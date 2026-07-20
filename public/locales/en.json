@@ -5590,6 +5590,153 @@
         "topology-nomatch": "No region matched; fell back to round-robin.",
         "none-up": "No resources are available."
       }
+    },
+    "mtu-mss": {
+      "name": "MTU / MSS calculator",
+      "blurb": "Enter a link MTU and your encapsulation stack (vxlan, gre, pppoe, vlan, mpls, +N custom) to get the inner MTU and TCP MSS, the Ethernet frame sizes, the underlay MTU an overlay needs, and the wire efficiency of standard versus jumbo frames.",
+      "inputLabel": "Link MTU and stack tokens",
+      "inputPlaceholder": "1500 vxlan · 1500 gre v6 · 9000 vxlan vlan · 1500 +57",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs entirely in your browser: fixed RFC header arithmetic, no network, no clock.",
+      "errors": {
+        "format": "Start with an MTU number, then optional tokens: v6, pppoe, gre, ipip, 6in4, vxlan, geneve, wireguard, vlan, qinq, mpls or mplsN, and +N for custom overhead.",
+        "mtu-range": "MTU must be between 68 and 65535.",
+        "custom-range": "Custom overhead +N must be between 1 and 2000 bytes.",
+        "mpls-range": "MPLS label count must be between 1 and 8 (mpls1 to mpls8).",
+        "duplicate": "A token was given twice; each encapsulation or shim appears once.",
+        "too-small": "That stack eats the whole MTU: the inner packet would be smaller than the 68-byte IPv4 minimum."
+      },
+      "inner": {
+        "heading": "Inside the MTU",
+        "mtu": "Inner IP MTU",
+        "mssV4": "TCP MSS over IPv4",
+        "mssV6": "TCP MSS over IPv6",
+        "encapNote": "Encapsulation consumes {total} bytes inside the link MTU (outer header: {outer}). This is the number to clamp MSS against.",
+        "sixInFourNote": "6in4 carries IPv6 inside IPv4, so the inner packet is IPv6: read the IPv6 MSS.",
+        "variableNote": "GENEVE's 50 bytes is the optionless base; variable-length options add more. Check your platform's actual header usage."
+      },
+      "stack": {
+        "heading": "The stack, layer by layer",
+        "insideMtu": "— inside the MTU (shrinks the inner packet)",
+        "onFrame": "— on the frame (IP MTU untouched)",
+        "lesson": "Encapsulations spend bytes inside the MTU, so the inner MTU and MSS shrink. L2 shims (VLAN, QinQ, MPLS) ride in the frame header, so the IP MTU does not move; the frame grows instead, which is why switches need frame headroom, not a smaller MTU.",
+        "labels": {
+          "pppoe": "PPPoE (RFC 2516)",
+          "gre": "GRE (RFC 2784)",
+          "ipip": "IP-in-IP (RFC 2003)",
+          "6in4": "6in4 (RFC 4213)",
+          "vxlan": "VXLAN (RFC 7348)",
+          "geneve": "GENEVE (RFC 8926)",
+          "wireguard": "WireGuard",
+          "custom": "Custom overhead",
+          "vlan": "802.1Q VLAN tag",
+          "qinq": "QinQ (802.1ad, two tags)",
+          "mpls": "MPLS label stack (RFC 3032)"
+        }
+      },
+      "frame": {
+        "heading": "At the link",
+        "maxFrame": "Largest Ethernet frame (header + shims + MTU + FCS)",
+        "onWire": "On the wire per frame (adds preamble + inter-frame gap)",
+        "shimNote": "With {shims} bytes of shims, an untagged-size payload already makes a baby giant: the switch must accept frames beyond 1518."
+      },
+      "underlay": {
+        "heading": "To carry a full 1500-byte inner packet",
+        "requiredMtu": "Required underlay IP MTU",
+        "requiredFrame": "Implied Ethernet frame",
+        "note": "The classic overlay design answer: raise the underlay MTU to this value (or clamp MSS down) so full-sized inner packets cross without fragmentation or path-MTU black holes."
+      },
+      "efficiency": {
+        "heading": "Wire efficiency, standard vs jumbo",
+        "arrow": "→",
+        "note": "Share of on-wire bytes that are TCP payload for full-sized IPv4 segments: (MTU − 40) ÷ (MTU + 38), counting Ethernet header, FCS, preamble and inter-frame gap. The classic pair: 94.93% at 1500, 99.14% at 9000."
+      }
+    },
+    "http-methods-comparison": {
+      "name": "HTTP methods comparison",
+      "blurb": "Enter one to four HTTP methods (try \"get vs query\") to see each one's registry facts: safe, idempotent, cacheable, request-body semantics, CORS safelist membership, HTML-form support, and the defining RFC - plus exactly which properties differ. Includes QUERY, the RFC 10008 method registered in June 2026.",
+      "inputLabel": "Method name(s)",
+      "inputPlaceholder": "query · get vs query · post,query · get post put delete",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs entirely in your browser: a fixed registry-fact table, no network, no clock.",
+      "errors": {
+        "format": "Enter one to four HTTP method names, separated by spaces, commas, or \"vs\" - for example \"get vs query\".",
+        "unknown-method": "\"{token}\" is not in the table. Known methods: GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH, QUERY, PROPFIND, REPORT, SEARCH.",
+        "too-many": "Compare at most four methods at a time."
+      },
+      "props": {
+        "safe": "Safe",
+        "idempotent": "Idempotent",
+        "cacheable": "Cacheable",
+        "body": "Request body",
+        "cors": "CORS preflight",
+        "form": "HTML forms"
+      },
+      "values": {
+        "yes": "yes",
+        "no": "no",
+        "corsYes": "safelisted (no preflight)",
+        "corsNo": "preflight required",
+        "cache": {
+          "yes": "yes",
+          "conditional": "only with explicit freshness",
+          "no": "no"
+        },
+        "body": {
+          "expected": "expected (the body is the point)",
+          "undefined": "no defined semantics (may be rejected)",
+          "allowed": "allowed but undefined",
+          "none": "must not carry content"
+        }
+      },
+      "methods": {
+        "GET": {
+          "story": "The read: safe, idempotent, cacheable - and the query must live in the URL, with every length limit, log file, and Referer header that implies."
+        },
+        "HEAD": {
+          "story": "GET's metadata twin: identical semantics, headers only in the response. What caches and monitors use to check without transferring."
+        },
+        "POST": {
+          "story": "The everything verb: create, submit, trigger - or secretly just search. The protocol cannot tell, so intermediaries must assume the worst: unsafe, non-idempotent, effectively uncacheable."
+        },
+        "PUT": {
+          "story": "Full replacement at a known URI. Not safe, but idempotent by design: putting the same representation twice leaves the same state, which is why retries are legal."
+        },
+        "DELETE": {
+          "story": "Idempotent but not safe: deleting twice leaves the world in the same state as deleting once, even though the second attempt may answer 404."
+        },
+        "CONNECT": {
+          "story": "Not a resource operation at all: it asks a proxy to open a tunnel (the way HTTPS traverses forward proxies). No body, no caching, its own rules."
+        },
+        "OPTIONS": {
+          "story": "The capability probe - and the vehicle of every CORS preflight. Asks what the target supports without touching it."
+        },
+        "TRACE": {
+          "story": "The diagnostic echo: the server reflects the request back. Safe and idempotent, forbidden a body, and disabled almost everywhere for header-leak reasons."
+        },
+        "PATCH": {
+          "story": "Partial modification (RFC 5789, 2010). Deliberately registered as neither safe nor idempotent: applying the same delta twice may not land in the same state."
+        },
+        "QUERY": {
+          "story": "The June 2026 arrival (RFC 10008): a read that carries a body. Safe and idempotent like GET, body like POST, cacheable with the cache key incorporating the request content - and the first new method registration since PATCH, sixteen years earlier. Not CORS-safelisted (preflight required); HTML forms fall back to GET today."
+        },
+        "PROPFIND": {
+          "story": "WebDAV's property reader (RFC 4918): safe, idempotent, XML body. One of the three registry precedents RFC 10008's appendix credits before giving QUERY a clean, generic start."
+        },
+        "REPORT": {
+          "story": "WebDAV versioning's extensible query (RFC 3253): safe and idempotent with a body, but tied to its XML report vocabulary - part of why a generic QUERY was still needed."
+        },
+        "SEARCH": {
+          "story": "The WebDAV search method (RFC 5323) - and QUERY's former name. Early drafts of the new method were called SEARCH until the 2021 rename gave it a fresh identity, free of the WebDAV baggage."
+        }
+      },
+      "diff": {
+        "heading": "Where they differ",
+        "none": "These methods share every property in the table.",
+        "note": "Safe and idempotent are IANA-registered promises about intent, mechanically usable by caches, retries, and proxies - never guarantees about payload content. A QUERY body deserves the same inspection as a POST body."
+      }
     }
   },
   "privacy_page": {
@@ -9664,8 +9811,8 @@
         "context": "SPAN mirrors locally, RSPAN across switches, ERSPAN across routed networks - each hop adds ways to drop packets silently."
       },
       "jumbo-frames": {
-        "def": "Ethernet frames above the standard 1500-byte payload, typically 9000: fewer headers per gigabyte, and misery when one hop in the path disagrees.",
-        "context": "Every device in the path must agree, which is why they thrive inside data centers and die crossing the internet."
+        "def": "Ethernet frames carrying more than the standard 1500-byte payload, typically 9000: fewer headers per gigabyte, and misery when one hop in the path disagrees.",
+        "context": "The 1500-byte limit is a 1980 economic decision that outlived its reasons; jumbos raise full-frame wire efficiency from about 94.9% to 99.1% and, historically more important, cut per-packet CPU and interrupt work. The catch is agreement: every device in the L2 domain must accept the size, because an MTU mismatch does not degrade politely - it black-holes. That is why jumbos thrive on controlled paths (storage, replication, overlay underlays inside the data center) and die crossing the internet."
       },
       "duplex-mismatch": {
         "def": "One end at full duplex, the other at half: the link works, slowly and with late collisions - the classic 'network is weird' root cause of the 2000s.",
@@ -11414,6 +11561,514 @@
       "spring4shell": {
         "def": "A 2022 remote code execution flaw in the Spring Framework for Java.",
         "context": "Spring4Shell let attackers achieve remote code execution through data binding in certain Spring configurations. Coming shortly after Log4Shell, it renewed attention on the risk carried by ubiquitous Java dependencies."
+      },
+      "flapping": {
+        "def": "An interface or route that keeps going down and up, down and up - never quite dead, never quite stable.",
+        "context": "A flapping link resets protocol adjacencies on every transition, so one bad SFP or loose patch cable can ripple through OSPF and BGP far beyond the port itself. BGP even grew a defense, route-flap damping, because a single flapping route can churn tables across the wider internet."
+      },
+      "fat-finger": {
+        "def": "To cause an outage with a typo - the wrong command, the wrong device, or one digit off in a config line.",
+        "context": "Half the war stories in networking start with a fat-fingered prefix, VLAN, or a reload typed into the wrong window. Change windows, peer review, and commit-confirm exist not because engineers are careless, but because everyone's fingers slip eventually."
+      },
+      "cruft": {
+        "def": "The accumulated leftover junk in a system - old configs, dead code, objects nobody dares delete.",
+        "context": "Every long-lived firewall policy and codebase grows cruft: rules for servers decommissioned years ago, objects named test2-DO-NOT-DELETE. Cleaning it is unglamorous and essential, because cruft is where surprises hide."
+      },
+      "bit-bucket": {
+        "def": "The imaginary place discarded data goes - the destination of everything sent to /dev/null.",
+        "context": "Dropped packets, silenced logs, and ignored alerts all land in the bit bucket. On Unix it has a real address, /dev/null: the device that accepts everything and stores nothing."
+      },
+      "thundering-herd": {
+        "def": "What happens when a crowd of clients all wake up, retry, or reconnect at exactly the same moment.",
+        "context": "A cache entry expires and a thousand requests hit the origin at once; a switch reboots and every device re-authenticates together. The fixes are jitter, backoff, and request coalescing - anything that turns a stampede back into a queue."
+      },
+      "hairpin-nat": {
+        "def": "Reaching your own public address from inside your own network - the traffic goes out to the NAT and hairpins straight back in.",
+        "context": "Without hairpin (loopback) NAT support, an internal client asking for the company's public IP gets nowhere, which is why split-horizon DNS often answers with the internal address instead. The name is the shape the traffic draws: out, U-turn, back."
+      },
+      "eyeball-network": {
+        "def": "An ISP whose customers are people watching screens - the networks where the eyeballs are.",
+        "context": "Peering economics splits the internet into eyeball networks (residential ISPs, mobile carriers) and content networks (CDNs, clouds). Content wants to reach eyeballs, eyeballs want content close, and interconnection disputes between the two are where most peering drama lives."
+      },
+      "five-nines": {
+        "def": "99.999% availability - about five minutes of downtime allowed per year.",
+        "context": "The classic telecom gold standard. Each added nine costs roughly ten times more than the last: four nines is under an hour of downtime a year, five is minutes, six is seconds. The honest question is never whether you can hit five nines, but which failures the users actually feel."
+      },
+      "war-room": {
+        "def": "The room, physical or virtual, where an incident's responders gather until the thing is fixed.",
+        "context": "A war room concentrates the people, the timeline, and the decision-making in one place during a major outage. The modern version is a bridge call plus a dedicated chat channel; the ritual matters more than the walls."
+      },
+      "snowflake-server": {
+        "def": "A server so hand-crafted and unique that nobody could rebuild it from scratch.",
+        "context": "Years of manual tweaks make a snowflake: beautiful, fragile, and unreproducible. The remedy is the cattle model - configuration as code, rebuildable from a definition - so that no machine is precious."
+      },
+      "configuration-drift": {
+        "def": "The slow divergence between what a system is supposed to look like and what it actually runs.",
+        "context": "One emergency hotfix here, one manual tweak there, and six months later no two of the 'identical' devices match. Drift is why audits surprise people, and why declarative tooling keeps re-asserting the desired state instead of trusting the last change."
+      },
+      "crash-cart": {
+        "def": "The wheeled cart with a monitor, keyboard, and cables that gets pushed to a server that stopped answering the network.",
+        "context": "When SSH is dead and the out-of-band card was never configured, the crash cart is the last resort: console access at walking speed. Datacenters keep one per aisle for exactly that day."
+      },
+      "tarpit": {
+        "def": "A defensive trick that answers attackers extremely slowly, wasting their time instead of refusing them.",
+        "context": "A tarpit accepts the connection and then drips out bytes, holding scanners and spam bots for minutes on what should take milliseconds. The German original, Teergrube, gave the technique its name during the spam wars."
+      },
+      "script-kiddie": {
+        "def": "An attacker who runs other people's exploit tools without understanding how they work.",
+        "context": "Dismissive but useful: script kiddies are the background noise of the internet, scanning everything with downloaded kits. The insult hides a serious point - automation means even unskilled attackers find unpatched systems, so 'nobody would bother attacking us' has never been true."
+      },
+      "shoulder-surfing": {
+        "def": "Stealing information the analog way: reading someone's screen or keyboard over their shoulder.",
+        "context": "Airport lounges, trains, and open-plan offices are the classic venues. Privacy screens, screen-lock habits, and not typing passwords during a projected demo are the countermeasures - the oldest attack in the book still works."
+      },
+      "dumpster-diving": {
+        "def": "Recovering sensitive information from the trash - printouts, sticky notes, unwiped drives.",
+        "context": "Old-school reconnaissance that still delivers: org charts, invoices, and password notes leave the building through the bin. Shredders and disk-wipe policies exist because the perimeter includes the dumpster."
+      },
+      "juice-jacking": {
+        "def": "The attack theory that a public USB charging port could push malware or pull data while it charges your phone.",
+        "context": "USB carries data and power on the same connector, which makes the attack plausible; confirmed in-the-wild cases are rare, but the fix is cheap - a power-only cable, a data blocker, or simply your own charger."
+      },
+      "bricked": {
+        "def": "Rendered as functional as a brick - a device so broken it will not even boot.",
+        "context": "A failed firmware update is the classic cause: half-written flash, no bootloader, no recovery. Soft-bricked means a rescue path exists (safe mode, TFTP boot, console); hard-bricked means it is now a paperweight with ports."
+      },
+      "borked": {
+        "def": "Broken, in the resigned voice of someone who has to fix it - as in 'the upgrade borked the standby unit'.",
+        "context": "Less formal than 'failed', more printable than the alternatives. A word for the state between working and diagnosed."
+      },
+      "nuke-and-pave": {
+        "def": "To stop debugging a sick machine and simply wipe it and reinstall from scratch.",
+        "context": "At some point the honest cost-benefit says rebuilding beats untangling. Cheap and safe when configs are code and data is backed up; terrifying exactly when they are not - which is the real lesson."
+      },
+      "dependency-hell": {
+        "def": "The state where software cannot be installed or upgraded because its dependencies' versions conflict.",
+        "context": "Package A needs libfoo 1.x, package B needs 2.x, and you need both. Windows called it DLL hell; every language ecosystem reinvents it. Lockfiles, vendoring, and containers are all, at heart, escapes from dependency hell."
+      },
+      "braindump": {
+        "def": "A verbatim collection of leaked real exam questions, sold or shared so candidates can memorize their way to a certification.",
+        "context": "The dark economy of the certification world. Using dumps violates every vendor's exam agreement, gets certifications revoked, and produces paper cert-holders who collapse at the first real device. The word also has an innocent sense - writing down everything you know before leaving a project - so context matters."
+      },
+      "alert-fatigue": {
+        "def": "The numbness that sets in when monitoring pages so often that real alerts drown among the false ones.",
+        "context": "Every ignored alarm trains the on-call brain that alarms do not matter - right up until one does. The cure is ruthless: every alert must be actionable, or it gets tuned, aggregated, or deleted."
+      },
+      "alarm-storm": {
+        "def": "One real failure detonating into thousands of secondary alarms across the monitoring system.",
+        "context": "A core link dies and every device behind it screams at once, burying the root cause under its own symptoms. Event correlation and topology-aware suppression exist to turn the storm back into a single actionable page."
+      },
+      "gray-failure": {
+        "def": "A failure that is real but not clean - the system is degraded in a way the health checks do not see.",
+        "context": "The disk that is slow but not dead, the link dropping one packet in a thousand. Gray failures are nastier than outages because everything reports green while users suffer; catching them means measuring what users experience, not just whether the process is up."
+      },
+      "goodput": {
+        "def": "The throughput that actually matters: useful application data delivered, after all the overhead and retransmissions.",
+        "context": "A link can show high throughput while goodput is terrible - retransmissions, headers, and duplicate data all count as traffic but not as progress. It is the difference between the speedometer and actually arriving."
+      },
+      "bufferbloat": {
+        "def": "Latency caused by oversized buffers: routers queue so much that packets arrive very late instead of being usefully dropped.",
+        "context": "Big buffers were meant to prevent loss, but a full deep buffer means every packet waits in a long line - which is why one big upload can make video calls stutter. Smart queue management (CoDel, FQ-CoDel, CAKE) drains the bloat."
+      },
+      "microburst": {
+        "def": "A traffic spike so brief that it overflows a switch buffer and drops packets, yet vanishes inside the utilization averages.",
+        "context": "The five-minute graph shows 30% while a two-millisecond burst overruns the port and TCP quietly retransmits. Classic in storage and trading networks; catching one takes high-resolution counters or buffer-drop statistics, not prettier averages."
+      },
+      "elephant-flow": {
+        "def": "A single long-lived flow so large it dominates a link - one elephant among thousands of mice.",
+        "context": "Backups, replication, and bulk transfers are the elephants; interactive traffic is the mice. One elephant can fill a queue and trample the mice's latency, which is why QoS, ECMP hashing, and flow-aware scheduling all care about telling them apart."
+      },
+      "living-off-the-land": {
+        "def": "Attacking with the tools already installed on the victim's systems, so nothing malicious ever has to be downloaded.",
+        "context": "PowerShell, WMI, certutil, PsExec: all legitimate, all signed, all abusable. It defeats naive antivirus because there is no malware file to find; defenders answer with behavioral detection and with logging what the built-in tools are doing."
+      },
+      "magic-smoke": {
+        "def": "The smoke inside electronics that, once released, can never be put back - the joke explanation for why fried hardware stays dead.",
+        "context": "'You let the magic smoke out' is how engineers pronounce a component dead after a miswire or a power surge. The humor encodes a truth: electronics fail visibly exactly once."
+      },
+      "tribal-knowledge": {
+        "def": "The critical operational knowledge that lives only in certain people's heads, never in the documentation.",
+        "context": "Why the failover script must run twice, which port is really connected where - the things you learn by asking the right veteran. It is the raw material of the bus factor, and writing it down is how teams stop being hostage to it."
+      },
+      "flag-day": {
+        "def": "A cutover where everything must change at once, with no coexistence between old and new.",
+        "context": "The name honors the original: January 1, 1983, when the ARPANET switched from NCP to TCP/IP in a single day. Protocol designers have avoided flag days ever since - it is why IPv6 was built to run alongside IPv4 rather than replace it overnight."
+      },
+      "forklift-upgrade": {
+        "def": "An upgrade so total that the old equipment leaves on a forklift - nothing is reused, everything is replaced.",
+        "context": "The opposite of an incremental migration: new chassis, new architecture, new cabling. Sometimes it genuinely beats nursing the installed base; vendors, naturally, tend to agree."
+      },
+      "sev1": {
+        "def": "The highest incident severity: the service is down, customers feel it, and everything else can wait.",
+        "context": "Declaring a SEV1 is a deliberate act - it summons the war room, wakes the escalation chain, and starts the clock on communications. Most organizations run SEV1 through SEV4; arguing about the number mid-incident is a smell of its own."
+      },
+      "its-always-dns": {
+        "def": "The troubleshooting proverb that whatever the symptom, the root cause will turn out to be DNS.",
+        "context": "Half joke, half statistics: name resolution touches everything, fails in creative ways, and hides behind symptoms that look like anything else. The haiku version is canon: it's not DNS - there's no way it's DNS - it was DNS."
+      },
+      "works-on-my-machine": {
+        "def": "The developer's classic defense when code fails everywhere except their own laptop.",
+        "context": "The phrase that launched a thousand containers. The gap between 'my machine' and production - versions, paths, environment variables, data - is precisely what reproducible builds, CI, and Docker exist to close."
+      },
+      "s-in-iot": {
+        "def": "The joke that the S in IoT stands for security - there is no S, and too often no security either.",
+        "context": "A one-line audit of an industry: default passwords, unpatchable firmware, devices that outlive their vendors. Botnets like Mirai turned the punchline into an operational fact."
+      },
+      "trust-but-verify": {
+        "def": "The old proverb of cooperative suspicion - accept the claim, then check it anyway.",
+        "context": "A Russian proverb that Reagan made famous in arms control and IT made a habit. Zero trust sharpened it into 'never trust, always verify': identity and posture are checked continuously, not once at the door."
+      },
+      "assume-breach": {
+        "def": "The security posture that plans as if attackers are already inside, because someday they will be.",
+        "context": "It reframes the job from building a perfect wall to limiting what a successful intruder can reach: segmentation, least privilege, detection, rehearsed response. The grim industry version: there are two kinds of companies - those that have been breached, and those that do not know it yet."
+      },
+      "never-touch-a-running-system": {
+        "def": "The conservative operator's creed: if it works, leave it alone.",
+        "context": "Born from hard experience with fragile systems, and half-obsolete in the patch-or-be-breached era: not touching a running system also means not patching it. The modern compromise is making change safe enough to do routinely rather than avoiding it."
+      },
+      "read-only-friday": {
+        "def": "The ops tradition of making no production changes on Friday, because weekends exist.",
+        "context": "A deploy at five on Friday has a way of becoming a Saturday incident with half the team unreachable. Mature CI/CD teams argue the rule away - if deploys are that risky, fix the deploys - but the instinct it encodes is respect for blast radius and for people's time off."
+      },
+      "hope-is-not-a-strategy": {
+        "def": "The SRE reminder that wishing a system stays up is not the same as engineering it to.",
+        "context": "Popularized by Google's SRE culture: reliability comes from measured objectives, error budgets, and rehearsed failure, not optimism. If the plan for a risk is 'it probably won't happen', there is no plan."
+      },
+      "you-build-it-you-run-it": {
+        "def": "The DevOps principle that the team that writes a service also operates it in production.",
+        "context": "Werner Vogels' phrase from Amazon, and the cultural end of throwing code over the wall: nothing teaches operability like being the one who gets paged. Ownership closes the loop between design decisions and 3 a.m. reality."
+      },
+      "single-pane-of-glass": {
+        "def": "The perennial vendor promise of one dashboard that shows everything - and the engineer's shorthand for doubting it.",
+        "context": "Every management product pitches one; most environments end up with a dozen single panes of glass. Useful as an aspiration, ironic as a description - usually said with one eyebrow raised."
+      },
+      "two-is-one-one-is-none": {
+        "def": "The redundancy proverb: with two you can lose one; with one, a single failure leaves you with nothing.",
+        "context": "Military in origin and native to network design: dual power feeds, dual supervisors, HA pairs, two of everything on the critical path. The corollary every operator learns: untested redundancy counts as one."
+      },
+      "fail-open-vs-fail-closed": {
+        "def": "The design choice of what a control does when it breaks: allow everything through, or block everything.",
+        "context": "A fire door fails open because life beats security; a vault fails closed for the opposite reason. Every inline control faces the same choice - an IPS that fails open keeps the business running but unprotected, while failing closed is safe and is also an outage. The right answer is a decision, never a default."
+      },
+      "crunchy-outside-chewy-center": {
+        "def": "The classic critique of perimeter-only security: a hard shell around a soft, defenseless inside.",
+        "context": "Bill Cheswick's 1990 description of firewalled networks - a sort of crunchy shell around a soft, chewy center - is still the sharpest one-liner about why one perimeter is not a strategy. Everything from segmentation to zero trust is an answer to it."
+      },
+      "castle-and-moat": {
+        "def": "The perimeter security model: strong walls at the edge, broad trust for anyone already inside.",
+        "context": "It matched the world where everything lived in one building behind one firewall. Cloud, SaaS, and remote work dissolved the moat - the resources left the castle - which is the whole argument for zero trust's per-request verification."
+      },
+      "pcap-or-it-didnt-happen": {
+        "def": "The network engineer's evidence standard: claims about traffic are settled by a packet capture, not by opinion.",
+        "context": "Applications blame the network, the network blames the application, and the pcap ends the argument, because packets do not lie. It is the profession's version of 'citation needed'."
+      },
+      "check-layer-1": {
+        "def": "The first commandment of troubleshooting: before anything clever, confirm the cable, the port, the power.",
+        "context": "The OSI model doubles as a debugging ladder, and an embarrassing share of 'routing problems' end at an unplugged patch lead or a dead SFP. Start at the bottom; the physical layer has no sense of humor."
+      },
+      "schroedingers-backup": {
+        "def": "The state of any backup that has never been restored: simultaneously good and bad until someone opens the box.",
+        "context": "Backup jobs succeed for years while quietly producing nothing restorable - wrong scope, silent corruption, expired credentials. The operational form of the proverb: a backup does not exist until a restore has been tested."
+      },
+      "three-two-one-backup": {
+        "def": "The backup rule of thumb: three copies of the data, on two different media, with one copy off-site.",
+        "context": "Simple enough to remember mid-disaster, and it survives most single failures: device death, site loss, even ransomware if the off-site copy is offline or immutable. The modern extension is 3-2-1-1-0: one copy offline, zero restore errors."
+      },
+      "raid-is-not-a-backup": {
+        "def": "The storage truth that redundancy protects against disk failure, not against deletion, corruption, or ransomware.",
+        "context": "RAID keeps a volume alive when a drive dies - and faithfully mirrors every mistake to all disks at once. Deleted the file? It is gone, redundantly. Availability and recoverability are different problems; a backup solves the second one."
+      },
+      "security-is-a-process": {
+        "def": "Bruce Schneier's reminder that security is a process, not a product - nothing you buy makes you done.",
+        "context": "Products help, but threats move, configurations drift, and people change; what endures is the loop of assessing, patching, monitoring, and responding. Anyone selling total security in a box is selling the noun without the verb."
+      },
+      "dont-roll-your-own-crypto": {
+        "def": "The first commandment of applied cryptography: use the vetted algorithms and libraries, never your homemade ones.",
+        "context": "Designing crypto that others cannot break is one of the hardest problems in the field, and every homemade cipher looks unbreakable to its author - Schneier's law in action. Rolling your own means your mistakes ship without ever meeting the years of public attack that hardened AES and TLS."
+      },
+      "key-management-is-hard": {
+        "def": "The crypto veteran's summary: encrypting data is the easy part; protecting, rotating, and not losing the keys is the hard part.",
+        "context": "The algorithms are free and vetted; what fails in practice is the key left in a repository, the certificate nobody renewed, the HSM nobody can operate. It is the two-hard-things joke of the crypto world, and the reason key-management systems exist."
+      },
+      "rough-consensus-and-running-code": {
+        "def": "The IETF's working philosophy: standards emerge from broad agreement plus implementations that actually work.",
+        "context": "David Clark's 1992 formulation - we reject kings, presidents and voting; we believe in rough consensus and running code - is why internet protocols are proven in interop before they are finished on paper. It is the cultural DNA behind every RFC this site teaches."
+      },
+      "turtles-all-the-way-down": {
+        "def": "The recursion joke applied to trust: every layer rests on another layer, and eventually you must simply stand somewhere.",
+        "context": "PKI ends at self-signed root CAs, DNS at the root servers, secure boot at a burned-in key - every chain of trust bottoms out in an anchor taken on faith. Naming the turtles is how you find out what you are actually trusting."
+      },
+      "second-system-effect": {
+        "def": "Fred Brooks's warning that the successor to a successful system tends to be overengineered with every idea saved up from the first.",
+        "context": "The first system was kept humble by ignorance; the second gets all the features its designers wished for, and sinks under them. Protocols, products, and rewrites all fall for it - restraint is a second-system skill."
+      },
+      "patch-tuesday-exploit-wednesday": {
+        "def": "The rhythm of Windows security: fixes ship on the second Tuesday, and reverse-engineered attacks follow within days.",
+        "context": "Microsoft's predictable cadence gave defenders a schedule - and gave attackers a diff to reverse into working exploits before slow organizations patch. The window between patch release and patch deployment is the whole game."
+      },
+      "demo-gods": {
+        "def": "The capricious deities who decide whether a live demo works - having behaved perfectly in every rehearsal.",
+        "context": "Every instructor and presenter knows the liturgy: the lab that ran flawlessly all week fails the moment an audience appears. Offerings include pre-recorded fallbacks, snapshots, and never typing live what a script can type for you."
+      },
+      "two-generals": {
+        "def": "The classic proof that two parties on an unreliable channel can never be perfectly certain they agree.",
+        "context": "Each general needs the other's confirmation, the confirmation needs its own confirmation, forever - no finite number of messengers yields certainty. It is why exactly-once delivery over a lossy network is impossible in the strict sense, and why TCP settles for reliable-enough with acknowledgments and retries."
+      },
+      "greenfield-vs-brownfield": {
+        "def": "Building on an empty field versus building inside what already exists - the two starting conditions of every project.",
+        "context": "Greenfield means freedom and no users; brownfield means constraints, migrations, and the installed base paying the bills. Most real work is brownfield, which is why 'how do we get there from here' matters more than the target architecture."
+      },
+      "hot-warm-cold-standby": {
+        "def": "The three temperatures of a backup system: running and synchronized, running but behind, or powered off until needed.",
+        "context": "The temperature buys recovery time: a hot standby takes over in seconds, a cold one after hours of restore. Cost scales the same way, which makes the choice a business decision wearing a technical costume."
+      },
+      "active-active-vs-active-passive": {
+        "def": "The two shapes of high availability: both nodes serving traffic, or one serving while the other waits.",
+        "context": "Active-passive is simpler to reason about and idles half the hardware; active-active uses everything and doubles the failure modes - notably the risk that each node runs fine alone but the pair cannot agree who owns what. BIG-IP HA pairs, firewall clusters, and databases all wrestle with the same trade."
+      },
+      "baby-giant": {
+        "def": "A frame just slightly over the classic 1518-byte Ethernet maximum - grown by tags and labels, not by payload.",
+        "context": "One 802.1Q VLAN tag makes 1522, QinQ makes 1526, a couple of MPLS labels push further. The payload is still a normal 1500 bytes; only the header grew. Switch platforms accept them by carrying frame headroom, which is why system MTUs read 9216 while the IP MTU stays put."
+      },
+      "brownout": {
+        "def": "A service that is up but deliberately or visibly degraded - dimmed, like the power-grid original, rather than dark.",
+        "context": "Feature brownouts are also a communication tool: briefly degrading a deprecated API warns integrators that the real shutdown is coming, in a way release notes never manage. The involuntary kind is just a gray failure with better branding."
+      },
+      "dark-launch": {
+        "def": "Shipping a feature to production silently, running it on real traffic before any user can see it.",
+        "context": "The code path executes, metrics and error rates accumulate, and the audience is zero - the feature flag stays off. It converts the scariest moment of a launch into a rehearsal with production-grade data."
+      },
+      "tiger-team": {
+        "def": "A small, hand-picked group pulled out of normal structure to attack one hard problem until it yields.",
+        "context": "The name comes from 1960s aerospace and earned immortality with Apollo 13's rescue effort. In security the term overlaps with red teams, but a tiger team is defined by its mission and temporariness, not by playing the adversary."
+      },
+      "cowboy-coding": {
+        "def": "Development with no process between the idea and production: no review, no tests, no branch, just push.",
+        "context": "Thrilling in a prototype, lethal in anything shared. The cowboy is not always wrong - speed has value - but the debt lands on whoever maintains the code, which is why teams fence the pasture with CI and review."
+      },
+      "firefighting": {
+        "def": "Operating in permanent emergency mode: all effort goes to the incident of the day, none to preventing the next one.",
+        "context": "The trap is self-sustaining - time spent extinguishing leaves no time for fireproofing, which guarantees more fires. Escaping requires deliberately protecting non-urgent work, which is exactly what burning teams feel they cannot afford."
+      },
+      "top-talkers": {
+        "def": "The hosts, flows, or applications consuming the most bandwidth on a link - the first list every traffic tool shows.",
+        "context": "NetFlow, sFlow, and every monitoring dashboard lead with top talkers because the distribution is brutally unequal: a handful of conversations usually own the link. It answers the eternal question 'what is eating the WAN' in one sorted column."
+      },
+      "clean-pipe": {
+        "def": "Internet transit that arrives already scrubbed of DDoS traffic - the provider filters the flood upstream and delivers only the clean flow.",
+        "context": "Sold by carriers and mitigation providers as a service: attack traffic is absorbed in their scrubbing centers, close to its sources, instead of saturating the customer's last mile. The metaphor is exact - the pipe is the same, the water is filtered before it reaches you."
+      },
+      "swivel-chair": {
+        "def": "Integrating two systems with a human who swivels between screens, reading from one and retyping into the other.",
+        "context": "The oldest middleware in the world, and still everywhere: ticket data copied into the change system, alarms retyped into spreadsheets. Every swivel is latency, toil, and a transcription error waiting to happen - which is why 'swivel-chair integration' is usually said while writing the automation ticket."
+      },
+      "shelfware": {
+        "def": "Software an organization bought, licensed, and never actually deployed - value sitting on a shelf.",
+        "context": "Born from bundle deals, over-optimistic projects, and compliance purchases. Security suffers a special variant: the tool is installed but never tuned, generating a comforting line item and no protection. License audits exist largely to find it."
+      },
+      "vaporware": {
+        "def": "A product announced with fanfare that never ships - or ships so late and so diminished that the announcement was the product.",
+        "context": "A vintage industry word from the era of pre-announcements designed to freeze competitors' sales. The defensive reflex it taught still applies to roadmap slides: ship dates are facts, announcements are marketing."
+      },
+      "bit-banging": {
+        "def": "Driving a hardware protocol entirely in software, toggling a pin bit by bit instead of using a dedicated controller.",
+        "context": "How you speak SPI or serial on a chip that lacks the peripheral: the CPU personally raises and lowers the line with careful timing. Inefficient, fragile at speed, and occasionally the only way - a rite of passage in embedded work."
+      },
+      "crown-jewels": {
+        "def": "The small set of assets whose compromise would actually hurt: the data, keys, and systems the business cannot lose.",
+        "context": "Security budgets are finite, so the crown-jewels exercise forces the uncomfortable ranking: which systems justify the strongest controls. The related phrase 'keys to the kingdom' names the credentials - domain admin, root CA, break-glass accounts - that unlock all of it at once."
+      },
+      "lift-and-shift": {
+        "def": "Migrating a workload to the cloud exactly as it is - same VM, same architecture, new landlord.",
+        "context": "The fastest migration and the least transformative: the application gains none of the elasticity it is now paying cloud prices for. Sometimes that is the right call (deadlines, datacenter exits), but the bill eventually argues for re-architecting."
+      },
+      "god-box": {
+        "def": "A single appliance that does everything - routing, firewalling, VPN, IPS, load balancing - one box to rule them all.",
+        "context": "Beloved by budgets and branch offices, feared by architects: the god box is a single point of failure with a very long blast radius, and its jack-of-all-trades feature set rarely matches best-of-breed depth. The eternal trade against complexity and cost."
+      },
+      "pizza-box": {
+        "def": "A flat 1U rack-mount server or switch - the form factor of a large pizza, stacked by the dozen.",
+        "context": "The visual vocabulary of every datacenter aisle: racks of pizza boxes, occasionally interrupted by a chassis. The shape won because it slices compute into rack-unit-sized, individually replaceable pieces."
+      },
+      "frobnicate": {
+        "def": "To fiddle with a setting or object, adjusting it without deep intent - classic hacker-dictionary vocabulary.",
+        "context": "From the Jargon File, with a documented scale of intent: you frob a knob aimlessly, twiddle it with mild purpose, and tweak it with precision. Surviving in the wild mostly as 'frob', it signals fluency in the culture's oldest dialect."
+      },
+      "keep-the-lights-on": {
+        "def": "The baseline operational work that keeps existing systems running - maintenance, patching, renewals, the unglamorous constant.",
+        "context": "KTLO is the budget line every transformation initiative resents and depends on. When it consumes the whole team, nothing new ever ships; when it is starved, the lights literally go out. Mature organizations measure the ratio."
+      },
+      "incast": {
+        "def": "The many-to-one traffic collapse: dozens of servers answer one request simultaneously and their combined burst overruns the receiver's switch port.",
+        "context": "The signature pathology of distributed storage and big-data queries - each sender behaves, the sum does not. The microburst overflows shallow buffers, TCP timeouts synchronize, and throughput craters. Fixes live in buffer tuning, ECN, and application-level request pacing."
+      },
+      "lit-fiber": {
+        "def": "Fiber with the electronics attached and light flowing - a working service, as opposed to dark fiber you light yourself.",
+        "context": "The buy-versus-build of the physical layer: lit service means the provider owns the optics and the wavelengths, dark fiber means you do. 'Lit building' is the sales version - the fiber is already there, turn-up is fast."
+      },
+      "middle-mile": {
+        "def": "The network segment between the local access network and the internet's core - the haul from the neighborhood to the exchange.",
+        "context": "The last mile gets the attention, but rural broadband economics usually die in the middle mile: backhauling a small town's traffic hundreds of kilometers to the nearest interconnection point. Subsidy programs and open-access networks target exactly this segment."
+      },
+      "meet-me-room": {
+        "def": "The room in a carrier-neutral facility where networks physically interconnect - the cross-connect floor where the internet is literally patched together.",
+        "context": "An MMR is racks of demarcation panels and a spider web of fiber jumpers: your router, their router, one cable. The room's neutrality is the product - any tenant can reach any carrier without touching the street."
+      },
+      "carrier-hotel": {
+        "def": "A building whose tenants are networks: dozens of carriers and providers colocated where fiber routes converge.",
+        "context": "The great interconnection buildings - the famous downtown addresses where transatlantic cables, backbones, and exchanges meet - concentrate staggering shares of a region's traffic. Their meet-me rooms are why 'where is the internet' has surprisingly literal answers."
+      },
+      "looking-glass": {
+        "def": "A public web interface into a network's router, letting outsiders run ping, traceroute, and BGP queries from inside that network.",
+        "context": "The courtesy tool of the ISP world: when routing looks wrong, you check how the routes appear from the other side. Debugging asymmetric paths and hijacks without looking glasses would be guesswork - they are peer review for the routing table."
+      },
+      "default-free-zone": {
+        "def": "The part of the internet whose routers carry the full routing table and no default route - nowhere to forward blindly.",
+        "context": "In the DFZ, every destination must be explicitly known or it does not exist - close to a million IPv4 prefixes and growing. Being default-free is what separates the core from the customers; everyone else can shrug and point a default at their provider."
+      },
+      "full-table": {
+        "def": "The complete set of internet routes, taken over BGP from a transit provider - the whole map, not a summary.",
+        "context": "'Taking full tables' is the moment a network graduates: with the complete table from two or more providers, the router can pick the genuinely best exit per prefix instead of trusting a default. The price is memory, convergence time, and operating like an adult in the DFZ."
+      },
+      "gold-plating": {
+        "def": "Adding polish and features nobody asked for - effort spent past the point where the requirement was met.",
+        "context": "The engineer's version of over-delivering: beautiful abstractions for one caller, configurability no one will use. It feels like quality and behaves like scope creep with better manners; YAGNI is the standing antidote."
+      },
+      "burn-rate": {
+        "def": "How fast a finite budget is being consumed - cash in a startup, error budget in SRE practice.",
+        "context": "The SRE borrowing is precise: if the month's reliability allowance is burning at three times the sustainable rate, alerts should fire long before the budget is gone. Same instinct as the startup runway - the number matters less than the slope."
+      },
+      "abandonware": {
+        "def": "Software whose vendor is gone or has walked away: no patches, no support, no legal way to buy it - and often no way to run it safely.",
+        "context": "Museums and emulation communities preserve the culture; enterprises meet the darker variant when a critical system's vendor evaporates and the unpatched binary becomes a permanent risk. Escrow clauses and open-source exits exist for exactly that ending."
+      },
+      "bloatware": {
+        "def": "Unwanted software that arrives pre-installed - trials, toolbars, vendor utilities - consuming resources nobody offered.",
+        "context": "The economics are simple: manufacturers are paid to preload it. The first ritual of a new corporate laptop image is scraping it off, which is why golden images and clean OS installs are IT hygiene, not preference."
+      },
+      "drinking-from-the-firehose": {
+        "def": "Absorbing information far faster than anyone could - the universal description of onboarding into a complex system.",
+        "context": "New hires, new codebases, new incident bridges: the volume is the hazing. The useful response is triage, not heroics - decide what to actually swallow, and where the rest is written down for later."
+      },
+      "if-it-hurts-do-it-more-often": {
+        "def": "The counterintuitive delivery principle: painful, risky activities become safe through frequency, not avoidance.",
+        "context": "Popularized by Martin Fowler about deployment and integration: rare releases accumulate risk and atrophy the muscles; frequent ones force automation and shrink each change's blast radius. The direct philosophical rival of read-only Friday - and the argument that eventually wins."
+      },
+      "you-cant-secure-what-you-cant-see": {
+        "def": "The visibility maxim: security begins with an accurate inventory of what exists, because unknown assets get no controls.",
+        "context": "Why asset management leads every serious controls framework, unglamorous as it is. Shadow IT, forgotten subdomains, and orphaned cloud accounts are breaches waiting patiently for their moment; discovery is the first control."
+      },
+      "no-plan-survives-contact": {
+        "def": "Moltke's maxim: the plan is what you have until reality responds, then adaptation is the actual skill.",
+        "context": "Field marshal Helmuth von Moltke's original point was not to skip planning but to plan for deviation - which is exactly the argument for incident runbooks that rehearse decision-making rather than script it, and for DR tests that expect surprises."
+      },
+      "make-it-work-make-it-right": {
+        "def": "Kent Beck's ordering of concerns: first correctness, then design, then - and only then - speed.",
+        "context": "The discipline is in the sequence: resisting cleverness before the thing works, and resisting optimization before the design is honest. Most premature-optimization sins are a violation of step three's position in the queue."
+      },
+      "canary-in-the-coal-mine": {
+        "def": "A sacrificial early-warning signal: something small that suffers first, so the rest can react in time.",
+        "context": "Miners' literal canaries became the vocabulary of modern operations: canary deployments send a slice of traffic to the new version and watch it before the fleet follows; canary tokens are honeytoken credentials whose only job is to scream when touched."
+      },
+      "weakest-link": {
+        "def": "The chain proverb applied to security: the system's real strength is its most neglected component, not its best one.",
+        "context": "Attackers do not duel your strongest control; they route around it - through the unpatched box, the reused password, the helpful human. The corollary shapes strategy: uniform decent coverage beats one magnificent wall with a gap."
+      },
+      "attackers-only-need-to-be-right-once": {
+        "def": "The defender's dilemma: attackers can fail repeatedly at no cost, while defense must hold everywhere, always.",
+        "context": "True as economics, and worth the modern counterpoint: a defender only needs to detect once, and an intruder must stay invisible through every step of a long kill chain. Assume-breach thinking exists to turn that second asymmetry into practice."
+      },
+      "street-finds-its-own-uses": {
+        "def": "William Gibson's observation that technology's real uses are invented by its users, not its designers.",
+        "context": "SMS, spreadsheets as databases, GPS as a fleet-discipline tool, DNS as a covert channel: every deployed system develops a second, unplanned life. Security consequences included - the street's creativity works both directions."
+      },
+      "nobody-knows-youre-a-dog": {
+        "def": "The 1993 New Yorker cartoon that named the internet's founding identity condition: online, nobody can tell who or what you are.",
+        "context": "Peter Steiner's two dogs at a computer became the most-reproduced summary of online anonymity ever drawn. Thirty years of identity engineering - PKI, MFA, KYC, verified badges - is one long argument with that caption, and the dog is still winning more often than the industry admits."
+      },
+      "routes-around-damage": {
+        "def": "John Gilmore's line that the Net treats blockage as a fault to route around - resilience as a design temperament.",
+        "context": "The full 1993 quote names censorship as the damage; the engineering half is simply true (dynamic routing exists to survive failures), while the political half has aged into an open argument. Both halves get invoked, often without noticing they differ."
+      },
+      "swiss-cheese-model": {
+        "def": "James Reason's accident model: every defense layer has holes, and disasters happen when the holes line up.",
+        "context": "Each slice - firewall, review, monitoring, training - is imperfect, which is fine; the design goal is ensuring the holes never align. It is the theory underneath defense in depth, and the honest answer to 'but we had a control for that': you had one slice."
+      },
+      "testing-in-production": {
+        "def": "The practice - reckless or disciplined, depending entirely on tooling - of validating changes on the live system.",
+        "context": "As a punchline it mocks missing test environments; as a discipline (feature flags, canaries, dark launches, chaos engineering) it acknowledges that production is the only environment that tells the whole truth. The joke and the strategy are separated by observability and a rollback path."
+      },
+      "perfect-is-the-enemy-of-good": {
+        "def": "Voltaire's warning that pursuing the flawless blocks shipping the sufficient.",
+        "context": "In engineering it pairs with the ninety-ninety rule: the last polish costs the most and pays the least. The judgment call it demands - which imperfections are acceptable - is the actual job; the proverb just forbids answering 'none'."
+      },
+      "slow-is-smooth-smooth-is-fast": {
+        "def": "The special-operations cadence rule: hurrying breeds errors, and errors cost more time than care ever did.",
+        "context": "During incidents it is the antidote to panic typing: the deliberate command executed once beats the fast one executed three times with a rollback in between. Change windows run on the same physics."
+      },
+      "belt-and-suspenders": {
+        "def": "Wearing two independent safeguards for the same failure - if one lets go, the trousers stay up.",
+        "context": "The idiom for deliberate redundancy of controls: backup and replication, MFA and conditional access, dual power feeds. The word 'independent' carries the weight; two straps anchored to the same failing point are one strap with extra steps."
+      },
+      "only-secure-computer": {
+        "def": "Gene Spafford's reductio: the only truly secure computer is off, encased in concrete, guarded - and useless.",
+        "context": "The point is not despair but framing: security is not a reachable end state, it is a trade against usefulness, managed as risk. Every real system lives somewhere on the line between the concrete block and the open door."
+      },
+      "all-models-are-wrong": {
+        "def": "George Box's statistics proverb: every model simplifies falsely - the question is whether it is useful anyway.",
+        "context": "Monitoring dashboards, capacity forecasts, risk matrices, network diagrams: all wrong, some useful. The operational discipline is remembering which simplifications each model made, because that is exactly where it will mislead you."
+      },
+      "map-is-not-the-territory": {
+        "def": "Korzybski's warning that representations are not the reality they describe - and confusing them has consequences.",
+        "context": "The network diagram, the CMDB, the runbook: maps, drawn once, aging quietly while the territory drifts. Incidents love the gap - the documented topology says the link exists, the packets disagree. Trust the territory; audit the maps."
+      },
+      "everything-fails-all-the-time": {
+        "def": "Werner Vogels' cloud axiom: at sufficient scale, failure is not an event but a permanent background condition.",
+        "context": "With enough disks, links, and instances, something is always broken - so architecture must assume it: redundancy, graceful degradation, retries with backoff. The mindset shift is from preventing failure to making it boring."
+      },
+      "no-solutions-only-tradeoffs": {
+        "def": "Thomas Sowell's economics dictum, adopted whole by engineering: every choice purchases its benefits with costs elsewhere.",
+        "context": "Consistency versus availability, security versus usability, flexibility versus simplicity - the mature design conversation is not 'which option is right' but 'which costs can we live with'. Anyone selling a pure solution has hidden the invoice."
+      },
+      "choose-boring-technology": {
+        "def": "Dan McKinley's principle: prefer proven, well-understood tools, and spend your few innovation tokens deliberately.",
+        "context": "Boring means known failure modes, deep operational lore, and answers on the first search-results page. The essay's framing - each team can afford maybe three genuinely novel choices - turned technology selection from taste into budgeting."
+      },
+      "security-theater": {
+        "def": "Bruce Schneier's term for measures that perform protection visibly while providing little of it.",
+        "context": "The value of the term is the test it implies: does this control change an attacker's calculus, or an observer's feelings? Some theater is even defensible - visible deterrence has effects - but only if someone, somewhere, knows which category the measure is in."
+      },
+      "compliance-is-not-security": {
+        "def": "The audit-season reminder that passing a checklist proves documentation, not protection.",
+        "context": "Frameworks set floors and attackers read the same checklists everyone else does. Breached organizations with clean audits are an industry constant. The mature stance keeps both books: compliance as the reporting layer, security as the engineering it is supposed to describe."
+      },
+      "zawinskis-law": {
+        "def": "Every program attempts to expand until it can read mail; those which cannot are replaced by ones which can.",
+        "context": "Jamie Zawinski's satire of software envelopment, aging beautifully: substitute 'embed a browser', 'add a chat', or 'ship an AI assistant' and the law still compiles. The underlying force is real - products grow toward platforms until something leaner eats them."
+      },
+      "segals-law": {
+        "def": "A man with a watch knows what time it is; a man with two watches is never sure.",
+        "context": "The proverb of conflicting authorities, and networking's favorite in-joke: it is literally why NTP exists and why serious timekeeping uses three or more sources with an algorithm to detect the liar. Two monitoring systems disagreeing about an outage is Segal's law with paging enabled."
+      },
+      "free-as-in-beer": {
+        "def": "The disambiguation of 'free software': gratis (free beer) versus libre (free speech) - price versus liberty.",
+        "context": "English overloads one word where other languages have two, so the movement coined the beer test. The distinction has teeth: freeware costs nothing and grants nothing, while open source may cost money and still grant everything that matters - the source, the rights, the exit."
+      },
+      "xy-problem": {
+        "def": "Asking for help with your attempted solution (Y) instead of your actual problem (X) - and burning everyone's time on the wrong question.",
+        "context": "The support-forum classic: 'how do I extract the last 3 characters of a filename' when the real goal is the extension. The cure is on both sides: askers state the underlying goal; helpers ask 'what are you actually trying to do' before optimizing the wrong path."
+      },
+      "single-source-of-truth": {
+        "def": "The principle that each fact should have exactly one authoritative home, with everything else derived from it.",
+        "context": "Two authoritative spreadsheets is how organizations institutionalize Segal's law. In practice SSOT means declaring which system wins - the IPAM, the repo, the CMDB - and making every copy provably downstream. Configuration drift is what happens when nobody declared."
+      },
+      "safe-method": {
+        "def": "An HTTP method whose defined semantics request no state change on the server - reading, not writing.",
+        "context": "RFC 9110's safe set is GET, HEAD, OPTIONS, and TRACE; RFC 10008 added QUERY in 2026. The designation is a registered promise about intent that caches, prefetchers, and crawlers act on mechanically - and it says nothing about the payload, so a safe method's body still deserves full security inspection."
+      },
+      "http-query-method": {
+        "def": "The HTTP method standardized in June 2026 (RFC 10008) for read-only queries that carry a request body: safe and idempotent like GET, body like POST, cacheable with the body in the cache key.",
+        "context": "The first new HTTP method since PATCH in 2010, it exists because GET forces queries into the URL and POST-as-search hides its read-only nature from every cache and proxy in the path. Adoption is a per-layer audit: WAF method allowlists written before mid-2026 block or blind-pass it, CORS requires a preflight, HTML forms fall back to GET, and any cache must key on the full body or invite poisoning."
       }
     },
     "totalCount": "{count} terms",

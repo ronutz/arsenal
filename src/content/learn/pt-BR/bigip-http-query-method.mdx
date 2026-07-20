@@ -1,0 +1,38 @@
+---
+slug: bigip-http-query-method
+title: "QUERY Encontra o BIG-IP: LTM, iRules e o Veredito do Advanced WAF"
+summary: "Como o BIG-IP lida com o novo método HTTP QUERY (RFC 10008): o perfil HTTP do LTM deixa métodos desconhecidos passarem por padrão, o Advanced WAF bloqueia o QUERY como Illegal method até você permiti-lo, e vinte anos de ambiguidade nas iRules entre HTTP::method e HTTP::query de repente importam. O que auditar, onde clicar e por que o corpo continua recebendo inspeção completa."
+concepts: ["f5", "bigip", "ltm", "asm", "waf", "irules", "query method", "http"]
+relatedTools: ["http-methods-comparison"]
+relatedArticles: ["http-query-method", "bigip-http3-waf", "f5xc-http-lb-route-evaluation"]
+category: networking
+order: 143
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Duas coisas chamadas "query", um método novo
+
+Antes de qualquer coisa, a desambiguação que todo engenheiro F5 precisa pregar na parede. O comando de iRule `HTTP::query` existe desde o BIG-IP 9.0 e retorna a query string - a parte da URI da requisição depois do `?`. O método HTTP QUERY, padronizado em junho de 2026 como RFC 10008, é um método de requisição como GET ou POST: uma leitura segura e idempotente que carrega um corpo. Eles compartilham uma palavra e mais nada. `[HTTP::query]` numa requisição QUERY retorna o que vier depois do `?` na URI, exatamente como faria num GET - não retorna o método, e não lê o corpo. O método mora em `[HTTP::method]`; o corpo, como sempre, mora no território de `HTTP::collect`/`HTTP::payload`.
+
+Para o método em si - por que existe, seu modelo de cache, o cabeçalho de descoberta Accept-Query e o argumento de segurança intenção-versus-payload - veja o explicador companheiro. Este artigo é sobre o que um BIG-IP faz quando o tráfego QUERY chega.
+
+## LTM: permissivo por projeto
+
+O BIG-IP LTM (Local Traffic Manager) fica na frente de um zoológico de servidores web, frameworks e proxies, então seu perfil HTTP aceita métodos desconhecidos por padrão. Uma requisição QUERY chegando a um virtual server padrão é analisada e encaminhada como qualquer outro método: full proxy, sem drama. Se a sua postura de segurança pedir, o perfil HTTP pode ser restringido a uma lista explícita de métodos permitidos - e nesse caso o QUERY, como qualquer outro, precisa ser adicionado deliberadamente. Essa permissividade padrão é conveniente e é exatamente por isso que a conversa de imposição pertence a uma camada acima, na política do WAF.
+
+A auditoria que precisa acontecer é nas suas iRules e Local Traffic Policies. Vinte anos de lógica ramificando em `[HTTP::method]` foram escritos quando o universo de verbos era GET, POST, PUT, DELETE e companhia. Um `switch [HTTP::method]` com um caso default que descarta, redireciona ou registra vai agora rotear o QUERY para esse default; uma cadeia de `if` que só reconhece GET e POST vai tratar o QUERY como nenhum dos dois. Nada disso está quebrado - está fazendo o que mandaram - mas mandaram antes de junho de 2026. Procure `HTTP::method` nas suas iRules e decida, regra por regra, o que o QUERY deve fazer ali.
+
+Durante a auditoria, um idioma clássico merece nota de rodapé, porque uma longa discussão no DevCentral mostra como ele confunde. Em iRules como `[getfield [HTTP::host] ":" 1]`, o `1` final é o índice de campo do getfield: divida o valor em `:` e retorne o primeiro campo - o jeito padrão de tirar a porta do cabeçalho Host. Não é uma captura de regex e, apesar do título da discussão, não tem nada a ver com `HTTP::query` nem com o método QUERY. O mesmo idioma funciona em query strings também - `[getfield [HTTP::query] "&" 1]` retorna o primeiro par de parâmetros - e é exatamente por isso que a confusão das duas-coisas-chamadas-query segue fazendo vítimas novas.
+
+## Advanced WAF: Illegal method até segunda ordem
+
+O BIG-IP Advanced WAF (antigo ASM, o Application Security Manager) impõe a validação de método HTTP como uma de suas verificações fundamentais: a política de segurança carrega uma lista explícita de métodos permitidos, e qualquer coisa fora da lista dispara a violação Illegal method. De fábrica, uma política permite um conjunto definido - GET, HEAD, POST e o que o template acrescentar - e como o QUERY é novíssimo, ele não está lá. O resultado é inequívoco: uma requisição QUERY atingindo um virtual server protegido é bloqueada, por padrão, como Illegal method. Isso é a linha de base segura funcionando como projetado, não um bug.
+
+Quando suas aplicações de backend começarem a suportar QUERY, permiti-lo é uma edição deliberada: na TMUI, Security > Application Security > HTTP Message Protection > Headers > Methods > Add, adicione QUERY aos métodos permitidos e aplique a política. Daí em diante o método passa - e todo o resto continua valendo. Essa é a parte que faz do Advanced WAF o tipo certo de porteiro aqui: diferente de uma allowlist crua, a política continua inspecionando a requisição. Assinaturas de ataque para XSS (cross-site scripting), injeção de SQL, injeção de comando e SSRF (server-side request forgery), inspeção de parâmetros e imposição de content profile rodam contra o corpo do QUERY exatamente como rodariam contra um corpo de POST. O mantra do explicador genérico - "seguro" descreve intenção, não payload - é imposto aqui mecanicamente: um QUERY carregando um payload de injeção de comando é bloqueado pelo payload, com o método legitimamente permitido.
+
+Mais uma consequência da RFC para configurar de propósito: o QUERY não está na safelist do CORS, então clientes de navegador enviarão um preflight OPTIONS antes de qualquer QUERY entre origens. Se o CORS é tratado na sua política do Advanced WAF, adicione o método novo àquela configuração também, ou o preflight vai negar o que a lista de métodos acabou de permitir.
+
+## A ordem de rollout que funciona
+
+Trate o QUERY no BIG-IP como três decisões deliberadas, nesta ordem. Primeiro, LTM: confirme a postura de métodos do perfil HTTP (permissivo por padrão, ou QUERY explicitamente adicionado a uma lista restrita) e audite toda iRule e política LTM que ramifica em `[HTTP::method]`. Segundo, Advanced WAF: deixe o QUERY bloqueado até a aplicação realmente suportá-lo, então adicione-o aos métodos permitidos sabendo que a inspeção completa do corpo continua. Terceiro, CORS: estenda a política para o preflight se navegadores estiverem no escopo. A ferramenta de [comparação de métodos HTTP](/tools/http-methods-comparison) mantém os fatos do registro à mão - "post vs query" é a justificativa de uma linha para por que este método mereceu veredito próprio em vez de herdar o do POST.

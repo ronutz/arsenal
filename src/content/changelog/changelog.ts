@@ -52,6 +52,49 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-20",
+    time: "19:00",
+    kind: "tool",
+    title: "New tool: HTTP methods comparison - starring QUERY, the first new method in 16 years",
+    tools: ["http-methods-comparison"],
+    body:
+      "RFC 10008 (June 2026) gave HTTP its first new method since PATCH in 2010: QUERY, the safe, idempotent, cacheable read that carries a request body. The new tool holds the registry facts for 13 methods (the RFC 9110 nine, PATCH, and the WebDAV trio PROPFIND/REPORT/SEARCH): safe, idempotent, cacheable, body semantics, CORS safelist, HTML-form support, and the defining spec - ask for 'get vs query' or 'post vs query' and it names exactly which properties differ. Two companion Learn articles ship with it: a full QUERY explainer (why it exists, the body-in-the-cache-key model, Accept-Query discovery, the equivalent-resource escape hatch, and why 'safe' describes intent rather than payload) and the BIG-IP chapter (LTM's HTTP profile passes unknown methods by default, Advanced WAF blocks QUERY as an Illegal method until explicitly allowed and then keeps inspecting the body, iRules branching on HTTP::method need a post-June-2026 audit, and HTTP::query the command has nothing to do with QUERY the method). Glossary gains safe-method and http-query-method. All facts grounded in RFC 10008, the IANA registry, and F5's own DevCentral coverage, fetched 2026-07-20.",
+    links: [
+      { label: "Open the comparison", href: "/tools/http-methods-comparison" },
+      { label: "The QUERY explainer", href: "/learn/http-query-method" },
+      { label: "QUERY on BIG-IP", href: "/learn/bigip-http-query-method" },
+    ],
+  },
+  {
+    date: "2026-07-20",
+    time: "18:30",
+    kind: "content",
+    title: "Glossary wave two: 58 more voices from the trenches",
+    body: "The jargon and expression shelves get their second restock in two days, from 881 to 939 entries. New jargon leans into the carrier and datacenter world: looking glass, the default-free zone, full tables, carrier hotels and meet-me rooms, the middle mile, lit fiber, clean pipes, plus incast, brownouts, dark launches, tiger teams, pizza boxes, god boxes, frobnicate, and keep the lights on. New expressions bring the named wisdom: Segal's law (two watches, and the reason NTP exists), Zawinski's law, the Swiss cheese model, the XY problem, choose boring technology, security theater, compliance is not security, everything fails all the time, no plan survives contact, and the New Yorker's immortal dog who nobody knows about. Every entry defined and contextualized in English and Brazilian Portuguese, cross-linked into both waves.",
+    links: [{ label: "Glossary", href: "/glossary" }],
+  },
+  {
+    date: "2026-07-20",
+    time: "18:00",
+    kind: "tool",
+    title: "New tool: MTU / MSS calculator, with a full jumbo frames explainer",
+    tools: ["mtu-mss"],
+    body:
+      "The queue's rank-73 resident is live. Enter a link MTU plus your encapsulation stack (vxlan, gre, pppoe, 6in4, geneve, wireguard, vlan, qinq, mpls, or +N for a measured IPsec cost) and get the inner MTU and TCP MSS for IPv4 and IPv6, the Ethernet frame sizes, the underlay MTU an overlay needs, and the wire efficiency of this MTU against the 1500 and 9000 classics. The tool's core lesson is the split most explanations blur: encapsulations spend bytes inside the MTU and shrink the inner packet, while VLAN tags and MPLS labels ride on the frame and leave the IP MTU alone (that is where 1522-byte baby giants and 9216 switch headroom come from). All constants are RFC-fixed and cross-verified; 22 golden vectors pin the classics (GRE 1476, VXLAN 1450/1550, PPPoE 1492, WireGuard 1440/1420, 94.93% vs 99.14%). Alongside it: a complete Learn explainer on jumbo frames, from the 1980 economics of the 1500-byte limit to overlay headroom, PMTUD black holes, and the ping commands that prove a 9000-byte path end to end, plus upgraded glossary entries for jumbo frames and the new baby giant.",
+    links: [
+      { label: "Open the calculator", href: "/tools/mtu-mss" },
+      { label: "Jumbo frames, explained", href: "/learn/jumbo-frames" },
+    ],
+  },
+  {
+    date: "2026-07-20",
+    time: "17:00",
+    kind: "content",
+    title: "The glossary learns to talk shop: 66 new jargon and expression entries",
+    body: "The two thinnest shelves of the glossary got a proper restock, from 814 to 880 entries. On the jargon side, the words engineers actually say: flapping, fat-finger, bufferbloat, microburst, elephant flows, goodput, gray failure, alarm storm, alert fatigue, tarpit, braindump, nuke and pave, magic smoke, flag day, forklift upgrade, SEV1, and friends. On the expression side, the sayings the trade lives by: it's always DNS, pcap or it didn't happen, check layer 1, fail open vs. fail closed, crunchy outside, chewy center, castle-and-moat, Schroedinger's backup, RAID is not a backup, the 3-2-1 rule, don't roll your own crypto, rough consensus and running code, the two generals problem, active-active vs. active-passive, and the demo gods. Every entry defined and given real context in English and Brazilian Portuguese, cross-linked where the ideas connect.",
+    links: [{ label: "Glossary", href: "/glossary" }],
+  },
+  {
     date: "2026-07-19",
     time: "22:00",
     kind: "content",

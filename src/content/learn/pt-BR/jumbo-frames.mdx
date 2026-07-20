@@ -1,0 +1,52 @@
+---
+slug: jumbo-frames
+title: "Jumbo frames: quando 1500 bytes deixa de bastar"
+summary: "Por que a Ethernet parou em 1500 bytes, o que os quadros jumbo de 9000 bytes realmente compram, onde eles brilham e como uma divergência de MTU vira um buraco negro silencioso."
+concepts: ["jumbo-frames", "mtu", "mss", "path-mtu-discovery", "baby-giant"]
+relatedTools: ["mtu-mss"]
+relatedArticles: ["ipv4-addressing", "tcp-proxy-layer-4"]
+category: networking
+order: 141
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Por que 1500, entre todos os números
+
+O limite de 1500 bytes de payload da Ethernet não é física. É uma decisão econômica de 1980: memória era cara, os primeiros controladores armazenavam quadros inteiros em RAM escassa, e um cabo coaxial compartilhado não podia deixar uma estação monopolizar o meio por muito tempo a cada quadro. Mil e quinhentos bytes equilibraram custo de buffer contra overhead, o número saiu na especificação DIX da Ethernet, o IEEE 802.3 o herdou, e quatro décadas e meia de hardware, drivers e suposições calcificaram em volta dele. Todas as razões por trás do número evaporaram - RAM é abundante, os links são comutados e full-duplex, e 400 Gb/s serializa um quadro de tamanho máximo em nanossegundos - mas o número em si permanece, porque a internet é muito boa em manter promessas de compatibilidade.
+
+O valor que esse limite restringe é a MTU (Maximum Transmission Unit, unidade máxima de transmissão): o maior pacote IP que um link transporta. Dela deriva o MSS (Maximum Segment Size, tamanho máximo de segmento), o maior bloco de dados de aplicação que o TCP (Transmission Control Protocol) coloca em um segmento - em um link comum de 1500 bytes, 1500 menos 20 bytes de cabeçalho IPv4 menos 20 de cabeçalho TCP, os famosos 1460.
+
+## O que um jumbo frame é - e o que não é
+
+Um jumbo frame é qualquer quadro Ethernet que carregue mais de 1500 bytes de payload. Na prática, a indústria convergiu para 9000 bytes, e vale ser preciso sobre o status desse número: é uma convenção de fato, não um padrão IEEE. O grupo de trabalho 802.3 recusou repetidas vezes padronizar um máximo maior, então o 9000 vive nos datasheets dos fabricantes, não no padrão - e é exatamente por isso que suporte, padrões de fábrica e comportamento de borda variam entre plataformas, e por que se configura explicitamente em vez de presumir.
+
+Por que cerca de nove mil? É confortavelmente maior que os blocos de aplicação de 8 KiB (kibibyte) comuns em cargas de storage e NFS (Network File System), com folga para cabeçalhos, e ainda fica dentro da cobertura do FCS (Frame Check Sequence) de 32 bits da Ethernet, cuja detecção de erros enfraquece conforme o quadro cresce. Datasheets de switch normalmente citam uma MTU de sistema de 9216 bytes - não é um tamanho jumbo concorrente, é folga: espaço para um payload de 9000 bytes mais tags de VLAN (Virtual Local Area Network), rótulos MPLS (Multiprotocol Label Switching) e outros shims de cabeçalho.
+
+O que aponta para uma distinção que resolve a maior parte da confusão sobre MTU. Encapsulamentos que viajam *dentro* do payload IP - PPPoE (Point-to-Point Protocol over Ethernet), GRE (Generic Routing Encapsulation), VXLAN (Virtual Extensible LAN) - encolhem a MTU interna utilizável. Shims de camada 2 - tags VLAN, rótulos MPLS - viajam no *cabeçalho do quadro* e não tocam a MTU IP; o quadro é que cresce. Uma única tag 802.1Q transforma um quadro cheio de 1518 bytes em um **baby giant** de 1522: payload inalterado, cabeçalho crescido. Jumbo frames aumentam o payload em si; baby giants aumentam só o embrulho.
+
+## O que os jumbos realmente compram
+
+O argumento de livro-texto é eficiência no fio. Um segmento TCP de tamanho cheio em um link de 1500 bytes entrega 1460 bytes de payload a cada 1538 bytes no fio (some 14 de cabeçalho Ethernet, 4 de FCS e 20 de preâmbulo e intervalo entre quadros): 94,93% de eficiência. Em 9000, a mesma aritmética dá 8960 de 9038: 99,14%. Real, porém modesto - uns quatro pontos percentuais de banda.
+
+O ganho historicamente maior era o trabalho por pacote. Cada quadro custa um overhead fixo em interrupções, processamento de protocolo e contabilidade por pacote em cada NIC (Network Interface Card, placa de rede), switch e host do caminho; seis vezes menos quadros para o mesmo gigabyte significavam seis vezes menos de tudo isso, e na era em que um núcleo de CPU penava para alimentar um link de 10 Gb/s, esse era o jogo inteiro. Os offloads modernos estreitaram essa vantagem: TSO (TCP Segmentation Offload) e LRO/GRO (Large/Generic Receive Offload) deixam a pilha do host fingir que lida com segmentos enormes enquanto a NIC fatia e remonta quadros no tamanho do fio, capturando boa parte do benefício de CPU sem tocar a MTU da rede. Um resumo moderno e honesto: jumbos ainda ajudam de forma mensurável storage, replicação e tráfego east-west em massa - e importam para a folga de overlays, como abaixo - mas são uma otimização com custo real de coordenação, não um upgrade gratuito.
+
+Onde eles pagam o próprio aluguel: redes de storage iSCSI (Internet Small Computer System Interface) e NFS, links de backup e replicação, tráfego de migração ao vivo no estilo vMotion, malhas de HPC (High-Performance Computing) e RDMA (Remote Direct Memory Access), e o underlay sob redes de overlay - todos caminhos controlados, delimitados, de data center. Que é exatamente o padrão: jumbos prosperam onde um único time controla cada salto.
+
+## O modo de falha: silêncio
+
+Eis por que jumbo frames têm fama. Uma divergência de MTU não degrada educadamente - ela vira buraco negro, e um buraco negro seletivo.
+
+Imagine um host mandando pacotes de 9000 bytes por um caminho onde um link ainda roda a 1500. Se o bit DF (Don't Fragment) do pacote está ligado - e as pilhas modernas ligam - o roteador da MTU menor precisa descartar o pacote e devolver uma mensagem ICMP (Internet Control Message Protocol) de "Fragmentation Needed" (Packet Too Big no ICMPv6). O PMTUD (Path MTU Discovery, descoberta da MTU do caminho) depende inteiramente dessa mensagem chegar. Se um firewall no meio descarta ICMP - um "endurecimento" deprimentemente comum - o remetente nunca descobre por que nada chega. O resultado é a assinatura clássica: ping funciona, o handshake TCP funciona, requisições pequenas funcionam, e a conexão trava no instante em que dados de verdade fluem, porque só os segmentos de tamanho cheio morrem. O IPv6 sobe a aposta: roteadores nunca fragmentam em IPv6, então o PMTUD (ou o primo da camada de pacotização, DPLPMTUD) é o único mecanismo, e o Packet Too Big do ICMPv6 não é opcional.
+
+As defesas práticas são três. Primeiro, mantenha a MTU uniforme em cada domínio L2 - cada host, porta de switch e interface de roteador do mesmo domínio de broadcast concorda, ou nenhum deles concorda. Segundo, deixe as mensagens too-big do ICMP viverem; elas são estruturais. Terceiro, nas fronteiras que você não controla, ajuste o MSS: reescrever a opção MSS do handshake TCP para caber no link mais estreito é o conserto pragmático que faz PPPoE a 1492 e túneis de todo tipo funcionarem para o público em geral.
+
+## Overlays: onde os dois mundos se encontram
+
+Redes de overlay são onde a aritmética jumbo vira trabalho diário. O VXLAN embrulha o quadro Ethernet interno inteiro em cabeçalhos novos - 8 de VXLAN, 8 de UDP (User Datagram Protocol), 20 de IPv4 externo, 14 de Ethernet interno: 50 bytes (70 com cabeçalho externo IPv6). Rode isso sobre um underlay de 1500 bytes e o tráfego interno é espremido a 1450 - os guests fragmentam ou ajustam MSS. As duas respostas limpas: elevar o underlay a pelo menos 1550, ou - o movimento padrão de data center - rodar um underlay de 9000 bytes e entregar aos tenants confortáveis 8950. O GENEVE cobra o mesmo com opções à parte; o GRE custa 24; o WireGuard, 60. O padrão generaliza: overlays gastam MTU, jumbos devolvem.
+
+## Ligando sem arrependimento
+
+Configuração é um exercício de acordo, de dentro para fora: primeiro switches e roteadores (folga de quadro e MTU de interface), depois os hosts, um domínio L2 por vez - nunca "a rede inteira" numa mudança só. Depois, verifique com um ping que proíba fragmentação no tamanho cheio. No Linux: `ping -M do -s 8972 <alvo>`; no Windows: `ping -f -l 8972 <alvo>`. O número mágico 8972 é só 9000 menos 20 bytes de cabeçalho IPv4 menos 8 do cabeçalho ICMP echo - se isso passa e 8973 falha, a MTU do seu caminho é exatamente 9000 e você provou isso de ponta a ponta. E saiba onde parar: tudo que olha para a internet fica em 1500, porque o caminho público é a única cadeia L2-e-L3 que você nunca vai controlar.
+
+A aritmética deste artigo - MTUs internas, valores de MSS, tamanhos de quadro, exigências de underlay, o par de eficiências - é exatamente o que a calculadora de MTU / MSS computa a partir de qualquer MTU de link e pilha de encapsulamento que você informar.

@@ -1,0 +1,54 @@
+---
+slug: http-query-method
+title: "HTTP QUERY: a leitura que finalmente carrega um corpo"
+summary: "A RFC 10008 (junho de 2026) deu ao HTTP seu primeiro método novo desde 2010: o QUERY é seguro, idempotente e cacheável como o GET, mas carrega um corpo de requisição como o POST. O que ele corrige, como funcionam seu cache e sua descoberta, por que 'seguro' não é 'inofensivo' e o que cada camada da infraestrutura precisa conferir antes de o tráfego QUERY chegar."
+concepts: ["http", "query method", "rfc 10008", "safe methods", "idempotency", "caching", "cors", "waf"]
+relatedTools: ["http-methods-comparison", "http-request-translator"]
+relatedArticles: ["http-versions-09-to-3", "http-proxy-forward-and-reverse", "curl-method-inference", "bigip-http-query-method"]
+category: networking
+order: 142
+status: reviewed
+updated: "2026-07-20"
+---
+
+## O problema das duas ferramentas
+
+Desde que a web tem APIs, ler dados significava escolher entre duas ferramentas imperfeitas. O GET (o método de recuperação do HTTP, o Hypertext Transfer Protocol) tem exatamente a semântica que uma leitura quer: seguro, idempotente, cacheável. Mas o GET não tem semântica definida para corpo de requisição - a RFC 9110 avisa abertamente que um corpo num GET pode fazer a requisição ser rejeitada - então a consulta precisa morar na URL. E aí vêm as paredes: os limites de tamanho de URL variam por proxy e servidor (a especificação só recomenda suportar cerca de 8.000 octetos, e você descobre o menor teto da cadeia em produção), filtros aninhados complexos viram strings percent-encoded ilegíveis, e URLs vazam - para logs de acesso, histórico do navegador, favoritos, analytics e cabeçalhos Referer.
+
+O POST resolve o problema do corpo e cria um problema semântico. Um POST pode criar um registro, disparar um job ou só executar uma busca - e o protocolo não consegue distinguir. Sua aplicação sabe que `POST /search` é somente leitura, mas esse conhecimento é um acordo privado entre o servidor e as pessoas que o escreveram. Todo cache, proxy, camada de retry e gateway no meio vê apenas "POST" e precisa assumir o pior: inseguro, não idempotente, não cacheável. É por isso que toda API REST uma hora ganha um endpoint `POST /search` que mente para a infraestrutura.
+
+## O que é o QUERY
+
+Em 15 de junho de 2026 o RFC Editor publicou a RFC 10008, "The HTTP QUERY Method" - um Proposed Standard, e o primeiro método HTTP genuinamente novo desde o PATCH da RFC 5789, em 2010, dezesseis anos antes. O QUERY é o híbrido deliberado: o suporte a corpo do POST com a semântica segura e idempotente do GET, registrado exatamente assim (Safe: yes, Idempotent: yes) no Registro de Métodos HTTP da IANA.
+
+```
+QUERY /products HTTP/1.1
+Host: example.org
+Content-Type: application/x-www-form-urlencoded
+
+q=foobar&limit=10&sort=-published
+```
+
+Como essas propriedades são registradas, e não apenas documentadas, a infraestrutura genérica finalmente consegue raciocinar sobre a requisição: um QUERY perdido pode ser repetido sem medo de mudanças parciais de estado, e a resposta é cacheável. A requisição diz a verdade sobre o que está fazendo.
+
+Alguns detalhes da especificação trabalham de verdade. Não há códigos de status novos: um media type ausente rende 400, um não suportado rende 415, e uma consulta bem formada que não pode ser processada rende 422. O Content-Type é imposto, não adivinhado - o servidor deve rejeitar um media type ausente ou inconsistente em vez de fazer sniffing. Um cabeçalho de resposta novo, Accept-Query, permite que um recurso anuncie suporte a QUERY e os media types que aceita, para o cliente descobrir o suporte em vez de tentar e errar até um 405. E a especificação define o "recurso equivalente": o servidor pode responder a um QUERY com um cabeçalho Location ou Content-Location atribuindo uma URI estável àquela consulta e ao seu resultado, devolvendo a possibilidade de favoritar que se perde quando a condição sai da URL.
+
+O cache é onde a esperteza e o perigo dividem a mesma frase: uma resposta de QUERY é cacheável, e a chave de cache deve incorporar o corpo da requisição. Esse é o mecanismo inteiro que torna cacheável uma requisição com corpo - dois corpos diferentes contra a mesma URL são duas entradas de cache diferentes - e é também o novo modo de falha. Um cache que normaliza ou faz hash do corpo de um jeito diferente de como a origem o interpreta pode servir a resposta errada num falso positivo de chave: envenenamento de cache e cache deception numa única classe de bug.
+
+## O nome, para registro
+
+Os primeiros rascunhos chamavam o método de SEARCH, emprestando da família WebDAV. O registro da IANA já tinha três métodos seguros, idempotentes e com corpo - PROPFIND, REPORT e SEARCH - todos amarrados aos vocabulários XML do WebDAV. O grupo de trabalho renomeou o esforço em 2021: o QUERY ganhou um começo limpo e genérico, e o nome mapeia direitinho no componente de consulta da URI. Do primeiro rascunho ao padrão foram onze anos, com aprovação da IESG em novembro de 2025 e publicação em junho de 2026. O HTTP não se move rápido - e é exatamente por isso que vale prestar atenção quando ele se move.
+
+## "Seguro" descreve intenção, não payload
+
+Esta é a frase para internalizar antes de implantar qualquer coisa. A designação de seguro significa que o cliente não está pedindo mudança de estado - ela não diz nada sobre o corpo ser malicioso. Um corpo de QUERY carrega injeção de SQL, XSS (cross-site scripting) ou um payload gigante exatamente tão bem quanto um corpo de POST. Todo conjunto de regras de WAF (web application firewall) que inspeciona corpos de POST precisa aplicar cobertura idêntica ao QUERY, mesmo confiando na semântica somente leitura para cache e repetição. Tratar "seguro" como "inofensivo" é como um upgrade limpo de protocolo vira uma porta aberta.
+
+A mesma lacuna entre intenção e imposição produz uma armadilha de CSRF (cross-site request forgery): middleware que protege `POST|PUT|DELETE|PATCH` pula o QUERY em silêncio. Se qualquer endpoint que aceite QUERY tiver qualquer efeito colateral - uma escrita de auditoria, um provisionamento preguiçoso - ele precisa continuar sob proteção CSRF, independentemente do rótulo do método. E allowlists de método escritas antes de junho de 2026 simplesmente não contêm o QUERY, o que falha de dois jeitos opostos: configurações estritas o descartam como verbo desconhecido e o rollout morre em silêncio na borda, enquanto configurações permissivas o encaminham sem a inspeção de corpo que aplicam ao POST - um ponto cego de inspeção, o pior desfecho. Tratamento inconsistente ao longo de uma cadeia de proxies também é exatamente como começam os desyncs de request smuggling; o QUERY precisa ser uma decisão deliberada em cada salto.
+
+Mais duas notas operacionais. Tirar as condições da URL é um ganho real de privacidade, mas se o seu gateway registra corpos de requisição, o seletor sensível agora está num lugar que suas regras de redação de log talvez não cubram - o vazamento mudou de endereço, não acabou. E o QUERY não está na safelist do CORS (Cross-Origin Resource Sharing), então todo QUERY de navegador entre origens dispara um preflight OPTIONS que a sua borda precisa tratar corretamente.
+
+## Onde está o suporte
+
+Em meados de 2026: o Node.js analisa QUERY na camada HTTP desde o início de 2024, antes da padronização. O OpenAPI 3.2 documenta operações QUERY. Navegadores o enviam via fetch() e XMLHttpRequest, mas nem Chrome nem Firefox cacheiam respostas de QUERY ainda, e um formulário HTML declarativo com method="query" recua para GET e descarta o corpo. O Spring tem issue aberta, mas não lançou. Engenheiros da Cloudflare e da Akamai são coautores da RFC, então o suporte na borda pode chegar antes das integrações de framework - ou seja, o seu CDN pode entender QUERY antes da sua aplicação. A leitura prática: pronto para produção em APIs servidor-a-servidor, estágio inicial para tráfego público de navegador - e nenhum motivo para arrancar os `POST /search` que funcionam; o QUERY convive com eles, migrado aos poucos.
+
+A ferramenta de [comparação de métodos HTTP](/tools/http-methods-comparison) guarda a tabela completa do registro: peça "get vs query" ou "post vs query" e ela nomeia exatamente quais propriedades viram. Para o que este método significa num BIG-IP especificamente - o perfil HTTP, as iRules e o veredito de Illegal method do Advanced WAF - veja o artigo companheiro.

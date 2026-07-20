@@ -4666,6 +4666,77 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /http-methods-comparison:
+    get:
+      tags:
+        - HTTP & web
+      operationId: run_http_methods_comparison
+      summary: HTTP methods comparison
+      description: >-
+        Enter one to four HTTP methods (try "get vs query") to see each one's registry facts: safe,
+        idempotent, cacheable, request-body semantics, CORS safelist membership, HTML-form support,
+        and the defining RFC - plus exactly which properties differ. Includes QUERY, the RFC 10008
+        method registered in June 2026. Standards: RFC 9110 §9.3, RFC 10008 (QUERY), IANA HTTP
+        Method Registry, RFC 5789 (PATCH), RFC 4918/3253/5323 (WebDAV). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - get vs query
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - HTTP & web
+      operationId: run_http_methods_comparison_post
+      summary: HTTP methods comparison (POST)
+      description: >-
+        Enter one to four HTTP methods (try "get vs query") to see each one's registry facts: safe,
+        idempotent, cacheable, request-body semantics, CORS safelist membership, HTML-form support,
+        and the defining RFC - plus exactly which properties differ. Includes QUERY, the RFC 10008
+        method registered in June 2026. Standards: RFC 9110 §9.3, RFC 10008 (QUERY), IANA HTTP
+        Method Registry, RFC 5789 (PATCH), RFC 4918/3253/5323 (WebDAV). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - get vs query
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /http-request-translator:
     get:
       tags:
@@ -5378,6 +5449,75 @@ paths:
             schema:
               type: object
               additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /mtu-mss:
+    get:
+      tags:
+        - TLS & transport
+      operationId: run_mtu_mss
+      summary: MTU / MSS calculator
+      description: >-
+        Enter a link MTU and your encapsulation stack (vxlan, gre, pppoe, vlan, mpls, +N custom) to
+        get the inner MTU and TCP MSS, the Ethernet frame sizes, the underlay MTU an overlay needs,
+        and the wire efficiency of standard versus jumbo frames. Standards: RFC 791/8200/9293/768
+        (header sizes), RFC 2784 GRE, RFC 7348 VXLAN, RFC 8926 GENEVE, RFC 2516 PPPoE, RFC 3032
+        MPLS. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - 1500 vxlan
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - TLS & transport
+      operationId: run_mtu_mss_post
+      summary: MTU / MSS calculator (POST)
+      description: >-
+        Enter a link MTU and your encapsulation stack (vxlan, gre, pppoe, vlan, mpls, +N custom) to
+        get the inner MTU and TCP MSS, the Ethernet frame sizes, the underlay MTU an overlay needs,
+        and the wire efficiency of standard versus jumbo frames. Standards: RFC 791/8200/9293/768
+        (header sizes), RFC 2784 GRE, RFC 7348 VXLAN, RFC 8926 GENEVE, RFC 2516 PPPoE, RFC 3032
+        MPLS. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - 1500 vxlan
       responses:
         '200':
           description: The computed result.

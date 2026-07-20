@@ -5590,6 +5590,153 @@
         "topology-nomatch": "Nenhuma região casou; recorreu a round-robin.",
         "none-up": "Nenhum recurso está disponível."
       }
+    },
+    "mtu-mss": {
+      "name": "Calculadora de MTU / MSS",
+      "blurb": "Informe a MTU do link e a pilha de encapsulamento (vxlan, gre, pppoe, vlan, mpls, +N personalizado) para obter a MTU interna e o MSS do TCP, os tamanhos de quadro Ethernet, a MTU de underlay que um overlay exige e a eficiência no fio de quadros padrão versus jumbo.",
+      "inputLabel": "MTU do link e tokens da pilha",
+      "inputPlaceholder": "1500 vxlan · 1500 gre v6 · 9000 vxlan vlan · 1500 +57",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda inteiramente no seu navegador: aritmética fixa de cabeçalhos das RFCs, sem rede, sem relógio.",
+      "errors": {
+        "format": "Comece com o número da MTU e depois tokens opcionais: v6, pppoe, gre, ipip, 6in4, vxlan, geneve, wireguard, vlan, qinq, mpls ou mplsN, e +N para overhead personalizado.",
+        "mtu-range": "A MTU deve estar entre 68 e 65535.",
+        "custom-range": "O overhead personalizado +N deve estar entre 1 e 2000 bytes.",
+        "mpls-range": "A quantidade de rótulos MPLS deve estar entre 1 e 8 (mpls1 a mpls8).",
+        "duplicate": "Um token foi informado duas vezes; cada encapsulamento ou shim aparece uma única vez.",
+        "too-small": "Essa pilha consome a MTU inteira: o pacote interno ficaria menor que o mínimo IPv4 de 68 bytes."
+      },
+      "inner": {
+        "heading": "Dentro da MTU",
+        "mtu": "MTU IP interna",
+        "mssV4": "MSS do TCP sobre IPv4",
+        "mssV6": "MSS do TCP sobre IPv6",
+        "encapNote": "O encapsulamento consome {total} bytes dentro da MTU do link (cabeçalho externo: {outer}). É contra esse número que se ajusta o MSS.",
+        "sixInFourNote": "O 6in4 transporta IPv6 dentro de IPv4, então o pacote interno é IPv6: leia o MSS de IPv6.",
+        "variableNote": "Os 50 bytes do GENEVE são a base sem opções; opções de comprimento variável adicionam mais. Verifique o uso real de cabeçalho da sua plataforma."
+      },
+      "stack": {
+        "heading": "A pilha, camada por camada",
+        "insideMtu": "— dentro da MTU (encolhe o pacote interno)",
+        "onFrame": "— no quadro (MTU IP intocada)",
+        "lesson": "Encapsulamentos gastam bytes dentro da MTU, então a MTU interna e o MSS encolhem. Shims de camada 2 (VLAN, QinQ, MPLS) viajam no cabeçalho do quadro, então a MTU IP não se move; o quadro cresce - e é por isso que switches precisam de folga de quadro, não de uma MTU menor.",
+        "labels": {
+          "pppoe": "PPPoE (RFC 2516)",
+          "gre": "GRE (RFC 2784)",
+          "ipip": "IP-in-IP (RFC 2003)",
+          "6in4": "6in4 (RFC 4213)",
+          "vxlan": "VXLAN (RFC 7348)",
+          "geneve": "GENEVE (RFC 8926)",
+          "wireguard": "WireGuard",
+          "custom": "Overhead personalizado",
+          "vlan": "Tag VLAN 802.1Q",
+          "qinq": "QinQ (802.1ad, duas tags)",
+          "mpls": "Pilha de rótulos MPLS (RFC 3032)"
+        }
+      },
+      "frame": {
+        "heading": "No link",
+        "maxFrame": "Maior quadro Ethernet (cabeçalho + shims + MTU + FCS)",
+        "onWire": "No fio, por quadro (soma preâmbulo + intervalo entre quadros)",
+        "shimNote": "Com {shims} bytes de shims, um payload de tamanho normal já vira um baby giant: o switch precisa aceitar quadros acima de 1518."
+      },
+      "underlay": {
+        "heading": "Para transportar um pacote interno cheio de 1500 bytes",
+        "requiredMtu": "MTU IP de underlay necessária",
+        "requiredFrame": "Quadro Ethernet implicado",
+        "note": "A resposta clássica de projeto de overlay: eleve a MTU do underlay a este valor (ou reduza o MSS) para que pacotes internos de tamanho cheio atravessem sem fragmentação nem buracos negros de path MTU."
+      },
+      "efficiency": {
+        "heading": "Eficiência no fio, padrão vs jumbo",
+        "arrow": "→",
+        "note": "Fração dos bytes no fio que é payload TCP em segmentos IPv4 de tamanho cheio: (MTU − 40) ÷ (MTU + 38), contando cabeçalho Ethernet, FCS, preâmbulo e intervalo entre quadros. O par clássico: 94,93% em 1500, 99,14% em 9000."
+      }
+    },
+    "http-methods-comparison": {
+      "name": "Comparação de métodos HTTP",
+      "blurb": "Informe de um a quatro métodos HTTP (experimente \"get vs query\") para ver os fatos de registro de cada um: seguro, idempotente, cacheável, semântica do corpo da requisição, presença na safelist do CORS, suporte em formulários HTML e a RFC que o define - além de exatamente quais propriedades diferem. Inclui o QUERY, o método da RFC 10008 registrado em junho de 2026.",
+      "inputLabel": "Nome(s) do(s) método(s)",
+      "inputPlaceholder": "query · get vs query · post,query · get post put delete",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda inteiramente no seu navegador: uma tabela fixa de fatos de registro, sem rede, sem relógio.",
+      "errors": {
+        "format": "Informe de um a quatro nomes de métodos HTTP, separados por espaços, vírgulas ou \"vs\" - por exemplo \"get vs query\".",
+        "unknown-method": "\"{token}\" não está na tabela. Métodos conhecidos: GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH, QUERY, PROPFIND, REPORT, SEARCH.",
+        "too-many": "Compare no máximo quatro métodos por vez."
+      },
+      "props": {
+        "safe": "Seguro",
+        "idempotent": "Idempotente",
+        "cacheable": "Cacheável",
+        "body": "Corpo da requisição",
+        "cors": "Preflight do CORS",
+        "form": "Formulários HTML"
+      },
+      "values": {
+        "yes": "sim",
+        "no": "não",
+        "corsYes": "na safelist (sem preflight)",
+        "corsNo": "preflight obrigatório",
+        "cache": {
+          "yes": "sim",
+          "conditional": "só com informação explícita de frescor",
+          "no": "não"
+        },
+        "body": {
+          "expected": "esperado (o corpo é o ponto)",
+          "undefined": "sem semântica definida (pode ser rejeitado)",
+          "allowed": "permitido, mas sem definição",
+          "none": "não deve carregar conteúdo"
+        }
+      },
+      "methods": {
+        "GET": {
+          "story": "A leitura: seguro, idempotente, cacheável - e a consulta precisa morar na URL, com todo limite de tamanho, arquivo de log e cabeçalho Referer que isso implica."
+        },
+        "HEAD": {
+          "story": "O gêmeo de metadados do GET: semântica idêntica, só cabeçalhos na resposta. O que caches e monitores usam para verificar sem transferir."
+        },
+        "POST": {
+          "story": "O verbo para tudo: criar, enviar, disparar - ou, em segredo, só buscar. O protocolo não consegue distinguir, então os intermediários assumem o pior: inseguro, não idempotente, na prática não cacheável."
+        },
+        "PUT": {
+          "story": "Substituição completa em uma URI conhecida. Não é seguro, mas é idempotente por projeto: colocar a mesma representação duas vezes deixa o mesmo estado - por isso repetições são legais."
+        },
+        "DELETE": {
+          "story": "Idempotente, mas não seguro: apagar duas vezes deixa o mundo no mesmo estado de apagar uma vez, ainda que a segunda tentativa responda 404."
+        },
+        "CONNECT": {
+          "story": "Nem é uma operação sobre recurso: pede a um proxy que abra um túnel (é assim que o HTTPS atravessa proxies de saída). Sem corpo, sem cache, com regras próprias."
+        },
+        "OPTIONS": {
+          "story": "A sonda de capacidades - e o veículo de todo preflight do CORS. Pergunta o que o alvo suporta sem tocá-lo."
+        },
+        "TRACE": {
+          "story": "O eco de diagnóstico: o servidor reflete a requisição de volta. Seguro e idempotente, proibido de ter corpo, e desabilitado em quase todo lugar por vazar cabeçalhos."
+        },
+        "PATCH": {
+          "story": "Modificação parcial (RFC 5789, 2010). Registrado deliberadamente como nem seguro nem idempotente: aplicar o mesmo delta duas vezes pode não terminar no mesmo estado."
+        },
+        "QUERY": {
+          "story": "A chegada de junho de 2026 (RFC 10008): uma leitura que carrega corpo. Seguro e idempotente como GET, corpo como POST, cacheável com a chave de cache incorporando o conteúdo da requisição - e o primeiro registro de método novo desde o PATCH, dezesseis anos antes. Fora da safelist do CORS (preflight obrigatório); formulários HTML hoje recuam para GET."
+        },
+        "PROPFIND": {
+          "story": "O leitor de propriedades do WebDAV (RFC 4918): seguro, idempotente, corpo em XML. Um dos três precedentes de registro que o apêndice da RFC 10008 credita antes de dar ao QUERY um começo limpo e genérico."
+        },
+        "REPORT": {
+          "story": "A consulta extensível do versionamento WebDAV (RFC 3253): segura e idempotente com corpo, mas presa ao vocabulário XML de relatórios - parte do motivo de um QUERY genérico ainda ser necessário."
+        },
+        "SEARCH": {
+          "story": "O método de busca do WebDAV (RFC 5323) - e o antigo nome do QUERY. Os primeiros rascunhos do novo método se chamavam SEARCH, até a renomeação de 2021 lhe dar uma identidade nova, livre da bagagem do WebDAV."
+        }
+      },
+      "diff": {
+        "heading": "Onde eles diferem",
+        "none": "Estes métodos compartilham todas as propriedades da tabela.",
+        "note": "Seguro e idempotente são promessas registradas na IANA sobre intenção, mecanicamente utilizáveis por caches, repetições e proxies - nunca garantias sobre o conteúdo do payload. Um corpo de QUERY merece a mesma inspeção de um corpo de POST."
+      }
     }
   },
   "privacy_page": {
@@ -9664,8 +9811,8 @@
         "context": "SPAN espelha localmente, RSPAN entre switches, ERSPAN através de redes roteadas - cada salto adiciona formas de descartar pacotes em silêncio."
       },
       "jumbo-frames": {
-        "def": "Quadros Ethernet acima do payload padrão de 1500 bytes, tipicamente 9000: menos cabeçalhos por gigabyte, e sofrimento quando um salto do caminho discorda.",
-        "context": "Todos os equipamentos do caminho precisam concordar, e é por isso que prosperam dentro do data center e morrem ao cruzar a internet."
+        "def": "Quadros Ethernet que carregam mais do que o payload padrão de 1500 bytes, tipicamente 9000: menos cabeçalhos por gigabyte, e sofrimento quando um salto do caminho discorda.",
+        "context": "O limite de 1500 bytes é uma decisão econômica de 1980 que sobreviveu às próprias razões; jumbos elevam a eficiência de quadro cheio no fio de cerca de 94,9% para 99,1% e, historicamente mais importante, cortam o trabalho de CPU e interrupções por pacote. O porém é o acordo: todo equipamento do domínio L2 precisa aceitar o tamanho, porque uma divergência de MTU não degrada educadamente - ela vira buraco negro. Por isso jumbos prosperam em caminhos controlados (storage, replicação, underlays de overlay dentro do data center) e morrem ao cruzar a internet."
       },
       "duplex-mismatch": {
         "def": "Uma ponta em full duplex, a outra em half: o link funciona, devagar e com colisões tardias - a clássica causa raiz do 'a rede está estranha' dos anos 2000.",
@@ -11414,6 +11561,514 @@
       "spring4shell": {
         "def": "Uma falha de execução remota de código de 2022 no Spring Framework para Java.",
         "context": "O Spring4Shell permitiu que atacantes obtivessem execução remota de código por meio do data binding em certas configurações do Spring. Surgindo logo após o Log4Shell, renovou a atenção sobre o risco trazido por dependências Java onipresentes."
+      },
+      "flapping": {
+        "def": "Uma interface ou rota que fica caindo e subindo, caindo e subindo - nunca totalmente morta, nunca estável.",
+        "context": "Um link em flapping reinicia as adjacências dos protocolos a cada transição, então um SFP ruim ou um patch cord frouxo pode se propagar pelo OSPF e pelo BGP muito além da porta em si. O BGP até ganhou uma defesa própria, o route-flap damping, porque uma única rota em flapping pode agitar tabelas pela internet afora."
+      },
+      "fat-finger": {
+        "def": "Causar uma interrupção com um erro de digitação - o comando errado, o equipamento errado, ou um dígito trocado numa linha de configuração.",
+        "context": "Metade das histórias de guerra em redes começa com um prefixo, uma VLAN ou um reload digitado com o dedo gordo na janela errada. Janelas de mudança, revisão por pares e commit-confirm existem não porque engenheiros sejam descuidados, mas porque o dedo de todo mundo escorrega uma hora."
+      },
+      "cruft": {
+        "def": "O entulho acumulado de um sistema - configurações antigas, código morto, objetos que ninguém tem coragem de apagar.",
+        "context": "Toda política de firewall e todo código de longa vida acumulam cruft: regras de servidores desativados anos atrás, objetos chamados teste2-NAO-APAGAR. Limpar é ingrato e essencial, porque é no cruft que as surpresas se escondem."
+      },
+      "bit-bucket": {
+        "def": "O lugar imaginário para onde vão os dados descartados - o destino de tudo que é mandado para /dev/null.",
+        "context": "Pacotes descartados, logs silenciados e alertas ignorados vão todos para o bit bucket. No Unix ele tem endereço de verdade, /dev/null: o dispositivo que aceita tudo e não guarda nada."
+      },
+      "thundering-herd": {
+        "def": "O que acontece quando uma multidão de clientes acorda, tenta de novo ou reconecta exatamente no mesmo instante.",
+        "context": "Uma entrada de cache expira e mil requisições atingem a origem de uma vez; um switch reinicia e todos os dispositivos se reautenticam juntos. As correções são jitter, backoff e coalescência de requisições - qualquer coisa que transforme o estouro da manada de volta em uma fila."
+      },
+      "hairpin-nat": {
+        "def": "Alcançar o próprio endereço público de dentro da própria rede - o tráfego sai até o NAT e faz o grampo de volta para dentro.",
+        "context": "Sem suporte a hairpin NAT (NAT loopback), um cliente interno que pede o IP público da empresa não chega a lugar nenhum - e é por isso que o DNS split-horizon costuma responder com o endereço interno. O nome é o desenho que o tráfego faz: sai, meia-volta, volta."
+      },
+      "eyeball-network": {
+        "def": "Um provedor cujos clientes são pessoas olhando para telas - as redes onde estão os olhos.",
+        "context": "A economia de peering divide a internet entre redes de eyeballs (provedores residenciais, operadoras móveis) e redes de conteúdo (CDNs, nuvens). O conteúdo quer alcançar os olhos, os olhos querem o conteúdo perto, e as disputas de interconexão entre os dois lados concentram quase todo o drama de peering."
+      },
+      "five-nines": {
+        "def": "99,999% de disponibilidade - cerca de cinco minutos de indisponibilidade permitidos por ano.",
+        "context": "O padrão-ouro clássico das telecomunicações. Cada nove adicional custa cerca de dez vezes mais que o anterior: quatro noves são menos de uma hora parada por ano, cinco são minutos, seis são segundos. A pergunta honesta nunca é se dá para atingir cinco noves, e sim quais falhas os usuários realmente sentem."
+      },
+      "war-room": {
+        "def": "A sala, física ou virtual, onde os responsáveis por um incidente se reúnem até a coisa ser resolvida.",
+        "context": "Uma war room concentra as pessoas, a linha do tempo e as decisões em um só lugar durante uma grande interrupção. A versão moderna é uma ponte de chamada mais um canal de chat dedicado; o ritual importa mais do que as paredes."
+      },
+      "snowflake-server": {
+        "def": "Um servidor tão artesanal e único que ninguém conseguiria reconstruí-lo do zero.",
+        "context": "Anos de ajustes manuais criam um floco de neve: bonito, frágil e irreproduzível. O remédio é o modelo de gado - configuração como código, reconstruível a partir de uma definição - para que nenhuma máquina seja preciosa."
+      },
+      "configuration-drift": {
+        "def": "A divergência lenta entre o que um sistema deveria ser e o que ele realmente executa.",
+        "context": "Um hotfix de emergência aqui, um ajuste manual ali, e seis meses depois nenhum dos equipamentos 'idênticos' bate com o outro. O drift é o motivo de auditorias surpreenderem, e de ferramentas declarativas reafirmarem o estado desejado em vez de confiar na última mudança."
+      },
+      "crash-cart": {
+        "def": "O carrinho com monitor, teclado e cabos que é empurrado até um servidor que parou de responder pela rede.",
+        "context": "Quando o SSH morreu e a placa de gerência fora de banda nunca foi configurada, o crash cart é o último recurso: acesso de console à velocidade de caminhada. Datacenters mantêm um por corredor exatamente para esse dia."
+      },
+      "tarpit": {
+        "def": "Um truque defensivo que responde aos atacantes com extrema lentidão, desperdiçando o tempo deles em vez de recusá-los.",
+        "context": "Um tarpit aceita a conexão e vai pingando bytes, prendendo scanners e bots de spam por minutos no que deveria levar milissegundos. O original alemão, Teergrube, batizou a técnica durante as guerras do spam."
+      },
+      "script-kiddie": {
+        "def": "Um atacante que roda ferramentas de exploit dos outros sem entender como funcionam.",
+        "context": "Depreciativo, mas útil: script kiddies são o ruído de fundo da internet, escaneando tudo com kits baixados. O insulto esconde um ponto sério - a automação faz até atacantes sem habilidade encontrarem sistemas sem patch, então 'ninguém se daria ao trabalho de nos atacar' nunca foi verdade."
+      },
+      "shoulder-surfing": {
+        "def": "Roubar informação do jeito analógico: lendo a tela ou o teclado de alguém por cima do ombro.",
+        "context": "Salas de embarque, trens e escritórios abertos são os palcos clássicos. Películas de privacidade, o hábito de bloquear a tela e não digitar senhas durante uma demo projetada são as contramedidas - o ataque mais antigo do livro ainda funciona."
+      },
+      "dumpster-diving": {
+        "def": "Recuperar informação sensível no lixo - impressões, post-its, discos não apagados.",
+        "context": "Reconhecimento à moda antiga que ainda rende: organogramas, faturas e anotações de senha saem do prédio pela lixeira. Trituradoras e políticas de descarte de discos existem porque o perímetro inclui a caçamba."
+      },
+      "juice-jacking": {
+        "def": "A teoria de ataque de que uma porta USB pública de carregamento poderia injetar malware ou extrair dados enquanto carrega o celular.",
+        "context": "O USB carrega dados e energia no mesmo conector, o que torna o ataque plausível; casos confirmados em campo são raros, mas a correção é barata - um cabo só de energia, um bloqueador de dados ou simplesmente o seu próprio carregador."
+      },
+      "bricked": {
+        "def": "Reduzido à utilidade de um tijolo - um dispositivo tão quebrado que nem inicializa.",
+        "context": "Uma atualização de firmware que falhou é a causa clássica: flash pela metade, sem bootloader, sem recuperação. Soft-bricked significa que existe um caminho de resgate (modo de segurança, boot por TFTP, console); hard-bricked significa que agora é um peso de papel com portas."
+      },
+      "borked": {
+        "def": "Quebrado, no tom resignado de quem vai ter que consertar - como em 'o upgrade borkou a unidade standby'.",
+        "context": "Menos formal que 'falhou', mais publicável que as alternativas. Uma palavra para o estado entre funcionando e diagnosticado."
+      },
+      "nuke-and-pave": {
+        "def": "Parar de depurar uma máquina doente e simplesmente formatar e reinstalar do zero.",
+        "context": "Em algum ponto o custo-benefício honesto diz que reconstruir vence desembaraçar. Barato e seguro quando a configuração é código e os dados têm backup; aterrorizante exatamente quando não são - e essa é a verdadeira lição."
+      },
+      "dependency-hell": {
+        "def": "O estado em que um software não pode ser instalado ou atualizado porque as versões das suas dependências entram em conflito.",
+        "context": "O pacote A precisa da libfoo 1.x, o pacote B precisa da 2.x, e você precisa dos dois. O Windows chamou isso de DLL hell; todo ecossistema de linguagem reinventa o problema. Lockfiles, vendoring e contêineres são, no fundo, rotas de fuga do inferno de dependências."
+      },
+      "braindump": {
+        "def": "Uma coleção literal de questões reais de prova vazadas, vendida ou compartilhada para candidatos decorarem o caminho até uma certificação.",
+        "context": "A economia obscura do mundo das certificações. Usar dumps viola o acordo de exame de todo fabricante, revoga certificações e produz certificados de papel que desmoronam diante do primeiro equipamento real. A palavra também tem um sentido inocente - escrever tudo o que você sabe antes de sair de um projeto - então o contexto importa."
+      },
+      "alert-fatigue": {
+        "def": "A dormência que se instala quando o monitoramento aciona com tanta frequência que os alertas reais se afogam entre os falsos.",
+        "context": "Cada alarme ignorado treina o cérebro do plantonista a achar que alarmes não importam - até o dia em que um importa. A cura é impiedosa: todo alerta precisa ser acionável, ou é ajustado, agregado ou apagado."
+      },
+      "alarm-storm": {
+        "def": "Uma única falha real detonando em milhares de alarmes secundários pelo sistema de monitoramento.",
+        "context": "Um link de core morre e todos os equipamentos atrás dele gritam ao mesmo tempo, enterrando a causa raiz sob os próprios sintomas. Correlação de eventos e supressão ciente de topologia existem para transformar a tempestade de volta em uma única página acionável."
+      },
+      "gray-failure": {
+        "def": "Uma falha real, porém não limpa - o sistema está degradado de um jeito que os health checks não enxergam.",
+        "context": "O disco lento mas não morto, o link derrubando um pacote em mil. Falhas cinzentas são piores que interrupções porque tudo aparece verde enquanto os usuários sofrem; pegá-las exige medir o que o usuário vivencia, não só se o processo está de pé."
+      },
+      "goodput": {
+        "def": "A vazão que importa de verdade: dados úteis da aplicação entregues, descontados todo o overhead e as retransmissões.",
+        "context": "Um link pode mostrar throughput alto com goodput péssimo - retransmissões, cabeçalhos e dados duplicados contam como tráfego, mas não como progresso. É a diferença entre o velocímetro e realmente chegar."
+      },
+      "bufferbloat": {
+        "def": "Latência causada por buffers superdimensionados: roteadores enfileiram tanto que os pacotes chegam muito atrasados em vez de serem descartados de forma útil.",
+        "context": "Buffers grandes nasceram para evitar perda, mas um buffer profundo cheio significa que todo pacote espera em uma fila longa - é por isso que um upload grande faz a videochamada engasgar. Gerenciamento inteligente de fila (CoDel, FQ-CoDel, CAKE) drena o inchaço."
+      },
+      "microburst": {
+        "def": "Um pico de tráfego tão breve que estoura o buffer do switch e derruba pacotes, mas desaparece dentro das médias de utilização.",
+        "context": "O gráfico de cinco minutos mostra 30% enquanto uma rajada de dois milissegundos estoura a porta e o TCP retransmite em silêncio. Clássico em redes de storage e de trading; flagrar um exige contadores de alta resolução ou estatísticas de descarte de buffer, não médias mais bonitas."
+      },
+      "elephant-flow": {
+        "def": "Um único fluxo de longa duração tão grande que domina um link - um elefante entre milhares de ratos.",
+        "context": "Backups, replicação e transferências em massa são os elefantes; o tráfego interativo são os ratos. Um elefante consegue encher uma fila e pisotear a latência dos ratos - por isso QoS, hashing de ECMP e escalonamento ciente de fluxo se importam em distingui-los."
+      },
+      "living-off-the-land": {
+        "def": "Atacar com as ferramentas já instaladas nos sistemas da vítima, sem precisar baixar nada malicioso.",
+        "context": "PowerShell, WMI, certutil, PsExec: todos legítimos, todos assinados, todos abusáveis. Isso derrota o antivírus ingênuo porque não há arquivo de malware para achar; os defensores respondem com detecção comportamental e registrando o que as ferramentas nativas andam fazendo."
+      },
+      "magic-smoke": {
+        "def": "A fumaça dentro dos componentes eletrônicos que, uma vez liberada, nunca mais volta - a explicação de brincadeira para o hardware queimado continuar morto.",
+        "context": "'Você deixou a fumaça mágica sair' é como engenheiros declaram um componente morto depois de uma ligação errada ou um surto de energia. O humor codifica uma verdade: eletrônica falha visivelmente exatamente uma vez."
+      },
+      "tribal-knowledge": {
+        "def": "O conhecimento operacional crítico que vive só na cabeça de certas pessoas, nunca na documentação.",
+        "context": "Por que o script de failover precisa rodar duas vezes, qual porta está realmente conectada onde - as coisas que se aprendem perguntando ao veterano certo. É a matéria-prima do fator ônibus, e escrever tudo isso é como um time deixa de ser refém."
+      },
+      "flag-day": {
+        "def": "Uma virada em que tudo precisa mudar de uma vez, sem coexistência entre o velho e o novo.",
+        "context": "O nome homenageia o original: 1º de janeiro de 1983, quando a ARPANET trocou o NCP pelo TCP/IP em um único dia. Projetistas de protocolo evitam flag days desde então - é por isso que o IPv6 foi feito para conviver com o IPv4 em vez de substituí-lo da noite para o dia."
+      },
+      "forklift-upgrade": {
+        "def": "Uma atualização tão total que o equipamento antigo sai de empilhadeira - nada é reaproveitado, tudo é trocado.",
+        "context": "O oposto de uma migração incremental: chassi novo, arquitetura nova, cabeamento novo. Às vezes vence de verdade o custo de cuidar da base instalada; os fabricantes, naturalmente, tendem a concordar."
+      },
+      "sev1": {
+        "def": "A severidade máxima de incidente: o serviço está fora, os clientes sentem, e todo o resto pode esperar.",
+        "context": "Declarar um SEV1 é um ato deliberado - convoca a war room, acorda a cadeia de escalonamento e dispara o relógio das comunicações. A maioria das organizações opera de SEV1 a SEV4; discutir o número no meio do incidente já é um mau sinal por si só."
+      },
+      "its-always-dns": {
+        "def": "O provérbio de troubleshooting segundo o qual, seja qual for o sintoma, a causa raiz vai acabar sendo o DNS.",
+        "context": "Metade piada, metade estatística: a resolução de nomes toca em tudo, falha de formas criativas e se esconde atrás de sintomas que parecem qualquer outra coisa. A versão em haicai é canônica: não é DNS - não tem como ser DNS - era DNS."
+      },
+      "works-on-my-machine": {
+        "def": "A defesa clássica do desenvolvedor quando o código falha em todo lugar, menos no próprio notebook.",
+        "context": "A frase que lançou mil contêineres. A distância entre 'a minha máquina' e a produção - versões, caminhos, variáveis de ambiente, dados - é exatamente o que builds reproduzíveis, CI e Docker existem para fechar."
+      },
+      "s-in-iot": {
+        "def": "A piada de que o S de IoT é de segurança - não existe S, e muitas vezes tampouco segurança.",
+        "context": "Uma auditoria de indústria em uma linha: senhas padrão, firmware sem patch possível, dispositivos que sobrevivem aos próprios fabricantes. Botnets como a Mirai transformaram a piada em fato operacional."
+      },
+      "trust-but-verify": {
+        "def": "O velho provérbio da desconfiança cooperativa - aceite a afirmação, mas confira mesmo assim.",
+        "context": "Um provérbio russo que Reagan tornou famoso no controle de armas e a TI transformou em hábito. O zero trust o afiou em 'nunca confie, sempre verifique': identidade e postura são checadas continuamente, não uma vez na porta."
+      },
+      "assume-breach": {
+        "def": "A postura de segurança que planeja como se os atacantes já estivessem dentro, porque um dia estarão.",
+        "context": "Ela reformula o trabalho: de construir a muralha perfeita para limitar o que um invasor bem-sucedido consegue alcançar - segmentação, menor privilégio, detecção, resposta ensaiada. A versão sombria da indústria: existem dois tipos de empresa - as que já foram invadidas e as que ainda não sabem."
+      },
+      "never-touch-a-running-system": {
+        "def": "O credo do operador conservador: se está funcionando, não mexa.",
+        "context": "Nascido da experiência dura com sistemas frágeis, e meio obsoleto na era do corrija-ou-seja-invadido: não mexer no sistema que funciona também significa não aplicar patch. O compromisso moderno é tornar a mudança segura o bastante para ser rotina, em vez de evitá-la."
+      },
+      "read-only-friday": {
+        "def": "A tradição de operações de não fazer mudanças em produção na sexta-feira, porque fins de semana existem.",
+        "context": "Um deploy às cinco da tarde de sexta tem o costume de virar um incidente de sábado com metade do time inalcançável. Times maduros de CI/CD argumentam contra a regra - se o deploy é tão arriscado assim, conserte o deploy - mas o instinto que ela codifica é respeito pelo raio de impacto e pela folga das pessoas."
+      },
+      "hope-is-not-a-strategy": {
+        "def": "O lembrete de SRE de que torcer para o sistema ficar de pé não é o mesmo que projetá-lo para isso.",
+        "context": "Popularizado pela cultura de SRE do Google: confiabilidade vem de objetivos medidos, orçamentos de erro e falhas ensaiadas, não de otimismo. Se o plano para um risco é 'provavelmente não vai acontecer', não há plano."
+      },
+      "you-build-it-you-run-it": {
+        "def": "O princípio DevOps de que o time que escreve um serviço também o opera em produção.",
+        "context": "A frase de Werner Vogels na Amazon, e o fim cultural de jogar código por cima do muro: nada ensina operabilidade como ser quem é acordado pelo pager. A propriedade fecha o ciclo entre as decisões de projeto e a realidade das três da manhã."
+      },
+      "single-pane-of-glass": {
+        "def": "A eterna promessa dos fabricantes de um painel único que mostra tudo - e o atalho do engenheiro para duvidar dela.",
+        "context": "Todo produto de gerenciamento promete um; a maioria dos ambientes acaba com uma dúzia de painéis únicos. Útil como aspiração, irônico como descrição - normalmente dito com uma sobrancelha erguida."
+      },
+      "two-is-one-one-is-none": {
+        "def": "O provérbio da redundância: com dois você pode perder um; com um, uma única falha deixa você com nada.",
+        "context": "De origem militar e nativo do projeto de redes: alimentação dupla, supervisores duplos, pares de HA, dois de tudo no caminho crítico. O corolário que todo operador aprende: redundância não testada conta como um."
+      },
+      "fail-open-vs-fail-closed": {
+        "def": "A escolha de projeto sobre o que um controle faz quando quebra: deixar tudo passar, ou bloquear tudo.",
+        "context": "Uma porta corta-fogo falha aberta porque a vida vence a segurança; um cofre falha fechado pelo motivo oposto. Todo controle inline enfrenta a mesma escolha - um IPS que falha aberto mantém o negócio rodando, porém desprotegido; falhar fechado é seguro e também é uma indisponibilidade. A resposta certa é uma decisão, nunca um padrão de fábrica."
+      },
+      "crunchy-outside-chewy-center": {
+        "def": "A crítica clássica à segurança só de perímetro: uma casca dura em volta de um interior mole e indefeso.",
+        "context": "A descrição de Bill Cheswick em 1990 para redes com firewall - uma espécie de casca crocante em volta de um centro macio e mastigável - continua sendo a melhor frase sobre por que um único perímetro não é estratégia. Da segmentação ao zero trust, tudo é uma resposta a ela."
+      },
+      "castle-and-moat": {
+        "def": "O modelo de segurança de perímetro: muralhas fortes na borda, confiança ampla para quem já está dentro.",
+        "context": "Ele servia ao mundo em que tudo morava num prédio só, atrás de um único firewall. Nuvem, SaaS e trabalho remoto dissolveram o fosso - os recursos saíram do castelo - e esse é o argumento inteiro da verificação por requisição do zero trust."
+      },
+      "pcap-or-it-didnt-happen": {
+        "def": "O padrão de evidência do engenheiro de redes: afirmações sobre tráfego se resolvem com uma captura de pacotes, não com opinião.",
+        "context": "As aplicações culpam a rede, a rede culpa a aplicação, e o pcap encerra a discussão, porque pacotes não mentem. É a versão da profissão para o 'citation needed'."
+      },
+      "check-layer-1": {
+        "def": "O primeiro mandamento do troubleshooting: antes de qualquer coisa inteligente, confirme o cabo, a porta, a energia.",
+        "context": "O modelo OSI também serve de escada de depuração, e uma fração constrangedora dos 'problemas de roteamento' termina num patch cord desconectado ou num SFP morto. Comece por baixo; a camada física não tem senso de humor."
+      },
+      "schroedingers-backup": {
+        "def": "O estado de qualquer backup que nunca foi restaurado: simultaneamente bom e ruim até alguém abrir a caixa.",
+        "context": "Jobs de backup terminam com sucesso por anos enquanto produzem, em silêncio, nada de restaurável - escopo errado, corrupção silenciosa, credenciais expiradas. A forma operacional do provérbio: um backup não existe até que uma restauração tenha sido testada."
+      },
+      "three-two-one-backup": {
+        "def": "A regra de bolso do backup: três cópias dos dados, em dois tipos de mídia, com uma cópia fora do site.",
+        "context": "Simples o bastante para lembrar no meio do desastre, e sobrevive à maioria das falhas isoladas: morte do dispositivo, perda do site, até ransomware se a cópia externa estiver offline ou for imutável. A extensão moderna é o 3-2-1-1-0: uma cópia offline, zero erros de restauração."
+      },
+      "raid-is-not-a-backup": {
+        "def": "A verdade do armazenamento: redundância protege contra falha de disco, não contra exclusão, corrupção ou ransomware.",
+        "context": "O RAID mantém o volume vivo quando um disco morre - e espelha fielmente cada erro para todos os discos ao mesmo tempo. Apagou o arquivo? Ele se foi, redundantemente. Disponibilidade e recuperabilidade são problemas diferentes; backup resolve o segundo."
+      },
+      "security-is-a-process": {
+        "def": "O lembrete de Bruce Schneier de que segurança é um processo, não um produto - nada que você compre te deixa pronto.",
+        "context": "Produtos ajudam, mas as ameaças se movem, as configurações derivam e as pessoas mudam; o que permanece é o ciclo de avaliar, corrigir, monitorar e responder. Quem vende segurança total numa caixa está vendendo o substantivo sem o verbo."
+      },
+      "dont-roll-your-own-crypto": {
+        "def": "O primeiro mandamento da criptografia aplicada: use os algoritmos e as bibliotecas auditados, nunca os seus caseiros.",
+        "context": "Projetar criptografia que os outros não quebrem é um dos problemas mais difíceis da área, e toda cifra caseira parece inquebrável para o próprio autor - a lei de Schneier em ação. Fazer a sua significa que os seus erros vão para produção sem nunca enfrentar os anos de ataque público que endureceram o AES e o TLS."
+      },
+      "key-management-is-hard": {
+        "def": "O resumo do veterano de criptografia: cifrar os dados é a parte fácil; proteger, rotacionar e não perder as chaves é a difícil.",
+        "context": "Os algoritmos são gratuitos e auditados; o que falha na prática é a chave esquecida num repositório, o certificado que ninguém renovou, o HSM que ninguém sabe operar. É a piada das duas coisas difíceis do mundo cripto - e a razão de existirem sistemas de gerência de chaves."
+      },
+      "rough-consensus-and-running-code": {
+        "def": "A filosofia de trabalho do IETF: padrões nascem de acordo amplo mais implementações que funcionam de verdade.",
+        "context": "A formulação de David Clark em 1992 - rejeitamos reis, presidentes e votação; acreditamos em consenso aproximado e código rodando - é o motivo de os protocolos da internet serem provados em interoperabilidade antes de estarem prontos no papel. É o DNA cultural por trás de cada RFC que este site ensina."
+      },
+      "turtles-all-the-way-down": {
+        "def": "A piada da recursão aplicada à confiança: cada camada se apoia em outra camada, e em algum momento é preciso simplesmente pisar em algum lugar.",
+        "context": "A PKI termina em CAs raiz autoassinadas, o DNS nos servidores raiz, o secure boot numa chave gravada de fábrica - toda cadeia de confiança desemboca numa âncora aceita por fé. Nomear as tartarugas é como você descobre em que está realmente confiando."
+      },
+      "second-system-effect": {
+        "def": "O alerta de Fred Brooks de que o sucessor de um sistema bem-sucedido tende a ser superengenheirado com todas as ideias guardadas do primeiro.",
+        "context": "O primeiro sistema foi mantido humilde pela ignorância; o segundo ganha todos os recursos que os projetistas sonharam, e afunda sob eles. Protocolos, produtos e reescritas caem nessa - contenção é uma habilidade de segundo sistema."
+      },
+      "patch-tuesday-exploit-wednesday": {
+        "def": "O ritmo da segurança no Windows: as correções saem na segunda terça-feira, e os ataques de engenharia reversa chegam em dias.",
+        "context": "A cadência previsível da Microsoft deu uma agenda aos defensores - e deu aos atacantes um diff para reverter em exploits funcionais antes que as organizações lentas apliquem o patch. A janela entre a publicação e a implantação da correção é o jogo inteiro."
+      },
+      "demo-gods": {
+        "def": "As divindades caprichosas que decidem se uma demonstração ao vivo funciona - depois de ela ter se comportado perfeitamente em todos os ensaios.",
+        "context": "Todo instrutor e palestrante conhece a liturgia: o laboratório que rodou impecável a semana toda falha no instante em que a plateia aparece. As oferendas incluem gravações de reserva, snapshots e nunca digitar ao vivo o que um script pode digitar por você."
+      },
+      "two-generals": {
+        "def": "A prova clássica de que duas partes num canal não confiável nunca podem ter certeza perfeita de que concordam.",
+        "context": "Cada general precisa da confirmação do outro, a confirmação precisa da própria confirmação, para sempre - nenhum número finito de mensageiros produz certeza. É por isso que a entrega exatamente-uma-vez sobre uma rede com perdas é impossível no sentido estrito, e por isso o TCP se contenta com o confiável-o-bastante de confirmações e retransmissões."
+      },
+      "greenfield-vs-brownfield": {
+        "def": "Construir num terreno vazio versus construir dentro do que já existe - as duas condições de partida de qualquer projeto.",
+        "context": "Greenfield significa liberdade e nenhum usuário; brownfield significa restrições, migrações e a base instalada pagando as contas. A maior parte do trabalho real é brownfield - por isso 'como chegamos lá partindo daqui' importa mais do que a arquitetura-alvo."
+      },
+      "hot-warm-cold-standby": {
+        "def": "As três temperaturas de um sistema reserva: rodando e sincronizado, rodando mas atrasado, ou desligado até ser necessário.",
+        "context": "A temperatura compra tempo de recuperação: um standby quente assume em segundos, um frio depois de horas de restauração. O custo escala do mesmo jeito, o que torna a escolha uma decisão de negócio vestida de fantasia técnica."
+      },
+      "active-active-vs-active-passive": {
+        "def": "As duas formas de alta disponibilidade: os dois nós servindo tráfego, ou um servindo enquanto o outro espera.",
+        "context": "Ativo-passivo é mais simples de raciocinar e deixa metade do hardware ociosa; ativo-ativo usa tudo e dobra os modos de falha - notavelmente o risco de cada nó funcionar bem sozinho sem que o par consiga combinar quem é dono do quê. Pares de HA do BIG-IP, clusters de firewall e bancos de dados lutam todos contra o mesmo dilema."
+      },
+      "baby-giant": {
+        "def": "Um quadro só ligeiramente acima do máximo Ethernet clássico de 1518 bytes - crescido por tags e rótulos, não por payload.",
+        "context": "Uma tag VLAN 802.1Q faz 1522, QinQ faz 1526, um par de rótulos MPLS empurra mais. O payload continua sendo os 1500 bytes normais; só o cabeçalho cresceu. Plataformas de switch os aceitam mantendo folga de quadro - por isso as MTUs de sistema marcam 9216 enquanto a MTU IP não sai do lugar."
+      },
+      "brownout": {
+        "def": "Um serviço que está no ar, mas deliberada ou visivelmente degradado - com a luz baixa, como no original da rede elétrica, em vez de apagado.",
+        "context": "Brownouts de recurso também são ferramenta de comunicação: degradar brevemente uma API descontinuada avisa os integradores de que o desligamento real está chegando, de um jeito que release notes nunca conseguem. A variedade involuntária é só uma falha cinzenta com marketing melhor."
+      },
+      "dark-launch": {
+        "def": "Colocar um recurso em produção em silêncio, rodando com tráfego real antes que qualquer usuário possa vê-lo.",
+        "context": "O caminho de código executa, métricas e taxas de erro se acumulam, e a plateia é zero - a feature flag continua desligada. Converte o momento mais assustador de um lançamento em um ensaio com dados de produção."
+      },
+      "tiger-team": {
+        "def": "Um grupo pequeno e escolhido a dedo, retirado da estrutura normal para atacar um problema difícil até ele ceder.",
+        "context": "O nome vem da indústria aeroespacial dos anos 1960 e ganhou imortalidade no resgate da Apollo 13. Em segurança o termo se sobrepõe a red team, mas o tiger team se define pela missão e pela temporariedade, não por interpretar o adversário."
+      },
+      "cowboy-coding": {
+        "def": "Desenvolvimento sem processo algum entre a ideia e a produção: sem revisão, sem testes, sem branch, só push.",
+        "context": "Emocionante num protótipo, letal em qualquer coisa compartilhada. O caubói nem sempre está errado - velocidade tem valor - mas a dívida cai sobre quem mantém o código, e é por isso que os times cercam o pasto com CI e revisão."
+      },
+      "firefighting": {
+        "def": "Operar em modo de emergência permanente: todo o esforço vai para o incidente do dia, nada para prevenir o próximo.",
+        "context": "A armadilha se retroalimenta - o tempo gasto apagando incêndio não deixa tempo para tornar nada à prova de fogo, o que garante mais incêndios. Escapar exige proteger deliberadamente o trabalho não urgente, exatamente o que times em chamas sentem que não podem pagar."
+      },
+      "top-talkers": {
+        "def": "Os hosts, fluxos ou aplicações que mais consomem banda em um link - a primeira lista que toda ferramenta de tráfego mostra.",
+        "context": "NetFlow, sFlow e todo painel de monitoramento abrem com os top talkers porque a distribuição é brutalmente desigual: um punhado de conversas costuma ser dono do link. Responde à eterna pergunta 'o que está comendo a WAN' em uma coluna ordenada."
+      },
+      "clean-pipe": {
+        "def": "Trânsito de internet que chega já limpo de tráfego de DDoS - o provedor filtra a enchente rio acima e entrega só o fluxo limpo.",
+        "context": "Vendido por operadoras e provedores de mitigação como serviço: o tráfego de ataque é absorvido nos centros de scrubbing deles, perto das origens, em vez de saturar a última milha do cliente. A metáfora é exata - o cano é o mesmo, a água é filtrada antes de chegar a você."
+      },
+      "swivel-chair": {
+        "def": "Integrar dois sistemas com um humano que gira entre telas, lendo de uma e redigitando na outra.",
+        "context": "O middleware mais antigo do mundo, e ainda onipresente: dados de chamado copiados para o sistema de mudanças, alarmes redigitados em planilhas. Cada giro é latência, trabalho braçal e um erro de transcrição esperando a vez - por isso 'integração de cadeira giratória' costuma ser dito enquanto se escreve o ticket de automação."
+      },
+      "shelfware": {
+        "def": "Software que a organização comprou, licenciou e nunca implantou de fato - valor parado na prateleira.",
+        "context": "Nasce de pacotes casados, projetos otimistas demais e compras de conformidade. A segurança sofre uma variante especial: a ferramenta instalada mas nunca ajustada, gerando uma linha reconfortante no orçamento e proteção nenhuma. Auditorias de licença existem em grande parte para encontrá-lo."
+      },
+      "vaporware": {
+        "def": "Um produto anunciado com estardalhaço que nunca é lançado - ou sai tão tarde e tão encolhido que o anúncio era o produto.",
+        "context": "Palavra clássica da era dos pré-anúncios feitos para congelar as vendas dos concorrentes. O reflexo defensivo que ela ensinou continua valendo para slides de roadmap: data de lançamento é fato, anúncio é marketing."
+      },
+      "bit-banging": {
+        "def": "Conduzir um protocolo de hardware inteiramente em software, alternando um pino bit a bit em vez de usar um controlador dedicado.",
+        "context": "É como se fala SPI ou serial num chip que não tem o periférico: a CPU pessoalmente sobe e desce a linha com temporização cuidadosa. Ineficiente, frágil em velocidade e às vezes o único caminho - um rito de passagem no mundo embarcado."
+      },
+      "crown-jewels": {
+        "def": "O pequeno conjunto de ativos cujo comprometimento doeria de verdade: os dados, chaves e sistemas que o negócio não pode perder.",
+        "context": "Orçamento de segurança é finito, então o exercício das joias da coroa força o ranking desconfortável: quais sistemas justificam os controles mais fortes. A expressão irmã, 'as chaves do reino', nomeia as credenciais - admin de domínio, CA raiz, contas break-glass - que abrem tudo de uma vez."
+      },
+      "lift-and-shift": {
+        "def": "Migrar uma carga de trabalho para a nuvem exatamente como está - mesma VM, mesma arquitetura, senhorio novo.",
+        "context": "A migração mais rápida e a menos transformadora: a aplicação não ganha nada da elasticidade que agora paga a preço de nuvem. Às vezes é a decisão certa (prazos, saída de datacenter), mas a fatura acaba defendendo a rearquitetura."
+      },
+      "god-box": {
+        "def": "Um único appliance que faz tudo - roteamento, firewall, VPN, IPS, balanceamento - uma caixa para a todos governar.",
+        "context": "Amada pelos orçamentos e pelas filiais, temida pelos arquitetos: a god box é um ponto único de falha com um raio de impacto bem longo, e seu conjunto de funções pau-para-toda-obra raramente alcança a profundidade do melhor de cada categoria. A eterna troca contra complexidade e custo."
+      },
+      "pizza-box": {
+        "def": "Um servidor ou switch de rack de 1U, achatado - o formato de uma pizza grande, empilhado às dúzias.",
+        "context": "O vocabulário visual de todo corredor de datacenter: racks de pizza boxes, ocasionalmente interrompidos por um chassi. O formato venceu porque fatia a computação em pedaços do tamanho de uma unidade de rack, substituíveis um a um."
+      },
+      "frobnicate": {
+        "def": "Mexer num ajuste ou objeto, alterando-o sem intenção profunda - vocabulário clássico do dicionário hacker.",
+        "context": "Do Jargon File, com uma escala de intenção documentada: você frobniza um botão sem rumo, gira com propósito leve e ajusta fino com precisão. Sobrevivendo na natureza principalmente como 'frob', sinaliza fluência no dialeto mais antigo da cultura."
+      },
+      "keep-the-lights-on": {
+        "def": "O trabalho operacional de base que mantém os sistemas existentes rodando - manutenção, patches, renovações, a constante sem glamour.",
+        "context": "KTLO é a linha de orçamento que toda iniciativa de transformação despreza e da qual depende. Quando consome o time inteiro, nada novo é entregue; quando é subfinanciada, as luzes literalmente se apagam. Organizações maduras medem a proporção."
+      },
+      "incast": {
+        "def": "O colapso de tráfego muitos-para-um: dezenas de servidores respondem a uma requisição ao mesmo tempo e a rajada combinada estoura a porta do switch do receptor.",
+        "context": "A patologia característica de storage distribuído e consultas de big data - cada remetente se comporta, a soma não. A microrrajada transborda buffers rasos, os timeouts de TCP se sincronizam e a vazão despenca. As correções vivem no ajuste de buffers, no ECN e no ritmo das requisições na aplicação."
+      },
+      "lit-fiber": {
+        "def": "Fibra com a eletrônica conectada e luz fluindo - um serviço funcionando, em oposição à fibra apagada que você mesmo acende.",
+        "context": "O comprar-versus-construir da camada física: serviço lit significa que o provedor é dono da óptica e dos comprimentos de onda; fibra apagada significa que você é. 'Prédio lit' é a versão de vendas - a fibra já está lá, a ativação é rápida."
+      },
+      "middle-mile": {
+        "def": "O trecho de rede entre o acesso local e o núcleo da internet - o transporte do bairro até o ponto de troca.",
+        "context": "A última milha leva a fama, mas a economia da banda larga rural costuma morrer na milha do meio: levar o tráfego de uma cidade pequena por centenas de quilômetros até o ponto de interconexão mais próximo. Programas de subsídio e redes de acesso aberto miram exatamente esse trecho."
+      },
+      "meet-me-room": {
+        "def": "A sala de uma instalação neutra onde as redes se interconectam fisicamente - o andar de cross-connects onde a internet é literalmente remendada.",
+        "context": "Uma MMR é fileiras de painéis de demarcação e uma teia de jumpers de fibra: o seu roteador, o deles, um cabo. A neutralidade da sala é o produto - qualquer inquilino alcança qualquer operadora sem tocar a rua."
+      },
+      "carrier-hotel": {
+        "def": "Um prédio cujos inquilinos são redes: dezenas de operadoras e provedores colocalizados onde as rotas de fibra convergem.",
+        "context": "Os grandes prédios de interconexão - os endereços famosos de centro de cidade onde cabos transatlânticos, backbones e pontos de troca se encontram - concentram fatias impressionantes do tráfego de uma região. Suas meet-me rooms são o motivo de 'onde fica a internet' ter respostas surpreendentemente literais."
+      },
+      "looking-glass": {
+        "def": "Uma interface web pública para o roteador de uma rede, deixando gente de fora rodar ping, traceroute e consultas BGP de dentro daquela rede.",
+        "context": "A ferramenta de cortesia do mundo dos provedores: quando o roteamento parece errado, você confere como as rotas aparecem do outro lado. Depurar caminhos assimétricos e sequestros de prefixo sem looking glasses seria adivinhação - eles são a revisão por pares da tabela de roteamento."
+      },
+      "default-free-zone": {
+        "def": "A parte da internet cujos roteadores carregam a tabela completa e nenhuma rota default - não há para onde encaminhar às cegas.",
+        "context": "Na DFZ, todo destino precisa ser explicitamente conhecido ou não existe - perto de um milhão de prefixos IPv4 e crescendo. Ser default-free é o que separa o núcleo dos clientes; todo o resto pode dar de ombros e apontar um default para o provedor."
+      },
+      "full-table": {
+        "def": "O conjunto completo de rotas da internet, recebido via BGP de um provedor de trânsito - o mapa inteiro, não um resumo.",
+        "context": "'Receber full tables' é o momento em que uma rede se forma adulta: com a tabela completa de dois ou mais provedores, o roteador escolhe a melhor saída de verdade por prefixo em vez de confiar num default. O preço é memória, tempo de convergência e operar como gente grande na DFZ."
+      },
+      "gold-plating": {
+        "def": "Adicionar polimento e recursos que ninguém pediu - esforço gasto depois do ponto em que o requisito foi atendido.",
+        "context": "A versão do engenheiro de entregar demais: abstrações lindas para um único chamador, configurabilidade que ninguém vai usar. Parece qualidade e se comporta como scope creep de boas maneiras; YAGNI é o antídoto de plantão."
+      },
+      "burn-rate": {
+        "def": "A velocidade com que um orçamento finito está sendo consumido - caixa numa startup, orçamento de erro na prática de SRE.",
+        "context": "O empréstimo do SRE é preciso: se a cota de confiabilidade do mês está queimando a três vezes o ritmo sustentável, os alertas devem disparar muito antes de o orçamento acabar. Mesmo instinto da pista de decolagem da startup - o número importa menos que a inclinação."
+      },
+      "abandonware": {
+        "def": "Software cujo fabricante sumiu ou virou as costas: sem patches, sem suporte, sem jeito legal de comprar - e muitas vezes sem jeito seguro de rodar.",
+        "context": "Museus e comunidades de emulação preservam a cultura; empresas encontram a variante mais sombria quando o fabricante de um sistema crítico evapora e o binário sem patch vira risco permanente. Cláusulas de escrow e saídas em código aberto existem exatamente para esse final."
+      },
+      "bloatware": {
+        "def": "Software indesejado que já vem instalado - trials, barras de ferramenta, utilitários do fabricante - consumindo recursos que ninguém ofereceu.",
+        "context": "A economia é simples: fabricantes são pagos para pré-carregar. O primeiro ritual de uma imagem corporativa nova é raspar tudo isso, e é por isso que golden images e instalações limpas são higiene de TI, não preferência."
+      },
+      "drinking-from-the-firehose": {
+        "def": "Absorver informação muito mais rápido do que qualquer um conseguiria - a descrição universal de entrar num sistema complexo.",
+        "context": "Recém-contratados, códigos novos, pontes de incidente novas: o volume é o trote. A resposta útil é triagem, não heroísmo - decidir o que engolir de fato, e onde o resto está escrito para depois."
+      },
+      "if-it-hurts-do-it-more-often": {
+        "def": "O princípio contraintuitivo de entrega: atividades dolorosas e arriscadas ficam seguras pela frequência, não pela evitação.",
+        "context": "Popularizado por Martin Fowler sobre deploy e integração: lançamentos raros acumulam risco e atrofiam os músculos; os frequentes forçam automação e encolhem o raio de impacto de cada mudança. O rival filosófico direto da sexta-feira somente-leitura - e o argumento que no fim vence."
+      },
+      "you-cant-secure-what-you-cant-see": {
+        "def": "A máxima da visibilidade: segurança começa com um inventário preciso do que existe, porque ativo desconhecido não recebe controle.",
+        "context": "É por isso que gestão de ativos abre todo framework sério de controles, por menos glamour que tenha. Shadow IT, subdomínios esquecidos e contas de nuvem órfãs são violações esperando pacientemente a vez; descoberta é o primeiro controle."
+      },
+      "no-plan-survives-contact": {
+        "def": "A máxima de Moltke: o plano é o que você tem até a realidade responder; depois, adaptação é a habilidade de verdade.",
+        "context": "O ponto original do marechal Helmuth von Moltke não era pular o planejamento, e sim planejar para o desvio - que é exatamente o argumento por runbooks de incidente que ensaiam a tomada de decisão em vez de roteirizá-la, e por testes de DR que esperam surpresas."
+      },
+      "make-it-work-make-it-right": {
+        "def": "A ordem de prioridades de Kent Beck: primeiro a correção, depois o projeto, e então - só então - a velocidade.",
+        "context": "A disciplina está na sequência: resistir à esperteza antes de a coisa funcionar, e resistir à otimização antes de o projeto ser honesto. A maioria dos pecados de otimização prematura é uma violação da posição do passo três na fila."
+      },
+      "canary-in-the-coal-mine": {
+        "def": "Um sinal de alerta sacrificial: algo pequeno que sofre primeiro, para que o resto reaja a tempo.",
+        "context": "Os canários literais dos mineiros viraram vocabulário da operação moderna: deploys canário mandam uma fatia do tráfego para a versão nova e a observam antes de a frota seguir; canary tokens são credenciais-isca cujo único trabalho é gritar quando tocadas."
+      },
+      "weakest-link": {
+        "def": "O provérbio da corrente aplicado à segurança: a força real do sistema é seu componente mais negligenciado, não o melhor.",
+        "context": "Atacantes não duelam com o seu controle mais forte; contornam - pela máquina sem patch, pela senha reutilizada, pelo humano prestativo. O corolário molda a estratégia: cobertura decente e uniforme vence uma muralha magnífica com uma brecha."
+      },
+      "attackers-only-need-to-be-right-once": {
+        "def": "O dilema do defensor: atacantes podem falhar repetidas vezes sem custo, enquanto a defesa precisa segurar em todo lugar, sempre.",
+        "context": "Verdadeiro como economia, e vale o contraponto moderno: o defensor só precisa detectar uma vez, e o invasor precisa ficar invisível em cada passo de uma longa kill chain. O pensamento de assumir a violação existe para transformar essa segunda assimetria em prática."
+      },
+      "street-finds-its-own-uses": {
+        "def": "A observação de William Gibson de que os usos reais da tecnologia são inventados pelos usuários, não pelos projetistas.",
+        "context": "SMS, planilha como banco de dados, GPS como disciplina de frota, DNS como canal encoberto: todo sistema implantado desenvolve uma segunda vida não planejada. Consequências de segurança incluídas - a criatividade da rua funciona nos dois sentidos."
+      },
+      "nobody-knows-youre-a-dog": {
+        "def": "O cartum de 1993 da New Yorker que batizou a condição fundadora de identidade da internet: online, ninguém sabe quem ou o que você é.",
+        "context": "Os dois cachorros de Peter Steiner diante do computador viraram o resumo mais reproduzido do anonimato online já desenhado. Trinta anos de engenharia de identidade - PKI, MFA, KYC, selos verificados - são uma longa discussão com aquela legenda, e o cachorro ainda vence mais vezes do que a indústria admite."
+      },
+      "routes-around-damage": {
+        "def": "A frase de John Gilmore de que a rede trata bloqueio como falha a ser contornada - resiliência como temperamento de projeto.",
+        "context": "A citação completa de 1993 nomeia a censura como o dano; a metade de engenharia é simplesmente verdadeira (roteamento dinâmico existe para sobreviver a falhas), enquanto a metade política envelheceu para uma discussão em aberto. As duas metades são invocadas, muitas vezes sem notar que diferem."
+      },
+      "swiss-cheese-model": {
+        "def": "O modelo de acidentes de James Reason: toda camada de defesa tem furos, e o desastre acontece quando os furos se alinham.",
+        "context": "Cada fatia - firewall, revisão, monitoramento, treinamento - é imperfeita, e tudo bem; a meta de projeto é garantir que os furos nunca se alinhem. É a teoria por baixo da defesa em profundidade, e a resposta honesta ao 'mas tínhamos um controle para isso': vocês tinham uma fatia."
+      },
+      "testing-in-production": {
+        "def": "A prática - imprudente ou disciplinada, dependendo inteiramente do ferramental - de validar mudanças no sistema vivo.",
+        "context": "Como piada, zomba dos ambientes de teste ausentes; como disciplina (feature flags, canários, dark launches, engenharia do caos), reconhece que produção é o único ambiente que conta a verdade inteira. A piada e a estratégia estão separadas por observabilidade e um caminho de rollback."
+      },
+      "perfect-is-the-enemy-of-good": {
+        "def": "O aviso de Voltaire de que perseguir o impecável bloqueia entregar o suficiente.",
+        "context": "Na engenharia, faz par com a regra dos noventa-noventa: o último polimento custa mais e paga menos. O julgamento que ela exige - quais imperfeições são aceitáveis - é o trabalho de verdade; o provérbio só proíbe responder 'nenhuma'."
+      },
+      "slow-is-smooth-smooth-is-fast": {
+        "def": "A regra de cadência das operações especiais: a pressa gera erros, e erros custam mais tempo do que o cuidado jamais custou.",
+        "context": "Durante incidentes é o antídoto contra a digitação em pânico: o comando deliberado executado uma vez vence o rápido executado três vezes com um rollback no meio. Janelas de mudança rodam na mesma física."
+      },
+      "belt-and-suspenders": {
+        "def": "Usar duas salvaguardas independentes para a mesma falha - se uma soltar, as calças ficam no lugar.",
+        "context": "O idioma da redundância deliberada de controles: backup e replicação, MFA e acesso condicional, alimentação dupla. A palavra 'independente' carrega o peso; duas correias ancoradas no mesmo ponto que falha são uma correia com passos extras."
+      },
+      "only-secure-computer": {
+        "def": "A redução ao absurdo de Gene Spafford: o único computador realmente seguro está desligado, encravado em concreto, vigiado - e inútil.",
+        "context": "O ponto não é desespero, é enquadramento: segurança não é um estado final alcançável, é uma troca contra a utilidade, gerida como risco. Todo sistema real vive em algum ponto da linha entre o bloco de concreto e a porta aberta."
+      },
+      "all-models-are-wrong": {
+        "def": "O provérbio estatístico de George Box: todo modelo simplifica falsamente - a pergunta é se ele é útil mesmo assim.",
+        "context": "Painéis de monitoramento, previsões de capacidade, matrizes de risco, diagramas de rede: todos errados, alguns úteis. A disciplina operacional é lembrar quais simplificações cada modelo fez, porque é exatamente ali que ele vai te enganar."
+      },
+      "map-is-not-the-territory": {
+        "def": "O aviso de Korzybski de que representações não são a realidade que descrevem - e confundi-las tem consequências.",
+        "context": "O diagrama de rede, o CMDB, o runbook: mapas, desenhados uma vez, envelhecendo em silêncio enquanto o território deriva. Incidentes adoram essa lacuna - a topologia documentada diz que o link existe, os pacotes discordam. Confie no território; audite os mapas."
+      },
+      "everything-fails-all-the-time": {
+        "def": "O axioma de nuvem de Werner Vogels: em escala suficiente, falha não é um evento, é condição permanente de fundo.",
+        "context": "Com discos, links e instâncias em quantidade, sempre há algo quebrado - então a arquitetura precisa assumir isso: redundância, degradação graciosa, retentativas com backoff. A virada de mentalidade é de prevenir a falha para torná-la entediante."
+      },
+      "no-solutions-only-tradeoffs": {
+        "def": "O ditado econômico de Thomas Sowell, adotado por inteiro pela engenharia: toda escolha compra seus benefícios com custos em outro lugar.",
+        "context": "Consistência versus disponibilidade, segurança versus usabilidade, flexibilidade versus simplicidade - a conversa madura de projeto não é 'qual opção está certa', é 'com quais custos conseguimos viver'. Quem vende uma solução pura escondeu a fatura."
+      },
+      "choose-boring-technology": {
+        "def": "O princípio de Dan McKinley: prefira ferramentas comprovadas e bem compreendidas, e gaste seus poucos tokens de inovação de propósito.",
+        "context": "Entediante significa modos de falha conhecidos, sabedoria operacional profunda e respostas na primeira página de busca. O enquadramento do ensaio - cada time banca talvez três escolhas genuinamente novas - transformou seleção de tecnologia de gosto em orçamento."
+      },
+      "security-theater": {
+        "def": "O termo de Bruce Schneier para medidas que encenam proteção de forma visível enquanto entregam pouca.",
+        "context": "O valor do termo é o teste que ele implica: este controle muda o cálculo do atacante, ou o sentimento de quem observa? Algum teatro é até defensável - dissuasão visível tem efeitos - mas só se alguém, em algum lugar, souber em qual categoria a medida está."
+      },
+      "compliance-is-not-security": {
+        "def": "O lembrete de época de auditoria: passar no checklist prova documentação, não proteção.",
+        "context": "Frameworks estabelecem pisos, e atacantes leem os mesmos checklists que todo mundo. Organizações violadas com auditorias limpas são uma constante da indústria. A postura madura mantém os dois livros: conformidade como camada de relato, segurança como a engenharia que ela deveria descrever."
+      },
+      "zawinskis-law": {
+        "def": "Todo programa tenta se expandir até conseguir ler e-mail; os que não conseguem são substituídos por outros que conseguem.",
+        "context": "A sátira de Jamie Zawinski sobre o envelopamento de software, envelhecendo lindamente: troque por 'embutir um navegador', 'adicionar um chat' ou 'entregar um assistente de IA' e a lei ainda compila. A força por baixo é real - produtos crescem rumo a plataformas até algo mais enxuto devorá-los."
+      },
+      "segals-law": {
+        "def": "Um homem com um relógio sabe que horas são; um homem com dois relógios nunca tem certeza.",
+        "context": "O provérbio das autoridades conflitantes, e a piada interna favorita das redes: é literalmente por isso que o NTP existe e por que a cronometragem séria usa três ou mais fontes com um algoritmo para detectar o mentiroso. Dois sistemas de monitoramento discordando sobre uma indisponibilidade é a lei de Segal com paging habilitado."
+      },
+      "free-as-in-beer": {
+        "def": "A desambiguação do 'software livre': grátis (cerveja de graça) versus livre (liberdade de expressão) - preço versus liberdade.",
+        "context": "O inglês sobrecarrega uma palavra onde outras línguas têm duas, então o movimento cunhou o teste da cerveja. A distinção tem dentes: freeware não custa nada e não concede nada, enquanto código aberto pode custar dinheiro e ainda conceder tudo o que importa - o fonte, os direitos, a saída."
+      },
+      "xy-problem": {
+        "def": "Pedir ajuda com a sua tentativa de solução (Y) em vez do problema real (X) - e queimar o tempo de todos na pergunta errada.",
+        "context": "O clássico dos fóruns de suporte: 'como extraio os últimos 3 caracteres de um nome de arquivo' quando a meta real é a extensão. A cura vale para os dois lados: quem pergunta declara o objetivo de fundo; quem ajuda pergunta 'o que você está tentando fazer de verdade' antes de otimizar o caminho errado."
+      },
+      "single-source-of-truth": {
+        "def": "O princípio de que cada fato deve ter exatamente um lar autoritativo, com todo o resto derivado dele.",
+        "context": "Duas planilhas autoritativas é como organizações institucionalizam a lei de Segal. Na prática, SSOT significa declarar qual sistema vence - o IPAM, o repositório, o CMDB - e tornar cada cópia comprovadamente jusante. Deriva de configuração é o que acontece quando ninguém declarou."
+      },
+      "safe-method": {
+        "def": "Um método HTTP cuja semântica definida não pede mudança de estado no servidor - leitura, não escrita.",
+        "context": "O conjunto seguro da RFC 9110 é GET, HEAD, OPTIONS e TRACE; a RFC 10008 adicionou o QUERY em 2026. A designação é uma promessa registrada sobre intenção, sobre a qual caches, prefetchers e crawlers agem mecanicamente - e ela não diz nada sobre o payload, então o corpo de um método seguro continua merecendo inspeção de segurança completa."
+      },
+      "http-query-method": {
+        "def": "O método HTTP padronizado em junho de 2026 (RFC 10008) para consultas somente leitura que carregam corpo: seguro e idempotente como GET, corpo como POST, cacheável com o corpo na chave de cache.",
+        "context": "O primeiro método HTTP novo desde o PATCH em 2010, existe porque o GET força a consulta para dentro da URL e o POST-como-busca esconde sua natureza somente leitura de todo cache e proxy do caminho. A adoção é uma auditoria camada a camada: allowlists de método de WAF escritas antes de meados de 2026 o bloqueiam ou o deixam passar sem inspeção, o CORS exige preflight, formulários HTML recuam para GET, e qualquer cache precisa chavear pelo corpo completo ou convida o envenenamento."
       }
     },
     "totalCount": "{count} termos",

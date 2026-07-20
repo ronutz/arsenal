@@ -1,0 +1,38 @@
+---
+slug: bigip-http-query-method
+title: "QUERY Meets BIG-IP: LTM, iRules, and the Advanced WAF Verdict"
+summary: "How BIG-IP handles the new HTTP QUERY method (RFC 10008): LTM's HTTP profile passes unknown methods by default, Advanced WAF blocks QUERY as an Illegal method until you allow it, and twenty years of iRules ambiguity between HTTP::method and HTTP::query suddenly matters. What to audit, where to click, and why the body still gets full inspection."
+concepts: ["f5", "bigip", "ltm", "asm", "waf", "irules", "query method", "http"]
+relatedTools: ["http-methods-comparison"]
+relatedArticles: ["http-query-method", "bigip-http3-waf", "f5xc-http-lb-route-evaluation"]
+category: networking
+order: 143
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Two things named "query", one new method
+
+Before anything else, the disambiguation every F5 engineer needs pinned to the wall. The iRule command `HTTP::query` has existed since BIG-IP 9.0 and returns the query string - the part of the request URI after the `?`. The HTTP QUERY method, standardized in June 2026 as RFC 10008, is a request method like GET or POST: a safe, idempotent read that carries a request body. They share a word and nothing else. `[HTTP::query]` on a QUERY request returns whatever follows `?` in the URI, exactly as it would on a GET - it does not return the method, and it does not read the body. The method lives in `[HTTP::method]`; the body, as ever, lives in `HTTP::collect`/`HTTP::payload` territory.
+
+For the method itself - why it exists, its caching model, the Accept-Query discovery header, and the intent-versus-payload security argument - see the companion explainer. This article is about what a BIG-IP does when QUERY traffic arrives.
+
+## LTM: permissive by design
+
+BIG-IP LTM (Local Traffic Manager) sits in front of a zoo of web servers, frameworks, and proxies, so its HTTP profile accepts unknown methods by default. A QUERY request arriving at a standard virtual server is parsed and forwarded like any other method: full proxy, no drama. If your security posture calls for it, the HTTP profile can be tightened to an explicit list of allowed methods - in which case QUERY, like anything else, must be deliberately added. That default permissiveness is convenient and is also exactly why the enforcement conversation belongs one layer up, in the WAF policy.
+
+The audit that does need doing is in your iRules and Local Traffic Policies. Twenty years of logic that branches on `[HTTP::method]` was written when the universe of verbs was GET, POST, PUT, DELETE, and friends. A `switch [HTTP::method]` with a default case that drops, redirects, or logs will now route QUERY into that default; an `if` chain that only recognizes GET and POST will treat QUERY as neither. None of that is broken - it is doing what it was told - but it was told before June 2026. Search your iRules for `HTTP::method` and decide, per rule, what QUERY should do there.
+
+While auditing, one classic idiom deserves a footnote, because a long-running DevCentral thread shows how it confuses people. In iRules like `[getfield [HTTP::host] ":" 1]`, the trailing `1` is getfield's field index: split the value on `:` and return the first field - the standard way to strip a port from the Host header. It is not a regex capture, and despite the thread's title, it has nothing to do with `HTTP::query` or the QUERY method. The same idiom works on query strings too - `[getfield [HTTP::query] "&" 1]` returns the first parameter pair - which is precisely why the two-things-named-query confusion keeps finding new victims.
+
+## Advanced WAF: Illegal method until told otherwise
+
+BIG-IP Advanced WAF (formerly ASM, the Application Security Manager) enforces HTTP method validation as one of its foundational checks: the security policy carries an explicit list of allowed methods, and anything not on the list triggers the Illegal method violation. Out of the box a policy allows a defined set - GET, HEAD, POST and whatever the template adds - and since QUERY is brand-new, it is not there. The result is unambiguous: a QUERY request hitting a protected virtual server is blocked, by default, as an Illegal method. That is the secure baseline working as intended, not a bug.
+
+When your backend applications start supporting QUERY, allowing it is one deliberate edit: in the TMUI, Security > Application Security > HTTP Message Protection > Headers > Methods > Add, add QUERY to the allowed methods, and apply the policy. From that point the method passes - and everything else still applies. This is the part that makes Advanced WAF the right kind of gatekeeper here: unlike a bare allowlist, the policy keeps inspecting the request. Attack signatures for XSS (cross-site scripting), SQL injection, command injection, and SSRF (server-side request forgery), parameter inspection, and content-profile enforcement all run against the QUERY body exactly as they would against a POST body. The generic explainer's mantra - "safe" describes intent, not payload - is enforced here mechanically: a QUERY carrying a command-injection payload gets blocked on the payload, with the method legitimately allowed.
+
+One more RFC consequence to configure deliberately: QUERY is not CORS-safelisted, so browser clients will send an OPTIONS preflight before any cross-origin QUERY. If CORS is handled in your Advanced WAF policy, add the new method to that configuration too, or the preflight will deny what the method list just permitted.
+
+## The rollout order that works
+
+Treat QUERY on BIG-IP as three deliberate decisions, made in this order. First, LTM: confirm the HTTP profile's method posture (default-permissive, or QUERY explicitly added to a restricted list) and audit every iRule and LTM policy that branches on `[HTTP::method]`. Second, Advanced WAF: leave QUERY blocked until the application actually supports it, then add it to the allowed methods knowing full body inspection continues. Third, CORS: extend the policy for the preflight if browsers are in scope. The [HTTP methods comparison](/tools/http-methods-comparison) tool keeps the registry facts at hand - "post vs query" is the one-line justification for why this method deserved its own verdict instead of inheriting POST's.

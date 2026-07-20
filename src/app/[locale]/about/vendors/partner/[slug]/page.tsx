@@ -28,6 +28,9 @@ import { radwareProfile } from "@/content/vendors/profiles/radware";
 import { impervaThalesProfile } from "@/content/vendors/profiles/imperva-thales";
 import { versaProfile } from "@/content/vendors/profiles/versa";
 import { nortelBayProfile } from "@/content/vendors/profiles/nortel-bay";
+// D-07 (PRIME 20/07/2026): every link pointing to Red Education carries lead
+// attribution and keeps the referrer; other external links stay fully strict.
+import { attributeRedEducationUrl, externalRel } from "@/config/redEducation";
 import { madgeProfile } from "@/content/vendors/profiles/madge";
 import { checkPointProfile } from "@/content/vendors/profiles/check-point";
 import { cyberarkProfile } from "@/content/vendors/profiles/cyberark";
@@ -286,9 +289,9 @@ export default async function PartnerVendorPage({
             <section className="section">
               <div className="container vendor-container">
                 <a
-                  href={vendor.externalUrl}
+                  href={attributeRedEducationUrl(vendor.externalUrl, "vendor-partner", vendor.slug)}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel={externalRel(vendor.externalUrl)}
                   className="btn btn-secondary"
                 >
                   {vendor.externalLabel ?? vendor.externalUrl} ↗
@@ -306,7 +309,12 @@ export default async function PartnerVendorPage({
                   <ul className="partner-sources-list">
                     {vendor.sources.map((s) => (
                       <li key={s.url}>
-                        <a href={s.url} target="_blank" rel="noopener noreferrer" className="partner-source-link">
+                        <a
+                          href={attributeRedEducationUrl(s.url, "vendor-partner-sources", vendor.slug)}
+                          target="_blank"
+                          rel={externalRel(s.url)}
+                          className="partner-source-link"
+                        >
                           {s.label}
                         </a>
                       </li>

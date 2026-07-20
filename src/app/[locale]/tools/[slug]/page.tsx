@@ -159,6 +159,10 @@ import F5CipherStringExpanderTool from "@/components/F5CipherStringExpanderTool"
 import { manifest as cipherStrManifest } from "@/lib/tools/f5-cipher-string-expander";
 import F5ServiceCheckDateTool from "@/components/F5ServiceCheckDateTool";
 import F5BigdThreadCalculatorTool from "@/components/F5BigdThreadCalculatorTool";
+import MtuMssTool from "@/components/MtuMssTool";
+import { manifest as mtuMssManifest } from "@/lib/tools/mtu-mss";
+import HttpMethodsComparisonTool from "@/components/HttpMethodsComparisonTool";
+import { manifest as httpMethodsManifest } from "@/lib/tools/http-methods-comparison";
 import { manifest as f5BigdThreadManifest } from "@/lib/tools/f5-bigd-thread-calculator";
 import FaultHypothesisBuilderTool from "@/components/FaultHypothesisBuilderTool";
 import { manifest as faultHypothesisBuilderManifest } from "@/lib/tools/fault-hypothesis-builder";
@@ -324,6 +328,14 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-bigd-thread-calculator": {
     Component: F5BigdThreadCalculatorTool,
     sources: f5BigdThreadManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "mtu-mss": {
+    Component: MtuMssTool,
+    sources: mtuMssManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "http-methods-comparison": {
+    Component: HttpMethodsComparisonTool,
+    sources: httpMethodsManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-bigip-license-explainer": {
     Component: F5BigipLicenseExplainerTool,

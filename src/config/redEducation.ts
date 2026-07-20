@@ -64,6 +64,39 @@ export function isRedEducationUrl(url: string): boolean {
 }
 
 /**
+ * Attach lead-source attribution to an EXISTING URL when (and only when) it
+ * points to Red Education. Unlike redEducationUrl(), which builds a link to the
+ * site root, this preserves the URL's full path and query (deep links to a
+ * vendor page, a case study, a course), and simply sets the UTM parameters on
+ * top. Non-Red-Education URLs pass through untouched, so it is safe to apply
+ * uniformly at any render site that mixes Red Education links with other
+ * external links.
+ *
+ * Ratified direction (D-07, PRIME 20/07/2026): every link pointing to Red
+ * Education carries referral attribution — the traffic and the leads must be
+ * visible as ronutz.com's contribution in Red Education's own analytics.
+ *
+ * @param url       the link as authored in content/data (any host).
+ * @param placement where on ronutz.com the link lives (becomes `utm_campaign`).
+ * @param detail    optional finer detail (becomes `utm_content`), e.g. a slug.
+ */
+export function attributeRedEducationUrl(url: string, placement: string, detail?: string): string {
+  if (!isRedEducationUrl(url)) return url;
+  try {
+    const u = new URL(url);
+    u.searchParams.set("utm_source", "ronutz.com");
+    u.searchParams.set("utm_medium", "referral");
+    u.searchParams.set("utm_campaign", placement);
+    if (detail) u.searchParams.set("utm_content", detail);
+    return u.toString();
+  } catch {
+    // A malformed URL is left exactly as authored — attribution is best-effort
+    // and must never break a link.
+    return url;
+  }
+}
+
+/**
  * The `rel` value for an external link. Red Education links keep the referrer
  * (rel="noopener" only); every other external link also blocks it
  * (rel="noopener noreferrer"). Pairs with target="_blank".

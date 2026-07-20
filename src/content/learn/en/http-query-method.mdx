@@ -1,0 +1,54 @@
+---
+slug: http-query-method
+title: "HTTP QUERY: the read that finally carries a body"
+summary: "RFC 10008 (June 2026) gave HTTP its first new method since 2010: QUERY is safe, idempotent, and cacheable like GET, but carries a request body like POST. What it fixes, how its caching and discovery work, why 'safe' is not 'harmless', and what every layer of infrastructure must check before QUERY traffic arrives."
+concepts: ["http", "query method", "rfc 10008", "safe methods", "idempotency", "caching", "cors", "waf"]
+relatedTools: ["http-methods-comparison", "http-request-translator"]
+relatedArticles: ["http-versions-09-to-3", "http-proxy-forward-and-reverse", "curl-method-inference", "bigip-http-query-method"]
+category: networking
+order: 142
+status: reviewed
+updated: "2026-07-20"
+---
+
+## The two-tool problem
+
+For as long as the web has had APIs, reading data meant choosing between two imperfect tools. GET (the retrieval method of HTTP, the Hypertext Transfer Protocol) has exactly the semantics a read wants: safe, idempotent, cacheable. But GET has no defined semantics for a request body - RFC 9110 warns outright that a body on a GET may get the request rejected - so the query must live in the URL. That runs into hard walls: URL length limits vary per proxy and server (the spec only recommends supporting about 8,000 octets, and you discover the smallest ceiling in the chain at runtime), complex nested filters become unreadable percent-encoded strings, and URLs leak - into access logs, browser history, bookmarks, analytics, and Referer headers.
+
+POST fixes the body problem and creates a semantic one. A POST can create a record, trigger a job, or just run a search, and the protocol cannot tell which. Your application knows `POST /search` is read-only, but that knowledge is a private agreement between the server and the people who wrote it. Every cache, proxy, retry layer, and gateway in the middle sees only "POST" and must assume the worst: unsafe, non-idempotent, not cacheable. This is why every REST API eventually grows a `POST /search` endpoint that lies to the infrastructure.
+
+## What QUERY is
+
+On 15 June 2026 the RFC Editor published RFC 10008, "The HTTP QUERY Method" - a Proposed Standard, and the first genuinely new HTTP method since PATCH landed in RFC 5789 in 2010, sixteen years earlier. QUERY is the deliberate hybrid: the body support of POST with the safe-and-idempotent semantics of GET, registered exactly that way (Safe: yes, Idempotent: yes) in the IANA HTTP Method Registry.
+
+```
+QUERY /products HTTP/1.1
+Host: example.org
+Content-Type: application/x-www-form-urlencoded
+
+q=foobar&limit=10&sort=-published
+```
+
+Because those properties are registered rather than merely documented, generic infrastructure can finally reason about the request: a dropped QUERY can be retried without fear of partial state changes, and the response is cacheable. The request tells the truth about what it is doing.
+
+A few spec details do real work. There are no new status codes: a missing media type earns a 400, an unsupported one a 415, and a well-formed query that cannot be processed a 422. Content-Type is enforced, not sniffed - the server must reject a missing or inconsistent media type rather than guess. A new response header, Accept-Query, lets a resource advertise QUERY support and the media types it accepts, so clients can discover support instead of trial-and-erroring into 405s. And the spec defines an "equivalent resource": the server may answer a QUERY with a Location or Content-Location header that assigns a stable URI to that query and its result, restoring the bookmarkability you lose when the condition moves out of the URL.
+
+Caching is where the cleverness and the danger share one sentence: a QUERY response is cacheable, and the cache key must incorporate the request body. That is the entire mechanism that makes a body-carrying request cacheable - two different bodies against the same URL are two different cache entries - and it is also the new failure mode. A cache that normalizes or hashes the body differently than the origin interprets it can serve the wrong response on a false key match: cache poisoning and cache deception in a single bug class.
+
+## The name, for the record
+
+Early drafts called the method SEARCH, borrowing from the WebDAV family. The IANA registry already held three safe, idempotent, body-carrying methods - PROPFIND, REPORT, and SEARCH - all tied to WebDAV's XML vocabularies. The working group renamed the effort in 2021: QUERY got a clean, generic start, and the name maps neatly onto the URI's query component. From first draft to standard took eleven years, with IESG approval in November 2025 and publication in June 2026. HTTP does not move fast, which is exactly why it is worth attention when it moves.
+
+## "Safe" describes intent, not payload
+
+This is the one sentence to internalize before deploying anything. The safe designation means the client is not requesting a state change - it says nothing about whether the body is malicious. A QUERY body carries SQL injection, XSS (cross-site scripting), or an oversized payload exactly as well as a POST body does. Every WAF (web application firewall) rule set that inspects POST bodies must apply identical coverage to QUERY, even while trusting its read-only semantics for caching and retries. Treating "safe" as "harmless" is how a clean protocol upgrade becomes an open door.
+
+The same intent-versus-enforcement gap produces a CSRF (cross-site request forgery) trap: middleware that protects `POST|PUT|DELETE|PATCH` silently skips QUERY. If any endpoint accepting QUERY has any side effect - an audit write, a lazy provisioning step - it must stay under CSRF protection regardless of the method's label. And method allowlists written before June 2026 do not contain QUERY at all, which fails in one of two opposite ways: strict setups drop it as an unknown verb and the rollout silently dies at the edge, while permissive setups forward it without the body inspection they apply to POST - an inspection blind spot, the worst outcome. Inconsistent handling across a proxy chain is also exactly how request-smuggling desyncs start; QUERY must be a deliberate decision at every hop.
+
+Two more operational notes. Moving conditions out of the URL is a genuine privacy win, but if your gateway logs request bodies, the sensitive selector is now in a place your log-redaction rules may not cover - the leak relocated, not eliminated. And QUERY is not on the CORS (Cross-Origin Resource Sharing) safelist, so every cross-origin browser QUERY triggers an OPTIONS preflight that your edge must handle correctly.
+
+## Where support stands
+
+As of mid-2026: Node.js has parsed QUERY at the HTTP layer since early 2024, ahead of standardization. OpenAPI 3.2 can document QUERY operations. Browsers send it via fetch() and XMLHttpRequest, but neither Chrome nor Firefox caches QUERY responses yet, and a declarative HTML form with method="query" falls back to GET and drops the body. Spring has an open issue but has not shipped. Cloudflare and Akamai engineers co-authored the RFC, so edge support may well land before framework integrations - meaning your CDN may understand QUERY before your application does. The practical read: production-ready for server-to-server APIs, early-stage for public browser-facing traffic - and no reason to rip out working `POST /search` endpoints; QUERY sits alongside them, migrated gradually.
+
+The [HTTP methods comparison](/tools/http-methods-comparison) tool holds the full registry table: ask it for "get vs query" or "post vs query" and it names exactly which properties flip. For what this method means on a BIG-IP specifically - the HTTP profile, iRules, and the Advanced WAF's Illegal-method verdict - see the companion article.

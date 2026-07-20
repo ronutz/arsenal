@@ -117,6 +117,8 @@ export const tools: ToolEntry[] = [
   { id: "f5-bigip-license-explainer", sub: "tmos", href: "/tools/f5-bigip-license-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "f5-cipher-string-expander", sub: "ltm", href: "/tools/f5-cipher-string-expander", category: "transport", vendors: ["f5"], available: true },
   { id: "f5-ssl-profile-explainer", sub: "ltm", href: "/tools/f5-ssl-profile-explainer", category: "transport", vendors: ["f5"], available: true },
+  { id: "mtu-mss", href: "/tools/mtu-mss", category: "networking", available: true },
+  { id: "http-methods-comparison", href: "/tools/http-methods-comparison", category: "networking", available: true },
   { id: "epoch", href: "/tools/epoch", category: "encoding", available: true },
   { id: "roman-numerals", href: "/tools/roman-numerals", category: "encoding", available: true },
   { id: "greek-alphabet", href: "/tools/greek-alphabet", category: "text", available: true },

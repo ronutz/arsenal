@@ -437,6 +437,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_http_header_order_fingerprint",
     "tag": "Fingerprinting"
   },
+  "http-methods-comparison": {
+    "url": "https://ronutz.com/api/v1/http-methods-comparison",
+    "method": "GET",
+    "op": "run_http_methods_comparison",
+    "tag": "HTTP & web"
+  },
   "http-request-translator": {
     "url": "https://ronutz.com/api/v1/http-request-translator",
     "method": "GET",
@@ -502,6 +508,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_letsencrypt_rate_limits",
     "tag": "PKI"
+  },
+  "mtu-mss": {
+    "url": "https://ronutz.com/api/v1/mtu-mss",
+    "method": "GET",
+    "op": "run_mtu_mss",
+    "tag": "TLS & transport"
   },
   "nslookup-output-explainer": {
     "url": "https://ronutz.com/api/v1/nslookup-output-explainer",

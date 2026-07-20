@@ -1,0 +1,52 @@
+---
+slug: jumbo-frames
+title: "Jumbo frames: when 1500 bytes stops being enough"
+summary: "Why Ethernet settled on 1500 bytes, what 9000-byte jumbo frames actually buy, where they shine, and how an MTU mismatch turns into a silent black hole."
+concepts: ["jumbo-frames", "mtu", "mss", "path-mtu-discovery", "baby-giant"]
+relatedTools: ["mtu-mss"]
+relatedArticles: ["ipv4-addressing", "tcp-proxy-layer-4"]
+category: networking
+order: 141
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Why 1500, of all numbers
+
+Ethernet's 1500-byte payload limit is not physics. It is a 1980 economic decision: memory was expensive, early controllers buffered whole frames in scarce RAM, and a shared coaxial cable could not let one station hog the medium for too long per frame. Fifteen hundred bytes balanced buffer cost against overhead, the number shipped in the DIX Ethernet specification, IEEE 802.3 inherited it, and four and a half decades of hardware, drivers, and assumptions have calcified around it. Every reason behind the number has since evaporated - RAM is abundant, links are switched and full-duplex, and 400 Gb/s serializes a maximum-size frame in nanoseconds - but the number itself remains, because the internet is very good at keeping compatibility promises.
+
+The value that limit constrains is the MTU (Maximum Transmission Unit): the largest IP packet a link will carry. From it follows the MSS (Maximum Segment Size), the largest chunk of application data TCP (Transmission Control Protocol) will put in one segment - on a plain 1500-byte link, 1500 minus 20 bytes of IPv4 header minus 20 bytes of TCP header, the famous 1460.
+
+## What a jumbo frame is - and is not
+
+A jumbo frame is any Ethernet frame carrying more than 1500 bytes of payload. In practice the industry converged on 9000 bytes, and it is worth being precise about that number's status: it is a de facto convention, not an IEEE standard. The 802.3 working group has repeatedly declined to standardize a larger maximum, so 9000 lives in vendor datasheets, not in the standard - which is exactly why support, defaults, and edge behavior vary between platforms and why you configure it explicitly instead of assuming it.
+
+Why roughly nine thousand? It is comfortably larger than the 8-KiB (kibibyte) application blocks common in storage and NFS (Network File System) workloads with headers to spare, while staying safely inside the coverage of Ethernet's 32-bit FCS (Frame Check Sequence) error detection, which weakens as frames grow. Switch datasheets usually quote a system MTU of 9216 bytes - that is not a competing jumbo size but headroom: room for a 9000-byte payload plus VLAN (Virtual Local Area Network) tags, MPLS (Multiprotocol Label Switching) labels, and other header shims.
+
+Which points at a distinction that resolves most MTU confusion. Encapsulations that ride *inside* the IP payload - PPPoE (Point-to-Point Protocol over Ethernet), GRE (Generic Routing Encapsulation), VXLAN (Virtual Extensible LAN) - shrink the usable inner MTU. Layer 2 shims - VLAN tags, MPLS labels - ride in the *frame header* and do not touch the IP MTU at all; they grow the frame instead. A single 802.1Q tag turns a full 1518-byte frame into a 1522-byte **baby giant**: payload unchanged, header grown. Jumbo frames grow the payload itself; baby giants grow only the wrapper.
+
+## What jumbos actually buy
+
+The textbook argument is wire efficiency. A full-sized TCP segment on a 1500-byte link delivers 1460 payload bytes for every 1538 bytes on the wire (add 14 of Ethernet header, 4 of FCS, and 20 of preamble and inter-frame gap): 94.93% efficient. At 9000, the same arithmetic gives 8960 of 9038: 99.14%. Real, but modest - about four percentage points of bandwidth.
+
+The historically bigger win was per-packet work. Every frame costs a fixed overhead in interrupts, protocol processing, and per-packet bookkeeping in every NIC (Network Interface Card), switch, and host on the path; six times fewer frames for the same gigabyte meant six times less of all of it, and in the era when a CPU core struggled to keep a 10 Gb/s link fed, that was the whole game. Modern offloads have narrowed this: TSO (TCP Segmentation Offload) and LRO/GRO (Large/Generic Receive Offload) let the host stack pretend it is handling huge segments while the NIC slices and reassembles wire-size frames, capturing much of the CPU benefit without touching the network MTU. An honest modern summary: jumbos still measurably help storage, replication, and east-west bulk traffic - and they matter for overlay headroom, as below - but they are an optimization with a real coordination cost, not a free upgrade.
+
+Where they earn their keep: iSCSI (Internet Small Computer System Interface) and NFS storage networks, backup and replication links, vMotion-style live-migration traffic, HPC (High-Performance Computing) and RDMA (Remote Direct Memory Access) fabrics, and the underlay beneath overlay networks - all controlled, bounded, data-center paths. Which is precisely the pattern: jumbos thrive where one team controls every hop.
+
+## The failure mode: silence
+
+Here is why jumbo frames have a reputation. An MTU mismatch does not degrade politely - it black-holes, and it black-holes selectively.
+
+Picture a host sending 9000-byte packets into a path where one link still runs at 1500. If the packet's DF (Don't Fragment) bit is set - and modern stacks set it - the small-MTU router must drop the packet and send back an ICMP (Internet Control Message Protocol) "Fragmentation Needed" message (Packet Too Big in ICMPv6). PMTUD (Path MTU Discovery) depends entirely on that message arriving. If a firewall along the way drops ICMP - a depressingly common "hardening" - the sender never learns why nothing arrives. The result is the classic signature: ping works, the TCP handshake works, small requests work, and the connection hangs the moment real data flows, because only full-sized segments die. IPv6 raises the stakes: routers never fragment in IPv6, so PMTUD (or its packetization-layer cousin, DPLPMTUD) is the only mechanism, and ICMPv6 Packet Too Big is not optional.
+
+The practical defenses are three. First, keep the MTU uniform across each L2 domain - every host, switch port, and router interface in the same broadcast domain agrees, or none of them do. Second, let ICMP's too-big messages live; they are load-bearing. Third, at boundaries you do not control, clamp the MSS: rewriting the TCP handshake's MSS option to fit the narrowest link is the pragmatic fix that makes PPPoE at 1492 and tunnels of every kind work for the general public.
+
+## Overlays: where the two worlds meet
+
+Overlay networks are where jumbo arithmetic becomes daily work. VXLAN wraps the entire inner Ethernet frame in new headers - 8 of VXLAN, 8 of UDP (User Datagram Protocol), 20 of outer IPv4, 14 of inner Ethernet: 50 bytes (70 with an IPv6 outer header). Run that over a 1500-byte underlay and inner traffic is squeezed to 1450 - guests fragment or clamp. The two clean answers: raise the underlay to at least 1550, or - the standard data-center move - run a 9000-byte underlay and hand tenants a comfortable 8950. GENEVE prices the same with options extra; GRE costs 24; WireGuard 60. The pattern generalizes: overlays spend MTU, jumbos refund it.
+
+## Turning it on without regret
+
+Configuration is an exercise in agreement, inside-out: switches and routers first (frame headroom and interface MTU), then hosts, one L2 domain at a time - never "the whole network" in one change. Then verify with a ping that forbids fragmentation at full size. On Linux: `ping -M do -s 8972 <target>`; on Windows: `ping -f -l 8972 <target>`. The magic number 8972 is just 9000 minus 20 bytes of IPv4 header minus 8 of ICMP echo header - if that succeeds and 8973 fails, your path MTU is exactly 9000 and you have proven it end to end. And know where to stop: anything internet-facing stays at 1500, because the public path is the one L2-and-L3 chain you will never control.
+
+The arithmetic in this article - inner MTUs, MSS values, frame sizes, underlay requirements, the efficiency pair - is exactly what the MTU / MSS calculator computes from any link MTU and encapsulation stack you give it.

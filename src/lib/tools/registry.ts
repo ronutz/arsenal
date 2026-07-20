@@ -61,6 +61,8 @@ import { run as bigipDnsGslbSimulatorRun } from "./bigip-dns-gslb-simulator";
 import { run as ja3TlsFingerprintRun } from "./ja3-tls-fingerprint";
 import { run as f5ServiceCheckDateRun } from "./f5-service-check-date";
 import { run as f5BigdThreadCalculatorRun } from "./f5-bigd-thread-calculator";
+import { run as mtuMssRun } from "./mtu-mss";
+import { run as httpMethodsComparisonRun } from "./http-methods-comparison";
 import { runFromJson as faultHypothesisBuilderRun } from "./fault-hypothesis-builder";
 import { runFromJson as changeWindowRunbookBuilderRun } from "./change-window-runbook-builder";
 import { runFromJson as incidentTimelineRcaBuilderRun } from "./incident-timeline-rca-builder";
@@ -156,6 +158,8 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "letsencrypt-rate-limits", structured: true, run: (input) => letsEncryptRateLimitsRun({ names: input }) },
   { slug: "f5-irules-runtime-calculator", structured: true, run: (input) => f5IrulesRuntimeCalculatorRun(JSON.parse(input)) },
   { slug: "f5-bigd-thread-calculator", run: f5BigdThreadCalculatorRun },
+  { slug: "mtu-mss", run: mtuMssRun },
+  { slug: "http-methods-comparison", run: httpMethodsComparisonRun },
   { slug: "fault-hypothesis-builder", structured: true, run: faultHypothesisBuilderRun },
   { slug: "change-window-runbook-builder", structured: true, run: changeWindowRunbookBuilderRun },
   { slug: "incident-timeline-rca-builder", structured: true, run: incidentTimelineRcaBuilderRun },
