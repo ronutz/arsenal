@@ -373,7 +373,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "23:45",
     kind: "content",
     title: "Ping Identity and Zscaler join the instructor portfolio",
-    body: "The instructor authorizations for Ping Identity and Zscaler are cleared, and the site now says so: the two career pages retire their not-authorized disclaimers, the About page's authorization list grows from four to six vendors, and the partner-page and vendor-hub copy names all six. Course catalogs for the two newest vendors will appear under Training as they are scheduled; until then the 28-course portfolio remains the four established platforms.",
+    body: "The instructor authorizations for Ping Identity and Zscaler are cleared, and the site now says so: the two career pages retire their not-authorized disclaimers, the About page's authorization list adds both vendors, and the partner-page and vendor-hub copy names them. Course catalogs for the two newest vendors will appear under Training as they are scheduled; until then the 28-course portfolio remains the established platforms.",
   },
   {
     date: "2026-07-15",

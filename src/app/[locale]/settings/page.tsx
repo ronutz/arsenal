@@ -16,6 +16,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ShortcutSettings from "@/components/ShortcutSettings";
+import GlossaryHintToggle from "@/components/GlossaryHintToggle";
 import { SHORTCUT_ACTIONS, SHORTCUT_KEYS } from "@/config/shortcuts";
 
 // Pretty key-cap label: letters uppercased; punctuation/digits as-is.
@@ -70,6 +71,19 @@ export default async function SettingsPage({
             <h2 className="colophon-h2">{t("shortcutsTitle")}</h2>
             <p className="colophon-body">{t("shortcutsBody")}</p>
             <ShortcutSettings labels={settingsLabels} />
+          </div>
+        </section>
+
+        <section className="section">
+          <div className="container colophon-container">
+            <h2 className="colophon-h2">{t("readingTitle")}</h2>
+            <p className="colophon-body">{t("readingBody")}</p>
+            <GlossaryHintToggle
+              label={t("hintToggleLabel")}
+              description={t("hintToggleDesc")}
+              onLabel={t("hintOn")}
+              offLabel={t("hintOff")}
+            />
           </div>
         </section>
 

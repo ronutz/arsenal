@@ -192,7 +192,7 @@ export default async function LocaleLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{var t=localStorage.getItem('ronutz-theme');if(t&&t!=='obsidian'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();",
+              "(function(){try{var t=localStorage.getItem('ronutz-theme');if(t&&t!=='obsidian'){document.documentElement.setAttribute('data-theme',t);}var g=localStorage.getItem('ronutz-glossary-hints');if(g==='off'){document.documentElement.setAttribute('data-glossary-hints','off');}}catch(e){}})();",
           }}
         />
         {/* Language preference (client-side, device-only). Precedence rule

@@ -52,11 +52,11 @@
     },
     "credibility": {
       "title": "Feito por quem coloca a mão na massa desde 1996.",
-      "body": "Trinta anos em redes e segurança corporativa, entregues por um instrutor que está na ativa, e não por uma página de marketing. Autorizado em seis fornecedores, então as comparações aqui são feitas com honestidade, não para vender.",
+      "body": "Trinta anos em redes e segurança corporativa, entregues por um instrutor que está na ativa, e não por uma página de marketing. Autorizado em cada fabricante ensinado aqui, então as comparações são feitas com honestidade, não para vender.",
       "aboutCta": "Mais sobre quem está por trás"
     },
     "pillars": {
-      "title": "Quatro plataformas, ensinadas e mantidas atualizadas.",
+      "title": "Plataformas ensinadas e mantidas atualizadas.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -5679,7 +5679,7 @@
     "lede": "Treinamentos de rede e segurança ministrados por quem passou a carreira no lado da implementação, e não apenas nos slides. Com base em São Paulo, ensinando para o mundo todo, em português e inglês.",
     "now": {
       "title": "O que faço agora",
-      "body": "Ministro treinamentos oficiais e certificados, conduzidos por instrutor, em quatro plataformas de segurança e redes. Há laboratórios práticos em sistemas reais e, para quem já conhece os fundamentos e veio para praticar, é exatamente esse o ponto: ambientes reais para trabalhar. Para turmas mais novas em uma tecnologia, o tempo vai primeiro para construir as fundações sobre as quais o tema se apoia, de modo que a parte prática faça sentido e as pessoas saiam entendendo por que as coisas se comportam como se comportam, não apenas quais botões apertar. Ambos têm igual valor, e o equilíbrio muda conforme quem está na sala. O ensino e a capacitação técnica fazem parte do meu trabalho desde o fim dos anos 1990, sobre uma carreira que começou no lado da implementação em 1996.",
+      "body": "Ministro treinamentos oficiais e certificados, conduzidos por instrutor, em plataformas de segurança e redes. Há laboratórios práticos em sistemas reais e, para quem já conhece os fundamentos e veio para praticar, é exatamente esse o ponto: ambientes reais para trabalhar. Para turmas mais novas em uma tecnologia, o tempo vai primeiro para construir as fundações sobre as quais o tema se apoia, de modo que a parte prática faça sentido e as pessoas saiam entendendo por que as coisas se comportam como se comportam, não apenas quais botões apertar. Ambos têm igual valor, e o equilíbrio muda conforme quem está na sala. O ensino e a capacitação técnica fazem parte do meu trabalho desde o fim dos anos 1990, sobre uma carreira que começou no lado da implementação em 1996.",
       "basedLabel": "Com base em",
       "basedValue": "São Paulo, Brasil",
       "teachesLabel": "Ensina",
@@ -5688,14 +5688,14 @@
       "languagesValue": "Português (nativo), inglês (fluente)"
     },
     "platforms": {
-      "title": "Quatro plataformas, ensinadas com profundidade",
-      "body": "Ser autorizado em seis fabricantes significa que posso ensinar cada um como deve ser e compará-los com honestidade. Estas são as plataformas para as quais estou autorizado a ministrar treinamento oficial atualmente.",
+      "title": "As plataformas, ensinadas com profundidade",
+      "body": "Ser instrutor autorizado de cada fabricante aqui significa que posso ensinar cada um como deve ser e compará-los com honestidade. Estas são as plataformas que estou autorizado a ensinar.",
       "f5": "BIG-IP em todo o currículo conduzido por instrutor: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automação e troubleshooting.",
       "fortinet": "Treinamento certificado da Fortinet, incluindo a trilha FCP.",
       "extreme": "Trilhas de switching, SD-WAN, e API e automação da Extreme Networks, passando por instalação, configuração, gerenciamento e troubleshooting.",
       "netskope": "Treinamento conduzido por instrutor sobre a Netskope Security Cloud.",
-      "ping": "Gestão de acesso e federação Ping Identity, autorização de instrutor habilitada em 2026; cursos a caminho.",
-      "zscaler": "Zscaler Zero Trust Exchange, autorização de instrutor habilitada em 2026; cursos a caminho."
+      "ping": "Gestão de acesso e federação Ping Identity, autorização de instrutor habilitada em 2026.",
+      "zscaler": "Zscaler Zero Trust Exchange, autorização de instrutor habilitada em 2026."
     },
     "path": {
       "title": "O caminho até aqui",
@@ -5983,7 +5983,7 @@
       "s2Title": "F5, desde o início",
       "s2Body": "A F5 é a âncora desde o começo desta época, apoiada em um trabalho com BIG-IP que remonta a mais de uma década. O currículo autorizado cobre todo o catálogo BIG-IP conduzido por instrutor: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, desenvolvimento de iRules, automação e troubleshooting, de cursos de um dia a cursos de quatro dias. Ao lado do ensino corre um complemento prático: ambientes de laboratório F5 BIG-IP gerenciados, para que a prática sempre tenha um lugar de verdade para acontecer.",
       "s3Title": "A expansão, plataforma a plataforma",
-      "s3Body": "O que distingue os anos recentes é uma progressão clara e datada. O treinamento da Extreme Networks foi somado a partir de 2021, cobrindo switching EXOS, SD-WAN e automação. A Fortinet veio a partir de 2024, com foco na trilha FCP FortiGate Administrator. A Netskope entrou a partir de 2025, cobrindo a operação, administração, implementação e integração da Netskope Security Cloud. Quatro plataformas, cada uma somada de forma deliberada, cada uma apoiada nas mesmas duas décadas de implementação de redes e segurança por baixo.",
+      "s3Body": "O que distingue os anos recentes é uma progressão clara e datada. O treinamento da Extreme Networks foi somado a partir de 2021, cobrindo switching EXOS, SD-WAN e automação. A Fortinet veio a partir de 2024, com foco na trilha FCP FortiGate Administrator. A Netskope entrou a partir de 2025, cobrindo a operação, administração, implementação e integração da Netskope Security Cloud. Cada plataforma foi somada de forma deliberada, cada uma apoiada nas mesmas duas décadas de implementação de redes e segurança por baixo.",
       "s4Title": "Através da Red Education, para o mundo",
       "s4Body": "O principal veículo dessa entrega global é a Red Education, um centro de treinamento autorizado por meio do qual cursos oficiais e certificados alcançam organizações em diferentes regiões. O cargo é global technical training instructor, ministrando para o tipo de audiência internacional que uma base em São Paulo, dois passaportes e um amor genuíno por viajar tornam possível. A relação permanente transforma a expertise individual em algo que organizações no mundo todo podem contratar e em que podem confiar.",
       "closer": "É aqui que o fio condutor de toda a história dá retorno. A curiosidade dos primeiros anos virou a profundidade de implementação dos anos de campo, e essa profundidade é agora o que cada aluno recebe: não um apresentador lendo slides, mas alguém que construiu esses sistemas explicando como eles funcionam de verdade, e por quê."
@@ -6089,7 +6089,7 @@
       "s1Body": "O projeto foi a construção física do programa RedeComep da RNP, Redes Comunitárias de Educação e Pesquisa, a iniciativa que deu a cidades brasileiras redes metropolitanas comunitárias para educação e pesquisa. Nós de Extreme foram instalados em Campinas e sua região, em São Paulo, nas cidades-irmãs de Petrolina, em Pernambuco, e Juazeiro, na Bahia, em Marabá, no Pará, e em Castanhal, também no Pará. A rede de cada cidade era um anel óptico metropolitano de longa distância rodando EAPS, o Ethernet Automatic Protection Switching da Extreme, o protocolo de resiliência de anel que mantém um anel de fibra convergido quando um trecho falha, conectando o ponto de presença da RNP às instituições federais e estaduais de ensino superior e pesquisa científica que ela atendia.",
       "s2Title": "Treinamento em EXOS e transferência de conhecimento",
       "s2Body": "Instalar os nós era só metade. A outra metade era tornar as equipes locais autossuficientes: entregando treinamento em ExtremeXOS (EXOS) Switching and Routing, e a transferência de conhecimento que vem junto, como os sistemas tinham sido configurados, como tudo funcionava, e como gerenciar, diagnosticar e expandir depois que a equipe de implantação seguisse em frente. Entregar a capacidade de operar e crescer a rede era o objetivo.",
-      "certs": "Extreme Networks Certified Instructor. A Extreme é um dos seis fornecedores do portfólio de instrutor; as autorizações atuais estão listadas em Treinamento. O trabalho aqui, de 2013 a 2014, foi implantação em campo e entrega de treinamento."
+      "certs": "Extreme Networks Certified Instructor. A Extreme é um dos fornecedores do portfólio de instrutor; as autorizações atuais estão listadas em Treinamento. O trabalho aqui, de 2013 a 2014, foi implantação em campo e entrega de treinamento."
     },
     "distribution": {
       "name": "FireEye, McAfee e Ixia",
@@ -6176,8 +6176,8 @@
   },
   "training": {
     "eyebrow": "Treinamentos que ministro",
-    "title": "Quatro plataformas, ensinadas por quem já as operou.",
-    "intro": "Treinamento oficial e certificado, conduzido por instrutor, em {courses} cursos nas quatro plataformas no centro das redes e da segurança modernas. Cada curso é ministrado por um instrutor autorizado, com décadas de implementação prática por trás do ensino.",
+    "title": "Plataformas ensinadas por quem já as operou.",
+    "intro": "Treinamento oficial e certificado, conduzido por instrutor, em {courses} cursos nas plataformas no centro das redes e da segurança modernas. Cada curso é ministrado por um instrutor autorizado, com décadas de implementação prática por trás do ensino.",
     "courseCount": "{count} cursos",
     "since": "desde",
     "representativeNote": "Este catálogo é representativo, não exaustivo. Nomes de cursos, durações e conteúdos refletem informações públicas atuais e são refinados a partir de datasheets oficiais.",
@@ -6212,9 +6212,9 @@
     "s3Title": "Mão na massa, não vago",
     "s3Body": "A habilidade técnica se constrói fazendo, então todo curso tem laboratórios práticos em sistemas reais, apoiados por ambientes de laboratório gerenciados onde a prática sempre tem um lugar real para acontecer. Para quem já conhece os fundamentos e veio para colocar a mão na tecnologia, é exatamente isso que essas pessoas buscam, e é tempo bem gasto. Para quem é mais novo no assunto, o tempo vai primeiro para as fundações sobre as quais os laboratórios se apoiam, de modo que a parte prática faça sentido em vez de ser seguida de forma mecânica. Ambos têm igual valor, e o equilíbrio simplesmente muda conforme a turma. O formato se adapta ao público: treinamento ao vivo conduzido por instrutor e entregue globalmente, presencial quando isso for melhor, em inglês ou português. De um jeito ou de outro, as pessoas devem sair com algo real e útil em mãos e uma compreensão real de por que aquilo funciona.",
     "s4Title": "Reconhecido, certificado e atualizado",
-    "s4Body": "O ensino se apoia em uma base de reconhecimento formal. F5 DevCentral MVP por três anos consecutivos, em 2022, 2023 e 2024. Certificações F5 mantidas desde 2015, e autorização de instrutor em quatro plataformas: F5, Extreme Networks, Fortinet e Netskope. A entrega alcança Austrália, Singapura, Índia, Europa Central, Estados Unidos e Brasil, através da Red Education, um centro de treinamento autorizado. As credenciais importam, mas são um atalho para o que está por baixo: um domínio genuíno e atual da tecnologia.",
+    "s4Body": "O ensino se apoia em uma base de reconhecimento formal. F5 DevCentral MVP por três anos consecutivos, em 2022, 2023 e 2024. Certificações F5 mantidas desde 2015, e autorização de instrutor em F5, Extreme Networks, Fortinet, Netskope, Ping Identity e Zscaler. A entrega alcança Austrália, Singapura, Índia, Europa Central, Estados Unidos e Brasil, através da Red Education, um centro de treinamento autorizado. As credenciais importam, mas são um atalho para o que está por baixo: um domínio genuíno e atual da tecnologia.",
     "platformsTitle": "O que eu ensino",
-    "platformsBody": "Treinamento oficial e certificado, conduzido por instrutor, em quatro plataformas no centro das redes e da segurança modernas. Cada uma leva ao seu catálogo de cursos completo.",
+    "platformsBody": "Treinamento oficial e certificado, conduzido por instrutor, nas plataformas no centro das redes e da segurança modernas. Cada uma leva ao seu catálogo de cursos completo.",
     "s5Title": "Além da sala de aula",
     "s5Body": "A mesma profundidade que produz um bom ensino produz uma boa consultoria. Trinta anos atravessando entrega de aplicações, segurança de rede, identidade e infraestrutura, tanto no lado do fabricante quanto no do cliente, são uma perspectiva que viaja muito além de uma sala de treinamento, até as decisões de arquitetura, a seleção de tecnologia e os problemas difíceis que não cabem em um conteúdo programático. O ensino é o foco; a experiência por trás dele está disponível para equipes que precisam de mais do que um curso.",
     "toolsTitle": "Ferramentas que calculam, nunca chutam",
@@ -7272,7 +7272,13 @@
     "persistNote": "Salvo apenas neste dispositivo. Limpar os dados do site ou usar outro navegador ou dispositivo restaura os padrões.",
     "themeLangTitle": "Tema e idioma",
     "themeLangBody": "Tema e idioma são definidos pelos controles no cabeçalho. Seu tema é lembrado neste dispositivo; seu idioma também é lembrado, e uma nova visita à página inicial do site leva você ao seu idioma preferido. Um link explícito em um idioma específico é sempre respeitado como está.",
-    "privacyLink": "Como as preferências são armazenadas"
+    "privacyLink": "Como as preferências são armazenadas",
+    "readingTitle": "Leitura",
+    "readingBody": "As dicas de glossário embutidas adicionam um sublinhado tracejado sutil à primeira menção de um termo técnico em um artigo. Passe o mouse ou toque para ver uma definição curta, com um link para a entrada completa do glossário. Esta é uma preferência apenas deste dispositivo.",
+    "hintToggleLabel": "Dicas de glossário embutidas",
+    "hintToggleDesc": "Sublinhar a primeira menção de termos do glossário nos artigos.",
+    "hintOn": "Ligado",
+    "hintOff": "Desligado"
   },
   "bossScreens": {
     "metaTitle": "Telas da Tecla do Chefe — /dev/fun",
@@ -11287,10 +11293,123 @@
       "iis": {
         "def": "O software de servidor web da Microsoft para Windows.",
         "context": "Internet Information Services é o servidor web integrado ao Windows Server. Suas peculiaridades de tratamento de URL e caminho, como aceitar barras invertidas como separadores, são uma fonte comum de truques de evasão de WAF que atacantes usam para escapar da correspondência de assinaturas."
+      },
+      "beast": {
+        "def": "Um ataque de 2011 que decifra tráfego TLS 1.0 explorando vetores de inicialização CBC previsíveis.",
+        "context": "Browser Exploit Against SSL/TLS combinou um truque de texto-claro escolhido com os IVs previsíveis do CBC para recuperar segredos como cookies. Empurrou a indústria rumo ao TLS 1.1+ e a cifras AEAD, e é a razão pela qual o RC4 foi brevemente preferido antes de suas próprias fraquezas aparecerem."
+      },
+      "poodle": {
+        "def": "Um ataque de 2014 que força um downgrade para SSL 3.0 para explorar seu padding CBC quebrado.",
+        "context": "Padding Oracle On Downgraded Legacy Encryption abusou do fato de um cliente recuar para SSL 3.0, cujo padding podia ser sondado byte a byte para recuperar dados. Praticamente encerrou o uso do SSL 3.0 na prática."
+      },
+      "crime": {
+        "def": "Um ataque de 2012 que recupera segredos observando o tamanho de requisições TLS comprimidas.",
+        "context": "Compression Ratio Info-leak Made Easy explorou a compressão em nível TLS: injetar palpites e observar o comprimento comprimido revelava quando um palpite casava com conteúdo secreto como um cookie de sessão. A correção foi desabilitar a compressão TLS."
+      },
+      "breach": {
+        "def": "Uma variante de 2013 do CRIME que mira a compressão de respostas HTTP em vez do TLS.",
+        "context": "Browser Reconnaissance and Exfiltration via Adaptive Compression of Hypertext funciona mesmo sem compressão TLS, atacando o gzip na camada HTTP e inferindo segredos refletidos em respostas comprimidas. As mitigações incluem mascarar tokens e desabilitar a reflexão de entrada do usuário."
+      },
+      "grease": {
+        "def": "Um mecanismo que envia valores fictícios aleatórios para manter implementações TLS tolerantes a extensões desconhecidas.",
+        "context": "Generate Random Extensions And Sustain Extensibility (RFC 8701) injeta deliberadamente valores reservados e sem significado nos handshakes TLS para que servidores e middleboxes aprendam a ignorar o que não reconhecem, evitando que extensões futuras quebrem. Também aparece como um marcador distintivo em fingerprints TLS."
+      },
+      "logjam": {
+        "def": "Um ataque de 2015 que rebaixa a troca de chaves Diffie-Hellman para parâmetros de exportação fracos de 512 bits.",
+        "context": "O Logjam enganava servidores para usarem grupos DH de nível exportação, pequenos o bastante para quebrar, e então computava o segredo compartilhado. Revelou quantos servidores reutilizavam os mesmos primos conhecidos, tornando ataques de precomputação viáveis."
+      },
+      "freak": {
+        "def": "Um ataque de 2015 que força servidores a usar chaves RSA de nível exportação, fracas e fatoráveis.",
+        "context": "Factoring RSA Export Keys explorou cifras de exportação remanescentes dos anos 1990: um atacante podia forçar um downgrade para RSA de 512 bits, fatorar a chave e se passar pelo servidor. Foi um legado direto das antigas restrições de exportação de criptografia dos EUA."
+      },
+      "drown": {
+        "def": "Um ataque de 2016 que quebra o TLS explorando o suporte de um servidor ao obsoleto SSLv2.",
+        "context": "Decrypting RSA with Obsolete and Weakened eNcryption usou um endpoint SSLv2 ainda habilitado, compartilhando a mesma chave RSA, como um oráculo entre protocolos para decifrar sessões TLS modernas. A lição foi desabilitar completamente o SSLv2 em todo lugar onde uma chave é usada."
+      },
+      "lucky13": {
+        "def": "Um ataque de temporização de 2013 contra o padding CBC no TLS.",
+        "context": "O Lucky Thirteen media diferenças mínimas de tempo no processamento do padding CBC pelo TLS para recuperar texto claro byte a byte. Reforçou o argumento para abandonar o modo CBC em favor de cifras AEAD."
+      },
+      "sweet32": {
+        "def": "Um ataque de 2016 que explora limites de aniversário em cifras de bloco de 64 bits como o 3DES.",
+        "context": "O Sweet32 mostrou que cifras com bloco de 64 bits, como 3DES e Blowfish, vazam dados quando tráfego suficiente é cifrado sob uma única chave, por causa de colisões de bloco. Impulsionou a descontinuação do 3DES no TLS."
+      },
+      "robot": {
+        "def": "Um retorno em 2017 de um clássico oráculo de padding RSA que afetou muitas pilhas TLS.",
+        "context": "Return Of Bleichenbacher's Oracle Threat mostrou que um ataque de padding RSA PKCS#1 v1.5 de 1998 ainda funcionava contra inúmeras implementações modernas. Ressaltou como é difícil aposentar completamente uma construção criptográfica falha."
+      },
+      "raccoon-attack": {
+        "def": "Um ataque de temporização de 2020 sobre TLS-DH que pode recuperar a chave de sessão em casos raros.",
+        "context": "O ataque Raccoon explorou como o TLS derivava o segredo pré-mestre a partir do Diffie-Hellman, onde bytes zero à esquerda e a temporização podiam vazar o suficiente para reconstruir a chave. É mais uma razão pela qual parâmetros DH efêmeros e código de tempo constante importam."
+      },
+      "spectre": {
+        "def": "Uma classe de ataques de 2018 que abusa da execução especulativa da CPU para vazar memória.",
+        "context": "O Spectre engana um processador para que ele acesse especulativamente dados que não deveria, e então os lê por canais laterais de cache. Afetou quase todas as CPUs modernas e forçou mudanças profundas em navegadores, sistemas operacionais e no projeto de hardware."
+      },
+      "meltdown": {
+        "def": "Um ataque de 2018 que permite a programas de usuário ler memória protegida do kernel via execução especulativa.",
+        "context": "O Meltdown quebrou o isolamento entre o espaço de usuário e o kernel em CPUs afetadas, permitindo ler memória arbitrária do kernel. A principal mitigação, o isolamento da tabela de páginas do kernel, trouxe um custo de desempenho mensurável."
+      },
+      "roca": {
+        "def": "Uma falha de 2017 na geração de chaves RSA em certos chips que tornava as chaves fatoráveis.",
+        "context": "Return of Coppersmith's Attack explorou uma rotina fraca de geração de chaves RSA em uma biblioteca criptográfica amplamente usada, de modo que as chaves públicas afetadas podiam ser fatoradas. Forçou a reemissão de muitos smartcards, TPMs e certificados de identidade."
+      },
+      "sloth": {
+        "def": "Um conjunto de ataques de 2016 que abusa de hashes obsoletos como o MD5 na negociação TLS.",
+        "context": "Security Losses from Obsolete and Truncated Transcript Hashes mostrou que permitir hashes fracos como o MD5 em assinaturas TLS possibilitava ataques de colisão de transcrição e de downgrade. Impulsionou a remoção de assinaturas baseadas em MD5 do TLS."
+      },
+      "terrapin": {
+        "def": "Um ataque de 2023 que pode enfraquecer ou truncar o handshake SSH.",
+        "context": "O Terrapin manipulou números de sequência durante o handshake SSH para remover mensagens e rebaixar a segurança em configurações específicas. Motivou atualizações no OpenSSH e em outras implementações SSH."
+      },
+      "alpaca": {
+        "def": "Um ataque entre protocolos de 2021 que confunde serviços TLS que compartilham um certificado.",
+        "context": "Application Layer Protocol Confusion Analyzing Cross-protocol Attacks redirecionava uma conexão TLS destinada a um serviço para outro que compartilhava o certificado, explorando expectativas incompatíveis na camada de aplicação. A verificação estrita de SNI e ALPN o mitiga."
+      },
+      "krack": {
+        "def": "Um ataque de 2017 ao Wi-Fi WPA2 que reinicia chaves de criptografia para repetir tráfego.",
+        "context": "Key Reinstallation Attack abusou do handshake de quatro vias do WPA2 forçando a reinstalação de uma chave já usada, reiniciando nonces e permitindo repetição ou decifração. Afetou essencialmente todo cliente Wi-Fi e motivou correções de firmware no mundo todo."
+      },
+      "rowhammer": {
+        "def": "Um ataque de hardware que inverte bits de memória ao acessar rapidamente linhas vizinhas.",
+        "context": "O Rowhammer explora interferência elétrica em DRAM densa: martelar uma linha pode inverter bits em uma linha adjacente, corrompendo a memória e permitindo escalonamento de privilégios. Ele borra a fronteira entre segurança de software e de hardware."
+      },
+      "bluekeep": {
+        "def": "Uma falha de 2019, propagável como verme, nos Serviços de Área de Trabalho Remota da Microsoft.",
+        "context": "O BlueKeep era um bug de execução remota de código pré-autenticação no RDP que podia se autopropagar como o WannaCry. Sua gravidade motivou correções raras até para versões do Windows sem suporte."
+      },
+      "zerologon": {
+        "def": "Uma falha de 2020 que permite a atacantes assumir o controle de um controlador de domínio Windows.",
+        "context": "O Zerologon explorou uma fraqueza criptográfica no protocolo Netlogon, de modo que um atacante na rede podia redefinir a senha de máquina de um controlador de domínio e tomar o controle. Foi classificado com severidade máxima."
+      },
+      "printnightmare": {
+        "def": "Um conjunto de falhas de 2021 no Spooler de Impressão do Windows que permite execução remota de código.",
+        "context": "O PrintNightmare abusou do serviço Spooler de Impressão, que roda com privilégios elevados e vem habilitado por padrão, para executar código do atacante e escalar até o sistema. Levou a correções emergenciais e à orientação de desabilitar o spooler onde não for necessário."
+      },
+      "proxylogon": {
+        "def": "Uma cadeia de falhas de 2021 no Microsoft Exchange amplamente explorada na prática.",
+        "context": "O ProxyLogon combinou uma falsificação de requisição do lado do servidor com outros bugs para obter execução remota de código sem autenticação em servidores Exchange locais. Foi explorado em massa antes de as correções serem amplamente aplicadas."
+      },
+      "proxyshell": {
+        "def": "Uma cadeia de exploração do Exchange de 2021 relacionada ao ProxyLogon.",
+        "context": "O ProxyShell encadeou três vulnerabilidades do Exchange para chegar à execução remota de código e, como o ProxyLogon, foi intensamente explorado por múltiplos agentes de ameaça. Juntos, tornaram a correção do Exchange uma prioridade urgente naquele ano."
+      },
+      "mirai": {
+        "def": "Um botnet de 2016 que sequestrou dispositivos IoT para lançar ataques DDoS recordes.",
+        "context": "O Mirai varria a internet em busca de dispositivos da internet das coisas com credenciais padrão e os alistava em um botnet que derrubou grandes serviços com inundações massivas de tráfego. Seu código-fonte foi divulgado publicamente, gerando muitas variantes."
+      },
+      "notpetya": {
+        "def": "Um surto de malware destrutivo de 2017 disfarçado de ransomware.",
+        "context": "O NotPetya se espalhou usando o mesmo exploit EternalBlue do WannaCry, mas foi projetado para destruir dados em vez de coletar resgate. Causou bilhões em prejuízos a empresas globais e é amplamente atribuído a um Estado-nação."
+      },
+      "spring4shell": {
+        "def": "Uma falha de execução remota de código de 2022 no Spring Framework para Java.",
+        "context": "O Spring4Shell permitiu que atacantes obtivessem execução remota de código por meio do data binding em certas configurações do Spring. Surgindo logo após o Log4Shell, renovou a atenção sobre o risco trazido por dependências Java onipresentes."
       }
     },
     "totalCount": "{count} termos",
-    "azNavLabel": "Ir para a letra"
+    "azNavLabel": "Ir para a letra",
+    "hintExpand": "Abrir no glossário"
   },
   "certGuides": {
     "title": "Guias de estudo para certificação",

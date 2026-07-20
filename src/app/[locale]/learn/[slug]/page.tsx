@@ -15,6 +15,9 @@ import ShareControl from "@/components/ShareControl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import BigipTimeline from "@/components/learn/BigipTimeline";
+import GlossaryTerm from "@/components/GlossaryTerm";
+import { rehypeGlossaryHints } from "@/lib/rehypeGlossaryHints";
+import { getHintSurfaces } from "@/lib/glossaryHints";
 import remarkGfm from "remark-gfm";
 import { routing } from "@/i18n/routing";
 import { getArticle, getAllArticleSlugs, getRelatedArticles, getArticleVendors } from "@/lib/learn";
@@ -123,8 +126,17 @@ export default async function ArticlePage({
             <div className="article-body">
               <MDXRemote
                 source={article.body}
-                options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
-                components={{ BigipTimeline }}
+                options={{
+                  mdxOptions: {
+                    remarkPlugins: [remarkGfm],
+                    // First-occurrence glossary hints: wrap the first prose
+                    // mention of each eligible term in <GlossaryTerm>. Built at
+                    // compile time; the visible affordance is opt-out via the
+                    // glossary-hints setting.
+                    rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()]],
+                  },
+                }}
+                components={{ BigipTimeline, GlossaryTerm }}
               />
             </div>
 

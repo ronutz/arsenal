@@ -13009,6 +13009,221 @@ main[data-view="list"] .boss-viewer-blurb {
 }
 
 /* ==========================================================================
+   GLOSSARY HINTS (inline first-occurrence affordance, PRIME 2026-07-19)
+   In Learn prose, the first mention of a high-value glossary term gets a
+   subtle dashed underline; hover/tap/focus opens a small scrollable popup with
+   an Expand link. Deliberately quiet — the underline must read as "there is
+   more here if you want it", never as emphasis. The whole affordance is
+   suppressed when the reader turns it off (data-glossary-hints="off" on <html>,
+   set before paint), in which case the term is plain text.
+   ========================================================================== */
+
+/* Trigger: an inline button that looks like text with a dashed underline. */
+.gloss-hint {
+  position: relative;
+  display: inline;
+}
+.gloss-hint-trigger {
+  /* strip button chrome — this must read as prose, not a control */
+  appearance: none;
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: help;
+  /* the affordance: a non-contiguous, muted underline set below the baseline */
+  text-decoration: underline dashed var(--border-strong);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 0.15s ease;
+}
+.gloss-hint-trigger:hover,
+.gloss-hint-trigger:focus-visible {
+  text-decoration-color: var(--accent-primary);
+}
+.gloss-hint-trigger:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Popup: a quiet elevated card, scrollable, anchored under the term. */
+.gloss-hint-panel {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  display: block;
+  width: min(22rem, 84vw);
+  max-height: 40vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.8rem 0.9rem;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.45);
+  /* body copy in the popup, not prose-inheriting sizes */
+  font-size: 0.86rem;
+  line-height: 1.5;
+  text-align: left;
+  animation: gloss-hint-in 0.13s ease;
+}
+@keyframes gloss-hint-in {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.gloss-hint-head {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+.gloss-hint-def {
+  display: block;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+.gloss-hint-context {
+  display: block;
+  color: var(--text-secondary);
+  margin-bottom: 0.6rem;
+}
+.gloss-hint-expand {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.gloss-hint-expand:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+/* When the popup would overflow the right edge on narrow screens, let it hug
+   the right instead. (Progressive: browsers without :has ignore this.) */
+@media (max-width: 34rem) {
+  .gloss-hint-panel {
+    left: auto;
+    right: 0;
+    width: min(20rem, 86vw);
+  }
+}
+
+/* Reduced motion: no entrance animation, popup just appears. */
+@media (prefers-reduced-motion: reduce) {
+  .gloss-hint-panel {
+    animation: none;
+  }
+}
+
+/* THE OFF-SWITCH: when hints are disabled, neutralize the affordance entirely.
+   The term becomes ordinary text and the trigger stops behaving like a control
+   for the reader (the panel is never rendered when off, but we also strip the
+   underline and revert the cursor so a disabled hint is indistinguishable from
+   plain prose). */
+[data-glossary-hints="off"] .gloss-hint-trigger {
+  text-decoration: none;
+  cursor: text;
+}
+[data-glossary-hints="off"] .gloss-hint-trigger:hover,
+[data-glossary-hints="off"] .gloss-hint-trigger:focus-visible {
+  text-decoration: none;
+}
+
+/* The settings toggle (Reading section). */
+.gloss-hint-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.gloss-hint-toggle-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.gloss-hint-toggle-label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.gloss-hint-toggle-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.gloss-hint-toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  appearance: none;
+  cursor: pointer;
+  padding: 0.35rem 0.7rem 0.35rem 0.4rem;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.85rem;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+.gloss-hint-toggle-switch[data-on="true"] {
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+.gloss-hint-toggle-switch:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+.gloss-hint-toggle-knob {
+  width: 1.6rem;
+  height: 1rem;
+  border-radius: 999px;
+  background: var(--border-strong);
+  position: relative;
+  transition: background 0.15s ease;
+}
+.gloss-hint-toggle-knob::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--text-primary);
+  transform: translateY(-50%);
+  transition: left 0.15s ease;
+}
+.gloss-hint-toggle-switch[data-on="true"] .gloss-hint-toggle-knob {
+  background: var(--accent-primary);
+}
+.gloss-hint-toggle-switch[data-on="true"] .gloss-hint-toggle-knob::after {
+  left: calc(100% - 0.8rem - 2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .gloss-hint-toggle-knob,
+  .gloss-hint-toggle-knob::after {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
    CERTIFICATION STUDY-AID HUB + STUDY GUIDES (PRIME 2026-07-09)
    The repurposed /certifications section (candidate-facing). Semantic tokens
    only; card vocabulary mirrors the tools/room cards for visual consistency.
