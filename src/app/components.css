@@ -13125,17 +13125,46 @@ main[data-view="list"] .boss-viewer-blurb {
   }
 }
 
+/* Tool-doc glossary hints: the marker is a real <a> (progressive: a working
+   link with JS off / hints off), styled to read like the Learn trigger rather
+   than a blue link. The client hydrator adds .gloss-hint-trigger-static once it
+   wires the popover; both look identical. */
+.gloss-hint-static,
+.gloss-hint-trigger-static {
+  color: inherit;
+  text-decoration: underline dashed var(--border-strong);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  cursor: help;
+  transition: text-decoration-color 0.15s ease;
+}
+.gloss-hint-static:hover,
+.gloss-hint-static:focus-visible,
+.gloss-hint-trigger-static:hover,
+.gloss-hint-trigger-static:focus-visible {
+  text-decoration-color: var(--accent-primary);
+  color: inherit;
+}
+.gloss-hint-trigger-static:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 /* THE OFF-SWITCH: when hints are disabled, neutralize the affordance entirely.
    The term becomes ordinary text and the trigger stops behaving like a control
    for the reader (the panel is never rendered when off, but we also strip the
    underline and revert the cursor so a disabled hint is indistinguishable from
    plain prose). */
-[data-glossary-hints="off"] .gloss-hint-trigger {
+[data-glossary-hints="off"] .gloss-hint-trigger,
+[data-glossary-hints="off"] .gloss-hint-static {
   text-decoration: none;
   cursor: text;
 }
 [data-glossary-hints="off"] .gloss-hint-trigger:hover,
-[data-glossary-hints="off"] .gloss-hint-trigger:focus-visible {
+[data-glossary-hints="off"] .gloss-hint-trigger:focus-visible,
+[data-glossary-hints="off"] .gloss-hint-static:hover,
+[data-glossary-hints="off"] .gloss-hint-static:focus-visible {
   text-decoration: none;
 }
 

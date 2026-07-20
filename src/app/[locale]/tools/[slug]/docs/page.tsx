@@ -24,6 +24,7 @@ import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { routing } from "@/i18n/routing";
 import { getAllToolDocSlugs, getToolDocHtml, hasToolDoc } from "@/lib/toolDocs";
+import ToolDocGlossaryHints from "@/components/ToolDocGlossaryHints";
 import { ogImages } from "@/lib/og";
 
 // One docs page per (locale, tool) for every tool that has authored docs.
@@ -116,6 +117,10 @@ export default async function ToolDocsPage({
                 className="article-body tooldoc-body"
                 dangerouslySetInnerHTML={{ __html: html }}
               />
+              {/* Upgrades the first-occurrence glossary-hint anchors inside the
+                  doc body into the shared hover/tap popover (no-op when hints
+                  are turned off, leaving plain links to the glossary). */}
+              <ToolDocGlossaryHints />
 
               {/* Foot: return to the tool. */}
               <p className="tooldoc-foot">

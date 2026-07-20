@@ -26,20 +26,59 @@ import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
+import { getTranslations } from "next-intl/server";
+import { getGlossaryEntry } from "@/content/glossary/glossary";
+import { getHintSurfaces } from "@/lib/glossaryHints";
+import {
+  rehypeGlossaryHintsStatic,
+  type HintProse,
+} from "@/lib/rehypeGlossaryHintsStatic";
 
 const DOCS_ROOT = path.join(process.cwd(), "src", "content", "tool-docs");
 const SOURCE_LOCALE = "en";
 
-// Shared, configured once. remark-gfm gives tables/strikethrough/task-lists,
-// matching the Learn articles' Markdown feature set.
-const processor = unified()
-  .use(remarkParse)
-  .use(remarkGfm)
-  .use(remarkRehype)
-  .use(rehypeStringify);
+// Base pipeline WITHOUT hints (used for the raw .md-derived HTML when hints are
+// not wanted, and as the shared spine). remark-gfm gives tables/strikethrough/
+// task-lists, matching the Learn articles' Markdown feature set.
+function baseProcessor() {
+  return unified().use(remarkParse).use(remarkGfm).use(remarkRehype);
+}
 
-/** Render a Markdown string to safe, escaped HTML. */
-async function markdownToHtml(md: string): Promise<string> {
+// Build a processor for a given locale that also runs the glossary-hints plugin.
+// The plugin needs (a) the eligible surfaces (shared, derived from the glossary)
+// and (b) a resolver from slug -> localized {headword, def, context, href}. The
+// resolver reads the same `glossary` i18n namespace the glossary pages use, so a
+// hinted term ships only its own two sentences (parity with the Learn hints).
+async function hintingProcessor(locale: string) {
+  const t = await getTranslations({ locale, namespace: "glossary" });
+  const expandLabel = t("hintExpand");
+
+  const proseFor = (slug: string): HintProse | null => {
+    const entry = getGlossaryEntry(slug);
+    if (!entry) return null;
+    const def = t(`entries.${slug}.def`);
+    const context = t(`entries.${slug}.context`);
+    // next-intl returns the key path when a message is missing; guard so we
+    // never inject a raw "entries.<slug>.def" string into a doc.
+    if (def.startsWith(`entries.${slug}`) || context.startsWith(`entries.${slug}`)) {
+      return null;
+    }
+    return {
+      headword: entry.headword,
+      def,
+      context,
+      href: `/${locale}/glossary/${slug}`,
+    };
+  };
+
+  return baseProcessor()
+    .use(rehypeGlossaryHintsStatic, getHintSurfaces(), proseFor, expandLabel)
+    .use(rehypeStringify);
+}
+
+/** Render a Markdown string to safe, escaped HTML, with glossary hints. */
+async function markdownToHtml(md: string, locale: string): Promise<string> {
+  const processor = await hintingProcessor(locale);
   const file = await processor.process(md);
   return String(file);
 }
@@ -78,5 +117,5 @@ export async function getToolDocHtml(
   if (!file) return null;
   let md = fs.readFileSync(file, "utf8");
   md = md.replace(/^\s*#\s+.*\r?\n/, ""); // strip one leading H1 if present
-  return markdownToHtml(md);
+  return markdownToHtml(md, locale);
 }
