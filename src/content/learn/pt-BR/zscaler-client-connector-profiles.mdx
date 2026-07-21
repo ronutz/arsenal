@@ -1,0 +1,32 @@
+---
+slug: zscaler-client-connector-profiles
+title: "Perfis do Client Connector: Onde o Endpoint Decide Como Encaminhar"
+summary: "O comportamento do Zscaler Client Connector tem dois documentos de profundidade: o forwarding profile decide como o tráfego sai do dispositivo em cada estado de rede, e o app profile decide a política de plataforma - bypasses, arquivos PAC, certificados. Os três estados de rede, os critérios de rede confiável que alternam entre eles, por que DNS vence resolução de hostname na detecção, e a mecânica de bypass que mantém VPNs e apps com pinning vivos."
+concepts: ["zscaler", "client connector", "zcc", "forwarding profile", "app profile", "trusted network", "z-tunnel", "bypass"]
+relatedTools: []
+relatedArticles: ["zia-traffic-forwarding-methods", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "how-a-pac-file-chooses-a-proxy", "proxy-user-authentication-methods", "zscaler-zero-trust-exchange-architecture"]
+category: security
+order: 178
+status: reviewed
+updated: "2026-07-21"
+---
+
+O Zscaler Client Connector (ZCC) é [o método de encaminhamento que viaja](/learn/zia-traffic-forwarding-methods), e sua inteligência vive em dois documentos de configuração que operadores novos rotineiramente confundem. O **forwarding profile** responde *como o tráfego sai deste dispositivo, nesta situação de rede* - é o documento do encanamento de tráfego. O **app profile** responde *que política de plataforma se aplica a esta instalação* - configurações por sistema operacional, listas de bypass, referências de PAC, tratamento de certificados. Mantenha a divisão clara (encanamento versus política) e o portal deixa de ser um labirinto. Tudo abaixo está fundamentado na documentação de Client Connector do fabricante, verificada em 2026-07-21.
+
+## Os três estados de rede
+
+O núcleo do forwarding profile é uma pequena máquina de estados. O ZCC classifica continuamente a situação do dispositivo como **on trusted network** (a LAN corporativa, definida abaixo), **off trusted network** (todo o resto - o café, a casa), ou **VPN trusted network** (uma VPN de terceiros está ativa). Para cada estado, o perfil atribui uma ação de encaminhamento. Para o ZIA o cardápio é: Z-Tunnel 1.0, Z-Tunnel 2.0, Tunnel with Local Proxy, Enforce Proxy, ou None; para o ZPA é simplesmente Tunnel ou None. A composição que isso permite é o ponto: um projeto comum encaminha por [Z-Tunnel 2.0](/learn/zscaler-tunnel-types-z-tunnel-gre-ipsec) quando fora da rede, e muda para None na rede confiável onde um túnel de localidade já carrega o site - o agente saindo de cena precisamente onde encaminhar duas vezes machucaria. A orientação de interoperabilidade do fabricante adiciona uma aresta afiada que vale citar em espírito: modos de túnel baseados em rota trabalham na mesma camada que clientes de VPN, então para o estado VPN-confiável a recomendação é evitar Tunnel (Route-Based) e deixar os estados fora do caminho um do outro.
+
+## Detecção de rede confiável: prefira o estático
+
+A máquina de estados é tão boa quanto seu sensor. Uma **rede confiável** é definida por critérios que o admin configura, e a recomendação da documentação é inequívoca: prefira as propriedades *estáticas* - os **servidores DNS** que a rede corporativa distribui e os **DNS search domains** do adaptador - à propriedade *dinâmica*, a **resolução de hostname e IP**, na qual o ZCC precisa resolver um nome e conferir a resposta. A resolução pode falhar no meio da transição entre redes; quando falha, o app conclui que está numa rede não confiável e aplica a ação de encaminhamento errada - uma detecção errada que se apresenta como "o Zscaler quebrou no Wi-Fi do escritório" e é, na verdade, uma escolha de sensor. Combinar servidor DNS com search domain dá o sinal de maior garantia, direto da melhor prática do próprio fabricante.
+
+## O app profile: bypasses, PAC e política de plataforma
+
+O app profile é onde vive a realidade por plataforma. Seu recurso operacionalmente mais importante é a **maquinaria de bypass**: destinos que não devem entrar no túnel. O caso canônico é a coexistência com gateway de VPN - a lista de bypass de VPN gateway do perfil aceita endereços, sub-redes ou FQDNs, e as ressalvas da documentação são do tipo que só vem de dor de campo: FQDNs são resolvidos *no início do túnel*, então um nome que depois resolver para outro lugar pode não continuar em bypass (prefira IPs e sub-redes); listas longas de FQDN atrasam a subida do túnel porque cada nome é resolvido antes; e para Z-Tunnel 1.0 e Tunnel with Local Proxy, subdomínios dos FQDNs listados também entram em bypass, a menos que uma opção diga o contrário. O mesmo perfil carrega as [referências de arquivo PAC](/learn/how-a-pac-file-chooses-a-proxy) que direcionam a seleção de proxy no encaminhamento, e itens de plataforma como instalar o certificado raiz da Zscaler - cada um uma alavanca pequena com raio de explosão grande.
+
+Bypasses por processo e por aplicação estendem a ideia ao software que jamais tolerará um proxy inline - agentes com certificate pinning sendo os moradores clássicos dessa lista, por razões que [os padrões do artigo de identidade](/learn/proxy-user-authentication-methods) e a história da inspeção TLS tornam previsíveis.
+
+## Lendo um problema de ZCC como um operador
+
+A ordem de depuração decorre da arquitetura: primeiro, *em que estado de rede o agente acredita estar* (o sensor), depois *que ação de encaminhamento o perfil atribui a esse estado* (o encanamento), depois *quais bypasses tocaram este destino* (as exceções), e só então o túnel em si. A maioria dos chamados de "o agente quebrou" é um dos três primeiros - um critério de detecção que oscilou, um estado mapeado para uma ação que ninguém revisitou, ou uma lista de bypass com uma entrada a mais. Os perfis são documentos pequenos; a disciplina é saber qual deles é dono do sintoma.

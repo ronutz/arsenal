@@ -1,0 +1,42 @@
+---
+slug: proxy-user-authentication-methods
+title: "How a Proxy Knows Who You Are: User Authentication Methods Inline"
+summary: "Policy per user is the whole promise of an inline proxy - which means the proxy must attach an identity to every flow, including the ones that cannot log in. The four working patterns: explicit 407 challenges, cookie-based web authentication, agent-asserted identity, and the surrogate-IP compromise - plus where each one breaks, because every one of them breaks somewhere."
+concepts: ["proxy", "authentication", "407", "cookie", "surrogate ip", "identity", "ntlm", "kerberos", "fundamentals"]
+relatedTools: []
+relatedArticles: ["http-proxy-forward-and-reverse", "kerberos-and-spnego", "how-a-pac-file-chooses-a-proxy", "ssl-forward-proxy-interception", "scim-overview"]
+category: security
+order: 174
+status: reviewed
+updated: "2026-07-21"
+---
+
+An inline [forward proxy](/learn/http-proxy-forward-and-reverse) earns its keep by making decisions per user - this group may reach that category, this person's downloads get inspected harder, that contractor gets logged by name. All of it rests on one prerequisite the marketing never dwells on: for every flow, the proxy must answer *who is this?* - and flows do not carry names. Four patterns answer the question in practice, and knowing where each one breaks is most of proxy operations.
+
+## Pattern one: the explicit challenge (407)
+
+When a client is explicitly configured to use a proxy - by setting, or by [PAC file](/learn/how-a-pac-file-chooses-a-proxy) - HTTP gives the proxy its own authentication lane. The proxy answers an unauthenticated request with status **407 Proxy Authentication Required** and a `Proxy-Authenticate` challenge; the client retries with `Proxy-Authorization` credentials. The schemes are the familiar ladder: Basic (credentials merely encoded - acceptable only inside TLS), NTLM (a legacy Windows challenge-response), and Negotiate, which carries [Kerberos via SPNEGO](/learn/kerberos-and-spnego) and gets the enterprise ideal - silent single sign-on from the domain-joined machine, no prompt, cryptographic identity per connection.
+
+Where it breaks: the challenge assumes a client that understands 407. Browsers do; a long tail of command-line tools, embedded devices, and applications with hand-rolled HTTP stacks do not, and they simply fail behind an authenticating proxy. Connection-oriented schemes such as NTLM also authenticate the *connection*, which multiplexing middleboxes can scramble. And nothing here helps traffic that never speaks HTTP.
+
+## Pattern two: the web login and the cookie
+
+Transparent and cloud proxies often cannot rely on client configuration at all, so they borrow the web's own pattern: the first browser request is redirected to an identity flow - typically SAML or OpenID Connect against the organization's identity provider, the same directory that [SCIM provisioning](/learn/scim-overview) keeps populated - and success plants a **cookie** the proxy recognizes on every subsequent request. Identity becomes a property of the browser session.
+
+Where it breaks: cookies live in browsers. A software updater, a mail client, an operating-system service - none will ever complete a redirect dance or present the cookie. Private browsing windows and cookie hygiene log users "out" of the network. And the cookie is scoped per user-agent, so two browsers on one machine authenticate twice.
+
+## Pattern three: the agent asserts
+
+Install organizational software on the endpoint and the identity problem inverts: a connector agent already knows who is logged in, authenticates *itself* to the proxy service, and forwards traffic inside a tunnel that is identity-stamped at the source. Every packet from the device arrives pre-attributed - browsers, updaters, and command lines alike - which is why the agent model dominates modern cloud security architectures: the identity rides the transport instead of the protocol.
+
+Where it breaks: the agent must be installed, which excludes guest devices, unmanaged bring-your-own hardware, servers nobody dares touch, and printers. Coverage is exactly the software-deployment footprint, no more.
+
+## Pattern four: the surrogate
+
+Which leaves the stubborn remainder: authenticated user on record, but traffic that carries no credential - the non-browser flows from a machine whose owner *did* log in through pattern two. The pragmatic bridge is **surrogate identity**: having authenticated a user from a given source IP address, the proxy records the mapping *this address = this user* for a bounded time, and attributes the address's other traffic accordingly. Zscaler's cloud, for one, names the mechanism exactly that - the surrogate-IP pattern is how a cookie-authenticated user's non-cookie traffic still lands in the right policy and the right logs.
+
+Where it breaks is written in the mechanism: the mapping is only as truthful as *one address, one user*. Behind carrier-grade or office [NAT](/learn/nat-explained), on shared terminals, on multi-user servers, the surrogate attributes one person's browsing to a crowd. The idle timeout is a dial between convenience and drift - too long and the next person inherits the last person's identity; too short and attribution gaps return. Surrogacy is a good compromise precisely because everyone involved remembers it is one.
+
+## The composite reality
+
+No production design picks one pattern; they layer. Agent identity where the agent reaches, cookie authentication for browsers beyond it, Kerberos where explicit configuration and domain trust align, surrogate mapping to sweep up the remainder - and [TLS inspection](/learn/ssl-forward-proxy-interception) underneath, since an identity the proxy cannot see applies to traffic it cannot read. When per-user policy misfires, the debugging question is never *is authentication on?* but *which of the four patterns did this particular flow ride, and where does that pattern break?*

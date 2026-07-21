@@ -1,0 +1,36 @@
+---
+slug: zia-traffic-forwarding-methods
+title: "Getting Traffic to ZIA: The Forwarding Decision"
+summary: "A cloud proxy only protects what reaches it, so every ZIA design starts with the same question: how does traffic get there? The four working answers - Client Connector on the device, tunnels from the location, PAC files steering browsers, and proxy chaining from an existing edge - what each one covers, what each one misses, and how real deployments layer them."
+concepts: ["zscaler", "zia", "forwarding", "gre", "ipsec", "pac", "client connector", "proxy chaining"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["zscaler-zero-trust-exchange-architecture", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "zscaler-client-connector-profiles"]
+category: networking
+order: 176
+status: reviewed
+updated: "2026-07-21"
+---
+
+[The Zero Trust Exchange is a proxy](/learn/zscaler-zero-trust-exchange-architecture), and a proxy protects exactly the traffic that reaches it - nothing more. That makes traffic forwarding the load-bearing design decision in every Zscaler Internet Access (ZIA) deployment: before any policy can matter, something must deliberately send the traffic to a Public Service Edge. The documentation's own framing (its forwarding-methods guide, verified 2026-07-21) offers a small menu, and the craft is knowing what each item covers, what it cannot see, and how they compose.
+
+## Method one: the agent on the device
+
+**Zscaler Client Connector (ZCC)** puts the forwarding decision on the endpoint itself. The agent authenticates the user, watches the network the device sits on, and forwards traffic to the nearest Service Edge through its Z-Tunnel. Coverage is the whole device - every browser, every updater, every command-line tool - and it travels: the laptop in the airport is forwarded exactly like the laptop at headquarters. This is the roaming answer and, increasingly, the default answer; [its profile machinery earns its own article](/learn/zscaler-client-connector-profiles). Its boundary is the install: agents cover managed devices, and only managed devices.
+
+## Method two: the tunnel from the location
+
+Where a whole site's traffic should be forwarded - guest networks, printers, servers, unmanaged hardware, everything behind the edge router - the location itself connects to the Exchange over a **GRE or IPsec tunnel**. The edge device wraps traffic toward a primary Service Edge (with a secondary in a different data center for failover), and everyone behind it is covered without touching a single endpoint. The choice between the two encapsulations, the published per-tunnel capacities, and the sizing arithmetic are [the tunnel-types article's whole subject](/learn/zscaler-tunnel-types-z-tunnel-gre-ipsec) - and the [tunnel chooser](/tools/zscaler-tunnel-chooser) computes the decision interactively. The boundary is symmetric with the agent's: a location tunnel knows the site, not the user, so identity must arrive another way - and the moment the laptop leaves the building, this method never sees it again.
+
+## Method three: the PAC file
+
+A [Proxy Auto-Configuration file](/learn/how-a-pac-file-chooses-a-proxy) tells browsers and PAC-aware applications, per URL, which proxy to use - here, pointed at ZIA. It needs no tunnel and no agent, which makes it the lightweight answer for browser-centric coverage and a precise instrument for exceptions: the PAC's logic can send some destinations direct and the rest to the cloud. Its limits are the ones PAC files always carry: only PAC-respecting clients obey it, non-browser traffic largely ignores it, and the file itself becomes a small piece of infrastructure to version and serve. In Zscaler practice PAC files also appear *inside* other methods - steering ZCC's forwarding or trimming what a location tunnel carries - which is why understanding them pays twice.
+
+## Method four: chaining from an existing proxy
+
+Organizations with an on-premises proxy or edge appliance can **chain** it to ZIA: the local device forwards to the cloud rather than to the internet, preserving existing egress architecture while adding the Exchange's inspection. It is the brownfield method - pragmatic during migrations, and honest about its ceiling: two proxies in path means two hops of latency and two places to debug.
+
+## Composition, and the on-net/off-net seam
+
+Real designs layer these. A classic shape: location tunnels carry the site (covering the unmanageable), ZCC covers managed devices wherever they roam, and PAC logic handles the exceptions - with ZCC configured to notice when it is *on* a tunneled network and adjust its behavior so traffic is not forwarded twice. That on-network/off-network awareness is exactly what [trusted-network detection in the Client Connector profiles](/learn/zscaler-client-connector-profiles) exists to automate, and it is where forwarding stops being four separate methods and becomes one coherent design.
+
+The operator's summary: pick per coverage domain, not per fashion - devices you manage get the agent, sites you own get tunnels, browsers you merely influence get PAC, edges you already run can chain - and make the seams explicit, because every forwarding gap is an inspection gap wearing a disguise.

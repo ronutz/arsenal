@@ -131,6 +131,8 @@ export const tools: ToolEntry[] = [
   { id: "user-agent-entropy-analyzer", href: "/tools/user-agent-entropy-analyzer", category: "security", vendors: ["zscaler", "ping"], vendorNeutral: true /* generic UA analysis; relevant to signal-based risk auth, not vendor-owned */, sub: "signals", available: true },
   { id: "http-header-order-fingerprint", href: "/tools/http-header-order-fingerprint", category: "security", vendors: ["zscaler", "ping"], vendorNeutral: true /* generic header-order fingerprint; relevant to bot/risk signals, not vendor-owned */, sub: "signals", available: true },
   { id: "p0f-signature-explainer", href: "/tools/p0f-signature-explainer", category: "networking", vendors: ["zscaler"], vendorNeutral: true /* generic passive TCP fingerprint; relevant to TLS-inspection signal surface, not vendor-owned */, sub: "signals", available: true },
+  { id: "zscaler-tunnel-chooser", href: "/tools/zscaler-tunnel-chooser", category: "networking", vendors: ["zscaler"], sub: "zte", available: true },
+  { id: "zscaler-firewall-rule-order-simulator", href: "/tools/zscaler-firewall-rule-order-simulator", category: "security", vendors: ["zscaler"], sub: "zte", available: true },
   { id: "jwks-explainer", href: "/tools/jwks-explainer", category: "identity", vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "oauth-tokens", available: true },
   { id: "regex", href: "/tools/regex", category: "web", available: true },
   { id: "diff", href: "/tools/diff", category: "text", available: true },

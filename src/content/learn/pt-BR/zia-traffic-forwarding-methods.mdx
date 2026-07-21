@@ -1,0 +1,36 @@
+---
+slug: zia-traffic-forwarding-methods
+title: "Levando o Tráfego até o ZIA: a Decisão de Encaminhamento"
+summary: "Um proxy em nuvem só protege o que chega até ele, então todo projeto de ZIA começa com a mesma pergunta: como o tráfego chega lá? As quatro respostas que funcionam - Client Connector no dispositivo, túneis da localidade, arquivos PAC direcionando navegadores, e encadeamento de proxy a partir de uma borda existente - o que cada uma cobre, o que cada uma perde, e como implantações reais as combinam em camadas."
+concepts: ["zscaler", "zia", "forwarding", "gre", "ipsec", "pac", "client connector", "proxy chaining"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["zscaler-zero-trust-exchange-architecture", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "zscaler-client-connector-profiles"]
+category: networking
+order: 176
+status: reviewed
+updated: "2026-07-21"
+---
+
+[O Zero Trust Exchange é um proxy](/learn/zscaler-zero-trust-exchange-architecture), e um proxy protege exatamente o tráfego que chega até ele - nada mais. Isso faz do encaminhamento de tráfego a decisão estrutural de todo projeto de Zscaler Internet Access (ZIA): antes que qualquer política possa importar, algo precisa enviar o tráfego deliberadamente a um Public Service Edge. O enquadramento da própria documentação (o guia de métodos de encaminhamento, verificado em 2026-07-21) oferece um cardápio pequeno, e o ofício está em saber o que cada item cobre, o que ele não consegue ver, e como eles se compõem.
+
+## Método um: o agente no dispositivo
+
+O **Zscaler Client Connector (ZCC)** coloca a decisão de encaminhamento no próprio endpoint. O agente autentica o usuário, observa a rede em que o dispositivo está, e encaminha o tráfego ao Service Edge mais próximo através do seu Z-Tunnel. A cobertura é o dispositivo inteiro - cada navegador, cada atualizador, cada ferramenta de linha de comando - e ela viaja: o laptop no aeroporto é encaminhado exatamente como o laptop na matriz. Esta é a resposta para roaming e, cada vez mais, a resposta padrão; [sua máquina de perfis merece artigo próprio](/learn/zscaler-client-connector-profiles). Sua fronteira é a instalação: agentes cobrem dispositivos gerenciados, e somente eles.
+
+## Método dois: o túnel da localidade
+
+Onde o tráfego de um site inteiro deve ser encaminhado - redes de visitantes, impressoras, servidores, hardware não gerenciado, tudo atrás do roteador de borda - a própria localidade conecta-se ao Exchange por um **túnel GRE ou IPsec**. O dispositivo de borda embrulha o tráfego rumo a um Service Edge primário (com um secundário em outro data center para failover), e todos atrás dele ficam cobertos sem tocar um único endpoint. A escolha entre os dois encapsulamentos, as capacidades publicadas por túnel e a aritmética de dimensionamento são [o assunto inteiro do artigo de tipos de túnel](/learn/zscaler-tunnel-types-z-tunnel-gre-ipsec) - e o [seletor de túneis](/tools/zscaler-tunnel-chooser) computa a decisão interativamente. A fronteira é simétrica à do agente: um túnel de localidade conhece o site, não o usuário, então a identidade precisa chegar por outro caminho - e no momento em que o laptop sai do prédio, este método nunca mais o vê.
+
+## Método três: o arquivo PAC
+
+Um [arquivo de Proxy Auto-Configuration](/learn/how-a-pac-file-chooses-a-proxy) diz a navegadores e aplicações que respeitam PAC, por URL, qual proxy usar - aqui, apontado para o ZIA. Não precisa de túnel nem de agente, o que o torna a resposta leve para cobertura centrada em navegador e um instrumento preciso para exceções: a lógica do PAC pode mandar alguns destinos direto e o resto para a nuvem. Seus limites são os de sempre: só clientes que respeitam PAC obedecem, tráfego não navegador em geral o ignora, e o arquivo em si vira uma pequena peça de infraestrutura para versionar e servir. Na prática Zscaler, arquivos PAC também aparecem *dentro* de outros métodos - direcionando o encaminhamento do ZCC ou aparando o que um túnel de localidade carrega - e é por isso que entendê-los paga duas vezes.
+
+## Método quatro: encadeando a partir de um proxy existente
+
+Organizações com um proxy local ou appliance de borda podem **encadeá-lo** ao ZIA: o dispositivo local encaminha para a nuvem em vez de para a internet, preservando a arquitetura de saída existente enquanto adiciona a inspeção do Exchange. É o método de brownfield - pragmático durante migrações, e honesto sobre seu teto: dois proxies no caminho são dois saltos de latência e dois lugares para depurar.
+
+## Composição, e a costura on-net/off-net
+
+Projetos reais fazem camadas. Um formato clássico: túneis de localidade carregam o site (cobrindo o ingerenciável), o ZCC cobre dispositivos gerenciados onde quer que estejam, e a lógica de PAC trata as exceções - com o ZCC configurado para perceber quando está *numa* rede tunelada e ajustar seu comportamento para que o tráfego não seja encaminhado duas vezes. Essa consciência de dentro-da-rede/fora-da-rede é exatamente o que [a detecção de rede confiável nos perfis do Client Connector](/learn/zscaler-client-connector-profiles) existe para automatizar, e é onde o encaminhamento deixa de ser quatro métodos separados e vira um projeto coerente.
+
+O resumo do operador: escolha por domínio de cobertura, não por moda - dispositivos que você gerencia recebem o agente, sites que você possui recebem túneis, navegadores que você apenas influencia recebem PAC, bordas que você já opera podem encadear - e torne as costuras explícitas, porque toda lacuna de encaminhamento é uma lacuna de inspeção disfarçada.

@@ -1,0 +1,38 @@
+---
+slug: zscaler-tunnel-types-z-tunnel-gre-ipsec
+title: "Zscaler Tunnel Types: Z-Tunnel, GRE, and IPsec, With the Numbers"
+summary: "Three tunnels carry traffic to the Zero Trust Exchange, and they are not interchangeable: the Client Connector's Z-Tunnel for devices, GRE and IPsec for locations. The published capacity figures - 1 Gbps, the 250 Mbps NAT penalty, 400 Mbps per source IP - the scale-out shapes the documentation itself uses, the HA pattern, and the MTU habit that keeps all three healthy."
+concepts: ["zscaler", "z-tunnel", "gre", "ipsec", "capacity", "mtu", "dtls", "forwarding"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss", "zia-traffic-forwarding-methods", "tls12-tls13-dtls-quic"]
+category: networking
+order: 177
+status: reviewed
+updated: "2026-07-21"
+---
+
+[Forwarding chose the coverage domain](/learn/zia-traffic-forwarding-methods); this article prices it. Three tunnel families carry traffic to the Zero Trust Exchange, split cleanly by who builds them: the Client Connector builds Z-Tunnels for a device, and the location's edge builds GRE or IPsec for a site. Every figure below is Zscaler's own published number, live-verified 2026-07-21, and the differences between the three are exactly the fundamentals this series laid down first.
+
+## The device tunnel: Z-Tunnel 1.0 and 2.0
+
+**Z-Tunnel** is the transport Zscaler Client Connector (and Cloud Connector) establishes to a Public Service Edge. Version 1.0 is an HTTP CONNECT tunnel - a proxy connection, in essence, shaped for web traffic. Version 2.0 upgrades the transport to TLS or its datagram sibling DTLS ([the same split this series covered for the protocols themselves](/learn/tls12-tls13-dtls-quic)), and with it the coverage: 2.0 is built to carry all ports and protocols from the device, not only the web pair, which is why the vendor's guidance steers new deployments toward it. The practical reading: Z-Tunnel is a per-device, authenticated transport whose capacity question is the device's, not the site's - sizing math lives with the location tunnels below.
+
+## The location tunnels: GRE first, for a reason
+
+A site forwards through **GRE** when three preconditions hold: a static public egress address, an edge device that speaks the protocol, and no requirement to encrypt in transit - [the plain envelope's whole trade](/learn/gre-tunnels-fundamentals). In exchange comes the highest published ceiling: **1 Gbps per tunnel**. One documented rule bites hard enough to memorize: if the *internal* tunnel endpoint addresses are source-NATed, the supported figure drops to **250 Mbps per tunnel**, because the service load-balances GRE traffic on those inner addresses and [NAT](/learn/nat-explained) collapses them into one. Removing that NAT is usually the cheapest capacity upgrade in the entire design.
+
+Scaling past a gigabit is additive and explicit: more tunnels, each from a **different public source IP**. The documentation's own worked examples set the shape - 2 Gbps is two primary tunnels plus two backups; 3 Gbps is three plus three - and the backup halves point at Public Service Edges in *different data centers*, which is the platform's standing high-availability pattern.
+
+## The location tunnels: IPsec, when GRE cannot
+
+Where the egress address is dynamic, the device lacks GRE, or the transit must be encrypted, the site forwards through **IPsec** - [IKEv2 negotiating, ESP carrying](/learn/ipsec-and-ike-fundamentals), peers identified by FQDN when addresses will not sit still, Dead Peer Detection watching liveness. The published capacity is **400 Mbps per public source IP address**, and the two documented ways past it are pure protocol: additional tunnels from different public source addresses, or multiple tunnels from the *same* address using NAT-Traversal with source-port randomization under IKEv2 - the port-varies property doing exactly what the fundamentals article promised it could. The documentation's sizing examples again: 800 Mbps as two primaries plus two backups, 1200 as three plus three, backups in different data centers.
+
+The honest comparison, then, is not "which is better" but "which constraints do you actually have": GRE buys ceiling and simplicity at the price of preconditions; IPsec buys tolerance and secrecy at the price of megabits.
+
+## The habit all three share: MTU
+
+Every one of these is an envelope, and [envelopes charge bytes](/learn/tunnel-overhead-mtu-and-mss). Zscaler's field guidance is the same habit that article teaches: set the tunnel MTU to the lower of the appliance MTU and the measured path MTU, fall back to **1400** when trouble appears anyway, and clamp TCP MSS to match - because the signature of a wrong tunnel MTU (handshakes fine, real data stalls) looks like a Zscaler problem and never is.
+
+## Choosing, deterministically
+
+The whole decision - eliminations, per-tunnel figure, minimum primary and backup counts - is mechanical once the constraints are named, which is why it is [a tool on this site](/tools/zscaler-tunnel-chooser): six answers in, the sized recommendation out, every step and source shown. The exam-shaped summary it encodes: encryption, dynamic IP, or a GRE-less device means IPsec at 400 per source IP; otherwise GRE at 1000 (250 under internal-endpoint NAT); primaries by ceiling division; backups mirror primaries into a different data center.

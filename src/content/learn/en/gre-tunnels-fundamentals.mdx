@@ -1,0 +1,40 @@
+---
+slug: gre-tunnels-fundamentals
+title: "GRE Tunnels: The Simplest Envelope in Networking"
+summary: "Generic Routing Encapsulation puts one packet inside another and asks nothing else of the path - no encryption, no authentication, just an envelope with a forwarding address. Why that simplicity is the point: the 24-byte anatomy, what GRE can carry that plain routing cannot, the keepalive question, and the trade a designer accepts when choosing GRE over an encrypted tunnel."
+concepts: ["gre", "tunnel", "encapsulation", "overhead", "protocol 47", "fundamentals"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["vpn-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss", "nat-explained"]
+category: networking
+order: 171
+status: reviewed
+updated: "2026-07-21"
+---
+
+Generic Routing Encapsulation (GRE) is the plainest tunnel a network can build: take a packet, put a small header in front of it, put a new IP header in front of that, and send the result to a tunnel endpoint that unwraps it and forwards what was inside. That is the whole protocol. Defined in RFC 2784 (with the optional key and sequence extensions in RFC 2890), GRE deliberately does less than almost any other tunnel - and the situations where it wins are exactly the ones where doing less is the feature.
+
+## The anatomy: 24 bytes over IPv4
+
+A GRE-over-IPv4 packet is three layers deep. The outer envelope is a normal IP header - 20 bytes - whose protocol field carries the value 47, the number registered for GRE. Then comes the GRE header itself: in its common minimal form, just 4 bytes stating what the payload is (the protocol type, using the same numbering Ethernet uses). Then the passenger: the original packet, untouched.
+
+Twenty plus four is the number worth memorizing: **24 bytes of overhead** on every packet. It sounds trivial until it meets a 1,500-byte path - a full-size passenger packet no longer fits, and something must give: fragmentation, a smaller tunnel MTU, or clamping what endpoints send. That arithmetic matters enough to deserve [its own article](/learn/tunnel-overhead-mtu-and-mss); here it is enough to know the envelope costs 24 bytes and the bill always comes due.
+
+## What the envelope buys
+
+Plain IP routing delivers a packet by its destination address, along whatever path the routing tables choose. GRE breaks that constraint in a useful way: the outer header's destination is the tunnel endpoint, so the passenger crosses networks that could never have routed it natively. Private RFC 1918 addresses cross the public internet. Multicast and routing-protocol traffic - which most transit networks drop or ignore - ride inside unicast envelopes, which is why routing adjacencies over GRE are a classic design. A protocol the middle of the path has never heard of travels fine, because the middle only reads the outside.
+
+The second purchase is topological: a tunnel is an interface. Two routers with a GRE tunnel between them behave as if a wire connected them, whatever geography lies underneath. Policies, routes, and measurements can attach to that virtual wire the way they would to a physical one.
+
+## What GRE refuses to do
+
+GRE provides no confidentiality, no integrity, and no authentication. The envelope is postcard-clear: anyone on the path reads the passenger as easily as the wrapper. There is no handshake and no session - the tunnel "exists" the moment both ends are configured, and a GRE endpoint will happily decapsulate whatever arrives claiming protocol 47, which is why filtering at the endpoints matters.
+
+Statelessness also means GRE cannot tell you it is down. The line protocol stays up while the far end is unreachable, silently blackholing traffic. The standard remedy is **keepalives** - one endpoint periodically sends a probe engineered so the far end reflects it; misses mark the tunnel down. Where keepalives are unavailable, designs lean on a routing protocol or an SLA probe across the tunnel to detect failure - health has to be added, because GRE ships without it.
+
+None of this is a defect. A [VPN's](/learn/vpn-fundamentals) cryptography costs cycles, state, and complexity; GRE spends none of that, which is why routers forward it at line rate in hardware and why it remains the default answer when the requirement is "carry this across there" rather than "hide this from everyone."
+
+## Choosing GRE, in one worked example
+
+Cloud security services that receive forwarded traffic make the trade concrete. Zscaler's Internet Access service accepts location traffic over either GRE or IPsec, and its published guidance (verified 2026-07-21) captures the classic decision: a GRE tunnel is supported up to **1 Gbps** - but only **250 Mbps** if the internal tunnel endpoint addresses are source-NATed, because the service load-balances on those inner addresses and [NAT](/learn/nat-explained) collapses them. Need more than a gigabit? Add tunnels with different public source addresses - two primaries and two backups for 2 Gbps. GRE's preconditions are equally classic: a static public egress address and a device that speaks it; where either is missing, the encrypted alternative steps in - which is where [IPsec and IKE](/learn/ipsec-and-ike-fundamentals) pick up the story.
+
+The fundamentals to carry forward: 24 bytes, protocol 47, no secrecy, no built-in health, and in exchange - speed, simplicity, and the ability to carry anything anywhere the outer header can reach.

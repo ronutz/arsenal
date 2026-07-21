@@ -1,0 +1,34 @@
+---
+slug: zia-ssl-inspection-policy-and-bypasses
+title: "TLS Inspection in ZIA: The Policy, the Bypasses, and the Bill"
+summary: "ZIA's TLS inspection is the forward-proxy interception pattern run as policy: rules evaluated in ascending order decide Inspect or Do Not Inspect, a Zscaler or customer CA signs the regenerated certificates, and every bypass is a deliberate blind spot. The rule anatomy, the untrusted-certificate and minimum-TLS backstops, why pinned applications must be exempted, and what an uninspected flow still costs."
+concepts: ["zscaler", "zia", "ssl inspection", "tls", "do not inspect", "root ca", "certificate", "policy"]
+relatedTools: []
+relatedArticles: ["ssl-forward-proxy-interception", "certificate-validation", "zscaler-zero-trust-exchange-architecture", "zscaler-client-connector-profiles", "tls12-tls13-dtls-quic"]
+category: security
+order: 180
+status: reviewed
+updated: "2026-07-21"
+---
+
+Everything [the forward-proxy interception article](/learn/ssl-forward-proxy-interception) establishes - the deliberate man-in-the-middle, the regenerated certificate, the client that must trust the interceptor's CA - Zscaler Internet Access runs as a first-class, rule-driven policy. The vendor's own description of the mechanism is exactly that pattern: the Service Edge intercepts the encrypted session, decrypts, inspects and applies controls, then re-encrypts onward, dynamically generating and signing a certificate on the server's behalf. What the platform adds is the policy machinery around it, and the discipline of treating every exemption as a priced decision. Details below are grounded in Zscaler's SSL/TLS inspection documentation, verified 2026-07-21.
+
+## The trust prerequisite
+
+None of it works until clients trust the signer. The regenerated certificates are issued under the **Zscaler root CA** - or, for organizations that prefer their own chain, a **customer intermediate CA** - and that certificate must sit in every client's trust store before inspection is enabled. Deployment reality follows: managed devices get the root pushed (Client Connector can install it; management tooling otherwise), and anything without the root sees browser certificate warnings that are not errors but the absence of this prerequisite. The vendor's rollout guidance is staged for the same reason: certificate first, then a test location or sublocation, then a defined user set, then the estate.
+
+## The policy: rules in ascending order, two verbs
+
+The SSL Inspection policy is a rule table in the ZIA policy engine's standard shape: rules evaluated in **ascending order**, first match deciding, criteria unset meaning *any*. Each rule resolves to one of two verbs - **Inspect** or **Do Not Inspect** - scoped by the usual dimensions (users and groups, locations, URL categories, cloud applications, and the rest). The composition that emerges in practice is a sandwich: high-order Do Not Inspect rules carve out the mandatory exemptions, a body of Inspect rules covers the estate, and the defaults catch the remainder. The order is the logic; two correct rules in the wrong order are one wrong policy.
+
+## The backstops on the uninspected
+
+The subtle half of the policy is what happens *without* decryption. Even a Do Not Inspect flow passes through configurable backstops that operate on what the handshake exposes: the **Untrusted Server Certificates** action decides whether a flow whose server certificate fails [validation](/learn/certificate-validation) is allowed, or blocked by resetting the connection - with an **OCSP** revocation check, via stapling, foldable into that validation; a **Minimum TLS Version** floor blocks protocol versions below the line; and a **Block No-SNI** option refuses traffic whose ClientHello names no server at all, closing the classic evade-by-omission. The vendor's own hardening guidance pairs these deliberately: where you choose not to look inside, at least refuse the flows that fail the outside checks.
+
+## Bypasses: every one a priced blind spot
+
+Some exemptions are not optional. Applications that **pin certificates** - the vendor keeps a dedicated page on the collision - will never accept a regenerated leaf: they fail closed under inspection and must be excluded, whether by policy rule here or by [the Client Connector's application bypasses](/learn/zscaler-client-connector-profiles) before traffic ever reaches the Edge. Others are governance: categories such as health or finance that policy or law says stay sealed. The operator's ledger must stay honest about the cost either way: an uninspected flow is invisible to the content engines - no malware analysis of its payloads, no data-protection matching inside it - and is judged only by its wrapper: destination, certificate, protocol hygiene. "Do Not Inspect" never means "trusted"; it means *judged from the outside only*, with the backstops above as the whole remaining defense.
+
+## The operator's checklist
+
+Read a ZIA inspection issue in this order: is the root trusted on the client (warnings say no); which rule matched, remembering ascending order and first match; if uninspected, which backstop fired - untrusted certificate, TLS floor, missing SNI; if inspected and broken, suspect pinning and check the exemption lists. And review the Do Not Inspect set on a calendar, not on complaints - bypasses accrete, and each one is a corridor the content engines never see.

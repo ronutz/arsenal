@@ -14653,3 +14653,17 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .fs-toggle:hover, .fs-toggle:focus-visible { color: #22d3ee; border-color: rgba(34, 211, 238, 0.4); outline: none; }
 .fs-toggle[aria-pressed="true"] { color: #8b97bf; border-color: rgba(139, 151, 191, 0.35); background: rgba(139, 151, 191, 0.08); }
+
+/* ============================================================================
+   ZSCALER TUNNEL CHOOSER (zscaler-tunnel-chooser) - result layout.
+   First native tool of the Zscaler family (PKG-ZSCALER v2 wave 1). Four
+   classes only: the result stack, its section titles, the ordered reasoning
+   steps, and the notes/prereqs lists. Semantic tokens throughout (D-19
+   comment; CSS rule: new classes carry their justification).
+   ========================================================================= */
+.ztc-empty { font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.6rem; }
+.ztc-result { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.75rem; }
+.ztc-section-title { font-size: 0.92rem; font-weight: 600; color: var(--text-primary); margin: 0.35rem 0 0.1rem; }
+.ztc-steps { margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-secondary); }
+.ztc-steps strong { color: var(--text-primary); }
+.ztc-notes { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.86rem; line-height: 1.5; color: var(--text-secondary); }

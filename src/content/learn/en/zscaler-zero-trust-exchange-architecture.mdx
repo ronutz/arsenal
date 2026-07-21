@@ -1,0 +1,34 @@
+---
+slug: zscaler-zero-trust-exchange-architecture
+title: "The Zscaler Zero Trust Exchange: A Proxy Where the Perimeter Used to Be"
+summary: "Zscaler's platform is not a firewall in the cloud - it is a globally distributed proxy that terminates every connection, inspects what it can see, and only then connects onward. Where ZIA, ZPA, and ZDX sit on that switchboard, what a Public Service Edge actually does, and why connect-to-app-not-network is the architectural sentence that explains everything else."
+concepts: ["zscaler", "zero trust exchange", "proxy", "service edge", "zia", "zpa", "zdx", "architecture"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["http-proxy-forward-and-reverse", "ssl-forward-proxy-interception", "vpn-fundamentals", "zia-traffic-forwarding-methods", "zpa-architecture-app-connectors-service-edges"]
+category: security
+order: 175
+status: reviewed
+updated: "2026-07-21"
+---
+
+The Zscaler Zero Trust Exchange (ZTE) is easiest to understand by what it is not: it is not a perimeter moved to the cloud. It is a globally distributed switchboard - a [proxy](/learn/http-proxy-forward-and-reverse) architecture in which every connection terminates at a Zscaler enforcement point, gets identified and inspected, and is then completed onward as a fresh connection. Sources connect to the Exchange; the Exchange connects to destinations. Nothing traverses; everything is brokered. Hold onto that sentence and the rest of the platform stops being a product list and starts being consequences.
+
+## The enforcement point: the Public Service Edge
+
+The worker in the architecture is the **Public Service Edge** - Zscaler's current name for the enforcement nodes deployed in its data centers worldwide (older material says ZEN, Zscaler Enforcement Node; the rename matters when reading documentation). A Service Edge terminates the user's or location's session, applies identity, applies policy, and originates the onward connection. Zscaler's documentation is specific about the operational posture: packet data is held in memory for inspection and either forwarded or dropped by policy - Service Edges never store payload data to disk - while transaction logs are compressed, tokenized, and streamed out over TLS to the logging infrastructure. The same "Service Edge" concept also exists in private form: single-tenant instances an organization hosts in its own site or cloud while Zscaler manages them - the same enforcement, brought closer.
+
+## Proxy, not router - and what that buys
+
+Because every session is terminated rather than routed through, the Exchange sees complete application transactions instead of packets in flight. That is what makes [TLS interception](/learn/ssl-forward-proxy-interception) a first-class feature rather than a bolt-on: the Service Edge stands as a man-in-the-middle by design, decrypting where policy says so, inspecting the plaintext once, and applying every enabled engine to that single decrypted stream - URL filtering, malware analysis, data protection - before re-encrypting onward. One termination, one inspection, many verdicts. It is also what makes the platform's scale model horizontal: sessions are stateless per node, so capacity is added by adding edges, and users are simply steered to the nearest healthy one.
+
+The proxy stance has a second consequence that shapes designs: the Exchange is reached by **forwarding**, not by routing tables. Traffic must be sent to it deliberately - by an agent on the device, by a tunnel from a location, by a proxy setting - which is exactly why [the forwarding-methods decision](/learn/zia-traffic-forwarding-methods) is the first real design conversation in any deployment.
+
+## Three services, one switchboard
+
+The product names are seats at the same exchange. **Zscaler Internet Access (ZIA)** is the outbound seat: users and locations connect to the Exchange, and the Exchange connects to the internet and SaaS on their behalf, applying the secure web gateway, firewall, and data-protection engines in the path. **Zscaler Private Access (ZPA)** is the inbound-without-inbound seat: private applications are never exposed; instead [App Connectors alongside the applications dial out](/learn/zpa-architecture-app-connectors-service-edges) to the Exchange, users dial in, and the Exchange stitches the two outbound connections together per application, per session. **Zscaler Digital Experience (ZDX)** is the measurement seat: with the data path brokered through the Exchange, the same vantage points measure the experience - device, network, and application health - end to end.
+
+The zero-trust claim lives in ZPA's connection model more than anywhere else: a user is connected to *an application they are authorized for*, never placed *on a network*. There is no flat inside to move laterally across, because there is no inside - only brokered, per-session threads. A [VPN](/learn/vpn-fundamentals) extends the network to the user; the Exchange inverts that, extending nothing and brokering everything.
+
+## Reading the architecture like an operator
+
+Three habits follow. First, identity is the routing table: policy hangs off who and what connected, so the identity integration is infrastructure, not an accessory. Second, the Service Edge is the vantage point: when troubleshooting, think in two legs - source to Edge, Edge to destination - because that is literally how the connection exists. Third, encryption boundaries are policy decisions: what the Exchange may decrypt it can inspect; [what it must not decrypt](/learn/zia-ssl-inspection-policy-and-bypasses) it can only pass judgment on from the outside. Every later article in this series is one of these consequences examined closely.

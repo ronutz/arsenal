@@ -1,0 +1,34 @@
+---
+slug: zia-ssl-inspection-policy-and-bypasses
+title: "Inspeção TLS no ZIA: a Política, os Bypasses e a Conta"
+summary: "A inspeção TLS do ZIA é o padrão de interceptação por forward proxy rodando como política: regras avaliadas em ordem crescente decidem Inspect ou Do Not Inspect, uma CA da Zscaler ou do cliente assina os certificados regenerados, e cada bypass é um ponto cego deliberado. A anatomia das regras, os anteparos de certificado não confiável e TLS mínimo, por que aplicações com pinning precisam de isenção, e o que um fluxo não inspecionado ainda custa."
+concepts: ["zscaler", "zia", "ssl inspection", "tls", "do not inspect", "root ca", "certificate", "policy"]
+relatedTools: []
+relatedArticles: ["ssl-forward-proxy-interception", "certificate-validation", "zscaler-zero-trust-exchange-architecture", "zscaler-client-connector-profiles", "tls12-tls13-dtls-quic"]
+category: security
+order: 180
+status: reviewed
+updated: "2026-07-21"
+---
+
+Tudo o que [o artigo de interceptação por forward proxy](/learn/ssl-forward-proxy-interception) estabelece - o man-in-the-middle deliberado, o certificado regenerado, o cliente que precisa confiar na CA do interceptador - o Zscaler Internet Access roda como política de primeira classe, dirigida por regras. A descrição do próprio fabricante para o mecanismo é exatamente esse padrão: o Service Edge intercepta a sessão cifrada, decifra, inspeciona e aplica controles, depois recifra adiante, gerando e assinando dinamicamente um certificado em nome do servidor. O que a plataforma adiciona é a maquinaria de política em volta, e a disciplina de tratar cada isenção como uma decisão com preço. Os detalhes abaixo estão fundamentados na documentação de inspeção SSL/TLS da Zscaler, verificada em 2026-07-21.
+
+## O pré-requisito de confiança
+
+Nada funciona até os clientes confiarem no assinante. Os certificados regenerados são emitidos sob a **CA raiz da Zscaler** - ou, para organizações que preferem a própria cadeia, uma **CA intermediária do cliente** - e esse certificado precisa estar no trust store de cada cliente antes de habilitar a inspeção. A realidade de implantação decorre: dispositivos gerenciados recebem a raiz por push (o Client Connector pode instalá-la; ferramentas de gestão nos demais casos), e qualquer coisa sem a raiz vê avisos de certificado no navegador que não são erros, e sim a ausência deste pré-requisito. A orientação de rollout do fabricante é escalonada pelo mesmo motivo: primeiro o certificado, depois uma localidade ou sublocalidade de teste, depois um conjunto definido de usuários, depois o parque inteiro.
+
+## A política: regras em ordem crescente, dois verbos
+
+A política de SSL Inspection é uma tabela de regras no formato padrão do motor de políticas do ZIA: regras avaliadas em **ordem crescente**, a primeira correspondência decide, critério não definido significa *any*. Cada regra resolve para um de dois verbos - **Inspect** ou **Do Not Inspect** - com escopo pelas dimensões usuais (usuários e grupos, localidades, categorias de URL, aplicações em nuvem, e o resto). A composição que emerge na prática é um sanduíche: regras Do Not Inspect de ordem alta recortam as isenções obrigatórias, um corpo de regras Inspect cobre o parque, e os padrões apanham o restante. A ordem é a lógica; duas regras corretas na ordem errada são uma política errada.
+
+## Os anteparos sobre o não inspecionado
+
+A metade sutil da política é o que acontece *sem* decifrar. Mesmo um fluxo Do Not Inspect passa por anteparos configuráveis que operam sobre o que o handshake expõe: a ação de **Untrusted Server Certificates** decide se um fluxo cujo certificado de servidor falha na [validação](/learn/certificate-validation) é permitido, ou bloqueado com reset da conexão - com uma checagem de revogação **OCSP**, via stapling, dobrável dentro dessa validação; um piso de **Minimum TLS Version** bloqueia versões de protocolo abaixo da linha; e uma opção de **Block No-SNI** recusa tráfego cujo ClientHello não nomeia servidor algum, fechando a clássica evasão por omissão. A orientação de endurecimento do próprio fabricante emparelha esses controles de propósito: onde você escolhe não olhar por dentro, ao menos recuse os fluxos que falham nas checagens de fora.
+
+## Bypasses: cada um é um ponto cego com preço
+
+Algumas isenções não são opcionais. Aplicações que fazem **pinning de certificados** - o fabricante mantém uma página dedicada à colisão - jamais aceitarão uma folha regenerada: elas falham fechadas sob inspeção e precisam ser excluídas, seja por regra de política aqui, seja pelos [bypasses de aplicação do Client Connector](/learn/zscaler-client-connector-profiles) antes de o tráfego sequer chegar ao Edge. Outras são governança: categorias como saúde ou finanças que a política ou a lei mandam permanecer seladas. O livro-caixa do operador precisa ficar honesto sobre o custo de qualquer forma: um fluxo não inspecionado é invisível para os engines de conteúdo - sem análise de malware nos seus payloads, sem correspondência de proteção de dados por dentro - e é julgado apenas pelo embrulho: destino, certificado, higiene de protocolo. "Do Not Inspect" nunca significa "confiável"; significa *julgado só por fora*, com os anteparos acima como toda a defesa restante.
+
+## O checklist do operador
+
+Leia um problema de inspeção no ZIA nesta ordem: a raiz está confiada no cliente (avisos dizem que não); qual regra correspondeu, lembrando ordem crescente e primeira correspondência; se não inspecionado, qual anteparo disparou - certificado não confiável, piso de TLS, SNI ausente; se inspecionado e quebrado, suspeite de pinning e confira as listas de isenção. E revise o conjunto Do Not Inspect por calendário, não por reclamação - bypasses se acumulam, e cada um é um corredor que os engines de conteúdo nunca veem.

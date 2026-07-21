@@ -1,0 +1,38 @@
+---
+slug: zscaler-tunnel-types-z-tunnel-gre-ipsec
+title: "Tipos de Túnel Zscaler: Z-Tunnel, GRE e IPsec, Com os Números"
+summary: "Três túneis levam tráfego ao Zero Trust Exchange, e eles não são intercambiáveis: o Z-Tunnel do Client Connector para dispositivos, GRE e IPsec para localidades. Os números de capacidade publicados - 1 Gbps, a penalidade de 250 Mbps sob NAT, 400 Mbps por IP de origem - os formatos de expansão que a própria documentação usa, o padrão de HA, e o hábito de MTU que mantém os três saudáveis."
+concepts: ["zscaler", "z-tunnel", "gre", "ipsec", "capacity", "mtu", "dtls", "forwarding"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss", "zia-traffic-forwarding-methods", "tls12-tls13-dtls-quic"]
+category: networking
+order: 177
+status: reviewed
+updated: "2026-07-21"
+---
+
+[O encaminhamento escolheu o domínio de cobertura](/learn/zia-traffic-forwarding-methods); este artigo o precifica. Três famílias de túnel carregam tráfego ao Zero Trust Exchange, divididas limpo por quem as constrói: o Client Connector constrói Z-Tunnels para um dispositivo, e a borda da localidade constrói GRE ou IPsec para um site. Cada número abaixo é da própria Zscaler, verificado ao vivo em 2026-07-21, e as diferenças entre os três são exatamente os fundamentos que esta série assentou primeiro.
+
+## O túnel do dispositivo: Z-Tunnel 1.0 e 2.0
+
+O **Z-Tunnel** é o transporte que o Zscaler Client Connector (e o Cloud Connector) estabelece até um Public Service Edge. A versão 1.0 é um túnel HTTP CONNECT - uma conexão de proxy, em essência, moldada para tráfego web. A versão 2.0 atualiza o transporte para TLS ou seu irmão de datagramas, o DTLS ([a mesma divisão que esta série cobriu para os próprios protocolos](/learn/tls12-tls13-dtls-quic)), e com isso a cobertura: o 2.0 é feito para carregar todas as portas e protocolos do dispositivo, não só o par web, e é por isso que a orientação do fabricante direciona implantações novas para ele. A leitura prática: o Z-Tunnel é um transporte por dispositivo, autenticado, cuja pergunta de capacidade é do dispositivo, não do site - a matemática de dimensionamento vive nos túneis de localidade abaixo.
+
+## Os túneis de localidade: GRE primeiro, por um motivo
+
+Um site encaminha por **GRE** quando três precondições valem: um endereço público de saída estático, um dispositivo de borda que fale o protocolo, e nenhuma exigência de cifrar em trânsito - [a troca inteira do envelope simples](/learn/gre-tunnels-fundamentals). Em contrapartida vem o teto publicado mais alto: **1 Gbps por túnel**. Uma regra documentada morde forte o bastante para memorizar: se os endereços *internos* dos endpoints do túnel passam por source NAT, o número suportado cai para **250 Mbps por túnel**, porque o serviço balanceia o tráfego GRE por esses endereços internos e o [NAT](/learn/nat-explained) os colapsa num só. Remover esse NAT costuma ser o upgrade de capacidade mais barato do projeto inteiro.
+
+Escalar além de um gigabit é aditivo e explícito: mais túneis, cada um de um **IP público de origem diferente**. Os exemplos trabalhados da própria documentação fixam o formato - 2 Gbps são dois túneis primários mais dois backups; 3 Gbps são três mais três - e as metades de backup apontam para Public Service Edges em *data centers diferentes*, que é o padrão permanente de alta disponibilidade da plataforma.
+
+## Os túneis de localidade: IPsec, quando o GRE não pode
+
+Onde o endereço de saída é dinâmico, o dispositivo não tem GRE, ou o trânsito precisa ser cifrado, o site encaminha por **IPsec** - [IKEv2 negociando, ESP carregando](/learn/ipsec-and-ike-fundamentals), peers identificados por FQDN quando endereços não param quietos, Dead Peer Detection vigiando a vivacidade. A capacidade publicada é **400 Mbps por endereço IP público de origem**, e os dois caminhos documentados além dela são puro protocolo: túneis adicionais de endereços públicos de origem diferentes, ou múltiplos túneis do *mesmo* endereço usando NAT Traversal com randomização de porta de origem sob IKEv2 - a propriedade da porta-que-varia fazendo exatamente o que o artigo de fundamentos prometeu. Os exemplos de dimensionamento da documentação, de novo: 800 Mbps como dois primários mais dois backups, 1200 como três mais três, backups em data centers diferentes.
+
+A comparação honesta, então, não é "qual é melhor", e sim "quais restrições você realmente tem": o GRE compra teto e simplicidade ao preço de precondições; o IPsec compra tolerância e sigilo ao preço de megabits.
+
+## O hábito que os três compartilham: MTU
+
+Cada um destes é um envelope, e [envelopes cobram bytes](/learn/tunnel-overhead-mtu-and-mss). A orientação de campo da Zscaler é o mesmo hábito que aquele artigo ensina: defina a MTU do túnel como o menor entre a MTU do appliance e a MTU medida do caminho, recue para **1400** quando o problema aparecer mesmo assim, e faça clamping do MSS do TCP para combinar - porque a assinatura de uma MTU de túnel errada (handshakes passam, dados de verdade travam) parece um problema do Zscaler e nunca é.
+
+## Escolhendo, deterministicamente
+
+A decisão inteira - eliminações, número por túnel, contagens mínimas de primários e backups - é mecânica uma vez nomeadas as restrições, e é por isso que ela é [uma ferramenta deste site](/tools/zscaler-tunnel-chooser): seis respostas entram, a recomendação dimensionada sai, cada passo e fonte exibidos. O resumo em formato de prova que ela codifica: criptografia, IP dinâmico ou dispositivo sem GRE significam IPsec a 400 por IP de origem; caso contrário GRE a 1000 (250 sob NAT dos endpoints internos); primários por divisão com teto; backups espelham os primários em outro data center.

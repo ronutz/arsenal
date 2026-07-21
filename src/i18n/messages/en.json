@@ -5737,6 +5737,59 @@
         "none": "These methods share every property in the table.",
         "note": "Safe and idempotent are IANA-registered promises about intent, mechanically usable by caches, retries, and proxies - never guarantees about payload content. A QUERY body deserves the same inspection as a POST body."
       }
+    },
+    "zscaler-tunnel-chooser": {
+      "name": "Zscaler Tunnel Chooser",
+      "blurb": "Answer six questions about a location - bandwidth, HA, static IP, encryption, GRE support, endpoint NAT - and get the deterministic GRE-vs-IPsec recommendation with the minimum tunnel count, computed from Zscaler's own published figures, every step shown.",
+      "emptyState": "Enter the location's required bandwidth in Mbps to compute the recommendation - or press Example to load the documentation's 2 Gbps case.",
+      "runsLocally": "Runs entirely in your browser. Six answers in, a sized recommendation out - nothing leaves the page.",
+      "example": "Example",
+      "clear": "Clear",
+      "panelHeading": "Location constraints",
+      "mbpsLabel": "Required bandwidth (Mbps)",
+      "mbpsPlaceholder": "e.g. 2000",
+      "haLabel": "High availability required?",
+      "staticIpLabel": "Static public egress IP?",
+      "encryptionLabel": "Encryption in transit required?",
+      "greSupportLabel": "Edge device supports GRE?",
+      "natedLabel": "Internal tunnel endpoints source-NATed?",
+      "yes": "Yes",
+      "no": "No",
+      "errorTitle": "Cannot size this yet",
+      "primariesLabel": "primary",
+      "backupsLabel": "backup",
+      "perTunnelLabel": "Per-tunnel figure",
+      "stepsTitle": "How the chooser decided",
+      "prereqsTitle": "Have in hand",
+      "notesTitle": "Operational notes"
+    },
+    "zscaler-firewall-rule-order-simulator": {
+      "name": "ZIA firewall rule-order simulator",
+      "blurb": "Paste a Firewall Filtering rule list and an optional flow: watch ascending-order, first-match evaluation execute, see which rule (or the deny-by-default Default rule) decides, and get pairwise shadow findings naming the rules that can never fire.",
+      "emptyState": "Paste rules (one per line: order | name | allow|block|block-icmp | criteria), optionally a flow: line - or press Example.",
+      "runsLocally": "Simulated entirely in your browser. Nothing is sent.",
+      "example": "Example",
+      "clear": "Clear",
+      "inputLabel": "Rules, optional flow: and default: lines",
+      "placeholder": "10 | allow-web | allow | proto=tcp port=443\nflow: proto=tcp port=443 dest=203.0.113.7",
+      "errorTitle": "That input does not parse",
+      "actionAllow": "Allow",
+      "actionBlock": "Block (silent)",
+      "actionBlockIcmp": "Block + notify (ICMP)",
+      "verdictRule": "Rule {order} · {name} decides this flow",
+      "verdictDefault": "No rule matched - the Default Firewall Filtering Rule decides",
+      "defaultLabel": "Default rule action",
+      "defaultExplicit": "set by your default: line",
+      "defaultImplicit": "Zscaler's out-of-the-box disposition",
+      "traceTitle": "Evaluation trace (ascending, stops at first match)",
+      "traceMatch": "MATCH → {action}. Evaluation stops here.",
+      "traceSkipped": "disabled: skipped, but keeps its place in the order",
+      "traceNoMatch": "no match (failed on {criterion})",
+      "shadowsTitle": "Shadowed rules (can never fire)",
+      "shadowHead": "Rule {order} · {name} is shadowed by rule {byOrder} · {byName}",
+      "rulesTitle": "Policy in evaluation order",
+      "ruleDisabled": "disabled",
+      "notesTitle": "Notes"
     }
   },
   "privacy_page": {
@@ -12134,6 +12187,70 @@
       "service-provider": {
         "def": "The application side of a federation: the party that consumes assertions or tokens and grants access based on them - SAML's SP, OIDC's relying party.",
         "context": "SP-initiated sign-on starts here - the user arrives at the application first, and it sends them to the identity provider with a request to authenticate."
+      },
+      "zero-trust-exchange": {
+        "def": "Zscaler's globally distributed proxy platform: every connection terminates at a Service Edge, is identified and inspected, then completed onward - sources connect to the Exchange, the Exchange connects to destinations.",
+        "context": "The architectural sentence behind ZIA, ZPA, and ZDX: nothing traverses, everything is brokered."
+      },
+      "zia": {
+        "def": "Zscaler Internet Access: the Exchange's outbound seat - secure web gateway, cloud firewall, and data protection applied between users and the internet/SaaS.",
+        "context": "The traffic must be forwarded to it first - agent, tunnel, PAC, or proxy chain."
+      },
+      "zpa": {
+        "def": "Zscaler Private Access: per-application, per-session brokered access to private apps - user and App Connector both dial out, a Service Edge stitches the Microtunnels.",
+        "context": "Access to applications, never to networks; nothing listens inbound."
+      },
+      "zdx": {
+        "def": "Zscaler Digital Experience: endpoint-to-application experience monitoring riding the same vantage points as the brokered data path.",
+        "context": "Device, network, and app health measured from where the traffic actually flows."
+      },
+      "zcc": {
+        "def": "Zscaler Client Connector: the endpoint agent that authenticates the user, classifies the network state, and forwards traffic per its forwarding profile.",
+        "context": "Two documents rule it: forwarding profile (plumbing) and app profile (platform policy)."
+      },
+      "public-service-edge": {
+        "def": "Zscaler's enforcement node in its worldwide data centers: terminates sessions, applies identity and policy, originates the onward connection; packet data stays in memory, never on disk.",
+        "context": "Formerly ZEN in older docs; the Private Service Edge is its single-tenant sibling."
+      },
+      "app-connector": {
+        "def": "ZPA's lightweight VM/container beside a private application, making only outbound TLS connections to Service Edges - enrolled with a provisioning key, discovering apps via its own DNS vantage.",
+        "context": "No inbound listener means the app is absent from the reachable internet, not hidden behind something."
+      },
+      "microtunnel": {
+        "def": "ZPA's per-application, per-user-session thread riding inside the TLS connections from client and App Connector, stitched at a Service Edge.",
+        "context": "The granularity is the security model: three apps, three Microtunnels."
+      },
+      "z-tunnel": {
+        "def": "Client Connector's transport to a Service Edge: 1.0 is an HTTP CONNECT tunnel shaped for web; 2.0 speaks TLS/DTLS and carries all ports and protocols.",
+        "context": "New deployments steer to 2.0 - the all-traffic device tunnel."
+      },
+      "surrogate-ip": {
+        "def": "ZIA mechanism mapping a known internal IP to an authenticated user for a period, so traffic that cannot carry credentials still gets user-level policy.",
+        "context": "The proxy-auth fallback for the unauthenticatable - printers, tools, embedded clients."
+      },
+      "forwarding-profile": {
+        "def": "ZCC's traffic-plumbing document: for each network state (on/off/VPN trusted) it assigns the forwarding action - Z-Tunnel 1.0/2.0, Tunnel with Local Proxy, Enforce Proxy, or None for ZIA; Tunnel or None for ZPA.",
+        "context": "The state machine that lets the agent stand down where a location tunnel already carries the site."
+      },
+      "trusted-network": {
+        "def": "A ZCC-detected network condition defined by admin criteria - preferably the static DNS servers and search domains over dynamic hostname resolution.",
+        "context": "A flaky criterion misclassifies the network and applies the wrong forwarding action."
+      },
+      "gre": {
+        "def": "Generic Routing Encapsulation: the minimal IP-in-IP envelope (24 bytes with its delivery header, protocol 47) - no encryption, no authentication, just carriage.",
+        "context": "The plain envelope: highest tunnel ceilings, zero secrecy."
+      },
+      "nat-t": {
+        "def": "NAT Traversal: IPsec's repair for address translation - detecting NAT in IKE and re-wrapping ESP in UDP/4500 so per-flow ports exist again.",
+        "context": "The port-varies property that also lets multiple tunnels share one source IP."
+      },
+      "mss-clamping": {
+        "def": "Rewriting TCP's advertised Maximum Segment Size downward in the SYN so segments fit a tunnel's reduced MTU without fragmentation or black holes.",
+        "context": "The device-side escape from PMTUD failures: fix the promise, not the path."
+      },
+      "pmtud": {
+        "def": "Path MTU Discovery: sending with Don't Fragment set and shrinking on ICMP Fragmentation Needed replies - which over-filtered networks silently break.",
+        "context": "When the ICMP never arrives, big packets vanish: the classic MTU black hole."
       }
     },
     "totalCount": "{count} terms",

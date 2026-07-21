@@ -1,0 +1,34 @@
+---
+slug: zia-cloud-firewall-rule-order
+title: "ZIA Cloud Firewall: Rule Order Is the Whole Ballgame"
+summary: "The Firewall Filtering policy is a first-match machine: rules evaluated in ascending order, evaluation stops at the first hit, and the undeletable default rule at the bottom blocks everything that fell through. The rule anatomy, the any-means-ignored criteria convention, disabled rules that keep their seat, the recommended-policy pattern, and the shadowing failure that order makes possible."
+concepts: ["zscaler", "zia", "cloud firewall", "rule order", "first match", "default rule", "shadowing", "network services"]
+relatedTools: ["zscaler-firewall-rule-order-simulator"]
+relatedArticles: ["zscaler-zero-trust-exchange-architecture", "zia-traffic-forwarding-methods", "bigip-afm-contexts-and-rule-processing", "zia-ssl-inspection-policy-and-bypasses"]
+category: security
+order: 181
+status: reviewed
+updated: "2026-07-21"
+---
+
+The Zscaler Internet Access (ZIA) Cloud Firewall extends [the Exchange's](/learn/zscaler-zero-trust-exchange-architecture) control beyond web traffic to every port and protocol a forwarded flow can carry - and its policy engine is a machine simple enough to state in one sentence and rich enough to misconfigure for years: **rules are evaluated in ascending numerical order, and evaluation stops at the first match**. Everything below is that sentence's consequences, grounded in Zscaler's Firewall Filtering documentation, verified 2026-07-21.
+
+## The anatomy of a rule
+
+A Firewall Filtering rule is an order number, a name, a set of criteria, and an action. The criteria dimensions are wide - users, groups, and departments; locations; **network services** (protocol-and-port definitions - HTTP on 80, HTTPS on 443, DNS on 53 by default, plus custom services); network applications; source IP groups and addresses (individual, subnet, or range); destination addresses, FQDNs, and countries; device trust levels; time windows. One convention does silent, load-bearing work: **a criterion left unset means Any, and Any means ignored during evaluation**. A rule with only a network service set matches that service for everyone, everywhere. Most accidental over-matches are this convention forgotten.
+
+Actions complete the verb set the vendor describes: **allow** the traffic, **block it silently** (drop), or **block while informing the client** - the ICMP-error flavor that lets the far end fail fast instead of timing out. Disabled rules hold one more subtlety worth its sentence: a disabled rule is not enforced, but it *keeps its place in the order* - the service skips it and moves on - so re-enabling one later restores exactly the precedence it always held.
+
+## The default rule: the floor that blocks
+
+At the bottom sits the **Default Firewall Filtering Rule** - always lowest precedence, undeletable, its criteria fixed (it matches whatever survived), only its action and logging editable, and that by super admins alone. Its shipped disposition is the design's whole personality: **when the firewall is enabled, the default rule blocks all traffic** from the network to the internet. ZIA's firewall is deny-by-default out of the box; nothing flows until a higher-order rule allows it. The vendor's recommended-policy pattern builds exactly on that floor: keep the default blocking, then write granular, high-order allows - beginning with a rule that permits the HTTP, HTTPS, and DNS network services, because those must pass the firewall for the web proxy and DNS Control engines to receive anything to evaluate at all. A firewall rule that strangles port 53 does not secure DNS; it starves the module that would have.
+
+Between your rules and the default, the platform also seats **predefined rules** - system-managed entries such as the Office 365 connectivity rule and Zscaler's own service-traffic rule - which occupy positions relative to admin rules; and where **Admin Rank** is enabled, an administrator's rank bounds which order values they may assign, so a higher-ranked admin's rules always precede a lower-ranked one's.
+
+## Shadowing: the failure mode order invents
+
+First-match engines all share one disease, familiar from [F5's AFM contexts](/learn/bigip-afm-contexts-and-rule-processing): a rule whose matches are entirely covered by an earlier rule **never fires**. Order 10 allowing TCP/443 to Any makes order 20's block of TCP/443 to one hostile subnet pure decoration - the specific rule is *shadowed* by the general one above it. The discipline is the classic ordering doctrine: specific before general, exceptions above the rules they except, and every Allow audited for what it silently swallows. The [rule-order simulator](/tools/zscaler-firewall-rule-order-simulator) on this site exists to make the disease visible: paste a rule list, trace a flow through first-match, and see which rules are unreachable and which earlier rule eclipses them.
+
+## The operator's read
+
+Debug in evaluation order, literally: list the rules ascending; find the first enabled rule whose criteria all match the flow (remembering Any-means-ignored); that rule's action is the verdict - and if none matched, the default's action is, which out of the box means *blocked*. When a rule "does not work," the question is almost never the rule; it is which earlier rule matched first. Order is not a property of the policy. Order *is* the policy.

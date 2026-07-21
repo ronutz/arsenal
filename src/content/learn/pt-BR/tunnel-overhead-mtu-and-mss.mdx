@@ -1,0 +1,38 @@
+---
+slug: tunnel-overhead-mtu-and-mss
+title: "Overhead de Túnel, MTU e MSS: a Matemática de Bytes que Todo Túnel Deve"
+summary: "Todo túnel adiciona bytes, todo caminho tem um teto, e a diferença entre os dois é onde mora a lentidão misteriosa. O overhead que cada encapsulamento cobra, por que a fragmentação é a pior das três saídas, como o Path MTU Discovery deveria funcionar e como firewalls o quebram, e o MSS clamping - o conserto de uma linha que faz o TCP caber na primeira tentativa."
+concepts: ["mtu", "mss", "fragmentation", "pmtud", "overhead", "df bit", "tunnel", "fundamentals"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "jumbo-frames", "tcp-connection-lifecycle"]
+category: networking
+order: 173
+status: reviewed
+updated: "2026-07-21"
+---
+
+Um túnel é um passageiro dentro de um envelope, e envelopes têm peso. O caminho, por sua vez, tem uma balança em cada salto: a Maximum Transmission Unit (MTU), classicamente 1.500 bytes na Ethernet. No momento em que o encapsulamento empurra um pacote de tamanho cheio para além da balança, uma de três coisas acontece - fragmentação, uma dança de descoberta, ou um buraco negro silencioso - e qual delas você recebe decide se o túnel parece saudável ou mal-assombrado.
+
+## O que cada envelope cobra
+
+A conta depende do embrulho. O Generic Routing Encapsulation é o barato: um cabeçalho IP novo de 20 bytes mais um cabeçalho GRE de 4 bytes - **24 bytes**, [como detalha o artigo próprio](/learn/gre-tunnels-fundamentals). É por isso que a MTU de túnel clássica num caminho de 1.500 bytes é 1.500 − 24 = **1.476**.
+
+O IPsec cobra mais, e - honestamente - uma faixa em vez de uma constante, porque o total depende do modo e da cifra: um pacote ESP em modo túnel adiciona um cabeçalho IP externo novo, o cabeçalho ESP com seu Security Parameter Index e número de sequência, o vetor de inicialização da cifra, padding até o alinhamento da cifra, e a tag de integridade; o NAT Traversal ainda adiciona um cabeçalho UDP por cima. Com uma configuração moderna de AES-GCM, o número prático de planejamento cai na vizinhança de 70 e poucos bytes, e é exatamente por isso que a orientação de campo tantas vezes arredonda a MTU do túnel para baixo, para **1.400**, em vez de raspar até a borda teórica. [O artigo de IPsec](/learn/ipsec-and-ike-fundamentals) explica de onde vem cada um desses bytes; aqui a lição é mais simples - nunca assuma que a aritmética de um túnel se aplica a outro.
+
+Empilhe túneis e as cobranças se empilham: GRE sobre IPsec paga as duas contas.
+
+## Saída um: fragmentação, a ruim
+
+Roteadores IPv4 podem dividir um pacote grande demais em fragmentos que o host remoto precisa remontar. Funciona, e é o pior desfecho disponível: cada fragmento custa um cabeçalho, a perda de qualquer fragmento perde o pacote inteiro, middleboxes adoram descartar fragmentos de saída, e a remontagem queima memória no destino. Pior: o remetente frequentemente proíbe - o TCP moderno liga o bit **Don't Fragment (DF)** justamente para poder aprender o tamanho real do caminho - e nesse ponto um pacote grande demais não é dividido, e sim descartado, com um bilhete.
+
+## Saída dois: Path MTU Discovery, a frágil
+
+O bilhete é o mecanismo. Um roteador que precisa descartar um pacote marcado com DF devolve uma mensagem ICMP "Fragmentation Needed" carregando a MTU que ele teria conseguido encaminhar; o remetente encolhe e tenta de novo. Isso é o **Path MTU Discovery (PMTUD)**, e quando funciona o caminho se ajusta sozinho. Quando falha, falha em silêncio: algum firewall no caminho descarta o ICMP, o remetente nunca aprende, e a conexão exibe a assinatura do buraco negro de PMTUD - pacotes pequenos passam, handshakes passam, e então tudo trava no momento em que dados de verdade fluem. Se [o ciclo de vida do TCP](/learn/tcp-connection-lifecycle) abre mas o primeiro segmento de tamanho cheio morre, suspeite da balança, não da aplicação.
+
+## Saída três: MSS clamping, o conserto que funciona de primeira
+
+O TCP negocia seu Maximum Segment Size (MSS) no handshake - cada ponta anunciando a maior carga que se deve enviar a ela. Os valores de MSS viajam em texto claro por todos os dispositivos do caminho, e esse é o truque: um endpoint de túnel pode **reescrever para baixo o MSS anunciado** enquanto o SYN passa, de modo que as duas pontas simplesmente nunca construam um segmento grande demais para o envelope. Sem fragmentos, sem dependência de ICMP, sem latência de descoberta - o encaixe está certo desde o primeiro byte de dados. A aritmética é mecânica: MSS = MTU do túnel − 40 (20 de IP + 20 de TCP, mais com opções). Num túnel GRE de 1.476 bytes isso dá 1.436; num túnel conservador de 1.400, 1.360. O clamping só ajuda o TCP - protocolos baseados em UDP precisam manter seus datagramas modestos ou se apoiar no PMTUD - mas é no TCP que mora a maior parte da dor.
+
+## O hábito na prática
+
+A orientação de encaminhamento para nuvem torna o hábito concreto: a documentação de túneis da Zscaler (verificada em 2026-07-21) manda o operador definir a MTU do túnel como o **menor entre a MTU do appliance e a MTU medida do caminho**, e, quando o problema aparece mesmo assim, recuar para **1.400** - folga conservadora vencendo máximos teóricos, que é a sabedoria de campo numa frase. O pre-flight completo, para qualquer túnel em qualquer lugar: conheça o overhead do seu envelope, subtraia-o da menor MTU do caminho, configure o túnel ali, faça clamping do MSS para esse valor menos 40, e deixe o PMTUD ser rede de segurança em vez de parede de sustentação. Quadros maiores mudam os números mas não o método - [jumbo frames](/learn/jumbo-frames) apenas movem o teto.

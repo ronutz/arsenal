@@ -1,0 +1,38 @@
+---
+slug: ipsec-and-ike-fundamentals
+title: "IPsec and IKE: How Encrypted Tunnels Negotiate Themselves"
+summary: "IPsec is two jobs in one suite: IKE negotiates who you are and which keys to use; ESP carries the protected packets. IKEv1 versus IKEv2, what a security association actually is, tunnel versus transport mode, why NAT almost broke everything until NAT-T, and why encryption always costs throughput - with a live worked example of the capacity math."
+concepts: ["ipsec", "ike", "ikev2", "esp", "security association", "nat-t", "tunnel mode", "fundamentals"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["vpn-fundamentals", "gre-tunnels-fundamentals", "tunnel-overhead-mtu-and-mss", "nat-explained", "forward-secrecy"]
+category: networking
+order: 172
+status: reviewed
+updated: "2026-07-21"
+---
+
+Internet Protocol Security (IPsec) is best understood as two protocols wearing one name. The Internet Key Exchange (IKE) is the control plane: it authenticates the two ends and negotiates the cryptography. The Encapsulating Security Payload (ESP) is the data plane: it carries every protected packet once the negotiation is done. Confuse the two and IPsec seems mystical; separate them and it becomes a pair of understandable machines.
+
+## The control plane: IKE, and why version 2 won
+
+IKE runs over UDP port 500 and exists to answer three questions: are you who you claim to be, which algorithms shall we use, and what keys protect the traffic. The answers are stored as **security associations (SAs)** - one-directional contracts saying "traffic matching this, protected with these algorithms and these keys, until this lifetime expires." A working tunnel holds an IKE SA for the control channel plus a pair of ESP SAs, one per direction, each identified on the wire by a Security Parameter Index so the receiver knows which contract decrypts which packet.
+
+IKEv1 (1998) did the job in two famous phases - Phase 1 building the secure control channel, Phase 2 negotiating the traffic SAs - across a thicket of modes and messages that made interop a career. IKEv2 (RFC 7296, 2005 onward) collapsed the ceremony into cleaner exchanges: `IKE_SA_INIT` establishes the channel, `IKE_AUTH` proves identities and brings up the first traffic SA, and everything after rides `CREATE_CHILD_SA`. Version 2 also folded in what v1 bolted on: built-in **Dead Peer Detection (DPD)** liveness probes, native NAT traversal, and a saner rekey story. When a vendor document says "use IKEv2," the reasons are these, not fashion.
+
+Authentication itself is commonly one of two shapes: a pre-shared key - fine between two administered gateways, fragile at scale - or certificates. Peers may be named by address or, usefully for dynamic endpoints, by a fully qualified domain name.
+
+## The data plane: ESP, and the two modes
+
+ESP (protocol 50) wraps each protected packet with a header carrying the SPI and a sequence number (replay protection), encrypts the payload, and seals it with an integrity check - modern deployments use a combined AEAD cipher such as AES-GCM that does both at once. What sits inside depends on the mode. **Transport mode** protects just the payload between two hosts that are themselves the endpoints. **Tunnel mode** - the site-to-site norm - encapsulates the entire original IP packet and puts a fresh outer header in front, so whole networks hide behind two gateways. Tunnel mode is [the VPN pattern](/learn/vpn-fundamentals) made concrete: private addressing inside, ciphertext and gateway addresses outside.
+
+## The NAT problem, and the 4500 fix
+
+ESP has no ports - it is its own IP protocol - and its integrity check covers things [NAT](/learn/nat-explained) must rewrite. Classic NAT devices therefore mangled or dropped it, which nearly made IPsec unusable from behind the average office edge. The repair is **NAT Traversal (NAT-T)**: during IKE, both ends detect a NAT on the path and, if found, shift ESP inside UDP on port 4500, giving the NAT an honest UDP flow to track. One protocol-design consequence worth knowing: because the UDP source port varies per flow, several tunnels can share one public address and remain distinguishable - a property capacity planners exploit deliberately.
+
+## Why encryption costs throughput
+
+Every ESP packet is encrypted, authenticated, and expanded - ESP header, initialization vector, integrity tag, padding, and in tunnel mode a whole extra IP header. The bytes are [MTU arithmetic](/learn/tunnel-overhead-mtu-and-mss); the cycles are capacity. Even with hardware crypto, an encrypted tunnel moves fewer bits per second than a [bare GRE envelope](/learn/gre-tunnels-fundamentals) on the same box, and providers meter accordingly.
+
+A live worked example (figures verified against Zscaler's documentation, 2026-07-21): Zscaler Internet Access accepts IPsec from locations at up to **400 Mbps per public source IP address**. Need 800? The published options are exactly the protocol lessons above - either additional tunnels from **different public source addresses**, or multiple tunnels from the **same address using NAT-T with source-port randomization under IKEv2**, the port-varies property earning its keep. The recommended shape is always a primary and a secondary tunnel to service edges in different data centers, with DPD watching liveness - high availability by negotiation, not by hope.
+
+What IPsec asks of a design, then: identity material at both ends, IKEv2 unless something old forbids it, tunnel mode between gateways, NAT-T wherever an address translator lurks - and the honest acceptance that secrecy is bought in megabits.

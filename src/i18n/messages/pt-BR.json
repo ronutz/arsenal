@@ -5737,6 +5737,59 @@
         "none": "Estes métodos compartilham todas as propriedades da tabela.",
         "note": "Seguro e idempotente são promessas registradas na IANA sobre intenção, mecanicamente utilizáveis por caches, repetições e proxies - nunca garantias sobre o conteúdo do payload. Um corpo de QUERY merece a mesma inspeção de um corpo de POST."
       }
+    },
+    "zscaler-tunnel-chooser": {
+      "name": "Seletor de Túneis Zscaler",
+      "blurb": "Responda seis perguntas sobre uma localidade - banda, HA, IP estático, criptografia, suporte a GRE, NAT dos endpoints - e receba a recomendação determinística GRE vs IPsec com a contagem mínima de túneis, calculada a partir dos números publicados pela própria Zscaler, com cada passo exibido.",
+      "emptyState": "Informe a banda necessária da localidade em Mbps para calcular a recomendação - ou pressione Exemplo para carregar o caso de 2 Gbps da documentação.",
+      "runsLocally": "Roda inteiramente no seu navegador. Seis respostas entram, uma recomendação dimensionada sai - nada deixa a página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "panelHeading": "Restrições da localidade",
+      "mbpsLabel": "Banda necessária (Mbps)",
+      "mbpsPlaceholder": "ex.: 2000",
+      "haLabel": "Alta disponibilidade exigida?",
+      "staticIpLabel": "IP público de saída estático?",
+      "encryptionLabel": "Criptografia em trânsito exigida?",
+      "greSupportLabel": "Dispositivo de borda suporta GRE?",
+      "natedLabel": "Endpoints internos do túnel com source NAT?",
+      "yes": "Sim",
+      "no": "Não",
+      "errorTitle": "Ainda não dá para dimensionar",
+      "primariesLabel": "primário(s)",
+      "backupsLabel": "backup",
+      "perTunnelLabel": "Número por túnel",
+      "stepsTitle": "Como o seletor decidiu",
+      "prereqsTitle": "Tenha em mãos",
+      "notesTitle": "Notas operacionais"
+    },
+    "zscaler-firewall-rule-order-simulator": {
+      "name": "Simulador de ordem de regras do firewall ZIA",
+      "blurb": "Cole uma lista de regras de Firewall Filtering e um flow opcional: veja a avaliação em ordem crescente com parada na primeira correspondência, descubra qual regra (ou a regra padrão negar-por-padrão) decide, e receba achados de sombreamento em pares nomeando as regras que nunca podem disparar.",
+      "emptyState": "Cole regras (uma por linha: ordem | nome | allow|block|block-icmp | critérios), opcionalmente uma linha flow: - ou pressione Exemplo.",
+      "runsLocally": "Simulado inteiramente no seu navegador. Nada é enviado.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "inputLabel": "Regras, linhas opcionais flow: e default:",
+      "placeholder": "10 | allow-web | allow | proto=tcp port=443\nflow: proto=tcp port=443 dest=203.0.113.7",
+      "errorTitle": "Essa entrada não parseia",
+      "actionAllow": "Permitir",
+      "actionBlock": "Bloquear (silencioso)",
+      "actionBlockIcmp": "Bloquear + notificar (ICMP)",
+      "verdictRule": "A regra {order} · {name} decide este fluxo",
+      "verdictDefault": "Nenhuma regra correspondeu - a Default Firewall Filtering Rule decide",
+      "defaultLabel": "Ação da regra padrão",
+      "defaultExplicit": "definida pela sua linha default:",
+      "defaultImplicit": "disposição de fábrica da Zscaler",
+      "traceTitle": "Rastro de avaliação (crescente, para na primeira correspondência)",
+      "traceMatch": "CORRESPONDE → {action}. A avaliação para aqui.",
+      "traceSkipped": "desabilitada: pulada, mas mantém seu lugar na ordem",
+      "traceNoMatch": "sem correspondência (falhou em {criterion})",
+      "shadowsTitle": "Regras sombreadas (nunca podem disparar)",
+      "shadowHead": "A regra {order} · {name} está sombreada pela regra {byOrder} · {byName}",
+      "rulesTitle": "Política em ordem de avaliação",
+      "ruleDisabled": "desabilitada",
+      "notesTitle": "Notas"
     }
   },
   "privacy_page": {
@@ -12134,6 +12187,70 @@
       "service-provider": {
         "def": "O lado da aplicação numa federação: a parte que consome assertions ou tokens e concede acesso com base neles - o SP do SAML, o relying party do OIDC.",
         "context": "O sign-on iniciado no SP começa aqui - o usuário chega primeiro à aplicação, e ela o envia ao provedor de identidade com um pedido de autenticação."
+      },
+      "zero-trust-exchange": {
+        "def": "A plataforma de proxy globalmente distribuída da Zscaler: cada conexão termina num Service Edge, é identificada e inspecionada, e então completada adiante - origens conectam ao Exchange, o Exchange conecta aos destinos.",
+        "context": "A frase arquitetural por trás de ZIA, ZPA e ZDX: nada atravessa, tudo é intermediado."
+      },
+      "zia": {
+        "def": "Zscaler Internet Access: o assento de saída do Exchange - secure web gateway, firewall em nuvem e proteção de dados aplicados entre usuários e a internet/SaaS.",
+        "context": "O tráfego precisa ser encaminhado até ele primeiro - agente, túnel, PAC ou cadeia de proxy."
+      },
+      "zpa": {
+        "def": "Zscaler Private Access: acesso intermediado por aplicação e por sessão a apps privados - usuário e App Connector discam ambos para fora, um Service Edge costura os Microtunnels.",
+        "context": "Acesso a aplicações, nunca a redes; nada escuta de entrada."
+      },
+      "zdx": {
+        "def": "Zscaler Digital Experience: monitoramento da experiência do endpoint à aplicação usando os mesmos pontos de observação do caminho de dados intermediado.",
+        "context": "Saúde de dispositivo, rede e app medida de onde o tráfego realmente flui."
+      },
+      "zcc": {
+        "def": "Zscaler Client Connector: o agente de endpoint que autentica o usuário, classifica o estado da rede e encaminha o tráfego conforme seu forwarding profile.",
+        "context": "Dois documentos o governam: forwarding profile (encanamento) e app profile (política de plataforma)."
+      },
+      "public-service-edge": {
+        "def": "O nó de aplicação de política da Zscaler em seus data centers pelo mundo: termina sessões, aplica identidade e política, origina a conexão adiante; dados de pacote ficam em memória, nunca em disco.",
+        "context": "Antigamente ZEN em docs antigos; o Private Service Edge é seu irmão single-tenant."
+      },
+      "app-connector": {
+        "def": "A VM/contêiner leve do ZPA ao lado de uma aplicação privada, fazendo apenas conexões TLS de saída até Service Edges - registrado com provisioning key, descobrindo apps pela própria vantagem de DNS.",
+        "context": "Sem listener de entrada, o app está ausente da internet alcançável, não escondido atrás de algo."
+      },
+      "microtunnel": {
+        "def": "O fio por aplicação e por sessão de usuário do ZPA, viajando dentro das conexões TLS do cliente e do App Connector, costurado num Service Edge.",
+        "context": "A granularidade é o modelo de segurança: três apps, três Microtunnels."
+      },
+      "z-tunnel": {
+        "def": "O transporte do Client Connector até um Service Edge: o 1.0 é um túnel HTTP CONNECT moldado para web; o 2.0 fala TLS/DTLS e carrega todas as portas e protocolos.",
+        "context": "Implantações novas vão para o 2.0 - o túnel de dispositivo para todo o tráfego."
+      },
+      "surrogate-ip": {
+        "def": "Mecanismo do ZIA que mapeia um IP interno conhecido a um usuário autenticado por um período, para que tráfego incapaz de portar credenciais ainda receba política por usuário.",
+        "context": "O plano B da autenticação de proxy para o inautenticável - impressoras, ferramentas, clientes embarcados."
+      },
+      "forwarding-profile": {
+        "def": "O documento de encanamento de tráfego do ZCC: para cada estado de rede (on/off/VPN trusted) atribui a ação de encaminhamento - Z-Tunnel 1.0/2.0, Tunnel with Local Proxy, Enforce Proxy ou None para ZIA; Tunnel ou None para ZPA.",
+        "context": "A máquina de estados que deixa o agente sair de cena onde um túnel de localidade já carrega o site."
+      },
+      "trusted-network": {
+        "def": "Uma condição de rede detectada pelo ZCC, definida por critérios do admin - de preferência os servidores DNS e search domains estáticos, em vez de resolução dinâmica de hostname.",
+        "context": "Um critério instável classifica a rede errado e aplica a ação de encaminhamento errada."
+      },
+      "gre": {
+        "def": "Generic Routing Encapsulation: o envelope IP-em-IP mínimo (24 bytes com seu cabeçalho de entrega, protocolo 47) - sem criptografia, sem autenticação, só transporte.",
+        "context": "O envelope simples: os maiores tetos de túnel, sigilo zero."
+      },
+      "nat-t": {
+        "def": "NAT Traversal: o reparo do IPsec para tradução de endereços - detectar NAT no IKE e reembrulhar o ESP em UDP/4500 para que portas por fluxo voltem a existir.",
+        "context": "A propriedade da porta-que-varia que também permite múltiplos túneis num mesmo IP de origem."
+      },
+      "mss-clamping": {
+        "def": "Reescrever para baixo o Maximum Segment Size anunciado do TCP no SYN, para que segmentos caibam na MTU reduzida de um túnel sem fragmentação nem buracos negros.",
+        "context": "A fuga do lado do dispositivo para falhas de PMTUD: conserte a promessa, não o caminho."
+      },
+      "pmtud": {
+        "def": "Path MTU Discovery: enviar com Don't Fragment ligado e encolher ao receber ICMP Fragmentation Needed - que redes com filtragem excessiva quebram em silêncio.",
+        "context": "Quando o ICMP nunca chega, pacotes grandes somem: o clássico buraco negro de MTU."
       }
     },
     "totalCount": "{count} termos",

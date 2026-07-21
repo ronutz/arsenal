@@ -1817,7 +1817,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.01",
             text: "Given a scenario including a user's attributes from the IdP, identify the groups they will be placed into, and the policies that will be applied.",
-            relatedArticles: [],
+            relatedArticles: ["scim-overview"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1825,7 +1825,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.02",
             text: "Identify the steps to assign users to the appropriate groups with the appropriate access using ZIdentity.",
-            relatedArticles: [],
+            relatedArticles: ["scim-overview"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1833,7 +1833,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.03",
             text: "Given a scenario including creating or modifying a user group in Zscaler Zidentity, identify the next step to ensure policies apply to that group.",
-            relatedArticles: [],
+            relatedArticles: ["scim-overview"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1849,7 +1849,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.05",
             text: "Given a scenario including an organization that has strict BYOD policies, identify the appropriate ZCC deployment option that should be used.",
-            relatedArticles: [],
+            relatedArticles: ["proxy-user-authentication-methods", "zia-traffic-forwarding-methods", "zscaler-client-connector-profiles"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1865,7 +1865,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.07",
             text: "Given a scenario including an organization goal to ensure user devices are compliant before enabling access to the internet or private application, identify the next step that should be taken.",
-            relatedArticles: [],
+            relatedArticles: ["zscaler-client-connector-profiles"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1873,7 +1873,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.08",
             text: "Given a scenario in which an organization requires more stringent access control on traffic originating from off of the corporate network, identify the most logical place to put that policy.",
-            relatedArticles: [],
+            relatedArticles: ["zscaler-zero-trust-exchange-architecture", "zia-traffic-forwarding-methods"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1881,15 +1881,15 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.09",
             text: "Given a scenario where an administrator needs to connect to Zscaler a location that requires a certain bandwidth and requirements and no need for HA, identify the type of tunnels that should be used and the minimal amount needed to cover the requisites.",
-            relatedArticles: ["vpn-fundamentals"],
-            relatedTools: [],
+            relatedArticles: ["vpn-fundamentals", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss", "zscaler-tunnel-types-z-tunnel-gre-ipsec"],
+            relatedTools: ["zscaler-tunnel-chooser"],
             manualLinks: [],
             keyPoints: [],
           },
           {
             id: "ZDTA-A.10",
             text: "Given a merger and acquisition use case, identify the appropriate configurations necessary to ensure seamless access to internet and private applications.",
-            relatedArticles: [],
+            relatedArticles: ["nat-explained"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1897,15 +1897,15 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.11",
             text: "Given a scenario with an example of misordered firewall rules, identify how the rule set will be executed and identify any unintended risks associated with the rule set order.",
-            relatedArticles: [],
-            relatedTools: [],
+            relatedArticles: ["zia-cloud-firewall-rule-order"],
+            relatedTools: ["zscaler-firewall-rule-order-simulator"],
             manualLinks: [],
             keyPoints: [],
           },
           {
             id: "ZDTA-A.12",
             text: "Given a scenario to deploy ZPA App Connectors in VMs or Containerized environments, identify the necessary information to be communicated to the team.",
-            relatedArticles: [],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1915,7 +1915,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.01",
             text: "Given a scenario including requirements, identify the appropriate assets where SSL bypass can be implemented.",
-            relatedArticles: ["ssl-forward-proxy-interception"],
+            relatedArticles: ["ssl-forward-proxy-interception", "zia-ssl-inspection-policy-and-bypasses"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1923,7 +1923,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.02",
             text: "Given a scenario including an application that needs to be accessed, identify the bypass that would allow the application to be accessed in this situation.",
-            relatedArticles: ["ssl-forward-proxy-interception"],
+            relatedArticles: ["ssl-forward-proxy-interception", "zia-ssl-inspection-policy-and-bypasses"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1931,7 +1931,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.03",
             text: "Given a scenario and an example of a log, identify why access is being allowed despite an expected policy violation.",
-            relatedArticles: [],
+            relatedArticles: ["zia-ssl-inspection-policy-and-bypasses"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1987,7 +1987,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.10",
             text: "Given a scenario where various users need to access different applications, identify the App Segments that enable proper least privileged access.",
-            relatedArticles: [],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1995,7 +1995,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.11",
             text: "Given a scenario where various users need to access different applications, identify the proper access policies to enforce least privileged access.",
-            relatedArticles: [],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2035,15 +2035,15 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.16",
             text: "Given an image of rules in a specific order in the platform, identify how a group's access is impacted.",
-            relatedArticles: [],
-            relatedTools: [],
+            relatedArticles: ["zia-cloud-firewall-rule-order"],
+            relatedTools: ["zscaler-firewall-rule-order-simulator"],
             manualLinks: [],
             keyPoints: [],
           },
           {
             id: "ZDTA-B.17",
             text: "Given a scenario about least privilege access, identify the most effective way to achieve the outcome.",
-            relatedArticles: [],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2051,7 +2051,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.18",
             text: "Given a scenario about the need for defining network segmentation for a private application, identify the most effective network segmentation strategy that should be used.",
-            relatedArticles: [],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2059,7 +2059,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.19",
             text: "Given a scenario including a micro-segmentation policy and internal applications, identify how to refine the policy to enhance the security posture for internal applications.",
-            relatedArticles: [],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2067,7 +2067,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.20",
             text: "Given a scenario including specific requirements for client forwarding policies with client connector, identify the Client Connector Forwarding Profile action that will meet the requirements.",
-            relatedArticles: ["how-a-pac-file-chooses-a-proxy"],
+            relatedArticles: ["how-a-pac-file-chooses-a-proxy", "proxy-user-authentication-methods", "zscaler-client-connector-profiles"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2075,7 +2075,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.21",
             text: "Given a scenario including requirements for trusted network bypass rules, identify the proper set of client forwarding policies that bypass applications when on a specific network.",
-            relatedArticles: ["how-a-pac-file-chooses-a-proxy"],
+            relatedArticles: ["how-a-pac-file-chooses-a-proxy", "zia-traffic-forwarding-methods", "zscaler-client-connector-profiles"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2083,7 +2083,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.22",
             text: "Given a scenario about applying posture-based access criteria to enforce device compliance, identify the outcome of the criteria.",
-            relatedArticles: [],
+            relatedArticles: ["zscaler-client-connector-profiles"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2133,15 +2133,15 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-C.06",
             text: "Given a scenario including a screenshot of a policy rule and the hierarchy, identify the unintended policy interactions.",
-            relatedArticles: [],
-            relatedTools: [],
+            relatedArticles: ["zia-cloud-firewall-rule-order"],
+            relatedTools: ["zscaler-firewall-rule-order-simulator"],
             manualLinks: [],
             keyPoints: [],
           },
           {
             id: "ZDTA-C.07",
             text: "Given a scenario including policy logic and configuration information, identify how to improve the overall platform performance.",
-            relatedArticles: [],
+            relatedArticles: ["zia-cloud-firewall-rule-order"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2149,7 +2149,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-C.08",
             text: "Given a scenario including information on known threat actor groups, identify how to block the malicious domains or IPs in Zscaler policies to prevent further compromise.",
-            relatedArticles: ["tcp-connection-lifecycle"],
+            relatedArticles: ["tcp-connection-lifecycle", "zscaler-zero-trust-exchange-architecture"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2157,7 +2157,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-C.09",
             text: "Given a scenario where a private application is intermittently working for the same user, identify a likely cause and solution.",
-            relatedArticles: [],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],

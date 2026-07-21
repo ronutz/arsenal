@@ -1,0 +1,42 @@
+---
+slug: proxy-user-authentication-methods
+title: "Como um Proxy Sabe Quem Você É: Métodos de Autenticação de Usuário Inline"
+summary: "Política por usuário é a promessa inteira de um proxy inline - o que significa que o proxy precisa prender uma identidade a cada fluxo, inclusive aos que não conseguem fazer login. Os quatro padrões que funcionam: desafios explícitos 407, autenticação web por cookie, identidade afirmada por agente, e o compromisso do surrogate IP - mais onde cada um quebra, porque todos eles quebram em algum lugar."
+concepts: ["proxy", "authentication", "407", "cookie", "surrogate ip", "identity", "ntlm", "kerberos", "fundamentals"]
+relatedTools: []
+relatedArticles: ["http-proxy-forward-and-reverse", "kerberos-and-spnego", "how-a-pac-file-chooses-a-proxy", "ssl-forward-proxy-interception", "scim-overview"]
+category: security
+order: 174
+status: reviewed
+updated: "2026-07-21"
+---
+
+Um [forward proxy](/learn/http-proxy-forward-and-reverse) inline ganha o próprio sustento tomando decisões por usuário - este grupo pode alcançar aquela categoria, os downloads desta pessoa passam por inspeção mais dura, aquele terceirizado é registrado pelo nome. Tudo isso repousa sobre um pré-requisito no qual o marketing nunca se demora: para cada fluxo, o proxy precisa responder *quem é este?* - e fluxos não carregam nomes. Quatro padrões respondem a pergunta na prática, e saber onde cada um quebra é a maior parte da operação de proxies.
+
+## Padrão um: o desafio explícito (407)
+
+Quando um cliente está explicitamente configurado para usar um proxy - por configuração ou por [arquivo PAC](/learn/how-a-pac-file-chooses-a-proxy) - o HTTP dá ao proxy uma pista de autenticação própria. O proxy responde a uma requisição não autenticada com o status **407 Proxy Authentication Required** e um desafio `Proxy-Authenticate`; o cliente tenta de novo com credenciais em `Proxy-Authorization`. Os esquemas são a escada familiar: Basic (credenciais meramente codificadas - aceitável somente dentro de TLS), NTLM (um desafio-resposta legado do Windows), e Negotiate, que carrega [Kerberos via SPNEGO](/learn/kerberos-and-spnego) e alcança o ideal corporativo - single sign-on silencioso a partir da máquina no domínio, sem prompt, identidade criptográfica por conexão.
+
+Onde quebra: o desafio pressupõe um cliente que entenda 407. Navegadores entendem; uma longa cauda de ferramentas de linha de comando, dispositivos embarcados e aplicações com pilhas HTTP artesanais não entende, e simplesmente falha atrás de um proxy que autentica. Esquemas orientados a conexão como o NTLM também autenticam a *conexão*, que middleboxes com multiplexação conseguem embaralhar. E nada aqui ajuda tráfego que nunca fala HTTP.
+
+## Padrão dois: o login web e o cookie
+
+Proxies transparentes e de nuvem muitas vezes não podem contar com configuração do cliente, então tomam emprestado o padrão da própria web: a primeira requisição do navegador é redirecionada para um fluxo de identidade - tipicamente SAML ou OpenID Connect contra o provedor de identidade da organização, o mesmo diretório que o [provisionamento SCIM](/learn/scim-overview) mantém populado - e o sucesso planta um **cookie** que o proxy reconhece em cada requisição seguinte. A identidade vira uma propriedade da sessão do navegador.
+
+Onde quebra: cookies vivem em navegadores. Um atualizador de software, um cliente de e-mail, um serviço do sistema operacional - nenhum deles jamais completará uma dança de redirecionamento nem apresentará o cookie. Janelas anônimas e higiene de cookies "deslogam" usuários da rede. E o cookie tem escopo por user-agent, então dois navegadores numa mesma máquina autenticam duas vezes.
+
+## Padrão três: o agente afirma
+
+Instale software organizacional no endpoint e o problema de identidade se inverte: um agente conector já sabe quem está logado, autentica *a si mesmo* junto ao serviço de proxy, e encaminha o tráfego dentro de um túnel carimbado com identidade na origem. Cada pacote do dispositivo chega pré-atribuído - navegadores, atualizadores e linhas de comando igualmente - e é por isso que o modelo de agente domina as arquiteturas modernas de segurança em nuvem: a identidade viaja no transporte em vez de no protocolo.
+
+Onde quebra: o agente precisa estar instalado, o que exclui dispositivos de visitantes, hardware pessoal não gerenciado, servidores que ninguém ousa tocar, e impressoras. A cobertura é exatamente a pegada de implantação do software, nem mais.
+
+## Padrão quatro: o surrogate
+
+O que deixa o resto teimoso: usuário autenticado em registro, mas tráfego que não carrega credencial - os fluxos não navegador de uma máquina cujo dono *fez* login pelo padrão dois. A ponte pragmática é a **identidade surrogate**: tendo autenticado um usuário a partir de um dado endereço IP de origem, o proxy registra o mapeamento *este endereço = este usuário* por um tempo limitado, e atribui o restante do tráfego daquele endereço de acordo. A nuvem da Zscaler, por exemplo, chama o mecanismo exatamente assim - o padrão de surrogate IP é como o tráfego sem cookie de um usuário autenticado por cookie ainda cai na política certa e nos logs certos.
+
+Onde quebra está escrito no mecanismo: o mapeamento é tão verdadeiro quanto *um endereço, um usuário*. Atrás de [NAT](/learn/nat-explained) de operadora ou de escritório, em terminais compartilhados, em servidores multiusuário, o surrogate atribui a navegação de uma pessoa a uma multidão. O timeout de inatividade é um dial entre conveniência e deriva - longo demais e a próxima pessoa herda a identidade da anterior; curto demais e as lacunas de atribuição voltam. A surrogacia é um bom compromisso precisamente porque todos os envolvidos lembram que ela é um.
+
+## A realidade composta
+
+Nenhum projeto de produção escolhe um padrão só; eles se sobrepõem em camadas. Identidade de agente onde o agente alcança, autenticação por cookie para navegadores além dele, Kerberos onde configuração explícita e confiança de domínio se alinham, mapeamento surrogate para varrer o restante - e [inspeção TLS](/learn/ssl-forward-proxy-interception) por baixo, já que uma identidade que o proxy não enxerga se aplica a tráfego que ele não consegue ler. Quando a política por usuário falha, a pergunta de depuração nunca é *a autenticação está ligada?*, e sim *qual dos quatro padrões este fluxo específico pegou, e onde esse padrão quebra?*

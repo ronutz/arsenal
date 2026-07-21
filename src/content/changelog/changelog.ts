@@ -52,6 +52,43 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-21T17:21:35-03:00",
+    kind: "tool",
+    tools: ["zscaler-firewall-rule-order-simulator"],
+    title: "ZIA firewall rule-order simulator",
+    body: "Paste Firewall Filtering rules and a flow; watch ascending-order, first-match evaluation execute, with the deny-by-default Default rule catching fallthrough and pairwise shadow findings naming the rules that can never fire. Grounded in three pinned Zscaler Help pages; 14 golden vectors.",
+  },
+  {
+    date: "2026-07-21T17:21:35-03:00",
+    kind: "content",
+    tools: [],
+    title: "Zscaler wave 1b: the platform foundations, in en + pt-BR",
+    body: "Seven Learn articles land the Zscaler program's core: the Zero Trust Exchange architecture, ZIA traffic forwarding methods, the three tunnel types with Zscaler's published capacity figures, Client Connector forwarding and app profiles, ZPA's App Connectors and Service Edges, ZIA TLS inspection policy and bypasses, and the Cloud Firewall's rule-order semantics - each depending on the fundamentals layer shipped first, per the fundamentals-first standing rule.",
+  },
+  {
+    date: "2026-07-21T16:39:45-03:00",
+    kind: "tool",
+    tools: ["zscaler-tunnel-chooser"],
+    title: "Zscaler Tunnel Chooser: GRE vs IPsec, sized from the vendor's own figures",
+    body: "First native Zscaler tool. Six answers about a location - bandwidth, HA, static IP, encryption mandate, GRE support, endpoint NAT - return the deterministic tunnel recommendation with the minimum primary and backup counts, computed from Zscaler's published per-tunnel figures (GRE 1 Gbps, 250 Mbps under source NAT, IPsec 400 Mbps per source IP), every elimination step shown and sourced.",
+    links: [
+      { label: "Open the tool", href: "/tools/zscaler-tunnel-chooser" },
+      { label: "GRE fundamentals", href: "/learn/gre-tunnels-fundamentals" },
+    ],
+  },
+  {
+    date: "2026-07-21T16:39:45-03:00",
+    kind: "content",
+    title: "The fundamentals layer opens the Zscaler program (R-8)",
+    body: "Four vendor-neutral fundamentals articles land in English and Portuguese as the knowledge dependencies of the Zscaler wave: GRE tunnels, IPsec and IKE, tunnel overhead with MTU and MSS clamping, and how inline proxies authenticate users - the first program cut under the fundamentals-first coverage rule, with existing fundamentals linked rather than duplicated.",
+    links: [
+      { label: "GRE tunnels", href: "/learn/gre-tunnels-fundamentals" },
+      { label: "IPsec and IKE", href: "/learn/ipsec-and-ike-fundamentals" },
+      { label: "Tunnel overhead, MTU and MSS", href: "/learn/tunnel-overhead-mtu-and-mss" },
+      { label: "Proxy user authentication", href: "/learn/proxy-user-authentication-methods" },
+    ],
+  },
+  {
     date: "2026-07-21",
     time: "04:07",
     kind: "content",

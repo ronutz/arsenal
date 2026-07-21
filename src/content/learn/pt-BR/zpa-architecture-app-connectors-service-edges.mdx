@@ -1,0 +1,34 @@
+---
+slug: zpa-architecture-app-connectors-service-edges
+title: "Arquitetura do ZPA: Duas Chamadas de Saída e um Broker no Meio"
+summary: "O Zscaler Private Access não expõe nada: o usuário disca para fora, um App Connector ao lado da aplicação disca para fora, e um Service Edge costura os dois num Microtunnel por aplicação. Os componentes - App Connectors, Public e Private Service Edges, a Central Authority - o modelo de TLS de dentro para fora que torna os apps invisíveis, e por que o broker nunca inspeciona os dados que carrega."
+concepts: ["zscaler", "zpa", "app connector", "service edge", "microtunnel", "ztna", "inside-out", "central authority"]
+relatedTools: []
+relatedArticles: ["zscaler-zero-trust-exchange-architecture", "vpn-fundamentals", "tls-reverse-proxy-inbound", "tcp-connection-lifecycle", "zscaler-client-connector-profiles"]
+category: security
+order: 179
+status: reviewed
+updated: "2026-07-21"
+---
+
+O Zscaler Private Access (ZPA) é a parte [do Exchange](/learn/zscaler-zero-trust-exchange-architecture) que substitui o caminho de entrada por completo. Uma [VPN](/learn/vpn-fundamentals) responde "como os de fora entram" estendendo a rede para fora; o ZPA recusa a pergunta - nada entra, porque nada escuta. As duas pontas discam para fora, e um broker no meio emenda as chamadas. Cada afirmação abaixo está fundamentada na documentação de arquitetura da Zscaler, verificada em 2026-07-21.
+
+## O elenco, numa conexão
+
+Quatro componentes fazem uma sessão. O **Zscaler Client Connector** no dispositivo estabelece uma conexão TLS de saída até um **Service Edge** do ZPA. Um **App Connector** - uma VM ou contêiner leve implantado *ao lado* da aplicação privada, no data center ou nuvem onde ela vive - já fez o mesmo do seu lado: uma conexão TLS de saída até seu Service Edge mais próximo, estabelecida no enrollment e mantida aquecida. Quando o usuário solicita uma aplicação, a **Central Authority** - a metáfora da própria documentação é o cérebro e sistema nervoso da nuvem ZPA - avalia a política, e o Service Edge costura as duas pernas de saída num **Microtunnel (M-tunnel)**: um fio por aplicação, por sessão de usuário, viajando dentro daquelas conexões TLS. Vários usuários alcançando a mesma aplicação recebem cada um seus próprios Microtunnels; um usuário alcançando três aplicações segura três. A granularidade *é* o modelo de segurança.
+
+## De dentro para fora, e o que invisibilidade significa literalmente
+
+A propriedade que define o App Connector é fazer somente conexões de **saída**. Nenhuma porta de escuta encara a internet; nenhum nome DNS resolve para a aplicação; nenhuma regra de firewall de entrada existe para ser mal configurada. Um atacante varrendo em busca da aplicação não encontra nada para varrer - o app não está escondido atrás de algo, ele está simplesmente *ausente* da internet alcançável. O enrollment segue o mesmo formato: um connector é levantado com uma provisioning key, gera seu próprio material de chaves e se autentica para fora junto à nuvem ZPA, recebendo identidade em certificado de volta - identidade fluindo para fora, exposição nunca fluindo para dentro.
+
+O connector também é onde a resolução de nomes silenciosamente vira arquitetura: App Connectors usam DNS *do próprio ponto de vista deles* para descobrir aplicações e enumerar os endereços atrás do nome de uma aplicação - e é por isso que a documentação trata DNS funcional no connector como crítico, e por que "o app resolve para mim mas não pelo ZPA" é quase sempre uma pergunta sobre o que os resolvers *do connector* conseguem ver.
+
+## Edges públicos, edges privados, e o que um broker se recusa a fazer
+
+Service Edges vêm em duas implantações com um só trabalho. Os **Public Service Edges** rodam nos data centers da Zscaler pelo mundo, dimensionados para concorrência enorme; os **Private Service Edges** são o mesmo broker como instância single-tenant que a organização hospeda no próprio site ou nuvem - gerenciados pela Zscaler, registrados na nuvem ZPA, política sincronizada para baixo, úteis quando o caminho mais curto entre usuários e aplicações nunca precisa sair do prédio.
+
+A descrição do cargo tem uma omissão deliberada: para o Private Access, o Service Edge **não inspeciona os dados** que fluem pelos Microtunnels que ele intermedia - o fabricante declara o contraste com o ZIA com todas as letras, e o emparelha com a postura operacional de que Service Edges mantêm dados de pacote apenas em memória e nunca gravam em disco, transmitindo os logs de transação para o Log Streaming Service. O broker conecta e aplica *acesso*; ele não é um ponto de inspeção de conteúdo. Proteção de conteúdo para aplicações privadas é uma camada separada e explícita (o AppProtection da Zscaler), adicionada onde o projeto exige em vez de presumida.
+
+## Lendo como um operador
+
+O hábito das duas pernas do artigo da plataforma afia-se aqui em três: usuário até o Service Edge, App Connector até o Service Edge, e connector até a aplicação - [três realidades TCP](/learn/tcp-connection-lifecycle), cada uma com seus próprios modos de falha. Acesso negado é política na Central Authority; conectado-mas-nada-carrega aponta para a perna connector-aplicação ou para o DNS do connector; lento-para-um-usuário é o caminho do Microtunnel daquele usuário, não a aplicação. E o planejamento de capacidade é horizontal por doutrina: connectors são implantados em grupos, mais de um por localidade, porque atualizações e falhas são absorvidas pelos pares - a mesma filosofia de adicionar-outro-nó que o Exchange inteiro pratica, aplicada à porta da aplicação.

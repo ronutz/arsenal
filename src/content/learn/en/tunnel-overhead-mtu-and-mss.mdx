@@ -1,0 +1,38 @@
+---
+slug: tunnel-overhead-mtu-and-mss
+title: "Tunnel Overhead, MTU, and MSS: The Byte Math Every Tunnel Owes"
+summary: "Every tunnel adds bytes, every path has a ceiling, and the difference between the two is where mysterious slowness lives. The overhead each encapsulation charges, why fragmentation is the worst of the three escapes, how Path MTU Discovery is supposed to work and how firewalls break it, and MSS clamping - the one-line fix that makes TCP fit on the first try."
+concepts: ["mtu", "mss", "fragmentation", "pmtud", "overhead", "df bit", "tunnel", "fundamentals"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "jumbo-frames", "tcp-connection-lifecycle"]
+category: networking
+order: 173
+status: reviewed
+updated: "2026-07-21"
+---
+
+A tunnel is a passenger inside an envelope, and envelopes have weight. The path, meanwhile, has a scale at every hop: the Maximum Transmission Unit (MTU), classically 1,500 bytes on Ethernet. The moment encapsulation pushes a full-size packet past the scale, one of three things happens - fragmentation, a discovery dance, or a quiet black hole - and which one you get decides whether the tunnel feels fine or haunted.
+
+## What each envelope charges
+
+The bill depends on the wrapper. Generic Routing Encapsulation is the cheap one: a fresh 20-byte IP header plus a 4-byte GRE header - **24 bytes**, [as its own article details](/learn/gre-tunnels-fundamentals). That is why the classic tunnel MTU on a 1,500-byte path is 1,500 − 24 = **1,476**.
+
+IPsec charges more, and - honestly - a range rather than a constant, because the total depends on mode and cipher: a tunnel-mode ESP packet adds a new outer IP header, the ESP header with its Security Parameter Index and sequence number, the cipher's initialization vector, padding to the cipher's alignment, and the integrity tag; NAT Traversal adds a UDP header on top. With a modern AES-GCM configuration the practical planning figure lands in the vicinity of 70-plus bytes, which is exactly why field guidance so often rounds the tunnel MTU down to **1,400** rather than shaving to a theoretical edge. [The IPsec article](/learn/ipsec-and-ike-fundamentals) explains where each of those bytes comes from; here the lesson is simpler - never assume one tunnel's arithmetic applies to another's.
+
+Stack tunnels and the charges stack: GRE over IPsec pays both bills.
+
+## Escape one: fragmentation, the bad one
+
+IPv4 routers may split an oversized packet into fragments the far host must reassemble. It works, and it is the worst available outcome: every fragment costs a header, loss of any fragment loses the whole packet, middleboxes love to drop fragments outright, and reassembly burns memory at the destination. Worse, the sender often forbids it - modern TCP sets the **Don't Fragment (DF)** bit precisely so it can learn the real path size - at which point an oversized packet is not split but discarded, with a note.
+
+## Escape two: Path MTU Discovery, the fragile one
+
+The note is the mechanism. A router that must drop a DF-marked packet returns an ICMP "Fragmentation Needed" message carrying the MTU it could have forwarded; the sender shrinks and retries. That is **Path MTU Discovery (PMTUD)**, and when it works the path tunes itself. When it fails, it fails silently: some firewall along the way discards the ICMP, the sender never learns, and the connection exhibits the signature of a PMTUD black hole - small packets fine, handshakes fine, then a stall the moment real data flows. If [the TCP lifecycle](/learn/tcp-connection-lifecycle) opens but the first full-size segment dies, suspect the scale, not the application.
+
+## Escape three: MSS clamping, the fix that works on the first try
+
+TCP negotiates its Maximum Segment Size (MSS) in the handshake - each end announcing the largest payload it should be sent. The MSS values ride in clear text through every device on the path, and that is the trick: a tunnel endpoint can **rewrite the advertised MSS downward** as the SYN passes, so both ends simply never build a segment too big for the envelope. No fragments, no ICMP dependency, no discovery latency - the fit is right from the first data byte. The arithmetic is mechanical: MSS = tunnel MTU − 40 (20 IP + 20 TCP, more with options). On a 1,476-byte GRE tunnel that is 1,436; on a 1,400-byte conservative tunnel, 1,360. Clamping only helps TCP - UDP-based protocols must keep their datagrams modest or lean on PMTUD - but TCP is where most of the pain lives.
+
+## The worked habit
+
+Cloud-forwarding guidance makes the habit concrete: Zscaler's tunnel documentation (verified 2026-07-21) tells operators to set the tunnel MTU to the **lower of the appliance MTU and the measured path MTU**, and, when trouble appears anyway, to fall back to **1,400** - conservative headroom beating theoretical maxima, which is field wisdom in one sentence. The full pre-flight, for any tunnel anywhere: know your envelope's overhead, subtract it from the smallest MTU on the path, set the tunnel there, clamp MSS to that minus 40, and let PMTUD be a safety net instead of a load-bearing wall. Larger frames change the numbers but not the method - [jumbo frames](/learn/jumbo-frames) simply move the ceiling.

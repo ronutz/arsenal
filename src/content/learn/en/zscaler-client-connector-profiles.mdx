@@ -1,0 +1,32 @@
+---
+slug: zscaler-client-connector-profiles
+title: "Client Connector Profiles: Where the Endpoint Decides How to Forward"
+summary: "Zscaler Client Connector's behavior is two documents deep: the forwarding profile decides how traffic leaves the device in each network state, and the app profile decides platform policy - bypasses, PAC files, certificates. The three network states, the trusted-network criteria that switch between them, why DNS beats hostname resolution for detection, and the bypass mechanics that keep VPNs and pinned apps alive."
+concepts: ["zscaler", "client connector", "zcc", "forwarding profile", "app profile", "trusted network", "z-tunnel", "bypass"]
+relatedTools: []
+relatedArticles: ["zia-traffic-forwarding-methods", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "how-a-pac-file-chooses-a-proxy", "proxy-user-authentication-methods", "zscaler-zero-trust-exchange-architecture"]
+category: security
+order: 178
+status: reviewed
+updated: "2026-07-21"
+---
+
+Zscaler Client Connector (ZCC) is [the forwarding method that travels](/learn/zia-traffic-forwarding-methods), and its intelligence lives in two configuration documents that new operators routinely confuse. The **forwarding profile** answers *how does traffic leave this device, in this network situation* - it is the traffic-plumbing document. The **app profile** answers *what platform policy applies to this installation* - per-operating-system settings, bypass lists, PAC references, certificate handling. Keep the split straight (plumbing versus policy) and the portal stops being a maze. Everything below is grounded in the vendor's Client Connector documentation, verified 2026-07-21.
+
+## The three network states
+
+The forwarding profile's core is a small state machine. ZCC continuously classifies the device's situation as **on trusted network** (the corporate LAN, as defined below), **off trusted network** (everywhere else - the coffee shop, home), or **VPN trusted network** (a third-party VPN is up). For each state, the profile assigns a forwarding action. For ZIA the menu is: Z-Tunnel 1.0, Z-Tunnel 2.0, Tunnel with Local Proxy, Enforce Proxy, or None; for ZPA it is simply Tunnel or None. The composition this enables is the point: a common design forwards through [Z-Tunnel 2.0](/learn/zscaler-tunnel-types-z-tunnel-gre-ipsec) when off-network, and switches to None on the trusted network where a location tunnel already carries the site - the agent standing down precisely where forwarding twice would hurt. The vendor's interoperability guidance adds a sharp edge worth quoting in spirit: route-based tunnel modes work at the same layer as VPN clients, so for the VPN-trusted state the recommendation is to avoid Tunnel (Route-Based) and let the states keep out of each other's way.
+
+## Trusted-network detection: prefer the static
+
+The state machine is only as good as its sensor. A **trusted network** is defined by criteria the admin sets, and the documentation's recommendation is unambiguous: prefer the *static* properties - the **DNS servers** the corporate network hands out and the **DNS search domains** on the adapter - over the *dynamic* one, **hostname-and-IP resolution**, in which ZCC must resolve a name and check the answer. Resolution can fail mid-transition between networks; when it does, the app concludes it is on an untrusted network and applies the wrong forwarding action - a misdetection that presents as "Zscaler broke on the office Wi-Fi" and is really a sensor choice. Combining DNS server plus search domain gives the highest-assurance signal, straight from the vendor's own best practice.
+
+## The app profile: bypasses, PAC, and platform policy
+
+The app profile is where per-platform reality lives. Its most operationally important feature is the **bypass machinery**: destinations that must not enter the tunnel. The canonical case is VPN-gateway coexistence - the profile's VPN gateway bypass list takes addresses, subnets, or FQDNs, and the documentation's caveats are the kind that only come from field pain: FQDNs are resolved *at tunnel start*, so a name that later resolves elsewhere may not stay bypassed (prefer IPs and subnets); long FQDN lists slow tunnel startup because every name is resolved first; and for Z-Tunnel 1.0 and Tunnel with Local Proxy, subdomains of listed FQDNs are bypassed too unless an option says otherwise. The same profile carries the [PAC file references](/learn/how-a-pac-file-chooses-a-proxy) that steer forwarding-time proxy selection, and platform items such as installing the Zscaler root certificate - each a small lever with a large blast radius.
+
+Process- and application-level bypasses extend the idea to software that will never tolerate an inline proxy - certificate-pinning agents being the classic residents of that list, for reasons [the identity article's patterns](/learn/proxy-user-authentication-methods) and the TLS-inspection story make predictable.
+
+## Reading a ZCC problem like an operator
+
+The debugging order falls out of the architecture: first, *which network state does the agent believe it is in* (the sensor), then *what forwarding action does the profile assign that state* (the plumbing), then *which bypasses touched this destination* (the exceptions), and only then the tunnel itself. Most "the agent is broken" tickets are one of the first three - a detection criterion that flickered, a state mapped to an action nobody revisited, or a bypass list with one entry too many. The profiles are small documents; the discipline is knowing which one owns the symptom.

@@ -1,0 +1,40 @@
+---
+slug: gre-tunnels-fundamentals
+title: "Túneis GRE: o Envelope Mais Simples do Networking"
+summary: "O Generic Routing Encapsulation coloca um pacote dentro de outro e não pede mais nada do caminho - sem criptografia, sem autenticação, apenas um envelope com endereço de entrega. Por que essa simplicidade é o ponto: a anatomia de 24 bytes, o que o GRE consegue carregar que o roteamento puro não consegue, a questão dos keepalives, e a troca que o projetista aceita ao escolher GRE em vez de um túnel cifrado."
+concepts: ["gre", "tunnel", "encapsulation", "overhead", "protocol 47", "fundamentals"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["vpn-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss", "nat-explained"]
+category: networking
+order: 171
+status: reviewed
+updated: "2026-07-21"
+---
+
+O Generic Routing Encapsulation (GRE) é o túnel mais simples que uma rede pode construir: pegue um pacote, coloque um pequeno cabeçalho na frente dele, coloque um novo cabeçalho IP na frente disso, e envie o resultado a um endpoint de túnel que desembrulha e encaminha o que estava dentro. Esse é o protocolo inteiro. Definido na RFC 2784 (com as extensões opcionais de chave e sequência na RFC 2890), o GRE deliberadamente faz menos do que quase qualquer outro túnel - e as situações em que ele vence são exatamente aquelas em que fazer menos é a vantagem.
+
+## A anatomia: 24 bytes sobre IPv4
+
+Um pacote GRE sobre IPv4 tem três camadas. O envelope externo é um cabeçalho IP normal - 20 bytes - cujo campo de protocolo carrega o valor 47, o número registrado para o GRE. Em seguida vem o cabeçalho GRE em si: na sua forma mínima mais comum, apenas 4 bytes declarando o que é a carga (o tipo de protocolo, usando a mesma numeração que a Ethernet usa). Depois, o passageiro: o pacote original, intocado.
+
+Vinte mais quatro é o número que vale memorizar: **24 bytes de overhead** em cada pacote. Parece trivial até encontrar um caminho de 1.500 bytes - um pacote passageiro de tamanho cheio não cabe mais, e algo precisa ceder: fragmentação, uma MTU de túnel menor, ou o ajuste do que os endpoints enviam. Essa aritmética importa o bastante para merecer [artigo próprio](/learn/tunnel-overhead-mtu-and-mss); aqui basta saber que o envelope custa 24 bytes e que a conta sempre chega.
+
+## O que o envelope compra
+
+O roteamento IP puro entrega um pacote pelo endereço de destino, pelo caminho que as tabelas de roteamento escolherem. O GRE quebra essa restrição de um jeito útil: o destino do cabeçalho externo é o endpoint do túnel, então o passageiro cruza redes que jamais poderiam roteá-lo nativamente. Endereços privados da RFC 1918 atravessam a internet pública. Tráfego multicast e de protocolos de roteamento - que a maioria das redes de trânsito descarta ou ignora - viaja dentro de envelopes unicast, e é por isso que adjacências de roteamento sobre GRE são um projeto clássico. Um protocolo que o meio do caminho nunca viu viaja sem problema, porque o meio só lê o lado de fora.
+
+A segunda compra é topológica: um túnel é uma interface. Dois roteadores com um túnel GRE entre si se comportam como se um fio os conectasse, seja qual for a geografia por baixo. Políticas, rotas e medições podem se prender a esse fio virtual como se prenderiam a um físico.
+
+## O que o GRE se recusa a fazer
+
+O GRE não oferece confidencialidade, integridade nem autenticação. O envelope é transparente como um cartão-postal: qualquer um no caminho lê o passageiro tão facilmente quanto o embrulho. Não há handshake nem sessão - o túnel "existe" no momento em que as duas pontas estão configuradas, e um endpoint GRE decapsula de bom grado o que chegar alegando protocolo 47, razão pela qual filtrar nos endpoints importa.
+
+Ser stateless também significa que o GRE não avisa quando cai. O protocolo de linha continua up enquanto a ponta remota está inalcançável, silenciosamente jogando tráfego num buraco negro. O remédio padrão são os **keepalives** - um endpoint envia periodicamente uma sonda construída para que a ponta remota a reflita; faltas marcam o túnel como down. Onde keepalives não estão disponíveis, os projetos se apoiam num protocolo de roteamento ou numa sonda de SLA através do túnel para detectar falha - a saúde precisa ser adicionada, porque o GRE vem sem ela de fábrica.
+
+Nada disso é defeito. A criptografia de uma [VPN](/learn/vpn-fundamentals) custa ciclos, estado e complexidade; o GRE não gasta nada disso, e é por isso que roteadores o encaminham em line rate no hardware e por isso ele continua sendo a resposta padrão quando o requisito é "carregue isto até lá" em vez de "esconda isto de todo mundo".
+
+## Escolhendo GRE, num exemplo prático
+
+Serviços de segurança em nuvem que recebem tráfego encaminhado tornam a troca concreta. O serviço Internet Access da Zscaler aceita tráfego de localidades por GRE ou IPsec, e sua orientação publicada (verificada em 2026-07-21) captura a decisão clássica: um túnel GRE é suportado até **1 Gbps** - mas apenas **250 Mbps** se os endereços internos do endpoint do túnel passarem por source NAT, porque o serviço balanceia carga usando esses endereços internos e o [NAT](/learn/nat-explained) os colapsa. Precisa de mais de um gigabit? Adicione túneis com endereços públicos de origem diferentes - dois primários e dois de backup para 2 Gbps. As precondições do GRE são igualmente clássicas: um endereço público de saída estático e um dispositivo que fale o protocolo; onde qualquer um dos dois falta, a alternativa cifrada assume - e é aí que [IPsec e IKE](/learn/ipsec-and-ike-fundamentals) continuam a história.
+
+Os fundamentos a levar adiante: 24 bytes, protocolo 47, sem sigilo, sem saúde embutida, e em troca - velocidade, simplicidade, e a capacidade de carregar qualquer coisa até onde o cabeçalho externo alcançar.

@@ -1,0 +1,34 @@
+---
+slug: zia-cloud-firewall-rule-order
+title: "Cloud Firewall do ZIA: a Ordem das Regras É o Jogo Inteiro"
+summary: "A política de Firewall Filtering é uma máquina de primeira correspondência: regras avaliadas em ordem crescente, a avaliação para no primeiro acerto, e a regra padrão indeletável no fundo bloqueia tudo o que caiu através. A anatomia das regras, a convenção any-significa-ignorado, regras desabilitadas que guardam o lugar, o padrão de política recomendada, e a falha de sombreamento que a ordem torna possível."
+concepts: ["zscaler", "zia", "cloud firewall", "rule order", "first match", "default rule", "shadowing", "network services"]
+relatedTools: ["zscaler-firewall-rule-order-simulator"]
+relatedArticles: ["zscaler-zero-trust-exchange-architecture", "zia-traffic-forwarding-methods", "bigip-afm-contexts-and-rule-processing", "zia-ssl-inspection-policy-and-bypasses"]
+category: security
+order: 181
+status: reviewed
+updated: "2026-07-21"
+---
+
+O Cloud Firewall do Zscaler Internet Access (ZIA) estende o controle [do Exchange](/learn/zscaler-zero-trust-exchange-architecture) para além do tráfego web, a cada porta e protocolo que um fluxo encaminhado pode carregar - e seu motor de políticas é uma máquina simples o bastante para caber numa frase e rica o bastante para ser mal configurada por anos: **as regras são avaliadas em ordem numérica crescente, e a avaliação para na primeira correspondência**. Tudo abaixo são as consequências dessa frase, fundamentadas na documentação de Firewall Filtering da Zscaler, verificada em 2026-07-21.
+
+## A anatomia de uma regra
+
+Uma regra de Firewall Filtering é um número de ordem, um nome, um conjunto de critérios e uma ação. As dimensões de critério são largas - usuários, grupos e departamentos; localidades; **network services** (definições de protocolo e porta - HTTP na 80, HTTPS na 443, DNS na 53 por padrão, mais serviços customizados); network applications; grupos e endereços IP de origem (individual, sub-rede ou faixa); endereços, FQDNs e países de destino; níveis de confiança do dispositivo; janelas de tempo. Uma convenção faz trabalho silencioso e estrutural: **critério não definido significa Any, e Any significa ignorado durante a avaliação**. Uma regra com apenas um network service definido corresponde àquele serviço para todo mundo, em todo lugar. A maioria dos over-matches acidentais é esta convenção esquecida.
+
+As ações completam o conjunto de verbos que o fabricante descreve: **permitir** o tráfego, **bloqueá-lo silenciosamente** (drop), ou **bloquear informando o cliente** - o sabor com erro ICMP que deixa a outra ponta falhar rápido em vez de esperar timeout. Regras desabilitadas guardam mais uma sutileza que merece sua frase: uma regra desabilitada não é aplicada, mas *mantém seu lugar na ordem* - o serviço a pula e segue adiante - então reabilitá-la depois restaura exatamente a precedência que ela sempre teve.
+
+## A regra padrão: o piso que bloqueia
+
+No fundo senta a **Default Firewall Filtering Rule** - sempre a menor precedência, indeletável, seus critérios fixos (ela corresponde ao que sobreviveu), apenas sua ação e logging editáveis, e isso somente por super admins. Sua disposição de fábrica é a personalidade inteira do projeto: **quando o firewall é habilitado, a regra padrão bloqueia todo o tráfego** da rede para a internet. O firewall do ZIA nasce negar-por-padrão; nada flui até que uma regra de ordem superior permita. O padrão de política recomendada do fabricante constrói exatamente sobre esse piso: mantenha a padrão bloqueando, e escreva permissões granulares de ordem alta - começando por uma regra que permita os network services de HTTP, HTTPS e DNS, porque esses precisam passar pelo firewall para que o proxy web e o DNS Control recebam qualquer coisa para avaliar. Uma regra de firewall que estrangula a porta 53 não protege o DNS; ela deixa faminto o módulo que o protegeria.
+
+Entre as suas regras e a padrão, a plataforma também assenta **regras predefinidas** - entradas gerenciadas pelo sistema, como a regra de conectividade do Office 365 e a regra do tráfego de serviço da própria Zscaler - que ocupam posições relativas às regras de admin; e onde o **Admin Rank** está habilitado, o rank de um administrador limita quais valores de ordem ele pode atribuir, de modo que as regras de um admin de rank superior sempre precedem as de um inferior.
+
+## Sombreamento: o modo de falha que a ordem inventa
+
+Motores de primeira correspondência compartilham a mesma doença, familiar [dos contextos do AFM da F5](/learn/bigip-afm-contexts-and-rule-processing): uma regra cujas correspondências são inteiramente cobertas por uma regra anterior **nunca dispara**. A ordem 10 permitindo TCP/443 para Any faz do bloqueio na ordem 20, de TCP/443 para uma sub-rede hostil, pura decoração - a regra específica está *sombreada* pela geral acima dela. A disciplina é a doutrina clássica de ordenação: específico antes do geral, exceções acima das regras que excetuam, e cada Allow auditado pelo que engole em silêncio. O [simulador de ordem de regras](/tools/zscaler-firewall-rule-order-simulator) deste site existe para tornar a doença visível: cole uma lista de regras, trace um fluxo pela primeira correspondência, e veja quais regras são inalcançáveis e qual regra anterior as eclipsa.
+
+## A leitura do operador
+
+Depure na ordem de avaliação, literalmente: liste as regras em ordem crescente; encontre a primeira regra habilitada cujos critérios todos correspondem ao fluxo (lembrando que Any significa ignorado); a ação dessa regra é o veredito - e se nenhuma correspondeu, a ação da padrão é, o que de fábrica significa *bloqueado*. Quando uma regra "não funciona", a pergunta quase nunca é a regra; é qual regra anterior correspondeu primeiro. Ordem não é uma propriedade da política. Ordem *é* a política.

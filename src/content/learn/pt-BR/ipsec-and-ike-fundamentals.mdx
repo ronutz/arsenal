@@ -1,0 +1,38 @@
+---
+slug: ipsec-and-ike-fundamentals
+title: "IPsec e IKE: Como Túneis Cifrados Negociam a Si Mesmos"
+summary: "IPsec são dois trabalhos numa suíte só: o IKE negocia quem você é e quais chaves usar; o ESP carrega os pacotes protegidos. IKEv1 versus IKEv2, o que uma security association realmente é, modo túnel versus transporte, por que o NAT quase quebrou tudo até o NAT-T, e por que criptografia sempre custa throughput - com um exemplo prático e vivo da matemática de capacidade."
+concepts: ["ipsec", "ike", "ikev2", "esp", "security association", "nat-t", "tunnel mode", "fundamentals"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["vpn-fundamentals", "gre-tunnels-fundamentals", "tunnel-overhead-mtu-and-mss", "nat-explained", "forward-secrecy"]
+category: networking
+order: 172
+status: reviewed
+updated: "2026-07-21"
+---
+
+O Internet Protocol Security (IPsec) é melhor entendido como dois protocolos usando um só nome. O Internet Key Exchange (IKE) é o plano de controle: autentica as duas pontas e negocia a criptografia. O Encapsulating Security Payload (ESP) é o plano de dados: carrega cada pacote protegido depois que a negociação termina. Confunda os dois e o IPsec parece místico; separe-os e ele vira um par de máquinas compreensíveis.
+
+## O plano de controle: IKE, e por que a versão 2 venceu
+
+O IKE roda sobre UDP porta 500 e existe para responder três perguntas: você é quem diz ser, quais algoritmos vamos usar, e quais chaves protegem o tráfego. As respostas ficam guardadas como **security associations (SAs)** - contratos unidirecionais dizendo "tráfego que casa com isto, protegido com estes algoritmos e estas chaves, até este tempo de vida expirar". Um túnel funcional mantém uma SA de IKE para o canal de controle mais um par de SAs de ESP, uma por direção, cada uma identificada no fio por um Security Parameter Index para que o receptor saiba qual contrato decifra qual pacote.
+
+O IKEv1 (1998) fazia o trabalho em duas fases famosas - a Fase 1 construindo o canal de controle seguro, a Fase 2 negociando as SAs de tráfego - através de um matagal de modos e mensagens que fez da interoperabilidade uma carreira. O IKEv2 (RFC 7296, de 2005 em diante) colapsou a cerimônia em trocas mais limpas: `IKE_SA_INIT` estabelece o canal, `IKE_AUTH` prova as identidades e levanta a primeira SA de tráfego, e tudo depois viaja em `CREATE_CHILD_SA`. A versão 2 também incorporou o que a v1 tinha de remendo: sondas de vivacidade **Dead Peer Detection (DPD)** embutidas, travessia de NAT nativa, e uma história de rekey mais sã. Quando um documento de fabricante diz "use IKEv2", as razões são essas, não moda.
+
+A autenticação em si costuma ter uma de duas formas: uma chave pré-compartilhada - adequada entre dois gateways administrados, frágil em escala - ou certificados. Os peers podem ser nomeados por endereço ou, útil para endpoints dinâmicos, por um fully qualified domain name.
+
+## O plano de dados: ESP, e os dois modos
+
+O ESP (protocolo 50) embrulha cada pacote protegido com um cabeçalho carregando o SPI e um número de sequência (proteção contra replay), cifra a carga, e sela com uma verificação de integridade - implantações modernas usam uma cifra AEAD combinada como AES-GCM que faz as duas coisas de uma vez. O que fica dentro depende do modo. O **modo transporte** protege apenas a carga entre dois hosts que são eles próprios os endpoints. O **modo túnel** - a norma site-to-site - encapsula o pacote IP original inteiro e coloca um cabeçalho externo novo na frente, de modo que redes inteiras se escondem atrás de dois gateways. O modo túnel é [o padrão de VPN](/learn/vpn-fundamentals) tornado concreto: endereçamento privado dentro, texto cifrado e endereços de gateway fora.
+
+## O problema do NAT, e o conserto na 4500
+
+O ESP não tem portas - é seu próprio protocolo IP - e sua verificação de integridade cobre coisas que o [NAT](/learn/nat-explained) precisa reescrever. Dispositivos de NAT clássicos, portanto, o mutilavam ou descartavam, o que quase tornou o IPsec inutilizável de trás da borda típica de escritório. O reparo é o **NAT Traversal (NAT-T)**: durante o IKE, as duas pontas detectam um NAT no caminho e, se encontrarem, movem o ESP para dentro de UDP na porta 4500, dando ao NAT um fluxo UDP honesto para rastrear. Uma consequência de projeto que vale conhecer: como a porta UDP de origem varia por fluxo, vários túneis podem compartilhar um endereço público e continuar distinguíveis - uma propriedade que planejadores de capacidade exploram de propósito.
+
+## Por que criptografia custa throughput
+
+Cada pacote ESP é cifrado, autenticado e expandido - cabeçalho ESP, vetor de inicialização, tag de integridade, padding, e no modo túnel um cabeçalho IP extra inteiro. Os bytes são [aritmética de MTU](/learn/tunnel-overhead-mtu-and-mss); os ciclos são capacidade. Mesmo com criptografia em hardware, um túnel cifrado move menos bits por segundo do que um [envelope GRE puro](/learn/gre-tunnels-fundamentals) na mesma caixa, e os provedores mediram de acordo.
+
+Um exemplo prático e vivo (números verificados contra a documentação da Zscaler, 2026-07-21): o Zscaler Internet Access aceita IPsec de localidades a até **400 Mbps por endereço IP público de origem**. Precisa de 800? As opções publicadas são exatamente as lições de protocolo acima - ou túneis adicionais a partir de **endereços públicos de origem diferentes**, ou múltiplos túneis a partir do **mesmo endereço usando NAT-T com randomização de porta de origem sob IKEv2**, a propriedade da porta-que-varia pagando o próprio salário. O formato recomendado é sempre um túnel primário e um secundário para service edges em data centers diferentes, com DPD vigiando a vivacidade - alta disponibilidade por negociação, não por esperança.
+
+O que o IPsec pede de um projeto, então: material de identidade nas duas pontas, IKEv2 a menos que algo antigo proíba, modo túnel entre gateways, NAT-T onde quer que um tradutor de endereços espreite - e a aceitação honesta de que sigilo se compra em megabits.
