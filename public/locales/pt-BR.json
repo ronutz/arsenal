@@ -7423,9 +7423,10 @@
     "readingTitle": "Leitura",
     "readingBody": "As dicas de glossário embutidas adicionam um sublinhado tracejado sutil à primeira menção de um termo técnico em um artigo. Passe o mouse ou toque para ver uma definição curta, com um link para a entrada completa do glossário. Esta é uma preferência apenas deste dispositivo.",
     "hintToggleLabel": "Dicas de glossário embutidas",
-    "hintToggleDesc": "Sublinhar a primeira menção de termos do glossário nos artigos.",
-    "hintOn": "Ligado",
-    "hintOff": "Desligado"
+    "hintToggleDesc": "Sublinhar termos do glossário em artigos e docs de ferramentas: a primeira menção de cada termo, todas as menções ou nenhuma.",
+    "hintFirst": "Primeira",
+    "hintAll": "Todas",
+    "hintNone": "Nenhuma"
   },
   "bossScreens": {
     "metaTitle": "Telas da Tecla do Chefe — /dev/fun",
@@ -8732,7 +8733,7 @@
       },
       "cors": {
         "def": "O mecanismo do navegador que decide se uma página web pode fazer requisições a uma origem diferente.",
-        "context": "Por padrão, a política de mesma origem impede que uma página de um site leia respostas de outro; o Cross-Origin Resource Sharing é como um servidor opta por permitir acessos específicos entre origens. Entendê-lo mal está por trás de boa parte das dores de cabeça de \"bloqueado por CORS\"."
+        "context": "Por padrão, a política de mesma origem impede que uma página de um site leia respostas de outro; o Cross-Origin Resource Sharing é como um servidor opta por permitir acessos específicos entre origens. Para qualquer coisa além das requisições mais simples, o navegador primeiro pede permissão com um preflight - uma requisição OPTIONS que o servidor precisa responder corretamente antes de a verdadeira ser enviada. Entender mal essa dança em dois tempos está por trás de boa parte das dores de cabeça de \"bloqueado por CORS\"."
       },
       "credential-stuffing": {
         "def": "Tentativas de login automatizadas usando pares de usuário e senha roubados de outros vazamentos.",
@@ -12069,6 +12070,10 @@
       "http-query-method": {
         "def": "O método HTTP padronizado em junho de 2026 (RFC 10008) para consultas somente leitura que carregam corpo: seguro e idempotente como GET, corpo como POST, cacheável com o corpo na chave de cache.",
         "context": "O primeiro método HTTP novo desde o PATCH em 2010, existe porque o GET força a consulta para dentro da URL e o POST-como-busca esconde sua natureza somente leitura de todo cache e proxy do caminho. A adoção é uma auditoria camada a camada: allowlists de método de WAF escritas antes de meados de 2026 o bloqueiam ou o deixam passar sem inspeção, o CORS exige preflight, formulários HTML recuam para GET, e qualquer cache precisa chavear pelo corpo completo ou convida o envenenamento."
+      },
+      "cors-preflight": {
+        "def": "A requisição OPTIONS que o navegador envia primeiro, pedindo permissão ao servidor, antes de aceitar enviar certas requisições entre origens.",
+        "context": "Uma requisição entre origens só pula o preflight quando é \"simples\": método GET, HEAD ou POST, com cabeçalhos e tipos de conteúdo da safelist. Qualquer outra coisa - PUT, DELETE, PATCH, o novo QUERY, ou um cabeçalho customizado como Authorization - faz o navegador enviar antes um OPTIONS com Access-Control-Request-Method e -Headers; só se o servidor responder com os cabeçalhos Access-Control-Allow-* correspondentes a requisição real acontece. A maioria dos erros de \"bloqueado por CORS\" é na verdade um preflight que o servidor respondeu mal ou nem respondeu, e o Access-Control-Max-Age é como servidores deixam o navegador guardar a permissão em cache em vez de perguntar antes de cada requisição."
       }
     },
     "totalCount": "{count} termos",

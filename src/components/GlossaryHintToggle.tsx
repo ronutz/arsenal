@@ -3,14 +3,18 @@
 // ============================================================================
 // src/components/GlossaryHintToggle.tsx
 // ----------------------------------------------------------------------------
-// The reader-facing on/off switch for inline glossary hints.
+// The reader-facing TRI-STATE control for inline glossary hints:
+//   first — underline only the first mention of each term per page (default);
+//   all   — underline every mention (bounded by the marking pass's caps);
+//   off   — plain prose everywhere.
 //
 // Mirrors the theme preference exactly: a device-only localStorage key
-// (`ronutz-glossary-hints`, values "on" | "off", default on) plus a matching
-// data attribute on <html> so the CSS can suppress the affordance instantly.
-// The layout's pre-paint script applies "off" before first paint; this control
-// flips it live thereafter, and the GlossaryHint island observes the attribute
-// so open popups go inert immediately.
+// (`ronutz-glossary-hints`, values "first" | "all" | "off"; the legacy value
+// "on" from the old two-state switch reads as "first") plus a matching data
+// attribute on <html> so CSS reacts instantly: absent = first, "all", "off".
+// The layout's pre-paint script applies the stored mode before first paint;
+// this control changes it live thereafter, and the hint islands observe the
+// attribute so open popups retune immediately.
 //
 // SSR- and private-mode-safe: reads return the default on the server and when
 // storage throws; writes no-op rather than error.
@@ -20,51 +24,68 @@ import { useEffect, useState } from "react";
 
 const KEY = "ronutz-glossary-hints";
 
+type HintMode = "first" | "all" | "off";
+
+/** Map any stored value (including the legacy "on"/"off") to a mode. */
+function toMode(raw: string | null): HintMode {
+  if (raw === "off") return "off";
+  if (raw === "all") return "all";
+  return "first"; // null, "first", legacy "on", anything else
+}
+
 interface GlossaryHintToggleProps {
   /** "Inline glossary hints" — the control's label. */
   label: string;
   /** Short description shown under the label. */
   description: string;
-  /** Accessible on/off state words, e.g. ["On", "Off"]. */
-  onLabel: string;
+  /** Localized option labels. */
+  firstLabel: string;
+  allLabel: string;
   offLabel: string;
 }
 
 export default function GlossaryHintToggle({
   label,
   description,
-  onLabel,
+  firstLabel,
+  allLabel,
   offLabel,
 }: GlossaryHintToggleProps) {
-  // Default on. `null` = not yet read (avoids a wrong first render flash).
-  const [enabled, setEnabled] = useState<boolean | null>(null);
+  // Default "first". `null` = not yet read (avoids a wrong first render flash).
+  const [mode, setMode] = useState<HintMode | null>(null);
 
   useEffect(() => {
-    let on = true;
+    let m: HintMode = "first";
     try {
-      on = window.localStorage.getItem(KEY) !== "off";
+      m = toMode(window.localStorage.getItem(KEY));
     } catch {
-      /* private mode: default on */
+      /* private mode: default */
     }
-    setEnabled(on);
+    setMode(m);
   }, []);
 
-  const apply = (on: boolean) => {
-    setEnabled(on);
+  const apply = (m: HintMode) => {
+    setMode(m);
     try {
-      window.localStorage.setItem(KEY, on ? "on" : "off");
+      window.localStorage.setItem(KEY, m);
     } catch {
       /* private mode: session-only, still updates the attribute */
     }
-    if (on) {
+    if (m === "first") {
       document.documentElement.removeAttribute("data-glossary-hints");
     } else {
-      document.documentElement.setAttribute("data-glossary-hints", "off");
+      document.documentElement.setAttribute("data-glossary-hints", m);
     }
   };
 
-  // Before the effect resolves, assume on (the default) so the switch is stable.
-  const isOn = enabled ?? true;
+  // Before the effect resolves, assume the default so the control is stable.
+  const current = mode ?? "first";
+
+  const options: { value: HintMode; text: string }[] = [
+    { value: "first", text: firstLabel },
+    { value: "all", text: allLabel },
+    { value: "off", text: offLabel },
+  ];
 
   return (
     <div className="gloss-hint-toggle">
@@ -72,18 +93,21 @@ export default function GlossaryHintToggle({
         <span className="gloss-hint-toggle-label">{label}</span>
         <span className="gloss-hint-toggle-desc">{description}</span>
       </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={isOn}
-        aria-label={label}
-        className="gloss-hint-toggle-switch"
-        data-on={isOn}
-        onClick={() => apply(!isOn)}
-      >
-        <span className="gloss-hint-toggle-knob" aria-hidden="true" />
-        <span className="gloss-hint-toggle-state">{isOn ? onLabel : offLabel}</span>
-      </button>
+      <div className="gloss-hint-toggle-seg" role="radiogroup" aria-label={label}>
+        {options.map((o) => (
+          <button
+            key={o.value}
+            type="button"
+            role="radio"
+            aria-checked={current === o.value}
+            className="gloss-hint-toggle-opt"
+            data-active={current === o.value}
+            onClick={() => apply(o.value)}
+          >
+            {o.text}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

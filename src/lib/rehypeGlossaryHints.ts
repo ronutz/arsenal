@@ -11,9 +11,12 @@
 // the spots.
 //
 // GUARANTEES:
-//   - FIRST OCCURRENCE PER DOCUMENT: a given slug is wrapped at most once per
-//     article (a `Set<slug>` scoped to this run). This is the whole reason the
-//     density stays low.
+//   - EVERY OCCURRENCE IS MARKED, FIRST IS SPECIAL: each match carries an
+//     occ attribute ("first" | "rest"). The reader-facing tri-state setting
+//     (first | all | off) decides which marks are ACTIVE: by default only the
+//     first occurrence per document shows the affordance, "all" activates the
+//     rest, "off" silences everything. Caps keep density bounded:
+//     MAX_PER_TERM occurrences per slug and MAX_MARKS_PER_DOC total.
 //   - NEVER inside code, links, or headings: we do not descend into <code>,
 //     <pre>, <a>, or <h1..h6>, so acronyms in commands, existing links, and
 //     titles are left untouched.
@@ -45,6 +48,18 @@ interface MdxJsxTextElement {
 
 const SKIP_TAGS = new Set(["code", "pre", "a", "h1", "h2", "h3", "h4", "h5", "h6"]);
 
+// Density caps for the all-occurrences pass: at most this many marks per slug
+// per document, and at most this many marks per document in total. Chosen so
+// even the longest articles stay light (median density today is ~2 marks/doc).
+const MAX_PER_TERM = 6;
+const MAX_MARKS_PER_DOC = 150;
+
+/** Per-document marking state: per-slug counts + total marks emitted. */
+interface MarkState {
+  counts: Map<string, number>;
+  total: number;
+}
+
 // Word-boundary test that treats a surface as bounded by non-word chars. We use
 // our own check rather than a giant alternation regex so per-surface case
 // sensitivity is honored and matching cost stays predictable.
@@ -62,12 +77,13 @@ function isWordBoundary(ch: string | undefined): boolean {
 function findFirstMatch(
   text: string,
   surfaces: HintSurface[],
-  used: Set<string>,
+  state: MarkState,
 ): { index: number; length: number; surface: HintSurface } | null {
+  if (state.total >= MAX_MARKS_PER_DOC) return null;
   let best: { index: number; length: number; surface: HintSurface } | null = null;
   const lower = text.toLowerCase();
   for (const s of surfaces) {
-    if (used.has(s.slug)) continue;
+    if ((state.counts.get(s.slug) ?? 0) >= MAX_PER_TERM) continue;
     const hay = s.caseSensitive ? text : lower;
     const needle = s.caseSensitive ? s.surface : s.surface.toLowerCase();
     let from = 0;
@@ -91,11 +107,18 @@ function findFirstMatch(
   return best;
 }
 
-function makeGlossaryElement(matched: string, slug: string): MdxJsxTextElement {
+function makeGlossaryElement(
+  matched: string,
+  slug: string,
+  occ: "first" | "rest",
+): MdxJsxTextElement {
   return {
     type: "mdxJsxTextElement",
     name: "GlossaryTerm",
-    attributes: [{ type: "mdxJsxAttribute", name: "slug", value: slug }],
+    attributes: [
+      { type: "mdxJsxAttribute", name: "slug", value: slug },
+      { type: "mdxJsxAttribute", name: "occ", value: occ },
+    ],
     children: [{ type: "text", value: matched } as Text],
   };
 }
@@ -108,21 +131,25 @@ function makeGlossaryElement(matched: string, slug: string): MdxJsxTextElement {
 function splitTextNode(
   node: Text,
   surfaces: HintSurface[],
-  used: Set<string>,
+  state: MarkState,
 ): ElementContent[] | null {
   let rest = node.value;
   const out: ElementContent[] = [];
   let matchedAny = false;
 
   while (rest.length > 0) {
-    const m = findFirstMatch(rest, surfaces, used);
+    const m = findFirstMatch(rest, surfaces, state);
     if (!m) break;
     matchedAny = true;
-    used.add(m.surface.slug);
+    const n = (state.counts.get(m.surface.slug) ?? 0) + 1;
+    state.counts.set(m.surface.slug, n);
+    state.total += 1;
     const before = rest.slice(0, m.index);
     const hit = rest.slice(m.index, m.index + m.length);
     if (before) out.push({ type: "text", value: before } as Text);
-    out.push(makeGlossaryElement(hit, m.surface.slug) as unknown as ElementContent);
+    out.push(
+      makeGlossaryElement(hit, m.surface.slug, n === 1 ? "first" : "rest") as unknown as ElementContent,
+    );
     rest = rest.slice(m.index + m.length);
   }
   if (!matchedAny) return null;
@@ -132,14 +159,14 @@ function splitTextNode(
 
 export function rehypeGlossaryHints(surfaces: HintSurface[]) {
   return function transformer(tree: Root): void {
-    const used = new Set<string>();
+    const state: MarkState = { counts: new Map(), total: 0 };
 
     function walk(node: Root | Element): void {
       const children = node.children as ElementContent[];
       for (let i = 0; i < children.length; i++) {
         const child = children[i];
         if (child.type === "text") {
-          const replaced = splitTextNode(child as Text, surfaces, used);
+          const replaced = splitTextNode(child as Text, surfaces, state);
           if (replaced) {
             children.splice(i, 1, ...replaced);
             i += replaced.length - 1;

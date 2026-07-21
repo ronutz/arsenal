@@ -1448,7 +1448,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     domains: ["web-development", "cyber-security"],
     expansion: "Cross-Origin Resource Sharing",
     aliases: ["cors", "cross-origin resource sharing", "same-origin policy"],
-    relatedTerms: ["csrf", "xss"],
+    relatedTerms: ["csrf", "xss", "cors-preflight"],
   },
   {
     slug: "csp",
@@ -8258,6 +8258,15 @@ export const GLOSSARY: GlossaryEntry[] = [
     aliases: ["QUERY method", "HTTP QUERY", "RFC 10008", "Accept-Query"],
     relatedTools: ["http-methods-comparison"],
     relatedTerms: ["safe-method", "idempotent", "cors", "csrf", "waf", "rest"],
+  },
+  {
+    slug: "cors-preflight",
+    headword: "CORS preflight",
+    kind: "term",
+    domains: ["web-development", "cyber-security"],
+    aliases: ["preflight", "preflight request", "OPTIONS preflight"],
+    relatedTools: ["http-methods-comparison"],
+    relatedTerms: ["cors", "safe-method", "http-query-method"],
   },
 ];
 

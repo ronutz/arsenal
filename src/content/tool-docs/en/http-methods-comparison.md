@@ -1,6 +1,6 @@
 ## What it does
 
-Enter one to four HTTP (Hypertext Transfer Protocol) method names and the tool returns each one's protocol-level facts: whether it is safe, idempotent, and cacheable, what its request-body semantics are, whether CORS (Cross-Origin Resource Sharing) lets browsers send it without a preflight, whether HTML forms can produce it declaratively, and which RFC defines it. Ask for two or more ("get vs query") and it also names exactly the properties where they differ. The table covers the nine core methods of RFC 9110, PATCH (RFC 5789), the WebDAV trio PROPFIND, REPORT, and SEARCH, and the headline row: QUERY, registered by RFC 10008 in June 2026 - the first new HTTP method since PATCH in 2010.
+Enter one to four HTTP (Hypertext Transfer Protocol) method names and the tool returns each one's protocol-level facts: whether it is safe, idempotent, and cacheable, what its request-body semantics are, whether CORS (Cross-Origin Resource Sharing) lets browsers send it without a preflight (the permission-asking OPTIONS request a browser fires before any non-simple cross-origin request), whether HTML forms can produce it declaratively, and which RFC defines it. Ask for two or more ("get vs query") and it also names exactly the properties where they differ. The table covers the nine core methods of RFC 9110, PATCH (RFC 5789), the WebDAV trio PROPFIND, REPORT, and SEARCH, and the headline row: QUERY, registered by RFC 10008 in June 2026 - the first new HTTP method since PATCH in 2010.
 
 ## The vocabulary, precisely
 

@@ -14,14 +14,15 @@
 // the Learn hints use — reusing the shared .gloss-hint* CSS so the two surfaces
 // are visually identical.
 //
-// PROGRESSIVE + RESPECTFUL OF THE OFF-SWITCH:
+// PROGRESSIVE + RESPECTFUL OF THE TRI-STATE (first | all | off):
 //   - With JS off, or before this runs, each marker is simply a working link to
 //     the glossary entry — never a dead affordance.
-//   - When hints are disabled (data-glossary-hints="off" on <html>, set before
-//     paint by the layout script), we do NOT attach the popover; the anchors are
-//     left as plain links and the shared CSS strips the underline. We also watch
-//     the attribute, so toggling the setting live adds/removes the behavior
-//     without a reload.
+//   - The mode lives on <html> as data-glossary-hints (absent = first, "all",
+//     "off"). Anchors carry data-gloss-occ ("first" | "rest"). A popover only
+//     opens for ACTIVE marks: mode not "off" and (first occurrence, or mode
+//     "all"). The shared CSS strips the underline from inactive marks, and this
+//     island keeps inactive rest-anchors out of the tab order. We watch the
+//     attribute, so changing the setting live retunes everything, no reload.
 //
 // One popover is open at a time. It is appended next to the trigger, positioned
 // by CSS (same rules as GlossaryHint's panel). Escape and outside-pointer close.
@@ -48,6 +49,7 @@ export default function ToolDocGlossaryHints() {
       if (anchor.dataset.glossWired === "1") return;
       anchor.dataset.glossWired = "1";
 
+      const occ = anchor.getAttribute("data-gloss-occ") ?? "first";
       const head = anchor.getAttribute("data-gloss-head") ?? "";
       const def = anchor.getAttribute("data-gloss-def") ?? "";
       const context = anchor.getAttribute("data-gloss-context") ?? "";
@@ -78,6 +80,7 @@ export default function ToolDocGlossaryHints() {
 
       const show = () => {
         clearTimer();
+        if (!activeFor(occ)) return; // inactive in the current mode: stay prose
         if (panel) return;
         // Close any other open popover first.
         if (closeOpen && closeOpen !== hide) closeOpen();
@@ -138,15 +141,35 @@ export default function ToolDocGlossaryHints() {
       anchors.forEach(wire);
     }
 
-    // Only attach behavior when hints are enabled. When off, leave anchors as
-    // plain links (CSS strips the underline via the off-switch rules).
-    const enabled = () => root.getAttribute("data-glossary-hints") !== "off";
-    if (enabled()) wireAll();
+    // Current mode from the <html> attribute: absent = "first" (the default).
+    const mode = (): "first" | "all" | "off" => {
+      const v = root.getAttribute("data-glossary-hints");
+      return v === "off" ? "off" : v === "all" ? "all" : "first";
+    };
+    // Is a mark with this occurrence active under the current mode?
+    const activeFor = (occ: string) =>
+      mode() !== "off" && (occ !== "rest" || mode() === "all");
 
-    // React to the off-switch toggling live.
+    // Keep inactive marks out of the tab order (they read as plain prose), and
+    // active ones reachable. Runs at wire time and on every mode change.
+    function syncFocusability() {
+      root
+        .querySelectorAll<HTMLAnchorElement>(".tooldoc-body a.gloss-hint-static")
+        .forEach((a) => {
+          const occ = a.getAttribute("data-gloss-occ") ?? "first";
+          a.tabIndex = activeFor(occ) ? 0 : -1;
+        });
+    }
+
+    if (mode() !== "off") wireAll();
+    syncFocusability();
+
+    // React to mode changes live.
     const attrObserver = new MutationObserver(() => {
-      if (enabled()) wireAll();
+      if (mode() !== "off") wireAll();
       else if (closeOpen) closeOpen();
+      if (mode() !== "all" && closeOpen) closeOpen();
+      syncFocusability();
     });
     attrObserver.observe(root, {
       attributes: true,

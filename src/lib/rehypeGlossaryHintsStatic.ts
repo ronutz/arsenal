@@ -24,10 +24,11 @@
 // Because the anchor is a real link, with JS off (or hints off) it degrades to a
 // plain link to the glossary entry — no dead affordance.
 //
-// GUARANTEES match the Learn plugin: first occurrence per document (a
-// Set<slug>), never inside code/pre/links/headings, longest-match-first, and
-// per-surface case sensitivity. Density is low by construction (measured across
-// the tool docs: median ~2, mean ~2.2 marks/doc).
+// GUARANTEES match the Learn plugin: every occurrence is marked and carries
+// data-gloss-occ="first" | "rest" (the reader's tri-state setting decides which
+// marks are active; caps below bound density), never inside
+// code/pre/links/headings, longest-match-first, and per-surface case
+// sensitivity.
 //
 // The plugin is a factory taking (surfaces, locale, defFor, expandLabel) so the
 // data source stays single-origin: `surfaces` from getHintSurfaces(), and
@@ -50,6 +51,16 @@ export interface HintProse {
 
 const SKIP_TAGS = new Set(["code", "pre", "a", "h1", "h2", "h3", "h4", "h5", "h6"]);
 
+// Density caps, mirroring rehypeGlossaryHints (the Learn plugin).
+const MAX_PER_TERM = 6;
+const MAX_MARKS_PER_DOC = 150;
+
+/** Per-document marking state: per-slug counts + total marks emitted. */
+interface MarkState {
+  counts: Map<string, number>;
+  total: number;
+}
+
 function isWordBoundary(ch: string | undefined): boolean {
   if (ch === undefined) return true;
   return !/[A-Za-z0-9]/.test(ch);
@@ -58,12 +69,13 @@ function isWordBoundary(ch: string | undefined): boolean {
 function findFirstMatch(
   text: string,
   surfaces: HintSurface[],
-  used: Set<string>,
+  state: MarkState,
 ): { index: number; length: number; surface: HintSurface } | null {
+  if (state.total >= MAX_MARKS_PER_DOC) return null;
   let best: { index: number; length: number; surface: HintSurface } | null = null;
   const lower = text.toLowerCase();
   for (const s of surfaces) {
-    if (used.has(s.slug)) continue;
+    if ((state.counts.get(s.slug) ?? 0) >= MAX_PER_TERM) continue;
     const hay = s.caseSensitive ? text : lower;
     const needle = s.caseSensitive ? s.surface : s.surface.toLowerCase();
     let from = 0;
@@ -90,6 +102,7 @@ function makeHintAnchor(
   prose: HintProse,
   slug: string,
   expandLabel: string,
+  occ: "first" | "rest",
 ): Element {
   return {
     type: "element",
@@ -97,6 +110,7 @@ function makeHintAnchor(
     properties: {
       className: ["gloss-hint-static"],
       href: prose.href,
+      "data-gloss-occ": occ,
       "data-gloss-slug": slug,
       "data-gloss-head": prose.headword,
       "data-gloss-def": prose.def,
@@ -110,7 +124,7 @@ function makeHintAnchor(
 function splitTextNode(
   node: Text,
   surfaces: HintSurface[],
-  used: Set<string>,
+  state: MarkState,
   proseFor: (slug: string) => HintProse | null,
   expandLabel: string,
 ): ElementContent[] | null {
@@ -119,21 +133,23 @@ function splitTextNode(
   let matchedAny = false;
 
   while (rest.length > 0) {
-    const m = findFirstMatch(rest, surfaces, used);
+    const m = findFirstMatch(rest, surfaces, state);
     if (!m) break;
     const prose = proseFor(m.surface.slug);
-    // If prose is missing for this slug, mark it used (so we do not retry it
+    // If prose is missing for this slug, cap it out (so we do not retry it
     // forever) but leave the text plain — the affordance must never break copy.
     if (!prose) {
-      used.add(m.surface.slug);
+      state.counts.set(m.surface.slug, MAX_PER_TERM);
       continue;
     }
     matchedAny = true;
-    used.add(m.surface.slug);
+    const n = (state.counts.get(m.surface.slug) ?? 0) + 1;
+    state.counts.set(m.surface.slug, n);
+    state.total += 1;
     const before = rest.slice(0, m.index);
     const hit = rest.slice(m.index, m.index + m.length);
     if (before) out.push({ type: "text", value: before } as Text);
-    out.push(makeHintAnchor(hit, prose, m.surface.slug, expandLabel));
+    out.push(makeHintAnchor(hit, prose, m.surface.slug, expandLabel, n === 1 ? "first" : "rest"));
     rest = rest.slice(m.index + m.length);
   }
   if (!matchedAny) return null;
@@ -147,7 +163,7 @@ export function rehypeGlossaryHintsStatic(
   expandLabel: string,
 ) {
   return function transformer(tree: Root): void {
-    const used = new Set<string>();
+    const state: MarkState = { counts: new Map(), total: 0 };
 
     function walk(node: Root | Element): void {
       const children = node.children as ElementContent[];
@@ -157,7 +173,7 @@ export function rehypeGlossaryHintsStatic(
           const replaced = splitTextNode(
             child as Text,
             surfaces,
-            used,
+            state,
             proseFor,
             expandLabel,
           );

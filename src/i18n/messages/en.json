@@ -7423,9 +7423,10 @@
     "readingTitle": "Reading",
     "readingBody": "Inline glossary hints add a subtle dashed underline to the first mention of a technical term in an article. Hover or tap it for a short definition, with a link to the full glossary entry. This is a device-only preference.",
     "hintToggleLabel": "Inline glossary hints",
-    "hintToggleDesc": "Underline the first mention of glossary terms in articles.",
-    "hintOn": "On",
-    "hintOff": "Off"
+    "hintToggleDesc": "Underline glossary terms in articles and tool docs: the first mention of each term, every mention, or none.",
+    "hintFirst": "First",
+    "hintAll": "All",
+    "hintNone": "None"
   },
   "bossScreens": {
     "metaTitle": "Boss-Key Screens — /dev/fun",
@@ -8732,7 +8733,7 @@
       },
       "cors": {
         "def": "The browser mechanism that decides whether a web page may make requests to a different origin.",
-        "context": "By default the same-origin policy blocks a page on one site from reading responses from another; Cross-Origin Resource Sharing is how a server opts to allow specific cross-origin access. Misunderstanding it is behind a large share of \"blocked by CORS\" developer headaches."
+        "context": "By default the same-origin policy blocks a page on one site from reading responses from another; Cross-Origin Resource Sharing is how a server opts to allow specific cross-origin access. For anything beyond the simplest requests, the browser first asks permission with a preflight - an OPTIONS request the server must answer correctly before the real one is sent. Misunderstanding that two-step dance is behind a large share of \"blocked by CORS\" developer headaches."
       },
       "credential-stuffing": {
         "def": "Automated login attempts using username and password pairs stolen from other breaches.",
@@ -12069,6 +12070,10 @@
       "http-query-method": {
         "def": "The HTTP method standardized in June 2026 (RFC 10008) for read-only queries that carry a request body: safe and idempotent like GET, body like POST, cacheable with the body in the cache key.",
         "context": "The first new HTTP method since PATCH in 2010, it exists because GET forces queries into the URL and POST-as-search hides its read-only nature from every cache and proxy in the path. Adoption is a per-layer audit: WAF method allowlists written before mid-2026 block or blind-pass it, CORS requires a preflight, HTML forms fall back to GET, and any cache must key on the full body or invite poisoning."
+      },
+      "cors-preflight": {
+        "def": "The OPTIONS request a browser sends first, asking the server's permission, before it is willing to send certain cross-origin requests at all.",
+        "context": "A cross-origin request only skips the preflight when it is \"simple\": method GET, HEAD, or POST, with safelisted headers and content types. Anything else - PUT, DELETE, PATCH, the new QUERY, or a custom header like Authorization - makes the browser first send OPTIONS with Access-Control-Request-Method and -Headers; only if the server answers with matching Access-Control-Allow-* headers does the real request follow. Most \"blocked by CORS\" errors are actually a preflight the server answered badly or not at all, and Access-Control-Max-Age is how servers let browsers cache the permission instead of asking before every request."
       }
     },
     "totalCount": "{count} terms",

@@ -25,9 +25,12 @@ import GlossaryHint from "@/components/GlossaryHint";
 
 export default async function GlossaryTerm({
   slug,
+  occ = "first",
   children,
 }: {
   slug: string;
+  /** "first" | "rest": which occurrence of the term this mark is (rehype-set). */
+  occ?: string;
   children: string;
 }) {
   const entry = getGlossaryEntry(slug);
@@ -48,6 +51,7 @@ export default async function GlossaryTerm({
 
   return (
     <GlossaryHint
+      occ={occ === "rest" ? "rest" : "first"}
       headword={entry.headword}
       def={def}
       context={context}

@@ -17,12 +17,13 @@
 // It deliberately holds NO glossary data of its own — def/context/headword/href
 // arrive as props, so the client bundle never carries the ~814-entry glossary.
 //
-// THE GLOBAL OFF-SWITCH is not handled in JS here: when hints are disabled the
-// document carries data-glossary-hints="off" (set before paint by the layout's
-// inline script), and CSS neutralizes the underline and the popup entirely, so
-// the term renders as ordinary text with zero interaction. Keeping the switch
-// in CSS makes it instant and total, and means a disabled hint costs nothing at
-// runtime beyond a plain <span>.
+// THE TRI-STATE SWITCH (first | all | off) lives on <html> as
+// data-glossary-hints: absent = first (the default), "all", or "off" — set
+// before paint by the layout's inline script and flipped live by the settings
+// control. This island mirrors the attribute into state: a mark is ACTIVE when
+// the mode is not "off" and (it is the first occurrence, or the mode is
+// "all"). Inactive marks render as ordinary prose spans — no button, no focus
+// stop, zero interaction cost.
 // ============================================================================
 
 import { useId, useRef, useState, useCallback, useEffect } from "react";
@@ -40,6 +41,8 @@ interface GlossaryHintProps {
   href: string;
   /** Localized label for the expand action ("Expand" / "Abrir"). */
   expandLabel: string;
+  /** Which occurrence of the term this mark is; "rest" activates only in "all" mode. */
+  occ?: "first" | "rest";
 }
 
 export default function GlossaryHint({
@@ -49,22 +52,22 @@ export default function GlossaryHint({
   context,
   href,
   expandLabel,
+  occ = "first",
 }: GlossaryHintProps) {
   const [open, setOpen] = useState(false);
-  const [enabled, setEnabled] = useState(true);
+  const [mode, setMode] = useState<"first" | "all" | "off">("first");
   const panelId = useId();
   const wrapRef = useRef<HTMLSpanElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Respect the global off-switch. The attribute is applied before paint by the
-  // layout script; we mirror it into state so the popup logic goes fully inert
-  // when hints are off (CSS already strips the underline). We also react to
-  // later toggles from the settings page via a storage/observer signal.
+  // Respect the global tri-state. The attribute is applied before paint by the
+  // layout script; we mirror it into state so inactive marks go fully inert.
+  // We also react to later changes from the settings page via the observer.
   useEffect(() => {
-    const read = () =>
-      setEnabled(
-        document.documentElement.getAttribute("data-glossary-hints") !== "off",
-      );
+    const read = () => {
+      const v = document.documentElement.getAttribute("data-glossary-hints");
+      setMode(v === "off" ? "off" : v === "all" ? "all" : "first");
+    };
     read();
     const obs = new MutationObserver(read);
     obs.observe(document.documentElement, {
@@ -119,8 +122,9 @@ export default function GlossaryHint({
 
   useEffect(() => () => clearTimer(), []);
 
-  // Off-switch: render as ordinary prose, no interaction at all.
-  if (!enabled) return <span className="gloss-hint-off">{children}</span>;
+  // Inactive (off, or a rest-occurrence outside "all" mode): ordinary prose.
+  const active = mode !== "off" && (occ !== "rest" || mode === "all");
+  if (!active) return <span className="gloss-hint-off">{children}</span>;
 
   return (
     <span

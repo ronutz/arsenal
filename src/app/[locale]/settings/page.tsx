@@ -81,8 +81,9 @@ export default async function SettingsPage({
             <GlossaryHintToggle
               label={t("hintToggleLabel")}
               description={t("hintToggleDesc")}
-              onLabel={t("hintOn")}
-              offLabel={t("hintOff")}
+              firstLabel={t("hintFirst")}
+              allLabel={t("hintAll")}
+              offLabel={t("hintNone")}
             />
           </div>
         </section>

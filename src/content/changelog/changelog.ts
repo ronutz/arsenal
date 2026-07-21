@@ -53,6 +53,14 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-20",
+    time: "21:30",
+    kind: "feature",
+    title: "Glossary hints grow a third gear: first, all, or none",
+    body: "The inline glossary hints - the dashed underlines that pop a definition on hover or tap - used to be a simple on/off. The switch in Settings is now a three-way choice: First underlines only the first mention of each term per page (the default, same behavior as before), All lights up every mention for readers who want the definition at hand wherever they meet the word, and None keeps prose completely plain. Under the hood every occurrence is now marked at build time and your choice decides which marks are active, instantly and without a reload, on Learn articles and tool docs alike. The preference stays on your device, like the theme.",
+    links: [{ label: "Reading settings", href: "/settings" }],
+  },
+  {
+    date: "2026-07-20",
     time: "19:00",
     kind: "tool",
     title: "New tool: HTTP methods comparison - starring QUERY, the first new method in 16 years",

@@ -13168,6 +13168,51 @@ main[data-view="list"] .boss-viewer-blurb {
   text-decoration: none;
 }
 
+/* THE TRI-STATE (first | all | off): occurrences after the first carry
+   data-gloss-occ="rest" (tool docs; Learn rest-marks render as plain spans in
+   React and need no CSS). Outside "all" mode a rest-mark is plain prose. */
+html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"] {
+  text-decoration: none;
+  cursor: text;
+}
+html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:hover,
+html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:focus-visible {
+  text-decoration: none;
+}
+
+/* The tri-state segmented control on the settings page. */
+.gloss-hint-toggle-seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+}
+.gloss-hint-toggle-opt {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+.gloss-hint-toggle-opt[data-active="true"] {
+  background: var(--surface-base);
+  color: var(--text-primary);
+  box-shadow: inset 0 0 0 1px var(--accent-primary);
+}
+.gloss-hint-toggle-opt:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
 /* The settings toggle (Reading section). */
 .gloss-hint-toggle {
   display: flex;
