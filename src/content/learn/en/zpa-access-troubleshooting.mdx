@@ -1,0 +1,30 @@
+---
+slug: zpa-access-troubleshooting
+title: "ZPA Access Troubleshooting: Policy, Health, or DNS - Pick the Right Suspect"
+summary: "An intermittent private-app failure has exactly three suspect families in ZPA's geometry: the policy said no, the delivery legs are unhealthy, or the connector cannot resolve or reach the server. How to split them fast - the deny-versus-broken distinction, connector health and DNS as the usual intermittency culprits, the segment-bypass traps that masquerade as outages, and where the diagnostics actually live."
+concepts: ["zscaler", "zpa", "troubleshooting", "app connector", "microtunnel", "dns", "access policy", "intermittent"]
+relatedTools: []
+relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segments-and-access-policy", "zscaler-posture-profiles-and-device-trust", "fault-isolation-first-hour", "reading-dig-output"]
+category: networking
+order: 197
+status: reviewed
+updated: "2026-07-21"
+---
+
+"The app works sometimes" is the ticket that eats afternoons - and in Zscaler Private Access (ZPA), its investigation is mercifully constrained, because [the architecture](/learn/zpa-architecture-app-connectors-service-edges) admits exactly three suspect families. Either **policy** declined the access, or the **delivery legs** are unhealthy, or the **connector-to-server** last mile - reachability and, overwhelmingly often, DNS - is failing. The craft is splitting the three fast, because their fixes live in different rooms.
+
+## Suspect one: policy said no
+
+A policy denial is a *decision*, and [the segments article](/learn/zpa-app-segments-and-access-policy) gave its debugging order: top-down first-match on the most specific segment - so check which rule actually matched, whether a broad rule eclipses the specific one you expected, and remember that no match at all means the default, and the default is deny. Then remember the criteria are **conjunctive**: identity can pass while [posture fails](/learn/zscaler-posture-profiles-and-device-trust), and posture is the classic *intermittency* generator on this branch - the device drifting in and out of a profile produces access that works at the desk and fails on the couch, which files as "flaky" until someone reads the conditions. The distinguishing symptom of the policy family: the denial is *clean* - access refused, consistently for the same user-device-state combination - rather than slow or partial.
+
+## Suspect two: the legs are unhealthy
+
+Policy said yes, and nothing arrived: now it is [the transport's three legs](/learn/zpa-architecture-app-connectors-service-edges) - the client's leg to the Service Edge, the connector's leg outbound, and the stitched Microtunnel between them. The usual intermittency culprit on this branch is **connector capacity and health**: a connector group where one member is down or saturated serves some sessions well and others badly, which reads as randomness from the user's chair. The architecture article's operating rules become the checklist: are all connectors in the serving group up and current, is the group actually the one [the segment's Server Group binds](/learn/zpa-app-segments-and-access-policy), and does redundancy hold *per group that serves the segment* rather than somewhere on the org chart.
+
+## Suspect three: the last mile, which is usually DNS
+
+The most instructive ZPA failure is the one where everything above is green and the app still fails: policy allowed, Microtunnel stitched, and the **App Connector itself cannot resolve the application's name** - because in this geometry [it is the connector, not the client, that resolves and reaches the server](/learn/zpa-architecture-app-connectors-service-edges). Connector-side DNS misconfiguration produces exactly the split-brain classic: the app works for people standing in the data center and fails through ZPA, and every traditional check the client runs looks fine because the client was never the one asking. The investigation is [a resolver conversation](/learn/reading-dig-output) held from the connector's vantage. The same drawer holds the segment-bypass traps the segments article documented: a Bypass Always poisoning a shared FQDN, or an IdP domain overlapping discovery domains, both of which masquerade as outages while being configuration.
+
+## The operator's split
+
+Run the three in order of cheapness: the policy read is a console lookup; leg health is a dashboard; the DNS check needs the connector's vantage. Capture the failing user's exact time and [correlate against changes](/learn/fault-isolation-first-hour) - a policy edit, a connector update - before believing in ghosts. And keep the sorting sentence: *clean and consistent denial is policy; random badness is health; works-inside-fails-through is the connector's last mile.*

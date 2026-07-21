@@ -1,0 +1,30 @@
+---
+slug: zia-locations-and-sublocations
+title: "Localidades e Sublocalidades: Ensinando à Nuvem Onde Ficam os Seus Sites"
+summary: "Uma localidade do ZIA é um site que a plataforma reconhece - pelos seus túneis ou pelos seus endereços de egresso - e o reconhecimento é o que destrava política por site, expectativas de autenticação e controle de banda. Sublocalidades subdividem um site por segmento de rede interna: o Wi-Fi de visitantes policiado diferente do andar corporativo, os servidores diferentes de ambos. Os interruptores de Gateway Options, os três modos documentados de banda, e por que a identificação de egresso é o jogo inteiro."
+concepts: ["zscaler", "zia", "locations", "sublocations", "gateway options", "bandwidth control", "egress", "gre", "ipsec"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["zia-traffic-forwarding-methods", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "zscaler-mergers-and-acquisitions", "private-address-space"]
+category: networking
+order: 200
+status: reviewed
+updated: "2026-07-21"
+---
+
+Tudo o que tem formato de site no Zscaler Internet Access (ZIA) pende de um objeto: a **localidade**. [O artigo de encaminhamento](/learn/zia-traffic-forwarding-methods) construiu os túneis; a localidade é o que faz a ponta distante de um túnel *significar* algo - este tráfego é a filial de São Paulo, então valem a política de São Paulo, as expectativas de autenticação de São Paulo e a matemática de banda de São Paulo. Fundamentado na documentação de gestão de localidades e de controle de banda da Zscaler, verificada em 2026-07-21.
+
+## O que é uma localidade, mecanicamente
+
+Uma localidade é uma regra de reconhecimento: a plataforma conhece um site pelos **túneis que ele termina** ([GRE ou IPsec, com credenciais por localidade](/learn/zscaler-tunnel-types-z-tunnel-gre-ipsec)) ou pelos seus **endereços estáticos de egresso** - a seção Addressing do objeto de localidade é onde essa identidade mora, e a Location Management API espelha o objeto inteiro para automação. Sobre o tráfego reconhecido, falam as **Gateway Options** da localidade: se a autenticação é exigida para os usuários do site, se o tráfego deste site está sujeito à inspeção SSL e ao processamento de firewall, se o controle de banda se aplica - o painel por site que deixa um laboratório e um call center viverem sob um mesmo tenant com regras diferentes. A consequência de projeto corre também na direção oposta: tráfego que a plataforma *não consegue* atribuir a uma localidade não recebe nada disso - identificação de egresso não é contabilidade, é a precondição de todo comportamento por site desta página.
+
+## Sublocalidades: política no grão do armário de rede
+
+Sites reais não são uniformes: o andar corporativo, o Wi-Fi de visitantes, a VLAN de servidores e o segmento IoT dividem um mesmo link de internet e merecem quatro políticas diferentes. As **sublocalidades** são a resposta - subdivisões de uma localidade chaveadas em **segmentos de rede interna** ([as faixas de endereço privado](/learn/private-address-space) atrás do egresso do site), cada uma carregando sua própria postura de política. O exemplo canônico se escreve sozinho: a rede de visitantes como sublocalidade sem expectativa de autenticação e com filtragem estrita; o segmento corporativo autenticado e plenamente inspecionado; o segmento de servidores com sua própria postura de firewall. Um site, um conjunto de túneis, quatro cidadãos de política.
+
+## Controle de banda: os três modos documentados
+
+A maquinaria de banda torna as sublocalidades concretas, e os modos documentados merecem memória exata. Uma localidade carrega seus números de banda; cada sublocalidade então escolhe uma de três posturas: **Use Location Bandwidth** - sacar do pool do pai, compartilhado *por ordem de chegada* com todos os demais sacadores; **Override** - uma alocação dedicada de download/upload em Mbps, reservada e *não compartilhada*; ou **Disable** - sem controle de banda para este segmento. A gramática de projeto segue: Override para o segmento cuja experiência você precisa garantir (a VLAN de voz, o ponto de venda), ordem de chegada para os segmentos que podem se acotovelar, e as regras da política de Bandwidth Control mais o seu dashboard fecham o ciclo - alocação, depois observação, [depois os relatórios que argumentam pelo circuito do ano que vem](/learn/zscaler-reports-and-executive-summaries).
+
+## A checklist do operador
+
+Três hábitos mantêm o objeto honesto. Quando a política por site se comporta mal, verifique o *reconhecimento* primeiro - o tráfego está de fato atribuindo à localidade que você pensa, ou chegando sem reconhecimento e caindo nos padrões? Ao [integrar um patrimônio adquirido](/learn/zscaler-mergers-and-acquisitions), localidades são a unidade de migração - cada site uma mudança limitada. E quando o tráfego da rede de visitantes aparece vestindo política corporativa, a resposta é quase sempre uma sublocalidade que ninguém definiu - a plataforma policia os segmentos que lhe ensinaram, e ensinar é este objeto.

@@ -1,0 +1,30 @@
+---
+slug: zscaler-admin-audit-logs
+title: "O Audit Log de Administradores: Quem Mudou o Quê, De Onde, Com Que Resultado"
+summary: "O ZIA registra toda ação de admin - console e API igualmente - como um registro de auditoria de anatomia precisa: timestamp, ação, categoria e subcategoria, recurso, admin, IP do cliente, interface, resultado e um diff de antes/depois. O bloqueio de cinco-falhas-num-minuto que se escreve no próprio log, a janela de retenção de seis meses, como a trilha flui para um SIEM, e como lê-la em busca de escalada de privilégios."
+concepts: ["zscaler", "zia", "audit log", "change record", "privilege escalation", "compliance", "api", "admin"]
+relatedTools: ["incident-timeline-rca-builder"]
+relatedArticles: ["zscaler-nanolog-nss-and-log-streaming", "zscaler-platform-updates-and-change-management", "zia-cloud-firewall-rule-order", "fault-isolation-first-hour"]
+category: security
+order: 192
+status: reviewed
+updated: "2026-07-21"
+---
+
+Logs de plano de dados respondem o que os *usuários* fizeram; o Audit Log de Administradores responde a pergunta mais desconfortável - o que *nós* fizemos. O Zscaler Internet Access (ZIA) registra as ações de todo admin no Admin Console **e toda ação tomada pelas Cloud Service APIs**, o que fecha a lacuna clássica em que mudanças por script escapam da trilha que as manuais deixam. Tudo abaixo está fundamentado na documentação de audit logs da Zscaler, verificada em 2026-07-21.
+
+## A anatomia de um registro
+
+Um registro de auditoria carrega um esqueleto preciso, que vale internalizar campo a campo porque as investigações moram nele: o **timestamp**; a **ação** realizada; a **categoria** e a **subcategoria** - o lugar do console onde a ação aconteceu, que transforma "algo mudou" em "algo mudou *no URL Filtering*"; o **recurso** tocado; o **ID do admin**; o **IP do cliente** de onde a sessão veio; a **interface** - Admin UI ou API, o campo que separa o clique de um humano da chamada de um script; e o **resultado**. Para mudanças de configuração, o registro se abre num **diff de antes-e-depois** - os valores anteriores e os atualizados lado a lado - que é a diferença entre saber que uma política mudou e saber *o que ela dizia antes*. O console filtra por intervalo de tempo, ação, categoria, subcategoria e resultado, busca por recurso, ID de admin ou IP do cliente, e exporta - a gramática de trabalho de uma investigação de mudança.
+
+## O log que inclui os próprios ataques
+
+Dois comportamentos documentados fazem do audit log um instrumento de segurança em vez de um ornamento de conformidade. Primeiro, **logins falhos são registrados**: uma conta de admin que faz cinco tentativas malsucedidas em um minuto é bloqueada por cinco minutos, e as falhas caem no log - então a tentativa de força bruta contra o seu console não é invisível, é uma consulta. Segundo, a dualidade de API: como ações de API são eventos de auditoria de primeira classe com sua própria etiqueta de interface, uma credencial de API vazada se comportando mal parece exatamente o que é - mudanças de configuração de um IP de cliente inesperado com Interface: API - em vez de um fantasma. A leitura de escalada de privilégios segue direto: filtre pelas categorias de gestão de admins e de papéis, e qualquer registro em que uma conta concede a si mesma ou a outra direitos mais largos é uma sentença à vista, com timestamp, atribuição e diff.
+
+## Retenção, e como tirar a trilha de lá
+
+O console guarda audit logs por **até seis meses** - longo o bastante para a maioria das investigações, curto o bastante para que regimes de conformidade com memória mais longa precisem exportar a trilha enquanto está quente. Isso é um problema resolvido na mesma arquitetura de todo o resto: o log de Admin Audit é um dos tipos de feed documentados na [família de streaming de logs do ZIA](/learn/zscaler-nanolog-nss-and-log-streaming), então a trilha de mudanças pode fluir continuamente ao SIEM ao lado dos logs de tráfego, onde a retenção vira a sua política em vez da do console.
+
+## Lendo como um operador
+
+Três hábitos fazem o log pagar o próprio sustento. Depois de todo incidente cuja história inclui "a política se comportou diferente do esperado", o audit log é a primeira parada, não a última - [uma regra que parou de corresponder](/learn/zia-cloud-firewall-rule-order) geralmente tem um registro de mudança com um nome, e correlacionar horários de mudança com o início dos sintomas é [a disciplina de linha do tempo](/learn/fault-isolation-first-hour) aplicada às próprias mãos. Antes de toda reunião de controle de mudanças, a visão de diff é a verdade de campo do que de fato foi entregue, diga o que disser o ticket. E no calendário, o filtro Interface: API merece uma revisão periódica própria - o comportamento da frota de automação deriva em silêncio, e este é o único lugar onde não consegue derivar invisível.

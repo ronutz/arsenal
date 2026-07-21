@@ -1,0 +1,26 @@
+---
+slug: zscaler-reports-and-executive-summaries
+title: "Reports and Executive Summaries: Turning the Nanolog Into Sentences Leadership Reads"
+summary: "Between the raw log stream and the board slide sits ZIA's reporting layer: interactive reports for the analyst's follow-the-thread loop, scheduled reports for the calendar, dashboards for the wall, and the executive-summary shape for leadership. What each form is for, why usage-over-time questions belong to reports rather than log greps, and the honest boundary where reporting ends and the SIEM begins."
+concepts: ["zscaler", "zia", "reports", "interactive reports", "scheduled reports", "executive summary", "dashboards", "usage"]
+relatedTools: []
+relatedArticles: ["zia-web-and-firewall-log-fields", "zscaler-nanolog-nss-and-log-streaming", "zscaler-admin-audit-logs", "zia-locations-and-sublocations"]
+category: security
+order: 195
+status: reviewed
+updated: "2026-07-21"
+---
+
+The same Nanolog that [streams fields to your SIEM](/learn/zscaler-nanolog-nss-and-log-streaming) also feeds an audience that will never open a SIEM: the analyst mid-investigation, the manager tracking a trend, the executive who wants one page. Zscaler Internet Access (ZIA) serves them through a reporting layer whose forms map to those readers - and knowing which form answers which question is the difference between reporting as insight and reporting as wallpaper. This article stays deliberately at the shape level: the analytics surface evolves, so the durable knowledge is what each form is *for* - the specific navigation lives in the product's own documentation, where this series always sends you for click-paths.
+
+## The forms and their readers
+
+**Interactive reports** are the analyst's instrument: aggregate views over the logged traffic - by user, location, category, application, threat class - that expand on click, so the loop of *notice, narrow, notice again* runs at reading speed instead of query speed. The bandwidth dashboards this series met in [the locations article](/learn/zia-locations-and-sublocations) are the same idea aimed at capacity. **Scheduled reports** put the calendar in charge: the same aggregates, generated and delivered on cadence - the Monday-morning artifact that keeps a trend observed without anyone remembering to observe it. **Dashboards** are ambient state for the wall and the standup. And the **executive summary** is its own discipline more than its own feature: the period's traffic, blocks, threat encounters, and usage shifts compressed into the few sentences a leadership audience will actually metabolize - the form where every number needs a verb.
+
+## Usage over time is a reporting question
+
+A recurring operational instinct deserves correcting in both directions. Questions of *record* - what exactly did this user fetch at 14:32, with which rule label - belong to [the log fields](/learn/zia-web-and-firewall-log-fields) and the SIEM; a report's aggregates cannot answer them. But questions of *trend* - is streaming media's share of branch bandwidth growing, did blocks spike after the policy change, which locations' usage justifies a bigger tunnel - belong to the reporting layer, and answering them by grepping raw logs is rebuilding, badly, what the platform already computes. The audit discipline pairs naturally: when a usage trend bends at a date, [the admin audit log](/learn/zscaler-admin-audit-logs) says what changed that day, and the report-plus-audit pair is the whole story - what moved, and whose hands moved it.
+
+## The honest boundaries
+
+Three keep expectations calibrated. Reporting reads what logging wrote: a category of traffic that never transits the platform, or transits uninspected, is invisible to every form above - the reporting layer inherits [inspection's blind spots](/learn/zia-web-and-firewall-log-fields) rather than transcending them. Retention is the platform's, not yours: trends beyond the platform's memory belong to the SIEM archive the streaming article built. And an executive summary is an editorial act - the platform can generate the numbers, but choosing which three of them matter this quarter is the operator's judgment, which is exactly why the summary that leadership trusts is the one a human signed.

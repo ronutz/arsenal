@@ -1,0 +1,30 @@
+---
+slug: zscaler-platform-updates-and-change-management
+title: "Updates and Change Management: Running Change on a Platform That Also Changes Itself"
+summary: "A cloud security platform has three change streams - the vendor's cloud, your agent fleet, and your policy - and only the last two take your orders. What the admin actually governs: the Client Connector's Update Settings and per-year release summaries for the fleet, the audit log as the policy change record, and the ringed-rollout and change-freeze disciplines that are operator practice layered on the documented controls, stated as such."
+concepts: ["zscaler", "change management", "updates", "release", "zcc", "audit log", "rollout", "change control"]
+relatedTools: ["incident-timeline-rca-builder"]
+relatedArticles: ["zscaler-admin-audit-logs", "troubleshooting-zcc-connectivity", "zscaler-client-connector-profiles", "fault-isolation-first-hour"]
+category: security
+order: 201
+status: reviewed
+updated: "2026-07-21"
+---
+
+Change management on-premises had one author: you. A cloud security platform has three change streams running concurrently - **the vendor's cloud**, which evolves on the vendor's schedule; **your agent fleet**, which updates on a schedule you govern; and **your policy**, which changes exactly when your admins change it - and mature operations treat them as three different disciplines rather than one anxiety. This article separates what is documented control from what is operator practice, and labels which is which throughout.
+
+## Stream one: the cloud, which you ride
+
+The service side - Service Edges, engines, the analytics - is updated by Zscaler, continuously and cloud-wide; that is the substance of the as-a-service bargain. The operator's lever here is *awareness*, and the documented instrument is the vendor's release publications - per-product, per-year release summaries and cloud release notes on the help portal. The practice worth institutionalizing (ours, stated as practice): someone owns reading them, on a cadence, with a standing question - *does anything in this cycle touch our configuration or our workarounds?* - because the cheapest incident is the one the release notes predicted.
+
+## Stream two: the fleet, which you schedule
+
+[The Client Connector](/learn/zscaler-client-connector-profiles) is the change stream you genuinely command, and the documented control point is the ZCC portal's **Update Settings** - the mechanism governing which release your fleet takes and when, alongside the per-year Client Connector release summaries that tell you what each version changes and which known issues ship with it. On top of that documented mechanism sits the discipline this article recommends *as practice, not as product semantics*: ring your rollout - a pilot population that includes IT itself, then a broader early ring, then the fleet - with [the troubleshooting toolkit](/learn/troubleshooting-zcc-connectivity) pointed at the pilot ring and a defined hold trigger. An agent that forwards all traffic is the wrong place to discover a regression fleet-wide, and the update settings exist precisely so you never have to.
+
+## Stream three: policy, which you author
+
+Policy change is where classic change control applies with full force, and the platform supplies the record layer: [the Administrator Audit Log](/learn/zscaler-admin-audit-logs), where every change - console or API - lands with actor, interface, timestamp, and the before/after diff. The disciplines that make it a system (practice, again, stated as such): changes proposed with their expected effect written down; the post-change verification that the effect and only the effect occurred; the audit diff as the review artifact rather than the ticket's prose; and change timestamps kept where [the incident timeline](/learn/fault-isolation-first-hour) can reach them - because "what changed recently" is the first question of every investigation, and this platform can always answer it.
+
+## The composite discipline
+
+The three streams meet in one calendar. Freeze windows - the practice of holding fleet and policy changes through business-critical periods - govern streams two and three, while stream one keeps flowing, which is exactly why stream-one awareness is a job. When an incident does land, the first sort is *which stream moved*: a cloud release, an agent version crossing a ring boundary, or a policy diff in the audit log - three streams, three suspects, [one timeline](/learn/fault-isolation-first-hour), and the operator who keeps them separated finds the answer in minutes instead of meetings.

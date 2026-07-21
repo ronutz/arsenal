@@ -1,0 +1,30 @@
+---
+slug: zia-locations-and-sublocations
+title: "Locations and Sublocations: Teaching the Cloud Where Your Sites Are"
+summary: "A ZIA location is a site the platform recognizes - by its tunnels or its egress addresses - and the recognition is what unlocks per-site policy, authentication expectations, and bandwidth control. Sublocations subdivide a site by internal network segment: the guest Wi-Fi policed differently from the corporate floor, the servers differently from both. The Gateway Options toggles, the three documented bandwidth modes, and why egress identification is the whole game."
+concepts: ["zscaler", "zia", "locations", "sublocations", "gateway options", "bandwidth control", "egress", "gre", "ipsec"]
+relatedTools: ["zscaler-tunnel-chooser"]
+relatedArticles: ["zia-traffic-forwarding-methods", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "zscaler-mergers-and-acquisitions", "private-address-space"]
+category: networking
+order: 200
+status: reviewed
+updated: "2026-07-21"
+---
+
+Everything site-shaped in Zscaler Internet Access (ZIA) hangs off one object: the **location**. [The forwarding article](/learn/zia-traffic-forwarding-methods) built the tunnels; the location is what makes the far end of a tunnel *mean* something - this traffic is the São Paulo branch, so São Paulo's policy, São Paulo's authentication expectations, and São Paulo's bandwidth math apply. Grounded in Zscaler's location-management and bandwidth-control documentation, verified 2026-07-21.
+
+## What a location is, mechanically
+
+A location is a recognition rule: the platform knows a site by the **tunnels it terminates** ([GRE or IPsec, credentialed per location](/learn/zscaler-tunnel-types-z-tunnel-gre-ipsec)) or by its **static egress addresses** - the Addressing section of the location object is where that identity lives, and the Location Management API mirrors the whole object for automation. On the recognized traffic, the location's **Gateway Options** speak: whether authentication is enforced for the site's users, whether this site's traffic is subject to SSL inspection and firewall processing, whether bandwidth control applies - the per-site switchboard that lets a lab site and a call center live under one tenant with different rules. The design consequence runs the other direction too: traffic the platform *cannot* attribute to a location gets none of this - egress identification is not bookkeeping, it is the precondition for every per-site behavior on the page.
+
+## Sublocations: policy at the wiring-closet grain
+
+Real sites are not uniform: the corporate floor, the guest Wi-Fi, the server VLAN, and the IoT segment share one internet pipe and deserve four different policies. **Sublocations** are the answer - subdivisions of a location keyed on **internal network segments** ([the private address ranges](/learn/private-address-space) behind the site's egress), each carrying its own policy posture. The canonical example writes itself: the guest network as a sublocation with authentication not expected and a strict filtering posture; the corporate segment authenticated and fully inspected; the server segment with its own firewall stance. One site, one tunnel set, four policy citizens.
+
+## Bandwidth control: the three documented modes
+
+The bandwidth machinery makes sublocations concrete, and the documented modes deserve exact memory. A location carries its bandwidth figures; each sublocation then chooses one of three postures: **Use Location Bandwidth** - draw from the parent's pool, shared *first-come, first-served* with everyone else drawing; **Override** - a dedicated download/upload allocation in Mbps, carved out and *not shared*; or **Disable** - no bandwidth control for this segment. The design grammar follows: Override is for the segment whose experience you must guarantee (the voice VLAN, the point-of-sale), first-come-first-served for the segments that can jostle, and the Bandwidth Control policy's rules plus its dashboard close the loop - allocation, then observation, [then the reports that argue for next year's circuit](/learn/zscaler-reports-and-executive-summaries).
+
+## The operator's checklist
+
+Three habits keep the object honest. When per-site policy misbehaves, verify *recognition* first - is the traffic actually attributing to the location you think, or arriving unrecognized and falling to defaults? When [onboarding an acquired estate](/learn/zscaler-mergers-and-acquisitions), locations are the unit of migration - each site a bounded change. And when the guest network's traffic shows up wearing corporate policy, the answer is almost always a sublocation nobody defined - the platform polices the segments it was taught, and teaching it is this object.

@@ -135,6 +135,7 @@ import LbMethodChooserTool from "@/components/LbMethodChooserTool";
 import ZscalerTunnelChooserTool from "@/components/ZscalerTunnelChooserTool";
 import ZscalerFirewallRuleOrderSimulatorTool from "@/components/ZscalerFirewallRuleOrderSimulatorTool";
 import ZscalerSslBypassPlannerTool from "@/components/ZscalerSslBypassPlannerTool";
+import ZdxScoreFactorExplainerTool from "@/components/ZdxScoreFactorExplainerTool";
 import GslbDecisionFlowTool from "@/components/GslbDecisionFlowTool";
 import TopologyLongestMatchTool from "@/components/TopologyLongestMatchTool";
 import DosVectorExplainerTool from "@/components/DosVectorExplainerTool";
@@ -150,6 +151,7 @@ import { manifest as lbMethodManifest } from "@/lib/tools/f5-lb-method-chooser";
 import { manifest as zscalerTunnelManifest } from "@/lib/tools/zscaler-tunnel-chooser";
 import { manifest as zscalerFwManifest } from "@/lib/tools/zscaler-firewall-rule-order-simulator";
 import { manifest as zscalerSslManifest } from "@/lib/tools/zscaler-ssl-bypass-planner";
+import { manifest as zdxFactorManifest } from "@/lib/tools/zdx-score-factor-explainer";
 import { manifest as gslbFlowManifest } from "@/lib/tools/f5-gslb-decision-flow";
 import { manifest as topoMatchManifest } from "@/lib/tools/f5-topology-longest-match";
 import { manifest as dosVectorManifest } from "@/lib/tools/f5-dos-vector-explainer";
@@ -625,6 +627,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "zscaler-ssl-bypass-planner": {
     Component: ZscalerSslBypassPlannerTool,
     sources: zscalerSslManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "zdx-score-factor-explainer": {
+    Component: ZdxScoreFactorExplainerTool,
+    sources: zdxFactorManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-gslb-decision-flow": {
     Component: GslbDecisionFlowTool,

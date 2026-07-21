@@ -1,0 +1,30 @@
+---
+slug: zscaler-admin-audit-logs
+title: "The Administrator Audit Log: Who Changed What, From Where, With What Outcome"
+summary: "ZIA records every admin action - console and API alike - as an audit record with a precise anatomy: timestamp, action, category and sub-category, resource, admin, client IP, interface, result, and a before/after diff. The five-failures-in-a-minute lockout that writes itself into the log, the six-month retention window, how the trail streams to a SIEM, and how to read it for privilege escalation."
+concepts: ["zscaler", "zia", "audit log", "change record", "privilege escalation", "compliance", "api", "admin"]
+relatedTools: ["incident-timeline-rca-builder"]
+relatedArticles: ["zscaler-nanolog-nss-and-log-streaming", "zscaler-platform-updates-and-change-management", "zia-cloud-firewall-rule-order", "fault-isolation-first-hour"]
+category: security
+order: 192
+status: reviewed
+updated: "2026-07-21"
+---
+
+Data-plane logs answer what *users* did; the Administrator Audit Log answers the more uncomfortable question - what *we* did. Zscaler Internet Access (ZIA) records the actions of every admin in the Admin Console **and every action taken through the Cloud Service APIs**, which closes the classic gap where scripted changes escape the trail that manual ones leave. Everything below is grounded in Zscaler's audit-log documentation, verified 2026-07-21.
+
+## The anatomy of a record
+
+An audit record carries a precise skeleton, worth internalizing field by field because investigations live in it: the **timestamp**; the **action** performed; the **category** and **sub-category** - the location in the console where the action happened, which turns "something changed" into "something changed *in URL Filtering*"; the **resource** touched; the **admin ID**; the **client IP** the session came from; the **interface** - Admin UI or API, the field that separates a human's click from a script's call; and the **result**. For configuration changes, the record opens into a **before-and-after diff** - the previous values and the updated values side by side - which is the difference between knowing a policy changed and knowing *what it said before*. The console filters across time range, action, category, sub-category, and result, searches by resource, admin ID, or client IP, and exports - the working grammar of a change investigation.
+
+## The log that includes its own attacks
+
+Two documented behaviors make the audit log a security instrument rather than a compliance ornament. First, **failed logins are recorded**: an admin account making five unsuccessful attempts within one minute is locked out for five minutes, and the failures land in the log - so the brute-force attempt against your console is not invisible, it is a query. Second, the API duality: because API actions are first-class audit events with their own interface tag, a leaked API credential misbehaving looks exactly like what it is - configuration changes from an unexpected client IP with Interface: API - rather than a ghost. The privilege-escalation read follows directly: filter for the admin-management and role-management categories, and any record where an account grants itself or another account broader rights is a sentence in plain sight, timestamped, attributed, and diffed.
+
+## Retention, and getting the trail out
+
+The console stores audit logs for **up to six months** - long enough for most investigations, short enough that compliance regimes with longer memories need the trail exported while it is warm. That is a solved problem in the same architecture as everything else: the Admin Audit log is one of the documented feed types in [ZIA's log streaming family](/learn/zscaler-nanolog-nss-and-log-streaming), so the change trail can flow continuously to the SIEM alongside the traffic logs, where retention becomes your policy rather than the console's.
+
+## Reading it like an operator
+
+Three habits make the log earn its keep. After every incident whose story includes "the policy behaved differently than expected," the audit log is the first stop, not the last - [a rule that stopped matching](/learn/zia-cloud-firewall-rule-order) usually has a change record with a name on it, and correlating change times against symptom onset is [the timeline discipline](/learn/fault-isolation-first-hour) applied to your own hands. Before every change-control meeting, the diff view is the ground truth of what actually shipped, whatever the ticket said. And on a calendar, the Interface: API filter deserves a periodic review of its own - the automation fleet's behavior drifts quietly, and this is the one place it cannot drift invisibly.

@@ -52,6 +52,25 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-21T20:03:38-03:00",
+    kind: "content",
+    title: "Zscaler glossary batch 2: seven platform terms",
+    body: "The PKG's closing glossary batch, en + pt-BR: ZIdentity, Private Service Edge, SSMA (Single Scan, Multi-Action), application segment, segment group, app profile, and posture profile - each cross-linked into the program's existing entries. The glossary reaches 978 entries.",
+  },
+  {
+    date: "2026-07-21T19:29:29-03:00",
+    kind: "tool",
+    tools: ["zdx-score-factor-explainer"],
+    title: "ZDX score factor explainer",
+    body: "Fourth native Zscaler tool: paste the metrics ZDX exposes and read the documented explanation of each - probe-family attribution, the score against the documented Poor band with its auto-RCA note, the web-versus-path diagnostic split, and the honesty calibrations. The composite formula is not published, so the tool computes no score and says so. Twelve golden vectors; three pinned vendor sources.",
+  },
+  {
+    date: "2026-07-21T19:29:29-03:00",
+    kind: "content",
+    title: "Zscaler waves 3 and 4: monitoring, logs, and operations (11 articles)",
+    body: "The program's closing arc, en + pt-BR: the ZDX score's anatomy, the administrator audit log, ZIA log fields, Nanolog/NSS/Cloud NSS/LSS streaming, reports and executive summaries, ZCC connectivity troubleshooting, ZPA access troubleshooting, the exfiltration-response walkthrough, the M&A scenario, locations and sublocations, and platform updates with change management. ZDTA coverage reaches 44/44 objectives; the zscaler-zero-trust reading path now spans the full arc with five tools.",
+  },
+  {
     date: "2026-07-21T18:40:28-03:00",
     kind: "tool",
     tools: ["zscaler-ssl-bypass-planner"],

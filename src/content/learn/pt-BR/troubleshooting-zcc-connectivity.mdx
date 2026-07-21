@@ -1,0 +1,30 @@
+---
+slug: troubleshooting-zcc-connectivity
+title: "Troubleshooting do Client Connector: o Menu de Diagnóstico e as Quatro Primeiras Verificações"
+summary: "Quando um usuário 'não consegue navegar pelo Zscaler', o Client Connector carrega seu próprio kit: os estados de conexão, Export Logs, captura de pacotes habilitada pelo admin, Restart Service e o Log Mode com escopo de sessão. A verificação em ip.zscaler.com, o probe de portal cativo generate_204, a faixa reservada 100.64.0.0/24 de health check, a assinatura de estrangulamento de DTLS que uma troca para TLS cura, e a disciplina de localizar antes de consertar."
+concepts: ["zscaler", "zcc", "troubleshooting", "packet capture", "logs", "captive portal", "ip.zscaler.com", "z-tunnel"]
+relatedTools: []
+relatedArticles: ["zscaler-client-connector-profiles", "zia-traffic-forwarding-methods", "fault-isolation-first-hour", "zdx-score-anatomy-and-probes"]
+category: networking
+order: 196
+status: reviewed
+updated: "2026-07-21"
+---
+
+"Não consigo navegar" através de uma plataforma de segurança em nuvem é uma frase com cinco sujeitos possíveis - o dispositivo, a rede local, o provedor de identidade, o túnel ou a nuvem - e quem resolve mais rápido é quem localiza antes de consertar. [O artigo de perfis](/learn/zscaler-client-connector-profiles) explicou o que o Zscaler Client Connector (ZCC) é *mandado* fazer; este é sobre descobrir o que ele está *de fato* fazendo. Fundamentado na documentação oficial de troubleshooting e nos runbooks da Zscaler, verificados em 2026-07-21.
+
+## O kit que o agente carrega
+
+O ZCC embarca seu próprio diagnóstico, e o menu documentado é o kit de perícia: **Export Logs** empacota os logs do agente num ZIP para o suporte; **Start Packet Capture** - quando o admin da organização habilitou - grava o fio enquanto você reproduz o problema; **Restart Service** reinicia o agente *sem impactar a aplicação de segurança*, a propriedade documentada que o torna um primeiro movimento seguro; **Clear Logs** zera o registro antes de uma reprodução limpa; e o **Log Mode** eleva a verbosidade *apenas para a sessão de conexão atual*, revertendo ao padrão da organização na próxima - profundidade de debug sem armadilha residual. O log que o túnel escreve - ZSATunnel entre eles - é onde o vocabulário de erros abaixo de fato aparece.
+
+## As quatro primeiras verificações
+
+**Um: o que o agente diz?** O estado de conexão na cara do app localiza sozinho - um estado de autenticação aponta para a conversa com o IdP; um estado conectado sem tráfego aponta rio abaixo. **Dois: o tráfego está de fato transitando pelo Zscaler?** A página de verificação do serviço em **ip.zscaler.com** responde do ponto de vista autoritativo: se o tráfego deste navegador está chegando pela plataforma, e por qual nó - o divisor mais rápido entre "o encaminhamento quebrou" e "o encaminhamento está bem, procure em outro lugar". **Três: há um portal cativo no caminho?** A detecção documentada sonda **http://gateway.&lt;cloud&gt;.net:443/generate_204** e espera um HTTP 204; qualquer outra coisa - a página de login do hotel, um redirect - significa que a rede quer um humano primeiro, e o agente está corretamente esperando. **Quatro: algo local está comendo o agente?** A checklist de interferência documentada: clientes VPN reivindicando rotas que precisam excluir a **faixa reservada 100.64.0.0/24 de health check**, firewalls de endpoint e antivírus filtrando os fluxos do agente, e um segundo produto de inspeção quebrando o TLS do próprio agente - a classe de falha em que o ZCC funciona depois de um boot limpo e degrada quando o outro agente sobe.
+
+## Lendo o vocabulário do túnel
+
+Duas assinaturas documentadas recompensam memorização. **SERVER_DOWN_ERROR e FIREWALL_BLOCK_ERROR nos logs do túnel, numa operadora conhecida por estrangular DTLS**, é a assinatura do transporte UDP do [Z-Tunnel 2.0](/learn/zia-traffic-forwarding-methods) sendo espremido - e a cura documentada é trocar o túnel para TLS, negociando um pouco de eficiência por um transporte que os middleboxes deixam em paz. E falhas com formato de DNS nos logs - erros de resolução contra os nomes de gateway - apontam para o resolvedor local ou para software de segurança interceptando DNS, não para a Zscaler; o agente não alcança uma nuvem cujo nome não consegue resolver.
+
+## A disciplina
+
+Cada verificação acima é [isolamento de falhas](/learn/fault-isolation-first-hour) vestindo um crachá de produto: estabeleça qual *segmento* é dono da falha antes de tocar em qualquer coisa, capture evidência (logs exportados, captura rodando) *enquanto a falha está viva*, e deixe [o ZDX](/learn/zdx-score-anatomy-and-probes) responder a versão em escala de frota da mesma pergunta - um usuário falhando é conversa de dispositivo; uma localidade falhando é conversa de rede; todos falhando é página de status.

@@ -5812,6 +5812,23 @@
       "blindSpotsTitle": "O que fica cego aqui",
       "backstopsTitle": "Checklist de salvaguardas para o não inspecionado",
       "notesTitle": "Notas permanentes"
+    },
+    "zdx-score-factor-explainer": {
+      "name": "Explicador de fatores do score ZDX",
+      "blurb": "Cole as métricas que o ZDX expõe e leia de volta o que cada uma é: família de probe, significado documentado, o score contra a faixa Poor documentada, e as notas de honestidade sobre o que a Zscaler não publica.",
+      "emptyState": "Cole linhas de métrica como \"score = 28\" ou \"pft = 850\" para ler a explicação documentada de cada uma.",
+      "runsLocally": "Roda inteiramente no seu navegador. Suas métricas nunca saem desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "inputLabel": "Métricas, uma por linha: métrica = valor",
+      "placeholder": "score = 28\npft = 850\ndns = 120\npath-loss = 4",
+      "errorTitle": "Essa entrada precisa de ajuste",
+      "readingsTitle": "Leituras das métricas",
+      "familyWeb": "Web Probe",
+      "familyCloudpath": "CloudPath",
+      "familyComposite": "Score composto",
+      "diagnosticTitle": "Separação diagnóstica",
+      "notesTitle": "Semântica documentada e notas de honestidade"
     }
   },
   "privacy_page": {
@@ -12273,6 +12290,34 @@
       "pmtud": {
         "def": "Path MTU Discovery: enviar com Don't Fragment ligado e encolher ao receber ICMP Fragmentation Needed - que redes com filtragem excessiva quebram em silêncio.",
         "context": "Quando o ICMP nunca chega, pacotes grandes somem: o clássico buraco negro de MTU."
+      },
+      "app-profile": {
+        "def": "O objeto de política do Zscaler Client Connector que decide o tratamento por aplicação no dispositivo: quais destinos contornam o túnel pela sua lógica PAC, e comportamento específico por sistema operacional.",
+        "context": "Par do forwarding profile: o forwarding decide COMO o tráfego sai do dispositivo; o app profile decide O QUE recebe tratamento especial."
+      },
+      "posture-profile": {
+        "def": "Uma verificação nomeada de estado do dispositivo avaliada pelo Zscaler Client Connector - criptografia de disco, estado do SO, presença de certificado e sinais afins - consumida pelas regras de acesso do ZPA como condições e exposta ao ZIA como confiança de dispositivo.",
+        "context": "O mecanismo que faz decisões de acesso seguirem o estado atual do dispositivo, por sessão, não só a identidade do usuário."
+      },
+      "app-segment": {
+        "def": "A unidade de definição de aplicação do ZPA: um conjunto de FQDNs, curingas ou endereços IP mais suas portas, nomeando o que pode ser alcançado. A política de acesso casa de cima para baixo contra o segmento mais específico.",
+        "context": "Zero trust nomeia aplicações em vez de redes; o application segment é onde a nomeação acontece."
+      },
+      "segment-group": {
+        "def": "Uma coleção de application segments do ZPA usada como eixo de política: regras de acesso costumam mirar segment groups, então estratégia de agrupamento é estratégia de política.",
+        "context": "Par dos server groups (o eixo de alcançabilidade, amarrando segmentos a grupos de App Connectors)."
+      },
+      "private-service-edge": {
+        "def": "Uma instância de Service Edge do ZPA que o cliente hospeda no próprio ambiente, costurando os mesmos Microtunnels dos Public Service Edges da nuvem, mas mantendo o ponto de encontro local.",
+        "context": "Escolhido por latência ou localidade do caminho de dados quando usuário, connector e aplicação vivem perto."
+      },
+      "ssma": {
+        "def": "Single Scan, Multi-Action (varredura única, múltiplas ações): o desenho do Service Edge do ZIA em que o conteúdo é varrido uma vez e cada engine habilitado age sobre essa única passagem, em vez de encadear dispositivos de inspeção separados.",
+        "context": "A resposta arquitetural à proliferação de appliances - um trânsito de proxy, todos os vereditos."
+      },
+      "zidentity": {
+        "def": "A camada unificada de identidade da Zscaler para o Zero Trust Exchange: um lugar para integrar provedores de identidade e gerir identidade de admins e usuários entre os serviços da plataforma.",
+        "context": "Identidade é o plano de controle do novo perímetro; o ZIdentity é onde a plataforma a centraliza."
       }
     },
     "totalCount": "{count} termos",

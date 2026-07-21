@@ -1,0 +1,26 @@
+---
+slug: zia-web-and-firewall-log-fields
+title: "ZIA Log Fields: The Vocabulary Investigations Are Written In"
+summary: "A ZIA log feed is a template of fields you choose - %s{login}, %s{csip}, %s{action} - and knowing which field carries what is the difference between a log and an answer. The web-versus-firewall division of labor, the obfuscation-prefix fields that pseudonymize identity, the hex-encoding rule that keeps hostile URLs parseable, and the Standard-tier subtlety where allowed sessions log in aggregate while blocks log per session."
+concepts: ["zscaler", "zia", "log fields", "nss feed", "web log", "firewall log", "obfuscation", "siem"]
+relatedTools: []
+relatedArticles: ["zscaler-nanolog-nss-and-log-streaming", "zia-cloud-firewall-rule-order", "zia-url-filtering-and-cloud-app-control", "syslog-message-formats"]
+category: security
+order: 193
+status: reviewed
+updated: "2026-07-21"
+---
+
+A log is a sentence, and sentences are made of vocabulary. In Zscaler Internet Access (ZIA), that vocabulary is literal: a log feed is a **template of fields you compose** - `%s{login}`, `%s{csip}`, `%s{action}` - and the feed emits exactly the sentence you designed, record after record, [streamed to wherever your SIEM lives](/learn/zscaler-nanolog-nss-and-log-streaming). This article is about the vocabulary itself: which fields carry which answers, and the three documented subtleties that trip first-time feed designers. Grounded in Zscaler's NSS feed-format documentation, verified 2026-07-21.
+
+## Two logs, two kinds of questions
+
+The **Web Log** speaks in transactions: who (`login`, department, location), fetched what (URL and its category), through which policy outcome (action, [the rule that fired](/learn/zia-url-filtering-and-cloud-app-control)), carrying what risk verdicts - the record of the proxy doing its job. The **Firewall Log** speaks in sessions: source and destination addresses and ports (`csip`, `csport`, and their destination counterparts), protocol, the network service and application identified, the action, byte counts in each direction, and the tunnel context the flow arrived through. The division of labor is diagnostic gold: "did the user reach the site" is a web-log question; "did the session even egress, and how much moved" is a firewall-log question - and an investigation that starts in the wrong log spends its first hour discovering that.
+
+## The three subtleties the documentation flags
+
+First, **obfuscation fields**: selected fields exist in a privacy-preserving twin with an `o` prefix - the obfuscated counterpart of a source-IP field emits a random string instead of the address - so a feed can be designed pseudonymous by construction for consumers who need patterns without identities. Second, **URL hex-encoding**: any URL byte at or below 0x20 or at or above 0x7F is encoded as %HH before the log ships, because a URL containing a raw newline is a parser attack on your SIEM, and the service defuses it at the source. Third - the one that generates capacity-planning surprises - on the **Standard Firewall subscription, allowed sessions are logged in aggregate** while **blocked sessions log individually and in detail**: fewer records for the permitted bulk, full fidelity where policy said no. A firewall feed's volume therefore tracks your *block* rate as much as your traffic, and an "our firewall logs are tiny" observation may mean exactly that the policy rarely blocks.
+
+## Designing a feed like an operator
+
+The craft is choosing fields for the questions you will actually ask at 2 a.m. The skeleton almost every investigation needs: time, user, device identity, client source IP, destination, the action, and *the rule label that produced it* - because "blocked" without the rule name sends you [back to the console to replay policy order by hand](/learn/zia-cloud-firewall-rule-order). Byte counts in both directions turn the firewall log into an exfiltration instrument. And the field template is per-feed, which means the right design is often *several* feeds: a lean real-time alerting feed, a full-fidelity investigation feed, an obfuscated analytics feed - same Nanolog, three sentences, each written for its reader. The syntax of getting those sentences delivered - servers, feeds, limits, and failure semantics - is [the next article's whole subject](/learn/zscaler-nanolog-nss-and-log-streaming).

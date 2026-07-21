@@ -1,0 +1,34 @@
+---
+slug: zscaler-nanolog-nss-and-log-streaming
+title: "Nanolog, NSS, Cloud NSS e LSS: Tirando os Logs de Lá"
+summary: "Os logs da Zscaler moram no Nanolog, do lado da nuvem; três caminhos de entrega os trazem para casa: a máquina virtual NSS transmitindo logs comprimidos via mTLS ao seu SIEM, o Cloud NSS postando lotes direto na API HTTPS de um SIEM, e o Log Streaming Service do ZPA entregando logs de acesso privado através dos seus App Connectors. A anatomia de dois núcleos da VM, os limites de feeds, a semântica de status HTTP em que um 400 descarta o lote, e a única regra de exclusão que impede o pipeline de comer a si mesmo."
+concepts: ["zscaler", "nanolog", "nss", "cloud nss", "lss", "siem", "log streaming", "mtls"]
+relatedTools: []
+relatedArticles: ["zia-web-and-firewall-log-fields", "zscaler-admin-audit-logs", "zia-ssl-inspection-policy-and-bypasses", "zpa-architecture-app-connectors-service-edges", "syslog-on-network-devices"]
+category: networking
+order: 194
+status: reviewed
+updated: "2026-07-21"
+---
+
+Uma plataforma de segurança em nuvem gera seus logs *na nuvem* - o que imediatamente coloca a pergunta do operador: como eles chegam ao *meu* SIEM? A resposta da Zscaler tem uma camada de armazenamento e três caminhos de entrega, e saber qual caminho serve a qual família de logs é o projeto inteiro. Fundamentado na documentação de NSS e de implantação da Zscaler, verificada em 2026-07-21.
+
+## A camada de armazenamento: Nanolog
+
+O **Nanolog** é o repositório de logs do lado da nuvem - o lugar onde [cada campo que o artigo anterior catalogou](/learn/zia-web-and-firewall-log-fields) de fato aterrissa conforme os Service Edges escrevem suas transações. Tudo a jusante é um *mecanismo de entrega lendo do Nanolog*; nada a jusante é o log de registro. Esse enquadramento resolve uma confusão recorrente numa frase: perder um feed de streaming perde a sua *cópia*, não os logs.
+
+## Caminho um: a máquina virtual NSS
+
+O caminho clássico é o **Nanolog Streaming Service (NSS)** - uma máquina virtual que você implanta (vSphere, AWS, Azure, GCP) que abre um túnel seguro até o cluster Nanolog, recebe seus logs num **fluxo altamente comprimido**, os formata pelos seus templates de feed e os entrega ao SIEM **por TCP puro**. A anatomia documentada é agradavelmente concreta: a VM roda em **dois núcleos de CPU - um para o plano de controle, um para o plano de dados**; um objeto de *servidor* NSS no console representa a VM e lhe emite o **certificado de cliente e a chave com que ela se autentica**; e a orientação de dimensionamento chega ao prático (na ordem de 11 Mbps de banda de download de logs por dez mil usuários, como exemplo do guia de implantação). Feeds se anexam a servidores sob limites documentados - **até 16 feeds por servidor**, com os tipos de log de sessão limitados a 8 para proteger o desempenho. E uma regra de implantação merece negrito porque amarra este artigo [ao de SSL](/learn/zia-ssl-inspection-policy-and-bypasses): **o tráfego da VM NSS até a nuvem Zscaler deve ser excluído da inspeção TLS** - ela se autentica no cluster Nanolog com TLS mútuo, e uma camada de interceptação entre os dois quebra o handshake por definição; tampouco seu tráfego de saída deve ser encaminhado pelo Service Edge. O pipeline de logs não pode fluir através da coisa que ele registra.
+
+## Caminho dois: Cloud NSS
+
+O **Cloud NSS** remove a VM: a nuvem Zscaler posta seus lotes de log formatados **diretamente no endpoint de API HTTPS de um SIEM** - um feed configurado com a URL da API e os cabeçalhos necessários, sem appliance para dimensionar, atualizar ou vigiar. A troca está declarada na sua semântica de falha, que é documentada e vale memorizar: na entrega, um HTTP **200 ou 204 significa que o lote é considerado enviado**; um **400 significa que o feed trata o lote como erro de parsing - e o descarta**. Um parser de SIEM mal configurado no caminho clássico represa; no Cloud NSS ele *descarta*, educada e permanentemente. Implantações de Cloud NSS, portanto, vivem e morrem por testar o contrato do endpoint receptor antes de apontar feeds de produção para ele.
+
+## Caminho três: LSS, para o lado privado
+
+[O ZPA](/learn/zpa-architecture-app-connectors-service-edges) tem sua própria geometria - e seu próprio transmissor. O **Log Streaming Service (LSS)** entrega as famílias de log do ZPA - atividade de usuário, status de usuário, status de connector e [a trilha de auditoria do ZPA](/learn/zscaler-admin-audit-logs) - a um receptor que você hospeda, com a entrega fluindo **através dos seus App Connectors**, os mesmos componentes de saída-apenas que carregam o tráfego das aplicações. A simetria é o projeto: logs de acesso privado viajam pelos trilhos do acesso privado, e o receptor precisa de alcançabilidade a partir dos grupos de connectors, não de um buraco vindo da internet.
+
+## Escolhendo como um operador
+
+A tabela de decisão se escreve sozinha. Logs de ZIA para um SIEM que fala TCP estilo syslog: VM NSS - orce a VM, exclua-a da inspeção, respeite os limites de feed por servidor. Logs de ZIA para um SIEM nativo de nuvem com API de ingestão HTTPS: Cloud NSS - e teste o contrato do endpoint, porque um 400 é um triturador. Logs de ZPA: LSS pelos connectors. E em todo caminho, o conselho [do artigo de campos](/learn/zia-web-and-firewall-log-fields) se acumula: vários feeds de propósito específico vencem um feed pia-de-cozinha - nos limites, no volume e na legibilidade às 2 da manhã do que chega.

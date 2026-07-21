@@ -134,6 +134,7 @@ export const tools: ToolEntry[] = [
   { id: "zscaler-tunnel-chooser", href: "/tools/zscaler-tunnel-chooser", category: "networking", vendors: ["zscaler"], sub: "zte", available: true },
   { id: "zscaler-firewall-rule-order-simulator", href: "/tools/zscaler-firewall-rule-order-simulator", category: "security", vendors: ["zscaler"], sub: "zte", available: true },
   { id: "zscaler-ssl-bypass-planner", href: "/tools/zscaler-ssl-bypass-planner", category: "security", vendors: ["zscaler"], sub: "zte", available: true },
+  { id: "zdx-score-factor-explainer", href: "/tools/zdx-score-factor-explainer", category: "networking", vendors: ["zscaler"], sub: "zte", available: true },
   { id: "jwks-explainer", href: "/tools/jwks-explainer", category: "identity", vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "oauth-tokens", available: true },
   { id: "regex", href: "/tools/regex", category: "web", available: true },
   { id: "diff", href: "/tools/diff", category: "text", available: true },

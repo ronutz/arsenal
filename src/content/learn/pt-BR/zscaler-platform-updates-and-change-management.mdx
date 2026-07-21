@@ -1,0 +1,30 @@
+---
+slug: zscaler-platform-updates-and-change-management
+title: "Atualizações e Gestão de Mudanças: Operando Mudança numa Plataforma Que Também Muda Sozinha"
+summary: "Uma plataforma de segurança em nuvem tem três correntes de mudança - a nuvem do fornecedor, a sua frota de agentes e a sua política - e só as duas últimas recebem as suas ordens. O que o admin de fato governa: as Update Settings do Client Connector e os sumários de release por ano para a frota, o audit log como registro de mudanças de política, e as disciplinas de rollout em anéis e janela de congelamento, que são prática de operador sobre os controles documentados, declaradas como tal."
+concepts: ["zscaler", "change management", "updates", "release", "zcc", "audit log", "rollout", "change control"]
+relatedTools: ["incident-timeline-rca-builder"]
+relatedArticles: ["zscaler-admin-audit-logs", "troubleshooting-zcc-connectivity", "zscaler-client-connector-profiles", "fault-isolation-first-hour"]
+category: security
+order: 201
+status: reviewed
+updated: "2026-07-21"
+---
+
+A gestão de mudanças no mundo local tinha um autor: você. Uma plataforma de segurança em nuvem tem três correntes de mudança rodando simultaneamente - **a nuvem do fornecedor**, que evolui no cronograma do fornecedor; **a sua frota de agentes**, que atualiza num cronograma que você governa; e **a sua política**, que muda exatamente quando os seus admins a mudam - e operações maduras as tratam como três disciplinas diferentes em vez de uma ansiedade só. Este artigo separa o que é controle documentado do que é prática de operador, e rotula qual é qual do início ao fim.
+
+## Corrente um: a nuvem, na qual você viaja
+
+O lado do serviço - Service Edges, engines, o analytics - é atualizado pela Zscaler, continuamente e em toda a nuvem; essa é a substância do contrato como-serviço. A alavanca do operador aqui é a *consciência*, e o instrumento documentado são as publicações de release do fornecedor - sumários de release por produto e por ano, e notas de release de nuvem no portal de ajuda. A prática que vale institucionalizar (nossa, declarada como prática): alguém é dono de lê-las, em cadência, com uma pergunta permanente - *algo neste ciclo toca a nossa configuração ou os nossos contornos?* - porque o incidente mais barato é o que as notas de release previram.
+
+## Corrente dois: a frota, que você agenda
+
+[O Client Connector](/learn/zscaler-client-connector-profiles) é a corrente de mudança que você genuinamente comanda, e o ponto de controle documentado são as **Update Settings** do portal ZCC - o mecanismo que governa qual release a sua frota toma e quando, ao lado dos sumários de release anuais do Client Connector, que dizem o que cada versão muda e com quais problemas conhecidos embarca. Sobre esse mecanismo documentado senta a disciplina que este artigo recomenda *como prática, não como semântica do produto*: role em anéis - uma população piloto que inclui a própria TI, depois um anel inicial mais largo, depois a frota - com [o kit de troubleshooting](/learn/troubleshooting-zcc-connectivity) apontado para o anel piloto e um gatilho de pausa definido. Um agente que encaminha todo o tráfego é o pior lugar para descobrir uma regressão em escala de frota, e as configurações de atualização existem precisamente para que você nunca precise.
+
+## Corrente três: a política, que você escreve
+
+Mudança de política é onde o controle de mudanças clássico se aplica com força total, e a plataforma fornece a camada de registro: [o Audit Log de Administradores](/learn/zscaler-admin-audit-logs), onde toda mudança - console ou API - aterrissa com autor, interface, timestamp e o diff de antes/depois. As disciplinas que fazem disso um sistema (prática, de novo, declarada como tal): mudanças propostas com o efeito esperado por escrito; a verificação pós-mudança de que o efeito, e só ele, ocorreu; o diff de auditoria como artefato de revisão em vez da prosa do ticket; e os timestamps de mudança guardados onde [a linha do tempo do incidente](/learn/fault-isolation-first-hour) os alcança - porque "o que mudou recentemente" é a primeira pergunta de toda investigação, e esta plataforma sempre sabe responder.
+
+## A disciplina composta
+
+As três correntes se encontram num só calendário. Janelas de congelamento - a prática de segurar mudanças de frota e de política em períodos críticos do negócio - governam as correntes dois e três, enquanto a corrente um segue fluindo, que é exatamente por que a consciência da corrente um é um trabalho. Quando um incidente aterrissa, a primeira triagem é *qual corrente se moveu*: um release de nuvem, uma versão de agente cruzando a fronteira de um anel, ou um diff de política no audit log - três correntes, três suspeitos, [uma linha do tempo](/learn/fault-isolation-first-hour), e o operador que as mantém separadas encontra a resposta em minutos em vez de reuniões.

@@ -1,0 +1,30 @@
+---
+slug: zdx-score-anatomy-and-probes
+title: "The ZDX Score: What the Probes Measure and How the Number Is Made"
+summary: "Zscaler Digital Experience turns user experience into a 1-100 score, and the anatomy is precise: Web Probes measuring Page Fetch Time, DNS Time, Server Response Time, and Availability; CloudPath probes measuring the network path hop by hop; probes every five minutes; the lowest score of the hour becoming the hour's score; group scores averaging each user's worst. What each metric means, the Poor band's automatic root-cause analysis, and what Zscaler does not publish about the formula."
+concepts: ["zscaler", "zdx", "web probe", "cloudpath", "page fetch time", "dns time", "server response time", "availability", "score"]
+relatedTools: ["zdx-score-factor-explainer"]
+relatedArticles: ["zscaler-zero-trust-exchange-architecture", "zscaler-client-connector-profiles", "troubleshooting-zcc-connectivity", "map-the-path-before-you-troubleshoot"]
+category: networking
+order: 191
+status: reviewed
+updated: "2026-07-21"
+---
+
+Every monitoring product eventually promises a single number, and Zscaler Digital Experience (ZDX - the platform's user-experience monitoring service) delivers one: a score from 1 to 100, computed per user and rolled up per application, location, city, department, and organization. Single numbers earn either trust or contempt depending on whether the operator knows how they are made - so this article opens the anatomy. Everything below is grounded in Zscaler's ZDX reference architecture and help documentation, verified 2026-07-21.
+
+## The instruments: two probe families
+
+ZDX measures from where the experience actually lives - the user's device - through [the Client Connector](/learn/zscaler-client-connector-profiles) this series already dissected, whose telemetry flows through a Telemetry and Policy Gateway into the ZDX analytics engine. The measuring itself belongs to two probe families with cleanly divided labor. **Web Probes** ask *how the application behaves*: they fetch a URL and record **Page Fetch Time** (which, by documented design, requests only the top-level page document, not every embedded asset - a probe, not a replay), **DNS Time**, **Server Response Time** (the time to first byte), and **Availability**. **CloudPath probes** ask *how the network path behaves*: hop-by-hop measurement of the route - latency and loss along the way - the [traceroute instinct](/learn/map-the-path-before-you-troubleshoot) industrialized. The division matters diagnostically: a bad web metric with a clean path points at the application; a bad path indicts the road.
+
+## How the number is made
+
+The documented mechanics reward exact memory. Probes run **every five minutes** for most plans, against every defined application. For the hourly view, ZDX takes **the lowest score observed during the hour** - the score is pessimistic by design, because an experience that was terrible for five minutes was terrible, whatever the average says. Rollups keep the same conservatism: a group's score (location, department, application, organization) is built from **each member user's lowest score over the timeframe, averaged** - the user's worst moments, democratically combined. And the bands carry operational meaning: a **Poor** score sits in the documented **0-33** range, and for Poor scores the dashboard automatically runs root-cause analysis on the worst recent sample, surfacing the factors that likely dragged it down.
+
+## What is not published, said plainly
+
+Zscaler documents the factors, the probing cadence, the lowest-of-the-hour rule, and the bands - and does **not** publish the exact composite formula that turns raw metrics into the 1-100 value. This series treats that the way [the honesty rules](/learn/zscaler-zero-trust-exchange-architecture) demand: the factors and semantics above are sourced; any claim about precise metric weights would be invention, and the companion tool declines to invent - it classifies and explains what the documentation grounds, and says so. Two more documented calibrations belong in the same drawer: API-retrieved metrics can differ from the dashboard by a small margin because aggregates use approximate functions for performance, and telemetry reporting carries an estimated delay of around twenty minutes - the score is near-real-time, not instantaneous.
+
+## Reading the score like an operator
+
+The anatomy dictates the reading order. A low score is an invitation, not a verdict: open the user, split web metrics from path metrics, and let the division of labor point - DNS Time ballooning is a resolver conversation; Server Response Time climbing with a clean path is the application's problem; path loss at a specific hop is [a network conversation with a street address](/learn/map-the-path-before-you-troubleshoot). And remember the pessimism when reporting upward: an hourly score is the hour's *worst* five minutes, which is exactly what a user remembers about their day, and exactly why the number is built that way.

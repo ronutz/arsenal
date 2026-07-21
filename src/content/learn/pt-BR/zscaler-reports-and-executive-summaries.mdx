@@ -1,0 +1,26 @@
+---
+slug: zscaler-reports-and-executive-summaries
+title: "Relatórios e Sumários Executivos: Transformando o Nanolog em Frases Que a Liderança Lê"
+summary: "Entre o fluxo bruto de logs e o slide de diretoria fica a camada de relatórios do ZIA: relatórios interativos para o laço siga-o-fio do analista, relatórios agendados para o calendário, dashboards para a parede, e o formato de sumário executivo para a liderança. Para que serve cada forma, por que perguntas de uso-ao-longo-do-tempo pertencem a relatórios e não a greps de log, e a fronteira honesta onde o relatório termina e o SIEM começa."
+concepts: ["zscaler", "zia", "reports", "interactive reports", "scheduled reports", "executive summary", "dashboards", "usage"]
+relatedTools: []
+relatedArticles: ["zia-web-and-firewall-log-fields", "zscaler-nanolog-nss-and-log-streaming", "zscaler-admin-audit-logs", "zia-locations-and-sublocations"]
+category: security
+order: 195
+status: reviewed
+updated: "2026-07-21"
+---
+
+O mesmo Nanolog que [transmite campos ao seu SIEM](/learn/zscaler-nanolog-nss-and-log-streaming) também alimenta uma audiência que nunca abrirá um SIEM: o analista no meio da investigação, o gestor acompanhando uma tendência, o executivo que quer uma página. O Zscaler Internet Access (ZIA) os serve por uma camada de relatórios cujas formas mapeiam para esses leitores - e saber qual forma responde a qual pergunta é a diferença entre relatório como insight e relatório como papel de parede. Este artigo fica deliberadamente no nível das formas: a superfície de analytics evolui, então o conhecimento durável é para que cada forma *serve* - a navegação específica mora na documentação do próprio produto, para onde esta série sempre manda você buscar caminhos de clique.
+
+## As formas e seus leitores
+
+Os **relatórios interativos** são o instrumento do analista: visões agregadas sobre o tráfego logado - por usuário, localidade, categoria, aplicação, classe de ameaça - que se expandem ao clique, para que o laço de *perceber, estreitar, perceber de novo* rode em velocidade de leitura em vez de velocidade de consulta. Os dashboards de banda que esta série encontrou [no artigo de localidades](/learn/zia-locations-and-sublocations) são a mesma ideia apontada para capacidade. Os **relatórios agendados** põem o calendário no comando: os mesmos agregados, gerados e entregues em cadência - o artefato de segunda de manhã que mantém uma tendência observada sem que ninguém lembre de observá-la. Os **dashboards** são estado ambiente para a parede e a daily. E o **sumário executivo** é mais uma disciplina do que um recurso: o tráfego do período, os bloqueios, os encontros com ameaças e os deslocamentos de uso comprimidos nas poucas frases que uma audiência de liderança de fato metaboliza - a forma em que todo número precisa de um verbo.
+
+## Uso ao longo do tempo é pergunta de relatório
+
+Um instinto operacional recorrente merece correção nas duas direções. Perguntas de *registro* - o que exatamente este usuário buscou às 14:32, com qual rótulo de regra - pertencem [aos campos de log](/learn/zia-web-and-firewall-log-fields) e ao SIEM; os agregados de um relatório não as respondem. Mas perguntas de *tendência* - a fatia de streaming na banda da filial está crescendo, os bloqueios saltaram depois da mudança de política, o uso de quais localidades justifica um túnel maior - pertencem à camada de relatórios, e respondê-las grepando logs brutos é reconstruir, mal, o que a plataforma já computa. A disciplina de auditoria se emparelha naturalmente: quando uma tendência de uso dobra numa data, [o audit log de administradores](/learn/zscaler-admin-audit-logs) diz o que mudou naquele dia, e o par relatório-mais-auditoria é a história inteira - o que se moveu, e as mãos de quem moveram.
+
+## As fronteiras honestas
+
+Três mantêm as expectativas calibradas. O relatório lê o que o log escreveu: uma categoria de tráfego que nunca transita pela plataforma, ou transita sem inspeção, é invisível a todas as formas acima - a camada de relatórios herda [os pontos cegos da inspeção](/learn/zia-web-and-firewall-log-fields) em vez de transcendê-los. A retenção é a da plataforma, não a sua: tendências além da memória da plataforma pertencem ao arquivo no SIEM que o artigo de streaming construiu. E um sumário executivo é um ato editorial - a plataforma pode gerar os números, mas escolher quais três deles importam neste trimestre é julgamento do operador, que é exatamente por que o sumário em que a liderança confia é aquele que um humano assinou.

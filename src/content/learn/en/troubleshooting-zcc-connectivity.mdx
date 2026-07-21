@@ -1,0 +1,30 @@
+---
+slug: troubleshooting-zcc-connectivity
+title: "Troubleshooting Client Connector: The Diagnostics Menu and the First Four Checks"
+summary: "When a user 'can't get online through Zscaler,' the Client Connector carries its own toolkit: the connection states, Export Logs, admin-enabled packet capture, Restart Service, and the session-scoped Log Mode. The ip.zscaler.com verification, the generate_204 captive-portal probe, the reserved 100.64.0.0/24 health-check range, the DTLS-throttling signature that a switch to TLS cures, and the discipline of localizing before fixing."
+concepts: ["zscaler", "zcc", "troubleshooting", "packet capture", "logs", "captive portal", "ip.zscaler.com", "z-tunnel"]
+relatedTools: []
+relatedArticles: ["zscaler-client-connector-profiles", "zia-traffic-forwarding-methods", "fault-isolation-first-hour", "zdx-score-anatomy-and-probes"]
+category: networking
+order: 196
+status: reviewed
+updated: "2026-07-21"
+---
+
+"I can't get online" through a cloud security platform is a sentence with five possible subjects - the device, the local network, the identity provider, the tunnel, or the cloud - and the fastest resolver is the one who localizes before fixing. [The profiles article](/learn/zscaler-client-connector-profiles) explained what Zscaler Client Connector (ZCC) is *told* to do; this one is about finding out what it is *actually* doing. Grounded in Zscaler's official troubleshooting documentation and runbooks, verified 2026-07-21.
+
+## The toolkit the agent carries
+
+ZCC ships its own diagnostics, and the documented menu is the crime kit: **Export Logs** bundles the agent's logs into a ZIP for support; **Start Packet Capture** - when the organization's admin has enabled it - records the wire while you reproduce the issue; **Restart Service** bounces the agent *without impacting security enforcement*, the documented property that makes it a safe first move; **Clear Logs** resets the record before a clean reproduction; and **Log Mode** raises verbosity *for the current connection session only*, reverting to the organization's default at the next - debug depth without a lingering foot-gun. The log the tunnel writes - ZSATunnel among them - is where the error vocabulary below actually appears.
+
+## The first four checks
+
+**One: what does the agent say?** The connection state on the app's face localizes by itself - an authentication state points at the IdP conversation, a connected state with no traffic points downstream. **Two: is traffic actually transiting Zscaler?** The service's verification page at **ip.zscaler.com** answers from the authoritative vantage: whether this browser's traffic is arriving through the platform, and through which node - the single fastest divider between "forwarding is broken" and "forwarding is fine, look elsewhere." **Three: is a captive portal in the way?** The documented detection probes **http://gateway.&lt;cloud&gt;.net:443/generate_204** and expects an HTTP 204; anything else - the hotel login page, a redirect - means the network wants a human first, and the agent is correctly waiting. **Four: is something local eating the agent?** The documented interference checklist: VPN clients claiming routes that must exclude the **reserved 100.64.0.0/24 health-check range**, endpoint firewalls and antivirus filtering the agent's flows, and a second inspection product breaking the agent's own TLS - the class of failure where ZCC works after a clean boot and degrades when the other agent starts.
+
+## Reading the tunnel's vocabulary
+
+Two documented signatures reward memorization. **SERVER_DOWN_ERROR and FIREWALL_BLOCK_ERROR in the tunnel logs, on an ISP known to throttle DTLS**, is the signature of [Z-Tunnel 2.0's](/learn/zia-traffic-forwarding-methods) UDP transport being squeezed - and the documented cure is switching the tunnel to TLS, trading a little efficiency for a transport middleboxes leave alone. And DNS-shaped failures in the logs - resolution errors against the gateway names - point at the local resolver or at security software intercepting DNS, not at Zscaler; the agent cannot reach a cloud whose name it cannot resolve.
+
+## The discipline
+
+Every check above is [fault isolation](/learn/fault-isolation-first-hour) wearing a product badge: establish which *segment* owns the failure before touching anything, capture evidence (logs exported, capture running) *while the failure is live*, and let [ZDX](/learn/zdx-score-anatomy-and-probes) answer the fleet-scale version of the same question - one user failing is a device conversation; a location failing is a network one; everyone failing is a status page.

@@ -1,0 +1,30 @@
+---
+slug: zpa-access-troubleshooting
+title: "Troubleshooting de Acesso no ZPA: Política, Saúde ou DNS - Escolha o Suspeito Certo"
+summary: "Uma falha intermitente de app privado tem exatamente três famílias de suspeitos na geometria do ZPA: a política disse não, as pernas de entrega estão doentes, ou o connector não resolve ou não alcança o servidor. Como separá-las rápido - a distinção negado-versus-quebrado, saúde de connector e DNS como os culpados usuais da intermitência, as armadilhas de bypass de segmento que se disfarçam de indisponibilidade, e onde os diagnósticos de fato moram."
+concepts: ["zscaler", "zpa", "troubleshooting", "app connector", "microtunnel", "dns", "access policy", "intermittent"]
+relatedTools: []
+relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segments-and-access-policy", "zscaler-posture-profiles-and-device-trust", "fault-isolation-first-hour", "reading-dig-output"]
+category: networking
+order: 197
+status: reviewed
+updated: "2026-07-21"
+---
+
+"O app funciona às vezes" é o chamado que come tardes - e no Zscaler Private Access (ZPA), sua investigação é misericordiosamente restrita, porque [a arquitetura](/learn/zpa-architecture-app-connectors-service-edges) admite exatamente três famílias de suspeitos. Ou a **política** recusou o acesso, ou as **pernas de entrega** estão doentes, ou a **última milha** connector-a-servidor - alcançabilidade e, esmagadoramente, DNS - está falhando. O ofício é separar as três rápido, porque seus consertos moram em salas diferentes.
+
+## Suspeito um: a política disse não
+
+Uma negação de política é uma *decisão*, e [o artigo de segmentos](/learn/zpa-app-segments-and-access-policy) deu sua ordem de depuração: de cima para baixo, primeira correspondência no segmento mais específico - então verifique qual regra de fato correspondeu, se uma regra larga eclipsa a específica que você esperava, e lembre que nenhuma correspondência significa o padrão, e o padrão é negar. Depois lembre que os critérios são **conjuntivos**: a identidade pode passar enquanto [a postura falha](/learn/zscaler-posture-profiles-and-device-trust), e postura é a clássica geradora de *intermitência* neste ramo - o dispositivo derivando para dentro e para fora de um perfil produz acesso que funciona na mesa e falha no sofá, o que é arquivado como "instável" até alguém ler as condições. O sintoma distintivo da família de política: a negação é *limpa* - acesso recusado, consistentemente para a mesma combinação usuário-dispositivo-estado - em vez de lenta ou parcial.
+
+## Suspeito dois: as pernas estão doentes
+
+A política disse sim, e nada chegou: agora são [as três pernas do transporte](/learn/zpa-architecture-app-connectors-service-edges) - a perna do cliente até o Service Edge, a perna de saída do connector, e o Microtunnel costurado entre elas. O culpado usual da intermitência neste ramo é **capacidade e saúde de connector**: um grupo de connectors em que um membro está fora ou saturado serve algumas sessões bem e outras mal, o que da cadeira do usuário se lê como aleatoriedade. As regras de operação do artigo de arquitetura viram a checklist: todos os connectors do grupo servidor estão de pé e atualizados, o grupo é de fato o que [o Server Group do segmento amarra](/learn/zpa-app-segments-and-access-policy), e a redundância se sustenta *por grupo que serve o segmento*, não em algum lugar do organograma.
+
+## Suspeito três: a última milha, que geralmente é DNS
+
+A falha mais instrutiva do ZPA é aquela em que tudo acima está verde e o app ainda falha: a política permitiu, o Microtunnel costurou, e o **próprio App Connector não consegue resolver o nome da aplicação** - porque nesta geometria [é o connector, não o cliente, que resolve e alcança o servidor](/learn/zpa-architecture-app-connectors-service-edges). DNS mal configurado do lado do connector produz exatamente o clássico cérebro-dividido: o app funciona para quem está de pé no data center e falha pelo ZPA, e cada verificação tradicional que o cliente roda parece boa porque o cliente nunca foi quem perguntava. A investigação é [uma conversa com o resolvedor](/learn/reading-dig-output) conduzida do ponto de vista do connector. A mesma gaveta guarda as armadilhas de bypass que o artigo de segmentos documentou: um Bypass Always envenenando um FQDN compartilhado, ou um domínio de IdP sobrepondo os domínios de descoberta - ambos se disfarçam de indisponibilidade sendo configuração.
+
+## A separação do operador
+
+Rode os três em ordem de custo: a leitura de política é uma consulta de console; saúde das pernas é um dashboard; a verificação de DNS precisa do ponto de vista do connector. Capture o horário exato do usuário que falha e [correlacione com mudanças](/learn/fault-isolation-first-hour) - uma edição de política, uma atualização de connector - antes de acreditar em fantasmas. E guarde a frase de triagem: *negação limpa e consistente é política; maldade aleatória é saúde; funciona-por-dentro-falha-através é a última milha do connector.*

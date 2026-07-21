@@ -1,0 +1,30 @@
+---
+slug: zscaler-mergers-and-acquisitions
+title: "Fusões e Aquisições no Exchange: Acesso no Dia Um Sem Fundir Redes"
+summary: "O cenário de integração de M&A é onde o zero trust paga sua arquitetura: o ZPA concede às pessoas da empresa adquirida acesso no dia um a aplicações nomeadas sem juntar redes, espaço RFC 1918 sobreposto deixa de ser bloqueio porque connectors resolvem localmente de cada lado, a identidade se funde em fases atrás de SAML e SCIM, e o encaminhamento migra localidade a localidade. A ordem das operações, e por que a fusão de redes pode esperar indefinidamente."
+concepts: ["zscaler", "mergers", "acquisitions", "zpa", "overlapping ip", "identity", "phased migration", "zero trust"]
+relatedTools: []
+relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segments-and-access-policy", "nat-explained", "saml-overview", "scim-overview", "zia-locations-and-sublocations"]
+category: networking
+order: 199
+status: reviewed
+updated: "2026-07-21"
+---
+
+O projeto clássico de integração de fusão é um projeto de rede: conectar as empresas, reconciliar os planos de endereçamento, estender confiança através da junção, e gastar um ano nisso. O cenário merece um passo a passo nesta série porque é onde a arquitetura do Exchange deixa de ser filosofia e vira cronograma: **o acesso pode preceder - e em grande parte substituir - a fusão de redes.** O que segue compõe instrumentos que esta série já construiu; o cenário é a aplicação, e as afirmações se apoiam nos fatos de arquitetura verificados em seus artigos de origem.
+
+## Dia um: acesso a aplicações, não a redes
+
+O requisito do dia um é sempre a mesma frase: *estas pessoas nomeadas da empresa adquirida precisam destas aplicações nomeadas das nossas, e vice-versa.* Essa frase é [uma política de ZPA](/learn/zpa-app-segments-and-access-policy), literalmente. Defina application segments para as aplicações compartilhadas, suba [App Connectors](/learn/zpa-architecture-app-connectors-service-edges) dentro do ambiente de cada empresa ao lado das suas aplicações, e escreva os allows: grupo da adquirida, segmentos nomeados, [condições de postura](/learn/zscaler-posture-profiles-and-device-trust) conforme a confiança exigir. O que *não* aconteceu é o ponto - nenhuma VPN entre os patrimônios, nenhuma troca de rotas, nenhum furo de firewall, nenhuma confiança transitiva de rede. O raio de explosão de cada lado permanece seu - o que numa M&A, em que você herdou um ambiente que ainda não auditou, não é um luxo e sim o controle.
+
+## O problema dos endereços sobrepostos se dissolve
+
+Duas empresas de qualquer idade vivem ambas no espaço RFC 1918, e ambas possuem um 10.0.0.0-alguma-coisa; a frente mais tediosa do projeto tradicional é [o NAT e o reendereçamento](/learn/nat-explained) que deixam os gêmeos coexistirem. A geometria do Exchange torna a colisão largamente irrelevante, e a razão é um fato já estabelecido: [o cliente nunca roteia até o endereço da aplicação - o connector alcança o servidor, resolvendo localmente do seu próprio lado](/learn/zpa-architecture-app-connectors-service-edges). Duas aplicações no mesmo endereço privado nos dois patrimônios são simplesmente dois segmentos servidos por dois grupos de connectors, cada um resolvendo a sua verdade. Os planos de endereçamento podem seguir contraditórios por anos; muitas integrações nunca os reconciliam.
+
+## A identidade se funde em fases, atrás dos brokers
+
+Pessoas, ao contrário de rotas, precisam de fato se fundir - mas [SAML](/learn/saml-overview) e [SCIM](/learn/scim-overview) transformam isso num programa em fases em vez de um dia-D. Fase um: a adquirida mantém seu provedor de identidade, adicionado como fonte de autenticação, seus grupos fluindo como vocabulário de política - acesso no dia um contra identidades que você não migrou. Fase dois: o provisionamento se consolida no cronograma, e como toda regra de acesso foi escrita contra atributos e grupos em vez de localização de rede, a migração de identidade renomeia os atores sem reescrever a peça.
+
+## Encaminhamento e o patrimônio, localidade a localidade
+
+O lado de segurança de internet segue a mesma gramática em fases: os sites adquiridos entram como [localidades](/learn/zia-locations-and-sublocations), seu egresso migrando ao Exchange túnel a túnel no cronograma que a capacidade permite - cada localidade uma mudança limitada com um rollback limitado, o oposto de um cutover. A trilha de auditoria do programa inteiro é [o registro de mudanças](/learn/zscaler-admin-audit-logs) que esta série já lê com fluência. E a postura de fechamento é a honesta: a fusão de redes, a substância inteira do projeto tradicional, vira trabalho adiável opcional - feito tarde, feito em parte, ou nunca - porque a coisa que ela existia para entregar, pessoas alcançando aplicações, foi entregue na primeira semana.

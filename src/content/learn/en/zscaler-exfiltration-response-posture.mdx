@@ -1,0 +1,30 @@
+---
+slug: zscaler-exfiltration-response-posture
+title: "The Exfiltration Alert: A Walkthrough From Signal to Posture Answer"
+summary: "A suspected data-exfiltration alert is the scenario where the whole Zscaler series converges: read the alert against the log fields, establish what inspection could actually see, walk the DLP and CASB planes for what left and what rests exposed, check the firewall's non-web corridors, and answer with posture changes - isolation for the gray, tightened bypasses, byte-count vigilance - rather than a single heroic block."
+concepts: ["zscaler", "exfiltration", "dlp", "casb", "incident response", "byte counts", "isolation", "posture"]
+relatedTools: ["incident-timeline-rca-builder"]
+relatedArticles: ["zia-dlp-engines-dictionaries-edm-idm", "zscaler-casb-and-saas-security", "zia-web-and-firewall-log-fields", "zia-ssl-inspection-policy-and-bypasses", "browser-isolation-fundamentals", "fault-isolation-first-hour"]
+category: security
+order: 198
+status: reviewed
+updated: "2026-07-21"
+---
+
+Every article in this series so far built an instrument; this one plays them together, on the scenario that most tests an operator's grasp of the whole: *a credible signal that data is leaving*. Maybe [a DLP rule fired](/learn/zia-dlp-engines-dictionaries-edm-idm); maybe a byte-count anomaly surfaced; maybe the tip was human. The walkthrough below is the composition - each step leaning on an instrument already dissected - and it ends, deliberately, in *posture* rather than in a single heroic block.
+
+## Step one: read the alert as a record
+
+An alert is [a log record wearing a siren](/learn/zia-web-and-firewall-log-fields), so start by extracting its skeleton: who (user, device, location), what destination (URL and category, cloud application and - crucially - *instance*), which rule produced the verdict, and the byte counts. The DLP alert names its engine; [the engine names its dictionaries](/learn/zia-dlp-engines-dictionaries-edm-idm); and the first honest question is the false-positive one - does the match survive contact with its confidence and proximity settings, or did a test fixture trip a pattern? Ten minutes here saves the afternoon.
+
+## Step two: establish what could be seen
+
+Before concluding anything from absence, map the visibility. [Was the flow inspected](/learn/zia-ssl-inspection-policy-and-bypasses)? A destination on the bypass list is a corridor where DLP was structurally blind - which changes the question from "what did DLP see" to "what does the firewall log's byte accounting say moved through the corridor." Was the device on the platform at all? The unmanaged-device path never transits inline controls, which is precisely [the out-of-band CASB's jurisdiction](/learn/zscaler-casb-and-saas-security). This step is the investigation's epistemology: the logs tell the truth, but only about what the architecture let them witness.
+
+## Step three: walk the two planes
+
+Now the pincer from [the CASB article](/learn/zscaler-casb-and-saas-security). The inline plane answers *what moved*: the user's transaction history around the alert window, uploads to personal instances, the firewall log's non-web sessions - because exfiltration does not owe you the courtesy of HTTPS to a categorized site, and the [Cloud Firewall's](/learn/zia-cloud-firewall-rule-order) session records with their per-direction byte counts are the accounting of every other corridor. The out-of-band plane answers *what rests exposed*: the sanctioned tenant scanned for the same data classes at rest - the file shared to the open internet is exfiltration that happened without a single suspicious flow, and remediation there (revoking shares, quarantining) is response, not archaeology.
+
+## Step four: answer with posture
+
+The findings decide between two endings. If exfiltration is confirmed, the incident machinery takes over - containment, scope, [the timeline discipline](/learn/fault-isolation-first-hour) with every change and event on one axis. But in the common case - ambiguous signal, real gap discovered - the mature answer is *posture change*, and the series has already built the vocabulary: tighten the bypass that blinded the flow, or accept it consciously and compensate with byte-count alerting on the corridor; route the uncategorizable destinations through [isolation with form input disabled](/learn/browser-isolation-fundamentals) rather than guessing allow-or-block; extend the DLP engine whose dictionary missed by one synonym; point the out-of-band scan at the tenant that turned out to be unwatched. The alert was a question about one flow; the answer worth keeping is about every future one.

@@ -271,6 +271,8 @@ export const API_TOOL_MAP: Map<string, ApiTool> = new Map(API_TOOLS.map((t) => [
  * without one, and the API and its docs stay in lockstep with the toolbox.
  */
 export const API_EXCLUDED: Record<string, string> = {
+  "zdx-score-factor-explainer":
+    "Documentation explainer: the value is the sourced per-metric reading and honesty notes rendered in the UI; it computes no score (formula unpublished) and its metric grammar is a teaching subset, not a stable API contract.",
   "zscaler-ssl-bypass-planner":
     "Advisory planner: the value is the sourced rationale, blind-spot ledger, and backstop checklist rendered in the UI; the asset grammar is a teaching subset, not a stable API contract.",
   "zscaler-tunnel-chooser":

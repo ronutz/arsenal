@@ -1841,7 +1841,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.04",
             text: "Given an Administrator Audit Log, interpret the activity or identify unauthorized activity in the Administrator Audit Logs.",
-            relatedArticles: [],
+            relatedArticles: ["zscaler-admin-audit-logs"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1857,7 +1857,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.06",
             text: "Given a scenario about an exfiltration, identify the next step that should be taken to check the company's posture.",
-            relatedArticles: ["zscaler-casb-and-saas-security", "zia-dlp-engines-dictionaries-edm-idm"],
+            relatedArticles: ["zscaler-casb-and-saas-security", "zia-dlp-engines-dictionaries-edm-idm", "zscaler-exfiltration-response-posture"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1881,7 +1881,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.09",
             text: "Given a scenario where an administrator needs to connect to Zscaler a location that requires a certain bandwidth and requirements and no need for HA, identify the type of tunnels that should be used and the minimal amount needed to cover the requisites.",
-            relatedArticles: ["vpn-fundamentals", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "zia-ssl-inspection-policy-and-bypasses"],
+            relatedArticles: ["vpn-fundamentals", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "zia-ssl-inspection-policy-and-bypasses", "zia-locations-and-sublocations"],
             relatedTools: ["zscaler-tunnel-chooser", "zscaler-ssl-bypass-planner"],
             manualLinks: [],
             keyPoints: [],
@@ -1889,7 +1889,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.10",
             text: "Given a merger and acquisition use case, identify the appropriate configurations necessary to ensure seamless access to internet and private applications.",
-            relatedArticles: ["nat-explained"],
+            relatedArticles: ["nat-explained", "zscaler-mergers-and-acquisitions", "zia-locations-and-sublocations"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1931,7 +1931,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.03",
             text: "Given a scenario and an example of a log, identify why access is being allowed despite an expected policy violation.",
-            relatedArticles: ["zia-ssl-inspection-policy-and-bypasses"],
+            relatedArticles: ["zia-ssl-inspection-policy-and-bypasses", "zia-web-and-firewall-log-fields"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2093,7 +2093,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-C.01",
             text: "Given a scenario about the need for specific information from web and firewall logs, identify the log type that should be used.",
-            relatedArticles: [],
+            relatedArticles: ["zia-web-and-firewall-log-fields", "zscaler-nanolog-nss-and-log-streaming"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2101,7 +2101,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-C.02",
             text: "Given an example audit log, identify indicators of privilege escalation.",
-            relatedArticles: [],
+            relatedArticles: ["zscaler-admin-audit-logs"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2109,7 +2109,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-C.03",
             text: "Given a scenario including an executive security summary and a desired goal, identify the appropriate next step given the information in the summary.",
-            relatedArticles: [],
+            relatedArticles: ["zscaler-nanolog-nss-and-log-streaming", "zscaler-reports-and-executive-summaries"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2117,7 +2117,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-C.04",
             text: "Given a scenario about tracking application usage over time and performance goals, identify methods to prevent the performance issues.",
-            relatedArticles: [],
+            relatedArticles: ["zdx-score-anatomy-and-probes", "zscaler-reports-and-executive-summaries"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2125,7 +2125,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-C.05",
             text: "Given a scenario including a goal about connectivity, identify the ZDX diagnostics that should be used to address the goal.",
-            relatedArticles: [],
+            relatedArticles: ["zdx-score-anatomy-and-probes", "troubleshooting-zcc-connectivity"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2157,7 +2157,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-C.09",
             text: "Given a scenario where a private application is intermittently working for the same user, identify a likely cause and solution.",
-            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges", "troubleshooting-zcc-connectivity", "zpa-access-troubleshooting"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2165,7 +2165,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-C.10",
             text: "Given a scenario and information about a system that need updates, identify the steps needed to deploy updates to the system including to the broader user base efficiently and with minimal disruption.",
-            relatedArticles: [],
+            relatedArticles: ["zscaler-platform-updates-and-change-management"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],

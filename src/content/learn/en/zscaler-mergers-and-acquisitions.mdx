@@ -1,0 +1,30 @@
+---
+slug: zscaler-mergers-and-acquisitions
+title: "Mergers and Acquisitions on the Exchange: Day-One Access Without Merging Networks"
+summary: "The M&A integration scenario is where zero trust earns its architecture: ZPA grants the acquired company's people day-one access to named applications without joining networks, overlapping RFC 1918 space stops being a blocker because connectors resolve locally on each side, identity merges in phases behind SAML and SCIM, and forwarding migrates location by location. The order of operations, and why the network merge can wait indefinitely."
+concepts: ["zscaler", "mergers", "acquisitions", "zpa", "overlapping ip", "identity", "phased migration", "zero trust"]
+relatedTools: []
+relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segments-and-access-policy", "nat-explained", "saml-overview", "scim-overview", "zia-locations-and-sublocations"]
+category: networking
+order: 199
+status: reviewed
+updated: "2026-07-21"
+---
+
+The classic merger-integration project is a network project: connect the companies, reconcile the address plans, extend trust across the join, and spend a year doing it. The scenario deserves a walkthrough in this series because it is where the Exchange's architecture stops being philosophy and starts being schedule: **access can precede - and largely replace - the network merge.** What follows composes instruments this series already built; the scenario is the application, and the claims lean on the architecture facts verified in their home articles.
+
+## Day one: access to applications, not networks
+
+The day-one requirement is always the same sentence: *these named people from the acquired company need these named applications from ours, and vice versa.* That sentence is [a ZPA policy](/learn/zpa-app-segments-and-access-policy), verbatim. Define application segments for the shared applications, stand [App Connectors](/learn/zpa-architecture-app-connectors-service-edges) inside each company's environment next to its applications, and write the allows: acquired-company group, named segments, [posture conditions](/learn/zscaler-posture-profiles-and-device-trust) as trust requires. What did *not* happen is the point - no VPN between the estates, no route exchange, no firewall holes, no transitive network trust. Each side's blast radius stays its own, which in an M&A - where you inherited an environment you have not yet audited - is not a nicety but the control.
+
+## The overlapping-address problem dissolves
+
+Two companies of any age both live in RFC 1918 space, and both own a 10.0.0.0-something; the traditional project's most tedious workstream is [the NAT and readdressing](/learn/nat-explained) that lets the twins coexist. The Exchange's geometry makes the collision largely irrelevant, and the reason is one already-established fact: [the client never routes to the application's address - the connector reaches the server, resolving locally on its own side](/learn/zpa-architecture-app-connectors-service-edges). Two applications at the same private address in the two estates are simply two segments served by two connector groups, each resolving its own truth. The address plans can stay contradictory for years; many integrations never reconcile them at all.
+
+## Identity merges in phases, behind the brokers
+
+People, unlike routes, must actually merge - but [SAML](/learn/saml-overview) and [SCIM](/learn/scim-overview) make it a phased program instead of a flag-day. Phase one: the acquired company keeps its identity provider, added as an authentication source, its groups flowing in as policy vocabulary - access on day one against identities you have not migrated. Phase two: provisioning consolidates on schedule, and because every access rule was written against attributes and groups rather than network location, the identity migration renames the actors without rewriting the play.
+
+## Forwarding and the estate, location by location
+
+The internet-security side follows the same phased grammar: the acquired sites onboard as [locations](/learn/zia-locations-and-sublocations), their egress migrating to the Exchange tunnel by tunnel on the schedule capacity allows - each location a bounded change with a bounded rollback, the opposite of a cutover. The audit trail of the whole program is [the change record](/learn/zscaler-admin-audit-logs) this series already reads fluently. And the closing posture is the honest one: the network merge, the traditional project's whole substance, becomes optional deferred work - done late, done partially, or never - because the thing it existed to deliver, people reaching applications, shipped in week one.

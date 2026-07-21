@@ -1,0 +1,30 @@
+---
+slug: zdx-score-anatomy-and-probes
+title: "O Score ZDX: O Que os Probes Medem e Como o Número É Feito"
+summary: "O Zscaler Digital Experience transforma experiência de usuário num score de 1 a 100, e a anatomia é precisa: Web Probes medindo Page Fetch Time, DNS Time, Server Response Time e Availability; probes CloudPath medindo o caminho de rede salto a salto; probes a cada cinco minutos; o menor score da hora virando o score da hora; scores de grupo fazendo a média do pior de cada usuário. O que cada métrica significa, a análise automática de causa raiz da faixa Poor, e o que a Zscaler não publica sobre a fórmula."
+concepts: ["zscaler", "zdx", "web probe", "cloudpath", "page fetch time", "dns time", "server response time", "availability", "score"]
+relatedTools: ["zdx-score-factor-explainer"]
+relatedArticles: ["zscaler-zero-trust-exchange-architecture", "zscaler-client-connector-profiles", "troubleshooting-zcc-connectivity", "map-the-path-before-you-troubleshoot"]
+category: networking
+order: 191
+status: reviewed
+updated: "2026-07-21"
+---
+
+Todo produto de monitoramento acaba prometendo um número único, e o Zscaler Digital Experience (ZDX - o serviço de monitoramento de experiência de usuário da plataforma) entrega um: um score de 1 a 100, computado por usuário e consolidado por aplicação, localidade, cidade, departamento e organização. Números únicos ganham confiança ou desprezo dependendo de o operador saber como são feitos - então este artigo abre a anatomia. Tudo abaixo está fundamentado na arquitetura de referência e na documentação de ajuda do ZDX, verificadas em 2026-07-21.
+
+## Os instrumentos: duas famílias de probes
+
+O ZDX mede de onde a experiência de fato mora - o dispositivo do usuário - através do [Client Connector](/learn/zscaler-client-connector-profiles) que esta série já dissecou, cuja telemetria flui por um Telemetry and Policy Gateway até o motor de análise do ZDX. A medição em si pertence a duas famílias de probes com trabalho dividido de forma limpa. Os **Web Probes** perguntam *como a aplicação se comporta*: eles buscam uma URL e registram o **Page Fetch Time** (que, por projeto documentado, requisita apenas o documento de topo da página, não cada recurso embutido - um probe, não um replay), o **DNS Time**, o **Server Response Time** (o tempo até o primeiro byte) e a **Availability**. Os **probes CloudPath** perguntam *como o caminho de rede se comporta*: medição salto a salto da rota - latência e perda ao longo do caminho - o [instinto do traceroute](/learn/map-the-path-before-you-troubleshoot) industrializado. A divisão importa no diagnóstico: métrica web ruim com caminho limpo aponta para a aplicação; caminho ruim acusa a estrada.
+
+## Como o número é feito
+
+A mecânica documentada recompensa memória exata. Os probes rodam **a cada cinco minutos** para a maioria dos planos, contra cada aplicação definida. Para a visão horária, o ZDX toma **o menor score observado durante a hora** - o score é pessimista por projeto, porque uma experiência que foi terrível por cinco minutos foi terrível, diga o que disser a média. As consolidações mantêm o mesmo conservadorismo: o score de um grupo (localidade, departamento, aplicação, organização) é construído a partir **do menor score de cada usuário membro no período, tirando-se a média** - os piores momentos de cada usuário, combinados democraticamente. E as faixas carregam significado operacional: um score **Poor** fica na faixa documentada de **0-33**, e para scores Poor o dashboard roda automaticamente a análise de causa raiz sobre a pior amostra recente, exibindo os fatores que provavelmente o derrubaram.
+
+## O que não é publicado, dito com clareza
+
+A Zscaler documenta os fatores, a cadência de probes, a regra do menor-da-hora e as faixas - e **não** publica a fórmula composta exata que transforma métricas brutas no valor de 1 a 100. Esta série trata isso como [as regras de honestidade](/learn/zscaler-zero-trust-exchange-architecture) exigem: os fatores e a semântica acima têm fonte; qualquer afirmação sobre pesos precisos de métrica seria invenção, e a ferramenta companheira se recusa a inventar - ela classifica e explica o que a documentação fundamenta, e diz isso. Duas calibragens documentadas moram na mesma gaveta: métricas recuperadas via API podem diferir do dashboard por uma margem pequena, porque os agregados usam funções aproximadas por desempenho, e a telemetria carrega um atraso estimado de cerca de vinte minutos - o score é quase em tempo real, não instantâneo.
+
+## Lendo o score como um operador
+
+A anatomia dita a ordem de leitura. Um score baixo é um convite, não um veredito: abra o usuário, separe métricas web de métricas de caminho, e deixe a divisão de trabalho apontar - DNS Time inchando é uma conversa com o resolvedor; Server Response Time subindo com caminho limpo é problema da aplicação; perda num salto específico é [uma conversa de rede com endereço](/learn/map-the-path-before-you-troubleshoot). E lembre do pessimismo ao reportar para cima: um score horário é os *piores* cinco minutos da hora - que é exatamente o que um usuário lembra do seu dia, e exatamente por que o número é construído assim.

@@ -1,0 +1,34 @@
+---
+slug: zscaler-nanolog-nss-and-log-streaming
+title: "Nanolog, NSS, Cloud NSS, and LSS: Getting the Logs Out"
+summary: "Zscaler's logs live in the cloud-side Nanolog; three delivery paths bring them home: the NSS virtual machine streaming compressed logs over mTLS to your SIEM, Cloud NSS posting batches straight to a SIEM's HTTPS API, and ZPA's Log Streaming Service delivering private-access logs through your App Connectors. The VM's two-core anatomy, the feed limits, the HTTP status semantics where a 400 drops the batch, and the one exclusion rule that keeps the pipeline from eating itself."
+concepts: ["zscaler", "nanolog", "nss", "cloud nss", "lss", "siem", "log streaming", "mtls"]
+relatedTools: []
+relatedArticles: ["zia-web-and-firewall-log-fields", "zscaler-admin-audit-logs", "zia-ssl-inspection-policy-and-bypasses", "zpa-architecture-app-connectors-service-edges", "syslog-on-network-devices"]
+category: networking
+order: 194
+status: reviewed
+updated: "2026-07-21"
+---
+
+A cloud security platform generates its logs *in the cloud* - which immediately poses the operator's question: how do they get to *my* SIEM? Zscaler's answer has one storage layer and three delivery paths, and knowing which path fits which log family is the whole design. Grounded in Zscaler's NSS and deployment documentation, verified 2026-07-21.
+
+## The storage layer: Nanolog
+
+**Nanolog** is the cloud-side log store - the place [every field the previous article catalogued](/learn/zia-web-and-firewall-log-fields) actually lands as Service Edges write their transactions. Everything downstream is a *delivery mechanism reading from Nanolog*; nothing downstream is the log of record. That framing settles a recurring confusion in one sentence: losing a streaming feed loses your *copy*, not the logs.
+
+## Path one: the NSS virtual machine
+
+The classic path is the **Nanolog Streaming Service (NSS)** - a virtual machine you deploy (vSphere, AWS, Azure, GCP) that opens a secure tunnel to the Nanolog cluster, receives your logs in a **highly compressed stream**, formats them per your feed templates, and delivers them to the SIEM **over raw TCP**. The documented anatomy is pleasingly concrete: the VM runs on **two CPU cores - one for the control plane, one for the data plane**; an NSS *server* object in the console represents the VM and issues it the **client certificate and key it authenticates with**; and the sizing guidance runs to the practical (on the order of 11 Mbps of log-download bandwidth per ten thousand users, as the deployment guide's example). Feeds attach to servers under documented limits - **up to 16 feeds per server**, with session-log types capped at 8 to protect performance. And one deployment rule earns bold type because it ties this article to [the SSL one](/learn/zia-ssl-inspection-policy-and-bypasses): **the NSS VM's traffic to the Zscaler cloud must be excluded from TLS inspection** - it authenticates to the Nanolog cluster with mutual TLS, and an interception layer between the two breaks the handshake by design; nor should its outbound traffic be forwarded through the Service Edge at all. The logging pipeline must not flow through the thing it is logging.
+
+## Path two: Cloud NSS
+
+**Cloud NSS** removes the VM: the Zscaler cloud posts your formatted log batches **directly to a SIEM's HTTPS API endpoint** - a feed configured with the API URL and any required headers, no appliance to size, patch, or babysit. The trade is stated in its failure semantics, which are documented and worth memorizing: on delivery, an HTTP **200 or 204 means the batch is considered uploaded**; a **400 means the feed treats the batch as a parsing error - and drops it**. A misconfigured SIEM parser on the classic path backs up; on Cloud NSS it *discards*, politely and permanently. Cloud NSS deployments therefore live and die by contract testing the receiving endpoint before pointing production feeds at it.
+
+## Path three: LSS, for the private side
+
+[ZPA](/learn/zpa-architecture-app-connectors-service-edges) has its own geometry - and its own streamer. The **Log Streaming Service (LSS)** delivers ZPA's log families - user activity, user status, connector status, and [the ZPA audit trail](/learn/zscaler-admin-audit-logs) - to a receiver you host, with delivery flowing **through your App Connectors**, the same outbound-only components that carry the application traffic. The symmetry is the design: private-access logs travel the private-access rails, and the receiver needs reachability from the connector groups, not a hole from the internet.
+
+## Choosing like an operator
+
+The decision table writes itself. ZIA logs to a SIEM that speaks syslog-style TCP: NSS VM - budget the VM, exclude it from inspection, mind the per-server feed limits. ZIA logs to a cloud-native SIEM with an HTTPS ingestion API: Cloud NSS - and contract-test the endpoint, because a 400 is a shredder. ZPA logs: LSS through the connectors. And in every path, [the fields article's](/learn/zia-web-and-firewall-log-fields) advice compounds: several purpose-built feeds beat one kitchen-sink feed, on limits, on volume, and on the 2 a.m. readability of what arrives.

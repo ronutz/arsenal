@@ -5812,6 +5812,23 @@
       "blindSpotsTitle": "What goes blind here",
       "backstopsTitle": "Backstop checklist for the uninspected",
       "notesTitle": "Standing notes"
+    },
+    "zdx-score-factor-explainer": {
+      "name": "ZDX score factor explainer",
+      "blurb": "Paste the metrics ZDX exposes and read back what each one is: probe family, documented meaning, the score against the documented Poor band, and the honesty notes on what Zscaler does not publish.",
+      "emptyState": "Paste metric lines like \"score = 28\" or \"pft = 850\" to read the documented explanation of each.",
+      "runsLocally": "Runs entirely in your browser. Your metrics never leave this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "inputLabel": "Metrics, one per line: metric = value",
+      "placeholder": "score = 28\npft = 850\ndns = 120\npath-loss = 4",
+      "errorTitle": "That input needs a fix",
+      "readingsTitle": "Metric readings",
+      "familyWeb": "Web Probe",
+      "familyCloudpath": "CloudPath",
+      "familyComposite": "Composite score",
+      "diagnosticTitle": "Diagnostic split",
+      "notesTitle": "Documented semantics and honesty notes"
     }
   },
   "privacy_page": {
@@ -12273,6 +12290,34 @@
       "pmtud": {
         "def": "Path MTU Discovery: sending with Don't Fragment set and shrinking on ICMP Fragmentation Needed replies - which over-filtered networks silently break.",
         "context": "When the ICMP never arrives, big packets vanish: the classic MTU black hole."
+      },
+      "app-profile": {
+        "def": "The Zscaler Client Connector policy object that decides per-application handling on the device: which destinations bypass the tunnel via its PAC logic, and platform-specific behavior per operating system.",
+        "context": "Pairs with the forwarding profile: forwarding decides HOW traffic leaves the device; the app profile decides WHAT gets special handling."
+      },
+      "posture-profile": {
+        "def": "A named device-state check evaluated by Zscaler Client Connector - disk encryption, OS state, certificate presence, and similar signals - consumed by ZPA access rules as conditions and surfaced to ZIA as device trust.",
+        "context": "The mechanism that makes access decisions follow the device's current state, per session, not just the user's identity."
+      },
+      "app-segment": {
+        "def": "ZPA's unit of application definition: a set of FQDNs, wildcards, or IP addresses plus their ports, naming what can be reached. Access policy matches top-down against the most specific segment.",
+        "context": "Zero trust names applications instead of networks; the application segment is where the naming happens."
+      },
+      "segment-group": {
+        "def": "A ZPA collection of application segments used as the policy axis: access rules commonly target segment groups, so grouping strategy is policy strategy.",
+        "context": "Pairs with server groups (the reachability axis, binding segments to App Connector groups)."
+      },
+      "private-service-edge": {
+        "def": "A ZPA Service Edge instance the customer hosts in their own environment, brokering the same stitched Microtunnels as the cloud's Public Service Edges but keeping the meeting point local.",
+        "context": "Chosen for latency or data-path locality when user, connector, and application all live close together."
+      },
+      "ssma": {
+        "def": "Single Scan, Multi-Action: the ZIA Service Edge design where content is scanned once and every enabled engine acts on that single pass, instead of daisy-chaining separate inspection devices.",
+        "context": "The architectural answer to appliance sprawl - one proxy transit, all verdicts."
+      },
+      "zidentity": {
+        "def": "Zscaler's unified identity layer for the Zero Trust Exchange: one place to integrate identity providers and manage admin and user identity across the platform's services.",
+        "context": "Identity is the new perimeter's control plane; ZIdentity is where the platform centralizes it."
       }
     },
     "totalCount": "{count} terms",
