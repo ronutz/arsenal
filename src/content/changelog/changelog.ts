@@ -53,6 +53,19 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-21",
+    time: "04:07",
+    kind: "content",
+    title: "Nine blueprints land: the six in-preparation F5 certifications go live with 133 verbatim objectives",
+    body: "The six F5 certifications that entered the rail as in-preparation placeholders are now fully published study guides. PRIME relayed the official exam blueprint PDFs, and every objective and example bullet was transcribed verbatim - BIG-IP DNS Specialist (302) with 16 objectives mapped onto the GTM/DNS shelf, BIG-IP ASM Specialist (303) with 25 objectives mapped onto the Advanced WAF shelf, BIG-IP APM Specialist (304) with 30 objectives mapped onto the access-and-identity shelf, Security Solutions (401) with 17 and Cloud Solutions (402) with 29 objectives, and the four NGINX administrator exams (F5N1 through F5N4) with 16 objectives across management, configuration, and troubleshooting. Each guide carries the official exam facts fetched from the F5 Education Services catalog the same day: cost, time limit, passing score, delivery, and prerequisites. Where a blueprint publishes objectives without example bullets (401 and 402), the study notes stay empty by honesty, and two typos printed in the 402 source are preserved exactly as published. The certification registry now stands at 22 guides, 10 certifications, and 277 verbatim objectives.",
+    links: [
+      { label: "All certifications", href: "/certifications" },
+      { label: "BIG-IP DNS Specialist (302)", href: "/certifications/f5-cts-dns-302" },
+      { label: "BIG-IP ASM Specialist (303)", href: "/certifications/f5-cts-asm-303" },
+      { label: "BIG-IP APM Specialist (304)", href: "/certifications/f5-cts-apm-304" },
+    ],
+  },
+  {
+    date: "2026-07-21",
     time: "02:51",
     kind: "feature",
     title: "The API page now teaches self-hosting: download, flip one switch, serve",

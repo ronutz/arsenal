@@ -2173,10 +2173,13 @@ export const studyGuides: StudyGuide[] = [
       ] },
     ],
   },
+  // ---------------------------------------------------------------------------
+  // BIG-IP DNS Specialist (302): objectives and example bullets transcribed
+  // VERBATIM from the official F5 exam blueprint (stamp 302.72017), PDF relayed
+  // by PRIME 2026-07-21. Catalog Key Info re-verified the same day. Related
+  // resources map to the site's GTM/DNS shelf per the ethics guardrail above.
+  // ---------------------------------------------------------------------------
   {
-    // BIG-IP DNS Specialist (302): awaiting the official blueprint (catalog links it behind
-    // my.f5.com Salesforce auth). status "preparing" per the registry's
-    // designed workflow until PRIME relays it, as with 101/201/301A/301B.
     slug: "f5-cts-dns-302",
     examCode: "302",
     examName: "BIG-IP DNS Specialist (302)",
@@ -2184,15 +2187,264 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-dns",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/big-ip-dns-specialist-302",
-    blueprintSourceLabel: "Catalog facts (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level; blueprint PDF behind my.f5.com",
-    status: "preparing",
-    examFacts: null,
-    sections: [],
+    blueprintSourceLabel:
+      "Exam blueprint 302.72017 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level",
+    status: "published",
+    examFacts: {
+      questions: "80 questions (70 items that are scored, 10 pilot/beta items)",
+      minutes: 90,
+      passMark: "245 (scaled range 100-350)",
+      cost: "US$180 per attempt (not including local taxes and fees)",
+      note:
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, BIG-IP DNS. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA).",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "Section 1: DESIGN AND ARCHITECT",
+        objectives: [
+          {
+            id: "1.01",
+            text: "Identify customer requirements, constraints, and challenges related to DNS",
+            relatedArticles: [
+              "dns-message-header-and-flags",
+              "dns-record-types-in-answers",
+              "bigip-dns-request-processing-order",
+            ],
+            relatedTools: ["dig-output-explainer"],
+            manualLinks: [],
+            keyPoints: [
+              "Recognize the functionality and limitations of the DNS protocol (e.g., hierarchy, roles)",
+              "Determine relevant information to gather regarding a customer's need for high availability, security, and management",
+            ],
+          },
+          {
+            id: "1.02",
+            text: "Evaluate existing DNS environment for BIG-IP DNS solutions",
+            relatedArticles: ["bigip-dns-request-processing-order"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Ascertain specific scope and scale of DNS requirements",
+              "Recognize limitations imposed by the existing DNS service provider",
+              "Identify change control procedure related the integration of BIG-IP DNS into an existing environment",
+            ],
+          },
+          {
+            id: "1.03",
+            text: "Determine appropriate deployment and integration strategy for a BIG-IP DNS solution",
+            relatedArticles: [
+              "gtm-load-balancing-methods",
+              "bigip-dns-request-processing-order",
+              "dnssec-records-in-dig",
+              "ltm-health-monitors",
+            ],
+            relatedTools: ["f5-gslb-decision-flow", "f5-lb-method-chooser"],
+            manualLinks: [],
+            keyPoints: [
+              "Given a customer environment, requirements, and constraints, select an appropriate deployment model",
+              "Given a customer environment, requirements, and constraints, recognize the use case for DNS Express, Zone Runner, DNS 64, DNSSEC, DNS Cache, various load balancing algorithms, persistence, and/or health monitor",
+            ],
+          },
+          {
+            id: "1.04",
+            text: "Determine performance requirements for a BIG-IP DNS solution",
+            relatedArticles: ["gtm-topology-records-and-longest-match", "dnssec-records-in-dig"],
+            relatedTools: ["f5-topology-longest-match"],
+            manualLinks: [],
+            keyPoints: [
+              "Relate the performance characteristics of virtual edition and physical hardware to a specific use case",
+              "Employ topology load balancing to optimize user experience",
+              "Predict the performance implications pertaining to key DNS features (e.g., DNSSEC, topology LB)",
+            ],
+          },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "Section 2: IMPLEMENT",
+        objectives: [
+          {
+            id: "2.01",
+            text: "Identify configuration options for TMOS and sync groups",
+            relatedArticles: [
+              "how-iquery-connects-bigip-dns",
+              "bigip-interfaces-trunks-vlans-selfips",
+              "bigip-config-sync",
+            ],
+            relatedTools: ["iquery-protocol-explainer"],
+            manualLinks: [],
+            keyPoints: [
+              "Create the proper self-IP configuration, routes, and settings for iQuery communications",
+              "Ensure proper NTP operation of all sync group members",
+              "Create logging profiles for DNS request and/or response",
+            ],
+          },
+          {
+            id: "2.02",
+            text: "Identify configure options for GSLB",
+            relatedArticles: [
+              "gslb-two-tier-pool-then-member",
+              "gtm-load-balancing-methods",
+              "gtm-topology-records-and-longest-match",
+            ],
+            relatedTools: ["bigip-dns-gslb-simulator", "f5-gslb-decision-flow", "f5-topology-longest-match"],
+            manualLinks: [],
+            keyPoints: [
+              "Differentiate between, and determine when to use, the two tiers of GSLB pool selection and the three tiers of virtual server selection",
+              "Recognize the functionality of various load balancing methods (e.g., static, dynamic, and fallback)",
+              "Recognize topology load balancing configuration parameters",
+            ],
+          },
+          {
+            id: "2.03",
+            text: "Identify configuration options for non-GSLB DNS components",
+            relatedArticles: ["bigip-dns-request-processing-order", "bigip-dns-multi-rpz"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Determine the listener IP and protocol",
+              "Configure DNS Express and DNS Cache",
+            ],
+          },
+          {
+            id: "2.04",
+            text: "Identify the necessary network environment for GSLB operations",
+            relatedArticles: ["how-iquery-connects-bigip-dns"],
+            relatedTools: ["iquery-protocol-explainer"],
+            manualLinks: [],
+            keyPoints: [
+              "Recognize the significance of source and destination ports for communication between BIG-IP DNS devices",
+              "Identify missing/non-functional network configurations when enabling GSLB operation (e.g., iQuery, generic host probing)",
+            ],
+          },
+        ],
+      },
+      {
+        id: "section-3",
+        title: "Section 3: TEST AND TROUBLESHOOT",
+        objectives: [
+          {
+            id: "3.01",
+            text: "Determine when and how to employ the appropriate network and DNS troubleshooting tools",
+            relatedArticles: ["bigip-tcpdump-syntax", "bigip-tcpdump-safety", "reverse-dns-lookups-with-nslookup"],
+            relatedTools: [
+              "dig-output-explainer",
+              "nslookup-output-explainer",
+              "f5-bigip-tcpdump-builder",
+              "packet-capture-plan-builder",
+            ],
+            manualLinks: [],
+            keyPoints: [
+              "Use openssl to review trusted cert information",
+              "Use tcpdump to capture and analyze DNS and iQuery traffic on appropriate VLAN and IP",
+              "Use dig/nslookup to verify DNS configuration and operation",
+            ],
+          },
+          {
+            id: "3.02",
+            text: "Diagnose BIG-IP DNS issues",
+            relatedArticles: ["how-iquery-connects-bigip-dns", "ltm-health-monitors"],
+            relatedTools: ["bigip-dns-gslb-simulator", "fault-hypothesis-builder"],
+            manualLinks: [],
+            keyPoints: [
+              "Investigate root cause for virtual server flapping issue",
+              "Analyze DNS request/response pattern to confirm BIG-IP DNS configuration, health monitor an iQuery operation",
+            ],
+          },
+          {
+            id: "3.03",
+            text: "Analyze system log data and statistics for problem analysis",
+            relatedArticles: ["bigip-log-files-map", "bigip-avr-analytics"],
+            relatedTools: ["syslog-pri-decoder"],
+            manualLinks: [],
+            keyPoints: [
+              "Verify the status of pools based on relevant log entries",
+              "Analyze statistical data to pinpoint any issues regarding query response times",
+              "Analyze appropriate log for proper zone transfer operation",
+            ],
+          },
+          {
+            id: "3.04",
+            text: "Address DNS-related issues based on troubleshooting and log analysis",
+            relatedArticles: ["how-iquery-connects-bigip-dns"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Apply config change (e.g., monitor or prober) to remedy flapping of server objects",
+              "Address proper IP address choice(s) for iQuery communication between devices",
+            ],
+          },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Section 4: OPERATIONS AND SUPPORT",
+        objectives: [
+          {
+            id: "4.01",
+            text: "Identify process to perform BIG-IP DNS configuration backup",
+            relatedArticles: ["bigip-ucs-archives"],
+            relatedTools: ["f5-tmsh-config-explainer"],
+            manualLinks: [],
+            keyPoints: [
+              "Perform the steps in the GUI to create system archive files",
+              "Issue TMSH commands to create system archive files.",
+              "Verify file creation and move to remote storage",
+            ],
+          },
+          {
+            id: "4.02",
+            text: "Identify the prerequisites and procedure for BIG-IP DNS configuration restoration",
+            relatedArticles: ["bigip-ucs-archives", "dnssec-records-in-dig"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Recognize the special requirements for restoring configuration data to a BIG-IP DNS RMA unit",
+              "Compare configuration objects between a new BIG-IP DNS and existing sync group member",
+              "Determine when and how to restore the master encryption keys for TSIG and DNSSEC",
+            ],
+          },
+          {
+            id: "4.03",
+            text: "Identify various BIG-IP DNS monitoring strategies",
+            relatedArticles: ["bigip-avr-analytics", "bigip-custom-alerting", "bigip-telemetry-streaming-ts"],
+            relatedTools: ["telemetry-streaming-explainer"],
+            manualLinks: [],
+            keyPoints: [
+              "Configure SNMP polling",
+              "Describe and use DNS statistics and DNS analytics",
+            ],
+          },
+          {
+            id: "4.04",
+            text: "Recognize appropriate procedures for performing BIG-IP DNS software upgrades",
+            relatedArticles: [
+              "bigip-license-reactivation",
+              "bigip-service-check-date",
+              "bigip-upgrade-vs-update",
+              "bigip-inplace-upgrade-and-64bit",
+            ],
+            relatedTools: ["f5-service-check-date"],
+            manualLinks: [],
+            keyPoints: [
+              "Recognize the significance of the requirement for license reactivation prior to upgrade",
+              "Given a GSLB configuration, predict the potential end-user impact when upgrading a DNS sync group member while it is offline",
+              "Validate BIG-IP DNS operation status, post-upgrade",
+            ],
+          },
+        ],
+      },
+    ],
   },
+  // ---------------------------------------------------------------------------
+  // BIG-IP ASM Specialist (303): objectives and example bullets transcribed
+  // VERBATIM from the official F5 exam blueprint (stamp 303.72017), PDF relayed
+  // by PRIME 2026-07-21. Catalog Key Info fetched the same day. Related
+  // resources map to the site's Advanced WAF (AWAF) shelf; ASM is the exam-era
+  // name of today's Advanced WAF module, so the mappings carry directly.
+  // ---------------------------------------------------------------------------
   {
-    // BIG-IP ASM Specialist (303): awaiting the official blueprint (catalog links it behind
-    // my.f5.com Salesforce auth). status "preparing" per the registry's
-    // designed workflow until PRIME relays it, as with 101/201/301A/301B.
     slug: "f5-cts-asm-303",
     examCode: "303",
     examName: "BIG-IP ASM Specialist (303)",
@@ -2200,15 +2452,329 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-asm",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/big-ip-asm-specialist-303",
-    blueprintSourceLabel: null,
-    status: "preparing",
-    examFacts: null,
-    sections: [],
+    blueprintSourceLabel:
+      "Exam blueprint 303.72017 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level",
+    status: "published",
+    examFacts: {
+      questions: "80 questions (70 items that are scored, 10 pilot/beta items)",
+      minutes: 90,
+      passMark: "245 (scaled range 100-350)",
+      cost: "US$180 per attempt (not including local taxes and fees)",
+      note:
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, BIG-IP ASM. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA); the catalog lists F5-CTS, BIG-IP ASM as a prerequisite for the Security Solutions Expert track.",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "Section 1: ARCHITECTURE/DESIGN AND POLICY CREATION",
+        objectives: [
+          {
+            id: "1.01",
+            text: "Explain the potential effects of common attacks on web applications",
+            relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Understand and describe how the ASM can affect clients and applications directly while in either transparent or blocking mode",
+              "Summarize the OWASP Top Ten",
+            ],
+          },
+          {
+            id: "1.02",
+            text: "Explain how specific security policies mitigate various web application attacks",
+            relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-false-positives"],
+            relatedTools: ["f5-irules-vs-ltm-policy"],
+            manualLinks: [],
+            keyPoints: [
+              "Understand/interpret an iRule or LTM policy to map application traffic to an ASM policy",
+              "Explain the trade-offs between security, manageability, false positives, and performance",
+            ],
+          },
+          {
+            id: "1.03",
+            text: "Determine the appropriate policy features and granularity for a given set of requirements",
+            relatedArticles: ["awaf-declarative-policy-structure"],
+            relatedTools: ["f5-awaf-declarative-policy-explainer"],
+            manualLinks: [],
+            keyPoints: [
+              "Understand application (security) requirements and convert requirements to technical tasks",
+            ],
+          },
+          {
+            id: "1.04",
+            text: "Determine which deployment method is most appropriate for a given set of requirements",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Determine which deployment method is most appropriate given the circumstances (web services, vulnerability scanner, templates, rapid deployment model)",
+            ],
+          },
+          {
+            id: "1.05",
+            text: "Explain the automatic policy builder lifecycle",
+            relatedArticles: [
+              "awaf-automatic-learning-poisoning",
+              "awaf-l7-behavioral-dos",
+              "awaf-client-side-signals-and-challenges",
+            ],
+            relatedTools: ["f5-awaf-learning-suggestion-interpreter", "f5-awaf-learning-poisoning-estimator"],
+            manualLinks: [],
+            keyPoints: [
+              "Create any profiles required to support the policy deployment (xml, JSON, logging profiles)",
+              "Implement anomaly detection appropriate to the web app (D/DoS protection, brute force attack, web scraping, proactive bot defense)",
+            ],
+          },
+          {
+            id: "1.06",
+            text: "Review and evaluate policy settings based on information gathered from ASM (attack signatures, DataGuard, entities)",
+            relatedArticles: [
+              "awaf-data-guard-response-masking",
+              "awaf-signature-staging-and-enforcement-readiness",
+            ],
+            relatedTools: ["f5-awaf-learning-suggestion-interpreter"],
+            manualLinks: [],
+            keyPoints: [
+              "Configure initial policy building settings (automatic policy builder settings)",
+            ],
+          },
+          {
+            id: "1.07",
+            text: "Define appropriate policy structure for policy elements",
+            relatedArticles: [
+              "awaf-content-profiles",
+              "awaf-data-guard-response-masking",
+              "awaf-declarative-policy-structure",
+              "awaf-session-tracking",
+            ],
+            relatedTools: ["f5-awaf-declarative-policy-explainer"],
+            manualLinks: [],
+            keyPoints: [
+              "Define appropriate policy structure for policy elements (URLs, parameters, file types, headers, sessions and logins, content profiles, CSRF protection, anomaly detection, DataGuard, proactive bot defense)",
+            ],
+          },
+          {
+            id: "1.08",
+            text: "Explain options and potential results within the deployment wizard",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Describe options within the deployment wizard (deployment method, attack signatures, virtual server, learning method",
+              "Select the appropriate ASM deployment model given the business requirements",
+            ],
+          },
+          {
+            id: "1.09",
+            text: "Explain available logging options",
+            relatedArticles: ["bigip-log-files-map"],
+            relatedTools: ["syslog-pri-decoder"],
+            manualLinks: [],
+            keyPoints: [
+              "Explain the specifications of the remote logger (ports, types of logs, formats, address)",
+            ],
+          },
+          {
+            id: "1.10",
+            text: "Describe the management of the attack signature lifecycle and select the appropriate attack signatures or signature sets",
+            relatedArticles: ["awaf-signature-staging-and-enforcement-readiness"],
+            relatedTools: ["f5-awaf-signature-accuracy-risk"],
+            manualLinks: [],
+            keyPoints: [
+              "Understand management of attack signature lifecycle (staging, enforcement readiness period) and select appropriate attack signatures or signature sets.",
+            ],
+          },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "Section 2: POLICY MAINTENANCE AND OPTIMIZATION",
+        objectives: [
+          {
+            id: "2.01",
+            text: "Evaluate the implications of changes in the policy to the security and functionality of the application",
+            relatedArticles: ["awaf-false-positives"],
+            relatedTools: ["f5-awaf-policy-diff"],
+            manualLinks: [],
+            keyPoints: [
+              "Evaluate whether the rules are being implemented effectively and appropriately to meet security and/or compliance requirements and make changes as appropriate",
+            ],
+          },
+          {
+            id: "2.02",
+            text: "Explain the process to integrate natively supported third party vulnerability scan output and generic formats with ASM",
+            relatedArticles: ["awaf-declarative-policy-structure"],
+            relatedTools: ["f5-awaf-policy-diff"],
+            manualLinks: [],
+            keyPoints: [
+              "Refine appropriate policy structure for policy elements (URLs, parameters, file types, headers, sessions and logins, content profiles, CSRF protection, anomaly protection)",
+              "Explain how to manage policies using import, export, merge, and revert",
+            ],
+          },
+          {
+            id: "2.03",
+            text: "Evaluate whether rules are being implemented effectively and appropriately to mitigate violations",
+            relatedArticles: ["awaf-false-positives"],
+            relatedTools: ["f5-awaf-request-log-triage"],
+            manualLinks: [],
+            keyPoints: [
+              "Evaluate the implications of changes in the policy to the security and vulnerabilities of the application",
+            ],
+          },
+          {
+            id: "2.04",
+            text: "Determine how a policy should be adjusted based upon available data",
+            relatedArticles: ["awaf-false-positives"],
+            relatedTools: ["f5-awaf-false-positive-triage"],
+            manualLinks: [],
+            keyPoints: [
+              "Tune an ASM policy for better performance, including use of wildcards to improve efficiency",
+            ],
+          },
+          {
+            id: "2.05",
+            text: "Define the ASM policy management functions",
+            relatedArticles: [],
+            relatedTools: ["f5-awaf-policy-diff"],
+            manualLinks: [],
+            keyPoints: [
+              "Identify the status of the policy",
+              "Define the violation types that exist in ASM",
+              "Describe how to merge and differentiate between policies",
+            ],
+          },
+        ],
+      },
+      {
+        id: "section-3",
+        title: "Section 3: REVIEW EVENT LOGS AND MITIGATE ATTACKS",
+        objectives: [
+          {
+            id: "3.01",
+            text: "Interpret log entries and identify opportunities to refine the policy",
+            relatedArticles: ["awaf-false-positives"],
+            relatedTools: ["f5-awaf-request-log-triage", "f5-awaf-false-positive-triage"],
+            manualLinks: [],
+            keyPoints: [
+              "Examine traffic violations, determine if any attack traffic was permitted through the ASM and modify the policy to remove false positives",
+              "Locate and interpret reported security violations by end users and application developers",
+            ],
+          },
+          {
+            id: "3.02",
+            text: "Given an ASM report, identify trends in support of security objectives",
+            relatedArticles: ["bigip-avr-analytics"],
+            relatedTools: ["f5-awaf-request-log-triage"],
+            manualLinks: [],
+            keyPoints: [
+              "Understand and describe each major violation category and how ASM detects common exploits",
+              "Generate reporting for the ASM system and review the contents of the reports (anomaly statistics, charts, requests, PCI compliance status)",
+            ],
+          },
+          {
+            id: "3.03",
+            text: "Determine the appropriate mitigation for a given attack or vulnerability",
+            relatedArticles: ["awaf-evasion-techniques"],
+            relatedTools: ["f5-awaf-evasion-explainer", "cvss-vector-decoder"],
+            manualLinks: [],
+            keyPoints: [
+              "Take appropriate action on reported security violations by end users and application developers",
+              "Modify ASM policy to adapt to attacks",
+            ],
+          },
+          {
+            id: "3.04",
+            text: "Decide the appropriate method for determining the success of attack mitigation",
+            relatedArticles: [],
+            relatedTools: ["f5-awaf-signature-accuracy-risk"],
+            manualLinks: [],
+            keyPoints: [
+              "Choose an appropriate user defined attack signature to respond to particular traffic",
+            ],
+          },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Section 4: TROUBLESHOOT",
+        objectives: [
+          {
+            id: "4.01",
+            text: "Evaluate ASM policy performance issues and determine appropriate mitigation strategies",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Analyze performance graphs and statistics along with ASM configurations to determine the root cause of performance issues and appropriate remediation to the configuration based on Guaranteed Logging",
+            ],
+          },
+          {
+            id: "4.02",
+            text: "Understand the impact of learning, alarm, and blocking settings on traffic enforcement",
+            relatedArticles: [
+              "awaf-enforcement-mode-blocking-vs-transparent",
+              "awaf-signature-staging-and-enforcement-readiness",
+            ],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Ensure that the security policy is inspecting web application traffic (application is functional and the policies are parsing the traffic)",
+            ],
+          },
+          {
+            id: "4.03",
+            text: "Examine policy objects to determine why traffic is or is not generating violations",
+            relatedArticles: ["awaf-false-positives"],
+            relatedTools: ["f5-awaf-request-log-triage"],
+            manualLinks: [],
+            keyPoints: [
+              "Examine Security Event Logs and ASM configurations to determine expected violations based on the logging profile assigned to the virtual server",
+            ],
+          },
+          {
+            id: "4.04",
+            text: "Identify and interpret ASM performance metrics",
+            relatedArticles: [],
+            relatedTools: ["f5-irules-performance-linter"],
+            manualLinks: [],
+            keyPoints: [
+              "Understand the impact of ASM iRules on performance.",
+              "Understand the impact of traffic spikes on ASM performance and available mitigation strategies",
+            ],
+          },
+          {
+            id: "4.05",
+            text: "Evaluate ASM system performance issues and determine appropriate mitigation strategies",
+            relatedArticles: [],
+            relatedTools: ["f5-awaf-policy-diff"],
+            manualLinks: [],
+            keyPoints: [
+              "Correlate performance issues with ASM policy changes based on security policy history information and system performance graphs",
+            ],
+          },
+          {
+            id: "4.06",
+            text: "Recognize ASM specific user roles and their permissions",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Recognize differences between user roles/permissions",
+              "Recognize ASM specific user roles",
+            ],
+          },
+        ],
+      },
+    ],
   },
+  // ---------------------------------------------------------------------------
+  // BIG-IP APM Specialist (304): objectives and example bullets transcribed
+  // VERBATIM from the official F5 exam blueprint (stamp 304.92018), PDF relayed
+  // by PRIME 2026-07-21. Catalog Key Info fetched the same day (incl. the
+  // prerequisite: a valid F5-CA, BIG-IP certification). Related resources map
+  // to the access-and-identity shelf (APM, SAML, Kerberos, LDAP, session data).
+  // ---------------------------------------------------------------------------
   {
-    // BIG-IP APM Specialist (304): awaiting the official blueprint (catalog links it behind
-    // my.f5.com Salesforce auth). status "preparing" per the registry's
-    // designed workflow until PRIME relays it, as with 101/201/301A/301B.
     slug: "f5-cts-apm-304",
     examCode: "304",
     examName: "BIG-IP APM Specialist (304)",
@@ -2216,15 +2782,416 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cts-apm",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/big-ip-apm-specialist-304",
-    blueprintSourceLabel: null,
-    status: "preparing",
-    examFacts: null,
-    sections: [],
+    blueprintSourceLabel:
+      "Exam blueprint 304.92018 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 90 minutes, Technology Specialist level; prerequisite: valid F5-CA, BIG-IP certification",
+    status: "published",
+    examFacts: {
+      questions: "80 questions (70 items that are scored, 10 pilot/beta items)",
+      minutes: 90,
+      passMark: "245 (scaled range 100-350)",
+      cost: "US$180 per attempt (not including local taxes and fees)",
+      note:
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Technology Specialist, APM. Prerequisite: F5 Certified BIG-IP Administrator (F5-CA); the catalog lists the BIG-IP APM Specialist certification as a prerequisite for the Security Solutions Expert track.",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "Section 1: AUTHENTICATION, AUTHORIZATION, AND ACCOUNTING (AAA), SINGLE SIGN-ON (SSO), FEDERATED AUTHORIZATION, MOBILE DEVICE MANAGEMENT (MDM)",
+        objectives: [
+          {
+            id: "1.01",
+            text: "Explain how to configure different types of AAA methods",
+            relatedArticles: ["ldap-fundamentals", "kerberos-and-spnego"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Configure AAA objects",
+              "Microsoft Active Directory, LDAP, Radius, RSA SecurID, TACACS, (Kerberos/NTLM, Client Cert auth), end-point management system profile",
+            ],
+          },
+          {
+            id: "1.02",
+            text: "Demonstrate knowledge of the network requirements for each authentication service type",
+            relatedArticles: ["ldap-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Demonstrate ability to test and validate connectivity to each authentication service (adtest output, ldapsearch output)",
+            ],
+          },
+          {
+            id: "1.03",
+            text: "Explain how to configure SSO objects",
+            relatedArticles: ["bigip-apm-sso-methods", "kerberos-and-spnego"],
+            relatedTools: ["f5-apm-sso-explainer"],
+            manualLinks: [],
+            keyPoints: [
+              "Determine specific SSO object requirements (e.g. Kerberos SPN requirements)",
+              "Determine when to choose one type of SSO over another",
+            ],
+          },
+          {
+            id: "1.04",
+            text: "Explain how to configure SAML as an SP and/or IdP",
+            relatedArticles: [
+              "f5-apm-saml-federation",
+              "saml-overview",
+              "saml-bindings-and-sso-initiation",
+              "saml-assertions-and-conditions",
+            ],
+            relatedTools: ["saml-decoder"],
+            manualLinks: [],
+            keyPoints: [
+              "Integrate BIG-IP APM Service Provider (SP) with external vendor IdP (e.g. PING, Okta, SaaS, etc.) Configure Single Logout (SLO)",
+            ],
+          },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "Section 2: NETWORK AND APPLICATION ACCESS",
+        objectives: [
+          {
+            id: "2.01",
+            text: "Explain how to configure SSL VPN manually or using a wizard",
+            relatedArticles: ["vpn-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Determine which option is appropriate to use: Network access, Portal access, Web Application access (APM/LTM Mode)",
+              "Choose appropriate Webtop type: Full, Network Access, Portal Access",
+            ],
+          },
+          {
+            id: "2.02",
+            text: "Explain how to configure Network Access Profiles",
+            relatedArticles: ["vpn-fundamentals", "bigip-snat-and-return-traffic"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Configure profile settings (e.g. Connectivity profile options, Edge Client Options and updates, SNAT)",
+              "Configure App Optimization",
+            ],
+          },
+          {
+            id: "2.03",
+            text: "Explain how to configure portal access",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Determine the appropriate level of patching",
+              "Evaluate global ACL order",
+              "Configure Resource Items",
+            ],
+          },
+          {
+            id: "2.04",
+            text: "Explain how to configure application access",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Configure Remote Desktop access (e.g. Launching applications, Custom Parameters)",
+              "Deploy Citrix Bundle",
+              "Configure App Tunnels",
+            ],
+          },
+          {
+            id: "2.05",
+            text: "Explain how to configure Web Access Management (LTM-APM Mode)",
+            relatedArticles: ["bigip-pools-and-load-balancing", "ltm-virtual-server-types"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Configure pool and virtual server",
+              "Determine when to use Web Access Management",
+            ],
+          },
+        ],
+      },
+      {
+        id: "section-3",
+        title: "Section 3: VISUAL POLICY EDITOR",
+        objectives: [
+          {
+            id: "3.01",
+            text: "Explain how to configure authentication and logon objects in VPE",
+            relatedArticles: ["bigip-apm-session-variables"],
+            relatedTools: ["f5-apm-session-variable-reference"],
+            manualLinks: [],
+            keyPoints: [
+              "Configure an auth and/or query object (e.g. Determine group membership, Configure required attributes)",
+              "Add appropriate logon page type",
+            ],
+          },
+          {
+            id: "3.02",
+            text: "Explain how to configure resource/custom variables",
+            relatedArticles: ["bigip-apm-session-variables", "bigip-apm-sso-methods"],
+            relatedTools: ["f5-apm-session-variable-reference"],
+            manualLinks: [],
+            keyPoints: [
+              "Set up SSO credential mapping",
+              "Assign Webtops dynamically",
+              "Configure variable assignment",
+            ],
+          },
+          {
+            id: "3.03",
+            text: "Explain how to configure VPE flow with multiple branches and objects",
+            relatedArticles: ["bigip-apm-session-variables"],
+            relatedTools: ["f5-apm-session-variable-reference"],
+            manualLinks: [],
+            keyPoints: [
+              "Determine policy ending types (allow, deny, redirect)",
+              "Use a message box to display a variable in a VPE",
+              "Assign custom session variables",
+            ],
+          },
+          {
+            id: "3.04",
+            text: "Explain how to configure and apply macros",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Use a macro to combine multiple VPE objects",
+              "Demonstrate an understanding of differences in creating a macro versus an access policy",
+            ],
+          },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Section 4: DEPLOY AND MAINTAIN iAPPS",
+        objectives: [
+          {
+            id: "4.01",
+            text: "Determine when to use an iApp",
+            relatedArticles: ["bigip-iapps-and-fast"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Import and deploy supported iApp templates",
+              "Determine the min/max BIG-IP module versions supported by a specific iApp template",
+              "Determine which BIG-IP modules are required to deploy a specific iApp template",
+            ],
+          },
+          {
+            id: "4.02",
+            text: "Apply procedural concepts to maintain iApps",
+            relatedArticles: ["bigip-iapps-and-fast"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Reconfigure a deployed iApp to update objects",
+              "Identify iApp used to deploy an object",
+            ],
+          },
+          {
+            id: "4.03",
+            text: "Determine appropriate applications for enabling/disabling strict updates",
+            relatedArticles: ["bigip-iapps-and-fast"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Make manual changes to a deployed application service",
+              "Demonstrate an understanding of the impact of disabling strict updates",
+            ],
+          },
+        ],
+      },
+      {
+        id: "section-5",
+        title: "Section 5: ADMINISTRATING AND TROUBLESHOOTING BIG-IP APM",
+        objectives: [
+          {
+            id: "5.01",
+            text: "Apply procedural concepts to manage and maintain access profiles",
+            relatedArticles: ["bigip-apm-session-variables"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Determine proper use of profile scope (e.g. profile, virtual server, global)",
+              "Tune policy settings (e.g. multiple concurrent users, limit active sessions per IP address)",
+            ],
+          },
+          {
+            id: "5.02",
+            text: "Perform basic customizations of the U/I",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Apply corporate branding (i.e. adding a logo, footer, logon form)",
+              "Add additional languages for browser localization",
+            ],
+          },
+          {
+            id: "5.03",
+            text: "Demonstrate an understanding of how High Availability applies to BIG-IP APM (with respect to end users, policy sync, device fail-over)",
+            relatedArticles: [
+              "bigip-ha-concepts-device-trust-groups",
+              "bigip-failover-states-and-operations",
+              "bigip-config-sync",
+            ],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Demonstrate an understanding of the limitation of two units per HA pair and traffic group",
+              "Configure Access Policy Sync (e.g. Configuring local objects vs global, validate access policy sync)",
+            ],
+          },
+          {
+            id: "5.04",
+            text: "Explain provisioning/licensing for BIG-IP APM",
+            relatedArticles: ["bigip-license-file-anatomy", "bigip-license-reactivation"],
+            relatedTools: ["f5-bigip-license-explainer"],
+            manualLinks: [],
+            keyPoints: [
+              "Update an existing license for BIG-IP APM",
+              "Consider CCU utilization for different types of access policy deployments",
+            ],
+          },
+          {
+            id: "5.05",
+            text: "Apply procedural concepts to gather relevant data",
+            relatedArticles: [
+              "bigip-apm-session-variables",
+              "bigip-tcpdump-syntax",
+              "bigip-tcpdump-safety",
+              "bigip-log-files-map",
+            ],
+            relatedTools: ["f5-bigip-tcpdump-builder", "packet-capture-plan-builder"],
+            manualLinks: [],
+            keyPoints: [
+              "Gather data from relevant BIG-IP tools (e.g. session reports, session variables, tcpdump, ssldump, sessiondump, APM log)",
+              "Add debug logic to APM iRules",
+              "Configure Debug logging",
+            ],
+          },
+          {
+            id: "5.06",
+            text: "Determine root cause",
+            relatedArticles: [],
+            relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder"],
+            manualLinks: [],
+            keyPoints: [
+              "Compare expected vs actual behaviors based on problem description",
+              "Analyze and correlate all collected data (client/BIG-IP/serverside) to understand where a failure occurred",
+              "Determine cause of EPSEC failures",
+            ],
+          },
+        ],
+      },
+      {
+        id: "section-6",
+        title: "Section 6: SECURITY",
+        objectives: [
+          {
+            id: "6.01",
+            text: "Explain how BIG-IP APM mitigates common attack vectors and methodologies",
+            relatedArticles: ["bigip-syn-flood-protection"],
+            relatedTools: ["f5-dos-vector-explainer"],
+            manualLinks: [],
+            keyPoints: [
+              "Demonstrate an understanding of how the BIG-IP solution mitigates common security risks (e.g., cookiehijacking, DoS attacks)",
+              "Determine which features of the BIG-IP device mitigate common DoS attacks",
+              "Deploy GeoIP and IP intelligence in the VPE to protect resources",
+            ],
+          },
+          {
+            id: "6.02",
+            text: "Determine which BIG-IP APM features should be used to mitigate a specific authentication attack",
+            relatedArticles: ["bigip-custom-alerting"],
+            relatedTools: ["totp-hotp"],
+            manualLinks: [],
+            keyPoints: [
+              "Configure logging",
+              "Configure objects needed to deploy MFA",
+              "Configure SNMP traps",
+            ],
+          },
+          {
+            id: "6.03",
+            text: "Apply procedural concepts to manage user sessions",
+            relatedArticles: ["bigip-apm-session-variables"],
+            relatedTools: ["f5-apm-session-variable-reference"],
+            manualLinks: [],
+            keyPoints: [
+              "Identify user session details",
+              "Demonstrate an understanding of BIG-IP APM session cookies",
+            ],
+          },
+          {
+            id: "6.04",
+            text: "Identify use cases of Secure Web Gateway (SWG)",
+            relatedArticles: [
+              "http-proxy-forward-and-reverse",
+              "ssl-forward-proxy-interception",
+              "how-a-pac-file-chooses-a-proxy",
+            ],
+            relatedTools: ["pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [
+              "Compare transparent vs explicit proxy deployments",
+              "Determine the purpose of SWG",
+            ],
+          },
+          {
+            id: "6.05",
+            text: "Describe access policy timeouts as related to security",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Describe the differences between inactivity timeout, access policy timeout, and maximum session timeout",
+            ],
+          },
+          {
+            id: "6.06",
+            text: "Explain how to configure and manage ACLs",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Explain how ACLs are deployed by default when creating a policy",
+              "Explain when a layer 4 or layer 7 ACL would be needed",
+            ],
+          },
+          {
+            id: "6.07",
+            text: "Demonstrate an understanding of network security requirements for application access",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Demonstrate an understanding of TCP/UDP ports required for application services",
+            ],
+          },
+          {
+            id: "6.08",
+            text: "Apply procedural concepts to implement EPSEC",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Configure client-side checks (e.g. anti-virus, firewall, registry)",
+              "Update and install EPSEC software",
+            ],
+          },
+        ],
+      },
+    ],
   },
+  // ---------------------------------------------------------------------------
+  // 401 - Security Solution Expert: objectives transcribed VERBATIM from the
+  // official F5 exam blueprint (stamp 401.102019), PDF relayed by PRIME
+  // 2026-07-21. This blueprint publishes objectives only (no example bullets),
+  // so keyPoints stay empty by honesty. Catalog Key Info fetched the same day.
+  // ---------------------------------------------------------------------------
   {
-    // Security Solutions (401): awaiting the official blueprint (catalog links it behind
-    // my.f5.com Salesforce auth). status "preparing" per the registry's
-    // designed workflow until PRIME relays it, as with 101/201/301A/301B.
     slug: "f5-cse-security-401",
     examCode: "401",
     examName: "Security Solutions (401)",
@@ -2232,15 +3199,190 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cse-sec",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/security-solutions-401",
-    blueprintSourceLabel: null,
-    status: "preparing",
-    examFacts: null,
-    sections: [],
+    blueprintSourceLabel:
+      "Exam blueprint 401.102019 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 105 minutes, Solution Expert level",
+    status: "published",
+    examFacts: {
+      questions: "70 questions (65 items that are scored, 5 pilot/beta items)",
+      minutes: 105,
+      passMark: "245 (scaled range 100-350)",
+      cost: "US$180 per attempt (not including local taxes and fees)",
+      note:
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Solution Expert, Security (F5-CSE, Security). Prerequisites: F5-CA plus F5-CTS LTM, F5-CTS ASM, and F5-CTS APM.",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "Section 1: THREAT ANALYSIS",
+        objectives: [
+          {
+            id: "1.01",
+            text: "Analyze external threat research to determine the potential impact to an organization",
+            relatedArticles: [],
+            relatedTools: ["cvss-vector-decoder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "1.02",
+            text: "Analyze threat modeling data to determine risk profiles of the infrastructure and applications",
+            relatedArticles: [],
+            relatedTools: ["cvss-vector-decoder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "Section 2: ARCHITECT SOLUTIONS",
+        objectives: [
+          {
+            id: "2.01",
+            text: "Determine the correct solution to mitigate a given threat",
+            relatedArticles: ["awaf-l7-behavioral-dos", "bigip-syn-flood-protection"],
+            relatedTools: ["f5-dos-vector-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.02",
+            text: "Determine the correct control to address a compliance or business requirement",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.03",
+            text: "Determine the appropriate security framework for an application",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.04",
+            text: "Explain the justification for a proposed solution",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.05",
+            text: "Determine when BIG-IQ is required for centralized management and visibility",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      {
+        id: "section-3",
+        title: "Section 3: OPERATION AND IMPLEMENTATION",
+        objectives: [
+          {
+            id: "3.01",
+            text: "Apply procedural concepts required to configure F5 technology to provide network layer DOS protection",
+            relatedArticles: ["bigip-syn-flood-protection", "bigip-connection-eviction-policies"],
+            relatedTools: ["f5-dos-vector-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "3.02",
+            text: "Determine the appropriate protection against known bad actors",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "3.03",
+            text: "Determine the appropriate settings to mitigate web fraud",
+            relatedArticles: ["f5-datasafe-application-layer-encryption"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "3.04",
+            text: "Articulate architectural requirements for outbound SSL visibility",
+            relatedArticles: ["f5-ssl-orchestrator-topologies", "ssl-forward-proxy-interception"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "3.05",
+            text: "Apply procedural concepts to configure network firewall protection",
+            relatedArticles: ["bigip-afm-contexts-and-rule-processing", "bigip-packet-filters"],
+            relatedTools: ["f5-afm-rule-context", "f5-packet-filter-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "3.06",
+            text: "Troubleshoot F5 technology to address functionality or performance issues",
+            relatedArticles: ["bigip-qkview-and-ihealth"],
+            relatedTools: ["fault-hypothesis-builder", "tac-escalation-packet-builder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "3.07",
+            text: "Verify a configuration is functioning as intended to mitigate a vulnerability",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Section 4: SECURITY RESPONSE",
+        objectives: [
+          {
+            id: "4.01",
+            text: "Analyze logs or other data sources for security incidents",
+            relatedArticles: ["bigip-log-files-map"],
+            relatedTools: ["syslog-pri-decoder", "f5-awaf-request-log-triage"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "4.02",
+            text: "Determine the appropriate proactive security response plan",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "4.03",
+            text: "Determine the appropriate incident response plan given specific attack details",
+            relatedArticles: [],
+            relatedTools: ["incident-timeline-rca-builder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+    ],
   },
+  // ---------------------------------------------------------------------------
+  // 402 - Cloud Solutions: objectives transcribed VERBATIM from the official
+  // F5 exam blueprint (stamp 402.42019), PDF relayed by PRIME 2026-07-21.
+  // This blueprint publishes objectives only (no example bullets), so keyPoints
+  // stay empty by honesty. Two source typos preserved verbatim: 2.06
+  // "architeching" and 3.05 "rlevant" appear exactly as printed in the PDF.
+  // 5.08 and 5.09 carry identical text at different cognitive levels in the
+  // source; both are kept, as printed. Catalog Key Info fetched the same day.
+  // ---------------------------------------------------------------------------
   {
-    // Cloud Solutions (402): awaiting the official blueprint (catalog links it behind
-    // my.f5.com Salesforce auth). status "preparing" per the registry's
-    // designed workflow until PRIME relays it, as with 101/201/301A/301B.
     slug: "f5-cse-cloud-402",
     examCode: "402",
     examName: "Cloud Solutions (402)",
@@ -2248,15 +3390,290 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-cse-cld",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/cloud-solutions-402",
-    blueprintSourceLabel: null,
-    status: "preparing",
-    examFacts: null,
-    sections: [],
+    blueprintSourceLabel:
+      "Exam blueprint 402.42019 (official PDF, relayed by PRIME 2026-07-21). Catalog Key Info (fetched 2026-07-21): US$180, English, test-center proctored, passing score 245, 105 minutes, Solution Expert level",
+    status: "published",
+    examFacts: {
+      questions: "70 questions (65 items that are scored, 5 pilot/beta items)",
+      minutes: 105,
+      passMark: "245 (scaled range 100-350)",
+      cost: "US$180 per attempt (not including local taxes and fees)",
+      note:
+        "Computer-based, multiple-choice; delivered at Pearson VUE test centers (English). Credential awarded: F5 Certified Solution Expert, Cloud (F5-CSE, Cloud). Prerequisites: F5-CA plus F5-CTS LTM and F5-CTS DNS.",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "Section 1: FOUNDATIONAL CLOUD CONCEPTS",
+        objectives: [
+          {
+            id: "1.01",
+            text: "Compare and contrast the various cloud business models and technologies",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "1.02",
+            text: "Apply concepts related to cloud Identity Access Management technologies",
+            relatedArticles: ["saml-overview", "oidc-overview"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "1.03",
+            text: "Describe the terminology, modules, and technical requirements related to application bursting and mobility",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "1.04",
+            text: "Apply concepts related to application bursting and mobility",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "Section 2: CLOUD INFRASTRUCTURE DESIGN",
+        objectives: [
+          {
+            id: "2.01",
+            text: "Describe the F5 licensing and support characteristics for cloud deployments",
+            relatedArticles: ["bigip-license-file-anatomy", "bigip-license-reactivation"],
+            relatedTools: ["f5-bigip-license-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.02",
+            text: "Evaluate variables relevant to the design of a cloud solution that meets business requirement",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.03",
+            text: "Enumerate the available permutations and combinations of F5 virtualization technologies",
+            relatedArticles: ["bigip-vcmp"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.04",
+            text: "Recognize the constraints imposed by various SDN technologies on F5 components",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.05",
+            text: "Relate technical requirements to F5 platforms and virtualization technologies",
+            relatedArticles: ["bigip-vcmp"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.06",
+            text: "Evaluate variables relevant to architeching solutions using single and multi-tier F5 products in various cloud environments",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.07",
+            text: "Evaluate the variables relevant to the design of green-field data centers and application delivery architectures to function as a cloud service provider",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.08",
+            text: "Apply key concepts related to the design on-demand provisioning of application services",
+            relatedArticles: ["bigip-declarative-onboarding-do", "as3-declaration-anatomy"],
+            relatedTools: ["do-explainer-validator", "as3-explainer-validator"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "2.09",
+            text: "Evaluate variables relevant to the design of on-demand provisioning of application services",
+            relatedArticles: ["as3-declaration-anatomy"],
+            relatedTools: ["as3-explainer-validator"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      {
+        id: "section-3",
+        title: "Section 3: CLOUD MIGRATION",
+        objectives: [
+          {
+            id: "3.01",
+            text: "Evaluate variables relevant to the creation and validation of a Cloud migration plan for applications",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "3.02",
+            text: "Apply key concepts required for the implementation of a Cloud migration plan for applications",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "3.03",
+            text: "Evaluate variables relevant to the implementation of a cloud migration plan for applications",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "3.04",
+            text: "Apply key concepts required to leverage technologies to integrate with various SDN environments",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "3.05",
+            text: "Evaluate variables rlevant to the leveraging of technologies to integrate with various SDN environments",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Section 4: CLOUD DEPLOYMENT",
+        objectives: [
+          {
+            id: "4.01",
+            text: "Analyze cloud service provider instance sizing and location as it relates to BIG-IP requirements",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "4.02",
+            text: "Apply the key concepts required to deploy F5 instances on a cloud infrastructure",
+            relatedArticles: ["bigip-declarative-onboarding-do"],
+            relatedTools: ["do-explainer-validator"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      {
+        id: "section-5",
+        title: "Section 5: CLOUD ORCHESTRATION AND AUTOMATION",
+        objectives: [
+          {
+            id: "5.01",
+            text: "Apply the N/E/S/W-bound API model in order to orchestrate service creation",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "5.02",
+            text: "Apply the key concepts required to automate and orchestrate using F5 RESTful APIs",
+            relatedArticles: [],
+            relatedTools: ["curl-command-builder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "5.03",
+            text: "Evaluate the variables relevant to automation and orchestration using F5 RESTful APIs",
+            relatedArticles: [],
+            relatedTools: ["curl-command-builder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "5.04",
+            text: "Apply the key concepts required to design a cloud bursting solution",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "5.05",
+            text: "Evaluate the variables relevant to design a cloud bursting solution",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "5.06",
+            text: "Determine how to utilize cloud deployment templates to create on demand provisioning of application services",
+            relatedArticles: ["as3-declaration-anatomy"],
+            relatedTools: ["as3-explainer-validator"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "5.07",
+            text: "Evaluate cloud deployment templates for the creation of on-demand provisioning of application services",
+            relatedArticles: ["as3-declaration-anatomy"],
+            relatedTools: ["as3-explainer-validator"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "5.08",
+            text: "Apply the key concepts required to create a workflow for dynamic provisioning of an F5 instance",
+            relatedArticles: ["bigip-declarative-onboarding-do"],
+            relatedTools: ["do-explainer-validator"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "5.09",
+            text: "Apply the key concepts required to create a workflow for dynamic provisioning of an F5 instance",
+            relatedArticles: ["bigip-declarative-onboarding-do"],
+            relatedTools: ["do-explainer-validator"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+    ],
   },
+  // ---------------------------------------------------------------------------
+  // NGINX Management (F5N1): objectives and example bullets transcribed
+  // VERBATIM from the official F5 Certified Administrator, NGINX certification
+  // blueprint (PDF relayed by PRIME 2026-07-21). Catalog Key Info fetched the
+  // same day. The blueprint groups objectives per exam; this guide carries the
+  // EXAM: Management table.
+  // ---------------------------------------------------------------------------
   {
-    // NGINX Management (F5N1): awaiting the official blueprint (catalog links it behind
-    // my.f5.com Salesforce auth). status "preparing" per the registry's
-    // designed workflow until PRIME relays it, as with 101/201/301A/301B.
     slug: "f5-nginx-f5n1",
     examCode: "F5N1",
     examName: "NGINX Management (F5N1)",
@@ -2264,15 +3681,85 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-management-f5n1",
-    blueprintSourceLabel: "NGINX exams are delivered via Certiverse online proctoring (per the F5 exam catalog)",
-    status: "preparing",
-    examFacts: null,
-    sections: [],
+    blueprintSourceLabel:
+      "F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes",
+    status: "published",
+    examFacts: {
+      questions: "Question count not published in the catalog or the certification blueprint",
+      minutes: 30,
+      passMark: "245",
+      cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
+      note:
+        "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "EXAM: Management",
+        objectives: [
+          {
+            id: "1.1",
+            text: "Given a scenario identify when to use NGINX",
+            relatedArticles: ["http-proxy-forward-and-reverse", "tcp-proxy-layer-4"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Describe NGINX as a web server",
+              "Describe NGINX as a reverse proxy",
+              "Describe NGINX as a load balancer",
+              "Describe NGINX as a caching solution",
+              "Describe NGINX as an API gateway",
+            ],
+          },
+          {
+            id: "1.2",
+            text: "Explain the NGINX configuration directory structure",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Identify the default NGINX core config file",
+              "Identify the included directories/files",
+              "Describe the order of how the included files will be 'merged' into the running configuration",
+              "Describe directive inheritance and overriding properties",
+            ],
+          },
+          {
+            id: "1.3",
+            text: "Demonstrate how to manage user permissions",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Identify user context (i.e. using the configuration file)",
+              "Describe how and when to give read/write/execute access",
+              "Describe how to run NGINX as a specific user type",
+              "Describe the relationship between NGINX processes and users",
+            ],
+          },
+          {
+            id: "1.4",
+            text: "Manage shared memory zones",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Describe how and why NGINX uses shared memory zones",
+              "Describe why directives use a shared memory zone",
+            ],
+          },
+        ],
+      },
+    ],
   },
+  // ---------------------------------------------------------------------------
+  // NGINX Configuration: Knowledge (F5N2): objectives and example bullets
+  // transcribed VERBATIM from the official F5 Certified Administrator, NGINX
+  // certification blueprint (PDF relayed by PRIME 2026-07-21). Catalog Key
+  // Info fetched the same day. This guide carries the EXAM: Configuration:
+  // Knowledge table.
+  // ---------------------------------------------------------------------------
   {
-    // NGINX Configuration: Knowledge (F5N2): awaiting the official blueprint (catalog links it behind
-    // my.f5.com Salesforce auth). status "preparing" per the registry's
-    // designed workflow until PRIME relays it, as with 101/201/301A/301B.
     slug: "f5-nginx-f5n2",
     examCode: "F5N2",
     examName: "NGINX Configuration: Knowledge (F5N2)",
@@ -2280,15 +3767,100 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-configuration-knowledge-f5n2",
-    blueprintSourceLabel: null,
-    status: "preparing",
-    examFacts: null,
-    sections: [],
+    blueprintSourceLabel:
+      "F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes",
+    status: "published",
+    examFacts: {
+      questions: "Question count not published in the catalog or the certification blueprint",
+      minutes: 30,
+      passMark: "245",
+      cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
+      note:
+        "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "EXAM: Configuration: Knowledge",
+        objectives: [
+          {
+            id: "1.1",
+            text: "Configure NGINX as a load balancer",
+            relatedArticles: ["tcp-proxy-layer-4"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Define the load balancing pools/systems",
+              "Explain the different load balancing algorithms",
+              "Describe the process used to remove a server from the pool",
+              "Describe what happens when a pool server goes down",
+              "Explain what is unique to NGINX as a load balancer",
+              "Describe how to configure security",
+              "Modify or tune a memory zone configuration",
+              "Describe how to configure NGINX as mirroring server",
+              "Describe how to configure NGINX as a layer 4 load balancer",
+              "Describe how to configure NGINX as an API Gateway",
+            ],
+          },
+          {
+            id: "1.2",
+            text: "Configure NGINX as a content cache server",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Define a minimum retention policy",
+              "Describe how to configure path regex routing",
+              "Describe the why and how of caching in NGINX",
+              "Define the cache in the http context",
+              "Enable the cache",
+              "Specify the content that should be cached",
+              "Describe different types of caching",
+              "Explain what is unique to NGINX as a cache server",
+            ],
+          },
+          {
+            id: "1.3",
+            text: "Configure NGINX as a web server",
+            relatedArticles: ["tls-reverse-proxy-inbound"],
+            relatedTools: ["regex"],
+            manualLinks: [],
+            keyPoints: [
+              "Demonstrate how to securely serve content (HTTP/HTTPS)",
+              "Describe the difference between serving static content and dynamic content. (REGEX, and variables)",
+              "Describe how server and location work",
+              "Explain what is unique to NGINX as a web server",
+            ],
+          },
+          {
+            id: "1.4",
+            text: "Configure NGINX as a reverse proxy",
+            relatedArticles: ["http-proxy-forward-and-reverse"],
+            relatedTools: ["secure-headers"],
+            manualLinks: [],
+            keyPoints: [
+              "Explain how traffic routing is handled in NGINX as a reverse proxy",
+              "Explain what is unique to NGINX as a reverse proxy",
+              "Configure encryption",
+              "Demonstrate how to manipulate headers",
+              "Describe the difference between proxy_set_header and add_header",
+              "Modify or tune a memory zone configuration",
+              "Describe how to configure NGINX as socket reserve proxy",
+              "Describe how open source NGINX handles health checks in different situations",
+            ],
+          },
+        ],
+      },
+    ],
   },
+  // ---------------------------------------------------------------------------
+  // NGINX Configuration: Demonstrate (F5N3): objectives and example bullets
+  // transcribed VERBATIM from the official F5 Certified Administrator, NGINX
+  // certification blueprint (PDF relayed by PRIME 2026-07-21). Catalog Key
+  // Info fetched the same day. This guide carries the EXAM: Configuration:
+  // Demonstrate table.
+  // ---------------------------------------------------------------------------
   {
-    // NGINX Configuration: Demonstrate (F5N3): awaiting the official blueprint (catalog links it behind
-    // my.f5.com Salesforce auth). status "preparing" per the registry's
-    // designed workflow until PRIME relays it, as with 101/201/301A/301B.
     slug: "f5-nginx-f5n3",
     examCode: "F5N3",
     examName: "NGINX Configuration: Demonstrate (F5N3)",
@@ -2296,15 +3868,102 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-configuration-demonstrate-f5n3",
-    blueprintSourceLabel: null,
-    status: "preparing",
-    examFacts: null,
-    sections: [],
+    blueprintSourceLabel:
+      "F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes",
+    status: "published",
+    examFacts: {
+      questions: "Question count not published in the catalog or the certification blueprint",
+      minutes: 30,
+      passMark: "245",
+      cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
+      note:
+        "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "EXAM: Configuration: Demonstrate",
+        objectives: [
+          {
+            id: "1.1",
+            text: "Demonstrate how to manage connections and bandwidth",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Describe the difference between rate limiting and bandwidth throttling",
+              "Demonstrate how to limit the amount of connections that are made to the NGINX server and its upstreams",
+              "Demonstrate how to set a bandwidth limit",
+              "Understand how to enable and optimize keep-alives for the NGINX server and its upstreams",
+            ],
+          },
+          {
+            id: "1.2",
+            text: "Demonstrate how to restrict access",
+            relatedArticles: [],
+            relatedTools: ["http-methods-comparison", "url-inspector"],
+            manualLinks: [],
+            keyPoints: [
+              "Demonstrate how to restrict access to NGINX based on IP address",
+              "Demonstrate how to restrict access to NGINX based on HTTP method",
+              "Demonstrate how to authenticate (auth basic / auth request)",
+              "Demonstrate how to restrict URIs",
+            ],
+          },
+          {
+            id: "1.3",
+            text: "Demonstrate how to configure logging",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Demonstrate how to customize the format of log files",
+              "Demonstrate how to customize the location of log files",
+              "Demonstrate how to set log levels (severity)",
+              "Describe the difference between an error log and an access log",
+            ],
+          },
+          {
+            id: "1.4",
+            text: "Demonstrate how to configure certificates",
+            relatedArticles: ["certificate-formats", "certificate-signing-request", "certificate-validation"],
+            relatedTools: ["x509", "csr-decoder"],
+            manualLinks: [],
+            keyPoints: [
+              "Define the difference between a server certificate and a client certificate",
+              "Describe the components necessary to use an SSL certificate",
+              "Describe how to protect the SSL certificate and key",
+            ],
+          },
+          {
+            id: "1.5",
+            text: "Demonstrate how to enable HTTPS and associated security settings",
+            relatedArticles: [
+              "tls-reverse-proxy-inbound",
+              "tls12-tls13-dtls-quic",
+              "tls13-cipher-suites",
+              "tls-cipher-security-keywords",
+            ],
+            relatedTools: ["cipher"],
+            manualLinks: [],
+            keyPoints: [
+              "Compare the advantages of TLS termination, end to end encryption, and TLS passthrough",
+              "Demonstrate how to enable TLS encryption",
+              "Enable/Disable ciphers and TLS version",
+              "Describe how force all traffic to redirect to HTTPS",
+            ],
+          },
+        ],
+      },
+    ],
   },
+  // ---------------------------------------------------------------------------
+  // NGINX Troubleshoot (F5N4): objectives and example bullets transcribed
+  // VERBATIM from the official F5 Certified Administrator, NGINX certification
+  // blueprint (PDF relayed by PRIME 2026-07-21; the blueprint's own table is
+  // titled EXAM: Troubleshooting). Catalog Key Info fetched the same day.
+  // ---------------------------------------------------------------------------
   {
-    // NGINX Troubleshoot (F5N4): awaiting the official blueprint (catalog links it behind
-    // my.f5.com Salesforce auth). status "preparing" per the registry's
-    // designed workflow until PRIME relays it, as with 101/201/301A/301B.
     slug: "f5-nginx-f5n4",
     examCode: "F5N4",
     examName: "NGINX Troubleshoot (F5N4)",
@@ -2312,10 +3971,65 @@ export const studyGuides: StudyGuide[] = [
     certification: "f5-ca-nginx",
     targetVersion: null,
     blueprintSourceUrl: "https://education.f5.com/certification/nginx-troubleshoot-f5n4",
-    blueprintSourceLabel: null,
-    status: "preparing",
-    examFacts: null,
-    sections: [],
+    blueprintSourceLabel:
+      "F5 Certified Administrator, NGINX certification blueprint (official PDF, relayed by PRIME 2026-07-21; based on NGINX Open Source Software). Catalog Key Info (fetched 2026-07-21): US$50 online / US$65 test center, English, online proctored via Certiverse or test-center proctored via Pearson VUE, passing score 245, 30 minutes",
+    status: "published",
+    examFacts: {
+      questions: "Question count not published in the catalog or the certification blueprint",
+      minutes: 30,
+      passMark: "245",
+      cost: "US$50 online proctored / US$65 test center (not including local taxes and fees)",
+      note:
+        "Online proctored via Certiverse (camera access required) or test-center proctored via Pearson VUE; English; Administrator NGINX level. One of the four exams (taken in any order) that earn F5 Certified Administrator, NGINX (F5-CA, NGINX); the certification is based on NGINX Open Source Software (OSS).",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "EXAM: Troubleshooting",
+        objectives: [
+          {
+            id: "1.1",
+            text: "Demonstrate how to stop, start, and reload NGINX binary",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [
+              "Describe how to send signals to the NGINX process",
+              "Describe the difference between a reload and a stop/start",
+              "Describe how to test a new configuration before applying it",
+            ],
+          },
+          {
+            id: "1.2",
+            text: "Troubleshoot basic use cases",
+            relatedArticles: [],
+            relatedTools: ["curl-command-builder"],
+            manualLinks: [],
+            keyPoints: [
+              "Interpret logs",
+              "Identify start up failures",
+              "Describe how to deal with HTTP error codes",
+              "Describe how to troubleshoot various response",
+              "Describe how to troubleshoot use cases with multiple virtual hosts, multiple ports, and default servers",
+              "Describe how to troubleshoot location precedence and add_header inheritance",
+              "Describe how to troubleshoot client and server connections",
+              "Describe basic SELinux use cases",
+            ],
+          },
+          {
+            id: "1.3",
+            text: "Troubleshoot TLS security settings",
+            relatedArticles: ["certificate-validation", "certificate-validity-windows"],
+            relatedTools: ["x509"],
+            manualLinks: [],
+            keyPoints: [
+              "Identify TLS connection errors",
+              "Describe how to troubleshoot invalid certificates",
+            ],
+          },
+        ],
+      },
+    ],
   },
 ];
 
