@@ -1,0 +1,28 @@
+---
+slug: bigip-iapps-and-fast
+title: "Deploying Applications with Templates: iApps and FAST"
+summary: "Templates turn a bag of virtual servers, pools, profiles, and monitors into one managed application service. How iApps work, what strict updates protects, how FAST modernizes the idea declaratively, how to modify an application deployed either way, and how to recognize template-created objects in a configuration."
+concepts: ["f5", "big-ip", "iapp", "fast", "templates", "application services", "strict updates", "automation"]
+relatedTools: ["f5-tmsh-config-explainer"]
+relatedArticles: ["bigip-profiles-on-a-virtual-server", "bigip-declarative-onboarding-do", "bigip-pools-and-load-balancing"]
+category: networking
+order: 155
+status: reviewed
+updated: "2026-07-21"
+---
+
+An application on BIG-IP is never one object; it is a small constellation - virtual server, pool, monitors, profiles, sometimes iRules and policies - that must stay coherent. Templates exist to create and manage the constellation as a unit. Two generations matter for the LTM blueprint: iApps, the classic mechanism, and F5 Application Services Templates (FAST), the declarative successor.
+
+## iApps: the application service as owner
+
+An iApp template is a form plus logic: you answer questions - addresses, ports, certificate, pool members - and deployment creates every needed object, grouped under an application service. The service owns its objects, and that ownership is enforced by strict updates: while enabled, the component objects resist direct modification, because a hand edit would drift them out of agreement with the template's answers. The supported way to modify an application deployed with an iApp is therefore to reconfigure the application service - reopen the form, change the answers, redeploy - not to edit the pool behind its back. Disabling strict updates is possible and occasionally necessary, at the price of the template no longer guaranteeing the whole.
+
+Recognizing template-created objects is a blueprint bullet with a simple answer: they live under the application service and carry its name as a prefix, and the interface marks the association. In the Traffic Management Shell (TMSH), listing the configuration shows the app-service linkage on each owned object.
+
+## FAST: the same idea, declaratively
+
+FAST reimagines the mechanism for the automation era. Templates are text - parameter schemas and object definitions - rendered into declarations and applied through a Representational State Transfer (REST) interface, with a management view in the interface as well. The consumption model is the same shape as iApps: supply parameter values, deploy, and modify by redeploying the same template with changed values, which FAST applies as a diff rather than a teardown. Because templates are files, they version-control cleanly, which is the practical reason FAST displaced iApps in pipeline-driven shops. It sits alongside the wider declarative toolchain described in [Declarative Onboarding](/learn/bigip-declarative-onboarding-do).
+
+## What the exam wants
+
+The objective is Remember-level, and three memorized facts cover it: modify an iApp-deployed application by reconfiguring the application service, respecting strict updates; modify a FAST-deployed application by redeploying its template with new parameter values; and identify template-created objects by their application service ownership and naming. Everything else on this page is the why behind those three.

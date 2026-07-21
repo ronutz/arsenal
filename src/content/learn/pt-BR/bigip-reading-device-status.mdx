@@ -1,0 +1,34 @@
+---
+slug: bigip-reading-device-status
+title: "Lendo o Status do BIG-IP: Dashboard, Network Map, TMSH e netstat"
+summary: "O dispositivo conta sua condição por meia dúzia de superfícies: o painel LCD, o dashboard, as formas e cores do Network Map, os comandos show do TMSH, as estatísticas de objetos e o humilde netstat. Saber qual superfície responde qual pergunta - e como ler uma tabela de portas em escuta - é o feijão com arroz da administração."
+concepts: ["f5", "big-ip", "device status", "network map", "dashboard", "tmsh", "netstat", "statistics", "service status"]
+relatedTools: ["f5-tmsh-config-explainer"]
+relatedArticles: ["bigip-log-files-map", "bigip-system-services", "bigip-ha-concepts-device-trust-groups"]
+category: networking
+order: 151
+status: reviewed
+updated: "2026-07-21"
+---
+
+"Identificar e reportar o status atual do dispositivo" soa como uma tarefa; num BIG-IP é um passeio por superfícies, cada uma com seu vocabulário. O administrador eficiente sabe qual delas responde a pergunta da vez.
+
+## A camada física: avisos do LCD
+
+Nas plataformas de hardware, o Liquid Crystal Display (LCD) do painel frontal reporta condições de hardware - alarmes de ventoinha, energia, temperatura - antes de você sequer logar. Um alarme piscando no painel é o jeito de o dispositivo dizer que o problema antecede o sistema operacional. Os mesmos alertas caem nos logs do sistema, mas o painel é a visão sem login.
+
+## A camada de visão geral: dashboard
+
+O dashboard grafa os sinais vitais - Central Processing Unit (CPU), memória, conexões, vazão - como séries temporais. Responde "o dispositivo está saudável em geral agora" e "algo mudou na última hora". É um medidor, não um microscópio: quando o dashboard mostra um penhasco, a próxima parada são as estatísticas e os logs para nomear a causa.
+
+## A camada de objetos: o Network Map
+
+O Network Map desenha a árvore de entrega - virtual servers, pools, membros - em formas coloridas, e as formas são uma língua que vale aprender com precisão. Círculo verde é disponível; losango vermelho é offline porque um monitor disse; quadrado azul é desconhecido, tipicamente sem monitor atribuído; triângulo amarelo é indisponível, com frequência um limite de conexões atingido; preto é desabilitado por um administrador. Um olhar responde "o que o dispositivo acredita sobre a saúde da minha aplicação", e o detalhe no hover nomeia o monitor decisor. O mapa reflete crença, não verdade: um membro verde atrás de um monitor quebrado está verde porque o monitor está feliz - exatamente a armadilha que as provas de troubleshooting armam.
+
+## A camada de comando: TMSH
+
+O Traffic Management Shell (TMSH) reporta tudo que as superfícies gráficas mostram, de forma automatizável. `show sys hardware`, `show sys cpu` e `show sys memory` cobrem a plataforma; `show cm sync-status` e `show sys failover` cobrem o retrato do cluster, incluindo o status de alta disponibilidade (HA) e de device trust; `show ltm virtual` e `show ltm pool` (com `members`) cobrem os objetos de tráfego, e as variantes de estatísticas somam os contadores. Interpretar estatísticas de objetos de tráfego - requisições distribuídas entre membros, conexões atuais versus máximas, bits de entrada e saída - é como você confirma funcionalidade com números em vez de cores: um pool cujos membros todos mostram tráfego está balanceando; um membro em zero enquanto os irmãos sobem é a anomalia que merece explicação.
+
+## A camada de socket: netstat e status de serviços
+
+O objetivo de netstat do blueprint é um teste de alfabetização Linux com sotaque BIG-IP. `netstat -pan` (ou o equivalente moderno `ss`) lista sockets com seus processos; filtrar por LISTEN responde "quais serviços estão de pé e em quais portas". A direção da inferência importa: dado um listener na porta 443 do Transmission Control Protocol (TCP) pertencendo ao httpd, você conclui que o utilitário de configuração está no ar; um listener na 22 é o sshd; a 4353 é o canal de gerenciamento entre dispositivos. Inversamente, "o serviço está escutando nesta porta" se responde pela presença ou ausência da linha. Combine com `tmsh show sys service` para a visão de status dos daemons, e você distingue elementos ativos de inativos da pilha de entrega sem sair do shell - precisamente o que o cenário da prova pede.

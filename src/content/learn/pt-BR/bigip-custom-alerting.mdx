@@ -1,0 +1,32 @@
+---
+slug: bigip-custom-alerting
+title: "Alerting Customizado no BIG-IP: Traps SNMP, E-mail e Syslog Remoto"
+summary: "O pipeline de alertas observa o fluxo de logs e age nas correspondências: os alertas embutidos vêm no alert.conf, os seus pertencem ao user_alert.conf. Definir um alerta customizado, os três mecanismos de entrega, escolher os níveis de log de tráfego local, e disparar alertas de teste de propósito com o logger."
+concepts: ["f5", "big-ip", "alerting", "snmp trap", "user_alert.conf", "alertd", "syslog", "email", "oid"]
+relatedTools: []
+relatedArticles: ["bigip-log-files-map", "bigip-system-services", "bigip-config-sync"]
+category: networking
+order: 154
+status: reviewed
+updated: "2026-07-21"
+---
+
+O alerting no BIG-IP é dirigido por log: o daemon de alertas observa o fluxo de mensagens e, quando uma linha casa com um alerta definido, dispara a ação configurada. As definições embutidas vivem num arquivo de sistema que você lê mas nunca edita; as suas pertencem ao `/config/user_alert.conf`. Essa arquitetura de uma frase responde sozinha metade das perguntas do blueprint.
+
+## Anatomia de um alerta customizado
+
+Uma entrada no `user_alert.conf` nomeia o alerta, dá a correspondência - uma string ou padrão que deve aparecer numa mensagem de log - e lista ações. O exemplo canônico casa uma mensagem específica de log do Local Traffic Manager (LTM) com uma ação de trap SNMP carregando um Object Identifier (OID) customizado. Traps customizados usam o espaço de OID enterprise da F5 com um sufixo específico do alerta, na faixa reservada a definições de usuário - especificar o OID é exatamente o item "descrever como especificar os OIDs para alerting". O caso de benefício se escreve sozinho: o catálogo embutido cobre eventos genéricos, mas só um alerta customizado pode chamá-lo pela única mensagem que importa à sua aplicação - um pool específico caindo, um aviso de licença específico - com um OID que seu sistema de monitoração roteia ao time certo.
+
+## Os três mecanismos de entrega
+
+A lista do blueprint é traps do Simple Network Management Protocol (SNMP), e-mail e syslog remoto, e cada um tem pré-requisito morando em outro lugar. Traps precisam de destinos configurados no [serviço SNMP do sistema](/learn/bigip-system-services). E-mail precisa do relay de correio do dispositivo configurado, e é melhor tratado como canal de conveniência do que como o chamado primário. A entrega por syslog remoto é o próprio pipeline de logging: envie as mensagens casadas ao coletor remoto e deixe a pilha de observabilidade alertar sobre elas - o padrão que melhor escala, já que o coletor guarda o contexto.
+
+Duas cautelas operacionais merecem lugar em qualquer texto: o `user_alert.conf` é por dispositivo e não é sincronizado pelo config sync, então mantenha-o em cada membro do device group; e ele sobrevive a upgrades como arquivo de configuração, mas revise-o após mudanças grandes de versão, caso os formatos das mensagens casadas tenham se movido.
+
+## Os níveis de log alimentam o pipeline
+
+Um alerta só casa com mensagem que foi registrada, o que faz dos níveis de logging de tráfego local parte do desenho do alerting. O sistema permite definir a severidade mínima registrada por área de atividade de tráfego local - a escada padrão de emergency a debug descrita no [mapa dos arquivos de log](/learn/bigip-log-files-map). Suba um nível para silenciar ruído e você pode silenciar justamente a mensagem que seu alerta casa; as duas configurações precisam ser desenhadas juntas.
+
+## Disparando alertas para teste
+
+Alerta não testado é esperança. Como o pipeline é dirigido por log, você o exercita ponta a ponta sem ferir nada: o utilitário `logger` injeta uma mensagem arbitrária no fluxo, então escrever uma linha contendo sua string de correspondência dispara o alerta exatamente como o evento real dispararia - trap enviado, e-mail entregue, syslog remetido. Teste após definir, e reteste após upgrades; o "explicar como disparar alertas customizados para fins de teste" do blueprint pede precisamente essa técnica.

@@ -1,0 +1,32 @@
+---
+slug: bigip-management-access-port-lockdown
+title: "Acesso de Gerenciamento no BIG-IP: Management IP, Port Lockdown e Listas de Acesso"
+summary: "Duas portas levam para dentro de um BIG-IP: a interface de gerenciamento dedicada e os self-IPs das VLANs de tráfego. Este artigo cobre configurar e encontrar o endereço de gerenciamento, o que o port lockdown de fato permite num self-IP, as listas de acesso do httpd e do sshd, e como diagnosticar os clássicos casos de management IP inalcançável."
+concepts: ["f5", "big-ip", "management ip", "port lockdown", "self-ip", "sshd", "httpd", "acl", "administrative access"]
+relatedTools: []
+relatedArticles: ["bigip-system-services", "bigip-interfaces-trunks-vlans-selfips", "bigip-reading-device-status"]
+category: networking
+order: 149
+status: reviewed
+updated: "2026-07-21"
+---
+
+O acesso administrativo a um BIG-IP chega por uma de duas portas. A interface de gerenciamento é uma porta dedicada, fora de banda, com endereço e rota-padrão próprios, deliberadamente separada do processamento de tráfego. Os self-IPs das VLANs de tráfego são em banda e também podem expor serviços administrativos - exatamente por isso são governados pelo port lockdown. Os blueprints testam a configuração das duas portas e o diagnóstico quando uma delas não abre.
+
+## O management IP
+
+O endereço de gerenciamento é definido na configuração inicial - pelo Liquid Crystal Display (LCD) do painel frontal no hardware, pelo utilitário de configuração ou pelo Traffic Management Shell (TMSH) com `modify sys management-ip` - e lê-lo de volta é uma linha: `list sys management-ip`. A rota de gerenciamento é separada da tabela de roteamento de tráfego, distinção que explica a maioria dos mistérios de "alcanço o plano de dados mas não o de gerenciamento": a interface de gerenciamento responde pela rota de gerenciamento, não pelo roteamento elegante que o lado de tráfego estiver fazendo.
+
+Quando a conectividade remota à interface de gerenciamento falha, percorra a cadeia curta: a interface está up e cabeada, o endereço é o que você pensa, sua origem está na rede de gerenciamento ou roteada até ela, e as listas de acesso abaixo permitem você.
+
+## Port lockdown nos self-IPs
+
+Todo self-IP carrega uma configuração de port lockdown que decide quais serviços o endereço responde. Allow None não responde nada administrativo - a postura endurecida padrão para endereços voltados ao tráfego. Allow All responde tudo, o que pertence a laboratórios. Allow Default permite o pequeno conjunto documentado que o próprio sistema precisa entre pares, notavelmente o canal de config sync na porta 4353 do Transmission Control Protocol (TCP), os heartbeats de network failover e o espelhamento de conexões - os serviços que um par de alta disponibilidade (HA) precisa trocar, razão pela qual o blueprint pergunta quais serviços devem estar habilitados para a disponibilidade de HA entre dispositivos. Listas custom nomeiam exatamente as portas que você escolher. O padrão operacional: Allow None em todo lugar, Allow Default (ou lista explícita) apenas nos self-IPs da VLAN dedicada de HA.
+
+## As listas de acesso dos daemons
+
+Independentes do port lockdown, os dois daemons administrativos mantêm suas próprias listas: a do httpd controla quais endereços de origem alcançam o utilitário de configuração por Hypertext Transfer Protocol Secure (HTTPS), e a do sshd controla o Secure Shell (SSH). Elas se aplicam também à interface de gerenciamento - fato que transforma "identificar a lista de acesso HTTP/SSH ao management IP" de pegadinha em item de checklist. Quando um colega alcança a tela de login e você não, compare os endereços de origem contra essas listas antes de culpar a rede.
+
+## Restringindo além: partições e papéis
+
+Limitar de onde os administradores conectam é metade da história; limitar o que podem fazer uma vez dentro pertence aos user roles e às partições administrativas, cobertos com o material de autenticação. A versão curta para esta página: partições delimitam quais objetos uma conta vê e toca, papéis delimitam os verbos, e ambos se compõem com as restrições de rede acima em defesa em profundidade.

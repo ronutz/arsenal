@@ -1,0 +1,32 @@
+---
+slug: bigip-management-access-port-lockdown
+title: "Management Access on BIG-IP: the Management IP, Port Lockdown, and Access Lists"
+summary: "Two doors lead into a BIG-IP: the dedicated management interface and the self-IPs on traffic VLANs. This article covers configuring and finding the management address, what port lockdown actually permits on a self-IP, the httpd and sshd access lists, and how to diagnose the classic can't-reach-the-management-IP situations."
+concepts: ["f5", "big-ip", "management ip", "port lockdown", "self-ip", "sshd", "httpd", "acl", "administrative access"]
+relatedTools: []
+relatedArticles: ["bigip-system-services", "bigip-interfaces-trunks-vlans-selfips", "bigip-reading-device-status"]
+category: networking
+order: 149
+status: reviewed
+updated: "2026-07-21"
+---
+
+Administrative access to a BIG-IP arrives through one of two doors. The management interface is a dedicated, out-of-band port with its own address and default route, deliberately separate from traffic processing. The self-IPs on traffic VLANs are in-band and can also expose administrative services - which is exactly why they are governed by port lockdown. The blueprints test the configuration of both doors and the diagnosis when one will not open.
+
+## The management IP
+
+The management address is set during initial configuration - from the front panel Liquid Crystal Display (LCD) on hardware, the configuration utility, or the Traffic Management Shell (TMSH) with `modify sys management-ip` - and reading it back is a one-liner: `list sys management-ip`. The management route is separate from the traffic routing table, a distinction that explains most "I can reach the data plane but not the management plane" mysteries: the management interface answers via the management route, not via whatever elegant routing the traffic side is doing.
+
+When remote connectivity to the management interface fails, walk the short chain: is the interface up and cabled, is the address what you think it is, is your source on the management network or routed to it, and do the access lists below permit you.
+
+## Port lockdown on self-IPs
+
+Every self-IP carries a port lockdown setting that decides which services the address answers. Allow None answers nothing administrative - the hardened default posture for traffic-facing addresses. Allow All answers everything, which belongs in labs. Allow Default permits the short documented set the system itself needs between peers, notably the config sync channel on Transmission Control Protocol (TCP) port 4353, network failover heartbeats, and connection mirroring - the services a high availability (HA) pair must exchange, which is why the blueprint asks which services must be enabled for HA availability between devices. Custom lists name exactly the ports you choose. The operational pattern: Allow None everywhere, Allow Default (or an explicit custom list) only on the dedicated HA VLAN's self-IPs.
+
+## The daemon access lists
+
+Independent of port lockdown, the two administrative daemons keep their own allow lists: httpd's list controls which source addresses may reach the configuration utility over Hypertext Transfer Protocol Secure (HTTPS), and sshd's list controls Secure Shell (SSH). They apply to the management interface too - a fact that turns "identify the HTTP/SSH access list to the management IP" from a trick question into a checklist item. When a colleague can reach the login page and you cannot, compare source addresses against these lists before blaming the network.
+
+## Restricting further: partitions and roles
+
+Limiting where administrators connect from is half the story; limiting what they can do once in belongs to user roles and administrative partitions, covered with the authentication material. The short version for this page: partitions scope which objects an account can see and touch, roles scope the verbs, and both compose with the network-level restrictions above into defense in depth.

@@ -6643,7 +6643,10 @@
     "servedOnTitle": "The API is served locally on this origin",
     "servedOnBody": "Local API processing is switched on. The same-origin Worker serves each endpoint using the in-house engines, returning the same deterministic, byte-identical results as the browser tools. It is stateless and logs no query values or request bodies. If you would rather keep everything on your own device, the browser tools remain the zero-egress default.",
     "stateBadgeOn": "API: served locally",
-    "stateBadgeOff": "API: documented, not served"
+    "stateBadgeOff": "API: documented, not served",
+    "selfHostTitle": "Self-hosting: turn the toolbox into your API",
+    "selfHostBody": "Everything needed to consume these tools as an Application Programming Interface (API) ships in the open-source repository, and the path from download to serving is deliberately short. One: download the source - github.com/ronutz/arsenal, Apache-2.0 licensed. Two: switch the API on - open src/config/apiSurface.ts and flip the single API_PROCESSING switch from 0 to 1; that one value drives both the Worker that serves the endpoints and every API badge in this interface, so the two can never disagree. Three: compile and deploy - npm install, npm run build, and publish to your own Cloudflare Workers account with the adapter already wired into the repository. Four: call the endpoints documented in the reference below - now answered by your deployment, on your domain, under your control.",
+    "selfHostBody2": "That is the whole design: self-hosting plus a flip of a switch makes this an API toolbox. The same deterministic engines that power these pages answer the endpoints - tools that compute, never guess - and the switch works in both directions: set API_PROCESSING back to 0, redeploy, and the surface returns to documented-but-not-served, endpoints answering 404, badges neutral."
   },
   "contributeIdeas": {
     "eyebrow": "Ideas welcome",
@@ -6773,7 +6776,12 @@
       "article": "Article",
       "topic": "Topic",
       "summary": "Summary"
-    }
+    },
+    "portalTerms": "{count} terms",
+    "portalPaths": "{count} reading paths",
+    "portalGuides": "{count} exam guides",
+    "portalObjectives": "{count} objectives mapped",
+    "portalStudyLede": "Curated reading paths and blueprint-mapped certification guides - every objective tied to the articles that teach it and the tools that exercise it."
   },
   "meetingBingo": {
     "metaTitle": "Meeting Bingo",
@@ -8261,7 +8269,7 @@
       "zscaler": "Zscaler and the Zero Trust Exchange: cloud secure web gateway and firewall (ZIA), zero trust access to private applications (ZPA), digital experience monitoring (ZDX), and data protection. Security delivered as a global cloud, not an appliance.",
       "ping": "Ping Identity and ForgeRock: access management across PingOne, PingFederate, PingAccess, and the ForgeRock Identity Platform, with SSO, MFA, identity orchestration, and directory services at enterprise scale."
     },
-    "redEduCallout": "Why these vendors? Because they are the platforms Rodolfo is authorized to teach through <link>Red Education</link>, a global award-winning authorized training partner: F5, Fortinet, Netskope, and Extreme Networks, with Ping Identity and Zscaler joining in 2026 as the newest authorizations through the same house."
+    "redEduCallout": "Why these vendors? Because they are the platforms Rodolfo is authorized to teach through <link>Red Education</link>, a global award-winning authorized training partner: F5, Fortinet, Netskope, Extreme Networks, Ping Identity, and Zscaler."
   },
   "glossary": {
     "title": "Glossary",
@@ -12306,8 +12314,8 @@
     "articlesCount": "{count} articles",
     "paths": {
       "bigip-fundamentals": {
-        "title": "BIG-IP fundamentals",
-        "lede": "F5's BIG-IP platform, from the local traffic plane to the DNS plane: how LTM (Local Traffic Manager) balances and represents services, how the box defends itself under SYN floods and connection pressure, and how GTM/BIG-IP DNS (Global Traffic Manager, the DNS-based global load balancer) decides - ending with iQuery, the protocol that ties the two planes together."
+        "title": "F5 BIG-IP end to end",
+        "lede": "Everything the retired 101, 201, 301A, and 301B blueprints listed, as this site's articles in teaching order: the networking fundamentals the modern track assumes (OSI (Open Systems Interconnection) to VPN (virtual private network)), the full administration arc from interfaces to high availability to the support workflows the new exams dropped, and the LTM (Local Traffic Manager) specialist craft - iRules, analytics, captures, SSL (Secure Sockets Layer) - closing with the two articles that compare the retired blueprints against the current ones."
       },
       "modern-identity": {
         "title": "Modern identity, from the token up",

@@ -52,6 +52,89 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-21",
+    time: "02:51",
+    kind: "feature",
+    title: "The API page now teaches self-hosting: download, flip one switch, serve",
+    body: "The API reference page gained the walkthrough it was missing: how to consume every tool as an API by running the toolbox yourself. The path is four steps and deliberately short - download the open-source repository, open src/config/apiSurface.ts and flip the single API_PROCESSING switch from 0 to 1, build and deploy to your own Cloudflare Workers account with the adapter already wired in, and call the endpoints now answered by your deployment on your domain. The same value drives both the Worker that serves and every badge in the interface, and it works in both directions - flip back to 0 and the surface returns to documented-but-not-served. Self-hosting plus a flip of a switch make it an API toolbox. The vendor hubs page also tightened its Red Education callout into the plain six-vendor list.",
+    links: [
+      { label: "The API page", href: "/api" },
+      { label: "Vendor hubs", href: "/vendor-hubs" },
+    ],
+  },
+  {
+    date: "2026-07-21",
+    time: "02:23",
+    kind: "content",
+    title: "The Zscaler ZDTA study guide arrives, six F5 certifications join the rail, and the Learn doors get their glow-up",
+    body: "Three moves in one release. First: the Zscaler Digital Transformation Administrator (ZDTA) study guide is live - all forty-four scenario objectives transcribed verbatim from the official ZDTA study guide's expansive blueprint, grouped exactly as Zscaler presents them across the six weighted domains, with the official exam facts and both source documents linked. It is the site's first certification guide beyond F5. Second: six more F5 certifications enter the registry as the rail's roadmap - BIG-IP DNS (302), ASM (303), APM (304), Security Solutions (401), Cloud Solutions (402), and the four-exam NGINX administrator track - each with its official catalog page linked and an in-preparation badge until the blueprints land. Third: the Glossary and Study guides doors on the Learn index traded two long phrases for proper feature cards - type ornaments, per-card accent colors, and live count badges pulled straight from the registries.",
+    links: [
+      { label: "Zscaler ZDTA study guide", href: "/certifications/zscaler-zdta" },
+      { label: "All certifications", href: "/certifications" },
+      { label: "The Learn library", href: "/learn" },
+    ],
+  },
+  {
+    date: "2026-07-21",
+    time: "01:59",
+    kind: "content",
+    title: "Eleven fundamentals and the F5 study guide: full coverage of the retired 101-201-301 blueprints",
+    body: "A coverage audit of the four retired F5 blueprints against the article shelf found eleven true holes, and eleven rich articles now fill them in English and Portuguese: the OSI model in practice, switch-router-firewall roles, ARP and MAC addresses (gratuitous ARP and MAC masquerading included), routing tables and the default gateway, NAT, the DHCP lease lifecycle, ICMP with ping and traceroute, the TCP connection lifecycle, VPN fundamentals, and - on the F5 side - EUD hardware diagnostics and AVR analytics. With the holes closed, the BIG-IP reading path on the study guides page grew into the F5 study guide proper: sixty-three articles in teaching order spanning everything the retired 101, 201, 301A, and 301B blueprints listed, from fundamentals through administration to the LTM specialist craft, with a fourteen-tool practice bench. The vendor-neutral fundamentals are flagged in code for reuse: when reading paths arrive for the other vendors, the shared floor is already marked for cross-reference.",
+    links: [
+      { label: "The F5 study guide: BIG-IP end to end", href: "/study-guides" },
+      { label: "The OSI model in practice", href: "/learn/osi-model-in-practice" },
+      { label: "The TCP connection lifecycle", href: "/learn/tcp-connection-lifecycle" },
+    ],
+  },
+  {
+    date: "2026-07-21",
+    time: "01:32",
+    kind: "content",
+    title: "Old blueprints against new: what 101, 201, 301A, and 301B taught that the modern F5 exams dropped",
+    body: "Two comparison articles close the loop on the F5 certification rail. The retired blueprints - 101 Application Delivery Fundamentals, 201 TMOS Administration, and the 301A/301B LTM Specialist pair - were laid beside the current F5-CA and F5-CTS LTM blueprints, objective by objective. The verdicts differ by track: the new CA is the old 201 restructured, but it dropped the entire 101 fundamentals layer (OSI, subnetting, ARP, ICMP, TLS rationale, VPN) and 201's whole support-resources section (support tickets, EUD hardware diagnostics, the qkview-iHealth workflow, DevCentral and AskF5); the new LTM track is a faithful restructure whose entire meaningful delta is three items - serial failover, ssldump, and the roles-partitions-route-domains synthesis. Each article names what fell away, why it still matters on the job, and where this site covers it.",
+    links: [
+      { label: "From 101 and 201 to F5-CA", href: "/learn/f5-ca-vs-retired-101-201" },
+      { label: "From 301A and 301B to the new LTM Specialist", href: "/learn/f5-cts-ltm-vs-retired-301a-301b" },
+      { label: "Certifications hub", href: "/certifications" },
+    ],
+  },
+  {
+    date: "2026-07-21",
+    time: "01:10",
+    kind: "content",
+    title: "Fourteen BIG-IP articles close every gap on the F5 study guides",
+    body: "Hours after the F5-CA and F5-CTS LTM guides went live with twenty-three honest Article-coming markers, the articles arrived. Fourteen new pieces in English and Portuguese cover the ground the site had never taught: the high availability cluster (device trust, device groups, and traffic groups; failover states and operations; config sync), UCS archives, the /var/log map, management access and port lockdown, the DNS-NTP-SNMP-syslog service quartet, reading device status from LCD panel to netstat, route domains, vCMP, custom alerting, iApps and FAST templates, the interface-to-self-IP dependency chain, and the qkview-iHealth support workflow. Every one is wired into the guide objectives it teaches: both F5 certification tracks now carry zero gaps - all one hundred objectives hold study notes and at least one article on this site. The study guides page also got two touches: reading-path cards now carry their category color on the left border instead of uniform cyan, and the certification card grid that duplicated the certifications hub was retired in favor of a signpost - one canonical home.",
+    links: [
+      { label: "F5CAB4: Control Plane Administration, now gapless", href: "/certifications/f5-ca-control-plane-administration" },
+      { label: "BIG-IP high availability concepts", href: "/learn/bigip-ha-concepts-device-trust-groups" },
+      { label: "qkview and iHealth", href: "/learn/bigip-qkview-and-ihealth" },
+    ],
+  },
+  {
+    date: "2026-07-21",
+    time: "00:53",
+    kind: "content",
+    title: "Fourteen BIG-IP articles close every gap on the F5 study guides",
+    body: "Hours after the F5-CA and F5-CTS LTM guides went live with twenty-three honest article-coming markers, the articles arrived. Fourteen new pieces in the networking category cover the whole missing territory: the high availability cluster (device trust, device groups and traffic groups; failover states and network failover; config sync), UCS archives, the log files map, management access and port lockdown, the DNS/NTP/SNMP/syslog system services, reading device status from LCD to netstat, route domains, vCMP, custom alerting, iApps and FAST templates, the interface-to-self-IP dependency chain, and the qkview/iHealth support workflow - each written in English and Portuguese, each wired into the guide objectives it teaches. Both F5 guides now have zero gaps: all one hundred objectives across the three published certifications carry study notes and at least one article on this site.",
+    links: [
+      { label: "The F5-CA guides, now gapless", href: "/certifications/f5-ca-control-plane-administration" },
+      { label: "BIG-IP high availability", href: "/learn/bigip-ha-concepts-device-trust-groups" },
+      { label: "qkview and iHealth", href: "/learn/bigip-qkview-and-ihealth" },
+    ],
+  },
+  {
+    date: "2026-07-21",
+    time: "00:07",
+    kind: "content",
+    title: "F5-CA and F5-CTS LTM study guides: eleven exams, one hundred objectives",
+    body: "The certifications hub now maps both current F5 BIG-IP tracks in full, from the official blueprints PRIME relayed. The five F5 Certified Administrator exams (F5CAB1 through F5CAB5, blueprint F5-CAB.0425) and the six BIG-IP LTM Specialist beta exams (F5CTSLTM1-B through F5CTSLTM6-B, blueprint F5CTSLTM.032026.BETA, beta window open until July 31) are published with every objective transcribed verbatim, the blueprint's own example bullets serving as the What to know points, and each objective wired to the site tools and Learn articles that teach it - the licensing objective points at the Service Check Date tool, the packet-capture exams at the tcpdump pair and builder, the iRules exam at eleven iRule articles, the TLS exam at the cipher bench. Where the site has no coverage yet - UCS archives, HA and failover, vCMP, custom alerting, route domains, the log files shelf - the guide says an article is coming instead of padding.",
+    links: [
+      { label: "Certifications hub", href: "/certifications" },
+      { label: "F5CAB1: Install, Initial Configuration, and Upgrade", href: "/certifications/f5-ca-install-config-upgrade" },
+      { label: "F5CTSLTM6-B: Packet Capture/Troubleshooting - TLS/SSL", href: "/certifications/f5-cts-ltm-pcap-tls-ssl" },
+    ],
+  },
+  {
     date: "2026-07-20",
     time: "23:19",
     kind: "content",

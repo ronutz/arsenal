@@ -8226,9 +8226,88 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-/* When the hub strip follows the callout (Learn index only), cancel the
+/* When the hub strip follows the learn portal grid (Learn index only, the
+   2026-07-21 portal-cards upgrade replaced the old text callouts), cancel the
    tuck-under-the-lede negative top margin; /tools keeps its -1rem. */
-.learn-glossary-callout + .vendor-hub-strip { margin-top: 0.85rem; }
+.learn-portal-grid + .vendor-hub-strip { margin-top: 0.95rem; }
+
+/* ---- learn portal cards (PRIME 2026-07-21: the Glossary and Study-guides
+   doors deserve dopamine, not two long phrases). Two feature cards with an
+   oversized type ornament, live count badges, per-card accent via the same
+   --note-accent custom property the reading-path cards use, and a hover lift.
+   Tokens only: glossary card rides accent-primary, study card rides
+   color-warning (the theme's amber second accent). ---- */
+.learn-portal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.9rem;
+  margin: 1.1rem 0 0;
+}
+.learn-portal-card {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--note-accent, var(--accent-primary));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--note-accent, var(--accent-primary)) 6%, var(--surface-base));
+  padding: 1rem 1.15rem 1.05rem;
+  text-decoration: none;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+.learn-portal-card:hover,
+.learn-portal-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--note-accent, var(--accent-primary)) 55%, var(--border-subtle));
+  background: color-mix(in srgb, var(--note-accent, var(--accent-primary)) 10%, var(--surface-base));
+}
+/* The oversized type ornament: pure CSS, no images; sits behind the copy. */
+.learn-portal-ornament {
+  position: absolute;
+  right: 0.4rem;
+  top: -0.55rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 3.4rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--note-accent, var(--accent-primary));
+  opacity: 0.14;
+  pointer-events: none;
+  user-select: none;
+}
+.learn-portal-title {
+  margin: 0 0 0.3rem;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.learn-portal-title .learn-portal-arrow {
+  display: inline-block;
+  color: var(--note-accent, var(--accent-primary));
+  transition: transform 140ms ease;
+}
+.learn-portal-card:hover .learn-portal-arrow,
+.learn-portal-card:focus-visible .learn-portal-arrow { transform: translateX(4px); }
+.learn-portal-lede {
+  margin: 0 0 0.55rem;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+/* Live count badges - the numbers are the dopamine. Derived from the
+   registries at build time (D-74: derive, never hand-count). */
+.learn-portal-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; }
+.learn-portal-badge {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--note-accent, var(--accent-primary));
+  border: 1px solid color-mix(in srgb, var(--note-accent, var(--accent-primary)) 45%, transparent);
+  border-radius: 999px;
+  padding: 0.12rem 0.55rem;
+  background: color-mix(in srgb, var(--note-accent, var(--accent-primary)) 9%, transparent);
+}
 
 /* ---- f5-afm-rule-context ---- */
 .afm-step.afm-terminated { border-left: 3px solid var(--color-warning); }
@@ -13317,9 +13396,12 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .certhub-notes { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .certhub-note {
   border: 1px solid var(--border-subtle);
-  border-left: 3px solid var(--accent-primary);
+  /* Per-card accent: pages may set --note-accent (e.g. the reading-path list
+     colors each card by its category, matching the category dot); everywhere
+     else the accent-primary fallback keeps the original look. */
+  border-left: 3px solid var(--note-accent, var(--accent-primary));
   border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--accent-primary) 5%, var(--surface-base));
+  background: color-mix(in srgb, var(--note-accent, var(--accent-primary)) 5%, var(--surface-base));
   padding: 1rem 1.15rem;
 }
 .certhub-note--ethics {

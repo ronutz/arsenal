@@ -1,0 +1,32 @@
+---
+slug: arp-and-mac-addresses
+title: "ARP and MAC Addresses: How IP Finds Ethernet"
+summary: "Every packet on a local network is delivered by MAC address, and ARP is the directory service that maps an IP to one. The one-to-one mapping, reading ARP output to prove resolution worked, gratuitous ARP, and MAC masquerading - the failover trick that makes an address move without the switches noticing."
+concepts: ["arp", "mac address", "layer 2", "fundamentals", "gratuitous arp", "mac masquerade", "default gateway"]
+relatedTools: []
+relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway", "bigip-failover-states-and-operations"]
+category: networking
+order: 162
+status: reviewed
+updated: "2026-07-21"
+---
+
+An Internet Protocol (IP) address gets a packet across networks; a Media Access Control (MAC) address gets a frame across the room. The Address Resolution Protocol (ARP) is the small, ancient mechanism that connects the two, and the retired F5 fundamentals exam kept three skills on it: state what service ARP provides, verify from its output that resolution worked, and explain MAC masquerading. All three still earn their keep daily.
+
+## The service ARP provides
+
+When a host needs to send to an IP address on its own subnet, it broadcasts a question - who has this IP - and the owner answers with its MAC address. The asker caches the answer in its ARP table: a one-to-one mapping of IP to MAC, aged out after a while and refreshed on demand. For destinations outside the subnet, the host does not ARP for the destination at all; it ARPs for the [default gateway](/learn/routing-tables-and-default-gateway) and hands the packet there - which is why a wrong gateway shows up as an ARP entry for the wrong router, not as a routing error message.
+
+A MAC address itself is 48 bits, written as six hex pairs; the first half is the vendor's Organizationally Unique Identifier, the second half the device. Valid means well-formed and, on a real segment, unique - two claimants for one MAC is a distinct and ugly failure.
+
+## Proving resolution worked
+
+Given ARP command output or a diagram, resolution succeeded if the target IP appears with a resolved MAC - a complete entry. An incomplete entry, or the IP absent entirely after traffic was attempted, means the question was asked and nobody answered: wrong subnet, host down, or a VLAN that does not actually reach the host. This is the Layer 2 checkpoint in any connectivity walk: before blaming routing or firewalls, confirm the ARP entry for the next hop is complete. On a BIG-IP, the same check applies to the device's view of pool members and gateways.
+
+## Gratuitous ARP: announcing yourself
+
+A gratuitous ARP is an unsolicited announcement - a host broadcasting its own IP-to-MAC mapping without being asked. Its purpose is cache correction: everyone on the segment updates their entry immediately. This is the mechanism that makes IP address movement work: when a floating address moves from one device to another during failover, the new owner sends gratuitous ARPs so switches and neighbors forward to the new port instead of the old one.
+
+## MAC masquerading: moving without moving
+
+Gratuitous ARP updates neighbors, but some environments respond slowly or filter the updates. MAC masquerading removes the problem: the floating traffic group carries a virtual MAC address that moves with it, so after a [failover](/learn/bigip-failover-states-and-operations) the IP-to-MAC mapping never changes at all - the same MAC simply appears on a different switch port, which switches learn from the first frame. Neighbors' ARP caches stay valid because nothing they cached moved. The retired blueprint asked candidates to explain the purpose of MAC masquerading, and this is it in one sentence: make an address migration invisible at Layer 2, so failover speed stops depending on how quickly everyone else refreshes their tables.

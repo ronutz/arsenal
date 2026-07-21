@@ -1,0 +1,30 @@
+---
+slug: bigip-vcmp
+title: "vCMP: Hosts, Guests, and How Resources Are Carved"
+summary: "Virtualized Clustered Multiprocessing turns one hardware platform into several independent BIG-IP instances. The host-guest model, the configured-provisioned-deployed lifecycle, how CPU cores drive memory allocation, version rules between host and guest, and how VLANs pass from host to guest."
+concepts: ["f5", "big-ip", "vcmp", "virtualization", "guest", "host", "multi-tenant", "resource allocation"]
+relatedTools: []
+relatedArticles: ["bigip-21x-whats-new", "bigip-interfaces-trunks-vlans-selfips", "bigip-cmp-clustered-multiprocessing"]
+category: networking
+order: 153
+status: reviewed
+updated: "2026-07-21"
+---
+
+Virtualized Clustered Multiprocessing (vCMP) is F5's hardware-level multi-tenancy: a host layer provisioned on supported platforms carves the box into guests, each a fully independent BIG-IP with its own version, configuration, and administrators. It is the ancestor of the tenant model on F5OS platforms - the [BIG-IP 21.x overview](/learn/bigip-21x-whats-new) covers that successor - and the LTM blueprint tests both generations with parallel wording.
+
+## Host and guest
+
+The host is a thin owner of hardware: you provision the vCMP feature, create VLANs, and define guests. Everything application-related happens inside guests. The division of labor matters for troubleshooting: interface and trunk state belong to the host; virtual servers and pools belong to the guest; VLANs are created on the host and published to guests, which is the answer to how network configuration objects relate between the two layers. A guest sees the VLANs it was given, not the physical ports beneath them.
+
+## The lifecycle: configured, provisioned, deployed
+
+A guest exists in one of three states, and the verbs are precise. Configured means defined only - no resources committed. Provisioned allocates the resources - cores, memory, disk - without starting the instance. Deployed allocates and runs. The state ladder is how you stage capacity: define guests ahead of need, provision when the resources should be reserved, deploy when the tenant goes live. Moving down the ladder releases resources.
+
+## Resources: cores drive everything
+
+Guest sizing is expressed in Central Processing Unit (CPU) cores, and memory follows automatically: each core brings a fixed platform-specific slice of memory with it, so a guest's memory is proportional to its core count rather than independently tunable. This is the relationship between CPU and memory on vCMP the blueprint asks about. On chassis platforms, cores come from blades and a guest can span slots, which adds an appliance-versus-chassis dimension to sizing conversations. Inside the guest, those cores appear as the guest's own data plane, with [Clustered Multiprocessing](/learn/bigip-cmp-clustered-multiprocessing) distributing traffic across them exactly as on a physical device.
+
+## Versions between host and guest
+
+Guests run their own software images, and version independence is the point - it is what lets tenants upgrade on their own schedules. Independence is bounded by a support matrix: a given host version supports a documented range of guest versions, and "select which versions can run on a guest given host version" is answered by that matrix, not by intuition. The operational habit: before planning a guest upgrade, confirm the target version is supported on the current host version, and when upgrading the host, confirm every resident guest version remains inside the new host's range.

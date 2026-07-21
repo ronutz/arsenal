@@ -1,0 +1,28 @@
+---
+slug: nat-explained
+title: "NAT Explained: Source, Destination, and Why the Internet Still Works"
+summary: "Network Address Translation rewrites addresses in flight - source NAT lets a thousand private hosts share one public address, destination NAT publishes an inside service on an outside address, and the translation table is what makes the return traffic find its way home. The function and purpose, the flavors, and the troubleshooting consequences of each."
+concepts: ["nat", "source nat", "destination nat", "pat", "private addresses", "fundamentals", "translation"]
+relatedTools: ["cidr"]
+relatedArticles: ["private-address-space", "bigip-snat-and-return-traffic", "tcp-connection-lifecycle"]
+category: networking
+order: 164
+status: reviewed
+updated: "2026-07-21"
+---
+
+Network Address Translation (NAT) is the practice of rewriting the addresses in packets as they cross a device. It exists because [private address space](/learn/private-address-space) is not routable on the internet, and because publishing a service rarely means exposing the machine's real address. The retired F5 fundamentals exam asked for the function and purpose of NAT - and the purpose splits cleanly by which address gets rewritten.
+
+## Source NAT: many inside, one outside
+
+Source NAT rewrites the source address of outbound traffic. In its overwhelmingly common form - port address translation, the many-to-one variant every home router performs - hundreds of private hosts share one public address, distinguished by translated source ports. The device keeps a translation table: this inside address and port became that outside address and port. Return traffic is matched against the table and un-translated back to the right host. The purpose is address conservation plus a side effect of unsolicited-inbound blindness: nobody outside can initiate to a host whose address exists only in the table.
+
+The troubleshooting consequences follow directly. Behind source NAT, every inside host looks like the same client to the server - which breaks naive per-address logging, rate limiting, and persistence, the very problem the [SNAT and return traffic article](/learn/bigip-snat-and-return-traffic) works through on a BIG-IP, where source NAT is also the standard cure for asymmetric return paths. And a full or aging-out translation table shows up as connections that establish and then mysteriously die: the mapping expired mid-conversation.
+
+## Destination NAT: publishing a service
+
+Destination NAT rewrites the destination address of inbound traffic: connections arriving at a public address are redirected to a private inside host - port forwarding in home terms, virtual servers in load-balancer terms. The purpose is publication with indirection: the address clients know is decoupled from the machine that answers, which is what allows the machine to move, multiply, or hide. A load balancer's virtual server is destination NAT elevated into a full proxy - and often performs source NAT on the same connection so the server's replies come back through the device rather than around it.
+
+## Reading NAT in a capture
+
+Because NAT rewrites addresses mid-path, a capture on one side never matches a capture on the other by address alone. Client side shows client-to-public; server side shows device-to-private. Correlate by time, ports, and payload instead - and expect the [TCP conversation](/learn/tcp-connection-lifecycle) to be one connection through a router-style NAT but two distinct connections through a proxying device. Knowing which of the two you are looking at is half of every NAT troubleshooting session; the other half is remembering that somewhere, a translation table entry either exists and explains everything, or does not and explains everything.

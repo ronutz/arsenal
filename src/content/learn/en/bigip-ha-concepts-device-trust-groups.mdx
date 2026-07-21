@@ -1,0 +1,32 @@
+---
+slug: bigip-ha-concepts-device-trust-groups
+title: "BIG-IP High Availability: Device Trust, Device Groups, and Traffic Groups"
+summary: "High availability (HA) on BIG-IP is built from three objects that are easy to conflate: device trust decides who may talk, device groups decide what is shared, and traffic groups decide what actually floats between devices during a failover. Understanding how they relate is the difference between an HA pair that behaves and one that surprises you."
+concepts: ["f5", "big-ip", "high availability", "device trust", "device group", "traffic group", "failover", "dsc"]
+relatedTools: []
+relatedArticles: ["bigip-failover-states-and-operations", "bigip-config-sync", "bigip-system-services"]
+category: networking
+order: 144
+status: reviewed
+updated: "2026-07-21"
+---
+
+High availability, abbreviated HA, is the property that lets one BIG-IP take over another's work without applications noticing. On BIG-IP the machinery behind it is called a Device Service Cluster (DSC), and it is assembled from three distinct objects. Certification blueprints ask you to explain how the concepts relate to one another, which is exactly the part people skip.
+
+## Device trust: who is allowed in the room
+
+Before two BIG-IP systems can share anything, they must trust each other. Device trust is a certificate exchange: each device presents an identity certificate, and once trust is established the devices appear in each other's device list under a shared trust domain. Everything else - configuration sync, failover heartbeats, connection mirroring - rides on this trust. Two practical consequences follow. First, the clocks must agree, because certificate validation is time-sensitive; a Network Time Protocol (NTP) misconfiguration is a classic root cause of broken trust. Second, when trust is damaged the fix is to reset and re-establish it, not to fight the symptoms downstream.
+
+## Device groups: what is shared
+
+A device group is a set of trusted devices that share something. A sync-failover group shares configuration and failover responsibility - this is what an HA pair is. A sync-only group shares configuration but never fails over, useful for distributing policy across many devices. The device group is where [config sync](/learn/bigip-config-sync) lives: membership in the group is what makes "synchronize the configuration" a meaningful sentence.
+
+## Traffic groups: what actually moves
+
+A traffic group is the unit of failover. It is a collection of floating objects - virtual addresses, floating self-IPs, Secure Network Address Translation (SNAT) translation addresses - that are active on exactly one device at a time. When failover happens, the traffic group moves; the devices themselves do not. A fresh system has one traffic group, traffic-group-1, and many deployments never need another. Creating additional traffic groups is how you build active-active designs: two groups, each active on a different device, each ready to move to the peer.
+
+The exam-favorite distinction is traffic groups versus HA groups. An HA group is a scoring mechanism - a health score built from pool availability, trunk member counts, or cluster health that can trigger a failover of a traffic group when the score drops. The traffic group is the thing that fails over; the HA group is one of several reasons it might.
+
+## How the three relate
+
+Read the stack bottom-up: device trust makes communication possible, the sync-failover device group defines the set of devices that share configuration and duty, and traffic groups define which addresses are active where. When a blueprint asks why high availability was lost, the answer is almost always a break in one layer that cascades upward - trust broken by time skew, sync failing across the group, or a traffic group unable to fail over because its next-active device is unavailable. The companion article on [failover states and operations](/learn/bigip-failover-states-and-operations) covers the moving parts.

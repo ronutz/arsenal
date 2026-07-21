@@ -1,0 +1,30 @@
+---
+slug: network-devices-switch-router-firewall
+title: "Switch, Router, Firewall: Who Does What on the Path"
+summary: "Three device roles carry most of every network diagram: switches forward frames inside a Layer 2 domain, routers move packets between networks, and firewalls decide what is allowed to pass. The function and purpose of each, how an application delivery controller relates to all three, and how to read a network diagram without getting lost."
+concepts: ["switch", "router", "firewall", "network devices", "fundamentals", "network diagrams", "topology"]
+relatedTools: []
+relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway", "bigip-interfaces-trunks-vlans-selfips"]
+category: networking
+order: 161
+status: reviewed
+updated: "2026-07-21"
+---
+
+Every network diagram is a sentence built from a small vocabulary, and three words carry most of the grammar. The retired F5 fundamentals exam asked candidates to explain the function and purpose of a router, a firewall, and a switch, and to interpret network diagrams - a pairing that makes sense, because you cannot read the diagram until you know what each box does to traffic.
+
+## The switch: forwarding inside a network
+
+A switch operates at Layer 2, forwarding Ethernet frames between ports based on Media Access Control (MAC) addresses. It learns which address lives behind which port by watching source addresses, floods frames whose destination it has not learned yet, and keeps a broadcast domain - a Virtual Local Area Network (VLAN) - stitched together. The purpose is local delivery: many devices, one network, frames arriving only where they belong. When a diagram shows servers hanging off a box that fans out into many short lines, that box is a switch, and everything on it shares a subnet unless VLANs say otherwise.
+
+## The router: forwarding between networks
+
+A router operates at Layer 3, forwarding Internet Protocol (IP) packets between different networks based on a [routing table](/learn/routing-tables-and-default-gateway). Each hop rewrites the Layer 2 framing while carrying the Layer 3 addresses through - the packet keeps its source and destination IP end to end, but changes its MAC clothing at every router. The purpose is reachability: connecting subnets, sites, and the internet itself. On a diagram, the router is the box where subnets change - one side 10.1.0.0/24, the other 10.2.0.0/24 - and its address on each segment is what hosts there call the default gateway.
+
+## The firewall: deciding what may pass
+
+A firewall enforces policy on traffic crossing it: which sources may reach which destinations on which ports, classically, and in modern next-generation form, which applications, users, and content. Where the switch asks "where does this go" and the router asks "which way is that", the firewall asks "should this be allowed at all". Its natural home on a diagram is a boundary - between the internet and everything, between user networks and data center, between application tiers - and the arrow through it is the diagram's way of saying a policy decision happens here.
+
+## Reading the diagram
+
+With the three roles fixed, interpretation is mechanical. Follow a client-to-server flow left to right: each switch is a local hop inside one subnet; each router is a subnet boundary and a routing decision; each firewall is a policy gate that can silently be the reason a connection never establishes. An application delivery controller like a BIG-IP sits in the same picture as a special case of all three at once - it switches and routes within [its own interfaces and VLANs](/learn/bigip-interfaces-trunks-vlans-selfips), it applies policy like a firewall, and it additionally terminates and remakes connections, which no plain switch, router, or firewall does. Knowing that distinction is what lets you predict, from the diagram alone, where an address changes, where a packet can be dropped by policy, and where a capture will show two connections instead of one.

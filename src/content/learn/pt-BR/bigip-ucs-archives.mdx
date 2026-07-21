@@ -1,0 +1,32 @@
+---
+slug: bigip-ucs-archives
+title: "Arquivos UCS: o Backup do BIG-IP Que Contém Tudo"
+summary: "Um User Configuration Set (UCS) é o backup completo do dispositivo: configuração, licença e - a parte que as pessoas esquecem - as chaves privadas SSL. Este artigo cobre criar e restaurar arquivos, o que existe dentro do pacote, as flags que importam ao restaurar em hardware diferente, e por que o armazenamento de longo prazo é uma decisão de segurança."
+concepts: ["f5", "big-ip", "ucs", "backup", "restore", "archive", "private keys", "disaster recovery"]
+relatedTools: ["f5-tmsh-config-explainer"]
+relatedArticles: ["bigip-config-sync", "bigip-log-files-map", "bigip-qkview-and-ihealth"]
+category: networking
+order: 147
+status: reviewed
+updated: "2026-07-21"
+---
+
+O arquivo User Configuration Set (UCS) é a unidade de recuperação de desastre do BIG-IP: um único arquivo comprimido capturando o que faz deste dispositivo este dispositivo. Os blueprints pedem os procedimentos, o caso de uso, o conteúdo e a disciplina de armazenamento - uma pista de que os quatro aparecem na operação real.
+
+## Criar e restaurar
+
+Na interface, os arquivos vivem na seção de archives do sistema: criar, baixar, enviar, restaurar. No Traffic Management Shell (TMSH), `save sys ucs <nome>` grava o arquivo - por padrão em `/var/local/ucs` - e `load sys ucs <nome>` restaura. A restauração substitui a configuração em execução por inteiro, portanto é operação de janela de manutenção num dispositivo em produção.
+
+Duas opções de restauração carregam a maior parte do peso operacional. `no-license` restaura tudo exceto a licença - o que você quer ao restaurar o arquivo de outro dispositivo numa unidade substituta que já carrega licença própria válida, o cenário de Return Merchandise Authorization (RMA). Uma restauração no estilo platform-migrate adapta um arquivo tirado numa plataforma de hardware para outra, mantendo a configuração lógica e deixando para trás os detalhes específicos de plataforma. Regra geral: mesmo dispositivo, restauração simples; dispositivo diferente, pense antes de digitar.
+
+## O que existe dentro
+
+Um UCS contém os arquivos de configuração (`bigip.conf`, `bigip_base.conf` e companhia), a licença por padrão, as contas de usuário e - o blueprint destaca isso por um motivo - as chaves privadas e certificados Secure Sockets Layer (SSL) instalados na caixa. Esse último item muda a classificação do arquivo: um UCS não é backup de texto, é material de chave. Quem segura o arquivo segura, na prática, cada identidade de certificado que o dispositivo serve.
+
+## O caso de uso, dito com clareza
+
+O UCS responde a uma pergunta: como eu recupero exatamente este dispositivo? Configuração corrompida, disco trocado, unidade substituída em RMA, ou um ponto de retorno conhecido antes de mudança invasiva - em cada caso, o arquivo mais uma versão de software compatível reproduzem o dispositivo. Ele complementa o [config sync](/learn/bigip-config-sync), que mantém pares alinhados mas não ressuscita dispositivo algum, e o [retrato diagnóstico qkview](/learn/bigip-qkview-and-ihealth), feito para leitura, não restauração.
+
+## Armazenamento de longo prazo é decisão de segurança
+
+Como o arquivo contém chaves privadas, armazenamento adequado de longo prazo significa armazenamento cifrado, com acesso restrito, fora do próprio dispositivo - um arquivo que morre com o disco que deveria proteger é backup só no nome. Copie os arquivos para fora da caixa em agenda regular, cifre-os em repouso (o sistema pode proteger o arquivo com passphrase na criação, o que também cifra as chaves contidas), controle quem lê o repositório e teste uma restauração de vez em quando. Backup não testado é hipótese.

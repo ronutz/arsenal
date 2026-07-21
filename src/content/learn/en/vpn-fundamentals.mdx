@@ -1,0 +1,28 @@
+---
+slug: vpn-fundamentals
+title: "VPN Fundamentals: What Tunnels Protect, and What They Don't"
+summary: "A virtual private network wraps traffic in an encrypted tunnel so it crosses untrusted networks as if it never left home. The rationale - privacy, encryption, and the limits of anonymity - the valid uses from site-to-site links to remote access, and the honest boundaries: what a tunnel genuinely protects, and the claims it cannot keep."
+concepts: ["vpn", "tunnel", "encryption", "remote access", "site-to-site", "fundamentals", "privacy"]
+relatedTools: []
+relatedArticles: ["tls-reverse-proxy-inbound", "nat-explained", "osi-model-in-practice"]
+category: networking
+order: 168
+status: reviewed
+updated: "2026-07-21"
+---
+
+A virtual private network (VPN) is a tunnel: traffic is encapsulated and encrypted at one end, carried across a network nobody trusts, and unwrapped at the other as if the two ends shared a private wire. The retired fundamentals blueprint asked for the rationale - privacy, encryption, anonymity - and the valid uses, a pairing worth keeping together because the rationale is where the honest limits live.
+
+## The function: an encrypted overlay
+
+Technically, a VPN puts whole packets inside other packets, protected by cryptography. The inner traffic keeps its private addressing and its meaning; the outer wrapper is all any intermediate network sees - endpoints and ciphertext. That single move buys the two properties the blueprint names first. Confidentiality: observers along the path read nothing of the content. Integrity and authenticity: the endpoints prove themselves to each other and tampering is detectable. The result behaves like a Layer 3 extension cord - remote things join the network as if local, which is both the entire value and the entire risk.
+
+## Valid uses
+
+Three patterns cover practice. Site-to-site: two networks joined across the internet - branch to headquarters, data center to cloud - with gateways tunneling on behalf of everyone behind them; the users never know. Remote access: an individual device tunnels into the organization, arriving with an internal address and internal reachability; this is the corporate client on the laptop, and the pattern F5 implements in Secure Sockets Layer (SSL) VPN form through its access module. And privacy transit: routing personal traffic through a provider to shield it from the local network - the coffee-shop case - and to change the address the destination sees.
+
+## The honest boundaries
+
+The blueprint's third word, anonymity, deserves the asterisk it rarely gets. A VPN moves trust; it does not remove it. The tunnel provider sees what the local network no longer can, the destination still sees a real address - the provider's - and identity leaks happily above the tunnel through logins, cookies, and fingerprints. Encrypted is likewise not endorsed: the tunnel authenticates its endpoints, not the intentions of the traffic inside, which is exactly why remote-access designs pair tunnels with posture checks and per-application policy, and why the industry's zero-trust turn treats "on the VPN" as the beginning of an access decision rather than the end of one. And a tunnel terminates: past its far end, traffic travels as plainly as it ever would - protection for the segment where it applies, not a blessing on the whole path, a boundary worth respecting in exactly the way [TLS termination points](/learn/tls-reverse-proxy-inbound) demand one layer up.
+
+Stated plainly for the exam question the retired blueprint asked: the rationale is confidentiality and integrity across untrusted segments, with anonymity a partial and provider-shaped property; the valid uses are joining networks, admitting remote users, and shielding transit - each excellent within its segment, none a substitute for securing what waits at either end.

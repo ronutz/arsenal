@@ -1,0 +1,28 @@
+---
+slug: bigip-failover-states-and-operations
+title: "Failover no BIG-IP: Estados, Forçamento e Network Failover"
+summary: "Active, standby, offline e forced offline são estados precisos com regras precisas. Este artigo percorre a máquina de estados do failover, a diferença entre forçar standby e forçar offline, network failover unicast versus multicast, e onde olhar quando acontece um failover que ninguém pediu."
+concepts: ["f5", "big-ip", "failover", "active standby", "force offline", "network failover", "unicast", "multicast", "high availability"]
+relatedTools: []
+relatedArticles: ["bigip-ha-concepts-device-trust-groups", "bigip-config-sync", "bigip-log-files-map"]
+category: networking
+order: 145
+status: reviewed
+updated: "2026-07-21"
+---
+
+Um BIG-IP num par de alta disponibilidade (HA, high availability) está sempre num estado definido para cada traffic group: active, dono dos endereços flutuantes e processando tráfego, ou standby, pronto para assumi-los. Dois estados administrativos os acompanham: offline, em que o dispositivo liberou seus traffic groups, e forced offline, em que ele adicionalmente se recusa a ficar ativo até ser liberado. Ler e controlar esses estados é habilidade central de administração, e os blueprints testam o procedimento e a interpretação.
+
+## Forçar standby versus forçar offline
+
+Force to standby manda um dispositivo ativo entregar seus traffic groups ativos ao par next-active. É a operação educada usada antes de manutenção: o tráfego migra, o dispositivo continua membro funcional do par, e voltará a ficar ativo se o par falhar depois. Force offline é mais forte: o dispositivo libera tudo e não assume tráfego em circunstância alguma até que um administrador libere o estado. Use quando um dispositivo está se comportando mal e você quer certeza de que ficará fora do caminho. Ambos estão na interface, no gerenciamento de dispositivos, e no Traffic Management Shell (TMSH) com `run sys failover standby` e `run sys failover offline`; o retrato atual vem de `show sys failover` e da visão geral de device management, que também informa o estado do device trust.
+
+## Como os dispositivos detectam um par morto
+
+A detecção de failover é baseada em heartbeat. Pares de hardware historicamente suportaram cabo serial dedicado, mas o mecanismo geral - e o único para edições virtuais e grupos com vários dispositivos - é o network failover: pacotes de heartbeat trocados pela rede entre endereços de failover. A configuração oferece unicast e multicast. Unicast envia heartbeats entre endereços específicos, tipicamente um self-IP dedicado de HA mais o endereço de gerenciamento como segundo canal. Multicast acrescenta um endereço de grupo que todos os membros escutam, historicamente recomendado em plataformas chassi com muitas lâminas. O blueprint pede a diferenciação: unicast é ponto a ponto e explícito, multicast é um-para-muitos e serve contagens maiores de membros.
+
+A detecção interage com os failsafes. VLAN failsafe monitora tráfego numa VLAN e pode disparar failover quando o segmento silencia; gateway failsafe pinga um roteador acima; o watchdog do sistema faz failover quando daemons críticos param de responder. Cada um é causa legítima de um failover que parece espontâneo.
+
+## Diagnosticando um failover que ninguém pediu
+
+Quando um failover acontece inesperadamente, a sequência de registro está nos [arquivos de log](/learn/bigip-log-files-map). O `/var/log/ltm` carrega as transições de estado e a razão da decisão - heartbeat perdido, failsafe disparado, daemon reiniciado. Correlacione os timestamps nos dois dispositivos: a visão do par sobre o mesmo minuto normalmente distingue "o ativo morreu" de "o standby parou de ouvi-lo", problemas muito diferentes. Estatísticas de interface e o caminho do heartbeat merecem atenção cedo, porque a causa mais comum de failover surpresa não é falha da aplicação, e sim interrupção na rede que carrega os heartbeats - um switch reiniciado, um membro de trunk oscilando, ou uma mudança de port lockdown que silenciou a porta de failover. O [artigo de acesso de gerenciamento](/learn/bigip-management-access-port-lockdown) cobre o lado do port lockdown dessa história.

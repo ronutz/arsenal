@@ -9,7 +9,7 @@
 //      (titles resolved live from the article registry, so a rename can never
 //      leave a stale label) with the tools a reader practices on. Guarded by
 //      scripts/check-reading-paths.mjs.
-//   2. CERTIFICATION STUDY GUIDES (src/content/certifications/study-guides.ts):
+//   2. CERTIFICATION SIGNPOST: a heading + one-line lede + button pointing at
 //      the blueprint-mapped exam guides. Rendered here as the SAME cards the
 //      /certifications hub uses (shared certhub-guide-* classes), linking into
 //      the per-exam pages - one card language across both entrances.
@@ -22,6 +22,7 @@
 // ============================================================================
 
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
@@ -29,11 +30,6 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { ogImages } from "@/lib/og";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
-import {
-  getCertifications,
-  getGuidesForCertification,
-  objectiveCount,
-} from "@/content/certifications/study-guides";
 import { getArticle } from "@/lib/learn";
 import { tools as toolRegistry } from "@/config/tools";
 import { categoryColor } from "@/config/categoryColors";
@@ -63,10 +59,8 @@ export default async function StudyGuidesPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("studyGuidesIndex");
-  const tCert = await getTranslations("certGuides");
   const tTools = await getTranslations("tools");
   const tNav = await getTranslations("nav");
-  const certs = getCertifications();
 
   return (
     <>
@@ -107,7 +101,12 @@ export default async function StudyGuidesPage({
                   .map((id) => toolRegistry.find((tl) => tl.id === id))
                   .filter((tl): tl is NonNullable<typeof tl> => Boolean(tl));
                 return (
-                  <div className="certhub-note" id={path.id} key={path.id}>
+                  <div
+                    className="certhub-note"
+                    id={path.id}
+                    key={path.id}
+                    style={{ "--note-accent": categoryColor(path.category) } as CSSProperties}
+                  >
                     <h3 className="certhub-note-title">
                       <span
                         className="category-dot"
@@ -154,51 +153,17 @@ export default async function StudyGuidesPage({
             </div>
           </section>
 
-          {/* 2. Certification study guides - the same cards as /certifications. */}
+          {/* 2. Certification study guides live at /certifications - one home,
+              one registry, one page rendering the card grid. This section is a
+              signpost, not a copy: the full grid rendered here too until
+              2026-07-21, when the duplicate was retired in favor of a single
+              canonical page (same data source, so nothing was lost). */}
           <section className="section" id="certification-guides">
             <div className="container certs-container">
               <div className="certs-group-head">
                 <h2 className="certs-group-title">{t("certTitle")}</h2>
               </div>
               <p className="certs-group-intro">{t("certLede")}</p>
-
-              {certs.map((cert) => {
-                const guides = getGuidesForCertification(cert.key);
-                return (
-                  <div key={cert.key}>
-                    <p className="certs-group-intro">
-                      <strong>{cert.name}</strong>{" "}
-                      <span className="certs-badge certs-badge--current mono">{cert.code}</span>
-                    </p>
-                    <ul className="certhub-guide-grid">
-                      {guides.map((g) => {
-                        const n = objectiveCount(g);
-                        return (
-                          <li className="certhub-guide-card-wrap" key={g.slug}>
-                            <Link href={`/certifications/${g.slug}`} className="certhub-guide-card">
-                              <span className="certhub-guide-code mono">{g.examCode}</span>
-                              <span className="certhub-guide-name">{g.examName}</span>
-                              <span className="certhub-guide-meta">
-                                {g.status === "preparing" ? (
-                                  <span className="certhub-guide-badge certhub-guide-badge--prep">
-                                    {tCert("inPreparation")}
-                                  </span>
-                                ) : (
-                                  <span className="certhub-guide-badge">
-                                    {tCert("objectivesCount", { count: n })}
-                                  </span>
-                                )}
-                                <span className="certhub-guide-cta">{tCert("openGuide")} &#8594;</span>
-                              </span>
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                );
-              })}
-
               <p>
                 <Link className="btn btn-secondary" href="/certifications">
                   {t("certAllCta")} &#8594;

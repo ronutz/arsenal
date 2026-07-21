@@ -1,0 +1,34 @@
+---
+slug: bigip-system-services
+title: "Os Serviços de Sistema por Trás de um BIG-IP Saudável: DNS, NTP, SNMP, Syslog"
+summary: "Quatro configurações pequenas com raio de explosão desproporcional. A resolução de nomes alimenta monitores e licenciamento, a sincronização de tempo sustenta o device trust e cada timestamp de log, o SNMP é como o sistema de monitoração enxerga você, e o syslog remoto é onde a evidência sobrevive. A configuração adequada de cada um, e o que quebra quando estão errados."
+concepts: ["f5", "big-ip", "dns", "ntp", "snmp", "syslog", "system services", "time sync"]
+relatedTools: []
+relatedArticles: ["bigip-config-sync", "bigip-log-files-map", "bigip-custom-alerting"]
+category: networking
+order: 150
+status: reviewed
+updated: "2026-07-21"
+---
+
+Quatro serviços moram nas telas de configuração do sistema, levam cinco minutos para preencher e decidem em silêncio se todo o resto funciona. A frase do blueprint é "mostre a configuração adequada para: DNS, NTP, SNMP, syslog", e adequada está trabalhando de verdade nessa frase.
+
+## DNS: o dispositivo como cliente
+
+Esta é a configuração de Domain Name System (DNS) que o próprio BIG-IP usa - endereços de resolvedores e domínios de busca - e não os serviços de DNS que o dispositivo possa oferecer a terceiros. O dispositivo resolve nomes quando monitores referenciam hostnames, quando o licenciamento e recursos de phone-home chamam para fora, e quando administradores usam nomes na configuração. Configuração adequada significa ao menos dois resolvedores alcançáveis. Quando a resolução quebra, os sintomas são oblíquos: um monitor que nunca sucede, uma ativação que expira, um comando TMSH que trava enquanto uma consulta espera para falhar.
+
+## NTP: a dependência que todos subestimam
+
+O Network Time Protocol (NTP) mantém o relógio honesto, e o relógio é dependência de coisas que não parecem temporais. Os certificados do device trust validam contra o tempo - relógios desviados quebram a confiança, e confiança quebrada quebra o [config sync](/learn/bigip-config-sync) e a coordenação de failover. A correlação de logs entre dispositivos assume timestamps concordantes. Tarefas agendadas disparam pelo relógio. Configuração adequada é ao menos dois servidores, o mesmo conjunto em todos os membros do device group, verificados com `ntpq -np` mostrando um par sincronizado. O item do blueprint "identificar como sincronizar data/hora entre dispositivos LTM" tem aqui sua resposta inteira.
+
+## SNMP: ser visto
+
+O Simple Network Management Protocol (SNMP) é como a monitoração externa consulta o dispositivo e como o dispositivo empurra traps. Configuração adequada tem três partes: a lista de endereços permitidos nomeando quais gerentes podem consultar, as communities (ou usuários SNMPv3, preferíveis onde possível - o v3 autentica e cifra, v1 e v2c são strings de comunidade em texto claro) e os destinos de trap para os eventos que você empurra. A consulta responde "qual a utilização da interface"; o trap responde "me avise no instante em que houver failover". O [alerting customizado](/learn/bigip-custom-alerting) estende o lado dos traps com alertas que você define.
+
+## Syslog: evidência que sobrevive
+
+Logs locais rotacionam; o syslog remoto é onde o registro persiste. Configuração adequada nomeia um ou mais servidores remotos e seleciona as facilidades e níveis a enviar. A trilha de auditoria em especial - o registro de quem mudou o quê - vale enviar por inteiro, porque o incidente que mais precisa dela é o mesmo que pode ter comprometido a cópia local. O [mapa dos arquivos de log](/learn/bigip-log-files-map) cobre o que cada arquivo local guarda; o destino remoto decide quanto tempo qualquer coisa sobrevive.
+
+## O fio comum
+
+Cada um dos quatro é dependência de algo maior: DNS da monitoração e do licenciamento, NTP da confiança e da forense, SNMP da visibilidade, syslog da responsabilização. É por isso que aparecem num blueprint de administração - não porque as telas sejam difíceis, mas porque as falhas são caras e os consertos levam cinco minutos cada.

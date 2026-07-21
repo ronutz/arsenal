@@ -1,0 +1,30 @@
+---
+slug: bigip-route-domains
+title: "Route Domains: Segmentação de Camada 3 Dentro de Um BIG-IP"
+summary: "Um route domain é uma tabela de roteamento separada com um ID, permitindo que um dispositivo sirva inquilinos cujos espaços de endereço se sobrepõem por completo. A notação com sinal de porcentagem, o strict isolation, os domínios pai e a conexão com partições - a funcionalidade que o blueprint de LTM pede para explicar."
+concepts: ["f5", "big-ip", "route domains", "segmentation", "overlapping ip", "multi-tenant", "layer 3"]
+relatedTools: ["cidr"]
+relatedArticles: ["bigip-interfaces-trunks-vlans-selfips", "bigip-management-access-port-lockdown"]
+category: networking
+order: 152
+status: reviewed
+updated: "2026-07-21"
+---
+
+Um route domain é uma tabela de roteamento com um número. Isso subestima só um pouco: ao dar às VLANs, self-IPs e objetos de tráfego um ID de domínio, um BIG-IP hospeda múltiplos mundos independentes de Camada 3 - incluindo mundos cujos planos de endereçamento colidem. Dois inquilinos podem ser ambos 10.0.0.0/8 no mesmo dispositivo, cada um no seu domínio, sem jamais se encontrarem.
+
+## A notação
+
+Endereços num domínio não-padrão carregam um sufixo de porcentagem: `10.1.1.1%2` é o 10.1.1.1 no route domain 2. O route domain 0 é o padrão e seus endereços vão sem sufixo, razão pela qual a maioria das configurações nunca mostra a notação. O sufixo aparece onde quer que um endereço apareça - virtual servers, membros de pool, self-IPs - e esquecê-lo é o erro clássico: um membro de pool digitado como `10.1.1.1` quando os servidores vivem no domínio 2 aponta para um host diferente, provavelmente inexistente, no domínio 0.
+
+## Associação e isolamento
+
+VLANs são atribuídas a route domains, e tudo numa VLAN herda seu domínio. Cada domínio mantém sua própria tabela de roteamento e sua própria rota-padrão. O strict isolation é o interruptor que decide se um domínio é muro ou cerca: estrito (o padrão) proíbe encaminhamento entre domínios por completo; relaxá-lo permite que o tráfego cruze para um domínio pai quando nenhuma rota local casa. Domínios pai criam exatamente essa hierarquia - um domínio filho pode recuar para as rotas do pai, útil quando inquilinos compartilham um segmento de serviços comum mantendo privado o próprio espaço.
+
+## Onde conecta com a administração
+
+Route domains combinam naturalmente com partições administrativas: uma partição pode carregar um route domain padrão, de modo que objetos criados pelos administradores de um inquilino caiam no mundo de Camada 3 daquele inquilino sem ninguém digitar sinais de porcentagem. O par entrega as duas metades da multi-tenancy - partições delimitam quem toca quais objetos, route domains delimitam por onde os pacotes desses objetos podem ir.
+
+## Explicando a funcionalidade, em estilo de prova
+
+O blueprint de LTM pede uma coisa aqui: explicar o que route domains fazem. A resposta compacta: fornecem instâncias de roteamento independentes dentro de um dispositivo, identificadas por ID numérico e pela notação de porcentagem, dando isolamento de espaço de endereços para redes sobrepostas, rotas-padrão por inquilino e compartilhamento controlado por domínios pai e pelo strict isolation. Se você também nota o `%ID` faltante numa configuração de cenário, está à frente da questão.

@@ -1,0 +1,28 @@
+---
+slug: tcp-connection-lifecycle
+title: "The TCP Connection Lifecycle: Handshake, Teardown, and Why Connections Fail"
+summary: "Every TCP conversation has three acts: the SYN handshake that creates it, the data flow that justifies it, and the FIN or RST that ends it. The difference between polite close and abort, the possible reasons a connection terminates, and the short list of causes when one fails to establish at all - the literacy behind every capture you will ever read."
+concepts: ["tcp", "handshake", "syn", "fin", "rst", "connection", "fundamentals", "troubleshooting"]
+relatedTools: []
+relatedArticles: ["osi-model-in-practice", "icmp-ping-and-traceroute", "bigip-tcpdump-syntax"]
+category: networking
+order: 167
+status: reviewed
+updated: "2026-07-21"
+---
+
+The Transmission Control Protocol (TCP) turns an unreliable packet network into a reliable byte stream, and it does so with ceremony: connections are explicitly created and explicitly ended. The retired fundamentals exam asked for the possible reasons a connection terminates and the possible causes when one fails to establish - questions whose answers are the core literacy of reading any packet capture.
+
+## Establishment: the three-way handshake
+
+A client proposes with a SYN, the server accepts with a SYN-ACK, the client confirms with an ACK - three segments, after which both sides hold a connection and data may flow. The handshake is also where the two sides exchange their starting sequence numbers and options; everything reliable about TCP is bootstrapped in these three packets, which is why a capture filter for SYNs is the fastest census of who is trying to talk to whom.
+
+## Why establishment fails
+
+When the handshake does not complete, the capture shows one of a short list. SYN, then silence: the SYN never arrived, or the SYN-ACK died on the way back - a routing gap, a silent drop at a firewall, or a dead host. SYN answered by RST: something reached the destination network and was actively refused - most often no listener on that port, sometimes a policy device resetting on purpose; either way, refusal is information, and it arrives fast. SYN answered by an [ICMP unreachable](/learn/icmp-ping-and-traceroute): a router or host named the failure explicitly. And SYN retransmitted in a slowing rhythm before giving up: the classic signature of a silent drop, distinguishable from refusal precisely by how long it takes to fail.
+
+## Termination: the polite close and the abort
+
+Connections end two ways. The graceful close is a FIN exchange - each side says it is done sending, each acknowledges, and the stream drains completely; this is the normal end of a finished conversation. The abort is a RST: an immediate, unilateral teardown that discards anything in flight. RSTs are legitimate - a process crashed, a host received data for a connection it no longer knows, an idle-timeout fired on a middlebox, an application chose abort over lingering - but every RST has a reason, and finding it is often the whole investigation. The practical reading: FINs at the end of a complete exchange are health; a RST in the middle of one is the event to explain, and its direction tells you who lost patience.
+
+Between proxies the picture doubles: a full-proxy device like a BIG-IP terminates the client's connection and originates its own to the server, so one user transaction is two lifecycles with independent handshakes, timeouts, and resets. Correlating them - and noticing which of the two failed - is the daily work the [capture syntax article](/learn/bigip-tcpdump-syntax) equips, and the reason this lifecycle deserves to be reflex before the first capture is ever taken.

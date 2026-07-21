@@ -1,0 +1,30 @@
+---
+slug: dhcp-lease-lifecycle
+title: "DHCP: the Lease Lifecycle Behind Automatic Addressing"
+summary: "The Dynamic Host Configuration Protocol hands out addresses, gateways, and resolvers so hosts arrive configured instead of blank. The discover-offer-request-acknowledge exchange, what a lease means and how renewal works, relays that carry requests across subnets, and the failure signatures - including the self-assigned address that says no server ever answered."
+concepts: ["dhcp", "lease", "dora", "fundamentals", "dhcp relay", "addressing", "apipa"]
+relatedTools: []
+relatedArticles: ["routing-tables-and-default-gateway", "ipv4-addressing", "bigip-system-services"]
+category: networking
+order: 165
+status: reviewed
+updated: "2026-07-21"
+---
+
+The Dynamic Host Configuration Protocol (DHCP) answers the first question every host asks a network: who am I here? An address, a subnet mask, a [default gateway](/learn/routing-tables-and-default-gateway), and name resolvers arrive in one exchange, which is why the retired fundamentals blueprint paired DHCP with NAT as functions worth explaining - together they are how networks scale past hand-configuration.
+
+## The exchange: discover, offer, request, acknowledge
+
+A fresh host broadcasts a discover - it has no address, so broadcast is all it can do. Any listening server answers with an offer: an address and the accompanying settings. The host broadcasts a request naming the offer it accepts - broadcast again, so competing servers learn they lost - and the chosen server confirms with an acknowledgment. Four steps, remembered by their initials as DORA, and at the end the host holds a lease: the address is borrowed, not owned, for a defined time.
+
+## Leases, renewal, and what expiry means
+
+A lease is a promise with a clock. Halfway through, the host quietly asks the same server to renew - unicast now, since it has an address - and normally life continues invisibly. If the server is gone, the host tries harder and broader as expiry approaches; if the lease truly lapses, the address must be surrendered and the host returns to discover. Two operational truths follow. Short leases make address pools agile and outages visible; long leases make networks calm and server outages survivable. And a host that keeps working during a DHCP outage is not proof of health - it is a lease that has not expired yet, a fuse burning quietly.
+
+## Relays: crossing the subnet boundary
+
+Discovery is broadcast, and broadcasts stop at routers - so either every subnet hosts a server, or routers run a DHCP relay: a function that receives the local broadcast and forwards it, unicast, to the real server, marking which subnet it came from so the server picks from the right pool. When a whole subnet fails to get addresses while others succeed, the relay configuration on that subnet's router is the first suspect.
+
+## Failure signatures
+
+The classics are recognizable at a glance. A self-assigned 169.254 address - Automatic Private IP Addressing - means the host asked and nobody answered: server down, relay missing, or the port blocked. Address conflicts mean two authorities or a static address squatting inside a dynamic pool. And a host with a perfect address but no reach beyond the subnet received a lease with a wrong or absent gateway - a server-side configuration error wearing a client-side costume. On infrastructure devices the moral inverts: a BIG-IP's own addresses are static by design, and DHCP appears in its life mainly as the reason the [system services](/learn/bigip-system-services) it depends on - resolvers above all - must be configured deliberately rather than assumed.

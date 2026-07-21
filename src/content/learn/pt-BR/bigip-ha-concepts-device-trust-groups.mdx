@@ -1,0 +1,32 @@
+---
+slug: bigip-ha-concepts-device-trust-groups
+title: "Alta Disponibilidade no BIG-IP: Device Trust, Device Groups e Traffic Groups"
+summary: "A alta disponibilidade (HA) no BIG-IP é construída com três objetos fáceis de confundir: o device trust decide quem pode conversar, os device groups decidem o que é compartilhado, e os traffic groups decidem o que de fato flutua entre os dispositivos num failover. Entender como eles se relacionam é a diferença entre um par HA que se comporta e um que surpreende."
+concepts: ["f5", "big-ip", "high availability", "device trust", "device group", "traffic group", "failover", "dsc"]
+relatedTools: []
+relatedArticles: ["bigip-failover-states-and-operations", "bigip-config-sync", "bigip-system-services"]
+category: networking
+order: 144
+status: reviewed
+updated: "2026-07-21"
+---
+
+Alta disponibilidade, abreviada HA (high availability), é a propriedade que permite a um BIG-IP assumir o trabalho de outro sem que as aplicações percebam. No BIG-IP, a maquinaria por trás disso se chama Device Service Cluster (DSC), montada a partir de três objetos distintos. Os blueprints de certificação pedem que você explique como os conceitos se relacionam entre si - que é exatamente a parte que as pessoas pulam.
+
+## Device trust: quem pode entrar na sala
+
+Antes que dois BIG-IP compartilhem qualquer coisa, eles precisam confiar um no outro. O device trust é uma troca de certificados: cada dispositivo apresenta um certificado de identidade e, estabelecida a confiança, os dispositivos aparecem na lista um do outro sob um domínio de confiança compartilhado. Todo o resto - sincronização de configuração, heartbeats de failover, espelhamento de conexões - viaja sobre essa confiança. Duas consequências práticas: primeiro, os relógios precisam concordar, porque a validação de certificados é sensível ao tempo; um Network Time Protocol (NTP) mal configurado é causa-raiz clássica de confiança quebrada. Segundo, quando a confiança se danifica, o conserto é resetá-la e restabelecê-la, não brigar com os sintomas rio abaixo.
+
+## Device groups: o que é compartilhado
+
+Um device group é um conjunto de dispositivos confiáveis que compartilham algo. Um grupo sync-failover compartilha configuração e responsabilidade de failover - é isso que um par HA é. Um grupo sync-only compartilha configuração mas nunca faz failover, útil para distribuir política entre muitos dispositivos. O device group é onde o [config sync](/learn/bigip-config-sync) mora: é a associação ao grupo que torna "sincronize a configuração" uma frase com sentido.
+
+## Traffic groups: o que de fato se move
+
+Um traffic group é a unidade do failover. É uma coleção de objetos flutuantes - endereços virtuais, self-IPs flutuantes, endereços de tradução de Secure Network Address Translation (SNAT) - ativos em exatamente um dispositivo por vez. Quando o failover acontece, o traffic group se move; os dispositivos, não. Um sistema recém-instalado tem um traffic group, o traffic-group-1, e muitas implantações nunca precisam de outro. Criar traffic groups adicionais é como se constroem desenhos ativo-ativo: dois grupos, cada um ativo num dispositivo diferente, cada um pronto para migrar ao par.
+
+A distinção favorita das provas é traffic group versus HA group. Um HA group é um mecanismo de pontuação - um score de saúde composto por disponibilidade de pools, contagem de membros de trunk ou saúde de cluster, capaz de disparar o failover de um traffic group quando a pontuação cai. O traffic group é a coisa que faz failover; o HA group é uma das razões possíveis.
+
+## Como os três se relacionam
+
+Leia a pilha de baixo para cima: o device trust torna a comunicação possível, o device group sync-failover define o conjunto que compartilha configuração e dever, e os traffic groups definem quais endereços estão ativos onde. Quando um blueprint pergunta por que a alta disponibilidade se perdeu, a resposta quase sempre é uma quebra numa camada que cascateia para cima - confiança quebrada por desvio de relógio, sync falhando no grupo, ou um traffic group incapaz de migrar porque o próximo dispositivo ativo está indisponível. O artigo companheiro sobre [estados e operações de failover](/learn/bigip-failover-states-and-operations) cobre as partes móveis.

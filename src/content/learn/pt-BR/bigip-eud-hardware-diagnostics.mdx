@@ -1,0 +1,30 @@
+---
+slug: bigip-eud-hardware-diagnostics
+title: "EUD: Diagnóstico de Hardware do BIG-IP Antes do RMA"
+summary: "A suíte End User Diagnostics é a bateria de testes offline para o hardware BIG-IP - memória, armazenamento, sensores, interfaces - rodando da sua própria imagem de boot, com o sistema operacional fora do caminho. O impacto de executá-la, os requisitos, como dar boot nela e coletar a saída, e onde ela se encaixa entre uma suspeita e uma autorização de devolução."
+concepts: ["f5", "big-ip", "eud", "hardware diagnostics", "rma", "platform", "troubleshooting"]
+relatedTools: []
+relatedArticles: ["bigip-log-files-map", "bigip-qkview-and-ihealth", "bigip-reading-device-status"]
+category: networking
+order: 169
+status: reviewed
+updated: "2026-07-21"
+---
+
+Quando uma plataforma de hardware BIG-IP se comporta como se o hardware fosse o problema - travamentos sem causa de software, sensores alarmando, interfaces com erros sem carga - a suíte End User Diagnostics (EUD) é a ferramenta que transforma suspeita em evidência. O blueprint aposentado do 201 lhe dava um objetivo inteiro, e a trilha moderna o descartou por completo; as caixas em campo não receberam o memorando, e é exatamente por isso que ela pertence a um plano de estudos completo.
+
+## O que o EUD é, e seu impacto
+
+O EUD é uma imagem diagnóstica independente: uma bateria de testes de hardware - memória, armazenamento, sensores, interfaces internas - que roda EM VEZ do Traffic Management Operating System (TMOS), não ao lado dele. Este é o impacto que o blueprint perguntava, dito sem enfeite: rodar o EUD significa o dispositivo fora de serviço pela duração. O sistema dá boot no ambiente de diagnóstico, o processamento de tráfego não existe enquanto ele roda, e os testes podem demorar bastante em configurações grandes de memória. É atividade de janela de manutenção numa unidade standby ou removida - nunca uma curiosidade a satisfazer numa unidade viva, e mais uma razão pela qual uma postura de [failover](/learn/bigip-failover-states-and-operations) funcionando é pré-requisito do troubleshooting de hardware, não gentileza.
+
+## Requisitos
+
+Três requisitos práticos decidem se a tarde corre bem. Só hardware: o EUD testa plataformas físicas; edições virtuais não têm sensores a sondar nem EUD a rodar. Acesso a console: a suíte é conduzida pelo console serial - terminal server, ou laptop e cabo - porque a imagem diagnóstica não está rodando sua pilha de gerenciamento. E imagem atual: a versão do EUD precisa casar com a plataforma; imagens acompanham a plataforma e são atualizadas como pacotes baixáveis da F5, então pré-posicionar a versão certa faz parte de preparar a janela.
+
+## Dando boot e coletando a saída
+
+A suíte é acionada no boot - interrompendo a inicialização e selecionando a imagem de diagnóstico no menu de boot, pelo console - e dali conduz um menu de testes: rodar todos, ou selecionar subsistemas quando se persegue uma suspeita específica. A coleta é o passo que as pessoas improvisam mal sob pressão, então decida antes: capture a própria sessão de console - todo emulador de terminal grava em arquivo - e recupere o relatório que o EUD escreve ao concluir, resumindo aprovado e reprovado por teste. Esse artefato é a entrega. Um chamado de suporte que abre com "teste de memória do EUD falhou, log anexo" e um [qkview](/learn/bigip-qkview-and-ihealth) de antes da queda é um chamado que pula inteira a fase do tem-certeza.
+
+## Onde ele se encaixa
+
+A sequência que respeita o tempo de todos: [logs](/learn/bigip-log-files-map) e status de sensores para formar a suspeita, qkview e iHealth para checar explicações conhecidas de software, EUD para interrogar o metal - e seu veredito ou inocenta o hardware, redirecionando a atenção ao software com confiança, ou o condena, convertendo o Return Merchandise Authorization (RMA) de negociação em formalidade. É esse o propósito todo: o EUD é como uma teoria de hardware deixa de ser teoria.

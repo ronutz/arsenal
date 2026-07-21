@@ -1,0 +1,28 @@
+---
+slug: routing-tables-and-default-gateway
+title: "Routing Tables and the Default Gateway: How a Packet Picks Its Next Hop"
+summary: "Why a route is needed at all, what a hop is, and the longest-prefix-match rule that decides which table entry wins - worked through the way the retired fundamentals exam asked: given a destination and a routing table, identify the route to be used. Plus the default route, the entry that answers when nothing else does."
+concepts: ["routing", "routing table", "default gateway", "longest prefix match", "hops", "fundamentals", "next hop"]
+relatedTools: ["cidr"]
+relatedArticles: ["network-devices-switch-router-firewall", "arp-and-mac-addresses", "route-summarization"]
+category: networking
+order: 163
+status: reviewed
+updated: "2026-07-21"
+---
+
+A host can deliver directly only to its own subnet; everything else needs a route - an instruction saying traffic for that destination goes to this next hop. The retired F5 fundamentals exam kept the topic honest and practical: explain why a route is needed, explain hops, and, given a destination address and a routing table, identify the route that will be used. The third skill is the one that matters, and it has exactly one rule.
+
+## Why a route, and what a hop is
+
+Internet Protocol (IP) delivery is subnet-local: if the destination shares my network, I resolve it with [ARP](/learn/arp-and-mac-addresses) and deliver the frame myself. If it does not, I need a router willing to carry the packet closer - and the router needs the same decision for its own next step. Each router-to-router handoff is a hop; a path is a chain of hops, each one a fresh routing decision made from that router's own table. Time to live exists precisely because hops can loop when tables disagree; the [ICMP article](/learn/icmp-ping-and-traceroute) shows how traceroute turns that counter into a map of the path.
+
+## Reading the table: longest prefix match wins
+
+A routing table is a list of destinations - networks with prefix lengths - each paired with a next hop or an exit interface. Given a packet, the router selects the most specific matching entry: the longest prefix that contains the destination. That single rule resolves every exam scenario and every real one. Destination 10.1.2.7 against a table holding 10.0.0.0/8, 10.1.0.0/16, and 10.1.2.0/24: all three contain the address; /24 is longest; that route wins. The [CIDR tool](/tools/cidr) makes the containment checks instant while the instinct forms, and [route summarization](/learn/route-summarization) is the same logic run in reverse - deliberately advertising shorter prefixes to keep tables small.
+
+Two supporting details complete the reading. Metrics break ties between equal-length prefixes learned from different sources. And a route's next hop must itself be reachable on a connected subnet - a table entry pointing at a gateway the device cannot ARP for is a route in name only.
+
+## The default gateway: the entry of last resort
+
+The default route - destination 0.0.0.0/0 - matches everything, and by the longest-match rule loses to everything more specific, which is exactly the design: it answers only when nothing else does. On an end host, the default gateway setting is this route; the host sends all off-subnet traffic to one router and lets the routed world take it from there. The purpose, as the retired blueprint phrased it, is simple to state and easy to underappreciate: it is the single address that stands between a host and every network it has never heard of. When it is wrong, the symptom is precise - on-subnet traffic works perfectly, everything else dies at the first hop - and recognizing that signature saves an hour of blaming the wrong layer.

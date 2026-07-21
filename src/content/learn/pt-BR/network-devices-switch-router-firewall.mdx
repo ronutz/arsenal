@@ -1,0 +1,30 @@
+---
+slug: network-devices-switch-router-firewall
+title: "Switch, Roteador, Firewall: Quem Faz o Quê no Caminho"
+summary: "Três papéis de dispositivo carregam a maior parte de qualquer diagrama de rede: switches encaminham quadros dentro de um domínio de Camada 2, roteadores movem pacotes entre redes, e firewalls decidem o que pode passar. A função e o propósito de cada um, como um application delivery controller se relaciona com os três, e como ler um diagrama de rede sem se perder."
+concepts: ["switch", "router", "firewall", "network devices", "fundamentals", "network diagrams", "topology"]
+relatedTools: []
+relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway", "bigip-interfaces-trunks-vlans-selfips"]
+category: networking
+order: 161
+status: reviewed
+updated: "2026-07-21"
+---
+
+Todo diagrama de rede é uma frase construída com um vocabulário pequeno, e três palavras carregam a maior parte da gramática. A prova aposentada de fundamentos da F5 pedia para explicar a função e o propósito de um roteador, de um firewall e de um switch, e para interpretar diagramas de rede - um pareamento que faz sentido, porque não se lê o diagrama sem saber o que cada caixa faz com o tráfego.
+
+## O switch: encaminhamento dentro de uma rede
+
+Um switch opera na Camada 2, encaminhando quadros Ethernet entre portas com base em endereços Media Access Control (MAC). Ele aprende qual endereço vive atrás de qual porta observando os endereços de origem, inunda quadros cujo destino ainda não aprendeu, e mantém costurado um domínio de broadcast - uma Virtual Local Area Network (VLAN). O propósito é a entrega local: muitos dispositivos, uma rede, quadros chegando só onde pertencem. Quando um diagrama mostra servidores pendurados numa caixa que se abre em muitas linhas curtas, a caixa é um switch, e tudo nela compartilha uma sub-rede, a menos que VLANs digam o contrário.
+
+## O roteador: encaminhamento entre redes
+
+Um roteador opera na Camada 3, encaminhando pacotes Internet Protocol (IP) entre redes diferentes com base numa [tabela de roteamento](/learn/routing-tables-and-default-gateway). Cada salto reescreve a moldura de Camada 2 enquanto carrega os endereços de Camada 3 - o pacote mantém origem e destino IP de ponta a ponta, mas troca de roupa MAC em cada roteador. O propósito é alcançabilidade: conectar sub-redes, sites e a própria internet. No diagrama, o roteador é a caixa onde as sub-redes mudam - um lado 10.1.0.0/24, o outro 10.2.0.0/24 - e o endereço dele em cada segmento é o que os hosts dali chamam de gateway padrão.
+
+## O firewall: decidindo o que pode passar
+
+Um firewall impõe política ao tráfego que o cruza: quais origens podem alcançar quais destinos em quais portas, classicamente, e na forma moderna de próxima geração, quais aplicações, usuários e conteúdos. Onde o switch pergunta "para onde isso vai" e o roteador pergunta "qual o caminho até lá", o firewall pergunta "isso deveria passar?". Seu lar natural no diagrama é uma fronteira - entre a internet e todo o resto, entre redes de usuários e data center, entre camadas de aplicação - e a seta que o atravessa é o jeito de o diagrama dizer que uma decisão de política acontece aqui.
+
+## Lendo o diagrama
+
+Com os três papéis fixados, a interpretação vira mecânica. Siga um fluxo cliente-servidor da esquerda para a direita: cada switch é um salto local dentro de uma sub-rede; cada roteador é uma fronteira de sub-rede e uma decisão de roteamento; cada firewall é um portão de política que pode, em silêncio, ser a razão de uma conexão nunca se estabelecer. Um application delivery controller como o BIG-IP entra na mesma cena como caso especial dos três ao mesmo tempo - ele comuta e roteia dentro das [próprias interfaces e VLANs](/learn/bigip-interfaces-trunks-vlans-selfips), aplica política como um firewall, e adicionalmente termina e refaz conexões, o que nenhum switch, roteador ou firewall puro faz. Conhecer essa distinção é o que permite prever, só pelo diagrama, onde um endereço muda, onde um pacote pode ser descartado por política, e onde uma captura mostrará duas conexões em vez de uma.

@@ -1,0 +1,32 @@
+---
+slug: bigip-ucs-archives
+title: "UCS Archives: the BIG-IP Backup That Contains Everything"
+summary: "A User Configuration Set (UCS) is the full-device backup: configuration, licenses, and - the part people forget - private SSL keys. This article covers creating and restoring archives, what is inside the file, the flags that matter when restoring to different hardware, and why long-term storage is a security decision."
+concepts: ["f5", "big-ip", "ucs", "backup", "restore", "archive", "private keys", "disaster recovery"]
+relatedTools: ["f5-tmsh-config-explainer"]
+relatedArticles: ["bigip-config-sync", "bigip-log-files-map", "bigip-qkview-and-ihealth"]
+category: networking
+order: 147
+status: reviewed
+updated: "2026-07-21"
+---
+
+The User Configuration Set (UCS) archive is the unit of BIG-IP disaster recovery: a single compressed file that captures what makes this device this device. Blueprints ask for the procedures, the use case, the contents, and the storage discipline - a hint that all four appear in real operations.
+
+## Creating and restoring
+
+In the interface, archives live under the system's archive section: create, download, upload, restore. In the Traffic Management Shell (TMSH), `save sys ucs <name>` writes the archive - by default into `/var/local/ucs` - and `load sys ucs <name>` restores it. The restore replaces the running configuration wholesale, so it is a maintenance-window operation on a production device.
+
+Two restore options carry most of the operational weight. `no-license` restores everything except the license, which is what you want when restoring another device's archive onto a replacement unit that already carries its own valid license - a Return Merchandise Authorization (RMA) scenario. A platform-migrate style restore adapts an archive taken on one hardware platform for a different one, keeping the logical configuration while leaving platform-specific detail behind. The general rule: same device, plain restore; different device, think before you type.
+
+## What is inside
+
+A UCS contains the configuration files (`bigip.conf`, `bigip_base.conf` and friends), the license by default, user accounts, and - the blueprint calls this out for a reason - the Secure Sockets Layer (SSL) private keys and certificates installed on the box. That last item changes the archive's classification: a UCS is not a text backup, it is key material. Anyone holding the file effectively holds every certificate identity the device serves.
+
+## The use case, stated plainly
+
+The UCS answers one question: how do I get this exact device back? Configuration corrupted, disk replaced, unit swapped under RMA, or a known-good rollback point before invasive change - in each case the archive plus a matching software version reproduces the device. It is complementary to [config sync](/learn/bigip-config-sync), which keeps peers aligned but cannot resurrect a device, and to the [qkview diagnostic snapshot](/learn/bigip-qkview-and-ihealth), which is for reading, not restoring.
+
+## Long-term storage is a security decision
+
+Because the archive contains private keys, proper long-term storage means encrypted storage with restricted access, off the device itself - an archive that dies with the disk it was protecting is a backup in name only. Copy archives off-box on a schedule, encrypt them at rest (the system can passphrase-protect archives at creation, which also encrypts the contained keys), control who can read the store, and test a restore occasionally. An untested backup is a hypothesis.

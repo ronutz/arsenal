@@ -1,0 +1,34 @@
+---
+slug: f5-ca-vs-retired-101-201
+title: "Do 101 e 201 ao F5-CA: o Que as Provas Aposentadas Ensinavam e a Trilha Nova Deixou de Cobrar"
+summary: "O blueprint moderno do F5-CA é, na essência, o velho 201 reestruturado em cinco provas modulares - mas a camada de fundamentos do 101 e toda a seção de recursos de suporte do 201 caíram na mudança. Uma comparação blueprint contra blueprint, e por que o material descartado ainda vale estudo para o trabalho, mesmo que não mais para a prova."
+concepts: ["f5", "big-ip", "certification", "f5-ca", "101", "201", "exam blueprint", "study strategy"]
+relatedTools: ["cidr"]
+relatedArticles: ["bigip-qkview-and-ihealth", "certificate-validation", "http-versions-09-to-3"]
+category: networking
+order: 158
+status: reviewed
+updated: "2026-07-21"
+---
+
+O caminho aposentado até o F5 Certified Administrator eram duas provas monolíticas: 101 - Application Delivery Fundamentals (blueprint v13.1, publicado em outubro de 2019) e 201 - TMOS Administration (blueprint 201.62020), cada uma com 80 questões em 90 minutos contra uma nota de corte escalonada de 245. O F5-CA moderno (blueprint F5-CAB.0425) substitui o par por cinco provas modulares mais curtas. Coloque os blueprints aposentados ao lado do atual e um padrão limpo aparece: a trilha nova é o velho 201, reestruturado e afiado - e duas camadas inteiras da preparação antiga caíram em silêncio.
+
+## O que atravessou quase literalmente
+
+Quase todo objetivo do 201 sobrevive, reorganizado. As velhas seções de troubleshooting viraram a nova prova de Support and Troubleshooting; a configuração de sistema virou Control Plane Administration; gerenciar virtual servers e pools virou Data Plane Configuration. Até os marcadores de exemplo viajam intactos - o Service Check Date do objetivo de licenciamento, o trio de arquivos de log, os procedimentos de UCS, o config sync, o exercício de inferência com netstat. Quem estudou para o 201 vai sentir a trilha nova como a mesma prova vestindo um casaco mais bem organizado. A ênfase genuinamente nova é o endurecimento de segurança: a trilha atual abre com Securing BIG-IP - port lockdown, vetores de DDoS, políticas de senha, listas de acesso do SSHD e do HTTPd - uma concentração que os blueprints antigos nunca tiveram.
+
+## Primeira camada descartada: os fundamentos do 101
+
+O velho 101 existia para certificar o andar térreo: mapear funcionalidade no modelo Open Systems Interconnection (OSI), atribuir endereços e ler relações de sub-rede, Network Address Translation (NAT) e o Dynamic Host Configuration Protocol (DHCP), o Address Resolution Protocol (ARP) e gateways padrão, tabelas de roteamento e saltos, o Internet Control Message Protocol (ICMP) com seu time to live (TTL) e mensagens de unreachable, modos de falha de Camada 1 como divergência de duplex, as razões do Transport Layer Security (TLS) e a diferença entre certificados autoassinados e assinados por autoridade, e a função de uma virtual private network (VPN). Nada disso aparece no blueprint atual do F5-CA. A premissa mudou: a trilha moderna presume a alfabetização em redes em vez de certificá-la.
+
+Isso é uma decisão de exame, não uma mudança na descrição do trabalho. Cada cenário de troubleshooting das provas novas ainda se apoia nessa camada - não se interpreta uma questão de port lockdown sem sub-redes, nem uma falha de monitor sem instinto de ARP e roteamento. Se seus fundamentos são de segunda mão, estude-os assim mesmo: a [ferramenta CIDR](/tools/cidr) exercita a matemática de endereçamento, a [estante de certificados](/learn/certificate-validation) cobre o que o 101 perguntava sobre TLS, e o [artigo de versões do HTTP](/learn/http-versions-09-to-3) fundamenta a leitura de códigos de erro que o 101 testava e a trilha nova empurrou para cima, para as provas de LTM Specialist.
+
+## Segunda camada descartada: a seção de recursos de suporte do 201
+
+O 201 dedicava sua quinta seção inteira ao trabalho com o suporte da F5, e a trilha CA atual a descartou por atacado: as características de um chamado de suporte (onde abrir, níveis de severidade, o que incluir), a suíte de diagnóstico de hardware End User Diagnostics (EUD) - impacto, requisitos, coleta de saída, métodos de boot -, o fluxo qkview-e-iHealth, e o mapa de recursos online - DevCentral, AskF5, iHealth, Support Portal. Dessa lista, só o qkview sobreviveu na trilha nova, e subiu um nível, para a primeira prova do LTM Specialist.
+
+Este é o delta que mais vale recusar perder. O dia em que um BIG-IP de produção falha é o dia em que a seção aposentada vira a única seção que importa - e [qkview e iHealth](/learn/bigip-qkview-and-ihealth) mais o hábito praticado de casos de suporte são baratos de manter afiados. O EUD, em particular, agora não vive em lugar nenhum do programa de certificação, e continua sendo a ferramenta que separa um RMA de hardware de uma semana de adivinhação.
+
+## Como usar os blueprints aposentados
+
+Trate-os como um plano de estudos suplementar, não como nostalgia. Estude primeiro o blueprint atual - é o que as provas medem. Depois percorra o 101 aposentado seção por seção como auto-auditoria de fundamentos, e guarde a seção cinco do 201 como o checklist operacional que a trilha nova assume que você aprenderá no trabalho. As declarações de escopo das provas antigas continuam descrições precisas do que o trabalho exige; as provas novas apenas pararam de perguntar.

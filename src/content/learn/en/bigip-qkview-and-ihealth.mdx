@@ -1,0 +1,30 @@
+---
+slug: bigip-qkview-and-ihealth
+title: "qkview and iHealth: the Support Snapshot Workflow"
+summary: "A qkview is the device's diagnostic self-portrait - configuration, logs, and system state in one file. Generate it from the GUI or command line, upload it to iHealth, and read the heuristics: known-issue matches, severity-ranked findings, and upgrade guidance. When to run one, and how to interpret what comes back."
+concepts: ["f5", "big-ip", "qkview", "ihealth", "diagnostics", "support", "heuristics", "troubleshooting"]
+relatedTools: []
+relatedArticles: ["bigip-log-files-map", "bigip-ucs-archives", "bigip-service-check-date"]
+category: networking
+order: 157
+status: reviewed
+updated: "2026-07-21"
+---
+
+When a BIG-IP needs outside eyes - F5 support, or your own analysis against the known-issue base - the unit of exchange is the qkview: a single archive capturing configuration, logs, and system diagnostic output at a moment in time. Its reading companion is iHealth, the analysis service that parses qkviews and reports what it recognizes. The pair appears on the LTM blueprint as "interpret the qkview heuristic results," and the retired 201 exam devoted an entire objective to the workflow - a strong hint about real-world frequency.
+
+## Generating a qkview
+
+From the interface, the support section offers snapshot generation and download. From the command line, running `qkview` writes the archive - named after the hostname - into `/var/tmp`. Generation walks the system collecting state, so on a busy device expect it to take minutes and consume cycles; it is safe, but schedule accordingly on a box already struggling. Retrieval is a download from the interface or a copy off `/var/tmp`. The archive contains the configuration and recent logs, so treat it with the same custody care as any diagnostic bundle - support-bound, not public.
+
+## When to run one
+
+Four occasions cover practice. Opening a support case: a current qkview is the first thing support asks for, so attach it at creation. After an incident: capture the state before evidence rotates away - logs age out, and the snapshot freezes them. Before an upgrade: iHealth's analysis flags version-specific concerns while there is still time to plan. And periodically on critical devices, because a baseline snapshot makes the incident-day snapshot comparable.
+
+## iHealth and the heuristics
+
+Uploading the qkview to iHealth - reachable through the my.f5.com support tooling - triggers automated analysis against F5's diagnostic base. The output is a findings list, each finding a heuristic match: a pattern in your configuration, logs, or versions that corresponds to a known issue, a misconfiguration signature, or a best-practice deviation, ranked by severity and linked to the relevant knowledge articles and, where applicable, the fixing version. Interpreting the results is triage, not obedience: a critical finding naming a defect present in your exact version and feature set outranks a page of informational style notes. Cross-check findings against the symptom that made you run the qkview - the heuristic that explains your incident is the one to act on first - and feed version-related findings into upgrade planning alongside the [service check date](/learn/bigip-service-check-date) gate.
+
+## What it is not
+
+A qkview is for reading, not restoring - the [UCS archive](/learn/bigip-ucs-archives) is the recovery artifact. And iHealth complements rather than replaces the [log files](/learn/bigip-log-files-map): heuristics find what is known, while the incident in front of you may be original. The disciplined workflow uses all three - logs for the narrative, qkview plus iHealth for the pattern match, UCS for the way back.

@@ -1,0 +1,30 @@
+---
+slug: bigip-avr-analytics
+title: "AVR: Application Visibility and Reporting no BIG-IP"
+summary: "O módulo de analytics on-box que transforma tráfego em estatísticas consultáveis - latência por virtual server, membro de pool, URL e código de resposta. Habilitá-lo com um perfil de analytics, filtrar até a visão que responde sua pergunta, usar tendências de latência para achar a camada lenta, e ler a evidência do AVR sobre má configuração."
+concepts: ["f5", "big-ip", "avr", "analytics", "latency", "visibility", "reporting", "troubleshooting"]
+relatedTools: []
+relatedArticles: ["bigip-telemetry-streaming-ts", "bigip-reading-device-status", "ltm-health-monitors"]
+category: networking
+order: 170
+status: reviewed
+updated: "2026-07-21"
+---
+
+Um BIG-IP fica onde toda requisição e toda resposta passam, o que faz dele a melhor testemunha do data center. O Application Visibility and Reporting (AVR) é o módulo que torna a testemunha articulada: coleta estatísticas por transação, na própria caixa, e as transforma em visões consultáveis - por virtual server, membro de pool, Uniform Resource Locator (URL), código de resposta, sub-rede de cliente e, acima de tudo, por latência. A prova aposentada 301B se apoiava nele em dois objetivos, e a trilha moderna o mantém ao lado do Telemetry; o ofício de lê-lo não mudou.
+
+## Ligando: o perfil de analytics
+
+O AVR se habilita onde o BIG-IP habilita tudo: com um perfil. Provisione o módulo, crie um perfil de analytics escolhendo o que coletar - quais estatísticas, quais entidades, se captura detalhes como URLs e países - e anexe-o aos virtual servers que interessam. A granularidade da coleta é decisão real: estatísticas por URL numa aplicação de alta cardinalidade custam memória e atenção, então colete o que uma pergunta precisa, não tudo que um checkbox oferece. As estatísticas então se acumulam nas visões de analytics da seção de estatísticas, no próprio dispositivo - sem pilha externa, que é precisamente o nicho do AVR ao lado do [Telemetry Streaming](/learn/bigip-telemetry-streaming-ts): o AVR responde na caixa, agora; o Telemetry despacha matéria-prima para sua plataforma de observabilidade jogar o jogo longo.
+
+## Filtros: estreitando até a resposta
+
+Uma visão de AVR sem filtro é um resumo; os itens da prova falavam de filtros avançados porque é no filtro que o diagnóstico acontece. Toda visão pode ser estreitada - este virtual server, este membro de pool, este padrão de URL, esta janela de tempo - e o movimento produtivo é comparativo: a mesma métrica filtrada de dois jeitos. Um membro contra os irmãos isola problema de servidor; uma URL contra a mediana da aplicação isola problema de endpoint; esta hora contra a terça passada isola uma mudança. O filtro é a hipótese, e o gráfico é o teste dela.
+
+## Tendências de latência: achando a camada lenta
+
+A contribuição-assinatura do AVR é a latência decomposta - o tempo atribuído ao lado do servidor como distinto da transação inteira - que é o que permite às tendências de latência identificar gargalos de camada de aplicação, como o blueprint formulava. Latência do lado do servidor subindo com taxa de requisições estável aponta para trás do BIG-IP: banco, pool de aplicação, uma Java virtual machine em coleta de lixo. Latência percebida pelo cliente subindo com o lado do servidor estável aponta para o caminho de rede ou para a frente do próprio dispositivo. A latência de um membro se descolando da do pool condena um host; todos os membros subindo juntos condenam algo que eles compartilham. A mesma decomposição rastreia o tráfego da aplicação pelas camadas: siga o tempo da transação, e a camada que o acumula se nomeia sozinha.
+
+## Má configuração no espelho
+
+O AVR também testemunha sobre a configuração do próprio BIG-IP. Um membro de pool sem transações enquanto marcado up é pergunta de persistência ou priority group. Distribuições de código de resposta enviesando para erro depois de uma mudança datam a mudança. Uma visão de URLs dominada por tráfego que deveria ter casado com outro virtual server expõe uma surpresa de ordem de matching. As [superfícies de status](/learn/bigip-reading-device-status) dizem o que o dispositivo acredita; o AVR mostra o que de fato aconteceu - e a verdade da configuração mora na diferença.

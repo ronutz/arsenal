@@ -1,0 +1,28 @@
+---
+slug: bigip-failover-states-and-operations
+title: "Failover on BIG-IP: States, Forcing, and Network Failover"
+summary: "Active, standby, offline, and forced offline are precise states with precise rules. This article walks the failover state machine, the difference between forcing standby and forcing offline, unicast versus multicast network failover, and where to look when a failover happens that nobody ordered."
+concepts: ["f5", "big-ip", "failover", "active standby", "force offline", "network failover", "unicast", "multicast", "high availability"]
+relatedTools: []
+relatedArticles: ["bigip-ha-concepts-device-trust-groups", "bigip-config-sync", "bigip-log-files-map"]
+category: networking
+order: 145
+status: reviewed
+updated: "2026-07-21"
+---
+
+A BIG-IP in a high availability (HA) pair is always in a definite state for each traffic group: active, meaning it owns the floating addresses and is processing traffic, or standby, meaning it is ready to take them. Two administrative states sit alongside: offline, where the device has released its traffic groups, and forced offline, where it additionally refuses to become active until released. Reading and controlling these states is a core administration skill, and the blueprints test both the procedure and the interpretation.
+
+## Forcing standby versus forcing offline
+
+Force to standby tells an active device to hand its active traffic groups to the next-active peer. It is the polite operation used before maintenance: traffic moves, the device stays a functioning member of the pair, and it will happily become active again if the peer later fails. Force offline is stronger: the device releases everything and will not take traffic under any circumstance until an administrator releases the offline state. Use it when a device is misbehaving and you want certainty that it stays out of the path. Both are available in the interface under device management and in the Traffic Management Shell (TMSH) with `run sys failover standby` and `run sys failover offline`; the current picture comes from `show sys failover` and the device management overview, which also reports device trust status.
+
+## How devices detect a dead peer
+
+Failover detection is heartbeat-based. Hardware pairs historically supported a hardwired serial failover cable, but the general mechanism - and the only one for virtual editions and multi-device groups - is network failover: heartbeat packets exchanged over the network between failover addresses. Configuration offers unicast and multicast modes. Unicast sends heartbeats between specific addresses, typically a dedicated HA self-IP plus the management address as a second channel. Multicast adds a group address that all members listen to, historically recommended on chassis platforms with many blades. The blueprint asks you to differentiate the two: unicast is point-to-point and explicit, multicast is one-to-many and suits larger member counts.
+
+Detection interacts with failsafe features. VLAN failsafe monitors traffic on a VLAN and can trigger failover when a segment goes silent; gateway failsafe pings an upstream router; the system watchdog fails over when critical daemons stop responding. Each is a legitimate cause of a failover that looks spontaneous.
+
+## Diagnosing a failover nobody ordered
+
+When a failover happens unexpectedly, the sequence of record is in [the log files](/learn/bigip-log-files-map). `/var/log/ltm` carries the state transitions and the reason the system decided to fail over - a lost heartbeat, a failsafe trigger, a daemon restart. Correlate the timestamps on both devices: the peer's view of the same minute usually distinguishes "the active device died" from "the standby stopped hearing it," which are very different problems. Interface statistics and the heartbeat path deserve early attention, because the most common cause of surprise failovers is not application failure but an interruption on the network carrying the heartbeats - a switch reboot, a flapping trunk member, or a port lockdown change that silenced the failover port. The [management access article](/learn/bigip-management-access-port-lockdown) covers the port lockdown side of that story.

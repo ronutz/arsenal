@@ -1,0 +1,30 @@
+---
+slug: bigip-config-sync
+title: "Config Sync on BIG-IP: When to Sync, and Why It Fails"
+summary: "Config sync keeps the members of a device group holding the same configuration - when you tell it to, in the direction you tell it. This article covers manual versus automatic sync, reading sync status, the recommended discipline, and the short list of root causes behind nearly every sync failure."
+concepts: ["f5", "big-ip", "config sync", "device group", "cmi", "sync status", "high availability"]
+relatedTools: ["f5-tmsh-config-explainer"]
+relatedArticles: ["bigip-ha-concepts-device-trust-groups", "bigip-failover-states-and-operations", "bigip-system-services"]
+category: networking
+order: 146
+status: reviewed
+updated: "2026-07-21"
+---
+
+Configuration synchronization, config sync for short, is the mechanism that keeps every member of a sync-failover or sync-only device group holding the same configuration. It is deliberately not automatic by default: you change one device, the group shows Changes Pending, and you choose when and in which direction to push. That choice is the feature - it gives you a window to validate a change on one device before committing the group to it.
+
+## Manual, automatic, and direction
+
+With manual sync, an administrator selects the device group and syncs either from a device to the group (push my changes out) or, on some paths, recommends the most recent configuration. Automatic sync pushes changes as they are made. Most operations teams keep manual sync precisely because it turns a fat-fingered change into a one-device incident instead of a group-wide one. Sync can be incremental - only the changes since the last sync - or full, and the system falls back to a full load when incremental state cannot be trusted.
+
+## Reading sync status
+
+The colored status in the interface summarizes the group: In Sync means everyone agrees; Changes Pending names the device holding newer configuration; Awaiting Initial Sync means a member has never received the group's configuration; Sync Failure means an attempt was made and rejected. TMSH gives the same picture with `show cm sync-status`, and comparing the configuration timestamps across devices - which the blueprint calls out explicitly - identifies who is ahead. The sync details pane names the exact object that failed to load, which is where diagnosis starts.
+
+## Why sync fails
+
+Nearly every sync failure resolves to one of a short list. Broken device trust: the certificate relationship described in [the HA concepts article](/learn/bigip-ha-concepts-device-trust-groups) has been damaged, often by time skew, and nothing rides on a broken channel. Time skew itself: when clocks disagree past tolerance, trust validation and commit ordering both suffer - which is why the Network Time Protocol (NTP) configuration in [system services](/learn/bigip-system-services) is an HA dependency, not a nicety. Version mismatch: members on different software versions may refuse configuration containing objects the older version does not understand, which is by design during upgrades - you upgrade, verify, and sync at the end. Network path: the sync channel is the Centralized Management Interface (CMI), carried between self-IPs on Transmission Control Protocol (TCP) port 4353; if a port lockdown change or a firewall removed that reachability, sync stops. And configuration that fails validation on the receiving device - a referenced object missing, a per-device value pushed group-wide - shows up as a load failure naming the offending object.
+
+## The discipline
+
+The habit that prevents most incidents fits in one sentence: make the change on one device, verify behavior, then sync from that device to the group - and never make simultaneous independent changes on two members, because whichever direction you sync afterward, one of the changes is going to be overwritten.

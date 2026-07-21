@@ -1,0 +1,28 @@
+---
+slug: routing-tables-and-default-gateway
+title: "Tabelas de Roteamento e o Gateway Padrão: Como um Pacote Escolhe o Próximo Salto"
+summary: "Por que uma rota é necessária, o que é um salto, e a regra do longest prefix match que decide qual entrada da tabela vence - trabalhada como a prova aposentada de fundamentos pedia: dado um destino e uma tabela de roteamento, identifique a rota a ser usada. Mais a rota padrão, a entrada que responde quando nenhuma outra responde."
+concepts: ["routing", "routing table", "default gateway", "longest prefix match", "hops", "fundamentals", "next hop"]
+relatedTools: ["cidr"]
+relatedArticles: ["network-devices-switch-router-firewall", "arp-and-mac-addresses", "route-summarization"]
+category: networking
+order: 163
+status: reviewed
+updated: "2026-07-21"
+---
+
+Um host entrega diretamente só na própria sub-rede; todo o resto precisa de uma rota - uma instrução dizendo que o tráfego para aquele destino vai para este próximo salto. A prova aposentada de fundamentos da F5 mantinha o assunto honesto e prático: explicar por que uma rota é necessária, explicar saltos e, dado um endereço de destino e uma tabela de roteamento, identificar a rota que será usada. A terceira habilidade é a que importa, e ela tem exatamente uma regra.
+
+## Por que uma rota, e o que é um salto
+
+A entrega Internet Protocol (IP) é local à sub-rede: se o destino compartilha minha rede, eu o resolvo com [ARP](/learn/arp-and-mac-addresses) e entrego o quadro eu mesmo. Se não compartilha, preciso de um roteador disposto a levar o pacote para mais perto - e o roteador precisa da mesma decisão para o próprio passo seguinte. Cada entrega roteador-a-roteador é um salto; um caminho é uma corrente de saltos, cada um uma decisão nova, tomada da tabela daquele roteador. O time to live existe precisamente porque saltos podem entrar em loop quando tabelas discordam; o [artigo de ICMP](/learn/icmp-ping-and-traceroute) mostra como o traceroute transforma esse contador num mapa do caminho.
+
+## Lendo a tabela: o prefixo mais longo vence
+
+Uma tabela de roteamento é uma lista de destinos - redes com comprimentos de prefixo - cada um pareado com um próximo salto ou uma interface de saída. Dado um pacote, o roteador seleciona a entrada mais específica que casa: o prefixo mais longo que contém o destino. Essa única regra resolve todo cenário de prova e todo cenário real. Destino 10.1.2.7 contra uma tabela com 10.0.0.0/8, 10.1.0.0/16 e 10.1.2.0/24: as três contêm o endereço; /24 é o mais longo; essa rota vence. A [ferramenta CIDR](/tools/cidr) torna instantâneas as checagens de contenção enquanto o instinto se forma, e a [sumarização de rotas](/learn/route-summarization) é a mesma lógica rodando ao contrário - anunciar deliberadamente prefixos mais curtos para manter tabelas pequenas.
+
+Dois detalhes de apoio completam a leitura. Métricas desempatam prefixos de mesmo comprimento aprendidos de fontes diferentes. E o próximo salto de uma rota precisa ser alcançável numa sub-rede conectada - uma entrada apontando para um gateway que o dispositivo não consegue resolver por ARP é rota só no nome.
+
+## O gateway padrão: a entrada de último recurso
+
+A rota padrão - destino 0.0.0.0/0 - casa com tudo e, pela regra do prefixo mais longo, perde para tudo que seja mais específico, que é exatamente o desenho: ela responde só quando nenhuma outra responde. Num host final, a configuração de gateway padrão é essa rota; o host manda todo tráfego fora da sub-rede para um roteador e deixa o mundo roteado assumir dali. O propósito, como o blueprint aposentado formulava, é simples de dizer e fácil de subestimar: é o único endereço que fica entre um host e toda rede de que ele nunca ouviu falar. Quando está errado, o sintoma é preciso - tráfego na sub-rede funciona perfeitamente, todo o resto morre no primeiro salto - e reconhecer essa assinatura economiza uma hora culpando a camada errada.

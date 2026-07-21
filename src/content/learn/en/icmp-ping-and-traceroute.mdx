@@ -1,0 +1,28 @@
+---
+slug: icmp-ping-and-traceroute
+title: "ICMP, ping, and traceroute: the Control Messages That Explain Your Network"
+summary: "The Internet Control Message Protocol is how the network talks about itself: echo request and reply give us ping, time-to-live exceeded gives us traceroute, and destination unreachable names exactly what failed. The purpose of TTL, the common uses of ICMP, and how to read the unreachable family instead of just noticing it."
+concepts: ["icmp", "ping", "traceroute", "ttl", "unreachable", "fundamentals", "troubleshooting"]
+relatedTools: []
+relatedArticles: ["routing-tables-and-default-gateway", "osi-model-in-practice", "tcp-connection-lifecycle"]
+category: networking
+order: 166
+status: reviewed
+updated: "2026-07-21"
+---
+
+The Internet Control Message Protocol (ICMP) is the network's own voice: not user data, but messages about delivery itself. The retired fundamentals blueprint asked for its common uses, the purpose of an IP time to live, and the reasons for unreachable messages - three questions that together cover most of what ping and traceroute ever tell you.
+
+## Echo request and reply: ping
+
+The simplest ICMP conversation is a question and its mirror: echo request out, echo reply back. That round trip proves Layer 3 reachability in both directions and measures its latency - which is all ping is, and precisely why it is the first command typed in any investigation. The nuances are in the negatives: no reply means the request never arrived, the reply never returned, or a policy device ate one of them silently - firewalls filtering ICMP make hosts look dead that are perfectly alive, so an unanswered ping is evidence, not a verdict.
+
+## Time to live: the loop breaker that draws maps
+
+Every IP packet carries a time to live (TTL): a hop counter decremented by each router, with the packet discarded when it reaches zero. Its purpose is protection - a routing loop would otherwise circulate packets forever - and the discard is announced with an ICMP time-exceeded message back to the sender.
+
+Traceroute weaponizes that courtesy. Send probes with TTL 1, 2, 3, and so on; each dies one hop farther along, and each time-exceeded message arrives signed by the router that killed it. The result is the path, hop by hop, with per-hop timing - a map drawn entirely from expiry notices. Read it with the usual cautions: routers may deprioritize or suppress their own ICMP responses, so a silent or slow middle hop is often cosmetic, while a path that stops progressing entirely marks where forwarding - or the return path - actually ends.
+
+## The unreachable family: failure with a name
+
+Destination unreachable is not one message but a family, and the code names the culprit. Network unreachable: a router had no route - a [routing table](/learn/routing-tables-and-default-gateway) gap. Host unreachable: the final router had the route but could not resolve the host - typically a failed ARP on the last subnet. Port unreachable: the host is alive and reached, but nothing listens on that port - which is not a network problem at all, and is also how classic traceroute detects arrival at the destination. Administratively prohibited: a policy device declined, on purpose. Treating these codes as distinct answers - route missing, host missing, service missing, policy said no - converts a generic failure into a directed next step, and pairs naturally with the [TCP-level signatures](/learn/tcp-connection-lifecycle) of the same failures one layer up.

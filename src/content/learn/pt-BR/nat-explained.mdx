@@ -1,0 +1,28 @@
+---
+slug: nat-explained
+title: "NAT Explicado: Origem, Destino, e Por Que a Internet Ainda Funciona"
+summary: "O Network Address Translation reescreve endereços em pleno voo - o NAT de origem deixa mil hosts privados compartilharem um endereço público, o NAT de destino publica um serviço interno num endereço externo, e a tabela de tradução é o que faz o tráfego de retorno achar o caminho de casa. A função e o propósito, os sabores, e as consequências de troubleshooting de cada um."
+concepts: ["nat", "source nat", "destination nat", "pat", "private addresses", "fundamentals", "translation"]
+relatedTools: ["cidr"]
+relatedArticles: ["private-address-space", "bigip-snat-and-return-traffic", "tcp-connection-lifecycle"]
+category: networking
+order: 164
+status: reviewed
+updated: "2026-07-21"
+---
+
+Network Address Translation (NAT) é a prática de reescrever os endereços dos pacotes conforme cruzam um dispositivo. Existe porque o [espaço de endereços privados](/learn/private-address-space) não é roteável na internet, e porque publicar um serviço raramente significa expor o endereço real da máquina. A prova aposentada de fundamentos da F5 pedia a função e o propósito do NAT - e o propósito se divide limpo conforme qual endereço é reescrito.
+
+## NAT de origem: muitos dentro, um fora
+
+O NAT de origem reescreve o endereço de origem do tráfego de saída. Na forma esmagadoramente comum - a tradução de endereço por porta, a variante muitos-para-um que todo roteador doméstico executa - centenas de hosts privados compartilham um endereço público, distinguidos pelas portas de origem traduzidas. O dispositivo mantém uma tabela de tradução: este endereço e porta internos viraram aquele endereço e porta externos. O tráfego de retorno é casado contra a tabela e destraduzido de volta ao host certo. O propósito é conservação de endereços mais um efeito colateral de cegueira a entradas não solicitadas: ninguém de fora consegue iniciar para um host cujo endereço só existe na tabela.
+
+As consequências de troubleshooting seguem direto. Atrás de um NAT de origem, todo host interno parece o mesmo cliente para o servidor - o que quebra logging por endereço, rate limiting e persistência ingênuos, exatamente o problema que o [artigo de SNAT e tráfego de retorno](/learn/bigip-snat-and-return-traffic) trabalha num BIG-IP, onde o NAT de origem também é a cura padrão para caminhos de retorno assimétricos. E uma tabela de tradução cheia ou expirando aparece como conexões que se estabelecem e depois morrem misteriosamente: o mapeamento expirou no meio da conversa.
+
+## NAT de destino: publicando um serviço
+
+O NAT de destino reescreve o endereço de destino do tráfego de entrada: conexões chegando a um endereço público são redirecionadas a um host interno privado - port forwarding em termos domésticos, virtual servers em termos de balanceador. O propósito é publicação com indireção: o endereço que os clientes conhecem se desacopla da máquina que responde, o que permite à máquina mudar, multiplicar-se ou se esconder. O virtual server de um balanceador é o NAT de destino elevado a proxy completo - e com frequência executa NAT de origem na mesma conexão, para que as respostas do servidor voltem através do dispositivo em vez de por fora dele.
+
+## Lendo NAT numa captura
+
+Como o NAT reescreve endereços no meio do caminho, uma captura de um lado nunca casa com a do outro só por endereço. O lado do cliente mostra cliente-para-público; o lado do servidor mostra dispositivo-para-privado. Correlacione por tempo, portas e payload - e espere que a [conversa TCP](/learn/tcp-connection-lifecycle) seja uma conexão através de um NAT estilo roteador, mas duas conexões distintas através de um dispositivo que faz proxy. Saber qual das duas você está olhando é metade de toda sessão de troubleshooting de NAT; a outra metade é lembrar que, em algum lugar, uma entrada da tabela de tradução ou existe e explica tudo, ou não existe e explica tudo.

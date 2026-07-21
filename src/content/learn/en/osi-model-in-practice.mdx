@@ -1,0 +1,32 @@
+---
+slug: osi-model-in-practice
+title: "The OSI Model in Practice: Mapping Real Traffic to Seven Layers"
+summary: "The Open Systems Interconnection model earns its place not as trivia but as a shared address system for problems: a MAC address is Layer 2, an IP address Layer 3, a TCP or UDP port Layer 4, and the application on top. How to map real artifacts to layers, where the model bends against TCP/IP reality, and why troubleshooting conversations go faster when everyone points at the same floor."
+concepts: ["osi model", "layers", "tcp/ip", "fundamentals", "networking", "encapsulation"]
+relatedTools: []
+relatedArticles: ["arp-and-mac-addresses", "tcp-connection-lifecycle", "http-versions-09-to-3"]
+category: networking
+order: 160
+status: reviewed
+updated: "2026-07-21"
+---
+
+The Open Systems Interconnection (OSI) model is a seven-layer map of how network communication is organized, and the retired F5 fundamentals exam asked for exactly the practical half of it: given an artifact, name the layer. That skill survives every curriculum change because it is how engineers give each other addresses inside a problem.
+
+## The seven floors, with their artifacts
+
+Layer 1, physical: cables, fiber, radio, the electrical or optical signal itself - and its failure modes, a damaged cable or a duplex mismatch. Layer 2, data link: Ethernet frames and Media Access Control (MAC) addresses; switches live here. Layer 3, network: Internet Protocol (IP) addresses and routing; routers live here. Layer 4, transport: the Transmission Control Protocol (TCP) and the User Datagram Protocol (UDP), and the port numbers that name conversations. Layers 5 and 6, session and presentation: rarely named in practice - encryption and encoding concerns get discussed here when they are discussed at all. Layer 7, application: the Hypertext Transfer Protocol (HTTP), the Domain Name System (DNS), and everything users actually asked for.
+
+The exam-style mapping is a reflex worth drilling: MAC address, Layer 2. IP address, Layer 3. TCP or UDP port, Layer 4. The application protocol, Layer 7. A virtual server listening on an address and port spans 3 and 4; a proxy making decisions on HTTP headers is working at 7.
+
+## Encapsulation: why the layers stack
+
+Each layer wraps the one above: application data goes inside a TCP segment, the segment inside an IP packet, the packet inside an Ethernet frame. Reading a packet capture is literally peeling this onion, outermost header first - which is why capture tools print frame, then IP, then TCP, then payload, in that order. When a device rewrites one layer and leaves the others alone - a router swapping Layer 2 headers hop by hop while the Layer 3 addresses ride through - the model is what makes that behavior predictable rather than mysterious.
+
+## Where the model bends
+
+The real internet runs on the TCP/IP suite, which never had seven layers; sessions and presentation blur into applications, and plenty of technology refuses to sit still - a load balancer terminating Transport Layer Security (TLS) and re-encrypting touches 4 through 7 in one motion, and tunnels put entire stacks inside Layer 4 payloads. The model is a vocabulary, not a law. Use it the way working engineers do: "the problem is below Layer 3" rules out applications and DNS in one sentence, and "it fails only at Layer 7" tells the network team they are probably off the hook.
+
+## The habit that pays
+
+When troubleshooting, name the highest layer you have proven good and the lowest layer you have proven bad; the fault lives between them. Link light and interface counters clear Layer 1; [ARP resolution](/learn/arp-and-mac-addresses) clears 2; a reply to ping clears 3; a [completed TCP handshake](/learn/tcp-connection-lifecycle) clears 4; after that, the conversation belongs to the application. That one habit converts the seven layers from an exam answer into a triage instrument.

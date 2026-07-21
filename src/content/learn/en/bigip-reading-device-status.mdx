@@ -1,0 +1,34 @@
+---
+slug: bigip-reading-device-status
+title: "Reading BIG-IP Status: Dashboard, Network Map, TMSH, and netstat"
+summary: "The device tells you its condition through half a dozen surfaces: the LCD panel, the dashboard, the Network Map's shapes and colors, TMSH show commands, object statistics, and the humble netstat. Knowing which surface answers which question - and how to read a listening-ports table - is bread-and-butter administration."
+concepts: ["f5", "big-ip", "device status", "network map", "dashboard", "tmsh", "netstat", "statistics", "service status"]
+relatedTools: ["f5-tmsh-config-explainer"]
+relatedArticles: ["bigip-log-files-map", "bigip-system-services", "bigip-ha-concepts-device-trust-groups"]
+category: networking
+order: 151
+status: reviewed
+updated: "2026-07-21"
+---
+
+"Identify and report current device status" sounds like one task; on a BIG-IP it is a tour of surfaces, each with its own vocabulary. The efficient administrator knows which one answers the question at hand.
+
+## The physical layer: LCD warnings
+
+On hardware platforms the front-panel Liquid Crystal Display (LCD) reports hardware-level conditions - fan, power, temperature alarms - before you ever log in. A blinking alarm on the panel is the device's way of saying the problem predates the operating system. The same alerts land in the system logs, but the panel is the zero-login view.
+
+## The overview layer: dashboard
+
+The dashboard graphs the vital signs - Central Processing Unit (CPU), memory, connections, throughput - as rolling time series. It answers "is the device generally healthy right now" and "did something change in the last hour." It is a gauge, not a microscope: when the dashboard shows a cliff, the next stop is statistics and logs to name the cause.
+
+## The object layer: the Network Map
+
+The Network Map draws the delivery tree - virtual servers, pools, pool members - as colored shapes, and the shapes are a language worth learning precisely. A green circle is available; a red diamond is offline because a monitor says so; a blue square means unknown, typically no monitor assigned; a yellow triangle is unavailable, often a connection limit reached; black means disabled by an administrator. One glance answers "what does the device believe about my application's health," and the hover details name the deciding monitor. The map reflects belief, not truth: a green member behind a broken monitor is green because the monitor is happy, which is exactly the trap the troubleshooting exams set.
+
+## The command layer: TMSH
+
+The Traffic Management Shell (TMSH) reports everything the graphical surfaces show, scriptably. `show sys hardware`, `show sys cpu`, and `show sys memory` cover the platform; `show cm sync-status` and `show sys failover` cover the cluster picture, including high availability (HA) and device trust status; `show ltm virtual` and `show ltm pool` (with `members`) cover the traffic objects, and the statistics variants add counters. Interpreting traffic object statistics - requests distributed across members, current versus maximum connections, bits in and out - is how you confirm functionality with numbers rather than colors: a pool whose members all show traffic is balancing; a member at zero while siblings climb is the anomaly worth explaining.
+
+## The socket layer: netstat and service status
+
+The blueprint's netstat objective is a Linux literacy check with a BIG-IP accent. `netstat -pan` (or the modern `ss` equivalent) lists sockets with owning processes; filtering for LISTEN answers "which services are up and on which ports." The inference direction matters: given output showing a listener on Transmission Control Protocol (TCP) 443 owned by httpd, you conclude the configuration utility is up; a listener on 22 is sshd; 4353 is the device-to-device management channel. Conversely, "is the service listening on this port" is answered by the presence or absence of the row. Pair it with `tmsh show sys service` for the daemon-status view, and you can distinguish active from inactive elements of the delivery stack without leaving the shell - which is precisely what the exam scenario asks.

@@ -1,0 +1,34 @@
+---
+slug: bigip-interfaces-trunks-vlans-selfips
+title: "Da Interface ao Self-IP: as Dependências de Camada 2 e 3 do BIG-IP"
+summary: "Interfaces se agregam em trunks, trunks e interfaces carregam VLANs tagged ou untagged, VLANs ancoram self-IPs, e rotas escolhem a saída - uma cadeia de dependências em que o status cascateia para baixo. Lê-la com fluência responde metade das perguntas de conectividade do blueprint de administração."
+concepts: ["f5", "big-ip", "interfaces", "trunks", "vlans", "self-ip", "tagged", "untagged", "routing", "lacp"]
+relatedTools: ["cidr"]
+relatedArticles: ["bigip-route-domains", "bigip-management-access-port-lockdown", "bigip-snat-and-return-traffic"]
+category: networking
+order: 156
+status: reviewed
+updated: "2026-07-21"
+---
+
+A rede do BIG-IP é uma cadeia estrita de dependências: interfaces físicas embaixo, depois trunks, depois Virtual Local Area Networks (VLANs), depois self-IPs, depois rotas. Cada camada existe sobre a de baixo, o status flui para baixo, e as decisões de tráfego leem a cadeia para cima. O blueprint pede que você explique as relações e seus status e estatísticas, o que recompensa percorrer a cadeia com método.
+
+## Interfaces e trunks
+
+Uma interface é uma porta física com velocidade, duplex e um status up-ou-down visível em `show net interface`, contadores inclusos - a primeira parada quando se suspeita de descartes ou erros. Um trunk agrega interfaces num único enlace lógico, normalmente negociado com o Link Aggregation Control Protocol (LACP), por banda e por sobrevivência à falha de um membro. Ilustrar o uso de um trunk é direto: dois cabos até o switch se comportam como um enlace único, mais rápido e mais durável, e `show net trunk` reporta a contagem de membros ativos - um trunk rodando com menos membros que o configurado está degradado porém up, um estado que vale alarmar.
+
+## VLANs: tagged ou untagged
+
+Uma VLAN recebe interfaces ou trunks, e cada atribuição é tagged ou untagged. Untagged significa que os quadros saem da porta sem marcação e a porta pertence a exatamente uma VLAN - comportamento de porta de acesso. Tagged significa que os quadros carregam o identificador 802.1Q, permitindo que uma interface ou trunk carregue muitas VLANs - o padrão normal num trunk para um switch. A regra distintiva para a prova: untagged casa uma VLAN com a porta, tagged multiplexa muitas, e as duas pontas do cabo precisam concordar, ou o tráfego aterrissa em silêncio no domínio de broadcast errado.
+
+## Self-IPs: os endereços do próprio dispositivo
+
+Um self-IP dá ao BIG-IP um endereço numa VLAN - o endereço de onde os monitores partem, que os pares de config sync e failover alcançam, e que os servidores usam como gateway. Self-IPs flutuantes pertencem a um traffic group e se movem no failover; os estáticos ficam com o dispositivo. Todo self-IP carrega a configuração de port lockdown coberta em [acesso de gerenciamento](/learn/bigip-management-access-port-lockdown). A dependência se lê: sem VLAN, sem self-IP; VLAN caída porque sua última interface morreu, self-IP inalcançável.
+
+## Rotas e a decisão de saída
+
+Qual VLAN, rota e endereço de saída o tráfego usa é decisão de roteamento: o destino casado contra a tabela de rotas (por [route domain](/learn/bigip-route-domains)), a rota escolhida nomeando um gateway alcançável em alguma VLAN através de algum self-IP. Para o tráfego que o dispositivo origina ou encaminha aos servidores, a origem é o self-IP da VLAN de saída - a menos que a Secure Network Address Translation (SNAT) a reescreva, assunto de [SNAT e tráfego de retorno](/learn/bigip-snat-and-return-traffic).
+
+## O status cascateia
+
+A cadeia também é um modelo de falha. Interface caída: o trunk degrada ou morre; uma VLAN cuja última portadora morreu leva seus self-IPs junto; rotas por esses self-IPs param de resolver; monitores partindo deles apagam, marcando down servidores saudáveis. Compare o status das interfaces primeiro, depois suba - as dependências de interfaces, trunks, VLANs e self-IPs, exatamente na ordem do blueprint.

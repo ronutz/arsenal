@@ -45,22 +45,108 @@ export interface ReadingPath {
  */
 export const READING_PATHS: ReadingPath[] = [
   {
-    // The seven BIG-IP fundamentals plus the two DNS-plane companions - the
-    // reading spine of the F5 fundamentals classroom, in teaching order.
+    // THE F5 STUDY GUIDE (PRIME directive 2026-07-21): everything the retired
+    // 101, 201, 301A, and 301B blueprints listed, delivered as this site's
+    // articles in teaching order - the exam-free companion to the
+    // certification study guides, which map only the CURRENT blueprints.
+    // Three movements, mirroring the retired program's own arc:
+    //   1. Fundamentals (the 101 scope): OSI to VPN - the networking floor
+    //      the modern track assumes instead of certifying.
+    //   2. Administration (the 201 / F5-CA scope): the device itself, from
+    //      interfaces to HA to support workflows - including EUD, which the
+    //      modern program dropped entirely.
+    //   3. Specialist (the 301A/B / F5-CTS LTM scope): performance, iRules,
+    //      analytics, captures, SSL - closing with the two blueprint-delta
+    //      articles that explain this path's own provenance.
+    // The GTM/DNS-plane companions that used to live here moved out when the
+    // path became blueprint-scoped (GTM was never in these four exams); those
+    // articles remain live and hub-listed.
     id: "bigip-fundamentals",
     category: "networking",
     articles: [
-      "ltm-load-balancing-methods",
+      // - Movement 1: fundamentals (retired 101 scope) -
+      "osi-model-in-practice",
+      "network-devices-switch-router-firewall",
+      "ipv4-addressing",
+      "subnetting-basics",
+      "cidr-notation",
+      "private-address-space",
+      "nat-explained",
+      "dhcp-lease-lifecycle",
+      "ipv6-addressing",
+      "arp-and-mac-addresses",
+      "routing-tables-and-default-gateway",
+      "icmp-ping-and-traceroute",
+      "tcp-connection-lifecycle",
+      "http-versions-09-to-3",
+      "certificate-validation",
+      "public-vs-private-pki",
+      "vpn-fundamentals",
+      // - Movement 2: administration (retired 201 / F5-CA scope) -
+      "bigip-interfaces-trunks-vlans-selfips",
+      "bigip-route-domains",
+      "bigip-management-access-port-lockdown",
+      "bigip-system-services",
+      "bigip-reading-device-status",
+      "bigip-log-files-map",
+      "how-a-virtual-server-works",
       "ltm-virtual-server-types",
+      "bigip-profiles-on-a-virtual-server",
+      "bigip-pools-and-load-balancing",
+      "ltm-load-balancing-methods",
+      "ltm-health-monitors",
+      "ltm-persistence-methods",
+      "bigip-snat-and-return-traffic",
+      "bigip-ltm-request-distribution",
+      "bigip-ha-concepts-device-trust-groups",
+      "bigip-failover-states-and-operations",
+      "bigip-config-sync",
+      "bigip-ucs-archives",
+      "bigip-license-file-anatomy",
+      "bigip-service-check-date",
+      "bigip-upgrade-vs-update",
+      "bigip-inplace-upgrade-and-64bit",
+      "bigip-qkview-and-ihealth",
+      "tac-cases-that-get-triaged-fast",
+      "bigip-eud-hardware-diagnostics",
+      // - Movement 3: specialist (retired 301A/301B / F5-CTS LTM scope) -
+      "bigip-l4-protocol-profiles",
+      "bigip-oneconnect-connection-reuse",
       "bigip-cmp-clustered-multiprocessing",
-      "bigip-syn-flood-protection",
-      "bigip-connection-eviction-policies",
-      "gtm-load-balancing-methods",
-      "gtm-topology-records-and-longest-match",
-      "how-iquery-connects-bigip-dns",
-      "bigip-dns-request-processing-order",
+      "irule-events-modules-and-profiles",
+      "irule-event-order-explained",
+      "irule-clientside-vs-serverside",
+      "irules-performance-and-timing",
+      "bigip-avr-analytics",
+      "bigip-iapps-and-fast",
+      "bigip-vcmp",
+      "bigip-custom-alerting",
+      "bigip-tcpdump-safety",
+      "bigip-tcpdump-syntax",
+      "capturing-on-vlans-and-trunks",
+      "reading-a-bigip-capture",
+      "f5-clientssl-vs-serverssl",
+      "f5-cipher-ordering-and-negotiation",
+      "f5-ssl-cert-key-chain",
+      "f5-ca-vs-retired-101-201",
+      "f5-cts-ltm-vs-retired-301a-301b",
     ],
-    tools: ["bigip-ltm-lb-simulator", "f5-gslb-decision-flow", "iquery-protocol-explainer"],
+    tools: [
+      "cidr",
+      "ipv6",
+      "dig-output-explainer",
+      "http-methods-comparison",
+      "x509",
+      "bigip-ltm-lb-simulator",
+      "f5-persistence-method-explainer",
+      "f5-tmsh-config-explainer",
+      "f5-service-check-date",
+      "f5-bigip-tcpdump-builder",
+      "f5-irules-runtime-calculator",
+      "f5-irules-performance-linter",
+      "cipher",
+      "f5-bigd-thread-calculator",
+    ],
   },
   {
     // Token-based identity from first principles: the token itself, its
@@ -152,3 +238,42 @@ export const READING_PATHS: ReadingPath[] = [
     tools: ["regex"],
   },
 ];
+
+// ============================================================================
+// CROSS-VENDOR FUNDAMENTALS FLAG (PRIME directive 2026-07-21)
+// ----------------------------------------------------------------------------
+// Many articles in the F5 path above are vendor-neutral fundamentals. PRIME's
+// standing instruction: when a reading path is created for another vendor's
+// study guide (Extreme, Fortinet, Netskope, Ping Identity, Zscaler), the
+// fundamentals mapped below MUST be considered for inclusion in that vendor's
+// path, so every vendor syllabus shares the same floor instead of re-teaching
+// or skipping it. This constant is the durable flag: it is not rendered
+// anywhere today; it exists so the future path author (human or ANVIL) finds
+// the cross-reference obligation next to the data it applies to.
+// Keys are Learn article slugs; values are the vendor keys (as defined in
+// src/config/vendors.ts) whose future paths should include the article.
+// ============================================================================
+export const CROSS_VENDOR_FUNDAMENTALS: Record<string, string[]> = {
+  // Core L2-L4 networking floor: every vendor's path starts here.
+  "osi-model-in-practice": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "network-devices-switch-router-firewall": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "ipv4-addressing": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "subnetting-basics": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "cidr-notation": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "private-address-space": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "nat-explained": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "dhcp-lease-lifecycle": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "ipv6-addressing": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "arp-and-mac-addresses": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "routing-tables-and-default-gateway": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "icmp-ping-and-traceroute": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "tcp-connection-lifecycle": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  "vpn-fundamentals": ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"],
+  // TLS/PKI floor: the vendors whose products terminate, inspect, or broker TLS.
+  "certificate-validation": ["f5", "netskope", "ping", "zscaler"],
+  "public-vs-private-pki": ["f5", "netskope", "ping", "zscaler"],
+  "http-versions-09-to-3": ["f5", "netskope", "ping", "zscaler"],
+  // Syslog shelf: the vendors whose platforms are administered through it.
+  "syslog-pri-facility-severity": ["f5", "fortinet", "extreme"],
+  "syslog-on-network-devices": ["f5", "fortinet", "extreme"],
+};

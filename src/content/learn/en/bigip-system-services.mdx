@@ -1,0 +1,34 @@
+---
+slug: bigip-system-services
+title: "The System Services Behind a Healthy BIG-IP: DNS, NTP, SNMP, Syslog"
+summary: "Four small configurations with outsized blast radius. Name resolution feeds monitors and licensing, time sync underpins device trust and every log timestamp, SNMP is how the monitoring system sees you, and remote syslog is where the evidence survives. Proper configuration for each, and what breaks when they are wrong."
+concepts: ["f5", "big-ip", "dns", "ntp", "snmp", "syslog", "system services", "time sync"]
+relatedTools: []
+relatedArticles: ["bigip-config-sync", "bigip-log-files-map", "bigip-custom-alerting"]
+category: networking
+order: 150
+status: reviewed
+updated: "2026-07-21"
+---
+
+Four services sit in the system configuration screens, take five minutes to fill in, and quietly decide whether everything else works. The blueprint phrase is "show proper configuration for: DNS, NTP, SNMP, syslog," and proper is doing real work in that sentence.
+
+## DNS: the device as a client
+
+This is the Domain Name System configuration the BIG-IP itself uses - resolver addresses and search domains - not the DNS services the device might provide to others. The device resolves names when monitors reference hostnames, when licensing and phone-home features call out, and when administrators use names in configuration. Proper configuration means at least two reachable resolvers. When resolution is broken the symptoms are oblique: a monitor that never succeeds, an activation that times out, a TMSH command that hangs while a lookup waits to fail.
+
+## NTP: the dependency everyone underestimates
+
+The Network Time Protocol (NTP) keeps the clock honest, and the clock is a dependency of things that do not look time-related. Device trust certificates validate against time - skewed clocks break trust, and broken trust breaks [config sync](/learn/bigip-config-sync) and failover coordination. Log correlation across devices assumes agreeing timestamps. Scheduled tasks fire on the clock. Proper configuration is at least two servers, the same set on every member of a device group, verified with `ntpq -np` showing a synchronized peer. The blueprint bullet "identify how to synch time/date amongst LTM devices" has this as its entire answer.
+
+## SNMP: being seen
+
+The Simple Network Management Protocol (SNMP) is how external monitoring polls the device and how the device pushes traps. Proper configuration has three parts: the allowed-addresses list naming which managers may poll, communities (or SNMPv3 users, preferred where possible - v3 authenticates and encrypts, v1 and v2c are plaintext community strings), and trap destinations for the events you push. Polling answers "what is the interface utilization"; traps answer "tell me the moment a failover happens." [Custom alerting](/learn/bigip-custom-alerting) extends the trap side with alerts you define.
+
+## Syslog: evidence that survives
+
+Local logs rotate; remote syslog is where the record persists. Proper configuration names one or more remote servers and selects the facilities and levels to ship. The audit trail especially - the record of who changed what - is worth shipping in full, because the incident that most needs it is the same incident that may have compromised the local copy. The [log files map](/learn/bigip-log-files-map) covers what each local file holds; the remote destination decides how long any of it survives.
+
+## The common thread
+
+Each of the four is a dependency of something bigger: DNS of monitoring and licensing, NTP of trust and forensics, SNMP of visibility, syslog of accountability. Which is why they appear on an administration blueprint at all - not because the screens are hard, but because the failures are expensive and the fixes are five minutes each.

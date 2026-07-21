@@ -1,0 +1,30 @@
+---
+slug: bigip-route-domains
+title: "Route Domains: Layer 3 Segmentation Inside One BIG-IP"
+summary: "A route domain is a separate routing table with an ID, letting one device serve tenants whose address spaces overlap completely. The percent-sign notation, strict isolation, parent domains, and the partition connection - the functionality the LTM blueprint asks you to explain."
+concepts: ["f5", "big-ip", "route domains", "segmentation", "overlapping ip", "multi-tenant", "layer 3"]
+relatedTools: ["cidr"]
+relatedArticles: ["bigip-interfaces-trunks-vlans-selfips", "bigip-management-access-port-lockdown"]
+category: networking
+order: 152
+status: reviewed
+updated: "2026-07-21"
+---
+
+A route domain is a routing table with a number. That undersells it only slightly: by giving VLANs, self-IPs, and traffic objects a domain ID, one BIG-IP hosts multiple independent Layer 3 worlds - including worlds whose address plans collide. Two tenants can both be 10.0.0.0/8 on the same device, each in its own domain, and never meet.
+
+## The notation
+
+Addresses in a non-default domain carry a percent suffix: `10.1.1.1%2` is 10.1.1.1 in route domain 2. Route domain 0 is the default and its addresses go unsuffixed, which is why most configurations never show the notation at all. The suffix appears wherever an address does - virtual servers, pool members, self-IPs - and forgetting it is the classic mistake: a pool member entered as `10.1.1.1` when the servers live in domain 2 points at a different, probably nonexistent, host in domain 0.
+
+## Membership and isolation
+
+VLANs are assigned to route domains, and everything on a VLAN inherits its domain. Each domain keeps its own routing table and its own default route. Strict isolation is the toggle that decides whether a domain is a wall or a fence: strict (the default) forbids cross-domain forwarding entirely; relaxing it permits traffic to cross into a parent domain when no local route matches. Parent domains create exactly that hierarchy - a child domain can fall back to the parent's routes, useful when tenants share a common services segment while keeping their own space private.
+
+## Where it connects to administration
+
+Route domains pair naturally with administrative partitions: a partition can carry a default route domain, so objects created by a tenant's administrators land in the tenant's Layer 3 world without anyone typing percent signs. The pairing gives you both halves of multi-tenancy - partitions scope who may touch which objects, route domains scope where those objects' packets may go.
+
+## Explaining the functionality, exam-style
+
+The LTM blueprint asks for one thing here: explain what route domains do. The compact answer: they provide independent routing instances within one device, identified by numeric ID and the percent notation, giving address-space isolation for overlapping networks, per-tenant default routes, and controlled sharing through parent domains and the strict-isolation setting. If you can also spot the missing `%ID` in a scenario configuration, you are ahead of the question.

@@ -14,6 +14,10 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogImages } from "@/lib/og";
 import { getArticlesByCategory, getArticleVendors } from "@/lib/learn";
+import type { CSSProperties } from "react";
+import { GLOSSARY } from "@/content/glossary/glossary";
+import { READING_PATHS } from "@/content/study-guides/reading-paths";
+import { studyGuides, objectiveCount } from "@/content/certifications/study-guides";
 import FamilyChip from "@/components/FamilyChip";
 import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
@@ -62,6 +66,10 @@ export default async function LearnIndexPage({
   );
 
 
+  // Total mapped objectives across every certification study guide - the
+  // number on the study-guides portal badge, derived live from the registry.
+  const totalObjectives = studyGuides.reduce((n, g) => n + objectiveCount(g), 0);
+
   return (
     <>
       <a href="#main" className="skip-link">
@@ -76,25 +84,42 @@ export default async function LearnIndexPage({
             <h1 className="page-hero-title">{t("title")}</h1>
             <p className="page-hero-lede learn-hero-lede">{t("lede")}</p>
 
-            {/* Glossary companion pointer: the Learn library explains topics at
-                length; the Glossary defines the vocabulary. Surfaced at the top
-                of the index so a reader looking up a single term has a one-click
-                door to it (PRIME 2026-07-09). */}
-            <p className="learn-glossary-callout">
-              <Link href="/glossary" className="learn-glossary-callout-link">
-                {tGloss("title")}: {tGloss("tagline")}
+            {/* Learn portal cards (PRIME 2026-07-21): the Glossary and the
+                Study-guides doors, upgraded from two long phrases to feature
+                cards - type ornament, per-card accent, live count badges
+                derived from the registries (never hand-counted). */}
+            <div className="learn-portal-grid">
+              <Link
+                href="/glossary"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>A&ndash;Z</span>
+                <p className="learn-portal-title">
+                  {tGloss("title")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{tGloss("tagline")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("portalTerms", { count: GLOSSARY.length })}</span>
+                </p>
               </Link>
-            </p>
-
-            {/* Study-guides companion pointer: same discoverability pattern as
-                the glossary callout above - the curated reading paths and the
-                certification guides get a one-click door from the library they
-                draw on (2026-07-18, the /study-guides launch). */}
-            <p className="learn-glossary-callout">
-              <Link href="/study-guides" className="learn-glossary-callout-link">
-                {tSg("title")}: {tSg("pathsLede")}
+              <Link
+                href="/study-guides"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>1&#8594;2&#8594;3</span>
+                <p className="learn-portal-title">
+                  {tSg("title")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("portalStudyLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("portalPaths", { count: READING_PATHS.length })}</span>
+                  <span className="learn-portal-badge">{t("portalGuides", { count: studyGuides.length })}</span>
+                  <span className="learn-portal-badge">{t("portalObjectives", { count: totalObjectives })}</span>
+                </p>
               </Link>
-            </p>
+            </div>
 
             {/* Vendor hub strip - see tools/page.tsx: discoverability on top
                 of the listing, nav stays small (PRIME 2026-07-03). */}

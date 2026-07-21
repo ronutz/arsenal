@@ -1,0 +1,30 @@
+---
+slug: dhcp-lease-lifecycle
+title: "DHCP: o Ciclo de Vida do Lease por Trás do Endereçamento Automático"
+summary: "O Dynamic Host Configuration Protocol distribui endereços, gateways e resolvedores para que hosts cheguem configurados em vez de em branco. A troca discover-offer-request-acknowledge, o que um lease significa e como funciona a renovação, os relays que carregam pedidos entre sub-redes, e as assinaturas de falha - incluindo o endereço autoatribuído que diz que nenhum servidor respondeu."
+concepts: ["dhcp", "lease", "dora", "fundamentals", "dhcp relay", "addressing", "apipa"]
+relatedTools: []
+relatedArticles: ["routing-tables-and-default-gateway", "ipv4-addressing", "bigip-system-services"]
+category: networking
+order: 165
+status: reviewed
+updated: "2026-07-21"
+---
+
+O Dynamic Host Configuration Protocol (DHCP) responde à primeira pergunta que todo host faz a uma rede: quem sou eu aqui? Um endereço, uma máscara, um [gateway padrão](/learn/routing-tables-and-default-gateway) e resolvedores de nomes chegam numa troca só - razão pela qual o blueprint aposentado de fundamentos pareava DHCP com NAT como funções a explicar: juntos, são como as redes escalam além da configuração à mão.
+
+## A troca: discover, offer, request, acknowledge
+
+Um host recém-chegado difunde um discover - não tem endereço, então broadcast é tudo que pode fazer. Qualquer servidor à escuta responde com um offer: um endereço e as configurações que o acompanham. O host difunde um request nomeando a oferta que aceita - broadcast de novo, para que servidores concorrentes saibam que perderam - e o servidor escolhido confirma com um acknowledgment. Quatro passos, lembrados pelas iniciais como DORA, e ao fim o host segura um lease: o endereço é emprestado, não possuído, por tempo definido.
+
+## Leases, renovação, e o que a expiração significa
+
+Um lease é uma promessa com relógio. Na metade do prazo, o host pede em silêncio a renovação ao mesmo servidor - unicast agora, já que tem endereço - e normalmente a vida continua invisível. Se o servidor sumiu, o host tenta com mais força e mais amplitude conforme a expiração se aproxima; se o lease de fato caduca, o endereço é devolvido e o host volta ao discover. Duas verdades operacionais seguem. Leases curtos deixam os pools ágeis e as falhas visíveis; leases longos deixam as redes calmas e as quedas de servidor sobreviváveis. E um host que continua funcionando durante uma queda do DHCP não é prova de saúde - é um lease que ainda não expirou, um pavio queimando em silêncio.
+
+## Relays: cruzando a fronteira da sub-rede
+
+A descoberta é broadcast, e broadcasts param nos roteadores - então ou cada sub-rede hospeda um servidor, ou os roteadores rodam um DHCP relay: a função que recebe o broadcast local e o encaminha, em unicast, ao servidor real, marcando de qual sub-rede veio, para que o servidor escolha do pool certo. Quando uma sub-rede inteira deixa de receber endereços enquanto as outras recebem, a configuração de relay no roteador daquela sub-rede é o primeiro suspeito.
+
+## Assinaturas de falha
+
+Os clássicos se reconhecem de relance. Um endereço autoatribuído 169.254 - Automatic Private IP Addressing - significa que o host perguntou e ninguém respondeu: servidor caído, relay ausente ou porta bloqueada. Conflitos de endereço significam duas autoridades, ou um endereço estático ocupando lugar dentro de um pool dinâmico. E um host com endereço perfeito mas sem alcance além da sub-rede recebeu um lease com gateway errado ou ausente - um erro de configuração do lado do servidor vestindo fantasia de problema do cliente. Nos dispositivos de infraestrutura a moral se inverte: os endereços de um BIG-IP são estáticos por desenho, e o DHCP aparece na vida dele principalmente como a razão pela qual os [serviços de sistema](/learn/bigip-system-services) de que depende - resolvedores acima de tudo - devem ser configurados deliberadamente em vez de presumidos.

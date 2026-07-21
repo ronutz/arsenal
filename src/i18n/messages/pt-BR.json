@@ -6643,7 +6643,10 @@
     "servedOnTitle": "A API é servida localmente nesta origem",
     "servedOnBody": "O processamento local da API está ligado. O Worker de mesma origem serve cada endpoint usando os motores internos, retornando os mesmos resultados determinísticos e idênticos byte a byte que as ferramentas do navegador. Ele não tem estado e não registra valores de consulta nem corpos de requisição. Se você preferir manter tudo no seu próprio dispositivo, as ferramentas do navegador continuam sendo o padrão sem envio de dados.",
     "stateBadgeOn": "API: servida localmente",
-    "stateBadgeOff": "API: documentada, não servida"
+    "stateBadgeOff": "API: documentada, não servida",
+    "selfHostTitle": "Self-hosting: transforme a caixa de ferramentas na sua API",
+    "selfHostBody": "Tudo que é preciso para consumir estas ferramentas como Application Programming Interface (API) vem no repositório de código aberto, e o caminho do download ao serviço é deliberadamente curto. Um: baixe o código-fonte - github.com/ronutz/arsenal, licença Apache-2.0. Dois: ligue a API - abra src/config/apiSurface.ts e vire a chave única API_PROCESSING de 0 para 1; esse único valor comanda tanto o Worker que serve os endpoints quanto cada selo de API desta interface, de modo que os dois nunca podem discordar. Três: compile e implante - npm install, npm run build, e publique na sua própria conta do Cloudflare Workers com o adaptador já preparado no repositório. Quatro: chame os endpoints documentados na referência abaixo - agora respondidos pela sua implantação, no seu domínio, sob o seu controle.",
+    "selfHostBody2": "Esse é o desenho inteiro: self-hosting mais o virar de uma chave transformam isto numa caixa de ferramentas em forma de API. Os mesmos motores determinísticos que movem estas páginas respondem os endpoints - ferramentas que computam, nunca adivinham - e a chave funciona nos dois sentidos: volte API_PROCESSING para 0, reimplante, e a superfície retorna a documentada-mas-não-servida, endpoints respondendo 404, selos neutros."
   },
   "license_page": {
     "eyebrow": "Termos",
@@ -6773,7 +6776,12 @@
       "article": "Artigo",
       "topic": "Tema",
       "summary": "Resumo"
-    }
+    },
+    "portalTerms": "{count} termos",
+    "portalPaths": "{count} trilhas de leitura",
+    "portalGuides": "{count} guias de prova",
+    "portalObjectives": "{count} objetivos mapeados",
+    "portalStudyLede": "Trilhas de leitura curadas e guias de certificação mapeados por blueprint - cada objetivo ligado aos artigos que o ensinam e às ferramentas que o exercitam."
   },
   "meetingBingo": {
     "metaTitle": "Bingo de Reunião",
@@ -8261,7 +8269,7 @@
       "zscaler": "Zscaler e o Zero Trust Exchange: secure web gateway e firewall em nuvem (ZIA), acesso zero trust a aplicações privadas (ZPA), monitoramento de experiência digital (ZDX) e proteção de dados. Segurança entregue como nuvem global, não como appliance.",
       "ping": "Ping Identity e ForgeRock: gestão de acesso no PingOne, PingFederate, PingAccess e na ForgeRock Identity Platform, com SSO, MFA, orquestração de identidade e serviços de diretório em escala corporativa."
     },
-    "redEduCallout": "Por que esses fornecedores? Porque são as plataformas que Rodolfo é autorizado a ensinar pela <link>Red Education</link>, uma parceira global e premiada de treinamento autorizado: F5, Fortinet, Netskope e Extreme Networks, com Ping Identity e Zscaler chegando em 2026 como as autorizações mais novas pela mesma casa."
+    "redEduCallout": "Por que esses fornecedores? Porque são as plataformas que Rodolfo é autorizado a ensinar pela <link>Red Education</link>, uma parceira global e premiada de treinamento autorizado: F5, Fortinet, Netskope, Extreme Networks, Ping Identity e Zscaler."
   },
   "glossary": {
     "title": "Glossário",
@@ -12306,8 +12314,8 @@
     "articlesCount": "{count} artigos",
     "paths": {
       "bigip-fundamentals": {
-        "title": "Fundamentos de BIG-IP",
-        "lede": "A plataforma BIG-IP da F5, do plano de tráfego local ao plano de DNS: como o LTM (Local Traffic Manager) balanceia e representa serviços, como a caixa se defende sob SYN floods e pressão de conexões, e como o GTM/BIG-IP DNS (Global Traffic Manager, o balanceador global baseado em DNS) decide - terminando no iQuery, o protocolo que une os dois planos."
+        "title": "F5 BIG-IP de ponta a ponta",
+        "lede": "Tudo que os blueprints aposentados 101, 201, 301A e 301B listavam, como os artigos deste site em ordem de ensino: os fundamentos de rede que a trilha moderna presume (do OSI (Open Systems Interconnection) à VPN (virtual private network)), o arco completo de administração - de interfaces a alta disponibilidade aos fluxos de suporte que as provas novas descartaram - e o ofício de especialista LTM (Local Traffic Manager): iRules, analytics, capturas, SSL (Secure Sockets Layer) - fechando com os dois artigos que comparam os blueprints aposentados com os atuais."
       },
       "modern-identity": {
         "title": "Identidade moderna, do token para cima",

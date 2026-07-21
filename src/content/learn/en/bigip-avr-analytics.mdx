@@ -1,0 +1,30 @@
+---
+slug: bigip-avr-analytics
+title: "AVR: Application Visibility and Reporting on BIG-IP"
+summary: "The on-box analytics module that turns traffic into queryable statistics - latency by virtual server, pool member, URL, and response code. Enabling it with an analytics profile, filtering to the view that answers your question, using latency trends to find the slow tier, and reading AVR's evidence for misconfiguration."
+concepts: ["f5", "big-ip", "avr", "analytics", "latency", "visibility", "reporting", "troubleshooting"]
+relatedTools: []
+relatedArticles: ["bigip-telemetry-streaming-ts", "bigip-reading-device-status", "ltm-health-monitors"]
+category: networking
+order: 170
+status: reviewed
+updated: "2026-07-21"
+---
+
+A BIG-IP sits where every request and every response passes, which makes it the best-placed witness in the data center. Application Visibility and Reporting (AVR) is the module that makes the witness articulate: it collects per-transaction statistics on box and turns them into queryable views - by virtual server, pool member, Uniform Resource Locator (URL), response code, client subnet, and above all by latency. The retired 301B exam leaned on it across two objectives, and the modern track keeps it beside Telemetry; the craft of reading it is unchanged.
+
+## Turning it on: the analytics profile
+
+AVR is enabled where BIG-IP enables everything: with a profile. Provision the module, create an analytics profile choosing what to collect - which statistics, which entities, whether to capture details like URLs and countries - and attach it to the virtual servers you care about. Collection granularity is a real decision: per-URL statistics on a high-cardinality application cost memory and attention, so collect what a question needs rather than everything a checkbox offers. The statistics then accumulate in the analytics views under the statistics section, on the device itself - no external stack required, which is precisely AVR's niche next to [Telemetry Streaming](/learn/bigip-telemetry-streaming-ts): AVR answers on box now, Telemetry ships raw material to your observability platform for the long game.
+
+## Filters: narrowing to the answer
+
+An AVR view unfiltered is a summary; the exam bullets asked about advanced filters because filtering is where diagnosis happens. Every view can be narrowed - this virtual server, this pool member, this URL pattern, this time window - and the productive motion is comparative: the same metric filtered two ways. One member versus its siblings isolates a server problem; one URL versus the application's median isolates an endpoint problem; this hour versus last Tuesday isolates a change. The filter is the hypothesis, and the chart is its test.
+
+## Latency trends: finding the slow tier
+
+AVR's signature contribution is decomposed latency - time attributed to the server side as distinct from the whole transaction - which is what lets latency trends identify application tier bottlenecks, as the blueprint put it. Rising server-side latency with flat request rates points behind the BIG-IP: database, application pool, a garbage-collecting Java virtual machine. Client-experienced latency rising while server-side stays flat points at the network path or the device's own front side. One member's latency detaching from the pool's convicts a host; every member rising together convicts something they share. The same decomposition traces application traffic through tiers: follow the transaction's time, and the tier hoarding it names itself.
+
+## Misconfiguration in the mirror
+
+AVR also testifies about the BIG-IP's own configuration. A pool member receiving no transactions while marked up is a persistence or priority-group question. Response-code distributions skewing to errors after a change date the change. A URL view dominated by traffic that should have matched a different virtual server exposes a matching-order surprise. The [status surfaces](/learn/bigip-reading-device-status) say what the device believes; AVR shows what actually happened - and configuration truth lives in the difference.

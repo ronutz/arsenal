@@ -1,0 +1,28 @@
+---
+slug: vpn-fundamentals
+title: "Fundamentos de VPN: o Que Túneis Protegem, e o Que Não Protegem"
+summary: "Uma virtual private network embrulha o tráfego num túnel cifrado para que ele cruze redes não confiáveis como se nunca tivesse saído de casa. O racional - privacidade, criptografia e os limites do anonimato -, os usos válidos de enlaces site-to-site ao acesso remoto, e as fronteiras honestas: o que um túnel genuinamente protege, e as promessas que ele não consegue manter."
+concepts: ["vpn", "tunnel", "encryption", "remote access", "site-to-site", "fundamentals", "privacy"]
+relatedTools: []
+relatedArticles: ["tls-reverse-proxy-inbound", "nat-explained", "osi-model-in-practice"]
+category: networking
+order: 168
+status: reviewed
+updated: "2026-07-21"
+---
+
+Uma virtual private network (VPN) é um túnel: o tráfego é encapsulado e cifrado numa ponta, carregado através de uma rede em que ninguém confia, e desembrulhado na outra como se as duas pontas compartilhassem um fio privado. O blueprint aposentado de fundamentos pedia o racional - privacidade, criptografia, anonimato - e os usos válidos, um pareamento que vale manter junto porque é no racional que moram os limites honestos.
+
+## A função: uma sobreposição cifrada
+
+Tecnicamente, uma VPN coloca pacotes inteiros dentro de outros pacotes, protegidos por criptografia. O tráfego interno mantém seu endereçamento privado e seu significado; o embrulho externo é tudo que qualquer rede intermediária vê - pontas e texto cifrado. Esse único movimento compra as duas propriedades que o blueprint nomeia primeiro. Confidencialidade: observadores no caminho não leem nada do conteúdo. Integridade e autenticidade: as pontas provam-se uma à outra e adulteração é detectável. O resultado se comporta como uma extensão de Camada 3 - coisas remotas entram na rede como se locais, o que é ao mesmo tempo todo o valor e todo o risco.
+
+## Usos válidos
+
+Três padrões cobrem a prática. Site-to-site: duas redes unidas através da internet - filial à matriz, data center à nuvem - com gateways tunelando em nome de todos atrás deles; os usuários nem sabem. Acesso remoto: um dispositivo individual tunela para dentro da organização, chegando com endereço interno e alcançabilidade interna; é o cliente corporativo no laptop, e o padrão que a F5 implementa em forma de VPN de Secure Sockets Layer (SSL) através do seu módulo de acesso. E trânsito de privacidade: rotear tráfego pessoal por um provedor para blindá-lo da rede local - o caso do café - e trocar o endereço que o destino enxerga.
+
+## As fronteiras honestas
+
+A terceira palavra do blueprint, anonimato, merece o asterisco que raramente recebe. Uma VPN move a confiança; não a remove. O provedor do túnel vê o que a rede local deixou de ver, o destino continua vendo um endereço real - o do provedor - e a identidade vaza alegremente por cima do túnel, em logins, cookies e fingerprints. Cifrado tampouco significa endossado: o túnel autentica suas pontas, não as intenções do tráfego lá dentro - exatamente por isso desenhos de acesso remoto pareiam túneis com checagens de postura e política por aplicação, e por isso a virada zero-trust da indústria trata "está na VPN" como o começo de uma decisão de acesso, não o fim de uma. E um túnel termina: depois da sua ponta distante, o tráfego viaja tão à vista quanto viajaria - proteção para o trecho onde se aplica, não uma bênção sobre o caminho inteiro, uma fronteira que merece o mesmo respeito que os [pontos de terminação TLS](/learn/tls-reverse-proxy-inbound) exigem uma camada acima.
+
+Dito com clareza, para a pergunta que o blueprint aposentado fazia: o racional é confidencialidade e integridade através de trechos não confiáveis, com anonimato como propriedade parcial e moldada pelo provedor; os usos válidos são unir redes, admitir usuários remotos e blindar o trânsito - cada um excelente no seu trecho, nenhum substituto para proteger o que espera em cada ponta.

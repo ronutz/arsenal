@@ -1,0 +1,30 @@
+---
+slug: bigip-qkview-and-ihealth
+title: "qkview e iHealth: o Fluxo do Retrato de Suporte"
+summary: "Um qkview é o autorretrato diagnóstico do dispositivo - configuração, logs e estado do sistema num arquivo. Gere pela interface ou pela linha de comando, envie ao iHealth e leia as heurísticas: correspondências com problemas conhecidos, achados ordenados por severidade e orientação de upgrade. Quando rodar um, e como interpretar o que volta."
+concepts: ["f5", "big-ip", "qkview", "ihealth", "diagnostics", "support", "heuristics", "troubleshooting"]
+relatedTools: []
+relatedArticles: ["bigip-log-files-map", "bigip-ucs-archives", "bigip-service-check-date"]
+category: networking
+order: 157
+status: reviewed
+updated: "2026-07-21"
+---
+
+Quando um BIG-IP precisa de olhos externos - o suporte da F5, ou sua própria análise contra a base de problemas conhecidos - a unidade de troca é o qkview: um único pacote capturando configuração, logs e saída diagnóstica do sistema num momento no tempo. Seu companheiro de leitura é o iHealth, o serviço de análise que interpreta qkviews e reporta o que reconhece. O par aparece no blueprint de LTM como "interpretar os resultados heurísticos do qkview", e a prova 201 aposentada dedicava um objetivo inteiro ao fluxo - forte indício da frequência no mundo real.
+
+## Gerando um qkview
+
+Na interface, a seção de suporte oferece geração e download do retrato. Na linha de comando, executar `qkview` grava o pacote - nomeado pelo hostname - em `/var/tmp`. A geração percorre o sistema coletando estado, então numa caixa ocupada espere minutos e consumo de ciclos; é segura, mas agende de acordo num dispositivo que já sofre. A recuperação é um download pela interface ou uma cópia de `/var/tmp`. O pacote contém a configuração e os logs recentes, então trate-o com o mesmo cuidado de custódia de qualquer pacote diagnóstico - destinado ao suporte, não ao público.
+
+## Quando rodar um
+
+Quatro ocasiões cobrem a prática. Abrir um chamado de suporte: um qkview atual é a primeira coisa que o suporte pede, então anexe na criação. Depois de um incidente: capture o estado antes que a evidência rotacione - logs envelhecem, e o retrato os congela. Antes de um upgrade: a análise do iHealth aponta preocupações específicas de versão enquanto ainda há tempo de planejar. E periodicamente nos dispositivos críticos, porque um retrato de linha de base torna comparável o retrato do dia do incidente.
+
+## iHealth e as heurísticas
+
+Enviar o qkview ao iHealth - alcançável pelas ferramentas de suporte do my.f5.com - dispara a análise automatizada contra a base diagnóstica da F5. A saída é uma lista de achados, cada um uma correspondência heurística: um padrão na sua configuração, logs ou versões que corresponde a um problema conhecido, uma assinatura de má configuração ou um desvio de boas práticas, ordenado por severidade e ligado aos artigos de conhecimento relevantes e, quando aplicável, à versão que corrige. Interpretar os resultados é triagem, não obediência: um achado crítico nomeando um defeito presente na sua versão e conjunto de recursos exatos vale mais que uma página de notas informativas de estilo. Cruze os achados com o sintoma que motivou o qkview - a heurística que explica o seu incidente é a primeira a agir - e alimente os achados de versão no planejamento de upgrade junto com o portão do [service check date](/learn/bigip-service-check-date).
+
+## O que ele não é
+
+Um qkview é para leitura, não restauração - o [arquivo UCS](/learn/bigip-ucs-archives) é o artefato de recuperação. E o iHealth complementa, não substitui, os [arquivos de log](/learn/bigip-log-files-map): heurísticas acham o que é conhecido, enquanto o incidente à sua frente pode ser inédito. O fluxo disciplinado usa os três - logs para a narrativa, qkview mais iHealth para o padrão, UCS para o caminho de volta.

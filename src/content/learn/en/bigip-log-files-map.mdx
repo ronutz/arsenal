@@ -1,0 +1,32 @@
+---
+slug: bigip-log-files-map
+title: "The BIG-IP Log Files: a Map of /var/log"
+summary: "Which log answers which question: /var/log/ltm for traffic objects and system events, /var/log/secure for who got in, /var/log/audit for who changed what - plus the severity ladder and how to read an event line. The fastest troubleshooters are the ones who open the right file first."
+concepts: ["f5", "big-ip", "logs", "var log ltm", "secure", "audit", "syslog", "severity", "troubleshooting"]
+relatedTools: []
+relatedArticles: ["bigip-custom-alerting", "bigip-failover-states-and-operations", "bigip-qkview-and-ihealth"]
+category: networking
+order: 148
+status: reviewed
+updated: "2026-07-21"
+---
+
+BIG-IP logs locally under `/var/log`, one file per concern, rotated on schedule. The certification blueprints keep three files on the marquee, and they deserve it: between them they answer "what happened to traffic," "who logged in," and "who changed the configuration."
+
+## The three files the exams name
+
+`/var/log/ltm` is the workhorse. Local Traffic Manager (LTM) events land here: pool members marked down and up by monitors, virtual server availability changes, failover state transitions, Traffic Management Microkernel (TMM) messages, license complaints, and general system events. When something changed in traffic behavior, this file holds the when and usually the why.
+
+`/var/log/secure` is authentication: login attempts on Secure Shell (SSH) and the console, successes and failures, the source addresses behind them. When the question is "who got in, or tried to," this is the file.
+
+`/var/log/audit` is change tracking: configuration modifications recorded as they happen, with the account that made them. When the question is "what changed right before things broke, and who changed it," audit is the answer - which makes it the natural companion to a config sync investigation.
+
+Beyond the trio, modules keep their own files - `/var/log/gtm`, `/var/log/apm`, and application security event logs - and the general system writes to `/var/log/messages` and `/var/log/daemon.log`. You rarely need the full list; you need the reflex of matching the question to the file.
+
+## Reading an event line
+
+Each entry carries a timestamp, a severity, the reporting process, and the message. The severity ladder is standard syslog, from emergency and alert at the catastrophic end through critical, error, warning, notice, and informational down to debug. Two practical points: severity is assigned by the reporting daemon, so a warning in one subsystem may matter more than an error in another; and the message identifier plus the object name are your search keys - a pool member down message names the member, the monitor, and the transition, which is everything a support search needs.
+
+## Local files, remote copies
+
+Local logs rotate and age out, so anything you must keep - audit trails especially - belongs on a remote syslog destination as well. Remote logging destinations and per-facility levels are configured in the system's logging settings, and [custom alerting](/learn/bigip-custom-alerting) builds on the same stream: an alert is just a log line that someone decided deserved a page. When a device problem needs deeper history than the logs retain, the [qkview snapshot](/learn/bigip-qkview-and-ihealth) packages the current logs alongside the configuration for support analysis.

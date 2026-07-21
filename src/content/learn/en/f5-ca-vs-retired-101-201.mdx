@@ -1,0 +1,34 @@
+---
+slug: f5-ca-vs-retired-101-201
+title: "From 101 and 201 to F5-CA: What the Retired Exams Taught That the New Track Dropped"
+summary: "The modern F5-CA blueprint is essentially the old 201 restructured into five modular exams - but the 101 fundamentals layer and 201's entire support-resources section fell away in the move. A blueprint-against-blueprint comparison, and why the dropped material is still worth studying for the job, if no longer for the exam."
+concepts: ["f5", "big-ip", "certification", "f5-ca", "101", "201", "exam blueprint", "study strategy"]
+relatedTools: ["cidr"]
+relatedArticles: ["bigip-qkview-and-ihealth", "certificate-validation", "http-versions-09-to-3"]
+category: networking
+order: 158
+status: reviewed
+updated: "2026-07-21"
+---
+
+The retired path to F5 Certified Administrator was two monolithic exams: 101 - Application Delivery Fundamentals (blueprint v13.1, published October 2019) and 201 - TMOS Administration (blueprint 201.62020), each 80 questions in 90 minutes against a 245 scaled passing score. The modern F5-CA (blueprint F5-CAB.0425) replaces the pair with five shorter, modular exams. Put the retired blueprints beside the current one and a clean pattern appears: the new track is the old 201, restructured and sharpened - and two whole layers of the old preparation quietly fell away.
+
+## What carried over almost verbatim
+
+Nearly every 201 objective survives, reorganized. The old troubleshooting sections became the new Support and Troubleshooting exam; system configuration became Control Plane Administration; managing virtual servers and pools became Data Plane Configuration. Even the example bullets travel intact - the old licensing objective's Service Check Date bullet, the log-file trio, the UCS procedures, config sync, the netstat inference exercise. If you studied for 201, the new track will feel like the same exam wearing a better-organized coat. The genuinely new emphasis is security hardening: the current track opens with Securing BIG-IP - port lockdown, DDoS vectors, password policies, SSHD and HTTPd access lists - a concentration the old blueprints never had.
+
+## Dropped layer one: the 101 fundamentals
+
+The old 101 existed to certify the ground floor: mapping functionality to the Open Systems Interconnection (OSI) model, assigning addresses and reading subnet relationships, Network Address Translation (NAT) and the Dynamic Host Configuration Protocol (DHCP), the Address Resolution Protocol (ARP) and default gateways, routing tables and hops, the Internet Control Message Protocol (ICMP) with its time to live (TTL) and unreachable messages, Layer 1 failure modes like duplex mismatches, reasons for Transport Layer Security (TLS) and the difference between self-signed and authority-signed certificates, and the function of a virtual private network (VPN). None of this appears in the current F5-CA blueprint. The assumption changed: the modern track presumes networking literacy rather than certifying it.
+
+That is an examination decision, not a job-description change. Every troubleshooting scenario on the new exams still leans on this layer - you cannot interpret a port lockdown question without subnetting, or a monitor failure without ARP and routing instincts. If your fundamentals are secondhand, study them anyway: the [CIDR tool](/tools/cidr) exercises the addressing math, the [certificate shelf](/learn/certificate-validation) covers what 101 asked about TLS, and the [HTTP versions article](/learn/http-versions-09-to-3) grounds the error-code literacy that 101 tested and the new track pushed up into the LTM Specialist exams.
+
+## Dropped layer two: 201's support-resources section
+
+201 devoted its entire fifth section to working with F5 support, and the current CA track dropped it wholesale: the characteristics of a support ticket (where to open one, severity levels, what to include), the End User Diagnostics (EUD) hardware test suite (impact, requirements, collecting output, boot methods), the qkview-and-iHealth workflow, and the map of online resources - DevCentral, AskF5, iHealth, the Support Portal. Of that list, only qkview survived in the new track, and it moved up a tier into the LTM Specialist's first exam.
+
+This is the delta most worth refusing to lose. The day a production BIG-IP fails is the day the retired section becomes the only section that matters - and [qkview and iHealth](/learn/bigip-qkview-and-ihealth) plus a practiced support-case habit are cheap to keep sharp. EUD in particular now lives nowhere in the certification program, yet it remains the tool that separates a hardware RMA from a week of guessing.
+
+## How to use the retired blueprints
+
+Treat them as a supplementary syllabus, not nostalgia. Study the current blueprint first - it is what the exams measure. Then walk the retired 101 section by section as a self-audit of fundamentals, and keep 201's section five as the operational checklist the new track assumes you will learn on the job. The old exams' scope statements remain accurate descriptions of what the work requires; the new exams simply stopped asking.

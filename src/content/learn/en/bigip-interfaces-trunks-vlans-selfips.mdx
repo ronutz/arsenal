@@ -1,0 +1,34 @@
+---
+slug: bigip-interfaces-trunks-vlans-selfips
+title: "From Interface to Self-IP: BIG-IP Layer 2 and 3 Dependencies"
+summary: "Interfaces aggregate into trunks, trunks and interfaces carry VLANs tagged or untagged, VLANs anchor self-IPs, and routes choose the egress - a dependency chain where status cascades downward. Reading it fluently answers half the connectivity questions on the administration blueprint."
+concepts: ["f5", "big-ip", "interfaces", "trunks", "vlans", "self-ip", "tagged", "untagged", "routing", "lacp"]
+relatedTools: ["cidr"]
+relatedArticles: ["bigip-route-domains", "bigip-management-access-port-lockdown", "bigip-snat-and-return-traffic"]
+category: networking
+order: 156
+status: reviewed
+updated: "2026-07-21"
+---
+
+BIG-IP networking is a strict dependency chain: physical interfaces at the bottom, then trunks, then Virtual Local Area Networks (VLANs), then self-IPs, then routes. Each layer exists on the one below, status flows downward, and traffic decisions read the chain upward. The blueprint asks you to explain the relationships and their status and statistics, which rewards walking the chain deliberately.
+
+## Interfaces and trunks
+
+An interface is a physical port with speed, duplex, and an up-or-down status visible in `show net interface`, counters included - the first stop when drops or errors are suspected. A trunk aggregates interfaces into one logical link, normally negotiated with the Link Aggregation Control Protocol (LACP), for bandwidth and for surviving a member failure. Illustrating the use of a trunk is straightforward: two cables to the switch behave as one faster, more durable link, and `show net trunk` reports the working member count - a trunk running on fewer members than configured is degraded but up, a state worth alarming on.
+
+## VLANs: tagged or untagged
+
+A VLAN is assigned interfaces or trunks, and each assignment is tagged or untagged. Untagged means frames leave the port bare and the port belongs to exactly one VLAN - access-port behavior. Tagged means frames carry the 802.1Q VLAN identifier, letting one interface or trunk carry many VLANs - the normal pattern on a trunk into a switch. The distinguishing rule for the exam: untagged pairs one VLAN with the port, tagged multiplexes many, and both ends of the cable must agree or traffic silently lands in the wrong broadcast domain.
+
+## Self-IPs: the device's own addresses
+
+A self-IP gives the BIG-IP an address on a VLAN - the address monitors source from, config sync and failover peers reach, and servers use as their gateway. Floating self-IPs belong to a traffic group and move on failover; static self-IPs stay with the device. Every self-IP carries the port lockdown setting covered in [management access](/learn/bigip-management-access-port-lockdown). The dependency reads: no VLAN, no self-IP; VLAN down because its last interface died, self-IP unreachable.
+
+## Routes and the egress decision
+
+Which VLAN, route, and egress address traffic uses is a routing decision: destination matched against the routing table (per [route domain](/learn/bigip-route-domains)), the chosen route naming a gateway reachable on some VLAN through some self-IP. For traffic the device originates or forwards to servers, the source is the self-IP on the egress VLAN - unless Secure Network Address Translation (SNAT) rewrites it, the subject of [SNAT and return traffic](/learn/bigip-snat-and-return-traffic).
+
+## Status cascades
+
+The chain is also a failure model. Interface down: trunk degrades or dies; a VLAN whose last carrier died takes its self-IPs with it; routes via those self-IPs stop resolving; monitors sourced from them go dark, marking healthy servers down. Compare interface status first, then walk upward - the dependencies of interfaces, trunks, VLANs, and self-IPs, in exactly the blueprint's order.

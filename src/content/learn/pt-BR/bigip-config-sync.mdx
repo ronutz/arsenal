@@ -1,0 +1,30 @@
+---
+slug: bigip-config-sync
+title: "Config Sync no BIG-IP: Quando Sincronizar, e Por Que Falha"
+summary: "O config sync mantém os membros de um device group com a mesma configuração - quando você mandar, na direção que você mandar. Este artigo cobre sync manual versus automático, a leitura do status, a disciplina recomendada e a lista curta de causas-raiz por trás de quase toda falha de sincronização."
+concepts: ["f5", "big-ip", "config sync", "device group", "cmi", "sync status", "high availability"]
+relatedTools: ["f5-tmsh-config-explainer"]
+relatedArticles: ["bigip-ha-concepts-device-trust-groups", "bigip-failover-states-and-operations", "bigip-system-services"]
+category: networking
+order: 146
+status: reviewed
+updated: "2026-07-21"
+---
+
+A sincronização de configuração, config sync para os íntimos, é o mecanismo que mantém cada membro de um device group sync-failover ou sync-only com a mesma configuração. Deliberadamente, não é automática por padrão: você muda um dispositivo, o grupo mostra Changes Pending, e você escolhe quando e em qual direção empurrar. Essa escolha é o recurso - ela dá uma janela para validar a mudança num dispositivo antes de comprometer o grupo com ela.
+
+## Manual, automático e direção
+
+No sync manual, o administrador seleciona o device group e sincroniza de um dispositivo para o grupo (empurrar minhas mudanças). O sync automático propaga as mudanças conforme são feitas. A maioria das equipes de operação mantém o manual precisamente porque ele transforma um erro de digitação num incidente de um dispositivo, e não do grupo inteiro. O sync pode ser incremental - só as mudanças desde o último - ou completo, e o sistema recua para uma carga completa quando o estado incremental não é confiável.
+
+## Lendo o status
+
+O status colorido na interface resume o grupo: In Sync significa que todos concordam; Changes Pending nomeia o dispositivo com configuração mais nova; Awaiting Initial Sync significa que um membro nunca recebeu a configuração do grupo; Sync Failure significa tentativa feita e rejeitada. O TMSH dá o mesmo retrato com `show cm sync-status`, e comparar os timestamps de configuração entre dispositivos - que o blueprint cita explicitamente - identifica quem está à frente. O painel de detalhes nomeia o objeto exato que falhou ao carregar, e é aí que o diagnóstico começa.
+
+## Por que o sync falha
+
+Quase toda falha se resolve numa lista curta. Device trust quebrado: a relação de certificados descrita no [artigo de conceitos de HA](/learn/bigip-ha-concepts-device-trust-groups) foi danificada, com frequência por desvio de relógio, e nada viaja num canal quebrado. O próprio desvio de tempo: quando os relógios divergem além da tolerância, a validação da confiança e a ordenação dos commits sofrem - por isso o Network Time Protocol (NTP) dos [serviços de sistema](/learn/bigip-system-services) é dependência de HA, não gentileza. Divergência de versão: membros em versões diferentes podem recusar configuração com objetos que a versão mais antiga não entende, o que é intencional durante upgrades - você atualiza, valida e sincroniza no final. Caminho de rede: o canal de sync é a Centralized Management Interface (CMI), carregada entre self-IPs na porta 4353 do Transmission Control Protocol (TCP); se uma mudança de port lockdown ou um firewall removeu essa alcançabilidade, o sync para. E configuração que falha na validação do lado receptor - objeto referenciado ausente, valor por-dispositivo empurrado para o grupo - aparece como falha de carga nomeando o objeto ofensor.
+
+## A disciplina
+
+O hábito que evita a maioria dos incidentes cabe numa frase: faça a mudança num dispositivo, valide o comportamento, então sincronize daquele dispositivo para o grupo - e nunca faça mudanças independentes simultâneas em dois membros, porque seja qual for a direção do sync depois, uma das mudanças será sobrescrita.

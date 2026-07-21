@@ -28,7 +28,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (p) => readFileSync(path.join(ROOT, p), "utf8");
 
-const VENDOR_KEYS = new Set(["f5", "fortinet", "netskope", "extreme", "ping"]);
+const VENDOR_KEYS = new Set(["f5", "fortinet", "netskope", "extreme", "ping", "zscaler"]);
 
 const errors = [];
 

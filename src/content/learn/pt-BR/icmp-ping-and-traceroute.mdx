@@ -1,0 +1,28 @@
+---
+slug: icmp-ping-and-traceroute
+title: "ICMP, ping e traceroute: as Mensagens de Controle Que Explicam Sua Rede"
+summary: "O Internet Control Message Protocol é como a rede fala de si mesma: echo request e reply nos dão o ping, o time-to-live excedido nos dá o traceroute, e o destination unreachable nomeia exatamente o que falhou. O propósito do TTL, os usos comuns do ICMP, e como ler a família unreachable em vez de apenas notá-la."
+concepts: ["icmp", "ping", "traceroute", "ttl", "unreachable", "fundamentals", "troubleshooting"]
+relatedTools: []
+relatedArticles: ["routing-tables-and-default-gateway", "osi-model-in-practice", "tcp-connection-lifecycle"]
+category: networking
+order: 166
+status: reviewed
+updated: "2026-07-21"
+---
+
+O Internet Control Message Protocol (ICMP) é a própria voz da rede: não dados de usuário, mas mensagens sobre a entrega em si. O blueprint aposentado de fundamentos pedia seus usos comuns, o propósito do time to live do IP e as razões das mensagens de unreachable - três perguntas que, juntas, cobrem quase tudo que ping e traceroute jamais contam.
+
+## Echo request e reply: o ping
+
+A conversa ICMP mais simples é uma pergunta e seu espelho: echo request na ida, echo reply na volta. Essa ida e volta prova alcançabilidade de Camada 3 nas duas direções e mede sua latência - que é tudo que o ping é, e precisamente por que é o primeiro comando digitado em qualquer investigação. As nuances estão nos negativos: sem resposta significa que o pedido não chegou, que a resposta não voltou, ou que um dispositivo de política engoliu um dos dois em silêncio - firewalls filtrando ICMP fazem hosts perfeitamente vivos parecerem mortos, então um ping sem resposta é evidência, não veredito.
+
+## Time to live: o quebra-loop que desenha mapas
+
+Todo pacote IP carrega um time to live (TTL): um contador de saltos decrementado por cada roteador, com o pacote descartado ao chegar a zero. Seu propósito é proteção - um loop de roteamento circularia pacotes para sempre - e o descarte é anunciado com uma mensagem ICMP de time exceeded de volta ao remetente.
+
+O traceroute transforma essa cortesia em arma. Envie sondas com TTL 1, 2, 3, e assim por diante; cada uma morre um salto mais adiante, e cada mensagem de time exceeded chega assinada pelo roteador que a matou. O resultado é o caminho, salto a salto, com tempos por salto - um mapa desenhado inteiramente com avisos de expiração. Leia com as cautelas de sempre: roteadores podem despriorizar ou suprimir as próprias respostas ICMP, então um salto do meio silencioso ou lento costuma ser cosmético, enquanto um caminho que para de progredir de vez marca onde o encaminhamento - ou o caminho de volta - termina de verdade.
+
+## A família unreachable: falha com nome
+
+Destination unreachable não é uma mensagem, é uma família, e o código nomeia o culpado. Network unreachable: um roteador não tinha rota - uma lacuna na [tabela de roteamento](/learn/routing-tables-and-default-gateway). Host unreachable: o roteador final tinha a rota mas não conseguiu resolver o host - tipicamente um ARP falhado na última sub-rede. Port unreachable: o host está vivo e foi alcançado, mas nada escuta naquela porta - o que não é problema de rede algum, e é também como o traceroute clássico detecta a chegada ao destino. Administratively prohibited: um dispositivo de política recusou, de propósito. Tratar esses códigos como respostas distintas - rota faltando, host faltando, serviço faltando, política disse não - converte uma falha genérica num próximo passo direcionado, e casa naturalmente com as [assinaturas em nível de TCP](/learn/tcp-connection-lifecycle) das mesmas falhas uma camada acima.

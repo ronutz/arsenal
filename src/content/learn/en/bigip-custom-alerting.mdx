@@ -1,0 +1,32 @@
+---
+slug: bigip-custom-alerting
+title: "Custom Alerting on BIG-IP: SNMP Traps, Email, and Remote Syslog"
+summary: "The alerting pipeline watches the log stream and acts on matches: built-in alerts ship in alert.conf, yours belong in user_alert.conf. Defining a custom alert, the three delivery mechanisms, choosing local traffic log levels, and triggering test alerts on purpose with logger."
+concepts: ["f5", "big-ip", "alerting", "snmp trap", "user_alert.conf", "alertd", "syslog", "email", "oid"]
+relatedTools: []
+relatedArticles: ["bigip-log-files-map", "bigip-system-services", "bigip-config-sync"]
+category: networking
+order: 154
+status: reviewed
+updated: "2026-07-21"
+---
+
+Alerting on BIG-IP is log-driven: the alert daemon watches the message stream, and when a line matches a defined alert, it fires the configured action. The built-in definitions live in a system file you read but never edit; your definitions belong in `/config/user_alert.conf`. That one-sentence architecture answers half the blueprint's questions by itself.
+
+## Anatomy of a custom alert
+
+An entry in `user_alert.conf` names the alert, gives the match - a string or pattern that must appear in a log message - and lists actions. The canonical example pairs a match on a specific Local Traffic Manager (LTM) log message with an SNMP trap action carrying a custom Object Identifier (OID). Custom traps use the F5 enterprise OID space with an alert-specific suffix from the range reserved for user definitions - specifying the OID is exactly the "describe how to specify the OIDs for alerting" bullet. The benefit case writes itself: the built-in catalog covers generic events, but only a custom alert can page you on the one message that matters to your application - a particular pool going down, a particular license warning - with an OID your monitoring system routes to the right team.
+
+## The three delivery mechanisms
+
+The blueprint's list is Simple Network Management Protocol (SNMP) traps, email, and remote syslog, and each has a prerequisite living elsewhere. Traps need destinations configured in the [SNMP system service](/learn/bigip-system-services). Email needs the device's mail relay configured, and is best treated as a convenience channel rather than the primary page. Remote syslog delivery is really the logging pipeline itself: ship the matching messages to the remote collector and let the observability stack alert on them - the pattern that scales best, since the collector already holds the context.
+
+Two operational cautions earn their place in any writeup: `user_alert.conf` is per-device and not synchronized by config sync, so maintain it on every member of a device group; and it survives upgrades as a configuration file, but review it after major version changes in case matched message formats moved.
+
+## Log levels feed the pipeline
+
+An alert can only match a message that was logged, which makes the local traffic logging levels part of alerting design. The system lets you set the minimum severity recorded per area of local traffic activity - the standard ladder from emergency down through debug described in [the log files map](/learn/bigip-log-files-map). Raise a level to quiet noise and you may silence the very message your alert matches; the two configurations must be designed together.
+
+## Triggering alerts for testing
+
+An untested alert is a hope. Because the pipeline is log-driven, you can exercise it end to end without harming anything: the `logger` utility injects an arbitrary message into the stream, so writing a line that contains your match string fires the alert exactly as the real event would - trap sent, email delivered, syslog shipped. Test after defining, and re-test after upgrades; the blueprint's "explain how to trigger custom alerts for testing purposes" is asking for precisely this technique.

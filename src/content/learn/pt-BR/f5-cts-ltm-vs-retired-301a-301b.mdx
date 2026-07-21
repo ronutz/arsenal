@@ -1,0 +1,32 @@
+---
+slug: f5-cts-ltm-vs-retired-301a-301b
+title: "Do 301A e 301B ao Novo LTM Specialist: uma Reestruturação Fiel, e o Pouco Que Ela Descartou"
+summary: "As seis novas provas beta do LTM Specialist mapeiam quase objetivo por objetivo sobre os blueprints aposentados do 301A e do 301B - a reestruturação é notavelmente fiel. Os deltas genuínos são poucos e específicos: failover serial, ssldump e um marcador de síntese se foram; F5OS tenants, monitoração In-TMM, Telemetry e FAST chegaram. O que mudou, e o que os itens descartados ainda ensinam."
+concepts: ["f5", "big-ip", "certification", "f5-cts-ltm", "301a", "301b", "exam blueprint", "study strategy"]
+relatedTools: ["f5-bigip-tcpdump-builder"]
+relatedArticles: ["bigip-failover-states-and-operations", "bigip-route-domains", "bigip-tcpdump-safety"]
+category: networking
+order: 159
+status: reviewed
+updated: "2026-07-21"
+---
+
+O caminho aposentado até o F5 Certified Technology Specialist, BIG-IP Local Traffic Manager (F5-CTS, LTM) eram duas provas: 301A - Architect, Setup and Deploy (blueprint 301a.62021) e 301B - Maintain and Troubleshoot (blueprint 301b.102017), cada uma com 80 questões em 90 minutos. A trilha moderna (blueprint beta F5CTSLTM.032026.BETA) as substitui por seis provas modulares. Deite os blueprints aposentados ao lado do novo e o veredito é quase tedioso: esta é uma reestruturação fiel. Quase todo objetivo do 301A reaparece nas novas provas de Base Configuration e de Virtual Server; quase todo objetivo do 301B reaparece nas de iRules, Upgrades e nas duas de Packet Capture - marcadores de exemplo inclusos, com frequência palavra por palavra. Quem se preparou para o par 301 se preparou para esta trilha.
+
+O que torna o punhado de diferenças genuínas digno de nome preciso.
+
+## O que a trilha nova descartou
+
+**Failover serial e hardwired.** O 301A pedia as diferenças entre network failover e hardware failover; o 301B pedia a relação entre failover serial e de rede. Os dois marcadores se foram - a trilha nova discute apenas network failover, unicast versus multicast. A aposentadoria espelha as plataformas: o cabo dedicado de failover pertence a gerações de hardware que estão saindo de cena. Mas pares de appliances com failover serial ainda existem em campo, e saber que um par hardwired detecta a morte do vizinho independentemente da rede - e o que isso significa quando a rede é justamente o que está falhando - continua sendo um instinto diagnóstico afiado. O [artigo de failover](/learn/bigip-failover-states-and-operations) mantém o conceito vivo ao lado do material moderno.
+
+**ssldump.** O 301B aposentado nomeava três analisadores de protocolo - Wireshark, tcpdump, ssldump; o blueprint novo nomeia dois. O ssldump, a clássica ferramenta on-box para ler handshakes de Secure Sockets Layer (SSL) a partir de uma captura e um arquivo de chave, saiu da lista conforme o Transport Layer Security (TLS) moderno e o sigilo futuro estreitaram o que ele consegue decifrar e o fluxo de decifração do Wireshark amadureceu. Ele ainda paga o próprio salário na triagem de handshake no dispositivo - ler a troca de hellos, a cifra escolhida, o alerta que matou a conexão - nada disso exige decifração. Capture com segurança conforme o [artigo de segurança do tcpdump](/learn/bigip-tcpdump-safety), e deixe o [construtor de tcpdump](/tools/f5-bigip-tcpdump-builder) moldar a captura.
+
+**A síntese das três tecnologias.** O 301A fechava seu objetivo de controle de acesso com um marcador que a trilha nova descartou: resumir como user roles, partições administrativas e route domains podem ser usados juntos. As peças individuais sobrevivem como objetivos separados, mas a síntese - papéis delimitam os verbos, partições delimitam os objetos, route domains delimitam os pacotes, e os três compõem a multi-tenancy completa - era a frase mais instrutiva do blueprint antigo. O [artigo de route domains](/learn/bigip-route-domains) preserva exatamente essa composição.
+
+## O que a trilha nova acrescentou
+
+Os acréscimos são a plataforma moderna aparecendo: F5OS tenants ganham objetivo próprio, paralelo aos guests de Virtualized Clustered Multiprocessing (vCMP); a monitoração In-TMM entra no objetivo de troubleshooting de monitores; o Telemetry passa a acompanhar o Application Visibility and Reporting (AVR) na prova de analytics; e o objetivo de templates cresce de iApps para iApps mais F5 Application Services Templates (FAST). Cada acréscimo está coberto pelos guias de estudo atuais deste site, objetivo por objetivo.
+
+## Como usar os blueprints aposentados
+
+Para esta trilha, os blueprints aposentados são corroboração mais que suplemento: confirmam que as provas novas testam o mesmo ofício, reorganizado. Os três itens descartados acima são todo o delta relevante - pequenos o bastante para estudar numa tarde, relevantes o bastante em campo para que você estude. Todo o resto que o par 301 perguntava, as seis novas perguntam também.

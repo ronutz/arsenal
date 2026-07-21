@@ -1,0 +1,30 @@
+---
+slug: bigip-eud-hardware-diagnostics
+title: "EUD: BIG-IP Hardware Diagnostics Before You RMA"
+summary: "The End User Diagnostics suite is the offline test battery for BIG-IP hardware - memory, storage, sensors, interfaces - run from its own boot image with the operating system out of the way. The impact of running it, the requirements, how to boot it and collect its output, and where it fits between a suspicion and a return authorization."
+concepts: ["f5", "big-ip", "eud", "hardware diagnostics", "rma", "platform", "troubleshooting"]
+relatedTools: []
+relatedArticles: ["bigip-log-files-map", "bigip-qkview-and-ihealth", "bigip-reading-device-status"]
+category: networking
+order: 169
+status: reviewed
+updated: "2026-07-21"
+---
+
+When a BIG-IP hardware platform behaves like the hardware itself is the problem - crashes without software cause, sensors alarming, interfaces erroring under no load - the End User Diagnostics (EUD) suite is the tool that turns suspicion into evidence. The retired 201 blueprint gave it a full objective, and the modern track dropped it entirely; the boxes in the field did not get the memo, which is exactly why it belongs in a complete syllabus.
+
+## What EUD is, and its impact
+
+EUD is a standalone diagnostic image: a battery of hardware tests - memory, storage, sensors, internal interfaces - that runs INSTEAD of the Traffic Management Operating System (TMOS), not alongside it. That is the impact the blueprint asked about, stated without decoration: running EUD means the device is out of service for the duration. The system boots into the diagnostic environment, traffic processing does not exist while it runs, and tests can take a long while on large memory configurations. It is a maintenance-window activity on a standby or removed unit - never a curiosity to satisfy on a live one, and one more reason a working [failover](/learn/bigip-failover-states-and-operations) posture is a prerequisite of hardware troubleshooting rather than a nicety.
+
+## Requirements
+
+Three practical requirements decide whether the afternoon goes smoothly. Hardware only: EUD tests physical platforms; virtual editions have no sensors to probe and no EUD to run. Console access: the suite is driven from the serial console - terminal server or a laptop and cable - because the diagnostic image is not running your management stack. And a current image: the EUD version must match the platform; images ship with the platform and are updated as downloadable packages from F5, so pre-staging the right version is part of preparing the window.
+
+## Booting it and collecting output
+
+The suite is entered at boot time - interrupting startup and selecting the diagnostic image from the boot menu on the console - and drives a test menu from there: run all, or select subsystems when chasing a specific suspicion. Collection is the step people improvise badly under pressure, so decide it beforehand: capture the console session itself - every terminal emulator logs to file - and retrieve the report EUD writes on completion, which summarizes pass and fail per test. That artifact is the deliverable. A support case that opens with "EUD memory test failed, log attached" and a [qkview](/learn/bigip-qkview-and-ihealth) from before the outage is a case that skips the entire are-you-sure phase.
+
+## Where it fits
+
+The sequence that respects everyone's time: [logs](/learn/bigip-log-files-map) and sensor status to form the suspicion, qkview and iHealth to check for known software explanations, EUD to interrogate the metal - and its verdict either clears the hardware, redirecting attention to software with confidence, or convicts it, converting a Return Merchandise Authorization from a negotiation into a formality. That is the whole purpose: EUD is how a hardware theory stops being a theory.

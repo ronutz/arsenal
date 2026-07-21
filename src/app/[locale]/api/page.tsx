@@ -71,6 +71,17 @@ export default async function ApiPage({
               <p className="api-body">{processingOn ? t("servedOnBody") : t("servedBody")}</p>
             </div>
 
+            {/* Self-hosting walkthrough (PRIME 2026-07-21): the concrete
+                journey from source to served endpoints - download, flip
+                API_PROCESSING in src/config/apiSurface.ts, build, deploy,
+                call. Sits directly after the served-state notice because it
+                answers the question that notice raises. */}
+            <div className="api-block">
+              <h2 className="api-h2">{t("selfHostTitle")}</h2>
+              <p className="api-body">{t("selfHostBody")}</p>
+              <p className="api-body">{t("selfHostBody2")}</p>
+            </div>
+
             <div className="api-block">
               <h2 className="api-h2">{t("privacyTitle")}</h2>
               <p className="api-body">{t("privacyBody")}</p>

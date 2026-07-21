@@ -1,0 +1,30 @@
+---
+slug: bigip-vcmp
+title: "vCMP: Hosts, Guests e Como os Recursos São Fatiados"
+summary: "O Virtualized Clustered Multiprocessing transforma uma plataforma de hardware em várias instâncias BIG-IP independentes. O modelo host-guest, o ciclo de vida configured-provisioned-deployed, como núcleos de CPU determinam a memória, as regras de versão entre host e guest, e como as VLANs passam do host para o guest."
+concepts: ["f5", "big-ip", "vcmp", "virtualization", "guest", "host", "multi-tenant", "resource allocation"]
+relatedTools: []
+relatedArticles: ["bigip-21x-whats-new", "bigip-interfaces-trunks-vlans-selfips", "bigip-cmp-clustered-multiprocessing"]
+category: networking
+order: 153
+status: reviewed
+updated: "2026-07-21"
+---
+
+O Virtualized Clustered Multiprocessing (vCMP) é a multi-tenancy em nível de hardware da F5: uma camada host provisionada em plataformas suportadas fatia a caixa em guests, cada um um BIG-IP totalmente independente com versão, configuração e administradores próprios. É o ancestral do modelo de tenants nas plataformas F5OS - o [panorama do BIG-IP 21.x](/learn/bigip-21x-whats-new) cobre o sucessor - e o blueprint de LTM testa as duas gerações com redação paralela.
+
+## Host e guest
+
+O host é um dono magro do hardware: você provisiona o recurso vCMP, cria VLANs e define guests. Tudo relacionado a aplicações acontece dentro dos guests. A divisão de trabalho importa no troubleshooting: estado de interface e trunk pertence ao host; virtual servers e pools pertencem ao guest; VLANs são criadas no host e publicadas aos guests - que é a resposta para como os objetos de configuração de rede se relacionam entre as duas camadas. Um guest enxerga as VLANs que recebeu, não as portas físicas debaixo delas.
+
+## O ciclo de vida: configured, provisioned, deployed
+
+Um guest existe num de três estados, e os verbos são precisos. Configured significa apenas definido - nenhum recurso comprometido. Provisioned aloca os recursos - núcleos, memória, disco - sem iniciar a instância. Deployed aloca e executa. A escada de estados é como você faseia capacidade: defina guests antes da necessidade, provisione quando os recursos devem ficar reservados, faça deploy quando o inquilino entra no ar. Descer a escada libera recursos.
+
+## Recursos: os núcleos comandam tudo
+
+O dimensionamento do guest se expressa em núcleos de Central Processing Unit (CPU), e a memória segue automaticamente: cada núcleo traz consigo uma fatia fixa de memória, específica da plataforma, de modo que a memória de um guest é proporcional à contagem de núcleos, e não ajustável de forma independente. Essa é a relação entre CPU e memória no vCMP que o blueprint pergunta. Nas plataformas chassi, os núcleos vêm das lâminas e um guest pode atravessar slots, o que acrescenta uma dimensão appliance-versus-chassi às conversas de dimensionamento. Dentro do guest, esses núcleos aparecem como o plano de dados do próprio guest, com o [Clustered Multiprocessing](/learn/bigip-cmp-clustered-multiprocessing) distribuindo o tráfego entre eles exatamente como num dispositivo físico.
+
+## Versões entre host e guest
+
+Guests rodam suas próprias imagens de software, e a independência de versão é o objetivo - é o que permite aos inquilinos atualizar nos próprios calendários. A independência é limitada por uma matriz de suporte: uma dada versão de host suporta uma faixa documentada de versões de guest, e "selecionar quais versões podem rodar num guest dada a versão do host" se responde por essa matriz, não por intuição. O hábito operacional: antes de planejar o upgrade de um guest, confirme que a versão-alvo é suportada na versão atual do host; ao atualizar o host, confirme que cada versão de guest residente permanece dentro da faixa do novo host.

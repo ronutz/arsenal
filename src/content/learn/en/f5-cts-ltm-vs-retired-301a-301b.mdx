@@ -1,0 +1,32 @@
+---
+slug: f5-cts-ltm-vs-retired-301a-301b
+title: "From 301A and 301B to the New LTM Specialist: a Faithful Restructure, and the Few Things It Dropped"
+summary: "The six new LTM Specialist beta exams map almost objective-for-objective onto the retired 301A and 301B blueprints - the restructure is remarkably faithful. The genuine deltas are few and specific: serial failover, ssldump, and one synthesis bullet are gone; F5OS tenants, In-TMM monitoring, Telemetry, and FAST arrived. What changed, and what the dropped items still teach."
+concepts: ["f5", "big-ip", "certification", "f5-cts-ltm", "301a", "301b", "exam blueprint", "study strategy"]
+relatedTools: ["f5-bigip-tcpdump-builder"]
+relatedArticles: ["bigip-failover-states-and-operations", "bigip-route-domains", "bigip-tcpdump-safety"]
+category: networking
+order: 159
+status: reviewed
+updated: "2026-07-21"
+---
+
+The retired path to F5 Certified Technology Specialist, BIG-IP Local Traffic Manager (F5-CTS, LTM) was two exams: 301A - Architect, Setup and Deploy (blueprint 301a.62021) and 301B - Maintain and Troubleshoot (blueprint 301b.102017), each 80 questions in 90 minutes. The modern track (beta blueprint F5CTSLTM.032026.BETA) replaces them with six modular exams. Lay the retired blueprints beside the new one and the verdict is almost boring: this is a faithful restructure. Nearly every 301A objective reappears in the new Base Configuration and Virtual Server exams; nearly every 301B objective reappears in the iRules, Upgrades, and the two Packet Capture exams - example bullets included, often word for word. If you prepared for the 301 pair, you prepared for this track.
+
+Which makes the handful of genuine differences worth naming precisely.
+
+## What the new track dropped
+
+**Serial and hardwired failover.** 301A asked you to describe the differences between network failover and hardware failover; 301B asked for the relationship between serial and network failover. Both bullets are gone - the new track discusses only network failover, unicast versus multicast. The retirement mirrors the platforms: the dedicated failover cable belongs to hardware generations that are aging out. But paired appliances with serial failover still exist in the field, and knowing that a hardwired pair detects peer death independently of the network - and what that means when the network itself is the thing failing - remains a sharp diagnostic instinct. The [failover article](/learn/bigip-failover-states-and-operations) keeps the concept alive alongside the modern material.
+
+**ssldump.** The retired 301B named three protocol analyzers - Wireshark, tcpdump, ssldump; the new blueprint names two. ssldump, the classic on-box tool for reading Secure Sockets Layer (SSL) handshakes from a capture and key file, fell off the list as modern Transport Layer Security (TLS) and forward secrecy narrowed what it can decrypt and Wireshark's decryption workflow matured. It still earns its keep for handshake-level triage on the device - reading the hello exchange, the chosen cipher, the alert that killed the connection - none of which needs decryption at all. Capture safely per the [tcpdump safety article](/learn/bigip-tcpdump-safety), and let the [tcpdump builder](/tools/f5-bigip-tcpdump-builder) shape the capture.
+
+**The three-technologies synthesis.** 301A closed its access-control objective with a bullet the new track dropped: summarize how user roles, administrative partitions, and route domains can be used together. The individual pieces all survive as separate objectives, but the synthesis - roles scope the verbs, partitions scope the objects, route domains scope the packets, and the three compose into full multi-tenancy - was the most instructive sentence in the old blueprint. The [route domains article](/learn/bigip-route-domains) preserves exactly that composition.
+
+## What the new track added
+
+The additions are the modern platform showing through: F5OS tenants get their own objective parallel to Virtualized Clustered Multiprocessing (vCMP) guests; In-TMM monitoring joins the monitor-troubleshooting objective; Telemetry stands alongside Application Visibility and Reporting (AVR) in the analytics exam; and the templates objective grows from iApps alone to iApps plus F5 Application Services Templates (FAST). Each addition is covered by the current study guides on this site, objective by objective.
+
+## How to use the retired blueprints
+
+For this track, the retired blueprints are corroboration more than supplement: they confirm the new exams test the same craft, reorganized. The three dropped items above are the entire meaningful delta - small enough to study in an afternoon, field-relevant enough that you should. Everything else the 301 pair asked, the new six ask too.

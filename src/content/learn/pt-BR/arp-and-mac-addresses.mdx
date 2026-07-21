@@ -1,0 +1,32 @@
+---
+slug: arp-and-mac-addresses
+title: "ARP e Endereços MAC: Como o IP Encontra a Ethernet"
+summary: "Todo pacote numa rede local é entregue por endereço MAC, e o ARP é o serviço de diretório que mapeia um IP para um deles. O mapeamento um-para-um, a leitura da saída do ARP para provar que a resolução funcionou, o gratuitous ARP, e o MAC masquerading - o truque de failover que faz um endereço se mover sem que os switches percebam."
+concepts: ["arp", "mac address", "layer 2", "fundamentals", "gratuitous arp", "mac masquerade", "default gateway"]
+relatedTools: []
+relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway", "bigip-failover-states-and-operations"]
+category: networking
+order: 162
+status: reviewed
+updated: "2026-07-21"
+---
+
+Um endereço Internet Protocol (IP) leva um pacote através de redes; um endereço Media Access Control (MAC) leva um quadro através da sala. O Address Resolution Protocol (ARP) é o mecanismo pequeno e antigo que conecta os dois, e a prova aposentada de fundamentos da F5 mantinha três habilidades sobre ele: dizer que serviço o ARP fornece, verificar pela saída que a resolução funcionou, e explicar o MAC masquerading. As três continuam pagando o próprio salário diariamente.
+
+## O serviço que o ARP fornece
+
+Quando um host precisa enviar para um IP na própria sub-rede, ele difunde uma pergunta - quem tem este IP - e o dono responde com seu endereço MAC. Quem perguntou guarda a resposta na tabela ARP: um mapeamento um-para-um de IP para MAC, envelhecido com o tempo e renovado sob demanda. Para destinos fora da sub-rede, o host não faz ARP para o destino; faz ARP para o [gateway padrão](/learn/routing-tables-and-default-gateway) e entrega o pacote ali - por isso um gateway errado aparece como entrada ARP para o roteador errado, não como mensagem de erro de roteamento.
+
+Um endereço MAC tem 48 bits, escritos como seis pares hexadecimais; a primeira metade é o Organizationally Unique Identifier do fabricante, a segunda é o dispositivo. Válido significa bem formado e, num segmento real, único - dois reclamantes para um MAC é uma falha distinta e feia.
+
+## Provando que a resolução funcionou
+
+Dada a saída de um comando ARP ou um diagrama, a resolução sucedeu se o IP alvo aparece com um MAC resolvido - uma entrada completa. Uma entrada incompleta, ou o IP ausente após tentativa de tráfego, significa que a pergunta foi feita e ninguém respondeu: sub-rede errada, host caído, ou uma VLAN que não alcança o host de verdade. Este é o posto de checagem de Camada 2 em qualquer caminhada de conectividade: antes de culpar roteamento ou firewalls, confirme que a entrada ARP do próximo salto está completa. Num BIG-IP, a mesma checagem vale para a visão do dispositivo sobre membros de pool e gateways.
+
+## Gratuitous ARP: anunciando a si mesmo
+
+Um gratuitous ARP é um anúncio não solicitado - um host difundindo o próprio mapeamento IP-para-MAC sem que ninguém pergunte. Seu propósito é correção de cache: todos no segmento atualizam a entrada imediatamente. É o mecanismo que faz a mudança de endereço IP funcionar: quando um endereço flutuante migra de um dispositivo para outro num failover, o novo dono envia gratuitous ARPs para que switches e vizinhos encaminhem para a nova porta.
+
+## MAC masquerading: mover-se sem se mover
+
+O gratuitous ARP atualiza vizinhos, mas alguns ambientes respondem devagar ou filtram os anúncios. O MAC masquerading remove o problema: o traffic group flutuante carrega um endereço MAC virtual que se move com ele, de modo que após um [failover](/learn/bigip-failover-states-and-operations) o mapeamento IP-para-MAC não muda nunca - o mesmo MAC simplesmente aparece em outra porta do switch, que aprende no primeiro quadro. Os caches ARP dos vizinhos permanecem válidos porque nada do que guardaram se moveu. O blueprint aposentado pedia o propósito do MAC masquerading, e é este, numa frase: tornar a migração de um endereço invisível na Camada 2, para que a velocidade do failover deixe de depender da rapidez com que todos os outros renovam suas tabelas.
