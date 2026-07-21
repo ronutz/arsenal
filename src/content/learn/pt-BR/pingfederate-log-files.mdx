@@ -1,0 +1,38 @@
+---
+slug: pingfederate-log-files
+title: "Os Arquivos de Log do PingFederate: Qual Responde Qual Pergunta"
+summary: "O elenco de <pf_install>/pingfederate/log e para que serve cada membro: server.log para a aplicação, admin.log e admin-api.log para quem mudou o quê, transaction.log para resumos de transações de protocolo, audit.log para eventos de autenticação e segurança - mais os níveis do log4j2.xml que controlam verbosidade e o hábito de casar a pergunta com o arquivo."
+concepts: ["pingfederate", "log files", "server.log", "audit.log", "transaction.log", "admin.log", "log4j2", "logging levels"]
+relatedTools: []
+relatedArticles: ["pingfederate-startup-files", "pingfederate-upgrade-playbook", "pingfederate-endpoints-map"]
+category: identity
+order: 41
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Um diretório, muitas respostas
+
+Tudo o que o PingFederate escreve pousa em `<pf_install>/pingfederate/log`, e o diretório recompensa ser aprendido como um elenco de personagens em vez de uma lista. Cada arquivo responde um **tipo de pergunta**, e tanto o exame quanto o diagnóstico real são exercícios de casar a pergunta com o arquivo antes de ler uma única linha.
+
+**`server.log`** é o log principal da aplicação - a história de vida do próprio servidor. Partida e parada, erros e avisos, a saúde dos subsistemas. Quando a pergunta é "o servidor está bem" ou "por que não subiu", o arquivo é este - e é sempre o primeiro depois de um upgrade.
+
+**`admin.log`** registra ações de administradores no console - quem mudou o quê, quando. **`admin-api.log`** é o gêmeo para a API administrativa, capturando o que a automação fez. Juntos são a trilha de auditoria da configuração: quando a pergunta é "quem mexeu nesta conexão na terça", a resposta está aqui, não nos logs de runtime.
+
+**`transaction.log`** resume as transações de protocolo do runtime - as conversas de SSO (single sign-on) e OAuth que o motor conduziu, uma linha de resumo por vez, com modos de detalhe próprios e configuráveis governando quanto cada resumo carrega.
+
+**`audit.log`** registra eventos de autenticação e segurança do runtime: quem autenticou, por qual meio, com qual resultado. É o arquivo do time de segurança, o que alimenta o SIEM (Security Information and Event Management), e o que responde "este usuário entrou, e como".
+
+O elenco de apoio completa o quadro: **`provisioner.log`** para atividade de provisionamento, **`init.log`** para a fase mais precoce da partida, e o log de requisições HTTP para registros crus de acesso.
+
+## O par de segurança
+
+Um pareamento merece ser dito do jeito que o exame diz: para **rastrear eventos de segurança e resumos de transações**, os arquivos são **`audit.log` e `transaction.log`** - o par de runtime. A distinção em relação aos logs administrativos é a distinção entre os dois sentidos de "o que aconteceu": os logs admin sabem o que administradores fizeram à configuração; os logs de audit e transaction sabem o que usuários e parceiros fizeram através do runtime. Confundir os dois manda uma investigação para o arquivo errado por horas.
+
+## Níveis: o log4j2.xml segura o botão
+
+Verbosidade é configuração, e mora em `server/default/conf/log4j2.xml` - níveis por logger na escada padrão: TRACE, DEBUG, INFO, WARN, ERROR. O padrão operacional é cirúrgico: eleve o logger de um subsistema a DEBUG enquanto reproduz o problema, capture, restaure. DEBUG generalizado num motor ocupado enterra o sinal e taxa o disco; precisão é a habilidade. E o arquivo em si é uma customização editada à mão com consequência conhecida de ciclo de vida: um [upgrade](/learn/pingfederate-upgrade-playbook) traz um log4j2.xml novo, e as suas mudanças locais precisam ser **mescladas** nele depois - a tarefa pós-upgrade a que esta série volta sempre, porque continua sendo esquecida.
+
+## O hábito
+
+A versão comprimida, digna de recitação: ações administrativas → `admin.log` (ou `admin-api.log` para automação); logins de usuários e eventos de segurança → `audit.log`; resumos de transações de protocolo → `transaction.log`; saúde do servidor → `server.log`; verbosidade → `log4j2.xml`, cirurgicamente. Case a pergunta com o arquivo primeiro, e o diretório de logs deixa de ser ruído para virar um índice.

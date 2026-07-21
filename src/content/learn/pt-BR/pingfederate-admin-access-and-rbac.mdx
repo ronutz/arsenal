@@ -1,0 +1,34 @@
+---
+slug: pingfederate-admin-access-and-rbac
+title: "Quem Administra o PingFederate: Contas Nativas, Papéis e Login do Console via LDAP"
+summary: "O modelo de acesso administrativo: contas nativas e o conjunto de papéis que divide o poder - User Admin, Admin, Expression Admin, Auditor e o papel criptográfico - mais como a autenticação do console migra de contas nativas para um diretório LDAP via run.properties e ldap.properties, com grupos do diretório mapeados nos mesmos papéis."
+concepts: ["pingfederate", "rbac", "administrative accounts", "roles", "ldap", "console authentication", "ognl"]
+relatedTools: []
+relatedArticles: ["ldap-fundamentals", "pingfederate-authentication-adapters", "pingfederate-operational-hygiene", "pingfederate-startup-files"]
+category: identity
+order: 36
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Contas nativas: o chaveiro padrão
+
+De fábrica, administradores são **contas nativas** - criadas e gerenciadas dentro do próprio console, a começar pela que o assistente de configuração fez. Cada conta carrega um ou mais **papéis administrativos**, e os papéis são onde o modelo ganha o nome: RBAC, Role-Based Access Control (controle de acesso baseado em papéis). Ninguém recebe "acesso ao PingFederate"; pessoas recebem papéis, e papéis recebem capacidades.
+
+O conjunto de papéis para saber de cor:
+
+**User Admin** gerencia os próprios administradores - criar contas, redefinir credenciais, atribuir papéis. **Admin** é o papel de configuração: conexões, adapters, data stores, OAuth - o trabalho diário de operar o produto. **Expression Admin** é deliberadamente separado e deliberadamente raro: permite escrever expressões OGNL (Object-Graph Navigation Language) em mapeamentos e políticas, e expressões executam código no servidor - exatamente por isso a capacidade de escrevê-las é um privilégio próprio e restrito, e não parte do Admin. **Auditor** é somente leitura, o papel de ler-sem-tocar para revisores e times de segurança; por natureza anda sozinho em vez de combinar. O papel **criptográfico** é dono de chaves e certificados - as chaves de assinatura e o material SSL cujo mau manejo tem consequências viradas para os parceiros.
+
+Papéis combinam conforme a função: um administrador de trabalho tipicamente tem Admin mais o que as atribuições exigirem, enquanto as separações que importam - expressões, custódia de chaves, gestão de contas - permanecem atribuíveis de propósito em vez de empacotadas por padrão.
+
+## Movendo o login do console para o LDAP
+
+Contas nativas escalam mal além de um punhado de humanos: senhas vivem em mais um lugar, entradas e saídas de pessoas viram limpeza no console, e o diretório que já governa todo o resto não governa nada aqui. Por isso a autenticação do console é **plugável**, e apontá-la para o LDAP (Lightweight Directory Access Protocol) é o movimento padrão.
+
+A troca acontece nos dois arquivos feitos para ela. No **`bin/run.properties`**, a propriedade de autenticação do console muda de nativa para LDAP - o mesmo arquivo dono das portas e do papel no cluster, porque isto também é uma decisão operacional de nó. Os detalhes do LDAP vivem no companheiro **`ldap.properties`**: qual diretório consultar, as credenciais de serviço para o bind, onde procurar os admins - e, a parte que torna tudo coerente, o **mapeamento de grupos do diretório para os papéis administrativos** acima. Ser membro dos grupos mapeados é o que concede Admin, User Admin, Auditor e os demais; o modelo de papéis não muda, só a origem das identidades.
+
+Duas verdades operacionais completam o quadro. A mudança vale a partir do **restart do console** - o modo de autenticação é lido na partida, não ao vivo. E a migração merece um **plano break-glass**: no instante em que o acesso ao console depende do diretório, uma indisponibilidade do diretório ou um erro no mapeamento de grupos pode trancar todos os administradores do lado de fora - conheça seu caminho de recuperação antes de precisar dele.
+
+## O instinto de projeto
+
+O objetivo do exame pede que você descreva essa maquinaria; o trabalho pede que aplique o instinto dela. Poder administrativo num produto de identidade é, ele mesmo, um problema de identidade: privilégio mínimo por papéis, execução de código (expressões) tratada como o poder à parte que é, custódia de chaves isolada, e a origem das identidades administrativas centralizada no diretório em que a organização já confia. Configure uma vez, e o console deixa de ser a exceção ao modelo de acesso da empresa para virar um exemplo dele.

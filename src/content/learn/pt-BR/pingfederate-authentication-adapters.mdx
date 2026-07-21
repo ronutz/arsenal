@@ -1,0 +1,34 @@
+---
+slug: pingfederate-authentication-adapters
+title: "Como Usuários Provam Quem São: PCVs e os Cinco Adapters"
+summary: "O kit de autenticação do PingFederate que o exame nomeia: Password Credential Validators como a camada reutilizável de verificação de senha, e então os cinco adapters e o padrão de integração que cada um encarna - HTML Form para login interativo, HTTP Basic para o desafio 401, Kerberos para SSO silencioso de desktop, OpenToken para o handoff via integration kit e Reference ID para o back-channel sem agente."
+concepts: ["pingfederate", "adapters", "pcv", "html form adapter", "kerberos", "spnego", "opentoken", "reference id"]
+relatedTools: []
+relatedArticles: ["kerberos-and-spnego", "ldap-fundamentals", "pingfederate-data-stores", "pingfederate-authentication-policies", "saml-overview"]
+category: identity
+order: 40
+status: reviewed
+updated: "2026-07-20"
+---
+
+## PCVs: a camada de senha, fatorada para fora
+
+Um Password Credential Validator (PCV) faz uma coisa: dado usuário e senha, responde válido ou inválido contra uma fonte. O LDAP Username PCV - verificando contra um diretório através de um [data store](/learn/pingfederate-data-stores) - é o cavalo de trabalho; outros validadores cobrem outras fontes. O ponto de projeto é que PCVs **não são usados diretamente por usuários**: adapters os consomem. Fatorar a verificação de senha para fora dos adapters significa que uma definição de validador serve o formulário de login, o desafio de basic auth e qualquer outra coisa que precise de senha conferida - e trocar a fonte toca uma definição, não cada experiência de login.
+
+## Os cinco adapters, cinco padrões
+
+Um adapter é como o PingFederate de fato autentica um usuário - ou recebe um usuário que outro alguém autenticou. O exame nomeia cinco, e cada um vale ser conhecido pelo **padrão que encarna**, porque questões de cenário descrevem uma situação e perguntam qual padrão serve.
+
+**HTML Form Adapter** - o padrão interativo. É a página de login com marca: encadeia um ou mais PCVs para verificar a senha, e é dono dos recursos de serviço de conta que cercam o login interativo - rastreio de bloqueio após tentativas falhas, fluxos de troca e redefinição de senha, lembrar-meu-usuário. Quando o cenário envolve humanos numa página de login, o adapter é este, e os recursos de ciclo de vida da conta são o motivo de ele ser mais que um formulário.
+
+**HTTP Basic Adapter** - o padrão de desafio. Um 401 puro de navegador apoiado num PCV: sem página, sem marca, sem mimos de sessão. Seu habitat são APIs (Application Programming Interfaces), clientes legados e ferramentas que falam basic auth nativamente. A troca é explícita: simplicidade e universalidade em troca de cada recurso humano que o form adapter tem.
+
+**Kerberos Adapter** - o padrão silencioso. Autenticação Integrada do Windows via SPNEGO (Simple and Protected GSS-API Negotiation Mechanism): uma estação ingressada no domínio prova a identidade do usuário a partir da sessão Kerberos existente, e o usuário não vê prompt algum. O custo do silêncio é configuração dos dois lados - realm e detalhes do KDC (Key Distribution Center) mais uma conta de serviço e keytab do lado do PingFederate, e configuração de confiança no navegador do lado do cliente. Quando o cenário diz "funcionários em máquinas de domínio, sem prompt de login", a resposta é esta, e o keytab é o porquê de funcionar.
+
+**OpenToken Adapter** - o padrão de integration kit. A ponte para aplicações equipadas com os integration kits da Ping: a identidade autenticada viaja entre o PingFederate e a aplicação como um OpenToken cifrado, carregado por cookie, parâmetro de query ou POST. Funciona nas duas direções - a aplicação pode ser quem recebe a identidade após o SSO, ou quem afirma no PingFederate um usuário já autenticado. Quando a aplicação tem um agente de integration kit, o OpenToken é o formato de fio entre eles.
+
+**Reference ID Adapter** - o padrão sem agente. Sem agente, sem parsing de token na aplicação: o PingFederate e a aplicação trocam uma **referência** de vida curta por uma API segura de back-channel de depósito e retirada, e a referência se resgata pelos atributos do usuário, servidor a servidor. O trabalho da aplicação encolhe para uma chamada autenticada de back-channel - exatamente o ponto quando instalar um agente é impossível ou indesejado.
+
+## Escolhendo, e o que vem depois
+
+A lógica de seleção comprime bem: humanos numa página → HTML Form; API ou basic auth legado → HTTP Basic; desktops de domínio, zero prompts → Kerberos; aplicação com integration kit → OpenToken; aplicação sem agente → Reference ID. Adapters autenticam - mas qual adapter cada usuário encontra, em que ordem, com quais fallbacks, é trabalho das [políticas de autenticação](/learn/pingfederate-authentication-policies), onde estes blocos viram árvores.

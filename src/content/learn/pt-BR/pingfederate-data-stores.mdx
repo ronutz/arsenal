@@ -1,0 +1,30 @@
+---
+slug: pingfederate-data-stores
+title: "Data Stores do PingFederate: LDAP e JDBC, Definidos Uma Vez, Usados em Todo Lugar"
+summary: "Data stores são as definições de conexão reutilizáveis do PingFederate: um store LDAP com tipo de diretório, hosts de failover, credenciais de bind e LDAPS; um store JDBC com sua URL de conexão, validation query e o driver JAR que precisa ser implantado antes de qualquer coisa conectar. Validadores de credencial, lookups de atributos e provisionamento consomem as mesmas definições - que é exatamente o ponto."
+concepts: ["pingfederate", "data stores", "ldap", "jdbc", "failover", "validation query", "attribute lookup"]
+relatedTools: []
+relatedArticles: ["ldap-fundamentals", "scim-overview", "pingfederate-authentication-adapters", "pingfederate-admin-access-and-rbac", "pingfederate-authentication-policies"]
+category: identity
+order: 39
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Uma definição, muitos consumidores
+
+Um data store no PingFederate é uma **definição de conexão**: como alcançar uma fonte externa de dados de identidade, configurada uma vez e referenciada em todo lugar. Os consumidores são a parte interessante - Password Credential Validators verificam senhas contra um store, mapeamentos de atributos buscam atributos adicionais num store durante o SSO, e o provisionamento lê e escreve através de um store. Mude o endereço do diretório ou rotacione a credencial de serviço, e a mudança acontece em exatamente um lugar; todo consumidor acompanha. Essa indireção é o projeto, e reconhecê-la é o que o "configurar **ou gerenciar**" do objetivo realmente pergunta.
+
+## Stores LDAP: a conexão com o diretório
+
+O data store LDAP (Lightweight Directory Access Protocol) carrega o que qualquer cliente de diretório precisa, moldado para produção. O **tipo de diretório** diz ao PingFederate qual dialeto ele está falando - Active Directory, PingDirectory, LDAP genérico - o que importa porque esquemas e comportamentos diferem. **Múltiplas entradas de host** dão failover: liste mais de um servidor de diretório e o store sobrevive à perda de qualquer um - o que, para um sistema de identidade, não é opcional. As **credenciais de bind da conta de serviço** são a identidade que o próprio PingFederate usa para buscar e ler - uma conta dedicada, de privilégio mínimo, nunca a de um humano. E o **transporte seguro** - LDAPS ou as opções seguras padronizadas pela implantação - mantém credenciais e dados de identidade cifrados no fio, com o certificado do diretório confiado pela gestão de certificados do servidor.
+
+O esquema do diretório então molda tudo rio abaixo: os atributos disponíveis para lookups e mapeamentos são os que o diretório de fato guarda, então a conversa do data store e a conversa do contrato de atributos são, no fundo, a mesma conversa.
+
+## Stores JDBC: a conexão com o banco
+
+O data store JDBC (Java Database Connectivity) aponta para um banco relacional, e três peças o fazem funcionar. A **URL de conexão JDBC** e as credenciais dizem onde e como quem. A **validation query** é a pequena sonda de saúde - uma consulta trivial que o servidor roda para confirmar que uma conexão do pool ainda está viva antes de confiar nela; a diferença entre failover elegante e erros misteriosos de runtime quando um banco derruba conexões em silêncio. E a peça que pega todo mundo uma vez: o **driver JAR**. O PingFederate não traz drivers de banco de fornecedores; o driver JDBC correspondente precisa ser implantado no diretório de bibliotecas do servidor - e o servidor reiniciado - antes de o store conseguir conectar. Um store JDBC que não encontra o driver é a clássica falha do primeiro dia, e a correção é um arquivo, não uma configuração.
+
+## Gerenciando stores como as dependências que são
+
+Data stores são onde o PingFederate toca infraestrutura que outra equipe opera, então gerenciá-los é, em boa parte, gerenciar essa realidade. O **teste de conexão** embutido verifica uma definição antes de algo depender dela. A configuração de failover - múltiplos hosts LDAP, comportamento são de pool sobre a validation query - decide como o runtime degrada quando a dependência tropeça: previsivelmente, com evidência clara nos logs, em vez de misteriosamente. E os acoplamentos operacionais merecem nome: a expiração da senha da conta de serviço pertence ao mesmo calendário dos certificados e da licença, e as janelas de manutenção do time do diretório ou do banco são, transitivamente, as suas. Um provedor de identidade é exatamente tão disponível quanto os stores contra os quais autentica - as definições de store são onde essa dependência fica explícita, visível e testável.

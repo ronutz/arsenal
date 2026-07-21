@@ -1,0 +1,38 @@
+---
+slug: pingfederate-authentication-policies
+title: "PingFederate Authentication Policies: Trees, Selectors, and the Contract at the End"
+summary: "How PingFederate decides who authenticates how: policy trees whose nodes are authentication sources and selectors, Fail and Success branches flowing top-down, reusable fragments for common sequences, and the Authentication Policy Contract at the end of every successful path - the normalization layer that makes everything downstream source-independent."
+concepts: ["pingfederate", "authentication policies", "policy trees", "selectors", "apc", "fragments", "authentication sources"]
+relatedTools: []
+relatedArticles: ["pingfederate-authentication-adapters", "saml-bindings-and-sso-initiation", "oidc-authorization-code-flow"]
+category: identity
+order: 42
+status: reviewed
+updated: "2026-07-20"
+---
+
+## The problem trees solve
+
+[Adapters](/learn/pingfederate-authentication-adapters) know how to authenticate; they do not know **who should meet which one, in what order, with what fallbacks**. That orchestration is the authentication policy layer: trees evaluated at runtime that route each arriving user to the right experience - employees to silent Kerberos, everyone else to the login form, this application's users through a second factor - out of the same building blocks.
+
+## Anatomy of a tree
+
+A policy tree is read top-down, and its nodes come in two kinds.
+
+**Authentication sources** do the authenticating: adapter instances, or IdP (Identity Provider) connections when the "source" is another federation partner. Each source node has two exits - **Fail** and **Success** - and the branches are the logic. Fail from the Kerberos attempt can flow into the HTML Form node, and that one line of tree is the classic pattern: try silent desktop SSO, fall back to the login page, invisibly to the user who just sees the right thing happen.
+
+**Selectors** branch without authenticating anyone. A selector inspects context - which application was requested, what network range the request came from, an extended property on the connection, and similar signals - and routes accordingly. Selectors are how one tree serves different populations differently: the corporate CIDR (Classless Inter-Domain Routing) range goes down the Kerberos branch, everything else goes straight to the form; the high-sensitivity application's branch adds a second factor that the ordinary branch skips.
+
+**Fragments** keep it maintainable. A fragment is a reusable sub-tree - form login followed by a second factor, say - built once and referenced from any policy that needs the sequence. When the second-factor configuration changes, it changes in the fragment, and every referencing policy follows. Trees that repeat themselves are trees mid-refactor.
+
+Policies then live in an ordered list with defaults beneath: evaluation finds the applicable policy, and when nothing applies, the configured default behavior answers - so the system's response to "no policy matched" is a decision you made, not an accident you discover.
+
+## The contract at the end
+
+Every successful path through a tree ends the same way: by fulfilling an **Authentication Policy Contract** (APC). The APC is a named set of attributes - the normalized identity that downstream configuration consumes - and its fulfillment maps whatever the winning source produced onto that common shape.
+
+This is the quiet masterstroke of the whole design. The Kerberos adapter and the HTML Form adapter emit different raw attributes; the APC absorbs the difference. Downstream - the SP (Service Provider) connections, the OAuth mappings - everything binds to the contract, not to the sources. Add a source tomorrow, rearrange the tree next quarter: as long as each path fulfills the contract, nothing downstream notices. The APC is where "how the user authenticated" stops mattering and "who the user is" begins - which is exactly the boundary the [attribute-mapping layers](/certifications/ping-cp-pingfederate) build on.
+
+## Basic configuration, the exam's version
+
+The objective says "basic configuration," and the basics compress to five moves: pick the authentication sources and place them as nodes; wire Fail and Success branches into the intended fallback story; add selectors where context should change the route; end every successful path in an APC fulfillment; and extract anything you built twice into a fragment. A tree a colleague can read top-down and narrate aloud - "corporate network tries Kerberos, falls back to the form, sensitive apps add a factor, everyone lands in the contract" - is the configuration doing its job.

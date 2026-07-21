@@ -1,0 +1,36 @@
+---
+slug: pingfederate-upgrade-playbook
+title: "Upgrading PingFederate: The Utility, the Merge, and the Cluster Order"
+summary: "How PingFederate upgrades actually work: the Upgrade Utility that copies configuration from the old install into the new one, the release notes you read for every version crossed, the custom-logging merge everyone forgets, and the console-first order that keeps a cluster consistent."
+concepts: ["pingfederate", "upgrade", "upgrade utility", "release notes", "log4j2", "cluster"]
+relatedTools: []
+relatedArticles: ["pingfederate-install-and-initial-setup", "pingfederate-startup-files", "pingfederate-log-files"]
+category: identity
+order: 34
+status: reviewed
+updated: "2026-07-20"
+---
+
+## The model: new install beside old
+
+PingFederate does not patch itself in place from a ZIP - the standard path is side-by-side. You install the new version next to the old one, then run the **Upgrade Utility** shipped with the new release. The utility reads the source installation and copies configuration, connections, adapters, keys, and deployed customizations into the new install, producing a new server that believes it has always been the old one. On Windows, the installer can alternatively perform an in-place upgrade; the side-by-side model remains the one that generalizes across platforms and the one worth internalizing.
+
+The side-by-side shape is a gift to operations: the old installation stays intact and startable, which means the rollback plan is "start the old one" rather than "restore from backup and pray." Keep the old tree until the new version has survived real traffic.
+
+## Read before you leap
+
+Every upgrade begins in the **release notes and upgrade considerations** - for every version you cross, not just the destination. Adapters get deprecated, properties get renamed, defaults change, Java requirements move. A jump across several releases is a jump across several sets of considerations, and the surprises live in the middle versions nobody read. Two questions to answer before touching anything: does the new version require a newer Java than the host runs, and is the current license valid for the new major version? Version upgrades commonly require a license issued for the new line, so license validity belongs on the pre-flight checklist, not the post-mortem.
+
+## The merge everyone forgets
+
+The Upgrade Utility copies what it understands, and hand-edited infrastructure files are where its understanding ends. The classic case - classic enough to be a certification sample topic - is **custom logging configuration**: local changes to `log4j2.xml` are not carried automatically, because the new version ships its own logging configuration that may itself have changed. The post-upgrade task is a deliberate merge: re-apply your customizations - the extra appenders, the raised levels, the retention changes - onto the new file, rather than clobbering the new file with the old one.
+
+The same discipline extends to the rest of the customization surface: UI templates and branding, localized message files, anything dropped into the server tree by hand. Inventory what was customized before the upgrade; verify each item after. The servers that upgrade painfully are the ones whose customizations were undocumented.
+
+## Clusters: console first
+
+In a clustered deployment the order is fixed: **upgrade the administrative console node first, then the engine nodes**, and confirm configuration replication once the engines rejoin. The console is the configuration authority; engines are consumers. Bringing the authority to the new version first keeps every subsequent step flowing in the supported direction, and upgrading engines one at a time keeps runtime capacity available throughout - the reason the cluster existed in the first place.
+
+## After: prove it, then delete nothing yet
+
+The upgrade is done when the evidence says so, not when the process exits. The proof set: the server starts clean (watch the [log files](/learn/pingfederate-log-files) - `server.log` first), the admin console opens and shows the expected version, a representative SSO transaction completes against a real partner, an OAuth client obtains a token, and the customization inventory checks out - including that logging merge. Only after the new version has carried genuine traffic does the old installation graduate from rollback plan to disk space.

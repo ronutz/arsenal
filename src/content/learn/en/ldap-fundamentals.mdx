@@ -1,0 +1,40 @@
+---
+slug: ldap-fundamentals
+title: "LDAP Fundamentals: The Directory Model Behind Identity Systems"
+summary: "The Lightweight Directory Access Protocol from first principles: the tree of entries and their distinguished names, the bind operation that authenticates, searches with base, scope, and filter, the group memberships access decisions ride on, and the LDAPS transport - the working vocabulary every identity product assumes before its own documentation makes sense."
+concepts: ["ldap", "directory", "distinguished name", "bind", "search filter", "ldaps", "active directory", "groups"]
+relatedTools: []
+relatedArticles: ["pingfederate-data-stores", "pingfederate-admin-access-and-rbac", "pingfederate-authentication-adapters"]
+category: identity
+order: 43
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Why identity always starts here
+
+Every identity deployment eventually points at a directory: the console admins are looked up in one, the password validators bind to one, the attribute lookups read from one. LDAP - the Lightweight Directory Access Protocol - is the protocol those conversations speak, and products document themselves in its vocabulary. Learn the vocabulary once and every "configure the LDAP data store" page becomes obvious; skip it and the same pages read like incantations.
+
+## The tree and the names
+
+A directory is a **tree of entries** - the Directory Information Tree. Each entry is a bag of attributes (`cn`, `mail`, `memberOf`, `objectClass`...), and each entry has exactly one address: its **Distinguished Name (DN)**, read leaf-first up to the root - `cn=Ana Souza,ou=Engineering,dc=example,dc=com`. The leaf-most component (`cn=Ana Souza`) is the Relative Distinguished Name, the entry's name within its branch; everything after it is the path. Two consequences do a lot of quiet work: DNs are unique addresses, so referencing an entry means holding its DN - and the tree's shape is a design decision, so search bases (below) are how you scope work to the branch that matters.
+
+The **schema** - which attributes an entry may carry, enforced through its object classes - is why the same product behaves differently against Active Directory and a generic directory: the attribute names differ (`sAMAccountName` is an Active Directory fact of life), and "directory type" settings in products exist precisely to absorb those dialect differences.
+
+## Bind: how authentication happens
+
+LDAP's authentication operation is the **bind**: present a DN and a credential, and the connection is now authenticated as that entry. Two binds appear in every deployment and are worth keeping distinct. The **service-account bind** is the product itself connecting - a dedicated, least-privileged account whose credentials sit in configuration and whose password expiry belongs on an operational calendar. The **user-verification bind** is how password checking actually works in most systems: first search for the user's entry to learn its DN, then attempt a bind as that DN with the supplied password. Bind succeeds, password is right - the directory itself is the judge, and no password hash ever leaves it.
+
+## Search: base, scope, filter
+
+Reading a directory is the **search** operation, and it takes three decisions. The **base DN** says where in the tree to start. The **scope** says how far to look: the base entry alone, its immediate children (one level), or the entire subtree beneath it - subtree being the everyday choice. The **filter** says what qualifies, in the parenthesized syntax that looks strange for one afternoon and then becomes readable forever: `(uid=asouza)`, `(&(objectClass=person)(mail=*@example.com))` - `&` for and, `|` for or, `!` for not, `*` as the wildcard. When a product asks for a "user search base" and a "user filter," it is asking exactly these questions, and misscoped bases or overbroad filters are behind most "user not found" and most slow-login mysteries.
+
+**Groups** ride the same machinery: membership is attributes - a group entry listing members, or a user entry carrying `memberOf` - and "map directory groups to roles" means "read those attributes and treat them as authorization."
+
+## The wire: LDAPS
+
+Binds carry passwords, searches carry identity data - the transport is not optional. **LDAPS** wraps the protocol in TLS on its own port (636 against 389 for plain LDAP), and trusting the directory's certificate becomes part of the client's configuration - which is why a directory integration and a [certificate trust](/learn/certificate-validation) conversation are usually the same ticket. Production directories come in replicated pairs or better, and clients list multiple hosts for failover: an identity system is exactly as available as its directory, so the directory ships as a plural.
+
+## The payoff
+
+With this vocabulary, the identity-product objectives collapse into recognition. An [LDAP data store](/learn/pingfederate-data-stores) is host list + service bind + directory type. [Console login via a directory](/learn/pingfederate-admin-access-and-rbac) is a search base, a filter, and group-to-role mapping. An LDAP password validator is the search-then-bind pattern with a name on it. The directory was never the hard part - it was only the assumed part.

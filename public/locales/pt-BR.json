@@ -12074,6 +12074,58 @@
       "cors-preflight": {
         "def": "A requisição OPTIONS que o navegador envia primeiro, pedindo permissão ao servidor, antes de aceitar enviar certas requisições entre origens.",
         "context": "Uma requisição entre origens só pula o preflight quando é \"simples\": método GET, HEAD ou POST, com cabeçalhos e tipos de conteúdo da safelist. Qualquer outra coisa - PUT, DELETE, PATCH, o novo QUERY, ou um cabeçalho customizado como Authorization - faz o navegador enviar antes um OPTIONS com Access-Control-Request-Method e -Headers; só se o servidor responder com os cabeçalhos Access-Control-Allow-* correspondentes a requisição real acontece. A maioria dos erros de \"bloqueado por CORS\" é na verdade um preflight que o servidor respondeu mal ou nem respondeu, e o Access-Control-Max-Age é como servidores deixam o navegador guardar a permissão em cache em vez de perguntar antes de cada requisição."
+      },
+      "scim": {
+        "def": "System for Cross-domain Identity Management: o padrão aberto de provisionamento - criar, atualizar, agrupar e desativar contas de usuário entre sistemas por uma API REST em JSON, com esquemas da RFC 7643 e protocolo da RFC 7644.",
+        "context": "SAML e OIDC autenticam a conta; o SCIM é como a conta chegou lá e como ela é desligada no dia em que a pessoa sai."
+      },
+      "kerberos": {
+        "def": "O protocolo de autenticação de rede baseado em tickets por trás do login silencioso corporativo: um Key Distribution Center emite tickets com prazo que os serviços verificam offline, então a senha viaja uma vez no login e nunca mais.",
+        "context": "Em ambientes Active Directory o Kerberos é o tecido padrão de autenticação, e produtos de SSO web o aproveitam via SPNEGO para login de desktop sem prompt."
+      },
+      "spnego": {
+        "def": "Simple and Protected GSS-API Negotiation Mechanism: o invólucro que carrega um service ticket Kerberos dentro do esquema Negotiate do HTTP, permitindo que o navegador se autentique num site silenciosamente a partir da sessão de domínio existente.",
+        "context": "O servidor desafia com WWW-Authenticate: Negotiate; um navegador configurado para confiar no site responde com um ticket - a maquinaria vendida como Autenticação Integrada do Windows."
+      },
+      "kdc": {
+        "def": "Key Distribution Center: a autoridade Kerberos - Authentication Service mais Ticket-Granting Service - que verifica principals e emite o TGT e os service tickets; no Active Directory roda nos controladores de domínio.",
+        "context": "Clientes falam com o KDC no login e ao alcançar cada serviço pela primeira vez; depois disso os tickets se verificam offline - por isso posicionamento do KDC e sincronia de relógio importam mais que vazão."
+      },
+      "keytab": {
+        "def": "Arquivo com as chaves Kerberos de longo prazo de uma conta de serviço, permitindo que um serviço - muitas vezes em Linux, fora do domínio - decifre os tickets apresentados pelos clientes sem ingresso interativo no domínio.",
+        "context": "Um keytab é uma credencial em forma de arquivo: gerado contra a conta dona do SPN, protegido como senha e regenerado sempre que a senha daquela conta muda."
+      },
+      "password-credential-validator": {
+        "def": "O componente reutilizável de verificação de senha do PingFederate: dado usuário e senha, um PCV responde válido ou inválido contra uma fonte como um diretório LDAP - e adapters o consomem, em vez de usuários o encontrarem diretamente.",
+        "context": "Fatorar a validação para fora dos adapters permite que o formulário de login e o desafio HTTP Basic compartilhem um PCV, e trocar a fonte de senha toca uma única definição."
+      },
+      "authentication-adapter": {
+        "def": "O componente do PingFederate que de fato autentica um usuário - ou recebe um autenticado alhures: HTML Form, HTTP Basic, Kerberos, OpenToken e Reference ID encarnam, cada um, um padrão de integração diferente.",
+        "context": "Adapters são as folhas das árvores de política de autenticação; a política decide qual adapter cada usuário encontra, em que ordem, com quais fallbacks."
+      },
+      "authentication-policy-contract": {
+        "def": "O conjunto normalizado de atributos que uma política de autenticação cumpre em todo caminho bem-sucedido: qualquer que seja o adapter ou a conexão IdP que autenticou, a configuração rio abaixo consome o mesmo contrato.",
+        "context": "O APC é a fronteira onde 'como o usuário autenticou' deixa de importar - conexões SP e mapeamentos OAuth se ligam ao contrato, nunca às fontes individuais."
+      },
+      "authentication-policy-tree": {
+        "def": "A árvore de decisão de autenticação em runtime do PingFederate: nós são fontes de autenticação e seletores, ramos Fail e Success expressam fallbacks, fragmentos reutilizáveis capturam sequências comuns, e todo caminho bem-sucedido termina cumprindo um contrato de política.",
+        "context": "Uma árvore roteia populações diferentes de formas diferentes - a rede corporativa tenta Kerberos e cai para o formulário; aplicações sensíveis somam um segundo fator."
+      },
+      "opentoken": {
+        "def": "O formato de token cifrado da Ping Identity para integration kits: a identidade autenticada viaja entre o PingFederate e uma aplicação como um OpenToken carregado por cookie, parâmetro de query ou POST.",
+        "context": "O adapter OpenToken opera nas duas direções - entrega o usuário a uma aplicação com agente após o SSO, ou aceita um que a aplicação já autenticou."
+      },
+      "data-store": {
+        "def": "Uma definição reutilizável de conexão a uma fonte externa de identidade - um diretório LDAP com hosts de failover e bind de serviço, ou um banco JDBC com driver e validation query - configurada uma vez e referenciada por validadores, lookups de atributos e provisionamento.",
+        "context": "A indireção é o ponto: rotacione a credencial de serviço ou mova o diretório, e todos os consumidores seguem uma única definição alterada."
+      },
+      "identity-provider": {
+        "def": "A parte que autentica o usuário e afirma o resultado: no SAML o IdP emite assertions; no OIDC o mesmo papel é o OpenID Provider emitindo ID tokens.",
+        "context": "Toda federação nomeia um lado provedor de identidade e o outro provedor de serviço - quem autentica, e quem confia."
+      },
+      "service-provider": {
+        "def": "O lado da aplicação numa federação: a parte que consome assertions ou tokens e concede acesso com base neles - o SP do SAML, o relying party do OIDC.",
+        "context": "O sign-on iniciado no SP começa aqui - o usuário chega primeiro à aplicação, e ela o envia ao provedor de identidade com um pedido de autenticação."
       }
     },
     "totalCount": "{count} termos",
@@ -12105,7 +12157,13 @@
     "latestTag": "mais recente",
     "articleComing": "Artigo em breve",
     "preparingTitle": "Guia de estudo em preparação",
-    "preparingBody": "O blueprint oficial desta prova está sendo mapeado para os artigos, as ferramentas e as páginas do manual do site. Enquanto isso, a página oficial da prova está no link acima."
+    "preparingBody": "O blueprint oficial desta prova está sendo mapeado para os artigos, as ferramentas e as páginas do manual do site. Enquanto isso, a página oficial da prova está no link acima.",
+    "factsQuestions": "Formato",
+    "factsDuration": "Tempo limite",
+    "factsMinutes": "{minutes} minutos",
+    "factsPassMark": "Nota de corte",
+    "factsCost": "Taxa do exame",
+    "keyPointsLabel": "O que saber"
   },
   "trainingCta": {
     "eyebrow": "Treinamento com instrutor",
@@ -12266,6 +12324,10 @@
       "regex-mastery": {
         "title": "Expressões regulares, do jeito certo",
         "lede": "A habilidade de ofício por baixo da análise de logs e de todo parser: quantificadores e classes, grupos e backreferences, âncoras e fronteiras, flags e modos - terminando no catastrophic backtracking, o modo de falha que toda regex em produção precisa evitar."
+      },
+      "pingfederate-administration": {
+        "title": "Administração de PingFederate, de ponta a ponta",
+        "lede": "Primeiro os fundamentos que o blueprint presume - o modelo de diretório e a maquinaria de tickets do Kerberos - depois os dez artigos de produto em ordem didática, o SCIM ao lado da parada de provisionamento, e os fluxos de SSO para fechar. A espinha de leitura por trás do guia de certificação PFP-001."
       }
     }
   },

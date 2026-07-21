@@ -12074,6 +12074,58 @@
       "cors-preflight": {
         "def": "The OPTIONS request a browser sends first, asking the server's permission, before it is willing to send certain cross-origin requests at all.",
         "context": "A cross-origin request only skips the preflight when it is \"simple\": method GET, HEAD, or POST, with safelisted headers and content types. Anything else - PUT, DELETE, PATCH, the new QUERY, or a custom header like Authorization - makes the browser first send OPTIONS with Access-Control-Request-Method and -Headers; only if the server answers with matching Access-Control-Allow-* headers does the real request follow. Most \"blocked by CORS\" errors are actually a preflight the server answered badly or not at all, and Access-Control-Max-Age is how servers let browsers cache the permission instead of asking before every request."
+      },
+      "scim": {
+        "def": "System for Cross-domain Identity Management: the open standard for provisioning - creating, updating, grouping, and deactivating user accounts across systems over a JSON REST API, with schemas from RFC 7643 and the protocol from RFC 7644.",
+        "context": "SAML and OIDC sign an account in; SCIM is how the account got there and how it is switched off the day the person leaves."
+      },
+      "kerberos": {
+        "def": "The ticket-based network authentication protocol behind enterprise silent sign-on: a Key Distribution Center issues time-limited tickets that services can verify offline, so passwords travel once at login and never again.",
+        "context": "In Active Directory environments Kerberos is the default authentication fabric, and web SSO products ride it through SPNEGO for prompt-free desktop login."
+      },
+      "spnego": {
+        "def": "Simple and Protected GSS-API Negotiation Mechanism: the wrapper that carries a Kerberos service ticket inside HTTP's Negotiate authentication scheme, letting a browser authenticate to a website silently from the user's existing domain session.",
+        "context": "The server challenges with WWW-Authenticate: Negotiate; a browser configured to trust the site answers with a ticket - the machinery marketed as Integrated Windows Authentication."
+      },
+      "kdc": {
+        "def": "Key Distribution Center: the Kerberos authority - Authentication Service plus Ticket-Granting Service - that verifies principals and issues the TGT and service tickets; in Active Directory it runs on the domain controllers.",
+        "context": "Clients talk to the KDC at login and when first reaching each service; after that, tickets verify offline, which is why KDC placement and time sync matter more than KDC throughput."
+      },
+      "keytab": {
+        "def": "A file holding a service account's long-term Kerberos keys, letting a service - often on Linux, outside the domain - decrypt the tickets clients present without interactive domain membership.",
+        "context": "A keytab is a credential in file form: generated against the account that owns the SPN, protected like a password, and regenerated whenever that account's password changes."
+      },
+      "password-credential-validator": {
+        "def": "PingFederate's reusable password-checking component: given a username and password, a PCV answers valid or invalid against a source such as an LDAP directory - and adapters consume it rather than users meeting it directly.",
+        "context": "Factoring validation out of the adapters means the login form and the HTTP Basic challenge can share one PCV, and changing the password source touches one definition."
+      },
+      "authentication-adapter": {
+        "def": "The PingFederate component that actually authenticates a user - or receives one authenticated elsewhere: HTML Form, HTTP Basic, Kerberos, OpenToken, and Reference ID each embody a different integration pattern.",
+        "context": "Adapters are the leaves of authentication policy trees; the policy decides which adapter a given user meets, in what order, with what fallbacks."
+      },
+      "authentication-policy-contract": {
+        "def": "The normalized attribute set an authentication policy fulfills on every successful path: whatever adapter or IdP connection authenticated the user, downstream configuration consumes the same contract.",
+        "context": "The APC is the boundary where 'how the user authenticated' stops mattering - SP connections and OAuth mappings bind to the contract, never to individual sources."
+      },
+      "authentication-policy-tree": {
+        "def": "PingFederate's runtime decision tree for authentication: nodes are authentication sources and selectors, Fail and Success branches express fallbacks, reusable fragments capture common sequences, and every successful path ends by fulfilling a policy contract.",
+        "context": "One tree routes different populations differently - corporate network tries Kerberos and falls back to the form, sensitive applications add a second factor."
+      },
+      "opentoken": {
+        "def": "Ping Identity's encrypted token format for integration kits: the authenticated identity travels between PingFederate and an application as an OpenToken carried by cookie, query parameter, or POST.",
+        "context": "The OpenToken adapter runs both directions - handing a user to an agent-equipped application after SSO, or accepting one the application already authenticated."
+      },
+      "data-store": {
+        "def": "A reusable connection definition to an external identity source - an LDAP directory with failover hosts and a service bind, or a JDBC database with its driver and validation query - configured once and referenced by validators, attribute lookups, and provisioning.",
+        "context": "The indirection is the point: rotate the service credential or move the directory, and every consumer follows one changed definition."
+      },
+      "identity-provider": {
+        "def": "The party that authenticates the user and asserts the result: in SAML the IdP issues assertions, in OIDC the same role is the OpenID Provider issuing ID tokens.",
+        "context": "Every federation names one side the identity provider and the other the service provider - who authenticates, and who trusts."
+      },
+      "service-provider": {
+        "def": "The application side of a federation: the party that consumes assertions or tokens and grants access based on them - SAML's SP, OIDC's relying party.",
+        "context": "SP-initiated sign-on starts here - the user arrives at the application first, and it sends them to the identity provider with a request to authenticate."
       }
     },
     "totalCount": "{count} terms",
@@ -12105,7 +12157,13 @@
     "latestTag": "latest",
     "articleComing": "Article coming",
     "preparingTitle": "Study guide in preparation",
-    "preparingBody": "The official blueprint for this exam is being mapped to the site's articles, tools, and manual pages. In the meantime, the exam's official page is linked above."
+    "preparingBody": "The official blueprint for this exam is being mapped to the site's articles, tools, and manual pages. In the meantime, the exam's official page is linked above.",
+    "factsQuestions": "Format",
+    "factsDuration": "Time limit",
+    "factsMinutes": "{minutes} minutes",
+    "factsPassMark": "Pass mark",
+    "factsCost": "Exam fee",
+    "keyPointsLabel": "What to know"
   },
   "trainingCta": {
     "eyebrow": "Instructor-led training",
@@ -12266,6 +12324,10 @@
       "regex-mastery": {
         "title": "Regular expressions, properly",
         "lede": "The craft skill under log analysis and every parser: quantifiers and classes, groups and backreferences, anchors and boundaries, flags and modes - ending on catastrophic backtracking, the failure mode every production regex must avoid."
+      },
+      "pingfederate-administration": {
+        "title": "PingFederate administration, end to end",
+        "lede": "The blueprint's assumed fundamentals first - the directory model and the Kerberos ticket machinery - then the ten product articles in teaching order, SCIM beside the provisioning stop, and the SSO flows to close. The reading spine behind the PFP-001 certification guide."
       }
     }
   },

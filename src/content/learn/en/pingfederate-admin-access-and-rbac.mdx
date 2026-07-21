@@ -1,0 +1,34 @@
+---
+slug: pingfederate-admin-access-and-rbac
+title: "Who Administers PingFederate: Native Accounts, Roles, and Console Login via LDAP"
+summary: "The administrative access model: native accounts and the role set that divides power - User Admin, Admin, Expression Admin, Auditor, and the cryptographic role - plus how console authentication moves from native accounts to an LDAP directory through run.properties and ldap.properties, with directory groups mapped onto the same roles."
+concepts: ["pingfederate", "rbac", "administrative accounts", "roles", "ldap", "console authentication", "ognl"]
+relatedTools: []
+relatedArticles: ["ldap-fundamentals", "pingfederate-authentication-adapters", "pingfederate-operational-hygiene", "pingfederate-startup-files"]
+category: identity
+order: 36
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Native accounts: the default key ring
+
+Out of the box, administrators are **native accounts** - created and managed inside the admin console itself, starting with the one the setup wizard made. Each account carries one or more **administrative roles**, and the roles are where the model earns its name: RBAC, Role-Based Access Control. Nobody gets "access to PingFederate"; people get roles, and roles get capabilities.
+
+The role set to know cold:
+
+**User Admin** manages the administrators themselves - creating accounts, resetting credentials, assigning roles. **Admin** is the configuration role: connections, adapters, data stores, OAuth - the daily work of running the product. **Expression Admin** is deliberately separate and deliberately rare: it permits authoring OGNL (Object-Graph Navigation Language) expressions in mappings and policies, and expressions execute code on the server - which is exactly why the ability to write them is its own gated privilege rather than part of Admin. **Auditor** is view-only, the read-without-touch role for reviewers and security teams; by nature it stands alone rather than combining. The **cryptographic** role owns keys and certificates - the signing keys and SSL material whose mishandling has partner-facing consequences.
+
+Roles combine to fit the job: a working administrator typically holds Admin plus whatever else the duties require, while the separations that matter - expressions, key custody, account management - stay assignable on purpose rather than bundled by default.
+
+## Moving console login to LDAP
+
+Native accounts scale badly past a handful of humans: passwords live in one more place, joiners and leavers mean console housekeeping, and the directory that already governs everything else governs nothing here. So console authentication is **pluggable**, and pointing it at LDAP (Lightweight Directory Access Protocol) is the standard move.
+
+The switch happens in the two files made for it. In **`bin/run.properties`**, the console-authentication property changes from native to LDAP - the same file that owns ports and the cluster role, because this too is a node-level operational decision. The LDAP specifics live in the companion **`ldap.properties`**: which directory to talk to, the service credentials to bind with, where to search for admins - and, the part that makes the whole thing coherent, the **mapping of directory groups onto the administrative roles** above. Membership in the mapped groups is what grants Admin, User Admin, Auditor, and the rest; the role model does not change, only where the identities come from.
+
+Two operational truths complete the picture. The change takes effect on **console restart** - authentication mode is read at startup, not live. And the migration deserves a **break-glass plan**: the moment console access depends on the directory, a directory outage or a group-mapping mistake can lock every administrator out, so know your recovery path before you need it.
+
+## The design instinct
+
+The exam objective asks you to describe this machinery; the job asks you to apply its instinct. Administrative power in an identity product is itself an identity problem: least privilege through roles, code execution (expressions) treated as the separate power it is, key custody isolated, and the source of admin identities centralized in the directory the organization already trusts. Configure it once, and the console stops being the exception to the company's access model and becomes an example of it.

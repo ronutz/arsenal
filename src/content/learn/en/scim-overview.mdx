@@ -1,0 +1,32 @@
+---
+slug: scim-overview
+title: "SCIM: The Standard That Provisions the Accounts SSO Signs In"
+summary: "The System for Cross-domain Identity Management in one sitting: why provisioning needed a standard, the RFC 7643 schemas for Users and Groups, the RFC 7644 REST protocol - create, filter, PATCH, deactivate - and where SCIM sits next to SAML and OIDC in an identity architecture: they authenticate the account, SCIM is how the account got there."
+concepts: ["scim", "provisioning", "deprovisioning", "rfc 7643", "rfc 7644", "users", "groups", "lifecycle"]
+relatedTools: []
+relatedArticles: ["ldap-fundamentals", "pingfederate-data-stores", "saml-overview"]
+category: identity
+order: 45
+status: reviewed
+updated: "2026-07-20"
+---
+
+## The problem SSO does not solve
+
+Single sign-on answers "how does Ana get into the application?" It never answers "how did the application learn Ana exists - and who removes her the day she leaves?" That second question is **provisioning**, and before it had a standard it had a swamp: one custom user-sync integration per application, each with its own API, its own attribute names, and its own way of being subtly broken. SCIM - the **System for Cross-domain Identity Management** - is the standard that drained the swamp: one schema for what a user is, one protocol for keeping systems agreed about it.
+
+## The schema: what a User is (RFC 7643)
+
+SCIM's first half is a data model, defined in RFC 7643. The **User** resource carries the attributes account management actually needs - `userName`, `name` with its parts, `emails`, `active` - and the **Group** resource carries a name and its members. Every resource declares its schema by URN and carries service metadata; when the core attributes are not enough, **extension schemas** add more without breaking the core - the enterprise extension (employee number, department, manager) being the one everybody meets first. The payload language is JSON throughout, which is half the reason SCIM integrations feel routine where their predecessors felt bespoke.
+
+One boolean deserves special respect: **`active`**. Deactivation - flipping `active` to false - is how most deprovisioning actually happens, preferred over deletion because it is reversible, auditable, and preserves the account's history. "Set active=false within minutes of HR termination" is the sentence most SCIM deployments exist to make true.
+
+## The protocol: REST verbs on /Users and /Groups (RFC 7644)
+
+SCIM's second half, RFC 7644, is a REST (Representational State Transfer) API shaped the way you would guess and standardized so you never have to guess again. Resources live under `/Users` and `/Groups`. **POST** creates, **GET** reads - with a standard **filter** grammar (`userName eq "asouza"`) so callers can find resources by attribute, not just by id. **PUT** replaces a resource whole; **PATCH** applies targeted changes - add a member to a group, flip `active` - and PATCH is the verb doing most of the real work, because lifecycle events are small deltas, not rewrites. **DELETE** exists for the cases deactivation does not cover. A `ServiceProviderConfig` endpoint lets a client discover what the server supports, which keeps implementations honest about optional features.
+
+The roles have names worth keeping straight: the **client** holds the truth and pushes it - typically the identity platform or HR-driven directory; the **service provider** (in SCIM's sense of the term) is the application receiving users. Identity suites play both parts in different integrations: receiving workforce changes on one side, provisioning downstream SaaS applications on the other.
+
+## Where SCIM sits in the architecture
+
+The clean mental model is a division of labor across three conversations. [LDAP](/learn/ldap-fundamentals) and the HR system are where identity **lives**. SCIM is how identity **travels** - accounts created, updated, grouped, and switched off across system boundaries, ahead of and independent of any login. [SAML](/learn/saml-overview) and OIDC are how identity **authenticates** - the runtime moment that assumes the account is already there. Products blur the edges - provisioning engines read directories and speak SCIM outward - but the blueprint-level distinction holds, and it is exactly why an identity certification lists SCIM among its assumed vocabulary: federation signs users in; SCIM is why there was a user to sign in, and why there is not one anymore the day that matters most.

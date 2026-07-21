@@ -1,0 +1,46 @@
+---
+slug: kerberos-and-spnego
+title: "Kerberos and SPNEGO: How Silent Desktop SSO Actually Works"
+summary: "The ticket machinery behind login-without-a-prompt: the KDC's two services, the TGT and the service ticket, why SPNs and keytabs exist, how SPNEGO carries a Kerberos ticket inside an HTTP Negotiate header, and the small list of things - clock skew, missing SPNs, browser trust - that break it in practice."
+concepts: ["kerberos", "spnego", "kdc", "tgt", "service ticket", "spn", "keytab", "negotiate", "iwa"]
+relatedTools: []
+relatedArticles: ["pingfederate-authentication-adapters", "pingfederate-authentication-policies", "ldap-fundamentals"]
+category: identity
+order: 44
+status: reviewed
+updated: "2026-07-20"
+---
+
+## The promise: authentication with no prompt
+
+A user signs in to a domain-joined workstation in the morning and, for the rest of the day, opens internal applications that simply know who they are - no login page, no password, no visible ceremony. That experience is Kerberos, and when it reaches a web application through the browser, the carrier is SPNEGO. Identity products expose it as an adapter or an "Integrated Windows Authentication" option; understanding the machinery underneath is what turns its configuration fields from folklore into engineering.
+
+## Tickets: the KDC's two conversations
+
+Kerberos is a ticket system operated by the **KDC** - the Key Distribution Center, which in an Active Directory world lives on the domain controllers. The KDC holds two logical services, and the whole protocol is two conversations with them.
+
+At workstation login, the client talks to the **Authentication Service** and proves knowledge of the user's password - modern deployments wrap this initial proof in pre-authentication - receiving in return a **Ticket-Granting Ticket (TGT)**: a time-limited credential that says "this principal authenticated recently" without ever sending the password anywhere again.
+
+When the user then needs a specific service, the client presents the TGT to the **Ticket-Granting Service** and asks for a **service ticket** for that service. The service ticket is encrypted with a key only the target service (and the KDC) knows - so when the client hands the ticket to the service, the service can decrypt and trust it **without contacting the KDC at all**. That offline verifiability is the elegance of the design: the KDC is consulted at login and at first use of each service, not on every request.
+
+## SPNs and keytabs: naming and keying the service
+
+Two artifacts make the service side work, and they are exactly the fields an adapter asks for.
+
+The **SPN** - Service Principal Name - is the service's identity in the ticket system, conventionally shaped like `HTTP/sso.example.com@REALM`. When the browser wants a ticket "for that website," the SPN is how the KDC knows which service key to encrypt it with. A missing or duplicated SPN registration is the single most common reason silent SSO silently is not.
+
+The **keytab** is a file holding the service's long-term key - the material that lets a non-Windows service (an identity server on Linux, say) decrypt the tickets clients bring, without the service itself joining the domain interactively. It is generated against the service account that owns the SPN, it is a credential in file form, and it is protected and rotated like one. Realm, KDC address, service account, keytab: every Kerberos adapter's configuration page is this paragraph as a form.
+
+## SPNEGO: the ticket meets HTTP
+
+Browsers do not speak raw Kerberos to websites; they speak **SPNEGO** - the Simple and Protected GSS-API Negotiation Mechanism - inside HTTP. The dance is short: the server challenges with `WWW-Authenticate: Negotiate`; a browser that trusts the site for integrated authentication obtains a service ticket for the site's SPN and replays the request with the ticket wrapped in the `Authorization: Negotiate` header; the server validates it with the keytab and the user is authenticated - zero prompts, one round trip of ceremony.
+
+The conditional in the middle is the operational catch: **browser trust is configuration**. Browsers only attempt Negotiate against sites an administrator has marked as intranet/trusted for integrated authentication; against everything else they quietly fall back. Which is why real deployments pair the silent path with a fallback path - try Kerberos, fall back to the login form - the exact pattern [authentication policy trees](/learn/pingfederate-authentication-policies) express in one branch.
+
+## The short list of ways it breaks
+
+Kerberos failures cluster tightly, and the list is worth memorizing. **Clock skew**: tickets are time-stamped and tolerance is minutes - unsynchronized clocks are failure mode number one, and time service health is Kerberos health. **SPN problems**: unregistered or duplicate SPNs mean the KDC issues tickets for the wrong key or none at all. **Keytab drift**: the service account's key changed (password reset) and the keytab still holds the old one. **Browser scope**: the site is not in the trusted zone, so the browser never tries. Four causes cover most incidents - and every one of them is checkable before a packet capture.
+
+## Where this lands in an identity product
+
+Map the machinery onto the [Kerberos adapter](/learn/pingfederate-authentication-adapters) and the configuration explains itself: the realm and KDC locate the ticket authority, the service account and keytab let the server decrypt what browsers bring, and the surrounding policy tree supplies the fallback for every client outside the silent path's reach. The prompt-free morning is not magic - it is tickets, names, keys, and clocks, each of which you can now name.

@@ -1,0 +1,46 @@
+---
+slug: kerberos-and-spnego
+title: "Kerberos e SPNEGO: Como o SSO Silencioso de Desktop Realmente Funciona"
+summary: "A maquinaria de tickets por trás do login sem prompt: os dois serviços do KDC, o TGT e o service ticket, por que SPNs e keytabs existem, como o SPNEGO carrega um ticket Kerberos dentro de um cabeçalho HTTP Negotiate, e a pequena lista de coisas - relógio fora de sincronia, SPN faltando, confiança do navegador - que quebram tudo na prática."
+concepts: ["kerberos", "spnego", "kdc", "tgt", "service ticket", "spn", "keytab", "negotiate", "iwa"]
+relatedTools: []
+relatedArticles: ["pingfederate-authentication-adapters", "pingfederate-authentication-policies", "ldap-fundamentals"]
+category: identity
+order: 44
+status: reviewed
+updated: "2026-07-20"
+---
+
+## A promessa: autenticação sem prompt
+
+Um usuário entra numa estação ingressada no domínio de manhã e, pelo resto do dia, abre aplicações internas que simplesmente sabem quem ele é - sem página de login, sem senha, sem cerimônia visível. Essa experiência é o Kerberos, e quando chega a uma aplicação web pelo navegador, o portador é o SPNEGO. Produtos de identidade a expõem como um adapter ou uma opção de "Autenticação Integrada do Windows"; entender a maquinaria por baixo é o que transforma os campos de configuração de folclore em engenharia.
+
+## Tickets: as duas conversas com o KDC
+
+Kerberos é um sistema de tickets operado pelo **KDC** - o Key Distribution Center, que num mundo Active Directory mora nos controladores de domínio. O KDC contém dois serviços lógicos, e o protocolo inteiro são duas conversas com eles.
+
+No login da estação, o cliente fala com o **Authentication Service** e prova conhecimento da senha do usuário - implantações modernas embrulham essa prova inicial em pré-autenticação - recebendo de volta um **Ticket-Granting Ticket (TGT)**: uma credencial com prazo que diz "este principal autenticou há pouco" sem nunca mais enviar a senha a lugar algum.
+
+Quando o usuário precisa de um serviço específico, o cliente apresenta o TGT ao **Ticket-Granting Service** e pede um **service ticket** para aquele serviço. O service ticket é cifrado com uma chave que só o serviço-alvo (e o KDC) conhece - então, quando o cliente entrega o ticket ao serviço, o serviço consegue decifrar e confiar **sem contatar o KDC**. Essa verificabilidade offline é a elegância do projeto: o KDC é consultado no login e no primeiro uso de cada serviço, não a cada requisição.
+
+## SPNs e keytabs: nomear e chavear o serviço
+
+Dois artefatos fazem o lado do serviço funcionar, e são exatamente os campos que um adapter pede.
+
+O **SPN** - Service Principal Name - é a identidade do serviço no sistema de tickets, convencionalmente no formato `HTTP/sso.example.com@REALM`. Quando o navegador quer um ticket "para aquele site", o SPN é como o KDC sabe com qual chave de serviço cifrá-lo. Um SPN não registrado ou duplicado é a razão mais comum de o SSO silencioso silenciosamente não acontecer.
+
+O **keytab** é um arquivo com a chave de longo prazo do serviço - o material que permite a um serviço fora do Windows (um servidor de identidade em Linux, digamos) decifrar os tickets que os clientes trazem, sem o serviço ingressar interativamente no domínio. É gerado contra a conta de serviço dona do SPN, é uma credencial em forma de arquivo, e é protegido e rotacionado como tal. Realm, endereço do KDC, conta de serviço, keytab: toda página de configuração de adapter Kerberos é este parágrafo em forma de formulário.
+
+## SPNEGO: o ticket encontra o HTTP
+
+Navegadores não falam Kerberos cru com sites; falam **SPNEGO** - o Simple and Protected GSS-API Negotiation Mechanism - dentro do HTTP. A dança é curta: o servidor desafia com `WWW-Authenticate: Negotiate`; um navegador que confia no site para autenticação integrada obtém um service ticket para o SPN do site e repete a requisição com o ticket embrulhado no cabeçalho `Authorization: Negotiate`; o servidor valida com o keytab e o usuário está autenticado - zero prompts, uma volta de cerimônia.
+
+A condicional no meio é a pegadinha operacional: **confiança do navegador é configuração**. Navegadores só tentam Negotiate contra sites que um administrador marcou como intranet/confiáveis para autenticação integrada; contra o resto, caem quietos para o caminho comum. É por isso que implantações reais emparelham o caminho silencioso com um de fallback - tenta Kerberos, cai para o formulário de login - exatamente o padrão que as [árvores de políticas de autenticação](/learn/pingfederate-authentication-policies) expressam num ramo.
+
+## A lista curta de jeitos de quebrar
+
+Falhas de Kerberos se agrupam com precisão, e a lista vale decorar. **Relógio fora de sincronia**: tickets têm carimbo de tempo e a tolerância é de minutos - relógios dessincronizados são o modo de falha número um, e a saúde do serviço de tempo é a saúde do Kerberos. **Problemas de SPN**: SPNs não registrados ou duplicados fazem o KDC emitir tickets para a chave errada, ou nenhum. **Keytab defasado**: a chave da conta de serviço mudou (reset de senha) e o keytab ainda guarda a antiga. **Escopo do navegador**: o site não está na zona confiável, então o navegador nem tenta. Quatro causas cobrem a maioria dos incidentes - e cada uma é verificável antes de qualquer captura de pacotes.
+
+## Onde isso pousa num produto de identidade
+
+Mapeie a maquinaria sobre o [adapter de Kerberos](/learn/pingfederate-authentication-adapters) e a configuração se explica: realm e KDC localizam a autoridade de tickets, conta de serviço e keytab deixam o servidor decifrar o que os navegadores trazem, e a árvore de política em volta fornece o fallback para todo cliente fora do alcance do caminho silencioso. A manhã sem prompts não é mágica - é tickets, nomes, chaves e relógios, e agora cada um deles tem nome.

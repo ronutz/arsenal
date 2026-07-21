@@ -53,6 +53,41 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-07-20",
+    time: "23:19",
+    kind: "content",
+    title: "The knowledge beneath PingFederate: LDAP, Kerberos, SCIM, a reading path, and thirteen glossary terms",
+    body: "A research pass over the PFP-001 dependency tree found the blueprint's own prerequisites uncovered: the exam assumes directory, Kerberos, and SCIM knowledge the site never taught. Three fundamentals articles fix that - the LDAP directory model behind every identity product, the ticket machinery that makes desktop SSO silent, and the provisioning standard that explains where accounts come from - each linked from the product articles and guide objectives that depend on them. A new reading path, PingFederate administration end to end, sequences the whole subject: fundamentals first, the ten product articles in teaching order, flows to close. And thirteen identity terms join the glossary - SCIM, Kerberos, SPNEGO, keytab, KDC, PCV, APC, policy tree, and friends - so the vocabulary now explains itself, underlined in place, throughout the wave.",
+    links: [
+      { label: "The reading path", href: "/study-guides" },
+      { label: "LDAP fundamentals", href: "/learn/ldap-fundamentals" },
+      { label: "Kerberos and SPNEGO", href: "/learn/kerberos-and-spnego" },
+    ],
+  },
+  {
+    date: "2026-07-20",
+    time: "22:50",
+    kind: "content",
+    title: "PingFederate Learn wave: ten articles close every gap on the PFP-001 guide",
+    body: "Hours after the Certified Professional - PingFederate study guide went live with fifteen honest article-coming markers, the articles arrived. Ten new pieces in the identity category - installation and initial setup, the upgrade playbook, the startup files tour, administrative access and RBAC, operational hygiene (license, notifications, configuration archive), the endpoints map, data stores, PCVs and the five adapters, the log files, and authentication policy trees - each written in English and Portuguese, each wired into the guide objective it teaches. The PFP-001 guide now has zero gaps: all twenty-four blueprint objectives carry study notes, at least one article on this site, and a pointer into the official documentation.",
+    links: [
+      { label: "The study guide, now gapless", href: "/certifications/ping-cp-pingfederate" },
+      { label: "Authentication policy trees", href: "/learn/pingfederate-authentication-policies" },
+      { label: "The log files", href: "/learn/pingfederate-log-files" },
+    ],
+  },
+  {
+    date: "2026-07-20",
+    time: "22:00",
+    kind: "content",
+    title: "The first fully worked study guide: Certified Professional - PingFederate (PFP-001)",
+    body: "The certifications section publishes its first complete guide. Every objective of the official PFP-001 blueprint - all four sections, twenty-four objectives, transcribed verbatim from Ping Identity's published exam study guide and live catalog - now carries study notes (the facts to know cold), links to the Learn articles and tools on this site that teach it, and a pointer into the official PingFederate documentation. The guide leads with the exam facts that matter when you book it: 70 multiple-choice items, 90 minutes, a 64% pass mark, PingFederate 12 or later. Where the site does not yet have an article for an objective, the guide says so honestly and that gap seeds the writing queue. As everywhere in this section: objectives map to learning resources, never to exam questions - study guides here help you learn the material, not shortcut the exam.",
+    links: [
+      { label: "Open the study guide", href: "/certifications/ping-cp-pingfederate" },
+      { label: "Certifications hub", href: "/certifications" },
+    ],
+  },
+  {
+    date: "2026-07-20",
     time: "21:30",
     kind: "feature",
     title: "Glossary hints grow a third gear: first, all, or none",

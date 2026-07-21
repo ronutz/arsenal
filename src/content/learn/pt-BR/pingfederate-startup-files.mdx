@@ -1,0 +1,32 @@
+---
+slug: pingfederate-startup-files
+title: "Os Arquivos de Inicialização do PingFederate: Quem Controla o Quê"
+summary: "Um tour pelos arquivos que decidem como um servidor PingFederate roda: os lançadores run.sh/run.bat, o run.properties para portas e papel no cluster, o jvm-memory.options para a heap, e o log4j2.xml para o que se escreve onde - mais o hábito de saber qual arquivo é dono de qual comportamento antes de precisar disso às 3 da manhã."
+concepts: ["pingfederate", "run.properties", "jvm-memory.options", "log4j2", "startup", "operational mode", "clustering"]
+relatedTools: []
+relatedArticles: ["pingfederate-install-and-initial-setup", "pingfederate-log-files", "pingfederate-operational-hygiene"]
+category: identity
+order: 35
+status: reviewed
+updated: "2026-07-20"
+---
+
+## O mapa
+
+Quase tudo de operacional num servidor PingFederate é decidido por um punhado de arquivos sob `<pf_install>/pingfederate`, e a habilidade que o exame (e a ponte de incidente) recompensa é saber **qual arquivo é dono de qual comportamento** sem consultar nada. O elenco, na ordem em que você o encontra:
+
+**`bin/run.sh` e `bin\run.bat`** são os lançadores - iniciam o servidor em primeiro plano no Linux/UNIX e no Windows, respectivamente. Servem ao primeiro boot e a sessões de diagnóstico; produção os embrulha num serviço, para o servidor subir com a máquina. Resista à tentação de editá-los para tuning: são lançadores, e o tuning pertence aos arquivos feitos para isso.
+
+**`bin/run.properties`** é o coração operacional. É onde vivem as portas - a 9999 do console administrativo e a 9031 do motor de runtime, ambas alteráveis aqui e em nenhum outro lugar sensato - junto com os hostnames que o servidor associa e anuncia. É também onde um nó aprende **o que ele é**: o modo operacional distingue um servidor autônomo de um nó de console em cluster e de um nó de motor em cluster. Mude o papel de um nó, suas portas ou o modo de autenticação do console, e você está editando o run.properties e reiniciando.
+
+**`bin/jvm-memory.options`** é dono das configurações de memória do Java - o dimensionamento de heap e as flags de memória da JVM (Java Virtual Machine). Quando um servidor precisa de mais memória, este arquivo é a resposta; editar scripts de lançamento ou exportar variáveis de ambiente é a camada errada. A separação é deliberada: o tuning de memória sobrevive a upgrades e permanece revisável quando mora no único arquivo cujo único trabalho é memória.
+
+**`server/default/conf/log4j2.xml`** decide o que é registrado, em que nível, em quais arquivos - assunto de artigo próprio nesta série. O ponto para o tour de inicialização é localização e propriedade: comportamento de log é configuração, mora sob `server/default/conf`, e mudanças locais nele são exatamente o tipo de customização que um upgrade não carrega por você.
+
+## A vizinhança maior do server/default
+
+A árvore `server/default` é onde a vida útil do servidor acontece. O `conf` guarda configuração além do log - incluindo o lar do arquivo de licença quando instalações são roteirizadas em vez de clicadas. Integration kits, adapters e drivers implantados pousam nos diretórios de biblioteca da mesma árvore; os arquivos automáticos de configuração que o servidor fotografa a cada mudança se acumulam sob seu diretório de dados. Raramente se edita aqui à mão além dos arquivos citados, mas lê-se daqui o tempo todo - e o planejamento de backup e de upgrade começa por saber que esta árvore é a memória do servidor.
+
+## O hábito que torna isso útil
+
+Perguntas de localização de arquivo parecem decoreba até um motor não subir, o console ficar inalcançável ou um nó de cluster acordar no papel errado. Aí a sequência de diagnóstico é exatamente este mapa: saída do lançador primeiro, `run.properties` para portas e papel, `jvm-memory.options` se a JVM morreu por memória, `log4j2.xml` e os [arquivos de log](/learn/pingfederate-log-files) para todo o resto. Aprenda o mapa quando nada está quebrado; recite-o quando algo estiver.

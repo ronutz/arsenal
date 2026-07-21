@@ -1,0 +1,32 @@
+---
+slug: scim-overview
+title: "SCIM: O Padrão Que Provisiona as Contas Que o SSO Autentica"
+summary: "O System for Cross-domain Identity Management de uma sentada: por que o provisionamento precisava de um padrão, os esquemas de Users e Groups da RFC 7643, o protocolo REST da RFC 7644 - criar, filtrar, PATCH, desativar - e onde o SCIM se encaixa ao lado de SAML e OIDC numa arquitetura de identidade: eles autenticam a conta; o SCIM é como a conta chegou lá."
+concepts: ["scim", "provisioning", "deprovisioning", "rfc 7643", "rfc 7644", "users", "groups", "lifecycle"]
+relatedTools: []
+relatedArticles: ["ldap-fundamentals", "pingfederate-data-stores", "saml-overview"]
+category: identity
+order: 45
+status: reviewed
+updated: "2026-07-20"
+---
+
+## O problema que o SSO não resolve
+
+Single sign-on responde "como a Ana entra na aplicação?". Nunca responde "como a aplicação soube que a Ana existe - e quem a remove no dia em que ela sai?". Essa segunda pergunta é **provisionamento**, e antes de ter um padrão ela tinha um pântano: uma integração de sincronização de usuários sob medida por aplicação, cada uma com sua API, seus nomes de atributos e seu jeito próprio de estar sutilmente quebrada. O SCIM - **System for Cross-domain Identity Management** - é o padrão que drenou o pântano: um esquema para o que um usuário é, um protocolo para manter sistemas de acordo sobre isso.
+
+## O esquema: o que é um User (RFC 7643)
+
+A primeira metade do SCIM é um modelo de dados, definido na RFC 7643. O recurso **User** carrega os atributos de que a gestão de contas realmente precisa - `userName`, `name` com suas partes, `emails`, `active` - e o recurso **Group** carrega um nome e seus membros. Todo recurso declara seu esquema por URN e carrega metadados de serviço; quando os atributos centrais não bastam, **esquemas de extensão** acrescentam mais sem quebrar o núcleo - a extensão enterprise (matrícula, departamento, gestor) sendo a primeira que todo mundo encontra. A língua dos payloads é JSON do início ao fim, o que é metade do motivo de integrações SCIM parecerem rotina onde suas antecessoras pareciam artesanato.
+
+Um booleano merece respeito especial: **`active`**. Desativação - virar `active` para false - é como a maior parte do deprovisionamento de fato acontece, preferida à exclusão por ser reversível, auditável e preservar o histórico da conta. "Colocar active=false minutos após o desligamento no RH" é a frase que a maioria das implantações de SCIM existe para tornar verdadeira.
+
+## O protocolo: verbos REST em /Users e /Groups (RFC 7644)
+
+A segunda metade, RFC 7644, é uma API REST (Representational State Transfer) com o formato que você chutaria - padronizado para você nunca mais precisar chutar. Recursos moram em `/Users` e `/Groups`. **POST** cria; **GET** lê - com uma gramática padrão de **filtro** (`userName eq "asouza"`) para localizar recursos por atributo, não só por id. **PUT** substitui o recurso inteiro; **PATCH** aplica mudanças pontuais - adicionar um membro a um grupo, virar o `active` - e o PATCH é o verbo que faz a maior parte do trabalho real, porque eventos de ciclo de vida são pequenos deltas, não reescritas. **DELETE** existe para os casos que a desativação não cobre. Um endpoint `ServiceProviderConfig` permite ao cliente descobrir o que o servidor suporta, o que mantém as implementações honestas sobre recursos opcionais.
+
+Os papéis têm nomes que valem manter em ordem: o **cliente** guarda a verdade e a empurra - tipicamente a plataforma de identidade ou o diretório alimentado pelo RH; o **service provider** (no sentido do SCIM) é a aplicação que recebe usuários. Suítes de identidade fazem os dois papéis em integrações diferentes: recebendo mudanças da força de trabalho de um lado, provisionando aplicações SaaS rio abaixo do outro.
+
+## Onde o SCIM se encaixa na arquitetura
+
+O modelo mental limpo é uma divisão de trabalho em três conversas. O [LDAP](/learn/ldap-fundamentals) e o sistema de RH são onde a identidade **mora**. O SCIM é como a identidade **viaja** - contas criadas, atualizadas, agrupadas e desligadas através de fronteiras de sistema, antes e independentemente de qualquer login. O [SAML](/learn/saml-overview) e o OIDC são como a identidade **autentica** - o momento de runtime que presume que a conta já está lá. Produtos borram as bordas - motores de provisionamento leem diretórios e falam SCIM para fora - mas a distinção em nível de blueprint se mantém, e é exatamente por isso que uma certificação de identidade lista o SCIM no vocabulário presumido: federação autentica usuários; o SCIM é o motivo de existir um usuário para autenticar - e de não existir mais no dia em que isso mais importa.

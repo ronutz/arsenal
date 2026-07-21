@@ -1,0 +1,38 @@
+---
+slug: pingfederate-log-files
+title: "The PingFederate Log Files: Which One Answers Which Question"
+summary: "The cast of <pf_install>/pingfederate/log and what each member is for: server.log for the application, admin.log and admin-api.log for who changed what, transaction.log for runtime protocol summaries, audit.log for authentication and security events - plus the log4j2.xml levels that control verbosity and the habit of matching the question to the file."
+concepts: ["pingfederate", "log files", "server.log", "audit.log", "transaction.log", "admin.log", "log4j2", "logging levels"]
+relatedTools: []
+relatedArticles: ["pingfederate-startup-files", "pingfederate-upgrade-playbook", "pingfederate-endpoints-map"]
+category: identity
+order: 41
+status: reviewed
+updated: "2026-07-20"
+---
+
+## One directory, many answers
+
+Everything PingFederate writes lands in `<pf_install>/pingfederate/log`, and the directory rewards being learned as a cast of characters rather than a list. Each file answers a **kind of question**, and both the exam and real troubleshooting are exercises in matching the question to the file before reading a single line.
+
+**`server.log`** is the main application log - the server's own life story. Startup and shutdown, errors and warnings, the health of subsystems. When the question is "is the server okay" or "why did it fail to start," this is the file, and it is always the first file after an upgrade.
+
+**`admin.log`** records administrator actions in the console - who changed what, when. **`admin-api.log`** is its twin for the administrative API, capturing what automation did. Together they are the configuration audit trail: when the question is "who touched this connection on Tuesday," the answer is here, not in the runtime logs.
+
+**`transaction.log`** summarizes runtime protocol transactions - the SSO (single sign-on) and OAuth conversations the engine conducted, one summary line at a time, with its own configurable detail modes governing how much each summary carries.
+
+**`audit.log`** records runtime authentication and security events: who authenticated, through what, with what result. This is the security team's file, the one that feeds the SIEM (Security Information and Event Management), and the one that answers "did this user sign in, and how."
+
+The supporting cast completes the picture: **`provisioner.log`** for provisioning activity, **`init.log`** for the earliest startup phase, and the HTTP request log for raw access records.
+
+## The security pair
+
+One pairing deserves to be stated the way the exam states it: for **tracking security-related events and transaction summaries**, the files are **`audit.log` and `transaction.log`** - the runtime pair. The distinction from the admin logs is the distinction between the two things "what happened" can mean: the admin logs know what administrators did to the configuration; the audit and transaction logs know what users and partners did through the runtime. Mixing those up sends an investigation to the wrong file for hours.
+
+## Levels: log4j2.xml holds the dial
+
+Verbosity is configuration, and it lives in `server/default/conf/log4j2.xml` - per-logger levels on the standard ladder: TRACE, DEBUG, INFO, WARN, ERROR. The operational pattern is surgical: raise one subsystem's logger to DEBUG while reproducing a problem, capture, restore. Blanket DEBUG on a busy engine buries the signal and taxes the disk; precision is the skill. And the file itself is a hand-edited customization with a known lifecycle consequence: an [upgrade](/learn/pingfederate-upgrade-playbook) ships a fresh log4j2.xml, and your local changes must be **merged** into it afterward - the post-upgrade task this series keeps returning to because it keeps being forgotten.
+
+## The habit
+
+The compressed version, worth reciting: admin actions → `admin.log` (or `admin-api.log` for automation); user sign-ins and security events → `audit.log`; protocol transaction summaries → `transaction.log`; server health → `server.log`; verbosity → `log4j2.xml`, surgically. Match the question to the file first, and the log directory turns from noise into an index.

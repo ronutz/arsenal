@@ -113,6 +113,29 @@ export default async function StudyGuidePage({
                     {guide.targetVersion ?? t("versionUnspecified")}
                   </span>
                 </li>
+                {/* At-a-glance exam facts (from the official catalog), when known. */}
+                {guide.examFacts && (
+                  <>
+                    <li>
+                      <span className="certguide-meta-label">{t("factsQuestions")}:</span>{" "}
+                      <span className="certguide-meta-value">{guide.examFacts.questions}</span>
+                    </li>
+                    <li>
+                      <span className="certguide-meta-label">{t("factsDuration")}:</span>{" "}
+                      <span className="certguide-meta-value">
+                        {t("factsMinutes", { minutes: guide.examFacts.minutes })}
+                      </span>
+                    </li>
+                    <li>
+                      <span className="certguide-meta-label">{t("factsPassMark")}:</span>{" "}
+                      <span className="certguide-meta-value">{guide.examFacts.passMark}</span>
+                    </li>
+                    <li>
+                      <span className="certguide-meta-label">{t("factsCost")}:</span>{" "}
+                      <span className="certguide-meta-value">{guide.examFacts.cost}</span>
+                    </li>
+                  </>
+                )}
                 {guide.blueprintSourceUrl && (
                   <li>
                     <span className="certguide-meta-label">{t("sourceLabel")}:</span>{" "}
@@ -127,6 +150,10 @@ export default async function StudyGuidePage({
                   </li>
                 )}
               </ul>
+
+              {guide.examFacts?.note && (
+                <p className="certguide-partof">{guide.examFacts.note}</p>
+              )}
 
               {/* Disclaimer (every guide). */}
               <p className="certguide-disclaimer">
@@ -163,6 +190,7 @@ export default async function StudyGuidePage({
                           manual: t("manualLabel"),
                           latest: t("latestTag"),
                           articleComing: t("articleComing"),
+                          keyPoints: t("keyPointsLabel"),
                         }}
                       />
                     ))}
@@ -201,6 +229,7 @@ function ObjectiveRow({
     manual: string;
     latest: string;
     articleComing: string;
+    keyPoints: string;
   };
 }) {
   const hasArticles = o.relatedArticles.length > 0;
@@ -212,6 +241,18 @@ function ObjectiveRow({
       <p className="certguide-objective-text">
         <span className="certguide-objective-id mono">{o.id}</span> {o.text}
       </p>
+
+      {/* Study notes: the facts to know cold for this objective. */}
+      {o.keyPoints && o.keyPoints.length > 0 && (
+        <div className="certguide-resource">
+          <span className="certguide-resource-label">{labels.keyPoints}:</span>
+          <ul className="certguide-keypoints">
+            {o.keyPoints.map((k, i) => (
+              <li key={i}>{k}</li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {hasArticles && (
         <div className="certguide-resource">

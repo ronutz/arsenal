@@ -1,0 +1,34 @@
+---
+slug: pingfederate-endpoints-map
+title: "The PingFederate Endpoints Map: Admin Port, Runtime Port, and What Lives Where"
+summary: "Every PingFederate endpoint belongs to one of two families: administrative endpoints on the console port (the console app and the /pf-admin-api) or runtime endpoints on the engine port (/idp and /sp application endpoints, the /as OAuth authorization server, OIDC's userinfo and discovery, and the /pf/heartbeat.ping that load balancers watch). Knowing which port answers which path is half the troubleshooting."
+concepts: ["pingfederate", "endpoints", "admin api", "heartbeat", "runtime", "sso endpoints", "oauth endpoints"]
+relatedTools: ["oidc"]
+relatedArticles: ["pingfederate-install-and-initial-setup", "saml-bindings-and-sso-initiation", "oidc-discovery"]
+category: identity
+order: 38
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Two ports, two worlds
+
+A PingFederate server answers on two ports, and every endpoint question resolves to knowing which world a path belongs to. The **administrative** world lives on the console port (9999 by default): humans and automation configuring the server. The **runtime** world lives on the engine port (9031 by default): browsers, partners, and clients actually performing SSO (single sign-on) and OAuth. The families never mix - an admin path does not answer on the runtime port, and vice versa - which is exactly why the distinction is the recurring exam angle and the first fork in any connectivity diagnosis.
+
+## The administrative family
+
+The console application itself is the endpoint humans use. Beside it sits the **administrative API** under `/pf-admin-api` - the REST (Representational State Transfer) surface through which everything the console does can be done programmatically: connections, adapters, clients, policies. Interactive API documentation ships with it, which makes the admin API discoverable from a browser before it is scripted from a pipeline. Infrastructure-as-code deployments of PingFederate are, in practice, deployments against this API - and it lives on the admin port, governed by the same administrative authentication and roles as the console.
+
+## The runtime family
+
+The runtime port carries three clusters of paths.
+
+The **SSO application endpoints** live under `/idp` and `/sp`: the start endpoints that launch flows (IdP-initiated and SP-initiated SSO, and their single-logout twins) and the protocol endpoints that receive the SAML (Security Assertion Markup Language) messages those starts set in motion. Their variables and the initiation styles they serve have their own treatment in the [SSO initiation article](/learn/saml-bindings-and-sso-initiation) - the endpoints-map fact is simply that this whole family is runtime.
+
+The **OAuth authorization server** lives under `/as`: authorization, token, introspection, revocation - the endpoints of every OAuth conversation. OIDC (OpenID Connect) extends the same world with the UserInfo endpoint, the published signing keys, and **discovery** at the well-known configuration path, where a client reads the provider's entire endpoint map in one request - the self-describing counterpart to everything this article lists by hand.
+
+And then there is the smallest, most-watched endpoint on the server: **`/pf/heartbeat.ping`**. It answers on the runtime port with the server's liveness, and it exists for machines - the load balancer health monitor, the uptime check, the orchestrator deciding whether this engine receives traffic. When an engine leaves a pool mysteriously, the conversation between the balancer and the heartbeat is where the answer lives.
+
+## Using the map
+
+Three habits turn the map into skill. When a partner reports an unreachable endpoint, first classify the path - admin or runtime - and check the matching port and firewall rule before anything deeper. When automating, remember the admin API is configuration and belongs behind administrative controls, never exposed alongside runtime traffic. And when building monitoring, point liveness checks at the heartbeat and functional checks at the runtime flows - the two answer different questions, and healthy deployments watch both.

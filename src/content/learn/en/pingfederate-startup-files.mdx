@@ -1,0 +1,32 @@
+---
+slug: pingfederate-startup-files
+title: "The PingFederate Startup Files: Who Controls What"
+summary: "A tour of the files that decide how a PingFederate server runs: the run.sh/run.bat launchers, run.properties for ports and the clustered role, jvm-memory.options for the heap, and log4j2.xml for what gets written where - plus the habit of knowing which file owns which behavior before you need it at 3 a.m."
+concepts: ["pingfederate", "run.properties", "jvm-memory.options", "log4j2", "startup", "operational mode", "clustering"]
+relatedTools: []
+relatedArticles: ["pingfederate-install-and-initial-setup", "pingfederate-log-files", "pingfederate-operational-hygiene"]
+category: identity
+order: 35
+status: reviewed
+updated: "2026-07-20"
+---
+
+## The map
+
+Almost everything operational about a PingFederate server is decided by a handful of files under `<pf_install>/pingfederate`, and the skill the exam (and the incident bridge) rewards is knowing **which file owns which behavior** without looking it up. The cast, in the order you meet them:
+
+**`bin/run.sh` and `bin\run.bat`** are the launchers - they start the server in the foreground on Linux/UNIX and Windows respectively. They are for first boots and troubleshooting sessions; production wraps them in a service so the server starts with the machine. Resist the temptation to edit them for tuning: they are launchers, and the tuning belongs in the files built for it.
+
+**`bin/run.properties`** is the operational heart. This is where the ports live - the administrative console's 9999 and the runtime engine's 9031, both changeable here and nowhere else sensible - along with the hostnames the server binds and advertises. It is also where a node learns **what it is**: the operational mode distinguishes a standalone server from a clustered console node and a clustered engine node. Change a node's role, its ports, or its console-authentication mode, and you are editing run.properties and restarting.
+
+**`bin/jvm-memory.options`** owns the Java memory settings - the heap sizing and related JVM (Java Virtual Machine) flags. When a server needs more memory, this file is the answer; editing launch scripts or exporting environment variables is the wrong layer. The separation is deliberate: memory tuning survives upgrades and stays reviewable when it lives in the one file whose only job is memory.
+
+**`server/default/conf/log4j2.xml`** decides what gets logged, at what level, to which files - the subject of its own article in this series. The point for the startup tour is location and ownership: logging behavior is configuration, it lives under `server/default/conf`, and local changes to it are exactly the kind of customization an upgrade will not carry for you.
+
+## The wider server/default neighborhood
+
+The `server/default` tree is where the server's working life happens. `conf` holds configuration beyond logging - including the license file's home when installs are scripted rather than clicked. Deployed integration kits, adapters, and drivers land in the library directories under the same tree; the automatic configuration archives the server snapshots on change accumulate under its data directory. You rarely hand-edit here beyond the files named above, but you read from here constantly - and backup and upgrade planning both start from knowing this tree is the server's memory.
+
+## The habit that makes this useful
+
+File-location questions look like trivia until an engine will not start, the console is unreachable, or a cluster node came up in the wrong role. Then the diagnostic sequence is exactly this map: launcher output first, `run.properties` for ports and role, `jvm-memory.options` if the JVM died for memory, `log4j2.xml` and the [log files](/learn/pingfederate-log-files) for everything else. Learn the map when nothing is broken; recite it when something is.

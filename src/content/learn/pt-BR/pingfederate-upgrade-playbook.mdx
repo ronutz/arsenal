@@ -1,0 +1,36 @@
+---
+slug: pingfederate-upgrade-playbook
+title: "Atualizando o PingFederate: O Utilitário, o Merge e a Ordem no Cluster"
+summary: "Como upgrades de PingFederate realmente funcionam: o Upgrade Utility que copia a configuração da instalação antiga para a nova, as release notes que se leem para cada versão cruzada, o merge da configuração de log que todo mundo esquece, e a ordem console-primeiro que mantém o cluster consistente."
+concepts: ["pingfederate", "upgrade", "upgrade utility", "release notes", "log4j2", "cluster"]
+relatedTools: []
+relatedArticles: ["pingfederate-install-and-initial-setup", "pingfederate-startup-files", "pingfederate-log-files"]
+category: identity
+order: 34
+status: reviewed
+updated: "2026-07-20"
+---
+
+## O modelo: instalação nova ao lado da antiga
+
+O PingFederate não se atualiza no lugar a partir de um ZIP - o caminho padrão é lado a lado. Você instala a versão nova ao lado da antiga e roda o **Upgrade Utility** que acompanha o novo release. O utilitário lê a instalação de origem e copia configuração, conexões, adapters, chaves e customizações implantadas para a instalação nova, produzindo um servidor novo que acredita ter sido sempre o antigo. No Windows, o instalador pode alternativamente atualizar no lugar; o modelo lado a lado continua sendo o que generaliza entre plataformas e o que vale internalizar.
+
+O formato lado a lado é um presente para a operação: a instalação antiga permanece intacta e inicializável, o que significa que o plano de rollback é "suba a antiga" em vez de "restaure do backup e reze". Mantenha a árvore antiga até a versão nova ter sobrevivido a tráfego real.
+
+## Leia antes de saltar
+
+Todo upgrade começa nas **release notes e considerações de upgrade** - de cada versão que você cruza, não só a de destino. Adapters são descontinuados, propriedades mudam de nome, padrões mudam, requisitos de Java se movem. Um salto por vários releases é um salto por vários conjuntos de considerações, e as surpresas moram nas versões do meio que ninguém leu. Duas perguntas para responder antes de tocar em qualquer coisa: a versão nova exige um Java mais novo que o do host, e a licença atual vale para a nova versão principal? Upgrades de versão comumente exigem uma licença emitida para a nova linha - validade de licença pertence ao checklist de pré-voo, não ao post-mortem.
+
+## O merge que todo mundo esquece
+
+O Upgrade Utility copia o que entende, e arquivos de infraestrutura editados à mão são onde o entendimento dele termina. O caso clássico - clássico o bastante para ser tópico de amostra da certificação - é a **configuração de log customizada**: mudanças locais no `log4j2.xml` não são levadas automaticamente, porque a versão nova traz sua própria configuração de log, que pode ela mesma ter mudado. A tarefa pós-upgrade é um merge deliberado: reaplicar suas customizações - os appenders extras, os níveis elevados, as mudanças de retenção - sobre o arquivo novo, em vez de atropelar o arquivo novo com o antigo.
+
+A mesma disciplina se estende ao resto da superfície de customização: templates e branding da interface, arquivos de mensagens localizados, qualquer coisa colocada à mão na árvore do servidor. Inventarie o que foi customizado antes do upgrade; verifique cada item depois. Os servidores que atualizam com dor são os de customizações não documentadas.
+
+## Clusters: console primeiro
+
+Numa implantação em cluster a ordem é fixa: **atualize primeiro o nó do console administrativo, depois os nós de motor**, e confirme a replicação de configuração quando os motores voltarem. O console é a autoridade de configuração; os motores são consumidores. Levar a autoridade à versão nova primeiro mantém cada passo seguinte fluindo na direção suportada, e atualizar motores um a um mantém capacidade de runtime disponível o tempo todo - a razão de o cluster existir.
+
+## Depois: prove, e não apague nada ainda
+
+O upgrade termina quando as evidências dizem, não quando o processo sai. O conjunto de provas: o servidor sobe limpo (olhe os [arquivos de log](/learn/pingfederate-log-files) - `server.log` primeiro), o console abre e mostra a versão esperada, uma transação de SSO representativa completa contra um parceiro real, um cliente OAuth obtém um token, e o inventário de customizações confere - incluindo aquele merge de log. Só depois de a versão nova carregar tráfego genuíno é que a instalação antiga se forma de plano de rollback em espaço em disco.

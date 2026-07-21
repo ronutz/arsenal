@@ -1,0 +1,44 @@
+---
+slug: pingfederate-install-and-initial-setup
+title: "Installing PingFederate: Requirements, First Run, and the Setup Wizard"
+summary: "What a PingFederate deployment needs before the ZIP is even extracted - a supported Java runtime, the 9999/9031 port plan, a dedicated service account - then the install itself on Windows or Linux, and exactly what the initial configuration wizard asks of you on first login: license, first administrator, and the base URL partners will trust."
+concepts: ["pingfederate", "installation", "system requirements", "setup wizard", "java", "ports", "service account"]
+relatedTools: []
+relatedArticles: ["pingfederate-upgrade-playbook", "pingfederate-startup-files", "pingfederate-endpoints-map"]
+category: identity
+order: 33
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Before the ZIP: what the server needs
+
+PingFederate is a Java application, and everything starts there: the host needs a supported 64-bit JVM (Java Virtual Machine), and "supported" is a moving target that the system-requirements page of your target version settles authoritatively - check it for every install and every upgrade rather than trusting memory. The operating-system list covers current Windows Server releases and the enterprise Linux distributions; the administrative console is used through a current mainstream browser (Chrome, Firefox, Edge, Safari).
+
+The network plan matters more than the hardware minimums. Two ports define the product's shape: **9999** serves the administrative console and the administrative API, **9031** serves the runtime engine - the port where browsers, partners, and OAuth clients actually arrive. Both are HTTPS, both are defaults you can change in run.properties, and both deserve deliberate firewall treatment: admin access restricted to the operations network, runtime access open to whatever population the deployment serves, and outbound paths cleared for back-channel calls to data stores and partners.
+
+Sizing follows the role split. The console node does light work; runtime engines carry the concurrent SSO (single sign-on) and OAuth load and are the thing you scale. A production deployment is a cluster - one console node, multiple engines - even when a single machine could technically carry the traffic, because maintenance without an outage window requires somewhere for the traffic to go.
+
+## The install: one ZIP, any platform
+
+The distribution is a ZIP for every platform, plus a Windows installer for those who prefer it. The ZIP path is beautifully boring: extract to the installation directory - conventionally referred to as `<pf_install>/pingfederate` - and the product is installed. There is no external database requirement for the core product; configuration lives on the filesystem, and clustering replicates it between nodes.
+
+First start happens in the foreground: `bin/run.sh` on Linux/UNIX, `bin\run.bat` on Windows. Foreground is for the first boot and for troubleshooting; production runs as a service, and the distribution provides the pieces - Windows service scripts, and service integration for Linux init systems - so the server survives reboots without a human.
+
+One discipline belongs in every runbook: PingFederate runs as a **dedicated, non-root service account** that owns the installation tree. Not root, not Administrator, not a shared account. The server needs to read and write its own directories and nothing else; an identity product is exactly the wrong place to discover what over-privileged processes can do.
+
+## First login: what the wizard actually does
+
+Browse to the administrative console - `https://<host>:9999/pingfederate/app` - and the initial setup takes over. It is short, and every step is on the exam-relevant list because every step defines the server's identity:
+
+The **license agreement and license file** come first: accept the terms, import the `.lic` file Ping Identity issued. No license, no server.
+
+The **initial administrative account** is created next - the first native admin user and its password. This account is the only key to the console until you create more administrators or move console authentication to a directory, so treat its credentials accordingly.
+
+The **base URL** is the step with consequences beyond this machine: it is the runtime address that partners, metadata, and OAuth clients will embed - the name the outside world uses to reach this PingFederate. Get it right before the first connection is built, because it propagates into everything you export afterwards.
+
+Recent releases also offer to connect the environment to **PingOne** during setup, linking the on-premises server to Ping's cloud platform. It is genuinely optional: a standalone deployment skips it and loses nothing that matters locally.
+
+## What "installed" should mean
+
+A finished installation is more than a running process. The checklist that separates installed from production-ready: the JVM version documented, the service configured to start on boot under the dedicated account, ports 9999 and 9031 reachable from exactly the networks that should reach them, the license imported and its expiry known, the first admin's credentials stored properly, and the base URL confirmed as the name that will appear in every partner conversation from now on. The next two stops on this path: the [startup files](/learn/pingfederate-startup-files) that control how the server runs, and the [upgrade playbook](/learn/pingfederate-upgrade-playbook) for when this version is no longer the current one.

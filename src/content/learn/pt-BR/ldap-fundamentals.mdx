@@ -1,0 +1,40 @@
+---
+slug: ldap-fundamentals
+title: "Fundamentos de LDAP: O Modelo de Diretório por Trás dos Sistemas de Identidade"
+summary: "O Lightweight Directory Access Protocol a partir dos princípios: a árvore de entradas e seus distinguished names, a operação de bind que autentica, buscas com base, escopo e filtro, os grupos sobre os quais decisões de acesso se apoiam, e o transporte LDAPS - o vocabulário de trabalho que todo produto de identidade presume antes de a própria documentação fazer sentido."
+concepts: ["ldap", "directory", "distinguished name", "bind", "search filter", "ldaps", "active directory", "groups"]
+relatedTools: []
+relatedArticles: ["pingfederate-data-stores", "pingfederate-admin-access-and-rbac", "pingfederate-authentication-adapters"]
+category: identity
+order: 43
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Por que identidade sempre começa aqui
+
+Toda implantação de identidade acaba apontando para um diretório: os admins do console são procurados num, os validadores de senha fazem bind noutro, os lookups de atributos leem de um terceiro - que geralmente são o mesmo. LDAP - o Lightweight Directory Access Protocol - é o protocolo que essas conversas falam, e os produtos se documentam no vocabulário dele. Aprenda o vocabulário uma vez e toda página de "configure o data store LDAP" fica óbvia; pule-o e as mesmas páginas parecem encantamentos.
+
+## A árvore e os nomes
+
+Um diretório é uma **árvore de entradas** - a Directory Information Tree. Cada entrada é um saco de atributos (`cn`, `mail`, `memberOf`, `objectClass`...), e cada entrada tem exatamente um endereço: seu **Distinguished Name (DN)**, lido da folha até a raiz - `cn=Ana Souza,ou=Engineering,dc=example,dc=com`. O componente mais à esquerda (`cn=Ana Souza`) é o Relative Distinguished Name, o nome da entrada dentro do seu galho; o resto é o caminho. Duas consequências fazem muito trabalho silencioso: DNs são endereços únicos, então referenciar uma entrada é guardar seu DN - e o formato da árvore é decisão de projeto, então as bases de busca (abaixo) são como se limita o trabalho ao galho que importa.
+
+O **esquema** - quais atributos uma entrada pode carregar, imposto pelas suas object classes - é por que o mesmo produto se comporta diferente contra o Active Directory e contra um diretório genérico: os nomes de atributo mudam (`sAMAccountName` é um fato da vida no Active Directory), e a configuração "tipo de diretório" nos produtos existe exatamente para absorver essas diferenças de dialeto.
+
+## Bind: como a autenticação acontece
+
+A operação de autenticação do LDAP é o **bind**: apresente um DN e uma credencial, e a conexão passa a estar autenticada como aquela entrada. Dois binds aparecem em toda implantação e valem ser mantidos distintos. O **bind da conta de serviço** é o produto em si conectando - uma conta dedicada, de privilégio mínimo, cujas credenciais moram na configuração e cuja expiração de senha pertence a um calendário operacional. O **bind de verificação do usuário** é como a checagem de senha de fato funciona na maioria dos sistemas: primeiro busca-se a entrada do usuário para descobrir seu DN, depois tenta-se um bind como aquele DN com a senha fornecida. Bind bem-sucedido, senha certa - o próprio diretório é o juiz, e nenhum hash de senha jamais sai dele.
+
+## Busca: base, escopo, filtro
+
+Ler um diretório é a operação de **search**, e ela pede três decisões. A **base DN** diz onde na árvore começar. O **escopo** diz até onde olhar: só a entrada-base, seus filhos imediatos (um nível), ou a subárvore inteira abaixo - subárvore sendo a escolha cotidiana. O **filtro** diz o que qualifica, na sintaxe entre parênteses que parece estranha por uma tarde e depois vira legível para sempre: `(uid=asouza)`, `(&(objectClass=person)(mail=*@example.com))` - `&` para e, `|` para ou, `!` para não, `*` como curinga. Quando um produto pede um "user search base" e um "user filter", ele está fazendo exatamente estas perguntas - e bases mal escopadas ou filtros largos demais estão por trás da maioria dos mistérios de "usuário não encontrado" e de login lento.
+
+Os **grupos** andam na mesma maquinaria: pertencimento é atributo - uma entrada de grupo listando membros, ou uma entrada de usuário carregando `memberOf` - e "mapear grupos do diretório para papéis" significa "ler esses atributos e tratá-los como autorização".
+
+## O fio: LDAPS
+
+Binds carregam senhas, buscas carregam dados de identidade - o transporte não é opcional. O **LDAPS** embrulha o protocolo em TLS na sua própria porta (636, contra 389 do LDAP puro), e confiar no certificado do diretório vira parte da configuração do cliente - motivo pelo qual uma integração de diretório e uma conversa de [confiança em certificados](/learn/certificate-validation) costumam ser o mesmo chamado. Diretórios de produção vêm em pares replicados ou melhor, e clientes listam múltiplos hosts para failover: um sistema de identidade é exatamente tão disponível quanto seu diretório, então o diretório vem no plural.
+
+## O retorno
+
+Com este vocabulário, os objetivos de produto de identidade colapsam em reconhecimento. Um [data store LDAP](/learn/pingfederate-data-stores) é lista de hosts + bind de serviço + tipo de diretório. [Login do console via diretório](/learn/pingfederate-admin-access-and-rbac) é base de busca, filtro e mapeamento de grupo para papel. Um validador de senha LDAP é o padrão busca-depois-bind com um nome em cima. O diretório nunca foi a parte difícil - era só a parte presumida.

@@ -1,0 +1,34 @@
+---
+slug: pingfederate-authentication-adapters
+title: "How Users Prove Who They Are: PCVs and the Five Adapters"
+summary: "The PingFederate authentication toolkit the exam names: Password Credential Validators as the reusable password-checking layer, then the five adapters and the integration pattern each one embodies - HTML Form for interactive login, HTTP Basic for the 401 challenge, Kerberos for silent desktop SSO, OpenToken for integration-kit handoff, and Reference ID for the agentless back-channel."
+concepts: ["pingfederate", "adapters", "pcv", "html form adapter", "kerberos", "spnego", "opentoken", "reference id"]
+relatedTools: []
+relatedArticles: ["kerberos-and-spnego", "ldap-fundamentals", "pingfederate-data-stores", "pingfederate-authentication-policies", "saml-overview"]
+category: identity
+order: 40
+status: reviewed
+updated: "2026-07-20"
+---
+
+## PCVs: the password layer, factored out
+
+A Password Credential Validator (PCV) does one thing: given a username and password, it answers valid or invalid against a source. The LDAP Username PCV - checking against a directory through a [data store](/learn/pingfederate-data-stores) - is the workhorse; other validators cover other sources. The design point is that PCVs are **not used directly by users**: adapters consume them. Factoring password verification out of the adapters means one validator definition serves the login form, the basic-auth challenge, and anything else that needs a password checked - and swapping the source touches one definition, not every login experience.
+
+## The five adapters, five patterns
+
+An adapter is how PingFederate actually authenticates a user - or receives a user someone else authenticated. The exam names five, and each is worth knowing as the **pattern it embodies**, because scenario questions describe a situation and ask which pattern fits.
+
+**HTML Form Adapter** - the interactive pattern. This is the branded login page: it chains one or more PCVs to verify the password, and it owns the account-service features that surround interactive login - lockout tracking after failed attempts, password change and reset flows, remember-my-username. When the scenario involves humans at a login page, this is the adapter, and the account-lifecycle features are why it is more than a form.
+
+**HTTP Basic Adapter** - the challenge pattern. A bare 401 browser challenge backed by a PCV: no page, no branding, no session niceties. Its habitat is APIs (Application Programming Interfaces), legacy clients, and tooling that speaks basic authentication natively. The trade is explicit: simplicity and universality in exchange for every human-facing feature the form adapter has.
+
+**Kerberos Adapter** - the silent pattern. Integrated Windows Authentication via SPNEGO (Simple and Protected GSS-API Negotiation Mechanism): a domain-joined workstation proves the user's identity from the existing Kerberos session, and the user sees no prompt at all. The cost of silence is configuration on both sides - the realm and KDC (Key Distribution Center) details plus a service account and keytab on the PingFederate side, and browser trust configuration on the client side. When the scenario says "employees on domain machines, no login prompt," this is the answer, and the keytab is why it works.
+
+**OpenToken Adapter** - the integration-kit pattern. The bridge to applications wired with Ping's integration kits: the authenticated identity travels between PingFederate and the application as an encrypted OpenToken, carried by cookie, query parameter, or POST. It runs in both directions - the application can be the thing receiving the identity after SSO, or the thing asserting an already-authenticated user into PingFederate. When the application has an agent from an integration kit, OpenToken is the wire format between them.
+
+**Reference ID Adapter** - the agentless pattern. No agent, no token parsing in the application: PingFederate and the application exchange a short-lived **reference** through a secured back-channel drop-off and pick-up API, and the reference redeems for the user's attributes server-to-server. The application's job shrinks to one authenticated back-channel call - which is exactly the point when installing an agent is impossible or unwanted.
+
+## Choosing, and what comes next
+
+The selection logic compresses well: humans at a page → HTML Form; API or legacy basic-auth → HTTP Basic; domain desktops, zero prompts → Kerberos; integration-kit application → OpenToken; agentless application → Reference ID. Adapters authenticate - but which adapter a given user meets, in what order, with what fallbacks, is the job of [authentication policies](/learn/pingfederate-authentication-policies), where these building blocks become trees.

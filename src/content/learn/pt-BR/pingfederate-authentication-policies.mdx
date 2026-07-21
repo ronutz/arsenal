@@ -1,0 +1,38 @@
+---
+slug: pingfederate-authentication-policies
+title: "Políticas de Autenticação do PingFederate: Árvores, Seletores e o Contrato no Fim"
+summary: "Como o PingFederate decide quem autentica como: árvores de política cujos nós são fontes de autenticação e seletores, ramos Fail e Success fluindo de cima para baixo, fragmentos reutilizáveis para sequências comuns, e o Authentication Policy Contract no fim de todo caminho bem-sucedido - a camada de normalização que torna tudo rio abaixo independente da fonte."
+concepts: ["pingfederate", "authentication policies", "policy trees", "selectors", "apc", "fragments", "authentication sources"]
+relatedTools: []
+relatedArticles: ["pingfederate-authentication-adapters", "saml-bindings-and-sso-initiation", "oidc-authorization-code-flow"]
+category: identity
+order: 42
+status: reviewed
+updated: "2026-07-20"
+---
+
+## O problema que as árvores resolvem
+
+[Adapters](/learn/pingfederate-authentication-adapters) sabem autenticar; não sabem **quem deve encontrar qual deles, em que ordem, com quais fallbacks**. Essa orquestração é a camada de políticas de autenticação: árvores avaliadas em runtime que roteiam cada usuário que chega para a experiência certa - funcionários para o Kerberos silencioso, todos os demais para o formulário de login, os usuários desta aplicação por um segundo fator - a partir dos mesmos blocos de construção.
+
+## Anatomia de uma árvore
+
+Uma árvore de política se lê de cima para baixo, e seus nós vêm em dois tipos.
+
+**Fontes de autenticação** fazem o autenticar: instâncias de adapter, ou conexões IdP (Identity Provider, provedor de identidade) quando a "fonte" é outro parceiro de federação. Cada nó de fonte tem duas saídas - **Fail** e **Success** - e os ramos são a lógica. O Fail da tentativa de Kerberos pode fluir para o nó do HTML Form, e essa única linha de árvore é o padrão clássico: tentar o SSO silencioso de desktop, cair para a página de login, invisivelmente para o usuário que só vê a coisa certa acontecer.
+
+**Seletores** ramificam sem autenticar ninguém. Um seletor inspeciona contexto - qual aplicação foi pedida, de qual faixa de rede a requisição veio, uma propriedade estendida da conexão, e sinais semelhantes - e roteia de acordo. Seletores são como uma árvore serve populações diferentes de formas diferentes: a faixa CIDR (Classless Inter-Domain Routing) corporativa desce pelo ramo do Kerberos, todo o resto vai direto ao formulário; o ramo da aplicação sensível adiciona um segundo fator que o ramo comum pula.
+
+**Fragmentos** mantêm a coisa sustentável. Um fragmento é uma subárvore reutilizável - login por formulário seguido de segundo fator, digamos - construída uma vez e referenciada de qualquer política que precise da sequência. Quando a configuração do segundo fator muda, muda no fragmento, e toda política que o referencia acompanha. Árvores que se repetem são árvores no meio de uma refatoração.
+
+As políticas então vivem numa lista ordenada com padrões abaixo: a avaliação encontra a política aplicável e, quando nada se aplica, o comportamento padrão configurado responde - de modo que a reação do sistema a "nenhuma política casou" é uma decisão que você tomou, não um acidente que você descobre.
+
+## O contrato no fim
+
+Todo caminho bem-sucedido por uma árvore termina do mesmo jeito: cumprindo um **Authentication Policy Contract** (APC). O APC é um conjunto nomeado de atributos - a identidade normalizada que a configuração rio abaixo consome - e seu cumprimento mapeia o que quer que a fonte vencedora produziu naquela forma comum.
+
+Este é o golpe de mestre silencioso do projeto inteiro. O adapter de Kerberos e o HTML Form emitem atributos crus diferentes; o APC absorve a diferença. Rio abaixo - as conexões SP (Service Provider, provedor de serviço), os mapeamentos OAuth - tudo se liga ao contrato, não às fontes. Adicione uma fonte amanhã, rearranje a árvore no trimestre que vem: enquanto cada caminho cumprir o contrato, nada rio abaixo percebe. O APC é onde "como o usuário autenticou" deixa de importar e "quem o usuário é" começa - exatamente a fronteira sobre a qual as [camadas de mapeamento de atributos](/certifications/ping-cp-pingfederate) constroem.
+
+## Configuração básica, na versão do exame
+
+O objetivo diz "configuração básica", e o básico comprime em cinco movimentos: escolha as fontes de autenticação e as posicione como nós; ligue os ramos Fail e Success na história de fallback pretendida; adicione seletores onde o contexto deva mudar a rota; termine todo caminho bem-sucedido no cumprimento de um APC; e extraia para um fragmento qualquer coisa que você construiu duas vezes. Uma árvore que um colega consegue ler de cima a baixo e narrar em voz alta - "rede corporativa tenta Kerberos, cai para o formulário, apps sensíveis somam um fator, todos pousam no contrato" - é a configuração fazendo seu trabalho.

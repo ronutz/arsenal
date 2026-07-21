@@ -94,6 +94,9 @@ export default async function StudyGuidesPage({
               </div>
               <p className="certs-group-intro">{t("pathsLede")}</p>
 
+              {/* Each path is a card; the wrapper owns the spacing between
+                  cards (certhub-note has none - it was born a single note). */}
+              <div className="reading-path-list">
               {READING_PATHS.map((path) => {
                 // Resolve every step live from the article registry: the title
                 // shown is always the article's current localized title.
@@ -121,10 +124,12 @@ export default async function StudyGuidesPage({
                     <p className="certhub-note-body">
                       <strong>{t("stepsLabel")}:</strong>
                     </p>
-                    <ol>
+                    <ol className="reading-path-steps">
                       {steps.map((a) => (
                         <li key={a.slug}>
-                          <Link href={`/learn/${a.slug}`}>{a.title}</Link>
+                          <Link href={`/learn/${a.slug}`} className="certguide-resource-link">
+                            {a.title}
+                          </Link>
                         </li>
                       ))}
                     </ol>
@@ -135,7 +140,9 @@ export default async function StudyGuidesPage({
                         {pathTools.map((tl, i) => (
                           <span key={tl.id}>
                             {i > 0 && " · "}
-                            <Link href={tl.href}>{tTools(`${tl.id}.name`)}</Link>
+                            <Link href={tl.href} className="certguide-resource-link">
+                              {tTools(`${tl.id}.name`)}
+                            </Link>
                           </span>
                         ))}
                       </p>
@@ -143,6 +150,7 @@ export default async function StudyGuidesPage({
                   </div>
                 );
               })}
+              </div>
             </div>
           </section>
 

@@ -1,0 +1,30 @@
+---
+slug: pingfederate-data-stores
+title: "PingFederate Data Stores: LDAP and JDBC, Defined Once, Used Everywhere"
+summary: "Data stores are PingFederate's reusable connection definitions: an LDAP store with directory type, failover hosts, bind credentials, and LDAPS; a JDBC store with its connection URL, validation query, and the driver JAR that must be deployed before anything connects. Credential validators, attribute lookups, and provisioning all consume the same definitions - which is the whole point."
+concepts: ["pingfederate", "data stores", "ldap", "jdbc", "failover", "validation query", "attribute lookup"]
+relatedTools: []
+relatedArticles: ["ldap-fundamentals", "scim-overview", "pingfederate-authentication-adapters", "pingfederate-admin-access-and-rbac", "pingfederate-authentication-policies"]
+category: identity
+order: 39
+status: reviewed
+updated: "2026-07-20"
+---
+
+## One definition, many consumers
+
+A data store in PingFederate is a **connection definition**: how to reach an external source of identity data, configured once and referenced everywhere. The consumers are the interesting part - Password Credential Validators verify passwords against a store, attribute mappings look up additional attributes from a store during SSO, and provisioning reads and writes through a store. Change the directory's address or rotate the service credential, and you change it in exactly one place; every consumer follows. That indirection is the design, and recognizing it is what the objective's "configure **or manage**" is really asking.
+
+## LDAP stores: the directory connection
+
+The LDAP (Lightweight Directory Access Protocol) data store carries what any directory client needs, shaped for production. The **directory type** tells PingFederate which dialect it is speaking - Active Directory, PingDirectory, generic LDAP - which matters because schemas and behaviors differ. **Multiple host entries** provide failover: list more than one directory server and the store survives the loss of any single one, which for an identity system is not optional. The **service-account bind credentials** are the identity PingFederate itself uses to search and read - a dedicated, least-privileged account, never a human's. And **secure transport** - LDAPS or the secure options the deployment standardizes on - keeps credentials and identity data encrypted on the wire, with the directory's certificate trusted through the server's certificate management.
+
+The directory's schema then shapes everything downstream: the attributes available to lookups and mappings are the attributes the directory actually holds, so the data-store conversation and the attribute-contract conversation are ultimately the same conversation.
+
+## JDBC stores: the database connection
+
+The JDBC (Java Database Connectivity) data store points at a relational database, and three pieces make it work. The **JDBC connection URL** and credentials say where and as whom. The **validation query** is the small health probe - a trivial query the server runs to confirm a pooled connection is still alive before trusting it, the difference between graceful failover and mysterious runtime errors when a database drops connections silently. And the piece that catches everyone once: the **driver JAR**. PingFederate ships without vendor database drivers; the matching JDBC driver must be deployed into the server's library directory - and the server restarted - before the store can connect at all. A JDBC store that cannot find its driver is the classic first-day failure, and the fix is a file, not a setting.
+
+## Managing stores like the dependencies they are
+
+Data stores are where PingFederate touches infrastructure someone else operates, so managing them is mostly managing that reality. The built-in **connection testing** verifies a definition before anything depends on it. Failover configuration - multiple LDAP hosts, sane pool behavior over the validation query - decides how the runtime degrades when the dependency stumbles: predictably, with clear log evidence, rather than mysteriously. And the operational couplings deserve naming: the service account's password expiry belongs on the same calendar as certificates and the license, and the directory or database team's maintenance windows are, transitively, your maintenance windows. An identity provider is exactly as available as the stores it authenticates against - the store definitions are where that dependency is made explicit, visible, and testable.

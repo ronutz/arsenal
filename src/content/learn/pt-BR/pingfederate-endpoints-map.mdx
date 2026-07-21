@@ -1,0 +1,34 @@
+---
+slug: pingfederate-endpoints-map
+title: "O Mapa de Endpoints do PingFederate: Porta Admin, Porta de Runtime e o Que Mora Onde"
+summary: "Todo endpoint do PingFederate pertence a uma de duas famílias: endpoints administrativos na porta do console (o console e a /pf-admin-api) ou endpoints de runtime na porta do motor (os endpoints de aplicação /idp e /sp, o servidor de autorização OAuth /as, o userinfo e o discovery do OIDC, e o /pf/heartbeat.ping que os balanceadores vigiam). Saber qual porta responde qual caminho é metade do diagnóstico."
+concepts: ["pingfederate", "endpoints", "admin api", "heartbeat", "runtime", "sso endpoints", "oauth endpoints"]
+relatedTools: ["oidc"]
+relatedArticles: ["pingfederate-install-and-initial-setup", "saml-bindings-and-sso-initiation", "oidc-discovery"]
+category: identity
+order: 38
+status: reviewed
+updated: "2026-07-20"
+---
+
+## Duas portas, dois mundos
+
+Um servidor PingFederate responde em duas portas, e toda pergunta de endpoint se resolve sabendo a qual mundo um caminho pertence. O mundo **administrativo** vive na porta do console (9999 por padrão): humanos e automação configurando o servidor. O mundo de **runtime** vive na porta do motor (9031 por padrão): navegadores, parceiros e clientes de fato realizando SSO (single sign-on) e OAuth. As famílias nunca se misturam - um caminho admin não responde na porta de runtime, e vice-versa - e é exatamente por isso que a distinção é o ângulo recorrente do exame e a primeira bifurcação de qualquer diagnóstico de conectividade.
+
+## A família administrativa
+
+A aplicação do console é o endpoint que humanos usam. Ao lado dela fica a **API administrativa** sob `/pf-admin-api` - a superfície REST (Representational State Transfer) pela qual tudo o que o console faz pode ser feito programaticamente: conexões, adapters, clientes, políticas. Documentação interativa da API acompanha, o que a torna explorável de um navegador antes de ser roteirizada por um pipeline. Implantações de PingFederate como infraestrutura-como-código são, na prática, implantações contra essa API - e ela vive na porta admin, governada pela mesma autenticação administrativa e pelos mesmos papéis do console.
+
+## A família de runtime
+
+A porta de runtime carrega três aglomerados de caminhos.
+
+Os **endpoints de aplicação de SSO** vivem sob `/idp` e `/sp`: os endpoints de partida que lançam fluxos (SSO iniciado no IdP e no SP, e seus gêmeos de single logout) e os endpoints de protocolo que recebem as mensagens SAML (Security Assertion Markup Language) que aquelas partidas colocaram em movimento. Suas variáveis e os estilos de iniciação têm tratamento próprio no [artigo de iniciação de SSO](/learn/saml-bindings-and-sso-initiation) - o fato do mapa de endpoints é simplesmente que essa família inteira é runtime.
+
+O **servidor de autorização OAuth** vive sob `/as`: autorização, token, introspecção, revogação - os endpoints de toda conversa OAuth. O OIDC (OpenID Connect) estende o mesmo mundo com o endpoint de UserInfo, as chaves de assinatura publicadas e o **discovery** no caminho well-known de configuração, onde um cliente lê o mapa inteiro de endpoints do provedor em uma requisição - a contraparte autodescritiva de tudo o que este artigo lista à mão.
+
+E então há o menor e mais vigiado endpoint do servidor: **`/pf/heartbeat.ping`**. Ele responde na porta de runtime com a vivacidade do servidor, e existe para máquinas - o health monitor do balanceador, o uptime check, o orquestrador decidindo se este motor recebe tráfego. Quando um motor sai de um pool misteriosamente, a conversa entre o balanceador e o heartbeat é onde mora a resposta.
+
+## Usando o mapa
+
+Três hábitos transformam o mapa em habilidade. Quando um parceiro relata endpoint inalcançável, primeiro classifique o caminho - admin ou runtime - e confira a porta e a regra de firewall correspondentes antes de qualquer coisa mais profunda. Ao automatizar, lembre que a API admin é configuração e pertence atrás de controles administrativos, nunca exposta junto do tráfego de runtime. E ao montar monitoração, aponte checagens de vivacidade para o heartbeat e checagens funcionais para os fluxos de runtime - os dois respondem perguntas diferentes, e implantações saudáveis vigiam ambos.

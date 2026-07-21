@@ -81,6 +81,35 @@ export const READING_PATHS: ReadingPath[] = [
     tools: ["jwt", "jwks-explainer", "pkce", "oidc", "totp-hotp"],
   },
   {
+    // The PingFederate administration walk: the two assumed fundamentals the
+    // official blueprint names (directory, Kerberos), then the ten product
+    // articles in teaching order with SCIM beside the data-store/provisioning
+    // stop, closing on the two flow articles a working deployment exercises.
+    // Companion to the PFP-001 certification guide, which maps the same
+    // material objective by objective.
+    id: "pingfederate-administration",
+    category: "identity",
+    articles: [
+      "saml-overview",
+      "ldap-fundamentals",
+      "kerberos-and-spnego",
+      "pingfederate-install-and-initial-setup",
+      "pingfederate-startup-files",
+      "pingfederate-upgrade-playbook",
+      "pingfederate-admin-access-and-rbac",
+      "pingfederate-operational-hygiene",
+      "pingfederate-endpoints-map",
+      "pingfederate-data-stores",
+      "scim-overview",
+      "pingfederate-authentication-adapters",
+      "pingfederate-authentication-policies",
+      "pingfederate-log-files",
+      "saml-bindings-and-sso-initiation",
+      "oidc-authorization-code-flow",
+    ],
+    tools: ["saml-decoder", "x509", "csr-decoder", "cert-renewal-planner", "oidc", "jwt", "pkce", "jwks-explainer"],
+  },
+  {
     // TLS from the suite string up to the protocol family - ending on the
     // comparison piece that places 1.2, 1.3, DTLS, and QUIC side by side.
     id: "tls-from-zero",
