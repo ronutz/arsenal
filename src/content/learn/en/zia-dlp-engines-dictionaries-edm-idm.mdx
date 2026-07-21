@@ -1,0 +1,34 @@
+---
+slug: zia-dlp-engines-dictionaries-edm-idm
+title: "ZIA Data Loss Prevention: Dictionaries, Engines, and the Fingerprint Tiers"
+summary: "Zscaler's inline DLP is the fundamentals' four instruments assembled into a hierarchy: dictionaries with confidence and proximity dials, engines combining dictionaries through boolean expressions, and rules aiming engines at traffic - with EDM and IDM as the Advanced-suite fingerprint tiers, indexed on your side via the Index Tool. The rule criteria, the AND-logic subtlety, OCR for images, and the inspection prerequisite under it all."
+concepts: ["zscaler", "zia", "dlp", "dictionaries", "engines", "edm", "idm", "index tool", "ocr"]
+relatedTools: []
+relatedArticles: ["dlp-fundamentals", "zia-ssl-inspection-policy-and-bypasses", "zscaler-casb-and-saas-security", "zia-cloud-firewall-rule-order"]
+category: security
+order: 187
+status: reviewed
+updated: "2026-07-21"
+---
+
+[The DLP fundamentals article](/learn/dlp-fundamentals) laid out the four instruments every product plays - patterns, dictionaries, exact data matching, indexed document matching. Zscaler Internet Access (ZIA) assembles them into a three-story hierarchy that is worth memorizing as a sentence: **dictionaries recognize, engines combine, rules aim.** Everything below is grounded in Zscaler's DLP documentation and its own troubleshooting runbook, verified 2026-07-21.
+
+## Story one: dictionaries
+
+A ZIA **DLP dictionary** is a data-class recognizer. Predefined dictionaries ship for the classics - identification numbers, financial data, health terms - each carrying the fundamentals' two dials under Zscaler's names: a **Confidence Score Threshold** and a **Proximity Length**, plus refinements like custom high-confidence phrases that let an organization teach a stock dictionary its own incriminating vocabulary. Custom dictionaries extend the set with the organization's own patterns and phrases. The dial-tuning is where false-positive budgets are actually spent: rather than abandoning a noisy dictionary, raise its confidence bar or tighten the neighborhood it demands.
+
+## Story two: engines, and the expression
+
+A **DLP engine** combines dictionaries through a boolean **Expression** - *this* dictionary AND *that* one, or one OR another - so a single engine can encode "personal identifiers near financial context" as a first-class object. This story of the hierarchy is the one the troubleshooting runbook keeps returning to: when a rule fires mysteriously, the investigation reads the engine's Expression, then each member dictionary's configuration - because the verdict was manufactured two stories below the rule that reported it.
+
+## Story three: rules, criteria, and one AND worth underlining
+
+**DLP rules** aim engines at traffic. The criteria set is the ZIA engine's familiar kit plus DLP's own reach: on the source side, users, groups, departments, locations, location groups, source IP groups, and the **user risk profile**; on the destination side, URL categories, cloud applications, cloud application *instances* (the sanctioned tenant versus the personal one), and even Private Access application segments - inline DLP extending over private-app traffic, not just the internet. One documented subtlety earns its own sentence: **the URL Categories and Cloud Applications fields combine with AND logic** - a rule naming both matches only traffic satisfying both, a quiet source of "why didn't it fire" tickets. Rule mechanics are [the standard first-match machine](/learn/zia-cloud-firewall-rule-order); the response side spans block, allow-and-record, and notification workflows - the fundamentals' reminder that response design, not matching, is where DLP programs succeed or rot.
+
+## The fingerprint tiers: EDM and IDM
+
+The precision instruments require the **Advanced DLP suite**, and both follow the fundamentals' privacy-preserving shape. For **Exact Data Match**, the organization runs Zscaler's **Index Tool** against its structured records, building templates field by field: each template designates one or two **primary fields** - which must hold unique values for the data type - with the rest as secondary corroboration, and the tool normalizes as it indexes (trimming stray whitespace, with a popular-formats option that trims false positives from non-standard layouts). What the cloud receives is the index, not the data; what a match means is *this exact record's value is in this flow*. **Indexed Document Match** does the same for whole documents, with a match-accuracy dial deciding how much of a fingerprinted file must appear - the excerpt-versus-boilerplate trade, exactly as the fundamentals framed it.
+
+## The reach extenders, and the floor under everything
+
+Two extensions round out the inline story. **OCR** brings images into scope - the screenshot of the customer table is text to the engines once recognition runs. And [the CASB article](/learn/zscaler-casb-and-saas-security) carries the same engines out-of-band, scanning data *at rest* in SaaS tenants - one dictionary investment, two enforcement planes. Under all of it sits the floor this series keeps returning to: inline DLP reads what inspection lets it read. [An SSL bypass](/learn/zia-ssl-inspection-policy-and-bypasses) is a DLP-blind corridor, and the honest DLP design review always begins with the bypass list, not the dictionary list.

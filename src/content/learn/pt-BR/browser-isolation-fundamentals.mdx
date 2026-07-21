@@ -1,0 +1,30 @@
+---
+slug: browser-isolation-fundamentals
+title: "Isolamento de Navegador: Quando Não Dá para Confiar na Página, Mova o Navegador"
+summary: "O Remote Browser Isolation para de perguntar se uma página é segura e remove a pergunta: o navegador real roda num contêiner descartável na nuvem, e o endpoint recebe apenas uma projeção renderizada - pixels ou um DOM reconstruído. O que cada modo de renderização troca, por que isolamento é a resposta para o meio incategorizável, o que custa, e onde ficam seus limites honestos."
+concepts: ["browser isolation", "rbi", "pixel streaming", "dom reconstruction", "containment", "zero-day", "phishing"]
+relatedTools: []
+relatedArticles: ["sandbox-detonation-fundamentals", "zia-url-filtering-and-cloud-app-control", "ssl-forward-proxy-interception"]
+category: security
+order: 184
+status: reviewed
+updated: "2026-07-21"
+---
+
+Todo controle web até aqui compartilha uma suposição: a página será *julgada* - categorizada, escaneada, detonada - e então entregue ou recusada. O Remote Browser Isolation (RBI) abandona o julgamento. Sua premissa: certo conteúdo não pode ser classificado com confiança a tempo, então **pare de entregar o conteúdo** - rode o navegador real num lugar descartável e entregue ao endpoint apenas uma *imagem* dele. O código da página executa; só executa onde não pode machucar ninguém. Esta é a camada neutra de fabricante sob os recursos de isolamento da indústria, [os da Zscaler incluídos](/learn/zia-url-filtering-and-cloud-app-control).
+
+## O mecanismo: um navegador num contêiner descartável
+
+Uma sessão de isolamento funciona assim: o clique do usuário é redirecionado a um contêiner na nuvem do provedor, onde um navegador completo busca, interpreta e executa a página - cada script, cada comportamento de plugin, cada tentativa de drive-by inclusos. De volta ao dispositivo do usuário viaja apenas uma renderização. Se a página carregava um exploit de navegador, ele disparou dentro de um contêiner sem nada a roubar e sem caminho lateral; quando a sessão ou a aba fecha, o contêiner é destruído, infecção e tudo. Contenção, não detecção: o zero-day funciona e não faz diferença.
+
+## Dois jeitos de enviar uma imagem
+
+A renderização viaja em uma de duas formas, e a troca entre elas define os produtos. O **pixel streaming** envia exatamente o que o nome diz - um vídeo interativo do navegador remoto. Sua história de segurança é máxima (nada além de pixels chega ao endpoint - não há HTML para interpretar, logo não há HTML para explorar) e seus custos são os custos de vídeo: banda, latência a cada rolagem, texto que pode sair borrado, área de transferência e impressão exigindo intermediação explícita. A **reconstrução de DOM** pega a página remota, remove o conteúdo ativo e envia uma reconstrução sanitizada para o navegador local exibir nativamente. A experiência fica perto do normal - texto nítido, rolagem nativa, transporte mais barato - ao preço de uma fronteira de confiança mais sutil: o endpoint volta a *interpretar markup*, markup sanitizado, e o sanitizador vira a coisa em que você está confiando. Nenhum modo vence em geral; pureza de pixels para a ponta hostil do espectro, conforto de reconstrução para o meio apenas-desconhecido, e muitas implantações usam ambos por camada de risco.
+
+## Onde o isolamento paga seu custo
+
+Isolamento é caro - computação em nuvem por sessão, latência adicional, quebra ocasional de sites - então projetos maduros o gastam estreitamente, no tráfego onde o julgamento genuinamente falha. O alvo canônico é o **meio incategorizável**: domínios recém-registrados, sites sem categoria, categorias arriscadas-mas-não-bloqueáveis - páginas que um filtro não pode honestamente permitir nem negar. Um segundo alvo é a **defesa de credenciais**: renderize uma página suspeita de phishing em isolamento com a entrada em formulários desabilitada, e o usuário pode olhar mas não pode digitar uma senha nela. Um terceiro são os **endpoints não confiáveis**: terceirizados e BYOD alcançando apps sensíveis por uma sessão isolada não deixam dados em cache num dispositivo que ninguém gerencia. Em cada caso o padrão é o mesmo - o isolamento converte uma decisão de classificação impossível numa decisão de renderização contível.
+
+## Limites honestos
+
+Três mantêm o entusiasmo calibrado. O isolamento protege o *endpoint da página*, não o *usuário de si mesmo* - um golpe renderizado ainda persuade, e se a política permitir digitar, credenciais ainda podem sair (por isso os controles de entrada em formulário importam tanto quanto a renderização). Downloads de arquivo furam a abstração por definição - um arquivo saindo do contêiner para o endpoint precisa voltar ao julgamento: [escaneamento e detonação](/learn/sandbox-detonation-fundamentals), ou conversão numa visão plana e segura. E compatibilidade é um imposto real - os cantos mais interativos da web moderna são exatamente os que mais tendem a se comportar mal através de uma projeção. Isolamento é a ferramenta certa onde a classificação falha; é um complemento das camadas que julgam, nunca sua substituição.

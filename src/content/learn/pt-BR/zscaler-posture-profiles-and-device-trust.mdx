@@ -1,0 +1,30 @@
+---
+slug: zscaler-posture-profiles-and-device-trust
+title: "Postura e Confiança do Dispositivo: Deixando o Estado do Dispositivo Votar"
+summary: "A identidade diz quem está pedindo; a postura diz de onde estão pedindo. Na plataforma Zscaler, o Client Connector avalia condições do dispositivo, o ZPA as consome como posture profiles nos critérios da access policy, e o ZIA consome níveis de device trust nas próprias regras - um sensor, dois planos de política. Como o voto funciona por sessão, por que critérios de postura são conjuntivos com a identidade, e os limites honestos de perguntar a um dispositivo sobre ele mesmo."
+concepts: ["zscaler", "posture", "device trust", "zcc", "zpa", "zia", "access policy", "zero trust"]
+relatedTools: []
+relatedArticles: ["zpa-app-segments-and-access-policy", "zscaler-client-connector-profiles", "zia-cloud-firewall-rule-order", "zscaler-zero-trust-exchange-architecture"]
+category: security
+order: 190
+status: reviewed
+updated: "2026-07-21"
+---
+
+A primeira pergunta do zero trust - *quem está pedindo?* - é respondida pela identidade. A segunda é mais quieta e igualmente decisiva: *de onde?* O mesmo engenheiro autenticado é um risco diferente no laptop corporativo endurecido e no desktop da família, e uma plataforma que não os distingue está fazendo acesso baseado em identidade com passos extras. Na plataforma Zscaler, o estado do dispositivo ganha um voto, e este artigo acompanha a viagem da cédula: sentida no endpoint, consumida por dois planos de política. Fundamentado na documentação Zscaler verificada em 2026-07-21 - os critérios de postura e confiança que aparecem na access policy do ZPA e nas dimensões de regra do ZIA, avaliados pelo Client Connector que esta série já dissecou.
+
+## O sensor: Client Connector, de novo
+
+O componente que percebe é o que já está no dispositivo: o [Zscaler Client Connector](/learn/zscaler-client-connector-profiles), cujo trabalho diurno de encaminhar tráfego vem com o bico de *conhecer o dispositivo* - sua plataforma, seu enrollment, condições da sua configuração e do seu ambiente. É o mesmo padrão da detecção de rede confiável que aquele artigo cobriu, generalizado: condições definidas pelo admin, avaliadas continuamente no endpoint, os resultados anexados às sessões do dispositivo. A consequência de projeto merece ser dita: postura, nesta arquitetura, é majoritariamente uma capacidade de *agente* - um dispositivo sem o Client Connector não consegue responder às perguntas, o que por si vira sinal, e o tipo de cliente (agente versus acesso por navegador) vira critério por direito próprio.
+
+## O consumidor de dentes mais afiados: ZPA
+
+O Private Access é onde a postura morde mais forte, porque [sua access policy](/learn/zpa-app-segments-and-access-policy) lista **posture profiles** como critérios de primeira classe ao lado de atributos SAML e SCIM, redes confiáveis, tipos de cliente e machine groups - e porque as condições da política são **conjuntivas**: identidade E postura E o que mais a regra nomear. A composição que isso permite é a textura real do zero trust: o sistema financeiro exige o grupo de finanças *e* uma postura de dispositivo conforme; o segmento das joias da coroa adiciona por cima a condição de rede corporativa; o grupo de terceirizados alcança sua única aplicação de qualquer dispositivo, mas só pelo tipo de cliente navegador, onde nada fica em cache local. A avaliação por sessão fecha o ciclo - [o Microtunnel](/learn/zpa-architecture-app-connectors-service-edges) é concedido por usuário, por aplicação, por sessão, então um dispositivo que sai da postura não herda a aprovação de ontem.
+
+## O outro consumidor: o device trust do ZIA
+
+O plano voltado à internet consome a mesma classe de sinal sob nome próprio: **níveis de device trust** aparecem entre [os critérios de regra do ZIA](/learn/zia-cloud-firewall-rule-order) - a lista documentada de dimensões do Cloud Firewall os inclui - então a política de saída também pode discriminar por estado do dispositivo: o laptop confiável navega sob um conjunto de regras, o dispositivo de baixa confiança sob um mais apertado. Um sensor, dois planos: a condição do endpoint vota no acesso privado e no acesso à internet igualmente, que é precisamente a promessa de um-cérebro [do Exchange](/learn/zscaler-zero-trust-exchange-architecture) aplicada ao estado do dispositivo.
+
+## Os limites honestos
+
+Três calibragens impedem a postura de virar teatro. Primeira: postura é uma *declaração do dispositivo sobre si mesmo* - o agente reporta condições de dentro da própria máquina julgada, o que é robusto contra deriva e má configuração, mais fraco contra um atacante local competente; postura sobe a barra e encolhe a janela, não cartoriza o endpoint. Segunda: postura verifica o que é *verificável* - condições precisam ser concretas e avaliáveis, e os riscos interessantes nem sempre são; postura é um filtro de higiene, não um veredito de comprometimento. Terceira: frescor é parâmetro de projeto - a avaliação acontece em momentos com formato de conexão, então a granularidade do "contínuo" é a granularidade das sessões, e projetos que precisam de revogação no meio da sessão devem se apoiar em duração de sessão e cadência de reavaliação. A leitura madura: postura converte higiene de dispositivo em insumo de política - um sinal forte e honesto, melhor usado como um conjunto entre vários, exatamente onde as listas de critérios dos dois planos o colocam.

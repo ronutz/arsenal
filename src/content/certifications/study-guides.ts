@@ -1857,7 +1857,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.06",
             text: "Given a scenario about an exfiltration, identify the next step that should be taken to check the company's posture.",
-            relatedArticles: [],
+            relatedArticles: ["zscaler-casb-and-saas-security", "zia-dlp-engines-dictionaries-edm-idm"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1865,7 +1865,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.07",
             text: "Given a scenario including an organization goal to ensure user devices are compliant before enabling access to the internet or private application, identify the next step that should be taken.",
-            relatedArticles: ["zscaler-client-connector-profiles"],
+            relatedArticles: ["zscaler-client-connector-profiles", "zscaler-posture-profiles-and-device-trust"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1881,8 +1881,8 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-A.09",
             text: "Given a scenario where an administrator needs to connect to Zscaler a location that requires a certain bandwidth and requirements and no need for HA, identify the type of tunnels that should be used and the minimal amount needed to cover the requisites.",
-            relatedArticles: ["vpn-fundamentals", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss", "zscaler-tunnel-types-z-tunnel-gre-ipsec"],
-            relatedTools: ["zscaler-tunnel-chooser"],
+            relatedArticles: ["vpn-fundamentals", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss", "zscaler-tunnel-types-z-tunnel-gre-ipsec", "zia-ssl-inspection-policy-and-bypasses"],
+            relatedTools: ["zscaler-tunnel-chooser", "zscaler-ssl-bypass-planner"],
             manualLinks: [],
             keyPoints: [],
           },
@@ -1939,7 +1939,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.04",
             text: "Given a scenario about creating and modifying a custom URL category, identify how to achieve a given goal.",
-            relatedArticles: [],
+            relatedArticles: ["zia-url-filtering-and-cloud-app-control"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1947,7 +1947,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.05",
             text: "Given a scenario about applying URL filtering rules to users/groups, identify how to achieve a given goal.",
-            relatedArticles: [],
+            relatedArticles: ["zia-url-filtering-and-cloud-app-control"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1955,7 +1955,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.06",
             text: "Given a sandbox scenario including a desired outcome, identify the next action that should be taken.",
-            relatedArticles: [],
+            relatedArticles: ["zia-file-type-control-and-sandbox", "sandbox-detonation-fundamentals"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1963,7 +1963,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.07",
             text: "Given an example sandbox report and organizational requirements, identify the trends in malicious activity over a specific timeframe.",
-            relatedArticles: [],
+            relatedArticles: ["zia-file-type-control-and-sandbox"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1971,7 +1971,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.08",
             text: "Given a scenario about file type control, identify how to ensure a given category is prioritized correctly.",
-            relatedArticles: [],
+            relatedArticles: ["zia-file-type-control-and-sandbox"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1979,7 +1979,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.09",
             text: "Given a scenario about applying file type policies and a specific user or group, identify how to apply the correct file type policy based on the roles and security needs.",
-            relatedArticles: [],
+            relatedArticles: ["zia-file-type-control-and-sandbox"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1987,7 +1987,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.10",
             text: "Given a scenario where various users need to access different applications, identify the App Segments that enable proper least privileged access.",
-            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segments-and-access-policy"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -1995,7 +1995,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.11",
             text: "Given a scenario where various users need to access different applications, identify the proper access policies to enforce least privileged access.",
-            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segments-and-access-policy"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2003,7 +2003,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.12",
             text: "Given a scenario including a content inspection rule, analyze the outcome of the rule, identify the appropriate actions to take, or communicate who should take appropriate actions.",
-            relatedArticles: [],
+            relatedArticles: ["zia-dlp-engines-dictionaries-edm-idm", "dlp-fundamentals"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2011,7 +2011,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.13",
             text: "Given a scenario including DLP notification, block actions, and a user uploading sensitive data, identify the notification method that should be used.",
-            relatedArticles: [],
+            relatedArticles: ["zia-dlp-engines-dictionaries-edm-idm"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2019,7 +2019,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.14",
             text: "Given a scenario including problems with unauthorized SaaS Applications in an organization, identify where to find Risky Assets / Potential Shadow IT in the portal.",
-            relatedArticles: [],
+            relatedArticles: ["zscaler-casb-and-saas-security"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2027,7 +2027,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.15",
             text: "Given a scenario about enforcing granular controls, identify the outcome of an action.",
-            relatedArticles: [],
+            relatedArticles: ["zscaler-casb-and-saas-security", "zia-url-filtering-and-cloud-app-control"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2043,7 +2043,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.17",
             text: "Given a scenario about least privilege access, identify the most effective way to achieve the outcome.",
-            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segments-and-access-policy", "zscaler-posture-profiles-and-device-trust"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],
@@ -2059,7 +2059,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "ZDTA-B.19",
             text: "Given a scenario including a micro-segmentation policy and internal applications, identify how to refine the policy to enhance the security posture for internal applications.",
-            relatedArticles: ["zpa-architecture-app-connectors-service-edges"],
+            relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zpa-app-segments-and-access-policy"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [],

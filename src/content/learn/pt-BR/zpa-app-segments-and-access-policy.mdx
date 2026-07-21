@@ -1,0 +1,32 @@
+---
+slug: zpa-app-segments-and-access-policy
+title: "App Segments e Access Policy no ZPA: Nomear as Aplicações, Depois Merecê-las"
+summary: "O plano de controle do ZPA é um vocabulário de quatro camadas - App Segments nomeando aplicações, Segment Groups agrupando-as para política, Server Groups amarrando-as a grupos de App Connector - e uma Access Policy que nega por padrão, avalia de cima para baixo por primeira correspondência no segmento mais específico, e condiciona cada allow a critérios de atributos SAML a postura. A regra de precedência do bypass, a ressalva do domínio do IdP, e a doutrina do block-acima-do-allow."
+concepts: ["zscaler", "zpa", "app segments", "segment groups", "server groups", "access policy", "first match", "posture", "saml", "scim"]
+relatedTools: []
+relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zscaler-posture-profiles-and-device-trust", "saml-overview", "scim-overview", "zia-cloud-firewall-rule-order"]
+category: security
+order: 189
+status: reviewed
+updated: "2026-07-21"
+---
+
+[O artigo de arquitetura do ZPA](/learn/zpa-architecture-app-connectors-service-edges) construiu o transporte - chamadas de saída, Microtunnels intermediados. Este constrói as *decisões*: como o Private Access nomeia as aplicações que protege, e quem merece uma conexão costurada até qual. O plano de controle é um vocabulário pequeno mais uma doutrina de avaliação, e ambos merecem ser internalizados com exatidão, porque o ZPA compartilha o DNA de negar-por-padrão e primeira correspondência [do seu irmão ZIA](/learn/zia-cloud-firewall-rule-order), adicionando um tempero próprio. Tudo abaixo está fundamentado na documentação de ZPA da Zscaler, verificada em 2026-07-21.
+
+## O vocabulário: quatro camadas, dois eixos
+
+Um **Application Segment** nomeia o que está sendo protegido: um conjunto de aplicações definido por FQDNs, domínios curinga ou endereços IP, mais suas portas. Segmentos então se amarram em dois eixos. O eixo de *política*: segmentos se reúnem em **Segment Groups**, para as regras de acesso enderçarem "as ferramentas de engenharia" em vez de enumerar doze segmentos. O eixo de *alcançabilidade*: segmentos referenciam **Server Groups**, que especificam **quais grupos de App Connector podem alcançar aqueles servidores** - a resposta de roteamento para "quais connectors, em qual data center, carregam os Microtunnels desta aplicação". A disciplina de nomes paga aqui: com quatro camadas de objetos em jogo, o nome de um objeto deveria dizer o que ele é e a que serve sem precisar abri-lo.
+
+Segmentos também carregam o ajuste de **Bypass** - se o Private Access deve ser pulado para esta aplicação: Always, apenas On Corporate Network (apoiando-se na [detecção de rede confiável do Client Connector](/learn/zscaler-client-connector-profiles)), ou o padrão *Use Client Forwarding Policy*, sob o qual requisições sem regra encaminham implicitamente ao ZPA. Duas arestas documentadas: o **Bypass Always de um segmento tem precedência** sobre as regras de client forwarding policy - o segmento vence a discussão - e quando o mesmo FQDN aparece em múltiplos segmentos, um Always envenena o nome para todos. A ressalva do IdP mora na mesma gaveta: um provedor de identidade definido dentro de um segmento precisa do Authentication Timeout em Never, e um domínio de IdP que se sobrepõe aos domínios de descoberta de aplicações deve ser posto em bypass de uma vez, ou usuários reautenticando *através* da coisa que os autentica falharão em círculos.
+
+## A doutrina: negar por padrão, primeira correspondência, mais específico
+
+A disposição da Access Policy é o gesto de assinatura da plataforma, declarado com todas as letras pela documentação: **o ZPA bloqueia o acesso a aplicações e segment groups até que regras de política permitam explicitamente** - então a política que você escreve é majoritariamente de allows, com blocks reservados às exceções. A avaliação é **de cima para baixo, primeira correspondência**, usando o **application segment mais específico** - e a regra de composição segue com inevitabilidade geométrica: *o block vai acima do allow*. Para admitir todos menos os terceirizados, o block dos terceirizados precisa preceder o allow geral, ou o allow geral corresponde primeiro e o block vira decoração - [sombreamento](/learn/zia-cloud-firewall-rule-order), edição ZPA.
+
+## Os critérios: identidade, e tudo o que a identidade esqueceu
+
+As condições de uma regra precisam **todas** corresponder, e o cardápio de critérios é onde zero trust deixa de ser slogan: application segments ou segment groups de um lado; do outro, atributos [SAML](/learn/saml-overview) e [SCIM](/learn/scim-overview) carregando quem o usuário é, **posture profiles** carregando [em que estado o dispositivo está](/learn/zscaler-posture-profiles-and-device-trust), redes confiáveis, tipos de cliente, machine groups, grupos de Cloud Connector. A percepção de projeto que a lista codifica: pertencer ao grupo, sozinho, reconstrói a VPN com marca melhor - são as condições de postura, rede e tipo de cliente em camadas *sobre* a identidade que tornam a decisão de acesso por sessão e revogável. Um limite documentado que vale arquivar: uma regra de política endereça no máximo 48 grupos de App Connector.
+
+## Lendo uma negação como um operador
+
+Negações se depuram na ordem da doutrina: qual regra correspondeu primeiro (de cima para baixo, segmento mais específico - um allow ou block largo está eclipsando a regra que você esperava?); se nenhuma regra correspondeu, a resposta é a padrão, e a padrão é *não*; se a regra correspondeu mas uma condição falhou, os critérios são conjuntivos - a identidade pode passar enquanto a postura falha, [e postura tem um artigo inteiro de motivos](/learn/zscaler-posture-profiles-and-device-trust). E quando o acesso passa mas nada carrega, a pergunta saiu deste artigo e voltou [às três pernas do transporte](/learn/zpa-architecture-app-connectors-service-edges) - a política disse sim; a entrega é problema do connector.

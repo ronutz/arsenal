@@ -52,6 +52,19 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-21T18:40:28-03:00",
+    kind: "tool",
+    tools: ["zscaler-ssl-bypass-planner"],
+    title: "ZIA SSL bypass planner",
+    body: "Third native Zscaler tool: paste an asset list (pinning, governance category, path control) and receive a deterministic TLS inspection plan - Inspect, policy Do Not Inspect, or Client Connector bypass - each verdict with sourced rationale, a priced blind-spot ledger, and the outside-backstop checklist whenever anything goes uninspected. Twelve golden vectors; grounded in Zscaler's SSL inspection documentation.",
+  },
+  {
+    date: "2026-07-21T18:40:28-03:00",
+    kind: "content",
+    title: "Zscaler wave 2: nine articles, the reading path, and the hub family section",
+    body: "Three fundamentals (DLP, sandbox detonation, browser isolation) and six Zscaler deep dives (URL Filtering and Cloud App Control precedence, File Type Control and Sandbox, DLP dictionaries/engines/EDM/IDM, CASB and SaaS security, ZPA app segments and access policy, posture and device trust) in English and Portuguese - plus the zscaler-zero-trust reading path and the Zscaler Zero Trust Exchange family section on the vendor hub.",
+  },
+  {
     date: "2026-07-21T17:21:35-03:00",
     kind: "tool",
     tools: ["zscaler-firewall-rule-order-simulator"],

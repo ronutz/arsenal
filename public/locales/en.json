@@ -3315,7 +3315,8 @@
         "signals": "Risk & client signals"
       },
       "zscaler": {
-        "signals": "TLS fingerprints"
+        "signals": "TLS fingerprints",
+        "zte": "Zscaler Zero Trust Exchange"
       }
     },
     "syslog-pri-decoder": {
@@ -5790,6 +5791,27 @@
       "rulesTitle": "Policy in evaluation order",
       "ruleDisabled": "disabled",
       "notesTitle": "Notes"
+    },
+    "zscaler-ssl-bypass-planner": {
+      "name": "ZIA SSL Bypass Planner",
+      "blurb": "Paste an asset list and get a deterministic TLS inspection plan: what inspects, what gets a Do Not Inspect rule, what needs a Client Connector bypass — each with sourced rationale, a blind-spot ledger, and the backstop checklist.",
+      "emptyState": "Paste one asset per line to plan: name | pinned|clean | regulated|general | agent|no-agent.",
+      "runsLocally": "Runs entirely in your browser. Your asset names never leave this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "inputLabel": "Assets, one per line",
+      "placeholder": "crm-desktop-app | pinned | general | agent",
+      "errorTitle": "That input needs a fix",
+      "summaryTitle": "Plan summary",
+      "countInspect": "Inspect",
+      "countDni": "Do Not Inspect (policy rule)",
+      "countZcc": "Client Connector bypass",
+      "verdictInspect": "INSPECT",
+      "verdictDni": "DO NOT INSPECT",
+      "verdictZcc": "ZCC BYPASS",
+      "blindSpotsTitle": "What goes blind here",
+      "backstopsTitle": "Backstop checklist for the uninspected",
+      "notesTitle": "Standing notes"
     }
   },
   "privacy_page": {
@@ -12453,6 +12475,10 @@
       "pingfederate-administration": {
         "title": "PingFederate administration, end to end",
         "lede": "The blueprint's assumed fundamentals first - the directory model and the Kerberos ticket machinery - then the ten product articles in teaching order, SCIM beside the provisioning stop, and the SSO flows to close. The reading spine behind the PFP-001 certification guide."
+      },
+      "zscaler-zero-trust": {
+        "title": "Zscaler Zero Trust Exchange",
+        "lede": "From tunnels and fundamentals to the full policy brain: forwarding, firewall order, TLS inspection, web and file controls, DLP, CASB, and ZPA's segments, policy, and posture — with the three native tools to practice on."
       }
     }
   },

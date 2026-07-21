@@ -237,6 +237,38 @@ export const READING_PATHS: ReadingPath[] = [
     ],
     tools: ["regex"],
   },
+  {
+    // The Zscaler program end to end, fundamentals-first (R-8): the four
+    // transport/identity floors and three security floors, then the Zscaler
+    // articles in dependency order - architecture, forwarding, tunnels,
+    // agent, firewall, TLS, web controls, files, DLP, CASB, ZPA, posture -
+    // with the three native tools where the practice lives.
+    id: "zscaler-zero-trust",
+    category: "security",
+    articles: [
+      "gre-tunnels-fundamentals",
+      "ipsec-and-ike-fundamentals",
+      "tunnel-overhead-mtu-and-mss",
+      "proxy-user-authentication-methods",
+      "dlp-fundamentals",
+      "sandbox-detonation-fundamentals",
+      "browser-isolation-fundamentals",
+      "zscaler-zero-trust-exchange-architecture",
+      "zia-traffic-forwarding-methods",
+      "zscaler-tunnel-types-z-tunnel-gre-ipsec",
+      "zscaler-client-connector-profiles",
+      "zia-cloud-firewall-rule-order",
+      "zia-ssl-inspection-policy-and-bypasses",
+      "zia-url-filtering-and-cloud-app-control",
+      "zia-file-type-control-and-sandbox",
+      "zia-dlp-engines-dictionaries-edm-idm",
+      "zscaler-casb-and-saas-security",
+      "zpa-architecture-app-connectors-service-edges",
+      "zpa-app-segments-and-access-policy",
+      "zscaler-posture-profiles-and-device-trust",
+    ],
+    tools: ["zscaler-tunnel-chooser", "zscaler-firewall-rule-order-simulator", "zscaler-ssl-bypass-planner"],
+  },
 ];
 
 // ============================================================================

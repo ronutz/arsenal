@@ -1,0 +1,34 @@
+---
+slug: dlp-fundamentals
+title: "Data Loss Prevention: How Machines Recognize Secrets"
+summary: "Every DLP product answers the same question - is this outbound content sensitive? - with the same four instruments: patterns, dictionaries, exact data matching against fingerprinted records, and indexed document matching against fingerprinted files. What each instrument can and cannot recognize, why confidence scores and proximity exist, and why the hard part of DLP was never the matching."
+concepts: ["dlp", "data loss prevention", "edm", "idm", "fingerprinting", "dictionaries", "patterns", "false positives"]
+relatedTools: []
+relatedArticles: ["zia-dlp-engines-dictionaries-edm-idm", "ssl-forward-proxy-interception", "regex-quantifiers-and-classes"]
+category: security
+order: 182
+status: reviewed
+updated: "2026-07-21"
+---
+
+Data Loss Prevention (DLP - the discipline of stopping sensitive data from leaving where it belongs) looks like one feature and is really one question asked at wire speed: *is this outbound content sensitive?* Every product in the category, whatever its logo, answers with the same four instruments, each trading recall against precision differently. Understand the instruments and any vendor's DLP configuration screen becomes legible; this article is the vendor-neutral layer under [the Zscaler implementation](/learn/zia-dlp-engines-dictionaries-edm-idm).
+
+## Instrument one: patterns
+
+The oldest instrument is the pattern - [a regular expression](/learn/regex-quantifiers-and-classes) shaped like the secret's *format*. A credit card number is sixteen digits with known prefixes; a Brazilian CPF is eleven digits with two check digits; an AWS access key starts with a recognizable prefix. Patterns are cheap and fast, and their weakness is the mirror of their strength: they recognize *shape*, not *meaning*. Sixteen digits that pass a Luhn checksum might be a card number or a test fixture. Pure pattern matching is where false positives are born, which is why every serious implementation immediately reaches for the next three instruments.
+
+## Instrument two: dictionaries, confidence, and proximity
+
+A dictionary is a curated vocabulary - terms, phrases, and patterns that *together* indicate a data class. The craft is in the two dials that ship alongside. A **confidence threshold** demands more than one weak signal: a lone digit string scores low; the same string near the words "credit card" and an expiry date scores high. **Proximity** defines how near the corroborating evidence must sit - "SSN" three words from a nine-digit string means something; the same pair separated by forty pages means nothing. Dictionaries turn matching from "does this shape occur" into "does this shape occur *in an incriminating neighborhood*", and that neighborhood test is what makes production DLP tolerable to live with.
+
+## Instrument three: exact data matching (EDM)
+
+Patterns catch anything shaped like a card number. Sometimes the requirement is sharper: catch **our customers'** card numbers - the actual records in the actual database - and nothing else. Exact Data Match does this without ever shipping the database to the inspection point: the organization runs an indexing tool *on its own side*, which reads the structured source (a table of names, IDs, account numbers), computes an irreversible fingerprint - a hash - of each cell, and uploads only the fingerprints. At inspection time, candidate values in the traffic are hashed the same way and compared. A match means *this exact value from our records* is leaving; a near-miss means nothing, by design. The elegance is the privacy property: the inspection service holds hashes it cannot reverse, so the sensitive dataset never leaves home even while being defended everywhere. The operational cost is freshness - the index only knows the records it was built from, so re-indexing cadence becomes a policy question.
+
+## Instrument four: indexed document matching (IDM)
+
+EDM fingerprints *records*; Indexed Document Match fingerprints *documents*. Feed the indexer the crown-jewel files - the design spec, the M&A memo, the source archive - and it derives fingerprints robust enough to recognize the document later even partially: an excerpt pasted into an email, a section inside a larger file. The dial here is **match accuracy** - how much of the fingerprinted material must be present to alarm - trading excerpt-catching sensitivity against noise from boilerplate that legitimately reappears everywhere.
+
+## The part that was never matching
+
+Three truths complete the fundamentals. First, DLP inspects what it can read: on today's internet that makes [TLS interception](/learn/ssl-forward-proxy-interception) the load-bearing prerequisite - an uninspected flow is a DLP-blind flow, every bypass a corridor. Second, images carry text too, which is why mature implementations bolt OCR onto the same engines. Third - and this is the one that separates deployments that work from shelfware - the matching was never the hard part. The hard parts are the response (block, notify, or quietly record?), the workflow that handles the alerts, and the political question of which false-positive rate the business will actually tolerate. The instruments are the easy 20%; the fundamentals end where that harder conversation begins.

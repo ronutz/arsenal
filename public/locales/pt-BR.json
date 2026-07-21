@@ -3315,7 +3315,8 @@
         "signals": "Risco e sinais do cliente"
       },
       "zscaler": {
-        "signals": "Fingerprints TLS"
+        "signals": "Fingerprints TLS",
+        "zte": "Zscaler Zero Trust Exchange"
       }
     },
     "syslog-pri-decoder": {
@@ -5790,6 +5791,27 @@
       "rulesTitle": "Política em ordem de avaliação",
       "ruleDisabled": "desabilitada",
       "notesTitle": "Notas"
+    },
+    "zscaler-ssl-bypass-planner": {
+      "name": "Planejador de Bypass SSL do ZIA",
+      "blurb": "Cole uma lista de ativos e receba um plano determinístico de inspeção TLS: o que inspeciona, o que ganha uma regra Do Not Inspect, o que precisa de bypass no Client Connector — cada um com raciocínio referenciado, um livro-razão de pontos cegos e a checklist de salvaguardas.",
+      "emptyState": "Cole um ativo por linha para planejar: nome | pinned|clean | regulated|general | agent|no-agent.",
+      "runsLocally": "Roda inteiramente no seu navegador. Os nomes dos seus ativos nunca saem desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "inputLabel": "Ativos, um por linha",
+      "placeholder": "crm-desktop-app | pinned | general | agent",
+      "errorTitle": "Essa entrada precisa de um ajuste",
+      "summaryTitle": "Resumo do plano",
+      "countInspect": "Inspecionar",
+      "countDni": "Do Not Inspect (regra de política)",
+      "countZcc": "Bypass no Client Connector",
+      "verdictInspect": "INSPECIONAR",
+      "verdictDni": "DO NOT INSPECT",
+      "verdictZcc": "BYPASS ZCC",
+      "blindSpotsTitle": "O que fica cego aqui",
+      "backstopsTitle": "Checklist de salvaguardas para o não inspecionado",
+      "notesTitle": "Notas permanentes"
     }
   },
   "privacy_page": {
@@ -12453,6 +12475,10 @@
       "pingfederate-administration": {
         "title": "Administração de PingFederate, de ponta a ponta",
         "lede": "Primeiro os fundamentos que o blueprint presume - o modelo de diretório e a maquinaria de tickets do Kerberos - depois os dez artigos de produto em ordem didática, o SCIM ao lado da parada de provisionamento, e os fluxos de SSO para fechar. A espinha de leitura por trás do guia de certificação PFP-001."
+      },
+      "zscaler-zero-trust": {
+        "title": "Zscaler Zero Trust Exchange",
+        "lede": "Dos túneis e fundamentos ao cérebro completo de política: encaminhamento, ordem de firewall, inspeção TLS, controles web e de arquivos, DLP, CASB e os segmentos, política e postura do ZPA — com as três ferramentas nativas para praticar."
       }
     }
   },

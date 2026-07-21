@@ -1,0 +1,30 @@
+---
+slug: zscaler-casb-and-saas-security
+title: "CASB in the Exchange: Inline, Out-of-Band, and the Posture of SaaS Itself"
+summary: "Zscaler's CASB is not a separate box but two vantage points on the same policy brain: inline, riding the ZIA proxy over data in motion, and out-of-band, connecting to SaaS tenants by API to scan data at rest. What each plane sees that the other cannot, shadow-IT discovery, SSPM's configuration-against-frameworks audit, and why the DLP engines you tuned once enforce in both planes."
+concepts: ["zscaler", "casb", "saas security", "out-of-band", "api", "sspm", "shadow it", "data at rest"]
+relatedTools: []
+relatedArticles: ["zia-dlp-engines-dictionaries-edm-idm", "zia-url-filtering-and-cloud-app-control", "zia-ssl-inspection-policy-and-bypasses", "zscaler-zero-trust-exchange-architecture"]
+category: security
+order: 188
+status: reviewed
+updated: "2026-07-21"
+---
+
+A Cloud Access Security Broker (CASB - the control point between users and cloud applications) answers a question the perimeter never had to: now that the data lives in someone else's SaaS, where does *our* policy stand? Zscaler's answer is architectural rather than boxological: CASB is a capability of [the Exchange](/learn/zscaler-zero-trust-exchange-architecture), enforced from **two vantage points** that split the problem cleanly - one watching data *in motion*, one auditing data *at rest*. The framing below follows Zscaler's own data-protection reference architecture, verified 2026-07-21.
+
+## The inline plane: data in motion
+
+Inline CASB is [the ZIA proxy path](/learn/zscaler-zero-trust-exchange-architecture) wearing its SaaS glasses. Traffic to cloud applications already terminates at the Service Edge; CASB adds the application-aware judgments on top of that same pipeline: which app is this, which *tenant* of the app (the corporate instance or a personal one), which activity - and [Cloud App Control's granular verbs](/learn/zia-url-filtering-and-cloud-app-control) plus [the DLP engines](/learn/zia-dlp-engines-dictionaries-edm-idm) enforce in real time on the flow. Inline's superpower is *prevention in the moment*: the upload that never completes, the paste that never lands. Its two structural limits are equally crisp. It sees only traffic that transits the Exchange - the flow from an unmanaged home device straight to the SaaS tenant never passes through - and it sees only what inspection exposes, so [every TLS bypass](/learn/zia-ssl-inspection-policy-and-bypasses) is a corridor around the whole plane. Inline also carries the discovery duty: **shadow IT** surfaces here, because the proxy logs are a census of which cloud applications the organization actually touches, sanctioned or not.
+
+## The out-of-band plane: data at rest
+
+Out-of-band CASB attacks the coverage gaps from the other side. Instead of standing in the traffic, it **connects to the SaaS tenant itself by API** - authorized access to the sanctioned instance - and scans what already lives there: files shared to the open internet years ago, sensitive records parked in the wrong folder, malware resident in the shared drive. The reference architecture is explicit about the engine reuse: out-of-band CASB **leverages the same Zscaler Cloud DLP** - the dictionaries, engines, EDM and IDM indexes tuned once enforce here too - so a data-classification investment pays in both planes. Out-of-band's superpower is *reach without a path*: it needs no traffic to inspect, so the home-device upload from last month is found in the tenant even though no proxy ever saw it move. Its structural limit is tense: it *finds and remediates* - revoking the share, quarantining the file - rather than preventing the act in flight. The two planes are therefore not rivals but a pincer: inline prevents what it can see move; out-of-band cleans up what moved unseen.
+
+## SSPM: auditing the platform, not the data
+
+A third question outranks both planes: is the SaaS platform itself configured safely? SaaS Security Posture Management (SSPM) audits tenant *configuration* - the sharing defaults, the authentication settings, the admin sprawl - and Zscaler's reference architecture states the method plainly: measuring configurations **against compliance frameworks** (seventeen of them, in its own count) with automated remediation. The mental model: DLP judges the data, CASB planes judge the movement and residence, SSPM judges the *container* - because the most elegant DLP policy is moot if the tenant's default says "anyone with the link."
+
+## The operator's map
+
+Read a SaaS-protection question by routing it to its plane. "Stop this leaving" is inline - and inherits inline's prerequisites: the traffic must transit, the TLS must be inspected. "What is already exposed" is out-of-band - and inherits the API connection to each sanctioned tenant. "Is the tenant itself safe" is SSPM. "What are people using at all" is shadow-IT discovery from the inline census. One policy brain, two enforcement planes, one configuration audit - and the classic failure is buying the pincer and deploying one jaw.

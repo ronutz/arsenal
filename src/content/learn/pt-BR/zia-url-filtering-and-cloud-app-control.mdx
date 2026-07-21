@@ -1,0 +1,30 @@
+---
+slug: zia-url-filtering-and-cloud-app-control
+title: "URL Filtering e Cloud App Control: Duas Políticas, Uma Regra de Precedência"
+summary: "O ZIA controla o acesso web com duas políticas cooperantes: o URL Filtering julga destinos por categoria, o Cloud App Control julga aplicações por identidade e atividade - e por padrão a política de apps vence. Os verbos Allow/Caution/Block com cotas, o exemplo do Facebook direto da documentação, o interruptor Allow Cascading, e por que TLS não inspecionado limita o que qualquer das políticas consegue ver."
+concepts: ["zscaler", "zia", "url filtering", "cloud app control", "categories", "precedence", "caution", "quota"]
+relatedTools: []
+relatedArticles: ["zia-cloud-firewall-rule-order", "zia-ssl-inspection-policy-and-bypasses", "browser-isolation-fundamentals", "zscaler-zero-trust-exchange-architecture"]
+category: security
+order: 185
+status: reviewed
+updated: "2026-07-21"
+---
+
+O controle de acesso web no Zscaler Internet Access (ZIA) são duas políticas num só sobretudo, e a costura entre elas é o fato mais cobrado do produto. O **URL Filtering** julga *destinos*: o serviço organiza URLs numa hierarquia de categorias, e as regras permitem, advertem ou bloqueiam por categoria, usuário, grupo, departamento, localidade e horário. O **Cloud App Control** julga *aplicações*: não "uma URL na categoria redes sociais", e sim "o Facebook, o app" - com verbos granulares por atividade (visualizar versus postar versus enviar arquivo). Tudo abaixo está fundamentado na documentação de URL Filtering e Cloud App Control da Zscaler, verificada em 2026-07-21.
+
+## Os verbos, e o truque da cota
+
+Regras de URL Filtering resolvem para três ações. **Allow** admite o tráfego - opcionalmente sob uma **cota diária** de banda ou tempo, esgotada a qual o serviço explica ao usuário que a franquia do dia acabou: política como orçamento em vez de muro. **Caution** interpõe uma página de aviso que o usuário pode atravessar - atrito para as zonas cinzentas, e uma trilha de auditoria de quem prosseguiu. **Block** recusa, com End User Notifications (EUNs) explicando o motivo; a EUN da regra sobrepõe a notificação padrão, então a mensagem pode combinar com a regra. A mecânica das regras é o kit padrão do motor do ZIA, [o mesmo que o artigo do Cloud Firewall disseca](/learn/zia-cloud-firewall-rule-order): ordem crescente, primeira correspondência, Admin Rank 0–7 limitando as posições atribuíveis, e regras desabilitadas guardando o assento enquanto o serviço passa por elas.
+
+## A regra de precedência que todo mundo aprende do jeito difícil
+
+Por padrão, **o Cloud App Control tem precedência sobre o URL Filtering**, e o exemplo trabalhado da própria documentação merece ser carregado em espírito: uma regra de Cloud App Control *permite visualizar o Facebook* enquanto uma regra de URL Filtering *bloqueia www.facebook.com* - e o usuário navega no Facebook, porque uma vez que uma regra de app permite explicitamente a transação, a política de URL nunca é consultada. Dois interruptores modulam isso. Globalmente, o **Allow Cascading to URL Filtering** (Advanced Settings) faz a política de URL se aplicar mesmo depois de um allow de regra de app - virando o exemplo para bloqueado - enquanto um *block* de regra de app sempre prevalece, com ou sem cascata. E quando nenhuma regra de Cloud App Control trata o app, o URL Filtering avalia normalmente - a precedência só morde onde uma regra de app de fato disparou. O mnemônico do operador: *a política de apps fala primeiro, e seus allows são finais, a menos que você os tenha feito cascatear.*
+
+## Onde cada política ganha o seu sustento
+
+A divisão de trabalho segue a granularidade. O URL Filtering é o pincel largo - categorias inteiras advertidas ou bloqueadas, cotas nos sorvedouros de tempo, a política recomendada como postura inicial. O Cloud App Control é o bisturi - a suíte de colaboração sancionada permitida por inteiro, a instância pessoal da mesma suíte restrita, uploads a compartilhamento de arquivos bloqueados enquanto downloads passam, cada verbo uma decisão separada. O bisturi precisa enxergar mais fundo, e essa é a dependência a manter à vista: controle no nível de atividade significa ler requisições dentro da sessão, que é [o assunto inteiro da inspeção TLS](/learn/zia-ssl-inspection-policy-and-bypasses). Num fluxo não inspecionado o serviço vê o SNI - um *nome* - e um nome sustenta *identificação* de categoria e app, não discriminação de atividade. Cada bypass de SSL rebaixa silenciosamente o bisturi de volta a pincel.
+
+## Lendo um chamado de "o bloqueio não funciona"
+
+A ordem de depuração se escreve sozinha a partir da arquitetura: primeiro, alguma regra de Cloud App Control permitiu a transação (precedência - a regra de URL nunca rodou); segundo, a cascata está habilitada, se você esperava que a política de URL se aplicasse mesmo assim; terceiro, qual regra de URL correspondeu primeiro, lembrando a ordem crescente; quarto, o fluxo foi sequer inspecionado - porque uma regra de atividade não pode disparar sobre tráfego que o Edge só pôde ver por fora. E para o meio cinzento onde nem allow nem block é honesto - o sem-categoria, o recém-registrado - a saída não é um chute mais corajoso, e sim [um controle totalmente diferente: o isolamento](/learn/browser-isolation-fundamentals), renderizando a página onde um chute errado não machuca.

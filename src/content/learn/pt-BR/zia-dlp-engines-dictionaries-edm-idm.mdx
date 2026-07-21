@@ -1,0 +1,34 @@
+---
+slug: zia-dlp-engines-dictionaries-edm-idm
+title: "Data Loss Prevention no ZIA: Dicionários, Engines e os Tiers de Fingerprint"
+summary: "O DLP inline da Zscaler são os quatro instrumentos dos fundamentos montados numa hierarquia: dicionários com botões de confiança e proximidade, engines combinando dicionários por expressões booleanas, e regras mirando engines no tráfego - com EDM e IDM como os tiers de fingerprint da suíte Advanced, indexados do seu lado pelo Index Tool. Os critérios das regras, a sutileza da lógica AND, OCR para imagens, e o pré-requisito de inspeção sob tudo."
+concepts: ["zscaler", "zia", "dlp", "dictionaries", "engines", "edm", "idm", "index tool", "ocr"]
+relatedTools: []
+relatedArticles: ["dlp-fundamentals", "zia-ssl-inspection-policy-and-bypasses", "zscaler-casb-and-saas-security", "zia-cloud-firewall-rule-order"]
+category: security
+order: 187
+status: reviewed
+updated: "2026-07-21"
+---
+
+[O artigo de fundamentos de DLP](/learn/dlp-fundamentals) expôs os quatro instrumentos que todo produto toca - padrões, dicionários, correspondência exata de dados, correspondência de documentos indexados. O Zscaler Internet Access (ZIA) os monta numa hierarquia de três andares que vale memorizar como frase: **dicionários reconhecem, engines combinam, regras miram.** Tudo abaixo está fundamentado na documentação de DLP da Zscaler e no seu próprio runbook de troubleshooting, verificados em 2026-07-21.
+
+## Andar um: dicionários
+
+Um **dicionário DLP** do ZIA é um reconhecedor de classe de dados. Dicionários predefinidos vêm para os clássicos - números de identificação, dados financeiros, termos de saúde - cada um carregando os dois botões dos fundamentos sob os nomes da Zscaler: um **Confidence Score Threshold** e um **Proximity Length**, mais refinamentos como frases customizadas de alta confiança, que deixam a organização ensinar a um dicionário de fábrica o seu próprio vocabulário incriminador. Dicionários customizados estendem o conjunto com os padrões e frases da própria casa. A afinação dos botões é onde o orçamento de falsos positivos é de fato gasto: em vez de abandonar um dicionário barulhento, suba sua barra de confiança ou aperte a vizinhança que ele exige.
+
+## Andar dois: engines, e a expressão
+
+Um **engine DLP** combina dicionários por meio de uma **Expression** booleana - *este* dicionário E *aquele*, ou um OU outro - de modo que um único engine pode codificar "identificadores pessoais perto de contexto financeiro" como objeto de primeira classe. Este andar da hierarquia é o que o runbook de troubleshooting não para de revisitar: quando uma regra dispara misteriosamente, a investigação lê a Expression do engine, depois a configuração de cada dicionário membro - porque o veredito foi manufaturado dois andares abaixo da regra que o reportou.
+
+## Andar três: regras, critérios, e um AND que merece sublinha
+
+As **regras de DLP** miram engines no tráfego. O conjunto de critérios é o kit familiar do motor ZIA mais o alcance próprio do DLP: do lado da origem, usuários, grupos, departamentos, localidades, grupos de localidades, grupos de IP de origem e o **perfil de risco do usuário**; do lado do destino, categorias de URL, aplicações em nuvem, *instâncias* de aplicação em nuvem (o tenant sancionado versus o pessoal) e até segmentos de aplicação do Private Access - o DLP inline se estendendo sobre o tráfego de apps privados, não só a internet. Uma sutileza documentada ganha sua própria frase: **os campos URL Categories e Cloud Applications combinam com lógica AND** - uma regra que nomeia ambos só corresponde ao tráfego que satisfaz os dois, uma fonte discreta de chamados de "por que não disparou". A mecânica das regras é [a máquina padrão de primeira correspondência](/learn/zia-cloud-firewall-rule-order); o lado da resposta abrange bloquear, permitir-e-registrar e fluxos de notificação - o lembrete dos fundamentos de que o desenho da resposta, não a correspondência, é onde programas de DLP triunfam ou apodrecem.
+
+## Os tiers de fingerprint: EDM e IDM
+
+Os instrumentos de precisão exigem a **suíte Advanced DLP**, e ambos seguem o formato preservador de privacidade dos fundamentos. Para o **Exact Data Match**, a organização roda o **Index Tool** da Zscaler contra seus registros estruturados, construindo templates campo a campo: cada template designa um ou dois **campos primários** - que precisam conter valores únicos para o tipo de dado - com os demais como corroboração secundária, e a ferramenta normaliza ao indexar (aparando espaços perdidos, com uma opção de formatos populares que apara falsos positivos de layouts fora do padrão). O que a nuvem recebe é o índice, não os dados; o que uma correspondência significa é *o valor deste registro exato está neste fluxo*. O **Indexed Document Match** faz o mesmo para documentos inteiros, com um botão de precisão de correspondência decidindo quanto de um arquivo com fingerprint precisa aparecer - a troca trecho-versus-boilerplate, exatamente como os fundamentos enquadraram.
+
+## Os extensores de alcance, e o piso sob tudo
+
+Duas extensões completam a história inline. O **OCR** traz imagens para o escopo - a captura de tela da tabela de clientes vira texto para os engines assim que o reconhecimento roda. E [o artigo de CASB](/learn/zscaler-casb-and-saas-security) leva os mesmos engines para fora de banda, escaneando dados *em repouso* nos tenants SaaS - um investimento em dicionários, dois planos de aplicação. Sob tudo isso senta o piso a que esta série sempre retorna: o DLP inline lê o que a inspeção deixa ler. [Um bypass de SSL](/learn/zia-ssl-inspection-policy-and-bypasses) é um corredor cego para o DLP, e a revisão honesta de um projeto de DLP sempre começa pela lista de bypass, não pela lista de dicionários.

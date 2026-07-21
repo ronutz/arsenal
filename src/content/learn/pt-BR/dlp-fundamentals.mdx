@@ -1,0 +1,34 @@
+---
+slug: dlp-fundamentals
+title: "Data Loss Prevention: Como Máquinas Reconhecem Segredos"
+summary: "Todo produto de DLP responde à mesma pergunta - este conteúdo de saída é sensível? - com os mesmos quatro instrumentos: padrões, dicionários, correspondência exata contra registros com fingerprint e correspondência de documentos indexados. O que cada instrumento consegue e não consegue reconhecer, por que existem confiança e proximidade, e por que a parte difícil do DLP nunca foi a correspondência."
+concepts: ["dlp", "data loss prevention", "edm", "idm", "fingerprinting", "dictionaries", "patterns", "false positives"]
+relatedTools: []
+relatedArticles: ["zia-dlp-engines-dictionaries-edm-idm", "ssl-forward-proxy-interception", "regex-quantifiers-and-classes"]
+category: security
+order: 182
+status: reviewed
+updated: "2026-07-21"
+---
+
+Data Loss Prevention (DLP - a disciplina de impedir que dados sensíveis saiam de onde pertencem) parece um recurso e é, na verdade, uma pergunta feita em velocidade de fio: *este conteúdo de saída é sensível?* Todo produto da categoria, qualquer que seja o logotipo, responde com os mesmos quatro instrumentos, cada um trocando abrangência por precisão de um jeito. Entenda os instrumentos e a tela de configuração de DLP de qualquer fabricante fica legível; este artigo é a camada neutra de fabricante sob [a implementação da Zscaler](/learn/zia-dlp-engines-dictionaries-edm-idm).
+
+## Instrumento um: padrões
+
+O instrumento mais antigo é o padrão - [uma expressão regular](/learn/regex-quantifiers-and-classes) com o formato do segredo. Um número de cartão de crédito são dezesseis dígitos com prefixos conhecidos; um CPF são onze dígitos com dois verificadores; uma chave de acesso AWS começa com um prefixo reconhecível. Padrões são baratos e rápidos, e sua fraqueza é o espelho da sua força: eles reconhecem *forma*, não *significado*. Dezesseis dígitos que passam no checksum de Luhn podem ser um cartão ou uma massa de teste. A correspondência por padrão puro é onde nascem os falsos positivos, e é por isso que toda implementação séria alcança imediatamente os próximos três instrumentos.
+
+## Instrumento dois: dicionários, confiança e proximidade
+
+Um dicionário é um vocabulário curado - termos, frases e padrões que *juntos* indicam uma classe de dados. O ofício está nos dois botões que vêm ao lado. Um **limiar de confiança** exige mais que um sinal fraco: uma sequência de dígitos solitária pontua baixo; a mesma sequência perto das palavras "cartão de crédito" e de uma data de validade pontua alto. A **proximidade** define quão perto a evidência corroborante precisa estar - "CPF" a três palavras de uma sequência de onze dígitos significa algo; o mesmo par separado por quarenta páginas não significa nada. Dicionários transformam a correspondência de "esta forma ocorre" em "esta forma ocorre *numa vizinhança incriminadora*", e é esse teste de vizinhança que torna o DLP de produção tolerável de conviver.
+
+## Instrumento três: correspondência exata de dados (EDM)
+
+Padrões pegam qualquer coisa com forma de número de cartão. Às vezes o requisito é mais afiado: pegar os números de cartão **dos nossos clientes** - os registros reais do banco de dados real - e nada mais. O Exact Data Match faz isso sem nunca enviar o banco ao ponto de inspeção: a organização roda uma ferramenta de indexação *do seu próprio lado*, que lê a fonte estruturada (uma tabela de nomes, IDs, números de conta), computa um fingerprint irreversível - um hash - de cada célula, e envia apenas os fingerprints. Na inspeção, valores candidatos no tráfego são hasheados do mesmo jeito e comparados. Uma correspondência significa *este valor exato dos nossos registros* está saindo; um quase-acerto não significa nada, por projeto. A elegância é a propriedade de privacidade: o serviço de inspeção guarda hashes que não consegue reverter, então o conjunto sensível nunca sai de casa mesmo sendo defendido em toda parte. O custo operacional é o frescor - o índice só conhece os registros de que foi construído, então a cadência de reindexação vira uma pergunta de política.
+
+## Instrumento quatro: correspondência de documentos indexados (IDM)
+
+O EDM faz fingerprint de *registros*; o Indexed Document Match faz fingerprint de *documentos*. Alimente o indexador com os arquivos-joia - a especificação de projeto, o memorando de M&A, o arquivo de código - e ele deriva fingerprints robustos o bastante para reconhecer o documento depois, mesmo parcial: um trecho colado num e-mail, uma seção dentro de um arquivo maior. O botão aqui é a **precisão de correspondência** - quanto do material com fingerprint precisa estar presente para alarmar - trocando sensibilidade a trechos por ruído de boilerplate que legitimamente reaparece em toda parte.
+
+## A parte que nunca foi a correspondência
+
+Três verdades completam os fundamentos. Primeira: o DLP inspeciona o que consegue ler - na internet de hoje, isso faz da [interceptação TLS](/learn/ssl-forward-proxy-interception) o pré-requisito estrutural: um fluxo não inspecionado é um fluxo cego para o DLP, cada bypass um corredor. Segunda: imagens também carregam texto, e é por isso que implementações maduras acoplam OCR aos mesmos engines. Terceira - e é esta que separa implantações que funcionam de software de prateleira - a correspondência nunca foi a parte difícil. As partes difíceis são a resposta (bloquear, notificar ou registrar em silêncio?), o fluxo de trabalho que trata os alertas, e a pergunta política de qual taxa de falsos positivos o negócio vai de fato tolerar. Os instrumentos são os 20% fáceis; os fundamentos terminam onde essa conversa mais dura começa.

@@ -204,6 +204,7 @@ export const VENDOR_SUBS: Record<string, readonly VendorSub[]> = Object.freeze({
     { id: "signals" },       // Client signals feeding adaptive, risk-based auth (JA3 / JA4 TLS fingerprints)
   ],
   zscaler: [
+    { id: "zte" },           // Zscaler Zero Trust Exchange - the native tool family (ZIA / ZPA)
     { id: "signals" },       // TLS-inspection surface: client fingerprints (JA3 / JA4) read on the wire
   ],
 });

@@ -1,0 +1,32 @@
+---
+slug: zpa-app-segments-and-access-policy
+title: "ZPA App Segments and Access Policy: Naming Applications, Then Earning Them"
+summary: "ZPA's control plane is a four-tier vocabulary - App Segments naming applications, Segment Groups bundling them for policy, Server Groups binding them to App Connector groups - and an Access Policy that denies by default, evaluates top-down first-match on the most specific segment, and gates every allow on criteria from SAML attributes to posture. The bypass precedence rule, the IdP-domain caveat, and the block-above-allow doctrine."
+concepts: ["zscaler", "zpa", "app segments", "segment groups", "server groups", "access policy", "first match", "posture", "saml", "scim"]
+relatedTools: []
+relatedArticles: ["zpa-architecture-app-connectors-service-edges", "zscaler-posture-profiles-and-device-trust", "saml-overview", "scim-overview", "zia-cloud-firewall-rule-order"]
+category: security
+order: 189
+status: reviewed
+updated: "2026-07-21"
+---
+
+[The ZPA architecture article](/learn/zpa-architecture-app-connectors-service-edges) built the transport - outbound calls, brokered Microtunnels. This one builds the *decisions*: how Private Access names the applications it protects, and who earns a stitched connection to which. The control plane is a small vocabulary plus one evaluation doctrine, and both are worth internalizing exactly, because ZPA shares the deny-by-default, first-match DNA of [its ZIA sibling](/learn/zia-cloud-firewall-rule-order) while adding a twist of its own. Everything below is grounded in Zscaler's ZPA documentation, verified 2026-07-21.
+
+## The vocabulary: four tiers, two axes
+
+An **Application Segment** names what is being protected: a set of applications defined by FQDNs, wildcard domains, or IP addresses, plus their ports. Segments then bind along two axes. The *policy* axis: segments collect into **Segment Groups**, so access rules can address "the engineering tools" instead of enumerating twelve segments. The *reachability* axis: segments reference **Server Groups**, which specify **which App Connector groups can reach those servers** - the routing answer to "which connectors, in which data center, carry this application's Microtunnels." Naming discipline earns its keep here: with four object tiers in play, an object's name should say what it is and where it serves without opening it.
+
+Segments also carry the **Bypass** setting - whether Private Access should be skipped for this application: Always, only On Corporate Network (leaning on [the Client Connector's trusted-network detection](/learn/zscaler-client-connector-profiles)), or the default *Use Client Forwarding Policy*, under which unmatched requests implicitly forward to ZPA. Two documented sharp edges: a segment's **Bypass Always takes precedence** over client forwarding policy rules - the segment wins the argument - and when the same FQDN appears in multiple segments, one Always-bypass poisons the name for all of them. The IdP caveat belongs in the same drawer: an identity provider defined inside a segment needs its Authentication Timeout set to Never, and an IdP domain overlapping application-discovery domains should be bypassed outright, or users re-authenticating *through* the thing that authenticates them will fail in circles.
+
+## The doctrine: deny by default, first match, most specific
+
+The Access Policy's disposition is the platform's signature move, stated plainly by the documentation: **ZPA blocks access to applications and segment groups until policy rules explicitly allow** - so the policy you write is mostly allows, with blocks reserved for carve-outs. Evaluation is **top-down, first-match**, using the **most specific application segment** - and the composition rule follows with geometric inevitability: *the block goes above the allow*. To admit everyone but contractors, the contractor block must precede the general allow, or the general allow matches first and the block is decoration - [shadowing](/learn/zia-cloud-firewall-rule-order), ZPA edition.
+
+## The criteria: identity, and everything identity forgot
+
+A rule's conditions must **all** match, and the criteria menu is where zero trust stops being a slogan: application segments or segment groups on one side; on the other, [SAML](/learn/saml-overview) and [SCIM](/learn/scim-overview) attributes carrying who the user is, **posture profiles** carrying [what state the device is in](/learn/zscaler-posture-profiles-and-device-trust), trusted networks, client types, machine groups, Cloud Connector groups. The design insight the criteria list encodes: group membership alone rebuilds the VPN with better branding - it is posture, network, and client-type conditions layered *onto* identity that make the access decision per-session and revocable. One documented bound worth filing: a policy rule addresses at most 48 App Connector groups.
+
+## Reading a denial like an operator
+
+Denials debug in doctrine order: which rule matched first (top-down, most specific segment - is a broad allow or block eclipsing the rule you expected?); if no rule matched, the answer is the default, and the default is *no*; if the rule matched but a condition failed, the criteria are conjunctive - identity may pass while posture fails, [and posture has its own article's worth of reasons](/learn/zscaler-posture-profiles-and-device-trust). And when access succeeds but nothing loads, the question has left this article entirely and returned to [the transport's three legs](/learn/zpa-architecture-app-connectors-service-edges) - policy said yes; delivery is the connector's problem.

@@ -1,0 +1,30 @@
+---
+slug: zia-url-filtering-and-cloud-app-control
+title: "URL Filtering and Cloud App Control: Two Policies, One Precedence Rule"
+summary: "ZIA controls web access with two cooperating policies: URL Filtering judges destinations by category, Cloud App Control judges applications by identity and activity - and by default the app policy wins. The Allow/Caution/Block verbs with quotas, the Facebook precedence example straight from the documentation, the Allow Cascading toggle, and why uninspected TLS caps what either policy can see."
+concepts: ["zscaler", "zia", "url filtering", "cloud app control", "categories", "precedence", "caution", "quota"]
+relatedTools: []
+relatedArticles: ["zia-cloud-firewall-rule-order", "zia-ssl-inspection-policy-and-bypasses", "browser-isolation-fundamentals", "zscaler-zero-trust-exchange-architecture"]
+category: security
+order: 185
+status: reviewed
+updated: "2026-07-21"
+---
+
+Web access control in Zscaler Internet Access (ZIA) is two policies wearing one trench coat, and the seam between them is the most-tested fact in the product. **URL Filtering** judges *destinations*: the service organizes URLs into a hierarchy of categories, and rules allow, caution, or block by category, user, group, department, location, and time. **Cloud App Control** judges *applications*: not "a URL in the social-networking category" but "Facebook, the app" - with granular verbs per activity (viewing versus posting versus uploading). Everything below is grounded in Zscaler's URL Filtering and Cloud App Control documentation, verified 2026-07-21.
+
+## The verbs, and the quota trick
+
+URL Filtering rules resolve to three actions. **Allow** admits the traffic - optionally under a **daily quota** of bandwidth or time, after which the service explains to the user that today's allowance is spent: policy as a budget rather than a wall. **Caution** interposes a warning page the user can click through - friction for the gray areas, and an audit trail of who proceeded. **Block** refuses, with End User Notifications (EUNs) explaining why; a rule-level EUN overrides the default notification, so the message can match the rule. The rule mechanics are the ZIA engine's standard kit, [the same one the Cloud Firewall article dissects](/learn/zia-cloud-firewall-rule-order): ascending order, first match, Admin Rank 0–7 bounding assignable positions, and disabled rules keeping their seat while the service skips past them.
+
+## The precedence rule everyone learns the hard way
+
+By default, **Cloud App Control takes precedence over URL Filtering**, and the documentation's own worked example is worth carrying verbatim in spirit: a Cloud App Control rule *allows viewing Facebook* while a URL Filtering rule *blocks www.facebook.com* - and the user browses Facebook, because once an app rule explicitly allows the transaction, the URL policy is never consulted. Two switches modulate this. Globally, **Allow Cascading to URL Filtering** (Advanced Settings) makes the URL policy apply even after an app-rule allow - flipping the example to blocked - while an app-rule *block* always stands, cascade or no cascade. And when no Cloud App Control rule addresses the app at all, URL Filtering evaluates normally - the precedence only bites where an app rule actually fired. The operator's mnemonic: *the app policy speaks first, and its allows are final unless you made them cascade.*
+
+## Where each policy earns its keep
+
+The division of labor follows the granularity. URL Filtering is the broad brush - whole categories cautioned or blocked, quotas on the time sinks, the recommended baseline as a starting posture. Cloud App Control is the scalpel - the sanctioned collaboration suite allowed in full, the personal instance of the same suite restricted, uploads to file sharing blocked while downloads pass, each verb a separate decision. The scalpel needs to see deeper, and that is the dependency to keep in view: activity-level control means reading requests inside the session, which is [TLS inspection's whole subject](/learn/zia-ssl-inspection-policy-and-bypasses). On an uninspected flow the service sees the SNI - a *name* - and a name supports category and app *identification*, not activity discrimination. Every SSL bypass quietly demotes the scalpel back to a brush.
+
+## Reading a "the block doesn't work" ticket
+
+The debugging order writes itself from the architecture: first, did a Cloud App Control rule allow the transaction (precedence - the URL rule never ran); second, is cascading enabled if you expected the URL policy to apply anyway; third, which URL rule matched first, remembering ascending order; fourth, was the flow even inspected - because an activity rule cannot fire on traffic the Edge could only see from outside. And for the gray middle where neither allow nor block is honest - the uncategorized, the newly registered - the escape hatch is not a braver guess but [a different control entirely: isolation](/learn/browser-isolation-fundamentals), rendering the page where a wrong guess cannot hurt.

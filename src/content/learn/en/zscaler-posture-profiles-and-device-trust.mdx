@@ -1,0 +1,30 @@
+---
+slug: zscaler-posture-profiles-and-device-trust
+title: "Posture and Device Trust: Letting the Device's State Vote"
+summary: "Identity says who is asking; posture says what they are asking from. In the Zscaler platform the Client Connector evaluates device conditions, ZPA consumes them as posture profiles in access policy criteria, and ZIA consumes device trust levels in its own rules - one sensor, two policy planes. How the vote works per session, why posture criteria are conjunctive with identity, and the honest limits of asking a device about itself."
+concepts: ["zscaler", "posture", "device trust", "zcc", "zpa", "zia", "access policy", "zero trust"]
+relatedTools: []
+relatedArticles: ["zpa-app-segments-and-access-policy", "zscaler-client-connector-profiles", "zia-cloud-firewall-rule-order", "zscaler-zero-trust-exchange-architecture"]
+category: security
+order: 190
+status: reviewed
+updated: "2026-07-21"
+---
+
+Zero trust's first question - *who is asking?* - gets answered by identity. Its second question is quieter and just as decisive: *from what?* The same authenticated engineer is a different risk on the hardened corporate laptop than on a family desktop, and a platform that cannot tell them apart is doing identity-based access with extra steps. In the Zscaler platform, the device's state gets a vote, and this article traces how the ballot travels: sensed on the endpoint, consumed by two policy planes. Grounded in the Zscaler documentation verified 2026-07-21 - the posture-and-trust criteria appearing in ZPA's access policy and ZIA's rule dimensions, evaluated by the Client Connector this series already dissected.
+
+## The sensor: Client Connector, again
+
+The component doing the noticing is the one already on the device: [Zscaler Client Connector](/learn/zscaler-client-connector-profiles), whose day job of forwarding traffic comes with the side job of *knowing the device* - its platform, its enrollment, conditions of its configuration and environment. This is the same pattern as the trusted-network detection that article covered, generalized: admin-defined conditions, continuously evaluated on the endpoint, the results attached to the device's sessions. The design consequence is worth stating: posture in this architecture is largely an *agent* capability - a device without the Client Connector cannot answer the questions, which itself becomes signal, and client type (agent versus browser access) becomes a criterion in its own right.
+
+## The consumer with the sharpest teeth: ZPA
+
+Private Access is where posture bites hardest, because [its access policy](/learn/zpa-app-segments-and-access-policy) lists **posture profiles** as first-class rule criteria alongside SAML and SCIM attributes, trusted networks, client types, and machine groups - and because the policy's conditions are **conjunctive**: identity AND posture AND whatever else the rule names. The composition this enables is zero trust's actual texture: the finance system requires the finance group *and* a compliant-device posture; the crown-jewel segment adds the corporate-network condition on top; the contractor group reaches its one application from any device, but only through the browser client type where nothing caches locally. Per-session evaluation closes the loop - [the Microtunnel](/learn/zpa-architecture-app-connectors-service-edges) is granted per user, per application, per session, so a device that drifts out of posture is not grandfathered by yesterday's approval.
+
+## The other consumer: ZIA's device trust
+
+The internet-facing plane consumes the same class of signal under its own name: **device trust levels** appear among [the ZIA rule criteria](/learn/zia-cloud-firewall-rule-order) - the Cloud Firewall's documented dimension list includes them - so outbound policy, too, can discriminate by device state: the trusted laptop browses under one rule set, the low-trust device under a tighter one. One sensor, two planes: the endpoint's condition votes on private access and internet access alike, which is precisely [the Exchange's](/learn/zscaler-zero-trust-exchange-architecture) one-brain promise applied to device state.
+
+## The honest limits
+
+Three calibrations keep posture from becoming theater. First, posture is a *statement by the device about itself* - the agent reports conditions from inside the very machine being judged, which is robust against drift and misconfiguration, weaker against a competent local attacker; posture raises the bar and shrinks the window, it does not notarize the endpoint. Second, posture checks what is *checkable* - conditions must be concrete and evaluable, and the interesting risks are not always either; posture is a filter on hygiene, not a verdict on compromise. Third, freshness is a design parameter: evaluation happens at connection-shaped moments, so the granularity of "continuous" is the granularity of sessions, and designs that need mid-session revocation must lean on session length and re-evaluation cadence. The mature reading: posture converts device hygiene into policy input - a strong, honest signal, best used as one conjunct among several, exactly where the criteria lists of both planes put it.

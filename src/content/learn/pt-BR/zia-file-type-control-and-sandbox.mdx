@@ -1,0 +1,30 @@
+---
+slug: zia-file-type-control-and-sandbox
+title: "File Type Control e Cloud Sandbox: os Dois Juízes do Download"
+summary: "Um arquivo entrando ou saindo pelo ZIA responde a dois juízes: as regras de File Type Control sobre que tipos de arquivo podem sequer se mover, e o Cloud Sandbox sobre o que arquivos nunca vistos realmente fazem. A denylist de hashes em toda a nuvem que transforma uma detonação na imunidade de todos, a decisão de First-Time Action que troca paciência do usuário por paciente zero, e o que o tier Advanced amplia."
+concepts: ["zscaler", "zia", "file type control", "sandbox", "quarantine", "first-time action", "patient zero", "hash"]
+relatedTools: []
+relatedArticles: ["sandbox-detonation-fundamentals", "zia-url-filtering-and-cloud-app-control", "zia-ssl-inspection-policy-and-bypasses", "hash-function-families"]
+category: security
+order: 186
+status: reviewed
+updated: "2026-07-21"
+---
+
+A política web no Zscaler Internet Access (ZIA) julga destinos e aplicações; cedo ou tarde, porém, um *arquivo* se move - um download, um upload - e arquivos ganham seu próprio par de juízes. O **File Type Control** decide se este *tipo* de arquivo pode se mover, nesta direção, para estas pessoas. O **Cloud Sandbox** decide o que um arquivo *nunca antes visto* realmente faz quando executado. O primeiro juiz é rápido e categórico; o segundo é lento e comportamental; juntos, são a consciência do caminho de download. Os detalhes de Sandbox abaixo estão fundamentados na documentação da Zscaler, verificada em 2026-07-21; [o artigo de fundamentos de detonação](/learn/sandbox-detonation-fundamentals) carrega a mecânica neutra de fabricante sobre a qual este constrói.
+
+## Juiz um: File Type Control
+
+O File Type Control é política na granularidade mais bruta que ainda é útil: regras com escopo nas dimensões padrão do motor ZIA - usuários, grupos, departamentos, localidades e o resto, [a mesma mecânica de todo lugar](/learn/zia-cloud-firewall-rule-order) - decidindo se classes de arquivo podem ser baixadas ou enviadas. Sua virtude é não pedir julgamento algum de conteúdo: se a organização não tem por que receber instaladores executáveis de sites sem categoria, ou enviar arquivos compactados a armazenamento pessoal, nenhum scanner precisa ser consultado - a *categoria do movimento* é a violação. Seu limite honesto é o espelho: controle de tipo não distingue uma planilha benigna de uma hostil, que é precisamente o caso que ele entrega ao segundo juiz.
+
+## Juiz dois: o Sandbox, e a memória de toda a nuvem
+
+O Cloud Sandbox da Zscaler é [a detonação como os fundamentos descrevem](/learn/sandbox-detonation-fundamentals) - arquivos rodando em ambiente virtual, comportamento gravado, vereditos por conduta - com a escala da plataforma virando a arma. Num veredito malicioso, o [hash](/learn/hash-function-families) do arquivo é propagado a **todos os ZIA Public Service Edges**, mantendo o que a documentação chama, com todas as letras, de uma denylist em tempo real: uma detonação em qualquer lugar vira bloqueio instantâneo em todo lugar, e a via cara (a jaula) fica reservada aos arquivos que a nuvem genuinamente nunca encontrou. A política também pode alistar **análise de IA** para uma pontuação instantânea de probabilidade - a via rápida na frente da detonação completa. As categorias de veredito leem como o modelo de ameaça: adware; o apanhado de malware-e-botnets para comportamento de APT, trojan, keylogger e spyware - classes de conduta, não nomes de assinatura, porque a maioria das condenações de sandbox é de arquivos que assinatura nenhuma jamais descreveu.
+
+## A First-Time Action: a bifurcação honesta do produto
+
+Toda implantação de sandbox precisa responder à pergunta de tempo que os fundamentos colocaram - e o ZIA torna a resposta um campo explícito de política. Quando um arquivo que casa com a política de Sandbox nunca foi visto, a **First-Time Action** decide a espera: permitir o download enquanto a análise roda em paralelo (fluido, e o primeiro destinatário é o paciente zero se o veredito sair culpado), ou **Quarantine** - o download é *temporariamente retido* aguardando o veredito, na formulação da própria documentação, trocando segundos-a-minutos de paciência do usuário pela garantia de que ninguém executa um arquivo não julgado. O padrão maduro é a discriminação por regra: quarentena para as classes executáveis vindas dos cantos arriscados da web, liberação para as classes de documento comuns vindas dos respeitáveis - a bifurcação aplicada com bisturi em vez de globalmente.
+
+## O tier Advanced, e o pré-requisito de inspeção
+
+Os tiers de assinatura ampliam a pauta do segundo juiz. A comparação da própria documentação: o tier Advanced escaneia **mais tipos de arquivo** que o conjunto executável básico - compactados, scripts e macros em documentos de escritório, PDF, Flash, pacotes Android - trata **arquivos maiores** além da linha de 2 MB, e destrava a **quarentena via regras de configuração**. E sobre ambos os juízes paira a mesma precondição que todo engine de conteúdo do ZIA compartilha: um arquivo dentro de uma sessão TLS não inspecionada é um arquivo que juiz nenhum jamais vê. [Cada bypass de SSL](/learn/zia-ssl-inspection-policy-and-bypasses) é um corredor que contorna este artigo inteiro - e é por isso que a lista de bypass e a política de sandbox são, na prática, uma só conversa de projeto em duas telas.
