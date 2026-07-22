@@ -139,6 +139,7 @@ import ZdxScoreFactorExplainerTool from "@/components/ZdxScoreFactorExplainerToo
 import ZccForwardingDecisionExplainerTool from "@/components/ZccForwardingDecisionExplainerTool";
 import HttpStatusCodeExplainerTool from "@/components/HttpStatusCodeExplainerTool";
 import NetskopeSteeringDecisionExplainerTool from "@/components/NetskopeSteeringDecisionExplainerTool";
+import SortingAlgorithmStepperTool from "@/components/SortingAlgorithmStepperTool";
 import GslbDecisionFlowTool from "@/components/GslbDecisionFlowTool";
 import TopologyLongestMatchTool from "@/components/TopologyLongestMatchTool";
 import DosVectorExplainerTool from "@/components/DosVectorExplainerTool";
@@ -158,6 +159,7 @@ import { manifest as zdxFactorManifest } from "@/lib/tools/zdx-score-factor-expl
 import { manifest as zccFdeManifest } from "@/lib/tools/zcc-forwarding-decision-explainer";
 import { manifest as httpStatusManifest } from "@/lib/tools/http-status-code-explainer";
 import { manifest as nsSteeringManifest } from "@/lib/tools/netskope-steering-decision-explainer";
+import { manifest as sortStepperManifest } from "@/lib/tools/sorting-algorithm-stepper";
 import { manifest as gslbFlowManifest } from "@/lib/tools/f5-gslb-decision-flow";
 import { manifest as topoMatchManifest } from "@/lib/tools/f5-topology-longest-match";
 import { manifest as dosVectorManifest } from "@/lib/tools/f5-dos-vector-explainer";
@@ -649,6 +651,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "netskope-steering-decision-explainer": {
     Component: NetskopeSteeringDecisionExplainerTool,
     sources: nsSteeringManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "sorting-algorithm-stepper": {
+    Component: SortingAlgorithmStepperTool,
+    sources: sortStepperManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-gslb-decision-flow": {
     Component: GslbDecisionFlowTool,

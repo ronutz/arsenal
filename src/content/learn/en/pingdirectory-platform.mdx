@@ -1,0 +1,30 @@
+---
+slug: pingdirectory-platform
+title: "The PingDirectory Platform: Store, Aggregate, Sync, Delegate"
+summary: "The four-piece identity data platform: the PingDirectory server as a high-performance LDAP and native SCIM 2.0 REST store, PingDirectoryProxy as the LDAPv3 gateway and virtual directory, PingDataSync as the real-time bidirectional synchronization engine across heterogeneous stores, and Delegated Admin as the controlled self-service surface - plus the operational grammar of cn=config, server groups, and zero-downtime moves."
+concepts: ["LDAP", "directory", "SCIM", "synchronization", "virtual directory", "identity data"]
+relatedTools: ["jwt", "oidc"]
+relatedArticles: ["ldap-fundamentals", "scim-overview", "pingone-platform", "ping-forgerock-lineage"]
+category: identity
+order: 228
+status: reviewed
+updated: "2026-07-22"
+---
+
+Every identity system stands on a data layer, and **PingDirectory** is Ping's answer at scale: not one server but a four-piece platform, each piece owning one verb. Knowing the verbs - store, aggregate, sync, delegate - turns the product diagram into a sentence. ([LDAP fundamentals](/learn/ldap-fundamentals) is the prerequisite article; facts here follow the official PingDirectory documentation, verified at the time of writing.)
+
+## Store: the PingDirectory server
+
+The core is a high-performance, extensible **LDAP directory server** built for the profile phase of identity - hundreds of millions of entries, dense attribute sets, heavy read *and* write concurrency. Two listeners are native peers: the LDAP listener speaks the protocol the previous thirty years of infrastructure expects, and an HTTPS listener speaks **SCIM 2.0** (System for Cross-domain Identity Management) REST natively - /Users, /Groups, JSON payloads, OAuth 2.0 bearer authentication - with no middleware translation in between. Operationally, the server's whole configuration lives as LDIF under **cn=config** in the directory information tree itself, manageable per server or across **server groups** with the command-line suite or the admin console; that one design choice makes fleet-wide configuration auditable with the same tools that read any other directory data.
+
+## Aggregate: PingDirectoryProxy
+
+The **PingDirectoryProxy server** is a fast LDAPv3 gateway in front of directory data, and it earns its keep twice. As a *proxy*, it load-balances, rate-limits, and applies data transformations, letting operators prioritize mission-critical applications with centralized policies. As a *virtual directory*, it aggregates multiple backends - directory instances, Active Directory domains, other stores - into one coherent tree without migrating anything: the canonical post-merger move, where two companies' directories appear unified to federated applications while the risky consolidation project stays unscheduled. The proxy is also a load-bearing piece of the platform's **zero-downtime migration** story, standing in front while data moves behind it.
+
+## Sync: PingDataSync
+
+**PingDataSync** is the platform's real-time, bidirectional synchronization engine - explicitly not batch ETL (extract, transform, load). It watches change sources by the mechanism each source actually offers - LDAP persistent search and change logs, Active Directory's DirSync control, database polling - and applies changes downstream immediately through configured pipelines of source adapters, transformation and mapping rules, and destination adapters. The supported-endpoint list is deliberately multi-vendor: PingDirectory itself, Active Directory, the Oracle/Sun directory family, OpenDJ, and generic LDAP - which makes DataSync the coexistence tool during long migrations, keeping the old and new worlds consistent for as long as the cutover takes.
+
+## Delegate, and where the platform sits
+
+**Delegated Admin** completes the set: a web application through which helpdesk staff, HR, or managers perform the routine identity tasks - password resets, attribute updates, group changes - inside guardrails, without raw directory access. Around the four pieces, the platform's posture is horizontal: add machines for parallel workloads, replicate for availability, and extend behavior through the Server SDK's plugin points without forking the product. In the wider Ping map, PingDirectory is the self-managed identity store integrated with [the PingOne platform](/learn/pingone-platform), offered in the FedRAMP High and DoD IL5-authorized government cloud, and distinct in lineage from PingDS, the *ForgeRock-heritage* directory - a naming distinction [the lineage article](/learn/ping-forgerock-lineage) untangles, and one worth having straight before the Certified Professional PingDirectory exam, whose [study guide](/certifications/ping-cp-pingdirectory) tracks the official objectives as they land.

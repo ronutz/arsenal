@@ -61,7 +61,7 @@ export default async function CertificationsHubPage({
   //    the open/closed state (PRIME directive 2026-07-21, item 2).
   const groups: HubVendorGroup[] = getCertificationsGroupedByVendor().map((g) => ({
     vendor: g.vendor,
-    vendorLabel: tVendors(g.vendor),
+    vendorLabel: tVendors(`${g.vendor}.name`),
     certs: g.certs.map((cert) => ({
       key: cert.key,
       name: cert.name,

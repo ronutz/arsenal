@@ -1,0 +1,30 @@
+---
+slug: cipher-families
+title: "Cipher Families: The Working Map"
+summary: "Every cipher suite is assembled from a small set of algorithm families, and each family carries its own advantages, disadvantages, and history. Block versus stream, AES versus ChaCha20, why AEAD modes replaced the old assemble-it-yourself pattern, what RSA, elliptic curves, and (EC)DHE each contribute, and which families are already retired - the encryption counterpart to the hash-families map."
+concepts: ["symmetric encryption", "asymmetric encryption", "AEAD", "block cipher", "stream cipher", "key exchange", "forward secrecy"]
+relatedTools: ["cipher", "f5-cipher-string-expander"]
+relatedArticles: ["hash-function-families", "cipher-suite-anatomy", "tls13-cipher-suites", "which-cipher-suites-to-use"]
+category: transport
+order: 225
+status: reviewed
+updated: "2026-07-22"
+---
+
+A TLS cipher suite looks like one thing, but it is an assembly of parts drawn from a few algorithm families - and reading suites fluently means knowing the families, not memorizing the strings. This is the encryption counterpart to [the hash-families map](/learn/hash-function-families): what each family is for, what it costs, and where its bodies are buried. [The suite anatomy article](/learn/cipher-suite-anatomy) shows how the parts snap together; here we meet the parts themselves.
+
+## Symmetric ciphers: the bulk workhorses
+
+Symmetric ciphers encrypt the actual data, with the same key on both ends. Two shapes exist. A **block cipher** transforms fixed-size blocks (AES: 128 bits at a time) and needs a *mode of operation* to handle real-length messages. A **stream cipher** generates a keystream and XORs it over the data, any length, no padding. **AES** (Advanced Encryption Standard) is the block-cipher workhorse of the internet: standardized since 2001, 128- or 256-bit keys, and - decisively - accelerated in silicon nearly everywhere (the AES-NI instructions), which makes it both fast and resistant to timing side channels. Its disadvantage is that AES is only as good as its mode, and its mode history is exactly where the trouble lived. **ChaCha20** is the modern stream cipher: designed for constant-time software implementation, it outruns AES on devices *without* hardware acceleration - which is why mobile-heavy fleets love it - and pairs with the Poly1305 authenticator. The two coexist on purpose: current guidance lets the client pick AES-GCM or ChaCha20-Poly1305 by its own hardware. The retired members of this family teach the failure modes: **DES** fell to its 56-bit key (brute-forceable decades ago), **3DES** limped on until its 64-bit block size made it birthday-attackable in long sessions (Sweet32), and **RC4**, once the web's favorite stream cipher, accumulated statistical biases until <a href="https://www.rfc-editor.org/rfc/rfc7465">RFC 7465</a> banned it from TLS outright.
+
+## Modes and AEAD: why assembly-required died
+
+A block cipher plus a mode plus a separate integrity mechanism used to be a kit you assembled - and the assembly kept going wrong. CBC (cipher block chaining) mode with MAC-then-encrypt produced a decade of padding-oracle attacks (POODLE against SSLv3, Lucky Thirteen against TLS CBC timing). The fix was structural: **AEAD** (authenticated encryption with associated data) modes weld confidentiality and integrity into ONE primitive with one key and no assembly choices. **GCM** (Galois/Counter Mode) is AES's AEAD and the internet's default; **CCM** is its conservative sibling for constrained hardware; **ChaCha20-Poly1305** is the stream-cipher AEAD. TLS 1.3 made the verdict final: [only AEAD suites exist there](/learn/tls13-cipher-suites). The advantage of AEAD is precisely the absence of choices; its only real disadvantage is unforgiving nonce discipline - reuse a nonce under the same key in GCM and authenticity collapses - which protocol design, not the administrator, now handles.
+
+## Asymmetric families: identity and key agreement
+
+The asymmetric families never touch the bulk data; they establish *who you are* and *what key to use*. **RSA** does both jobs - signing and encryption - which was historically its appeal and operationally its trap: using the server's long-term RSA key to transport the session key ("static RSA key exchange") means one stolen private key retroactively opens every recorded session. That property - no **forward secrecy** - is why static-RSA key exchange is gone from TLS 1.3 and from every modern configuration, while RSA *signatures* live on in certificates. **Elliptic-curve** signatures (ECDSA on P-256, and the newer EdDSA/Ed25519) deliver the same authentication with far smaller keys and faster math. For key agreement, the **Diffie-Hellman** family - finite-field DHE and, overwhelmingly today, elliptic-curve **ECDHE** on X25519 or P-256 - generates a fresh key pair per connection, which is exactly what forward secrecy means: yesterday's traffic stays sealed even if today's server key leaks. The advantages column for ECDHE is so strong that modern guidance simply requires it; the only members of this family in the forbidden drawer are **anonymous** DH (no authentication, trivially intercepted) and the deliberately weakened **EXPORT** grades that FREAK and Logjam resurrected as attacks.
+
+## Reading the map forward
+
+Family literacy makes every suite string self-explanatory: [the anatomy article](/learn/cipher-suite-anatomy) decomposes the naming, [the 1.3 article](/learn/tls13-cipher-suites) shows the shrunken modern list, and [the verdict ledger](/learn/which-cipher-suites-to-use) turns families into configuration decisions. The next family shift is already visible: quantum-resistant key exchange is arriving as *hybrids* that run X25519 alongside a lattice KEM, covered in [the hybrid key-exchange article](/learn/hybrid-key-exchange-in-tls) - the families map gets a new continent, but the reading skills stay the same. And when a suite string crosses your terminal, [the cipher suite decoder](/tools/cipher) applies this whole map for you, family by family.

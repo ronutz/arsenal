@@ -1,0 +1,34 @@
+---
+slug: which-cipher-suites-to-use
+title: "Quais Suítes de Cifras Usar: O Livro-Razão de Veredictos"
+summary: "A resposta decisiva à pergunta de configuração, camada por camada: o que rodar hoje (o trio do TLS 1.3 mais as suítes AEAD com ECDHE no 1.2), o que é aceitável em nichos estreitos, o que está em declínio, o que é absolutamente proibido e por qual RFC, e o que o futuro reserva - fundamentado no RFC 8446, RFC 9155, nos perfis atuais da Mozilla e no NIST SP 800-52r2."
+concepts: ["cipher suite", "forward secrecy", "AEAD", "TLS 1.3", "deprecation", "compliance"]
+relatedTools: ["cipher", "f5-cipher-string-expander"]
+relatedArticles: ["cipher-families", "cipher-suite-anatomy", "tls13-cipher-suites", "tls-cipher-security-keywords"]
+category: transport
+order: 226
+status: reviewed
+updated: "2026-07-22"
+---
+
+Os artigos de suítes deste site ensinam a *ler* - [famílias](/learn/cipher-families), [anatomia](/learn/cipher-suite-anatomy), [o encolhimento do 1.3](/learn/tls13-cipher-suites), [as palavras-chave de perigo](/learn/tls-cipher-security-keywords). Este responde à pergunta a que essas habilidades levam: **o que eu configuro de fato?** O livro-razão abaixo tem cinco camadas, cada uma fundamentada em uma autoridade nomeada, verificada contra a orientação vigente no momento da escrita.
+
+## Recomendado agora
+
+**No TLS 1.3, a resposta já vem pronta**: o <a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a> define cinco suítes AEAD (authenticated encryption with associated data, criptografia autenticada com dados associados), e as três que importam em todo lugar são TLS_AES_128_GCM_SHA256 (0x1301), TLS_AES_256_GCM_SHA384 (0x1302) e TLS_CHACHA20_POLY1305_SHA256 (0x1303) - exatamente o trio que o perfil *Modern* da Mozilla roda, só TLS 1.3, nada mais a decidir. O sigilo futuro é estrutural no 1.3 (a troca de chaves é sempre efêmera), então toda suíte desta camada o tem por construção. **No TLS 1.2, onde clientes mais antigos ainda o exigem**, o conjunto recomendado são as suítes AEAD com ECDHE (Elliptic Curve Diffie-Hellman Ephemeral, Diffie-Hellman efêmero de curva elíptica) e nada mais: ECDHE-ECDSA/ECDHE-RSA com AES-128-GCM, AES-256-GCM ou ChaCha20-Poly1305 - o perfil *Intermediate* da Mozilla, que pontualmente contém **nenhum CBC, nenhum RC4, nenhum 3DES e nenhuma troca de chaves RSA estática**. Deixe a preferência de ordem do servidor desligada nesta camada: o cliente escolhe AES-GCM ou ChaCha20 conforme o próprio hardware, e as duas respostas estão certas.
+
+## Aceitável, nos seus nichos
+
+As suítes AES-CCM (incluindo CCM_8) são AEAD honesto e existem para hardware restrito e de classe IoT onde a matemática de Galois do GCM sai cara; em servidores de uso geral não acrescentam nada. O DHE de corpo finito com cargas AEAD ainda entrega sigilo futuro para clientes raros sem suporte a curvas elípticas, a um custo de handshake significativamente maior e com o fardo de grupos fortes e bem escolhidos - muitos operadores hoje simplesmente removem o DHE em vez de policiá-lo. Os dois nichos são legítimos; nenhum pertence a um padrão.
+
+## Em declínio: legal, mas de saída
+
+As suítes em modo CBC (AES-CBC com HMAC) não estão formalmente banidas, e as implementações de TLS 1.2 corrigiram os oráculos conhecidos - mas sua história (o caminho de downgrade do POODLE, o timing do Lucky Thirteen) é o motivo de todo perfil atual simplesmente excluí-las, e sua ausência do TLS 1.3 é a direção da estrada posta por escrito. A troca de chaves RSA estática divide a mesma gaveta: sem sigilo futuro, um convite permanente a variantes de oráculo da classe ROBOT, ausente do 1.3. E pelo <a href="https://www.rfc-editor.org/rfc/rfc9155">RFC 9155</a>, o SHA-1 acabou até nos algoritmos de *assinatura* do TLS 1.2 - uma deprecação mais silenciosa que os banimentos de cifras, mas a mesma trajetória. Se uma varredura de conformidade encontrar algo desta camada, o achado é "funciona hoje, migre deliberadamente".
+
+## Absolutamente não - e com nome
+
+A camada proibida não é opinião; cada entrada tem um documento. **RC4**: proibido no TLS pelo <a href="https://www.rfc-editor.org/rfc/rfc7465">RFC 7465</a> depois que os vieses do seu keystream viraram ataques práticos. **3DES**: blocos de 64 bits tornam sessões HTTPS longas atacáveis por aniversário (Sweet32); o NIST o desautorizou para novas aplicações e ele não sobrevive em nada atual. Qualquer coisa de grau **EXPORT**: as suítes deliberadamente enfraquecidas dos anos 1990 que FREAK e Logjam transformaram em ataques de downgrade ao vivo. Criptografia **NULL** e troca de chaves **anônima**: as palavras significam o que dizem - sem confidencialidade, ou sem autenticação. **MD5** em qualquer papel: quebrado por colisão. E o piso de protocolo debaixo delas: o SSLv3 é proibido pelo <a href="https://www.rfc-editor.org/rfc/rfc7568">RFC 7568</a> (o POODLE foi seu funeral), e o TLS 1.0/1.1 estão formalmente deprecados pelo <a href="https://www.rfc-editor.org/rfc/rfc8996">RFC 8996</a>. Qualquer item desta camada aparecendo numa varredura é um achado para corrigir agora, não para agendar.
+
+## As âncoras de conformidade e o futuro
+
+Para ambientes regulados, o <a href="https://csrc.nist.gov/pubs/sp/800/52/r2/final">NIST SP 800-52 Revisão 2</a> é a referência: suítes baseadas em FIPS no TLS 1.2, suporte a TLS 1.3 exigido para sistemas federais desde 1º de janeiro de 2024, e chaves de certificado com segurança mínima de 112 bits - segue sendo a revisão vigente, com uma atualização da era pós-quântica amplamente antecipada, mas não publicada. A camada do futuro já está parcialmente implantada: a troca de chaves híbrida (X25519 pareado com o KEM de reticulados ML-KEM) protege o tráfego gravado de hoje contra a descriptografia quântica de amanhã, e [o artigo de troca de chaves híbrida](/learn/hybrid-key-exchange-in-tls) cobre como a transição funciona sem mudar nada na coluna simétrica deste livro-razão - AES-GCM e ChaCha20-Poly1305 seguem em frente. Para aplicar o livro-razão a uma configuração real, decodifique qualquer suíte que encontrar com [o decodificador de suítes de cifras](/tools/cipher), e expanda uma string de cifras F5 inteira contra ele com [o expansor de cipher strings](/tools/f5-cipher-string-expander); reverifique as fontes dos perfis nas próprias páginas quando for configurar, porque esta lista de camadas é uma fotografia de um consenso em movimento, honesta quanto à sua data.

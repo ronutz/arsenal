@@ -1,0 +1,34 @@
+---
+slug: which-cipher-suites-to-use
+title: "Which Cipher Suites to Use: The Verdict Ledger"
+summary: "The decisive answer to the configuration question, tier by tier: what to run today (the TLS 1.3 trio plus ECDHE AEAD suites on 1.2), what is acceptable in narrow niches, what is declining, what is absolutely forbidden and by which RFC, and what the future holds - grounded in RFC 8446, RFC 9155, Mozilla's current profiles, and NIST SP 800-52r2."
+concepts: ["cipher suite", "forward secrecy", "AEAD", "TLS 1.3", "deprecation", "compliance"]
+relatedTools: ["cipher", "f5-cipher-string-expander"]
+relatedArticles: ["cipher-families", "cipher-suite-anatomy", "tls13-cipher-suites", "tls-cipher-security-keywords"]
+category: transport
+order: 226
+status: reviewed
+updated: "2026-07-22"
+---
+
+The suite articles on this site teach you to *read* - [families](/learn/cipher-families), [anatomy](/learn/cipher-suite-anatomy), [the 1.3 shrinkage](/learn/tls13-cipher-suites), [the danger keywords](/learn/tls-cipher-security-keywords). This one answers the question those skills lead to: **what do I actually configure?** The ledger below has five tiers, each grounded in a named authority, verified against the current guidance at the time of writing.
+
+## Recommended now
+
+**On TLS 1.3, the answer is already made for you**: <a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a> defines five AEAD (authenticated encryption with associated data) suites, and the three that matter everywhere are TLS_AES_128_GCM_SHA256 (0x1301), TLS_AES_256_GCM_SHA384 (0x1302), and TLS_CHACHA20_POLY1305_SHA256 (0x1303) - exactly the trio Mozilla's *Modern* profile runs, TLS 1.3 only, nothing else to decide. Forward secrecy is structural in 1.3 (key exchange is always ephemeral), so every suite in this tier has it by construction. **On TLS 1.2, where older clients still require it**, the recommended set is the ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) AEAD suites and nothing more: ECDHE-ECDSA/ECDHE-RSA with AES-128-GCM, AES-256-GCM, or ChaCha20-Poly1305 - Mozilla's *Intermediate* profile, which pointedly contains **no CBC, no RC4, no 3DES, and no static-RSA key exchange**. Leave server cipher-order preference off in this tier: the client picks AES-GCM or ChaCha20 by its own hardware, and both answers are right.
+
+## Acceptable, in their niches
+
+AES-CCM suites (including CCM_8) are honest AEAD and exist for constrained and IoT-class hardware where GCM's Galois math is expensive; on general-purpose servers they add nothing. Finite-field DHE with AEAD payloads still delivers forward secrecy for rare clients without elliptic-curve support, at meaningfully higher handshake cost and with the burden of strong, well-chosen groups - many operators now drop DHE entirely rather than police it. Both niches are legitimate; neither belongs in a default.
+
+## Declining: legal, but on the way out
+
+CBC-mode suites (AES-CBC with HMAC) are not formally banned, and TLS 1.2 implementations patched the known oracles - but their history (POODLE's downgrade path, Lucky Thirteen's timing) is why every current profile simply excludes them, and their absence from TLS 1.3 is the direction of travel written down. Static-RSA key exchange shares the drawer: no forward secrecy, a standing invitation to ROBOT-class oracle variants, absent from 1.3. And per <a href="https://www.rfc-editor.org/rfc/rfc9155">RFC 9155</a>, SHA-1 is done even in the TLS 1.2 *signature* algorithms - a quieter deprecation than the cipher bans, but the same trajectory. If a compliance scan finds any of this tier, the finding is "works today, migrate deliberately."
+
+## Absolutely not - and by name
+
+The forbidden tier is not opinion; each entry has a document. **RC4**: prohibited in TLS by <a href="https://www.rfc-editor.org/rfc/rfc7465">RFC 7465</a> after its keystream biases became practical attacks. **3DES**: 64-bit blocks make long HTTPS sessions birthday-attackable (Sweet32); NIST disallowed it for new applications and it survives nowhere current. **EXPORT-grade** anything: the deliberately weakened 1990s suites that FREAK and Logjam turned into live downgrade attacks. **NULL** encryption and **anonymous** key exchange: the words mean what they say - no confidentiality, or no authentication. **MD5** in any role: collision-broken. And the protocol floor underneath them: SSLv3 is prohibited by <a href="https://www.rfc-editor.org/rfc/rfc7568">RFC 7568</a> (POODLE was its funeral), and TLS 1.0/1.1 are formally deprecated by <a href="https://www.rfc-editor.org/rfc/rfc8996">RFC 8996</a>. Anything in this tier appearing on a scan is a finding to fix now, not to schedule.
+
+## The compliance anchors and the future
+
+For regulated environments, <a href="https://csrc.nist.gov/pubs/sp/800/52/r2/final">NIST SP 800-52 Revision 2</a> is the reference: FIPS-based suites on TLS 1.2, TLS 1.3 support required for federal systems since January 1, 2024, and certificate keys at 112-bit security minimum - it remains the standing revision, with a post-quantum-era update widely anticipated rather than published. The future tier itself is already partially deployed: hybrid key exchange (X25519 paired with the ML-KEM lattice KEM) protects today's recorded traffic against tomorrow's quantum decryption, and [the hybrid key-exchange article](/learn/hybrid-key-exchange-in-tls) covers how the transition works without changing anything in this ledger's symmetric column - AES-GCM and ChaCha20-Poly1305 carry on. To apply the ledger to a real configuration, decode any suite you meet with [the cipher suite decoder](/tools/cipher), and expand a whole F5 cipher string against it with [the cipher string expander](/tools/f5-cipher-string-expander); re-verify the profile sources on their own pages when you configure, because this tier list is a snapshot of a moving consensus, honest about its date.

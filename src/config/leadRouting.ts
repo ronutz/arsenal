@@ -22,7 +22,7 @@
 // components that call it.
 // ============================================================================
 
-import { redEducationUrl } from "@/config/redEducation";
+import { RED_EDUCATION_BASE } from "@/config/redEducation";
 
 export interface LeadDestination {
   /** Short label shown to users / used in the button. */
@@ -40,10 +40,11 @@ export interface LeadDestination {
 /** Red Education — the current authorized training center for all courses. */
 const RED_EDUCATION: LeadDestination = {
   name: "Red Education",
-  // Lead-attributed URL: utm_campaign=training-cta marks this as the course/
-  // platform "Request this training" placement. The UTM params ride the query
-  // string and are safely ignored if Red Education does not consume them.
-  url: redEducationUrl("training-cta"),
+  // BASE URL only (standing rule, PRIME 2026-07-22): placement-level
+  // attribution is applied at render time - in RequestTraining - where the
+  // vendor, page, locale, and CTA context actually lives. No context-free
+  // attributed URL may be baked here at module scope.
+  url: RED_EDUCATION_BASE,
   kind: "atc",
 };
 

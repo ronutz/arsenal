@@ -13443,6 +13443,23 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .certhub-guide-cta { font-size: 0.8rem; font-weight: 600; color: var(--accent-primary); }
 .certhub-renewal { margin: 1rem 0 0; font-size: 0.85rem; color: var(--text-tertiary); font-style: italic; }
 
+/* Collapsible certification row (2026-07-22 layout fix): the hub's
+   cert-level toggle is a ONE-LINE clickable row - triangle, name, code -
+   not a column card. Button reset + row flex; the guide CARDS keep the
+   column style. */
+.certhub-cert-row {
+  display: flex; align-items: center; gap: 0.6rem; width: 100%;
+  margin: 0.35rem 0; padding: 0.55rem 0.85rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font: inherit; text-align: left; cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.certhub-cert-row:hover, .certhub-cert-row:focus-visible { border-color: var(--accent-primary); }
+.certhub-cert-row .certhub-guide-name { flex: 1 1 auto; }
+.certhub-cert-row .certs-badge { flex: 0 0 auto; }
+
 /* Study guide page. */
 .certguide-partof { margin: 0.25rem 0 0.75rem; color: var(--text-tertiary); font-size: 0.9rem; }
 .certguide-meta { list-style: none; margin: 0 0 1rem; padding: 0; display: flex; flex-wrap: wrap; gap: 0.35rem 1.5rem; font-size: 0.88rem; }

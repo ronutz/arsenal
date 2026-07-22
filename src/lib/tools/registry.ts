@@ -65,6 +65,7 @@ import { run as mtuMssRun } from "./mtu-mss";
 import { run as httpMethodsComparisonRun } from "./http-methods-comparison";
 import { run as httpStatusCodeExplainerRun } from "./http-status-code-explainer";
 import { run as netskopeSteeringDecisionRun } from "./netskope-steering-decision-explainer";
+import { run as sortingStepperRun, type Strategy as SortStrategy } from "./sorting-algorithm-stepper";
 import { runFromJson as faultHypothesisBuilderRun } from "./fault-hypothesis-builder";
 import { runFromJson as changeWindowRunbookBuilderRun } from "./change-window-runbook-builder";
 import { runFromJson as incidentTimelineRcaBuilderRun } from "./incident-timeline-rca-builder";
@@ -164,6 +165,14 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "http-methods-comparison", run: httpMethodsComparisonRun },
   { slug: "http-status-code-explainer", run: httpStatusCodeExplainerRun },
   { slug: "netskope-steering-decision-explainer", run: netskopeSteeringDecisionRun },
+  {
+    slug: "sorting-algorithm-stepper",
+    structured: true,
+    run: (input: string) => {
+      const p = JSON.parse(input) as { text: string; strategy: SortStrategy };
+      return sortingStepperRun(p);
+    },
+  },
   { slug: "fault-hypothesis-builder", structured: true, run: faultHypothesisBuilderRun },
   { slug: "change-window-runbook-builder", structured: true, run: changeWindowRunbookBuilderRun },
   { slug: "incident-timeline-rca-builder", structured: true, run: incidentTimelineRcaBuilderRun },

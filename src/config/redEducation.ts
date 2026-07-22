@@ -33,23 +33,59 @@ export const RED_EDUCATION_BASE = "https://www.rededucation.com/";
 /** Host suffix treated as "Red Education" for attribution + referrer handling. */
 const RED_EDUCATION_HOST = "rededucation.com";
 
-/**
- * Build a Red Education URL carrying lead-source attribution.
- *
- * @param placement where on ronutz.com the link lives (becomes `utm_campaign`),
- *                  e.g. "footer", "training-cta", "contact".
- * @param detail    optional finer detail (becomes `utm_content`), e.g. a course
- *                  or platform slug.
- *
- * The parameters are appended to the query string and are safely ignored by any
- * server that does not expect them (never a 4xx).
- */
-export function redEducationUrl(placement: string, detail?: string): string {
-  const u = new URL(RED_EDUCATION_BASE);
+// ----------------------------------------------------------------------------
+// PLACEMENT-LEVEL ATTRIBUTION SCHEMA (standing rule, PRIME 2026-07-22).
+// Every outbound Red Education link carries five analytics-standard UTM
+// parameters answering, for every single click: which vendor value stream,
+// which page, which CTA, and which language produced it.
+//
+//   utm_source   = ronutz.com                          (constant)
+//   utm_medium   = referral                            (constant)
+//   utm_campaign = vendor/program key                  (f5, netskope, ..., or "site")
+//   utm_content  = pageType or pageType/pageSlug       (the exact page)
+//   utm_term     = locale.cta                          (language + placement)
+//
+// The rule applies to the ENTIRE site - past, present, and future: no static,
+// context-free Red Education URL may be baked at module scope; attribution is
+// applied at render time, where the page/vendor/locale/CTA context lives.
+// ----------------------------------------------------------------------------
+
+/** The render-time context every Red Education link must carry. */
+export interface RedEduAttribution {
+  /** Vendor or program key (f5, extreme, fortinet, netskope, ping, zscaler); omit for site-level placements. */
+  vendor?: string;
+  /** Page type: "course", "platform", "learn", "tool", "vendor-partner", "red-education", "contact", ... */
+  pageType: string;
+  /** The page's own slug; omitted for singleton pages. */
+  pageSlug?: string;
+  /** The rendering locale (en, pt-BR, ...). */
+  locale: string;
+  /** The specific call-to-action on that page ("request-training", "main-cta", "source-link", ...). */
+  cta: string;
+}
+
+/** UTM values must survive analytics pipelines: lowercase, dot/dash/slash-safe. */
+function utmSafe(v: string): string {
+  return v.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9._/-]/g, "");
+}
+
+/** Apply the five-parameter schema to a URL object. */
+function applyAttribution(u: URL, a: RedEduAttribution): void {
   u.searchParams.set("utm_source", "ronutz.com");
   u.searchParams.set("utm_medium", "referral");
-  u.searchParams.set("utm_campaign", placement);
-  if (detail) u.searchParams.set("utm_content", detail);
+  u.searchParams.set("utm_campaign", utmSafe(a.vendor ?? "site"));
+  u.searchParams.set("utm_content", utmSafe(a.pageSlug ? `${a.pageType}/${a.pageSlug}` : a.pageType));
+  u.searchParams.set("utm_term", utmSafe(`${a.locale}.${a.cta}`));
+}
+
+/**
+ * Build a Red Education URL (site root) carrying full placement-level
+ * attribution. The parameters ride the query string and are safely ignored by
+ * any server that does not expect them (never a 4xx).
+ */
+export function redEducationUrl(a: RedEduAttribution): string {
+  const u = new URL(RED_EDUCATION_BASE);
+  applyAttribution(u, a);
   return u.toString();
 }
 
@@ -76,18 +112,14 @@ export function isRedEducationUrl(url: string): boolean {
  * Education carries referral attribution — the traffic and the leads must be
  * visible as ronutz.com's contribution in Red Education's own analytics.
  *
- * @param url       the link as authored in content/data (any host).
- * @param placement where on ronutz.com the link lives (becomes `utm_campaign`).
- * @param detail    optional finer detail (becomes `utm_content`), e.g. a slug.
+ * @param url the link as authored in content/data (any host).
+ * @param a   the render-time placement context (vendor, page, locale, CTA).
  */
-export function attributeRedEducationUrl(url: string, placement: string, detail?: string): string {
+export function attributeRedEducationUrl(url: string, a: RedEduAttribution): string {
   if (!isRedEducationUrl(url)) return url;
   try {
     const u = new URL(url);
-    u.searchParams.set("utm_source", "ronutz.com");
-    u.searchParams.set("utm_medium", "referral");
-    u.searchParams.set("utm_campaign", placement);
-    if (detail) u.searchParams.set("utm_content", detail);
+    applyAttribution(u, a);
     return u.toString();
   } catch {
     // A malformed URL is left exactly as authored — attribution is best-effort

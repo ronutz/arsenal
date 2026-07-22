@@ -599,6 +599,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_secure_headers",
     "tag": "Security & WAF"
   },
+  "sorting-algorithm-stepper": {
+    "url": "https://ronutz.com/api/v1/sorting-algorithm-stepper",
+    "method": "GET",
+    "op": "run_sorting_algorithm_stepper",
+    "tag": "Algorithms"
+  },
   "ssrf-url-classifier": {
     "url": "https://ronutz.com/api/v1/ssrf-url-classifier",
     "method": "GET",

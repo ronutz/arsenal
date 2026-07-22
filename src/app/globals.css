@@ -744,3 +744,14 @@ a {
   font-family: var(--font-mono);
   font-variant-ligatures: none;
 }
+
+/* sorting-algorithm-stepper: the indices the algorithm is touching RIGHT NOW.
+   Justified new class (2026-07-22): the step-focus highlight is the tool's
+   core teaching affordance - no existing class marks per-character emphasis
+   inside a mono run. Semantic tokens only. */
+.sas-focus {
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  border-radius: 3px;
+  padding: 0 2px;
+}

@@ -1,0 +1,30 @@
+---
+slug: pingone-platform
+title: "PingOne: The Platform Behind the Product Names"
+summary: "What PingOne actually is - a multi-tenant identity-as-a-service platform organized around environments inside an organization - and how its named services (SSO, MFA, Protect, Verify, Authorize, DaVinci) divide the work, how it relates to the self-managed PingFederate/PingAccess/PingDirectory stack and to Advanced Identity Cloud, and why the same word appears in so many product names."
+concepts: ["IDaaS", "multi-tenant", "MFA", "risk", "authorization", "identity platform"]
+relatedTools: ["oidc", "totp-hotp", "jwt"]
+relatedArticles: ["pingone-davinci-orchestration", "pingaccess-policy-model", "pingdirectory-platform", "ping-forgerock-lineage"]
+category: identity
+order: 229
+status: reviewed
+updated: "2026-07-22"
+---
+
+"PingOne" is the most overloaded word in the Ping catalog, and the confusion dissolves once you see the shape: **PingOne is the platform**, and the names after it are services on that platform. This article draws the map - what the platform is, what each service does, and how it relates to the software you run yourself. (Facts follow Ping's official product documentation, verified at the time of writing.)
+
+## The platform shape
+
+PingOne is a **multi-tenant, cloud-based identity-as-a-service (IDaaS) platform** with an organization-based model: your *organization* is the tenant, containing *environments* (production, staging, per-brand, per-region) that hold the directories, applications, policies, and administrators. Everything is API-first - the admin console is a client of the same management APIs you can call yourself - and standard protocols (OIDC, OAuth 2.0, SAML 2.0, SCIM) are the interface to applications. The platform posture is the classic IDaaS trade: Ping runs the availability, patching, and scale; you configure rather than operate.
+
+## The named services
+
+Each capability is a named service on the platform. **PingOne SSO** is the core: directory, authentication, and single sign-on to applications over the standard protocols. **PingOne MFA** adds the factor ladder - push, one-time passcodes of the [TOTP/HOTP family](/tools/totp-hotp), FIDO2/passkeys - as policy-driven step-up. **PingOne Protect** is the risk engine: device and behavioral signals scored into risk levels that authentication policies consume, the mechanism behind reducing MFA fatigue while catching account takeover and new-account fraud. **PingOne Verify** does identity *proofing* - government-ID checks and liveness - for the moments when you must know the human is who the document says. **PingOne Authorize** carries fine-grained, policy-based authorization decisions beyond the coarse app-level grant. And **PingOne DaVinci** is the orchestration fabric that wires all of the above into user journeys - large enough a topic that [it has its own article](/learn/pingone-davinci-orchestration).
+
+## One platform, two software worlds
+
+The platform does not replace the self-managed stack; it *partners* with it, and most real estates are hybrid. [PingFederate](/learn/pingfederate-authentication-policies) remains the self-managed federation workhorse, [PingAccess](/learn/pingaccess-policy-model) the self-managed access layer, [PingDirectory](/learn/pingdirectory-platform) the self-managed store - and each integrates with PingOne services (a PingFederate policy can invoke PingOne Protect's risk score; PingOne MFA can serve as the factor for a self-managed login). Sitting beside all of this is **PingOne Advanced Identity Cloud** - the ForgeRock-heritage cloud platform, a different codebase with journeys and trees rather than DaVinci flows, whose story belongs to [the lineage article](/learn/ping-forgerock-lineage). When a diagram says "PingOne," the first question is always *which* PingOne: the platform, a named service on it, or Advanced Identity Cloud.
+
+## Why the map matters
+
+Operationally, the map decides where configuration lives and where an outage can come from - a Protect policy misfire is a platform-service question, a PingFederate adapter failure is a self-managed one, and hybrid architectures need both runbooks. Commercially and in certification terms, the map is the syllabus boundary: the Certified Professional **PingOne** exam covers the platform and its services, while Advanced Identity Cloud, DaVinci, and the self-managed products each carry their own credential - all tracked on [the certifications hub](/certifications) as their official objectives land. For regulated environments, the platform family extends to a government cloud carrying FedRAMP High and DoD Impact Level 5 authorizations, the compliance names this site's glossary work will keep expanding.

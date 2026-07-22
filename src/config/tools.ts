@@ -139,6 +139,7 @@ export const tools: ToolEntry[] = [
   { id: "zcc-forwarding-decision-explainer", href: "/tools/zcc-forwarding-decision-explainer", category: "networking", vendors: ["zscaler"], sub: "zte", available: true },
   { id: "jwks-explainer", href: "/tools/jwks-explainer", category: "identity", vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "oauth-tokens", available: true },
   { id: "regex", href: "/tools/regex", category: "web", available: true },
+  { id: "sorting-algorithm-stepper", href: "/tools/sorting-algorithm-stepper", category: "web", available: true },
   { id: "diff", href: "/tools/diff", category: "text", available: true },
   // The four below were built but never registered here (drift caught and
   // guarded by scripts/check-tools-registry.mjs in the prebuild chain).

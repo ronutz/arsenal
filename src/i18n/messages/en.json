@@ -5875,6 +5875,29 @@
       "modeLabel": "Effective mode: {mode}",
       "ledgerTitle": "Decision ledger",
       "notesTitle": "Standing notes"
+    },
+    "sorting-algorithm-stepper": {
+      "name": "Sorting Algorithm Stepper",
+      "blurb": "Paste a small list of numbers, pick a strategy - bubble, selection, insertion, merge, or quick - and watch the algorithm think: every comparison, every swap, one WHY line per move, with live comparison and write counters that make Big-O growth tangible.",
+      "emptyState": "Paste numbers above (or press Example) and pick a strategy to step through the sort.",
+      "runsLocally": "Runs entirely in your browser - the list never leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "inputLabel": "Numbers to sort (2-16, space or comma separated)",
+      "strategyLabel": "Strategy",
+      "placeholder": "5 3 8 1 9 2",
+      "errorTitle": "That input needs a fix",
+      "countersTitle": "Result",
+      "counters": "{comparisons} comparisons, {writes} writes for {n} items",
+      "strategy_bubble": "Bubble sort (adjacent swaps, early exit)",
+      "strategy_selection": "Selection sort (find minimum, one swap per pass)",
+      "strategy_insertion": "Insertion sort (grow a sorted prefix)",
+      "strategy_merge": "Merge sort (divide and conquer)",
+      "strategy_quick": "Quicksort (Lomuto partition, last-element pivot)",
+      "kind_compare": "compare",
+      "kind_swap": "swap",
+      "kind_write": "write",
+      "kind_note": "note"
     }
   },
   "privacy_page": {
@@ -6300,7 +6323,7 @@
       "tagline": "Where the career began, and the enterprise LAN was learned from the ground up.",
       "intro": "The longest single thread in this history runs through one company and its successor. Cabletron Systems, a leading networking equipment vendor based in Rochester, New Hampshire, was the first employer, starting in 1996. When Cabletron reorganized into four companies in 2000, the line carried forward as Enterasys Networks, and the relationship resumed there from 2005. Together these span the formative decade of enterprise networking expertise.",
       "s1Title": "Cabletron, 1996 to 2000",
-      "s1Body": "Over four and a half years, the role moved through the full arc of vendor engineering: field engineering and post-sales support, systems engineering and pre-sales, and, from 1997, certified instruction. The daily work was hands-on and physical: installing, configuring, troubleshooting, upgrading, migrating, and sometimes physically relocating the secure, redundant, resilient, managed networks that ran São Paulo's enterprises, LAN, campus LAN, and WAN alike. The WAN side was built on Frame Relay and fractional-E1 leased lines, the LP circuits of the Brazilian carriers, reaching up to ATM and Packet over SONET on the faster links, and leaned mostly on Cisco routers, from the period when Cabletron partnered with Cisco on routing before it built its own. This was where the discipline of solution design, implementation, auditing, troubleshooting, and escalation management was first practised, and where teaching first entered the work.",
+      "s1Body": "Over four and a half years, the role moved through the full arc of vendor engineering: field engineering and post-sales support, systems engineering and pre-sales, and, from 1997, certified instruction. The daily work was hands-on and physical: installing, configuring, troubleshooting, upgrading, migrating, and sometimes physically relocating the secure, redundant, resilient, managed networks that ran São Paulo's enterprises, LAN, campus LAN, and WAN alike. The WAN side was built on Frame Relay and fractional-E1 leased lines, the LP circuits of the Brazilian carriers, reaching up to ATM and Packet over SONET on the faster links, and leaned mostly on Cisco routers - in that era sold as Cabletron-branded OEM (original equipment manufacturer) modules built on licensed Cisco IOS: the CRBRIM and its Cisco-technology WAN routing siblings that slotted into the MMAC hub family, carrying Cisco 2500-, 4000-, and 4500-series routing inside Cabletron sheet metal. Installing, configuring, optimizing, and troubleshooting those routers was daily work, done in the age when the config examples that mattered were printed out and carried in the notebook bag. In the latter years they gave way to the SmartSwitch Router, the switch-router line born of Cabletron's 1998 YAGO Systems acquisition - the same technology thread that later became Riverstone. This was where the discipline of solution design, implementation, auditing, troubleshooting, and escalation management was first practised, and where teaching first entered the work.",
       "s2Title": "Enterasys, 2005 to 2007",
       "s2Body": "Returning to the lineage as a services and support manager, the focus was the Secure Routing product line, with Enterasys as the regional focal point for Brazil. The work combined high-level customer support, complex troubleshooting, and escalation management, including the demanding escalations that came in from a key account, Petrobras in São Paulo, with localized product management alongside. The technical surface had grown to include network management, NAC and UAC, intrusion detection and prevention, and SIEM, across enterprise switching and routing. Enterasys was later acquired by Extreme Networks in 2013, closing a circle that connects this early work to a platform still taught today.",
       "certs": "Cabletron Systems Engineer (CSE), 1999. Enterasys Systems Engineer (ESE), 2000 and 2007. Enterasys Certified Internetworking Engineer (ECIE), 2007.",
@@ -6347,7 +6370,7 @@
       "name": "Cisco Systems",
       "years": "2003 – 2008",
       "tagline": "Keeping critical national infrastructure running, as the single point of contact for Brazil's federal customers.",
-      "intro": "Contracted through Cisco Professional Services in Brazil, this was the career at its most operationally demanding, where the work was less about any single technology and more about keeping critical systems running for customers who could not afford downtime.",
+      "intro": "The Cisco story here actually begins in 1996, not 2003: the Cabletron years ran on Cisco routing sold as Cabletron-branded OEM (original equipment manufacturer) modules - the CRBRIM and its Cisco-IOS WAN routing siblings - installed, configured, optimized, and troubleshot daily until the YAGO-born SmartSwitch Router displaced them. Contracted through Cisco Professional Services in Brazil, this was the career at its most operationally demanding, where the work was less about any single technology and more about keeping critical systems running for customers who could not afford downtime.",
       "s1Title": "High-touch operations, 2003 to 2004",
       "s1Body": "As a high-touch operations manager and single point of contact, the role was post-sales customer-satisfaction management for two of Brazil's largest federal entities: SERPRO, the government's data-processing agency, and ECT-Correios, the national postal service, across Brasília and São Paulo. The technical surface included Catalyst switches and routers, PIX firewalls, and CSS, CSM, and ACE content and load-balancing appliances. The real discipline, though, was escalation management and crisis handling, maintaining high satisfaction for accounts where the stakes were national.",
       "s2Title": "Cisco instruction, 2007 to 2008",
@@ -12443,6 +12466,18 @@
       "newedge": {
         "def": "Netskope's privately operated global network of data centers - the infrastructure the Netskope One security cloud runs on. Every data center provides full compute for single-pass inspection, with extensive peering close to users and to the major SaaS providers.",
         "context": "The architectural answer to 'where does the proxy live': not in a few hub regions with backhaul, but at points of presence engineered for low round-trip time. The platform-architecture article on this site draws the full picture."
+      },
+      "block-cipher": {
+        "def": "A cipher that encrypts fixed-size blocks (AES: 128 bits), relying on a mode of operation to handle real message lengths.",
+        "context": "The mode is where the security lives or dies: CBC's padding history produced a decade of oracles, while the AEAD modes (GCM, CCM) weld integrity in and are all TLS 1.3 permits. AES is the block cipher of the internet largely because AES-NI silicon makes it fast and constant-time nearly everywhere."
+      },
+      "stream-cipher": {
+        "def": "A cipher that generates a keystream and XORs it over the data - any length, no blocks, no padding.",
+        "context": "ChaCha20 (RFC 8439, paired with Poly1305) is the modern member: constant-time in software and faster than AES on hardware without acceleration, which is why mobile fleets favor it. Its infamous predecessor RC4 accumulated keystream biases until RFC 7465 banned it from TLS entirely."
+      },
+      "key-exchange": {
+        "def": "How two parties agree on the session's secret key - the part of a cipher suite that decides whether recorded traffic stays sealed.",
+        "context": "Ephemeral Diffie-Hellman (ECDHE on X25519 or P-256) generates fresh keys per connection, giving forward secrecy; static-RSA key transport does not, which is why TLS 1.3 removed it and made ephemeral exchange structural. The post-quantum transition happens here too: hybrid X25519+ML-KEM runs both worlds side by side."
       }
     },
     "totalCount": "{count} terms",
@@ -12655,6 +12690,10 @@
       "netskope-sase": {
         "title": "Netskope SASE, End to End",
         "lede": "The whole platform in reading order: architecture and NewEdge, every steering method, the client, TLS decryption, the two protection paths, CCI-driven policy, Private Access, Cloud Firewall, and the analytics layer - with the PAC and SAML tools to practice on. Built to walk the accreditation and certification domains from this site."
+      },
+      "ping-identity-platform": {
+        "title": "The Ping Identity Platform",
+        "lede": "The whole Ping estate in reading order: the PingOne platform map and the ForgeRock lineage first, so every product name resolves; then PingAccess policy, the PingDirectory data platform, and DaVinci orchestration; closing with the PingFederate shelf - the self-managed federation core - in its established teaching order. The companion walk to the Certified Professional guides on the certifications hub."
       }
     }
   },

@@ -1,0 +1,30 @@
+---
+slug: pingdirectory-platform
+title: "A Plataforma PingDirectory: Armazenar, Agregar, Sincronizar, Delegar"
+summary: "A plataforma de dados de identidade em quatro peças: o servidor PingDirectory como armazém LDAP de alta performance com REST SCIM 2.0 nativo, o PingDirectoryProxy como gateway LDAPv3 e diretório virtual, o PingDataSync como motor de sincronização bidirecional em tempo real entre armazéns heterogêneos, e o Delegated Admin como superfície controlada de autosserviço - mais a gramática operacional de cn=config, grupos de servidores e movimentos sem downtime."
+concepts: ["LDAP", "directory", "SCIM", "synchronization", "virtual directory", "identity data"]
+relatedTools: ["jwt", "oidc"]
+relatedArticles: ["ldap-fundamentals", "scim-overview", "pingone-platform", "ping-forgerock-lineage"]
+category: identity
+order: 228
+status: reviewed
+updated: "2026-07-22"
+---
+
+Todo sistema de identidade se apoia numa camada de dados, e o **PingDirectory** é a resposta da Ping em escala: não um servidor, mas uma plataforma de quatro peças, cada uma dona de um verbo. Conhecer os verbos - armazenar, agregar, sincronizar, delegar - transforma o diagrama do produto numa frase. ([Fundamentos de LDAP](/learn/ldap-fundamentals) é o artigo pré-requisito; os fatos aqui seguem a documentação oficial do PingDirectory, verificada no momento da escrita.)
+
+## Armazenar: o servidor PingDirectory
+
+O núcleo é um **servidor de diretório LDAP** de alta performance e extensível, feito para a fase de perfil da identidade - centenas de milhões de entradas, conjuntos densos de atributos, concorrência pesada de leitura *e* escrita. Dois listeners são pares nativos: o listener LDAP fala o protocolo que os últimos trinta anos de infraestrutura esperam, e um listener HTTPS fala REST **SCIM 2.0** (System for Cross-domain Identity Management) nativamente - /Users, /Groups, payloads JSON, autenticação OAuth 2.0 de portador - sem camada de tradução no meio. Operacionalmente, toda a configuração do servidor vive como LDIF sob **cn=config** na própria árvore de informação do diretório, gerenciável por servidor ou por **grupos de servidores** com a suíte de linha de comando ou o console administrativo; essa única escolha de projeto torna a configuração da frota auditável com as mesmas ferramentas que leem qualquer outro dado do diretório.
+
+## Agregar: o PingDirectoryProxy
+
+O **servidor PingDirectoryProxy** é um gateway LDAPv3 rápido na frente dos dados de diretório, e paga seu custo duas vezes. Como *proxy*, ele balanceia carga, limita taxa e aplica transformações de dados, deixando operadores priorizarem aplicações de missão crítica com políticas centralizadas. Como *diretório virtual*, agrega múltiplos backends - instâncias de diretório, domínios Active Directory, outros armazéns - numa árvore coerente sem migrar nada: o movimento canônico pós-fusão, em que os diretórios de duas empresas aparecem unificados para as aplicações federadas enquanto o projeto arriscado de consolidação segue sem data. O proxy também é peça estrutural da história de **migração sem downtime** da plataforma, segurando a frente enquanto os dados se movem atrás dele.
+
+## Sincronizar: o PingDataSync
+
+O **PingDataSync** é o motor de sincronização bidirecional em tempo real da plataforma - explicitamente não é ETL (extract, transform, load) em lote. Ele observa fontes de mudança pelo mecanismo que cada fonte de fato oferece - persistent search e change logs de LDAP, o controle DirSync do Active Directory, polling de banco de dados - e aplica as mudanças rio abaixo imediatamente, por pipelines configurados de adaptadores de origem, regras de transformação e mapeamento, e adaptadores de destino. A lista de endpoints suportados é deliberadamente multifornecedor: o próprio PingDirectory, Active Directory, a família de diretórios Oracle/Sun, OpenDJ e LDAP genérico - o que faz do DataSync a ferramenta de coexistência em migrações longas, mantendo o mundo velho e o novo consistentes pelo tempo que a virada levar.
+
+## Delegar, e onde a plataforma se encaixa
+
+O **Delegated Admin** completa o conjunto: uma aplicação web pela qual helpdesk, RH ou gestores executam as tarefas rotineiras de identidade - resets de senha, atualizações de atributo, mudanças de grupo - dentro de guarda-corpos, sem acesso cru ao diretório. Ao redor das quatro peças, a postura da plataforma é horizontal: adicione máquinas para cargas paralelas, replique para disponibilidade, e estenda o comportamento pelos pontos de plugin do Server SDK sem bifurcar o produto. No mapa Ping mais amplo, o PingDirectory é o armazém de identidade autogerenciado integrado à [plataforma PingOne](/learn/pingone-platform), oferecido na nuvem governamental autorizada FedRAMP High e DoD IL5, e distinto em linhagem do PingDS, o diretório de *herança ForgeRock* - uma distinção de nomes que [o artigo de linhagem](/learn/ping-forgerock-lineage) desembaraça, e que vale ter clara antes do exame Certified Professional PingDirectory, cujo [guia de estudos](/certifications/ping-cp-pingdirectory) acompanha os objetivos oficiais à medida que chegam.

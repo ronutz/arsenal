@@ -1,0 +1,30 @@
+---
+slug: pingaccess-policy-model
+title: "The PingAccess Policy Model: Gateway, Agent, and the Rule Stack"
+summary: "How PingAccess decides who reaches what: the two deployment shapes (gateway routing to sites, agents speaking PAAP to a policy server), the application-and-resource partition, rules composed into rule sets and rule set groups, the fixed evaluation order, and the token mediation that keeps legacy backends in the game."
+concepts: ["access management", "policy", "gateway", "agent", "rules", "token mediation"]
+relatedTools: ["oidc", "jwt", "saml-decoder"]
+relatedArticles: ["pingfederate-authentication-policies", "oauth-tokens", "oidc-overview", "pingone-platform"]
+category: identity
+order: 227
+status: reviewed
+updated: "2026-07-22"
+---
+
+PingFederate answers "who are you"; **PingAccess** answers "and what may you touch" - web access management (WAM) down to the URL level, for web applications and APIs alike. Its policy model is a small number of parts with a strict evaluation discipline, and once the parts are named, every deployment diagram reads itself. (Facts here follow the official PingAccess documentation, verified at the time of writing.)
+
+## Two shapes: gateway and agent
+
+Every PingAccess deployment answers one architectural question first: does traffic go *through* PingAccess, or does PingAccess *advise* the web server that already has it? In a **gateway** deployment, PingAccess is a reverse proxy: a **virtual host** represents the external name, a **site** holds the internal location of the real application, and PingAccess routes requests from the one to the other, enforcing policy in the path. In an **agent** deployment, a lightweight agent lives on the target web server, intercepts requests there, and consults the **policy server** over the PingAccess Agent Protocol (PAAP) - authenticating with a shared secret, caching decisions to keep latency down, and deliberately allowing many agents to share one name and secret so large fleets stay manageable. Gateway centralizes and needs no touch on the app servers; agent keeps traffic local and scales decision-making out to where the requests already are.
+
+## Applications, resources, and the rule stack
+
+The unit of protection is the **application** - typed as Web, API, or Web+API, where the hybrid type switches processing per request: a web-session cookie means web behavior, an OAuth bearer token means API behavior, and a configurable fallback catches requests carrying neither. Inside an application, **resources** partition the URL space into areas that deserve different treatment - an admin path, a payment endpoint - each able to carry its own policy. The policy itself is built from **rules** (the atomic checks: network range, header values, web-session attributes, OAuth scopes, authentication level, attribute- and role-based criteria), composed into **rule sets** (satisfy-all or satisfy-any), and rule sets into **rule set groups**. The composition is what makes the model expressive without scripting: the same MFA-required rule can sit in a dozen applications' policies, maintained once.
+
+## The order is the contract
+
+PingAccess evaluates in a fixed sequence, and knowing it is the difference between a policy that works and one that mysteriously doesn't. **Identity mappings run first**, so every rule downstream can see the header fields the mapping set. Then **access-control rules run before processing rules** - the gate before the transformation - and within each kind, rules fire in the order you arranged them in the policy manager. When both an application-level policy and a resource-level policy match a request, the documented ordering resolves which applies first. Requests for URLs with no PingAccess definition at all fall to the **unknown-resource** handling you configured, per agent if needed, with custom error responses - the model's explicit answer to "what about everything else."
+
+## Token mediation: the legacy bridge
+
+Granting access is half the job; speaking the backend's language is the other half. After policy evaluation passes, a PingAccess gateway can perform **token mediation**: exchanging the PingAccess token or an OAuth bearer token - via a PingFederate token generator - for whatever security token the protected system natively expects. The user never sees the exchange, and the legacy application processes the request as if the user had authenticated to it directly, which is precisely how decades-old backends survive inside a modern, [OIDC-fronted](/learn/oidc-overview) perimeter. It is the same architectural pattern this site covers on the F5 side with access profiles: modern identity at the edge, translated identity at the origin. For the certification angle, this model - shapes, stack, order, mediation - is exactly the terrain the Certified Professional PingAccess exam walks, and [the study guide](/certifications/ping-cp-pingaccess) tracks it as the official objectives land.

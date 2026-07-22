@@ -1,0 +1,30 @@
+---
+slug: pingone-davinci-orchestration
+title: "PingOne DaVinci: Orquestração de Identidade como uma Tela"
+summary: "O que é orquestração de identidade e por que virou categoria própria de produto: os fluxos de arrastar e soltar do DaVinci, o catálogo de conectores que transforma fornecedores em nós, a orquestração dirigida pelo servidor que deixa jornadas mudarem sem release de app, a origem na Singular Key, e como o DaVinci coexiste com as jornadas e árvores de herança ForgeRock sob uma família única de SDKs."
+concepts: ["orchestration", "user journeys", "flows", "connectors", "no-code", "CIAM"]
+relatedTools: ["oidc", "jwt", "pkce"]
+relatedArticles: ["pingone-platform", "oidc-authorization-code-flow", "pingaccess-policy-model", "ping-forgerock-lineage"]
+category: identity
+order: 230
+status: reviewed
+updated: "2026-07-22"
+---
+
+Cadastro, login, step-up de MFA, reset de senha, prova de identidade, checagens de fraude - uma jornada real de usuário cruza meia dúzia de sistemas, e por anos a fiação entre eles foi código sob medida que quebrava a cada troca de fornecedor. **Orquestração de identidade** é a categoria de produto que substituiu esse código por uma tela, e o **PingOne DaVinci** é o orquestrador da Ping. (Os fatos seguem a documentação e os anúncios oficiais da Ping, verificados no momento da escrita.)
+
+## Fluxos: a jornada como diagrama
+
+A unidade do DaVinci é o **fluxo**: um grafo de arrastar e soltar em que cada nó faz uma coisa - coletar uma credencial, chamar um motor de risco, ramificar numa condição, invocar MFA, escrever num diretório - e as arestas são os caminhos possíveis do usuário, incluindo os infelizes. O mote do lançamento foi "se você consegue desenhar no quadro branco, consegue orquestrar", e a substância atrás do slogan é que a *lógica da jornada sai do código da aplicação*: times de produto mudam a experiência de login editando o diagrama, não publicando release de app. Fluxos são versionados, testáveis e componíveis - um subfluxo de prova de identidade construído uma vez é reusado por toda jornada que precisar dele.
+
+## Conectores: fornecedores como nós
+
+A segunda metade do modelo é o **catálogo de conectores**: integrações pré-construídas que expõem serviços externos como nós na tela - os serviços da própria Ping ([PingOne MFA, Protect, Verify](/learn/pingone-platform)) ao lado de um ecossistema grande de terceiros: provedores de prova, motores de fraude, CRMs, serviços de comunicação. Os conectores são o que torna a orquestração uma estratégia de *integração*, e não só um fluxograma: trocar um fornecedor de fraude por outro vira uma substituição de nó dentro do fluxo, com a jornada ao redor intocada. Este também é o limite honesto a nomear: sua jornada é tão confiável quanto os serviços que seus nós chamam, então a orquestração concentra o monitoramento exatamente onde concentra a integração.
+
+## Dirigido pelo servidor: o cliente fica burro de propósito
+
+O DaVinci executa fluxos no lado do servidor, e os SDKs de cliente (JavaScript para single-page apps, Android, iOS) implementam a **orquestração dirigida pelo servidor**: o fluxo diz ao cliente o que renderizar em seguida - quais campos coletar, qual desafio apresentar - por meio de coletores tipados, e o app fornece sua própria aparência. Trate os tipos de coletor genericamente e *o fluxo pode mudar em produção sem atualização do app*: adicionar um passo de prova, reordenar o MFA, inserir um portão de risco, tudo sem tocar no binário que os usuários já instalaram. Essa única propriedade é boa parte do valor operacional da orquestração, e é o centro de projeto da atual família unificada de SDKs da Ping, que fala com fluxos DaVinci e com as jornadas de herança ForgeRock por um único modelo.
+
+## Origem, coexistência e o ângulo do exame
+
+O DaVinci entrou no catálogo pela aquisição da **Singular Key** pela Ping em 2021, relançado como PingOne DaVinci no início de 2022 - jovem para os padrões de infraestrutura de identidade, o que explica sua forma nativa de nuvem. Desde a fusão com a ForgeRock, ele coexiste com uma segunda tradição de orquestração: **jornadas e árvores de autenticação** no PingAM e no [Advanced Identity Cloud](/learn/ping-forgerock-lineage), um motor diferente com filosofia de tela parecida; a direção da plataforma é convergência na camada de SDK e experiência enquanto os dois motores servem suas bases instaladas. Para certificação, o DaVinci carrega seu próprio exame Certified Professional - orquestração é tratada como competência própria, não nota de rodapé do PingOne - e [o guia de estudos](/certifications/ping-cp-pingone-davinci) acompanha os objetivos oficiais à medida que chegam.

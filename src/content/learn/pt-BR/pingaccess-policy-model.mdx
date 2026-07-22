@@ -1,0 +1,30 @@
+---
+slug: pingaccess-policy-model
+title: "O Modelo de Políticas do PingAccess: Gateway, Agente e a Pilha de Regras"
+summary: "Como o PingAccess decide quem alcança o quê: as duas formas de implantação (gateway roteando para sites, agentes falando PAAP com um servidor de políticas), a partição em aplicações e recursos, regras compostas em conjuntos e grupos de conjuntos, a ordem fixa de avaliação, e a mediação de tokens que mantém backends legados no jogo."
+concepts: ["access management", "policy", "gateway", "agent", "rules", "token mediation"]
+relatedTools: ["oidc", "jwt", "saml-decoder"]
+relatedArticles: ["pingfederate-authentication-policies", "oauth-tokens", "oidc-overview", "pingone-platform"]
+category: identity
+order: 227
+status: reviewed
+updated: "2026-07-22"
+---
+
+O PingFederate responde "quem é você"; o **PingAccess** responde "e o que você pode tocar" - web access management (WAM, gestão de acesso web) até o nível da URL, para aplicações web e APIs igualmente. Seu modelo de políticas é um número pequeno de peças com uma disciplina estrita de avaliação, e uma vez nomeadas as peças, todo diagrama de implantação se lê sozinho. (Os fatos aqui seguem a documentação oficial do PingAccess, verificada no momento da escrita.)
+
+## Duas formas: gateway e agente
+
+Toda implantação de PingAccess responde primeiro a uma pergunta arquitetural: o tráfego passa *através* do PingAccess, ou o PingAccess *aconselha* o servidor web que já o tem? Numa implantação **gateway**, o PingAccess é um reverse proxy: um **virtual host** representa o nome externo, um **site** guarda a localização interna da aplicação real, e o PingAccess roteia as requisições de um para o outro, aplicando a política no caminho. Numa implantação com **agente**, um agente leve vive no servidor web de destino, intercepta as requisições ali e consulta o **servidor de políticas** pelo PingAccess Agent Protocol (PAAP) - autenticando com um segredo compartilhado, cacheando decisões para segurar a latência, e permitindo deliberadamente que muitos agentes compartilhem um mesmo nome e segredo para que frotas grandes continuem gerenciáveis. O gateway centraliza e não exige toque nos servidores de aplicação; o agente mantém o tráfego local e escala a decisão para onde as requisições já estão.
+
+## Aplicações, recursos e a pilha de regras
+
+A unidade de proteção é a **aplicação** - tipada como Web, API ou Web+API, onde o tipo híbrido troca o processamento por requisição: cookie de sessão web significa comportamento web, token OAuth de portador significa comportamento de API, e um fallback configurável captura requisições sem nenhum dos dois. Dentro de uma aplicação, os **recursos** particionam o espaço de URLs em áreas que merecem tratamentos distintos - um caminho de administração, um endpoint de pagamento - cada um capaz de carregar sua própria política. A política em si é construída de **regras** (as checagens atômicas: faixa de rede, valores de cabeçalho, atributos de sessão web, escopos OAuth, nível de autenticação, critérios por atributo e por papel), compostas em **conjuntos de regras** (satisfaça-todas ou satisfaça-qualquer), e conjuntos em **grupos de conjuntos**. A composição é o que torna o modelo expressivo sem script: a mesma regra exige-MFA pode morar nas políticas de uma dúzia de aplicações, mantida uma vez só.
+
+## A ordem é o contrato
+
+O PingAccess avalia numa sequência fixa, e conhecê-la é a diferença entre uma política que funciona e uma que misteriosamente não. **Mapeamentos de identidade rodam primeiro**, para que toda regra rio abaixo veja os campos de cabeçalho que o mapeamento definiu. Depois, **regras de controle de acesso rodam antes das regras de processamento** - o portão antes da transformação - e, dentro de cada tipo, as regras disparam na ordem em que você as arranjou no gerenciador de políticas. Quando uma política de nível de aplicação e uma de nível de recurso casam com a mesma requisição, a ordem documentada resolve qual se aplica primeiro. Requisições para URLs sem definição alguma no PingAccess caem no tratamento de **recurso desconhecido** que você configurou, por agente se preciso, com respostas de erro personalizadas - a resposta explícita do modelo para o "e todo o resto?".
+
+## Mediação de tokens: a ponte para o legado
+
+Conceder acesso é metade do trabalho; falar a língua do backend é a outra metade. Depois que a avaliação de política passa, um gateway PingAccess pode executar a **mediação de tokens**: trocando o token do PingAccess ou um token OAuth de portador - via um token generator do PingFederate - pelo token de segurança que o sistema protegido espera nativamente. O usuário nunca vê a troca, e a aplicação legada processa a requisição como se o usuário tivesse se autenticado nela diretamente, que é precisamente como backends de décadas sobrevivem dentro de um perímetro moderno [com OIDC na frente](/learn/oidc-overview). É o mesmo padrão arquitetural que este site cobre do lado F5 com access profiles: identidade moderna na borda, identidade traduzida na origem. Para o ângulo de certificação, este modelo - formas, pilha, ordem, mediação - é exatamente o terreno que o exame Certified Professional PingAccess percorre, e [o guia de estudos](/certifications/ping-cp-pingaccess) o acompanha à medida que os objetivos oficiais chegam.

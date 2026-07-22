@@ -196,6 +196,34 @@ export const READING_PATHS: ReadingPath[] = [
     tools: ["saml-decoder", "x509", "csr-decoder", "cert-renewal-planner", "oidc", "jwt", "pkce", "jwks-explainer"],
   },
   {
+    // The Ping platform walk (PRIME 2026-07-22): the map before the terrain -
+    // the PingOne platform disambiguation and the ForgeRock lineage decode
+    // first, so every later product name resolves; then the three product
+    // deep-dives (access, directory, orchestration); then the PingFederate
+    // shelf in its established teaching order as the self-managed core.
+    // Companion to the nine Certified Professional guides on the hub.
+    id: "ping-identity-platform",
+    category: "identity",
+    articles: [
+      "pingone-platform",
+      "ping-forgerock-lineage",
+      "pingaccess-policy-model",
+      "pingdirectory-platform",
+      "pingone-davinci-orchestration",
+      "pingfederate-install-and-initial-setup",
+      "pingfederate-startup-files",
+      "pingfederate-upgrade-playbook",
+      "pingfederate-admin-access-and-rbac",
+      "pingfederate-operational-hygiene",
+      "pingfederate-endpoints-map",
+      "pingfederate-data-stores",
+      "pingfederate-authentication-adapters",
+      "pingfederate-authentication-policies",
+      "pingfederate-log-files",
+    ],
+    tools: ["oidc", "jwt", "pkce", "saml-decoder", "totp-hotp"],
+  },
+  {
     // TLS from the suite string up to the protocol family - ending on the
     // comparison piece that places 1.2, 1.3, DTLS, and QUIC side by side.
     id: "tls-from-zero",

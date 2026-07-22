@@ -51,3 +51,10 @@ Next.js 15 **static export** (`output: "export"`) PWA deployed as Cloudflare Wor
 ## Where the deeper rules live
 
 CONCORD canon (Charter, Architecture & Build Spec, Protocol, decision log D-nn) in the private `concord` repo — PRIME holds the authoritative copies and attaches them per session. When this file and canon disagree, canon wins; flag the drift.
+
+- **UTM placement schema (standing rule 2026-07-22):** no static Red
+  Education URL at module scope; every outbound Red Education link is
+  attributed at RENDER time via redEducationUrl()/attributeRedEducationUrl()
+  with the full {vendor?, pageType, pageSlug?, locale, cta} context
+  (five params: source=ronutz.com, medium=referral, campaign=vendor,
+  content=pageType/pageSlug, term=locale.cta). See src/config/redEducation.ts.

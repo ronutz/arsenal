@@ -1,0 +1,30 @@
+---
+slug: ping-forgerock-lineage
+title: "De Sun a Ping: A Linhagem ForgeRock Decodificada"
+summary: "Por que o catálogo Ping tem dois de tudo: a árvore genealógica do OpenSSO, OpenDS e OpenIDM da Sun, passando por OpenAM, OpenDJ, OpenIDM e OpenIG da ForgeRock, até os atuais PingAM, PingDS, PingIDM, PingGateway e PingOne Advanced Identity Cloud - a fusão de 2023 que criou as pilhas paralelas, qual produto responde por qual nome, e como ler qualquer diagrama de arquitetura Ping sem ambiguidade."
+concepts: ["ForgeRock", "lineage", "access management", "identity management", "mergers", "product naming"]
+relatedTools: ["oidc", "saml-decoder"]
+relatedArticles: ["pingone-platform", "pingdirectory-platform", "pingaccess-policy-model", "pingone-davinci-orchestration"]
+category: identity
+order: 231
+status: reviewed
+updated: "2026-07-22"
+---
+
+Abra um diagrama de arquitetura Ping atual e você encontra dois gerenciadores de acesso, dois diretórios, dois gateways e duas plataformas de nuvem. Isso não é indecisão - é uma fusão, e os nomes carregam vinte e cinco anos de história. Este artigo decodifica a linhagem para que todo nome se resolva na hora. (História verificada contra registros públicos e materiais da própria Ping no momento da escrita.)
+
+## Ato um: a suíte de identidade open source da Sun
+
+A história começa na **Sun Microsystems**, que abriu o código da sua pilha de identidade no fim dos anos 2000: **OpenSSO** para gestão de acesso e federação, **OpenDS** como diretório LDAP em Java, e os começos do **OpenIDM** para provisionamento de identidade. Quando a Oracle adquiriu a Sun em 2010 e o interesse nos projetos abertos esfriou, um grupo de ex-Sun fundou a **ForgeRock** para levá-los adiante - o clássico movimento de bifurcar e fundar, e a razão de os produtos ForgeRock sempre terem parecido irmãos: nasceram na mesma casa.
+
+## Ato dois: a plataforma ForgeRock
+
+A ForgeRock renomeou e reconstruiu a herança: o OpenSSO virou **OpenAM**, a linha do OpenDS continuou como **OpenDJ**, o OpenIDM amadureceu como motor de provisionamento, e uma peça nova, o **OpenIG** (Identity Gateway), chegou para a aplicação de políticas na borda. Por volta de 2016-2017 a ForgeRock deixou o modelo open source, e a plataforma comercial assumiu seus nomes duradouros: **Access Management (AM)** com suas assinaturas *árvores de autenticação* - a tela de orquestração de jornadas anos antes de orquestração virar categoria - **Directory Services (DS)**, **Identity Management (IDM)** e **Identity Gateway (IG)**, depois acompanhados do SaaS **ForgeRock Identity Cloud**. Forks comunitários (Wren Security, Open Identity Platform) continuam o código aberto antigo, sem afiliação com a linha comercial.
+
+## Ato três: a fusão e as renomeações
+
+Em **agosto de 2023**, a Thoma Bravo - já dona da Ping Identity - adquiriu a ForgeRock por USD 2,3 bilhões e fundiu as empresas. Os produtos ForgeRock foram remarcados com prefixos Ping, mesma tecnologia por baixo: AM virou **PingAM**, DS virou **PingDS**, IDM virou **PingIDM**, IG virou **PingGateway**, e o ForgeRock Identity Cloud virou **PingOne Advanced Identity Cloud**. O resultado é a duplicação deliberada do catálogo: **PingFederate e PingAccess** de um lado, **PingAM e PingGateway** do outro; **PingDirectory** (o diretório da própria Ping, herança UnboundID) ao lado do **PingDS** (a linha OpenDJ); [**PingOne**](/learn/pingone-platform) a plataforma nativa Ping ao lado do **Advanced Identity Cloud**, a nativa ForgeRock, cada uma com sua tradição de orquestração - [fluxos DaVinci](/learn/pingone-davinci-orchestration) versus jornadas e árvores do AM - convergindo na camada de SDK enquanto os dois motores servem suas bases instaladas.
+
+## Lendo qualquer diagrama, e o ângulo do exame
+
+A regra prática de decodificação: *o prefixo diz a base de código*. PingAM/PingDS/PingIDM/PingGateway/Advanced Identity Cloud = herança ForgeRock, árvores e jornadas, documentação da era Backstage; PingFederate/PingAccess/PingDirectory/PingOne = herança Ping. Nenhum dos lados é legado - os dois são atuais, e parques híbridos rodam ambos - então a linhagem é conhecimento operacional, não curiosidade: ela prevê modelos de administração, caminhos de upgrade e onde uma dada funcionalidade mora. O programa de certificação espelha exatamente o catálogo duplicado, com exames Certified Professional para PingAM, PingIDM e Advanced Identity Cloud ao lado dos de herança Ping, todos acompanhados no [hub de certificações](/certifications). E para a história deste próprio site: o hábito de linhagem - Cabletron para Enterasys para Extreme, Sun para ForgeRock para Ping - é a mesma habilidade aplicada a outra árvore genealógica.

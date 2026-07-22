@@ -16,7 +16,7 @@ import SiteFooter from "@/components/SiteFooter";
 import ContactForm from "@/components/ContactForm";
 import ObfuscatedEmail from "@/components/ObfuscatedEmail";
 import { Link } from "@/i18n/navigation";
-import { externalRel } from "@/config/redEducation";
+import { attributeRedEducationUrl, externalRel } from "@/config/redEducation";
 import {
   contactEmail,
   contactChannels,
@@ -122,7 +122,7 @@ export default async function ContactPage({
                     <a
                       key={c.id}
                       className="contact-channel"
-                      href={c.url}
+                      href={attributeRedEducationUrl(c.url, { pageType: "contact", locale, cta: c.id })}
                       {...(c.external
                         ? { target: "_blank", rel: externalRel(c.url) }
                         : {})}

@@ -35,7 +35,7 @@
 // as a draft; he rewrites it in the i18n messages (redEducation.tribute) to
 // make it fully his own.
 //
-// Outbound links: the CTA uses redEducationUrl("red-education-page") so the
+// Outbound links: the CTA carries full placement-level attribution so the
 // lead is attributed; the case-study deep link keeps the referrer via
 // externalRel (their host). Statically generated per locale.
 // ============================================================================
@@ -110,7 +110,7 @@ export default async function RedEducationPage({
   const tNav = await getTranslations("nav");
 
   // The lead-attributed outbound CTA (utm_campaign identifies this page).
-  const reduUrl = redEducationUrl("red-education-page");
+  const reduUrl = redEducationUrl({ pageType: "red-education", locale, cta: "main-cta" });
 
   // EducationalOrganization JSON-LD: this page is ABOUT Red Education (the
   // org is the page's mainEntity; we are not claiming to be them). Facts
@@ -252,7 +252,7 @@ export default async function RedEducationPage({
               <p className="redu-body">
                 {t("caseStudyNote")}{" "}
                 <a
-                  href={attributeRedEducationUrl(CASE_STUDY_URL, "red-education-page", "case-study")}
+                  href={attributeRedEducationUrl(CASE_STUDY_URL, { pageType: "red-education", locale, cta: "case-study" })}
                   className="redu-inline-link"
                   target="_blank"
                   rel={externalRel(CASE_STUDY_URL)}

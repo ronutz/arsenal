@@ -289,7 +289,7 @@ export default async function PartnerVendorPage({
             <section className="section">
               <div className="container vendor-container">
                 <a
-                  href={attributeRedEducationUrl(vendor.externalUrl, "vendor-partner", vendor.slug)}
+                  href={attributeRedEducationUrl(vendor.externalUrl, { vendor: vendor.slug, pageType: "vendor-partner", pageSlug: vendor.slug, locale, cta: "site-link" })}
                   target="_blank"
                   rel={externalRel(vendor.externalUrl)}
                   className="btn btn-secondary"
@@ -310,7 +310,7 @@ export default async function PartnerVendorPage({
                     {vendor.sources.map((s) => (
                       <li key={s.url}>
                         <a
-                          href={attributeRedEducationUrl(s.url, "vendor-partner-sources", vendor.slug)}
+                          href={attributeRedEducationUrl(s.url, { vendor: vendor.slug, pageType: "vendor-partner", pageSlug: vendor.slug, locale, cta: "source-link" })}
                           target="_blank"
                           rel={externalRel(s.url)}
                           className="partner-source-link"

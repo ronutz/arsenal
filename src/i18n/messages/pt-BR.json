@@ -5875,6 +5875,29 @@
       "modeLabel": "Modo efetivo: {mode}",
       "ledgerTitle": "Livro-razão da decisão",
       "notesTitle": "Notas permanentes"
+    },
+    "sorting-algorithm-stepper": {
+      "name": "Passo a Passo de Algoritmos de Ordenação",
+      "blurb": "Cole uma lista pequena de números, escolha uma estratégia - bubble, selection, insertion, merge ou quick - e assista o algoritmo pensar: cada comparação, cada troca, uma linha de PORQUÊ por movimento, com contadores ao vivo de comparações e escritas que tornam o crescimento Big-O tangível.",
+      "emptyState": "Cole números acima (ou aperte Exemplo) e escolha uma estratégia para percorrer a ordenação.",
+      "runsLocally": "Roda inteiramente no seu navegador - a lista nunca sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "inputLabel": "Números para ordenar (2-16, separados por espaço ou vírgula)",
+      "strategyLabel": "Estratégia",
+      "placeholder": "5 3 8 1 9 2",
+      "errorTitle": "Essa entrada precisa de um ajuste",
+      "countersTitle": "Resultado",
+      "counters": "{comparisons} comparações, {writes} escritas para {n} itens",
+      "strategy_bubble": "Bubble sort (trocas adjacentes, saída antecipada)",
+      "strategy_selection": "Selection sort (acha o mínimo, uma troca por passe)",
+      "strategy_insertion": "Insertion sort (cresce um prefixo ordenado)",
+      "strategy_quick": "Quicksort (partição de Lomuto, pivô no último elemento)",
+      "strategy_merge": "Merge sort (dividir para conquistar)",
+      "kind_compare": "comparação",
+      "kind_swap": "troca",
+      "kind_write": "escrita",
+      "kind_note": "nota"
     }
   },
   "privacy_page": {
@@ -6300,7 +6323,7 @@
       "tagline": "Onde a carreira começou, e onde a LAN corporativa foi aprendida do zero.",
       "intro": "O fio individual mais longo desta história percorre uma empresa e sua sucessora. A Cabletron Systems, uma fabricante líder de equipamentos de rede sediada em Rochester, New Hampshire, foi o primeiro empregador, a partir de 1996. Quando a Cabletron se reorganizou em quatro empresas em 2000, a linha continuou como Enterasys Networks, e a relação foi retomada ali a partir de 2005. Juntas, abrangem a década formativa da expertise em redes corporativas.",
       "s1Title": "Cabletron, 1996 a 2000",
-      "s1Body": "Ao longo de quatro anos e meio, o papel percorreu todo o arco da engenharia de fornecedor: engenharia de campo e suporte pós-vendas, engenharia de sistemas e pré-vendas, e, a partir de 1997, instrução certificada. O trabalho do dia a dia era prático e físico: instalar, configurar, diagnosticar, atualizar, migrar e, às vezes, mudar fisicamente de lugar as redes seguras, redundantes, resilientes e gerenciadas que faziam as empresas de São Paulo funcionarem, LAN, LAN de campus e WAN. O lado WAN era construído sobre Frame Relay e linhas E1 fracionadas, as LPs das operadoras brasileiras, chegando a ATM e Packet over SONET nos enlaces mais rápidos, e se apoiava principalmente em roteadores Cisco, do período em que a Cabletron fez parceria com a Cisco em roteamento antes de desenvolver o seu próprio. Foi aqui que a disciplina de projeto de solução, implementação, auditoria, diagnóstico e gestão de escalonamento foi praticada pela primeira vez, e onde o ensino entrou no trabalho.",
+      "s1Body": "Ao longo de quatro anos e meio, o papel percorreu todo o arco da engenharia de fornecedor: engenharia de campo e suporte pós-vendas, engenharia de sistemas e pré-vendas, e, a partir de 1997, instrução certificada. O trabalho do dia a dia era prático e físico: instalar, configurar, diagnosticar, atualizar, migrar e, às vezes, mudar fisicamente de lugar as redes seguras, redundantes, resilientes e gerenciadas que faziam as empresas de São Paulo funcionarem, LAN, LAN de campus e WAN. O lado WAN era construído sobre Frame Relay e linhas E1 fracionadas, as LPs das operadoras brasileiras, chegando a ATM e Packet over SONET nos enlaces mais rápidos, e se apoiava principalmente em roteadores Cisco - naquela era vendidos como módulos OEM (original equipment manufacturer, fabricante original do equipamento) com a marca Cabletron, construídos sobre o Cisco IOS licenciado: o CRBRIM e seus irmãos de roteamento WAN com tecnologia Cisco que se encaixavam na família de hubs MMAC, carregando roteamento das séries Cisco 2500, 4000 e 4500 dentro da chapa da Cabletron. Instalar, configurar, otimizar e diagnosticar esses roteadores era trabalho diário, feito na época em que os exemplos de configuração que importavam eram impressos e carregados na bolsa do notebook. Nos últimos anos eles deram lugar ao SmartSwitch Router, a linha de switch-router nascida da aquisição da YAGO Systems pela Cabletron em 1998 - o mesmo fio tecnológico que depois virou a Riverstone. Foi aqui que a disciplina de projeto de solução, implementação, auditoria, diagnóstico e gestão de escalonamento foi praticada pela primeira vez, e onde o ensino entrou no trabalho.",
       "s2Title": "Enterasys, 2005 a 2007",
       "s2Body": "Voltando à linhagem como gerente de serviços e suporte, o foco era a linha de produtos Secure Routing, com a Enterasys como ponto focal regional para o Brasil. O trabalho combinava suporte a clientes de alto nível, diagnóstico complexo e gestão de escalonamento, incluindo os escalonamentos exigentes que chegavam de uma conta-chave, a Petrobras em São Paulo, com gestão de produto localizada em paralelo. A superfície técnica havia crescido para incluir gerência de rede, NAC e UAC, detecção e prevenção de intrusão, e SIEM, em switching e roteamento corporativos. A Enterasys foi depois adquirida pela Extreme Networks em 2013, fechando um círculo que conecta este trabalho inicial a uma plataforma ainda ensinada hoje.",
       "certs": "Cabletron Systems Engineer (CSE), 1999. Enterasys Systems Engineer (ESE), 2000 e 2007. Enterasys Certified Internetworking Engineer (ECIE), 2007.",
@@ -6347,7 +6370,7 @@
       "name": "Cisco Systems",
       "years": "2003 – 2008",
       "tagline": "Manter uma infraestrutura nacional crítica funcionando, como ponto de contato único para os clientes federais do Brasil.",
-      "intro": "Contratado através da Cisco Professional Services no Brasil, esta foi a carreira em sua forma operacionalmente mais exigente, em que o trabalho tinha menos a ver com uma única tecnologia e mais com manter sistemas críticos funcionando para clientes que não podiam se dar ao luxo de tempo de inatividade.",
+      "intro": "A história com a Cisco aqui começa de fato em 1996, não em 2003: os anos de Cabletron rodavam sobre roteamento Cisco vendido como módulos OEM (original equipment manufacturer, fabricante original do equipamento) com a marca Cabletron - o CRBRIM e seus irmãos de roteamento WAN com Cisco IOS - instalados, configurados, otimizados e diagnosticados diariamente, até o SmartSwitch Router nascido da YAGO os substituir. Contratado através da Cisco Professional Services no Brasil, esta foi a carreira em sua forma operacionalmente mais exigente, em que o trabalho tinha menos a ver com uma única tecnologia e mais com manter sistemas críticos funcionando para clientes que não podiam se dar ao luxo de tempo de inatividade.",
       "s1Title": "Operações de alto contato, 2003 a 2004",
       "s1Body": "Como gestor de operações de alto contato e ponto de contato único, o cargo foi a gestão da satisfação do cliente no pós-venda para duas das maiores entidades federais do Brasil: o SERPRO, a empresa de processamento de dados do governo, e a ECT-Correios, o correio nacional, entre Brasília e São Paulo. A superfície técnica incluía switches e roteadores Catalyst, firewalls PIX, e appliances de conteúdo e balanceamento de carga CSS, CSM e ACE. A verdadeira disciplina, porém, era a gestão de escalonamentos e o gerenciamento de crises, manter alta satisfação para contas em que o que estava em jogo era nacional.",
       "s2Title": "Instrução da Cisco, 2007 a 2008",
@@ -12443,6 +12466,18 @@
       "newedge": {
         "def": "A rede global de data centers operada privadamente pela Netskope - a infraestrutura sobre a qual roda a nuvem de segurança Netskope One. Cada data center oferece computação completa para inspeção single-pass, com peering extenso perto dos usuários e dos grandes provedores de SaaS.",
         "context": "A resposta arquitetural para 'onde mora o proxy': não em poucas regiões-hub com backhaul, e sim em pontos de presença projetados para baixo tempo de ida e volta. O artigo de arquitetura da plataforma neste site desenha o quadro completo."
+      },
+      "block-cipher": {
+        "def": "Uma cifra que criptografa blocos de tamanho fixo (AES: 128 bits), dependendo de um modo de operação para lidar com mensagens de tamanho real.",
+        "context": "O modo é onde a segurança vive ou morre: a história de padding do CBC produziu uma década de oráculos, enquanto os modos AEAD (GCM, CCM) soldam a integridade por dentro e são tudo o que o TLS 1.3 permite. O AES é a cifra de bloco da internet em grande parte porque o silício AES-NI o torna rápido e de tempo constante em quase todo lugar."
+      },
+      "stream-cipher": {
+        "def": "Uma cifra que gera um keystream e aplica XOR sobre os dados - qualquer tamanho, sem blocos, sem padding.",
+        "context": "O ChaCha20 (RFC 8439, pareado com o Poly1305) é o membro moderno: tempo constante em software e mais rápido que o AES em hardware sem aceleração, motivo pelo qual frotas mobile o preferem. Seu antecessor infame, o RC4, acumulou vieses de keystream até o RFC 7465 bani-lo do TLS por completo."
+      },
+      "key-exchange": {
+        "def": "Como duas partes combinam a chave secreta da sessão - a parte de uma suíte de cifras que decide se o tráfego gravado permanece selado.",
+        "context": "O Diffie-Hellman efêmero (ECDHE em X25519 ou P-256) gera chaves novas por conexão, dando sigilo futuro; o transporte de chave com RSA estático não dá, e por isso o TLS 1.3 o removeu e tornou a troca efêmera estrutural. A transição pós-quântica acontece aqui também: o híbrido X25519+ML-KEM roda os dois mundos lado a lado."
       }
     },
     "totalCount": "{count} termos",
@@ -12655,6 +12690,10 @@
       "netskope-sase": {
         "title": "Netskope SASE, de Ponta a Ponta",
         "lede": "A plataforma inteira em ordem de leitura: arquitetura e NewEdge, cada método de direcionamento, o cliente, descriptografia TLS, os dois caminhos de proteção, política guiada por CCI, Private Access, Cloud Firewall e a camada de analytics - com as ferramentas de PAC e SAML para praticar. Feita para percorrer os domínios das acreditações e certificações a partir deste site."
+      },
+      "ping-identity-platform": {
+        "title": "A Plataforma Ping Identity",
+        "lede": "Todo o parque Ping em ordem de leitura: o mapa da plataforma PingOne e a linhagem ForgeRock primeiro, para que cada nome de produto se resolva; depois a política do PingAccess, a plataforma de dados PingDirectory e a orquestração DaVinci; fechando com a estante PingFederate - o núcleo autogerenciado de federação - na sua ordem de ensino estabelecida. A caminhada companheira dos guias Certified Professional no hub de certificações."
       }
     }
   },

@@ -155,6 +155,148 @@ export const certifications: Certification[] = [
     sourceUrl: "https://training.pingidentity.com/certification",
   },
   {
+    key: "ping-cp-pingaccess",
+    name: "Certified Professional - PingAccess",
+    code: "PAP-001",
+    vendor: "ping",
+    examSlugs: ["ping-cp-pingaccess"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Exam based on PingAccess version 8 or later. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+  },
+  {
+    key: "ping-cp-pingdirectory",
+    name: "Certified Professional - PingDirectory",
+    code: "CP-PingDirectory",
+    vendor: "ping",
+    examSlugs: ["ping-cp-pingdirectory"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalog code was not verified from official sources this session. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+  },
+  {
+    key: "ping-cp-pingone",
+    name: "Certified Professional - PingOne",
+    code: "CP-PingOne",
+    vendor: "ping",
+    examSlugs: ["ping-cp-pingone"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalog code was not verified from official sources this session. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+  },
+  {
+    key: "ping-cp-pingone-davinci",
+    name: "Certified Professional - PingOne DaVinci",
+    code: "CP-PingOne-DaVinci",
+    vendor: "ping",
+    examSlugs: ["ping-cp-pingone-davinci"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The exam name is the official identifier; a Kryterion catalog code was not verified from official sources this session. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+  },
+  {
+    key: "ping-cp-pingam",
+    name: "Certified Professional - PingAM",
+    code: "CP-PingAM",
+    vendor: "ping",
+    examSlugs: ["ping-cp-pingam"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Exam based on PingAM version 7 (the product formerly ForgeRock Access Management). Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+  },
+  {
+    key: "ping-cp-pingone-aic",
+    name: "Certified Professional - PingOne Advanced Identity Cloud",
+    code: "CP-PingOne-AIC",
+    vendor: "ping",
+    examSlugs: ["ping-cp-pingone-aic"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Credential valid for 2 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Formerly the ForgeRock Identity Cloud certification. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+  },
+  {
+    key: "ping-cp-pingidm",
+    name: "Certified Professional - PingIDM",
+    code: "CP-PingIDM",
+    vendor: "ping",
+    examSlugs: ["ping-cp-pingidm"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Credential valid for 3 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. The product formerly ForgeRock Identity Management. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+  },
+  {
+    key: "ping-cp-pingone-idg",
+    name: "Certified Professional - PingOne Identity Governance",
+    code: "CP-PingOne-IDG",
+    vendor: "ping",
+    examSlugs: ["ping-cp-pingone-idg"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Credential valid for 2 years; renewal is by retaking and passing the exam, attemptable from 3 months before expiration. Proctored by Kryterion, remote or at a testing center. Delivered on PingOne Advanced Identity Cloud with the Identity Governance functionality. Facts per the official Certification Guide (certification-exams-policies-procedures.pdf) + training.pingidentity.com/certification catalog, verified 2026-07-22.",
+  },
+  {
+    key: "ping-ce-pingfederate",
+    name: "Certified Expert - PingFederate",
+    code: "CE-PingFederate",
+    vendor: "ping",
+    examSlugs: ["ping-ce-pingfederate"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Expert-tier credential for PingFederate (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+  },
+  {
+    key: "ping-ce-pingaccess",
+    name: "Certified Expert - PingAccess",
+    code: "CE-PingAccess",
+    vendor: "ping",
+    examSlugs: ["ping-ce-pingaccess"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Expert-tier credential for PingAccess (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+  },
+  {
+    key: "ping-ce-pingdirectory",
+    name: "Certified Expert - PingDirectory",
+    code: "CE-PingDirectory",
+    vendor: "ping",
+    examSlugs: ["ping-ce-pingdirectory"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Expert-tier credential for PingDirectory (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+  },
+  {
+    key: "ping-ce-pingone",
+    name: "Certified Expert - PingOne",
+    code: "CE-PingOne",
+    vendor: "ping",
+    examSlugs: ["ping-ce-pingone"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Expert-tier credential for PingOne (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+  },
+  {
+    key: "ping-ce-pingone-aic",
+    name: "Certified Expert - PingOne Advanced Identity Cloud",
+    code: "CE-PingOne-AIC",
+    vendor: "ping",
+    examSlugs: ["ping-ce-pingone-aic"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Expert-tier credential for PingOne Advanced Identity Cloud (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+  },
+  {
+    key: "ping-ce-pingam",
+    name: "Certified Expert - PingAM",
+    code: "CE-PingAM",
+    vendor: "ping",
+    examSlugs: ["ping-ce-pingam"],
+    sourceUrl: "https://training.pingidentity.com/certification",
+    renewalNote:
+      "Expert-tier credential for PingAM (PRIME ruling 2026-07-22: Expert tier in scope). Per the official Certification Guide, Certified Expert exams may be multiple-choice or practical lab-based, proctored by Kryterion remotely or at a testing center; renewal is by retaking the exam, attemptable from 3 months before expiration. Per-exam format, length, and pass mark not captured from official sources this session.",
+  },
+
+
+  {
     key: "f5-cts-ltm",
     code: "F5-CTS, LTM",
     name: "F5 Certified Technology Specialist, BIG-IP LTM",
@@ -1160,6 +1302,276 @@ export const studyGuides: StudyGuide[] = [
         ],
       },
     ],
+  },
+  {
+    // Run B scaffold (2026-07-22): certification verified from official Ping
+    // sources; the detailed objective list lives in the official per-exam
+    // study-guide PDF (Certification Center), pending transcription - hence
+    // status "preparing" and no invented sections. Facts below are ONLY what
+    // was verified from official pages this session.
+    slug: "ping-cp-pingaccess",
+    examCode: "PAP-001",
+    examName: "Certified Professional - PingAccess",
+    vendor: "ping",
+    certification: "ping-cp-pingaccess",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official exam description, training.pingidentity.com/certification (verified 2026-07-22); covers PingAccess version 8 or later; a Professional Practice Exam is offered; detailed objectives in the official study-guide PDF, pending transcription",
+    status: "preparing",
+    examFacts: {
+      questions: "70 multiple-choice questions",
+      minutes: 90,
+      passMark: "64%",
+      cost: "Purchased through the Ping Identity Certification Center (regional tax may apply); each voucher is valid for a single attempt",
+      note: "Proctored by Kryterion (remote or testing center). Credential valid for 3 years. Validates basic installation and configuration of PingAccess.",
+    },
+    sections: [],
+  },
+  {
+    // Run B scaffold (2026-07-22): certification verified from official Ping
+    // sources; the detailed objective list lives in the official per-exam
+    // study-guide PDF (Certification Center), pending transcription - hence
+    // status "preparing" and no invented sections. Facts below are ONLY what
+    // was verified from official pages this session.
+    slug: "ping-cp-pingdirectory",
+    examCode: "CP-PingDirectory",
+    examName: "Certified Professional - PingDirectory",
+    vendor: "ping",
+    certification: "ping-cp-pingdirectory",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official exam description, training.pingidentity.com/certification (verified 2026-07-22): validates basic installation, configuration, and maintenance of PingDirectory; question count, duration, and pass mark not captured from official sources this session; detailed objectives in the official study-guide PDF, pending transcription",
+    status: "preparing",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    // Run B scaffold (2026-07-22): certification verified from official Ping
+    // sources; the detailed objective list lives in the official per-exam
+    // study-guide PDF (Certification Center), pending transcription - hence
+    // status "preparing" and no invented sections. Facts below are ONLY what
+    // was verified from official pages this session.
+    slug: "ping-cp-pingone",
+    examCode: "CP-PingOne",
+    examName: "Certified Professional - PingOne",
+    vendor: "ping",
+    certification: "ping-cp-pingone",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official exam description, training.pingidentity.com/certification (verified 2026-07-22); a Professional Practice Exam is offered and topics are published on the exam details page; format facts not fully captured from official sources this session; detailed objectives pending transcription",
+    status: "preparing",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    // Run B scaffold (2026-07-22): certification verified from official Ping
+    // sources; the detailed objective list lives in the official per-exam
+    // study-guide PDF (Certification Center), pending transcription - hence
+    // status "preparing" and no invented sections. Facts below are ONLY what
+    // was verified from official pages this session.
+    slug: "ping-cp-pingone-davinci",
+    examCode: "CP-PingOne-DaVinci",
+    examName: "Certified Professional - PingOne DaVinci",
+    vendor: "ping",
+    certification: "ping-cp-pingone-davinci",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official program roster, Ping Identity Certification Guide (verified 2026-07-22); a Professional Practice Exam is offered; format facts not captured from official sources this session; detailed objectives pending transcription",
+    status: "preparing",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    // Run B scaffold (2026-07-22): certification verified from official Ping
+    // sources; the detailed objective list lives in the official per-exam
+    // study-guide PDF (Certification Center), pending transcription - hence
+    // status "preparing" and no invented sections. Facts below are ONLY what
+    // was verified from official pages this session.
+    slug: "ping-cp-pingam",
+    examCode: "CP-PingAM",
+    examName: "Certified Professional - PingAM",
+    vendor: "ping",
+    certification: "ping-cp-pingam",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official exam details page, training.pingidentity.com/certification (verified 2026-07-22); exam based on PingAM version 7; required preparation: AM-410 PingAM Deep Dive; recommended: AM-421 PingAM Customization and APIs; detailed objectives pending transcription",
+    status: "preparing",
+    examFacts: {
+      questions: "100 multiple-choice questions",
+      minutes: 120,
+      passMark: "66%",
+      cost: "Purchased through the Ping Identity Certification Center (regional tax may apply); each voucher is valid for a single attempt",
+      note: "Proctored by Kryterion. Credential valid for 3 years. Validates install, configure, administer, troubleshoot, and maintain for PingAM (formerly ForgeRock Access Management).",
+    },
+    sections: [],
+  },
+  {
+    // Run B scaffold (2026-07-22): certification verified from official Ping
+    // sources; the detailed objective list lives in the official per-exam
+    // study-guide PDF (Certification Center), pending transcription - hence
+    // status "preparing" and no invented sections. Facts below are ONLY what
+    // was verified from official pages this session.
+    slug: "ping-cp-pingone-aic",
+    examCode: "CP-PingOne-AIC",
+    examName: "Certified Professional - PingOne Advanced Identity Cloud",
+    vendor: "ping",
+    certification: "ping-cp-pingone-aic",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official exam details page + official study guide, training.pingidentity.com/certification (verified 2026-07-22); recommended courses AIC-330, AIC-410, AIC-420; working knowledge of OAuth 2.0, OpenID Connect, and SAML 2.0 expected; detailed objectives pending transcription from the official study-guide PDF",
+    status: "preparing",
+    examFacts: {
+      questions: "60-70 multiple-choice questions",
+      minutes: 90,
+      passMark: "70.00%",
+      cost: "Purchased through the Ping Identity Certification Center (regional tax may apply); each voucher is valid for a single attempt",
+      note: "Proctored by Kryterion. Credential valid for 2 years. Validates configure, administer, troubleshoot, and maintain for Advanced Identity Cloud tenants (formerly ForgeRock Identity Cloud).",
+    },
+    sections: [],
+  },
+  {
+    // Run B scaffold (2026-07-22): certification verified from official Ping
+    // sources; the detailed objective list lives in the official per-exam
+    // study-guide PDF (Certification Center), pending transcription - hence
+    // status "preparing" and no invented sections. Facts below are ONLY what
+    // was verified from official pages this session.
+    slug: "ping-cp-pingidm",
+    examCode: "CP-PingIDM",
+    examName: "Certified Professional - PingIDM",
+    vendor: "ping",
+    certification: "ping-cp-pingidm",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official exam description, training.pingidentity.com/certification (verified 2026-07-22); detailed objectives pending transcription",
+    status: "preparing",
+    examFacts: {
+      questions: "100 multiple-choice questions",
+      minutes: 120,
+      passMark: "66.00%",
+      cost: "Purchased through the Ping Identity Certification Center (regional tax may apply); each voucher is valid for a single attempt",
+      note: "Credential valid for 3 years. Validates install, configure, administer, troubleshoot, and maintain for PingIDM (formerly ForgeRock Identity Management).",
+    },
+    sections: [],
+  },
+  {
+    // Run B scaffold (2026-07-22): certification verified from official Ping
+    // sources; the detailed objective list lives in the official per-exam
+    // study-guide PDF (Certification Center), pending transcription - hence
+    // status "preparing" and no invented sections. Facts below are ONLY what
+    // was verified from official pages this session.
+    slug: "ping-cp-pingone-idg",
+    examCode: "CP-PingOne-IDG",
+    examName: "Certified Professional - PingOne Identity Governance",
+    vendor: "ping",
+    certification: "ping-cp-pingone-idg",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official program roster, Ping Identity Certification Guide (verified 2026-07-22); delivered on PingOne Advanced Identity Cloud with Identity Governance functionality; format facts not captured from official sources this session; detailed objectives pending transcription",
+    status: "preparing",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    // Expert tier (PRIME ruling 2026-07-22). Existence and delivery model
+    // verified from the official Certification Guide; per-exam blueprints
+    // pending the official study-guide PDFs - status preparing, no invented
+    // objectives or facts.
+    slug: "ping-ce-pingfederate",
+    examCode: "CE-PingFederate",
+    examName: "Certified Expert - PingFederate",
+    vendor: "ping",
+    certification: "ping-ce-pingfederate",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official Certification Guide roster (verified 2026-07-22): Certified Expert exams are multiple-choice or practical lab-based, targeting advanced administration and deployment; per-exam format and detailed objectives pending the official study-guide PDF",
+    status: "preparing",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    // Expert tier (PRIME ruling 2026-07-22). Existence and delivery model
+    // verified from the official Certification Guide; per-exam blueprints
+    // pending the official study-guide PDFs - status preparing, no invented
+    // objectives or facts.
+    slug: "ping-ce-pingaccess",
+    examCode: "CE-PingAccess",
+    examName: "Certified Expert - PingAccess",
+    vendor: "ping",
+    certification: "ping-ce-pingaccess",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official Certification Guide roster (verified 2026-07-22): Certified Expert exams are multiple-choice or practical lab-based, targeting advanced administration and deployment; per-exam format and detailed objectives pending the official study-guide PDF",
+    status: "preparing",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    // Expert tier (PRIME ruling 2026-07-22). Existence and delivery model
+    // verified from the official Certification Guide; per-exam blueprints
+    // pending the official study-guide PDFs - status preparing, no invented
+    // objectives or facts.
+    slug: "ping-ce-pingdirectory",
+    examCode: "CE-PingDirectory",
+    examName: "Certified Expert - PingDirectory",
+    vendor: "ping",
+    certification: "ping-ce-pingdirectory",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official Certification Guide roster (verified 2026-07-22): Certified Expert exams are multiple-choice or practical lab-based, targeting advanced administration and deployment; per-exam format and detailed objectives pending the official study-guide PDF",
+    status: "preparing",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    // Expert tier (PRIME ruling 2026-07-22). Existence and delivery model
+    // verified from the official Certification Guide; per-exam blueprints
+    // pending the official study-guide PDFs - status preparing, no invented
+    // objectives or facts.
+    slug: "ping-ce-pingone",
+    examCode: "CE-PingOne",
+    examName: "Certified Expert - PingOne",
+    vendor: "ping",
+    certification: "ping-ce-pingone",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official Certification Guide roster (verified 2026-07-22): Certified Expert exams are multiple-choice or practical lab-based, targeting advanced administration and deployment; per-exam format and detailed objectives pending the official study-guide PDF",
+    status: "preparing",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    // Expert tier (PRIME ruling 2026-07-22). Existence and delivery model
+    // verified from the official Certification Guide; per-exam blueprints
+    // pending the official study-guide PDFs - status preparing, no invented
+    // objectives or facts.
+    slug: "ping-ce-pingone-aic",
+    examCode: "CE-PingOne-AIC",
+    examName: "Certified Expert - PingOne Advanced Identity Cloud",
+    vendor: "ping",
+    certification: "ping-ce-pingone-aic",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official Certification Guide roster (verified 2026-07-22): Certified Expert exams are multiple-choice or practical lab-based, targeting advanced administration and deployment; per-exam format and detailed objectives pending the official study-guide PDF",
+    status: "preparing",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    // Expert tier (PRIME ruling 2026-07-22). Existence and delivery model
+    // verified from the official Certification Guide; per-exam blueprints
+    // pending the official study-guide PDFs - status preparing, no invented
+    // objectives or facts.
+    slug: "ping-ce-pingam",
+    examCode: "CE-PingAM",
+    examName: "Certified Expert - PingAM",
+    vendor: "ping",
+    certification: "ping-ce-pingam",
+    targetVersion: null,
+    blueprintSourceUrl: "https://training.pingidentity.com/certification",
+    blueprintSourceLabel: "Official Certification Guide roster (verified 2026-07-22): Certified Expert exams are multiple-choice or practical lab-based, targeting advanced administration and deployment; per-exam format and detailed objectives pending the official study-guide PDF",
+    status: "preparing",
+    examFacts: null,
+    sections: [],
   },
   {
     slug: "f5-cts-ltm-base-config-networking",
@@ -4106,7 +4518,13 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceUrl: "https://www.netskope.com/wp-content/uploads/2024/09/2024-09-Netskope-Administrator-Accreditation-TR-772-1.pdf",
     blueprintSourceLabel: "Official Netskope Administrator Accreditation description (TR-772-1, 09/24); 60 questions, 90 minutes, delivered through Netskope Academy; valid two years from award; replaces the former NCCSA certification; practitioner profile: configure, monitor, and perform basic troubleshooting, ~6 months suggested; recommended preparation: a tenant, NSCIOTT and NSCO&A Academy courses, and the Knowledge Portal. Sourcing note: TR-772-1 facts verified from the official document and its resource page; the TR-772-1 PDF blocks automated retrieval, so the topic list follows the NSK101/NCCSA blueprint (fetched in full), which TR-772-1 itself states this accreditation replaces - the sibling TR-773-1, fetched in full, carries a topic list identical to its corresponding NSK200 blueprint",
     status: "published",
-    examFacts: null,
+    examFacts: {
+      questions: "60 questions",
+      minutes: 90,
+      passMark: "Not published in TR-772-1",
+      cost: "Delivered through Netskope Academy (TR-772-1 publishes no separate exam fee)",
+      note: "Valid for two years from the date the exam is successfully completed through Netskope Academy. This accreditation replaces the former Netskope Certified Cloud Security Administrator certification.",
+    },
     sections: [
       { id: "adm-css", title: "Cloud Security Concepts", objectives: [
           {
@@ -4302,7 +4720,13 @@ export const studyGuides: StudyGuide[] = [
     blueprintSourceUrl: "https://www.netskope.com/pt/wp-content/uploads/2024/09/2024-09-Netskope-Integrator-Accreditation-TR-773-1.pdf",
     blueprintSourceLabel: "Official Netskope Integrator Accreditation description (TR-773-1, 09/24); 60 questions, 90 minutes, delivered through Netskope Academy; valid two years from award; replaces the former NCCSI certification; practitioner profile: implement, integrate, configure, monitor, and troubleshoot, ~12 months suggested; recommended preparation: a tenant, NSCIOTT, NSCO&A, and Netskope Security Cloud Implementation & Integration (NSCI&I) Academy courses, and the Knowledge Portal",
     status: "published",
-    examFacts: null,
+    examFacts: {
+      questions: "60 questions",
+      minutes: 90,
+      passMark: "Not published in TR-773-1",
+      cost: "Delivered through Netskope Academy (TR-773-1 publishes no separate exam fee)",
+      note: "Valid for two years from the date the exam is successfully completed through Netskope Academy. This accreditation replaces the former Netskope Certified Cloud Security Integrator certification.",
+    },
     sections: [
       { id: "int-css", title: "Cloud Security Concepts", objectives: [
           {
@@ -5106,6 +5530,20 @@ const CERT_HUB_ORDER: Record<string, number> = {
   "netskope-nccsi": 4,
   "netskope-architect": 5,
   "ping-cp-pingfederate": 1,
+  "ping-cp-pingaccess": 2,
+  "ping-cp-pingdirectory": 3,
+  "ping-cp-pingone": 4,
+  "ping-cp-pingone-davinci": 5,
+  "ping-cp-pingam": 6,
+  "ping-cp-pingone-aic": 7,
+  "ping-cp-pingidm": 8,
+  "ping-cp-pingone-idg": 9,
+  "ping-ce-pingfederate": 10,
+  "ping-ce-pingaccess": 11,
+  "ping-ce-pingdirectory": 12,
+  "ping-ce-pingone": 13,
+  "ping-ce-pingone-aic": 14,
+  "ping-ce-pingam": 15,
   "zscaler-zdta": 1,
 };
 

@@ -17,11 +17,11 @@
 // Server component (no client state); all copy from the "training" namespace.
 // ============================================================================
 
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { isEnabled } from "@/config/features";
 import { routeFor, routeForPlatform } from "@/config/leadRouting";
-import { externalRel } from "@/config/redEducation";
+import { attributeRedEducationUrl, externalRel } from "@/config/redEducation";
 
 interface RequestTrainingProps {
   /** Platform slug (required). */
@@ -41,10 +41,22 @@ export default async function RequestTraining({
   if (!isEnabled("requestTraining")) return null;
 
   const t = await getTranslations("training");
+  const locale = await getLocale();
 
-  // Resolve the destination via the routing config.
+  // Resolve the destination via the routing config, then apply placement-level
+  // attribution HERE, where the vendor/page/locale/CTA context lives (standing
+  // rule, PRIME 2026-07-22). Non-Red-Education destinations pass through.
   const dest = course ? routeFor(platform, course) : routeForPlatform(platform);
   const isInternal = dest.url.startsWith("/");
+  const destUrl = isInternal
+    ? dest.url
+    : attributeRedEducationUrl(dest.url, {
+        vendor: platform,
+        pageType: course ? "course" : "platform",
+        pageSlug: course ?? platform,
+        locale,
+        cta: "request-training",
+      });
 
   const label = t("requestTraining");
   const via = t("requestVia", { destination: dest.name });
@@ -52,15 +64,15 @@ export default async function RequestTraining({
   return (
     <div className={"request-training request-training--" + variant}>
       {isInternal ? (
-        <Link href={dest.url} className="btn btn-primary request-training-btn">
+        <Link href={destUrl} className="btn btn-primary request-training-btn">
           {label}
         </Link>
       ) : (
         <a
-          href={dest.url}
+          href={destUrl}
           className="btn btn-primary request-training-btn"
           target="_blank"
-          rel={externalRel(dest.url)}
+          rel={externalRel(destUrl)}
         >
           {label}
         </a>

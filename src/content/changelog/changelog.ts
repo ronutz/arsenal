@@ -52,6 +52,55 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-22T03:28:49-03:00",
+    kind: "content",
+    tools: [],
+    title: "New reading path: The Ping Identity Platform",
+    body: "The five platform explainers and the PingFederate shelf now walk in one line. The path opens with the map before the terrain - the PingOne platform disambiguation and the ForgeRock lineage decode, so every product name resolves before any product detail - then the three deep-dives (PingAccess policy model, the PingDirectory data platform, DaVinci orchestration), and closes with the ten PingFederate articles in their established teaching order as the self-managed federation core. Fifteen articles, five companion tools, and the natural walking route beside the nine Certified Professional study guides on the certifications hub.",
+  },
+  {
+    date: "2026-07-22T03:07:16-03:00",
+    kind: "content",
+    tools: [],
+    title: "The Ping platform wave: five explainers beyond PingFederate",
+    body: "Run B movement 2 lands the Learn wave that maps the rest of the Ping Identity estate, official-docs grounded and live-verified. The PingAccess policy model: gateway versus agent (sites, PAAP, shared-secret fleets), applications and resources, rules composed into rule sets and groups, the fixed evaluation order with identity mappings first and access control before processing, and token mediation as the legacy bridge. The PingDirectory platform in four verbs: store (LDAP plus native SCIM 2.0 REST, cn=config, server groups), aggregate (the Proxy as LDAPv3 gateway and virtual directory), sync (PingDataSync's real-time bidirectional pipelines across AD, Oracle/Sun, OpenDJ, and generic LDAP), delegate (the guarded self-service surface). PingOne decoded as the platform behind the product names, service by service: SSO, MFA, Protect, Verify, Authorize, DaVinci. DaVinci itself as orchestration-as-a-canvas: flows, the connector catalog, server-driven orchestration that changes journeys without app releases, the Singular Key origin. And the ForgeRock lineage from Sun's OpenSSO, OpenDS, and OpenIDM through OpenAM and OpenDJ to PingAM, PingDS, PingIDM, PingGateway, and Advanced Identity Cloud - the 2023 merger, the parallel stacks, and the prefix rule that decodes any diagram. All five in English and native Portuguese, cross-linked into the existing OAuth, OIDC, SAML, SCIM, and LDAP shelves.",
+  },
+  {
+    date: "2026-07-22T02:39:48-03:00",
+    kind: "content",
+    tools: [],
+    title: "The cipher shelf completed: families map + the verdict ledger",
+    body: "PRIME's cipher enrichment directive, delivered where the gaps actually were: the existing shelf already carried suite anatomy, the three naming conventions, the TLS 1.3 shrinkage, the danger keywords, and the Cipher Suite Decoder tool - so two missing pieces were built, not duplicates. 'Cipher Families: The Working Map' is the encryption counterpart to the hash-families article: block versus stream, AES versus ChaCha20 with the advantages and disadvantages of each, why AEAD ended the assemble-it-yourself era, what RSA, elliptic curves, and ECDHE each contribute, and the retired members (DES, 3DES, RC4) with the attacks that retired them. 'Which Cipher Suites to Use: The Verdict Ledger' then answers the configuration question in five tiers - recommended now, acceptable in niches, declining, absolutely forbidden by name and RFC (7465, 7568, 8996, 9155), and the post-quantum future - each grounded in RFC 8446, Mozilla's current Modern and Intermediate profiles, and NIST SP 800-52r2, all verified against live sources this session. Three glossary terms join alongside: block cipher, stream cipher, and key exchange.",
+  },
+  {
+    date: "2026-07-22T02:19:32-03:00",
+    kind: "content",
+    tools: [],
+    title: "Certifications hub layout fixed + the Cisco-inside-Cabletron chapter",
+    body: "Two PRIME-reported issues closed. The certifications hub had vendor section titles rendering as raw translation keys (a lookup pointed at the vendor object instead of its name), and the collapsible certification rows borrowed a column-card style that stacked triangle, name, and code vertically - titles now resolve properly and each certification collapses to a true one-line row. And the career history gets its missing opening: the Cisco relationship began in 1996, not 2003 - the Cabletron years ran on Cisco routing sold as Cabletron-branded OEM modules built on licensed Cisco IOS, the CRBRIM and its WAN routing siblings carrying Cisco 2500-, 4000-, and 4500-series technology in the MMAC hub family, installed, configured, optimized, and troubleshot daily in the printed-config era, until the YAGO-born SmartSwitch Router displaced them. Both the Cabletron and Cisco vendor pages now tell it, in both languages.",
+  },
+  {
+    date: "2026-07-22T01:57:41-03:00",
+    kind: "tool",
+    tools: ["sorting-algorithm-stepper"],
+    title: "Algorithms primer + the sorting stepper",
+    body: "New learning wing opens: the primer 'What Is an Algorithm?' gives the working definition, the three engineering questions (correct? how does cost grow? what does it trade?), Big-O as the grammar of growth with its honest caveats, and the families already running under this site's own tools. Beside it ships the sorting-algorithm-stepper: paste up to 16 numbers, pick bubble, selection, insertion, merge, or quick, and watch every comparison and swap with a one-line WHY - counters included, so O(n log n) versus O(n-squared) stops being notation and becomes something you watched happen. Teaching behaviors preserved on purpose: bubble's early exit on sorted input, and Lomuto quicksort's degradation on it. Also this update: the Ping Identity Certified Expert tier (six exams) joins the certifications hub in preparing status per PRIME's ruling.",
+  },
+  {
+    date: "2026-07-22T01:31:21-03:00",
+    kind: "content",
+    tools: [],
+    title: "Ping Identity program mapped: eight new certifications",
+    body: "Run B opens with the verified answer to 'a triad, or more?': the Ping Identity Certified Professional program spans NINE products - PingFederate (already on this site), PingAccess, PingDirectory, PingOne, PingOne DaVinci, PingAM, PingOne Advanced Identity Cloud, PingIDM, and PingOne Identity Governance - plus a Certified Expert tier across six of them. All eight new certifications join the hub with only officially verified facts (Kryterion delivery, credential lengths, renewal windows, and exam formats where published: PingAccess PAP-001 70q/90min/64% on version 8+, PingAM 100q/120min/66% on version 7 with AM-410 required, PingIDM 100q/120min/66%, Advanced Identity Cloud 60-70q/90min/70%). Guides sit in preparing status until the official per-exam study-guide PDFs are transcribed - no invented objectives.",
+  },
+  {
+    date: "2026-07-22T00:55:22-03:00",
+    kind: "infra",
+    tools: [],
+    title: "Placement-level traffic attribution, site-wide",
+    body: "Every outbound Red Education link now carries five-parameter placement attribution: utm_campaign names the vendor value stream, utm_content the exact page (course/adm-big-ip, vendor-partner/red-education), and utm_term the language and call-to-action (pt-br.request-training). Attribution moved from module-scope constants to render time, where the vendor, page, locale, and CTA context lives - so analytics can answer not merely whether ronutz.com sends traffic, but which page, CTA, vendor, article, and language produces the value. Standing rule for all future placements.",
+  },
+  {
     date: "2026-07-22T00:17:25-03:00",
     kind: "tool",
     tools: ["netskope-steering-decision-explainer"],

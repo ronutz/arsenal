@@ -1,0 +1,30 @@
+---
+slug: what-is-an-algorithm
+title: "What Is an Algorithm? A Working Primer"
+summary: "An algorithm is a finite, unambiguous recipe that turns input into output - and the engineering questions are always the same three: is it correct, how does its cost grow, and what does it trade away. Big-O as the grammar of growth, why constants and asymptotes both matter, the core families you already operate (search, sort, hash, graph, state machines), and where each one is already running inside this site's own tools."
+concepts: ["algorithm", "big-o", "complexity", "sorting", "searching", "hashing", "graphs", "state machines"]
+relatedTools: ["sorting-algorithm-stepper", "hash", "regex"]
+relatedArticles: ["hash-function-families", "regex-catastrophic-backtracking", "ltm-load-balancing-methods", "bigip-dns-request-processing-order"]
+category: networking
+order: 224
+status: reviewed
+updated: "2026-07-22"
+---
+
+Every technical field on this site - routing, TLS, load balancing, regex, DNS - stands on the same substrate: **algorithms**. The word gets treated as computer-science mystique, but the working definition is plain: a finite, unambiguous procedure that transforms input into output. A PAC file deciding a proxy, a hash function digesting a certificate, a balancer picking a pool member - each is an algorithm you already operate. This primer gives the vocabulary to reason about them; [the sorting stepper](/tools/sorting-algorithm-stepper) lets you watch one think, move by move.
+
+## The three questions that matter
+
+For any algorithm, engineering asks exactly three things. **Is it correct?** - does it produce the right output for *every* valid input, including the empty, the maximal, and the adversarial ones (the corner cases where real bugs live). **How does its cost grow?** - not "is it fast on my laptop" but *what happens as the input scales*, which is the question the next section formalizes. **What does it trade?** - time against memory, simplicity against speed, worst case against average case, preprocessing against per-query cost. There is no free lunch, only well-chosen trades: a hash table buys near-instant lookup by spending memory and surrendering ordering; an index buys fast reads by taxing every write.
+
+## Big-O: the grammar of growth
+
+**Big-O notation** describes how cost scales with input size *n*, ignoring constants and lower-order terms - deliberately. **O(1)** is constant: a hash lookup costs the same at ten entries or ten million. **O(log n)** shrinks the problem each step: binary search on a sorted million-entry table needs ~20 probes, and doubling the table adds *one*. **O(n)** touches everything once: a linear scan, a checksum pass. **O(n log n)** is the sorting floor for comparison-based sorts - merge sort and the standard-library sorts live here. **O(n²)** compares everything with everything: fine at 50 items, catastrophic at 50,000 - which is why [regex backtracking blowups](/learn/regex-catastrophic-backtracking) and accidental nested loops are production incidents, not curiosities. Two honest caveats keep Big-O useful: constants matter at small *n* (insertion sort beats clever sorts on tiny arrays, which is why real libraries hybridize), and *worst* versus *average* case can diverge dramatically - quicksort averages O(n log n) but degrades to O(n²) on adversarial input, a fact with genuine security consequences.
+
+## The families you already run
+
+**Search** - linear scan versus binary search versus hash lookup is the O(n) / O(log n) / O(1) trilogy, and it explains why sorted data and indexes exist. **Sorting** - the classic teaching ground, because every strategy is visible: selection sort's stubborn scanning, insertion sort's incremental tidiness, merge sort's divide-and-conquer, quicksort's partition gamble. **Hashing** - [covered in depth on this site](/learn/hash-function-families): constant-time mapping with engineered collision behavior, underlying tables, dedup, and integrity. **Graphs** - networks *are* graphs; shortest-path algorithms are literally what routing protocols compute, and [a GSLB decision](/learn/bigip-dns-request-processing-order) is a weighted selection walk. **State machines** - [regex engines](/learn/regex-catastrophic-backtracking), TCP, TLS handshakes: input drives transitions through named states. Recognizing the family is half the analysis: "this is a graph problem" or "this is really a sort" immediately tells you the known costs and the known trades.
+
+## How to actually learn them
+
+Algorithms are learned by *watching them run*, not by memorizing pseudocode. Take a small input, execute the steps by hand, and narrate why each move happens - the comparisons, the swaps, the invariant that holds after every pass. That is precisely what [the sorting stepper](/tools/sorting-algorithm-stepper) mechanizes: paste a list, pick a strategy, and step through every decision with the reasoning attached. Ten minutes of watching insertion sort maintain its sorted prefix teaches more than an hour of reading about it - and the habit generalizes to every system this site documents, because under every config knob, something is stepping through exactly this kind of loop.

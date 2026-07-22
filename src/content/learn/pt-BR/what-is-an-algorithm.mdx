@@ -1,0 +1,30 @@
+---
+slug: what-is-an-algorithm
+title: "O Que É um Algoritmo? Um Primer de Trabalho"
+summary: "Um algoritmo é uma receita finita e sem ambiguidade que transforma entrada em saída - e as perguntas de engenharia são sempre as mesmas três: está correto, como o custo cresce, e o que ele troca. Big-O como a gramática do crescimento, por que constantes e assíntotas importam, as famílias centrais que você já opera (busca, ordenação, hash, grafos, máquinas de estado), e onde cada uma já roda dentro das ferramentas deste site."
+concepts: ["algorithm", "big-o", "complexity", "sorting", "searching", "hashing", "graphs", "state machines"]
+relatedTools: ["sorting-algorithm-stepper", "hash", "regex"]
+relatedArticles: ["hash-function-families", "regex-catastrophic-backtracking", "ltm-load-balancing-methods", "bigip-dns-request-processing-order"]
+category: networking
+order: 224
+status: reviewed
+updated: "2026-07-22"
+---
+
+Todo campo técnico deste site - roteamento, TLS, balanceamento, regex, DNS - apoia-se no mesmo substrato: **algoritmos**. A palavra é tratada como mística de ciência da computação, mas a definição de trabalho é simples: um procedimento finito e sem ambiguidade que transforma entrada em saída. Um arquivo PAC decidindo um proxy, uma função de hash digerindo um certificado, um balanceador escolhendo um membro de pool - cada um é um algoritmo que você já opera. Este primer entrega o vocabulário para raciocinar sobre eles; [o passo-a-passo de ordenação](/tools/sorting-algorithm-stepper) deixa você assistir um pensar, movimento a movimento.
+
+## As três perguntas que importam
+
+Para qualquer algoritmo, a engenharia pergunta exatamente três coisas. **Está correto?** - produz a saída certa para *toda* entrada válida, incluindo a vazia, a máxima e as adversariais (os cantos onde moram os bugs reais). **Como o custo cresce?** - não "é rápido no meu laptop", e sim *o que acontece quando a entrada escala*, a pergunta que a próxima seção formaliza. **O que ele troca?** - tempo contra memória, simplicidade contra velocidade, pior caso contra caso médio, pré-processamento contra custo por consulta. Não há almoço grátis, só trocas bem escolhidas: uma tabela hash compra busca quase instantânea gastando memória e abrindo mão de ordem; um índice compra leituras rápidas taxando cada escrita.
+
+## Big-O: a gramática do crescimento
+
+A **notação Big-O** descreve como o custo escala com o tamanho da entrada *n*, ignorando constantes e termos menores - de propósito. **O(1)** é constante: uma busca em hash custa o mesmo com dez entradas ou dez milhões. **O(log n)** encolhe o problema a cada passo: busca binária numa tabela ordenada de um milhão de entradas precisa de ~20 sondagens, e dobrar a tabela adiciona *uma*. **O(n)** toca tudo uma vez: uma varredura linear, um passe de checksum. **O(n log n)** é o piso da ordenação por comparação - merge sort e as ordenações de biblioteca padrão moram aqui. **O(n²)** compara tudo com tudo: tranquilo com 50 itens, catastrófico com 50.000 - e é por isso que [explosões de backtracking em regex](/learn/regex-catastrophic-backtracking) e loops aninhados acidentais são incidentes de produção, não curiosidades. Duas ressalvas honestas mantêm o Big-O útil: constantes importam em *n* pequeno (insertion sort vence ordenações espertas em arrays minúsculos, e por isso bibliotecas reais hibridizam), e pior caso versus caso médio podem divergir dramaticamente - o quicksort tem média O(n log n) mas degrada a O(n²) com entrada adversarial, fato com consequências genuínas de segurança.
+
+## As famílias que você já roda
+
+**Busca** - varredura linear versus busca binária versus consulta em hash é a trilogia O(n) / O(log n) / O(1), e explica por que dados ordenados e índices existem. **Ordenação** - o terreno clássico de ensino, porque toda estratégia fica visível: a varredura teimosa do selection sort, a arrumação incremental do insertion sort, o dividir-para-conquistar do merge sort, a aposta de partição do quicksort. **Hashing** - [coberto em profundidade neste site](/learn/hash-function-families): mapeamento em tempo constante com comportamento de colisão projetado, sustentando tabelas, dedup e integridade. **Grafos** - redes *são* grafos; algoritmos de caminho mais curto são literalmente o que protocolos de roteamento computam, e [uma decisão de GSLB](/learn/bigip-dns-request-processing-order) é uma caminhada de seleção ponderada. **Máquinas de estado** - [motores de regex](/learn/regex-catastrophic-backtracking), TCP, handshakes TLS: a entrada dirige transições por estados nomeados. Reconhecer a família é metade da análise: "isto é um problema de grafo" ou "isto é na verdade uma ordenação" já entrega os custos e as trocas conhecidos.
+
+## Como de fato aprendê-los
+
+Algoritmos se aprendem *assistindo-os rodar*, não decorando pseudocódigo. Pegue uma entrada pequena, execute os passos à mão e narre por que cada movimento acontece - as comparações, as trocas, a invariante que se mantém após cada passe. É precisamente isso que [o passo-a-passo de ordenação](/tools/sorting-algorithm-stepper) mecaniza: cole uma lista, escolha uma estratégia e percorra cada decisão com o raciocínio anexado. Dez minutos assistindo o insertion sort manter seu prefixo ordenado ensinam mais que uma hora lendo a respeito - e o hábito generaliza para todo sistema que este site documenta, porque debaixo de cada botão de configuração, algo está percorrendo exatamente esse tipo de laço.

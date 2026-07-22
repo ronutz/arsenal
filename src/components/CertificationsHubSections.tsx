@@ -87,7 +87,7 @@ export default function CertificationsHubSections({
                 <div id={cert.key} key={cert.key}>
                   <button
                     type="button"
-                    className="certs-group-head certhub-guide-card"
+                    className="certhub-cert-row"
                     aria-expanded={isOpen}
                     aria-controls={`${cert.key}-guides`}
                     onClick={() => setOpen((o) => ({ ...o, [cert.key]: !o[cert.key] }))}

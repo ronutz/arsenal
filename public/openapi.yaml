@@ -26,6 +26,7 @@ servers:
   - url: https://ronutz.com/api/v1
     description: Production edge (Cloudflare Worker, stateless, no request logging)
 tags:
+  - name: Algorithms
   - name: Encoding
   - name: Extreme switching & fabric (EXOS / VOSS / SPB)
   - name: F5 BIG-IP LTM
@@ -6446,6 +6447,76 @@ paths:
               type: string
               examples:
                 - 'Strict-Transport-Security: max-age=63072000; includeSubDomains'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /sorting-algorithm-stepper:
+    get:
+      tags:
+        - Algorithms
+      operationId: run_sorting_algorithm_stepper
+      summary: Sorting Algorithm Stepper
+      description: >-
+        Paste a small list of numbers, pick a strategy - bubble, selection, insertion, merge, or
+        quick - and watch the algorithm think: every comparison, every swap, one WHY line per move,
+        with live comparison and write counters that make Big-O growth tangible. The input is a JSON
+        object: send it as the request body (POST) or as a JSON string (?input=). Standards:
+        Textbook-canonical sorting variants; correctness enforced by golden vectors + per-run
+        sortedness invariant. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - 5 3 8 1 9 2
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Algorithms
+      operationId: run_sorting_algorithm_stepper_post
+      summary: Sorting Algorithm Stepper (POST)
+      description: >-
+        Paste a small list of numbers, pick a strategy - bubble, selection, insertion, merge, or
+        quick - and watch the algorithm think: every comparison, every swap, one WHY line per move,
+        with live comparison and write counters that make Big-O growth tangible. The input is a JSON
+        object: send it as the request body (POST) or as a JSON string (?input=). Standards:
+        Textbook-canonical sorting variants; correctness enforced by golden vectors + per-run
+        sortedness invariant. Stateless and side-effect-free: the same input always yields the same
+        result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
         '200':
           description: The computed result.
