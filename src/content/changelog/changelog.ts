@@ -52,6 +52,55 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-22T00:17:25-03:00",
+    kind: "tool",
+    tools: ["netskope-steering-decision-explainer"],
+    title: "Netskope steering decision explainer",
+    body: "The 117th tool and second native Netskope one: paste a compact steering spec and walk the documented decision order to steered, bypassed, blocked, or direct - with the why-ledger. It knows the three traffic modes and their audiences, the always-on RFC1918 bypass, the exception families including cert-pinned steer-and-decrypt, dynamic steering's per-location modes down to None, Fail Close's documented split (domain/IP/cert-pinned exceptions survive it, category exceptions do not), and the non-standard-port-by-IP pitfall with its FQDN-plus-IP remedy. Fourteen golden vectors; API-included; woven into thirteen steering objectives across the five Netskope guides and into the netskope-sase path.",
+  },
+  {
+    date: "2026-07-21T23:16:07-03:00",
+    kind: "content",
+    tools: [],
+    title: "Netskope program complete: accreditations + Learn wave 1",
+    body: "The Netskope shelf grows in both directions. Credentials: the two CURRENT Academy accreditations (Administrator TR-772-1, Integrator TR-773-1) join the registry with verbatim topic lists from the official PDFs, the three NSK certification guides gain corrected lineage notes (the 2024 accreditations replaced them), and the hub now shows five Netskope credentials in program order. Content: eight new articles in en + pt-BR - platform architecture and NewEdge, steering methods, client deployment, real-time vs API protection, the Cloud Confidence Index, Private Access (NPA), Cloud Firewall, and events/Advanced Analytics - woven into 52 guide objectives across all five Netskope guides, so nearly every domain now teaches from this site. Collaterals: the netskope-sase reading path (eleven articles, two tools, in platform teaching order) and two glossary entries (CCI, NewEdge) in en + pt-BR.",
+  },
+  {
+    date: "2026-07-21T22:35:21-03:00",
+    kind: "content",
+    tools: [],
+    title: "Netskope certification program: three study guides",
+    body: "The certifications hub gains the Netskope Cloud Security Certification Program: NCCSA (NSK101), NCCSI (NSK200), and Cloud Security Architect (NSK300), each transcribed verbatim from the official certification-description PDFs on netskope.com - five domains per exam, 58 published objectives total, practitioner profiles, validity and lineage notes (each certification replaced a former accreditation), and the Academy course chain (NSCIOTT, NSCO&A, NSCI&I, Activation & Adoption) in the source labels. Objectives map to the site's steering, SAML/SCIM, DLP, sandbox, TLS-inspection, and HTTP shelves; the unmapped objectives chart the Netskope Learn wave to come.",
+  },
+  {
+    date: "2026-07-21T22:01:49-03:00",
+    kind: "tool",
+    tools: ["http-status-code-explainer"],
+    title: "HTTP wave: nine articles + status-code explainer",
+    body: "The HTTP estate grows a full teaching arc: methods (safe/idempotent as the bits the plumbing runs on), status-code families, headers anatomy (end-to-end vs hop-by-hop, Host, order-as-fingerprint), cookie mechanics, forms and request encoding, AJAX/fetch/XHR, CORS, URI-vs-URL-vs-URN, and the HTML/CSS/DOM triad - nine articles in en + pt-BR, cross-referenced into the existing curl, URL, and security-header shelves. Plus a new API-included tool: the status-code explainer, RFC-9110-grounded, answering unknown codes with the protocol's own x00 forward-compatibility rule. The http-evolution reading path grows to fourteen articles and five tools.",
+  },
+  {
+    date: "2026-07-21T22:01:49-03:00",
+    kind: "content",
+    tools: [],
+    title: "Why we say SSL when we mean TLS",
+    body: "A transport-family article on the web's most persistent misnomer: Netscape's three SSL drafts, the 1999 political rename (the wire version field still says 3.1), the RFC 6176/7568 executions, the inertia mechanics - CA product names, openssl, configuration fossils - and the naming musing: HTTPS names the scheme, encryption-in-transit names the property, QUIC is moving the ground again, and RFC 8446 kept the name on purpose.",
+  },
+  {
+    date: "2026-07-21T22:01:49-03:00",
+    kind: "feature",
+    tools: [],
+    title: "Certifications hub: vendor-ordered, collapsible",
+    body: "The certifications hub now lists study guides by vendor in hub order and, within each vendor, in certification order (F5: CA, CTS-LTM, DNS, ASM, APM, CSE-Security, CSE-Cloud, NGINX). Vendors stay visible; certification rows collapse by default and expand to their exam-guide cards, with expand-all and collapse-all controls.",
+  },
+  {
+    date: "2026-07-21T22:01:49-03:00",
+    kind: "content",
+    tools: [],
+    title: "Brazilian connectivity history + access technologies",
+    body: "Four articles in en + pt-BR - the last mile from POTS to always-on (anchored on a 1999 Telesp Speedy first-subscriber story), pagers and paging networks (the Teletrim operator-relay era), LEO satellite constellations, and LoRa/LPWAN - plus fifteen glossary entries: TELESP, TELEBRAS, EMBRATEL, ANATEL, CGI.br, NIC.br, FAPESP, USP, UNICAMP as sourced lore, and POTS, ADSL, HFC, LEO constellation, LoRa, and pager as the access-technology vocabulary. The pre-1996 history page gains the bip: a timeline beat, a narrative movement, a field-guide card, and the ADSL coda that ends the POTS era where it began.",
+  },
+  {
     date: "2026-07-21T20:32:01-03:00",
     kind: "tool",
     tools: ["zcc-forwarding-decision-explainer"],

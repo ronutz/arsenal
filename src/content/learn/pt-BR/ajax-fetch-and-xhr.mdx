@@ -1,0 +1,30 @@
+---
+slug: ajax-fetch-and-xhr
+title: "AJAX, XHR e fetch: Quando as Páginas Aprenderam a Responder"
+summary: "Na primeira década, a web tinha um movimento só: clique, tela em branco, página nova. O XMLHttpRequest deu às páginas um segundo - pedir dados em segundo plano, atualizar no lugar - e 'AJAX' batizou a revolução (que prontamente trocou o X pelo JSON). Como o XHR funcionava, o que o fetch consertou (promises, streams, uma API sã), o que ficou igual por baixo (continua tudo HTTP), e a fronteira a que toda requisição de fundo responde: same-origin, com CORS como exceção negociada."
+concepts: ["ajax", "xhr", "fetch", "xmlhttprequest", "json", "asynchronous", "promises", "same-origin"]
+relatedTools: ["http-request-translator", "curl-command-builder"]
+relatedArticles: ["curl-to-fetch", "cors-explained", "html-css-and-the-dom", "json-formatting-and-canonical"]
+category: networking
+order: 212
+status: reviewed
+updated: "2026-07-21"
+---
+
+O modelo de interação da web primitiva era a carga de página inteira: cada clique jogava fora a página que você tinha e buscava uma inteiramente nova. A técnica que mudou isso era quase constrangedoramente pequena - um objeto JavaScript capaz de fazer uma requisição HTTP *sem navegar* - e tudo, do webmail às aplicações de página única, é essa única capacidade, capitalizada. Este artigo é a história e a mecânica; [o guia de migração de curl para fetch](/learn/curl-to-fetch) é o irmão mão-na-massa.
+
+## XHR: o objeto que começou tudo
+
+O **XMLHttpRequest** saiu de fininho (invenção da Microsoft para o Outlook Web Access, depois clonada em todo lugar) e por anos foi só curiosidade - até a onda de aplicações de meados dos anos 2000 construídas sobre ele forçar um nome: **AJAX**, *Asynchronous JavaScript and XML*. A piada que a história pregou está na última letra: as cargas que venceram não foram XML e sim **JSON**, [cuja gramática este site cobre em separado](/learn/json-formatting-and-canonical) - mais leve de interpretar, nativo da linguagem que faz a requisição. O formato do XHR entrega sua era: dirigido por callbacks de evento (`onreadystatechange`, ready states numéricos), configurado imperativamente (`xhr.open("GET", url)` e depois `xhr.send()`), e notoriamente ruim de compor - pirâmides de callback eram o imposto que toda aplicação interativa pagava.
+
+## fetch: o mesmo fio, um cabo moderno
+
+O **fetch** trocou o cabo, não o fio. `fetch(url)` retorna uma **Promise** que resolve num `Response`, então requisições compõem com cadeias de `then` e `async/await` em vez de máquinas de estado de callback; `Request`, `Response` e `Headers` são objetos de verdade; corpos são **streams** legíveis incrementalmente; e cancelamento finalmente funciona direito via `AbortController`. Dois fios de tropeço comportamentais pegam todo recém-chegado: o fetch **rejeita apenas em falha de rede** - um 404 ou 500 é uma promise *cumprida* cujo `response.ok` é falso, então checar status é trabalho seu - e cookies seguem a opção `credentials` em vez de sempre pegarem carona. Por baixo, nada mudou: a requisição no fio usa [os mesmos métodos](/learn/http-methods-the-verbs), [os mesmos cabeçalhos](/learn/http-headers-anatomy), os mesmos códigos de status - e é exatamente por isso que uma chamada fetch e [um comando curl se traduzem um no outro](/learn/curl-to-fetch) tão limpo.
+
+## A regra por baixo: same-origin
+
+Dar a scripts o poder de fazer requisições forçou a decisão de segurança mais importante do navegador. As requisições de um script carregam os cookies e a posição de rede *do usuário* - então, por padrão, uma página só pode ler respostas da **própria origem** (esquema + host + porta). Sem essa regra, qualquer página que você visitasse leria seu webmail. A exceção controlada - como `api.example.com` concede permissão a `app.example.com`, preflights e tudo - é [o CORS, o próximo artigo](/learn/cors-explained). O hábito a construir desde já: toda requisição de fundo na aba de rede do DevTools responde a essa fronteira, saiba ela ou não.
+
+## O que mudou, e o que só pareceu mudar
+
+O legado real do AJAX é arquitetural: a página deixou de ser um documento que se substitui e virou [um DOM vivo que se muta](/learn/html-css-and-the-dom), alimentado por requisições de fundo - a cisão que nos deu APIs como produto, JSON como língua franca e a aplicação de página única. Mas o insight de engenharia durável corre no sentido contrário: *nada no HTTP mudou*. Toda habilidade que este site ensina sobre requisições, cabeçalhos, códigos de status e cache se aplica sem modificação às requisições que o seu JavaScript faz - o navegador só parou de obrigar você a assistir cada uma carregar.

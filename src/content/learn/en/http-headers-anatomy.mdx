@@ -1,0 +1,30 @@
+---
+slug: http-headers-anatomy
+title: "HTTP Headers: The Anatomy of the Metadata"
+summary: "Everything HTTP knows about a message that isn't the message travels in headers: name-colon-value lines with case-insensitive names, folded into four working roles - request context, response context, representation metadata, and payload plumbing. The end-to-end vs hop-by-hop split that proxies live by, the Host header that made virtual hosting possible, content negotiation, conditionals, and why header order became a fingerprint."
+concepts: ["http", "headers", "host", "content-type", "end-to-end", "hop-by-hop", "content negotiation", "conditional requests"]
+relatedTools: ["http-request-translator", "http-header-order-fingerprint", "secure-headers"]
+relatedArticles: ["http-status-codes-the-five-families", "secure-headers-overview", "http-cookies-state-over-stateless", "curl-headers-auth-and-cookies"]
+category: networking
+order: 209
+status: reviewed
+updated: "2026-07-21"
+---
+
+Strip an HTTP message of its body and its first line, and what remains is the protocol's entire nervous system: **headers** - `Name: value` lines, names case-insensitive, values shaped by each header's own grammar. Headers are where caching, authentication, negotiation, routing, and security actually happen; the body is just cargo. This article gives the anatomy; [the request translator](/tools/http-request-translator) lets you dissect real specimens.
+
+## Four working roles
+
+The cleanest mental model sorts headers by what they describe. **Request context**: who is asking and how - `Host`, `User-Agent`, `Referer` (the misspelling is standardized), `Authorization`, `Cookie`. **Response context**: who answered and under what terms - `Server`, `Set-Cookie`, `WWW-Authenticate`, `Retry-After`. **Representation metadata**: what the enclosed thing *is*, independent of direction - `Content-Type`, `Content-Length`, `Content-Encoding`, `Content-Language`, `ETag`, `Last-Modified`. **Negotiation and conditionals**: the client's preferences and premises - the `Accept-*` family proposing formats, encodings, and languages, and the `If-*` family (`If-None-Match`, `If-Modified-Since`) turning requests conditional so caches can earn their [`304`](/learn/http-status-codes-the-five-families).
+
+## The header that saved the web's address space
+
+`Host` deserves its own paragraph. HTTP/1.0 requests named only a path, so one IP address meant one website. HTTP/1.1 made `Host` mandatory, and with that single line, **virtual hosting** was born: thousands of sites per address, the server choosing which one to be based on the header. Every reverse proxy, every CDN, every ingress controller still routes on it (or on its TLS twin, SNI) - and a request whose `Host` disagrees with its URL is either a misconfiguration or an attack probe, which is why it features in every WAF's opening chapter.
+
+## End-to-end versus hop-by-hop
+
+The web is a chain of intermediaries, and headers split into two citizenships. **End-to-end** headers belong to the conversation's endpoints - `Content-Type`, `Authorization`, `Cache-Control` directives aimed at everyone - and intermediaries must forward them. **Hop-by-hop** headers govern one link only - `Connection`, `Keep-Alive`, `Transfer-Encoding`, `Upgrade`, proxy authentication - and each hop consumes and regenerates them rather than forwarding. [Proxies](/learn/http-proxy-forward-and-reverse) live and die by this split: forwarding a hop-by-hop header downstream is a classic smuggling ingredient, and the `Connection` header even exists partly to name *additional* headers that must be stripped at the hop. Meanwhile intermediaries add their own trail - `Via`, and the `X-Forwarded-For` lineage now standardized as `Forwarded` - which is how a backend learns who originally called through three layers of infrastructure.
+
+## Order, custom headers, and the fingerprint
+
+Two field notes complete the anatomy. First, custom headers: the `X-` prefix convention was officially deprecated years ago (the experiments never stay experiments - `X-Forwarded-For` is load-bearing infrastructure), so new headers just take honest names. Second, a subtlety this site turned into a tool: the specification says header *order* mostly does not matter semantically - so implementations never agreed on one, and every client emits its own characteristic sequence. Browsers, curl, Python, and bots each have a recognizable signature, which makes [header order a fingerprint](/tools/http-header-order-fingerprint) - one more instance of the recurring lesson that whatever a specification leaves free, implementations will make identifying.

@@ -1,0 +1,30 @@
+---
+slug: netskope-advanced-analytics
+title: "Netskope Events and Advanced Analytics: From Traffic to Evidence"
+summary: "Every monitoring objective on every Netskope blueprint - event monitoring, event analysis, application discovery, event sharing - resolves to one underlying discipline: the platform's event model and what is built on it. How inline and API inspection become page, application, alert, and audit events; how Skope IT answers 'what just happened' while Advanced Analytics answers 'what has been happening'; and how events leave the platform - streamed to the SIEM and SOC tooling - so the security cloud becomes a first-class evidence source."
+concepts: ["netskope", "advanced analytics", "skope it", "events", "alerts", "siem", "reporting", "monitoring"]
+relatedTools: ["incident-timeline-rca-builder"]
+relatedArticles: ["cloud-confidence-index", "netskope-realtime-vs-api-protection", "syslog-message-formats", "netskope-platform-architecture-and-newedge"]
+category: security
+order: 223
+status: reviewed
+updated: "2026-07-21"
+---
+
+A security platform that inspects everything and remembers nothing would be a very expensive light switch. The monitoring domains on the Netskope blueprints - two objectives on the administrator track, four on the integrator's - are about the remembering: the event model the platform writes, the two lenses it reads them through, and the plumbing that ships them to the rest of the security stack.
+
+## The event model: what inspection writes down
+
+Everything [both protection paths](/learn/netskope-realtime-vs-api-protection) see condenses into typed events. **Page and network events** record the traffic level - who connected where, when, how much. **Application events** record the decoded activity level that makes the platform interesting: *user X performed upload to app Y, instance Z* - the noun-verb-object grammar that raw web logs never had. **Alert events** record policy verdicts: the DLP match, the threat detection, the block, [the CCI-based](/learn/cloud-confidence-index) coaching page and what the user chose. **Audit events** record what administrators did to the tenant itself - the answer to "who changed this policy," which every incident review eventually asks. The model matters more than the console: exam scenarios about "which events would show..." are really asking which layer of this ladder a given question lives on.
+
+## Two lenses: Skope IT and Advanced Analytics
+
+The platform reads its own events at two very different distances, and knowing which lens a task belongs to is the practical skill. **Skope IT** is the operational, near-real-time view: search and filter recent events, follow one user's afternoon, chase one alert - the lens of triage and [the timeline an incident review reconstructs](/tools/incident-timeline-rca-builder). **Advanced Analytics** is the analytical distance: a business-intelligence layer over the event warehouse, with dashboards, scheduled reports, and cross-time questions - shadow-IT posture by department, DLP trend by quarter, [CCI](/learn/cloud-confidence-index) distribution of everything discovered, the risk story leadership actually asks for. The division of labor is the answer pattern for monitoring scenarios: *this event, now* → Skope IT; *this trend, this report, this dashboard* → Advanced Analytics.
+
+## Leaving the platform: event sharing
+
+The integrator blueprint's "event sharing methodologies" objective names the last leg: no serious SOC treats any single console as the destination. Events export from the platform into the organization's SIEM and analytics stack - streamed in near real time or pulled via REST - where they join [everything else speaking the log lingua franca](/learn/syslog-message-formats) for correlation: the Netskope DLP alert next to the endpoint detection next to the identity provider's sign-in anomaly. The design consequence worth stating plainly: the security cloud is an evidence *source*, and its integration quality - completeness, latency, field fidelity - is a first-class deployment requirement, not an afterthought.
+
+## The closing habit
+
+The habit that makes all six monitoring objectives cohere: for any question about the environment, name the event type that would answer it, the lens suited to the distance, and the destination where it must also land. Traffic to evidence, evidence to answers, answers to the systems that act on them - that pipeline is what the blueprints are actually examining.

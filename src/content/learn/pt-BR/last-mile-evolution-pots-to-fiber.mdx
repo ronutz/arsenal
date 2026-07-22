@@ -1,0 +1,30 @@
+---
+slug: last-mile-evolution-pots-to-fiber
+title: "A Última Milha: do POTS ao Sempre-Conectado"
+summary: "A história da conectividade residencial é a história de um trecho teimoso de infraestrutura - a última milha - sendo reinventado quatro vezes: o serviço telefônico convencional que carregava vozes, o truque do ADSL que fez o mesmo par de cobre carregar dados em tempo integral, a segunda vida DOCSIS da planta de cabo, e a fibra até a casa. Por que os 256 kbps de 1999 importaram mais que sua velocidade, o que o sempre-conectado de fato mudou, e como uma casa pode acabar servida pelo fantasma do cobre, pelo coaxial, pelo vidro e pelo céu ao mesmo tempo."
+concepts: ["last mile", "pots", "adsl", "dsl", "docsis", "hfc", "ftth", "always-on", "broadband"]
+relatedTools: []
+relatedArticles: ["leo-satellite-constellations", "pagers-and-paging-networks", "tunnel-overhead-mtu-and-mss", "nat-explained"]
+category: networking
+order: 202
+status: reviewed
+updated: "2026-07-21"
+---
+
+Todo diagrama de rede tem uma borda de aparência tediosa onde o mundo da operadora toca a parede do cliente, e essa borda - a **última milha** - tem sido o trecho mais difícil, mais caro e mais reinventado da história das telecomunicações. O núcleo ganhou fibra cedo; a última milha ganhou o que já estava enterrado. Este artigo percorre suas quatro reinvenções, ancorado onde a própria história deste site começa: São Paulo, 1999, uma linha de 256 kbps que mudou tudo, menos seus fios.
+
+## POTS: uma rede construída para uma conversa por vez
+
+O **POTS - Plain Old Telephone Service, o serviço telefônico convencional** - foi um triunfo de engenharia otimizado para exatamente um trabalho: carregar uma voz, na faixa de aproximadamente 300 a 3400 Hz, sobre um par metálico trançado, com o circuito *dedicado pela duração da chamada*. Essa última propriedade definiu a experiência da internet inicial: modems discados heroicamente espremiam dados pela banda de voz (chegando a uns 56 kbps), mas a conexão existia apenas enquanto a "chamada" existia - a linha ficava ocupada, o medidor frequentemente corria, e estar online era um *evento*. O caminho deste autor subiu cada degrau dessa escada: um Microdigital TK82-C em 1984, e em 1991 - aos quinze, já montando e vendendo PCs - sysop de BBS, o que significava *ser* o destino que aquelas chamadas discadas alcançavam, um usuário por vez num circuito POTS; depois a internet acadêmica em 1993, a internet comercial em 1995, e o primeiro emprego corporativo em 1996, como engenheiro de campo de redes na Cabletron Systems, pioneira do switching Ethernet. O mundo daquela era resolvia alcançabilidade de outro jeito, [com pagers](/learn/pagers-and-paging-networks) - assíncronos, retransmitidos por operadora, e profundamente não-tempo-real.
+
+## ADSL: o mesmo cobre, de repente em tempo integral
+
+A primeira reinvenção foi um truque de frequência. O **ADSL - Asymmetric Digital Subscriber Line, a linha digital assimétrica de assinante** - observou que o par de cobre podia carregar muito mais espectro do que a banda de voz usa, e o dividiu: a voz fica abaixo de ~4 kHz, os dados viajam nas frequências acima, e um filtro impede que se ouçam. As consequências foram maiores que a velocidade. O canal de dados era **sempre-conectado** - sem discar, sem linha ocupada, sem medidor por minuto - e o modem terminava num **DSLAM** na central, em vez de em outro modem do outro lado de uma ligação. Em São Paulo, a Telesp - recém-privatizada nas mãos da Telefónica em 1998 - lançou o ADSL como Speedy em 1999, e este autor esteve entre seus primeiros assinantes: 256 kbps no mesmo par metálico que a casa sempre teve, usado *continuamente* pela primeira vez. Essa continuidade, não a taxa de bits, foi a revolução - e, como diriam os obituários da época, o começo definitivo do fim do POTS. Uma nota operacional daquele mundo ainda morde hoje: implantações de ADSL comumente envelopavam o tráfego em PPPoE, cujos cabeçalhos extras são uma razão clássica para [a matemática de MTU](/learn/tunnel-overhead-mtu-and-mss) surpreender.
+
+## DOCSIS sobre HFC: a segunda vida da planta de televisão
+
+A segunda reinvenção veio do *outro* fio que entra na casa. A televisão a cabo havia construído plantas **HFC - Hybrid Fiber-Coaxial, híbridas de fibra e coaxial**: fibra do headend até nós de bairro, coaxial no trecho final, uma árvore de broadcast com enorme espectro descendente. O **DOCSIS - Data Over Cable Service Interface Specification**, a família de padrões da CableLabs - transformou essa árvore numa rede de banda larga: canais descendentes compartilhados pela vizinhança, subida concedida pelo escalonador do CMTS, e gerações sucessivas alargando ambos. O DOCSIS 3.1 trouxe canais baseados em OFDM e capacidade descendente multi-gigabit ao mesmo coaxial - e é assim que uma casa cabeada na era da TV analógica carrega serviço gigabit hoje sem um novo cabo de descida.
+
+## FTTH, e a casa servida de quatro jeitos
+
+A terceira reinvenção para de reutilizar e começa a substituir: o **FTTH - Fiber To The Home, fibra até a casa** - leva vidro por toda a última milha, tipicamente como uma rede óptica passiva dividindo uma fibra alimentadora entre dezenas de casas, com folga de banda e latência que as tecnologias metálicas tomam emprestado da física para aproximar. E a quarta reinvenção [pula o chão inteiramente](/learn/leo-satellite-constellations). A imagem de fechamento é a âncora deste próprio artigo: a mesma casa que recebeu aquele circuito ADSL de 1999 é hoje alcançável por DOCSIS 3.1 sobre HFC, por FTTH e por uma constelação em órbita baixa - quatro últimas milhas, três meios, um endereço, e o par de cobre que começou tudo finalmente autorizado a descansar.

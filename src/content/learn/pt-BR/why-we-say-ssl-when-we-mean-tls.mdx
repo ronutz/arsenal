@@ -1,0 +1,30 @@
+---
+slug: why-we-say-ssl-when-we-mean-tls
+title: "Por Que Dizemos SSL Quando Queremos Dizer TLS?"
+summary: "O SSL foi proibido, descontinuado e está morto há anos - e a indústria ainda vende 'certificados SSL', configura 'inspeção SSL' e linka o openssl. A história explica o hábito: o SSL da Netscape, a renomeação política para TLS em 1999 (o campo de versão no fio ainda dizia 3.1), e um quarto de século de inércia de marketing. Mais a reflexão que a pergunta merece: como seria um nome independente de protocolo, e algum já existe?"
+concepts: ["ssl", "tls", "naming", "rfc 2246", "rfc 8446", "https", "quic", "history"]
+relatedTools: []
+relatedArticles: ["tls12-tls13-dtls-quic", "ssl-forward-proxy-interception", "tls-cipher-security-keywords", "certificate-validation"]
+category: transport
+order: 206
+status: reviewed
+updated: "2026-07-21"
+---
+
+Entre em qualquer sala de operações e você ouvirá em menos de uma hora: "o cert SSL expirou", "habilita a inspeção SSL", "olha o handshake SSL" - descrevendo sistemas onde nem um byte de SSL de verdade flui há uma década. Este site também faz isso, deliberadamente, [em nomes de ferramenta que encontram os operadores onde o vocabulário deles mora](/learn/ssl-forward-proxy-interception). A persistência do nome de um protocolo morto é um artefato genuinamente interessante, e desempacotá-lo leva três partes: de onde o SSL veio, por que o nome mudou, e por que a mudança nunca pegou.
+
+## As raízes: os três rascunhos da Netscape
+
+O **SSL - Secure Sockets Layer, a camada de sockets seguros** - foi a resposta da Netscape a uma web comercial que precisava de criptografia antes de poder aceitar um cartão de crédito. O SSL 1.0 nunca saiu - quebrado antes do lançamento. O **SSL 2.0** saiu em 1995 e se revelou seriamente falho; o **SSL 3.0** veio em 1996 como um redesenho substancial (com ajuda criptográfica externa) e virou a fundação sobre a qual tudo desde então de fato se constrói. Então o protocolo cresceu além do pai: padronizar o protocolo de um fornecedor sob o nome de um fornecedor, no meio da guerra de navegadores Netscape-Microsoft, era politicamente impossível - então quando a IETF assumiu a tutela, o protocolo ganhou um nome neutro. O **TLS - Transport Layer Security, a segurança da camada de transporte** - 1.0 chegou como a RFC 2246 em janeiro de 1999, e a pista sobrevive no fio até hoje: o campo de versão do TLS 1.0 literalmente diz **3.1** - o próprio protocolo admitindo que era a próxima revisão menor do SSL 3.0 vestindo um crachá novo.
+
+## A divergência: um nome morreu no papel, viveu na fala
+
+Dali os caminhos se separam com clareza. No papel, o TLS marchou: 1.1 (RFC 4346, 2006), 1.2 (RFC 5246, 2008) e o genuinamente redesenhado **1.3** (RFC 8446, 2018) - [cujo handshake os artigos de TLS deste site dissecam](/learn/tls12-tls13-dtls-quic). O SSL, enquanto isso, foi formalmente executado duas vezes: o SSL 2.0 *proibido* pela RFC 6176 em 2011, o SSL 3.0 descontinuado pela RFC 7568 em 2015 depois que o ataque POODLE tornou sua aposentadoria urgente. E mesmo assim, na fala, no comércio e no código, o SSL prosperou. As razões se acumulam: as autoridades certificadoras passaram anos vendendo um produto chamado "certificado SSL", e nomes de produto sobrevivem a protocolos; a biblioteca dominante é o **openssl**, invocado pelo nome milhões de vezes por dia; uma geração de documentação, vagas de emprego e diretivas de configuração (`ssl_protocols`, `SSLEngine`) fossilizou o termo; o "SSL/TLS" surgiu como a garantia dupla da indústria e só entrincheirou os dois; e, sem ciência mas de verdade, *SSL* é simplesmente mais fácil de falar. Nomes são interfaces, e interfaces têm retrocompatibilidade.
+
+## A reflexão: como seria um nome melhor?
+
+A pergunta com que este artigo foi convidado a sentar: chamar a coisa de "TLS" ainda é nomear um *protocolo*, e protocolos são superados - existe um vocabulário independente de protocolo, proposto ou em uso? Parcialmente, sim, e cada candidato nomeia uma camada diferente da ideia. O **HTTPS** nomeia o *esquema* - sobreviveu intocado à transição SSL-para-TLS, e sobreviveria à próxima, mas só cobre a web. **"Criptografia em trânsito"** nomeia a *propriedade* - frameworks de conformidade e documentação de nuvem preferem cada vez mais o termo precisamente porque não assume protocolo algum - mas um nome de propriedade não responde "qual handshake falhou". E o chão está mudando de novo de qualquer jeito: o **QUIC** absorveu o handshake do TLS 1.3 *dentro* de um protocolo de transporte, então a fatia de tráfego "TLS" que mais cresce já não roda sobre camada de sockets alguma, deixando os dois nomes legados levemente errados numa direção nova. Não existe esforço sério para renomear o TLS - a RFC 8446 manteve o nome de propósito, porque a IETF aprendeu em 1999 o que renomeações custam.
+
+## O tratado de paz do operador
+
+A postura prática é bilíngue. Em *especificações, políticas e qualquer coisa precisa*: TLS, com versão, porque "SSL" num requisito de segurança é na melhor hipótese desleixo e na pior permite o proibido. Em *conversa e superfícies de produto*: encontre as pessoas onde as palavras estão - e é por isso que as ferramentas deste site dizem SSL nos nomes e TLS nas mecânicas. E guarde o padrão para a visão longa: a indústria não falhou em renomear o SSL; ela demonstrou que nomes são infraestrutura estrutural, atualizada com ainda mais relutância do que os protocolos que rotulam.

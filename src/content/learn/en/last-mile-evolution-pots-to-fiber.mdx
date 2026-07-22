@@ -1,0 +1,30 @@
+---
+slug: last-mile-evolution-pots-to-fiber
+title: "The Last Mile: From POTS to Always-On"
+summary: "The story of residential connectivity is the story of one stubborn stretch of infrastructure - the last mile - being reinvented four times: the plain old telephone service that carried voices, the ADSL trick that made the same copper pair carry data full-time, the cable plant's DOCSIS second life, and fiber to the home. Why 1999's 256 kbps mattered more than its speed, what always-on actually changed, and how one house can end up served by copper's ghost, coax, glass, and the sky at once."
+concepts: ["last mile", "pots", "adsl", "dsl", "docsis", "hfc", "ftth", "always-on", "broadband"]
+relatedTools: []
+relatedArticles: ["leo-satellite-constellations", "pagers-and-paging-networks", "tunnel-overhead-mtu-and-mss", "nat-explained"]
+category: networking
+order: 202
+status: reviewed
+updated: "2026-07-21"
+---
+
+Every network diagram has a boring-looking edge where the carrier's world touches the customer's wall, and that edge - the **last mile** - has been the hardest, most expensive, most reinvented stretch of infrastructure in telecom history. The core got fiber early; the last mile got whatever was already buried. This article walks its four reinventions, anchored where this site's own story starts: São Paulo, 1999, a 256 kbps line that changed everything except its wires.
+
+## POTS: a network built for one conversation at a time
+
+**POTS - the Plain Old Telephone Service** - was an engineering triumph optimized for exactly one job: carrying a voice, in roughly the 300-3400 Hz band, over a twisted metallic pair, with the circuit *dedicated for the duration of the call*. That last property defined the early internet experience: dial-up modems heroically squeezed data through the voice band (topping out around 56 kbps), but the connection existed only while the "call" did - the line was busy, the meter often ran, and being online was an *event*. This author's own path climbed every rung of that ladder: a Microdigital TK82-C in 1984, and by 1991 - at fifteen, already building and selling PCs - a BBS sysop, which meant *being* the destination those dial-up calls reached, one caller at a time on one POTS circuit; then the academic internet in 1993, the commercial internet in 1995, and a first corporate role in 1996 as a field network engineer at Cabletron Systems, the Ethernet switching pioneer. The world of that era solved reachability differently, [with pagers](/learn/pagers-and-paging-networks) - asynchronous, operator-relayed, and profoundly not real-time.
+
+## ADSL: the same copper, suddenly full-time
+
+The first reinvention was a frequency trick. **ADSL - Asymmetric Digital Subscriber Line** - observed that the copper pair could carry far more spectrum than the voice band uses, and split it: voice stays below ~4 kHz, data rides in the frequencies above, and a filter keeps them from hearing each other. The consequences were bigger than the speed. The data channel was **always on** - no dialing, no busy line, no per-minute meter - and the modem terminated at a **DSLAM** in the exchange rather than at another modem across a phone call. In São Paulo, Telesp - freshly privatized into Telefónica's hands in 1998 - launched ADSL as Speedy in 1999, and this author was among its first subscribers: 256 kbps on the same metallic pair the house had always had, used *continuously* for the first time. That continuity, not the bitrate, was the revolution - and, as the title of the era's obituaries would put it, the definitive beginning of the end of POTS. One operational footnote from that world still bites today: ADSL deployments commonly wrapped traffic in PPPoE, whose extra headers are a classic reason [MTU math](/learn/tunnel-overhead-mtu-and-mss) surprises people.
+
+## DOCSIS on HFC: the television plant's second life
+
+The second reinvention came from the *other* wire into the house. Cable television had built **HFC - Hybrid Fiber-Coaxial** - plants: fiber from the headend to neighborhood nodes, coax for the final drop, a broadcast tree with enormous downstream spectrum. **DOCSIS - Data Over Cable Service Interface Specification**, the CableLabs standard family - turned that tree into a broadband network: downstream channels shared by a neighborhood, upstream granted by the CMTS scheduler, and successive generations widening both. DOCSIS 3.1 brought OFDM-based channels and multi-gigabit downstream capability to the same coax - which is how a house wired in the analog-TV era can carry gigabit service today without a new drop cable.
+
+## FTTH, and the house served four ways
+
+The third reinvention stops reusing and starts replacing: **FTTH - Fiber To The Home** - runs glass the entire last mile, typically as a passive optical network splitting one feeder fiber among dozens of homes, with bandwidth and latency headroom the metallic technologies borrow against physics to approximate. And the fourth reinvention [skips the ground entirely](/learn/leo-satellite-constellations). The closing image is this article's own anchor: the same house that took that 1999 ADSL circuit is today reachable over DOCSIS 3.1 HFC, over FTTH, and over a low-earth-orbit constellation - four last miles, three media, one address, and the copper pair that started it all finally allowed to rest.

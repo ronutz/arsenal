@@ -1,0 +1,30 @@
+---
+slug: netskope-realtime-vs-api-protection
+title: "Real-time vs API Protection: The Two Vantage Points of a Security Cloud"
+summary: "Every Netskope blueprint separates 'real-time inline' from 'API' policy, and the split is the platform's deepest design decision: inline protection stands in the traffic path and can stop things before they happen, while API-enabled protection connects to managed SaaS out-of-band and can see things inline never will - content already at rest, sharing changes made from anywhere, activity from devices you do not steer. What each path sees, what each can do about it, and why mature deployments always run both."
+concepts: ["netskope", "real-time protection", "api protection", "inline", "out-of-band", "casb", "dlp", "saas"]
+relatedTools: []
+relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-inline-tls-decryption", "dlp-fundamentals", "netskope-steering-methods"]
+category: security
+order: 219
+status: reviewed
+updated: "2026-07-21"
+---
+
+Ask what a cloud security platform can see, and the honest answer is: it depends which of its two eyes you mean. [The architecture article](/learn/netskope-platform-architecture-and-newedge) introduced the split; this one gives it the working detail the "real-time inline or API policy configuration concepts" objectives ask for.
+
+## Inline: standing in the path
+
+**Real-time protection** is the proxy stance: traffic [steered into the cloud](/learn/netskope-steering-methods) transits the inspection engine *while it happens*, [decrypted where policy allows](/learn/netskope-inline-tls-decryption), decoded to the activity level - not just "user connected to a storage app" but *upload*, *download*, *share*, *post* - and evaluated against policy before it proceeds. The defining power is prevention in the moment: the upload that violates [DLP](/learn/dlp-fundamentals) never lands; the download from the risky tenant never starts; the coaching page interrupts the action to ask "this is going to a personal instance - proceed?" The equally defining limits: inline sees only steered traffic (an unmanaged device off the steering map is invisible), and it sees only *motion* - what crosses the wire while inspection is standing there.
+
+## API: the auditor with tenant keys
+
+**API-enabled protection** takes the opposite stance: no traffic path at all. The tenant administrator connects Netskope to the organization's managed SaaS - the corporate storage, mail, and collaboration tenants - through those platforms' own administrative APIs, granting scoped access out-of-band. From that vantage the platform sees what inline structurally cannot: content **already at rest** (including everything uploaded before Netskope existed in the environment), **sharing state and its changes** (the file quietly flipped to link-sharing months after upload), and activity performed from **any device on any network**, steered or not, because the observation point is the SaaS tenant itself. The trade is tense: actions are *retrospective* - detect, then quarantine, revoke the share, notify - seconds to minutes after the fact rather than before it.
+
+## Same policy language, different physics
+
+The comparison that settles exam scenarios: **coverage** - inline covers steered traffic to *any* destination (thousands of apps, the whole web); API covers *managed tenants only*, but from every direction. **Timing** - inline prevents; API remediates. **Visibility** - inline sees motion in flight; API sees rest and state. **Dependency** - inline needs [steering](/learn/netskope-steering-methods) and TLS interception; API needs admin consent to each tenant and nothing on any device. Both feed the same DLP engine and the same policy vocabulary, which is exactly why the platform presents them as two policy types rather than two products.
+
+## Why the answer is both
+
+The closing reasoning worth internalizing: each path's blind spot is the other's home ground. Inline alone misses the unmanaged device writing straight into your tenant and everything already stored; API alone misses the entire unmanaged web and can only clean up after motion it never saw. A scenario that names an unmanaged device touching corporate SaaS is pointing at API (or [reverse-proxy steering](/learn/netskope-steering-methods)); one that names blocking an action *as it happens* is pointing inline; and a deployment question with no such cue is almost always answered "both, deliberately."

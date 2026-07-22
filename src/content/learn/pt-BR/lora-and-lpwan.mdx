@@ -1,0 +1,30 @@
+---
+slug: lora-and-lpwan
+title: "LoRa e LPWAN: Quilômetros de Alcance numa Bateria de Moeda"
+summary: "Há um canto do networking onde os requisitos invertem tudo que a banda larga otimiza: enviar poucos bytes, poucas vezes por hora, por quilômetros de cidade, de uma bateria que precisa durar anos. LPWAN é esse canto; LoRa é seu cidadão mais conhecido - o rádio de chirp spread spectrum da Semtech trocando taxa de bits por orçamentos de enlace espantosos, e o LoRaWAN, a camada de rede da LoRa Alliance, organizando gateways, classes de dispositivo e a etiqueta de duty cycle do espectro compartilhado."
+concepts: ["lora", "lorawan", "lpwan", "iot", "chirp spread spectrum", "ism band", "gateway", "duty cycle"]
+relatedTools: []
+relatedArticles: ["pagers-and-paging-networks", "leo-satellite-constellations", "last-mile-evolution-pots-to-fiber"]
+category: networking
+order: 205
+status: reviewed
+updated: "2026-07-21"
+---
+
+Todo o resto [da história da última milha](/learn/last-mile-evolution-pots-to-fiber) perseguiu uma métrica: mais bits por segundo. O canto do networking deste artigo persegue a trindade oposta - **alcance, bateria, custo** - e sacrifica vazão alegremente para consegui-los. **LPWAN - Low-Power Wide-Area Network, rede de longa área e baixa potência** - é o nome da categoria; um hidrômetro num porão reportando oito bytes duas vezes por dia, por dez anos, numa bateria, é a alma da categoria.
+
+## A barganha com a física: os chirps do LoRa
+
+**LoRa** (de *long range*, longo alcance) é uma técnica de rádio de camada física, desenvolvida comercialmente pela Semtech, construída sobre **chirp spread spectrum**: cada símbolo é uma varredura de frequência - um chirp - pelo canal, e o receptor correlaciona contra o padrão de varredura conhecido. Espalhar cada símbolo por tempo e frequência desse jeito compra a propriedade sobre a qual tudo aqui repousa: sinais decodificáveis *abaixo do piso de ruído*, rendendo orçamentos de enlace que atravessam quilômetros de desordem urbana e mais ainda em campo aberto - a taxas de dados medidas em centenas de bits a poucos kilobits por segundo. Um **spreading factor** configurável torna a troca explícita: fatores maiores, chirps mais longos, mais alcance, dados mais lentos. É [a lição do pager](/learn/pagers-and-paging-networks) ensinada por outra matemática - aceite limites severos, colecione superpoderes.
+
+## A camada de rede: LoRaWAN
+
+Rádios precisam de etiqueta, e o **LoRaWAN** - a especificação aberta mantida pela LoRa Alliance - a fornece. A topologia é uma estrela de estrelas: dispositivos transmitem para quaisquer **gateways** ao alcance (sem associação, sem sessão por dispositivo - todo gateway que ouve um quadro o encaminha), gateways levam a um servidor de rede que deduplica e entrega. Dispositivos vêm em três classes documentadas que mapeiam para filosofia de bateria: **Classe A**, a padrão e mais econômica - o dispositivo transmite quando tem algo a dizer e escuta apenas em duas breves janelas de recepção logo depois; **Classe B**, somando janelas agendadas sincronizadas por beacons dos gateways; **Classe C**, escutando continuamente, para dispositivos na tomada. Segurança vem assada na especificação, com chaves baseadas em AES separando as cargas de rede e de aplicação. E como o LoRa tipicamente viaja em **bandas ISM sub-GHz não licenciadas**, regulações regionais impõem **limites de duty cycle** - um dispositivo só pode transmitir uma pequena porcentagem do tempo, o que é menos uma restrição e mais uma confissão de projeto: esta rede é para sussurros, não conversas.
+
+## O que ela não é, e o que vence onde
+
+A fronteira honesta mantém implantações sãs. O LoRaWAN não faz streaming, não faz download de firmware com graça, não carrega voz, e sua capacidade de descida é recurso escasso - com um dispositivo Classe A só se fala logo depois de ele falar. Variantes de IoT celular oferecem alternativas em espectro licenciado com outras trocas; protocolos de curto alcance vencem dentro de uma sala; [satélites vencem onde nenhum gateway jamais ficará de pé](/learn/leo-satellite-constellations). O reino do LoRa é a média distância: sensoriamento em escala de cidade, agricultura, medição, rastreamento - onde a carga é pequena, o orçamento de energia é sagrado e a infraestrutura precisa ser quase de graça.
+
+## O padrão que vale guardar
+
+O LPWAN completa um tema que este grupo de artigos insiste em soar: networking não é uma corrida única por mais banda, e sim uma família de barganhas, cada uma abrindo mão do que seu nicho não precisa. O pager trocou transmissão por alcance; o LEO troca logística de frota por latência; o LoRa troca taxa de bits por anos de silêncio entre sussurros. Ler uma tecnologia começa por ler sua barganha.

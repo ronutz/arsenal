@@ -1,0 +1,30 @@
+---
+slug: cors-explained
+title: "CORS Explained: The Border Control of the Browser"
+summary: "CORS is the most misunderstood error message in web development, because it punishes the wrong mental model. It is not a wall - the same-origin policy is the wall; CORS is the door: a header protocol by which a server volunteers 'that other origin may read my responses.' Simple requests vs preflights, what OPTIONS is doing in your network tab, why credentials tighten every rule, why '*' is not the fix, and why CORS never protected the server in the first place."
+concepts: ["cors", "same-origin", "preflight", "options", "access-control-allow-origin", "credentials", "browser security"]
+relatedTools: ["secure-headers", "http-request-translator"]
+relatedArticles: ["ajax-fetch-and-xhr", "content-security-policy", "http-methods-the-verbs", "http-headers-anatomy"]
+category: security
+order: 213
+status: reviewed
+updated: "2026-07-21"
+---
+
+Every web developer meets CORS the same way: a request that works in curl fails in the browser with a red console message, and the first three fixes found online are three different ways to make it worse. The confusion has one root: CORS is blamed for blocking, but blocking is not its job. The **same-origin policy** blocks - by default, [a page's scripts may not read responses](/learn/ajax-fetch-and-xhr) from other origins, because those requests ride the *user's* cookies and network position. **CORS - Cross-Origin Resource Sharing** - is the mechanism by which a server *opens* that default, deliberately and per-origin. It is the door in the wall, and every header in it is the server saying "yes."
+
+## Simple requests: read forbidden, not send
+
+For requests a form could have made anyway - GET, HEAD, or POST with form-ish content types, no exotic headers - the browser sends the request normally with an `Origin` header attached, and applies the policy to the *response*: unless it carries `Access-Control-Allow-Origin` matching the caller (or `*`), the script gets an opaque error - the response arrived, the browser read it, the *script* may not. Two consequences follow. The famous one: the request already *happened* - same-origin protects reading, not sending, which is why cross-site request forgery predates and survives CORS, defended instead by [SameSite cookies](/learn/cookie-security-flags) and anti-forgery tokens. The subtle one: the error message cannot tell you the server's secrets - it just says the door did not open.
+
+## Preflights: asking permission first
+
+Anything a form could *not* have made - a PUT or DELETE, a `Content-Type: application/json`, an `Authorization` header - would be a genuinely new power in cross-origin hands, so the browser asks first. That is the **preflight**: an automatic [`OPTIONS`](/learn/http-methods-the-verbs) request announcing `Access-Control-Request-Method` and `Access-Control-Request-Headers`, to which the server must answer with its allowances (`Access-Control-Allow-Methods`, `-Allow-Headers`, and the origin) before the real request is permitted to leave. `Access-Control-Max-Age` lets the browser cache the permission and skip repeat preflights. When you see unexplained OPTIONS requests in a network tab, that is not your code - that is the border asking.
+
+## Credentials: the rules tighten
+
+By default, cross-origin fetches do not carry cookies. Opting in (`credentials: "include"`) makes the request act as the logged-in user - so the protocol removes every shortcut: `Access-Control-Allow-Credentials: true` becomes mandatory, and **the wildcard stops working** - `Allow-Origin` must name the exact origin, echoed deliberately, never `*`. This is the protocol's design speaking plainly: the more of the user's authority a request carries, the more explicitly the server must name who may wield it. Which also explains the cargo-cult anti-pattern: reflecting every `Origin` back with credentials allowed is not configuration, it is disabling the wall while leaving the door frame for decoration.
+
+## What CORS is, and is not
+
+The closing correction that untangles most real-world confusion: CORS is a *browser* mechanism protecting *users* - curl, servers, and mobile apps never consult it, which is why "it works in Postman" proves nothing. It does not authenticate, does not authorize, and does not protect the server; it governs which *web origins* may read what the user's browser fetched. Server-side protection is the server's own job, and the browser's other declarative border - what a page may *load and execute* - belongs to [Content Security Policy](/learn/content-security-policy), CORS's frequently confused neighbor.

@@ -1,0 +1,30 @@
+---
+slug: leo-satellite-constellations
+title: "Constelações LEO: Por Que a Nova Internet por Satélite É Outro Animal"
+summary: "Satélites geoestacionários resolveram cobertura e perderam latência: estacionados a 35.786 km, a física sozinha cobra meio segundo de ida e volta. Constelações em órbita terrestre baixa invertem o negócio - satélites a poucas centenas de quilômetros, latência nas dezenas de milissegundos, ao preço de precisar de milhares de satélites em movimento, terminais phased-array que os rastreiam, e handoffs constantes. A geometria, a engenharia que ela força, os enlaces laser entre satélites, e as trocas honestas."
+concepts: ["leo", "satellite", "constellation", "starlink", "geostationary", "latency", "phased array", "inter-satellite links"]
+relatedTools: []
+relatedArticles: ["last-mile-evolution-pots-to-fiber", "map-the-path-before-you-troubleshoot", "lora-and-lpwan"]
+category: networking
+order: 204
+status: reviewed
+updated: "2026-07-21"
+---
+
+Internet por satélite costumava vir com um asterisco, e o asterisco era a física. A nova geração removeu o asterisco movendo os satélites - e tudo o que é interessante nas constelações **LEO - Low Earth Orbit, órbita terrestre baixa** - decorre dessa única decisão. Esta é [a quarta última milha](/learn/last-mile-evolution-pots-to-fiber), e não funciona em nada como as três primeiras.
+
+## O problema de geometria de que o GEO não escapava
+
+Um satélite **geoestacionário** orbita a 35.786 km sobre o equador, onde seu período casa com a rotação da Terra - ele paira imóvel no céu, então uma antena aponta uma vez e nunca se move, e três satélites enxergam quase o planeta inteiro. O preço é a própria distância: rádio viaja à velocidade da luz, e subir-e-descer duas vezes (consulta vai, resposta volta) por essa altitude custa aproximadamente meio segundo de tempo de ida e volta antes de qualquer equipamento de rede somar um microssegundo. Para televisão broadcast, irrelevante; para handshakes TCP, negociações TLS e qualquer coisa interativa, estrutural. A internet GEO sempre lutou contra a própria altitude.
+
+## A inversão do LEO, e a engenharia que ela força
+
+Constelações LEO - a Starlink sendo o exemplo operando em escala - colocam satélites a poucas centenas de quilômetros, colapsando o atraso de propagação para as **dezenas de milissegundos**, competitivo com caminhos terrestres. Mas um satélite tão baixo não pode pairar imóvel: ele cruza o céu em minutos, então *cobertura* agora exige **milhares de satélites** em camadas orbitais coordenadas, e cada propriedade que o GEO tornava trivial vira engenharia. O terminal de solo vira uma **antena phased-array** - direcionando seu feixe eletronicamente para rastrear satélites e saltar entre eles sem antena móvel. Sessões sobrevivem a **handoffs constantes** conforme satélites nascem e se põem. E o roteamento ganha uma terceira dimensão: constelações modernas carregam **enlaces laser entre satélites**, deixando o tráfego viajar entre satélites no vácuo e descer perto do destino - e é por isso que um [traceroute](/learn/map-the-path-before-you-troubleshoot) por uma rede dessas mostra um primeiro salto que fica, deliciosamente, no espaço.
+
+## As trocas honestas
+
+A franqueza de engenharia que este site deve a toda tecnologia: a lista de preços do LEO é real. Milhares de satélites precisam ser lançados, substituídos em vidas curtas (o arrasto atmosférico em baixa altitude é um recurso para gestão de detritos e um custo para operadores) e desorbitados com responsabilidade; astrônomos documentam os riscos de luz; o terminal é um pequeno computador faminto por energia, não uma antena passiva; e a capacidade é compartilhada por célula de céu, então densidade de assinantes importa como importa [num nó de bairro DOCSIS](/learn/last-mile-evolution-pots-to-fiber). Nada disso desqualifica - é o formato do acordo: latência comprada de volta da física com logística de frota.
+
+## Onde de fato se encaixa
+
+A consequência de projeto é o posicionamento. Onde há fibra, a fibra vence em capacidade e estabilidade. Onde não há nada - áreas rurais, oceanos, zonas de desastre, o móvel e o remoto - uma constelação LEO entrega algo antes impossível: banda larga de baixa latência sem infraestrutura local além do terminal. E na casa multi-caminho a que esta série sempre volta, ela ganha um trabalho específico: o caminho *independente* - que não divide duto, poste, headend nem domínio de falha com as linhas terrestres que ela protege.

@@ -5848,6 +5848,33 @@
       "bypassTitle": "The bypass layer: mechanisms, explained",
       "honestyTitle": "Why an explainer, not a simulator",
       "notesTitle": "Standing notes"
+    },
+    "http-status-code-explainer": {
+      "name": "HTTP status code explainer",
+      "blurb": "Paste status codes (404, 301 302 307) or families (5xx) and get each one decoded: family, registered name, documented meaning, and the operational notes - including the protocol's own fallback rule for codes it has never met.",
+      "emptyState": "Paste codes like 404 or 301 302 307, or a family like 5xx.",
+      "runsLocally": "Runs entirely in your browser. Nothing you paste leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "inputLabel": "Status codes or families, separated by spaces",
+      "placeholder": "301 302 307 502 503 504",
+      "errorTitle": "That input needs a fix",
+      "familyLabel": "Family",
+      "notesTitle": "Standing notes"
+    },
+    "netskope-steering-decision-explainer": {
+      "name": "Netskope steering decision explainer",
+      "blurb": "Paste a compact steering spec - mode, tunnel state, Fail Close, dynamic location, one flow, and the exceptions it matches - and walk the documented decision order to a verdict: steered, bypassed, blocked, or direct, with the why-ledger. Where the docs publish no rule (cross-family exception precedence), it says so instead of inventing one.",
+      "emptyState": "Paste a spec, or press Example for the grammar.",
+      "runsLocally": "Runs entirely in your browser. Nothing you paste leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "inputLabel": "Steering spec (key: value lines)",
+      "placeholder": "mode: web\ntunnel: up\nflow: web app.example.com",
+      "errorTitle": "That spec needs a fix",
+      "modeLabel": "Effective mode: {mode}",
+      "ledgerTitle": "Decision ledger",
+      "notesTitle": "Standing notes"
     }
   },
   "privacy_page": {
@@ -6074,6 +6101,11 @@
           "years": "1995",
           "where": "First formal role · INTELECTA (SEBRAE-SP)",
           "what": "An electronic-data-interchange system on Novell NetWare and PCBoard. The point where hobby, trade, and profession became one thing."
+        },
+        {
+          "years": "1995–96",
+          "where": "Reachable while roaming · Teletrim bip",
+          "what": "First reachability away from any desk: a one-way pager on São Paulo's Teletrim service. Callers dictated their message to a human operator, who typed it into the air toward the bip on the belt — limited, asynchronous, nothing like real time, and revolutionary anyway."
         }
       ],
       "storyTitle": "The apprenticeship, in seven movements",
@@ -6131,12 +6163,13 @@
           "title": "From hobby to trade",
           "body": [
             "Somewhere in those same years the curiosity started to pay. From 1991 the work was hands-on and autonomous: importing components from the United States, assembling custom PCs and selling them, then installing and troubleshooting them for whoever needed help — DOS and CP/M, Turbo Pascal, and the Clipper and dBase databases that quietly ran small businesses then.",
-            "In 1995 it converged into a first formal role at INTELECTA, a company incubated by SEBRAE-SP. The project was an electronic-data-interchange system for trading medical and hospital supplies, built on Novell NetWare servers and the PCBoard bulletin-board system. A real system solving a real commercial problem — the exact point where the hobby, the trade, and the profession finally became a single thing."
+            "In 1995 it converged into a first formal role at INTELECTA, a company incubated by SEBRAE-SP. The project was an electronic-data-interchange system for trading medical and hospital supplies, built on Novell NetWare servers and the PCBoard bulletin-board system. A real system solving a real commercial problem — the exact point where the hobby, the trade, and the profession finally became a single thing.",
+            "That same year brought the era's other rite of passage: the bip. From 1995 or 1996 Rodolfo carried a Teletrim pager — first time in his life the world could find him while he moved through it. The protocol was gloriously manual: someone dialed the service, spoke their message to a human operator, and the operator transmitted the text to the destination's bip. Every callback number, every change of plans, every message not quite meant for third ears passed through a stranger's headset first. The operators of São Paulo must have heard so many things — and, one has to assume, kept most of them."
           ]
         }
       ],
       "fieldTitle": "A field guide to a vanished world",
-      "fieldIntro": "The vocabulary of the era, for anyone who arrived after it. Two of these open into the glossary, where the phone-phreaking lineage is documented in full.",
+      "fieldIntro": "The vocabulary of the era, for anyone who arrived after it. Three of these open into the glossary, where the phone-phreaking lineage is documented in full.",
       "field": {
         "bbs": {
           "tag": "The board",
@@ -6209,9 +6242,14 @@
           "tag": "The phone",
           "term": "War-dialing",
           "desc": "A modem set to dial automatically through whole ranges of phone numbers, logging which ones answered — a carrier, a fax, or a PBX. Named for the 1983 film WarGames, it was the reconnaissance half of phreaking: mapping the network to find what was out there."
+        },
+        "bip": {
+          "tag": "The belt",
+          "term": "Bip (pager)",
+          "desc": "A one-way radio receiver on a broadcast network — no transmitter, no uplink, just an identity code and whatever the tower sent. The classic service put a human operator between caller and pocket: your message, read aloud to a stranger, typed into the air. Reachability before real time."
         }
       },
-      "closer": "By the end of 1995 the foundation was set, and it was never really about the tricks. It was about the habit underneath them — taking a thing apart until it is genuinely understood, then explaining it to whoever comes next. The vendor badges, the certifications, the classrooms on four continents: all of it was built on a teenager with a cloned Sinclair, a soldering iron, a stolen dial tone, and an unreasonable need to know how everything worked.",
+      "closer": "By the end of 1995 the foundation was set, and it was never really about the tricks. It was about the habit underneath them — taking a thing apart until it is genuinely understood, then explaining it to whoever comes next. The vendor badges, the certifications, the classrooms on four continents: all of it was built on a teenager with a cloned Sinclair, a soldering iron, a stolen dial tone, and an unreasonable need to know how everything worked. The telephone line itself kept one last appointment with him. In 1999, at that same house, he became one of Telesp's first ADSL subscribers: 256 kbps over the metallic pair the family had always had — but connected full-time, for the first time, without hoarding the phone line. Being online stopped being an event; the copper that had rationed the BBS one caller at a time now carried the internet continuously, and that always-on hum was the definitive beginning of the end of POTS. He still lives in that house. Today it is connected through DOCSIS 3.1 over the cable plant, through fiber to the home, and through a low-earth-orbit constellation — four last miles deep, on the address where one phone line once had to be enough.",
       "fieldMore": "In the glossary →"
     },
     "era19962020": {
@@ -12337,6 +12375,74 @@
       "zidentity": {
         "def": "Zscaler's unified identity layer for the Zero Trust Exchange: one place to integrate identity providers and manage admin and user identity across the platform's services.",
         "context": "Identity is the new perimeter's control plane; ZIdentity is where the platform centralizes it."
+      },
+      "telesp": {
+        "def": "Telecomunicações de São Paulo: the Telebrás system's São Paulo fixed-line operator (1973-1998), successor to the CTB's São Paulo operations; acquired by Spain's Telefónica in the 1998 privatization, becoming Telefônica Brasil (the Vivo brand from 2012). Under Telefónica it launched São Paulo's ADSL broadband, Speedy, in 1999.",
+        "context": "The company whose copper pair carried this site's author onto always-on internet in 1999."
+      },
+      "telebras": {
+        "def": "Telecomunicações Brasileiras S.A.: the state holding that organized Brazil's telecom operators from 1972; the whole system - three fixed holdings, Embratel, and eight cellular holdings - was privatized in twelve auctions on 29 July 1998, the largest privatization in Brazilian history.",
+        "context": "The monopoly era's name; its breakup is the hinge of Brazil's telecom timeline."
+      },
+      "embratel": {
+        "def": "Empresa Brasileira de Telecomunicações: Brazil's long-distance and data carrier, created in 1965 and folded into the Telebrás system; ran the country's first commercial internet trial in December 1994; privatized in 1998 to MCI WorldCom, sold to Telmex in 2004, incorporated into Claro in 2015.",
+        "context": "The backbone company - long distance, international, and the first commercial internet on-ramp."
+      },
+      "anatel": {
+        "def": "Agência Nacional de Telecomunicações: Brazil's telecom regulator, created by the Lei Geral de Telecomunicações (Law 9.472, July 1997) to set rules and supervise the privatized sector in the public interest.",
+        "context": "The referee the 1998 privatization required - regulation moved from ministry to agency."
+      },
+      "cgi-br": {
+        "def": "Comitê Gestor da Internet no Brasil: the multistakeholder Internet Steering Committee created in 1995 by the Science & Technology and Communications ministries to set internet directives and policies in Brazil, including governance of the .br domain.",
+        "context": "Brazil's answer to internet governance - policy by committee rather than by carrier."
+      },
+      "nic-br": {
+        "def": "Núcleo de Informação e Coordenação do Ponto BR: the entity that implements CGI.br's decisions - formalized in 2003, operating the .br registry (Registro.br) since 2005, plus measurement, IX, and security functions.",
+        "context": "The operational arm: where .br domains, Brazilian IP allocation, and traffic exchange actually run."
+      },
+      "fapesp": {
+        "def": "Fundação de Amparo à Pesquisa do Estado de São Paulo: São Paulo's research-funding foundation whose data-processing team built Brazil's academic network (ANSP), received Jon Postel's delegation of the .br domain in 1989, made the country's first TCP/IP connection in 1991 (to ESnet via Fermilab), and ran .br registration until NIC.br took over.",
+        "context": "A research funder that accidentally became a country's internet registry - for sixteen years."
+      },
+      "usp": {
+        "def": "Universidade de São Paulo: Brazil's largest research university and a founding participant of the ANSP academic network - Brazilian internet history runs through its physics and engineering departments' need to reach colleagues abroad.",
+        "context": "One of the campuses whose email envy bootstrapped a national network."
+      },
+      "unicamp": {
+        "def": "Universidade Estadual de Campinas: the Campinas state research university, a founding ANSP participant alongside USP and UNESP in the pre-internet academic networking that became Brazil's on-ramp.",
+        "context": "The other São Paulo campus in the founding story."
+      },
+      "pots": {
+        "def": "Plain Old Telephone Service: the analog telephone network - a voice in the 300-3400 Hz band over a dedicated twisted pair for the duration of a call. Dial-up internet was data squeezed through its voice channel, one occupied line at a time.",
+        "context": "The retronym the internet made necessary - and then made historical."
+      },
+      "adsl": {
+        "def": "Asymmetric Digital Subscriber Line: broadband over the existing telephone pair by frequency division - voice below ~4 kHz, data above, a DSLAM terminating the data side at the exchange. Asymmetric because downstream gets most of the spectrum. Its arrival made home connections always-on.",
+        "context": "The technology that let the same copper carry the internet full-time - the beginning of POTS's end."
+      },
+      "hfc": {
+        "def": "Hybrid Fiber-Coaxial: the cable-TV plant architecture - fiber from the headend to neighborhood nodes, coaxial for the final drop - that DOCSIS turned into a shared broadband network.",
+        "context": "Why the television cable in the wall can carry gigabit internet."
+      },
+      "leo-constellation": {
+        "def": "A fleet of satellites in Low Earth Orbit - hundreds of kilometers up rather than geostationary's 35,786 km - trading one motionless satellite for thousands of moving ones: latency drops to tens of milliseconds, at the cost of constant handoffs, phased-array terminals, and fleet logistics. Starlink is the operating example at scale.",
+        "context": "Satellite internet without the half-second physics tax."
+      },
+      "lora": {
+        "def": "A long-range, low-power radio technique (Semtech's chirp spread spectrum) and, via LoRaWAN (the LoRa Alliance's network specification), an LPWAN architecture: kilometers of range, years of battery, bytes of payload, gateways forwarding whatever they hear.",
+        "context": "The network for whispers - sensors that must live for years on a coin cell."
+      },
+      "pager": {
+        "def": "A one-way radio receiver on a simulcast broadcast network - the bip: no transmitter, no uplink, everything in range decoded and only your address displayed. Classic service relayed messages through human operators; POCSAG and FLEX carried the digital formats.",
+        "context": "Reachability before real-time - and a privacy lesson: an operator read every message aloud into the air."
+      },
+      "cci": {
+        "def": "Cloud Confidence Index - Netskope's 0-100 risk rating for tens of thousands of cloud applications, scored against objective criteria adapted from the Cloud Security Alliance's guidance and grouped into enterprise-readiness categories such as certifications and compliance, data protection, access control, auditability, disaster recovery, and legal/privacy terms.",
+        "context": "CCI levels (excellent, high, medium, low, poor) are usable directly in policy - steering, coaching, or blocking by risk tier rather than by naming apps one at a time. Named verbatim in the Netskope blueprints' monitoring domain, and the subject of this site's Cloud Confidence Index article."
+      },
+      "newedge": {
+        "def": "Netskope's privately operated global network of data centers - the infrastructure the Netskope One security cloud runs on. Every data center provides full compute for single-pass inspection, with extensive peering close to users and to the major SaaS providers.",
+        "context": "The architectural answer to 'where does the proxy live': not in a few hub regions with backhaul, but at points of presence engineered for low round-trip time. The platform-architecture article on this site draws the full picture."
       }
     },
     "totalCount": "{count} terms",
@@ -12374,7 +12480,9 @@
     "factsMinutes": "{minutes} minutes",
     "factsPassMark": "Pass mark",
     "factsCost": "Exam fee",
-    "keyPointsLabel": "What to know"
+    "keyPointsLabel": "What to know",
+    "expandAll": "Expand all",
+    "collapseAll": "Collapse all"
   },
   "trainingCta": {
     "eyebrow": "Instructor-led training",
@@ -12543,6 +12651,10 @@
       "zscaler-zero-trust": {
         "title": "Zscaler Zero Trust Exchange",
         "lede": "From tunnels and fundamentals to the full policy brain: forwarding, firewall order, TLS inspection, web and file controls, DLP, CASB, and ZPA's segments, policy, and posture — with the three native tools to practice on."
+      },
+      "netskope-sase": {
+        "title": "Netskope SASE, End to End",
+        "lede": "The whole platform in reading order: architecture and NewEdge, every steering method, the client, TLS decryption, the two protection paths, CCI-driven policy, Private Access, Cloud Firewall, and the analytics layer - with the PAC and SAML tools to practice on. Built to walk the accreditation and certification domains from this site."
       }
     }
   },

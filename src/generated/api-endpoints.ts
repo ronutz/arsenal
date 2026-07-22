@@ -449,6 +449,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_http_request_translator",
     "tag": "HTTP & web"
   },
+  "http-status-code-explainer": {
+    "url": "https://ronutz.com/api/v1/http-status-code-explainer",
+    "method": "GET",
+    "op": "run_http_status_code_explainer",
+    "tag": "HTTP"
+  },
   "incident-timeline-rca-builder": {
     "url": "https://ronutz.com/api/v1/incident-timeline-rca-builder",
     "method": "GET",
@@ -514,6 +520,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_mtu_mss",
     "tag": "TLS & transport"
+  },
+  "netskope-steering-decision-explainer": {
+    "url": "https://ronutz.com/api/v1/netskope-steering-decision-explainer",
+    "method": "GET",
+    "op": "run_netskope_steering_decision_explainer",
+    "tag": "Netskope"
   },
   "nslookup-output-explainer": {
     "url": "https://ronutz.com/api/v1/nslookup-output-explainer",

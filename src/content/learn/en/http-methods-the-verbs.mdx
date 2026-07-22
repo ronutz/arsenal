@@ -1,0 +1,30 @@
+---
+slug: http-methods-the-verbs
+title: "HTTP Methods: The Verbs of the Web"
+summary: "GET, HEAD, POST, PUT, DELETE, PATCH, OPTIONS, TRACE, CONNECT - and now QUERY. What each method promises, why 'safe' and 'idempotent' are the two properties that actually matter (to caches, retries, proxies, and crawlers), why HTML forms only ever learned two verbs, and how to read an API's soul from the methods it accepts."
+concepts: ["http", "methods", "get", "post", "put", "delete", "patch", "idempotent", "safe", "query"]
+relatedTools: ["http-methods-comparison", "http-request-translator"]
+relatedArticles: ["http-query-method", "http-status-codes-the-five-families", "html-forms-and-request-encoding", "http-versions-09-to-3"]
+category: networking
+order: 207
+status: reviewed
+updated: "2026-07-21"
+---
+
+Every HTTP request opens with a verb, and that verb is a contract: it tells servers, caches, proxies, and retry logic what kind of thing is about to happen. Most of the web's plumbing does not read your URLs or your payloads - it reads your **method** and acts on the promises the method makes. This article is about those promises; [the comparison tool](/tools/http-methods-comparison) puts them side by side.
+
+## The two properties that run the world
+
+**Safe** means the request is read-only from the client's point of view: it asks for state, it does not change it. GET, HEAD, and OPTIONS are safe - which is precisely why crawlers may follow every link on your site, why prefetchers speculatively fire GETs, and why a "delete" action behind a GET link is a famous way to have a search-engine bot empty your database. **Idempotent** is the weaker, subtler promise: doing it *N* times leaves the same state as doing it once. All safe methods are idempotent; PUT and DELETE are idempotent without being safe (putting the same representation twice, or deleting the same resource twice, converges). POST promises *neither* - which is why your browser asks "resubmit form?" before replaying one, and why network middleware will silently retry a timed-out GET but never a timed-out POST. Retries, caching, and prefetching all key off these two bits.
+
+## The roster, briefly and honestly
+
+**GET** retrieves a representation; **HEAD** is GET minus the body - same headers, no payload, the protocol's way of asking "how big, how fresh?" **POST** is the deliberately unpromising workhorse: process this payload according to the resource's own semantics - create something, trigger something, anything. **PUT** replaces the target with the enclosed representation (whole-resource, idempotent); **PATCH** applies a partial modification (and is *not* automatically idempotent - a patch that says "append X" proves it). **DELETE** removes; **OPTIONS** asks what is allowed - and gained a second career as [CORS preflight's](/learn/cors-explained) vehicle; **TRACE** echoes the request back (almost universally disabled); **CONNECT** asks a proxy to open a raw tunnel, which is how HTTPS traverses [forward proxies](/learn/http-proxy-forward-and-reverse). And the newest citizen, **QUERY**, exists to fix a real hole - safe, idempotent retrieval *with a request body* for queries too large or too structured for a URL - a story [this site tells in full](/learn/http-query-method), including its BIG-IP handling.
+
+## Why forms only speak two verbs
+
+A recurring surprise: HTML forms submit with GET or POST, full stop - the richer verbs belong to APIs called from code. That constraint shaped a generation of server frameworks (method-override headers, `_method` form fields) and is half the reason POST became the universal "do something" verb. The other half is inertia, [which this site has written about before in another costume](/learn/why-we-say-ssl-when-we-mean-tls). How forms encode what they send is [its own article](/learn/html-forms-and-request-encoding).
+
+## Reading an API by its verbs
+
+The practical skill: an API's method discipline tells you its soul. Strict resource semantics (GET reads, PUT replaces, PATCH edits, DELETE removes, POST creates-under) signal a design you can cache, retry, and reason about; everything-is-POST signals RPC wearing HTTP as a transport - not wrong, but a different contract, where *you* now carry the idempotency bookkeeping the verbs would have carried for you. Either way, the verb line is the first line - of the request, and of the analysis.

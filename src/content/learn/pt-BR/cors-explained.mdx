@@ -1,0 +1,30 @@
+---
+slug: cors-explained
+title: "CORS Explicado: O Controle de Fronteira do Navegador"
+summary: "CORS é a mensagem de erro mais mal-entendida do desenvolvimento web, porque pune o modelo mental errado. Ele não é o muro - a same-origin policy é o muro; CORS é a porta: um protocolo de cabeçalhos pelo qual um servidor se oferece: 'aquela outra origem pode ler minhas respostas'. Requisições simples vs preflights, o que o OPTIONS está fazendo na sua aba de rede, por que credenciais apertam cada regra, por que '*' não é o conserto, e por que o CORS nunca protegeu o servidor, para começo de conversa."
+concepts: ["cors", "same-origin", "preflight", "options", "access-control-allow-origin", "credentials", "browser security"]
+relatedTools: ["secure-headers", "http-request-translator"]
+relatedArticles: ["ajax-fetch-and-xhr", "content-security-policy", "http-methods-the-verbs", "http-headers-anatomy"]
+category: security
+order: 213
+status: reviewed
+updated: "2026-07-21"
+---
+
+Todo desenvolvedor web conhece o CORS do mesmo jeito: uma requisição que funciona no curl falha no navegador com uma mensagem vermelha no console, e os três primeiros consertos achados na internet são três jeitos diferentes de piorar. A confusão tem uma raiz: o CORS leva a culpa de bloquear, mas bloquear não é o trabalho dele. A **same-origin policy** bloqueia - por padrão, [os scripts de uma página não podem ler respostas](/learn/ajax-fetch-and-xhr) de outras origens, porque essas requisições cavalgam os cookies e a posição de rede *do usuário*. O **CORS - Cross-Origin Resource Sharing, compartilhamento de recursos entre origens** - é o mecanismo pelo qual um servidor *abre* esse padrão, deliberadamente e por origem. É a porta no muro, e cada cabeçalho dele é o servidor dizendo "sim".
+
+## Requisições simples: proibido ler, não enviar
+
+Para requisições que um formulário poderia ter feito de qualquer jeito - GET, HEAD, ou POST com content types de formulário, sem cabeçalhos exóticos - o navegador envia normalmente com um cabeçalho `Origin` anexado, e aplica a política à *resposta*: a menos que ela carregue `Access-Control-Allow-Origin` casando com o chamador (ou `*`), o script recebe um erro opaco - a resposta chegou, o navegador a leu, o *script* não pode. Duas consequências seguem. A famosa: a requisição já *aconteceu* - same-origin protege a leitura, não o envio, e é por isso que o cross-site request forgery antecede e sobrevive ao CORS, defendido em vez disso por [cookies SameSite](/learn/cookie-security-flags) e tokens anti-forgery. A sutil: a mensagem de erro não pode contar os segredos do servidor - só diz que a porta não abriu.
+
+## Preflights: pedir licença antes
+
+Qualquer coisa que um formulário *não* poderia ter feito - um PUT ou DELETE, um `Content-Type: application/json`, um cabeçalho `Authorization` - seria um poder genuinamente novo em mãos de outra origem, então o navegador pergunta antes. Esse é o **preflight**: uma requisição [`OPTIONS`](/learn/http-methods-the-verbs) automática anunciando `Access-Control-Request-Method` e `Access-Control-Request-Headers`, à qual o servidor deve responder com suas permissões (`Access-Control-Allow-Methods`, `-Allow-Headers` e a origem) antes de a requisição real poder sair. O `Access-Control-Max-Age` deixa o navegador cachear a permissão e pular preflights repetidos. Quando você vê requisições OPTIONS inexplicadas numa aba de rede, não é o seu código - é a fronteira perguntando.
+
+## Credenciais: as regras apertam
+
+Por padrão, fetches entre origens não carregam cookies. Optar por incluí-los (`credentials: "include"`) faz a requisição agir como o usuário logado - então o protocolo remove todo atalho: `Access-Control-Allow-Credentials: true` vira obrigatório, e **o curinga para de funcionar** - o `Allow-Origin` deve nomear a origem exata, ecoada de propósito, nunca `*`. É o projeto do protocolo falando claro: quanto mais da autoridade do usuário uma requisição carrega, mais explicitamente o servidor deve nomear quem pode empunhá-la. O que também explica o antipadrão de carga: refletir todo `Origin` de volta com credenciais permitidas não é configuração, é desligar o muro deixando o batente da porta de enfeite.
+
+## O que o CORS é, e não é
+
+A correção de fechamento que desembaraça a maior parte da confusão do mundo real: CORS é mecanismo de *navegador* protegendo *usuários* - curl, servidores e apps móveis nunca o consultam, e é por isso que "funciona no Postman" não prova nada. Ele não autentica, não autoriza e não protege o servidor; governa quais *origens web* podem ler o que o navegador do usuário buscou. Proteção do lado do servidor é trabalho do próprio servidor, e a outra fronteira declarativa do navegador - o que uma página pode *carregar e executar* - pertence à [Content Security Policy](/learn/content-security-policy), a vizinha frequentemente confundida do CORS.

@@ -1,0 +1,30 @@
+---
+slug: http-cookies-state-over-stateless
+title: "HTTP Cookies: State Over a Stateless Protocol"
+summary: "HTTP forgets you after every request - by design. Cookies are the retrofit that lets it remember anyway: the server writes a note with Set-Cookie, the browser returns it with Cookie, and everything else - scope, lifetime, security - is rules about when that note travels. Domain and Path scoping, session vs persistent lifetimes, why the server never sees what the browser knows, and where the security flags article picks up."
+concepts: ["cookies", "set-cookie", "session", "state", "domain", "path", "expires", "max-age"]
+relatedTools: ["http-request-translator", "secure-headers"]
+relatedArticles: ["cookie-security-flags", "http-headers-anatomy", "bigip-persistence-cookies", "curl-headers-auth-and-cookies"]
+category: networking
+order: 210
+status: reviewed
+updated: "2026-07-21"
+---
+
+HTTP's founding simplification is amnesia: every request stands alone, and the server owes it no memory of the last one. That statelessness is why the web scales - any server can answer any request - and why logging in should be impossible. **Cookies** are the retrofit that squares the circle: state lives *in the client* and travels with every request, so the protocol stays stateless while the application remembers. The mechanics fit in one sentence; the consequences fill this article and [its security sequel](/learn/cookie-security-flags).
+
+## The two headers, and who keeps the ledger
+
+A response says `Set-Cookie: session=abc123; Path=/; Max-Age=3600` - one cookie per header line, name, value, and attributes. From then on, every request the browser sends *in scope* carries `Cookie: session=abc123` - names and values only, attributes never echoed back. Two asymmetries hide there, and both matter. First, **the browser keeps the ledger**: the server declared the rules once at set time, but only the client knows what it stored, when it expires, and what else is in the jar - the server just sees what comes back. Second, cookies are per-*request*, not per-session: the browser attaches every in-scope cookie to every matching request, which is the entire performance and security surface in one habit - and the reason session identifiers stay short and [load balancers can ride the mechanism for persistence](/learn/bigip-persistence-cookies).
+
+## Scope: which requests carry it
+
+Attributes at set time define the cookie's territory. **Domain** unset means host-only - the exact origin host, the strictest and best default; `Domain=example.com` widens it to the whole registrable domain including subdomains, which is exactly how a session leaks to a subdomain you forgot you had. **Path** narrows by URL prefix - more etiquette than security, since same-origin pages can reach across paths. The browser computes the intersection on every request: host match, path match, plus the scheme and cross-site rules [the flags article owns](/learn/cookie-security-flags). One more territorial rule earns its mention: the **public suffix list** is why nobody can set a cookie for `.com` or `.com.br` and have it follow you across the internet.
+
+## Lifetime: session or persistent
+
+No expiry attribute makes a **session cookie** - it dies with the browsing session, which modern session-restore features quietly stretch far beyond what "session" suggests. `Max-Age` (seconds from now, the modern form) or `Expires` (an absolute date, the legacy form) makes a **persistent cookie** written to disk; when both appear, `Max-Age` wins. Deletion is just the same move with the clock turned back: set the cookie again with `Max-Age=0` or a past `Expires`. And because the ledger is the browser's, "log out" that only clears the server-side session while the cookie lingers is a classic half-measure - the note keeps arriving, now naming a session that no longer exists.
+
+## What cookies are, once you squint
+
+The pattern worth keeping: a cookie is a *server-issued claim stored by the client and replayed on schedule* - which makes it the conceptual ancestor of every bearer credential since. Where the story goes next is defense: `Secure`, `HttpOnly`, `SameSite`, and the `__Host-` prefix are [the sequel](/learn/cookie-security-flags), and they exist because everything this article described - automatic attachment, wide scoping, client-side custody - is precisely what attackers learned to ride.

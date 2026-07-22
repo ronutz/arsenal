@@ -1,0 +1,30 @@
+---
+slug: html-css-and-the-dom
+title: "HTML, CSS, and the DOM: The Page as a Living Tree"
+summary: "Three technologies, one division of labor: HTML declares structure, CSS declares presentation, and the DOM is what actually exists at runtime - the tree the browser built from your HTML, the only thing scripts can touch, and the reason 'view source' and 'inspect element' show different worlds. How markup becomes a tree, how selectors address it (the same selectors CSS styles with and scripts query with), and why the DOM is where XSS happens and where CSP stands guard."
+concepts: ["html", "css", "dom", "tree", "selectors", "elements", "rendering", "javascript"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["ajax-fetch-and-xhr", "content-security-policy", "html-forms-and-request-encoding", "xml-well-formedness"]
+category: networking
+order: 215
+status: reviewed
+updated: "2026-07-21"
+---
+
+Every page you have ever seen is three declarations cooperating: **HTML** says what the content *is*, **CSS** says how it should *look*, and **JavaScript** says how it *behaves* - but the three never actually meet in your files. They meet in the **DOM**, the live structure the browser builds, and understanding that meeting point is the difference between writing pages and understanding them. This article closes the web-content arc that [the AJAX story](/learn/ajax-fetch-and-xhr) opened.
+
+## HTML: structure, forgivingly parsed
+
+HTML is a markup vocabulary of nested elements - headings, paragraphs, links, [forms](/learn/html-forms-and-request-encoding), each tag carrying semantic meaning that accessibility tools, search engines, and readers rely on. Its parser has one famous personality trait: it *never gives up*. Unclosed tags, misnested elements, stray text - the HTML parsing algorithm has a defined recovery for everything, which is why twenty-five years of broken markup still renders. That forgiveness is a deliberate contrast to [XML's draconian well-formedness](/learn/xml-well-formedness), and it has a security shadow: a parser that repairs anything is a parser whose repairs an attacker can steer, which is where markup injection stories begin.
+
+## The DOM: what the markup became
+
+The browser does not render your HTML - it parses it *once* into the **DOM, the Document Object Model**: a tree of element, attribute, and text nodes. From then on, the tree is the truth. "View source" shows the bytes that arrived; "inspect element" shows the tree as it *now* is - after the parser's repairs and after every script mutation. That distinction is the entire mechanism of the modern web: [fetch a payload in the background](/learn/ajax-fetch-and-xhr), mutate the tree, and the page updates without navigating - the DOM is the surface every framework ultimately paints on. It is also the security boundary's floor: **DOM-based XSS** is precisely attacker-influenced text flowing into a tree-mutation sink (`innerHTML` being the classic), becoming *nodes* instead of staying *text* - the runtime rhyme of the parser story above.
+
+## CSS and selectors: one addressing scheme, two customers
+
+CSS attaches presentation to the tree through **selectors** - patterns like `nav a`, `.card > h2`, `#main` - with specificity rules deciding conflicts (the *cascade* in the name). The elegant economy worth noticing: selectors became the tree's universal addressing scheme. The same grammar CSS styles with, scripts query with (`document.querySelector(".card > h2")`), test frameworks locate with, and scrapers extract with. Learn selectors once, and you have learned to point at any part of any page for every purpose - which is why they are the most transferable ten kilobytes of knowledge in web tooling.
+
+## The triad, from a security seat
+
+The closing frame for this site's audience: structure, presentation, and behavior separated is not just engineering hygiene - it is the *policy surface*. Because the roles are distinct, a page can declare which sources may supply each one, and that declaration is [Content Security Policy](/learn/content-security-policy): scripts from here, styles from there, inline handlers forbidden. CSP is, in effect, the triad's separation of concerns promoted to an enforced contract - and the reason the tidy division this article described is not merely how pages are built, but how they are defended.

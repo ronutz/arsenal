@@ -1,0 +1,30 @@
+---
+slug: http-status-codes-the-five-families
+title: "HTTP Status Codes: The Five Families"
+summary: "Three digits, and the first one does most of the work: 1xx continues, 2xx succeeds, 3xx redirects, 4xx blames the client, 5xx confesses for the server. The family logic, the codes an operator actually meets (200, 204, 301 vs 302 vs 307, 304's cache dance, 401 vs 403, 404 vs 410, 429, 500 vs 502 vs 503 vs 504), the famous curiosities, and why an unknown code's first digit is always enough to act on."
+concepts: ["http", "status codes", "2xx", "3xx", "4xx", "5xx", "redirect", "cache", "rfc 9110"]
+relatedTools: ["http-status-code-explainer", "http-request-translator"]
+relatedArticles: ["http-methods-the-verbs", "http-headers-anatomy", "http-versions-09-to-3", "hsts-and-https"]
+category: networking
+order: 208
+status: reviewed
+updated: "2026-07-21"
+---
+
+An HTTP response leads with three digits, and the design's genius is that a client which has never seen the specific code can still behave correctly: **the first digit names the family, and the family names the required behavior**. That forward-compatibility rule - treat an unknown `4xx` as `400`, an unknown `5xx` as `500` - is why the status registry could keep growing for thirty years without breaking a single old client. [The explainer tool](/tools/http-status-code-explainer) decodes any code you paste; this article gives you the map it draws from.
+
+## The families, and what each one obligates
+
+**1xx (informational)** - interim responses before the real one: `100 Continue` releases a client waiting to send a large body, `101 Switching Protocols` is how WebSocket upgrades leave HTTP/1.1. **2xx (success)** - the request was received, understood, accepted: `200 OK` with a body, `204 No Content` deliberately without one, `206 Partial Content` answering range requests (the code behind resumable downloads and video seeking). **3xx (redirection)** - further action needed, usually elsewhere. **4xx (client error)** - the request itself is at fault; fix it before retrying. **5xx (server error)** - the request may be fine; the server failed to fulfill it. That last distinction is operational gold: 4xx storms point at clients, bots, or broken links; 5xx storms point at your own stack.
+
+## The redirects worth telling apart
+
+The 3xx family hides the web's most consequential subtleties. `301` (permanent) and `302` (found/temporary) date to an era when clients infamously rewrote a redirected POST into a GET - so HTTP/1.1 added the explicit pair: `307` (temporary, *method preserved*) and `308` (permanent, method preserved). Choosing 301 vs 302 also steers caches and search engines: permanent means "update your records." And `304 Not Modified` is not a redirect at all but the cache handshake's payoff - the client asked conditionally (`If-None-Match`, `If-Modified-Since`, [headers explained here](/learn/http-headers-anatomy)) and the server answered "yours is still good," with no body, saving the transfer.
+
+## The 4xx you will actually debug
+
+`400` is the generic "malformed"; `401 Unauthorized` really means *unauthenticated* - it must arrive with `WWW-Authenticate`, an invitation to present credentials - while `403 Forbidden` means *authenticated or not, no*: identity known, permission denied. `404 Not Found` declines to say whether the thing ever existed; `410 Gone` asserts it existed and is deliberately gone (crawlers treat that as "stop asking"). `405` rejects [the verb](/learn/http-methods-the-verbs), `408` timed out waiting for you, `413`/`414` reject oversized bodies and URLs, and `429 Too Many Requests` is rate limiting's official voice, ideally carrying `Retry-After`. The curiosities have their fans - `418 I'm a teapot` from an April Fools RFC, and `451 Unavailable For Legal Reasons`, whose number is a deliberate Ray Bradbury citation.
+
+## The 5xx that name your outage
+
+`500` is the server's generic confession. The proxy-era trio matters more in practice, because each points somewhere different in the chain: `502 Bad Gateway` - the intermediary reached the upstream and got garbage or a refusal; `503 Service Unavailable` - the service itself is overloaded or down (the honest maintenance code, also ideally with `Retry-After`); `504 Gateway Timeout` - the intermediary reached out and *nobody answered in time*. On any load-balanced or CDN-fronted architecture, reading 502 vs 503 vs 504 correctly is the first minute of every incident - it tells you whether to look at the backend's health, its capacity, or the path between.

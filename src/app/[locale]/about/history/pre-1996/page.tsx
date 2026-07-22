@@ -49,6 +49,7 @@ const FIELD_TERMS: { id: string; slug?: string }[] = [
   { id: "shell" },
   { id: "slipppp" },
   { id: "mosaic" },
+  { id: "bip", slug: "pager" },
 ];
 
 export default async function Pre1996Page({

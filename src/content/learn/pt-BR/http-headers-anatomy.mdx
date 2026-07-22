@@ -1,0 +1,30 @@
+---
+slug: http-headers-anatomy
+title: "Cabeçalhos HTTP: A Anatomia dos Metadados"
+summary: "Tudo que o HTTP sabe sobre uma mensagem e que não é a mensagem viaja em cabeçalhos: linhas nome-dois-pontos-valor com nomes insensíveis a caixa, dobradas em quatro papéis de trabalho - contexto de requisição, contexto de resposta, metadados de representação e encanamento de carga. A divisão end-to-end vs hop-by-hop pela qual proxies vivem, o cabeçalho Host que tornou a hospedagem virtual possível, negociação de conteúdo, condicionais, e por que a ordem dos cabeçalhos virou impressão digital."
+concepts: ["http", "headers", "host", "content-type", "end-to-end", "hop-by-hop", "content negotiation", "conditional requests"]
+relatedTools: ["http-request-translator", "http-header-order-fingerprint", "secure-headers"]
+relatedArticles: ["http-status-codes-the-five-families", "secure-headers-overview", "http-cookies-state-over-stateless", "curl-headers-auth-and-cookies"]
+category: networking
+order: 209
+status: reviewed
+updated: "2026-07-21"
+---
+
+Tire de uma mensagem HTTP o corpo e a primeira linha, e o que sobra é o sistema nervoso inteiro do protocolo: **cabeçalhos** - linhas `Nome: valor`, nomes insensíveis a caixa, valores moldados pela gramática de cada cabeçalho. Cabeçalhos são onde cache, autenticação, negociação, roteamento e segurança de fato acontecem; o corpo é só carga. Este artigo entrega a anatomia; [o tradutor de requisições](/tools/http-request-translator) deixa você dissecar espécimes reais.
+
+## Quatro papéis de trabalho
+
+O modelo mental mais limpo ordena cabeçalhos pelo que descrevem. **Contexto de requisição**: quem pede e como - `Host`, `User-Agent`, `Referer` (o erro de grafia é padronizado), `Authorization`, `Cookie`. **Contexto de resposta**: quem respondeu e em que termos - `Server`, `Set-Cookie`, `WWW-Authenticate`, `Retry-After`. **Metadados de representação**: o que a coisa enviada *é*, independente de direção - `Content-Type`, `Content-Length`, `Content-Encoding`, `Content-Language`, `ETag`, `Last-Modified`. **Negociação e condicionais**: as preferências e premissas do cliente - a família `Accept-*` propondo formatos, codificações e línguas, e a família `If-*` (`If-None-Match`, `If-Modified-Since`) tornando requisições condicionais para caches ganharem seu [`304`](/learn/http-status-codes-the-five-families).
+
+## O cabeçalho que salvou o espaço de endereços da web
+
+O `Host` merece parágrafo próprio. Requisições HTTP/1.0 nomeavam só um caminho, então um endereço IP significava um site. O HTTP/1.1 tornou o `Host` obrigatório, e com essa única linha nasceu a **hospedagem virtual**: milhares de sites por endereço, o servidor escolhendo qual ser com base no cabeçalho. Todo proxy reverso, toda CDN, todo ingress controller ainda roteia por ele (ou pelo gêmeo de TLS, o SNI) - e uma requisição cujo `Host` discorda da URL é ou má configuração ou sonda de ataque, razão pela qual ele figura no capítulo de abertura de todo WAF.
+
+## End-to-end versus hop-by-hop
+
+A web é uma cadeia de intermediários, e cabeçalhos se dividem em duas cidadanias. Cabeçalhos **end-to-end** pertencem às pontas da conversa - `Content-Type`, `Authorization`, diretivas de `Cache-Control` endereçadas a todos - e intermediários devem encaminhá-los. Cabeçalhos **hop-by-hop** governam um único elo - `Connection`, `Keep-Alive`, `Transfer-Encoding`, `Upgrade`, autenticação de proxy - e cada salto os consome e regenera em vez de encaminhar. [Proxies](/learn/http-proxy-forward-and-reverse) vivem e morrem por essa divisão: encaminhar um hop-by-hop rio abaixo é ingrediente clássico de smuggling, e o cabeçalho `Connection` existe em parte para nomear cabeçalhos *adicionais* que devem ser removidos no salto. Enquanto isso, intermediários deixam sua própria trilha - `Via`, e a linhagem `X-Forwarded-For` hoje padronizada como `Forwarded` - que é como um backend descobre quem originalmente chamou através de três camadas de infraestrutura.
+
+## Ordem, cabeçalhos custom e a impressão digital
+
+Duas notas de campo completam a anatomia. Primeira, cabeçalhos custom: a convenção do prefixo `X-` foi oficialmente descontinuada há anos (os experimentos nunca ficam experimentos - `X-Forwarded-For` é infraestrutura estrutural), então cabeçalhos novos levam nomes honestos. Segunda, uma sutileza que este site transformou em ferramenta: a especificação diz que a *ordem* dos cabeçalhos em geral não importa semanticamente - então as implementações nunca combinaram uma, e cada cliente emite sua sequência característica. Navegadores, curl, Python e robôs têm assinaturas reconhecíveis, o que faz da [ordem de cabeçalhos uma impressão digital](/tools/http-header-order-fingerprint) - mais uma instância da lição recorrente: o que a especificação deixa livre, as implementações tornam identificável.

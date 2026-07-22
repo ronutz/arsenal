@@ -1,0 +1,30 @@
+---
+slug: html-forms-and-request-encoding
+title: "HTML Forms and Request Encoding: How the Web Ships Your Input"
+summary: "A form is a contract between a page and a server: which fields, which verb, which wire format. GET puts the answers in the URL; POST puts them in the body; and enctype picks the body's dialect - urlencoded's key=value chains, multipart's boundary-delimited parts built for files. What each choice means for logs, caches, size limits, and debugging, plus the fetch-era footnote: FormData kept the formats alive after forms stopped being the only sender."
+concepts: ["forms", "get", "post", "urlencoded", "multipart", "enctype", "formdata", "encoding"]
+relatedTools: ["curl-command-builder", "http-request-translator", "url-inspector"]
+relatedArticles: ["query-strings", "curl-data-flags-and-content-type", "http-methods-the-verbs", "url-encoding-and-idn"]
+category: encoding
+order: 211
+status: reviewed
+updated: "2026-07-21"
+---
+
+Before JavaScript sent a single request, the `<form>` element was how the web talked back - and its design decisions still govern how nearly every request body on the internet is shaped. A form declares three things: *where* (`action`), *how* ([`method`](/learn/http-methods-the-verbs), and the element only speaks GET and POST), and *in what wire format* (`enctype`). This article follows the input from the field to the wire; [the curl builder](/tools/curl-command-builder) lets you forge the same requests by hand.
+
+## GET: answers in the address
+
+`method="GET"` serializes the fields into [the query string](/learn/query-strings): `?q=fable&lang=pt`, names and values [percent-encoded](/learn/url-encoding-and-idn), pairs joined by `&` - with the form-heritage quirk that spaces become `+` in this context. The consequences come as a package: the request is bookmarkable, shareable, cacheable, and safely retried - *and* every value lands in browser history, server logs, and `Referer` headers, with practical URL length ceilings on top. The rule writes itself: GET for searches and filters, never for secrets, never for [state changes a crawler might click](/learn/http-methods-the-verbs).
+
+## POST + urlencoded: the same pairs, moved indoors
+
+`method="POST"` with the default `enctype="application/x-www-form-urlencoded"` ships the *identical* `name=value&name=value` serialization - just relocated into the request body, with `Content-Type: application/x-www-form-urlencoded` announcing the dialect. Same encoding, different address: values leave the URL (and its logs and history), size ceilings effectively vanish, and the request stops being idempotent by contract. Login forms live here. One habit-forming detail for anyone who reads packet captures: the body of a urlencoded POST *looks exactly like a query string*, because it is one - a fact [the curl data-flags article](/learn/curl-data-flags-and-content-type) exploits deliberately.
+
+## Multipart: envelopes for files
+
+Key-value chains cannot carry a photograph. `enctype="multipart/form-data"` switches to an envelope format: the `Content-Type` header declares a **boundary** string, and the body becomes parts separated by that boundary - each part with its own mini-headers (`Content-Disposition: form-data; name="avatar"; filename="me.jpg"`, its own `Content-Type`) and raw payload, no percent-encoding needed. It is heavier per field and mandatory for `<input type="file">`; the classic failure is forging one by hand and hand-setting the `Content-Type` without the boundary the body actually uses - the server receives an envelope it cannot cut open. (The third enctype, `text/plain`, exists and belongs in no production request.)
+
+## The fetch-era footnote
+
+Forms stopped being the only sender [when XHR and fetch arrived](/learn/ajax-fetch-and-xhr), but the formats outlived the element: `URLSearchParams` builds urlencoded bodies, `FormData` builds multipart ones (boundary handled for you - do not set the header yourself), and JSON joined as the API era's third dialect. The durable skill is reading `Content-Type` as the body's declared grammar and knowing all three by sight: `q=a&r=b`, boundary-cut parts, and `{"q":"a"}` are the same intent in three costumes - and half of all integration bugs are one side wearing the wrong one.

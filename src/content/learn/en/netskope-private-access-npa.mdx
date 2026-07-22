@@ -1,0 +1,30 @@
+---
+slug: netskope-private-access-npa
+title: "Netskope Private Access: ZTNA Instead of the VPN"
+summary: "The Integrator blueprint's 'private application publication' objective names the platform's answer to remote access: NPA, a zero-trust network access service where lightweight publishers inside the data center dial out to the cloud, users' clients dial in, and the broker stitches per-application connections between them. No inbound firewall holes, no network-level access, no lateral movement - and a policy model where 'can reach the app' is decided per user, per app, continuously. How it works, why the VPN comparison lands, and where the operational sharp edges are."
+concepts: ["netskope", "npa", "ztna", "zero trust", "vpn", "publisher", "private access", "remote access"]
+relatedTools: []
+relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-client-deployment", "netskope-steering-methods", "ipsec-and-ike-fundamentals"]
+category: security
+order: 221
+status: reviewed
+updated: "2026-07-21"
+---
+
+The corporate VPN's contract was always broader than anyone wanted: authenticate once, receive a network address, and *be on the network* - able to reach the application you came for and, at layer 3, everything else routing permits. **Netskope Private Access (NPA)** is the platform's ZTNA replacement for that contract, and "private application publication" sits on the Integrator blueprint because the model inverts enough assumptions that configuring it well requires actually holding the new picture.
+
+## The architecture: two outbound calls and a broker
+
+Three parts, one trick. **Publishers** - lightweight connector software on VMs or containers *inside* each environment that hosts private apps (the data center, each VPC) - make **outbound** connections to the Netskope cloud and hold them open. Users' [Netskope Clients](/learn/netskope-client-deployment) likewise connect outbound to the cloud. When a user requests a published application, the cloud **brokers** the two connections together, and traffic flows user → cloud → publisher → application. The trick is that word *outbound*: no inbound firewall rule, no exposed listener, no DNAT ever points at the data center. The applications are simply not reachable from the internet at all - unlike the VPN concentrator, which is by definition an internet-facing door with your name on it, and which attackers scan for accordingly.
+
+## The contract: applications, not networks
+
+The second inversion is what "access" means. NPA grants reachability **per application** - an app defined by names and ports and published through specific publishers - to **specific users and groups**, evaluated continuously with device and identity context. There is no network membership to inherit and therefore no lateral movement to inherit it with: reaching the ERP grants the ERP, not the subnet it lives on. This is the zero-trust substance behind the acronym, and it is also the honest answer to the blueprint's scenario questions: the difference between "connect to the network to reach the app" and "reach the app, full stop" *is* the product.
+
+## The operational sharp edges
+
+Three seams do most of the real-world work. **App definition**: apps reachable by browser are the easy case; thick clients with dynamic ports, server-initiated callbacks, or protocol quirks are where definitions get refined - the eternal ZTNA tax, not a Netskope-specific one. **Publisher placement and capacity**: publishers are the data path, so they are sized, made redundant, and placed near the applications they publish; a wheezing publisher looks exactly like a slow application. **DNS**: users must resolve private names to be steered to them at all, which quietly makes name-resolution design part of every NPA rollout - and the first suspect when "the app works on VPN but not on NPA."
+
+## Where it sits in the platform
+
+NPA rounds out the coverage map this Netskope series has been drawing: [inline protection](/learn/netskope-realtime-vs-api-protection) for the web and SaaS, API protection for managed tenants at rest, [Cloud Firewall](/learn/netskope-cloud-firewall) for non-web egress - and NPA for the traffic that goes *inward*, to the applications you own. Same client, same cloud, same policy brain; the VPN concentrator retires, and with it the flat network it sold tickets to.

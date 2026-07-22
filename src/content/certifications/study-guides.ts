@@ -181,6 +181,64 @@ export const certifications: Certification[] = [
     sourceUrl: "https://www.zscaler.com/zscaler-cyber-academy/digital-transformation-administrator",
   },
   {
+    // The CURRENT Netskope credentials (2024 program): Academy-delivered
+    // accreditations that REPLACED the Pearson VUE certifications below.
+    // Facts verbatim from the official TR-772-1 / TR-773-1 PDFs
+    // (netskope.com, 09/24), fetched live 2026-07-21.
+    key: "netskope-administrator-accreditation",
+    name: "Netskope Administrator Accreditation",
+    code: "TR-772-1",
+    vendor: "netskope",
+    sourceUrl: "https://www.netskope.com/wp-content/uploads/2024/09/2024-09-Netskope-Administrator-Accreditation-TR-772-1.pdf",
+    examSlugs: ["netskope-administrator-accreditation"],
+    renewalNote:
+      "Valid for two years from the date of award, based on the actual date the exam is successfully completed through Netskope Academy. 60 questions, 90 minutes. This accreditation replaces the former Netskope Certified Cloud Security Administrator certification (NSK101).",
+  },
+  {
+    key: "netskope-integrator-accreditation",
+    name: "Netskope Integrator Accreditation",
+    code: "TR-773-1",
+    vendor: "netskope",
+    sourceUrl: "https://www.netskope.com/pt/wp-content/uploads/2024/09/2024-09-Netskope-Integrator-Accreditation-TR-773-1.pdf",
+    examSlugs: ["netskope-integrator-accreditation"],
+    renewalNote:
+      "Valid for two years from the date of award, based on the actual date the exam is successfully completed through Netskope Academy. 60 questions, 90 minutes. This accreditation replaces the former Netskope Certified Cloud Security Integrator certification (NSK200).",
+  },
+  {
+    // The three Netskope Cloud Security Certification Program credentials
+    // (PKG-CONTENT-QUEUE Run A). Facts per the official certification
+    // description PDFs fetched live 2026-07-21 from netskope.com.
+    key: "netskope-nccsa",
+    sourceUrl: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSA-NSK101-Certification-Description-2024-01-26.pdf",
+    name: "Netskope Certified Cloud Security Administrator (NCCSA)",
+    code: "NSK101",
+    vendor: "netskope",
+    examSlugs: ["netskope-nsk101"],
+    renewalNote:
+      "Valid for two years from the date the exam is passed at Pearson VUE. This certification replaced the former Administrator accreditation in 2022 and was itself replaced by the 2024 Netskope Administrator Accreditation (Academy-delivered); the published blueprint remains the reference for the credential line. Exam: 90 minutes, Pearson VUE.",
+  },
+  {
+    key: "netskope-nccsi",
+    sourceUrl: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSI-NSK200-Certification-Description-2022-11-22.pdf",
+    name: "Netskope Certified Cloud Security Integrator (NCCSI)",
+    code: "NSK200",
+    vendor: "netskope",
+    examSlugs: ["netskope-nsk200"],
+    renewalNote:
+      "Valid for two years from the date the exam is passed at Pearson VUE. This certification replaced the former Integrator accreditation in 2022 and was itself replaced by the 2024 Netskope Integrator Accreditation (Academy-delivered); the published blueprint remains the reference for the credential line. Exam: 90 minutes, Pearson VUE.",
+  },
+  {
+    key: "netskope-architect",
+    sourceUrl: "https://www.netskope.com/fr/wp-content/uploads/2022/10/netskope-cloud-security-certification-program.pdf",
+    name: "Netskope Certified Cloud Security Architect",
+    code: "NSK300",
+    vendor: "netskope",
+    examSlugs: ["netskope-nsk300"],
+    renewalNote:
+      "Valid for two years from the date the exam is passed at Pearson VUE. This certification replaced the former Cloud Security Elite accreditation in 2022. An Architect Accreditation exists in the current 2024 Academy program, but no standalone blueprint for it has been published; this NSK300 blueprint remains the architect tier’s published reference. Exam: 90 minutes, Pearson VUE.",
+  },
+
+  {
     key: "f5-cts-dns",
     code: "F5-CTS, BIG-IP DNS",
     name: "F5 Certified Technology Specialist, BIG-IP DNS",
@@ -3132,7 +3190,7 @@ export const studyGuides: StudyGuide[] = [
               "ssl-forward-proxy-interception",
               "how-a-pac-file-chooses-a-proxy",
             ],
-            relatedTools: ["pac-file-explainer"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
             manualLinks: [],
             keyPoints: [
               "Compare transparent vs explicit proxy deployments",
@@ -4031,6 +4089,972 @@ export const studyGuides: StudyGuide[] = [
       },
     ],
   },
+  {
+    // CURRENT Netskope accreditation (2024 Academy program). Topics VERBATIM
+    // from the official TR PDF fetched live 2026-07-21 - the topic list is
+    // word-for-word the same as the corresponding NSK certification
+    // blueprint, which the accreditation replaced; delivery moved to
+    // Netskope Academy (60 questions, 90 minutes). Question count is
+    // published for this track, so it appears in the source label;
+    // pass mark is not published, so examFacts stays null.
+    slug: "netskope-administrator-accreditation",
+    examCode: "TR-772-1",
+    examName: "Netskope Administrator Accreditation",
+    vendor: "netskope",
+    certification: "netskope-administrator-accreditation",
+    targetVersion: null,
+    blueprintSourceUrl: "https://www.netskope.com/wp-content/uploads/2024/09/2024-09-Netskope-Administrator-Accreditation-TR-772-1.pdf",
+    blueprintSourceLabel: "Official Netskope Administrator Accreditation description (TR-772-1, 09/24); 60 questions, 90 minutes, delivered through Netskope Academy; valid two years from award; replaces the former NCCSA certification; practitioner profile: configure, monitor, and perform basic troubleshooting, ~6 months suggested; recommended preparation: a tenant, NSCIOTT and NSCO&A Academy courses, and the Knowledge Portal. Sourcing note: TR-772-1 facts verified from the official document and its resource page; the TR-772-1 PDF blocks automated retrieval, so the topic list follows the NSK101/NCCSA blueprint (fetched in full), which TR-772-1 itself states this accreditation replaces - the sibling TR-773-1, fetched in full, carries a topic list identical to its corresponding NSK200 blueprint",
+    status: "published",
+    examFacts: null,
+    sections: [
+      { id: "adm-css", title: "Cloud Security Concepts", objectives: [
+          {
+            id: "ADM-A.01",
+            text: "Cloud security theory",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-A.02",
+            text: "Common industry compliance standards",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-A.03",
+            text: "Common cloud service model concepts",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-A.04",
+            text: "Data-in-motion protection compared to data-at-rest concepts",
+            relatedArticles: ["dlp-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-A.05",
+            text: "Web security concepts",
+            relatedArticles: ["hsts-and-https", "secure-headers-overview"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-A.06",
+            text: "Traffic steering concepts",
+            relatedArticles: ["netskope-steering-methods", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "adm-pcb", title: "Netskope Platform Concepts Basics", objectives: [
+          {
+            id: "ADM-B.01",
+            text: "Deployment modes",
+            relatedArticles: ["netskope-realtime-vs-api-protection", "http-proxy-forward-and-reverse"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-B.02",
+            text: "Features and architectural benefits",
+            relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-inline-tls-decryption"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-B.03",
+            text: "Security controls",
+            relatedArticles: ["netskope-cloud-firewall", "dlp-fundamentals", "sandbox-detonation-fundamentals", "browser-isolation-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-B.04",
+            text: "Cloud security risk management/reduction",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "adm-mgmt", title: "Netskope Platform Management", objectives: [
+          {
+            id: "ADM-C.01",
+            text: "Steering traffic to Netskope",
+            relatedArticles: ["netskope-steering-methods", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-C.02",
+            text: "Basic configuration elements",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-C.03",
+            text: "Real-time inline or API policy configuration concepts",
+            relatedArticles: ["netskope-realtime-vs-api-protection"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-C.04",
+            text: "Basic administration tasks",
+            relatedArticles: ["scim-overview"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "adm-mon", title: "Netskope Platform Monitoring", objectives: [
+          {
+            id: "ADM-D.01",
+            text: "Identifying cloud risk using the Cloud Confidence Index (CCI)",
+            relatedArticles: ["cloud-confidence-index"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-D.02",
+            text: "Event monitoring",
+            relatedArticles: ["netskope-advanced-analytics"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "adm-tsh", title: "Netskope Platform Troubleshooting", objectives: [
+          {
+            id: "ADM-E.01",
+            text: "Common steering issues",
+            relatedArticles: ["netskope-steering-methods", "netskope-client-deployment", "how-a-pac-file-chooses-a-proxy"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-E.02",
+            text: "Policy-related misconfigurations",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-E.03",
+            text: "TLS decryption-related issues",
+            relatedArticles: ["netskope-inline-tls-decryption", "ssl-forward-proxy-interception"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "ADM-E.04",
+            text: "Collect log files used for service requests",
+            relatedArticles: ["netskope-client-deployment"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    // CURRENT Netskope accreditation (2024 Academy program). Topics VERBATIM
+    // from the official TR PDF fetched live 2026-07-21 - the topic list is
+    // word-for-word the same as the corresponding NSK certification
+    // blueprint, which the accreditation replaced; delivery moved to
+    // Netskope Academy (60 questions, 90 minutes). Question count is
+    // published for this track, so it appears in the source label;
+    // pass mark is not published, so examFacts stays null.
+    slug: "netskope-integrator-accreditation",
+    examCode: "TR-773-1",
+    examName: "Netskope Integrator Accreditation",
+    vendor: "netskope",
+    certification: "netskope-integrator-accreditation",
+    targetVersion: null,
+    blueprintSourceUrl: "https://www.netskope.com/pt/wp-content/uploads/2024/09/2024-09-Netskope-Integrator-Accreditation-TR-773-1.pdf",
+    blueprintSourceLabel: "Official Netskope Integrator Accreditation description (TR-773-1, 09/24); 60 questions, 90 minutes, delivered through Netskope Academy; valid two years from award; replaces the former NCCSI certification; practitioner profile: implement, integrate, configure, monitor, and troubleshoot, ~12 months suggested; recommended preparation: a tenant, NSCIOTT, NSCO&A, and Netskope Security Cloud Implementation & Integration (NSCI&I) Academy courses, and the Knowledge Portal",
+    status: "published",
+    examFacts: null,
+    sections: [
+      { id: "int-css", title: "Cloud Security Concepts", objectives: [
+          {
+            id: "INT-A.01",
+            text: "Cloud security theory",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-A.02",
+            text: "Traffic steering methods",
+            relatedArticles: ["netskope-steering-methods", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-A.03",
+            text: "Major solutions that are available in the Netskope Security Cloud platform",
+            relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-cloud-firewall", "netskope-inline-tls-decryption", "dlp-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "int-impl", title: "Netskope Platform Implementation", objectives: [
+          {
+            id: "INT-B.01",
+            text: "Various steering methods to a Netskope tenant",
+            relatedArticles: ["netskope-steering-methods", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-B.02",
+            text: "Access management solutions",
+            relatedArticles: ["saml-overview", "scim-overview"],
+            relatedTools: ["saml-decoder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-B.03",
+            text: "Privileged account control",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-B.04",
+            text: "Netskope client deployment",
+            relatedArticles: ["netskope-client-deployment"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-B.05",
+            text: "Data protection with Netskope DLP",
+            relatedArticles: ["dlp-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-B.06",
+            text: "Threat protection using the Netskope platform",
+            relatedArticles: ["sandbox-detonation-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "int-mgmt", title: "Netskope Platform Management", objectives: [
+          {
+            id: "INT-C.01",
+            text: "DLP policy creation",
+            relatedArticles: ["dlp-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-C.02",
+            text: "Private application publication",
+            relatedArticles: ["netskope-private-access-npa"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-C.03",
+            text: "Real-time protection policies",
+            relatedArticles: ["netskope-realtime-vs-api-protection"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-C.04",
+            text: "SSL decryption policies",
+            relatedArticles: ["netskope-inline-tls-decryption", "ssl-forward-proxy-interception"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-C.05",
+            text: "REST API integrations",
+            relatedArticles: ["http-methods-the-verbs", "http-status-codes-the-five-families"],
+            relatedTools: ["http-request-translator", "http-status-code-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "int-mon", title: "Netskope Platform Monitoring", objectives: [
+          {
+            id: "INT-D.01",
+            text: "Event analysis",
+            relatedArticles: ["netskope-advanced-analytics"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-D.02",
+            text: "Incident response workflows",
+            relatedArticles: [],
+            relatedTools: ["incident-timeline-rca-builder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-D.03",
+            text: "Application discovery",
+            relatedArticles: ["cloud-confidence-index", "netskope-advanced-analytics"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-D.04",
+            text: "Event sharing methodologies",
+            relatedArticles: ["netskope-advanced-analytics", "syslog-message-formats"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "int-tsh", title: "Netskope Platform Troubleshooting", objectives: [
+          {
+            id: "INT-E.01",
+            text: "Client connectivity issues",
+            relatedArticles: ["netskope-client-deployment"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-E.02",
+            text: "Use of logs for troubleshooting",
+            relatedArticles: ["syslog-message-formats"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "INT-E.03",
+            text: "Troubleshooting user provisioning",
+            relatedArticles: ["scim-overview", "saml-overview"],
+            relatedTools: ["saml-decoder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    // Netskope Cloud Security Certification Program (Run A). Objectives are
+    // VERBATIM from the official certification description PDF fetched live
+    // 2026-07-21 (topic sub-bullets, transcribed exactly). Exam facts per
+    // the same PDF: 90 minutes, Pearson VUE, 2 Academy credits or USD 200;
+    // question count and pass mark are not published, so examFacts is null.
+    slug: "netskope-nsk101",
+    examCode: "NSK101",
+    examName: "Netskope Certified Cloud Security Administrator (NCCSA)",
+    vendor: "netskope",
+    certification: "netskope-nccsa",
+    targetVersion: null,
+    blueprintSourceUrl: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSA-NSK101-Certification-Description-2024-01-26.pdf",
+    blueprintSourceLabel: "Official NCCSA (NSK101) Certification Description; 90 minutes, Pearson VUE; practitioner profile: configure, monitor, and perform basic troubleshooting, ~6 months of practical experience suggested; recommended preparation: NSCIOTT and NSCO&A Academy courses plus a tenant and the Knowledge Portal",
+    status: "published",
+    examFacts: null,
+    sections: [
+      { id: "nsk101-css", title: "Cloud Security Concepts", objectives: [
+          {
+            id: "NCCSA-A.01",
+            text: "Cloud security theory",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-A.02",
+            text: "Common industry compliance standards",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-A.03",
+            text: "Common cloud service model concepts",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-A.04",
+            text: "Data-in-motion protection compared to data-at-rest concepts",
+            relatedArticles: ["dlp-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-A.05",
+            text: "Web security concepts",
+            relatedArticles: ["hsts-and-https", "secure-headers-overview"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-A.06",
+            text: "Traffic steering concepts",
+            relatedArticles: ["netskope-steering-methods", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk101-pcb", title: "Netskope Platform Concepts Basics", objectives: [
+          {
+            id: "NCCSA-B.01",
+            text: "Deployment modes",
+            relatedArticles: ["netskope-realtime-vs-api-protection", "http-proxy-forward-and-reverse"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-B.02",
+            text: "Features and architectural benefits",
+            relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-inline-tls-decryption"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-B.03",
+            text: "Security controls",
+            relatedArticles: ["netskope-cloud-firewall", "dlp-fundamentals", "sandbox-detonation-fundamentals", "browser-isolation-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-B.04",
+            text: "Cloud security risk management/reduction",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk101-mgmt", title: "Netskope Platform Management", objectives: [
+          {
+            id: "NCCSA-C.01",
+            text: "Steering traffic to Netskope",
+            relatedArticles: ["netskope-steering-methods", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-C.02",
+            text: "Basic configuration elements",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-C.03",
+            text: "Real-time inline or API policy configuration concepts",
+            relatedArticles: ["netskope-realtime-vs-api-protection"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-C.04",
+            text: "Basic administration tasks",
+            relatedArticles: ["scim-overview"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk101-mon", title: "Netskope Platform Monitoring", objectives: [
+          {
+            id: "NCCSA-D.01",
+            text: "Identifying cloud risk using the Cloud Confidence Index (CCI)",
+            relatedArticles: ["cloud-confidence-index"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-D.02",
+            text: "Event monitoring",
+            relatedArticles: ["netskope-advanced-analytics"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk101-tsh", title: "Netskope Platform Troubleshooting", objectives: [
+          {
+            id: "NCCSA-E.01",
+            text: "Common steering issues",
+            relatedArticles: ["netskope-steering-methods", "netskope-client-deployment", "how-a-pac-file-chooses-a-proxy"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-E.02",
+            text: "Policy-related misconfigurations",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-E.03",
+            text: "TLS decryption-related issues",
+            relatedArticles: ["netskope-inline-tls-decryption", "ssl-forward-proxy-interception"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSA-E.04",
+            text: "Collect log files used for service requests",
+            relatedArticles: ["netskope-client-deployment"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    // Netskope Cloud Security Certification Program (Run A). Objectives are
+    // VERBATIM from the official certification description PDF fetched live
+    // 2026-07-21 (topic sub-bullets, transcribed exactly). Exam facts per
+    // the same PDF: 90 minutes, Pearson VUE, 2 Academy credits or USD 200;
+    // question count and pass mark are not published, so examFacts is null.
+    slug: "netskope-nsk200",
+    examCode: "NSK200",
+    examName: "Netskope Certified Cloud Security Integrator (NCCSI)",
+    vendor: "netskope",
+    certification: "netskope-nccsi",
+    targetVersion: null,
+    blueprintSourceUrl: "https://www.netskope.com/wp-content/uploads/2022/11/NCCSI-NSK200-Certification-Description-2022-11-22.pdf",
+    blueprintSourceLabel: "Official NCCSI (NSK200) Certification Description; 90 minutes, Pearson VUE; practitioner profile: implement, integrate, configure, monitor, and troubleshoot, ~12 months suggested; recommended preparation: NSCIOTT, NSCO&A, and NSCI&I Academy courses plus a tenant and the Knowledge Portal",
+    status: "published",
+    examFacts: null,
+    sections: [
+      { id: "nsk200-css", title: "Cloud Security Solutions", objectives: [
+          {
+            id: "NCCSI-A.01",
+            text: "Cloud security theory",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-A.02",
+            text: "Traffic steering methods",
+            relatedArticles: ["netskope-steering-methods", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-A.03",
+            text: "Major solutions that are available in the Netskope Security Cloud platform",
+            relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-cloud-firewall", "netskope-inline-tls-decryption", "dlp-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk200-impl", title: "Netskope Platform Implementation", objectives: [
+          {
+            id: "NCCSI-B.01",
+            text: "Various steering methods to a Netskope tenant",
+            relatedArticles: ["netskope-steering-methods", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-B.02",
+            text: "Access management solutions",
+            relatedArticles: ["saml-overview", "scim-overview"],
+            relatedTools: ["saml-decoder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-B.03",
+            text: "Privileged account control",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-B.04",
+            text: "Netskope client deployment",
+            relatedArticles: ["netskope-client-deployment"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-B.05",
+            text: "Data protection with Netskope DLP",
+            relatedArticles: ["dlp-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-B.06",
+            text: "Threat protection using the Netskope platform",
+            relatedArticles: ["sandbox-detonation-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk200-mgmt", title: "Netskope Platform Management", objectives: [
+          {
+            id: "NCCSI-C.01",
+            text: "DLP policy creation",
+            relatedArticles: ["dlp-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-C.02",
+            text: "Private application publication",
+            relatedArticles: ["netskope-private-access-npa"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-C.03",
+            text: "Real-time protection policies",
+            relatedArticles: ["netskope-realtime-vs-api-protection"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-C.04",
+            text: "SSL decryption policies",
+            relatedArticles: ["netskope-inline-tls-decryption", "ssl-forward-proxy-interception"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-C.05",
+            text: "REST API integrations",
+            relatedArticles: ["http-methods-the-verbs", "http-status-codes-the-five-families"],
+            relatedTools: ["http-request-translator", "http-status-code-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk200-mon", title: "Netskope Platform Monitoring", objectives: [
+          {
+            id: "NCCSI-D.01",
+            text: "Event analysis",
+            relatedArticles: ["netskope-advanced-analytics"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-D.02",
+            text: "Incident response workflows",
+            relatedArticles: [],
+            relatedTools: ["incident-timeline-rca-builder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-D.03",
+            text: "Application discovery",
+            relatedArticles: ["cloud-confidence-index", "netskope-advanced-analytics"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-D.04",
+            text: "Event sharing methodologies",
+            relatedArticles: ["netskope-advanced-analytics", "syslog-message-formats"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk200-tsh", title: "Netskope Platform Troubleshooting", objectives: [
+          {
+            id: "NCCSI-E.01",
+            text: "Client connectivity issues",
+            relatedArticles: ["netskope-client-deployment"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-E.02",
+            text: "Use of logs for troubleshooting",
+            relatedArticles: ["syslog-message-formats"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NCCSI-E.03",
+            text: "Troubleshooting user provisioning",
+            relatedArticles: ["scim-overview", "saml-overview"],
+            relatedTools: ["saml-decoder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    // Netskope Cloud Security Certification Program (Run A). Objectives are
+    // VERBATIM from the official certification description PDF fetched live
+    // 2026-07-21 (topic sub-bullets, transcribed exactly). Exam facts per
+    // the same PDF: 90 minutes, Pearson VUE, 2 Academy credits or USD 200;
+    // question count and pass mark are not published, so examFacts is null.
+    slug: "netskope-nsk300",
+    examCode: "NSK300",
+    examName: "Netskope Certified Cloud Security Architect",
+    vendor: "netskope",
+    certification: "netskope-architect",
+    targetVersion: null,
+    blueprintSourceUrl: "https://www.netskope.com/fr/wp-content/uploads/2022/10/netskope-cloud-security-certification-program.pdf",
+    blueprintSourceLabel: "Official Cloud Security Certification Program description (Architect / NSK300 section); 90 minutes, Pearson VUE; practitioner profile: plan and execute a successful deployment and set the environment up for ongoing value realization, ~18 months suggested; recommended preparation adds the Activation & Adoption course and lab to NSCIOTT, NSCO&A, and NSCI&I",
+    status: "published",
+    examFacts: null,
+    sections: [
+      { id: "nsk300-css", title: "Cloud Security Solutions", objectives: [
+          {
+            id: "NSKA-A.01",
+            text: "Components and functions of the Netskope Security Cloud Platform",
+            relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-private-access-npa", "netskope-cloud-firewall", "netskope-inline-tls-decryption"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-A.02",
+            text: "Integration capabilities with the Netskope Security Cloud Platform",
+            relatedArticles: ["netskope-realtime-vs-api-protection"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-A.03",
+            text: "Deployment methods are supported with Netskope",
+            relatedArticles: ["netskope-steering-methods", "http-proxy-forward-and-reverse"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-A.04",
+            text: "Various microservices of the Netskope Security Cloud Platform",
+            relatedArticles: ["netskope-platform-architecture-and-newedge"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk300-impl", title: "Netskope Platform Implementation", objectives: [
+          {
+            id: "NSKA-B.01",
+            text: "Steering methods - Architecture",
+            relatedArticles: ["netskope-steering-methods", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tunnel-overhead-mtu-and-mss"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-B.02",
+            text: "Steering methods - Deployment",
+            relatedArticles: ["netskope-steering-methods", "netskope-client-deployment", "how-a-pac-file-chooses-a-proxy"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-B.03",
+            text: "API-enabled protection",
+            relatedArticles: ["netskope-realtime-vs-api-protection"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-B.04",
+            text: "Real-time Protection",
+            relatedArticles: ["netskope-realtime-vs-api-protection"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk300-mgmt", title: "Netskope Platform Management", objectives: [
+          {
+            id: "NSKA-C.01",
+            text: "Administrative tasks in the Netskope Security Cloud Platform",
+            relatedArticles: [],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-C.02",
+            text: "DLP management",
+            relatedArticles: ["dlp-fundamentals"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-C.03",
+            text: "Identity management",
+            relatedArticles: ["saml-overview", "scim-overview"],
+            relatedTools: ["saml-decoder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-C.04",
+            text: "Netskope components monitoring",
+            relatedArticles: ["netskope-advanced-analytics"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk300-mon", title: "Netskope Platform Monitoring", objectives: [
+          {
+            id: "NSKA-D.01",
+            text: "Reporting and analytics",
+            relatedArticles: ["netskope-advanced-analytics"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+      { id: "nsk300-tsh", title: "Netskope Platform Troubleshooting", objectives: [
+          {
+            id: "NSKA-E.01",
+            text: "Client connectivity issues",
+            relatedArticles: ["netskope-client-deployment"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-E.02",
+            text: "Steering analysis",
+            relatedArticles: ["netskope-steering-methods", "how-a-pac-file-chooses-a-proxy"],
+            relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-E.03",
+            text: "Connectivity issues",
+            relatedArticles: ["map-the-path-before-you-troubleshoot"],
+            relatedTools: [],
+            manualLinks: [],
+            keyPoints: [],
+          },
+          {
+            id: "NSKA-E.04",
+            text: "SAML integrations",
+            relatedArticles: ["saml-overview", "saml-bindings-and-sso-initiation", "saml-signatures"],
+            relatedTools: ["saml-decoder"],
+            manualLinks: [],
+            keyPoints: [],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -4055,6 +5079,57 @@ export function getAllStudyGuideSlugs(): string[] {
 /** All certifications. */
 export function getCertifications(): Certification[] {
   return certifications;
+}
+
+// ---------------------------------------------------------------------------
+// CERTIFICATIONS HUB ORDERING (PRIME directive 2026-07-21, PKG-CONTENT-QUEUE
+// item 2): the hub lists study guides BY VENDOR (in the vendor-hub
+// chronological order) and, within each vendor, BY CERTIFICATION ORDER -
+// F5's ratified sequence: CA, CTS-LTM, CTS-DNS, CTS-ASM, CTS-APM, CSE-SEC,
+// CSE-CLD (the NGINX administrator track closes the F5 list). Unlisted keys
+// sort after listed ones, alphabetically, so future certs never vanish.
+// ---------------------------------------------------------------------------
+const VENDOR_HUB_ORDER = ["f5", "extreme", "fortinet", "netskope", "ping", "zscaler"] as const;
+
+const CERT_HUB_ORDER: Record<string, number> = {
+  "f5-ca": 1,
+  "f5-cts-ltm": 2,
+  "f5-cts-dns": 3,
+  "f5-cts-asm": 4,
+  "f5-cts-apm": 5,
+  "f5-cse-sec": 6,
+  "f5-cse-cld": 7,
+  "f5-ca-nginx": 8,
+  "netskope-administrator-accreditation": 1,
+  "netskope-integrator-accreditation": 2,
+  "netskope-nccsa": 3,
+  "netskope-nccsi": 4,
+  "netskope-architect": 5,
+  "ping-cp-pingfederate": 1,
+  "zscaler-zdta": 1,
+};
+
+/** Certifications grouped by vendor for the hub, both axes explicitly ordered. */
+export function getCertificationsGroupedByVendor(): Array<{ vendor: string; certs: Certification[] }> {
+  const groups: Array<{ vendor: string; certs: Certification[] }> = [];
+  const seen = new Set<string>();
+  const vendorRank = (v: string) => {
+    const i = (VENDOR_HUB_ORDER as readonly string[]).indexOf(v);
+    return i === -1 ? VENDOR_HUB_ORDER.length : i;
+  };
+  const certRank = (c: Certification) => CERT_HUB_ORDER[c.key] ?? 999;
+  const vendors = [...new Set(certifications.map((c) => c.vendor))].sort(
+    (a, b) => vendorRank(a) - vendorRank(b) || a.localeCompare(b),
+  );
+  for (const vendor of vendors) {
+    if (seen.has(vendor)) continue;
+    seen.add(vendor);
+    const certs = certifications
+      .filter((c) => c.vendor === vendor)
+      .sort((a, b) => certRank(a) - certRank(b) || a.name.localeCompare(b.name));
+    groups.push({ vendor, certs });
+  }
+  return groups;
 }
 
 /** Certifications offered by a given vendor (for vendor-hub cross-links). */

@@ -5848,6 +5848,33 @@
       "bypassTitle": "A camada de bypass: mecanismos, explicados",
       "honestyTitle": "Por que um explicador, e não um simulador",
       "notesTitle": "Notas permanentes"
+    },
+    "http-status-code-explainer": {
+      "name": "Explicador de códigos de status HTTP",
+      "blurb": "Cole códigos de status (404, 301 302 307) ou famílias (5xx) e receba cada um decodificado: família, nome registrado, significado documentado e as notas operacionais - incluindo a própria regra de fallback do protocolo para códigos que ele nunca viu.",
+      "emptyState": "Cole códigos como 404 ou 301 302 307, ou uma família como 5xx.",
+      "runsLocally": "Roda inteiramente no seu navegador. Nada do que você cola sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "inputLabel": "Códigos de status ou famílias, separados por espaços",
+      "placeholder": "301 302 307 502 503 504",
+      "errorTitle": "Essa entrada precisa de ajuste",
+      "familyLabel": "Família",
+      "notesTitle": "Notas permanentes"
+    },
+    "netskope-steering-decision-explainer": {
+      "name": "Explicador de decisão de steering Netskope",
+      "blurb": "Cole uma especificação compacta de steering - modo, estado do túnel, Fail Close, localização dinâmica, um fluxo e as exceções que ele casa - e percorra a ordem de decisão documentada até o veredito: steered, bypassed, blocked ou direct, com o livro-razão do porquê. Onde a documentação não publica regra (precedência entre famílias de exceção), ele diz isso em vez de inventar uma.",
+      "emptyState": "Cole uma especificação, ou pressione Exemplo para ver a gramática.",
+      "runsLocally": "Roda inteiramente no seu navegador. Nada do que você cola sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "inputLabel": "Especificação de steering (linhas chave: valor)",
+      "placeholder": "mode: web\ntunnel: up\nflow: web app.example.com",
+      "errorTitle": "Essa especificação precisa de ajuste",
+      "modeLabel": "Modo efetivo: {mode}",
+      "ledgerTitle": "Livro-razão da decisão",
+      "notesTitle": "Notas permanentes"
     }
   },
   "privacy_page": {
@@ -6074,6 +6101,11 @@
           "years": "1995",
           "where": "Primeiro cargo formal · INTELECTA (SEBRAE-SP)",
           "what": "Um sistema de intercâmbio eletrônico de dados sobre Novell NetWare e PCBoard. O ponto em que hobby, ofício e profissão viraram uma coisa só."
+        },
+        {
+          "years": "1995–96",
+          "where": "Alcançável em trânsito · bip Teletrim",
+          "what": "Primeira alcançabilidade longe de qualquer mesa: um pager unidirecional no serviço Teletrim de São Paulo. Quem ligava ditava a mensagem a uma operadora humana, que a digitava para o ar rumo ao bip no cinto — limitado, assíncrono, nada de tempo real, e revolucionário assim mesmo."
         }
       ],
       "storyTitle": "O aprendizado, em sete movimentos",
@@ -6131,12 +6163,13 @@
           "title": "Do hobby ao ofício",
           "body": [
             "Em algum ponto desses mesmos anos a curiosidade começou a pagar. A partir de 1991 o trabalho era prático e autônomo: importar componentes dos Estados Unidos, montar PCs sob medida e vendê-los, depois instalá-los e resolver seus problemas para quem precisasse — DOS e CP/M, Turbo Pascal, e os bancos de dados Clipper e dBase que silenciosamente rodavam os pequenos negócios da época.",
-            "Em 1995 tudo convergiu para um primeiro cargo formal na INTELECTA, uma empresa incubada pelo SEBRAE-SP. O projeto era um sistema de intercâmbio eletrônico de dados para a comercialização de suprimentos médicos e hospitalares, construído sobre servidores Novell NetWare e o sistema de BBS PCBoard. Um sistema de verdade resolvendo um problema comercial de verdade — o exato ponto em que o hobby, o ofício e a profissão finalmente viraram uma coisa só."
+            "Em 1995 tudo convergiu para um primeiro cargo formal na INTELECTA, uma empresa incubada pelo SEBRAE-SP. O projeto era um sistema de intercâmbio eletrônico de dados para a comercialização de suprimentos médicos e hospitalares, construído sobre servidores Novell NetWare e o sistema de BBS PCBoard. Um sistema de verdade resolvendo um problema comercial de verdade — o exato ponto em que o hobby, o ofício e a profissão finalmente viraram uma coisa só.",
+            "O mesmo período trouxe o outro rito de passagem da era: o bip. De 1995 ou 1996 em diante, Rodolfo carregava um pager da Teletrim — a primeira vez na vida em que o mundo podia encontrá-lo em movimento. O protocolo era gloriosamente manual: alguém ligava para o serviço, falava a mensagem a uma operadora humana, e a operadora transmitia o texto ao bip do destino. Cada número de retorno, cada mudança de planos, cada recado não exatamente destinado a terceiros ouvidos passava antes pelo fone de uma estranha. As operadoras de São Paulo devem ter ouvido tanta coisa — e, há de se supor, guardado quase tudo."
           ]
         }
       ],
       "fieldTitle": "Um guia de campo de um mundo desaparecido",
-      "fieldIntro": "O vocabulário da época, para quem chegou depois dela. Dois destes abrem no glossário, onde a linhagem do phreaking telefônico está documentada por inteiro.",
+      "fieldIntro": "O vocabulário da época, para quem chegou depois dela. Três destes abrem no glossário, onde a linhagem do phreaking telefônico está documentada por inteiro.",
       "field": {
         "bbs": {
           "tag": "O BBS",
@@ -6209,9 +6242,14 @@
           "tag": "O telefone",
           "term": "War-dialing",
           "desc": "Um modem programado para discar automaticamente por faixas inteiras de números de telefone, anotando quais respondiam — um modem, um fax ou um PBX. Batizado a partir do filme WarGames (1983), era a metade de reconhecimento do phreaking: mapear a rede para descobrir o que havia por lá."
+        },
+        "bip": {
+          "tag": "O cinto",
+          "term": "Bip (pager)",
+          "desc": "Um receptor de rádio unidirecional numa rede de broadcast — sem transmissor, sem subida, só um código de identidade e o que a torre mandasse. O serviço clássico punha uma operadora humana entre quem ligava e o bolso: sua mensagem, lida em voz alta a uma estranha, digitada para o ar. Alcançabilidade antes do tempo real."
         }
       },
-      "closer": "No fim de 1995 a base estava montada, e nunca tinha sido realmente sobre os truques. Era sobre o hábito por baixo deles — desmontar uma coisa até entendê-la de verdade, e então explicá-la para quem vem depois. Os crachás de fabricante, as certificações, as salas de aula em quatro continentes: tudo isso foi construído sobre um adolescente com um Sinclair clonado, um ferro de solda, um tom de discagem roubado e uma vontade desmedida de saber como tudo funcionava.",
+      "closer": "No fim de 1995 a base estava montada, e nunca tinha sido realmente sobre os truques. Era sobre o hábito por baixo deles — desmontar uma coisa até entendê-la de verdade, e então explicá-la para quem vem depois. Os crachás de fabricante, as certificações, as salas de aula em quatro continentes: tudo isso foi construído sobre um adolescente com um Sinclair clonado, um ferro de solda, um tom de discagem roubado e uma vontade desmedida de saber como tudo funcionava. A própria linha telefônica ainda tinha um último compromisso com ele. Em 1999, naquela mesma casa, ele se tornou um dos primeiros assinantes de ADSL da Telesp: 256 kbps sobre o par metálico que a família sempre teve — mas conectado em tempo integral, pela primeira vez, sem sequestrar a linha do telefone. Estar online deixou de ser um evento; o cobre que racionava o BBS um usuário por vez agora carregava a internet continuamente, e aquele zumbido sempre-ligado foi o começo definitivo do fim do POTS. Ele ainda mora naquela casa. Hoje ela é conectada por DOCSIS 3.1 sobre a planta de cabo, por fibra até em casa, e por uma constelação em órbita baixa — quatro últimas milhas de profundidade, no endereço onde um dia uma linha de telefone tinha que bastar.",
       "fieldMore": "No glossário →"
     },
     "era19962020": {
@@ -12337,6 +12375,74 @@
       "zidentity": {
         "def": "A camada unificada de identidade da Zscaler para o Zero Trust Exchange: um lugar para integrar provedores de identidade e gerir identidade de admins e usuários entre os serviços da plataforma.",
         "context": "Identidade é o plano de controle do novo perímetro; o ZIdentity é onde a plataforma a centraliza."
+      },
+      "telesp": {
+        "def": "Telecomunicações de São Paulo: a operadora de telefonia fixa do sistema Telebrás em São Paulo (1973-1998), sucessora das operações paulistas da CTB; adquirida pela espanhola Telefónica na privatização de 1998, tornando-se a Telefônica Brasil (marca Vivo a partir de 2012). Sob a Telefónica, lançou a banda larga ADSL de São Paulo, o Speedy, em 1999.",
+        "context": "A empresa cujo par de cobre levou o autor deste site à internet sempre-conectada em 1999."
+      },
+      "telebras": {
+        "def": "Telecomunicações Brasileiras S.A.: a holding estatal que organizou as operadoras brasileiras a partir de 1972; o sistema inteiro - três holdings fixas, a Embratel e oito holdings celulares - foi privatizado em doze leilões em 29 de julho de 1998, a maior privatização da história brasileira.",
+        "context": "O nome da era do monopólio; seu desmonte é a dobradiça da linha do tempo das telecomunicações do Brasil."
+      },
+      "embratel": {
+        "def": "Empresa Brasileira de Telecomunicações: a operadora de longa distância e dados do Brasil, criada em 1965 e incorporada ao sistema Telebrás; rodou o primeiro teste de internet comercial do país em dezembro de 1994; privatizada em 1998 para a MCI WorldCom, vendida à Telmex em 2004, incorporada à Claro em 2015.",
+        "context": "A empresa do backbone - longa distância, internacional e a primeira rampa comercial de internet."
+      },
+      "anatel": {
+        "def": "Agência Nacional de Telecomunicações: a reguladora brasileira, criada pela Lei Geral de Telecomunicações (Lei 9.472, julho de 1997) para normatizar e fiscalizar o setor privatizado em nome do interesse público.",
+        "context": "O árbitro que a privatização de 1998 exigiu - a regulação saiu do ministério para a agência."
+      },
+      "cgi-br": {
+        "def": "Comitê Gestor da Internet no Brasil: o comitê multissetorial criado em 1995 pelos ministérios da Ciência e Tecnologia e das Comunicações para definir diretrizes e políticas da internet no Brasil, incluindo a governança do domínio .br.",
+        "context": "A resposta brasileira à governança da internet - política por comitê, não por operadora."
+      },
+      "nic-br": {
+        "def": "Núcleo de Informação e Coordenação do Ponto BR: a entidade que implementa as decisões do CGI.br - formalizada em 2003, operando o registro .br (Registro.br) desde 2005, além de funções de medição, IX e segurança.",
+        "context": "O braço operacional: onde domínios .br, alocação de IP brasileira e troca de tráfego de fato rodam."
+      },
+      "fapesp": {
+        "def": "Fundação de Amparo à Pesquisa do Estado de São Paulo: a fundação paulista de fomento cuja equipe de processamento de dados construiu a rede acadêmica brasileira (ANSP), recebeu de Jon Postel a delegação do domínio .br em 1989, fez a primeira conexão TCP/IP do país em 1991 (à ESnet via Fermilab) e operou o registro .br até o NIC.br assumir.",
+        "context": "Uma financiadora de pesquisa que virou, por acidente, o registro de internet de um país - por dezesseis anos."
+      },
+      "usp": {
+        "def": "Universidade de São Paulo: a maior universidade de pesquisa do Brasil e participante fundadora da rede acadêmica ANSP - a história da internet brasileira passa pela necessidade de seus departamentos de física e engenharia de alcançar colegas no exterior.",
+        "context": "Um dos campi cuja inveja de e-mail deu partida numa rede nacional."
+      },
+      "unicamp": {
+        "def": "Universidade Estadual de Campinas: a universidade estadual de pesquisa de Campinas, participante fundadora da ANSP ao lado de USP e UNESP na rede acadêmica pré-internet que virou a rampa do Brasil.",
+        "context": "O outro campus paulista da história de fundação."
+      },
+      "pots": {
+        "def": "Plain Old Telephone Service, o serviço telefônico convencional: a rede analógica - uma voz na faixa de 300-3400 Hz sobre um par trançado dedicado pela duração da chamada. A internet discada era dado espremido pelo canal de voz, uma linha ocupada por vez.",
+        "context": "O retrônimo que a internet tornou necessário - e depois tornou histórico."
+      },
+      "adsl": {
+        "def": "Asymmetric Digital Subscriber Line, linha digital assimétrica de assinante: banda larga sobre o par telefônico existente por divisão de frequência - voz abaixo de ~4 kHz, dados acima, um DSLAM terminando o lado de dados na central. Assimétrica porque a descida leva a maior parte do espectro. Sua chegada tornou as conexões domésticas sempre-conectadas.",
+        "context": "A tecnologia que deixou o mesmo cobre carregar a internet em tempo integral - o começo do fim do POTS."
+      },
+      "hfc": {
+        "def": "Hybrid Fiber-Coaxial, híbrida de fibra e coaxial: a arquitetura da planta de TV a cabo - fibra do headend até nós de bairro, coaxial no trecho final - que o DOCSIS transformou numa rede de banda larga compartilhada.",
+        "context": "Por que o cabo de televisão na parede pode carregar internet gigabit."
+      },
+      "leo-constellation": {
+        "def": "Uma frota de satélites em órbita terrestre baixa - centenas de quilômetros, contra os 35.786 km do geoestacionário - trocando um satélite imóvel por milhares em movimento: a latência cai para dezenas de milissegundos, ao custo de handoffs constantes, terminais phased-array e logística de frota. A Starlink é o exemplo operando em escala.",
+        "context": "Internet por satélite sem o imposto de meio segundo da física."
+      },
+      "lora": {
+        "def": "Uma técnica de rádio de longo alcance e baixa potência (o chirp spread spectrum da Semtech) e, via LoRaWAN (a especificação de rede da LoRa Alliance), uma arquitetura LPWAN: quilômetros de alcance, anos de bateria, bytes de carga, gateways encaminhando o que ouvem.",
+        "context": "A rede dos sussurros - sensores que precisam viver anos numa bateria de moeda."
+      },
+      "pager": {
+        "def": "Um receptor de rádio unidirecional numa rede de broadcast em simulcast - o bip: sem transmissor, sem subida, tudo ao alcance decodificado e só o seu endereço exibido. O serviço clássico retransmitia mensagens por operadoras humanas; POCSAG e FLEX carregavam os formatos digitais.",
+        "context": "Alcançabilidade antes do tempo real - e uma lição de privacidade: uma operadora lia cada mensagem em voz alta para o ar."
+      },
+      "cci": {
+        "def": "Cloud Confidence Index - a nota de risco de 0 a 100 da Netskope para dezenas de milhares de aplicações em nuvem, pontuada contra critérios objetivos adaptados das orientações da Cloud Security Alliance e agrupada em categorias de prontidão empresarial como certificações e conformidade, proteção de dados, controle de acesso, auditabilidade, recuperação de desastres e termos legais/privacidade.",
+        "context": "Os níveis do CCI (excellent, high, medium, low, poor) são usáveis diretamente em política - direcionando, orientando ou bloqueando por faixa de risco em vez de nomear apps um a um. Citado verbatim no domínio de monitoramento dos blueprints Netskope, e assunto do artigo Cloud Confidence Index deste site."
+      },
+      "newedge": {
+        "def": "A rede global de data centers operada privadamente pela Netskope - a infraestrutura sobre a qual roda a nuvem de segurança Netskope One. Cada data center oferece computação completa para inspeção single-pass, com peering extenso perto dos usuários e dos grandes provedores de SaaS.",
+        "context": "A resposta arquitetural para 'onde mora o proxy': não em poucas regiões-hub com backhaul, e sim em pontos de presença projetados para baixo tempo de ida e volta. O artigo de arquitetura da plataforma neste site desenha o quadro completo."
       }
     },
     "totalCount": "{count} termos",
@@ -12374,7 +12480,9 @@
     "factsMinutes": "{minutes} minutos",
     "factsPassMark": "Nota de corte",
     "factsCost": "Taxa do exame",
-    "keyPointsLabel": "O que saber"
+    "keyPointsLabel": "O que saber",
+    "expandAll": "Expandir tudo",
+    "collapseAll": "Recolher tudo"
   },
   "trainingCta": {
     "eyebrow": "Treinamento com instrutor",
@@ -12543,6 +12651,10 @@
       "zscaler-zero-trust": {
         "title": "Zscaler Zero Trust Exchange",
         "lede": "Dos túneis e fundamentos ao cérebro completo de política: encaminhamento, ordem de firewall, inspeção TLS, controles web e de arquivos, DLP, CASB e os segmentos, política e postura do ZPA — com as três ferramentas nativas para praticar."
+      },
+      "netskope-sase": {
+        "title": "Netskope SASE, de Ponta a Ponta",
+        "lede": "A plataforma inteira em ordem de leitura: arquitetura e NewEdge, cada método de direcionamento, o cliente, descriptografia TLS, os dois caminhos de proteção, política guiada por CCI, Private Access, Cloud Firewall e a camada de analytics - com as ferramentas de PAC e SAML para praticar. Feita para percorrer os domínios das acreditações e certificações a partir deste site."
       }
     }
   },

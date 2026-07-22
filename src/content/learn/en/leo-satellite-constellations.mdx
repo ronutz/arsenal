@@ -1,0 +1,30 @@
+---
+slug: leo-satellite-constellations
+title: "LEO Constellations: Why the New Satellite Internet Is a Different Animal"
+summary: "Geostationary satellites solved coverage and lost latency: parked at 35,786 km, physics alone charges half a second round trip. Low Earth Orbit constellations invert the deal - satellites a few hundred kilometers up, latency in the tens of milliseconds, at the price of needing thousands of moving satellites, phased-array terminals that track them, and constant handoffs. The geometry, the engineering it forces, inter-satellite laser links, and the honest trade-offs."
+concepts: ["leo", "satellite", "constellation", "starlink", "geostationary", "latency", "phased array", "inter-satellite links"]
+relatedTools: []
+relatedArticles: ["last-mile-evolution-pots-to-fiber", "map-the-path-before-you-troubleshoot", "lora-and-lpwan"]
+category: networking
+order: 204
+status: reviewed
+updated: "2026-07-21"
+---
+
+Satellite internet used to come with an asterisk, and the asterisk was physics. The new generation removed the asterisk by moving the satellites - and everything interesting about **LEO - Low Earth Orbit** - constellations follows from that one decision. This is [the fourth last mile](/learn/last-mile-evolution-pots-to-fiber), and it works nothing like the first three.
+
+## The geometry problem GEO couldn't escape
+
+A **geostationary** satellite orbits at 35,786 km above the equator, where its period matches Earth's rotation - it hangs motionless in the sky, so a dish points once and never moves, and three satellites can see almost the whole planet. The price is the distance itself: radio travels at light speed, and up-and-down twice (query out, answer back) across that altitude costs roughly half a second of round-trip time before any network equipment adds a microsecond. For broadcast television, irrelevant; for TCP handshakes, TLS negotiations, and anything interactive, structural. GEO internet was always fighting its own altitude.
+
+## LEO's inversion, and the engineering it forces
+
+LEO constellations - Starlink being the operating example at scale - place satellites at a few hundred kilometers instead, collapsing propagation delay into the **tens of milliseconds**, competitive with terrestrial paths. But a satellite that low cannot hang motionless: it crosses the sky in minutes, so *coverage* now requires **thousands of satellites** in coordinated orbital shells, and every property that GEO made trivial becomes engineering. The ground terminal becomes a **phased-array antenna** - steering its beam electronically to track satellites and hop between them with no moving dish. Sessions survive **constant handoffs** as satellites rise and set. And routing gains a third dimension: modern constellations carry **inter-satellite laser links**, letting traffic travel between satellites in vacuum and come down near its destination - which is why a [traceroute](/learn/map-the-path-before-you-troubleshoot) through such a network shows a first hop that is, delightfully, in space.
+
+## The honest trade-offs
+
+The engineering candor this site owes every technology: LEO's price list is real. Thousands of satellites must be launched, replaced on short lifetimes (atmospheric drag at low altitude is a feature for debris management and a cost for operators), and deorbited responsibly; astronomers document the streaks; the terminal is a small power-hungry computer rather than a passive dish; and capacity is shared per cell of sky, so density of subscribers matters the way it does on [a DOCSIS neighborhood node](/learn/last-mile-evolution-pots-to-fiber). None of this is disqualifying - it is the shape of the bargain: latency bought back from physics by fleet logistics.
+
+## Where it actually fits
+
+The design consequence is placement. Where fiber exists, fiber wins on capacity and stability. Where nothing exists - rural areas, oceans, disaster zones, the mobile and the remote - a LEO constellation delivers something previously impossible: low-latency broadband with no local infrastructure beyond the terminal. And in the multi-path household this series keeps returning to, it earns a specific job: the *independent* path - sharing no duct, no pole, no headend, and no failure domain with the terrestrial lines it backs up.

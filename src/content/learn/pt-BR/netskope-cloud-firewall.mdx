@@ -1,0 +1,26 @@
+---
+slug: netskope-cloud-firewall
+title: "Netskope Cloud Firewall: Controle de Saída para Tudo que Não É Web"
+summary: "Um secure web gateway inspeciona as portas 80 e 443 - e o resto do tráfego saindo das máquinas dos seus usuários dá de ombros e vai direto. O Cloud Firewall fecha essa lacuna: firewall-as-a-service para todas as portas e protocolos de saída, com regras escritas em usuários, grupos, aplicações e FQDNs em vez de IPs de origem, entregue pelo mesmo client e pelos mesmos túneis que direcionam o tráfego web. O que ele cobre, como seu modelo de política difere da caixa que substitui, e por que 'steer all traffic' é o interruptor que o liga."
+concepts: ["netskope", "cloud firewall", "fwaas", "egress", "non-web", "ports", "protocols", "policy"]
+relatedTools: []
+relatedArticles: ["netskope-steering-methods", "netskope-client-deployment", "netskope-platform-architecture-and-newedge", "netskope-realtime-vs-api-protection"]
+category: security
+order: 222
+status: reviewed
+updated: "2026-07-21"
+---
+
+Os dois blueprints da trilha de administrador arquivam o Cloud Firewall sob "security controls", e sua razão de existir é uma frase de contabilidade honesta: um [secure web gateway](/learn/netskope-platform-architecture-and-newedge) governa protocolos web, e empresas emitem muito mais que web - DNS para terceiros, SSH para shells de nuvem, SMTP de software mal-comportado, clientes de banco, portas de aplicações próprias, e o que quer que o malware da vez prefira precisamente *porque* não é a porta 443. No appliance da filial, o firewall cobria tudo isso no perímetro. Mova a segurança para a nuvem sem uma camada de firewall, e o restante não-web simplesmente vai direto, sem governo. O **Cloud Firewall (CFW)** é a camada firewall-as-a-service da plataforma exatamente para esse restante: tráfego de saída, todas as portas e protocolos.
+
+## Levando o tráfego até lá: o pré-requisito de steering
+
+A dependência a internalizar primeiro, porque decide implantações reais: o CFW governa só o que chega a ele, e steering só-web não lhe manda nada. O [Netskope Client](/learn/netskope-client-deployment) precisa rodar em **steering de todo o tráfego** (ou o site precisa encaminhar por [túneis GRE/IPsec](/learn/netskope-steering-methods)) para fluxos não-web sequer transitarem pela nuvem. Essa única escolha de configuração é o interruptor prático - e a primeira checagem quando uma política de firewall "não funciona": em steering só-web, o tráfego que ela deveria governar nunca saiu do prédio pela Netskope.
+
+## O modelo de política: identidade e aplicações, não endereços
+
+A diferença interessante em relação ao appliance que ele substitui é em que as regras são *escritas*. Os substantivos nativos de um firewall de perímetro são endereços IP e portas, porque é o que um perímetro vê. Os substantivos nativos do CFW são **usuários e grupos** (o client entrega tráfego pré-atribuído a identidades), **aplicações** (fluxos classificados pelo que são, não só por onde batem) e **FQDNs de destino**, ao lado das portas e protocolos clássicos. A consequência lê como um sonho de política da era dos appliances: *"desenvolvedores podem SSH para as faixas do provedor de nuvem; ninguém mais origina SSH; todo SMTP de saída é negado exceto o do relay de e-mail"* - escrita uma vez, seguindo cada usuário a cada rede, sem rulebase por site para derivar. O controle de DNS de saída merece menção própria: governar quem pode falar DNS com quem é, discretamente, um dos controles não-web de maior alavancagem, já que DNS tunelado é caminho clássico de exfiltração e comando-e-controle.
+
+## O que ele é, e o que não é
+
+Demarcar fronteiras mantém o modelo mental honesto. O CFW é controle de **saída** para tráfego de usuários e filiais - não é firewall de entrada/data center, não substitui os security groups do seu provedor de nuvem, e não é o [NPA](/learn/netskope-private-access-npa), que cuida de alcançar as *suas próprias* apps privadas. E ele deliberadamente complementa em vez de duplicar o SWG: tráfego web recebe o tratamento completo de proxy - [decifração](/learn/netskope-inline-tls-decryption), inspeção de conteúdo, [DLP](/learn/dlp-fundamentals) - enquanto o CFW dá ao restante não-web um permitir/negar de calibre firewall com identidade. Mesma nuvem single-pass, mesmo cérebro de política, duas profundidades de inspeção casadas a dois tipos de tráfego - exatamente a resposta quando um cenário de blueprint pergunta por que uma plataforma com proxy ainda embarca um firewall.

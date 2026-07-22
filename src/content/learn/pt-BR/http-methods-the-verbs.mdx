@@ -1,0 +1,30 @@
+---
+slug: http-methods-the-verbs
+title: "Métodos HTTP: Os Verbos da Web"
+summary: "GET, HEAD, POST, PUT, DELETE, PATCH, OPTIONS, TRACE, CONNECT - e agora QUERY. O que cada método promete, por que 'safe' e 'idempotente' são as duas propriedades que de fato importam (para caches, retentativas, proxies e crawlers), por que formulários HTML só aprenderam dois verbos, e como ler a alma de uma API pelos métodos que ela aceita."
+concepts: ["http", "methods", "get", "post", "put", "delete", "patch", "idempotent", "safe", "query"]
+relatedTools: ["http-methods-comparison", "http-request-translator"]
+relatedArticles: ["http-query-method", "http-status-codes-the-five-families", "html-forms-and-request-encoding", "http-versions-09-to-3"]
+category: networking
+order: 207
+status: reviewed
+updated: "2026-07-21"
+---
+
+Toda requisição HTTP abre com um verbo, e esse verbo é um contrato: ele diz a servidores, caches, proxies e lógicas de retentativa que tipo de coisa está prestes a acontecer. A maior parte do encanamento da web não lê suas URLs nem suas cargas - lê o seu **método** e age sobre as promessas que o método faz. Este artigo é sobre essas promessas; [a ferramenta de comparação](/tools/http-methods-comparison) as coloca lado a lado.
+
+## As duas propriedades que governam o mundo
+
+**Safe** (seguro) significa que a requisição é somente-leitura do ponto de vista do cliente: ela pede estado, não o muda. GET, HEAD e OPTIONS são safe - e é precisamente por isso que crawlers podem seguir cada link do seu site, que prefetchers disparam GETs especulativos, e que uma ação de "excluir" atrás de um link GET é um jeito famoso de ter um robô de busca esvaziando seu banco. **Idempotente** é a promessa mais fraca e sutil: fazer *N* vezes deixa o mesmo estado que fazer uma. Todo método safe é idempotente; PUT e DELETE são idempotentes sem serem safe (colocar a mesma representação duas vezes, ou excluir o mesmo recurso duas vezes, converge). POST não promete *nenhuma das duas* - e é por isso que seu navegador pergunta "reenviar formulário?" antes de repetir um, e por que middleware de rede retenta em silêncio um GET que estourou o tempo, mas nunca um POST. Retentativas, cache e prefetch se guiam por esses dois bits.
+
+## O elenco, breve e honesto
+
+**GET** recupera uma representação; **HEAD** é GET menos o corpo - mesmos cabeçalhos, sem carga, o jeito do protocolo de perguntar "quão grande, quão fresco?" **POST** é o operário deliberadamente sem promessas: processe esta carga conforme a semântica do próprio recurso - criar algo, disparar algo, qualquer coisa. **PUT** substitui o alvo pela representação enviada (recurso inteiro, idempotente); **PATCH** aplica uma modificação parcial (e *não* é automaticamente idempotente - um patch que diz "anexe X" prova). **DELETE** remove; **OPTIONS** pergunta o que é permitido - e ganhou segunda carreira como veículo do [preflight de CORS](/learn/cors-explained); **TRACE** ecoa a requisição de volta (quase universalmente desabilitado); **CONNECT** pede a um proxy que abra um túnel bruto, que é como o HTTPS atravessa [proxies de encaminhamento](/learn/http-proxy-forward-and-reverse). E o cidadão mais novo, **QUERY**, existe para fechar um buraco real - recuperação safe e idempotente *com corpo de requisição*, para consultas grandes ou estruturadas demais para uma URL - história que [este site conta por inteiro](/learn/http-query-method), incluindo o manejo no BIG-IP.
+
+## Por que formulários só falam dois verbos
+
+Uma surpresa recorrente: formulários HTML submetem com GET ou POST, ponto - os verbos mais ricos pertencem a APIs chamadas por código. Essa restrição moldou uma geração de frameworks de servidor (cabeçalhos de method-override, campos `_method`) e é metade da razão de o POST ter virado o verbo universal de "faça algo". A outra metade é inércia, [sobre a qual este site já escreveu com outra fantasia](/learn/why-we-say-ssl-when-we-mean-tls). Como formulários codificam o que enviam é [artigo próprio](/learn/html-forms-and-request-encoding).
+
+## Lendo uma API pelos verbos
+
+A habilidade prática: a disciplina de métodos de uma API conta a alma dela. Semântica estrita de recursos (GET lê, PUT substitui, PATCH edita, DELETE remove, POST cria-sob) sinaliza um projeto que você pode cachear, retentar e raciocinar; tudo-é-POST sinaliza RPC vestindo HTTP como transporte - não errado, mas outro contrato, em que *você* agora carrega a contabilidade de idempotência que os verbos carregariam por você. De um jeito ou de outro, a linha do verbo é a primeira linha - da requisição, e da análise.

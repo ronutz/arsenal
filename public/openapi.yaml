@@ -35,10 +35,12 @@ tags:
   - name: F5 automation (AS3 / DO)
   - name: Fingerprinting
   - name: Fortinet FortiGate & FortiOS
+  - name: HTTP
   - name: HTTP & web
   - name: Hashing
   - name: Identifiers & time
   - name: Identity & tokens
+  - name: Netskope
   - name: Netskope SSE / SASE
   - name: Networking
   - name: Networking & addressing
@@ -4804,6 +4806,75 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /http-status-code-explainer:
+    get:
+      tags:
+        - HTTP
+      operationId: run_http_status_code_explainer
+      summary: HTTP status code explainer
+      description: >-
+        Paste status codes (404, 301 302 307) or families (5xx) and get each one decoded: family,
+        registered name, documented meaning, and the operational notes - including the protocol's
+        own fallback rule for codes it has never met. Standards: RFC 9110: HTTP Semantics, RFC 6585:
+        Additional HTTP Status Codes, RFC 7725 (451), RFC 8297 (103 Early Hints). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - 301 302 307
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - HTTP
+      operationId: run_http_status_code_explainer_post
+      summary: HTTP status code explainer (POST)
+      description: >-
+        Paste status codes (404, 301 302 307) or families (5xx) and get each one decoded: family,
+        registered name, documented meaning, and the operational notes - including the protocol's
+        own fallback rule for codes it has never met. Standards: RFC 9110: HTTP Semantics, RFC 6585:
+        Additional HTTP Status Codes, RFC 7725 (451), RFC 8297 (103 Early Hints). Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - 301 302 307
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /incident-timeline-rca-builder:
     get:
       tags:
@@ -5518,6 +5589,79 @@ paths:
               type: string
               examples:
                 - 1500 vxlan
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /netskope-steering-decision-explainer:
+    get:
+      tags:
+        - Netskope
+      operationId: run_netskope_steering_decision_explainer
+      summary: Netskope steering decision explainer
+      description: >-
+        Paste a compact steering spec - mode, tunnel state, Fail Close, dynamic location, one flow,
+        and the exceptions it matches - and walk the documented decision order to a verdict:
+        steered, bypassed, blocked, or direct, with the why-ledger. Where the docs publish no rule
+        (cross-family exception precedence), it says so instead of inventing one. Standards:
+        docs.netskope.com: Configure a Steering Profile, Creating a Steering Configuration (Fail
+        Close, non-standard ports), Enabling Dynamic Steering, Certificate Pinned Applications.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - 'mode: web'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Netskope
+      operationId: run_netskope_steering_decision_explainer_post
+      summary: Netskope steering decision explainer (POST)
+      description: >-
+        Paste a compact steering spec - mode, tunnel state, Fail Close, dynamic location, one flow,
+        and the exceptions it matches - and walk the documented decision order to a verdict:
+        steered, bypassed, blocked, or direct, with the why-ledger. Where the docs publish no rule
+        (cross-family exception precedence), it says so instead of inventing one. Standards:
+        docs.netskope.com: Configure a Steering Profile, Creating a Steering Configuration (Fail
+        Close, non-standard ports), Enabling Dynamic Steering, Certificate Pinned Applications.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - 'mode: web'
       responses:
         '200':
           description: The computed result.

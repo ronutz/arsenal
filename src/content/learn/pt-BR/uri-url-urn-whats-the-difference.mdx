@@ -1,0 +1,30 @@
+---
+slug: uri-url-urn-whats-the-difference
+title: "URI, URL, URN: Qual É Mesmo a Diferença?"
+summary: "As três siglas que todo mundo usa como sinônimo codificam uma ideia limpa: identificar vs localizar vs nomear. URI é o guarda-chuva - qualquer identificador na gramática padrão; URL é o identificador que também diz onde e como buscar; URN era o esquema para nomes puros, sem localização (urn:isbn:...). Por que o próprio W3C declarou a tricotomia clássica obsoleta, o que 'URI' significa em especificações vs 'URL' na conversa, e a lição de nomes que este site vive colecionando."
+concepts: ["uri", "url", "urn", "identifier", "scheme", "rfc 3986", "naming"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["url-anatomy", "url-encoding-and-idn", "relative-urls-and-resolution", "why-we-say-ssl-when-we-mean-tls"]
+category: encoding
+order: 214
+status: reviewed
+updated: "2026-07-21"
+---
+
+Pergunte a três engenheiros a diferença entre URI, URL e URN e você recebe três respostas confiantes e mutuamente incompatíveis - porque a terminologia genuinamente mudou sob os pés de todos. A ideia por baixo, porém, é limpa, e vale ter clara antes de [dissecar as partes de uma URL](/learn/url-anatomy): é a diferença entre *identificar* uma coisa, *localizá-la* e *nomeá-la*.
+
+## O guarda-chuva: URI
+
+Um **URI - Uniform Resource Identifier, identificador uniforme de recurso** - é qualquer string, na gramática padrão (RFC 3986: esquema, depois estrutura específica do esquema), que identifica um recurso. Essa é a definição inteira: um identificador com sintaxe combinada. `https://ronutz.com/en/learn`, `mailto:alguem@example.com`, `urn:isbn:0451450523`, `tel:+55-11-...` - todos URIs. A genialidade do guarda-chuva é que software genérico consegue manejar identificadores *sem entendê-los*: as regras de parsing, [as regras de codificação](/learn/url-encoding-and-idn) e [o algoritmo de resolução relativa](/learn/relative-urls-and-resolution) operam no nível do URI, para todo esquema, inclusive os ainda não inventados.
+
+## Os dois filhos: localizar vs nomear
+
+A tricotomia clássica dividia os URIs em dois tipos. Uma **URL - Uniform Resource Locator, localizador uniforme de recurso** - identifica um recurso *dizendo onde ele está e como chegar*: `https://host/caminho` embala o protocolo, a autoridade a contatar e o caminho a pedir. Instruções de acesso inclusas. Um **URN - Uniform Resource Name, nome uniforme de recurso** - identifica *sem* localização: `urn:isbn:0451450523` nomeia um livro específico para sempre, não importa quem hospede uma cópia, se alguém hospeda, ou quais servidores morreram desde então. A troca é exatamente o problema da persistência em espelho: URLs apodrecem quando as coisas se movem (a epidemia de links quebrados da web é a prova), enquanto URNs nunca apodrecem mas também nunca dereferenciam - um nome sem instruções de busca precisa de uma infraestrutura de *resolvedores* para ser útil, e essa infraestrutura nunca chegou em escala de web. O URN-esquema ainda existe e funciona (ISBNs, UUIDs como `urn:uuid:`, documentos de padrões); o URN-categoria perdeu em silêncio.
+
+## Por que a tricotomia foi aposentada
+
+Eis a parte que encerra discussões: o esclarecimento conjunto do W3C e da IETF concluiu que particionar URIs em "localizadores" e "nomes" descreve o mundo pior do que admitir que a fronteira é borrada - um link persistente `https://doi.org/...` é localização ou nome? Os dois, de propósito. Então o uso moderno colapsou pragmaticamente: **especificações dizem "URI"** (o termo da RFC 3986 para a gramática geral), **o URL Standard do WHATWG - o que os navegadores de fato implementam - diz "URL" para tudo**, e "URN" sobrevive só como um esquema entre muitos. A tabela de tradução prática: num documento IETF, URI é a palavra geral correta; em APIs de navegador e na fala do dia a dia, URL é; e corrigir o "URL" de um colega para "URI" numa conversa é tecnicamente defensável e socialmente desaconselhável.
+
+## A lição que este site vive colecionando
+
+O que pousa este artigo em território familiar: a história URI/URL/URN é irmã [da história SSL/TLS](/learn/why-we-say-ssl-when-we-mean-tls) - um vocabulário oficial preciso, um vernáculo vencedor mais bagunçado, e o insight durável de que nomes são interfaces com retrocompatibilidade. A conclusão de engenharia é a que vale guardar: projete identificadores sabendo *qual promessa* você está fazendo - "eis como buscar isto" ou "isto significará a mesma coisa em trinta anos" - porque a gramática expressa qualquer uma, e a conta de manutenção chega em cima da promessa que você quebrou.

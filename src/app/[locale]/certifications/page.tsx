@@ -23,8 +23,11 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import TrainingCta from "@/components/TrainingCta";
+import CertificationsHubSections, {
+  type HubVendorGroup,
+} from "@/components/CertificationsHubSections";
 import {
-  getCertifications,
+  getCertificationsGroupedByVendor,
   getGuidesForCertification,
   objectiveCount,
 } from "@/content/certifications/study-guides";
@@ -51,7 +54,33 @@ export default async function CertificationsHubPage({
 
   const t = await getTranslations("certGuides");
   const tNav = await getTranslations("nav");
-  const certs = getCertifications();
+  const tVendors = await getTranslations("vendors");
+
+  // -- Build the hub's vendor->certification->guide tree server-side, with
+  //    every display string resolved here so the client component owns only
+  //    the open/closed state (PRIME directive 2026-07-21, item 2).
+  const groups: HubVendorGroup[] = getCertificationsGroupedByVendor().map((g) => ({
+    vendor: g.vendor,
+    vendorLabel: tVendors(g.vendor),
+    certs: g.certs.map((cert) => ({
+      key: cert.key,
+      name: cert.name,
+      code: cert.code,
+      requiresText: t("requiresAll", { count: cert.examSlugs.length }),
+      renewalNote: cert.renewalNote,
+      guides: getGuidesForCertification(cert.key).map((guide) => {
+        const n = objectiveCount(guide);
+        return {
+          slug: guide.slug,
+          examCode: guide.examCode,
+          examName: guide.examName,
+          preparing: guide.status === "preparing",
+          badge: guide.status === "preparing" ? t("inPreparation") : t("objectivesCount", { count: n }),
+          cta: t("openGuide"),
+        };
+      }),
+    })),
+  }));
 
   return (
     <>
@@ -84,53 +113,12 @@ export default async function CertificationsHubPage({
             </div>
           </section>
 
-          {/* One section per certification, with its exam guides as cards. */}
-          {certs.map((cert) => {
-            const guides = getGuidesForCertification(cert.key);
-            return (
-              <section className="section certhub-cert" id={cert.key} key={cert.key}>
-                <div className="container certs-container">
-                  <div className="certs-group-head">
-                    <h2 className="certs-group-title">{cert.name}</h2>
-                    <span className="certs-badge certs-badge--current mono">{cert.code}</span>
-                  </div>
-                  <p className="certs-group-intro">
-                    {t("requiresAll", { count: cert.examSlugs.length })}
-                  </p>
-
-                  <ul className="certhub-guide-grid">
-                    {guides.map((g) => {
-                      const n = objectiveCount(g);
-                      return (
-                        <li className="certhub-guide-card-wrap" key={g.slug}>
-                          <Link href={`/certifications/${g.slug}`} className="certhub-guide-card">
-                            <span className="certhub-guide-code mono">{g.examCode}</span>
-                            <span className="certhub-guide-name">{g.examName}</span>
-                            <span className="certhub-guide-meta">
-                              {g.status === "preparing" ? (
-                                <span className="certhub-guide-badge certhub-guide-badge--prep">
-                                  {t("inPreparation")}
-                                </span>
-                              ) : (
-                                <span className="certhub-guide-badge">
-                                  {t("objectivesCount", { count: n })}
-                                </span>
-                              )}
-                              <span className="certhub-guide-cta">{t("openGuide")} &#8594;</span>
-                            </span>
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-
-                  {cert.renewalNote && (
-                    <p className="certhub-renewal">{cert.renewalNote}</p>
-                  )}
-                </div>
-              </section>
-            );
-          })}
+          {/* Vendors in hub order; certifications collapsible (PRIME 2026-07-21). */}
+          <CertificationsHubSections
+            groups={groups}
+            expandAllLabel={t("expandAll")}
+            collapseAllLabel={t("collapseAll")}
+          />
 
           {/* Instructor-led training CTA (subtle): high-intent candidates can
               learn these live with an authorized instructor at Red Education. */}

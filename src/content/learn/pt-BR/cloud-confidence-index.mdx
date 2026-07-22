@@ -1,0 +1,30 @@
+---
+slug: cloud-confidence-index
+title: "O Cloud Confidence Index: Pontuando os Apps que Seus Usuários Já Encontraram"
+summary: "Os blueprints do NSK101 e da Administrator Accreditation nomeiam um tópico de monitoramento ao pé da letra: 'identifying cloud risk using the Cloud Confidence Index (CCI)'. O CCI é a nota de prontidão corporativa da Netskope para dezenas de milhares de apps de nuvem - uma avaliação objetiva, baseada em critérios, de 0 a 100, agregada de categorias como certificações e conformidade, proteção de dados, controle de acesso, auditabilidade e continuidade de negócio, dividida em níveis de poor a excellent. O que mede, o que deliberadamente não mede, e como a nota vira política pelo Cloud Confidence Level."
+concepts: ["netskope", "cci", "cloud confidence index", "shadow it", "app risk", "casb", "governance"]
+relatedTools: []
+relatedArticles: ["netskope-realtime-vs-api-protection", "netskope-advanced-analytics", "dlp-fundamentals", "netskope-platform-architecture-and-newedge"]
+category: security
+order: 220
+status: reviewed
+updated: "2026-07-21"
+---
+
+A descoberta com que toda implantação de CASB começa é a mesma: a organização acredita usar quarenta apps de nuvem e o tráfego diz dois mil. O problema que vem em seguida é triagem - quais dos outros 1.960 estão bem, quais são arriscados, e com que base você defende a resposta? O **Cloud Confidence Index** é a resposta permanente da Netskope, e os dois blueprints da trilha de administrador o nomeiam como *o* tópico de monitoramento porque ele é o vocabulário em que as conversas de risco de aplicação acontecem na plataforma.
+
+## O que o CCI é
+
+O CCI é uma avaliação mantida por pesquisa, de 0 a 100, da **prontidão corporativa** de uma aplicação de nuvem - uma nota por app, pelas dezenas de milhares de aplicações que a plataforma identifica, mantida atual pelo time de pesquisa da Netskope e não por cada cliente. O número agrega categorias objetivas, baseadas em critérios, que leem como um checklist de due diligence porque é o que são: **certificações e conformidade com padrões** (as auditorias e atestados que o fornecedor detém), **proteção de dados** (cifra em repouso e em trânsito, separação de tenants, postura de tratamento de dados), **controle de acesso** (as capacidades de identidade e permissão que o app suporta), **auditabilidade** (se o app consegue contar o que aconteceu), **recuperação de desastre e continuidade de negócio**, e termos de **legal e privacidade**. As notas se dividem em níveis nomeados - de *poor*, passando por *low* e *medium*, até *high* e *excellent* - e a forma em níveis é onde a nota se torna operacional.
+
+## O que ele deliberadamente não é
+
+Duas fronteiras mantêm o conceito honesto, e ambas caem em exame. O CCI avalia a **aplicação, não o seu uso dela**: um app de armazenamento nota excellent hospedando seus dados de cliente sem proteção continua sendo um incidente - prontidão do fornecedor e comportamento dos seus usuários são [perguntas diferentes com instrumentos diferentes](/learn/dlp-fundamentals). E ele **não é veredito de popularidade nem de ausência de malware**: é due diligence sobre a postura corporativa do provedor, exatamente por isso consegue ser objetivo e baseado em critérios onde "este app é bom?" não consegue.
+
+## Da nota à política: o Cloud Confidence Level
+
+O índice paga o próprio salário quando o nível vira **atributo de política**. Em vez de manter uma lista de bloqueio eterna dos apps descobertos ontem, a política fala em níveis e categorias: permita a suíte sancionada; para a cauda longa, deixe apps *excellent* e *high* passarem com o [DLP observando](/learn/dlp-fundamentals), aplique coaching nos *medium*, bloqueie *poor* e *low* de saída. O ciclo de governança se fecha pela descoberta: [o lado de analytics](/learn/netskope-advanced-analytics) mostra o que está de fato em uso ordenado por CCI, os fora-da-curva são revisados, e a lista sancionada cresce ou as páginas de bloqueio se explicam - com uma nota baseada em critérios, e não uma opinião, como razão declarada.
+
+## O padrão transferível
+
+Tire a marca e o CCI é um projeto que vale carregar entre fornecedores: transforme uma pergunta irrespondível ("este app é seguro?") numa objetiva e pontuada por critérios ("quão pronto para empresa é este provedor?"), divida a nota em níveis, e deixe a política falar os níveis. É o mesmo movimento que a gestão de risco faz em toda parte - e reconhecer o padrão é o que permite a um engenheiro ler criticamente e bem a pontuação de risco de apps de qualquer fornecedor, esta inclusa.

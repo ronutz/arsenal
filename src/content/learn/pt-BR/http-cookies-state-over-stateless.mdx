@@ -1,0 +1,30 @@
+---
+slug: http-cookies-state-over-stateless
+title: "Cookies HTTP: Estado Sobre um Protocolo Sem Estado"
+summary: "O HTTP esquece você depois de cada requisição - por projeto. Cookies são o retrofit que o deixa lembrar mesmo assim: o servidor escreve um bilhete com Set-Cookie, o navegador o devolve com Cookie, e todo o resto - escopo, vida útil, segurança - são regras sobre quando esse bilhete viaja. Escopo por Domain e Path, vidas de sessão vs persistente, por que o servidor nunca vê o que o navegador sabe, e onde o artigo de flags de segurança assume."
+concepts: ["cookies", "set-cookie", "session", "state", "domain", "path", "expires", "max-age"]
+relatedTools: ["http-request-translator", "secure-headers"]
+relatedArticles: ["cookie-security-flags", "http-headers-anatomy", "bigip-persistence-cookies", "curl-headers-auth-and-cookies"]
+category: networking
+order: 210
+status: reviewed
+updated: "2026-07-21"
+---
+
+A simplificação fundadora do HTTP é a amnésia: cada requisição vale sozinha, e o servidor não deve a ela memória alguma da anterior. Essa ausência de estado é por que a web escala - qualquer servidor responde qualquer requisição - e por que fazer login deveria ser impossível. **Cookies** são o retrofit que fecha a conta: o estado mora *no cliente* e viaja com cada requisição, o protocolo segue sem estado enquanto a aplicação lembra. A mecânica cabe numa frase; as consequências enchem este artigo e [sua sequência de segurança](/learn/cookie-security-flags).
+
+## Os dois cabeçalhos, e quem guarda o livro-caixa
+
+Uma resposta diz `Set-Cookie: session=abc123; Path=/; Max-Age=3600` - um cookie por linha de cabeçalho, nome, valor e atributos. Dali em diante, cada requisição que o navegador envia *dentro do escopo* carrega `Cookie: session=abc123` - só nomes e valores, atributos nunca ecoados de volta. Duas assimetrias se escondem aí, e ambas importam. Primeira, **o navegador guarda o livro-caixa**: o servidor declarou as regras uma vez na hora de gravar, mas só o cliente sabe o que armazenou, quando expira e o que mais há no pote - o servidor só vê o que volta. Segunda, cookies são por *requisição*, não por sessão: o navegador anexa todo cookie em escopo a toda requisição correspondente, o que é a superfície inteira de performance e segurança num só hábito - e a razão de identificadores de sessão serem curtos e de [balanceadores pegarem carona no mecanismo para persistência](/learn/bigip-persistence-cookies).
+
+## Escopo: quais requisições o carregam
+
+Atributos na gravação definem o território do cookie. **Domain** ausente significa host-only - o host exato de origem, o padrão mais estrito e melhor; `Domain=example.com` alarga para o domínio registrável inteiro incluindo subdomínios, que é exatamente como uma sessão vaza para um subdomínio que você esqueceu que tinha. **Path** estreita por prefixo de URL - mais etiqueta que segurança, já que páginas da mesma origem alcançam outros caminhos. O navegador computa a interseção a cada requisição: casamento de host, casamento de caminho, mais as regras de esquema e cross-site que [o artigo de flags governa](/learn/cookie-security-flags). Uma regra territorial a mais merece menção: a **public suffix list** é por que ninguém consegue gravar um cookie para `.com` ou `.com.br` e fazê-lo seguir você pela internet.
+
+## Vida útil: sessão ou persistente
+
+Sem atributo de expiração nasce um **cookie de sessão** - morre com a sessão de navegação, que os recursos modernos de restauração esticam silenciosamente muito além do que "sessão" sugere. `Max-Age` (segundos a partir de agora, a forma moderna) ou `Expires` (data absoluta, a forma legada) faz um **cookie persistente** gravado em disco; quando ambos aparecem, `Max-Age` vence. Apagar é o mesmo movimento com o relógio virado: grave o cookie de novo com `Max-Age=0` ou um `Expires` no passado. E como o livro-caixa é do navegador, o "logout" que só limpa a sessão do lado do servidor enquanto o cookie persiste é meia-medida clássica - o bilhete continua chegando, agora nomeando uma sessão que não existe mais.
+
+## O que cookies são, apertando os olhos
+
+O padrão que vale guardar: um cookie é uma *alegação emitida pelo servidor, guardada pelo cliente e reapresentada em rotina* - o que o faz ancestral conceitual de toda credencial bearer desde então. O próximo capítulo é defesa: `Secure`, `HttpOnly`, `SameSite` e o prefixo `__Host-` são [a sequência](/learn/cookie-security-flags), e existem porque tudo que este artigo descreveu - anexação automática, escopo largo, custódia no cliente - é precisamente o que atacantes aprenderam a cavalgar.

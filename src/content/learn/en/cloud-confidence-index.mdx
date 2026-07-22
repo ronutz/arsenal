@@ -1,0 +1,30 @@
+---
+slug: cloud-confidence-index
+title: "The Cloud Confidence Index: Scoring the Apps Your Users Already Found"
+summary: "The NSK101 and Administrator blueprints name one monitoring topic verbatim: 'identifying cloud risk using the Cloud Confidence Index (CCI).' The CCI is Netskope's enterprise-readiness score for tens of thousands of cloud apps - an objective, criteria-based 0-100 rating rolled up from categories like certifications and compliance, data protection, access control, auditability, and business continuity, banded into levels from poor to excellent. What it measures, what it deliberately does not, and how the score becomes policy through the Cloud Confidence Level."
+concepts: ["netskope", "cci", "cloud confidence index", "shadow it", "app risk", "casb", "governance"]
+relatedTools: []
+relatedArticles: ["netskope-realtime-vs-api-protection", "netskope-advanced-analytics", "dlp-fundamentals", "netskope-platform-architecture-and-newedge"]
+category: security
+order: 220
+status: reviewed
+updated: "2026-07-21"
+---
+
+The discovery every CASB deployment begins with is the same: the organization believes it uses forty cloud apps and the traffic says two thousand. The problem that follows is triage - which of the other 1,960 are fine, which are risky, and on what basis do you defend the answer? The **Cloud Confidence Index** is Netskope's standing answer, and both administrator-track blueprints name it as *the* monitoring topic because it is the vocabulary in which app-risk conversations happen on the platform.
+
+## What the CCI is
+
+The CCI is a research-maintained rating, from 0 to 100, of a cloud application's **enterprise readiness** - one score per app, across the tens of thousands of applications the platform identifies, kept current by Netskope's research team rather than by each customer. The number rolls up from objective, criteria-based categories that read like a due-diligence checklist because that is what they are: **certifications and standards compliance** (the audits and attestations the vendor holds), **data protection** (encryption at rest and in transit, tenant separation, data-handling posture), **access control** (the identity and permission capabilities the app supports), **auditability** (whether the app can tell you what happened), **disaster recovery and business continuity**, and **legal and privacy** terms. Scores band into named levels - from *poor* through *low* and *medium* to *high* and *excellent* - and the leveled form is where the score becomes operational.
+
+## What it deliberately is not
+
+Two boundaries keep the concept honest, and both are exam-relevant. The CCI rates the **application, not your usage of it**: an excellent-rated storage app hosting your unprotected customer data is still an incident - readiness of the vendor and behavior of your users are [different questions with different instruments](/learn/dlp-fundamentals). And it is **not a popularity or safety-from-malware verdict**: it is due diligence about the provider's enterprise posture, which is precisely why it can be objective and criteria-based where "is this app good?" cannot.
+
+## From score to policy: the Cloud Confidence Level
+
+The index earns its keep when the banded level becomes a **policy attribute**. Instead of maintaining an eternal blocklist of yesterday's discovered apps, policy speaks in levels and categories: allow the sanctioned suite; for the long tail, let *excellent* and *high* apps pass with [DLP watching](/learn/dlp-fundamentals), coach users on *medium*, block *poor* and *low* outright. The governance loop closes through discovery: [the analytics side](/learn/netskope-advanced-analytics) surfaces what is actually in use ranked by CCI, the outliers get reviewed, and the sanctioned list grows or the block pages explain themselves - with a criteria-based score, not an opinion, as the stated reason.
+
+## The transferable pattern
+
+Strip the branding and the CCI is a design worth carrying between vendors: turn an unanswerable question ("is this app safe?") into an objective, criteria-scored one ("how enterprise-ready is this provider?"), band the score into levels, and let policy speak the levels. It is the same move risk management makes everywhere - and recognizing the pattern is what lets an engineer read any vendor's app-risk scoring, this one included, critically and well.

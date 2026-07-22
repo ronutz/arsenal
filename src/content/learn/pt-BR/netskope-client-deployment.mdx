@@ -1,0 +1,30 @@
+---
+slug: netskope-client-deployment
+title: "Implantação do Netskope Client: Inscrição, Identidade e o Túnel"
+summary: "O Netskope Client é o método de steering que carrega identidade consigo - o que torna a implantação um problema em três partes: colocar o software (push por MDM/UEM, instalação dirigida por IdP, ou convite por e-mail), vinculá-lo ao usuário certo (inscrição é identidade, não só instalação), e controlar o que o túnel carrega (configuração de steering, exceções, e a decisão fail-open versus fail-closed). O objetivo 'client connectivity issues' do blueprint mora inteiro dentro dessas três."
+concepts: ["netskope", "client", "enrollment", "mdm", "idp", "steering configuration", "fail open", "fail closed"]
+relatedTools: []
+relatedArticles: ["netskope-steering-methods", "netskope-platform-architecture-and-newedge", "scim-overview", "saml-overview"]
+category: networking
+order: 218
+status: reviewed
+updated: "2026-07-21"
+---
+
+Tanto o blueprint de Integrator ("Netskope client deployment") quanto toda seção de troubleshooting ("client connectivity issues") apontam para o mesmo artefato: o agente no endpoint. Entendê-lo como três problemas separáveis - software, identidade, túnel - é o que transforma esses objetivos de memorização em raciocínio.
+
+## Colocando o software: três famílias de instalação
+
+A implantação corporativa acontece de três jeitos reconhecíveis. **Empurrada pela gestão**: o ferramental MDM/UEM (os Intunes e Jamfs da frota) instala em silêncio e em escala - o padrão para frotas corporativas. **Dirigida por IdP**: a instalação é acoplada ao fluxo de identidade, e a inscrição acontece com o login SSO do usuário. **Por convite**: convites por e-mail, usuário a usuário, para populações pequenas, pilotos e a cauda longa. O ponto de engenharia sob as três é que instalar é a metade *fácil*; o método de instalação é escolhido, sobretudo, pela confiabilidade com que conduz ao segundo problema.
+
+## Vinculando a uma pessoa: inscrição é identidade
+
+Um client recém-instalado é inútil até saber *de quem* é - a vantagem toda sobre [túneis de site](/learn/netskope-steering-methods) é que o tráfego chega pré-atribuído a um usuário. A inscrição vincula dispositivo a identidade, e por isso se apoia no encanamento de diretório que este site já cobre: usuários provisionados via [SCIM](/learn/scim-overview) ou importação de diretório, autenticados via [SSO SAML](/learn/saml-overview). As falhas clássicas de implantação moram nessa costura, não no instalador: o usuário existe no endpoint mas não no tenant, o UPN que o client vê não casa com a identidade provisionada, a autenticação de inscrição entra em loop. Quando o objetivo de troubleshooting diz "user provisioning", é desta costura que ele fala.
+
+## Controlando o que ele carrega: configuração de steering e postura de falha
+
+Inscrito, o client baixa sua **configuração de steering** - a declaração do lado do tenant sobre o que tunelar (tráfego web, apps de nuvem, ou todo o tráfego [para cobertura completa de firewall](/learn/netskope-cloud-firewall)) e o que excetuar (as aplicações e destinos que devem ir direto: coisas que quebram sob proxy, tráfego já tratado em outro lugar). Dois comportamentos operacionais completam a imagem e decidem incidentes reais. Primeiro, exceções são consultadas *no dispositivo*: um destino excetuado do steering nunca chega à nuvem, então nenhuma política do lado da nuvem jamais poderá se aplicar a ele - a primeira pergunta de metade dos chamados de "política não está aplicando". Segundo, a **postura de falha**: quando o client não alcança nenhum ponto de presença NewEdge, a escolha do tenant entre fail-open (o tráfego flui sem inspeção; a disponibilidade vence) e fail-closed (o tráfego bloqueia; a segurança vence) é a caixa de seleção mais consequente da configuração - e a resposta correta é uma decisão de negócio, não técnica.
+
+## Lendo um incidente de client
+
+A ordem diagnóstica que decorre do modelo em três partes: o software está presente e rodando (problema de instalação); está inscrito para o usuário esperado (problema de identidade); o túnel está de pé até um data center próximo, e este tráfego está dentro ou fora das exceções de steering (problema de túnel)? Os logs do client respondem às três - exatamente por isso "collect log files used for service requests" senta no blueprint ao lado dos objetivos de conectividade, e por isso [a imagem da arquitetura da plataforma](/learn/netskope-platform-architecture-and-newedge), de atendimento no PoP mais próximo, é o pano de fundo de toda reclamação de latência.

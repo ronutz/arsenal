@@ -1,0 +1,30 @@
+---
+slug: netskope-platform-architecture-and-newedge
+title: "Arquitetura da Plataforma Netskope: Uma Plataforma, Dois Caminhos de Dados, Uma Nuvem Privada"
+summary: "A arquitetura por trás de todo domínio de exame Netskope cabe numa imagem: uma nuvem de segurança (Netskope One) rodando como microsserviços numa rede global operada privadamente (NewEdge), inspecionando tráfego por dois caminhos de dados complementares - proxy inline em tempo real para dados em movimento, e conexões de API fora de banda para dados em repouso no SaaS gerenciado. O que é cada peça, por que a inspeção single-pass importa, e como o vocabulário (CASB, SWG, ZTNA, CFW, DLP) mapeia para um motor em vez de cinco caixas."
+concepts: ["netskope", "newedge", "sase", "sse", "microservices", "single-pass", "casb", "swg"]
+relatedTools: []
+relatedArticles: ["netskope-inline-tls-decryption", "netskope-realtime-vs-api-protection", "netskope-steering-methods", "http-proxy-forward-and-reverse"]
+category: networking
+order: 216
+status: reviewed
+updated: "2026-07-21"
+---
+
+Todo blueprint Netskope - certificação e accreditation - abre com "features and architectural benefits", e a arquitetura é genuinamente a chave que torna o resto da plataforma legível. Este artigo desenha a imagem única da qual os outros artigos Netskope deste site pendem.
+
+## A plataforma: um motor vestindo cinco siglas
+
+O Netskope One é uma plataforma SASE/SSE: a metade de segurança do Secure Access Service Edge, entregue como serviço de nuvem. O vocabulário da indústria faz parecer cinco produtos - **CASB** (Cloud Access Security Broker: visibilidade e controle sobre SaaS), **SWG** (Secure Web Gateway: filtragem web e proteção contra ameaças), **ZTNA** (Zero Trust Network Access: [acesso a aplicações privadas](/learn/netskope-private-access-npa)), **Cloud Firewall** ([controle de saída para tudo que não é web](/learn/netskope-cloud-firewall)) e **DLP** ([prevenção de perda de dados](/learn/dlp-fundamentals)) - mas arquiteturalmente são superfícies de política sobre um motor de inspeção. Um único fluxo de tráfego, decifrado e decodificado, é avaliado uma vez, em passagem única, contra todas elas. Esse é o significado prático da alegação de "single-pass": não compressão de marketing, e sim a razão de uma decisão de steering e uma interceptação TLS comprarem todos os controles de uma vez, em vez de encadear cinco appliances que cada um decifra, inspeciona e recifra.
+
+## NewEdge: a rede em que o motor roda
+
+Um proxy de nuvem é tão bom quanto sua distância do usuário, então a Netskope opera a **NewEdge** - sua rede global de data centers operada privadamente, onde a inspeção de fato acontece. A intenção de projeto que vale entender para qualquer cenário de exame: todo data center é full-compute (qualquer ponto de presença executa qualquer inspeção, então usuários são atendidos na porta mais próxima em vez de arrastados até onde um recurso mora), e o peering com as grandes plataformas SaaS e web acontece diretamente nessas bordas. A consequência operacional é a que importa em campo: o orçamento de latência de "mande tudo por uma nuvem para inspeção" é pago na distância até o nó NewEdge mais próximo - e é por isso que projeto de steering e proximidade de data center são temas recorrentes de troubleshooting, não trivia.
+
+## Microsserviços: por que a plataforma entrega recursos do jeito que entrega
+
+O blueprint do NSK300 nomeia "the various microservices of the Netskope Security Cloud platform" como tópico de nível arquiteto, e o conceito importa mais que qualquer lista de componentes: o pipeline de inspeção é composto de serviços independentes - decifração, decodificação de protocolo, identificação de aplicação, análise de ameaças, DLP - costurados naquela passagem única. O benefício arquitetural é do lado da implantação: serviços escalam e atualizam de forma independente pela NewEdge sem janelas de manutenção visíveis ao cliente, o contraste invisível com o mundo de appliances, em que um recurso de inspeção é uma imagem de software numa caixa cuja atualização exige downtime agendado.
+
+## Dois caminhos de dados, um cérebro de política
+
+A peça final da imagem é a divisão sobre a qual a plataforma inteira repousa, e ela ganha [artigo próprio](/learn/netskope-realtime-vs-api-protection): a **proteção inline em tempo real** faz proxy do tráfego enquanto ele acontece (os [métodos de steering](/learn/netskope-steering-methods) existem para entregar tráfego a ela, e a [interceptação TLS](/learn/netskope-inline-tls-decryption) existe para que ela enxergue), enquanto a **proteção via API** conecta-se fora de banda a tenants SaaS gerenciados e inspeciona o que já está em repouso. Mesmo vocabulário de política, mesmo motor de DLP, pontos de observação diferentes - e saber qual caminho vê o quê é, confiavelmente, onde começam tanto as questões de exame quanto os incidentes de produção com Netskope.

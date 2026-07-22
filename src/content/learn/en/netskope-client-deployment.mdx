@@ -1,0 +1,30 @@
+---
+slug: netskope-client-deployment
+title: "Netskope Client Deployment: Enrollment, Identity, and the Tunnel"
+summary: "The Netskope Client is the steering method that carries identity with it - which makes deployment a three-part problem: getting the software on (MDM/UEM push, IdP-driven install, or email invitation), binding it to the right user (enrollment is identity, not just installation), and controlling what the tunnel carries (steering configuration, exceptions, and the fail-open versus fail-closed decision). The blueprint's 'client connectivity issues' objective lives entirely inside these three."
+concepts: ["netskope", "client", "enrollment", "mdm", "idp", "steering configuration", "fail open", "fail closed"]
+relatedTools: []
+relatedArticles: ["netskope-steering-methods", "netskope-platform-architecture-and-newedge", "scim-overview", "saml-overview"]
+category: networking
+order: 218
+status: reviewed
+updated: "2026-07-21"
+---
+
+Both the Integrator blueprint ("Netskope client deployment") and every troubleshooting section ("client connectivity issues") point at the same artifact: the agent on the endpoint. Understanding it as three separable problems - software, identity, tunnel - is what turns those objectives from memorization into reasoning.
+
+## Getting it on: three install families
+
+Enterprise deployment happens in three recognizable ways. **Management-pushed**: MDM/UEM tooling (the Intunes and Jamfs of the fleet) installs silently at scale - the default for corporate fleets. **IdP-driven**: installation is coupled to the identity flow so enrollment happens with the user's SSO login. **Invitation-based**: per-user email invitations for small populations, pilots, and the long tail. The engineering point underneath all three is that installation is the *easy* half; the install method is chosen mostly for how reliably it leads to the second problem.
+
+## Binding it to a person: enrollment is identity
+
+A freshly installed client is useless until it knows *whose* it is - the whole advantage over [site tunnels](/learn/netskope-steering-methods) is that traffic arrives pre-attributed to a user. Enrollment binds device to identity, which is why it leans on the directory plumbing this site already covers: users provisioned via [SCIM](/learn/scim-overview) or directory import, authenticated via [SAML SSO](/learn/saml-overview). The classic deployment failures live at this seam, not in the installer: the user exists on the endpoint but not in the tenant, the UPN the client sees does not match the identity provisioned, the enrollment authentication loops. When the troubleshooting objective says "user provisioning," this seam is what it means.
+
+## Controlling what it carries: steering configuration and failure posture
+
+Once enrolled, the client downloads its **steering configuration** - the tenant-side declaration of what to tunnel (web traffic, cloud apps, or all traffic [for full firewall coverage](/learn/netskope-cloud-firewall)) and what to except (the apps and destinations that must go direct: things that break under proxying, traffic already handled elsewhere). Two operational behaviors complete the picture and decide real incidents. First, exceptions are consulted *on the device*: a destination excepted from steering never reaches the cloud, so no cloud-side policy can ever apply to it - the first question of half of all "policy not applying" tickets. Second, the **failure posture**: when the client cannot reach any NewEdge point of presence, the tenant's choice between fail-open (traffic flows uninspected; availability wins) and fail-closed (traffic blocks; security wins) is the single most consequential checkbox in the configuration - and the correct answer is a business decision, not a technical one.
+
+## Reading a client incident
+
+The diagnostic order that follows from the three-part model: is the software present and running (install problem); is it enrolled to the expected user (identity problem); is the tunnel up to a nearby data center, and is this traffic inside or outside the steering exceptions (tunnel problem)? Client logs answer all three - which is precisely why "collect log files used for service requests" sits in the blueprint next to the connectivity objectives, and why [the platform-architecture picture](/learn/netskope-platform-architecture-and-newedge) of nearest-PoP service is the background of every latency complaint.

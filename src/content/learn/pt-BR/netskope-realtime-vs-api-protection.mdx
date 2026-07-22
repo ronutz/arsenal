@@ -1,0 +1,30 @@
+---
+slug: netskope-realtime-vs-api-protection
+title: "Proteção em Tempo Real vs via API: Os Dois Pontos de Observação de uma Nuvem de Segurança"
+summary: "Todo blueprint Netskope separa política 'real-time inline' de política 'API', e a divisão é a decisão de projeto mais profunda da plataforma: a proteção inline fica no caminho do tráfego e pode impedir as coisas antes que aconteçam, enquanto a proteção via API conecta-se ao SaaS gerenciado fora de banda e vê o que a inline nunca verá - conteúdo já em repouso, mudanças de compartilhamento feitas de qualquer lugar, atividade de dispositivos que você não direciona. O que cada caminho vê, o que cada um pode fazer a respeito, e por que implantações maduras sempre rodam os dois."
+concepts: ["netskope", "real-time protection", "api protection", "inline", "out-of-band", "casb", "dlp", "saas"]
+relatedTools: []
+relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-inline-tls-decryption", "dlp-fundamentals", "netskope-steering-methods"]
+category: security
+order: 219
+status: reviewed
+updated: "2026-07-21"
+---
+
+Pergunte o que uma plataforma de segurança em nuvem consegue ver, e a resposta honesta é: depende de qual dos dois olhos dela você quer dizer. [O artigo de arquitetura](/learn/netskope-platform-architecture-and-newedge) apresentou a divisão; este dá a ela o detalhe de trabalho que os objetivos de "real-time inline or API policy configuration concepts" pedem.
+
+## Inline: de pé no caminho
+
+A **proteção em tempo real** é a postura de proxy: o tráfego [direcionado para a nuvem](/learn/netskope-steering-methods) transita pelo motor de inspeção *enquanto acontece*, [decifrado onde a política permite](/learn/netskope-inline-tls-decryption), decodificado até o nível de atividade - não só "usuário conectou a um app de armazenamento", mas *upload*, *download*, *compartilhamento*, *postagem* - e avaliado contra a política antes de prosseguir. O poder que a define é a prevenção no momento: o upload que viola o [DLP](/learn/dlp-fundamentals) nunca pousa; o download do tenant arriscado nunca começa; a página de coaching interrompe a ação para perguntar "isto vai para uma instância pessoal - prosseguir?". Os limites igualmente definidores: a inline só vê tráfego direcionado (um dispositivo não gerenciado fora do mapa de steering é invisível), e só vê *movimento* - o que cruza o fio enquanto a inspeção está ali de pé.
+
+## API: o auditor com as chaves do tenant
+
+A **proteção via API** assume a postura oposta: caminho de tráfego nenhum. O administrador do tenant conecta a Netskope ao SaaS gerenciado da organização - os tenants corporativos de armazenamento, e-mail e colaboração - pelas APIs administrativas dessas próprias plataformas, concedendo acesso com escopo, fora de banda. Desse ponto de observação a plataforma vê o que a inline estruturalmente não pode: conteúdo **já em repouso** (incluindo tudo que subiu antes de a Netskope existir no ambiente), **estado de compartilhamento e suas mudanças** (o arquivo que meses depois do upload virou, em silêncio, compartilhado por link), e atividade feita de **qualquer dispositivo em qualquer rede**, direcionado ou não, porque o ponto de observação é o próprio tenant SaaS. A troca é tensa: as ações são *retrospectivas* - detectar, e então quarentenar, revogar o compartilhamento, notificar - segundos a minutos depois do fato, e não antes dele.
+
+## Mesma língua de política, físicas diferentes
+
+A comparação que resolve cenários de exame: **cobertura** - a inline cobre tráfego direcionado a *qualquer* destino (milhares de apps, a web inteira); a API cobre *só tenants gerenciados*, mas de todas as direções. **Tempo** - a inline previne; a API remedia. **Visibilidade** - a inline vê movimento em voo; a API vê repouso e estado. **Dependência** - a inline precisa de [steering](/learn/netskope-steering-methods) e interceptação TLS; a API precisa do consentimento administrativo a cada tenant e de nada em dispositivo algum. As duas alimentam o mesmo motor de DLP e o mesmo vocabulário de política, exatamente por isso a plataforma as apresenta como dois tipos de política, e não dois produtos.
+
+## Por que a resposta é as duas
+
+O raciocínio de fechamento que vale internalizar: o ponto cego de cada caminho é o quintal do outro. A inline sozinha perde o dispositivo não gerenciado escrevendo direto no seu tenant e tudo que já está armazenado; a API sozinha perde toda a web não gerenciada e só consegue limpar depois um movimento que nunca viu. Um cenário que nomeia um dispositivo não gerenciado tocando o SaaS corporativo aponta para API (ou para [steering por reverse proxy](/learn/netskope-steering-methods)); um que nomeia bloquear uma ação *enquanto acontece* aponta para inline; e uma pergunta de implantação sem pista nenhuma quase sempre se responde "as duas, de propósito".

@@ -1,0 +1,30 @@
+---
+slug: pagers-and-paging-networks
+title: "Pagers e Redes de Paging: Alcançável Antes do Tempo Real"
+summary: "Antes do telefone no bolso, havia o bip no cinto: um receptor de rádio unidirecional numa rede de broadcast em simulcast, alimentada - na sua forma clássica - por uma operadora humana que pegava as palavras de quem ligava e as digitava para o ar. Como as redes de paging de fato funcionavam, dos bipes two-tone ao POCSAG e ao FLEX, por que o modelo de retransmissão por operadora significava estranhos lendo a sua vida em voz alta, e por que hospitais mantiveram pagers muito depois de todo mundo seguir em frente."
+concepts: ["pager", "paging", "bip", "pocsag", "flex", "simulcast", "one-way", "teletrim"]
+relatedTools: []
+relatedArticles: ["last-mile-evolution-pots-to-fiber", "lora-and-lpwan", "leo-satellite-constellations"]
+category: networking
+order: 203
+status: reviewed
+updated: "2026-07-21"
+---
+
+Houve uma década em que ser alcançável longe de uma mesa significava uma caixinha de plástico que só sabia *escutar*. O pager - o **bip**, no português brasileiro - resolveu a mobilidade uma geração antes de a telefonia móvel poder pagar por ela, e o fez com uma arquitetura que vale estudar precisamente por quanto ela se recusava a fazer. O primeiro gosto deste autor de alcançabilidade em trânsito veio em 1995 ou 1996, no serviço Teletrim de São Paulo - limitado, assíncrono, nada parecido com tempo real, e revolucionário assim mesmo. O timing não foi acidente: 1996 foi também o ano em que este autor começou como engenheiro de campo de redes na Cabletron Systems, e para um técnico que vivia entre clientes, o bip no cinto *era* o sistema de despacho - o escritório sempre conseguia te achar, mesmo que você só conseguisse achar um orelhão para responder.
+
+## A arquitetura: unidirecional, em todo lugar ao mesmo tempo
+
+Uma rede de paging é um **sistema de broadcast unidirecional em simulcast**: transmissores potentes por toda a área de cobertura enviam o *mesmo* sinal simultaneamente, e cada pager no alcance decodifica tudo, exibindo apenas as mensagens endereçadas ao seu próprio código de identidade. A elegância está no que isso elimina - o pager não tem transmissor, então não precisa de orçamento de subida, de dança de registro, de conhecimento da rede sobre onde ele está. Os custos são a imagem espelhada: a rede não pode saber se uma mensagem chegou, a cobertura é o que os transmissores cobrem, e o dispositivo é mudo por projeto. Bateria medida em semanas e receptores que funcionavam no fundo de prédios eram os dividendos - propriedades que [o rádio moderno de baixa potência](/learn/lora-and-lpwan) ainda persegue.
+
+## Dos bipes às palavras
+
+O arco da tecnologia vai da invenção de Al Gross em 1949 (o criador do walkie-talkie, de novo), passando por anos de uso crítico restrito, até a FCC abrir os pagers ao público em geral em 1958. As primeiras unidades **two-tone** transmitiam exatamente um bit - *alguém quer você* - e o destinatário telefonava a uma central para saber quem. Pagers numéricos exibiam um número de retorno; alfanuméricos exibiam texto. Por baixo, a indústria padronizou protocolos digitais de sinalização - o **POCSAG**, o formato amplamente adotado abençoado pelo CCITT, e a família **FLEX** da Motorola, de maior vazão - que definiam como endereços e cargas de mensagem viajam no broadcast.
+
+## A operadora no meio
+
+O modelo clássico de serviço merece sua própria seção, porque é uma lição de privacidade vestindo fantasia de nostalgia. Para chamar alguém no pager, você *ligava para uma operadora humana*, falava sua mensagem, e a operadora a digitava para transmissão ao bip do destino. Cada compromisso, cada desculpa, cada "me liga, é urgente, você sabe por quê" passava pelo fone de ouvido de um estranho - o tecido de mensagens da era tinha um humano no caminho dos dados, e como este autor coloca, por experiência do lado receptor: elas devem ter ouvido tanta coisa. No Brasil o modelo escalou impressionantemente para o seu momento - operadoras como Teletrim e PageNet cresceram a base nacional de cerca de cem mil usuários em 1993 para uns oitocentos mil em três anos - antes de a telefonia móvel e o SMS absorverem o caso de uso.
+
+## Por que os pagers se recusaram a morrer
+
+O epílogo é instrutivo. O paging sobreviveu por décadas em hospitais e serviços de emergência depois de os consumidores o abandonarem, e por razões de engenharia, não sentimentais: broadcast em simulcast penetra prédios onde o celular sofre, um dispositivo só-recepção não congestiona nada, a rede não tem estado de sessão por usuário para sobrecarregar numa crise, e baterias de semanas falham raramente. O último serviço de paging para consumidores do Japão rodou até 2019. O padrão a guardar: as *limitações* de uma arquitetura - unidirecional, burra, broadcast - podem ser exatamente as propriedades de confiabilidade de que um nicho crítico precisa, uma frase que voltará toda vez que uma tecnologia "obsoleta" sobreviver ao ciclo de hype da sua substituta.

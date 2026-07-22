@@ -1,0 +1,34 @@
+---
+slug: netskope-steering-methods
+title: "Netskope Steering Methods: Getting Traffic to the Cloud That Inspects It"
+summary: "A cloud security platform inspects nothing until traffic reaches it, which is why 'traffic steering' anchors every Netskope blueprint. The full menu: the Netskope Client's per-device tunnel, explicit proxy and PAC files, GRE and IPsec tunnels from sites, reverse proxy for unmanaged devices, and the honest decision logic - who owns the device, where the user is, and what traffic classes need inspecting - that picks among them."
+concepts: ["netskope", "steering", "client", "pac", "gre", "ipsec", "explicit proxy", "reverse proxy"]
+relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"]
+relatedArticles: ["netskope-client-deployment", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "netskope-platform-architecture-and-newedge"]
+category: networking
+order: 217
+status: reviewed
+updated: "2026-07-21"
+---
+
+Every Netskope exam track lists steering twice - as a concept and as a practice - because it is the platform's existential dependency: [the inspection engine](/learn/netskope-platform-architecture-and-newedge) sees only what arrives. Steering is the family of answers to one question: *by what mechanism does this user's or this site's traffic reach the Netskope cloud?* The options split cleanly by what you control.
+
+## Managed devices: the Netskope Client
+
+The primary method for devices you manage is the **Netskope Client** - an agent that builds an encrypted tunnel from the endpoint to the nearest NewEdge point of presence and steers configured traffic into it. Because it rides the device, it works identically in the office, at home, and in the airport; because it is configuration-driven, *what* it steers is a tenant decision (web only, cloud apps, or [all traffic including non-web ports for the Cloud Firewall](/learn/netskope-cloud-firewall)), with exceptions carved out for things that must not be proxied. The client matters enough to get [its own deployment article](/learn/netskope-client-deployment); for this map, the key property is per-user identity: traffic arrives already attributed to an enrolled person, which is what makes user-based policy trivial downstream.
+
+## Browsers and legacy fleets: explicit proxy and PAC
+
+The agentless classic still earns its place: point browsers at the cloud as an **explicit proxy**, usually via a **PAC file** whose logic decides per-URL what goes to Netskope and what goes direct. Everything this site's [PAC anatomy article](/learn/how-a-pac-file-chooses-a-proxy) and [PAC explainer tool](/tools/pac-file-explainer) teach applies verbatim - including the failure modes: PAC files steer only the applications that honor them, which in practice means browsers, and attribution needs an authentication step the client would have given you for free.
+
+## Sites: GRE and IPsec tunnels
+
+For an office where you would rather steer the *location* than each device, the perimeter router or firewall builds a tunnel to Netskope and forwards traffic into it - **GRE** where you want [a simple unencrypted carrier](/learn/gre-tunnels-fundamentals) (the payload is mostly TLS anyway) and **IPsec** where [the path itself must be encrypted or GRE is unavailable](/learn/ipsec-and-ike-fundamentals). Site tunnels trade the client's user-identity for coverage of everything on the network - guests, printers, the lab - and reintroduce every classic tunnel consideration this site has already cataloged, [overhead and MSS clamping included](/learn/tunnel-overhead-mtu-and-mss).
+
+## Unmanaged devices: the reverse proxy
+
+The remaining gap is the device you cannot touch: a contractor's laptop logging into your SaaS tenant. **Reverse proxy** steering closes it from the identity side - the IdP's SAML flow hands the session to Netskope, which rewrites the app's URLs so the browser's traffic to *that application* transits inspection with nothing installed. Scope is the trade: it protects specific managed applications, not the device's traffic in general - precisely the coverage question [the real-time-versus-API article](/learn/netskope-realtime-vs-api-protection) picks up.
+
+## The decision, honestly
+
+The selection logic that survives contact with both exams and production: *managed device* → Client, everywhere it goes; *managed network, mixed devices* → GRE/IPsec from the site; *browsers only, no agent possible* → explicit proxy/PAC; *unmanaged device, managed app* → reverse proxy; and real estates run several at once, which is why steering *precedence and exceptions* - not the methods themselves - are where the troubleshooting objectives on every Netskope blueprint actually live.

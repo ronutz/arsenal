@@ -1,0 +1,30 @@
+---
+slug: uri-url-urn-whats-the-difference
+title: "URI, URL, URN: What's Actually the Difference?"
+summary: "The three acronyms everyone uses interchangeably encode one clean idea: identify vs locate vs name. URI is the umbrella - any identifier in the standard grammar; URL is the identifier that also tells you where and how to fetch; URN was the scheme for pure, location-free names (urn:isbn:...). Why the W3C itself declared the classical trichotomy obsolete, what 'URI' means in specs vs 'URL' in conversation, and the naming lesson this site keeps collecting."
+concepts: ["uri", "url", "urn", "identifier", "scheme", "rfc 3986", "naming"]
+relatedTools: ["url-inspector"]
+relatedArticles: ["url-anatomy", "url-encoding-and-idn", "relative-urls-and-resolution", "why-we-say-ssl-when-we-mean-tls"]
+category: encoding
+order: 214
+status: reviewed
+updated: "2026-07-21"
+---
+
+Ask three engineers the difference between URI, URL, and URN and you will get three confident, mutually incompatible answers - because the terminology genuinely shifted under everyone's feet. The underlying idea, though, is clean, and worth having straight before [dissecting a URL's parts](/learn/url-anatomy): it is the difference between *identifying* a thing, *locating* it, and *naming* it.
+
+## The umbrella: URI
+
+A **URI - Uniform Resource Identifier** - is any string, in the standard grammar (RFC 3986: scheme, then scheme-specific structure), that identifies a resource. That is the whole definition: an identifier with agreed syntax. `https://ronutz.com/en/learn`, `mailto:someone@example.com`, `urn:isbn:0451450523`, `tel:+55-11-...` - all URIs. The genius of the umbrella is that generic software can handle identifiers *without understanding them*: the parsing rules, [the encoding rules](/learn/url-encoding-and-idn), and [the relative-resolution algorithm](/learn/relative-urls-and-resolution) all operate at the URI level, for every scheme, including ones not invented yet.
+
+## The two children: locate vs name
+
+The classical trichotomy split URIs into two kinds. A **URL - Uniform Resource Locator** - identifies a resource *by telling you where it is and how to get it*: `https://host/path` bundles the protocol, the authority to contact, and the path to ask for. Access instructions included. A **URN - Uniform Resource Name** - identifies *without* location: `urn:isbn:0451450523` names a specific book forever, no matter who hosts a copy, whether anyone does, or which servers have died since. The trade is exactly the persistence problem in mirror image: URLs rot when things move (the web's broken-link epidemic is the proof), while URNs never rot but also never dereference - a name with no fetch instructions needs a *resolver* infrastructure to become useful, and that infrastructure never arrived at web scale. URN-the-scheme still exists and works (ISBNs, UUIDs as `urn:uuid:`, standards documents); URN-the-category quietly lost.
+
+## Why the trichotomy was retired
+
+Here is the part that settles arguments: the W3C and IETF's joint clarification concluded that partitioning URIs into "locators" and "names" describes the world worse than admitting the boundary is blurry - is a persistent `https://doi.org/...` link a location or a name? Both, on purpose. So modern usage collapsed pragmatically: **specifications say "URI"** (the RFC 3986 term for the general grammar), **the WHATWG URL Standard - what browsers actually implement - says "URL" for everything**, and "URN" survives only as one scheme among many. The practical translation table: in an IETF document, URI is the correct general word; in browser APIs and everyday speech, URL is; and correcting a colleague's "URL" to "URI" in conversation is technically defensible and socially inadvisable.
+
+## The lesson this site keeps collecting
+
+Which lands this article in familiar territory: the URI/URL/URN story is [the SSL/TLS story's](/learn/why-we-say-ssl-when-we-mean-tls) sibling - a precise official vocabulary, a messier winning vernacular, and the durable insight that names are interfaces with backward compatibility. The engineering takeaway is the one worth keeping: design identifiers knowing *which promise* you are making - "here is how to fetch it" or "this will mean the same thing in thirty years" - because the grammar can express either, and the maintenance bill arrives on whichever promise you broke.

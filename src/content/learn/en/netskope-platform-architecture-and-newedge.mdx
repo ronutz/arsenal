@@ -1,0 +1,30 @@
+---
+slug: netskope-platform-architecture-and-newedge
+title: "Netskope Platform Architecture: One Platform, Two Data Paths, One Private Cloud"
+summary: "The architecture behind every Netskope exam domain fits one picture: a security cloud (Netskope One) running as microservices on a privately operated global network (NewEdge), inspecting traffic through two complementary data paths - inline real-time proxying for data in motion, and out-of-band API connections for data at rest in managed SaaS. What each piece is, why single-pass inspection matters, and how the vocabulary (CASB, SWG, ZTNA, CFW, DLP) maps onto one engine rather than five boxes."
+concepts: ["netskope", "newedge", "sase", "sse", "microservices", "single-pass", "casb", "swg"]
+relatedTools: []
+relatedArticles: ["netskope-inline-tls-decryption", "netskope-realtime-vs-api-protection", "netskope-steering-methods", "http-proxy-forward-and-reverse"]
+category: networking
+order: 216
+status: reviewed
+updated: "2026-07-21"
+---
+
+Every Netskope blueprint - certification and accreditation alike - opens with "features and architectural benefits," and the architecture is genuinely the key that makes the rest of the platform legible. This article draws the one picture the other Netskope articles on this site hang from.
+
+## The platform: one engine wearing five acronyms
+
+Netskope One is a SASE/SSE platform: the security half of Secure Access Service Edge, delivered as a cloud service. The industry vocabulary makes it sound like five products - **CASB** (Cloud Access Security Broker: visibility and control over SaaS), **SWG** (Secure Web Gateway: web filtering and threat protection), **ZTNA** (Zero Trust Network Access: [private application access](/learn/netskope-private-access-npa)), **Cloud Firewall** ([egress control for everything that is not web](/learn/netskope-cloud-firewall)), and **DLP** ([data loss prevention](/learn/dlp-fundamentals)) - but architecturally they are policy surfaces on one inspection engine. A single decrypted, decoded traffic stream is evaluated once, in a single pass, against all of them. That is the practical meaning of the "single-pass" claim: not marketing compression but the reason one steering decision and one TLS interception buys every control at once, instead of chaining five appliances that each decrypt, inspect, and re-encrypt.
+
+## NewEdge: the network the engine runs on
+
+A cloud proxy is only as good as its distance from the user, so Netskope operates **NewEdge** - its privately run global network of data centers where the inspection actually happens. The design intent worth understanding for any exam scenario: every data center is full-compute (any point of presence can perform any inspection, so users are served at the nearest door rather than backhauled to wherever a feature lives), and peering with the major SaaS and web platforms happens directly at those edges. The operational consequence is the one that matters in the field: the latency budget of "send everything through a cloud for inspection" is paid in the distance to the nearest NewEdge node - which is why steering design and data-center proximity are recurring troubleshooting themes rather than trivia.
+
+## Microservices: why the platform ships features the way it does
+
+The NSK300 blueprint names "the various microservices of the Netskope Security Cloud platform" as an architect-tier topic, and the concept matters more than any component list: the inspection pipeline is composed of independent services - decryption, protocol decode, app identification, threat analysis, DLP - stitched into that single pass. The architectural benefit is deployment-side: services scale and update independently across NewEdge without customer-visible maintenance windows, which is the invisible contrast with the appliance world, where an inspection feature is a software image on a box you schedule downtime to upgrade.
+
+## Two data paths, one policy brain
+
+The final piece of the picture is the split the whole platform rests on, and it gets [its own article](/learn/netskope-realtime-vs-api-protection): **inline real-time protection** proxies traffic as it happens (the [steering methods](/learn/netskope-steering-methods) exist to deliver traffic into it, and [TLS interception](/learn/netskope-inline-tls-decryption) exists so it can see), while **API-enabled protection** connects out-of-band to managed SaaS tenants and inspects what is already at rest. Same policy vocabulary, same DLP engine, different vantage points - and knowing which path sees what is, reliably, where Netskope exam questions and Netskope production incidents both begin.

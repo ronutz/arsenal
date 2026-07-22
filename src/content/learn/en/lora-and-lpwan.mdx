@@ -1,0 +1,30 @@
+---
+slug: lora-and-lpwan
+title: "LoRa and LPWAN: Kilometers of Range on a Coin Cell"
+summary: "There is a corner of networking where the requirements invert everything broadband optimizes for: send a few bytes, a few times an hour, kilometers through a city, from a battery that must last years. LPWAN is that corner; LoRa is its best-known citizen - Semtech's chirp spread spectrum radio trading bitrate for astonishing link budgets, and LoRaWAN, the LoRa Alliance's network layer, organizing gateways, device classes, and the duty-cycle etiquette of shared spectrum."
+concepts: ["lora", "lorawan", "lpwan", "iot", "chirp spread spectrum", "ism band", "gateway", "duty cycle"]
+relatedTools: []
+relatedArticles: ["pagers-and-paging-networks", "leo-satellite-constellations", "last-mile-evolution-pots-to-fiber"]
+category: networking
+order: 205
+status: reviewed
+updated: "2026-07-21"
+---
+
+Everything else in [the last-mile story](/learn/last-mile-evolution-pots-to-fiber) chased one metric: more bits per second. This article's corner of networking chases the opposite trinity - **range, battery, cost** - and cheerfully sacrifices throughput to get them. **LPWAN - Low-Power Wide-Area Network** - is the category name; a water meter in a basement reporting eight bytes twice a day, for ten years, on one battery, is the category's soul.
+
+## The physics bargain: LoRa's chirps
+
+**LoRa** (from *long range*) is a physical-layer radio technique, developed commercially by Semtech, built on **chirp spread spectrum**: each symbol is a frequency sweep - a chirp - across the channel, and the receiver correlates against the known sweep pattern. Spreading each symbol across time and frequency this way buys the property everything else here rests on: signals decodable *below the noise floor*, yielding link budgets that carry kilometers through urban clutter and further in the open - at data rates measured in hundreds of bits to a few kilobits per second. A configurable **spreading factor** makes the trade explicit: higher factors, longer chirps, longer range, slower data. It is [the pager's lesson](/learn/pagers-and-paging-networks) taught by different math - accept severe limits, collect superpowers.
+
+## The network layer: LoRaWAN
+
+Radios need etiquette, and **LoRaWAN** - the open specification maintained by the LoRa Alliance - supplies it. The topology is a star of stars: devices transmit to any **gateways** in earshot (no association, no per-device session - every gateway that hears a frame forwards it), gateways backhaul to a network server that deduplicates and delivers. Devices come in three documented classes that map to battery philosophy: **Class A**, the default and thriftiest - a device transmits when it has something to say and listens only in two brief receive windows afterward; **Class B**, adding scheduled listening slots synchronized by gateway beacons; **Class C**, listening continuously, for devices with mains power. Security is baked in at the specification level with AES-based keys separating network and application payloads. And because LoRa typically rides **unlicensed sub-GHz ISM bands**, regional regulations impose **duty-cycle limits** - a device may only transmit a small percentage of the time, which is less a restriction than a design confession: this network is for whispers, not conversations.
+
+## What it is not, and what wins where
+
+The honest boundary keeps deployments sane. LoRaWAN does not stream, does not do firmware downloads gracefully, does not carry voice, and its downlink capacity is a scarce resource - a Class A device can only be spoken to right after it speaks. Cellular IoT variants offer licensed-spectrum alternatives with different trade-offs; short-range protocols win inside a room; [satellites win where no gateway will ever stand](/learn/leo-satellite-constellations). LoRa's kingdom is the middle distance: city-scale sensing, agriculture, metering, tracking - anywhere the payload is small, the power budget is sacred, and the infrastructure must be nearly free.
+
+## The pattern worth keeping
+
+LPWAN completes a theme this cluster of articles keeps sounding: networking is not one race toward more bandwidth but a family of bargains, each trading away what its niche does not need. The pager traded transmission for reach; LEO trades fleet logistics for latency; LoRa trades bitrate for years of silence between whispers. Reading a technology starts with reading its bargain.

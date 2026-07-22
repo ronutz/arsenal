@@ -1,0 +1,30 @@
+---
+slug: html-forms-and-request-encoding
+title: "Formulários HTML e Codificação de Requisições: Como a Web Despacha Sua Entrada"
+summary: "Um formulário é um contrato entre página e servidor: quais campos, qual verbo, qual formato de fio. GET põe as respostas na URL; POST põe no corpo; e o enctype escolhe o dialeto do corpo - as correntes chave=valor do urlencoded, as partes delimitadas por boundary do multipart, feitas para arquivos. O que cada escolha significa para logs, caches, limites de tamanho e depuração, mais a nota da era fetch: o FormData manteve os formatos vivos depois que formulários deixaram de ser o único remetente."
+concepts: ["forms", "get", "post", "urlencoded", "multipart", "enctype", "formdata", "encoding"]
+relatedTools: ["curl-command-builder", "http-request-translator", "url-inspector"]
+relatedArticles: ["query-strings", "curl-data-flags-and-content-type", "http-methods-the-verbs", "url-encoding-and-idn"]
+category: encoding
+order: 211
+status: reviewed
+updated: "2026-07-21"
+---
+
+Antes de o JavaScript enviar uma única requisição, o elemento `<form>` era como a web respondia - e suas decisões de projeto ainda governam o formato de quase todo corpo de requisição da internet. Um formulário declara três coisas: *para onde* (`action`), *como* ([`method`](/learn/http-methods-the-verbs), e o elemento só fala GET e POST) e *em que formato de fio* (`enctype`). Este artigo segue a entrada do campo ao fio; [o construtor de curl](/tools/curl-command-builder) deixa você forjar as mesmas requisições à mão.
+
+## GET: respostas no endereço
+
+`method="GET"` serializa os campos [na query string](/learn/query-strings): `?q=fable&lang=pt`, nomes e valores [percent-encoded](/learn/url-encoding-and-idn), pares unidos por `&` - com a peculiaridade de herança dos formulários de que espaços viram `+` nesse contexto. As consequências vêm em pacote: a requisição é favoritável, compartilhável, cacheável e retentável com segurança - *e* cada valor cai no histórico do navegador, nos logs do servidor e em cabeçalhos `Referer`, com tetos práticos de comprimento de URL por cima. A regra se escreve sozinha: GET para buscas e filtros, nunca para segredos, nunca para [mudanças de estado que um crawler possa clicar](/learn/http-methods-the-verbs).
+
+## POST + urlencoded: os mesmos pares, mudados para dentro
+
+`method="POST"` com o `enctype="application/x-www-form-urlencoded"` padrão despacha a serialização *idêntica* `nome=valor&nome=valor` - só realocada para o corpo da requisição, com `Content-Type: application/x-www-form-urlencoded` anunciando o dialeto. Mesma codificação, outro endereço: os valores saem da URL (e de seus logs e histórico), tetos de tamanho praticamente somem, e a requisição deixa de ser idempotente por contrato. Formulários de login moram aqui. Um detalhe que vicia quem lê capturas de pacote: o corpo de um POST urlencoded *parece exatamente uma query string*, porque é uma - fato que [o artigo de data-flags do curl](/learn/curl-data-flags-and-content-type) explora de propósito.
+
+## Multipart: envelopes para arquivos
+
+Correntes de chave-valor não carregam uma fotografia. `enctype="multipart/form-data"` troca para um formato de envelope: o cabeçalho `Content-Type` declara uma string de **boundary**, e o corpo vira partes separadas por esse boundary - cada parte com seus mini-cabeçalhos (`Content-Disposition: form-data; name="avatar"; filename="eu.jpg"`, seu próprio `Content-Type`) e carga bruta, sem percent-encoding. É mais pesado por campo e obrigatório para `<input type="file">`; a falha clássica é forjar um à mão e fixar o `Content-Type` sem o boundary que o corpo de fato usa - o servidor recebe um envelope que não consegue abrir. (O terceiro enctype, `text/plain`, existe e não pertence a requisição de produção alguma.)
+
+## A nota da era fetch
+
+Formulários deixaram de ser o único remetente [quando XHR e fetch chegaram](/learn/ajax-fetch-and-xhr), mas os formatos sobreviveram ao elemento: `URLSearchParams` monta corpos urlencoded, `FormData` monta multipart (boundary por conta dele - não fixe o cabeçalho você mesmo), e o JSON entrou como o terceiro dialeto da era das APIs. A habilidade durável é ler `Content-Type` como a gramática declarada do corpo e conhecer os três de vista: `q=a&r=b`, partes cortadas por boundary e `{"q":"a"}` são a mesma intenção em três fantasias - e metade dos bugs de integração é um dos lados vestindo a errada.

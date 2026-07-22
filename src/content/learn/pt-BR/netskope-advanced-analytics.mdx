@@ -1,0 +1,30 @@
+---
+slug: netskope-advanced-analytics
+title: "Eventos e Advanced Analytics da Netskope: Do Tráfego à Evidência"
+summary: "Todo objetivo de monitoramento em todo blueprint Netskope - event monitoring, event analysis, application discovery, event sharing - se resolve numa disciplina subjacente: o modelo de eventos da plataforma e o que se constrói sobre ele. Como a inspeção inline e via API vira eventos de página, aplicação, alerta e auditoria; como o Skope IT responde 'o que acabou de acontecer' enquanto o Advanced Analytics responde 'o que vem acontecendo'; e como eventos saem da plataforma - transmitidos ao SIEM e ao ferramental do SOC - para a nuvem de segurança virar fonte de evidência de primeira classe."
+concepts: ["netskope", "advanced analytics", "skope it", "events", "alerts", "siem", "reporting", "monitoring"]
+relatedTools: ["incident-timeline-rca-builder"]
+relatedArticles: ["cloud-confidence-index", "netskope-realtime-vs-api-protection", "syslog-message-formats", "netskope-platform-architecture-and-newedge"]
+category: security
+order: 223
+status: reviewed
+updated: "2026-07-21"
+---
+
+Uma plataforma de segurança que inspeciona tudo e não lembra de nada seria um interruptor de luz muito caro. Os domínios de monitoramento dos blueprints Netskope - dois objetivos na trilha de administrador, quatro na de integrador - são sobre o lembrar: o modelo de eventos que a plataforma escreve, as duas lentes pelas quais os lê, e o encanamento que os despacha para o resto da pilha de segurança.
+
+## O modelo de eventos: o que a inspeção anota
+
+Tudo que [os dois caminhos de proteção](/learn/netskope-realtime-vs-api-protection) veem condensa em eventos tipados. **Eventos de página e de rede** registram o nível do tráfego - quem conectou onde, quando, quanto. **Eventos de aplicação** registram o nível de atividade decodificada que torna a plataforma interessante: *usuário X executou upload no app Y, instância Z* - a gramática sujeito-verbo-objeto que logs web crus nunca tiveram. **Eventos de alerta** registram vereditos de política: o match de DLP, a detecção de ameaça, o bloqueio, a página de coaching [baseada em CCI](/learn/cloud-confidence-index) e o que o usuário escolheu. **Eventos de auditoria** registram o que administradores fizeram no próprio tenant - a resposta ao "quem mudou esta política" que toda revisão de incidente acaba perguntando. O modelo importa mais que o console: cenários de exame sobre "quais eventos mostrariam..." estão na verdade perguntando em qual degrau dessa escada uma dada pergunta mora.
+
+## Duas lentes: Skope IT e Advanced Analytics
+
+A plataforma lê os próprios eventos de duas distâncias bem diferentes, e saber a que lente uma tarefa pertence é a habilidade prática. O **Skope IT** é a visão operacional, quase em tempo real: buscar e filtrar eventos recentes, seguir a tarde de um usuário, perseguir um alerta - a lente da triagem e [da linha do tempo que uma revisão de incidente reconstrói](/tools/incident-timeline-rca-builder). O **Advanced Analytics** é a distância analítica: uma camada de business intelligence sobre o armazém de eventos, com dashboards, relatórios agendados e perguntas atravessando o tempo - postura de shadow IT por departamento, tendência de DLP por trimestre, distribuição de [CCI](/learn/cloud-confidence-index) de tudo que foi descoberto, a história de risco que a liderança de fato pede. A divisão de trabalho é o padrão de resposta para cenários de monitoramento: *este evento, agora* → Skope IT; *esta tendência, este relatório, este dashboard* → Advanced Analytics.
+
+## Saindo da plataforma: event sharing
+
+O objetivo "event sharing methodologies" do blueprint de integrador nomeia a perna final: nenhum SOC sério trata console algum como destino. Eventos exportam da plataforma para o SIEM e a pilha analítica da organização - transmitidos quase em tempo real ou puxados via REST - onde se juntam a [todo o resto que fala a língua franca dos logs](/learn/syslog-message-formats) para correlação: o alerta de DLP da Netskope ao lado da detecção do endpoint ao lado da anomalia de login do provedor de identidade. A consequência de projeto que vale dizer com todas as letras: a nuvem de segurança é uma *fonte* de evidência, e a qualidade da sua integração - completude, latência, fidelidade de campos - é requisito de primeira classe da implantação, não uma nota de rodapé.
+
+## O hábito de fechamento
+
+O hábito que faz os seis objetivos de monitoramento coerirem: para qualquer pergunta sobre o ambiente, nomeie o tipo de evento que a responderia, a lente adequada à distância, e o destino onde ele também precisa pousar. Tráfego em evidência, evidência em respostas, respostas nos sistemas que agem sobre elas - esse pipeline é o que os blueprints estão de fato examinando.

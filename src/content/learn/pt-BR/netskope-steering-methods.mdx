@@ -1,0 +1,34 @@
+---
+slug: netskope-steering-methods
+title: "Métodos de Steering da Netskope: Levando o Tráfego até a Nuvem que o Inspeciona"
+summary: "Uma plataforma de segurança em nuvem não inspeciona nada até o tráfego chegar a ela, e é por isso que 'traffic steering' ancora todo blueprint Netskope. O cardápio completo: o túnel por dispositivo do Netskope Client, proxy explícito e arquivos PAC, túneis GRE e IPsec a partir de sites, reverse proxy para dispositivos não gerenciados, e a lógica de decisão honesta - quem é dono do dispositivo, onde o usuário está, e que classes de tráfego precisam de inspeção - que escolhe entre eles."
+concepts: ["netskope", "steering", "client", "pac", "gre", "ipsec", "explicit proxy", "reverse proxy"]
+relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"]
+relatedArticles: ["netskope-client-deployment", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "netskope-platform-architecture-and-newedge"]
+category: networking
+order: 217
+status: reviewed
+updated: "2026-07-21"
+---
+
+Todo trilho de exame Netskope lista steering duas vezes - como conceito e como prática - porque é a dependência existencial da plataforma: [o motor de inspeção](/learn/netskope-platform-architecture-and-newedge) só vê o que chega. Steering é a família de respostas a uma pergunta: *por qual mecanismo o tráfego deste usuário ou deste site alcança a nuvem Netskope?* As opções se dividem limpo pelo que você controla.
+
+## Dispositivos gerenciados: o Netskope Client
+
+O método primário para dispositivos que você gerencia é o **Netskope Client** - um agente que constrói um túnel cifrado do endpoint ao ponto de presença NewEdge mais próximo e direciona para dentro dele o tráfego configurado. Por andar no dispositivo, funciona identicamente no escritório, em casa e no aeroporto; por ser dirigido por configuração, *o que* ele direciona é decisão do tenant (só web, apps de nuvem, ou [todo o tráfego incluindo portas não-web para o Cloud Firewall](/learn/netskope-cloud-firewall)), com exceções recortadas para o que não deve ser proxiado. O client importa o bastante para ter [artigo próprio de implantação](/learn/netskope-client-deployment); para este mapa, a propriedade-chave é identidade por usuário: o tráfego chega já atribuído a uma pessoa inscrita, o que torna política por usuário trivial rio abaixo.
+
+## Navegadores e frotas legadas: proxy explícito e PAC
+
+O clássico sem agente ainda merece o lugar: apontar navegadores para a nuvem como **proxy explícito**, geralmente via **arquivo PAC** cuja lógica decide por URL o que vai à Netskope e o que vai direto. Tudo que [o artigo de anatomia de PAC](/learn/how-a-pac-file-chooses-a-proxy) e [a ferramenta explicadora de PAC](/tools/pac-file-explainer) deste site ensinam se aplica ao pé da letra - incluindo os modos de falha: arquivos PAC só direcionam as aplicações que os honram, o que na prática significa navegadores, e a atribuição precisa de um passo de autenticação que o client teria dado de graça.
+
+## Sites: túneis GRE e IPsec
+
+Para um escritório onde é melhor direcionar a *localidade* do que cada dispositivo, o roteador ou firewall de perímetro constrói um túnel até a Netskope e encaminha o tráfego para dentro - **GRE** onde se quer [um portador simples sem cifra](/learn/gre-tunnels-fundamentals) (a carga já é majoritariamente TLS) e **IPsec** onde [o próprio caminho deve ser cifrado ou o GRE não está disponível](/learn/ipsec-and-ike-fundamentals). Túneis de site trocam a identidade-de-usuário do client pela cobertura de tudo que está na rede - visitantes, impressoras, o laboratório - e reintroduzem toda consideração clássica de túnel que este site já catalogou, [overhead e clamp de MSS inclusos](/learn/tunnel-overhead-mtu-and-mss).
+
+## Dispositivos não gerenciados: o reverse proxy
+
+A lacuna restante é o dispositivo que você não pode tocar: o notebook de um contratado entrando no seu tenant SaaS. O steering por **reverse proxy** fecha essa lacuna pelo lado da identidade - o fluxo SAML do IdP entrega a sessão à Netskope, que reescreve as URLs da aplicação para que o tráfego do navegador *para aquela aplicação* transite pela inspeção sem nada instalado. O escopo é a troca: protege aplicações gerenciadas específicas, não o tráfego do dispositivo em geral - precisamente a pergunta de cobertura que [o artigo de tempo-real versus API](/learn/netskope-realtime-vs-api-protection) retoma.
+
+## A decisão, com honestidade
+
+A lógica de seleção que sobrevive ao contato com exames e com produção: *dispositivo gerenciado* → Client, aonde quer que vá; *rede gerenciada, dispositivos mistos* → GRE/IPsec do site; *só navegadores, agente impossível* → proxy explícito/PAC; *dispositivo não gerenciado, app gerenciada* → reverse proxy; e ambientes reais rodam vários ao mesmo tempo, razão pela qual *precedência e exceções* de steering - não os métodos em si - são onde os objetivos de troubleshooting de todo blueprint Netskope de fato moram.

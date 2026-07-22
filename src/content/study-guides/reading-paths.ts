@@ -217,11 +217,21 @@ export const READING_PATHS: ReadingPath[] = [
     category: "networking",
     articles: [
       "http-versions-09-to-3",
+      "http-methods-the-verbs",
+      "http-query-method",
+      "http-status-codes-the-five-families",
+      "http-headers-anatomy",
+      "http-cookies-state-over-stateless",
+      "html-forms-and-request-encoding",
+      "ajax-fetch-and-xhr",
+      "cors-explained",
+      "uri-url-urn-whats-the-difference",
+      "html-css-and-the-dom",
       "http-proxy-forward-and-reverse",
       "hsts-and-https",
       "curl-protocols-beyond-http",
     ],
-    tools: ["http-request-translator", "url-inspector"],
+    tools: ["http-request-translator", "http-methods-comparison", "http-status-code-explainer", "url-inspector", "curl-command-builder"],
   },
   {
     // The craft skill under log analysis, iRules, and every parser: the five
@@ -236,6 +246,27 @@ export const READING_PATHS: ReadingPath[] = [
       "regex-catastrophic-backtracking",
     ],
     tools: ["regex"],
+  },
+  {
+    // The Netskope SASE reading path (Run A): the platform in teaching order,
+    // architecture through analytics, matching the accreditation and
+    // certification domains the guides transcribe.
+    id: "netskope-sase",
+    category: "security",
+    articles: [
+      "netskope-platform-architecture-and-newedge",
+      "netskope-steering-methods",
+      "how-a-pac-file-chooses-a-proxy",
+      "netskope-client-deployment",
+      "netskope-inline-tls-decryption",
+      "netskope-realtime-vs-api-protection",
+      "cloud-confidence-index",
+      "dlp-fundamentals",
+      "netskope-private-access-npa",
+      "netskope-cloud-firewall",
+      "netskope-advanced-analytics",
+    ],
+    tools: ["pac-file-explainer", "netskope-steering-decision-explainer", "saml-decoder"],
   },
   {
     // The Zscaler program end to end, fundamentals-first (R-8): the four

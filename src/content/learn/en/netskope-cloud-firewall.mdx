@@ -1,0 +1,26 @@
+---
+slug: netskope-cloud-firewall
+title: "Netskope Cloud Firewall: Egress Control for Everything That Isn't Web"
+summary: "A secure web gateway inspects ports 80 and 443 - and the rest of the traffic leaving your users' machines shrugs and goes direct. Cloud Firewall closes that gap: firewall-as-a-service for all outbound ports and protocols, with rules written in users, groups, applications, and FQDNs instead of source IPs, delivered through the same client and tunnels that steer web traffic. What it covers, how its policy model differs from the box it replaces, and why 'steer all traffic' is the switch that turns it on."
+concepts: ["netskope", "cloud firewall", "fwaas", "egress", "non-web", "ports", "protocols", "policy"]
+relatedTools: []
+relatedArticles: ["netskope-steering-methods", "netskope-client-deployment", "netskope-platform-architecture-and-newedge", "netskope-realtime-vs-api-protection"]
+category: security
+order: 222
+status: reviewed
+updated: "2026-07-21"
+---
+
+Both administrator-track blueprints file Cloud Firewall under "security controls," and its reason to exist is one sentence of honest accounting: a [secure web gateway](/learn/netskope-platform-architecture-and-newedge) governs web protocols, and enterprises emit far more than web - DNS to third parties, SSH to cloud shells, SMTP from misbehaving software, database clients, custom application ports, and whatever the malware du jour prefers precisely *because* it is not port 443. On a branch-office appliance, the firewall covered all of that at the perimeter. Move security to the cloud without a firewall tier, and the non-web remainder simply goes direct, ungoverned. **Cloud Firewall (CFW)** is the platform's firewall-as-a-service tier for exactly that remainder: outbound traffic, all ports and protocols.
+
+## Getting the traffic there: the steering prerequisite
+
+The dependency to internalize first, because it decides real deployments: CFW governs only what reaches it, and web-only steering does not send it anything. The [Netskope Client](/learn/netskope-client-deployment) must run in **all-traffic steering** (or the site must forward through [GRE/IPsec tunnels](/learn/netskope-steering-methods)) for non-web flows to transit the cloud at all. That single configuration choice is the practical on-switch - and the first check when a firewall policy "does not work": in web-only steering, the traffic it should govern never left the building through Netskope.
+
+## The policy model: identity and applications, not addresses
+
+The interesting difference from the appliance it replaces is what rules are *written in*. A perimeter firewall's native nouns are IP addresses and ports, because that is what a perimeter sees. CFW's native nouns are **users and groups** (the client delivers traffic pre-attributed to identities), **applications** (flows classified by what they are, not just where they knock), and **destination FQDNs** alongside classic ports and protocols. The consequence reads like a policy dream from the appliance era: *"developers may SSH to the cloud provider's ranges; nobody else originates SSH at all; all outbound SMTP is denied except the mail relay's"* - written once, following every user to every network, with no per-site rulebase to drift. Egress DNS control deserves its own mention: governing who may speak DNS to whom is quietly one of the highest-leverage non-web controls, since tunneled DNS is a classic exfiltration and command-and-control path.
+
+## What it is, and what it is not
+
+Boundary-setting keeps the mental model honest. CFW is **egress** control for user and branch traffic - it is not an inbound/data-center firewall, not a replacement for your cloud provider's security groups, and not [NPA](/learn/netskope-private-access-npa), which handles reaching *your own* private apps. And it deliberately complements rather than duplicates the SWG: web traffic gets the full proxy treatment - [decryption](/learn/netskope-inline-tls-decryption), content inspection, [DLP](/learn/dlp-fundamentals) - while CFW gives the non-web remainder firewall-grade allow/deny with identity. Same single-pass cloud, same policy brain, two depths of inspection matched to two kinds of traffic - which is exactly the answer when a blueprint scenario asks why a platform with a proxy still ships a firewall.

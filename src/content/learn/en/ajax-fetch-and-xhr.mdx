@@ -1,0 +1,30 @@
+---
+slug: ajax-fetch-and-xhr
+title: "AJAX, XHR, and fetch: When Pages Learned to Talk Back"
+summary: "For its first decade the web had one move: click, blank screen, new page. XMLHttpRequest gave pages a second one - request data in the background, update in place - and 'AJAX' named the revolution (which promptly dropped the X for JSON). How XHR worked, what fetch fixed (promises, streams, a sane API), what stayed the same underneath (it is all still HTTP), and the boundary every background request answers to: same-origin, with CORS as the negotiated exception."
+concepts: ["ajax", "xhr", "fetch", "xmlhttprequest", "json", "asynchronous", "promises", "same-origin"]
+relatedTools: ["http-request-translator", "curl-command-builder"]
+relatedArticles: ["curl-to-fetch", "cors-explained", "html-css-and-the-dom", "json-formatting-and-canonical"]
+category: networking
+order: 212
+status: reviewed
+updated: "2026-07-21"
+---
+
+The early web's interaction model was the full page load: every click threw away the page you had and fetched a whole new one. The technique that changed it was almost embarrassingly small - a JavaScript object that could make an HTTP request *without navigating* - and everything from webmail to single-page applications is that one capability, compounded. This article is the story and the mechanics; [the migration guide from curl to fetch](/learn/curl-to-fetch) is its hands-on sibling.
+
+## XHR: the object that started it
+
+**XMLHttpRequest** shipped quietly (a Microsoft invention for Outlook Web Access, then cloned everywhere) and for years was just a curiosity - until the mid-2000s wave of applications built on it forced a name: **AJAX**, *Asynchronous JavaScript and XML*. The joke history played is in the last letter: the payloads that won were not XML but **JSON**, [whose grammar this site covers separately](/learn/json-formatting-and-canonical) - lighter to parse, native to the language making the request. XHR's shape tells you its era: event-callback driven (`onreadystatechange`, numeric ready states), configured imperatively (`xhr.open("GET", url)` then `xhr.send()`), and famously awkward to compose - callback pyramids were the tax every interactive app paid.
+
+## fetch: the same wire, a modern handle
+
+**fetch** replaced the handle, not the wire. `fetch(url)` returns a **Promise** resolving to a `Response`, so requests compose with `then` chains and `async/await` instead of callback state machines; `Request`, `Response`, and `Headers` are real objects; bodies are **streams** you can read incrementally; and cancellation finally works properly via `AbortController`. Two behavioral trip wires catch every newcomer: fetch **rejects only on network failure** - a 404 or 500 is a *fulfilled* promise whose `response.ok` is false, so status checking is your job - and cookies follow the `credentials` option rather than always tagging along. Underneath, nothing changed: the request on the wire is [the same methods](/learn/http-methods-the-verbs), [the same headers](/learn/http-headers-anatomy), the same status codes - which is exactly why a fetch call and [a curl command translate into each other](/learn/curl-to-fetch) so cleanly.
+
+## The rule underneath: same-origin
+
+Giving scripts the power to make requests forced the browser's most important security decision. A script's requests carry the *user's* cookies and network position - so by default, a page may only read responses from its **own origin** (scheme + host + port). Without that rule, any page you visit could read your webmail. The controlled exception - how `api.example.com` grants `app.example.com` permission, preflights and all - is [CORS, the next article](/learn/cors-explained). The habit to build now: every background request in the DevTools network tab is answering to that boundary, whether it knows it or not.
+
+## What changed, and what only seemed to
+
+AJAX's real legacy is architectural: the page stopped being a document you replace and became [a living DOM you mutate](/learn/html-css-and-the-dom), fed by background requests - the split that gave us APIs as products, JSON as lingua franca, and the single-page application. But the durable engineering insight runs the other way: *nothing about HTTP changed*. Every skill this site teaches about requests, headers, status codes, and caching applies unmodified to the requests your JavaScript makes - the browser just stopped making you watch each one load.

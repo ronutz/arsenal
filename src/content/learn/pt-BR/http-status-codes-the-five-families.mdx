@@ -1,0 +1,30 @@
+---
+slug: http-status-codes-the-five-families
+title: "Códigos de Status HTTP: As Cinco Famílias"
+summary: "Três dígitos, e o primeiro faz a maior parte do trabalho: 1xx continua, 2xx tem sucesso, 3xx redireciona, 4xx culpa o cliente, 5xx confessa pelo servidor. A lógica das famílias, os códigos que um operador de fato encontra (200, 204, 301 vs 302 vs 307, a dança de cache do 304, 401 vs 403, 404 vs 410, 429, 500 vs 502 vs 503 vs 504), as curiosidades famosas, e por que o primeiro dígito de um código desconhecido sempre basta para agir."
+concepts: ["http", "status codes", "2xx", "3xx", "4xx", "5xx", "redirect", "cache", "rfc 9110"]
+relatedTools: ["http-status-code-explainer", "http-request-translator"]
+relatedArticles: ["http-methods-the-verbs", "http-headers-anatomy", "http-versions-09-to-3", "hsts-and-https"]
+category: networking
+order: 208
+status: reviewed
+updated: "2026-07-21"
+---
+
+Uma resposta HTTP abre com três dígitos, e a genialidade do projeto é que um cliente que nunca viu aquele código específico ainda consegue se comportar corretamente: **o primeiro dígito nomeia a família, e a família nomeia o comportamento exigido**. Essa regra de compatibilidade futura - trate um `4xx` desconhecido como `400`, um `5xx` desconhecido como `500` - é o que deixou o registro de códigos crescer por trinta anos sem quebrar um único cliente antigo. [A ferramenta explicadora](/tools/http-status-code-explainer) decodifica qualquer código que você colar; este artigo entrega o mapa de onde ela desenha.
+
+## As famílias, e o que cada uma obriga
+
+**1xx (informativo)** - respostas provisórias antes da real: `100 Continue` libera um cliente esperando para enviar um corpo grande, `101 Switching Protocols` é como o upgrade de WebSocket sai do HTTP/1.1. **2xx (sucesso)** - a requisição foi recebida, entendida, aceita: `200 OK` com corpo, `204 No Content` deliberadamente sem, `206 Partial Content` respondendo requisições de faixa (o código por trás de downloads retomáveis e do seek de vídeo). **3xx (redirecionamento)** - ação adicional necessária, geralmente em outro lugar. **4xx (erro do cliente)** - a própria requisição está errada; conserte antes de repetir. **5xx (erro do servidor)** - a requisição pode estar boa; o servidor falhou em cumpri-la. Essa última distinção é ouro operacional: tempestades de 4xx apontam para clientes, robôs ou links quebrados; tempestades de 5xx apontam para o seu próprio stack.
+
+## Os redirecionamentos que vale distinguir
+
+A família 3xx esconde as sutilezas mais consequentes da web. `301` (permanente) e `302` (encontrado/temporário) datam de uma era em que clientes notoriamente reescreviam um POST redirecionado como GET - então o HTTP/1.1 somou o par explícito: `307` (temporário, *método preservado*) e `308` (permanente, método preservado). Escolher 301 vs 302 também dirige caches e buscadores: permanente significa "atualize seus registros". E o `304 Not Modified` não é redirecionamento nenhum, e sim o prêmio do aperto de mãos de cache - o cliente perguntou condicionalmente (`If-None-Match`, `If-Modified-Since`, [cabeçalhos explicados aqui](/learn/http-headers-anatomy)) e o servidor respondeu "o seu ainda vale", sem corpo, poupando a transferência.
+
+## Os 4xx que você vai depurar de verdade
+
+`400` é o "malformado" genérico; `401 Unauthorized` na verdade significa *não autenticado* - deve chegar com `WWW-Authenticate`, um convite a apresentar credenciais - enquanto `403 Forbidden` significa *autenticado ou não, não*: identidade conhecida, permissão negada. `404 Not Found` se recusa a dizer se a coisa algum dia existiu; `410 Gone` afirma que existiu e foi removida de propósito (crawlers tratam isso como "pare de perguntar"). `405` rejeita [o verbo](/learn/http-methods-the-verbs), `408` cansou de esperar por você, `413`/`414` rejeitam corpos e URLs grandes demais, e `429 Too Many Requests` é a voz oficial do rate limiting, idealmente carregando `Retry-After`. As curiosidades têm seus fãs - `418 I'm a teapot`, de uma RFC de primeiro de abril, e `451 Unavailable For Legal Reasons`, cujo número é citação deliberada de Ray Bradbury.
+
+## Os 5xx que nomeiam o seu incidente
+
+`500` é a confissão genérica do servidor. O trio da era dos proxies importa mais na prática, porque cada um aponta para um lugar diferente da cadeia: `502 Bad Gateway` - o intermediário alcançou o upstream e recebeu lixo ou recusa; `503 Service Unavailable` - o próprio serviço está sobrecarregado ou fora (o código honesto de manutenção, também idealmente com `Retry-After`); `504 Gateway Timeout` - o intermediário chamou e *ninguém respondeu a tempo*. Em qualquer arquitetura com balanceador ou CDN na frente, ler 502 vs 503 vs 504 corretamente é o primeiro minuto de todo incidente - diz se você olha a saúde do backend, a capacidade dele, ou o caminho no meio.

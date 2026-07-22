@@ -119,6 +119,7 @@ export const tools: ToolEntry[] = [
   { id: "f5-ssl-profile-explainer", sub: "ltm", href: "/tools/f5-ssl-profile-explainer", category: "transport", vendors: ["f5"], available: true },
   { id: "mtu-mss", href: "/tools/mtu-mss", category: "networking", available: true },
   { id: "http-methods-comparison", href: "/tools/http-methods-comparison", category: "networking", available: true },
+  { id: "http-status-code-explainer", href: "/tools/http-status-code-explainer", category: "networking", available: true },
   { id: "epoch", href: "/tools/epoch", category: "encoding", available: true },
   { id: "roman-numerals", href: "/tools/roman-numerals", category: "encoding", available: true },
   { id: "greek-alphabet", href: "/tools/greek-alphabet", category: "text", available: true },
@@ -161,6 +162,7 @@ export const tools: ToolEntry[] = [
   { id: "fortios-sniffer-builder", sub: "fortigate", href: "/tools/fortios-sniffer-builder", category: "networking", vendors: ["fortinet"], available: true },
   // First Netskope tool: populates the Netskope vendor hub.
   { id: "pac-file-explainer", sub: "swg", href: "/tools/pac-file-explainer", category: "networking", vendors: ["netskope"], vendorNeutral: true /* Netscape-era open browser standard; hub-affiliated, not vendor-owned */, available: true },
+  { id: "netskope-steering-decision-explainer", sub: "swg", href: "/tools/netskope-steering-decision-explainer", category: "networking", vendors: ["netskope"], available: true },
   // First Extreme tool: populates the Extreme vendor hub.
   { id: "exos-config-explainer", sub: "switching", href: "/tools/exos-config-explainer", category: "networking", vendors: ["extreme"], available: true },
   { id: "fault-hypothesis-builder", href: "/tools/fault-hypothesis-builder", category: "operations", available: true },

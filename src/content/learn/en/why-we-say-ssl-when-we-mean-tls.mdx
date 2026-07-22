@@ -1,0 +1,30 @@
+---
+slug: why-we-say-ssl-when-we-mean-tls
+title: "Why Do We Say SSL When We Mean TLS?"
+summary: "SSL has been prohibited, deprecated, and dead for years - and the industry still sells 'SSL certificates,' configures 'SSL inspection,' and links openssl. The history explains the habit: Netscape's SSL, the political rename to TLS in 1999 (the wire version field still said 3.1), and a quarter century of marketing inertia. Plus the musing the question deserves: what would a protocol-independent name even look like, and do any exist?"
+concepts: ["ssl", "tls", "naming", "rfc 2246", "rfc 8446", "https", "quic", "history"]
+relatedTools: []
+relatedArticles: ["tls12-tls13-dtls-quic", "ssl-forward-proxy-interception", "tls-cipher-security-keywords", "certificate-validation"]
+category: transport
+order: 206
+status: reviewed
+updated: "2026-07-21"
+---
+
+Walk into any operations room and you will hear it within the hour: "the SSL cert expired," "enable SSL inspection," "check the SSL handshake" - describing systems where not one byte of actual SSL has flowed in a decade. This site does it too, deliberately, [in tool names that meet operators where their vocabulary lives](/learn/ssl-forward-proxy-interception). The persistence of a dead protocol's name is a genuinely interesting artifact, and unpacking it takes three parts: where SSL came from, why the name changed, and why the change never took.
+
+## The roots: Netscape's three drafts
+
+**SSL - Secure Sockets Layer** - was Netscape's answer to a commercial web that needed encryption before it could take a credit card. SSL 1.0 never shipped - broken before release. **SSL 2.0** shipped in 1995 and turned out seriously flawed; **SSL 3.0** followed in 1996 as a substantial redesign (with outside cryptographic help) and became the foundation everything since actually builds on. Then the protocol outgrew its parent: standardizing one vendor's protocol under one vendor's name, in the middle of the Netscape-Microsoft browser war, was politically impossible - so when the IETF took stewardship, the protocol got a neutral name. **TLS - Transport Layer Security** - 1.0 arrived as RFC 2246 in January 1999, and the tell survives on the wire to this day: TLS 1.0's version field literally reads **3.1** - the protocol itself admitting it was SSL 3.0's next minor revision wearing a new badge.
+
+## The divergence: one name died on paper, lived in speech
+
+From there the paths split cleanly. On paper, TLS marched: 1.1 (RFC 4346, 2006), 1.2 (RFC 5246, 2008), and the genuinely redesigned **1.3** (RFC 8446, 2018) - [whose handshake this site's TLS articles dissect](/learn/tls12-tls13-dtls-quic). SSL, meanwhile, was formally executed twice: SSL 2.0 *prohibited* by RFC 6176 in 2011, SSL 3.0 deprecated by RFC 7568 in 2015 after the POODLE attack made its retirement urgent. And yet in speech, commerce, and code, SSL thrived. The reasons compound: certificate authorities had spent years selling a product called an "SSL certificate," and product names outlive protocols; the dominant library is **openssl**, invoked by name millions of times a day; a generation of documentation, job postings, and configuration directives (`ssl_protocols`, `SSLEngine`) fossilized the term; "SSL/TLS" emerged as the industry's hedge and only entrenched both; and, unscientifically but really, *SSL* is simply easier to say. Names are interfaces, and interfaces have backward compatibility.
+
+## The musing: what would a better name even be?
+
+The question this article was asked to sit with: naming the thing "TLS" is still naming a *protocol*, and protocols get superseded - is there a protocol-independent vocabulary, proposed or in use? Partially, yes, and each candidate names a different layer of the idea. **HTTPS** names the *scheme* - it survived the SSL-to-TLS transition untouched, and would survive the next one, but it only covers the web. **"Encryption in transit"** names the *property* - compliance frameworks and cloud documentation increasingly prefer it precisely because it makes no protocol commitment - but a property name cannot answer "which handshake failed." And the ground is shifting again regardless: **QUIC** absorbed TLS 1.3's handshake *inside* a transport protocol, so the fastest-growing share of "TLS" traffic no longer runs on a socket layer at all, making both legacy names slightly wrong in a new direction. No serious effort to rename TLS exists - RFC 8446 kept the name on purpose, because the IETF learned in 1999 what renames cost.
+
+## The operator's peace treaty
+
+The practical posture is bilingual. In *specifications, policy, and anything precise*: TLS, with a version, because "SSL" in a security requirement is at best sloppy and at worst permits the prohibited. In *conversation and product surfaces*: meet people where the words are - which is why this site's tools say SSL in their names and TLS in their mechanics. And keep the pattern for the long view: the industry did not fail to rename SSL; it demonstrated that names are load-bearing infrastructure, upgraded even more reluctantly than the protocols they label.

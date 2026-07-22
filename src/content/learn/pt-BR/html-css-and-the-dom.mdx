@@ -1,0 +1,30 @@
+---
+slug: html-css-and-the-dom
+title: "HTML, CSS e o DOM: A Página como Árvore Viva"
+summary: "Três tecnologias, uma divisão de trabalho: HTML declara estrutura, CSS declara apresentação, e o DOM é o que de fato existe em tempo de execução - a árvore que o navegador construiu do seu HTML, a única coisa que scripts tocam, e a razão de 'ver código-fonte' e 'inspecionar elemento' mostrarem mundos diferentes. Como marcação vira árvore, como seletores a endereçam (os mesmos seletores com que o CSS estiliza e os scripts consultam), e por que o DOM é onde o XSS acontece e onde a CSP monta guarda."
+concepts: ["html", "css", "dom", "tree", "selectors", "elements", "rendering", "javascript"]
+relatedTools: ["secure-headers"]
+relatedArticles: ["ajax-fetch-and-xhr", "content-security-policy", "html-forms-and-request-encoding", "xml-well-formedness"]
+category: networking
+order: 215
+status: reviewed
+updated: "2026-07-21"
+---
+
+Toda página que você já viu é três declarações cooperando: **HTML** diz o que o conteúdo *é*, **CSS** diz como ele deve *parecer*, e **JavaScript** diz como ele se *comporta* - mas as três nunca se encontram de fato nos seus arquivos. Elas se encontram no **DOM**, a estrutura viva que o navegador constrói, e entender esse ponto de encontro é a diferença entre escrever páginas e entendê-las. Este artigo fecha o arco de conteúdo web que [a história do AJAX](/learn/ajax-fetch-and-xhr) abriu.
+
+## HTML: estrutura, interpretada com clemência
+
+HTML é um vocabulário de marcação de elementos aninhados - títulos, parágrafos, links, [formulários](/learn/html-forms-and-request-encoding), cada tag carregando um significado semântico do qual ferramentas de acessibilidade, buscadores e leitores dependem. Seu parser tem um traço de personalidade famoso: *nunca desiste*. Tags não fechadas, elementos mal aninhados, texto perdido - o algoritmo de parsing de HTML tem recuperação definida para tudo, e é por isso que vinte e cinco anos de marcação quebrada ainda renderizam. Essa clemência é contraste deliberado com [o rigor draconiano do XML](/learn/xml-well-formedness), e tem uma sombra de segurança: um parser que conserta qualquer coisa é um parser cujos consertos um atacante pode dirigir, que é onde as histórias de injeção de marcação começam.
+
+## O DOM: no que a marcação se tornou
+
+O navegador não renderiza o seu HTML - ele o interpreta *uma vez* para dentro do **DOM, o Document Object Model, modelo de objetos do documento**: uma árvore de nós de elemento, atributo e texto. Dali em diante, a árvore é a verdade. "Ver código-fonte" mostra os bytes que chegaram; "inspecionar elemento" mostra a árvore como ela está *agora* - depois dos consertos do parser e de cada mutação de script. Essa distinção é o mecanismo inteiro da web moderna: [buscar uma carga em segundo plano](/learn/ajax-fetch-and-xhr), mutar a árvore, e a página atualiza sem navegar - o DOM é a superfície em que todo framework, no fim, pinta. É também o chão da fronteira de segurança: o **XSS baseado em DOM** é precisamente texto influenciado pelo atacante fluindo para um sumidouro de mutação de árvore (`innerHTML` sendo o clássico), virando *nós* em vez de continuar *texto* - a rima em tempo de execução da história do parser acima.
+
+## CSS e seletores: um esquema de endereçamento, dois fregueses
+
+O CSS prende apresentação à árvore por **seletores** - padrões como `nav a`, `.card > h2`, `#main` - com regras de especificidade decidindo conflitos (a *cascata* do nome). A economia elegante que vale notar: seletores viraram o esquema de endereçamento universal da árvore. A mesma gramática com que o CSS estiliza, os scripts consultam (`document.querySelector(".card > h2")`), frameworks de teste localizam e scrapers extraem. Aprenda seletores uma vez, e você aprendeu a apontar para qualquer parte de qualquer página para qualquer propósito - e é por isso que eles são os dez kilobytes de conhecimento mais transferíveis do ferramental web.
+
+## A tríade, vista da cadeira de segurança
+
+O enquadramento de fechamento para a audiência deste site: estrutura, apresentação e comportamento separados não é só higiene de engenharia - é a *superfície de política*. Porque os papéis são distintos, uma página pode declarar quais fontes podem fornecer cada um, e essa declaração é a [Content Security Policy](/learn/content-security-policy): scripts daqui, estilos dali, handlers inline proibidos. A CSP é, na prática, a separação de responsabilidades da tríade promovida a contrato imposto - e a razão de a divisão arrumada que este artigo descreveu não ser apenas como páginas são construídas, mas como são defendidas.
