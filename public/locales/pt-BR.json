@@ -5829,6 +5829,25 @@
       "familyComposite": "Score composto",
       "diagnosticTitle": "Separação diagnóstica",
       "notesTitle": "Semântica documentada e notas de honestidade"
+    },
+    "zcc-forwarding-decision-explainer": {
+      "name": "Explicador de decisão de encaminhamento do ZCC",
+      "blurb": "Cole uma postura do Client Connector (estado de rede, ação de ZIA, versão de túnel) e leia de volta a espinha documentada de encaminhamento, camada por camada - com os mecanismos de bypass explicados, e a razão de isto ser um explicador e não um simulador declarada de saída.",
+      "emptyState": "Cole linhas de configuração como \"network = off-trusted\" e \"zia-action = tunnel\" para percorrer a espinha de decisão documentada.",
+      "runsLocally": "Roda inteiramente no seu navegador. Sua postura nunca sai desta página.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "inputLabel": "Configurações, uma por linha: chave = valor",
+      "placeholder": "network = off-trusted\nzia-action = tunnel\ntunnel = zt2\nzpa-action = tunnel",
+      "errorTitle": "Essa entrada precisa de ajuste",
+      "spineTitle": "A espinha de decisão documentada",
+      "layerNetwork": "Estado de rede",
+      "layerZia": "Ação de ZIA",
+      "layerTunnel": "Z-Tunnel",
+      "layerZpa": "Ação de ZPA",
+      "bypassTitle": "A camada de bypass: mecanismos, explicados",
+      "honestyTitle": "Por que um explicador, e não um simulador",
+      "notesTitle": "Notas permanentes"
     }
   },
   "privacy_page": {

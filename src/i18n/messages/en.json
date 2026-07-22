@@ -5829,6 +5829,25 @@
       "familyComposite": "Composite score",
       "diagnosticTitle": "Diagnostic split",
       "notesTitle": "Documented semantics and honesty notes"
+    },
+    "zcc-forwarding-decision-explainer": {
+      "name": "ZCC forwarding decision explainer",
+      "blurb": "Paste a Client Connector posture (network state, ZIA action, tunnel version) and read the documented forwarding spine back layer by layer - with the bypass mechanisms explained, and the reason this is an explainer rather than a simulator stated up front.",
+      "emptyState": "Paste setting lines like \"network = off-trusted\" and \"zia-action = tunnel\" to walk the documented decision spine.",
+      "runsLocally": "Runs entirely in your browser. Your posture never leaves this page.",
+      "example": "Example",
+      "clear": "Clear",
+      "inputLabel": "Settings, one per line: key = value",
+      "placeholder": "network = off-trusted\nzia-action = tunnel\ntunnel = zt2\nzpa-action = tunnel",
+      "errorTitle": "That input needs a fix",
+      "spineTitle": "The documented decision spine",
+      "layerNetwork": "Network state",
+      "layerZia": "ZIA action",
+      "layerTunnel": "Z-Tunnel",
+      "layerZpa": "ZPA action",
+      "bypassTitle": "The bypass layer: mechanisms, explained",
+      "honestyTitle": "Why an explainer, not a simulator",
+      "notesTitle": "Standing notes"
     }
   },
   "privacy_page": {

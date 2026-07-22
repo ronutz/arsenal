@@ -136,6 +136,7 @@ import ZscalerTunnelChooserTool from "@/components/ZscalerTunnelChooserTool";
 import ZscalerFirewallRuleOrderSimulatorTool from "@/components/ZscalerFirewallRuleOrderSimulatorTool";
 import ZscalerSslBypassPlannerTool from "@/components/ZscalerSslBypassPlannerTool";
 import ZdxScoreFactorExplainerTool from "@/components/ZdxScoreFactorExplainerTool";
+import ZccForwardingDecisionExplainerTool from "@/components/ZccForwardingDecisionExplainerTool";
 import GslbDecisionFlowTool from "@/components/GslbDecisionFlowTool";
 import TopologyLongestMatchTool from "@/components/TopologyLongestMatchTool";
 import DosVectorExplainerTool from "@/components/DosVectorExplainerTool";
@@ -152,6 +153,7 @@ import { manifest as zscalerTunnelManifest } from "@/lib/tools/zscaler-tunnel-ch
 import { manifest as zscalerFwManifest } from "@/lib/tools/zscaler-firewall-rule-order-simulator";
 import { manifest as zscalerSslManifest } from "@/lib/tools/zscaler-ssl-bypass-planner";
 import { manifest as zdxFactorManifest } from "@/lib/tools/zdx-score-factor-explainer";
+import { manifest as zccFdeManifest } from "@/lib/tools/zcc-forwarding-decision-explainer";
 import { manifest as gslbFlowManifest } from "@/lib/tools/f5-gslb-decision-flow";
 import { manifest as topoMatchManifest } from "@/lib/tools/f5-topology-longest-match";
 import { manifest as dosVectorManifest } from "@/lib/tools/f5-dos-vector-explainer";
@@ -631,6 +633,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "zdx-score-factor-explainer": {
     Component: ZdxScoreFactorExplainerTool,
     sources: zdxFactorManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "zcc-forwarding-decision-explainer": {
+    Component: ZccForwardingDecisionExplainerTool,
+    sources: zccFdeManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-gslb-decision-flow": {
     Component: GslbDecisionFlowTool,

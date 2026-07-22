@@ -52,6 +52,13 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-21T20:32:01-03:00",
+    kind: "tool",
+    tools: ["zcc-forwarding-decision-explainer"],
+    title: "ZCC forwarding decision explainer",
+    body: "Fifth native Zscaler tool, shipped in the ratified descoped form after the authorized verification pass: the documented forwarding spine (network-state determination, per-state ZIA and ZPA actions, Z-Tunnel 1.0 vs 2.0 with the automatic failover and hybrid web-split) computed layer by layer, the bypass mechanisms rendered as an explained ledger, and the why-explainer-not-simulator statement as first-class output - the cross-mechanism bypass precedence is unpublished, so the tool invents nothing. Twelve golden vectors; four pinned vendor sources.",
+  },
+  {
     date: "2026-07-21T20:03:38-03:00",
     kind: "content",
     title: "Zscaler glossary batch 2: seven platform terms",

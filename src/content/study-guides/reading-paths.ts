@@ -278,7 +278,7 @@ export const READING_PATHS: ReadingPath[] = [
       "zscaler-mergers-and-acquisitions",
       "zscaler-platform-updates-and-change-management",
     ],
-    tools: ["zscaler-tunnel-chooser", "zscaler-firewall-rule-order-simulator", "zscaler-ssl-bypass-planner", "ja4-fingerprint-decoder", "zdx-score-factor-explainer"],
+    tools: ["zscaler-tunnel-chooser", "zcc-forwarding-decision-explainer", "zscaler-firewall-rule-order-simulator", "zscaler-ssl-bypass-planner", "ja4-fingerprint-decoder", "zdx-score-factor-explainer"],
   },
 ];
 
