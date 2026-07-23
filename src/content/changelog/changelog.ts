@@ -52,6 +52,12 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-23T18:38:12-03:00",
+    kind: "content",
+    title: "The glossary starts going deep, and starts linking to the tools",
+    body: "A census of all 1,167 glossary entries turned up something more interesting than thin writing: 98.6 percent of them linked to no tool at all. On a site whose whole thesis is tools that compute rather than guess, a glossary that defines a thing without pointing at the thing that computes it is only doing half its job. This release begins fixing both halves. Entries now support an optional deeper body that appears only on the entry's own page, deliberately separate from the short definition that shows up in hover tooltips across the site, so the tooltips stay readable while the pages can go as deep as the subject deserves. Eight foundational entries lead the way with three-paragraph treatments grounded in where you actually meet the term: DNS as the thing you investigate when something else is broken and the question is which layer is holding the wrong answer; TLS as a negotiation whose details turned out to be a fingerprint; MTU as the problem where small things work and large things hang; multi-factor authentication and the lesson that any factor a person can be persuaded to relay will be relayed by a person under pressure. Alongside the writing, entries including DNS, TLS, WAF, SAML, JWT, OAuth, CIDR and MTU now link directly to the tools that decode, calculate, or explain them. It stays a glossary, in name and in spirit, just one that finally connects to the rest of the site.",
+  },
+  {
     date: "2026-07-23T17:51:39-03:00",
     kind: "infra",
     title: "Deploy unblocked: the site crossed Cloudflare's 100,000-file ceiling",

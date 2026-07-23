@@ -100,6 +100,22 @@ for (const e of entries) {
   const pt = ptEntries[e.slug];
   if (!en?.def || !en?.context) errors.push(`"${e.slug}": missing en def/context`);
   if (!pt?.def || !pt?.context) errors.push(`"${e.slug}": missing pt-BR def/context`);
+
+  // `depth` is the OPTIONAL encyclopedia-grade body added by the glossary
+  // depth retrofit (2026-07-23). It is optional per entry, but never
+  // optional per LOCALE: an entry that has depth in one language and not
+  // the other would render a rich page in en and a thin one in pt-BR,
+  // which the multi-locale rule forbids. It must also not simply repeat
+  // `context`, which would double the same paragraph on the page.
+  if (Boolean(en?.depth) !== Boolean(pt?.depth)) {
+    errors.push(`"${e.slug}": depth present in only one locale (en+pt-BR required together)`);
+  }
+  if (en?.depth && en.depth.trim() === en.context.trim()) {
+    errors.push(`"${e.slug}": en depth duplicates context`);
+  }
+  if (pt?.depth && pt.depth.trim() === pt.context.trim()) {
+    errors.push(`"${e.slug}": pt-BR depth duplicates context`);
+  }
 }
 
 // 6: no orphan prose (entry in i18n with no registry slug)

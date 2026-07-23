@@ -38,7 +38,20 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 45  # guardrail; a full build + deploy should land in ~15-20 min
+    # Guardrail, NOT a target. Raised 45 -> 90 on 2026-07-23 after a run was
+    # killed at "maximum execution time of 45m0s".
+    # Measured reality at ~9,800 pages / 16 locales: the build step alone took
+    # 33m56s on 2026-07-23, and that run then FAILED FAST at the deploy step
+    # (asset ceiling, 48s). With the ceiling fixed, wrangler actually uploads
+    # ~72,700 assets, which adds real minutes on top of the build - so the
+    # true end-to-end cost crossed 45m for the first time.
+    # 90 leaves headroom for growth while staying far below GitHub's HARD
+    # platform limit of 360 minutes per job on hosted runners (verified
+    # against docs.github.com/actions/reference/actions-limits, 2026-07-23);
+    # timeout-minutes cannot be raised above that on ubuntu-latest.
+    # If a run ever approaches 90, the fix is to cut build time (see the
+    # step-level timeouts below), not to keep raising this number.
+    timeout-minutes: 90
 
     steps:
       # ---------------------------------------------------------------------
@@ -71,6 +84,22 @@ jobs:
           node-version-file: ".node-version"
           cache: npm
 
+      # Next.js build cache. Most deploys change CONTENT (mdx, i18n JSON,
+      # glossary) rather than code, and Next can reuse compiled output across
+      # runs, which is the cheapest available cut to the 33m56s build step.
+      # Keyed on lockfile + source hash so a dependency or code change
+      # invalidates it; restore-keys lets a content-only change still hit a
+      # warm cache. .next/cache ONLY - never .next or out/, which are large
+      # and must be regenerated. Added 2026-07-23 after the 45m job timeout.
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
+          restore-keys: |
+            nextjs-${{ hashFiles('package-lock.json') }}-
+            nextjs-
+
       - name: Install dependencies
         run: npm ci
 
@@ -85,6 +114,9 @@ jobs:
       #    exact shortfall instead of failing silently.
       # ---------------------------------------------------------------------
       - name: Build (guards + export + pagefind + machine-legible)
+        # Step-level bound: the job guardrail is 90 min, but a HUNG build
+        # should not consume all of it. 60 min is ~1.8x the measured 33m56s.
+        timeout-minutes: 60
         run: |
           npm run build || {
             echo "BUILD FAILED. Disk state at failure:"
@@ -124,6 +156,10 @@ jobs:
       #    at >= 4.34.0 in devDependencies so local and CI deploys match.
       # ---------------------------------------------------------------------
       - name: Deploy to Cloudflare Workers
+        # Uploading ~72,700 assets takes minutes; a stuck upload should fail
+        # here rather than at the job guardrail, so the log points at the
+        # right step.
+        timeout-minutes: 25
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

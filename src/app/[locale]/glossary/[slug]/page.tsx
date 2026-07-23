@@ -125,6 +125,26 @@ export default async function GlossaryEntryPage({
             <p className="gloss-detail-def">{t(`entries.${slug}.def`)}</p>
             <p className="gloss-detail-context">{t(`entries.${slug}.context`)}</p>
 
+            {/* OPTIONAL depth body (glossary depth retrofit, 2026-07-23).
+                `context` is deliberately kept short because the SAME string
+                is rendered inside the GlossaryHint hover panel (22rem wide,
+                max-height 40vh) on tool docs and articles site-wide — long
+                context would turn every tooltip into a scroll trap. The
+                encyclopedia-grade body therefore lives in its own optional
+                key and renders ONLY here, on the detail page.
+                Split on blank lines into paragraphs; reuses the existing
+                .gloss-detail-context style, so no new CSS is introduced
+                (CSS reuse-only rule). Entries without a `depth` key render
+                exactly as before, which keeps the retrofit incremental. */}
+            {t.has(`entries.${slug}.depth`) &&
+              t(`entries.${slug}.depth`)
+                .split("\n\n")
+                .map((para, i) => (
+                  <p key={i} className="gloss-detail-context">
+                    {para}
+                  </p>
+                ))}
+
             {/* Optional original illustration (site policy: original art only). */}
             {entry.image && (
               <figure className="gloss-figure">
