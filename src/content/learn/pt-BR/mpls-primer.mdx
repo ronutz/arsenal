@@ -1,0 +1,40 @@
+---
+slug: mpls-primer
+title: "MPLS: rótulos, pilhas e o núcleo livre de BGP"
+summary: "Empurre um rótulo na borda, troque-o salto a salto, remova-o antes da saída - e de repente o núcleo não precisa de tabela de rotas, VPNs isolam milhares de clientes, e o tráfego vai para onde a engenharia manda. Um primer prático de comutação por rótulos, L3VPNs e o presente em Segment Routing."
+concepts: ["mpls", "bgp", "igp", "is-is", "atm", "vrf"]
+relatedTools: ["cidr"]
+relatedArticles: ["bgp-primer", "isis-primer", "ospf-primer"]
+category: networking
+order: 237
+status: reviewed
+updated: "2026-07-22"
+---
+
+## Uma consulta, depois rótulos
+
+O encaminhamento IP clássico faz cada roteador fazer o trabalho inteiro: casar o destino por prefixo mais longo contra uma tabela de rotas, salto após salto, como se cada roteador visse o pacote pela primeira vez. O MPLS toma a decisão **uma vez**. O roteador de borda - o LER, label edge router - classifica o pacote numa classe de encaminhamento, empurra um **rótulo** curto nele, e dali em diante os roteadores de núcleo - LSRs, label switch routers - fazem a operação mais barata das redes: consultam o rótulo de entrada numa tabela pequena, **trocam** pelo de saída, encaminham. Na borda oposta o rótulo é **removido** e o IP normal recomeça. Empurrar, trocar, remover: o mecanismo inteiro cabe em três verbos.
+
+A linhagem é furto honesto de engenharia: o MPLS levou o insight de circuito virtual do ATM - decida o caminho uma vez, depois comute por identificadores pequenos - e deixou para trás as células de 53 bytes, as camadas de adaptação e o imposto de célula. O label-switched path (LSP) é um circuito virtual que carrega pacotes inteiros.
+
+## A pilha é o truque inteiro
+
+Um pacote pode carregar **mais de um rótulo**, e essa pilha é onde o MPLS deixa de ser otimização e vira arquitetura. O rótulo externo significa *como cruzar o backbone*; um rótulo interno pode significar *o que este pacote é* - a VPN deste cliente, este pseudowire, este serviço. Roteadores de núcleo leem só o rótulo externo; não sabem nem se importam com o que viaja por baixo.
+
+Duas consequências construíram a indústria de operadoras como ela existe:
+
+**O núcleo livre de BGP.** Só roteadores de borda precisam da tabela completa da internet e das rotas de clientes; o núcleo encaminha por rótulos apenas. No início dos anos 2000 isso era sobrevivência - o silício de núcleo não segurava a tabela global crescente - e permanece como a separação limpa: inteligência na borda, velocidade no meio.
+
+**O L3VPN** (RFC 4364), o produto que pagou por tudo. Cada cliente se conecta a um **VRF** - uma tabela de rotas privada na borda do provedor - e as rotas de clientes viajam entre bordas dentro do BGP, desambiguadas por route distinguishers e dirigidas por route targets, com o rótulo interno selecionando o VRF certo na saída. Mil clientes, todos usando 10.0.0.0/8, num backbone compartilhado, sem nunca se verem: é a pilha de rótulos trabalhando, e é o que "um circuito MPLS" significa para empresas há vinte anos.
+
+## Quem distribui os rótulos
+
+Rótulos precisam ser acordados entre vizinhos, e a história do MPLS é a história dessa sinalização. O **LDP** foi o cavalo de batalha: simples, segue os caminhos mais curtos do IGP, sem engenharia de tráfego. O **RSVP-TE** foi o peso-pesado: caminhos explícitos, reserva de banda, fast reroute - a ferramenta para desviar tráfego de enlaces congestionados, ao preço de estado por caminho em todo lugar. A resposta moderna, o **Segment Routing**, apaga a sinalização por completo: o caminho é codificado no próprio pacote como uma pilha de rótulos de segmento, distribuídos como extensões do IGP - e é por isso que a história dos TLVs no primer de IS-IS importa aqui. Mesmo plano de encaminhamento, radicalmente menos maquinaria de protocolo; é para onde o MPLS de operadora caminha há uma década.
+
+Dois detalhes práticos que todo operador de MPLS carrega: o **penultimate hop popping** - o penúltimo roteador remove o rótulo externo para o roteador de saída fazer uma consulta em vez de duas, uma pequena cortesia que confunde toda primeira captura de pacotes; e o imposto de MTU - cada rótulo tem quatro bytes, e um ajuste de MTU esquecido num enlace de núcleo é o clássico chamado de "a VPN funciona para ping, morre para tráfego de verdade".
+
+## O MPLS morreu?
+
+A pergunta chega com todo pitch de SD-WAN, e a resposta honesta tem duas metades. Na **borda WAN empresarial**, o circuito L3VPN gerenciado premium genuinamente perdeu terreno: transporte internet mais overlays de SD-WAN levaram o crescimento do mercado de conectividade de filiais. No **núcleo de operadora**, os rótulos nunca foram a lugar algum - os backbones que carregam esses mesmos túneis de SD-WAN, as redes móveis e os serviços de atacado rodam comutados por rótulo, cada vez mais via Segment Routing. O MPLS não morreu; recuou do nome do produto para o encanamento, que é onde infraestrutura vencedora costuma terminar.
+
+Como os caminhos mais curtos subjacentes são computados é território dos primers de OSPF e IS-IS; como a borda troca essas rotas de VPN é do BGP - os três primers e este descrevem uma única máquina.

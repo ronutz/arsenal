@@ -140,6 +140,9 @@ import ZccForwardingDecisionExplainerTool from "@/components/ZccForwardingDecisi
 import HttpStatusCodeExplainerTool from "@/components/HttpStatusCodeExplainerTool";
 import NetskopeSteeringDecisionExplainerTool from "@/components/NetskopeSteeringDecisionExplainerTool";
 import SortingAlgorithmStepperTool from "@/components/SortingAlgorithmStepperTool";
+import CableRunPlannerTool from "@/components/CableRunPlannerTool";
+import LdapFilterExplainerTool from "@/components/LdapFilterExplainerTool";
+import OauthFlowChooserTool from "@/components/OauthFlowChooserTool";
 import GslbDecisionFlowTool from "@/components/GslbDecisionFlowTool";
 import TopologyLongestMatchTool from "@/components/TopologyLongestMatchTool";
 import DosVectorExplainerTool from "@/components/DosVectorExplainerTool";
@@ -160,6 +163,9 @@ import { manifest as zccFdeManifest } from "@/lib/tools/zcc-forwarding-decision-
 import { manifest as httpStatusManifest } from "@/lib/tools/http-status-code-explainer";
 import { manifest as nsSteeringManifest } from "@/lib/tools/netskope-steering-decision-explainer";
 import { manifest as sortStepperManifest } from "@/lib/tools/sorting-algorithm-stepper";
+import { manifest as cablePlannerManifest } from "@/lib/tools/cable-run-planner";
+import { manifest as ldapFilterManifest } from "@/lib/tools/ldap-filter-explainer";
+import { manifest as oauthChooserManifest } from "@/lib/tools/oauth-flow-chooser";
 import { manifest as gslbFlowManifest } from "@/lib/tools/f5-gslb-decision-flow";
 import { manifest as topoMatchManifest } from "@/lib/tools/f5-topology-longest-match";
 import { manifest as dosVectorManifest } from "@/lib/tools/f5-dos-vector-explainer";
@@ -655,6 +661,18 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "sorting-algorithm-stepper": {
     Component: SortingAlgorithmStepperTool,
     sources: sortStepperManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "cable-run-planner": {
+    Component: CableRunPlannerTool,
+    sources: cablePlannerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "ldap-filter-explainer": {
+    Component: LdapFilterExplainerTool,
+    sources: ldapFilterManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "oauth-flow-chooser": {
+    Component: OauthFlowChooserTool,
+    sources: oauthChooserManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-gslb-decision-flow": {
     Component: GslbDecisionFlowTool,

@@ -88,6 +88,13 @@ import { datacomProfile } from "@/content/vendors/profiles/datacom";
 import { banyanProfile } from "@/content/vendors/profiles/banyan";
 import { fujitsuProfile } from "@/content/vendors/profiles/fujitsu";
 import { necProfile } from "@/content/vendors/profiles/nec";
+import { dolchProfile } from "@/content/vendors/profiles/dolch";
+import { cycladesNetworkProfile } from "@/content/vendors/profiles/cyclades-network";
+import { asusAskeyProfile } from "@/content/vendors/profiles/asus-askey";
+import { netgearProfile } from "@/content/vendors/profiles/netgear";
+import { tpLinkProfile } from "@/content/vendors/profiles/tp-link";
+import { zyxelProfile } from "@/content/vendors/profiles/zyxel";
+import { alliedTelesisProfile } from "@/content/vendors/profiles/allied-telesis";
 
 // Rich profiles, keyed by slug. Vendors without a profile render the simple layout.
 const PROFILES: Record<string, VendorProfile> = {
@@ -154,6 +161,13 @@ const PROFILES: Record<string, VendorProfile> = {
   [nvidiaProfile.slug]: nvidiaProfile,
   [aristaProfile.slug]: aristaProfile,
   [ubiquitiProfile.slug]: ubiquitiProfile,
+  [dolchProfile.slug]: dolchProfile,
+  [cycladesNetworkProfile.slug]: cycladesNetworkProfile,
+  [asusAskeyProfile.slug]: asusAskeyProfile,
+  [netgearProfile.slug]: netgearProfile,
+  [tpLinkProfile.slug]: tpLinkProfile,
+  [zyxelProfile.slug]: zyxelProfile,
+  [alliedTelesisProfile.slug]: alliedTelesisProfile,
   [accessHomeFleetProfile.slug]: accessHomeFleetProfile,
   [watchguardProfile.slug]: watchguardProfile,
   [a10KempProfile.slug]: a10KempProfile,

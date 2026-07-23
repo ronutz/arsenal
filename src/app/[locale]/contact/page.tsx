@@ -135,6 +135,18 @@ export default async function ContactPage({
               </div>
             </div>
           </section>
+
+          {/* Content removal / correction route (PRIME 2026-07-23). Pairs with
+              the good-faith notice on every vendor-linked study guide. */}
+          <section className="section">
+            <div className="container">
+              <h2 className="contact-section-label">{t("takedownHeading")}</h2>
+              <p className="colophon-body">
+                {t("takedownBody")}{" "}
+                <Link href="/disclaimer">{t("takedownLink")} →</Link>
+              </p>
+            </div>
+          </section>
         </article>
       </main>
 

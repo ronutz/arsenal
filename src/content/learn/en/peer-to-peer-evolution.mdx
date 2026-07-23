@@ -1,0 +1,50 @@
+---
+slug: peer-to-peer-evolution
+title: "Peer-to-peer, from Napster to the swarm: the architectures that outlived the piracy"
+summary: "Napster, Gnutella, Kazaa, eMule, BitTorrent - four years of file-sharing produced five distinct network architectures, each solving the weakness the last one died from. The centralized index, unstructured flooding, the supernode, the distributed hash table, and the swarm - what each actually was, how the courtroom shaped the topology, and why these ideas quietly power Skype, streaming CDNs, and blockchains today."
+concepts: ["peer-to-peer", "client-server", "onion-routing"]
+relatedTools: []
+relatedArticles: []
+category: networking
+order: 241
+status: reviewed
+updated: "2026-07-23"
+---
+
+## One problem, five answers
+
+Peer-to-peer file sharing set out to solve a single problem: let a crowd of ordinary computers find and trade files among themselves, with no company owning the library. Between 1999 and 2003 that problem was answered five different ways, and the reason there were five is that each design died from a specific weakness the next one was built to fix. Read in order, the history is not a list of apps but a clean lesson in distributed-systems trade-offs - and the enabling spark under all of it was a codec. MP3 (MPEG-1 Audio Layer III, from the Fraunhofer Institute, standardized in 1993) shrank a song from tens of megabytes of CD audio to three or four, small enough to move over a dial-up line, and in doing so it detached music from the physical disc. Everything that follows is what happened once the file became weightless.
+
+## The centralized index: Napster (1999)
+
+Napster's insight was to split the two jobs a file-sharing system has to do: **finding** a file and **transferring** it. The transfer was genuinely peer-to-peer - your machine downloaded straight from another user's machine. But the **finding** ran through a central server that held the index of who had what. That hybrid is why Napster was both explosively fast to grow (26 million users by early 2001) and trivially easy to kill: the index was a single company at a single address. When the recording industry won *A&M Records v. Napster* in 2001, there was one plug to pull, and pulling it ended the network. The architecture contained its own death certificate.
+
+## Pure decentralization: Gnutella and LimeWire (2000)
+
+Gnutella's answer was to delete the server entirely. There was no central index - to search, your client asked its neighbors, who asked their neighbors, and the query **flooded** outward hop by hop. Nothing sat at a single address, so nothing could be sued into silence, and LimeWire and its kin rode this network for years. The cost was arithmetic: flooding every query to every neighbor generates traffic that grows faster than the useful results, so pure Gnutella scaled badly and buckled under its own chatter. The network's own fix previewed the next idea - it grew a two-tier structure of **ultrapeers**, stable well-connected nodes that shielded ordinary "leaf" peers from the flood, cutting query overhead dramatically. Decentralization had learned it needed some hierarchy back.
+
+## The supernode compromise: FastTrack and Kazaa (2001)
+
+Kazaa, built on the proprietary **FastTrack** protocol, made that hierarchy the center of the design. FastTrack promoted well-connected users to **supernodes** - your ordinary machine connected to one supernode, which indexed the files of the dozens of leaf nodes around it and gossiped with other supernodes to answer searches. It was the Napster index shattered into thousands of pieces and pushed into the crowd, which is exactly why there was no single server to shut down. Kazaa added a second trick that pointed straight at the future: **multi-source download**, pulling different ranges of the same file from several peers at once. It also carried the era's original sin - bundled spyware and adware - which did as much to kill the ordinary user's trust as any lawsuit. FastTrack's authors were Estonian engineers including Jaan Tallinn, working with Niklas Zennstrom and Janus Friis; the same people took the supernode idea almost unchanged and built **Skype** on it in 2003. The architecture outlived the piracy by two years and a business model.
+
+## The structured turn: eDonkey, eMule, and the DHT
+
+The eDonkey network started with index servers, but its open-source client **eMule** popularized the leap that made central anything unnecessary: the **distributed hash table**. A DHT turns "who has this file?" from a broadcast question into a lookup. Every file has a hash, every peer has an ID in the same address space, and a key-based routing algorithm - eMule's **Kad** network uses **Kademlia** (2002), whose elegant XOR distance metric locates any key in a logarithmic number of hops - means the location of a file is *computed*, not searched. There is no server to seize and no flood to drown in, only a self-organizing address book spread across every participant. This was the deepest architectural shift in the whole story: from **unstructured** networks that find things by asking around, to **structured** networks that find things by arithmetic. eMule paired it with a queue system that rewarded patience, which made it the tool of choice for large and rare files that the faster networks never kept alive.
+
+## The swarm: BitTorrent (2001)
+
+BitTorrent, from Bram Cohen, made one more separation and changed everything. It stopped treating a file as a thing you download from a source and started treating it as a set of **pieces** you assemble from a **swarm**. Everyone downloading the same file is also uploading the pieces they already have, so popular files get *faster* as more people want them - the exact inverse of the client-server curve, where popularity is congestion. The genius is in the incentive: BitTorrent's **tit-for-tat** choking algorithm preferentially uploads to peers who upload back to you, which quietly solves the free-rider problem that let earlier networks rot into leechers. BitTorrent also cleanly separated the two jobs Napster fused. Finding peers was first a **tracker** (a small coordination server), then a **DHT** (Mainline DHT, Kademlia again) that made trackers optional, then **magnet links** that replaced the .torrent file with nothing but a hash. Transferring was the swarm. Kill any one part and the others carry on, which is why BitTorrent, alone among these, never really went away.
+
+## The courtroom as a design constraint
+
+It is tempting to read this as pure engineering, but the law shaped the topology as directly as bandwidth did. *A&M v. Napster* (2001) established that a central index meant contributory and vicarious liability - so the next designs removed the center. When the industry pursued the supernode networks, the U.S. Supreme Court's *MGM Studios v. Grokster* (2005) supplied a new theory: the **inducement** rule held that promoting a tool for infringement created liability regardless of the tool's architecture, which ended FastTrack's American life and pushed Kazaa's owners into a roughly nine-figure settlement in 2006. Sweden's **Pirate Bay** trial (2009) sent its operators to prison and became the movement's defining courtroom drama. The pattern is unmistakable: each legal defeat selected for a more decentralized successor, right up until *Grokster* established that decentralization alone was no shield if you marketed the intent. Architecture could evade a subpoena; it could not evade a jury deciding what you meant to build.
+
+## Why it "died" - and the four forces that killed it
+
+By the late 2000s the open file-sharing networks faded, and not mainly because of any single lawsuit. Four forces converged. **Legal pressure** raised the cost and fear for operators and users alike. **Sanitation** collapsed the experience from the inside: the networks filled with viruses, spyware, and deliberate fake files (often seeded by the industry itself) until finding a clean copy became work. **Broadband** replaced dial-up, making real-time streaming feasible so that you no longer needed to own the file at all. And **convenience** closed the case: the market discovered that people would happily pay for access if the legal service was faster, safer, and better organized than piracy. YouTube and direct-download lockers arrived around 2005; Spotify and Netflix turned streaming into the default by the end of the decade, delivering everything from centralized clouds and **content delivery networks** - a return, in effect, to a very sophisticated client-server model.
+
+## It didn't actually die
+
+The apps died; the architectures are everywhere. Skype was FastTrack's supernode design wearing a headset. **IPFS** is a content-addressed DHT for the whole web, using the same Kademlia lineage as eMule and BitTorrent. Blockchain networks gossip transactions peer-to-peer over unstructured overlays that would be familiar to any Gnutella engineer. **WebRTC** puts browser-to-browser peer connections in every video call. Even CDNs, the streaming era's centralizing answer, quietly experiment with peer-assisted delivery to offload their own bandwidth. The file-sharing wars were, in hindsight, a public four-year laboratory for distributed systems, and the winners were the ideas, not the products.
+
+One branch of the decentralized-network family tree sits deliberately apart from all of this, because it optimizes for a different thing entirely - not distribution but **anonymity**. **Tor**, the onion router, is a decentralized overlay like these, but it exists to hide *who* is talking rather than to spread *what* is shared, and its layered-encryption design earns a dedicated write-up of its own rather than a paragraph here. That article is coming.

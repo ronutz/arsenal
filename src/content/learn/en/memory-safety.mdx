@@ -1,0 +1,52 @@
+---
+slug: memory-safety
+title: "Memory safety: the bug classes and the defenses that answer them"
+summary: "Buffer overflow, use-after-free, null dereference, integer overflow - four names for two failures, staying inside an object and only touching it while it is alive. How each one works, why roughly seventy percent of serious vulnerabilities in large C and C++ codebases belong to this family, and what each defensive layer actually buys."
+concepts: ["buffer-overflow", "use-after-free", "memory-safety", "aslr", "cwe"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["ldap-search-filters"]
+category: security
+order: 240
+status: reviewed
+updated: "2026-07-23"
+---
+
+## Two questions, not a dozen bug names
+
+Every bug in this family answers one of two questions wrongly. **Spatial safety**: is this access inside the bounds of the object it belongs to? **Temporal safety**: is this object still alive at the moment I touch it? A buffer overflow is a spatial failure, a use-after-free is a temporal one, and once you hold that axis the rest of the vocabulary stops being a list to memorize. The reason the industry cares is a number that keeps being reproduced independently: analyses from Microsoft, Google, and advisories from CISA and the NSA converge on roughly **seventy percent** of serious vulnerabilities in large C and C++ codebases being memory-safety issues. That is not a rounding error in a threat model. That is the threat model.
+
+## The spatial failures
+
+A **buffer overflow** is a fixed-size buffer, an unchecked copy, and data landing in whatever sat next to it. What sat next to a stack buffer, historically, was the saved return address, so a sufficiently long input could decide where the function returned to - which is how this class powered the Morris worm in 1988 and Code Red in 2001, and why it is still CWE-787 near the top of the CWE Top 25 today. The mechanism is that simple; the entire mitigation stack below exists because of it.
+
+An **integer overflow** looks like a different bug and usually ends as the same one. Add one to the maximum signed 32-bit integer and you get the most negative one. That is a curiosity until the wrapped value is a *size*: a length calculation overflows to something small, passes a sanity check precisely because it now looks small, and is then used to allocate a buffer that the real data promptly overruns. Ariane 5 destroyed itself on a related conversion failure in 1996. CWE-190.
+
+An **off-by-one** is the same story at the smallest possible scale - `<` where `<=` belonged, one byte past the end - and in the wrong structure a single byte is enough to matter.
+
+## The temporal failures
+
+A **use-after-free** is a pointer to memory that has been released. The allocator may have already handed that block to something else, so the program is now reading or writing another object's data through a stale lens. This is more dangerous than a crash because the contents are influenceable: an attacker who can control what gets allocated into the freed space controls what the confused code sees. That is why use-after-free (CWE-416) and its sibling double-free are mainstays of modern browser and kernel exploitation, long after the simple stack overflow stopped working reliably.
+
+A **null pointer dereference** - PRIME's "zero pointer" - is the gentle cousin. A function returned null on failure, nobody checked, and the program touches address zero. On any modern system the zero page is deliberately left unmapped, so this is a reliable crash rather than a takeover; that unmapping *is* the mitigation, and it is why the same bug was far more dangerous on older systems where low memory could be mapped. Its real cost is availability: force the null path repeatedly and you have a denial of service. CWE-476.
+
+A **memory leak** is the one that never crashes on cue. Memory is allocated and never released, the process is fine for hours or weeks, and then the machine starts swapping - with the incident beginning very far from the cause. The tell is a service that behaves perfectly right after a restart, which is how scheduled nightly restarts became folk medicine instead of a fix.
+
+## What each defensive layer actually buys
+
+The defenses arrived roughly in the order the attacks did, and it is worth being precise about what each one does and does not do.
+
+**Stack canaries** put a known value between local buffers and the saved return address and check it before returning. If it changed, something wrote past the buffer, and the program aborts rather than returning into attacker-chosen data. Cheap, compiler-inserted, on by default nearly everywhere - and strictly a *detector* of contiguous overwrites, not a preventer.
+
+**NX / DEP** marks pages writable or executable, never both. This ended the simplest exploitation pattern outright: writing instructions into a buffer and jumping to them no longer works. Attackers responded by reusing code already present and legitimately executable in the process rather than injecting their own.
+
+**ASLR** randomizes where the stack, heap, libraries, and (with PIE) the executable land, so an attacker who needs to know an address has to guess. Its weakness is information disclosure: one leaked pointer can derandomize an entire region, which is why a "mere" info-leak bug is rated more seriously than its direct impact suggests.
+
+**Memory-safe languages** are the layer that removes the question instead of raising its price. Rust, Go, Java, C#, and modern C++ practice make the failing pattern either impossible or checked. Rewriting the world is not realistic, so the working consensus is memory-safe languages for new components, hardening plus sanitizers for the code that stays.
+
+Notice the shape of that list. Each mitigation raised the cost substantially and none of them ended the game - which is the honest argument for deploying them together rather than choosing between them.
+
+## Finding them before someone else does
+
+**Fuzzing** feeds a program vast quantities of malformed input to see what makes it die, on the theory that a program mishandling input badly enough to crash may mishandle it exploitably. Coverage-guided fuzzers like AFL and libFuzzer keep the mutations that reach new code paths, and they are paired with **sanitizers** - AddressSanitizer and friends - that turn silent corruption into a loud, reproducible failure with a stack trace. **GDB** is where a crash becomes an explanation: a breakpoint, a backtrace, and the offending line usually names itself.
+
+And this is where QA practice rejoins security practice. A **regression test** written at the moment a bug is fixed is what stops that bug from returning; a fuzzing corpus is a regression suite that writes itself. The register they all report into is **CWE** - the category of mistake - as distinct from **CVE**, which is one specific instance of it in one specific product. The CVE tells you what broke this week. The CWE tells you what your codebase keeps getting wrong.

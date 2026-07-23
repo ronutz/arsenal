@@ -1,0 +1,44 @@
+---
+slug: bgp-primer
+title: "BGP: how the internet decides where traffic goes"
+summary: "The Border Gateway Protocol is the internet's routing brain - and it works nothing like the routing inside your network. A practical primer: autonomous systems, the path-vector idea, the attributes that encode business policy, why convergence is slow on purpose, and what RPKI fixes."
+concepts: ["bgp", "egp", "igp", "peering", "rpki", "anycast"]
+relatedTools: ["cidr"]
+relatedArticles: ["ospf-primer", "ieee-802-working-groups"]
+category: networking
+order: 234
+status: reviewed
+updated: "2026-07-22"
+---
+
+## The problem BGP actually solves
+
+Inside one network, routing is a math problem: find the shortest path, everyone agrees on the map, done. Between networks, routing is a **business** problem. Your ISP will not carry a competitor's traffic for free just because the path is shorter, and a bank will not send its packets through a network it does not trust just because the metric says so. The internet needed a protocol where every network could apply its own policy and still, somehow, produce a working global routing table.
+
+That protocol is the Border Gateway Protocol - BGP-4, standardized in RFC 4271, famously first sketched on napkins over lunch at an IETF meeting in 1989 by engineers from Cisco and IBM. The napkin protocol now moves essentially all inter-network traffic on Earth.
+
+## Autonomous systems: the unit of the internet
+
+BGP's world is made of **autonomous systems** (AS): networks under one administrative control, each with a number - AS 15169 is Google, AS 26599 is Telefônica Brasil. Your enterprise might have one; every ISP has at least one. The internet, at BGP's altitude, is roughly 75,000+ of these numbered blobs and the relationships between them - customer pays provider, peers exchange traffic settlement-free - and BGP is how the blobs tell each other which IP prefixes they can reach.
+
+Two flavors, one protocol: **eBGP** speaks between different autonomous systems (the border in the name), while **iBGP** distributes those external routes among the routers inside one AS. The classic gotcha every engineer meets: iBGP does not re-advertise iBGP-learned routes to other iBGP peers - that loop-prevention rule is why full meshes, route reflectors, and confederations exist.
+
+## Path vector: the whole trip, not just the distance
+
+An interior protocol advertises "I can reach X at cost 20." BGP advertises the **entire path**: "I can reach X via AS 3356, then AS 15169." That AS-path is the loop prevention (see your own AS number in the path, discard the route) and the trust record (you can read exactly whose networks your packets will cross).
+
+Policy rides on **attributes** attached to each route, evaluated in a strict order every BGP engineer eventually recites in their sleep. The three that decide most real-world arguments: **local preference** (how much *my* network prefers this exit - the knob for "send traffic out the cheap link"), **AS-path length** (the tiebreaker that acts like distance), and **MED** (a polite suggestion to your neighbor about which entrance to use, honored exactly as much as politeness usually is). Communities - little numeric tags on routes - are the duct tape of interdomain policy: "customer route", "do not export to Europe", "prepend three times on this exit", all encoded as tags your neighbors agree to act on.
+
+## Slow on purpose
+
+BGP convergence is measured in seconds to minutes, and this horrifies people raised on interior protocols. It is a feature. A protocol carrying close to a million prefixes, across networks that do not trust each other, dampens and paces its updates because the alternative - the whole internet recomputing at LAN speed every time a link in one country flaps - is the outage. When you need fast failover *and* BGP, you engineer it: tighter timers where both sides consent, BFD for sub-second failure detection, and anycast for services that must survive anything.
+
+## The insecurity everyone lives with
+
+Classic BGP believes what it is told. If a network announces a prefix it does not own - by mistake (a typo'd route leak) or by design (a hijack) - neighbors that accept the announcement will send traffic there. The famous incidents - a Pakistani ISP accidentally blackholing YouTube worldwide in 2008, cryptocurrency thefts via hijacked DNS prefixes - are all this one flaw. The modern answer is **RPKI**: cryptographic statements of which AS may originate which prefix, letting routers drop invalid announcements. Origin validation is now mainstream among serious operators; path validation remains the harder, slower frontier. When you evaluate an ISP, "do you drop RPKI-invalids?" is a question that sorts them quickly.
+
+## Reading BGP like a practitioner
+
+The practical mental model: a BGP route is a promise with a paper trail. When you look at a route, read it as a sentence - *this prefix, learned from that neighbor, crossing these autonomous systems, preferred because of this attribute*. Aggregation is why the table is only around a million routes instead of billions: networks announce summarized CIDR blocks, not every subnet (the prefix arithmetic behind that is exactly what the CIDR tool on this site computes). And when something breaks on the internet side of your border, the first three questions are always the same: is the prefix still announced, is the AS-path sane, and did anyone's policy change this morning.
+
+The interior counterpart to all this - how routing works where you *do* control both ends - is the subject of the OSPF primer.

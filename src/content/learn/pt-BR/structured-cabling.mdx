@@ -1,0 +1,38 @@
+---
+slug: structured-cabling
+title: "Cabeamento estruturado: o sistema atrás da tomada de rede"
+summary: "A TIA-568 transforma a fiação de um prédio de improviso em sistema: lances horizontais, salas de telecom, o canal de 100 metros, categorias, pinagens e as classificações de fogo que os fiscais de fato conferem. O mapa do espelho na parede ao backbone."
+concepts: ["eia-tia", "utp", "cable-categories", "t568a-t568b", "plenum", "wiring-closet"]
+relatedTools: ["cable-run-planner", "oui-lookup"]
+relatedArticles: ["ieee-802-working-groups", "gpon-how-one-fiber-serves-a-neighborhood", "last-mile-evolution-pots-to-fiber"]
+category: networking
+order: 233
+status: reviewed
+updated: "2026-07-22"
+---
+
+## De fios a um sistema
+
+Antes do cabeamento estruturado, a fiação de um prédio era o que o último instalador tivesse deixado: lances ponto a ponto, conectores proprietários, emendas sem documentação. A família ANSI/TIA-568 - a linhagem de padrões da TIA, herdeira da velha parceria EIA/TIA - substituiu isso por um sistema: mídia padronizada, conectores e pinagens padronizados, distâncias padronizadas e uma topologia padronizada, de modo que qualquer ponto conforme atenda qualquer serviço conforme, e quem estiver diagnosticando no ano dez consiga raciocinar sobre o que quem instalou no ano um fez.
+
+A topologia é uma estrela de estrelas. Cada ponto de área de trabalho corre um cabo **horizontal** de volta a uma sala de telecom no seu andar; as salas de telecom se ligam por cabeamento de **backbone** - lances de riser entre andares, lances de campus entre prédios - até o ponto de distribuição principal. O vocabulário de wiring closet mapeia nisso: o MDF como sala principal, os IDFs como intermediárias por andar, os patch panels como a fronteira onde a fiação permanente do prédio termina e os patch cords móveis começam.
+
+## O canal de 100 metros
+
+O número que todo engenheiro de redes carrega: um **canal** de par trançado pode totalizar 100 metros. O padrão o divide em até 90 metros de **enlace permanente** - o cabo na parede, conectorizado nas duas pontas - mais 10 metros somados de patch cords nas duas extremidades. Essa divisão é o motivo de o lance horizontal ser testado e certificado uma vez, na instalação, e os patch cords permanecerem descartáveis.
+
+O canal, não a bobina de cabo, é o que uma **categoria** certifica. Cat 5e suporta gigabit Ethernet pelos 100 metros completos. Cat 6 eleva a banda testada e carrega 10 Gb/s, mas só até uns 55 metros; Cat 6A carrega 10 Gb/s na distância inteira e é o padrão sensato para cabeamento horizontal novo. Cat 8 dobra a aposta para o data center: 25/40 Gb/s, mas só até 30 metros, efetivamente blindado, para fileiras switch-servidor e não para andares de escritório. E a certificação é ponta a ponta - um enlace permanente Cat 6A com cordões Cat 5e é, como sistema, Cat 5e.
+
+O cobre em si é UTP por padrão - quatro pares, interferência combatida só com a geometria da trança. Onde o ambiente é eletricamente hostil, as construções blindadas (F/UTP, S/FTP) acrescentam folha e malha, ao preço de cabo mais rígido e da obrigação de aterrar as blindagens direito. A terminação segue uma de duas pinagens, T568A ou T568B, funcionalmente idênticas; a regra do site é escolher uma e nunca misturar, porque uma de cada ponta produz um crossover - um tipo de cabo que o auto-MDIX tornou histórico, mas que o erro de conectorização ainda recria por acidente.
+
+## Fibra onde o cobre para
+
+Além dos 100 metros, ou entre prédios, ou onde a isolação elétrica importa, o backbone vira óptico. A divisão é monomodo versus multimodo: o núcleo estreito da monomodo carrega um caminho de luz por quilômetros e é o padrão para distâncias de campus e operadora; o núcleo mais largo da multimodo mantém baixo o custo dos transceptores pelas centenas de metros dentro de uma instalação, nos graus OM3 a OM5. O transceptor plugável no switch - a linhagem SFP, para cobre e fibra igualmente - é o que casa a porta com o meio que a planta oferecer, com conversores de mídia como alternativa avulsa onde não há porta SFP.
+
+## As classificações que os fiscais conferem
+
+Uma dimensão do cabeamento não tem nada a ver com sinal e tudo a ver com código de incêndio. Cabo com jaqueta para espaços de **plenum** de ar (CMP) precisa queimar devagar e soltar pouca fumaça; o CMR classificado para **riser** cobre os shafts verticais; jaquetas de uso geral cobrem o resto, e as classificações só substituem para baixo - plenum vai a qualquer lugar, riser não vai em plenum. Fora da América do Norte o vocabulário paralelo é LSZH. É a parte da lista de materiais do cabeamento que um fiscal de obra, não um testador de enlace, faz valer - e a parte mais caramente descoberta tarde.
+
+## Por que o sistema se sustenta
+
+A conquista silenciosa do cabeamento estruturado é que a camada física deixou de ser interessante. Um ponto é um ponto; um canal certifica na sua categoria ou não certifica; uma sala de telecom segue a mesma gramática em São Paulo e em Estocolmo. O custo dessa falta de graça é disciplina - etiquetar, testar, uma pinagem por site, painéis cegos nos slots vazios do rack - e a recompensa é que tudo acima da camada 1 pode assumir que o fio simplesmente funciona.

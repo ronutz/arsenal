@@ -1,0 +1,44 @@
+---
+slug: bgp-primer
+title: "BGP: como a internet decide para onde o tráfego vai"
+summary: "O Border Gateway Protocol é o cérebro de roteamento da internet - e não funciona nada como o roteamento dentro da sua rede. Um primer prático: sistemas autônomos, a ideia de path vector, os atributos que codificam política comercial, por que a convergência é lenta de propósito, e o que o RPKI conserta."
+concepts: ["bgp", "egp", "igp", "peering", "rpki", "anycast"]
+relatedTools: ["cidr"]
+relatedArticles: ["ospf-primer", "ieee-802-working-groups"]
+category: networking
+order: 234
+status: reviewed
+updated: "2026-07-22"
+---
+
+## O problema que o BGP realmente resolve
+
+Dentro de uma rede, roteamento é um problema de matemática: ache o caminho mais curto, todos concordam com o mapa, pronto. Entre redes, roteamento é um problema de **negócio**. Seu provedor não vai carregar o tráfego de um concorrente de graça só porque o caminho é mais curto, e um banco não vai mandar seus pacotes por uma rede em que não confia só porque a métrica mandou. A internet precisava de um protocolo em que cada rede pudesse aplicar sua própria política e, ainda assim, de algum jeito, produzir uma tabela de roteamento global que funciona.
+
+Esse protocolo é o Border Gateway Protocol - o BGP-4, padronizado na RFC 4271, notoriamente rascunhado pela primeira vez em guardanapos, durante um almoço numa reunião do IETF em 1989, por engenheiros da Cisco e da IBM. O protocolo do guardanapo hoje move essencialmente todo o tráfego entre redes da Terra.
+
+## Sistemas autônomos: a unidade da internet
+
+O mundo do BGP é feito de **sistemas autônomos** (AS): redes sob um controle administrativo, cada uma com um número - AS 15169 é o Google, AS 26599 é a Telefônica Brasil. Sua empresa pode ter um; todo provedor tem pelo menos um. A internet, na altitude do BGP, é algo como 75.000+ dessas bolhas numeradas e as relações entre elas - cliente paga provedor, peers trocam tráfego sem acerto financeiro - e o BGP é como as bolhas contam umas às outras quais prefixos IP conseguem alcançar.
+
+Dois sabores, um protocolo: o **eBGP** fala entre sistemas autônomos diferentes (o border do nome), enquanto o **iBGP** distribui essas rotas externas entre os roteadores dentro de um AS. A pegadinha clássica que todo engenheiro encontra: o iBGP não re-anuncia rotas aprendidas por iBGP a outros peers iBGP - essa regra de prevenção de loop é o motivo de existirem full meshes, route reflectors e confederações.
+
+## Path vector: a viagem inteira, não só a distância
+
+Um protocolo interior anuncia "alcanço X com custo 20". O BGP anuncia o **caminho inteiro**: "alcanço X via AS 3356, depois AS 15169". Esse AS-path é a prevenção de loop (viu seu próprio número de AS no caminho, descarta a rota) e o registro de confiança (você lê exatamente por quais redes seus pacotes vão cruzar).
+
+A política anda em **atributos** anexados a cada rota, avaliados numa ordem estrita que todo engenheiro de BGP um dia recita dormindo. Os três que decidem a maioria das discussões do mundo real: **local preference** (o quanto a *minha* rede prefere esta saída - o botão de "manda o tráfego pelo link barato"), **comprimento do AS-path** (o desempate que age como distância) e **MED** (uma sugestão educada ao vizinho sobre qual entrada usar, honrada exatamente na medida em que educação costuma ser). Communities - pequenas etiquetas numéricas nas rotas - são a fita adesiva da política interdomínio: "rota de cliente", "não exporte para a Europa", "faça prepend três vezes nesta saída", tudo codificado em tags que seus vizinhos concordam em obedecer.
+
+## Lento de propósito
+
+A convergência do BGP se mede em segundos a minutos, e isso horroriza quem cresceu em protocolos interiores. É uma característica. Um protocolo que carrega perto de um milhão de prefixos, através de redes que não confiam umas nas outras, amortece e cadencia suas atualizações porque a alternativa - a internet inteira recomputando em velocidade de LAN toda vez que um enlace em algum país oscila - é o próprio apagão. Quando você precisa de failover rápido *e* de BGP, você engenheira: timers mais apertados onde os dois lados consentem, BFD para detecção de falha subsegundo, e anycast para serviços que precisam sobreviver a qualquer coisa.
+
+## A insegurança com que todo mundo convive
+
+O BGP clássico acredita no que lhe contam. Se uma rede anuncia um prefixo que não é dela - por engano (um route leak de digitação) ou por desígnio (um hijack) - os vizinhos que aceitarem o anúncio mandarão tráfego para lá. Os incidentes famosos - um provedor paquistanês derrubando o YouTube do mundo inteiro por acidente em 2008, roubos de criptomoeda via prefixos de DNS sequestrados - são todos essa única falha. A resposta moderna é o **RPKI**: declarações criptográficas de qual AS pode originar qual prefixo, permitindo aos roteadores descartar anúncios inválidos. A validação de origem já é corrente entre operadoras sérias; a validação de caminho segue sendo a fronteira mais difícil e lenta. Ao avaliar um provedor, "vocês descartam RPKI-inválidos?" é uma pergunta que separa rápido o joio do trigo.
+
+## Lendo BGP como praticante
+
+O modelo mental prático: uma rota BGP é uma promessa com rastro documental. Ao olhar uma rota, leia-a como uma frase - *este prefixo, aprendido daquele vizinho, cruzando estes sistemas autônomos, preferido por causa deste atributo*. Agregação é o motivo de a tabela ter só cerca de um milhão de rotas em vez de bilhões: as redes anunciam blocos CIDR sumarizados, não cada sub-rede (a aritmética de prefixos por trás disso é exatamente o que a ferramenta de CIDR deste site computa). E quando algo quebra do lado internet da sua borda, as três primeiras perguntas são sempre as mesmas: o prefixo ainda está anunciado, o AS-path está são, e a política de alguém mudou hoje de manhã.
+
+A contraparte interior de tudo isso - como o roteamento funciona onde você *controla* as duas pontas - é o assunto do primer de OSPF.

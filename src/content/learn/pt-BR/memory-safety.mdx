@@ -1,0 +1,52 @@
+---
+slug: memory-safety
+title: "Segurança de memória: as classes de bug e as defesas que respondem a elas"
+summary: "Estouro de buffer, use-after-free, desreferência de ponteiro nulo, estouro de inteiro - quatro nomes para duas falhas, ficar dentro de um objeto e só tocá-lo enquanto está vivo. Como cada uma funciona, por que cerca de setenta por cento das vulnerabilidades sérias em grandes bases de código C e C++ pertencem a esta família, e o que cada camada defensiva de fato compra."
+concepts: ["buffer-overflow", "use-after-free", "memory-safety", "aslr", "cwe"]
+relatedTools: ["cvss-vector-decoder"]
+relatedArticles: ["ldap-search-filters"]
+category: security
+order: 240
+status: reviewed
+updated: "2026-07-23"
+---
+
+## Duas perguntas, não uma dúzia de nomes de bug
+
+Todo bug desta família responde errado a uma de duas perguntas. **Segurança espacial**: este acesso está dentro dos limites do objeto ao qual pertence? **Segurança temporal**: este objeto ainda está vivo no momento em que o toco? Um estouro de buffer é uma falha espacial, um use-after-free é temporal, e uma vez que você segura esse eixo o resto do vocabulário deixa de ser uma lista a decorar. A razão de a indústria se importar é um número que segue sendo reproduzido de forma independente: análises da Microsoft e do Google e alertas da CISA e da NSA convergem em cerca de **setenta por cento** das vulnerabilidades sérias em grandes bases de código C e C++ serem problemas de segurança de memória. Isso não é erro de arredondamento em um modelo de ameaças. Isso é o modelo de ameaças.
+
+## As falhas espaciais
+
+Um **estouro de buffer** é um buffer de tamanho fixo, uma cópia sem verificação, e dados caindo no que estivesse ao lado. O que ficava ao lado de um buffer na pilha, historicamente, era o endereço de retorno salvo, então uma entrada suficientemente longa podia decidir para onde a função retornaria - foi assim que esta classe moveu o verme Morris em 1988 e o Code Red em 2001, e é por isso que ela segue como CWE-787 perto do topo do CWE Top 25 hoje. O mecanismo é simples assim; toda a pilha de mitigações abaixo existe por causa dele.
+
+Um **estouro de inteiro** parece outro bug e normalmente termina como o mesmo. Some um ao maior inteiro de 32 bits com sinal e você obtém o mais negativo. Isso é curiosidade até o valor que deu a volta ser um *tamanho*: um cálculo de comprimento transborda para algo pequeno, passa por uma verificação de sanidade justamente porque agora parece pequeno, e é então usado para alocar um buffer que os dados reais prontamente estouram. O Ariane 5 destruiu a si mesmo por uma falha de conversão aparentada em 1996. CWE-190.
+
+Um **off-by-one** é a mesma história na menor escala possível - `<` onde cabia `<=`, um byte além do fim - e na estrutura errada um único byte basta para importar.
+
+## As falhas temporais
+
+Um **use-after-free** é um ponteiro para memória que já foi liberada. O alocador pode já ter entregado aquele bloco a outra coisa, então o programa agora lê ou escreve dados de outro objeto por uma lente vencida. Isso é mais perigoso que uma queda porque o conteúdo é influenciável: quem ataca e consegue controlar o que é alocado no espaço liberado controla o que o código confuso enxerga. É por isso que use-after-free (CWE-416) e seu irmão duplo free são pilares da exploração moderna de navegadores e de kernel, muito depois de o simples estouro de pilha ter deixado de funcionar de forma confiável.
+
+Uma **desreferência de ponteiro nulo** - o "ponteiro zero" do PRIME - é a prima mansa. Uma função retornou nulo em caso de falha, ninguém verificou, e o programa toca o endereço zero. Em qualquer sistema moderno a página zero é deixada deliberadamente sem mapeamento, então isso é uma queda confiável e não uma tomada de controle; esse não mapeamento *é* a mitigação, e é por isso que o mesmo bug era bem mais perigoso em sistemas antigos onde a memória baixa podia ser mapeada. Seu custo real é disponibilidade: force o caminho nulo repetidamente e você tem uma negação de serviço. CWE-476.
+
+Um **vazamento de memória** é o que nunca quebra na hora marcada. Memória é alocada e nunca liberada, o processo fica bem por horas ou semanas, e então a máquina começa a paginar - com o incidente começando muito longe da causa. O sinal é um serviço que se comporta perfeitamente logo após um reinício, e foi assim que reinícios noturnos agendados viraram medicina popular em vez de correção.
+
+## O que cada camada defensiva de fato compra
+
+As defesas chegaram mais ou menos na ordem em que os ataques chegaram, e vale ser preciso sobre o que cada uma faz e não faz.
+
+**Canários de pilha** colocam um valor conhecido entre os buffers locais e o endereço de retorno salvo e o verificam antes de retornar. Se mudou, algo escreveu além do buffer, e o programa aborta em vez de retornar para dados escolhidos por quem ataca. Barato, inserido pelo compilador, ligado por padrão em quase todo lugar - e estritamente um *detector* de sobrescritas contíguas, não um preventor.
+
+**NX / DEP** marca páginas como graváveis ou executáveis, nunca ambas. Isso encerrou de vez o padrão de exploração mais simples: escrever instruções em um buffer e saltar para elas deixou de funcionar. Quem ataca respondeu reutilizando código já presente e legitimamente executável no processo em vez de injetar o próprio.
+
+**ASLR** aleatoriza onde caem a pilha, o heap, as bibliotecas e, com PIE, o próprio executável, de modo que quem precisa saber um endereço tem que chutar. Sua fraqueza é a divulgação de informação: um único ponteiro vazado pode desaleatorizar uma região inteira, e é por isso que um "mero" bug de vazamento é classificado com mais gravidade do que seu impacto direto sugere.
+
+**Linguagens seguras quanto à memória** são a camada que remove a pergunta em vez de encarecer sua resposta. Rust, Go, Java, C# e o C++ moderno tornam o padrão falho impossível ou verificado. Reescrever o mundo não é realista, então o consenso de trabalho é linguagens seguras para componentes novos, endurecimento mais sanitizadores para o código que fica.
+
+Repare no formato dessa lista. Cada mitigação elevou o custo substancialmente e nenhuma encerrou o jogo - que é o argumento honesto para implantá-las juntas em vez de escolher entre elas.
+
+## Encontrá-los antes que outra pessoa encontre
+
+**Fuzzing** alimenta um programa com quantidades enormes de entrada malformada para ver o que o mata, na teoria de que um programa que trata mal a entrada a ponto de quebrar pode tratá-la mal de forma explorável. Fuzzers guiados por cobertura como AFL e libFuzzer guardam as mutações que alcançam caminhos novos de código, e são combinados com **sanitizadores** - o AddressSanitizer e companhia - que transformam corrupção silenciosa em falha ruidosa e reproduzível com pilha de chamadas. O **GDB** é onde uma queda vira explicação: um breakpoint, um backtrace, e a linha culpada normalmente se nomeia sozinha.
+
+E é aqui que a prática de QA reencontra a prática de segurança. Um **teste de regressão** escrito no momento em que um bug é corrigido é o que impede aquele bug de voltar; um corpus de fuzzing é uma suíte de regressão que se escreve sozinha. O registro em que todos reportam é a **CWE** - a categoria do erro - distinta do **CVE**, que é uma instância específica dela em um produto específico. O CVE diz o que quebrou esta semana. A CWE diz o que sua base de código erra sempre.

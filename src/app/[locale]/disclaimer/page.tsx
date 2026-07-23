@@ -55,6 +55,8 @@ export default async function DisclaimerPage({
     ["adviceTitle", "adviceBody"],
     ["liabilityTitle", "liabilityBody"],
     ["securityTitle", "securityBody"],
+    ["goodFaithTitle", "goodFaithBody"],
+    ["takedownTitle", "takedownBody"],
     ["openSourceTitle", "openSourceBody"],
     ["changesTitle", "changesBody"],
   ];

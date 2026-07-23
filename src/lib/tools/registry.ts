@@ -66,6 +66,9 @@ import { run as httpMethodsComparisonRun } from "./http-methods-comparison";
 import { run as httpStatusCodeExplainerRun } from "./http-status-code-explainer";
 import { run as netskopeSteeringDecisionRun } from "./netskope-steering-decision-explainer";
 import { run as sortingStepperRun, type Strategy as SortStrategy } from "./sorting-algorithm-stepper";
+import { run as cableRunPlannerRun } from "./cable-run-planner";
+import { run as ldapFilterExplainerRun } from "./ldap-filter-explainer";
+import { run as oauthFlowChooserRun } from "./oauth-flow-chooser";
 import { runFromJson as faultHypothesisBuilderRun } from "./fault-hypothesis-builder";
 import { runFromJson as changeWindowRunbookBuilderRun } from "./change-window-runbook-builder";
 import { runFromJson as incidentTimelineRcaBuilderRun } from "./incident-timeline-rca-builder";
@@ -173,6 +176,9 @@ export const API_TOOLS: ApiTool[] = [
       return sortingStepperRun(p);
     },
   },
+  { slug: "cable-run-planner", structured: true, run: (input: string) => cableRunPlannerRun(JSON.parse(input)) },
+  { slug: "ldap-filter-explainer", structured: true, run: ldapFilterExplainerRun },
+  { slug: "oauth-flow-chooser", structured: true, run: oauthFlowChooserRun },
   { slug: "fault-hypothesis-builder", structured: true, run: faultHypothesisBuilderRun },
   { slug: "change-window-runbook-builder", structured: true, run: changeWindowRunbookBuilderRun },
   { slug: "incident-timeline-rca-builder", structured: true, run: incidentTimelineRcaBuilderRun },

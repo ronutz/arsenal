@@ -200,6 +200,20 @@ export default async function StudyGuidePage({
             ))
           )}
 
+          {/* Good-faith / public-sources notice + takedown route (PRIME 2026-07-23).
+              Appears on EVERY vendor-linked guide, not only the hub. */}
+          <section className="section">
+            <div className="container certs-container certhub-notes">
+              <div className="certhub-note">
+                <h2 className="certhub-note-title">{t("goodFaithTitle")}</h2>
+                <p className="certhub-note-body">
+                  {t("goodFaithBody")}{" "}
+                  <Link href="/disclaimer">{t("goodFaithLink")} →</Link>
+                </p>
+              </div>
+            </div>
+          </section>
+
           {/* Instructor-led training CTA (subtle): a candidate on this exam is
               the ideal person to book live training at Red Education. */}
           <section className="section">

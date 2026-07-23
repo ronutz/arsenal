@@ -1,0 +1,46 @@
+---
+slug: oauth-choosing-the-grant
+title: "OAuth flows: choosing the grant in 2026"
+summary: "One decision starts every integration: which flow. The modern answer is short - authorization code + PKCE for humans, client credentials for machines, the device grant for TVs - and the reasons implicit and ROPC died are worth knowing by heart. RFC 9700 finally wrote it all down."
+concepts: ["oauth", "oidc", "pkce", "jwt"]
+relatedTools: ["oauth-flow-chooser"]
+relatedArticles: ["oauth-client-types", "oauth-code-flow", "oidc-authorization-code-flow"]
+category: security
+order: 239
+status: reviewed
+updated: "2026-07-22"
+---
+
+## The question that starts every integration
+
+Before scopes, before token lifetimes, before a single redirect URI is registered in PingFederate or PingOne, there is one decision: *which grant*. OAuth 2.0's original menu (RFC 6749) offered four, the ecosystem added more, and two of the originals have since been formally retired - so the honest 2026 menu is shorter than the specification suggests. In January 2025 the IETF published **RFC 9700**, the OAuth 2.0 Security Best Current Practice, which turned a decade of hard-won operational wisdom into normative text. This article is that decision, in prose; the flow chooser on this site is the same decision as a tool.
+
+## One question sorts most of it: can the client keep a secret?
+
+A **confidential client** - a server-side web app, a backend service - can hold a client secret (or better, a private key) where users cannot see it. A **public client** - a single-page app in a browser, a native app on a phone - cannot: everything it ships, it ships to territory the user controls. This single distinction, developed fully in the client-types article, drives most of the grant decision, because the flows differ mainly in how much they can trust the client to authenticate itself.
+
+## The workhorse: authorization code, now always with PKCE
+
+For anything a human signs into, the answer is the **authorization code flow**: the app sends the user's browser to the authorization server, the user authenticates there (never in the app), and the app exchanges the returned code for tokens. What changed over the years is one addition that RFC 9700 now recommends for *every* client, confidential included: **PKCE** (RFC 7636). The app invents a secret `code_verifier` per request, sends its hash up front, and must present the original at exchange time - so an intercepted or injected code is worthless without it. For SPAs and native apps, which have no client secret at all, PKCE is not an enhancement; it is the security model.
+
+Native apps carry one more rule, from RFC 8252: use the **system browser**, never an embedded webview. The webview lets the app watch the user type their password - exactly the credential exposure OAuth exists to prevent - and it cannot share the browser's existing sessions, so single sign-on breaks too. The claimed-https or custom-scheme redirect brings the user back to the app when the dance is done.
+
+## When there is no human: client credentials
+
+Service-to-service calls have no user to redirect, no consent to gather. The client authenticates as *itself* - secret, private key JWT, or mutual TLS - and receives a token under its own authority: the **client credentials** grant, RFC 6749 §4.4. Two habits keep it clean. First, no refresh tokens: the RFC says one SHOULD NOT be issued, because the client can simply authenticate again. Second, resist the temptation to smuggle a "service account user" through it: if a human's context is in the request, it is not machine-to-machine, and pretending otherwise builds an audit hole.
+
+## When there is no keyboard: the device grant
+
+The television, the console, the kiosk: a browser-based redirect is impossible where typing is misery. The **device authorization grant** (RFC 8628) splits the flow across two devices: the constrained one displays a short `user_code` and a verification URL, the user approves on their phone or laptop, and the device polls the token endpoint until the approval lands. Everyone who has activated a streaming app on a TV has performed it.
+
+## The retired: implicit and ROPC, and why they had to go
+
+The **implicit grant** returned tokens directly in the URL fragment - no code exchange, no client authentication, no way to bind the token to the requester. Fragments leak through history, referrers, and injected scripts, and nothing sender-constrains what arrives. RFC 9700 directs authorization code + PKCE instead, and the OAuth 2.1 consolidation removes implicit outright. The **resource owner password credentials** grant was worse in a quieter way: the application collects the user's actual password. That single design choice breaks MFA, breaks federation, trains users to type credentials into arbitrary apps, and hands every integrated app a phishing-shaped liability. RFC 9700's language is MUST NOT. When a vendor console still shows these grants, they exist for legacy migration - not for new work.
+
+## Offline access, done like an adult
+
+Refresh tokens are how an app works while its user sleeps - and they are long-lived credentials, so their handling defines your risk. A confidential client stores them server-side, next to its secret, and that is largely that. A public client is the interesting case, and RFC 9700 gives it two acceptable shapes: sender-constrain the token, or **rotate** it - every refresh issues a new refresh token and invalidates the old, so a stolen one dies the first time the thief and the app race to use it. Identity providers across the market, PingOne included, implement rotation for exactly this reason.
+
+## The whole decision, in one breath
+
+Human present: authorization code, PKCE always, secret too if a backend exists, OIDC's `openid` scope on top when you need to know *who*. No human: client credentials, no refresh token. No keyboard: device grant. Never: implicit, never: passwords in apps. That is the entire modern table - and the flow chooser on this site will recite it back, RFC citations included, for whatever you are building.

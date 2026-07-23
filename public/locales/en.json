@@ -12478,6 +12478,230 @@
       "key-exchange": {
         "def": "How two parties agree on the session's secret key - the part of a cipher suite that decides whether recorded traffic stays sealed.",
         "context": "Ephemeral Diffie-Hellman (ECDHE on X25519 or P-256) generates fresh keys per connection, giving forward secrecy; static-RSA key transport does not, which is why TLS 1.3 removed it and made ephemeral exchange structural. The post-quantum transition happens here too: hybrid X25519+ML-KEM runs both worlds side by side."
+      },
+      "nist": {
+        "def": "The US standards agency whose cryptographic and security publications function as global engineering baselines.",
+        "context": "NIST runs the FIPS standards and the SP 800 series this site cites constantly - SP 800-52r2 for TLS configuration, SP 800-38A for cipher modes - and ran the open competitions that selected AES and SHA-3. Its post-quantum standardization produced ML-KEM and ML-DSA, and its Cybersecurity Framework (CSF) anchors countless compliance programs. Not a regulator: adoption outside US federal systems is voluntary, which makes its influence the more remarkable."
+      },
+      "mitre": {
+        "def": "The US not-for-profit that operates federally funded R&D centers - and, for practitioners, the home of ATT&CK, CVE, and CWE.",
+        "context": "MITRE (the name is not an acronym) stewards the common vocabularies of security operations: the CVE program numbering public vulnerabilities, CWE classifying weakness types, and the ATT&CK knowledge base of adversary tactics and techniques that detection engineering and purple teams are organized around, with D3FEND as the defensive counterpart."
+      },
+      "ietf": {
+        "def": "The body that standardizes the internet's protocols, in the open, as RFCs.",
+        "context": "The Internet Engineering Task Force works by 'rough consensus and running code': open working groups produce Internet-Drafts that mature into RFCs - TCP, HTTP, TLS, DNS, and nearly every protocol this site's tools decode. Anyone can participate; there is no membership fee. It operates alongside IANA (registries) and the RFC Editor (publication), and its documents are the primary sources this site links by preference."
+      },
+      "cloud-security-alliance": {
+        "def": "The industry body that defines how cloud security is assessed and attested.",
+        "context": "CSA's Cloud Controls Matrix (CCM) is the de facto control framework for cloud providers, and the STAR registry publishes provider self-assessments and certifications against it - the acronym you meet on every vendor trust-center page. It also runs the CCSK certificate and the shared-responsibility research that SASE and zero-trust vendor conversations lean on."
+      },
+      "sans": {
+        "def": "The best-known commercial training institute in security operations, and home of the GIAC certifications and the Internet Storm Center.",
+        "context": "SANS courses and their GIAC exams are the operational counterpart to vendor certifications: incident response, forensics, detection, offensive skills. Its Internet Storm Center is a long-running community sensor and daily-diary institution, and its free resources (posters, cheat sheets, reading room) circulate far beyond paying students."
+      },
+      "isc2": {
+        "def": "The certification body behind the CISSP - the credential most often gatekeeping senior security roles.",
+        "context": "ISC2 (formerly styled (ISC)², rebranded in 2023) maintains the CISSP, CCSP for cloud, and a members' code of ethics with real teeth: certified members can be stripped for violations. Where SANS/GIAC test hands-on depth, ISC2 credentials test breadth of the common body of knowledge - which is exactly why hiring pipelines lean on them."
+      },
+      "eff": {
+        "def": "The nonprofit defending civil liberties in the digital world - and the maker of Certbot.",
+        "context": "Founded in 1990, the Electronic Frontier Foundation litigates, lobbies, and builds: it was a founding partner of the effort that became Let's Encrypt, and it ships Certbot, the client that made free certificates operationally trivial. Its research and scorecards (device privacy, data practices) are standing references in privacy engineering."
+      },
+      "ieee": {
+        "def": "The engineering society whose 802 committee defines the LAN standards everything on this site runs over.",
+        "context": "The IEEE Standards Association is where Ethernet (802.3), Wi-Fi (802.11), and bridging/VLANs (802.1, including 802.1Q and Spanning Tree's 802.1D lineage) live. The 802 family is a map of working groups, each owning a layer-2 technology - a map this site will chart group by group in a dedicated explainer."
+      },
+      "eia-tia": {
+        "def": "The standards lineage behind structured cabling - the TIA-568 family that defines the categories, connectors, and distances of every wiring closet.",
+        "context": "The Telecommunications Industry Association (successor to the EIA side of the old EIA/TIA partnership) publishes ANSI/TIA-568 and its siblings: the cable category definitions (Cat 5e, 6, 6A, 8), the T568A/T568B pinouts, channel lengths, and the data-center and pathways standards. When a datasheet says 'meets Cat 6A', this is whose test limits it means."
+      },
+      "defcon": {
+        "def": "The world's largest hacker conference - Las Vegas every August since 1993 - and the cultural center of gravity of the scene.",
+        "context": "Founded by Jeff Moss (Dark Tangent), DEF CON grew from a farewell party into the annual gathering: villages for every specialty (lockpicking to voting machines to aerospace), the flagship capture-the-flag, electronic badges that are puzzles in themselves, and Goons keeping the chaos functional. Talks routinely make global news; the culture around them - Spot the Fed, the Wall of Sheep lineage - is half the institution."
+      },
+      "black-hat": {
+        "def": "The corporate-facing security conference: research Briefings and paid Trainings, run days before DEF CON.",
+        "context": "Started by Jeff Moss in 1997 as the suit-friendly counterpart to DEF CON, Black Hat USA now anchors 'hacker summer camp' in Las Vegas, with Europe and Asia editions. Its Briefings are a premier venue for vulnerability research disclosure; its expo floor is where the vendor industry meets that research. Now operated by Informa Tech, it remains the conference companies budget for when DEF CON reads as too informal."
+      },
+      "chaos-computer-club": {
+        "def": "Europe's oldest and most influential hacker association - German, political, and deeply serious about technology and civil rights.",
+        "context": "Founded in 1981, the CCC made its name with the 1984 Btx hack that exposed a German bank system's flaws by donating the proceeds back. Its annual Chaos Communication Congress (the C3, between Christmas and New Year) and the summer Chaos Communication Camp are institutions; its magazine Die Datenschleuder and its expert testimony to courts and parliaments define the club's blend of hands-on hacking and public-interest advocacy."
+      },
+      "2600-magazine": {
+        "def": "The Hacker Quarterly: the printed voice of hacker culture since 1984, and the origin of the HOPE conference and the Friday 2600 meetings.",
+        "context": "Edited by Emmanuel Goldstein (Eric Corley) and named for the 2600 Hz phreaking tone, 2600 has published reader-submitted explorations of systems for four decades, fought landmark legal battles (notably the DeCSS case), and seeded a worldwide network of first-Friday meetups. Its HOPE conference (Hackers On Planet Earth) carries the same lineage - and the magazine's editor opened the very first YSTS in Sao Paulo, tying this entry to the Brazilian scene."
+      },
+      "ysts": {
+        "def": "You Shot the Sheriff: Brazil's curated, single-day security conference - invitation-flavored, bar-hosted, and famously well-connected.",
+        "context": "Running in Sao Paulo since the late 2000s, YSTS packs hand-picked national and international speakers into one relaxed day (traditionally in a bar, drinks included), the weekend after BSidesSP. Its first edition was opened by 2600's Emmanuel Goldstein, and its tradition endures: selected speakers receive a medal granting free entry to every future edition. Widely regarded as the most sought-after ticket in the Brazilian scene."
+      },
+      "bsides-sao-paulo": {
+        "def": "The community-run, free security conference of Sao Paulo - born inside Garoa Hacker Clube in 2011, now among the largest BSides anywhere.",
+        "context": "Co0L BSidesSP is part of the global Security BSides movement: volunteer-organized, free to attend, and deliberately community-first - dozens of villages, a CTF, lightning talks, a Brazilian open-source arsenal track, and BSides 4 Kids. It traditionally runs the weekend before YSTS; the 2026 edition marked fifteen years since the first one was held inside Garoa. The hot dogs are free too, by the hundreds."
+      },
+      "garoa-hacker-clube": {
+        "def": "Sao Paulo's hackerspace - one of Brazil's first, and the room where BSidesSP was born.",
+        "context": "Garoa (the name is the city's famous drizzle) is a member-run space in the classic hackerspace tradition: open weekly activities, electronics benches, retrocomputing, lockpicking, cryptography study groups, and a wiki-documented culture of projects. Beyond its own walls it has been an incubator for the local scene, hosting the first BSidesSP edition and feeding volunteers into most of the city's community security events."
+      },
+      "mente-binaria": {
+        "def": "The Brazilian nonprofit teaching computing and security from first principles - free courses, an active forum, and open-source tooling.",
+        "context": "Founded by researcher Fernando Merces, Mente Binaria is formally a nonprofit teaching and research institution: its free CERO (reverse engineering) and AMO (malware analysis) courses run on the Papo Binario YouTube channel, its forum community spans beginners to veterans, it maintains open-source tools like readpe (born as pev), and programs like CodeHERS bring women into reverse engineering. Portuguese-language, foundations-first - a rare and load-bearing institution in the Brazilian scene."
+      },
+      "h2hc": {
+        "def": "Hackers to Hackers Conference: Latin America's oldest security research conference - Sao Paulo, every year since 2004.",
+        "context": "H2HC is the deep-technical anchor of the Brazilian calendar: vulnerability research, exploitation, reverse engineering, hardware - the research end of the spectrum, with international headliners alongside Brazilian researchers and the H2HC University training days. Its reputation for a playfully 'hostile' hallway culture is worn as a badge: it is the room where the technical bar is highest."
+      },
+      "mind-the-sec": {
+        "def": "The corporate-scale information-security conference of Sao Paulo - where the Brazilian market's decision-makers meet the vendor ecosystem.",
+        "context": "Mind the Sec occupies the enterprise end of the Brazilian conference spectrum: multi-day, expo-heavy, executive-focused - the counterpart to the community events (BSidesSP, H2HC) on the same calendar. The 2026 edition runs September 15-17 in Sao Paulo. For practitioners it is the market-watching stop: who is selling what to whom in Brazilian security."
+      },
+      "f5-devcentral": {
+        "def": "F5's official technical community - articles, Q&A, and two decades of iRules knowledge, with a recognized MVP program.",
+        "context": "DevCentral (today at community.f5.com) is where F5 practitioners publish deep-dive articles, answer configuration questions, and share iRules and automation - much of the working knowledge of BIG-IP outside official docs lives there. Its MVP program recognizes standing contributors annually. This site's own F5 material cites DevCentral pieces where they are the best source on record."
+      },
+      "fortinet-community": {
+        "def": "Fortinet's official user community - forums, knowledge-base articles, and ideas exchange for the FortiGate ecosystem.",
+        "context": "The Fortinet Community (community.fortinet.com, successor to the FUSE community brand) is the vendor-run home for FortiOS questions and answers, moderated knowledge-base articles, and product idea submissions. For day-to-day FortiGate troubleshooting it is the first stop after the docs - and alongside it, the independent r/fortinet subreddit carries a notably active practitioner culture."
+      },
+      "apisec-university": {
+        "def": "Free, certificate-granting API-security training - the fastest on-ramp into the OWASP API Top 10 world.",
+        "context": "APIsec University offers free online courses - API Security Fundamentals, the OWASP API Security Top 10, API authentication, gateway best practices, API penetration testing - with completion badges via Credly and certifications like CASA and ACP, serving well over a hundred thousand students. It also runs the free APISEC|CON online conference. Vendor-adjacent but genuinely educational: the courses stand on their own."
+      },
+      "reddit": {
+        "def": "The threaded, voted discussion platform whose networking and vendor subreddits carry an outsized share of real-world troubleshooting.",
+        "context": "Beyond the front page, Reddit's technical subreddits are working infrastructure: r/networking for vendor-neutral engineering discussion, and per-vendor communities (r/fortinet notably active; equivalents exist across the platforms this site covers) where practitioners compare notes faster than official channels. Unofficial by nature - verify against vendor documentation - but for 'has anyone else seen this', frequently the fastest answer on the internet."
+      },
+      "iso-27001": {
+        "def": "The international standard for an information security management system (ISMS) - the certification most vendor trust centers lead with.",
+        "context": "ISO/IEC 27001 (current revision 27001:2022) certifies that an organization runs a documented, audited system for managing information-security risk across sites, development, support, and data centers. Certificates run three years with annual surveillance audits. All three vendors this site's instructor teaches - F5, Netskope, Extreme - hold it, alongside its cloud siblings 27017 and 27018."
+      },
+      "iso-27017": {
+        "def": "The cloud-security extension of ISO 27001 - controls specific to being, or using, a cloud service provider.",
+        "context": "ISO/IEC 27017:2015 supplements ISO 27002/27001 with cloud-specific guidance: shared responsibility, virtual-machine hardening, administrator operations, tenant isolation. It is not a standalone certification so much as a cloud overlay, which is why it almost always appears bundled with 27001 and 27018 on a provider's compliance page."
+      },
+      "iso-27018": {
+        "def": "The privacy extension of ISO 27001 - protecting personally identifiable information processed in the public cloud.",
+        "context": "ISO/IEC 27018:2019 sets controls for cloud providers acting as processors of PII: consent, transparency about sub-processors, data return and deletion, and restrictions on using customer data for advertising. It maps closely to GDPR obligations, and rounds out the 27001/27017/27018 trio that cloud vendors present together."
+      },
+      "fedramp": {
+        "def": "The US government's standardized security-authorization program for cloud services - High, Moderate, and Low baselines.",
+        "context": "FedRAMP lets a cloud service be assessed once, against NIST SP 800-53 controls, and reused across federal agencies. The baselines scale with data sensitivity; FedRAMP High covers the government's most sensitive unclassified data. Netskope's GovCloud holds FedRAMP High; F5's Distributed Cloud carries FedRAMP authorizations - the credential public-sector buyers look for first."
+      },
+      "pci-dss": {
+        "def": "The payment-card industry's security standard for anyone who stores, processes, or transmits cardholder data.",
+        "context": "PCI DSS is set by the PCI Security Standards Council (the card brands) and defines a baseline of network, encryption, access-control, and monitoring requirements. It is contractual rather than governmental, but non-compliance carries fines and lost processing rights. It is a common scope item on vendor trust centers even when the vendor never directly handles card data, because customers deploy their products in cardholder environments."
+      },
+      "hipaa": {
+        "def": "The US healthcare-privacy law governing protected health information (PHI).",
+        "context": "HIPAA (1996) sets the confidentiality, integrity, and availability requirements for PHI, and its Security and Privacy Rules flow down to vendors as business associates. A vendor stating HIPAA alignment means its controls and its Business Associate Agreement support customers in regulated healthcare - a standard line on the trust centers of infrastructure vendors serving that sector."
+      },
+      "csa-star": {
+        "def": "The Cloud Security Alliance's public registry of cloud-provider security postures - self-assessment through third-party certification.",
+        "context": "STAR (Security, Trust, Assurance and Risk) builds on the CSA Cloud Controls Matrix: Level 1 is a published self-assessment, Level 2 adds third-party certification (often paired with ISO 27001), all mapped to leading standards. It is the transparency layer of cloud compliance, letting buyers compare providers against one cloud-specific control framework - and it ties every vendor trust center back to the CSA."
+      },
+      "cyber-essentials": {
+        "def": "The UK government's baseline cyber-hygiene certification, run by the NCSC.",
+        "context": "Cyber Essentials sets five basic technical controls (firewalls, secure configuration, access control, malware protection, patch management); Cyber Essentials Plus adds hands-on verification. It is deliberately entry-level - required for many UK public-sector contracts - and appears on vendor trust centers as evidence of the fundamentals, distinct from the depth of ISO 27001."
+      },
+      "c5": {
+        "def": "Germany's government-backed cloud-security attestation, defined by the BSI.",
+        "context": "The Cloud Computing Compliance Criteria Catalogue (C5) was introduced by Germany's Federal Office for Information Security (BSI) to give a consistent, auditable baseline for cloud providers serving the German market. An auditor attests against the catalogue; the result is widely recognized across German and EU public and private sectors - the German counterpart to schemes like ENS (Spain) and IRAP (Australia) that cluster on multinational trust centers."
+      },
+      "irap": {
+        "def": "Australia's assessment framework letting cloud services be validated against the government's security manual.",
+        "context": "IRAP (Information Security Registered Assessors Program) trains and endorses assessors who evaluate systems against the Australian Signals Directorate's Information Security Manual (ISM). An IRAP assessment tells Australian government customers which controls are in place and how responsibility is shared - the Australian analogue to FedRAMP, and a standard entry on the trust centers of vendors selling into that market."
+      },
+      "data-privacy-framework": {
+        "def": "The mechanism for lawfully transferring personal data from the EU/UK/Switzerland to certified US companies.",
+        "context": "The EU-U.S. Data Privacy Framework (DPF), with its UK and Swiss extensions, replaced the invalidated Privacy Shield. US companies self-certify to the Department of Commerce that they meet EU-equivalent protections, enabling transatlantic data flows without additional transfer mechanisms. It sits alongside GDPR on privacy-focused trust centers as the transfer-compliance answer."
+      },
+      "nis2": {
+        "def": "The EU directive massively expanding cybersecurity obligations across essential and important sectors.",
+        "context": "NIS2 (Directive (EU) 2022/2555) widens the original NIS scope to far more sectors, tightens incident-reporting timelines, and adds management accountability with real penalties. It is transposed into each member state's national law, and its arrival is why vendor trust centers and blogs (Extreme's among them) now foreground NIS2 readiness for European customers."
+      },
+      "802-1q": {
+        "def": "The IEEE standard that adds a VLAN tag to an Ethernet frame - the reason one physical link can carry many virtual LANs.",
+        "context": "802.1Q inserts a four-byte tag carrying a 12-bit VLAN ID (4,094 usable) and a priority field into the Ethernet header. A tagged link between switches is a trunk; untagged access ports drop a device into a single VLAN. It is the foundation of segmentation on switched networks, and it lives in the 802.1 working group, the architecture arm of the 802 family."
+      },
+      "802-1x": {
+        "def": "Port-based network access control - the IEEE standard that makes a switch port or access point authenticate before it forwards traffic.",
+        "context": "802.1X frames the handshake: a supplicant (the device), an authenticator (the switch or AP), and an authentication server (usually RADIUS) exchange EAP over LAN until the port opens or stays closed. It is the enforcement layer under enterprise Wi-Fi (WPA2/WPA3-Enterprise) and wired NAC, and pairs naturally with 802.1Q to place authenticated devices into the right VLAN."
+      },
+      "802-3": {
+        "def": "The IEEE working group and standard for Ethernet - every wired speed and medium, plus Power over Ethernet.",
+        "context": "802.3 has carried Ethernet from 10BASE5 coax to hundreds of gigabits, each variant a lettered amendment, and defines PoE across 802.3af, 802.3at, and the four-pair 802.3bt. It inherited the 1500-byte frame from DIX Ethernet and has repeatedly declined to standardize jumbo frames - which is why 9000-byte support is a vendor convention rather than a clause."
+      },
+      "wifi": {
+        "def": "The consumer name for wireless LAN built on IEEE 802.11 - and a certification mark from the Wi-Fi Alliance.",
+        "context": "Every Wi-Fi generation is an 802.11 amendment: Wi-Fi 4 (802.11n), Wi-Fi 5 (802.11ac), Wi-Fi 6/6E (802.11ax), Wi-Fi 7 (802.11be-2024). The IEEE writes the standard; the Wi-Fi Alliance owns the trademark and runs interoperability certification, which is why marketing says 'Wi-Fi 7' while datasheets say '802.11be'. Security rides on top via WPA2 and WPA3."
+      },
+      "wpa": {
+        "def": "The Wi-Fi Alliance's security scheme for wireless LANs - WPA2 and WPA3 today, replacing the broken WEP.",
+        "context": "WPA (Wi-Fi Protected Access) came as an urgent fix for WEP; WPA2 made AES-CCMP the standard; WPA3 (2018) added stronger handshakes (SAE) and forward secrecy. Each has a Personal mode (pre-shared key) and an Enterprise mode that delegates authentication to 802.1X/RADIUS. When a network prompts for 'WPA2-Enterprise', that is WPA riding on the port-based access control from the 802.1 group."
+      },
+      "decnet": {
+        "def": "Digital Equipment Corporation's networking suite - the protocol that ran the VAX era, evolving from proprietary roots toward OSI.",
+        "context": "DECnet (formally Digital Network Architecture, DNA) connected DEC's PDP and VAX machines from the mid-1970s. Phase IV was the widely deployed peer-to-peer version of the 1980s; Phase V realigned it onto OSI protocols as the industry standardized. It shared 1990s Ethernet segments with AppleTalk and IPX before TCP/IP displaced them all - a name every network engineer of the minicomputer era knew, and part of the lineage behind vendors like Cabletron that grew up wiring those machines."
+      },
+      "xns": {
+        "def": "Xerox's late-1970s protocol architecture - the ancestral design that Novell IPX, and much else, copied.",
+        "context": "Xerox Network Systems came out of PARC alongside Ethernet itself, and its layered design (the IDP datagram at its core) became the archetype early LAN vendors cloned. Novell's IPX is XNS with the serial numbers filed off; Banyan VINES and others borrowed too. XNS itself saw little direct deployment, but as a template it shaped a generation - notably except AppleTalk, which deliberately went its own way."
+      },
+      "appletalk": {
+        "def": "Apple's plug-and-play networking suite of the 1980s and 90s - zero-configuration before the term existed, now discontinued.",
+        "context": "Introduced in 1985, AppleTalk let Macs and LaserWriters self-assign addresses and find each other with no router or server - built into every Mac. It ran over LocalTalk, then EtherTalk (Ethernet) and TokenTalk (Token Ring). Unusually for its era it was not based on Xerox XNS. TCP/IP eroded it through the 1990s, and Apple ended support in Mac OS X 10.6 (Snow Leopard, 2009), pointing users to Bonjour - which carries its zero-config spirit forward on IP."
+      },
+      "ipx": {
+        "def": "Novell NetWare's networking protocols - the LAN standard of the file-server era, derived from Xerox XNS.",
+        "context": "IPX (the layer-3 datagram) and SPX (the layer-4 connection protocol) were introduced by Novell in 1983, adapted from Xerox XNS's IDP and SPP. Through the late 1980s and 90s IPX/SPX was the default on NetWare LANs - and, as NetWare dominated file and print, on a huge share of business networks. Windows spoke it too. TCP/IP took over around the Windows XP era, and IPX faded to legacy - the protocol behind the NetWare that vendors like Novell built an empire on."
+      },
+      "novell-sap": {
+        "def": "NetWare's Service Advertising Protocol - how servers announced 'here I am, and here's what I offer' across an IPX network.",
+        "context": "SAP let file servers, print servers, and other NetWare services broadcast their existence and type so clients could find them without central configuration. Convenient at small scale, its periodic broadcasts became a notorious scaling problem on large IPX internetworks - routers had to carry ever-growing SAP tables, and 'SAP storms' were a real operational headache. It is a clean cautionary tale in service discovery that predates today's DNS-based approaches."
+      },
+      "sna": {
+        "def": "IBM's mainframe networking architecture - the hierarchical world that predated and long coexisted with TCP/IP in the enterprise.",
+        "context": "Systems Network Architecture (1974) defined how terminals and controllers reached IBM mainframes, in a rigid hierarchy centered on the host (VTAM). Its link layer was SDLC. For decades SNA and TCP/IP ran side by side in banks and large enterprises, bridged and tunneled (DLSw) as IP won; later APPN added peer routing. Knowing SNA explains a great deal about why enterprise networking evolved the way it did, and about the IBM gear that shaped the industry."
+      },
+      "ppp": {
+        "def": "The Point-to-Point Protocol - the standard way to run IP (and more) over a serial link, from dial-up to modern broadband.",
+        "context": "PPP frames a point-to-point connection with a Link Control Protocol to bring the line up and Network Control Protocols to carry IP and other layer-3 traffic, plus built-in authentication via PAP or CHAP. It replaced the cruder SLIP, powered the dial-up internet, and lives on inside PPPoE and PPTP. When a broadband link authenticates with a username and password, PPP is usually underneath."
+      },
+      "slip": {
+        "def": "The Serial Line Internet Protocol - the minimal, pre-PPP way to put IP packets on a serial line.",
+        "context": "SLIP does almost nothing: it marks IP packet boundaries on a serial link and no more - no addressing negotiation, no authentication, no support for protocols other than IP, no error detection. It carried the early dial-up internet until PPP, with all the features SLIP lacked, replaced it. A compressed variant (CSLIP) squeezed TCP/IP headers. It survives mainly as history and in tiny embedded contexts."
+      },
+      "ml-ppp": {
+        "def": "Multilink PPP - bundling several physical links into one logical PPP connection for more bandwidth.",
+        "context": "Multilink PPP (MP) fragments traffic across multiple links - two ISDN B-channels, several serial lines - and reassembles it at the far end, presenting one pipe of their combined capacity. It was the classic way to get more than a single circuit's throughput before cheap high-speed links, common on ISDN and bonded T1s, and it relies on the same LCP/authentication machinery as plain PPP."
+      },
+      "chap": {
+        "def": "The Challenge-Handshake Authentication Protocol - PPP's secure alternative to sending a password in the clear.",
+        "context": "CHAP authenticates by challenge and response: the authenticator sends a random challenge, the peer replies with a hash of the challenge plus a shared secret, and the secret itself never crosses the wire. It can also re-challenge mid-session. Microsoft's MS-CHAP variants extended it. It is the safer of PPP's two authentication options - the other, PAP, sends the password in plaintext - and the pattern recurs throughout network authentication."
+      },
+      "pap": {
+        "def": "The Password Authentication Protocol - PPP's simplest, and least safe, way to log in: the password in plaintext.",
+        "context": "PAP sends the username and password across the link unprotected, in a single exchange. It is trivial to implement and trivial to sniff, which is why CHAP exists and why PAP is only acceptable when the link itself is already encrypted or trusted. It endures as a fallback and as the textbook example of why authentication protocols evolved toward challenge-response and away from sending the secret."
+      },
+      "hdlc": {
+        "def": "High-Level Data Link Control - the ISO framing standard that underlies a whole family of serial protocols.",
+        "context": "HDLC defines how to delimit and error-check frames on a synchronous serial link, and it is foundational: X.25's LAPB, Frame Relay, ISDN's LAPD, and Cisco's default serial encapsulation are all HDLC-derived. It descends from IBM's SDLC, generalized by ISO into a vendor-neutral standard. You rarely configure 'HDLC' by name, but its frame structure is quietly under much of classic WAN networking."
+      },
+      "sdlc": {
+        "def": "IBM's Synchronous Data Link Control - the link-layer protocol of SNA, and the ancestor of HDLC.",
+        "context": "SDLC (mid-1970s) was IBM's bit-oriented, synchronous link protocol for connecting terminals and controllers into SNA. ISO generalized it into HDLC, which in turn seeded LAPB, LAPD, and the rest of the serial family - so SDLC sits at the root of that tree. In its own right it carried IBM mainframe traffic for decades, and migrating SDLC to IP (SDLC-to-LLC conversion, DLSw) was a standard enterprise project as TCP/IP took over."
+      },
+      "frame-relay": {
+        "def": "The packet-switched WAN service that replaced X.25 and defined enterprise connectivity in the 1990s and 2000s.",
+        "context": "Frame Relay descends directly from X.25 (both trace to the 1976 packet-switching work) but strips out the per-hop error correction X.25 needed on noisy analog lines, betting on cleaner digital links for speed. Sites bought virtual circuits (identified by DLCI) with a committed information rate (CIR) instead of a mesh of leased lines. It was the WAN workhorse until MPLS and IP VPNs displaced it - the service a generation of enterprise routers was built to speak."
+      },
+      "x25": {
+        "def": "The first widely deployed packet-switching standard - ITU-T's 1976 protocol that ran WANs, ATMs, and card networks for decades.",
+        "context": "X.25 was finalized by the CCITT (now ITU-T) in 1976 - older than IPv4 and the OSI model - as a virtual-circuit packet service over the noisy analog links of the day, with heavy per-hop error checking (its link layer, LAPB, is HDLC-based). It carried financial transactions, airline reservations, and early corporate WANs; credit-card networks used it into the 2010s, and aviation still does. Frame Relay is its leaner successor. A genuine ancestor of modern packet networking."
+      },
+      "x21": {
+        "def": "ITU-T's interface for circuit-switched data networks - the serial physical-layer standard that often sat beneath X.25.",
+        "context": "X.21 defines the physical and signaling interface between data terminal equipment and a circuit-switched public data network - the connector, voltages, and call-setup handshake. It was used directly on circuit-switched data networks and as the physical layer under X.25 in parts of Europe. Largely historical now, it is the companion 'X-dot' standard to X.25: X.25 the packet protocol, X.21 the serial interface it could ride on."
       }
     },
     "totalCount": "{count} terms",

@@ -5898,6 +5898,68 @@
       "kind_swap": "troca",
       "kind_write": "escrita",
       "kind_note": "nota"
+    },
+    "cable-run-planner": {
+      "name": "Planejador de lance de cabo",
+      "blurb": "Velocidade, distância, ambiente e PoE entram - toda opção de cabo e fibra conforme sai, cada uma citando a regra TIA-568 ou 802.3 que a governa, com exclusões honestas para o resto.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "emptyState": "Escolha uma velocidade, digite uma distância, e as mídias conformes aparecem - com os padrões que dizem isso.",
+      "errorTitle": "Problema na entrada",
+      "speedLabel": "Velocidade do enlace",
+      "distanceLabel": "Distância do lance (metros)",
+      "distancePlaceholder": "ex.: 80",
+      "envLabel": "Ambiente",
+      "env_office": "Escritório / padrão",
+      "env_industrial": "Industrial (alta EMI)",
+      "env_plenum": "Plenum de ar",
+      "env_outdoor": "Externo",
+      "poeLabel": "PoE necessário",
+      "poe_none": "Nenhum",
+      "poe_af": "802.3af (15 W)",
+      "poe_at": "802.3at (30 W)",
+      "poe_bt": "802.3bt (até 90 W)",
+      "optionsTitle": "Opções conformes",
+      "excludedTitle": "Excluídas - e por quê",
+      "maxReach": "máx",
+      "runsLocally": "Todo o planejamento roda localmente no seu navegador; nada é enviado."
+    },
+    "ldap-filter-explainer": {
+      "name": "Explicador de filtros LDAP",
+      "blurb": "Cole um filtro de busca LDAP - receba a árvore anotada: operadores, tipos de correspondência, escapes RFC 4515 decodificados, OIDs de regras do AD reconhecidos, e erros ancorados no caractere exato.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "emptyState": "Cole um filtro como (&(objectClass=user)(cn=Rod*)) e a árvore aparece - cada nó explicado em linguagem simples.",
+      "errorTitle": "Erro de sintaxe no filtro",
+      "errorAt": "na posição",
+      "inputLabel": "Filtro de busca LDAP",
+      "placeholder": "(&(objectClass=person)(mail=*@example.com))",
+      "valueLabel": "Valor (escapes decodificados):",
+      "statsItems": "Condições:",
+      "statsDepth": "profundidade:",
+      "statsEscapes": "escapes decodificados:",
+      "runsLocally": "Analisado inteiramente no seu navegador - o filtro nunca sai desta página."
+    },
+    "oauth-flow-chooser": {
+      "name": "Seletor de fluxo OAuth",
+      "blurb": "Que tipo de app, existe usuário, precisa de acesso offline - e o grant certo volta com citação de RFC, com implicit e ROPC aposentados pelo nome conforme a RFC 9700.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "emptyState": "Escolha o tipo de aplicação e a recomendação aparece - o grant, as RFCs, e os fluxos que você NÃO deve usar, com os motivos.",
+      "errorTitle": "Problema na entrada",
+      "appTypeLabel": "O que você está construindo?",
+      "appTypePlaceholder": "Escolha um tipo de aplicação...",
+      "type_server-web": "App web server-side (o backend guarda um segredo)",
+      "type_spa": "Single-page app (roda no navegador)",
+      "type_native": "App nativo / mobile",
+      "type_service": "Serviço-a-serviço (sem humano presente)",
+      "type_device": "Dispositivo de entrada limitada (TV, console, quiosque)",
+      "identityLabel": "O app precisa saber QUEM é o usuário autenticado (OpenID Connect)",
+      "offlineLabel": "O app precisa de acesso com o usuário ausente (refresh tokens)",
+      "grantLabel": "Grant:",
+      "avoidedTitle": "Não escolhidos - e por quê",
+      "avoidedBadge": "evite",
+      "runsLocally": "Decidido inteiramente no seu navegador - nada é transmitido."
     }
   },
   "privacy_page": {
@@ -5955,7 +6017,8 @@
     "source": "Código-fonte",
     "disclaimer": "Aviso legal",
     "glossary": "Glossário",
-    "sitemap": "sitemap"
+    "sitemap": "sitemap",
+    "blog": "Blog"
   },
   "search": {
     "kindTool": "Ferramenta",
@@ -6464,8 +6527,8 @@
       "s2Title": "Identidade, decodificada neste site",
       "s2Body": "O ferramental de identidade deste site decodifica os mesmos artefatos que PingFederate e PingOne movem em produção: o decodificador SAML, os inspetores de JWT e OIDC e as ferramentas de PKCE e TOTP leem as asserções, tokens e fluxos sobre os quais a federação roda - localmente, no navegador. O curso de practitioner de PingFederate em 2025 marca o capítulo, e os padrões de federação que ele ensina são exatamente o que essas ferramentas tornam visível.",
       "certs": "Instrutor autorizado da Ping Identity (habilitado em 2026). PingFederate Practitioner (2025), obtido pelo Ping Identity Training. Detalhes completos na página de credenciais.",
-      "lineageTitle": "Como duas linhagens de identidade viraram uma",
-      "lineageDesc": "A Ping nasceu da federação em 2002. A Sun abriu o código de sua pilha de acesso como OpenSSO em 2005; quando a Oracle a engavetou em 2010, cinco engenheiros da Sun a bifurcaram como ForgeRock (OpenAM, OpenDJ) e a levaram à NYSE. A Thoma Bravo fechou o capital das duas em 2022 e as combinou em 23 de agosto de 2023."
+      "lineageTitle": "Como três linhagens de identidade viraram uma",
+      "lineageDesc": "A Ping nasceu da federação em Denver em 2002. A Sun abriu o código do seu stack de acesso como OpenSSO e do seu novo diretório Java como OpenDS; quando a Oracle absorveu a Sun em 2010, cinco engenheiros bifurcaram o código em Oslo como ForgeRock - OpenAM e OpenDJ. Uma terceira linha, o diretório UnboundID construído por veteranos de diretório da Sun em Austin, juntou-se à Ping em 2016 como PingDirectory. A Thoma Bravo fechou o capital de Ping e ForgeRock em 2022 e as combinou em 23 de agosto de 2023: uma plataforma, as três heranças, com o DaVinci como tecido de orquestração."
     },
     "zscaler": {
       "name": "Zscaler",
@@ -6596,7 +6659,10 @@
       }
     },
     "feedbackNote": "Encontrou um bug, um erro ou uma imprecisão no site?",
-    "feedbackLink": "Compartilhe na página de ideias"
+    "feedbackLink": "Compartilhe na página de ideias",
+    "takedownHeading": "Remoção e correção de conteúdo",
+    "takedownBody": "Se você detém direitos sobre material publicado neste site e entende que ele deve ser removido, corrigido ou atribuído de outra forma, escreva para o endereço acima informando a URL ou as URLs exatas e, quando possível, uma breve nota sobre qual é o problema. Esse contexto é genuinamente útil, e não uma formalidade: permite corrigir o erro direito, em todo o site, em vez de página por página. Os pedidos são analisados com rapidez e boa-fé.",
+    "takedownLink": "Ler o aviso legal completo"
   },
   "certs": {
     "title": "Certificações e credenciais",
@@ -8004,7 +8070,11 @@
     "changesTitle": "Mudanças",
     "changesBody": "O site, suas ferramentas, seu conteúdo, seu código e este aviso podem mudar, quebrar ou desaparecer a qualquer momento, sem aviso e sem obrigação para com ninguém. A versão atual desta página é a que se aplica.",
     "acceptBody": "Ao usar este site ou seu código, você aceita este aviso integralmente. Se não o aceita, seu único remédio é deixar de usar o site e o código.",
-    "backHome": "Voltar ao início"
+    "backHome": "Voltar ao início",
+    "goodFaithTitle": "Material de fabricantes, fontes públicas e boa-fé",
+    "goodFaithBody": "Os guias de estudo, as páginas de certificação e os recursos ligados a fabricantes neste site são obras educacionais independentes. São montados a partir de material publicamente disponível - blueprints de exame publicados, documentação oficial de produto, catálogos de treinamento dos fabricantes e anúncios públicos - e existem com um único propósito: ajudar profissionais em atividade a aprender uma tecnologia de verdade e a evoluir na própria carreira. Cada objetivo é citado à fonte pública de onde veio, os apontamentos de estudo são identificados como material autoral e não como texto do fabricante, e nada aqui contém questões de prova, respostas ou brain dumps de qualquer espécie, porque isso violaria justamente os acordos de certificação que este site existe para respeitar. Nomes de produtos, códigos de exame e marcas pertencem a seus respectivos titulares e são usados de forma nominativa, apenas para identificar o assunto ensinado. Este site não é afiliado a nenhum fabricante aqui citado, nem endossado por eles, nem fala em nome deles.",
+    "takedownTitle": "Se algo não deveria estar aqui",
+    "takedownBody": "Boa-fé vale nos dois sentidos, e um titular de direitos nunca deveria precisar brigar para ser ouvido. Se você detém ou representa material publicado aqui e entende que ele deve ser removido, corrigido ou atribuído de outra forma, escreva para o endereço de contato informando a URL ou as URLs exatas e, quando possível, uma breve nota sobre qual é o problema - se o conteúdo não é de fato público, se a atribuição está errada, ou se a reprodução causa um dano que não previmos. Essa explicação é genuinamente útil, e não uma formalidade: ela permite corrigir o erro direito, em todo o site, em vez de página por página. Os pedidos são analisados com rapidez e boa-fé, material contestado pode ser retirado enquanto a questão ainda está em aberto, e nenhum titular precisa justificar sua reivindicação antes de o conteúdo sair do ar, caso prefira que ele saia primeiro."
   },
   "notFound": {
     "sub": "Página não encontrada",
@@ -8484,7 +8554,8 @@
       "programming": "programação",
       "vendors": "fornecedores e produtos",
       "isp-telecom": "Provedores e telecom",
-      "it-support": "Suporte de TI"
+      "it-support": "Suporte de TI",
+      "events": "eventos"
     },
     "entries": {
       "the-hacker-manifesto": {
@@ -9325,7 +9396,7 @@
       },
       "social-engineering": {
         "def": "Manipular pessoas, e não tecnologia, para obter acesso ou informação.",
-        "context": "Todo golpe, de uma ligação com pretexto a uma porta em que alguém entra na cola de outro, é engenharia social: explorar boa vontade, autoridade ou urgência para contornar controles que só o código imporia. É por isso que OPSEC e conscientização importam tanto quanto atualizar sistemas."
+        "context": "É a técnica que nenhum patch fecha, porque a vulnerabilidade é uma decisão humana e não uma linha de código. Em termos de inteligência de ameaças é o vetor de ataque clássico e uma das técnicas mais comuns nos TTPs de qualquer agente: pretexting (inventar um papel crível), phishing e seus primos direcionados, isca e carona (tailgating) são todos procedimentos sob ela. A defesa é correspondentemente humana, treinamento de conscientização, hábitos de verificação e processos que não dependem de uma única pessoa escolher certo sob pressão, e é por isso que segurança é um processo e não um produto."
       },
       "sql-injection": {
         "def": "Injetar comandos de banco de dados por uma entrada que é concatenada em uma consulta.",
@@ -9944,16 +10015,16 @@
         "context": "IEEE 802.3ad/802.1AX; um agregado sem negociação é como se obtêm port channels de um lado só e falhas misteriosas."
       },
       "vrrp": {
-        "def": "Virtual Router Redundancy Protocol: dois ou mais roteadores compartilham um endereço de gateway virtual, para o gateway padrão sobreviver à falha de um equipamento.",
-        "context": "O irmão de padrão aberto do HSRP da Cisco; o ritual é uma eleição, o prêmio é o MAC virtual."
+        "def": "A família de redundância de primeiro salto - VRRP (o padrão aberto) e o HSRP da Cisco: dois ou mais roteadores compartilham um IP e MAC virtuais de gateway, e o default gateway sobrevive à falha de um equipamento.",
+        "context": "O truque é que os hosts nunca aprendem o endereço de um roteador real: apontam para um IP virtual possuído por quem detém no momento o papel de master (VRRP, RFC 5798, MAC virtual 0000.5e00.01xx) ou active (HSRP, o precursor da Cisco que moldou a ideia). A eleição roda por prioridade; a preempção decide se um ex-master recuperado retoma o cargo; um gratuitous ARP anuncia a troca para os switches reaprenderem a porta. A variante GLBP da Cisco acrescenta balanceamento entre gateways em vez de um standby ocioso. O nome da família é FHRP - first-hop redundancy protocol - e a pergunta de projeto é sempre a mesma: milissegundos de failover para o único endereço de que todo host depende."
       },
       "vrf": {
         "def": "Virtual Routing and Forwarding: várias tabelas de roteamento independentes num só roteador, para redes sobrepostas ou não relacionadas nunca se misturarem.",
         "context": "O irmão de roteamento da ideia de VLAN: virtualizar a tabela, não só o domínio de broadcast."
       },
       "mpls": {
-        "def": "Multiprotocol Label Switching: encaminha pacotes por rótulos curtos em vez de consultas IP, permitindo às operadoras caminhos rápidos e VPNs privadas sobre núcleos compartilhados.",
-        "context": "O 'multiprotocol' é literal: o rótulo não sabe nem se importa com o payload que carrega."
+        "def": "Multiprotocol Label Switching - encaminhamento por rótulos curtos em vez de consultas IP: empurre um rótulo na borda, troque-o salto a salto, remova-o antes da saída. A maquinaria sob a maioria dos serviços de operadora.",
+        "context": "Um roteador de borda classifica o pacote uma vez, empurra um rótulo, e o núcleo apenas troca rótulos ao longo de um caminho comutado pré-construído - nenhum roteador de núcleo precisa da tabela de rotas da internet (o BGP-free core), e rótulos empilham, que é o truque inteiro: um rótulo interno significando 'a VPN deste cliente' viaja num rótulo externo significando 'este caminho pelo backbone'. Essa pilha é como os L3VPNs (RFC 4364) mantêm separados milhares de espaços de endereço sobrepostos de clientes numa rede só, e como a engenharia de tráfego prende fluxos a caminhos explícitos. Rótulos historicamente vinham do LDP ou do RSVP-TE; o Segment Routing agora codifica o caminho no próprio pacote e aposenta a sinalização. O MPLS levou as ideias de circuito virtual do ATM e deixou as células para trás - e enquanto o SD-WAN remodelou a borda empresarial, o núcleo de operadora por baixo ainda fala rótulos."
       },
       "gre-tunnel": {
         "def": "Generic Routing Encapsulation: embrulha um pacote dentro de outro para o tráfego cruzar redes que não o roteariam nativamente - um túnel, sem criptografia.",
@@ -10080,8 +10151,8 @@
         "context": "O nome é literal - nenhuma luz no vidro até o locatário acendê-la."
       },
       "bfd": {
-        "def": "Bidirectional Forwarding Detection: pacotes de hello em escala de milissegundos que avisam aos protocolos de roteamento que um caminho morreu bem antes de seus próprios timers perceberem.",
-        "context": "Os protocolos de roteamento mantêm seus hellos lentos por sanidade; o BFD existe para o failover acontecer antes de o usuário perceber."
+        "def": "Bidirectional Forwarding Detection - um fluxo minúsculo e agnóstico de protocolo de hellos que detecta um caminho morto em milissegundos, para os protocolos de roteamento comutarem antes de o usuário perceber.",
+        "context": "Protocolos de roteamento mantêm hellos deliberadamente lentos (segundos) por estabilidade; o BFD (RFC 5880) roda o batimento rápido por eles: dois pontos trocam pacotes de controle mínimos em intervalos comumente ajustados a dezenas de milissegundos, declaram o caminho morto após algumas perdas, e notificam todos os clientes registrados - BGP, OSPF, IS-IS, rotas estáticas, VRRP - de uma vez. Uma sessão protege todos, e essa é a elegância: a detecção de vida vira um serviço compartilhado em vez de cirurgia de timers por protocolo. A echo function empurra a detecção para o próprio plano de encaminhamento. A regra prática: onde failover importa e o meio não sinaliza perda de link, o BFD é a diferença entre 50 milissegundos e 30 segundos."
       },
       "last-mile": {
         "def": "O trecho final de rede entre a infraestrutura do provedor e a porta do cliente - os quilômetros mais caros das telecomunicações.",
@@ -10284,8 +10355,8 @@
         "context": "KCS (Knowledge-Centered Service) é a disciplina de escrever o artigo enquanto se resolve o caso."
       },
       "itil": {
-        "def": "O framework de gestão de serviços de TI: vocabulário e práticas comuns para incidentes, problemas, mudanças e entrega de serviço.",
-        "context": "Nascido da prática do governo britânico nos anos 1980; hoje é a língua franca dos service desks."
+        "def": "O framework de gestão de serviços de TI - o vocabulário compartilhado de incidentes, problemas, mudanças e serviços que faz as equipes de operações e seus tickets falarem uma língua só.",
+        "context": "Nascido no governo britânico do fim dos anos 1980 (a Infrastructure Library de boas práticas da CCTA), o ITIL virou o cânone mundial de ITSM: a trindade incidente/problema/mudança, níveis de serviço e o service desk como disciplina remontam a ele. A tutela passou à Axelos em 2013 e à PeopleCert em 2021; o ITIL 4 (2019) reenquadrou o catálogo de processos como um sistema de valor de serviço, com práticas, princípios orientadores e um tratado de paz explícito com Agile e DevOps. A escada de certificação (Foundation para cima) é a credencial de operações mais comum da indústria - e o motivo de metade dos campos de ticket do mundo terem os nomes que têm."
       },
       "problem-management": {
         "def": "A prática ITIL que caça a causa por trás de incidentes recorrentes: incidentes restauram o serviço, problemas removem o motivo da quebra.",
@@ -11212,16 +11283,16 @@
         "context": "Modo MAC de Ponte por Caminho Mais Curto (do inglês Shortest Path Bridging MAC mode, IEEE 802.1aq) cria um fabric Ethernet livre de loops e por caminho mais curto, controlado pelo protocolo de roteamento IS-IS, substituindo o spanning tree por encaminhamento multicaminho real através de um backbone de provedor ou campus."
       },
       "is-is": {
-        "def": "Um protocolo de roteamento de estado de enlace, usado em grandes redes e fabrics Ethernet.",
-        "context": "Sistema Intermediário para Sistema Intermediário (do inglês Intermediate System to Intermediate System, ISO/IEC 10589) é um protocolo de gateway interior de estado de enlace, um par do OSPF, preferido em grandes núcleos de provedores de serviço e usado como plano de controle para fabrics SPBM."
+        "def": "Intermediate System to Intermediate System - o gêmeo link-state do OSPF vindo do mundo OSI: o protocolo que você provavelmente nunca configurou, rodando os backbones de operadora que seu tráfego cruza todo dia.",
+        "context": "O IS-IS (ISO 10589, estendido para IP pela RFC 1195) joga o mesmo jogo do OSPF - inunde o mapa, rode Dijkstra - com outro pedigree e dois hábitos que envelheceram notavelmente bem. Ele roda direto sobre a camada 2, não sobre IP, então não pode ser atacado nem quebrado pelo próprio roteamento que computa; e tudo que carrega é TLV, então estendê-lo para IPv6, engenharia de tráfego ou Segment Routing significou TLVs novos, não versões novas de protocolo. Sua hierarquia de dois níveis (áreas level 1, backbone level 2) mapeia frouxamente nas áreas-e-área-0 do OSPF. Grandes provedores padronizaram nele décadas atrás e nunca saíram; empresas o encontram mais dentro de underlays de fabric de data center."
       },
       "exos": {
         "def": "O sistema operacional de switches da Extreme Networks.",
         "context": "Sistema Operacional Extreme (do inglês Extreme Operating System, ExtremeXOS) é o sistema operacional de rede modular que roda nos switches da Extreme Networks, com uma arquitetura de processos isolados e uma superfície de scripting/automação para configuração e gerenciamento."
       },
       "rip": {
-        "def": "Um dos protocolos de roteamento mais antigos, que usa a contagem de saltos como métrica.",
-        "context": "Protocolo de Informação de Roteamento (do inglês Routing Information Protocol, RFC 2453) escolhe rotas pelo menor número de saltos, limitado a 15, o que o torna simples mas inadequado para grandes redes. Sobrevive principalmente em implantações pequenas ou legadas, há muito substituído pelo OSPF e pelo BGP."
+        "def": "Routing Information Protocol - o primeiro protocolo de roteamento comum da internet: contagem de saltos como métrica, 15 saltos como horizonte, e 'roteamento por boato' como método.",
+        "context": "O RIP (RFC 1058, refinado como RIPv2 na RFC 2453) é distance-vector puro: a cada 30 segundos cada roteador conta aos vizinhos as distâncias em que acredita, e todos confiam nos boatos. Contagem de saltos é a única métrica - um enlace de 10 Gb/s vale o mesmo que um modem - e 16 significa inalcançável, o que limita qualquer rede RIP a 15 saltos e dá ao count-to-infinity o seu teto. Split horizon, poison reverse e hold-down timers são os remédios caseiros que todo estudante de redes decora. Obsoleto em redes sérias, imortal no ensino: o RIP é onde os problemas que OSPF e EIGRP resolvem são sentidos pela primeira vez."
       },
       "beb": {
         "def": "Um dispositivo de borda em um fabric Ethernet que encapsula o tráfego para o backbone.",
@@ -11436,8 +11507,8 @@
         "context": "Chave de Prova para Troca de Código (do inglês Proof Key for Code Exchange, RFC 7636) vincula um código de autorização ao cliente que o solicitou, usando um segredo de uso único. Impede que um código interceptado seja resgatado por um atacante e é hoje padrão para clientes OAuth públicos."
       },
       "eigrp": {
-        "def": "Um protocolo de roteamento da Cisco conhecido pela convergência rápida.",
-        "context": "Protocolo Aprimorado de Roteamento de Gateway Interior (do inglês Enhanced Interior Gateway Routing Protocol) é um protocolo de vetor de distância da Cisco com reconvergência rápida via seu algoritmo DUAL. Pode sumarizar rotas em quase qualquer interface, razão pela qual aparece em discussões sobre sumarização de rotas."
+        "def": "Enhanced Interior Gateway Routing Protocol - o distance-vector avançado da Cisco: o algoritmo DUAL mantém rotas de backup livres de loop pré-computadas, então a convergência é quase instantânea.",
+        "context": "O EIGRP nasceu do IGRP anterior da Cisco (cuja métrica composta de banda mais atraso ele manteve e refinou) e ficou proprietário por duas décadas até a Cisco publicá-lo como RFC informacional 7868 em 2016. Seu coração é o Diffusing Update Algorithm de J.J. Garcia-Luna-Aceves: para cada destino, o roteador rastreia feasible successors - vizinhos matematicamente provados livres de loop - então quando o melhor caminho morre, o backup é promovido sem recomputação nem inundação. Por isso o elogio clássico é 'convergência rápida'. A troca: soberbo dentro de ambientes Cisco, historicamente uma alavanca de lock-in, e ainda o contrapeso de prova ao modelo link-state aberto do OSPF."
       },
       "as": {
         "def": "Uma rede sob uma única política administrativa de roteamento, identificada por um ASN.",
@@ -12478,6 +12549,642 @@
       "key-exchange": {
         "def": "Como duas partes combinam a chave secreta da sessão - a parte de uma suíte de cifras que decide se o tráfego gravado permanece selado.",
         "context": "O Diffie-Hellman efêmero (ECDHE em X25519 ou P-256) gera chaves novas por conexão, dando sigilo futuro; o transporte de chave com RSA estático não dá, e por isso o TLS 1.3 o removeu e tornou a troca efêmera estrutural. A transição pós-quântica acontece aqui também: o híbrido X25519+ML-KEM roda os dois mundos lado a lado."
+      },
+      "nist": {
+        "def": "A agência de padrões dos EUA cujas publicações de criptografia e segurança funcionam como baselines de engenharia globais.",
+        "context": "O NIST mantém os padrões FIPS e a série SP 800 que este site cita o tempo todo - SP 800-52r2 para configuração de TLS, SP 800-38A para modos de cifra - e conduziu as competições abertas que selecionaram o AES e o SHA-3. Sua padronização pós-quântica produziu o ML-KEM e o ML-DSA, e seu Cybersecurity Framework (CSF) ancora incontáveis programas de conformidade. Não é regulador: a adoção fora dos sistemas federais dos EUA é voluntária, o que torna sua influência ainda mais notável."
+      },
+      "mitre": {
+        "def": "A organização sem fins lucrativos dos EUA que opera centros de P&D com financiamento federal - e, para praticantes, a casa do ATT&CK, do CVE e do CWE.",
+        "context": "A MITRE (o nome não é um acrônimo) é guardiã dos vocabulários comuns da operação de segurança: o programa CVE numerando vulnerabilidades públicas, o CWE classificando tipos de fraqueza, e a base de conhecimento ATT&CK de táticas e técnicas de adversários em torno da qual a engenharia de detecção e os purple teams se organizam, com o D3FEND como contraparte defensiva."
+      },
+      "ietf": {
+        "def": "O corpo que padroniza os protocolos da internet, abertamente, como RFCs.",
+        "context": "A Internet Engineering Task Force trabalha por 'consenso aproximado e código rodando': grupos de trabalho abertos produzem Internet-Drafts que amadurecem em RFCs - TCP, HTTP, TLS, DNS e quase todo protocolo que as ferramentas deste site decodificam. Qualquer um pode participar; não há taxa de associação. Opera ao lado da IANA (registros) e do RFC Editor (publicação), e seus documentos são as fontes primárias que este site referencia por preferência."
+      },
+      "cloud-security-alliance": {
+        "def": "O corpo da indústria que define como a segurança de nuvem é avaliada e atestada.",
+        "context": "A Cloud Controls Matrix (CCM) da CSA é o framework de controles de fato para provedores de nuvem, e o registro STAR publica autoavaliações e certificações de provedores contra ela - o acrônimo que você encontra em toda página de trust center de fornecedor. Ela também mantém o certificado CCSK e a pesquisa de responsabilidade compartilhada em que as conversas de SASE e zero trust dos fornecedores se apoiam."
+      },
+      "sans": {
+        "def": "O instituto comercial de treinamento mais conhecido em operações de segurança, casa das certificações GIAC e do Internet Storm Center.",
+        "context": "Os cursos SANS e seus exames GIAC são a contraparte operacional das certificações de fornecedor: resposta a incidentes, forense, detecção, habilidades ofensivas. Seu Internet Storm Center é uma instituição de longa data de sensores comunitários e diários, e seus recursos gratuitos (pôsteres, cheat sheets, reading room) circulam muito além dos alunos pagantes."
+      },
+      "isc2": {
+        "def": "O corpo certificador por trás do CISSP - a credencial que mais frequentemente guarda a porta de cargos sêniores de segurança.",
+        "context": "A ISC2 (antes grafada (ISC)², remarcada em 2023) mantém o CISSP, o CCSP para nuvem, e um código de ética de membros com dentes de verdade: certificados podem ser cassados por violações. Onde SANS/GIAC testam profundidade mão na massa, as credenciais ISC2 testam amplitude do corpo comum de conhecimento - exatamente por isso os funis de contratação se apoiam nelas."
+      },
+      "eff": {
+        "def": "A organização sem fins lucrativos que defende liberdades civis no mundo digital - e a criadora do Certbot.",
+        "context": "Fundada em 1990, a Electronic Frontier Foundation litiga, faz advocacy e constrói: foi parceira fundadora do esforço que virou o Let's Encrypt, e mantém o Certbot, o cliente que tornou certificados gratuitos operacionalmente triviais. Suas pesquisas e scorecards (privacidade de dispositivos, práticas de dados) são referências permanentes em engenharia de privacidade."
+      },
+      "ieee": {
+        "def": "A sociedade de engenharia cujo comitê 802 define os padrões de LAN sobre os quais tudo neste site roda.",
+        "context": "A IEEE Standards Association é onde vivem o Ethernet (802.3), o Wi-Fi (802.11) e bridging/VLANs (802.1, incluindo o 802.1Q e a linhagem 802.1D do Spanning Tree). A família 802 é um mapa de grupos de trabalho, cada um dono de uma tecnologia de camada 2 - um mapa que este site vai cartografar grupo a grupo num explicador dedicado."
+      },
+      "eia-tia": {
+        "def": "A linhagem de padrões por trás do cabeamento estruturado - a família TIA-568 que define as categorias, conectores e distâncias de todo wiring closet.",
+        "context": "A Telecommunications Industry Association (sucessora do lado EIA da antiga parceria EIA/TIA) publica o ANSI/TIA-568 e seus irmãos: as definições de categoria de cabo (Cat 5e, 6, 6A, 8), as pinagens T568A/T568B, comprimentos de canal, e os padrões de data center e caminhos. Quando um datasheet diz 'atende Cat 6A', são os limites de teste dela que ele quer dizer."
+      },
+      "defcon": {
+        "def": "A maior conferência hacker do mundo - Las Vegas todo agosto desde 1993 - e o centro de gravidade cultural da cena.",
+        "context": "Fundada por Jeff Moss (Dark Tangent), a DEF CON cresceu de uma festa de despedida para o encontro anual: villages para cada especialidade (de lockpicking a urnas eletrônicas e aeroespacial), o capture-the-flag principal, crachás eletrônicos que são quebra-cabeças em si, e os Goons mantendo o caos funcional. Palestras viram notícia global com frequência; a cultura ao redor - Spot the Fed, a linhagem do Wall of Sheep - é metade da instituição."
+      },
+      "black-hat": {
+        "def": "A conferência de segurança com cara corporativa: Briefings de pesquisa e Trainings pagos, dias antes da DEF CON.",
+        "context": "Criada por Jeff Moss em 1997 como a contraparte de terno da DEF CON, a Black Hat USA hoje ancora o 'hacker summer camp' em Las Vegas, com edições Europe e Asia. Seus Briefings são palco de primeira linha para divulgação de pesquisa de vulnerabilidades; seu salão de exposição é onde a indústria de fornecedores encontra essa pesquisa. Hoje operada pela Informa Tech, segue sendo a conferência que as empresas orçam quando a DEF CON soa informal demais."
+      },
+      "chaos-computer-club": {
+        "def": "A mais antiga e influente associação hacker da Europa - alemã, política e profundamente séria sobre tecnologia e direitos civis.",
+        "context": "Fundado em 1981, o CCC fez seu nome com o hack do Btx em 1984, que expôs falhas de um sistema bancário alemão devolvendo o dinheiro obtido. Seu Chaos Communication Congress anual (o C3, entre Natal e Ano Novo) e o Chaos Communication Camp de verão são instituições; sua revista Die Datenschleuder e seus pareceres técnicos a tribunais e parlamentos definem a mistura do clube: hacking mão na massa e advocacy de interesse público."
+      },
+      "2600-magazine": {
+        "def": "The Hacker Quarterly: a voz impressa da cultura hacker desde 1984, e a origem da conferência HOPE e dos encontros 2600 de sexta-feira.",
+        "context": "Editada por Emmanuel Goldstein (Eric Corley) e batizada pelo tom de phreaking de 2600 Hz, a 2600 publica há quatro décadas explorações de sistemas enviadas por leitores, travou batalhas legais históricas (notavelmente o caso DeCSS) e semeou uma rede mundial de encontros na primeira sexta do mês. Sua conferência HOPE (Hackers On Planet Earth) carrega a mesma linhagem - e o editor da revista abriu a primeiríssima YSTS em São Paulo, amarrando esta entrada à cena brasileira."
+      },
+      "ysts": {
+        "def": "You Shot the Sheriff: a conferência brasileira curada de um dia só - com sabor de convite, sediada em bar e famosamente bem conectada.",
+        "context": "Rodando em São Paulo desde o fim dos anos 2000, a YSTS reúne palestrantes nacionais e internacionais escolhidos a dedo num único dia descontraído (tradicionalmente num bar, bebida inclusa), no fim de semana seguinte à BSidesSP. Sua primeira edição foi aberta por Emmanuel Goldstein, da 2600, e a tradição permanece: palestrantes selecionados recebem uma medalha que garante entrada livre em todas as edições futuras. Amplamente tida como o ingresso mais disputado da cena brasileira."
+      },
+      "bsides-sao-paulo": {
+        "def": "A conferência de segurança comunitária e gratuita de São Paulo - nascida dentro do Garoa Hacker Clube em 2011, hoje entre as maiores BSides do mundo.",
+        "context": "A Co0L BSidesSP faz parte do movimento global Security BSides: organizada por voluntários, gratuita e deliberadamente comunitária - dezenas de villages, CTF, lightning talks, uma trilha de arsenal open source brasileiro e o BSides 4 Kids. Tradicionalmente acontece no fim de semana anterior à YSTS; a edição de 2026 marcou quinze anos desde a primeira, realizada dentro do Garoa. Os cachorros-quentes também são grátis, às centenas."
+      },
+      "garoa-hacker-clube": {
+        "def": "O hackerspace de São Paulo - um dos primeiros do Brasil, e a sala onde a BSidesSP nasceu.",
+        "context": "O Garoa (o nome é a famosa garoa paulistana) é um espaço mantido por membros na tradição clássica dos hackerspaces: atividades semanais abertas, bancadas de eletrônica, retrocomputação, lockpicking, grupos de estudo de criptografia e uma cultura de projetos documentada em wiki. Para além das próprias paredes, foi incubadora da cena local, sediando a primeira edição da BSidesSP e alimentando de voluntários boa parte dos eventos comunitários de segurança da cidade."
+      },
+      "mente-binaria": {
+        "def": "A organização sem fins lucrativos brasileira que ensina computação e segurança desde os fundamentos - cursos gratuitos, fórum ativo e ferramentas open source.",
+        "context": "Fundada pelo pesquisador Fernando Mercês, a Mente Binária é formalmente uma instituição de ensino e pesquisa sem fins lucrativos: seus cursos gratuitos CERO (engenharia reversa) e AMO (análise de malware) rodam no canal Papo Binário no YouTube, seu fórum reúne de iniciantes a veteranos, mantém ferramentas open source como o readpe (nascido pev), e programas como o CodeHERS trazem mulheres para a engenharia reversa. Em português, com base nos fundamentos - uma instituição rara e estrutural na cena brasileira."
+      },
+      "h2hc": {
+        "def": "Hackers to Hackers Conference: a mais antiga conferência de pesquisa em segurança da América Latina - São Paulo, todo ano desde 2004.",
+        "context": "A H2HC é a âncora técnica profunda do calendário brasileiro: pesquisa de vulnerabilidades, exploração, engenharia reversa, hardware - a ponta de pesquisa do espectro, com headliners internacionais ao lado de pesquisadores brasileiros e os dias de treinamento da H2HC University. Sua fama de cultura de corredor brincalhonamente 'hostil' é usada como medalha: é a sala onde a barra técnica é mais alta."
+      },
+      "mind-the-sec": {
+        "def": "A conferência de segurança da informação em escala corporativa de São Paulo - onde quem decide no mercado brasileiro encontra o ecossistema de fornecedores.",
+        "context": "O Mind the Sec ocupa a ponta enterprise do espectro brasileiro de conferências: vários dias, exposição pesada, foco executivo - a contraparte dos eventos comunitários (BSidesSP, H2HC) no mesmo calendário. A edição de 2026 acontece de 15 a 17 de setembro em São Paulo. Para praticantes, é a parada de observação do mercado: quem está vendendo o quê para quem na segurança brasileira."
+      },
+      "f5-devcentral": {
+        "def": "A comunidade técnica oficial da F5 - artigos, perguntas e respostas e duas décadas de conhecimento de iRules, com um programa MVP reconhecido.",
+        "context": "O DevCentral (hoje em community.f5.com) é onde praticantes de F5 publicam artigos de profundidade, respondem dúvidas de configuração e compartilham iRules e automação - boa parte do conhecimento de trabalho de BIG-IP fora da documentação oficial mora lá. Seu programa MVP reconhece contribuidores de destaque anualmente. O material F5 deste próprio site cita peças do DevCentral quando elas são a melhor fonte disponível."
+      },
+      "fortinet-community": {
+        "def": "A comunidade oficial de usuários da Fortinet - fóruns, artigos de base de conhecimento e troca de ideias do ecossistema FortiGate.",
+        "context": "A Fortinet Community (community.fortinet.com, sucessora da marca FUSE) é a casa mantida pelo fornecedor para perguntas e respostas de FortiOS, artigos moderados de base de conhecimento e submissão de ideias de produto. Para o troubleshooting diário de FortiGate é a primeira parada depois da documentação - e, ao lado dela, o subreddit independente r/fortinet carrega uma cultura de praticantes notavelmente ativa."
+      },
+      "apisec-university": {
+        "def": "Treinamento gratuito de segurança de APIs com certificado - a rampa mais rápida para o mundo do OWASP API Top 10.",
+        "context": "A APIsec University oferece cursos online gratuitos - API Security Fundamentals, o OWASP API Security Top 10, autenticação de APIs, boas práticas de gateway, pentest de APIs - com badges de conclusão via Credly e certificações como CASA e ACP, servindo bem mais de cem mil alunos. Também realiza a conferência online gratuita APISEC|CON. Adjacente a fornecedor, mas genuinamente educacional: os cursos se sustentam sozinhos."
+      },
+      "reddit": {
+        "def": "A plataforma de discussão em threads e votos cujos subreddits de redes e de fornecedores carregam uma fatia desproporcional do troubleshooting do mundo real.",
+        "context": "Para além da página inicial, os subreddits técnicos do Reddit são infraestrutura de trabalho: o r/networking para discussão de engenharia neutra de fornecedor, e comunidades por fornecedor (o r/fortinet notavelmente ativo; equivalentes existem pelas plataformas que este site cobre) onde praticantes comparam notas mais rápido que os canais oficiais. Não oficiais por natureza - verifique contra a documentação do fornecedor - mas para o 'mais alguém já viu isso?', frequentemente a resposta mais rápida da internet."
+      },
+      "iso-27001": {
+        "def": "O padrão internacional para um sistema de gestão de segurança da informação (ISMS) - a certificação com que a maioria dos trust centers de fornecedores abre.",
+        "context": "A ISO/IEC 27001 (revisão atual 27001:2022) certifica que uma organização opera um sistema documentado e auditado de gestão de risco de segurança da informação por sites, desenvolvimento, suporte e data centers. Os certificados valem três anos com auditorias anuais de acompanhamento. Os três fornecedores que o instrutor deste site leciona - F5, Netskope, Extreme - a possuem, ao lado das irmãs de nuvem 27017 e 27018."
+      },
+      "iso-27017": {
+        "def": "A extensão de segurança em nuvem da ISO 27001 - controles específicos de ser, ou usar, um provedor de nuvem.",
+        "context": "A ISO/IEC 27017:2015 complementa a ISO 27002/27001 com orientação específica de nuvem: responsabilidade compartilhada, hardening de máquinas virtuais, operações de administrador, isolamento de tenant. Não é uma certificação isolada, e sim uma camada de nuvem, por isso quase sempre aparece junto da 27001 e da 27018 na página de conformidade de um provedor."
+      },
+      "iso-27018": {
+        "def": "A extensão de privacidade da ISO 27001 - protegendo informação pessoal identificável processada na nuvem pública.",
+        "context": "A ISO/IEC 27018:2019 define controles para provedores de nuvem que atuam como operadores de PII: consentimento, transparência sobre suboperadores, devolução e exclusão de dados, e restrições ao uso de dados de clientes para publicidade. Mapeia de perto as obrigações do GDPR e fecha o trio 27001/27017/27018 que os fornecedores de nuvem apresentam juntos."
+      },
+      "fedramp": {
+        "def": "O programa padronizado de autorização de segurança do governo dos EUA para serviços de nuvem - baselines High, Moderate e Low.",
+        "context": "O FedRAMP permite que um serviço de nuvem seja avaliado uma vez, contra os controles do NIST SP 800-53, e reutilizado por várias agências federais. Os baselines escalam com a sensibilidade dos dados; o FedRAMP High cobre os dados não classificados mais sensíveis do governo. O GovCloud da Netskope tem FedRAMP High; o Distributed Cloud da F5 carrega autorizações FedRAMP - a credencial que compradores do setor público procuram primeiro."
+      },
+      "pci-dss": {
+        "def": "O padrão de segurança da indústria de cartões para quem armazena, processa ou transmite dados de portadores de cartão.",
+        "context": "O PCI DSS é definido pelo PCI Security Standards Council (as bandeiras de cartão) e estabelece um baseline de requisitos de rede, criptografia, controle de acesso e monitoramento. É contratual, e não governamental, mas o descumprimento traz multas e perda do direito de processar. É item comum de escopo em trust centers de fornecedores mesmo quando o fornecedor nunca toca dados de cartão diretamente, porque clientes implantam seus produtos em ambientes de portadores de cartão."
+      },
+      "hipaa": {
+        "def": "A lei de privacidade em saúde dos EUA que rege a informação de saúde protegida (PHI).",
+        "context": "A HIPAA (1996) define os requisitos de confidencialidade, integridade e disponibilidade para PHI, e suas Security e Privacy Rules descem aos fornecedores como business associates. Um fornecedor declarando alinhamento com HIPAA significa que seus controles e seu Business Associate Agreement apoiam clientes na saúde regulada - uma linha padrão nos trust centers de fornecedores de infraestrutura que servem esse setor."
+      },
+      "csa-star": {
+        "def": "O registro público da Cloud Security Alliance sobre a postura de segurança de provedores de nuvem - da autoavaliação à certificação por terceiros.",
+        "context": "O STAR (Security, Trust, Assurance and Risk) se constrói sobre a Cloud Controls Matrix da CSA: o Nível 1 é uma autoavaliação publicada, o Nível 2 acrescenta certificação por terceiros (muitas vezes pareada com ISO 27001), tudo mapeado a padrões de referência. É a camada de transparência da conformidade em nuvem, deixando compradores comparar provedores contra um único framework de controles específico de nuvem - e amarra todo trust center de fornecedor de volta à CSA."
+      },
+      "cyber-essentials": {
+        "def": "A certificação baseline de higiene cibernética do governo do Reino Unido, operada pelo NCSC.",
+        "context": "O Cyber Essentials define cinco controles técnicos básicos (firewalls, configuração segura, controle de acesso, proteção contra malware, gestão de patches); o Cyber Essentials Plus acrescenta verificação prática. É deliberadamente de nível de entrada - exigido em muitos contratos do setor público britânico - e aparece em trust centers como evidência dos fundamentos, distinto da profundidade da ISO 27001."
+      },
+      "c5": {
+        "def": "A atestação de segurança em nuvem apoiada pelo governo alemão, definida pelo BSI.",
+        "context": "O Cloud Computing Compliance Criteria Catalogue (C5) foi introduzido pelo Federal Office for Information Security (BSI) da Alemanha para dar um baseline consistente e auditável a provedores de nuvem que servem o mercado alemão. Um auditor atesta contra o catálogo; o resultado é amplamente reconhecido nos setores público e privado alemão e da UE - a contraparte alemã de esquemas como o ENS (Espanha) e o IRAP (Austrália) que se agrupam em trust centers multinacionais."
+      },
+      "irap": {
+        "def": "O framework de avaliação da Austrália que permite validar serviços de nuvem contra o manual de segurança do governo.",
+        "context": "O IRAP (Information Security Registered Assessors Program) treina e credencia assessores que avaliam sistemas contra o Information Security Manual (ISM) do Australian Signals Directorate. Uma avaliação IRAP diz aos clientes do governo australiano quais controles estão em vigor e como a responsabilidade é compartilhada - o análogo australiano do FedRAMP, e entrada padrão nos trust centers de fornecedores que vendem nesse mercado."
+      },
+      "data-privacy-framework": {
+        "def": "O mecanismo para transferir legalmente dados pessoais da UE/Reino Unido/Suíça para empresas dos EUA certificadas.",
+        "context": "O EU-U.S. Data Privacy Framework (DPF), com suas extensões do Reino Unido e da Suíça, substituiu o invalidado Privacy Shield. Empresas dos EUA se autocertificam ao Department of Commerce de que atendem proteções equivalentes às da UE, habilitando fluxos transatlânticos de dados sem mecanismos adicionais de transferência. Fica ao lado do GDPR em trust centers focados em privacidade como a resposta de conformidade de transferência."
+      },
+      "nis2": {
+        "def": "A diretiva da UE que expande enormemente as obrigações de cibersegurança por setores essenciais e importantes.",
+        "context": "A NIS2 (Diretiva (UE) 2022/2555) amplia o escopo da NIS original para muito mais setores, aperta os prazos de reporte de incidentes e adiciona responsabilização da alta gestão com penalidades reais. É transposta para a lei nacional de cada estado-membro, e sua chegada é o motivo de trust centers e blogs de fornecedores (o da Extreme entre eles) hoje darem destaque à prontidão para NIS2 para clientes europeus."
+      },
+      "802-1q": {
+        "def": "O padrão IEEE que acrescenta uma tag de VLAN a um quadro Ethernet - o motivo de um enlace físico poder carregar muitas LANs virtuais.",
+        "context": "O 802.1Q insere no cabeçalho Ethernet uma tag de quatro bytes com um VLAN ID de 12 bits (4.094 utilizáveis) e um campo de prioridade. Um enlace com tag entre switches é um trunk; portas de acesso sem tag colocam um dispositivo numa única VLAN. É a base da segmentação em redes comutadas, e vive no grupo de trabalho 802.1, o braço de arquitetura da família 802."
+      },
+      "802-1x": {
+        "def": "Controle de acesso à rede baseado em porta - o padrão IEEE que faz uma porta de switch ou access point autenticar antes de encaminhar tráfego.",
+        "context": "O 802.1X estrutura o handshake: um supplicant (o dispositivo), um authenticator (o switch ou AP) e um servidor de autenticação (geralmente RADIUS) trocam EAP sobre LAN até a porta abrir ou permanecer fechada. É a camada de imposição sob o Wi-Fi corporativo (WPA2/WPA3-Enterprise) e o NAC cabeado, e combina naturalmente com o 802.1Q para colocar dispositivos autenticados na VLAN certa."
+      },
+      "802-3": {
+        "def": "O grupo de trabalho e padrão IEEE do Ethernet - toda velocidade e meio cabeado, além do Power over Ethernet.",
+        "context": "O 802.3 levou o Ethernet do coax 10BASE5 a centenas de gigabits, cada variante uma emenda com letra, e define o PoE nos 802.3af, 802.3at e no de quatro pares 802.3bt. Herdou o quadro de 1500 bytes do DIX Ethernet e repetidamente recusou padronizar jumbo frames - por isso o suporte a 9000 bytes é convenção de fornecedor, não cláusula."
+      },
+      "wifi": {
+        "def": "O nome de consumo para a rede local sem fio construída sobre o IEEE 802.11 - e uma marca de certificação da Wi-Fi Alliance.",
+        "context": "Toda geração de Wi-Fi é uma emenda do 802.11: Wi-Fi 4 (802.11n), Wi-Fi 5 (802.11ac), Wi-Fi 6/6E (802.11ax), Wi-Fi 7 (802.11be-2024). O IEEE escreve o padrão; a Wi-Fi Alliance é dona da marca e conduz a certificação de interoperabilidade, por isso o marketing diz 'Wi-Fi 7' enquanto o datasheet diz '802.11be'. A segurança vem por cima via WPA2 e WPA3."
+      },
+      "wpa": {
+        "def": "O esquema de segurança da Wi-Fi Alliance para redes sem fio - WPA2 e WPA3 hoje, substituindo o quebrado WEP.",
+        "context": "O WPA (Wi-Fi Protected Access) veio como remendo urgente para o WEP; o WPA2 tornou o AES-CCMP o padrão; o WPA3 (2018) acrescentou handshakes mais fortes (SAE) e forward secrecy. Cada um tem um modo Personal (chave pré-compartilhada) e um modo Enterprise que delega a autenticação ao 802.1X/RADIUS. Quando uma rede pede 'WPA2-Enterprise', é o WPA correndo sobre o controle de acesso baseado em porta do grupo 802.1."
+      },
+      "decnet": {
+        "def": "A suíte de rede da Digital Equipment Corporation - o protocolo que rodou a era VAX, evoluindo de raízes proprietárias em direção ao OSI.",
+        "context": "O DECnet (formalmente Digital Network Architecture, DNA) conectava as máquinas PDP e VAX da DEC desde meados dos anos 1970. A Phase IV foi a versão peer-to-peer amplamente implantada dos anos 1980; a Phase V a realinhou sobre protocolos OSI conforme a indústria padronizava. Dividiu segmentos Ethernet dos anos 1990 com o AppleTalk e o IPX antes de o TCP/IP deslocar todos eles - um nome que todo engenheiro de redes da era dos minicomputadores conhecia, e parte da linhagem por trás de fornecedores como a Cabletron, que cresceu cabeando essas máquinas."
+      },
+      "xns": {
+        "def": "A arquitetura de protocolos da Xerox do fim dos anos 1970 - o projeto ancestral que o IPX da Novell, e muito mais, copiou.",
+        "context": "O Xerox Network Systems saiu do PARC ao lado do próprio Ethernet, e seu projeto em camadas (o datagrama IDP no núcleo) virou o arquétipo que os primeiros fornecedores de LAN clonaram. O IPX da Novell é o XNS com o número de série raspado; o Banyan VINES e outros também tomaram emprestado. O XNS em si teve pouca implantação direta, mas como modelo moldou uma geração - notavelmente exceto o AppleTalk, que deliberadamente seguiu o próprio caminho."
+      },
+      "appletalk": {
+        "def": "A suíte de rede plug-and-play da Apple dos anos 1980 e 90 - configuração zero antes de o termo existir, hoje descontinuada.",
+        "context": "Introduzido em 1985, o AppleTalk deixava Macs e LaserWriters autoatribuírem endereços e se encontrarem sem roteador ou servidor - embutido em todo Mac. Rodava sobre LocalTalk, depois EtherTalk (Ethernet) e TokenTalk (Token Ring). Incomum para sua época, não era baseado no Xerox XNS. O TCP/IP o corroeu pelos anos 1990, e a Apple encerrou o suporte no Mac OS X 10.6 (Snow Leopard, 2009), apontando os usuários ao Bonjour - que leva adiante seu espírito de configuração zero sobre IP."
+      },
+      "ipx": {
+        "def": "Os protocolos de rede do NetWare da Novell - o padrão de LAN da era dos servidores de arquivos, derivado do Xerox XNS.",
+        "context": "O IPX (o datagrama de camada 3) e o SPX (o protocolo de conexão de camada 4) foram introduzidos pela Novell em 1983, adaptados do IDP e do SPP do Xerox XNS. Pelo fim dos anos 1980 e 90 o IPX/SPX era o padrão em LANs NetWare - e, como o NetWare dominava arquivo e impressão, numa enorme fatia das redes corporativas. O Windows também o falava. O TCP/IP assumiu por volta da era do Windows XP, e o IPX minguou para legado - o protocolo por trás do NetWare sobre o qual fornecedores como a Novell ergueram um império."
+      },
+      "novell-sap": {
+        "def": "O Service Advertising Protocol do NetWare - como servidores anunciavam 'estou aqui, e é isto que ofereço' por uma rede IPX.",
+        "context": "O SAP deixava servidores de arquivo, de impressão e outros serviços NetWare transmitirem sua existência e tipo para os clientes os acharem sem configuração central. Conveniente em pequena escala, seus broadcasts periódicos viraram um notório problema de escalabilidade em grandes internetworks IPX - roteadores tinham de carregar tabelas SAP cada vez maiores, e as 'SAP storms' eram uma dor de cabeça operacional real. É um caso exemplar de descoberta de serviços que antecede as abordagens baseadas em DNS de hoje."
+      },
+      "sna": {
+        "def": "A arquitetura de rede de mainframe da IBM - o mundo hierárquico que precedeu e por muito tempo coexistiu com o TCP/IP na empresa.",
+        "context": "A Systems Network Architecture (1974) definia como terminais e controladores alcançavam mainframes IBM, numa hierarquia rígida centrada no host (VTAM). Sua camada de enlace era o SDLC. Por décadas a SNA e o TCP/IP rodaram lado a lado em bancos e grandes empresas, com bridge e túnel (DLSw) conforme o IP vencia; depois o APPN acrescentou roteamento peer. Conhecer a SNA explica muito sobre por que a rede corporativa evoluiu como evoluiu, e sobre o equipamento IBM que moldou a indústria."
+      },
+      "ppp": {
+        "def": "O Point-to-Point Protocol - a forma padrão de rodar IP (e mais) sobre um enlace serial, do dial-up à banda larga moderna.",
+        "context": "O PPP enquadra uma conexão ponto a ponto com um Link Control Protocol para levantar a linha e Network Control Protocols para carregar IP e outros tráfegos de camada 3, além de autenticação embutida via PAP ou CHAP. Substituiu o mais tosco SLIP, moveu a internet discada e vive dentro do PPPoE e do PPTP. Quando um enlace de banda larga autentica com usuário e senha, geralmente há PPP por baixo."
+      },
+      "slip": {
+        "def": "O Serial Line Internet Protocol - a forma mínima, pré-PPP, de colocar pacotes IP numa linha serial.",
+        "context": "O SLIP quase não faz nada: marca os limites do pacote IP num enlace serial e nada mais - sem negociação de endereço, sem autenticação, sem suporte a outros protocolos além do IP, sem detecção de erro. Carregou a internet discada inicial até o PPP, com todos os recursos que faltavam ao SLIP, o substituir. Uma variante comprimida (CSLIP) espremia os cabeçalhos TCP/IP. Sobrevive sobretudo como história e em contextos embarcados minúsculos."
+      },
+      "ml-ppp": {
+        "def": "Multilink PPP - agrupar vários enlaces físicos numa única conexão PPP lógica por mais banda.",
+        "context": "O Multilink PPP (MP) fragmenta o tráfego por múltiplos enlaces - dois canais B de ISDN, várias linhas seriais - e o remonta na outra ponta, apresentando um único cano com a capacidade somada. Era a forma clássica de obter mais que a vazão de um circuito antes dos enlaces baratos de alta velocidade, comum em ISDN e T1s agrupados, e se apoia na mesma maquinaria de LCP/autenticação do PPP comum."
+      },
+      "chap": {
+        "def": "O Challenge-Handshake Authentication Protocol - a alternativa segura do PPP a enviar a senha em texto claro.",
+        "context": "O CHAP autentica por desafio e resposta: o authenticator envia um desafio aleatório, o peer responde com um hash do desafio mais um segredo compartilhado, e o segredo em si nunca cruza o fio. Também pode redesafiar no meio da sessão. As variantes MS-CHAP da Microsoft o estenderam. É a mais segura das duas opções de autenticação do PPP - a outra, o PAP, envia a senha em texto claro - e o padrão se repete por toda a autenticação de rede."
+      },
+      "pap": {
+        "def": "O Password Authentication Protocol - a forma mais simples, e menos segura, de o PPP fazer login: a senha em texto claro.",
+        "context": "O PAP envia usuário e senha pelo enlace sem proteção, numa única troca. É trivial de implementar e trivial de farejar, por isso o CHAP existe e por isso o PAP só é aceitável quando o próprio enlace já é criptografado ou confiável. Perdura como fallback e como o exemplo de livro-texto de por que os protocolos de autenticação evoluíram para desafio-resposta e para longe de enviar o segredo."
+      },
+      "hdlc": {
+        "def": "O High-Level Data Link Control - o padrão de enquadramento da ISO que sustenta toda uma família de protocolos seriais.",
+        "context": "O HDLC define como delimitar e verificar erros de quadros num enlace serial síncrono, e é fundacional: o LAPB do X.25, o Frame Relay, o LAPD do ISDN e o encapsulamento serial padrão da Cisco são todos derivados do HDLC. Descende do SDLC da IBM, generalizado pela ISO num padrão neutro de fornecedor. Você raramente configura 'HDLC' pelo nome, mas sua estrutura de quadro está silenciosamente sob boa parte da rede WAN clássica."
+      },
+      "sdlc": {
+        "def": "O Synchronous Data Link Control da IBM - o protocolo de enlace da SNA, e o ancestral do HDLC.",
+        "context": "O SDLC (meados dos anos 1970) era o protocolo de enlace síncrono e orientado a bit da IBM para conectar terminais e controladores na SNA. A ISO o generalizou no HDLC, que por sua vez semeou o LAPB, o LAPD e o resto da família serial - então o SDLC fica na raiz dessa árvore. Por direito próprio carregou tráfego de mainframe IBM por décadas, e migrar o SDLC para IP (conversão SDLC-para-LLC, DLSw) era um projeto corporativo padrão conforme o TCP/IP assumia."
+      },
+      "frame-relay": {
+        "def": "O serviço WAN de comutação de pacotes que substituiu o X.25 e definiu a conectividade corporativa dos anos 1990 e 2000.",
+        "context": "O Frame Relay descende diretamente do X.25 (ambos remontam ao trabalho de comutação de pacotes de 1976), mas retira a correção de erro por salto que o X.25 precisava nas linhas analógicas ruidosas, apostando em enlaces digitais mais limpos por velocidade. Os sites compravam circuitos virtuais (identificados por DLCI) com uma taxa de informação comprometida (CIR) em vez de uma malha de linhas dedicadas. Foi o cavalo de batalha da WAN até o MPLS e as VPNs IP o deslocarem - o serviço que uma geração de roteadores corporativos foi feita para falar."
+      },
+      "x25": {
+        "def": "O primeiro padrão de comutação de pacotes amplamente implantado - o protocolo de 1976 da ITU-T que rodou WANs, caixas eletrônicos e redes de cartão por décadas.",
+        "context": "O X.25 foi finalizado pelo CCITT (hoje ITU-T) em 1976 - mais antigo que o IPv4 e o modelo OSI - como um serviço de pacotes por circuito virtual sobre os enlaces analógicos ruidosos da época, com pesada verificação de erro por salto (sua camada de enlace, o LAPB, é baseada em HDLC). Carregou transações financeiras, reservas aéreas e as primeiras WANs corporativas; redes de cartão de crédito o usaram até os anos 2010, e a aviação ainda usa. O Frame Relay é seu sucessor mais enxuto. Um ancestral genuíno da rede de pacotes moderna."
+      },
+      "x21": {
+        "def": "A interface da ITU-T para redes de dados por comutação de circuitos - o padrão serial de camada física que muitas vezes ficava sob o X.25.",
+        "context": "O X.21 define a interface física e de sinalização entre o equipamento terminal de dados e uma rede pública de dados por comutação de circuitos - o conector, as tensões e o handshake de estabelecimento de chamada. Foi usado diretamente em redes de dados por comutação de circuitos e como camada física sob o X.25 em partes da Europa. Hoje bastante histórico, é o padrão 'X-ponto' companheiro do X.25: o X.25 o protocolo de pacotes, o X.21 a interface serial sobre a qual ele podia correr."
+      },
+      "utp": {
+        "def": "Par trançado sem blindagem - o cabeamento de cobre que carrega quase toda conexão cabeada de escritório.",
+        "context": "O UTP agrupa quatro pares de fios, cada par trançado para cancelar interferência - sem blindagem, só geometria. É o meio padrão do cabeamento estruturado: barato, flexível, terminado em RJ45 e especificado por categoria (Cat 5e, 6, 6A) para as velocidades e distâncias que suporta. Quando se acrescenta blindagem para ambientes ruidosos, o cabo deixa de ser 'U' e entra no território do par trançado blindado."
+      },
+      "shielded-twisted-pair": {
+        "def": "Par trançado com blindagem de folha ou malha - para os ambientes onde só a geometria da trança não vence o ruído.",
+        "context": "A família blindada é nomeada pela construção: F/UTP envolve pares sem blindagem numa folha geral, S/FTP acrescenta malha sobre pares individualmente folheados, e o velho 'STP' cobria frouxamente várias delas. Blindagens precisam de aterramento correto para ajudar em vez de atrapalhar. Custa mais e dobra menos que o UTP, então ganha lugar sobretudo em pisos industriais, áreas de alta EMI e enlaces Cat 8 / alta frequência onde o padrão na prática exige blindagem."
+      },
+      "cable-categories": {
+        "def": "Os graus de desempenho TIA-568 do par trançado - o que 'Cat 6A' de fato promete.",
+        "context": "Cada categoria certifica uma banda e as velocidades de Ethernet que carrega num canal de 100 m: Cat 5e (100 MHz, 1 Gb/s), Cat 6 (250 MHz, 1 Gb/s a 100 m e 10 Gb/s só até uns 55 m), Cat 6A (500 MHz, 10 Gb/s nos 100 m completos) e Cat 8 (2000 MHz, 25/40 Gb/s mas só até 30 m, para lances curtos de data center, e blindado na prática). A categoria nomeia cabo e conectores juntos - um enlace Cat 6A com patch cords Cat 5e é um enlace Cat 5e."
+      },
+      "rj45": {
+        "def": "O conector modular de oito posições na ponta de quase todo patch cord Ethernet - propriamente o plugue 8P8C.",
+        "context": "'RJ45' é o nome que pegou do velho esquema telefônico de registered jacks; o conector que o Ethernet realmente usa é o plugue e jack modular 8P8C (oito posições, oito contatos). Termina quatro pares trançados pela pinagem T568A ou T568B, aparece como plugue nos cordões e como keystone em painéis e espelhos, e sua trava - e a tendência dela de quebrar - é experiência universal de campo."
+      },
+      "t568a-t568b": {
+        "def": "As duas pinagens TIA-568 para terminar par trançado em RJ45 - desempenho idêntico, ordem fio-a-pino diferente.",
+        "context": "T568A e T568B diferem apenas na troca de posição dos pares verde e laranja. Qualquer uma funciona; o que importa é consistência - as duas pontas no mesmo esquema dão um cabo direto, uma ponta de cada dá um crossover. B é o hábito de fato em boa parte do mercado, A é preferida em algumas especificações governamentais e residenciais. A regra que todo instalador aprende: escolha um esquema por site e nunca misture."
+      },
+      "crossover-cable": {
+        "def": "Um patch cord com T568A numa ponta e T568B na outra - antes exigido para ligar dispositivos iguais, hoje obsoleto pelo auto-MDIX.",
+        "context": "Os pares de transmissão e recepção do Ethernet precisavam se alinhar: ligar PC a switch usava cabo direto, mas PC-a-PC ou switch-a-switch pedia os pares cruzados. O auto-MDIX da era gigabit deixou as portas detectarem e trocarem eletronicamente, então qualquer par de portas moderno funciona com qualquer cabo. O crossover sobrevive como relíquia de caixa de ferramentas, truque de laboratório para equipamento antigo e pergunta recorrente de prova."
+      },
+      "plenum": {
+        "def": "A classificação de fogo que decide onde um cabo pode legalmente passar - plenum (CMP) para espaços de ar, riser (CMR) para shafts verticais.",
+        "context": "Plenums de ar espalham fumaça rápido, então o cabo com jaqueta para esses espaços (CMP) precisa queimar devagar e emitir pouca fumaça; o CMR classificado para riser cuida dos shafts entre andares; classificações de uso geral cobrem o resto. As classificações aninham para baixo - plenum substitui riser, nunca o inverso. Fora da América do Norte o vocabulário paralelo é LSZH (baixa fumaça, zero halogênio). É a dimensão de conformidade de código do cabeamento, cobrada por fiscais, não por testadores de enlace."
+      },
+      "single-mode-fiber": {
+        "def": "A fibra de longa distância: um núcleo tão estreito que a luz viaja num caminho só - distância medida em dezenas de quilômetros, não centenas de metros.",
+        "context": "O núcleo de ~9 mícrons da fibra monomodo admite um único modo de propagação, eliminando a dispersão modal que limita a multimodo, então os lances vão de enlaces de campus a cabos intercontinentais. Padronizada como OS1/OS2, geralmente de jaqueta amarela, e acionada por ópticas a laser que historicamente custavam mais que as da multimodo - uma diferença que encolheu o bastante para muitas obras novas simplesmente escolherem monomodo em tudo."
+      },
+      "multimode-fiber": {
+        "def": "A fibra de curto alcance de prédios e data centers - núcleo largo, ópticas mais baratas, distâncias de centenas de metros.",
+        "context": "O núcleo de 50 mícrons da multimodo (62,5 na OM1 legada) carrega muitos caminhos de luz ao mesmo tempo; o espalhamento deles (dispersão modal) é o que limita a distância conforme as velocidades sobem. Os graus OM1 a OM5 marcam a progressão - OM3 e OM4 (aqua) são os cavalos de batalha otimizados a laser para 10-100 Gb/s dentro das instalações, a OM5 (verde-lima) acrescenta suporte de banda larga para curto alcance multi-comprimento-de-onda. A troca contra a monomodo é clássica: transceptores mais baratos, alcance menor."
+      },
+      "transceiver": {
+        "def": "O módulo plugável que dá personalidade à porta do switch - cobre ou fibra, curto ou longo alcance, uma linhagem do GBIC ao OSFP.",
+        "context": "Em vez de fixar a óptica na fabricação, as portas recebem plugáveis padronizados: o GBIC parrudo cedeu ao SFP, depois SFP+ (10G), SFP28 (25G), os quad-lane QSFP+ / QSFP28 (40/100G), e QSFP-DD e OSFP em 400G e além. A escolha do módulo - SR, LR, DAC twinax, cobre RJ45 - decide meio e distância; o form factor decide o que cabe na porta. Os jogos de trava de fornecedor sobre ópticas de terceiros 'não suportadas' são uma discussão permanente da indústria."
+      },
+      "media-converter": {
+        "def": "A caixinha que traduz um meio físico em outro - classicamente Ethernet de cobre para fibra e de volta.",
+        "context": "Um conversor de mídia faz a ponte entre as duas metades de um enlace na camada 1/2: estender um lance de cobre além dos 100 m saltando para fibra, ligar um dispositivo só-cobre a uma planta de fibra, ou unir segmentos multimodo e monomodo. Existem unidades avulsas e versões em chassi; muitas implantações modernas preferem um switch com portas SFP fazendo o mesmo trabalho. Simples, barato e um clássico ponto de falha silencioso que vale etiquetar."
+      },
+      "poe-injector": {
+        "def": "O dispositivo midspan que acrescenta Power over Ethernet a um enlace cujo switch não consegue fornecer.",
+        "context": "Um injetor fica entre uma porta de switch sem PoE e um dispositivo alimentado, inserindo DC nos pares conforme 802.3af/at/bt para um access point ou câmera distante funcionar sem tomada local. O dispositivo inverso - um splitter - extrai a energia de volta para equipamento sem entrada PoE. Injetores resolvem o caso avulso; em escala, comutação PoE no closet substitui a floresta de fontes na parede."
+      },
+      "wiring-closet": {
+        "def": "A sala de telecom onde o cabeamento de um andar termina - patch panels, switches e a fronteira entre cabeamento horizontal e backbone.",
+        "context": "O cabeamento estruturado puxa o lance horizontal de cada ponto de volta a uma sala de telecom (TR): painéis na frente, portas de switch conectadas atrás, enlaces de backbone subindo pelo riser até o distribuidor principal. O vocabulário MDF/IDF mapeia nisso - a sala principal e as intermediárias por andar. Suas disciplinas sem glamour - etiquetagem, organização de cabos, refrigeração, portas trancadas - decidem se o site é manutenível em cinco anos."
+      },
+      "rack": {
+        "def": "O quadro de 19 polegadas que padroniza como o equipamento se monta - e a unidade de rack (U), o quantum de altura de 1,75 polegada em que tudo se mede.",
+        "context": "O rack de 19 polegadas antecede a computação (centrais telefônicas o usavam), e sua gramática é universal: altura de equipamento em U (1U = 1,75 pol / 44,45 mm), gabinetes típicos de 42U, racks de dois montantes para patch versus gabinetes de quatro montantes para servidores, trilhos de furo quadrado e porcas-gaiola. 'É 2U' comunica na hora entre todos os fornecedores - uma das padronizações silenciosas e totais das redes."
+      },
+      "hot-cold-aisle": {
+        "def": "O layout de data center que separa o ar de entrada do equipamento do ar de exaustão - fileiras frente a frente e costas com costas.",
+        "context": "Racks arranjados para todas as frentes (entradas) dividirem um corredor frio alimentado pela refrigeração, e todas as traseiras (exaustões) dividirem um corredor quente que retorna às unidades CRAC/CRAH, impedem o ar quente de recircular para as entradas. O confinamento - portas e painéis selando um corredor ou o outro - afia a separação e os números de eficiência (PUE). Painéis cegos nos slots vazios do rack são o detalhe humilde que faz o esquema todo funcionar."
+      },
+      "data-center-tiers": {
+        "def": "A classificação I-a-IV do Uptime Institute para resiliência de data center - da capacidade básica à tolerância a falhas.",
+        "context": "Tier I é capacidade básica; Tier II acrescenta componentes redundantes; Tier III é manutenível concorrentemente (qualquer componente pode ser servido sem derrubar a produção, o alvo comum de empresa/colo); Tier IV é tolerante a falhas, atravessando falhas de equipamento. Os tiers descrevem topologia da instalação - caminhos de energia e refrigeração - não qualidade de operação. Distinto dos tiers de trânsito de ISP e dos tiers de suporte de mesmo nome; três escadas sem relação dividindo uma palavra."
+      },
+      "atm": {
+        "def": "Asynchronous Transfer Mode - a aposta dos anos 1990 de que todo tráfego, de voz a dados, deveria andar em células fixas de 53 bytes com QoS rígido. Ethernet e IP venceram no lugar.",
+        "context": "O ATM cortava tudo em payloads de 48 bytes atrás de cabeçalhos de 5, comutados por rótulos de circuito VPI/VCI, com classes de serviço (CBR, VBR, ABR, UBR) dando às operadoras as garantias em que confiavam. Rodou a visão B-ISDN sobre SONET/SDH em OC-3 e OC-12, carregou o back-end do DSL por anos e dominou núcleos de operadora na virada do século. O que o matou: o imposto de célula de ~10% de overhead, a complexidade de camadas de adaptação como a AAL5 e de fingir ser uma LAN, e portas Ethernet que ficaram rápidas e baratas mais depressa do que o ATM conseguia. O MPLS levou as ideias de engenharia de tráfego e deixou as células para trás."
+      },
+      "lane": {
+        "def": "LAN Emulation - o esquema do ATM Forum para uma rede de células se passar por Ethernet. Notoriamente o momento em que muitos engenheiros decidiram que ATM até o desktop era má ideia.",
+        "context": "Como todo protocolo de LAN assumia broadcast e endereços MAC, o LANE os aparafusou sobre o ATM ponto-a-ponto com um elenco de servidores: o cliente LEC em cada host, um LES para resolver MACs em endereços ATM, um LECS para configuração e o apropriadamente chamado BUS - o Broadcast and Unknown Server - por onde afunilava todo o tráfego de broadcast. Cada peça era um gargalo e um ponto único de falha, diagnosticar significava rastrear chamadas por todas elas, e o edifício inteiro existia para emular o que um switch Ethernet barato simplesmente fazia. Sobrevive como o conto moral sobre emular a coisa que você deveria substituir."
+      },
+      "sonet": {
+        "def": "Synchronous Optical Network - o padrão telco que fez do transporte óptico uma hierarquia sincronizada com anéis que se curam em 50 milissegundos. O SDH é seu gêmeo internacional.",
+        "context": "SONET (ANSI/Telcordia, América do Norte) e SDH (ITU-T G.707, resto do mundo) organizaram o transporte em fibra numa hierarquia TDM rígida construída do STS-1 de 51,84 Mb/s, com multiplexadores add/drop em anéis protegidos que restauravam o serviço em 50 ms após um corte de fibra - o número que definiu carrier-grade por uma geração. Voz, ATM e enlaces de pacotes andavam dentro dos seus contêineres. O transporte packet-optical e o OTN o deslocaram em grande parte, mas seu enquadramento, sua disciplina de OAM e o reflexo dos 50 ms ainda moldam como operadoras pensam."
+      },
+      "pos": {
+        "def": "Packet over SONET - IP direto na hierarquia óptica em enquadramento PPP, pulando o imposto de célula do ATM. O enlace de backbone do núcleo da internet no início dos anos 2000.",
+        "context": "O PoS (RFC 2615) embrulha pacotes em enquadramento PPP tipo-HDLC direto nos payloads SONET/SDH, então um OC-48 ou OC-192 entre dois roteadores de núcleo carrega IP com quase nenhum overhead e nada da maquinaria de segmentação do ATM. Pelos anos 1990-2000 foi assim que os grandes fabricantes de roteadores venderam o núcleo da internet, e a interface OC-192 PoS era a porta de prestígio da sua época. O Ethernet a 10G e além, mais barato por porta e de ponta a ponta, acabou tomando o papel; o PoS permanece o exemplo limpo de remover uma camada em vez de gerenciá-la."
+      },
+      "dwdm": {
+        "def": "Dense Wavelength Division Multiplexing - muitas cores de luz independentes descendo uma fibra. A razão de um único filamento carregar terabits e a espinha dorsal de toda rede de longa distância.",
+        "context": "O DWDM empacota dezenas de comprimentos de onda densamente espaçados (a grade ITU-T G.694.1 na banda C, espaçamento de 100/50 GHz e agora grades flexíveis) num par de fibras, cada lambda um enlace independente. Amplificadores de fibra dopada com érbio o tornaram prático ao reforçar todos os canais de uma vez sem eletrônica, e a óptica coerente empurrou cada comprimento de onda de 10G para 100G, 400G e além. É como cabos submarinos, backbones nacionais e anéis metropolitanos escalam - e por que alugar 'um lambda' é um produto. Seu irmão mais grosso, o CWDM, espaça canais mais largamente para equipamento de curta distância mais barato."
+      },
+      "oc-levels": {
+        "def": "A escada de Optical Carrier do SONET - OC-3, OC-12, OC-48, OC-192 - cada degrau 51,84 Mb/s vezes n, com os nomes STM do SDH para as mesmas velocidades.",
+        "context": "OC-n significa n vezes o STS-1 de 51,84 Mb/s: OC-3 a 155 Mb/s (STM-1 no SDH), OC-12 a 622 (STM-4), OC-48 a 2,5 Gb/s (STM-16), OC-192 a 10 Gb/s (STM-64), OC-768 a 40 Gb/s (STM-256). Um sufixo 'c' (OC-3c) significava concatenado - um cano grande em vez de subdivisões canalizadas. Por duas décadas esses nomes ERAM o vocabulário de velocidade de enlaces de operadora e interfaces de roteador; ler diagramas antigos, RFPs ou histórias de guerra exige a escada, mesmo agora que os nomes do Ethernet assumiram."
+      },
+      "igp": {
+        "def": "Interior Gateway Protocol - a classe de protocolos de roteamento que rodam dentro de um sistema autônomo: OSPF, IS-IS, EIGRP, RIP.",
+        "context": "O trabalho de um IGP é conhecimento rápido e completo da topologia da própria organização: protocolos link-state (OSPF, IS-IS) inundam o mapa e deixam cada roteador computar caminhos mais curtos; protocolos distance-vector mais velhos (RIP) passavam rumores de distância. IGPs otimizam para convergência rápida e métricas internas, e deliberadamente não carregam a internet inteira - esse problema de escala e política pertence ao lado exterior, o BGP. Em redes MPLS o IGP também carrega a alcançabilidade subjacente dos rótulos, e é por isso que projetar IGP continua sendo um ofício de operadora."
+      },
+      "egp": {
+        "def": "Exterior Gateway Protocol - a classe de protocolos que roteia ENTRE sistemas autônomos, e também o nome do protocolo específico dos anos 1980 que o BGP substituiu.",
+        "context": "O termo faz dupla função. Como classe, EGP significa roteamento inter-domínio - hoje efetivamente sinônimo de BGP, onde política, relações comerciais e alcançabilidade importam mais que caminhos mais curtos. Como nome próprio, o EGP (RFC 904, 1984) foi o protocolo real da topologia em árvore da internet primitiva; sua incapacidade de lidar com malhas arbitrárias é precisamente o que o BGP foi inventado para consertar em 1989. Respostas de prova e documentos antigos usam os dois sentidos, então vale carregar a desambiguação."
+      },
+      "t1": {
+        "def": "A portadora digital norte-americana de 1,544 Mb/s - 24 canais de 64 kb/s, o DS1, a linha dedicada de que uma geração de WANs foi construída.",
+        "context": "O T1 vem da hierarquia T-carrier da Bell: 24 timeslots DS0 de 64 kb/s cada, mais enquadramento, dão 1,544 Mb/s, entregues canalizados (cada slot um circuito próprio de voz ou dados) ou clear-channel como um cano único. A escada segue ao T3/DS3 de 44,736 Mb/s (28 T1s), acima do qual os níveis OC do SONET assumem. Por décadas 'um T1' significou a própria conectividade empresarial - Frame Relay, linhas dedicadas PPP e troncos de PBX andavam nele - e sua aritmética de 24 canais ainda aparece no PRI de voz (23B+D). Território da América do Norte e Japão; o resto do mundo roda E1."
+      },
+      "e1": {
+        "def": "A portadora digital internacional de 2,048 Mb/s - 32 timeslots de 64 kb/s, a resposta E-carrier ao T1, e a linha em que as redes brasileiras cresceram.",
+        "context": "O E1 divide 2,048 Mb/s em 32 timeslots: 30 canais úteis, o slot 0 para enquadramento e o slot 16 classicamente para sinalização (30B+D em termos de PRI ISDN), em interfaces físicas G.703. A hierarquia sobe ao E3 de 34,368 Mb/s antes de o SONET/SDH absorver a escada. Fora da América do Norte e do Japão, 'dois megas' era o circuito empresarial, a linha de acesso Frame Relay e o tronco de voz das décadas do discado à banda larga. A divisão T1/E1 é o lembrete clássico de que até o encanamento das telecomunicações bifurcou por região - mesmo DNA de 64 kb/s, aritmética diferente."
+      },
+      "sampasec": {
+        "def": "O CitySec de São Paulo - o encontro mensal informal de bar dos profissionais e entusiastas de segurança da cidade, na terceira quarta-feira do mês.",
+        "context": "O SampaSec segue o modelo CitySec - o formato de encontro de segurança informal e sem pauta que se espalhou pelo mundo a partir da ideia de Richard Bejtlich, Chris Walsh e Adam Shostack - e ancora a cena paulistana desde por volta de 2010, ao lado de irmãos brasileiros como CamSec (Campinas), PoASec (Porto Alegre) e SSASec (Salvador). Sem palestra obrigatória, sem credencial, sem dress code: o ponto é a mesa - estudantes, veteranos, pesquisadores e o recrutador ocasional. É o tecido conjuntivo entre os marcos maiores da cidade: muita vila da BSidesSP, conversa de corredor do YSTS e projeto do Garoa começou numa mesa de SampaSec."
+      },
+      "dpd": {
+        "def": "Dead Peer Detection - como um ponto IPsec descobre que o parceiro IKE se foi: uma troca sob demanda de 'você está aí', para túneis mortos serem derrubados e o failover acontecer.",
+        "context": "Túneis IPsec falham em silêncio: os pacotes simplesmente param de chegar, e sem verificação de vida um gateway encripta alegremente para o vazio por horas. O DPD (RFC 3706, da era IKEv1) substituiu keepalives periódicos desperdiçadores por um desenho sob demanda - só quando há tráfego de saída e nada foi ouvido de volta é que o peer envia a notificação R-U-THERE e aguarda o reconhecimento; algumas perdas e as security associations são derrubadas, liberando o túnel para restabelecer ou comutar. O IKEv2 embutiu a verificação equivalente nas suas trocas informacionais, mas o nome DPD sobrevive nas interfaces de fornecedores e configurações de túnel em toda parte - geralmente como um intervalo, uma contagem de tentativas, e o eterno julgamento entre detectar falha rápido e oscilar numa WAN com perdas."
+      },
+      "igmp": {
+        "def": "Internet Group Management Protocol - como um host levanta a mão para um grupo multicast, e como a rede aprende quais portas realmente querem o fluxo.",
+        "context": "O IGMP roda entre hosts e seu roteador de primeiro salto: um membership report diz 'quero o grupo 239.x.x.x', um leave diz 'terminei', e um querier eleito consulta periodicamente para o estado não envelhecer (o IGMPv3, RFC 3376, acrescenta filtragem por origem - a fundação do SSM). O gêmeo do lado do switch é o IGMP snooping: switches escutam os reports para o multicast inundar só as portas que pediram, em vez da VLAN inteira - o único ajuste cuja ausência explica a maioria das histórias de 'o multicast derreteu minha rede'. O IGMP cuida apenas do último salto; levar o fluxo ATRAVÉS da rede, entre roteadores, é trabalho do PIM."
+      },
+      "pim": {
+        "def": "Protocol Independent Multicast - o roteamento do multicast: construir as árvores de entrega que levam um fluxo a muitas redes, usando a tabela unicast que já existe.",
+        "context": "O 'protocol independent' é o projeto: o PIM não computa topologia própria - empresta a tabela unicast (do OSPF, do IS-IS, do BGP) para suas verificações de reverse path. O PIM Sparse Mode (RFC 7761), o modo que venceu, começa cada grupo numa árvore compartilhada enraizada num rendezvous point - o ponto de encontro onde fontes e receptores se acham - escrita (*,G); com o tráfego fluindo, os roteadores dos receptores podem migrar para a árvore de caminho mais curto direto à fonte, escrita (S,G). O flood-and-prune do dense mode sobrevive mais em laboratório, e o SSM dispensa o rendezvous point quando os receptores conhecem sua fonte. Na prática, troubleshooting de multicast é troubleshooting de PIM: onde está o RP, o RPF passa, e em qual árvore este pacote está."
+      },
+      "dvmrp": {
+        "def": "Distance Vector Multicast Routing Protocol - o primeiro protocolo de roteamento multicast, e o motor do MBone: a lógica do RIP, apontada para árvores de entrega.",
+        "context": "O DVMRP (RFC 1075, 1988) construiu a prova de conceito do multicast: uma troca distance-vector à la RIP definindo caminhos reversos, e entrega flood-and-prune - mande o fluxo para todo lugar, deixe os ramos desinteressados se podarem, repita quando as podas expiram. Seu monumento é o MBone, o backbone virtual de multicast dos anos 1990 feito de túneis DVMRP sobre a internet unicast, por onde reuniões do IETF, missões da NASA e um famoso show dos Rolling Stones foram transmitidos anos antes de 'streaming' ser palavra de uso corrente. A economia do flood-and-prune não escalava, o PIM Sparse Mode o substituiu, e o DVMRP se aposentou na história - o protocolo que mostrou que multicast podia funcionar."
+      },
+      "cobit": {
+        "def": "O framework de governança da ISACA para a TI corporativa - a resposta do auditor à pergunta que o ITIL não faz: quem decide, quem responde, e como provamos.",
+        "context": "O COBIT (hoje na versão COBIT 2019) descende da herança de auditoria da ISACA, e isso aparece: o framework separa GOVERNANÇA (avaliar, dirigir, monitorar - trabalho do conselho) de GESTÃO (planejar, construir, rodar, monitorar - trabalho dos executivos) e mapeia objetivos, processos e maturidade de modo que o controle possa ser projetado e auditado. Onde o ITIL diz às operações como rodar serviços, o COBIT diz à organização como governar todo o parque de TI - por isso os dois são vizinhos de prova e colegas de mundo real: o COBIT põe os requisitos, o ITIL é um jeito de atendê-los."
+      },
+      "agile": {
+        "def": "O Manifesto de 2001 e tudo que ele desencadeou - indivíduos acima de processos, software funcionando acima de documentação, responder à mudança acima de seguir o plano.",
+        "context": "Dezessete praticantes se reuniram numa estação de esqui em Utah em fevereiro de 2001 e destilaram uma década de rebelião dos métodos leves em quatro valores e doze princípios. A palavra virou guarda-chuva: os sprints e standups do Scrum, o fluxo do Kanban, as práticas de engenharia do XP se abrigam nela, e metade do vocabulário do trabalho moderno - backlog, retro, velocity, MVP - vazou dela para tudo. A leitura honesta para gente de infraestrutura: Agile é uma aposta de que feedback vence previsão, e ela ganha exatamente onde os requisitos genuinamente não podem ser conhecidos de antemão - por isso a 'transformação ágil' dá certo em times de produto e vira teatro de ritual onde o trabalho é, de fato, operação."
+      },
+      "okr": {
+        "def": "Objectives and Key Results - a disciplina de metas de Andy Grove na Intel: uma ambição qualitativa, medida por poucos resultados brutalmente quantitativos.",
+        "context": "Um Objetivo diz aonde você vai ('tornar a plataforma a escolha óbvia'); seus Key Results dizem como você saberá que chegou (números, datas, limiares - avaliados, não sensações). Grove construiu a prática na Intel; John Doerr a levou a um Google de quarenta pessoas em 1999, e a difusão a partir dali a tornou a gramática padrão de planejamento da indústria de tecnologia, popularizada no Avalie o que Importa de Doerr. A disciplina que separa OKRs funcionais de decoração de parede: key results são resultados, não tarefas; ambiciosos o bastante para 70 por cento ser boa nota; e poucos o bastante para lembrar sem consultar."
+      },
+      "kanban": {
+        "def": "O sistema puxado da Toyota, adaptado ao trabalho de conhecimento: visualize o fluxo, limite o trabalho em andamento, e deixe a capacidade puxar tarefas em vez de cronogramas empurrarem.",
+        "context": "Os cartões kanban (quadro de sinais) do Sistema Toyota de Produção sinalizavam às estações a montante produzir só o que a jusante consumia - estoque substituído por informação. A adaptação de David Anderson em meados dos anos 2000 trouxe a ideia para software e operações: um quadro cujas colunas são os estados reais do fluxo, cartões que são o trabalho, e a única regra que faz todo o trabalho pesado - limites de WIP, que convertem 'está tudo em andamento' em coisas prontas saindo do quadro. Para times de operações, kanban costuma servir melhor que sprints: trabalho movido a interrupção não respeita caixas de duas semanas, mas flui lindamente por um cano limitado."
+      },
+      "furukawa": {
+        "def": "Furukawa Electric LatAm - o nome no cabeamento estruturado do Brasil há décadas: a operação sediada em Curitiba da Furukawa Electric japonesa fundada em 1884, cuja marca de cabeamento agora carrega o nome Lightera.",
+        "context": "Pergunte a um instalador brasileiro de quem é o cabo na parede e a resposta costuma ser Furukawa: a operação LatAm (sede em Curitiba, com plantas lá, em Santa Rita do Sapucaí e além) tornou a marca sinônimo de cabeamento estruturado, alinhada à TIA/ISO e à própria ABNT NBR 14565 do Brasil. Seu programa FCP - Furukawa Certified Professional, entregue por centros autorizados com treinamento oficial obrigatório antes do exame, e reconhecido pela BICSI para pontos do RCDD - é uma das certificações pioneiras de cabeamento do mercado e um rito de passagem do ofício de infraestrutura no país. O rebranding recente põe Lightera nas certificações e soluções; os instaladores continuam dizendo Furukawa."
+      },
+      "cisco-certifications": {
+        "def": "A escada de certificação que definiu a indústria: CCNA para provar que você opera uma rede, CCNP para provar que constrói uma, CCIE para provar sob pressão de laboratório.",
+        "context": "Desde que o CCIE chegou em 1993 - anos antes de existirem os níveis associados - a escada da Cisco é a moeda comum das redes: o CCNA como bilhete de entrada da profissão, o CCNP como credencial do engenheiro em atividade, e o laboratório prático de oito horas do CCIE como o exame mais temido e mais respeitado da indústria, cujos detentores citam seu número como pilotos registram horas de voo. A reestruturação de 2020 consolidou a dispersão (um CCNA, trilhas de especialização, DevNet somado para automação) sem mudar o fato social: num currículo desta indústria, essas três siglas dispensam explicação."
+      },
+      "cissp": {
+        "def": "A certificação de segurança de nível gerencial - o carro-chefe da (ISC)2 desde 1994: oito domínios, uma milha de largura, e a credencial que vagas de liderança em segurança pedem pelo nome.",
+        "context": "O CISSP cobre os oito domínios do Common Body of Knowledge - de gestão de segurança e risco a arquitetura, segurança de redes, IAM, testes e operações - numa altitude deliberadamente gerencial: a piada corrente 'uma milha de largura e uma polegada de profundidade' também é o projeto. Exigem-se cinco anos de experiência remunerada (quem passa antes fica como Associate até completá-los), mais endosso e educação continuada. Ele sinaliza amplitude e fluência em governança, não profundidade mão-na-massa - exatamente por isso descrições de vaga de CISO o pedem, e por isso praticantes técnicos o emparelham com certificações técnicas em vez de substituí-las."
+      },
+      "cwnp": {
+        "def": "O corpo de certificação Wi-Fi neutro de fornecedor - e o CWNA, seu carro-chefe: a credencial que prova que você entende rádio, não só controladoras.",
+        "context": "A CWNP (Certified Wireless Network Professionals, estabelecida em 1999) construiu a trilha wireless que nenhum fornecedor podia: comportamento de RF, espectro, antenas e mecânica do 802.11 ensinados sem produto pendurado. O CWNA (Wireless Network Administrator) é a fundação sobre a qual tudo empilha - CWSP para segurança, CWDP para projeto, CWAP para análise - culminando no CWNE, o nível expert conquistado por portfólio e endosso, não por uma prova. Num campo onde a maior parte do treinamento é a interface de um fornecedor disfarçada, a escada da CWNP é onde engenheiros vão aprender por que o survey tem a cara que tem."
+      },
+      "roadsec": {
+        "def": "O maior festival hacker da América Latina - um dia inteiro de palestras, CTF, drones e lockpicking que percorre as capitais brasileiras desde 2014.",
+        "context": "O Roadsec inverteu a fórmula das conferências: em vez de fazer os hackers do Brasil viajarem a uma cidade, o festival viaja até eles - uma caravana pelas capitais, culminando a cada ano numa megaedição em São Paulo. O formato é deliberadamente festival, não conferência: palestras de carreira ao lado de vilas de hardware, montagem de robôs ao lado de pesquisa séria, e no centro o Hackaflag, o campeonato de CTF cujas etapas regionais ao longo da turnê coroam um campeão nacional. Para uma geração de estudantes brasileiros longe do eixo São Paulo-Rio, uma parada do Roadsec foi a primeira vez que a comunidade de segurança chegou à sua cidade - que é exatamente o ponto."
+      },
+      "cryptorave": {
+        "def": "A maratona de criptoativismo financiada coletivamente de São Paulo: 24 horas ininterruptas de privacidade, segurança e direitos digitais - gratuita, voluntária e enfaticamente sem patrocínio corporativo.",
+        "context": "Nascida do ethos ensine-cripto-a-qualquer-um do movimento internacional das CryptoParties, a CryptoRave escalou a festa caseira a um dos maiores eventos do gênero no mundo: palestras, oficinas mão na massa, install fests e arte varando a noite em espaços públicos (a 10ª edição, 2026, tomou a Biblioteca Mário de Andrade sob o tema '85 segundos para o fim do mundo'). O modelo de financiamento é a política: financiamento coletivo em vez de patrocinadores, para a programação não responder a fornecedor algum. Onde a maioria dos eventos de segurança fala a profissionais, a CryptoRave deliberadamente fala a todos - jornalistas, ativistas, vizinhos - na teoria de que privacidade fracassa se não for popular."
+      },
+      "gts-gter": {
+        "def": "Os grupos de trabalho gêmeos do NIC.br - GTS para segurança de redes, GTER para engenharia e operação: as reuniões gratuitas onde os operadores da internet brasileira comparam anotações, duas vezes por ano, há décadas.",
+        "context": "O GTER (Grupo de Trabalho em Engenharia e Operação de Redes) é o irmão mais velho; o GTS (Grupo de Trabalho em Segurança de Redes) cresceu de um subgrupo de segurança do GTER lançado na Comdex-SP em 1996 - a mesma linhagem que produziu o CERT.br em 1997. As reuniões conjuntas, gratuitas e transmitidas, ancoram a Semana de Infraestrutura da Internet no Brasil a cada dezembro (GTER 55 | GTS 41 em 2026) e carregam a memória operacional do país: incidentes de BGP, temporadas de DDoS, migração IPv6, tudo apresentado pelos operadores que os viveram. O Prêmio Alberto Courrège Gomide honra os decanos técnicos da comunidade. Se a operação de redes brasileira tem um hallway track, é aqui."
+      },
+      "campus-party": {
+        "def": "O festival de tecnologia com cidade de barracas: milhares de campuseiros acampando dentro de um pavilhão de convenções por uma semana de palestras, hackathons e conectividade 24/7.",
+        "context": "Nascida na Espanha em 1997 como uma LAN party e escalada a festival itinerante, a Campus Party encontrou seus maiores públicos no Brasil, onde as edições desde 2008 transformaram o acampamento em rito de passagem: dormir na barraca, viver na arena, programar a noite toda numa banda notoriamente superdimensionada. A programação atravessa robótica, astronomia, games, startups e segurança - a amplitude é o ponto. Não é uma conferência de segurança e nunca alegou ser; é onde muitos tecnólogos brasileiros, alunos do autor deste site entre eles, encontraram sua tribo pela primeira vez."
+      },
+      "latinoware": {
+        "def": "O congresso latino-americano de software livre e tecnologias abertas, realizado desde 2004 no Parque Tecnológico Itaipu, em Foz do Iguaçu.",
+        "context": "A Latinoware cresceu junto com o forte movimento de software livre brasileiro até se tornar um dos maiores encontros FLOSS da região: comunidade, governo e academia reunidos no parque tecnológico da usina binacional de Itaipu para palestras, tutoriais e install fests por todos os cantos do ecossistema aberto - de kernels a licenças de conteúdo. Sua localização é seu símbolo: tecnologia aberta discutida na fronteira de três países, num monumento à infraestrutura compartilhada. Para o ofício de redes, importa como o lugar onde as comunidades de Linux, BSD e ferramentas abertas que sustentam todo NOC encontram seus contribuidores latino-americanos."
+      },
+      "ekoparty": {
+        "def": "A maior conferência hacker da América Latina: Buenos Aires, todo ano desde 2001, onde a comunidade de segurança da região - e mais de uma vulnerabilidade de classe mundial - sobe ao palco.",
+        "context": "Fundada em 2001 por cinco hackers argentinos, a Ekoparty cresceu de um pequeno encontro local ao ponto de encontro do continente: mais de 10.000 participantes, villages, wargames, lockpicking, herança de wardriving e uma semana de treinamentos em volta dos dias principais (a 22ª edição ocorre no Centro de Convenciones de Buenos Aires em 2026). Seu palco tem estatura mundial - o ataque BEAST contra TLS foi revelado na Ekoparty 2011, e o CRIME veio em seguida em 2012 - prova de que pesquisa ofensiva de primeira linha também fala espanhol e português. Para pesquisadores latino-americanos, uma palestra na Ekoparty é o equivalente caseiro de um palco principal em Vegas."
+      },
+      "dragonjar": {
+        "def": "A principal conferência hacker da Colômbia, crescida da comunidade DragonJAR - e deliberadamente realizada inteiramente em espanhol.",
+        "context": "A DragonJAR começou como uma das comunidades e fóruns de segurança mais ativos do mundo hispanofalante, e sua conferência em Medellín (DragonJARCON) herdou esse caráter: palestras técnicas, ferramentas e pesquisa da e para a comunidade regional, com o compromisso todo-em-espanhol como posição explícita de acessibilidade - conteúdo de classe mundial não deveria exigir inglês. Ao lado da Ekoparty e da 8.8 forma a espinha do circuito latino-americano, e seus palestrantes alumni circulam pelos outros eventos como um quem-é-quem da pesquisa de segurança hispanofalante."
+      },
+      "8dot8": {
+        "def": "A conferência hacker técnica do Chile - '100% técnico y académico', embrulhada a cada ano num tema diferente da cultura pop, de The Matrix a Unreal.",
+        "context": "Fundada em Santiago em 2011 e cocriada por Gabriel Bergel, a 8.8 Computer Security Conference se propôs a 'democratizar o conhecimento e criar comunidade' - e mediu-se até virar instituição regional: nos primeiros 16 anos, mais de 90 eventos, 500+ palestrantes e 27.000+ participantes em oito países, além de spinoffs como a 8.8 Gobierno realizada com o CSIRT nacional chileno. A assinatura é o tom: conteúdo rigoroso dentro de uma moldura colorida e encharcada de cultura pop (a 15ª edição vestiu-se de Matrix; a de 2026 é Unreal). Com Ekoparty e DragonJAR completa o circuito austral onde a cena de segurança latino-americana conversa consigo mesma."
+      },
+      "fenasoft": {
+        "def": "A gigantesca feira de informática do Brasil nos anos 1990: os pavilhões do Anhembi, filas intermináveis na entrada, e uma nação conhecendo o computador pessoal - tudo ao mesmo tempo.",
+        "context": "Criada por Max Gonçalves, a Feira Nacional de Software estreou no RioCentro em março de 1987 e mudou-se para São Paulo em 1990, bem quando a reserva de mercado da informática desmoronava - e o timing a tornou um fenômeno. No Parque Anhembi virou, por todos os relatos, a maior feira de informática da América Latina: cerca de 670.000 visitantes em 1992, 800.000 e mais de mil expositores em 1993, negócios medidos em bilhões, e filas do lado de fora do parque que viraram parte da própria memória. Para a geração que entrou na informática no Brasil dos anos 1990, caminhar por aqueles pavilhões - disquetes, primeiros portáteis, a chegada da internet ao consumidor - era a peregrinação. A guinada corporativa dos anos 2000 encerrou em silêncio a loucura; a palavra mais usada para lembrar as edições dos anos 1990 é exatamente essa."
+      },
+      "shmoocon": {
+        "def": "A convenção hacker de Washington, D.C. que permaneceu pequena, barata e amada de propósito - realizada todo inverno de 2005 até a edição de despedida em 2025.",
+        "context": "Organizada pelo The Shmoo Group, a ShmooCon inverteu a lógica de crescimento da indústria: cerca de duas mil vagas no Washington Hilton, ingressos precificados para serem acessíveis, e uma demanda tão feroz que as vendas esgotavam em segundos - um ritual próprio. O formato era fixo e querido: um primeiro dia de palestras-relâmpago chamado One Track Mind, depois dois dias entre Build It, Belay It e Bring It On, mais instituições como o Hack Fortress e a village de lockpicking do TOOOL. Após vinte anos, os organizadores a encerraram nos próprios termos com a edição de 2025 - uma conferência que terminou não por desbotar, mas por concluir, o que nesta indústria é uma distinção à parte."
+      },
+      "troopers": {
+        "def": "A conferência da ERNW em Heidelberg - a que praticantes europeus experientes citam quando só podem escolher uma: treinamentos, três trilhas e roundtables onde palestrantes e público discutem de igual para igual.",
+        "context": "Realizada desde 2008 na Print Media Academy de Heidelberg sob o lema de tornar o mundo um lugar mais seguro, a TROOPERS construiu sua reputação sobre densidade, não escala: dois dias de treinamentos de alto nível, dois de palestras (a trilha de Active Directory e Entra ID virou assinatura que reúne os pesquisadores europeus de segurança de identidade como nenhum outro lugar) e um dia final de roundtables. A cultura aparece nos detalhes - crachás eletrônicos com canto de solda para modificá-los, a herança do IPv6 Security Summit, uma cidade pequena o bastante para a conferência tomar suas noites. Modesta em tamanho, desproporcional no respeito que impõe."
+      },
+      "hitb": {
+        "def": "Hack In The Box - a conferência de segurança 'deep-knowledge' nascida em Kuala Lumpur no início dos anos 2000, cujos palcos migraram pela Ásia, Europa e Oriente Médio.",
+        "context": "A HITBSecConf fez seu nome na profundidade técnica - palestras de pesquisa em múltiplas trilhas, treinamentos sérios e sua herança de capture-the-flag - e na geografia: foi por anos o centro gravitacional da cena asiática de pesquisa em segurança, com as edições de Amsterdã dos anos 2010 servindo de celebrada contraparte europeia até esse capítulo fechar de vez em 2023. A conferência continua onde começou e além, na Ásia e no Oriente Médio, mantendo intacta sua proposição fundadora: conteúdo em nível de pesquisa, sem enchimento, e um palco que deixou claro que pesquisa de segurança de classe mundial nunca foi monopólio ocidental."
+      },
+      "nullcon": {
+        "def": "A principal conferência hacker da Índia, crescida da null - a maior comunidade aberta de segurança do país - e realizada nas praias de Goa desde 2010.",
+        "context": "A null (estilizada n|u) é uma associação sem fins lucrativos e a maior comunidade ativa de segurança da Índia, com capítulos por Bangalore, Mumbai, Pune, Délhi e além, construída sobre encontros mensais gratuitos e troca aberta de pesquisa. A Nullcon é seu braço de conferência - operada e comercializada pela Payatu - e escalou o ethos da comunidade a um evento internacional: palestras técnicas de peso, treinamentos, uma village de hardware e o cenário de Goa que virou parte da marca (uma edição em Berlim estende a temporada). Sua ascensão acompanha a ascensão da Índia na indústria global de segurança, e para os pesquisadores do subcontinente é o palco principal de casa."
+      },
+      "rsa-conference": {
+        "def": "O maior palco da indústria: nascida em 1991 como um pequeno encontro de criptógrafos, hoje o megaevento anual de São Francisco onde o mercado de segurança mostra o que está vendendo este ano.",
+        "context": "A RSA Conference começou como um seminário convocado pela RSA Data Security para a pequena comunidade que discutia criptografia - o Cryptographers' Panel sobrevive como elo ritual com essa origem - e cresceu com a indústria até virar sua feira: dezenas de milhares de participantes, um salão de exposições de siglas competindo pelos mesmos orçamentos, e as teses de marketing do ano em cada banner. A leitura honesta que os praticantes compartilham: as palestras são desiguais, mas o sinal é real - ande pelo salão e você sabe no que a indústria acredita, ou quer que você acredite, este ano. A Black Hat é onde a pesquisa estreia; a RSA é onde ela vira produto."
+      },
+      "cisco-live": {
+        "def": "O megaevento de fornecedor que começou como Networkers: laboratórios de certificação, o salão World of Solutions, e a peregrinação anual dos certificados Cisco.",
+        "context": "A conferência de usuários da Cisco remonta aos encontros Networkers do fim dos anos 1980 e escalou com a empresa até virar instituição multicidade (edições americanas e internacionais) que definiu o que é um evento-bandeira de fornecedor: sessões técnicas profundas ministradas por quem escreveu os recursos, provas de certificação no local onde carreiras são cunhadas, a cultura NetVet dos que retornam há décadas, e um salão - o World of Solutions - que dobra como reunião de família do ecossistema. Seu DNA é a parte interessante: ao contrário de uma feira, o centro de gravidade é a educação, e por isso gerações de engenheiros de rede datam suas habilidades por qual Cisco Live frequentaram."
+      },
+      "mwc": {
+        "def": "Mobile World Congress - o megaevento da GSMA em Barcelona onde a indústria de telecom anuncia seu ano: aparelhos, redes e cerca de cem mil pessoas de crachá.",
+        "context": "Descendente do GSM World Congress dos anos 1990 e dos seus anos 3GSM em Cannes, o evento mudou-se para Barcelona em 2006, adotou o nome MWC e virou a âncora de calendário da indústria na Fira Gran Via: lançamentos de celulares para as manchetes, mas o negócio de verdade nos corredores onde operadoras, fabricantes de equipamento e agora empresas de nuvem e chips negociam a próxima geração - o ciclo de hype de cada G estreou ali. Edições satélites estendem a marca, e para quem trabalha em provedor ou operadora, a semana do MWC é quando os roadmaps que vão aterrissar na sua rede são anunciados a todos de uma vez."
+      },
+      "nanog": {
+        "def": "O North American Network Operators' Group: a assembleia onde as pessoas que de fato operam a internet comparam anotações - três encontros por ano e uma lista de discussão lendária, desde 1994.",
+        "context": "O NANOG nasceu dos encontros de regional-techs da era NSFNET e manteve esse caráter fundador: operadores apresentando a operadores sobre incidentes de roteamento, peering, clima de DDoS e a verdade operacional por trás do marketing. A lista de discussão é uma instituição por si - décadas de post-mortems de apagões e discussão de engenharia sem rodeios - e o termo hallway track bem poderia ter sido cunhado para seus corredores, onde acordos de peering se fecham no café. Irmãos regionais mundo afora (o GTS/GTER do Brasil cumpre o mesmo papel em casa, o LACNOG para a região) compartilham o modelo: sem keynotes de fornecedor no centro, só a rede, como operada."
+      },
+      "lacnic": {
+        "def": "O registro de internet da América Latina e Caribe - guardião dos endereços IP e números de AS da região, cujas reuniões semestrais dobram como o congresso de operadores do continente.",
+        "context": "Um dos cinco registros regionais de internet, o LACNIC (estabelecido em 2002, sede em Montevidéu) aloca IPv4, IPv6 e números de sistema autônomo pela América Latina e Caribe, e conduz o fórum aberto de políticas onde a comunidade escreve suas próprias regras de alocação. As reuniões são os eventos: realizadas pela região em conjunto com o LACNOG, o grupo de operadores, concentram numa semana as conversas de BGP, peering, IPv6 e segurança do continente - com programas de bolsas que deliberadamente puxam engenheiros novos para dentro da sala. Para uma região que entrou cedo na era do esgotamento do IPv4, as reuniões do LACNIC são onde a transição foi discutida, medida e engenheirada."
+      },
+      "network-topology": {
+        "def": "O formato da rede: como os nós estão conectados, desenhado seja como os cabos realmente correm, seja como o tráfego realmente flui.",
+        "context": "A distinção que confunde é topologia física versus lógica, e com frequência elas são diferentes. A Ethernet clássica cabeada em estrela através de um hub se comportava logicamente como barramento, porque todo quadro ainda alcançava todas as portas e toda estação ainda disputava o mesmo meio. Pergunte a qual delas a pessoa se refere antes de discutir o diagrama."
+      },
+      "bus-topology": {
+        "def": "Um único cabo compartilhado no qual todas as estações se conectam, com terminadores nas duas pontas.",
+        "context": "A Ethernet original: 10BASE5 thicknet com vampire taps, depois 10BASE2 thinnet com conectores BNC em T. Um meio compartilhado significa um único domínio de colisão, então as estações precisavam se revezar, e um rompimento ou um terminador faltando derrubava o segmento inteiro. Essa fragilidade é exatamente o motivo de a estrela tê-la substituído, embora o barramento sobreviva conceitualmente no sem-fio, onde o ar é o meio compartilhado."
+      },
+      "star-topology": {
+        "def": "Cada nó se conecta a um dispositivo central, e nada se conecta diretamente a nada mais.",
+        "context": "A topologia que venceu. Um switch no centro dá a cada estação seu próprio domínio de colisão e transforma uma falha de cabo em um problema de uma porta em vez de uma queda de rede, e é por isso que o cabeamento estruturado padronizou lances individuais até a sala técnica. A objeção óbvia é o centro como ponto único de falha, respondida na prática por empilhamento, redundância de chassi ou conexão dupla a dois switches."
+      },
+      "ring-topology": {
+        "def": "Cada nó se conecta a exatamente dois vizinhos, formando um laço fechado por onde o tráfego circula.",
+        "context": "Token Ring e FDDI a tornaram famosa: um token circulando pelo laço concedia o direito de transmitir, o que produzia um comportamento determinístico e livre de colisões que a Ethernet não conseguia igualar na época. Anéis duplos contrarrotativos davam ao FDDI seu fechamento automático em caso de rompimento. A economia da Ethernet acabou vencendo, mas os anéis nunca sumiram: migraram para a rede metropolitana e a camada óptica, onde SONET/SDH e protocolos de anel resiliente ainda exploram a mesma propriedade."
+      },
+      "mesh-topology": {
+        "def": "Nós se conectam diretamente a muitos outros nós, de modo que o tráfego tem múltiplos caminhos independentes.",
+        "context": "Uma malha completa conecta cada nó a todos os outros, o que custa n(n-1)/2 enlaces e para de escalar quase imediatamente, então projetos reais usam malha parcial: conectividade rica onde compensa, esparsa no resto. O núcleo entre sistemas autônomos da internet é o maior exemplo em funcionamento, e a malha sem fio aplica a mesma ideia onde cabear é inviável. Redundância é o objetivo, e o preço é complexidade em roteamento e diagnóstico."
+      },
+      "tree-topology": {
+        "def": "Uma hierarquia de estrelas: uma raiz que se ramifica em camadas, sem laços no projeto pretendido.",
+        "context": "O clássico campus em três camadas, núcleo, distribuição e acesso, é uma árvore, e sua virtude é que agregação e política caem em camadas previsíveis. Como o projeto pressupõe ausência de laços, um laço acidental vira tempestade de broadcast, e é para isso que existe o spanning tree como quebra-laços automático. Data centers modernos abandonaram em boa parte a árvore estrita em favor de spine-leaf, querendo caminhos de custo igual em vez de um único ramo para cima."
+      },
+      "hybrid-topology": {
+        "def": "Qualquer rede real: uma mistura de topologias costuradas, escolhidas por camada conforme a necessidade de cada uma.",
+        "context": "Ninguém projeta algo puro. Uma empresa típica é estrela na camada de acesso, malha entre os switches de núcleo, anel na operadora metropolitana que conecta os sites, e logicamente ponto a ponto em cada túnel VPN. As topologias de livro-texto valem justamente para que você consiga nomear as peças do híbrido que está de fato olhando."
+      },
+      "client-server": {
+        "def": "Arquitetura em que clientes solicitantes falam com um servidor designado que detém o recurso e responde.",
+        "context": "A assimetria é o projeto inteiro: o servidor está sempre escutando, é endereçável e administrado, e o cliente inicia. Essa centralização é o que torna controle de acesso, backup e auditoria tratáveis, e é por isso que quase todo protocolo corporativo, HTTP, LDAP, SMTP, SQL, funciona assim. O custo é que o servidor é ao mesmo tempo o gargalo e o alvo."
+      },
+      "peer-to-peer": {
+        "def": "Arquitetura em que cada nó é cliente e servidor ao mesmo tempo, fornecendo recursos aos demais diretamente.",
+        "context": "Os pares se descobrem e trocam sem uma autoridade central detendo os dados, o que dá ao P2P sua resiliência e sua economia de banda: quanto mais participantes, mais capacidade, invertendo exatamente a curva do cliente-servidor. BitTorrent, a fofoca das blockchains e o compartilhamento de arquivos entre dois desktops Windows são todos o mesmo modelo. A troca é governança, já que não há um lugar único para aplicar política ou revogar acesso."
+      },
+      "host-to-host": {
+        "def": "Associação direta entre dois pontos finais, sem intermediário atuando como o recurso.",
+        "context": "O termo aparece em dois lugares que vale separar. No modelo em camadas do TCP/IP, a camada host a host é a camada de transporte, TCP e UDP, cuja função é a entrega fim a fim entre dois hosts independentemente dos roteadores no meio. Em conversa de topologia, host a host significa um enlace ponto a ponto simples, um cabo crossover ou um circuito WAN serial. Os dois sentidos compartilham a ideia: duas pontas, simétricas, sem servidor no meio."
+      },
+      "quality-assurance": {
+        "def": "A disciplina de construir confiança de que o software faz o que deveria, antes que os usuários descubram o contrário.",
+        "context": "Vale separar de teste: teste é uma atividade, QA é a prática inteira de processo, padrões e evidências que torna a qualidade previsível em vez de sortuda. A distinção aparece também nos cargos, onde uma pessoa de QA hoje escreve pelo menos tanto código quanto quem desenvolve o que está sendo testado."
+      },
+      "regression-testing": {
+        "def": "Reexecutar testes existentes para confirmar que uma mudança não quebrou algo que já funcionava.",
+        "context": "O nome é o ponto: uma regressão é o progresso andando para trás, e a razão de uma suíte crescer é que todo bug corrigido uma vez deve continuar corrigido. Times maduros adicionam um teste que reproduz cada bug no momento em que o corrigem, de modo que a suíte vira a memória de tudo que já deu errado. Pular isso sob pressão de prazo é a falsa economia clássica por trás do hotfix emergencial uma semana depois."
+      },
+      "test-automation": {
+        "def": "Deixar máquinas executarem os testes, para que rodem a cada mudança em vez de quando alguém tiver tempo.",
+        "context": "Automação compra repetibilidade e velocidade, que é o que torna a integração contínua possível, já que ninguém faz teste de regressão manual a cada commit. A armadilha é tratar percentual de cobertura como objetivo: uma suíte cheia de testes frágeis que afirmam detalhes de implementação custa mais para manter do que os bugs que pega. Testes unitários são baratos e rápidos, testes ponta a ponta são lentos e verdadeiros, e a proporção entre eles é uma decisão de projeto de verdade."
+      },
+      "semantic-versioning": {
+        "def": "A convenção MAIOR.MENOR.CORREÇÃO, em que cada número carrega uma promessa sobre compatibilidade.",
+        "context": "No SemVer, a correção significa consertos retrocompatíveis, a menor significa acréscimos retrocompatíveis, e a maior significa que algo foi quebrado e quem chama precisa ler as notas. Seu valor é inteiramente social: permite que um gerenciador de dependências raciocine sobre atualizações automaticamente, o que só funciona enquanto quem publica mantém a promessa. A versão 0.y.z é a válvula de escape explícita que significa que nada está estável ainda."
+      },
+      "patch": {
+        "def": "Uma alteração aplicada a um software existente para corrigir um defeito ou fechar uma vulnerabilidade.",
+        "context": "A palavra vem da era literal, quando um patch era fita cobrindo um furo em um cartão perfurado. Em segurança, aplicar patches é o controle menos glamouroso e mais eficaz que existe, porque a maioria das invasões explora algo que já tem correção publicada. A dificuldade prática nunca é o patch em si, e sim a janela de mudança: provar que a correção não vai quebrar a produção é em que a gestão de patches de fato consiste."
+      },
+      "hotfix": {
+        "def": "Uma correção urgente e de escopo estreito, publicada fora do ciclo normal de releases.",
+        "context": "Um hotfix troca processo por velocidade: fura a fila porque algo está pegando fogo, o que significa que também pula boa parte dos testes que normalmente pegariam efeitos colaterais. A disciplina que mantém hotfixes seguros é reintegrá-los à linha principal imediatamente, já que o desastre clássico é a correção emergencial que some silenciosamente no próximo release agendado e a indisponibilidade volta."
+      },
+      "vi": {
+        "def": "O editor modal de terminal que existe em praticamente todo sistema tipo Unix, e seu sucessor moderno dominante, o Vim.",
+        "context": "Modal significa que as teclas fazem coisas diferentes conforme o modo, e é por isso que iniciantes travam sem conseguir sair e veteranos editam rápido sem tirar as mãos da posição de descanso. Aprendê-lo não é nostalgia, é seguro: vi é o que existe no shell de recuperação, no console do appliance e no contêiner sem mais nada instalado. O kit mínimo de sobrevivência é i para inserir, Esc para sair da inserção, e :wq para gravar e sair."
+      },
+      "nano": {
+        "def": "Um editor de terminal pequeno e não modal que mostra os próprios atalhos no rodapé da tela.",
+        "context": "A virtude do nano é não exigir conhecimento prévio, já que as teclas de controle estão impressas ali mesmo, e é por isso que distribuições o instalam como padrão para editar um arquivo de configuração rapidamente. Ele sucedeu o Pico, do cliente de e-mail Pine. Para uma mudança de duas linhas em uma máquina onde você não vai morar, é a ferramenta certa, e não uma inferior."
+      },
+      "emacs": {
+        "def": "O editor extensível do projeto GNU, mais próximo de um ambiente programável que por acaso edita texto.",
+        "context": "Quase todo o Emacs é escrito em seu próprio dialeto de Lisp e pode ser redefinido em tempo de execução, que é o que as pessoas querem dizer com a piada de que ele é um ótimo sistema operacional a que falta apenas um editor decente. Sua rivalidade com o vi é a piada mais antiga da área, a guerra dos editores, e os dois lados estão certos: um otimiza as teclas da edição, o outro a remodelagem da própria ferramenta."
+      },
+      "gdb": {
+        "def": "O depurador do GNU: executa um programa sob controle para que você possa pará-lo, inspecioná-lo e percorrê-lo passo a passo.",
+        "context": "Os movimentos centrais são o breakpoint para pausar em uma linha escolhida, backtrace para ver a pilha de chamadas que levou até ali, print para ler variáveis, e step ou next para avançar. É a ferramenta que transforma uma falha em explicação, já que um segfault mais um backtrace costuma nomear a linha culpada de imediato. Pesquisadores de segurança e engenheiros reversos usam a mesma ferramenta pelo outro lado, observando a memória enquanto um programa a manipula errado."
+      },
+      "memory-leak": {
+        "def": "Memória que um programa aloca e nunca libera, de modo que sua ocupação cresce até algo ceder.",
+        "context": "Não é uma queda, é um sangramento lento, e é isso que o torna difícil: o processo fica bem por horas ou semanas, então a máquina começa a paginar e o incidente começa longe da causa. A assinatura clássica é um serviço que se comporta perfeitamente depois de reiniciado, e foi assim que reinícios noturnos viraram remédio caseiro em vez de correção. Detectores como o Valgrind e os sanitizadores de endereço existem justamente porque o sintoma aparece muito longe da alocação."
+      },
+      "buffer-overflow": {
+        "def": "Escrever mais dados em um buffer do que ele comporta, de modo que o excesso cai na memória adjacente, que nunca deveria recebê-lo.",
+        "context": "O mecanismo cabe em uma linha: um buffer de tamanho fixo, uma cópia sem verificação, e o que estivesse ao lado na memória é sobrescrito. Historicamente, o que ficava ao lado de um buffer na pilha era o endereço de retorno salvo, então uma entrada suficientemente longa podia redirecionar a execução no retorno da função, e foi isso que fez desta a classe de vulnerabilidade definidora dos anos 1990 e o motor do verme Morris e do Code Red. Todo o endurecimento moderno de processos é uma resposta a ela: canários de pilha para detectar a sobrescrita, NX/DEP para que dados sobrescritos não executem, ASLR para que o atacante não consiga prever endereços, e linguagens com verificação de limites ou seguras quanto à memória para que a escrita nem aconteça. É a CWE-787, ainda perto do topo do CWE Top 25 trinta anos depois."
+      },
+      "stack-overflow": {
+        "def": "Esgotar a pilha de chamadas, geralmente por uma recursão que nunca alcança seu caso base.",
+        "context": "Vale manter distinto de um estouro de buffer na pilha, que é outro bug com nome parecido. Aqui nada é sobrescrito maliciosamente: a pilha simplesmente atinge seu limite e o processo morre, tipicamente com uma exceção de estouro de pilha ou uma falha de segmentação. A correção é quase sempre algorítmica, uma condição de parada faltando ou converter recursão profunda em iteração, e é o bug que deu nome ao famoso site de programação."
+      },
+      "integer-overflow": {
+        "def": "Um resultado aritmético grande demais para o seu tipo, de modo que o valor dá a volta silenciosamente em vez de crescer.",
+        "context": "Some um ao maior inteiro de 32 bits com sinal e você cai no mais negativo, o que é só curiosidade até o valor que deu a volta ser usado como tamanho. O padrão perigoso é um cálculo de comprimento que transborda para algo minúsculo, passa por uma verificação de sanidade porque agora parece pequeno, e é então usado para alocar um buffer que os dados reais estouram, e é assim que estouros de inteiro viram bugs de corrupção de memória. O Ariane 5 destruiu a si mesmo por um erro de conversão aparentado. As mitigações são aritmética verificada, tipos mais largos, e tratar qualquer aritmética de tamanho sobre entrada não confiável como suspeita. É a CWE-190."
+      },
+      "null-pointer-dereference": {
+        "def": "Seguir um ponteiro que contém nulo, de modo que o programa lê ou escreve no endereço zero e é interrompido pelo sistema operacional.",
+        "context": "O PRIME chama isso de ponteiro zero, e a causa costuma ser prosaica: uma função retornou nulo em caso de falha e ninguém verificou. Em sistemas modernos é uma queda confiável e não uma tomada de controle, porque a página zero é deixada deliberadamente sem mapeamento, que é precisamente a mitigação, e isso explica por que o mesmo bug era bem mais perigoso em sistemas antigos onde a memória baixa podia ser mapeada. Seu custo real é disponibilidade, já que quem consegue forçar o caminho nulo repetidamente tem uma negação de serviço. É a CWE-476, e no depurador é o bug mais rápido de diagnosticar: o backtrace nomeia a linha."
+      },
+      "use-after-free": {
+        "def": "Usar um ponteiro para memória que já foi liberada, de volta a quando ele ainda significava algo.",
+        "context": "O ponteiro agora está pendurado: o alocador pode ter entregado aquele bloco a outra coisa inteiramente, então o programa está lendo ou escrevendo dados de outro objeto pela lente errada. É mais perigoso que uma simples queda porque o conteúdo é influenciável por quem ataca, se conseguir controlar o que é alocado no espaço liberado, o que faz dele um pilar da exploração moderna de navegadores e de kernel, e a razão de o duplo free ser tratado como seu irmão. As defesas são disciplina de propriedade, anular ponteiros após liberar, alocadores endurecidos e, no limite, linguagens que tornam o padrão irrepresentável. É a CWE-416."
+      },
+      "memory-safety": {
+        "def": "A propriedade de nunca acessar memória fora do que um programa legitimamente possui, no espaço ou no tempo.",
+        "context": "São duas metades: segurança espacial significa ficar dentro dos limites de um objeto, e segurança temporal significa tocá-lo apenas enquanto ele está vivo, e é por isso que estouro de buffer e use-after-free são o mesmo problema visto em eixos diferentes. A conclusão da indústria, afirmada por CISA, NSA e Microsoft igualmente, é que cerca de setenta por cento das vulnerabilidades sérias em grandes bases de código C e C++ são falhas de segurança de memória, e foi isso que colocou Rust, Go, Java e o C++ moderno no centro da conversa. Reescrever tudo não é realista, então a resposta prática é linguagens seguras quanto à memória para componentes novos, mais endurecimento e sanitizadores para o código que fica."
+      },
+      "stack-canary": {
+        "def": "Um valor conhecido colocado entre os buffers locais e o endereço de retorno salvo, verificado antes de a função retornar.",
+        "context": "O nome é a metáfora da mina de carvão: se o canário está morto, algo escreveu além do buffer, e o programa aborta em vez de retornar para o que agora ocupa aquela posição. Compiladores o adicionam automaticamente sob opções como -fstack-protector, e é barato, por isso vem ligado por padrão em quase todo lugar. Ele detecta em vez de prevenir, e só protege o caso de sobrescrita contígua, então é uma camada entre várias, não a resposta sozinho."
+      },
+      "aslr": {
+        "def": "Aleatorizar onde as regiões de memória de um processo caem, de modo que seus endereços mudem a cada execução.",
+        "context": "A exploração geralmente exige saber onde algo está, então embaralhar a pilha, o heap, as bibliotecas e, com PIE, o próprio executável transforma um ataque confiável em um chute. Sua fraqueza é qualquer coisa que vaze um endereço, já que um único ponteiro vazado pode desaleatorizar uma região inteira, e é por isso que bugs de divulgação de informação são classificados com mais gravidade do que seu impacto direto sugere. Junto de NX e canários, é a terceira perna do endurecimento padrão de processos."
+      },
+      "nx-bit": {
+        "def": "Marcar páginas de memória como graváveis ou executáveis, mas nunca ambas, para que dados injetados não possam rodar como código.",
+        "context": "O bit de hardware é NX ou XD; a Microsoft chama a política de DEP, e o princípio geral é W xor X. Isso encerrou a forma mais simples de exploração, em que quem atacava escrevia instruções em um buffer e saltava para elas, e é a razão de os atacantes terem migrado para reutilizar código já presente e legitimamente executável no processo. Essa escalada é a lição honesta desta família inteira: cada mitigação elevou o custo substancialmente sem encerrar o jogo, e é por isso que são implantadas juntas em vez de escolhidas entre si."
+      },
+      "fuzzing": {
+        "def": "Alimentar um programa com quantidades enormes de entradas malformadas ou aleatórias para ver o que o faz quebrar.",
+        "context": "Uma queda é uma pista, já que um programa que trata mal a entrada a ponto de morrer pode tratá-la mal de forma explorável, e fuzzers acham em horas o que a revisão de código deixa passar por anos. Fuzzers modernos guiados por cobertura, como AFL e libFuzzer, mutam entradas e guardam as que alcançam caminhos novos de código, e é por isso que são combinados com sanitizadores que transformam corrupção silenciosa em falha ruidosa e reproduzível. Fica dos dois lados da cerca: a mesma ferramenta serve ao fabricante endurecendo um parser e a quem pesquisa bugs nele."
+      },
+      "cwe": {
+        "def": "Um catálogo comunitário de tipos de fraqueza de software, cada um com um identificador estável como CWE-787.",
+        "context": "A distinção em relação ao CVE é a que vale guardar: um CVE é uma vulnerabilidade específica em um produto específico, enquanto uma CWE é a categoria de erro por trás dela, então o relatório de CVE diz o que quebrou e sua CWE diz por quê. A MITRE publica anualmente o CWE Top 25 das fraquezas mais perigosas, que é o registro onde as classes de segurança de memória seguem aparecendo. É o vocabulário em que revisões de código seguro e ferramentas de análise estática reportam."
+      },
+      "ether": {
+        "def": "O meio imaginário pelo qual se acreditava que a luz viajava, e a piscadela no nome Ethernet.",
+        "context": "A física do século XIX supunha que ondas precisavam de um meio, então postulou o éter luminífero preenchendo todo o espaço; o experimento de Michelson-Morley de 1887 celebremente falhou em detectá-lo, e a relatividade depois o dispensou por completo. Quando Metcalfe e Boggs batizaram sua rede de Ethernet em 1973, a piada foi deliberada: o cabo coaxial compartilhado era o meio onipresente em que toda estação transmitia, um éter funcional para pacotes mesmo depois de a física ter abandonado o verdadeiro. Engenheiros ainda dizem que um pacote perdido sumiu no éter, e o trocadilho é o ponto inteiro."
+      },
+      "daemon": {
+        "def": "Um processo de segundo plano de longa duração que espera em silêncio para fazer seu trabalho, batizado a partir de um espírito benevolente, não de um demônio.",
+        "context": "O termo vem do demônio de Maxwell na física, escolhido pelo Project MAC do MIT nos anos 1960 para um processo prestativo que trabalha sem ser visto; o sufixo convencional -d (sshd, httpd, crond) os marca. Um daemon não tem terminal de controle e costuma ser iniciado no boot, e é justamente por isso que um travado fica invisível até algo que depende dele falhar. No Windows a mesma ideia se chama serviço. O BSD até adotou o mascote de chifrinhos, insistindo que era um daemon e nunca um demônio."
+      },
+      "host-to-multihost": {
+        "def": "Um remetente alcançando muitos destinatários de uma vez: o padrão de comunicação um-para-muitos.",
+        "context": "Broadcast e multicast são suas formas cotidianas, e a pergunta de projeto é sempre quem é obrigado a processar a cópia. O broadcast força toda estação do segmento a olhar; o multicast entrega apenas a quem assinou, e é por isso que streaming e protocolos de roteamento o preferem. O gêmeo sombrio do padrão é o ataque de amplificação, em que uma pequena requisição um-para-muitos é abusada para inundar uma vítima. Contraste com seu espelho, o multihost-to-host."
+      },
+      "multihost-to-host": {
+        "def": "Muitos remetentes convergindo para um destinatário: o padrão muitos-para-um, também chamado de incast.",
+        "context": "É o formato do back-end de um balanceador de carga, de um coletor de logs e de um banco de dados sob fan-in, e é onde nasce o congestionamento, porque um único enlace ou buffer vira o ponto de encontro de tráfego que partiu de muitos lugares ao mesmo tempo. Empurrado além da capacidade de propósito, o mesmo padrão é uma negação de serviço distribuída: milhares de hosts mirados em um. O colapso por incast em data centers, onde respostas sincronizadas estouram o buffer de um switch, é a versão benigna da mesma física."
+      },
+      "promiscuous-mode": {
+        "def": "Uma configuração de interface de rede que aceita todos os quadros do fio, não só os endereçados a ela.",
+        "context": "Normalmente uma NIC ignora quadros cujo MAC de destino não é o seu; o modo promíscuo desliga esse filtro para que uma ferramenta de captura veja o segmento inteiro, que é do que o Wireshark e o tcpdump dependem. Num meio compartilhado como a Ethernet antiga com hub ou o sem-fio aberto (onde o equivalente é o modo monitor) isso significava ver o tráfego de todo mundo, então redes comutadas e uma porta SPAN/espelho viraram a maneira sancionada de alimentar um sensor. A configuração é neutra, e a mesma capacidade serve tanto ao quem diagnostica quanto ao quem bisbilhota."
+      },
+      "deep-web": {
+        "def": "Tudo na web que os mecanismos de busca não indexam, o que é a maior parte dela.",
+        "context": "A deep web é mundana e enorme: sua caixa de e-mail, o portal do banco, periódicos pagos, e qualquer página atrás de um login ou de um formulário de consulta. A confusão persistente é tratá-la como sinistra, quando ela apenas significa não rastreável. A dark web é um subconjunto minúsculo e deliberadamente oculto dela, alcançável só com software específico, e confundir as duas faz páginas privadas comuns soarem como cena de crime."
+      },
+      "dark-web": {
+        "def": "O subconjunto da deep web alcançável apenas por redes de anonimato, onde os sites escondem sua localização além do seu conteúdo.",
+        "context": "Sua tecnologia definidora é o roteamento em cebola via Tor, cujos serviços ocultos (os endereços .onion) escondem servidor e visitante igualmente. O resultado é genuinamente misto: caixas de denúncia de whistleblowers, espelhos de imprensa censurada e fóruns de privacidade dividem o espaço com os mercados em que as manchetes se fixam, do Silk Road em diante, que negociam bens ilícitos e liquidam em criptomoeda. Seu enquadramento honesto é uma ferramenta, não um lugar, e o anonimato é o que ela oferece a todos que chegam, por qualquer motivo."
+      },
+      "darknet": {
+        "def": "Uma rede sobreposta que roda na internet pública mas só é alcançável com software, configuração ou autorização específicos.",
+        "context": "A palavra antecede sua reputação: um artigo da Microsoft Research de 2002 usou darknet para qualquer rede de distribuição privada, e sistemas amigo-para-amigo como Freenet e I2P se encaixam na definição tanto quanto o Tor. Um darknet é a rede privada subjacente; a dark web são os sites que as pessoas rodam sobre um. Manter os dois distintos é a diferença entre nomear uma rua e nomear as lojas ao longo dela."
+      },
+      "ttp": {
+        "def": "Táticas, técnicas e procedimentos: a descrição em camadas de como um agente de ameaça opera.",
+        "context": "As camadas sobem em especificidade: uma tática é o objetivo (obter acesso inicial), uma técnica é o método geral (phishing), e um procedimento é o jeito concreto deste agente fazer (uma isca se passando por um fornecedor específico com um payload particular). TTPs são a coisa mais durável que se pode rastrear sobre um adversário, porque ele pode alugar infraestrutura nova da noite para o dia mas não muda facilmente como pensa, que é exatamente a percepção por trás do MITRE ATT&CK. Compare com o IoC, de vida mais curta."
+      },
+      "attack-vector": {
+        "def": "O caminho ou meio específico pelo qual um atacante alcança e compromete um alvo.",
+        "context": "E-mail de phishing, RDP exposto, uma dependência vulnerável, um pendrive largado, um fornecedor comprometido: cada um é um vetor, e o conjunto de todos eles é a superfície de ataque. A distinção que importa na prática é vetor versus vulnerabilidade, já que o vetor é a rota de entrada e a vulnerabilidade é a falha que ele explora ao chegar. Reduzir vetores, fechar caminhos não usados, costuma ser mais barato que corrigir toda falha atrás deles, e é por isso que a redução da superfície de ataque é um controle por si só."
+      },
+      "ioc": {
+        "def": "Um artefato forense que indica que um sistema pode ter sido comprometido: um hash, um IP, um domínio, um nome de arquivo, uma chave de registro.",
+        "context": "IoCs são como a detecção escala, já que um SIEM pode casar milhões de eventos contra um feed de indicadores conhecidos como maliciosos automaticamente. Sua fraqueza é a força invertida: são baratos de mudar para o atacante, um domínio novo ou um binário recompilado derrota uma assinatura na hora, e é por isso que indicadores ficam na base da Pirâmide da Dor e os TTPs no topo. Boa detecção usa os dois, IoCs pela velocidade e comportamento pela durabilidade."
+      },
+      "open-graph": {
+        "def": "Um pequeno conjunto de meta tags HTML que dizem a outros sites como exibir um link para a sua página - o título, a imagem e a descrição no cartão de prévia.",
+        "context": "Introduzido pelo Facebook em 2010 e especificado em ogp.me, o Open Graph transforma uma página em um objeto compartilhável por meio de tags no cabeçalho como og:title, og:image, og:description, og:url e og:type. Seu alcance cresceu muito além do Facebook: cole um link no Slack, Discord, LinkedIn, WhatsApp, iMessage ou X e a prévia rica que aparece é quase sempre lida dessas tags (o X sobrepõe suas próprias tags twitter:card, com recuo para o OG). A lição mais comum no mundo real é que o rastreador lê o HTML ESTÁTICO, então a prévia do link reflete as tags OG no markup servido, e não algo renderizado depois por JavaScript - por isso aplicações de página única tantas vezes aparecem como um cartão em branco até pré-renderizarem suas tags. Este próprio site gera uma imagem OG por página em tempo de build exatamente por isso."
+      },
+      "tor": {
+        "def": "Rede de anonimato que roteia o tráfego por três relays voluntários, cada um descascando uma camada de criptografia, de modo que nenhum relay sozinho conhece as duas pontas.",
+        "context": "O roteamento em cebola nasceu no Laboratório de Pesquisa Naval dos Estados Unidos nos anos 1990, e o paradoxo é o próprio projeto: uma rede usada só por espiões identificaria seus usuários como espiões, então ela precisava ser pública e popular para funcionar. O circuito de três saltos divide o conhecimento (o guard vê você, o exit vê seu destino, nenhum vê os dois), e endereços .onion são chaves públicas em vez de nomes registrados, então autenticam o servidor por construção. Vale corrigir a suposição habitual: apenas uma fatia baixa de um dígito do tráfego Tor chega a serviços onion; o resto simplesmente sai para a web comum."
+      },
+      "reserva-de-mercado": {
+        "def": "A política brasileira que reservou legalmente o mercado interno de informática a empresas de capital nacional, de 1984 a 1992.",
+        "context": "A Lei 7.232/1984 instituiu a Política Nacional de Informática com prazo de oito anos escrito nela, e passou por unanimidade sobre uma coalizão de militares nacionalistas, indústria nacional e oposição de esquerda. Na prática produziu clones do ZX81, do Apple II, do padrão MSX e do IBM PC vendidos tarde e caro, uma rota de contrabando pelo Paraguai, e uma disputa comercial via Seção 301 com Washington que terminou com Reagan anunciando sanções em 1987. A reserva expirou no prazo, em outubro de 1992. A aposta em hardware falhou, mas a geração de engenheiros que ela formou é ancestral direta da automação bancária brasileira e de empresas como Cyclades e Datacom."
       }
     },
     "totalCount": "{count} termos",
@@ -12517,7 +13224,10 @@
     "factsCost": "Taxa do exame",
     "keyPointsLabel": "O que saber",
     "expandAll": "Expandir tudo",
-    "collapseAll": "Recolher tudo"
+    "collapseAll": "Recolher tudo",
+    "goodFaithTitle": "Fontes públicas, usadas de boa-fé",
+    "goodFaithBody": "Estes guias são materiais de estudo independentes, montados a partir de conteúdo publicamente disponível: blueprints de exame publicados, documentação oficial de produto e catálogos de treinamento dos fabricantes. Nomes de produtos, códigos de exame e marcas pertencem a seus titulares e são usados apenas para identificar o assunto ensinado. Este site não é afiliado a nenhum fabricante aqui citado nem endossado por ele. Se você detém direitos sobre material publicado nesta página e entende que ele deve ser removido ou corrigido, envie a URL exata e uma breve nota sobre o problema pela página de contato; os pedidos são analisados com rapidez e boa-fé.",
+    "goodFaithLink": "Ler o aviso legal completo"
   },
   "trainingCta": {
     "eyebrow": "Treinamento com instrutor",
@@ -12791,5 +13501,12 @@
     ],
     "fullscreenEnterAria": "Entrar em tela cheia",
     "fullscreenExitAria": "Sair da tela cheia"
+  },
+  "blog": {
+    "title": "Blog",
+    "intro": "Comentários datados sobre o que está acontecendo em redes, segurança e identidade - escritos a partir de um ponto de vista, e verdadeiros na data em que foram publicados.",
+    "empty": "Ainda não há publicações.",
+    "furtherReading": "Leitura complementar",
+    "furtherReadingAria": "Leitura complementar"
   }
 }

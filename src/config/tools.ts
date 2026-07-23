@@ -140,6 +140,9 @@ export const tools: ToolEntry[] = [
   { id: "jwks-explainer", href: "/tools/jwks-explainer", category: "identity", vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "oauth-tokens", available: true },
   { id: "regex", href: "/tools/regex", category: "web", available: true },
   { id: "sorting-algorithm-stepper", href: "/tools/sorting-algorithm-stepper", category: "web", available: true },
+  { id: "cable-run-planner", href: "/tools/cable-run-planner", category: "networking", available: true },
+  { id: "ldap-filter-explainer", href: "/tools/ldap-filter-explainer", category: "identity", available: true },
+  { id: "oauth-flow-chooser", href: "/tools/oauth-flow-chooser", category: "identity", available: true },
   { id: "diff", href: "/tools/diff", category: "text", available: true },
   // The four below were built but never registered here (drift caught and
   // guarded by scripts/check-tools-registry.mjs in the prebuild chain).

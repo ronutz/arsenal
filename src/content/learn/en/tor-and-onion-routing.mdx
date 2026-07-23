@@ -1,0 +1,61 @@
+---
+slug: tor-and-onion-routing
+title: "Tor: how onion routing actually works, and what it does not protect"
+summary: "Onion routing was invented at a US Navy lab, and that paradox is the key to understanding it: anonymity only works if the crowd is diverse. How a three-hop circuit is built, what onion services really are, the threat model Tor openly admits it loses to, and why most Tor traffic never touches the dark web at all."
+concepts: ["onion-routing", "dark-web", "darknet", "deep-web", "vpn"]
+relatedTools: ["ja3-tls-fingerprint"]
+relatedArticles: ["peer-to-peer-evolution"]
+category: security
+order: 242
+status: reviewed
+updated: "2026-07-23"
+---
+
+## The paradox at the origin
+
+Onion routing was invented in the mid-1990s at the **US Naval Research Laboratory**, by Paul Syverson with David Goldschlag and Michael Reed. That sounds like a contradiction — a military lab building a tool to defeat surveillance — until you see the problem they actually had. If intelligence traffic goes out over an obviously-government network, the metadata gives the game away before anyone breaks the encryption. Knowing *that* a connection happened, and between whom, is often more valuable than knowing what it said.
+
+The fix has an awkward consequence, and it is the single most important idea in this whole subject: **a network used only by spies protects no spies**. If everyone on the network is a Navy analyst, then being on the network identifies you as a Navy analyst. Anonymity requires a crowd, and the crowd has to be varied. Roger Dingledine and Nick Mathewson later titled a paper on this "Anonymity Loves Company." So the tool had to be released publicly, to everyone, including people the Navy would never choose as allies. Tor's alpha shipped on **20 September 2002**; the NRL released the code under a free licence in 2004; the EFF funded it; and **The Tor Project became a 501(c)(3) nonprofit in 2006**. The design's strength depends on serving people with incompatible motives — which is also why arguments about "who Tor is for" tend to miss.
+
+## What a circuit actually is
+
+The name describes the encryption, not the topology. Your client picks three relays and builds a **circuit**: a **guard** (entry), a **middle**, and an **exit**. Before sending anything, it wraps the payload in three layers of encryption, one per relay, keyed so that each relay can peel exactly one.
+
+The result is that **no single relay knows both ends**. The guard sees your real IP address but not your destination. The exit sees the destination but not you. The middle exists precisely so the guard and exit never touch each other, and knows neither. That is the whole trick, and everything else is engineering around it.
+
+Two supporting pieces matter. A small set of **directory authorities** publishes a signed **consensus** listing the relays and their properties, so clients agree on who exists without asking a single server they must trust blindly. And the **guard** is deliberately sticky — clients keep the same entry relay for months rather than picking fresh ones, because a client that reshuffles its entry point constantly will eventually, by chance, pick an adversary's relay. Rotating slowly is safer than rotating often.
+
+Relays are volunteer-run: on the order of several thousand at any time, though **exit relays are a much smaller subset**, since running one means receiving abuse complaints and legal attention for traffic you did not generate. That structural scarcity of exits is a permanent feature of the network's economics.
+
+## Onion services: the half with no exit
+
+An **onion service** (formerly "hidden service") is a server that never leaves the network. Instead of a circuit out to the clearnet, client and service each build circuits to a **rendezvous point** and meet in the middle, so neither learns the other's IP address. The `.onion` address is not a name registered anywhere — it *is* the service's public key, encoded. That means the address **authenticates the destination by construction**: there is no certificate authority to fool, because reaching the right address and reaching the right server are the same event.
+
+The current generation is **v3**, which lengthened those addresses to 56 characters and fixed real cryptographic weaknesses in the old 16-character v2 format; v2 was deprecated and shut off in 2021. If you have ever wondered why onion addresses turned into an unreadable wall of base32, that is why — the address got longer because it is carrying stronger keys.
+
+## The threat model, stated honestly
+
+Tor's own documentation is unusually candid about what it does not do, and repeating that honestly matters more than cheerleading.
+
+- **A global passive adversary defeats it.** Tor does not defend against someone who can watch a large enough share of the internet at once. If you can observe traffic entering the network and leaving it, you can correlate timing and volume and link the two ends without breaking any encryption. This is **traffic confirmation**, and it is the acknowledged limit of the design.
+- **The exit relay sees what the destination sees.** Tor anonymizes *who* you are, not *what* you send. Traffic leaving an exit to an unencrypted site is readable by whoever runs that exit. HTTPS is what protects the content; Tor protects the association. This has been demonstrated repeatedly by researchers running sniffing exits.
+- **The browser is usually the leak, not the network.** Deanonymization in practice tends to come from JavaScript, plugins, a distinctive **fingerprint**, or a logged-in account — not from breaking circuits. Tor Browser exists specifically to make all users look identical, which is why "just change one setting" quietly undoes the protection.
+- **Onion services are not automatically safe to operate.** Application-level bugs, misconfigured servers leaking their real address, and operational mistakes have unmasked far more services than cryptographic attacks ever have.
+
+## The censorship arms race
+
+Because Tor's relay list is public, a censor can simply block every relay. The answer is **bridges** — unlisted entry relays — and **pluggable transports**, which disguise the traffic itself. **obfs4** makes the stream look like nothing in particular; **meek** hides it inside a connection to a large cloud provider so blocking it means blocking that provider; **Snowflake** turns ordinary volunteers' browsers into temporary proxies via WebRTC, so the set of entry points changes constantly and cannot be enumerated. Snowflake's traffic spikes track censorship events — it is heavily used from Russia and Iran. This is the direct counterpart to national filtering: the same deep-packet inspection that identifies protocols is what these transports exist to confuse.
+
+## What Tor is actually used for
+
+Here is the fact that most surprises people, and it is worth stating plainly: according to the Tor Project's own metrics, **only a small single-digit percentage of Tor traffic goes to onion services at all**. The overwhelming majority of it exits to the ordinary web. Tor is, in daily practice, a tool for reading the normal internet privately — not a door to a hidden one.
+
+The visible users bear that out. **SecureDrop**, run at hundreds of newsrooms, uses onion services to take documents from sources. The New York Times, the BBC, ProPublica, and DuckDuckGo run onion addresses. Debian distributes packages over them. Millions of daily users connect from countries with ordinary internet access, and Germany consistently supplies the largest single share — which is not a profile of a criminal underground.
+
+The funding story has an epilogue worth noting for accuracy: US government sources once supplied more than half the Tor Project's revenue, and by the 2023–2024 reporting that had fallen to roughly a third, with corporate and nonprofit support (OpenSats, Mullvad, Proton) and individual donations making up much of the rest. The dependency people cite as a scandal has been actively reduced.
+
+## Tor versus a VPN, in one distinction
+
+A **VPN** moves your trust: your ISP no longer sees your traffic, and the VPN operator does. That is a real improvement in some threat models and no improvement at all in others, because you have swapped one observer for another and the new one is a single company with logs and a jurisdiction.
+
+Tor is built so that **no single party is in that position**. The guard knows you but not your destination; the exit knows your destination but not you; and no relay is asked to be trustworthy on its own. You are not trusting an operator's promise — you are relying on the fact that the parties who could unmask you are separate and, ideally, do not collude. That is a weaker guarantee than "trust us" sounds, and a much stronger one than it actually is.

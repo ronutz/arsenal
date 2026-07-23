@@ -1,0 +1,40 @@
+---
+slug: isis-primer
+title: "IS-IS: o protocolo de roteamento escondido sob a internet"
+summary: "O gêmeo link-state do OSPF vindo do mundo OSI roda os backbones de operadora que seus pacotes cruzam diariamente - e a maioria dos engenheiros nunca digitou seu nome. Um primer prático: o truque da camada 2, endereços NET, níveis em vez de áreas, extensibilidade por TLV, e por que as grandes redes nunca saíram."
+concepts: ["is-is", "ospf", "igp", "bgp", "mpls"]
+relatedTools: ["cidr"]
+relatedArticles: ["ospf-primer", "mpls-primer", "bgp-primer"]
+category: networking
+order: 236
+status: reviewed
+updated: "2026-07-22"
+---
+
+## O gêmeo com sotaque estranho
+
+IS-IS e OSPF são a mesma ideia com roupas diferentes: inunde uma descrição dos seus enlaces para todos, deixe cada roteador montar o mapa idêntico, rode Dijkstra, concorde nos caminhos mais curtos. Ambos nasceram no fim dos anos 1980. O OSPF veio do IETF e fala IP fluente; o IS-IS - Intermediate System to Intermediate System, no dialeto encantadoramente burocrático do OSI em que roteadores são "sistemas intermediários" - veio da suíte concorrente da ISO (ISO 10589), aprendeu a carregar rotas IP na RFC 1195, e venceu em silêncio as maiores redes da Terra enquanto o OSPF vencia os livros-texto.
+
+Se você nunca configurou IS-IS, seus pacotes não se importam: uma fatia impressionante dos backbones de operadoras tier-1 e grandes provedores roda nele, e os underlays de fabric de data center o redescobriram. Entender por que escolheram o gêmeo de sotaque estranho é o primer inteiro.
+
+## O truque da camada 2
+
+O OSPF anda sobre IP - seus pacotes têm cabeçalho IP, o que significa que o protocolo de roteamento depende da própria camada para a qual computa rotas, e pode ser alcançado (e atacado) por qualquer coisa que envie um pacote IP. O IS-IS roda **direto sobre a camada 2**: suas PDUs sentam em quadros Ethernet sem cabeçalho IP algum. Duas consequências que as operadoras amam. Primeiro, desaparece uma classe ovo-e-galinha de falhas - o protocolo não pode ser quebrado por uma configuração IP corrompida porque nunca toca IP para trabalhar. Segundo, você não ataca uma adjacência IS-IS de três saltos de distância, porque não há endereço IP para mirar; seria preciso estar no fio.
+
+O custo do pedigree OSI é o endereçamento: todo roteador precisa de um **NET** - Network Entity Title, um endereço estilo OSI que se parece com `49.0001.1921.6800.1001.00` e codifica uma área e um system ID. Engenheiros resmungam, criam o template uma vez, e nunca mais pensam nisso; o system ID é comumente cunhado a partir de um IP de loopback, um pequeno ritual que cada casa executa do seu jeito.
+
+## Níveis, não áreas
+
+Onde o OSPF fatia áreas em torno de uma área 0 de backbone obrigatória, o IS-IS pensa em **níveis**. Roteadores level 1 conhecem intimamente a própria área; roteadores level 2 formam o backbone que conecta áreas; um roteador pode ser ambos (L1/L2), agindo como a porta da sua área. A diferença elegante em relação ao OSPF: o backbone não é uma área que você configura, e sim um *conjunto contíguo de roteadores capazes de L2*, que pode serpentear por onde for. Na prática, muitas redes grandes pulam o debate de hierarquia por completo e rodam o backbone inteiro como um único domínio level-2 plano - um desenho que o equivalente de área única do OSPF administra com muito menos graça em escala, e um dos motivos de as operadoras terem ficado.
+
+Em segmentos multiacesso o IS-IS elege um DIS - um designated router com outro nome - com uma diferença comportamental que pega os nativos de OSPF: a eleição de DIS **é** preemptiva, e não existe DIS backup, porque a sincronização de banco de dados do protocolo torna barato perder o DIS.
+
+## TLVs: a razão de ter envelhecido tão bem
+
+Tudo que o IS-IS anuncia viaja como **TLV** - type, length, value - dentro das suas PDUs de link-state. Capacidade nova? Defina um tipo novo de TLV; roteadores velhos pulam o que não entendem. Essa única escolha de projeto é o motivo de o IS-IS ter absorvido trinta anos de mudança sem quebra de versão: suporte a IPv6 foram TLVs novos (nunca precisou de um "IS-ISv3", ao contrário do OSPFv3 separado do OSPF), métricas largas foram um TLV, atributos de engenharia de tráfego foram TLVs, e o **Segment Routing** - a arquitetura moderna do MPLS de operadora - chega, de novo, em TLVs. Redes que apostaram no IS-IS receberam cada revolução como atualização incremental de software. É uma das vindicações mais silenciosas do projeto de protocolos: extensibilidade como a característica que sobrevive a toda característica.
+
+## Onde você vai realmente encontrá-lo
+
+Três lugares. Núcleos de operadora e grandes provedores, onde é o IGP incumbente há décadas e hoje sustenta as implantações de Segment Routing. Fabrics de data center, onde a independência de camada 2 e a escala em L2 plano o fizeram underlay dentro de várias arquiteturas de fabric e NOSes de fornecedores. E provas de certificação, onde a tabela comparativa OSPF-versus-IS-IS é eterna. A orientação empresarial honesta: se você não é operadora e não está montando um fabric que o especifica, o ferramental e o mercado de talentos do OSPF costumam vencer - mas leia a documentação de underlay do seu fornecedor de fabric antes de assumir que você já não roda IS-IS em algum lugar.
+
+Os fundamentos de mapa-e-matemática são compartilhados com o OSPF e cobertos no primer dele; onde todos os protocolos interiores entregam à política é território do primer de BGP; e os serviços comutados por rótulo que esses backbones de fato entregam são o assunto do primer de MPLS.

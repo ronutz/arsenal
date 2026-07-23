@@ -47,6 +47,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_bigip_ltm_lb_simulator",
     "tag": "F5 BIG-IP LTM"
   },
+  "cable-run-planner": {
+    "url": "https://ronutz.com/api/v1/cable-run-planner",
+    "method": "GET",
+    "op": "run_cable_run_planner",
+    "tag": "Physical layer"
+  },
   "cert-renewal-planner": {
     "url": "https://ronutz.com/api/v1/cert-renewal-planner",
     "method": "GET",
@@ -509,6 +515,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_jwt",
     "tag": "Identity & tokens"
   },
+  "ldap-filter-explainer": {
+    "url": "https://ronutz.com/api/v1/ldap-filter-explainer",
+    "method": "GET",
+    "op": "run_ldap_filter_explainer",
+    "tag": "Identity & directory"
+  },
   "letsencrypt-rate-limits": {
     "url": "https://ronutz.com/api/v1/letsencrypt-rate-limits",
     "method": "GET",
@@ -532,6 +544,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_nslookup_output_explainer",
     "tag": "Networking & addressing"
+  },
+  "oauth-flow-chooser": {
+    "url": "https://ronutz.com/api/v1/oauth-flow-chooser",
+    "method": "GET",
+    "op": "run_oauth_flow_chooser",
+    "tag": "Identity & tokens"
   },
   "oidc": {
     "url": "https://ronutz.com/api/v1/oidc",

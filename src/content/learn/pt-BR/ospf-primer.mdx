@@ -1,0 +1,40 @@
+---
+slug: ospf-primer
+title: "OSPF: o mapa, a matemática e a área 0"
+summary: "Open Shortest Path First é o protocolo de roteamento interior padrão: todo roteador recebe o mapa inteiro e roda Dijkstra sobre ele. Um primer prático: inundação link-state, áreas e a regra do backbone, custo e a armadilha da reference bandwidth, eleições de DR, e os hábitos de projeto que mantêm o OSPF entediante."
+concepts: ["ospf", "igp", "is-is", "rip", "eigrp", "bgp"]
+relatedTools: ["cidr"]
+relatedArticles: ["bgp-primer", "structured-cabling"]
+category: networking
+order: 235
+status: reviewed
+updated: "2026-07-22"
+---
+
+## Todo mundo recebe o mapa
+
+Os velhos protocolos distance-vector roteavam por boato: cada roteador contava aos vizinhos o que acreditava, e a crença se propagava - devagar, e às vezes errado, como a patologia do count-to-infinity do RIP provou. O roteamento link-state inverte a ideia. Cada roteador OSPF descreve seus próprios enlaces em pequenos anúncios (LSAs), esses anúncios são **inundados** sem alteração a todos os roteadores da área, e cada roteador monta o banco de dados idêntico - o mapa. Então cada um roda, independentemente, o mesmo algoritmo de caminho mais curto, o de Dijkstra, sobre o mapa. Mesmo mapa mais mesma matemática é igual a acordo livre de loops, sem ninguém confiar na aritmética de ninguém além da própria.
+
+Isso é o OSPF - Open Shortest Path First, RFC 2328 na versão IPv4 que todo mundo aprende, OSPFv3 levando a ideia ao IPv6. O "open" era o ponto no nascimento: um padrão que qualquer um podia implementar, contra as alternativas proprietárias da época.
+
+## O custo, e a armadilha dentro dele
+
+O OSPF escolhe caminhos por **custo**, somado por enlace, e por padrão o custo deriva da banda: uma banda de referência dividida pela velocidade do enlace. A armadilha que gerações de engenheiros já encontraram: a referência clássica padrão é 100 Mb/s - fazia sentido quando Fast Ethernet era rápido - então um enlace de 1 Gb/s, um de 10 Gb/s e um de 100 Gb/s computam todos o mesmo custo 1, e o OSPF alegremente balanceia seu uplink de data center com um caminho gigabit legado. Elevar a reference bandwidth de forma consistente em todos os roteadores é um dos primeiros ajustes adultos de qualquer projeto OSPF; definir custos explícitos nos enlaces que importam é o outro.
+
+## Áreas, e a única regra que é de fato lei
+
+Um único mapa inundado só escala até certo ponto: cada oscilação de enlace faz todos os roteadores da área recomputarem. A resposta do OSPF são as **áreas**: a rede é fatiada em regiões que guardam seus mapas detalhados para si e trocam resumos. A estrutura tem uma lei: **a área 0 é o backbone, e toda outra área precisa se conectar a ela**. Tráfego entre áreas passa pelo backbone; os area border routers (ABRs) sentam na costura e fazem a sumarização. Tipos especiais de área - stub, totally stubby, NSSA - existem para encolher o que sites pequenos precisam carregar, e seus nomes são a trivia favorita das provas. O hábito prático de projeto é mais velho que todos eles: mantenha a área 0 contígua, mantenha-a estável, e sumarize nas bordas para que um enlace oscilando numa filial nunca faça o núcleo pensar.
+
+## LANs, e a eleição do presidente da mesa
+
+Num enlace ponto-a-ponto, dois roteadores simplesmente viram vizinhos. Num segmento Ethernet compartilhado com cinco roteadores, adjacências em full mesh significariam dez relações todas se inundando - então o OSPF elege um **designated router** (e um backup, o BDR) para agir como presidente da mesa do segmento: todos sincronizam com o DR, o DR redistribui. A eleição é vencida por prioridade, desempatada por router ID, e notoriamente **não-preemptiva**: um ex-presidente que retorna não toma o cargo de volta, o que surpreende todo mundo exatamente uma vez. Em projetos roteados modernos, o hábito mais limpo é declarar os enlaces entre roteadores como ponto-a-ponto e pular a eleição por completo.
+
+Vizinhos, estados de adjacência (a caminhada de Down por ExStart até Full), timers de hello e dead que precisam bater, MTUs diferentes que travam o ExStart - essas são as mecânicas de quase toda sessão de troubleshooting de OSPF já feita. O checklist é curto e universal: mesma sub-rede, mesma área, mesmos timers, mesma MTU, mesma autenticação.
+
+## Onde o OSPF se encaixa
+
+O OSPF é um protocolo de gateway interior - a abordagem mapa-e-matemática para a rede que você administra, onde o objetivo é verdade e velocidade, não política. Seu irmão link-state IS-IS joga o mesmo jogo com outro pedigree e forte adoção em operadoras; o EIGRP é o contraponto distance-vector avançado do mundo Cisco; e na borda do seu sistema autônomo, todos entregam ao BGP, onde política vale mais que caminho mais curto - o assunto do primer de BGP. A divisão de trabalho é o projeto: o OSPF acha o caminho mais rápido pelo território que você possui; o BGP negocia o território que você não possui.
+
+## Os hábitos que o mantêm entediante
+
+OSPF que funciona é OSPF entediante, e os hábitos são conhecidos: uma área 0 contígua; sumarização nos ABRs; passive-interface como padrão para que LANs de usuário não ouçam hellos; router IDs explícitos para que nada mude de identidade num reload; reference bandwidth elevada antes do primeiro enlace de 10 Gb/s, não depois; e autenticação ligada, porque um hello intruso é um mapa intruso. Faça isso, e o OSPF desaparece na infraestrutura - que é o maior elogio que um protocolo interior pode receber.

@@ -1,0 +1,40 @@
+---
+slug: ospf-primer
+title: "OSPF: the map, the math, and area 0"
+summary: "Open Shortest Path First is the standard interior routing protocol: every router gets the whole map and runs Dijkstra on it. A practical primer: link-state flooding, areas and the backbone rule, cost and the reference-bandwidth trap, DR elections, and the design habits that keep OSPF boring."
+concepts: ["ospf", "igp", "is-is", "rip", "eigrp", "bgp"]
+relatedTools: ["cidr"]
+relatedArticles: ["bgp-primer", "structured-cabling"]
+category: networking
+order: 235
+status: reviewed
+updated: "2026-07-22"
+---
+
+## Everyone gets the map
+
+The old distance-vector protocols routed by rumor: each router told its neighbors what it believed, and belief propagated - slowly, and sometimes wrongly, as RIP's count-to-infinity pathology proved. Link-state routing inverts the idea. Every OSPF router describes its own links in small advertisements (LSAs), those advertisements are **flooded** unchanged to every router in the area, and each router assembles the identical database - the map. Then each one independently runs the same shortest-path-first algorithm, Dijkstra's, over the map. Same map plus same math equals loop-free agreement, without anyone trusting anyone's arithmetic but their own.
+
+That is OSPF - Open Shortest Path First, RFC 2328 for the IPv4 version everyone learns, OSPFv3 carrying the idea to IPv6. The "open" was the point at birth: a standard anyone could implement, against the proprietary alternatives of the day.
+
+## Cost, and the trap inside it
+
+OSPF picks paths by **cost**, summed per link, and by default cost is derived from bandwidth: a reference bandwidth divided by the link's speed. The trap generations of engineers have met: the classic default reference is 100 Mb/s - which made sense when Fast Ethernet was fast - so a 1 Gb/s link, a 10 Gb/s link, and a 100 Gb/s link all compute to the same cost of 1, and OSPF happily load-balances your data-center uplink with a legacy gigabit path. Raising the reference bandwidth consistently on every router is one of the first grown-up settings in any OSPF design; setting costs explicitly on the links you care about is the other.
+
+## Areas, and the one rule that is really a law
+
+A single flooded map scales only so far: every link flap makes every router in the area recompute. OSPF's answer is **areas**: the network is carved into regions that keep their detailed maps to themselves and exchange summaries. The structure has one law: **area 0 is the backbone, and every other area must attach to it**. Inter-area traffic goes through the backbone; area border routers (ABRs) sit on the seam and do the summarizing. Special area types - stub, totally stubby, NSSA - exist to shrink what small sites must carry, and their names are the exam's favorite trivia. The practical design habit is older than all of them: keep area 0 contiguous, keep it stable, and summarize at the borders so a flapping link in a branch never makes the core think.
+
+## LANs, and the meeting-chair election
+
+On a point-to-point link, two routers simply become neighbors. On a shared Ethernet segment with five routers, full-mesh adjacencies would mean ten relationships all flooding at each other - so OSPF elects a **designated router** (and a backup, the BDR) to act as the segment's meeting chair: everyone synchronizes with the DR, the DR redistributes. The election is won by priority, tie-broken by router ID, and famously **non-preemptive**: a returning ex-chair does not take the job back, which surprises everyone exactly once. On modern routed designs, the cleaner habit is declaring inter-router links point-to-point and skipping the election entirely.
+
+Neighbors, adjacency states (the walk from Down through ExStart to Full), hello and dead timers that must match, MTU mismatches that stall ExStart - these are the mechanics of nearly every OSPF troubleshooting session ever run. The checklist is short and universal: same subnet, same area, same timers, same MTU, same authentication.
+
+## Where OSPF sits
+
+OSPF is an interior gateway protocol - the map-and-math approach for the network you administer, where the goal is truth and speed, not policy. Its link-state sibling IS-IS plays the same game with a different pedigree and a strong carrier following; EIGRP is the advanced distance-vector counterpoint from the Cisco world; and at the border of your autonomous system, all of them hand off to BGP, where policy outranks shortest paths - the subject of the BGP primer. The division of labor is the design: OSPF finds the fastest way across the territory you own; BGP negotiates the territory you do not.
+
+## The habits that keep it boring
+
+Working OSPF is boring OSPF, and the habits are known: one contiguous area 0; summarization at the ABRs; passive-interface as the default so user LANs hear no hellos; explicit router IDs so nothing changes identity on a reload; reference bandwidth raised before the first 10 Gb/s link, not after; and authentication on, because a rogue hello is a rogue map. Do those, and OSPF disappears into the infrastructure - which is the highest compliment an interior protocol can earn.

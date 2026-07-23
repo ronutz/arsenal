@@ -689,6 +689,21 @@ export const partnerVendors: PartnerVendor[] = [
     body: ["The profile covers Project RAND's 1946 origins, the mathematical toolkit years, Baran's survivability argument and its parallel invention by Donald Davies, and the flow of the idea into the ARPANET."],
   },
   {
+    slug: "cyclades-network",
+    group: "other",
+    name: "CYCLADES (IRIA, France)",
+    tagline: "Where the datagram was born.",
+    intro:
+      "Louis Pouzin's 1972-1973 research network at IRIA was the first to make hosts responsible for reliability over an unreliable packet substrate - Pouzin coined the word datagram for it - and Cerf and Kahn's 1974 TCP/IP founding paper cites the work directly.",
+    body: [
+      "Killed by French PTT politics in favor of Transpac and X.25 (shut down 1977 per INRIA's account, forced off by 1981 per the general record), CYCLADES stands as both the internet's deepest design ancestor and the canonical cautionary tale about monopolies and innovation. Distinct from - and shelved beside - the Brazilian Cyclades of the console-server story: same name, different continent, both honored here.",
+    ],
+    sources: [
+      { label: "INRIA - Between Stanford and Cyclades", url: "https://www.inria.fr/en/between-stanford-and-cyclades-transatlantic-perspective-creation-internet" },
+      { label: "History of Computer Communications - CYCLADES and Louis Pouzin", url: "https://historyofcomputercommunications.info/section/8.3/CYCLADES-Network-and-Louis-Pouzin-1971-1972/" },
+    ],
+  },
+  {
     slug: "toshiba",
     group: "other",
     name: "Toshiba - the company that gave the world flash",
@@ -737,6 +752,22 @@ export const partnerVendors: PartnerVendor[] = [
     body: ["The profile covers the 1986 Sniffer, Sniffer University, the Dolch chassis, the 1997 NAI merger and 2004 rebirth, Arbor's Peakflow and ATLAS, and NetScout's 2007 and 2015 consolidating acquisitions."],
   },
   {
+    slug: "dolch",
+    group: "other",
+    name: "Dolch (Kontron / Azonix lineage)",
+    tagline: "The rugged luggable the Sniffer lived in.",
+    intro:
+      "Dolch Computer Systems built the suitcase-format rugged portables that carried a generation of field engineering - and, above all, Network General's Sniffer analyzer, which shipped on Dolch PACs so routinely the Computer History Museum catalogs them as Sniffer platforms.",
+    body: [
+      "Founded 1987 in California by Volker Dolch; twice ranked first in rugged portables (VDC, 1999 and 2002); acquired by Kontron AG in February 2005, with the rugged mobile platform passing to Azonix in 2007. The hardware half of the packet-analysis story told in the Sniffer lineage profile.",
+    ],
+    sources: [
+      { label: "Wikipedia - Dolch", url: "https://en.wikipedia.org/wiki/Dolch" },
+      { label: "Kontron - acquisition announcement (2005)", url: "https://www.kontron.com/en/news/kontron-ag-completes-acquisition-of-dolch-computer-systems-inc/n128919" },
+      { label: "Computer History Museum - Dolch network analyzer materials", url: "https://www.computerhistory.org/collections/catalog/102727516" },
+    ],
+  },
+  {
     slug: "blue-coat-packeteer",
     group: "other",
     name: "Blue Coat & Packeteer - the checkpoint companies",
@@ -749,7 +780,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Cyclades, Avocent & Vertiv - the physical layer of uptime",
     tagline: "A Brazilian-founded console-server pioneer, the KVM leaders, and Liebert's computer-room weather - consolidated into the company whose product is uptime itself.",
-    intro: "Cyclades - founded in 1988 in a São Paulo garage by João Lima and Daniel Dalarossa, an early Linux champion that later moved to California - built the out-of-band discipline: the console path that shares no fate with the network it manages. Through Avocent's KVM heritage and Emerson Network Power (whose other root is Ralph Liebert's 1965 precision cooling), the lineage became Vertiv: access, power, and cooling as one problem, now the constraint the AI build-out plans around. The name also earns an honorable footnote: Pouzin's CYCLADES research network, TCP/IP's credited French ancestor.",
+    intro: "Cyclades - founded in 1988 in a São Paulo garage by João Lima and Daniel Dalarossa, an early Linux champion that later moved to California - built the out-of-band discipline: the console path that shares no fate with the network it manages. Through Avocent's KVM heritage and Emerson Network Power (whose other root is Ralph Liebert's 1965 precision cooling), the lineage became Vertiv: access, power, and cooling as one problem, now the constraint the AI build-out plans around. The name also earns an honorable footnote: Pouzin's CYCLADES research network - TCP/IP's credited French ancestor - now has its own profile in this pioneer lineage; same name, different continent, no corporate relation.",
     body: ["The profile covers the 1989 Brazilian founding, the console-server category, the 2006 Avocent acquisition, Emerson Network Power and the Liebert root, the 2016 Vertiv carve-out, and the AI-density era."],
   },
   {
@@ -839,6 +870,80 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "The hometown entry: carrier gear, GPON, and a national OS, designed and built in Rio Grande do Sul since 1998.",
     intro: "Every other company in this encyclopedia had to be imported into Brazil; Datacom grew there. Its own switching and GPON lines on its own DmOS carried the country's regional-ISP fiber boom - a standing existence proof that network sovereignty is buildable, born of the same Brazilian engineering tradition that a decade earlier produced Cyclades.",
     body: ["The profile covers the 1998 founding, the DmSwitch carrier-Ethernet years, DmOS, the provedores' GPON wave, the domestic-financing structural factor stated plainly, and the quarter-century mark."],
+  },
+  // ---- Contemporary additions, PRIME roster 2026-07-22, importance-ranked ----
+  {
+    slug: "asus-askey",
+    group: "contemporary",
+    name: "ASUS + Askey",
+    tagline: "The motherboard empire and its network-communications arm.",
+    intro:
+      "ASUS grew from four ex-Acer engineers' 1989 motherboard startup into the world's fifth-largest PC vendor; Askey, founded the same year and later an ASUS Group member, is the invisible ODM behind decades of carrier modems, gateways, and 5G CPE - with offices that include Brazil.",
+    body: [
+      "Consolidated into one profile per the corporate reality: the branded systems giant and the white-label access-hardware machine, one group, both 1989 Taipei foundings.",
+    ],
+    sources: [
+      { label: "Wikipedia - Asus", url: "https://en.wikipedia.org/wiki/Asus" },
+      { label: "Askey - about", url: "https://www.askey.com.tw/about/" },
+    ],
+  },
+  {
+    slug: "netgear",
+    group: "contemporary",
+    name: "NETGEAR",
+    tagline: "The company that put networking on the retail shelf.",
+    intro:
+      "Founded inside Bay Networks in 1996 by Patrick Lo and Mark Merrill, NETGEAR invented networking-as-retail: the blue metal switches, then Nighthawk and Orbi - the first networking gear millions of people ever bought themselves.",
+    body: [
+      "Survived the Nortel absorption of its parent, reached independence and a NASDAQ listing in 2003, spun Arlo off in 2018, and still defines what home and small-business networking looks like on a shelf.",
+    ],
+    sources: [
+      { label: "NETGEAR - company", url: "https://www.netgear.com/about/" },
+    ],
+  },
+  {
+    slug: "tp-link",
+    group: "contemporary",
+    name: "TP-Link",
+    tagline: "The volume king of consumer networking.",
+    intro:
+      "Founded in Shenzhen in 1996 by brothers Zhao Jianjun and Zhao Jiaxing - the name abbreviates twisted pair link - TP-Link rode disciplined cost-performance to the top of global consumer WLAN shipment rankings and stayed there for years.",
+    body: [
+      "Archer and Deco carry the volume core, Omada takes the controller model to the SMB value tier, Tapo reaches into the smart home - and, kept factual, US-government scrutiny reported since late 2024 remains on the public record, unresolved at verification.",
+    ],
+    sources: [
+      { label: "TP-Link - about", url: "https://www.tp-link.com/about-us/" },
+    ],
+  },
+  {
+    slug: "zyxel",
+    group: "contemporary",
+    name: "Zyxel",
+    tagline: "The modem-era first-mover from Hsinchu.",
+    intro:
+      "Begun in a rented Taoyuan apartment in 1988 and founded at Hsinchu Science Park in 1989 by Dr. Shun-I Chu, Zyxel built the U-1496 modems the BBS generation saved up for - then shipped the world's first integrated data/fax/voice modem (1992) and analog/digital ISDN modem (1995).",
+    body: [
+      "Listed in Taiwan in 1999 and restructured under the Zyxel Group holding, it still ships carrier CPE and SMB networking-and-security across every access generation since the modem - with the 2025 end-of-life zero-day episode kept honestly in the record.",
+    ],
+    sources: [
+      { label: "Zyxel - company history", url: "https://www.zyxel.com/global/en/company/about-zyxel" },
+      { label: "Wikipedia - Zyxel", url: "https://en.wikipedia.org/wiki/Zyxel" },
+    ],
+  },
+  {
+    slug: "allied-telesis",
+    group: "contemporary",
+    name: "Allied Telesis",
+    tagline: "Japan's global Ethernet workhorse, from media converters up.",
+    intro:
+      "Takayoshi Oshima (1940-2022) founded the company in Tokyo in March 1987 - System Plus for six months, Allied Telesis ever after, Allied Telesyn to a generation of international buyers - starting from the humblest product in networking: the media converter.",
+    body: [
+      "Listed in Tokyo in 2000, dual-hearted between Japan and San Jose, and built on the unglamorous middle of the market: the switches and converters that run schools, factories, and city infrastructure for decades between thoughts.",
+    ],
+    sources: [
+      { label: "Allied Telesis - founder memorial", url: "https://www.alliedtelesis.com/us/en/press/mr-takayoshi-oshima-founder-and-ceo-allied-telesis" },
+      { label: "Wikipedia - Allied Telesis", url: "https://en.wikipedia.org/wiki/Allied_Telesis" },
+    ],
   },
 ];
 

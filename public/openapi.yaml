@@ -40,6 +40,7 @@ tags:
   - name: HTTP & web
   - name: Hashing
   - name: Identifiers & time
+  - name: Identity & directory
   - name: Identity & tokens
   - name: Netskope
   - name: Netskope SSE / SASE
@@ -48,6 +49,7 @@ tags:
     description: IP addressing and subnet computations.
   - name: Operations & Fieldcraft
   - name: PKI
+  - name: Physical layer
   - name: Protocol & packet decoders
   - name: Security & WAF
   - name: TLS & transport
@@ -364,6 +366,74 @@ paths:
           text/plain:
             schema:
               type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cable-run-planner:
+    get:
+      tags:
+        - Physical layer
+      operationId: run_cable_run_planner
+      summary: Cable run planner
+      description: >-
+        Speed, distance, environment, PoE in - every compliant cable and fiber option out, each
+        citing the TIA-568 or 802.3 rule that governs it, with honest exclusions for the rest. The
+        input is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
+        Standards: ANSI/TIA-568 channel limits + IEEE 802.3 optic reaches; rules table pinned by
+        golden vectors incl. exact-at-limit cases. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - '{"speedMbps":10000,"distanceM":80,"environment":"office","poe":"none"}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Physical layer
+      operationId: run_cable_run_planner_post
+      summary: Cable run planner (POST)
+      description: >-
+        Speed, distance, environment, PoE in - every compliant cable and fiber option out, each
+        citing the TIA-568 or 802.3 rule that governs it, with honest exclusions for the rest. The
+        input is a JSON object: send it as the request body (POST) or as a JSON string (?input=).
+        Standards: ANSI/TIA-568 channel limits + IEEE 802.3 optic reaches; rules table pinned by
+        golden vectors incl. exact-at-limit cases. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
         '200':
           description: The computed result.
@@ -5468,6 +5538,74 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /ldap-filter-explainer:
+    get:
+      tags:
+        - Identity & directory
+      operationId: run_ldap_filter_explainer
+      summary: LDAP filter explainer
+      description: >-
+        Paste an LDAP search filter - get the annotated tree: operators, match types, decoded RFC
+        4515 escapes, recognized AD matching-rule OIDs, and errors anchored to the exact character.
+        The input is a JSON object: send it as the request body (POST) or as a JSON string
+        (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - '{"filter":"(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Identity & directory
+      operationId: run_ldap_filter_explainer_post
+      summary: LDAP filter explainer (POST)
+      description: >-
+        Paste an LDAP search filter - get the annotated tree: operators, match types, decoded RFC
+        4515 escapes, recognized AD matching-rule OIDs, and errors anchored to the exact character.
+        The input is a JSON object: send it as the request body (POST) or as a JSON string
+        (?input=). Standards: RFC 4515 grammar; anchored errors; AD matching-rule OIDs recognized.
+        Stateless and side-effect-free: the same input always yields the same result, and nothing is
+        stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /letsencrypt-rate-limits:
     get:
       tags:
@@ -5730,6 +5868,72 @@ paths:
               type: string
               examples:
                 - 'Non-authoritative answer:'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /oauth-flow-chooser:
+    get:
+      tags:
+        - Identity & tokens
+      operationId: run_oauth_flow_chooser
+      summary: OAuth flow chooser
+      description: >-
+        What kind of app, is there a user, offline access needed - and the right grant comes back
+        RFC-cited, with implicit and ROPC retired by name per RFC 9700. The input is a JSON object:
+        send it as the request body (POST) or as a JSON string (?input=). Standards: RFC
+        6749/7636/8252/8628; RFC 9700 retirements encoded. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - '{"appType":"spa","wantsIdentity":true,"needsOffline":true}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Identity & tokens
+      operationId: run_oauth_flow_chooser_post
+      summary: OAuth flow chooser (POST)
+      description: >-
+        What kind of app, is there a user, offline access needed - and the right grant comes back
+        RFC-cited, with implicit and ROPC retired by name per RFC 9700. The input is a JSON object:
+        send it as the request body (POST) or as a JSON string (?input=). Standards: RFC
+        6749/7636/8252/8628; RFC 9700 retirements encoded. Stateless and side-effect-free: the same
+        input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
         '200':
           description: The computed result.

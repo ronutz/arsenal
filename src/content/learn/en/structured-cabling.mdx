@@ -1,0 +1,38 @@
+---
+slug: structured-cabling
+title: "Structured cabling: the system behind the wall jack"
+summary: "TIA-568 turns a building's wiring from improvisation into a system: horizontal runs, telecom rooms, the 100-meter channel, categories, pinouts, and the fire ratings inspectors actually check. The map from wall plate to backbone."
+concepts: ["eia-tia", "utp", "cable-categories", "t568a-t568b", "plenum", "wiring-closet"]
+relatedTools: ["cable-run-planner", "oui-lookup"]
+relatedArticles: ["ieee-802-working-groups", "gpon-how-one-fiber-serves-a-neighborhood", "last-mile-evolution-pots-to-fiber"]
+category: networking
+order: 233
+status: reviewed
+updated: "2026-07-22"
+---
+
+## From wires to a system
+
+Before structured cabling, building wiring was whatever the last installer left behind: point-to-point runs, proprietary connectors, undocumented splices. The ANSI/TIA-568 family - the standards lineage of the TIA, heir to the old EIA/TIA partnership - replaced that with a system: standardized media, standardized connectors and pinouts, standardized distances, and a standardized topology, so that any compliant outlet can serve any compliant service, and the person troubleshooting in year ten can reason about what the person installing in year one did.
+
+The topology is a star of stars. Every work-area outlet runs a **horizontal** cable back to a telecom room on its floor; telecom rooms link by **backbone** cabling - riser runs between floors, campus runs between buildings - up to the main distribution point. The wiring closet vocabulary maps onto this: the MDF as the main room, IDFs as the per-floor intermediates, patch panels as the boundary where permanent building wiring ends and movable patch cords begin.
+
+## The 100-meter channel
+
+The number every network engineer carries: a twisted-pair **channel** may total 100 meters. The standard splits it as up to 90 meters of **permanent link** - the cable in the wall, punched down at both ends - plus a combined 10 meters of patch cords at the two ends. That split is why the horizontal run is tested and certified once, at installation, and the patch cords stay disposable.
+
+The channel, not the cable spool, is what a **category** certifies. Cat 5e supports gigabit Ethernet across the full 100 meters. Cat 6 raises the tested bandwidth and carries 10 Gb/s, but only to roughly 55 meters; Cat 6A carries 10 Gb/s the full distance and is the sensible default for new horizontal cabling. Cat 8 doubles down for the data center: 25/40 Gb/s, but only to 30 meters, effectively shielded, for switch-to-server rows rather than office floors. And the certification is end to end - a Cat 6A permanent link patched with Cat 5e cords is, as a system, Cat 5e.
+
+The copper itself is UTP by default - four pairs, interference fought with twist geometry alone. Where the environment is electrically hostile, the shielded constructions (F/UTP, S/FTP) add foil and braid, at the price of stiffer cable and the obligation to ground the shields properly. Termination follows one of two pinouts, T568A or T568B, functionally identical; the site rule is to pick one and never mix, because one of each end yields a crossover - a cable type that auto-MDIX made historical, but that miswiring still recreates by accident.
+
+## Fiber where copper stops
+
+Beyond 100 meters, or between buildings, or wherever electrical isolation matters, the backbone goes optical. The split is single-mode versus multimode: single-mode's narrow core carries one light path for kilometers and is the default for campus and carrier distances; multimode's wider core keeps transceiver costs down over the hundreds of meters inside a facility, in grades OM3 through OM5. The pluggable transceiver in the switch - SFP lineage for copper and fiber alike - is what marries the port to whichever medium the plant offers, with media converters as the standalone fallback where no SFP port exists.
+
+## The ratings inspectors check
+
+One dimension of cabling has nothing to do with signal and everything to do with fire code. Cable jacketed for air-handling **plenum** spaces (CMP) must burn slow and smoke little; **riser**-rated CMR covers vertical shafts; general-purpose jackets cover the rest, and the ratings substitute downward only - plenum may go anywhere, riser may not go in plenums. Outside North America the parallel vocabulary is LSZH. It is the part of the cabling bill of materials that a building inspector, not a link tester, enforces - and the part most expensively discovered late.
+
+## Why the system holds
+
+Structured cabling's quiet achievement is that the physical layer stopped being interesting. An outlet is an outlet; a channel either certifies to its category or it does not; a telecom room follows the same grammar in São Paulo and Stockholm. The cost of that boringness is discipline - labeling, testing, one pinout per site, blanking the empty rack slots - and the payoff is that everything above layer 1 gets to assume the wire simply works.

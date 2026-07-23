@@ -1,0 +1,40 @@
+---
+slug: mpls-primer
+title: "MPLS: labels, stacks, and the BGP-free core"
+summary: "Push a label at the edge, swap it hop by hop, pop it before the exit - and suddenly the core needs no routing table, VPNs isolate thousands of customers, and traffic goes where engineering says. A practical primer on label switching, L3VPNs, and the Segment Routing present."
+concepts: ["mpls", "bgp", "igp", "is-is", "atm", "vrf"]
+relatedTools: ["cidr"]
+relatedArticles: ["bgp-primer", "isis-primer", "ospf-primer"]
+category: networking
+order: 237
+status: reviewed
+updated: "2026-07-22"
+---
+
+## One lookup, then labels
+
+Classic IP forwarding makes every router do the full job: longest-prefix-match the destination against a routing table, hop after hop, as if each router were seeing the packet for the first time. MPLS makes the decision **once**. The edge router - the LER, label edge router - classifies the packet into a forwarding class, pushes a short **label** onto it, and from there the core routers - LSRs, label switch routers - do the cheapest operation in networking: look up the incoming label in a small table, **swap** it for the outgoing one, forward. At the far edge the label is **popped** and normal IP resumes. Push, swap, pop: the entire mechanism fits in three verbs.
+
+The lineage is honest engineering theft: MPLS took ATM's virtual-circuit insight - decide the path once, then switch on small identifiers - and left behind the 53-byte cells, the adaptation layers, and the cell tax. The label-switched path (LSP) is a virtual circuit that carries whole packets.
+
+## The stack is the whole trick
+
+A packet can carry **more than one label**, and this stack is where MPLS stops being an optimization and becomes an architecture. The outer label means *how to cross the backbone*; an inner label can mean *what this packet is* - this customer's VPN, this pseudowire, this service. Core routers read only the outer label; they neither know nor care what rides beneath.
+
+Two consequences built the carrier industry as it exists:
+
+**The BGP-free core.** Only edge routers need the internet's full routing table and the customer routes; the core forwards on labels alone. In the early 2000s this was survival - core silicon could not hold the growing global table - and it remains the clean separation: intelligence at the edge, speed in the middle.
+
+**L3VPN** (RFC 4364), the product that paid for everything. Each customer attaches to a **VRF** - a private routing table on the provider's edge - and customer routes travel between edges inside BGP, disambiguated by route distinguishers and steered by route targets, with the inner label selecting the right VRF on exit. A thousand customers, all using 10.0.0.0/8, on one shared backbone, never seeing each other: that is the label stack at work, and it is what "an MPLS circuit" has meant to enterprises for twenty years.
+
+## Who hands out the labels
+
+Labels must be agreed between neighbors, and the history of MPLS is the history of that signaling. **LDP** was the workhorse: simple, follows the IGP's shortest paths, no traffic engineering. **RSVP-TE** was the heavyweight: explicit paths, bandwidth reservation, fast reroute - the tool for engineering traffic away from congested links, at the price of per-path state everywhere. The modern answer, **Segment Routing**, deletes the signaling entirely: the path is encoded in the packet itself as a stack of segment labels, distributed as extensions of the IGP - which is why the IS-IS primer's TLV story matters here. Same forwarding plane, radically less protocol machinery; it is where carrier MPLS has been heading for a decade.
+
+Two practical details every MPLS operator carries: **penultimate hop popping** - the second-to-last router removes the outer label so the exit router does one lookup instead of two, a tiny courtesy that confuses every first packet capture; and the MTU tax - each label is four bytes, and a forgotten MTU adjustment on one core link is the classic "VPN works for pings, dies for real traffic" ticket.
+
+## Is MPLS dead?
+
+The question arrives with every SD-WAN pitch, and the honest answer has two halves. At the **enterprise WAN edge**, the premium managed L3VPN circuit has genuinely lost ground: internet transport plus SD-WAN overlays took the branch-connectivity market's growth. In the **carrier core**, labels never went anywhere - the backbones carrying those very SD-WAN tunnels, the mobile networks, and the wholesale services run label-switched, increasingly via Segment Routing. MPLS did not die; it receded from the product name into the plumbing, which is where infrastructure that wins tends to end up.
+
+How the underlying shortest paths get computed is the OSPF and IS-IS primers' territory; how the edge exchanges those VPN routes is BGP's - the three primers and this one describe a single machine.

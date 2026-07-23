@@ -12478,6 +12478,230 @@
       "key-exchange": {
         "def": "Como duas partes combinam a chave secreta da sessão - a parte de uma suíte de cifras que decide se o tráfego gravado permanece selado.",
         "context": "O Diffie-Hellman efêmero (ECDHE em X25519 ou P-256) gera chaves novas por conexão, dando sigilo futuro; o transporte de chave com RSA estático não dá, e por isso o TLS 1.3 o removeu e tornou a troca efêmera estrutural. A transição pós-quântica acontece aqui também: o híbrido X25519+ML-KEM roda os dois mundos lado a lado."
+      },
+      "nist": {
+        "def": "A agência de padrões dos EUA cujas publicações de criptografia e segurança funcionam como baselines de engenharia globais.",
+        "context": "O NIST mantém os padrões FIPS e a série SP 800 que este site cita o tempo todo - SP 800-52r2 para configuração de TLS, SP 800-38A para modos de cifra - e conduziu as competições abertas que selecionaram o AES e o SHA-3. Sua padronização pós-quântica produziu o ML-KEM e o ML-DSA, e seu Cybersecurity Framework (CSF) ancora incontáveis programas de conformidade. Não é regulador: a adoção fora dos sistemas federais dos EUA é voluntária, o que torna sua influência ainda mais notável."
+      },
+      "mitre": {
+        "def": "A organização sem fins lucrativos dos EUA que opera centros de P&D com financiamento federal - e, para praticantes, a casa do ATT&CK, do CVE e do CWE.",
+        "context": "A MITRE (o nome não é um acrônimo) é guardiã dos vocabulários comuns da operação de segurança: o programa CVE numerando vulnerabilidades públicas, o CWE classificando tipos de fraqueza, e a base de conhecimento ATT&CK de táticas e técnicas de adversários em torno da qual a engenharia de detecção e os purple teams se organizam, com o D3FEND como contraparte defensiva."
+      },
+      "ietf": {
+        "def": "O corpo que padroniza os protocolos da internet, abertamente, como RFCs.",
+        "context": "A Internet Engineering Task Force trabalha por 'consenso aproximado e código rodando': grupos de trabalho abertos produzem Internet-Drafts que amadurecem em RFCs - TCP, HTTP, TLS, DNS e quase todo protocolo que as ferramentas deste site decodificam. Qualquer um pode participar; não há taxa de associação. Opera ao lado da IANA (registros) e do RFC Editor (publicação), e seus documentos são as fontes primárias que este site referencia por preferência."
+      },
+      "cloud-security-alliance": {
+        "def": "O corpo da indústria que define como a segurança de nuvem é avaliada e atestada.",
+        "context": "A Cloud Controls Matrix (CCM) da CSA é o framework de controles de fato para provedores de nuvem, e o registro STAR publica autoavaliações e certificações de provedores contra ela - o acrônimo que você encontra em toda página de trust center de fornecedor. Ela também mantém o certificado CCSK e a pesquisa de responsabilidade compartilhada em que as conversas de SASE e zero trust dos fornecedores se apoiam."
+      },
+      "sans": {
+        "def": "O instituto comercial de treinamento mais conhecido em operações de segurança, casa das certificações GIAC e do Internet Storm Center.",
+        "context": "Os cursos SANS e seus exames GIAC são a contraparte operacional das certificações de fornecedor: resposta a incidentes, forense, detecção, habilidades ofensivas. Seu Internet Storm Center é uma instituição de longa data de sensores comunitários e diários, e seus recursos gratuitos (pôsteres, cheat sheets, reading room) circulam muito além dos alunos pagantes."
+      },
+      "isc2": {
+        "def": "O corpo certificador por trás do CISSP - a credencial que mais frequentemente guarda a porta de cargos sêniores de segurança.",
+        "context": "A ISC2 (antes grafada (ISC)², remarcada em 2023) mantém o CISSP, o CCSP para nuvem, e um código de ética de membros com dentes de verdade: certificados podem ser cassados por violações. Onde SANS/GIAC testam profundidade mão na massa, as credenciais ISC2 testam amplitude do corpo comum de conhecimento - exatamente por isso os funis de contratação se apoiam nelas."
+      },
+      "eff": {
+        "def": "A organização sem fins lucrativos que defende liberdades civis no mundo digital - e a criadora do Certbot.",
+        "context": "Fundada em 1990, a Electronic Frontier Foundation litiga, faz advocacy e constrói: foi parceira fundadora do esforço que virou o Let's Encrypt, e mantém o Certbot, o cliente que tornou certificados gratuitos operacionalmente triviais. Suas pesquisas e scorecards (privacidade de dispositivos, práticas de dados) são referências permanentes em engenharia de privacidade."
+      },
+      "ieee": {
+        "def": "A sociedade de engenharia cujo comitê 802 define os padrões de LAN sobre os quais tudo neste site roda.",
+        "context": "A IEEE Standards Association é onde vivem o Ethernet (802.3), o Wi-Fi (802.11) e bridging/VLANs (802.1, incluindo o 802.1Q e a linhagem 802.1D do Spanning Tree). A família 802 é um mapa de grupos de trabalho, cada um dono de uma tecnologia de camada 2 - um mapa que este site vai cartografar grupo a grupo num explicador dedicado."
+      },
+      "eia-tia": {
+        "def": "A linhagem de padrões por trás do cabeamento estruturado - a família TIA-568 que define as categorias, conectores e distâncias de todo wiring closet.",
+        "context": "A Telecommunications Industry Association (sucessora do lado EIA da antiga parceria EIA/TIA) publica o ANSI/TIA-568 e seus irmãos: as definições de categoria de cabo (Cat 5e, 6, 6A, 8), as pinagens T568A/T568B, comprimentos de canal, e os padrões de data center e caminhos. Quando um datasheet diz 'atende Cat 6A', são os limites de teste dela que ele quer dizer."
+      },
+      "defcon": {
+        "def": "A maior conferência hacker do mundo - Las Vegas todo agosto desde 1993 - e o centro de gravidade cultural da cena.",
+        "context": "Fundada por Jeff Moss (Dark Tangent), a DEF CON cresceu de uma festa de despedida para o encontro anual: villages para cada especialidade (de lockpicking a urnas eletrônicas e aeroespacial), o capture-the-flag principal, crachás eletrônicos que são quebra-cabeças em si, e os Goons mantendo o caos funcional. Palestras viram notícia global com frequência; a cultura ao redor - Spot the Fed, a linhagem do Wall of Sheep - é metade da instituição."
+      },
+      "black-hat": {
+        "def": "A conferência de segurança com cara corporativa: Briefings de pesquisa e Trainings pagos, dias antes da DEF CON.",
+        "context": "Criada por Jeff Moss em 1997 como a contraparte de terno da DEF CON, a Black Hat USA hoje ancora o 'hacker summer camp' em Las Vegas, com edições Europe e Asia. Seus Briefings são palco de primeira linha para divulgação de pesquisa de vulnerabilidades; seu salão de exposição é onde a indústria de fornecedores encontra essa pesquisa. Hoje operada pela Informa Tech, segue sendo a conferência que as empresas orçam quando a DEF CON soa informal demais."
+      },
+      "chaos-computer-club": {
+        "def": "A mais antiga e influente associação hacker da Europa - alemã, política e profundamente séria sobre tecnologia e direitos civis.",
+        "context": "Fundado em 1981, o CCC fez seu nome com o hack do Btx em 1984, que expôs falhas de um sistema bancário alemão devolvendo o dinheiro obtido. Seu Chaos Communication Congress anual (o C3, entre Natal e Ano Novo) e o Chaos Communication Camp de verão são instituições; sua revista Die Datenschleuder e seus pareceres técnicos a tribunais e parlamentos definem a mistura do clube: hacking mão na massa e advocacy de interesse público."
+      },
+      "2600-magazine": {
+        "def": "The Hacker Quarterly: a voz impressa da cultura hacker desde 1984, e a origem da conferência HOPE e dos encontros 2600 de sexta-feira.",
+        "context": "Editada por Emmanuel Goldstein (Eric Corley) e batizada pelo tom de phreaking de 2600 Hz, a 2600 publica há quatro décadas explorações de sistemas enviadas por leitores, travou batalhas legais históricas (notavelmente o caso DeCSS) e semeou uma rede mundial de encontros na primeira sexta do mês. Sua conferência HOPE (Hackers On Planet Earth) carrega a mesma linhagem - e o editor da revista abriu a primeiríssima YSTS em São Paulo, amarrando esta entrada à cena brasileira."
+      },
+      "ysts": {
+        "def": "You Shot the Sheriff: a conferência brasileira curada de um dia só - com sabor de convite, sediada em bar e famosamente bem conectada.",
+        "context": "Rodando em São Paulo desde o fim dos anos 2000, a YSTS reúne palestrantes nacionais e internacionais escolhidos a dedo num único dia descontraído (tradicionalmente num bar, bebida inclusa), no fim de semana seguinte à BSidesSP. Sua primeira edição foi aberta por Emmanuel Goldstein, da 2600, e a tradição permanece: palestrantes selecionados recebem uma medalha que garante entrada livre em todas as edições futuras. Amplamente tida como o ingresso mais disputado da cena brasileira."
+      },
+      "bsides-sao-paulo": {
+        "def": "A conferência de segurança comunitária e gratuita de São Paulo - nascida dentro do Garoa Hacker Clube em 2011, hoje entre as maiores BSides do mundo.",
+        "context": "A Co0L BSidesSP faz parte do movimento global Security BSides: organizada por voluntários, gratuita e deliberadamente comunitária - dezenas de villages, CTF, lightning talks, uma trilha de arsenal open source brasileiro e o BSides 4 Kids. Tradicionalmente acontece no fim de semana anterior à YSTS; a edição de 2026 marcou quinze anos desde a primeira, realizada dentro do Garoa. Os cachorros-quentes também são grátis, às centenas."
+      },
+      "garoa-hacker-clube": {
+        "def": "O hackerspace de São Paulo - um dos primeiros do Brasil, e a sala onde a BSidesSP nasceu.",
+        "context": "O Garoa (o nome é a famosa garoa paulistana) é um espaço mantido por membros na tradição clássica dos hackerspaces: atividades semanais abertas, bancadas de eletrônica, retrocomputação, lockpicking, grupos de estudo de criptografia e uma cultura de projetos documentada em wiki. Para além das próprias paredes, foi incubadora da cena local, sediando a primeira edição da BSidesSP e alimentando de voluntários boa parte dos eventos comunitários de segurança da cidade."
+      },
+      "mente-binaria": {
+        "def": "A organização sem fins lucrativos brasileira que ensina computação e segurança desde os fundamentos - cursos gratuitos, fórum ativo e ferramentas open source.",
+        "context": "Fundada pelo pesquisador Fernando Mercês, a Mente Binária é formalmente uma instituição de ensino e pesquisa sem fins lucrativos: seus cursos gratuitos CERO (engenharia reversa) e AMO (análise de malware) rodam no canal Papo Binário no YouTube, seu fórum reúne de iniciantes a veteranos, mantém ferramentas open source como o readpe (nascido pev), e programas como o CodeHERS trazem mulheres para a engenharia reversa. Em português, com base nos fundamentos - uma instituição rara e estrutural na cena brasileira."
+      },
+      "h2hc": {
+        "def": "Hackers to Hackers Conference: a mais antiga conferência de pesquisa em segurança da América Latina - São Paulo, todo ano desde 2004.",
+        "context": "A H2HC é a âncora técnica profunda do calendário brasileiro: pesquisa de vulnerabilidades, exploração, engenharia reversa, hardware - a ponta de pesquisa do espectro, com headliners internacionais ao lado de pesquisadores brasileiros e os dias de treinamento da H2HC University. Sua fama de cultura de corredor brincalhonamente 'hostil' é usada como medalha: é a sala onde a barra técnica é mais alta."
+      },
+      "mind-the-sec": {
+        "def": "A conferência de segurança da informação em escala corporativa de São Paulo - onde quem decide no mercado brasileiro encontra o ecossistema de fornecedores.",
+        "context": "O Mind the Sec ocupa a ponta enterprise do espectro brasileiro de conferências: vários dias, exposição pesada, foco executivo - a contraparte dos eventos comunitários (BSidesSP, H2HC) no mesmo calendário. A edição de 2026 acontece de 15 a 17 de setembro em São Paulo. Para praticantes, é a parada de observação do mercado: quem está vendendo o quê para quem na segurança brasileira."
+      },
+      "f5-devcentral": {
+        "def": "A comunidade técnica oficial da F5 - artigos, perguntas e respostas e duas décadas de conhecimento de iRules, com um programa MVP reconhecido.",
+        "context": "O DevCentral (hoje em community.f5.com) é onde praticantes de F5 publicam artigos de profundidade, respondem dúvidas de configuração e compartilham iRules e automação - boa parte do conhecimento de trabalho de BIG-IP fora da documentação oficial mora lá. Seu programa MVP reconhece contribuidores de destaque anualmente. O material F5 deste próprio site cita peças do DevCentral quando elas são a melhor fonte disponível."
+      },
+      "fortinet-community": {
+        "def": "A comunidade oficial de usuários da Fortinet - fóruns, artigos de base de conhecimento e troca de ideias do ecossistema FortiGate.",
+        "context": "A Fortinet Community (community.fortinet.com, sucessora da marca FUSE) é a casa mantida pelo fornecedor para perguntas e respostas de FortiOS, artigos moderados de base de conhecimento e submissão de ideias de produto. Para o troubleshooting diário de FortiGate é a primeira parada depois da documentação - e, ao lado dela, o subreddit independente r/fortinet carrega uma cultura de praticantes notavelmente ativa."
+      },
+      "apisec-university": {
+        "def": "Treinamento gratuito de segurança de APIs com certificado - a rampa mais rápida para o mundo do OWASP API Top 10.",
+        "context": "A APIsec University oferece cursos online gratuitos - API Security Fundamentals, o OWASP API Security Top 10, autenticação de APIs, boas práticas de gateway, pentest de APIs - com badges de conclusão via Credly e certificações como CASA e ACP, servindo bem mais de cem mil alunos. Também realiza a conferência online gratuita APISEC|CON. Adjacente a fornecedor, mas genuinamente educacional: os cursos se sustentam sozinhos."
+      },
+      "reddit": {
+        "def": "A plataforma de discussão em threads e votos cujos subreddits de redes e de fornecedores carregam uma fatia desproporcional do troubleshooting do mundo real.",
+        "context": "Para além da página inicial, os subreddits técnicos do Reddit são infraestrutura de trabalho: o r/networking para discussão de engenharia neutra de fornecedor, e comunidades por fornecedor (o r/fortinet notavelmente ativo; equivalentes existem pelas plataformas que este site cobre) onde praticantes comparam notas mais rápido que os canais oficiais. Não oficiais por natureza - verifique contra a documentação do fornecedor - mas para o 'mais alguém já viu isso?', frequentemente a resposta mais rápida da internet."
+      },
+      "iso-27001": {
+        "def": "O padrão internacional para um sistema de gestão de segurança da informação (ISMS) - a certificação com que a maioria dos trust centers de fornecedores abre.",
+        "context": "A ISO/IEC 27001 (revisão atual 27001:2022) certifica que uma organização opera um sistema documentado e auditado de gestão de risco de segurança da informação por sites, desenvolvimento, suporte e data centers. Os certificados valem três anos com auditorias anuais de acompanhamento. Os três fornecedores que o instrutor deste site leciona - F5, Netskope, Extreme - a possuem, ao lado das irmãs de nuvem 27017 e 27018."
+      },
+      "iso-27017": {
+        "def": "A extensão de segurança em nuvem da ISO 27001 - controles específicos de ser, ou usar, um provedor de nuvem.",
+        "context": "A ISO/IEC 27017:2015 complementa a ISO 27002/27001 com orientação específica de nuvem: responsabilidade compartilhada, hardening de máquinas virtuais, operações de administrador, isolamento de tenant. Não é uma certificação isolada, e sim uma camada de nuvem, por isso quase sempre aparece junto da 27001 e da 27018 na página de conformidade de um provedor."
+      },
+      "iso-27018": {
+        "def": "A extensão de privacidade da ISO 27001 - protegendo informação pessoal identificável processada na nuvem pública.",
+        "context": "A ISO/IEC 27018:2019 define controles para provedores de nuvem que atuam como operadores de PII: consentimento, transparência sobre suboperadores, devolução e exclusão de dados, e restrições ao uso de dados de clientes para publicidade. Mapeia de perto as obrigações do GDPR e fecha o trio 27001/27017/27018 que os fornecedores de nuvem apresentam juntos."
+      },
+      "fedramp": {
+        "def": "O programa padronizado de autorização de segurança do governo dos EUA para serviços de nuvem - baselines High, Moderate e Low.",
+        "context": "O FedRAMP permite que um serviço de nuvem seja avaliado uma vez, contra os controles do NIST SP 800-53, e reutilizado por várias agências federais. Os baselines escalam com a sensibilidade dos dados; o FedRAMP High cobre os dados não classificados mais sensíveis do governo. O GovCloud da Netskope tem FedRAMP High; o Distributed Cloud da F5 carrega autorizações FedRAMP - a credencial que compradores do setor público procuram primeiro."
+      },
+      "pci-dss": {
+        "def": "O padrão de segurança da indústria de cartões para quem armazena, processa ou transmite dados de portadores de cartão.",
+        "context": "O PCI DSS é definido pelo PCI Security Standards Council (as bandeiras de cartão) e estabelece um baseline de requisitos de rede, criptografia, controle de acesso e monitoramento. É contratual, e não governamental, mas o descumprimento traz multas e perda do direito de processar. É item comum de escopo em trust centers de fornecedores mesmo quando o fornecedor nunca toca dados de cartão diretamente, porque clientes implantam seus produtos em ambientes de portadores de cartão."
+      },
+      "hipaa": {
+        "def": "A lei de privacidade em saúde dos EUA que rege a informação de saúde protegida (PHI).",
+        "context": "A HIPAA (1996) define os requisitos de confidencialidade, integridade e disponibilidade para PHI, e suas Security e Privacy Rules descem aos fornecedores como business associates. Um fornecedor declarando alinhamento com HIPAA significa que seus controles e seu Business Associate Agreement apoiam clientes na saúde regulada - uma linha padrão nos trust centers de fornecedores de infraestrutura que servem esse setor."
+      },
+      "csa-star": {
+        "def": "O registro público da Cloud Security Alliance sobre a postura de segurança de provedores de nuvem - da autoavaliação à certificação por terceiros.",
+        "context": "O STAR (Security, Trust, Assurance and Risk) se constrói sobre a Cloud Controls Matrix da CSA: o Nível 1 é uma autoavaliação publicada, o Nível 2 acrescenta certificação por terceiros (muitas vezes pareada com ISO 27001), tudo mapeado a padrões de referência. É a camada de transparência da conformidade em nuvem, deixando compradores comparar provedores contra um único framework de controles específico de nuvem - e amarra todo trust center de fornecedor de volta à CSA."
+      },
+      "cyber-essentials": {
+        "def": "A certificação baseline de higiene cibernética do governo do Reino Unido, operada pelo NCSC.",
+        "context": "O Cyber Essentials define cinco controles técnicos básicos (firewalls, configuração segura, controle de acesso, proteção contra malware, gestão de patches); o Cyber Essentials Plus acrescenta verificação prática. É deliberadamente de nível de entrada - exigido em muitos contratos do setor público britânico - e aparece em trust centers como evidência dos fundamentos, distinto da profundidade da ISO 27001."
+      },
+      "c5": {
+        "def": "A atestação de segurança em nuvem apoiada pelo governo alemão, definida pelo BSI.",
+        "context": "O Cloud Computing Compliance Criteria Catalogue (C5) foi introduzido pelo Federal Office for Information Security (BSI) da Alemanha para dar um baseline consistente e auditável a provedores de nuvem que servem o mercado alemão. Um auditor atesta contra o catálogo; o resultado é amplamente reconhecido nos setores público e privado alemão e da UE - a contraparte alemã de esquemas como o ENS (Espanha) e o IRAP (Austrália) que se agrupam em trust centers multinacionais."
+      },
+      "irap": {
+        "def": "O framework de avaliação da Austrália que permite validar serviços de nuvem contra o manual de segurança do governo.",
+        "context": "O IRAP (Information Security Registered Assessors Program) treina e credencia assessores que avaliam sistemas contra o Information Security Manual (ISM) do Australian Signals Directorate. Uma avaliação IRAP diz aos clientes do governo australiano quais controles estão em vigor e como a responsabilidade é compartilhada - o análogo australiano do FedRAMP, e entrada padrão nos trust centers de fornecedores que vendem nesse mercado."
+      },
+      "data-privacy-framework": {
+        "def": "O mecanismo para transferir legalmente dados pessoais da UE/Reino Unido/Suíça para empresas dos EUA certificadas.",
+        "context": "O EU-U.S. Data Privacy Framework (DPF), com suas extensões do Reino Unido e da Suíça, substituiu o invalidado Privacy Shield. Empresas dos EUA se autocertificam ao Department of Commerce de que atendem proteções equivalentes às da UE, habilitando fluxos transatlânticos de dados sem mecanismos adicionais de transferência. Fica ao lado do GDPR em trust centers focados em privacidade como a resposta de conformidade de transferência."
+      },
+      "nis2": {
+        "def": "A diretiva da UE que expande enormemente as obrigações de cibersegurança por setores essenciais e importantes.",
+        "context": "A NIS2 (Diretiva (UE) 2022/2555) amplia o escopo da NIS original para muito mais setores, aperta os prazos de reporte de incidentes e adiciona responsabilização da alta gestão com penalidades reais. É transposta para a lei nacional de cada estado-membro, e sua chegada é o motivo de trust centers e blogs de fornecedores (o da Extreme entre eles) hoje darem destaque à prontidão para NIS2 para clientes europeus."
+      },
+      "802-1q": {
+        "def": "O padrão IEEE que acrescenta uma tag de VLAN a um quadro Ethernet - o motivo de um enlace físico poder carregar muitas LANs virtuais.",
+        "context": "O 802.1Q insere no cabeçalho Ethernet uma tag de quatro bytes com um VLAN ID de 12 bits (4.094 utilizáveis) e um campo de prioridade. Um enlace com tag entre switches é um trunk; portas de acesso sem tag colocam um dispositivo numa única VLAN. É a base da segmentação em redes comutadas, e vive no grupo de trabalho 802.1, o braço de arquitetura da família 802."
+      },
+      "802-1x": {
+        "def": "Controle de acesso à rede baseado em porta - o padrão IEEE que faz uma porta de switch ou access point autenticar antes de encaminhar tráfego.",
+        "context": "O 802.1X estrutura o handshake: um supplicant (o dispositivo), um authenticator (o switch ou AP) e um servidor de autenticação (geralmente RADIUS) trocam EAP sobre LAN até a porta abrir ou permanecer fechada. É a camada de imposição sob o Wi-Fi corporativo (WPA2/WPA3-Enterprise) e o NAC cabeado, e combina naturalmente com o 802.1Q para colocar dispositivos autenticados na VLAN certa."
+      },
+      "802-3": {
+        "def": "O grupo de trabalho e padrão IEEE do Ethernet - toda velocidade e meio cabeado, além do Power over Ethernet.",
+        "context": "O 802.3 levou o Ethernet do coax 10BASE5 a centenas de gigabits, cada variante uma emenda com letra, e define o PoE nos 802.3af, 802.3at e no de quatro pares 802.3bt. Herdou o quadro de 1500 bytes do DIX Ethernet e repetidamente recusou padronizar jumbo frames - por isso o suporte a 9000 bytes é convenção de fornecedor, não cláusula."
+      },
+      "wifi": {
+        "def": "O nome de consumo para a rede local sem fio construída sobre o IEEE 802.11 - e uma marca de certificação da Wi-Fi Alliance.",
+        "context": "Toda geração de Wi-Fi é uma emenda do 802.11: Wi-Fi 4 (802.11n), Wi-Fi 5 (802.11ac), Wi-Fi 6/6E (802.11ax), Wi-Fi 7 (802.11be-2024). O IEEE escreve o padrão; a Wi-Fi Alliance é dona da marca e conduz a certificação de interoperabilidade, por isso o marketing diz 'Wi-Fi 7' enquanto o datasheet diz '802.11be'. A segurança vem por cima via WPA2 e WPA3."
+      },
+      "wpa": {
+        "def": "O esquema de segurança da Wi-Fi Alliance para redes sem fio - WPA2 e WPA3 hoje, substituindo o quebrado WEP.",
+        "context": "O WPA (Wi-Fi Protected Access) veio como remendo urgente para o WEP; o WPA2 tornou o AES-CCMP o padrão; o WPA3 (2018) acrescentou handshakes mais fortes (SAE) e forward secrecy. Cada um tem um modo Personal (chave pré-compartilhada) e um modo Enterprise que delega a autenticação ao 802.1X/RADIUS. Quando uma rede pede 'WPA2-Enterprise', é o WPA correndo sobre o controle de acesso baseado em porta do grupo 802.1."
+      },
+      "decnet": {
+        "def": "A suíte de rede da Digital Equipment Corporation - o protocolo que rodou a era VAX, evoluindo de raízes proprietárias em direção ao OSI.",
+        "context": "O DECnet (formalmente Digital Network Architecture, DNA) conectava as máquinas PDP e VAX da DEC desde meados dos anos 1970. A Phase IV foi a versão peer-to-peer amplamente implantada dos anos 1980; a Phase V a realinhou sobre protocolos OSI conforme a indústria padronizava. Dividiu segmentos Ethernet dos anos 1990 com o AppleTalk e o IPX antes de o TCP/IP deslocar todos eles - um nome que todo engenheiro de redes da era dos minicomputadores conhecia, e parte da linhagem por trás de fornecedores como a Cabletron, que cresceu cabeando essas máquinas."
+      },
+      "xns": {
+        "def": "A arquitetura de protocolos da Xerox do fim dos anos 1970 - o projeto ancestral que o IPX da Novell, e muito mais, copiou.",
+        "context": "O Xerox Network Systems saiu do PARC ao lado do próprio Ethernet, e seu projeto em camadas (o datagrama IDP no núcleo) virou o arquétipo que os primeiros fornecedores de LAN clonaram. O IPX da Novell é o XNS com o número de série raspado; o Banyan VINES e outros também tomaram emprestado. O XNS em si teve pouca implantação direta, mas como modelo moldou uma geração - notavelmente exceto o AppleTalk, que deliberadamente seguiu o próprio caminho."
+      },
+      "appletalk": {
+        "def": "A suíte de rede plug-and-play da Apple dos anos 1980 e 90 - configuração zero antes de o termo existir, hoje descontinuada.",
+        "context": "Introduzido em 1985, o AppleTalk deixava Macs e LaserWriters autoatribuírem endereços e se encontrarem sem roteador ou servidor - embutido em todo Mac. Rodava sobre LocalTalk, depois EtherTalk (Ethernet) e TokenTalk (Token Ring). Incomum para sua época, não era baseado no Xerox XNS. O TCP/IP o corroeu pelos anos 1990, e a Apple encerrou o suporte no Mac OS X 10.6 (Snow Leopard, 2009), apontando os usuários ao Bonjour - que leva adiante seu espírito de configuração zero sobre IP."
+      },
+      "ipx": {
+        "def": "Os protocolos de rede do NetWare da Novell - o padrão de LAN da era dos servidores de arquivos, derivado do Xerox XNS.",
+        "context": "O IPX (o datagrama de camada 3) e o SPX (o protocolo de conexão de camada 4) foram introduzidos pela Novell em 1983, adaptados do IDP e do SPP do Xerox XNS. Pelo fim dos anos 1980 e 90 o IPX/SPX era o padrão em LANs NetWare - e, como o NetWare dominava arquivo e impressão, numa enorme fatia das redes corporativas. O Windows também o falava. O TCP/IP assumiu por volta da era do Windows XP, e o IPX minguou para legado - o protocolo por trás do NetWare sobre o qual fornecedores como a Novell ergueram um império."
+      },
+      "novell-sap": {
+        "def": "O Service Advertising Protocol do NetWare - como servidores anunciavam 'estou aqui, e é isto que ofereço' por uma rede IPX.",
+        "context": "O SAP deixava servidores de arquivo, de impressão e outros serviços NetWare transmitirem sua existência e tipo para os clientes os acharem sem configuração central. Conveniente em pequena escala, seus broadcasts periódicos viraram um notório problema de escalabilidade em grandes internetworks IPX - roteadores tinham de carregar tabelas SAP cada vez maiores, e as 'SAP storms' eram uma dor de cabeça operacional real. É um caso exemplar de descoberta de serviços que antecede as abordagens baseadas em DNS de hoje."
+      },
+      "sna": {
+        "def": "A arquitetura de rede de mainframe da IBM - o mundo hierárquico que precedeu e por muito tempo coexistiu com o TCP/IP na empresa.",
+        "context": "A Systems Network Architecture (1974) definia como terminais e controladores alcançavam mainframes IBM, numa hierarquia rígida centrada no host (VTAM). Sua camada de enlace era o SDLC. Por décadas a SNA e o TCP/IP rodaram lado a lado em bancos e grandes empresas, com bridge e túnel (DLSw) conforme o IP vencia; depois o APPN acrescentou roteamento peer. Conhecer a SNA explica muito sobre por que a rede corporativa evoluiu como evoluiu, e sobre o equipamento IBM que moldou a indústria."
+      },
+      "ppp": {
+        "def": "O Point-to-Point Protocol - a forma padrão de rodar IP (e mais) sobre um enlace serial, do dial-up à banda larga moderna.",
+        "context": "O PPP enquadra uma conexão ponto a ponto com um Link Control Protocol para levantar a linha e Network Control Protocols para carregar IP e outros tráfegos de camada 3, além de autenticação embutida via PAP ou CHAP. Substituiu o mais tosco SLIP, moveu a internet discada e vive dentro do PPPoE e do PPTP. Quando um enlace de banda larga autentica com usuário e senha, geralmente há PPP por baixo."
+      },
+      "slip": {
+        "def": "O Serial Line Internet Protocol - a forma mínima, pré-PPP, de colocar pacotes IP numa linha serial.",
+        "context": "O SLIP quase não faz nada: marca os limites do pacote IP num enlace serial e nada mais - sem negociação de endereço, sem autenticação, sem suporte a outros protocolos além do IP, sem detecção de erro. Carregou a internet discada inicial até o PPP, com todos os recursos que faltavam ao SLIP, o substituir. Uma variante comprimida (CSLIP) espremia os cabeçalhos TCP/IP. Sobrevive sobretudo como história e em contextos embarcados minúsculos."
+      },
+      "ml-ppp": {
+        "def": "Multilink PPP - agrupar vários enlaces físicos numa única conexão PPP lógica por mais banda.",
+        "context": "O Multilink PPP (MP) fragmenta o tráfego por múltiplos enlaces - dois canais B de ISDN, várias linhas seriais - e o remonta na outra ponta, apresentando um único cano com a capacidade somada. Era a forma clássica de obter mais que a vazão de um circuito antes dos enlaces baratos de alta velocidade, comum em ISDN e T1s agrupados, e se apoia na mesma maquinaria de LCP/autenticação do PPP comum."
+      },
+      "chap": {
+        "def": "O Challenge-Handshake Authentication Protocol - a alternativa segura do PPP a enviar a senha em texto claro.",
+        "context": "O CHAP autentica por desafio e resposta: o authenticator envia um desafio aleatório, o peer responde com um hash do desafio mais um segredo compartilhado, e o segredo em si nunca cruza o fio. Também pode redesafiar no meio da sessão. As variantes MS-CHAP da Microsoft o estenderam. É a mais segura das duas opções de autenticação do PPP - a outra, o PAP, envia a senha em texto claro - e o padrão se repete por toda a autenticação de rede."
+      },
+      "pap": {
+        "def": "O Password Authentication Protocol - a forma mais simples, e menos segura, de o PPP fazer login: a senha em texto claro.",
+        "context": "O PAP envia usuário e senha pelo enlace sem proteção, numa única troca. É trivial de implementar e trivial de farejar, por isso o CHAP existe e por isso o PAP só é aceitável quando o próprio enlace já é criptografado ou confiável. Perdura como fallback e como o exemplo de livro-texto de por que os protocolos de autenticação evoluíram para desafio-resposta e para longe de enviar o segredo."
+      },
+      "hdlc": {
+        "def": "O High-Level Data Link Control - o padrão de enquadramento da ISO que sustenta toda uma família de protocolos seriais.",
+        "context": "O HDLC define como delimitar e verificar erros de quadros num enlace serial síncrono, e é fundacional: o LAPB do X.25, o Frame Relay, o LAPD do ISDN e o encapsulamento serial padrão da Cisco são todos derivados do HDLC. Descende do SDLC da IBM, generalizado pela ISO num padrão neutro de fornecedor. Você raramente configura 'HDLC' pelo nome, mas sua estrutura de quadro está silenciosamente sob boa parte da rede WAN clássica."
+      },
+      "sdlc": {
+        "def": "O Synchronous Data Link Control da IBM - o protocolo de enlace da SNA, e o ancestral do HDLC.",
+        "context": "O SDLC (meados dos anos 1970) era o protocolo de enlace síncrono e orientado a bit da IBM para conectar terminais e controladores na SNA. A ISO o generalizou no HDLC, que por sua vez semeou o LAPB, o LAPD e o resto da família serial - então o SDLC fica na raiz dessa árvore. Por direito próprio carregou tráfego de mainframe IBM por décadas, e migrar o SDLC para IP (conversão SDLC-para-LLC, DLSw) era um projeto corporativo padrão conforme o TCP/IP assumia."
+      },
+      "frame-relay": {
+        "def": "O serviço WAN de comutação de pacotes que substituiu o X.25 e definiu a conectividade corporativa dos anos 1990 e 2000.",
+        "context": "O Frame Relay descende diretamente do X.25 (ambos remontam ao trabalho de comutação de pacotes de 1976), mas retira a correção de erro por salto que o X.25 precisava nas linhas analógicas ruidosas, apostando em enlaces digitais mais limpos por velocidade. Os sites compravam circuitos virtuais (identificados por DLCI) com uma taxa de informação comprometida (CIR) em vez de uma malha de linhas dedicadas. Foi o cavalo de batalha da WAN até o MPLS e as VPNs IP o deslocarem - o serviço que uma geração de roteadores corporativos foi feita para falar."
+      },
+      "x25": {
+        "def": "O primeiro padrão de comutação de pacotes amplamente implantado - o protocolo de 1976 da ITU-T que rodou WANs, caixas eletrônicos e redes de cartão por décadas.",
+        "context": "O X.25 foi finalizado pelo CCITT (hoje ITU-T) em 1976 - mais antigo que o IPv4 e o modelo OSI - como um serviço de pacotes por circuito virtual sobre os enlaces analógicos ruidosos da época, com pesada verificação de erro por salto (sua camada de enlace, o LAPB, é baseada em HDLC). Carregou transações financeiras, reservas aéreas e as primeiras WANs corporativas; redes de cartão de crédito o usaram até os anos 2010, e a aviação ainda usa. O Frame Relay é seu sucessor mais enxuto. Um ancestral genuíno da rede de pacotes moderna."
+      },
+      "x21": {
+        "def": "A interface da ITU-T para redes de dados por comutação de circuitos - o padrão serial de camada física que muitas vezes ficava sob o X.25.",
+        "context": "O X.21 define a interface física e de sinalização entre o equipamento terminal de dados e uma rede pública de dados por comutação de circuitos - o conector, as tensões e o handshake de estabelecimento de chamada. Foi usado diretamente em redes de dados por comutação de circuitos e como camada física sob o X.25 em partes da Europa. Hoje bastante histórico, é o padrão 'X-ponto' companheiro do X.25: o X.25 o protocolo de pacotes, o X.21 a interface serial sobre a qual ele podia correr."
       }
     },
     "totalCount": "{count} termos",

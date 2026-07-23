@@ -1,0 +1,46 @@
+---
+slug: ieee-802-working-groups
+title: "The IEEE 802 family, group by group"
+summary: "802 is not one standard but a committee of working groups, each owning a slice of the lower two layers. Here is the map: who owns Ethernet, who owns Wi-Fi, what the numbers after the dot mean, and which groups are alive, hibernating, or long dead."
+concepts: ["ieee", "ethernet", "vlan", "wifi", "802-1x", "poe"]
+relatedTools: ["oui-lookup"]
+relatedArticles: ["jumbo-frames", "what-is-an-algorithm"]
+category: networking
+order: 232
+status: reviewed
+updated: "2026-07-22"
+---
+
+## One committee, many working groups
+
+When a datasheet says a switch is "802.1Q capable" or a laptop does "802.11ax", the number is a street address inside a single organization: the IEEE 802 LAN/MAN Standards Committee, known internally as the LMSC. It was formed in February 1980 - which, in one popular telling, is where the "802" itself comes from - and it develops the standards for local, metropolitan, and personal area networks through an open, accredited process.
+
+The committee does not write standards as a monolith. It delegates each technology area to a **working group**, and the number after the "802." tells you which one. 802.3 is the Ethernet working group. 802.11 is the Wireless LAN working group. 802.1 handles bridging and the architecture that ties the family together. A trailing letter (or letters) names a specific amendment produced by that group: 802.11ac, 802.11ax, 802.3bt. So "802.11be" parses as *the Wireless LAN group's amendment "be"* - the one the market calls Wi-Fi 7.
+
+One structural point explains a lot of the vocabulary. The 802 committee split the OSI data link layer into two sublayers: the **Logical Link Control** (LLC) on top, once its own working group (802.2), and the **Media Access Control** (MAC) underneath, which is where each technology's rules for sharing the medium actually live. When people say "MAC address", the MAC in question is this sublayer.
+
+## The load-bearing groups
+
+A handful of working groups carry almost everything this site touches.
+
+**802.1 - Higher Layer LAN Protocols (the architecture group).** 802.1 owns the glue: bridging, and the VLAN tag format 802.1Q that lets one physical link carry many virtual LANs. It owns 802.1X, the port-based network access control that turns a switch port or an access point into an authentication checkpoint - the front half of enterprise Wi-Fi and wired NAC. And the spanning tree lineage that keeps a bridged topology loop-free traces to 802.1D and its successors. If Ethernet is the road, 802.1 is the traffic law.
+
+**802.3 - Ethernet.** The largest and busiest group. It has carried Ethernet from 10BASE5 thick coax in the early 1980s through twisted-pair, fiber, and on to hundreds of gigabits per second, each speed and medium arriving as a lettered amendment. 802.3 is also where **Power over Ethernet** is defined: the original 802.3af, the higher-power 802.3at (PoE+), and the four-pair 802.3bt (PoE++ / Type 3 and 4) that powers today's access points and cameras. Notably, 802.3 has repeatedly *declined* to standardize the 9000-byte jumbo frame - which is why jumbo support is a vendor convention, not a clause.
+
+**802.11 - Wireless LAN (Wi-Fi).** Every Wi-Fi generation is an 802.11 amendment: 802.11n (Wi-Fi 4), 802.11ac (Wi-Fi 5), 802.11ax (Wi-Fi 6 and 6E), and **802.11be (Wi-Fi 7), published as IEEE Std 802.11be-2024**. The group is highly active - recent amendments through 2024 and 2025 extend it into sensing (802.11bf) and other directions - and, like all 802 standards, its documents become free to download six months after publication under the IEEE GET program.
+
+**802.15 - Wireless Specialty Networks.** Formerly the Wireless Personal Area Network group, 802.15 is the home of short-range wireless: its Task Group 1 was based on **Bluetooth**, and 802.15.4 is the low-rate PHY/MAC that **Zigbee** and Thread build on top of. When you see Bluetooth or Zigbee described as "802.15", this is the group.
+
+## Alive, hibernating, and disbanded
+
+The 802 committee keeps a public register of which groups are active, which are **hibernating** (dormant but revivable), and which are **disbanded**. It is a useful map of networking history, because a technology's status here often mirrors its fate in the market.
+
+Still active alongside the four above are the radio-regulatory and coexistence groups - 802.18 (Radio Regulatory), 802.19 (Wireless Coexistence), 802.24 (Vertical Applications) - and the 5G/IMT-2020 standing committee.
+
+Hibernating: **802.16**, Broadband Wireless Access, the group behind WiMAX; **802.21**, Media Independent Handover; and **802.22**, Wireless Regional Area Networks. Dormant rather than dead - the standards remain in force until withdrawn.
+
+Disbanded, and worth knowing as history: **802.2** (Logical Link Control - folded into the architecture once the LLC sublayer stabilized), **802.4** (Token Bus), **802.5** (**Token Ring**, IBM's ring technology that Ethernet outcompeted), **802.6** (Metropolitan Area Network), and **802.14** (Cable Modem, superseded by DOCSIS). A standard staying "in place until replaced or withdrawn" is why you can still meet 802.5 gear in the wild decades after its group closed.
+
+## Reading an 802 label
+
+Put together, the grammar is simple. **`802.<group>`** names the technology area; a **trailing letter** names an amendment within it; and the working group's status tells you whether the technology is current, coasting, or historical. 802.1Q is a VLAN tag. 802.3bt is four-pair PoE. 802.11be is Wi-Fi 7. And 802.5 is a museum piece with a working group that closed years ago. Once the addressing clicks, the alphabet soup on every switch and access-point datasheet resolves into a map you can actually read.

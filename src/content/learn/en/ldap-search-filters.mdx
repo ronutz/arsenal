@@ -1,0 +1,36 @@
+---
+slug: ldap-search-filters
+title: "LDAP search filters: reading the parentheses"
+summary: "Every directory query - PingDirectory, Active Directory, any LDAP server - comes down to one filter string in prefix notation. How to read it: the operators, the six match types, the escapes, the famous AD bit-filter OIDs, and why an unindexed filter can take down a directory."
+concepts: ["ldap", "active-directory", "kerberos"]
+relatedTools: ["ldap-filter-explainer"]
+relatedArticles: ["ldap-fundamentals", "oidc-authorization-code-flow"]
+category: security
+order: 238
+status: reviewed
+updated: "2026-07-22"
+---
+
+## Prefix notation, or why the operator comes first
+
+An LDAP filter puts the operator *before* its operands, each filter wrapped in parentheses: `(&(objectClass=person)(sn=Nützmann))` means AND-of-two-conditions, not "objectClass and-equals person". Once that clicks, every filter reads the same way from the outside in: the first character after `(` tells you what kind of node you are looking at - `&` for AND, `|` for OR, `!` for NOT (which takes exactly one child), or an attribute name, which means you have reached a leaf condition. The grammar is RFC 4515, and it is small enough to hold in your head - which is exactly what this article is for.
+
+## The six ways a leaf can match
+
+A leaf condition is `attribute`, an operator, and a value, and there are six operators to know. **Equality** (`=`) is the workhorse. **Presence** (`=*`) - a lone asterisk - asks only whether the attribute exists at all: `(mail=*)` finds everyone who has any mail value. **Substring** uses asterisks as wildcards inside the value: `(cn=Rod*fo)` means starts-with-Rod, ends-with-fo, and each starred segment is evaluated in order. **Greater-or-equal** (`>=`) and **less-or-equal** (`<=`) do ordered comparison under the attribute's syntax - timestamps and integers, mostly; note there is no plain `>` or `<` in the grammar. And **approximate** (`~=`) is the odd one out: a server-defined "sounds like" rule that behaves differently on every implementation, which is why production filters almost never use it.
+
+## Escapes: the four characters that need armor
+
+Because `(`, `)`, `*`, and `\` are structural, a value containing them must escape them as a backslash plus two hex digits: `\28`, `\29`, `\2a`, `\5c` (and `\00` for NUL). So a user literally named "R*od (admin)" is searched as `(cn=R\2aod \28admin\29)`. This is the single most common source of broken filters in application code - and, when unescaped user input flows straight into a filter string, the mechanism behind **LDAP injection**, the directory world's cousin of SQL injection. The rule is the same as it ever was: escape at the boundary, always.
+
+## Extensible matches, and the three numbers AD admins tattoo somewhere
+
+The strangest leaf form is the **extensible match**: `attribute:rule:=value`, where the rule is an OID selecting *how* to compare. In the wild this almost always means Active Directory's three famous rules. `(userAccountControl:1.2.840.113556.1.4.803:=2)` is bit-AND - true when all the bits of the value are set in the attribute - and with value 2 it is *the* idiom for "disabled accounts", because bit 1 of userAccountControl is ACCOUNTDISABLE. Rule `...804` is bit-OR (any bit set), and `...1941` - LDAP_MATCHING_RULE_IN_CHAIN - walks nested group membership transitively: `(memberOf:1.2.840.113556.1.4.1941:=cn=Admins,ou=Groups,dc=example,dc=com)` matches members of Admins *and of every group inside it*, at the price of one of the most expensive evaluations a domain controller can perform.
+
+## The performance chapter nobody reads until the outage
+
+A filter is not just logic; it is a query plan. Directories answer equality and presence tests fast when the attribute is **indexed** - and degrade to scanning candidate sets when it is not. Leading-wildcard substrings (`(cn=*son)`) defeat ordinary indexes entirely, the same way `LIKE '%son'` does in SQL. This is why PingDirectory's administration exam spends an objective on creating and managing indexes, and why its `summarize-access-log` tooling exists: the unindexed filter that worked fine in the lab is the classic cause of the directory that falls over on Monday morning. The habit to build: know which attributes your filters touch, and know whether they are indexed - *before* the filter ships.
+
+## A working gallery
+
+Filters compose, so real ones are just the pieces above, nested. "Enabled people with a corporate address": `(&(objectClass=user)(mail=*@example.com)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))`. "Anyone in Engineering or Support, by nested membership": `(|(memberOf:1.2.840.113556.1.4.1941:=cn=Eng,...)(memberOf:1.2.840.113556.1.4.1941:=cn=Support,...))`. "Stale machine accounts": `(&(objectClass=computer)(pwdLastSet<=133500000000000000))`. Paste any of them - or your own - into the LDAP filter explainer on this site, and every node comes back annotated: the operators, the match types, the decoded escapes, and the recognized OIDs by name. The parentheses stop being noise the day you can read them; the tool exists to get you there faster.

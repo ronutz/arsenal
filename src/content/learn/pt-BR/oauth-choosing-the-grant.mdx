@@ -1,0 +1,46 @@
+---
+slug: oauth-choosing-the-grant
+title: "Fluxos OAuth: escolhendo o grant em 2026"
+summary: "Uma decisão inicia toda integração: qual fluxo. A resposta moderna é curta - authorization code + PKCE para humanos, client credentials para máquinas, device grant para TVs - e as razões pelas quais implicit e ROPC morreram valem saber de cor. A RFC 9700 finalmente escreveu tudo isso."
+concepts: ["oauth", "oidc", "pkce", "jwt"]
+relatedTools: ["oauth-flow-chooser"]
+relatedArticles: ["oauth-client-types", "oauth-code-flow", "oidc-authorization-code-flow"]
+category: security
+order: 239
+status: reviewed
+updated: "2026-07-22"
+---
+
+## A pergunta que inicia toda integração
+
+Antes dos escopos, antes dos tempos de vida de token, antes de uma única redirect URI ser registrada no PingFederate ou no PingOne, existe uma decisão: *qual grant*. O cardápio original do OAuth 2.0 (RFC 6749) oferecia quatro, o ecossistema acrescentou outros, e dois dos originais foram desde então formalmente aposentados - então o cardápio honesto de 2026 é mais curto do que a especificação sugere. Em janeiro de 2025 o IETF publicou a **RFC 9700**, a Best Current Practice de Segurança do OAuth 2.0, que transformou uma década de sabedoria operacional duramente conquistada em texto normativo. Este artigo é essa decisão, em prosa; o seletor de fluxo deste site é a mesma decisão, como ferramenta.
+
+## Uma pergunta resolve a maior parte: o cliente consegue guardar um segredo?
+
+Um **cliente confidencial** - um app web server-side, um serviço de backend - consegue manter um client secret (ou melhor, uma chave privada) onde usuários não veem. Um **cliente público** - uma single-page app no navegador, um app nativo no celular - não consegue: tudo que ele embarca, embarca para território que o usuário controla. Essa única distinção, desenvolvida por completo no artigo de tipos de cliente, dirige a maior parte da decisão de grant, porque os fluxos diferem principalmente em quanto podem confiar no cliente para se autenticar.
+
+## O cavalo de batalha: authorization code, agora sempre com PKCE
+
+Para qualquer coisa em que um humano faz login, a resposta é o **fluxo authorization code**: o app manda o navegador do usuário ao servidor de autorização, o usuário se autentica lá (nunca no app), e o app troca o código retornado por tokens. O que mudou ao longo dos anos foi uma adição que a RFC 9700 agora recomenda para *todo* cliente, confidencial incluído: o **PKCE** (RFC 7636). O app inventa um `code_verifier` secreto por requisição, envia seu hash de antemão, e precisa apresentar o original na hora da troca - assim um código interceptado ou injetado não vale nada sem ele. Para SPAs e apps nativos, que não têm client secret algum, PKCE não é um aprimoramento; é o modelo de segurança.
+
+Apps nativos carregam uma regra a mais, da RFC 8252: use o **navegador do sistema**, nunca um webview embutido. O webview deixa o app assistir o usuário digitar a senha - exatamente a exposição de credencial que o OAuth existe para impedir - e não compartilha as sessões existentes do navegador, então o single sign-on quebra também. O redirect de https reivindicado ou esquema próprio traz o usuário de volta ao app quando a dança termina.
+
+## Quando não há humano: client credentials
+
+Chamadas serviço-a-serviço não têm usuário para redirecionar, nem consentimento para colher. O cliente se autentica como *ele mesmo* - segredo, JWT de chave privada, ou TLS mútuo - e recebe um token sob sua própria autoridade: o grant **client credentials**, RFC 6749 §4.4. Dois hábitos o mantêm limpo. Primeiro, sem refresh tokens: a RFC diz que um NÃO DEVE ser emitido, porque o cliente pode simplesmente se autenticar de novo. Segundo, resista à tentação de contrabandear um "usuário de conta de serviço" por ele: se o contexto de um humano está na requisição, não é máquina-a-máquina, e fingir o contrário constrói um buraco de auditoria.
+
+## Quando não há teclado: o device grant
+
+A televisão, o console, o quiosque: um redirect via navegador é impossível onde digitar é um sofrimento. O **device authorization grant** (RFC 8628) divide o fluxo entre dois dispositivos: o limitado exibe um `user_code` curto e uma URL de verificação, o usuário aprova no celular ou notebook, e o dispositivo consulta o token endpoint até a aprovação chegar. Todo mundo que já ativou um app de streaming numa TV executou esse fluxo.
+
+## Os aposentados: implicit e ROPC, e por que tiveram que ir
+
+O **grant implicit** devolvia tokens diretamente no fragmento da URL - sem troca de código, sem autenticação de cliente, sem jeito de amarrar o token a quem pediu. Fragmentos vazam por histórico, referrers e scripts injetados, e nada restringe ao remetente o que chega. A RFC 9700 direciona para authorization code + PKCE, e a consolidação OAuth 2.1 remove o implicit de vez. O grant de **resource owner password credentials** era pior de um jeito mais silencioso: a aplicação coleta a senha real do usuário. Essa única escolha de projeto quebra MFA, quebra federação, treina usuários a digitar credenciais em apps arbitrários, e entrega a cada app integrado um passivo em formato de phishing. A linguagem da RFC 9700 é MUST NOT. Quando o console de um fornecedor ainda mostra esses grants, eles existem para migração de legado - não para trabalho novo.
+
+## Acesso offline, feito como gente grande
+
+Refresh tokens são como um app trabalha enquanto o usuário dorme - e são credenciais de vida longa, então seu manuseio define o seu risco. Um cliente confidencial os guarda no servidor, ao lado do segredo, e é basicamente isso. O cliente público é o caso interessante, e a RFC 9700 lhe dá duas formas aceitáveis: restringir o token ao remetente, ou **rotacioná-lo** - cada refresh emite um novo refresh token e invalida o antigo, então um roubado morre na primeira vez que o ladrão e o app correm para usá-lo. Provedores de identidade por todo o mercado, PingOne incluído, implementam rotação exatamente por isso.
+
+## A decisão inteira, num fôlego
+
+Humano presente: authorization code, PKCE sempre, segredo também se existe backend, o escopo `openid` do OIDC por cima quando você precisa saber *quem*. Sem humano: client credentials, sem refresh token. Sem teclado: device grant. Nunca: implicit, nunca: senhas dentro de apps. Essa é a tabela moderna inteira - e o seletor de fluxo deste site a recita de volta, com citações de RFC, para o que quer que você esteja construindo.

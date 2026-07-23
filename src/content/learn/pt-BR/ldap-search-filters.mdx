@@ -1,0 +1,36 @@
+---
+slug: ldap-search-filters
+title: "Filtros de busca LDAP: lendo os parênteses"
+summary: "Toda consulta a diretório - PingDirectory, Active Directory, qualquer servidor LDAP - se resume a uma string de filtro em notação prefixada. Como lê-la: os operadores, os seis tipos de correspondência, os escapes, os famosos OIDs de bit-filter do AD, e por que um filtro sem índice pode derrubar um diretório."
+concepts: ["ldap", "active-directory", "kerberos"]
+relatedTools: ["ldap-filter-explainer"]
+relatedArticles: ["ldap-fundamentals", "oidc-authorization-code-flow"]
+category: security
+order: 238
+status: reviewed
+updated: "2026-07-22"
+---
+
+## Notação prefixada, ou por que o operador vem primeiro
+
+Um filtro LDAP põe o operador *antes* dos operandos, cada filtro embrulhado em parênteses: `(&(objectClass=person)(sn=Nützmann))` significa E-de-duas-condições, não "objectClass e-igual person". Quando isso encaixa, todo filtro se lê do mesmo jeito, de fora para dentro: o primeiro caractere depois de `(` diz que tipo de nó você está olhando - `&` para E, `|` para OU, `!` para NÃO (que aceita exatamente um filho), ou um nome de atributo, o que significa que você chegou a uma condição folha. A gramática é a RFC 4515, e é pequena o bastante para caber na cabeça - que é exatamente o propósito deste artigo.
+
+## As seis formas de uma folha corresponder
+
+Uma condição folha é `atributo`, um operador e um valor, e há seis operadores a conhecer. **Igualdade** (`=`) é o cavalo de batalha. **Presença** (`=*`) - um asterisco sozinho - pergunta apenas se o atributo existe: `(mail=*)` encontra todo mundo que tem algum valor de mail. **Substring** usa asteriscos como curingas dentro do valor: `(cn=Rod*fo)` significa começa-com-Rod, termina-com-fo, e cada segmento entre asteriscos é avaliado em ordem. **Maior-ou-igual** (`>=`) e **menor-ou-igual** (`<=`) fazem comparação ordenada conforme a sintaxe do atributo - timestamps e inteiros, na maior parte; note que não existe `>` nem `<` puros na gramática. E a **aproximada** (`~=`) é o ponto fora da curva: uma regra "parece com" definida pelo servidor, que se comporta diferente em cada implementação - por isso filtros de produção quase nunca a usam.
+
+## Escapes: os quatro caracteres que precisam de armadura
+
+Como `(`, `)`, `*` e `\` são estruturais, um valor que os contenha precisa escapá-los como barra invertida mais dois dígitos hexadecimais: `\28`, `\29`, `\2a`, `\5c` (e `\00` para NUL). Então um usuário literalmente chamado "R*od (admin)" é buscado como `(cn=R\2aod \28admin\29)`. Essa é a fonte mais comum de filtros quebrados em código de aplicação - e, quando entrada de usuário sem escape flui direto para uma string de filtro, o mecanismo por trás da **injeção de LDAP**, a prima do mundo dos diretórios da injeção de SQL. A regra é a de sempre: escape na fronteira, sempre.
+
+## Correspondências extensíveis, e os três números que admins de AD tatuam em algum lugar
+
+A forma de folha mais estranha é a **correspondência extensível**: `atributo:regra:=valor`, onde a regra é um OID escolhendo *como* comparar. No mundo real isso quase sempre significa as três regras famosas do Active Directory. `(userAccountControl:1.2.840.113556.1.4.803:=2)` é bit-AND - verdadeiro quando todos os bits do valor estão ligados no atributo - e com valor 2 é *o* idioma para "contas desabilitadas", porque o bit 1 do userAccountControl é ACCOUNTDISABLE. A regra `...804` é bit-OR (qualquer bit ligado), e a `...1941` - LDAP_MATCHING_RULE_IN_CHAIN - percorre pertencimento aninhado a grupos transitivamente: `(memberOf:1.2.840.113556.1.4.1941:=cn=Admins,ou=Groups,dc=example,dc=com)` corresponde a membros de Admins *e de todo grupo dentro dele*, ao preço de uma das avaliações mais caras que um controlador de domínio pode executar.
+
+## O capítulo de desempenho que ninguém lê até o incidente
+
+Um filtro não é só lógica; é um plano de consulta. Diretórios respondem testes de igualdade e presença rápido quando o atributo está **indexado** - e degradam para varrer conjuntos de candidatos quando não está. Substrings com curinga no início (`(cn=*son)`) derrotam índices comuns por completo, do mesmo jeito que `LIKE '%son'` faz no SQL. É por isso que a prova de administração do PingDirectory dedica um objetivo a criar e gerenciar índices, e por isso o ferramental `summarize-access-log` dele existe: o filtro sem índice que funcionava bem no laboratório é a causa clássica do diretório que cai na segunda-feira de manhã. O hábito a construir: saiba quais atributos seus filtros tocam, e saiba se estão indexados - *antes* de o filtro ir para produção.
+
+## Uma galeria de trabalho
+
+Filtros compõem, então os reais são só as peças acima, aninhadas. "Pessoas habilitadas com endereço corporativo": `(&(objectClass=user)(mail=*@example.com)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))`. "Qualquer um em Engenharia ou Suporte, por pertencimento aninhado": `(|(memberOf:1.2.840.113556.1.4.1941:=cn=Eng,...)(memberOf:1.2.840.113556.1.4.1941:=cn=Support,...))`. "Contas de máquina obsoletas": `(&(objectClass=computer)(pwdLastSet<=133500000000000000))`. Cole qualquer um deles - ou os seus próprios - no explicador de filtros LDAP deste site, e cada nó volta anotado: os operadores, os tipos de correspondência, os escapes decodificados, e os OIDs reconhecidos pelo nome. Os parênteses deixam de ser ruído no dia em que você consegue lê-los; a ferramenta existe para chegar lá mais rápido.

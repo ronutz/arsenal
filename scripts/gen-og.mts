@@ -117,8 +117,15 @@ function vendorColor(vendor: string): string {
 
 /** Article frontmatter title + description from the mdx file. */
 function articleCard(slug: string, locale: string) {
-  const p = `src/content/learn/${locale}/${slug}.mdx`;
-  const src = read(fs.existsSync(path.join(ROOT, p)) ? p : `src/content/learn/en/${slug}.mdx`);
+  // Learn article first; blog posts (same frontmatter shape: title + summary)
+  // fall back to the blog content tree so /blog posts get real OG cards too.
+  const candidates = [
+    `src/content/learn/${locale}/${slug}.mdx`,
+    `src/content/learn/en/${slug}.mdx`,
+    `src/content/blog/${locale}/${slug}.mdx`,
+    `src/content/blog/en/${slug}.mdx`,
+  ];
+  const src = read(candidates.find((c) => fs.existsSync(path.join(ROOT, c))) ?? candidates[1]);
   const fm = src.slice(0, src.indexOf("---", 4));
   const title = fm.match(/^title:\s*["']?(.+?)["']?\s*$/m)?.[1] ?? slug;
   const description = fm.match(/^summary:\s*["']?(.+?)["']?\s*$/m)?.[1] ?? "";
@@ -351,6 +358,7 @@ const STATIC_PAGES: { slug: string; title: Record<string, string>; tagline: Reco
   { slug: "", title: { en: "Network, security, and identity tools", "pt-BR": "Ferramentas de rede, segurança e identidade" }, tagline: { en: "Deterministic, local-compute tools by Rodolfo Nützmann - teaching enterprise networks since 1996.", "pt-BR": "Ferramentas determinísticas de computação local, por Rodolfo Nützmann - ensinando redes corporativas desde 1996." }, brand: true },
   { slug: "tools", title: { en: "Tools", "pt-BR": "Ferramentas" }, tagline: { en: "Deterministic network, security, and identity tools that compute, never guess.", "pt-BR": "Ferramentas determinísticas de rede, segurança e identidade que calculam, nunca chutam." } },
   { slug: "learn", title: { en: "Learn", "pt-BR": "Aprender" }, tagline: { en: "Grounded articles on networking, security, and identity - sourced, never hand-wavy.", "pt-BR": "Artigos fundamentados sobre redes, segurança e identidade - com fontes, nunca vagos." } },
+  { slug: "blog", title: { en: "Blog", "pt-BR": "Blog" }, tagline: { en: "Dated commentary on networking, security, and identity - written from a point of view.", "pt-BR": "Comentários datados sobre redes, segurança e identidade - escritos a partir de um ponto de vista." } },
   { slug: "certifications", title: { en: "Certification study guides", "pt-BR": "Guias de estudo para certificação" }, tagline: { en: "Blueprint-guided study maps: every exam objective linked to the articles, tools, and manuals that teach it.", "pt-BR": "Mapas de estudo guiados pelo blueprint: cada objetivo ligado aos artigos, ferramentas e manuais que o ensinam." } },
   { slug: "study-guides", title: { en: "Study guides", "pt-BR": "Guias de estudo" }, tagline: { en: "Curated reading paths through the Learn library, plus blueprint-mapped certification guides - all free.", "pt-BR": "Trilhas de leitura pela biblioteca Learn e guias de certificação mapeados por blueprint - tudo gratuito." } },
   { slug: "glossary", title: { en: "Glossary", "pt-BR": "Glossário" }, tagline: { en: "Plain-language definitions for networking, security, and identity terms.", "pt-BR": "Definições em linguagem clara para termos de rede, segurança e identidade." } },
@@ -371,7 +379,12 @@ function enumerateJobs(): Job[] {
   const tpStart = routeSrc.indexOf("const TOOL_PAGES");
   const tpSeg = routeSrc.slice(tpStart, routeSrc.indexOf("generateStaticParams", tpStart));
   const builtTools = [...tpSeg.matchAll(/^ {2}"?([a-z0-9-]+)"?:\s*\{/gm)].map((m) => m[1]);
-  const articleSlugs = fs.readdirSync(path.join(ROOT, "src/content/learn/en")).filter((f) => f.endsWith(".mdx")).map((f) => f.replace(/\.mdx$/, ""));
+  const mdxSlugs = (dir: string) =>
+    fs.existsSync(path.join(ROOT, dir))
+      ? fs.readdirSync(path.join(ROOT, dir)).filter((f) => f.endsWith(".mdx")).map((f) => f.replace(/\.mdx$/, ""))
+      : [];
+  // Learn articles + blog posts share the "article" card kind (same frontmatter).
+  const articleSlugs = [...new Set([...mdxSlugs("src/content/learn/en"), ...mdxSlugs("src/content/blog/en")])];
   const glossaryReg = read("src/content/glossary/glossary.ts");
   const glossarySlugs = [...glossaryReg.matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
   const guideReg = read("src/content/certifications/study-guides.ts");

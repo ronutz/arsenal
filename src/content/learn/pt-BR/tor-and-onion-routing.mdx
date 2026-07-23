@@ -1,0 +1,61 @@
+---
+slug: tor-and-onion-routing
+title: "Tor: como o roteamento em cebola realmente funciona, e o que ele não protege"
+summary: "O roteamento em cebola foi inventado num laboratório da Marinha dos EUA, e esse paradoxo é a chave para entendê-lo: anonimato só funciona se a multidão for diversa. Como um circuito de três saltos é construído, o que são de fato os serviços onion, o modelo de ameaças que o Tor admite abertamente perder, e por que a maior parte do tráfego Tor nunca toca a dark web."
+concepts: ["onion-routing", "dark-web", "darknet", "deep-web", "vpn"]
+relatedTools: ["ja3-tls-fingerprint"]
+relatedArticles: ["peer-to-peer-evolution"]
+category: security
+order: 242
+status: reviewed
+updated: "2026-07-23"
+---
+
+## O paradoxo na origem
+
+O roteamento em cebola foi inventado em meados dos anos 1990 no **Laboratório de Pesquisa Naval dos Estados Unidos** (US Naval Research Laboratory), por Paul Syverson com David Goldschlag e Michael Reed. Soa como contradição — um laboratório militar construindo uma ferramenta para derrotar a vigilância — até você ver o problema que eles de fato tinham. Se o tráfego de inteligência sai por uma rede obviamente governamental, os metadados entregam o jogo antes de alguém quebrar a criptografia. Saber *que* uma conexão aconteceu, e entre quem, costuma valer mais do que saber o que ela disse.
+
+A solução tem uma consequência incômoda, e ela é a ideia mais importante de todo este assunto: **uma rede usada só por espiões não protege espião nenhum**. Se todo mundo na rede é um analista da Marinha, então estar na rede identifica você como um analista da Marinha. Anonimato exige uma multidão, e a multidão precisa ser variada. Roger Dingledine e Nick Mathewson depois intitularam um artigo sobre isso de "Anonymity Loves Company" (o anonimato adora companhia). Então a ferramenta tinha que ser lançada publicamente, para todos, inclusive para pessoas que a Marinha jamais escolheria como aliadas. O alfa do Tor saiu em **20 de setembro de 2002**; o NRL liberou o código sob licença livre em 2004; a EFF financiou; e **o Tor Project virou uma organização sem fins lucrativos 501(c)(3) em 2006**. A força do projeto depende de servir pessoas com motivos incompatíveis — que é também por que discussões sobre "para quem o Tor serve" costumam errar o alvo.
+
+## O que é, de fato, um circuito
+
+O nome descreve a criptografia, não a topologia. Seu cliente escolhe três relays e constrói um **circuito**: um **guard** (entrada), um **middle** (meio) e um **exit** (saída). Antes de enviar qualquer coisa, ele embrulha a carga em três camadas de criptografia, uma por relay, com chaves tais que cada relay descasca exatamente uma.
+
+O resultado é que **nenhum relay sozinho conhece as duas pontas**. O guard vê seu IP real, mas não o destino. O exit vê o destino, mas não você. O middle existe justamente para que guard e exit nunca se toquem, e não conhece nenhum dos dois. Esse é o truque inteiro; todo o resto é engenharia em volta dele.
+
+Duas peças de apoio importam. Um pequeno conjunto de **autoridades de diretório** publica um **consenso** assinado listando os relays e suas propriedades, para que os clientes concordem sobre quem existe sem precisar confiar cegamente em um servidor único. E o **guard** é deliberadamente fixo — clientes mantêm o mesmo relay de entrada por meses em vez de sortear novos, porque um cliente que embaralha seu ponto de entrada o tempo todo acabará, por acaso, escolhendo o relay de um adversário. Girar devagar é mais seguro do que girar sempre.
+
+Os relays são mantidos por voluntários: alguns milhares a qualquer momento, mas os **relays de saída são um subconjunto bem menor**, já que operar um significa receber reclamações de abuso e atenção jurídica por tráfego que você não gerou. Essa escassez estrutural de saídas é um traço permanente da economia da rede.
+
+## Serviços onion: a metade sem saída
+
+Um **serviço onion** (antes chamado de "serviço oculto") é um servidor que nunca deixa a rede. Em vez de um circuito até a clearnet, cliente e serviço constroem cada um seus circuitos até um **ponto de encontro** (rendezvous) e se encontram no meio, de modo que nenhum descobre o IP do outro. O endereço `.onion` não é um nome registrado em lugar algum — ele *é* a chave pública do serviço, codificada. Isso significa que o endereço **autentica o destino por construção**: não há autoridade certificadora a ser enganada, porque chegar ao endereço certo e chegar ao servidor certo são o mesmo evento.
+
+A geração atual é a **v3**, que alongou esses endereços para 56 caracteres e corrigiu fragilidades criptográficas reais do antigo formato v2 de 16 caracteres; a v2 foi descontinuada e desligada em 2021. Se você já se perguntou por que endereços onion viraram uma parede ilegível de base32, é por isso — o endereço ficou maior porque carrega chaves mais fortes.
+
+## O modelo de ameaças, dito com honestidade
+
+A própria documentação do Tor é excepcionalmente franca sobre o que ele não faz, e repetir isso honestamente importa mais do que torcer.
+
+- **Um adversário passivo global o derrota.** O Tor não defende contra quem consegue observar uma fatia grande o bastante da internet ao mesmo tempo. Se você observa o tráfego entrando na rede e saindo dela, dá para correlacionar tempo e volume e ligar as duas pontas sem quebrar criptografia alguma. Isso é **confirmação de tráfego**, e é o limite reconhecido do projeto.
+- **O relay de saída vê o que o destino vê.** O Tor anonimiza *quem* você é, não *o que* você envia. Tráfego que sai para um site sem criptografia é legível por quem opera aquela saída. É o HTTPS que protege o conteúdo; o Tor protege a associação. Pesquisadores já demonstraram isso repetidamente operando saídas que farejavam tráfego.
+- **O vazamento costuma ser o navegador, não a rede.** Na prática, a desanonimização vem de JavaScript, plugins, uma **impressão digital** distintiva ou uma conta logada — não de circuitos quebrados. O Tor Browser existe justamente para fazer todos os usuários parecerem idênticos, e é por isso que "só mudar uma configuração" desfaz a proteção silenciosamente.
+- **Serviços onion não são automaticamente seguros de operar.** Bugs de aplicação, servidores mal configurados vazando o endereço real e erros operacionais já desmascararam muito mais serviços do que qualquer ataque criptográfico.
+
+## A corrida armamentista da censura
+
+Como a lista de relays do Tor é pública, um censor pode simplesmente bloquear todos eles. A resposta são as **bridges** — relays de entrada não listados — e os **pluggable transports**, que disfarçam o próprio tráfego. O **obfs4** faz o fluxo parecer coisa nenhuma; o **meek** o esconde dentro de uma conexão com um grande provedor de nuvem, de modo que bloqueá-lo significa bloquear aquele provedor; o **Snowflake** transforma navegadores de voluntários comuns em proxies temporários via WebRTC, de modo que o conjunto de pontos de entrada muda constantemente e não pode ser enumerado. Os picos de tráfego do Snowflake acompanham eventos de censura — ele é muito usado a partir da Rússia e do Irã. Essa é a contraparte direta da filtragem nacional: a mesma inspeção profunda de pacotes que identifica protocolos é o que esses transportes existem para confundir.
+
+## Para que o Tor é realmente usado
+
+Eis o fato que mais surpreende, e vale dizer sem rodeios: segundo as métricas do próprio Tor Project, **apenas uma porcentagem baixa de um dígito do tráfego Tor vai para serviços onion**. A esmagadora maioria sai para a web comum. Na prática cotidiana, o Tor é uma ferramenta para ler a internet normal com privacidade — não uma porta para uma internet escondida.
+
+Os usuários visíveis confirmam isso. O **SecureDrop**, rodando em centenas de redações, usa serviços onion para receber documentos de fontes. The New York Times, BBC, ProPublica e DuckDuckGo mantêm endereços onion. O Debian distribui pacotes por eles. Milhões de usuários diários se conectam de países com acesso normal à internet, e a Alemanha fornece consistentemente a maior fatia — o que não é o perfil de um submundo criminoso.
+
+A história do financiamento tem um epílogo que vale registrar por precisão: fontes do governo dos EUA já supriram mais da metade da receita do Tor Project, e no relatório de 2023–2024 isso havia caído para cerca de um terço, com apoio corporativo e de organizações sem fins lucrativos (OpenSats, Mullvad, Proton) e doações individuais compondo boa parte do restante. A dependência que as pessoas citam como escândalo vem sendo ativamente reduzida.
+
+## Tor versus VPN, em uma distinção
+
+Uma **VPN** desloca sua confiança: seu provedor de acesso deixa de ver seu tráfego, e o operador da VPN passa a ver. Isso é uma melhoria real em alguns modelos de ameaça e nenhuma melhoria em outros, porque você trocou um observador por outro e o novo é uma empresa única, com logs e uma jurisdição.
+
+O Tor é construído para que **nenhuma parte isolada ocupe essa posição**. O guard conhece você mas não seu destino; o exit conhece seu destino mas não você; e nenhum relay precisa ser confiável sozinho. Você não está confiando na promessa de um operador — está apoiado no fato de que as partes capazes de desmascarar você são separadas e, idealmente, não conspiram entre si. É uma garantia mais fraca do que "confie em nós" soa, e bem mais forte do que de fato é.

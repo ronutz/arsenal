@@ -1,0 +1,40 @@
+---
+slug: isis-primer
+title: "IS-IS: the routing protocol hiding under the internet"
+summary: "OSPF's link-state twin from the OSI world runs the carrier backbones your packets cross daily - and most engineers have never typed its name. A practical primer: the layer-2 trick, NET addresses, levels instead of areas, TLV extensibility, and why the big networks never left."
+concepts: ["is-is", "ospf", "igp", "bgp", "mpls"]
+relatedTools: ["cidr"]
+relatedArticles: ["ospf-primer", "mpls-primer", "bgp-primer"]
+category: networking
+order: 236
+status: reviewed
+updated: "2026-07-22"
+---
+
+## The twin with the strange accent
+
+IS-IS and OSPF are the same idea wearing different clothes: flood a description of your links to everyone, let every router build the identical map, run Dijkstra, agree on shortest paths. Both were born in the late 1980s. OSPF came from the IETF and speaks fluent IP; IS-IS - Intermediate System to Intermediate System, in OSI's charmingly bureaucratic dialect where routers are "intermediate systems" - came from ISO's competing protocol suite (ISO 10589), got taught to carry IP routes in RFC 1195, and quietly won the largest networks on Earth while OSPF won the textbooks.
+
+If you have never configured IS-IS, your packets do not care: a striking share of tier-1 carrier and large ISP backbones run it, and data-center fabric underlays rediscovered it. Understanding why they chose the twin with the strange accent is the whole primer.
+
+## The layer-2 trick
+
+OSPF rides on IP - its packets have IP headers, which means the routing protocol depends on the very layer it is computing routes for, and can be reached (and attacked) by anything that can send an IP packet. IS-IS runs **directly over layer 2**: its PDUs sit in Ethernet frames with no IP header at all. Two consequences carriers love. First, a chicken-and-egg class of failure disappears - the protocol cannot be broken by a corrupted IP configuration because it never touches IP to do its work. Second, you cannot attack an IS-IS adjacency from three hops away, because there is no IP address to aim at; you would need to be on the wire.
+
+The cost of the OSI pedigree is the addressing: every router needs a **NET** - a Network Entity Title, an OSI-style address that looks like `49.0001.1921.6800.1001.00` and encodes an area and a system ID. Engineers grumble, template it once, and never think about it again; the system ID is commonly minted from a loopback IP, a small ritual every shop performs its own way.
+
+## Levels, not areas
+
+Where OSPF carves areas around a mandatory backbone area 0, IS-IS thinks in **levels**. Level 1 routers know their own area intimately; level 2 routers form the backbone that connects areas; a router can be both (L1/L2), acting as its area's door. The elegant difference from OSPF: the backbone is not an area you configure but a *contiguous set of L2-capable routers*, which can thread through anywhere. In practice, many large networks skip the hierarchy debate entirely and run the whole backbone as one flat level-2 domain - a design OSPF's single-area equivalent handles far less gracefully at scale, and one reason the carriers stayed.
+
+On multi-access segments IS-IS elects a DIS - a designated router by another name - with one behavioral difference that catches OSPF natives: the DIS election **is** preemptive, and there is no backup DIS, because the protocol's database synchronization makes losing the DIS cheap.
+
+## TLVs: the reason it aged so well
+
+Everything IS-IS advertises travels as a **TLV** - type, length, value - inside its link-state PDUs. New capability? Define a new TLV type; old routers skip what they do not understand. This one design choice is why IS-IS absorbed thirty years of change without a version break: IPv6 support was new TLVs (no "IS-ISv3" ever needed, unlike OSPF's separate OSPFv3), wide metrics were a TLV, traffic-engineering attributes were TLVs, and **Segment Routing** - the modern architecture of carrier MPLS - rides in, once again, TLVs. Networks that had bet on IS-IS got each revolution as an incremental software update. It is one of protocol design's quietest vindications: extensibility as the feature that outlives every feature.
+
+## Where you will actually meet it
+
+Three places. Carrier and large-ISP cores, where it has been the incumbent IGP for decades and now underpins Segment Routing deployments. Data-center fabrics, where its layer-2 independence and flat-L2 scaling made it the underlay inside several fabric architectures and vendor NOSes. And certification exams, where the OSPF-versus-IS-IS comparison table is eternal. The honest enterprise guidance: if you are not a carrier and not building a fabric that specifies it, OSPF's tooling and talent pool usually win - but read your fabric vendor's underlay documentation before assuming you are not already running IS-IS somewhere.
+
+The map-and-math fundamentals are shared with OSPF and covered in its primer; where all interior protocols hand off to policy is the BGP primer's territory; and the label-switched services these backbones actually deliver are the subject of the MPLS primer.
