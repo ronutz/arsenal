@@ -70,6 +70,9 @@
       "name": "Identity & tokens"
     },
     {
+      "name": "Industry & context"
+    },
+    {
       "name": "Netskope"
     },
     {
@@ -1461,6 +1464,94 @@
                 "examples": [
                   ";; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4321"
                 ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digital-transformation-tracker": {
+      "get": {
+        "tags": [
+          "Industry & context"
+        ],
+        "operationId": "run_digital_transformation_tracker",
+        "summary": "Digital transformation tracker",
+        "description": "Thirty milestones across seven domains, sorted by how much you should trust them: what shipped, what is already law, what is scheduled, what is scheduled but actively moving, and what is only somebody's forecast. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Certainty-tiered milestone dataset; attribution invariant enforced by golden vectors. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"domains\":[\"money\",\"state\"],\"certainties\":[\"shipped\",\"inForce\"]}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Industry & context"
+        ],
+        "operationId": "run_digital_transformation_tracker_post",
+        "summary": "Digital transformation tracker (POST)",
+        "description": "Thirty milestones across seven domains, sorted by how much you should trust them: what shipped, what is already law, what is scheduled, what is scheduled but actively moving, and what is only somebody's forecast. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Certainty-tiered milestone dataset; attribution invariant enforced by golden vectors. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
               }
             }
           }

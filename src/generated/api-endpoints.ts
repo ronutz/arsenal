@@ -113,6 +113,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_dig_output_explainer",
     "tag": "Networking & addressing"
   },
+  "digital-transformation-tracker": {
+    "url": "https://ronutz.com/api/v1/digital-transformation-tracker",
+    "method": "GET",
+    "op": "run_digital_transformation_tracker",
+    "tag": "Industry & context"
+  },
   "do-explainer-validator": {
     "url": "https://ronutz.com/api/v1/do-explainer-validator",
     "method": "GET",

@@ -5960,6 +5960,33 @@
       "avoidedTitle": "Not chosen - and why",
       "avoidedBadge": "avoid",
       "runsLocally": "Decided entirely in your browser - nothing is transmitted."
+    },
+    "digital-transformation-tracker": {
+      "name": "Digital transformation tracker",
+      "blurb": "Thirty milestones across seven domains, sorted by how much you should trust them: what shipped, what is already law, what is scheduled, what is scheduled but actively moving, and what is only somebody's forecast.",
+      "example": "Example",
+      "clear": "Clear",
+      "filtersLabel": "Filters",
+      "domainLabel": "Domain",
+      "certaintyLabel": "How certain is it?",
+      "emptyState": "No milestones match those filters. Clear one and try again.",
+      "errorTitle": "Filter problem",
+      "summary": "{total} milestones - {settled} settled fact, {forward} forward-looking.",
+      "enabledLabel": "Made possible:",
+      "sourceLabel": "Source:",
+      "runsLocally": "Filtered entirely in your browser. Forward-looking rows always name who is forecasting.",
+      "domain_infrastructure": "Infrastructure",
+      "domain_commerce": "Commerce",
+      "domain_money": "Money",
+      "domain_work": "Work",
+      "domain_state": "Services & state",
+      "domain_media": "Media",
+      "domain_health": "Health",
+      "certainty_shipped": "Shipped",
+      "certainty_inForce": "In force",
+      "certainty_scheduled": "Scheduled",
+      "certainty_contested": "Scheduled, but moving",
+      "certainty_forecast": "Forecast"
     }
   },
   "privacy_page": {
@@ -13185,6 +13212,46 @@
       "reserva-de-mercado": {
         "def": "The Brazilian policy that legally reserved the domestic computer market for nationally-owned companies from 1984 to 1992.",
         "context": "Lei 7.232/1984 established the Politica Nacional de Informatica with an eight-year term written into it, and it passed unanimously on a coalition of nationalist military officers, domestic industry, and the left opposition. In practice it produced clones of the ZX81, Apple II, MSX, and IBM PC sold late and expensive, a smuggling route through Paraguay, and a Section 301 trade fight with Washington that ended in Reagan announcing sanctions in 1987. The reserve expired on schedule in October 1992. The hardware bet failed, but the engineering generation it trained is a direct ancestor of Brazilian banking automation and of firms like Cyclades and Datacom."
+      },
+      "amateur-radio": {
+        "def": "A licensed radio service for self-training, experimentation, and non-commercial communication, with allocations across the whole spectrum.",
+        "context": "The licence is the distinction: examinations, a callsign issued under an ITU treaty allocation, and permission to build and modify your own transmitting equipment, which is almost unique in modern radio. Amateurs run everything from Morse on a wire antenna to microwave links and satellites. The service earns its spectrum partly through emergency communications, because a station with a battery and an antenna keeps working when towers, exchanges, and the internet do not."
+      },
+      "callsign": {
+        "def": "A unique identifier issued to a licensed radio station, structured as prefix, digit, and suffix.",
+        "context": "The prefix range is allocated to a country by the International Telecommunication Union, so a callsign is legible worldwide without explanation. Brazil holds the entire PPA to PYZ block plus ZV to ZZ for special stations, and Anatel issues within it using a two-letter-plus-digit scheme where the digit is regional: PY2 is Sao Paulo, PY1 Rio de Janeiro, PY4 Minas Gerais. The letter series also signals licence class in Brazil, so a PU station is distinguishable from a PY one on the air."
+      },
+      "morse-code": {
+        "def": "Encoding of characters as short and long tones, sent as an on-off keyed carrier and known on the air as CW.",
+        "context": "It survives because of an engineering fact rather than nostalgia: a trained ear extracts Morse from noise that renders voice unintelligible, in a fraction of the bandwidth. When propagation collapses, CW is often the only thing still getting through. It is sent with a straight key, a paddle driving an electronic keyer, or a computer, and the Q-code abbreviations that grew around it, like QTH for location and QRM for interference, became the shared vocabulary of the whole hobby."
+      },
+      "repeater": {
+        "def": "A radio station on high ground that receives on one frequency and simultaneously retransmits on another, extending the range of low-power stations.",
+        "context": "Two settings catch newcomers out. The offset is the difference between the repeater's input and output frequencies, and reversing it means you hear everyone while nobody hears you. CTCSS is a sub-audible tone proving you are a legitimate user rather than distant interference, so the right frequency with the wrong tone produces the same silence as the wrong frequency. Repeaters are almost always built, sited, and maintained by volunteers at their own expense."
+      },
+      "citizens-band": {
+        "def": "A small licence-free or lightly-licensed radio allocation near 27 MHz with fixed channels and low power limits.",
+        "context": "Worth keeping firmly distinct from amateur radio, which the equipment can superficially resemble. CB has no examination, no individually-issued callsign, fixed channels, and tight power limits; amateur radio is a licensed service with allocations across the spectrum and permission to build your own transmitters. Sitting at the top of HF, CB occasionally propagates by sky wave during high solar activity, which is why distant stations sometimes appear on a channel that should be local."
+      },
+      "radio-spectrum": {
+        "def": "The range of electromagnetic frequencies used for radio, conventionally divided into bands from VLF to EHF.",
+        "context": "One trade governs the whole thing: low frequencies travel far and carry little, high frequencies carry enormous amounts and stop at the first obstacle. Long wavelengths diffract around terrain and buildings, short ones behave increasingly like light, and available bandwidth scales with frequency. Every allocation decision, from submarine communications at a few kilohertz to millimetre-wave 5G, is a position taken on that single trade."
+      },
+      "propagation": {
+        "def": "How a radio signal actually travels from transmitter to receiver, which depends far more on frequency than on power.",
+        "context": "Three modes explain nearly everything. Ground wave follows the earth's surface and dominates below about 2 MHz. Sky wave, between roughly 2 and 30 MHz, is refracted by the ionosphere back to earth and can cross oceans in multiple hops. Line of sight takes over above about 30 MHz. The ionosphere varies by day and night, season, and the eleven-year solar cycle, which is why an HF path that worked this morning can be dead this afternoon."
+      },
+      "hf": {
+        "def": "High frequency, 3 to 30 MHz: the shortwave range where signals refract off the ionosphere and travel worldwide.",
+        "context": "This is the band that makes intercontinental contact possible with modest equipment, because sky wave propagation does the work that power cannot. A hundred watts into a wire antenna can reach another continent, which no amount of power at 2.4 GHz will achieve. The cost is variability: conditions shift with the time of day, the season, and solar activity, so choosing the right frequency for the path is the core operating skill. International broadcasting, long-distance maritime and aeronautical services, and most amateur DX live here."
+      },
+      "vhf-uhf": {
+        "def": "Very high frequency (30 to 300 MHz) and ultra high frequency (300 MHz to 3 GHz): the line-of-sight bands.",
+        "context": "Above roughly 30 MHz the ionosphere generally stops bending signals back, so coverage is limited by the horizon and by obstructions, which is why antenna height matters so much. VHF carries FM broadcasting, air traffic control, and marine radio; UHF carries mobile telephony, Wi-Fi, Bluetooth, GPS, and most television. Both are reliable and predictable compared with HF, and tropospheric ducting occasionally carries them far beyond the horizon anyway."
+      },
+      "ism-band": {
+        "def": "Industrial, scientific and medical bands: spectrum usable without an individual licence, subject to power and interference rules.",
+        "context": "These allocations made consumer wireless possible. Wi-Fi and Bluetooth share 2.4 GHz with microwave ovens and much else, which is exactly why that band is congested, and the 5 and 6 GHz Wi-Fi bands trade range for room. LoRa takes the opposite bet in the sub-GHz ISM allocations, accepting very low data rates to get kilometres of range and years of battery life. Licence-exempt does not mean rule-free: duty cycle and power limits are what keep the bands usable."
       }
     },
     "totalCount": "{count} terms",

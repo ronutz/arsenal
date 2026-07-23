@@ -1,0 +1,24 @@
+# ============================================================================
+# public/.assetsignore  ->  copied by `next build` to out/.assetsignore
+# ----------------------------------------------------------------------------
+# Wrangler reads this file (gitignore syntax) from the assets directory and
+# EXCLUDES matching files from the Workers static-asset manifest.
+#
+# WHY: Cloudflare Workers caps static assets at 100,000 files per version
+# (Paid plan; error 10304). On 2026-07-23 the 16-locale export crossed the
+# cap (manifest 106,377). The single largest safely-removable category is the
+# Next.js App Router RSC payload written next to every page as index.txt
+# (~33,700 files at 16 locales, one per route per locale).
+#
+# EFFECT of excluding them: the client router's soft-navigation prefetch
+# (which fetches <route>/index.txt) gets a 404 and Next.js falls back to a
+# normal full-page navigation. For a static content site this is a cosmetic
+# degradation (MPA-style navigation); HTML, SEO, search (pagefind), OG
+# images, the machine-legible .md twins, robots.txt, security.txt and
+# llms.txt are all unaffected -- none of those are named index.txt.
+#
+# Manifest after exclusion: ~72,700 of 100,000 (~27K headroom).
+# Decision package with the strategic options lives in concord:
+# canon/PKG-asset-budget-2026-07-23.md. (D-19)
+# ============================================================================
+**/index.txt

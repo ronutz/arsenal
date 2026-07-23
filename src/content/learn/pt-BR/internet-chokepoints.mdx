@@ -1,0 +1,72 @@
+---
+slug: internet-chokepoints
+title: "Como a internet é desligada, e quem de fato consegue fazer isso"
+summary: "Não existe um interruptor, mas existem pontos de estrangulamento: cabos, roteamento, trocas de tráfego e o pequeno número de empresas por onde a maior parte do tráfego passa. Um passeio pelos mecanismos, pelo que cada Estado realmente consegue fazer com eles, e pela conclusão incômoda de que vigiar tudo é mais fácil do que desligar qualquer coisa."
+concepts: ["bgp", "onion-routing", "tor"]
+relatedTools: []
+relatedArticles: ["tor-and-onion-routing", "peer-to-peer-evolution"]
+category: networking
+order: 245
+status: reviewed
+updated: "2026-07-23"
+---
+
+## Não existe interruptor, e essa é a pergunta errada de qualquer forma
+
+A internet foi projetada para rotear em volta de danos, então não há uma alavanca única que alguém possa puxar para desligá-la globalmente. Isso é verdade e muito repetido. O que costuma ficar de fora é que a descentralização protege a *rede*, não um *país* em particular — e que o objetivo mais realista de um Estado nunca foi desligar a internet, e sim enxergar tudo que a atravessa. Nesse segundo objetivo, a notícia é bem pior.
+
+Eis os pontos de estrangulamento, grosso modo em ordem de alavancagem.
+
+## Cabos submarinos: a verdade física
+
+Quase todo o tráfego intercontinental viaja por algumas centenas de cabos submarinos de fibra, e cada um deles chega em terra numa estação de pouso — um prédio, em local conhecido, com uma porta. Cortar cabos degrada regiões; grampeá-los é a rota clássica para vigilância em massa.
+
+A concentração é o que torna isso perigoso, e a **Austrália é a ilustração mais clara**: cerca de **quinze cabos internacionais conhecidos carregam aproximadamente 99% do tráfego de dados do país**. Toda a conectividade externa de um continente repousa sobre um número que dá para contar nos dedos. A Austrália leva isso a sério o bastante para ter sido o primeiro país a integrar o International Cable Protection Committee, para declarar **zonas de proteção de cabos** sob o Anexo 3A do Telecommunications Act de 1997, com penas que chegam a dez anos de prisão por danificar um cabo dentro de uma delas, e em 2026 para financiar um Cable Connectivity and Resilience Centre para o Indo-Pacífico.
+
+## BGP: a alavanca maior que o DNS
+
+O controle mais eficaz é o roteamento. A internet são dezenas de milhares de sistemas autônomos anunciando uns aos outros quais faixas de endereços conseguem alcançar. Historicamente, esses anúncios são aceitos por confiança.
+
+**O Egito em janeiro de 2011 é o exemplo trabalhado.** O país saiu do ar em questão de horas, não porque alguém cortou um cabo, mas porque seus provedores *retiraram seus anúncios BGP*. Se ninguém anuncia uma rota até você, você deixa de existir como destino. A infraestrutura permaneceu intacta o tempo inteiro.
+
+A mesma confiança pode ser abusada na direção oposta: anunciar prefixos que não são seus pode sequestrar ou redirecionar silenciosamente o tráfego alheio. O **RPKI** é a correção parcial, atestando criptograficamente quem pode anunciar o quê, e sua adoção é real mas ainda incompleta.
+
+## DNS raiz: mais resiliente do que a história sugere
+
+"Derrubar os treze servidores raiz" é um mito duradouro. Existem treze *identidades* de servidor raiz (A a M), mas cada uma é servida por muitas instâncias **anycast** distribuídas pelo mundo — centenas de servidores físicos respondendo pelos mesmos endereços. Não há um rack de treze máquinas para desligar.
+
+O ponto de controle real é o *conteúdo* da zona raiz, publicado sob IANA/ICANN e assinado com **DNSSEC**. Vale notar que os Estados Unidos abriram mão de seu papel de supervisão direta na **transição da custódia da IANA em 2016**, passando-a à comunidade multissetorial — o que desarmou, ao menos formalmente, o argumento de que um governo controlava o sistema de nomes. O que um Estado consegue fazer é envenenar ou sobrepor o DNS *dentro de suas fronteiras*, que é exatamente o que a filtragem nacional faz.
+
+## Trocas de tráfego e trânsito: onde um país é de fato estreito
+
+A exposição real de um país é o número de pontos de troca de tráfego e de provedores de trânsito internacional que possui. Poucas trocas significam um pequeno número de prédios onde a internet nacional pode ser inspecionada ou interrompida.
+
+É aqui que o **Brasil é genuinamente incomum, no sentido resiliente**. O **IX.br**, operado pelo CEPTRO.br do NIC.br, é um dos maiores sistemas de troca de tráfego do mundo em volume e é distribuído por dezenas de cidades em vez de concentrado em uma. Essa topologia foi uma escolha deliberada de política, e torna a internet brasileira sensivelmente mais difícil de interromper em um ponto único do que a arquitetura de países que mantiveram tudo em uma ou duas instalações.
+
+## GPS: uma dependência de tempo, não de conectividade
+
+A navegação por satélite merece menção justamente por ser comumente mal compreendida. Negar o GPS não desconecta a internet. Mas o GPS distribui **tempo** extremamente preciso, e a sincronização de tempo sustenta redes celulares, ordenação de transações financeiras e algumas operações de rede.
+
+O bloqueio por interferência — afogar o sinal — é fácil, barato e local. O **spoofing** — alimentar posição ou tempo falsos — é mais perigoso porque os sistemas o aceitam como válido. Existe redundância na forma de GLONASS, Galileo e BeiDou, e os EUA desligaram a Disponibilidade Seletiva (degradação civil deliberada) em 2000. A internet sobrevive à perda de GPS; sistemas críticos em tempo é que oscilam.
+
+## O que cada Estado de fato consegue fazer
+
+A **China** é a implementação de referência de controle sem desligamento. O tráfego cruza um pequeno número de gateways internacionais onde envenenamento de DNS, bloqueio de IP, filtragem baseada em SNI e TLS e inspeção profunda de pacotes são aplicados como arquitetura, e não como medida emergencial. O objetivo de projeto é uma internet doméstica funcional e integralmente observável.
+
+A **Rússia** buscou soberania de forma explícita: a lei da "internet soberana" de 2019 obrigou equipamentos de inspeção profunda de pacotes nas operadoras e pretende manter a rede doméstica funcionando caso seja separada da global, com exercícios periódicos de desconexão.
+
+Os **Estados Unidos** não têm interruptor e não conseguiriam construir um, porque a rede é distribuída e boa parte dela está fora da jurisdição norte-americana. Sua alavancagem é de outra natureza e, discutivelmente, maior: uma fatia enorme do tráfego mundial termina em nuvens e redes de distribuição de conteúdo sediadas nos EUA, e instrumentos legais alcançam essas empresas. As revelações de Snowden documentaram coleta em cabos e acesso compelido a provedores em escala.
+
+A **União Europeia** é reguladora, não operadora. GDPR, a Lei de Serviços Digitais e a Lei de Mercados Digitais moldam o comportamento das plataformas e obrigam remoções e transparência, mas a UE não tem capacidade de desligamento nem uma ordem constitucional disposta a adquiri-la.
+
+A **Austrália** ocupa posição incomum: democracia liberal, porém com exposição física concentrada e alcance legal amplo. O **Telecommunications and Other Legislation Amendment (Assistance and Access) Act de 2018**, universalmente chamado de TOLA, permite que agências obriguem provedores de comunicação a auxiliar no acesso a comunicações criptografadas. A lei afirma que provedores não podem ser obrigados a introduzir uma "fragilidade sistêmica", e a crítica persistente de criptógrafos é que auxiliar com os dados de um usuário sem enfraquecer o mecanismo para todos frequentemente não é tecnicamente separável. A Austrália mantém ainda um regime de eSafety com poderes de remoção incomuns entre democracias comparáveis.
+
+O **Brasil** é o caso mais interessante para quem lê isto em São Paulo, porque sua capacidade é **judicial**, não executiva. Sob o arcabouço do Marco Civil, tribunais podem determinar a suspensão nacional de plataformas, e o caminho de execução passa pela **Anatel** até os provedores. Em 2024 o Supremo Tribunal Federal fez exatamente isso: em 30 de agosto, o ministro Alexandre de Moraes determinou que os provedores bloqueassem o **X** em todo o país por descumprimento e ausência de representante legal, com a Anatel encarregada de implementar. A decisão trazia ainda multa diária de R$ 50 mil para quem contornasse o bloqueio por VPN e — o detalhe que importa tecnicamente — quando o tráfego começou a rotear em volta do bloqueio, o tribunal determinou o bloqueio também de provedores de CDN, entre eles **Cloudflare, Fastly e EdgeUno**. A suspensão durou até 8 de outubro de 2024, encerrando-se quando o X cumpriu as ordens.
+
+Esse episódio é a demonstração moderna mais clara de todo o argumento dos pontos de estrangulamento. Bloquear uma plataforma exigiu alcançar os provedores, depois as CDNs, depois as lojas de aplicativos, depois os usuários de VPN. Cada passo foi possível; cada passo exigiu descer mais uma camada; e o bloqueio foi poroso o tempo todo. Note também a distinção constitucional: um desligamento brasileiro desse tipo exige um *tribunal*, o que é um modelo de ameaça significativamente diferente de um Executivo que possa ordená-lo diretamente.
+
+## A conclusão incômoda
+
+Desligar é barulhento, caro e autolesivo: o apagão do Egito prejudicou a própria economia e não salvou o governo. Vigiar é silencioso, barato e usa os *mesmos* pontos de estrangulamento — o cabo, a troca de tráfego, o gateway — sem quebrar nada que alguém perceba.
+
+Então o resumo honesto é este: **vigiar tudo é mais fácil do que desligar qualquer coisa**, e a descentralização que torna implausível um apagão global oferece bem pouca proteção a um país dentro das próprias fronteiras. É precisamente por isso que as contramedidas técnicas que pressupõem uma rede hostil — criptografia em todo lugar, transparência de certificados, RPKI e sistemas de anonimato como o Tor — importam mais do que a tranquilizadora história de origem da arquitetura.

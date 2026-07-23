@@ -1,0 +1,72 @@
+---
+slug: internet-chokepoints
+title: "How the internet gets shut down, and who can actually do it"
+summary: "There is no off switch, but there are chokepoints: cables, routing, exchanges, and the small number of companies most traffic passes through. A tour of the mechanisms, what each state can genuinely do with them, and the uncomfortable conclusion that watching everything is easier than switching anything off."
+concepts: ["bgp", "onion-routing", "tor"]
+relatedTools: []
+relatedArticles: ["tor-and-onion-routing", "peer-to-peer-evolution"]
+category: networking
+order: 245
+status: reviewed
+updated: "2026-07-23"
+---
+
+## There is no switch, and that is the wrong question anyway
+
+The internet was designed to route around damage, so there is no single lever anyone can pull to turn it off globally. That much is true and frequently repeated. What gets left out is that decentralization protects the *network*, not any particular *country* — and that the more realistic goal for a state has never been to switch the internet off, but to see everything crossing it. On that second objective the news is considerably worse.
+
+Here are the chokepoints, roughly in order of leverage.
+
+## Submarine cables: the physical truth
+
+Almost all intercontinental traffic travels through a few hundred submarine fibre cables, and every one of them comes ashore at a landing station — a building, in a known location, with a door. Cutting cables degrades regions; tapping them is the classic route to mass surveillance.
+
+Concentration is what makes this dangerous, and **Australia is the clearest illustration**: roughly **fifteen known international cables carry about 99% of the country's data traffic**. A continent's entire external connectivity rests on a number you can count on your fingers. Australia takes it seriously enough to have been the first country to join the International Cable Protection Committee, to declare **cable protection zones** under Schedule 3A of the Telecommunications Act 1997 with penalties reaching ten years' imprisonment for damaging a cable inside one, and in 2026 to fund a Cable Connectivity and Resilience Centre for the Indo-Pacific.
+
+## BGP: the bigger lever than DNS
+
+The more effective control is routing. The internet is tens of thousands of autonomous systems announcing to each other which address ranges they can reach. Those announcements are, historically, taken on trust.
+
+**Egypt in January 2011 is the worked example.** The country went offline in a matter of hours, not by anyone cutting a cable, but by its providers *withdrawing their BGP announcements*. If nobody advertises a route to you, you cease to exist as a destination. The infrastructure was perfectly intact the entire time.
+
+The same trust can be abused in the other direction: announcing prefixes you do not own can blackhole or silently redirect someone else's traffic. **RPKI** is the partial fix, cryptographically attesting who may announce what, and its deployment is real but still incomplete.
+
+## Root DNS: more resilient than the story suggests
+
+"Take down the thirteen root servers" is a durable myth. There are thirteen root server *identities* (A through M), but each is served by many **anycast** instances distributed worldwide — hundreds of physical servers answering to the same addresses. There is no rack of thirteen machines to unplug.
+
+The genuine control point is the root zone's *content*, published under IANA/ICANN and signed with **DNSSEC**. Notably, the United States relinquished its direct oversight role in the **2016 IANA stewardship transition**, moving it to the multistakeholder community — which defused, at least formally, the argument that one government controlled the naming system. What a state can do is poison or override DNS *within its own borders*, which is exactly what national filtering does.
+
+## Exchanges and transit: where a country is actually narrow
+
+A country's real exposure is the number of internet exchange points and international transit providers it has. Few exchanges means a small number of buildings where the national internet can be inspected or interrupted.
+
+This is where **Brazil is genuinely unusual, in the resilient direction**. **IX.br**, operated by NIC.br's CEPTRO.br, is one of the largest exchange systems in the world by traffic and is distributed across dozens of cities rather than concentrated in one. That topology was a deliberate policy choice, and it makes the Brazilian internet markedly harder to interrupt at a single point than the architecture of countries that kept everything in one or two facilities.
+
+## GPS: a timing dependency, not a connectivity one
+
+Satellite navigation deserves a mention precisely because it is commonly misunderstood. Denying GPS does not disconnect the internet. But GPS distributes extremely precise **time**, and time synchronization underpins cellular networks, financial transaction ordering, and some network operations.
+
+Jamming — drowning the signal — is easy, cheap, and local. **Spoofing** — feeding false position or time — is more dangerous because systems accept it as valid. Redundancy exists in the form of GLONASS, Galileo, and BeiDou, and the US switched off Selective Availability (deliberate civilian degradation) in 2000. The internet survives GPS loss; specific timing-critical systems wobble.
+
+## What each state can actually do
+
+**China** is the reference implementation of control without shutdown. Traffic crosses a small number of international gateways where DNS poisoning, IP blocking, SNI and TLS-based filtering, and deep packet inspection are applied as architecture rather than as emergency measures. The design goal is a functioning domestic internet that is comprehensively observable.
+
+**Russia** has pursued sovereignty explicitly: the 2019 "sovereign internet" law mandated deep-packet-inspection equipment at operators and aims to keep the domestic network running if severed from the global one, with periodic disconnection exercises.
+
+**The United States** has no kill switch and could not build one, because the network is distributed and much of it lies outside US jurisdiction. Its leverage is different and arguably greater: an enormous share of the world's traffic terminates at US-headquartered clouds and content delivery networks, and legal instruments reach those companies. The Snowden disclosures documented upstream cable collection and provider-compelled access at scale.
+
+**The European Union** is a regulator rather than an operator. GDPR, the Digital Services Act, and the Digital Markets Act shape platform behaviour and compel takedowns and transparency, but the EU has no shutdown capability and a constitutional order hostile to acquiring one.
+
+**Australia** sits in an unusual position: liberal-democratic, yet with concentrated physical exposure and broad legal reach. The **Telecommunications and Other Legislation Amendment (Assistance and Access) Act 2018**, universally called TOLA, lets agencies compel communications providers to assist with access to encrypted communications. The Act states that providers cannot be required to introduce a "systemic weakness", and the enduring criticism from cryptographers is that assisting with one user's data without weakening the mechanism for everyone is often not technically separable. Australia also maintains an eSafety regime with takedown powers unusual among comparable democracies.
+
+**Brazil** is the most interesting case for anyone reading this in São Paulo, because its capability is **judicial** rather than executive. Under the Marco Civil framework, courts can order platforms suspended nationwide, and the enforcement path runs through **Anatel** to the ISPs. In 2024 the Supreme Federal Court did exactly that: on 30 August, Justice Alexandre de Moraes ordered ISPs to block **X** nationwide over non-compliance and the absence of a legal representative, with Anatel directed to implement it. The order also carried a daily fine of R$50,000 for individuals circumventing the block by VPN, and — the detail that matters technically — when traffic began routing around the block, the court ordered CDN providers including **Cloudflare, Fastly, and EdgeUno** blocked as well. The suspension ran until 8 October 2024, ending when X complied.
+
+That episode is the clearest modern demonstration of the whole chokepoint argument. Blocking a platform meant reaching the ISPs, then the CDNs, then the app stores, then the VPN users. Each step was possible; each step required going one layer deeper; and the block was porous throughout. Note also the constitutional distinction: a Brazilian shutdown of that kind requires a *court*, which is a meaningfully different threat model from an executive that can order it directly.
+
+## The uncomfortable conclusion
+
+Shutdown is loud, expensive, and self-harming: Egypt's blackout damaged its own economy and did not save the government. Surveillance is quiet, cheap, and uses the *same* chokepoints — the cable, the exchange, the gateway — without breaking anything anyone would notice.
+
+So the honest summary is this: **watching everything is easier than switching anything off**, and the decentralization that makes a global blackout implausible offers a country very little protection at its own borders. Which is precisely why the technical countermeasures that assume a hostile network — encryption everywhere, certificate transparency, RPKI, and anonymity systems like Tor — matter more than the architecture's reassuring origin story.

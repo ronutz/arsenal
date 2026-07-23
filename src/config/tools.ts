@@ -142,6 +142,7 @@ export const tools: ToolEntry[] = [
   { id: "sorting-algorithm-stepper", href: "/tools/sorting-algorithm-stepper", category: "web", available: true },
   { id: "cable-run-planner", href: "/tools/cable-run-planner", category: "networking", available: true },
   { id: "ldap-filter-explainer", href: "/tools/ldap-filter-explainer", category: "identity", available: true },
+  { id: "digital-transformation-tracker", href: "/tools/digital-transformation-tracker", category: "operations", available: true },
   { id: "oauth-flow-chooser", href: "/tools/oauth-flow-chooser", category: "identity", available: true },
   { id: "diff", href: "/tools/diff", category: "text", available: true },
   // The four below were built but never registered here (drift caught and

@@ -1,0 +1,60 @@
+---
+slug: radio-spectrum
+title: "The radio spectrum: which frequencies go how far, and why"
+summary: "Why a shortwave signal crosses an ocean on 100 watts while your Wi-Fi struggles through a wall. The bands from VLF to EHF, the three propagation modes that explain nearly everything, and the trade that governs all radio: reach or capacity, never both."
+concepts: ["wifi", "lora"]
+relatedTools: []
+relatedArticles: ["amateur-radio"]
+category: networking
+order: 248
+status: reviewed
+updated: "2026-07-23"
+---
+
+## One trade governs everything
+
+Low frequencies travel far and carry little. High frequencies carry enormous amounts and stop at the first obstacle. Almost every design decision in radio, from submarine communications to 5G, is a position taken on that trade.
+
+The reason is physical. A long wavelength diffracts around hills, buildings, and the curve of the earth; a short one behaves increasingly like light, which is why you can see the shadow cast by a wall and why your Wi-Fi has the same problem. Meanwhile bandwidth — the room available to carry information — scales with frequency, so the high bands are where the capacity lives.
+
+## The three propagation modes
+
+Nearly all the behaviour follows from which of three modes dominates.
+
+**Ground wave** follows the earth's surface, hugging the terrain. It dominates below about 2 MHz. It is why AM broadcast stations cover a region reliably day and night, and why very low frequencies reach submerged submarines.
+
+**Sky wave** is the interesting one. Between roughly 2 and 30 MHz, signals launched upward are refracted by the **ionosphere** and bent back to earth, hundreds or thousands of kilometres away. They can bounce off the ground and go up again — **multi-hop** — and cross oceans. This is not a metaphor: an HF station running 100 watts into a wire antenna can be heard on another continent, which no amount of power at 2.4 GHz will achieve.
+
+**Line of sight** takes over above roughly 30 MHz. The signal goes where you can see, limited by the horizon, which is why VHF and UHF antennas are mounted as high as possible and why obstructions matter so much.
+
+The ionosphere is not constant, and that is the whole texture of HF operating. It changes between day and night, with the seasons, and across the roughly eleven-year **solar cycle**: at solar maximum the ionosphere is more heavily charged, supports higher frequencies, and long-distance paths open that are simply unavailable at solar minimum. Occasionally **sporadic E** or **tropospheric ducting** produces propagation far beyond the normal rules, which is why operators still get surprised.
+
+## The bands
+
+**VLF, 3–30 kHz.** Wavelengths of tens of kilometres. Penetrates seawater, so it is used to communicate with submerged submarines, and for some navigation and time signals. Data rates are almost comically low — a few characters per second — but it reaches places nothing else does.
+
+**LF, 30–300 kHz.** Long-distance ground wave. Time-signal stations that discipline radio-controlled clocks live here, along with some maritime navigation and, in parts of the world, longwave broadcasting.
+
+**MF, 300 kHz–3 MHz.** The AM broadcast band sits here. Ground wave by day; at night, when the absorbing D layer of the ionosphere fades, sky wave lets distant AM stations arrive from hundreds of kilometres away. Anyone who has picked up a faraway station on a car radio at night has observed the ionosphere directly.
+
+**HF, 3–30 MHz.** Shortwave. This is the band of international broadcasting, maritime and aeronautical long-distance communications, and most amateur DX work. Sky wave makes worldwide contact possible with modest equipment, and the drawback is the same as the advantage: conditions vary constantly, and the frequency that worked this morning may be dead this afternoon. Also home to **CB** near 27 MHz at the top of the band.
+
+**VHF, 30–300 MHz.** FM broadcasting, air traffic control, marine radio, older television, and heavy amateur repeater use. Mostly line of sight, generally reliable, and largely immune to the ionospheric drama below it — though at solar maximum the lower VHF frequencies occasionally propagate long distances anyway.
+
+**UHF, 300 MHz–3 GHz.** Where modern life happens: mobile telephony, Wi-Fi at 2.4 GHz, Bluetooth, GPS, most television, and amateur repeaters. Enough bandwidth for real data rates, small antennas, and buildings that block signals convincingly. **Tropospheric ducting** — temperature inversions trapping signals in a refractive layer — occasionally carries UHF far past the horizon.
+
+**SHF, 3–30 GHz.** Satellite links, radar, microwave backhaul, Wi-Fi at 5 and 6 GHz. Huge capacity, strictly line of sight, and rain begins to matter as an attenuator.
+
+**EHF, 30–300 GHz.** Millimetre wave, including 5G's high bands. Extraordinary capacity over very short distances, blocked by almost anything including foliage and human bodies, which is why millimetre-wave 5G needs dense small-cell deployment rather than tall towers.
+
+## Where the familiar things sit
+
+The **ISM bands** — industrial, scientific, and medical — are the licence-exempt allocations that made consumer wireless possible. Wi-Fi and Bluetooth share 2.4 GHz with microwave ovens and much else, which is precisely why that band is congested; the 5 and 6 GHz Wi-Fi bands offer more room and less range, exactly as the trade predicts. **LoRa** takes the opposite bet, using sub-GHz ISM allocations and very low data rates to get kilometres of range and years of battery life from a sensor — a deliberate choice of reach over capacity.
+
+Cellular spans low bands for coverage and high bands for capacity in the same network, which is the trade managed rather than resolved: the low band reaches the rural edge, the high band serves the dense city block.
+
+## Why this is worth knowing
+
+If you understand the trade, most radio behaviour stops being mysterious. Your Wi-Fi struggles through walls because 2.4 GHz behaves like light. A ham on 20 metres talks to Japan on the power of a light bulb because the ionosphere is a mirror at that frequency. Your phone works indoors on a low band and gets fast outdoors on a high one. Millimetre-wave 5G is astonishing on the street corner where the cell is and absent one building later.
+
+None of it is arbitrary. It is one trade, made over and over, in every band.

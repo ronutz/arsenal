@@ -142,6 +142,7 @@ import NetskopeSteeringDecisionExplainerTool from "@/components/NetskopeSteering
 import SortingAlgorithmStepperTool from "@/components/SortingAlgorithmStepperTool";
 import CableRunPlannerTool from "@/components/CableRunPlannerTool";
 import LdapFilterExplainerTool from "@/components/LdapFilterExplainerTool";
+import DigitalTransformationTrackerTool from "@/components/DigitalTransformationTrackerTool";
 import OauthFlowChooserTool from "@/components/OauthFlowChooserTool";
 import GslbDecisionFlowTool from "@/components/GslbDecisionFlowTool";
 import TopologyLongestMatchTool from "@/components/TopologyLongestMatchTool";
@@ -165,6 +166,7 @@ import { manifest as nsSteeringManifest } from "@/lib/tools/netskope-steering-de
 import { manifest as sortStepperManifest } from "@/lib/tools/sorting-algorithm-stepper";
 import { manifest as cablePlannerManifest } from "@/lib/tools/cable-run-planner";
 import { manifest as ldapFilterManifest } from "@/lib/tools/ldap-filter-explainer";
+import { manifest as dxTrackerManifest } from "@/lib/tools/digital-transformation-tracker";
 import { manifest as oauthChooserManifest } from "@/lib/tools/oauth-flow-chooser";
 import { manifest as gslbFlowManifest } from "@/lib/tools/f5-gslb-decision-flow";
 import { manifest as topoMatchManifest } from "@/lib/tools/f5-topology-longest-match";
@@ -669,6 +671,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "ldap-filter-explainer": {
     Component: LdapFilterExplainerTool,
     sources: ldapFilterManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "digital-transformation-tracker": {
+    Component: DigitalTransformationTrackerTool,
+    sources: dxTrackerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "oauth-flow-chooser": {
     Component: OauthFlowChooserTool,

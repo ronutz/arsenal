@@ -98,8 +98,23 @@ jobs:
       # 20,000 on Free. Printed every run so growth is visible in the logs.
       - name: Report asset count and disk state
         run: |
-          COUNT=$(find out -type f | wc -l)
-          echo "out/ contains ${COUNT} files (Paid cap: 100,000 per version)"
+          # Budget math (2026-07-23 incident, Cloudflare error 10304):
+          # the cap is 100,000 MANIFEST files per version (Paid). The RSC
+          # index.txt payloads are excluded from the manifest by
+          # out/.assetsignore, so the number that counts is EFFECTIVE =
+          # TOTAL - IGNORED. Fail loudly here at >97,000 instead of
+          # letting wrangler fail 35 minutes in. Strategic options live in
+          # concord canon/PKG-asset-budget-2026-07-23.md.
+          TOTAL=$(find out -type f | wc -l)
+          IGNORED=$(find out -name 'index.txt' | wc -l)
+          EFFECTIVE=$((TOTAL - IGNORED))
+          echo "out/ total: ${TOTAL}; ignored by .assetsignore (index.txt): ${IGNORED}"
+          echo "EFFECTIVE manifest estimate: ${EFFECTIVE} of 100,000 (gate: 97,000)"
+          test -f out/.assetsignore || { echo "::error::out/.assetsignore missing - manifest would include index.txt and likely exceed 100,000"; exit 1; }
+          if [ "${EFFECTIVE}" -gt 97000 ]; then
+            echo "::error::Asset budget gate: effective manifest ${EFFECTIVE} > 97,000. Act on PKG-asset-budget-2026-07-23 before deploying."
+            exit 1
+          fi
           df -h /
 
       # ---------------------------------------------------------------------

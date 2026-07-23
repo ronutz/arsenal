@@ -1,0 +1,76 @@
+---
+slug: brazil-internet-governance
+title: "Who actually governs the internet in Brazil"
+summary: "Brazil built one of the world's most distinctive internet governance models: multistakeholder before that was a word, with a research foundation running the country's first connection and a committee that is not a ministry. The organs, the laws, the state computing backbone underneath it all, and the 2025 ruling that rewrote platform liability."
+concepts: ["ixp", "lgpd", "gdpr"]
+relatedTools: []
+relatedArticles: ["brazil-market-reserve", "internet-chokepoints"]
+category: networking
+order: 246
+status: reviewed
+updated: "2026-07-23"
+---
+
+## It started at a research foundation, not a ministry
+
+Brazil's internet did not arrive through a telecoms incumbent or a government programme. It arrived because physicists wanted to talk to Fermilab.
+
+In late 1988 the **Laboratório Nacional de Computação Científica** in Rio reached **BITNET** via the University of Maryland, and **FAPESP** — the São Paulo state research foundation — connected to the **Fermi National Accelerator Laboratory** in Batavia, Illinois. The link ran over a leased Embratel line at 4,800 bits per second, on copper inside a submarine cable, because fibre was not available for this. Accounts differ slightly on the exact sequencing and on whether to date the milestone to the 1988 BITNET link or to **14 April 1989**, when the connection was formally inaugurated; both dates appear in FAPESP's own material, and the honest answer is that the thing was built incrementally rather than switched on once.
+
+The network FAPESP created and funded was **ANSP**, the *Academic Network at São Paulo*, linking USP, Unicamp, Unesp and IPT, later reaching UFMG and UFRGS. Its architect was **Demi Getschko**, later inducted into the Internet Hall of Fame for exactly this work. And here is the fact that shapes everything afterwards: from that beginning **until 1994, when commercial internet began in Brazil, the FAPESP link to Fermilab carried essentially all Brazilian internet traffic to the outside world**. A state research foundation was, for about five years, the country's international gateway.
+
+FAPESP also took on administration of the `.br` domain and the distribution of IP addresses — a registry function born of practical necessity that is still visible in the institutional structure today. The **RNP** (Rede Nacional de Pesquisa), launched in 1989, began building a national backbone in 1991, and until August 1996 its own international connectivity ran over FAPESP's lines.
+
+Worth noting the timing against the other Brazilian story: all of this happened *during* the market reserve, and the academic network was one of the few places where current international technology could legally and practically be used.
+
+**KyaTera**, later, was a FAPESP project of a different kind — an optical research network using dedicated dark fibre to link laboratories in São Paulo state, built to study the network itself rather than merely to use one.
+
+## The committee that is not a ministry
+
+In 1995, as commercial internet arrived, Brazil made the choice that still defines it. Rather than handing the internet to the telecoms regulator or to a ministry, it created the **CGI.br** — the *Comitê Gestor da Internet no Brasil* — with representation from government, the private sector, civil society, and the academic community.
+
+This is genuine multistakeholder governance, established years before the term became standard in international forums, and Brazil has since used it as a diplomatic position. In 2009 CGI.br published its **Decálogo**, ten principles for internet governance, which asserted network neutrality, privacy, freedom of expression, and the inimputability of the network itself — five years before those ideas became statute.
+
+Execution sits with **NIC.br**, the non-profit created in 2005 to implement CGI.br's decisions. Its arms are where the practical internet lives:
+
+- **Registro.br** runs the `.br` domain — the function FAPESP originally improvised.
+- **CERT.br** handles national incident response.
+- **CEPTRO.br** runs **IX.br**, the national internet exchange system, and drives IPv6 adoption.
+
+**IX.br** deserves emphasis because it is genuinely world-class: among the largest exchange systems anywhere by traffic, and deliberately distributed across dozens of cities rather than concentrated in one facility. An **IXP** is simply a place where networks meet to exchange traffic directly rather than paying transit to reach each other; building many of them, in many cities, is why Brazilian domestic traffic stays domestic and why the national internet is comparatively hard to disrupt at any single point.
+
+Alongside all this sits **Anatel**, the telecommunications regulator created under the *Lei Geral de Telecomunicações* (Law 9.472/1997), which regulates the carriers the internet rides on — a different job from governing the internet itself, and a distinction Brazil has been careful to maintain.
+
+## The machine underneath: state data processing
+
+None of the above explains how the Brazilian *state* actually computes, and that story is older than the internet.
+
+**SERPRO** was created by **Law 4.516 of 1 December 1964** as the *Serviço Federal de Processamento de Dados*, to modernize federal administration — starting, characteristically, with tax collection: by 1965 it was building the income tax assessment system, and in 1966–67 it installed regional operating units in all ten fiscal regions of the federal revenue service. It grew into one of the largest public-sector IT organizations in the world, holding the databases behind federal taxation, customs, and identity, and operating a nationwide network with regional centres from Belém to Porto Alegre. It has recently been renamed the *Empresa Nacional de Inteligência em Governo Digital e Tecnologia da Informação*, though everyone still says SERPRO.
+
+The states built their own. **PRODESP**, the *Companhia de Processamento de Dados do Estado de São Paulo*, was created by state decree on **24 July 1969** and started work that October in a borrowed room at the Finance Secretariat with two employees and no equipment. Its first computer was an IBM 360/65 costing around nine million dollars; its first production job was the state payroll, then 290,000 people. By the early 1980s it ran fourteen mainframes and a teleprocessing network of some 900 terminals, and it built a **Rede Estadual de Processamento de Dados** with regional computing centres in Campinas, Bauru, Presidente Prudente and Ribeirão Preto — decentralizing computing across the state interior at a time when that was genuinely hard.
+
+**PRODAM-SP** does the equivalent job for the city of São Paulo, and nearly every Brazilian state has its counterpart: PRODERJ in Rio de Janeiro, PRODEMGE in Minas Gerais, PROCERGS in Rio Grande do Sul, and so on.
+
+This layer matters for two reasons. It is why Brazilian e-government works at population scale — the computing capacity and the operational culture existed decades before the web. And it means the Brazilian state holds enormous quantities of citizen data in public-sector systems, which is precisely why the data protection framework below is not academic.
+
+## The laws
+
+**Marco Civil da Internet, Law 12.965/2014**, is the internet's civil framework, regulated by Decree 8.771/2016. It is admired internationally for good reason: it establishes **network neutrality**, protects freedom of expression and privacy, sets rules on connection and application logs, and — the provision that made it famous — limited platform liability for user content.
+
+**LGPD, Law 13.709/2018**, in force since 2020, is the general data protection law, closely modelled on GDPR: legal bases for processing, data subject rights including access and erasure, and the **ANPD** as supervisory authority.
+
+## The 2025 ruling that changed the famous part
+
+Article 19 of the Marco Civil said a platform became civilly liable for third-party content only after failing to comply with a **specific court order** to remove it. It was the deliberate centrepiece: a judicial check against private censorship-by-complaint.
+
+On **26 June 2025**, ruling jointly on Themes 987 and 533, the **Supremo Tribunal Federal** declared Article 19 **partially and progressively unconstitutional** by 8 votes to 3. The reasoning is unusual and worth stating precisely: the Court held the provision was *not* unconstitutional when enacted, but became so over time — "progressive unconstitutionality" — as platforms grew, recommendation systems became more powerful, and the scale of harm changed.
+
+The practical effect is a shift toward **notice and takedown**: platforms can now be liable if, after an extrajudicial notification, they fail to act with diligence against manifestly unlawful content. The Court preserved the original judicial-order requirement for crimes against honour, kept liability *subjective* (requiring fault, outside specific presumptions), applied the decision prospectively, and stated that the thesis governs until Congress legislates on the matter. The acórdão was published on **6 November 2025**, setting out four distinct liability regimes depending on content type and how it circulated.
+
+Two honest observations. First, this is the judiciary filling a gap that the legislature left open, which several civil-society organizations noted with discomfort even where they welcomed the outcome. Second, its practical application is still settling; anyone acting on it should read the actual theses rather than a summary, including this one.
+
+## Why the shape of it matters
+
+Put the pieces together and Brazil's model is genuinely distinctive. The internet arrived through a research foundation rather than a carrier. Governance went to a multistakeholder committee rather than a ministry, before that was fashionable. The exchange layer was deliberately distributed across the country rather than concentrated. Data protection and civil rights were legislated relatively early. And the deepest layer — the state's own computing — predates all of it by decades.
+
+It is not a frictionless system, and the Article 19 ruling and the 2024 platform confrontations show real tension between judicial power, platform power, and legislative absence. But it is a coherent design with an identifiable philosophy, which is more than many countries can say, and it began with a physics collaboration and a 4,800 bit-per-second line to Illinois.

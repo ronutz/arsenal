@@ -1,0 +1,52 @@
+---
+slug: amateur-radio
+title: "Amateur radio: callsigns, modes, and why it still matters"
+summary: "A callsign is an identity issued by treaty, readable anywhere on earth. What the letters and the digit mean, how PY2 says São Paulo, the difference between voice and CW and digital, what a repeater actually does, and why a hobby older than broadcasting is still the fallback when everything else fails."
+concepts: ["lora", "wifi"]
+relatedTools: []
+relatedArticles: ["radio-spectrum"]
+category: networking
+order: 247
+status: reviewed
+updated: "2026-07-23"
+---
+
+## The callsign is the point
+
+Almost everything else in radio is negotiable. The callsign is not. It is issued by a national authority under an allocation made by treaty at the International Telecommunication Union, and it identifies a specific licensed operator anywhere on earth without further explanation. Two people who share no language can still exchange callsigns and know exactly who they are talking to and under whose rules.
+
+The structure is prefix, digit, suffix. The ITU allocated **Brazil the whole PPA–PYZ block**, plus the ZV–ZZ range for special and event stations, and **Anatel** issues within it using a two-letter-plus-digit prefix scheme. The digit is regional: **PY2 is São Paulo**, PY1 Rio de Janeiro, PY3 Rio Grande do Sul, PY4 Minas Gerais, PY5 Paraná, PP1 Espírito Santo, PT2 the Federal District, and so on. Offshore Brazilian territories get their own: Fernando de Noronha, Trindade, and the St Peter and St Paul Rocks each carry distinct identifiers, which is why they appear so often in expedition logs.
+
+So a callsign like **PY2EM** is legible at a glance to anyone in the hobby: Brazil, São Paulo, full licence privileges. The letter prefix also encodes licence class in the Brazilian system — the **PU** series marks a class with restricted band and mode privileges, so a PU station is immediately distinguishable from a PY one on the air.
+
+**None of this is Citizens Band.** CB is a small, licence-free-or-lightly-licensed allocation near 27 MHz with fixed channels, low power limits, and no callsign discipline. Amateur radio is a licensed service with examinations, allocations across the entire spectrum from below 2 MHz into the microwave bands, permission to build and modify your own equipment, and a formal international status. A magnetically-mounted antenna on a car roof feeding a proper transceiver is an amateur mobile station, and it is a different thing entirely from a CB rig, however similar they look from outside the car.
+
+## Voice, CW, and digital
+
+**Voice** is the obvious mode and the least efficient. On VHF and UHF it is normally **FM**, which sounds clean and dies abruptly when the signal is too weak. On HF it is almost always **SSB** (single sideband), which strips the carrier and one sideband to put all the transmitter's power into the part that carries information — the reason SSB sounds oddly compressed and slightly unnatural, and the reason it works at distances FM never would.
+
+**CW** — continuous wave, which everyone calls Morse — is the oldest mode and refuses to die, for a good engineering reason. A human ear and brain can pull a Morse signal out of noise that would render voice completely unintelligible, and the transmitted bandwidth is a fraction of what voice requires. When conditions collapse, CW is often the only thing still getting through. Operators send it with a straight key, a paddle driving an electronic keyer, or increasingly a computer, and the abbreviations that grew up around it — the **Q-codes** like QTH for location, QSL for acknowledgement, QRM for interference — became the shared vocabulary of the whole hobby, used just as often in voice contacts.
+
+**Digital modes** now carry an enormous share of activity. RTTY and packet came first; PSK31 made keyboard-to-keyboard conversation practical on tiny power; and **FT8** changed the culture substantially by making contacts possible at signal levels below what a human can hear at all, in structured 15-second exchanges. Purists complain that it is not really conversation. It is also demonstrably working when nothing else is.
+
+## Repeaters, and the offset that confuses everyone
+
+A handheld radio on VHF or UHF reaches, at best, the visual horizon. A **repeater** solves this by sitting somewhere high — a hilltop, a tower, the top of a tall building — listening on one frequency and simultaneously retransmitting on another. Every low-power station in the coverage area suddenly talks to every other one.
+
+Two details trip up newcomers. First, the **offset**: because the repeater listens and transmits at the same time, the two frequencies must differ, and your radio must transmit on the repeater's input while listening on its output. Get the offset backwards and you will hear everyone perfectly and nobody will hear you. Second, **CTCSS** — a sub-audible tone sent alongside your transmission that tells the repeater you are a legitimate user rather than distant interference. A correct frequency with the wrong tone produces exactly the same silence as a wrong frequency.
+
+Repeaters are also the most collaborative part of the hobby. They are built, sited, powered, licensed, and maintained by clubs and individuals for everyone's benefit, generally at their own expense. Anyone who has helped haul equipment up a hill, aligned a duplexer, or driven out to fix a repeater after a lightning strike understands that the hobby's infrastructure is entirely volunteer-built.
+
+## What operators actually do
+
+**DX** is the pursuit of distance — working stations in other countries and on other continents, often on HF where the ionosphere makes intercontinental contacts possible with modest power. **Contesting** compresses that into competitive events where operators exchange minimal information as fast as possible for hours. **Nets** are scheduled on-air meetings, sometimes social, sometimes for traffic handling or emergency practice. **QSL cards** — physical postcards confirming a contact — remain a genuine tradition, and the electronic equivalents have not displaced the pleasure of a card arriving from somewhere improbable.
+
+Then there is **emergency communications**, which is the answer to the question of why any of this still matters. Amateur radio needs no towers, no exchanges, no billing systems, and no internet. When a hurricane takes out the cellular network, when an earthquake severs the fibre, when a flood isolates a valley, the licensed operator with a battery and a wire antenna is a functioning communications system. Brazilian operators have supported disaster response for decades on exactly this basis.
+
+## The equipment, and what it teaches
+
+A typical station splits by band. An **HF transceiver** with a wire or beam antenna is for distance. A **VHF/UHF radio** — handheld, mobile, or base — is for local and repeater work. A mobile installation uses a magnetically-mounted or permanently-fixed antenna on the vehicle body, which acts as the ground plane the antenna needs, and this is why mounting position on the roof matters more than it looks like it should.
+
+Beyond the radios sit the things that make the hobby an engineering education rather than an appliance: the SWR meter that tells you whether your antenna is actually accepting power, the antenna tuner, the coaxial feedline whose loss rises sharply with frequency, the linear amplifier, the headsets and desk microphones and keys. And the licence itself permits something almost unique in modern radio: you may build, modify, and repair your own transmitting equipment. In an era of sealed devices, an entire service exists where opening the case is the point.
+
+That is the deeper reason amateur radio persists next to the internet rather than being replaced by it. It is not a worse messaging system. It is a licence to understand the physical layer, granted by treaty, and the people who hold it tend to be the ones who can still make a signal travel when the infrastructure is gone.

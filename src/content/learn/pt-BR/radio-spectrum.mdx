@@ -1,0 +1,60 @@
+---
+slug: radio-spectrum
+title: "O espectro de rádio: quais frequências vão até onde, e por quê"
+summary: "Por que um sinal de ondas curtas cruza um oceano com 100 watts enquanto seu Wi-Fi sofre para atravessar uma parede. As faixas de VLF a EHF, os três modos de propagação que explicam quase tudo, e a troca que governa todo o rádio: alcance ou capacidade, nunca os dois."
+concepts: ["wifi", "lora"]
+relatedTools: []
+relatedArticles: ["amateur-radio"]
+category: networking
+order: 248
+status: reviewed
+updated: "2026-07-23"
+---
+
+## Uma troca governa tudo
+
+Frequências baixas viajam longe e carregam pouco. Frequências altas carregam quantidades enormes e param no primeiro obstáculo. Quase toda decisão de projeto em rádio, da comunicação com submarinos ao 5G, é uma posição tomada sobre essa troca.
+
+A razão é física. Um comprimento de onda longo se difrata em volta de morros, prédios e da curvatura da Terra; um curto se comporta cada vez mais como luz, e é por isso que você vê a sombra projetada por uma parede e por que seu Wi-Fi tem o mesmo problema. Enquanto isso, a largura de banda — o espaço disponível para carregar informação — escala com a frequência, então é nas faixas altas que mora a capacidade.
+
+## Os três modos de propagação
+
+Quase todo o comportamento decorre de qual dos três modos domina.
+
+A **onda terrestre** segue a superfície da Terra, acompanhando o terreno. Domina abaixo de cerca de 2 MHz. É por isso que emissoras AM cobrem uma região de forma confiável de dia e de noite, e por que frequências muito baixas alcançam submarinos submersos.
+
+A **onda ionosférica** é a interessante. Entre cerca de 2 e 30 MHz, sinais lançados para cima são refratados pela **ionosfera** e curvados de volta à Terra, a centenas ou milhares de quilômetros. Podem refletir no solo e subir de novo — **multi-hop** — e cruzar oceanos. Isso não é metáfora: uma estação de HF com 100 watts numa antena de fio pode ser ouvida em outro continente, o que nenhuma potência em 2,4 GHz conseguirá.
+
+A **visada direta** assume acima de aproximadamente 30 MHz. O sinal vai até onde você enxerga, limitado pelo horizonte, e é por isso que antenas de VHF e UHF são montadas o mais alto possível e por que obstruções importam tanto.
+
+A ionosfera não é constante, e é aí que está toda a textura da operação em HF. Ela muda entre dia e noite, com as estações do ano, e ao longo do **ciclo solar** de cerca de onze anos: no máximo solar a ionosfera fica mais carregada, sustenta frequências mais altas, e abrem-se caminhos de longa distância simplesmente indisponíveis no mínimo solar. Ocasionalmente o **E esporádico** ou o **duto troposférico** produzem propagação muito além das regras normais, e é por isso que operadores ainda se surpreendem.
+
+## As faixas
+
+**VLF, 3–30 kHz.** Comprimentos de onda de dezenas de quilômetros. Penetra água do mar, então é usada para comunicação com submarinos submersos, além de navegação e sinais de tempo. As taxas de dados são quase cômicas — poucos caracteres por segundo — mas alcança lugares que nada mais alcança.
+
+**LF, 30–300 kHz.** Onda terrestre de longa distância. Estações de sinal horário que disciplinam relógios radiocontrolados vivem aqui, junto com navegação marítima e, em partes do mundo, radiodifusão em ondas longas.
+
+**MF, 300 kHz–3 MHz.** A faixa de radiodifusão AM fica aqui. Onda terrestre de dia; à noite, quando a camada D absorvente da ionosfera se dissipa, a onda ionosférica deixa emissoras AM distantes chegarem de centenas de quilômetros. Quem já pegou uma estação distante no rádio do carro à noite observou a ionosfera diretamente.
+
+**HF, 3–30 MHz.** Ondas curtas. É a faixa da radiodifusão internacional, das comunicações marítimas e aeronáuticas de longa distância, e da maior parte do DX de radioamador. A onda ionosférica torna possível o contato mundial com equipamento modesto, e a desvantagem é a mesma que a vantagem: as condições variam constantemente, e a frequência que funcionou de manhã pode estar morta à tarde. Aqui também fica o **CB**, perto dos 27 MHz, no topo da faixa.
+
+**VHF, 30–300 MHz.** Radiodifusão FM, controle de tráfego aéreo, rádio marítimo, televisão antiga e uso intenso de repetidoras de radioamador. Majoritariamente visada direta, em geral confiável, e amplamente imune ao drama ionosférico abaixo dela — embora no máximo solar as frequências mais baixas de VHF ocasionalmente propaguem a longa distância mesmo assim.
+
+**UHF, 300 MHz–3 GHz.** Onde a vida moderna acontece: telefonia móvel, Wi-Fi em 2,4 GHz, Bluetooth, GPS, a maior parte da televisão, e repetidoras de radioamador. Largura de banda suficiente para taxas de dados reais, antenas pequenas, e prédios que bloqueiam sinal de forma convincente. O **duto troposférico** — inversões de temperatura aprisionando sinais numa camada refrativa — ocasionalmente leva UHF muito além do horizonte.
+
+**SHF, 3–30 GHz.** Enlaces de satélite, radar, backhaul por micro-ondas, Wi-Fi em 5 e 6 GHz. Capacidade enorme, visada direta estrita, e a chuva começa a importar como atenuador.
+
+**EHF, 30–300 GHz.** Ondas milimétricas, incluindo as faixas altas do 5G. Capacidade extraordinária a distâncias muito curtas, bloqueada por quase tudo, inclusive folhagem e corpos humanos, e é por isso que o 5G milimétrico exige implantação densa de pequenas células em vez de torres altas.
+
+## Onde ficam as coisas familiares
+
+As **faixas ISM** — industrial, científica e médica — são as alocações isentas de licença que tornaram possível o sem-fio de consumo. Wi-Fi e Bluetooth dividem 2,4 GHz com fornos de micro-ondas e muita coisa mais, e é exatamente por isso que a faixa é congestionada; as faixas de Wi-Fi em 5 e 6 GHz oferecem mais espaço e menos alcance, precisamente como a troca prevê. O **LoRa** faz a aposta oposta, usando alocações ISM abaixo de 1 GHz e taxas de dados muito baixas para obter quilômetros de alcance e anos de bateria de um sensor — uma escolha deliberada de alcance sobre capacidade.
+
+O celular abrange faixas baixas para cobertura e altas para capacidade na mesma rede, que é a troca administrada em vez de resolvida: a faixa baixa alcança a borda rural, a alta atende ao quarteirão denso.
+
+## Por que vale saber disso
+
+Se você entende a troca, quase todo comportamento de rádio deixa de ser misterioso. Seu Wi-Fi sofre com paredes porque 2,4 GHz se comporta como luz. Um radioamador em 20 metros fala com o Japão com a potência de uma lâmpada porque a ionosfera é um espelho naquela frequência. Seu telefone funciona dentro de casa numa faixa baixa e fica rápido na rua numa faixa alta. O 5G milimétrico é espantoso na esquina onde está a célula e sumiu um prédio depois.
+
+Nada disso é arbitrário. É uma troca só, feita repetidamente, em cada faixa.

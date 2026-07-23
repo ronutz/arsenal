@@ -1,0 +1,76 @@
+---
+slug: brazil-internet-governance
+title: "Quem de fato governa a internet no Brasil"
+summary: "O Brasil construiu um dos modelos de governança da internet mais distintos do mundo: multissetorial antes de a palavra existir, com uma fundação de pesquisa operando a primeira conexão do país e um comitê que não é ministério. Os órgãos, as leis, a espinha dorsal de computação estatal por baixo de tudo, e a decisão de 2025 que reescreveu a responsabilidade das plataformas."
+concepts: ["ixp", "lgpd", "gdpr"]
+relatedTools: []
+relatedArticles: ["brazil-market-reserve", "internet-chokepoints"]
+category: networking
+order: 246
+status: reviewed
+updated: "2026-07-23"
+---
+
+## Começou numa fundação de pesquisa, não num ministério
+
+A internet brasileira não chegou por uma operadora de telecomunicações nem por um programa de governo. Chegou porque físicos queriam conversar com o Fermilab.
+
+No fim de 1988 o **Laboratório Nacional de Computação Científica**, no Rio, alcançou a **BITNET** via Universidade de Maryland, e a **FAPESP** — a fundação paulista de amparo à pesquisa — conectou-se ao **Fermi National Accelerator Laboratory**, em Batavia, Illinois. O enlace corria sobre uma linha dedicada alugada da Embratel a 4.800 bits por segundo, em fio de cobre dentro de um cabo submarino, porque não havia fibra para esse tipo de serviço. Os relatos divergem um pouco quanto à sequência exata e quanto a datar o marco na conexão BITNET de 1988 ou em **14 de abril de 1989**, quando a ligação foi formalmente inaugurada; as duas datas aparecem em material da própria FAPESP, e a resposta honesta é que a coisa foi construída aos poucos, não ligada de uma vez.
+
+A rede que a FAPESP criou e financiou foi a **ANSP**, *Academic Network at São Paulo*, interligando USP, Unicamp, Unesp e IPT, e depois alcançando UFMG e UFRGS. Seu arquiteto foi **Demi Getschko**, mais tarde admitido no Internet Hall of Fame exatamente por esse trabalho. E eis o fato que molda todo o resto: daquele início **até 1994, quando começou a internet comercial no país, o enlace da FAPESP com o Fermilab carregou praticamente todo o tráfego brasileiro de internet com o exterior**. Uma fundação estadual de pesquisa foi, por cerca de cinco anos, o gateway internacional do país.
+
+A FAPESP também assumiu a administração do domínio `.br` e a distribuição de números IP — uma função de registro nascida de necessidade prática e ainda visível na estrutura institucional de hoje. A **RNP** (Rede Nacional de Pesquisa), lançada em 1989, começou a montar um backbone nacional em 1991, e até agosto de 1996 sua conectividade internacional passava pelas linhas da FAPESP.
+
+Vale notar o momento, contra a outra história brasileira: tudo isso aconteceu *durante* a reserva de mercado, e a rede acadêmica foi um dos poucos lugares onde tecnologia internacional atual podia ser usada legal e praticamente.
+
+A **KyaTera**, depois, foi um projeto FAPESP de outra natureza — uma rede óptica de pesquisa usando fibra apagada dedicada para ligar laboratórios no estado de São Paulo, construída para estudar a própria rede, e não apenas para usar uma.
+
+## O comitê que não é ministério
+
+Em 1995, com a chegada da internet comercial, o Brasil fez a escolha que ainda o define. Em vez de entregar a internet ao regulador de telecomunicações ou a um ministério, criou o **CGI.br** — Comitê Gestor da Internet no Brasil — com representação de governo, setor privado, sociedade civil e comunidade acadêmica.
+
+Isso é governança multissetorial de verdade, estabelecida anos antes de o termo virar padrão em fóruns internacionais, e o Brasil desde então a usa como posição diplomática. Em 2009 o CGI.br publicou seu **Decálogo**, dez princípios para a governança da internet, que afirmava neutralidade da rede, privacidade, liberdade de expressão e a inimputabilidade da própria rede — cinco anos antes de essas ideias virarem lei.
+
+A execução cabe ao **NIC.br**, entidade sem fins lucrativos criada em 2005 para implementar as decisões do CGI.br. Seus braços são onde a internet prática acontece:
+
+- **Registro.br** opera o domínio `.br` — a função que a FAPESP improvisou originalmente.
+- **CERT.br** cuida da resposta nacional a incidentes.
+- **CEPTRO.br** opera o **IX.br**, o sistema nacional de troca de tráfego, e impulsiona a adoção de IPv6.
+
+O **IX.br** merece destaque porque é genuinamente de classe mundial: entre os maiores sistemas de troca de tráfego do planeta em volume, e deliberadamente distribuído por dezenas de cidades em vez de concentrado numa instalação. Um **IXP** é simplesmente um lugar onde redes se encontram para trocar tráfego diretamente, em vez de pagar trânsito para se alcançarem; construir muitos deles, em muitas cidades, é por que o tráfego doméstico brasileiro permanece doméstico e por que a internet nacional é comparativamente difícil de interromper em um ponto único.
+
+Ao lado de tudo isso está a **Anatel**, o regulador de telecomunicações criado pela *Lei Geral de Telecomunicações* (Lei 9.472/1997), que regula as operadoras sobre as quais a internet trafega — trabalho diferente de governar a internet em si, e uma distinção que o Brasil manteve com cuidado.
+
+## A máquina por baixo: processamento de dados do Estado
+
+Nada do acima explica como o *Estado* brasileiro de fato computa, e essa história é mais velha que a internet.
+
+O **SERPRO** foi criado pela **Lei 4.516, de 1º de dezembro de 1964**, como *Serviço Federal de Processamento de Dados*, para modernizar a administração federal — começando, caracteristicamente, pela arrecadação: em 1965 já construía o sistema do Imposto de Renda, e em 1966–67 instalou unidades regionais de operação nas dez regiões fiscais da Receita Federal. Cresceu até se tornar uma das maiores organizações públicas de TI do mundo, guardando as bases de dados por trás da tributação federal, da aduana e da identificação, e operando uma rede nacional com centros regionais de Belém a Porto Alegre. Foi recentemente renomeado *Empresa Nacional de Inteligência em Governo Digital e Tecnologia da Informação*, embora todo mundo continue dizendo SERPRO.
+
+Os estados construíram os seus. A **PRODESP**, Companhia de Processamento de Dados do Estado de São Paulo, foi criada por decreto estadual em **24 de julho de 1969** e começou a operar em outubro do mesmo ano, numa sala emprestada da Secretaria da Fazenda, com dois funcionários e sem equipamento. Seu primeiro computador foi um IBM 360/65 de cerca de nove milhões de dólares; seu primeiro trabalho em produção foi a folha de pagamento do Estado, então com 290 mil funcionários. No início dos anos 1980 operava catorze grandes computadores e uma rede de teleprocessamento com cerca de 900 terminais, e montou uma **Rede Estadual de Processamento de Dados** com centros regionais de informática em Campinas, Bauru, Presidente Prudente e Ribeirão Preto — descentralizando computação pelo interior num tempo em que isso era genuinamente difícil.
+
+A **PRODAM-SP** faz o equivalente para a cidade de São Paulo, e praticamente todo estado brasileiro tem sua contraparte: PRODERJ no Rio de Janeiro, PRODEMGE em Minas Gerais, PROCERGS no Rio Grande do Sul, e assim por diante.
+
+Essa camada importa por dois motivos. É por ela que o governo eletrônico brasileiro funciona em escala populacional — a capacidade computacional e a cultura operacional existiam décadas antes da web. E significa que o Estado brasileiro guarda quantidades enormes de dados de cidadãos em sistemas públicos, que é exatamente por que o arcabouço de proteção de dados abaixo não é acadêmico.
+
+## As leis
+
+O **Marco Civil da Internet, Lei 12.965/2014**, é o arcabouço civil da internet, regulamentado pelo Decreto 8.771/2016. É admirado internacionalmente com razão: estabelece a **neutralidade de rede**, protege liberdade de expressão e privacidade, define regras sobre registros de conexão e de aplicação e — o dispositivo que o tornou famoso — limitava a responsabilidade das plataformas por conteúdo de usuários.
+
+A **LGPD, Lei 13.709/2018**, em vigor desde 2020, é a lei geral de proteção de dados, próxima ao modelo do GDPR: bases legais para tratamento, direitos do titular incluindo acesso e eliminação, e a **ANPD** como autoridade supervisora.
+
+## A decisão de 2025 que mudou a parte famosa
+
+O artigo 19 do Marco Civil dizia que uma plataforma só se tornava civilmente responsável por conteúdo de terceiros após descumprir **ordem judicial específica** de remoção. Era a peça central deliberada: um controle judicial contra a censura privada por reclamação.
+
+Em **26 de junho de 2025**, julgando conjuntamente os Temas 987 e 533, o **Supremo Tribunal Federal** declarou o artigo 19 **parcial e progressivamente inconstitucional**, por 8 votos a 3. O raciocínio é incomum e vale enunciar com precisão: a Corte entendeu que o dispositivo *não* nasceu inconstitucional, mas se tornou inconstitucional ao longo do tempo — "inconstitucionalidade progressiva" — à medida que as plataformas cresceram, os sistemas de recomendação se sofisticaram e a escala dos danos mudou.
+
+O efeito prático é um deslocamento para o **notice and takedown**: as plataformas podem agora responder se, após notificação extrajudicial, não agirem com diligência contra conteúdo manifestamente ilícito. A Corte preservou a exigência de ordem judicial para crimes contra a honra, manteve a responsabilidade *subjetiva* (exigindo culpa, fora de presunções específicas), aplicou a decisão prospectivamente e afirmou que a tese vale até que o Congresso legisle sobre a matéria. O acórdão foi publicado em **6 de novembro de 2025**, estabelecendo quatro regimes distintos de responsabilidade conforme o tipo de conteúdo e a forma de circulação.
+
+Duas observações honestas. Primeira: este é o Judiciário preenchendo uma lacuna deixada aberta pelo Legislativo, o que várias organizações da sociedade civil apontaram com desconforto mesmo quando saudaram o resultado. Segunda: sua aplicação prática ainda está se assentando; quem for agir com base nela deve ler as teses efetivas, e não um resumo — inclusive este.
+
+## Por que o formato disso importa
+
+Juntando as peças, o modelo brasileiro é genuinamente distinto. A internet chegou por uma fundação de pesquisa, não por uma operadora. A governança foi para um comitê multissetorial, e não para um ministério, antes de isso virar moda. A camada de troca de tráfego foi deliberadamente distribuída pelo país, e não concentrada. Proteção de dados e direitos civis foram legislados relativamente cedo. E a camada mais profunda — a computação do próprio Estado — antecede tudo isso em décadas.
+
+Não é um sistema sem atrito, e a decisão sobre o artigo 19 e os confrontos com plataformas em 2024 mostram tensão real entre poder judicial, poder das plataformas e ausência legislativa. Mas é um desenho coerente, com uma filosofia identificável, o que é mais do que muitos países podem dizer — e começou com uma colaboração de física e uma linha de 4.800 bits por segundo até Illinois.

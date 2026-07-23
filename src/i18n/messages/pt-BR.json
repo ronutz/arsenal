@@ -5960,6 +5960,33 @@
       "avoidedTitle": "Não escolhidos - e por quê",
       "avoidedBadge": "evite",
       "runsLocally": "Decidido inteiramente no seu navegador - nada é transmitido."
+    },
+    "digital-transformation-tracker": {
+      "name": "Rastreador de transformação digital",
+      "blurb": "Trinta marcos em sete domínios, ordenados por quanto você deve confiar neles: o que já aconteceu, o que já é lei, o que está agendado, o que está agendado mas em movimento, e o que é apenas a previsão de alguém.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "filtersLabel": "Filtros",
+      "domainLabel": "Domínio",
+      "certaintyLabel": "Qual o grau de certeza?",
+      "emptyState": "Nenhum marco corresponde a esses filtros. Remova um e tente de novo.",
+      "errorTitle": "Problema no filtro",
+      "summary": "{total} marcos - {settled} fato consolidado, {forward} olhando para frente.",
+      "enabledLabel": "Tornou possível:",
+      "sourceLabel": "Fonte:",
+      "runsLocally": "Filtrado inteiramente no seu navegador. Linhas que olham para frente sempre dizem quem está prevendo.",
+      "domain_infrastructure": "Infraestrutura",
+      "domain_commerce": "Comércio",
+      "domain_money": "Dinheiro",
+      "domain_work": "Trabalho",
+      "domain_state": "Serviços e Estado",
+      "domain_media": "Mídia",
+      "domain_health": "Saúde",
+      "certainty_shipped": "Aconteceu",
+      "certainty_inForce": "Em vigor",
+      "certainty_scheduled": "Agendado",
+      "certainty_contested": "Agendado, mas em movimento",
+      "certainty_forecast": "Previsão"
     }
   },
   "privacy_page": {
@@ -13185,6 +13212,46 @@
       "reserva-de-mercado": {
         "def": "A política brasileira que reservou legalmente o mercado interno de informática a empresas de capital nacional, de 1984 a 1992.",
         "context": "A Lei 7.232/1984 instituiu a Política Nacional de Informática com prazo de oito anos escrito nela, e passou por unanimidade sobre uma coalizão de militares nacionalistas, indústria nacional e oposição de esquerda. Na prática produziu clones do ZX81, do Apple II, do padrão MSX e do IBM PC vendidos tarde e caro, uma rota de contrabando pelo Paraguai, e uma disputa comercial via Seção 301 com Washington que terminou com Reagan anunciando sanções em 1987. A reserva expirou no prazo, em outubro de 1992. A aposta em hardware falhou, mas a geração de engenheiros que ela formou é ancestral direta da automação bancária brasileira e de empresas como Cyclades e Datacom."
+      },
+      "amateur-radio": {
+        "def": "Serviço de rádio licenciado para autoinstrução, experimentação e comunicação não comercial, com alocações em todo o espectro.",
+        "context": "A licença é a distinção: provas, um indicativo emitido sob alocação por tratado da UIT, e permissão para construir e modificar o próprio equipamento transmissor, o que é quase único no rádio moderno. Radioamadores fazem de Morse em antena de fio a enlaces de micro-ondas e satélites. O serviço justifica seu espectro em parte pela comunicação de emergência, porque uma estação com bateria e antena continua funcionando quando torres, centrais e a internet não funcionam."
+      },
+      "callsign": {
+        "def": "Identificador único emitido a uma estação de rádio licenciada, estruturado como prefixo, dígito e sufixo.",
+        "context": "A faixa de prefixos é alocada a um país pela União Internacional de Telecomunicações, então um indicativo é legível mundialmente sem explicação. O Brasil detém todo o bloco PPA a PYZ mais ZV a ZZ para estações especiais, e a Anatel emite dentro dele com esquema de duas letras mais dígito, em que o dígito é regional: PY2 é São Paulo, PY1 Rio de Janeiro, PY4 Minas Gerais. A série de letras também sinaliza a classe de licença no Brasil, de modo que uma estação PU se distingue de uma PY no ar."
+      },
+      "morse-code": {
+        "def": "Codificação de caracteres como tons curtos e longos, enviada como portadora ligada e desligada, conhecida no ar como CW.",
+        "context": "Sobrevive por um fato de engenharia, e não por nostalgia: um ouvido treinado extrai Morse de um ruído que torna a fonia ininteligível, com uma fração da largura de banda. Quando a propagação desaba, o CW frequentemente é a única coisa ainda passando. É enviado com manipulador vertical, paddle acionando um keyer eletrônico, ou computador, e as abreviações em código Q que cresceram em volta dele, como QTH para localização e QRM para interferência, viraram o vocabulário compartilhado do hobby inteiro."
+      },
+      "repeater": {
+        "def": "Estação de rádio em ponto alto que recebe em uma frequência e retransmite simultaneamente em outra, estendendo o alcance de estações de baixa potência.",
+        "context": "Dois ajustes derrubam iniciantes. O offset é a diferença entre as frequências de entrada e saída da repetidora, e invertê-lo significa que você ouve todo mundo enquanto ninguém ouve você. O CTCSS é um tom subaudível que prova que você é usuário legítimo e não interferência distante, então a frequência certa com tom errado produz o mesmo silêncio que a frequência errada. Repetidoras quase sempre são construídas, instaladas e mantidas por voluntários, por conta própria."
+      },
+      "citizens-band": {
+        "def": "Alocação de rádio pequena, isenta ou levemente licenciada, perto dos 27 MHz, com canais fixos e limites baixos de potência.",
+        "context": "Vale manter firmemente distinta do radioamadorismo, com o qual o equipamento pode se parecer superficialmente. O CB não tem prova, não tem indicativo emitido individualmente, tem canais fixos e limites estreitos de potência; o radioamadorismo é serviço licenciado, com alocações por todo o espectro e permissão para construir os próprios transmissores. Situado no topo do HF, o CB ocasionalmente propaga por onda ionosférica em alta atividade solar, e é por isso que estações distantes às vezes aparecem num canal que deveria ser local."
+      },
+      "radio-spectrum": {
+        "def": "A faixa de frequências eletromagnéticas usada para rádio, convencionalmente dividida em bandas de VLF a EHF.",
+        "context": "Uma troca governa tudo: frequências baixas viajam longe e carregam pouco, frequências altas carregam quantidades enormes e param no primeiro obstáculo. Comprimentos de onda longos se difratam em volta do terreno e de prédios, os curtos se comportam cada vez mais como luz, e a largura de banda disponível escala com a frequência. Toda decisão de alocação, da comunicação com submarinos em poucos quilohertz ao 5G milimétrico, é uma posição tomada sobre essa única troca."
+      },
+      "propagation": {
+        "def": "Como um sinal de rádio de fato viaja do transmissor ao receptor, o que depende muito mais da frequência do que da potência.",
+        "context": "Três modos explicam quase tudo. A onda terrestre acompanha a superfície da Terra e domina abaixo de cerca de 2 MHz. A onda ionosférica, entre aproximadamente 2 e 30 MHz, é refratada pela ionosfera de volta ao solo e pode cruzar oceanos em múltiplos saltos. A visada direta assume acima de cerca de 30 MHz. A ionosfera varia entre dia e noite, com as estações e com o ciclo solar de onze anos, e é por isso que um caminho em HF que funcionou de manhã pode estar morto à tarde."
+      },
+      "hf": {
+        "def": "Alta frequência, de 3 a 30 MHz: a faixa de ondas curtas em que os sinais se refratam na ionosfera e viajam pelo mundo.",
+        "context": "É a faixa que torna possível o contato intercontinental com equipamento modesto, porque a propagação ionosférica faz o trabalho que a potência não faz. Cem watts numa antena de fio podem alcançar outro continente, o que nenhuma potência em 2,4 GHz conseguirá. O custo é a variabilidade: as condições mudam com a hora, a estação do ano e a atividade solar, então escolher a frequência certa para o caminho é a habilidade central de operação. Radiodifusão internacional, serviços marítimos e aeronáuticos de longa distância e a maior parte do DX de radioamador vivem aqui."
+      },
+      "vhf-uhf": {
+        "def": "Frequência muito alta (30 a 300 MHz) e ultra alta (300 MHz a 3 GHz): as faixas de visada direta.",
+        "context": "Acima de cerca de 30 MHz a ionosfera geralmente deixa de curvar os sinais de volta, então a cobertura é limitada pelo horizonte e por obstruções, e é por isso que a altura da antena importa tanto. O VHF carrega radiodifusão FM, controle de tráfego aéreo e rádio marítimo; o UHF carrega telefonia móvel, Wi-Fi, Bluetooth, GPS e a maior parte da televisão. Ambos são confiáveis e previsíveis em comparação ao HF, e o duto troposférico ocasionalmente os leva muito além do horizonte mesmo assim."
+      },
+      "ism-band": {
+        "def": "Faixas industrial, científica e médica: espectro utilizável sem licença individual, sujeito a regras de potência e interferência.",
+        "context": "Essas alocações tornaram possível o sem-fio de consumo. Wi-Fi e Bluetooth dividem 2,4 GHz com fornos de micro-ondas e muita coisa mais, e é exatamente por isso que a faixa é congestionada, enquanto as faixas de Wi-Fi em 5 e 6 GHz trocam alcance por espaço. O LoRa faz a aposta oposta nas alocações ISM abaixo de 1 GHz, aceitando taxas de dados muito baixas para obter quilômetros de alcance e anos de bateria. Isento de licença não significa sem regras: limites de ciclo de trabalho e de potência são o que mantém as faixas utilizáveis."
       }
     },
     "totalCount": "{count} termos",

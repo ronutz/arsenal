@@ -68,6 +68,7 @@ import { run as netskopeSteeringDecisionRun } from "./netskope-steering-decision
 import { run as sortingStepperRun, type Strategy as SortStrategy } from "./sorting-algorithm-stepper";
 import { run as cableRunPlannerRun } from "./cable-run-planner";
 import { run as ldapFilterExplainerRun } from "./ldap-filter-explainer";
+import { run as digitalTransformationTrackerRun } from "./digital-transformation-tracker";
 import { run as oauthFlowChooserRun } from "./oauth-flow-chooser";
 import { runFromJson as faultHypothesisBuilderRun } from "./fault-hypothesis-builder";
 import { runFromJson as changeWindowRunbookBuilderRun } from "./change-window-runbook-builder";
@@ -178,6 +179,7 @@ export const API_TOOLS: ApiTool[] = [
   },
   { slug: "cable-run-planner", structured: true, run: (input: string) => cableRunPlannerRun(JSON.parse(input)) },
   { slug: "ldap-filter-explainer", structured: true, run: ldapFilterExplainerRun },
+  { slug: "digital-transformation-tracker", structured: true, run: digitalTransformationTrackerRun },
   { slug: "oauth-flow-chooser", structured: true, run: oauthFlowChooserRun },
   { slug: "fault-hypothesis-builder", structured: true, run: faultHypothesisBuilderRun },
   { slug: "change-window-runbook-builder", structured: true, run: changeWindowRunbookBuilderRun },
