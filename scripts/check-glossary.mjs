@@ -22,7 +22,7 @@
 // golden vector or the vendor-namespace guard does.
 // ============================================================================
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -30,6 +30,20 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REGISTRY = path.join(ROOT, "src/content/glossary/glossary.ts");
 const EN = path.join(ROOT, "src/i18n/messages/en.json");
 const PT = path.join(ROOT, "src/i18n/messages/pt-BR.json");
+
+// Link-target universes, read live so the guard can never drift from reality:
+// tool slugs from the tools registry, article slugs from the en Learn corpus.
+// (Added 2026-07-23 after a dangling "mac-oui" relatedTools reference shipped
+// undetected - plain strings are invisible to TypeScript.)
+const TOOL_SLUGS = new Set(
+  [...readFileSync(path.join(ROOT, "src/lib/tools/registry.ts"), "utf8")
+    .matchAll(/slug:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]),
+);
+const ARTICLE_SLUGS = new Set(
+  readdirSync(path.join(ROOT, "src/content/learn/en"))
+    .filter((f) => f.endsWith(".mdx"))
+    .map((f) => f.slice(0, -4)),
+);
 
 const VALID_KINDS = new Set(["term", "acronym", "expression", "jargon", "lore"]);
 const VALID_DOMAINS = new Set([
@@ -58,7 +72,16 @@ for (const chunk of chunks) {
   const relatedRaw = chunk.match(/relatedTerms:\s*\[([^\]]*)\]/)?.[1] ?? "";
   const relatedTerms = [...relatedRaw.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
   const hasSources = /sources:\s*\[/.test(chunk);
-  entries.push({ slug, kind, domains, relatedTerms, hasSources });
+  // relatedTools / relatedArticles are parsed so their targets can be
+  // validated below. Before 2026-07-23 these rails were NOT checked, which
+  // let a dangling "mac-oui" tool reference sit in the file unnoticed:
+  // TypeScript cannot catch it (they are plain strings) and the page simply
+  // renders a link to a tool that does not exist.
+  const toolsRaw = chunk.match(/relatedTools:\s*\[([^\]]*)\]/)?.[1] ?? "";
+  const relatedTools = [...toolsRaw.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  const artsRaw = chunk.match(/relatedArticles:\s*\[([^\]]*)\]/)?.[1] ?? "";
+  const relatedArticles = [...artsRaw.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  entries.push({ slug, kind, domains, relatedTerms, hasSources, relatedTools, relatedArticles });
 }
 
 if (entries.length === 0) {
@@ -90,6 +113,19 @@ for (const e of entries) {
   // 4: relatedTerms resolve
   for (const r of e.relatedTerms) {
     if (!slugSet.has(r)) errors.push(`"${e.slug}": relatedTerms -> "${r}" does not resolve`);
+  }
+  // 4b: relatedTools resolve to a real tool slug in the registry
+  for (const r of e.relatedTools) {
+    if (!TOOL_SLUGS.has(r)) {
+      errors.push(`"${e.slug}": relatedTools -> "${r}" is not a registry tool slug`);
+    }
+  }
+  // 4c: relatedArticles resolve to a real Learn article (en corpus is the
+  // source of truth; the multi-locale rule keeps pt-BR in step)
+  for (const r of e.relatedArticles) {
+    if (!ARTICLE_SLUGS.has(r)) {
+      errors.push(`"${e.slug}": relatedArticles -> "${r}" is not a Learn article slug`);
+    }
   }
   // 5: lore has sources
   if (e.kind === "lore" && !e.hasSources) {
