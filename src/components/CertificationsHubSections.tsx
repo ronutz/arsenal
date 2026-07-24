@@ -38,6 +38,10 @@ export interface HubCert {
 export interface HubVendorGroup {
   vendor: string;
   vendorLabel: string;
+  /** One-line summary shown on the vendor card at the top of the hub. */
+  vendorBlurb: string;
+  /** Precomputed "N certifications - M exam guides" line for the card. */
+  vendorCount: string;
   certs: HubCert[];
 }
 
@@ -45,16 +49,27 @@ export default function CertificationsHubSections({
   groups,
   expandAllLabel,
   collapseAllLabel,
+  vendorsHeading,
 }: {
   groups: HubVendorGroup[];
   expandAllLabel: string;
   collapseAllLabel: string;
+  /** Heading above the vendor overview cards. */
+  vendorsHeading: string;
 }) {
-  // -- One open/closed flag per certification key; default all COLLAPSED
-  //    (the directive's default view: vendors visible, cert titles closed).
+  // -- Open/closed state now covers BOTH levels (PRIME 2026-07-24):
+  //    a flag per VENDOR (`vendor-<key>`) and a flag per CERTIFICATION
+  //    (`<cert.key>`). Both default to COLLAPSED, so a reader first sees
+  //    every vendor at a glance and expands only the one they care about.
   const [open, setOpen] = useState<Record<string, boolean>>({});
 
-  const allKeys = groups.flatMap((g) => g.certs.map((c) => c.key));
+  // Expand-all / collapse-all must act on EVERY collapsible on the page,
+  // vendors and certifications alike, or "expand all" would leave the
+  // certification rows hidden inside a newly opened vendor.
+  const allKeys = [
+    ...groups.map((g) => `vendor-${g.vendor}`),
+    ...groups.flatMap((g) => g.certs.map((c) => c.key)),
+  ];
   const setAll = (value: boolean) =>
     setOpen(Object.fromEntries(allKeys.map((k) => [k, value])));
 
@@ -74,13 +89,58 @@ export default function CertificationsHubSections({
         </div>
       </section>
 
-      {/* ---- One always-visible section per vendor, in hub order ---- */}
-      {groups.map((g) => (
-        <section className="section certhub-cert" id={`vendor-${g.vendor}`} key={g.vendor}>
+      {/* ---- Vendor overview cards (PRIME 2026-07-24): every vendor the hub
+             covers, visible at a glance before anything is expanded. Clicking
+             a card opens that vendor's section and scrolls to it, so the cards
+             double as a table of contents. ---- */}
+      <section className="section">
+        <div className="container certs-container">
+          <h2 className="certs-group-title">{vendorsHeading}</h2>
+          <ul className="certhub-guide-grid">
+            {groups.map((g) => (
+              <li className="certhub-guide-card-wrap" key={`card-${g.vendor}`}>
+                <a
+                  href={`#vendor-${g.vendor}`}
+                  className="certhub-guide-card"
+                  onClick={() => setOpen((o) => ({ ...o, [`vendor-${g.vendor}`]: true }))}
+                >
+                  <span className="certhub-guide-name">{g.vendorLabel}</span>
+                  <span className="certhub-guide-meta">
+                    <span className="certhub-guide-badge">{g.vendorCount}</span>
+                  </span>
+                  <span className="certs-group-intro">{g.vendorBlurb}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ---- One COLLAPSIBLE section per vendor, in hub order ---- */}
+      {groups.map((g) => {
+        const vKey = `vendor-${g.vendor}`;
+        const vOpen = !!open[vKey];
+        return (
+        <section className="section certhub-cert" id={vKey} key={g.vendor}>
           <div className="container certs-container">
-            <h2 className="certs-group-title">{g.vendorLabel}</h2>
+            {/* Vendor title is now the collapse control itself. */}
+            <button
+              type="button"
+              className="certhub-cert-row"
+              aria-expanded={vOpen}
+              aria-controls={`${vKey}-certs`}
+              onClick={() => setOpen((o) => ({ ...o, [vKey]: !o[vKey] }))}
+            >
+              <span className="certhub-guide-cta" aria-hidden="true">
+                {vOpen ? "\u25be" : "\u25b8"}
+              </span>
+              <h2 className="certs-group-title">{g.vendorLabel}</h2>
+              <span className="certs-badge certs-badge--current mono">{g.vendorCount}</span>
+            </button>
 
             {/* ---- Collapsible certification rows, in certification order ---- */}
+            {vOpen && (
+            <div id={`${vKey}-certs`}>
             {g.certs.map((cert) => {
               const isOpen = !!open[cert.key];
               return (
@@ -133,9 +193,12 @@ export default function CertificationsHubSections({
                 </div>
               );
             })}
+            </div>
+            )}
           </div>
         </section>
-      ))}
+        );
+      })}
     </>
   );
 }

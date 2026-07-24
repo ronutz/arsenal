@@ -62,6 +62,14 @@ export default async function CertificationsHubPage({
   const groups: HubVendorGroup[] = getCertificationsGroupedByVendor().map((g) => ({
     vendor: g.vendor,
     vendorLabel: tVendors(`${g.vendor}.name`),
+    // Vendor overview card copy (PRIME 2026-07-24). The blurb reuses the
+    // EXISTING vendors namespace tagline - no new copy invented here - and the
+    // count is derived, so both stay correct as guides are added.
+    vendorBlurb: tVendors(`${g.vendor}.tagline`),
+    vendorCount: t("vendorCount", {
+      certs: g.certs.length,
+      guides: g.certs.reduce((n, c) => n + getGuidesForCertification(c.key).length, 0),
+    }),
     certs: g.certs.map((cert) => ({
       key: cert.key,
       name: cert.name,
@@ -126,6 +134,7 @@ export default async function CertificationsHubPage({
             groups={groups}
             expandAllLabel={t("expandAll")}
             collapseAllLabel={t("collapseAll")}
+            vendorsHeading={t("vendorsHeading")}
           />
 
           {/* Instructor-led training CTA (subtle): high-intent candidates can

@@ -30,6 +30,9 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { ogImages } from "@/lib/og";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
+import ReadingPathSections, {
+  type PathGroup,
+} from "@/components/ReadingPathSections";
 import { getArticle } from "@/lib/learn";
 import { tools as toolRegistry } from "@/config/tools";
 import { categoryColor } from "@/config/categoryColors";
@@ -61,6 +64,62 @@ export default async function StudyGuidesPage({
   const t = await getTranslations("studyGuidesIndex");
   const tTools = await getTranslations("tools");
   const tNav = await getTranslations("nav");
+  const tVendors = await getTranslations("vendors");
+
+  // -- Reading paths, grouped and sorted for the collapsible index
+  //    (PRIME 2026-07-24). GROUP ORDER is fixed and deliberate: the
+  //    vendor-agnostic group first, then vendors alphabetically as PRIME
+  //    specified (F5, Extreme, Fortinet, Netskope, Ping, Zscaler). Within a
+  //    group, paths sort ALPHABETICALLY by localized title via localeCompare,
+  //    so pt-BR accents order correctly rather than by raw code point.
+  const GROUP_ORDER = ["general", "f5", "extreme", "fortinet", "netskope", "ping", "zscaler"];
+  // Vendor detection is DERIVED from the path id: no new data field to keep in
+  // sync, and a path named for its vendor lands in that vendor's group.
+  //    A path belongs to a vendor when its id starts with that vendor's token
+  //    (with or without a separator, so both "ping-identity-platform" and
+  //    "pingfederate-administration" land under Ping), plus the one alias the
+  //    ids actually use: "bigip" is F5's product name, not a separate vendor.
+  const VENDOR_ALIASES: Record<string, string[]> = {
+    f5: ["f5", "bigip"],
+    extreme: ["extreme", "exos", "voss"],
+    fortinet: ["fortinet", "fortigate"],
+    netskope: ["netskope"],
+    ping: ["ping"],
+    zscaler: ["zscaler"],
+  };
+  const vendorOf = (id: string) =>
+    GROUP_ORDER.find(
+      (v) => v !== "general" && (VENDOR_ALIASES[v] ?? []).some((tok) => id.startsWith(tok)),
+    ) ?? "general";
+
+  const resolvedPaths = READING_PATHS.map((path) => {
+    const steps = path.articles
+      .map((slug) => getArticle(slug, locale))
+      .filter((a): a is NonNullable<typeof a> => a !== null)
+      .map((a) => ({ slug: a.slug, title: a.title }));
+    const tools = path.tools
+      .map((id) => toolRegistry.find((tl) => tl.id === id))
+      .filter((tl): tl is NonNullable<typeof tl> => Boolean(tl))
+      .map((tl) => ({ id: tl.id, href: tl.href, name: tTools(`${tl.id}.name`) }));
+    return {
+      id: path.id,
+      group: vendorOf(path.id),
+      color: categoryColor(path.category),
+      title: t(`paths.${path.id}.title`),
+      lede: t(`paths.${path.id}.lede`),
+      countBadge: t("articlesCount", { count: steps.length }),
+      steps,
+      tools,
+    };
+  });
+
+  const pathGroups: PathGroup[] = GROUP_ORDER.map((key) => ({
+    key,
+    label: key === "general" ? t("groupGeneral") : tVendors(`${key}.name`),
+    paths: resolvedPaths
+      .filter((p) => p.group === key)
+      .sort((a, b) => a.title.localeCompare(b.title, locale)),
+  })).filter((g) => g.paths.length > 0);
 
   return (
     <>
@@ -90,66 +149,21 @@ export default async function StudyGuidesPage({
 
               {/* Each path is a card; the wrapper owns the spacing between
                   cards (certhub-note has none - it was born a single note). */}
-              <div className="reading-path-list">
-              {READING_PATHS.map((path) => {
-                // Resolve every step live from the article registry: the title
-                // shown is always the article's current localized title.
-                const steps = path.articles
-                  .map((slug) => getArticle(slug, locale))
-                  .filter((a): a is NonNullable<typeof a> => a !== null);
-                const pathTools = path.tools
-                  .map((id) => toolRegistry.find((tl) => tl.id === id))
-                  .filter((tl): tl is NonNullable<typeof tl> => Boolean(tl));
-                return (
-                  <div
-                    className="certhub-note"
-                    id={path.id}
-                    key={path.id}
-                    style={{ "--note-accent": categoryColor(path.category) } as CSSProperties}
-                  >
-                    <h3 className="certhub-note-title">
-                      <span
-                        className="category-dot"
-                        style={{ background: categoryColor(path.category) }}
-                        aria-hidden
-                      />{" "}
-                      {t(`paths.${path.id}.title`)}{" "}
-                      <span className="certhub-guide-code mono">
-                        {t("articlesCount", { count: steps.length })}
-                      </span>
-                    </h3>
-                    <p className="certhub-note-body">{t(`paths.${path.id}.lede`)}</p>
-                    {/* The ordered syllabus: numbered links, reading order. */}
-                    <p className="certhub-note-body">
-                      <strong>{t("stepsLabel")}:</strong>
-                    </p>
-                    <ol className="reading-path-steps">
-                      {steps.map((a) => (
-                        <li key={a.slug}>
-                          <Link href={`/learn/${a.slug}`} className="certguide-resource-link">
-                            {a.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ol>
-                    {/* The practice bench: the tools this path exercises. */}
-                    {pathTools.length > 0 && (
-                      <p className="certhub-note-body">
-                        <strong>{t("practiceLabel")}:</strong>{" "}
-                        {pathTools.map((tl, i) => (
-                          <span key={tl.id}>
-                            {i > 0 && " · "}
-                            <Link href={tl.href} className="certguide-resource-link">
-                              {tTools(`${tl.id}.name`)}
-                            </Link>
-                          </span>
-                        ))}
-                      </p>
-                    )}
-                  </div>
-                );
-              })}
-              </div>
+              {/* Reading paths are GROUPED and COLLAPSIBLE (PRIME 2026-07-24).
+                  Grouping is DERIVED from the path id rather than from a new
+                  data field: ids that begin with a vendor token belong to that
+                  vendor, everything else is vendor-agnostic. Deriving beats
+                  adding a field nobody remembers to set (D-74), and the guard
+                  below fails the build if a group has no heading. */}
+              <ReadingPathSections
+                groups={pathGroups}
+                expandAllLabel={t("expandAll")}
+                collapseAllLabel={t("collapseAll")}
+                seeContentsLabel={t("seeContents")}
+                hideContentsLabel={t("hideContents")}
+                stepsLabel={t("stepsLabel")}
+                practiceLabel={t("practiceLabel")}
+              />
             </div>
           </section>
 
