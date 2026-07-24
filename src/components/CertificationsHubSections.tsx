@@ -75,20 +75,6 @@ export default function CertificationsHubSections({
 
   return (
     <>
-      {/* ---- Expand / collapse all (acts on every certification row) ---- */}
-      <section className="section">
-        <div className="container certs-container">
-          <div className="dig-input-actions">
-            <button type="button" className="b64-copy" onClick={() => setAll(true)}>
-              {expandAllLabel}
-            </button>
-            <button type="button" className="b64-copy" onClick={() => setAll(false)}>
-              {collapseAllLabel}
-            </button>
-          </div>
-        </div>
-      </section>
-
       {/* ---- Vendor overview cards (PRIME 2026-07-24): every vendor the hub
              covers, visible at a glance before anything is expanded. Clicking
              a card opens that vendor's section and scrolls to it, so the cards
@@ -113,6 +99,23 @@ export default function CertificationsHubSections({
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* ---- Expand / collapse all: placed directly ABOVE the certifications
+             list rather than above the vendor cards (PRIME 2026-07-24), so the
+             controls sit with the thing they control instead of floating at
+             the top of the page. Acts on vendors AND certification rows. ---- */}
+      <section className="section">
+        <div className="container certs-container">
+          <div className="dig-input-actions">
+            <button type="button" className="b64-copy" onClick={() => setAll(true)}>
+              {expandAllLabel}
+            </button>
+            <button type="button" className="b64-copy" onClick={() => setAll(false)}>
+              {collapseAllLabel}
+            </button>
+          </div>
         </div>
       </section>
 

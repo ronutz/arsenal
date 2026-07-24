@@ -3675,6 +3675,20 @@
   border-bottom: 1px solid color-mix(in srgb, var(--accent-amber) 28%, transparent);
 }
 
+/* Vendor-hub section titles (PRIME 2026-07-24): brighter and larger than the
+   shared .tools-category used on /tools, /learn and /category, so the two
+   section headings on a vendor hub genuinely stand out. Scoped as a MODIFIER
+   rather than changing .tools-category itself, because that class is shared by
+   four pages and a global change would restyle all of them. Cyan comes from
+   the existing accent token, so themes still apply. */
+.tools-category--hub {
+  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+  letter-spacing: 0.05em;
+  color: var(--accent-primary);
+  border-bottom-color: color-mix(in srgb, var(--accent-primary) 45%, transparent);
+}
+.tools-category--hub .tools-category-link { color: var(--accent-primary); }
+
 /* Category jump-nav (tools + learn indexes) */
 .category-nav {
   display: flex;
@@ -13458,6 +13472,19 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .certhub-cert-row:hover, .certhub-cert-row:focus-visible { border-color: var(--accent-primary); }
 .certhub-cert-row .certhub-guide-name { flex: 1 1 auto; }
+/* Vendor/certification titles inside a collapse row (PRIME 2026-07-24).
+   The row is a <button>, and .certs-group-title sets size and weight but no
+   colour, so an <h2> nested inside inherited the button's colour and rendered
+   almost illegibly dark. Set the heading colour explicitly here, scoped to the
+   row so standalone .certs-group-title elsewhere is untouched, and let it flex
+   so the badge stays aligned right. */
+.certhub-cert-row .certs-group-title {
+  flex: 1 1 auto;
+  margin: 0;
+  color: var(--text-primary);
+}
+.certhub-cert-row:hover .certs-group-title,
+.certhub-cert-row:focus-visible .certs-group-title { color: var(--accent-primary); }
 .certhub-cert-row .certs-badge { flex: 0 0 auto; }
 
 /* Study guide page. */

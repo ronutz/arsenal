@@ -15,6 +15,7 @@
 // the history link -> closing CTA.
 // ============================================================================
 
+import type { CSSProperties } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
@@ -67,25 +68,62 @@ export default async function TrainingLandingPage({
 
           {/* Instructor — who teaches these courses; links to the professional
               showcase so a prospective client can verify credentials before
-              booking. */}
+              booking.
+              PRIME 2026-07-24: the three destinations were plain buttons at the
+              bottom of the bio card and read as an afterthought. They are now
+              PORTAL CARDS ABOVE the bio, reusing the learn-portal-* vocabulary
+              already established on /learn for the Glossary and Study-guides
+              doors, so the three showcase surfaces are the first thing a
+              prospective client sees. Reuse-only: no new CSS classes. */}
           <section className="section teach-instructor">
             <div className="container teach-container">
+              <p className="teach-instructor-eyebrow">{t("instructor.eyebrow")}</p>
+              <div className="learn-portal-grid">
+                <Link
+                  href="/about"
+                  className="learn-portal-card"
+                  style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    RN
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("instructor.about")} <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("instructor.aboutLede")}</p>
+                </Link>
+                <Link
+                  href="/about/credentials"
+                  className="learn-portal-card"
+                  style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    &#10003;
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("instructor.certs")} <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("instructor.certsLede")}</p>
+                </Link>
+                <Link
+                  href="/endorsements"
+                  className="learn-portal-card"
+                  style={{ "--note-accent": "var(--color-success)" } as CSSProperties}
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    &#8220;&#8221;
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("instructor.endorsements")} <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("instructor.endorsementsLede")}</p>
+                </Link>
+              </div>
+
               <div className="teach-instructor-card">
                 <div className="teach-instructor-text">
-                  <p className="teach-instructor-eyebrow">{t("instructor.eyebrow")}</p>
                   <h2 className="teach-instructor-name">Rodolfo Nützmann</h2>
                   <p className="teach-instructor-body">{t("instructor.body")}</p>
-                </div>
-                <div className="teach-instructor-links">
-                  <Link href="/about" className="teach-instructor-link teach-instructor-link--primary">
-                    {t("instructor.about")}
-                  </Link>
-                  <Link href="/about/credentials" className="teach-instructor-link">
-                    {t("instructor.certs")}
-                  </Link>
-                  <Link href="/endorsements" className="teach-instructor-link">
-                    {t("instructor.endorsements")}
-                  </Link>
                 </div>
               </div>
             </div>

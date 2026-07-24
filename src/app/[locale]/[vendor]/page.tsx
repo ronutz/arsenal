@@ -276,7 +276,7 @@ export default async function VendorHubPage({
                  (/tools/<vendor> 301s here); category-section supplies the
                  sticky-header scroll offset. ---- */}
             <section id="tools" className="category-section" style={{ marginBottom: "2.5rem" }}>
-              <h2 className="tools-category">
+              <h2 className="tools-category tools-category--hub">
                 {tHub("toolsHeading")} ({vendorTools.length})
               </h2>
               {subGroups.filter((g) => g.tools.length > 0).map((group) => (
@@ -309,7 +309,7 @@ export default async function VendorHubPage({
             {/* ---- Articles. id="learn" is a redirect target
                  (/learn/<vendor> 301s here). ---- */}
             <section id="learn" className="category-section">
-              <h2 className="tools-category">
+              <h2 className="tools-category tools-category--hub">
                 {tHub("learnHeading")} ({vendorArticles.length})
               </h2>
               {subGroups.filter((g) => g.articles.length > 0).map((group) => (
