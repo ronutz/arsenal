@@ -7,10 +7,10 @@
   "//5": "Code is Apache-2.0; content (Learn articles and copy) is CC BY 4.0.",
   "//6": "================================================================",
   "name": "@ronutz/arsenal",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The ronutz.com application: a privacy-first, local-compute network/security toolbox PWA (Next.js).",
   "license": "Apache-2.0",
-  "author": "Rodolfo N\u00fctzmann (https://ronutz.com)",
+  "author": "Rodolfo Nützmann (https://ronutz.com)",
   "homepage": "https://ronutz.com",
   "repository": {
     "type": "git",
