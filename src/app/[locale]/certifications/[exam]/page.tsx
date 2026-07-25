@@ -168,6 +168,15 @@ export default async function StudyGuidePage({
               <div className="container certs-container">
                 <div className="certguide-preparing">
                   <h2 className="certguide-preparing-title">{t("preparingTitle")}</h2>
+                  {/* Availability is a DIFFERENT fact from transcription status:
+                      "we have not mapped it yet" vs "the vendor has not shipped
+                      the exam yet". The second changes whether a candidate can
+                      book anything, so it goes first. (2026-07-25) */}
+                  {guide.availabilityNote && (
+                    <p className="certguide-preparing-body">
+                      <strong>{guide.availabilityNote}</strong>
+                    </p>
+                  )}
                   <p className="certguide-preparing-body">{t("preparingBody")}</p>
                 </div>
               </div>

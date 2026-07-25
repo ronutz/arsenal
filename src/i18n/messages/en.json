@@ -13810,7 +13810,10 @@
     "goodFaithBody": "These guides are independent study aids built from publicly available material: published exam blueprints, official product documentation, and vendor training catalogues. Product names, exam codes, and trademarks belong to their owners and are used only to identify the subject being taught. This site is not affiliated with or endorsed by any vendor named here. If you hold rights in material published on this page and believe it should be removed or corrected, please send the exact URL and a short note on the issue through the contact page; requests are reviewed promptly and in good faith.",
     "goodFaithLink": "Read the full disclaimer",
     "vendorsHeading": "Vendors covered",
-    "vendorCount": "{certs} certifications, {guides} exam guides"
+    "vendorCount": "{certs} certifications, {guides} exam guides",
+    "requiresOne": "Earned by passing any one of these {count} exams.",
+    "prerequisitesLabel": "Prerequisites",
+    "requirementLabel": "How to earn it"
   },
   "trainingCta": {
     "eyebrow": "Instructor-led training",

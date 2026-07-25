@@ -74,7 +74,26 @@ export default async function CertificationsHubPage({
       key: cert.key,
       name: cert.name,
       code: cert.code,
-      requiresText: t("requiresAll", { count: cert.examSlugs.length }),
+      // "all" (the default) means every listed exam is required; "one" means
+      // any single one of them earns the level. Fortinet's NSE 5/6/7 are the
+      // "one" case - a track lists several product exams and one suffices -
+      // so rendering the F5 wording there would tell a candidate to sit eight
+      // exams instead of one. (PRIME 2026-07-25)
+      // "custom" suppresses the generated count line entirely: NSE 8 lists four
+      // exams but requires two of them (Core + one elective), so any generated
+      // count would be wrong. requirementNote carries the rule instead.
+      requiresText:
+        cert.requirementMode === "custom"
+          ? null
+          : cert.requirementMode === "one"
+            ? t("requiresOne", { count: cert.examSlugs.length })
+            : t("requiresAll", { count: cert.examSlugs.length }),
+      // Official wording for anything the mode cannot express, e.g. NSE 8's
+      // "Core practical exam AND one elective".
+      requirementNote: cert.requirementNote ?? null,
+      // Certifications that must be ACTIVE first, in the vendor's own wording.
+      prerequisites: cert.prerequisites ?? [],
+      prerequisitesLabel: t("prerequisitesLabel"),
       renewalNote: cert.renewalNote,
       guides: getGuidesForCertification(cert.key).map((guide) => {
         const n = objectiveCount(guide);
@@ -83,6 +102,9 @@ export default async function CertificationsHubPage({
           examCode: guide.examCode,
           examName: guide.examName,
           preparing: guide.status === "preparing",
+          // Surfaced on the card so a reader scanning a level sees which exams
+          // are not yet sittable without opening each guide.
+          availabilityNote: guide.availabilityNote ?? null,
           badge: guide.status === "preparing" ? t("inPreparation") : t("objectivesCount", { count: n }),
           cta: t("openGuide"),
         };

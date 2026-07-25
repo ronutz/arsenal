@@ -22,6 +22,9 @@ export interface HubGuide {
   /** Precomputed badge text: "N objectives" or the in-preparation label. */
   badge: string;
   preparing: boolean;
+  /** Set when the vendor has not released the exam yet — a DIFFERENT fact from
+   *  "we have not transcribed the blueprint yet". */
+  availabilityNote?: string | null;
   cta: string;
 }
 
@@ -30,7 +33,14 @@ export interface HubCert {
   name: string;
   code: string;
   /** Precomputed "requires all N exams" line. */
-  requiresText: string;
+  /** Null when requirementMode is "custom" and the note carries the rule. */
+  requiresText: string | null;
+  /** Official wording for a requirement the mode cannot express (NSE 8's
+   *  "Core practical exam AND one elective"). Null when there is nothing extra. */
+  requirementNote?: string | null;
+  /** Certifications that must be ACTIVE before this one can be earned. */
+  prerequisites?: string[];
+  prerequisitesLabel?: string;
   renewalNote?: string | null;
   guides: HubGuide[];
 }
@@ -164,7 +174,21 @@ export default function CertificationsHubSections({
 
                   {isOpen && (
                     <div id={`${cert.key}-guides`}>
-                      <p className="certs-group-intro">{cert.requiresText}</p>
+                      {cert.requiresText && (
+                        <p className="certs-group-intro">{cert.requiresText}</p>
+                      )}
+                      {/* Requirements sit with the certification LEVEL, not with
+                          the individual exams, because that is the unit a
+                          candidate plans against (PRIME 2026-07-25). */}
+                      {cert.requirementNote && (
+                        <p className="certs-group-intro">{cert.requirementNote}</p>
+                      )}
+                      {cert.prerequisites && cert.prerequisites.length > 0 && (
+                        <p className="certs-group-intro">
+                          <strong>{cert.prerequisitesLabel}:</strong>{" "}
+                          {cert.prerequisites.join(" · ")}
+                        </p>
+                      )}
                       <ul className="certhub-guide-grid">
                         {cert.guides.map((guide) => (
                           <li className="certhub-guide-card-wrap" key={guide.slug}>
@@ -184,6 +208,14 @@ export default function CertificationsHubSections({
                                 >
                                   {guide.badge}
                                 </span>
+                                {/* Availability caveat sits on the CARD so a
+                                    reader scanning a level sees which exams
+                                    cannot be sat yet without opening each one. */}
+                                {guide.availabilityNote && (
+                                  <span className="certhub-guide-badge certhub-guide-badge--prep">
+                                    {guide.availabilityNote}
+                                  </span>
+                                )}
                                 <span className="certhub-guide-cta">{guide.cta} &#8594;</span>
                               </span>
                             </Link>

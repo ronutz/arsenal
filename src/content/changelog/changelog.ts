@@ -52,6 +52,12 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-25T05:26:13-03:00",
+    kind: "content",
+    title: "The Fortinet certification path is rebuilt around the exams you actually sit",
+    body: "Fortinet restructured its certification program on 15 July 2026, retiring the FCF through FCX names and returning to eight NSE levels across four tracks. The study guides here now follow that structure exactly: thirty-eight exam guides grouped under ten certification levels, because a level like NSE 6 is not one exam but sixteen product exams of which you sit one. Each level states what it takes to earn it in Fortinet's own wording, which prerequisite certifications must be active first, and how renewal works. That distinction matters more than it sounds: NSE 5 lists eight exams and NSE 6 lists sixteen, and saying you must pass all of them would be wrong by a factor of eight. NSE 8 is different again, needing the Core practical exam plus one of three electives, so it states its rule rather than counting. Eight exams that Fortinet has published but not yet released now say so on the card and on the guide, rather than looking like ordinary guides awaiting work. The NSE 4 FortiOS Administrator guide is the first with its objectives mapped: five sections and nineteen objectives transcribed from the Fortinet Training Institute exam page, each linked to the official administration guide and, where this site has one, to an article or tool that teaches it.",
+  },
+  {
     date: "2026-07-25T03:09:05-03:00",
     kind: "content",
     title: "Every term the articles and tools reference now has a full explanation",

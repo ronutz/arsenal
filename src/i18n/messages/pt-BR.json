@@ -13810,7 +13810,10 @@
     "goodFaithBody": "Estes guias são materiais de estudo independentes, montados a partir de conteúdo publicamente disponível: blueprints de exame publicados, documentação oficial de produto e catálogos de treinamento dos fabricantes. Nomes de produtos, códigos de exame e marcas pertencem a seus titulares e são usados apenas para identificar o assunto ensinado. Este site não é afiliado a nenhum fabricante aqui citado nem endossado por ele. Se você detém direitos sobre material publicado nesta página e entende que ele deve ser removido ou corrigido, envie a URL exata e uma breve nota sobre o problema pela página de contato; os pedidos são analisados com rapidez e boa-fé.",
     "goodFaithLink": "Ler o aviso legal completo",
     "vendorsHeading": "Fabricantes cobertos",
-    "vendorCount": "{certs} certificações, {guides} guias de exame"
+    "vendorCount": "{certs} certificações, {guides} guias de exame",
+    "requiresOne": "Obtida ao ser aprovado em qualquer um destes {count} exames.",
+    "prerequisitesLabel": "Pré-requisitos",
+    "requirementLabel": "Como obter"
   },
   "trainingCta": {
     "eyebrow": "Treinamento com instrutor",
