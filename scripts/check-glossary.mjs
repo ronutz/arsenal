@@ -81,7 +81,10 @@ for (const chunk of chunks) {
   const relatedTools = [...toolsRaw.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
   const artsRaw = chunk.match(/relatedArticles:\s*\[([^\]]*)\]/)?.[1] ?? "";
   const relatedArticles = [...artsRaw.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
-  entries.push({ slug, kind, domains, relatedTerms, hasSources, relatedTools, relatedArticles });
+  // headword is parsed for the duplicate-topic check in section 3b. It was not
+  // captured before, which is part of why duplicate subjects went unnoticed.
+  const headword = chunk.match(/headword:\s*"([^"]+)"/)?.[1];
+  entries.push({ slug, headword, kind, domains, relatedTerms, hasSources, relatedTools, relatedArticles });
 }
 
 if (entries.length === 0) {
@@ -160,6 +163,94 @@ for (const s of Object.keys(enEntries)) {
 }
 for (const s of Object.keys(ptEntries)) {
   if (!slugSet.has(s)) errors.push(`pt-BR prose "${s}" has no registry entry`);
+}
+
+// ---- 3b. DUPLICATE TOPICS ---------------------------------------------------
+// Two entries may not describe the SAME THING under different slugs. This is
+// the defect the 2026-07-25 reconciliation cleaned up: the corpus had grown
+// across many waves, and a topic added as "the-x" in one wave and "x" in
+// another looked distinct to every check that existed, because uniqueness of
+// slugs is not uniqueness of subjects.
+//
+// Detection is by HEADWORD, not by text similarity. Measured against the
+// confirmed pairs, Jaccard overlap of def+context was only 0.18-0.30: the two
+// versions were written independently and share little vocabulary, so any
+// similarity threshold loose enough to catch them floods with false positives.
+// Normalising the headword (drop a leading article, strip non-alphanumerics)
+// catches them exactly.
+{
+  const byHeadword = new Map();
+  for (const e of entries) {
+    if (!e.headword) continue;
+    const key = e.headword
+      .toLowerCase()
+      .trim()
+      .replace(/^(the|a|an)\s+/, "")
+      .replace(/[^a-z0-9]/g, "");
+    if (!key) continue;
+    if (!byHeadword.has(key)) byHeadword.set(key, []);
+    byHeadword.get(key).push(e.slug);
+  }
+  for (const [key, slugs] of byHeadword) {
+    if (slugs.length > 1) {
+      errors.push(
+        `duplicate topic: ${slugs.map((s) => `"${s}"`).join(" and ")} share the ` +
+          `normalized headword "${key}". Merge them and redirect the retired ` +
+          `slug in MERGED_GLOSSARY_SLUGS (worker/index.ts), or differentiate ` +
+          `the headwords if they are genuinely different subjects.`,
+      );
+    }
+  }
+}
+
+// ---- 3c. DUPLICATE TOPICS, word-order variant -------------------------------
+// 3b normalizes the headword as a STRING, so it catches article and
+// punctuation variants ("the Therac-25" vs "Therac-25") and misses rephrasings
+// ("pets vs. cattle" vs "cattle, not pets"; "the first computer bug" vs
+// "bug (the first computer bug)"). Both of those were real duplicates that
+// survived the first pass, so this second check compares the SET of
+// significant headword tokens, which is order-insensitive.
+//
+// Order-insensitivity is also this check's weakness: a genuinely DIRECTIONAL
+// pair reads as a collision. host-to-multihost (one-to-many) and
+// multihost-to-host (many-to-one, incast) are opposite concepts sharing the
+// same two tokens. Such pairs go in the allowlist below, which keeps the check
+// FAILING CLOSED: a new collision blocks the build until somebody either
+// merges the entries or consciously records that they are distinct.
+const DISTINCT_DESPITE_SHARED_TOKENS = new Set([
+  "host-to-multihost|multihost-to-host", // opposite directions: fan-out vs fan-in
+]);
+{
+  const STOP = new Set([
+    "the","a","an","of","in","on","to","is","not","vs","versus","and","or",
+    "for","your","own","it",
+  ]);
+  const byTokens = new Map();
+  for (const e of entries) {
+    if (!e.headword) continue;
+    const toks = [
+      ...new Set(
+        (e.headword.toLowerCase().match(/[a-z0-9]+/g) ?? []).filter(
+          (w) => w.length > 1 && !STOP.has(w),
+        ),
+      ),
+    ].sort();
+    if (toks.length < 2) continue; // one significant token is too loose to judge
+    const key = toks.join(" ");
+    if (!byTokens.has(key)) byTokens.set(key, []);
+    byTokens.get(key).push(e.slug);
+  }
+  for (const [key, slugs] of byTokens) {
+    if (slugs.length < 2) continue;
+    if (DISTINCT_DESPITE_SHARED_TOKENS.has([...slugs].sort().join("|"))) continue;
+    errors.push(
+      `possible duplicate topic: ${slugs.map((s) => `"${s}"`).join(" and ")} share ` +
+        `the headword tokens {${key}}. Merge and redirect via ` +
+        `MERGED_GLOSSARY_SLUGS (worker/index.ts), or if they are genuinely ` +
+        `distinct add "${[...slugs].sort().join("|")}" to ` +
+        `DISTINCT_DESPITE_SHARED_TOKENS with a reason.`,
+    );
+  }
 }
 
 // ---- 4. report -------------------------------------------------------------

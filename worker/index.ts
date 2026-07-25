@@ -89,6 +89,32 @@ const RENAMED_API_SLUGS = new Map<string, string>([
   ["persistence-method-explainer", "f5-persistence-method-explainer"],
 ]);
 
+
+// Glossary topics that existed twice under different slugs and were merged
+// (2026-07-25 reconciliation). The retired slug PERMANENTLY REDIRECTS to the
+// survivor rather than 404ing, so inbound links and any search standing the
+// old URL earned are preserved. 308 matches RENAMED_API_SLUGS above: method
+// and body survive, and clients must not rewrite the request.
+// Survivor chosen by corpus convention (article-free form; expressions never
+// carry "the-") and by accuracy where the name is a proper one.
+const MERGED_GLOSSARY_SLUGS = new Map<string, string>([
+  ["eating-your-own-dog-food", "dogfooding"],
+  ["foobar", "foo-bar"],
+  ["leftpad", "left-pad"],
+  ["the-ariane-5-failure", "ariane-5"],
+  ["the-blue-box", "blue-box"],
+  ["the-mars-climate-orbiter", "mars-climate-orbiter"],
+  ["the-network-is-reliable", "fallacies-of-distributed-computing"],
+  ["the-therac-25", "therac-25"],
+  ["the-thundering-herd", "thundering-herd"],
+  ["pets-vs-cattle", "cattle-not-pets"],
+  ["the-first-computer-bug", "the-first-bug"],
+  ["the-y2k-bug", "y2k"],
+  ["the-year-2038-problem", "year-2038-problem"],
+  ["there-are-two-hard-things", "two-hard-things"],
+  ["two-generals", "two-generals-problem"],
+]);
+
 // Vanity short paths -> their canonical destination. Resolved in the locale-
 // gate section below, BEFORE the default-locale redirect that would otherwise
 // send /mb -> /en/mb/ (which has no page and 404s). Keys are matched with any
@@ -282,6 +308,25 @@ export default {
             Location: new URL(`${vanityDest}${url.search}`, url.origin).toString(),
             "Cache-Control": "no-store",
           },
+        });
+      }
+    }
+
+    // ---- Merged glossary slugs (AFTER vanity, BEFORE the locale gate) ------
+    // A retired duplicate keeps working: /<locale>/glossary/<old>/ answers with
+    // a permanent redirect to the survivor. Matched with the locale intact so
+    // the reader stays in the language they were reading, and with any trailing
+    // slash tolerated. 308 preserves method and body, matching the API-slug
+    // policy above. Runs before the locale gate because that gate would rewrite
+    // the path and lose the glossary segment.
+    {
+      const m = /^\/([A-Za-z-]+)\/glossary\/([a-z0-9-]+)\/?$/.exec(url.pathname);
+      const merged = m ? MERGED_GLOSSARY_SLUGS.get(m[2]) : undefined;
+      if (m && merged) {
+        const to = new URL(`/${m[1]}/glossary/${merged}/${url.search}`, url.origin);
+        return new Response(null, {
+          status: 308,
+          headers: { Location: to.toString(), "Cache-Control": "public, max-age=86400" },
         });
       }
     }

@@ -131,7 +131,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     headword: "foo / bar",
     kind: "lore",
     domains: ["programming"],
-    aliases: ["foobar", "foo", "bar", "metasyntactic variable"],
+    aliases: ["foo-bar", "foo", "bar", "metasyntactic variable"],
     relatedTerms: ["baz", "the-jargon-file"],
     sources: [
       { label: "RFC 3092 - Etymology of \"Foo\"", href: "https://www.rfc-editor.org/rfc/rfc3092" },
@@ -293,14 +293,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     domains: ["programming", "hacking"],
     aliases: ["grokking"],
     sources: [{ label: "Robert A. Heinlein, \"Stranger in a Strange Land\", 1961" }],
-  },
-  {
-    slug: "eating-your-own-dog-food",
-    headword: "dogfooding",
-    kind: "expression",
-    domains: ["ops-culture", "programming"],
-    aliases: ["dogfooding", "eat your own dog food", "dog food"],
-    relatedTerms: ["shift-left"],
   },
   {
     slug: "rabbit-hole",
@@ -1710,15 +1702,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     sources: [{ label: "The Jargon File (\"fencepost error\")" }],
   },
   {
-    slug: "there-are-two-hard-things",
-    headword: "the two hard things",
-    kind: "expression",
-    domains: ["programming"],
-    aliases: ["two hard problems", "cache invalidation and naming things", "phil karlton"],
-    relatedTerms: ["off-by-one", "technical-debt"],
-    sources: [{ label: "attributed to Phil Karlton" }],
-  },
-  {
     slug: "xkcd-workflow",
     headword: "\"is it worth the time?\"",
     kind: "expression",
@@ -1727,26 +1710,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     relatedTerms: ["toil", "yak-shaving"],
     sources: [{ label: "xkcd 1205, \"Is It Worth the Time?\"" }],
   },
-  {
-    slug: "leftpad",
-    headword: "the left-pad incident",
-    kind: "lore",
-    domains: ["programming", "web-development", "ops-culture"],
-    aliases: ["left-pad", "leftpad", "npm left-pad"],
-    relatedTerms: ["technical-debt", "supply-chain-attack"],
-    sources: [{ label: "npm / left-pad unpublish, March 2016" }],
-  },
-  {
-    slug: "the-network-is-reliable",
-    headword: "the fallacies of distributed computing",
-    kind: "lore",
-    domains: ["enterprise-networking", "cloud", "programming"],
-    aliases: ["fallacies of distributed computing", "the network is reliable", "eight fallacies"],
-    relatedTerms: ["five-hundred-mile-email", "race-condition"],
-    sources: [{ label: "L. Peter Deutsch et al., Sun Microsystems, 1994-97" }],
-  },
-
-  // ---- more networking ----
   {
     slug: "dns",
     headword: "DNS",
@@ -1945,7 +1908,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     kind: "term",
     domains: ["cyber-security", "grc"],
     aliases: ["supply-chain attack", "software supply chain", "dependency attack"],
-    relatedTerms: ["leftpad", "zero-day"],
+    relatedTerms: ["left-pad", "zero-day"],
   },
   {
     slug: "defense-in-depth",
@@ -2119,14 +2082,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     sources: [{ label: "Cohen, 'On Holy Wars and a Plea for Peace', IEEE Computer (1981)" }, { label: "Swift, 'Gulliver's Travels' (1726)" }],
   },
   {
-    slug: "the-ariane-5-failure",
-    headword: "the Ariane 5 Flight 501 failure",
-    kind: "lore",
-    domains: ["programming", "ops-culture"],
-    aliases: ["Ariane 501", "Ariane 5 explosion", "overflow disaster"],
-    sources: [{ label: "Lions Report - Ariane 5 Flight 501 Inquiry Board (1996)" }],
-  },
-  {
     slug: "the-answer-42",
     headword: "42 (the Answer)",
     kind: "lore",
@@ -2232,25 +2187,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     aliases: ["Fear Uncertainty and Doubt"],
   },
   {
-    slug: "the-thundering-herd",
-    headword: "the thundering herd",
-    kind: "term",
-    domains: ["cloud", "enterprise-networking"],
-    aliases: ["thundering herd problem"],
-  },
-
-  // ------------------------------------------------ BATCH 3 (2026-07-14) ----
-  // +30 entries, weighted lore/expression. Every lore entry sourced.
-  {
-    slug: "the-blue-box",
-    headword: "the blue box",
-    kind: "lore",
-    domains: ["cyber-security", "ops-culture"],
-    aliases: ["blue box", "Wozniak blue box", "phreaking box"],
-    relatedTerms: ["captain-crunch"],
-    sources: [{ label: "Wozniak, 'iWoz' (2006)" }],
-  },
-  {
     slug: "the-first-webpage",
     headword: "the first web page",
     kind: "lore",
@@ -2294,47 +2230,12 @@ export const GLOSSARY: GlossaryEntry[] = [
     sources: [{ label: "Zero Wing (Toaplan/Sega, 1991) - European Mega Drive port" }],
   },
   {
-    slug: "the-y2k-bug",
-    headword: "the Y2K bug",
-    kind: "lore",
-    domains: ["programming", "ops-culture"],
-    aliases: ["Y2K", "millennium bug", "year 2000 problem"],
-    relatedTerms: ["the-year-2038-problem"],
-    sources: [{ label: "NIST / widely documented remediation (1999-2000)" }],
-  },
-  {
-    slug: "the-year-2038-problem",
-    headword: "the Year 2038 problem",
-    kind: "lore",
-    domains: ["programming", "enterprise-networking"],
-    aliases: ["Y2K38", "epochalypse", "2038 bug"],
-    relatedArticles: ["the-year-2038-problem"],
-    relatedTerms: ["the-y2k-bug"],
-    sources: [{ label: "Signed 32-bit time_t overflow, 2038-01-19 03:14:07 UTC" }],
-  },
-  {
     slug: "the-pentium-fdiv-bug",
     headword: "the Pentium FDIV bug",
     kind: "lore",
     domains: ["programming", "ops-culture"],
     aliases: ["FDIV bug", "Pentium bug", "Intel FDIV"],
     sources: [{ label: "Nicely (1994); Intel Q4 1994 charge (~US$475M)" }],
-  },
-  {
-    slug: "the-therac-25",
-    headword: "the Therac-25",
-    kind: "lore",
-    domains: ["programming", "ops-culture"],
-    aliases: ["Therac-25", "radiation therapy accidents"],
-    sources: [{ label: "Leveson & Turner, 'An Investigation of the Therac-25 Accidents', IEEE Computer (1993)" }],
-  },
-  {
-    slug: "the-mars-climate-orbiter",
-    headword: "the Mars Climate Orbiter",
-    kind: "lore",
-    domains: ["programming", "ops-culture"],
-    aliases: ["Mars Climate Orbiter", "MCO", "metric mixup"],
-    sources: [{ label: "NASA Mars Climate Orbiter Mishap Investigation Board (1999)" }],
   },
   {
     slug: "knight-capital",
@@ -2942,15 +2843,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     sources: [{ label: "Attributed to Phil Karlton; documented by Martin Fowler, 'TwoHardThings'", href: "https://martinfowler.com/bliki/TwoHardThings.html" }],
   },
   {
-    slug: "foobar",
-    headword: "foobar",
-    kind: "jargon",
-    domains: ["programming", "ops-culture"],
-    aliases: ["foo", "bar", "baz"],
-    relatedTerms: ["snafu"],
-    sources: [{ label: "RFC 3092 - Etymology of 'Foo' (Apr 1, 2001)", href: "https://www.rfc-editor.org/rfc/rfc3092" }],
-  },
-  {
     slug: "nerd-snipe",
     headword: "nerd snipe",
     kind: "jargon",
@@ -3433,15 +3325,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     sources: [{ label: "Fred Brooks, 'No Silver Bullet' (1986)", href: "https://en.wikipedia.org/wiki/No_Silver_Bullet" }],
   },
   {
-    slug: "pets-vs-cattle",
-    headword: "pets vs. cattle",
-    kind: "expression",
-    domains: ["cloud", "ops-culture"],
-    aliases: ["cattle not pets"],
-    relatedTerms: ["chaos-monkey"],
-    sources: [{ label: "Popularized by Randy Bias (2012), crediting Bill Baker", href: "https://cloudscaling.com/blog/cloud-computing/the-history-of-pets-vs-cattle/" }],
-  },
-  {
     slug: "blue-screen-of-death",
     headword: "blue screen of death",
     kind: "jargon",
@@ -3454,7 +3337,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     headword: "Chaos Monkey",
     kind: "jargon",
     domains: ["cloud", "ops-culture"],
-    relatedTerms: ["pets-vs-cattle"],
+    relatedTerms: ["cattle-not-pets"],
     sources: [{ label: "Netflix Tech Blog / Chaos Monkey (open-sourced 2012)", href: "https://github.com/Netflix/chaosmonkey" }],
   },
   {
@@ -3513,14 +3396,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     relatedArticles: ["the-year-2038-problem"],
     relatedTerms: ["y2k"],
     sources: [{ label: "Year 2038 problem - Wikipedia", href: "https://en.wikipedia.org/wiki/Year_2038_problem" }],
-  },
-  {
-    slug: "the-first-computer-bug",
-    headword: "the first computer bug",
-    kind: "lore",
-    domains: ["programming", "ops-culture"],
-    aliases: ["Grace Hopper's moth"],
-    sources: [{ label: "Log book with computer bug - Smithsonian / Naval History", href: "https://en.wikipedia.org/wiki/Software_bug#History" }],
   },
   {
     slug: "the-homebrew-computer-club",
@@ -8716,7 +8591,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     kind: "jargon",
     domains: ["cloud", "ops-culture"],
     aliases: ["snowflake"],
-    relatedTerms: ["pets-vs-cattle"],
+    relatedTerms: ["cattle-not-pets"],
   },
   {
     slug: "configuration-drift",
@@ -9079,14 +8954,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     domains: ["ops-culture"],
   },
   {
-    slug: "two-generals",
-    headword: "the two generals problem",
-    kind: "expression",
-    domains: ["programming", "enterprise-networking"],
-    aliases: ["two generals' problem"],
-    relatedTerms: ["fallacies-of-distributed-computing"],
-  },
-  {
     slug: "greenfield-vs-brownfield",
     headword: "greenfield vs. brownfield",
     kind: "expression",
@@ -9236,7 +9103,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     kind: "jargon",
     domains: ["programming"],
     aliases: ["frob", "twiddle"],
-    relatedTerms: ["foobar", "mung"],
+    relatedTerms: ["foo-bar", "mung"],
   },
   {
     slug: "keep-the-lights-on",
