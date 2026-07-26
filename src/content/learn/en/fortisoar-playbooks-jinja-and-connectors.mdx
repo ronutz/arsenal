@@ -1,0 +1,79 @@
+---
+slug: fortisoar-playbooks-jinja-and-connectors
+title: "FortiSOAR Playbooks, Jinja, and Connectors"
+summary: "A playbook is a trigger, a sequence of steps, and data flowing between them. Most of the difficulty is in that third part: getting the output of one step into the shape the next one needs, which is what Jinja is for. Connectors are how playbooks reach anything outside FortiSOAR, and connector failures look like playbook failures."
+concepts: ["fortinet", "fortisoar", "playbook", "jinja", "connector", "trigger", "json query", "yaql", "api", "automation"]
+relatedTools: []
+sub: fortisoar
+relatedArticles: ["fortisoar-architecture-and-data-model", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 71
+status: reviewed
+updated: "2026-07-26"
+---
+
+Playbooks are where FortiSOAR does work. They are also where most of the learning curve is, and nearly all of it is about data rather than logic.
+
+## Triggers
+
+A playbook starts from one of a few trigger types, and choosing the right one prevents a class of problem:
+
+- **On create or update** of a record, which is how alert enrichment usually starts.
+- **Manual**, run by an analyst against a record, which suits actions a human should authorise.
+- **Scheduled**, for periodic work such as reconciliation or reporting.
+- **Referenced**, meaning called by another playbook — this is how you factor common logic out instead of copying it.
+
+The mistake worth naming is using an update trigger on a record the playbook itself updates, which produces a loop. Conditions on the trigger, or a flag the playbook sets, are how that is avoided.
+
+## Steps and the shape of data
+
+A playbook is a sequence of steps: connector actions, decisions, loops, record operations, and calls to other playbooks.
+
+Every step produces output, and the next step consumes it. The output of a connector action is whatever that product's API returned, which is rarely the shape the next step wants. **Bridging that gap is the actual work of building playbooks**, and it is where Jinja comes in.
+
+## Jinja
+
+Jinja is the templating language used to reference and transform data inside a playbook. Its most common uses are ordinary:
+
+- Referencing a previous step's output.
+- Reaching into a nested structure to pull one value.
+- Filtering or reshaping a list.
+- Building a string from several values, for a comment or notification.
+
+**Filters** transform values — changing case, formatting dates, joining lists, applying defaults when a value is absent. That last one deserves emphasis: a playbook that assumes a field is present will fail on the record where it is not, and a default filter is the difference between a graceful path and a stopped execution.
+
+**The Jinja editor** evaluates an expression against real data before you commit to it. Using it is the single biggest time-saver in playbook development, because the alternative is running the playbook to find out and reading the failure afterwards.
+
+## JSON Query and YAQL
+
+Two more ways to work with data, each with a niche:
+
+**JSON Query** extracts from JSON structures using a path expression. It suits reaching a specific value in a deeply nested API response, and it is more legible than chained Jinja for that job.
+
+**YAQL** evaluates expressions over data, including filtering collections by a condition. It suits selecting the subset of a list that matters rather than iterating over everything.
+
+There is overlap, and choosing between them is mostly about which expresses the intent most clearly to whoever reads the playbook next.
+
+## Connectors
+
+Connectors are how FortiSOAR reaches other systems: firewalls, endpoint tools, threat intelligence, ticketing, mail. Each exposes actions the playbook calls.
+
+Three things account for most connector trouble:
+
+**Configuration and credentials.** A connector must be configured with its endpoint and credentials, and a credential that expires produces every action failing at once. Connectors have a health check, and reading it is faster than diagnosing from a playbook log.
+
+**Version and API drift.** The remote product's API changes, and an action that worked stops working. This presents as a playbook that used to be reliable, which is a distinctive symptom worth recognising.
+
+**Rate limits.** A playbook looping over a hundred records and calling an external API for each will hit limits that a single manual test never revealed.
+
+## The API
+
+FortiSOAR exposes both a **REST API** and a **JSON-RPC API**, and the distinction is worth knowing:
+
+REST addresses resources through URLs and standard verbs, and it is what most integrations use. JSON-RPC calls named procedures with parameters over a single endpoint.
+
+For most work — creating records from an external system, querying incidents, triggering a playbook — REST is the expected route. The practical reason to know both is that reading examples in the wild means recognising which one you are looking at.
+
+## What an exam candidate should be able to state cold
+
+Triggers are create or update, manual, scheduled, or referenced by another playbook, and an update trigger on a record the playbook updates creates a loop. Steps pass data, and reshaping that data with Jinja is most of the work; the default filter prevents failures on absent fields and the Jinja editor tests expressions before running. JSON Query extracts from nested JSON and YAQL filters collections. Connector failures come from credentials, API drift and rate limits, and the connector health check is faster than reading playbook logs. FortiSOAR offers both REST and JSON-RPC APIs, with REST the usual choice.

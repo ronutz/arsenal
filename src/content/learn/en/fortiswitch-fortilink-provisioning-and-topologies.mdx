@@ -1,0 +1,68 @@
+---
+slug: fortiswitch-fortilink-provisioning-and-topologies
+title: "FortiSwitch and FortiLink: Provisioning, Topologies, and When the Switch Will Not Come Up"
+summary: "FortiLink turns a FortiGate into the switch controller, which means the switch stops being a device you configure and becomes one the firewall configures for you. That shift explains the provisioning flow, the supported topologies, and nearly every FortiLink fault, which almost always resolves to discovery, authorization, or a port that is not what FortiLink expects."
+concepts: ["fortinet", "fortiswitch", "fortilink", "provisioning", "managed switch", "topology", "mclag", "stacking", "multi-tenancy", "troubleshooting"]
+relatedTools: []
+sub: fortiswitch
+relatedArticles: ["fortigate-initial-configuration-and-operation-modes", "fortigate-firewall-policy-and-nat"]
+category: networking
+order: 59
+status: reviewed
+updated: "2026-07-26"
+---
+
+A FortiSwitch can run standalone, with its own configuration and its own CLI. In almost every Fortinet deployment it does not, because **FortiLink** lets a FortiGate manage it, and the switch becomes an extension of the firewall's configuration rather than a device with a life of its own.
+
+## What FortiLink actually changes
+
+With FortiLink in use, the FortiGate becomes the **switch controller**. Ports on the switch appear in the FortiGate's interface list, VLANs are created on the FortiGate and pushed down, and the switch's own configuration is managed rather than authored.
+
+The practical consequence is worth stating plainly: **configuration made directly on a managed switch is liable to be overwritten.** The FortiGate holds the intended state and reconciles the switch to it, in the same way FortiManager holds the intended state for a firewall. Someone who fixes a problem by logging into the switch has made a change that will disappear.
+
+## Provisioning, step by step
+
+1. **The FortiLink interface.** One or more FortiGate ports are designated as the FortiLink interface. Using an aggregate rather than a single port is the norm where redundancy matters, and it must be an aggregate on both ends.
+2. **Discovery.** The switch, connected to that interface, is discovered automatically. It appears as an unauthorized device.
+3. **Authorization.** You authorize it. Until you do, it is visible and unmanaged, which is the state people mistake for a fault.
+4. **Configuration push.** Once authorized, the FortiGate applies its switch configuration: VLANs, port settings, security policies.
+
+A switch that never appears at all failed at step 2, and the causes are few: the cable is not on a FortiLink-designated port, the switch is not in a mode that allows management, or there is a firmware incompatibility between the FortiGate's controller and the switch.
+
+## Topologies
+
+The supported shapes trade cost against resilience, and the choice constrains everything downstream.
+
+**Single tier** connects switches directly to the FortiGate. Simple, and every switch is one failure away from isolation.
+
+**Two tier** introduces a distribution layer: access switches connect to distribution switches, which connect to the FortiGate. This is the common enterprise shape, and it is where link redundancy starts to matter.
+
+**MCLAG** pairs two switches so that a downstream device can be dual-homed to both while seeing one logical peer. This is how a single access switch survives the loss of a distribution switch without relying on spanning tree to reconverge.
+
+**Stacking over FortiLink** connects switches through each other rather than each back to the FortiGate, which saves ports at the cost of making an upstream switch a dependency for everything behind it.
+
+The port roles for stacking must be configured deliberately. A switch cabled into a stack topology without the corresponding port configuration will either not be discovered or will form a topology you did not intend.
+
+## Multi-tenancy
+
+Where one physical switch infrastructure serves multiple tenants, separation is expressed through VLANs mapped to different FortiGate VDOMs. Each tenant's traffic is carried on its own VLANs, and the VDOM boundary on the FortiGate is what keeps the policy sets, routing and administration apart.
+
+The thing to get right is that the switch is shared. Separation is a property of the configuration, not of the hardware, so a VLAN assigned to the wrong port is a tenancy breach rather than a misconfiguration to fix at leisure.
+
+## When FortiLink does not come up
+
+In the order that resolves most cases:
+
+**1. Is the port a FortiLink port?** The most common cause by a distance. A switch on an ordinary port is just a device sending traffic.
+
+**2. Is the switch discovered but unauthorized?** Authorization is a deliberate step and easy to forget on the second and third switch.
+
+**3. Firmware compatibility.** The FortiGate's switch controller supports a range of FortiSwitchOS versions. A switch outside it may be discovered and fail to be managed properly, which presents as intermittent or partial configuration.
+
+**4. Aggregate mismatch.** If the FortiLink interface is an aggregate on one side and individual ports on the other, the link may come up physically and never form.
+
+**5. Loops during cabling.** Connecting a switch that is already cabled elsewhere can create a loop before spanning tree converges, and the resulting broadcast storm makes everything look broken at once.
+
+## What an exam candidate should be able to state cold
+
+FortiLink makes the FortiGate the switch controller, so the switch is configured from the firewall and direct changes on it are liable to be overwritten. Provisioning is FortiLink interface, discovery, authorization, then configuration push, and an unauthorized switch is visible but unmanaged. Topologies run single tier, two tier, MCLAG for dual-homing, and stacking to save ports at the cost of dependency. Multi-tenancy uses VLANs mapped to VDOMs, so separation is configuration rather than hardware. When FortiLink fails, check the port role first, then authorization, then firmware compatibility.

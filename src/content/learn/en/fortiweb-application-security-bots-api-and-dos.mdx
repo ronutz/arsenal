@@ -1,0 +1,82 @@
+---
+slug: fortiweb-application-security-bots-api-and-dos
+title: "FortiWeb Protection: Signatures, Machine Learning, Bots, APIs, and DoS"
+summary: "Web application protection combines things that recognise known attacks with things that learn what your application normally does. Bots and APIs each need their own treatment, because a bot is not distinguished by its payload and an API has no user to challenge."
+concepts: ["fortinet", "fortiweb", "signature", "machine learning", "bot mitigation", "api protection", "openapi", "dos protection", "rate limiting", "vulnerability scan", "fortiai"]
+relatedTools: []
+sub: fortiweb
+relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortigate-security-profiles-flow-vs-proxy"]
+category: security
+order: 82
+status: reviewed
+updated: "2026-07-26"
+---
+
+Protecting a web application means answering two different questions: is this request a known attack, and is this request something my application would ever legitimately receive. Signatures answer the first, learning answers the second, and neither is sufficient alone.
+
+## Signatures and known attacks
+
+Signature-based detection recognises the recognisable: SQL injection, cross-site scripting, command injection, path traversal, known exploit attempts against known platforms.
+
+Signatures are fast and precise about what they know, and they generate false positives on applications whose legitimate input resembles attack payloads. A content management system where authors write about SQL will trip SQL injection signatures with entirely legitimate content.
+
+That makes **exceptions** part of running a WAF rather than a sign of failure. The discipline is to scope them narrowly — this signature, on this URL, on this parameter — because a signature disabled globally to fix one page removes protection everywhere.
+
+## Machine learning
+
+The complementary approach learns your application's normal traffic and flags deviation. It observes parameters over time: what types appear, what lengths, what character sets, what ranges.
+
+The value is coverage of what signatures cannot describe: a parameter that has only ever contained a numeric identifier suddenly receiving a long string is anomalous regardless of whether that string matches any known attack pattern.
+
+Two things determine whether it works:
+
+**The learning period must see representative traffic.** A model built during a quiet week will flag normal month-end volume as anomalous. A model built while an application is under attack learns the attack as normal.
+
+**The application must be stable.** Every release that changes parameters invalidates part of what was learned, so there is an ongoing relationship between deployment cadence and re-learning rather than a one-time setup.
+
+## Bot mitigation
+
+Bots are not distinguished by payload. A credential-stuffing bot sends perfectly well-formed login requests; that is the entire problem. Distinguishing them means looking at behaviour rather than content.
+
+The signals:
+
+**Declared identity.** User agent and reverse DNS identify well-behaved bots, and are trivially forged by anything that does not want to be identified.
+
+**Behaviour.** Request rate, navigation patterns, timing regularity. Humans pause, misclick and browse; automation does not.
+
+**Capability challenges.** JavaScript execution and cookie handling filter out simple tooling, since a script that does not run JavaScript fails silently. CAPTCHA is the escalation, and it costs real users something, which is why it belongs on suspicion rather than by default.
+
+The categorisation that makes this manageable is that bots are not one thing. Search engine crawlers are wanted. Monitoring and uptime checkers are yours. Scrapers and credential stuffers are not. A configuration that treats all automation identically either blocks your own monitoring or permits credential stuffing.
+
+## API protection
+
+APIs need separate treatment for a straightforward reason: there is no browser and no user, so every challenge-based control is unavailable. There is also no page to inspect — the payload is structured data.
+
+**Schema validation** is the strongest control available, and it is the one that makes API protection tractable. An OpenAPI specification describes exactly what each endpoint accepts: which fields, which types, which ranges, which are required. Validating against it rejects anything malformed without knowing anything about attacks, because a request that does not match the contract is invalid by definition.
+
+**Discovery** matters because the specification is usually incomplete. Observing live traffic reveals endpoints that exist and are not documented, and undocumented endpoints are where the unreviewed code lives.
+
+**Rate limiting per key or token** replaces the per-user controls a browser would allow, and is the main defence against enumeration and scraping through an otherwise correct API.
+
+## DoS protection
+
+Application-layer denial of service does not need volume. A request that causes an expensive query can exhaust a server at a rate that never looks like an attack on a bandwidth graph.
+
+The layered controls:
+
+- **Connection limits** per source.
+- **Request rate limits** per source, per URL, or per session.
+- **Slow-request protection** against clients that open connections and send data as slowly as possible to hold resources.
+- **Expensive-endpoint limits**, which is where per-URL rate limiting earns its keep: the search endpoint and the static asset deserve very different thresholds.
+
+The limitation to be honest about is that a WAF protects what is behind it and is itself in the path. Volumetric attacks large enough to saturate the link must be handled upstream, and no on-premises device solves that.
+
+## Vulnerability scanning and FortiAI
+
+**Web vulnerability scanning** probes your own applications for weaknesses. Its value in a WAF is the loop it closes: findings can inform protection while the application is being fixed, which is the practical answer when the fix requires a release cycle you do not control.
+
+**FortiAI** assists with the part of WAF operation that consumes the most time, which is deciding whether an alert is a real attack or the application behaving normally. It is a triage aid rather than a decision-maker, and the sensible posture is the one that applies to every automated judgement in this material: watch what it concludes before letting it act.
+
+## What an exam candidate should be able to state cold
+
+Signatures recognise known attacks and produce false positives where legitimate input resembles them, so exceptions should be scoped to signature, URL and parameter. Machine learning covers what signatures cannot describe and depends on a representative learning period and a stable application. Bots are distinguished by behaviour rather than payload, and treating all automation alike either blocks your monitoring or permits credential stuffing. API protection rests on schema validation, because a request violating the contract is invalid without reference to attacks, plus discovery of undocumented endpoints and per-key rate limiting. Application-layer DoS needs no volume, and volumetric attacks must be handled upstream of any inline device.

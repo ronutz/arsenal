@@ -1,0 +1,62 @@
+---
+slug: fortimail-content-security-encryption-and-ibe
+title: "Segurança de conteúdo, arquivamento e criptografia no FortiMail, incluindo IBE"
+summary: "Depois que uma mensagem é aceita, controles de conteúdo decidem o que ela pode conter e a criptografia decide quem pode lê-la. A criptografia baseada em identidade é a parte que vale entender direito, porque resolve o problema que tornou o e-mail seguro impraticável por décadas: enviar e-mail criptografado a alguém que não tem chaves nem software."
+concepts: ["fortinet", "fortimail", "antivírus", "sandbox", "filtragem de conteúdo", "arquivamento", "tls", "smime", "ibe", "criptografia baseada em identidade", "proteção de dados"]
+relatedTools: []
+sub: fortimail
+relatedArticles: ["fortimail-policies-session-filtering-and-antispam", "fortinet-ssl-inspection-modes"]
+category: security
+order: 78
+status: reviewed
+updated: "2026-07-26"
+---
+
+Controles de conteúdo e criptografia respondem metades diferentes da mesma pergunta: o que pode passar, e quem pode ler.
+
+## Malware e ameaças avançadas
+
+O **antivírus** varre anexos contra assinaturas. É rápido, é certeiro sobre o que conhece, e não sabe nada sobre o que não viu.
+
+A **integração com sandbox** endereça essa lacuna detonando anexos suspeitos num ambiente isolado e observando o comportamento. A troca é tempo: a análise demora mais que uma consulta de assinatura, então a decisão de implantação é o que fazer enquanto se espera. Reter a mensagem atrasa e-mail legítimo; entregar e retirar num veredito ruim deixa uma janela em que o anexo esteve disponível.
+
+O **desarme de conteúdo** toma um caminho totalmente diferente. Em vez de decidir se um documento é malicioso, remove o conteúdo ativo — macros, objetos embutidos, scripts — e entrega uma versão achatada. É decisivo de um jeito que a detecção não consegue ser, porque não precisa reconhecer a ameaça, e custa a funcionalidade legítima que o conteúdo removido oferecia.
+
+A **proteção de URL** importa porque links não são anexos. Um link pode ser benigno na entrega e malicioso uma hora depois, e é por isso que reescrever URLs para verificá-las no momento do clique existe: a verificação acontece quando o usuário age, e não quando a mensagem chega.
+
+## Filtragem de conteúdo e arquivamento
+
+A **filtragem de conteúdo** inspeciona a mensagem contra dicionários e regras: palavras e padrões, tipos de anexo, limites de tamanho, e dados estruturados como números de cartão ou de identidade. A saída é onde isso ganha seu lugar, pegando dados saindo que não deveriam.
+
+Duas notas práticas. Casamento por dicionário produz falsos positivos em discussão legítima dos próprios termos que procura, então pontuação e contexto vencem bloqueio por termo único. E o tipo de anexo deve ser verificado pelo conteúdo real, e não pela extensão, porque renomear um arquivo não é evasão sofisticada.
+
+O **arquivamento** retém cópias para conformidade ou investigação. Seu valor está inteiramente na recuperabilidade: um arquivo em que ninguém consegue buscar num tempo útil é armazenamento, e não controle. O tempo de retenção deve seguir a obrigação que o motivou, e a obrigação frequentemente define um máximo além de um mínimo.
+
+## Criptografia tradicional
+
+O **TLS** protege o e-mail em trânsito entre servidores. O TLS oportunista o usa quando o outro lado suporta e recai para texto claro quando não, o que é melhor que nada e não oferece garantia. O **TLS obrigatório** para um domínio parceiro específico se recusa a entregar em claro, que é o que uma exigência de confidencialidade de fato precisa.
+
+O TLS protege o salto, e não a mensagem. Uma vez entregue, a mensagem fica em texto claro no sistema receptor, e é essa a limitação que a criptografia no nível da mensagem existe para endereçar.
+
+O **S/MIME** criptografa a própria mensagem para que só o portador da chave privada do destinatário possa lê-la. É genuinamente ponta a ponta, e exige que o destinatário tenha um certificado e software que o use. Dentro de uma organização ou entre parceiros preparados, isso é alcançável. Com um destinatário externo qualquer, não é, e essa lacuna é o que tornou o e-mail seguro impraticável para a maior parte da correspondência real.
+
+## Criptografia baseada em identidade
+
+O IBE fecha essa lacuna. O destinatário não precisa de certificado, troca de chaves nem software.
+
+O fluxo:
+
+1. A política determina que uma mensagem precisa ser criptografada — por destinatário, por casamento de conteúdo, ou por um marcador que o remetente acrescenta.
+2. O FortiMail a criptografa e envia ao destinatário uma **notificação**, em vez da mensagem.
+3. O destinatário segue a notificação até um portal seguro e se autentica. Destinatários de primeira vez se registram nesse momento.
+4. Eles leem a mensagem, e podem responder com segurança pelo mesmo portal.
+
+A razão de isso importar é que funciona com qualquer pessoa que tenha uma caixa postal e um navegador, que é exatamente a população para a qual você de fato precisa enviar e-mail confidencial.
+
+As contrapartidas são reais e valem ser nomeadas. O destinatário precisa ir a algum lugar para ler a mensagem em vez de vê-la no cliente, o que é atrito, e atrito numa mensagem que alguém não esperava produz "isto é phishing?" — razoavelmente, já que o padrão é idêntico. Avisar os destinatários com antecedência de que isso vai acontecer não é opcional se você quiser que seja usado.
+
+**Administrar usuários IBE** cobre o ciclo de vida: registro no primeiro recebimento, redefinição de senha quando esquecem, expiração por inatividade, e a ajuda de que precisarão quando não conseguirem entrar. Esse último é carga real de suporte, e uma implantação que não a planeja é uma em que as pessoas param de usar IBE e mandam as coisas em claro.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O antivírus é rápido e só conhece o que já viu; o sandbox detona o desconhecido ao custo de latência, e a decisão de projeto é reter ou entregar enquanto se espera; o desarme de conteúdo remove conteúdo ativo sem precisar reconhecer a ameaça. A reescrita de URL verifica links no clique porque um link pode se tornar malicioso depois da entrega. O TLS protege o salto, e não a mensagem, e o TLS oportunista não oferece garantia. O S/MIME é ponta a ponta e exige certificados do destinatário. O IBE não exige nada do destinatário além de caixa postal e navegador: ele é notificado, se autentica num portal, e lê ali, o que troca atrito por universalidade.

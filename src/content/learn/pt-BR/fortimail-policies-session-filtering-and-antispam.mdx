@@ -1,0 +1,59 @@
+---
+slug: fortimail-policies-session-filtering-and-antispam
+title: "Políticas e antispam no FortiMail: controle de acesso, políticas de IP e filtragem de sessão"
+summary: "O FortiMail avalia o e-mail por um modelo de políticas em camadas, e saber qual camada age quando explica tanto por que uma mensagem passou quanto por que um perfil que você configurou nunca se aplicou. O antispam então funciona melhor quando as verificações baratas rodam cedo e as caras rodam só sobre o que sobreviveu."
+concepts: ["fortinet", "fortimail", "controle de acesso", "política de ip", "política de destinatário", "filtragem de sessão", "antispam", "greylisting", "reputação", "spf", "dkim", "dmarc"]
+relatedTools: []
+sub: fortimail
+relatedArticles: ["fortimail-smtp-fundamentals-and-deployment", "fortigate-firewall-policy-and-nat"]
+category: security
+order: 77
+status: reviewed
+updated: "2026-07-26"
+---
+
+O modelo de políticas do FortiMail tem mais camadas que o de um firewall, e elas agem em pontos diferentes da conversa SMTP. A maioria das perguntas do tipo "por que isso passou" se resolve sabendo qual camada decide o quê.
+
+## As camadas, na ordem em que agem
+
+**Regras de controle de acesso** decidem se a sessão é aceita. Casam por remetente, destinatário, endereço de origem e estado de autenticação, e seu trabalho principal é o controle de relay: e-mail para um domínio protegido é entrada e é aceito; e-mail para outro lugar é relay e precisa ser justificado por autenticação ou origem confiável. Agem no `RCPT TO`, antes de existir conteúdo.
+
+**Políticas de IP** casam pelo endereço de origem do cliente que conecta e selecionam quais perfis se aplicam. São o lugar certo para decisões sobre *de onde o e-mail vem*: um gateway de parceiro confiável, um servidor de aplicação interno, um host desconhecido da internet.
+
+**Políticas de destinatário** casam por remetente e destinatário de envelope, e selecionam perfis conforme *entre quem* o e-mail é. Políticas de entrada e de saída são separadas, o que importa porque o perfil sensato difere: antispam agressivo na entrada, proteção de dados e criptografia na saída.
+
+A interação que vale conhecer é que políticas de IP são consultadas primeiro e podem contornar por completo a avaliação de política de destinatário. Uma mensagem de uma origem casada por uma política de IP permissiva pode nunca alcançar a política de destinatário que você esperava aplicar, e essa é a causa mais comum de um perfil que parece não fazer nada.
+
+Dentro de cada tipo, a avaliação é ordenada e a primeira correspondência vence — a mesma disciplina da política de firewall, com o mesmo risco de encobrimento.
+
+## Filtragem baseada em sessão
+
+A filtragem de sessão age durante a conversa SMTP, antes de o corpo da mensagem ser transferido. É isso que a torna barata.
+
+A **reputação de remetente** pontua o host que conecta por seu comportamento recente e pode rejeitar ou limitar antes de qualquer outra coisa rodar.
+
+O **greylisting** rejeita temporariamente uma tripla remetente-destinatário-host vista pela primeira vez, com uma falha temporária. Servidores legítimos enfileiram e tentam de novo, e a mensagem chega pouco depois; muito software de envio em massa não tenta de novo. É eficaz e custa latência de entrega em correspondentes genuinamente novos, e essa é a troca a explicitar em vez de descobrir surpreso.
+
+**SPF, DKIM e DMARC** verificam que o remetente está autorizado a usar o domínio que alega. Sua limitação vale ser dita: eles autenticam o *domínio*, e não a intenção. Uma mensagem perfeitamente autenticada de um domínio parecido passa nos três, e é por isso que verificações de similaridade de domínio existem ao lado deles.
+
+**Verificação de destinatário e limitação de taxa** rejeitam e-mail para endereços inexistentes e reduzem tentativas de colheita.
+
+## Antispam, em camadas por custo
+
+O princípio organizador é que verificações baratas devem rodar primeiro para que as caras vejam menos.
+
+- **Nível de conexão** — reputação, DNSBL, limites de taxa. Nenhuma mensagem transferida.
+- **Nível de sessão** — greylisting, autenticação de remetente. Só envelope.
+- **Nível de conteúdo** — classificação antispam do FortiGuard, heurísticas, palavras banidas, análise de URL, análise de imagem. Exige a mensagem completa.
+
+A classificação do FortiGuard faz a maior parte do trabalho na prática, e os controles locais existem para o que é específico da sua organização.
+
+As **ações** importam tanto quanto a detecção. As opções — rejeitar, descartar, colocar em quarentena, marcar — diferem em quem fica sabendo:
+
+**Rejeitar** informa o servidor remetente, então um remetente legítimo descobre que sua mensagem não chegou. **Descartar** não informa ninguém, o que é certo para spam evidente e errado para qualquer coisa incerta, porque torna o e-mail perdido invisível. **Quarentena** o retém para revisão, e quarentena por destinatário com um resumo permite que os usuários recuperem seus próprios falsos positivos sem abrir chamado. **Marcar** entrega com um sinalizador e é a opção mais suave.
+
+O julgamento é casar a ação com a confiança. Descartar por uma pontuação heurística é como e-mail legítimo desaparece sem deixar rastro, e a perda de confiança resultante é cara de reparar.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Regras de controle de acesso decidem se a sessão é aceita e tratam o controle de relay no RCPT TO; políticas de IP casam a origem que conecta e selecionam perfis; políticas de destinatário casam remetente e destinatário de envelope, separadamente para entrada e saída. Uma correspondência de política de IP pode contornar a avaliação de política de destinatário, e essa é a razão usual de um perfil configurado nunca se aplicar. A filtragem de sessão age antes de o corpo ser transferido, e o greylisting funciona porque servidores legítimos tentam de novo. SPF, DKIM e DMARC autenticam o domínio, e não a intenção, então um domínio parecido passa nos três. Case a ação com a confiança: descartar é silencioso e deve ficar reservado à certeza.

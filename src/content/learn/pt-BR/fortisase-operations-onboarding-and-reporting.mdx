@@ -1,0 +1,69 @@
+---
+slug: fortisase-operations-onboarding-and-reporting
+title: "Operação do FortiSASE: integrar usuários, postura de endpoint e ler os relatórios"
+summary: "Operar uma implantação SASE é sobretudo colocar usuários nela e depois entender o que ela está dizendo. A integração decide a cobertura, a postura decide qual acesso é concedido, e os relatórios são onde um serviço de segurança demonstra seu valor ou produz números sobre os quais ninguém age."
+concepts: ["fortinet", "fortisase", "sase", "integração de usuários", "postura de endpoint", "conformidade", "zero trust", "relatórios", "sla de desempenho", "acesso privado seguro"]
+relatedTools: []
+sub: fortisase
+relatedArticles: ["fortigate-cloud-deployments-and-fortisase", "forticlient-ems-endpoint-security-ztna-and-troubleshooting", "fortigate-routing-and-sdwan-selection"]
+category: cloud
+order: 85
+status: reviewed
+updated: "2026-07-26"
+---
+
+Um serviço SASE só protege o tráfego que chega até ele. Tudo na operação decorre disso, começando por como os usuários entram.
+
+## Integração, e o que cada método de fato cobre
+
+**Com agente** coloca o FortiClient no endpoint, que estabelece um túnel ao ponto de presença mais próximo. Cobre todo o tráfego do equipamento independentemente da aplicação, e funciona fora da rede corporativa, que é todo o propósito. Exige implantar e manter um agente.
+
+**Sem agente** direciona o tráfego sem software no endpoint, tipicamente tráfego web por configuração de proxy explícito ou arquivo PAC. Mais fácil de implantar, e mais estreito: cobre o que estiver configurado para usá-lo e nada mais. Adequado a equipamentos não gerenciados e de terceiros em que instalar agente não é opção.
+
+**Por site** conecta um local inteiro por um túnel do equipamento de borda, então todo host atrás dele é coberto sem tocar em endpoint algum. É assim que filiais são integradas, e cobre equipamentos que jamais rodariam um agente.
+
+A maioria das implantações usa os três, e a pergunta de cobertura é a que se deve continuar fazendo: qual tráfego, de quais equipamentos, não está passando pelo serviço. É ali que está a lacuna, e raramente é onde as pessoas olham.
+
+## Postura de endpoint
+
+A postura transforma "este é o notebook da Ana" em "este é o notebook da Ana e está num estado do qual estou disposto a conceder acesso".
+
+As verificações são as conhecidas: o agente de segurança está rodando e atual, o sistema operacional está corrigido a um nível exigido, a criptografia de disco está ligada, o software exigido está presente, o proibido não está.
+
+O que importa é o que acontece na falha, e há três respostas sensatas, e não uma:
+
+**Bloquear** para condições que de fato tornam o acesso inseguro.
+**Restringir** a um conjunto limitado de destinos, incluindo o que for necessário para voltar à conformidade.
+**Avisar e registrar** para condições que vale conhecer e não devem parar o trabalho.
+
+Aplicar bloqueio a tudo produz um serviço que impede as pessoas de trabalhar por razões que elas não conseguem resolver sozinhas, e o resultado disso é pressão para desligar as verificações. O caminho de remediação não é opcional: um equipamento restrito por não conformidade precisa conseguir alcançar o que o corrige.
+
+A postura é contínua, e não um portão no momento da conexão. Um equipamento que sai de conformidade no meio da sessão deve perder o acesso que dependia disso, e essa é a diferença prática entre acesso ciente de postura e uma verificação única.
+
+## Regras de conformidade em endpoints gerenciados
+
+Regras de conformidade descrevem o estado exigido, e são empurradas a endpoints gerenciados pela gerência de endpoints com que o SASE integra. As regras e as verificações de postura são duas metades de um ciclo: as regras dizem o que deveria ser verdade, a verificação confere, e o acesso reflete o resultado.
+
+O ponto operacional é que uma regra que ninguém consegue satisfazer produz uma frota em não conformidade permanente, e nesse ponto o sinal não vale nada. Regras devem ser alcançáveis no parque que você de fato tem, e apertadas conforme o parque melhora, e não antes disso.
+
+## SLAs de desempenho
+
+Onde o SASE carrega tráfego com requisitos de desempenho, acordos de nível de serviço medem os caminhos — latência, jitter, perda de pacotes — e direcionam o tráfego conforme. É a mesma mecânica do SLA de desempenho do SD-WAN, aplicada ao caminho entre o usuário e o ponto de presença.
+
+O detalhe que vale trazer é que a medição precisa se parecer com o tráfego. Uma verificação de saúde contra um endpoint próximo que reporta números excelentes enquanto a aplicação que todo mundo usa vai mal está medindo a coisa errada, e vai continuar direcionando tráfego por um caminho que falha para o uso que importa.
+
+## Ler os relatórios
+
+Os relatórios são onde uma implantação SASE se justifica ou não.
+
+**Relatórios de tráfego de usuários** respondem para onde a força de trabalho de fato vai: quais aplicações, quanto, por quem. O valor recorrente é descobrir a aplicação homologada que ninguém usa e a não homologada que todo mundo usa, que é conversa de compras tanto quanto de segurança.
+
+**Relatórios de segurança** respondem o que foi bloqueado e por quê. O número a observar não é o total, e sim a distribuição: um pequeno número de usuários gerando a maioria dos bloqueios é situação diferente de uma distribuição uniforme, e a resposta difere.
+
+**Relatórios de conformidade** respondem quanto do parque está no estado que você exige, e a tendência importa mais que o número.
+
+A disciplina que torna qualquer disso útil é decidir de antemão o que você faria de diferente a cada resposta. Um relatório que não mudaria uma decisão é um relatório que ninguém precisa rodar, e a razão de painéis não serem lidos geralmente é que ninguém estabeleceu que ação cada número implicava.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+A integração com agente cobre todo o tráfego de um equipamento e exige um agente; sem agente cobre o que estiver configurado para usá-la; por site cobre tudo atrás de um equipamento de borda. A pergunta de cobertura é qual tráfego não está chegando ao serviço. Verificações de postura devem mapear para bloquear, restringir ou avisar, e não tudo bloquear, e um equipamento restrito precisa conseguir alcançar o que o torna conforme. A postura é contínua, então sair de conformidade no meio da sessão deve retirar o acesso. Medições de SLA de desempenho precisam se parecer com o tráfego que direcionam. Relatórios só são úteis se a ação implicada por cada resposta tiver sido decidida de antemão.

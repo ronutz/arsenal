@@ -1,0 +1,62 @@
+---
+slug: fortimail-content-security-encryption-and-ibe
+title: "FortiMail Content Security, Archiving, and Encryption Including IBE"
+summary: "Once a message is accepted, content controls decide what it may contain and encryption decides who may read it. Identity-based encryption is the part worth understanding properly, because it solves the problem that made secure email impractical for decades: sending encrypted mail to someone who has no keys and no software."
+concepts: ["fortinet", "fortimail", "antivirus", "sandbox", "content filtering", "archiving", "tls", "smime", "ibe", "identity-based encryption", "data protection"]
+relatedTools: []
+sub: fortimail
+relatedArticles: ["fortimail-policies-session-filtering-and-antispam", "fortinet-ssl-inspection-modes"]
+category: security
+order: 78
+status: reviewed
+updated: "2026-07-26"
+---
+
+Content controls and encryption answer different halves of the same question: what may pass, and who may read it.
+
+## Malware and advanced threats
+
+**Antivirus** scans attachments against signatures. It is fast, it is certain about what it knows, and it knows nothing about what it has not seen.
+
+**Sandbox integration** addresses that gap by detonating suspicious attachments in an isolated environment and observing behaviour. The trade is time: analysis takes longer than a signature lookup, so the deployment decision is what to do while waiting. Holding the message delays legitimate mail; delivering and retracting on a bad verdict leaves a window where the attachment was available.
+
+**Content disarm** takes a different approach entirely. Rather than deciding whether a document is malicious, it removes the active content — macros, embedded objects, scripts — and delivers a flattened version. It is decisive in a way detection cannot be, because it does not need to recognise the threat, and it costs whatever legitimate functionality the removed content provided.
+
+**URL protection** matters because links are not attachments. A link can be benign at delivery and malicious an hour later, which is why rewriting URLs to check them at click time exists: the check happens when the user acts, not when the message arrives.
+
+## Content filtering and archiving
+
+**Content filtering** inspects the message against dictionaries and rules — words and patterns, attachment types, size limits, and structured data like card or identity numbers. Outbound is where this earns its place, catching data leaving that should not.
+
+Two practical notes. Dictionary matching produces false positives on legitimate discussion of the terms it looks for, so scoring and context beat single-term blocking. And attachment type should be checked by actual content rather than by extension, because renaming a file is not a sophisticated evasion.
+
+**Archiving** retains copies for compliance or investigation. Its value is entirely in retrievability: an archive nobody can search within a useful time is storage rather than a control. Retention length should follow the obligation that motivated it, and the obligation frequently sets a maximum as well as a minimum.
+
+## Traditional encryption
+
+**TLS** protects mail in transit between servers. Opportunistic TLS uses it when the far side supports it and falls back to plaintext when it does not, which is better than nothing and provides no guarantee. **Enforced TLS** to a specific partner domain refuses to deliver in the clear, which is what a confidentiality requirement actually needs.
+
+TLS protects the hop, not the message. Once delivered, the message sits in plaintext on the receiving system, which is the limitation that message-level encryption exists to address.
+
+**S/MIME** encrypts the message itself so only the holder of the recipient's private key can read it. It is genuinely end to end, and it requires the recipient to have a certificate and software that uses it. Within an organisation or between prepared partners, that is achievable. With an arbitrary external recipient, it is not, and that gap is what made secure email impractical for most real correspondence.
+
+## Identity-based encryption
+
+IBE closes that gap. The recipient needs no certificate, no key exchange and no software.
+
+The flow:
+
+1. Policy determines that a message must be encrypted — by recipient, by content match, or by a marker the sender adds.
+2. FortiMail encrypts it and sends the recipient a **notification** rather than the message.
+3. The recipient follows the notification to a secure portal and authenticates. First-time recipients register at this point.
+4. They read the message, and can reply securely through the same portal.
+
+The reason this matters is that it works with anyone who has a mailbox and a browser, which is the entire population you actually need to send confidential mail to.
+
+The trade-offs are real and worth naming. The recipient must go somewhere to read the message rather than seeing it in their client, which is friction, and friction on a message someone was not expecting produces "is this phishing?" — reasonably, since the pattern is identical. Telling recipients in advance to expect it is not optional if you want it used.
+
+**Managing IBE users** covers the lifecycle: registration on first receipt, password resets when they forget, inactivity expiry, and the help they will need when they cannot get in. That last one is a real support load, and a deployment that does not plan for it is one where people stop using IBE and send things in the clear instead.
+
+## What an exam candidate should be able to state cold
+
+Antivirus is fast and knows only what it has seen; sandboxing detonates the unknown at the cost of latency, and the design decision is whether to hold or deliver while waiting; content disarm removes active content without needing to recognise the threat. URL rewriting checks links at click time because a link can turn malicious after delivery. TLS protects the hop and not the message, and opportunistic TLS provides no guarantee. S/MIME is end to end and requires recipient certificates. IBE requires nothing of the recipient beyond a mailbox and a browser: the recipient is notified, authenticates to a portal, and reads there, which trades friction for universality.

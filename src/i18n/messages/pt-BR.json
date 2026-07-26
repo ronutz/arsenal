@@ -13968,7 +13968,13 @@
     "requiresOne": "Obtida ao ser aprovado em qualquer um destes {count} exames.",
     "prerequisitesLabel": "Pré-requisitos",
     "requirementLabel": "Como obter",
-    "officialPage": "Página oficial da certificação"
+    "officialPage": "Página oficial da certificação",
+    "sourceCaveatTruncated": "Nota sobre este blueprint: a própria página do exame da Fortinet publica uma coluna Tasks cujas entradas estão truncadas ou vazias, então os objetivos abaixo são transcritos da coluna Details ao lado delas, agrupados sob os títulos de seção e os pesos publicados. Verificado contra uma busca nova.",
+    "retiringLabel": "Em descontinuação",
+    "retirementNotice": "O {exam} pode ser prestado até {until}.",
+    "retirementReplacedBy": "Ele é substituído pelo {exam}.",
+    "retirementNoReplacement": "A página da Fortinet não nomeia um substituto.",
+    "sourceCaveatCourse": "Estes objetivos vêm da página do curso da Fortinet para este produto, e não de um blueprint de exame: a Fortinet ainda não publicou um para este exame. O material é o que o curso ensina, e um blueprint de exame pode organizá-lo ou ponderá-lo de outra forma."
   },
   "trainingCta": {
     "eyebrow": "Treinamento com instrutor",

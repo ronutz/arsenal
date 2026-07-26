@@ -1,0 +1,57 @@
+---
+slug: fortiedr-policies-playbooks-and-communication-control
+title: "Políticas, controle de comunicação e playbooks no FortiEDR"
+summary: "O FortiEDR tem duas famílias de política que respondem perguntas diferentes: políticas de segurança decidem o que um processo pode fazer, e o controle de comunicação decide quais aplicações podem falar com a rede. Playbooks decidem o que acontece automaticamente depois de uma detecção. Cada uma tem modo de simulação, e usá-lo é a diferença entre uma implantação e uma interrupção."
+concepts: ["fortinet", "fortiedr", "política de segurança", "controle de comunicação", "playbook", "modo de simulação", "exceção", "automação", "resposta"]
+relatedTools: []
+sub: fortiedr
+relatedArticles: ["fortiedr-architecture-and-deployment", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 68
+status: reviewed
+updated: "2026-07-26"
+---
+
+As políticas do FortiEDR vêm em duas famílias fáceis de confundir e que respondem perguntas genuinamente diferentes.
+
+## Políticas de segurança: o que um processo pode fazer
+
+Políticas de segurança detectam e bloqueiam comportamento no ponto da ação: um processo tentando algo que casa com um padrão malicioso. São organizadas pela etapa de ataque que endereçam, o que é agrupamento mais útil do que parece, porque permite ser rígido nas etapas em que falsos positivos são raros e cauteloso onde software legítimo se comporta de forma suspeita.
+
+Toda política roda num de dois modos:
+
+**Simulação** detecta e reporta sem bloquear. **Prevenção** bloqueia.
+
+A sequência de implantação que funciona é simulação primeiro, por tempo suficiente para ver o que a política teria feito num período representativo, e então prevenção depois que as exceções forem compreendidas. Ir direto para prevenção num parque novo é como uma aplicação de negócio que faz algo incomum por bons motivos acaba bloqueada no pior momento.
+
+**Exceções** são como comportamento legítimo é permitido. A disciplina é torná-las tão estreitas quanto a situação permitir: uma exceção para um processo específico fazendo algo específico, e não para um diretório ou uma aplicação inteira. Uma exceção ampla é um buraco que persiste muito depois de a razão dela ser esquecida.
+
+## Controle de comunicação: quais aplicações podem falar
+
+O controle de comunicação é outra pergunta. Ele inventaria as aplicações dos seus endpoints que se comunicam pela rede, e deixa você decidir quais têm permissão.
+
+Seu valor é visibilidade antes da aplicação. A maioria das organizações não tem lista exata do que fala com a internet a partir de seus endpoints, e só o inventário frequentemente encontra software não aprovado, utilitários sem manutenção e aplicações com vulnerabilidades conhecidas ainda em uso diário.
+
+A política pode então agir: negar uma aplicação de vez, ou permiti-la restringindo aonde pode conectar. Reputação e informação de vulnerabilidade de cada aplicação alimentam a decisão, e é isso que torna isso mais útil que uma lista mantida à mão.
+
+## Playbooks
+
+Playbooks automatizam o que acontece quando algo é detectado. As ações disponíveis vão do informativo ao drástico: notificar, coletar dados forenses, encerrar o processo, isolar o equipamento, bloquear o arquivo em todo o parque.
+
+Dois pontos de projeto determinam se a automação ajuda ou atrapalha.
+
+**Case a ação com a confiança.** Uma detecção de alta confiança de malware conhecido justifica isolamento. Uma anomalia comportamental de baixa confiança justifica coletar dados e avisar alguém. Aplicar a mesma resposta aos dois produz ou sub-resposta a incidentes reais ou uma enxurrada de isolamentos desnecessários, e o segundo ensina as pessoas a desconfiar do sistema.
+
+**Observe antes de agir.** O mesmo argumento do modo de simulação. Rode o gatilho do playbook sem as ações destrutivas por tempo suficiente para ver o que ele teria pego, e então habilite-as.
+
+Playbooks também podem ser delimitados por grupo de coletores, que é como uma política conservadora se aplica a servidores enquanto uma mais agressiva se aplica a estações.
+
+## Onde as duas famílias se encontram
+
+Um incidente muitas vezes envolve as duas: um processo fazendo algo suspeito e depois tentando alcançar um endereço. A política de segurança endereça o primeiro, o controle de comunicação o segundo, e ler um evento geralmente significa olhar o que cada um observou.
+
+A conclusão prática é não recorrer a uma família quando a outra é a ferramenta certa. Uma aplicação que não deveria falar com a internet é problema de controle de comunicação; um processo injetando em outro é problema de política de segurança, e configurar a errada produz uma regra que nunca dispara.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Políticas de segurança detectam e bloqueiam comportamento no ponto da ação e são organizadas por etapa de ataque; o controle de comunicação governa quais aplicações podem usar a rede. As duas oferecem simulação antes da prevenção, e a sequência é simular, entender exceções, então aplicar. Exceções devem ser as mais estreitas possíveis. Playbooks automatizam a resposta, e a ação deve casar com a confiança da detecção: isolamento para alta confiança, coleta de dados e notificação para baixa.

@@ -1,0 +1,81 @@
+---
+slug: fortiweb-deployment-policies-and-delivery
+title: "Implantação, políticas de servidor e entrega de aplicações no FortiWeb"
+summary: "Um firewall de aplicação web fica à frente de aplicações que ele não escreveu e não pode quebrar. O modo de implantação decide quanto ele consegue fazer e quanto risco introduz, e a política de servidor é onde uma aplicação é descrita bem o bastante para que a proteção signifique algo."
+concepts: ["fortinet", "fortiweb", "waf", "proxy reverso", "inspeção transparente", "pool de servidores", "política de servidor", "offload de ssl", "balanceamento", "cache", "investigação"]
+relatedTools: []
+sub: fortiweb
+relatedArticles: ["fortigate-firewall-policy-and-nat", "fortinet-ssl-inspection-modes"]
+category: security
+order: 81
+status: reviewed
+updated: "2026-07-26"
+---
+
+Um firewall de aplicação web é incomum entre equipamentos de segurança por terminar e reoriginar o tráfego que protege. Isso lhe dá capacidade real e faz do modo de implantação a decisão da qual tudo o mais decorre.
+
+## Modos de implantação
+
+O **proxy reverso** é o modo de capacidade total. O FortiWeb termina a conexão do cliente, inspeciona, e abre sua própria conexão ao servidor. Por possuir os dois lados, ele consegue reescrever, redirecionar, fazer offload de TLS, balancear carga e injetar cookies. Também significa que os clientes conectam ao FortiWeb e não ao servidor, então o DNS aponta para ele e o servidor enxerga o FortiWeb como cliente — o que importa para registro, e é por isso que o endereço original do cliente precisa ser encaminhado num cabeçalho para que os logs do servidor sigam úteis.
+
+O **proxy verdadeiramente transparente** fica em linha sem mudança de endereçamento. Ainda consegue inspecionar e bloquear, e não consegue fazer o que exige possuir a conexão.
+
+A **inspeção transparente** observa e consegue redefinir conexões, mas não modifica o tráfego. Menor risco, menor capacidade.
+
+O modo **offline ou sniffer** vê uma cópia do tráfego e só consegue detectar. É o ponto de partida certo numa implantação nova, porque produz o quadro de falsos positivos sem chance alguma de bloquear tráfego legítimo.
+
+A progressão que funciona é offline primeiro para conhecer a aplicação, então em linha numa postura sem bloqueio, e então bloqueando depois que as exceções forem compreendidas. Ir direto a proxy reverso com bloqueio ligado numa aplicação que ninguém perfilou é como um WAF é removido depois de sua primeira indisponibilidade.
+
+## Políticas e objetos de servidor
+
+A hierarquia de configuração vale ser mantida clara, porque tudo se prende a ela.
+
+Um **pool de servidores** descreve os servidores reais: endereços, portas, verificações de saúde, e como o tráfego é distribuído entre eles.
+
+Um **servidor virtual** é o endereço ao qual os clientes conectam.
+
+Uma **política de servidor** liga um servidor virtual a um pool e prende todo o resto: o perfil de proteção, a configuração de TLS, o comportamento de registro. É a unidade de "esta aplicação, protegida assim".
+
+**Verificações de saúde** merecem decisão, e não padrão. Uma verificação que só confere se a porta está aberta seguirá mandando tráfego a um servidor cuja aplicação travou mas cujo listener está vivo. Uma verificação que busca uma página real e confere o conteúdo esperado detecta a falha que importa.
+
+## TLS
+
+O FortiWeb geralmente termina o TLS, o que é pré-requisito para inspecionar qualquer coisa, já que corpos de requisição criptografados são opacos.
+
+**Offload** significa terminar no FortiWeb e falar com os servidores em texto claro, o que tira trabalho criptográfico dos servidores e exige que a rede interna seja confiável para carregar o tráfego.
+
+**Recriptografia** termina e então abre nova conexão TLS ao servidor, então o tráfego fica protegido nas duas pernas. Um pouco mais de trabalho, e a resposta certa onde o caminho interno não é confiável.
+
+A configuração de certificados e cifras também vive aqui, e é onde uma implantação de WAF frequentemente melhora a postura TLS de uma aplicação como efeito colateral, simplesmente por ser o lugar onde isso é configurado de forma central.
+
+## Entrega de aplicações
+
+Por terminar conexões, o FortiWeb consegue melhorar a entrega além de proteger:
+
+**Balanceamento de carga** sobre um pool, com a persistência de que aplicações com estado precisam. A persistência é o detalhe que quebra coisas: uma aplicação guardando estado de sessão num servidor vai falhar de forma intermitente se as requisições forem distribuídas sem ela, e o sintoma são usuários deslogados aleatoriamente.
+
+**Cache e compressão** reduzem carga de servidor e banda.
+
+**Reuso de conexões** ao back end reduz a rotatividade de conexões que os servidores tratam.
+
+Isso é genuinamente útil e é também por que uma indisponibilidade do WAF leva a aplicação junto. Um equipamento no caminho é uma dependência, e a implantação deve ser projetada com isso em mente em vez de descobri-lo.
+
+## Investigação
+
+A ordem que resolve a maioria dos casos:
+
+**1. O tráfego chega ao FortiWeb?** DNS, roteamento, e o endereço do servidor virtual. Se nada chega, política alguma pode agir.
+
+**2. Alguma política de servidor casou?** Tráfego que não casa com política alguma não é protegido e pode não ser encaminhado, conforme a configuração.
+
+**3. O pool está saudável?** Falhas de verificação de saúde tiram servidores em silêncio, e um pool com todos os membros fora produz erros que parecem defeito do WAF.
+
+**4. Foi bloqueado, e por quê?** O log de ataques nomeia a assinatura ou regra. Isso distingue "o WAF bloqueou" de "a aplicação retornou erro", que parecem idênticos ao usuário.
+
+**5. É TLS?** Divergências de certificado, desacordo de versão de protocolo e incompatibilidade de cifra se apresentam como conexões que falham antes de existir HTTP, então log algum de nível HTTP as mostrará.
+
+A distinção com que vale ter disciplina é entre o FortiWeb bloquear uma requisição e a aplicação rejeitá-la. As duas produzem requisição falha; só uma é sua para corrigir.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O proxy reverso termina e reorigina, dando capacidade total incluindo reescrita, offload e balanceamento, e exige encaminhar o endereço do cliente para os logs do servidor seguirem úteis. Modos transparentes trocam capacidade por risco menor, e o modo offline só detecta, sendo a postura inicial certa. Pool de servidores mais servidor virtual ligados por uma política de servidor é a hierarquia de configuração. Verificações de saúde que só testam a porta não percebem uma aplicação travada. Offload fala em claro com os servidores; recriptografia protege as duas pernas. Balanceamento precisa de persistência ou aplicações com estado quebram de forma intermitente. Investigue em ordem: tráfego chegando, política casada, pool saudável, log de ataques, e então TLS.

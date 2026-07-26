@@ -1,0 +1,65 @@
+---
+slug: forticnapp-fundamentals-and-cloud-posture
+title: "FortiCNAPP: Cloud Posture, Account Integration, and Compliance"
+summary: "A CNAPP exists because cloud risk is not one problem. Misconfiguration, excessive permissions, vulnerable workloads and unsafe infrastructure code are four different failures needing four different views, and the platform's value is holding them together well enough to say which actually matters."
+concepts: ["fortinet", "forticnapp", "cnapp", "cspm", "cwpp", "ciem", "cloud posture", "compliance", "misconfiguration", "agentless", "deployment"]
+relatedTools: []
+sub: forticnapp
+relatedArticles: ["fortigate-cloud-deployments-and-fortisase", "fortinet-soc-architecture-and-adversary-behaviour"]
+category: cloud
+order: 79
+status: reviewed
+updated: "2026-07-26"
+---
+
+Cloud security tooling accumulated as a set of acronyms because each addressed a different failure. A CNAPP is the argument that they should be one product, and the argument is sound for one reason: the failures compound, and no single view can tell you which combination is dangerous.
+
+## The four problems
+
+**Misconfiguration** — a storage bucket readable by anyone, a database reachable from the internet, logging disabled. This is posture management, and it is the largest source of cloud incidents by a wide margin, because it requires no exploit at all.
+
+**Excessive permissions** — an identity that can do far more than its job needs. Cloud permission models are permissive by default and grow through accretion, and the gap between granted and used is where lateral movement lives.
+
+**Vulnerable workloads** — the containers and instances actually running, with whatever unpatched software they contain.
+
+**Unsafe infrastructure code** — the templates that will produce tomorrow's misconfiguration, currently sitting in a repository.
+
+The compounding is the point. A vulnerable container is a finding. A vulnerable container that is internet-facing and running as an identity with administrative permissions is an incident waiting to happen, and only a view that spans all three can say so.
+
+## Connecting cloud accounts
+
+Integration is read-only access to the cloud provider's own APIs and logs — a role in AWS, an application registration in Azure, a service account in GCP. The platform reads configuration, permissions, resource inventory and activity logs.
+
+Two points that decide whether the deployment is useful:
+
+**Coverage must be complete.** An unconnected account is invisible, and shadow accounts are exactly where the interesting problems are. Connecting the accounts you know about while an unknown one runs unmonitored gives a false sense of coverage.
+
+**Read-only is the correct default.** The platform's job is to see and to tell you. Remediation authority is a separate decision that deserves to be made deliberately rather than acquired by default.
+
+## Deployment models
+
+**Agentless** works entirely from provider APIs and snapshots. It covers everything in the connected accounts immediately, requires nothing installed, and sees configuration and inventory rather than runtime behaviour.
+
+**Agent-based** puts a lightweight collector on workloads and adds what agentless cannot see: running processes, actual network connections, in-memory activity. Deeper, and it requires deployment.
+
+Most real deployments use both, and the sensible sequence is agentless first for immediate estate-wide visibility, then agents on the workloads whose behaviour matters.
+
+## Compliance reporting
+
+The platform evaluates the estate against frameworks — CIS benchmarks, PCI DSS, SOC 2, HIPAA, and others — and reports which controls pass and which do not.
+
+The honest framing is that this is a mapping exercise, not an audit. It tells you which technical controls the framework expects and which of them your configuration satisfies. It does not know about your compensating controls, your documented exceptions, or the parts of the framework that are about process rather than configuration.
+
+That makes it genuinely useful for two things: finding the technical gaps quickly, and producing evidence for the parts it can evaluate. Treating a passing report as compliance is a mistake the report itself does not make.
+
+**Non-compliant assets** are where the report becomes work. The list is only actionable if it can be prioritised, which is why exposure and permission context matter: a non-compliant asset that nothing can reach is a different priority from an identical one that is public.
+
+## Detecting risk
+
+Risk detection is where the compounding gets computed. The platform correlates configuration, exposure, vulnerability and permission data to identify combinations that constitute an actual attack path, rather than reporting each finding independently.
+
+The practical value is triage. An estate of any size produces thousands of individual findings, and the number of them that form a genuine path from the internet to something valuable is far smaller. That smaller list is the one worth working, and producing it is the main thing that distinguishes a CNAPP from four separate scanners.
+
+## What an exam candidate should be able to state cold
+
+A CNAPP unifies posture, workload protection, entitlement management and infrastructure-as-code scanning because those failures compound: a vulnerable, internet-facing workload running with excessive permissions is an attack path that no single view identifies. Integration is read-only access to provider APIs, and incomplete account coverage produces false confidence. Agentless gives immediate estate-wide configuration visibility; agents add runtime behaviour. Compliance reporting maps technical controls to frameworks and is not an audit. Risk detection's value is reducing thousands of findings to the few that form a real attack path.

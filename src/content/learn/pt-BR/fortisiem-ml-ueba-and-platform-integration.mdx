@@ -1,0 +1,60 @@
+---
+slug: fortisiem-ml-ueba-and-platform-integration
+title: "Aprendizado de máquina, UEBA e integração da plataforma no FortiSIEM"
+summary: "Regras pegam o que você pensou em descrever. Aprendizado de máquina e análise de comportamento de usuários e entidades existem para o que você não pensou, e ambos funcionam aprendendo o normal e reportando o desvio. Isso faz do período de aprendizado uma preocupação operacional real, porque uma linha de base construída durante um incidente codifica o incidente como normal."
+concepts: ["fortinet", "fortisiem", "aprendizado de máquina", "ueba", "linha de base", "detecção de anomalias", "ztna", "integração", "painel", "pontuação de risco"]
+relatedTools: []
+sub: fortisiem
+relatedArticles: ["fortisiem-rules-incidents-and-remediation", "forticlient-ems-endpoint-security-ztna-and-troubleshooting"]
+category: security
+order: 74
+status: reviewed
+updated: "2026-07-26"
+---
+
+A detecção baseada em regras tem um limite estrutural: encontra o que alguém pensou em descrever. As técnicas abaixo endereçam o restante, e compartilham um mecanismo e, portanto, uma fraqueza.
+
+## Como as abordagens que aprendem funcionam
+
+Tanto a detecção por aprendizado de máquina quanto a análise de comportamento constroem um modelo do normal a partir de dados observados e reportam afastamentos dele. As consequências desse mecanismo merecem ser ditas antes dos recursos:
+
+**O período da linha de base importa enormemente.** Um modelo aprendido num período que incluiu um incidente trata o incidente como normal. Um modelo aprendido em período curto demais trata variação rotineira — fechamento de mês, um feriado, o lançamento de um projeto — como anômala.
+
+**Anômalo não é malicioso.** Um desvio é uma afirmação sobre estatística, e não sobre intenção. Alguém mudando de função, uma aplicação nova sendo distribuída, e um atacante exfiltrando dados produzem todos afastamentos da linha de base. A saída é sinal de priorização, e não veredito.
+
+**A explicabilidade varia.** Uma regra que dispara diz exatamente com o que casou. Uma anomalia diz que algo foi incomum, e as implementações úteis dizem qual dimensão foi incomum e por quanto. Julgue esses recursos por conseguirem responder o porquê.
+
+## UEBA especificamente
+
+A análise de comportamento de usuários e entidades monta perfis para usuários e para entidades como hosts e contas de serviço, e procura afastamentos.
+
+Os padrões em que ela é genuinamente boa, e que regras tratam mal:
+
+- **Acesso fora do padrão do próprio usuário.** Não uma regra sobre quais sistemas o financeiro pode tocar, e sim a observação de que esta pessoa nunca tocou este sistema.
+- **Desvio do grupo de pares.** Um membro de uma equipe se comportando de forma diferente do resto, o que pega o caso em que o histórico próprio do usuário é curto demais para ser linha de base.
+- **Mudança gradual.** Um aumento lento no acesso a dados ao longo de semanas, que regra de limiar alguma pega porque nenhum dia isolado a excede.
+- **Viagem impossível e anomalias de horário**, simples de enunciar e incômodas de expressar como regras entre fontes.
+
+A saída da UEBA alimenta dois lugares. Ela pode **contribuir para regras**, de modo que uma regra dispare apenas quando uma atividade coincidir com pontuação de risco elevada, o que corta falsos positivos substancialmente. E move **painéis** que ordenam usuários e entidades por risco, que é uma forma diferente de começar o dia de trabalho: em vez de "o que disparou", responde "quem vale olhar".
+
+## Integração com ZTNA
+
+Decisões de acesso zero trust produzem um fluxo rico de eventos: qual usuário, qual equipamento, qual aplicação, qual postura, permitido ou negado. Alimentar isso no SIEM acrescenta uma dimensão que a rede sozinha não carrega.
+
+A correlação que isso habilita é o ponto. Um equipamento falhando verificações de postura, então um usuário daquele equipamento tentando acesso a várias aplicações em sequência, então uma rajada de negações: cada um é menor e a sequência não é. Só um sistema que enxerga as decisões de acesso e a atividade ao redor consegue uni-los.
+
+Também fecha um ciclo de volta à política. Um SIEM que identifica uma conta como de alto risco pode levar o sistema de acesso a exigir mais dela, que é o zero trust se comportando como pretendido, e não como conjunto estático de regras.
+
+## Tornar a integração útil, e não apenas presente
+
+Conectar um produto ao SIEM é simples e não é o mesmo que obter valor dele. Três coisas separam as duas:
+
+**Análise sintática.** Os eventos precisam cair em campos estruturados, ou são texto sobre o qual não se pode agregar. Uma integração que entrega logs não analisados produziu armazenamento, e não analytics.
+
+**Alinhamento com o CMDB.** O equipamento na fonte nova precisa ser reconhecível como o mesmo que o SIEM já conhece, ou a correlação não consegue uni-los.
+
+**Uma pergunta que ela responde.** O teste honesto para uma integração nova é qual consulta ou regra se torna possível e não era antes. Se nenhuma, a integração acrescentou volume e custo sem acrescentar capacidade, e volume num SIEM nunca é de graça.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Aprendizado de máquina e UEBA aprendem o normal e reportam desvio, então o período da linha de base é preocupação operacional real e uma anomalia é sinal de priorização, e não veredito. A UEBA perfila usuários e entidades, pega desvio de pares e mudança gradual que limiares não pegam, e alimenta tanto regras quanto painéis de risco. Eventos de ZTNA acrescentam usuário, equipamento, aplicação e postura à correlação. Uma integração nova só é útil se seus eventos forem analisados em campos, seus equipamentos se alinharem ao CMDB, e ela tornar respondível alguma pergunta que não era.

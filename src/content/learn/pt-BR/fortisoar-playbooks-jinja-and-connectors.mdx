@@ -1,0 +1,79 @@
+---
+slug: fortisoar-playbooks-jinja-and-connectors
+title: "Playbooks, Jinja e conectores no FortiSOAR"
+summary: "Um playbook é um gatilho, uma sequência de passos, e dados fluindo entre eles. A maior parte da dificuldade está nessa terceira parte: levar a saída de um passo à forma de que o próximo precisa, que é para o que serve o Jinja. Conectores são como os playbooks alcançam qualquer coisa fora do FortiSOAR, e falhas de conector parecem falhas de playbook."
+concepts: ["fortinet", "fortisoar", "playbook", "jinja", "conector", "gatilho", "json query", "yaql", "api", "automação"]
+relatedTools: []
+sub: fortisoar
+relatedArticles: ["fortisoar-architecture-and-data-model", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 71
+status: reviewed
+updated: "2026-07-26"
+---
+
+Playbooks são onde o FortiSOAR trabalha. São também onde está a maior parte da curva de aprendizado, e quase toda ela é sobre dados, e não sobre lógica.
+
+## Gatilhos
+
+Um playbook começa por um de alguns tipos de gatilho, e escolher o certo evita uma classe de problema:
+
+- **Na criação ou atualização** de um registro, que é como o enriquecimento de alertas geralmente começa.
+- **Manual**, executado por um analista sobre um registro, que serve a ações que um humano deve autorizar.
+- **Agendado**, para trabalho periódico como reconciliação ou relatórios.
+- **Referenciado**, ou seja, chamado por outro playbook — é assim que se fatora lógica comum em vez de copiá-la.
+
+O erro que vale nomear é usar gatilho de atualização num registro que o próprio playbook atualiza, o que produz um laço. Condições no gatilho, ou um sinalizador que o playbook define, é como isso se evita.
+
+## Passos e a forma dos dados
+
+Um playbook é uma sequência de passos: ações de conector, decisões, laços, operações de registro, e chamadas a outros playbooks.
+
+Todo passo produz saída, e o próximo a consome. A saída de uma ação de conector é o que a API daquele produto retornou, que raramente é a forma que o próximo passo quer. **Fazer a ponte nessa lacuna é o trabalho de verdade de construir playbooks**, e é onde entra o Jinja.
+
+## Jinja
+
+Jinja é a linguagem de template usada para referenciar e transformar dados dentro de um playbook. Seus usos mais comuns são ordinários:
+
+- Referenciar a saída de um passo anterior.
+- Alcançar dentro de uma estrutura aninhada para extrair um valor.
+- Filtrar ou remodelar uma lista.
+- Montar uma string a partir de vários valores, para um comentário ou notificação.
+
+**Filtros** transformam valores: mudar caixa, formatar datas, juntar listas, aplicar padrões quando um valor está ausente. Esse último merece ênfase: um playbook que presume que um campo está presente vai falhar no registro em que ele não está, e um filtro de padrão é a diferença entre um caminho gracioso e uma execução interrompida.
+
+**O editor Jinja** avalia uma expressão contra dados reais antes de você se comprometer com ela. Usá-lo é a maior economia de tempo no desenvolvimento de playbooks, porque a alternativa é rodar o playbook para descobrir e ler a falha depois.
+
+## JSON Query e YAQL
+
+Mais duas formas de trabalhar com dados, cada uma com seu nicho:
+
+**JSON Query** extrai de estruturas JSON usando uma expressão de caminho. Serve a alcançar um valor específico numa resposta de API profundamente aninhada, e é mais legível que Jinja encadeado para esse trabalho.
+
+**YAQL** avalia expressões sobre dados, incluindo filtrar coleções por uma condição. Serve a selecionar o subconjunto de uma lista que importa em vez de iterar sobre tudo.
+
+Há sobreposição, e escolher entre eles é sobretudo sobre qual expressa a intenção mais claramente a quem ler o playbook depois.
+
+## Conectores
+
+Conectores são como o FortiSOAR alcança outros sistemas: firewalls, ferramentas de endpoint, inteligência de ameaças, chamados, e-mail. Cada um expõe ações que o playbook chama.
+
+Três coisas respondem pela maior parte dos problemas com conectores:
+
+**Configuração e credenciais.** Um conector precisa ser configurado com seu endpoint e credenciais, e uma credencial que expira produz todas as ações falhando de uma vez. Conectores têm verificação de saúde, e lê-la é mais rápido que diagnosticar por um log de playbook.
+
+**Versão e deriva de API.** A API do produto remoto muda, e uma ação que funcionava para de funcionar. Isso se apresenta como um playbook que era confiável, sintoma distintivo que vale reconhecer.
+
+**Limites de taxa.** Um playbook iterando sobre cem registros e chamando uma API externa para cada um vai bater em limites que um teste manual único nunca revelou.
+
+## A API
+
+O FortiSOAR expõe uma **API REST** e uma **API JSON-RPC**, e a distinção vale conhecer:
+
+REST endereça recursos por URLs e verbos padrão, e é o que a maioria das integrações usa. JSON-RPC chama procedimentos nomeados com parâmetros por um único endpoint.
+
+Para a maior parte do trabalho — criar registros a partir de um sistema externo, consultar incidentes, disparar um playbook — REST é a rota esperada. A razão prática de conhecer as duas é que ler exemplos por aí significa reconhecer qual delas você está vendo.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Gatilhos são criação ou atualização, manual, agendado, ou referenciado por outro playbook, e um gatilho de atualização num registro que o playbook atualiza cria um laço. Passos passam dados, e remodelar esses dados com Jinja é a maior parte do trabalho; o filtro de padrão evita falhas em campos ausentes e o editor Jinja testa expressões antes de rodar. JSON Query extrai de JSON aninhado e YAQL filtra coleções. Falhas de conector vêm de credenciais, deriva de API e limites de taxa, e a verificação de saúde do conector é mais rápida que ler logs de playbook. O FortiSOAR oferece APIs REST e JSON-RPC, com REST sendo a escolha usual.

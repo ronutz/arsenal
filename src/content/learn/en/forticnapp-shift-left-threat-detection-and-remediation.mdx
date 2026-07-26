@@ -1,0 +1,84 @@
+---
+slug: forticnapp-shift-left-threat-detection-and-remediation
+title: "FortiCNAPP: Shift-Left, Threat Detection, and Remediating Cloud Risk"
+summary: "Finding a misconfiguration in production is late. Shift-left moves the check to the point where the mistake is cheapest to fix, which is before it is deployed. Runtime detection handles what shifting left cannot prevent, and behavioural baselines are what make cloud threat detection tractable at all."
+concepts: ["fortinet", "forticnapp", "shift left", "infrastructure as code", "ci cd", "runtime detection", "behavioral baseline", "remediation", "alert tuning", "cloud threats"]
+relatedTools: []
+sub: forticnapp
+relatedArticles: ["forticnapp-fundamentals-and-cloud-posture", "fortiedr-threat-hunting-forensics-and-investigation"]
+category: cloud
+order: 80
+status: reviewed
+updated: "2026-07-26"
+---
+
+Cloud infrastructure is built from code and rebuilt constantly. That changes where security controls belong, because a finding in production points at a template that will recreate it tomorrow.
+
+## Shift-left
+
+Shifting left means checking earlier: scanning infrastructure-as-code templates and container images before they are deployed rather than auditing what they produced.
+
+The argument is cost. A misconfiguration caught in a pull request is a comment and a five-minute fix. The same misconfiguration in production is a change request, a maintenance window, and a conversation about who authorised it. The defect is identical; only the cost of correcting it changed.
+
+The second argument is durability. Fixing production without fixing the template means the next deployment reintroduces it, which is how organisations remediate the same finding repeatedly and conclude that security work is Sisyphean.
+
+**Where the checks go:**
+
+- **In the repository**, on pull requests, so the feedback reaches the person who wrote it while they still remember why.
+- **In the pipeline**, as a build stage, where a policy can fail the build.
+- **In the registry**, scanning images so a vulnerable base image is caught before anything runs it.
+
+**What to fail on** is the decision that determines whether this survives contact with delivery teams. Failing a build on every finding produces a pipeline people route around. Failing on a narrow, defensible set — publicly exposed storage, hardcoded credentials, critical vulnerabilities with a fix available — and reporting the rest keeps the gate credible.
+
+## Runtime detection
+
+Shifting left prevents known-bad configurations. It does not prevent compromise, stolen credentials, or an authorised identity doing something it should not, which is what runtime detection is for.
+
+Cloud threat detection is harder than endpoint detection for a specific reason: much of what an attacker does is legitimate API activity performed with valid credentials. There is no malware to find. Creating a user, attaching a policy, reading a bucket, launching an instance — all ordinary, all part of real attacks.
+
+That is why **behavioural baselining** rather than signature matching is the workable approach. The platform learns what normal looks like for each identity and resource — which APIs they call, from where, at what times, against what — and surfaces deviation.
+
+The detections that matter follow from that:
+
+- An identity using an API it has never used.
+- Activity from a region or address range the account has never seen.
+- A permission escalation, particularly an identity granting itself capability.
+- A workload connecting somewhere it never has.
+- Enumeration patterns, where an identity systematically lists what it can reach.
+
+None of these is conclusive alone. All of them are unusual, and unusual is the correct signal when everything is authorised.
+
+## Investigating
+
+An alert needs context to be triaged, and the context is what a unified view provides:
+
+**The identity** — what is it, what may it do, what does it normally do.
+**The resource** — what is it, what is on it, is it exposed.
+**The sequence** — what happened before and after, since a single action rarely tells the story.
+**The path** — what could be reached from here, which is what turns an alert into an assessment of consequence.
+
+That last one is where investigation and posture data meet. The same question — what can this reach — is a risk question before an incident and a blast-radius question during one.
+
+## Remediation
+
+**Guided remediation** tells you what to change and, for infrastructure defined in code, where the template is. That second part is what makes the fix durable.
+
+**Automated remediation** acts directly. It suits narrow, high-confidence, low-consequence cases: removing public access from a bucket that policy says must never be public, disabling credentials that leaked into a repository.
+
+The constraint is that cloud automation can cause outages as easily as it prevents incidents. Revoking a permission that turned out to be load-bearing is a production incident caused by the security tool. The sequencing that works is the same as everywhere else in this material: run in observe mode, see what would have been changed, then enable it for the cases where the answer was right every time.
+
+## Tuning
+
+Untuned detection produces noise, and noisy detection gets muted. The tuning that actually helps:
+
+**Suppress known-good.** A backup service reading every bucket is anomalous by construction and correct by design. Excluding it makes the remaining anomalies meaningful.
+
+**Scope by environment.** Development and production justify different thresholds, and applying production sensitivity to a sandbox generates alerts nobody will action.
+
+**Tune the baseline period.** A baseline learned during an atypical window — a migration, a launch — encodes the wrong normal.
+
+**Review what is suppressed.** Suppressions accumulate and outlive their reasons, and an unreviewed suppression list is a growing blind spot.
+
+## What an exam candidate should be able to state cold
+
+Shift-left scans infrastructure code and images before deployment, because the same defect costs a comment in a pull request and a change request in production, and fixing production without the template guarantees recurrence. Fail builds on a narrow defensible set or teams route around the gate. Cloud threat detection relies on behavioural baselining rather than signatures because attacker activity is legitimate API calls with valid credentials. Investigation needs identity, resource, sequence and reachable path, and the path question is risk before an incident and blast radius during one. Automated remediation suits narrow high-confidence cases and should run in observe mode first, because revoking a load-bearing permission is an outage the security tool caused.

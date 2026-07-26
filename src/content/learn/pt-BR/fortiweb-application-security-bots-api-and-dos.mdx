@@ -1,0 +1,82 @@
+---
+slug: fortiweb-application-security-bots-api-and-dos
+title: "Proteção no FortiWeb: assinaturas, aprendizado de máquina, bots, APIs e DoS"
+summary: "Proteger uma aplicação web combina coisas que reconhecem ataques conhecidos com coisas que aprendem o que sua aplicação normalmente faz. Bots e APIs precisam cada um de tratamento próprio, porque um bot não se distingue pelo conteúdo e uma API não tem usuário a desafiar."
+concepts: ["fortinet", "fortiweb", "assinatura", "aprendizado de máquina", "mitigação de bots", "proteção de api", "openapi", "proteção contra dos", "limitação de taxa", "varredura de vulnerabilidades", "fortiai"]
+relatedTools: []
+sub: fortiweb
+relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortigate-security-profiles-flow-vs-proxy"]
+category: security
+order: 82
+status: reviewed
+updated: "2026-07-26"
+---
+
+Proteger uma aplicação web significa responder duas perguntas diferentes: esta requisição é um ataque conhecido, e esta requisição é algo que minha aplicação alguma vez receberia legitimamente. Assinaturas respondem a primeira, o aprendizado responde a segunda, e nenhuma basta sozinha.
+
+## Assinaturas e ataques conhecidos
+
+A detecção por assinatura reconhece o reconhecível: injeção de SQL, cross-site scripting, injeção de comandos, travessia de diretórios, tentativas de exploração conhecidas contra plataformas conhecidas.
+
+Assinaturas são rápidas e precisas sobre o que conhecem, e geram falsos positivos em aplicações cuja entrada legítima se parece com cargas de ataque. Um sistema de gestão de conteúdo em que autores escrevem sobre SQL vai disparar assinaturas de injeção de SQL com conteúdo inteiramente legítimo.
+
+Isso faz das **exceções** parte de operar um WAF, e não sinal de falha. A disciplina é delimitá-las com estreiteza — esta assinatura, nesta URL, neste parâmetro — porque uma assinatura desabilitada globalmente para corrigir uma página remove proteção de toda parte.
+
+## Aprendizado de máquina
+
+A abordagem complementar aprende o tráfego normal da sua aplicação e sinaliza desvios. Ela observa parâmetros ao longo do tempo: que tipos aparecem, que comprimentos, que conjuntos de caracteres, que faixas.
+
+O valor é cobrir o que assinaturas não conseguem descrever: um parâmetro que só teve identificadores numéricos recebendo de repente uma cadeia longa é anômalo independentemente de casar com padrão de ataque conhecido.
+
+Duas coisas determinam se funciona:
+
+**O período de aprendizado precisa ver tráfego representativo.** Um modelo construído numa semana calma vai sinalizar o volume normal de fechamento de mês como anômalo. Um modelo construído enquanto uma aplicação está sob ataque aprende o ataque como normal.
+
+**A aplicação precisa ser estável.** Cada versão que muda parâmetros invalida parte do que foi aprendido, então existe uma relação contínua entre a cadência de implantação e o reaprendizado, e não uma configuração feita uma vez.
+
+## Mitigação de bots
+
+Bots não se distinguem pelo conteúdo. Um bot de recheio de credenciais envia requisições de login perfeitamente bem formadas; esse é todo o problema. Distingui-los significa olhar comportamento em vez de conteúdo.
+
+Os sinais:
+
+**Identidade declarada.** User agent e DNS reverso identificam bots bem comportados, e são trivialmente forjáveis por qualquer coisa que não queira ser identificada.
+
+**Comportamento.** Taxa de requisições, padrões de navegação, regularidade de tempo. Humanos pausam, erram cliques e navegam; automação não.
+
+**Desafios de capacidade.** Execução de JavaScript e tratamento de cookies filtram ferramental simples, já que um script que não roda JavaScript falha em silêncio. O CAPTCHA é a escalada, e custa algo a usuários reais, e é por isso que pertence à suspeita, e não ao padrão.
+
+A categorização que torna isso administrável é que bots não são uma coisa só. Rastreadores de busca são desejados. Monitoramento e verificadores de disponibilidade são seus. Raspadores e recheadores de credenciais não são. Uma configuração que trata toda automação igual ou bloqueia seu próprio monitoramento ou permite recheio de credenciais.
+
+## Proteção de API
+
+APIs precisam de tratamento próprio por uma razão direta: não há navegador nem usuário, então todo controle baseado em desafio fica indisponível. Também não há página a inspecionar — a carga é dado estruturado.
+
+A **validação de esquema** é o controle mais forte disponível, e é o que torna a proteção de API tratável. Uma especificação OpenAPI descreve exatamente o que cada endpoint aceita: quais campos, quais tipos, quais faixas, quais são obrigatórios. Validar contra ela rejeita qualquer coisa malformada sem saber nada sobre ataques, porque uma requisição que não casa com o contrato é inválida por definição.
+
+A **descoberta** importa porque a especificação geralmente está incompleta. Observar tráfego ao vivo revela endpoints que existem e não estão documentados, e endpoints não documentados são onde o código não revisado vive.
+
+A **limitação de taxa por chave ou token** substitui os controles por usuário que um navegador permitiria, e é a defesa principal contra enumeração e raspagem por uma API de resto correta.
+
+## Proteção contra DoS
+
+A negação de serviço na camada de aplicação não precisa de volume. Uma requisição que causa uma consulta cara consegue esgotar um servidor a uma taxa que nunca se parece com ataque num gráfico de banda.
+
+Os controles em camadas:
+
+- **Limites de conexão** por origem.
+- **Limites de taxa de requisições** por origem, por URL, ou por sessão.
+- **Proteção contra requisições lentas** contra clientes que abrem conexões e enviam dados o mais devagar possível para reter recursos.
+- **Limites em endpoints caros**, que é onde a limitação por URL ganha seu lugar: o endpoint de busca e o ativo estático merecem limiares bem diferentes.
+
+A limitação a admitir é que um WAF protege o que está atrás dele e ele próprio está no caminho. Ataques volumétricos grandes o bastante para saturar o enlace precisam ser tratados acima, e equipamento local algum resolve isso.
+
+## Varredura de vulnerabilidades e FortiAI
+
+A **varredura de vulnerabilidades web** sonda suas próprias aplicações em busca de fraquezas. Seu valor num WAF é o ciclo que fecha: achados podem informar a proteção enquanto a aplicação é corrigida, que é a resposta prática quando a correção exige um ciclo de versão que você não controla.
+
+O **FortiAI** auxilia na parte da operação de WAF que mais consome tempo, que é decidir se um alerta é ataque real ou a aplicação se comportando normalmente. É um auxílio de triagem, e não quem decide, e a postura sensata é a que vale para todo julgamento automatizado neste material: observe o que ele conclui antes de deixá-lo agir.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Assinaturas reconhecem ataques conhecidos e produzem falsos positivos onde a entrada legítima se parece com eles, então exceções devem ser delimitadas a assinatura, URL e parâmetro. O aprendizado de máquina cobre o que assinaturas não descrevem e depende de um período de aprendizado representativo e de uma aplicação estável. Bots se distinguem por comportamento, e não por conteúdo, e tratar toda automação igual ou bloqueia seu monitoramento ou permite recheio de credenciais. A proteção de API se apoia em validação de esquema, porque uma requisição que viola o contrato é inválida sem referência a ataques, mais descoberta de endpoints não documentados e limitação por chave. O DoS de aplicação não precisa de volume, e ataques volumétricos precisam ser tratados acima de qualquer equipamento em linha.

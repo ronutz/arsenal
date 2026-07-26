@@ -1,0 +1,57 @@
+---
+slug: fortiap-secure-wireless-access-and-segmentation
+title: "Acesso wireless seguro no FortiAP: autenticação, VLANs e NAC"
+summary: "Proteger uma rede sem fio são duas decisões: como um cliente prova quem é, e em qual segmento ele cai depois disso. Autenticação corporativa e atribuição dinâmica de VLAN juntas fazem uma única SSID atender muitas populações, o que é quase sempre melhor que uma SSID por grupo."
+concepts: ["fortinet", "fortiap", "wpa2", "wpa3", "802.1x", "radius", "portal cativo", "vlan dinâmica", "nac", "wireless de visitantes", "segmentação"]
+relatedTools: []
+sub: fortiap
+relatedArticles: ["fortiap-wireless-fundamentals-and-deployment", "fortigate-authentication-and-fsso", "fortinac-isolation-access-control-and-onboarding"]
+category: security
+order: 63
+status: reviewed
+updated: "2026-07-26"
+---
+
+A segurança wireless tem duas metades que costumam ser confundidas: provar identidade e decidir colocação. São configuradas separadamente e falham separadamente.
+
+## Como um cliente prova quem é
+
+**Pessoal (chave pré-compartilhada)** usa uma senha para todos. Simples, e tem a propriedade de que todo equipamento compartilha um segredo, então o conhecimento de um funcionário que sai não sai com ele, e trocar a chave significa tocar em todos os equipamentos. Adequado para implantações pequenas e para equipamentos que não conseguem fazer melhor.
+
+**Corporativo (802.1X)** autentica cada usuário ou equipamento individualmente contra RADIUS. Credenciais são por identidade, revogação é por identidade, e o servidor RADIUS pode retornar atributos descrevendo o que aquela identidade deve receber. É isso que torna possível a segmentação abaixo.
+
+O **WPA3** melhora o WPA2 nos dois modos: o pessoal ganha resistência a ataques de dicionário offline sobre a senha, e o corporativo oferece opções criptográficas mais fortes. A consideração operacional é o suporte dos clientes, e é por isso que existem modos de transição e por que eles trazem a ressalva de que uma rede aceitando os dois é tão forte quanto a opção mais fraca para os clientes que a escolherem.
+
+O **portal cativo** não é autenticação no mesmo sentido. Ele intercepta uma sessão de navegador e exige interação, o que serve a visitantes e não serve a nada sem navegador. Combinar uma SSID aberta com portal cativo e supor que o tráfego está protegido é erro: o ar está sem criptografia, independentemente do que o portal pergunte.
+
+## Decidir onde o cliente cai
+
+O instinto é uma SSID por grupo. Isso é caro, porque cada SSID consome tempo de ar anunciando sua existência em cada AP em cada banda, e o custo é pago por todo cliente, use-a ou não. Um punhado de SSIDs é um projeto; uma dúzia é um problema de desempenho.
+
+A abordagem melhor é a **atribuição dinâmica de VLAN**. Uma SSID corporativa, e o servidor RADIUS retorna a VLAN junto com o resultado da autenticação, então funcionários, terceiros e equipamentos de laboratório caem em segmentos diferentes vendo o mesmo nome de rede.
+
+Isso move a decisão de política para o sistema de identidade, onde ela pertence, e significa que acrescentar uma população nova é mudança de RADIUS, e não mudança de wireless.
+
+## Integração com NAC
+
+Onde a decisão de colocação precisa considerar mais que identidade, o controle de acesso à rede a estende. O cliente autentica; o sistema de NAC avalia o que o equipamento é e se está conforme; a VLAN resultante reflete os dois.
+
+O caso interessante é o equipamento que autentica com sucesso e não está conforme: um notebook corporativo com agente desatualizado. A identidade sozinha o admitiria. A colocação ciente de postura o põe onde possa ser remediado, que é todo o argumento a favor da complexidade adicional.
+
+A regra de projeto do NAC cabeado vale sem mudança: um equipamento colocado num segmento de remediação precisa conseguir alcançar aquilo de que precisa para se tornar conforme, ou fica simplesmente preso.
+
+## Wireless de visitantes
+
+Acesso de visitantes é uma SSID própria porque visitantes de fato são uma população diferente, e os controles são os que as pessoas pulam:
+
+**Isole os clientes uns dos outros.** Visitantes não têm razão para se alcançar, e o isolamento de clientes remove uma classe inteira de ataque de uma rede cujos endpoints você não controla.
+
+**Delimite o acesso.** Internet e nada mais, expresso como política de firewall e não presumido a partir da VLAN.
+
+**Limite a taxa.** Uma rede de visitantes sem limite é uma rede de visitantes capaz de consumir a banda do site.
+
+**Expire as credenciais.** Seja por expiração de conta no portal, seja rotacionando a chave, acesso de visitante que persiste indefinidamente deixa de ser acesso de visitante.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O modo pessoal usa senha compartilhada; o corporativo autentica por identidade contra RADIUS e habilita colocação dirigida por atributos. O WPA3 fortalece os dois modos, e modos de transição são tão fortes quanto a opção mais fraca que um cliente escolher. Portal cativo é interação, não criptografia. Prefira uma SSID corporativa com atribuição dinâmica de VLAN a muitas SSIDs, porque cada SSID custa tempo de ar em cada AP. O NAC acrescenta postura à decisão de colocação, e um segmento de remediação precisa alcançar o que a remediação exige. Redes de visitantes precisam de isolamento de clientes, acesso delimitado, limitação de taxa e expiração.

@@ -1,0 +1,57 @@
+---
+slug: fortidlp-architecture-and-deployment
+title: "FortiDLP: arquitetura, agentes e saber onde seus dados de fato estão"
+summary: "Prevenção de perda de dados só funciona onde consegue enxergar. O FortiDLP põe um agente no endpoint para observar dados no ponto de uso, e não apenas em trânsito, e integra com plataformas SaaS para ver dados que nunca tocam sua rede. Entender qual ponto de observação cobre o quê é a diferença entre cobertura e a aparência dela."
+concepts: ["fortinet", "fortidlp", "prevenção de perda de dados", "agente", "inquilino", "integração saas", "endpoint", "ativo", "nó", "atividade de usuário"]
+relatedTools: []
+sub: fortidlp
+relatedArticles: ["forticlient-ems-architecture-and-deployment", "fortigate-security-profiles-flow-vs-proxy"]
+category: security
+order: 70
+status: reviewed
+updated: "2026-07-26"
+---
+
+A prevenção de perda de dados tradicional observava a fronteira da rede. Isso funcionava quando os dados saíam pela rede e a rede era sua. Nenhuma das duas premissas se sustenta hoje, e é por isso que o FortiDLP coloca seu ponto de observação no endpoint e nas plataformas SaaS.
+
+## De onde ele observa
+
+O **agente de endpoint** vê os dados no ponto de uso: um arquivo sendo copiado para um pendrive, colado num navegador, enviado a uma conta pessoal de nuvem, ou impresso. Crucialmente, ele vê isso antes da criptografia, e é isso que permite a um agente de endpoint responder perguntas que um sensor de rede não responde. Tráfego para uma aplicação SaaS é TLS no fio; no endpoint é um arquivo sendo anexado.
+
+A **integração SaaS** conecta à API da própria plataforma e vê o que está armazenado e compartilhado ali. Isso cobre o caso em que os dados nunca passam por um endpoint gerenciado por você: um arquivo compartilhado diretamente entre duas contas de nuvem, ou um terceiro recebendo acesso a um documento.
+
+Os dois são complementares, e não redundantes, e a lacuna entre eles merece ser nomeada: um equipamento não gerenciado acessando uma plataforma SaaS é visível à integração e não ao agente, e um equipamento gerenciado manipulando arquivos locais é visível ao agente e não à integração. Cobertura é a união, e saber qual metade falta para um dado caminho é o que torna uma implantação honesta.
+
+## Inquilinos e estrutura
+
+Um **inquilino** é o contêiner de nível mais alto: políticas, dados, usuários e administradores. Para a maioria das organizações há um. Para um provedor de serviços ou um grupo com entidades genuinamente separadas, a tenência é a fronteira de separação, e como em todo produto multi-inquilino aqui, a atribuição é controle de segurança, e não decisão de arquivamento.
+
+Dentro de um inquilino, os objetos com que se trabalha são:
+
+**Ativos** — os endpoints rodando agentes.
+**Nós** — os componentes que formam a implantação.
+**Usuários** — as pessoas a quem a atividade é atribuída, que é o que transforma um evento de "um arquivo se moveu" em "alguém moveu um arquivo".
+
+## Implantar agentes
+
+A implantação de agentes é distribuição de software comum, e as considerações que causam problema são as conhecidas de todo outro produto de endpoint desta pilha.
+
+**Registro importa mais que instalação.** Um agente instalado que não se registrou no inquilino não tem política. Está presente, consome recursos, e não protege nada.
+
+**Lacunas de cobertura são o risco real.** Um parque com noventa por cento de cobertura de agentes tem um caminho de dez por cento para dados saírem sem observação, e as pessoas com maior chance de estarem nesses dez por cento são as de equipamentos não gerenciados ou incomuns. O inventário de ativos responde isso e vale ser lido com regularidade, e não na época da auditoria.
+
+**Diferenças de plataforma existem.** As capacidades variam por sistema operacional, e presumir paridade num parque misto produz política aplicada em alguns endpoints e não em outros, sem sinal óbvio de que isso está acontecendo.
+
+## Atividade e comportamento do usuário
+
+O FortiDLP registra o que os usuários fazem com dados, e esse registro tem dois usos que devem ser mantidos separados.
+
+O primeiro é **detecção**: uma atividade casou com uma política e algo deve acontecer.
+
+O segundo é **contexto**: entender como é o normal para um usuário ou papel, para que atividade incomum possa ser reconhecida como incomum. Um usuário que rotineiramente lida com centenas de registros de clientes não faz nada notável ao abrir um; um usuário que nunca os toca baixando o conjunto inteiro, sim.
+
+Esse segundo uso é o que separa uma implantação moderna de DLP de um motor de regras produzindo ruído, e depende inteiramente de ter histórico suficiente para saber qual era o normal.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O agente de endpoint observa dados no ponto de uso, antes da criptografia, e é por isso que enxerga o que um sensor de rede não enxerga. A integração SaaS cobre dados que nunca tocam um endpoint gerenciado, e as duas juntas definem a cobertura — saber qual metade falta para um caminho é o que torna a implantação honesta. Inquilinos são a fronteira de separação; ativos são endpoints com agente; a atividade é atribuída a usuários. Um agente instalado e não registrado não tem política, e cobertura abaixo de total significa que existe um caminho não observado.

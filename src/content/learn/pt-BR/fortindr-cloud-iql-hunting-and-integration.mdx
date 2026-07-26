@@ -1,0 +1,68 @@
+---
+slug: fortindr-cloud-iql-hunting-and-integration
+title: "FortiNDR Cloud: consultas IQL, caça a ameaças e integração"
+summary: "O valor dos metadados de rede retidos é poder fazer perguntas a eles depois do fato. O IQL é como essas perguntas são feitas, a caça é a prática de fazê-las sem esperar um alerta, e a integração é o que leva as respostas ao resto do SOC em vez de deixá-las num console."
+concepts: ["fortinet", "fortindr", "iql", "caça a ameaças", "investigação", "consulta", "api", "conector", "integração", "análise retrospectiva"]
+relatedTools: []
+sub: fortindr
+relatedArticles: ["fortindr-cloud-architecture-detections-and-events", "fortisoar-playbooks-jinja-and-connectors"]
+category: security
+order: 75
+status: reviewed
+updated: "2026-07-26"
+---
+
+Uma detecção conta sobre uma coisa num momento. Metadados retidos permitem perguntar o que mais aconteceu, e é aí que o monitoramento de rede ganha a maior parte do seu valor.
+
+## IQL
+
+O IQL é a linguagem de consulta sobre os dados de evento retidos. Seu formato é familiar a quem já usou uma linguagem de consulta de logs: selecione o tipo de evento, filtre por valores de campo, agregue, ordene.
+
+As consultas que aparecem repetidamente:
+
+- **Tudo envolvendo um endereço**, nos dois sentidos, sobre uma janela. É a primeira consulta na maioria das investigações.
+- **Conexões a um domínio ou certificado**, que encontra todo host que alcançou a mesma infraestrutura.
+- **Agregação para achar exceções** — o host fazendo muito mais consultas DNS que seus pares, a conexão que se repete num intervalo suspeitosamente regular.
+- **Valores raros**, já que primeiras ocorrências costumam ser mais interessantes que volume. Um user agent visto uma vez em noventa dias merece um olhar.
+
+O hábito que vale construir é escrever uma consulta para a pergunta em vez de ler um painel e torcer. Painéis respondem as perguntas que alguém antecipou; consultas respondem as suas.
+
+## Análise retrospectiva
+
+A capacidade que distingue metadados retidos de alerta ao vivo é perguntar sobre o passado.
+
+Quando um indicador chega — de inteligência de ameaças, de um comunicado do setor, de outro incidente — a pergunta imediata é "nós já vimos isso". Com metadados retidos, isso é uma consulta. Sem eles, é irrespondível, e a resposta honesta a uma diretoria perguntando se vocês foram afetados é que não dá para saber.
+
+Vale dizer com clareza porque é o argumento para o tempo de retenção. Invasões são frequentemente descobertas muito depois de começarem, e retenção menor que o intervalo típico de descoberta significa que o começo do incidente já se foi quando você vai procurar.
+
+## Caça a ameaças
+
+Caçar é consultar com uma hipótese em vez de com um gatilho. As hipóteses que produzem resultado em dados de rede:
+
+**Beaconing.** Conexões regulares, de baixo volume, em intervalos consistentes. Software legítimo também faz beacon, então o achado é uma lista de candidatos, e não uma conclusão, mas é uma lista curta.
+
+**Protocolo incomum numa porta.** Algo que não é HTTP na 80, ou DNS carregando mais dados do que resolução de nomes exige. Tunelamento de protocolo tem forma reconhecível.
+
+**Novos destinos externos.** Infraestrutura que host algum contatou antes, sobretudo quando o primeiro contato parte de um servidor, e não de uma estação.
+
+**Anomalias de volume no sentido errado.** Um host que normalmente recebe e de repente envia é a forma clássica de exfiltração.
+
+**Comparação com pares.** Um host de um grupo se comportando diferente do resto do grupo é sinal forte justamente porque a comparação é contra sistemas genuinamente semelhantes.
+
+A disciplina é registrar a hipótese e o resultado mesmo quando o resultado é nada. Uma caça que não achou nada é uma ausência documentada, e saber que você procurou vale depois.
+
+## Integração
+
+Achados que ficam num console não viram resposta. Três rotas de integração importam:
+
+**Acesso por API** a detecções e eventos, para que um SIEM os ingira e correlacione com telemetria de endpoint e identidade. É isso que põe achados de rede ao lado do resto do quadro.
+
+**Conectores para orquestração**, para que uma detecção dispare enriquecimento e resposta no FortiSOAR sem alguém copiar valores entre janelas.
+
+**Enriquecimento para fora**, em que uma investigação em outro lugar consulta metadados de rede por contexto — com o que mais este host falou — sem sair do incidente.
+
+A integração que vale construir primeiro é a que leva detecções de rede para a mesma fila do resto. Um console separado com alertas próprios é um segundo lugar para olhar, e segundos lugares para olhar não são olhados durante incidentes.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O IQL consulta dados de evento retidos por tipo, filtro, agregação e ordenação, e as formas comuns são tudo envolvendo um endereço, conexões a infraestrutura compartilhada, agregação para exceções, e valores raros. Metadados retidos tornam possível a análise retrospectiva, então retenção menor que o intervalo típico de descoberta significa que o início de um incidente já se foi. Hipóteses de caça que funcionam em dados de rede incluem regularidade de beacon, protocolo em portas inesperadas, novos destinos externos, padrões de volume invertidos, e comparação com pares. Integração por API e conectores é o que impede achados de ficarem num console que ninguém consulta durante um incidente.

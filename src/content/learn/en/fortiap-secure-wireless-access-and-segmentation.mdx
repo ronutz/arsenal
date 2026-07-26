@@ -1,0 +1,57 @@
+---
+slug: fortiap-secure-wireless-access-and-segmentation
+title: "Secure Wireless Access on FortiAP: Authentication, VLANs, and NAC"
+summary: "Securing a wireless network is two decisions: how a client proves who it is, and which segment it lands in once it has. Enterprise authentication and dynamic VLAN assignment together make one SSID serve many populations, which is almost always better than one SSID per group."
+concepts: ["fortinet", "fortiap", "wpa2", "wpa3", "802.1x", "radius", "captive portal", "dynamic vlan", "nac", "guest wireless", "segmentation"]
+relatedTools: []
+sub: fortiap
+relatedArticles: ["fortiap-wireless-fundamentals-and-deployment", "fortigate-authentication-and-fsso", "fortinac-isolation-access-control-and-onboarding"]
+category: security
+order: 63
+status: reviewed
+updated: "2026-07-26"
+---
+
+Wireless security has two halves that are often conflated: proving identity, and deciding placement. They are configured separately and fail separately.
+
+## How a client proves who it is
+
+**Personal (pre-shared key)** uses one passphrase for everyone. Simple, and it has the property that every device shares a secret, so a departing employee's knowledge does not depart with them and changing the key means touching every device. Fine for small deployments and for devices that cannot do better.
+
+**Enterprise (802.1X)** authenticates each user or device individually against RADIUS. Credentials are per identity, revocation is per identity, and the RADIUS server can return attributes describing what this identity should get. This is what makes the segmentation below possible.
+
+**WPA3** improves on WPA2 in both modes: personal gains resistance to offline dictionary attacks on the passphrase, and enterprise offers stronger cryptographic options. The operational consideration is client support, which is why transition modes exist and why they carry the caveat that a network accepting both is only as strong as the weaker option for clients that choose it.
+
+**Captive portal** is not authentication in the same sense. It intercepts a browser session and requires interaction, which suits guests and suits nothing that lacks a browser. Combining an open SSID plus captive portal with the assumption that traffic is protected is a mistake: the air is unencrypted regardless of what the portal asks for.
+
+## Deciding where the client lands
+
+The instinct is one SSID per group. That is expensive, because every SSID consumes airtime broadcasting its existence on every AP on every band, and the cost is paid by every client whether or not they use it. A handful of SSIDs is a design; a dozen is a performance problem.
+
+The better approach is **dynamic VLAN assignment**. One enterprise SSID, and the RADIUS server returns the VLAN with the authentication result, so staff, contractors and lab devices land in different segments while seeing the same network name.
+
+That moves the policy decision to the identity system where it belongs, and it means adding a new population is a RADIUS change rather than a wireless change.
+
+## NAC integration
+
+Where the placement decision needs to consider more than identity, network access control extends it. The client authenticates; the NAC system evaluates what the device is and whether it is compliant; the resulting VLAN reflects both.
+
+The interesting case is the device that authenticates successfully and is not compliant — a corporate laptop with an out-of-date agent. Identity alone would admit it. Posture-aware placement puts it somewhere it can be remediated, which is the entire argument for the additional complexity.
+
+The design rule from wired NAC applies unchanged: a device placed in a remediation segment must be able to reach whatever it needs to become compliant, or it is simply stuck.
+
+## Guest wireless
+
+Guest access is its own SSID because guests genuinely are a different population, and the controls are the ones people skip:
+
+**Isolate clients from each other.** Guests have no reason to reach one another, and client isolation removes an entire class of attack from a network you do not control the endpoints of.
+
+**Scope the access.** Internet and nothing else, expressed as firewall policy rather than assumed from the VLAN.
+
+**Rate limit.** A guest network without a limit is a guest network that can consume the site's bandwidth.
+
+**Expire the credentials.** Whether by portal account expiry or by rotating the key, guest access that persists indefinitely stops being guest access.
+
+## What an exam candidate should be able to state cold
+
+Personal uses a shared passphrase; enterprise authenticates per identity against RADIUS and enables attribute-driven placement. WPA3 strengthens both modes and transition modes are only as strong as the weaker option a client picks. Captive portal is interaction, not encryption. Prefer one enterprise SSID with dynamic VLAN assignment over many SSIDs, because each SSID costs airtime on every AP. NAC adds posture to the placement decision, and a remediation segment must be able to reach what remediation requires. Guest networks need client isolation, scoped access, rate limiting and expiry.

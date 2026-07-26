@@ -1,0 +1,55 @@
+---
+slug: fortindr-cloud-architecture-detections-and-events
+title: "FortiNDR Cloud: arquitetura, sensores, tipos de evento e detecções"
+summary: "A detecção e resposta de rede observa tráfego em vez de endpoints, o que permite ver o que agente algum vê: equipamentos que não conseguem rodar um, movimento lateral entre hosts, e tráfego de sistemas que ninguém sabia existir. Entender o que os sensores capturam e como as detecções se constroem sobre isso é o que torna os resultados acionáveis."
+concepts: ["fortinet", "fortindr", "detecção e resposta de rede", "sensor", "tipos de evento", "detecção", "observação comportamental", "detector", "metadados", "visibilidade"]
+relatedTools: []
+sub: fortindr
+relatedArticles: ["fortinet-soc-architecture-and-adversary-behaviour", "fortiedr-threat-hunting-forensics-and-investigation"]
+category: security
+order: 74
+status: reviewed
+updated: "2026-07-26"
+---
+
+Ferramentas de endpoint veem o que um host faz. A detecção de rede vê o que os hosts fazem entre si, o que cobre um conjunto de casos que nada mais cobre bem.
+
+## O que a visibilidade de rede acrescenta
+
+Três coisas justificam observar tráfego mesmo já tendo agentes em endpoints.
+
+**Equipamentos que não conseguem rodar um agente.** Impressoras, câmeras, sistemas prediais, equipamento médico e industrial, e tudo mais em que instalar software não é opção. Costumam ser os sistemas menos mantidos da rede, e o monitoramento de rede é a única visibilidade disponível para eles.
+
+**Movimento lateral.** O movimento entre hosts é visível como tráfego de um jeito que pode não ser a partir de nenhum dos endpoints individualmente, sobretudo quando as credenciais usadas são legítimas.
+
+**O parque desconhecido.** O tráfego revela equipamentos que inventário algum lista. Na maioria das organizações, a primeira implantação de sensores encontra algo que ninguém sabia explicar, e só isso já costuma justificar o exercício.
+
+## Arquitetura e sensores
+
+**Sensores** ficam onde conseguem ver tráfego: tipicamente um espelhamento ou tap num ponto de concentração, ou um sensor virtual num ambiente de nuvem. Observam, extraem metadados, e encaminham para análise. A análise e a retenção acontecem no serviço em nuvem, o que mantém o trabalho do sensor estreito.
+
+O posicionamento do sensor é a decisão que determina tudo o que o produto consegue fazer. Um sensor na borda da internet vê tráfego entrando e saindo e não vê tráfego entre hosts dentro de um segmento. Um sensor interno vê movimento lateral e não vê saída. Cobertura é projeto deliberado, e a posição honesta é saber quais segmentos estão sem monitoramento, e não supor que a implantação vê tudo.
+
+## Eventos e metadados
+
+O sensor não retém todo pacote. Ele extrai **metadados** por protocolo: numa conexão, quem falou com quem e por quanto tempo; em DNS, o nome consultado e a resposta; em HTTP, o host, o caminho e o user agent; em TLS, o certificado e o SNI, já que a carga é criptografada.
+
+Esse último é o ponto que vale internalizar. A maior parte do tráfego é criptografada, e a detecção de rede funciona mesmo assim, porque muita coisa é observável sem a carga: qual servidor, qual certificado, tempo e volume das conexões, como a sessão se comporta. Um beacon para um servidor de comando e controle é reconhecível pela regularidade de tempo e tamanho sem ler um único byte de conteúdo.
+
+Tipos de evento valem conhecer porque consultas e detecções são escritas contra eles, e saber qual tipo carrega qual campo é a diferença entre uma consulta que retorna o que você quis dizer e uma que não retorna nada.
+
+## Detecções e observações comportamentais
+
+Duas categorias de saída, e confundi-las desperdiça tempo de triagem.
+
+**Detecções** são julgamentos: isto casa com algo reconhecidamente malicioso, ou casa com um padrão de significado documentado. São acionáveis e são o que deve chegar a uma fila.
+
+**Observações comportamentais** são fatos notáveis mas não conclusivos: este host começou a falar com um país com o qual nunca falou, este protocolo apareceu onde não era visto. Individualmente são contexto. Juntas, ou ao lado de uma detecção, montam um quadro.
+
+O erro é tratar observações como alertas. Elas são o material de que a investigação é feita, e não uma fila de trabalho, e colocá-las numa produz exatamente a fadiga de alertas que faz as pessoas pararem de ler.
+
+**Detectores** são o que produz detecções. Alguns vêm com o produto e são mantidos pelo fabricante; detectores personalizados expressam o que importa no seu ambiente. A disciplina é a mesma de qualquer engenharia de detecção: uma pergunta clara, uma resposta definida, e falsos positivos medidos contra o seu próprio tráfego, e não em princípio.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+A detecção de rede cobre equipamentos sem agente, movimento lateral, e equipamentos que inventário algum conhece. Sensores observam num tap ou espelhamento e extraem metadados por protocolo em vez de reter pacotes, e o posicionamento determina o que pode ser visto: borda vê saída, interno vê lateral. A detecção funciona sobre tráfego criptografado porque certificado, SNI, tempo e volume são observáveis sem carga, e beacon é reconhecível só pela regularidade. Detecções são julgamentos acionáveis; observações comportamentais são contexto e não devem virar fila de trabalho.

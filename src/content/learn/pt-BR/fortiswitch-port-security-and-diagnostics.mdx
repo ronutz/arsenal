@@ -1,0 +1,58 @@
+---
+slug: fortiswitch-port-security-and-diagnostics
+title: "Segurança de portas, antispoofing e diagnóstico no FortiSwitch"
+summary: "A segurança de portas decide quais equipamentos podem usar uma porta; o antispoofing decide se um equipamento pode reivindicar um endereço que não é dele. Os dois vivem na camada de acesso, onde equipamentos não confiáveis se conectam, e os dois falham de formas que parecem rede quebrada em vez de segurança funcionando."
+concepts: ["fortinet", "fortiswitch", "segurança de porta", "802.1x", "sticky mac", "dhcp snooping", "inspeção dinâmica de arp", "ip source guard", "diagnóstico", "investigação"]
+relatedTools: ["fortios-sniffer-builder"]
+sub: fortiswitch
+relatedArticles: ["fortiswitch-vlans-stp-ports-and-qos", "fortinac-device-modeling-and-profiling"]
+category: security
+order: 61
+status: reviewed
+updated: "2026-07-26"
+---
+
+A camada de acesso é onde equipamentos não confiáveis se conectam, então é onde os recursos de segurança do switch ganham seu lugar. Eles se dividem em dois grupos: decidir quem pode conectar, e impedir que um equipamento conectado minta sobre quem é.
+
+## Decidir quem pode conectar
+
+O **802.1X** autentica um equipamento ou usuário antes de a porta carregar tráfego. Vem em dois formatos, e a diferença importa numa porta com mais de um equipamento atrás:
+
+- **Por porta** autentica uma vez, e a porta então carrega tráfego para qualquer coisa atrás dela. Simples, e um hub ou switch não gerenciado atrás de uma porta autenticada deixa tudo passar.
+- **Por MAC** autentica cada MAC separadamente, que é o que você quer onde um telefone e um PC dividem uma porta, ou onde um switch pequeno está legitimamente presente.
+
+A autenticação corre contra um servidor RADIUS, e o servidor pode retornar a VLAN em que o equipamento deve ser colocado. É assim que uma única porta física atende segmentos diferentes conforme quem se conecta, e é o mecanismo sobre o qual o controle de acesso à rede se constrói.
+
+O **sticky MAC** toma outro caminho: a porta aprende os endereços MAC conectados no momento e depois recusa outros. Não exige infraestrutura de autenticação, o que o torna atraente para equipamentos que não conseguem autenticar: impressoras, câmeras, equipamento industrial.
+
+Sua fraqueza é confiar no que aprendeu. Se o equipamento errado estava conectado quando a porta aprendeu, o equipamento errado agora está permitido, e endereços MAC podem ser forjados por qualquer coisa suficientemente determinada. Eleva o esforço necessário; não resolve a questão.
+
+## Impedir que um equipamento minta
+
+Três recursos funcionam juntos, e a ordem em que dependem uns dos outros é o que se deve lembrar.
+
+O **DHCP snooping** observa as trocas DHCP e monta uma tabela de qual endereço foi atribuído a qual MAC em qual porta. Também classifica portas como confiáveis ou não, e descarta respostas de servidor DHCP que cheguem por portas não confiáveis — o que barra um servidor DHCP indevido, seja malicioso ou o roteador doméstico de alguém plugado ao contrário.
+
+A **inspeção dinâmica de ARP** usa essa tabela para validar pacotes ARP. Um ARP reivindicando um endereço que a tabela diz pertencer a outro MAC é descartado, o que derrota a falsificação de ARP.
+
+O **IP source guard** usa a mesma tabela para descartar pacotes IP cujo endereço de origem não corresponde ao atribuído àquela porta, o que barra falsificação de endereço de forma direta.
+
+A dependência é a parte importante na operação: **o segundo e o terceiro precisam do primeiro.** Habilitar inspeção dinâmica de ARP sem DHCP snooping a deixa sem tabela contra a qual validar. E qualquer equipamento com endereço estático é invisível à tabela de snooping, então será bloqueado a menos que se acrescente uma associação estática para ele — que é a causa mais comum de "ligamos os recursos de segurança e os servidores pararam".
+
+## Extrair informação do switch
+
+Quando algo está errado na camada de acesso, algumas visões respondem à maioria das perguntas mais rápido que o raciocínio.
+
+A **tabela de endereços MAC** responde onde um equipamento está de fato. Um MAC numa porta inesperada é a forma mais rápida de achar um equipamento que foi movido, ou um laço fazendo o mesmo MAC aparecer em várias portas em sequência.
+
+As **estatísticas de porta** respondem se a porta está saudável. Contadores de erro subindo de forma constante apontam para cabeamento, divergência de duplex ou um óptico falhando. Uma taxa de broadcast implausível aponta para um laço.
+
+A **tabela de DHCP snooping** responde o que o switch acredita sobre o endereço de um equipamento, que é sobre o que os recursos de antispoofing agem.
+
+A **captura de pacotes** responde o que está de fato no fio quando os contadores não são conclusivos. Capturar no switch mostra o que a porta vê, que nem sempre é o que o endpoint acredita ter enviado.
+
+O hábito que vale construir é ler a tabela antes de formar uma teoria. Um equipamento que não está na tabela de endereços MAC não está conectado do jeito que você pensa, e análise de política nenhuma corrige isso.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O 802.1X autentica antes de a porta carregar tráfego, por porta uma vez ou por MAC para cada equipamento, e o RADIUS pode retornar a VLAN. O sticky MAC permite endereços aprendidos sem infraestrutura de autenticação e confia no que aprendeu. O DHCP snooping monta a tabela de endereços e barra servidores indevidos em portas não confiáveis; inspeção dinâmica de ARP e IP source guard dependem dessa tabela, e equipamentos com endereço estático precisam de associação explícita ou serão bloqueados. Comece o diagnóstico pela tabela de MAC, pelas estatísticas de porta e pela tabela de snooping, e não pela política.

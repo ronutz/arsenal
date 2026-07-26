@@ -1,0 +1,75 @@
+---
+slug: fortisiem-rules-incidents-and-remediation
+title: "Regras, subpadrões e transformar incidentes em ação no FortiSIEM"
+summary: "Uma regra do FortiSIEM é montada a partir de subpadrões, e é isso que permite expressar condições que uma busca sozinha não expressa: isto aconteceu, e então aquilo aconteceu, dentro desta janela. Depois que uma regra dispara, o trabalho migra para ajuste, notificação e remediação, e cada um tem um modo de falha que silenciosamente torna o SIEM inútil."
+concepts: ["fortinet", "fortisiem", "regra", "subpadrão", "correlação", "incidente", "ajuste", "política de notificação", "remediação", "falso positivo"]
+relatedTools: []
+sub: fortisiem
+relatedArticles: ["fortisiem-analytics-queries-and-cmdb", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 73
+status: reviewed
+updated: "2026-07-26"
+---
+
+O propósito de uma regra de SIEM é expressar algo que uma busca não expressa: uma relação entre eventos ao longo do tempo. Entender como isso é construído é a maior parte do que torna a escrita de regras tratável.
+
+## Componentes de uma regra
+
+Uma regra reúne:
+
+- **Um padrão** descrevendo o que casar, montado a partir de um ou mais subpadrões.
+- **Uma janela de tempo** em que o padrão precisa valer.
+- **Uma severidade**, que dirige o que acontece depois.
+- **Campos de agrupamento** que decidem o que conta como a mesma ocorrência.
+- **Ações** tomadas quando ela dispara.
+
+Os campos de agrupamento merecem pausa, porque determinam se uma regra produz um incidente ou mil. Uma regra agrupada por endereço de origem produz um incidente por origem; a mesma regra sem agrupamento produz um incidente para o conjunto. Nenhum está certo em geral e os dois estão certos às vezes.
+
+## Subpadrões são a parte interessante
+
+Um **subpadrão** é um filtro mais uma agregação mais um limiar: eventos que casam com esta condição, agrupados assim, excedendo esta contagem dentro da janela.
+
+Uma regra com um subpadrão expressa uma condição de limiar: mais de N falhas de uma origem em cinco minutos. Isso é útil e não é o que torna a correlação valiosa.
+
+Uma regra com **múltiplos subpadrões** expressa uma relação: uma sequência de falhas de autenticação de uma origem, seguida de um sucesso da mesma origem. Nenhuma metade é notável sozinha. Falhas acontecem o tempo todo e sucessos são o caso normal. A sequência é o que importa, e ela só é expressável com subpadrões que compartilham um campo de agrupamento.
+
+Esse campo compartilhado é o mecanismo que as pessoas perdem de vista. Os subpadrões são unidos por ele, e errá-lo produz uma regra que ou nunca dispara ou dispara em eventos não relacionados que por acaso coincidiram.
+
+## O ajuste é o trabalho
+
+Um conjunto novo de regras produz mais incidentes do que alguém consegue ler. A reação determina se o SIEM se torna útil ou ignorado, e há apenas dois caminhos: ajustar, ou parar de ler.
+
+Ajustar bem significa perguntar por que cada incidente recorrente está sendo gerado, em vez de suprimi-lo:
+
+**É genuinamente benigno?** Um processo de backup que autentica centenas de vezes por noite não é um ataque de força bruta. A correção é uma exceção estreita o bastante para cobrir aquele processo e nada mais.
+
+**O limiar está errado?** Um limiar definido para uma rede tranquila dispara sem parar numa movimentada.
+
+**O agrupamento está errado?** Regras que produzem uma enxurrada de incidentes quase idênticos geralmente estão agrupadas de forma fina demais.
+
+**É real e apenas frequente?** Às vezes a resposta é que algo genuinamente ruim acontece o tempo todo, e a reação correta é corrigir isso, e não a regra.
+
+A disciplina a manter é que supressão sem compreensão é como um SIEM acaba silencioso e cego ao mesmo tempo.
+
+## Políticas de notificação
+
+Uma política de notificação decide quem é avisado e como. Os parâmetros são severidade, o ativo ou unidade de negócio afetados, e a hora do dia.
+
+O modo de falha é simétrico e as duas metades são comuns. Notifique sobre tudo e os destinatários filtram as mensagens para uma pasta que ninguém abre. Notifique sobre quase nada e um incidente genuíno fica sem leitura até de manhã.
+
+O arranjo que funciona casa urgência com canal: interrompa alguém apenas pelo que justifica interrupção, enfileire o resto para revisão, e torne os critérios explícitos para que as pessoas confiem que uma interrupção significa algo.
+
+O CMDB ganha seu lugar aqui. Notificação delimitada por criticidade de ativo e unidade de negócio é precisa; notificação delimitada só por severidade trata uma máquina de laboratório e um controlador de domínio de forma idêntica.
+
+## Remediação
+
+O FortiSIEM pode agir, e não apenas reportar: bloquear um endereço num firewall, desabilitar uma conta, isolar um endpoint, rodar um script.
+
+A mesma regra vale como em todo o resto desta pilha — case a ação com a confiança — com um acréscimo específico a um SIEM. Um SIEM age sobre evidência correlacionada de múltiplos sistemas, então sua confiança numa conclusão pode ser maior que a de qualquer produto isolado. Esse é o argumento a favor de a remediação automática ser viável aqui onde não seria a partir de um sensor único.
+
+Também significa que o raio de alcance é maior. Um bloqueio automático movido por uma regra com uma união de subpadrões sutilmente errada pode agir sobre muita coisa depressa, então a sequência é: rode a regra sem a ação, leia o que ela teria feito num período representativo, e então habilite.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Uma regra é um padrão de subpadrões sobre uma janela de tempo com campos de agrupamento e ações, e o agrupamento decide se ela produz um incidente ou muitos. Um subpadrão é filtro mais agregação mais limiar; múltiplos subpadrões unidos por um campo compartilhado expressam uma sequência, que é o que a correlação acrescenta sobre a busca. Ajuste entendendo por que um incidente recorre, em vez de suprimi-lo. A notificação deve casar urgência com canal e usar contexto do CMDB em vez de só severidade. A remediação se beneficia da confiança correlacionada e tem raio de alcance correspondentemente maior, então observe antes de habilitar.

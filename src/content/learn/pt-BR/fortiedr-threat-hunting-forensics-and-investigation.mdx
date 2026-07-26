@@ -1,0 +1,73 @@
+---
+slug: fortiedr-threat-hunting-forensics-and-investigation
+title: "Caça a ameaças, forense e investigação de alertas no FortiEDR"
+summary: "Um alerta diz que algo aconteceu. A investigação responde o que aconteceu antes, o que foi tocado, e se ainda está acontecendo. O FortiEDR guarda a telemetria que torna isso respondível, e a caça a ameaças é como se fazem perguntas a ela sem esperar um alerta."
+concepts: ["fortinet", "fortiedr", "caça a ameaças", "forense", "investigação", "triagem de alertas", "árvore de processos", "consulta agendada", "fortixdr", "investigação"]
+relatedTools: []
+sub: fortiedr
+relatedArticles: ["fortiedr-policies-playbooks-and-communication-control", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 69
+status: reviewed
+updated: "2026-07-26"
+---
+
+Detecção e investigação são atividades diferentes. A detecção pergunta se algo casa; a investigação pergunta o que de fato aconteceu, e precisa de dados coletados antes de alguém saber que deveria olhar.
+
+## Ler um alerta
+
+Um alerta no FortiEDR carrega mais que um veredito. As partes que importam na triagem:
+
+**A árvore de processos.** O que lançou o quê. Costuma ser a rota mais rápida a uma conclusão, porque atividade maliciosa quase sempre tem um pai implausível: um documento de escritório lançando um interpretador de scripts, um navegador lançando um shell.
+
+**A ação que disparou.** Qual comportamento específico casou, e se foi bloqueado ou apenas observado. Um evento em modo de simulação registra o que teria acontecido.
+
+**Classificação.** Se o serviço de nuvem considera isso reconhecidamente malicioso, suspeito, ou provavelmente benigno, e com que confiança.
+
+**Escopo.** Se apareceu num endpoint ou em muitos. A mesma detecção por todo o parque é situação diferente de uma ocorrência, e muda o que se faz a seguir.
+
+A pergunta da triagem não é "isto é malicioso", e sim "isto justifica ação agora". Elas diferem com frequência suficiente para que mantê-las separadas poupe muito tempo.
+
+## Forense
+
+A investigação forense reconstrói o que aconteceu em torno de um evento: a ancestralidade do processo, arquivos tocados, mudanças de registro, conexões de rede, e a sequência de tudo isso.
+
+O valor está em responder as perguntas que um alerta não responde: como entrou, o que alcançou, se persistiu, e se se moveu. Um alerta diz que um processo foi bloqueado; a forense diz se aquele processo já havia gravado algo que rodará na próxima inicialização.
+
+A disciplina que vale enunciar é coletar antes de remediar. Reinstalar um endpoint remove a evidência, e a pergunta "isto alcançou mais alguma coisa" fica sem resposta exatamente no momento em que mais importa.
+
+## Caça a ameaças
+
+A caça a ameaças inverte o fluxo usual. Em vez de esperar uma detecção, você consulta a telemetria coletada procurando coisas que não disparariam alerta mas vale conhecer: um par pai-filho de processos raro, execução a partir de um diretório temporário, um binário assinado num local incomum.
+
+Os blocos de construção são **consultas** sobre os dados coletados e **consultas agendadas** que rodam repetidamente e reportam mudanças. A segunda é o que transforma a caça de atividade ocasional em cobertura contínua.
+
+**Perfis de caça a ameaças** controlam quanta telemetria os coletores retêm. Essa é uma troca real: coletar mais significa mais a vasculhar e mais recurso consumido nos endpoints e no armazenamento. Decidir isso deliberadamente por grupo de coletores — mais rico em servidores e endpoints de alto valor, mais leve em estações comuns — é melhor que aceitar um padrão que está errado nas duas pontas.
+
+A restrição honesta é que a caça só encontra o que foi coletado. Um perfil que não retém uma categoria de telemetria torna aquela categoria não caçável por melhor que seja a consulta, e descobrir isso durante uma investigação é o momento errado.
+
+## FortiXDR
+
+O FortiXDR estende a mesma ideia entre produtos: correlacionar telemetria de endpoint com sinais de rede, e-mail e outros, para que um incidente visível apenas como fragmentos em cada um vire uma narrativa só.
+
+O argumento a favor é que ataques relevantes raramente ficam no campo de visão de um produto. Um e-mail de phishing, uma execução no endpoint e uma conexão de saída são três eventos banais separadamente e um incidente claro em conjunto.
+
+## Investigação de problemas
+
+As causas recorrentes, na ordem que vale verificar:
+
+**1. O coletor está reportando?** Um coletor parado é um endpoint sem telemetria, então caça e forense não acham nada ali, independentemente da consulta.
+
+**2. Está no grupo certo?** Grupo errado significa política errada e perfil de caça errado.
+
+**3. A telemetria está sendo retida?** Ausência de resultados pode significar que o comportamento não ocorreu, ou que nunca foi coletado. São coisas bem diferentes e parecem idênticas.
+
+**4. O FCS estava alcançável?** Classificação degradada durante uma indisponibilidade explica eventos estranhamente sem classificação.
+
+**5. Versão.** Um coletor mais antigo pode não produzir a telemetria que uma consulta nova espera.
+
+O formato geral é o mesmo que atravessa toda esta plataforma: confirme que o dado existe antes de tirar conclusões da ausência dele.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Faça a triagem de um alerta pela árvore de processos, pela ação que disparou, pela classificação e pelo escopo, e separe "é malicioso" de "justifica ação agora". A forense reconstrói a atividade ao redor e precisa ser coletada antes da remediação, porque reinstalar destrói a evidência. A caça consulta telemetria retida, consultas agendadas a tornam contínua, e perfis de caça decidem o que é retido — então ausência de resultados pode ser ausência de coleta. O FortiXDR correlaciona entre produtos. Quando faltam resultados, verifique se o coletor está reportando e no grupo certo antes de confiar na consulta.

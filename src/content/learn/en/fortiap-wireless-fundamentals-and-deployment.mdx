@@ -1,0 +1,58 @@
+---
+slug: fortiap-wireless-fundamentals-and-deployment
+title: "FortiAP Deployment: Wireless Fundamentals, the Integrated Controller, and AP Profiles"
+summary: "A FortiAP managed by a FortiGate is configured almost entirely through profiles rather than per device, which is what makes a fleet manageable. Understanding the radio fundamentals underneath those profiles is what stops the settings from being guesses, because most wireless complaints are radio problems wearing a configuration costume."
+concepts: ["fortinet", "fortiap", "wireless", "802.11", "wireless controller", "capwap", "ap profile", "channel", "transmit power", "ssid", "band steering"]
+relatedTools: []
+sub: fortiap
+relatedArticles: ["fortigate-initial-configuration-and-operation-modes", "fortiswitch-vlans-stp-ports-and-qos"]
+category: networking
+order: 62
+status: reviewed
+updated: "2026-07-26"
+---
+
+Wireless is a shared medium that everyone can see and no one controls. Almost every difficulty with it comes back to that, and the configuration options exist to manage the consequences.
+
+## The fundamentals that decide everything else
+
+**Bands.** 2.4 GHz travels further and penetrates better, and has only three non-overlapping channels in most regulatory domains, so it congests quickly and is shared with a great deal of non-Wi-Fi interference. 5 GHz has many more channels and shorter range. 6 GHz, where available, adds substantial spectrum with the shortest range of the three.
+
+**Channel width.** Wider channels carry more and consume more spectrum. On 2.4 GHz, anything above 20 MHz is usually a mistake because it removes what little channel separation exists. On 5 GHz, wider channels are viable until density makes reuse impossible.
+
+**The medium is shared.** Only one device transmits at a time within earshot. That is why client count matters more than bandwidth, why a single slow client can hold airtime that faster ones could have used, and why "add more access points" makes things worse when the additions overlap on the same channels.
+
+**Signal is not the whole story.** A client can show excellent signal strength and perform badly because the channel is congested or because interference is raising the noise floor. Signal-to-noise ratio is the more honest number.
+
+## The integrated controller
+
+A FortiGate includes a wireless controller. FortiAPs connect to it over **CAPWAP**, which carries both the management channel and, depending on the SSID, the data.
+
+Discovery and authorization follow the same shape as FortiSwitch: the AP finds the controller, appears as unauthorized, and you authorize it. An AP that never appears has a discovery problem — no route to the controller, no DHCP option or DNS record pointing at it, or a firewall in between blocking CAPWAP.
+
+The important design decision is how each SSID forwards traffic:
+
+| Mode | Data path | Suits |
+|---|---|---|
+| **Tunnel** | Client traffic is tunnelled to the FortiGate | Centralised policy and inspection; remote sites |
+| **Bridge** | Client traffic is switched locally onto a VLAN | Local traffic that should not cross the WAN |
+
+Tunnel mode gives the firewall sight of everything at the cost of hairpinning local traffic through it. Bridge mode keeps local traffic local, and means the FortiGate does not see it unless it routes it. Choosing bridge mode and then wondering why security profiles are not applying is a recurring confusion.
+
+## AP profiles
+
+An **AP profile** holds the radio configuration — band, channel, width, transmit power, enabled SSIDs — and is applied to many access points. That is the point: fleet-wide change without touching devices individually.
+
+Two settings deserve a decision rather than a default:
+
+**Channel selection.** Automatic selection lets the controller pick and adapt, which suits most deployments. Manual channel planning is worth the effort in dense environments where you know the layout better than an algorithm reading its own neighbourhood.
+
+**Transmit power.** The instinct is to turn it up. The consequence is that clients hear the AP from further away than the AP hears them, so they associate at range and then perform badly, and cells overlap enough to reduce reuse. Lower power with more APs beats higher power with fewer, almost always.
+
+**Band steering** encourages dual-band clients onto 5 GHz, which helps because clients otherwise favour the band with the strongest signal, and that is usually the congested one.
+
+Where a subset of APs needs different settings — an outdoor unit, a high-density room — the answer is another profile rather than per-device overrides, so the fleet stays describable.
+
+## What an exam candidate should be able to state cold
+
+2.4 GHz has three non-overlapping channels and more range; 5 and 6 GHz have more spectrum and less. The medium is shared, so client count and airtime matter more than headline rates, and signal-to-noise is more honest than signal strength. FortiAPs join the FortiGate's integrated controller over CAPWAP and must be authorized. SSIDs are tunnel mode, where traffic goes to the FortiGate, or bridge mode, where it is switched locally and the firewall does not see it. AP profiles configure the fleet, and raising transmit power usually makes coverage worse rather than better.

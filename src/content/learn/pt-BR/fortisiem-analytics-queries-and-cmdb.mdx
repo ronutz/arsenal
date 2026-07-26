@@ -1,0 +1,51 @@
+---
+slug: fortisiem-analytics-queries-and-cmdb
+title: "Analytics no FortiSIEM: montar consultas, agregação e o CMDB"
+summary: "Uma busca em SIEM é tão boa quanto aquilo contra o que ela consegue cruzar. O FortiSIEM mantém um banco de dados de gerenciamento de configuração descrevendo o que são seus equipamentos, e a capacidade de consultar eventos junto com esse contexto é o que separa uma busca útil de uma caça a texto em linhas de log."
+concepts: ["fortinet", "fortisiem", "siem", "consulta", "agregação", "group by", "cmdb", "tabela de consulta", "consulta aninhada", "analytics"]
+relatedTools: []
+sub: fortisiem
+relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortianalyzer-reports-datasets-and-charts"]
+category: security
+order: 72
+status: reviewed
+updated: "2026-07-26"
+---
+
+Buscar bem num SIEM é uma habilidade de curva curta e retorno grande. A maior parte dela é saber sobre o que se pode filtrar, por que se pode agrupar, e qual contexto está disponível para cruzar.
+
+## De um resultado de busca a uma consulta
+
+O fluxo produtivo raramente é escrever uma consulta do zero. É buscar de forma ampla, achar um evento que pareça relevante, e construir a consulta a partir dele, acrescentando os campos que a tornam específica e removendo os que a tornam estreita.
+
+Isso importa porque os nomes de campo num SIEM são numerosos e pouco memorizáveis. Partir de um evento real significa trabalhar com os campos que de fato existem nos dados, e não com os que você supõe existirem, que é a razão mais comum de uma consulta cuidadosamente escrita não retornar nada.
+
+## Agregação e group by
+
+Uma busca crua retorna eventos. A agregação os transforma numa resposta.
+
+O **group by** colapsa eventos em grupos por um ou mais campos. Agrupe falhas de autenticação por endereço de origem e você tem uma lista ordenada de quem está falhando, que é um objeto diferente e mais útil que mil falhas individuais.
+
+**Funções de agregação** — contagem, soma, média, mínimo, máximo, contagem distinta — produzem o número de cada grupo. A contagem distinta merece menção porque responde perguntas que as outras não: não quantas conexões um host fez, mas quantos destinos diferentes ele alcançou, que é o que distingue um servidor movimentado de uma varredura.
+
+O formato geral que vale internalizar é que uma pergunta de segurança é quase sempre uma agregação. "Está acontecendo algo incomum" não é pesquisável; "quais origens produziram mais de cinquenta falhas em dez minutos" é.
+
+## O CMDB
+
+O FortiSIEM mantém um **banco de dados de gerenciamento de configuração** descrevendo os equipamentos que conhece: o que são, o que rodam, como se chamam, qual unidade de negócio é dona, qual a importância.
+
+É essa a diferença entre um SIEM e uma busca de logs. Um evento diz que um endereço fez algo. O CMDB diz que aquele endereço é um controlador de domínio no ambiente financeiro classificado como crítico, e isso muda tanto a prioridade do evento quanto o que se faz a respeito.
+
+O conteúdo do CMDB é populado por descoberta e por importação, e ele decai. Um CMDB que descreve o parque de dois anos atrás produz priorização confiante, bem formatada e errada. Mantê-lo atual é ingrato e é o que faz tudo acima dele funcionar.
+
+## Tabelas de consulta e consultas aninhadas
+
+**Tabelas de consulta** guardam dados de referência que não são eventos: uma lista de funcionários desligados, contas administrativas reconhecidamente boas, endereços pertencentes a um parceiro. Cruzar eventos contra elas transforma uma busca genérica numa busca organizacional. "Autenticação de uma conta da lista de desligados" não é expressável sem a lista.
+
+**Consultas aninhadas** usam o resultado de uma consulta como entrada de outra. O padrão que mais aparece é em duas etapas: encontrar o conjunto de coisas que casa com alguma condição, e então encontrar tudo que essas coisas fizeram. Identifique os hosts que contataram um endereço suspeito, e então recupere toda a atividade desses hosts.
+
+É assim que uma investigação de fato transcorre — uma primeira consulta estabelece a população e uma segunda a explora — e fazer isso numa consulta aninhada em vez de copiar resultados à mão é mais rápido e repetível.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Monte consultas a partir de um evento real, e não de memória, porque isso garante que os nomes de campo existem. O group by colapsa eventos em grupos e funções de agregação produzem o número por grupo, com a contagem distinta respondendo quantas coisas diferentes em vez de quantas vezes. O CMDB fornece contexto que transforma um endereço num ativo classificado, e um CMDB desatualizado produz priorização confiante e errada. Tabelas de consulta cruzam eventos com dados de referência organizacionais, e consultas aninhadas alimentam uma consulta com o resultado de outra, que é como uma investigação em duas etapas se expressa.

@@ -1,0 +1,55 @@
+---
+slug: forticlient-ems-architecture-and-deployment
+title: "FortiClient EMS: arquitetura, modos de implantação e perfis de endpoint"
+summary: "O EMS é um servidor de gerência ao qual os endpoints se reportam, e um mecanismo de perfis que diz a eles o que ser. Acertar a implantação é sobretudo sobre como os endpoints encontram o servidor e como são agrupados depois disso, porque um perfil aplicado ao grupo errado é a razão mais comum de um endpoint não fazer o que você configurou."
+concepts: ["fortinet", "forticlient", "ems", "gerência de endpoints", "implantação", "perfil de endpoint", "telemetria", "código de convite", "local", "nuvem"]
+relatedTools: []
+sub: forticlient
+relatedArticles: ["fortigate-authentication-and-fsso", "fortinac-device-modeling-and-profiling"]
+category: security
+order: 65
+status: reviewed
+updated: "2026-07-26"
+---
+
+O FortiClient EMS faz dois trabalhos: é onde os endpoints se registram e reportam, e é onde você descreve como um endpoint deve ser. Quase tudo na operação decorre dessa divisão.
+
+## Os componentes
+
+O **FortiClient** roda no endpoint. Conforme o licenciamento e o perfil, ele fornece o cliente VPN, proteção de endpoint, filtragem web, firewall de aplicações, varredura de vulnerabilidades e o agente ZTNA.
+
+O **EMS** é o servidor de gerência. Guarda o inventário de endpoints, os perfis, e a telemetria que os endpoints reportam. É também o que integra com o Security Fabric, que é como um FortiGate passa a saber coisas sobre um endpoint com o qual nunca falou diretamente.
+
+A conexão entre eles é um **canal de telemetria** que o endpoint inicia. Esse sentido importa: os endpoints procuram o EMS, então um endpoint que nunca aparece tem problema de caminho ou de descoberta, e não de permissão no servidor.
+
+## Modos de implantação
+
+O **EMS local** roda no seu próprio servidor Windows. Você o controla, você o atualiza, e os endpoints precisam alcançá-lo — o que para uma força de trabalho remota significa publicá-lo ou exigir VPN, e cada opção tem consequências.
+
+O **EMS Cloud** é hospedado pela Fortinet. Os endpoints o alcançam de qualquer lugar sem você publicar nada, o que serve a uma força de trabalho distribuída e tira o servidor da sua carga de manutenção. O que se abre mão é do controle direto sobre o servidor e a localização dos dados.
+
+A decisão geralmente se resolve por onde os endpoints estão, e não por preferência: uma força de trabalho majoritariamente remota é mal atendida por um servidor local que ela só alcança por uma VPN que talvez precise do EMS para configurar.
+
+## Levar o FortiClient até os endpoints
+
+Existem várias rotas, e a certa depende da ferramenta que você já tem:
+
+- **Distribuição de software** pelo seu sistema de gerência atual, que é como a maioria dos parques gerenciados faz.
+- **Implantação a partir do EMS** para endpoints que o EMS já alcança, útil para máquinas em domínio.
+- **Instalação manual com código de convite**, que é como endpoints não gerenciados e remotos entram, e como a maioria dos pilotos roda.
+
+O passo do registro é o que de fato importa. Um FortiClient instalado que não se registrou no EMS não tem perfil, então está rodando padrões em vez da sua configuração. Um parque em que alguns endpoints se comportam de forma inesperada muitas vezes é um parque em que alguns endpoints nunca se registraram.
+
+## Perfis são a configuração
+
+Um **perfil de endpoint** descreve o que o endpoint deve fazer: quais recursos de proteção estão ligados, o que o filtro web bloqueia, como são os túneis de VPN, quais são as regras de ZTNA.
+
+Perfis são atribuídos a **grupos**, e grupos podem ser montados a partir da estrutura do Active Directory ou do agrupamento próprio do EMS. É aqui que mora a confusão mais comum do EMS: um perfil está correto, e está atribuído a um grupo em que o endpoint não está, então o endpoint aplica obedientemente outra coisa.
+
+O hábito de diagnóstico que poupa tempo é verificar qual perfil um endpoint de fato recebeu antes de examinar o perfil que você acha que ele recebeu. O EMS informa isso por endpoint, e resolve a questão de imediato.
+
+**Herança e prioridade de perfis** decidem o que acontece quando um endpoint pode casar com mais de um grupo. Vale entender a precedência na sua implantação uma vez, deliberadamente, em vez de descobri-la durante um incidente.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O FortiClient roda no endpoint e inicia a telemetria até o EMS, então falhas de registro são problemas de caminho ou descoberta. O EMS existe local ou como EMS Cloud, e a escolha geralmente segue onde os endpoints estão. A implantação pode ser por gerência de software existente, a partir do EMS, ou manual com código de convite, e um endpoint não registrado roda padrões em vez da sua configuração. Perfis são atribuídos a grupos; quando um endpoint se comporta de forma inesperada, verifique qual perfil ele de fato recebeu antes de examinar o pretendido.

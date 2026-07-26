@@ -1,0 +1,65 @@
+---
+slug: fortiedr-architecture-and-deployment
+title: "FortiEDR Architecture: Components, Deployment, Multi-Tenancy, and the Cloud Service"
+summary: "FortiEDR splits detection between what the collector sees on the endpoint and what the cloud service knows about the world. Understanding which component does what explains the deployment topology, why multi-tenancy is structured the way it is, and what happens when the cloud service is unreachable."
+concepts: ["fortinet", "fortiedr", "endpoint detection and response", "collector", "aggregator", "core", "central manager", "fortinet cloud service", "multi-tenancy", "api"]
+relatedTools: []
+sub: fortiedr
+relatedArticles: ["forticlient-ems-architecture-and-deployment", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 67
+status: reviewed
+updated: "2026-07-26"
+---
+
+FortiEDR is built around a claim worth understanding before the components make sense: that the decisive moment is not when a file arrives but when a process tries to do something it should not. The architecture follows from that.
+
+## The components
+
+**Collectors** run on endpoints. They observe process behaviour and, critically, can block an action at the moment it is attempted rather than only reporting it afterwards.
+
+**Aggregators** are the concentration point collectors report to. They exist so that a large estate does not have every endpoint talking directly to the core, and so that endpoints have something reachable nearby.
+
+**Cores** perform the deeper analysis on what aggregators forward.
+
+The **Central Manager** is the console: policies, inventory, events, investigation.
+
+**Fortinet Cloud Service (FCS)** provides the classification intelligence. When a collector sees something suspicious, FCS is what turns "this process did something unusual" into "this is known bad" or "this is benign".
+
+That last one deserves attention because of what happens when it is unavailable. The collector still enforces the policy it has and still blocks at the moment of action; what degrades is the enrichment that reduces false positives. Operating without FCS is not the same as operating without protection, and it is not the same as operating normally either.
+
+## Deployment
+
+Collector installation is ordinary software deployment through whatever tooling manages your estate. The considerations that actually cause trouble are elsewhere:
+
+**Collector groups** determine which policies apply. This is the same trap as EMS profiles: a policy that is correct and assigned to a group the endpoint is not in produces an endpoint doing something else entirely.
+
+**Communication path.** Collectors must reach an aggregator. A remote endpoint that cannot is unprotected in the sense that matters — it is running its last known policy with no reporting and no updates.
+
+**Coexistence with other endpoint software.** Two products both hooking process execution is a recognised source of instability, and the exclusion configuration for each is worth doing deliberately rather than after the first crash.
+
+## Multi-tenancy
+
+Where one deployment serves multiple organisations — a managed service provider, or a group with genuinely separate business units — multi-tenancy separates them. Each tenant has its own collectors, policies, events and administrators, and cannot see the others.
+
+The architectural point is that separation is at the management layer while infrastructure may be shared. That makes tenant assignment a security control rather than an organisational convenience, with the same weight as VLAN assignment in a shared switching fabric.
+
+## Inventory and system tools
+
+The inventory is the answer to "what is actually protected", and it is more useful than it sounds because the gap between the estate you believe you have and the one that is reporting is where incidents happen.
+
+Worth reading regularly rather than during an incident:
+
+- **Collectors not reporting.** Every one is an endpoint running an unknown policy with no visibility.
+- **Version spread.** Old collector versions may lack detections that newer ones have.
+- **Unmanaged endpoints**, where the network shows a device the inventory does not.
+
+## The API
+
+FortiEDR exposes a management API, which matters for three things in practice: pulling events into a SIEM, automating response from an orchestration platform, and reporting across a fleet without clicking through the console.
+
+The value of API-driven work is consistency rather than speed. An action taken through an API is the same action every time, which is what makes it safe to trigger automatically.
+
+## What an exam candidate should be able to state cold
+
+Collectors observe process behaviour on endpoints and can block at the moment of action; aggregators concentrate their reporting; cores analyse; the Central Manager is the console. Fortinet Cloud Service supplies classification intelligence, and losing it degrades enrichment rather than removing enforcement. Collector groups decide which policies apply, and a group mismatch is the common cause of unexpected endpoint behaviour. Multi-tenancy separates at the management layer over possibly shared infrastructure. The inventory's value is finding endpoints that are not reporting.

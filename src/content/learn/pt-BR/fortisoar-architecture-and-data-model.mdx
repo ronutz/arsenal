@@ -1,0 +1,65 @@
+---
+slug: fortisoar-architecture-and-data-model
+title: "Arquitetura e modelo de dados do FortiSOAR: módulos, registros e relacionamentos"
+summary: "O FortiSOAR é um banco de dados com automação acoplada, e quase tudo que você constrói se apoia em seu modelo de dados. Módulos guardam registros, campos guardam valores, e relacionamentos conectam registros entre módulos. Entender isso antes de escrever um playbook é a diferença entre automação que se compõe e automação que é um monte de casos especiais."
+concepts: ["fortinet", "fortisoar", "soar", "modelo de dados", "módulo", "registro", "relacionamento", "rbac", "implantação", "painel", "widget"]
+relatedTools: []
+sub: fortisoar
+relatedArticles: ["fortianalyzer-soc-events-incidents-playbooks", "fortiedr-threat-hunting-forensics-and-investigation"]
+category: security
+order: 70
+status: reviewed
+updated: "2026-07-26"
+---
+
+O FortiSOAR é frequentemente descrito como plataforma de automação, o que subestima a parte que determina se uma implantação dá certo. Ele é um **repositório estruturado para trabalho de segurança**, com automação que age sobre ele. Acerte o modelo de dados e os playbooks se compõem; erre e cada playbook vira um caso especial.
+
+## Modelos de implantação
+
+**Nó único** roda tudo num equipamento. Adequado à maioria das implantações, e sua disponibilidade é a sua disponibilidade.
+
+**Alta disponibilidade** agrupa nós para que a perda de um não pare o tratamento de incidentes — o que importa mais que o usual aqui, porque a plataforma é o que as pessoas usam *durante* um incidente.
+
+Implantações **distribuídas ou multi-inquilino** colocam nós de inquilino com um mestre central. Um provedor de serviços gerenciados usa esse formato, e uma organização com regiões que precisam manter seus dados locais reportando centralmente também. A pergunta que distingue é se os dados podem sair do inquilino, porque isso decide quanto um nó trata por conta própria.
+
+## O modelo de dados
+
+Quatro conceitos, e eles se apoiam uns nos outros.
+
+Um **módulo** é um tipo de coisa: alertas, incidentes, indicadores, ativos, tarefas. Módulos são o que aparece na navegação e a que os registros pertencem.
+
+Um **registro** é uma instância: um alerta, um incidente.
+
+**Campos** guardam os valores de um registro. Eles têm tipos, e o tipo importa mais do que parece: um campo de lista de seleção restringe a entrada a valores conhecidos, e é isso que o torna utilizável em condições de playbook e em agrupamento de painéis. Um campo de texto guardando o que deveria ser uma lista de seleção é a razão mais comum de um painel não conseguir sumarizar algo.
+
+**Relacionamentos** conectam registros entre módulos. Um incidente se relaciona aos alertas que o levantaram, aos ativos envolvidos, aos indicadores observados, às tarefas atribuídas. É essa a parte que distingue uma plataforma SOAR de uma fila de chamados: o relacionamento é consultável, então "mostre todo incidente que tocou este ativo no último trimestre" é pergunta que o sistema responde.
+
+## Correlação entre módulos
+
+Correlação é para o que servem os relacionamentos. Quando um alerta chega carregando um indicador já ligado a um incidente aberto, o sistema pode anexá-lo em vez de levantar uma duplicata.
+
+A consequência prática é a deduplicação. Um SOC afogado em alertas frequentemente é um SOC vendo o mesmo evento reportado cinco vezes por cinco produtos, e a correlação por um indicador compartilhado colapsa isso num incidente com cinco fontes.
+
+Só funciona se os dados forem consistentes. Um indicador armazenado como texto num lugar e como registro relacionado em outro não pode ser correlacionado, e é por isso que o modelo de dados merece atenção antes da automação.
+
+## Controle de acesso
+
+O controle de acesso do FortiSOAR é baseado em papéis, e opera em dois eixos que vale manter distintos:
+
+**O que você pode fazer** — criar, ler, atualizar, remover — expresso por módulo. Um analista pode atualizar incidentes e não removê-los; um administrador pode ambos.
+
+**O que você pode ver** — quais registros são visíveis, tipicamente delimitados por equipe ou propriedade. Numa implantação multi-inquilino essa é a fronteira que mantém os inquilinos apartados, e é controle de segurança, e não conveniência.
+
+O erro de projeto a evitar é conceder permissões amplas durante a implantação pretendendo estreitá-las depois. Automação escrita contra permissões que ninguém estreitou é automação que quebra quando alguém estreitar.
+
+## Modelos, painéis e widgets
+
+**Modelos** padronizam como um registro se parece e o que é obrigatório nele, para que incidentes de um dado tipo carreguem os mesmos campos e ninguém precise lembrar o que preencher.
+
+**Painéis** são montados de **widgets**, cada um mostrando uma fatia dos dados. A disciplina útil é construir painéis para uma pergunta, e não para um cargo: "o que está sem responsável e com mais de uma hora" é acionável, enquanto "tudo sobre incidentes" é uma tela que as pessoas param de olhar.
+
+Widgets consultam o mesmo modelo de dados, o que fecha o ciclo: um campo que é lista de seleção pode ser agrupado e contado, e um campo de texto livre não.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+A implantação é nó único, alta disponibilidade, ou distribuída e multi-inquilino, e a pergunta decisiva para a última é se os dados podem sair do inquilino. Módulos guardam registros, registros têm campos tipados, e relacionamentos conectam registros entre módulos; relacionamentos são consultáveis e são o que habilita correlação e deduplicação. O tipo do campo importa, porque listas de seleção podem ser agrupadas em condições e painéis e texto livre não. O controle de acesso governa o que você pode fazer por módulo e quais registros pode ver, e o segundo é a fronteira entre inquilinos.

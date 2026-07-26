@@ -1,0 +1,60 @@
+---
+slug: fortisiem-ml-ueba-and-platform-integration
+title: "FortiSIEM Machine Learning, UEBA, and Integrating the Rest of the Platform"
+summary: "Rules catch what you thought to describe. Machine learning and user behaviour analytics exist for what you did not, and both work by learning normal and reporting deviation. That makes the learning period a real operational concern, because a baseline built during an incident encodes the incident as normal."
+concepts: ["fortinet", "fortisiem", "machine learning", "ueba", "baseline", "anomaly detection", "ztna", "integration", "dashboard", "risk score"]
+relatedTools: []
+sub: fortisiem
+relatedArticles: ["fortisiem-rules-incidents-and-remediation", "forticlient-ems-endpoint-security-ztna-and-troubleshooting"]
+category: security
+order: 74
+status: reviewed
+updated: "2026-07-26"
+---
+
+Rule-based detection has a structural limit: it finds what someone thought to describe. The techniques below address the remainder, and they share a mechanism and therefore a weakness.
+
+## How the learning approaches work
+
+Both machine learning detection and user behaviour analytics build a model of normal from observed data and report departures from it. The consequences of that mechanism are worth stating before the features:
+
+**The baseline period matters enormously.** A model learned during a period that included an incident treats the incident as normal. A model learned over too short a period treats routine variation — month end, a holiday, a project launch — as anomalous.
+
+**Anomalous is not malicious.** A deviation is a statement about statistics, not intent. Someone changing role, a new application rolling out, and an attacker exfiltrating data all produce departures from baseline. The output is a prioritisation signal, not a verdict.
+
+**Explainability varies.** A rule that fires tells you exactly what it matched. An anomaly tells you something was unusual, and the useful implementations say which dimension was unusual and by how much. Judge these features by whether they can answer why.
+
+## UEBA specifically
+
+User and entity behaviour analytics builds profiles for users and for entities such as hosts and service accounts, and looks for departures.
+
+The patterns it is genuinely good at, which rules handle badly:
+
+- **Access outside a user's own pattern.** Not a rule about which systems finance may touch, but the observation that this person has never touched this system before.
+- **Peer group deviation.** One member of a team behaving unlike the rest of it, which catches the case where a user's own history is too short to be a baseline.
+- **Gradual change.** A slow increase in data access over weeks, which no threshold rule catches because no single day exceeds it.
+- **Impossible travel and timing anomalies**, which are simple to state and awkward to express as rules across sources.
+
+UEBA output feeds two places. It can **contribute to rules**, so a rule fires only when an activity coincides with an elevated risk score, which cuts false positives substantially. And it drives **dashboards** that rank users and entities by risk, which is a different way of starting a working day from an incident queue: rather than "what fired", it answers "who is worth looking at".
+
+## ZTNA integration
+
+Zero trust access decisions produce a rich event stream: which user, which device, which application, what posture, allowed or denied. Feeding that into the SIEM adds a dimension the network alone does not carry.
+
+The correlation this enables is the point. A device failing posture checks, then a user from that device attempting access to several applications in succession, then a burst of denials — each is minor and the sequence is not. Only a system seeing both the access decisions and the surrounding activity can join them.
+
+It also closes a loop back to policy. A SIEM that identifies an account as high risk can drive the access system to require more of it, which is zero trust behaving as intended rather than as a static rule set.
+
+## Making integration useful rather than merely present
+
+Connecting a product to the SIEM is straightforward and is not the same as gaining value from it. Three things separate the two:
+
+**Parsing.** Events must land in structured fields, or they are text you cannot aggregate on. An integration that delivers unparsed logs has produced storage, not analytics.
+
+**CMDB alignment.** The device in the new source must be recognisable as the same device the SIEM already knows, or correlation cannot join them.
+
+**A question it answers.** The honest test for a new integration is which query or rule becomes possible that was not before. If nothing does, the integration has added volume and cost without adding capability, and volume in a SIEM is never free.
+
+## What an exam candidate should be able to state cold
+
+Machine learning and UEBA learn normal and report deviation, so the baseline period is a real operational concern and an anomaly is a prioritisation signal rather than a verdict. UEBA profiles users and entities, catches peer deviation and gradual change that thresholds miss, and feeds both rules and risk dashboards. ZTNA events add user, device, application and posture to the correlation. A new integration is only useful if its events are parsed into fields, its devices align to the CMDB, and it makes some question answerable that was not before.

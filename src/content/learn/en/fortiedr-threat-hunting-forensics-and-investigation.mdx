@@ -1,0 +1,73 @@
+---
+slug: fortiedr-threat-hunting-forensics-and-investigation
+title: "FortiEDR Threat Hunting, Forensics, and Investigating an Alert"
+summary: "An alert tells you something happened. Investigation answers what happened before it, what it touched, and whether it is still happening. FortiEDR keeps the telemetry that makes those answerable, and threat hunting is how you ask questions of it without waiting for an alert to prompt you."
+concepts: ["fortinet", "fortiedr", "threat hunting", "forensics", "investigation", "alert triage", "process tree", "scheduled query", "fortixdr", "troubleshooting"]
+relatedTools: []
+sub: fortiedr
+relatedArticles: ["fortiedr-policies-playbooks-and-communication-control", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 69
+status: reviewed
+updated: "2026-07-26"
+---
+
+Detection and investigation are different activities. Detection asks whether something matches; investigation asks what actually happened, and needs data that was collected before anyone knew to look.
+
+## Reading an alert
+
+An alert in FortiEDR carries more than a verdict. The parts that matter when triaging:
+
+**The process tree.** What launched what. This is usually the fastest route to a conclusion, because malicious activity nearly always has an implausible parent: an office document spawning a script interpreter, a browser spawning a shell.
+
+**The action that triggered it.** Which specific behaviour matched, and whether it was blocked or only observed. An event in simulation mode records what would have happened.
+
+**Classification.** Whether the cloud service considers this known bad, suspicious, or likely benign, and how confident that is.
+
+**Scope.** Whether this appeared on one endpoint or many. The same detection across an estate is a different situation from one instance, and it changes what you do next.
+
+The triage question is not "is this malicious" but "does this warrant action now". Those differ often enough that keeping them apart saves a great deal of time.
+
+## Forensics
+
+Forensic investigation reconstructs what happened around an event: the process ancestry, files touched, registry changes, network connections, and the sequence of the whole thing.
+
+The value is in answering the questions an alert cannot: how it got in, what it reached, whether it persisted, and whether it moved. An alert says a process was blocked; forensics says whether that process had already written something that will run at next boot.
+
+The discipline worth stating is to collect before remediating. Reimaging an endpoint removes the evidence, and the question "did this reach anything else" becomes unanswerable at exactly the moment it matters most.
+
+## Threat hunting
+
+Threat hunting inverts the usual flow. Rather than waiting for a detection, you query the collected telemetry for things that would not trigger an alert but are worth knowing: a rare parent-child process pair, execution from a temporary directory, a signed binary in an unusual location.
+
+The building blocks are **queries** over the collected data and **scheduled queries** that run repeatedly and report changes. The second is what turns hunting from an occasional activity into ongoing coverage.
+
+**Threat hunting profiles** control how much telemetry collectors retain. This is a real trade: more collection means more to hunt through and more resource used on endpoints and in storage. Deciding it deliberately per collector group — richer on servers and high-value endpoints, lighter on general workstations — is better than accepting a default that is wrong at both ends.
+
+The honest constraint is that hunting only finds what was collected. A profile that does not retain a category of telemetry makes that category unhuntable no matter how good the query, and discovering this during an investigation is the wrong moment.
+
+## FortiXDR
+
+FortiXDR extends the same idea across products: correlating endpoint telemetry with network, email and other signals so that an incident visible only as fragments in each becomes one narrative.
+
+The argument for it is that meaningful attacks rarely stay in one product's field of view. A phishing email, an endpoint execution and an outbound connection are three unremarkable events separately and one clear incident together.
+
+## Troubleshooting
+
+The recurring causes, in the order worth checking:
+
+**1. Is the collector reporting?** A collector that has stopped is an endpoint with no telemetry, so hunting and forensics find nothing there regardless of the query.
+
+**2. Is it in the right group?** Wrong group means wrong policy and wrong hunting profile.
+
+**3. Is the telemetry being retained?** Absence of results can mean the behaviour did not happen, or that it was never collected. These are very different and look identical.
+
+**4. Was FCS reachable?** Degraded classification during an outage explains events that seem oddly unclassified.
+
+**5. Version.** An older collector may not produce the telemetry a newer query expects.
+
+The general shape is the one that runs through this whole platform: confirm the data exists before drawing conclusions from its absence.
+
+## What an exam candidate should be able to state cold
+
+Triage an alert from the process tree, the triggering action, the classification and the scope, and separate "is it malicious" from "does it warrant action now". Forensics reconstructs the surrounding activity and must be collected before remediation, because reimaging destroys the evidence. Threat hunting queries retained telemetry, scheduled queries make it continuous, and hunting profiles decide what is retained — so absence of results may mean absence of collection. FortiXDR correlates across products. When results are missing, check the collector is reporting and in the right group before trusting the query.

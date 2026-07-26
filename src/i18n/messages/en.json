@@ -13968,7 +13968,13 @@
     "requiresOne": "Earned by passing any one of these {count} exams.",
     "prerequisitesLabel": "Prerequisites",
     "requirementLabel": "How to earn it",
-    "officialPage": "Official certification page"
+    "officialPage": "Official certification page",
+    "sourceCaveatTruncated": "Note on this blueprint: Fortinet's own exam page publishes a Tasks column whose entries are truncated or blank, so the objectives below are transcribed from the Details column beside them, grouped under the published section headings and weightings. Verified against a fresh fetch.",
+    "retiringLabel": "Retiring",
+    "retirementNotice": "{exam} can be sat until {until}.",
+    "retirementReplacedBy": "It is replaced by {exam}.",
+    "retirementNoReplacement": "Fortinet's page does not name a replacement.",
+    "sourceCaveatCourse": "These objectives come from Fortinet's course page for this product, not from an exam blueprint: Fortinet has not published one for this exam yet. The material is what the course teaches, and an exam blueprint may organise or weight it differently."
   },
   "trainingCta": {
     "eyebrow": "Instructor-led training",

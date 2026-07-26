@@ -1,0 +1,75 @@
+---
+slug: fortigate-logging-and-diagnostics
+title: "FortiGate Logging and Diagnostics: Where Logs Go and How to Find a Problem"
+summary: "A FortiGate can log to several destinations with very different retention and searchability, and a policy that is not logging produces nothing to investigate. When something is wrong, a small set of commands answers most questions faster than reading configuration does."
+concepts: ["fortinet", "fortigate", "logging", "log settings", "memory logging", "disk logging", "diagnostics", "resource", "conserve mode", "connectivity", "troubleshooting"]
+relatedTools: ["fortigate-session-table-explainer", "fortios-sniffer-builder"]
+sub: fortigate
+relatedArticles: ["fortigate-firewall-policy-and-nat", "fortianalyzer-log-ingestion-and-storage"]
+category: networking
+order: 83
+status: reviewed
+updated: "2026-07-26"
+---
+
+Most FortiGate investigation begins with a log that does not exist, because logging was never enabled for the traffic in question. That is the first thing to establish rather than the last.
+
+## Where logs can go
+
+| Destination | Retention | Searchable | Notes |
+|---|---|---|---|
+| Memory | Very short; lost on reboot | Yes, on the device | Fine for live work, useless afterwards |
+| Local disk | Longer; not on all models | Yes, on the device | Constrained, and writes wear the disk |
+| FortiAnalyzer | Long | Yes, centrally | The normal answer for anything retained |
+| Syslog | Whatever the collector keeps | In the collector | Where an existing SIEM is the destination |
+| FortiGate Cloud | Managed | Yes | Suits deployments with no FortiAnalyzer |
+
+The decision that matters is that memory logging is for the next few minutes. Investigating an incident from yesterday on a device logging only to memory is not possible, and this is discovered at the worst time.
+
+## What actually gets logged
+
+Two settings decide whether anything exists to find.
+
+**Per-policy logging.** Each firewall policy chooses to log all sessions, log security events only, or log nothing. A policy with logging disabled produces no record of the traffic it passed, which is exactly the situation where someone asks what happened.
+
+**Log all sessions versus security events only** is a real trade. All sessions gives complete traffic records and generates a great deal of volume; security events only records what a security profile acted on, and leaves ordinary allowed traffic invisible. The common compromise is full logging on the policies that matter and security events elsewhere.
+
+The implicit deny at the end of the policy list does not log by default. That is worth changing on most deployments, because "the traffic is being dropped and nothing appears in the logs" is otherwise the expected behaviour rather than a fault.
+
+## Reading logs
+
+Traffic logs answer where the traffic went and which policy allowed it. Security logs answer what a profile did. Event logs answer what the device itself did — HA transitions, administrator logins, interface state, licence and update activity.
+
+Event logs are the underused one. A recurring problem that correlates with something in the event log — a nightly HA renegotiation, a failing update — is a problem whose cause is already written down.
+
+## Diagnosing connectivity
+
+The order that resolves most cases, from cheapest to most expensive:
+
+**1. Does a session exist?** The session table is the authoritative record. A session with traffic in one direction and none in return says the FortiGate forwarded the packets and nothing came back, which is not the firewall blocking anything.
+
+**2. Which policy matched?** The session carries the policy ID, which settles arguments that reading the policy list cannot.
+
+**3. Is the route what you think?** A route lookup for the destination answers whether traffic is even leaving the interface you expect.
+
+**4. Debug flow** shows the decision path for new sessions: policy lookup, routing, NAT, and where a packet was dropped and why. This is the tool for the case where no session is being created at all.
+
+**5. Packet capture** shows what is actually on the wire when the device's own view and reality appear to disagree.
+
+Working in that order matters because each step is more expensive than the last, and the first two answer most questions.
+
+## Resource problems
+
+**Conserve mode** is the one to recognise on sight. When memory pressure crosses a threshold, FortiOS enters conserve mode to protect itself, and proxy-based inspection is affected first — new sessions may pass without inspection or be blocked, depending on configuration. The symptom is intermittent inspection behaviour that looks like a policy problem, and the cause is memory.
+
+**High CPU** is usually attributable to a specific process, and the per-process view names it. Sustained high CPU on the inspection processes points at inspection load; on the management processes, at logging or an administrative task.
+
+**Session count near the limit** produces failures that look random because they affect whichever session is unlucky enough to be next.
+
+**Disk full** stops logging, which produces the confusing situation where the device is working and nothing is being recorded.
+
+The general shape is that resource exhaustion produces symptoms that look like configuration faults, so checking resources early saves time that would otherwise go into reading policies that are correct.
+
+## What an exam candidate should be able to state cold
+
+Log destinations differ in retention and searchability, and memory logging is lost on reboot, so investigating yesterday requires disk, FortiAnalyzer or syslog. Logging is per policy, and a policy with logging disabled produces nothing to investigate; the implicit deny does not log by default. Diagnose connectivity in order: session exists, which policy matched, route lookup, debug flow, then packet capture. Conserve mode is triggered by memory pressure and affects proxy inspection first, presenting as intermittent inspection that looks like a policy fault.

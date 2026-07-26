@@ -1,0 +1,75 @@
+---
+slug: fortigate-logging-and-diagnostics
+title: "Registro e diagnóstico no FortiGate: para onde vão os logs e como achar um problema"
+summary: "Um FortiGate pode registrar em vários destinos com retenção e capacidade de busca bem diferentes, e uma política que não registra não produz nada a investigar. Quando algo está errado, um pequeno conjunto de comandos responde à maioria das perguntas mais rápido que ler a configuração."
+concepts: ["fortinet", "fortigate", "registro", "configuração de log", "log em memória", "log em disco", "diagnóstico", "recursos", "modo de conservação", "conectividade", "investigação"]
+relatedTools: ["fortigate-session-table-explainer", "fortios-sniffer-builder"]
+sub: fortigate
+relatedArticles: ["fortigate-firewall-policy-and-nat", "fortianalyzer-log-ingestion-and-storage"]
+category: networking
+order: 83
+status: reviewed
+updated: "2026-07-26"
+---
+
+A maior parte da investigação num FortiGate começa com um log que não existe, porque o registro nunca foi habilitado para o tráfego em questão. Isso é a primeira coisa a estabelecer, e não a última.
+
+## Para onde os logs podem ir
+
+| Destino | Retenção | Pesquisável | Notas |
+|---|---|---|---|
+| Memória | Muito curta; perdida no reboot | Sim, no equipamento | Serve ao trabalho ao vivo, inútil depois |
+| Disco local | Maior; não em todos os modelos | Sim, no equipamento | Limitado, e a escrita desgasta o disco |
+| FortiAnalyzer | Longa | Sim, centralmente | A resposta normal para o que precisa ser retido |
+| Syslog | O que o coletor guardar | No coletor | Onde um SIEM existente é o destino |
+| FortiGate Cloud | Gerenciada | Sim | Serve a implantações sem FortiAnalyzer |
+
+A decisão que importa é que o log em memória serve aos próximos minutos. Investigar um incidente de ontem num equipamento que só registra em memória não é possível, e isso se descobre na pior hora.
+
+## O que de fato é registrado
+
+Duas configurações decidem se existe algo a encontrar.
+
+**Registro por política.** Cada política de firewall escolhe registrar todas as sessões, registrar apenas eventos de segurança, ou não registrar. Uma política com registro desabilitado não produz registro algum do tráfego que passou, que é exatamente a situação em que alguém pergunta o que aconteceu.
+
+**Registrar todas as sessões contra apenas eventos de segurança** é uma troca real. Todas as sessões dá registros de tráfego completos e gera muito volume; apenas eventos de segurança registra o que um perfil de segurança tratou, e deixa o tráfego permitido comum invisível. O meio-termo comum é registro completo nas políticas que importam e eventos de segurança no resto.
+
+A negação implícita ao fim da lista não registra por padrão. Vale mudar isso na maioria das implantações, porque "o tráfego está sendo descartado e nada aparece nos logs" é, de outro modo, o comportamento esperado, e não um defeito.
+
+## Ler os logs
+
+Logs de tráfego respondem para onde o tráfego foi e qual política o permitiu. Logs de segurança respondem o que um perfil fez. Logs de evento respondem o que o próprio equipamento fez: transições de HA, logins de administrador, estado de interface, atividade de licença e atualização.
+
+Logs de evento são os subutilizados. Um problema recorrente que se correlaciona com algo no log de eventos — uma renegociação de HA noturna, uma atualização falhando — é um problema cuja causa já está escrita.
+
+## Diagnosticar conectividade
+
+A ordem que resolve a maioria dos casos, do mais barato ao mais caro:
+
+**1. Existe uma sessão?** A tabela de sessões é o registro autoritativo. Uma sessão com tráfego num sentido e nenhum de volta diz que o FortiGate encaminhou os pacotes e nada voltou, o que não é o firewall bloqueando nada.
+
+**2. Qual política casou?** A sessão carrega o ID da política, o que encerra discussões que ler a lista de políticas não encerra.
+
+**3. A rota é o que você pensa?** Uma consulta de rota para o destino responde se o tráfego sequer está saindo pela interface que você espera.
+
+**4. O debug flow** mostra o caminho de decisão para sessões novas: consulta de política, roteamento, NAT, e onde um pacote foi descartado e por quê. É a ferramenta para o caso em que sessão alguma está sendo criada.
+
+**5. Captura de pacotes** mostra o que de fato está no fio quando a visão do equipamento e a realidade parecem discordar.
+
+Trabalhar nessa ordem importa porque cada passo é mais caro que o anterior, e os dois primeiros respondem à maioria das perguntas.
+
+## Problemas de recursos
+
+O **modo de conservação** é o que vale reconhecer de imediato. Quando a pressão de memória cruza um limiar, o FortiOS entra em modo de conservação para se proteger, e a inspeção em modo proxy é afetada primeiro: sessões novas podem passar sem inspeção ou ser bloqueadas, conforme a configuração. O sintoma é comportamento de inspeção intermitente que parece problema de política, e a causa é memória.
+
+**CPU alta** costuma ser atribuível a um processo específico, e a visão por processo o nomeia. CPU alta sustentada nos processos de inspeção aponta para carga de inspeção; nos de gerência, para registro ou tarefa administrativa.
+
+**Contagem de sessões perto do limite** produz falhas que parecem aleatórias porque afetam qualquer sessão que tenha o azar de ser a próxima.
+
+**Disco cheio** para o registro, o que produz a situação confusa em que o equipamento funciona e nada é registrado.
+
+O formato geral é que o esgotamento de recursos produz sintomas que parecem defeitos de configuração, então verificar recursos cedo poupa o tempo que iria para ler políticas que estão corretas.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Os destinos de log diferem em retenção e pesquisabilidade, e o log em memória se perde no reboot, então investigar ontem exige disco, FortiAnalyzer ou syslog. O registro é por política, e uma política com registro desabilitado não produz nada a investigar; a negação implícita não registra por padrão. Diagnostique conectividade em ordem: existe sessão, qual política casou, consulta de rota, debug flow, e então captura de pacotes. O modo de conservação é disparado por pressão de memória e afeta a inspeção em proxy primeiro, apresentando-se como inspeção intermitente que parece defeito de política.

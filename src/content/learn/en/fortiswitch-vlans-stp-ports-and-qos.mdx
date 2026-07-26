@@ -1,0 +1,67 @@
+---
+slug: fortiswitch-vlans-stp-ports-and-qos
+title: "FortiSwitch VLANs, Spanning Tree, Ports, and QoS"
+summary: "The day-to-day work on a managed FortiSwitch is VLANs, port configuration and loop prevention. Each has one detail that catches people: VLANs are created on the FortiGate, spanning tree is on by default and its protections are not, split ports change the port count, and QoS does nothing until something is trusted to mark the traffic."
+concepts: ["fortinet", "fortiswitch", "vlan", "spanning tree", "stp", "bpdu guard", "split port", "transceiver", "qos", "lldp-med", "voice vlan"]
+relatedTools: []
+sub: fortiswitch
+relatedArticles: ["fortiswitch-fortilink-provisioning-and-topologies", "fortigate-firewall-policy-and-nat"]
+category: networking
+order: 60
+status: reviewed
+updated: "2026-07-26"
+---
+
+Once FortiLink is up, the switch is configured from the FortiGate. Everything below assumes that, because it changes where you go to make each change.
+
+## VLANs come from the FortiGate
+
+On a managed FortiSwitch, a VLAN is created as an **interface on the FortiGate** and then assigned to switch ports. That single fact reorients most VLAN work: the VLAN's addressing, DHCP server and firewall policies all live on the firewall, and the switch port assignment is the last step rather than the first.
+
+Each port carries a **native VLAN** for untagged traffic and a set of **allowed VLANs** for tagged traffic. The classic fault is an access device on a port whose native VLAN is not the one intended, which produces a device that gets an address from the wrong scope and is then filtered by policies it was never meant to hit.
+
+Inter-VLAN routing happens on the FortiGate, which means it is subject to firewall policy. That is a feature rather than an inconvenience: traffic between two VLANs on the same switch is inspected, which a traditional layer 3 switch would forward without ever showing it to a firewall.
+
+## Spanning tree, and the protections that are not on by default
+
+Spanning tree runs by default and prevents loops by blocking redundant paths. What is not on by default is the set of protections against the ways spanning tree itself goes wrong.
+
+**BPDU guard** shuts a port down if it receives a BPDU. On an access port, a BPDU means someone has plugged in a switch, and the correct response is usually to stop that port rather than allow a topology change.
+
+**Root guard** prevents a port from becoming the path to a new root bridge, which stops an inferior switch elsewhere in the network from taking over the topology.
+
+**Loop guard** protects against the case where a blocking port stops receiving BPDUs and wrongly transitions to forwarding, which creates the loop spanning tree exists to prevent.
+
+The general principle is that spanning tree assumes cooperating switches. These protections exist for the parts of the network where that assumption does not hold, which is every access port a user can reach.
+
+A loop that forms anyway announces itself the same way every time: a broadcast storm, switch CPU at its limit, and everything on the affected VLANs failing simultaneously. Reading the port statistics for an implausible broadcast rate finds it faster than reasoning about the topology.
+
+## Ports, split ports and transceivers
+
+A **split port** breaks one high-speed interface into several lower-speed ones — a 40G port into four 10G, a 100G into four 25G — using a breakout cable. Two things follow:
+
+Splitting changes the port inventory, so port names change and configuration bound to the original port does not survive. Do it before the port is in service, not after.
+
+It usually requires a reboot to take effect, which makes it a maintenance-window change rather than a live one.
+
+**Transceiver compatibility** is worth checking before assuming a fault. A port that will not link, or links at an unexpected speed, is more often an unsupported or faulty optic than a configuration problem, and the switch will report what it sees the transceiver as.
+
+## QoS does nothing until something is trusted
+
+QoS on a switch is about which packets get preference when a port is congested, and it only works if packets are marked in a way the switch believes.
+
+The two marking schemes are **802.1p** in the VLAN tag at layer 2 and **DSCP** in the IP header at layer 3. A port configured to **trust** one of these accepts the marking the device set; a port that trusts nothing treats everything as best effort regardless of how carefully the endpoint marked it.
+
+That is the detail that makes QoS appear not to work. An IP phone marking its traffic correctly, into a port that trusts nothing, produces exactly the behaviour of no QoS at all.
+
+Marked traffic is then mapped to egress queues, and the queue configuration decides how bandwidth is shared when there is not enough.
+
+## LLDP-MED and the voice VLAN
+
+**LLDP-MED** extends LLDP with the fields IP phones need. The switch advertises the voice VLAN and QoS policy, and a phone that understands the advertisement configures itself.
+
+The value is operational: it removes per-port voice configuration and lets a phone be moved without touching the switch. The failure mode is a phone that does not receive the advertisement, ends up in the data VLAN, and works — badly, unprioritised, and on the wrong subnet — which is harder to notice than a phone that does not work at all.
+
+## What an exam candidate should be able to state cold
+
+On a managed switch, VLANs are created as FortiGate interfaces and assigned to ports, and inter-VLAN routing goes through firewall policy. Spanning tree runs by default; BPDU guard, root guard and loop guard do not, and they exist for ports where cooperating switches cannot be assumed. Split ports change the port inventory and generally need a reboot. QoS requires a trust setting: an untrusted port ignores endpoint marking entirely. LLDP-MED advertises the voice VLAN and QoS to phones so they configure themselves.

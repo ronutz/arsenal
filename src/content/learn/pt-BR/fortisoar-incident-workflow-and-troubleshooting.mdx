@@ -1,0 +1,73 @@
+---
+slug: fortisoar-incident-workflow-and-troubleshooting
+title: "Fluxo de incidentes, filas, war rooms e depuração de playbooks no FortiSOAR"
+summary: "A automação existe para servir pessoas trabalhando incidentes, e os recursos de fluxo decidem se esse trabalho é ordenado. Fases registram onde um incidente está, filas decidem quem o pega, e war rooms guardam a colaboração. Quando a automação se comporta mal, o log de playbook executado responde o que aconteceu mais rápido que o raciocínio."
+concepts: ["fortinet", "fortisoar", "resposta a incidentes", "fases", "fila", "turno", "war room", "depuração de playbook", "log de execução", "investigação"]
+relatedTools: []
+sub: fortisoar
+relatedArticles: ["fortisoar-playbooks-jinja-and-connectors", "fortisoar-architecture-and-data-model"]
+category: security
+order: 72
+status: reviewed
+updated: "2026-07-26"
+---
+
+Tudo que a plataforma automatiza existe para que as pessoas trabalhem incidentes bem. Os recursos de fluxo são o que transforma uma fila de alertas em trabalho administrado, e valem ser configurados deliberadamente, e não aceitos como vêm.
+
+## Fases
+
+Um incidente percorre **fases**: triagem, investigação, contenção, erradicação, recuperação, encerramento, no formato que seu processo de fato usa.
+
+Fases importam por duas razões além da organização. Tornam **onde um incidente está** visível sem precisar lê-lo, o que permite a um supervisor ver um acúmulo se formando numa fase em vez de uma sensação geral de correria. E dão à automação algo em que se apoiar: um playbook pode agir quando um incidente entra em contenção sem precisar interpretar um estado em texto livre.
+
+O conselho que vale seguir é modelar o processo que você tem, e não um idealizado. Fases que ninguém usa viram ruído, e um incidente parado numa fase porque não há onde colocá-lo com exatidão faz as métricas mentirem.
+
+## Filas e turnos
+
+**Filas** guardam trabalho esperando ser pego. Em vez de atribuir um incidente a uma pessoa nomeada que pode estar dormindo, ele vai para uma fila de onde quem está de plantão retira.
+
+**Turnos** descrevem quem está de plantão e quando, para que o roteamento siga a escala, e não uma suposição.
+
+Dois benefícios operacionais decorrem, e são a razão de fazer isso em vez de atribuir direto:
+
+**Nada é atribuído a quem não está.** A atribuição direta falha em silêncio exatamente nos piores momentos: madrugada, fim de semana, férias.
+
+**A propriedade é explícita.** Trabalho retirado de uma fila foi aceito por alguém, o que é diferente de trabalho empurrado que pode não ter sido visto.
+
+## War rooms
+
+Uma **war room** é um espaço de colaboração anexado a um incidente: as pessoas, a conversa, as evidências, as tarefas, tudo num lugar com registro do que aconteceu.
+
+O argumento a favor é que a alternativa é um canal de chat em outro lugar. Quando a investigação termina, esse canal guarda decisões e contexto que nunca chegam ao registro do incidente, e a revisão pós-incidente reconstrói de memória.
+
+Uma war room mantém a discussão anexada àquilo que está sendo discutido, e é isso que torna o registro utilizável depois.
+
+## Depurar playbooks
+
+Quando um playbook não faz o esperado, o **log de playbook executado** responde. Ele mostra cada passo, suas entradas, suas saídas, e onde a execução parou.
+
+A ordem que resolve a maioria das falhas:
+
+**1. O gatilho disparou?** Nenhuma execução significa que a condição do gatilho não casou, ou que o playbook está desativado. Isso é mais comum que qualquer falha de passo.
+
+**2. Qual passo falhou?** O log o nomeia e mostra o que ele recebeu. Um passo falhando com entrada inesperada é a forma mais comum.
+
+**3. O que o passo de fato recebeu?** Não o que você espera que ele receba. Um passo anterior retornando lista vazia, ou um campo ausente naquele registro específico, produz uma falha que parece o passo estar quebrado quando o dado é que estava errado.
+
+**4. É o conector?** Um passo chamando um sistema externo falha pelas razões pelas quais conectores falham — credenciais, deriva de API, limites de taxa — e a verificação de saúde do conector distingue isso de um problema de lógica em segundos.
+
+**5. Avalie o Jinja.** O editor Jinja renderiza uma expressão contra dados reais. Uma expressão que parece correta e produz string vazia é causa muito comum, e é aqui que ela fica visível.
+
+## Os modos de falha que vale reconhecer de imediato
+
+**Funciona num registro e noutro não.** Quase sempre diferença de dados: um campo presente num e ausente no outro. O filtro de padrão é a correção.
+
+**Funcionava antes.** Algo externo mudou: a API de um conector, uma credencial, um valor de lista de seleção que uma condição testa.
+
+**Roda duas vezes.** Um gatilho disparando numa atualização que o próprio playbook fez.
+
+**Para no meio sem erro.** Frequentemente um passo de condição desviando por um ramo que você não esperava, o que o log de execução mostra com clareza.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Fases tornam a posição de um incidente visível e dão à automação algo em que se apoiar. Filas mais turnos roteiam trabalho a quem está de fato de plantão e tornam a propriedade explícita, o que a atribuição direta não faz. War rooms mantêm a colaboração anexada ao incidente para que o registro seja utilizável depois. Depure pelo log de playbook executado em ordem: o gatilho disparou, qual passo falhou, o que ele de fato recebeu, é o conector, e então avalie o Jinja. Funciona num registro e noutro não significa diferença de dados; funcionava antes significa que algo externo mudou.

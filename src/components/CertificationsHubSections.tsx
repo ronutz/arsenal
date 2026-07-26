@@ -25,6 +25,9 @@ export interface HubGuide {
   /** Set when the vendor has not released the exam yet — a DIFFERENT fact from
    *  "we have not transcribed the blueprint yet". */
   availabilityNote?: string | null;
+  /** Set when a version of this exam is being withdrawn (PRIME 2026-07-26).
+   *  Shown on the card because a deadline changes what to book. */
+  retirement?: { exam: string; until: string; replacedBy: string | null } | null;
   cta: string;
 }
 
@@ -41,6 +44,7 @@ export interface HubCert {
   /** Certifications that must be ACTIVE before this one can be earned. */
   prerequisites?: string[];
   prerequisitesLabel?: string;
+  retiringLabel?: string;
   /** The vendor's own page for this certification, so requirements can be
    *  checked against the source rather than trusted to this site. */
   sourceUrl?: string | null;
@@ -227,6 +231,11 @@ export default function CertificationsHubSections({
                                 {/* Availability caveat sits on the CARD so a
                                     reader scanning a level sees which exams
                                     cannot be sat yet without opening each one. */}
+                                {guide.retirement && (
+                                  <p className="certhub-guide-badge certhub-guide-badge--prep">
+                                    {cert.retiringLabel} {guide.retirement.until}
+                                  </p>
+                                )}
                                 {guide.availabilityNote && (
                                   <span className="certhub-guide-badge certhub-guide-badge--prep">
                                     {guide.availabilityNote}

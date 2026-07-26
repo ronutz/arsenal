@@ -1,0 +1,59 @@
+---
+slug: fortimail-policies-session-filtering-and-antispam
+title: "FortiMail Policies and Antispam: Access Control, IP Policies, and Session Filtering"
+summary: "FortiMail evaluates mail through a layered policy model, and knowing which layer acts when explains both why a message was allowed and why a profile you configured never applied. Antispam then works best when the cheap checks run early and the expensive ones run only on what survives."
+concepts: ["fortinet", "fortimail", "access control", "ip policy", "recipient policy", "session filtering", "antispam", "greylisting", "reputation", "spf", "dkim", "dmarc"]
+relatedTools: []
+sub: fortimail
+relatedArticles: ["fortimail-smtp-fundamentals-and-deployment", "fortigate-firewall-policy-and-nat"]
+category: security
+order: 77
+status: reviewed
+updated: "2026-07-26"
+---
+
+FortiMail's policy model has more layers than a firewall's, and they act at different points in the SMTP conversation. Most "why did this get through" questions resolve to knowing which layer decides what.
+
+## The layers, in the order they act
+
+**Access control rules** decide whether the session is accepted at all. They match on sender, recipient, source address and authentication status, and their primary job is relay control: mail to a protected domain is inbound and accepted; mail to elsewhere is relay and must be justified by authentication or a trusted source. These act at `RCPT TO`, before any content exists.
+
+**IP policies** match on the source address of the connecting client and select which profiles apply. They are the right place for decisions about *where mail comes from* — a trusted partner gateway, an internal application server, an unknown internet host.
+
+**Recipient policies** match on envelope sender and recipient, and select profiles based on *who the mail is between*. Inbound and outbound recipient policies are separate, which matters because the sensible profile differs: aggressive antispam inbound, data protection and encryption outbound.
+
+The interaction worth knowing is that IP policies are consulted first and can bypass recipient policy evaluation entirely. A message from a source matched by a permissive IP policy may never reach the recipient policy you expected to apply, which is the most common cause of a profile that appears to do nothing.
+
+Within each type, evaluation is ordered and the first match wins — the same discipline as firewall policy, with the same shadowing risk.
+
+## Session-based filtering
+
+Session filtering acts during the SMTP conversation, before the message body has been transferred. That is what makes it cheap.
+
+**Sender reputation** scores the connecting host on its recent behaviour and can reject or throttle before anything else runs.
+
+**Greylisting** temporarily rejects a first-time sender-recipient-host triplet with a temporary failure. Legitimate mail servers queue and retry, and the message arrives shortly after; much bulk-sending software does not retry. It is effective and it costs delivery latency on genuinely new correspondents, which is the trade to be explicit about rather than surprised by.
+
+**SPF, DKIM and DMARC** verify that the sender is authorised to use the domain it claims. Their limitation is worth stating: they authenticate the *domain*, not the intent. A perfectly authenticated message from a lookalike domain passes all three, which is why domain-similarity checks exist alongside them.
+
+**Recipient verification and rate limiting** reject mail for non-existent addresses and blunt harvesting attempts.
+
+## Antispam, layered by cost
+
+The organising principle is that cheap checks should run first so the expensive ones see less.
+
+- **Connection-level** — reputation, DNSBL, rate limits. No message transferred.
+- **Session-level** — greylisting, sender authentication. Envelope only.
+- **Content-level** — FortiGuard antispam classification, heuristics, banned words, URL analysis, image analysis. Requires the full message.
+
+FortiGuard's classification does most of the work in practice, and the local controls exist for what is specific to your organisation.
+
+**Actions** matter as much as detection. The options — reject, discard, quarantine, tag — differ in who finds out:
+
+**Reject** tells the sending server, so a legitimate sender learns their message did not arrive. **Discard** tells nobody, which is right for definite spam and wrong for anything uncertain, because it makes lost mail invisible. **Quarantine** holds it for review, and per-recipient quarantine with a digest lets users retrieve their own false positives without a helpdesk ticket. **Tag** delivers with a marker and is the gentlest option.
+
+The judgement is to match the action to the confidence. Discarding on a heuristic score is how legitimate mail disappears without trace, and the resulting loss of trust is expensive to repair.
+
+## What an exam candidate should be able to state cold
+
+Access control rules decide whether the session is accepted and handle relay control at RCPT TO; IP policies match the connecting source and select profiles; recipient policies match envelope sender and recipient, separately for inbound and outbound. An IP policy match can bypass recipient policy evaluation, which is the usual reason a configured profile never applies. Session filtering acts before the body transfers, and greylisting works because legitimate servers retry. SPF, DKIM and DMARC authenticate the domain, not the intent, so a lookalike domain passes all three. Match the action to confidence: discard is silent and should be reserved for certainty.

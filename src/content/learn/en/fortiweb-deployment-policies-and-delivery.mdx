@@ -1,0 +1,81 @@
+---
+slug: fortiweb-deployment-policies-and-delivery
+title: "FortiWeb Deployment, Server Policies, and Application Delivery"
+summary: "A web application firewall sits in front of applications it did not write and must not break. The deployment mode decides how much it can do and how much risk it introduces, and the server policy is where an application is described well enough for protection to be meaningful."
+concepts: ["fortinet", "fortiweb", "waf", "reverse proxy", "transparent inspection", "server pool", "server policy", "ssl offload", "load balancing", "caching", "troubleshooting"]
+relatedTools: []
+sub: fortiweb
+relatedArticles: ["fortigate-firewall-policy-and-nat", "fortinet-ssl-inspection-modes"]
+category: security
+order: 81
+status: reviewed
+updated: "2026-07-26"
+---
+
+A web application firewall is unusual among security devices in that it terminates and re-originates the traffic it protects. That gives it real capability and makes deployment mode the decision everything else follows from.
+
+## Deployment modes
+
+**Reverse proxy** is the full-capability mode. FortiWeb terminates the client connection, inspects, and opens its own connection to the server. Because it owns both sides it can rewrite, redirect, offload TLS, load balance and inject cookies. It also means clients connect to FortiWeb rather than to the server, so DNS points at it and the server sees FortiWeb as the client — which matters for logging, and is why the original client address must be forwarded in a header for server logs to remain useful.
+
+**True transparent proxy** sits inline without addressing changes. It can still inspect and block, and it cannot do the things that require owning the connection.
+
+**Transparent inspection** observes and can reset connections, but does not modify traffic. Lower risk, lower capability.
+
+**Offline / sniffer** sees a copy of traffic and can only detect. This is the right starting point for a new deployment, because it produces the false-positive picture without any chance of blocking legitimate traffic.
+
+The progression that works is offline first to learn the application, then inline in a non-blocking posture, then blocking once the exceptions are understood. Going straight to reverse proxy with blocking enabled on an application nobody has profiled is how a WAF gets removed after its first outage.
+
+## Server policies and objects
+
+The configuration hierarchy is worth holding clearly, because everything attaches to it.
+
+A **server pool** describes the real servers: addresses, ports, health checks, and how traffic is distributed between them.
+
+A **virtual server** is the address clients connect to.
+
+A **server policy** binds a virtual server to a server pool and attaches everything else: the protection profile, the TLS configuration, the logging behaviour. It is the unit of "this application, protected this way".
+
+**Health checks** deserve a decision rather than a default. A check that only verifies the port is open will keep sending traffic to a server whose application has crashed but whose listener is alive. A check that fetches a real page and matches expected content detects the failure that matters.
+
+## TLS
+
+FortiWeb usually terminates TLS, which is a prerequisite for inspecting anything, since encrypted request bodies are opaque otherwise.
+
+**Offloading** means terminating at FortiWeb and talking to servers over plaintext, which removes cryptographic work from the servers and requires that the internal network be trusted to carry the traffic.
+
+**Re-encryption** terminates and then opens a new TLS connection to the server, so the traffic is protected on both legs. Slightly more work, and the right answer wherever the internal path is not trusted.
+
+The certificate and cipher configuration lives here too, and it is where a WAF deployment frequently improves an application's TLS posture as a side effect, simply by being the place where it is configured centrally.
+
+## Application delivery
+
+Because it terminates connections, FortiWeb can improve delivery as well as protect:
+
+**Load balancing** across a server pool, with the persistence that stateful applications need. Persistence is the detail that breaks things: an application holding session state on one server will fail intermittently if requests are distributed without it, and the symptom is users being logged out at random.
+
+**Caching and compression** reduce server load and bandwidth.
+
+**Connection reuse** to the back end reduces the connection churn servers handle.
+
+These are genuinely useful and they are also why a WAF outage takes the application with it. A device in the path is a dependency, and the deployment should be designed with that in mind rather than discovering it.
+
+## Troubleshooting
+
+The order that resolves most cases:
+
+**1. Is traffic reaching FortiWeb at all?** DNS, routing, and the virtual server address. If nothing arrives, no policy can act.
+
+**2. Did a server policy match?** Traffic that matches no policy is not protected and may not be forwarded, depending on configuration.
+
+**3. Is the server pool healthy?** Health check failures take servers out silently, and a pool with every member down produces errors that look like a WAF fault.
+
+**4. Was it blocked, and by what?** The attack log names the signature or rule. This distinguishes "the WAF blocked it" from "the application returned an error", which look identical to a user.
+
+**5. Is it TLS?** Certificate mismatches, protocol version disagreements and cipher incompatibility present as connections that fail before any HTTP exists, so no HTTP-level log will show them.
+
+The distinction worth being disciplined about is between FortiWeb blocking a request and the application rejecting it. Both produce a failed request; only one is yours to fix.
+
+## What an exam candidate should be able to state cold
+
+Reverse proxy terminates and re-originates, giving full capability including rewriting, offload and load balancing, and requires forwarding the client address for server logs to stay useful. Transparent modes trade capability for lower risk, and offline mode detects only, which is the right starting posture. Server pool plus virtual server bound by a server policy is the configuration hierarchy. Health checks that only test the port miss a crashed application. Offloading talks plaintext to servers; re-encryption protects both legs. Load balancing needs persistence or stateful applications break intermittently. Troubleshoot in order: traffic arriving, policy matched, pool healthy, attack log, then TLS.

@@ -1,0 +1,67 @@
+---
+slug: fortiswitch-vlans-stp-ports-and-qos
+title: "VLANs, spanning tree, portas e QoS no FortiSwitch"
+summary: "O trabalho diário num FortiSwitch gerenciado é VLANs, configuração de portas e prevenção de laços. Cada um tem um detalhe que pega as pessoas: VLANs são criadas no FortiGate, o spanning tree vem ligado e suas proteções não, portas divididas mudam a contagem de portas, e o QoS não faz nada até algo ser confiado para marcar o tráfego."
+concepts: ["fortinet", "fortiswitch", "vlan", "spanning tree", "stp", "bpdu guard", "porta dividida", "transceptor", "qos", "lldp-med", "vlan de voz"]
+relatedTools: []
+sub: fortiswitch
+relatedArticles: ["fortiswitch-fortilink-provisioning-and-topologies", "fortigate-firewall-policy-and-nat"]
+category: networking
+order: 60
+status: reviewed
+updated: "2026-07-26"
+---
+
+Uma vez que o FortiLink esteja no ar, o switch é configurado a partir do FortiGate. Tudo abaixo pressupõe isso, porque muda o lugar aonde você vai para fazer cada mudança.
+
+## VLANs vêm do FortiGate
+
+Num FortiSwitch gerenciado, uma VLAN é criada como **interface no FortiGate** e então atribuída às portas do switch. Esse único fato reorienta a maior parte do trabalho com VLANs: o endereçamento, o servidor DHCP e as políticas de firewall daquela VLAN vivem todos no firewall, e a atribuição às portas do switch é o último passo, e não o primeiro.
+
+Cada porta carrega uma **VLAN nativa** para tráfego sem tag e um conjunto de **VLANs permitidas** para tráfego com tag. A falha clássica é um equipamento de acesso numa porta cuja VLAN nativa não é a pretendida, o que produz um equipamento que recebe endereço do escopo errado e é então filtrado por políticas que nunca deveriam alcançá-lo.
+
+O roteamento entre VLANs acontece no FortiGate, o que significa que está sujeito à política de firewall. Isso é recurso, e não inconveniente: tráfego entre duas VLANs no mesmo switch é inspecionado, o que um switch de camada 3 tradicional encaminharia sem jamais mostrar a um firewall.
+
+## Spanning tree, e as proteções que não vêm ligadas
+
+O spanning tree roda por padrão e previne laços bloqueando caminhos redundantes. O que não vem ligado é o conjunto de proteções contra as formas pelas quais o próprio spanning tree dá errado.
+
+O **BPDU guard** desliga uma porta se ela receber um BPDU. Numa porta de acesso, um BPDU significa que alguém plugou um switch, e a resposta correta geralmente é parar aquela porta em vez de permitir uma mudança de topologia.
+
+O **root guard** impede que uma porta se torne o caminho para uma nova ponte raiz, o que impede um switch inferior em outro ponto da rede de assumir a topologia.
+
+O **loop guard** protege do caso em que uma porta bloqueada deixa de receber BPDUs e transiciona indevidamente para encaminhamento, criando o laço que o spanning tree existe para evitar.
+
+O princípio geral é que o spanning tree pressupõe switches cooperativos. Essas proteções existem para as partes da rede onde essa premissa não vale, que é toda porta de acesso ao alcance de um usuário.
+
+Um laço que se forme mesmo assim se anuncia sempre do mesmo jeito: tempestade de broadcast, CPU do switch no limite, e tudo nas VLANs afetadas falhando ao mesmo tempo. Ler as estatísticas de porta procurando uma taxa de broadcast implausível encontra isso mais rápido que raciocinar sobre a topologia.
+
+## Portas, portas divididas e transceptores
+
+Uma **porta dividida** quebra uma interface de alta velocidade em várias mais lentas — uma porta de 40G em quatro de 10G, uma de 100G em quatro de 25G — usando um cabo breakout. Duas coisas decorrem:
+
+Dividir muda o inventário de portas, então os nomes mudam e a configuração vinculada à porta original não sobrevive. Faça antes de a porta entrar em serviço, e não depois.
+
+Geralmente exige reinicialização para valer, o que torna isso uma mudança de janela de manutenção, e não algo ao vivo.
+
+**Compatibilidade de transceptor** vale verificar antes de presumir defeito. Uma porta que não sobe enlace, ou sobe numa velocidade inesperada, é mais frequentemente um óptico não suportado ou com defeito do que problema de configuração, e o switch informa o que enxerga do transceptor.
+
+## O QoS não faz nada até algo ser confiado
+
+QoS num switch trata de quais pacotes têm preferência quando uma porta congestiona, e só funciona se os pacotes forem marcados de um jeito em que o switch acredite.
+
+Os dois esquemas de marcação são **802.1p** na tag de VLAN na camada 2 e **DSCP** no cabeçalho IP na camada 3. Uma porta configurada para **confiar** num deles aceita a marcação que o equipamento definiu; uma porta que não confia em nada trata tudo como melhor esforço, por mais cuidadosa que tenha sido a marcação do endpoint.
+
+Esse é o detalhe que faz o QoS parecer não funcionar. Um telefone IP marcando seu tráfego corretamente, numa porta que não confia em nada, produz exatamente o comportamento de QoS nenhum.
+
+O tráfego marcado é então mapeado a filas de saída, e a configuração das filas decide como a banda é dividida quando não há o bastante.
+
+## LLDP-MED e a VLAN de voz
+
+O **LLDP-MED** estende o LLDP com os campos de que telefones IP precisam. O switch anuncia a VLAN de voz e a política de QoS, e um telefone que entende o anúncio se configura sozinho.
+
+O valor é operacional: elimina configuração de voz por porta e permite mover um telefone sem tocar no switch. O modo de falha é um telefone que não recebe o anúncio, vai parar na VLAN de dados, e funciona — mal, sem priorização, e na sub-rede errada — o que é mais difícil de notar que um telefone que não funciona.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Num switch gerenciado, VLANs são criadas como interfaces do FortiGate e atribuídas às portas, e o roteamento entre VLANs passa pela política de firewall. O spanning tree roda por padrão; BPDU guard, root guard e loop guard não, e existem para portas onde não se pode presumir switches cooperativos. Portas divididas mudam o inventário de portas e geralmente exigem reinicialização. O QoS exige uma configuração de confiança: uma porta sem confiança ignora a marcação do endpoint por completo. O LLDP-MED anuncia a VLAN de voz e o QoS aos telefones para que eles se configurem.

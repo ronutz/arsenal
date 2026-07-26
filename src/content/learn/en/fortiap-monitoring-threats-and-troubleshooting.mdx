@@ -1,0 +1,70 @@
+---
+slug: fortiap-monitoring-threats-and-troubleshooting
+title: "FortiAP Monitoring, Wireless Threats, and Troubleshooting What Users Actually Report"
+summary: "Users report that the Wi-Fi is slow. That sentence covers coverage problems, congestion, interference, roaming failures, and things that are not wireless at all. Separating them takes a handful of readings, and knowing which reading distinguishes which cause is most of wireless troubleshooting."
+concepts: ["fortinet", "fortiap", "monitoring", "rogue ap", "wids", "interference", "channel utilization", "roaming", "aiops", "wireless troubleshooting", "debug"]
+relatedTools: []
+sub: fortiap
+relatedArticles: ["fortiap-wireless-fundamentals-and-deployment", "fortiap-secure-wireless-access-and-segmentation"]
+category: networking
+order: 64
+status: reviewed
+updated: "2026-07-26"
+---
+
+Wireless generates more vague complaints than any other part of the network, because everything from a bad optic to a crowded channel arrives as "the Wi-Fi is bad". The work is turning that into a measurement.
+
+## The readings that matter
+
+**Signal strength (RSSI)** at the client says whether coverage reaches. Weak signal explains poor performance at the edge of a cell and explains nothing in the middle of one.
+
+**Signal-to-noise ratio** says whether the signal is usable. Strong signal with a high noise floor performs badly, and this is the reading that separates a coverage problem from an interference problem.
+
+**Channel utilization** says whether the medium is busy. High utilization with good signal is congestion, and no amount of moving the client closer will fix it.
+
+**Client count per radio** says whether the AP is oversubscribed. Airtime is shared, so twenty clients on one radio each get a fraction regardless of their individual signal.
+
+**Data rate and retries** say whether transmissions are succeeding. A client negotiating a low rate, or retrying heavily, is on a marginal link even if the signal number looks acceptable.
+
+Two of these readings, taken together, distinguish most cases:
+
+| Signal | Utilization | Likely cause |
+|---|---|---|
+| Weak | Low | Coverage — the client is too far or obstructed |
+| Strong | High | Congestion — too many clients or too much traffic |
+| Strong, poor SNR | Low | Interference — something non-Wi-Fi is raising the noise floor |
+| Strong | Low, still slow | Not wireless — look upstream at DHCP, DNS, routing or the WAN |
+
+That last row is worth taking seriously. A meaningful share of wireless complaints are wired problems experienced over wireless, and the fastest way to establish it is to reproduce the problem on a cable.
+
+## Threats and rogue detection
+
+**Rogue AP detection** finds access points broadcasting in your space that are not yours. Most are neighbours, and the meaningful cases are the two that are not: an AP plugged into your own network by someone who wanted better coverage, and an AP impersonating your SSID to collect credentials.
+
+The distinction that matters is **on-wire detection** — whether the discovered AP is connected to your network or merely audible. A neighbour's AP is noise; a rogue on your own wire is an open door, and treating them the same produces a list nobody reads.
+
+**Wireless intrusion detection** watches for the recognisable attack patterns: deauthentication floods that force clients off so they can be captured reassociating, evil twins presenting a familiar SSID, and clients probing for networks they have previously joined.
+
+As with any detector, the useful posture is to see what it reports before acting on what it reports. Automatic suppression of a rogue that turns out to be a neighbour's network is, in most jurisdictions, interfering with someone else's equipment.
+
+## Roaming
+
+A client decides when to roam; the infrastructure can only make the decision easier. That is the fact that explains most roaming complaints, because a client that clings to a distant AP is behaving badly and no controller setting overrides it directly.
+
+What helps is making the alternative obvious: adequate overlap so a better AP is genuinely available, transmit power low enough that cells do not extend beyond usefulness, and the fast-roaming standards enabled so that moving between APs does not require full reauthentication. Sticky clients remain a client-side behaviour, and the honest answer sometimes involves the client's driver rather than the network.
+
+## AIOps
+
+FortiAIOps analyses wireless telemetry over time and surfaces patterns a point-in-time view cannot: an AP that degrades every weekday at the same hour, a client type that consistently fails on one band, a channel that becomes unusable when a neighbouring tenant arrives.
+
+The value is in correlation across time and devices, which is exactly the work that is tedious by hand. It complements the live readings rather than replacing them: AIOps tells you where to look and the readings tell you what is happening.
+
+## Logs and debugs
+
+The wireless event log records associations, authentications, disconnections and the reason codes for each. Reason codes are worth reading rather than skimming, because they distinguish a client that left from a client that was pushed and from one that failed to authenticate.
+
+For live investigation, the controller's diagnostics show the AP and client state as the controller understands it, and packet capture at the AP shows what is actually on the air. The sequence that resolves most association failures is: check the event log for the reason code, then confirm the client's view against the controller's, then capture if they disagree.
+
+## What an exam candidate should be able to state cold
+
+Distinguish coverage, congestion and interference using signal strength, signal-to-noise and channel utilization together, and be willing to conclude that the problem is not wireless at all. Rogue detection matters when the AP is on your wire; a neighbour's AP is noise. Wireless intrusion detection recognises deauthentication floods and evil twins. Roaming is a client decision that the infrastructure can only encourage through overlap, sensible power and fast-roaming support. Read the reason codes in the wireless event log before capturing.

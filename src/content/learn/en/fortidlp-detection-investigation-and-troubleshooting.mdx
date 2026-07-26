@@ -1,0 +1,83 @@
+---
+slug: fortidlp-detection-investigation-and-troubleshooting
+title: "FortiDLP Detection, Investigating Cases, and Diagnosing the Agent"
+summary: "A DLP deployment succeeds or fails on how it handles the cases where a person moved data for a legitimate reason. Actions that are too blunt train people to work around the tool; investigation that lacks context cannot tell the two apart. This covers the response options, the event-to-case escalation, and what to check when the agent is not reporting."
+concepts: ["fortinet", "fortidlp", "detection", "policy action", "case management", "incident", "behavior analytics", "false positive", "agent troubleshooting", "audit log"]
+relatedTools: []
+sub: fortidlp
+relatedArticles: ["fortidlp-architecture-and-deployment", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 71
+status: reviewed
+updated: "2026-07-26"
+---
+
+Every data loss prevention deployment meets the same problem: most of what it detects is someone doing their job in a way the policy did not anticipate. How the product handles that determines whether it is used or worked around.
+
+## The response options
+
+FortiDLP's actions form a range, and the range is the point:
+
+**Monitor** records the activity and does nothing else. This is where every new policy should start, because it answers what the policy would have done without anyone finding out the hard way.
+
+**Warn** tells the user that what they are doing looks like a policy violation and lets them proceed. This sounds weak and is frequently the most effective option, because a large share of data loss is genuinely accidental and a prompt at the moment of action stops it without an escalation.
+
+**Justify** requires the user to state a reason before proceeding. The reason is recorded, which produces two useful outcomes: legitimate business processes the policy did not anticipate become visible, and the record exists if the activity turns out to matter.
+
+**Block** stops the action.
+
+The instinct is to block everything sensitive. The consequence is that people find another route, and the new route is one you are not watching. Starting at monitor, moving to warn or justify, and reserving block for the cases where the answer is genuinely never, produces better outcomes than starting at block and relaxing under pressure.
+
+## Events, cases and incidents
+
+An **event** is a single observed activity that matched a policy. Most events are individually unremarkable.
+
+A **case** groups related events into something a person works, with an owner and a status. This is where the analysis happens, because one file leaving is a data point and the same user moving forty files over three days is a pattern.
+
+An **incident** is a case that has been determined to be a genuine problem requiring response.
+
+Keeping the three apart matters operationally, because the volume at each level is different by an order of magnitude, and treating every event as an incident is how a team stops reading any of them.
+
+## Behaviour analytics
+
+Behaviour analytics is what makes the volume manageable. It builds a picture of normal activity for a user and their peers, and surfaces deviation from it.
+
+The value is in the questions it answers that a rule cannot:
+
+- Is this user's activity unusual **for them**? A developer pushing code to an external repository is routine; the same action from someone in finance is not.
+- Is it unusual **for their role**? Peer comparison catches the case where a user's own history is short.
+- Has something **changed**? A gradual increase in data access, or a burst before a resignation, are patterns visible only over time.
+
+This does not replace policy. It prioritises what policy produced, which is a different and equally necessary job.
+
+## Investigating well
+
+The questions that resolve most cases, in order:
+
+**What was the data?** Sensitivity determines everything downstream, and a case about a public document is closed quickly.
+
+**Where was it going?** A personal cloud account, a USB drive and an approved partner platform are three very different situations that produce similar-looking events.
+
+**Who, and is this normal for them?** Behaviour analytics answers the second half.
+
+**Was there a stated reason?** If the policy used justify, the user has already told you, and that is frequently the whole investigation.
+
+**What else did they do around it?** A single action rarely tells the story; the surrounding activity usually does.
+
+## Diagnosing the agent
+
+The recurring causes, in order:
+
+**1. Is the agent registered and reporting?** Same first question as every endpoint product here. An agent that stopped is a blind spot, not a quiet endpoint.
+
+**2. Which policies did it receive?** Not which you assigned — which it has.
+
+**3. Is the platform supported for that capability?** Feature parity across operating systems is not guaranteed, and a policy that cannot be enforced on a platform simply is not.
+
+**4. Performance.** An agent inspecting file operations sits in a hot path. Performance reports exist because a slow endpoint is the fastest way to have an agent removed by someone who has had enough.
+
+**5. Audit and debug logs.** The audit log records what changed in the configuration and who changed it, which answers "this used to work" faster than anything else. Debug logs record why the agent did what it did.
+
+## What an exam candidate should be able to state cold
+
+Actions range from monitor through warn and justify to block, and starting at monitor is what makes a rollout survivable; justify is uniquely useful because it records the business reason. Events are single activities, cases group them for a human, incidents are cases confirmed as problems, and the volume at each level differs by an order of magnitude. Behaviour analytics prioritises rather than replaces policy, comparing a user against their own history and their peers. Diagnose the agent in order: registered and reporting, which policies it received, platform support, performance, then the audit and debug logs.

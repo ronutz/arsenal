@@ -1,0 +1,82 @@
+---
+slug: fortimail-smtp-fundamentals-and-deployment
+title: "Implantação do FortiMail: fundamentos de SMTP, modos de operação e domínios protegidos"
+summary: "O modo de operação escolhido determina o que o FortiMail consegue fazer e quanto da infraestrutura de e-mail muda ao redor dele. Entender antes a distinção entre envelope e cabeçalho no SMTP é o que faz o modelo de políticas depois fazer sentido, porque o FortiMail casa pelo envelope e os usuários veem o cabeçalho."
+concepts: ["fortinet", "fortimail", "smtp", "mta", "modo gateway", "modo transparente", "modo servidor", "domínio protegido", "relay", "envelope"]
+relatedTools: []
+sub: fortimail
+relatedArticles: ["fortigate-security-profiles-flow-vs-proxy", "fortigate-authentication-and-fsso"]
+category: security
+order: 76
+status: reviewed
+updated: "2026-07-26"
+---
+
+A segurança de e-mail depende de forma incomum de entender o protocolo, porque o que os usuários veem e o que o servidor de e-mail usa não são a mesma coisa, e os atacantes contam com essa distância.
+
+## O envelope e o cabeçalho
+
+Uma sessão SMTP carrega dois conjuntos de endereços.
+
+O **envelope** é o que a própria conversa SMTP diz: `MAIL FROM` e `RCPT TO`. É isso que de fato roteia a mensagem, e é contra isso que o FortiMail casa políticas.
+
+O **cabeçalho** é o que aparece dentro da mensagem: o `From:` e o `To:` que o cliente do destinatário exibe.
+
+**Eles não precisam coincidir.** Isso não é defeito; listas de discussão e encaminhamento dependem disso. É também o mecanismo por trás da falsificação de nome de exibição, em que o envelope é um endereço descartável e o cabeçalho afirma ser seu diretor financeiro. Controles antifalsificação existem justamente porque os dois podem divergir.
+
+A consequência prática para configuração: uma política que parece não casar muitas vezes está casando pelo envelope enquanto você lê o cabeçalho.
+
+## A sessão, em ordem
+
+Uma conversa SMTP segue uma sequência fixa, e o FortiMail pode agir em cada etapa:
+
+1. **Conexão** — o cliente conecta. Reputação e limites de conexão valem aqui, antes de qualquer coisa ser dita.
+2. **HELO/EHLO** — o cliente se identifica.
+3. **MAIL FROM** — o remetente de envelope. Verificações por remetente valem aqui.
+4. **RCPT TO** — o destinatário de envelope. É aqui que o controle de relay decide se a mensagem é aceita.
+5. **DATA** — a mensagem em si, cabeçalhos e corpo.
+6. **Fim do DATA** — o ponto em que a varredura de conteúdo tem tudo.
+
+Rejeitar cedo é melhor que rejeitar tarde. Uma mensagem recusada no `RCPT TO` não custa quase nada e o servidor remetente gera o retorno; uma mensagem aceita e depois descartada faz de você o responsável por ela, e gerar retorno a um remetente forjado faz de você parte do problema de outra pessoa. É esse o argumento para rejeitar em vez de aceitar-e-apagar.
+
+## Modos de operação
+
+O modo é a decisão de implantação, e condiciona tudo depois dele.
+
+| | Gateway | Transparente | Servidor |
+|---|---|---|---|
+| Papel | MTA à frente do seu servidor | Em linha, invisível | O próprio servidor de e-mail |
+| Registros MX | Apontam ao FortiMail | Inalterados | Apontam ao FortiMail |
+| Servidor de e-mail | Seu, atrás dele | Seu, inalterado | Nenhum; o FortiMail é ele |
+| Caixas postais | Não | Não | Sim |
+| Uso típico | A escolha comum | Quando não se pode readereçar | Sites pequenos sem servidor |
+
+O **modo gateway** é o que a maioria usa. O FortiMail vira o MX dos seus domínios, filtra, e repassa o e-mail limpo ao servidor interno.
+
+O **modo transparente** insere o FortiMail no caminho sem mudar endereçamento algum, que é a resposta quando registros MX ou o servidor de e-mail não podem ser tocados. É uma ponte, e vale a mesma ressalva de um firewall transparente: nada mais na rede muda, então investigar significa lembrar que ele está ali.
+
+O **modo servidor** faz do FortiMail o sistema de e-mail, com caixas postais e acesso de usuários. Serve a organizações sem servidor de e-mail próprio e é a ferramenta errada onde já existe um.
+
+## Domínios protegidos
+
+Um **domínio protegido** informa ao FortiMail quais domínios são seus. Isso não é burocracia administrativa: é o que dá sentido à direção. Entrada significa endereçado a um domínio protegido; saída significa vindo de um. Políticas, regras de relay e comportamento antispam dependem todos dessa distinção.
+
+Um domínio que deveria estar protegido e não está produz o sintoma recorrente de e-mail tratado como tráfego de relay e recusado, e parece problema de política em vez de definição faltante.
+
+Cada domínio protegido também carrega como o e-mail para ele é entregue adiante, e como os destinatários são validados. A **verificação de destinatário** importa mais do que parece: sem ela, o FortiMail aceita e-mail para endereços que não existem e depois precisa devolvê-lo, o que é trabalho desperdiçado e fonte de retorno indevido.
+
+## Comportamento de MTA seguro
+
+Algumas configurações determinam se sua implantação é boa cidadã e se vira ferramenta de alguém:
+
+**Não seja um relay aberto.** Regras de controle de acesso decidem quem pode repassar por você. Errar isso transforma seu equipamento em infraestrutura de spam e suas faixas de endereço em entradas de listas de bloqueio.
+
+**Autentique usuários de saída** em vez de confiar em endereços de origem, sobretudo onde os usuários enviam de qualquer lugar.
+
+**Publique e honre autenticação de remetente.** SPF, DKIM e DMARC nos seus próprios domínios impedem que outros o personifiquem; verificá-los na entrada impede que você aceite personificação de outros.
+
+**Limite a taxa.** Limites de conexão e de mensagens por origem protegem o equipamento e reduzem a colheita de diretórios.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O envelope SMTP roteia a mensagem e é o que as políticas casam; o cabeçalho é o que o usuário vê, e os dois podem legitimamente diferir, que é o que a falsificação de nome de exibição explora. Rejeitar no RCPT TO é mais barato e mais seguro que aceitar e descartar, porque um retorno a um remetente forjado faz de você parte do problema. O modo gateway faz do FortiMail o MX à frente do seu servidor, o transparente o insere sem mudar endereçamento, e o servidor substitui o servidor de e-mail. Domínios protegidos definem o que significam entrada e saída, e a verificação de destinatário evita aceitar e-mail para endereços inexistentes.

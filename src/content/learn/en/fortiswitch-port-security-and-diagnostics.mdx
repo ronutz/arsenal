@@ -1,0 +1,58 @@
+---
+slug: fortiswitch-port-security-and-diagnostics
+title: "FortiSwitch Port Security, Antispoofing, and Getting Information Out of the Switch"
+summary: "Port security decides which devices may use a port; antispoofing decides whether a device may claim an address it does not own. Both live on the access layer where untrusted devices connect, and both fail in ways that look like the network is broken rather than like security is working."
+concepts: ["fortinet", "fortiswitch", "port security", "802.1x", "sticky mac", "dhcp snooping", "dynamic arp inspection", "ip source guard", "diagnostics", "troubleshooting"]
+relatedTools: ["fortios-sniffer-builder"]
+sub: fortiswitch
+relatedArticles: ["fortiswitch-vlans-stp-ports-and-qos", "fortinac-device-modeling-and-profiling"]
+category: security
+order: 61
+status: reviewed
+updated: "2026-07-26"
+---
+
+The access layer is where untrusted devices attach, so it is where the switch's security features earn their place. They fall into two groups: deciding who may connect, and stopping a connected device from lying about who it is.
+
+## Deciding who may connect
+
+**802.1X** authenticates a device or user before the port carries traffic. It comes in two shapes, and the difference matters on a port with more than one device behind it:
+
+- **Port-based** authenticates once, and the port then carries traffic for anything behind it. Simple, and a hub or unmanaged switch behind an authenticated port lets everything through.
+- **MAC-based** authenticates each MAC separately, which is what you want where a phone and a PC share a port, or where a small switch is legitimately present.
+
+Authentication runs against a RADIUS server, and the server can return the VLAN the device should be placed in. That is how a single physical port serves different network segments depending on who connects to it, and it is the mechanism network access control builds on.
+
+**Sticky MAC** takes a different approach: the port learns the MAC addresses currently connected and then refuses others. It requires no authentication infrastructure, which makes it attractive for devices that cannot authenticate — printers, cameras, industrial equipment.
+
+Its weakness is that it trusts what it learned. If the wrong device was connected when the port learned, the wrong device is now permitted, and MAC addresses can be spoofed by anything determined enough to try. It raises the effort required; it does not settle the question.
+
+## Stopping a device from lying
+
+Three features work together, and the order they depend on each other is the thing to remember.
+
+**DHCP snooping** watches DHCP exchanges and builds a table of which address was assigned to which MAC on which port. It also classifies ports as trusted or untrusted, and drops DHCP server responses arriving on untrusted ports — which stops a rogue DHCP server, whether malicious or someone's home router plugged in backwards.
+
+**Dynamic ARP inspection** uses that table to validate ARP packets. An ARP claiming an address that the snooping table says belongs to a different MAC is dropped, which defeats ARP spoofing.
+
+**IP source guard** uses the same table to drop IP packets whose source address does not match what was assigned to that port, which stops address spoofing outright.
+
+The dependency is the operationally important part: **the second and third need the first.** Enabling dynamic ARP inspection without DHCP snooping leaves it with no table to validate against. And any device with a static address is invisible to the snooping table, so it will be blocked unless a static binding is added for it — which is the single most common cause of "we turned on the security features and the servers stopped working".
+
+## Getting information out of the switch
+
+When something is wrong at the access layer, a few views answer most questions faster than reasoning does.
+
+**The MAC address table** answers where a device actually is. A MAC on an unexpected port is the fastest way to find a device that has been moved, or a loop that is causing the same MAC to appear on several ports in turn.
+
+**Port statistics** answer whether the port is healthy. Error counters climbing steadily point at cabling, duplex mismatch or a failing optic. An implausible broadcast rate points at a loop.
+
+**The DHCP snooping table** answers what the switch believes about a device's address, which is what the antispoofing features act on.
+
+**Packet capture** answers what is actually on the wire when the counters are not conclusive. Capturing at the switch shows what the port sees, which is not always what the endpoint believes it sent.
+
+The habit worth building is to read the table before forming a theory. A device that is not in the MAC address table is not connected the way you think it is, and no amount of policy analysis will fix that.
+
+## What an exam candidate should be able to state cold
+
+802.1X authenticates before the port carries traffic, port-based once or MAC-based per device, and RADIUS can return the VLAN. Sticky MAC permits learned addresses without authentication infrastructure and trusts what it learned. DHCP snooping builds the address table and blocks rogue servers on untrusted ports; dynamic ARP inspection and IP source guard both depend on that table, and statically addressed devices need explicit bindings or they will be blocked. Start diagnosis from the MAC address table, port statistics and the snooping table rather than from the policy.

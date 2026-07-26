@@ -1,0 +1,68 @@
+---
+slug: fortindr-cloud-iql-hunting-and-integration
+title: "FortiNDR Cloud: IQL Queries, Threat Hunting, and Integration"
+summary: "The value of retained network metadata is that you can ask it questions after the fact. IQL is how those questions are asked, hunting is the practice of asking them without waiting for an alert, and integration is what lets the answers reach the rest of the SOC rather than staying in one console."
+concepts: ["fortinet", "fortindr", "iql", "threat hunting", "investigation", "query", "api", "connector", "integration", "retrospective analysis"]
+relatedTools: []
+sub: fortindr
+relatedArticles: ["fortindr-cloud-architecture-detections-and-events", "fortisoar-playbooks-jinja-and-connectors"]
+category: security
+order: 75
+status: reviewed
+updated: "2026-07-26"
+---
+
+A detection tells you about one thing at one moment. Retained metadata lets you ask what else happened, and that is where network monitoring earns most of its value.
+
+## IQL
+
+IQL is the query language for the retained event data. Its shape is familiar to anyone who has used a log query language: select the event type, filter on field values, aggregate, and order.
+
+The queries that come up repeatedly:
+
+- **Everything involving an address**, in either direction, over a window. This is the first query in most investigations.
+- **Connections to a domain or certificate**, which finds every host that reached the same infrastructure.
+- **Aggregation to find outliers** — the host making far more DNS queries than its peers, the connection that recurs at a suspiciously regular interval.
+- **Rare values**, since first-time occurrences are frequently more interesting than volume. A user agent seen once in ninety days is worth a look.
+
+The habit worth building is to write a query for the question rather than reading a dashboard and hoping. Dashboards answer the questions someone anticipated; queries answer yours.
+
+## Retrospective analysis
+
+The capability that distinguishes retained metadata from live alerting is asking about the past.
+
+When an indicator arrives — from threat intelligence, an industry advisory, another incident — the question is immediately "did we ever see this". With retained metadata that is a query. Without it, it is unanswerable, and the honest answer to a board asking whether you were affected is that you cannot tell.
+
+That is worth stating plainly because it is the argument for retention length. Intrusions are frequently discovered long after they began, and retention shorter than the typical discovery interval means the beginning of the incident is already gone when you go looking.
+
+## Threat hunting
+
+Hunting is querying with a hypothesis rather than a trigger. The hypotheses that produce results on network data:
+
+**Beaconing.** Regular, low-volume connections at consistent intervals. Legitimate software beacons too, so the finding is a candidate list rather than a conclusion, but it is a short list.
+
+**Unusual protocol on a port.** Something that is not HTTP on 80, or DNS carrying more data than name resolution requires. Protocol tunnelling is a recognisable shape.
+
+**New external destinations.** Infrastructure that no host has contacted before, particularly when the first contact comes from a server rather than a workstation.
+
+**Volume anomalies in the wrong direction.** A host that normally receives and suddenly sends is a classic exfiltration shape.
+
+**Peer comparison.** One host in a group behaving unlike the rest of the group is a strong signal precisely because the comparison is against genuinely similar systems.
+
+The discipline is to record the hypothesis and the result even when the result is nothing. A hunt that found nothing is a documented absence, and knowing you looked is valuable later.
+
+## Integration
+
+Findings that stay in one console do not become response. Three integration routes matter:
+
+**API access** to detections and events, so a SIEM can ingest them and correlate with endpoint and identity telemetry. This is what puts network findings alongside the rest of the picture.
+
+**Connectors into orchestration**, so a detection can trigger enrichment and response in FortiSOAR without a person copying values between windows.
+
+**Enrichment outward**, where an investigation elsewhere queries network metadata for context — what else did this host talk to — without leaving the incident.
+
+The integration worth building first is the one that gets network detections into the same queue as everything else. A separate console with its own alerts is a second place to look, and second places to look are not looked at during incidents.
+
+## What an exam candidate should be able to state cold
+
+IQL queries retained event data by type, filter, aggregation and ordering, and the common shapes are everything involving an address, connections to shared infrastructure, aggregation for outliers, and rare values. Retained metadata makes retrospective analysis possible, so retention shorter than the typical discovery interval means the start of an incident is already gone. Hunting hypotheses that work on network data include beaconing regularity, protocol on unexpected ports, new external destinations, reversed volume patterns, and peer comparison. Integration via API and connectors is what stops findings from staying in a console nobody checks during an incident.

@@ -1,0 +1,70 @@
+---
+slug: fortiap-monitoring-threats-and-troubleshooting
+title: "Monitoramento, ameaças e investigação de wireless no FortiAP"
+summary: "Usuários relatam que o Wi-Fi está lento. Essa frase cobre problemas de cobertura, congestionamento, interferência, falhas de roaming, e coisas que não são wireless. Separá-las exige um punhado de leituras, e saber qual leitura distingue qual causa é a maior parte da investigação de wireless."
+concepts: ["fortinet", "fortiap", "monitoramento", "ap não autorizado", "wids", "interferência", "utilização de canal", "roaming", "aiops", "investigação wireless", "depuração"]
+relatedTools: []
+sub: fortiap
+relatedArticles: ["fortiap-wireless-fundamentals-and-deployment", "fortiap-secure-wireless-access-and-segmentation"]
+category: networking
+order: 64
+status: reviewed
+updated: "2026-07-26"
+---
+
+O wireless gera mais reclamações vagas que qualquer outra parte da rede, porque tudo, de um óptico ruim a um canal lotado, chega como "o Wi-Fi está ruim". O trabalho é transformar isso numa medição.
+
+## As leituras que importam
+
+A **intensidade de sinal (RSSI)** no cliente diz se a cobertura chega. Sinal fraco explica desempenho ruim na borda de uma célula e não explica nada no meio dela.
+
+A **relação sinal-ruído** diz se o sinal é utilizável. Sinal forte com piso de ruído alto tem desempenho ruim, e essa é a leitura que separa problema de cobertura de problema de interferência.
+
+A **utilização de canal** diz se o meio está ocupado. Utilização alta com bom sinal é congestionamento, e aproximar o cliente não resolve nada.
+
+A **contagem de clientes por rádio** diz se o AP está sobrecarregado. O tempo de ar é compartilhado, então vinte clientes num rádio recebem cada um uma fração, independentemente de seus sinais individuais.
+
+A **taxa de dados e as retransmissões** dizem se as transmissões estão tendo sucesso. Um cliente negociando taxa baixa, ou retransmitindo muito, está num enlace marginal mesmo que o número do sinal pareça aceitável.
+
+Duas dessas leituras, tomadas juntas, distinguem a maioria dos casos:
+
+| Sinal | Utilização | Causa provável |
+|---|---|---|
+| Fraco | Baixa | Cobertura — o cliente está longe demais ou obstruído |
+| Forte | Alta | Congestionamento — clientes demais ou tráfego demais |
+| Forte, sinal-ruído ruim | Baixa | Interferência — algo que não é Wi-Fi elevando o piso de ruído |
+| Forte | Baixa, e ainda lento | Não é wireless — olhe acima: DHCP, DNS, roteamento ou a WAN |
+
+Essa última linha merece ser levada a sério. Uma parcela significativa das reclamações de wireless são problemas cabeados vividos por wireless, e a forma mais rápida de estabelecer isso é reproduzir o problema num cabo.
+
+## Ameaças e detecção de APs indevidos
+
+A **detecção de AP indevido** encontra pontos de acesso transmitindo no seu espaço que não são seus. A maioria são vizinhos, e os casos relevantes são os dois que não são: um AP plugado na sua própria rede por alguém que queria cobertura melhor, e um AP imitando sua SSID para coletar credenciais.
+
+A distinção que importa é a **detecção no fio**: se o AP descoberto está conectado à sua rede ou apenas audível. O AP de um vizinho é ruído; um AP indevido no seu próprio fio é uma porta aberta, e tratá-los igual produz uma lista que ninguém lê.
+
+A **detecção de intrusão wireless** observa os padrões de ataque reconhecíveis: enxurradas de desautenticação que forçam clientes a sair para serem capturados ao reassociar, gêmeos malignos apresentando uma SSID familiar, e clientes sondando por redes que já usaram.
+
+Como com qualquer detector, a postura útil é ver o que ele reporta antes de agir sobre o que ele reporta. Supressão automática de um AP que se revela a rede de um vizinho é, na maioria das jurisdições, interferir em equipamento alheio.
+
+## Roaming
+
+O cliente decide quando fazer roaming; a infraestrutura só pode facilitar a decisão. É esse o fato que explica a maioria das reclamações de roaming, porque um cliente que se agarra a um AP distante está se comportando mal e configuração nenhuma do controlador o sobrepõe diretamente.
+
+O que ajuda é tornar a alternativa óbvia: sobreposição adequada para que um AP melhor esteja de fato disponível, potência de transmissão baixa o bastante para que as células não se estendam além da utilidade, e os padrões de roaming rápido habilitados para que mudar de AP não exija reautenticação completa. Clientes grudentos seguem sendo comportamento do lado do cliente, e a resposta honesta às vezes envolve o driver do cliente, e não a rede.
+
+## AIOps
+
+O FortiAIOps analisa telemetria wireless ao longo do tempo e revela padrões que uma visão pontual não consegue: um AP que degrada todo dia útil no mesmo horário, um tipo de cliente que falha consistentemente numa banda, um canal que se torna inutilizável quando o vizinho de andar chega.
+
+O valor está na correlação ao longo do tempo e entre equipamentos, que é exatamente o trabalho tedioso de fazer à mão. Complementa as leituras ao vivo em vez de substituí-las: o AIOps diz onde olhar e as leituras dizem o que está acontecendo.
+
+## Logs e depurações
+
+O log de eventos wireless registra associações, autenticações, desconexões e os códigos de motivo de cada uma. Códigos de motivo merecem ser lidos, e não passados por cima, porque distinguem um cliente que saiu de um cliente que foi empurrado e de um que falhou ao autenticar.
+
+Para investigação ao vivo, os diagnósticos do controlador mostram o estado de AP e cliente como o controlador o entende, e a captura de pacotes no AP mostra o que está de fato no ar. A sequência que resolve a maioria das falhas de associação é: ver o código de motivo no log de eventos, então confirmar a visão do cliente contra a do controlador, e capturar se discordarem.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Distinga cobertura, congestionamento e interferência usando intensidade de sinal, sinal-ruído e utilização de canal em conjunto, e esteja disposto a concluir que o problema não é wireless. A detecção de AP indevido importa quando o AP está no seu fio; o AP de um vizinho é ruído. A detecção de intrusão wireless reconhece enxurradas de desautenticação e gêmeos malignos. O roaming é decisão do cliente que a infraestrutura só pode incentivar com sobreposição, potência sensata e suporte a roaming rápido. Leia os códigos de motivo no log de eventos wireless antes de capturar.

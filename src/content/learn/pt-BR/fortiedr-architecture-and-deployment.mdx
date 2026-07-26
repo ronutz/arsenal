@@ -1,0 +1,65 @@
+---
+slug: fortiedr-architecture-and-deployment
+title: "Arquitetura do FortiEDR: componentes, implantação, multi-inquilino e o serviço de nuvem"
+summary: "O FortiEDR divide a detecção entre o que o coletor vê no endpoint e o que o serviço de nuvem sabe sobre o mundo. Entender qual componente faz o quê explica a topologia de implantação, por que o multi-inquilino é estruturado como é, e o que acontece quando o serviço de nuvem está inalcançável."
+concepts: ["fortinet", "fortiedr", "detecção e resposta de endpoint", "coletor", "agregador", "core", "central manager", "fortinet cloud service", "multi-inquilino", "api"]
+relatedTools: []
+sub: fortiedr
+relatedArticles: ["forticlient-ems-architecture-and-deployment", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 67
+status: reviewed
+updated: "2026-07-26"
+---
+
+O FortiEDR se constrói em torno de uma afirmação que vale entender antes de os componentes fazerem sentido: a de que o momento decisivo não é quando um arquivo chega, e sim quando um processo tenta fazer algo que não deveria. A arquitetura decorre disso.
+
+## Os componentes
+
+**Coletores** rodam nos endpoints. Observam comportamento de processos e, criticamente, conseguem bloquear uma ação no momento em que ela é tentada, em vez de apenas reportar depois.
+
+**Agregadores** são o ponto de concentração ao qual os coletores reportam. Existem para que um parque grande não tenha todo endpoint falando direto com o core, e para que os endpoints tenham algo alcançável por perto.
+
+**Cores** fazem a análise mais profunda do que os agregadores encaminham.
+
+O **Central Manager** é o console: políticas, inventário, eventos, investigação.
+
+O **Fortinet Cloud Service (FCS)** fornece a inteligência de classificação. Quando um coletor vê algo suspeito, o FCS é o que transforma "este processo fez algo incomum" em "isto é reconhecidamente malicioso" ou "isto é benigno".
+
+Esse último merece atenção pelo que acontece quando fica indisponível. O coletor ainda aplica a política que tem e ainda bloqueia no momento da ação; o que degrada é o enriquecimento que reduz falsos positivos. Operar sem o FCS não é o mesmo que operar sem proteção, e também não é o mesmo que operar normalmente.
+
+## Implantação
+
+A instalação de coletores é distribuição de software comum, pela ferramenta que gerencia seu parque. As considerações que de fato causam problema estão em outro lugar:
+
+**Grupos de coletores** determinam quais políticas se aplicam. É a mesma armadilha dos perfis do EMS: uma política correta atribuída a um grupo em que o endpoint não está produz um endpoint fazendo outra coisa.
+
+**Caminho de comunicação.** Coletores precisam alcançar um agregador. Um endpoint remoto que não alcança está desprotegido no sentido que importa: rodando sua última política conhecida, sem reporte e sem atualizações.
+
+**Convivência com outros softwares de endpoint.** Dois produtos capturando execução de processos é fonte reconhecida de instabilidade, e a configuração de exclusões de cada um vale ser feita deliberadamente, e não depois do primeiro travamento.
+
+## Multi-inquilino
+
+Onde uma implantação atende múltiplas organizações — um provedor de serviços gerenciados, ou um grupo com unidades de negócio genuinamente separadas — o multi-inquilino as separa. Cada inquilino tem seus coletores, políticas, eventos e administradores, e não enxerga os demais.
+
+O ponto arquitetural é que a separação é na camada de gerência enquanto a infraestrutura pode ser compartilhada. Isso faz da atribuição de inquilino um controle de segurança, e não uma conveniência organizacional, com o mesmo peso da atribuição de VLAN numa malha de switches compartilhada.
+
+## Inventário e ferramentas de sistema
+
+O inventário é a resposta a "o que está de fato protegido", e é mais útil do que parece porque a distância entre o parque que você acredita ter e o que está reportando é onde os incidentes acontecem.
+
+Vale ler com regularidade, e não durante um incidente:
+
+- **Coletores que não reportam.** Cada um é um endpoint rodando política desconhecida sem visibilidade.
+- **Dispersão de versões.** Coletores antigos podem não ter detecções que os novos têm.
+- **Endpoints não gerenciados**, em que a rede mostra um equipamento que o inventário não tem.
+
+## A API
+
+O FortiEDR expõe uma API de gerência, que importa para três coisas na prática: puxar eventos para um SIEM, automatizar resposta a partir de uma plataforma de orquestração, e reportar sobre uma frota sem clicar pelo console.
+
+O valor do trabalho por API é a consistência, e não a velocidade. Uma ação tomada por API é a mesma ação todas as vezes, e é isso que a torna segura de disparar automaticamente.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Coletores observam comportamento de processos nos endpoints e conseguem bloquear no momento da ação; agregadores concentram o reporte; cores analisam; o Central Manager é o console. O Fortinet Cloud Service fornece inteligência de classificação, e perdê-lo degrada o enriquecimento em vez de remover a aplicação. Grupos de coletores decidem quais políticas se aplicam, e divergência de grupo é a causa comum de comportamento inesperado. O multi-inquilino separa na camada de gerência sobre infraestrutura possivelmente compartilhada. O valor do inventário é encontrar endpoints que não estão reportando.

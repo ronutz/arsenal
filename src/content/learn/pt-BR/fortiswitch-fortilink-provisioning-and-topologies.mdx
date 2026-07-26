@@ -1,0 +1,68 @@
+---
+slug: fortiswitch-fortilink-provisioning-and-topologies
+title: "FortiSwitch e FortiLink: provisionamento, topologias e quando o switch não sobe"
+summary: "O FortiLink transforma um FortiGate no controlador de switches, o que faz o switch deixar de ser um equipamento que você configura e virar um que o firewall configura para você. Essa mudança explica o fluxo de provisionamento, as topologias suportadas, e quase toda falha de FortiLink, que quase sempre se resolve em descoberta, autorização, ou uma porta que não é o que o FortiLink espera."
+concepts: ["fortinet", "fortiswitch", "fortilink", "provisionamento", "switch gerenciado", "topologia", "mclag", "empilhamento", "multi-inquilino", "investigação"]
+relatedTools: []
+sub: fortiswitch
+relatedArticles: ["fortigate-initial-configuration-and-operation-modes", "fortigate-firewall-policy-and-nat"]
+category: networking
+order: 59
+status: reviewed
+updated: "2026-07-26"
+---
+
+Um FortiSwitch pode operar de forma autônoma, com configuração e CLI próprias. Em quase toda implantação Fortinet ele não opera, porque o **FortiLink** permite que um FortiGate o gerencie, e o switch vira uma extensão da configuração do firewall em vez de um equipamento com vida própria.
+
+## O que o FortiLink de fato muda
+
+Com o FortiLink em uso, o FortiGate vira o **controlador de switches**. As portas do switch aparecem na lista de interfaces do FortiGate, VLANs são criadas no FortiGate e empurradas para baixo, e a configuração do switch passa a ser gerenciada em vez de autorada.
+
+A consequência prática merece ser dita com clareza: **configuração feita diretamente num switch gerenciado tende a ser sobrescrita.** O FortiGate mantém o estado pretendido e reconcilia o switch com ele, do mesmo jeito que o FortiManager mantém o estado pretendido de um firewall. Quem resolve um problema acessando o switch fez uma mudança que vai desaparecer.
+
+## Provisionamento, passo a passo
+
+1. **A interface FortiLink.** Uma ou mais portas do FortiGate são designadas como interface FortiLink. Usar um agregado em vez de uma porta única é a norma onde redundância importa, e precisa ser agregado nas duas pontas.
+2. **Descoberta.** O switch conectado a essa interface é descoberto automaticamente. Ele aparece como equipamento não autorizado.
+3. **Autorização.** Você o autoriza. Até fazer isso ele fica visível e não gerenciado, e é esse o estado que as pessoas confundem com defeito.
+4. **Envio da configuração.** Uma vez autorizado, o FortiGate aplica sua configuração de switch: VLANs, ajustes de porta, políticas de segurança.
+
+Um switch que nunca aparece falhou no passo 2, e as causas são poucas: o cabo não está numa porta designada como FortiLink, o switch não está num modo que permita gerência, ou há incompatibilidade de firmware entre o controlador do FortiGate e o switch.
+
+## Topologias
+
+Os formatos suportados trocam custo por resiliência, e a escolha condiciona tudo o que vem depois.
+
+**Camada única** conecta switches diretamente ao FortiGate. Simples, e cada switch está a uma falha do isolamento.
+
+**Duas camadas** introduz uma camada de distribuição: switches de acesso conectam a switches de distribuição, que conectam ao FortiGate. É o formato corporativo comum, e é onde redundância de enlace começa a importar.
+
+**MCLAG** emparelha dois switches para que um equipamento abaixo possa se conectar aos dois enxergando um par lógico. É assim que um switch de acesso sobrevive à perda de um switch de distribuição sem depender da reconvergência do spanning tree.
+
+**Empilhamento sobre FortiLink** conecta switches uns aos outros em vez de cada um de volta ao FortiGate, o que economiza portas ao custo de tornar um switch acima dependência de tudo que está atrás dele.
+
+Os papéis de porta para empilhamento precisam ser configurados deliberadamente. Um switch cabeado numa topologia de pilha sem a configuração de porta correspondente ou não será descoberto ou formará uma topologia que você não pretendia.
+
+## Multi-inquilino
+
+Onde uma infraestrutura física de switches atende múltiplos inquilinos, a separação se expressa por VLANs mapeadas a VDOMs diferentes do FortiGate. O tráfego de cada inquilino é carregado em suas próprias VLANs, e a fronteira de VDOM no FortiGate é o que mantém conjuntos de políticas, roteamento e administração apartados.
+
+O que precisa estar certo é que o switch é compartilhado. A separação é propriedade da configuração, e não do hardware, então uma VLAN atribuída à porta errada é uma quebra de isolamento entre inquilinos, e não um erro de configuração para corrigir com calma.
+
+## Quando o FortiLink não sobe
+
+Na ordem que resolve a maioria dos casos:
+
+**1. A porta é uma porta FortiLink?** A causa mais comum de longe. Um switch numa porta comum é apenas um equipamento enviando tráfego.
+
+**2. O switch está descoberto porém não autorizado?** Autorização é passo deliberado e fácil de esquecer no segundo e no terceiro switch.
+
+**3. Compatibilidade de firmware.** O controlador do FortiGate suporta uma faixa de versões do FortiSwitchOS. Um switch fora dela pode ser descoberto e falhar em ser gerenciado direito, o que aparece como configuração intermitente ou parcial.
+
+**4. Divergência de agregado.** Se a interface FortiLink for agregado de um lado e portas individuais do outro, o enlace pode subir fisicamente e nunca se formar.
+
+**5. Laços durante o cabeamento.** Conectar um switch que já está cabeado em outro ponto pode criar um laço antes de o spanning tree convergir, e a tempestade de broadcast resultante faz tudo parecer quebrado ao mesmo tempo.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O FortiLink faz do FortiGate o controlador de switches, então o switch é configurado a partir do firewall e mudanças diretas nele tendem a ser sobrescritas. O provisionamento é interface FortiLink, descoberta, autorização, e então envio da configuração, e um switch não autorizado fica visível e não gerenciado. As topologias vão de camada única a duas camadas, MCLAG para conexão dupla, e empilhamento para economizar portas ao custo de dependência. Multi-inquilino usa VLANs mapeadas a VDOMs, então a separação é configuração e não hardware. Quando o FortiLink falha, verifique o papel da porta primeiro, depois a autorização, depois a compatibilidade de firmware.

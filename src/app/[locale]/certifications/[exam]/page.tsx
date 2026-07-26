@@ -183,7 +183,48 @@ export default async function StudyGuidePage({
             </section>
           ) : (
             /* -------- Published state: blueprint sections + objectives -------- */
-            guide.sections.map((section) => (
+            <>
+              {guide.retirement && (
+                /* A retiring exam has a deadline and usually a successor, and
+                   both change what a candidate should book. Names and dates
+                   stay verbatim; only the surrounding words are localised. */
+                <section className="section">
+                  <div className="container certs-container">
+                    <p className="cidr-privacy">
+                      <strong>
+                        {t("retirementNotice", {
+                          exam: guide.retirement.exam,
+                          until: guide.retirement.until,
+                        })}
+                      </strong>
+                      {guide.retirement.replacedBy
+                        ? ` ${t("retirementReplacedBy", { exam: guide.retirement.replacedBy })}`
+                        : ` ${t("retirementNoReplacement")}`}
+                    </p>
+                  </div>
+                </section>
+              )}
+              {guide.sourceCaveat === "course-objectives" && (
+                /* Fortinet has not published an exam blueprint for this one, so
+                   these come from the COURSE page. Same material, different
+                   artifact — say which, rather than let a reader assume. */
+                <section className="section">
+                  <div className="container certs-container">
+                    <p className="cidr-privacy">{t("sourceCaveatCourse")}</p>
+                  </div>
+                </section>
+              )}
+              {guide.sourceCaveat === "truncated-blueprint" && (
+                /* The vendor's own blueprint is defective for this exam, so say
+                   so where a candidate will see it. The honest alternative to
+                   silently reconstructing text Fortinet never published. */
+                <section className="section">
+                  <div className="container certs-container">
+                    <p className="cidr-privacy">{t("sourceCaveatTruncated")}</p>
+                  </div>
+                </section>
+              )}
+              {guide.sections.map((section) => (
               <section className="section certguide-section" key={section.id}>
                 <div className="container certs-container">
                   <h2 className="certguide-section-title">{section.title}</h2>
@@ -206,7 +247,8 @@ export default async function StudyGuidePage({
                   </ul>
                 </div>
               </section>
-            ))
+            ))}
+            </>
           )}
 
           {/* Good-faith / public-sources notice + takedown route (PRIME 2026-07-23).

@@ -1,0 +1,65 @@
+---
+slug: fortisoar-architecture-and-data-model
+title: "FortiSOAR Architecture and Data Model: Modules, Records, and Relationships"
+summary: "FortiSOAR is a database with automation attached, and almost everything you build sits on its data model. Modules hold records, fields hold values, and relationships connect records across modules. Understanding that before writing a playbook is the difference between automation that composes and automation that is a pile of special cases."
+concepts: ["fortinet", "fortisoar", "soar", "data model", "module", "record", "relationship", "rbac", "deployment", "dashboard", "widget"]
+relatedTools: []
+sub: fortisoar
+relatedArticles: ["fortianalyzer-soc-events-incidents-playbooks", "fortiedr-threat-hunting-forensics-and-investigation"]
+category: security
+order: 70
+status: reviewed
+updated: "2026-07-26"
+---
+
+FortiSOAR is often described as an automation platform, which undersells the part that determines whether a deployment succeeds. It is a **structured datastore for security work**, with automation that acts on it. Get the data model right and playbooks compose; get it wrong and every playbook becomes a special case.
+
+## Deployment models
+
+**Single node** runs everything on one appliance. Right for most deployments, and its availability is your availability.
+
+**High availability** clusters nodes so the loss of one does not stop incident handling — which matters more than usual here, because the platform is what people use *during* an incident.
+
+**Distributed or multi-tenant** deployments place tenant nodes with a central master. A managed service provider runs this shape, and so does an organisation with regions that must keep their data local while reporting centrally. The distinguishing question is whether data may leave the tenant, because that decides how much a node handles on its own.
+
+## The data model
+
+Four concepts, and they build on each other.
+
+A **module** is a type of thing: alerts, incidents, indicators, assets, tasks. Modules are what appear in navigation and what records belong to.
+
+A **record** is one instance — one alert, one incident.
+
+**Fields** hold the values on a record. They have types, and the type matters more than it looks: a picklist field constrains input to known values, which is what makes it usable in playbook conditions and dashboard grouping. A text field holding what should have been a picklist is the most common reason a dashboard cannot summarise something.
+
+**Relationships** connect records across modules. An incident relates to the alerts that raised it, the assets involved, the indicators observed, the tasks assigned. This is the part that distinguishes a SOAR platform from a ticket queue: the relationship is queryable, so "show me every incident touching this asset in the last quarter" is a question the system can answer.
+
+## Correlation across modules
+
+Correlation is what relationships are for. When an alert arrives carrying an indicator already linked to an open incident, the system can attach it rather than raising a duplicate.
+
+The practical consequence is deduplication. A SOC drowning in alerts is frequently a SOC seeing the same event reported five times by five products, and correlation on a shared indicator collapses that into one incident with five sources.
+
+It only works if the data is consistent. An indicator stored as text in one place and as a related record in another cannot be correlated, which is why the data model deserves attention before the automation does.
+
+## Access control
+
+FortiSOAR's access control is role-based, and it operates on two axes worth keeping distinct:
+
+**What you may do** — create, read, update, delete — expressed per module. An analyst may update incidents and not delete them; an administrator may do both.
+
+**What you may see** — which records are visible, typically scoped by team or ownership. In a multi-tenant deployment this is the boundary that keeps tenants apart, and it is a security control rather than a convenience.
+
+The design mistake to avoid is granting broad permissions during a rollout and intending to narrow them later. Automation written against permissions nobody has narrowed is automation that breaks when they are.
+
+## Templates, dashboards and widgets
+
+**Templates** standardise how a record looks and what is required on it, so incidents of a given type carry the same fields and nobody has to remember what to fill in.
+
+**Dashboards** are built from **widgets**, each showing a slice of the data. The useful discipline is to build dashboards for a question rather than for a role: "what is unassigned and older than an hour" is actionable, while "everything about incidents" is a screen people stop looking at.
+
+Widgets query the same data model, which closes the loop: a field that is a picklist can be grouped and counted, and a field that is free text cannot.
+
+## What an exam candidate should be able to state cold
+
+Deployment is single node, HA, or distributed and multi-tenant, and the deciding question for the last is whether data may leave the tenant. Modules hold records, records have typed fields, and relationships connect records across modules; relationships are queryable and are what enable correlation and deduplication. Field type matters, because picklists can be grouped in playbook conditions and dashboards while free text cannot. Access control governs both what you may do per module and which records you may see, and the second is the tenant boundary.

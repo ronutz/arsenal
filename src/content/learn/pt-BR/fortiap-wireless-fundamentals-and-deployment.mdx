@@ -1,0 +1,58 @@
+---
+slug: fortiap-wireless-fundamentals-and-deployment
+title: "Implantação de FortiAP: fundamentos de rádio, controlador integrado e perfis de AP"
+summary: "Um FortiAP gerenciado por um FortiGate é configurado quase inteiramente por perfis, e não por equipamento, e é isso que torna uma frota administrável. Entender os fundamentos de rádio por baixo desses perfis é o que impede que as configurações sejam chutes, porque a maioria das reclamações de wireless são problemas de rádio fantasiados de configuração."
+concepts: ["fortinet", "fortiap", "wireless", "802.11", "controlador wireless", "capwap", "perfil de ap", "canal", "potência de transmissão", "ssid", "direcionamento de banda"]
+relatedTools: []
+sub: fortiap
+relatedArticles: ["fortigate-initial-configuration-and-operation-modes", "fortiswitch-vlans-stp-ports-and-qos"]
+category: networking
+order: 62
+status: reviewed
+updated: "2026-07-26"
+---
+
+O wireless é um meio compartilhado que todos enxergam e ninguém controla. Quase toda dificuldade com ele remete a isso, e as opções de configuração existem para administrar as consequências.
+
+## Os fundamentos que decidem todo o resto
+
+**Bandas.** 2,4 GHz alcança mais longe e penetra melhor, e tem apenas três canais sem sobreposição na maioria dos domínios regulatórios, então congestiona rápido e é compartilhada com muita interferência que não é Wi-Fi. 5 GHz tem muito mais canais e alcance menor. 6 GHz, onde disponível, acrescenta espectro substancial com o menor alcance dos três.
+
+**Largura de canal.** Canais mais largos carregam mais e consomem mais espectro. Em 2,4 GHz, qualquer coisa acima de 20 MHz costuma ser erro, porque elimina a pouca separação de canais que existe. Em 5 GHz, canais mais largos são viáveis até a densidade tornar a reutilização impossível.
+
+**O meio é compartilhado.** Só um equipamento transmite por vez ao alcance dos demais. É por isso que a contagem de clientes importa mais que a banda, por que um único cliente lento retém tempo de ar que outros mais rápidos poderiam ter usado, e por que "colocar mais pontos de acesso" piora as coisas quando os novos se sobrepõem nos mesmos canais.
+
+**Sinal não é a história toda.** Um cliente pode exibir excelente intensidade de sinal e ter desempenho ruim porque o canal está congestionado ou porque interferência está elevando o piso de ruído. A relação sinal-ruído é o número mais honesto.
+
+## O controlador integrado
+
+Um FortiGate inclui um controlador wireless. Os FortiAPs se conectam a ele por **CAPWAP**, que carrega o canal de gerência e, conforme a SSID, também os dados.
+
+Descoberta e autorização seguem o mesmo formato do FortiSwitch: o AP encontra o controlador, aparece como não autorizado, e você o autoriza. Um AP que nunca aparece tem problema de descoberta: sem rota até o controlador, sem opção DHCP ou registro DNS apontando para ele, ou um firewall no caminho bloqueando CAPWAP.
+
+A decisão de projeto importante é como cada SSID encaminha o tráfego:
+
+| Modo | Caminho dos dados | Serve a |
+|---|---|---|
+| **Túnel** | O tráfego do cliente é tunelado até o FortiGate | Política e inspeção centralizadas; sites remotos |
+| **Ponte** | O tráfego do cliente é comutado localmente numa VLAN | Tráfego local que não deve cruzar a WAN |
+
+O modo túnel dá ao firewall visão de tudo ao custo de fazer o tráfego local dar a volta por ele. O modo ponte mantém o tráfego local local, e significa que o FortiGate não o vê salvo se o rotear. Escolher modo ponte e depois estranhar por que perfis de segurança não estão sendo aplicados é confusão recorrente.
+
+## Perfis de AP
+
+Um **perfil de AP** guarda a configuração de rádio — banda, canal, largura, potência de transmissão, SSIDs habilitadas — e é aplicado a muitos pontos de acesso. Esse é o propósito: mudança em toda a frota sem tocar em equipamentos individualmente.
+
+Duas configurações merecem decisão, e não padrão:
+
+**Seleção de canal.** A seleção automática deixa o controlador escolher e se adaptar, o que serve à maioria das implantações. Planejamento manual de canais compensa em ambientes densos onde você conhece o layout melhor que um algoritmo lendo a própria vizinhança.
+
+**Potência de transmissão.** O instinto é aumentar. A consequência é que os clientes ouvem o AP de mais longe do que o AP os ouve, então eles se associam à distância e têm desempenho ruim, e as células se sobrepõem o suficiente para reduzir a reutilização. Potência menor com mais APs vence potência maior com menos APs, quase sempre.
+
+O **direcionamento de banda** incentiva clientes de banda dupla a irem para 5 GHz, o que ajuda porque os clientes de outro modo preferem a banda de sinal mais forte, e essa costuma ser a congestionada.
+
+Onde um subconjunto de APs precisa de configuração diferente — uma unidade externa, uma sala de alta densidade — a resposta é outro perfil, e não exceções por equipamento, para que a frota siga descritível.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+2,4 GHz tem três canais sem sobreposição e mais alcance; 5 e 6 GHz têm mais espectro e menos. O meio é compartilhado, então contagem de clientes e tempo de ar importam mais que taxas de catálogo, e sinal-ruído é mais honesto que intensidade de sinal. FortiAPs entram no controlador integrado do FortiGate por CAPWAP e precisam ser autorizados. SSIDs são modo túnel, em que o tráfego vai ao FortiGate, ou modo ponte, em que é comutado localmente e o firewall não o vê. Perfis de AP configuram a frota, e aumentar a potência de transmissão geralmente piora a cobertura em vez de melhorá-la.

@@ -1,0 +1,55 @@
+---
+slug: forticlient-ems-architecture-and-deployment
+title: "FortiClient EMS: Architecture, Deployment Modes, and Endpoint Profiles"
+summary: "EMS is a management server that endpoints check in to, and a profile engine that tells them what to be. Getting the deployment right is mostly about how endpoints find the server and how they are grouped once they do, because a profile applied to the wrong group is the most common reason an endpoint is not doing what you configured."
+concepts: ["fortinet", "forticlient", "ems", "endpoint management", "deployment", "endpoint profile", "telemetry", "invitation code", "on-premises", "cloud"]
+relatedTools: []
+sub: forticlient
+relatedArticles: ["fortigate-authentication-and-fsso", "fortinac-device-modeling-and-profiling"]
+category: security
+order: 65
+status: reviewed
+updated: "2026-07-26"
+---
+
+FortiClient EMS does two jobs: it is where endpoints register and report, and it is where you describe what an endpoint should look like. Almost everything operational follows from that split.
+
+## The components
+
+**FortiClient** runs on the endpoint. Depending on licensing and profile it provides the VPN client, endpoint protection, web filtering, application firewall, vulnerability scanning and ZTNA agent.
+
+**EMS** is the management server. It holds the endpoint inventory, the profiles, and the telemetry endpoints report. It is also what integrates with the Security Fabric, which is how a FortiGate comes to know things about an endpoint it has never spoken to directly.
+
+The connection between them is a **telemetry channel** that the endpoint initiates. That direction matters: endpoints reach out to EMS, so an endpoint that never appears has a path or discovery problem, not a permissions problem on the server.
+
+## Deployment modes
+
+**On-premises EMS** runs on your own Windows server. You control it, you patch it, and endpoints must be able to reach it — which for a remote workforce means publishing it or requiring VPN, and each option has consequences.
+
+**EMS Cloud** is hosted by Fortinet. Endpoints reach it from anywhere without you publishing anything, which suits a distributed workforce and removes the server from your maintenance burden. What you give up is direct control over the server and its data location.
+
+The decision usually turns on where the endpoints are rather than on preference: a workforce that is mostly remote is poorly served by an on-premises server they can only reach through a VPN they may need EMS to configure.
+
+## Getting FortiClient onto endpoints
+
+Several routes exist, and the right one depends on what tooling you already have:
+
+- **Software deployment** through your existing management system, which is how most managed estates do it.
+- **EMS-driven deployment** to endpoints EMS can already reach, useful for domain-joined machines.
+- **Manual installation with an invitation code**, which is how unmanaged and remote endpoints join, and how most pilots run.
+
+The registration step is what actually matters. An installed FortiClient that has not registered to EMS has no profile, so it is running defaults rather than your configuration. An estate where some endpoints behave unexpectedly is often an estate where some endpoints never registered.
+
+## Profiles are the configuration
+
+An **endpoint profile** describes what the endpoint should do: which protection features are on, what the web filter blocks, what the VPN tunnels look like, what the ZTNA rules are.
+
+Profiles are assigned to **groups**, and groups can be built from Active Directory structure or from EMS's own grouping. This is where the most common EMS confusion lives: a profile is correct, and it is assigned to a group the endpoint is not in, so the endpoint dutifully applies something else.
+
+The diagnostic habit that saves time is to check which profile an endpoint actually received before examining the profile you think it received. EMS reports this per endpoint, and it settles the question immediately.
+
+**Profile inheritance and priority** decide what happens when an endpoint could match more than one group. Understanding the precedence in your own deployment is worth doing once deliberately rather than discovering it during an incident.
+
+## What an exam candidate should be able to state cold
+
+FortiClient runs on the endpoint and initiates telemetry to EMS, so registration failures are path or discovery problems. EMS is available on-premises or as EMS Cloud, and the choice usually follows where the endpoints are rather than preference. Deployment can be through existing software management, EMS-driven, or manual with an invitation code, and an unregistered endpoint runs defaults rather than your configuration. Profiles are assigned to groups; when an endpoint behaves unexpectedly, check which profile it actually received before examining the one you intended.

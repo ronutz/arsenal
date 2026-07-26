@@ -1,0 +1,75 @@
+---
+slug: forticlient-ems-endpoint-security-ztna-and-troubleshooting
+title: "FortiClient EMS: segurança de endpoint, quarentena, ZTNA e diagnóstico"
+summary: "Uma vez que os endpoints estejam registrados e com perfil, o EMS vira um sistema de política e resposta. A quarentena isola um endpoint comprometido, o ZTNA substitui a confiança implícita na rede por verificação por sessão, e a conexão com o Fabric é o que permite a um FortiGate agir sobre coisas que só o EMS sabe."
+concepts: ["fortinet", "forticlient", "ems", "segurança de endpoint", "quarentena", "ztna", "zero trust", "security fabric", "conformidade", "investigação"]
+relatedTools: []
+sub: forticlient
+relatedArticles: ["forticlient-ems-architecture-and-deployment", "fortigate-cloud-deployments-and-fortisase"]
+category: security
+order: 66
+status: reviewed
+updated: "2026-07-26"
+---
+
+Uma plataforma de gerência de endpoints ganha seu lugar no momento em que algo dá errado num endpoint. Tudo abaixo trata desse momento e dos mecanismos que o tornam sobrevivível.
+
+## Segurança de endpoint pelo perfil
+
+Os recursos de proteção são habilitados e ajustados no perfil de endpoint: proteção contra malware, filtragem web aplicada no endpoint em vez de num gateway, firewall de aplicações, controle de mídia removível, e varredura de vulnerabilidades que reporta correções faltantes.
+
+O que merece atenção é a **filtragem web no endpoint**. Um gateway filtra o tráfego que passa por ele; um endpoint fora da rede corporativa não passa por nada que você controle. A filtragem no endpoint acompanha o equipamento, que é todo o argumento a favor dela, e é por isso que uma força de trabalho remota muda o cálculo de onde a filtragem deve ficar.
+
+A **varredura de vulnerabilidades** produz um inventário do que está sem correção. Seu valor não é a varredura, e sim a alimentação da política: um endpoint com vulnerabilidades críticas pode ser tratado de forma diferente de um sem, e isso só é útil se algo agir sobre a informação.
+
+## Quarentena
+
+A quarentena isola um endpoint comprometido. O FortiClient bloqueia o tráfego de rede daquele endpoint localmente, então o isolamento não depende de o endpoint estar num segmento que você controla — que é o ponto, porque um notebook comprometido está frequentemente em casa.
+
+A quarentena pode ser disparada manualmente por um administrador, automaticamente pelo EMS numa detecção, ou pelo Security Fabric quando um FortiGate ou FortiAnalyzer conclui que o endpoint está comprometido.
+
+Dois pontos de projeto importam:
+
+**Deixe um caminho de volta.** Um endpoint em quarentena que não alcança o EMS não pode ser liberado, e alguém terá de ir até ele. A configuração de quarentena deve permitir tráfego de gerência.
+
+**Decida quem pode liberar.** A quarentena é disruptiva por natureza, então o caminho de liberação deve ser deliberado, e não disponível a quem notar primeiro.
+
+## ZTNA
+
+O ZTNA substitui "você está na rede, portanto pode alcançar a aplicação" por "esta sessão, deste equipamento, para este usuário, pode alcançar esta aplicação".
+
+As peças:
+
+- O **endpoint** apresenta um certificado de cliente emitido pelo EMS, que identifica o equipamento, e não o usuário.
+- O **EMS** fornece a postura do equipamento — está registrado, a proteção está ligada, está conforme — como **tags ZTNA**.
+- O **FortiGate** atua como proxy de acesso, terminando a sessão e decidindo por requisição usando a identidade do usuário mais essas tags.
+
+A diferença prática em relação à VPN merece ser dita com clareza. Uma VPN concede acesso de rede e depois depende da política de firewall para estreitá-lo; o ZTNA não concede nada até uma requisição específica ser avaliada, e a postura faz parte dessa avaliação. Um equipamento que sai de conformidade perde acesso sem mudança de rede alguma, porque a tag de que dependia deixou de existir.
+
+A dependência a lembrar é que as tags ZTNA vêm do EMS. Um endpoint que parou de reportar ao EMS tem tags obsoletas ou ausentes, e a falha de acesso resultante parece problema de firewall sendo problema de gerência de endpoints.
+
+## Integração com o Security Fabric
+
+Conectar o EMS ao Fabric permite a um FortiGate usar o que o EMS sabe. A política de firewall passa a poder casar com tags ZTNA ou com conformidade do endpoint, e uma detecção em qualquer ponto do Fabric pode disparar a quarentena do endpoint.
+
+É esse o ciclo que vale ter: o FortiGate vê o tráfego e o endpoint vê o processo que o gerou, e nenhum dos dois sozinho consegue agir sobre ambos.
+
+## Diagnosticar endpoints
+
+A ordem que resolve a maioria dos casos:
+
+**1. O endpoint está registrado e reportando?** O EMS mostra o último contato. Um endpoint que parou de reportar explica postura obsoleta, tags ausentes e mudanças de perfil não aplicadas de uma vez só.
+
+**2. Qual perfil ele recebeu?** Não o que você atribuiu: o que o EMS diz que ele recebeu.
+
+**3. O recurso está de fato habilitado naquele perfil?** O licenciamento condiciona alguns recursos, e um recurso não licenciado não vai rodar por mais cuidadosa que seja a configuração.
+
+**4. O que o FortiClient diz localmente?** Os logs do próprio cliente registram por que ele bloqueou algo ou falhou ao conectar, o que é mais direto que inferir pelo EMS.
+
+**5. Conectividade com o EMS.** Para endpoints remotos essa é a causa recorrente, e explica sintomas de registro, telemetria e ZTNA simultaneamente.
+
+O padrão é o mesmo que atravessa o resto desta plataforma: estabeleça que o endpoint e o servidor concordam sobre o que deveria estar acontecendo antes de investigar por que não está.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Os recursos de proteção são habilitados pelo perfil de endpoint, e a filtragem web no endpoint acompanha o equipamento fora da rede corporativa. A quarentena bloqueia o tráfego localmente, então funciona onde quer que o endpoint esteja, e precisa deixar um caminho de volta ao EMS. O ZTNA combina um certificado de cliente identificando o equipamento, tags ZTNA do EMS descrevendo a postura, e um FortiGate como proxy de acesso decidindo por sessão; tags obsoletas de um endpoint que parou de reportar parecem defeito de firewall. Diagnostique em ordem: registrado e reportando, qual perfil recebeu, licenciamento, logs locais do cliente, e então conectividade.

@@ -1,0 +1,83 @@
+---
+slug: fortidlp-detection-investigation-and-troubleshooting
+title: "Detecção, investigação de casos e diagnóstico do agente no FortiDLP"
+summary: "Uma implantação de DLP tem sucesso ou fracassa pela forma como lida com os casos em que uma pessoa moveu dados por motivo legítimo. Ações rudes demais ensinam as pessoas a contornar a ferramenta; investigação sem contexto não consegue distinguir os dois. Este artigo cobre as opções de resposta, a escalada de evento a caso, e o que verificar quando o agente não reporta."
+concepts: ["fortinet", "fortidlp", "detecção", "ação de política", "gestão de casos", "incidente", "análise de comportamento", "falso positivo", "diagnóstico de agente", "log de auditoria"]
+relatedTools: []
+sub: fortidlp
+relatedArticles: ["fortidlp-architecture-and-deployment", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 71
+status: reviewed
+updated: "2026-07-26"
+---
+
+Toda implantação de prevenção de perda de dados encontra o mesmo problema: a maior parte do que ela detecta é alguém fazendo seu trabalho de um jeito que a política não previu. Como o produto lida com isso determina se ele é usado ou contornado.
+
+## As opções de resposta
+
+As ações do FortiDLP formam uma faixa, e a faixa é o ponto:
+
+**Monitorar** registra a atividade e não faz mais nada. É onde toda política nova deveria começar, porque responde o que a política teria feito sem ninguém descobrir do jeito difícil.
+
+**Avisar** informa ao usuário que o que ele está fazendo parece violação de política e o deixa prosseguir. Isso soa fraco e frequentemente é a opção mais eficaz, porque boa parte da perda de dados é genuinamente acidental e um aviso no momento da ação a interrompe sem escalada.
+
+**Justificar** exige que o usuário declare um motivo antes de prosseguir. O motivo é registrado, o que produz dois resultados úteis: processos de negócio legítimos que a política não previu ficam visíveis, e o registro existe se a atividade acabar importando.
+
+**Bloquear** interrompe a ação.
+
+O instinto é bloquear tudo que for sensível. A consequência é que as pessoas encontram outra rota, e a nova rota é uma que você não está observando. Começar em monitorar, avançar para avisar ou justificar, e reservar o bloqueio para os casos em que a resposta é genuinamente nunca, produz melhores resultados que começar em bloquear e relaxar sob pressão.
+
+## Eventos, casos e incidentes
+
+Um **evento** é uma única atividade observada que casou com uma política. A maioria dos eventos é individualmente banal.
+
+Um **caso** agrupa eventos relacionados em algo que uma pessoa trabalha, com dono e estado. É onde a análise acontece, porque um arquivo saindo é um ponto de dado e o mesmo usuário movendo quarenta arquivos em três dias é um padrão.
+
+Um **incidente** é um caso determinado como problema genuíno exigindo resposta.
+
+Manter os três separados importa na operação, porque o volume em cada nível difere por uma ordem de grandeza, e tratar todo evento como incidente é como uma equipe para de ler qualquer um deles.
+
+## Análise de comportamento
+
+A análise de comportamento é o que torna o volume administrável. Ela monta um retrato da atividade normal de um usuário e de seus pares, e revela o desvio.
+
+O valor está nas perguntas que ela responde e uma regra não:
+
+- A atividade deste usuário é incomum **para ele**? Um desenvolvedor enviando código a um repositório externo é rotina; a mesma ação vinda do financeiro não é.
+- É incomum **para o papel dele**? A comparação com pares pega o caso em que o histórico próprio do usuário é curto.
+- Algo **mudou**? Um aumento gradual no acesso a dados, ou um pico antes de um pedido de demissão, são padrões visíveis apenas ao longo do tempo.
+
+Isso não substitui a política. Prioriza o que a política produziu, que é trabalho diferente e igualmente necessário.
+
+## Investigar bem
+
+As perguntas que resolvem a maioria dos casos, em ordem:
+
+**Qual era o dado?** A sensibilidade determina tudo que vem depois, e um caso sobre um documento público se fecha rápido.
+
+**Para onde ia?** Uma conta pessoal de nuvem, um pendrive e uma plataforma de parceiro aprovada são três situações bem diferentes que produzem eventos parecidos.
+
+**Quem, e isso é normal para essa pessoa?** A análise de comportamento responde a segunda metade.
+
+**Houve motivo declarado?** Se a política usou justificar, o usuário já lhe contou, e frequentemente essa é a investigação inteira.
+
+**O que mais ele fez em volta?** Uma ação isolada raramente conta a história; a atividade ao redor geralmente conta.
+
+## Diagnosticar o agente
+
+As causas recorrentes, em ordem:
+
+**1. O agente está registrado e reportando?** Mesma primeira pergunta de todo produto de endpoint aqui. Um agente que parou é ponto cego, e não endpoint quieto.
+
+**2. Quais políticas ele recebeu?** Não as que você atribuiu: as que ele tem.
+
+**3. A plataforma suporta aquela capacidade?** Paridade de recursos entre sistemas operacionais não é garantida, e uma política que não pode ser aplicada numa plataforma simplesmente não é.
+
+**4. Desempenho.** Um agente inspecionando operações de arquivo fica num caminho crítico. Relatórios de desempenho existem porque um endpoint lento é a forma mais rápida de ter um agente removido por alguém que se cansou.
+
+**5. Logs de auditoria e depuração.** O log de auditoria registra o que mudou na configuração e quem mudou, o que responde "isso funcionava antes" mais rápido que qualquer outra coisa. Logs de depuração registram por que o agente fez o que fez.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+As ações vão de monitorar, passando por avisar e justificar, até bloquear, e começar em monitorar é o que torna uma implantação sobrevivível; justificar é singularmente útil porque registra o motivo de negócio. Eventos são atividades isoladas, casos os agrupam para um humano, incidentes são casos confirmados como problemas, e o volume em cada nível difere por uma ordem de grandeza. A análise de comportamento prioriza em vez de substituir a política, comparando um usuário com seu próprio histórico e com seus pares. Diagnostique o agente em ordem: registrado e reportando, quais políticas recebeu, suporte da plataforma, desempenho, e então os logs de auditoria e depuração.

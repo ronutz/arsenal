@@ -1,0 +1,57 @@
+---
+slug: fortidlp-architecture-and-deployment
+title: "FortiDLP: Architecture, Agents, and Knowing Where Your Data Actually Is"
+summary: "Data loss prevention only works where it can see. FortiDLP puts an agent on the endpoint so it observes data at the point of use rather than only in transit, and integrates with SaaS platforms so it sees data that never touches your network. Understanding which vantage point covers what is the difference between coverage and the appearance of it."
+concepts: ["fortinet", "fortidlp", "data loss prevention", "agent", "tenant", "saas integration", "endpoint", "asset", "node", "user activity"]
+relatedTools: []
+sub: fortidlp
+relatedArticles: ["forticlient-ems-architecture-and-deployment", "fortigate-security-profiles-flow-vs-proxy"]
+category: security
+order: 70
+status: reviewed
+updated: "2026-07-26"
+---
+
+Traditional data loss prevention watched the network boundary. That worked when data left over the network and the network was yours. Neither assumption holds now, which is why FortiDLP puts its vantage point on the endpoint and in the SaaS platforms instead.
+
+## Where it watches from
+
+**The endpoint agent** sees data at the point of use: a file being copied to a USB drive, pasted into a browser, uploaded to a personal cloud account, or printed. Crucially it sees this before encryption, which is what makes an endpoint agent able to answer questions a network sensor cannot. Traffic to a SaaS application is TLS on the wire; on the endpoint it is a file being attached.
+
+**SaaS integration** connects to the platform's own API and sees what is stored and shared there. That covers the case where data never passes an endpoint you manage — a file shared directly between two cloud accounts, or an external party granted access to a document.
+
+The two are complementary rather than redundant, and the gap between them is worth naming: an unmanaged device accessing a SaaS platform is visible to the integration but not the agent, and a managed device handling local files is visible to the agent but not the integration. Coverage is the union, and knowing which half is missing for a given path is what makes a deployment honest.
+
+## Tenants and structure
+
+A **tenant** is the top-level container: policies, data, users and administrators. For most organisations there is one. For a service provider or a group with genuinely separate entities, tenancy is the separation boundary, and as with every other multi-tenant product here, assignment is a security control rather than a filing decision.
+
+Within a tenant, the objects you work with are:
+
+**Assets** — the endpoints running agents.
+**Nodes** — the components making up the deployment.
+**Users** — the people the activity is attributed to, which is what turns an event from "a file moved" into "someone moved a file".
+
+## Deploying agents
+
+Agent deployment is ordinary software distribution, and the considerations that cause trouble are the familiar ones from every other endpoint product in this stack.
+
+**Registration matters more than installation.** An installed agent that has not registered to the tenant has no policy. It is present, it is consuming resources, and it is not protecting anything.
+
+**Coverage gaps are the real risk.** An estate at ninety percent agent coverage has a ten percent path for data to leave without observation, and the people most likely to be in that ten percent are the ones with unmanaged or unusual devices. The asset inventory answers this and is worth reading regularly rather than at audit time.
+
+**Platform differences exist.** Capabilities vary by operating system, and assuming parity across a mixed estate produces policy that is enforced on some endpoints and not others, with no obvious signal that this is happening.
+
+## User activity and behaviour
+
+FortiDLP records what users do with data, and that record has two uses that should be kept apart.
+
+The first is **detection**: an activity matched a policy and something should happen.
+
+The second is **context**: understanding what normal looks like for a user or a role, so that unusual activity can be recognised as unusual. A user who routinely handles hundreds of customer records is not doing something remarkable by opening one; a user who never touches them downloading the lot is.
+
+That second use is what separates a modern DLP deployment from a rule engine producing noise, and it depends entirely on having enough history to know what normal was.
+
+## What an exam candidate should be able to state cold
+
+The endpoint agent observes data at the point of use, before encryption, which is why it can see what a network sensor cannot. SaaS integration covers data that never touches a managed endpoint, and the two together define coverage — knowing which half is missing for a path is what makes the deployment honest. Tenants are the separation boundary; assets are agent-running endpoints; activity is attributed to users. An installed but unregistered agent has no policy, and agent coverage below full means an unobserved path exists.

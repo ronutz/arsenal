@@ -1,0 +1,75 @@
+---
+slug: fortisiem-rules-incidents-and-remediation
+title: "FortiSIEM Rules, Subpatterns, and Turning Incidents Into Action"
+summary: "A FortiSIEM rule is built from subpatterns, which is what lets it express conditions a single search cannot: this happened, and then that happened, within this window. Once a rule fires, the work shifts to tuning, notification and remediation, and each of those has a failure mode that quietly makes the SIEM useless."
+concepts: ["fortinet", "fortisiem", "rule", "subpattern", "correlation", "incident", "tuning", "notification policy", "remediation", "false positive"]
+relatedTools: []
+sub: fortisiem
+relatedArticles: ["fortisiem-analytics-queries-and-cmdb", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 73
+status: reviewed
+updated: "2026-07-26"
+---
+
+The point of a SIEM rule is to express something a search cannot: a relationship between events over time. Understanding how that is constructed is most of what makes rule writing tractable.
+
+## Rule components
+
+A rule brings together:
+
+- **A pattern** describing what to match, built from one or more subpatterns.
+- **A time window** over which the pattern must hold.
+- **A severity**, which drives what happens downstream.
+- **Grouping fields** that decide what counts as the same occurrence.
+- **Actions** taken when it fires.
+
+The grouping fields are worth pausing on, because they determine whether a rule produces one incident or a thousand. A rule grouped by source address produces one incident per source; the same rule grouped by nothing produces one incident for the lot. Neither is right in general and both are right sometimes.
+
+## Subpatterns are the interesting part
+
+A **subpattern** is a filter plus an aggregation plus a threshold: events matching this condition, grouped this way, exceeding this count within the window.
+
+A rule with one subpattern expresses a threshold condition — more than N failures from one source in five minutes. That is useful and is not what makes correlation valuable.
+
+A rule with **multiple subpatterns** expresses a relationship: a run of authentication failures from a source, followed by a success from the same source. Neither half is remarkable alone. Failures happen constantly and successes are the normal case. The sequence is what matters, and it is only expressible with subpatterns that share a grouping field.
+
+That shared field is the mechanism people miss. The subpatterns are joined on it, and getting it wrong produces a rule that either never fires or fires on unrelated events that happened to coincide.
+
+## Tuning is the job
+
+A new rule set produces more incidents than anyone can read. The response determines whether the SIEM becomes useful or ignored, and there are only two paths: tune, or stop reading.
+
+Tuning well means asking why each recurring incident is being generated rather than suppressing it:
+
+**Is it genuinely benign?** A backup process that authenticates hundreds of times nightly is not a brute-force attack. The fix is an exclusion narrow enough to cover that process and nothing else.
+
+**Is the threshold wrong?** A threshold set for a quiet network fires constantly on a busy one.
+
+**Is the grouping wrong?** Rules that produce a flood of near-identical incidents are usually grouped too finely.
+
+**Is it real and just frequent?** Sometimes the answer is that something genuinely bad is happening constantly, and the correct response is to fix it rather than the rule.
+
+The discipline to hold is that suppression without understanding is how a SIEM ends up quiet and blind at the same time.
+
+## Notification policies
+
+A notification policy decides who is told and how. The parameters are severity, the affected asset or business unit, and the time of day.
+
+The failure mode is symmetrical and both halves are common. Notify on everything and recipients filter the mail rule-wise into a folder nobody opens. Notify on almost nothing and a genuine incident sits unread until morning.
+
+The workable arrangement matches urgency to channel: interrupt someone only for what warrants interruption, queue the rest for review, and make the criteria explicit so people trust that an interruption means something.
+
+The CMDB earns its keep here. Notification scoped by asset criticality and business unit is precise; notification scoped by severity alone treats a lab machine and a domain controller identically.
+
+## Remediation
+
+FortiSIEM can act rather than only report: block an address on a firewall, disable an account, isolate an endpoint, run a script.
+
+The same rule applies as everywhere else in this stack — match the action to the confidence — with one addition specific to a SIEM. A SIEM acts on correlated evidence from multiple systems, so its confidence in a conclusion can be higher than any single product's. That is the argument for automated remediation here being viable where it would not be from a single sensor.
+
+It also means the blast radius is larger. An automated block driven by a rule with a subtly wrong subpattern join can act on a lot of things quickly, so the sequence is: run the rule without the action, read what it would have done over a representative period, then enable it.
+
+## What an exam candidate should be able to state cold
+
+A rule is a pattern of subpatterns over a time window with grouping fields and actions, and the grouping decides whether it produces one incident or many. A subpattern is a filter plus aggregation plus threshold; multiple subpatterns joined on a shared field express a sequence, which is what correlation adds over search. Tune by understanding why an incident recurs rather than suppressing it. Notification should match urgency to channel and use CMDB context rather than severity alone. Remediation benefits from correlated confidence and has a correspondingly larger blast radius, so observe before enabling.

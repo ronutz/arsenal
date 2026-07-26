@@ -1,0 +1,55 @@
+---
+slug: fortindr-cloud-architecture-detections-and-events
+title: "FortiNDR Cloud: Architecture, Sensors, Event Types, and Detections"
+summary: "Network detection and response watches traffic rather than endpoints, which lets it see things no agent can: devices that cannot run one, lateral movement between hosts, and traffic from systems nobody knew existed. Understanding what the sensors capture and how detections are built on it is what makes the results actionable."
+concepts: ["fortinet", "fortindr", "network detection and response", "sensor", "event types", "detection", "behavioral observation", "detector", "metadata", "visibility"]
+relatedTools: []
+sub: fortindr
+relatedArticles: ["fortinet-soc-architecture-and-adversary-behaviour", "fortiedr-threat-hunting-forensics-and-investigation"]
+category: security
+order: 74
+status: reviewed
+updated: "2026-07-26"
+---
+
+Endpoint tools see what a host does. Network detection sees what hosts do to each other, which covers a set of cases nothing else does well.
+
+## What network visibility adds
+
+Three things justify watching traffic when you already have endpoint agents.
+
+**Devices that cannot run an agent.** Printers, cameras, building systems, medical and industrial equipment, and anything else where installing software is not an option. These are frequently the least maintained systems on the network, and network monitoring is the only visibility available for them.
+
+**Lateral movement.** Movement between hosts is visible as traffic in a way it may not be from either endpoint individually, particularly when the credentials being used are legitimate.
+
+**The unknown estate.** Traffic reveals devices no inventory lists. In most organisations the first sensor deployment finds something nobody could account for, and that alone tends to justify the exercise.
+
+## Architecture and sensors
+
+**Sensors** sit where they can see traffic — typically a span or tap at a network chokepoint, or a virtual sensor in a cloud environment. They observe, extract metadata, and forward it for analysis. The analysis and retention happen in the cloud service, which is what keeps the sensor's job narrow.
+
+Sensor placement is the decision that determines everything the product can do. A sensor at the internet edge sees traffic entering and leaving and cannot see host-to-host traffic inside a segment. A sensor internally sees lateral movement and not egress. Coverage is a deliberate design, and the honest position is to know which segments are unmonitored rather than to assume the deployment sees everything.
+
+## Events and metadata
+
+The sensor does not retain every packet. It extracts **metadata** per protocol: for a connection, who talked to whom and for how long; for DNS, the name queried and the answer; for HTTP, the host, path and user agent; for TLS, the certificate and the SNI, since the payload is encrypted.
+
+That last one is the point worth internalising. Most traffic is encrypted, and network detection works anyway, because a great deal is observable without the payload: which server, what certificate, connection timing and volume, how the session behaves. Beaconing to a command and control server is recognisable from timing and size regularity without reading a single byte of content.
+
+Event types are worth knowing because queries and detections are written against them, and knowing which type carries which field is the difference between a query that returns what you meant and one that returns nothing.
+
+## Detections and behavioural observations
+
+Two categories of output, and conflating them wastes triage time.
+
+**Detections** are judgements: this matches something known bad, or matches a pattern with a documented meaning. They are actionable and are what should reach a queue.
+
+**Behavioural observations** are notable-but-not-conclusive facts: this host started talking to a country it never has, this protocol appeared where it has not been seen. Individually they are context. Together, or alongside a detection, they build a picture.
+
+The mistake is treating observations as alerts. They are the material investigation is made of, not a work queue, and putting them in one produces exactly the alert fatigue that makes people stop reading.
+
+**Detectors** are what produce detections. Some ship with the product and are maintained by the vendor; custom detectors express what matters in your environment. The discipline is the same as any detection engineering: a clear question, a defined response, and false positives measured against your own traffic rather than in principle.
+
+## What an exam candidate should be able to state cold
+
+Network detection covers agentless devices, lateral movement, and devices no inventory knows about. Sensors observe at a tap or span and extract per-protocol metadata rather than retaining packets, and sensor placement determines what can be seen at all — edge sees egress, internal sees lateral. Detection works on encrypted traffic because certificate, SNI, timing and volume are observable without payload, and beaconing is recognisable from regularity alone. Detections are actionable judgements; behavioural observations are context and should not be treated as a work queue.

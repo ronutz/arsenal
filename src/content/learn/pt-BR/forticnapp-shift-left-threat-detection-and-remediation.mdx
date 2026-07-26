@@ -1,0 +1,84 @@
+---
+slug: forticnapp-shift-left-threat-detection-and-remediation
+title: "FortiCNAPP: shift-left, detecção de ameaças e remediação de risco em nuvem"
+summary: "Achar uma configuração incorreta em produção é tarde. O shift-left move a verificação ao ponto em que o erro é mais barato de corrigir, que é antes de ser implantado. A detecção em execução trata do que o shift-left não previne, e linhas de base comportamentais são o que torna a detecção de ameaças em nuvem tratável."
+concepts: ["fortinet", "forticnapp", "shift left", "infraestrutura como código", "ci cd", "detecção em execução", "linha de base comportamental", "remediação", "ajuste de alertas", "ameaças em nuvem"]
+relatedTools: []
+sub: forticnapp
+relatedArticles: ["forticnapp-fundamentals-and-cloud-posture", "fortiedr-threat-hunting-forensics-and-investigation"]
+category: cloud
+order: 80
+status: reviewed
+updated: "2026-07-26"
+---
+
+Infraestrutura de nuvem é construída a partir de código e reconstruída constantemente. Isso muda onde os controles de segurança pertencem, porque um achado em produção aponta para um modelo que vai recriá-lo amanhã.
+
+## Shift-left
+
+Fazer shift-left significa verificar mais cedo: varrer modelos de infraestrutura como código e imagens de contêiner antes de serem implantados, em vez de auditar o que produziram.
+
+O argumento é custo. Uma configuração incorreta pega num pull request é um comentário e uma correção de cinco minutos. A mesma configuração em produção é uma requisição de mudança, uma janela de manutenção, e uma conversa sobre quem autorizou. O defeito é idêntico; só o custo de corrigi-lo mudou.
+
+O segundo argumento é durabilidade. Corrigir produção sem corrigir o modelo significa que a próxima implantação o reintroduz, e é assim que organizações remediam o mesmo achado repetidamente e concluem que o trabalho de segurança é de Sísifo.
+
+**Onde as verificações vão:**
+
+- **No repositório**, em pull requests, para que o retorno chegue a quem escreveu enquanto ainda lembra por quê.
+- **No pipeline**, como etapa de build, onde uma política pode reprovar a construção.
+- **No registro**, varrendo imagens para que uma imagem base vulnerável seja pega antes de qualquer coisa executá-la.
+
+**Em que reprovar** é a decisão que determina se isso sobrevive ao contato com os times de entrega. Reprovar a construção em todo achado produz um pipeline que as pessoas contornam. Reprovar num conjunto estreito e defensável — armazenamento publicamente exposto, credenciais embutidas, vulnerabilidades críticas com correção disponível — e informar o resto mantém o portão crível.
+
+## Detecção em execução
+
+O shift-left previne configurações reconhecidamente ruins. Não previne comprometimento, credenciais roubadas, ou uma identidade autorizada fazendo algo que não deveria, que é para o que serve a detecção em execução.
+
+A detecção de ameaças em nuvem é mais difícil que a de endpoint por uma razão específica: boa parte do que um atacante faz é atividade legítima de API com credenciais válidas. Não há malware a encontrar. Criar um usuário, anexar uma política, ler um bucket, lançar uma instância — tudo comum, tudo parte de ataques reais.
+
+É por isso que **linha de base comportamental**, e não casamento de assinaturas, é a abordagem que funciona. A plataforma aprende como é o normal de cada identidade e recurso — quais APIs chamam, de onde, em que horários, contra o quê — e revela desvios.
+
+As detecções que importam decorrem disso:
+
+- Uma identidade usando uma API que nunca usou.
+- Atividade de uma região ou faixa de endereços que a conta nunca viu.
+- Uma escalada de permissão, sobretudo uma identidade concedendo capacidade a si mesma.
+- Uma carga conectando a algum lugar ao qual nunca conectou.
+- Padrões de enumeração, em que uma identidade lista sistematicamente o que consegue alcançar.
+
+Nenhum é conclusivo sozinho. Todos são incomuns, e incomum é o sinal correto quando tudo é autorizado.
+
+## Investigar
+
+Um alerta precisa de contexto para ser triado, e o contexto é o que uma visão unificada oferece:
+
+**A identidade** — o que é, o que pode fazer, o que normalmente faz.
+**O recurso** — o que é, o que está nele, está exposto.
+**A sequência** — o que veio antes e depois, já que uma ação isolada raramente conta a história.
+**O caminho** — o que poderia ser alcançado daqui, que é o que transforma um alerta numa avaliação de consequência.
+
+Esse último é onde investigação e dados de postura se encontram. A mesma pergunta — o que isto alcança — é pergunta de risco antes de um incidente e de raio de alcance durante um.
+
+## Remediação
+
+A **remediação guiada** diz o que mudar e, para infraestrutura definida em código, onde está o modelo. Essa segunda parte é o que torna a correção durável.
+
+A **remediação automatizada** age diretamente. Serve a casos estreitos, de alta confiança e baixa consequência: remover acesso público de um bucket que a política diz que nunca deve ser público, desabilitar credenciais que vazaram num repositório.
+
+A restrição é que automação em nuvem pode causar indisponibilidade tão facilmente quanto previne incidentes. Revogar uma permissão que se revelou estrutural é um incidente de produção causado pela ferramenta de segurança. O sequenciamento que funciona é o mesmo de todo este material: rodar em modo observação, ver o que teria sido mudado, e então habilitar para os casos em que a resposta esteve certa todas as vezes.
+
+## Ajuste
+
+Detecção sem ajuste produz ruído, e detecção ruidosa é silenciada. O ajuste que de fato ajuda:
+
+**Suprima o reconhecidamente bom.** Um serviço de backup lendo todo bucket é anômalo por construção e correto por projeto. Excluí-lo torna as anomalias restantes significativas.
+
+**Delimite por ambiente.** Desenvolvimento e produção justificam limiares diferentes, e aplicar sensibilidade de produção a um ambiente de testes gera alertas que ninguém vai tratar.
+
+**Ajuste o período da linha de base.** Uma linha de base aprendida numa janela atípica — uma migração, um lançamento — codifica o normal errado.
+
+**Revise o que está suprimido.** Supressões se acumulam e sobrevivem às suas razões, e uma lista de supressões não revisada é um ponto cego crescente.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O shift-left varre código de infraestrutura e imagens antes da implantação, porque o mesmo defeito custa um comentário num pull request e uma requisição de mudança em produção, e corrigir produção sem o modelo garante recorrência. Reprove construções num conjunto estreito e defensável ou os times contornam o portão. A detecção de ameaças em nuvem depende de linha de base comportamental, e não de assinaturas, porque a atividade do atacante são chamadas legítimas de API com credenciais válidas. A investigação precisa de identidade, recurso, sequência e caminho alcançável, e a pergunta do caminho é risco antes de um incidente e raio de alcance durante um. A remediação automatizada serve a casos estreitos de alta confiança e deve rodar antes em modo observação, porque revogar uma permissão estrutural é uma indisponibilidade causada pela ferramenta de segurança.

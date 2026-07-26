@@ -1,0 +1,51 @@
+---
+slug: fortisiem-analytics-queries-and-cmdb
+title: "FortiSIEM Analytics: Building Queries, Aggregation, and the CMDB"
+summary: "A SIEM search is only as good as what it can join against. FortiSIEM keeps a configuration management database describing what your devices are, and the ability to query events alongside that context is what separates a useful search from a text hunt through log lines."
+concepts: ["fortinet", "fortisiem", "siem", "query", "aggregation", "group by", "cmdb", "lookup table", "nested query", "analytics"]
+relatedTools: []
+sub: fortisiem
+relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortianalyzer-reports-datasets-and-charts"]
+category: security
+order: 72
+status: reviewed
+updated: "2026-07-26"
+---
+
+Searching a SIEM well is a skill with a short learning curve and a large payoff. Most of it is knowing what you can filter on, what you can group by, and what context is available to join against.
+
+## From a search result to a query
+
+The productive workflow is rarely to write a query from nothing. It is to search broadly, find an event that looks relevant, and build the query outward from it — adding the fields that make it specific and removing the ones that make it narrow.
+
+That matters because the field names in a SIEM are numerous and inconsistently memorable. Starting from a real event means you are working with the fields that actually exist in the data rather than the ones you assume exist, which is the most common reason a carefully written query returns nothing.
+
+## Aggregation and group by
+
+A raw search returns events. Aggregation turns them into an answer.
+
+**Group by** collapses events into buckets by one or more fields. Group authentication failures by source address and you get a ranked list of who is failing, which is a different and more useful object than a thousand individual failures.
+
+**Aggregate functions** — count, sum, average, minimum, maximum, distinct count — produce the number for each bucket. Distinct count deserves particular mention because it answers questions the others cannot: not how many connections a host made, but how many different destinations it reached, which is what distinguishes a busy server from a scan.
+
+The general shape worth internalising is that a security question is almost always an aggregation. "Is anything unusual happening" is not searchable; "which sources produced more than fifty failures in ten minutes" is.
+
+## The CMDB
+
+FortiSIEM maintains a **configuration management database** describing the devices it knows about: what they are, what they run, what they are called, which business unit owns them, how important they are.
+
+This is the difference between a SIEM and a log search. An event says an address did something. The CMDB says that address is a domain controller in the finance environment classified as critical, and that changes both the priority of the event and what you do about it.
+
+CMDB content is populated by discovery and by import, and it decays. A CMDB that describes the estate as it was two years ago produces confident, well-formatted, wrong prioritisation. Keeping it current is unglamorous and is the thing that makes everything above it work.
+
+## Lookup tables and nested queries
+
+**Lookup tables** hold reference data that is not events: a list of terminated employees, known-good administrative accounts, addresses belonging to a partner. Joining events against them turns a generic search into an organisational one. "Authentication from an account on the terminated list" is not expressible without the list.
+
+**Nested queries** use the result of one query as input to another. The pattern that comes up most often is two-stage: find the set of things matching some condition, then find everything those things did. Identify the hosts that contacted a suspicious address, then retrieve all activity from those hosts.
+
+This is how an investigation actually proceeds — a first query establishes the population and a second explores it — and doing it in one nested query rather than by copying results by hand is both faster and repeatable.
+
+## What an exam candidate should be able to state cold
+
+Build queries outward from a real event rather than from memory, because that guarantees the field names exist. Group by collapses events into buckets and aggregate functions produce the number per bucket, with distinct count answering how many different things rather than how many times. The CMDB supplies device context that turns an address into a classified asset, and a stale CMDB produces confident wrong prioritisation. Lookup tables join events against organisational reference data, and nested queries feed one query's results into another, which is how a two-stage investigation is expressed.

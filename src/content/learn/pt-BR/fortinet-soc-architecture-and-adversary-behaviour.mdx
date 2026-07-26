@@ -1,0 +1,75 @@
+---
+slug: fortinet-soc-architecture-and-adversary-behaviour
+title: "Arquitetura de SOC e comportamento adversário: vetores de ataque e para que servem os produtos"
+summary: "Um centro de operações de segurança é um conjunto de produtos apenas incidentalmente. O que o faz funcionar é saber quais perguntas cada produto responde, como os atacantes de fato entram, e como ler uma sequência de eventos como comportamento em vez de como uma lista de alertas. Este é o enquadramento em que o resto do material de SOC da Fortinet se apoia."
+concepts: ["fortinet", "soc", "operações de segurança", "comportamento adversário", "vetor de ataque", "cadeia de ataque", "mitre attack", "engenharia de detecção", "arquitetura", "telemetria"]
+relatedTools: []
+sub: soc
+relatedArticles: ["fortianalyzer-soc-events-incidents-playbooks", "fortiedr-threat-hunting-forensics-and-investigation", "fortisoar-incident-workflow-and-troubleshooting"]
+category: security
+order: 73
+status: reviewed
+updated: "2026-07-26"
+---
+
+Comprar produtos de SOC é fácil e construir um SOC não é, porque a dificuldade não está em produto algum, e sim em saber qual pergunta cada um responde e como as respostas se combinam.
+
+## Para que serve cada camada
+
+A arquitetura de SOC da Fortinet é mais fácil de guardar como um conjunto de perguntas que como uma lista de produtos.
+
+| Pergunta | Onde é respondida |
+|---|---|
+| O que aconteceu neste endpoint? | FortiEDR |
+| O que aconteceu na rede? | Logs do FortiGate, FortiNDR |
+| O que aconteceu em tudo, correlacionado? | FortiSIEM, FortiAnalyzer |
+| Quem está tratando isso, e o que já fez? | FortiSOAR |
+| O que é normal para este usuário ou entidade? | UEBA |
+
+O valor está nas costuras, e não nas caixas. Uma execução num endpoint é banal; uma conexão de saída é banal; um e-mail de phishing é banal. Os três juntos, nessa ordem, em minutos, são um incidente, e produto algum sozinho vê os três.
+
+Esse é o argumento para correlação, e é também a razão de um SOC com ferramentas excelentes e nenhuma integração render menos que um com ferramentas modestas conectadas entre si.
+
+## Vetores de ataque
+
+As rotas de entrada não mudaram muito, e saber a quais você está de fato exposto foca todo o resto.
+
+**Phishing e engenharia social** seguem sendo o acesso inicial mais comum, porque miram a parte do sistema que não se corrige com atualização. A oportunidade de detecção raramente é o e-mail em si, e geralmente é o que acontece depois dele: um documento lançando um interpretador de scripts, um usuário autenticando de um local implausível.
+
+**Serviços expostos e vulnerabilidades** vêm em segundo. Tudo que é alcançável da internet está sendo varrido continuamente, e a janela entre uma vulnerabilidade se tornar pública e ser explorada em escala é curta o bastante para que a cadência de correção seja preocupação de detecção, e não só de higiene.
+
+**Abuso de credenciais** é o que torna os demais duradouros. Credenciais roubadas produzem atividade que é autorizada por definição, e é por isso que telemetria de identidade importa e por que "este login teve sucesso" não é o mesmo que "este login foi legítimo".
+
+**Cadeia de suprimentos e terceiros** alarga o perímetro para incluir organizações que você não controla. A consequência prática é que conexões confiáveis merecem monitoramento, e não isenção.
+
+**Atividade interna**, maliciosa ou descuidada, é o caso em que todo controle técnico está satisfeito e o comportamento ainda está errado. É o argumento mais forte a favor de linha de base comportamental.
+
+## Ler comportamento em vez de alertas
+
+Um alerta diz que algo casou com uma regra. Comportamento é a sequência, e lê-la é o que separa triagem de investigação.
+
+Os enquadramentos que ajudam:
+
+**Etapas.** Ataques avançam por fases reconhecíveis: obter acesso, estabelecer persistência, escalar privilégio, mover-se lateralmente, coletar, e agir sobre objetivos. Situar uma observação numa etapa diz o que procurar em seguida: um alerta de execução deveria motivar uma checagem de persistência, porque é isso que costuma vir depois.
+
+**Técnicas acima de indicadores.** Um indicador é um endereço ou hash específico e muda barato. Uma técnica — extrair credenciais da memória de um processo, agendar uma tarefa para persistência — é cara para o atacante mudar porque é como o objetivo é alcançado. Detecções escritas contra técnicas sobrevivem; contra indicadores, expiram.
+
+**Linhas de base.** Boa parte da atividade maliciosa é atividade comum num lugar ou horário incomum. Uma ferramenta administrativa não é suspeita; aquela conta usando-a naquele servidor àquela hora pode ser. Isso só funciona se o normal tiver sido caracterizado, que é para o que serve a UEBA.
+
+## O que torna uma detecção boa
+
+A falha recorrente em engenharia de detecção é volume sem discriminação. Uma regra que dispara o tempo todo é silenciada, e uma regra silenciada é pior que uma ausente, porque produz a aparência de cobertura.
+
+As propriedades que vale exigir:
+
+**Uma resposta.** Se ninguém sabe dizer o que fazer quando ela dispara, é telemetria, e não detecção, e pertence a um painel.
+
+**Falsos positivos toleráveis.** Medidos no ambiente real, e não em princípio. Uma regra que produz quarenta alertas por dia no seu parque precisa de ajuste antes de ser habilitada, faça ela o que fizer em outro lugar.
+
+**Intenção documentada.** O que ela procura e por quê. Quem faz a triagem às 3h frequentemente não é quem a escreveu, e uma regra que ninguém entende é uma regra que ninguém consegue ajustar.
+
+**Dados que ela consiga de fato ver.** Uma detecção que depende de telemetria que sua coleta não retém nunca vai disparar, e a ausência parece idêntica a uma ausência de ataques.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Cada produto de SOC responde uma pergunta diferente — endpoint, rede, correlacionado, fluxo de trabalho, linha de base comportamental — e o valor está em correlacionar entre eles, porque ataques relevantes são banais em qualquer visão isolada. Os principais vetores são phishing, serviços expostos, abuso de credenciais, cadeia de suprimentos e insiders, e o abuso de credenciais é o que torna a atividade autorizada por definição. Leia comportamento como sequências em etapas, prefira técnicas a indicadores porque indicadores mudam barato, e estabeleça uma linha de base para que atividade comum em contexto incomum fique visível. Uma detecção precisa de resposta definida, falsos positivos toleráveis medidos no seu próprio ambiente, intenção documentada, e telemetria que seja de fato coletada.

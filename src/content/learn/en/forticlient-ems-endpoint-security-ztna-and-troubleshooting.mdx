@@ -1,0 +1,75 @@
+---
+slug: forticlient-ems-endpoint-security-ztna-and-troubleshooting
+title: "FortiClient EMS: Endpoint Security, Quarantine, ZTNA, and Diagnosing Endpoints"
+summary: "Once endpoints are registered and profiled, EMS becomes a policy and response system. Quarantine isolates a compromised endpoint, ZTNA replaces implicit network trust with per-session verification, and the Fabric connection is what lets a FortiGate act on things only EMS knows."
+concepts: ["fortinet", "forticlient", "ems", "endpoint security", "quarantine", "ztna", "zero trust", "security fabric", "compliance", "troubleshooting"]
+relatedTools: []
+sub: forticlient
+relatedArticles: ["forticlient-ems-architecture-and-deployment", "fortigate-cloud-deployments-and-fortisase"]
+category: security
+order: 66
+status: reviewed
+updated: "2026-07-26"
+---
+
+An endpoint management platform earns its place at the moment something goes wrong on an endpoint. Everything below is about that moment and the mechanisms that make it survivable.
+
+## Endpoint security through the profile
+
+The protective features are enabled and tuned in the endpoint profile: malware protection, web filtering applied on the endpoint rather than at a gateway, an application firewall, removable-media control, and vulnerability scanning that reports missing patches.
+
+The one worth dwelling on is **web filtering on the endpoint**. A gateway filters traffic that crosses it; an endpoint off the corporate network crosses nothing you control. Endpoint-side filtering follows the device, which is the entire argument for it, and it is why a remote workforce changes the calculus on where filtering belongs.
+
+**Vulnerability scanning** produces an inventory of what is unpatched. Its value is not the scan but the feed into policy: an endpoint with critical vulnerabilities can be treated differently from one without, and that is only useful if something acts on it.
+
+## Quarantine
+
+Quarantine isolates a compromised endpoint. FortiClient blocks that endpoint's network traffic locally, so isolation does not depend on the endpoint being on a network segment you control — which is the point, because a compromised laptop is frequently at home.
+
+Quarantine can be triggered manually by an administrator, automatically by EMS on a detection, or by the Security Fabric when a FortiGate or FortiAnalyzer concludes the endpoint is compromised.
+
+Two design points matter:
+
+**Leave a path back.** A quarantined endpoint that cannot reach EMS cannot be released, and someone has to drive to it. The quarantine configuration should permit management traffic.
+
+**Decide who can release.** Quarantine is disruptive by design, so the release path should be deliberate rather than available to whoever notices first.
+
+## ZTNA
+
+ZTNA replaces "you are on the network, therefore you may reach the application" with "this session, from this device, for this user, may reach this application".
+
+The pieces:
+
+- **The endpoint** presents a client certificate issued through EMS, which identifies the device rather than the user.
+- **EMS** supplies device posture — is it registered, is protection on, is it compliant — as **ZTNA tags**.
+- **The FortiGate** acts as the access proxy, terminating the session and deciding per request using the user's identity plus those tags.
+
+The practical difference from VPN is worth stating plainly. A VPN grants network access and then relies on firewall policy to narrow it; ZTNA grants nothing until a specific request is evaluated, and posture is part of that evaluation. A device that falls out of compliance loses access without any network change, because the tag it was relying on is gone.
+
+The dependency to remember is that ZTNA tags come from EMS. An endpoint that has stopped reporting to EMS has stale or absent tags, and the resulting access failure looks like a firewall problem while being an endpoint management problem.
+
+## Security Fabric integration
+
+Connecting EMS to the Fabric lets a FortiGate use what EMS knows. Firewall policy can then match on ZTNA tags or endpoint compliance, and a detection anywhere in the Fabric can trigger endpoint quarantine.
+
+That is the loop worth having: the FortiGate sees traffic and the endpoint sees the process that generated it, and neither alone can act on both.
+
+## Diagnosing endpoints
+
+The order that resolves most cases:
+
+**1. Is the endpoint registered and reporting?** EMS shows last-seen. An endpoint that stopped reporting explains stale posture, missing tags and unapplied profile changes all at once.
+
+**2. Which profile did it get?** Not which profile you assigned — which one EMS says it received.
+
+**3. Is the feature actually enabled in that profile?** Licensing gates some features, and a feature that is not licensed is not going to run however carefully it is configured.
+
+**4. What does FortiClient say locally?** The client's own logs record why it blocked something or failed to connect, which is more direct than inferring from EMS.
+
+**5. Connectivity to EMS.** For remote endpoints this is the recurring cause, and it explains registration, telemetry and ZTNA symptoms simultaneously.
+
+The pattern is the same one that runs through the rest of this platform: establish that the endpoint and the server agree about what should be happening before investigating why it is not.
+
+## What an exam candidate should be able to state cold
+
+Protective features are enabled through the endpoint profile, and endpoint-side web filtering follows the device off the corporate network. Quarantine blocks traffic locally so it works wherever the endpoint is, and must leave a path back to EMS. ZTNA combines a client certificate identifying the device, ZTNA tags from EMS describing posture, and a FortiGate acting as access proxy deciding per session; stale tags from an endpoint that stopped reporting look like a firewall fault. Diagnose in order: registered and reporting, which profile it received, licensing, local client logs, then connectivity.

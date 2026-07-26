@@ -1,0 +1,75 @@
+---
+slug: fortinet-soc-architecture-and-adversary-behaviour
+title: "SOC Architecture and Adversary Behaviour: Attack Vectors and What the Products Are For"
+summary: "A security operations centre is a set of products only incidentally. What makes it work is knowing which questions each product answers, how attackers actually get in, and how to read a sequence of events as behaviour rather than as a list of alerts. This is the frame the rest of the Fortinet SOC material hangs on."
+concepts: ["fortinet", "soc", "security operations", "adversary behaviour", "attack vector", "kill chain", "mitre attack", "detection engineering", "architecture", "telemetry"]
+relatedTools: []
+sub: soc
+relatedArticles: ["fortianalyzer-soc-events-incidents-playbooks", "fortiedr-threat-hunting-forensics-and-investigation", "fortisoar-incident-workflow-and-troubleshooting"]
+category: security
+order: 73
+status: reviewed
+updated: "2026-07-26"
+---
+
+Buying SOC products is easy and building a SOC is not, because the difficulty is not in any one product but in knowing which question each answers and how their answers combine.
+
+## What each layer is for
+
+The Fortinet SOC architecture is easier to hold in mind as a set of questions than as a product list.
+
+| Question | Where it is answered |
+|---|---|
+| What happened on this endpoint? | FortiEDR |
+| What happened on the network? | FortiGate logs, FortiNDR |
+| What happened across everything, correlated? | FortiSIEM, FortiAnalyzer |
+| Who is working this, and what have they done? | FortiSOAR |
+| What is normal for this user or entity? | UEBA |
+
+The value is in the seams rather than the boxes. An endpoint execution is unremarkable; an outbound connection is unremarkable; a phishing email is unremarkable. The three together, in that order, within minutes, are an incident, and no single product sees all three.
+
+That is the argument for correlation, and it is also the reason a SOC with excellent tools and no integration performs worse than one with modest tools that are wired together.
+
+## Attack vectors
+
+The routes in have not changed much, and knowing which ones you are actually exposed to focuses everything downstream.
+
+**Phishing and social engineering** remain the most common initial access, because they target the part of the system that cannot be patched. The detection opportunity is rarely the email itself and usually what happens after it: a document spawning a script interpreter, a user authenticating from an implausible location.
+
+**Exposed services and vulnerabilities** are the second. Anything reachable from the internet is being scanned continuously, and the window between a vulnerability becoming public and being exploited at scale is short enough that patch cadence is a detection concern, not just a hygiene one.
+
+**Credential abuse** is what makes the others durable. Stolen credentials produce activity that is authorised by definition, which is why identity telemetry matters and why "this login succeeded" is not the same as "this login was legitimate".
+
+**Supply chain and third parties** widen the perimeter to include organisations you do not control. The practical consequence is that trusted connections deserve monitoring rather than exemption.
+
+**Insider activity**, whether malicious or careless, is the case where every technical control is satisfied and the behaviour is still wrong. It is the strongest argument for behavioural baselining.
+
+## Reading behaviour rather than alerts
+
+An alert says a thing matched a rule. Behaviour is the sequence, and reading it is what separates triage from investigation.
+
+The frames that help:
+
+**Stages.** Attacks proceed through recognisable phases: gaining access, establishing persistence, escalating privilege, moving laterally, collecting, and acting on objectives. Placing an observation in a stage tells you what to look for next — an execution alert should prompt a check for persistence, because that is what usually follows.
+
+**Techniques over indicators.** An indicator is a specific address or hash and changes cheaply. A technique — dumping credentials from process memory, scheduling a task for persistence — is expensive for an attacker to change because it is how the objective is achieved. Detections written against techniques survive; detections written against indicators expire.
+
+**Baselines.** Much malicious activity is ordinary activity in an unusual place or at an unusual time. An administrative tool is not suspicious; that account using it on that server at that hour may be. This only works if normal has been characterised, which is what UEBA is for.
+
+## What makes detections good
+
+The recurring failure in detection engineering is volume without discrimination. A rule that fires constantly gets muted, and a muted rule is worse than an absent one because it produces the appearance of coverage.
+
+The properties worth insisting on:
+
+**A response.** If nobody can say what to do when it fires, it is telemetry rather than a detection, and it belongs in a dashboard.
+
+**Tolerable false positives.** Measured on the real environment, not in principle. A rule producing forty alerts a day in your estate needs tuning before it is enabled, whatever it does elsewhere.
+
+**Documented intent.** What it is looking for and why. The person triaging at 3am is frequently not the person who wrote it, and a rule nobody understands is a rule nobody can tune.
+
+**Data it can actually see.** A detection depending on telemetry your collection does not retain will never fire, and the absence looks identical to an absence of attacks.
+
+## What an exam candidate should be able to state cold
+
+Each SOC product answers a different question — endpoint, network, correlated, workflow, behavioural baseline — and the value is in correlating across them, because meaningful attacks are unremarkable in any single view. The main attack vectors are phishing, exposed services, credential abuse, supply chain and insiders, and credential abuse is what makes activity authorised by definition. Read behaviour as staged sequences, prefer techniques over indicators because indicators change cheaply, and baseline normal so that ordinary activity in an unusual context becomes visible. A detection needs a defined response, tolerable false positives measured in your own environment, documented intent, and telemetry that is actually collected.

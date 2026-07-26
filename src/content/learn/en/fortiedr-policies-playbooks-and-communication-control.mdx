@@ -1,0 +1,57 @@
+---
+slug: fortiedr-policies-playbooks-and-communication-control
+title: "FortiEDR Policies, Communication Control, and Playbooks"
+summary: "FortiEDR has two policy families that answer different questions: security policies decide what a process may do, and communication control decides which applications may talk to the network. Playbooks decide what happens automatically once something is detected. Each has a simulation mode, and using it is the difference between a rollout and an outage."
+concepts: ["fortinet", "fortiedr", "security policy", "communication control", "playbook", "simulation mode", "exception", "automation", "response"]
+relatedTools: []
+sub: fortiedr
+relatedArticles: ["fortiedr-architecture-and-deployment", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 68
+status: reviewed
+updated: "2026-07-26"
+---
+
+FortiEDR's policies come in two families that are easy to conflate and answer genuinely different questions.
+
+## Security policies: what a process may do
+
+Security policies detect and block behaviour at the point of action — a process attempting something that matches a malicious pattern. They are organised by the stage of an attack they address, which is a more useful grouping than it first appears, because it lets you be strict about the stages where false positives are rare and cautious where legitimate software behaves suspiciously.
+
+Every policy runs in one of two modes:
+
+**Simulation** detects and reports without blocking. **Prevention** blocks.
+
+The deployment sequence that works is simulation first, long enough to see what the policy would have done across a representative period, then prevention once the exceptions are understood. Going straight to prevention on a new estate is how a line-of-business application that does something unusual for good reasons gets blocked at the worst moment.
+
+**Exceptions** are how legitimate behaviour is permitted. The discipline is to make them as narrow as the situation allows: an exception for a specific process doing a specific thing, rather than for a directory or a whole application. A broad exception is a hole that persists long after the reason for it is forgotten.
+
+## Communication control: which applications may talk
+
+Communication control is a different question. It inventories the applications on your endpoints that communicate over the network, and lets you decide which are permitted to.
+
+Its value is visibility before enforcement. Most organisations do not have an accurate list of what is talking to the internet from their endpoints, and the inventory alone frequently finds unapproved software, unmaintained utilities and applications with known vulnerabilities still in daily use.
+
+Policy can then act on that: deny an application outright, or allow it while restricting where it may connect. Reputation and vulnerability information about each application feeds the decision, which is what makes this more useful than a manually maintained list.
+
+## Playbooks
+
+Playbooks automate what happens when something is detected. The available actions run from the informational to the drastic: notify, collect forensic data, terminate the process, isolate the device, block the file across the estate.
+
+Two design points determine whether automation helps or hurts.
+
+**Match the action to the confidence.** A high-confidence detection of known malware justifies isolation. A low-confidence behavioural anomaly justifies collecting data and telling someone. Applying the same response to both produces either under-response to real incidents or a stream of unnecessary isolations, and the second teaches people to distrust the system.
+
+**Watch before acting.** The same argument as simulation mode. Run the playbook's trigger without the destructive actions long enough to see what it would have caught, then enable them.
+
+Playbooks can also be scoped by collector group, which is how a conservative policy applies to servers while a more aggressive one applies to workstations.
+
+## Where the two policy families meet
+
+An incident often involves both: a process doing something suspicious and then attempting to reach an address. Security policy addresses the first, communication control the second, and reading an event usually means looking at what each observed.
+
+The practical takeaway is not to reach for one family when the other is the right tool. An application that should not be talking to the internet is a communication control problem; a process injecting into another is a security policy problem, and configuring the wrong one produces a rule that never fires.
+
+## What an exam candidate should be able to state cold
+
+Security policies detect and block behaviour at the point of action and are organised by attack stage; communication control governs which applications may use the network. Both offer simulation before prevention, and the rollout sequence is simulate, understand exceptions, then enforce. Exceptions should be as narrow as possible. Playbooks automate response, and the action should match the confidence of the detection: isolation for high confidence, data collection and notification for low.

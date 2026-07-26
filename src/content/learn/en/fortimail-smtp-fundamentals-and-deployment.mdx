@@ -1,0 +1,82 @@
+---
+slug: fortimail-smtp-fundamentals-and-deployment
+title: "FortiMail Deployment: SMTP Fundamentals, Operation Modes, and Protected Domains"
+summary: "Which operation mode you choose determines what FortiMail can do and how much of the mail infrastructure changes around it. Understanding SMTP's envelope-versus-header distinction first is what makes the policy model afterwards make sense, because FortiMail matches on the envelope and users see the header."
+concepts: ["fortinet", "fortimail", "smtp", "mta", "gateway mode", "transparent mode", "server mode", "protected domain", "relay", "envelope"]
+relatedTools: []
+sub: fortimail
+relatedArticles: ["fortigate-security-profiles-flow-vs-proxy", "fortigate-authentication-and-fsso"]
+category: security
+order: 76
+status: reviewed
+updated: "2026-07-26"
+---
+
+Email security is unusually dependent on understanding the protocol, because the thing users see and the thing the mail server acts on are not the same, and attackers rely on the gap.
+
+## The envelope and the header
+
+An SMTP session carries two sets of addresses.
+
+The **envelope** is what the SMTP conversation itself says: `MAIL FROM` and `RCPT TO`. This is what actually routes the message, and it is what FortiMail matches policies against.
+
+The **header** is what appears inside the message: the `From:` and `To:` a recipient's mail client displays.
+
+**They do not have to match.** That is not a flaw; mailing lists and forwarding depend on it. It is also the mechanism behind display-name spoofing, where the envelope is some throwaway address and the header claims to be your finance director. Anti-spoofing controls exist precisely because the two can diverge.
+
+The practical consequence for configuration: a policy that appears not to match is often matching on the envelope while you are reading the header.
+
+## The session, in order
+
+An SMTP conversation proceeds in a fixed sequence, and FortiMail can act at each step:
+
+1. **Connection** — the client connects. Reputation and connection limits apply here, before anything is said.
+2. **HELO/EHLO** — the client identifies itself.
+3. **MAIL FROM** — the envelope sender. Sender-based checks apply.
+4. **RCPT TO** — the envelope recipient. This is where relay control decides whether the message is accepted at all.
+5. **DATA** — the message itself, headers and body.
+6. **End of DATA** — the point at which content scanning has everything.
+
+Rejecting early is better than rejecting late. A message refused at `RCPT TO` costs almost nothing and the sending server generates the bounce; a message accepted and then discarded makes you responsible for it, and generating a bounce to a forged sender makes you part of someone else's problem. That is the argument for rejecting rather than accepting-then-deleting.
+
+## Operation modes
+
+The mode is the deployment decision, and it constrains everything after it.
+
+| | Gateway | Transparent | Server |
+|---|---|---|---|
+| Role | MTA in front of your mail server | Inline, invisible | The mail server itself |
+| MX records | Point at FortiMail | Unchanged | Point at FortiMail |
+| Mail server | Yours, behind it | Yours, unchanged | None; FortiMail is it |
+| Mailboxes | No | No | Yes |
+| Typical use | The common choice | No re-addressing possible | Small sites with no mail server |
+
+**Gateway mode** is what most deployments use. FortiMail becomes the MX for your domains, filters, and relays clean mail to the internal server.
+
+**Transparent mode** inserts FortiMail into the path without changing any addressing, which is the answer when MX records or the mail server cannot be touched. It is a bridge, and the same caveat applies as with a transparent firewall: nothing else about the network changes, so troubleshooting means remembering it is there.
+
+**Server mode** makes FortiMail the mail system, with mailboxes and user access. It suits organisations without a separate mail server and is the wrong tool where one already exists.
+
+## Protected domains
+
+A **protected domain** tells FortiMail which domains are yours. This is not administrative bookkeeping — it is what makes direction meaningful. Inbound means addressed to a protected domain; outbound means from one. Policies, relay rules and antispam behaviour all depend on that distinction.
+
+A domain that should be protected and is not produces the recurring symptom of mail being treated as relay traffic and refused, and it looks like a policy problem rather than a missing definition.
+
+Each protected domain also carries how mail for it is delivered onward, and how recipients are validated. **Recipient verification** matters more than it sounds: without it, FortiMail accepts mail for addresses that do not exist and then has to bounce it, which is both wasted work and a source of backscatter.
+
+## Secure MTA behaviour
+
+A few settings determine whether your deployment is a good citizen and whether it becomes someone's tool:
+
+**Do not be an open relay.** Access control rules decide who may relay through you. Getting this wrong turns your appliance into spam infrastructure and your address ranges into blocklist entries.
+
+**Authenticate outbound users** rather than trusting source addresses, especially where users send from anywhere.
+
+**Publish and honour sender authentication.** SPF, DKIM and DMARC on your own domains stop others impersonating you; checking them inbound stops you accepting impersonation of others.
+
+**Rate limit.** Connection and message limits per source protect the appliance and blunt directory harvesting.
+
+## What an exam candidate should be able to state cold
+
+The SMTP envelope routes the message and is what policies match; the header is what the user sees, and the two may legitimately differ, which is what display-name spoofing exploits. Rejecting at RCPT TO is cheaper and safer than accepting then discarding, because a bounce to a forged sender makes you part of the problem. Gateway mode makes FortiMail the MX in front of your server, transparent mode inserts it without changing addressing, and server mode replaces the mail server entirely. Protected domains define what inbound and outbound mean, and recipient verification prevents accepting mail for addresses that do not exist.

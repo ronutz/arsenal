@@ -1,0 +1,69 @@
+---
+slug: fortisase-operations-onboarding-and-reporting
+title: "FortiSASE Operations: Onboarding Users, Endpoint Posture, and Reading the Reports"
+summary: "Running a SASE deployment is mostly about getting users onto it and then understanding what it is telling you. Onboarding decides coverage, posture decides what access is granted, and the reports are where a security service either demonstrates its value or produces numbers nobody acts on."
+concepts: ["fortinet", "fortisase", "sase", "onboarding", "endpoint posture", "compliance", "zero trust", "reporting", "performance sla", "secure private access"]
+relatedTools: []
+sub: fortisase
+relatedArticles: ["fortigate-cloud-deployments-and-fortisase", "forticlient-ems-endpoint-security-ztna-and-troubleshooting", "fortigate-routing-and-sdwan-selection"]
+category: cloud
+order: 85
+status: reviewed
+updated: "2026-07-26"
+---
+
+A SASE service only protects the traffic that reaches it. Everything operational follows from that, starting with how users get on.
+
+## Onboarding, and what each method actually covers
+
+**Agent-based** puts FortiClient on the endpoint, which establishes a tunnel to the nearest point of presence. It covers all traffic from the device regardless of application, and it works off the corporate network, which is the entire point. It requires deploying and maintaining an agent.
+
+**Agentless** directs traffic without software on the endpoint, typically web traffic through explicit proxy settings or a PAC file. Easier to deploy, and narrower: it covers what is configured to use it and nothing else. Suitable for unmanaged and contractor devices where installing an agent is not an option.
+
+**Site-based** connects an entire location through a tunnel from its edge device, so every host behind it is covered without touching any endpoint. This is how branches are onboarded, and it covers devices that could never run an agent.
+
+Most deployments use all three, and the coverage question is the one to keep asking: which traffic, from which devices, is not going through the service. That is where the gap is, and it is rarely where people look.
+
+## Endpoint posture
+
+Posture turns "this is Ana's laptop" into "this is Ana's laptop and it is in a state I am willing to grant access from".
+
+The checks are the familiar ones — the security agent is running and current, the operating system is patched to a required level, disk encryption is on, required software is present, prohibited software is not.
+
+What matters is what happens on failure, and there are three sensible answers rather than one:
+
+**Block** for conditions that genuinely make access unsafe.
+**Restrict** to a limited set of destinations, including whatever is needed to become compliant.
+**Warn and log** for conditions worth knowing about that should not stop work.
+
+Applying block to everything produces a service that stops people working for reasons they cannot fix themselves, and the outcome of that is pressure to disable the checks. The remediation path is not optional: a device restricted for non-compliance must be able to reach whatever fixes it.
+
+Posture is continuous rather than a gate at connection time. A device that falls out of compliance mid-session should lose the access that depended on it, and that is the practical difference between posture-aware access and a one-time check.
+
+## Compliance rules on managed endpoints
+
+Compliance rules describe the required state, and are pushed to managed endpoints through the endpoint management that SASE integrates with. The rules and the posture checks are two halves of one loop: the rules say what should be true, the posture check verifies it, and access reflects the result.
+
+The operational point is that a rule nobody can satisfy produces a fleet in permanent non-compliance, at which point the signal is worthless. Rules should be achievable on the estate you actually have, and tightened as the estate improves rather than in advance of it.
+
+## Performance SLAs
+
+Where SASE carries traffic that has performance requirements, service-level agreements measure the paths — latency, jitter, packet loss — and steer traffic accordingly. This is the same mechanic as SD-WAN performance SLA, applied to the path between the user and the point of presence.
+
+The detail worth carrying over is that the measurement must resemble the traffic. A health check against a nearby endpoint that reports excellent numbers while the application everyone uses performs badly is measuring the wrong thing, and it will keep steering traffic onto a path that is failing for the use that matters.
+
+## Reading the reports
+
+Reporting is where a SASE deployment justifies itself or does not.
+
+**User traffic reports** answer where the workforce actually goes: which applications, how much, by whom. The recurring value is discovering the sanctioned application nobody uses and the unsanctioned one everybody does, which is a procurement conversation as much as a security one.
+
+**Security reports** answer what was blocked and why. The number to watch is not the total but the distribution: a small number of users generating most of the blocks is a different situation from an even spread, and the response differs.
+
+**Compliance reports** answer how much of the estate is in the state you require, and the trend matters more than the number.
+
+The discipline that makes any of this useful is to decide in advance what you would do differently at each answer. A report that would not change a decision is a report nobody needs to run, and the reason dashboards go unread is usually that nobody ever established what action any of the numbers implied.
+
+## What an exam candidate should be able to state cold
+
+Agent-based onboarding covers all traffic from a device and requires an agent; agentless covers what is configured to use it; site-based covers everything behind an edge device. The coverage question is which traffic is not reaching the service. Posture checks should map to block, restrict or warn rather than all blocking, and a restricted device must be able to reach what makes it compliant. Posture is continuous, so falling out of compliance mid-session should withdraw access. Performance SLA measurements must resemble the traffic they steer. Reports are only useful if the action implied by each answer was decided in advance.

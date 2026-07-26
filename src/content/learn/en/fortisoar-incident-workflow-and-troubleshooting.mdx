@@ -1,0 +1,73 @@
+---
+slug: fortisoar-incident-workflow-and-troubleshooting
+title: "FortiSOAR Incident Workflow, Queues, War Rooms, and Debugging Playbooks"
+summary: "The automation exists to serve people working incidents, and the workflow features decide whether that work is orderly. Phases track where an incident is, queues decide who picks it up, and war rooms hold the collaboration. When automation misbehaves, the executed playbook log answers what happened faster than reasoning does."
+concepts: ["fortinet", "fortisoar", "incident response", "phases", "queue", "shift", "war room", "playbook debugging", "execution log", "troubleshooting"]
+relatedTools: []
+sub: fortisoar
+relatedArticles: ["fortisoar-playbooks-jinja-and-connectors", "fortisoar-architecture-and-data-model"]
+category: security
+order: 72
+status: reviewed
+updated: "2026-07-26"
+---
+
+Everything the platform automates exists so that people can work incidents well. The workflow features are what turn a queue of alerts into managed work, and they are worth configuring deliberately rather than accepting.
+
+## Phases
+
+An incident moves through **phases** — triage, investigation, containment, eradication, recovery, closure, in whatever shape your process actually uses.
+
+Phases matter for two reasons beyond tidiness. They make **where an incident is** visible without reading it, which is what lets a supervisor see a backlog forming in one phase rather than a general sense of busyness. And they give automation something to key on: a playbook can act when an incident enters containment without needing to interpret free-text status.
+
+The advice worth following is to model the process you have rather than an idealised one. Phases nobody uses become noise, and an incident sitting in a phase because there is nowhere accurate to put it makes the metrics lie.
+
+## Queues and shifts
+
+**Queues** hold work waiting to be picked up. Rather than assigning an incident to a named person who may be asleep, it goes to a queue that whoever is on duty draws from.
+
+**Shifts** describe who is on duty when, so the routing follows the roster rather than an assumption.
+
+Two operational benefits follow, and they are the reason to do this rather than assign directly:
+
+**Nothing is assigned to someone who is not there.** Direct assignment fails silently at exactly the wrong times — overnight, at a weekend, during leave.
+
+**Ownership is explicit.** Work drawn from a queue has been accepted by someone, which is different from work that was pushed at them and may not have been seen.
+
+## War rooms
+
+A **war room** is a collaboration space attached to an incident: the people, the conversation, the evidence, the tasks, all in one place with a record of what happened.
+
+The argument for it is that the alternative is a chat channel somewhere else. When the investigation is over, that channel holds decisions and context that never make it into the incident record, and the post-incident review reconstructs from memory.
+
+A war room keeps the discussion attached to the thing being discussed, which is what makes the record usable afterwards.
+
+## Debugging playbooks
+
+When a playbook does not do what you expected, the **executed playbook log** answers it. It shows each step, its inputs, its outputs, and where execution stopped.
+
+The order that resolves most failures:
+
+**1. Did the trigger fire?** No execution at all means the trigger condition did not match, or the playbook is deactivated. This is more common than any step-level failure.
+
+**2. Which step failed?** The log names it and shows what it received. A step failing on unexpected input is the most common shape.
+
+**3. What did the step actually receive?** Not what you expect it to receive. A previous step returning an empty list, or a field absent on this particular record, produces a failure that looks like the step is broken when the data was wrong.
+
+**4. Is it the connector?** A step calling an external system fails for the reasons connectors fail — credentials, API drift, rate limits — and the connector health check distinguishes those from a playbook logic problem in seconds.
+
+**5. Evaluate the Jinja.** The Jinja editor renders an expression against real data. An expression that looks correct and produces an empty string is a very common cause, and this is where it becomes visible.
+
+## The failure modes worth recognising on sight
+
+**It works on one record and not another.** Almost always a data difference — a field present on one and absent on the other. The default filter is the fix.
+
+**It used to work.** Something external changed: a connector's API, a credential, a picklist value that a condition tests against.
+
+**It runs twice.** A trigger firing on an update the playbook itself made.
+
+**It stops partway with no error.** Frequently a condition step routing down a branch you did not expect, which the execution log shows plainly.
+
+## What an exam candidate should be able to state cold
+
+Phases make an incident's position visible and give automation something to key on. Queues plus shifts route work to whoever is actually on duty and make ownership explicit, which direct assignment does not. War rooms keep the collaboration attached to the incident so the record is usable afterwards. Debug from the executed playbook log in order: did the trigger fire, which step failed, what did it actually receive, is it the connector, then evaluate the Jinja. Works on one record and not another means a data difference; used to work means something external changed.

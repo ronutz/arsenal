@@ -94,6 +94,7 @@ export default async function CertificationsHubPage({
       // Certifications that must be ACTIVE first, in the vendor's own wording.
       prerequisites: cert.prerequisites ?? [],
       prerequisitesLabel: t("prerequisitesLabel"),
+      retiringLabel: t("retiringLabel"),
       // The vendor's own page for THIS certification. Stored since the model
       // was written and never rendered until now, which meant a reader had no
       // one-click way to check the requirements against the source.
@@ -110,6 +111,7 @@ export default async function CertificationsHubPage({
           // Surfaced on the card so a reader scanning a level sees which exams
           // are not yet sittable without opening each guide.
           availabilityNote: guide.availabilityNote ?? null,
+          retirement: guide.retirement ?? null,
           badge: guide.status === "preparing" ? t("inPreparation") : t("objectivesCount", { count: n }),
           cta: t("openGuide"),
         };

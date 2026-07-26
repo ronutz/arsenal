@@ -1,0 +1,71 @@
+---
+slug: fortinet-cloud-automation-caas-and-native-integration
+title: "Fortinet in Public Cloud: Container Protection, Native Integration, and Infrastructure as Code"
+summary: "Protecting cloud workloads means working with the provider's own constructs rather than against them. Containers need protection at a different layer than virtual machines, native services provide telemetry and enforcement points worth using, and infrastructure as code is how any of it stays reproducible."
+concepts: ["fortinet", "public cloud", "caas", "container", "kubernetes", "terraform", "ansible", "cloud native", "automation", "monitoring", "iaas"]
+relatedTools: []
+sub: cloud
+relatedArticles: ["fortigate-cloud-deployments-and-fortisase", "forticnapp-fundamentals-and-cloud-posture"]
+category: cloud
+order: 84
+status: reviewed
+updated: "2026-07-26"
+---
+
+Cloud architecture rewards working with the platform. A design that treats a cloud region as a data centre with someone else's hardware produces something that works and costs more, scales worse, and cannot be rebuilt.
+
+## Protecting IaaS versus CaaS
+
+**IaaS** — virtual machines and virtual networks — maps closely onto familiar practice. A FortiGate VM inspects traffic, and the design work is steering traffic through it using the provider's routing constructs, since there is no cable to insert a device into. Route tables, gateway load balancers and transit constructs are the mechanism, and getting them right is most of the deployment.
+
+**CaaS** — containers and Kubernetes — does not map onto that at all, for reasons worth being explicit about:
+
+**Containers are short-lived.** A workload may exist for minutes. Anything that depends on a stable address or on manual registration will not keep up.
+
+**Addresses are ephemeral and reused.** Policy written against addresses is meaningless when the address belonged to something else an hour ago. Policy must be written against labels and identities.
+
+**Most traffic never leaves the host.** Container-to-container communication on the same node does not traverse a network device, so a virtual firewall at the network edge sees none of it.
+
+That is why container protection happens at different layers: admission control deciding what may run at all, image scanning before deployment, runtime protection inside the cluster observing process and network behaviour, and a network firewall for what crosses the cluster boundary. The last of these is the only one that resembles the IaaS approach, and it covers the smallest share of the traffic.
+
+## Integrating with cloud-native services
+
+The provider supplies capabilities worth consuming rather than duplicating.
+
+**Identity and access.** Using the provider's identity system for instance permissions is better than credentials in configuration, because it removes a secret that would otherwise need rotating and storing.
+
+**Logging and flow records.** Provider flow logs and audit trails describe traffic and API activity that a firewall in the path does not see, particularly activity against the provider's own control plane. That control-plane activity is where cloud incidents actually happen, and no network device observes it.
+
+**Native load balancers and gateways** are the supported way to steer traffic in most provider designs, and building around them rather than replacing them keeps the design within what the provider supports and scales.
+
+**Tagging.** Cloud resources carry tags, and dynamic address objects that resolve tags to addresses let policy follow workloads that come and go. This is the single most useful cloud integration for a firewall, because it converts an ephemeral, changing environment into policy that does not need rewriting.
+
+## Infrastructure as code
+
+Cloud environments are rebuilt often enough that manual configuration stops being viable, and the tooling divides along a line worth understanding.
+
+**Terraform** describes desired state declaratively. You express what should exist, and it computes the difference from what does exist and reconciles. Its natural job is provisioning infrastructure: networks, instances, load balancers, firewall instances.
+
+**Ansible** executes procedures. It is well suited to configuring things once they exist, including pushing configuration into a deployed FortiGate.
+
+The two compose naturally: Terraform builds the environment, Ansible configures what is inside it.
+
+What this buys is not speed. It is:
+
+**Reproducibility.** The same input produces the same environment, which makes a disaster-recovery region a re-run rather than a project.
+
+**Review.** Infrastructure changes go through the same review as application changes, and a security misconfiguration becomes visible in a pull request rather than in an audit.
+
+**Drift detection.** Comparing declared state to actual state finds the manual change someone made at 2am and never mentioned.
+
+The discipline that makes it work is that the code must be the source of truth. An environment where people also make console changes has two sources of truth and no reliable way to tell which is right — the same problem as a FortiManager estate where people edit devices directly, with the same resolution: bring the change back into the declared state or lose it at the next apply.
+
+## Monitoring cloud workloads
+
+Cloud monitoring has to answer questions that on-premises monitoring does not: whether an autoscaled group has the instances it should, whether a workload is reachable through the provider's own routing, whether an identity is doing something unusual.
+
+Fortinet's monitoring across a cloud estate covers the firewall's own view — sessions, policy hits, inspection — while posture and identity questions belong to a CNAPP, and provider-native metrics cover the infrastructure underneath. All three are needed, and the failure mode is assuming any one of them is complete.
+
+## What an exam candidate should be able to state cold
+
+IaaS protection resembles familiar practice and the design work is steering traffic with the provider's routing constructs. Containers are short-lived with reused addresses and much traffic never leaves the host, so protection uses admission control, image scanning and in-cluster runtime protection rather than only a network firewall. Consume native identity, flow logs and load balancers rather than duplicating them, and use tag-driven dynamic address objects so policy follows ephemeral workloads. Terraform declares desired state for provisioning and Ansible executes configuration procedures; the value is reproducibility, review and drift detection, and it requires that code be the single source of truth.
