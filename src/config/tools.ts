@@ -165,6 +165,14 @@ export const tools: ToolEntry[] = [
   { id: "f5-awaf-policy-diff", sub: "asm-awaf", href: "/tools/f5-awaf-policy-diff", category: "security", vendors: ["f5"], available: true },
   // First Fortinet tool: populates the Fortinet vendor hub.
   { id: "fortios-sniffer-builder", sub: "fortigate", href: "/tools/fortios-sniffer-builder", category: "networking", vendors: ["fortinet"], available: true },
+  // Second Fortinet tool: policy match + shadowing, serving NSE 4 objectives 2.01/2.02.
+  { id: "fortigate-policy-lookup-explainer", sub: "fortigate", href: "/tools/fortigate-policy-lookup-explainer", category: "security", vendors: ["fortinet"], available: true },
+  { id: "fortigate-session-table-explainer", sub: "fortigate", href: "/tools/fortigate-session-table-explainer", category: "networking", vendors: ["fortinet"], available: true },
+  { id: "fortigate-ha-failover-simulator", sub: "fortigate", href: "/tools/fortigate-ha-failover-simulator", category: "networking", vendors: ["fortinet"], available: true },
+  { id: "fortigate-ipsec-phase-mismatch-analyzer", sub: "fortigate", href: "/tools/fortigate-ipsec-phase-mismatch-analyzer", category: "security", vendors: ["fortinet"], available: true },
+  { id: "fortigate-route-selection-explainer", sub: "fortigate", href: "/tools/fortigate-route-selection-explainer", category: "networking", vendors: ["fortinet"], available: true },
+  { id: "fortigate-security-profile-coverage-checker", sub: "fortigate", href: "/tools/fortigate-security-profile-coverage-checker", category: "security", vendors: ["fortinet"], available: true },
+  { id: "fortios-config-diff-explainer", sub: "fortigate", href: "/tools/fortios-config-diff-explainer", category: "networking", vendors: ["fortinet"], available: true },
   // First Netskope tool: populates the Netskope vendor hub.
   { id: "pac-file-explainer", sub: "swg", href: "/tools/pac-file-explainer", category: "networking", vendors: ["netskope"], vendorNeutral: true /* Netscape-era open browser standard; hub-affiliated, not vendor-owned */, available: true },
   { id: "netskope-steering-decision-explainer", sub: "swg", href: "/tools/netskope-steering-decision-explainer", category: "networking", vendors: ["netskope"], available: true },

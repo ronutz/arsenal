@@ -1,0 +1,76 @@
+---
+slug: fortigate-routing-and-sdwan-selection
+title: "FortiGate Routing and SD-WAN: Route Selection Order and Rule Evaluation"
+summary: "A FortiGate chooses an egress path in a defined order: policy routes are consulted before the routing table, and within the routing table the most specific prefix wins, with distance breaking ties between protocols and priority breaking ties within one. SD-WAN adds a rule layer on top that selects a member by measured performance. This covers that order, what distance and priority actually do, and how SD-WAN rules and health checks interact."
+concepts: ["fortinet", "fortigate", "static route", "administrative distance", "route priority", "policy route", "sd-wan", "performance sla", "ecmp"]
+relatedTools: ["cidr", "fortigate-route-selection-explainer"]
+sub: fortigate
+relatedArticles: ["fortigate-firewall-policy-and-nat", "longest-prefix-match", "reading-a-fortigate-sniffer-trace"]
+category: networking
+order: 45
+status: reviewed
+updated: "2026-07-25"
+---
+
+"Why is traffic leaving the wrong interface" is one of the most common FortiGate questions, and it almost always resolves to route selection order. There are four mechanisms that can decide the egress path, they are consulted in a fixed sequence, and knowing that sequence answers the question directly.
+
+## The order of consultation
+
+| Order | Mechanism | Decides on |
+|---|---|---|
+| 1 | Policy route (PBR) | Source, destination, protocol, port, incoming interface |
+| 2 | SD-WAN rule | Application, address, user, then a member chosen by SLA |
+| 3 | Routing table (FIB) | Longest matching prefix |
+| 4 | Distance, then priority, then ECMP | Ties within the table |
+
+A policy route is consulted **before** the routing table and overrides it. That is the single most useful fact here, because a policy route created months ago and forgotten is the classic cause of traffic that ignores an obviously correct static route. If the routing table says one thing and the traffic does another, check for a policy route first.
+
+## Distance and priority are not the same thing, and the exam knows it
+
+These two are routinely conflated, and the distinction is precise.
+
+**Administrative distance** decides which route gets **installed** in the routing table. It compares routes to the same destination learned from different sources — static, OSPF, BGP — and the lowest distance wins. The loser is not used at all; it does not appear in the forwarding table.
+
+**Priority** decides which of several **already-installed** routes is preferred. It applies to routes that survived the distance comparison, and again the lower value wins.
+
+The consequence that matters operationally: two static routes to the same destination with the **same distance** both install, and priority chooses between them. Two static routes with **different distances** mean only one installs, and the other is a floating route that appears only when the first is withdrawn. That is how a backup default route is built — same prefix, higher distance — and getting distance and priority the wrong way round produces either two active paths when you wanted a standby, or a standby that never activates.
+
+```
+get router info routing-table all
+get router info routing-table details 0.0.0.0/0
+```
+
+The first command shows what actually installed. A route you configured that does not appear there lost a distance comparison.
+
+## Static routes: the fields that change behaviour
+
+A static route carries a destination prefix, a gateway, an outgoing interface, a distance, and a priority. Two further properties are worth stating:
+
+**Link health monitoring** ties a route's presence to a reachability check. Without it, a static route stays in the table as long as the interface is up, which is exactly the wrong behaviour when the interface is up but the path beyond it is broken — the classic "the link is fine, the far end is unreachable" failure. With a health check attached, the route is withdrawn when the check fails, and a floating backup route takes over.
+
+**ECMP** applies when multiple routes tie on prefix, distance, and priority. FortiOS then load balances across them, and the algorithm is configurable: source IP, source-destination IP, weighted, or by measured usage. The default is source IP based, which keeps a given source on a consistent path — important, because per-packet balancing across paths with different latencies causes reordering.
+
+## SD-WAN replaces the choice with a measured one
+
+SD-WAN groups several interfaces into a logical zone and chooses between them per rule, based on measured performance rather than static configuration.
+
+The pieces fit together in one direction:
+
+- A **performance SLA** (health check) probes a server through each member and records latency, jitter, and packet loss. It defines thresholds that make a member pass or fail.
+- An **SD-WAN rule** matches traffic — by source, destination, application, or user — and names the members that may carry it, plus a strategy for choosing among them.
+- The **strategy** decides how: manual (a fixed member), best quality (the member with the best measured metric), lowest cost (the cheapest member that still meets SLA), or maximise bandwidth (spread across all members that meet SLA).
+
+Rules are evaluated in order, first match wins, and traffic matching no rule falls through to the implicit rule, which uses the routing table.
+
+The point that catches people: **a member that fails its SLA is removed from selection**, and if every member of a rule fails, the traffic falls back rather than being blackholed. So an SD-WAN rule that appears to be ignored is often a rule whose members are all failing their health check. Check the SLA status before the rule logic.
+
+```
+diagnose sys sdwan health-check
+diagnose sys sdwan service
+```
+
+The first shows each member's measured latency, jitter, and loss against its thresholds. The second shows which rule matched and which member was selected, which is the direct answer to "why did this session take that link".
+
+## What an exam candidate should be able to state cold
+
+Policy routes are consulted before the routing table and override it. Within the table, longest prefix wins first; distance decides which route installs; priority decides between installed routes; ECMP load balances true ties. A floating backup route is the same prefix with a higher distance. Link health monitoring is what makes a static route withdraw when the path beyond the interface fails. SD-WAN rules match in order and select a member by strategy from those currently passing their performance SLA, falling back to the routing table when none qualify.

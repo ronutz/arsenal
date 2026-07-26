@@ -1,0 +1,67 @@
+---
+slug: fortimanager-scripts-revisions-and-troubleshooting
+title: "Scripts, histórico de revisões e investigação de instalações no FortiManager"
+summary: "Quando uma mudança no FortiManager não chega, a resposta está quase sempre num de três lugares: o log de instalação, o histórico de revisões, ou o estado de sincronia. Scripts acrescentam uma quarta forma de mudar coisas e uma quarta forma de ser surpreendido. Este artigo cobre para que serve cada um e em que ordem verificar."
+concepts: ["fortinet", "fortimanager", "script cli", "histórico de revisões", "investigação", "fora de sincronia", "log de instalação", "diagnóstico", "adom"]
+relatedTools: ["fortios-config-diff-explainer"]
+sub: fortimanager
+relatedArticles: ["fortimanager-policy-packages-and-installs", "fortimanager-adoms-and-device-registration"]
+category: operations
+order: 56
+status: reviewed
+updated: "2026-07-26"
+---
+
+A maior parte da investigação no FortiManager é uma busca por qual das duas configurações está em discussão — a do banco ou a do equipamento — e o que aconteceu entre elas.
+
+## Scripts, e onde eles rodam
+
+Um script CLI é um bloco de comandos FortiOS que o FortiManager pode executar. A distinção importante é o **alvo**, porque o mesmo script tem consequências diferentes conforme ele:
+
+- **Contra o banco do equipamento** — o script muda a cópia do FortiManager, e a mudança chega ao equipamento na próxima instalação. Esse é o padrão mais seguro, porque a prévia de instalação continua valendo.
+- **Diretamente no equipamento** — o script roda no próprio FortiGate, imediatamente. O banco do FortiManager fica atrasado, e o equipamento sai de sincronia.
+- **Contra um pacote de políticas** — para mudanças de política e objetos expressas em CLI.
+
+Rodar diretamente no equipamento é ocasionalmente necessário e rotineiramente lamentado, porque cria exatamente a divergência que a plataforma existe para evitar. Onde for usado, uma importação depois é o que põe as duas cópias de acordo.
+
+O histórico de execução de scripts registra o que rodou, onde, e o que o equipamento retornou. Esse histórico é o primeiro lugar a olhar quando uma mudança parece ter acontecido pela metade.
+
+## O histórico de revisões responde "o que mudou"
+
+Toda instalação cria uma revisão. O histórico dá duas coisas que importam num incidente:
+
+**Um diff entre quaisquer duas revisões**, que mostra o que uma dada instalação de fato mudou, e não o que alguém acredita que mudou.
+
+**Um ponto de restauração.** Reverter carrega uma configuração anterior no banco; ela se torna real no equipamento apenas quando você instala. Esse duplo passo é deliberado, e significa que uma reversão pode ser revisada na prévia de instalação antes de valer.
+
+Para comparar configurações fora do FortiManager — um chamado de suporte, uma revisão de mudança, dois equipamentos que deveriam coincidir — um diff estrutural é mais fácil de ler que um diff por linha, porque agrupa por objeto em vez de por número de linha e não reporta um bloco que mudou de lugar como remoção mais inserção.
+
+## A ordem de investigação
+
+Da causa mais comum para baixo:
+
+**1. Estado de sincronia.** Fora de sincronia significa que as duas cópias diferem, e todo outro sintoma decorre disso. Determine qual lado tem a mudança que você quer antes de fazer qualquer coisa, porque importar e instalar descartam cada um o trabalho do outro lado.
+
+**2. Log de instalação.** Ele nomeia o comando que falhou e o que o equipamento respondeu. Isso é mais preciso que inspecionar o equipamento depois e adivinhar.
+
+**3. Histórico de revisões.** Compare as duas últimas revisões do equipamento. Se a mudança esperada não está no diff, ela nunca saiu do banco, o que aponta para o modo workspace ou para o pacote não ter sido salvo.
+
+**4. Versão do ADOM.** Uma divergência entre a versão de firmware do ADOM e a do equipamento produz CLI gerado que o equipamento rejeita, e os erros parecem não ter relação com a causa real.
+
+**5. Conectividade e autorização.** Um equipamento inalcançável ou cuja autorização expirou não pode receber instalação, e o sintoma é uma instalação que nunca conclui, e não uma que falha de forma limpa.
+
+## Nível de equipamento, de ADOM e de sistema
+
+Manter isso separado encurta a maioria das investigações:
+
+Problemas de **nível de equipamento** afetam um equipamento: estado de sincronia, alcance, divergência de firmware, um comando que falhou em seu log de instalação.
+
+Problemas de **nível de ADOM** afetam tudo num ADOM: uma referência de objeto quebrada, um workspace travado, um ADOM na versão errada, um pacote de políticas que não valida.
+
+Problemas de **nível de sistema** afetam o equipamento: disco esgotado, um cluster HA fora de sincronia, FortiGuard inalcançável, disputa de recursos onde os recursos de FortiAnalyzer dividem a máquina.
+
+O valor diagnóstico está no padrão. Um equipamento com problema é problema de equipamento; todos os equipamentos de um ADOM com problema é problema de ADOM; todos os ADOMs com problema é o sistema. Essa triagem leva segundos e elimina a maior parte do espaço de busca.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Scripts podem mirar o banco do equipamento, o equipamento diretamente, ou um pacote de políticas, e rodar diretamente no equipamento cria divergência que uma importação precisa resolver. Toda instalação cria uma revisão; revisões podem ser comparadas e revertidas, e uma reversão muda o banco até ser instalada. A ordem de investigação é estado de sincronia, log de instalação, diff de revisão, versão do ADOM, então conectividade. Classifique o sintoma como de equipamento, de ADOM ou de sistema antes de investigar, porque o padrão nomeia a camada.

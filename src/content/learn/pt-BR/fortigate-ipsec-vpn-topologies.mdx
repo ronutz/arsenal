@@ -1,0 +1,67 @@
+---
+slug: fortigate-ipsec-vpn-topologies
+title: "VPN IPsec no FortiGate: fase 1, fase 2 e topologias redundantes"
+summary: "Um túnel IPsec é negociado em duas fases, e saber qual fase falhou estreita imediatamente um defeito. Além de um túnel isolado, a escolha entre malha completa, hub and spoke e projetos parcialmente redundantes é uma troca entre o número de túneis a administrar e o caminho que o tráfego de fato toma. Este artigo cobre as fases, as divergências que quebram cada uma, e como a redundância é expressa."
+concepts: ["fortinet", "fortigate", "ipsec", "ike", "fase 1", "fase 2", "vpn site a site", "malha completa", "hub and spoke", "advpn", "vpn redundante"]
+relatedTools: ["fortigate-ipsec-phase-mismatch-analyzer"]
+sub: fortigate
+relatedArticles: ["fortigate-routing-and-sdwan-selection", "fortigate-firewall-policy-and-nat"]
+category: networking
+order: 49
+status: reviewed
+updated: "2026-07-25"
+---
+
+Quase todo defeito de IPsec se resolve numa pergunta: qual fase falhou. As duas fases negociam coisas diferentes, falham por razões diferentes, e o caminho de diagnóstico diverge imediatamente assim que se sabe qual foi.
+
+## Duas fases, dois trabalhos
+
+A **fase 1** estabelece um canal seguro entre os dois gateways para que o resto da negociação aconteça de forma privada. Autentica os pares e acorda criptografia, hash, um grupo Diffie-Hellman e um tempo de vida.
+
+A **fase 2** roda dentro desse canal protegido e negocia as associações de segurança que de fato carregam tráfego. Acorda o conjunto de transformação e, criticamente, os **seletores**: quais redes de origem e destino este túnel carrega.
+
+A divisão é por que a falha diz tanto. Uma falha de fase 1 é sobre identidade ou proposta. Uma falha de fase 2 significa que os gateways se autenticaram com sucesso e então discordaram sobre o que proteger.
+
+| Sintoma | Fase | Causa usual |
+|---|---|---|
+| Túnel nunca sobe, sem tentativa de fase 2 | 1 | Chave pré-compartilhada divergente, ID de par errado, sem proposta compatível |
+| Fase 1 sobe, fase 2 nunca conclui | 2 | Seletores divergentes, transformação divergente, PFS habilitado de um lado só |
+| Túnel sobe, tráfego algum passa | Nenhuma | Rota ausente ou política de firewall ausente |
+| Túnel cai em intervalos regulares | Qualquer | Tempos de vida divergentes, ou renegociação falhando |
+
+A terceira linha é a que mais desperdiça tempo. Um túnel que reporta ativo e não passa nada não é problema de IPsec: é problema de roteamento ou de política, e as duas coisas de que um túnel funcional ainda precisa são uma **rota** apontando tráfego para dentro dele e uma **política de firewall** permitindo o tráfego através dele.
+
+## As divergências que realmente acontecem
+
+Os **seletores** são a falha de fase 2 mais comum. Os dois lados precisam concordar sobre as redes que o túnel carrega, e precisam concordar exatamente: uma sub-rede de um lado e uma super-rede do outro é divergência, não aproximação. Quando um par é um equipamento com suporte estreito a seletores, os dois lados precisam ser configurados de forma simétrica, e não conveniente.
+
+O **perfect forward secrecy** precisa coincidir. Habilitado de um lado e não do outro faz a fase 2 falhar com uma mensagem que não diz isso de forma óbvia.
+
+Os **tempos de vida** não precisam coincidir exatamente, o menor vence, mas valores muito diferentes causam renegociações em intervalos incômodos, e uma renegociação que falha se apresenta como um túnel que cai numa cadência regular.
+
+A **travessia de NAT** é necessária sempre que um equipamento entre os pares traduz endereços, porque o ESP não tem portas para um tradutor reescrever. A detecção acontece na fase 1 e o túnel então encapsula em UDP 4500. Os keepalives importam, porque uma entrada de tradução expira em ociosidade, o que produz um túnel que funciona e então para em silêncio após um período tranquilo.
+
+## Topologias: a escolha real é quantos túneis você administra
+
+**Malha completa** conecta cada site a todos os outros. O tráfego sempre toma o caminho direto, ótimo para latência, e a contagem de túneis cresce de forma quadrática: dez sites são quarenta e cinco túneis, e cada site novo exige configuração em todos os existentes. Serve a um número pequeno de sites que conversam entre si constantemente.
+
+**Hub and spoke** conecta cada site apenas a um concentrador. Acrescentar um site é uma mudança no hub e uma no spoke, e é por isso que quase toda implantação grande tem esse formato. O custo é o caminho: tráfego entre spokes atravessa o hub, acrescentando latência e concentrando carga, e o hub vira ponto único de falha que vale projetar com cuidado.
+
+Projetos **parcialmente redundantes** são o meio-termo e aquilo para que a maioria das redes reais converge: hub and spoke como base, mais túneis diretos entre os pares específicos de sites cujo tráfego os justifica, mais um segundo hub para que a falha de um seja sobrevivível.
+
+| | Malha completa | Hub and spoke | Malha parcial |
+|---|---|---|---|
+| Túneis para n sites | n(n-1)/2 | n | n mais as exceções |
+| Acrescentar um site | Mexer em todos | Mexer no hub | Mexer no hub |
+| Caminho entre spokes | Direto | Pelo hub | Direto onde configurado |
+| Ponto único de falha | Nenhum | O hub | Mitigado por um segundo hub |
+
+O ADVPN vale conhecer como a resposta a essa troca: mantém a configuração hub and spoke permitindo que os spokes construam atalhos diretos sob demanda, então o custo de administração fica linear e o caminho do tráfego fica direto assim que um atalho se forma.
+
+## Redundância dentro de um túnel
+
+Além da topologia, uma conexão lógica isolada pode ser tornada redundante. Configurar **várias interfaces de fase 1 para gateways remotos diferentes** e controlar qual é preferida pela distância de roteamento dá um par ativo-reserva: a rota primária é usada enquanto seu túnel está ativo, e a rota flutuante de reserva assume quando ela é retirada. Essa é exatamente a mecânica de rota estática do artigo de roteamento, aplicada a túneis, e depende de a interface do túnel cair quando o túnel cai, que é o que a detecção de par morto fornece.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+A fase 1 autentica os pares e protege a negociação; a fase 2 negocia as SAs e os seletores. Falhas de fase 1 são identidade ou proposta; falhas de fase 2 são seletores, transformações ou PFS. Um túnel ativo que não passa nada está sem rota ou sem política, não sem configuração de IPsec. A travessia de NAT encapsula ESP em UDP 4500 e precisa de keepalives. Malha completa são n(n-1)/2 túneis, hub and spoke são n com trânsito pelo hub, e a redundância dentro de um túnel se constrói com várias interfaces de fase 1 mais distância de rota.

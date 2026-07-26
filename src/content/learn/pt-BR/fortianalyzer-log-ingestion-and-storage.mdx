@@ -1,0 +1,65 @@
+---
+slug: fortianalyzer-log-ingestion-and-storage
+title: "Ingestão de logs no FortiAnalyzer: normalização e a divisão analytics/arquivo"
+summary: "O FortiAnalyzer recebe logs, os analisa em campos estruturados, e os armazena de duas formas bem diferentes. O repositório analytics é indexado e pesquisável; o arquivo é comprimido e não é. Quase toda surpresa com FortiAnalyzer, de um relatório que volta vazio a uma busca que não acha logs do trimestre passado, vem dessa divisão e da política de dados que a governa."
+concepts: ["fortinet", "fortianalyzer", "ingestão de logs", "normalização", "analytics", "arquivo", "política de dados", "adom", "security fabric", "oftp"]
+relatedTools: []
+sub: fortianalyzer
+relatedArticles: ["fortigate-firewall-policy-and-nat", "reading-a-fortigate-sniffer-trace"]
+category: security
+order: 51
+status: reviewed
+updated: "2026-07-26"
+---
+
+O FortiAnalyzer é um banco de dados de logs com um console de segurança em cima. A maior parte da confusão sobre ele se resolve numa pergunta: o que aconteceu com um log entre o equipamento emiti-lo e você não conseguir encontrá-lo.
+
+## O caminho que um log percorre
+
+Um FortiGate ou outro equipamento Fortinet envia logs ao FortiAnalyzer por um protocolo dedicado na porta TCP 514, criptografado por padrão. O equipamento precisa estar **registrado e autorizado** do lado do FortiAnalyzer antes de seus logs serem aceitos, e esse é o primeiro ponto em que a ingestão falha em silêncio: um equipamento não autorizado envia logs para o vazio, e ele próprio não reporta erro que chame atenção.
+
+Uma vez aceito, cada log é **analisado em campos estruturados**. Uma linha de log crua é texto; o que o FortiAnalyzer armazena é uma linha com colunas tipadas: endereço de origem, destino, ação, ID de política, aplicação, e dezenas de outras conforme o tipo de log. Essa etapa de análise é o que torna um log pesquisável e reportável, em vez de apenas retido.
+
+Os logs então caem num **ADOM**, o domínio administrativo que particiona equipamentos e seus dados. Um ADOM não é apenas uma fronteira de controle de acesso: é também o escopo de buscas, relatórios e manipuladores de eventos, e é por isso que trabalho feito no ADOM errado retorna resposta verdadeira sobre o conjunto errado de equipamentos.
+
+## A divisão que explica quase tudo
+
+O FortiAnalyzer guarda logs de duas formas, e elas não são duas cópias da mesma coisa.
+
+| | Analytics | Arquivo |
+|---|---|---|
+| Forma | Linhas analisadas e indexadas no banco SQL | Arquivos de log crus comprimidos |
+| Pesquisável | Sim, por qualquer campo | Não diretamente |
+| Alimenta relatórios e FortiView | Sim | Não |
+| Custo de disco por log | Maior | Muito menor |
+| Retenção | Geralmente menor | Geralmente maior |
+
+Um log é gravado no arquivo ao chegar e, se a política de dados do ADOM assim determinar, também inserido no analytics. Quando um log passa da **retenção de analytics**, ele é removido do repositório indexado, permanecendo no arquivo até a retenção de arquivo expirar.
+
+As consequências são diretas, e são as respostas às perguntas que as pessoas de fato fazem:
+
+- **"Por que meu relatório do trimestre passado volta vazio?"** Os logs saíram do analytics. Ainda existem no arquivo, mas relatórios são construídos sobre o analytics.
+- **"Por que não consigo buscar uma sessão de seis meses atrás?"** Mesma razão.
+- **"Por que meu disco está cheio se a retenção parece razoável?"** O analytics custa várias vezes o que o arquivo custa por log, então a janela de analytics é a configuração que consome o espaço.
+
+A política de dados é por ADOM, então um equipamento compartilhado pode legitimamente guardar noventa dias de analytics para uma unidade de negócio e sete para outra.
+
+## Integração com o Fabric é registro mais contexto
+
+Juntar o FortiAnalyzer ao Security Fabric faz mais que arrumar a visão de topologia. Dá ao FortiAnalyzer a relação entre equipamentos, para que um log de um FortiGate possa ser correlacionado com um registro de endpoint do FortiClient EMS ou uma porta de switch do FortiSwitch. Essa correlação é o que transforma uma lista de eventos numa narrativa sobre um host.
+
+Também importa para automação: um playbook que coloca um endpoint em quarentena precisa saber qual gerenciador é dono daquele endpoint, e a conexão com o Fabric é de onde isso vem.
+
+## O que verificar quando faltam logs
+
+A ordem importa, porque cada passo depende do anterior.
+
+1. **O equipamento está registrado e autorizado?** Um equipamento não autorizado é descartado, não enfileirado.
+2. **O equipamento está de fato enviando?** Verifique a configuração de encaminhamento de logs no próprio equipamento, e lembre que uma política com registro desabilitado não gera nada para enviar.
+3. **Qual ADOM?** Equipamentos caem num ADOM, e buscar em outro não acha nada.
+4. **Analytics ou arquivo?** Se o intervalo de tempo for mais antigo que a retenção de analytics, os logs estão no arquivo e não aparecerão numa busca ou relatório comum.
+5. **O disco está cheio?** Quando o armazenamento se esgota, o FortiAnalyzer para de inserir, e o sintoma é um fim abrupto de dados novos, e não um erro onde você está olhando.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Equipamentos precisam estar registrados e autorizados antes de os logs serem aceitos. Logs são analisados em campos estruturados na chegada, e é isso que os torna pesquisáveis. Todo log vai para o arquivo; apenas os logs dentro da janela de retenção de analytics são indexados e, portanto, pesquisáveis e reportáveis. ADOMs delimitam equipamentos, buscas, relatórios e manipuladores de eventos igualmente. A integração com o Fabric fornece o contexto entre equipamentos de que correlação e automação dependem.

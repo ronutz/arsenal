@@ -1,0 +1,71 @@
+---
+slug: fortimanager-policy-packages-and-installs
+title: "FortiManager Policy Packages, Installs, and Workspace Mode"
+summary: "A policy package is a set of policies that gets installed to one or more devices. Between editing it and the device changing, there is an install preview worth reading, a locking model worth understanding, and a set of failure modes that all look like the install just did not work."
+concepts: ["fortinet", "fortimanager", "policy package", "install", "install preview", "workspace mode", "locking", "object management", "fortiguard"]
+relatedTools: ["fortios-config-diff-explainer"]
+sub: fortimanager
+relatedArticles: ["fortimanager-adoms-and-device-registration", "fortigate-firewall-policy-and-nat"]
+category: operations
+order: 55
+status: reviewed
+updated: "2026-07-26"
+---
+
+The unit of work in FortiManager is the **policy package**: an ordered set of firewall policies, with the objects they reference, that installs to one or more devices. Understanding what happens between clicking install and the device changing is most of operating FortiManager safely.
+
+## Packages, objects, and the reference that breaks installs
+
+A policy package contains policies. Those policies reference **objects** — addresses, services, schedules, profiles — which live in the ADOM rather than in the package. One object can be referenced by many packages, which is the point.
+
+It also means an object cannot be deleted while something references it, and that a package installed to a device brings its referenced objects along. A device that ends up with objects it does not appear to use usually acquired them this way.
+
+Packages can target one device or several. Installing one package to several devices is how a common ruleset is kept identical across a fleet, and it is why per-device differences have to be expressed through **per-device mapping** rather than by editing the shared object.
+
+## Read the install preview
+
+An install does not go straight to the device. FortiManager can show you the exact CLI it intends to send, and reading it takes seconds and catches the expensive mistakes.
+
+What to look for:
+
+- **Changes you did not make.** These usually mean the database was already ahead of the device from an earlier abandoned edit, and installing now applies both.
+- **Deletions.** An install pushes the database's view. If the device has a locally-created policy that FortiManager does not know about, an install can remove it. This is the single most damaging FortiManager accident and the preview is where it is visible.
+- **Object churn.** Large numbers of object edits on a small policy change often indicate an ADOM version mismatch or an object being remapped.
+
+The preview is the FortiManager equivalent of reading a diff before merging, and the reasoning is identical: the cost of reading it is trivial against the cost of not.
+
+## Workspace mode, and why your colleague cannot save
+
+By default several administrators can edit concurrently, which on a busy platform means one person's install carries another person's half-finished work.
+
+**Workspace mode** fixes that by requiring a lock. In normal locking, an administrator locks an ADOM or a package, edits, then saves and unlocks. Nobody else can edit what is locked, and unlocked changes are not installable.
+
+Two consequences catch people:
+
+An administrator who edits and then leaves without unlocking blocks everyone else until the lock is released, which an administrator with sufficient rights can do.
+
+Changes made in a workspace session are not visible to others, and are not installed, until they are **saved**. An edit that appears to have vanished is usually an unsaved session.
+
+**Workflow mode** adds an approval step on top, so changes are submitted and must be approved before they can be installed. That is the right shape where change control is a requirement and unnecessary overhead where it is not.
+
+## FortiGuard services through FortiManager
+
+FortiManager can act as a local FortiGuard distribution point, downloading antivirus and IPS updates once and serving them to managed devices. The reasons are bandwidth and reachability: a fleet of devices each fetching updates independently multiplies traffic, and devices without direct internet access cannot fetch at all.
+
+The failure mode to know is that a device configured to use FortiManager for FortiGuard, on a FortiManager that itself cannot reach Fortinet, silently stops receiving updates. Signature age is the symptom to watch, and it does not announce itself.
+
+## When an install does not take
+
+In rough order of frequency:
+
+1. **The device is out of sync** and the install was blocked or partially applied. Check sync status first.
+2. **The package was not saved** in workspace mode.
+3. **The install was to the wrong device or scope** — a package targeting a group rather than the device in question.
+4. **A dependency failed**, typically an object that cannot be resolved on the target, which shows in the install log rather than as a general error.
+5. **ADOM version mismatch**, where the generated CLI is not valid for the device's firmware.
+
+The install log names the failing command, which is more precise than any inference from the device's state.
+
+## What an exam candidate should be able to state cold
+
+A policy package holds policies; the objects they reference live in the ADOM and travel with the package on install. The install preview shows the exact CLI, including deletions, and is where the damaging surprises are visible. Workspace mode requires a lock to edit and a save to make changes installable; workflow mode adds approval. FortiManager can serve FortiGuard updates locally, and fails silently if it cannot reach Fortinet itself. When an install does not take, check sync state, then the save, then the install log.

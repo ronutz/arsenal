@@ -1,0 +1,68 @@
+---
+slug: fortigate-cloud-deployments-and-fortisase
+title: "FortiGate in the Cloud and FortiSASE: Deployment Models and Onboarding"
+summary: "FortiGate exists in the public cloud in two quite different shapes: a virtual machine you deploy and operate yourself, and FortiGate CNF, a managed service where Fortinet operates the firewall. FortiSASE is different again, delivering inspection from Fortinet's points of presence to users wherever they are. This covers what distinguishes each, how licensing differs, and the ways users are onboarded to SASE."
+concepts: ["fortinet", "fortigate", "fortigate vm", "fortigate cnf", "fortisase", "public cloud", "byol", "paygo", "sase", "zero trust network access"]
+relatedTools: []
+sub: fortigate
+relatedArticles: ["fortigate-initial-configuration-and-operation-modes", "fortinet-ssl-inspection-modes"]
+category: cloud
+order: 50
+status: reviewed
+updated: "2026-07-25"
+---
+
+Three things carry the FortiGate name in the cloud and they are not variations of one another. The difference is **who operates the firewall**, and that single question determines what you configure, what you are billed for, and what you are responsible for when it breaks.
+
+## FortiGate VM: your appliance, someone else's hardware
+
+A FortiGate VM is the same FortiOS you run on an appliance, deployed as a virtual machine in AWS, Azure, GCP or a private hypervisor. You size it, deploy it, configure it, patch it, and operate it. Everything in the rest of this series applies unchanged: policies, NAT, routing, security profiles, HA.
+
+What changes is the surrounding environment. Cloud networking is not a data centre: interfaces attach to virtual networks with their own routing, the provider's route tables must send traffic to the firewall for it to see anything, and a security group in front of it can silently drop what you expected to inspect. Deploying the VM is the easy half; steering traffic through it is the design work.
+
+Licensing comes in two shapes, and the choice has consequences:
+
+| | BYOL (bring your own licence) | PAYG (pay as you go) |
+|---|---|---|
+| Purchase | Licence bought from Fortinet, applied to the instance | Billed hourly through the cloud marketplace |
+| Capacity | Fixed by the licence | Fixed by the instance size |
+| Suits | Steady, predictable workloads | Bursty or short-lived deployments |
+| Moving between clouds | Licence travels | Tied to the marketplace |
+
+## FortiGate CNF: Fortinet operates it
+
+FortiGate CNF (Cloud-Native Firewall) inverts the responsibility. It is delivered as a managed service: Fortinet runs the firewall infrastructure, handles its availability and scaling, and you configure policy through FortiManager rather than administering an instance.
+
+The distinction that matters is what you no longer do. There is no instance to size, patch, upgrade or cluster, and no HA design to get right. What you give up is the corresponding control: you are not tuning the platform, and its behaviour is what the service provides.
+
+The honest framing is the same as any managed service. It suits teams whose constraint is operational capacity rather than configuration flexibility, and it is the wrong choice where a specific low-level behaviour matters.
+
+## FortiSASE: inspection where the user is
+
+FortiSASE is not a firewall you deploy at all. It is inspection delivered from Fortinet's points of presence, applied to users wherever they connect from. Traffic goes from the endpoint to the nearest PoP, is inspected there, and continues to its destination.
+
+The problem it addresses is that the perimeter model assumed users sat behind it. Backhauling a remote user's traffic to a central firewall so it can be inspected adds latency to every session for the sake of a control that could be applied closer to them.
+
+**Onboarding methods** are what an exam candidate is most likely to be asked about, and there are three shapes:
+
+- **Agent-based.** FortiClient on the endpoint establishes a tunnel to the nearest PoP. This gives the most control and covers all traffic from the device, at the cost of deploying and maintaining an agent.
+- **Agentless.** Traffic is directed to the service without software on the endpoint, typically for web traffic via explicit proxy settings or PAC file. Easier to deploy, narrower coverage.
+- **Site-based.** An entire location is connected to the service through a tunnel from its edge device, so every host behind it is covered without touching any endpoint. This is how branch offices are usually onboarded.
+
+Most real deployments use more than one: agent for managed laptops, site-based for offices, agentless for unmanaged or contractor devices.
+
+## Where the three fit together
+
+They are not competitors so much as answers to different questions.
+
+| | Who operates it | Where inspection happens | Typical use |
+|---|---|---|---|
+| FortiGate VM | You | Your cloud network | Cloud workload protection, full control |
+| FortiGate CNF | Fortinet | Your cloud network | Cloud protection without operating it |
+| FortiSASE | Fortinet | Fortinet PoPs | Users and branches, wherever they are |
+
+A single organisation commonly runs all three: VMs protecting cloud workloads, SASE covering the workforce, and physical appliances at sites that need them. The shared configuration language across them is the reason the combination is manageable at all.
+
+## What an exam candidate should be able to state cold
+
+FortiGate VM is FortiOS you deploy and operate, licensed BYOL or PAYG, and the design work is steering cloud traffic through it. FortiGate CNF is the same protection as a managed service where Fortinet operates the infrastructure and you configure policy centrally. FortiSASE delivers inspection from Fortinet PoPs to users wherever they are, with agent-based, agentless, and site-based onboarding, and it exists because backhauling remote traffic to a central firewall costs latency for a control that can be applied nearer the user.

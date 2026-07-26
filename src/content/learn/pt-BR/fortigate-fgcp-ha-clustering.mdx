@@ -1,0 +1,73 @@
+---
+slug: fortigate-fgcp-ha-clustering
+title: "Alta disponibilidade FGCP no FortiGate: ativo-passivo, ativo-ativo e failover"
+summary: "O FGCP agrupa dois ou mais FortiGates para que um assuma o lugar do outro. Qual unidade se torna primária é decidido por uma eleição sensível ao override, a sobrevivência das sessões depende do que estava sendo sincronizado, e a surpresa mais comum é que sessões inspecionadas nem sempre sobrevivem a um failover. Este artigo cobre os dois modos, a ordem da eleição, o heartbeat e a sincronização de sessões, e o split brain."
+concepts: ["fortinet", "fortigate", "fgcp", "alta disponibilidade", "ativo-passivo", "ativo-ativo", "failover", "heartbeat", "session pickup", "split brain"]
+relatedTools: ["fortigate-ha-failover-simulator"]
+sub: fortigate
+relatedArticles: ["fortigate-initial-configuration-and-operation-modes", "fortigate-firewall-policy-and-nat"]
+category: networking
+order: 47
+status: reviewed
+updated: "2026-07-25"
+---
+
+Um par de alta disponibilidade existe para sobreviver à falha de uma unidade. Se ele de fato sobrevive depende de três coisas: como a primária é eleita, qual estado é sincronizado, e se o heartbeat pode ser perdido de forma independente do caminho de dados.
+
+## Ativo-passivo e ativo-ativo
+
+**Ativo-passivo** é a implantação comum. Uma unidade é primária e processa todo o tráfego; a secundária mantém configuração e tabela de sessões sincronizadas e não processa nada até assumir. A capacidade é a de uma unidade; a segunda é seguro.
+
+**Ativo-ativo** distribui parte do tráfego entre os membros. No FortiOS isso é mais estreito do que o nome sugere: a primária ainda recebe todo o tráfego e toma todas as decisões de roteamento e política, e então distribui o trabalho de **inspeção** às secundárias. Eleva a vazão de inspeção, não a capacidade bruta de encaminhamento, e acrescenta complexidade à investigação, porque uma dada sessão pode ser inspecionada numa unidade diferente daquela em que você está conectado.
+
+A orientação honesta é que ativo-passivo é o certo para a maioria das implantações. Ativo-ativo justifica sua complexidade quando o gargalo é comprovadamente a inspeção UTM, e não a vazão.
+
+## A eleição, e por que o override muda tudo
+
+Quando um cluster se forma ou um membro falha, a primária é escolhida comparando, nesta ordem:
+
+1. **Interfaces monitoradas com falha** — menos é melhor. Uma unidade com interface monitorada caída perde.
+2. **Idade** — a unidade que está ativa há mais tempo vence, então uma unidade reiniciada não retoma o papel de imediato.
+3. **Prioridade** — o valor configurado; maior vence.
+4. **Número de série** — o desempate determinístico.
+
+A sutileza é a posição da **idade acima da prioridade**. Com o override desabilitado, que é o padrão, uma unidade recuperada permanece secundária mesmo tendo prioridade maior, porque a primária atual tem idade maior. Isso é deliberado: impede que uma unidade instável tome e perca o papel repetidamente, e cada tomada é uma interrupção.
+
+Habilitar o **override** move a prioridade acima da idade, então a unidade preferida retoma a primária assim que volta. É o que as pessoas em geral acham que querem, e vem com a interrupção de retorno que o padrão estava evitando. Escolha conscientemente, e não por acidente.
+
+## Heartbeat, e split brain
+
+Os membros do cluster trocam heartbeats por interfaces dedicadas. O heartbeat carrega o sinal de saúde e a sincronização de configuração e de sessões.
+
+**Use duas interfaces de heartbeat.** Um enlace único de heartbeat é ponto único de falha cujo modo de falha é o pior disponível: se os membros não se ouvem mas ambos seguem conectados à rede, os dois concluem que o outro falhou e os dois viram primária. Isso é split brain, e duas unidades servindo os mesmos endereços e o mesmo MAC produzem sintomas muito mais confusos que uma queda simples.
+
+As interfaces de heartbeat devem ser diretamente conectadas quando possível, ou no mínimo levadas por um caminho independente da rede de dados, justamente para que uma falha no caminho de dados não corte o heartbeat também.
+
+## O que sobrevive a um failover, e o que não sobrevive
+
+A sincronização de configuração é contínua, então a secundária sempre tem a configuração atual. A sincronização de sessões é onde as expectativas divergem do comportamento.
+
+| Tipo de sessão | Sobrevive ao failover |
+|---|---|
+| Sessões TCP com session pickup habilitado | Sim |
+| UDP e ICMP | Depende da configuração; não por padrão |
+| Sessões inspecionadas por perfil em modo proxy | Em geral não |
+| Túneis IPsec | Com sincronização IPsec configurada |
+| Sessões de SSL VPN | Não preservadas; usuários reconectam |
+
+**O session pickup não vem habilitado por padrão.** Sem ele, toda sessão cai no failover, e o cluster ainda "funciona" no sentido de que a secundária assume: apenas quebra todas as conexões no processo. Habilitá-lo custa sobrecarga de sincronização, que é a razão do padrão, mas para a maioria das implantações a sobrecarga é a melhor troca.
+
+A linha que vale internalizar é a inspeção em modo proxy. Uma sessão sendo armazenada e inspecionada por um proxy mantém estado que não é sincronizado, então não sobrevive. Esse é o custo concreto da escolha entre fluxo e proxy aparecendo num lugar inesperado.
+
+## Verificar se um cluster está de fato saudável
+
+```
+get system ha status
+diagnose sys ha checksum cluster
+```
+
+O primeiro mostra membros, papéis e saúde. O segundo é a verificação mais valiosa: compara somas de verificação da configuração entre os membros, e uma divergência significa que o cluster está **fora de sincronia**, e a secundária assumirá com configuração diferente daquela que você vem editando. Um cluster que reporta os dois membros ativos e tem somas divergentes é um failover falho esperando para acontecer, e nada na visão comum de status revela isso.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+A ordem da eleição é interfaces monitoradas com falha, depois idade, depois prioridade, depois número de série. O override move a prioridade acima da idade e provoca retorno. Duas interfaces de heartbeat, porque uma só arrisca split brain. O session pickup vem desligado e é o que faz sessões TCP sobreviverem; sessões inspecionadas por proxy em geral não sobrevivem de qualquer forma. A comparação de somas de verificação é a checagem que revela um cluster fora de sincronia.

@@ -1,0 +1,61 @@
+---
+slug: fortianalyzer-soc-events-incidents-playbooks
+title: "SOC no FortiAnalyzer: manipuladores de eventos, incidentes, indicadores e playbooks"
+summary: "Um log é um registro. Um evento é um log que casou com uma regra que você escreveu. Um incidente agrupa eventos em algo que uma pessoa trabalha. Playbooks agem sobre eles. Deixar esses quatro níveis claros é a maior parte do que o lado SOC do FortiAnalyzer exige, e explica por que um manipulador de eventos que parece correto não produz nada."
+concepts: ["fortinet", "fortianalyzer", "manipulador de eventos", "incidente", "indicador de comprometimento", "playbook", "soc", "automação", "conector", "fabric"]
+relatedTools: []
+sub: fortianalyzer
+relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortigate-security-profiles-flow-vs-proxy"]
+category: security
+order: 52
+status: reviewed
+updated: "2026-07-26"
+---
+
+Os recursos de operações de segurança do FortiAnalyzer são quatro camadas empilhadas sobre o banco de logs, e cada uma só enxerga o que a camada abaixo produziu. Depurar qualquer coisa aqui significa descobrir qual camada parou.
+
+## Os quatro níveis
+
+**Logs** são o que os equipamentos enviaram. Todo nível acima deriva deles.
+
+**Eventos** são logs que casaram com um **manipulador de eventos**: uma regra com condições de filtro, uma severidade e, opcionalmente, um limiar sobre uma janela de tempo. Um manipulador não pesquisa o arquivo; ele avalia os logs que chegam ao analytics. Esse único fato responde à reclamação mais comum sobre eles, abaixo.
+
+**Incidentes** agrupam eventos relacionados numa unidade de trabalho com dono, estado e histórico. Um evento é uma observação de máquina; um incidente é um caso humano.
+
+**Indicadores** são os observáveis anexados a um incidente: um endereço, um hash, um domínio. São o que permite comparar um incidente com outro e com inteligência de ameaças.
+
+**Playbooks** automatizam a resposta. São disparados por um evento, um incidente, um agendamento, ou manualmente, e agem por meio de **conectores** para outros produtos.
+
+## Por que um manipulador de eventos não produz nada
+
+Quase todo relato de manipulador silencioso é um destes, em ordem aproximada de frequência:
+
+- **Os logs não estão no analytics.** Manipuladores avaliam o fluxo indexado. Se o tráfego nunca foi registrado, ou o equipamento não está autorizado, ou o tipo de log não está sendo armazenado, não há nada para casar.
+- **O ADOM está errado.** Manipuladores são delimitados por ADOM como todo o resto.
+- **O filtro é mais estrito que o pretendido.** Múltiplas condições são combinadas com E, e um campo vazio nos logs reais jamais casará com um valor.
+- **Um limiar não foi alcançado.** Um manipulador configurado para disparar em cinco ocorrências em dez minutos não produz nada com quatro, o que está correto e é invisível.
+- **O manipulador está desabilitado**, fácil de não notar numa lista longa.
+
+A ordem de diagnóstico que funciona é buscar os logs crus pela condição primeiro. Se a busca não retorna nada, o manipulador nunca iria disparar e o problema está acima, no registro ou no licenciamento, e não na regra.
+
+## Playbooks, e a parte que pega as pessoas
+
+Um playbook é um gatilho mais uma sequência de tarefas. As tarefas rodam por conectores: o conector local do FortiAnalyzer para seus próprios dados, e conectores de Fabric para FortiGate, FortiClient EMS, FortiMail e outros.
+
+Duas coisas dão errado mais que as demais:
+
+**O conector não está autorizado.** Um playbook que coloca um endpoint em quarentena precisa de um conector funcional para o gerenciador dono daquele endpoint. Um conector não autorizado ou mal configurado falha na tarefa, e não no gatilho, então o playbook é reportado como tendo executado.
+
+**O gatilho dispara mais ou menos que o esperado.** Um playbook disparado por incidente não roda a cada evento, apenas quando um incidente é criado ou atualizado. Um playbook que parece não rodar muitas vezes está corretamente esperando por um incidente que nada está criando.
+
+Ao investigar, leia primeiro o histórico de execução do próprio playbook. Ele registra qual tarefa falhou e com o quê, o que é mais rápido que inferir a partir da ausência de efeito.
+
+## Onde o FortiView se encaixa
+
+O FortiView é a visão interativa sobre o analytics: principais origens, principais destinos, ameaças, aplicações, cada uma navegável até os logs que a compõem. É uma superfície de leitura, não uma camada de armazenamento, então seus limites são os limites do analytics: mostra o que está indexado, no ADOM atual, dentro da retenção.
+
+Um painel do FortiView que parece vazio para um período que certamente teve tráfego é de novo a questão da retenção de analytics, e não um problema do FortiView.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Manipuladores de eventos avaliam logs que chegam ao analytics dentro de seu ADOM, com condições combinadas por E e limiares opcionais. Incidentes agrupam eventos e carregam indicadores. Playbooks são disparados por eventos, incidentes, agendamentos ou manualmente, e agem por conectores que precisam estar autorizados. O FortiView lê o analytics e herda sua retenção e seu escopo de ADOM. Quando algo não produz nada, busque os logs crus primeiro: se os logs não estão lá, regra alguma acima deles pode disparar.

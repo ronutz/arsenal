@@ -1,0 +1,65 @@
+---
+slug: fortianalyzer-log-ingestion-and-storage
+title: "FortiAnalyzer Log Ingestion: Normalization, and the Analytics/Archive Split"
+summary: "FortiAnalyzer receives logs, parses them into structured fields, and stores them in two very different ways. The analytics store is indexed and searchable; the archive is compressed and is not. Almost every FortiAnalyzer surprise, from a report that returns nothing to a search that finds no logs for last quarter, comes from that split and from the data policy that governs it."
+concepts: ["fortinet", "fortianalyzer", "log ingestion", "normalization", "analytics", "archive", "data policy", "adom", "security fabric", "oftp"]
+relatedTools: []
+sub: fortianalyzer
+relatedArticles: ["fortigate-firewall-policy-and-nat", "reading-a-fortigate-sniffer-trace"]
+category: security
+order: 51
+status: reviewed
+updated: "2026-07-26"
+---
+
+FortiAnalyzer is a log database with a security console on top. Most confusion about it resolves to one question: what happened to a log between the device emitting it and you failing to find it.
+
+## The path a log takes
+
+A FortiGate or other Fortinet device sends logs to FortiAnalyzer over a dedicated protocol on TCP 514, encrypted by default. The device must be **registered and authorized** on the FortiAnalyzer side before its logs are accepted, which is the first place ingestion silently fails: an unauthorized device sends logs into a void, and the device itself reports no error worth noticing.
+
+Once accepted, each log is **parsed into structured fields**. A raw log line is text; what FortiAnalyzer stores is a row with typed columns — source address, destination, action, policy ID, application, and dozens more depending on log type. That parsing step is what makes a log searchable and reportable rather than merely retained.
+
+Logs then land in an **ADOM**, the administrative domain that partitions devices and their data. An ADOM is not just an access-control boundary: it is also the scope of searches, reports and event handlers, which is why work done in the wrong ADOM returns a truthful answer about the wrong set of devices.
+
+## The split that explains almost everything
+
+FortiAnalyzer keeps logs in two forms, and they are not two copies of the same thing.
+
+| | Analytics | Archive |
+|---|---|---|
+| Form | Parsed, indexed rows in the SQL database | Compressed raw log files |
+| Searchable | Yes, by any field | Not directly |
+| Feeds reports and FortiView | Yes | No |
+| Disk cost per log | Higher | Much lower |
+| Retention | Usually shorter | Usually longer |
+
+A log is written to the archive on arrival and, if the ADOM's data policy says so, also inserted into analytics. When a log ages past its **analytics retention**, it is removed from the indexed store while remaining in the archive until archive retention expires.
+
+The consequences are direct, and they are the answers to the questions people actually ask:
+
+- **"Why does my report for last quarter come back empty?"** The logs aged out of analytics. They still exist in the archive, but reports are built on analytics.
+- **"Why can't I search for a session from six months ago?"** Same reason.
+- **"Why is my disk full when retention looks reasonable?"** Analytics costs several times what the archive costs per log, so the analytics window is the setting that consumes the space.
+
+The data policy is per ADOM, so a shared appliance can legitimately hold ninety days of analytics for one business unit and seven for another.
+
+## Fabric integration is registration plus context
+
+Joining FortiAnalyzer to the Security Fabric does more than tidy the topology view. It gives FortiAnalyzer the relationship between devices, so a log from a FortiGate can be correlated with an endpoint record from FortiClient EMS or a switch port from FortiSwitch. That correlation is what turns a list of events into a narrative about one host.
+
+It also matters for automation: a playbook that quarantines an endpoint needs to know which manager owns that endpoint, and the Fabric connection is where that comes from.
+
+## What to check when logs are missing
+
+The order matters, because each step depends on the one above it.
+
+1. **Is the device registered and authorized?** An unauthorized device is dropped, not queued.
+2. **Is the device actually sending?** Check the log-forwarding configuration on the device itself, and remember that a policy with logging disabled generates nothing to send.
+3. **Which ADOM?** Devices land in one ADOM, and searching another finds nothing.
+4. **Analytics or archive?** If the time range is older than the analytics retention, the logs are in the archive and will not appear in a normal search or report.
+5. **Is the disk full?** When storage is exhausted, FortiAnalyzer stops inserting, and the symptom is an abrupt end to new data rather than an error where you are looking.
+
+## What an exam candidate should be able to state cold
+
+Devices must be registered and authorized before logs are accepted. Logs are parsed into structured fields on arrival, which is what makes them searchable. Every log goes to the archive; only logs within the analytics retention window are indexed and therefore searchable and reportable. ADOMs scope devices, searches, reports and event handlers alike. Fabric integration supplies the cross-device context that correlation and automation depend on.

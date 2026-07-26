@@ -87,6 +87,13 @@ import { run as iqueryRun } from "./iquery-protocol-explainer";
 import { run as doRun } from "./do-explainer-validator";
 import { run as tsRun } from "./telemetry-streaming-explainer";
 import { run as fortiosSnifferRun } from "./fortios-sniffer-builder";
+import { run as fgtPolicyLookupRun } from "./fortigate-policy-lookup-explainer";
+import { run as fgtSessionTableRun } from "./fortigate-session-table-explainer";
+import { run as fgtHaRun } from "./fortigate-ha-failover-simulator";
+import { run as fgtIpsecRun } from "./fortigate-ipsec-phase-mismatch-analyzer";
+import { run as fgtRouteRun } from "./fortigate-route-selection-explainer";
+import { run as fgtProfileRun } from "./fortigate-security-profile-coverage-checker";
+import { run as fgtDiffRun } from "./fortios-config-diff-explainer";
 import { run as pacRun } from "./pac-file-explainer";
 import { run as exosRun } from "./exos-config-explainer";
 import { run as acmeDns01Run } from "./acme-dns01";
@@ -228,6 +235,13 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "do-explainer-validator", run: doRun },
   { slug: "telemetry-streaming-explainer", run: tsRun },
   { slug: "fortios-sniffer-builder", run: fortiosSnifferRun },
+  { slug: "fortigate-policy-lookup-explainer", run: fgtPolicyLookupRun },
+  { slug: "fortigate-session-table-explainer", run: fgtSessionTableRun },
+  { slug: "fortigate-ha-failover-simulator", run: fgtHaRun },
+  { slug: "fortigate-ipsec-phase-mismatch-analyzer", run: fgtIpsecRun },
+  { slug: "fortigate-route-selection-explainer", run: fgtRouteRun },
+  { slug: "fortigate-security-profile-coverage-checker", run: fgtProfileRun },
+  { slug: "fortios-config-diff-explainer", run: fgtDiffRun },
   { slug: "pac-file-explainer", run: pacRun },
   { slug: "exos-config-explainer", run: exosRun },
   { slug: "f5-awaf-false-positive-triage", structured: true, run: f5AwafFpRun },

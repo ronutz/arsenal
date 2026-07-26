@@ -94,6 +94,11 @@ export default async function CertificationsHubPage({
       // Certifications that must be ACTIVE first, in the vendor's own wording.
       prerequisites: cert.prerequisites ?? [],
       prerequisitesLabel: t("prerequisitesLabel"),
+      // The vendor's own page for THIS certification. Stored since the model
+      // was written and never rendered until now, which meant a reader had no
+      // one-click way to check the requirements against the source.
+      sourceUrl: cert.sourceUrl ?? null,
+      sourceLabel: t("officialPage"),
       renewalNote: cert.renewalNote,
       guides: getGuidesForCertification(cert.key).map((guide) => {
         const n = objectiveCount(guide);

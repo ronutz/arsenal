@@ -5866,6 +5866,636 @@
         }
       }
     },
+    "/fortigate-ha-failover-simulator": {
+      "get": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_ha_failover_simulator",
+        "summary": "FortiGate HA failover simulator",
+        "description": "Describe an FGCP cluster and see which unit becomes primary, which criterion decided it, and who would be primary if override were toggled. Standards: FGCP primary unit selection. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "member: name=FGT-A, serial=FG100A, priority=200, age=120, failed=0"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_ha_failover_simulator_post",
+        "summary": "FortiGate HA failover simulator (POST)",
+        "description": "Describe an FGCP cluster and see which unit becomes primary, which criterion decided it, and who would be primary if override were toggled. Standards: FGCP primary unit selection. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "member: name=FGT-A, serial=FG100A, priority=200, age=120, failed=0"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fortigate-ipsec-phase-mismatch-analyzer": {
+      "get": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_ipsec_phase_mismatch_analyzer",
+        "summary": "FortiGate IPsec phase mismatch analyzer",
+        "description": "Describe both IPsec peers and get the disagreement named, and which phase would fail. Phase 1 and phase 2 fail for different reasons and lead to different diagnostics. Standards: IKE phase 1 and phase 2 negotiation. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "phase1: version=ikev2, encryption=aes256, hash=sha256, dhgroup=14, auth=psk"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_ipsec_phase_mismatch_analyzer_post",
+        "summary": "FortiGate IPsec phase mismatch analyzer (POST)",
+        "description": "Describe both IPsec peers and get the disagreement named, and which phase would fail. Phase 1 and phase 2 fail for different reasons and lead to different diagnostics. Standards: IKE phase 1 and phase 2 negotiation. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "phase1: version=ikev2, encryption=aes256, hash=sha256, dhgroup=14, auth=psk"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fortigate-policy-lookup-explainer": {
+      "get": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_policy_lookup_explainer",
+        "summary": "FortiGate policy lookup explainer",
+        "description": "Paste a FortiGate policy list and a packet, and see which policy matches, why each earlier policy did not, and which policies below the match can never take effect as ordered. Standards: FortiOS firewall policy evaluation. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "config firewall policy\\n  edit 1\\n    set srcintf \"port1\"\\n  next\\nend"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_policy_lookup_explainer_post",
+        "summary": "FortiGate policy lookup explainer (POST)",
+        "description": "Paste a FortiGate policy list and a packet, and see which policy matches, why each earlier policy did not, and which policies below the match can never take effect as ordered. Standards: FortiOS firewall policy evaluation. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "config firewall policy\\n  edit 1\\n    set srcintf \"port1\"\\n  next\\nend"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fortigate-route-selection-explainer": {
+      "get": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_route_selection_explainer",
+        "summary": "FortiGate route selection explainer",
+        "description": "Give a destination and a set of routes and see which install, which is selected, and which are floating backups absent from the forwarding table. Standards: FortiOS routing table selection. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "route: prefix=10.2.0.0/16, gw=10.1.1.1, dev=port3, distance=10, priority=0"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_route_selection_explainer_post",
+        "summary": "FortiGate route selection explainer (POST)",
+        "description": "Give a destination and a set of routes and see which install, which is selected, and which are floating backups absent from the forwarding table. Standards: FortiOS routing table selection. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "route: prefix=10.2.0.0/16, gw=10.1.1.1, dev=port3, distance=10, priority=0"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fortigate-security-profile-coverage-checker": {
+      "get": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_security_profile_coverage_checker",
+        "summary": "FortiGate security profile coverage checker",
+        "description": "Answers why is my profile not working before the ticket is raised. Walks the dependency chain and names which link failed. Standards: FortiOS SSL inspection and inspection modes. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "ssl: certificate"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_security_profile_coverage_checker_post",
+        "summary": "FortiGate security profile coverage checker (POST)",
+        "description": "Answers why is my profile not working before the ticket is raised. Walks the dependency chain and names which link failed. Standards: FortiOS SSL inspection and inspection modes. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "ssl: certificate"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fortigate-session-table-explainer": {
+      "get": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_session_table_explainer",
+        "summary": "FortiGate session table explainer",
+        "description": "Paste diagnose sys session list output and have it read back: which policy admitted the flow, what was translated on each leg, and whether the far side ever replied. Standards: FortiOS diagnose sys session list. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "session info: proto=6 proto_state=01 duration=125 expire=3590 timeout=3600"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_session_table_explainer_post",
+        "summary": "FortiGate session table explainer (POST)",
+        "description": "Paste diagnose sys session list output and have it read back: which policy admitted the flow, what was translated on each leg, and whether the far side ever replied. Standards: FortiOS diagnose sys session list. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "session info: proto=6 proto_state=01 duration=125 expire=3590 timeout=3600"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fortios-config-diff-explainer": {
+      "get": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortios_config_diff_explainer",
+        "summary": "FortiOS config diff explainer",
+        "description": "Two configurations in, a structural diff out. A moved block is not a change, except in the sections where order is the behaviour. Standards: FortiOS configuration structure. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "config firewall address\\n    edit \"LAN\"\\n        set subnet 10.1.0.0 255.255.0.0\\n    next\\nend"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortios_config_diff_explainer_post",
+        "summary": "FortiOS config diff explainer (POST)",
+        "description": "Two configurations in, a structural diff out. A moved block is not a change, except in the sections where order is the behaviour. Standards: FortiOS configuration structure. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "config firewall address\\n    edit \"LAN\"\\n        set subnet 10.1.0.0 255.255.0.0\\n    next\\nend"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fortios-sniffer-builder": {
       "get": {
         "tags": [

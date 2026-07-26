@@ -1,0 +1,66 @@
+---
+slug: fortimanager-adoms-and-device-registration
+title: "ADOMs e registro de equipamentos no FortiManager: o banco de dados é a fonte da verdade"
+summary: "O FortiManager mantém sua própria cópia da configuração de cada equipamento gerenciado, e é essa cópia que é instalada. Entender essa única relação, e o ADOM que a delimita, explica o registro de equipamentos, o estado fora de sincronia, o versionamento de ADOM, e por que existe o banco global."
+concepts: ["fortinet", "fortimanager", "adom", "registro de equipamentos", "fora de sincronia", "revisão", "banco global", "implantação", "gerência centralizada"]
+relatedTools: []
+sub: fortimanager
+relatedArticles: ["fortigate-firewall-policy-and-nat", "fortianalyzer-log-ingestion-and-storage"]
+category: operations
+order: 54
+status: reviewed
+updated: "2026-07-26"
+---
+
+O FortiManager não é uma janela de controle remoto para seus firewalls. Ele mantém seu **próprio banco de dados** com a configuração de cada equipamento, você edita esse banco, e então instala dele para o equipamento. Quase tudo que surpreende as pessoas no FortiManager decorre dessa única decisão de projeto.
+
+## Registro, e o que de fato acontece
+
+Adicionar um equipamento faz três coisas em sequência: o FortiManager o autoriza, obtém sua configuração em execução, e armazena essa configuração como a linha de base do equipamento no banco. Daí em diante há duas cópias da verdade, e elas podem divergir.
+
+A divergência é normal e esperada. Alguém acessa o FortiGate diretamente e muda uma política; a cópia do FortiManager deixa de coincidir. O equipamento fica **fora de sincronia**, e o FortiManager avisa em vez de sobrescrever em silêncio.
+
+Resolver isso é uma escolha, e escolher errado perde trabalho:
+
+| Situação | Ação | Efeito |
+|---|---|---|
+| O equipamento tem mudanças que você quer manter | **Importar** | A configuração do equipamento é trazida ao banco do FortiManager |
+| O banco tem mudanças que você quer aplicar | **Instalar** | A configuração do banco é enviada ao equipamento |
+| Os dois mudaram | Importar, reconciliar, depois instalar | Do contrário a instalação descarta as edições feitas no equipamento |
+
+O hábito que vale construir é ler o estado de sincronia antes de qualquer coisa, porque uma instalação a partir de um banco desatualizado é como uma correção local é revertida em silêncio.
+
+## ADOMs delimitam tudo
+
+Um domínio administrativo particiona equipamentos gerenciados junto com suas políticas, objetos e administradores. Equipamentos vivem em exatamente um ADOM, e pacotes de políticas, objetos de endereço e serviços são por ADOM por padrão.
+
+As razões são as conhecidas: separar inquilinos ou unidades de negócio, delegar administração sem conceder direitos globais, e evitar colisão entre espaços de nomes de objetos não relacionados.
+
+Dois detalhes importam na operação:
+
+**Controle de versão do ADOM.** Um ADOM é associado a uma versão de firmware, e espera-se que os equipamentos nele coincidam. Um equipamento numa versão principal diferente da de seu ADOM é a causa usual de uma instalação que se comporta de forma estranha ou de uma opção que não aparece, porque o esquema que o FortiManager mantém não corresponde ao do equipamento.
+
+**O banco global.** Objetos e políticas de cabeçalho e rodapé definidos no ADOM global podem ser atribuídos a múltiplos ADOMs, e é assim que uma regra que precisa existir em todo lugar é mantida num lugar só. Políticas de cabeçalho ficam acima das políticas do próprio ADOM e as de rodapé abaixo, então uma negação global no rodapé é uma regra abrangente de verdade e uma permissão global no cabeçalho supera tudo que é local — vale lembrar, porque interage com a avaliação por primeira correspondência exatamente como se espera e exatamente como as pessoas esquecem.
+
+## Revisões são o desfazer que você de fato tem
+
+Toda instalação cria uma revisão da configuração do equipamento no banco, e revisões podem ser comparadas e revertidas. Isso dá duas capacidades que vale usar deliberadamente.
+
+**Comparação** responde o que mudou entre dois pontos, o que é mais rápido e muito mais legível que comparar dois despejos completos de configuração à mão.
+
+**Reversão** restaura uma configuração anterior ao banco, que você então instala. Note os dois passos: reverter uma revisão não toca o equipamento por si só. Isso é uma propriedade de segurança, não um inconveniente.
+
+A retenção de revisões é finita e configurável. Uma implantação que guarda poucas revisões num equipamento muito editado pode perder justamente a que você queria, então a configuração de retenção merece uma decisão, e não um padrão.
+
+## Formatos de implantação
+
+Os comuns, e o que os distingue:
+
+- **FortiManager único** gerenciando equipamentos diretamente. Mais simples, e a disponibilidade do gerenciador passa a ser uma preocupação operacional.
+- **FortiManager em HA**, um cluster com uma primária cuidando da configuração e pares mantendo cópias sincronizadas.
+- **Gerenciador de gerenciadores**, em que um FortiManager central coordena subordinados, usado em escala ou onde há exigência de separação administrativa entre regiões.
+- **FortiManager com recursos de FortiAnalyzer habilitados**, permitindo que um equipamento gerencie configuração e armazene logs. Conveniente em implantações menores, e significa que as duas cargas disputam os mesmos recursos.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O FortiManager mantém seu próprio banco com a configuração de cada equipamento e instala a partir dele. Fora de sincronia significa que as duas cópias diferem; importar puxa do equipamento, instalar envia para ele, e escolher errado descarta trabalho. ADOMs delimitam equipamentos, políticas e objetos, e carregam uma versão de firmware que deve coincidir com a dos equipamentos neles. Objetos do banco global e políticas de cabeçalho e rodapé são atribuídos aos ADOMs, com cabeçalhos acima e rodapés abaixo das políticas do próprio ADOM. Revisões são criadas na instalação, podem ser comparadas e revertidas, e uma reversão afeta o banco até você instalar.

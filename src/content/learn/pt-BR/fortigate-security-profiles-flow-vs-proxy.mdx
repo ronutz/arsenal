@@ -1,0 +1,84 @@
+---
+slug: fortigate-security-profiles-flow-vs-proxy
+title: "Perfis de segurança do FortiGate: antivírus, IPS e controle de aplicações"
+summary: "Antivírus, IPS e controle de aplicações são perfis de segurança separados anexados a uma política de firewall, e o que cada um consegue de fato enxergar depende de duas coisas que o exame cobra diretamente: o modo de inspeção em que o perfil roda e se a inspeção SSL descriptografa o tráfego antes. Este artigo cobre inspeção por fluxo contra proxy, os modos de varredura do antivírus, como assinaturas de IPS e ações por taxa diferem, e por que às vezes o controle de aplicações não consegue identificar uma aplicação."
+concepts: ["fortinet", "fortigate", "perfil de segurança", "antivírus", "ips", "controle de aplicações", "modo fluxo", "modo proxy", "utm"]
+relatedTools: ["fortigate-security-profile-coverage-checker"]
+sub: fortigate
+relatedArticles: ["fortinet-ssl-inspection-modes", "fortigate-firewall-policy-and-nat", "reading-a-fortigate-sniffer-trace"]
+category: security
+order: 44
+status: reviewed
+updated: "2026-07-25"
+---
+
+Uma política de firewall decide se o tráfego passa. Os perfis de segurança decidem o que é feito com o tráfego que passa. Eles são anexados por política, o que significa que a mesma origem e o mesmo destino podem ser inspecionados de formas diferentes conforme a política que correspondeu, e isso é projeto deliberado, não acidente.
+
+## Fluxo e proxy são a divisão da qual tudo depende
+
+O FortiOS inspeciona conteúdo em um de dois motores, e a escolha limita o que cada perfil consegue fazer.
+
+**Inspeção por fluxo** examina os pacotes conforme passam, sem reter o objeto inteiro. É mais rápida, acrescenta menos latência, e pode ser descarregada para hardware. Como nunca monta o arquivo ou a mensagem completa, algumas verificações são inerentemente limitadas.
+
+**Inspeção por proxy** termina a sessão, armazena o objeto, inspeciona-o inteiro e então encaminha. Enxerga tudo, ao custo de latência, memória e da perda do descarregamento em hardware.
+
+| Propriedade | Por fluxo | Por proxy |
+|---|---|---|
+| Tratamento do objeto | Em fluxo, pacote a pacote | Armazenado e remontado |
+| Latência | Menor | Maior |
+| Descarregamento em hardware | Possível | Não |
+| Mensagens de substituição | Limitadas | Páginas HTML completas de bloqueio |
+| Vê um arquivo compactado inteiro para varrer dentro | Restrito | Sim |
+
+A regra prática é que o modo fluxo é o padrão para vazão e o modo proxy é o que se escolhe quando um recurso específico precisa do objeto inteiro. Misturá-los entre políticas é normal; o que causa surpresa é esperar comportamento exclusivo de proxy numa política rodando em modo fluxo.
+
+## Antivírus: os modos de varredura e o que os derrota
+
+O perfil de antivírus varre em busca de malware, e seu comportamento segue a divisão de motores acima.
+
+Em **modo proxy** o arquivo é armazenado e varrido completo. É a posição mais forte: um arquivo compactado pode ser expandido e seu conteúdo varrido, e um bloqueio pode ser substituído por uma página explicativa.
+
+Em **modo fluxo** o arquivo é varrido conforme flui. O FortiOS ainda detecta a esmagadora maioria do malware assim, e as restrições estão nas bordas: arquivos muito grandes e compactados profundamente aninhados são onde a diferença aparece.
+
+Três configurações importam mais do que os candidatos esperam:
+
+- **Tratamento de arquivos grandes demais.** Arquivos acima do limiar configurado não são varridos. A ação padrão os libera, o que significa que os maiores downloads são justamente os que passam sem inspeção, salvo se você mudar isso. Bloquear arquivos grandes demais é mais seguro e mais disruptivo; a escolha deve ser deliberada, não herdada do padrão.
+- **Compactados criptografados.** Um arquivo protegido por senha não pode ser varrido por nada. O perfil pode ser configurado para tratá-lo como infectado, que é a única opção real disponível.
+- **Os interruptores de grayware e heurística.** Pegam mais e produzem mais falsos positivos, que é a troca comum de detecção.
+
+O ponto que se conecta ao artigo anterior: **o antivírus não inspeciona o que não consegue ler.** Num download HTTPS com inspeção de certificado em vez de inspeção profunda, a carga nunca é descriptografada e o perfil de antivírus não tem nada para examinar. O perfil aparece anexado e configurado, e não faz nada.
+
+## IPS: assinaturas, e as duas coisas que as pessoas confundem
+
+O sistema de prevenção de intrusões compara o tráfego com assinaturas e toma uma ação por assinatura ou por filtro.
+
+As assinaturas carregam severidade, alvo (cliente ou servidor), protocolo e sistema operacional. Em vez de habilitar milhares individualmente, um sensor de IPS é montado a partir de **filtros** que selecionam por esses atributos, por exemplo todas as assinaturas de severidade alta e crítica voltadas a servidores, mais sobreposições individuais onde uma assinatura específica precisa de tratamento diferente.
+
+As distinções que vale reter:
+
+- **Baseado em assinatura contra baseado em taxa.** A maioria das assinaturas casa um padrão. Um subconjunto é baseado em taxa, disparando por frequência e não por conteúdo: muitas autenticações falhas, uma enxurrada de tentativas de conexão. Existem para comportamento que pacote nenhum revela sozinho.
+- **Ação contra registro de pacote.** A ação decide o que acontece com o tráfego (passar, bloquear, resetar, quarentena). O registro de pacote decide separadamente se o pacote ofensor é capturado para análise posterior. É valioso e consome disco, então pertence a um conjunto direcionado de assinaturas, e não a tudo.
+- **IPS não é política de firewall.** Ele inspeciona tráfego que uma política já permitiu. Tráfego negado pela política nunca chega ao motor de IPS, e é por isso que um sensor de IPS não compensa uma regra ampla demais.
+
+## Controle de aplicações: o que identifica, e quando não consegue
+
+O controle de aplicações identifica tráfego por assinatura de aplicação, e não por porta, que é justamente o ponto: algo na porta 443 não é necessariamente um navegador, e a porta quase nada diz numa rede moderna.
+
+Ele funciona inspecionando padrões de tráfego e características de carga contra a base de aplicações da Fortinet, e então aplica uma ação por aplicação ou por categoria. Isso produz controle útil, permitir a suíte de colaboração, bloquear o cliente de compartilhamento, monitorar o serviço de streaming, que uma regra por porta não consegue expressar.
+
+Seus limites decorrem diretamente de como funciona:
+
+- **Criptografia.** Sem inspeção profunda, o controle de aplicações vê apenas metadados do handshake. Algumas aplicações seguem identificáveis só pelo SNI; muitas não.
+- **A identificação exige pacotes.** O motor precisa observar parte suficiente de uma sessão para classificá-la. Os primeiros pacotes de um fluxo podem passar antes de a aplicação ser reconhecida, e é por isso que o controle de aplicações molda comportamento em vez de agir como portão rígido já no primeiro pacote.
+- **Evasão deliberada.** Aplicações projetadas para parecer tráfego web comum são difíceis de distinguir de tráfego web comum. A base é atualizada continuamente, e isso segue sendo corrida armamentista, não problema resolvido.
+
+## A cadeia de dependências que o exame realmente cobra
+
+Esses três perfis formam uma cadeia de precondições, e enunciá-la corretamente é a maior parte do valor:
+
+1. Uma **política de firewall** precisa permitir o tráfego. Nada inspeciona o que foi negado.
+2. A **inspeção SSL** precisa descriptografá-lo, se for criptografado. Inspeção de certificado não basta para antivírus, IPS nem controle de aplicações, que precisam todos da carga.
+3. O **modo de inspeção** precisa suportar o recurso. Alguns comportamentos exigem modo proxy e são restritos ou ausentes no modo fluxo.
+4. Só então a **ação do perfil** se aplica.
+
+A maioria dos relatos de "o perfil não está funcionando" se resolve na etapa dois. O perfil está anexado, a configuração está certa, e o tráfego está criptografado com inspeção de certificado, então não há nada para inspecionar.

@@ -1,0 +1,67 @@
+---
+slug: fortigate-ipsec-vpn-topologies
+title: "FortiGate IPsec VPN: Phase 1, Phase 2, and Redundant Topologies"
+summary: "An IPsec tunnel is negotiated in two phases, and knowing which phase failed narrows a fault immediately. Beyond a single tunnel, the choice between full mesh, hub and spoke, and partially redundant designs is a trade between the number of tunnels to manage and the path traffic actually takes. This covers the phases, the mismatches that break each one, and how redundancy is expressed."
+concepts: ["fortinet", "fortigate", "ipsec", "ike", "phase 1", "phase 2", "site-to-site vpn", "full mesh", "hub and spoke", "adfl", "redundant vpn"]
+relatedTools: ["fortigate-ipsec-phase-mismatch-analyzer"]
+sub: fortigate
+relatedArticles: ["fortigate-routing-and-sdwan-selection", "fortigate-firewall-policy-and-nat"]
+category: networking
+order: 49
+status: reviewed
+updated: "2026-07-25"
+---
+
+Almost every IPsec fault resolves to one question: which phase failed. The two phases negotiate different things, fail for different reasons, and the diagnostic path diverges immediately once you know which one it was.
+
+## Two phases, two jobs
+
+**Phase 1** establishes a secure channel between the two gateways so that the rest of the negotiation can happen privately. It authenticates the peers and agrees on encryption, hashing, a Diffie-Hellman group, and a lifetime.
+
+**Phase 2** runs inside that protected channel and negotiates the security associations that actually carry traffic. It agrees on the transform set and, critically, on the **selectors**: which source and destination networks this tunnel carries.
+
+The split is why the failure tells you so much. A phase 1 failure is about identity or proposal. A phase 2 failure means the gateways authenticated successfully and then disagreed about what to protect.
+
+| Symptom | Phase | Usual cause |
+|---|---|---|
+| Tunnel never comes up, no phase 2 attempt | 1 | Pre-shared key mismatch, wrong peer ID, no matching proposal |
+| Phase 1 up, phase 2 never completes | 2 | Selector mismatch, transform mismatch, PFS enabled on one side |
+| Tunnel up, no traffic passes | Neither | Missing route or missing firewall policy |
+| Tunnel drops on a schedule | Either | Lifetime mismatch, or rekey failing |
+
+That third row is the one that wastes the most time. A tunnel that reports up and passes nothing is not an IPsec problem at all — it is a routing or policy problem, and the two things a working tunnel still needs are a **route** pointing traffic into it and a **firewall policy** permitting the traffic across it.
+
+## The mismatches that actually happen
+
+**Selectors** are the most common phase 2 failure. Both sides must agree on the networks the tunnel carries, and they must agree exactly: a subnet on one side and a supernet on the other is a mismatch, not an approximation. When one peer is a device with narrow selector support, the two sides must be configured symmetrically rather than conveniently.
+
+**Perfect forward secrecy** must match. Enabled on one side and not the other fails phase 2 with a message that does not obviously say so.
+
+**Lifetimes** need not match exactly — the shorter one wins — but wildly different values cause rekeys at awkward intervals, and a rekey that fails presents as a tunnel that drops on a regular cadence.
+
+**NAT traversal** is required whenever a device between the peers translates addresses, because ESP has no ports for a translator to rewrite. Detection happens during phase 1 and the tunnel then encapsulates in UDP 4500. Keepalives matter, because a translation entry expires when idle, which produces a tunnel that works and then silently stops after a quiet period.
+
+## Topologies: the real choice is how many tunnels you manage
+
+**Full mesh** connects every site to every other. Traffic always takes the direct path, which is optimal for latency, and the tunnel count grows quadratically: ten sites is forty-five tunnels, and every new site requires configuration at every existing one. It suits a small number of sites that talk to each other constantly.
+
+**Hub and spoke** connects each site only to a hub. Adding a site is one configuration change at the hub and one at the spoke, which is why almost all large deployments are shaped this way. The cost is the path: spoke-to-spoke traffic traverses the hub, adding latency and concentrating load, and the hub becomes a single point of failure worth designing around.
+
+**Partially redundant** designs are the middle ground and what most real networks converge on: hub and spoke as the base, plus direct tunnels between the specific pairs of sites whose traffic justifies them, plus a second hub so the failure of one is survivable.
+
+| | Full mesh | Hub and spoke | Partial mesh |
+|---|---|---|---|
+| Tunnels for n sites | n(n-1)/2 | n | n plus the exceptions |
+| Adding a site | Touch every site | Touch the hub | Touch the hub |
+| Spoke-to-spoke path | Direct | Via the hub | Direct where configured |
+| Single point of failure | None | The hub | Mitigated by a second hub |
+
+ADVPN is worth knowing as the answer to the trade: it keeps hub-and-spoke configuration while allowing spokes to build direct shortcuts on demand, so the management cost stays linear and the traffic path is direct once a shortcut forms.
+
+## Redundancy within a tunnel
+
+Beyond topology, a single logical connection can be made redundant. Configuring **multiple phase 1 interfaces to different remote gateways** and controlling which is preferred through routing distance gives an active-standby pair: the primary route is used while its tunnel is up, and the floating backup route takes over when it is withdrawn. This is exactly the static-route mechanic from the routing article, applied to tunnels, and it depends on the tunnel interface going down when the tunnel does — which is what dead peer detection provides.
+
+## What an exam candidate should be able to state cold
+
+Phase 1 authenticates the peers and protects the negotiation; phase 2 negotiates the SAs and the selectors. Phase 1 failures are identity or proposal; phase 2 failures are selectors, transforms or PFS. A tunnel that is up and passes nothing is missing a route or a policy, not an IPsec setting. NAT traversal encapsulates ESP in UDP 4500 and needs keepalives. Full mesh is n(n-1)/2 tunnels, hub and spoke is n with a hub-transit path, and redundancy within a tunnel is built from multiple phase 1 interfaces plus route distance.

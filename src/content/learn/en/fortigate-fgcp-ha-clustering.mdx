@@ -1,0 +1,73 @@
+---
+slug: fortigate-fgcp-ha-clustering
+title: "FortiGate FGCP High Availability: Active-Passive, Active-Active, and Failover"
+summary: "FGCP clusters two or more FortiGates so one can take over from another. Which unit becomes primary is decided by an override-sensitive election, session survival depends on what was being synchronised, and the most common surprise is that inspected sessions do not always survive a failover. This covers the two modes, the election order, heartbeat and session synchronisation, and split brain."
+concepts: ["fortinet", "fortigate", "fgcp", "high availability", "active-passive", "active-active", "failover", "heartbeat", "session pickup", "split brain"]
+relatedTools: ["fortigate-ha-failover-simulator"]
+sub: fortigate
+relatedArticles: ["fortigate-initial-configuration-and-operation-modes", "fortigate-firewall-policy-and-nat"]
+category: networking
+order: 47
+status: reviewed
+updated: "2026-07-25"
+---
+
+A high-availability pair exists to survive the failure of one unit. Whether it actually does depends on three things: how the primary is elected, what state is synchronised, and whether the heartbeat can be lost independently of the data path.
+
+## Active-passive and active-active
+
+**Active-passive** is the common deployment. One unit is primary and processes all traffic; the secondary maintains a synchronised configuration and session table and processes nothing until it takes over. Capacity is that of one unit; the second is insurance.
+
+**Active-active** distributes some traffic across members. In FortiOS this is narrower than the name suggests: the primary still receives all traffic and makes all the routing and policy decisions, then distributes **inspection** work to secondaries. It raises inspection throughput, not raw forwarding capacity, and it adds complexity to troubleshooting because a given session may be inspected on a unit other than the one you are logged into.
+
+The honest guidance is that active-passive is right for most deployments. Active-active earns its complexity when the bottleneck is demonstrably UTM inspection rather than throughput.
+
+## The election, and why override changes everything
+
+When a cluster forms or a member fails, the primary is chosen by comparing, in order:
+
+1. **Failed monitored interfaces** — fewer is better. A unit with a monitored interface down loses.
+2. **Age** — the unit that has been up longer wins, so a rebooted unit does not immediately reclaim the role.
+3. **Priority** — the configured value; higher wins.
+4. **Serial number** — the deterministic tie-break.
+
+The subtlety is the position of **age above priority**. With override disabled, which is the default, a recovered unit stays secondary even if it has the higher priority, because the current primary has greater age. That is deliberate: it prevents a flapping unit from repeatedly seizing and losing the role, and each seizure is a disruption.
+
+Enabling **override** moves priority above age, so the preferred unit reclaims primary as soon as it returns. That is what people usually think they want, and it comes with the failback disruption the default was avoiding. Choose it consciously rather than by accident.
+
+## Heartbeat, and split brain
+
+Cluster members exchange heartbeats over dedicated interfaces. The heartbeat carries the health signal and the configuration and session synchronisation.
+
+**Use two heartbeat interfaces.** A single heartbeat link is a single point of failure whose failure mode is the worst one available: if members cannot hear each other but both remain connected to the network, both conclude the other has failed and both become primary. That is split brain, and two units serving the same addresses and the same MAC produces symptoms far more confusing than a plain outage.
+
+Heartbeat interfaces should be directly connected where possible, or at minimum carried on a path independent of the data network, precisely so that a data-path failure does not sever the heartbeat too.
+
+## What survives a failover, and what does not
+
+Configuration synchronisation is continuous, so the secondary always holds the current configuration. Session synchronisation is where expectations diverge from behaviour.
+
+| Session type | Survives failover |
+|---|---|
+| TCP sessions with session pickup enabled | Yes |
+| UDP and ICMP | Depends on configuration; not by default |
+| Sessions being inspected by a proxy-mode profile | Generally not |
+| IPsec tunnels | With IPsec synchronisation configured |
+| SSL VPN sessions | Not preserved; users reconnect |
+
+**Session pickup is not enabled by default.** Without it, every session drops on failover, and the cluster still "works" in that the secondary takes over — it just breaks every connection in the process. Enabling it costs synchronisation overhead, which is the reason for the default, but for most deployments the overhead is the better trade.
+
+The row worth internalising is proxy-mode inspection. A session being buffered and inspected by a proxy holds state that is not synchronised, so it does not survive. This is the concrete cost of the flow-versus-proxy choice showing up somewhere unexpected.
+
+## Verifying a cluster is actually healthy
+
+```
+get system ha status
+diagnose sys ha checksum cluster
+```
+
+The first shows the members, roles and health. The second is the more valuable check: it compares configuration checksums across members, and a mismatch means the cluster is **out of sync** — the secondary will take over with a different configuration than the one you have been editing. A cluster that reports both members up and has mismatched checksums is a failed failover waiting to happen, and nothing in the ordinary status view reveals it.
+
+## What an exam candidate should be able to state cold
+
+Election order is failed monitored interfaces, then age, then priority, then serial. Override moves priority above age and causes failback. Two heartbeat interfaces, because a single one risks split brain. Session pickup is off by default and is what makes TCP sessions survive; proxy-inspected sessions generally do not survive regardless. Checksum comparison is the check that reveals an out-of-sync cluster.

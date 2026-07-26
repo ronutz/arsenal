@@ -413,6 +413,48 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_flow_path_reasoner",
     "tag": "Operations & Fieldcraft"
   },
+  "fortigate-ha-failover-simulator": {
+    "url": "https://ronutz.com/api/v1/fortigate-ha-failover-simulator",
+    "method": "GET",
+    "op": "run_fortigate_ha_failover_simulator",
+    "tag": "Fortinet FortiGate & FortiOS"
+  },
+  "fortigate-ipsec-phase-mismatch-analyzer": {
+    "url": "https://ronutz.com/api/v1/fortigate-ipsec-phase-mismatch-analyzer",
+    "method": "GET",
+    "op": "run_fortigate_ipsec_phase_mismatch_analyzer",
+    "tag": "Fortinet FortiGate & FortiOS"
+  },
+  "fortigate-policy-lookup-explainer": {
+    "url": "https://ronutz.com/api/v1/fortigate-policy-lookup-explainer",
+    "method": "GET",
+    "op": "run_fortigate_policy_lookup_explainer",
+    "tag": "Fortinet FortiGate & FortiOS"
+  },
+  "fortigate-route-selection-explainer": {
+    "url": "https://ronutz.com/api/v1/fortigate-route-selection-explainer",
+    "method": "GET",
+    "op": "run_fortigate_route_selection_explainer",
+    "tag": "Fortinet FortiGate & FortiOS"
+  },
+  "fortigate-security-profile-coverage-checker": {
+    "url": "https://ronutz.com/api/v1/fortigate-security-profile-coverage-checker",
+    "method": "GET",
+    "op": "run_fortigate_security_profile_coverage_checker",
+    "tag": "Fortinet FortiGate & FortiOS"
+  },
+  "fortigate-session-table-explainer": {
+    "url": "https://ronutz.com/api/v1/fortigate-session-table-explainer",
+    "method": "GET",
+    "op": "run_fortigate_session_table_explainer",
+    "tag": "Fortinet FortiGate & FortiOS"
+  },
+  "fortios-config-diff-explainer": {
+    "url": "https://ronutz.com/api/v1/fortios-config-diff-explainer",
+    "method": "GET",
+    "op": "run_fortios_config_diff_explainer",
+    "tag": "Fortinet FortiGate & FortiOS"
+  },
   "fortios-sniffer-builder": {
     "url": "https://ronutz.com/api/v1/fortios-sniffer-builder",
     "method": "GET",

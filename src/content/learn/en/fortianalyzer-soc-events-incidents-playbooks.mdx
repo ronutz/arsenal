@@ -1,0 +1,61 @@
+---
+slug: fortianalyzer-soc-events-incidents-playbooks
+title: "FortiAnalyzer SOC: Event Handlers, Incidents, Indicators, and Playbooks"
+summary: "A log is a record. An event is a log that matched a rule you wrote. An incident groups events into something a person works. Playbooks act on them. Getting those four levels straight is most of what the SOC side of FortiAnalyzer asks of you, and it explains why an event handler that looks correct produces nothing."
+concepts: ["fortinet", "fortianalyzer", "event handler", "incident", "indicator of compromise", "playbook", "soc", "automation", "connector", "fabric"]
+relatedTools: []
+sub: fortianalyzer
+relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortigate-security-profiles-flow-vs-proxy"]
+category: security
+order: 52
+status: reviewed
+updated: "2026-07-26"
+---
+
+FortiAnalyzer's security operations features are four layers stacked on the log database, and each one only sees what the layer below produced. Debugging anything here means working out which layer stopped.
+
+## The four levels
+
+**Logs** are what devices sent. Every other level is derived from them.
+
+**Events** are logs that matched an **event handler** — a rule with filter conditions, a severity, and optionally a threshold over a time window. An event handler does not search the archive; it evaluates logs arriving into analytics. That single fact answers the most common complaint about them, below.
+
+**Incidents** group related events into a unit of work with an owner, a status and a history. An event is a machine observation; an incident is a human case.
+
+**Indicators** are the observables attached to an incident — an address, a hash, a domain. They are what let one incident be compared with another and with threat intelligence.
+
+**Playbooks** automate response. They are triggered by an event, an incident, a schedule, or manually, and they act through **connectors** to other products.
+
+## Why an event handler produces nothing
+
+Nearly every report of a silent event handler is one of these, in rough order of frequency:
+
+- **The logs are not in analytics.** Handlers evaluate the indexed stream. If the traffic was never logged, or the device is not authorized, or the log type is not being stored, there is nothing to match.
+- **The ADOM is wrong.** Handlers are scoped to an ADOM like everything else.
+- **The filter is stricter than intended.** Multiple conditions are ANDed, and a field that is empty in the actual logs will never match a value.
+- **A threshold has not been reached.** A handler set to fire on five occurrences in ten minutes produces nothing at four, which is correct and invisible.
+- **The handler is disabled**, which is easy to miss on a long list.
+
+The diagnostic order that works is to search the raw logs for the condition first. If the search returns nothing, the handler was never going to fire and the problem is upstream in logging or licensing, not in the rule.
+
+## Playbooks, and the part that catches people
+
+A playbook is a trigger plus a sequence of tasks. Tasks run through connectors: the local FortiAnalyzer connector for its own data, and Fabric connectors for FortiGate, FortiClient EMS, FortiMail and others.
+
+Two things go wrong more than the rest:
+
+**The connector is not authorized.** A playbook that quarantines an endpoint needs a working connector to the manager that owns it. An unauthorized or misconfigured connector fails at the task, not at the trigger, so the playbook reports as having run.
+
+**The trigger fires more or less often than expected.** An incident-triggered playbook does not run on every event, only when an incident is created or updated. A playbook that appears not to run is often correctly waiting for an incident that nothing is creating.
+
+When troubleshooting, read the playbook's own execution history first. It records which task failed and with what, which is faster than inferring from the absence of an effect.
+
+## Where FortiView fits
+
+FortiView is the interactive view over analytics — top sources, top destinations, threats, applications, each drillable down to the contributing logs. It is a reading surface, not a storage layer, so its limits are the analytics limits: it shows what is indexed, in the current ADOM, within retention.
+
+A FortiView panel that looks empty for a period that definitely had traffic is the analytics retention question again, not a FortiView problem.
+
+## What an exam candidate should be able to state cold
+
+Event handlers evaluate logs arriving into analytics within their ADOM, with ANDed conditions and optional thresholds. Incidents group events and carry indicators. Playbooks are triggered by events, incidents, schedules or manually, and act through connectors that must be authorized. FortiView reads analytics and inherits its retention and ADOM scope. When something produces nothing, search the raw logs first: if the logs are not there, no rule above them can fire.

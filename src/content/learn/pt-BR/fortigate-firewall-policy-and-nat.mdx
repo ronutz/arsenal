@@ -1,0 +1,86 @@
+---
+slug: fortigate-firewall-policy-and-nat
+title: "Políticas de firewall e NAT no FortiGate: ordem de correspondência, SNAT e DNAT"
+summary: "Um FortiGate avalia as políticas de firewall de cima para baixo e para na primeira que corresponde, o que faz da ordem uma propriedade funcional, e não cosmética. Este artigo cobre como uma política é correspondida, a diferença entre NAT por política e NAT central, como o NAT de origem escolhe o endereço por meio de pools, e por que o NAT de destino via VIP muda contra o que a política precisa ser escrita."
+concepts: ["fortinet", "fortigate", "política de firewall", "nat", "snat", "dnat", "virtual ip", "ip pool", "nat central", "consulta de política"]
+relatedTools: ["cidr", "fortigate-policy-lookup-explainer", "fortios-config-diff-explainer"]
+sub: fortigate
+relatedArticles: ["fortinet-ssl-inspection-modes", "reading-a-fortigate-sniffer-trace", "nat-firewall-myth"]
+category: security
+order: 43
+status: reviewed
+updated: "2026-07-25"
+---
+
+Duas das falhas mais comuns em FortiGate são uma política que nunca corresponde e uma política que corresponde a algo não pretendido. As duas vêm da mesma origem: a ordem de avaliação e onde a tradução de endereços acontece em relação a ela. Deixar esses dois fatos claros elimina a maior parte da adivinhação.
+
+## A primeira correspondência vence, e esse é todo o comportamento
+
+O FortiOS avalia a lista de políticas de cima para baixo e para na primeira cujos critérios de correspondência sejam todos satisfeitos. Não há pontuação, não há vitória do mais específico, e não há continuação. Uma política ampla colocada acima de uma mais estreita torna a mais estreita **inalcançável**, e a interface não avisa: a política fica ali com aparência correta, com um contador de acertos que nunca incrementa.
+
+Esse contador é o diagnóstico. Uma política que deveria corresponder e mostra zero acertos está quase sempre encoberta por algo acima dela, e a correção é de ordenação, não de conteúdo da regra.
+
+Os critérios pelos quais uma política corresponde são a interface de entrada e de saída, endereço de origem e destino, serviço, agendamento e, quando configurado, usuário ou grupo. Todos precisam corresponder. É por isso que uma política com os endereços certos e a interface de saída errada silenciosamente deixa de corresponder: o par de interfaces faz parte da correspondência, não é consequência dela.
+
+No fim da lista está uma negação implícita. Tudo que não for explicitamente permitido é descartado e, por padrão, esse descarte não é registrado, que é a segunda maior fonte de confusão. Se o tráfego some e nenhuma política mostra acerto, ele encontrou a negação implícita.
+
+## Sequência: o que acontece antes de a política ser consultada
+
+A correspondência de política não acontece primeiro. Um pacote que chega a um FortiGate passa por várias etapas antes de a lista de políticas ser consultada, e cada uma pode descartá-lo por razões que política alguma enxerga.
+
+| Etapa | O que faz | Como falha |
+|---|---|---|
+| Verificações de entrada | Admissão na interface, marcação de VLAN | VLAN errada ou interface fora |
+| Política de DoS | Limiares de anomalia, limite por origem | Tráfego descartado antes de qualquer política |
+| NAT de destino (VIP) | Reescreve o endereço de destino | Aplicado **antes** da consulta de rota |
+| Consulta de rota | Escolhe a interface de saída | Sem rota, política alguma corresponde |
+| Política de firewall | Primeira correspondência vence | Encoberta por política mais ampla acima |
+| NAT de origem | Reescreve o endereço de origem | Aplicado **depois** da correspondência |
+
+As duas linhas que vale memorizar são o NAT de destino e o de origem, porque ficam em lados opostos da decisão de política. Essa única assimetria explica a maior parte da confusão com NAT na plataforma.
+
+## O NAT de destino acontece primeiro, então a política vê o endereço interno
+
+Um objeto de IP virtual (VIP) mapeia um endereço externo para um interno. O FortiOS aplica esse mapeamento **antes** da consulta de rota e antes da avaliação de política, o que tem uma consequência em que as pessoas tropeçam constantemente: o destino da política de firewall precisa ser o **objeto VIP**, e não o endereço do servidor interno nem o endereço público como objeto de endereço comum.
+
+Escrever a política contra o endereço interno falha, porque no momento da correspondência o destino já foi reescrito e a política é comparada contra o VIP que fez a reescrita. Escrever contra um objeto de endereço comum contendo o IP público também falha, pela mesma razão.
+
+A ordenação também explica por que um VIP afeta o roteamento. Como a tradução precede a consulta de rota, a rota é escolhida para o destino **traduzido**, então um VIP apontando para uma sub-rede interna sai pela interface interna, como se espera.
+
+## O NAT de origem acontece depois, e tem três fontes de endereço
+
+O NAT de origem é aplicado depois que uma política correspondeu e permitiu o tráfego. No NAT por política, o modo padrão, você habilita o NAT na própria política e então escolhe de onde vem o novo endereço de origem.
+
+| Opção | Endereço de origem usado | Quando usar |
+|---|---|---|
+| Endereço da interface de saída | O próprio IP da interface de saída | O caso comum de acesso à internet |
+| Pool dinâmico: Overload | Endereços do pool, muitas sessões por endereço | Mais capacidade que um IP único, com sobrecarga de portas |
+| Pool dinâmico: Um-para-um | Um interno para um do pool, sem tradução de porta | Quando o outro lado precisa ver endereço estável e distinto |
+| Pool dinâmico: Faixa fixa de portas | Faixa interna fixa para faixa externa fixa | Mapeamento determinístico para auditoria ou registro |
+
+Overload é o comportamento padrão de um pool e funciona como tradução comum de endereço e porta. Um-para-um é a opção que surpreende: ela **não** traduz portas, então consome um endereço do pool por host interno e esgota rapidamente um pool pequeno.
+
+## O NAT central é outro modelo, não uma configuração
+
+O FortiOS oferece duas arquiteturas de NAT e você escolhe uma para o VDOM inteiro.
+
+**NAT por política** coloca a decisão de NAT na política: cada política carrega seu próprio interruptor de NAT e escolha de pool. É o padrão, e mantém a decisão ao lado da regra que permitiu o tráfego.
+
+**NAT central** separa as duas coisas por completo. As políticas de firewall deixam de carregar configuração de NAT; em vez disso, uma tabela Central SNAT e uma tabela DNAT/VIP são avaliadas de forma independente, cada uma com sua própria lista ordenada. As políticas decidem *se* o tráfego passa; as tabelas centrais decidem *como* ele é traduzido.
+
+A troca é real nos dois sentidos. O NAT central escala melhor quando muitas políticas compartilham o mesmo comportamento de tradução, porque a regra mora num lugar só em vez de ser repetida. O NAT por política é mais fácil de ler num conjunto pequeno, porque um objeto responde às duas perguntas. O que causa transtorno é alternar entre eles num sistema já configurado: habilitar o NAT central descarta as configurações de NAT por política, e elas não voltam se você alternar de volta. Decida antes de construir.
+
+## Ler uma sessão para confirmar o que de fato aconteceu
+
+A resposta autoritativa para "qual política correspondeu e o que foi traduzido" é a tabela de sessões, não a configuração. Uma entrada de sessão nomeia o ID da política que a admitiu e mostra as tuplas original e traduzida, o que encerra discussões rapidamente.
+
+```
+diagnose sys session filter dst 203.0.113.10
+diagnose sys session list
+```
+
+Na saída, o campo `policy_id` é a política que correspondeu. A linha `hook=post dir=org` carrega a origem pós-NAT, e `hook=pre dir=org` carrega o destino pré-NAT. Se o ID da política não for o esperado, você tem um problema de encobrimento; se os endereços não estiverem traduzidos como esperado, você tem um problema de configuração de NAT. A distinção entre esses dois diagnósticos é exatamente o que a tabela de sessões oferece e o que a lista de políticas sozinha não oferece.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Políticas correspondem por par de interfaces, endereço, serviço, agendamento e usuário, todos eles, a primeira correspondência vence, e há negação implícita no fim. O NAT de destino via VIP acontece antes do roteamento e antes da política, então o destino da política é o objeto VIP. O NAT de origem acontece depois da correspondência e tira o endereço da interface de saída ou de um pool cujo tipo determina se as portas são traduzidas. NAT central e NAT por política são arquiteturas mutuamente exclusivas escolhidas por VDOM, não opções que se misturam.

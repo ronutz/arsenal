@@ -213,6 +213,13 @@ import F5AwafLearningPoisoningEstimatorTool from "@/components/F5AwafLearningPoi
 import As3ExplainerValidatorTool from "@/components/As3ExplainerValidatorTool";
 import IqueryProtocolExplainerTool from "@/components/IqueryProtocolExplainerTool";
 import FortiosSnifferBuilderTool from "@/components/FortiosSnifferBuilderTool";
+import FortigatePolicyLookupExplainerTool from "@/components/FortigatePolicyLookupExplainerTool";
+import FortigateSessionTableExplainerTool from "@/components/FortigateSessionTableExplainerTool";
+import FortigateHaFailoverSimulatorTool from "@/components/FortigateHaFailoverSimulatorTool";
+import FortigateIpsecPhaseMismatchAnalyzerTool from "@/components/FortigateIpsecPhaseMismatchAnalyzerTool";
+import FortigateRouteSelectionExplainerTool from "@/components/FortigateRouteSelectionExplainerTool";
+import FortigateSecurityProfileCoverageCheckerTool from "@/components/FortigateSecurityProfileCoverageCheckerTool";
+import FortiosConfigDiffExplainerTool from "@/components/FortiosConfigDiffExplainerTool";
 import PacFileExplainerTool from "@/components/PacFileExplainerTool";
 import ExosConfigExplainerTool from "@/components/ExosConfigExplainerTool";
 import DoExplainerValidatorTool from "@/components/DoExplainerValidatorTool";
@@ -228,6 +235,13 @@ import { manifest as f5AwafPoisoningManifest } from "@/lib/tools/f5-awaf-learnin
 import { manifest as as3Manifest } from "@/lib/tools/as3-explainer-validator";
 import { manifest as iqueryManifest } from "@/lib/tools/iquery-protocol-explainer";
 import { manifest as fortiosSnifferManifest } from "@/lib/tools/fortios-sniffer-builder";
+import { manifest as fgtPolicyLookupManifest } from "@/lib/tools/fortigate-policy-lookup-explainer";
+import { manifest as fgtSessionTableManifest } from "@/lib/tools/fortigate-session-table-explainer";
+import { manifest as fgtHaManifest } from "@/lib/tools/fortigate-ha-failover-simulator";
+import { manifest as fgtIpsecManifest } from "@/lib/tools/fortigate-ipsec-phase-mismatch-analyzer";
+import { manifest as fgtRouteManifest } from "@/lib/tools/fortigate-route-selection-explainer";
+import { manifest as fgtProfileManifest } from "@/lib/tools/fortigate-security-profile-coverage-checker";
+import { manifest as fgtDiffManifest } from "@/lib/tools/fortios-config-diff-explainer";
 import { manifest as pacManifest } from "@/lib/tools/pac-file-explainer";
 import { manifest as exosManifest } from "@/lib/tools/exos-config-explainer";
 import { manifest as doManifest } from "@/lib/tools/do-explainer-validator";
@@ -563,6 +577,34 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "fortios-sniffer-builder": {
     Component: FortiosSnifferBuilderTool,
     sources: fortiosSnifferManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fortigate-policy-lookup-explainer": {
+    Component: FortigatePolicyLookupExplainerTool,
+    sources: fgtPolicyLookupManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fortigate-session-table-explainer": {
+    Component: FortigateSessionTableExplainerTool,
+    sources: fgtSessionTableManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fortigate-ha-failover-simulator": {
+    Component: FortigateHaFailoverSimulatorTool,
+    sources: fgtHaManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fortigate-ipsec-phase-mismatch-analyzer": {
+    Component: FortigateIpsecPhaseMismatchAnalyzerTool,
+    sources: fgtIpsecManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fortigate-route-selection-explainer": {
+    Component: FortigateRouteSelectionExplainerTool,
+    sources: fgtRouteManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fortigate-security-profile-coverage-checker": {
+    Component: FortigateSecurityProfileCoverageCheckerTool,
+    sources: fgtProfileManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fortios-config-diff-explainer": {
+    Component: FortiosConfigDiffExplainerTool,
+    sources: fgtDiffManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "pac-file-explainer": {
     Component: PacFileExplainerTool,

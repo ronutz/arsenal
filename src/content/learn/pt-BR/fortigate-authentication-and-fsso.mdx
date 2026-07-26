@@ -1,0 +1,65 @@
+---
+slug: fortigate-authentication-and-fsso
+title: "Autenticação de firewall e FSSO no FortiGate: identidade dentro de uma política"
+summary: "Colocar um usuário em vez de um endereço IP numa política de firewall exige que o FortiGate saiba quem está por trás de um endereço. Ele pode perguntar diretamente por autenticação ativa, ou aprender em silêncio a partir de um diretório com FSSO. Este artigo cobre os métodos de autenticação, a diferença entre identificação ativa e passiva, como o coletor FSSO aprende os logons, e os modos de falha de cada abordagem."
+concepts: ["fortinet", "fortigate", "autenticação de firewall", "fsso", "single sign-on", "portal cativo", "ldap", "radius", "active directory", "grupo de usuários"]
+relatedTools: []
+sub: fortigate
+relatedArticles: ["fortigate-firewall-policy-and-nat", "fortigate-initial-configuration-and-operation-modes"]
+category: security
+order: 48
+status: reviewed
+updated: "2026-07-25"
+---
+
+Uma política escrita contra um endereço IP controla um lugar. Uma política escrita contra um usuário controla uma pessoa, que é o que a maioria das regras de fato tenta expressar. A distância entre as duas é a identificação: o FortiGate precisa decidir qual usuário está por trás de um endereço de origem antes de aplicar uma regra baseada em usuário.
+
+Há duas formas de fechar essa distância, e elas se comportam de maneiras bem diferentes.
+
+## Autenticação ativa: o FortiGate pergunta
+
+O usuário é desafiado e fornece credenciais. A política é escrita contra um usuário ou grupo, e o tráfego que corresponde dispara o desafio.
+
+O desafio chega como **portal cativo** para tráfego de navegador, ou como solicitação no nível do protocolo para serviços que suportem uma. As credenciais são então verificadas contra uma fonte:
+
+| Fonte | Como valida | Uso típico |
+|---|---|---|
+| Local | Contas armazenadas no FortiGate | Implantações pequenas, contas de emergência |
+| LDAP | Bind contra um diretório | Active Directory ou outro LDAP existente |
+| RADIUS | Troca RADIUS, muitas vezes com MFA atrás | Onde já existe um AAA central |
+| SAML | Redirecionamento a um provedor de identidade | SSO moderno, identidade federada |
+| FortiToken | Segundo fator sobre qualquer um dos acima | Onde MFA for exigido |
+
+A autenticação ativa é precisa: o FortiGate sabe exatamente quem autenticou porque perguntou. Seu custo é a interrupção. O usuário vê uma solicitação, e tudo que não for sessão de navegador, uma sincronização em segundo plano, um cliente de API, um dispositivo sem usuário, não tem como respondê-la.
+
+## Identificação passiva: o FSSO informa o FortiGate
+
+O Fortinet Single Sign-On elimina a solicitação aprendendo a identidade do diretório. Quando um usuário entra no domínio, esse evento de logon é capturado e repassado ao FortiGate, que monta um mapeamento de endereço para usuário e aplica políticas baseadas em usuário sem desafiar ninguém.
+
+As peças:
+
+- Um **agente coletor** num servidor Windows recebe ou lê eventos de logon e mantém a tabela de usuário para endereço.
+- **Agentes de DC** opcionais nos controladores de domínio empurram eventos ao coletor, sendo a alternativa a consulta sem agente ao log de eventos de segurança.
+- O **FortiGate** recebe a tabela do coletor e a consulta ao casar uma política baseada em usuário.
+
+Os dois formatos de implantação diferem de um jeito que vale conhecer. O **modo com agente** instala um agente de DC em cada controlador, que empurra eventos conforme acontecem: menor latência e mais trabalho para implantar. O **modo sem agente** faz o coletor consultar o log de cada controlador, o que é mais fácil de implantar e acrescenta atraso de consulta, então um usuário que acabou de entrar pode não ser identificado por um curto período.
+
+## Onde cada abordagem falha
+
+Nenhuma é completa, e os modos de falha são o que o operador de fato enfrenta.
+
+**A autenticação ativa falha** para tráfego não interativo. Um servidor fazendo chamadas de saída, um dispositivo IoT, ou uma tarefa agendada não conseguem responder a um portal cativo. As políticas para eles precisam ser baseadas em endereço, e misturar políticas por usuário e por endereço na ordem certa é o projeto comum.
+
+**O FSSO falha** onde o evento de logon não é visto. Um usuário que nunca entra no domínio é invisível. Uma máquina usada por duas pessoas em sequência mantém o primeiro mapeamento até ele expirar. Servidores de terminal são o problema clássico: muitos usuários atrás de um endereço significam que uma tabela de endereço para usuário não consegue distingui-los, que é exatamente o que o agente de Terminal Server existe para resolver, rastreando faixas de portas por usuário.
+
+**As duas falham** na mudança de endereço. Uma concessão DHCP que passa a outro dispositivo deixa um mapeamento obsoleto, e é por isso que os tempos de expiração importam e por que são uma troca entre exatidão e voltar a solicitar.
+
+## A ordem importa, como sempre
+
+Políticas baseadas em usuário interagem com a regra da primeira correspondência. Uma política por usuário só corresponde depois que o usuário é identificado; se a identificação não concluiu, o tráfego cai para o que estiver abaixo. Colocar uma permissão ampla por endereço acima de uma política por usuário faz a política de usuário nunca se aplicar: o mesmo problema de encobrimento, com uma dimensão a mais.
+
+A sequência prática é políticas por usuário primeiro, alternativas por endereço abaixo delas, e uma regra explícita para origens não interativas conhecidas, para que não fiquem esperando por uma autenticação que não conseguem realizar.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+A autenticação ativa desafia o usuário por portal cativo ou solicitação de protocolo e valida contra local, LDAP, RADIUS ou SAML, opcionalmente com FortiToken como segundo fator. O FSSO identifica passivamente aprendendo eventos de logon de domínio por um agente coletor, em modo com agente com DCs empurrando ou sem agente consultando o log. A autenticação ativa não serve tráfego não interativo; o FSSO não distingue múltiplos usuários atrás de um endereço sem o agente de Terminal Server. Políticas por usuário precisam ficar acima das por endereço ou nunca correspondem.

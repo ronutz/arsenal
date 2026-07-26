@@ -41,6 +41,10 @@ export interface HubCert {
   /** Certifications that must be ACTIVE before this one can be earned. */
   prerequisites?: string[];
   prerequisitesLabel?: string;
+  /** The vendor's own page for this certification, so requirements can be
+   *  checked against the source rather than trusted to this site. */
+  sourceUrl?: string | null;
+  sourceLabel?: string;
   renewalNote?: string | null;
   guides: HubGuide[];
 }
@@ -182,6 +186,18 @@ export default function CertificationsHubSections({
                           candidate plans against (PRIME 2026-07-25). */}
                       {cert.requirementNote && (
                         <p className="certs-group-intro">{cert.requirementNote}</p>
+                      )}
+                      {cert.sourceUrl && (
+                        <p className="certs-group-intro">
+                          <a
+                            className="certhub-guide-cta"
+                            href={cert.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {cert.sourceLabel} &#8599;
+                          </a>
+                        </p>
                       )}
                       {cert.prerequisites && cert.prerequisites.length > 0 && (
                         <p className="certs-group-intro">

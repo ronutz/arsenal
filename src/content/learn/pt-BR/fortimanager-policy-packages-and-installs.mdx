@@ -1,0 +1,71 @@
+---
+slug: fortimanager-policy-packages-and-installs
+title: "Pacotes de políticas, instalações e modo workspace no FortiManager"
+summary: "Um pacote de políticas é um conjunto de políticas que é instalado em um ou mais equipamentos. Entre editá-lo e o equipamento mudar, há uma prévia de instalação que vale ler, um modelo de travamento que vale entender, e um conjunto de modos de falha que parecem todos com a instalação simplesmente não ter funcionado."
+concepts: ["fortinet", "fortimanager", "pacote de políticas", "instalação", "prévia de instalação", "modo workspace", "travamento", "gestão de objetos", "fortiguard"]
+relatedTools: ["fortios-config-diff-explainer"]
+sub: fortimanager
+relatedArticles: ["fortimanager-adoms-and-device-registration", "fortigate-firewall-policy-and-nat"]
+category: operations
+order: 55
+status: reviewed
+updated: "2026-07-26"
+---
+
+A unidade de trabalho no FortiManager é o **pacote de políticas**: um conjunto ordenado de políticas de firewall, com os objetos que elas referenciam, que é instalado em um ou mais equipamentos. Entender o que acontece entre clicar instalar e o equipamento mudar é a maior parte de operar o FortiManager com segurança.
+
+## Pacotes, objetos, e a referência que quebra instalações
+
+Um pacote de políticas contém políticas. Essas políticas referenciam **objetos** — endereços, serviços, agendas, perfis — que vivem no ADOM, e não no pacote. Um objeto pode ser referenciado por muitos pacotes, e esse é o propósito.
+
+Também significa que um objeto não pode ser removido enquanto algo o referencia, e que um pacote instalado num equipamento leva junto seus objetos referenciados. Um equipamento que acaba com objetos que aparentemente não usa geralmente os adquiriu assim.
+
+Pacotes podem ter como alvo um equipamento ou vários. Instalar um pacote em vários equipamentos é como um conjunto comum de regras é mantido idêntico numa frota, e é por isso que diferenças por equipamento precisam ser expressas por **mapeamento por equipamento**, e não editando o objeto compartilhado.
+
+## Leia a prévia de instalação
+
+Uma instalação não vai direto ao equipamento. O FortiManager consegue mostrar exatamente o CLI que pretende enviar, e ler isso leva segundos e evita os erros caros.
+
+O que procurar:
+
+- **Mudanças que você não fez.** Geralmente significam que o banco já estava adiante do equipamento por uma edição abandonada, e instalar agora aplica as duas.
+- **Remoções.** Uma instalação envia a visão do banco. Se o equipamento tem uma política criada localmente que o FortiManager desconhece, a instalação pode removê-la. Esse é o acidente mais danoso do FortiManager e a prévia é onde ele fica visível.
+- **Rotatividade de objetos.** Muitas edições de objetos numa mudança pequena de política costumam indicar divergência de versão de ADOM ou um objeto sendo remapeado.
+
+A prévia é o equivalente no FortiManager a ler um diff antes de integrar, e o raciocínio é idêntico: o custo de ler é trivial diante do custo de não ler.
+
+## Modo workspace, e por que seu colega não consegue salvar
+
+Por padrão vários administradores podem editar ao mesmo tempo, o que numa plataforma movimentada significa que a instalação de um carrega o trabalho pela metade de outro.
+
+O **modo workspace** resolve isso exigindo um travamento. No travamento normal, um administrador trava um ADOM ou um pacote, edita, então salva e destrava. Ninguém mais pode editar o que está travado, e mudanças não salvas não são instaláveis.
+
+Duas consequências pegam as pessoas:
+
+Um administrador que edita e sai sem destravar bloqueia todos os demais até o travamento ser liberado, o que um administrador com direitos suficientes pode fazer.
+
+Mudanças feitas numa sessão de workspace não são visíveis para os outros, e não são instaladas, até serem **salvas**. Uma edição que parece ter sumido geralmente é uma sessão não salva.
+
+O **modo workflow** acrescenta uma etapa de aprovação, então mudanças são submetidas e precisam ser aprovadas antes de poderem ser instaladas. É o formato certo onde controle de mudanças é exigência, e sobrecarga desnecessária onde não é.
+
+## Serviços FortiGuard pelo FortiManager
+
+O FortiManager pode atuar como ponto local de distribuição do FortiGuard, baixando atualizações de antivírus e IPS uma vez e servindo-as aos equipamentos gerenciados. As razões são banda e alcance: uma frota em que cada equipamento busca atualizações por conta multiplica o tráfego, e equipamentos sem acesso direto à internet não conseguem buscar.
+
+O modo de falha a conhecer é que um equipamento configurado para usar o FortiManager como FortiGuard, num FortiManager que ele próprio não alcança a Fortinet, silenciosamente deixa de receber atualizações. A idade das assinaturas é o sintoma a observar, e ele não se anuncia.
+
+## Quando uma instalação não pega
+
+Em ordem aproximada de frequência:
+
+1. **O equipamento está fora de sincronia** e a instalação foi bloqueada ou aplicada em parte. Verifique o estado de sincronia primeiro.
+2. **O pacote não foi salvo** no modo workspace.
+3. **A instalação foi no equipamento ou escopo errado** — um pacote mirando um grupo em vez do equipamento em questão.
+4. **Uma dependência falhou**, tipicamente um objeto que não pode ser resolvido no alvo, o que aparece no log de instalação e não como erro genérico.
+5. **Divergência de versão de ADOM**, em que o CLI gerado não é válido para o firmware do equipamento.
+
+O log de instalação nomeia o comando que falhou, o que é mais preciso que qualquer inferência a partir do estado do equipamento.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Um pacote de políticas guarda políticas; os objetos que elas referenciam vivem no ADOM e acompanham o pacote na instalação. A prévia de instalação mostra o CLI exato, inclusive remoções, e é onde as surpresas danosas ficam visíveis. O modo workspace exige travar para editar e salvar para tornar as mudanças instaláveis; o modo workflow acrescenta aprovação. O FortiManager pode servir atualizações FortiGuard localmente, e falha em silêncio se ele próprio não alcançar a Fortinet. Quando uma instalação não pega, verifique sincronia, depois o salvamento, depois o log de instalação.

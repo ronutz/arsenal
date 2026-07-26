@@ -1,0 +1,70 @@
+---
+slug: fortinac-isolation-access-control-and-onboarding
+title: "FortiNAC: redes de isolamento, controle de acesso e integração de visitantes e terceiros"
+summary: "Depois que o FortiNAC sabe o que um endpoint é, ele decide para onde esse endpoint pode ir. Redes de isolamento são onde equipamentos desconhecidos e não conformes vão parar, políticas de acesso decidem o destino, e a integração cobre as pessoas que não são funcionários. O tema recorrente é que o isolamento só funciona se o equipamento isolado ainda alcançar o que precisa para se tornar conforme."
+concepts: ["fortinet", "fortinac", "rede de isolamento", "política de acesso", "vlan", "acesso de visitantes", "terceiros", "mdm", "syslog", "trap snmp", "automação de segurança"]
+relatedTools: []
+sub: fortinac
+relatedArticles: ["fortinac-device-modeling-and-profiling", "fortigate-authentication-and-fsso"]
+category: security
+order: 58
+status: reviewed
+updated: "2026-07-26"
+---
+
+Controle de acesso no FortiNAC é uma decisão sobre colocação: dado o que este endpoint é e quem o está usando, em qual segmento de rede ele deveria estar. A mecânica é direta; as decisões de projeto em torno do isolamento é que fazem implantações darem certo ou frustrarem todo mundo.
+
+## Redes de isolamento
+
+Uma **rede de isolamento** é um segmento para endpoints que ainda não têm permissão na rede de produção. O FortiNAC usa várias, e confundi-las torna a investigação mais difícil do que precisa ser:
+
+| Rede de isolamento | Quem vai parar lá | Propósito |
+|---|---|---|
+| Registro | Endpoints desconhecidos ou não registrados | Permitir que o usuário se identifique e registre o equipamento |
+| Remediação | Endpoints registrados porém não conformes | Permitir que o equipamento corrija o que está errado |
+| Quarentena | Endpoints sinalizados por um evento de segurança | Conter, pendente de investigação |
+| Beco sem saída | Endpoints que as anteriores não conseguem ajudar | Isolamento deliberado sem caminho de saída |
+
+A regra de projeto que importa mais que qualquer outra: **um endpoint isolado precisa continuar conseguindo alcançar o que precisa para deixar de estar isolado.** Uma rede de registro sem DNS, sem DHCP e sem rota até o portal cativo é uma rede em que ninguém jamais consegue se registrar, e o sintoma são usuários relatando que nada acontece.
+
+O assistente de configuração existe porque acertar esses serviços de apoio é trabalhoso e a falha é silenciosa. Usá-lo e depois revisar o que ele produziu é mais rápido que montar tudo à mão.
+
+## Políticas de acesso decidem o destino
+
+Uma política de acesso combina uma **condição** com um **resultado**. A condição casa com o que o FortiNAC sabe: a classificação do endpoint, seu estado de registro, o grupo do usuário, a localização, o horário. O resultado é o acesso de rede a conceder, tipicamente uma VLAN.
+
+As políticas são avaliadas em ordem e a primeira correspondência vence, o que a esta altura deve soar familiar. Traz a mesma consequência: uma política ampla colocada acima de uma específica torna a específica inalcançável, e nada avisa.
+
+A ordenação prática é do específico para o geral, com uma regra final abrangente que manda o que não casou para algum lugar seguro, e não para algum lugar permissivo.
+
+## Visitantes e terceiros
+
+Acesso de visitantes é um problema diferente do acesso de funcionários, porque não há conta de diretório nem equipamento gerenciado. O FortiNAC trata isso com fluxos de registro patrocinado ou autorregistro: um visitante se registra por um portal, opcionalmente exigindo aprovação de um patrocinador, e recebe acesso por tempo limitado.
+
+Os controles que importam são os que as pessoas esquecem de definir:
+
+**Uma expiração.** Contas de visitante que nunca expiram se acumulam, e cada uma é uma credencial viva.
+
+**Um escopo.** Acesso de visitante deve alcançar a internet e pouco mais, e isso se expressa no resultado da política de acesso, e não se presume.
+
+**Acesso de terceiros** fica entre visitante e funcionário: mais duradouro que um visitante, mais estreito que o quadro próprio, e geralmente ligado a um patrocinador responsável por ele. Modelar terceiros como visitantes de expiração longa é comum e funciona, desde que a expiração seja de fato aplicada.
+
+## MDM e integração com terceiros
+
+O FortiNAC pode consumir informação de sistemas que sabem coisas que ele não sabe.
+
+A **integração com MDM** dá ao FortiNAC o estado de conformidade de um dispositivo móvel gerenciado: se está inscrito, criptografado, com jailbreak, rodando uma versão exigida. Isso permite que uma política de acesso dependa da postura do dispositivo, e não apenas da identidade, que é a diferença prática entre "este é o celular da Ana" e "este é o celular da Ana e ele está conforme".
+
+**Entrada por syslog e trap SNMP** permite que equipamentos de terceiros avisem o FortiNAC de que algo aconteceu. Um appliance de segurança que detecta comportamento malicioso pode enviar uma mensagem syslog que o FortiNAC interpreta e sobre a qual age, e é assim que produtos sem integração nativa ainda participam da aplicação.
+
+Os dois compartilham um modo de falha que vale enunciar: a integração só está tão atual quanto a última mensagem recebida. Um MDM cuja sincronização parou em silêncio deixa o FortiNAC aplicando sobre postura obsoleta, o que é pior que aplicar sobre nenhuma, porque parece estar funcionando.
+
+## Automação de segurança
+
+A automação liga um evento a uma resposta sem humano no meio: um endpoint sinalizado por um sistema integrado é movido para quarentena, uma porta com equipamento inesperado é desabilitada, uma falha de conformidade dispara remediação.
+
+O valor é a velocidade, e o risco é a confiança no gatilho. Uma quarentena automática movida por um detector ruidoso produz interrupções que parecem falhas de rede, então a progressão sensata é rodar o gatilho em modo apenas-alerta tempo suficiente para ver o que ele teria feito antes de deixá-lo agir.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Redes de isolamento de registro, remediação, quarentena e beco sem saída atendem estados diferentes, e um endpoint isolado precisa conseguir alcançar os serviços de que precisa para se tornar conforme. Políticas de acesso combinam uma condição com um resultado de rede, avaliadas em ordem com a primeira correspondência vencendo. Acesso de visitante precisa de expiração e escopo; terceiros são visitantes de longa duração com patrocinador. O MDM fornece postura do dispositivo e a entrada por syslog ou trap SNMP deixa sistemas de terceiros dispararem ação, e ambos só estão tão atuais quanto sua última mensagem. A automação deve ser observada em modo apenas-alerta antes de ter permissão para agir.

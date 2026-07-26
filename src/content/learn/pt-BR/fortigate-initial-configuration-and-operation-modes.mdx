@@ -1,0 +1,71 @@
+---
+slug: fortigate-initial-configuration-and-operation-modes
+title: "Configuração inicial do FortiGate: estado de fábrica, acesso e modos de operação"
+summary: "Um FortiGate recém-saído da caixa tem um estado de fábrica conhecido, e as primeiras decisões tomadas sobre ele são difíceis de mudar depois: modo de operação NAT ou transparente, se os VDOMs serão habilitados, e como o acesso administrativo é alcançado. Este artigo cobre os padrões de fábrica, a diferença entre os dois modos de operação, o que habilitar VDOMs de fato faz, e as configurações de acesso administrativo que mais deixam gente trancada do lado de fora."
+concepts: ["fortinet", "fortigate", "configuração inicial", "padrão de fábrica", "modo nat", "modo transparente", "vdom", "trusted host", "acesso administrativo"]
+relatedTools: []
+sub: fortigate
+relatedArticles: ["fortigate-firewall-policy-and-nat", "fortigate-routing-and-sdwan-selection"]
+category: networking
+order: 46
+status: reviewed
+updated: "2026-07-25"
+---
+
+A primeira hora com um FortiGate novo define três coisas incômodas de reverter: em qual modo de operação ele roda, se está dividido em VDOMs, e como você o alcança. Cada uma tem um padrão, e cada padrão é certo para algumas implantações e errado para outras.
+
+## O estado de fábrica
+
+Um FortiGate sai com configuração conhecida. A interface interna tem um endereço de gerência documentado e roda um servidor DHCP, então um notebook ligado nela recebe endereço e alcança a interface web de imediato. A conta admin não tem senha. Não há políticas de firewall, o que somado à negação implícita significa que **nada passa** até você escrever uma: uma unidade nova não é permissiva por padrão, é inerte.
+
+Uma restauração de fábrica retorna exatamente a esse estado, o que importa na recuperação: é uma linha de base conhecida, e não uma configuração parcialmente limpa.
+
+```
+execute factoryreset
+```
+
+O primeiro passo de configuração é sempre o mesmo, e é o que as pessoas adiam: definir a senha do admin. Uma unidade com senha em branco alcançável de qualquer lugar é o achado mais comum em qualquer auditoria de FortiGate.
+
+## Modo NAT e modo transparente
+
+O modo de operação determina o que o equipamento é na rede.
+
+**Modo NAT** é o padrão e a escolha usual. As interfaces têm endereços IP, o equipamento roteia entre elas e atua como gateway. Tudo sobre políticas, NAT, roteamento e SD-WAN pressupõe esse modo.
+
+**Modo transparente** transforma o equipamento num elemento invisível no fio. As interfaces não têm endereços IP, o FortiGate faz ponte entre elas na camada 2, e os hosts dos dois lados não sabem que ele existe. Ele recebe um único IP de gerência para administração e nada mais. É o que se usa para inserir inspeção num segmento existente sem readereçar nada, requisito comum quando a rede não pode mudar mas o tráfego precisa ser inspecionado.
+
+| | Modo NAT | Modo transparente |
+|---|---|---|
+| Endereçamento de interface | Cada interface tem IP | Sem IPs de interface; um IP de gerência |
+| Papel | Roteador e gateway | Ponte de camada 2 |
+| Roteamento, NAT, SD-WAN | Disponíveis | Não se aplicam |
+| Visível aos hosts | Sim, como gateway | Não |
+| Uso típico | A borda da rede | Inserir inspeção num segmento existente |
+
+Trocar de modo **apaga a maior parte da configuração**, porque os dois modos não compartilham configurações significativas. É por isso que a escolha pertence ao começo, e não a depois.
+
+## VDOMs dividem um equipamento em vários
+
+Domínios virtuais particionam um FortiGate em unidades independentes, cada uma com suas interfaces, políticas, tabela de roteamento e administradores. O tráfego não passa entre VDOMs salvo se você deliberadamente os interligar.
+
+As razões para habilitá-los são reais: separar inquilinos ou unidades de negócio que não devem ver a configuração uns dos outros, manter teste e produção apartados num só equipamento, ou delegar administração sem conceder direitos globais.
+
+O custo é que toda operação adquire um contexto. Comandos de configuração, diagnósticos e roteamento tornam-se por VDOM, e um comando executado no VDOM errado retorna resposta verdadeira sobre a rede errada. Essa única confusão responde por boa parte dos relatos de "a configuração está certa mas não funciona" em equipamentos multi-VDOM.
+
+Há sempre um VDOM de gerência, dono do tráfego de saída do próprio equipamento: atualizações, registro e DNS do sistema.
+
+## Acesso administrativo, e como as pessoas se trancam do lado de fora
+
+Cada interface tem um conjunto de protocolos administrativos permitidos. Habilitar HTTPS e SSH numa interface interna é comum; habilitá-los na interface WAN expõe o plano de gerência à internet, e fazer isso sem restrição é como equipamentos acabam em relatórios de exploração em massa.
+
+Dois controles importam mais que a lista de protocolos:
+
+**Trusted hosts** restringem uma conta administrativa a endereços de origem específicos. Isso é por conta, não por interface, e é o controle mais forte: mesmo que a gerência seja alcançável, só as origens listadas conseguem autenticar. É também o bloqueio autoinfligido clássico, porque uma entrada que não inclua seu endereço atual passa a valer imediatamente.
+
+**Mudar as portas de gerência** move HTTPS e SSH de 443 e 22. Isso não é segurança por si só, e reduz de forma significativa o ruído de varredura indiscriminada. Também libera a 443 para uma VPN ou servidor virtual na mesma interface, que muitas vezes é a motivação real.
+
+O caminho de recuperação quando o acesso se perde é o console pela porta serial, que configuração de software alguma bloqueia. Qualquer implantação de FortiGate em que o console não seja alcançável não tem caminho de recuperação aquém de uma visita ao local, e isso vale saber antes de importar.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Estado de fábrica: endereço interno conhecido, DHCP na interna, senha de admin em branco, sem políticas e portanto sem tráfego. Modo NAT roteia e é o padrão; modo transparente faz ponte na camada 2 com um único IP de gerência, e alternar entre eles apaga a configuração. VDOMs dão políticas e tabelas de roteamento independentes com um VDOM de gerência para o tráfego do próprio equipamento, e todo comando passa a ser sensível ao contexto. O acesso administrativo é controlado por interface via protocolo e por conta via trusted host, e o console é o caminho de recuperação.

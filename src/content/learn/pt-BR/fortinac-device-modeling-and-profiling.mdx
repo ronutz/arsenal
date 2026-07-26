@@ -1,0 +1,64 @@
+---
+slug: fortinac-device-modeling-and-profiling
+title: "Modelagem e perfilamento de equipamentos no FortiNAC: saber o que está na rede"
+summary: "O FortiNAC não consegue controlar o que não consegue identificar. Modelar a infraestrutura ensina a ele com quais switches e controladoras falar e como; o perfilamento classifica os endpoints que aparecem nessas portas. Ambos são pré-requisitos de toda decisão de política que vem depois, e é por isso que tanta investigação de NAC termina aqui."
+concepts: ["fortinet", "fortinac", "modelagem de equipamentos", "perfilamento", "controle de acesso à rede", "snmp", "rogue", "classificação de endpoints", "topologia"]
+relatedTools: []
+sub: fortinac
+relatedArticles: ["fortigate-authentication-and-fsso", "fortigate-firewall-policy-and-nat"]
+category: security
+order: 57
+status: reviewed
+updated: "2026-07-26"
+---
+
+Controle de acesso à rede responde duas perguntas em ordem: o que é essa coisa, e o que ela deveria poder alcançar. O FortiNAC não consegue responder a segunda antes de responder a primeira, então a identificação é onde o trabalho e os defeitos se concentram.
+
+## Modelar a infraestrutura
+
+O FortiNAC precisa conhecer os **equipamentos de rede** — switches, controladoras sem fio, firewalls — porque são deles que ele lê informação de endpoints e são eles que ele instrui a mover uma porta para outra VLAN.
+
+Modelar um equipamento significa dizer ao FortiNAC como alcançá-lo e como falar com ele: o endereço de gerência, as credenciais SNMP para ler dados de porta e MAC, e as credenciais CLI para fazer mudanças. As duas importam, e falham de formas diferentes. SNMP errado significa que o FortiNAC não vê nada nas portas daquele equipamento. Credenciais CLI erradas significam que o FortiNAC vê tudo e não muda nada, o que se apresenta como políticas que avaliam corretamente e nunca surtem efeito.
+
+Equipamentos são organizados em contêineres e grupos, e isso não é cosmético: grupos são o que políticas e tarefas agendadas miram, então um equipamento no grupo errado está fora do escopo das regras que deveriam cobri-lo.
+
+## Perfilamento: decidir o que um endpoint é
+
+Um endpoint aparece como um endereço MAC numa porta. O **perfilamento** transforma isso numa classificação: uma impressora, uma leitora de crachá, um notebook corporativo, um desconhecido, usando regras que examinam o que se pode observar sobre ele.
+
+Os sinais disponíveis incluem o prefixo de fabricante do MAC, a impressão digital DHCP, resultados de varredura ativa, o user agent HTTP, e respostas a sondagens dirigidas. Uma regra de perfilamento combina esses sinais num teste, e as regras são avaliadas em ordem, então **a primeira regra que casa vence** — a mesma disciplina de ordenação de uma lista de políticas de firewall, com o mesmo risco de encobrimento quando uma regra ampla fica acima de uma específica.
+
+A classificação importa porque a política é escrita contra tipo de equipamento. Uma regra que dá às impressoras acesso à VLAN de impressão não faz nada por uma impressora que foi perfilada como desconhecida.
+
+## Rogue é uma classificação, não uma acusação
+
+Um endpoint que o FortiNAC não classificou e não consegue associar a um host conhecido é um **rogue**. A palavra sugere hostilidade; o significado é não reconhecido.
+
+Essa distinção importa na operação, porque a resposta correta a um rogue geralmente não é bloqueá-lo, e sim descobrir por que ele não classificou:
+
+- As regras de perfilamento ainda não cobrem aquele tipo de equipamento.
+- O equipamento não responde aos sinais de que as regras dependem, o que é comum em equipamentos embarcados e de OT que ignoram varreduras ativas.
+- Ele apareceu num equipamento que o FortiNAC não modela, ou num cujas credenciais SNMP estão erradas, então nada foi aprendido sobre ele.
+- Ele é genuinamente não autorizado, que é o caso para o qual o sistema existe e o menos comum na prática.
+
+Uma implantação produzindo muitos rogues geralmente está sub-perfilada, e não sob ataque.
+
+## Investigar estado de equipamentos e endpoints
+
+A ordem que resolve a maioria dos casos:
+
+**1. O equipamento de rede está alcançável e legível?** Se o SNMP está falhando, todo endpoint naquele equipamento fica invisível e o sintoma parece problema de endpoint.
+
+**2. O FortiNAC vê o endpoint?** Busque pelo MAC. Se ele está ausente, a lacuna está acima: a porta, o modelo do equipamento, ou as credenciais.
+
+**3. Como ele classificou?** Um endpoint que existe mas classificou de forma inesperada aponta para ordem de regras de perfilamento ou para uma regra cujos sinais aquele equipamento não emite.
+
+**4. Em que estado ele está?** Registrado, rogue, desabilitado e autenticado são estados diferentes com consequências diferentes de política, e ler o estado é mais rápido que inferi-lo do comportamento.
+
+**5. A ação de aplicação de fato aconteceu?** É aqui que credenciais CLI e suporte do equipamento importam. O FortiNAC decidiu certo e o switch não fez é um defeito diferente de o FortiNAC ter decidido errado.
+
+Manter os passos 4 e 5 separados é o hábito mais útil aqui, porque o sintoma é idêntico — o endpoint está na VLAN errada — e a causa está em pontas opostas do sistema.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O FortiNAC precisa modelar equipamentos de rede com credenciais SNMP e CLI: SNMP para ler, CLI para aplicar, e elas falham de formas diferentes. O perfilamento classifica endpoints a partir de sinais observáveis, com regras avaliadas em ordem e a primeira correspondência vencendo. Rogue significa não classificado, não hostil, e uma enxurrada de rogues geralmente significa perfilamento incompleto. Investigue em ordem: equipamento alcançável, endpoint visto, classificação, estado, e então se a aplicação de fato chegou ao switch.

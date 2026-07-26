@@ -1,0 +1,55 @@
+---
+slug: fortianalyzer-reports-datasets-and-charts
+title: "Relatórios do FortiAnalyzer: datasets, gráficos e por que um relatório volta vazio"
+summary: "Um relatório do FortiAnalyzer é construído em camadas: um dataset é uma consulta, um gráfico renderiza um dataset, e um relatório organiza gráficos. Saber qual camada você está editando é a diferença entre corrigir um relatório em um minuto e reconstruir um que nunca esteve quebrado. Um relatório vazio é quase sempre o dataset não achando nada, e há poucas razões para isso acontecer."
+concepts: ["fortinet", "fortianalyzer", "relatório", "dataset", "gráfico", "sql", "adom", "analytics", "agendamento", "investigação"]
+relatedTools: []
+sub: fortianalyzer
+relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 53
+status: reviewed
+updated: "2026-07-26"
+---
+
+Relatórios são a parte do FortiAnalyzer que as pessoas mais usam e menos entendem, porque três objetos distintos precisam estar certos e o erro só aparece no fim.
+
+## As três camadas
+
+Um **dataset** é uma consulta ao banco analytics. Define o que é contado, sobre qual período, filtrado como, e retorna linhas. Todo o resto em relatórios é apresentação.
+
+Um **gráfico** liga um dataset a uma forma visual: uma tabela, um gráfico de barras, uma pizza. O gráfico escolhe quantas linhas mostrar e como rotulá-las; não pode acrescentar dados que o dataset não retornou.
+
+Um **relatório** é um layout: uma capa, seções e gráficos dispostos em ordem, mais um período e um agendamento opcional.
+
+A estratificação é por que "o relatório está errado" não é um diagnóstico. Um número errado é problema de dataset. Um número certo mal apresentado é problema de gráfico. Os gráficos certos na ordem errada é problema de layout, e só o terceiro é rápido de corrigir.
+
+## Por que um relatório volta vazio
+
+Esta é a dúvida de suporte mais comum sobre FortiAnalyzer, e as causas são poucas:
+
+- **Sem logs no analytics para aquele período.** A causa dominante. Logs saem do repositório indexado permanecendo no arquivo, e relatórios leem o analytics. Um relatório do trimestre passado com janela de analytics de trinta dias virá sempre vazio, e nada no relatório está errado.
+- **ADOM errado.** O relatório roda num ADOM e os equipamentos registram em outro.
+- **O filtro de equipamentos não casa com nada.** Um relatório delimitado a um grupo vazio, ou a um equipamento reregistrado com outro nome, retorna linhas para ninguém.
+- **O tráfego nunca foi registrado.** Uma política com registro desabilitado não produz logs, então relatório algum pode mostrar seu tráfego. Vale verificar cedo porque parece idêntico a todas as outras causas de relatório vazio.
+- **O período é relativo e o agendamento não é o que você pensa.** Um relatório agendado diariamente para "últimos 7 dias" rodando à meia-noite cobre uma janela diferente do mesmo relatório rodado manualmente ao meio-dia.
+
+O teste mais rápido é pegar a condição subjacente do dataset e buscar os logs diretamente para o mesmo período e ADOM. Se a busca vier vazia, o relatório está se comportando corretamente e o problema está acima.
+
+## Personalizar sem quebrar
+
+Relatórios, datasets e gráficos predefinidos vêm com o produto e são sobrescritos na atualização. **Clone antes de editar.** Um relatório predefinido personalizado que silenciosamente reverte após uma atualização de firmware é uma ferida autoinfligida fácil de evitar e chata de diagnosticar.
+
+Quando um gráfico precisa de dados que os datasets de fábrica não fornecem, o dataset é onde o trabalho acontece. Isso significa escrever a consulta, e significa saber qual tipo de log carrega o campo: logs de tráfego, de UTM e de evento são tabelas diferentes com colunas diferentes, e um campo que existe numa não está disponível em outra.
+
+## Agendamento e saída
+
+Relatórios podem rodar em agenda e ser entregues por e-mail ou gravados em arquivo, em PDF ou outros formatos. Duas notas operacionais importam mais do que parecem:
+
+Um relatório agendado consome recursos no horário agendado. Vários relatórios grandes na mesma agenda num equipamento ocupado vão disputar, e o sintoma são relatórios que demoram muito mais que quando rodados individualmente.
+
+O período de um relatório deve casar com sua cadência. Um relatório semanal cobrindo "últimos 30 dias" se sobrepõe a si mesmo três vezes, o que é legítimo se intencional e confuso se não.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Um dataset é uma consulta, um gráfico renderiza um dataset, um relatório organiza gráficos, e cada camada só pode apresentar o que a de baixo retornou. Relatórios leem o analytics, e não o arquivo, então um relatório vazio para um período antigo é retenção, e não defeito. Clone objetos predefinidos antes de editar, porque atualizações os sobrescrevem. O diagnóstico mais rápido para um relatório vazio é buscar os logs pela mesma condição, período e ADOM.

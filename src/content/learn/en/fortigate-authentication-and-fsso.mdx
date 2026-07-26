@@ -1,0 +1,65 @@
+---
+slug: fortigate-authentication-and-fsso
+title: "FortiGate Firewall Authentication and FSSO: Identity in a Policy"
+summary: "Putting a user rather than an IP address in a firewall policy requires the FortiGate to know who is behind an address. It can ask directly through active authentication, or learn it silently from a directory through FSSO. This covers the authentication methods, the difference between active and passive identification, how the FSSO collector learns logons, and the failure modes each approach has."
+concepts: ["fortinet", "fortigate", "firewall authentication", "fsso", "single sign-on", "captive portal", "ldap", "radius", "active directory", "user group"]
+relatedTools: []
+sub: fortigate
+relatedArticles: ["fortigate-firewall-policy-and-nat", "fortigate-initial-configuration-and-operation-modes"]
+category: security
+order: 48
+status: reviewed
+updated: "2026-07-25"
+---
+
+A policy written against an IP address controls a location. A policy written against a user controls a person, which is what most rules are actually trying to express. The gap between those two is identification: the FortiGate must decide which user is behind a source address before it can apply a user-based rule.
+
+There are two ways to close that gap, and they behave very differently.
+
+## Active authentication: the FortiGate asks
+
+The user is challenged and supplies credentials. The policy is written against a user or group, and traffic matching it triggers the challenge.
+
+The challenge arrives as a **captive portal** for browser traffic, or as a protocol-level prompt for services that support one. Credentials are then checked against a source:
+
+| Source | How it validates | Typical use |
+|---|---|---|
+| Local | Accounts stored on the FortiGate | Small deployments, break-glass accounts |
+| LDAP | Bind against a directory | Existing Active Directory or other LDAP |
+| RADIUS | RADIUS exchange, often with MFA behind it | Where a central AAA already exists |
+| SAML | Redirect to an identity provider | Modern SSO, federated identity |
+| FortiToken | Second factor on top of any of the above | Anywhere MFA is required |
+
+Active authentication is precise: the FortiGate knows exactly who authenticated because it asked. Its cost is interruption. The user sees a prompt, and anything that is not a browser session — a background sync, an API client, a device with no user — has no way to answer it.
+
+## Passive identification: FSSO tells the FortiGate
+
+Fortinet Single Sign-On removes the prompt by learning identity from the directory instead. When a user logs into the domain, that logon event is captured and relayed to the FortiGate, which builds a mapping of address to user and applies user-based policies without ever challenging anyone.
+
+The pieces:
+
+- A **collector agent** on a Windows server receives or reads logon events and maintains the user-to-address table.
+- Optional **DC agents** on domain controllers push events to the collector, the alternative being agentless polling of the security event log.
+- The **FortiGate** receives the table from the collector and consults it when matching a user-based policy.
+
+The two deployment shapes differ in a way worth knowing. **Agent mode** installs a DC agent on each domain controller, which pushes events as they happen — lower latency and more load to deploy. **Agentless mode** has the collector poll each controller's event log, which is easier to deploy and adds polling delay, so a user who has just logged in may not be identified for a short window.
+
+## Where each approach fails
+
+Neither is complete, and the failure modes are what an operator actually deals with.
+
+**Active authentication fails** for non-interactive traffic. A server making outbound calls, an IoT device, or a scheduled job cannot answer a captive portal. Policies for those must be address-based, and mixing user-based and address-based policies in the right order is the ordinary design.
+
+**FSSO fails** where the logon event is not seen. A user who never logs into the domain is invisible. A machine used by two people in sequence keeps the first mapping until it ages out. Terminal servers are the classic problem: many users behind one address means an address-to-user table cannot distinguish them, which is exactly what the Terminal Server agent exists to solve by tracking port ranges per user.
+
+**Both fail** on address change. A DHCP lease that moves to a different device leaves a stale mapping, which is why timeouts matter and why they are a trade between accuracy and re-prompting.
+
+## Order matters, as always
+
+User-based policies interact with the first-match rule. A user-based policy only matches once the user is identified; if identification has not completed, the traffic falls through to whatever is below. Placing a broad address-based allow above a user-based policy means the user policy never applies — the same shadowing problem, with an extra dimension.
+
+The practical sequence is user-based policies first, address-based fallbacks below them, and an explicit rule for known non-interactive sources so they do not sit waiting for an authentication they cannot perform.
+
+## What an exam candidate should be able to state cold
+
+Active authentication challenges the user through a captive portal or protocol prompt and validates against local, LDAP, RADIUS or SAML, optionally with FortiToken as a second factor. FSSO identifies passively by learning domain logon events through a collector agent, in agent mode with DC agents pushing or agentless mode polling the event log. Active authentication cannot serve non-interactive traffic; FSSO cannot distinguish multiple users behind one address without the Terminal Server agent. User-based policies must sit above address-based ones or they never match.

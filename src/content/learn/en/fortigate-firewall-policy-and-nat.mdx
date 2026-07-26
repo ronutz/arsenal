@@ -1,0 +1,86 @@
+---
+slug: fortigate-firewall-policy-and-nat
+title: "FortiGate Firewall Policies and NAT: Matching Order, SNAT, and DNAT"
+summary: "A FortiGate evaluates firewall policies top to bottom and stops at the first match, which makes policy order a functional property rather than a cosmetic one. This covers how a policy is matched, the difference between policy-based NAT and central NAT, how source NAT is chosen through IP pools, and why destination NAT through a VIP changes what the policy must be written against."
+concepts: ["fortinet", "fortigate", "firewall policy", "nat", "snat", "dnat", "virtual ip", "ip pool", "central nat", "policy lookup"]
+relatedTools: ["cidr", "fortigate-policy-lookup-explainer", "fortios-config-diff-explainer"]
+sub: fortigate
+relatedArticles: ["fortinet-ssl-inspection-modes", "reading-a-fortigate-sniffer-trace", "nat-firewall-myth"]
+category: security
+order: 43
+status: reviewed
+updated: "2026-07-25"
+---
+
+Two of the most common FortiGate faults are a policy that never matches and a policy that matches something you did not intend. Both come from the same source: the order of evaluation, and where address translation happens relative to it. Getting those two facts straight removes most of the guesswork.
+
+## First match wins, and that is the whole behaviour
+
+FortiOS evaluates the policy list from top to bottom and stops at the first policy whose match criteria are all satisfied. There is no scoring, no most-specific-wins, and no continuation. A broad policy placed above a narrower one makes the narrower one **unreachable**, and the interface will not tell you: the policy sits there looking correct, with a hit counter that never increments.
+
+That hit counter is the diagnostic. A policy that should be matching and shows zero hits is almost always shadowed by something above it, and the fix is ordering rather than the rule content.
+
+The criteria a policy matches on are the incoming and outgoing interface, source and destination address, service, schedule, and, where configured, user or user group. All of them must match. This is why a policy with the right addresses but the wrong outgoing interface silently fails to match: the interface pair is part of the match, not a consequence of it.
+
+At the end of the list sits an implicit deny. Anything not explicitly permitted is dropped, and by default that drop is not logged, which is the second most common source of confusion. If traffic disappears and no policy shows a hit, it met the implicit deny.
+
+## Sequence: what happens before the policy is consulted
+
+Policy matching does not happen first. A packet arriving at a FortiGate passes through several stages before the policy list is consulted, and each can drop it for reasons a policy never sees.
+
+| Stage | What it does | How it fails |
+|---|---|---|
+| Ingress interface checks | Interface admission, VLAN tagging | Wrong VLAN or interface down |
+| DoS policy | Anomaly thresholds, per-source rate limits | Traffic dropped before any policy is evaluated |
+| Destination NAT (VIP) | Rewrites the destination address | Applied **before** the routing lookup |
+| Routing lookup | Chooses the egress interface | No route means no policy can match |
+| Firewall policy | First match wins | Shadowed by a broader policy above |
+| Source NAT | Rewrites the source address | Applied **after** the policy matched |
+
+The two rows worth memorising are destination NAT and source NAT, because they sit on opposite sides of the policy decision. That single asymmetry explains most NAT confusion on the platform.
+
+## Destination NAT happens first, so the policy sees the internal address
+
+A virtual IP (VIP) object maps an external address to an internal one. FortiOS applies that mapping **before** the routing lookup and before policy evaluation, which has a consequence people trip over constantly: the firewall policy's destination must be the **VIP object**, not the internal server address and not the public address as a plain address object.
+
+Writing the policy against the internal address fails, because at the moment of matching, the destination has already been rewritten and the policy is compared against the VIP that performed the rewrite. Writing it against a plain address object holding the public IP also fails, for the same reason.
+
+The ordering also explains why a VIP affects routing. Because translation precedes the route lookup, the route is chosen for the **translated** destination, so a VIP pointing at an internal subnet routes out of the internal interface as you would expect.
+
+## Source NAT happens after, and has three sources of address
+
+Source NAT is applied once a policy has matched and permitted the traffic. In policy-based NAT — the default mode — you enable NAT on the policy itself, and then choose where the new source address comes from.
+
+| Option | Source address used | When to use it |
+|---|---|---|
+| Use Outgoing Interface Address | The egress interface's own IP | The ordinary case for internet access |
+| Dynamic IP Pool: Overload | Pool addresses, many sessions per address | More capacity than a single IP, port-overloaded |
+| Dynamic IP Pool: One-to-One | One internal to one pool address, no port translation | When the far side must see a stable, distinct address |
+| Dynamic IP Pool: Fixed Port Range | Fixed internal range to fixed external range | Deterministic mapping for audit or logging |
+
+Overload is the default behaviour of an IP pool and works like ordinary port address translation. One-to-one is the option that surprises people: it does **not** translate ports, so it consumes a pool address per internal host and exhausts a small pool quickly.
+
+## Central NAT is a different model, not a setting
+
+FortiOS offers two NAT architectures and you choose one for the whole VDOM.
+
+**Policy-based NAT** puts the NAT decision on the policy: each policy carries its own NAT toggle and pool selection. This is the default, and it keeps the decision next to the rule that permitted the traffic.
+
+**Central NAT** separates them entirely. Firewall policies no longer carry a NAT setting; instead a Central SNAT table and a DNAT/VIP table are evaluated independently, each with its own ordered rule list. Policies decide *whether* traffic passes; the central tables decide *how* it is translated.
+
+The trade is real in both directions. Central NAT scales better when many policies share the same translation behaviour, because the rule lives in one place rather than being repeated. Policy-based NAT is easier to read for a small ruleset, because one object answers both questions. What causes trouble is switching between them on a configured system: enabling central NAT drops the per-policy NAT settings, and they do not come back if you switch away again. Decide before you build.
+
+## Reading a session to confirm what actually happened
+
+The authoritative answer to "which policy matched and what was translated" is the session table, not the configuration. A session entry names the policy ID that admitted it and shows both the original and translated tuples, which settles arguments quickly.
+
+```
+diagnose sys session filter dst 203.0.113.10
+diagnose sys session list
+```
+
+In the output, the `policy_id` field is the policy that matched. The `hook=post dir=org` line carries the post-NAT source, and `hook=pre dir=org` carries the pre-NAT destination. If the policy ID is not the one you expected, you have a shadowing problem; if the addresses are not translated as expected, you have a NAT configuration problem. The distinction between those two diagnoses is exactly what the session table gives you and what the policy list alone cannot.
+
+## What an exam candidate should be able to state cold
+
+Policies match on interface pair, address, service, schedule and user, all of them, first match wins, implicit deny at the end. Destination NAT via a VIP happens before routing and before policy, so the policy destination is the VIP object. Source NAT happens after the policy matched, and takes its address from the egress interface or from an IP pool whose type determines whether ports are translated. Central NAT and policy NAT are mutually exclusive architectures chosen per VDOM, not options you can mix.

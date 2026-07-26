@@ -1,0 +1,55 @@
+---
+slug: fortianalyzer-reports-datasets-and-charts
+title: "FortiAnalyzer Reports: Datasets, Charts, and Why a Report Comes Back Empty"
+summary: "A FortiAnalyzer report is built in layers: a dataset is a query, a chart renders one dataset, and a report lays out charts. Knowing which layer you are editing is the difference between fixing a report in a minute and rebuilding one that was never broken. An empty report is almost always the dataset finding nothing, and there are only a few reasons that happens."
+concepts: ["fortinet", "fortianalyzer", "report", "dataset", "chart", "sql", "adom", "analytics", "scheduling", "troubleshooting"]
+relatedTools: []
+sub: fortianalyzer
+relatedArticles: ["fortianalyzer-log-ingestion-and-storage", "fortianalyzer-soc-events-incidents-playbooks"]
+category: security
+order: 53
+status: reviewed
+updated: "2026-07-26"
+---
+
+Reporting is the part of FortiAnalyzer people touch most and understand least, because three separate objects have to be right and the error surfaces only at the end.
+
+## The three layers
+
+A **dataset** is a query against the analytics database. It defines what is counted, over what period, filtered how, and returns rows. Everything else in reporting is presentation.
+
+A **chart** binds one dataset to a visual form — a table, a bar chart, a pie. The chart chooses how many rows to show and how to label them; it cannot add data the dataset did not return.
+
+A **report** is a layout: a title page, sections, and charts arranged in order, plus a time period and an optional schedule.
+
+The layering is why "the report is wrong" is not a diagnosis. A wrong number is a dataset problem. A right number shown badly is a chart problem. The right charts in the wrong order is a layout problem, and only the third is quick to fix.
+
+## Why a report comes back empty
+
+This is the single most common FortiAnalyzer support question, and the causes are few:
+
+- **No logs in analytics for that period.** The dominant cause. Logs age out of the indexed store while remaining in the archive, and reports read analytics. A report for last quarter on a thirty-day analytics window will always be empty, and nothing about the report is at fault.
+- **Wrong ADOM.** The report runs in one ADOM and the devices log to another.
+- **Device filter matches nothing.** A report scoped to a device group that is empty, or to a device that has been re-registered under a different name, returns rows for no one.
+- **The traffic was never logged.** A policy with logging disabled produces no logs, so no report can show its traffic. This is worth checking early because it looks identical to every other empty-report cause.
+- **The time period is relative and the schedule is not what you think.** A report scheduled daily for "last 7 days" run at midnight covers a different window than the same report run manually at noon.
+
+The fastest test is to take the dataset's underlying condition and search the logs directly for the same period and ADOM. If the search is empty, the report is behaving correctly and the problem is upstream.
+
+## Customising without breaking things
+
+Predefined reports, datasets and charts ship with the product and are overwritten on upgrade. **Clone before editing.** A customised predefined report that quietly reverts after a firmware update is a self-inflicted wound that is easy to avoid and annoying to diagnose.
+
+When a chart needs data the shipped datasets do not provide, the dataset is where the work happens. That means writing the query, and it means knowing which log type carries the field: traffic logs, UTM logs and event logs are different tables with different columns, and a field that exists in one is not available in another.
+
+## Scheduling, and output
+
+Reports can run on a schedule and be delivered by email or written to a file, in PDF or other formats. Two operational notes matter more than they look:
+
+A scheduled report consumes resources at its scheduled time. Several large reports on the same schedule on a busy appliance will contend, and the symptom is reports that take far longer than when run individually.
+
+A report's period should match its cadence. A weekly report covering "last 30 days" overlaps itself three times over, which is legitimate if intended and confusing if not.
+
+## What an exam candidate should be able to state cold
+
+A dataset is a query, a chart renders one dataset, a report lays out charts, and each layer can only present what the one below returned. Reports read analytics, not the archive, so an empty report for an old period is retention rather than a fault. Clone predefined objects before editing, because upgrades overwrite them. The fastest diagnosis for an empty report is to search the logs for the same condition, period and ADOM.

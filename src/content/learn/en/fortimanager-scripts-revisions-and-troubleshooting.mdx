@@ -1,0 +1,67 @@
+---
+slug: fortimanager-scripts-revisions-and-troubleshooting
+title: "FortiManager Scripts, Revision History, and Troubleshooting Installs"
+summary: "When a FortiManager change does not land, the answer is almost always in one of three places: the install log, the revision history, or the sync status. Scripts add a fourth way to change things and a fourth way to be surprised. This covers what each is for and the order to check them in."
+concepts: ["fortinet", "fortimanager", "cli script", "revision history", "troubleshooting", "out of sync", "install log", "diagnostics", "adom"]
+relatedTools: ["fortios-config-diff-explainer"]
+sub: fortimanager
+relatedArticles: ["fortimanager-policy-packages-and-installs", "fortimanager-adoms-and-device-registration"]
+category: operations
+order: 56
+status: reviewed
+updated: "2026-07-26"
+---
+
+Most FortiManager troubleshooting is a search for which of two configurations is being talked about — the database's or the device's — and what happened between them.
+
+## Scripts, and where they run
+
+A CLI script is a block of FortiOS commands that FortiManager can execute. The important distinction is the **target**, because the same script has different consequences depending on it:
+
+- **Against the device database** — the script changes FortiManager's copy, and the change reaches the device on the next install. This is the safer default, because the install preview still applies.
+- **Directly on the device** — the script runs on the FortiGate itself, immediately. FortiManager's database is now behind, and the device goes out of sync.
+- **Against a policy package** — for policy and object changes expressed as CLI.
+
+Running directly on the device is occasionally necessary and routinely regretted, because it creates exactly the drift the platform exists to prevent. Where it is used, an import afterwards is what puts the two copies back in agreement.
+
+Script execution history records what ran, where, and what the device returned. That history is the first place to look when a change appears to have half-happened.
+
+## Revision history answers "what changed"
+
+Every install creates a revision. The history gives two things that matter in an incident:
+
+**A diff between any two revisions**, which shows what a given install actually changed rather than what someone believes it changed.
+
+**A restore point.** Reverting loads an earlier configuration into the database; it becomes real on the device only when you install it. That two-step is deliberate, and it means a revert can be reviewed in the install preview before it takes effect.
+
+For comparing configurations outside FortiManager — a support case, a change review, two devices that should match — a structural diff is easier to read than a line diff, because it groups by object rather than by line number and does not report a moved block as a deletion plus an insertion.
+
+## The troubleshooting order
+
+Working from the most common cause down:
+
+**1. Sync status.** Out of sync means the two copies differ, and every other symptom follows from it. Determine which side has the change you want before doing anything, because import and install each discard the other side's work.
+
+**2. Install log.** It names the command that failed and what the device said. This is more precise than inspecting the device afterwards and guessing.
+
+**3. Revision history.** Compare the last two revisions of the device. If the change you expected is not in the diff, it never left the database, which points at workspace mode or the package not being saved.
+
+**4. ADOM version.** A mismatch between the ADOM's firmware version and the device's produces generated CLI the device rejects, and the errors look unrelated to the actual cause.
+
+**5. Connectivity and authorization.** A device that is unreachable or whose authorization has lapsed cannot be installed to, and the symptom is an install that never completes rather than one that fails cleanly.
+
+## Device-level, ADOM-level, and system-level
+
+Keeping these apart shortens most investigations:
+
+**Device-level** problems affect one device: sync state, reachability, firmware mismatch, a failed command in its install log.
+
+**ADOM-level** problems affect everything in one ADOM: a broken object reference, a locked workspace, an ADOM on the wrong version, a policy package that will not validate.
+
+**System-level** problems affect the appliance: disk exhaustion, an HA cluster out of sync, FortiGuard unreachable, resource contention where FortiAnalyzer features share the box.
+
+The diagnostic value is in the pattern. One device misbehaving is a device problem; every device in one ADOM misbehaving is an ADOM problem; every ADOM misbehaving is the system. That triage takes seconds and rules out most of the search space.
+
+## What an exam candidate should be able to state cold
+
+Scripts can target the device database, the device directly, or a policy package, and running directly on the device creates drift that an import must resolve. Every install creates a revision; revisions can be diffed and reverted, and a revert changes the database until installed. The troubleshooting order is sync status, install log, revision diff, ADOM version, then connectivity. Scope the symptom to device, ADOM, or system before investigating, because the pattern names the layer.

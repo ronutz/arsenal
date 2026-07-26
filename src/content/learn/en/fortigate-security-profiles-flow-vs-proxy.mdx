@@ -1,0 +1,84 @@
+---
+slug: fortigate-security-profiles-flow-vs-proxy
+title: "FortiGate Security Profiles: Antivirus, IPS, and Application Control"
+summary: "Antivirus, IPS, and application control are separate security profiles attached to a firewall policy, and what each can actually see depends on two things the exam tests directly: the inspection mode the profile runs in, and whether SSL inspection decrypts the traffic first. This covers flow versus proxy inspection, the antivirus scanning modes, how IPS signatures and rate-based actions differ, and why application control sometimes cannot identify an application at all."
+concepts: ["fortinet", "fortigate", "security profile", "antivirus", "ips", "application control", "flow mode", "proxy mode", "utm"]
+relatedTools: ["fortigate-security-profile-coverage-checker"]
+sub: fortigate
+relatedArticles: ["fortinet-ssl-inspection-modes", "fortigate-firewall-policy-and-nat", "reading-a-fortigate-sniffer-trace"]
+category: security
+order: 44
+status: reviewed
+updated: "2026-07-25"
+---
+
+A firewall policy decides whether traffic passes. Security profiles decide what is done to the traffic that does. They are attached per policy, which means the same source and destination can be inspected differently depending on which policy matched, and that is a deliberate design rather than an accident.
+
+## Flow and proxy are the split everything else hangs off
+
+FortiOS inspects content in one of two engines, and the choice constrains what every profile can do.
+
+**Flow-based inspection** examines packets as they pass, without holding the whole object. It is faster, adds less latency, and can be offloaded to hardware. Because it never assembles the complete file or message, some checks are inherently limited.
+
+**Proxy-based inspection** terminates the session, buffers the object, inspects it whole, then forwards it. It sees everything, at the cost of latency, memory, and the loss of hardware offload.
+
+| Property | Flow-based | Proxy-based |
+|---|---|---|
+| Object handling | Streamed, packet by packet | Buffered and reassembled |
+| Latency | Lower | Higher |
+| Hardware offload | Possible | No |
+| Replacement messages | Limited | Full HTML block pages |
+| Sees a full archive to scan inside it | Constrained | Yes |
+
+The practical rule is that flow mode is the default for throughput and proxy mode is what you choose when a specific feature needs the whole object. Mixing them across policies is normal; what causes surprises is expecting a proxy-only behaviour from a policy running in flow mode.
+
+## Antivirus: the scanning modes and what defeats them
+
+The antivirus profile scans for malware, and its behaviour follows the engine split above.
+
+In **proxy mode** the file is buffered and scanned complete. That is the strongest position: an archive can be expanded and its contents scanned, and a block can be replaced with an explanatory page.
+
+In **flow mode** the file is scanned as it streams. FortiOS still detects the overwhelming majority of malware this way, and the constraints are at the edges — very large files and deeply nested archives are where the difference shows.
+
+Three settings matter more than candidates expect:
+
+- **Oversize file handling.** Files above the configured threshold are not scanned. The default action passes them, which means the largest downloads are the ones going uninspected unless you change it. Blocking oversized files is safer and more disruptive; the choice should be deliberate rather than defaulted.
+- **Encrypted archives.** A password-protected archive cannot be scanned by anything. The profile can be set to treat it as infected, which is the only real option available.
+- **The grayware and heuristic toggles.** These catch more and produce more false positives, which is the ordinary detection trade.
+
+The point that ties back to the previous article: **antivirus cannot inspect what it cannot read.** On an HTTPS download with certificate inspection rather than deep inspection, the payload is never decrypted and the antivirus profile has nothing to examine. The profile appears attached and configured and does nothing.
+
+## IPS: signatures, and the two things people confuse
+
+The intrusion prevention system matches traffic against signatures and takes an action per signature or per filter.
+
+Signatures carry a severity, a target (client or server), a protocol, and an operating system. Rather than enabling thousands individually, an IPS sensor is built from **filters** that select by those attributes — for example, all high and critical severity signatures targeting servers — plus individual overrides where a specific signature needs different treatment.
+
+The distinctions worth holding:
+
+- **Signature-based versus rate-based.** Most signatures match a pattern. A subset are rate-based, triggering on frequency rather than content: many failed authentications, a flood of connection attempts. They exist for behaviour no single packet reveals.
+- **Action versus packet logging.** The action decides what happens to the traffic (pass, block, reset, quarantine). Packet logging separately decides whether the offending packet is captured for later analysis. It is valuable and it consumes disk, so it belongs on a targeted set of signatures rather than everything.
+- **IPS is not a firewall policy.** It inspects traffic a policy already permitted. Traffic denied by policy never reaches the IPS engine, which is why an IPS sensor cannot compensate for an overly broad rule.
+
+## Application control: what it identifies, and when it cannot
+
+Application control identifies traffic by application signature rather than by port, which is the whole point: something on port 443 is not necessarily a web browser, and the port tells you almost nothing on a modern network.
+
+It works by inspecting traffic patterns and payload characteristics against Fortinet's application database, then applying an action per application or per category. That yields useful control — allow the collaboration suite, block the file-sharing client, monitor the streaming service — that a port-based rule cannot express.
+
+Its limits follow directly from how it works:
+
+- **Encryption.** Without deep inspection, application control sees only handshake metadata. Some applications remain identifiable from SNI alone; many do not.
+- **Identification takes packets.** The engine needs to observe enough of a session to classify it. The first few packets of a flow may pass before the application is recognised, which is why application control shapes behaviour rather than acting as a hard gate on the very first packet.
+- **Deliberate evasion.** Applications designed to look like ordinary web traffic are hard to distinguish from ordinary web traffic. The database is updated continuously, and this remains an arms race rather than a solved problem.
+
+## The dependency chain the exam is really testing
+
+These three profiles form a chain of preconditions, and stating it correctly is most of the value:
+
+1. A **firewall policy** must permit the traffic. Nothing inspects what was denied.
+2. **SSL inspection** must decrypt it, if it is encrypted. Certificate inspection is not enough for antivirus, IPS, or application control, all of which need the payload.
+3. The **inspection mode** must support the feature. Some behaviours require proxy mode and are constrained or absent in flow mode.
+4. Only then does the **profile action** apply.
+
+Most "the profile is not working" reports resolve at step two. The profile is attached, the configuration is right, and the traffic is encrypted with certificate inspection in place, so there is nothing to inspect.

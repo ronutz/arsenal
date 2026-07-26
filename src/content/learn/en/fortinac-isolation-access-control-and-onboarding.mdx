@@ -1,0 +1,70 @@
+---
+slug: fortinac-isolation-access-control-and-onboarding
+title: "FortiNAC Isolation Networks, Access Control, and Onboarding Guests and Contractors"
+summary: "Once FortiNAC knows what an endpoint is, it decides where that endpoint may go. Isolation networks are where unknown and non-compliant devices land, access policies decide the destination, and onboarding covers the people who are not employees. The recurring theme is that isolation only works if the isolated device can still reach what it needs to become compliant."
+concepts: ["fortinet", "fortinac", "isolation network", "access policy", "vlan", "guest access", "contractor", "mdm", "syslog", "snmp trap", "security automation"]
+relatedTools: []
+sub: fortinac
+relatedArticles: ["fortinac-device-modeling-and-profiling", "fortigate-authentication-and-fsso"]
+category: security
+order: 58
+status: reviewed
+updated: "2026-07-26"
+---
+
+Access control in FortiNAC is a decision about placement: given what this endpoint is and who is using it, which network segment should it be in. The mechanics are straightforward; the design decisions around isolation are where deployments succeed or frustrate everyone.
+
+## Isolation networks
+
+An **isolation network** is a segment for endpoints that are not allowed on the production network yet. FortiNAC uses several, and confusing them makes troubleshooting harder than it needs to be:
+
+| Isolation network | Who lands there | Purpose |
+|---|---|---|
+| Registration | Unknown or unregistered endpoints | Let the user identify themselves and register the device |
+| Remediation | Registered but non-compliant endpoints | Let the device fix what is wrong |
+| Quarantine | Endpoints flagged by a security event | Contain, pending investigation |
+| Dead end | Endpoints that cannot be helped by the above | Deliberate isolation with no path out |
+
+The design rule that matters more than any other: **an isolated endpoint must still be able to reach what it needs to stop being isolated.** A registration network with no DNS, no DHCP and no route to the captive portal is a network where nobody can ever register, and the symptom is users reporting that nothing happens.
+
+The configuration wizard exists because getting those supporting services right is fiddly and the failure is silent. Using it and then reviewing what it produced is faster than assembling it by hand.
+
+## Access policies decide the destination
+
+An access policy pairs a **condition** with a **result**. The condition matches on what FortiNAC knows: the endpoint's classification, its registration state, the user's group membership, the location, the time. The result is the network access to grant — typically a VLAN.
+
+Policies are evaluated in order and the first match wins, which by now should sound familiar. It carries the same consequence: a broad policy placed above a specific one makes the specific one unreachable, and nothing warns you.
+
+The practical ordering is specific before general, with a final catch-all that sends anything unmatched somewhere safe rather than somewhere permissive.
+
+## Guests and contractors
+
+Guest access is a different problem from employee access, because there is no directory account and no managed device. FortiNAC handles it with sponsored or self-registration flows: a visitor registers through a portal, optionally requiring a sponsor to approve, and receives time-limited access.
+
+The controls that matter are the ones people forget to set:
+
+**An expiry.** Guest accounts that never expire accumulate, and every one is a live credential.
+
+**A scope.** Guest access should reach the internet and little else, and that is expressed in the access policy result rather than assumed.
+
+**Contractor access** sits between guest and employee: longer-lived than a visitor, narrower than staff, and usually tied to a sponsor who is accountable for it. Modelling contractors as long-expiry guests is common and works, provided the expiry is genuinely enforced.
+
+## MDM and third-party integration
+
+FortiNAC can consume information from systems that know things it does not.
+
+**MDM integration** gives FortiNAC the compliance state of a managed mobile device — whether it is enrolled, encrypted, jailbroken, running a required version. That lets an access policy depend on device posture rather than only on identity, which is the practical difference between "this is Ana's phone" and "this is Ana's phone and it is compliant".
+
+**Syslog and SNMP trap input** let third-party devices tell FortiNAC something happened. A security appliance that detects malicious behaviour can send a syslog message that FortiNAC parses and acts on, which is how products with no native integration still participate in enforcement.
+
+Both share a failure mode worth stating: the integration is only as current as the last message received. An MDM whose sync has silently stopped leaves FortiNAC enforcing on stale posture, which is worse than enforcing on none because it looks like it is working.
+
+## Security automation
+
+Automation ties an event to a response without a human in between: an endpoint flagged by an integrated system is moved to quarantine, a port with an unexpected device is disabled, a compliance failure triggers remediation.
+
+The value is speed, and the risk is confidence in the trigger. An automated quarantine driven by a noisy detector produces outages that look like network faults, so the sensible progression is to run the trigger in alert-only mode long enough to see what it would have done before letting it act.
+
+## What an exam candidate should be able to state cold
+
+Registration, remediation, quarantine and dead-end isolation networks serve different states, and an isolated endpoint must be able to reach the services it needs to become compliant. Access policies pair a condition with a network result, evaluated in order with first match winning. Guest access needs an expiry and a scope; contractors are long-lived guests with a sponsor. MDM supplies device posture and syslog or SNMP trap input lets third-party systems trigger action, and both are only as current as their last message. Automation should be observed in alert-only mode before it is allowed to act.

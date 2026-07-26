@@ -1,0 +1,66 @@
+---
+slug: fortimanager-adoms-and-device-registration
+title: "FortiManager ADOMs and Device Registration: The Database Is the Source of Truth"
+summary: "FortiManager keeps its own copy of every managed device's configuration, and that copy is what gets installed. Understanding that one relationship, and the ADOM that scopes it, explains device registration, the out-of-sync state, ADOM versioning, and why the global database exists."
+concepts: ["fortinet", "fortimanager", "adom", "device registration", "out of sync", "revision", "global database", "deployment", "central management"]
+relatedTools: []
+sub: fortimanager
+relatedArticles: ["fortigate-firewall-policy-and-nat", "fortianalyzer-log-ingestion-and-storage"]
+category: operations
+order: 54
+status: reviewed
+updated: "2026-07-26"
+---
+
+FortiManager is not a remote-control window onto your firewalls. It holds its **own database** of each device's configuration, you edit that database, and then you install from it to the device. Almost everything that surprises people about FortiManager follows from that one design decision.
+
+## Registration, and what actually happens
+
+Adding a device does three things in sequence: FortiManager authorizes it, retrieves its running configuration, and stores that configuration as the device's baseline in the database. From then on there are two copies of the truth, and they can drift.
+
+Drift is normal and expected. Someone logs into the FortiGate directly and changes a policy; FortiManager's copy no longer matches. The device is now **out of sync**, and FortiManager tells you so rather than silently overwriting.
+
+Resolving it is a choice, and choosing wrongly loses work:
+
+| Situation | Action | Effect |
+|---|---|---|
+| The device has changes you want to keep | **Import** | Device configuration is pulled into the FortiManager database |
+| The database has changes you want to apply | **Install** | Database configuration is pushed to the device |
+| Both changed | Import first, reconcile, then install | Otherwise the install discards the device-side edits |
+
+The habit worth building is to read the sync status before doing anything, because an install from a stale database is how a local fix gets silently reverted.
+
+## ADOMs scope everything
+
+An administrative domain partitions managed devices along with their policies, objects and administrators. Devices live in exactly one ADOM, and policy packages, address objects and services are per ADOM by default.
+
+The reasons are the familiar ones: separating tenants or business units, delegating administration without granting global rights, and keeping unrelated object namespaces from colliding.
+
+Two details matter operationally:
+
+**ADOM version tracking.** An ADOM is associated with a firmware version, and devices in it are expected to match. A device on a different major version than its ADOM is the usual cause of an install that behaves oddly or an option that will not appear, because the schema FortiManager holds does not match the device's.
+
+**The global database.** Objects and header/footer policies defined in the global ADOM can be assigned down to multiple ADOMs, which is how a rule that must exist everywhere gets maintained in one place. Header policies land above the ADOM's own policies and footer policies below, so a global deny at the footer is a genuine catch-all and a global allow at the header outranks everything local — worth remembering, because it interacts with first-match evaluation exactly as you would expect and exactly as people forget.
+
+## Revisions are the undo you actually have
+
+Every install creates a revision of the device configuration in the database, and revisions can be compared and reverted. That gives two capabilities worth using deliberately.
+
+**Comparison** answers what changed between two points, which is faster and far more readable than diffing two full configuration dumps by hand.
+
+**Reversion** restores an earlier configuration to the database, which you then install. Note the two steps: reverting a revision does not by itself touch the device. That is a safety property, not an inconvenience.
+
+Revision retention is finite and configurable. A deployment that keeps only a handful of revisions on a heavily-edited device can lose the one you wanted, so the retention setting deserves a decision rather than a default.
+
+## Deployment shapes
+
+The common ones, and what distinguishes them:
+
+- **Single FortiManager** managing devices directly. Simplest, and the availability of the manager becomes an operational concern.
+- **FortiManager HA**, a cluster with one primary handling configuration and peers holding synchronised copies.
+- **Manager of managers**, where a central FortiManager coordinates subordinate ones, used at scale or where administrative separation is required across regions.
+- **FortiManager with FortiAnalyzer features enabled**, letting one appliance both manage configuration and store logs. Convenient for smaller deployments, and it means the two workloads compete for the same resources.
+
+## What an exam candidate should be able to state cold
+
+FortiManager holds its own database of each device's configuration and installs from it. Out of sync means the two copies differ; import pulls from the device, install pushes to it, and choosing wrongly discards work. ADOMs scope devices, policies and objects, and carry a firmware version that should match the devices in them. Global database objects and header/footer policies are assigned down to ADOMs, with headers above and footers below the ADOM's own policies. Revisions are created on install, can be compared and reverted, and reverting affects the database until you install.

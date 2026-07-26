@@ -1,0 +1,68 @@
+---
+slug: fortigate-cloud-deployments-and-fortisase
+title: "FortiGate na nuvem e FortiSASE: modelos de implantação e integração de usuários"
+summary: "O FortiGate existe na nuvem pública em dois formatos bem diferentes: uma máquina virtual que você implanta e opera, e o FortiGate CNF, um serviço gerenciado em que a Fortinet opera o firewall. O FortiSASE é diferente ainda, entregando inspeção a partir dos pontos de presença da Fortinet aos usuários onde quer que estejam. Este artigo cobre o que distingue cada um, como o licenciamento difere, e as formas de integrar usuários ao SASE."
+concepts: ["fortinet", "fortigate", "fortigate vm", "fortigate cnf", "fortisase", "nuvem pública", "byol", "paygo", "sase", "zero trust network access"]
+relatedTools: []
+sub: fortigate
+relatedArticles: ["fortigate-initial-configuration-and-operation-modes", "fortinet-ssl-inspection-modes"]
+category: cloud
+order: 50
+status: reviewed
+updated: "2026-07-25"
+---
+
+Três coisas levam o nome FortiGate na nuvem e não são variações umas das outras. A diferença é **quem opera o firewall**, e essa única pergunta determina o que você configura, o que é cobrado, e por que você responde quando algo quebra.
+
+## FortiGate VM: seu appliance, hardware de outra pessoa
+
+Um FortiGate VM é o mesmo FortiOS que você roda num appliance, implantado como máquina virtual em AWS, Azure, GCP ou num hipervisor privado. Você dimensiona, implanta, configura, atualiza e opera. Tudo no resto desta série se aplica sem mudança: políticas, NAT, roteamento, perfis de segurança, alta disponibilidade.
+
+O que muda é o ambiente ao redor. Rede em nuvem não é um data center: interfaces se ligam a redes virtuais com roteamento próprio, as tabelas de rota do provedor precisam enviar tráfego ao firewall para que ele veja algo, e um grupo de segurança à frente dele pode descartar em silêncio o que você esperava inspecionar. Implantar a VM é a metade fácil; direcionar tráfego por ela é o trabalho de projeto.
+
+O licenciamento vem em dois formatos, e a escolha tem consequências:
+
+| | BYOL (traga sua licença) | PAYG (pague conforme o uso) |
+|---|---|---|
+| Aquisição | Licença comprada da Fortinet e aplicada à instância | Cobrada por hora pelo marketplace da nuvem |
+| Capacidade | Fixada pela licença | Fixada pelo tamanho da instância |
+| Serve a | Cargas estáveis e previsíveis | Implantações intermitentes ou curtas |
+| Mudar de nuvem | A licença acompanha | Presa ao marketplace |
+
+## FortiGate CNF: a Fortinet opera
+
+O FortiGate CNF (Cloud-Native Firewall) inverte a responsabilidade. É entregue como serviço gerenciado: a Fortinet opera a infraestrutura do firewall, cuida de sua disponibilidade e escala, e você configura política pelo FortiManager em vez de administrar uma instância.
+
+A distinção que importa é o que você deixa de fazer. Não há instância para dimensionar, atualizar, migrar de versão ou agrupar, e não há projeto de alta disponibilidade para acertar. O que você abre mão é do controle correspondente: você não está ajustando a plataforma, e o comportamento dela é o que o serviço oferece.
+
+O enquadramento honesto é o mesmo de qualquer serviço gerenciado. Serve a times cuja restrição é capacidade operacional, e não flexibilidade de configuração, e é a escolha errada onde um comportamento específico de baixo nível importa.
+
+## FortiSASE: inspeção onde o usuário está
+
+O FortiSASE não é um firewall que você implanta. É inspeção entregue a partir dos pontos de presença da Fortinet, aplicada aos usuários de onde quer que se conectem. O tráfego vai do endpoint ao PoP mais próximo, é inspecionado ali, e segue ao destino.
+
+O problema que ele endereça é que o modelo de perímetro pressupunha usuários atrás dele. Trazer o tráfego de um usuário remoto até um firewall central para ser inspecionado acrescenta latência a cada sessão em nome de um controle que poderia ser aplicado mais perto dele.
+
+Os **métodos de integração** são o que mais provavelmente será cobrado num exame, e há três formatos:
+
+- **Com agente.** O FortiClient no endpoint estabelece um túnel ao PoP mais próximo. Dá mais controle e cobre todo o tráfego do dispositivo, ao custo de implantar e manter um agente.
+- **Sem agente.** O tráfego é direcionado ao serviço sem software no endpoint, tipicamente tráfego web via configuração de proxy explícito ou arquivo PAC. Mais fácil de implantar, cobertura mais estreita.
+- **Por site.** Um local inteiro é conectado ao serviço por um túnel do equipamento de borda, então todo host atrás dele é coberto sem tocar em endpoint algum. É como filiais são geralmente integradas.
+
+A maioria das implantações reais usa mais de um: agente para notebooks gerenciados, por site para escritórios, sem agente para dispositivos não gerenciados ou de terceiros.
+
+## Onde os três se encaixam
+
+Não são tanto concorrentes quanto respostas a perguntas diferentes.
+
+| | Quem opera | Onde a inspeção acontece | Uso típico |
+|---|---|---|---|
+| FortiGate VM | Você | Sua rede em nuvem | Proteção de carga em nuvem, controle total |
+| FortiGate CNF | Fortinet | Sua rede em nuvem | Proteção em nuvem sem operá-la |
+| FortiSASE | Fortinet | PoPs da Fortinet | Usuários e filiais, onde estiverem |
+
+Uma mesma organização comumente roda os três: VMs protegendo cargas em nuvem, SASE cobrindo a força de trabalho, e appliances físicos nos sites que precisam deles. A linguagem de configuração compartilhada entre eles é a razão de a combinação ser administrável.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+FortiGate VM é FortiOS que você implanta e opera, licenciado BYOL ou PAYG, e o trabalho de projeto é direcionar o tráfego da nuvem por ele. FortiGate CNF é a mesma proteção como serviço gerenciado, em que a Fortinet opera a infraestrutura e você configura política centralmente. O FortiSASE entrega inspeção dos PoPs da Fortinet aos usuários onde estiverem, com integração com agente, sem agente e por site, e existe porque trazer tráfego remoto até um firewall central custa latência por um controle que pode ser aplicado mais perto do usuário.

@@ -1,0 +1,76 @@
+---
+slug: fortigate-routing-and-sdwan-selection
+title: "Roteamento e SD-WAN no FortiGate: ordem de seleção de rota e avaliação de regras"
+summary: "Um FortiGate escolhe o caminho de saída numa ordem definida: rotas por política são consultadas antes da tabela de roteamento e, dentro da tabela, o prefixo mais específico vence, com a distância desempatando entre protocolos e a prioridade desempatando dentro de um. O SD-WAN acrescenta uma camada de regras que seleciona um membro por desempenho medido. Este artigo cobre essa ordem, o que distância e prioridade de fato fazem, e como regras de SD-WAN e verificações de saúde interagem."
+concepts: ["fortinet", "fortigate", "rota estática", "distância administrativa", "prioridade de rota", "rota por política", "sd-wan", "performance sla", "ecmp"]
+relatedTools: ["cidr", "fortigate-route-selection-explainer"]
+sub: fortigate
+relatedArticles: ["fortigate-firewall-policy-and-nat", "longest-prefix-match", "reading-a-fortigate-sniffer-trace"]
+category: networking
+order: 45
+status: reviewed
+updated: "2026-07-25"
+---
+
+"Por que o tráfego está saindo pela interface errada" é uma das perguntas mais comuns sobre FortiGate, e quase sempre se resolve na ordem de seleção de rota. Há quatro mecanismos que podem decidir o caminho de saída, eles são consultados numa sequência fixa, e conhecer essa sequência responde à pergunta diretamente.
+
+## A ordem de consulta
+
+| Ordem | Mecanismo | Decide por |
+|---|---|---|
+| 1 | Rota por política (PBR) | Origem, destino, protocolo, porta, interface de entrada |
+| 2 | Regra de SD-WAN | Aplicação, endereço, usuário, e então um membro escolhido por SLA |
+| 3 | Tabela de roteamento (FIB) | Prefixo correspondente mais longo |
+| 4 | Distância, depois prioridade, depois ECMP | Empates dentro da tabela |
+
+Uma rota por política é consultada **antes** da tabela de roteamento e a sobrepõe. Esse é o fato mais útil aqui, porque uma rota por política criada meses atrás e esquecida é a causa clássica de tráfego que ignora uma rota estática obviamente correta. Se a tabela diz uma coisa e o tráfego faz outra, procure primeiro uma rota por política.
+
+## Distância e prioridade não são a mesma coisa, e o exame sabe disso
+
+As duas são rotineiramente confundidas, e a distinção é precisa.
+
+**Distância administrativa** decide qual rota é **instalada** na tabela de roteamento. Compara rotas para o mesmo destino aprendidas de fontes diferentes, estática, OSPF, BGP, e a menor distância vence. A perdedora não é usada de forma alguma; não aparece na tabela de encaminhamento.
+
+**Prioridade** decide qual entre várias rotas **já instaladas** é preferida. Aplica-se às rotas que sobreviveram à comparação de distância e, de novo, o menor valor vence.
+
+A consequência que importa na operação: duas rotas estáticas para o mesmo destino com a **mesma distância** instalam as duas, e a prioridade escolhe entre elas. Duas rotas estáticas com **distâncias diferentes** significam que só uma instala, e a outra é uma rota flutuante que aparece apenas quando a primeira é retirada. É assim que se constrói uma rota padrão de reserva, mesmo prefixo, distância maior, e inverter distância e prioridade produz ou dois caminhos ativos quando se queria um reserva, ou um reserva que nunca ativa.
+
+```
+get router info routing-table all
+get router info routing-table details 0.0.0.0/0
+```
+
+O primeiro comando mostra o que de fato instalou. Uma rota configurada que não aparece ali perdeu uma comparação de distância.
+
+## Rotas estáticas: os campos que mudam o comportamento
+
+Uma rota estática carrega prefixo de destino, gateway, interface de saída, distância e prioridade. Duas outras propriedades merecem menção:
+
+**Monitoramento de saúde do enlace** amarra a presença de uma rota a uma verificação de alcançabilidade. Sem ele, uma rota estática permanece na tabela enquanto a interface estiver ativa, que é exatamente o comportamento errado quando a interface está ativa mas o caminho além dela está quebrado, a falha clássica de "o enlace está bom, o outro lado está inalcançável". Com uma verificação anexada, a rota é retirada quando a verificação falha, e uma rota flutuante de reserva assume.
+
+**ECMP** se aplica quando várias rotas empatam em prefixo, distância e prioridade. O FortiOS então balanceia a carga entre elas, e o algoritmo é configurável: IP de origem, IP de origem e destino, ponderado, ou por uso medido. O padrão é baseado em IP de origem, o que mantém uma dada origem num caminho consistente, algo importante porque balanceamento por pacote entre caminhos de latências diferentes causa reordenação.
+
+## O SD-WAN substitui a escolha por uma medida
+
+O SD-WAN agrupa várias interfaces numa zona lógica e escolhe entre elas por regra, com base em desempenho medido em vez de configuração estática.
+
+As peças se encaixam numa direção:
+
+- Um **performance SLA** (verificação de saúde) sonda um servidor por cada membro e registra latência, jitter e perda de pacotes. Define limiares que fazem um membro passar ou falhar.
+- Uma **regra de SD-WAN** casa tráfego, por origem, destino, aplicação ou usuário, e nomeia os membros que podem carregá-lo, mais uma estratégia de escolha entre eles.
+- A **estratégia** decide como: manual (membro fixo), melhor qualidade (o membro com a melhor métrica medida), menor custo (o mais barato que ainda atende ao SLA), ou maximizar banda (distribuir entre todos os membros que atendem ao SLA).
+
+As regras são avaliadas em ordem, a primeira correspondência vence, e o tráfego que não casa com regra alguma cai na regra implícita, que usa a tabela de roteamento.
+
+O ponto que pega as pessoas: **um membro que falha seu SLA é removido da seleção** e, se todos os membros de uma regra falham, o tráfego recua em vez de ser descartado. Então uma regra de SD-WAN que parece ignorada é muitas vezes uma regra cujos membros estão todos falhando a verificação de saúde. Verifique o estado do SLA antes da lógica da regra.
+
+```
+diagnose sys sdwan health-check
+diagnose sys sdwan service
+```
+
+O primeiro mostra a latência, o jitter e a perda medidos de cada membro contra seus limiares. O segundo mostra qual regra correspondeu e qual membro foi selecionado, que é a resposta direta para "por que esta sessão pegou aquele enlace".
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Rotas por política são consultadas antes da tabela de roteamento e a sobrepõem. Dentro da tabela, o prefixo mais longo vence primeiro; a distância decide qual rota instala; a prioridade decide entre rotas instaladas; o ECMP balanceia empates verdadeiros. Uma rota de reserva flutuante é o mesmo prefixo com distância maior. O monitoramento de saúde do enlace é o que faz uma rota estática ser retirada quando o caminho além da interface falha. As regras de SD-WAN casam em ordem e selecionam um membro por estratégia entre os que estão passando seu performance SLA, recuando para a tabela de roteamento quando nenhum se qualifica.

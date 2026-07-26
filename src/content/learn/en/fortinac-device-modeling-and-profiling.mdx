@@ -1,0 +1,64 @@
+---
+slug: fortinac-device-modeling-and-profiling
+title: "FortiNAC Device Modeling and Profiling: Knowing What Is on the Network"
+summary: "FortiNAC cannot control what it cannot identify. Modeling the infrastructure teaches it which switches and controllers to talk to and how; profiling classifies the endpoints that appear on those ports. Both are prerequisites for every policy decision that follows, which is why so much NAC troubleshooting ends up here."
+concepts: ["fortinet", "fortinac", "device modeling", "device profiling", "network access control", "snmp", "rogue", "endpoint classification", "topology"]
+relatedTools: []
+sub: fortinac
+relatedArticles: ["fortigate-authentication-and-fsso", "fortigate-firewall-policy-and-nat"]
+category: security
+order: 57
+status: reviewed
+updated: "2026-07-26"
+---
+
+Network access control answers two questions in order: what is this thing, and what should it be allowed to reach. FortiNAC cannot answer the second until it has answered the first, so identification is where the work and the faults concentrate.
+
+## Modeling the infrastructure
+
+FortiNAC needs to know about the **network devices** — switches, wireless controllers, firewalls — because those are what it reads endpoint information from and what it instructs to move a port into a different VLAN.
+
+Modeling a device means telling FortiNAC how to reach it and how to talk to it: the management address, the SNMP credentials for reading port and MAC data, and the CLI credentials for making changes. Both matter, and they fail differently. Wrong SNMP means FortiNAC sees nothing on that device's ports. Wrong CLI credentials mean FortiNAC sees everything and can change nothing, which presents as policies that evaluate correctly and never take effect.
+
+Devices are organised into containers and groups, which is not cosmetic: groups are what policies and scheduled tasks target, so a device in the wrong group is outside the scope of the rules meant to cover it.
+
+## Profiling: deciding what an endpoint is
+
+An endpoint appears as a MAC address on a port. **Device profiling** turns that into a classification — a printer, a badge reader, a corporate laptop, an unknown — using rules that examine what can be observed about it.
+
+The signals available include the MAC address vendor prefix, DHCP fingerprint, active scan results, HTTP user agent, and responses to targeted probes. A profiling rule combines these into a test, and rules are evaluated in order, so **the first matching rule wins** — the same ordering discipline as a firewall policy list, with the same shadowing risk when a broad rule sits above a specific one.
+
+The classification matters because policy is written against device type. A rule that grants printers access to the print VLAN does nothing for a printer that profiled as unknown.
+
+## Rogue is a classification, not an accusation
+
+An endpoint FortiNAC has not classified and cannot match to a known host is a **rogue**. The word suggests hostility; the meaning is unrecognised.
+
+That distinction matters operationally, because the correct response to a rogue is usually not to block it but to work out why it did not classify:
+
+- Profiling rules do not cover that device type yet.
+- The device does not respond to the signals the rules rely on, which is common for embedded and OT equipment that ignores active scans.
+- It appeared on a device FortiNAC is not modeling, or on one whose SNMP credentials are wrong, so nothing was learned about it at all.
+- It is genuinely unauthorised, which is the case the system exists for and the least common in practice.
+
+A deployment producing large numbers of rogues is usually under-profiled rather than under attack.
+
+## Troubleshooting device and endpoint status
+
+The order that resolves most cases:
+
+**1. Is the network device reachable and readable?** If SNMP is failing, every endpoint on that device is invisible and the symptom looks like an endpoint problem.
+
+**2. Does FortiNAC see the endpoint at all?** Search by MAC. If it is absent, the gap is upstream — the port, the device model, or the credentials.
+
+**3. What did it classify as?** An endpoint that exists but classified unexpectedly points at profiling rule order or a rule whose signals that device does not emit.
+
+**4. What state is it in?** Registered, rogue, disabled and authenticated are different states with different policy consequences, and reading the state is faster than inferring it from behaviour.
+
+**5. Did the enforcement action actually happen?** This is where CLI credentials and device support matter. FortiNAC decided correctly and the switch did not do it is a different fault from FortiNAC deciding wrongly.
+
+Keeping steps 4 and 5 apart is the single most useful habit here, because the symptom is identical — the endpoint is on the wrong VLAN — and the cause is at opposite ends of the system.
+
+## What an exam candidate should be able to state cold
+
+FortiNAC must model network devices with both SNMP and CLI credentials: SNMP to read, CLI to enforce, and they fail differently. Profiling classifies endpoints from observable signals, with rules evaluated in order and first match winning. Rogue means unclassified, not hostile, and a flood of rogues usually means incomplete profiling. Troubleshoot in order: device reachable, endpoint seen, classification, state, then whether enforcement actually reached the switch.
