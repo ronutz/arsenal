@@ -52,6 +52,12 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-27T03:55:26-03:00",
+    kind: "infra",
+    title: "Three Check Point exams were listed twice, and a guard now makes that impossible",
+    body: "Scaffolding the Check Point accreditation layer added guides for exams that already had them, so three of them appeared twice on the page: multi-domain management, virtual system extension, and the R81.20 troubleshooting expert. Both copies pointed at real certifications and both slugs resolved, so every existing check passed. That is the shape of the problem worth naming: the guards all verify that references RESOLVE, and none of them verified that a thing is only described once. The duplicates are merged, keeping the version-explicit records that were already there, and five accreditation exams that had been hanging off the Master certification now sit under their own accreditations where they belong. A new build check enforces it from here: no two guides may claim the same exam code, no two may share a slug, and a guide's link to its certification has to agree in both directions. Fortinet is exempt from the first rule and that is correct rather than a loophole, since its exam code is a level label that sixteen product exams share by design. The exemption is written down explicitly, because inferring it from the data would let a vendor with one duplicate look like a vendor whose codes were never unique.",
+  },
+  {
     date: "2026-07-27T02:50:27-03:00",
     kind: "content",
     title: "HackingPoint: five offensive-security credentials, and why they sit outside the certification path",
