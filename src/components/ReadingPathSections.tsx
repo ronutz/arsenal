@@ -104,7 +104,7 @@ export default function ReadingPathSections({
 
       {/* ---- Groups in the fixed order supplied by the server ---- */}
       {groups.map((g) => (
-        <div key={g.key} id={`paths-${g.key}`}>
+        <div key={g.key} id={`paths-${g.key}`} className="certs-vendor-block">
           <h3 className="certs-group-title">{g.label}</h3>
 
           <div className="reading-path-list">

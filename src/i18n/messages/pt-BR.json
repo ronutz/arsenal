@@ -6739,7 +6739,14 @@
     "industryPointerLink": "Explorar as linhagens da indústria",
     "checkpoint": {
       "name": "Check Point",
-      "tagline": "A empresa que transformou o firewall com estado num produto - e que ainda constrói o modelo de gerência com o qual todos os outros são comparados."
+      "tagline": "A empresa que transformou o firewall com estado num produto - e que ainda constrói o modelo de gerência com o qual todos os outros são comparados.",
+      "years": "2026 – hoje",
+      "intro": "A Check Point entra neste registro pela ponta oposta à de tudo ao seu redor. A maioria dos capítulos aqui é sobre uma empresa que chegou para resolver um problema que os estabelecidos haviam deixado em aberto. A Check Point É a estabelecida: ela entregou a inspeção com estado como produto em 1993 e criou, na prática, a categoria dentro da qual todo firewall deste site compete. Aprendê-la agora, depois de duas décadas nas plataformas que vieram desafiá-la, é um caminho estranho e útil.",
+      "s1Title": "A empresa que transformou o firewall num produto",
+      "s1Body": "A filtragem de pacotes existia antes de 1993 e a inspeção com estado não foi invenção da Check Point no sentido acadêmico. O que a Check Point fez foi transformá-la em algo que se podia comprar, instalar e administrar sem construir você mesmo, e então envolvê-la num modelo de gerência que tratava a política como banco de dados, e não como configuração de equipamento. Essa segunda decisão foi a que envelheceu melhor. Trinta anos depois, a separação entre servidor de gerência e ponto de aplicação, e a ideia de que se publica uma política antes de instalá-la, ainda é o que surpreende quem chega de outros fabricantes - e ainda é o modelo com o qual esses fabricantes são comparados.",
+      "s2Title": "Aprendendo de trás para frente",
+      "s2Body": "Os guias de estudo do CCSA e do CCSE deste site foram escritos a partir dos blueprints de prova publicados pela própria Check Point, e são deliberadamente inclinados ao que pega quem chega de FortiGate ou BIG-IP. Que a base de regras termina num descarte implícito que não registra nada. Que as camadas de política são um E, e não um OU, então aceitar numa camada só significa que o tráfego segue para a próxima. Que publicar e instalar são duas ações separadas e parar na primeira não muda nada. Nenhuma delas é difícil; todas são do tipo que se aprende uma vez, normalmente errando. A Red Education é um Check Point Authorized Training Center, nomeada Check Point Software Technologies Platinum Elite ATC Partner of the Year 2024, e foi assim que este capítulo começou.",
+      "certs": "Estudando para CCSA e CCSE. As certificações serão registradas na página de credenciais à medida que chegarem; os guias de estudo aqui são material de estudo e não constituem afirmação de entrega."
     }
   },
   "training": {
@@ -7190,7 +7197,8 @@
     "metaDescription": "Todas as ferramentas e todos os artigos de {vendor} no ronutz.com, em uma página: ferramentas agrupadas por família, depois a biblioteca completa de artigos.",
     "certsEyebrow": "Preparação para certificação",
     "certsCta": "Guia de estudo: {cert}",
-    "industryLink": "A história da {vendor} na seção de indústria"
+    "industryLink": "A história da {vendor} na seção de indústria",
+    "industryLede": "Como a {vendor} chegou até aqui: as aquisições, as viradas e as pessoas cujo trabalho foi parar dentro da plataforma."
   },
   "learn": {
     "eyebrow": "Aprender",
@@ -7208,7 +7216,15 @@
     "portalPaths": "{count} trilhas de leitura",
     "portalGuides": "{count} guias de prova",
     "portalObjectives": "{count} objetivos mapeados",
-    "portalStudyLede": "Trilhas de leitura curadas e guias de certificação mapeados por blueprint - cada objetivo ligado aos artigos que o ensinam e às ferramentas que o exercitam."
+    "portalStudyLede": "Trilhas de leitura curadas e guias de certificação mapeados por blueprint - cada objetivo ligado aos artigos que o ensinam e às ferramentas que o exercitam.",
+    "portalArticles": "O índice de artigos",
+    "portalArticlesLede": "A biblioteca independente de fabricante, agrupada por assunto. O conteúdo específico de cada fabricante fica nos hubs.",
+    "portalArticleCount": "{count} artigos",
+    "portalHubs": "Hubs de fabricantes",
+    "portalHubsLede": "Uma porta por fabricante: as ferramentas, os artigos e as certificações de cada plataforma.",
+    "portalHubCount": "{count} fabricantes",
+    "portalCerts": "Guias de estudo de certificação",
+    "portalCertsLede": "Blueprints de prova mapeados objetivo por objetivo aos artigos que os ensinam."
   },
   "meetingBingo": {
     "metaTitle": "Bingo de Reunião",
@@ -13950,7 +13966,7 @@
     "targetsLabel": "Baseada em",
     "versionUnspecified": "Versão do produto não especificada no blueprint",
     "sourceLabel": "Fonte do blueprint",
-    "disclaimer": "Recurso de estudo independente, montado a partir do blueprint público da prova. Sem afiliação, autorização ou endosso da {vendor}. Objetivos, versões e disponibilidade das provas mudam, então sempre confira o blueprint oficial.",
+    "disclaimer": "Material de estudo independente, construído a partir do blueprint público da prova. Sem afiliação, autorização ou endosso da {vendor}. Os objetivos são transcritos e mapeados à mão, então esta página pode conter erros ou estar defasada em relação ao material atual do fabricante: objetivos, versões, numeração e disponibilidade mudam sem aviso. Trate o portal de certificação da própria {vendor} como a fonte da verdade e confira nele antes de agendar qualquer coisa.",
     "onThisSite": "Neste site",
     "toolsLabel": "Ferramentas",
     "manualLabel": "Manual oficial",
@@ -14057,7 +14073,10 @@
     "nameChanges": "Mudanças de nome corporativo",
     "f5CardTitle": "F5, Inc.",
     "f5CardDesc": "De um único balanceador (1996) a uma plataforma de entrega e segurança de aplicações, via mais de 23 aquisições.",
-    "moreSoon": "Mais linhagens de fornecedores estão sendo pesquisadas e adicionadas - cada uma verificada em fontes primárias antes de publicar."
+    "moreSoon": "As linhagens dos demais fabricantes deste site estão sendo pesquisadas. Cada uma só entra no ar quando suas aquisições forem verificadas contra fontes primárias, então um fabricante sem página aqui apenas ainda não foi feito.",
+    "titleFor": "Linhagem da {vendor}",
+    "backToHub": "Voltar para {vendor}",
+    "introFor": "Do que a {vendor} é feita, e quem a fez. Cada aquisição abaixo é verificada contra fontes primárias, com a linha de produto em que ela se transformou onde essa ligação é documentada, e não inferida."
   },
   "partnerVendors": {
     "reduEyebrow": "Parceiro de treinamento da Red Education",
@@ -14083,7 +14102,11 @@
     "contemporarySectionTitle": "Os contemporâneos - ainda escrevendo seus capítulos",
     "contemporarySectionNote": "Empresas da era moderna cujas histórias ainda estão se desenrolando - sem associação de treinamento; perfiladas pelo que significam para o setor hoje.",
     "contemporaryEyebrow": "Contemporâneo do setor",
-    "contemporaryCardTag": "contemporâneo"
+    "contemporaryCardTag": "contemporâneo",
+    "timelineSectionTitle": "A linhagem, em ordem",
+    "timelineSectionNote": "Cada empresa cuja tecnologia ou cujas pessoas foram parar dentro das plataformas deste site, ordenada pelo ano em que sua história começa. Algumas seguem ativas e outras foram absorvidas há décadas; as que terminaram trazem o ano e o que aconteceu. Ordenar por fundação, e não por situação, evita um julgamento que vinha errando com frequência - boa parte dos nomes antigos daqui segue muito bem em atividade.",
+    "timelineSince": "{from} - hoje",
+    "timelineSpan": "{from} - {to}"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",
@@ -14113,11 +14136,11 @@
   "studyGuidesIndex": {
     "eyebrow": "Guias de estudo",
     "title": "Guias de estudo",
-    "lede": "Duas formas de estudar aqui, ambas gratuitas. As trilhas de leitura percorrem a biblioteca Learn em ordem didática - cada uma é uma sequência ordenada de artigos com as ferramentas para praticar. Os guias de estudo de certificação mapeiam os blueprints oficiais das provas, objetivo por objetivo, para artigos, ferramentas e os manuais do próprio fabricante.",
-    "pathsTitle": "Trilhas de leitura",
-    "pathsLede": "Cada trilha é um currículo sem prova: leia na ordem e pratique com as ferramentas pelo caminho. Tudo computa localmente e nada fica atrás de paywall.",
+    "lede": "Duas formas de estudar aqui, e elas respondem perguntas diferentes. As trilhas de leitura seguem uma tecnologia, e não uma prova: percorra a biblioteca Learn em ordem didática, com as ferramentas para praticar pelo caminho. Os guias de estudo de certificação ficam em página própria e fazem o oposto - partem do blueprint publicado pelo fabricante e o mapeiam objetivo por objetivo.",
+    "pathsTitle": "Trilhas de leitura curadas",
+    "pathsLede": "Uma trilha é um currículo sem prova por trás. Nada aqui é organizado em torno de um blueprint de certificação nem avaliado por um: a ordem é a ordem em que o assunto faz sentido, escolhida para que cada artigo prepare o seguinte. Leia de ponta a ponta, ou pare quando tiver o que veio buscar. Tudo computa localmente e nada fica atrás de paywall.",
     "certTitle": "Guias de estudo de certificação",
-    "certLede": "Guias mapeados por blueprint para as provas por trás das credenciais - cada objetivo ligado aos artigos que o ensinam, às ferramentas que o exercitam e às páginas do manual oficial, que continuam sendo a fonte da verdade.",
+    "certLede": "Estes são os que têm formato de prova, e ficam na página de certificações. Cada um segue o blueprint publicado pelo próprio fabricante, objetivo por objetivo, ligando cada objetivo aos artigos que o ensinam, às ferramentas que o exercitam, e às páginas de manual que seguem sendo a fonte da verdade.",
     "certAllCta": "Todas as certificações e guias",
     "stepsLabel": "Ordem de leitura",
     "practiceLabel": "Pratique com",

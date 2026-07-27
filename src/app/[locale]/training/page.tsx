@@ -78,47 +78,6 @@ export default async function TrainingLandingPage({
           <section className="section teach-instructor">
             <div className="container teach-container">
               <p className="teach-instructor-eyebrow">{t("instructor.eyebrow")}</p>
-              <div className="learn-portal-grid">
-                <Link
-                  href="/about"
-                  className="learn-portal-card"
-                  style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
-                >
-                  <span className="learn-portal-ornament" aria-hidden>
-                    RN
-                  </span>
-                  <p className="learn-portal-title">
-                    {t("instructor.about")} <span className="learn-portal-arrow">&#8594;</span>
-                  </p>
-                  <p className="learn-portal-lede">{t("instructor.aboutLede")}</p>
-                </Link>
-                <Link
-                  href="/about/credentials"
-                  className="learn-portal-card"
-                  style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
-                >
-                  <span className="learn-portal-ornament" aria-hidden>
-                    &#10003;
-                  </span>
-                  <p className="learn-portal-title">
-                    {t("instructor.certs")} <span className="learn-portal-arrow">&#8594;</span>
-                  </p>
-                  <p className="learn-portal-lede">{t("instructor.certsLede")}</p>
-                </Link>
-                <Link
-                  href="/endorsements"
-                  className="learn-portal-card"
-                  style={{ "--note-accent": "var(--color-success)" } as CSSProperties}
-                >
-                  <span className="learn-portal-ornament" aria-hidden>
-                    &#8220;&#8221;
-                  </span>
-                  <p className="learn-portal-title">
-                    {t("instructor.endorsements")} <span className="learn-portal-arrow">&#8594;</span>
-                  </p>
-                  <p className="learn-portal-lede">{t("instructor.endorsementsLede")}</p>
-                </Link>
-              </div>
 
               <div className="teach-instructor-card">
                 <div className="teach-instructor-text">
@@ -190,6 +149,59 @@ export default async function TrainingLandingPage({
             <div className="container teach-container">
               <h2 className="teach-block-title">{t("s5Title")}</h2>
               <p className="teach-block-body">{t("s5Body")}</p>
+            </div>
+          </section>
+
+          {/* Showcase destinations - about, credentials, endorsements.
+              PRIME 2026-07-27: these had been portal cards ABOVE the instructor
+              bio (their own earlier placement, 2026-07-24). At the top of the
+              page they steered a reader AWAY from the training material before
+              they had read any of it. Moved below "Beyond the classroom", where
+              a reader who has finished the page is ready to go somewhere else -
+              which is exactly when a pointer helps rather than distracts. */}
+          <section className="section">
+            <div className="container teach-container">
+            <div className="learn-portal-grid">
+              <Link
+                href="/about"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>
+                  RN
+                </span>
+                <p className="learn-portal-title">
+                  {t("instructor.about")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("instructor.aboutLede")}</p>
+              </Link>
+              <Link
+                href="/about/credentials"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>
+                  &#10003;
+                </span>
+                <p className="learn-portal-title">
+                  {t("instructor.certs")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("instructor.certsLede")}</p>
+              </Link>
+              <Link
+                href="/endorsements"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-success)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>
+                  &#8220;&#8221;
+                </span>
+                <p className="learn-portal-title">
+                  {t("instructor.endorsements")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("instructor.endorsementsLede")}</p>
+              </Link>
+            </div>
             </div>
           </section>
 

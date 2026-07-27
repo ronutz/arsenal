@@ -30,6 +30,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { ogImages } from "@/lib/og";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
+import { readingPathVendor } from "@/lib/reading-path-vendors";
 import ReadingPathSections, {
   type PathGroup,
 } from "@/components/ReadingPathSections";
@@ -73,25 +74,8 @@ export default async function StudyGuidesPage({
   //    group, paths sort ALPHABETICALLY by localized title via localeCompare,
   //    so pt-BR accents order correctly rather than by raw code point.
   const GROUP_ORDER = ["general", "f5", "extreme", "fortinet", "netskope", "ping", "zscaler"];
-  // Vendor detection is DERIVED from the path id: no new data field to keep in
-  // sync, and a path named for its vendor lands in that vendor's group.
-  //    A path belongs to a vendor when its id starts with that vendor's token
-  //    (with or without a separator, so both "ping-identity-platform" and
-  //    "pingfederate-administration" land under Ping), plus the one alias the
-  //    ids actually use: "bigip" is F5's product name, not a separate vendor.
-  const VENDOR_ALIASES: Record<string, string[]> = {
-    f5: ["f5", "bigip"],
-    extreme: ["extreme", "exos", "voss"],
-    fortinet: ["fortinet", "fortigate"],
-    netskope: ["netskope"],
-    ping: ["ping"],
-    zscaler: ["zscaler"],
-  };
-  const vendorOf = (id: string) =>
-    GROUP_ORDER.find(
-      (v) => v !== "general" && (VENDOR_ALIASES[v] ?? []).some((tok) => id.startsWith(tok)),
-    ) ?? "general";
-
+  // Vendor detection lives in src/lib/reading-path-vendors.ts so the vendor
+  // hubs get the same answer (2026-07-27); two copies drift silently.
   const resolvedPaths = READING_PATHS.map((path) => {
     const steps = path.articles
       .map((slug) => getArticle(slug, locale))
@@ -103,7 +87,7 @@ export default async function StudyGuidesPage({
       .map((tl) => ({ id: tl.id, href: tl.href, name: tTools(`${tl.id}.name`) }));
     return {
       id: path.id,
-      group: vendorOf(path.id),
+      group: readingPathVendor(path.id, GROUP_ORDER),
       color: categoryColor(path.category),
       title: t(`paths.${path.id}.title`),
       lede: t(`paths.${path.id}.lede`),

@@ -42,6 +42,9 @@ import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { getCertificationsForVendor } from "@/content/certifications/study-guides";
+import { READING_PATHS } from "@/content/study-guides/reading-paths";
+import { readingPathVendor, READING_PATH_VENDOR_KEYS } from "@/lib/reading-path-vendors";
+import { lineageFor } from "@/content/lineages";
 import { VENDOR_CAREER_SLUGS } from "@/content/vendors/career";
 import { tools } from "@/config/tools";
 import { subsOf } from "@/config/vendors";
@@ -89,6 +92,8 @@ export default async function VendorHubPage({
   const tNav = await getTranslations("nav");
   const t = await getTranslations("tools"); // vendor labels + tool names/blurbs
   const tHub = await getTranslations("vendorHub"); // page chrome
+  const tPaths = await getTranslations("studyGuidesIndex"); // reading-path titles/ledes
+  const tLin = await getTranslations("lineages"); // lineage card copy
   const tShortcuts = await getTranslations("shortcuts"); // "." context panel
   const label = t(`vendors.${vendor}`);
 
@@ -140,16 +145,6 @@ export default async function VendorHubPage({
                 { label: label },
               ]}
             />
-            {/* Top link to this vendor's page in the industry section
-                (PRIME directive 2026-07-15): every hub cross-links its
-                career/history chapter under /about/vendors/<slug>. */}
-            {VENDOR_CAREER_SLUGS[vendor] && (
-              <p className="hub-industry-link">
-                <Link href={`/about/vendors/${VENDOR_CAREER_SLUGS[vendor]}`}>
-                  {tHub("industryLink", { vendor: label })} →
-                </Link>
-              </p>
-            )}
             {/* Hero: vendor dot + eyebrow, vendor name, one-line mission. */}
             <p className="hero-eyebrow">
               <span
@@ -166,28 +161,96 @@ export default async function VendorHubPage({
               {tHub("lede", { vendor: label })}
             </p>
 
-            {/* Certification cross-link (PRIME 2026-07-09): when this vendor has
-                study guides on the site, surface a prominent link from its hub to
-                the certification page. High-intent traffic path. Conditional, so
-                vendors without guides show nothing. */}
+            {/* ---- Hub doors (PRIME 2026-07-27) ----
+                 These were three different shapes: a bare text link to the
+                 vendor's history chapter above the title, and a callout box of
+                 inline links to its certifications. They are now one grid of
+                 portal cards, reusing the learn-portal-* vocabulary already
+                 established on /learn and /training, so a reader meets the
+                 same card everywhere a page hands off to another page.
+                 Reading paths join them: a vendor's paths were only reachable
+                 from /study-guides, which meant the hub for a platform never
+                 mentioned the guided route through its own articles. */}
             {(() => {
               const vendorCerts = getCertificationsForVendor(vendor);
-              if (vendorCerts.length === 0) return null;
+              const careerSlug = VENDOR_CAREER_SLUGS[vendor];
+              const vendorPaths = READING_PATHS.filter(
+                (rp) => readingPathVendor(rp.id, READING_PATH_VENDOR_KEYS) === vendor,
+              );
+              if (!careerSlug && vendorCerts.length === 0 && vendorPaths.length === 0 && !lineageFor(vendor))
+                return null;
               return (
-                <div className="vendor-cert-callout">
-                  <span className="vendor-cert-callout-eyebrow">{tHub("certsEyebrow")}</span>
-                  <div className="vendor-cert-callout-links">
-                    {vendorCerts.map((c) => (
-                      <Link
-                        key={c.key}
-                        href={`/certifications#${c.key}`}
-                        className="vendor-cert-callout-link"
-                      >
-                        {tHub("certsCta", { cert: c.name })}
-                        <span aria-hidden="true"> &#8594;</span>
-                      </Link>
-                    ))}
-                  </div>
+                <div className="learn-portal-grid" style={{ marginBottom: "2.5rem" }}>
+                  {careerSlug && (
+                    <Link
+                      href={`/about/vendors/${careerSlug}`}
+                      className="learn-portal-card"
+                      style={{ "--note-accent": vendorColor(vendor) } as CSSProperties}
+                    >
+                      <span className="learn-portal-ornament" aria-hidden>
+                        &#9670;
+                      </span>
+                      <p className="learn-portal-title">
+                        {tHub("industryLink", { vendor: label })}{" "}
+                        <span className="learn-portal-arrow">&#8594;</span>
+                      </p>
+                      <p className="learn-portal-lede">{tHub("industryLede", { vendor: label })}</p>
+                    </Link>
+                  )}
+                  {lineageFor(vendor) && (
+                    <Link
+                      href={`/${vendor}/vendor-lineage`}
+                      className="learn-portal-card"
+                      style={{ "--note-accent": vendorColor(vendor) } as CSSProperties}
+                    >
+                      <span className="learn-portal-ornament" aria-hidden>
+                        &#8635;
+                      </span>
+                      <p className="learn-portal-title">
+                        {tLin("titleFor", { vendor: label })}{" "}
+                        <span className="learn-portal-arrow">&#8594;</span>
+                      </p>
+                      <p className="learn-portal-lede">{tLin("introFor", { vendor: label })}</p>
+                    </Link>
+                  )}
+                  {vendorCerts.map((c) => (
+                    <Link
+                      key={c.key}
+                      href={`/certifications#${c.key}`}
+                      className="learn-portal-card"
+                      style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
+                    >
+                      <span className="learn-portal-ornament" aria-hidden>
+                        &#10003;
+                      </span>
+                      <p className="learn-portal-title">
+                        {c.name} <span className="learn-portal-arrow">&#8594;</span>
+                      </p>
+                      <p className="learn-portal-lede">{tHub("certsEyebrow")}</p>
+                    </Link>
+                  ))}
+                  {vendorPaths.map((rp) => (
+                    <Link
+                      key={rp.id}
+                      href={`/study-guides#paths-${vendor}`}
+                      className="learn-portal-card"
+                      style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+                    >
+                      <span className="learn-portal-ornament" aria-hidden>
+                        1&#8594;2&#8594;3
+                      </span>
+                      <p className="learn-portal-title">
+                        {tPaths(`paths.${rp.id}.title`)}{" "}
+                        <span className="learn-portal-arrow">&#8594;</span>
+                      </p>
+                      <p className="learn-portal-lede">{tPaths(`paths.${rp.id}.lede`)}</p>
+                      <p className="learn-portal-badges">
+                        <span className="learn-portal-badge">
+                          {tPaths("articlesCount", { count: rp.articles.length })}
+                        </span>
+                      </p>
+                    </Link>
+                  ))}
                 </div>
               );
             })()}

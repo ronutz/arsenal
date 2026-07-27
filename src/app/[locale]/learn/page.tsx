@@ -21,7 +21,7 @@ import { studyGuides, objectiveCount } from "@/content/certifications/study-guid
 import FamilyChip from "@/components/FamilyChip";
 import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
-import { populatedVendors, vendorColor } from "@/config/vendors";
+import { VENDOR_FAMILIES } from "@/config/vendors";
 import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
@@ -58,6 +58,8 @@ export default async function LearnIndexPage({
   // Articles, grouped by the loader (within each group: curated order; English
   // fallback handled inside). Category groups themselves are sorted A->Z by
   // resolved label, locale-aware, to mirror the Tools index taxonomy.
+  // Total across the category groups - the badge on the jump-to-articles card.
+  const articleCount = getArticlesByCategory(locale).reduce((n, g) => n + g.articles.length, 0);
   const groups = getArticlesByCategory(locale).sort((a, b) =>
     tTools(`categories.${a.category}`).localeCompare(
       tTools(`categories.${b.category}`),
@@ -89,6 +91,55 @@ export default async function LearnIndexPage({
                 cards - type ornament, per-card accent, live count badges
                 derived from the registries (never hand-counted). */}
             <div className="learn-portal-grid">
+              {/* PRIME 2026-07-27: three doors ahead of the existing pair.
+                  The first is an in-page jump rather than a link - the article
+                  index is what this page IS, and it sat below three screens of
+                  portal cards with nothing pointing at it. The other two
+                  replace the per-vendor pill strip that used to sit here: one
+                  door to the hubs and one to the certification guides, instead
+                  of a row that grew by one pill per vendor. */}
+              <a
+                href="#articles"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--accent-primary)" } as React.CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#9660;</span>
+                <p className="learn-portal-title">
+                  {t("portalArticles")} <span className="learn-portal-arrow">&#8595;</span>
+                </p>
+                <p className="learn-portal-lede">{t("portalArticlesLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("portalArticleCount", { count: articleCount })}</span>
+                </p>
+              </a>
+              <Link
+                href="/vendor-hubs"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-warning)" } as React.CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
+                <p className="learn-portal-title">
+                  {t("portalHubs")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("portalHubsLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("portalHubCount", { count: VENDOR_FAMILIES.length })}</span>
+                </p>
+              </Link>
+              <Link
+                href="/certifications"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--accent-primary)" } as React.CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#10003;</span>
+                <p className="learn-portal-title">
+                  {t("portalCerts")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("portalCertsLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("portalGuides", { count: studyGuides.length })}</span>
+                </p>
+              </Link>
               <Link
                 href="/glossary"
                 className="learn-portal-card"
@@ -121,22 +172,6 @@ export default async function LearnIndexPage({
               </Link>
             </div>
 
-            {/* Vendor hub strip - see tools/page.tsx: discoverability on top
-                of the listing, nav stays small (PRIME 2026-07-03). */}
-            {populatedVendors().length > 0 && (
-              <p className="vendor-hub-strip">
-                {populatedVendors().map((v) => (
-                  <Link key={v} href={`/${v}`} className="vendor-hub-strip-link">
-                    <span
-                      className="category-dot"
-                      style={{ "--chip-color": vendorColor(v) } as React.CSSProperties}
-                      aria-hidden="true"
-                    />
-                    {tTools(`vendors.${v}`)} {tHub("eyebrow")} →
-                  </Link>
-                ))}
-              </p>
-            )}
 
 
             {/* Sticky nav-utility bar (PRIME 2026-07-09): jump-to + show-only +
@@ -193,6 +228,12 @@ export default async function LearnIndexPage({
                 </div>
               </div>
             </div>
+
+            {/* Jump target for the articles card at the top of the page: the
+                article index is what this page is for, and nothing pointed at
+                it. Self-closing anchor rather than a wrapper - no closing tag
+                to misplace - with the offset that clears the sticky header. */}
+            <div id="articles" aria-hidden style={{ scrollMarginTop: "5.5rem" }} />
 
             {/* One block per category, mirroring the tools index taxonomy. */}
             {groups.map((group) => (

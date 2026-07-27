@@ -30,6 +30,25 @@ export interface PartnerVendor {
   group: "redu" | "other" | "contemporary";
   /** Display name (current company for "other", the vendor for "redu"). */
   name: string;
+  /** Year the story on this card BEGINS - the founding of the earliest company
+   *  it covers. Used to order the lineage timeline (PRIME 2026-07-27), which
+   *  replaced a "contemporaries" vs "other vendors" split that did not survive
+   *  contact with the facts: several vendors in "other" are demonstrably still
+   *  trading. A founding year is a fact rather than a judgement, so ordering by
+   *  it removes the need to categorise at all.
+   *  On combined-lineage cards this is the EARLIEST company in the story, which
+   *  is the one the card opens with. */
+  founded?: number;
+  /** Set only where the company on this card stopped existing independently -
+   *  absorbed, renamed away, or wound up. LEFT UNSET where that has not
+   *  happened or is not stated plainly in the profile's own sourced timeline;
+   *  an absent marker correctly reads as "still trading".
+   *  Deliberately NOT auto-extracted: a first attempt to derive these from the
+   *  timelines produced roughly thirty wrong answers out of forty-eight,
+   *  because prose cannot be pattern-matched for direction - "IBM acquires Red
+   *  Hat" and "Red Hat acquired by IBM" look identical to a regex, and a
+   *  divestiture looks like an ending. Populated by review, in batches. */
+  ended?: { year: number; note: string };
   /** One-line positioning shown on the card and hero. */
   tagline: string;
   /** Longer intro paragraph on the page. */
@@ -67,6 +86,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "nutanix",
     group: "redu",
     name: "Nutanix",
+    founded: 2009,
     tagline: "Hybrid multicloud and hyper-converged infrastructure.",
     intro:
       "Nutanix builds the hybrid multicloud platform that runs and manages applications and data across private and public clouds, built on hyper-converged infrastructure.",
@@ -88,6 +108,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "arista",
     group: "redu",
     name: "Arista Networks",
+    founded: 2004,
     tagline: "Cloud-scale data-center and campus networking (EOS).",
     intro:
       "Arista Networks builds high-performance, cloud-scale networking - switches and routers running the programmable EOS operating system, widely deployed in data centers.",
@@ -103,33 +124,10 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
-    slug: "check-point",
-    group: "redu",
-    name: "Check Point Software Technologies",
-    tagline: "Enterprise network security and threat prevention.",
-    intro:
-      "Check Point Software Technologies is one of the longest-established network-security vendors, known for its firewall and unified threat-prevention platforms across enterprise, cloud, and endpoint.",
-    body: [
-      "Red Education is a Check Point Authorized Training Center, named Check Point Software Technologies Platinum Elite ATC Partner of the Year 2024 and a Gold Stevie Award winner with Check Point for Global Partnership of the Year.",
-    ],
-    awards: [
-      "Check Point Platinum Elite ATC Partner of the Year 2024",
-      "Gold Stevie Award - Global Partnership of the Year (with Check Point)",
-      ...REDU_AWARDS_GENERAL,
-    ],
-    externalUrl: "https://www.rededucation.com/checkpoint/",
-    externalLabel: "Check Point training at Red Education",
-    sources: [
-      { label: "Red Education - Check Point (CCSA/CCSE ATC)", url: "https://www.rededucation.com/checkpoint/" },
-      ...REDU_SOURCES,
-    ],
-  },
-
-  // ---- GROUP: Other vendors (corporate lineage; no training association) ----
-  {
     slug: "avaya",
     group: "redu",
     name: "Avaya",
+    founded: 2000,
     tagline: "Enterprise communications: Aura, IP Office, and contact center.",
     intro:
       "Avaya builds enterprise communications and contact-center platforms - the Aura suite, IP Office, and the Experience Platform - carrying decades of voice-engineering heritage into unified communications and CX.",
@@ -166,6 +164,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "cyberark",
     group: "redu",
     name: "CyberArk",
+    founded: 1999,
     tagline: "Privileged access and identity security.",
     intro:
       "CyberArk defined the privileged-access-management category: vaulting, rotating, and brokering the credentials and secrets that hold the keys to everything else, extended over time into a full identity-security platform.",
@@ -223,6 +222,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "mobileiron",
     group: "redu",
     name: "MobileIron",
+    founded: 2007,
     tagline: "Mobile device management pioneer, now part of Ivanti.",
     intro:
       "MobileIron was one of the pioneers of mobile device management, building the platform enterprises first used to enroll, secure, and wipe fleets of smartphones as they flooded into the workplace.",
@@ -240,6 +240,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "paessler",
     group: "redu",
     name: "Paessler",
+    founded: 1997,
     tagline: "PRTG: the network monitoring standard of the mid-market.",
     intro:
       "Paessler builds PRTG, the sensor-based monitoring platform that thousands of IT teams use as their single pane for network, server, and infrastructure health.",
@@ -260,6 +261,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "red-hat",
     group: "redu",
     name: "Red Hat",
+    founded: 1994,
     tagline: "Enterprise open source: RHEL, OpenShift, Ansible.",
     intro:
       "Red Hat made open source safe for the enterprise: Red Hat Enterprise Linux, OpenShift, and Ansible are the commercially supported spine of Linux estates, container platforms, and automation worldwide.",
@@ -278,6 +280,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "riverbed",
     group: "redu",
     name: "Riverbed",
+    founded: 2002,
     tagline: "WAN optimization pioneer turned observability company.",
     intro:
       "Riverbed defined WAN optimization: its SteelHead appliances made far-away applications feel local in the era when every branch office lived at the end of a thin, expensive circuit, and the company has since rebuilt itself around observability and acceleration.",
@@ -295,6 +298,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "symantec",
     group: "redu",
     name: "Symantec",
+    founded: 1982,
     tagline: "The security brand of a generation, now Broadcom's enterprise line.",
     intro:
       "Symantec was for decades the biggest name in security software, from Norton on the desktop to the enterprise endpoint, web, and data-protection suites that carried its yellow badge into every large IT estate.",
@@ -312,6 +316,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "hpe-juniper-aruba",
     group: "other",
     name: "HPE Networking - HP, 3Com, Aruba, Juniper",
+    founded: 1939,
     tagline: "The great consolidation: from the Addison Avenue garage to the $14B Juniper merger.",
     intro:
       "Four founding stories converged into one company: Hewlett-Packard (1939), 3Com and the commercialization of Ethernet (1979), Juniper Networks and purpose-built routing silicon (1996), and Aruba Networks and the mobile-first enterprise (2002). HP acquired 3Com in 2010 and Aruba in 2015, split into HP Inc and HPE that same year, and closed the acquisition of Juniper Networks on July 2, 2025 - assembling the industry's broadest challenge to Cisco.",
@@ -331,6 +336,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "brocade-broadcom",
     group: "other",
     name: "Brocade & Foundry - the Broadcom diaspora",
+    founded: 1995,
     tagline: "Two 1990s pioneers, one 2017 dismemberment: SAN to Broadcom, data center to Extreme, campus and Wi-Fi to CommScope.",
     intro:
       "Brocade built the switched Fibre Channel fabric that made storage area networks possible; Foundry shipped the first gigabit Ethernet, Layer 3, and Layer 4-7 switches. They merged in 2008, and in 2017 Broadcom took the combination apart: the SAN business stayed with Broadcom, the Foundry-derived data-center lines went to Extreme Networks, and campus switching plus Ruckus Wi-Fi went to ARRIS, then CommScope - with Belden announced as the next owner in 2026.",
@@ -351,6 +357,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "mcafee-fireeye-trellix",
     group: "other",
     name: "McAfee, FireEye & Mandiant - the road to Trellix",
+    founded: 1987,
     tagline: "Three security pioneers, one private-equity remix: Trellix and Skyhigh under STG, Mandiant inside Google Cloud, McAfee consumer private.",
     intro:
       "Three founding stories - McAfee and commercial antivirus (1987), FireEye and virtual-machine detonation (2004), Mandiant and incident response as a discipline (2004) - collided in 2021-2022. Symphony Technology Group carved out McAfee Enterprise ($4.0B) and FireEye's products plus the FireEye name ($1.2B), fused them into Trellix, and spun the SSE portfolio out as Skyhigh Security; the remaining company renamed itself Mandiant and joined Google Cloud; McAfee's consumer business went private for over $14 billion.",
@@ -370,6 +377,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "mikrotik",
     group: "other",
     name: "MikroTik - Latvia's quiet giant",
+    founded: 1996,
     tagline: "RouterOS on commodity hardware: the company that made carrier-grade routing affordable everywhere - and stayed independent.",
     intro:
       "Founded in Riga in 1996, MikroTik put carrier-grade routing software on ordinary x86 PCs (RouterOS, 1997), then on its own boards (RouterBOARD, 2002). The price-performance formula made it ubiquitous among ISPs and wireless ISPs worldwide - including Brazil - and in 2022 it became the first private company in Latvia to pass EUR 1 billion in value. Still private, still in Riga, still founder-controlled.",
@@ -385,6 +393,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "radware",
     group: "other",
     name: "Radware - the Zisapel lineage",
+    founded: 1997,
     tagline: "Born of Israel's RAD Group in 1997; the ADC and DDoS specialist that rescued Alteon from Nortel's wreckage for ~$18M.",
     intro:
       "A father-and-son founding inside Israel's most storied networking family: RAD Group patriarch Yehuda Zisapel and his son Roy, CEO since inception. Radware IPO'd on NASDAQ in 1999, built the DefensePro DDoS line, and in April 2009 bought Nortel's legendary Alteon application-switching assets out of bankruptcy for about $18 million - instantly a top-three ADC vendor. Still independent, still founder-led.",
@@ -401,6 +410,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "imperva-thales",
     group: "other",
     name: "Imperva - from WebCohort to Thales",
+    founded: 2002,
     tagline: "The WAF pioneer founded by a Check Point co-founder, now the application-security arm of a French defense giant.",
     intro:
       "Founded in Israel in 2002 as WebCohort by Shlomo Kramer (co-founder of Check Point, later founder of Cato Networks), Amichai Shulman, and Mickey Boodaei, the company shipped SecureSphere in 2003 and helped define the web application firewall category. NYSE IPO in 2011, a $2.1 billion Thoma Bravo take-private in January 2019, and a $3.6 billion acquisition by Thales completed on December 4, 2023.",
@@ -417,6 +427,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "versa",
     group: "other",
     name: "Versa Networks - the SASE independent",
+    founded: 2012,
     tagline: "Two ex-Riverstone, ex-Juniper brothers building unified SASE - one of the last large independents in a consolidated market.",
     intro:
       "Founded in 2012 by brothers Kumar and Apurva Mehta after eight years leading Juniper's MX series - and, before that, senior roles at Riverstone Networks, where Rodolfo worked from 2000 to 2002. Versa built networking and security as one multi-tenant software stack years before Gartner named the category SASE, raised roughly $316 million while rivals sold to Cisco, VMware, Aruba, and Palo Alto, and remains independent.",
@@ -433,6 +444,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "nortel-bay",
     group: "other",
     name: "Nortel & Bay Networks - the giant that vanished",
+    founded: 1895,
     tagline: "From 1895 Montreal to a third of Canada's stock index to the largest bankruptcy in Canadian history - and the $4.5B patent auction that ended it.",
     intro:
       "Northern Electric (1895) became Northern Telecom, bet everything on digital switching in 1976, and grew into Nortel - worth C$398 billion at the 2000 peak, more than a third of the entire Toronto Stock Exchange. Along the way it swallowed Bay Networks (the 1994 SynOptics-Wellfleet merger) for $9.1 billion and Alteon WebSystems for $7.8 billion. The collapse erased it all: the January 14, 2009 filing was the largest corporate failure in Canadian history, the pieces scattered to Ericsson, Avaya, Ciena, Radware, and eventually Extreme Networks, and the 2011 Rockstar patent auction - $4.5 billion, against Google's pi-themed bids - was the tombstone.",
@@ -454,6 +466,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "madge",
     group: "other",
     name: "Madge Networks - Token Ring's standard-bearer",
+    founded: 1986,
     tagline: "From a Buckinghamshire farm to beating IBM in court at IBM's own game - and down with the protocol it championed: 'the Betamax of the networking world.'",
     intro:
       "Robert Madge founded the company on his family's farm in 1986 with no new technology at all - just the bet that IBM's Token Ring could be built better and sold harder than IBM did. He won the court fight that made it royalty-free, rode the ring to more than 25 countries and the Sunday Times Rich List, hedged with Israel's Lannet (sold to Lucent for $117 million in 1998), and absorbed rival Olicom's Token Ring business in 1999 - by which point the ring was 81 percent of sales, a market shrinking beneath its last champion. A Dutch court granted the bankruptcy order in 2003; the remains ended up at Ringdale, crowned the world's largest supplier of Token Ring technology after the world had stopped buying it.",
@@ -474,6 +487,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "sun-microsystems",
     group: "other",
     name: "Sun Microsystems - the network is the computer",
+    founded: 1982,
     tagline: "Four Stanford-orbit founders, SPARC, Solaris, Java - the dot in dot-com, absorbed by Oracle in 2010.",
     intro: "Sun packed more industry-shaping ideas into 28 years than most vendors manage in a century: the workstation, the network-first slogan it took the world decades to catch up with, NFS, SPARC, Solaris, and Java. Its 2010 end inside Oracle scattered a diaspora that still runs the industry - including the ForgeRock and Arista stories elsewhere in this section.",
     body: ["From Andy Bechtolsheim's Stanford University Network workstation to Java running on billions of devices, Sun's arc is the arc of open systems itself - told in full in the profile below, with the bloodlines that lead out of it."],
@@ -482,6 +496,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "silicon-graphics",
     group: "other",
     name: "Silicon Graphics - the geometry of Hollywood",
+    founded: 1982,
     tagline: "Jim Clark's geometry engines rendered Jurassic Park and invented OpenGL; the name ended at HPE in 2016.",
     intro: "SGI built the machines that taught computers to see: geometry pipelines, IRIX on MIPS, and the purple workstations behind a decade of movie magic. Its fall is as instructive as its rise - commodity PCs ate the graphics market SGI created, and OpenGL outlived the company that wrote it.",
     body: ["Founder Jim Clark left in 1994 to co-found Netscape; the company's Cray chapter, its two bankruptcies, and the 2016 HPE acquisition close the loop told in the profile below."],
@@ -490,6 +505,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "xerox",
     group: "other",
     name: "Xerox - the company that fumbled the future",
+    founded: 1906,
     tagline: "Xerography built the empire; PARC invented Ethernet, the GUI, and laser printing - and networking's history runs through that lab.",
     intro: "Xerox matters to this site for one building above all: the Palo Alto Research Center, where Ethernet itself was invented in 1973. The copier giant commercialized almost none of what PARC created - the most productive fumble in technology history - and its own print business marches on, completing the Lexmark acquisition in 2025.",
     body: ["From Chester Carlson's xerography patent to Bob Metcalfe's Ethernet memo, the profile below follows both the empire and the laboratory that gave this industry its wires."],
@@ -498,6 +514,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "dec",
     group: "other",
     name: "Digital Equipment Corporation - the minicomputer king",
+    founded: 1957,
     tagline: "Ken Olsen's PDP and VAX machines defined two decades of computing; DEC co-authored Ethernet and ended inside Compaq in 1998.",
     intro: "DEC took computing out of the glass house: the PDP-8 made computers departmental, the PDP-11 made them ubiquitous, and VAX/VMS made them an architecture empire. DEC also co-signed the DIX Ethernet standard with Intel and Xerox - the reason this industry cables the way it does.",
     body: ["The profile traces Maynard's woolen mill to the $9.6 billion Compaq acquisition - then the largest in computer history - and the VMS-to-Windows-NT bloodline that followed the people out."],
@@ -506,6 +523,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "nokia",
     group: "other",
     name: "Nokia - from paper mill to network giant",
+    founded: 1865,
     tagline: "A 160-year arc: rubber boots to world phone leader to one of the three companies that build the world's mobile networks.",
     intro: "Nokia is the industry's great shapeshifter: an 1865 Finnish paper mill that became the world's largest phone maker, lost that crown in the smartphone wars, and rebuilt itself as a networks powerhouse - absorbing Alcatel-Lucent and Bell Labs in 2016 and optical vendor Infinera in 2025.",
     body: ["The profile follows every act, through the Microsoft phone sale, the Siemens joint venture, and the 2025 leadership change that put a data-center executive at the helm."],
@@ -514,6 +532,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "ericsson",
     group: "other",
     name: "Ericsson - 150 years of telephony",
+    founded: 1876,
     tagline: "From an 1876 Stockholm telegraph workshop to the AXE switch, GSM, Bluetooth, and today's 5G triumvirate.",
     intro: "Ericsson has been building the telephone network since the telephone was new. The AXE digital switch wired the world, its engineers were central to GSM, a 1990s Ericsson project gave the world Bluetooth, and today it stands with Nokia and Huawei as one of three companies that can build a national mobile network end to end.",
     body: ["The profile below runs from Lars Magnus Ericsson's workshop through the Sony Ericsson decade to the modern 5G and enterprise-wireless era."],
@@ -522,6 +541,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "huawei",
     group: "other",
     name: "Huawei - the Shenzhen ascent",
+    founded: 1987,
     tagline: "From a 1987 PBX reseller to the world's largest telecom equipment maker - and the center of the decade's biggest technology-policy storm.",
     intro: "Huawei's rise is the defining industrial story of modern networking: founded in Shenzhen in 1987 with about 21,000 yuan, it out-engineered and out-priced the incumbents until it led the world in telecom equipment. The 2019 United States Entity List placed it at the center of the technology-sovereignty era, and its silicon comeback since is a story still being written.",
     body: ["The profile tells the arc factually - the rural-first strategy, HiSilicon, the sanctions years, and the employee-owned structure - from the public record."],
@@ -530,6 +550,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "siemens",
     group: "other",
     name: "Siemens - the 1847 telegraph startup",
+    founded: 1847,
     tagline: "Werner von Siemens built the Indo-European telegraph line; the conglomerate's communications bloodline runs through EWSD, the Nokia JV, and Unify.",
     intro: "Siemens is the oldest company in this section by decades: an 1847 Berlin workshop whose pointer telegraph grew into a global electrical empire. Its communications lineage - telephone exchanges, the EWSD switch, Nokia Siemens Networks, and the Unify enterprise-communications line - threads through half the industry's history, while today's Siemens leads industrial automation and its networking.",
     body: ["The profile follows the telegraph century, the telecom exits, and where the communications bloodlines ended up."],
@@ -538,6 +559,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "novell",
     group: "other",
     name: "Novell - the network operating system",
+    founded: 1983,
     tagline: "NetWare owned the LAN era and IPX ran the world's offices; the lineage ended at OpenText in 2023.",
     intro: "Before TCP/IP won, the corporate network spoke IPX and logged into NetWare - and an entire profession grew up around Novell certifications. The company that defined the network operating system then spent two decades searching for a second act: UnixWare, WordPerfect, SUSE, the Microsoft pact, and a chain of acquisitions ending at OpenText in 2023.",
     body: ["The profile below is LAN-era history in full: Ray Noorda's coopetition, the Utah empire, and the long unwinding."],
@@ -546,6 +568,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "oracle",
     group: "other",
     name: "Oracle - the database empire",
+    founded: 1977,
     tagline: "The first commercial SQL database, four decades of acquisitions - Sun included - and 2025's handover to co-CEOs for the AI era.",
     intro: "Oracle commercialized the relational database before IBM, its inventor's employer, got around to it - and has compounded that head start for nearly fifty years. Its acquisition machine reshaped the industry map, absorbing PeopleSoft, BEA, Sun Microsystems, NetSuite, and Cerner, and its 2025 leadership handover to co-CEOs marks the pivot to the AI-infrastructure era.",
     body: ["The profile runs from the CIA project that named the company to the September 2025 succession, verified against Oracle's own SEC filings."],
@@ -554,6 +577,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "ibm",
     group: "other",
     name: "IBM - the century company",
+    founded: 1911,
     tagline: "Punched cards to System/360 to the PC to Red Hat: the company the rest of the industry defined itself against.",
     intro: "For most of computing's history, IBM was the industry: the tabulating monopoly, the $5 billion System/360 bet that created the mainframe world, the PC that accidentally crowned Microsoft and Intel, and the services turnaround that saved it. Its networking fingerprints - SNA, Token Ring - run through several other pages in this section, and the 2019 Red Hat acquisition ties it to the open-source lineage told there.",
     body: ["The profile compresses eleven decades into the moments that shaped this industry, Token Ring wars included."],
@@ -562,6 +586,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "sap",
     group: "other",
     name: "SAP - five engineers against the mainframe",
+    founded: 1972,
     tagline: "Ex-IBM founders built the ERP category in 1972; R/3 conquered the client-server world and HANA reinvented the core.",
     intro: "SAP is Europe's greatest software story: five IBM engineers in Mannheim who bet in 1972 that business software could be a standard product, not a custom project. R/3 rode the client-server wave into nearly every large enterprise on earth, and the company reinvented its own foundations twice - in-memory HANA in 2010 and the cloud pivot after it.",
     body: ["The profile follows Walldorf from R/1 to RISE, the ecosystem that employs a small nation of consultants, and the networking-adjacent reality that SAP traffic shaped a generation of QoS designs."],
@@ -571,6 +596,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "3com",
     group: "other",
     name: "3Com - Ethernet leaves the lab",
+    founded: 1979,
     tagline: "Bob Metcalfe commercialized his own PARC invention; EtherLink wired the PC era, Palm rode along, and the story ended at HP in 2010.",
     intro: "3Com is the second half of the Ethernet story this section starts on the Xerox page: Metcalfe left PARC in 1979 to sell the network he had invented, and the EtherLink card put Ethernet inside the IBM PC itself. Computers, Communication, Compatibility - the three Coms - became the connectivity company of the LAN decade.",
     body: ["From the first PC Ethernet adapters through the US Robotics merger that brought Palm aboard, to the H3C venture in China and the 2010 HP acquisition - the profile below follows the wire out of the lab and into everything."],
@@ -579,6 +605,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "compaq",
     group: "other",
     name: "Compaq - the clone that became the king",
+    founded: 1982,
     tagline: "Three ex-TI engineers sketched a portable on a placemat, clean-roomed the IBM BIOS, and built the fastest company to a billion dollars - then bought DEC and merged into HP.",
     intro: "Compaq legitimized the PC-compatible industry: its 1982 clean-room BIOS made 'IBM compatible' a legal product category, its Deskpro 386 beat IBM to Intel's 386, and by the mid-1990s it was the world's largest PC maker. Its acquisitions of Tandem and DEC made it, briefly, the industry's everything-company - until the 2002 HP merger closed the arc.",
     body: ["The profile runs from the Houston placemat sketch to the proxy-fight merger, with the DEC bloodline this section tells separately flowing through it."],
@@ -587,6 +614,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "netscape",
     group: "other",
     name: "Netscape - the company that opened the web",
+    founded: 1994,
     tagline: "Clark and Andreessen's Navigator took the internet mainstream; SSL, JavaScript, and the cookie were invented here - the browser lost the war, the inventions won everything.",
     intro: "No company on this page matters more to this site's daily subject matter: SSL - the ancestor of every TLS session the tools here decode - was designed at Netscape, as were JavaScript and the HTTP cookie. The Navigator browser took the web from academia to everyone, triggered the browser wars, and left behind Mozilla and the open web itself.",
     body: ["From Jim Clark's post-SGI second act and the 1995 IPO that started the dot-com era, to the AOL acquisition and the Firefox afterlife - the profile follows the fifty-one months that rewired the world."],
@@ -595,6 +623,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "motorola",
     group: "other",
     name: "Motorola - the radio century",
+    founded: 1928,
     tagline: "Car radios to the walkie-talkie to the first handheld cell call and the moon itself; split in 2011 into Solutions and a Mobility arm that passed through Google to Lenovo.",
     intro: "Motorola put radio everywhere: in cars in the 1930s, on soldiers' backs in the 1940s, on the Moon in 1969, and in Martin Cooper's hand for the first handheld cellular call in 1973. The century company split in 2011 - Motorola Solutions carries the mission-critical radio and public-safety network lineage today, while the phone side journeyed through Google to Lenovo.",
     body: ["The profile covers the Galvin brothers' Chicago startup, the DynaTAC and RAZR eras, the Iridium gamble, the 68000 processor family that powered a computing generation, and both halves of the split."],
@@ -603,6 +632,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "unisys",
     group: "other",
     name: "Unisys - computing's oldest bloodlines",
+    founded: 1886,
     tagline: "Burroughs (1886) plus Sperry's UNIVAC - the ENIAC creators' company - merged in 1986: the deepest lineage in this section, still running ClearPath descendants today.",
     intro: "Unisys is where computing's two oldest commercial bloodlines meet: William Seward Burroughs's 1886 adding-machine company, and Sperry's UNIVAC division - built on Eckert and Mauchly, the engineers of ENIAC itself, whose UNIVAC I of 1951 was America's first commercial computer and famously called the 1952 election on CBS. The 1986 merger created Unisys; the mainframe heritage survives in ClearPath.",
     body: ["The profile traces both trunks - the adding machine and ENIAC - through the 1986 merger, the services pivot, and the modern company."],
@@ -611,6 +641,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "data-general",
     group: "other",
     name: "Data General - the soul of a new machine",
+    founded: 1968,
     tagline: "Edson de Castro left DEC to build the Nova; Tracy Kidder's Pulitzer immortalized the Eagle; CLARiiON storage carried the DNA into EMC in 1999.",
     intro: "Data General was born from the industry's most famous walkout: Edson de Castro, designer of DEC's PDP-8, left when Ken Olsen shelved his next design, and the 1969 Nova - elegant, cheap, sixteen bits - forced the entire minicomputer market to respond. Tracy Kidder's The Soul of a New Machine made its Eagle project the most celebrated engineering story ever written.",
     body: ["The profile follows the Nova and Eclipse decades, the AViiON pivot, and the CLARiiON storage line whose 1999 acquisition by EMC seeded the midrange-storage dynasty that lives on at Dell today."],
@@ -620,6 +651,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "marconi",
     group: "other",
     name: "Marconi - wireless itself, then the bubble",
+    founded: 1897,
     tagline: "Guglielmo Marconi bridged the Atlantic in 1901; a century later the company bearing his name became telecom's starkest dot-com cautionary tale, carved up by Ericsson in 2006.",
     intro: "Marconi is two stories a century apart: the man who made radio a business - transatlantic signals in 1901, the operators aboard Titanic in 1912 - and the GEC conglomerate that took his name in 1999, bet its fortune on telecom equipment at the bubble's exact top, and collapsed within two years. Few lineages contain both the birth of an industry and its most instructive corporate death.",
     body: ["The profile follows the Wireless Telegraph and Signal Company through GEC's electronics empire, the 1999 renaming and acquisition spree, the 2001 collapse, and the 2006 Ericsson carve-up that ended the name in networking."],
@@ -628,6 +660,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "wang",
     group: "other",
     name: "Wang Laboratories - the office before the PC",
+    founded: 1951,
     tagline: "An Wang's core-memory patents funded a word-processing empire that owned the office of the late 1970s - and the PC unmade it inside a decade.",
     intro: "Before the PC, the office ran on Wang: dedicated word-processing systems so dominant that secretaries listed 'Wang' as a skill. Dr. An Wang - who sold his magnetic-core memory patents to IBM and built the Massachusetts Miracle's signature company - saw the minicomputer and the office converge before almost anyone. The general-purpose PC running WordPerfect erased the category he created.",
     body: ["From the 1951 Boston founding through the WPS and VS golden years, the failed succession, and the 1992 Chapter 11, the profile tells the sharpest single-product rise and fall in this section."],
@@ -636,6 +669,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "tandem",
     group: "other",
     name: "Tandem Computers - the machine that never stops",
+    founded: 1974,
     tagline: "Jimmy Treybig's NonStop architecture made fault tolerance a product in 1976; it still runs stock exchanges and card networks today, as HPE NonStop.",
     intro: "Tandem built computers on one premise: no single point of failure - paired processors, mirrored everything, hardware and software designed so the system survives any one fault mid-transaction. ATMs, card networks, stock exchanges, and 911 systems standardized on NonStop, and half a century later the architecture is still sold, by HPE, doing the same jobs.",
     body: ["The profile covers the 1974 founding, the process-pair architecture, the legendary company culture, the ServerNet interconnect whose ideas fed InfiniBand, and the 1997 Compaq acquisition that carried NonStop into HP."],
@@ -644,6 +678,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "banyan",
     group: "other",
     name: "Banyan Systems - the directory pioneer",
+    founded: 1983,
     tagline: "VINES and StreetTalk delivered a true global directory service years before NDS or Active Directory - and lost anyway; the idea won everywhere.",
     intro: "Banyan solved enterprise networking's hardest problem first: StreetTalk, the global naming and directory service inside VINES, let a user log in anywhere on a worldwide network years before Novell's NDS or Microsoft's Active Directory existed. The United States Marine Corps ran on it. Being right early, against NetWare's channel and NT's bundling, was not enough.",
     body: ["The profile pairs naturally with the Novell page: the 1983 founding, the Unix-based VINES architecture, StreetTalk's design lead, the loss of the platform war, and the quiet 2000s dissolution of the company whose core idea now runs every enterprise on earth."],
@@ -652,6 +687,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "fujitsu",
     group: "other",
     name: "Fujitsu - Japan's computing standard-bearer",
+    founded: 1935,
     tagline: "Born from a 1935 Fuji Electric spin-off (itself a Furukawa-Siemens venture), Fujitsu fought IBM with Amdahl, absorbed ICL, and built the K and Fugaku supercomputers.",
     intro: "Fujitsu carries Japan's mainframe century: FACOM computers from the 1950s, the Amdahl partnership that took the IBM-compatible fight to IBM's own customers, the ICL acquisition that made it a European power, and the K and Fugaku machines that twice topped the world's supercomputer rankings. Its optical and network businesses wire a substantial share of the Pacific.",
     body: ["The profile traces the Siemens-adjacent founding lineage, the plug-compatible wars, the services transformation into Japan's largest IT company, and the ARM-based Fugaku era."],
@@ -660,6 +696,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "nec",
     group: "other",
     name: "NEC - Japan's first joint venture",
+    founded: 1899,
     tagline: "Founded 1899 with Western Electric capital; NEAX switched the world's calls, the PC-98 owned Japan's PC market, and the C&C vision named the convergence everyone now lives in.",
     intro: "NEC was Japan's first joint venture with foreign capital - Western Electric, 1899 - and grew into the country's communications backbone: NEAX exchanges, satellites, submarine cable systems, and the SX vector supercomputers behind the Earth Simulator. Its PC-8001 and PC-98 lines dominated Japan's personal-computer market for over a decade, and Koji Kobayashi's 1977 'C&C' - Computers and Communications - named the convergence this whole industry became.",
     body: ["The profile covers the Western Electric founding, the switching and space decades, the PC-98 era, the world-number-one semiconductor years that ended in the Renesas merger, and today's biometrics and submarine-cable strengths."],
@@ -668,6 +705,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "bell-labs-lucent-alcatel",
     group: "other",
     name: "Bell Labs, Lucent & Alcatel - the transistor's bloodline",
+    founded: 1898,
     tagline: "The transistor, information theory, Unix, the laser, cellular - ten Nobel Prizes of foundations, spun into Lucent in 1996, merged with Alcatel in 2006, carried into Nokia in 2016.",
     intro: "No institution shaped this industry more than Bell Telephone Laboratories: the 1947 transistor, Shannon's 1948 information theory, Unix and C, the CCD, the cellular concept. Its corporate afterlife - the record-setting Lucent IPO, the bubble's hardest fall, the Alcatel merger, the Nokia acquisition - is the industry's sharpest lesson that inventing the future and capturing its value are different skills.",
     body: ["The profile covers the 1925 founding, the 1947-1969 invention run, the 1996 trivestiture and Lucent's rise and fall, Alcatel's CGE-to-ITT ascent, the 2006 merger, and the 2016 passage into Nokia - where Bell Labs continues."],
@@ -676,6 +714,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "intel-amd",
     group: "other",
     name: "Intel & AMD - Fairchild's children: the x86 rivalry",
+    founded: 1968,
     tagline: "The 4004, Moore's Law, and the second source that wrote AMD64 - one entry, because neither story parses without the other.",
     intro: "Both companies walked out of Fairchild Semiconductor a year apart - Noyce and Moore in 1968, Jerry Sanders in 1969 - and spent the next half-century pricing computing for everyone. Intel invented the commercial microprocessor and set the industry's cadence; AMD went from licensed second source to the author of the 64-bit x86 instruction set the whole world (Intel included) now runs.",
     body: ["The profile covers the Fairchild exodus, the 4004 and the IBM PC's dual-source mandate, the memory exit, the gigahertz race, the AMD64 irony, Zen's comeback, and the duopoly's diverging bets."],
@@ -684,6 +723,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "rand",
     group: "other",
     name: "RAND Corporation - where packet switching was imagined",
+    founded: 1948,
     tagline: "Paul Baran's 1964 'On Distributed Communications' argued a network with no center could survive anything - AT&T declined to build it; the internet did.",
     intro: "A Santa Monica think tank, not a vendor - included on merit no vendor matches. RAND built the postwar decision sciences (game theory's workshop, linear programming, the Delphi method), ran early AI on its own JOHNNIAC, and employed the engineer whose eleven 1964 reports specified distributed, message-block, store-and-forward networking: the conceptual root of every router on these pages.",
     body: ["The profile covers Project RAND's 1946 origins, the mathematical toolkit years, Baran's survivability argument and its parallel invention by Donald Davies, and the flow of the idea into the ARPANET."],
@@ -692,6 +732,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "cyclades-network",
     group: "other",
     name: "CYCLADES (IRIA, France)",
+    founded: 1971,
     tagline: "Where the datagram was born.",
     intro:
       "Louis Pouzin's 1972-1973 research network at IRIA was the first to make hosts responsible for reliability over an unreliable packet substrate - Pouzin coined the word datagram for it - and Cerf and Kahn's 1974 TCP/IP founding paper cites the work directly.",
@@ -707,6 +748,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "toshiba",
     group: "other",
     name: "Toshiba - the company that gave the world flash",
+    founded: 1875,
     tagline: "Fujio Masuoka invented NOR and then NAND flash at Toshiba in the 1980s - every SSD, phone, and memory card descends from it; the T1100 started the laptop era.",
     intro: "From an 1875 telegraph works founded by a maker of mechanical dolls to the conglomerate that invented flash memory and the mass-market laptop - and then, through the Westinghouse disaster and the accounting scandal, sold the memory crown jewels (today's Kioxia) and left the stock exchange after 74 years. One immortal contribution bracketed by a very mortal corporate story.",
     body: ["The profile covers the Tanaka and Hakunetsusha roots, the 1939 merger, the JW-10 and T1100 firsts, Masuoka's NOR and NAND inventions, the DVD and HD DVD chapters, and the Westinghouse-to-Kioxia unwinding."],
@@ -715,6 +757,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "hitachi",
     group: "other",
     name: "Hitachi - the industrial giant that stores the world",
+    founded: 1910,
     tagline: "From a mine's five-horsepower motor in 1910 to VSP arrays, HGST drives, and Britain's express trains - the conglomerate whose storage lineage runs through every SAN.",
     intro: "Namihei Odaira believed Japan should build its own machines; the repair shop he ran became one of the broadest engineering companies on earth. For this site's purposes the storage line matters most: the plug-compatible mainframe wars (and the 1982 FBI sting), Hitachi Data Systems' enterprise arrays, and the 2003 purchase of IBM's disk-drive business - the company that invented the hard drive, absorbed and carried forward.",
     body: ["The profile covers the 1910 founding, rail from 1924 to the UK fleets, the mainframe era and the IBM case, HDS to Vantara, HGST to Western Digital, and the Lumada-era pivot to data."],
@@ -723,6 +766,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "bull",
     group: "other",
     name: "Bull - Europe's computing champion",
+    founded: 1931,
     tagline: "Punch-card wars against IBM in the 1930s, the prophetic Gamma 60, nationalization and privatization - and a final act building Europe's first exascale supercomputer.",
     intro: "Founded on a Norwegian engineer's tabulator patents, Compagnie des Machines Bull spent ninety years as the definitive national champion: fighting IBM card format against card format, surviving GE and Honeywell ownership, nationalization under Mitterrand, and privatization - to end up, inside Atos/Eviden, building the BullSequana machines that power JUPITER, Europe's first exascale system. The GECOS field in /etc/passwd is its Unix-era fingerprint.",
     body: ["The profile covers Fredrik Rosing Bull's patents, the Gamma 3 and Gamma 60, Plan Calcul and CII-Honeywell-Bull, the Groupe Bull years, the HPC pivot from Tera-10 to BullSequana, and the Atos/Eviden exascale finale."],
@@ -731,6 +775,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "ncsa",
     group: "other",
     name: "NCSA - the campus lab that made the web visible",
+    founded: 1986,
     tagline: "Mosaic gave the web a face in 1993; NCSA httpd's orphaned patches became Apache; NCSA Telnet networked a generation of campuses.",
     intro: "A national supercomputing center whose side projects changed the world: Andreessen and Bina's Mosaic made the internet something you could see (and, via Spyglass, seeded Internet Explorer too), Rob McCool's httpd and CGI defined how the early web served and ran programs, and its patch community became the Apache HTTP Server. The Netscape page on this site is the sequel to this one.",
     body: ["The profile covers the 1983 Black Proposal and 1986 founding, NCSA Telnet, Mosaic's 1993 explosion and its two browser-war descendants, httpd and CGI, and the birth of Apache from the orphaned patches."],
@@ -739,6 +784,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "ciena",
     group: "other",
     name: "Ciena - the company that taught fiber to carry colors",
+    founded: 1992,
     tagline: "The first commercial DWDM deployment (Sprint, 1996) multiplied installed fiber sixteenfold - and Ciena has compounded the optical layer ever since, Nortel inheritance included.",
     intro: "David Huber's dense wavelength-division multiplexing turned one strand of glass into sixteen channels without digging a meter of trench - the 1996 Sprint deployment that changed long-haul economics overnight. Ciena survived the crash that killed its rivals, inherited Nortel's optical crown in 2010, and its WaveLogic coherent optics have made wavelength capacity a semiconductor curve.",
     body: ["The profile covers the 1992 founding, the MultiWave 1600 and the record 1997 IPO, the crash years, the Nortel optical acquisition, and the coherent era from 40G to today's 800G class."],
@@ -747,6 +793,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "sniffer-lineage",
     group: "other",
     name: "The Sniffer lineage - Network General to NetScout",
+    founded: 1984,
     tagline: "The 1986 Sniffer made protocol analysis a profession; through Dolch luggables, Network Associates, and Arbor's DDoS telemetry, the whole bloodline converged on NetScout.",
     intro: "One entry for five companies, because they are one story: Network General's Sniffer named the practice every engineer still uses, Volker Dolch's rugged luggables were its field chassis, the Network Associates merger and un-merger carried the brand through the roll-up era, Arbor Networks scaled packet thinking to internet-wide DDoS telemetry - and NetScout, founded two years before the Sniffer existed, became the house where the whole analyzer tradition came home.",
     body: ["The profile covers the 1986 Sniffer, Sniffer University, the Dolch chassis, the 1997 NAI merger and 2004 rebirth, Arbor's Peakflow and ATLAS, and NetScout's 2007 and 2015 consolidating acquisitions."],
@@ -755,6 +802,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "dolch",
     group: "other",
     name: "Dolch (Kontron / Azonix lineage)",
+    founded: 1987,
     tagline: "The rugged luggable the Sniffer lived in.",
     intro:
       "Dolch Computer Systems built the suitcase-format rugged portables that carried a generation of field engineering - and, above all, Network General's Sniffer analyzer, which shipped on Dolch PACs so routinely the Computer History Museum catalogs them as Sniffer platforms.",
@@ -771,6 +819,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "blue-coat-packeteer",
     group: "other",
     name: "Blue Coat & Packeteer - the checkpoint companies",
+    founded: 1996,
     tagline: "CacheFlow's pivot made the proxy a security platform; PacketShaper created traffic shaping - together, the prehistory of the SSE category.",
     intro: "Two 1996 companies that answered the same question - what happens at the checkpoint - for content and for bandwidth. Blue Coat (born CacheFlow) made the inline proxy the enterprise web's enforcement point, SSL inspection included; Packeteer's PacketShaper taught the WAN that traffic has identity. Merged in 2008, carried through Symantec into Broadcom, their architecture is what every cloud secure web gateway runs today.",
     body: ["The profile covers the legendary CacheFlow IPO, the 2002 pivot to Blue Coat, PacketShaper's category creation, the 2008 acquisition, the private-equity years, and the Symantec-to-Broadcom passage."],
@@ -779,6 +828,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "cyclades-avocent-vertiv",
     group: "other",
     name: "Cyclades, Avocent & Vertiv - the physical layer of uptime",
+    founded: 1965,
     tagline: "A Brazilian-founded console-server pioneer, the KVM leaders, and Liebert's computer-room weather - consolidated into the company whose product is uptime itself.",
     intro: "Cyclades - founded in 1988 in a São Paulo garage by João Lima and Daniel Dalarossa, an early Linux champion that later moved to California - built the out-of-band discipline: the console path that shares no fate with the network it manages. Through Avocent's KVM heritage and Emerson Network Power (whose other root is Ralph Liebert's 1965 precision cooling), the lineage became Vertiv: access, power, and cooling as one problem, now the constraint the AI build-out plans around. The name also earns an honorable footnote: Pouzin's CYCLADES research network - TCP/IP's credited French ancestor - now has its own profile in this pioneer lineage; same name, different continent, no corporate relation.",
     body: ["The profile covers the 1989 Brazilian founding, the console-server category, the 2006 Avocent acquisition, Emerson Network Power and the Liebert root, the 2016 Vertiv carve-out, and the AI-density era."],
@@ -787,6 +837,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "dell-force10",
     group: "other",
     name: "Dell & Force10 - the direct model and its fabric",
+    founded: 1984,
     tagline: "A dorm-room assembler became the datacenter's broadest supplier - and the 10GbE pioneer it absorbed in 2011 became its switching lineage.",
     intro: "Michael Dell's direct model reset how hardware reaches buyers; the 2013 take-private and the 2016 EMC acquisition - the largest technology deal in history - rebuilt the company around the datacenter. Inside it runs Force10's engineering: the 1999 startup whose purpose-built E-Series delivered line-rate 10 Gigabit Ethernet before anyone else, whose FTOS lineage survives as Dell's switching OS today.",
     body: ["The profile covers the 1984 dorm-room founding and the direct model, Force10's E1200 and HPC fabrics, the 2011 acquisition, the take-private, the EMC megadeal, and the PowerSwitch present."],
@@ -795,6 +846,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "zte",
     group: "other",
     name: "ZTE - China's other giant",
+    founded: 1985,
     tagline: "Shenzhen 1985, top-four in 5G - and the 2018 denial order that made supply-chain dependency the industry's most vivid lesson.",
     intro: "Founded two years before its Shenzhen neighbor Huawei, ZTE grew from digital switching into one of the world's four mobile-equipment majors. In April 2018 a US component ban halted the company within weeks; the $1.4 billion settlement that restarted it - fine, escrow, replaced management, embedded monitors - turned 'where does your silicon come from' into a board-level network-design question everywhere.",
     body: ["The profile covers the 1985 founding, the ZXJ10 era, global scale through CDMA and handsets, the 2017 plea and 2018 denial-order crisis with its settlement, and the bifurcated 5G market ZTE now inhabits."],
@@ -803,6 +855,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "fluke",
     group: "other",
     name: "Fluke - the meters and certifiers in every field bag",
+    founded: 1948,
     tagline: "The 87 multimeter and the DSX CableAnalyzer - and a 2015 three-way split (Fortive, NetScout, NetAlly) worth knowing cold.",
     intro: "John Fluke Sr.'s 1948 instruments company became the generic word for the multimeter itself, and Fluke Networks made cabling certification an instrument category with legal weight. The 2015 Danaher deal split the story: enterprise visibility went to NetScout (the handheld line later reborn as NetAlly), while cable certification stayed Fluke Networks under Fortive - one company, three present-day homes.",
     body: ["The profile covers the 1948 founding, the 87, the DSP-to-DSX certification lineage, AirMagnet, the carefully-told 2015 split, and the Fortive present."],
@@ -811,6 +864,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "dns-bind",
     group: "other",
     name: "DNS & BIND - the internet's phone book and its reference implementation",
+    founded: 1983,
     tagline: "Mockapetris's 1983 design and Berkeley's software that ran it - delegation, caching, and forty years of the same wire format.",
     intro: "Before the DNS, the internet's names lived in a text file everyone downloaded. Paul Mockapetris's 1983 design replaced it with a delegated, cached, planetary database - and four Berkeley grad students wrote BIND, the implementation that made 'running DNS' and 'running BIND' the same sentence for a quarter century.",
     body: ["The profile covers HOSTS.TXT's collapse, RFC 882/883 and 1034/1035, the MX record, Vixie and ISC, BIND 9, the Kaminsky patch, the 2010 root signing, Dyn day, and the DoT/DoH era."],
@@ -819,6 +873,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "http-gopher",
     group: "other",
     name: "HTTP & Gopher - the web's protocol and the rival it eclipsed",
+    founded: 1989,
     tagline: "Two futures shipped in 1991; one spring of licensing decided between them - CERN gave the web away, Minnesota asked for money.",
     intro: "Gopher was the better-organized system and for two years it was winning. Then, weeks apart in 1993, Minnesota announced server fees and CERN declared the web royalty-free forever - the cleanest natural experiment in protocol economics ever run. HTTP went on to replace its own transport twice without breaking a URL.",
     body: ["The profile covers the 1989 CERN proposal and HTTP/0.9, Gopher's rise and Veronica, the spring-1993 licensing fork, Mosaic, the Host header, REST, and the HTTP/2-to-HTTP/3-over-QUIC arc this site's WAF material continues."],
@@ -827,6 +882,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "nvidia",
     group: "contemporary",
     name: "Nvidia - the GPU company that runs the fabric",
+    founded: 1993,
     tagline: "CUDA's decade-early bet, the AlexNet ignition, Mellanox - the network's biggest customer became one of its vendors.",
     intro: "Nvidia named the GPU, made it programmable a decade before the world needed it, and became the platform of the AI era. For this site's readers the 2020 Mellanox acquisition is the hinge: InfiniBand, Spectrum-X Ethernet, and BlueField DPUs make Nvidia simultaneously the most demanding workload networks carry and a top-tier network vendor - both sides of the AI-fabric argument.",
     body: ["The profile covers the 1993 founding, RIVA-to-GeForce survival and naming, CUDA, AlexNet, the Mellanox networking turn, the trillion-dollar ascent, and the NVLink/InfiniBand/Spectrum-X fabric wars."],
@@ -835,6 +891,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "ubiquiti",
     group: "contemporary",
     name: "Ubiquiti - enterprise features at prosumer prices",
+    founded: 2005,
     tagline: "airMAX armed the WISPs, UniFi made the controller model a $200 purchase - and two incidents every security reader should know cold.",
     intro: "Robert Pera's bet was that big-vendor radio performance could ship at a fraction of the price, sold by community instead of a sales force. airMAX connected the places carriers skipped; UniFi became the default answer for small networks and a rising share of serious ones. Kept factual, its 2015 BEC fraud and 2020-21 insider case are canonical security teaching material.",
     body: ["The profile covers the 2005 founding, the WISP world, UniFi and the 2011 IPO, the product-led model, and the two incidents on the public record."],
@@ -843,6 +900,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "access-home-fleet",
     group: "contemporary",
     name: "The access & home fleet - Netgear, TP-Link, Zyxel, Asus & Askey, Allied Telesis",
+    founded: 1987,
     tagline: "The boxes everyone actually owns: the first hop of most packets on Earth, told as one fleet.",
     intro: "Five names, one layer: the CPE and SOHO gear that put networking in ordinary rooms. Netgear's Bay Networks spinoff roots, TP-Link's decade-plus shipment crown, Zyxel's modem-era pedigree, the ASUS/Askey retail-and-ODM pairing, and Allied Telesis holding the access edge since 1987 - plus the 2024 geopolitics that scale eventually attracts.",
     body: ["The profile tells the five foundings, the mesh and cloud-management turns, the enthusiast-firmware culture, the invisible carrier-ODM fleet, and why this tier is both the industry's proving ground and its largest attack surface."],
@@ -851,6 +909,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "watchguard",
     group: "contemporary",
     name: "WatchGuard - the red box that made the firewall an appliance",
+    founded: 1996,
     tagline: "The 1996 Firebox turned security from a project into an object - and the mid-market has run on it since.",
     intro: "WatchGuard's founding bet was packaging: firewall software sealed into a red steel appliance, priced and consoled for the company with one IT person. The category the giants now dominate was proven here first - and the company never abandoned the mid-market and MSP channel it created.",
     body: ["The profile covers the Firebox, the 1999 IPO and 2006 take-private, the UTM years on Fireware, AuthPoint, the Panda Security acquisition, and the MSP-first present."],
@@ -859,6 +918,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "a10-kemp",
     group: "contemporary",
     name: "A10 & Kemp - the ADC challengers",
+    founded: 2000,
     tagline: "The second tier that kept the load-balancing leaders honest: A10 from the throughput flank, Kemp from below.",
     intro: "Application delivery never became a monopoly, and these two are why. Lee Chen's A10 built its franchise where traffic is heaviest - CGNAT, DDoS, the service-provider tier - while Kemp's LoadMaster priced the ADC for the Exchange administrator and went virtual before the market did. Every leader's quote was written knowing they existed.",
     body: ["The profile covers both foundings, the Brocade litigation chapter, the 2014 A10 IPO, the CGNAT decade, Thunder TPS, Kemp's virtual-first bet, and the 2021 Progress acquisition."],
@@ -867,6 +927,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "datacom",
     group: "contemporary",
     name: "Datacom - Brazil's networking manufacturer",
+    founded: 1998,
     tagline: "The hometown entry: carrier gear, GPON, and a national OS, designed and built in Rio Grande do Sul since 1998.",
     intro: "Every other company in this encyclopedia had to be imported into Brazil; Datacom grew there. Its own switching and GPON lines on its own DmOS carried the country's regional-ISP fiber boom - a standing existence proof that network sovereignty is buildable, born of the same Brazilian engineering tradition that a decade earlier produced Cyclades.",
     body: ["The profile covers the 1998 founding, the DmSwitch carrier-Ethernet years, DmOS, the provedores' GPON wave, the domestic-financing structural factor stated plainly, and the quarter-century mark."],
@@ -876,6 +937,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "asus-askey",
     group: "contemporary",
     name: "ASUS + Askey",
+    founded: 1989,
     tagline: "The motherboard empire and its network-communications arm.",
     intro:
       "ASUS grew from four ex-Acer engineers' 1989 motherboard startup into the world's fifth-largest PC vendor; Askey, founded the same year and later an ASUS Group member, is the invisible ODM behind decades of carrier modems, gateways, and 5G CPE - with offices that include Brazil.",
@@ -891,6 +953,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "netgear",
     group: "contemporary",
     name: "NETGEAR",
+    founded: 1996,
     tagline: "The company that put networking on the retail shelf.",
     intro:
       "Founded inside Bay Networks in 1996 by Patrick Lo and Mark Merrill, NETGEAR invented networking-as-retail: the blue metal switches, then Nighthawk and Orbi - the first networking gear millions of people ever bought themselves.",
@@ -905,6 +968,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "tp-link",
     group: "contemporary",
     name: "TP-Link",
+    founded: 1996,
     tagline: "The volume king of consumer networking.",
     intro:
       "Founded in Shenzhen in 1996 by brothers Zhao Jianjun and Zhao Jiaxing - the name abbreviates twisted pair link - TP-Link rode disciplined cost-performance to the top of global consumer WLAN shipment rankings and stayed there for years.",
@@ -919,6 +983,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "zyxel",
     group: "contemporary",
     name: "Zyxel",
+    founded: 1988,
     tagline: "The modem-era first-mover from Hsinchu.",
     intro:
       "Begun in a rented Taoyuan apartment in 1988 and founded at Hsinchu Science Park in 1989 by Dr. Shun-I Chu, Zyxel built the U-1496 modems the BBS generation saved up for - then shipped the world's first integrated data/fax/voice modem (1992) and analog/digital ISDN modem (1995).",
@@ -934,6 +999,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "allied-telesis",
     group: "contemporary",
     name: "Allied Telesis",
+    founded: 1987,
     tagline: "Japan's global Ethernet workhorse, from media converters up.",
     intro:
       "Takayoshi Oshima (1940-2022) founded the company in Tokyo in March 1987 - System Plus for six months, Allied Telesis ever after, Allied Telesyn to a generation of international buyers - starting from the humblest product in networking: the media converter.",

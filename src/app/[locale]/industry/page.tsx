@@ -58,8 +58,12 @@ export default async function IndustryHubPage({
   const tNav = await getTranslations("nav");
 
   const reduPartners = partnerVendors.filter((v) => v.group === "redu");
-  const otherVendors = partnerVendors.filter((v) => v.group === "other");
-  const contemporaryVendors = partnerVendors.filter((v) => v.group === "contemporary");
+  // One chronological list: the old "other" and "contemporary" groups merged
+  // and sorted by founding year. Cards without a year sort last rather than
+  // being dropped, so a missing year is visible instead of silent.
+  const lineageTimeline = partnerVendors
+    .filter((v) => v.group === "other" || v.group === "contemporary")
+    .sort((a, b) => (a.founded ?? 9999) - (b.founded ?? 9999) || a.name.localeCompare(b.name));
 
   return (
     <>
@@ -140,41 +144,43 @@ export default async function IndustryHubPage({
               ))}
             </ul>
 
-            {/* The wider industry (corporate lineages, no training association). */}
-            <div className="vendor-divider">
-              <h2 className="vendor-divider-title">{tp("otherSectionTitle")}</h2>
-              <p className="vendor-divider-note">{tp("otherSectionNote")}</p>
-            </div>
-            <ul className="vendor-grid">
-              {otherVendors.map((v) => (
-                <li key={v.slug}>
-                  <Link href={`/about/vendors/partner/${v.slug}`} className="vendor-card">
-                    <span className="vendor-card-years mono">{tp("otherCardTag")}</span>
-                    <span className="vendor-card-name">{v.name}</span>
-                    <span className="vendor-card-tagline">{v.tagline}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* ---- The lineage timeline (PRIME 2026-07-27) ----
+                 This replaced two sections, "the contemporaries - still writing
+                 their chapters" and "other vendors - lineages of the pioneers".
+                 The split did not survive contact with the facts: several
+                 vendors filed under "other" are demonstrably still trading, so
+                 the two labels described the same thing twice and forced a
+                 judgement call on every new card.
 
-            {/* The contemporaries (modern-era companies, still writing their
-                chapters; new group below the pioneers - PRIME roster
-                2026-07-16, shipped wave 6). */}
+                 Ordering by founding year removes the judgement entirely. A
+                 founding year is a fact, it is already in each profile's own
+                 sourced timeline, and it puts the story in the order it
+                 happened - which is what a lineage page is for. Cards carry an
+                 end marker only where the company stopped existing
+                 independently; its absence correctly reads as "still here". */}
             <div className="vendor-divider">
-              <h2 className="vendor-divider-title">{tp("contemporarySectionTitle")}</h2>
-              <p className="vendor-divider-note">{tp("contemporarySectionNote")}</p>
+              <h2 className="vendor-divider-title">{tp("timelineSectionTitle")}</h2>
+              <p className="vendor-divider-note">{tp("timelineSectionNote")}</p>
             </div>
-            <ul className="vendor-grid">
-              {contemporaryVendors.map((v) => (
-                <li key={v.slug}>
+            <ol className="vendor-timeline">
+              {lineageTimeline.map((v) => (
+                <li key={v.slug} className="vendor-timeline-item">
+                  <span className="vendor-timeline-year mono" aria-hidden="true">
+                    {v.founded}
+                  </span>
                   <Link href={`/about/vendors/partner/${v.slug}`} className="vendor-card">
-                    <span className="vendor-card-years mono">{tp("contemporaryCardTag")}</span>
+                    <span className="vendor-card-years mono">
+                      {v.ended
+                        ? tp("timelineSpan", { from: v.founded, to: v.ended.year })
+                        : tp("timelineSince", { from: v.founded })}
+                    </span>
                     <span className="vendor-card-name">{v.name}</span>
                     <span className="vendor-card-tagline">{v.tagline}</span>
+                    {v.ended && <span className="vendor-card-end">{v.ended.note}</span>}
                   </Link>
                 </li>
               ))}
-            </ul>
+            </ol>
           </div>
         </section>
       </main>

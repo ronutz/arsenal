@@ -52,6 +52,36 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-27T16:02:09-03:00",
+    kind: "content",
+    title: "F5's corporate lineage moves to where F5 lives",
+    body: "The page tracing what F5 is actually made of, twenty-three acquisitions and what each one became, used to sit under About. Two things were wrong with that. About is the autobiographical section, and a lineage is about the vendor rather than about me. And the page was written as a hub for every vendor's lineage while containing exactly one, so its copy talked about vendors in general and then showed F5 alone under a note promising more soon. It now lives at f5 slash vendor-lineage, one click from the F5 tools and articles, with copy that is about F5 rather than about the idea of lineages. The route builds itself from a registry, so adding a vendor means adding its researched data and one line, and a vendor whose acquisitions have not been verified yet simply has no page rather than an empty one. The bar has not moved: every acquisition is checked against primary sources before it ships, with the product line it turned into only where that connection is documented rather than inferred.",
+  },
+  {
+    date: "2026-07-27T15:40:31-03:00",
+    kind: "content",
+    title: "Vendor hubs hand off in cards now, and finally mention their own reading paths",
+    body: "A vendor hub used to point elsewhere in three different shapes: a bare text link to the vendor's history chapter floating above the title, and a callout box of inline links to its certifications. They are now one grid of cards, using the same portal card that already appears on the Learn and training pages, so a reader meets the same object every time a page hands off to another page. The addition worth having is the third kind. Every vendor with a guided reading path had that path reachable only from the study guides index, which meant the hub for a platform never mentioned the curated route through its own articles. Those paths now sit alongside the history and certification cards, with the number of articles on each. One thing changed under the surface to make it safe: working out which vendor a reading path belongs to was a rule living inside the study guides page, and the hubs needed the same answer. Rather than copy it, the rule moved into one shared function. Two copies of a rule like that drift the first time a vendor is added and only one is updated, and the failure is silent, since paths simply stop appearing on one of the two pages.",
+  },
+  {
+    date: "2026-07-27T15:19:08-03:00",
+    kind: "content",
+    title: "Check Point gets a chapter, which is a strange one to write",
+    body: "Check Point has been on this site as a partner-track card and a pair of study guides. It now has a chapter of its own, alongside the other vendors whose stories run through this record, and it is an odd one to write because it runs the wrong way round. Almost every chapter here is about a company that turned up to solve something the incumbents had left open. Check Point is the incumbent. It shipped stateful inspection as a product in 1993 and created the category every firewall on this site competes inside, so learning it now, after two decades on the platforms that came to challenge it, means meeting the original last. The page argues that the durable part was never the inspection engine, which others built too, but the management model: policy as a database held apart from the devices that enforce it, published before it is installed. Thirty years on that is still the thing that catches people arriving from other vendors, and still the model those vendors get compared against. No instructor authorization is claimed, here or anywhere: the study guides are built from Check Point's own published blueprints and say nothing about who may deliver their training.",
+  },
+  {
+    date: "2026-07-27T05:28:29-03:00",
+    kind: "content",
+    title: "Better doors on the Learn page, and the training page stops pointing away from itself",
+    body: "The Learn page had a row of pills, one per vendor, sitting between the portal cards and the articles. It grew by one pill every time a vendor was added and pushed the article index further down a page whose whole purpose is the article index. The pills are gone, replaced by three cards: one that jumps straight to the articles, one door to the vendor hubs, and one to the certification guides. The first of those is an in-page jump rather than a link, because the thing it points at was already on the page and simply had nothing directing anyone to it. The training page had the opposite problem. Three cards linking to the bio, the credentials and the endorsements sat at the very top, so the first thing a prospective client saw on a page about courses was three invitations to go somewhere else. They now sit after Beyond the classroom, at the point where someone has read the page and is ready to look further, which is when a pointer helps instead of interrupting.",
+  },
+  {
+    date: "2026-07-27T05:04:15-03:00",
+    kind: "content",
+    title: "The industry page is a timeline now, because the old grouping was making a judgement it kept getting wrong",
+    body: "Until now the wider industry split into pioneers and contemporaries, and the split did not hold up. Plenty of companies filed under the pioneers are still trading, so the two headings were describing the same thing twice while forcing a call on every new entry about whether a company counts as historical. Ordering by founding year removes the question. It is a fact rather than an opinion, it already sits in each profile's own sourced timeline, and it puts the story in the order it happened, which is what a lineage page is for. So the two sections are now one vertical timeline running from an 1847 pointer telegraph to a 2012 SD-WAN startup, with the year in the gutter so chronology can be scanned without reading a card. Cards will carry an end year where the company stopped existing independently. Those are being added by review rather than derived, because deriving them was tried and produced roughly thirty wrong answers out of forty-eight: prose cannot be pattern-matched for direction, since a company acquiring someone and a company being acquired read almost identically, and a divestiture reads like an ending. An absent end marker means still trading, which is the honest default.",
+  },
+  {
     date: "2026-07-27T03:55:26-03:00",
     kind: "infra",
     title: "Three Check Point exams were listed twice, and a guard now makes that impossible",

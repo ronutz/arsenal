@@ -30,6 +30,7 @@ export const CAREER_VENDORS = [
   { slug: "netskope", key: "netskope" },         // accreditations 2024, instructor 2025
   { slug: "ping-identity", key: "ping" },        // PingFederate Practitioner 2025
   { slug: "zscaler", key: "zscaler" },           // chapter opening 2026; hub on the roadmap
+  { slug: "check-point", key: "checkpoint" },    // chapter opening 2026; studying toward CCSA/CCSE, no delivery claim
 ] as const;
 
 // ============================================================================

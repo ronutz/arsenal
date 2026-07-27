@@ -65,7 +65,7 @@ const RED_EDUCATION_VENDORS: { name: string; href?: string }[] = [
   { name: "F5", href: "/about/vendors/f5" },
   { name: "Fortinet", href: "/about/vendors/fortinet" },
   { name: "Palo Alto Networks", href: "/about/vendors/palo-alto" },
-  { name: "Check Point", href: "/about/vendors/partner/check-point" },
+  { name: "Check Point", href: "/about/vendors/check-point" },
   { name: "Cisco", href: "/about/vendors/cisco" },
   { name: "Nutanix", href: "/about/vendors/partner/nutanix" },
   { name: "Arista", href: "/about/vendors/partner/arista" },

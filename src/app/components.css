@@ -2400,6 +2400,11 @@
   display: flex;
   align-items: center;
   gap: 0.85rem;
+  /* Breathing room ABOVE a section title, not just below it (PRIME
+     2026-07-27): section titles were sitting tight against the content of the
+     section before them, which made a long page read as one undifferentiated
+     column. */
+  margin-top: 1.75rem;
   margin-bottom: 0.75rem;
   flex-wrap: wrap;
 }
@@ -14711,3 +14716,74 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .ztc-steps { margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-secondary); }
 .ztc-steps strong { color: var(--text-primary); }
 .ztc-notes { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.86rem; line-height: 1.5; color: var(--text-secondary); }
+
+/* ---------------------------------------------------------------------------
+   Lineage timeline (/industry) - PRIME 2026-07-27.
+   A vertical rail with the founding year in the gutter, so the eye can scan
+   chronology without reading a card. Replaces a two-group split ("pioneers"
+   vs "contemporaries") that described the same thing twice.
+   The rail is a border on the list, not a pseudo-element per item, so it stays
+   continuous and costs nothing to paint.
+--------------------------------------------------------------------------- */
+.vendor-timeline {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0 0 0 clamp(3.25rem, 8vw, 5rem);
+  border-left: 1px solid var(--border-subtle);
+}
+
+.vendor-timeline-item {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+/* Year sits in the gutter to the LEFT of the rail, with a node on it. */
+.vendor-timeline-year {
+  position: absolute;
+  left: calc(clamp(3.25rem, 8vw, 5rem) * -1);
+  top: 0.9rem;
+  width: clamp(3.25rem, 8vw, 5rem);
+  padding-right: 1.15rem;
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--text-tertiary, var(--text-secondary));
+}
+
+.vendor-timeline-year::after {
+  content: "";
+  position: absolute;
+  right: -0.3rem;
+  top: 0.32rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+}
+
+/* Shown only on cards whose company stopped existing independently. */
+.vendor-card-end {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-tertiary, var(--text-secondary));
+}
+
+@media (max-width: 40rem) {
+  /* On narrow screens the gutter costs more than it gives: drop the rail and
+     let the year sit inline above the card. */
+  .vendor-timeline {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .vendor-timeline-year {
+    position: static;
+    display: block;
+    width: auto;
+    padding: 0 0 0.3rem;
+    text-align: left;
+  }
+  .vendor-timeline-year::after {
+    display: none;
+  }
+}
