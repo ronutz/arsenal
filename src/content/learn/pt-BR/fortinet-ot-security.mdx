@@ -1,0 +1,65 @@
+---
+slug: fortinet-ot-security
+title: "Segurança de tecnologia operacional: por que o manual de TI não se transfere"
+summary: "Redes industriais invertem quase toda premissa sobre a qual a segurança de TI se constrói. Disponibilidade supera confidencialidade, equipamentos não podem ser corrigidos nem varridos, e os protocolos foram projetados sem autenticação porque se presumia isolamento físico. Protegê-las significa contornar esses fatos, e não corrigi-los."
+concepts: ["fortinet", "segurança ot", "ics", "scada", "modelo purdue", "modbus", "inspeção de protocolo", "segmentação", "descoberta passiva", "disponibilidade", "legado"]
+relatedTools: []
+sub: ot
+relatedArticles: ["fortinac-device-modeling-and-profiling", "fortigate-firewall-policy-and-nat", "fortigate-security-profiles-flow-vs-proxy"]
+category: security
+order: 96
+status: reviewed
+updated: "2026-07-26"
+---
+
+Tecnologia operacional é o equipamento que roda processos físicos: controladores, sensores, atuadores, os sistemas que os supervisionam. Protegê-la não é proteger uma rede de TI incomum. É um problema diferente vestindo equipamento parecido.
+
+## As inversões
+
+**Disponibilidade vem primeiro.** Em TI, a ordem usual é confidencialidade, integridade, disponibilidade. Em OT ela se inverte. Um processo que para pode significar produto perdido, equipamento danificado, ou pessoas feridas. Um controle de segurança que arrisca parar o processo é frequentemente rejeitado só por isso, e com razão.
+
+**Aplicar correções não é rotina.** Um controlador pode estar certificado como parte de um processo validado, ou ter suporte apenas num firmware que ninguém pode mudar, ou simplesmente não poder sair do ar fora de uma janela de manutenção que ocorre duas vezes por ano. Sistemas rodam por décadas. "Aplique a correção" muitas vezes não está disponível como resposta.
+
+**Varredura pode quebrar coisas.** Equipamentos anteriores a redes hostis podem falhar quando sondados. Uma varredura comum de vulnerabilidades já parou linhas de produção. Esse único fato elimina a maior parte da descoberta ativa do arsenal.
+
+**Os protocolos não têm segurança.** Modbus, DNP3 e seus contemporâneos foram projetados para redes isoladas. Não há autenticação nem criptografia, porque nenhuma foi considerada necessária. Qualquer coisa que alcance um controlador pode comandá-lo.
+
+**Agentes não são opção.** Nada se instala num controlador.
+
+Cada uma dessas remove uma ferramenta de que o manual de TI depende, e é por isso que a resposta em OT se concentra na rede.
+
+## Segmentação como controle principal
+
+Se os endpoints não podem ser defendidos, o tráfego até eles precisa ser.
+
+O **modelo Purdue** é a referência: níveis do processo físico na base, passando por controle, supervisão, operações, até a TI corporativa no topo. Seu valor prático é nomear onde as fronteiras pertencem e dar um vocabulário comum para discutir sobre elas.
+
+A fronteira que mais importa é entre a TI corporativa e a rede de controle, porque é o caminho que a maioria dos incidentes toma: um comprometimento na rede de escritório alcançando a rede de planta porque as duas foram conectadas por uma razão legítima que ninguém revisitou.
+
+A **microssegmentação** dentro da rede de controle limita o movimento uma vez dentro. Uma estação de engenharia comprometida não deveria alcançar todo controlador do site, e na maioria das redes existentes ela alcança.
+
+A regra que torna a segmentação de OT tratável é que o tráfego industrial é **altamente previsível**. Os mesmos equipamentos falam com os mesmos equipamentos usando os mesmos protocolos, em boa medida com horário. Isso torna uma política de negação por padrão muito mais alcançável que numa rede corporativa, porque os fluxos legítimos podem de fato ser enumerados.
+
+## Inspeção ciente de protocolo
+
+Um firewall que entende protocolos industriais consegue distinguir uma leitura de uma escrita. Essa distinção é a útil: um historiador consultando valores é rotina, e um comando que muda um setpoint não é, mesmo que os dois sejam o mesmo protocolo para uma regra baseada em porta.
+
+A política pode então permitir monitoramento restringindo o controle a origens específicas, que é o formato prático do menor privilégio numa rede de OT.
+
+## Descoberta passiva
+
+Como varrer não é seguro, o inventário é construído **observando o tráfego**. Equipamentos são identificados por como se comunicam: os protocolos, os padrões de tráfego, as assinaturas de fabricante no que enviam.
+
+É mais lento que a varredura ativa, não encontrará algo inteiramente silencioso, e não arrisca derrubar um controlador. Em OT essa troca não é disputada.
+
+O primeiro inventário costuma ser o entregável que justifica o projeto, porque a maioria dos sites não tem uma lista exata do que está na rede de controle, e não consegue obtê-la de outro jeito.
+
+## Trabalhar com os donos do processo
+
+A falha recorrente em programas de segurança de OT é organizacional, e não técnica. Times de segurança propõem controles em termos de TI, a engenharia de planta ouve risco à produção, e o programa trava.
+
+O que funciona é enquadrar nos termos que já importam ali: segurança física, disponibilidade e integridade do processo. Um controle que impede uma mudança não autorizada de setpoint está protegendo o processo, e esse é um argumento com que a engenharia de planta já concorda. Um controle que exige reinicialização para ser instalado está pedindo algo caro, e fingir o contrário danifica a relação de que o programa depende.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+OT inverte a prioridade usual para disponibilidade primeiro, e correções, varredura ativa e agentes frequentemente não estão disponíveis, o que joga a resposta para a rede. Protocolos industriais como Modbus e DNP3 não têm autenticação porque se presumia isolamento. O modelo Purdue nomeia as fronteiras, e a fronteira entre TI e controle é o caminho que a maioria dos incidentes toma. O tráfego industrial é previsível o bastante para que negação por padrão seja genuinamente alcançável. A inspeção ciente de protocolo distingue leituras de escritas, que é onde mora o menor privilégio. A descoberta precisa ser passiva porque varrer pode fazer equipamentos falharem, e o inventário resultante costuma ser o primeiro entregável real do projeto.

@@ -1,0 +1,85 @@
+---
+slug: fortiadc-application-delivery-and-load-balancing
+title: "FortiADC: entrega de aplicações, balanceamento de carga e verificações de saúde"
+summary: "Um controlador de entrega de aplicações decide qual servidor recebe cada requisição e para de enviar tráfego a servidores que não conseguem atendê-la. A maioria dos problemas de entrega é uma de duas coisas: uma verificação de saúde que testa a coisa errada, ou persistência de que uma aplicação com estado precisava e não teve."
+concepts: ["fortinet", "fortiadc", "entrega de aplicações", "balanceamento de carga", "servidor virtual", "servidor real", "pool de servidores", "verificação de saúde", "persistência", "offload de ssl"]
+relatedTools: []
+sub: fortiadc
+relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortigate-routing-and-sdwan-selection"]
+category: networking
+order: 86
+status: reviewed
+updated: "2026-07-26"
+---
+
+## O modelo de objetos
+
+Quatro objetos, e eles se aninham.
+
+Um **servidor real** é um backend: um endereço, uma porta, um peso e um estado.
+
+Um **pool de servidores** agrupa servidores reais e define como as requisições são distribuídas entre eles, mais a verificação de saúde que decide quais estão elegíveis.
+
+Um **servidor virtual** é aquilo a que os clientes conectam: o endereço e a porta publicados ao mundo, ligados a um pool.
+
+**Perfis e políticas** anexados ao servidor virtual governam o resto: como o protocolo é tratado, se o TLS é terminado, o que é inspecionado, como a persistência funciona.
+
+O formato é deliberadamente próximo ao IP virtual de um firewall, e a diferença importa: um VIP encaminha a um destino, um ADC escolhe entre vários e sabe se cada um está vivo.
+
+## Escolher um servidor
+
+Os métodos de distribuição diferem no que otimizam:
+
+**Round robin** pega cada servidor por vez. Justo quando os servidores são iguais e as requisições custam o mesmo, o que é mais raro do que parece.
+
+**Round robin ponderado** respeita diferenças de capacidade, então um servidor maior recebe proporcionalmente mais.
+
+**Menos conexões** envia ao servidor que no momento tem menos, o que se adapta a requisições de duração variável — a resposta certa usual para qualquer coisa com conexões longas.
+
+**Menor tempo de resposta** leva em conta com que rapidez cada servidor está de fato respondendo, o que pega um servidor que está no ar e sofrendo.
+
+**Hash de origem** manda o mesmo cliente ao mesmo servidor, que é persistência por aritmética em vez de por estado.
+
+A escolha importa menos do que se espera em cargas uniformes e importa muito quando os servidores diferem, ou as requisições diferem.
+
+## Verificações de saúde decidem tudo o que vem depois
+
+Uma verificação de saúde determina quais servidores estão elegíveis. Erre nela e o balanceador distribui tráfego com confiança a servidores que não conseguem atendê-lo.
+
+Os níveis, em utilidade crescente:
+
+**Camada 3** — ele responde a um ping. Confirma que o host está ligado. Quase inútil como sinal de saúde da aplicação.
+
+**Camada 4** — a porta aceita conexão. Confirma que algo está escutando. Uma aplicação travada cujo listener sobreviveu passa nisso.
+
+**Camada 7** — busca uma página e confere a resposta. Confirma que a aplicação responde. É o mínimo que significa algo.
+
+**Camada 7 com correspondência de conteúdo** — busca uma página e confere se o corpo contém o que deveria. É esta que pega a aplicação retornando uma página de erro amigável com status 200, que é o modo de falha que mais derrota verificações ingênuas.
+
+As melhores verificações exercitam a cadeia de dependências: uma página que consulta o banco prova que o banco está alcançável, o que uma página estática não prova. O custo é que uma instabilidade do banco tira todos os servidores de uma vez, então a verificação deve ser tão profunda quanto a falha que você precisa detectar, e não mais.
+
+## Persistência
+
+A persistência mantém um cliente no mesmo servidor entre requisições. Aplicações que guardam estado de sessão em memória a exigem, e o sintoma de sua ausência é característico: usuários deslogados aleatoriamente, carrinhos esvaziando, formulários perdendo o conteúdo — intermitente, irreproduzível, e culpado em tudo menos no balanceador.
+
+Os mecanismos trocam confiabilidade por intrusividade:
+
+**Endereço de origem** não exige nada da aplicação e agrupa todo mundo atrás de um NAT num único servidor.
+
+**Por cookie** é preciso por navegador e exige que o ADC insira ou leia um cookie, o que precisa que o tráfego seja legível — então, com TLS, precisa de terminação.
+
+**ID de sessão SSL** funciona sem ler a carga e é pouco confiável conforme os clientes renegociam.
+
+A resposta melhor, onde você consegue influenciar a aplicação, é remover a necessidade: externalizar o estado de sessão para que qualquer servidor possa atender qualquer requisição. A persistência é um contorno para aplicações que não conseguem fazer isso.
+
+## TLS
+
+Terminar o TLS no ADC permite roteamento por conteúdo, persistência por cookie e inspeção, e tira trabalho criptográfico dos servidores.
+
+O **offload** fala em texto claro com o backend, o que exige confiar na rede interna. A **recriptografia** abre uma conexão TLS nova ao servidor, protegendo as duas pernas a algum custo.
+
+Terminar também centraliza a gestão de certificados, o que geralmente é uma melhoria em relação a certificados espalhados por servidores com datas de expiração independentes que ninguém acompanha.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Servidores reais se agrupam em pools, pools se ligam a servidores virtuais, e perfis no servidor virtual governam tratamento de protocolo e TLS. Métodos de distribuição importam mais quando servidores ou requisições são desiguais; menos conexões serve a requisições de duração variável. Verificações de saúde decidem elegibilidade, e a camada 4 aprova uma aplicação travada cujo listener sobreviveu, então camada 7 com correspondência de conteúdo é o nível que significa algo. A persistência é exigida por aplicações que guardam estado de sessão, e sua ausência se apresenta como deslogamentos aleatórios culpados em tudo menos no balanceador.

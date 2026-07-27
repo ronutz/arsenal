@@ -1,0 +1,55 @@
+---
+slug: fortigate-carrier-nat-and-specialised-traffic
+title: "NAT em escala de operadora, MAP-E, domain fronting e WCCP"
+summary: "Quatro recursos que aparecem nas bordas de uma implantação FortiGate: dois que existem porque os endereços IPv4 acabaram, um que fecha uma técnica de evasão que se esconde dentro de infraestrutura legítima, e um que redireciona tráfego a um proxy sem mudar a configuração dos clientes."
+concepts: ["fortinet", "fortigate", "cgnat", "nat de operadora", "map-e", "transição ipv6", "domain fronting", "sni", "wccp", "proxy explícito", "registro"]
+relatedTools: []
+sub: fortigate
+relatedArticles: ["fortigate-firewall-policy-and-nat", "fortinet-ssl-inspection-modes"]
+category: networking
+order: 95
+status: reviewed
+updated: "2026-07-26"
+---
+
+Estes quatro têm pouco em comum, exceto que cada um resolve um problema que o conjunto básico de recursos não resolve, e cada um carrega uma consequência que vale conhecer antes de implantar.
+
+## NAT em escala de operadora
+
+O NAT comum traduz uma rede privada atrás de um punhado de endereços públicos. O **CGNAT** faz o mesmo numa escala em que os números mudam o que importa: milhares de assinantes compartilhando um conjunto, e a atribuição de portas virando a restrição, e não os endereços.
+
+O mecanismo que torna isso viável é a **alocação de blocos de portas**: em vez de atribuir portas individualmente, um assinante recebe um bloco. Isso reduz enormemente o volume de registro — um registro por bloco em vez de por sessão — e é a diferença entre um volume de logs que pode ser retido e um que não pode.
+
+A consequência que alcança todo o resto é a **reputação compartilhada**. Quando milhares de assinantes compartilham um endereço, o comportamento daquele endereço é o agregado. Um assinante comprometido pode fazer o endereço entrar numa lista de bloqueio, e todos atrás dele são afetados por algo que não fizeram. É também por isso que a reputação por endereço de origem é evidência mais fraca do que parece, e por que o material de DDoS e de NAC nesta coleção volta ao mesmo ponto: um endereço não é um usuário.
+
+A obrigação que decorre é o registro. Atribuir uma ação a um assinante depois do fato exige saber qual assinante detinha qual bloco de portas em que momento, e se isso não foi registrado não pode ser reconstruído.
+
+## MAP-E
+
+O **MAP-E** é um mecanismo de transição para IPv6: carrega tráfego IPv4 por uma rede somente IPv6 encapsulando-o, com o mapeamento entre endereço IPv4 mais porta e prefixo IPv6 definido por regras, e não por estado por assinante.
+
+A propriedade sem estado é o ponto. Uma operadora com CGNAT com estado precisa manter uma tabela de tradução para cada sessão ativa de toda a sua base. O MAP-E move esse trabalho para a borda do cliente e deixa o núcleo encaminhando por regras, o que escala de um jeito que estado não escala.
+
+Para uma empresa isso é sobretudo algo encontrado, e não implantado — um site cuja operadora entrega apenas IPv6, em que as restrições de conectividade de entrada e das portas disponíveis para sessões de saída vêm da regra MAP-E, e não de configuração local alguma.
+
+## Domain fronting
+
+O **domain fronting** é uma técnica de evasão que funciona fazendo uma parte da conexão discordar de outra. O handshake TLS apresenta um nome — um domínio legítimo e popular que a filtragem vai permitir — enquanto a requisição HTTP criptografada dentro pede outro host na mesma infraestrutura.
+
+Um filtro que lê apenas o handshake visível vê um destino permitido. O tráfego vai para outro lugar completamente.
+
+Funciona porque grandes plataformas de conteúdo e nuvem atendem muitos clientes a partir de front-ends compartilhados, então o nome externo e o interno podem legitimamente resolver para a mesma infraestrutura. É também por isso que é usado para comando e controle: o tráfego está genuinamente indo a um provedor respeitável.
+
+A **proteção** consiste em comparar os dois: o nome apresentado no handshake contra o host pedido dentro. Uma divergência não é acidental. Detectá-la exige descriptografar, o que coloca isso ao lado das trocas de inspeção cobertas em outro ponto desta coleção — uma política que não consegue ver dentro não pega isso.
+
+## WCCP
+
+O **WCCP** redireciona tráfego de um roteador ou switch para um cache ou proxy, de forma transparente. Os clientes não são configurados para usar um proxy e não sabem que há um envolvido.
+
+A razão de existir é a razão pela qual o proxy transparente existe em geral: configurar cada cliente é um projeto, e clientes que você não administra não podem ser configurados.
+
+As trocas são as conhecidas para transparência. O proxy vê tráfego que o cliente acredita ir direto à origem, então qualquer coisa que dependa de o cliente saber do proxy — certos fluxos de autenticação, algum tratamento de certificados — se comporta de outro jeito. E o redirecionamento é uma dependência: uma falha de WCCP remove o caminho, então o projeto precisa de uma resposta para quando o cache estiver indisponível.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O CGNAT compartilha endereços públicos entre muitos assinantes, usa alocação de blocos de portas para manter o registro tratável, e cria reputação compartilhada em que um assinante pode fazer um endereço ser bloqueado para todos. Atribuir ações a assinantes exige registro de blocos de portas que não pode ser reconstruído depois. O MAP-E carrega IPv4 sobre IPv6 sem estado usando regras, movendo o trabalho para a borda do cliente. O domain fronting apresenta um nome no handshake TLS e pede outro dentro; a proteção consiste em compará-los e exige descriptografia. O WCCP redireciona a um proxy de forma transparente, então os clientes o desconhecem, e o redirecionamento vira uma dependência.

@@ -1,0 +1,67 @@
+---
+slug: fortiappsec-advanced-protection-and-availability
+title: "FortiAppSec Cloud: proteção do lado do cliente, detecção comportamental, GSLB e disponibilidade"
+summary: "Além do WAF, um serviço de aplicação em nuvem acrescenta três coisas que o produto local não consegue: proteção para o código que roda no navegador do visitante, detecção comportamental que funciona porque o serviço vê tráfego de muitos clientes, e balanceamento global que decide qual região atende uma requisição antes de ela ser feita."
+concepts: ["fortinet", "fortiappsec", "proteção do lado do cliente", "magecart", "detecção comportamental", "biometria", "openapi", "gslb", "verificação de saúde", "monitoramento sintético", "fortiai"]
+relatedTools: []
+sub: fortiappsec
+relatedArticles: ["fortiappsec-cloud-waf-and-managed-delivery", "fortiweb-application-security-bots-api-and-dos"]
+category: cloud
+order: 92
+status: reviewed
+updated: "2026-07-26"
+---
+
+Um WAF inspeciona requisições que chegam à sua aplicação. Três categorias de risco ficam fora disso, e um serviço em nuvem está posicionado para endereçá-las de um jeito que um equipamento no seu rack não está.
+
+## Proteção do lado do cliente
+
+Páginas modernas carregam scripts de lugares que você não controla: analytics, widgets de pagamento, gerenciadores de tags, publicidade, chat. Cada um roda com acesso total à página, inclusive ao que o visitante digita nela.
+
+Essa é a lacuna que um WAF não enxerga. O script malicioso não está numa requisição ao seu servidor; ele é entregue ao navegador por um terceiro e exfiltra direto para um atacante. Os logs do seu servidor não mostram nada porque nada de errado chegou ao seu servidor. Ataques de roubo de cartão funcionam exatamente assim, e persistem por meses porque o site se comporta normalmente.
+
+A **proteção do lado do cliente** inventaria o que de fato executa nos navegadores dos visitantes e com o que esses scripts falam, e então sinaliza mudanças: um script novo que ninguém acrescentou, um script existente que passou a enviar dados para outro lugar, uma dependência que mudou de comportamento após uma atualização.
+
+O achado incômodo na maioria das primeiras implantações é o próprio inventário. Sites rotineiramente rodam scripts que ninguém na organização sabe explicar, muitas vezes restos de uma campanha de anos atrás, e cada um deles consegue ler o formulário de pagamento.
+
+## Detecção comportamental e biométrica
+
+Distinguir um humano de automação é o problema recorrente por trás de recheio de credenciais, raspagem e fraude, e não se resolve inspecionando o conteúdo das requisições, porque elas são bem formadas.
+
+A **detecção comportamental** olha como o cliente interage: o tempo entre ações, o movimento do ponteiro, a cadência da digitação, o jeito como a página é navegada. Humanos são irregulares de formas características; a automação é regular, ou irregular de formas que não correspondem a como as pessoas de fato se comportam.
+
+O enquadramento **biométrico** merece precisão, porque a palavra sugere algo que aqui ela não significa. Isto não identifica uma pessoa. Mede padrões de interação para julgar se o cliente é humano. A distinção importa para conversas sobre privacidade, e errá-la em qualquer direção deturpa o produto.
+
+A vantagem que um serviço tem sobre um equipamento é a população. A detecção melhora com a variedade de tráfego visto, e um serviço à frente de muitos clientes vê muito mais que qualquer implantação isolada.
+
+## Detecção e triagem assistidas por IA
+
+A **detecção de ameaças baseada em IA** identifica padrões que não casam com assinatura conhecida e não são individualmente anômalos, que é onde abordagens por assinatura e por limiar se esgotam.
+
+O **FortiAI Assistant** endereça o problema mais banal e mais caro: o tempo que uma pessoa leva para decidir se um alerta é real. Ele resume, explica o que disparou, e sugere onde olhar.
+
+A limitação merece ser dita, e não descoberta. Esses sistemas são confiantes independentemente de estarem certos, e são menos confiáveis exatamente onde um caso é incomum — que é o caso em que você mais precisava de ajuda. Encurtam a triagem rotineira e não substituem o julgamento aplicado ao caso estranho. Trate a saída como opinião bem informada a verificar, e não como veredito.
+
+## Proteção de API com OpenAPI
+
+Onde existe uma especificação, validar contra ela é o controle mais forte disponível: uma requisição que viola o contrato é inválida sem referência alguma a padrões de ataque.
+
+O obstáculo prático é que especificações derivam. Uma especificação gerada no lançamento e nunca atualizada vai rejeitar tráfego legítimo após a próxima implantação, e o incidente resultante é culpado no serviço de segurança. Manter a validação alinhada à aplicação implantada é um acordo contínuo com quem publica a API, e não um envio único.
+
+## Balanceamento global
+
+O **GSLB** decide qual região responde, e faz isso por DNS: um resolvedor pergunta onde o nome vive, e a resposta depende de onde o cliente está e de quais regiões estão saudáveis.
+
+Integrar um domínio significa delegar essa decisão ao serviço. Daí em diante:
+
+**Verificações de saúde** determinam quais pontos estão elegíveis. Vale a mesma disciplina de qualquer balanceador, e a mesma armadilha: uma verificação que só confirma que a porta está aberta seguirá direcionando usuários a uma região cuja aplicação falhou.
+
+**Testes sintéticos** vão além e são a razão de se preocupar com monitoramento de GSLB. Em vez de verificar de dentro da sua infraestrutura, eles exercitam a aplicação de fora, de vários locais, como um usuário faria. Isso pega as falhas que o monitoramento interno reporta como saudáveis: um problema de rede regional entre os usuários e seus servidores funcionando, um CDN mal configurado, um certificado que expirou em uma região só.
+
+A distância entre "nosso monitoramento está verde" e "os usuários não nos alcançam" é exatamente o que verificações sintéticas externas fecham.
+
+**O cache de DNS** é a restrição a planejar. Um failover é tão rápido quanto o tempo de vida do registro permite, e resolvedores nem sempre honram um valor curto. O failover de GSLB é questão de minutos, e não de segundos, e um projeto que supôs o contrário será decepcionado na primeira falha regional.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+A proteção do lado do cliente cobre scripts executando no navegador do visitante, que um WAF nunca vê porque os dados saem do navegador direto e jamais alcançam seu servidor. A detecção comportamental julga se um cliente é humano por padrões de interação e não identifica pessoas. A IA auxilia a triagem mas é confiante esteja certa ou não, e é menos confiável em casos incomuns. A validação por OpenAPI é o controle de API mais forte e exige que a especificação acompanhe a aplicação implantada. O GSLB decide por DNS, verificações de saúde precisam testar a aplicação e não a porta, testes sintéticos pegam falhas que o monitoramento interno chama de saudáveis, e o failover é limitado pelo cache de DNS.

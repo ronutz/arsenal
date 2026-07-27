@@ -1,0 +1,78 @@
+---
+slug: fortimail-workspace-security-and-policies
+title: "FortiMail Workspace Security: proteger o Microsoft 365 e o Google Workspace"
+summary: "Plataformas de e-mail em nuvem já filtram o e-mail antes de você vê-lo, então uma segunda camada precisa se justificar. Ela o faz conectando pela API da própria plataforma, e não pelo caminho do e-mail, o que significa que inspeciona o que chega depois da filtragem da plataforma e consegue agir sobre e-mail já entregue numa caixa postal."
+concepts: ["fortinet", "fortimail workspace", "microsoft 365", "google workspace", "integração por api", "organização", "lista de permissão", "lista de bloqueio", "política", "extensão", "log de auditoria"]
+relatedTools: []
+sub: fortimail
+relatedArticles: ["fortimail-policies-session-filtering-and-antispam", "fortimail-content-security-encryption-and-ibe"]
+category: cloud
+order: 91
+status: reviewed
+updated: "2026-07-26"
+---
+
+Proteger e-mail que vive no Microsoft 365 ou no Google Workspace é problema diferente de proteger um servidor de e-mail que você opera, e a diferença está em como a proteção se conecta.
+
+## Integração por API, não pelo caminho do e-mail
+
+Um gateway tradicional fica no caminho do e-mail: o e-mail passa por ele antes de chegar ao servidor. Um serviço de segurança de workspace conecta pela **API** da plataforma, e isso muda o que é possível nos dois sentidos.
+
+**O que ganha:**
+
+- Enxerga o e-mail **depois** da filtragem da própria plataforma, então é uma segunda opinião genuína, e não uma duplicata das mesmas verificações.
+- Consegue agir sobre e-mail **já entregue**. Uma mensagem que se revela maliciosa uma hora após a chegada pode ser removida de todas as caixas que alcançou, o que um gateway não consegue porque a mensagem saiu dele há muito.
+- Enxerga **e-mail interno**, que jamais atravessa um gateway externo. Isso importa porque uma conta interna comprometida enviando a colegas é exatamente o tráfego que um projeto de perímetro perde.
+- Sem mudança de MX e sem dependência do caminho do e-mail, então uma falha degrada a proteção em vez de parar o e-mail.
+
+**O que abre mão:** não está em linha, então há uma janela entre a entrega e a avaliação. O projeto aceita essa janela em troca da remoção retroativa.
+
+Conectar exige autorizar o serviço no console administrativo da própria plataforma com as permissões de que precisa para ler e agir sobre o e-mail. Essa autorização é a implantação, e seu escopo merece leitura, e não um clique.
+
+## Organizações e hierarquia
+
+O serviço modela a tenência como **organizações**, que podem se aninhar.
+
+A hierarquia existe para que a política seja definida uma vez e herdada, com exceções onde se justificam: um pai para o grupo, filhos por unidade de negócio ou por empresa adquirida, cada um com seus administradores.
+
+As duas coisas a acertar:
+
+**Direção da herança.** Uma política definida no pai se aplica para baixo salvo se um filho a sobrepuser. Quem investiga por que um filho se comporta de forma inesperada deveria olhar árvore acima antes de supor que o filho está mal configurado.
+
+**Escopo do administrador.** Um administrador num nó enxerga e controla aquele nó e tudo abaixo dele. Conceder num nível alto demais é o erro comum, e numa implantação multi-inquilino é quebra de isolamento, e não inconveniência.
+
+## Listas de permissão, de bloqueio e precedência
+
+Todo produto de e-mail tem essas listas e todo um deles gera chamados de suporte, porque a pergunta é sempre a mesma: qual vence.
+
+A regra de precedência a estabelecer e documentar é **qual lista é avaliada primeiro, e em que escopo**. Uma lista de permissão no nível da organização e uma de bloqueio no nível do filho nomeando o mesmo remetente produzirão um desfecho, e seja qual for, alguém será surpreendido.
+
+O conselho operacional importa mais que a mecânica:
+
+**Listas de permissão são a lista perigosa.** Uma entrada errada numa lista de bloqueio barra e-mail desejado, o que é barulhento e é corrigido. Uma entrada errada numa lista de permissão deixa e-mail de atacante passar em silêncio, e remetentes permitidos são alvo padrão justamente porque a proteção está desligada para eles.
+
+**Permita tão estreitamente quanto o problema exigir.** Um endereço específico, e não um domínio. Um domínio, e não um domínio de topo.
+
+**Revise-as.** Listas de permissão acumulam entradas acrescentadas para resolver um problema de entrega anos atrás, e cada uma é um buraco permanente.
+
+## Políticas, extensões e recursos avançados
+
+**Políticas** decidem o que acontece com o quê: quais detecções se aplicam a quais destinatários, e que ação segue.
+
+**Extensões** acrescentam capacidade além do e-mail: proteção para as superfícies de compartilhamento de arquivos, chat e colaboração que vivem ao lado do e-mail na mesma plataforma. Isso merece ser levado a sério, porque uma organização que endureceu o e-mail e ignorou o compartilhamento de arquivos embutido na mesma suíte moveu o alvo em vez de removê-lo.
+
+**A integração de canais** conecta essas superfícies de colaboração para que um arquivo malicioso compartilhado num chat fique sujeito ao mesmo escrutínio de um anexado a uma mensagem.
+
+## Operar
+
+**Varreduras** são o registro do que foi examinado e do que foi encontrado. Filtrá-las é como se rastreia uma mensagem específica, e é a primeira parada quando alguém pergunta por que uma mensagem foi ou não entregue.
+
+**Logs de auditoria** registram ação administrativa: quem mudou uma política, quem permitiu um remetente, quem liberou uma mensagem. Numa implantação multi-inquilino essa é a trilha de responsabilização, e é também onde uma investigação começa quando uma mudança que ninguém assume passou a valer.
+
+**Estado do serviço e atualizações de recursos** importam mais num serviço que num appliance, porque a plataforma muda por baixo de você. Um recurso que aparece sem aviso pode mudar comportamento, e uma interrupção do serviço é um incidente de outra pessoa que se torna seu.
+
+**Mensagens de erro** neste ambiente geralmente significam a conexão de API: autorização revogada ou expirada, permissões alteradas do lado da plataforma, ou limitação sob carga. É o primeiro lugar a olhar, porque produz sintomas que se parecem com falha de política.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O serviço conecta pela API da plataforma, e não pelo caminho do e-mail, o que permite inspecionar depois da filtragem da própria plataforma, agir sobre e-mail já entregue, e enxergar e-mail interno, ao custo de não estar em linha. Organizações se aninham e a política herda para baixo, então investigue para cima antes de culpar um filho. Listas de permissão são mais perigosas que as de bloqueio porque uma entrada errada falha em silêncio, e devem ser as mais estreitas possíveis e revisadas. Extensões cobrem as superfícies de colaboração ao lado do e-mail, que é para onde um atacante se move quando o e-mail é endurecido. Erros geralmente remetem à autorização da API.

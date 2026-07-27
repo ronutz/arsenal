@@ -1,0 +1,63 @@
+---
+slug: fortinet-sd-branch-and-overlay-fabric
+title: "SD-Branch e redes overlay: VXLAN, extensão de LAN e orquestrar muitos sites"
+summary: "Uma filial é um firewall, alguns switches e alguns pontos de acesso que precisam ser configurados de forma consistente em centenas de locais por pessoas que nunca os visitarão. O SD-Branch colapsa isso numa unidade gerenciada, e a rede overlay é o que permite à rede de um site se estender além dele."
+concepts: ["fortinet", "sd-branch", "overlay", "vxlan", "extensão de lan", "orquestrador", "modelos", "variáveis", "provisionamento sem toque", "hub e spoke", "malha completa"]
+relatedTools: []
+sub: sdwan
+relatedArticles: ["fortigate-routing-and-sdwan-selection", "fortiswitch-fortilink-provisioning-and-topologies", "fortigate-ipsec-vpn-topologies"]
+category: networking
+order: 94
+status: reviewed
+updated: "2026-07-26"
+---
+
+A parte difícil de operar duzentas filiais não é filial alguma isolada. É que todas as duzentas precisam ser configuradas de forma consistente, mudadas juntas, e reparadas por alguém que não consegue vê-las.
+
+## O que o SD-Branch de fato consolida
+
+O **SD-Branch** é o FortiGate num site gerenciando tudo o mais naquele site: os switches por FortiLink, os pontos de acesso por CAPWAP, e a WAN por SD-WAN.
+
+A consolidação importa por uma razão além da organização. Quando um equipamento é dono do site, um site vira um **modelo**, e não uma coleção de equipamentos configurados de forma independente. A unidade de mudança é o tipo de site — varejo pequeno, varejo grande, depósito — e uma mudança se aplica a todos os sites daquele tipo de uma vez.
+
+Isso também muda a implantação. O **provisionamento sem toque** significa que o equipamento é enviado direto ao site, alguém o liga, ele encontra a plataforma de gerenciamento, e baixa a configuração do seu papel. Ninguém com conhecimento de redes precisa estar presente ou viajar, que é toda a economia de operar muitos sites pequenos.
+
+## Modelos e variáveis
+
+Em escala a configuração é quase idêntica em toda parte e diferente num punhado de específicos: endereços, nome do site, identificadores de VLAN, detalhes do circuito.
+
+**Modelos** guardam o que é comum. **Variáveis** guardam o que difere, resolvidas por equipamento no momento do provisionamento.
+
+A disciplina que sustenta isso é manter tudo o que for possível no modelo e tudo o que for genuinamente por site nas variáveis. A deriva de configuração começa no dia em que alguém faz uma mudança pontual direto num equipamento, porque agora aquele site está fora do modelo e a próxima mudança de modelo ou sobrescreve a correção ou pula aquele site — e os dois são piores que o problema original.
+
+O **Overlay Orchestrator** constrói o próprio overlay: dados os sites, os hubs e a topologia desejada, ele gera a configuração de túneis, o endereçamento e o roteamento em vez de exigir que cada um seja definido à mão. Isso importa mais no momento em que a topologia muda, já que acrescentar um hub à mão em duzentos spokes é onde os erros moram.
+
+## Topologias de overlay
+
+**Hub único** é o mais simples: todo spoke faz túnel para um hub, e todo tráfego entre sites passa por ele. O hub é ponto único de falha e gargalo de banda.
+
+**Hub duplo** acrescenta um segundo, e a decisão de projeto é ativo-ativo ou ativo-standby. Ativo-ativo usa os dois e exige roteamento capaz de preferir com senso e falhar de forma limpa; ativo-standby é mais simples e deixa capacidade ociosa.
+
+**Malha completa** conecta cada site a cada outro, o que tira o hub do caminho de dados e cria um problema de configuração que cresce com o quadrado do número de sites — e é por isso que existem abordagens dinâmicas. Atalhos sob demanda entre spokes dão comportamento de malha quando dois sites de fato conversam, sem manter túneis que ficariam sem uso.
+
+A resposta pragmática na maioria das escalas é hub-and-spoke com atalhos dinâmicos: o hub trata o controle e o fluxo ocasional, e caminhos diretos se formam onde o tráfego justifica.
+
+## VXLAN e extensão de LAN
+
+O **VXLAN** encapsula quadros de camada 2 dentro de UDP para que um segmento Ethernet possa atravessar uma rede roteada. Esse é o mecanismo; a razão de querê-lo é mais estreita do que parece.
+
+A **extensão de LAN** é a aplicação comum: fazer um site remoto parecer estar no mesmo segmento de camada 2 de um central. Existe porque algumas coisas de fato precisam disso — uma aplicação que fixa endereços no código, um equipamento que só funciona em sua sub-rede original, uma migração em que os endereços ainda não podem mudar.
+
+O enquadramento honesto é que esticar a camada 2 por uma WAN é um compromisso. Carrega tráfego de broadcast por um enlace que preferiria não tê-lo, transforma uma falha remota numa falha local, e remove a fronteira de roteamento que teria contido um problema. É a resposta certa a restrições específicas e o padrão errado.
+
+Onde for usada, mantenha o segmento esticado tão pequeno quanto a exigência demanda, em vez de estender o endereçamento de um site inteiro porque um equipamento precisou.
+
+## Monitorar entre sites
+
+Duzentos sites produzem mais estado do que qualquer um lê, então a postura útil é por exceção: o que está diferente do seu modelo, o que está falhando seu SLA de desempenho, o que não se reportou.
+
+O que vale observar em especial é a **deriva de configuração**, porque ela se acumula em silêncio e só aparece quando uma mudança de modelo se comporta de forma inesperada num site entre muitos. Um equipamento fora de sincronia com seu modelo é um equipamento cujo comportamento ninguém consegue prever a partir do modelo, que é toda a proposta de valor perdida.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O SD-Branch põe o FortiGate no comando de switches, pontos de acesso e WAN num site, o que transforma um site num modelo em vez de uma coleção de equipamentos, e habilita o provisionamento sem toque. Modelos guardam o que é comum e variáveis o que difere por site; edições diretas no equipamento criam deriva que uma mudança de modelo posterior ou sobrescreve ou pula. As topologias de overlay vão de hub único a hub duplo ativo-ativo ou ativo-standby, e malha completa, cuja configuração cresce com o quadrado dos sites, e é por isso que existem atalhos dinâmicos. O VXLAN encapsula camada 2 em UDP para habilitar a extensão de LAN, que é um compromisso que carrega broadcast pela WAN e remove uma fronteira de contenção, então mantenha o segmento esticado mínimo.

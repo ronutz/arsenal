@@ -1,0 +1,79 @@
+---
+slug: fortirecon-attack-surface-and-digital-risk
+title: "FortiRecon: gestão de superfície de ataque e o que a dark web de fato é"
+summary: "A gestão de superfície de ataque externa responde uma pergunta que a maioria das organizações não consegue: o que um atacante vê ao olhar para nós. Ela trabalha de fora, sem credenciais e sem agentes, que é exatamente como um atacante começa, e rotineiramente encontra ativos que ninguém sabia estarem expostos."
+concepts: ["fortinet", "fortirecon", "gestão de superfície de ataque", "asm", "proteção de risco digital", "surface web", "deep web", "dark web", "mitre attack", "cadeia de ataque", "dados semente"]
+relatedTools: []
+sub: fortirecon
+relatedArticles: ["fortinet-soc-architecture-and-adversary-behaviour", "forticnapp-fundamentals-and-cloud-posture"]
+category: security
+order: 90
+status: reviewed
+updated: "2026-07-26"
+---
+
+Toda ferramenta de segurança discutida até aqui olha para dentro, para coisas que você possui e administra. O FortiRecon olha para dentro a partir de fora, o que encontra uma categoria de problema que as ferramentas voltadas para dentro não encontram: as coisas que você possui e desconhece.
+
+## Surface, deep e dark
+
+Esses três termos são usados de forma solta e a distinção é simples.
+
+A **surface web** é o que um buscador indexou. Pública e encontrável.
+
+A **deep web** é tudo que é alcançável e não está indexado: conteúdo atrás de login, atrás de formulário, numa página que nada referencia. A maior parte da web em volume, e inteiramente comum — seu webmail é deep web.
+
+A **dark web** exige software específico para alcançar, mais comumente o Tor, e é projetada para que hospedeiros e visitantes sejam difíceis de identificar. Essa propriedade atrai mercados criminosos, e é por isso que importa aqui.
+
+A distinção que importa na operação é que **deep não significa oculto de um atacante**. Um servidor de homologação sem links é deep web e é descobrível varrendo o espaço de endereços, o que qualquer um pode fazer. Supor o contrário é o raciocínio por trás de muitos sistemas expostos.
+
+## Onde um atacante começa
+
+Os frameworks de ataque descrevem a sequência, e a primeira fase é a que o FortiRecon endereça.
+
+A **cadeia de ataque** começa com reconhecimento, antes de qualquer exploração. O **MITRE ATT&CK** formaliza a mesma ideia e acrescenta detalhe: um adversário reúne informação sobre hosts, domínios, funcionários e tecnologia do alvo antes de tocar em qualquer coisa.
+
+Esse reconhecimento não é detectável pelas suas próprias defesas, porque acontece contra fontes públicas e infraestrutura de terceiros. Nada cruza seu firewall. A única forma de saber o que ele rende é fazê-lo você mesmo, que é o que a gestão de superfície de ataque externa é.
+
+## Gestão de superfície de ataque
+
+A **ASM** descobre e monitora o que é visível externamente: domínios e subdomínios, endereços e faixas, serviços e portas expostos, tecnologias e versões, certificados, armazenamento em nuvem e repositórios de código.
+
+A descoberta parte de **dados semente** — os domínios, marcas e faixas de endereço que você conhece — e se expande seguindo o que eles revelam: registros de transparência de certificados, registros DNS, WHOIS e relações de hospedagem, até montar o parque visível.
+
+O que ela encontra, de forma confiável, em quase toda implantação:
+
+- **Infraestrutura esquecida.** Um servidor de homologação de um projeto encerrado, um microsite de marketing, o parque de uma empresa adquirida que ninguém integrou.
+- **Nuvem não gerenciada.** A conta de um time fora da visibilidade central.
+- **Interfaces de gerência expostas.** Um painel administrativo que jamais deveria ter sido público.
+- **Certificados expirados ou emitidos indevidamente.**
+- **Tecnologias com vulnerabilidades conhecidas**, identificadas por versão a partir de fora.
+
+O valor não é que sejam exóticas. É que são comuns e invisíveis ao inventário que você mantém, e um atacante as encontra com as mesmas técnicas.
+
+## Proteção de risco digital
+
+A **proteção de marca** observa personificação: domínios parecidos registrados contra o seu, aplicativos falsos, contas sociais fraudulentas. O registro de um domínio parecido frequentemente precede uma campanha de phishing, então é aviso antecipado, e não reclamação.
+
+A **inteligência centrada no adversário** observa fóruns e mercados criminosos em busca de menções à sua organização: credenciais à venda, acesso sendo anunciado, dados sendo negociados, ou seu nome aparecendo em listas de alvos.
+
+O achado que muda uma tarde são credenciais vazadas. Saber que um conjunto das suas contas aparece num vazamento permite redefini-las antes de serem usadas, e essa janela é todo o valor.
+
+## Torná-lo útil
+
+A descoberta produz uma lista, e uma lista ainda não é trabalho. Duas disciplinas:
+
+**Propriedade.** Um achado que ninguém possui é um achado que ninguém corrige. A conta de nuvem não gerenciada é justamente o caso em que ninguém tem certeza de quem é, e estabelecer isso é a maior parte da remediação.
+
+**Priorização por exposição e consequência.** Um certificado expirado num host descomissionado não é emergência; uma interface administrativa exposta num sistema vivo é. Ordenar só por severidade não capta isso.
+
+Implantações de **MSSP** acrescentam uma dimensão de inquilino: o parque de cada cliente é separado, a integração exige os dados semente daquele cliente, e achados jamais podem cruzar entre inquilinos. A separação é controle de segurança, e não conveniência organizacional.
+
+## APIs
+
+A API importa aqui mais que na maioria dos produtos, porque a saída da ASM é um fluxo, e não um painel. Ativos descobertos pertencem ao seu inventário, achados pertencem ao sistema de chamados onde a remediação é acompanhada, e vazamentos de credenciais deveriam disparar uma resposta em vez de esperar ser notados.
+
+Um console que precisa ser visitado para ser útil não será visitado com frequência suficiente para que um aviso antecipado seja antecipado.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Surface web é indexada, deep web é alcançável porém não indexada e inclui conteúdo comum, dark web exige software específico e hospeda mercados criminosos; deep não significa oculto de um atacante. O reconhecimento é a primeira fase da cadeia de ataque e acontece fora da sua visibilidade, então a única forma de vê-lo é fazê-lo. A ASM parte de dados semente e se expande por transparência de certificados, DNS e relações de hospedagem, encontrando de forma confiável infraestrutura esquecida, nuvem não gerenciada e interfaces de gerência expostas. A proteção de risco digital cobre domínios parecidos e menções em fóruns criminosos, e credenciais vazadas são o achado com a janela útil mais curta. Achados precisam de dono e de priorização por exposição, e a API importa porque a saída é um fluxo.

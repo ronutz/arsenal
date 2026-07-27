@@ -1,0 +1,73 @@
+---
+slug: fortiappsec-cloud-waf-and-managed-delivery
+title: "FortiAppSec Cloud: WAF as a Service, DDoS, and Managed Application Delivery"
+summary: "FortiAppSec Cloud moves web application protection off your equipment and into a service in front of your origin. That changes what you configure, what you can see, and where the failure modes are, and the origin-exposure problem is the one that undoes deployments."
+concepts: ["fortinet", "fortiappsec", "cloud waf", "saas", "origin protection", "ddos", "bot mitigation", "cdn", "dns", "api protection"]
+relatedTools: []
+sub: fortiappsec
+relatedArticles: ["fortiweb-application-security-bots-api-and-dos", "fortigate-cloud-deployments-and-fortisase"]
+category: cloud
+order: 87
+status: reviewed
+updated: "2026-07-26"
+---
+
+A cloud WAF is the same protective idea as an on-premises one with a different delivery model, and the differences are what determine whether a deployment works.
+
+## How traffic reaches it
+
+You point DNS for the protected hostname at the service. Clients resolve to the service, the service inspects, and clean traffic is forwarded to your **origin**.
+
+That single mechanism produces the defining property and the defining weakness.
+
+**The property:** protection happens before traffic reaches your infrastructure, so volumetric attacks are absorbed by capacity you do not own and do not pay to keep idle. This is the argument no on-premises device can answer, since anything in your rack is behind a link that can be saturated.
+
+**The weakness:** if an attacker learns your origin address, they can go around the service entirely. Every protection you configured becomes irrelevant, and the attack arrives at an origin that was never designed to face the internet directly.
+
+## Locking the origin
+
+The mitigations, in rough order of how often they are skipped:
+
+**Restrict origin access to the service's address ranges.** A firewall rule on the origin permitting only the cloud service is the single most important control in the deployment, and it is routinely deferred.
+
+**Do not publish the origin in DNS.** A leftover A record for the bare hostname, a `www` variant, an old staging entry, or a mail record on the same host will give it away. So will historical DNS data, which is archived and searchable.
+
+**Watch what the application leaks.** Error pages, redirects and email headers reproduce the real hostname more often than people expect.
+
+**Rotate the origin address** if it has already been exposed, because it does not become secret again on its own.
+
+## What the service provides
+
+**WAF** — the same signature and behavioural protection as the on-premises product, managed as a service.
+
+**DDoS mitigation** at network and application layers, with capacity that is the point of the model.
+
+**Bot mitigation**, which matters more in front of a public application than anywhere else, because credential stuffing and scraping target exactly what a cloud WAF sits in front of.
+
+**API protection**, including schema validation where a specification exists.
+
+**Content delivery**, since the service is already terminating and forwarding, so caching static content is nearly free.
+
+The operational shift is that you configure policy and Fortinet operates the platform. That removes patching, scaling and availability from your responsibility, and removes the ability to tune the platform underneath. Whether that is a gain depends on whether your constraint was operational capacity or specific behaviour.
+
+## Certificates
+
+The service terminates TLS, which means it needs a certificate for your hostname. Either you upload one, or the service obtains and renews one for you.
+
+The managed option removes an expiry that someone has to remember, and expiring certificates remain a leading cause of self-inflicted outages. The uploaded option keeps issuance under your control where policy requires it.
+
+Either way the origin connection should also be encrypted, which means the origin needs a certificate too — commonly one nobody thinks about because no browser ever validates it.
+
+## Visibility
+
+The trade for not operating the platform is that you see what the service reports. In practice this is generous — traffic, attacks, bots, latency, cache behaviour — and it is not the same as holding the logs.
+
+The two things worth setting up early:
+
+**Log export** into your own SIEM, so cloud WAF events sit alongside everything else rather than in a separate console that gets checked after an incident rather than during one.
+
+**Alerting on attack volume changes** rather than on individual events. Individual blocks are constant background noise on any public application; a change in the pattern is the signal.
+
+## What an exam candidate should be able to state cold
+
+Traffic reaches the service by DNS, the service inspects and forwards to the origin, and volumetric protection is the advantage no on-premises device can match. The defining weakness is origin exposure: an attacker who learns the origin address bypasses everything, so restricting origin access to the service's ranges is the most important control in the deployment. Certificates can be managed by the service or uploaded, and the origin connection needs one too. Export logs to your own SIEM and alert on changes in attack pattern rather than on individual blocks.

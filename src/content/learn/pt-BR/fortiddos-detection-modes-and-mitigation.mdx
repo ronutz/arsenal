@@ -1,0 +1,84 @@
+---
+slug: fortiddos-detection-modes-and-mitigation
+title: "FortiDDoS: detecção contra prevenção, limiares e como o bloqueio decide"
+summary: "Um appliance de DDoS precisa distinguir um ataque de uma terça-feira movimentada, e faz isso aprendendo como seu tráfego normalmente é, em vez de reconhecer assinaturas. Essa única escolha de projeto explica o dimensionamento, os dois modos de operação, e por que existe o sistema de penalidades em vez de um bloqueio simples."
+concepts: ["fortinet", "fortiddos", "ddos", "modo de detecção", "modo de prevenção", "limiar", "linha de base", "syn flood", "acl", "lista de bloqueio", "fator de penalidade"]
+relatedTools: []
+sub: fortiddos
+relatedArticles: ["fortiweb-application-security-bots-api-and-dos", "fortigate-firewall-policy-and-nat"]
+category: security
+order: 88
+status: reviewed
+updated: "2026-07-26"
+---
+
+A defesa volumétrica tem um problema que assinatura alguma resolve: os pacotes numa inundação normalmente são válidos. O que os torna um ataque é que há demais, de lugares demais, ao mesmo tempo. O FortiDDoS é construído em torno de medir isso, e não de reconhecê-lo.
+
+## Dimensionamento, e por que não é opcional
+
+Escolher um modelo é decisão de capacidade, e os números que importam são vazão e o tamanho de ataque que o appliance é classificado para absorver.
+
+O fato direto é que um equipamento em linha não consegue mitigar um ataque maior que o enlace que o alimenta. Se 10 Gbps de tráfego de ataque chegam num enlace de 10 Gbps, o enlace está cheio antes de o appliance decidir qualquer coisa. Mitigação de DDoS local trata ataques que cabem no seu cano, e qualquer coisa maior precisa ser tratada acima, por uma operadora ou um serviço de limpeza em nuvem.
+
+Isso não é crítica ao produto; é a física da implantação, e um projeto que a ignora produz um appliance funcionando perfeitamente durante uma indisponibilidade.
+
+## Detecção e prevenção
+
+O **modo de detecção** observa e informa. Constrói a linha de base do tráfego, sinaliza o que teria tratado, e não descarta nada.
+
+O **modo de prevenção** age sobre o que detecta.
+
+A sequência que funciona é detecção primeiro, por tempo suficiente para ver um período representativo, e então prevenção. Um equipamento passado direto para prevenção descarta tráfego legítimo no primeiro pico que nunca viu, e o incidente resultante é causado pela proteção, e não por um ataque.
+
+"Tempo suficiente" significa cobrir os ciclos que seu tráfego de fato tem: a semana útil, o fechamento de mês, a campanha ou o processamento em lote que move seus números. Uma linha de base aprendida numa quinzena calma codifica o normal errado.
+
+## Limiares e a linha de base
+
+O FortiDDoS estabelece como o normal se parece em muitos parâmetros — taxas de pacotes por tipo, taxas de conexão, distribuição de protocolos, comportamento de origem — e trata o desvio como o sinal.
+
+Limiares podem ser aprendidos automaticamente ou definidos à mão. Automático é o certo para a maioria, porque o número de parâmetros está muito além do que alguém ajustará manualmente. Manual importa onde você sabe algo que o appliance não consegue inferir, como um evento agendado que legitimamente parecerá um ataque.
+
+A consequência a internalizar é que isto é detecção de anomalias, então herda o modo de falha da detecção de anomalias: um pico legítimo, súbito e genuíno parece exatamente um ataque. Um lançamento de produto ou uma menção na imprensa serão mitigados salvo se alguém tiver antecipado.
+
+## Períodos de bloqueio e fatores de penalidade
+
+Quando uma origem é identificada como atacante, a resposta não é bloqueio permanente. Origens são bloqueadas por um período, e a reincidência o alonga.
+
+O raciocínio vale entender, porque é o que separa isso de uma ACL:
+
+**Endereços são compartilhados e forjados.** Um bloqueio permanente num endereço que se revela um gateway NAT de operadora derruba um grande número de usuários legítimos, e o bloqueio sobrevive ao ataque por meses.
+
+**Ataques terminam.** Uma origem que fazia parte de uma botnet há uma hora pode ser uma máquina já limpa agora.
+
+**A escalada mira a persistência.** Uma origem que para ao ser bloqueada é tratada barato; uma que volta de imediato ganha um bloqueio mais longo. O sistema gasta sua severidade nas origens que a merecem.
+
+O efeito prático é que a mitigação é autolimitada, em vez de acumular uma lista permanente que ninguém ousa podar.
+
+## SYN floods e anomalias
+
+A proteção contra **SYN flood** endereça o ataque clássico de esgotamento, em que conexões semiabertas consomem a tabela de conexões do servidor. O appliance valida que uma origem completa o handshake antes de a conexão consumir recursos do servidor, então origens forjadas — que não conseguem completá-lo — são filtradas sem o servidor jamais vê-las.
+
+A **proteção contra anomalias** descarta pacotes malformados ou impossíveis: combinações inválidas de flags, comprimentos errados, endereços que não podem ser legítimos. Custam quase nada para verificar e não há tráfego legítimo do outro lado da decisão.
+
+## Listas de controle de acesso e de bloqueio
+
+ACLs e listas de bloqueio ficam ao lado da maquinaria comportamental e respondem outra pergunta: não "isto é anômalo", e sim "isto é permitido".
+
+Ganham seu lugar para origens reconhecidamente ruins, geografias com que você não tem negócio, e protocolos que jamais deveriam alcançar um dado serviço. São baratas porque agem antes da análise.
+
+A disciplina é que uma lista estática é um passivo de manutenção que apodrece em silêncio. Uma entrada acrescentada durante um incidente três anos atrás segue descartando tráfego e ninguém lembra por quê, então entradas merecem um motivo e uma data de revisão.
+
+## Ler os gráficos
+
+Os gráficos de estatísticas são como um ataque é caracterizado depois do fato, e o formato geralmente nomeia o tipo:
+
+- Uma **inundação volumétrica** mostra a taxa de pacotes subindo muito além da linha de base com a mistura de protocolos distorcida.
+- Um **SYN flood** mostra colapso na razão entre conexões completadas e tentadas.
+- Um **ataque na camada de aplicação** mostra taxas modestas de pacotes contra um serviço específico, e é por isso que escapa por completo do raciocínio baseado em banda.
+- Um **pico legítimo** mostra alta em tudo com as *proporções* intactas, e essa é a pista que o distingue de um ataque.
+
+Essa última é a leitura que vale praticar, porque é a que decide se você está tendo um incidente ou um bom dia.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Um equipamento em linha não mitiga mais do que seu enlace carrega, então ataques maiores pertencem a montante. O modo de detecção aprende a linha de base e informa; a prevenção age; rode detecção o bastante para cobrir seus ciclos reais de tráfego. Limiares são aprendidos em muitos parâmetros e isto é detecção de anomalias, então um pico legítimo parece um ataque. O bloqueio é temporário com penalidades crescentes porque endereços são compartilhados e forjados e ataques terminam. A proteção contra SYN flood valida o handshake para que origens forjadas nunca alcancem o servidor. Um pico legítimo mantém suas proporções; um ataque as distorce.

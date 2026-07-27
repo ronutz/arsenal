@@ -1,0 +1,61 @@
+---
+slug: fortigate-traffic-shaping-and-qos
+title: "FortiGate Traffic Shaping and QoS: Guaranteeing Bandwidth That Is Already Full"
+summary: "Shaping only matters when a link is congested, because until then everything gets through. What it decides is who suffers when there is not enough, and the recurring mistake is guaranteeing more than the link has and calling it a policy."
+concepts: ["fortinet", "fortigate", "traffic shaping", "qos", "shared shaper", "per-ip shaper", "interface-based shaping", "dscp", "priority", "mean opinion score", "forward error correction"]
+relatedTools: []
+sub: fortigate
+relatedArticles: ["fortigate-routing-and-sdwan-selection", "fortiswitch-vlans-stp-ports-and-qos"]
+category: networking
+order: 93
+status: reviewed
+updated: "2026-07-26"
+---
+
+Traffic shaping is unusual among firewall features in that it does nothing at all most of the time. On an uncongested link every packet goes through and no policy is exercised. Shaping is a plan for the minutes when that stops being true.
+
+## The three shaper types
+
+**Shared shapers** apply a bandwidth limit across everything matching a policy, collectively. Ten users sharing a 10 Mbps shared shaper get 10 Mbps between them.
+
+**Per-IP shapers** apply the limit to each source separately. Ten users on a 10 Mbps per-IP shaper can consume 100 Mbps in total, which is either what you wanted or a nasty surprise.
+
+Choosing wrongly between these is the most common shaping fault, and the symptom is either a link that saturates despite a limit, or a limit that throttles a group who should each have had the allowance.
+
+**Interface-based shaping** applies at the interface rather than per policy, which is how you express the physical reality that a WAN link has a ceiling regardless of which policy the traffic matched. Policy shapers divide a pool; interface shaping defines the pool.
+
+## Guaranteed, maximum, and priority
+
+A shaper carries up to three settings and they interact in a way worth being precise about.
+
+**Guaranteed bandwidth** is reserved. Traffic matching this policy will get at least this much when it wants it.
+
+**Maximum bandwidth** is the ceiling. It will get no more than this even if the link is idle.
+
+**Priority** decides the order in which traffic above its guarantee competes for what remains.
+
+The failure that appears in every deployment eventually: **guarantees that sum to more than the link can carry**. Each looks reasonable in isolation, the total is impossible, and the device honours them in an order nobody designed. The discipline is to add the guarantees up against the real link speed, and to leave headroom rather than allocating the last megabit.
+
+The related subtlety is that a guarantee on an idle class is not free — it is capacity that cannot be given away, so over-guaranteeing quiet traffic starves busy traffic for no benefit.
+
+## DSCP, and who you can trust
+
+Traffic can be classified by policy match, or by the **DSCP** marking already in the packet.
+
+Trusting a marking is only sensible where you control what set it. An endpoint marking its own traffic as expedited forwarding is not evidence of anything, since any application can do that and the ones that matter least are often the most aggressive about it. The usual arrangement is to trust markings from managed devices, re-mark at the edge for everything else, and preserve markings across a WAN where the carrier honours them.
+
+That last point needs verifying rather than assuming: a carrier that does not honour DSCP will deliver your carefully marked traffic as best effort, and the shaping effort ends at your own egress.
+
+## Voice, MOS and FEC
+
+Voice and video are the reason most people configure shaping at all, and they fail differently from bulk traffic. A file transfer that slows down is slower; a call that loses packets is unintelligible.
+
+**Mean opinion score** expresses call quality as a single number derived from latency, jitter and loss. Its value is that it converts three measurements nobody agrees how to weigh into one that maps to what a user would say about the call. A link can look healthy on a bandwidth graph while its MOS says the calls on it are poor, and the MOS is the one that matches the complaints.
+
+**Forward error correction** takes a different approach to loss: rather than retransmitting what was lost, it sends redundant data so the receiver can reconstruct missing packets without asking again. On a real-time stream that is the only option that helps, because a retransmission arrives after the moment it was needed.
+
+The cost is bandwidth — you are deliberately sending more than the payload requires. That is worth it on a lossy link carrying voice and wasteful on a clean link carrying backups, so it belongs on specific overlays rather than switched on globally.
+
+## What an exam candidate should be able to state cold
+
+Shaping only acts under congestion; it decides who suffers when there is not enough. Shared shapers limit a policy collectively, per-IP shapers limit each source, and confusing them produces either saturation despite a limit or throttling of a group. Interface shaping defines the pool that policy shapers divide. Guarantees that sum beyond the link's capacity is the recurring design fault, and a guarantee on idle traffic is capacity that cannot be reused. Trust DSCP only from devices you control, and verify the carrier honours it. MOS converts latency, jitter and loss into a number matching user experience; FEC trades bandwidth for loss resilience and suits real-time traffic where retransmission arrives too late.

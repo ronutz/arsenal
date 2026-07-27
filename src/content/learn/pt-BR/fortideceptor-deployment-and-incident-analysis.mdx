@@ -1,0 +1,65 @@
+---
+slug: fortideceptor-deployment-and-incident-analysis
+title: "Implantação do FortiDeceptor: redes, sites isolados, gerência central e análise de incidentes"
+summary: "Uma implantação de dissimulação precisa alcançar os segmentos onde os atacantes operam, o que frequentemente inclui redes isoladas por projeto. A topologia de implantação, o assistente que a monta, e a análise que segue um alerta são o corpo prático de operar o FortiDeceptor."
+concepts: ["fortinet", "fortideceptor", "implantação", "rede de dissimulação", "isolado", "gerência central", "análise de incidentes", "integração", "ot", "quarentena"]
+relatedTools: []
+sub: fortideceptor
+relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy", "fortinac-device-modeling-and-profiling"]
+category: security
+order: 87
+status: reviewed
+updated: "2026-07-26"
+---
+
+A dissimulação só detecta o que consegue alcançar. O trabalho de implantação é colocar chamarizes nos segmentos que importam, inclusive nos que são deliberadamente difíceis de alcançar.
+
+## Redes de implantação
+
+Uma **rede de implantação** é um segmento onde chamarizes são colocados. Na prática isso significa uma VLAN, e os chamarizes tomam endereços nela como hosts comuns fariam.
+
+A regra de projeto decorre diretamente do que faz a dissimulação funcionar: chamarizes precisam estar **nos segmentos que um atacante percorre**, e precisam ser indistinguíveis dos hosts reais neles. Um chamariz numa "VLAN de dissimulação" dedicada que nada mais usa é trivialmente identificável e detecta apenas o invasor menos cuidadoso.
+
+O **assistente de implantação** existe porque montar isso à mão é trabalhoso: escolher tipos de chamariz, alocar endereços, mapear a VLANs, e fazê-lo de forma consistente em muitos segmentos. Usá-lo e revisar o que ele produziu é mais rápido que construir cada chamariz individualmente, e torna a implantação descritível, o que importa quando outra pessoa precisa mantê-la.
+
+## Implantações isoladas
+
+Tecnologia operacional e outros ambientes isolados não conseguem alcançar um serviço em nuvem ou um gerenciador central, e esse isolamento é o propósito, e não um inconveniente a contornar.
+
+O FortiDeceptor suporta operar nesses ambientes, o que muda duas coisas: atualizações de assinaturas e conteúdo precisam ser trazidas deliberadamente em vez de buscadas, e o alerta precisa alcançar um operador pelo caminho que o ambiente permitir.
+
+É aqui que a dissimulação ganha valor particular. Redes isoladas frequentemente são aquelas em que agentes não podem ser instalados e a inspeção de tráfego é limitada, e um chamariz não precisa de nenhum dos dois. Ele fica na rede e espera, que é um controle que sobrevive a restrições que a maioria dos outros não sobrevive.
+
+## Gerência central e de topo
+
+Onde vários equipamentos são implantados — múltiplos sites, múltiplos ambientes isolados — a **gerência central** os agrega para que incidentes sejam vistos num lugar e a configuração aplicada de forma consistente. A **gerência de topo** estende a mesma ideia mais um nível, o que serve a um parque grande ou a um provedor administrando várias organizações.
+
+A razão operacional de se importar é que alertas de dissimulação são raros e de alto valor. Um alerta raro chegando num console que ninguém observa é pior que alerta nenhum, então o ponto de agregação deve ser algo já dentro de um fluxo de trabalho, e não uma tela separada.
+
+## Integração
+
+A dissimulação é mais útil quando seu sinal de alta confiança move alguma coisa.
+
+Enviar alertas ao **FortiAnalyzer ou a um SIEM** os coloca ao lado de tudo o mais, para que uma interação com chamariz possa ser correlacionada com o que a mesma origem fez em outro lugar. Essa correlação frequentemente converte um alerta numa linha do tempo.
+
+A integração com **FortiGate ou controle de acesso à rede** permite contenção automática: um endereço que tocou um chamariz pode ser posto em quarentena ou ter o acesso restrito. Este é um dos melhores candidatos a automação justamente pela propriedade de poucos falsos positivos — a cautela usual com resposta automática é proporcional aos falsos positivos, e aqui eles são raros.
+
+A cautela que permanece é o caso do endereço compartilhado. Colocar em quarentena uma origem que se revela um gateway de NAT ou um host de salto afeta todos atrás dele, então a automação deveria considerar o que está por trás do endereço que está prestes a cortar.
+
+## Analisar um incidente
+
+A ordem que chega a uma resposta:
+
+**1. O que foi tocado, e por quem?** O chamariz e o endereço de origem. O mapa de implantação mostra onde os dois ficam, o que frequentemente torna a intenção óbvia — movimento lateral por um segmento parece diferente de uma conexão única e dirigida.
+
+**2. Um token foi envolvido?** Se a interação seguiu um token, o endpoint que o guardava está comprometido. Esse é o fato mais acionável que a dissimulação produz, e aponta para uma máquina real, e não falsa.
+
+**3. O que eles tentaram?** Credenciais tentadas, comandos executados, arquivos tocados. Num chamariz de pilha completa isso é registro comportamental genuíno.
+
+**4. Como mapeia a técnicas conhecidas?** Situar o comportamento num framework o torna comparável com outras detecções e diz o que costuma vir a seguir, que é o que transforma um alerta numa busca.
+
+**5. Onde mais essa origem esteve?** Este é o passo de correlação, e precisa da integração acima. Uma origem que tocou um chamariz e também autenticou em algum lugar incomum é situação diferente de uma que só tocou o chamariz.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Chamarizes precisam ficar nos segmentos que atacantes percorrem e ser indistinguíveis de hosts reais, então uma VLAN de dissimulação dedicada derrota o propósito. O assistente monta chamarizes, endereços e redes de forma consistente. O suporte a ambientes isolados importa porque ambientes isolados frequentemente não rodam agentes, e um chamariz não precisa de nenhum. Gerência central e de topo agregam múltiplos equipamentos para que alertas raros e valiosos cheguem onde alguém está olhando. A dissimulação é forte candidata a contenção automática porque falsos positivos são raros, com cuidado quanto a endereços compartilhados. Analise em ordem: o que foi tocado, se um token foi envolvido e portanto qual endpoint real está comprometido, o que foi tentado, e onde mais aquela origem aparece.

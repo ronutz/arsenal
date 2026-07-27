@@ -1,0 +1,67 @@
+---
+slug: fortiappsec-advanced-protection-and-availability
+title: "FortiAppSec Cloud: Client-Side Protection, Behavioural Detection, GSLB, and Availability"
+summary: "Beyond the WAF, a cloud application service adds three things the on-premises product cannot: protection for code running in the visitor's browser, behavioural detection that works because the service sees traffic across many customers, and global load balancing that decides which region serves a request before it is made."
+concepts: ["fortinet", "fortiappsec", "client-side protection", "magecart", "behavioural detection", "biometric", "openapi", "gslb", "health check", "synthetic monitoring", "fortiai"]
+relatedTools: []
+sub: fortiappsec
+relatedArticles: ["fortiappsec-cloud-waf-and-managed-delivery", "fortiweb-application-security-bots-api-and-dos"]
+category: cloud
+order: 92
+status: reviewed
+updated: "2026-07-26"
+---
+
+A WAF inspects requests arriving at your application. Three categories of risk sit outside that, and a cloud service is positioned to address them in a way an appliance in your rack is not.
+
+## Client-side protection
+
+Modern pages load scripts from places you do not control: analytics, payment widgets, tag managers, advertising, chat. Each runs with full access to the page, including whatever the visitor types into it.
+
+That is the gap a WAF cannot see. The malicious script is not in a request to your server; it is delivered to the browser from a third party and it exfiltrates directly to an attacker. Your server logs show nothing because nothing wrong reached your server. Card-skimming attacks work exactly this way, and they persist for months because the site behaves normally.
+
+**Client-side protection** inventories what actually executes in visitors' browsers and what those scripts talk to, then flags change: a new script nobody added, an existing script that started sending data somewhere new, a dependency that changed behaviour after an update.
+
+The uncomfortable finding in most first deployments is the inventory itself. Sites routinely run scripts nobody in the organisation can account for, often left from a campaign years ago, and every one of them can read the payment form.
+
+## Behavioural and biometric detection
+
+Distinguishing a human from automation is the recurring problem behind credential stuffing, scraping and fraud, and it cannot be solved by inspecting request contents because the requests are well-formed.
+
+**Behavioural detection** looks at how the client interacts: the timing between actions, the movement of a pointer, the cadence of typing, the way a page is navigated. Humans are irregular in characteristic ways; automation is regular, or irregular in ways that do not match how people actually behave.
+
+The **biometric** framing is worth being precise about, because the word suggests something it does not mean here. This is not identifying a person. It is measuring interaction patterns to judge whether the client is a human at all. The distinction matters for privacy conversations, and getting it wrong in either direction misrepresents the product.
+
+The advantage a service has over an appliance is the population. Detection improves with the variety of traffic seen, and a service in front of many customers sees far more than any single deployment can.
+
+## AI-assisted detection and triage
+
+**AI-based threat detection** identifies patterns that do not match a known signature and are not individually anomalous, which is where signature and threshold approaches both run out.
+
+**FortiAI Assistant** addresses the more mundane and more expensive problem: the time it takes a person to decide whether an alert is real. It summarises, explains what triggered, and suggests where to look.
+
+The limitation deserves stating clearly rather than being discovered. These systems are confident regardless of whether they are right, and they are least reliable exactly where a case is unusual — which is the case you most needed help with. They shorten routine triage and are not a substitute for the judgement applied to the odd one. Treat the output as a well-informed opinion to verify, not a verdict.
+
+## API protection with OpenAPI
+
+Where a specification exists, validating against it is the strongest control available: a request that violates the contract is invalid without any reference to attack patterns.
+
+The practical obstacle is that specifications drift. A specification generated at release and never updated will reject legitimate traffic after the next deployment, and the resulting incident gets blamed on the security service. Keeping validation aligned with the deployed application is an ongoing arrangement with whoever ships the API, not a one-time upload.
+
+## Global load balancing
+
+**GSLB** decides which region answers, and it does so through DNS: a resolver asks where the hostname lives, and the answer depends on where the client is and which regions are healthy.
+
+Onboarding a domain means delegating that decision to the service. From then on:
+
+**Health checks** determine which endpoints are eligible. The same discipline applies as with any load balancer, and the same trap: a check that only confirms the port is open will keep directing users to a region whose application has failed.
+
+**Synthetic testing** goes further and is the reason to bother with GSLB monitoring at all. Rather than checking from inside your infrastructure, it exercises the application from the outside, from multiple locations, the way a user would. That catches the failures internal monitoring reports as healthy: a regional network problem between users and your working servers, a CDN misconfiguration, a certificate that expired in one region only.
+
+The gap between "our monitoring is green" and "users cannot reach us" is exactly what external synthetic checks close.
+
+**DNS caching** is the constraint to plan around. A failover is only as fast as the record's time-to-live allows, and resolvers do not always honour a short one. GSLB failover is minutes rather than seconds, and a design that assumed otherwise will be disappointed during the first regional failure.
+
+## What an exam candidate should be able to state cold
+
+Client-side protection covers scripts executing in the visitor's browser, which a WAF never sees because the data leaves the browser directly and never reaches your server. Behavioural detection judges whether a client is human from interaction patterns and does not identify people. AI assists triage but is confident whether or not it is right, and is least reliable on unusual cases. OpenAPI validation is the strongest API control and requires the specification to track the deployed application. GSLB decides by DNS, health checks must test the application rather than the port, synthetic testing catches failures internal monitoring calls healthy, and failover is bounded by DNS caching.

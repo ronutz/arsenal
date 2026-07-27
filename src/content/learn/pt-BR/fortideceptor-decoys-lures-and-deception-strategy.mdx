@@ -1,0 +1,69 @@
+---
+slug: fortideceptor-decoys-lures-and-deception-strategy
+title: "FortiDeceptor: chamarizes, iscas, tokens e o desenho de uma estratégia de dissimulação"
+summary: "A dissimulação funciona sobre uma premissa que nenhum outro controle compartilha: um chamariz não tem usuários legítimos, então qualquer interação com ele é suspeita por construção. Essa única propriedade é por que a dissimulação produz tão poucos falsos positivos, e é também o que uma implantação pode destruir sem perceber."
+concepts: ["fortinet", "fortideceptor", "dissimulação", "chamariz", "isca", "token", "honeypot", "mitre", "detecção", "estratégia"]
+relatedTools: []
+sub: fortideceptor
+relatedArticles: ["fortinet-soc-architecture-and-adversary-behaviour", "fortiedr-threat-hunting-forensics-and-investigation"]
+category: security
+order: 86
+status: reviewed
+updated: "2026-07-26"
+---
+
+Quase toda tecnologia de detecção tem a mesma dificuldade: distinguir atividade maliciosa de atividade legítima parecida com ela. A dissimulação contorna isso por completo.
+
+## Por que um chamariz quase não produz falsos positivos
+
+Um **chamariz** é um sistema que existe apenas para ser descoberto. Roda serviços, parece real, e **usuário ou processo legítimo algum tem razão para tocá-lo**. Nada aponta para ele no DNS que uma pessoa seguiria, aplicação alguma depende dele, tarefa de backup alguma o varre.
+
+Então uma interação com um chamariz não é pontuada, ponderada nem correlacionada. Ela é anômala por construção, e esse é todo o argumento a favor da dissimulação como controle: o sinal é quase sem ruído de um jeito que assinatura ou linha de base alguma consegue ser.
+
+O corolário é que **a propriedade é destruída por descuido**. Um chamariz numa sub-rede que seu varredor de vulnerabilidades percorre gera alertas toda noite. Um chamariz respondendo por um nome num sistema de inventário é tocado pela gestão de ativos. Preservar a propriedade é o trabalho de verdade, e é tarefa de projeto, não de configuração.
+
+## Chamarizes, iscas e tokens
+
+Três coisas distintas, e confundi-las torna o projeto mais difícil do que precisa ser.
+
+Um **chamariz** é o sistema falso em si, implantado na sua rede, rodando serviços que um atacante acharia interessantes: compartilhamentos SMB, RDP, SSH, portas de banco de dados, protocolos industriais.
+
+Uma **isca** é o que torna o chamariz descobrível. Um chamariz que ninguém encontra não detecta nada, então as iscas são as migalhas: um compartilhamento anunciado onde uma varredura o encontraria, um serviço numa porta que convida a uma conexão.
+
+Um **token** é uma isca colocada num endpoint **real**: uma credencial salva, um compartilhamento nos favoritos, uma entrada de conexão RDP, um login em cache no navegador. Seu propósito é diferente e mais valioso: é isca para um atacante que já comprometeu uma máquina real e procura para onde ir em seguida. Usá-lo o leva a um chamariz.
+
+Que os tokens fiquem em máquinas reais é a parte importante. Chamarizes detectam varredura e movimento lateral; tokens detectam **colheita de credenciais e a decisão sobre para onde mover em seguida**, que é mais cedo e mais acionável.
+
+## Pilha leve e pilha completa
+
+Chamarizes de **pilha leve** emulam serviços. São baratos o bastante para implantar em grande número, o que importa porque cobertura por muitas sub-redes é o que torna provável que um atacante encontre um. Respondem de forma convincente à descoberta e a uma primeira interação, e um atacante determinado sondando fundo percebe.
+
+Chamarizes de **pilha completa** rodam um sistema operacional real. São convincentes sob interação sustentada e permitem observar o que um atacante de fato faz, o que é inteligência, e não apenas detecção. Custam mais e você implanta menos.
+
+O formato sensato é pilha leve para amplitude e um pequeno número de pilha completa onde você mais quer observar comportamento em vez de apenas registrar uma passagem.
+
+## Desenhar a dissimulação
+
+As perguntas de projeto que determinam se uma implantação encontra algo:
+
+**Onde um atacante olharia?** Chamarizes pertencem aos caminhos que um invasor tomaria, e não a um canto tranquilo onde estão seguros. Isso significa VLANs de usuários, segmentos de servidores, e os segmentos adjacentes ao que for valioso.
+
+**O que eles achariam plausível?** Um chamariz chamado `HONEYPOT-01` num parque em que tudo mais segue uma convenção de nomes não é dissimulação. Chamarizes devem ser indistinguíveis de seus vizinhos em nomes, endereçamento e perfil de serviços.
+
+**O que você está protegendo?** Chamarizes concentrados em torno das joias da coroa detectam o atacante que já chegou lá. Chamarizes espalhados detectam mais cedo. Os dois são legítimos; fazer um acreditando ter feito o outro não é.
+
+**Como você o manterá invisível para você mesmo?** Exclusões em varredores, inventários de ativos e monitoramento precisam existir antes da implantação, ou seu próprio ferramental produz os primeiros cem alertas.
+
+## Ler o que a dissimulação diz
+
+Um alerta de chamariz é de alta confiança e ainda precisa de interpretação:
+
+**Qual chamariz, e como foi alcançado?** Um chamariz tocado por uma varredura de toda uma sub-rede é diferente de um alcançado diretamente por endereço, o que implica conhecimento.
+
+**Um token foi envolvido?** Um alerta de token nomeia o endpoint real em que o token estava, o que diz qual máquina está comprometida. Isso costuma ser mais valioso que a própria interação com o chamariz.
+
+**O que eles fizeram?** Num chamariz de pilha completa, o comportamento observado mapeia a técnicas reconhecíveis, e mapeá-lo a um framework como as matrizes MITRE, inclusive a matriz ICS onde houver tecnologia operacional, o torna comparável com tudo o mais que você vê.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Um chamariz não tem usuários legítimos, então interação com ele é anômala por construção, e preservar essa propriedade contra seus próprios varredores e inventários é o trabalho real da implantação. Chamarizes são sistemas falsos, iscas os tornam descobríveis, e tokens são iscas em endpoints reais que pegam um atacante escolhendo para onde mover. Pilha leve emula serviços e dá amplitude; pilha completa roda um SO real e dá observação. Chamarizes precisam ser plausíveis e estar nos caminhos que um atacante tomaria.

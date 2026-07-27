@@ -1,0 +1,65 @@
+---
+slug: fortiadc-security-dns-and-troubleshooting
+title: "Segurança, DNS e investigação no FortiADC"
+summary: "Um ADC no caminho do tráfego consegue aplicar controles além de distribuir, o que faz dele um lugar natural para proteção de aplicações web e distribuição baseada em DNS. O diagnóstico segue a mesma ordem sempre, e conhecê-la separa uma falha real de backend do controlador fazendo seu trabalho."
+concepts: ["fortinet", "fortiadc", "waf", "owasp", "aprendizado adaptativo", "proteção contra dos", "balanceamento global", "dns", "snmp", "investigação", "backup"]
+relatedTools: []
+sub: fortiadc
+relatedArticles: ["fortiadc-server-load-balancing-and-application-delivery", "fortiweb-application-security-bots-api-and-dos"]
+category: security
+order: 89
+status: reviewed
+updated: "2026-07-26"
+---
+
+Uma vez que o tráfego termina no controlador, a proteção fica disponível no mesmo lugar em que a distribuição acontece. Essa conveniência é real e vem com a mesma cautela de qualquer controle em linha.
+
+## Proteção de aplicações web
+
+O FortiADC consegue aplicar funções de firewall de aplicação web ao tráfego que intermedia: detecção por assinatura para os ataques reconhecíveis de injeção e scripting, e um perfil orientado ao **OWASP Top 10** cobrindo as categorias que a maioria das aplicações erra.
+
+A troca é conhecida de qualquer WAF. Assinaturas produzem falsos positivos onde a entrada legítima se parece com cargas de ataque, e a disciplina é delimitar exceções com estreiteza — esta assinatura, esta URL, este parâmetro — em vez de desabilitar uma regra globalmente para corrigir uma página.
+
+O **aprendizado adaptativo** constrói um modelo dos parâmetros normais da aplicação e sinaliza desvios, o que cobre o que assinaturas não descrevem. Duas condições governam se é útil, e são as mesmas de qualquer lugar em que se aplica aprendizado:
+
+A janela de aprendizado precisa ver **tráfego representativo**, ou um período calmo vira a linha de base e o volume normal parece anômalo. E a aplicação precisa ser razoavelmente **estável**, porque cada versão que muda parâmetros invalida parte do aprendido.
+
+A **proteção contra DoS** na camada de aplicação importa porque esgotar um servidor não exige volume: uma requisição que dispara uma consulta cara consegue fazê-lo a uma taxa que gráfico de banda algum sinalizaria. Limites de conexão, taxas de requisição por origem e por URL, e proteção contra requisições lentas são as camadas. Ataques volumétricos grandes o bastante para saturar o enlace ainda precisam ser tratados acima, porque um equipamento em linha está dentro do problema.
+
+## Serviços de DNS e distribuição global
+
+O FortiADC consegue atuar como servidor DNS e, de forma mais útil, usar DNS para distribuir tráfego entre sites.
+
+O balanceamento local escolhe um servidor; o **balanceamento global escolhe um data center**, respondendo consultas DNS de forma diferente conforme saúde, geografia ou preferência configurada. É assim que uma aplicação multi-site sobrevive à perda de um site, e como usuários são direcionados ao mais próximo.
+
+A restrição que decide o quão bem funciona é o **cache**. Uma resposta DNS é cacheada por resolvedores e clientes pelo seu TTL, então um failover só tem efeito conforme os caches expiram. TTLs curtos tornam o failover responsivo e aumentam a carga de consultas; TTLs longos fazem o inverso. Essa é uma troca deliberada, e um site que faz failover "devagar" geralmente é um cujo TTL nunca foi escolhido pensando em failover.
+
+## Monitoramento
+
+O **SNMP** expõe as métricas sobre as quais vale alertar: estado dos membros do pool, contagem de conexões, vazão, saúde do sistema. A primeira sobre a qual alertar é membros de pool caindo, porque esse é o evento que precede uma indisponibilidade visível, e não o que a acompanha.
+
+O registro cobre tráfego, eventos de segurança e atividade do sistema, e vale o mesmo princípio de um FortiGate: uma política ou perfil não configurado para registrar não produz nada a investigar depois.
+
+## Investigação
+
+A ordem que resolve a maioria dos casos, do mais barato ao mais caro:
+
+**1. O servidor virtual está recebendo tráfego?** Resolução DNS e roteamento. Se nada chega, configuração alguma abaixo importa.
+
+**2. Os membros do pool estão saudáveis?** Um pool com todos os membros falhando a verificação produz erros que parecem defeito do controlador. Veja o que a verificação de saúde de fato testa — uma verificação rasa que passa enquanto a aplicação está quebrada é pior que uma que falha.
+
+**3. Qual servidor real recebeu?** Isso distingue um problema de backend num servidor de um problema de controlador afetando todos, e é a forma mais rápida de identificar o servidor destoante.
+
+**4. Foi bloqueado pela segurança?** O log de segurança nomeia a regra. Isso separa "o ADC bloqueou" de "a aplicação retornou erro", que parecem idênticos num navegador.
+
+**5. É persistência?** Comportamento intermitente, específico de usuário, que funciona e depois não, é persistência até prova em contrário. É o sintoma de ADC mais comumente mal diagnosticado, porque se apresenta como defeito de aplicação.
+
+**6. É TLS?** Divergências de certificado, protocolo e cifra falham antes de existir HTTP, então log algum de nível HTTP as mostrará.
+
+## Backup de configuração
+
+Fazer backup e restaurar a configuração merece menção porque um ADC é um ponto único pelo qual aplicações passam. A disciplina útil é fazer backup **antes** de cada mudança, e não numa agenda, já que a restauração que você vai querer é a imediatamente anterior ao que quebrou — e verificar uma restauração de vez em quando, porque um backup não testado é uma crença, e não uma capacidade.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O controlador consegue aplicar proteção por assinatura e um perfil orientado ao OWASP, com exceções delimitadas a assinatura, URL e parâmetro. O aprendizado adaptativo precisa de janela representativa e aplicação estável. O DoS de aplicação não precisa de volume; o volumétrico precisa ser tratado acima. O balanceamento global distribui por resposta DNS e sua responsividade é governada pelo TTL. Investigue em ordem: tráfego chegando, saúde do pool, qual servidor real, log de segurança, persistência, e então TLS — e falhas intermitentes específicas de usuário são persistência até prova em contrário.

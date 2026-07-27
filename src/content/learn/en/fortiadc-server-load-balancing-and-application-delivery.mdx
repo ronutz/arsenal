@@ -1,0 +1,83 @@
+---
+slug: fortiadc-server-load-balancing-and-application-delivery
+title: "FortiADC: Server Load Balancing, Persistence, and Application Delivery"
+summary: "An application delivery controller sits in front of servers and decides which one receives each request. The configuration hierarchy is small, and two decisions inside it — the balancing method and the persistence rule — determine whether a stateful application works or fails in ways that look random."
+concepts: ["fortinet", "fortiadc", "adc", "load balancing", "virtual server", "real server", "server pool", "persistence", "health check", "ssl offload", "optimization"]
+relatedTools: []
+sub: fortiadc
+relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortigate-routing-and-sdwan-selection"]
+category: networking
+order: 88
+status: reviewed
+updated: "2026-07-26"
+---
+
+An application delivery controller is a reverse proxy with opinions about distribution, health and optimisation. Everything it does is built on a hierarchy of four objects.
+
+## The hierarchy
+
+A **real server** is one backend: an address, a port, a weight, and a health check.
+
+A **server pool** groups real servers and defines how traffic is distributed among them.
+
+A **virtual server** is the address clients connect to. It binds a listening address and port to a pool.
+
+An **application profile** describes protocol behaviour — how HTTP is handled, what is rewritten, which optimisations apply.
+
+Anything you configure attaches to one of those four, and knowing which one is most of finding your way around.
+
+## Balancing methods, and what they assume
+
+The method decides which real server gets the next request, and each carries an assumption:
+
+**Round robin** distributes evenly and assumes all servers and all requests are equal. Fine for homogeneous, stateless workloads.
+
+**Weighted** round robin lets unequal servers carry proportional load, which matters after a hardware refresh leaves you with a mixed pool.
+
+**Least connections** sends to the server with fewest active connections, which handles requests of varying duration far better than round robin. This is the sensible default for most real applications.
+
+**Fastest response** uses measured response time, which adapts to servers that are degraded rather than down. Its risk is oscillation if the measurement window is short.
+
+**Source hash** maps a client consistently to a server. This is a distribution method that happens to give stickiness, and it is a blunt instrument for persistence — see below.
+
+## Persistence is where stateful applications break
+
+If an application keeps session state on the server that created it, a client whose next request lands elsewhere appears logged out. The symptom is intermittent and random-looking, which makes it expensive to diagnose and is why persistence deserves a deliberate decision.
+
+**Source address persistence** ties a client address to a server. Simple, and it fails where many clients share one address behind NAT — a whole office lands on one server, which is both an imbalance and a fragility.
+
+**Cookie persistence** has the ADC insert or read a cookie identifying the server. Far more accurate because it identifies a session rather than a network location, and it requires the client to accept cookies and the traffic to be readable.
+
+**SSL session ID persistence** works where cookies are unavailable, with the caveat that session identifiers change more often than sessions do.
+
+The general rule: prefer cookie persistence where you can terminate TLS, and reach for source address only where you cannot.
+
+## Health checks decide what "up" means
+
+A pool member is used or not used based on its health check, and the check's depth determines what failure it can see.
+
+A **TCP connect** check confirms something is listening. It will happily keep sending traffic to a server whose application has crashed behind a live socket.
+
+An **HTTP** check fetches a page and can match expected content. This detects the application failing rather than the port closing, which is the failure that actually happens.
+
+A **scripted or multi-step** check exercises a real transaction, which is what you want for an application whose health depends on a database being reachable.
+
+The rule of thumb is to check as deeply as the failure you are trying to survive. A shallow check on a critical service is a decision to keep serving errors.
+
+## Optimisation
+
+Because it terminates connections, an ADC can improve delivery as well as distribute it.
+
+**SSL offloading** moves cryptographic work off the servers, and the decision is whether the internal leg is re-encrypted. Offloading to plaintext requires trusting the internal network; re-encrypting does not.
+
+**Compression** trades CPU for bandwidth and helps most on text.
+
+**Caching** serves repeated static content without touching a server.
+
+**Page speed optimisation** rewrites content — inlining, minifying, deferring — to reduce round trips. It is the one to introduce cautiously, because it changes what the browser receives and can break a fragile front end. Test it before enabling broadly.
+
+**Connection multiplexing** reuses backend connections across client requests, which reduces the connection churn servers handle and often helps more than the compression everyone reaches for first.
+
+## What an exam candidate should be able to state cold
+
+Real servers group into pools, a virtual server binds a listening address to a pool, and an application profile describes protocol behaviour. Least connections suits varying request durations and is the sensible default; source hash gives stickiness as a side effect and is a blunt persistence tool. Cookie persistence identifies a session and is preferred where TLS is terminated; source address persistence collapses clients behind NAT onto one server. Health checks must be as deep as the failure you want to survive, since a TCP check misses a crashed application behind a live socket. SSL offload requires a trusted internal leg unless re-encrypted.

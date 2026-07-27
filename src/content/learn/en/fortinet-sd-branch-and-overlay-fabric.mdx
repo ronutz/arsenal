@@ -1,0 +1,63 @@
+---
+slug: fortinet-sd-branch-and-overlay-fabric
+title: "SD-Branch and Overlay Networks: VXLAN, LAN Extension, and Orchestrating Many Sites"
+summary: "A branch is a firewall, some switches and some access points that all have to be configured consistently across hundreds of locations by people who will never visit them. SD-Branch collapses that into one managed unit, and overlay networking is what lets a site's network extend beyond the site."
+concepts: ["fortinet", "sd-branch", "overlay", "vxlan", "lan extension", "orchestrator", "templates", "variables", "zero touch provisioning", "hub and spoke", "full mesh"]
+relatedTools: []
+sub: sdwan
+relatedArticles: ["fortigate-routing-and-sdwan-selection", "fortiswitch-fortilink-provisioning-and-topologies", "fortigate-ipsec-vpn-topologies"]
+category: networking
+order: 94
+status: reviewed
+updated: "2026-07-26"
+---
+
+The hard part of running two hundred branches is not any single branch. It is that all two hundred must be configured consistently, changed together, and repaired by someone who cannot see them.
+
+## What SD-Branch actually consolidates
+
+**SD-Branch** is the FortiGate at a site managing everything else at that site: the switches over FortiLink, the access points over CAPWAP, and the WAN through SD-WAN.
+
+The consolidation matters for a reason beyond tidiness. When one device owns the site, a site becomes a **template** rather than a collection of independently-configured equipment. The unit of change is the site type — small retail, large retail, warehouse — and a change applies to every site of that type at once.
+
+That also changes deployment. **Zero-touch provisioning** means hardware ships directly to the site, someone plugs it in, it finds the management platform, and it downloads the configuration for its role. Nobody with networking knowledge needs to be present or to travel, which is the entire economics of running many small sites.
+
+## Templates and variables
+
+At scale the configuration is nearly identical everywhere and different in a handful of specifics: addresses, site name, VLAN identifiers, circuit details.
+
+**Templates** hold what is common. **Variables** hold what differs, resolved per device at provisioning time.
+
+The discipline that makes this hold up is to keep everything possible in the template and everything genuinely per-site in variables. Configuration drift begins the day someone makes a one-off change directly on a device, because now that site is outside the template and the next template change will either overwrite the fix or skip that site — and both are worse than the original problem.
+
+The **Overlay Orchestrator** builds the overlay itself: given the sites, the hubs, and the desired topology, it generates the tunnel configuration, addressing and routing rather than requiring each be defined by hand. That matters most at the moment topology changes, since adding a hub by hand across two hundred spokes is where errors live.
+
+## Overlay topologies
+
+**Single hub** is the simplest: every spoke tunnels to one hub, and all inter-site traffic passes through it. The hub is a single point of failure and a bandwidth bottleneck.
+
+**Dual hub** adds a second, and the design decision is active-active or active-standby. Active-active uses both and requires routing that can prefer sensibly and fail cleanly; active-standby is simpler and leaves capacity idle.
+
+**Full mesh** connects every site to every other, which removes the hub from the data path and creates a configuration problem that grows as the square of the number of sites — which is why dynamic approaches exist. On-demand shortcuts between spokes give mesh behaviour when two sites actually talk, without maintaining tunnels that would sit unused.
+
+The pragmatic answer at most scales is hub-and-spoke with dynamic shortcuts: the hub handles control and the occasional flow, and direct paths form where traffic justifies them.
+
+## VXLAN and LAN extension
+
+**VXLAN** encapsulates layer 2 frames inside UDP so an Ethernet segment can span a routed network. That is the mechanism; the reason to want it is narrower than it first appears.
+
+**LAN extension** is the common application: making a remote site appear to be on the same layer 2 segment as a central one. It exists because some things genuinely need it — an application that hardcodes addresses, a device that only works on its original subnet, a migration where addresses cannot change yet.
+
+The honest framing is that stretching layer 2 across a WAN is a compromise. It carries broadcast traffic across a link that would rather not have it, it makes a remote failure into a local one, and it removes the routing boundary that would have contained a problem. It is the right answer to specific constraints and the wrong default.
+
+Where it is used, keep the stretched segment as small as the requirement demands rather than extending a whole site's addressing because one device needed it.
+
+## Monitoring across sites
+
+Two hundred sites produce more status than anyone reads, so the useful posture is exception-based: what is different from its template, what is failing its performance SLA, what has not checked in.
+
+The specific thing worth watching is **configuration drift**, because it accumulates silently and only surfaces when a template change behaves unexpectedly at one site out of many. A device out of sync with its template is a device whose behaviour nobody can predict from the template, which is the whole value proposition gone.
+
+## What an exam candidate should be able to state cold
+
+SD-Branch puts the FortiGate in charge of switches, access points and WAN at a site, which turns a site into a template rather than a collection of devices, and enables zero-touch provisioning. Templates hold what is common and variables what differs per site; direct device edits create drift that a later template change will either overwrite or skip. Overlay topologies run single hub, dual hub active-active or active-standby, and full mesh whose configuration grows as the square of the sites, which is why dynamic shortcuts exist. VXLAN encapsulates layer 2 in UDP to enable LAN extension, which is a compromise that carries broadcast across the WAN and removes a containment boundary, so keep the stretched segment minimal.

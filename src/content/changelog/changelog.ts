@@ -52,6 +52,36 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-26T21:08:27-03:00",
+    kind: "infra",
+    title: "A build guard for the rule that half-shipped three articles in one day",
+    body: "Articles here are written in English and Brazilian Portuguese in the same change, and until now nothing enforced it. In a single day that rule broke three times: once when work was interrupted between writing the two files, once when a write went through the wrong text encoding and threw, and once when an accented character ended up inside a payload that could not carry one. Every time, the twelve existing guards stayed green while the site carried an article that existed in one language only, and every time it was caught by counting files by hand. Hand-counting is not a control. The new guard fails the build if an article exists in one locale and not the other, in either direction, since an orphaned translation usually means the English was renamed and the pair broke silently. Writing it turned up something worth knowing: articles route on the slug declared inside the file rather than on the filename, so one long-standing file whose name and slug differ is correct rather than broken. The check was rewritten to test what actually matters, which is that both locales agree on the routing slug, and then verified by deliberately breaking it both ways to confirm it fails when it should.",
+  },
+  {
+    date: "2026-07-26T20:38:55-03:00",
+    kind: "content",
+    title: "Every published Fortinet exam objective now points at something that teaches it",
+    body: "NSE 8 is the last of it, and most of it was already written. Its objectives are terse topic terms rather than sentences, things like Zones and Hardening and Meta fields, so they needed rules written against those exact words before they would match anything. Once they did, one hundred and sixteen of the hundred and thirty-four resolved to articles that already existed, which is the pattern this whole programme has followed: the expert exam re-asks what the practitioner exams below it cover. Eighteen were genuinely uncovered and four new articles close them. Traffic shaping gets the observation that it does nothing at all until a link is congested, so it is really a plan for who suffers when there is not enough, and the design fault that turns up everywhere is guarantees that quietly sum to more than the link can carry. SD-Branch is about turning a site into a template rather than a pile of separately configured equipment, with the honest note that stretching a layer 2 segment across a WAN is a compromise rather than a default. The carrier networking article ends up making the same point the DDoS and network access control articles reach independently, which is that an address is not a user. And the operational technology article starts from the inversion that makes the rest of this collection inapplicable there: availability outranks confidentiality, patching is often impossible, and scanning can stop a production line.",
+  },
+  {
+    date: "2026-07-26T18:45:13-03:00",
+    kind: "content",
+    title: "Every Fortinet exam below NSE 8 is now fully covered",
+    body: "Five new articles finish the last products that had objectives but nothing explaining them. FortiDDoS gets the argument that matters most before any configuration: an inline appliance cannot mitigate an attack larger than the link feeding it, so anything bigger belongs upstream, and a device working perfectly during an outage is the predictable result of ignoring that. Its behavioural approach also means a genuine traffic surge from a product launch looks exactly like an attack unless somebody said so in advance. FortiRecon covers the reconnaissance an attacker performs before touching anything, which your own defences cannot see because none of it crosses your firewall, and it reliably finds forgotten staging servers and cloud accounts nobody folded into the inventory. FortiMail Workspace explains why an API connection beats a mail gateway for cloud mail: it inspects after the platform's own filtering, sees internal mail a perimeter never touches, and can pull a message out of every mailbox it already reached. Along the way fifty-four entries were removed from the study guides that were never objectives at all, things like a PDF viewer and speakers or headphones, swept in from the technical requirements listed further down the same course pages.",
+  },
+  {
+    date: "2026-07-26T18:19:52-03:00",
+    kind: "content",
+    title: "The three entry-level Fortinet certifications now have their objectives",
+    body: "NSE 1, NSE 2 and NSE 3 sat empty for a while because their certification pages describe the certification without listing what it covers, and the courses that do list it are not linked from them. With the right course pages in hand, all three are filled and every objective points at material already on this site, which is what you would expect at that level: an entry-level objective about firewalls, web application firewalls and network access control is answered by the articles written for the exams above it. One correction worth recording. NSE 1 was briefly populated from the wrong course, an older information security awareness syllabus rather than the cybersecurity and cloud fundamentals one the certification actually maps to. The objectives were plausible and they were not the right ones, which is a reminder that a source that looks correct is not the same as the correct source.",
+  },
+  {
+    date: "2026-07-26T17:56:48-03:00",
+    kind: "content",
+    title: "Deception and application delivery, plus the NSE 1 to 3 course objectives corrected",
+    body: "Four new articles cover two products this site had nothing on. The FortiDeceptor pair rests on a property no other control has: a decoy has no legitimate users, so any interaction with it is suspicious by construction rather than by scoring. That is why deception produces so few false positives, and it is also fragile in a way worth stating, because a decoy on a subnet your own vulnerability scanner sweeps will generate alerts every night. The distinction between decoys, lures and tokens matters too: tokens sit on real machines, so a token alert names the endpoint that is actually compromised, which is usually more valuable than the decoy interaction that revealed it. The FortiADC pair covers the two decisions that determine whether a stateful application survives load balancing. Persistence is the one people diagnose last and should suspect first, since intermittent user-specific failures look like application bugs. Health checks are the other, because a check that only confirms the port is open will keep sending traffic to a server whose application has crashed behind a live socket. Separately, NSE 1, 2 and 3 now carry their course objectives, and NSE 1 has been corrected: it was transcribed from the wrong course page and now cites Cybersecurity and Cloud Fundamentals, which is the course the certification actually names.",
+  },
+  {
     date: "2026-07-26T16:52:10-03:00",
     kind: "content",
     title: "Ten more Fortinet exams filled in from Fortinet's course pages",

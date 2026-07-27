@@ -1,0 +1,65 @@
+---
+slug: fortinet-ot-security
+title: "Operational Technology Security: Why the IT Playbook Does Not Transfer"
+summary: "Industrial networks invert almost every assumption IT security is built on. Availability outranks confidentiality, devices cannot be patched or scanned, and protocols were designed with no authentication because the network was assumed to be physically isolated. Protecting them means working around those facts rather than fixing them."
+concepts: ["fortinet", "ot security", "ics", "scada", "purdue model", "modbus", "protocol inspection", "segmentation", "passive discovery", "availability", "legacy"]
+relatedTools: []
+sub: ot
+relatedArticles: ["fortinac-device-modeling-and-profiling", "fortigate-firewall-policy-and-nat", "fortigate-security-profiles-flow-vs-proxy"]
+category: security
+order: 96
+status: reviewed
+updated: "2026-07-26"
+---
+
+Operational technology is the equipment that runs physical processes: controllers, sensors, actuators, the systems that supervise them. Securing it is not securing an unusual IT network. It is a different problem wearing similar equipment.
+
+## The inversions
+
+**Availability comes first.** In IT, the usual ranking is confidentiality, integrity, availability. In OT it reverses. A process that stops can mean lost product, damaged equipment, or people getting hurt. A security control that risks stopping the process is frequently rejected on that basis alone, and correctly so.
+
+**Patching is not routine.** A controller may be certified as part of a validated process, or supported only on a firmware nobody may change, or simply unable to be taken down outside a maintenance window that comes twice a year. Systems run for decades. "Patch it" is often not available as an answer.
+
+**Scanning can break things.** Devices that predate hostile networks may fault when probed. An ordinary vulnerability scan has stopped production lines. That single fact eliminates most active discovery from the toolkit.
+
+**The protocols have no security.** Modbus, DNP3, and their contemporaries were designed for isolated networks. There is no authentication and no encryption, because none was thought necessary. Anything that can reach a controller can command it.
+
+**Agents are not an option.** Nothing installs on a controller.
+
+Every one of those removes a tool the IT playbook depends on, which is why the OT answer concentrates on the network.
+
+## Segmentation as the primary control
+
+If the endpoints cannot be defended, the traffic to them has to be.
+
+The **Purdue model** is the reference: levels from the physical process at the bottom through control, supervision, operations, and enterprise IT at the top. Its practical value is that it names where the boundaries belong and gives a shared vocabulary for arguing about them.
+
+The boundary that matters most is between enterprise IT and the control network, because that is the path most incidents take: a compromise in the office network reaching the plant network because the two were connected for a legitimate reason nobody revisited.
+
+**Microsegmentation** within the control network limits movement once inside. A compromised engineering workstation should not be able to reach every controller on the site, and in most brownfield networks it can.
+
+The rule that makes OT segmentation tractable is that industrial traffic is **highly predictable**. The same devices talk to the same devices using the same protocols, largely on a schedule. That makes a default-deny policy far more achievable than in an enterprise network, because the legitimate flows can actually be enumerated.
+
+## Protocol-aware inspection
+
+A firewall that understands industrial protocols can distinguish a read from a write. That distinction is the useful one: a historian polling values is routine, and a command that changes a setpoint is not, even though both are the same protocol to a port-based rule.
+
+Policy can then permit monitoring while restricting control to specific sources, which is the practical shape of least privilege in an OT network.
+
+## Passive discovery
+
+Since scanning is unsafe, the inventory is built by **watching traffic**. Devices are identified from how they communicate — the protocols, the traffic patterns, the vendor signatures in what they send.
+
+It is slower than active scanning, it will not find something entirely silent, and it does not risk taking down a controller. In OT that trade is not close.
+
+The first inventory is typically the deliverable that justifies the project, because most sites do not have an accurate list of what is on the control network, and cannot get one any other way.
+
+## Working with the process owners
+
+The recurring failure in OT security programmes is organisational rather than technical. Security teams propose controls in IT terms, plant engineering hears risk to production, and the programme stalls.
+
+What works is framing in the terms that already matter there: safety, uptime, and process integrity. A control that prevents an unauthorised setpoint change is protecting the process, and that is an argument plant engineering already agrees with. A control that requires a reboot to install is asking for something expensive, and pretending otherwise damages the relationship the programme depends on.
+
+## What an exam candidate should be able to state cold
+
+OT inverts the usual priority to availability first, and patching, active scanning and agents are frequently unavailable, which forces the answer onto the network. Industrial protocols such as Modbus and DNP3 have no authentication because isolation was assumed. The Purdue model names the boundaries, and the IT-to-control boundary is the path most incidents take. Industrial traffic is predictable enough that default-deny is genuinely achievable. Protocol-aware inspection distinguishes reads from writes, which is where least privilege lives. Discovery must be passive because scanning can fault devices, and the resulting inventory is usually the project's first real deliverable.

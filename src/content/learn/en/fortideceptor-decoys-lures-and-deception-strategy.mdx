@@ -1,0 +1,69 @@
+---
+slug: fortideceptor-decoys-lures-and-deception-strategy
+title: "FortiDeceptor: Decoys, Lures, Tokens, and Designing a Deception Strategy"
+summary: "Deception works on a premise no other control shares: a decoy has no legitimate users, so any interaction with it is suspicious by construction. That single property is why deception produces so few false positives, and it is also the thing a deployment can accidentally destroy."
+concepts: ["fortinet", "fortideceptor", "deception", "decoy", "lure", "token", "honeypot", "mitre", "detection", "strategy"]
+relatedTools: []
+sub: fortideceptor
+relatedArticles: ["fortinet-soc-architecture-and-adversary-behaviour", "fortiedr-threat-hunting-forensics-and-investigation"]
+category: security
+order: 86
+status: reviewed
+updated: "2026-07-26"
+---
+
+Almost every detection technology has the same difficulty: distinguishing malicious activity from legitimate activity that resembles it. Deception sidesteps it entirely.
+
+## Why a decoy produces almost no false positives
+
+A **decoy** is a system that exists only to be discovered. It runs services, it looks real, and **no legitimate user or process has any reason to touch it**. Nothing points to it in DNS that a person would follow, no application depends on it, no backup job scans it.
+
+So an interaction with a decoy is not scored, weighted or correlated. It is anomalous by construction, and that is the whole argument for deception as a control: the signal is nearly noise-free in a way that no signature or baseline can be.
+
+The corollary is that **the property is destroyed by carelessness**. A decoy on a subnet your vulnerability scanner sweeps generates alerts every night. A decoy answering to a hostname in an inventory system gets touched by asset management. Preserving the property is the actual work, and it is a design task rather than a configuration one.
+
+## Decoys, lures and tokens
+
+Three distinct things, and conflating them makes the design harder than it needs to be.
+
+A **decoy** is the fake system itself, deployed on your network, running services an attacker would find interesting — SMB shares, RDP, SSH, database ports, industrial protocols.
+
+A **lure** is what makes the decoy discoverable. A decoy nobody finds detects nothing, so lures are the breadcrumbs: a share advertised where scanning would find it, a service on a port that invites a connection.
+
+A **token** is a lure placed on a **real** endpoint — a saved credential, a bookmarked share, an RDP connection entry, a browser-cached login. Its purpose is different and more valuable: it is bait for an attacker who has already compromised a real machine and is looking for where to go next. Using it takes them to a decoy.
+
+That tokens sit on real machines is the important part. Decoys detect scanning and lateral movement; tokens detect **credential harvesting and the decision about where to move next**, which is earlier and more actionable.
+
+## Light-stack and full-stack
+
+**Light-stack** decoys emulate services. They are cheap enough to deploy in large numbers, which matters because coverage across many subnets is what makes an attacker likely to meet one. They respond convincingly to discovery and to a first interaction, and a determined attacker probing deeply can tell.
+
+**Full-stack** decoys run a real operating system. They are convincing under sustained interaction and let you observe what an attacker actually does, which is intelligence rather than just detection. They cost more and you deploy fewer.
+
+The sensible shape is light-stack for breadth and a small number of full-stack decoys where you most want to watch behaviour rather than merely record a trip.
+
+## Designing the deception
+
+The design questions that determine whether a deployment finds anything:
+
+**Where would an attacker look?** Decoys belong on the paths an intruder would take, not in a quiet corner where they are safe. That means user VLANs, server segments, and the segments adjacent to whatever is valuable.
+
+**What would they find plausible?** A decoy named `HONEYPOT-01` in an estate where everything else follows a naming convention is not deception. Decoys should be indistinguishable from their neighbours in naming, addressing and service profile.
+
+**What are you protecting?** Decoys concentrated around the crown jewels detect the attacker who has already found their way there. Decoys spread broadly detect earlier. Both are legitimate; doing one while believing you did the other is not.
+
+**How will you keep it invisible to yourself?** Exclusions in scanners, asset inventories and monitoring must be in place before deployment, or your own tooling produces the first hundred alerts.
+
+## Reading what deception tells you
+
+An alert from a decoy is high confidence and still needs interpretation:
+
+**Which decoy, and how was it reached?** A decoy touched by a scan across a whole subnet is different from one reached directly by address, which implies knowledge.
+
+**Was a token used?** A token alert names the real endpoint the token was on, which tells you which machine is compromised. That is often more valuable than the decoy interaction itself.
+
+**What did they do?** On a full-stack decoy, the observed behaviour maps to recognisable techniques, and mapping it to a framework such as the MITRE matrices — including the ICS matrix where operational technology is in scope — makes it comparable with everything else you see.
+
+## What an exam candidate should be able to state cold
+
+A decoy has no legitimate users, so interaction with it is anomalous by construction, and preserving that property against your own scanners and inventory is the real deployment work. Decoys are fake systems, lures make them discoverable, and tokens are bait placed on real endpoints that catch an attacker choosing where to move next. Light-stack emulates services and gives breadth; full-stack runs a real operating system and gives observation. Decoys must be plausible and placed on the paths an attacker would take.

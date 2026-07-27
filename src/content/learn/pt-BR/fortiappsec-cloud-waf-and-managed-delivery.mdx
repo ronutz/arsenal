@@ -1,0 +1,71 @@
+---
+slug: fortiappsec-cloud-waf-and-managed-delivery
+title: "FortiAppSec Cloud: WAF como serviço, DDoS e entrega de aplicações gerenciada"
+summary: "O FortiAppSec Cloud tira a proteção de aplicações web do seu equipamento e a coloca num serviço à frente da sua origem. Isso muda o que você configura, o que consegue enxergar, e onde estão os modos de falha, e o problema de exposição da origem é o que desfaz implantações."
+concepts: ["fortinet", "fortiappsec", "waf em nuvem", "saas", "proteção de origem", "ddos", "mitigação de bots", "cdn", "dns", "proteção de api"]
+relatedTools: []
+sub: fortiappsec
+relatedArticles: ["fortiweb-application-security-bots-api-and-dos", "fortigate-cloud-deployments-and-fortisase"]
+category: cloud
+order: 87
+status: reviewed
+updated: "2026-07-26"
+---
+
+## Como o tráfego chega até ele
+
+Você aponta o DNS do nome protegido para o serviço. Os clientes resolvem para o serviço, o serviço inspeciona, e o tráfego limpo é encaminhado à sua **origem**.
+
+Esse único mecanismo produz a propriedade definidora e a fraqueza definidora.
+
+**A propriedade:** a proteção acontece antes de o tráfego alcançar sua infraestrutura, então ataques volumétricos são absorvidos por uma capacidade que você não possui e não paga para manter ociosa. É o argumento que equipamento local algum consegue responder, já que qualquer coisa no seu rack está atrás de um enlace que pode ser saturado.
+
+**A fraqueza:** se um atacante descobre o endereço da sua origem, ele pode contornar o serviço por completo. Toda proteção que você configurou se torna irrelevante, e o ataque chega a uma origem que nunca foi projetada para encarar a internet diretamente.
+
+## Trancar a origem
+
+As mitigações, na ordem aproximada de com que frequência são puladas:
+
+**Restrinja o acesso à origem às faixas de endereço do serviço.** Uma regra de firewall na origem permitindo apenas o serviço em nuvem é o controle mais importante da implantação, e é rotineiramente adiada.
+
+**Não publique a origem no DNS.** Um registro A esquecido para o nome puro, uma variante `www`, uma entrada antiga de homologação, ou um registro de e-mail no mesmo host vão entregá-la. Dados históricos de DNS também, porque são arquivados e pesquisáveis.
+
+**Observe o que a aplicação vaza.** Páginas de erro, redirecionamentos e cabeçalhos de e-mail reproduzem o nome real com mais frequência do que se espera.
+
+**Troque o endereço da origem** se ele já foi exposto, porque ele não volta a ser secreto sozinho.
+
+## O que o serviço oferece
+
+**WAF** — a mesma proteção por assinatura e comportamento do produto local, administrada como serviço.
+
+**Mitigação de DDoS** nas camadas de rede e de aplicação, com a capacidade que é o ponto do modelo.
+
+**Mitigação de bots**, que importa mais à frente de uma aplicação pública que em qualquer outro lugar, porque recheio de credenciais e raspagem miram exatamente aquilo à frente do que um WAF em nuvem fica.
+
+**Proteção de API**, incluindo validação de esquema onde existe uma especificação.
+
+**Entrega de conteúdo**, já que o serviço já está terminando e encaminhando, então armazenar conteúdo estático em cache é quase de graça.
+
+A mudança operacional é que você configura política e a Fortinet opera a plataforma. Isso tira atualização, escala e disponibilidade da sua responsabilidade, e tira a capacidade de ajustar a plataforma por baixo. Se isso é ganho depende de sua restrição ter sido capacidade operacional ou comportamento específico.
+
+## Certificados
+
+O serviço termina o TLS, o que significa que precisa de um certificado para o seu nome. Ou você envia um, ou o serviço obtém e renova um para você.
+
+A opção gerenciada elimina uma expiração que alguém precisa lembrar, e certificados expirando seguem sendo causa principal de indisponibilidades autoinfligidas. A opção enviada mantém a emissão sob seu controle onde a política exige.
+
+De todo modo, a conexão com a origem também deveria ser criptografada, o que significa que a origem também precisa de um certificado — comumente um em que ninguém pensa, porque navegador algum jamais o valida.
+
+## Visibilidade
+
+A troca por não operar a plataforma é que você enxerga o que o serviço reporta. Na prática isso é generoso — tráfego, ataques, bots, latência, comportamento de cache — e não é o mesmo que ter os logs.
+
+As duas coisas que vale configurar cedo:
+
+**Exportação de logs** para o seu próprio SIEM, para que eventos do WAF em nuvem fiquem ao lado de todo o resto em vez de num console separado que é consultado depois de um incidente, e não durante.
+
+**Alertas sobre mudanças no volume de ataques**, e não sobre eventos individuais. Bloqueios individuais são ruído de fundo constante em qualquer aplicação pública; uma mudança no padrão é o sinal.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O tráfego chega ao serviço por DNS, o serviço inspeciona e encaminha à origem, e a proteção volumétrica é a vantagem que equipamento local algum iguala. A fraqueza definidora é a exposição da origem: um atacante que descobre o endereço da origem contorna tudo, então restringir o acesso à origem às faixas do serviço é o controle mais importante da implantação. Certificados podem ser gerenciados pelo serviço ou enviados, e a conexão com a origem também precisa de um. Exporte logs ao seu próprio SIEM e alerte sobre mudanças no padrão de ataque, e não sobre bloqueios individuais.

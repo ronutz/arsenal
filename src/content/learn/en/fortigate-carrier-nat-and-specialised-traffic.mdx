@@ -1,0 +1,55 @@
+---
+slug: fortigate-carrier-nat-and-specialised-traffic
+title: "Carrier-Scale NAT, MAP-E, Domain Fronting, and WCCP"
+summary: "Four features that show up at the edges of a FortiGate deployment: two that exist because IPv4 addresses ran out, one that closes an evasion technique which hides inside legitimate infrastructure, and one that redirects traffic to a proxy without changing how clients are configured."
+concepts: ["fortinet", "fortigate", "cgnat", "carrier grade nat", "map-e", "ipv6 transition", "domain fronting", "sni", "wccp", "explicit proxy", "logging"]
+relatedTools: []
+sub: fortigate
+relatedArticles: ["fortigate-firewall-policy-and-nat", "fortinet-ssl-inspection-modes"]
+category: networking
+order: 95
+status: reviewed
+updated: "2026-07-26"
+---
+
+These four have little in common except that each solves a problem the basic feature set does not, and each carries a consequence worth knowing before it is deployed.
+
+## Carrier-grade NAT
+
+Ordinary NAT translates a private network behind a handful of public addresses. **CGNAT** does the same at a scale where the numbers change what matters: thousands of subscribers sharing a pool, with the assignment of ports becoming the constraint rather than the addresses.
+
+The mechanism that makes it workable is **port block allocation**: rather than assigning ports individually, a subscriber is given a block. That reduces the logging burden enormously — one record per block rather than per session — and it is the difference between a log volume that can be retained and one that cannot.
+
+The consequence that reaches everyone else is **shared reputation**. When thousands of subscribers share an address, that address's behaviour is the aggregate. One compromised subscriber can get the address blocklisted, and everyone behind it is affected by something they did not do. This is also why source-address reputation is weaker evidence than it looks, and why the DDoS and NAC material in this collection keeps returning to the same point: an address is not a user.
+
+The obligation that follows is logging. Attributing an action to a subscriber after the fact requires knowing which subscriber held which port block at which time, and if that was not recorded it cannot be reconstructed.
+
+## MAP-E
+
+**MAP-E** is an IPv6 transition mechanism: it carries IPv4 traffic across an IPv6-only network by encapsulating it, with the mapping between IPv4 address-plus-port and IPv6 prefix defined by rules rather than by per-subscriber state.
+
+The stateless property is the point. A carrier operating stateful CGNAT must hold a translation table for every active session across its whole subscriber base. MAP-E moves that work to the customer edge and leaves the core forwarding on rules, which scales in a way state does not.
+
+For an enterprise this is mostly something encountered rather than deployed — a site whose carrier delivers IPv6 only, where the constraints on inbound connectivity and on the ports available for outbound sessions come from the MAP-E rule rather than from any local configuration.
+
+## Domain fronting
+
+**Domain fronting** is an evasion technique that works by making one part of a connection disagree with another. The TLS handshake presents one hostname — a legitimate, popular domain that filtering will allow — while the encrypted HTTP request inside asks for a different host on the same infrastructure.
+
+A filter reading only the visible handshake sees an allowed destination. The traffic goes somewhere else entirely.
+
+It works because large content and cloud platforms serve many customers from shared front-ends, so the outer name and the inner name can legitimately resolve to the same infrastructure. That is also why it is used for command and control: the traffic is genuinely going to a reputable provider.
+
+**Protection** means comparing the two: the name presented in the handshake against the host requested inside. A mismatch is not accidental. Detecting it requires decrypting, which places this squarely alongside the inspection trade-offs covered elsewhere in this collection — a policy that cannot see inside cannot catch this.
+
+## WCCP
+
+**WCCP** redirects traffic from a router or switch to a cache or proxy, transparently. Clients are not configured to use a proxy and do not know one is involved.
+
+The reason it exists is the reason transparent proxying exists generally: configuring every client is a project, and clients you do not manage cannot be configured at all.
+
+The trade-offs are the familiar ones for transparency. The proxy sees traffic the client believes is going directly to the origin, so anything depending on the client knowing about a proxy — certain authentication flows, some certificate handling — behaves differently. And the redirection is a dependency: a WCCP failure removes the path, so the design needs an answer for what happens when the cache is unavailable.
+
+## What an exam candidate should be able to state cold
+
+CGNAT shares public addresses across many subscribers, uses port block allocation to keep logging tractable, and creates shared reputation where one subscriber can get an address blocklisted for everyone. Subscriber attribution requires port-block logging that cannot be reconstructed later. MAP-E carries IPv4 over IPv6 statelessly using rules rather than per-session state, moving work to the customer edge. Domain fronting presents one hostname in the TLS handshake and requests another inside; protection means comparing them and requires decryption. WCCP redirects to a proxy transparently, so clients are unaware, and the redirection becomes a dependency.

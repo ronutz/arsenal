@@ -1,0 +1,65 @@
+---
+slug: fortiadc-security-dns-and-troubleshooting
+title: "FortiADC Security: WAF, Adaptive Learning, DNS Services, and Diagnosing Delivery"
+summary: "An ADC in the traffic path can enforce as well as distribute, which makes it a natural place for web application protection and DNS-based distribution. Diagnosis follows the same order every time, and knowing it separates a genuine backend fault from the controller doing its job."
+concepts: ["fortinet", "fortiadc", "waf", "owasp", "adaptive learning", "dos protection", "global load balancing", "dns", "snmp", "troubleshooting", "backup"]
+relatedTools: []
+sub: fortiadc
+relatedArticles: ["fortiadc-server-load-balancing-and-application-delivery", "fortiweb-application-security-bots-api-and-dos"]
+category: security
+order: 89
+status: reviewed
+updated: "2026-07-26"
+---
+
+Once traffic terminates on the controller, protection becomes available in the same place distribution happens. That convenience is real and it comes with the same caution as any inline control.
+
+## Web application protection
+
+FortiADC can apply web application firewall functions to the traffic it proxies: signature detection for the recognisable injection and scripting attacks, and an **OWASP Top 10** oriented profile covering the categories most applications get wrong.
+
+The trade is familiar from any WAF. Signatures produce false positives where legitimate input resembles attack payloads, and the discipline is to scope exceptions narrowly — this signature, this URL, this parameter — rather than disabling a rule globally to fix one page.
+
+**Adaptive learning** builds a model of the application's normal parameters and flags deviation, which covers what signatures cannot describe. Two conditions govern whether it is useful, and they are the same as anywhere else learning is applied:
+
+The learning window must see **representative traffic**, or a quiet period becomes the baseline and normal volume reads as anomalous. And the application must be reasonably **stable**, because each release that changes parameters invalidates part of what was learned.
+
+**DoS protection** at the application layer matters because exhausting a server does not require volume — a request triggering an expensive query can do it at a rate no bandwidth graph would flag. Connection limits, request rates per source and per URL, and slow-request protection are the layers. Volumetric attacks large enough to saturate the link still have to be handled upstream, because an inline device is inside the problem.
+
+## DNS services and global distribution
+
+FortiADC can act as a DNS server and, more usefully, use DNS to distribute traffic across sites.
+
+Local balancing picks a server; **global load balancing picks a data centre**, by answering DNS queries differently depending on health, geography or configured preference. That is how a multi-site application survives losing a site, and how users are steered to the nearest one.
+
+The constraint that decides how well it works is **caching**. A DNS answer is cached by resolvers and clients for its TTL, so a failover only takes effect as caches expire. Short TTLs make failover responsive and increase query load; long TTLs do the reverse. This is a deliberate trade, and a site that fails over "slowly" is usually one whose TTL was never chosen with failover in mind.
+
+## Monitoring
+
+**SNMP** exposes the metrics worth alerting on: pool member state, connection counts, throughput, system health. The one to alert on first is pool members going down, because that is the event that precedes a visible outage rather than accompanying it.
+
+Logging covers traffic, security events and system activity, and the same principle applies as on a FortiGate: a policy or profile not configured to log produces nothing to investigate later.
+
+## Troubleshooting
+
+The order that resolves most cases, cheapest first:
+
+**1. Is the virtual server receiving traffic?** DNS resolution and routing. If nothing arrives, no configuration below matters.
+
+**2. Are pool members healthy?** A pool with all members failing health checks produces errors that look like a controller fault. Check what the health check actually tests — a shallow check that passes while the application is broken is worse than a failing one.
+
+**3. Which real server received it?** This distinguishes a backend problem on one server from a controller problem affecting all of them, and it is the fastest way to identify the odd server out.
+
+**4. Was it blocked by security?** The security log names the rule. This separates "the ADC blocked it" from "the application returned an error", which look identical from a browser.
+
+**5. Is it persistence?** Intermittent, user-specific, works-then-doesn't behaviour is persistence until proven otherwise. This is the most commonly misdiagnosed ADC symptom, because it presents as an application bug.
+
+**6. Is it TLS?** Certificate, protocol and cipher mismatches fail before HTTP exists, so no HTTP-level log will show them.
+
+## Configuration backup
+
+Backing up and restoring configuration deserves a mention because an ADC is a single point through which applications pass. The useful discipline is to back up **before** every change rather than on a schedule, since the restore you will want is the one from immediately before whatever broke — and to verify a restore occasionally, because an untested backup is a belief rather than a capability.
+
+## What an exam candidate should be able to state cold
+
+The controller can apply signature-based protection and an OWASP-oriented profile, with exceptions scoped to signature, URL and parameter. Adaptive learning needs a representative learning window and a stable application. Application-layer DoS needs no volume; volumetric must be handled upstream. Global load balancing distributes by DNS answer and its responsiveness is governed by TTL. Troubleshoot in order: traffic arriving, pool health, which real server, security log, persistence, then TLS — and intermittent user-specific failures are persistence until proven otherwise.

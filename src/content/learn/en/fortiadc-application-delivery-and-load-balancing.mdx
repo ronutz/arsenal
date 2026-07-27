@@ -1,0 +1,87 @@
+---
+slug: fortiadc-application-delivery-and-load-balancing
+title: "FortiADC: Application Delivery, Server Load Balancing, and Health Checks"
+summary: "An application delivery controller decides which server gets each request and stops sending traffic to servers that cannot serve it. Most delivery problems are one of two things: a health check that tests the wrong thing, or persistence that a stateful application needed and did not get."
+concepts: ["fortinet", "fortiadc", "application delivery", "load balancing", "virtual server", "real server", "server pool", "health check", "persistence", "ssl offload"]
+relatedTools: []
+sub: fortiadc
+relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortigate-routing-and-sdwan-selection"]
+category: networking
+order: 86
+status: reviewed
+updated: "2026-07-26"
+---
+
+An application delivery controller sits in front of a group of servers and makes one decision per request: which server handles this. Everything else it does is in service of making that decision well and surviving the servers that stop working.
+
+## The object model
+
+Four objects, and they nest.
+
+A **real server** is one backend: an address, a port, a weight, and a status.
+
+A **server pool** groups real servers and defines how requests are distributed across them, plus the health check that decides which are eligible.
+
+A **virtual server** is what clients connect to: the address and port published to the world, bound to a pool.
+
+**Profiles and policies** attached to the virtual server govern the rest — how the protocol is handled, whether TLS is terminated, what is inspected, how persistence works.
+
+The shape is deliberately close to a firewall's virtual IP, and the difference matters: a VIP forwards to one destination, an ADC chooses among many and knows whether each is alive.
+
+## Choosing a server
+
+The distribution methods differ in what they optimise:
+
+**Round robin** takes each server in turn. Fair when servers are equal and requests cost the same, which is rarer than it sounds.
+
+**Weighted round robin** respects capacity differences, so a larger server takes proportionally more.
+
+**Least connections** sends to whichever server currently holds fewest, which adapts to requests that vary in duration — the usual right answer for anything with long-lived connections.
+
+**Least response time** factors in how quickly each server is actually answering, which catches a server that is up and struggling.
+
+**Source hash** sends the same client to the same server, which is persistence by arithmetic rather than by state.
+
+The choice matters less than people expect for uniform workloads and matters a great deal when servers differ or requests do.
+
+## Health checks decide everything downstream
+
+A health check determines which servers are eligible. Get it wrong and the load balancer confidently distributes traffic to servers that cannot serve it.
+
+The levels, in increasing usefulness:
+
+**Layer 3** — does it answer a ping. Confirms the host is powered on. Almost worthless as an application health signal.
+
+**Layer 4** — does the port accept a connection. Confirms something is listening. A crashed application whose listener survives passes this.
+
+**Layer 7** — fetch a page and check the response. Confirms the application answers. This is the minimum that means anything.
+
+**Content-matched layer 7** — fetch a page and check the body contains what it should. This is the one that catches the application returning a friendly error page with a 200 status, which is the failure mode that most often defeats naive checks.
+
+The best checks exercise the dependency chain: a page that queries the database proves the database is reachable, which a static page does not. The cost is that a database blip takes every server out at once, so the check should be as deep as the failure you need to detect and no deeper.
+
+## Persistence
+
+Persistence keeps a client on the same server across requests. Applications that hold session state in memory require it, and the symptom of its absence is distinctive: users randomly logged out, baskets emptying, forms losing their contents — intermittent, unreproducible, and blamed on everything except the load balancer.
+
+The mechanisms trade reliability against intrusiveness:
+
+**Source address** requires nothing of the application and groups everyone behind one NAT onto a single server.
+
+**Cookie-based** is accurate per browser and requires the ADC to insert or read a cookie, which needs the traffic to be readable — so with TLS, it needs termination.
+
+**SSL session ID** works without reading the payload and is unreliable as clients renegotiate.
+
+The better answer, where you can influence the application, is to remove the need: externalise session state so any server can serve any request. Persistence is a workaround for applications that cannot do that.
+
+## TLS
+
+Terminating TLS at the ADC allows content-based routing, cookie persistence and inspection, and it moves cryptographic work off the servers.
+
+**Offload** talks plaintext to the backend, which requires trusting the internal network. **Re-encryption** opens a fresh TLS connection to the server, protecting both legs at some cost.
+
+Terminating also centralises certificate management, which is usually an improvement on certificates scattered across servers with independent expiry dates that nobody is tracking.
+
+## What an exam candidate should be able to state cold
+
+Real servers group into pools, pools bind to virtual servers, and profiles on the virtual server govern protocol handling and TLS. Distribution methods matter most when servers or requests are uneven; least connections suits variable-duration requests. Health checks decide eligibility, and layer 4 passes a crashed application whose listener survives, so content-matched layer 7 is the level that means something. Persistence is required by applications holding session state, and its absence presents as random logouts blamed on anything but the load balancer.

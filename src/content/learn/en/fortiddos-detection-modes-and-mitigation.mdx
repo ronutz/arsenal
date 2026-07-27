@@ -1,0 +1,84 @@
+---
+slug: fortiddos-detection-modes-and-mitigation
+title: "FortiDDoS: Detection Versus Prevention, Thresholds, and How Blocking Decides"
+summary: "A DDoS appliance has to tell an attack from a busy Tuesday, and it does that by learning what your traffic normally looks like rather than by recognising signatures. That single design choice explains sizing, the two operating modes, and why the penalty system exists instead of a simple block."
+concepts: ["fortinet", "fortiddos", "ddos", "detection mode", "prevention mode", "threshold", "baseline", "syn flood", "acl", "blocklist", "penalty factor"]
+relatedTools: []
+sub: fortiddos
+relatedArticles: ["fortiweb-application-security-bots-api-and-dos", "fortigate-firewall-policy-and-nat"]
+category: security
+order: 88
+status: reviewed
+updated: "2026-07-26"
+---
+
+Volumetric defence has a problem no signature can solve: the packets in a flood are usually valid. What makes them an attack is that there are too many, from too many places, at once. FortiDDoS is built around measuring that rather than recognising it.
+
+## Sizing, and why it is not optional
+
+Choosing a model is a capacity decision, and the numbers that matter are throughput and the size of attack the appliance is rated to absorb.
+
+The blunt fact is that an inline device cannot mitigate an attack larger than the link feeding it. If 10 Gbps of attack traffic arrives on a 10 Gbps link, the link is full before the appliance decides anything. On-premises DDoS mitigation handles attacks that fit through your pipe, and anything larger has to be dealt with upstream by a carrier or a cloud scrubbing service.
+
+That is not a criticism of the product; it is the physics of the deployment, and a design that ignores it produces an appliance that is working perfectly during an outage.
+
+## Detection and prevention
+
+**Detection mode** observes and reports. It builds the traffic baseline, flags what it would have acted on, and drops nothing.
+
+**Prevention mode** acts on what it detects.
+
+The sequence that works is detection first, for long enough to see a representative period, then prevention. A device switched straight to prevention drops legitimate traffic during the first busy period it has never seen, and the resulting incident is caused by the protection rather than by an attack.
+
+"Long enough" means covering the cycles your traffic actually has — the working week, the month end, whatever campaign or batch job moves your numbers. A baseline learned over a quiet fortnight encodes the wrong normal.
+
+## Thresholds and the baseline
+
+FortiDDoS establishes what normal looks like across many parameters — packet rates by type, connection rates, protocol distribution, source behaviour — and treats deviation as the signal.
+
+Thresholds can be learned automatically or set manually. Automatic is right for most deployments, because the number of parameters is far beyond what anyone will tune by hand. Manual matters where you know something the appliance cannot infer, such as a scheduled event that will legitimately look like an attack.
+
+The consequence to internalise is that this is anomaly detection, so it inherits anomaly detection's failure mode: a genuine, sudden, legitimate traffic surge looks exactly like an attack. A product launch or a news mention will be mitigated unless someone anticipated it.
+
+## Blocking periods and penalty factors
+
+When a source is identified as attacking, the response is not a permanent block. Sources are blocked for a period, and repeated offence lengthens it.
+
+The reasoning is worth understanding, because it is what separates this from an ACL:
+
+**Addresses are shared and spoofed.** A permanent block on an address that turns out to be a carrier NAT gateway takes out a large number of legitimate users, and the block outlives the attack by months.
+
+**Attacks end.** A source that was part of a botnet an hour ago may be a cleaned-up machine now.
+
+**Escalation targets persistence.** A source that stops when blocked is dealt with cheaply; one that returns immediately earns a longer block. The system spends its severity on the sources that deserve it.
+
+The practical effect is that mitigation is self-limiting rather than accumulating a permanent list nobody dares to prune.
+
+## SYN floods and anomalies
+
+**SYN flood** protection addresses the classic exhaustion attack, where half-open connections consume the server's connection table. The appliance validates that a source completes the handshake before the connection is allowed to consume server resources, so spoofed sources — which cannot complete it — are filtered without the server ever seeing them.
+
+**Anomaly protection** drops packets that are malformed or impossible: invalid flag combinations, bad lengths, addresses that cannot be legitimate. These cost almost nothing to check and there is no legitimate traffic on the other side of the decision.
+
+## Access control lists and blocklists
+
+ACLs and blocklists sit alongside the behavioural machinery and answer a different question: not "is this anomalous" but "is this allowed at all".
+
+They earn their place for known-bad sources, geographies you have no business with, and protocols that should never reach a given service. They are cheap because they act before analysis.
+
+The discipline is that a static list is a maintenance burden that silently rots. An entry added during an incident three years ago is still dropping traffic and nobody remembers why, so entries deserve a reason and a review date.
+
+## Reading the graphs
+
+The statistics graphs are how an attack is characterised after the fact, and the shape usually names the type:
+
+- A **volumetric flood** shows packet rate climbing far beyond baseline with the protocol mix skewed.
+- A **SYN flood** shows a collapse in the ratio of completed to attempted connections.
+- An **application-layer attack** shows modest packet rates against a specific service, which is why it evades bandwidth-based thinking entirely.
+- A **legitimate surge** shows a rise across the board with the *proportions* intact, which is the tell that distinguishes it from an attack.
+
+That last one is the reading worth practising, because it is the one that decides whether you are having an incident or a good day.
+
+## What an exam candidate should be able to state cold
+
+An inline appliance cannot mitigate more than its link can carry, so larger attacks belong upstream. Detection mode learns the baseline and reports; prevention acts; run detection long enough to cover your real traffic cycles. Thresholds are learned across many parameters and this is anomaly detection, so a legitimate surge looks like an attack. Blocking is time-limited with escalating penalties because addresses are shared and spoofed and attacks end. SYN flood protection validates the handshake so spoofed sources never reach the server. A legitimate surge keeps its proportions; an attack skews them.

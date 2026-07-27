@@ -1,0 +1,61 @@
+---
+slug: fortigate-traffic-shaping-and-qos
+title: "Traffic shaping e QoS no FortiGate: garantir banda num enlace que já está cheio"
+summary: "O shaping só importa quando um enlace está congestionado, porque até lá tudo passa. O que ele decide é quem sofre quando não há o bastante, e o erro recorrente é garantir mais do que o enlace tem e chamar isso de política."
+concepts: ["fortinet", "fortigate", "traffic shaping", "qos", "shaper compartilhado", "shaper por ip", "shaping por interface", "dscp", "prioridade", "mean opinion score", "correção antecipada de erros"]
+relatedTools: []
+sub: fortigate
+relatedArticles: ["fortigate-routing-and-sdwan-selection", "fortiswitch-vlans-stp-ports-and-qos"]
+category: networking
+order: 93
+status: reviewed
+updated: "2026-07-26"
+---
+
+O traffic shaping é incomum entre recursos de firewall por não fazer nada na maior parte do tempo. Num enlace sem congestionamento todo pacote passa e política alguma é exercitada. O shaping é um plano para os minutos em que isso deixa de ser verdade.
+
+## Os três tipos de shaper
+
+**Shapers compartilhados** aplicam um limite de banda a tudo que casa com uma política, coletivamente. Dez usuários num shaper compartilhado de 10 Mbps têm 10 Mbps entre eles.
+
+**Shapers por IP** aplicam o limite a cada origem separadamente. Dez usuários num shaper por IP de 10 Mbps podem consumir 100 Mbps no total, o que é ou o que você queria ou uma surpresa desagradável.
+
+Escolher errado entre os dois é a falha de shaping mais comum, e o sintoma é ou um enlace que satura apesar de um limite, ou um limite que estrangula um grupo que deveria ter tido a cota cada um.
+
+O **shaping por interface** se aplica na interface, e não por política, que é como se expressa a realidade física de que um enlace WAN tem um teto independentemente da política que o tráfego casou. Shapers de política dividem um bolo; o shaping por interface define o bolo.
+
+## Garantido, máximo e prioridade
+
+Um shaper carrega até três ajustes e eles interagem de um jeito que vale precisar.
+
+**Banda garantida** é reservada. O tráfego que casa com esta política terá pelo menos isto quando quiser.
+
+**Banda máxima** é o teto. Ele não receberá mais que isto nem com o enlace ocioso.
+
+**Prioridade** decide a ordem em que o tráfego acima de sua garantia disputa o que resta.
+
+A falha que aparece em toda implantação mais cedo ou mais tarde: **garantias que somam mais do que o enlace carrega**. Cada uma parece razoável isolada, o total é impossível, e o equipamento as honra numa ordem que ninguém projetou. A disciplina é somar as garantias contra a velocidade real do enlace, e deixar folga em vez de alocar o último megabit.
+
+A sutileza relacionada é que uma garantia numa classe ociosa não é de graça — é capacidade que não pode ser cedida, então garantir demais a tráfego quieto mata de fome o tráfego ocupado sem benefício algum.
+
+## DSCP, e em quem se pode confiar
+
+O tráfego pode ser classificado por casamento de política, ou pela marcação **DSCP** já presente no pacote.
+
+Confiar numa marcação só faz sentido onde você controla quem a definiu. Um endpoint marcando o próprio tráfego como encaminhamento expedito não é evidência de nada, já que qualquer aplicação consegue fazer isso e as que menos importam costumam ser as mais agressivas nisso. O arranjo usual é confiar em marcações de equipamentos gerenciados, remarcar na borda para todo o resto, e preservar marcações pela WAN onde a operadora as honra.
+
+Esse último ponto precisa de verificação, e não de suposição: uma operadora que não honra DSCP entregará seu tráfego cuidadosamente marcado como melhor esforço, e o esforço de shaping termina na sua própria saída.
+
+## Voz, MOS e FEC
+
+Voz e vídeo são a razão pela qual a maioria configura shaping, e falham de forma diferente do tráfego em massa. Uma transferência de arquivo que fica mais lenta é mais lenta; uma chamada que perde pacotes fica ininteligível.
+
+O **mean opinion score** exprime a qualidade da chamada como um número único derivado de latência, jitter e perda. Seu valor é converter três medições que ninguém concorda como ponderar em uma que corresponde ao que um usuário diria sobre a chamada. Um enlace pode parecer saudável num gráfico de banda enquanto seu MOS diz que as chamadas nele estão ruins, e o MOS é o que casa com as reclamações.
+
+A **correção antecipada de erros** encara a perda de outro jeito: em vez de retransmitir o que se perdeu, envia dados redundantes para que o receptor reconstrua pacotes faltantes sem pedir de novo. Num fluxo em tempo real essa é a única opção que ajuda, porque uma retransmissão chega depois do momento em que era necessária.
+
+O custo é banda — você está deliberadamente enviando mais do que a carga exige. Isso compensa num enlace com perda carregando voz e é desperdício num enlace limpo carregando backups, então pertence a overlays específicos, e não a um ajuste global.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+O shaping só age sob congestionamento; decide quem sofre quando não há o bastante. Shapers compartilhados limitam uma política coletivamente, shapers por IP limitam cada origem, e confundi-los produz ou saturação apesar de um limite ou estrangulamento de um grupo. O shaping por interface define o bolo que os shapers de política dividem. Garantias que somam além da capacidade do enlace é a falha de projeto recorrente, e uma garantia em tráfego ocioso é capacidade que não pode ser reaproveitada. Confie no DSCP apenas de equipamentos que você controla, e verifique se a operadora o honra. O MOS converte latência, jitter e perda num número que casa com a experiência do usuário; o FEC troca banda por resiliência à perda e serve a tráfego em tempo real, onde a retransmissão chega tarde demais.

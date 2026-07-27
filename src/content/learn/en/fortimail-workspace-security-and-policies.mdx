@@ -1,0 +1,78 @@
+---
+slug: fortimail-workspace-security-and-policies
+title: "FortiMail Workspace Security: Protecting Microsoft 365 and Google Workspace"
+summary: "Cloud mail platforms already filter mail before you see it, so a second layer has to justify itself. It does so by connecting through the platform's own API rather than the mail path, which means it inspects what arrives after the platform's filtering and can act on mail already sitting in a mailbox."
+concepts: ["fortinet", "fortimail workspace", "microsoft 365", "google workspace", "api integration", "organization", "allowlist", "blocklist", "policy", "extension", "audit log"]
+relatedTools: []
+sub: fortimail
+relatedArticles: ["fortimail-policies-session-filtering-and-antispam", "fortimail-content-security-encryption-and-ibe"]
+category: cloud
+order: 91
+status: reviewed
+updated: "2026-07-26"
+---
+
+Protecting mail that lives in Microsoft 365 or Google Workspace is a different problem from protecting a mail server you run, and the difference is in how the protection connects.
+
+## API integration, not the mail path
+
+A traditional gateway sits in the mail path: mail flows through it before reaching the server. A workspace security service connects through the platform's **API** instead, and that changes what is possible in both directions.
+
+**What it gains:**
+
+- It sees mail **after** the platform's own filtering, so it is a genuine second opinion rather than a duplicate of the same checks.
+- It can act on mail **already delivered**. A message that turns out to be malicious an hour after arrival can be removed from every mailbox it reached, which a gateway cannot do because the message left it long ago.
+- It sees **internal mail**, which never traverses an external gateway at all. That matters because a compromised internal account sending to colleagues is exactly the traffic a perimeter design misses.
+- No MX change and no mail-path dependency, so a fault degrades protection rather than stopping mail.
+
+**What it gives up:** it is not inline, so there is a window between delivery and evaluation. The design accepts that window in exchange for retroactive removal.
+
+Connecting requires authorising the service in the platform's own admin console with the permissions it needs to read and act on mail. That authorisation is the deployment, and its scope deserves reading rather than clicking.
+
+## Organisations and hierarchy
+
+The service models tenancy as **organisations**, which can nest.
+
+The hierarchy exists so that policy can be set once and inherited, with exceptions where they are warranted — a parent for the group, children per business unit or per acquired company, each with its own administrators.
+
+The two things to get right:
+
+**Inheritance direction.** A policy set at the parent applies downward unless a child overrides it. Someone debugging why a child behaves unexpectedly should look up the tree before assuming the child is misconfigured.
+
+**Administrator scope.** An administrator at a node sees and controls that node and everything beneath it. Granting at too high a level is the common mistake, and in a multi-tenant deployment it is a tenancy breach rather than an inconvenience.
+
+## Allowlists, blocklists, and precedence
+
+Every mail product has these and every one gets support tickets about them, because the question is always the same: which wins.
+
+The precedence rule to establish and document is **which list is evaluated first, and at what scope**. An organisation-level allowlist and a child-level blocklist naming the same sender will produce one outcome, and whichever it is, someone will be surprised by it.
+
+The operational advice matters more than the mechanics:
+
+**Allowlists are the dangerous list.** A blocklist entry that is wrong blocks wanted mail, which is noisy and gets fixed. An allowlist entry that is wrong lets attacker mail through silently, and allowlisted senders are a standard target precisely because the protection is switched off for them.
+
+**Allowlist as narrowly as the problem requires.** A specific address, not a domain. A domain, not a top-level domain.
+
+**Review them.** Allowlists accumulate entries added to solve a delivery problem years ago, and each is a permanent hole.
+
+## Policies, extensions and advanced features
+
+**Policies** decide what happens to what: which detections apply to which recipients, and what action follows.
+
+**Extensions** add capability beyond mail — protection for the file sharing, chat and collaboration surfaces that live alongside mail in the same platform. That is worth taking seriously, because an organisation that has hardened mail and ignored the file sharing built into the same suite has moved the target rather than removed it.
+
+**Channel integration** connects those collaboration surfaces so that a malicious file shared in chat is subject to the same scrutiny as one attached to a message.
+
+## Operating it
+
+**Scans** are the record of what was examined and what was found. Filtering them is how a specific message is traced, and it is the first stop when someone asks why a message was or was not delivered.
+
+**Audit logs** record administrative action: who changed a policy, who allowlisted a sender, who released a message. In a multi-tenant deployment this is the accountability trail, and it is also where an investigation starts when a change nobody admits to has taken effect.
+
+**Service status and feature updates** matter more for a service than for an appliance, because the platform changes under you. A feature that appears without announcement can change behaviour, and a service interruption is someone else's incident that becomes yours.
+
+**Error messages** in this environment usually mean the API connection: authorisation revoked or expired, permissions changed on the platform side, or throttling under load. That is the first place to look, because it produces symptoms that resemble a policy fault.
+
+## What an exam candidate should be able to state cold
+
+The service connects through the platform API rather than the mail path, which lets it inspect after the platform's own filtering, act on already-delivered mail, and see internal mail, at the cost of not being inline. Organisations nest and policy inherits downward, so debug upward before blaming a child. Allowlists are more dangerous than blocklists because a wrong entry fails silently, and they should be as narrow as possible and reviewed. Extensions cover the collaboration surfaces beside mail, which is where an attacker moves when mail is hardened. Errors usually trace to the API authorisation.

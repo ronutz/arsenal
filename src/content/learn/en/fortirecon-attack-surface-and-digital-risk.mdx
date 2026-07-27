@@ -1,0 +1,79 @@
+---
+slug: fortirecon-attack-surface-and-digital-risk
+title: "FortiRecon: Attack Surface Management and What the Dark Web Actually Is"
+summary: "External attack surface management answers a question most organisations cannot: what does an attacker see when they look at us. It works from the outside with no credentials and no agents, which is exactly how an attacker starts, and it routinely finds assets nobody knew were exposed."
+concepts: ["fortinet", "fortirecon", "attack surface management", "asm", "digital risk protection", "surface web", "deep web", "dark web", "mitre attack", "kill chain", "seed data"]
+relatedTools: []
+sub: fortirecon
+relatedArticles: ["fortinet-soc-architecture-and-adversary-behaviour", "forticnapp-fundamentals-and-cloud-posture"]
+category: security
+order: 90
+status: reviewed
+updated: "2026-07-26"
+---
+
+Every security tool discussed so far looks inward at things you own and manage. FortiRecon looks inward from the outside, which finds a category of problem the inward-looking tools cannot: the things you own and do not know about.
+
+## Surface, deep, and dark
+
+These three terms are used loosely and the distinction is simple.
+
+The **surface web** is what a search engine has indexed. Public and findable.
+
+The **deep web** is everything reachable that is not indexed: content behind a login, behind a form, on a page nothing links to. Most of the web by volume, and entirely ordinary — your webmail is deep web.
+
+The **dark web** requires specific software to reach, most commonly Tor, and is designed so that hosts and visitors are hard to identify. That property attracts criminal markets, which is why it matters here.
+
+The distinction that matters operationally is that **deep does not mean hidden from an attacker**. An unlinked staging server is deep web and is discoverable by scanning the address space, which anyone can do. Assuming otherwise is the reasoning behind a great many exposed systems.
+
+## Where an attacker starts
+
+Attack frameworks describe the sequence, and the first phase is the one FortiRecon addresses.
+
+The **kill chain** begins with reconnaissance, before any exploitation. **MITRE ATT&CK** formalises the same idea and adds detail: an adversary gathers information about the target's hosts, domains, employees and technology before touching anything.
+
+That reconnaissance is not detectable by your own defences, because it happens against public sources and third-party infrastructure. Nothing crosses your firewall. The only way to know what it yields is to perform it yourself, which is what external attack surface management is.
+
+## Attack surface management
+
+**ASM** discovers and monitors what is externally visible: domains and subdomains, addresses and ranges, exposed services and ports, technologies and versions, certificates, cloud storage, and code repositories.
+
+The discovery starts from **seed data** — the domains, brands and address ranges you know about — and expands outward by following what those reveal: certificate transparency logs, DNS records, WHOIS and hosting relationships, until it has assembled the visible estate.
+
+What it finds, reliably, in almost every deployment:
+
+- **Forgotten infrastructure.** A staging server from a project that ended, a marketing microsite, an acquired company's estate nobody folded in.
+- **Unmanaged cloud.** A team's account outside central visibility.
+- **Exposed management interfaces.** An administrative panel that should never have been public.
+- **Expired or misissued certificates.**
+- **Technologies with known vulnerabilities**, identified by version from the outside.
+
+The value is not that these are exotic. It is that they are ordinary and invisible to the inventory you maintain, and an attacker finds them with the same techniques.
+
+## Digital risk protection
+
+**Brand protection** watches for impersonation: lookalike domains registered against yours, fake applications, fraudulent social accounts. Registration of a lookalike domain frequently precedes a phishing campaign, so it is an early warning rather than a complaint.
+
+**Adversary-centric intelligence** watches criminal forums and markets for mentions of your organisation: credentials for sale, access being advertised, data being traded, or your name appearing in target lists.
+
+The finding that changes an afternoon is leaked credentials. Knowing that a set of your accounts appears in a dump lets you reset them before they are used, and that window is the entire value.
+
+## Making it useful
+
+Discovery produces a list, and a list is not yet work. Two disciplines:
+
+**Ownership.** A finding nobody owns is a finding nobody fixes. The unmanaged cloud account is exactly the case where nobody is sure whose it is, and establishing that is most of the remediation.
+
+**Prioritisation by exposure and consequence.** An expired certificate on a decommissioned host is not an emergency; an exposed administrative interface on a live system is. Sorting by severity alone misses that.
+
+**MSSP deployments** add a tenancy dimension: each customer's estate is separate, onboarding requires that customer's seed data, and findings must never cross between tenants. The separation is a security control, not an organisational convenience.
+
+## APIs
+
+The API matters here more than in most products, because ASM output is a feed rather than a dashboard. Discovered assets belong in your inventory, findings belong in the ticketing system where remediation is tracked, and credential leaks should trigger a response rather than wait to be noticed.
+
+A console that must be visited to be useful will not be visited often enough for an early warning to be early.
+
+## What an exam candidate should be able to state cold
+
+Surface web is indexed, deep web is reachable but unindexed and includes ordinary content, dark web needs specific software and hosts criminal markets; deep does not mean hidden from an attacker. Reconnaissance is the first phase of the kill chain and happens outside your visibility, so the only way to see it is to perform it. ASM starts from seed data and expands via certificate transparency, DNS and hosting relationships, reliably finding forgotten infrastructure, unmanaged cloud and exposed management interfaces. Digital risk protection covers lookalike domains and criminal-forum mentions, and leaked credentials are the finding with the shortest useful window. Findings need an owner and prioritisation by exposure, and the API matters because the output is a feed.

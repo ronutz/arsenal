@@ -1,0 +1,61 @@
+---
+slug: fortiddos-policies-proxies-and-operations
+title: "FortiDDoS Protection Policies, Proxy Traffic, and Running It Day to Day"
+summary: "Protection policies scope which rules apply to which traffic, which matters because a public web service and an internal API deserve very different treatment. The hardest operational problem is traffic that arrives through proxies and CDNs, where every request shares a handful of source addresses."
+concepts: ["fortinet", "fortiddos", "protection policy", "service protection profile", "proxy", "cdn", "shared source", "operations", "tuning", "false positive"]
+relatedTools: []
+sub: fortiddos
+relatedArticles: ["fortiddos-detection-modes-and-mitigation", "fortiweb-application-security-bots-api-and-dos"]
+category: security
+order: 89
+status: reviewed
+updated: "2026-07-26"
+---
+
+Once the appliance is inline and has a baseline, the work is scoping: making sure each kind of traffic is measured against expectations that fit it.
+
+## Protection policies
+
+A **protection policy** binds a set of thresholds and behaviours to a defined slice of traffic — typically a service, a subnet, or a VLAN.
+
+Scoping matters because averaging destroys the signal. Measure a public website and a backup replication link against one baseline and you get thresholds that are too loose for the website and too tight for the backup. Neither is protected properly, and the appliance looks like it is not working.
+
+The practical grouping is by traffic character rather than by organisational chart:
+
+- **Public-facing services** — high and variable volumes, many sources, the primary attack surface.
+- **Internal services** — predictable volumes from a known population, where an anomaly is more meaningful because normal is narrower.
+- **Bulk transfer** — backups and replication, which look like a flood by every metric and are legitimate.
+
+That last group is the one most often forgotten, and it produces the most memorable false positive: the nightly backup mitigated as a volumetric attack.
+
+## Traffic through proxies and CDNs
+
+This is the hardest problem in the product, and it is worth stating plainly why.
+
+Source-based defence assumes an address identifies a source. Behind a CDN, a corporate proxy, a carrier NAT or a cloud egress gateway, thousands of users share a handful of addresses. Every source-rate threshold now measures a population, and the appliance's basic assumption is violated.
+
+Two consequences:
+
+**Legitimate shared sources look like attackers.** A CDN edge node forwarding for ten thousand users exceeds any per-source rate designed for one user.
+
+**Attackers behind shared sources are invisible.** Their traffic disappears into a volume that is already high and already tolerated.
+
+The handling is a combination rather than a single setting: identify the known proxy and CDN ranges so they are treated as populations rather than individuals, raise or disable per-source thresholds for those ranges specifically, and lean on the layer that can see the real client — the forwarded-for header at the application layer, which is where a WAF operates and a network DDoS appliance does not.
+
+The honest position is that a device inspecting packets cannot fully solve a problem created by address sharing, and the answer is layering rather than tuning.
+
+## Running it day to day
+
+**Review what would have been blocked** before anything is enforced, and keep reviewing after. Detection-mode reporting during a prevention deployment is how you find a threshold that is about to cause an incident.
+
+**Re-baseline after real change.** A new service, a migration, a season — each shifts what normal is. A baseline is a description of the past and it expires.
+
+**Anticipate scheduled events.** A launch, a campaign, an end-of-quarter batch. Each is a legitimate surge that behavioural mitigation will treat as an attack unless someone said so in advance. That conversation belongs before the event.
+
+**Investigate false positives rather than raising thresholds reflexively.** A threshold raised to silence an alert is protection removed, and the reason is forgotten long before the consequence arrives.
+
+**Know what you would do about an attack larger than your link.** The answer is an upstream call, and the time to establish who and how is not during the incident.
+
+## What an exam candidate should be able to state cold
+
+Protection policies scope thresholds to traffic that behaves alike, because averaging unlike traffic produces thresholds that protect neither; bulk transfer is the group most often forgotten and the most common false positive. Traffic arriving through proxies and CDNs breaks the assumption that an address identifies a source, so shared ranges need to be identified and treated as populations, and the real client is only visible at the application layer. Re-baseline after real change, anticipate scheduled surges, and investigate false positives rather than raising thresholds, because a raised threshold is removed protection.

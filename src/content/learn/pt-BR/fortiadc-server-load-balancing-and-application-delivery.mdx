@@ -1,0 +1,83 @@
+---
+slug: fortiadc-server-load-balancing-and-application-delivery
+title: "FortiADC: balanceamento de carga de servidores, persistência e entrega de aplicações"
+summary: "Um controlador de entrega de aplicações fica à frente dos servidores e decide qual deles recebe cada requisição. A hierarquia de configuração é pequena, e duas decisões dentro dela — o método de balanceamento e a regra de persistência — determinam se uma aplicação com estado funciona ou falha de formas que parecem aleatórias."
+concepts: ["fortinet", "fortiadc", "adc", "balanceamento de carga", "servidor virtual", "servidor real", "pool de servidores", "persistência", "verificação de saúde", "offload de ssl", "otimização"]
+relatedTools: []
+sub: fortiadc
+relatedArticles: ["fortiweb-deployment-policies-and-delivery", "fortigate-routing-and-sdwan-selection"]
+category: networking
+order: 88
+status: reviewed
+updated: "2026-07-26"
+---
+
+Um controlador de entrega de aplicações é um proxy reverso com opiniões sobre distribuição, saúde e otimização. Tudo o que ele faz se apoia numa hierarquia de quatro objetos.
+
+## A hierarquia
+
+Um **servidor real** é um backend: endereço, porta, peso e verificação de saúde.
+
+Um **pool de servidores** agrupa servidores reais e define como o tráfego é distribuído entre eles.
+
+Um **servidor virtual** é o endereço ao qual os clientes conectam. Liga um endereço e porta de escuta a um pool.
+
+Um **perfil de aplicação** descreve o comportamento de protocolo: como o HTTP é tratado, o que é reescrito, quais otimizações se aplicam.
+
+Qualquer coisa que você configure se prende a um desses quatro, e saber a qual é a maior parte de se orientar.
+
+## Métodos de balanceamento, e o que pressupõem
+
+O método decide qual servidor real recebe a próxima requisição, e cada um carrega uma premissa:
+
+**Round robin** distribui igualmente e pressupõe que todos os servidores e todas as requisições são iguais. Serve a cargas homogêneas e sem estado.
+
+**Round robin ponderado** deixa servidores desiguais carregarem carga proporcional, o que importa depois de uma renovação de hardware deixar um pool misto.
+
+**Menos conexões** envia ao servidor com menos conexões ativas, o que lida com requisições de duração variável muito melhor que round robin. É o padrão sensato para a maioria das aplicações reais.
+
+**Resposta mais rápida** usa tempo de resposta medido, o que se adapta a servidores degradados em vez de fora do ar. Seu risco é oscilação se a janela de medição for curta.
+
+**Hash de origem** mapeia um cliente consistentemente a um servidor. É um método de distribuição que por acaso dá aderência, e é instrumento grosseiro para persistência — veja abaixo.
+
+## A persistência é onde aplicações com estado quebram
+
+Se uma aplicação mantém estado de sessão no servidor que a criou, um cliente cuja próxima requisição cai em outro lugar parece deslogado. O sintoma é intermitente e de aparência aleatória, o que o torna caro de diagnosticar e é por isso que a persistência merece decisão deliberada.
+
+**Persistência por endereço de origem** liga um endereço de cliente a um servidor. Simples, e falha onde muitos clientes compartilham um endereço atrás de NAT: um escritório inteiro cai num servidor, o que é desequilíbrio e fragilidade.
+
+**Persistência por cookie** faz o ADC inserir ou ler um cookie identificando o servidor. Bem mais exata porque identifica uma sessão em vez de uma localização de rede, e exige que o cliente aceite cookies e que o tráfego seja legível.
+
+**Persistência por ID de sessão SSL** funciona onde cookies não estão disponíveis, com a ressalva de que identificadores de sessão mudam mais do que as sessões.
+
+A regra geral: prefira persistência por cookie onde puder terminar o TLS, e recorra a endereço de origem apenas onde não puder.
+
+## Verificações de saúde decidem o que significa "no ar"
+
+Um membro do pool é usado ou não conforme sua verificação de saúde, e a profundidade da verificação determina qual falha ela consegue enxergar.
+
+Uma verificação de **conexão TCP** confirma que algo está escutando. Ela seguirá alegremente mandando tráfego a um servidor cuja aplicação travou atrás de um socket vivo.
+
+Uma verificação **HTTP** busca uma página e pode conferir conteúdo esperado. Isso detecta a aplicação falhando, e não a porta fechando, que é a falha que de fato acontece.
+
+Uma verificação **com script ou de vários passos** exercita uma transação real, que é o que se quer para uma aplicação cuja saúde depende de um banco de dados alcançável.
+
+A regra prática é verificar tão fundo quanto a falha que você quer sobreviver. Uma verificação rasa num serviço crítico é a decisão de continuar servindo erros.
+
+## Otimização
+
+Por terminar conexões, um ADC consegue melhorar a entrega além de distribuir.
+
+O **offload de SSL** tira trabalho criptográfico dos servidores, e a decisão é se a perna interna é recriptografada. Fazer offload para texto claro exige confiar na rede interna; recriptografar, não.
+
+A **compressão** troca CPU por banda e ajuda mais em texto.
+
+O **cache** serve conteúdo estático repetido sem tocar num servidor.
+
+A **otimização de velocidade de página** reescreve conteúdo — embutindo, minificando, adiando — para reduzir idas e voltas. É a que se introduz com cautela, porque muda o que o navegador recebe e pode quebrar um front end frágil. Teste antes de habilitar amplamente.
+
+A **multiplexação de conexões** reutiliza conexões de backend entre requisições de clientes, o que reduz a rotatividade de conexões que os servidores tratam e frequentemente ajuda mais que a compressão que todos buscam primeiro.
+
+## O que quem vai prestar o exame precisa saber de cor
+
+Servidores reais se agrupam em pools, um servidor virtual liga um endereço de escuta a um pool, e um perfil de aplicação descreve comportamento de protocolo. Menos conexões serve a durações variáveis e é o padrão sensato; hash de origem dá aderência como efeito colateral e é ferramenta grosseira de persistência. Persistência por cookie identifica uma sessão e é preferida onde o TLS é terminado; por endereço de origem colapsa clientes atrás de NAT num servidor. Verificações de saúde precisam ser tão profundas quanto a falha que se quer sobreviver, já que uma verificação TCP não percebe uma aplicação travada atrás de um socket vivo. O offload de SSL exige uma perna interna confiável salvo se recriptografada.

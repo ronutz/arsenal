@@ -1,0 +1,65 @@
+---
+slug: fortideceptor-deployment-and-incident-analysis
+title: "FortiDeceptor Deployment: Networks, Air-Gapped Sites, Central Management, and Incident Analysis"
+summary: "A deception deployment has to reach the segments where attackers operate, which frequently includes networks that are isolated by design. The deployment topology, the wizard that assembles it, and the analysis that follows an alert are the practical body of running FortiDeceptor."
+concepts: ["fortinet", "fortideceptor", "deployment", "deception network", "air-gapped", "central management", "incident analysis", "integration", "ot", "quarantine"]
+relatedTools: []
+sub: fortideceptor
+relatedArticles: ["fortideceptor-decoys-lures-and-deception-strategy", "fortinac-device-modeling-and-profiling"]
+category: security
+order: 87
+status: reviewed
+updated: "2026-07-26"
+---
+
+Deception only detects what it can reach. The deployment work is getting decoys onto the segments that matter, including the ones that are deliberately hard to reach.
+
+## Deployment networks
+
+A **deployment network** is a segment where decoys are placed. In practice this means a VLAN, and the decoys take addresses on it as ordinary hosts would.
+
+The design rule follows directly from what makes deception work: decoys must be **on the segments an attacker traverses**, and they must be indistinguishable from real hosts on them. A decoy in a dedicated "deception VLAN" that nothing else uses is trivially identifiable and detects only the least careful intruder.
+
+The **deployment wizard** exists because assembling this by hand is fiddly: choosing decoy types, allocating addresses, mapping to VLANs, and doing it consistently across many segments. Using it and reviewing what it produced is faster than building each decoy individually, and it makes the deployment describable, which matters when someone else has to maintain it.
+
+## Air-gapped deployments
+
+Operational technology and other isolated environments cannot reach a cloud service or a central manager, and that isolation is the point rather than an inconvenience to route around.
+
+FortiDeceptor supports operating in such environments, which changes two things: signature and content updates must be brought in deliberately rather than fetched, and alerting must reach an operator through whatever path the environment allows.
+
+This is where deception earns particular value. Isolated networks are frequently the ones where agents cannot be installed and traffic inspection is limited, and a decoy needs neither. It sits on the network and waits, which is a control that survives constraints most others do not.
+
+## Central and top management
+
+Where several appliances are deployed — multiple sites, multiple isolated environments — **central management** aggregates them so incidents are seen in one place and configuration is applied consistently. **Top management** extends the same idea another level, which suits a large estate or a provider managing several organisations.
+
+The operational reason to care is that deception alerts are rare and high value. A rare alert arriving in a console nobody watches is worse than no alert, so the aggregation point should be somewhere already part of a workflow rather than a separate screen.
+
+## Integration
+
+Deception is most useful when its high-confidence signal drives something.
+
+Sending alerts to **FortiAnalyzer or a SIEM** puts them beside everything else, so a decoy interaction can be correlated with what the same source did elsewhere. That correlation frequently converts one alert into a timeline.
+
+Integration with **FortiGate or network access control** allows automated containment: an address that touched a decoy can be quarantined or have its access restricted. This is one of the better candidates for automation precisely because of the low false-positive property — the usual caution about automated response is proportional to false positives, and here they are rare.
+
+The caution that remains is the compromised-shared-address case. Quarantining a source that turns out to be a NAT gateway or a jump host affects everyone behind it, so the automation should account for what sits behind the address it is about to cut off.
+
+## Analysing an incident
+
+The order that gets to an answer:
+
+**1. What was touched, and by whom?** The decoy and the source address. The deployment map shows where both sit, which frequently makes the intent obvious — lateral movement across a segment looks different from a single directed connection.
+
+**2. Was a token involved?** If the interaction followed a token, the endpoint holding that token is compromised. That is the most actionable fact deception produces, and it points at a real machine rather than a fake one.
+
+**3. What did they attempt?** Credentials tried, commands run, files touched. On a full-stack decoy this is a genuine behavioural record.
+
+**4. How does it map to known technique?** Placing the behaviour in a framework makes it comparable with other detections and tells you what typically comes next, which is what turns an alert into a search.
+
+**5. Where else has that source been?** This is the correlation step, and it needs the integration above. A source that touched a decoy and also authenticated somewhere unusual is a different situation from one that only touched the decoy.
+
+## What an exam candidate should be able to state cold
+
+Decoys must sit on the segments attackers traverse and be indistinguishable from real hosts, so a dedicated deception VLAN defeats the purpose. The deployment wizard assembles decoys, addresses and networks consistently. Air-gapped support matters because isolated environments often cannot run agents, and a decoy needs none. Central and top management aggregate multiple appliances so rare high-value alerts land where someone is looking. Deception is a strong candidate for automated containment because false positives are rare, with care around shared addresses. Analyse in order: what was touched, whether a token was involved and therefore which real endpoint is compromised, what was attempted, and where else that source appears.
