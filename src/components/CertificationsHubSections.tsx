@@ -42,6 +42,11 @@ export interface HubCert {
    *  "Core practical exam AND one elective"). Null when there is nothing extra. */
   requirementNote?: string | null;
   /** Certifications that must be ACTIVE before this one can be earned. */
+  /** "standalone" = outside the vendor's certification ladder (PRIME
+   *  2026-07-27). Labelled on the card because someone planning a route to a
+   *  higher certification needs to know this one does not advance them. */
+  track?: "standalone" | null;
+  standaloneLabel?: string;
   prerequisites?: string[];
   prerequisitesLabel?: string;
   retiringLabel?: string;
@@ -231,6 +236,11 @@ export default function CertificationsHubSections({
                                 {/* Availability caveat sits on the CARD so a
                                     reader scanning a level sees which exams
                                     cannot be sat yet without opening each one. */}
+                                {cert.track === "standalone" && (
+                                  <p className="certhub-guide-badge certhub-guide-badge--prep">
+                                    {cert.standaloneLabel}
+                                  </p>
+                                )}
                                 {guide.retirement && (
                                   <p className="certhub-guide-badge certhub-guide-badge--prep">
                                     {cert.retiringLabel} {guide.retirement.until}

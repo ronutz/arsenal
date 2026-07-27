@@ -92,6 +92,8 @@ export default async function CertificationsHubPage({
       // "Core practical exam AND one elective".
       requirementNote: cert.requirementNote ?? null,
       // Certifications that must be ACTIVE first, in the vendor's own wording.
+      track: cert.track ?? null,
+      standaloneLabel: t("standaloneTrackLabel"),
       prerequisites: cert.prerequisites ?? [],
       prerequisitesLabel: t("prerequisitesLabel"),
       retiringLabel: t("retiringLabel"),

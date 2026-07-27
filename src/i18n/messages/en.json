@@ -6242,7 +6242,7 @@
     },
     "platforms": {
       "title": "The platforms, taught in depth",
-      "body": "Being an authorized instructor for every vendor here means I can teach each one properly and compare them honestly. These are the platforms I am authorized to teach.",
+      "body": "Being an authorized instructor for these four means I can teach each one properly and compare them honestly. These are the platforms I am authorized to teach.",
       "f5": "BIG-IP across the full instructor-led curriculum: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automation, and troubleshooting.",
       "fortinet": "Fortinet certified training, including the FCP track.",
       "extreme": "Extreme Networks switching, SD-WAN, and API and automation tracks, across installation, configuration, management, and troubleshooting.",
@@ -6708,7 +6708,7 @@
       "s1Body": "In 2025 Rodolfo completed Ping Identity's official PingFederate training and earned the PingFederate Practitioner credential, deep-diving the federation server that turned SAML from a specification into enterprise plumbing. For someone who teaches access management on other platforms and builds SAML and OIDC tooling for this site, it was the natural next protocol stack to master from the inside.",
       "s2Title": "Identity, decoded on this site",
       "s2Body": "The identity toolset on this site decodes the same artifacts PingFederate and PingOne move in production: the SAML decoder, the JWT and OIDC inspectors, and the PKCE and TOTP tools all read the assertions, tokens, and flows federation runs on - locally, in the browser. The chapter's coursework runs through PingFederate practitioner training in 2025, and the federation patterns it teaches are exactly what those tools make visible.",
-      "certs": "Authorized Ping Identity instructor (cleared 2026). PingFederate Practitioner (2025), earned through Ping Identity Training. Full detail on the credentials page.",
+      "certs": "PingFederate Practitioner (2025), earned through Ping Identity Training. Full detail on the credentials page.",
       "lineageTitle": "How three identity bloodlines became one",
       "lineageDesc": "Ping was founded on federation in Denver in 2002. Sun open-sourced its access stack as OpenSSO and its new Java directory as OpenDS; when Oracle absorbed Sun in 2010, five engineers forked the code in Oslo as ForgeRock - OpenAM and OpenDJ. A third line, the UnboundID directory built by Sun directory alumni in Austin, joined Ping in 2016 as PingDirectory. Thoma Bravo took Ping and ForgeRock private in 2022 and combined them on August 23, 2023: one platform, all three heritages, with DaVinci as the orchestration tissue."
     },
@@ -6721,7 +6721,7 @@
       "s1Body": "Two decades of this record run through firewalls, load balancers, and the perimeters they defended; Zscaler is the company that bet earliest that the perimeter would dissolve into a global inspection cloud. Studying the Zero Trust Exchange, ZIA, and ZPA architectures is the natural continuation of the SSE work already underway in the Netskope chapter, from the other side of the same market.",
       "s2Title": "Reading the TLS surface",
       "s2Body": "The JA4 and JA3 decoders on this site read the same TLS surface the Zero Trust Exchange inspects at scale: the handshake a client offers before any policy fires, and everything it reveals. It is a natural pairing - a cloud that terminates and inspects the world's TLS, and a toolbox that teaches what those handshakes say - with more of that tooling to follow.",
-      "certs": "Authorized Zscaler instructor (cleared 2026). Platform certifications will be recorded on the credentials page as they land."
+      "certs": "Platform certifications will be recorded on the credentials page as they land."
     },
     "pulse": {
       "name": "Pulse Secure",
@@ -6736,7 +6736,11 @@
     },
     "industryPointerTitle": "The wider family tree",
     "industryPointerBody": "Deep-research lineages of the Red Education training partners and the pioneers that shaped this industry - Check Point to Nortel, Symantec to Madge - live on the Industry page.",
-    "industryPointerLink": "Explore the industry lineages"
+    "industryPointerLink": "Explore the industry lineages",
+    "checkpoint": {
+      "name": "Check Point",
+      "tagline": "The company that made the stateful firewall a product - and still builds the management model everything else is compared against."
+    }
   },
   "training": {
     "eyebrow": "Training I deliver",
@@ -8694,7 +8698,8 @@
       "netskope": "Netskope One and SSE: the next-gen secure web gateway, CASB, ZTNA, cloud firewall, and the data-protection and platform layers.",
       "extreme": "Extreme Networks: Platform ONE, the ExtremeCloud IQ continuum, wired and wireless and fabric, access security, and analytics.",
       "zscaler": "Zscaler and the Zero Trust Exchange: cloud secure web gateway and firewall (ZIA), zero trust access to private applications (ZPA), digital experience monitoring (ZDX), and data protection. Security delivered as a global cloud, not an appliance.",
-      "ping": "Ping Identity and ForgeRock: access management across PingOne, PingFederate, PingAccess, and the ForgeRock Identity Platform, with SSO, MFA, identity orchestration, and directory services at enterprise scale."
+      "ping": "Ping Identity and ForgeRock: access management across PingOne, PingFederate, PingAccess, and the ForgeRock Identity Platform, with SSO, MFA, identity orchestration, and directory services at enterprise scale.",
+      "checkpoint": "Check Point Quantum and the Infinity architecture: security gateways managed from a separate management server, with a policy model built on layers, objects and a database that is published before it is installed. The CCSA and CCSE study guides follow it."
     },
     "redEduCallout": "Why these vendors? Because they are the platforms Rodolfo is authorized to teach through <link>Red Education</link>, a global award-winning authorized training partner: F5, Fortinet, Netskope, Extreme Networks, Ping Identity, and Zscaler."
   },
@@ -13975,7 +13980,8 @@
     "retirementNotice": "{exam} can be sat until {until}.",
     "retirementReplacedBy": "It is replaced by {exam}.",
     "retirementNoReplacement": "Fortinet's page does not name a replacement.",
-    "sourceCaveatCourse": "These objectives come from Fortinet's course page for this product, not from an exam blueprint: Fortinet has not published one for this exam yet. The material is what the course teaches, and an exam blueprint may organise or weight it differently."
+    "sourceCaveatCourse": "These objectives come from Fortinet's course page for this product, not from an exam blueprint: Fortinet has not published one for this exam yet. The material is what the course teaches, and an exam blueprint may organise or weight it differently.",
+    "standaloneTrackLabel": "Outside the certification path"
   },
   "trainingCta": {
     "eyebrow": "Instructor-led training",

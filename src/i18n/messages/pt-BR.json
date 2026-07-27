@@ -6242,7 +6242,7 @@
     },
     "platforms": {
       "title": "As plataformas, ensinadas com profundidade",
-      "body": "Ser instrutor autorizado de cada fabricante aqui significa que posso ensinar cada um como deve ser e compará-los com honestidade. Estas são as plataformas que estou autorizado a ensinar.",
+      "body": "Ser instrutor autorizado destes quatro significa que posso ensinar cada um como deve ser e compará-los com honestidade. Estas são as plataformas que estou autorizado a ensinar.",
       "f5": "BIG-IP em todo o currículo conduzido por instrutor: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automação e troubleshooting.",
       "fortinet": "Treinamento certificado da Fortinet, incluindo a trilha FCP.",
       "extreme": "Trilhas de switching, SD-WAN, e API e automação da Extreme Networks, passando por instalação, configuração, gerenciamento e troubleshooting.",
@@ -6708,7 +6708,7 @@
       "s1Body": "Em 2025, Rodolfo concluiu o treinamento oficial de PingFederate da Ping Identity e obteve a credencial PingFederate Practitioner, mergulhando no servidor de federação que transformou o SAML de especificação em encanamento corporativo. Para quem ensina gestão de acesso em outras plataformas e constrói ferramentas de SAML e OIDC para este site, era a próxima pilha de protocolos natural a dominar por dentro.",
       "s2Title": "Identidade, decodificada neste site",
       "s2Body": "O ferramental de identidade deste site decodifica os mesmos artefatos que PingFederate e PingOne movem em produção: o decodificador SAML, os inspetores de JWT e OIDC e as ferramentas de PKCE e TOTP leem as asserções, tokens e fluxos sobre os quais a federação roda - localmente, no navegador. O curso de practitioner de PingFederate em 2025 marca o capítulo, e os padrões de federação que ele ensina são exatamente o que essas ferramentas tornam visível.",
-      "certs": "Instrutor autorizado da Ping Identity (habilitado em 2026). PingFederate Practitioner (2025), obtido pelo Ping Identity Training. Detalhes completos na página de credenciais.",
+      "certs": "PingFederate Practitioner (2025), obtido pelo Ping Identity Training. Detalhes completos na página de credenciais.",
       "lineageTitle": "Como três linhagens de identidade viraram uma",
       "lineageDesc": "A Ping nasceu da federação em Denver em 2002. A Sun abriu o código do seu stack de acesso como OpenSSO e do seu novo diretório Java como OpenDS; quando a Oracle absorveu a Sun em 2010, cinco engenheiros bifurcaram o código em Oslo como ForgeRock - OpenAM e OpenDJ. Uma terceira linha, o diretório UnboundID construído por veteranos de diretório da Sun em Austin, juntou-se à Ping em 2016 como PingDirectory. A Thoma Bravo fechou o capital de Ping e ForgeRock em 2022 e as combinou em 23 de agosto de 2023: uma plataforma, as três heranças, com o DaVinci como tecido de orquestração."
     },
@@ -6721,7 +6721,7 @@
       "s1Body": "Duas décadas deste registro atravessam firewalls, balanceadores e os perímetros que eles defendiam; a Zscaler é a empresa que apostou mais cedo que o perímetro se dissolveria numa nuvem global de inspeção. Estudar as arquiteturas do Zero Trust Exchange, do ZIA e do ZPA é a continuação natural do trabalho de SSE já em andamento no capítulo Netskope, do outro lado do mesmo mercado.",
       "s2Title": "Lendo a superfície TLS",
       "s2Body": "Os decodificadores JA4 e JA3 deste site leem a mesma superfície TLS que o Zero Trust Exchange inspeciona em escala: o handshake que um cliente oferece antes de qualquer política disparar, e tudo o que ele revela. É um par natural - uma nuvem que termina e inspeciona o TLS do mundo, e uma caixa de ferramentas que ensina o que esses handshakes dizem - com mais desse ferramental a caminho.",
-      "certs": "Instrutor autorizado da Zscaler (habilitado em 2026). As certificações da plataforma serão registradas na página de credenciais à medida que chegarem."
+      "certs": "As certificações da plataforma serão registradas na página de credenciais à medida que chegarem."
     },
     "pulse": {
       "name": "Pulse Secure",
@@ -6736,7 +6736,11 @@
     },
     "industryPointerTitle": "A árvore genealógica mais ampla",
     "industryPointerBody": "As linhagens pesquisadas a fundo dos parceiros de treinamento da Red Education e dos pioneiros que moldaram esta indústria - de Check Point a Nortel, de Symantec a Madge - vivem na página Indústria.",
-    "industryPointerLink": "Explorar as linhagens da indústria"
+    "industryPointerLink": "Explorar as linhagens da indústria",
+    "checkpoint": {
+      "name": "Check Point",
+      "tagline": "A empresa que transformou o firewall com estado num produto - e que ainda constrói o modelo de gerência com o qual todos os outros são comparados."
+    }
   },
   "training": {
     "eyebrow": "Treinamentos que ministro",
@@ -8694,7 +8698,8 @@
       "netskope": "Netskope One e SSE: o secure web gateway de nova geração, CASB, ZTNA, firewall em nuvem e as camadas de proteção de dados e de plataforma.",
       "extreme": "Extreme Networks: Platform ONE, o contínuo ExtremeCloud IQ, cabeado, sem fio e fabric, segurança de acesso e analytics.",
       "zscaler": "Zscaler e o Zero Trust Exchange: secure web gateway e firewall em nuvem (ZIA), acesso zero trust a aplicações privadas (ZPA), monitoramento de experiência digital (ZDX) e proteção de dados. Segurança entregue como nuvem global, não como appliance.",
-      "ping": "Ping Identity e ForgeRock: gestão de acesso no PingOne, PingFederate, PingAccess e na ForgeRock Identity Platform, com SSO, MFA, orquestração de identidade e serviços de diretório em escala corporativa."
+      "ping": "Ping Identity e ForgeRock: gestão de acesso no PingOne, PingFederate, PingAccess e na ForgeRock Identity Platform, com SSO, MFA, orquestração de identidade e serviços de diretório em escala corporativa.",
+      "checkpoint": "Check Point Quantum e a arquitetura Infinity: gateways de segurança gerenciados a partir de um servidor de gerência separado, com um modelo de política construído sobre camadas, objetos e um banco de dados que é publicado antes de ser instalado. Os guias de estudo do CCSA e do CCSE o acompanham."
     },
     "redEduCallout": "Por que esses fornecedores? Porque são as plataformas que Rodolfo é autorizado a ensinar pela <link>Red Education</link>, uma parceira global e premiada de treinamento autorizado: F5, Fortinet, Netskope, Extreme Networks, Ping Identity e Zscaler."
   },
@@ -13975,7 +13980,8 @@
     "retirementNotice": "O {exam} pode ser prestado até {until}.",
     "retirementReplacedBy": "Ele é substituído pelo {exam}.",
     "retirementNoReplacement": "A página da Fortinet não nomeia um substituto.",
-    "sourceCaveatCourse": "Estes objetivos vêm da página do curso da Fortinet para este produto, e não de um blueprint de exame: a Fortinet ainda não publicou um para este exame. O material é o que o curso ensina, e um blueprint de exame pode organizá-lo ou ponderá-lo de outra forma."
+    "sourceCaveatCourse": "Estes objetivos vêm da página do curso da Fortinet para este produto, e não de um blueprint de exame: a Fortinet ainda não publicou um para este exame. O material é o que o curso ensina, e um blueprint de exame pode organizá-lo ou ponderá-lo de outra forma.",
+    "standaloneTrackLabel": "Fora do caminho de certificação"
   },
   "trainingCta": {
     "eyebrow": "Treinamento com instrutor",

@@ -133,6 +133,15 @@ export interface StudyGuide {
 
 /** A certification (a credential earned by passing one or more exams). */
 export interface Certification {
+  /** Which path this credential belongs to. Omitted means the vendor's main
+   *  certification ladder, which is every entry that predates this field.
+   *  "standalone" marks a credential that exists OUTSIDE that ladder and does
+   *  NOT count toward it - Check Point's HackingPoint courses are the case it
+   *  was added for (PRIME 2026-07-27). The distinction is not cosmetic: a
+   *  reader planning a route to CCSM needs to know which exams move them along
+   *  it and which do not, and Check Point's own FAQ lists these in a separate
+   *  table for exactly that reason. */
+  track?: "standalone";
   /** Grouping key (e.g. "f5-ca"). */
   key: string;
   /** Short code shown as a badge (e.g. "F5-CA, BIG-IP"). */
@@ -182,6 +191,218 @@ export const certifications: Certification[] = [
   //   CCSA -> CCSE -> two ISAs -> CCSM -> two more ISAs -> CCSM Elite.
   // All Check Point certifications are valid for two years from the exam date.
   // ==========================================================================
+  // ==========================================================================
+  // INFINITY SPECIALIST ACCREDITATIONS (ISA) - added 2026-07-26, roster and
+  // exam numbers transcribed VERBATIM from Check Point's own Certification FAQ
+  // (checkpoint.com/downloads/training/check-point-certification-faq.pdf,
+  // dated 3/2026). These are the building blocks of the Master path: they are
+  // what turn a CCSE into a CCSM and a CCSM into a CCSM Elite.
+  //
+  // THE RULE THAT SURPRISES PEOPLE: an ISA only counts toward an extension or
+  // an upgrade if it is passed AFTER the core certification, and only while
+  // that core certification is still valid. An ISA passed first, or passed
+  // against an expired CCSE, awards the accreditation and nothing else.
+  // ==========================================================================
+  // ==========================================================================
+  // HACKINGPOINT / CCPE - added 2026-07-27 at PRIME's request, as an EXPLICITLY
+  // NON-CERTIFICATION PATH (track: "standalone").
+  //
+  // HackingPoint is Check Point's offensive-security education programme. The
+  // courses carry exam numbers and Pearson VUE exams, and Check Point issues
+  // badges for them, so they are real credentials. What they are NOT is part of
+  // the Master path: Check Point's own Certification FAQ lists them in a table
+  // of their own, separate from the certification program model, and only
+  // Infinity Specialist Accreditations advance a CCSE toward CCSM.
+  // Recording that distinction is the whole point of the track field - someone
+  // planning a route to CCSM should not mistake these for steps along it.
+  // ==========================================================================
+  {
+    track: "standalone",
+    key: "checkpoint-ccpe-i",
+    code: "CCPE-I",
+    name: "Check Point Certified PenTesting Expert - Infrastructure Hacking (CCPE-I)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccpe-i-exam"],
+    prerequisites: [],
+    requirementMode: "custom",
+    requirementNote:
+      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
+    renewalNote: null,
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    track: "standalone",
+    key: "checkpoint-ccpe-w",
+    code: "CCPE-W",
+    name: "Check Point Certified PenTesting Expert - Web Hacking (CCPE-W)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccpe-w-exam"],
+    prerequisites: [],
+    requirementMode: "custom",
+    requirementNote:
+      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
+    renewalNote: null,
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    track: "standalone",
+    key: "checkpoint-ccpe-iot",
+    code: "CCPE-IoT",
+    name: "Check Point Certified PenTesting Expert - Hacking IoT (CCPE-IoT)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccpe-iot-exam"],
+    prerequisites: [],
+    requirementMode: "custom",
+    requirementNote:
+      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
+    renewalNote: null,
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    track: "standalone",
+    key: "checkpoint-ccpe-c",
+    code: "CCPE-C",
+    name: "Check Point Certified PenTesting Expert - Cloud Security (CCPE-C)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccpe-c-exam"],
+    prerequisites: [],
+    requirementMode: "custom",
+    requirementNote:
+      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
+    renewalNote: null,
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    track: "standalone",
+    key: "checkpoint-ccpe-ai",
+    code: "CCPE-AI",
+    name: "Check Point Certified PenTesting Expert - Advanced Infrastructure Hacking (CCPE-AI)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccpe-ai-exam"],
+    prerequisites: [],
+    requirementMode: "custom",
+    requirementNote:
+      "A HackingPoint course credential, NOT an Infinity Specialist Accreditation. Check Point lists these in their own table, separate from the certification program model, and they do NOT count toward the CCSM or CCSM Elite - only ISAs do that. Exams are delivered at Pearson VUE.",
+    renewalNote: null,
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    key: "checkpoint-ccas",
+    code: "CCAS",
+    name: "Check Point Certified Automation Specialist R81.20 (CCAS)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccas-exam"],
+    prerequisites: [],
+    requirementNote:
+      "An Infinity Specialist Accreditation. Valid for two years and not itself extendable, though it may be retaken within six months of expiry for a fresh two-year term. Passed after a valid CCSE it extends that certification by a year; a second one awards the CCSM.",
+    renewalNote:
+      "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    key: "checkpoint-ccme",
+    code: "CCME",
+    name: "Check Point Certified Maestro Expert R81 (CCME)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccme-exam"],
+    prerequisites: [],
+    requirementNote:
+      "An Infinity Specialist Accreditation. Valid for two years and not itself extendable, though it may be retaken within six months of expiry for a fresh two-year term. Passed after a valid CCSE it extends that certification by a year; a second one awards the CCSM.",
+    renewalNote:
+      "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    key: "checkpoint-cccs",
+    code: "CCCS",
+    name: "Check Point Certified Cloud Specialist R81.20 (CCCS)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-cccs-exam"],
+    prerequisites: [],
+    requirementNote:
+      "An Infinity Specialist Accreditation. Valid for two years and not itself extendable, though it may be retaken within six months of expiry for a fresh two-year term. Passed after a valid CCSE it extends that certification by a year; a second one awards the CCSM.",
+    renewalNote:
+      "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    key: "checkpoint-cces",
+    code: "CCES",
+    name: "Check Point Certified Harmony Endpoint Specialist R81.20 (CCES)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-cces-exam"],
+    prerequisites: [],
+    requirementNote:
+      "An Infinity Specialist Accreditation. Valid for two years and not itself extendable, though it may be retaken within six months of expiry for a fresh two-year term. Passed after a valid CCSE it extends that certification by a year; a second one awards the CCSM.",
+    renewalNote:
+      "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    key: "checkpoint-ccms",
+    code: "CCMS",
+    name: "Check Point Certified Multi-Domain Security Management Specialist R81 (CCMS)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccms-exam"],
+    prerequisites: [],
+    requirementNote:
+      "An Infinity Specialist Accreditation. Valid for two years and not itself extendable, though it may be retaken within six months of expiry for a fresh two-year term. Passed after a valid CCSE it extends that certification by a year; a second one awards the CCSM.",
+    renewalNote:
+      "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    key: "checkpoint-ccvs",
+    code: "CCVS",
+    name: "Check Point Certified Virtual System Extension Specialist R81 (CCVS)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccvs-exam"],
+    prerequisites: [],
+    requirementNote:
+      "An Infinity Specialist Accreditation. Valid for two years and not itself extendable, though it may be retaken within six months of expiry for a fresh two-year term. Passed after a valid CCSE it extends that certification by a year; a second one awards the CCSM.",
+    renewalNote:
+      "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    key: "checkpoint-ccta",
+    code: "CCTA",
+    name: "Check Point Certified Troubleshooting Administrator R82 (CCTA)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccta-exam"],
+    prerequisites: ["A passed CCSA or CCSE (R80 or newer). It may be expired."],
+    requirementNote:
+      "An Infinity Specialist Accreditation. Valid for two years and not itself extendable, though it may be retaken within six months of expiry for a fresh two-year term. Passed after a valid CCSE it extends that certification by a year; a second one awards the CCSM.",
+    renewalNote:
+      "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    key: "checkpoint-ccte",
+    code: "CCTE",
+    name: "Check Point Certified Troubleshooting Expert R81.20 (CCTE)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccte-exam"],
+    prerequisites: ["A passed CCSE (R80 or newer). It may be expired."],
+    requirementNote:
+      "An Infinity Specialist Accreditation. Valid for two years and not itself extendable, though it may be retaken within six months of expiry for a fresh two-year term. Passed after a valid CCSE it extends that certification by a year; a second one awards the CCSM.",
+    renewalNote:
+      "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
+  {
+    key: "checkpoint-ctps",
+    code: "CTPS",
+    name: "Check Point Certified Threat Prevention Specialist (CTPS)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ctps-exam"],
+    prerequisites: [],
+    requirementNote:
+      "An Infinity Specialist Accreditation. Valid for two years and not itself extendable, though it may be retaken within six months of expiry for a fresh two-year term. Passed after a valid CCSE it extends that certification by a year; a second one awards the CCSM.",
+    renewalNote:
+      "Valid for two years. Retaking the same accreditation renews it for two years but does not extend a core certification a second time - a different accreditation is needed for that.",
+    sourceUrl: "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+  },
   {
     key: "checkpoint-ccsm",
     code: "CCSM",
@@ -1044,6 +1265,547 @@ export const studyGuides: StudyGuide[] = [
       until: "September 30, 2026",
       replacedBy: null,
     },
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccpe-i-exam",
+    certification: "checkpoint-ccpe-i",
+    targetVersion: "current",
+    examCode: "156-402",
+    examName: "Check Point Certified PenTesting Expert - Infrastructure Hacking (CCPE-I)",
+    vendor: "checkpoint",
+    status: "published",
+    sourceCaveat: "course-objectives",
+    availabilityNote:
+      "A two-day foundation class and the recommended prerequisite for Advanced Infrastructure Hacking. Check Point publishes a course synopsis for the HackingPoint classes rather than a per-objective exam blueprint, so the class content is transcribed where a clean first-party capture exists and left empty where it does not. Nothing here is filled in from secondhand summaries.",
+    blueprintSourceLabel: "Check Point HackingPoint course synopsis (class content)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/hackingpoint-infrastructure-hacking-course.pdf",
+    examFacts: null,
+    sections: [
+      {
+        id: "section-1",
+        title: "The art of port scanning",
+        objectives: [
+      {
+        id: "1.01",
+        text: "Basic concepts of Hacking Methodology",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "1.02",
+        text: "Enumeration techniques and Port scanning",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "The art of online password attacks",
+        objectives: [
+      {
+        id: "2.01",
+        text: "Configure online password attack",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "2.02",
+        text: "Exploiting network service misconfiguration",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-3",
+        title: "The art of hacking databases",
+        objectives: [
+      {
+        id: "3.01",
+        text: "Mysql, Postgres",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "3.02",
+        text: "Attack chaining techniques",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Metasploit basics",
+        objectives: [
+      {
+        id: "4.01",
+        text: "Exploitation concepts, Manual exploitation methodology",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "4.02",
+        text: "Metasploit framework",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-5",
+        title: "Password cracking",
+        objectives: [
+      {
+        id: "5.01",
+        text: "Understanding basic concepts of cryptography",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "5.02",
+        text: "Design offline brute force attack",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-6",
+        title: "Hacking Unix",
+        objectives: [
+      {
+        id: "6.01",
+        text: "Linux vulnerabilities, misconfiguration",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "6.02",
+        text: "Privilege escalation techniques",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-7",
+        title: "Hacking application servers on Unix",
+        objectives: [
+      {
+        id: "7.01",
+        text: "Web server misconfiguration",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "7.02",
+        text: "Multiple exploitation techniques",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-8",
+        title: "Hacking third party CMS software",
+        objectives: [
+      {
+        id: "8.01",
+        text: "CMS Software",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "8.02",
+        text: "Vulnerability scanning & exploitation",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-9",
+        title: "Windows enumeration",
+        objectives: [
+      {
+        id: "9.01",
+        text: "Windows Enumeration techniques Configuration Issues",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "9.02",
+        text: "Attack chaining",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-10",
+        title: "Client-side attacks",
+        objectives: [
+      {
+        id: "10.01",
+        text: "Various Windows client-side attack techniques",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-11",
+        title: "Privilege escalation on Windows",
+        objectives: [
+      {
+        id: "11.01",
+        text: "Post exploitation",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "11.02",
+        text: "Windows Privilege escalation techniques",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-12",
+        title: "Hacking application servers on Windows",
+        objectives: [
+      {
+        id: "12.01",
+        text: "Web server misconfiguration",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "12.02",
+        text: "Exploiting Application servers",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-13",
+        title: "Post exploitation",
+        objectives: [
+      {
+        id: "13.01",
+        text: "Metasploit Post exploitation techniques",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "13.02",
+        text: "Window 10 Security features & different bypass techniques",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+      {
+        id: "section-14",
+        title: "Hacking Windows domains",
+        objectives: [
+      {
+        id: "14.01",
+        text: "Understanding Windows Authentication",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+      {
+        id: "14.02",
+        text: "Gaining access to Domain Controller",
+        relatedArticles: [],
+        relatedTools: [],
+        manualLinks: [],
+        gap: true,
+      },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "checkpoint-ccpe-w-exam",
+    certification: "checkpoint-ccpe-w",
+    targetVersion: "current",
+    examCode: "156-403",
+    examName: "Check Point Certified PenTesting Expert - Web Hacking (CCPE-W)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Web application penetration testing, including the OWASP Top 10 and PCI DSS as they bear on web application security. Check Point publishes a course synopsis for the HackingPoint classes rather than a per-objective exam blueprint, so the class content is transcribed where a clean first-party capture exists and left empty where it does not. Nothing here is filled in from secondhand summaries.",
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccpe-iot-exam",
+    certification: "checkpoint-ccpe-iot",
+    targetVersion: "current",
+    examCode: "156-404",
+    examName: "Check Point Certified PenTesting Expert - Hacking IoT (CCPE-IoT)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Penetration testing of connected devices: embedded systems, firmware, and the protocols IoT devices use. Check Point publishes a course synopsis for the HackingPoint classes rather than a per-objective exam blueprint, so the class content is transcribed where a clean first-party capture exists and left empty where it does not. Nothing here is filled in from secondhand summaries.",
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccpe-c-exam",
+    certification: "checkpoint-ccpe-c",
+    targetVersion: "current",
+    examCode: "156-406",
+    examName: "Check Point Certified PenTesting Expert - Cloud Security (CCPE-C)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Penetration testing of cloud infrastructure and cloud-hosted services. Check Point publishes a course synopsis for the HackingPoint classes rather than a per-objective exam blueprint, so the class content is transcribed where a clean first-party capture exists and left empty where it does not. Nothing here is filled in from secondhand summaries.",
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccpe-ai-exam",
+    certification: "checkpoint-ccpe-ai",
+    targetVersion: "current",
+    examCode: "156-409",
+    examName: "Check Point Certified PenTesting Expert - Advanced Infrastructure Hacking (CCPE-AI)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "The advanced infrastructure track, building on the foundation course. Check Point publishes a course synopsis for the HackingPoint classes rather than a per-objective exam blueprint, so the class content is transcribed where a clean first-party capture exists and left empty where it does not. Nothing here is filled in from secondhand summaries.",
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccas-exam",
+    certification: "checkpoint-ccas",
+    targetVersion: "R81.20",
+    examCode: "156-521",
+    examName: "Check Point Certified Automation Specialist R81.20 (CCAS)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Check Point publishes the exam number and the accreditation name for this specialist track, and does not publish a per-objective blueprint the way it does for the CCSA and CCSE. The objectives here will be transcribed when a first-party source for them exists; nothing is filled in from secondhand summaries.",
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccme-exam",
+    certification: "checkpoint-ccme",
+    targetVersion: "R81",
+    examCode: "156-836",
+    examName: "Check Point Certified Maestro Expert R81 (CCME)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Check Point publishes the exam number and the accreditation name for this specialist track, and does not publish a per-objective blueprint the way it does for the CCSA and CCSE. The objectives here will be transcribed when a first-party source for them exists; nothing is filled in from secondhand summaries.",
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-cccs-exam",
+    certification: "checkpoint-cccs",
+    targetVersion: "R81.20",
+    examCode: "156-561",
+    examName: "Check Point Certified Cloud Specialist R81.20 (CCCS)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Check Point publishes the exam number and the accreditation name for this specialist track, and does not publish a per-objective blueprint the way it does for the CCSA and CCSE. The objectives here will be transcribed when a first-party source for them exists; nothing is filled in from secondhand summaries.",
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-cces-exam",
+    certification: "checkpoint-cces",
+    targetVersion: "R81.20",
+    examCode: "156-536",
+    examName: "Check Point Certified Harmony Endpoint Specialist R81.20 (CCES)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Check Point publishes the exam number and the accreditation name for this specialist track, and does not publish a per-objective blueprint the way it does for the CCSA and CCSE. The objectives here will be transcribed when a first-party source for them exists; nothing is filled in from secondhand summaries.",
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccms-exam",
+    certification: "checkpoint-ccms",
+    targetVersion: "R81",
+    examCode: "156-541",
+    examName: "Check Point Certified Multi-Domain Security Management Specialist R81 (CCMS)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Check Point publishes the exam number and the accreditation name for this specialist track, and does not publish a per-objective blueprint the way it does for the CCSA and CCSE. The objectives here will be transcribed when a first-party source for them exists; nothing is filled in from secondhand summaries.",
+    retirement: {
+      exam: "Check Point Certified Multi-Domain Security Management Specialist R81",
+      until: "September 30, 2026",
+      replacedBy: null,
+    },
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccvs-exam",
+    certification: "checkpoint-ccvs",
+    targetVersion: "R81",
+    examCode: "156-551",
+    examName: "Check Point Certified Virtual System Extension Specialist R81 (CCVS)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Check Point publishes the exam number and the accreditation name for this specialist track, and does not publish a per-objective blueprint the way it does for the CCSA and CCSE. The objectives here will be transcribed when a first-party source for them exists; nothing is filled in from secondhand summaries.",
+    retirement: {
+      exam: "Check Point Certified Virtual System Extension Specialist R81",
+      until: "September 30, 2026",
+      replacedBy: null,
+    },
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccta-exam",
+    certification: "checkpoint-ccta",
+    targetVersion: "R82",
+    examCode: "156-583",
+    examName: "Check Point Certified Troubleshooting Administrator R82 (CCTA)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Check Point publishes the exam number and the accreditation name for this specialist track, and does not publish a per-objective blueprint the way it does for the CCSA and CCSE. The objectives here will be transcribed when a first-party source for them exists; nothing is filled in from secondhand summaries.",
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccte-exam",
+    certification: "checkpoint-ccte",
+    targetVersion: "R81.20",
+    examCode: "156-587",
+    examName: "Check Point Certified Troubleshooting Expert R81.20 (CCTE)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Check Point publishes the exam number and the accreditation name for this specialist track, and does not publish a per-objective blueprint the way it does for the CCSA and CCSE. The objectives here will be transcribed when a first-party source for them exists; nothing is filled in from secondhand summaries.",
+    retirement: {
+      exam: "Check Point Certified Troubleshooting Expert R81.20",
+      until: "September 30, 2026",
+      replacedBy: "Check Point Certified Troubleshooting Expert R82 (exam 156-588)",
+    },
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ctps-exam",
+    certification: "checkpoint-ctps",
+    targetVersion: "current",
+    examCode: "156-590",
+    examName: "Check Point Certified Threat Prevention Specialist (CTPS)",
+    vendor: "checkpoint",
+    status: "preparing",
+    availabilityNote:
+      "Check Point publishes the exam number and the accreditation name for this specialist track, and does not publish a per-objective blueprint the way it does for the CCSA and CCSE. The objectives here will be transcribed when a first-party source for them exists; nothing is filled in from secondhand summaries.",
+    blueprintSourceLabel: "Check Point Certification FAQ (official roster)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/check-point-certification-faq.pdf",
     examFacts: null,
     sections: [],
   },

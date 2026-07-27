@@ -52,6 +52,18 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-27T02:50:27-03:00",
+    kind: "content",
+    title: "HackingPoint: five offensive-security credentials, and why they sit outside the certification path",
+    body: "Check Point runs an offensive-security programme called HackingPoint, and its five PenTesting Expert courses now appear here: infrastructure hacking, web hacking, hacking IoT, cloud security, and advanced infrastructure hacking. They carry exam numbers, they are sat at the same test centres, and Check Point issues badges for them, so they are real credentials. What they are not is a step toward the Security Master, and that distinction is now stated on the card rather than buried in a note. Only Infinity Specialist Accreditations advance an expert certification toward Master, and Check Point lists the HackingPoint courses in a table of their own for that reason. Someone planning a route upward should not mistake one for the other. The infrastructure hacking course carries its full class content, transcribed from the synopsis Check Point publishes: fourteen modules from port scanning and online password attacks through to gaining access to a domain controller. The other four list what Check Point publishes about them and no more. Their synopses are multi-column documents that do not extract cleanly, and a syllabus that looks complete while missing modules would be worse than an honest gap.",
+  },
+  {
+    date: "2026-07-27T02:14:59-03:00",
+    kind: "content",
+    title: "The rest of the Check Point path: nine specialist accreditations, and how the Master levels are actually earned",
+    body: "Check Point's certification path has a shape worth knowing before you plan a route through it, because the top two levels are not exams. The Security Master is awarded automatically to someone holding a valid expert certification who then passes two specialist accreditations, and the Master Elite the same way from there. So the question is never when to sit the Master exam, it is which accreditations to choose. All nine are now listed with the exam numbers Check Point publishes: automation, Maestro, cloud, Harmony endpoint, multi-domain management, virtual system extension, troubleshooting at administrator and expert level, and threat prevention. Two rules attached to them decide whether an accreditation counts for anything beyond itself. It has to be passed after the core certification rather than before, and the core certification has to still be valid at the time. An accreditation passed first, or passed against an expired expert certification, is awarded and extends nothing. Three of the accreditations are also on their way out: multi-domain management, virtual system extension, and the R81.20 troubleshooting expert all stop being available on the thirtieth of September 2026, and the troubleshooting expert has a named R82 replacement.",
+  },
+  {
     date: "2026-07-27T01:49:37-03:00",
     kind: "content",
     title: "Being precise about which vendors carry an instructor authorization",
