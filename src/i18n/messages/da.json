@@ -853,6 +853,9 @@
       "note2": "Dette er de planlagte datoer. F5 udsender også når som helst sikkerhedsadvarsler uden for planen og engineering-hotfixes til hastende problemer og bevarer fleksibilitet til at justere tidspunktet for meddelelser.",
       "learnMore": "Ny med denne ændring?",
       "learnLink": "Læs hvad der ændrede sig og hvorfor"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {

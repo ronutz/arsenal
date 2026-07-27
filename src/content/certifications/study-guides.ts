@@ -175,6 +175,65 @@ export interface Certification {
 // ---------------------------------------------------------------------------
 
 export const certifications: Certification[] = [
+  // ==========================================================================
+  // Check Point (added 2026-07-26). Facts live-verified the same day against
+  // Check Point's own Exam Prep Guides and the Pearson VUE program page
+  // (last updated 2026-07-21). Path per Pearson VUE:
+  //   CCSA -> CCSE -> two ISAs -> CCSM -> two more ISAs -> CCSM Elite.
+  // All Check Point certifications are valid for two years from the exam date.
+  // ==========================================================================
+  {
+    key: "checkpoint-ccsm",
+    code: "CCSM",
+    name: "Check Point Certified Security Master (CCSM)",
+    vendor: "checkpoint",
+    examSlugs: [],
+    requirementMode: "custom",
+    requirementNote:
+      "Not earned by a dedicated exam. Awarded to a holder of an ACTIVE CCSE who then passes two Check Point Specialist accreditation exams. Check Point's own two pages name these differently: checkpoint.com calls them Check Point Specialist accreditations and the Pearson VUE program page calls them Infinity Specialist Accreditations (ISA).",
+    prerequisites: ["An active CCSE certification"],
+    renewalNote:
+      "Valid for two years. Can be extended by one year by passing one further Specialist accreditation; a second one upgrades the holder to CCSM Elite.",
+    sourceUrl: "https://www.checkpoint.com/services/training/certification-program/",
+  },
+  {
+    key: "checkpoint-ccsm-elite",
+    code: "CCSM Elite",
+    name: "Check Point Certified Security Master Elite (CCSM-E)",
+    vendor: "checkpoint",
+    examSlugs: [],
+    requirementMode: "custom",
+    requirementNote:
+      "Not earned by a dedicated exam. Awarded to a CCSM who passes two further Specialist accreditation exams, which is four in total across the path.",
+    prerequisites: ["An active CCSM certification"],
+    renewalNote:
+      "Can be extended indefinitely, one year at a time, for each additional Specialist accreditation passed.",
+    sourceUrl: "https://www.checkpoint.com/services/training/certification-program/",
+  },
+
+  {
+    key: "checkpoint-ccsa",
+    code: "CCSA",
+    name: "Check Point Certified Security Administrator (CCSA)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccsa-r82"],
+    prerequisites: [],
+    renewalNote:
+      "Valid for two years. A CCSA cannot be extended by passing Infinity Specialist Accreditation exams: recertify by passing the CCSA again within six months of expiry, or advance to the CCSE.",
+    sourceUrl: "https://www.pearsonvue.com/us/en/checkpoint.html",
+  },
+  {
+    key: "checkpoint-ccse",
+    code: "CCSE",
+    name: "Check Point Certified Security Expert (CCSE)",
+    vendor: "checkpoint",
+    examSlugs: ["checkpoint-ccse-r82"],
+    prerequisites: ["CCSA certification (any R8x or newer; it may be expired)"],
+    renewalNote:
+      "Valid for two years, and can be extended by one year by passing one Infinity Specialist Accreditation exam. Passing a second ISA upgrades the holder to CCSM.",
+    sourceUrl: "https://www.pearsonvue.com/us/en/checkpoint.html",
+  },
+
   {
     key: "f5-ca",
     code: "F5-CA, BIG-IP",
@@ -898,6 +957,606 @@ const F5CA_SOURCE =
   "https://support.education.f5.com/hc/en-us/articles/37607208476059-What-is-the-F5-Certified-Administrator-BIG-IP-F5-CA-BIG-IP-certification";
 
 export const studyGuides: StudyGuide[] = [
+  {
+    slug: "checkpoint-ccta-r8120",
+    examCode: "156-582",
+    examName: "Check Point Certified Troubleshooting Administrator - R81.20 (CCTA)",
+    vendor: "checkpoint",
+    certification: "checkpoint-ccsm",
+    targetVersion: "R81.20",
+    blueprintSourceUrl: "https://www.pearsonvue.com/us/en/checkpoint.html",
+    blueprintSourceLabel: "Pearson VUE Check Point certification program page",
+    status: "preparing",
+    availabilityNote:
+      "Scaffolded from the Pearson VUE Check Point program page, which publishes this exam's code and prerequisite. Check Point does not publish an exam prep guide for the Specialist accreditations as it does for CCSA and CCSE, so no objective blueprint is available yet. Prerequisite: A passed CCSA or CCSE exam (version R80 and up).",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccte-r82",
+    examCode: "156-588",
+    examName: "Check Point Certified Troubleshooting Expert - R82 (CCTE)",
+    vendor: "checkpoint",
+    certification: "checkpoint-ccsm",
+    targetVersion: "R82",
+    blueprintSourceUrl: "https://www.pearsonvue.com/us/en/checkpoint.html",
+    blueprintSourceLabel: "Pearson VUE Check Point certification program page",
+    status: "preparing",
+    availabilityNote:
+      "Scaffolded from the Pearson VUE Check Point program page, which publishes this exam's code and prerequisite. Check Point does not publish an exam prep guide for the Specialist accreditations as it does for CCSA and CCSE, so no objective blueprint is available yet. Prerequisite: A passed CCSE exam (version R80 and up). A previous version of the CCTE is not a prerequisite.",
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccte-r8120",
+    examCode: "156-587",
+    examName: "Check Point Certified Troubleshooting Expert - R81.20 (CCTE)",
+    vendor: "checkpoint",
+    certification: "checkpoint-ccsm",
+    targetVersion: "R81.20",
+    blueprintSourceUrl: "https://www.pearsonvue.com/us/en/checkpoint.html",
+    blueprintSourceLabel: "Pearson VUE Check Point certification program page",
+    status: "preparing",
+    availabilityNote:
+      "Scaffolded from the Pearson VUE Check Point program page, which publishes this exam's code and prerequisite. Check Point does not publish an exam prep guide for the Specialist accreditations as it does for CCSA and CCSE, so no objective blueprint is available yet. Prerequisite: A passed CCSE exam (version R80 and up). A previous version of the CCTE is not a prerequisite.",
+    retirement: {
+      exam: "Check Point Certified Troubleshooting Expert R81.20 (CCTE)",
+      until: "September 30, 2026",
+      replacedBy: "156-588 - Check Point Certified Troubleshooting Expert - R82 (CCTE)",
+    },
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccms-r81",
+    examCode: "156-541",
+    examName: "Check Point Certified Multi-Domain Security Management Specialist - R81 (CCMS)",
+    vendor: "checkpoint",
+    certification: "checkpoint-ccsm",
+    targetVersion: "R81",
+    blueprintSourceUrl: "https://www.pearsonvue.com/us/en/checkpoint.html",
+    blueprintSourceLabel: "Pearson VUE Check Point certification program page",
+    status: "preparing",
+    availabilityNote:
+      "Scaffolded from the Pearson VUE Check Point program page, which publishes this exam's code and prerequisite. Check Point does not publish an exam prep guide for the Specialist accreditations as it does for CCSA and CCSE, so no objective blueprint is available yet. Prerequisite: None published.",
+    retirement: {
+      exam: "Check Point Certified Multi-Domain Security Management Specialist - R81 (CCMS)",
+      until: "September 30, 2026",
+      replacedBy: null,
+    },
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccvs-r81",
+    examCode: "156-551",
+    examName: "Check Point Certified VSX Specialist - R81 (CCVS)",
+    vendor: "checkpoint",
+    certification: "checkpoint-ccsm",
+    targetVersion: "R81",
+    blueprintSourceUrl: "https://www.pearsonvue.com/us/en/checkpoint.html",
+    blueprintSourceLabel: "Pearson VUE Check Point certification program page",
+    status: "preparing",
+    availabilityNote:
+      "Scaffolded from the Pearson VUE Check Point program page, which publishes this exam's code and prerequisite. Check Point does not publish an exam prep guide for the Specialist accreditations as it does for CCSA and CCSE, so no objective blueprint is available yet. Prerequisite: None published.",
+    retirement: {
+      exam: "Check Point Certified VSX Specialist - R81 (CCVS)",
+      until: "September 30, 2026",
+      replacedBy: null,
+    },
+    examFacts: null,
+    sections: [],
+  },
+  {
+    slug: "checkpoint-ccsa-r82",
+    certification: "checkpoint-ccsa",
+    targetVersion: "R82",
+    examCode: "156-215.82",
+    examName: "Check Point Certified Security Administrator R82 (CCSA)",
+    vendor: "checkpoint",
+    status: "published",
+    blueprintSourceLabel: "Check Point Exam Prep Guide (official)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/CCSA-Exam-Prep-Guide.pdf",
+    examFacts: {
+      questions: "100 multiple-choice questions",
+      minutes: 90,
+      passMark: "70%",
+      cost: "USD 300 (varies by region and testing centre)",
+      note:
+        "Check Point states roughly 80% of questions come from the official course content and the remaining 20% from product knowledge gained through documentation, SecureKnowledge articles, or real-world experience. An extra 15 minutes is given where English is not the native language. Delivered at a Pearson VUE test centre or via OnVUE online proctoring. The credential is valid for two years.",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "Module 1: Introduction to Quantum Security",
+        objectives: [
+      {
+        id: "1.01",
+        text: "Identify and explain the primary components of the Check Point Three-Tier Architecture and their interoperation",
+        relatedArticles: ["checkpoint-three-tier-architecture-and-smartconsole"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "1.02",
+        text: "Navigate and perform basic exploration of Gaia on various Check Point components (SMS, Log Server, Gateway Cluster Members)",
+        relatedArticles: ["checkpoint-three-tier-architecture-and-smartconsole"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "1.03",
+        text: "Connect to and effectively navigate the SmartConsole interface",
+        relatedArticles: ["checkpoint-three-tier-architecture-and-smartconsole"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "Module 2: Administrator Account Management",
+        objectives: [
+      {
+        id: "2.01",
+        text: "Explain the purpose and functionality of SmartConsole administrator accounts",
+        relatedArticles: ["checkpoint-administrators-sessions-and-objects"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "2.02",
+        text: "Create new administrators and assign appropriate profiles",
+        relatedArticles: ["checkpoint-administrators-sessions-and-objects"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "2.03",
+        text: "Manage concurrent administrator sessions, including taking over and verifying session status",
+        relatedArticles: ["checkpoint-administrators-sessions-and-objects"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-3",
+        title: "Module 3: Object Management",
+        objectives: [
+      {
+        id: "3.01",
+        text: "Explain the role of SmartConsole Objects in building security policies",
+        relatedArticles: ["checkpoint-administrators-sessions-and-objects"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "3.02",
+        text: "Identify and differentiate between various physical and logical object types",
+        relatedArticles: ["checkpoint-administrators-sessions-and-objects"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "3.03",
+        text: "View, modify, and manage existing GATEWAYS & SERVERS, Network, and Service Objects",
+        relatedArticles: ["checkpoint-administrators-sessions-and-objects"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Module 4: Security Policy Management",
+        objectives: [
+      {
+        id: "4.01",
+        text: "Explain the role of Security Policies in controlling network traffic",
+        relatedArticles: ["checkpoint-security-policy-and-rule-base"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "4.02",
+        text: "Identify essential elements of a security policy (source, destination, service, action, track)",
+        relatedArticles: ["checkpoint-security-policy-and-rule-base"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "4.03",
+        text: "Verify, modify, install, and test the Standard Security Policy",
+        relatedArticles: ["checkpoint-security-policy-and-rule-base", "checkpoint-administrators-sessions-and-objects"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-5",
+        title: "Module 5: Policy Layers",
+        objectives: [
+      {
+        id: "5.01",
+        text: "Demonstrate a clear understanding of the policy layer concept",
+        relatedArticles: ["checkpoint-policy-layers-ordered-and-inline"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "5.02",
+        text: "Explain the traffic inspection flow through different policy layers",
+        relatedArticles: ["checkpoint-policy-layers-ordered-and-inline"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "5.03",
+        text: "Add, configure, deploy, and test rules within Ordered Layers and create/test Inline DMZ Layers",
+        relatedArticles: ["checkpoint-policy-layers-ordered-and-inline"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-6",
+        title: "Module 6: Security Operations Monitoring",
+        objectives: [
+      {
+        id: "6.01",
+        text: "Explain the importance of monitoring security operations",
+        relatedArticles: ["checkpoint-logging-and-monitoring"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "6.02",
+        text: "Configure Log Management and tune Log Server settings",
+        relatedArticles: ["checkpoint-logging-and-monitoring"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "6.03",
+        text: "Effectively use predefined and custom queries to analyze logging results",
+        relatedArticles: ["checkpoint-logging-and-monitoring"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "6.04",
+        text: "Monitor the status and health of Check Point systems via the Monitoring Blade",
+        relatedArticles: ["checkpoint-logging-and-monitoring"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-7",
+        title: "Module 7: Identity Awareness",
+        objectives: [
+      {
+        id: "7.01",
+        text: "Explain how Identity Awareness enhances security by integrating user and computer identities into the security policy",
+        relatedArticles: ["checkpoint-identity-awareness"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "7.02",
+        text: "Identify the key components and their roles in the Identity Awareness solution",
+        relatedArticles: ["checkpoint-identity-awareness"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "7.03",
+        text: "Adjust the Security Policy for Identity Awareness, configure the Identity Collector, define User Access Roles, and test functionality",
+        relatedArticles: ["checkpoint-identity-awareness"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-8",
+        title: "Module 8: HTTPS Inspection",
+        objectives: [
+      {
+        id: "8.01",
+        text: "Explain why HTTPS Inspection is crucial for deep packet inspection of encrypted traffic",
+        relatedArticles: ["checkpoint-https-inspection-and-web-control"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "8.02",
+        text: "Identify the components required for successful HTTPS Inspection",
+        relatedArticles: ["checkpoint-https-inspection-and-web-control"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "8.03",
+        text: "Enable HTTPS Inspection, adjust Access Control Rules, deploy the Security Gateway Certificate, and test/analyze policy with HTTPS Inspection",
+        relatedArticles: ["checkpoint-https-inspection-and-web-control"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-9",
+        title: "Module 9: Application Control and URL Filtering",
+        objectives: [
+      {
+        id: "9.01",
+        text: "Explain how Application Control and URL Filtering enhance granular control over web traffic",
+        relatedArticles: ["checkpoint-https-inspection-and-web-control"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "9.02",
+        text: "Identify the key components and functionalities of both solutions",
+        relatedArticles: ["checkpoint-https-inspection-and-web-control"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "9.03",
+        text: "Adjust the Access Control Policy, create and adjust Application Control and URL Filtering Rules, and test their effectiveness",
+        relatedArticles: ["checkpoint-https-inspection-and-web-control"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-10",
+        title: "Module 10: Threat Prevention Fundamentals",
+        objectives: [
+      {
+        id: "10.01",
+        text: "Understand the comprehensive capabilities of Check Point's Threat Prevention",
+        relatedArticles: ["checkpoint-threat-prevention-fundamentals"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "10.02",
+        text: "Identify the core components of Autonomous Threat Prevention",
+        relatedArticles: ["checkpoint-threat-prevention-fundamentals"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "10.03",
+        text: "Enable and test Autonomous Threat Prevention features",
+        relatedArticles: ["checkpoint-threat-prevention-fundamentals"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "checkpoint-ccse-r82",
+    certification: "checkpoint-ccse",
+    targetVersion: "R82",
+    examCode: "156-315.82",
+    examName: "Check Point Certified Security Expert R82 (CCSE)",
+    vendor: "checkpoint",
+    status: "published",
+    blueprintSourceLabel: "Check Point Exam Prep Guide (official)",
+    blueprintSourceUrl:
+      "https://www.checkpoint.com/downloads/training/CCSE-Exam-Prep-Guide.pdf",
+    examFacts: {
+      questions: "100 multiple-choice questions",
+      minutes: 90,
+      passMark: "70%",
+      cost: "USD 300 (varies by region and testing centre)",
+      note:
+        "Check Point states roughly 80% of questions come from the official course content and the remaining 20% from product knowledge gained through documentation, SecureKnowledge articles, or real-world experience. An extra 15 minutes is given where English is not the native language. Delivered at a Pearson VUE test centre or via OnVUE online proctoring. The credential is valid for two years.",
+    },
+    sections: [
+      {
+        id: "section-1",
+        title: "Module 1: Management High Availability",
+        objectives: [
+      {
+        id: "1.01",
+        text: "Explain the roles of Primary and Secondary Security Management Servers in an HA setup",
+        relatedArticles: ["checkpoint-management-high-availability"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "1.02",
+        text: "Articulate the process of failover and how it impacts the security environment",
+        relatedArticles: ["checkpoint-management-high-availability"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "1.03",
+        text: "Configure and verify the synchronization status between Management HA members",
+        relatedArticles: ["checkpoint-management-high-availability"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-2",
+        title: "Module 2: Advanced Policy Management",
+        objectives: [
+      {
+        id: "2.01",
+        text: "Implement Updatable Objects to streamline policy management for dynamic cloud services",
+        relatedArticles: ["checkpoint-advanced-policy-and-nat"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "2.02",
+        text: "Create and manage manual NAT rules for specific network requirements",
+        relatedArticles: ["checkpoint-advanced-policy-and-nat"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "2.03",
+        text: "Configure the Security Management Server to be accessible when located behind a NAT device",
+        relatedArticles: ["checkpoint-advanced-policy-and-nat"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-3",
+        title: "Module 3: Site-to-Site VPN",
+        objectives: [
+      {
+        id: "3.01",
+        text: "Configure and troubleshoot a Site-to-Site VPN tunnel between two or more Check Point Gateways",
+        relatedArticles: ["checkpoint-site-to-site-vpn"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "3.02",
+        text: "Establish a VPN tunnel with a third-party Gateway using both pre-shared keys and certificates",
+        relatedArticles: ["checkpoint-site-to-site-vpn"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "3.03",
+        text: "Implement Link Selection and ISP Redundancy to ensure continuous VPN connectivity",
+        relatedArticles: ["checkpoint-site-to-site-vpn"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-4",
+        title: "Module 4: Advanced Security Monitoring",
+        objectives: [
+      {
+        id: "4.01",
+        text: "Deploy and configure a SmartEvent Server to begin collecting logs",
+        relatedArticles: ["checkpoint-smartevent-and-compliance"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "4.02",
+        text: "Create and customize SmartEvent events, alerts, and reports",
+        relatedArticles: ["checkpoint-smartevent-and-compliance"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "4.03",
+        text: "Use the Compliance Blade to audit the security policy and report on compliance scores",
+        relatedArticles: ["checkpoint-smartevent-and-compliance"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-5",
+        title: "Module 5: Upgrades",
+        objectives: [
+      {
+        id: "5.01",
+        text: "Select the appropriate upgrade method for a given scenario",
+        relatedArticles: ["checkpoint-upgrades-and-migrations"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "5.02",
+        text: "Use the Central Deployment Tool to install a hotfix on a Security Gateway",
+        relatedArticles: ["checkpoint-upgrades-and-migrations"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "5.03",
+        text: "Verify the successful completion of an upgrade or hotfix installation",
+        relatedArticles: ["checkpoint-upgrades-and-migrations"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-6",
+        title: "Module 6: Advanced Upgrades and Migrations",
+        objectives: [
+      {
+        id: "6.01",
+        text: "Export a Security Management Server database",
+        relatedArticles: ["checkpoint-upgrades-and-migrations"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "6.02",
+        text: "Import a database to a new Security Management Server appliance or virtual machine",
+        relatedArticles: ["checkpoint-upgrades-and-migrations"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "6.03",
+        text: "Validate the successful migration and ensure all policies and objects are present",
+        relatedArticles: ["checkpoint-upgrades-and-migrations"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+      {
+        id: "section-7",
+        title: "Module 7: ElasticXL Cluster",
+        objectives: [
+      {
+        id: "7.01",
+        text: "Describe the architecture and benefits of an ElasticXL Cluster",
+        relatedArticles: ["checkpoint-elasticxl-cluster"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "7.02",
+        text: "Deploy and configure a new ElasticXL Cluster",
+        relatedArticles: ["checkpoint-elasticxl-cluster"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+      {
+        id: "7.03",
+        text: "Explain how the cluster handles traffic and provides high availability",
+        relatedArticles: ["checkpoint-elasticxl-cluster"],
+        relatedTools: [],
+        manualLinks: [],
+      },
+        ],
+      },
+    ],
+  },
   {
     slug: "f5-ca-install-config-upgrade",
     examCode: "F5CAB1",

@@ -1,0 +1,71 @@
+---
+slug: checkpoint-administrators-sessions-and-objects
+title: "Administradores, sessões e objetos na Check Point: publicar não é instalar"
+summary: "A Check Point dá a cada administrador uma sessão de trabalho privada, então suas mudanças ficam invisíveis para os colegas até você publicar, e inertes no gateway até você instalar. São duas ações separadas e confundi-las é o erro inicial mais comum na plataforma."
+concepts: ["check point", "ccsa", "smartconsole", "administrador", "perfil de permissão", "sessão", "publicar", "instalar política", "objetos", "objeto de rede", "objeto de serviço"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-three-tier-architecture-and-smartconsole", "fortimanager-policy-packages-and-installs"]
+category: security
+order: 101
+status: reviewed
+updated: "2026-07-26"
+---
+
+Dois administradores podem trabalhar na mesma política ao mesmo tempo sem sobrescrever um ao outro. O mecanismo que torna isso seguro é a sessão, e é também o que torna a plataforma confusa na primeira semana.
+
+## Publicar e instalar são ações diferentes
+
+Esta é a coisa mais importante a acertar, e vale dizer com clareza.
+
+**Publicar** grava as mudanças da sua sessão no banco de dados de gerência e as torna visíveis a outros administradores. Nada chega a gateway algum.
+
+**Instalar política** compila o banco de dados numa política e a envia aos gateways selecionados. É aí que o tratamento do tráfego de fato muda.
+
+Então uma mudança passa por três estados: **privada** à sua sessão, **publicada** no banco de dados, e **instalada** no gateway. Uma regra que você escreveu e publicou mas não instalou não está fazendo nada, e tudo no SmartConsole parecerá correto enquanto ela não faz nada.
+
+O corolário também importa: **instalar a política instala o banco de dados publicado**, e não a sua sessão não publicada. Se você instala sem publicar, suas próprias mudanças não estão no que você acabou de enviar.
+
+## Sessões
+
+As mudanças de cada administrador se acumulam numa sessão. Até serem publicadas, são privadas, e é isso que permite duas pessoas trabalharem simultaneamente.
+
+O **travamento** evita conflitos: quando você modifica um objeto, ele fica travado para a sua sessão, e outro administrador o vê como travado e não consegue mudá-lo até você publicar ou descartar.
+
+Isso produz a situação que todo mundo encontra em algum momento: um colega travou um objeto e foi para casa. Um administrador com permissões suficientes pode **assumir** a sessão, que é a resolução documentada, e não uma gambiarra.
+
+**Descartar** joga fora as mudanças de uma sessão. É o desfazer para o trabalho que você não publicou, e é completo: tudo desde a última publicação se vai.
+
+O hábito que vale construir é publicar em unidades pequenas e coerentes com uma descrição significativa. A descrição da sessão vira o registro de auditoria, e "mudanças" não diz nada a ninguém seis meses depois.
+
+## Administradores e perfis de permissão
+
+Contas de administrador se autenticam no servidor de gerência. O que elas podem fazer é governado por um **perfil de permissão**, que é um objeto separado atribuído à conta.
+
+A distinção é a parte útil: perfis são reutilizáveis, então "auditor somente leitura" é definido uma vez e atribuído a muitas pessoas, e mudar o perfil muda o acesso de todos de uma vez.
+
+Perfis podem ser delimitados pelo que pode ser feito — ler, escrever, ou nada — nas áreas da plataforma: política de controle de acesso, prevenção de ameaças, logs, e configurações de gerência. Um arranjo comum e sensato dá aos auditores leitura em tudo e escrita em nada, dá à central de serviços leitura só em logs, e reserva escrita de política ao time que a possui.
+
+O erro de projeto a evitar é o que toda plataforma convida: conceder perfis amplos durante a implantação pretendendo estreitá-los depois.
+
+## Objetos
+
+Uma regra não consegue referenciar um endereço diretamente. Ela referencia um **objeto**, e o objeto guarda o endereço. Essa indireção é todo o propósito: mude o objeto e toda regra que o usa muda junto.
+
+Os tipos que você encontra de imediato:
+
+**Objetos de rede** — um host, uma rede, uma faixa de endereços, ou um grupo deles. Grupos são como uma regra permanece legível quando cobre vinte sub-redes.
+
+**Objetos de serviço** — TCP, UDP, ICMP e outros, definidos por porta e protocolo, mais grupos de serviços.
+
+**Gateways e servidores** — os próprios equipamentos gerenciados, que também são objetos, e é por isso que uma regra pode referenciar o gateway.
+
+**Objetos de aplicação e URL**, que a política de controle de acesso usa para casar com o que o tráfego *é*, e não com a porta que ele usa.
+
+Dois hábitos compensam rápido. **Nomeie objetos pelo que são**, e não pelo que serviram: `Srv-Web-DMZ` sobrevive ao fim de um projeto de um jeito que `ProjetoApolo` não sobrevive. E **verifique se um objeto existe antes de criar um**, porque objetos duplicados para o mesmo endereço são como uma base de regras se torna impossível de raciocinar.
+
+Um objeto em uso não pode ser removido, o que é proteção, e não obstáculo. O **Where Used** responde o que depende dele, e ler isso antes de mudar um objeto evita a classe de acidente em que um objeto compartilhado é editado para um propósito e muda dez regras em silêncio.
+
+## O que quem vai prestar o CCSA precisa saber de cor
+
+Publicar grava as mudanças de uma sessão no banco de dados de gerência e as torna visíveis a outros administradores; instalar política envia o banco publicado aos gateways e é quando o tratamento do tráfego muda. Uma mudança é privada, depois publicada, depois instalada, e parar antes significa que nada acontece. Objetos são modificados sob travamento de sessão, outro administrador pode assumir uma sessão abandonada, e descartar reverte tudo desde a última publicação. Perfis de permissão são objetos reutilizáveis atribuídos a contas de administrador. Regras referenciam objetos em vez de endereços, um objeto em uso não pode ser removido, e o Where Used responde o que uma mudança vai afetar.

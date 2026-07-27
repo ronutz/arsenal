@@ -1,0 +1,72 @@
+---
+slug: checkpoint-identity-awareness
+title: "Check Point Identity Awareness: Writing Rules About People Instead of Addresses"
+summary: "Identity Awareness lets a rule say who rather than where. The gateway has to learn the user-to-address mapping from somewhere, and which source you choose decides how quickly identities appear, how accurate they stay, and what happens when someone changes desk."
+concepts: ["check point", "ccsa", "identity awareness", "access role", "identity collector", "ad query", "browser-based authentication", "captive portal", "identity agent", "identity sharing"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-security-policy-and-rule-base", "fortigate-authentication-and-fsso"]
+category: security
+order: 105
+status: reviewed
+updated: "2026-07-26"
+---
+
+A rule that permits an address permits whoever is using that address. In an environment with roaming users, shared machines and DHCP, that is a weaker statement than it looks, and Identity Awareness is how it is strengthened.
+
+## The problem it solves
+
+The firewall sees addresses. Policy usually wants to talk about people: this department reaches the finance application, contractors do not, administrators reach management interfaces from anywhere.
+
+Identity Awareness supplies the missing mapping — which user is currently at which address — so a rule can reference an identity and the gateway can resolve it at match time.
+
+## Access Roles
+
+An **Access Role** is the object a rule references. It can combine:
+
+- **Users or groups**, typically from Active Directory.
+- **Machines**, so a rule can require a corporate computer rather than any device the user logs in from.
+- **Locations**, meaning the networks the connection originates from.
+- **Remote access clients**, where applicable.
+
+Because the conditions combine, an Access Role can express "a member of Finance, on a domain-joined machine, from the office network" as a single object. That combination is where the feature earns its place: identity alone answers who, and the machine and location conditions answer whether the circumstances are right.
+
+## Where identities come from
+
+This is the part that determines whether a deployment works well, and the options trade coverage against intrusiveness.
+
+**Identity Collector** is the usual answer in a Windows environment. A small collector agent runs on a Windows host, subscribes to domain controller security event logs, and forwards login events to the gateway. It scales well because the collector does the talking to the domain controllers, and the gateway receives a stream rather than polling.
+
+**AD Query** is the agentless predecessor: the gateway itself queries domain controllers for login events. It requires no additional software, which is its appeal, and it puts the query load on the gateway.
+
+**Browser-Based Authentication** presents a captive portal. The user authenticates in a browser and the gateway learns the mapping. It covers anyone with a browser, including devices outside the domain, and it is intrusive by design — the user notices.
+
+**Identity Agent** is software on the endpoint that reports the logged-in user directly. It gives the strongest binding and requires deployment and maintenance.
+
+**Terminal Servers** need their own handling, because many users share one address. Without a specific mechanism, everyone on a terminal server appears as one identity, and rules cannot distinguish them.
+
+Most real deployments combine sources: a collector for domain machines, and a portal for everything else.
+
+## Where identity is applied
+
+The gateway must have Identity Awareness enabled, the identity source configured, and the Access Role used in the policy. Missing any of the three produces a rule that never matches.
+
+Identity can also be **shared between gateways**, so a user identified at one gateway is known to another without re-authenticating. That matters in a multi-gateway environment and is a configuration step rather than a default.
+
+## What goes wrong
+
+The recurring faults, and what they look like:
+
+**The rule never matches.** Usually the identity is not known to the gateway. Check whether the gateway sees the user before examining the rule.
+
+**Identity is stale.** A user logged out or moved, but the mapping persists until it times out. A shared machine amplifies this: the previous user's identity may still be attached to the address.
+
+**Users appear as unknown.** The identity source is not covering them — a non-domain device, an unsupported operating system, or a login the collector never saw because it happened before the collector was watching.
+
+**Everyone on a terminal server looks the same.** The specific case above, and it needs the specific solution rather than tuning.
+
+The diagnostic order is the same shape as everywhere else on the platform: confirm the gateway knows the identity, then confirm the Access Role resolves it, then look at the rule.
+
+## What a CCSA candidate should be able to state cold
+
+Identity Awareness maps users to addresses so a rule can reference an identity. An Access Role combines users or groups, machines, locations and remote access clients into one object. Identity sources include Identity Collector, which forwards domain controller login events and scales well; AD Query, which is agentless and queries from the gateway; Browser-Based Authentication via a captive portal, which covers non-domain devices and is visible to the user; and Identity Agent on the endpoint. Terminal servers need specific handling because users share an address. A rule that never matches usually means the gateway does not know the identity, so verify that before examining the rule.

@@ -48,6 +48,15 @@ export const VENDOR_FAMILIES: readonly VendorFamily[] = Object.freeze([
   { key: "netskope", alwaysShow: false },
   { key: "ping", alwaysShow: false },
   { key: "zscaler", alwaysShow: false },
+  // Check Point added 2026-07-26.
+  // AUTHORIZATION GUARDRAIL (PRIME 2026-07-26, supersedes the 2026-07-15
+  // clearance note): authorized-instructor status is claimed publicly for
+  // F5, Fortinet, Netskope and Extreme Networks ONLY. Ping, Zscaler and
+  // Check Point are covered here as STUDY MATERIAL - hubs, certification
+  // guides and articles - with no statement or implication that Rodolfo
+  // delivers their authorized training. Adding a vendor to this list is a
+  // browse-surface decision and never an authorization claim.
+  { key: "checkpoint", alwaysShow: false },
 ]);
 
 /** vendor key -> supplementary hue (dot + soft border only). Provisional; tune here. */
@@ -57,6 +66,7 @@ export const VENDOR_COLORS: Record<string, string> = {
   netskope: "#00A9E0", // Netskope blue
   extreme: "#582C83", // Extreme Networks purple
   zscaler: "#0071C5", // Zscaler blue (provisional brand hue; dot + soft border only)
+  checkpoint: "#E00034", // Check Point magenta-red (provisional brand hue; dot + soft border only, same treatment as the others)
   ping: "#C8102E", // Ping Identity red (provisional; distinct enough from F5 red at dot size)
 };
 

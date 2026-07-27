@@ -52,6 +52,36 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-27T01:49:37-03:00",
+    kind: "content",
+    title: "Being precise about which vendors carry an instructor authorization",
+    body: "This site covers seven vendors, and they are not all covered for the same reason. Four of them are ones Rodolfo is authorized to teach: F5, Fortinet, Netskope and Extreme Networks. The Ping Identity, Zscaler and Check Point hubs exist because the technology is worth explaining and because their certifications are worth studying for, which is a different claim entirely. Copy that blurred the two has been corrected: the Ping and Zscaler pages no longer describe an instructor authorization, and the line on the front page that said authorized across every vendor taught here has been reworded, because it stopped being true the moment this site started covering vendors it does not deliver training for. The study guides are unaffected. An exam blueprint transcribed from a vendor's own published guide is just as useful whoever teaches the course, and nothing about the accuracy of that material depended on the claim that has been removed.",
+  },
+  {
+    date: "2026-07-27T01:03:08-03:00",
+    kind: "content",
+    title: "The rest of the Check Point path, as far as the published sources actually go",
+    body: "Check Point's certification path runs from administrator to expert, then through specialist accreditations to Security Master and Security Master Elite. The two master levels are now modelled, and neither is earned by an exam of its own: Security Master is an active expert certification plus two specialist accreditations, and Elite is two more on top, four across the whole path. The specialist tier is where this stops short, and deliberately. Check Point's own certification page describes that tier in prose and renders the list of exams as an image, so there is no roster to read. Pearson VUE publishes codes only for the exams it happens to mention in its announcements and retirements. Five are confirmed that way and are scaffolded, three of them carrying retirement dates at the end of September. Searching turns up several more, but only from exam-dump sites and a forum post that contradict each other on the codes, with one cloud exam appearing under two different numbers. Publishing those here would put a number in front of someone about to book an exam, so they are left out until a source worth trusting supplies them.",
+  },
+  {
+    date: "2026-07-27T00:01:33-03:00",
+    kind: "content",
+    title: "The CCSE is covered too, so both Check Point core exams are complete",
+    body: "Six articles finish the Check Point Certified Security Expert blueprint. Management high availability opens with what it actually protects, which is the ability to manage rather than the traffic, since gateways enforce their installed policy whether or not any management server exists. Failover is manual by design, and the reason is worth knowing: automatic promotion between two servers that can both write to a database is how you get a split brain, which is a worse problem than an unavailable server. The NAT article covers the fault that wastes the most time on this platform, where a manual static NAT is configured perfectly and receives nothing at all, because manual NAT does not create proxy ARP and the upstream router is asking who owns an address nobody answers for. The VPN article makes the same kind of point: the tunnel that fails to establish is easy, and the one that establishes and carries nothing is the real problem, which almost always traces to a network missing from an encryption domain or to VPN traffic that was never excluded from NAT. Upgrades cover the ordering rule that is not a preference, since a management server can manage older gateways and an older one cannot manage newer, plus the three operations that all sound like backup and are not interchangeable.",
+  },
+  {
+    date: "2026-07-26T23:00:28-03:00",
+    kind: "content",
+    title: "The CCSA is fully covered: every objective now has an article behind it",
+    body: "Four more articles finish the Check Point Certified Security Administrator blueprint. Logging starts from the two conditions that have to hold before a log exists at all, since a rule set not to track handles traffic silently and a gateway that lost its log server enforces policy perfectly while producing no evidence. Identity Awareness covers writing rules about people rather than addresses, and is organised around the choice that actually decides whether a deployment works, which is where the gateway learns the user-to-address mapping from. The web control article puts HTTPS inspection, application control and URL filtering together because they are one subject: without decryption the gateway sees a destination, a handshake name and a certificate, which supports categorisation and not much else. It also covers why bypass is standard rather than a compromise, since certificate pinning and privacy obligations both point at the same mechanism. Threat prevention closes it with the setting that matters more than which engines are enabled: an engine in detect mode logs while the traffic proceeds, so a profile left that way produces a complete and entirely inert record of attacks that succeeded, and the dashboards look identical either way.",
+  },
+  {
+    date: "2026-07-26T22:42:58-03:00",
+    kind: "content",
+    title: "Check Point arrives: CCSA and CCSE study guides, and the first four articles",
+    body: "Check Point is the seventh vendor on this site, starting with the two certifications that open its path: the Certified Security Administrator and the Certified Security Expert. Both guides carry objectives transcribed from Check Point's own published exam prep guides rather than assembled from secondhand summaries, which means the exam facts are exact: both are a hundred questions in ninety minutes at seventy percent, and the expert exam requires a passed administrator exam that is allowed to be expired. The first four articles cover the part of the platform that surprises people arriving from other firewalls. Check Point separates where policy is written from where it is enforced, so a rule is not live because you saved it. It becomes visible to your colleagues when you publish and it changes traffic when you install, and those are two different actions. Unmatched traffic is dropped by a rule that does not exist and logs nothing, which is why every real deployment adds an explicit final rule that drops and logs. And policy layers are an AND rather than an OR: accepting in one layer only means the traffic proceeds to the next, so a permit early cannot override a drop later.",
+  },
+  {
     date: "2026-07-26T21:08:27-03:00",
     kind: "infra",
     title: "A build guard for the rule that half-shipped three articles in one day",

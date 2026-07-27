@@ -853,6 +853,9 @@
       "note2": "Ce sont les dates prévues. F5 publie aussi à tout moment des alertes de sécurité hors bande et des correctifs d'ingénierie (hotfixes) pour les problèmes urgents, et conserve une marge pour ajuster le calendrier des notifications.",
       "learnMore": "Nouveau sur ce changement ?",
       "learnLink": "Lisez ce qui a changé et pourquoi"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {

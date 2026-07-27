@@ -1,0 +1,72 @@
+---
+slug: checkpoint-three-tier-architecture-and-smartconsole
+title: "Arquitetura de três camadas da Check Point: gerência, gateway e SmartConsole"
+summary: "A Check Point separa o lugar onde a política é escrita do lugar onde ela é aplicada, e essa divisão explica quase todo o resto da plataforma: por que se instala a política em vez de apenas salvá-la, por que o SIC existe, e por que um gateway continua funcionando com o servidor de gerência fora do ar."
+concepts: ["check point", "ccsa", "arquitetura de três camadas", "security management server", "security gateway", "smartconsole", "sic", "gaia", "clish", "modo expert"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["fortigate-initial-configuration-and-operation-modes", "fortimanager-adoms-and-device-registration"]
+category: security
+order: 100
+status: reviewed
+updated: "2026-07-26"
+---
+
+A maioria dos firewalls é configurada no próprio firewall. A Check Point não é, e toda surpresa inicial com a plataforma vem daí.
+
+## As três camadas
+
+O **Security Management Server** guarda o banco de dados: objetos, regras, usuários, e o histórico de quem mudou o quê. Ele não aplica nada. A política é escrita aqui.
+
+O **Security Gateway** aplica. Ele inspeciona o tráfego contra uma política que recebeu do servidor de gerência. Não guarda a configuração autoritativa; guarda uma cópia compilada dela.
+
+O **SmartConsole** é o cliente. Não é o servidor de gerência e não armazena nada — é uma janela para o banco de dados, e é por isso que fechá-lo não muda nada e por que dois administradores podem tê-lo aberto ao mesmo tempo.
+
+O arranjo pode ser **distribuído**, com gerência e gateway em máquinas separadas, ou **standalone**, com os dois numa só. Distribuído é o formato normal em produção. Standalone é comum em laboratórios e sites pequenos, e é o que faz as pessoas pensarem que a Check Point funciona como outros firewalls, o que deixa de ser verdade no momento em que encontram uma implantação real.
+
+## O que decorre da divisão
+
+**Você instala a política.** Salvar uma regra no SmartConsole muda o banco de dados, e o gateway não é afetado até a política ser instalada nele. Uma regra correta e não instalada não faz nada. Essa é a fonte mais comum de "eu mudei e nada aconteceu".
+
+**Gateways sobrevivem a quedas da gerência.** Um gateway com política instalada continua aplicando-a, esteja o servidor de gerência alcançável ou não. O que se perde é a capacidade de mudar a política e, conforme a configuração, para onde vão os logs.
+
+**O banco de dados é a fonte da verdade.** Como no FortiManager, a configuração autoritativa não está no equipamento que aplica. Quem edita um gateway diretamente está editando algo que será sobrescrito.
+
+## SIC
+
+As camadas se autenticam entre si com o **Secure Internal Communication**, um arranjo de TLS mútuo usando certificados emitidos pela **Internal Certificate Authority** do servidor de gerência.
+
+Estabelecer o SIC é um passo único por gateway: você define uma senha de uso único nos dois lados, eles a trocam, a ICA emite um certificado ao gateway, e daí em diante a confiança é baseada em certificado.
+
+Duas coisas que vale saber antes de encontrá-las:
+
+**Falhas de SIC parecem falhas de política.** Se o SIC está quebrado, a instalação de política falha, os logs param de chegar, e o gateway aparece como inalcançável — um conjunto de sintomas que convida a investigar a política, o que não leva a lugar algum.
+
+**Redefinir o SIC é disruptivo e às vezes necessário.** É a correção padrão depois que um gateway é reconstruído ou seu endereço muda, e significa restabelecer a confiança pelas duas pontas.
+
+## Gaia
+
+O **Gaia** é o sistema operacional dos appliances Check Point e de servidores abertos, e apresenta duas interfaces e meia:
+
+O **Gaia Portal** é a interface web: interfaces, roteamento, DNS, NTP, usuários, backups, atualizações de software. A configuração de nível de máquina vive aqui, e não no SmartConsole.
+
+O **Gaia CLI (clish)** é o shell estruturado, com completação e validação de comandos. Configura as mesmas coisas que o Portal.
+
+O **modo expert** cai num shell completo como root. É onde vivem os comandos de diagnóstico da própria Check Point, e onde se pode causar dano real. A distinção entre clish e expert vale ser internalizada cedo: o clish valida o que você digita, o expert não.
+
+A divisão que importa para o exame e para o trabalho real: **o Gaia configura a máquina; o SmartConsole configura a política de segurança.** Um endereço de interface é Gaia. Uma regra de firewall é SmartConsole. Confundir os dois é onde administradores novos perdem tempo.
+
+## Navegar o SmartConsole
+
+Quatro visões, e saber para que serve cada uma encurta tudo depois:
+
+- **Gateways & Servers** — o parque gerenciado, seu estado e sua versão.
+- **Security Policies** — as bases de regras: controle de acesso, prevenção de ameaças, e suas camadas.
+- **Logs & Monitor** — o que de fato aconteceu, mais relatórios e visões.
+- **Manage & Settings** — administradores, perfis de permissão, sessões, revisões, e as preferências que governam o próprio banco de dados.
+
+O explorador de objetos fica ao lado dessas e é onde vivem as peças reutilizáveis. Ficar à vontade com a busca ali vale os dez minutos que leva, porque um ambiente grande tem milhares de objetos e rolar a lista não é estratégia.
+
+## O que quem vai prestar o CCSA precisa saber de cor
+
+O servidor de gerência guarda o banco de dados e não aplica nada; o gateway aplica uma cópia compilada; o SmartConsole é um cliente que não armazena nada. Implantações são distribuídas ou standalone. A política precisa ser instalada para valer, e um gateway continua aplicando sua política instalada quando a gerência está inalcançável. O SIC é confiança baseada em certificados emitidos pela Internal Certificate Authority do servidor de gerência, estabelecida com senha de uso único, e sua falha se apresenta como problema de política e de logs. O Gaia configura a máquina pelo Portal ou pelo clish, com o modo expert como shell root sem validação; o SmartConsole configura a política de segurança.

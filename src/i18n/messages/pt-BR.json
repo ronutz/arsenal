@@ -52,7 +52,7 @@
     },
     "credibility": {
       "title": "Feito por quem coloca a mão na massa desde 1996.",
-      "body": "Trinta anos em redes e segurança corporativa, entregues por um instrutor que está na ativa, e não por uma página de marketing. Autorizado em cada fabricante ensinado aqui, então as comparações são feitas com honestidade, não para vender.",
+      "body": "Trinta anos em redes e segurança corporativa, entregues por um instrutor que está na ativa, e não por uma página de marketing. As comparações aqui são feitas com honestidade, não para vender.",
       "aboutCta": "Mais sobre quem está por trás"
     },
     "pillars": {
@@ -3507,7 +3507,8 @@
       "netskope": "Netskope",
       "extreme": "Extreme Networks",
       "zscaler": "Zscaler",
-      "ping": "Ping Identity"
+      "ping": "Ping Identity",
+      "checkpoint": "Check Point"
     },
     "x509": {
       "name": "Decodificador de certificados X.509",

@@ -1,0 +1,68 @@
+---
+slug: checkpoint-logging-and-monitoring
+title: "Registro e monitoramento na Check Point: para onde vão os logs e como fazer perguntas a eles"
+summary: "Um log só existe se uma regra foi configurada para criá-lo, e só sobrevive se havia um servidor de logs para recebê-lo. Uma vez que os dois sejam verdade, a visão Logs and Monitor é uma interface de consulta, e não uma lista, e aprender a fazer perguntas a ela é a diferença entre achar uma resposta em segundos e rolar a tela."
+concepts: ["check point", "ccsa", "smartlog", "servidor de logs", "logs and monitor", "consultas", "monitoring blade", "track", "smartview", "cpview"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-security-policy-and-rule-base", "fortianalyzer-log-ingestion-and-storage"]
+category: security
+order: 104
+status: reviewed
+updated: "2026-07-26"
+---
+
+Toda investigação nesta plataforma começa no mesmo lugar, e vale saber o que precisa ser verdade antes de você chegar lá.
+
+## Duas condições antes de um log existir
+
+**A regra precisa registrar.** O campo Track de cada regra decide se uma correspondência é registrada. Uma regra com None trata o tráfego em silêncio. Essa é a primeira coisa a verificar quando os logs estão vazios, antes de qualquer coisa mais interessante.
+
+**Um servidor de logs precisa recebê-lo.** Gateways enviam logs a um servidor de logs — normalmente o próprio servidor de gerência numa implantação pequena, ou um servidor dedicado onde o volume justifica. Se o gateway não o alcança, os logs se enfileiram localmente e depois expiram.
+
+A falha que vale reconhecer: um gateway que perdeu seu servidor de logs continua aplicando a política perfeitamente e para de produzir evidência. Nada no tratamento do tráfego muda, então o sintoma é silêncio, e não um alarme.
+
+## Servidores de logs dedicados
+
+Separar o servidor de logs do servidor de gerência é a resposta normal quando o volume cresce, por duas razões que vale distinguir.
+
+**Carga.** A indexação de logs é cara, e um servidor de gerência ocupado indexando é um servidor de gerência lento para publicar e instalar.
+
+**Retenção.** Logs consomem disco numa cadência; a política não. Dimensioná-los separadamente é mais fácil que dimensionar uma máquina para os dois.
+
+Um servidor de logs dedicado é um objeto no SmartConsole como outro qualquer, com SIC estabelecido do mesmo jeito, e os gateways são configurados para enviar a ele.
+
+## Consultar em vez de rolar
+
+A visão Logs and Monitor é uma interface de busca. O hábito produtivo é expressar o que você procura, em vez de filtrar visualmente.
+
+Os campos que respondem à maioria das perguntas: origem, destino, serviço, ação, número da regra, blade, e o gateway que produziu a entrada. Eles se combinam, e combinar dois deles normalmente reduz o tráfego de um dia a algo legível.
+
+**Consultas predefinidas** cobrem os formatos comuns e vale lê-las uma vez, porque também ensinam a sintaxe pelo exemplo.
+
+**Consultas personalizadas** guardam as perguntas específicas do seu ambiente. As que valem manter são as investigações recorrentes: tráfego descartado para um servidor crítico, atividade de administradores, conexões de uma sub-rede que não deveria iniciá-las.
+
+A virada mental é de "deixa eu olhar os logs" para "deixa eu fazer uma pergunta", e é a diferença entre minutos e uma tarde.
+
+## Ler uma entrada de log
+
+Uma única entrada responde mais que se o tráfego passou:
+
+- **Qual regra casou**, por número e camada, que é a rota mais rápida para uma resposta de política.
+- **Qual blade** produziu a entrada, já que um descarte pela política de controle de acesso e um descarte pela prevenção de ameaças são problemas diferentes.
+- **A ação tomada**, e em entradas de prevenção de ameaças, se foi prevenida ou apenas detectada.
+- **Informação de NAT**, quando houve tradução, o que resolve a confusão recorrente de um log mostrando um endereço que o destino nunca viu.
+
+Esse segundo ponto merece ênfase. "O firewall bloqueou" não é diagnóstico até você saber qual parte do firewall, porque a correção está numa política diferente conforme a resposta.
+
+## O Monitoring Blade
+
+Logs dizem o que aconteceu com o tráfego. O Monitoring Blade diz como o próprio sistema está: estado do gateway, uso de recursos, vazão, contagem de conexões, estado de túneis VPN, e saúde de cluster.
+
+Seu valor está no que ele pega e os logs não. Um gateway no limite de conexões descarta tráfego que regra alguma descartou, e o log parece falha de rede enquanto a causa é capacidade.
+
+Para investigação ao vivo no próprio gateway, o **cpview** apresenta a mesma classe de informação como um console em execução, que é aonde se vai quando a pergunta é o que o gateway está fazendo agora, e não o que fez antes.
+
+## O que quem vai prestar o CCSA precisa saber de cor
+
+Um log existe apenas se o campo Track da regra o cria e um servidor de logs o recebe; um gateway que perdeu seu servidor de logs aplica a política corretamente e não produz evidência. Servidores de logs dedicados separam carga de indexação e dimensionamento de retenção da gerência. A visão Logs and Monitor é uma interface de consulta: filtre por origem, destino, serviço, ação, regra e blade, e guarde as investigações recorrentes como consultas personalizadas. Uma entrada de log nomeia a regra que casou, sua camada, e o blade que agiu, e a identidade do blade determina qual política contém a correção. O Monitoring Blade cobre a saúde do sistema, o que pega problemas de capacidade que regra alguma causou.

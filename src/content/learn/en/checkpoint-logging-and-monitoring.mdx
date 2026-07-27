@@ -1,0 +1,68 @@
+---
+slug: checkpoint-logging-and-monitoring
+title: "Check Point Logging and Monitoring: Where Logs Go and How to Ask Them Questions"
+summary: "A log only exists if a rule was set to create it, and it only survives if a log server was there to receive it. Once both are true, the Logs and Monitor view is a query interface rather than a list, and learning to ask it questions is the difference between finding an answer in seconds and scrolling."
+concepts: ["check point", "ccsa", "smartlog", "log server", "logs and monitor", "queries", "monitoring blade", "track", "smartview", "cpview"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-security-policy-and-rule-base", "fortianalyzer-log-ingestion-and-storage"]
+category: security
+order: 104
+status: reviewed
+updated: "2026-07-26"
+---
+
+Every troubleshooting session on this platform starts in the same place, and it is worth knowing what has to be true before you get there.
+
+## Two conditions before a log exists
+
+**The rule must track.** Each rule's Track field decides whether a match is recorded at all. A rule set to None handles traffic silently. This is the first thing to check when the logs are empty, ahead of anything more interesting.
+
+**A log server must receive it.** Gateways send logs to a log server — usually the management server itself in a small deployment, or a dedicated log server where volume justifies one. If the gateway cannot reach it, logs queue locally and then age out.
+
+The failure worth recognising: a gateway that lost its log server keeps enforcing policy perfectly and stops producing evidence. Nothing about traffic handling changes, so the symptom is silence rather than an alarm.
+
+## Dedicated log servers
+
+Separating the log server from the management server is the normal answer once volume grows, for two reasons that are worth distinguishing.
+
+**Load.** Log indexing is expensive, and a management server busy indexing is a management server slow to publish and install.
+
+**Retention.** Logs consume disk on a schedule; policy does not. Sizing them separately is easier than sizing one box for both.
+
+A dedicated log server is an object in SmartConsole like any other, with SIC established the same way, and gateways are configured to send to it.
+
+## Querying rather than scrolling
+
+The Logs and Monitor view is a search interface. The productive habit is to express what you are looking for rather than to filter visually.
+
+The fields that answer most questions: source, destination, service, action, rule number, blade, and the gateway that produced the entry. Those combine, and combining two of them usually narrows a day's traffic to something readable.
+
+**Predefined queries** cover the common shapes and are worth reading through once, because they also teach the query syntax by example.
+
+**Custom queries** save the questions specific to your environment. The ones worth keeping are the recurring investigations: traffic dropped to a critical server, administrator activity, connections from a subnet that should not be initiating them.
+
+The mental shift is from "let me look at the logs" to "let me ask a question", and it is the difference between minutes and an afternoon.
+
+## Reading a log entry
+
+A single entry answers more than whether traffic passed:
+
+- **Which rule matched**, by number and layer, which is the fastest route to a policy answer.
+- **Which blade** produced the entry, since a drop by the access control policy and a drop by threat prevention are different problems.
+- **The action taken**, and for threat prevention entries, whether it was prevented or only detected.
+- **NAT information**, when translation occurred, which resolves the recurring confusion of a log showing an address the destination never saw.
+
+That second point deserves emphasis. "The firewall blocked it" is not a diagnosis until you know which part of the firewall, because the fix is in a different policy depending on the answer.
+
+## The Monitoring Blade
+
+Logs say what happened to traffic. The Monitoring Blade says how the system itself is doing: gateway status, resource use, throughput, connection counts, VPN tunnel state, and cluster health.
+
+Its value is in what it catches that logs cannot. A gateway at its connection limit drops traffic that no policy rule dropped, and the log looks like a network fault while the cause is capacity.
+
+For live investigation on the gateway itself, **cpview** presents the same class of information as a running console, which is where you go when the question is what the gateway is doing right now rather than what it did earlier.
+
+## What a CCSA candidate should be able to state cold
+
+A log exists only if the rule's Track field creates one and a log server receives it; a gateway that lost its log server enforces policy correctly and produces no evidence. Dedicated log servers separate indexing load and retention sizing from management. The Logs and Monitor view is a query interface: filter by source, destination, service, action, rule and blade, and save the recurring investigations as custom queries. A log entry names the matching rule, its layer, and the blade that acted, and blade identity determines which policy holds the fix. The Monitoring Blade covers system health, which catches capacity problems that no rule caused.

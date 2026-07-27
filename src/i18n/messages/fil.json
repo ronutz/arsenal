@@ -853,6 +853,9 @@
       "note2": "Ito ang mga nakatakdang petsa. Naglalabas din ang F5 ng out-of-band na security alert at engineering hotfix para sa mga apurahang isyu anumang oras, at pinananatili ang flexibility na iakma ang timing ng notification.",
       "learnMore": "Bago sa pagbabagong ito?",
       "learnLink": "Basahin kung ano ang nagbago at bakit"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {

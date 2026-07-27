@@ -10,7 +10,8 @@
 // craft that became PingDirectory), five stages, tones telling the story.
 // RICH Lineage is now MANDATORY on every vendor's details, exactly like the
 // RICH Timeline (the F5 standard). PingFederate Practitioner 2025; hub open.
-// Authorized Ping Identity instructor since 2026 (PRIME 2026-07-15).
+// No authorized-instructor claim for Ping (PRIME 2026-07-26, supersedes
+// 2026-07-15): this hub is study material, like Check Point's.
 // s2 authorization sentence REMOVED and section retitled (PRIME 2026-07-16):
 // the page now closes on the hub/toolset chapter like its siblings.
 // ============================================================================

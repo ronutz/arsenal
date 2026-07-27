@@ -1,0 +1,63 @@
+---
+slug: checkpoint-policy-layers-ordered-and-inline
+title: "Check Point Policy Layers: Ordered, Inline, and Shared"
+summary: "Layers let one rule base be several. Traffic must be accepted by every ordered layer to pass, an inline layer is a sub-policy hanging off a single rule, and a shared layer is one policy reused across packages. The accept semantics are what people get wrong."
+concepts: ["check point", "ccsa", "policy layer", "ordered layer", "inline layer", "shared layer", "sub-policy", "rule base", "access control", "modularity"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-security-policy-and-rule-base", "checkpoint-application-control-and-url-filtering"]
+category: security
+order: 103
+status: reviewed
+updated: "2026-07-26"
+---
+
+A single flat rule base stops scaling for two reasons: it becomes long enough that nobody can reason about it, and different teams need to own different parts of it. Layers address both.
+
+## Ordered layers
+
+An **ordered layer** is a rule base that traffic passes through in sequence. A connection is evaluated against the first layer; if accepted, it moves to the next; and it must be **accepted by every layer** to be allowed.
+
+That is the semantic worth committing to memory, because it inverts the intuition people bring from flat rule bases:
+
+- **Accept in a layer** does not mean the traffic is allowed. It means the traffic proceeds to the next layer.
+- **Drop in any layer** ends it. No later layer is consulted.
+- The traffic is allowed only when the **last** layer accepts it.
+
+So layers are an AND, not an OR. A common arrangement puts a coarse network layer first, owned by the network team, and a granular application layer after it, owned by the security team. Traffic that the network layer refuses never reaches the application layer at all, which is both the efficiency argument and the delegation argument.
+
+The consequence to plan for is that **a permit in an early layer cannot override a drop in a later one**. If you want an exception, it belongs in the layer that would otherwise deny it.
+
+## Inline layers
+
+An **inline layer** is a sub-policy attached to a single rule. The parent rule's condition acts as a gate: if traffic matches it, evaluation continues inside the sub-policy; if it does not match, the sub-policy is skipped entirely.
+
+The value is scoping. A DMZ inline layer under a rule matching DMZ destinations means every DMZ rule lives together, is evaluated only for DMZ traffic, and can be handed to whoever owns the DMZ.
+
+Two behaviours to be precise about:
+
+**The parent rule is a filter, not a decision.** Traffic that does not match the parent never sees the sub-policy.
+
+**An inline layer needs its own final rule.** If traffic matches the parent but nothing inside the sub-policy, what happens is governed by the sub-policy's own last rule. Leaving that implicit is how traffic ends up dropped by a layer nobody remembers writing.
+
+## Shared layers
+
+A **shared layer** is one layer used by more than one policy package. Edit it once and every package using it changes.
+
+That is exactly what you want for a corporate baseline applied everywhere, and exactly what you must be careful with, because a change made for one site's benefit lands on every site sharing the layer. The discipline is to keep shared layers genuinely universal and push anything site-specific into a layer that is not shared.
+
+## Reading traffic through layers
+
+When a connection behaves unexpectedly, the question is not "which rule matched" but "which rule in which layer matched", and the log entry tells you both.
+
+The diagnostic order that works:
+
+1. **Was it dropped, and in which layer?** A drop in the first layer means later layers are irrelevant, however carefully they were written.
+2. **If it was accepted everywhere and still failed**, the firewall is not the problem — look at routing, NAT, or the destination.
+3. **If an inline layer was involved**, check whether the parent rule matched at all, because a sub-policy that was never entered looks identical to one whose rules did not match.
+
+That third case is the one that wastes the most time, and distinguishing it takes one look at the parent rule.
+
+## What a CCSA candidate should be able to state cold
+
+Ordered layers are evaluated in sequence and traffic must be accepted by **every** layer to pass, so accept means proceed to the next layer and drop in any layer ends evaluation. A permit in an early layer cannot override a later drop. An inline layer is a sub-policy under one rule, whose condition gates entry; traffic not matching the parent skips the sub-policy entirely, and the sub-policy needs its own final rule. Shared layers are reused across policy packages, so a change affects every package using them. When troubleshooting, identify which layer dropped the traffic before examining any rule.

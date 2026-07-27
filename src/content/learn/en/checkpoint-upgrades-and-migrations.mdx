@@ -1,0 +1,75 @@
+---
+slug: checkpoint-upgrades-and-migrations
+title: "Check Point Upgrades and Migrations: Order, Compatibility, and Getting the Database Out"
+summary: "Upgrade order is not a preference: management goes first, because a management server can manage older gateways and an older management server cannot manage newer ones. Migration is a different operation from upgrading, and the thing being moved is the database rather than the machine."
+concepts: ["check point", "ccse", "upgrade", "in-place upgrade", "cpuse", "central deployment tool", "hotfix", "migration", "migrate export", "snapshot", "backup", "compatibility"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-management-high-availability", "fortimanager-adoms-and-device-registration"]
+category: security
+order: 112
+status: reviewed
+updated: "2026-07-26"
+---
+
+Two operations get conflated. Upgrading changes the software on a machine you are keeping. Migrating moves the management database to a different machine. They have different risks and different recovery paths.
+
+## Management first
+
+The compatibility rule that determines sequencing: **a management server can manage gateways running older versions; an older management server cannot manage newer gateways.**
+
+So management is upgraded first, and gateways follow. Reversing that leaves gateways a management server cannot talk to, which is a self-inflicted outage of the management plane at the worst moment.
+
+Check Point publishes the supported version combinations, and checking them is a five-minute task that occasionally cancels the whole plan — which is a good outcome discovered early and an expensive one discovered mid-window.
+
+## Three things that all sound like backup
+
+They are not interchangeable, and choosing the wrong one is discovered during recovery.
+
+**Backup** captures the Gaia configuration and the Check Point database. It restores onto the same version and is the lightest of the three.
+
+**Snapshot** captures the entire system, operating system included. It is the heaviest, the slowest, and the only one that restores the machine to exactly its previous state — which is what you want before an in-place upgrade.
+
+**Migrate export** captures the management database alone, without the operating system, and is designed to be imported onto a different machine, typically a newer version. It is the tool for moving management to new hardware.
+
+The rule that follows: **take a snapshot before an in-place upgrade** — it is the only one that gets you back if the upgrade itself fails.
+
+## Upgrade methods
+
+**In-place upgrade** upgrades the existing installation, keeping configuration. Fastest, and it carries forward whatever accumulated in the installation, including anything unhealthy.
+
+**Fresh installation with migrate** installs the new version cleanly and imports the database. More work, and it leaves a clean system. This is the right choice when the existing installation has history, or when the hardware is being replaced anyway.
+
+**CPUSE**, the deployment agent, handles package download and installation on Gaia, and is the mechanism behind most in-place work.
+
+**The Central Deployment Tool** pushes hotfixes and upgrades to multiple gateways from SmartConsole. Its value is at scale: patching twenty gateways individually is twenty maintenance windows, and doing it centrally is one.
+
+## Migrating the database
+
+The sequence is unremarkable and unforgiving of skipped steps: export from the source, build the target, import, verify, then repoint the gateways.
+
+**Verification is the step people skip**, and the one that matters. Import succeeding is not the same as the database being right. Objects, policies, administrators and — critically — certificates and licences all need checking before anything depends on the new server.
+
+The certificate point deserves emphasis: SIC trust is certificate-based, so a migration that loses or invalidates the ICA leaves you with a management server that cannot talk to its gateways. That is recoverable and it is a long afternoon.
+
+## Gateway upgrades
+
+Gateways are upgraded after management. Two situations differ:
+
+**A standalone gateway** means an outage for its traffic. There is no way around it; there is only scheduling.
+
+**A cluster** can be upgraded member by member, keeping traffic flowing. That is one of the main operational arguments for clustering, and it comes with the caveat that the cluster runs in a mixed-version state during the process, which is supported for the duration of an upgrade and not as a resting state.
+
+## Before any of it
+
+The list that prevents most upgrade incidents:
+
+- **Check compatibility** between the target version and every gateway.
+- **Take the right kind of backup**, per the distinction above.
+- **Know the rollback**, specifically: what you would restore and how long it takes.
+- **Check licences.** A version change can require a licence the appliance does not have, and discovering that after the upgrade is a bad time.
+- **Do management first.**
+
+## What a CCSE candidate should be able to state cold
+
+Management is upgraded before gateways, because a management server can manage older gateways but not newer ones. Backup captures configuration and database, snapshot captures the whole system including the OS and is what you take before an in-place upgrade, and migrate export captures the database alone for import onto a different machine. In-place is fastest and carries forward existing state; fresh install with migrate is cleaner. CPUSE handles Gaia package installation and the Central Deployment Tool pushes to many gateways at once. After a migration, verify objects, policies, licences and certificates, because a lost ICA leaves management unable to talk to its gateways. Clusters upgrade member by member; standalone gateways mean an outage.

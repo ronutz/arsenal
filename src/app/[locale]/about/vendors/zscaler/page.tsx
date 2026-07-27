@@ -1,6 +1,7 @@
 // ============================================================================
 // Vendor page: Zscaler. The newest chapter: hub open (JA3/JA4 carry the
-// zscaler tag), authorized Zscaler instructor since 2026 (PRIME 2026-07-15).
+// zscaler tag). No authorized-instructor claim for Zscaler (PRIME 2026-07-26,
+// supersedes 2026-07-15): this hub is study material, like Check Point's.
 // Content in the "vendors" namespace; rich corporate profile below the
 // career narrative (same pattern as the Extreme page).
 // s2 authorization sentence REMOVED and section retitled (PRIME 2026-07-16):

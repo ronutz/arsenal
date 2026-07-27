@@ -1,0 +1,67 @@
+---
+slug: checkpoint-threat-prevention-fundamentals
+title: "Prevenção de ameaças na Check Point: os blades, os perfis, e prevenir contra detectar"
+summary: "A prevenção de ameaças são vários motores sob uma política, cada um pegando uma etapa diferente de um ataque. A configuração que mais importa não é quais motores estão ligados, e sim se cada um está prevenindo ou apenas detectando, porque essa única escolha decide se você tem proteção ou um relatório."
+concepts: ["check point", "ccsa", "prevenção de ameaças", "ips", "anti-bot", "antivírus", "threat emulation", "threat extraction", "perfil", "prevenir", "detectar", "autonomous threat prevention"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-https-inspection-and-web-control", "fortigate-security-profiles-flow-vs-proxy"]
+category: security
+order: 107
+status: reviewed
+updated: "2026-07-26"
+---
+
+O controle de acesso decide se uma conexão é permitida. A prevenção de ameaças decide se o que está dentro dela é seguro, e faz isso com vários motores que endereçam momentos diferentes de um ataque.
+
+## Os motores e para que serve cada um
+
+O **IPS** inspeciona o tráfego procurando exploração de vulnerabilidades conhecidas. É o motor que barra um ataque contra um serviço que você não corrigiu, que é a maior parte da razão de ele existir.
+
+O **antivírus** identifica arquivos maliciosos conhecidos em trânsito.
+
+O **Anti-Bot** trabalha na direção oposta. Não tenta impedir a infecção; detecta um host que já está infectado reconhecendo sua comunicação com infraestrutura de comando e controle. Isso faz dele o motor que avisa que algo já entrou, que é um tipo diferente e indesejado de utilidade.
+
+O **Threat Emulation** roda arquivos desconhecidos num sandbox e observa o que fazem, que é como um arquivo sem assinatura recebe um veredito. O custo é tempo.
+
+O **Threat Extraction** toma o caminho oposto: em vez de decidir se um documento é malicioso, remove o conteúdo ativo e entrega imediatamente uma versão limpa. É decisivo onde a emulação é minuciosa, e os dois são frequentemente implantados juntos — a extração entrega uma cópia segura de imediato enquanto a emulação chega a um veredito sobre o original.
+
+A divisão que vale reter: IPS e antivírus pegam o conhecido, a emulação trata o desconhecido, a extração contorna a pergunta, e o Anti-Bot presume que os outros já falharam.
+
+## Prevenir e detectar
+
+Todo motor age num de dois modos, e essa é a configuração que decide se a implantação protege algo.
+
+**Detectar** identifica e registra. O tráfego segue.
+
+**Prevenir** bloqueia.
+
+Um perfil em Detectar produz um registro exato, completo e inteiramente inerte de ataques que tiveram sucesso. Isso é genuinamente valioso durante uma implantação e sem valor como estado permanente, e o modo de falha é que ninguém percebe a diferença — os painéis parecem idênticos, porque os eventos são os mesmos eventos.
+
+A sequência que funciona é implantar em Detectar, rodar tempo suficiente para ver os falsos positivos que seu ambiente produz, ajustá-los, e então passar para Prevenir. Pular a etapa do meio é como uma aplicação de negócio é bloqueada na primeira manhã.
+
+## Perfis
+
+Um **perfil** agrupa quais motores estão ativos, em que modo, com que sensibilidade, e é aplicado a gateways pela política de prevenção de ameaças.
+
+Perfis de fábrica cobrem as intenções comuns — um permissivo favorecendo disponibilidade, um equilibrado, e um estrito favorecendo segurança. Clonar um e ajustar é o ponto de partida normal.
+
+Populações diferentes justificam perfis diferentes, e é aqui que o recurso ganha seu lugar: um perfil para servidores, onde o tráfego é previsível e a rigidez é acessível, e um perfil para tráfego geral de usuários, onde não é.
+
+O **Autonomous Threat Prevention** é a abordagem mais recente, em que a Check Point mantém a configuração conforme uma postura declarada, em vez de exigir ajuste por motor. Troca controle granular por permanecer atual, e para a maioria das implantações essa é a troca melhor, porque um perfil ajustado à mão três anos atrás não é a proteção que as pessoas pensam que é.
+
+## O que custa
+
+A prevenção de ameaças inspeciona conteúdo, então consome recursos de um jeito que o controle de acesso não consome. A emulação em particular leva tempo real.
+
+As consequências a planejar:
+
+**A vazão cai.** Um gateway dimensionado para vazão de firewall não está dimensionado para prevenção de ameaças completa sobre o mesmo tráfego.
+
+**A emulação acrescenta latência**, e a decisão de projeto é o que fazer enquanto se espera: reter o arquivo e atrasar o usuário, ou entregar e retirar num veredito ruim. As duas são defensáveis; nenhuma é de graça.
+
+**Tráfego criptografado é invisível sem inspeção.** Tudo isso depende do HTTPS Inspection para a maior parte do tráfego, e é por isso que aquele recurso e este são efetivamente um projeto só.
+
+## O que quem vai prestar o CCSA precisa saber de cor
+
+O IPS cobre exploração de vulnerabilidades conhecidas, o antivírus arquivos maliciosos conhecidos, o Anti-Bot hosts infectados comunicando com comando e controle, o Threat Emulation arquivos desconhecidos num sandbox, e o Threat Extraction remove conteúdo ativo entregando um documento limpo de imediato. Todo motor roda em Detectar ou Prevenir, e Detectar registra enquanto o tráfego segue, então um perfil deixado em Detectar produz um registro completo de ataques bem-sucedidos. Implante em Detectar, ajuste falsos positivos, e então passe para Prevenir. Perfis agrupam motores, modos e sensibilidade e são aplicados pela política de prevenção de ameaças. A prevenção de ameaças custa vazão e, na emulação, latência, e depende do HTTPS Inspection para enxergar tráfego criptografado.

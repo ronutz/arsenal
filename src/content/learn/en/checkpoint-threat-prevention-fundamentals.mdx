@@ -1,0 +1,67 @@
+---
+slug: checkpoint-threat-prevention-fundamentals
+title: "Check Point Threat Prevention: The Blades, Profiles, and Prevent Versus Detect"
+summary: "Threat Prevention is several engines under one policy, each catching a different stage of an attack. The setting that matters most is not which engines are on but whether each is preventing or only detecting, because that single choice decides whether you have protection or a report."
+concepts: ["check point", "ccsa", "threat prevention", "ips", "anti-bot", "anti-virus", "threat emulation", "threat extraction", "profile", "prevent", "detect", "autonomous threat prevention"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-https-inspection-and-web-control", "fortigate-security-profiles-flow-vs-proxy"]
+category: security
+order: 107
+status: reviewed
+updated: "2026-07-26"
+---
+
+Access control decides whether a connection is allowed. Threat Prevention decides whether what is inside it is safe, and it does so with several engines that address different moments in an attack.
+
+## The engines and what each is for
+
+**IPS** inspects traffic for exploitation of known vulnerabilities. It is the engine that stops an attack against a service you have not patched, which is most of the reason it exists.
+
+**Anti-Virus** identifies known malicious files in transit.
+
+**Anti-Bot** works from the other direction. It does not try to stop the infection; it detects a host that is already infected by recognising its communication with command-and-control infrastructure. That makes it the engine that tells you something already got in, which is a different and unwelcome kind of useful.
+
+**Threat Emulation** runs unknown files in a sandbox and observes what they do, which is how a file with no signature gets a verdict. The cost is time.
+
+**Threat Extraction** takes the opposite approach: rather than deciding whether a document is malicious, it removes the active content and delivers a clean version immediately. It is decisive where emulation is thorough, and the two are frequently deployed together — extraction delivers a safe copy at once while emulation reaches a verdict on the original.
+
+The division worth holding: IPS and Anti-Virus catch what is known, Emulation handles what is unknown, Extraction sidesteps the question, and Anti-Bot assumes the others have already failed.
+
+## Prevent and Detect
+
+Every engine acts in one of two modes, and this is the setting that decides whether the deployment protects anything.
+
+**Detect** identifies and logs. Traffic proceeds.
+
+**Prevent** blocks.
+
+A profile in Detect produces an accurate, complete, entirely inert record of attacks that succeeded. That is genuinely valuable during a rollout and worthless as a permanent state, and the failure mode is that nobody notices the difference — the dashboards look identical, because the events are the same events.
+
+The sequence that works is to deploy in Detect, run long enough to see the false positives your environment produces, tune those, then move to Prevent. Skipping the middle step is how a business application gets blocked on the first morning.
+
+## Profiles
+
+A **profile** bundles which engines are active, in which mode, with what sensitivity, and is applied to gateways through the Threat Prevention policy.
+
+Shipped profiles cover the common intents — a permissive one favouring availability, a balanced one, and a strict one favouring security. Cloning one and adjusting is the normal starting point.
+
+Different populations justify different profiles, and this is where the feature earns its place: a profile for servers, where traffic is predictable and strictness is affordable, and a profile for general user traffic, where it is not.
+
+**Autonomous Threat Prevention** is the more recent approach, where Check Point maintains the configuration according to a stated posture rather than requiring per-engine tuning. It trades granular control for keeping current, and for most deployments that is the better trade, because a hand-tuned profile from three years ago is not the protection anyone thinks it is.
+
+## What it costs
+
+Threat Prevention inspects content, so it consumes resources in a way access control does not. Emulation in particular takes real time.
+
+The consequences to plan for:
+
+**Throughput drops.** A gateway sized for firewall throughput is not sized for full threat prevention on the same traffic.
+
+**Emulation adds latency**, and the design decision is what to do while waiting: hold the file and delay the user, or deliver and retract on a bad verdict. Both are defensible; neither is free.
+
+**Encrypted traffic is invisible without inspection.** All of this depends on HTTPS Inspection for the majority of traffic, which is why that feature and this one are effectively one project.
+
+## What a CCSA candidate should be able to state cold
+
+IPS covers exploitation of known vulnerabilities, Anti-Virus known malicious files, Anti-Bot infected hosts communicating with command and control, Threat Emulation unknown files in a sandbox, and Threat Extraction removes active content and delivers a clean document immediately. Every engine runs in Detect or Prevent, and Detect logs while traffic proceeds, so a profile left in Detect produces a complete record of successful attacks. Deploy in Detect, tune false positives, then move to Prevent. Profiles bundle engines, modes and sensitivity and are applied through the Threat Prevention policy. Threat Prevention costs throughput and, for emulation, latency, and it depends on HTTPS Inspection to see encrypted traffic at all.

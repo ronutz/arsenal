@@ -1,0 +1,66 @@
+---
+slug: checkpoint-management-high-availability
+title: "Check Point Management High Availability: Active, Standby, and Why Failover Is Manual"
+summary: "A second management server protects the database, not the traffic. Gateways keep enforcing whatever happens to management, so what you are buying is the ability to keep changing policy — and the synchronisation status is the thing that tells you whether you actually have it."
+concepts: ["check point", "ccse", "management high availability", "primary", "secondary", "active", "standby", "synchronization", "failover", "ica", "database"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-three-tier-architecture-and-smartconsole", "fortigate-fgcp-ha-clustering"]
+category: security
+order: 108
+status: reviewed
+updated: "2026-07-26"
+---
+
+Management high availability is easy to misread as a traffic-protection feature. It is not, and understanding what it actually protects sets expectations correctly.
+
+## What it protects, and what it does not
+
+A gateway enforces its installed policy whether or not any management server exists. Take the management server away entirely and traffic keeps flowing exactly as it was.
+
+So management HA protects the **ability to manage**: to change policy, to install it, to see logs if the management server is also the log server, and to keep the object database from being a single point of loss.
+
+That reframes the urgency. A failed management server is a serious problem for the security team and, on its own, not an outage for the business. Treating it as a fire is how people make mistakes during the recovery.
+
+## Primary, secondary, active and standby
+
+Two roles that are easy to conflate:
+
+**Primary and secondary** describe how the servers were installed. The primary is the one built first, and it is where the **Internal Certificate Authority** lives — the ICA does not move, which matters when you plan for the primary's loss.
+
+**Active and standby** describe what each server is doing now. Only one is active at a time, and only the active one accepts policy changes.
+
+The standby holds a synchronised copy of the database. It is not a second place to work: connecting SmartConsole to a standby gives you a read-only view, which is a design decision rather than a limitation, because two writable copies would diverge.
+
+## Synchronisation
+
+The active server replicates its database to the standby. Sync can run on a schedule, on publish, or be triggered manually.
+
+The status field is the one to actually look at, and the values mean genuinely different things:
+
+- **Synchronised** — the copies agree. This is the only state that means you have HA.
+- **Lagging** — the standby is behind. Recoverable by syncing, and worth knowing why it happened.
+- **Collision** — both were changed independently and the databases have diverged. Someone must decide which copy wins, and the other's changes are lost.
+- **Never been synchronised** — configured but never actually replicated, which is HA that exists on paper only.
+
+Collision is the state worth designing against, and it arises from exactly the scenario people improvise during an incident: promoting the standby while the primary is still reachable and being edited.
+
+## Failover is deliberate
+
+Check Point does not fail management over automatically, and the reason is sound. An automatic failover between two servers that can both write to a database is how you get a split brain, and a split-brain management database is a worse problem than an unavailable one.
+
+So promotion is an administrator action: you make the standby active, having established that the old active is genuinely gone or will stay out of service.
+
+The consequence to plan for is that **the ICA remains on the primary**. Losing the primary permanently is not just a promotion; it involves ICA recovery, and that is a procedure to have read before you need it rather than during.
+
+## What to verify, and when
+
+**Regularly, not during an incident:** that the status says Synchronised, that the standby has current data, and that someone other than you knows the promotion procedure.
+
+**During a change:** that sync completed after a significant publish, because a standby lagging by a week is a standby that will restore last week's policy.
+
+**In a test:** an actual promotion, in a maintenance window, once. An untested failover plan is a belief rather than a capability, and this is the sort of procedure where the first attempt reveals which step nobody documented.
+
+## What a CCSE candidate should be able to state cold
+
+Management HA protects the ability to manage, not traffic: gateways enforce their installed policy regardless. Primary and secondary describe installation, active and standby describe current role, and only the active accepts changes while a standby gives a read-only view. The ICA lives on the primary and does not move. Synchronisation status matters: Synchronised means HA exists, Lagging is recoverable, Collision means the databases diverged and one side's changes will be lost, and Never been synchronised means HA on paper only. Failover is manual by design, because automatic promotion between two writable databases invites split brain.

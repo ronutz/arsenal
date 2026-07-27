@@ -1,8 +1,10 @@
 // ============================================================================
 // src/content/vendors/profiles/zscaler.ts
 // ----------------------------------------------------------------------------
-// ZSCALER - the newest chapter. AUTHORIZATION UPDATE (PRIME 2026-07-15):
-// Rodolfo is cleared as an authorized Zscaler instructor; the hub is open
+// ZSCALER - the newest chapter. AUTHORIZATION (PRIME 2026-07-26, SUPERSEDES
+// 2026-07-15): NO authorized-instructor claim is made for Zscaler. Same
+// treatment as Check Point: the hub is study material, not a delivery claim.
+// The hub is open
 // (JA3/JA4 tools carry the zscaler tag) and the i18n narrative states the
 // authorization (the earlier disclaimer is retired). Sixth vendor in the
 // teaching portfolio.
@@ -39,7 +41,7 @@ export const zscalerProfile: VendorProfile = {
     { year: 2024, title: "Data fabric and single-vendor SASE", detail: "January brings Zero Trust SASE on the company's SSE platform; March adds Avalor's Data Fabric for Security (a reported $310 million) and April the agentless segmentation of Airgap Networks - the analytics and east-west pieces.", sourceNote: "Zscaler 8-K FY2024; Avalor figure per press reporting." },
     { year: 2025, title: "Red Canary and the AI SOC", detail: "August 1, 2025: Zscaler completes the acquisition of MDR leader Red Canary, pairing its agentic detection-and-response expertise with the Zero Trust Exchange's telemetry; with the SPLX deal it totals $692 million in consideration - the stated ambition is the AI-powered SOC.", sourceNote: "Zscaler press release; 8-K FY2026 Q1 aggregate figure." },
     { year: 2026, title: "Scale as the moat", detail: "Protecting roughly 45 percent of the Fortune 500 and inspecting over 500 billion transactions daily, Zscaler's argument is now less about the idea - everyone concedes it - and more about who operates the biggest, smartest enforcement cloud." },
-    { year: 2026, personal: true, title: "Rodolfo's chapter", detail: "Cleared as an authorized Zscaler instructor in 2026 - the sixth vendor in the teaching portfolio, delivered through Red Education." },
+    { year: 2026, personal: true, title: "Rodolfo's chapter", detail: "The zero-trust chapter opening in 2026 - the segment where the perimeter stops being a place and becomes a decision made per session." },
   ],
   products: [
     { name: "Zscaler Internet Access (ZIA)", what: "The founding product: cloud-delivered secure web gateway, firewall, sandbox, and DLP between users and the internet." },

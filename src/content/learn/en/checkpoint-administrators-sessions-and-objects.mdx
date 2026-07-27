@@ -1,0 +1,71 @@
+---
+slug: checkpoint-administrators-sessions-and-objects
+title: "Check Point Administrators, Sessions, and Objects: Publish Is Not Install"
+summary: "Check Point gives every administrator a private working session, so your changes are invisible to colleagues until you publish and inert on the gateway until you install. Those are two separate actions and confusing them is the most common early mistake on the platform."
+concepts: ["check point", "ccsa", "smartconsole", "administrator", "permission profile", "session", "publish", "install policy", "objects", "network object", "service object"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-three-tier-architecture-and-smartconsole", "fortimanager-policy-packages-and-installs"]
+category: security
+order: 101
+status: reviewed
+updated: "2026-07-26"
+---
+
+Two administrators can work on the same policy at the same time without overwriting each other. The mechanism that makes that safe is the session, and it is also what makes the platform confusing for the first week.
+
+## Publish and install are different actions
+
+This is the single most important thing to get right, and it is worth stating plainly.
+
+**Publish** writes your session's changes into the management database and makes them visible to other administrators. Nothing reaches any gateway.
+
+**Install policy** compiles the database into a policy and pushes it to the selected gateways. This is when traffic handling actually changes.
+
+So a change goes through three states: **private** to your session, **published** to the database, and **installed** on the gateway. A rule you wrote and published but did not install is doing nothing at all, and everything about SmartConsole will look correct while it does nothing.
+
+The corollary matters too: **installing policy installs the published database**, not your unpublished session. If you install without publishing, your own changes are not in what you just pushed.
+
+## Sessions
+
+Every administrator's changes accumulate in a session. Until published, they are private, which is what lets two people work simultaneously.
+
+**Locking** prevents conflicts: when you modify an object, it is locked to your session, and another administrator sees it as locked and cannot change it until you publish or discard.
+
+That produces the situation everyone meets eventually — a colleague has an object locked and has gone home. An administrator with sufficient permissions can **take over** the session, which is the documented resolution rather than a workaround.
+
+**Discard** throws away a session's changes. It is the undo for work you have not published, and it is complete: everything since the last publish goes.
+
+The habit worth building is to publish in small, coherent units with a meaningful description. The session description becomes the audit record, and "changes" tells nobody anything six months later.
+
+## Administrators and permission profiles
+
+Administrator accounts authenticate to the management server. What they may do is governed by a **permission profile**, which is a separate object assigned to the account.
+
+The distinction is the useful part: profiles are reusable, so "read-only auditor" is defined once and assigned to many people, and changing the profile changes everyone's access at once.
+
+Profiles can be scoped by what may be done — read, write, or nothing — across the platform's areas: access control policy, threat prevention, logs, and management settings. A common and sensible arrangement gives auditors read on everything and write on nothing, gives a service desk read on logs only, and reserves policy write for the team that owns it.
+
+The design mistake to avoid is the one every platform invites: granting broad profiles during a rollout and intending to narrow them later.
+
+## Objects
+
+A rule cannot reference an address directly. It references an **object**, and the object holds the address. That indirection is the whole point: change the object and every rule using it changes with it.
+
+The types you meet immediately:
+
+**Network objects** — a host, a network, an address range, or a group of those. Groups are how a rule stays readable when it covers twenty subnets.
+
+**Service objects** — TCP, UDP, ICMP and others, defined by port and protocol, plus service groups.
+
+**Gateways and servers** — the managed devices themselves, which are objects too, and which is why a rule can reference the gateway.
+
+**Application and URL objects**, which the access control policy uses to match on what the traffic *is* rather than which port it uses.
+
+Two habits pay off quickly. **Name objects for what they are**, not what they were for: `Srv-Web-DMZ` survives a project ending in a way `ProjectApollo` does not. And **check whether an object exists before creating one**, because duplicate objects for the same address are how a rule base becomes impossible to reason about.
+
+An object in use cannot be deleted, which is a protection rather than an obstacle. **Where Used** answers what depends on it, and reading that before changing an object prevents the class of accident where a shared object is edited for one purpose and quietly changes ten rules.
+
+## What a CCSA candidate should be able to state cold
+
+Publish writes a session's changes to the management database and makes them visible to other administrators; install policy pushes the published database to gateways and is when traffic handling changes. A change is private, then published, then installed, and stopping early means nothing happens. Objects are modified under a session lock, another administrator can take over a stranded session, and discard reverts everything since the last publish. Permission profiles are reusable objects assigned to administrator accounts. Rules reference objects rather than addresses, an object in use cannot be deleted, and Where Used answers what a change will affect.

@@ -853,6 +853,9 @@
       "note2": "Queste sono le date programmate. F5 emette inoltre in qualsiasi momento avvisi di sicurezza fuori banda ed engineering hotfix per problemi urgenti, e mantiene flessibilità sui tempi delle notifiche.",
       "learnMore": "Nuovo a questo cambiamento?",
       "learnLink": "Leggi cosa è cambiato e perché"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {

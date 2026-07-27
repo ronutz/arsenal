@@ -853,6 +853,9 @@
       "note2": "Detta är de planerade datumen. F5 skickar även när som helst säkerhetsvarningar utanför schemat och engineering-hotfixar för brådskande problem, och behåller flexibilitet att justera tidpunkten för aviseringar.",
       "learnMore": "Ny med den här ändringen?",
       "learnLink": "Läs vad som ändrades och varför"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {

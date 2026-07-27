@@ -52,7 +52,7 @@
     },
     "credibility": {
       "title": "Built by someone who has done the work since 1996.",
-      "body": "Thirty years in enterprise networking and security, delivered as a working instructor rather than a marketing page. Authorized across every vendor taught here, so the comparisons are made honestly, not sold.",
+      "body": "Thirty years in enterprise networking and security, delivered as a working instructor rather than a marketing page. The comparisons here are made honestly, not sold.",
       "aboutCta": "More about who builds this"
     },
     "pillars": {
@@ -3507,7 +3507,8 @@
       "netskope": "Netskope",
       "extreme": "Extreme Networks",
       "zscaler": "Zscaler",
-      "ping": "Ping Identity"
+      "ping": "Ping Identity",
+      "checkpoint": "Check Point"
     },
     "x509": {
       "name": "X.509 Certificate Decoder",

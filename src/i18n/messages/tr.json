@@ -853,6 +853,9 @@
       "note2": "Bunlar planlanan tarihlerdir. F5 ayrıca acil sorunlar için her an plan dışı güvenlik uyarıları ve mühendislik düzeltmeleri (hotfix) yayımlar ve bildirim zamanlamasını ayarlama esnekliğini korur.",
       "learnMore": "Bu değişiklikte yeni misiniz?",
       "learnLink": "Neyin neden değiştiğini okuyun"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {

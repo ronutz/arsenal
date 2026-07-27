@@ -1,0 +1,75 @@
+---
+slug: checkpoint-security-policy-and-rule-base
+title: "A base de regras da Check Point: ordem, regras implícitas e as regras que todo mundo esquece"
+summary: "Uma base de regras Check Point é avaliada de cima para baixo, a primeira correspondência vence, e termina num descarte implícito que não registra nada. Duas regras convencionais existem para corrigir o que isso deixa você sem enxergar, e saber por que elas existem é mais útil que saber seus nomes."
+concepts: ["check point", "ccsa", "base de regras", "política de segurança", "primeira correspondência", "regras implícitas", "stealth rule", "cleanup rule", "track", "instalar política", "nat"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-administrators-sessions-and-objects", "fortigate-firewall-policy-and-nat"]
+category: security
+order: 102
+status: reviewed
+updated: "2026-07-26"
+---
+
+A base de regras é a parte da Check Point que mais se parece com todo outro firewall, e é justamente por isso que seus comportamentos específicos pegam as pessoas.
+
+## Do que uma regra é feita
+
+Cada regra carrega, na ordem de quanto importam: **Source**, **Destination**, **Services & Applications**, **Action**, **Track** e **Install On**, mais os campos VPN, Content, Time e Comment.
+
+Dois deles merecem mais atenção do que costumam receber.
+
+O **Track** decide se algo é registrado. Uma regra com None deixa o tráfego passar ou o descarta sem deixar evidência. Toda investigação que começa com "não tem nada nos logs" termina aqui mais vezes do que termina em qualquer outro lugar.
+
+O **Install On** delimita uma regra a gateways específicos. Num ambiente de gateway único é invisível; num de múltiplos gateways é como uma base de regras atende vários sites sem que toda regra se aplique em toda parte.
+
+## Avaliação
+
+As regras são avaliadas **de cima para baixo, e a primeira correspondência vence.** Nada abaixo de uma regra que casou é consultado.
+
+Isso produz o mesmo problema de encobrimento que toda política ordenada tem: uma regra ampla acima de uma específica torna a específica inalcançável. A verificação de política da Check Point pega algumas dessas, e ler a base de regras como um documento — geral embaixo, específico em cima — evita mais.
+
+A convenção de ordenação que funciona é a conhecida: mais específico primeiro, exceções acima das regras que excetuam, permissões amplas embaixo, e uma regra final explícita.
+
+## O descarte implícito, e por que se acrescenta um explícito
+
+Se o tráfego não casa com regra alguma, ele é descartado. Esse comportamento é embutido e **não é registrado**.
+
+É por isso que as implantações acrescentam uma **cleanup rule** explícita como última regra: qualquer origem, qualquer destino, qualquer serviço, ação Drop, track Log. Não muda nada sobre qual tráfego é permitido — o descarte implícito o teria descartado de todo jeito — e muda tudo sobre visibilidade, porque agora você consegue ver o que está sendo descartado.
+
+Um firewall sem cleanup rule é um firewall em que "a conexão simplesmente falha e nada aparece nos logs" é o comportamento esperado, e não um defeito. Essa única regra é a diferença entre uma política que você consegue investigar e uma que não.
+
+## A stealth rule
+
+A **stealth rule** bloqueia tráfego endereçado ao próprio gateway vindo de qualquer lugar de onde ele não deva ser administrado, e fica perto do topo, acima das regras que permitem tráfego geral.
+
+O raciocínio é que o gateway é um host com endereços, então sem uma regra sobre ele, regras amplas de permissão podem admitir conexões até ele. A stealth rule torna o gateway invisível a todos que não têm o que fazer conectando nele.
+
+O detalhe de ordenação que importa: ela vai **abaixo** das regras que legitimamente permitem acesso de gerência, e **acima** de todo o resto. Coloque-a acima das regras de gerência e você se trancou do lado de fora — um erro genuinamente comum de primeiro dia e bastante instrutivo.
+
+## Regras implícitas
+
+A Check Point gera **regras implícitas** automaticamente para permitir o tráfego de controle de que a própria plataforma precisa: comunicação entre gateway e gerência, SIC, licenciamento, e afins.
+
+Três coisas a saber:
+
+São configuradas em **Global Properties**, e não na base de regras, então não aparecem como regras que você possa editar individualmente.
+
+Cada uma pode ser posicionada **primeiro, por último, ou antes da última** em relação às suas regras, e o posicionamento importa porque a avaliação por primeira correspondência vale para elas também.
+
+**Não são registradas por padrão**, o que significa que o tráfego pode ser permitido por uma regra que você não consegue ver e não vai encontrar nos logs. Habilitar o registro de regras implícitas durante uma investigação é o passo que resolve "isto está sendo permitido e não acho qual regra permite".
+
+## Instalar a política
+
+A instalação compila o banco de dados numa política e a envia aos gateways selecionados.
+
+A **verificação** roda antes e pega problemas estruturais: regras conflitantes, objetos que não podem ser resolvidos. Vale ler em vez de clicar adiante, porque é mais barato que a alternativa.
+
+A instalação é **atômica por gateway**: ou tem sucesso e a nova política é aplicada, ou falha e a política anterior continua. Um gateway não termina meio configurado, o que é uma propriedade genuinamente tranquilizadora durante uma janela de mudança.
+
+Se a instalação falha, a mensagem nomeia a razão, e as causas comuns são um conjunto pequeno: SIC quebrado, gateway inalcançável, divergência de versão entre gateway e gerência, ou um objeto que não pode ser resolvido para aquele gateway.
+
+## O que quem vai prestar o CCSA precisa saber de cor
+
+Regras carregam origem, destino, serviços e aplicações, ação, track e install-on; Track com None significa que a regra não deixa evidência. A avaliação é de cima para baixo, primeira correspondência vence. Tráfego sem correspondência é descartado implicitamente e **não é registrado**, e é por isso que se acrescenta uma cleanup rule explícita com Drop e Log ao final. A stealth rule protege o próprio gateway e pertence acima das regras de tráfego geral, porém abaixo do acesso legítimo de gerência. Regras implícitas são geradas a partir das Global Properties, podem ser posicionadas primeiro, por último ou antes da última, e não são registradas por padrão. A instalação de política verifica antes e é atômica por gateway: em caso de falha, a política anterior continua rodando.

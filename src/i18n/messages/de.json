@@ -853,6 +853,9 @@
       "note2": "Dies sind die geplanten Termine. F5 gibt außerdem jederzeit außerplanmäßige Sicherheitswarnungen und Engineering-Hotfixes für dringende Probleme heraus und behält sich Flexibilität beim Zeitpunkt der Hinweise vor.",
       "learnMore": "Neu bei dieser Änderung?",
       "learnLink": "Lesen Sie, was sich geändert hat und warum"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {

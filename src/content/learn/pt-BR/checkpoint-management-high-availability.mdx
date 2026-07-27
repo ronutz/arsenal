@@ -1,0 +1,66 @@
+---
+slug: checkpoint-management-high-availability
+title: "Alta disponibilidade de gerência na Check Point: ativo, standby, e por que o failover é manual"
+summary: "Um segundo servidor de gerência protege o banco de dados, e não o tráfego. Os gateways continuam aplicando a política aconteça o que acontecer com a gerência, então o que você está comprando é a capacidade de continuar mudando a política — e o estado de sincronização é o que diz se você de fato a tem."
+concepts: ["check point", "ccse", "alta disponibilidade de gerência", "primário", "secundário", "ativo", "standby", "sincronização", "failover", "ica", "banco de dados"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-three-tier-architecture-and-smartconsole", "fortigate-fgcp-ha-clustering"]
+category: security
+order: 108
+status: reviewed
+updated: "2026-07-26"
+---
+
+A alta disponibilidade de gerência é fácil de ler errado como recurso de proteção de tráfego. Não é, e entender o que ela de fato protege ajusta as expectativas corretamente.
+
+## O que ela protege, e o que não protege
+
+Um gateway aplica sua política instalada exista ou não um servidor de gerência. Tire o servidor de gerência por completo e o tráfego continua fluindo exatamente como estava.
+
+Então a HA de gerência protege a **capacidade de gerenciar**: mudar a política, instalá-la, ver logs se o servidor de gerência também for o servidor de logs, e evitar que o banco de objetos seja um ponto único de perda.
+
+Isso reenquadra a urgência. Um servidor de gerência falho é um problema sério para o time de segurança e, por si só, não é uma indisponibilidade para o negócio. Tratá-lo como incêndio é como as pessoas cometem erros durante a recuperação.
+
+## Primário, secundário, ativo e standby
+
+Dois papéis fáceis de confundir:
+
+**Primário e secundário** descrevem como os servidores foram instalados. O primário é o construído primeiro, e é onde vive a **Internal Certificate Authority** — a ICA não se move, o que importa ao planejar a perda do primário.
+
+**Ativo e standby** descrevem o que cada servidor está fazendo agora. Só um é ativo por vez, e só o ativo aceita mudanças de política.
+
+O standby mantém uma cópia sincronizada do banco. Não é um segundo lugar para trabalhar: conectar o SmartConsole a um standby dá uma visão somente leitura, o que é decisão de projeto, e não limitação, porque duas cópias graváveis divergiriam.
+
+## Sincronização
+
+O servidor ativo replica seu banco para o standby. A sincronização pode rodar em agenda, na publicação, ou ser disparada manualmente.
+
+O campo de estado é o que de fato se deve olhar, e os valores significam coisas genuinamente diferentes:
+
+- **Sincronizado** — as cópias concordam. É o único estado que significa que você tem HA.
+- **Atrasado** — o standby está para trás. Recuperável sincronizando, e vale saber por que aconteceu.
+- **Colisão** — os dois foram alterados de forma independente e os bancos divergiram. Alguém precisa decidir qual cópia vence, e as mudanças da outra se perdem.
+- **Nunca sincronizado** — configurado e jamais replicado, que é HA existindo só no papel.
+
+Colisão é o estado contra o qual vale projetar, e surge exatamente do cenário que as pessoas improvisam durante um incidente: promover o standby enquanto o primário ainda está alcançável e sendo editado.
+
+## O failover é deliberado
+
+A Check Point não faz failover automático da gerência, e a razão é sólida. Um failover automático entre dois servidores que ambos podem gravar num banco é como se obtém um split brain, e um banco de gerência em split brain é um problema pior que um indisponível.
+
+Então a promoção é ação de administrador: você torna o standby ativo, tendo estabelecido que o antigo ativo está genuinamente fora ou permanecerá fora de serviço.
+
+A consequência a planejar é que **a ICA permanece no primário**. Perder o primário em definitivo não é apenas uma promoção; envolve recuperação da ICA, e esse é um procedimento para ler antes de precisar dele, e não durante.
+
+## O que verificar, e quando
+
+**Com regularidade, e não durante um incidente:** que o estado diz Sincronizado, que o standby tem dados atuais, e que alguém além de você conhece o procedimento de promoção.
+
+**Durante uma mudança:** que a sincronização terminou depois de uma publicação significativa, porque um standby atrasado em uma semana é um standby que vai restaurar a política da semana passada.
+
+**Num teste:** uma promoção real, numa janela de manutenção, uma vez. Um plano de failover não testado é uma crença, e não uma capacidade, e este é o tipo de procedimento em que a primeira tentativa revela qual passo ninguém documentou.
+
+## O que quem vai prestar o CCSE precisa saber de cor
+
+A HA de gerência protege a capacidade de gerenciar, e não o tráfego: os gateways aplicam sua política instalada de todo jeito. Primário e secundário descrevem a instalação, ativo e standby o papel atual, e só o ativo aceita mudanças enquanto um standby dá visão somente leitura. A ICA vive no primário e não se move. O estado de sincronização importa: Sincronizado significa que a HA existe, Atrasado é recuperável, Colisão significa que os bancos divergiram e as mudanças de um lado se perderão, e Nunca sincronizado é HA no papel. O failover é manual por projeto, porque promoção automática entre dois bancos graváveis convida ao split brain.

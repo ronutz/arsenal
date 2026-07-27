@@ -1,0 +1,63 @@
+---
+slug: checkpoint-policy-layers-ordered-and-inline
+title: "Camadas de política na Check Point: ordenadas, inline e compartilhadas"
+summary: "Camadas permitem que uma base de regras seja várias. O tráfego precisa ser aceito por toda camada ordenada para passar, uma camada inline é uma subpolítica pendurada numa única regra, e uma camada compartilhada é uma política reutilizada entre pacotes. A semântica do aceite é o que as pessoas erram."
+concepts: ["check point", "ccsa", "camada de política", "camada ordenada", "camada inline", "camada compartilhada", "subpolítica", "base de regras", "controle de acesso", "modularidade"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-security-policy-and-rule-base", "checkpoint-application-control-and-url-filtering"]
+category: security
+order: 103
+status: reviewed
+updated: "2026-07-26"
+---
+
+Uma base de regras plana deixa de escalar por duas razões: fica longa o bastante para ninguém conseguir raciocinar sobre ela, e times diferentes precisam ser donos de partes diferentes. Camadas endereçam as duas.
+
+## Camadas ordenadas
+
+Uma **camada ordenada** é uma base de regras pela qual o tráfego passa em sequência. Uma conexão é avaliada contra a primeira camada; se aceita, passa à seguinte; e precisa ser **aceita por todas as camadas** para ser permitida.
+
+Essa é a semântica que vale memorizar, porque inverte a intuição que as pessoas trazem de bases planas:
+
+- **Aceitar numa camada** não significa que o tráfego está permitido. Significa que o tráfego segue para a próxima camada.
+- **Descartar em qualquer camada** encerra. Camada alguma posterior é consultada.
+- O tráfego só é permitido quando a **última** camada o aceita.
+
+Então camadas são um E, e não um OU. Um arranjo comum põe uma camada de rede grosseira primeiro, do time de redes, e uma camada de aplicação granular depois, do time de segurança. O tráfego que a camada de rede recusa jamais alcança a camada de aplicação, que é tanto o argumento de eficiência quanto o de delegação.
+
+A consequência a planejar é que **uma permissão numa camada inicial não sobrepõe um descarte numa posterior**. Se você quer uma exceção, ela pertence à camada que de outro modo negaria.
+
+## Camadas inline
+
+Uma **camada inline** é uma subpolítica anexada a uma única regra. A condição da regra pai age como portão: se o tráfego casa com ela, a avaliação continua dentro da subpolítica; se não casa, a subpolítica é inteiramente pulada.
+
+O valor é a delimitação. Uma camada inline de DMZ sob uma regra que casa destinos da DMZ significa que toda regra de DMZ vive junta, é avaliada apenas para tráfego de DMZ, e pode ser entregue a quem for dono da DMZ.
+
+Dois comportamentos a precisar:
+
+**A regra pai é um filtro, não uma decisão.** Tráfego que não casa com o pai jamais vê a subpolítica.
+
+**Uma camada inline precisa da própria regra final.** Se o tráfego casa com o pai mas com nada dentro da subpolítica, o que acontece é governado pela última regra da própria subpolítica. Deixar isso implícito é como o tráfego acaba descartado por uma camada que ninguém lembra ter escrito.
+
+## Camadas compartilhadas
+
+Uma **camada compartilhada** é uma camada usada por mais de um pacote de políticas. Edite uma vez e todo pacote que a usa muda.
+
+É exatamente o que se quer para uma linha de base corporativa aplicada em toda parte, e exatamente com o que se deve ter cuidado, porque uma mudança feita para o benefício de um site cai em todos os sites que compartilham a camada. A disciplina é manter camadas compartilhadas genuinamente universais e empurrar qualquer coisa específica de site para uma camada que não seja compartilhada.
+
+## Ler o tráfego pelas camadas
+
+Quando uma conexão se comporta de forma inesperada, a pergunta não é "qual regra casou", e sim "qual regra em qual camada casou", e a entrada de log diz as duas coisas.
+
+A ordem de diagnóstico que funciona:
+
+1. **Foi descartado, e em qual camada?** Um descarte na primeira camada torna as camadas seguintes irrelevantes, por mais cuidadosamente que tenham sido escritas.
+2. **Se foi aceito em todas e ainda assim falhou**, o firewall não é o problema — olhe roteamento, NAT, ou o destino.
+3. **Se uma camada inline estava envolvida**, verifique se a regra pai casou, porque uma subpolítica em que nunca se entrou parece idêntica a uma cujas regras não casaram.
+
+Esse terceiro caso é o que mais desperdiça tempo, e distingui-lo leva um olhar na regra pai.
+
+## O que quem vai prestar o CCSA precisa saber de cor
+
+Camadas ordenadas são avaliadas em sequência e o tráfego precisa ser aceito por **todas** para passar, então aceitar significa seguir para a próxima camada e descartar em qualquer uma encerra a avaliação. Uma permissão numa camada inicial não sobrepõe um descarte posterior. Uma camada inline é uma subpolítica sob uma regra, cuja condição controla a entrada; tráfego que não casa com o pai pula a subpolítica inteira, e a subpolítica precisa da própria regra final. Camadas compartilhadas são reutilizadas entre pacotes, então uma mudança afeta todo pacote que as usa. Ao investigar, identifique qual camada descartou o tráfego antes de examinar regra alguma.

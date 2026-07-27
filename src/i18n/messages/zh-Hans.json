@@ -853,6 +853,9 @@
       "note2": "这些是计划日期。F5 仍会随时针对紧急问题发布计划外安全警报和工程热修复，并保留调整通告时间的灵活性。",
       "learnMore": "初次了解此变更？",
       "learnLink": "阅读变更内容及原因"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {

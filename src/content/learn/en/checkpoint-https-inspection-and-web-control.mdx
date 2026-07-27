@@ -1,0 +1,67 @@
+---
+slug: checkpoint-https-inspection-and-web-control
+title: "Check Point HTTPS Inspection, Application Control, and URL Filtering"
+summary: "Most traffic is encrypted, so the controls that decide which applications and sites are permitted can only see what the handshake reveals unless the gateway decrypts. HTTPS Inspection is what makes the rest work fully, and it is also the feature most likely to break something on the day you enable it."
+concepts: ["check point", "ccsa", "https inspection", "outbound inspection", "inbound inspection", "certificate", "application control", "url filtering", "appwiki", "bypass", "categories"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-policy-layers-ordered-and-inline", "fortinet-ssl-inspection-modes"]
+category: security
+order: 106
+status: reviewed
+updated: "2026-07-26"
+---
+
+Application Control and URL Filtering answer what the traffic is and where it is going. HTTPS Inspection is what lets them answer fully rather than approximately, which is why the three belong in one discussion.
+
+## Why inspection is needed at all
+
+Without decryption, a gateway examining an HTTPS connection sees the destination address, the server name in the TLS handshake, and the certificate. That is enough to categorise many sites and enough for coarse application identification.
+
+It is not enough to see the URL path, the content, or anything the connection carries. So a policy that blocks a category can act on the name presented at connection time, and a policy that inspects files or applies data controls cannot act at all.
+
+**Outbound inspection** is the common case: users reaching the internet. The gateway terminates the client's TLS session, opens its own to the server, and inspects in between. Because it presents a certificate for a site it does not own, it signs one with its own CA — and every client must trust that CA or every site produces a warning.
+
+Distributing that CA certificate to managed devices is the deployment step, and unmanaged devices are the reason a rollout is never quite finished.
+
+**Inbound inspection** protects servers you own. The gateway holds the real server certificate and private key, so there is no trust problem and no client-side work.
+
+## What inspection breaks, and why bypass exists
+
+Certificate pinning is the honest obstacle. An application that pins expects a specific certificate and sees the gateway's instead, so it refuses to connect — correctly, from its own point of view. Banking apps, updaters and many mobile applications do this, and no amount of configuration on your side changes their behaviour.
+
+There is also a privacy and regulatory dimension. Decrypting an employee's banking or healthcare session is frequently not permitted, regardless of technical capability.
+
+Both point at the same mechanism: **bypass**, by category, by site, or by source. Bypassing banking and healthcare categories is standard practice and it is a deliberate blind spot rather than an oversight.
+
+The HTTPS Inspection policy is its own rule base, evaluated top-down, with actions to inspect or bypass. The ordering discipline is the familiar one: specific bypasses above the general inspect rule.
+
+## Application Control
+
+Application Control identifies applications by behaviour and signature rather than by port. That distinction is the point: an application that moves to a different port is still identified, and one that tunnels inside HTTPS is identified when inspection is available.
+
+The application database carries **categories** and **risk levels**, and rules can reference either. A rule permitting "Business Applications" and blocking "Anonymizers" is written once and stays current as the database updates — which is the reason to prefer categories over naming individual applications wherever the intent is categorical.
+
+**Custom applications** cover what the database does not know, typically internal systems.
+
+## URL Filtering
+
+URL Filtering categorises sites, and rules act on categories, on custom lists, or on specific sites.
+
+The two operational realities worth planning for:
+
+**Miscategorisation happens.** A site is in the wrong category, or a legitimate business tool sits in a blocked one. The process for handling that — an override, and a submission to the vendor — should exist before it is needed, because it will be needed during someone's urgent task.
+
+**Blocking produces support calls.** A block page that explains what happened and how to request an exception converts a support call into a form submission. A silent failure produces a ticket that starts with "the internet is broken".
+
+## How they combine in the policy
+
+Both are enforced through the Access Control policy, commonly in their own layer beneath a network layer. The layering semantics from the ordered-layer discussion apply unchanged: traffic must be accepted by the network layer before the application layer sees it.
+
+The rollout that avoids incidents is the same shape used everywhere in this collection. **Detect first**: enable identification and log, without blocking, long enough to see what your users actually do. The list will contain applications nobody knew were in use, and some of them will be load-bearing. Then block, starting with the categories nobody will argue about.
+
+Enabling a full application and URL policy in blocking mode on day one is how the feature gets disabled in week two.
+
+## What a CCSA candidate should be able to state cold
+
+Without decryption a gateway sees the destination, the handshake server name and the certificate, which supports categorisation but not content inspection. Outbound HTTPS Inspection re-signs with the gateway's CA, so every client must trust it; inbound inspection uses the real server certificate and needs no client trust. Certificate pinning and privacy obligations are why bypass by category or site is standard, and the HTTPS Inspection policy is its own top-down rule base. Application Control identifies by behaviour rather than port; prefer categories and risk levels over naming individual applications. Deploy in detect-and-log mode before blocking.

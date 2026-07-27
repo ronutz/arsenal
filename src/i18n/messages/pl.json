@@ -853,6 +853,9 @@
       "note2": "To są zaplanowane daty. F5 wydaje również w dowolnym momencie alerty bezpieczeństwa poza harmonogramem oraz poprawki inżynieryjne (hotfixy) dla pilnych problemów i zachowuje elastyczność w dostosowaniu terminów powiadomień.",
       "learnMore": "Nowość w tej zmianie?",
       "learnLink": "Przeczytaj, co się zmieniło i dlaczego"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {

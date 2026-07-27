@@ -853,6 +853,9 @@
       "note2": "Dit zijn de geplande data. F5 geeft ook op elk moment out-of-band beveiligingswaarschuwingen en engineering-hotfixes uit voor dringende problemen, en houdt flexibiliteit om de timing van meldingen aan te passen.",
       "learnMore": "Nieuw met deze wijziging?",
       "learnLink": "Lees wat er is veranderd en waarom"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {

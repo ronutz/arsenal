@@ -853,6 +853,9 @@
       "note2": "Ini ialah tarikh yang dijadualkan. F5 juga mengeluarkan amaran keselamatan luar jadual dan pembaikan kejuruteraan (hotfix) untuk isu mendesak pada bila-bila masa, dan mengekalkan fleksibiliti untuk melaraskan masa pemberitahuan.",
       "learnMore": "Baharu dengan perubahan ini?",
       "learnLink": "Baca apa yang berubah dan mengapa"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {

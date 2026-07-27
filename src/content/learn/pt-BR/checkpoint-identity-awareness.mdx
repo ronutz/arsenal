@@ -1,0 +1,72 @@
+---
+slug: checkpoint-identity-awareness
+title: "Identity Awareness na Check Point: escrever regras sobre pessoas em vez de endereços"
+summary: "O Identity Awareness permite que uma regra diga quem, e não onde. O gateway precisa aprender o mapeamento usuário-endereço de algum lugar, e a fonte escolhida decide com que rapidez as identidades aparecem, quão precisas permanecem, e o que acontece quando alguém troca de mesa."
+concepts: ["check point", "ccsa", "identity awareness", "access role", "identity collector", "ad query", "autenticação por navegador", "portal cativo", "identity agent", "compartilhamento de identidade"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-security-policy-and-rule-base", "fortigate-authentication-and-fsso"]
+category: security
+order: 105
+status: reviewed
+updated: "2026-07-26"
+---
+
+Uma regra que permite um endereço permite quem quer que esteja usando aquele endereço. Num ambiente com usuários móveis, máquinas compartilhadas e DHCP, essa é uma afirmação mais fraca do que parece, e o Identity Awareness é como ela se fortalece.
+
+## O problema que ele resolve
+
+O firewall vê endereços. A política normalmente quer falar de pessoas: este departamento alcança a aplicação financeira, terceiros não, administradores alcançam interfaces de gerência de qualquer lugar.
+
+O Identity Awareness fornece o mapeamento que falta — qual usuário está no momento em qual endereço — para que uma regra possa referenciar uma identidade e o gateway a resolva no momento da correspondência.
+
+## Access Roles
+
+Um **Access Role** é o objeto que a regra referencia. Ele pode combinar:
+
+- **Usuários ou grupos**, tipicamente do Active Directory.
+- **Máquinas**, para que uma regra possa exigir um computador corporativo, e não qualquer dispositivo de onde o usuário faça login.
+- **Localizações**, ou seja, as redes de onde a conexão parte.
+- **Clientes de acesso remoto**, quando aplicável.
+
+Como as condições se combinam, um Access Role consegue expressar "membro de Finanças, numa máquina do domínio, a partir da rede do escritório" como um único objeto. Essa combinação é onde o recurso ganha seu lugar: a identidade sozinha responde quem, e as condições de máquina e localização respondem se as circunstâncias estão certas.
+
+## De onde vêm as identidades
+
+Esta é a parte que determina se uma implantação funciona bem, e as opções trocam cobertura por intrusividade.
+
+O **Identity Collector** é a resposta usual num ambiente Windows. Um pequeno agente coletor roda num host Windows, assina os logs de eventos de segurança dos controladores de domínio, e encaminha eventos de login ao gateway. Escala bem porque o coletor é quem fala com os controladores, e o gateway recebe um fluxo em vez de consultar.
+
+O **AD Query** é o antecessor sem agente: o próprio gateway consulta os controladores de domínio por eventos de login. Não exige software adicional, que é seu apelo, e põe a carga de consulta no gateway.
+
+A **autenticação por navegador** apresenta um portal cativo. O usuário se autentica num navegador e o gateway aprende o mapeamento. Cobre qualquer um com navegador, incluindo dispositivos fora do domínio, e é intrusiva por natureza: o usuário percebe.
+
+O **Identity Agent** é software no endpoint que reporta o usuário logado diretamente. Dá o vínculo mais forte e exige implantação e manutenção.
+
+**Servidores de terminal** precisam de tratamento próprio, porque muitos usuários compartilham um endereço. Sem um mecanismo específico, todos num servidor de terminal aparecem como uma identidade, e as regras não conseguem distingui-los.
+
+A maioria das implantações reais combina fontes: um coletor para máquinas do domínio, e um portal para todo o resto.
+
+## Onde a identidade é aplicada
+
+O gateway precisa ter o Identity Awareness habilitado, a fonte de identidade configurada, e o Access Role usado na política. Faltar qualquer um dos três produz uma regra que nunca casa.
+
+A identidade também pode ser **compartilhada entre gateways**, para que um usuário identificado num gateway seja conhecido por outro sem reautenticar. Isso importa num ambiente com múltiplos gateways e é um passo de configuração, e não um padrão.
+
+## O que dá errado
+
+As falhas recorrentes, e como se parecem:
+
+**A regra nunca casa.** Geralmente a identidade não é conhecida pelo gateway. Verifique se o gateway vê o usuário antes de examinar a regra.
+
+**A identidade está obsoleta.** Um usuário deslogou ou se moveu, mas o mapeamento persiste até expirar. Uma máquina compartilhada amplifica isso: a identidade do usuário anterior pode ainda estar ligada ao endereço.
+
+**Usuários aparecem como desconhecidos.** A fonte de identidade não os cobre — um dispositivo fora do domínio, um sistema operacional não suportado, ou um login que o coletor nunca viu porque aconteceu antes de o coletor estar observando.
+
+**Todos num servidor de terminal parecem iguais.** O caso específico acima, e precisa da solução específica, e não de ajuste.
+
+A ordem de diagnóstico tem o mesmo formato de todo o resto da plataforma: confirme que o gateway conhece a identidade, então confirme que o Access Role a resolve, e então olhe a regra.
+
+## O que quem vai prestar o CCSA precisa saber de cor
+
+O Identity Awareness mapeia usuários a endereços para que uma regra possa referenciar uma identidade. Um Access Role combina usuários ou grupos, máquinas, localizações e clientes de acesso remoto num objeto. Fontes de identidade incluem o Identity Collector, que encaminha eventos de login de controladores de domínio e escala bem; o AD Query, sem agente e consultando a partir do gateway; a autenticação por navegador via portal cativo, que cobre dispositivos fora do domínio e é visível ao usuário; e o Identity Agent no endpoint. Servidores de terminal precisam de tratamento específico porque os usuários compartilham um endereço. Uma regra que nunca casa geralmente significa que o gateway não conhece a identidade, então verifique isso antes de examinar a regra.

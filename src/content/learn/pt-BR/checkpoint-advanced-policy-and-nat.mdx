@@ -1,0 +1,65 @@
+---
+slug: checkpoint-advanced-policy-and-nat
+title: "NAT na Check Point: automático contra manual, hide contra estático, e o proxy ARP"
+summary: "A Check Point consegue gerar regras de NAT a partir das propriedades do próprio objeto, ou deixar você escrevê-las, e os dois se comportam de formas que importam. A falha mais comum de NAT manual não tem nada a ver com a regra: o gateway não está respondendo ARP por um endereço para o qual está traduzindo."
+concepts: ["check point", "ccse", "nat", "nat automático", "nat manual", "hide nat", "nat estático", "proxy arp", "updatable objects", "gerência atrás de nat", "base de regras de nat"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-security-policy-and-rule-base", "fortigate-firewall-policy-and-nat"]
+category: security
+order: 109
+status: reviewed
+updated: "2026-07-26"
+---
+
+O NAT na Check Point tem dois pontos de entrada, e escolher entre eles é a primeira decisão.
+
+## Hide e estático
+
+O **hide NAT** traduz muitos endereços internos atrás de um só, distinguindo sessões por porta. É como uma rede de clientes alcança a internet a partir de um único endereço, e é inerentemente de saída: nada de fora consegue iniciar uma conexão a um host escondido, porque não há endereço único para mirar.
+
+O **NAT estático** é um para um. Um endereço interno mapeia para um público nos dois sentidos, então conexões de entrada são possíveis. É o que um servidor publicado usa.
+
+A distinção não é preferência; decorre de se algo precisa iniciar uma conexão para dentro.
+
+## Automático e manual
+
+O **NAT automático** é configurado no próprio objeto: marque hide ou estático no host ou rede, informe o endereço traduzido, e a Check Point gera as regras. É rápido, é difícil de errar estruturalmente, e cobre a maioria dos requisitos.
+
+O **NAT manual** é uma regra que você escreve na base de regras de NAT, especificando origem, destino e serviço originais e traduzidos. Você precisa dele quando a tradução depende de mais que o objeto — quando difere por destino, se aplica só a certos serviços, ou exige posição específica em relação a outras regras de NAT.
+
+Duas diferenças de comportamento que vale carregar:
+
+**Ordenação.** Regras automáticas são posicionadas pela Check Point, e regras manuais ficam onde você as põe. Na base combinada, a posição determina qual se aplica, e uma regra manual acima de uma automática pode antecipá-la.
+
+**Proxy ARP.** Com NAT automático, o gateway responde ARP pelos endereços traduzidos por conta própria. Com NAT manual, **ele não responde por padrão**, e essa é a falha que todo mundo encontra.
+
+## O problema do proxy ARP
+
+O sintoma é específico e parece problema de roteamento: um NAT estático manual está configurado corretamente, a regra está certa, e o tráfego para o endereço traduzido nunca chega.
+
+A causa é que o endereço traduzido normalmente pertence a uma sub-rede na interface externa do gateway mas não é um endereço que o gateway possua. O roteador acima faz ARP por ele, ninguém responde, e o pacote nunca é encaminhado. O firewall não está descartando nada — ele nunca recebe o tráfego.
+
+A correção é configurar proxy ARP para aquele endereço no gateway, para que ele responda em nome do endereço.
+
+Reconhecer esse formato poupa muito tempo, porque todo instinto aponta para a política e a política está bem. Se um NAT manual não funciona e nada aparece nos logs, o ARP é onde olhar antes de qualquer coisa.
+
+## Tráfego de VPN e NAT
+
+O tráfego que entra numa VPN site a site normalmente não deve ser traduzido: o par espera os endereços originais, e traduzi-los quebra a correspondência do domínio de criptografia. Excluir o tráfego de VPN do NAT é passo de configuração padrão, e não caso de borda, e esquecê-lo produz um túnel que se estabelece e não carrega nada.
+
+## Updatable Objects
+
+Um **Updatable Object** representa um serviço cujos endereços a Check Point mantém — grandes provedores de nuvem e SaaS, cujas faixas mudam sem aviso.
+
+O valor é que uma regra que o referencia permanece correta conforme o provedor muda de infraestrutura, o que um grupo mantido à mão não faz. O custo é uma dependência: o gateway precisa conseguir buscar atualizações, e um que não consegue está aplicando uma regra contra uma lista obsoleta sem avisar.
+
+## Gerência atrás de NAT
+
+Onde o servidor de gerência fica atrás de um equipamento de NAT e gerencia gateways do lado de fora, os gateways precisam alcançar o servidor no endereço traduzido enquanto o servidor se conhece pelo real.
+
+Essa é uma configuração específica, e não algo que funcione implicitamente, e errá-la se apresenta como SIC que não estabelece ou instalação de política que expira — sintomas que convidam a investigar o gateway, que é a ponta errada.
+
+## O que quem vai prestar o CCSE precisa saber de cor
+
+Hide NAT é muitos para um e só de saída; NAT estático é um para um e permite entrada. O NAT automático é configurado no objeto e gera as próprias regras e o proxy ARP; o NAT manual é escrito na base de regras, posicionado por você, e **não cria proxy ARP**, que é a causa usual de um NAT manual correto não receber tráfego e não registrar nada. O tráfego de VPN normalmente é excluído do NAT ou o túnel não carrega nada. Updatable Objects acompanham faixas de endereços de provedores e dependem de o gateway conseguir buscar atualizações. Gerência atrás de NAT precisa de configuração explícita, e sua falha parece problema de SIC ou de instalação.

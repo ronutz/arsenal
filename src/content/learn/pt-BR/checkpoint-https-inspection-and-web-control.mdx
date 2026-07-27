@@ -1,0 +1,67 @@
+---
+slug: checkpoint-https-inspection-and-web-control
+title: "HTTPS Inspection, Application Control e URL Filtering na Check Point"
+summary: "A maior parte do tráfego é criptografada, então os controles que decidem quais aplicações e sites são permitidos só conseguem ver o que o handshake revela, salvo se o gateway descriptografar. O HTTPS Inspection é o que faz o resto funcionar por completo, e é também o recurso com maior probabilidade de quebrar algo no dia em que você o habilita."
+concepts: ["check point", "ccsa", "https inspection", "inspeção de saída", "inspeção de entrada", "certificado", "application control", "url filtering", "appwiki", "bypass", "categorias"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-policy-layers-ordered-and-inline", "fortinet-ssl-inspection-modes"]
+category: security
+order: 106
+status: reviewed
+updated: "2026-07-26"
+---
+
+O Application Control e o URL Filtering respondem o que o tráfego é e para onde vai. O HTTPS Inspection é o que os deixa responder por completo, em vez de aproximadamente, e é por isso que os três pertencem a uma discussão só.
+
+## Por que a inspeção é necessária
+
+Sem descriptografia, um gateway examinando uma conexão HTTPS vê o endereço de destino, o nome do servidor no handshake TLS, e o certificado. Isso basta para categorizar muitos sites e basta para identificação grosseira de aplicações.
+
+Não basta para ver o caminho da URL, o conteúdo, ou qualquer coisa que a conexão carregue. Então uma política que bloqueia uma categoria pode agir sobre o nome apresentado na conexão, e uma política que inspeciona arquivos ou aplica controles de dados não consegue agir.
+
+A **inspeção de saída** é o caso comum: usuários alcançando a internet. O gateway termina a sessão TLS do cliente, abre a própria com o servidor, e inspeciona no meio. Como apresenta um certificado para um site que não é dele, assina um com a própria CA — e todo cliente precisa confiar naquela CA, ou todo site produz um aviso.
+
+Distribuir esse certificado de CA aos dispositivos gerenciados é o passo de implantação, e dispositivos não gerenciados são a razão pela qual uma implantação nunca fica bem terminada.
+
+A **inspeção de entrada** protege servidores que você possui. O gateway detém o certificado real do servidor e a chave privada, então não há problema de confiança nem trabalho do lado do cliente.
+
+## O que a inspeção quebra, e por que existe bypass
+
+A fixação de certificados é o obstáculo honesto. Uma aplicação que fixa certificados espera um específico e vê o do gateway, então se recusa a conectar — corretamente, do seu ponto de vista. Aplicativos bancários, atualizadores e muitas aplicações móveis fazem isso, e configuração alguma do seu lado muda o comportamento delas.
+
+Há também uma dimensão de privacidade e regulação. Descriptografar a sessão bancária ou de saúde de um funcionário frequentemente não é permitido, independentemente da capacidade técnica.
+
+Os dois apontam para o mesmo mecanismo: **bypass**, por categoria, por site, ou por origem. Ignorar as categorias bancária e de saúde é prática padrão e é um ponto cego deliberado, e não um descuido.
+
+A política de HTTPS Inspection é sua própria base de regras, avaliada de cima para baixo, com ações de inspecionar ou ignorar. A disciplina de ordenação é a conhecida: bypasses específicos acima da regra geral de inspeção.
+
+## Application Control
+
+O Application Control identifica aplicações por comportamento e assinatura, e não por porta. Essa distinção é o ponto: uma aplicação que muda de porta continua identificada, e uma que tunela dentro de HTTPS é identificada quando a inspeção está disponível.
+
+A base de aplicações carrega **categorias** e **níveis de risco**, e regras podem referenciar qualquer um deles. Uma regra permitindo "Aplicações de Negócio" e bloqueando "Anonimizadores" é escrita uma vez e permanece atual conforme a base é atualizada — que é a razão de preferir categorias a nomear aplicações individuais sempre que a intenção for categórica.
+
+**Aplicações personalizadas** cobrem o que a base não conhece, tipicamente sistemas internos.
+
+## URL Filtering
+
+O URL Filtering categoriza sites, e as regras agem sobre categorias, sobre listas personalizadas, ou sobre sites específicos.
+
+As duas realidades operacionais a planejar:
+
+**Categorização errada acontece.** Um site está na categoria errada, ou uma ferramenta legítima de negócio está numa bloqueada. O processo para tratar isso — uma exceção, e uma submissão ao fabricante — deveria existir antes de ser necessário, porque será necessário durante a tarefa urgente de alguém.
+
+**Bloquear produz chamados.** Uma página de bloqueio que explica o que aconteceu e como pedir exceção converte um chamado em um formulário. Uma falha silenciosa produz um chamado que começa com "a internet está quebrada".
+
+## Como se combinam na política
+
+Ambos são aplicados pela política de controle de acesso, comumente numa camada própria abaixo de uma camada de rede. A semântica de camadas ordenadas vale sem mudança: o tráfego precisa ser aceito pela camada de rede antes de a camada de aplicação vê-lo.
+
+A implantação que evita incidentes tem o mesmo formato usado em toda esta coleção. **Detecte primeiro**: habilite a identificação e o registro, sem bloquear, por tempo suficiente para ver o que seus usuários de fato fazem. A lista conterá aplicações que ninguém sabia estarem em uso, e algumas serão estruturais. Então bloqueie, começando pelas categorias sobre as quais ninguém vai discutir.
+
+Habilitar uma política completa de aplicações e URLs em modo de bloqueio no primeiro dia é como o recurso é desligado na segunda semana.
+
+## O que quem vai prestar o CCSA precisa saber de cor
+
+Sem descriptografia um gateway vê o destino, o nome do servidor no handshake e o certificado, o que sustenta categorização mas não inspeção de conteúdo. A inspeção de saída reassina com a CA do gateway, então todo cliente precisa confiar nela; a de entrada usa o certificado real do servidor e não exige confiança do cliente. Fixação de certificados e obrigações de privacidade são por que o bypass por categoria ou site é padrão, e a política de HTTPS Inspection é sua própria base de regras de cima para baixo. O Application Control identifica por comportamento, e não por porta; prefira categorias e níveis de risco a nomear aplicações individuais. Implante em modo de detecção e registro antes de bloquear.

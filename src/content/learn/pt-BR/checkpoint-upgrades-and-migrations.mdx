@@ -1,0 +1,75 @@
+---
+slug: checkpoint-upgrades-and-migrations
+title: "Atualizações e migrações na Check Point: ordem, compatibilidade, e tirar o banco de dados de lá"
+summary: "A ordem de atualização não é preferência: a gerência vem primeiro, porque um servidor de gerência consegue gerenciar gateways mais antigos e um servidor mais antigo não consegue gerenciar gateways mais novos. Migração é operação diferente de atualização, e o que se move é o banco de dados, e não a máquina."
+concepts: ["check point", "ccse", "atualização", "atualização in-place", "cpuse", "central deployment tool", "hotfix", "migração", "migrate export", "snapshot", "backup", "compatibilidade"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-management-high-availability", "fortimanager-adoms-and-device-registration"]
+category: security
+order: 112
+status: reviewed
+updated: "2026-07-26"
+---
+
+Duas operações são confundidas. Atualizar muda o software numa máquina que você vai manter. Migrar move o banco de dados de gerência para outra máquina. Têm riscos diferentes e caminhos de recuperação diferentes.
+
+## Gerência primeiro
+
+A regra de compatibilidade que determina o sequenciamento: **um servidor de gerência consegue gerenciar gateways em versões mais antigas; um servidor mais antigo não consegue gerenciar gateways mais novos.**
+
+Então a gerência é atualizada primeiro, e os gateways seguem. Inverter isso deixa gateways com os quais o servidor de gerência não consegue falar, o que é uma indisponibilidade autoinfligida do plano de gerência no pior momento.
+
+A Check Point publica as combinações de versão suportadas, e conferi-las é uma tarefa de cinco minutos que ocasionalmente cancela o plano inteiro — um bom desfecho descoberto cedo, e caro descoberto no meio da janela.
+
+## Três coisas que soam todas como backup
+
+Não são intercambiáveis, e escolher a errada se descobre durante a recuperação.
+
+O **backup** captura a configuração do Gaia e o banco da Check Point. Restaura na mesma versão e é o mais leve dos três.
+
+O **snapshot** captura o sistema inteiro, sistema operacional incluído. É o mais pesado, o mais lento, e o único que devolve a máquina exatamente ao estado anterior — que é o que se quer antes de uma atualização in-place.
+
+O **migrate export** captura apenas o banco de gerência, sem o sistema operacional, e é projetado para ser importado noutra máquina, tipicamente de versão mais nova. É a ferramenta para mover a gerência para hardware novo.
+
+A regra que decorre: **tire um snapshot antes de uma atualização in-place** — é o único que traz você de volta se a própria atualização falhar.
+
+## Métodos de atualização
+
+A **atualização in-place** atualiza a instalação existente, mantendo a configuração. Mais rápida, e carrega adiante o que se acumulou na instalação, inclusive o que não estiver saudável.
+
+A **instalação limpa com migrate** instala a nova versão do zero e importa o banco. Mais trabalho, e deixa um sistema limpo. É a escolha certa quando a instalação existente tem histórico, ou quando o hardware será trocado de todo jeito.
+
+O **CPUSE**, o agente de implantação, cuida do download e da instalação de pacotes no Gaia, e é o mecanismo por trás da maior parte do trabalho in-place.
+
+O **Central Deployment Tool** empurra hotfixes e atualizações para múltiplos gateways a partir do SmartConsole. Seu valor é em escala: corrigir vinte gateways individualmente são vinte janelas de manutenção, e fazê-lo centralmente é uma.
+
+## Migrar o banco de dados
+
+A sequência é banal e implacável com passos pulados: exportar da origem, construir o destino, importar, verificar, e então reapontar os gateways.
+
+**A verificação é o passo que as pessoas pulam**, e o que importa. Uma importação bem-sucedida não é o mesmo que o banco estar certo. Objetos, políticas, administradores e — criticamente — certificados e licenças, todos precisam ser conferidos antes de qualquer coisa depender do novo servidor.
+
+O ponto dos certificados merece ênfase: a confiança do SIC é baseada em certificados, então uma migração que perde ou invalida a ICA deixa você com um servidor de gerência que não consegue falar com seus gateways. Isso é recuperável e é uma tarde longa.
+
+## Atualizar gateways
+
+Gateways são atualizados depois da gerência. Duas situações diferem:
+
+Um **gateway autônomo** significa indisponibilidade para o tráfego dele. Não há como contornar; há apenas agendamento.
+
+Um **cluster** pode ser atualizado membro a membro, mantendo o tráfego fluindo. Esse é um dos principais argumentos operacionais para clusterizar, e vem com a ressalva de que o cluster roda num estado de versões mistas durante o processo, o que é suportado pela duração de uma atualização, e não como estado de repouso.
+
+## Antes de tudo isso
+
+A lista que evita a maioria dos incidentes de atualização:
+
+- **Confira a compatibilidade** entre a versão alvo e cada gateway.
+- **Tire o tipo certo de backup**, conforme a distinção acima.
+- **Conheça o rollback**, especificamente: o que você restauraria e quanto tempo leva.
+- **Confira as licenças.** Uma mudança de versão pode exigir uma licença que o equipamento não tem, e descobrir isso depois da atualização é uma hora ruim.
+- **Faça a gerência primeiro.**
+
+## O que quem vai prestar o CCSE precisa saber de cor
+
+A gerência é atualizada antes dos gateways, porque um servidor de gerência consegue gerenciar gateways mais antigos e não mais novos. O backup captura configuração e banco, o snapshot captura o sistema inteiro incluindo o SO e é o que se tira antes de uma atualização in-place, e o migrate export captura apenas o banco para importar noutra máquina. In-place é mais rápido e carrega o estado existente; instalação limpa com migrate é mais limpa. O CPUSE cuida da instalação de pacotes no Gaia e o Central Deployment Tool empurra para muitos gateways de uma vez. Depois de uma migração, verifique objetos, políticas, licenças e certificados, porque uma ICA perdida deixa a gerência sem conseguir falar com seus gateways. Clusters atualizam membro a membro; gateways autônomos significam indisponibilidade.

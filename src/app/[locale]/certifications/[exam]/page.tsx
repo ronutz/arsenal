@@ -162,6 +162,26 @@ export default async function StudyGuidePage({
             </div>
           </section>
 
+              {guide.retirement && (
+            /* A retiring exam has a deadline and usually a successor, and
+               both change what a candidate should book. Names and dates
+               stay verbatim; only the surrounding words are localised. */
+            <section className="section">
+              <div className="container certs-container">
+                <p className="cidr-privacy">
+                  <strong>
+                    {t("retirementNotice", {
+                      exam: guide.retirement.exam,
+                      until: guide.retirement.until,
+                    })}
+                  </strong>
+                  {guide.retirement.replacedBy
+                    ? ` ${t("retirementReplacedBy", { exam: guide.retirement.replacedBy })}`
+                    : ` ${t("retirementNoReplacement")}`}
+                </p>
+              </div>
+            </section>
+          )}
           {guide.status === "preparing" || guide.sections.length === 0 ? (
             /* -------- Preparing state: honest placeholder -------- */
             <section className="section">
@@ -184,26 +204,6 @@ export default async function StudyGuidePage({
           ) : (
             /* -------- Published state: blueprint sections + objectives -------- */
             <>
-              {guide.retirement && (
-                /* A retiring exam has a deadline and usually a successor, and
-                   both change what a candidate should book. Names and dates
-                   stay verbatim; only the surrounding words are localised. */
-                <section className="section">
-                  <div className="container certs-container">
-                    <p className="cidr-privacy">
-                      <strong>
-                        {t("retirementNotice", {
-                          exam: guide.retirement.exam,
-                          until: guide.retirement.until,
-                        })}
-                      </strong>
-                      {guide.retirement.replacedBy
-                        ? ` ${t("retirementReplacedBy", { exam: guide.retirement.replacedBy })}`
-                        : ` ${t("retirementNoReplacement")}`}
-                    </p>
-                  </div>
-                </section>
-              )}
               {guide.sourceCaveat === "course-objectives" && (
                 /* Fortinet has not published an exam blueprint for this one, so
                    these come from the COURSE page. Same material, different

@@ -1,0 +1,67 @@
+---
+slug: checkpoint-site-to-site-vpn
+title: "VPN site a site na Check Point: comunidades, domínios de criptografia, e por que o túnel está vazio"
+summary: "Uma VPN Check Point é construída a partir de comunidades, e não de definições individuais de túnel, e é isso que torna muitos sites administráveis. A falha recorrente não é o túnel não estabelecer, e sim ele estabelecer e não carregar nada, e isso quase sempre remete ao domínio de criptografia ou ao NAT."
+concepts: ["check point", "ccse", "vpn site a site", "comunidade vpn", "malha", "estrela", "domínio de criptografia", "ike", "fase 1", "fase 2", "link selection", "redundância de isp", "túnel permanente"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-advanced-policy-and-nat", "fortigate-ipsec-vpn-topologies"]
+category: security
+order: 110
+status: reviewed
+updated: "2026-07-26"
+---
+
+A maioria dos produtos de VPN pede que você defina túneis. A Check Point pede que você defina quem está numa comunidade, e deriva os túneis. Essa diferença é o que mantém uma implantação de vinte sites descritível.
+
+## Comunidades
+
+Uma **comunidade VPN** é um conjunto de gateways que compartilham uma política de VPN, e sua topologia decide quais pares constroem túneis.
+
+**Malha** significa que cada membro conecta a todos os outros. Qualquer site alcança qualquer site diretamente, e o número de túneis cresce com o quadrado da associação — tranquilo em escala pequena, incômodo além dela.
+
+**Estrela** designa centros e satélites. Satélites conectam a centros, e não entre si. Isso serve ao formato que a maioria das organizações de fato tem, em que filiais precisam do data center muito mais do que precisam umas das outras, e mantém a contagem de túneis linear.
+
+Onde dois satélites genuinamente precisam conversar, a escolha é permitir comunicação satélite a satélite pelo centro, ou colocar aqueles sites numa comunidade em malha própria. As duas são legítimas, e a segunda é mais limpa quando o tráfego justifica.
+
+## O domínio de criptografia
+
+Cada gateway tem um **domínio de criptografia** — o conjunto de redes atrás dele que a VPN carrega.
+
+Esse é o objeto mais importante de uma configuração de VPN e a fonte da maioria das falhas que não são de autenticação. O par decide se criptografa com base em o destino estar no domínio que você declarou. Duas consequências decorrem:
+
+**Uma rede faltando no domínio não é carregada.** O túnel está no ar, outro tráfego passa, e essa sub-rede silenciosamente não passa. O sintoma é conectividade parcial, o que confunde muito mais que nenhuma.
+
+**Domínios sobrepostos causam roteamento errado.** Se dois pares reivindicam a mesma rede, o tráfego vai para a correspondência que for encontrada, e a resposta raramente é a que você queria.
+
+Quando um túnel está estabelecido e o tráfego não passa, o domínio de criptografia é a primeira coisa a comparar dos dois lados — antes de tocar nas propostas.
+
+## IKE, resumidamente
+
+A **fase 1** autentica os pares e estabelece um canal seguro: método de autenticação, criptografia, hash, grupo Diffie-Hellman, tempo de vida.
+
+A **fase 2** negocia o túnel que carrega dados, com seus próprios algoritmos e tempo de vida.
+
+O comportamento que vale conhecer para investigação é que **as fases falham de formas diferentes**. Uma falha de fase 1 significa que os pares nunca concordaram em como conversar, então nada existe. Uma falha de fase 2 significa que se autenticaram e então não concordaram sobre o túnel de dados — você sabe que o par é quem diz ser, e a discordância é sobre parâmetros. Saber qual fase falhou reduz a busca pela metade.
+
+As propostas precisam **se intersectar**, e não coincidir exatamente. Cada lado oferece um conjunto, e a negociação escolhe algo comum. Uma divergência significa não haver sobreposição alguma, que é uma condição mais estreita do que parece.
+
+## Autenticação
+
+**Chaves pré-compartilhadas** são simples e não escalam: cada par precisa de uma, e rotacioná-las é manual.
+
+**Certificados** escalam, e entre gateways Check Point gerenciados pelo mesmo servidor a ICA trata disso de forma transparente — que é por que VPNs internas dão muito menos trabalho que as de terceiros.
+
+**Gateways de terceiros** são onde o esforço se concentra. Os padrões do outro fabricante serão diferentes, o tratamento de certificados será diferente, e a ideia dele de domínio de VPN pode ser expressa de forma totalmente distinta. Acordar os parâmetros explicitamente e por escrito, com antecedência, poupa um dia de capturas de pacote.
+
+## Link Selection e redundância de ISP
+
+O **Link Selection** decide qual interface e endereço local um gateway usa para tráfego de VPN quando tem mais de um. O padrão funciona até o gateway ter múltiplas saídas, e nesse ponto o par pode ver tráfego de um endereço que não espera e rejeitá-lo.
+
+A **redundância de ISP** fornece failover entre duas conexões de internet, em ativo-passivo ou balanceamento. Para VPN especificamente, o par precisa aceitar o túnel de qualquer um dos endereços, o que é configuração nas duas pontas, e não algo que o failover forneça sozinho.
+
+**Túneis permanentes** mantêm o túnel estabelecido em vez de construí-lo sob demanda, que é o que torna o monitoramento significativo — um túnel que só existe quando há tráfego não pode ser alarmado.
+
+## O que quem vai prestar o CCSE precisa saber de cor
+
+Comunidades definem associação e derivam túneis: malha conecta cada par e cresce com o quadrado da associação, estrela conecta satélites a centros e permanece linear. O domínio de criptografia declara quais redes a VPN carrega, e uma rede faltando produz conectividade parcial por um túnel estabelecido. A fase 1 autentica os pares, a fase 2 negocia o túnel de dados, elas falham de formas diferentes, e as propostas precisam se intersectar, e não coincidir. Certificados escalam onde chaves pré-compartilhadas não escalam, e a ICA torna VPNs internas simples. O Link Selection importa em gateways com múltiplas saídas, e túneis permanentes são o que tornam o monitoramento possível.

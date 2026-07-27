@@ -1,0 +1,75 @@
+---
+slug: checkpoint-security-policy-and-rule-base
+title: "The Check Point Rule Base: Order, Implied Rules, and the Rules Everyone Forgets"
+summary: "A Check Point rule base is evaluated top to bottom, first match wins, and ends in an implicit drop that logs nothing. Two conventional rules exist to fix what that leaves you blind to, and knowing why they exist is more useful than knowing their names."
+concepts: ["check point", "ccsa", "rule base", "security policy", "first match", "implied rules", "stealth rule", "cleanup rule", "track", "install policy", "nat"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-administrators-sessions-and-objects", "fortigate-firewall-policy-and-nat"]
+category: security
+order: 102
+status: reviewed
+updated: "2026-07-26"
+---
+
+The rule base is the part of Check Point that looks most like every other firewall, which is exactly why its specific behaviours catch people.
+
+## What a rule is made of
+
+Each rule carries, in order of how often it matters: **Source**, **Destination**, **Services & Applications**, **Action**, **Track**, and **Install On**, plus VPN, Content, Time and Comment fields.
+
+Two of those deserve more attention than they usually get.
+
+**Track** decides whether anything is recorded. A rule set to None passes or drops traffic and leaves no evidence. Every troubleshooting session that begins "there is nothing in the logs" ends here more often than it ends anywhere else.
+
+**Install On** scopes a rule to particular gateways. In a single-gateway environment it is invisible; in a multi-gateway one it is how a rule base serves several sites without every rule applying everywhere.
+
+## Evaluation
+
+Rules are evaluated **top to bottom, and the first match wins.** Nothing below a matching rule is consulted.
+
+That produces the same shadowing problem every ordered policy has: a broad rule above a specific one makes the specific one unreachable. Check Point's policy verification catches some of these, and reading the rule base as a document — general at the bottom, specific at the top — prevents more.
+
+The ordering convention that works is the familiar one: most specific first, exceptions above the rules they except, broad permits low, and an explicit final rule.
+
+## The implicit cleanup rule, and why you add an explicit one
+
+If traffic matches no rule, it is dropped. That behaviour is built in and **it is not logged**.
+
+This is why deployments add an explicit **cleanup rule** as the last rule: any source, any destination, any service, action Drop, track Log. It changes nothing about what traffic is allowed — the implicit drop would have dropped it anyway — and it changes everything about visibility, because now you can see what is being dropped.
+
+A firewall with no cleanup rule is a firewall where "the connection just fails and nothing appears in the logs" is the expected behaviour rather than a fault. That single rule is the difference between a policy you can troubleshoot and one you cannot.
+
+## The stealth rule
+
+The **stealth rule** blocks traffic addressed to the gateway itself from anywhere it should not be administered from, and it sits near the top, above the rules that permit general traffic.
+
+The reasoning is that the gateway is a host with addresses, so without a rule about it, general permit rules can allow connections to it. The stealth rule makes the gateway invisible to everyone who has no business connecting to it.
+
+The ordering detail that matters: it goes **below** the rules that legitimately permit management access, and **above** everything else. Put it above the management rules and you have locked yourself out — which is a genuinely common first-day mistake and an instructive one.
+
+## Implied rules
+
+Check Point generates **implied rules** automatically to permit the control traffic the platform itself needs: communication between gateway and management, SIC, licensing, and similar.
+
+Three things to know:
+
+They are configured in **Global Properties**, not in the rule base, so they do not appear as rules you can edit individually.
+
+Each can be placed **first, last, or before last** relative to your rules, and the placement matters because first-match evaluation applies to them too.
+
+They are **not logged by default**, which means traffic can be permitted by a rule you cannot see and will not find in the logs. Enabling implied-rule logging while troubleshooting is the step that resolves "this is being allowed and I cannot find which rule allows it".
+
+## Installing policy
+
+Installation compiles the database into a policy and pushes it to the selected gateways.
+
+**Verification** runs first and catches structural problems — conflicting rules, objects that cannot be resolved. It is worth reading rather than clicking through, because it is cheaper than the alternative.
+
+Installation is **atomic per gateway**: it either succeeds and the new policy is enforced, or it fails and the previous policy continues. A gateway does not end up half-configured, which is a genuinely reassuring property during a change window.
+
+If installation fails, the message names the reason, and the common causes are a small set: SIC broken, gateway unreachable, a version mismatch between gateway and management, or an object that cannot be resolved for that gateway.
+
+## What a CCSA candidate should be able to state cold
+
+Rules carry source, destination, services and applications, action, track and install-on; Track set to None means the rule leaves no evidence. Evaluation is top-down, first match wins. Unmatched traffic is dropped implicitly and **not logged**, which is why an explicit cleanup rule with Drop and Log is added last. The stealth rule protects the gateway itself and belongs above general traffic rules but below legitimate management access. Implied rules are generated from Global Properties, can be placed first, last or before last, and are not logged by default. Policy installation verifies first and is atomic per gateway: on failure the previous policy keeps running.

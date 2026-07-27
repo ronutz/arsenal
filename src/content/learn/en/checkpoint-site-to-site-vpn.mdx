@@ -1,0 +1,67 @@
+---
+slug: checkpoint-site-to-site-vpn
+title: "Check Point Site-to-Site VPN: Communities, Encryption Domains, and Why the Tunnel Is Empty"
+summary: "A Check Point VPN is built from communities rather than individual tunnel definitions, which is what makes many sites manageable. The recurring fault is not that the tunnel fails to establish but that it establishes and carries nothing, and that almost always traces to the encryption domain or to NAT."
+concepts: ["check point", "ccse", "site-to-site vpn", "vpn community", "meshed", "star", "encryption domain", "ike", "phase 1", "phase 2", "link selection", "isp redundancy", "permanent tunnel"]
+relatedTools: []
+sub: checkpoint
+relatedArticles: ["checkpoint-advanced-policy-and-nat", "fortigate-ipsec-vpn-topologies"]
+category: security
+order: 110
+status: reviewed
+updated: "2026-07-26"
+---
+
+Most VPN products ask you to define tunnels. Check Point asks you to define who is in a community, and derives the tunnels. That difference is what keeps a twenty-site deployment describable.
+
+## Communities
+
+A **VPN community** is a set of gateways that share a VPN policy, and its topology decides which pairs build tunnels.
+
+**Meshed** means every member connects to every other. Any site can reach any site directly, and the number of tunnels grows as the square of the membership — fine at small scale, unwieldy beyond it.
+
+**Star** designates centres and satellites. Satellites connect to centres, not to each other. This suits the shape most organisations actually have, where branches need the data centre far more often than they need each other, and it keeps the tunnel count linear.
+
+Where two branches genuinely need to talk, the choice is to permit satellite-to-satellite communication through the centre, or to place those specific sites in their own meshed community. Both are legitimate, and the second is cleaner when the traffic justifies it.
+
+## The encryption domain
+
+Each gateway has an **encryption domain** — the set of networks behind it that the VPN carries.
+
+This is the single most important object in a VPN configuration and the source of most failures that are not authentication failures. The peer decides whether to encrypt based on whether the destination is in your declared domain. Two consequences follow:
+
+**A network missing from the domain is not carried.** The tunnel is up, other traffic passes, and this one subnet silently does not. The symptom is partial connectivity, which is far more confusing than none.
+
+**Overlapping domains cause misrouting.** If two peers both claim a network, traffic goes to whichever match is found, and the answer is rarely the one you wanted.
+
+When a tunnel is established and traffic is not passing, the encryption domain is the first thing to compare on both sides — before touching the proposals.
+
+## IKE, briefly
+
+**Phase 1** authenticates the peers and establishes a secure channel: authentication method, encryption, hashing, Diffie-Hellman group, lifetime.
+
+**Phase 2** negotiates the tunnel that carries data, with its own algorithms and lifetime.
+
+The behaviour worth knowing for troubleshooting is that **the phases fail differently**. A phase 1 failure means the peers never agreed on how to talk, so nothing exists. A phase 2 failure means they authenticated and then failed to agree on the data tunnel — you know the peer is who it says it is, and the disagreement is about parameters. Knowing which phase failed halves the search.
+
+Proposals must **intersect**, not match exactly. Each side offers a set, and the negotiation picks something common. A mismatch means no overlap at all, which is a narrower condition than it first appears.
+
+## Authentication
+
+**Pre-shared keys** are simple and do not scale: every pair needs one, and rotating them is manual.
+
+**Certificates** scale, and between Check Point gateways managed by the same server the ICA handles this transparently — which is why internal VPNs are so much less work than third-party ones.
+
+**Third-party gateways** are where the effort concentrates. The other vendor's defaults will differ, their certificate handling will differ, and their idea of a VPN domain may be expressed entirely differently. Agreeing the parameters explicitly in advance, in writing, saves a day of packet captures.
+
+## Link Selection and ISP Redundancy
+
+**Link Selection** decides which local interface and address a gateway uses for VPN traffic when it has more than one. The default works until the gateway is multi-homed, at which point the peer may see traffic from an address it does not expect and reject it.
+
+**ISP Redundancy** provides failover between two internet connections, in active-passive or load-sharing. For VPN specifically, the peer must accept the tunnel from either address, which is a configuration on both ends rather than something failover provides by itself.
+
+**Permanent tunnels** keep the tunnel established rather than building it on demand, which is what makes monitoring meaningful — a tunnel that only exists when traffic flows cannot be alarmed on.
+
+## What a CCSE candidate should be able to state cold
+
+Communities define membership and derive tunnels: meshed connects every pair and grows as the square of the membership, star connects satellites to centres and stays linear. The encryption domain declares which networks the VPN carries, and a missing network produces partial connectivity through an established tunnel. Phase 1 authenticates the peers, phase 2 negotiates the data tunnel, they fail differently, and proposals must intersect rather than match. Certificates scale where pre-shared keys do not, and the ICA makes internal VPNs straightforward. Link Selection matters on multi-homed gateways, and permanent tunnels are what make monitoring possible.
