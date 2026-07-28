@@ -161,97 +161,119 @@ export default async function VendorHubPage({
               {tHub("lede", { vendor: label })}
             </p>
 
-            {/* ---- Hub doors (PRIME 2026-07-27) ----
-                 These were three different shapes: a bare text link to the
-                 vendor's history chapter above the title, and a callout box of
-                 inline links to its certifications. They are now one grid of
-                 portal cards, reusing the learn-portal-* vocabulary already
-                 established on /learn and /training, so a reader meets the
-                 same card everywhere a page hands off to another page.
-                 Reading paths join them: a vendor's paths were only reachable
-                 from /study-guides, which meant the hub for a platform never
-                 mentioned the guided route through its own articles. */}
+            {/* ---- Hub doors, in three bands (PRIME 2026-07-27) ----
+                 A single flat grid put eleven cards on the F5 hub and twenty
+                 on Fortinet's, which pushed the tools - the reason the page
+                 exists - below two screens of navigation. The doors are now
+                 grouped by what they are, and sized by how many there are:
+
+                   1. STORY: the vendor's chapter and its corporate lineage.
+                      Two cards at most, so they stay full size.
+                   2. CERTIFICATIONS: one per certification, and there can be
+                      twenty. Rendered as a COMPACT CHIP ROW rather than cards,
+                      because twenty cards is a wall and twenty chips is a
+                      list. One class added for this (justified here): no
+                      existing class produces a dense inline row of links.
+                   3. PATHS: guided reading routes, few enough to stay cards.
+
+                 Net effect on the F5 hub: eleven cards become three cards plus
+                 a chip row, and the tools move up by roughly a screen. */}
             {(() => {
               const vendorCerts = getCertificationsForVendor(vendor);
               const careerSlug = VENDOR_CAREER_SLUGS[vendor];
+              const hasLineage = Boolean(lineageFor(vendor));
               const vendorPaths = READING_PATHS.filter(
                 (rp) => readingPathVendor(rp.id, READING_PATH_VENDOR_KEYS) === vendor,
               );
-              if (!careerSlug && vendorCerts.length === 0 && vendorPaths.length === 0 && !lineageFor(vendor))
+              if (!careerSlug && !hasLineage && vendorCerts.length === 0 && vendorPaths.length === 0) {
                 return null;
+              }
               return (
-                <div className="learn-portal-grid" style={{ marginBottom: "2.5rem" }}>
-                  {careerSlug && (
-                    <Link
-                      href={`/about/vendors/${careerSlug}`}
-                      className="learn-portal-card"
-                      style={{ "--note-accent": vendorColor(vendor) } as CSSProperties}
-                    >
-                      <span className="learn-portal-ornament" aria-hidden>
-                        &#9670;
-                      </span>
-                      <p className="learn-portal-title">
-                        {tHub("industryLink", { vendor: label })}{" "}
-                        <span className="learn-portal-arrow">&#8594;</span>
-                      </p>
-                      <p className="learn-portal-lede">{tHub("industryLede", { vendor: label })}</p>
-                    </Link>
+                <>
+                  {/* -- Band 1: the story -- */}
+                  {(careerSlug || hasLineage) && (
+                    <div className="learn-portal-grid">
+                      {careerSlug && (
+                        <Link
+                          href={`/about/vendors/${careerSlug}`}
+                          className="learn-portal-card"
+                          style={{ "--note-accent": vendorColor(vendor) } as CSSProperties}
+                        >
+                          <span className="learn-portal-ornament" aria-hidden>
+                            &#9670;
+                          </span>
+                          <p className="learn-portal-title">
+                            {tHub("industryLink", { vendor: label })}{" "}
+                            <span className="learn-portal-arrow">&#8594;</span>
+                          </p>
+                          <p className="learn-portal-lede">{tHub("industryLede", { vendor: label })}</p>
+                        </Link>
+                      )}
+                      {hasLineage && (
+                        <Link
+                          href={`/${vendor}/vendor-lineage`}
+                          className="learn-portal-card"
+                          style={{ "--note-accent": vendorColor(vendor) } as CSSProperties}
+                        >
+                          <span className="learn-portal-ornament" aria-hidden>
+                            &#8635;
+                          </span>
+                          <p className="learn-portal-title">
+                            {tLin("titleFor", { vendor: label })}{" "}
+                            <span className="learn-portal-arrow">&#8594;</span>
+                          </p>
+                          <p className="learn-portal-lede">{tLin("introFor", { vendor: label })}</p>
+                        </Link>
+                      )}
+                    </div>
                   )}
-                  {lineageFor(vendor) && (
-                    <Link
-                      href={`/${vendor}/vendor-lineage`}
-                      className="learn-portal-card"
-                      style={{ "--note-accent": vendorColor(vendor) } as CSSProperties}
-                    >
-                      <span className="learn-portal-ornament" aria-hidden>
-                        &#8635;
-                      </span>
-                      <p className="learn-portal-title">
-                        {tLin("titleFor", { vendor: label })}{" "}
-                        <span className="learn-portal-arrow">&#8594;</span>
+
+                  {/* -- Band 2: certifications, compact -- */}
+                  {vendorCerts.length > 0 && (
+                    <div className="hub-chip-band">
+                      <p className="hub-chip-band-label">
+                        {tHub("certsEyebrow")}
                       </p>
-                      <p className="learn-portal-lede">{tLin("introFor", { vendor: label })}</p>
-                    </Link>
+                      <ul className="hub-chip-row">
+                        {vendorCerts.map((c) => (
+                          <li key={c.key}>
+                            <Link href={`/certifications#${c.key}`} className="hub-chip">
+                              {c.code || c.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
-                  {vendorCerts.map((c) => (
-                    <Link
-                      key={c.key}
-                      href={`/certifications#${c.key}`}
-                      className="learn-portal-card"
-                      style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
-                    >
-                      <span className="learn-portal-ornament" aria-hidden>
-                        &#10003;
-                      </span>
-                      <p className="learn-portal-title">
-                        {c.name} <span className="learn-portal-arrow">&#8594;</span>
-                      </p>
-                      <p className="learn-portal-lede">{tHub("certsEyebrow")}</p>
-                    </Link>
-                  ))}
-                  {vendorPaths.map((rp) => (
-                    <Link
-                      key={rp.id}
-                      href={`/study-guides#paths-${vendor}`}
-                      className="learn-portal-card"
-                      style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
-                    >
-                      <span className="learn-portal-ornament" aria-hidden>
-                        1&#8594;2&#8594;3
-                      </span>
-                      <p className="learn-portal-title">
-                        {tPaths(`paths.${rp.id}.title`)}{" "}
-                        <span className="learn-portal-arrow">&#8594;</span>
-                      </p>
-                      <p className="learn-portal-lede">{tPaths(`paths.${rp.id}.lede`)}</p>
-                      <p className="learn-portal-badges">
-                        <span className="learn-portal-badge">
-                          {tPaths("articlesCount", { count: rp.articles.length })}
-                        </span>
-                      </p>
-                    </Link>
-                  ))}
-                </div>
+
+                  {/* -- Band 3: guided reading -- */}
+                  {vendorPaths.length > 0 && (
+                    <div className="learn-portal-grid" style={{ marginBottom: "2.5rem" }}>
+                      {vendorPaths.map((rp) => (
+                        <Link
+                          key={rp.id}
+                          href={`/study-guides#paths-${vendor}`}
+                          className="learn-portal-card"
+                          style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+                        >
+                          <span className="learn-portal-ornament" aria-hidden>
+                            1&#8594;2&#8594;3
+                          </span>
+                          <p className="learn-portal-title">
+                            {tPaths(`paths.${rp.id}.title`)}{" "}
+                            <span className="learn-portal-arrow">&#8594;</span>
+                          </p>
+                          <p className="learn-portal-lede">{tPaths(`paths.${rp.id}.lede`)}</p>
+                          <p className="learn-portal-badges">
+                            <span className="learn-portal-badge">
+                              {tPaths("articlesCount", { count: rp.articles.length })}
+                            </span>
+                          </p>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </>
               );
             })()}
 

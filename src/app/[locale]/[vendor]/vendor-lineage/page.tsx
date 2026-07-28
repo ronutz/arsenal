@@ -110,8 +110,7 @@ export default async function VendorLineagePage({
 
           <section className="section">
             <div className="container lineage-container">
-              <p className="lineage-more">{t("moreSoon")}</p>
-              <p style={{ marginTop: "1.25rem" }}>
+              <p>
                 <Link className="btn btn-secondary" href={`/${vendor}`}>
                   {tHub("eyebrow")} &#8594;
                 </Link>

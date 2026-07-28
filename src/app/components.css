@@ -14819,3 +14819,62 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .lineage-sub-price {
   color: var(--text-tertiary, var(--text-secondary));
 }
+
+/* ---------------------------------------------------------------------------
+   Vendor-hub certification chips (PRIME 2026-07-27).
+   Justification for new classes (the reuse-only rule): no existing class
+   produces a dense inline row of links. The certification doors were rendering
+   as full portal cards - eleven on the F5 hub, twenty on Fortinet's - which
+   pushed the tools below two screens of navigation. A chip row puts the same
+   destinations in one or two lines.
+   Also tightens the portal cards themselves, which were taller than their
+   content needed.
+--------------------------------------------------------------------------- */
+.hub-chip-band {
+  margin: 0 0 1.75rem;
+}
+
+.hub-chip-band-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, var(--text-secondary));
+}
+
+.hub-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hub-chip {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.hub-chip:hover,
+.hub-chip:focus-visible {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+/* Portal cards carried more vertical padding than their content needed; this
+   trims every surface that uses them (learn, training, the vendor hubs). */
+.learn-portal-card {
+  padding-block: 1rem;
+}
+
+.learn-portal-lede {
+  margin-bottom: 0;
+}

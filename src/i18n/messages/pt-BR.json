@@ -6319,7 +6319,7 @@
     },
     "platforms": {
       "title": "As plataformas, ensinadas com profundidade",
-      "body": "Ser instrutor autorizado destes quatro significa que posso ensinar cada um como deve ser e compará-los com honestidade. Estas são as plataformas que estou autorizado a ensinar.",
+      "body": "Ser instrutor autorizado destes fabricantes significa que posso ensinar cada um como deve ser e compará-los com honestidade.",
       "f5": "BIG-IP em todo o currículo conduzido por instrutor: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automação e troubleshooting.",
       "fortinet": "Treinamento certificado da Fortinet, incluindo a trilha FCP.",
       "extreme": "Trilhas de switching, SD-WAN, e API e automação da Extreme Networks, passando por instalação, configuração, gerenciamento e troubleshooting.",
@@ -6369,7 +6369,15 @@
       "endorsementsEyebrow": "Nas palavras deles",
       "endorsementsTitle": "Depoimentos",
       "endorsementsDesc": "Recomendações de colegas, parceiros e alunos ao longo de duas décadas de treinamento, citadas na íntegra.",
-      "endorsementsCta": "Ler os depoimentos"
+      "endorsementsCta": "Ler os depoimentos",
+      "historyEyebrow": "A versão longa",
+      "historyTitle": "Leia a história completa",
+      "historyDesc": "Trinta anos contados como deve ser: as empresas, as tecnologias, e as viradas que não estavam no plano.",
+      "historyCta": "Ler a história",
+      "recordEyebrow": "Fabricante a fabricante",
+      "recordTitle": "O registro da carreira",
+      "recordDesc": "Cada fabricante por onde esta carreira passou, cada um com seu capítulo e o que o trabalho de fato era.",
+      "recordCta": "Abrir o registro"
     }
   },
   "endorsements": {
@@ -8786,7 +8794,6 @@
     "openHub": "Abrir hub",
     "comingSoon": "O hub abre com a sua primeira ferramenta",
     "note": "Cada hub é o único lugar que reúne tudo o que o site tem para um fornecedor: as ferramentas, agrupadas por família de produto, e a biblioteca completa de artigos daquele fornecedor, em uma só página. Os mesmos hubs são alcançáveis pela faixa nas listagens de Ferramentas e Aprender.",
-    "scopeNote": "Estes quatro são os fornecedores cujo treinamento o autor deste site está autorizado a ministrar. Ferramentas e artigos podem referenciar tecnologias de outros fornecedores quando relevante, mas um hub aqui significa uma relação de treinamento autorizado, não apenas cobertura.",
     "metaTitle": "Hubs de fornecedores - ronutz.com",
     "metaDescription": "Os hubs de fornecedores em ronutz.com: F5, Fortinet, Netskope, Extreme Networks, Zscaler e Ping Identity, cada um reunindo todas as ferramentas e artigos daquele fornecedor em uma página.",
     "blurbs": {
@@ -8798,8 +8805,7 @@
       "ping": "Ping Identity e ForgeRock: gestão de acesso no PingOne, PingFederate, PingAccess e na ForgeRock Identity Platform, com SSO, MFA, orquestração de identidade e serviços de diretório em escala corporativa.",
       "checkpoint": "Check Point Quantum e a arquitetura Infinity: gateways de segurança gerenciados a partir de um servidor de gerência separado, com um modelo de política construído sobre camadas, objetos e um banco de dados que é publicado antes de ser instalado. Os guias de estudo do CCSA e do CCSE o acompanham.",
       "nginx": "NGINX como servidor web, proxy reverso, balanceador e cache: a árvore de configuração, a ordem de correspondência de location que decide qual bloco vence, e o comportamento de proxy que surpreende na primeira vez."
-    },
-    "redEduCallout": "Por que esses fornecedores? Porque são as plataformas que Rodolfo é autorizado a ensinar pela <link>Red Education</link>, uma parceira global e premiada de treinamento autorizado: F5, Fortinet, Netskope, Extreme Networks, Ping Identity e Zscaler."
+    }
   },
   "glossary": {
     "title": "Glossário",
@@ -14155,7 +14161,6 @@
     "nameChanges": "Mudanças de nome corporativo",
     "f5CardTitle": "F5, Inc.",
     "f5CardDesc": "De um único balanceador (1996) a uma plataforma de entrega e segurança de aplicações, via mais de 23 aquisições.",
-    "moreSoon": "As linhagens dos demais fabricantes deste site estão sendo pesquisadas. Cada uma só entra no ar quando suas aquisições forem verificadas contra fontes primárias, então um fabricante sem página aqui apenas ainda não foi feito.",
     "titleFor": "Linhagem da {vendor}",
     "backToHub": "Voltar para {vendor}",
     "introFor": "Do que a {vendor} é feita, e quem a fez. Cada aquisição abaixo é verificada contra fontes primárias, com a linha de produto em que ela se transformou onde essa ligação é documentada, e não inferida."

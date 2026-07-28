@@ -6319,7 +6319,7 @@
     },
     "platforms": {
       "title": "The platforms, taught in depth",
-      "body": "Being an authorized instructor for these four means I can teach each one properly and compare them honestly. These are the platforms I am authorized to teach.",
+      "body": "Being an authorized instructor for these vendors means I can teach each one properly and compare them honestly.",
       "f5": "BIG-IP across the full instructor-led curriculum: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automation, and troubleshooting.",
       "fortinet": "Fortinet certified training, including the FCP track.",
       "extreme": "Extreme Networks switching, SD-WAN, and API and automation tracks, across installation, configuration, management, and troubleshooting.",
@@ -6369,7 +6369,15 @@
       "endorsementsEyebrow": "In their words",
       "endorsementsTitle": "Endorsements",
       "endorsementsDesc": "Recommendations from colleagues, partners, and students across two decades of training, quoted verbatim.",
-      "endorsementsCta": "Read the endorsements"
+      "endorsementsCta": "Read the endorsements",
+      "historyEyebrow": "The long version",
+      "historyTitle": "Read the full history",
+      "historyDesc": "Thirty years told properly: the companies, the technologies, and the turns that were not planned.",
+      "historyCta": "Read the history",
+      "recordEyebrow": "Vendor by vendor",
+      "recordTitle": "The career record",
+      "recordDesc": "Every vendor this career ran through, each with its own chapter and what the work actually was.",
+      "recordCta": "Open the record"
     }
   },
   "endorsements": {
@@ -8786,7 +8794,6 @@
     "openHub": "Open hub",
     "comingSoon": "Hub opens with its first tool",
     "note": "Each hub is the single place that gathers everything the site holds for a vendor: the tools, grouped by product family, and the full article library for that vendor, on one page. The same hubs are reachable from the strip on the Tools and Learn listings.",
-    "scopeNote": "These four are the vendors whose training this site's author is authorized to deliver. Tools and articles may reference other vendors' technologies where relevant, but a hub here means an authorized-training relationship, not just coverage.",
     "metaTitle": "Vendor hubs - ronutz.com",
     "metaDescription": "The vendor hubs on ronutz.com: F5, Fortinet, Netskope, Extreme Networks, Zscaler, and Ping Identity, each gathering every tool and article for that vendor on one page.",
     "blurbs": {
@@ -8798,8 +8805,7 @@
       "ping": "Ping Identity and ForgeRock: access management across PingOne, PingFederate, PingAccess, and the ForgeRock Identity Platform, with SSO, MFA, identity orchestration, and directory services at enterprise scale.",
       "checkpoint": "Check Point Quantum and the Infinity architecture: security gateways managed from a separate management server, with a policy model built on layers, objects and a database that is published before it is installed. The CCSA and CCSE study guides follow it.",
       "nginx": "NGINX as web server, reverse proxy, load balancer and cache: the configuration tree, the location matching order that decides which block wins, and the proxying behaviour that surprises people the first time."
-    },
-    "redEduCallout": "Why these vendors? Because they are the platforms Rodolfo is authorized to teach through <link>Red Education</link>, a global award-winning authorized training partner: F5, Fortinet, Netskope, Extreme Networks, Ping Identity, and Zscaler."
+    }
   },
   "glossary": {
     "title": "Glossary",
@@ -14155,7 +14161,6 @@
     "nameChanges": "Corporate name changes",
     "f5CardTitle": "F5, Inc.",
     "f5CardDesc": "From one load balancer (1996) to an app delivery and security platform, via 23+ acquisitions.",
-    "moreSoon": "Lineages for the other vendors on this site are being researched. Each ships only once its acquisitions are verified against primary sources, so a vendor with no page here simply has not been done yet.",
     "titleFor": "{vendor} lineage",
     "backToHub": "Back to {vendor}",
     "introFor": "What {vendor} is made of, and who made it. Every acquisition below is verified against primary sources, with the product line it turned into where that connection is documented rather than inferred."

@@ -91,34 +91,6 @@ export default async function AboutPage({
           </div>
         </section>
 
-        {/* --- CREDENTIALS & ENDORSEMENTS (featured; the credibility signals
-            that used to sit in the primary nav now lead the About page, where
-            they read as a professional showcase rather than utility nav). --- */}
-        <section className="section about-credibility">
-          <div className="container">
-            <div className="about-cred-grid">
-              <Link href="/about/credentials" className="about-cred-card">
-                <span className="about-cred-eyebrow">{t("credibility.certsEyebrow")}</span>
-                <span className="about-cred-title">{t("credibility.certsTitle")}</span>
-                <span className="about-cred-desc">{t("credibility.certsDesc")}</span>
-                <span className="about-cred-cta">
-                  {t("credibility.certsCta")}
-                  <span aria-hidden="true"> →</span>
-                </span>
-              </Link>
-              <Link href="/endorsements" className="about-cred-card">
-                <span className="about-cred-eyebrow">{t("credibility.endorsementsEyebrow")}</span>
-                <span className="about-cred-title">{t("credibility.endorsementsTitle")}</span>
-                <span className="about-cred-desc">{t("credibility.endorsementsDesc")}</span>
-                <span className="about-cred-cta">
-                  {t("credibility.endorsementsCta")}
-                  <span aria-hidden="true"> →</span>
-                </span>
-              </Link>
-            </div>
-          </div>
-        </section>
-
         {/* --- WHAT I DO NOW --- */}
         <section className="section">
           <div className="container section-narrow">
@@ -164,16 +136,6 @@ export default async function AboutPage({
               <li className="about-platform">
                 <span className="about-platform-name">Netskope</span>
                 <span className="about-platform-detail">{t("platforms.netskope")}</span>
-              </li>
-              {/* Ping Identity + Zscaler: instructor authorizations cleared 2026
-                  (PRIME 2026-07-15); course catalogs to follow under Training. */}
-              <li className="about-platform">
-                <span className="about-platform-name">Ping Identity</span>
-                <span className="about-platform-detail">{t("platforms.ping")}</span>
-              </li>
-              <li className="about-platform">
-                <span className="about-platform-name">Zscaler</span>
-                <span className="about-platform-detail">{t("platforms.zscaler")}</span>
               </li>
             </ul>
           </div>
@@ -233,15 +195,47 @@ export default async function AboutPage({
               </li>
             </ol>
 
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "1.5rem" }}>
-              <Link href="/about/history" className="btn btn-secondary">
-                {t("path.fullHistory")}
+            {/* Four cards where three buttons used to be (PRIME 2026-07-27).
+                Certifications and endorsements moved down from the top of the
+                page to join them: they are where a reader goes AFTER the career
+                timeline, not before it. The vendor-lineage link is gone - it
+                belongs on the vendor hubs, which is where it now lives. */}
+            <div className="about-cred-grid" style={{ marginTop: "2rem" }}>
+              <Link href="/about/history" className="about-cred-card">
+                <span className="about-cred-eyebrow">{t("credibility.historyEyebrow")}</span>
+                <span className="about-cred-title">{t("credibility.historyTitle")}</span>
+                <span className="about-cred-desc">{t("credibility.historyDesc")}</span>
+                <span className="about-cred-cta">
+                  {t("credibility.historyCta")}
+                  <span aria-hidden="true"> →</span>
+                </span>
               </Link>
-              <Link href="/about/vendors" className="btn btn-secondary">
-                {t("path.vendorsLink")}
+              <Link href="/about/vendors" className="about-cred-card">
+                <span className="about-cred-eyebrow">{t("credibility.recordEyebrow")}</span>
+                <span className="about-cred-title">{t("credibility.recordTitle")}</span>
+                <span className="about-cred-desc">{t("credibility.recordDesc")}</span>
+                <span className="about-cred-cta">
+                  {t("credibility.recordCta")}
+                  <span aria-hidden="true"> →</span>
+                </span>
               </Link>
-              <Link href="/f5/vendor-lineage" className="btn btn-secondary">
-                {t("path.lineagesLink")}
+              <Link href="/about/credentials" className="about-cred-card">
+                <span className="about-cred-eyebrow">{t("credibility.certsEyebrow")}</span>
+                <span className="about-cred-title">{t("credibility.certsTitle")}</span>
+                <span className="about-cred-desc">{t("credibility.certsDesc")}</span>
+                <span className="about-cred-cta">
+                  {t("credibility.certsCta")}
+                  <span aria-hidden="true"> →</span>
+                </span>
+              </Link>
+              <Link href="/endorsements" className="about-cred-card">
+                <span className="about-cred-eyebrow">{t("credibility.endorsementsEyebrow")}</span>
+                <span className="about-cred-title">{t("credibility.endorsementsTitle")}</span>
+                <span className="about-cred-desc">{t("credibility.endorsementsDesc")}</span>
+                <span className="about-cred-cta">
+                  {t("credibility.endorsementsCta")}
+                  <span aria-hidden="true"> →</span>
+                </span>
               </Link>
             </div>
           </div>

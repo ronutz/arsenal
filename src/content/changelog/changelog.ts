@@ -52,6 +52,18 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-27T23:40:17-03:00",
+    kind: "content",
+    title: "The About page puts the career first and the credentials after it",
+    body: "Certifications and endorsements used to be the first thing on the About page, two cards sitting above everything else. They have moved down to join the links at the end of the career timeline, which is where a reader actually wants them: after the thirty years, not before. Those links became cards at the same time, so the four now read as one set rather than a row of buttons under a wall of text. The platforms section lost two entries and a sentence. Ping Identity and Zscaler are no longer listed among the platforms taught in depth, and the line claiming the section listed everything the author is authorized to teach is gone, because that claim needed maintaining every time the site covered another vendor and it was easier to stop making it. The vendor lineage link went too, since lineages now live on the vendor hubs where the rest of each vendor's material is.",
+  },
+  {
+    date: "2026-07-27T23:20:19-03:00",
+    kind: "infra",
+    title: "Vendor hubs stop burying their own tools",
+    body: "A vendor hub opened with every destination rendered the same way and stacked in one grid. On the F5 page that meant eleven cards before the tools; on Fortinet's it meant twenty, because Fortinet has nineteen certifications and each one had a card of its own. The navigation had become taller than the content it was navigating to. The doors are now grouped by what they are and sized by how many there are. The vendor's story and its corporate lineage stay as full cards, because there are at most two. The certifications become a row of compact chips, because twenty cards is a wall and twenty chips is a list. Guided reading paths stay as cards, since there are only ever a handful. The cards themselves also carry less vertical padding than their content needed. Two sections have gone from the vendor hubs index at the same time, one asking why these vendors and one describing them as four when there are now eight, and the note at the foot of every lineage page promising that other lineages were being researched has gone too, since all eight now exist.",
+  },
+  {
     date: "2026-07-27T21:57:50-03:00",
     kind: "content",
     title: "Every vendor hub now has a lineage, and the lineages go one level deeper",
