@@ -1,0 +1,59 @@
+---
+slug: nginx-limiting-connections-and-rate
+title: "Limitar requisições, conexões e banda no NGINX: baldes furados e o burst que surpreende"
+summary: "Três limites diferentes, três diretivas diferentes, e um mecanismo comum que vale entender antes de ajustar. O limitador de requisições é um balde furado, e não uma cota por segundo, e burst com nodelay muda seu comportamento de formas que o nome não sugere."
+concepts: ["nginx", "limit_req", "limit_conn", "limit_rate", "limitação de taxa", "balde furado", "burst", "nodelay", "zona de memória compartilhada", "controle de acesso", "allow", "deny", "f5"]
+relatedTools: ["nginx-location-matcher"]
+sub: nginx
+relatedArticles: ["nginx-configuration-tree-and-includes", "nginx-location-matching-order"]
+category: networking
+order: 122
+status: reviewed
+updated: "2026-07-27"
+---
+
+Três limites são confundidos entre si porque todos soam como "diminua isso". Eles restringem coisas diferentes, e só um é limitador de taxa no sentido que as pessoas costumam querer dizer.
+
+## Requisições, conexões, banda
+
+**`limit_req`** limita com que frequência requisições chegam. Esse é o limitador de taxa.
+
+**`limit_conn`** limita quantas conexões estão abertas ao mesmo tempo a partir de uma chave. Um cliente abrindo cinquenta conexões simultâneas é um problema diferente de um fazendo cinquenta requisições rapidamente, e essa é a diretiva para isso.
+
+**`limit_rate`** limita banda por conexão, em bytes por segundo. Não restringe quantas requisições chegam, só a velocidade de entrega de cada resposta. Um cliente pode derrotá-la abrindo mais conexões, que é exatamente por que ela anda junto com `limit_conn`.
+
+Os três precisam de uma chave — normalmente `$binary_remote_addr` em vez de `$remote_addr`, porque a forma binária é menor e o espaço da zona é finito.
+
+## O limitador de requisições é um balde furado
+
+`limit_req_zone` com `rate=10r/s` **não** significa "dez requisições a cada segundo, depois zera". Significa uma requisição a cada cem milissegundos. Requisições chegando mais rápido que isso são excedentes, de imediato, mesmo que o segundo esteja no começo.
+
+Então dez requisições disparadas simultaneamente contra um limite de `10r/s` não passam todas. Uma passa e nove são rejeitadas, porque chegaram mais rápido que uma a cada cem milissegundos. Esse resultado surpreende quase todo mundo na primeira vez.
+
+## O que o burst de fato faz
+
+`burst=20` acrescenta uma fila de vinte vagas. Requisições excedentes não são rejeitadas enquanto houver espaço na fila — elas **esperam**, e são liberadas na taxa configurada.
+
+Essa é a parte que o nome esconde. Por padrão, `burst` atrasa; não permite uma rajada mais rápida. Um cliente enviando vinte requisições de uma vez contra `10r/s burst=20` recebe vinte respostas bem-sucedidas espalhadas por dois segundos, e para esse cliente o servidor simplesmente parece lento.
+
+**`nodelay`** muda isso para o que as pessoas normalmente queriam: requisições enfileiradas são encaminhadas **imediatamente** em vez de ritmadas, ainda ocupando sua vaga e liberando-a na taxa configurada. Assim uma rajada genuína é absorvida a toda velocidade, e o excesso sustentado segue recusado quando as vagas acabam.
+
+A distinção vale ser dita com clareza. `burst` sozinho suaviza o tráfego. `burst` com `nodelay` tolera picos. Eles produzem experiências bem diferentes para um cliente bem-comportado que por acaso é irregular.
+
+## Restringir acesso
+
+`allow` e `deny` filtram por endereço, e são avaliados **em ordem, primeira correspondência vence**, que é o mesmo formato da maioria das listas de acesso e a mesma armadilha: um `allow` amplo acima de um `deny` específico deixa o deny morto.
+
+O padrão usual termina com `deny all` depois dos allows, porque sem ele qualquer coisa não correspondida é permitida.
+
+Para além de endereços, `auth_basic` cobre credenciais simples, e `satisfy` decide se um cliente precisa passar por toda verificação ou só por uma delas — `satisfy any` é o que deixa um endereço interno entrar sem senha enquanto ainda pede a todos os outros.
+
+## Dimensionar a zona não é formalidade
+
+Cada um desses limitadores guarda estado numa zona de memória compartilhada para que todos os workers vejam os mesmos contadores. Quando a zona enche, o NGINX descarta entradas mais antigas, e clientes descartados deixam de ser acompanhados — o limite para de valer para eles.
+
+Uma zona pequena demais não falha ruidosamente. Ela silenciosamente deixa de fazer seu trabalho para alguns clientes, que é o pior modo de falha possível para um controle que você acrescentou de propósito.
+
+## O que quem estuda precisa saber de cor
+
+`limit_req` limita a taxa de chegada de requisições, `limit_conn` limita conexões simultâneas por chave, e `limit_rate` limita banda por conexão e pode ser derrotada abrindo mais conexões. O limitador de requisições é um balde furado: `10r/s` significa uma a cada cem milissegundos, então dez requisições simultâneas não passam todas. `burst` acrescenta vagas de fila e por PADRÃO ATRASA as requisições enfileiradas em vez de permitir uma rajada mais rápida; acrescentar `nodelay` as encaminha de imediato ainda consumindo vagas, que é o que a maioria queria dizer. `allow` e `deny` são primeira-correspondência-vence na ordem escrita e precisam de um `deny all` final para fechar. Tudo isso vive numa zona de memória compartilhada, e uma zona que enche descarta em silêncio.

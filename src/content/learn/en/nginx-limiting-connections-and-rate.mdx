@@ -1,0 +1,59 @@
+---
+slug: nginx-limiting-connections-and-rate
+title: "Limiting requests, connections and bandwidth in NGINX: leaky buckets and the burst that surprises people"
+summary: "Three different limits, three different directives, and one shared mechanism worth understanding before you tune it. The request limiter is a leaky bucket, not a quota per second, and burst plus nodelay change its behaviour in ways the names do not suggest."
+concepts: ["nginx", "limit_req", "limit_conn", "limit_rate", "rate limiting", "leaky bucket", "burst", "nodelay", "shared memory zone", "access control", "allow", "deny", "f5"]
+relatedTools: ["nginx-location-matcher"]
+sub: nginx
+relatedArticles: ["nginx-configuration-tree-and-includes", "nginx-location-matching-order"]
+category: networking
+order: 122
+status: reviewed
+updated: "2026-07-27"
+---
+
+Three limits get confused with each other because they all sound like "slow this down". They constrain different things, and only one of them is a rate limiter in the sense people usually mean.
+
+## Requests, connections, bandwidth
+
+**`limit_req`** limits how often requests arrive. This is the rate limiter.
+
+**`limit_conn`** limits how many connections are open at once from one key. A client opening fifty simultaneous connections is a different problem from one making fifty requests quickly, and this is the directive for it.
+
+**`limit_rate`** limits bandwidth per connection, in bytes per second. It does not restrict how many requests arrive, only how fast each response is delivered. A client can defeat it by opening more connections, which is exactly why it pairs with `limit_conn`.
+
+All three need a key — usually `$binary_remote_addr` rather than `$remote_addr`, because the binary form is smaller and zone space is finite.
+
+## The request limiter is a leaky bucket
+
+`limit_req_zone` with `rate=10r/s` does **not** mean "ten requests each second, then reset". It means one request every hundred milliseconds. Requests arriving faster than that are excess, immediately, even if the second is young.
+
+So ten requests fired simultaneously against a `10r/s` limit do not all pass. One passes and nine are rejected, because they arrived faster than one per hundred milliseconds. That result surprises almost everyone the first time.
+
+## What burst actually does
+
+`burst=20` adds a queue of twenty slots. Excess requests are not rejected while there is room in the queue — they **wait**, and are released at the configured rate.
+
+That is the part the name hides. By default `burst` delays; it does not allow a faster burst. A client sending twenty requests at once against `10r/s burst=20` gets twenty successful responses spread over two seconds, and to that client the server simply looks slow.
+
+**`nodelay`** changes it to what people usually wanted: queued requests are forwarded **immediately** rather than being paced, while still occupying their slot and freeing it at the configured rate. So a genuine burst is absorbed at full speed, and sustained excess is still refused once the slots are gone.
+
+The distinction is worth stating plainly. `burst` alone smooths traffic. `burst` with `nodelay` tolerates spikes. They produce very different experiences for a well-behaved client that happens to be bursty.
+
+## Restricting access
+
+`allow` and `deny` filter by address, and they are evaluated **in order, first match wins**, which is the same shape as most access lists and the same trap: a broad `allow` above a specific `deny` makes the deny dead.
+
+The usual pattern ends with `deny all` after the allows, because without it anything not matched is permitted.
+
+For anything beyond addresses, `auth_basic` covers simple credentials, and `satisfy` decides whether a client must pass every check or just one of them — `satisfy any` is what lets an internal address in without a password while still prompting everyone else.
+
+## Zone sizing is not a formality
+
+Every one of these limiters stores state in a shared memory zone so all workers see the same counters. When the zone fills, NGINX evicts older entries, and evicted clients are no longer being tracked — the limit stops applying to them.
+
+A zone that is too small does not fail loudly. It quietly stops doing its job for some clients, which is the worst possible failure mode for a control you added on purpose.
+
+## What a learner should be able to state cold
+
+`limit_req` limits request arrival rate, `limit_conn` limits simultaneous connections from one key, and `limit_rate` limits bandwidth per connection and can be defeated by opening more connections. The request limiter is a leaky bucket: `10r/s` means one per hundred milliseconds, so ten simultaneous requests do not all pass. `burst` adds queue slots and by DEFAULT DELAYS the queued requests rather than allowing a faster burst; adding `nodelay` forwards them immediately while still consuming slots, which is what most people meant. `allow` and `deny` are first-match-wins in written order and need a final `deny all` to be closed. All of it lives in a shared memory zone, and a zone that fills evicts silently.

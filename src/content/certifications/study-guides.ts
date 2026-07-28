@@ -11621,7 +11621,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.2",
             text: "Explain the NGINX configuration directory structure",
-            relatedArticles: [],
+            relatedArticles: ["nginx-configuration-tree-and-includes"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -11634,7 +11634,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.3",
             text: "Demonstrate how to manage user permissions",
-            relatedArticles: [],
+            relatedArticles: ["nginx-configuration-tree-and-includes"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -11647,7 +11647,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.4",
             text: "Manage shared memory zones",
-            relatedArticles: [],
+            relatedArticles: ["nginx-configuration-tree-and-includes", "nginx-limiting-connections-and-rate"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -11712,7 +11712,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.2",
             text: "Configure NGINX as a content cache server",
-            relatedArticles: [],
+            relatedArticles: ["nginx-configuration-tree-and-includes"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -11794,7 +11794,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.1",
             text: "Demonstrate how to manage connections and bandwidth",
-            relatedArticles: [],
+            relatedArticles: ["nginx-limiting-connections-and-rate"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -11807,7 +11807,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.2",
             text: "Demonstrate how to restrict access",
-            relatedArticles: [],
+            relatedArticles: ["nginx-limiting-connections-and-rate"],
             relatedTools: ["http-methods-comparison", "url-inspector"],
             manualLinks: [],
             keyPoints: [
@@ -11820,7 +11820,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.3",
             text: "Demonstrate how to configure logging",
-            relatedArticles: [],
+            relatedArticles: ["nginx-reload-signals-and-first-troubleshooting"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -11897,7 +11897,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.1",
             text: "Demonstrate how to stop, start, and reload NGINX binary",
-            relatedArticles: [],
+            relatedArticles: ["nginx-reload-signals-and-first-troubleshooting"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -11909,7 +11909,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "1.2",
             text: "Troubleshoot basic use cases",
-            relatedArticles: [],
+            relatedArticles: ["nginx-reload-signals-and-first-troubleshooting", "nginx-location-matching-order"],
             relatedTools: ["curl-command-builder"],
             manualLinks: [],
             keyPoints: [
@@ -11970,6 +11970,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -11978,6 +11979,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -11986,6 +11988,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12045,6 +12048,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
         ],
@@ -12064,6 +12068,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12118,6 +12123,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12172,6 +12178,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12215,6 +12222,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12374,6 +12382,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12382,6 +12391,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12390,6 +12400,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12449,6 +12460,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
         ],
@@ -12468,6 +12480,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12522,6 +12535,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12568,6 +12582,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12611,6 +12626,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -12840,6 +12856,7 @@ export const studyGuides: StudyGuide[] = [
             relatedArticles: [],
             relatedTools: [],
             manualLinks: [],
+            gap: true,
             keyPoints: [],
           },
           {
@@ -13897,6 +13914,7 @@ export const studyGuides: StudyGuide[] = [
         relatedArticles: [],
         relatedTools: [],
         manualLinks: [],
+        gap: true,
       },
       {
         id: "1.02",
@@ -15652,6 +15670,7 @@ export const studyGuides: StudyGuide[] = [
         relatedArticles: [],
         relatedTools: [],
         manualLinks: [],
+        gap: true,
       },
       {
         id: "1.02",
@@ -16453,6 +16472,7 @@ export const studyGuides: StudyGuide[] = [
         relatedArticles: [],
         relatedTools: [],
         manualLinks: [],
+        gap: true,
       },
       {
         id: "1.02",
@@ -18150,6 +18170,7 @@ export const studyGuides: StudyGuide[] = [
         relatedArticles: [],
         relatedTools: [],
         manualLinks: [],
+        gap: true,
       },
       {
         id: "4.02",
@@ -18290,6 +18311,7 @@ export const studyGuides: StudyGuide[] = [
         relatedArticles: [],
         relatedTools: [],
         manualLinks: [],
+        gap: true,
       },
       {
         id: "1.02",
@@ -18770,6 +18792,7 @@ export const studyGuides: StudyGuide[] = [
         relatedArticles: [],
         relatedTools: [],
         manualLinks: [],
+        gap: true,
       },
       {
         id: "4.02",
@@ -19001,6 +19024,7 @@ export const studyGuides: StudyGuide[] = [
         relatedArticles: [],
         relatedTools: [],
         manualLinks: [],
+        gap: true,
       },
       {
         id: "1.02",
@@ -19175,6 +19199,7 @@ export const studyGuides: StudyGuide[] = [
         relatedArticles: [],
         relatedTools: [],
         manualLinks: [],
+        gap: true,
       },
       {
         id: "2.02",
@@ -19849,6 +19874,7 @@ export const studyGuides: StudyGuide[] = [
         relatedArticles: [],
         relatedTools: [],
         manualLinks: [],
+        gap: true,
       },
       {
         id: "4.02",
@@ -20113,6 +20139,38 @@ const CERT_HUB_ORDER: Record<string, number> = {
   "fortinet-nse-8": 17,
   "fortinet-industry-ot-security": 18,
   "fortinet-industry-mssp-security": 19,
+  // Check Point, in the order the programme is actually walked rather than
+  // alphabetically (PRIME 2026-07-27). Without an entry here everything falls
+  // to rank 999 and sorts by NAME, which buried CCSA and CCSE in the middle of
+  // the list and scattered the five HackingPoint courses through it.
+  //
+  // The grouping is the point:
+  //   1-2   the core ladder - the two exams that open the path
+  //   3-4   the Master levels, which continue that ladder and have NO exam of
+  //         their own: they are awarded for accumulating accreditations
+  //   5-13  the Infinity Specialist Accreditations, in Check Point's own FAQ
+  //         roster order - these are the building blocks that reach 3 and 4
+  //   14-18 HackingPoint, which is NOT on that path at all, ordered by the
+  //         course progression Check Point describes (infrastructure first,
+  //         since it is the recommended prerequisite for the advanced class)
+  "checkpoint-ccsa": 1,
+  "checkpoint-ccse": 2,
+  "checkpoint-ccsm": 3,
+  "checkpoint-ccsm-elite": 4,
+  "checkpoint-ccas": 5,
+  "checkpoint-ccme": 6,
+  "checkpoint-cccs": 7,
+  "checkpoint-cces": 8,
+  "checkpoint-ccms": 9,
+  "checkpoint-ccvs": 10,
+  "checkpoint-ccta": 11,
+  "checkpoint-ccte": 12,
+  "checkpoint-ctps": 13,
+  "checkpoint-ccpe-i": 14,
+  "checkpoint-ccpe-ai": 15,
+  "checkpoint-ccpe-w": 16,
+  "checkpoint-ccpe-iot": 17,
+  "checkpoint-ccpe-c": 18,
   // Extreme Certified Professional tracks
   "extreme-ecp-switching": 1,
   "extreme-ecp-fabric": 2,

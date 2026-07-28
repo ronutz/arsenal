@@ -1,0 +1,67 @@
+---
+slug: nginx-configuration-tree-and-includes
+title: "A árvore de configuração do NGINX: o que é incluído, em que ordem, e de quem é o worker"
+summary: "Um arquivo, um diretório de fragmentos, e uma ordem de inclusão que decide qual diretiva vence. Mais as duas perguntas de propriedade que explicam a maioria das falhas de permissão: com qual usuário o master roda, com qual os workers rodam, e por que são deliberadamente diferentes."
+concepts: ["nginx", "nginx.conf", "include", "configuração", "bloco http", "bloco server", "processo worker", "processo master", "diretiva user", "zona de memória compartilhada", "f5"]
+relatedTools: ["nginx-location-matcher"]
+sub: nginx
+relatedArticles: ["nginx-location-matching-order"]
+category: networking
+order: 121
+status: reviewed
+updated: "2026-07-27"
+---
+
+O NGINX lê um arquivo. Todo o resto que você edita chega lá porque esse arquivo o puxou, e conhecer o formato dessa árvore é a diferença entre editar o fragmento certo e editar um fragmento que ninguém lê.
+
+## Uma raiz, depois includes
+
+O arquivo principal é o `nginx.conf`. Os pacotes das distribuições então dividem o resto em diretórios e os trazem de volta com `include`, que não faz nada de sofisticado: insere o conteúdo dos arquivos correspondentes naquele ponto do arquivo, como se você os tivesse digitado ali.
+
+Duas convenções dominam. O empacotamento estilo Debian usa `sites-available` para os fragmentos que você escreve e `sites-enabled` para links simbólicos aos que quer ativos, com o include apontando para `sites-enabled`. O estilo Red Hat dispensa a divisão e inclui um diretório `conf.d` diretamente.
+
+A consequência prática é a mesma nos dois: **um arquivo que não é incluído não é lido**. Uma edição num fragmento em `sites-available` sem link simbólico não muda nada, e o NGINX não avisa, porque para ele aquele arquivo não existe.
+
+## O contexto decide o que uma diretiva pode fazer
+
+Diretivas vivem em blocos, e um bloco é um contexto: `main` no topo, depois `events`, depois `http`, depois `server` dentro dele, depois `location` dentro desse. Uma diretiva só é legal nos contextos que sua documentação lista.
+
+A herança corre para baixo. Defina algo em `http` e todo `server` recebe; defina de novo num `server` e esse valor vence ali. A regra que pega as pessoas é que a herança é **por diretiva, não por grupo de diretivas** — algumas substituem um valor herdado, e outras, como `add_header`, param de herdar por completo assim que o filho define uma própria.
+
+## A ordem de inclusão é a ordem dos arquivos
+
+O `include` com curinga expande numa ordem definida, e os fragmentos caem na posição da instrução de include. Dois fragmentos que definem a mesma diretiva no mesmo contexto deixam o último de pé.
+
+Isso importa mais quando um pacote entrega um fragmento padrão. Um `default.conf` que inclui antes do seu e define um `server` para o mesmo nome e porta pode silenciosamente ficar com as requisições que você julgava suas, porque o primeiro bloco server correspondente a um par nome-e-porta vence.
+
+## Quem roda como quem
+
+Dois processos, duas identidades.
+
+O **master** inicia como root, e precisa: ele associa as portas privilegiadas e abre os arquivos de log.
+
+Os **workers** caem para a conta nomeada pela diretiva `user`, e são eles que de fato leem seu conteúdo. Essa é a divisão que explica a maioria dos problemas de permissão: o master abriu o socket sem dificuldade, então o serviço sobe limpo, e então um worker não consegue ler um arquivo e devolve 403.
+
+Quando um arquivo está ilegível, a pergunta nunca é "o root consegue ler isto" — é se o usuário do worker consegue atravessar cada diretório do caminho *e* ler o arquivo no fim. Um arquivo permissivo dentro de um diretório em que o worker não consegue entrar segue inalcançável.
+
+## Zonas de memória compartilhada
+
+Vários recursos precisam que os workers compartilhem estado em vez de cada um manter o seu: contadores de limitação de taxa, contagens de conexão, metadados de cache, saúde de upstream. Um worker decidindo com seus próprios números aplicaria um limite por worker, e não por servidor.
+
+Então essas diretivas recebem uma **zona**: um nome e um tamanho, alocada uma vez e mapeada em cada worker. `zone=one:10m` é uma região chamada `one` de dez megabytes.
+
+Duas coisas decorrem. O nome é como outras diretivas se referem à mesma região, então definição e uso precisam concordar. E o tamanho é finito — quando uma zona enche, o NGINX começa a descartar entradas mais antigas, o que para um limitador de taxa significa que ele silenciosamente deixa de acompanhar alguns clientes. Dimensionar não é formalidade.
+
+## O que conferir primeiro
+
+**O arquivo está realmente incluído?** Trace a partir do `nginx.conf`. Um fragmento que ninguém lê é a hora perdida mais comum por aqui.
+
+**A diretiva é legal naquele contexto?** O NGINX diz com todas as letras quando não é.
+
+**Algo posterior sobrescreveu?** Mesma diretiva, mesmo contexto, posição posterior.
+
+**O usuário do worker consegue ler?** Não o root — o worker.
+
+## O que quem estuda precisa saber de cor
+
+O NGINX lê o `nginx.conf` e todo o resto chega por `include`, que cola o conteúdo no lugar, então um fragmento não incluído não é lido de forma alguma. Diretivas só são legais nos contextos documentados e herdam para baixo por diretiva, e não como grupo. O processo master roda como root para associar portas privilegiadas e abrir logs, enquanto os workers caem para a conta `user` e são eles que leem o conteúdo, e é por isso que uma subida limpa seguida de 403 é questão de permissão do worker, não do root. Zonas de memória compartilhada existem para que os workers compartilhem contadores em vez de cada um aplicar um limite sozinho; são nomeadas para que as diretivas se refiram à mesma região, e finitas, então uma zona cheia começa a descartar.

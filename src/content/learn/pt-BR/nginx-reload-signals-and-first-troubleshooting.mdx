@@ -1,0 +1,65 @@
+---
+slug: nginx-reload-signals-and-first-troubleshooting
+title: "Recarregar o NGINX sem derrubar tráfego, e as primeiras quatro coisas a conferir quando quebra"
+summary: "Um reload não é um restart: o master valida a nova configuração, sobe novos workers, e deixa os antigos terminarem o que estavam fazendo. Saber isso, e saber qual log responde qual pergunta, resolve a maioria dos problemas de NGINX antes que fiquem interessantes."
+concepts: ["nginx", "reload", "sinal", "SIGHUP", "gracioso", "nginx -t", "log de erro", "log de acesso", "processo worker", "investigação", "f5"]
+relatedTools: ["nginx-location-matcher"]
+sub: nginx
+relatedArticles: ["nginx-configuration-tree-and-includes", "nginx-location-matching-order"]
+category: networking
+order: 123
+status: reviewed
+updated: "2026-07-27"
+---
+
+A maior parte da investigação em NGINX é curta, desde que você comece no lugar certo. O problema é que o primeiro movimento óbvio — reiniciar e ver — é justamente o que perde informação e derruba conexões.
+
+## Teste antes de recarregar
+
+`nginx -t` interpreta a configuração e reporta o primeiro problema com arquivo e número de linha. Não muda nada.
+
+Rode antes de cada reload, sem exceção. Um reload com configuração quebrada é recusado, o que é seguro, mas você descobre no momento em que tentava mudar algo, e não no momento em que terminou de escrever.
+
+## Um reload não é um restart
+
+Envie um reload e o processo master valida a nova configuração, e se estiver boa, sobe **novos** processos worker com ela. Os workers antigos param de aceitar novas conexões e seguem servindo as que já têm até terminarem, e então saem.
+
+Nada em trânsito é derrubado. É por isso que mudanças de configuração em produção são rotina em vez de evento, e é a coisa mais útil a saber sobre operar NGINX.
+
+Um **restart** para tudo e sobe de novo. Conexões morrem. É necessário quando o próprio master precisa mudar — um binário novo, ou uma diretiva que só o master lê na inicialização — e não fora disso.
+
+Vale saber para a prova e para ler material mais antigo: reload é `SIGHUP` ao master, encerramento gracioso é `SIGQUIT`, encerramento imediato é `SIGTERM`, e reabertura de logs é `SIGUSR1`. Um gerenciador de serviços embrulha isso, mas os sinais são o que ele envia.
+
+## Reabrir logs
+
+Rotacionar um log renomeando o arquivo não faz o NGINX escrever no arquivo novo. O worker mantém um descritor aberto e segue escrevendo no renomeado, então o arquivo novo fica vazio e o espaço em disco nunca é de fato recuperado.
+
+A correção é dizer ao NGINX para reabrir seus logs depois da renomeação. Toda configuração sensata de logrotate para NGINX faz isso, que é por que funciona quando você não pensou a respeito, e por que falha em silêncio quando alguém rotaciona à mão.
+
+## Qual log responde qual pergunta
+
+**O log de erro** guarda o motivo. Falhas ao subir, negativas de permissão, problemas de conexão com upstream, falhas de handshake TLS. Seu nível é configurável, e `debug` está disponível se a compilação suportar — mas seja deliberado, porque a saída de debug é enorme.
+
+**O log de acesso** guarda o registro. Qual requisição, qual status, quanto tempo levou, qual o tamanho. É onde você aprende *o que* aconteceu.
+
+A divisão vale ser internalizada: o log de acesso diz que uma requisição devolveu 502, e o log de erro diz por quê.
+
+## As primeiras quatro conferências
+
+**A configuração é válida?** `nginx -t`, sempre primeiro.
+
+**Está rodando, e como quem?** O master deve ser root e os workers a conta `user`. Um master ausente significa que nunca subiu, e o log de erro dirá por quê.
+
+**O worker consegue ler?** Quase todo 403 que não é um `deny` explícito é problema de permissão do usuário worker — o caminho inteiro, não só o arquivo.
+
+**Qual location de fato casou?** Para qualquer coisa de roteamento, essa é a pergunta, e a resposta frequentemente não é o bloco que você esperava. O [comparador de location](/tools/nginx-location-matcher) deste site roda o algoritmo de seleção documentado e mostra o percurso.
+
+## Dois códigos de status que vale ler direito
+
+**502** significa que o NGINX alcançou o upstream e recebeu algo inutilizável, ou não conseguiu conectar. O problema normalmente está atrás do NGINX, não nele.
+
+**504** significa que o upstream aceitou a conexão e não respondeu a tempo. Isso é timeout, e a correção é o upstream ser mais rápido ou o timeout ser maior — decidir qual é o trabalho de verdade.
+
+## O que quem estuda precisa saber de cor
+
+`nginx -t` valida sem mudar nada e deve preceder cada reload. Um reload sobe novos workers com a nova configuração e deixa os antigos terminarem suas conexões existentes, então nada em trânsito é derrubado; um restart derruba conexões e só é necessário quando o próprio master precisa mudar. Reload é SIGHUP, encerramento gracioso SIGQUIT, imediato SIGTERM, reabertura de log SIGUSR1. Renomear um arquivo de log não redireciona a saída — o NGINX precisa ser avisado para reabrir. O log de erro guarda o motivo e o log de acesso guarda o registro. Para um 403 suspeite de permissões do usuário worker no caminho inteiro; um 502 significa que o upstream devolveu algo inutilizável ou estava inalcançável, e um 504 que não respondeu a tempo.

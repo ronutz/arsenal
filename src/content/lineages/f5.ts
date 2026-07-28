@@ -29,6 +29,21 @@ export interface Acquisition {
   became?: string;
   /** Optional footnote for a figure discrepancy or date nuance. */
   sourceNote?: string;
+  /**
+   * What the ACQUIRED company had itself acquired before being bought.
+   *
+   * PRIME 2026-07-27. A lineage that stops at one level is misleading in this
+   * industry, because the interesting technology is often two or three owners
+   * deep: Extreme's fabric came from Avaya, which got it from Nortel, which
+   * got it from Bay Networks, which was Wellfleet and SynOptics. Listing only
+   * "Extreme bought Avaya's networking business" hides the part that explains
+   * the product.
+   *
+   * Kept to ONE level deliberately. Two levels is the difference between a
+   * lineage and a family tree, and the third level is almost never what
+   * anyone came to find out.
+   */
+  subAcquisitions?: { year: number; name: string; price?: string; what: string }[];
 }
 
 export interface VendorLineage {
@@ -85,7 +100,7 @@ export const f5Lineage: VendorLineage = {
     { year: 2013, name: "Versafe", price: "$91.7M", what: "Anti-fraud, anti-phishing and anti-malware for web and mobile.", sourceNote: "SEC 10-K FY2013: $91.7M (some sources cite ~$92M)." },
     { year: 2014, name: "Defense.NET", price: "$49.4M", what: "Cloud-based DDoS mitigation as a service.", sourceNote: "Widely reported at $49.4M." },
     { year: 2015, name: "Lyatiss / CloudWeaver", price: "undisclosed", what: "Application-defined networking for the cloud." },
-    { year: 2019, name: "NGINX", price: "$670M", what: "The company behind the widely used open-source web and application server.", became: "NGINX Plus and the modern app-services portfolio." },
+    { year: 2019, name: "NGINX", price: "$670M", what: "The company behind the widely used open-source web and application server.", became: "NGINX Plus and the modern app-services portfolio.", subAcquisitions: [{ year: 2011, name: "Nginx, Inc. is formed around the project", what: "The software predates the company by seven years: Igor Sysoev wrote it in his own time from 2002 and released it in 2004, and the company was registered only in 2011. F5 bought a company built around software that was already everywhere." }] },
     { year: 2020, name: "Shape Security", price: "$1B", what: "AI-driven bot detection and online fraud prevention.", sourceNote: "Announced December 2019; closed January 2020." },
     { year: 2021, name: "Volterra", price: "$500M", what: "Edge and multi-cloud application services.", became: "The basis of F5 Distributed Cloud Services." },
     { year: 2021, name: "Threat Stack", price: "$68M", what: "Cloud security monitoring and compliance." },

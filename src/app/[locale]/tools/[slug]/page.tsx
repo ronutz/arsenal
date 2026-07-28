@@ -134,6 +134,14 @@ import { manifest as persistManifest } from "@/lib/tools/f5-persistence-method-e
 import LbMethodChooserTool from "@/components/LbMethodChooserTool";
 import ZscalerTunnelChooserTool from "@/components/ZscalerTunnelChooserTool";
 import ZscalerFirewallRuleOrderSimulatorTool from "@/components/ZscalerFirewallRuleOrderSimulatorTool";
+import CheckpointPolicyLayerEvaluatorTool from "@/components/CheckpointPolicyLayerEvaluatorTool";
+import NginxLocationMatcherTool from "@/components/NginxLocationMatcherTool";
+import NginxProxyPassRewriterTool from "@/components/NginxProxyPassRewriterTool";
+import NginxProxyCacheDecisionTool from "@/components/NginxProxyCacheDecisionTool";
+import { manifest as checkpointLayerManifest } from "@/lib/tools/checkpoint-policy-layer-evaluator";
+import { manifest as nginxLocationManifest } from "@/lib/tools/nginx-location-matcher";
+import { manifest as nginxProxyManifest } from "@/lib/tools/nginx-proxy-pass-rewriter";
+import { manifest as nginxCacheManifest } from "@/lib/tools/nginx-proxy-cache-decision";
 import ZscalerSslBypassPlannerTool from "@/components/ZscalerSslBypassPlannerTool";
 import ZdxScoreFactorExplainerTool from "@/components/ZdxScoreFactorExplainerTool";
 import ZccForwardingDecisionExplainerTool from "@/components/ZccForwardingDecisionExplainerTool";
@@ -681,6 +689,22 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "zscaler-firewall-rule-order-simulator": {
     Component: ZscalerFirewallRuleOrderSimulatorTool,
     sources: zscalerFwManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "nginx-proxy-cache-decision": {
+    Component: NginxProxyCacheDecisionTool,
+    sources: nginxCacheManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "nginx-proxy-pass-rewriter": {
+    Component: NginxProxyPassRewriterTool,
+    sources: nginxProxyManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "nginx-location-matcher": {
+    Component: NginxLocationMatcherTool,
+    sources: nginxLocationManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "checkpoint-policy-layer-evaluator": {
+    Component: CheckpointPolicyLayerEvaluatorTool,
+    sources: checkpointLayerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "zscaler-ssl-bypass-planner": {
     Component: ZscalerSslBypassPlannerTool,

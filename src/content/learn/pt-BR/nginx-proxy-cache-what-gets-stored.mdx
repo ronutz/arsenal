@@ -1,0 +1,71 @@
+---
+slug: nginx-proxy-cache-what-gets-stored
+title: "Cache no NGINX: o que é armazenado, o que é servido, e a brecha por onde dados de usuário vazam"
+summary: "Se uma resposta é armazenada e se uma requisição posterior é servida a partir dela são perguntas diferentes com respostas diferentes. O NGINX protege você de cachear uma resposta com cookie, e não protege de servir uma resposta cacheada a uma requisição com cookie. Essa assimetria é por onde um usuário recebe a página de outro."
+concepts: ["nginx", "proxy_cache", "proxy_cache_key", "proxy_cache_valid", "proxy_no_cache", "proxy_cache_bypass", "proxy_ignore_headers", "set-cookie", "chave de cache", "cache", "f5"]
+relatedTools: ["nginx-proxy-cache-decision", "nginx-proxy-pass-rewriter"]
+sub: nginx
+relatedArticles: ["nginx-proxy-pass-uri-rewriting", "nginx-location-matching-order"]
+category: networking
+order: 125
+status: reviewed
+updated: "2026-07-27"
+---
+
+Duas perguntas são tratadas como uma, e não são. Se o NGINX **armazena** uma resposta é decidido pela resposta. Se uma requisição posterior é **servida** com aquela cópia é decidido pela requisição e pela chave de cache. A maioria dos acidentes de cache mora nessa brecha.
+
+## Nada é cacheado até você dizer
+
+O `proxy_cache` nomeando uma zona é o interruptor. Sem ele, toda outra diretiva de cache do arquivo fica inerte, e essa é de longe a razão mais comum de nada ser cacheado — a configuração parece completa porque tem `proxy_cache_valid` e um caminho, mas o interruptor nunca foi acionado.
+
+## O que impede uma resposta de ser armazenada
+
+**O método.** O `proxy_cache_methods` tem como padrão GET e HEAD. Um POST nunca é cacheado a menos que você o adicione deliberadamente, e adicioná-lo deliberadamente raramente é o que se quer.
+
+**`Set-Cookie` na resposta.** O NGINX não armazena uma resposta que define um cookie, presumindo que seja específica do usuário. Esse padrão faz trabalho real: é por isso que uma página de login ou um painel personalizado nunca é cacheado por acidente.
+
+**A instrução da própria origem.** `Cache-Control: no-cache`, `no-store` ou `private`, ou um `Expires` no passado, impedem o armazenamento. A aplicação está dizendo algo sobre a resposta, e por padrão o NGINX escuta.
+
+**Nenhum tempo de vida.** Se nada dá um tempo de vida ao status — nenhum `proxy_cache_valid` correspondente, nenhum cabeçalho de frescor do upstream — não há sob o que armazenar.
+
+**`proxy_no_cache`** com valor não vazio e diferente de zero.
+
+## As duas diretivas que as pessoas trocam
+
+`proxy_no_cache` impede a **escrita**. A resposta é buscada e usada, e nada é armazenado.
+
+`proxy_cache_bypass` pula a **consulta**. A requisição vai ao upstream em vez de ser servida do cache — e o resultado **ainda é armazenado**.
+
+Elas parecem sinônimos e são opostas na metade que importa. Usar bypass onde você queria no_cache enche o cache exatamente com as respostas que você tentava manter fora dele.
+
+## A chave define o que significa "a mesma requisição"
+
+A chave padrão é `$scheme$proxy_host$request_uri`, e `$request_uri` inclui a query string. Então `?page=2` é uma entrada distinta, o que está certo — e também significa que qualquer parâmetro de cache-busting derrota o cache por completo, o que às vezes é uma surpresa na fatura e não nos logs.
+
+Monte uma chave a partir de `$uri` e você descartou a query string. Duas requisições que diferem só na query agora compartilham uma entrada, e uma delas recebe a resposta da outra.
+
+## A assimetria que vaza
+
+Aqui está a parte que vale ler duas vezes.
+
+O NGINX exclui **respostas** com cookie do armazenamento. Ele **não** exclui **requisições** com cookie de serem servidas.
+
+Uma requisição chegando com `Cookie: session=abc` é consultada sob a chave comum. Se existir uma entrada compartilhada, aquele usuário recebe a entrada compartilhada. O NGINX nunca considerou o cookie dele, porque a chave não o mencionava.
+
+Sozinho isso costuma ser inofensivo, porque as respostas personalizadas nunca foram armazenadas. Deixa de ser inofensivo no momento em que alguém acrescenta `proxy_ignore_headers Set-Cookie` — muitas vezes para fazer o cache "funcionar" num site cujo backend define um cookie de sessão em toda resposta.
+
+Agora respostas por usuário são armazenadas sob uma chave que todos os usuários compartilham. A página do primeiro usuário autenticado é servida a todo mundo. Isso não é um ataque exótico; é uma mudança de duas linhas na configuração que parece um ajuste de desempenho.
+
+**Se as respostas variam por usuário, a chave precisa variar por usuário** — `$cookie_session` na chave, ou as respostas mantidas fora do cache por completo. Não existe uma terceira opção em que você ignora `Set-Cookie` e permanece seguro.
+
+## O que conferir quando o cache se comporta mal
+
+**Nada cacheado?** Procure `proxy_cache` primeiro, depois o método, depois se algo fornece um tempo de vida.
+
+**Cacheado quando não deveria?** Procure `proxy_ignore_headers`, e leia o `Cache-Control` do upstream para ver o que ele pediu.
+
+**Conteúdo errado servido?** Compare a chave de cache com tudo aquilo em que a resposta de fato varia. A chave é a definição de "a mesma requisição", e se ela omite algo que importa, o cache está se comportando corretamente e a definição é que está errada.
+
+## O que quem estuda precisa saber de cor
+
+O `proxy_cache` nomeando uma zona é o que liga o cache; sem ele nada mais se aplica. Só GET e HEAD são cacheados por padrão. Uma resposta com `Set-Cookie`, ou com `Cache-Control: no-cache`, `no-store` ou `private`, não é armazenada a menos que esses cabeçalhos sejam ignorados, e um status sem tempo de vida não é armazenado de forma alguma. `proxy_no_cache` impede a escrita enquanto `proxy_cache_bypass` pula a consulta e ainda escreve. A chave define o que conta como a mesma requisição, por padrão inclui a query string, e precisa incluir tudo em que a resposta varia. O NGINX exclui respostas com cookie do armazenamento mas não exclui requisições com cookie de serem servidas, então ignorar `Set-Cookie` sem variar a chave por cookie serve a página de um usuário para todos.

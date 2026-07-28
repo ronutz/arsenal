@@ -1,0 +1,67 @@
+---
+slug: nginx-configuration-tree-and-includes
+title: "The NGINX configuration tree: what includes, in what order, and who owns the worker"
+summary: "One file, a directory of fragments, and an include order that decides which directive wins. Plus the two ownership questions that explain most permission failures: which user the master runs as, which user the workers run as, and why those are deliberately different."
+concepts: ["nginx", "nginx.conf", "include", "configuration", "http block", "server block", "worker process", "master process", "user directive", "shared memory zone", "f5"]
+relatedTools: ["nginx-location-matcher"]
+sub: nginx
+relatedArticles: ["nginx-location-matching-order"]
+category: networking
+order: 121
+status: reviewed
+updated: "2026-07-27"
+---
+
+NGINX reads one file. Everything else you edit gets there because that file pulled it in, and knowing the shape of that tree is the difference between editing the right fragment and editing a fragment nothing reads.
+
+## One root, then includes
+
+The main file is `nginx.conf`. Distribution packages then split the rest into directories and pull them back with `include`, which does nothing clever: it inserts the contents of the matched files at that point in the file, as though you had typed them there.
+
+Two conventions dominate. Debian-style packaging uses `sites-available` for the fragments you write and `sites-enabled` for symlinks to the ones you want active, with the include pointing at `sites-enabled`. Red Hat style skips the split and includes a `conf.d` directory directly.
+
+The practical consequence is the same in both: **a file that is not included is not read**. An edit to a `sites-available` fragment with no symlink changes nothing, and NGINX will not warn you, because as far as it is concerned that file does not exist.
+
+## Context decides what a directive can do
+
+Directives live in blocks, and a block is a context: `main` at the top level, then `events`, then `http`, then `server` inside it, then `location` inside that. A directive is only legal in the contexts its documentation lists.
+
+Inheritance runs downward. Set something in `http` and every `server` gets it; set it again in a `server` and that value wins there. The rule that catches people is that inheritance is **per directive, not per group of directives** — some directives replace an inherited value, and some, like `add_header`, stop inheriting entirely as soon as the child sets one of its own.
+
+## Include order is file order
+
+`include` with a wildcard expands in a defined order, and the fragments land in the position of the include statement. Two fragments that set the same directive in the same context leave the last one standing.
+
+This matters most when a package ships a default fragment. A `default.conf` that includes earlier than yours and sets a `server` for the same name and port can quietly take the requests you thought were yours, because the first matching server block for a name-and-port pair wins.
+
+## Who runs as whom
+
+Two processes, two identities.
+
+The **master** starts as root, and it needs to: it binds the privileged ports and opens the log files.
+
+The **workers** drop to the account named by the `user` directive, and they are what actually reads your content. This is the split that explains most permission problems: the master opened the socket without difficulty, so the service starts cleanly, and then a worker cannot read a file and returns 403.
+
+When a file is unreadable, the question is never "can root read this" — it is whether the worker user can traverse every directory in the path *and* read the file at the end. A permissive file inside a directory the worker cannot enter is still unreachable.
+
+## Shared memory zones
+
+Several features need workers to share state rather than each keeping its own: rate limiting counters, connection counts, cache metadata, upstream health. A worker deciding on its own numbers would enforce a limit per worker rather than per server.
+
+So those directives take a **zone**: a name and a size, allocated once and mapped into every worker. `zone=one:10m` is a region called `one` of ten megabytes.
+
+Two things follow. The name is how other directives refer to the same region, so the definition and the use must agree. And the size is finite — when a zone fills, NGINX starts evicting older entries, which for a rate limiter means it quietly stops tracking some clients. Sizing is not a formality.
+
+## What to check first
+
+**Is the file actually included?** Trace from `nginx.conf` down. A fragment nothing reads is the most common wasted hour here.
+
+**Is the directive legal in that context?** NGINX will tell you plainly if it is not.
+
+**Did something later override it?** Same directive, same context, later position.
+
+**Can the worker user read it?** Not root — the worker.
+
+## What a learner should be able to state cold
+
+NGINX reads `nginx.conf` and everything else arrives through `include`, which pastes file contents in place, so a fragment that is not included is not read at all. Directives are legal only in their documented contexts and inherit downward per directive rather than as a group. The master process runs as root to bind privileged ports and open logs, while workers drop to the `user` account and are what actually reads content, which is why a clean start followed by a 403 is a worker-permission question and not a root one. Shared memory zones exist so workers share counters instead of each enforcing a limit alone; they are named so directives can refer to the same region, and sized finitely, so a full zone starts evicting.

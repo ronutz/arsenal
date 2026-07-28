@@ -1,0 +1,57 @@
+---
+slug: nginx-location-matching-order
+title: "Correspondência de location no NGINX: por que o bloco que você esperava não foi o que rodou"
+summary: "O NGINX não escolhe o primeiro location que casa, nem o último. Ele segue uma ordem fixa de cinco passos em que a ordem do arquivo importa para exatamente um deles, e é por isso que ler a configuração de cima para baixo engana sobre qual bloco vence."
+concepts: ["nginx", "location", "proxy reverso", "correspondência por prefixo", "expressão regular", "caret til", "roteamento de requisição", "f5"]
+relatedTools: ["nginx-location-matcher"]
+sub: nginx
+relatedArticles: ["http-proxy-forward-and-reverse", "tls-reverse-proxy-inbound"]
+category: networking
+order: 120
+status: reviewed
+updated: "2026-07-27"
+---
+
+Quase toda configuração confusa de NGINX remonta a uma suposição: a de que os blocos são tentados na ordem em que você os escreveu. Não são, e a distância entre essa suposição e o algoritmo real é onde as tardes vão embora.
+
+## A ordem que de fato roda
+
+1. **Correspondência exata.** Um `location = /caminho` que casa encerra a busca de imediato. Nada mais é considerado.
+2. **A rodada de prefixos.** Cada location de prefixo é verificado e o **mais longo** que casa é memorizado. Não o primeiro do arquivo, o mais longo.
+3. **A saída antecipada.** Se esse prefixo mais longo tiver `^~`, ele vence agora e as expressões regulares nunca são tentadas.
+4. **Expressões regulares**, tentadas **na ordem em que aparecem no arquivo**, e a **primeira** que casa vence, batendo o prefixo memorizado.
+5. **Retorno.** Se nenhuma expressão regular casou, o prefixo mais longo memorizado vence afinal.
+
+A ordem do arquivo decide exatamente um desses cinco passos. Todo o resto é especificidade e modificadores.
+
+## A consequência que pega as pessoas
+
+Considere uma configuração com um bloco de prefixo `/images/` e, mais abaixo, `location ~ \.(gif|jpg|png)$`.
+
+Uma requisição para `/images/logo.gif` **não** usa o bloco `/images/`. A rodada de prefixos o memoriza, então o passo quatro roda as expressões regulares, a extensão casa, e a regex vence. O bloco de aparência mais específica, escrito primeiro, perde para um geral escrito depois.
+
+É por isso que "meu bloco `/images/` está sendo ignorado" quase sempre é uma regex de extensão logo abaixo dele. O bloco não está sendo ignorado; está sendo superado por projeto.
+
+## O que `^~` realmente significa
+
+Ele é lido como "prioridade maior", e esse é o modelo mental errado. `^~` significa **pare antes das expressões regulares**. Não torna o prefixo mais forte; remove o passo quatro da busca.
+
+O que faz dele a correção exata para o caso acima. Mude o bloco para `location ^~ /images/` e a regex de extensão nunca roda para URIs sob `/images/`, continuando a funcionar em todo o resto.
+
+## O mais longo, não o primeiro
+
+Dentro da rodada de prefixos, `/a/b/c/` vence `/a/` para uma requisição a `/a/b/c/d` independentemente de qual aparece primeiro. Ordenar blocos de prefixo por legibilidade é seguro; ordenar blocos de regex muda o comportamento.
+
+## O que conferir quando uma requisição cai no lugar errado
+
+**Existe uma correspondência exata?** Ela teria encerrado a busca no passo um.
+
+**Existe uma regex que casa?** Se sim, e nenhum `^~` disparou, ela venceu todos os prefixos. Olhe abaixo do bloco que você esperava, não acima.
+
+**O prefixo que você esperava é mesmo o mais longo que casa?** Um mais longo em outro ponto do arquivo leva a rodada.
+
+**Há dois blocos idênticos?** O NGINX rejeita de saída um location exato ou de prefixo duplicado; uma regex duplicada fica simplesmente inalcançável.
+
+## O que quem estuda precisa saber de cor
+
+O NGINX tenta correspondências exatas primeiro e para se uma casar; depois memoriza o prefixo mais longo, não o primeiro; então, a menos que esse prefixo tenha `^~`, tenta expressões regulares na ordem do arquivo e deixa a primeira que casar vencer o prefixo; e só retorna ao prefixo se nenhuma regex casou. A ordem do arquivo importa para expressões regulares e para mais nada. `^~` é uma saída antecipada, e não um aumento de prioridade, e é a correção quando uma regex insiste em roubar tráfego de um bloco de prefixo.

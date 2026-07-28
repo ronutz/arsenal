@@ -1,0 +1,57 @@
+---
+slug: nginx-location-matching-order
+title: "NGINX location matching: why the block you expected is not the one that ran"
+summary: "NGINX does not pick the first location that matches, and it does not pick the last. It follows a fixed five-step order in which the file's own order matters for exactly one step, which is why reading a config top to bottom will mislead you about which block wins."
+concepts: ["nginx", "location", "reverse proxy", "prefix match", "regular expression", "caret tilde", "request routing", "f5"]
+relatedTools: ["nginx-location-matcher"]
+sub: nginx
+relatedArticles: ["http-proxy-forward-and-reverse", "tls-reverse-proxy-inbound"]
+category: networking
+order: 120
+status: reviewed
+updated: "2026-07-27"
+---
+
+Almost every confusing NGINX config traces back to one assumption: that the blocks are tried in the order you wrote them. They are not, and the gap between that assumption and the real algorithm is where the afternoons go.
+
+## The order that actually runs
+
+1. **Exact match.** A `location = /path` that matches ends the search immediately. Nothing else is considered.
+2. **The prefix round.** Every prefix location is checked and the **longest** match is remembered. Not the first one in the file, the longest one.
+3. **The early exit.** If that longest prefix carries `^~`, it wins now and regular expressions are never tried.
+4. **Regular expressions**, tried **in the order they appear in the file**, and the **first** one that matches wins, beating the remembered prefix.
+5. **Fallback.** If no regular expression matched, the remembered longest prefix wins after all.
+
+File order decides exactly one of those five steps. Everything else is about specificity and modifiers.
+
+## The consequence that catches people
+
+Consider a config with a `/images/` prefix block and, somewhere further down, `location ~ \.(gif|jpg|png)$`.
+
+A request for `/images/logo.gif` does **not** use the `/images/` block. The prefix round remembers it, then step four runs the regular expressions, the extension matches, and the regex wins. The more specific-looking block, written first, loses to a general one written later.
+
+This is why "my `/images/` block is being ignored" is nearly always a file-extension regex somewhere below it. The block is not being ignored; it is being outranked by design.
+
+## What `^~` actually means
+
+It is read as "higher priority", and that is the wrong mental model. `^~` means **stop before the regular expressions**. It does not make the prefix stronger, it removes step four from the search.
+
+Which makes it the precise fix for the case above. Change the block to `location ^~ /images/` and the extension regex never runs for URIs under `/images/` — while continuing to work everywhere else.
+
+## Longest, not first
+
+Within the prefix round, `/a/b/c/` beats `/a/` for a request to `/a/b/c/d` regardless of which appears first in the file. Ordering prefix blocks for readability is safe; ordering regex blocks changes behaviour.
+
+## What to check when a request lands in the wrong place
+
+**Is there an exact match?** It would have ended the search at step one.
+
+**Is there a regex that matches?** If so, and no `^~` fired, it beat every prefix. Look below the block you expected, not above it.
+
+**Is the prefix you expected actually the longest match?** A longer one elsewhere in the file takes the round.
+
+**Are two blocks identical?** NGINX rejects a duplicate exact or prefix location outright; a duplicate regex is simply unreachable.
+
+## What a learner should be able to state cold
+
+NGINX tries exact matches first and stops if one hits; then remembers the longest prefix match, not the first; then, unless that prefix carried `^~`, tries regular expressions in file order and lets the first match win over the prefix; and falls back to the prefix only if no regex matched. File order matters for regular expressions and nothing else. `^~` is an early exit rather than a priority boost, and it is the fix when a regex keeps stealing traffic from a prefix block.

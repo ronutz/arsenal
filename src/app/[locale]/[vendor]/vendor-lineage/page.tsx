@@ -23,12 +23,22 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import AcquisitionTimeline from "@/components/AcquisitionTimeline";
 import { lineageFor, LINEAGE_VENDORS } from "@/content/lineages";
+import { populatedVendors } from "@/config/vendors";
 import { LIVE_LOCALE_CODES } from "@/i18n/locales";
 
-/** One page per (locale, vendor-with-a-lineage). */
+/** One page per (locale, vendor-with-a-lineage-AND-a-hub).
+ *
+ *  The hub condition is not cosmetic. This page lives under /<vendor>/ and its
+ *  back link returns to /<vendor>, which only exists once that vendor has at
+ *  least one tool. Publishing a lineage for a vendor with no hub would ship a
+ *  page whose only way out is a 404 - which is how Check Point's lineage was
+ *  caught before it shipped, its research being finished well before its tools
+ *  were. The data sits ready and the page appears by itself the day the hub
+ *  does. */
 export function generateStaticParams() {
+  const withHub = new Set(populatedVendors());
   return LIVE_LOCALE_CODES.flatMap((locale) =>
-    LINEAGE_VENDORS.map((vendor) => ({ locale, vendor })),
+    LINEAGE_VENDORS.filter((v) => withHub.has(v)).map((vendor) => ({ locale, vendor })),
   );
 }
 

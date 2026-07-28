@@ -3508,7 +3508,8 @@
       "extreme": "Extreme Networks",
       "zscaler": "Zscaler",
       "ping": "Ping Identity",
-      "checkpoint": "Check Point"
+      "checkpoint": "Check Point",
+      "nginx": "NGINX"
     },
     "x509": {
       "name": "X.509 Certificate Decoder",
@@ -6142,6 +6143,82 @@
       "kind_object-removed": "REMOVED",
       "kind_object-changed": "CHANGED",
       "kind_object-moved": "ORDER CHANGED"
+    },
+    "checkpoint-policy-layer-evaluator": {
+      "name": "Check Point policy layer evaluator",
+      "blurb": "Watch a connection cross ordered layers: which rule matched in each, whether an accept meant allowed or merely proceed, and where a drop logged nothing.",
+      "inputLabel": "Policy and test connection",
+      "placeholder": "layer Network ordered\n1 | permit internal | accept | src=10.0.0.0/8\n2 | cleanup | drop |\ntest src=10.1.1.5 dst=93.184.216.34 svc=443",
+      "example": "Example",
+      "clear": "Clear",
+      "privacy": "Everything is evaluated in your browser. Nothing is sent anywhere, and no address is resolved.",
+      "parseErrorHeadline": "That policy could not be read",
+      "verdictHeading": "Verdict",
+      "verdictAllowed": "Allowed",
+      "verdictDropped": "Dropped",
+      "connectionSummary": "{src} to {dst} on port {svc}",
+      "traceHeading": "How it got there",
+      "inlineTag": "inline layer",
+      "outcomeProceed": "accepted, proceeds to the next layer",
+      "outcomeAllowed": "accepted by the last layer, so allowed",
+      "outcomeDropped": "dropped",
+      "outcomeInline": "entered the inline layer",
+      "silentWarning": "This drop logs nothing. The connection fails and no entry appears in the logs.",
+      "findingsHeading": "About the policy itself"
+    },
+    "nginx-location-matcher": {
+      "name": "NGINX location matcher",
+      "blurb": "Paste your location blocks and a URI, and watch NGINX's five-step selection run: exact, longest prefix, the caret-tilde early exit, regexes in file order, then the fallback.",
+      "inputLabel": "Location blocks and a request URI",
+      "placeholder": "location /\nlocation /images/\nlocation ~ \\.(gif|jpg|png)$\n\nrequest /images/logo.gif",
+      "example": "Example",
+      "clear": "Clear",
+      "privacy": "Matched entirely in your browser. Nothing is sent anywhere, and no file is read.",
+      "parseErrorHeadline": "That configuration could not be read",
+      "winnerHeading": "The block that wins",
+      "noMatch": "No location matches - this falls through to the server block",
+      "requested": "Request: {uri}",
+      "walkHeading": "How NGINX got there",
+      "decisive": "decides it",
+      "stageExact": "Exact match",
+      "stagePrefix": "Prefix round (longest wins)",
+      "stagePriority": "Caret-tilde early exit",
+      "stageRegex": "Regular expressions, in file order",
+      "stageFallback": "Fallback to the longest prefix",
+      "findingsHeading": "About the configuration"
+    },
+    "nginx-proxy-pass-rewriter": {
+      "name": "NGINX proxy_pass rewriter",
+      "blurb": "One trailing slash decides whether your backend sees /app/page or /page. Paste the directive and see both answers side by side.",
+      "inputLabel": "location, proxy_pass and a request URI",
+      "placeholder": "location /app/\nproxy_pass http://backend;\n\nrequest /app/page",
+      "example": "Example",
+      "clear": "Clear",
+      "privacy": "Computed in your browser. The upstream name is never resolved or contacted.",
+      "parseErrorHeadline": "That could not be read",
+      "resultHeading": "What the backend receives",
+      "refused": "NGINX refuses this configuration",
+      "counterpartHeading": "With the switch flipped",
+      "findingsHeading": "Worth knowing"
+    },
+    "nginx-proxy-cache-decision": {
+      "name": "NGINX cache decision explainer",
+      "blurb": "Two different questions: will this response be stored, and will a later request be served from it. Paste the directives and the exchange to see both answers and why.",
+      "inputLabel": "Cache directives, the request, and the upstream response",
+      "placeholder": "proxy_cache zone1\nproxy_cache_valid 200 10m\n\nrequest GET /a\n\nresponse 200",
+      "example": "Example",
+      "clear": "Clear",
+      "privacy": "Decided in your browser. Nothing is fetched and no upstream is contacted.",
+      "parseErrorHeadline": "That could not be read",
+      "verdictHeading": "The two verdicts",
+      "storedYes": "STORED - this response is written to the cache",
+      "storedNo": "NOT STORED - this response never reaches the cache",
+      "servedYes": "SERVED - a later matching request gets it from cache",
+      "servedNo": "NOT SERVED - a later request goes upstream",
+      "keyLabel": "Cache key: {key}",
+      "storeHeading": "Why it is or is not stored",
+      "serveHeading": "Why it is or is not served",
+      "warningsHeading": "Worth knowing"
     }
   },
   "privacy_page": {
@@ -6747,6 +6824,10 @@
       "s2Title": "Learning it backwards",
       "s2Body": "The CCSA and CCSE study guides on this site were written from Check Point's own published exam blueprints, and they are deliberately weighted toward what catches someone arriving from FortiGate or BIG-IP. That the rule base ends in an implicit drop that logs nothing. That policy layers are an AND rather than an OR, so accepting in one layer only means the traffic proceeds to the next. That publish and install are two separate actions and stopping after the first changes nothing. None of these is difficult; all of them are the kind of thing you learn once, usually by getting them wrong. Red Education is a Check Point Authorized Training Center, named Check Point Software Technologies Platinum Elite ATC Partner of the Year 2024, which is how this chapter opened.",
       "certs": "Studying toward CCSA and CCSE. Certifications will be recorded on the credentials page as they land; the study guides here are study material and carry no delivery claim."
+    },
+    "nginx": {
+      "name": "NGINX",
+      "tagline": "The reverse proxy that became the default answer - a web server, load balancer and cache whose configuration model is one file tree and a matching order worth understanding before you fight it."
     }
   },
   "training": {
@@ -8715,7 +8796,8 @@
       "extreme": "Extreme Networks: Platform ONE, the ExtremeCloud IQ continuum, wired and wireless and fabric, access security, and analytics.",
       "zscaler": "Zscaler and the Zero Trust Exchange: cloud secure web gateway and firewall (ZIA), zero trust access to private applications (ZPA), digital experience monitoring (ZDX), and data protection. Security delivered as a global cloud, not an appliance.",
       "ping": "Ping Identity and ForgeRock: access management across PingOne, PingFederate, PingAccess, and the ForgeRock Identity Platform, with SSO, MFA, identity orchestration, and directory services at enterprise scale.",
-      "checkpoint": "Check Point Quantum and the Infinity architecture: security gateways managed from a separate management server, with a policy model built on layers, objects and a database that is published before it is installed. The CCSA and CCSE study guides follow it."
+      "checkpoint": "Check Point Quantum and the Infinity architecture: security gateways managed from a separate management server, with a policy model built on layers, objects and a database that is published before it is installed. The CCSA and CCSE study guides follow it.",
+      "nginx": "NGINX as web server, reverse proxy, load balancer and cache: the configuration tree, the location matching order that decides which block wins, and the proxying behaviour that surprises people the first time."
     },
     "redEduCallout": "Why these vendors? Because they are the platforms Rodolfo is authorized to teach through <link>Red Education</link>, a global award-winning authorized training partner: F5, Fortinet, Netskope, Extreme Networks, Ping Identity, and Zscaler."
   },

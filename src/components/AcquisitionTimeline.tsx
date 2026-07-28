@@ -90,6 +90,21 @@ export default function AcquisitionTimeline({ lineage, labels }: AcquisitionTime
                   <span className="lineage-deal-price mono">{a.price}</span>
                 </div>
                 <p className="lineage-deal-what">{a.what}</p>
+                {a.subAcquisitions && a.subAcquisitions.length > 0 && (
+                  /* What the acquired company had itself bought. The technology
+                     that matters is often two owners deep, and stopping at one
+                     level hides the part that explains the product. */
+                  <ul className="lineage-sub-list">
+                    {a.subAcquisitions.map((sub) => (
+                      <li className="lineage-sub" key={`${sub.year}-${sub.name}`}>
+                        <span className="lineage-sub-year mono">{sub.year}</span>{" "}
+                        <span className="lineage-sub-name">{sub.name}</span>
+                        {sub.price ? <span className="lineage-sub-price mono"> {sub.price}</span> : null}
+                        <span className="lineage-sub-what"> &mdash; {sub.what}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 {a.became && (
                   <p className="lineage-deal-became">
                     <span className="lineage-deal-became-label">{labels.became}</span>

@@ -1,0 +1,71 @@
+---
+slug: nginx-proxy-pass-uri-rewriting
+title: "A barra final do proxy_pass no NGINX: um caractere que decide o que seu backend recebe"
+summary: "proxy_pass com uma parte de URI substitui o prefixo do location que casou. Sem ela, a URI original da requisição passa direto. Essa é a regra inteira, é um interruptor binário e não uma questão de grau, e uma única barra basta para virá-lo."
+concepts: ["nginx", "proxy_pass", "proxy reverso", "barra final", "reescrita de uri", "prefixo de location", "upstream", "resolver", "f5"]
+relatedTools: ["nginx-proxy-pass-rewriter", "nginx-location-matcher"]
+sub: nginx
+relatedArticles: ["nginx-location-matching-order", "nginx-reload-signals-and-first-troubleshooting"]
+category: networking
+order: 124
+status: reviewed
+updated: "2026-07-27"
+---
+
+Duas configurações que diferem por um caractere enviam caminhos completamente diferentes ao seu backend. Nada avisa, as duas são válidas, e qual delas você queria depende de um backend que talvez você não controle.
+
+## A regra
+
+**`proxy_pass http://backend;`** — sem parte de URI, nada depois do host. A **URI original da requisição passa inalterada**, prefixo do location incluído.
+
+**`proxy_pass http://backend/;`** — com parte de URI, ainda que seja só uma barra. A parte da requisição que **casou com o prefixo do location é substituída** por ela.
+
+É isso. Um interruptor de duas posições, não um espectro.
+
+## Como isso se parece
+
+Com `location /app/` e uma requisição para `/app/page`:
+
+`proxy_pass http://backend;` envia **`/app/page`**. O backend vê o prefixo.
+
+`proxy_pass http://backend/;` envia **`/page`**. O prefixo sumiu.
+
+`proxy_pass http://backend/v2/;` envia **`/v2/page`**. O prefixo foi substituído por outra coisa — que é como uma linha faz o que muita gente busca no `rewrite`.
+
+## Qual delas você quer
+
+Depende inteiramente do backend.
+
+Uma aplicação **montada no mesmo caminho** — que espera `/app/page` porque é assim que monta os próprios links — precisa da forma **sem** a barra.
+
+Uma aplicação que **não sabe que está atrás de um prefixo** — um serviço simples que serve `/page` — precisa da forma **com** ela.
+
+Inverta e o sintoma é um 404 vindo do backend para uma requisição que o NGINX intermediou perfeitamente. O proxy está funcionando; ele está enviando um caminho que o backend nunca ouviu falar.
+
+## A barra dobrada
+
+Se o location não termina em barra mas o proxy_pass carrega uma parte de URI, a substituição continua literal — e a barra que sobrou da requisição sobrevive.
+
+`location /app` com `proxy_pass http://backend/` e uma requisição para `/app/page` envia **`//page`**. Duas barras, de verdade, para o upstream.
+
+Alguns backends normalizam isso e outros devolvem 404. Vale saber que é comportamento real e não artefato de exibição, porque quando você vir isso num log de upstream, foi daqui que veio. Igualar as barras finais dos dois lados é a correção.
+
+## Duas configurações que o NGINX recusa
+
+Um location de **expressão regular** com parte de URI é rejeitado de saída na inicialização. Não há prefixo literal a substituir — a correspondência foi calculada, não é uma cadeia fixa — então a substituição fica indefinida e o NGINX não sobe.
+
+Um **location nomeado** (`@fallback`) é recusado pelo mesmo motivo. Os dois funcionam com um `proxy_pass http://backend;` puro, e os dois precisam de `rewrite` se você quiser mudar o caminho.
+
+Essa é uma das falhas mais amigáveis: acontece na inicialização, com mensagem clara, em vez de em produção.
+
+## A exceção da variável
+
+Ponha uma variável em qualquer lugar do valor — `proxy_pass http://$upstream/;` — e **a substituição do prefixo deixa de acontecer**. O caminho é usado como escrito.
+
+Isso pega quem acrescenta uma variável a uma configuração funcionando por algum motivo alheio e descobre que os caminhos mudaram silenciosamente por baixo.
+
+Há uma segunda consequência que vale conhecer: com variável, o NGINX resolve o nome do upstream em tempo de requisição, e não na inicialização. Isso normalmente exige uma diretiva `resolver`, e um nome que falha ao resolver vira erro de execução em vez de erro de configuração que o `nginx -t` teria pego.
+
+## O que quem estuda precisa saber de cor
+
+`proxy_pass` com parte de URI substitui o prefixo do location que casou por essa URI; sem parte de URI a URI original da requisição passa inalterada. Uma barra final basta para ser uma parte de URI. A escolha errada produz um 404 do backend para uma requisição que o proxy tratou corretamente. Um location sem barra final somado a uma parte de URI envia uma barra genuinamente dobrada ao upstream. Locations de expressão regular e nomeados não podem carregar parte de URI e são recusados na inicialização. Uma variável em qualquer lugar do valor suspende a substituição por completo e move a resolução do upstream para o tempo de requisição, o que normalmente exige um `resolver`.

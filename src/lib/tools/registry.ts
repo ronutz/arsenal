@@ -316,6 +316,14 @@ export const API_EXCLUDED: Record<string, string> = {
     "Interactive six-question chooser: the value is the sourced elimination walk-through rendered in the UI; the structured-object input is not a stable text API contract.",
   "zscaler-firewall-rule-order-simulator":
     "Policy teaching simulator: the value is the rendered trace, verdict, and shadow findings; the rule grammar is a deliberate teaching subset, not a stable API contract.",
+  "nginx-proxy-cache-decision":
+    "Config teaching explainer: the value is the two rendered rule walks and the leak warnings; the directive grammar is a deliberate teaching subset, not a stable API contract.",
+  "nginx-proxy-pass-rewriter":
+    "Config teaching rewriter: the value is the side-by-side comparison and the findings; the directive grammar is a deliberate teaching subset, not a stable API contract.",
+  "nginx-location-matcher":
+    "Config teaching matcher: the value is the rendered five-step walk and the config findings; the location grammar is a deliberate teaching subset, not a stable API contract.",
+  "checkpoint-policy-layer-evaluator":
+    "Policy teaching evaluator: the value is the rendered per-layer trace and the findings; the layer grammar is a deliberate teaching subset, not a stable API contract.",
   "hash-preimage-finder":
     "Bounded brute-force preimage search: compute-heavy and abuse-prone on a shared edge. Browser-only by design.",
 };

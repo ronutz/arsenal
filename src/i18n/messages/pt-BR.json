@@ -3508,7 +3508,8 @@
       "extreme": "Extreme Networks",
       "zscaler": "Zscaler",
       "ping": "Ping Identity",
-      "checkpoint": "Check Point"
+      "checkpoint": "Check Point",
+      "nginx": "NGINX"
     },
     "x509": {
       "name": "Decodificador de certificados X.509",
@@ -6142,6 +6143,82 @@
       "kind_object-removed": "REMOVIDO",
       "kind_object-changed": "ALTERADO",
       "kind_object-moved": "ORDEM ALTERADA"
+    },
+    "checkpoint-policy-layer-evaluator": {
+      "name": "Avaliador de camadas de política Check Point",
+      "blurb": "Acompanhe uma conexão atravessando camadas ordenadas: qual regra casou em cada uma, se um aceite significou permitido ou apenas seguir adiante, e onde um descarte não registrou nada.",
+      "inputLabel": "Política e conexão de teste",
+      "placeholder": "layer Network ordered\n1 | permit internal | accept | src=10.0.0.0/8\n2 | cleanup | drop |\ntest src=10.1.1.5 dst=93.184.216.34 svc=443",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "privacy": "Tudo é avaliado no seu navegador. Nada é enviado a lugar algum, e endereço algum é resolvido.",
+      "parseErrorHeadline": "Não foi possível ler essa política",
+      "verdictHeading": "Veredito",
+      "verdictAllowed": "Permitida",
+      "verdictDropped": "Descartada",
+      "connectionSummary": "{src} para {dst} na porta {svc}",
+      "traceHeading": "Como chegou aí",
+      "inlineTag": "camada inline",
+      "outcomeProceed": "aceita, segue para a próxima camada",
+      "outcomeAllowed": "aceita pela última camada, portanto permitida",
+      "outcomeDropped": "descartada",
+      "outcomeInline": "entrou na camada inline",
+      "silentWarning": "Este descarte não registra nada. A conexão falha e entrada alguma aparece nos logs.",
+      "findingsHeading": "Sobre a própria política"
+    },
+    "nginx-location-matcher": {
+      "name": "Comparador de location do NGINX",
+      "blurb": "Cole seus blocos location e uma URI, e acompanhe a seleção de cinco passos do NGINX: exata, prefixo mais longo, a saída antecipada do circunflexo-til, regexes na ordem do arquivo, e então o retorno.",
+      "inputLabel": "Blocos location e uma URI de requisição",
+      "placeholder": "location /\nlocation /images/\nlocation ~ \\.(gif|jpg|png)$\n\nrequest /images/logo.gif",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "privacy": "Comparado inteiramente no seu navegador. Nada é enviado a lugar algum, e arquivo algum é lido.",
+      "parseErrorHeadline": "Não foi possível ler essa configuração",
+      "winnerHeading": "O bloco que vence",
+      "noMatch": "Nenhum location casa - isso cai para o bloco server",
+      "requested": "Requisição: {uri}",
+      "walkHeading": "Como o NGINX chegou lá",
+      "decisive": "decide",
+      "stageExact": "Correspondência exata",
+      "stagePrefix": "Rodada de prefixos (o mais longo vence)",
+      "stagePriority": "Saída antecipada do circunflexo-til",
+      "stageRegex": "Expressões regulares, na ordem do arquivo",
+      "stageFallback": "Retorno ao prefixo mais longo",
+      "findingsHeading": "Sobre a configuração"
+    },
+    "nginx-proxy-pass-rewriter": {
+      "name": "Reescritor de proxy_pass do NGINX",
+      "blurb": "Uma barra final decide se seu backend vê /app/page ou /page. Cole a diretiva e veja as duas respostas lado a lado.",
+      "inputLabel": "location, proxy_pass e uma URI de requisição",
+      "placeholder": "location /app/\nproxy_pass http://backend;\n\nrequest /app/page",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "privacy": "Calculado no seu navegador. O nome do upstream nunca é resolvido nem contatado.",
+      "parseErrorHeadline": "Não foi possível ler isso",
+      "resultHeading": "O que o backend recebe",
+      "refused": "O NGINX recusa esta configuração",
+      "counterpartHeading": "Com o interruptor invertido",
+      "findingsHeading": "Vale saber"
+    },
+    "nginx-proxy-cache-decision": {
+      "name": "Explicador de decisão de cache do NGINX",
+      "blurb": "Duas perguntas diferentes: esta resposta será armazenada, e uma requisição posterior será servida a partir dela. Cole as diretivas e a troca para ver as duas respostas e o porquê.",
+      "inputLabel": "Diretivas de cache, a requisição, e a resposta do upstream",
+      "placeholder": "proxy_cache zone1\nproxy_cache_valid 200 10m\n\nrequest GET /a\n\nresponse 200",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "privacy": "Decidido no seu navegador. Nada é buscado e upstream algum é contatado.",
+      "parseErrorHeadline": "Não foi possível ler isso",
+      "verdictHeading": "Os dois vereditos",
+      "storedYes": "ARMAZENADA - esta resposta é escrita no cache",
+      "storedNo": "NÃO ARMAZENADA - esta resposta nunca chega ao cache",
+      "servedYes": "SERVIDA - uma requisição posterior correspondente a recebe do cache",
+      "servedNo": "NÃO SERVIDA - uma requisição posterior vai ao upstream",
+      "keyLabel": "Chave de cache: {key}",
+      "storeHeading": "Por que é ou não armazenada",
+      "serveHeading": "Por que é ou não servida",
+      "warningsHeading": "Vale saber"
     }
   },
   "privacy_page": {
@@ -6747,6 +6824,10 @@
       "s2Title": "Aprendendo de trás para frente",
       "s2Body": "Os guias de estudo do CCSA e do CCSE deste site foram escritos a partir dos blueprints de prova publicados pela própria Check Point, e são deliberadamente inclinados ao que pega quem chega de FortiGate ou BIG-IP. Que a base de regras termina num descarte implícito que não registra nada. Que as camadas de política são um E, e não um OU, então aceitar numa camada só significa que o tráfego segue para a próxima. Que publicar e instalar são duas ações separadas e parar na primeira não muda nada. Nenhuma delas é difícil; todas são do tipo que se aprende uma vez, normalmente errando. A Red Education é um Check Point Authorized Training Center, nomeada Check Point Software Technologies Platinum Elite ATC Partner of the Year 2024, e foi assim que este capítulo começou.",
       "certs": "Estudando para CCSA e CCSE. As certificações serão registradas na página de credenciais à medida que chegarem; os guias de estudo aqui são material de estudo e não constituem afirmação de entrega."
+    },
+    "nginx": {
+      "name": "NGINX",
+      "tagline": "O proxy reverso que virou a resposta padrão - servidor web, balanceador e cache cujo modelo de configuração é uma árvore de arquivos e uma ordem de correspondência que vale entender antes de brigar com ela."
     }
   },
   "training": {
@@ -8715,7 +8796,8 @@
       "extreme": "Extreme Networks: Platform ONE, o contínuo ExtremeCloud IQ, cabeado, sem fio e fabric, segurança de acesso e analytics.",
       "zscaler": "Zscaler e o Zero Trust Exchange: secure web gateway e firewall em nuvem (ZIA), acesso zero trust a aplicações privadas (ZPA), monitoramento de experiência digital (ZDX) e proteção de dados. Segurança entregue como nuvem global, não como appliance.",
       "ping": "Ping Identity e ForgeRock: gestão de acesso no PingOne, PingFederate, PingAccess e na ForgeRock Identity Platform, com SSO, MFA, orquestração de identidade e serviços de diretório em escala corporativa.",
-      "checkpoint": "Check Point Quantum e a arquitetura Infinity: gateways de segurança gerenciados a partir de um servidor de gerência separado, com um modelo de política construído sobre camadas, objetos e um banco de dados que é publicado antes de ser instalado. Os guias de estudo do CCSA e do CCSE o acompanham."
+      "checkpoint": "Check Point Quantum e a arquitetura Infinity: gateways de segurança gerenciados a partir de um servidor de gerência separado, com um modelo de política construído sobre camadas, objetos e um banco de dados que é publicado antes de ser instalado. Os guias de estudo do CCSA e do CCSE o acompanham.",
+      "nginx": "NGINX como servidor web, proxy reverso, balanceador e cache: a árvore de configuração, a ordem de correspondência de location que decide qual bloco vence, e o comportamento de proxy que surpreende na primeira vez."
     },
     "redEduCallout": "Por que esses fornecedores? Porque são as plataformas que Rodolfo é autorizado a ensinar pela <link>Red Education</link>, uma parceira global e premiada de treinamento autorizado: F5, Fortinet, Netskope, Extreme Networks, Ping Identity e Zscaler."
   },

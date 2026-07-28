@@ -23,11 +23,25 @@
 // ============================================================================
 
 import { f5Lineage } from "./f5";
+import { extremeLineage } from "./extreme";
+import { checkPointLineage } from "./check-point";
+import { nginxLineage } from "./nginx";
+import { fortinetLineage } from "./fortinet";
+import { pingLineage } from "./ping-identity";
+import { zscalerLineage } from "./zscaler";
+import { netskopeLineage } from "./netskope";
 import type { VendorLineage } from "./f5";
 
 /** Vendor key (as in src/config/vendors.ts) -> its researched lineage. */
 export const LINEAGES: Record<string, VendorLineage> = {
   f5: f5Lineage,
+  extreme: extremeLineage,
+  checkpoint: checkPointLineage,
+  nginx: nginxLineage,
+  fortinet: fortinetLineage,
+  ping: pingLineage,
+  zscaler: zscalerLineage,
+  netskope: netskopeLineage,
 };
 
 /** Vendor keys that have a lineage page. Drives generateStaticParams. */

@@ -57,6 +57,13 @@ export const VENDOR_FAMILIES: readonly VendorFamily[] = Object.freeze([
   // delivers their authorized training. Adding a vendor to this list is a
   // browse-surface decision and never an authorization claim.
   { key: "checkpoint", alwaysShow: false },
+  // NGINX added 2026-07-27 (PRIME): its own vendor family rather than an F5
+  // sub-family. The org chart says otherwise - F5 acquired NGINX in 2019 and
+  // the certification is F5's own F5-CA, NGINX - but the browse surface exists
+  // for readers, and a reader looking for NGINX is not looking for BIG-IP.
+  // The certification correctly stays under F5, where F5 issues it; this key
+  // gives the TECHNOLOGY a home for its tools and articles.
+  { key: "nginx", alwaysShow: false },
 ]);
 
 /** vendor key -> supplementary hue (dot + soft border only). Provisional; tune here. */

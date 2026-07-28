@@ -1,0 +1,71 @@
+---
+slug: nginx-proxy-pass-uri-rewriting
+title: "The NGINX proxy_pass trailing slash: one character that decides what your backend receives"
+summary: "proxy_pass with a URI part replaces the matched location prefix. Without one, the original request URI passes straight through. That is the entire rule, it is a binary switch rather than a shade of difference, and a single slash is enough to flip it."
+concepts: ["nginx", "proxy_pass", "reverse proxy", "trailing slash", "uri rewriting", "location prefix", "upstream", "resolver", "f5"]
+relatedTools: ["nginx-proxy-pass-rewriter", "nginx-location-matcher"]
+sub: nginx
+relatedArticles: ["nginx-location-matching-order", "nginx-reload-signals-and-first-troubleshooting"]
+category: networking
+order: 124
+status: reviewed
+updated: "2026-07-27"
+---
+
+Two configurations that differ by one character send completely different paths to your backend. Nothing warns you, both are valid, and which one you wanted depends on a backend you may not control.
+
+## The rule
+
+**`proxy_pass http://backend;`** — no URI part, nothing after the host. The **original request URI is passed through unchanged**, location prefix and all.
+
+**`proxy_pass http://backend/;`** — a URI part, even if it is only a slash. The part of the request that **matched the location prefix is replaced** by it.
+
+That is the whole thing. It is a switch with two positions, not a spectrum.
+
+## What it looks like
+
+With `location /app/` and a request for `/app/page`:
+
+`proxy_pass http://backend;` sends **`/app/page`**. The backend sees the prefix.
+
+`proxy_pass http://backend/;` sends **`/page`**. The prefix is gone.
+
+`proxy_pass http://backend/v2/;` sends **`/v2/page`**. The prefix was replaced by something else entirely — which is how one line does what people often reach for `rewrite` to do.
+
+## Which one you want
+
+It depends entirely on the backend.
+
+An application that is **mounted at the same path** — it expects `/app/page` because that is how it builds its own links — needs the form **without** the slash.
+
+An application that **does not know it is behind a prefix** — a plain service that serves `/page` — needs the form **with** it.
+
+Get it backwards and the symptom is a 404 from the backend for a request NGINX proxied perfectly. The proxy is working; it is sending a path the backend has never heard of.
+
+## The doubled slash
+
+If the location does not end in a slash but proxy_pass carries a URI part, the replacement is still literal — and the leftover slash from the request survives.
+
+`location /app` with `proxy_pass http://backend/` and a request for `/app/page` sends **`//page`**. Two slashes, genuinely, upstream.
+
+Some backends normalise that away and some return 404. It is worth knowing this is a real behaviour rather than a display artefact, because when you see it in an upstream log this is where it came from. Matching the trailing slashes on both sides is the fix.
+
+## Two configurations NGINX refuses
+
+A **regular-expression** location with a URI part is rejected outright at startup. There is no literal prefix to replace — the match was computed, not a fixed string — so the substitution is undefined and NGINX will not start.
+
+A **named location** (`@fallback`) is refused for the same reason. Both are fine with a bare `proxy_pass http://backend;`, and both need a `rewrite` if you want to change the path.
+
+This is one of the friendlier failures: it happens at startup, with a clear message, rather than in production.
+
+## The variable exception
+
+Put a variable anywhere in the value — `proxy_pass http://$upstream/;` — and **the prefix substitution stops happening**. The path is used as written.
+
+This catches people who add a variable to a working configuration for some unrelated reason and find the paths silently change underneath them.
+
+There is a second consequence worth knowing: with a variable, NGINX resolves the upstream name at request time rather than at startup. That usually means you need a `resolver` directive, and a name that fails to resolve becomes a runtime error rather than a configuration error you would have caught on `nginx -t`.
+
+## What a learner should be able to state cold
+
+`proxy_pass` with a URI part replaces the matched location prefix with that URI; without a URI part the original request URI is passed through unchanged. One trailing slash is enough to be a URI part. The wrong choice produces a 404 from the backend for a request the proxy handled correctly. A location without a trailing slash plus a URI part sends a genuinely doubled slash upstream. Regular-expression and named locations may not carry a URI part at all and are refused at startup. A variable anywhere in the value suspends the substitution entirely and moves upstream resolution to request time, which usually requires a `resolver`.

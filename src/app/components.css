@@ -14787,3 +14787,35 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
     display: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Nested acquisitions on a lineage deal (PRIME 2026-07-27): what the acquired
+   company had itself bought. Indented under its parent with a rule, so the
+   depth is visible without a second timeline competing with the first.
+--------------------------------------------------------------------------- */
+.lineage-sub-list {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0 0 0 0.9rem;
+  border-left: 1px solid var(--border-subtle);
+}
+
+.lineage-sub {
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.lineage-sub-year {
+  color: var(--text-tertiary, var(--text-secondary));
+}
+
+.lineage-sub-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.lineage-sub-price {
+  color: var(--text-tertiary, var(--text-secondary));
+}
