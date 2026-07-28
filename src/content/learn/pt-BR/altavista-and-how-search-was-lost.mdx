@@ -1,0 +1,58 @@
+---
+slug: altavista-and-how-search-was-lost
+title: "AltaVista: feito para quebrar um processador, e perdido ao virar portal"
+summary: "O AltaVista começou como benchmark. Um pesquisador queria uma carga caótica o bastante para estressar os novos chips Alpha da DEC, então apontou um rastreador para a web inteira. O resultado liderou a busca por anos e depois foi desmontado pelos próprios donos, o que faz dele o estudo de caso mais claro da indústria sobre perder um mercado que já se tem."
+concepts: ["altavista", "buscador", "dec", "alpha", "rastreador web", "babel fish", "google", "portal", "compaq", "yahoo", "estratégia de produto"]
+relatedTools: []
+relatedArticles: ["apache-httpd-and-what-nginx-was-written-against"]
+category: networking
+order: 127
+status: reviewed
+updated: "2026-07-28"
+---
+
+O fracasso mais instrutivo da história da web não foi técnico. O AltaVista tinha o melhor índice, o melhor rastreador e o melhor hardware, e perdeu mesmo assim.
+
+## Era um benchmark
+
+Em 1995 a DEC preparava seus sistemas Alpha de 64 bits, e eles eram rápidos o bastante para que os benchmarks padrão da época não os estressassem de forma significativa. Não se mede um furacão com um catavento.
+
+Paul Flaherty, pesquisador da DEC, esboçou uma resposta durante as férias: parar de usar testes sintéticos e apontar um rastreador para a World Wide Web, que era caótica, imprevisível e crescente. Ele não estava tentando organizar a informação do mundo. Queria uma carga grande o bastante para quebrar as próprias máquinas.
+
+**Louis Monier** escreveu o rastreador, chamado Scooter. **Michael Burrows** escreveu o indexador. Foi lançado em 15 de dezembro de 1995 com dezesseis milhões de documentos indexados — número extraordinário então — oferecendo busca em texto completo com operadores booleanos e consultas em linguagem natural, numa época em que a principal alternativa era um diretório mantido à mão.
+
+Foi de imediato a melhor coisa disponível. Em 1996 era o provedor exclusivo de busca do Yahoo, que ele próprio começara como diretório.
+
+## O que inventou pelo caminho
+
+O **Babel Fish**, primeiro serviço de tradução automática da web, batizado com o nome da criatura de *O Guia do Mochileiro das Galáxias* que traduz qualquer idioma ao ser colocada no ouvido. Sobreviveu ao seu criador, e seus descendentes ainda rodam.
+
+## Como foi perdido
+
+A propriedade mudou de mãos quatro vezes em cinco anos, e cada dono queria que ele fosse outra coisa.
+
+A Compaq adquiriu a DEC em 1998 por **US$ 9,6 bilhões**, então a maior aquisição de tecnologia da história. O AltaVista veio junto no negócio, e por vários relatos executivos da Compaq não sabiam que ele existia. A Compaq então pagou mais **US$ 3,3 milhões** pelo domínio `altavista.com`, que alguém sem relação registrara em 1994.
+
+Aí veio a decisão que importou. A Compaq reconstruiu o AltaVista como **portal** — compras, e-mail gratuito, notícias, diretórios — para competir com o Yahoo. O raciocínio era da época: portais pareciam ser onde estava o dinheiro. O efeito foi que o melhor buscador da web passou a competir em tudo, menos em buscar.
+
+Em junho de 1999 a Compaq vendeu 83% à CMGI por cerca de **US$ 2,3 bilhões** em ações. A oferta pública prevista para abril de 2000 foi cancelada quando a bolha estourou. Em 2002, depois de demissões e trocas de gestão, o AltaVista havia removido os recursos de portal e voltado à qualidade da busca — bom trabalho, chegando depois de o Google ter tomado o mercado.
+
+Em fevereiro de 2003 a Overture o comprou por **US$ 140 milhões**, cerca de seis por cento da avaliação de três anos antes. O Yahoo adquiriu a Overture cinco meses depois. Em 2004 o Scooter e o motor de ranqueamento original foram desligados e o AltaVista virou fachada para os resultados do Yahoo — a marca ainda lá, nada da máquina por trás. O Yahoo o desligou em **8 de julho de 2013**.
+
+## O que de fato deu errado
+
+Não foi a tecnologia. O índice era excelente, o rastreador era excelente, e o hardware era o mais rápido disponível.
+
+O que deu errado é que **ninguém que o possuiu quis que ele fosse um buscador**. A DEC o construiu para vender Alphas. A Compaq queria um portal. A CMGI queria uma abertura de capital. A Overture queria inventário de anúncios. O Yahoo queria um concorrente fora do caminho.
+
+A vantagem do Google não foi apenas o PageRank. Foi ser uma empresa cujo propósito inteiro era aquilo em que o AltaVista era melhor, no momento em que os donos do AltaVista decidiram que aquilo era pouco interessante.
+
+## Por que isso cabe num site de redes
+
+Porque o padrão se repete, e vale reconhecê-lo cedo. Um produto que lidera sua categoria é adquirido; o comprador tem estratégia própria; o produto é reposicionado rumo a essa estratégia; aquilo em que ele era melhor vira recurso de algo maior; um concorrente focado toma o mercado.
+
+As páginas de linhagem deste site estão cheias disso. Vale saber como isso se parece por dentro, e o AltaVista é o exemplo mais limpo que a indústria tem.
+
+## O que quem estuda precisa saber de cor
+
+O AltaVista foi construído nos laboratórios da DEC em Palo Alto para gerar uma carga pesada o bastante para estressar os processadores Alpha, lançado em 15 de dezembro de 1995 com dezesseis milhões de documentos, e oferecia busca booleana em texto completo quando a alternativa era um diretório feito à mão. Flaherty teve a ideia, Monier escreveu o rastreador, Burrows escreveu o indexador. Entregou o Babel Fish, primeiro serviço de tradução da web. A Compaq o adquiriu junto com a DEC em 1998, transformou-o em portal, e vendeu a maioria à CMGI por cerca de US$ 2,3 bilhões; a Overture o comprou em 2003 por US$ 140 milhões e o Yahoo o desligou em 2013. A tecnologia nunca falhou — nenhum dono quis que ele fosse um buscador, e um concorrente que queria tomou o mercado.

@@ -35,11 +35,11 @@
     },
     "credibility": {
       "title": "Ginawa ng taong gumagawa nito mula pa noong 1996.",
-      "body": "Tatlumpung taon sa enterprise networking at security, inihahatid ng isang aktibong instructor, hindi ng isang marketing page. Certified sa apat na platform, kaya ang mga paghahambing dito ay tapat, hindi para magbenta.",
+      "body": "Tatlumpung taon sa enterprise networking at security, inihahatid ng isang aktibong instructor, hindi ng isang marketing page. Certified sa mga platform, kaya ang mga paghahambing dito ay tapat, hindi para magbenta.",
       "aboutCta": "Higit pa tungkol sa gumagawa nito"
     },
     "pillars": {
-      "title": "Apat na platform, itinuturo at pinapanatiling updated.",
+      "title": "Mga platform, itinuturo at pinapanatiling updated.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -928,7 +928,7 @@
     "lede": "Pagsasanay sa network at security, inihahatid ng isang practitioner na ginugol ang malaking bahagi ng kaniyang karera sa panig ng implementasyon, hindi lamang sa harap ng mga slide. Nakabase sa São Paulo, nagtuturo sa buong mundo, sa Portuges at Ingles.",
     "now": {
       "title": "Ano ang ginagawa ko ngayon",
-      "body": "Nagtuturo ako ng opisyal, sertipikadong pagsasanay na pinamumunuan ng instructor sa apat na plataporma ng seguridad at networking. May hands-on na lab sa totoong mga sistema, at para sa mga nakakaalam na ng mga pundasyon at pumunta para magsanay, iyon mismo ang punto: totoong mga kapaligiran na mapagtatrabahuhan. Para sa mga pangkat na mas baguhan sa isang teknolohiya, ang panahon ay unang napupunta sa pagbuo ng mga pundasyong pinagbabatayan ng paksa, para maging makabuluhan ang hands-on na gawain at umalis ang mga tao na nauunawaan kung bakit kumikilos nang ganoon ang mga bagay, hindi lang kung aling mga buton ang pipindutin. Pareho silang may pantay na halaga, at ang balanse ay lumilipat ayon sa kung sino ang nasa silid. Ang pagtuturo at teknikal na enablement ay bahagi na ng aking trabaho mula noong huling bahagi ng dekada 1990, sa isang karerang nagsimula sa panig ng implementasyon noong 1996.",
+      "body": "Nagtuturo ako ng opisyal, sertipikadong pagsasanay na pinamumunuan ng instructor sa mga plataporma ng seguridad at networking. May hands-on na lab sa totoong mga sistema, at para sa mga nakakaalam na ng mga pundasyon at pumunta para magsanay, iyon mismo ang punto: totoong mga kapaligiran na mapagtatrabahuhan. Para sa mga pangkat na mas baguhan sa isang teknolohiya, ang panahon ay unang napupunta sa pagbuo ng mga pundasyong pinagbabatayan ng paksa, para maging makabuluhan ang hands-on na gawain at umalis ang mga tao na nauunawaan kung bakit kumikilos nang ganoon ang mga bagay, hindi lang kung aling mga buton ang pipindutin. Pareho silang may pantay na halaga, at ang balanse ay lumilipat ayon sa kung sino ang nasa silid. Ang pagtuturo at teknikal na enablement ay bahagi na ng aking trabaho mula noong huling bahagi ng dekada 1990, sa isang karerang nagsimula sa panig ng implementasyon noong 1996.",
       "basedLabel": "Nakabase sa",
       "basedValue": "São Paulo, Brazil",
       "teachesLabel": "Nagtuturo",
@@ -937,8 +937,8 @@
       "languagesValue": "Portuges (katutubo), Ingles (matatas)"
     },
     "platforms": {
-      "title": "Apat na platform, itinuturo nang malalim",
-      "body": "Ang pagiging certified sa apat na vendor ay nangangahulugang kaya kong ituro nang tama ang bawat isa at ihambing sila nang tapat. Narito ang mga platform na awtorisado akong magbigay ng opisyal na pagsasanay ngayon.",
+      "title": "Mga platform, itinuturo nang malalim",
+      "body": "Ang pagiging awtorisadong instruktor para sa mga vendor na ito ay nangangahulugang kaya kong ituro nang tama ang bawat isa at ihambing sila nang tapat.",
       "f5": "BIG-IP sa buong instructor-led curriculum: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automation, at troubleshooting.",
       "fortinet": "Certified na Fortinet training, kasama ang FCP track.",
       "extreme": "Extreme Networks switching, SD-WAN, at mga track sa API at automation; sumasaklaw sa installation, configuration, management, at troubleshooting.",
@@ -1046,7 +1046,7 @@
       "s2Title": "F5, mula sa simula",
       "s2Body": "Ang F5 ang naging sentro mula sa simula ng panahong ito, itinayo sa ibabaw ng trabaho sa BIG-IP na umaabot nang mahigit sampung taon. Sumasaklaw ang awtorisadong programa sa buong instructor-led na BIG-IP catalog: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, iRules development, automation, at troubleshooting, mula isang araw hanggang apat na araw na kurso. Kasama sa pagsasanay ang isang hands-on na karagdagan: isang managed na F5 BIG-IP lab environment, para palaging may tunay na pagsasagawaan ang pagsasanay.",
       "s3Title": "Paglawak, platform-by-platform",
-      "s3Body": "Ang nagbubukod sa mga nakaraang taon ay isang malinaw at may petsang pag-usad. Idinagdag ang Extreme Networks training mula 2021, sumasaklaw sa EXOS switching, SD-WAN, at automation. Sumunod ang Fortinet mula 2024, nakatuon sa FCP FortiGate Administrator track. Idinagdag ang Netskope mula 2025, sumasaklaw sa operations, administration, deployment, at integration ng Netskope Security Cloud. Apat na platform, bawat isa ay sinadyang idinagdag, bawat isa ay nakatindig sa ibabaw ng parehong dalawampung taon ng network at security implementation sa ilalim nito.",
+      "s3Body": "Ang nagbubukod sa mga nakaraang taon ay isang malinaw at may petsang pag-usad. Idinagdag ang Extreme Networks training mula 2021, sumasaklaw sa EXOS switching, SD-WAN, at automation. Sumunod ang Fortinet mula 2024, nakatuon sa FCP FortiGate Administrator track. Idinagdag ang Netskope mula 2025, sumasaklaw sa operations, administration, deployment, at integration ng Netskope Security Cloud. Mga platform, bawat isa ay sinadyang idinagdag, bawat isa ay nakatindig sa ibabaw ng parehong dalawampung taon ng network at security implementation sa ilalim nito.",
       "s4Title": "Sa pamamagitan ng Red Education, sa mundo",
       "s4Body": "Ang pangunahing daluyan ng pandaigdigang paghahatid na ito ay ang Red Education, isang awtorisadong training center na naghahatid ng opisyal na certified na mga kurso sa mga organisasyon sa iba't ibang rehiyon. Ang papel ay global technical training instructor, naghahatid sa isang internasyonal na hanay ng mga kalahok na ginagawang posible ng baseng São Paulo, dalawang pasaporte, at tunay na pagmamahal sa paglalakbay. Ang tuloy-tuloy na kolaborasyong ito ay nagbabago sa indibidwal na kadalubhasaan tungo sa isang bagay na maaaring i-book at pagkatiwalaan ng mga organisasyon sa buong mundo.",
       "closer": "Dito napatunayan ang halaga ng sinulid na umaabot sa buong kuwentong ito. Ang kuryosidad ng mga unang taon ay naging lalim ng implementasyon sa pamamagitan ng mga taon sa field, at ang lalim na iyon ang ngayon ay natatanggap ng bawat kalahok: hindi isang taga-pagsalita na nagbabasa ng slide, kundi isang taong nagtayo ng mga sistemang ito at kayang ipaliwanag kung paano at bakit talaga ang mga ito gumagana."
@@ -1127,8 +1127,8 @@
   },
   "training": {
     "eyebrow": "Mga kursong itinuturo ko",
-    "title": "Apat na platform, itinuturo ng taong gumamit mismo ng mga ito.",
-    "intro": "Opisyal, certified, instructor-led na pagsasanay sa apat na platform sa kaibuturan ng modernong networking at security, sa {courses} na kurso. Bawat kurso ay inihahatid ng isang awtorisadong instructor na may mga dekada ng hands-on na karanasan sa implementasyon sa likod ng pagtuturo.",
+    "title": "Mga platform, itinuturo ng taong gumamit mismo ng mga ito.",
+    "intro": "Opisyal, certified, instructor-led na pagsasanay sa mga platform sa kaibuturan ng modernong networking at security, sa {courses} na kurso. Bawat kurso ay inihahatid ng isang awtorisadong instructor na may mga dekada ng hands-on na karanasan sa implementasyon sa likod ng pagtuturo.",
     "courseCount": "{count} na kurso",
     "since": "mula",
     "representativeNote": "Ang catalog na ito ay kinatawan, hindi kabuuan. Ang mga pamagat, tagal, at nilalaman ng kurso ay sumasalamin sa kasalukuyang pampublikong impormasyon at pinipino ayon sa opisyal na mga deskripsyon.",
@@ -1163,9 +1163,9 @@
     "s3Title": "Hands-on, hindi malabo",
     "s3Body": "Ang teknikal na kasanayan ay nabubuo sa paggawa, kaya bawat kurso ay may hands-on na lab sa totoong mga sistema, suportado ng mga pinamamahalaang lab environment kung saan ang pagsasanay ay laging may totoong lugar na mapaglalaruan. Para sa mga nakakaalam na ng mga pundasyon at pumunta para mahawakan ang teknolohiya, iyon mismo ang dahilan ng kanilang pagpunta, at panahong maganda ang pagkakagamit. Para sa mga mas baguhan, ang panahon ay unang napupunta sa mga pundasyong pinagbabatayan ng mga lab, para maging makabuluhan ang hands-on na gawain sa halip na sundin nang paulit-ulit. Pareho silang may pantay na halaga, at ang balanse ay basta lumilipat ayon sa mga nasa silid. Ang format ay umaangkop sa madla: live na pagsasanay na pinamumunuan ng instructor at inihahatid sa buong mundo, personal kapag mas mainam iyon, sa Ingles o Portuges. Alinman doon, dapat umalis ang mga tao na may totoo at kapaki-pakinabang na dala at tunay na pag-unawa kung bakit ito gumagana.",
     "s4Title": "Kinikilala, certified, at updated",
-    "s4Body": "Ang pagsasanay na ito ay nakatindig sa pundasyon ng pormal na pagkilala. F5 DevCentral MVP nang tatlong magkakasunod na taon, noong 2022, 2023, at 2024. F5 certifications na pinananatili mula 2015, at instructor authorization sa apat na platform: F5, Extreme Networks, Fortinet, at Netskope. Umaabot ang paghahatid sa Australia, Singapore, India, Central Europe, Estados Unidos, at Brazil, sa pamamagitan ng awtorisadong training center na Red Education. Mahalaga ang mga kredensyal, ngunit ang mga ito ay isang shortcut patungo sa nasa ilalim nito: tunay at kasalukuyang husay sa teknolohiya.",
+    "s4Body": "Ang pagsasanay na ito ay nakatindig sa pundasyon ng pormal na pagkilala. F5 DevCentral MVP nang tatlong magkakasunod na taon, noong 2022, 2023, at 2024. F5 certifications na pinananatili mula 2015, at instructor authorization sa mga platform: F5, Extreme Networks, Fortinet, at Netskope. Umaabot ang paghahatid sa Australia, Singapore, India, Central Europe, Estados Unidos, at Brazil, sa pamamagitan ng awtorisadong training center na Red Education. Mahalaga ang mga kredensyal, ngunit ang mga ito ay isang shortcut patungo sa nasa ilalim nito: tunay at kasalukuyang husay sa teknolohiya.",
     "platformsTitle": "Ano ang itinuturo ko",
-    "platformsBody": "Opisyal, certified, instructor-led na pagsasanay sa apat na platform sa kaibuturan ng modernong networking at security. Bawat isa ay umaakay sa kumpletong catalog ng kurso nito.",
+    "platformsBody": "Opisyal, certified, instructor-led na pagsasanay sa mga platform sa kaibuturan ng modernong networking at security. Bawat isa ay umaakay sa kumpletong catalog ng kurso nito.",
     "s5Title": "Higit pa sa silid-aralan",
     "s5Body": "Ang parehong lalim na lumilikha ng mahusay na pagsasanay ay lumilikha rin ng mahusay na konsultasyon. Tatlumpung taon sa application delivery, network security, identity, at infrastructure, sa panig ng vendor at sa panig ng kliyente, ay isang pananaw na umaabot nang malayo lampas sa silid-aralan, hanggang sa mga desisyon sa arkitektura, pagpili ng teknolohiya, at ang mahihirap na tanong na hindi kasya sa isang kurikulum. Pokus ang pagsasanay; available ang karanasan sa likod nito para sa mga koponang nangangailangan ng higit pa sa isang kurso.",
     "toolsTitle": "Mga tool na nagkakalkula, hindi nanghuhula",

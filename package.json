@@ -10,7 +10,7 @@
   "version": "0.1.0",
   "description": "The ronutz.com application: a privacy-first, local-compute network/security toolbox PWA (Next.js).",
   "license": "Apache-2.0",
-  "author": "Rodolfo N\u00fctzmann (https://ronutz.com)",
+  "author": "Rodolfo Nützmann (https://ronutz.com)",
   "homepage": "https://ronutz.com",
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
     "build": "next build && pagefind --site out && tsx scripts/gen-machine-legible.mts && cp public/.assetsignore out/.assetsignore",
     "start": "next start",
     "lint": "next lint",
-    "prebuild": "node scripts/check-lockfile-platforms.mjs && node scripts/check-tool-articles.mjs && node scripts/check-locale-parity.mjs && node scripts/check-changelog.mjs && node scripts/check-tools-registry.mjs && node scripts/check-vendor-namespace.mjs && node scripts/check-glossary.mjs && node scripts/check-study-guides.mjs && node scripts/check-exam-codes.mjs && node scripts/check-objective-coverage.mjs && node scripts/check-reading-paths.mjs && node scripts/check-blog.mjs && node scripts/check-tool-docs.mjs && node scripts/check-user-guide.mjs && node scripts/check-icu-messages.mjs && node scripts/check-css-coverage.mjs && node scripts/check-client-messages.mjs && node scripts/copy-locales.mjs && tsx scripts/gen-og.mts && node scripts/check-og.mjs && tsx scripts/build-openapi.mts && node scripts/gen-api-endpoints.mjs && node scripts/gen-locale-coverage.mjs && node scripts/gen-build-info.mjs",
+    "prebuild": "node scripts/check-lockfile-platforms.mjs && node scripts/check-tool-articles.mjs && node scripts/check-locale-parity.mjs && node scripts/check-locale-numerals.mjs && node scripts/check-changelog.mjs && node scripts/check-tools-registry.mjs && node scripts/check-vendor-namespace.mjs && node scripts/check-glossary.mjs && node scripts/check-study-guides.mjs && node scripts/check-exam-codes.mjs && node scripts/check-objective-coverage.mjs && node scripts/check-reading-paths.mjs && node scripts/check-blog.mjs && node scripts/check-tool-docs.mjs && node scripts/check-user-guide.mjs && node scripts/check-icu-messages.mjs && node scripts/check-css-coverage.mjs && node scripts/check-client-messages.mjs && node scripts/copy-locales.mjs && tsx scripts/gen-og.mts && node scripts/check-og.mjs && tsx scripts/build-openapi.mts && node scripts/gen-api-endpoints.mjs && node scripts/gen-locale-coverage.mjs && node scripts/gen-build-info.mjs",
     "update-swagger-ui": "node scripts/update-swagger-ui.mjs"
   },
   "//7": "Self-contained: tool engines are in-house under src/lib/; no external engine dependency.",

@@ -35,11 +35,11 @@
     },
     "credibility": {
       "title": "Creato da chi mette le mani in pasta dal 1996.",
-      "body": "Trent'anni in reti e sicurezza aziendale, offerti da un istruttore in attività e non da una pagina di marketing. Certificato su quattro piattaforme, così i confronti qui si fanno con onestà, non per vendere.",
+      "body": "Trent'anni in reti e sicurezza aziendale, offerti da un istruttore in attività e non da una pagina di marketing. Certificato su piattaforme, così i confronti qui si fanno con onestà, non per vendere.",
       "aboutCta": "Scopri di più su chi c'è dietro"
     },
     "pillars": {
-      "title": "Quattro piattaforme, insegnate e tenute aggiornate.",
+      "title": "Le piattaforme, insegnate e tenute aggiornate.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -928,7 +928,7 @@
     "lede": "Formazione su reti e sicurezza tenuta da chi ha trascorso la carriera sul fronte dell'implementazione, non solo sulle slide. Con base a São Paulo, insegnando in tutto il mondo, in portoghese e inglese.",
     "now": {
       "title": "Cosa faccio adesso",
-      "body": "Tengo corsi ufficiali e certificati, condotti da un istruttore, su quattro piattaforme di sicurezza e networking. Ci sono laboratori pratici su sistemi reali e, per chi conosce già i fondamenti ed è venuto a esercitarsi, è esattamente questo il punto: ambienti reali in cui lavorare. Per gruppi più nuovi a una tecnologia, il tempo va prima a costruire le fondamenta su cui poggia l'argomento, così che la parte pratica abbia senso e le persone escano capendo perché le cose si comportano come si comportano, non solo quali pulsanti premere. Entrambi hanno pari valore, e l'equilibrio cambia in base a chi c'è in aula. L'insegnamento e l'abilitazione tecnica fanno parte del mio lavoro dalla fine degli anni Novanta, su una carriera iniziata sul lato dell'implementazione nel 1996.",
+      "body": "Tengo corsi ufficiali e certificati, condotti da un istruttore, su piattaforme di sicurezza e networking. Ci sono laboratori pratici su sistemi reali e, per chi conosce già i fondamenti ed è venuto a esercitarsi, è esattamente questo il punto: ambienti reali in cui lavorare. Per gruppi più nuovi a una tecnologia, il tempo va prima a costruire le fondamenta su cui poggia l'argomento, così che la parte pratica abbia senso e le persone escano capendo perché le cose si comportano come si comportano, non solo quali pulsanti premere. Entrambi hanno pari valore, e l'equilibrio cambia in base a chi c'è in aula. L'insegnamento e l'abilitazione tecnica fanno parte del mio lavoro dalla fine degli anni Novanta, su una carriera iniziata sul lato dell'implementazione nel 1996.",
       "basedLabel": "Con base a",
       "basedValue": "São Paulo, Brasile",
       "teachesLabel": "Insegna",
@@ -937,8 +937,8 @@
       "languagesValue": "Portoghese (madrelingua), inglese (fluente)"
     },
     "platforms": {
-      "title": "Quattro piattaforme, insegnate in profondità",
-      "body": "Essere certificato su quattro fornitori significa che posso insegnare ciascuno come si deve e confrontarli con onestà. Queste sono le piattaforme per cui sono attualmente autorizzato a tenere formazione ufficiale.",
+      "title": "Le piattaforme, insegnate in profondità",
+      "body": "Essere istruttore autorizzato per questi fornitori significa che posso insegnare ciascuno come si deve e confrontarli con onestà.",
       "f5": "BIG-IP sull'intero curriculum condotto da istruttore: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automazione e troubleshooting.",
       "fortinet": "Formazione certificata Fortinet, incluso il percorso FCP.",
       "extreme": "Percorsi di switching, SD-WAN, e API e automazione di Extreme Networks, attraverso installazione, configurazione, gestione e troubleshooting.",
@@ -1046,7 +1046,7 @@
       "s2Title": "F5, fin dall'inizio",
       "s2Body": "F5 è l'àncora fin dall'inizio di questa epoca, basata su un lavoro con BIG-IP che risale a più di un decennio fa. Il curriculum autorizzato copre l'intero catalogo BIG-IP condotto da istruttore: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, sviluppo di iRules, automazione e troubleshooting, da corsi di un giorno a corsi di quattro giorni. Accanto all'insegnamento corre un complemento pratico: ambienti di laboratorio F5 BIG-IP gestiti, così che la pratica abbia sempre un posto vero in cui svolgersi.",
       "s3Title": "L'espansione, piattaforma dopo piattaforma",
-      "s3Body": "Ciò che distingue gli anni recenti è una progressione chiara e datata. La formazione su Extreme Networks fu aggiunta dal 2021, coprendo switching EXOS, SD-WAN e automazione. Fortinet seguì dal 2024, con focus sul percorso FCP FortiGate Administrator. Netskope si aggiunse dal 2025, coprendo il funzionamento, l'amministrazione, l'implementazione e l'integrazione della Netskope Security Cloud. Quattro piattaforme, ciascuna aggiunta in modo deliberato, ciascuna poggiata sugli stessi due decenni di implementazione di reti e sicurezza sottostanti.",
+      "s3Body": "Ciò che distingue gli anni recenti è una progressione chiara e datata. La formazione su Extreme Networks fu aggiunta dal 2021, coprendo switching EXOS, SD-WAN e automazione. Fortinet seguì dal 2024, con focus sul percorso FCP FortiGate Administrator. Netskope si aggiunse dal 2025, coprendo il funzionamento, l'amministrazione, l'implementazione e l'integrazione della Netskope Security Cloud. Le piattaforme, ciascuna aggiunta in modo deliberato, ciascuna poggiata sugli stessi due decenni di implementazione di reti e sicurezza sottostanti.",
       "s4Title": "Attraverso Red Education, verso il mondo",
       "s4Body": "Il veicolo principale di questa erogazione globale è Red Education, un centro di formazione autorizzato attraverso cui corsi ufficiali e certificati raggiungono organizzazioni in diverse regioni. Il ruolo è global technical training instructor, con erogazione al tipo di platee internazionali che una base a São Paulo, due passaporti e un amore genuino per i viaggi rendono possibile. Il rapporto duraturo trasforma la competenza individuale in qualcosa che organizzazioni di tutto il mondo possono ingaggiare e su cui possono contare.",
       "closer": "È qui che il filo conduttore di tutta la storia dà i suoi frutti. La curiosità dei primi anni diventò la profondità di implementazione degli anni sul campo, e quella profondità è ora ciò che ogni partecipante riceve: non un presentatore che legge le slide, ma qualcuno che ha costruito questi sistemi e spiega come funzionano davvero, e perché."
@@ -1127,8 +1127,8 @@
   },
   "training": {
     "eyebrow": "Corsi che tengo",
-    "title": "Quattro piattaforme, insegnate da chi le ha messe in funzione.",
-    "intro": "Formazione ufficiale, certificata e condotta da istruttore, su {courses} corsi nelle quattro piattaforme al centro delle reti e della sicurezza moderne. Ogni corso è tenuto da un istruttore autorizzato, con decenni di implementazione pratica dietro l'insegnamento.",
+    "title": "Le piattaforme, insegnate da chi le ha messe in funzione.",
+    "intro": "Formazione ufficiale, certificata e condotta da istruttore, su {courses} corsi nelle piattaforme al centro delle reti e della sicurezza moderne. Ogni corso è tenuto da un istruttore autorizzato, con decenni di implementazione pratica dietro l'insegnamento.",
     "courseCount": "{count} corsi",
     "since": "dal",
     "representativeNote": "Questo catalogo è rappresentativo, non esaustivo. Nomi dei corsi, durate e contenuti riflettono le informazioni pubbliche attuali e sono affinati a partire dai datasheet ufficiali.",
@@ -1163,9 +1163,9 @@
     "s3Title": "Mani in pasta, non vago",
     "s3Body": "La competenza tecnica si costruisce facendo, quindi ogni corso ha laboratori pratici su sistemi reali, sostenuti da ambienti di laboratorio gestiti dove la pratica ha sempre un luogo reale in cui svolgersi. Per chi conosce già i fondamenti ed è venuto a mettere le mani sulla tecnologia, è esattamente ciò per cui è qui, ed è tempo ben speso. Per chi è più nuovo, il tempo va prima alle fondamenta su cui poggiano i laboratori, così che la parte pratica abbia senso anziché essere seguita a memoria. Entrambi hanno pari valore, e l'equilibrio semplicemente cambia in base all'aula. Il formato si adatta al pubblico: formazione dal vivo con istruttore ed erogata a livello globale, in presenza quando serve meglio, in inglese o portoghese. In ogni caso, le persone dovrebbero uscire con qualcosa di reale e utile in mano e una reale comprensione del perché funziona.",
     "s4Title": "Riconosciuto, certificato e aggiornato",
-    "s4Body": "L'insegnamento poggia su una base di riconoscimento formale. F5 DevCentral MVP per tre anni consecutivi, nel 2022, 2023 e 2024. Certificazioni F5 mantenute dal 2015, e autorizzazione come istruttore su quattro piattaforme: F5, Extreme Networks, Fortinet e Netskope. L'erogazione raggiunge Australia, Singapore, India, Europa centrale, Stati Uniti e Brasile, attraverso Red Education, un centro di formazione autorizzato. Le qualifiche contano, ma sono una scorciatoia per ciò che c'è sotto: una padronanza genuina e attuale della tecnologia.",
+    "s4Body": "L'insegnamento poggia su una base di riconoscimento formale. F5 DevCentral MVP per tre anni consecutivi, nel 2022, 2023 e 2024. Certificazioni F5 mantenute dal 2015, e autorizzazione come istruttore su piattaforme: F5, Extreme Networks, Fortinet e Netskope. L'erogazione raggiunge Australia, Singapore, India, Europa centrale, Stati Uniti e Brasile, attraverso Red Education, un centro di formazione autorizzato. Le qualifiche contano, ma sono una scorciatoia per ciò che c'è sotto: una padronanza genuina e attuale della tecnologia.",
     "platformsTitle": "Cosa insegno",
-    "platformsBody": "Formazione ufficiale, certificata e condotta da istruttore, su quattro piattaforme al centro delle reti e della sicurezza moderne. Ciascuna rimanda al suo catalogo di corsi completo.",
+    "platformsBody": "Formazione ufficiale, certificata e condotta da istruttore, su piattaforme al centro delle reti e della sicurezza moderne. Ciascuna rimanda al suo catalogo di corsi completo.",
     "s5Title": "Oltre l'aula",
     "s5Body": "La stessa profondità che produce un buon insegnamento produce una buona consulenza. Trent'anni attraverso application delivery, sicurezza di rete, identità e infrastruttura, sia sul fronte del fornitore sia su quello del cliente, sono una prospettiva che viaggia ben oltre una sala di formazione, fino alle decisioni di architettura, alla scelta della tecnologia e ai problemi difficili che non rientrano in un programma. L'insegnamento è il focus; l'esperienza che ci sta dietro è disponibile per i team che hanno bisogno di più di un corso.",
     "toolsTitle": "Strumenti che calcolano, mai a indovinare",

@@ -1,0 +1,59 @@
+---
+slug: apache-httpd-and-what-nginx-was-written-against
+title: "Apache httpd: o servidor que rodava a web, e o problema que produziu o NGINX"
+summary: "O Apache começou como remendos a um servidor que ninguém mantinha, e em um ano rodava mais da web que qualquer outro. A arquitetura que o tornou flexível é também a que o fez sofrer com o tráfego dos anos 2000, e esse é o problema que o NGINX foi escrito para resolver."
+concepts: ["apache", "httpd", "nginx", "servidor web", "ncsa httpd", "processo por conexão", "c10k", "prefork", "worker mpm", "event mpm", "código aberto", "apache software foundation"]
+relatedTools: ["nginx-location-matcher"]
+sub: nginx
+relatedArticles: ["nginx-location-matching-order", "nginx-configuration-tree-and-includes"]
+category: networking
+order: 126
+status: reviewed
+updated: "2026-07-28"
+---
+
+Não dá para explicar por que o NGINX existe sem explicar o Apache, porque o NGINX foi escrito contra um problema específico que a arquitetura do Apache tinha, e entender esse problema explica boa parte do que os dois servidores fazem.
+
+## De onde veio
+
+No início de 1995 o servidor web mais usado era o daemon HTTP de domínio público escrito por Rob McCool no National Center for Supercomputing Applications. Seu desenvolvimento parara quando ele deixou o NCSA em meados de 1994, e cada webmaster escrevera suas próprias correções sem lugar comum para colocá-las.
+
+Brian Behlendorf — que vinha remendando aquele código para que ele desse conta do cadastro de usuários do HotWired, site da revista Wired — montou uma lista de e-mails com Cliff Skolnick. No fim de fevereiro de 1995, oito pessoas coordenavam remendos: Behlendorf, **Roy Fielding**, Rob Hartill, David Robinson, Skolnick, Randy Terbush, Robert Thau e Andrew Wilson.
+
+A primeira versão pública foi a 0.6.2, em abril de 1995. A 1.0 saiu em dezembro, e em um ano o Apache havia ultrapassado o NCSA como servidor mais usado da internet — posição que manteve por quase duas décadas.
+
+Fielding, a propósito, viria a coautorar o HTTP/1.1 e a definir o REST. As pessoas que escreveram o servidor escreveram também boa parte do que ele fala.
+
+## A arquitetura, e o que ela custou
+
+O modelo original do Apache dá **a cada conexão o seu próprio processo**. Uma requisição chega, um processo a atende do início ao fim, e esse processo é só dela até a conexão fechar.
+
+As vantagens são reais e explicam o domínio por tanto tempo. Uma queda derruba um processo, não o servidor. Módulos podem ser escritos em qualquer estilo sem preocupação com bloqueio, porque bloquear afeta só aquela conexão. O `mod_php` rodando dentro do processo do servidor era simples. A configuração podia ser sobreposta por diretório com `.htaccess`, o que tornou a hospedagem compartilhada viável.
+
+O custo é memória e troca de contexto. Cada processo carrega sua própria cópia do interpretador e sua própria pilha. Algumas centenas de conexões simultâneas são confortáveis. Dez mil não — não porque o servidor seja mal escrito, mas porque dez mil processos são dez mil processos.
+
+Isso virou o **problema C10K**: a constatação, batizada por volta de 1999, de que atender dez mil conexões simultâneas exigia um modelo diferente, e não uma máquina mais rápida.
+
+## O que o Apache fez a respeito
+
+O Apache não ficou parado. Ganhou **módulos de multiprocessamento**: o `prefork` é o clássico processo-por-conexão; o `worker` usa threads dentro de processos, então uma conexão custa uma thread e não um processo; o `event` — padrão moderno — entrega conexões keep-alive ociosas a um pequeno conjunto de threads ouvintes em vez de segurar um worker para cada uma.
+
+Um Apache ajustado com o MPM event é uma máquina genuinamente diferente do prefork de que as pessoas se lembram, e comparações que ignoram isso comparam com 2005.
+
+## O que o NGINX fez em vez disso
+
+O NGINX partiu da outra ponta. Em vez de um processo por conexão, um número pequeno e fixo de processos worker roda cada um um laço de eventos e atende milhares de conexões por vez. Nada bloqueia; o worker circula entre as conexões conforme cada uma fica pronta.
+
+É por isso que os dois servidores parecem tão diferentes de configurar. O `.htaccess` por diretório do Apache não tem equivalente no NGINX, e nunca terá, porque procurar esses arquivos a cada requisição é exatamente o tipo de trabalho de sistema de arquivos por requisição que um laço de eventos existe para evitar. O carregamento dinâmico de módulos do Apache e os módulos em tempo de compilação do NGINX vêm da mesma diferença.
+
+## Qual é a resposta certa
+
+Os dois, honestamente, e a versão honesta é que a distância diminuiu.
+
+O Apache com o MPM event lida com concorrência muito melhor do que sua fama sugere, e sua configuração por diretório e o ecossistema de módulos seguem sendo razões para escolhê-lo. O modelo do NGINX cai melhor em proxy reverso de alta concorrência e entrega de estáticos, e é por isso que virou padrão na frente de servidores de aplicação, e não como aquilo que os roda.
+
+A implantação comum por anos foi ambos: NGINX na frente para concorrência e TLS, Apache atrás rodando a aplicação. Nenhum tinha vencido; faziam trabalhos diferentes.
+
+## O que quem estuda precisa saber de cor
+
+O Apache começou em fevereiro de 1995 como remendos coordenados ao NCSA httpd parado de Rob McCool, por oito contribuidores incluindo Roy Fielding, que depois coautorou o HTTP/1.1 e definiu o REST; ultrapassou o NCSA em um ano e a Apache Software Foundation foi constituída em 1999. Seu modelo original dá um processo a cada conexão, o que é robusto e flexível e caro em memória — a restrição que virou o problema C10K. O Apache respondeu com módulos de multiprocessamento, e o MPM event é uma máquina bem diferente do prefork. O NGINX respondeu invertendo o modelo: poucos workers, cada um com um laço de eventos sobre muitas conexões. Essa diferença explica as diferenças de configuração, o `.htaccess` acima de tudo, e os dois eram comumente implantados juntos em vez de um substituir o outro.

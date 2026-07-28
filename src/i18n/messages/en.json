@@ -14030,6 +14030,58 @@
       "ism-band": {
         "def": "Industrial, scientific and medical bands: spectrum usable without an individual licence, subject to power and interference rules.",
         "context": "These allocations made consumer wireless possible. Wi-Fi and Bluetooth share 2.4 GHz with microwave ovens and much else, which is exactly why that band is congested, and the 5 and 6 GHz Wi-Fi bands trade range for room. LoRa takes the opposite bet in the sub-GHz ISM allocations, accepting very low data rates to get kilometres of range and years of battery life. Licence-exempt does not mean rule-free: duty cycle and power limits are what keep the bands usable."
+      },
+      "apache-httpd": {
+        "def": "The web server that ran most of the internet for the best part of two decades, begun in 1995 as coordinated patches to a server nobody was maintaining.",
+        "context": "Its original model gives every connection its own process, which is robust and flexible and expensive in memory. That cost is the constraint NGINX was written against, and later Apache multi-processing modules - especially event - answered it from the other direction."
+      },
+      "a-patchy-server": {
+        "def": "The oldest explanation of how Apache got its name: it was a server made of patches.",
+        "context": "The project's own FAQ said so from 1996 to 2001. Brian Behlendorf said in 2000 that the name honoured the Apache people, then said in 2007 that it was the patches after all, and the foundation today credits the tribe. Both stories are in the record and neither has been retracted cleanly, which is why this entry is marked disputed."
+      },
+      "apache-software-foundation": {
+        "def": "The non-profit incorporated in June 1999 so the Apache projects would outlive any individual volunteer.",
+        "context": "Formed from the eight-person Apache Group with Brian Behlendorf as first president. The structure is the reason the ASF now stewards hundreds of projects rather than one web server."
+      },
+      "c10k": {
+        "def": "The problem, named in 1999, of handling ten thousand simultaneous connections on one machine.",
+        "context": "Not a hardware question but an architectural one: a server giving each connection its own process or thread runs out of memory and scheduler long before it runs out of CPU. The answer was the event loop, which is what NGINX and Apache's event module both use."
+      },
+      "altavista": {
+        "def": "The search engine that led the web before Google, built at DEC as a way to stress-test a processor.",
+        "context": "Launched 15 December 1995 with an index of sixteen million documents and full Boolean search, at a time when the alternative was a hand-maintained directory. Its owners then rebuilt it as a portal to compete with Yahoo, which meant competing on everything except the thing it was best at. Sold to Overture in 2003 for about six percent of its valuation three years earlier, and shut down by Yahoo on 8 July 2013."
+      },
+      "babel-fish": {
+        "def": "The web's first machine-translation service, shipped by AltaVista.",
+        "context": "Named for the creature in The Hitchhiker's Guide to the Galaxy that translates any language when placed in your ear. It outlived its parent under Yahoo's brand and now redirects to Microsoft's translator."
+      },
+      "scooter-crawler": {
+        "def": "AltaVista's web crawler, written by Louis Monier at DEC.",
+        "context": "The half of AltaVista that actually stressed the hardware, which was the original point of the project. Switched off around 2004 when Yahoo replaced the engine with its own, leaving the AltaVista brand as a front end for someone else's results."
+      },
+      "pagerank": {
+        "def": "Google's ranking idea: score a page by who links to it, weighting links from well-linked pages more heavily.",
+        "context": "It measures something a page's own author does not control, which is why it resisted the keyword-stuffing that was defeating the search engines of the mid-1990s. Begun as a Stanford project called BackRub in January 1996. Page and Brin offered it to AltaVista for a million dollars in 1998 and were turned down."
+      },
+      "googol": {
+        "def": "The digit one followed by a hundred zeros, and the word Google is a misspelling of it.",
+        "context": "Chosen to suggest the scale of the index the founders intended to build. The mathematical term itself was coined by a nine-year-old asked to name a very large number."
+      },
+      "six-degrees-of-separation": {
+        "def": "The idea that any two people are connected by a chain of about six acquaintances - and the name of the first social network.",
+        "context": "SixDegrees.com launched in 1997 with profiles, friends lists and the ability to see how you connected to any other member: every feature social networks still have. It reached 3.5 million users and failed anyway, because in the late 1990s most of the people those users knew were not online at all. The idea was right and the infrastructure had not arrived."
+      },
+      "large-language-model": {
+        "def": "A model trained on very large amounts of text to predict what comes next, which turns out to be enough to do a great many other things.",
+        "context": "The capability people find surprising is emergent rather than designed: nobody wrote rules for summarising or translating or writing code. Worth holding onto when reading claims about what these systems 'understand' - next-token prediction at scale is what is actually happening, and how much that explains is genuinely contested."
+      },
+      "transformer-architecture": {
+        "def": "The 2017 neural-network design that made modern language models practical, built on self-attention.",
+        "context": "Introduced in a Google paper titled 'Attention Is All You Need'. Its advantage over what came before is that it processes a whole sequence in parallel rather than one token at a time, which is what made training on internet-scale text affordable. Every large language model in current use is a descendant."
+      },
+      "generative-ai": {
+        "def": "Systems that produce new text, images, audio or code rather than classifying or ranking existing material.",
+        "context": "The technology was not new in November 2022; the access was. ChatGPT's launch on 30 November 2022 reached a hundred million monthly users in two months, and what changed was that using a language model stopped requiring an API key or any idea of what a transformer is. Capability had been improving for years in public view."
       }
     },
     "totalCount": "{count} terms",

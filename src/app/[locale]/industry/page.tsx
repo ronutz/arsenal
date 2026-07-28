@@ -85,8 +85,13 @@ export default async function IndustryHubPage({
      *  chapters do not carry one - none of those companies has ended. */
     ended?: { year: number; note: string };
     href: string;
-    /** Which strand it came from, for the pill. */
-    kind: "industry" | "redu" | "career";
+    /** Red Education delivers this vendor's authorized training. */
+    isRedu: boolean;
+    /** A chapter this career was lived inside.
+     *  These two are INDEPENDENT, not alternatives: nine companies are both,
+     *  and modelling them as one category meant only one pill could ever
+     *  show (PRIME 2026-07-28). */
+    isCareer: boolean;
   };
 
   const fromPartners: TimelineEntry[] = partnerVendors
@@ -100,7 +105,8 @@ export default async function IndustryHubPage({
       founded: v.founded,
       ended: v.ended,
       href: `/about/vendors/${v.slug}`,
-      kind: v.group === "redu" ? ("redu" as const) : ("industry" as const),
+      isRedu: v.group === "redu",
+      isCareer: false,
     }));
 
   const fromCareer: TimelineEntry[] = CAREER_VENDORS.map((v) => ({
@@ -109,7 +115,8 @@ export default async function IndustryHubPage({
     tagline: t(`${v.key}.tagline`),
     founded: v.founded,
     href: `/about/vendors/${v.slug}`,
-    kind: "career" as const,
+    isRedu: REDU_CAREER_PARTNERS.includes(v.slug as (typeof REDU_CAREER_PARTNERS)[number]),
+    isCareer: true,
   }));
 
   const lineageTimeline: TimelineEntry[] = [...fromPartners, ...fromCareer].sort(
@@ -200,10 +207,10 @@ export default async function IndustryHubPage({
                     </span>
                     <span className="vendor-card-name">
                       {v.name}
-                      {v.kind === "redu" && (
+                      {v.isRedu && (
                         <span className="vendor-partner-pill">{tp("reduPill")}</span>
                       )}
-                      {v.kind === "career" && (
+                      {v.isCareer && (
                         <span className="vendor-career-pill">{tp("careerPill")}</span>
                       )}
                     </span>

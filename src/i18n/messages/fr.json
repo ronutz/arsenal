@@ -35,11 +35,11 @@
     },
     "credibility": {
       "title": "Conçu par quelqu'un qui fait le travail depuis 1996.",
-      "body": "Trente ans dans les réseaux et la sécurité d'entreprise, livrés par un formateur en exercice plutôt que par une page marketing. Certifié sur quatre plateformes, de sorte que les comparaisons ici sont faites honnêtement, pas vendues.",
+      "body": "Trente ans dans les réseaux et la sécurité d'entreprise, livrés par un formateur en exercice plutôt que par une page marketing. Certifié sur plateformes, de sorte que les comparaisons ici sont faites honnêtement, pas vendues.",
       "aboutCta": "En savoir plus sur la personne derrière"
     },
     "pillars": {
-      "title": "Quatre plateformes, enseignées et tenues à jour.",
+      "title": "Les plateformes, enseignées et tenues à jour.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -928,7 +928,7 @@
     "lede": "Formations réseau et sécurité dispensées par un praticien qui a passé sa carrière du côté de la mise en œuvre, pas seulement des diapositives. Basé à São Paulo, enseignant dans le monde entier, en portugais et en anglais.",
     "now": {
       "title": "Ce que je fais aujourd'hui",
-      "body": "Je dispense des formations officielles et certifiées, animées par un instructeur, sur quatre plateformes de sécurité et de réseau. Il y a des travaux pratiques sur des systèmes réels, et pour ceux qui connaissent déjà les fondamentaux et sont venus pratiquer, c'est exactement l'objectif : de vrais environnements où travailler. Pour les groupes plus novices sur une technologie, le temps va d'abord à bâtir les fondations sur lesquelles repose le sujet, afin que la pratique ait du sens et que les gens repartent en comprenant pourquoi les choses se comportent ainsi, et pas seulement sur quels boutons appuyer. Les deux ont une valeur égale, et l'équilibre change selon qui est dans la salle. L'enseignement et l'habilitation technique font partie de mon travail depuis la fin des années 1990, sur une carrière qui a commencé du côté de l'implémentation en 1996.",
+      "body": "Je dispense des formations officielles et certifiées, animées par un instructeur, sur plateformes de sécurité et de réseau. Il y a des travaux pratiques sur des systèmes réels, et pour ceux qui connaissent déjà les fondamentaux et sont venus pratiquer, c'est exactement l'objectif : de vrais environnements où travailler. Pour les groupes plus novices sur une technologie, le temps va d'abord à bâtir les fondations sur lesquelles repose le sujet, afin que la pratique ait du sens et que les gens repartent en comprenant pourquoi les choses se comportent ainsi, et pas seulement sur quels boutons appuyer. Les deux ont une valeur égale, et l'équilibre change selon qui est dans la salle. L'enseignement et l'habilitation technique font partie de mon travail depuis la fin des années 1990, sur une carrière qui a commencé du côté de l'implémentation en 1996.",
       "basedLabel": "Basé à",
       "basedValue": "São Paulo, Brésil",
       "teachesLabel": "Enseigne",
@@ -937,8 +937,8 @@
       "languagesValue": "Portugais (langue maternelle), anglais (courant)"
     },
     "platforms": {
-      "title": "Quatre plateformes, enseignées en profondeur",
-      "body": "Être certifié sur quatre fournisseurs signifie que je peux enseigner chacun correctement et les comparer honnêtement. Voici les plateformes pour lesquelles je suis actuellement habilité à dispenser des formations officielles.",
+      "title": "Les plateformes, enseignées en profondeur",
+      "body": "Être formateur agréé pour ces fournisseurs signifie que je peux enseigner chacun correctement et les comparer honnêtement.",
       "f5": "BIG-IP sur l'ensemble du curriculum animé par un formateur : LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automatisation et dépannage.",
       "fortinet": "Formations Fortinet certifiées, y compris le parcours FCP.",
       "extreme": "Parcours Extreme Networks de commutation, SD-WAN, API et automatisation, couvrant l'installation, la configuration, la gestion et le dépannage.",
@@ -1046,7 +1046,7 @@
       "s2Title": "F5, depuis le début",
       "s2Body": "F5 est l'ancre depuis le début de cette ère, s'appuyant sur un travail avec BIG-IP qui remonte à plus d'une décennie. Le curriculum agréé couvre l'intégralité du catalogue BIG-IP animé par un formateur : Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, développement d'iRules, automatisation et dépannage, allant de cours d'une journée à quatre jours. Parallèlement à l'enseignement s'ajoute un complément pratique : des environnements de laboratoire F5 BIG-IP gérés, pour que la pratique ait toujours un lieu réel où se dérouler.",
       "s3Title": "L'expansion, plateforme par plateforme",
-      "s3Body": "Ce qui distingue les années récentes, c'est une progression claire et datée. Les formations Extreme Networks ont été ajoutées à partir de 2021, couvrant la commutation EXOS, le SD-WAN et l'automatisation. Fortinet a suivi à partir de 2024, centré sur le parcours FCP FortiGate Administrator. Netskope s'est ajouté à partir de 2025, couvrant l'exploitation, l'administration, l'implémentation et l'intégration du Netskope Security Cloud. Quatre plateformes, chacune ajoutée délibérément, chacune reposant sur les deux mêmes décennies de mise en œuvre réseau et sécurité en dessous.",
+      "s3Body": "Ce qui distingue les années récentes, c'est une progression claire et datée. Les formations Extreme Networks ont été ajoutées à partir de 2021, couvrant la commutation EXOS, le SD-WAN et l'automatisation. Fortinet a suivi à partir de 2024, centré sur le parcours FCP FortiGate Administrator. Netskope s'est ajouté à partir de 2025, couvrant l'exploitation, l'administration, l'implémentation et l'intégration du Netskope Security Cloud. Les plateformes, chacune ajoutée délibérément, chacune reposant sur les deux mêmes décennies de mise en œuvre réseau et sécurité en dessous.",
       "s4Title": "Via Red Education, vers le monde",
       "s4Body": "Le principal véhicule de cette prestation mondiale est Red Education, un centre de formation agréé par lequel des cours officiels et certifiés atteignent des organisations à travers les régions. Le rôle est global technical training instructor, dispensant à ce type de publics internationaux qu'une base à São Paulo, deux passeports et un véritable amour du voyage rendent possibles. Cette relation durable transforme l'expertise individuelle en quelque chose que des organisations du monde entier peuvent réserver et sur quoi elles peuvent compter.",
       "closer": "C'est ici que le fil conducteur de toute l'histoire porte ses fruits. La curiosité des premières années est devenue la profondeur de mise en œuvre des années de praticien, et cette profondeur est désormais ce que chaque participant reçoit : non pas un présentateur lisant des diapositives, mais quelqu'un qui a construit ces systèmes expliquant comment ils fonctionnent réellement, et pourquoi."
@@ -1127,8 +1127,8 @@
   },
   "training": {
     "eyebrow": "Les formations que je dispense",
-    "title": "Quatre plateformes, enseignées par quelqu'un qui les a exploitées.",
-    "intro": "Formations officielles et certifiées animées par un formateur, couvrant {courses} cours sur les quatre plateformes au cœur des réseaux et de la sécurité modernes. Chaque cours est dispensé par un formateur agréé, avec des décennies de mise en œuvre pratique derrière l'enseignement.",
+    "title": "Les plateformes, enseignées par quelqu'un qui les a exploitées.",
+    "intro": "Formations officielles et certifiées animées par un formateur, couvrant {courses} cours sur les plateformes au cœur des réseaux et de la sécurité modernes. Chaque cours est dispensé par un formateur agréé, avec des décennies de mise en œuvre pratique derrière l'enseignement.",
     "courseCount": "{count} cours",
     "since": "depuis",
     "representativeNote": "Ce catalogue est représentatif, non exhaustif. Les noms des cours, les durées et les contenus reflètent les informations publiques actuelles et sont affinés à partir des fiches techniques officielles.",
@@ -1163,9 +1163,9 @@
     "s3Title": "Pratique, pas approximatif",
     "s3Body": "La compétence technique se construit en faisant, c'est pourquoi chaque cours comporte des travaux pratiques sur des systèmes réels, soutenus par des environnements de laboratoire gérés où la pratique a toujours un lieu réel où se dérouler. Pour ceux qui connaissent déjà les fondamentaux et sont venus mettre la main sur la technologie, c'est exactement ce pour quoi ils sont là, et c'est du temps bien employé. Pour les plus novices, le temps va d'abord aux fondations sur lesquelles reposent les travaux pratiques, afin que la pratique ait du sens plutôt que d'être suivie par cœur. Les deux ont une valeur égale, et l'équilibre change simplement selon le groupe. Le format s'adapte au public : formation en direct animée par un instructeur et dispensée dans le monde entier, en présentiel quand cela convient mieux, en anglais ou en portugais. Dans tous les cas, les participants devraient repartir avec quelque chose de réel et d'utile en main et une réelle compréhension de son fonctionnement.",
     "s4Title": "Reconnu, certifié et à jour",
-    "s4Body": "L'enseignement repose sur un socle de reconnaissance formelle. F5 DevCentral MVP trois années consécutives, en 2022, 2023 et 2024. Certifications F5 détenues depuis 2015, et habilitation de formateur sur quatre plateformes : F5, Extreme Networks, Fortinet et Netskope. La prestation atteint l'Australie, Singapour, l'Inde, l'Europe centrale, les États-Unis et le Brésil, via Red Education, un centre de formation agréé. Les qualifications comptent, mais elles sont un raccourci pour ce qui se trouve en dessous : une maîtrise authentique et actuelle de la technologie.",
+    "s4Body": "L'enseignement repose sur un socle de reconnaissance formelle. F5 DevCentral MVP trois années consécutives, en 2022, 2023 et 2024. Certifications F5 détenues depuis 2015, et habilitation de formateur sur plateformes : F5, Extreme Networks, Fortinet et Netskope. La prestation atteint l'Australie, Singapour, l'Inde, l'Europe centrale, les États-Unis et le Brésil, via Red Education, un centre de formation agréé. Les qualifications comptent, mais elles sont un raccourci pour ce qui se trouve en dessous : une maîtrise authentique et actuelle de la technologie.",
     "platformsTitle": "Ce que j'enseigne",
-    "platformsBody": "Formations officielles et certifiées animées par un formateur, couvrant quatre plateformes au cœur des réseaux et de la sécurité modernes. Chacune renvoie à son catalogue de cours complet.",
+    "platformsBody": "Formations officielles et certifiées animées par un formateur, couvrant plateformes au cœur des réseaux et de la sécurité modernes. Chacune renvoie à son catalogue de cours complet.",
     "s5Title": "Au-delà de la salle de classe",
     "s5Body": "La même profondeur qui fait un bon enseignement fait un bon conseil. Trente ans couvrant la distribution d'applications, la sécurité réseau, l'identité et l'infrastructure, côté fournisseur et côté client, constituent une perspective qui voyage bien au-delà d'une salle de formation, jusque dans les décisions d'architecture, la sélection de technologies et les problèmes difficiles qui n'entrent pas dans un programme. L'enseignement est l'objet ; l'expérience qui le sous-tend est à la disposition des équipes qui ont besoin de plus qu'un cours.",
     "toolsTitle": "Des outils qui calculent, jamais ne devinent",

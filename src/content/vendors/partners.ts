@@ -105,6 +105,186 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // OPENAI - added 2026-07-28 (PRIME: "OpenAI and Anthropic on the
+    // timeline"). The anchor for the generative-AI marker: ChatGPT's launch is
+    // the moment the technology stopped being a research subject and became
+    // something anyone could use.
+    // Verified 2026-07-28. Note the founding-date sources differ by three days
+    // (8 vs 11 December 2015); the 11th is the public announcement and is used.
+    slug: "openai",
+    group: "contemporary",
+    name: "OpenAI",
+    founded: 2015,
+    tagline: "Founded as a non-profit hedge against AI being controlled by one company, and now largely owned by one company.",
+    intro:
+      "OpenAI was announced on 11 December 2015 as a non-profit, with $1B in pledged funding and a stated mission to build artificial general intelligence that benefits all of humanity - and to build it in the open rather than behind a single corporation's walls. The non-profit structure was the point: a deliberate hedge against the technology ending up controlled by Google, Microsoft or anyone else.",
+    body: [
+      "The founding group included Sam Altman, Greg Brockman, Elon Musk, Ilya Sutskever, Wojciech Zaremba and John Schulman. Schulman led the reinforcement-learning-from-human-feedback work that later made ChatGPT feel like a conversation rather than a text generator.",
+      "The structure did not hold. OpenAI restructured as a capped-profit partnership in 2019 and converted to a public benefit corporation in 2025. Microsoft holds roughly 27% of the new entity - about $135B at the March 2026 round - and the non-profit retained 26%. Critics including several former employees argued the conversion reduced the non-profit's practical control over what the company does with what it builds. Whatever one makes of that, it is a striking distance travelled from the founding premise.",
+      "ChatGPT launched on 30 November 2022 and was not the original product plan. It reached a million users in five days and a hundred million monthly users in two months, the fastest consumer adoption of anything to that point.",
+      "That date is the marker worth having. Large language models existed before it and had been improving for years; what changed was that using one stopped requiring an API key, a research affiliation, or any idea of what a transformer is. The technology did not become capable in November 2022. It became available.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/OpenAI",
+    externalLabel: "OpenAI",
+    sources: [
+      { label: "Grokipedia: OpenAI - founding date and founders", url: "https://grokipedia.com/page/OpenAI" },
+      { label: "Who created ChatGPT - the 30 November 2022 launch, adoption figures, Microsoft stake", url: "https://felloai.com/who-created-chatgpt/" },
+      { label: "OpenAI and Anthropic funding history - the capped-profit and PBC restructurings", url: "https://pinggy.io/blog/openai_anthropic_funding_history/" },
+    ],
+  },
+  {
+    // ANTHROPIC - added 2026-07-28 (PRIME).
+    // NOTE FOR ANY FUTURE EDITOR: this site is authored with Claude, which
+    // Anthropic makes. That is a reason to hold this entry to a HIGHER
+    // standard than the others, not a lower one - so the unflattering facts
+    // are here (the Alameda Research money, the founder-count discrepancy in
+    // the sources) and the copy states what the company IS rather than
+    // advertising it. If this entry ever reads like promotion, it is wrong.
+    slug: "anthropic",
+    group: "contemporary",
+    name: "Anthropic",
+    founded: 2021,
+    tagline: "Founded by people who left OpenAI over where it was going, and built around the bet that safety research and frontier capability have to happen in the same building.",
+    intro:
+      "Anthropic was incorporated in January 2021 by senior people who had just left OpenAI, principally the siblings Dario Amodei - OpenAI's VP of Research - and Daniela Amodei, its VP of Safety and Policy. The stated reason for leaving was directional disagreement, specifically over OpenAI's 2019 arrangements with Microsoft.",
+      body: [
+      "The other founders named in the record are Jared Kaplan, Jack Clark, Chris Olah, Ben Mann, Sam McCandlish and Tom Brown. Sources describe the group as seven former OpenAI employees while listing eight names including the Amodeis; the discrepancy is in the sources and is left visible rather than resolved by picking one.",
+      "The premise is a specific technical claim rather than a slogan: that you cannot do useful safety research on systems you are not building, because the problems only appear at the frontier. Dario Amodei had co-authored 'Concrete Problems in AI Safety' in 2016, which set out failure modes - side effects, unsafe exploration - that were theoretical then and are engineering concerns now.",
+      "The funding history includes a fact the company would presumably rather not carry: of the $580M Series B in April 2022, roughly $500M came from Alameda Research, the trading firm affiliated with Sam Bankman-Fried, months before its collapse. That is in the public record and belongs in any honest account of how the company was capitalised.",
+      "It is structured as a public benefit corporation with a governance trust, and its products are the Claude models. It is included on this timeline because the generative-AI era is not a single company's story, and because a site that teaches people to check their sources should name the one it was built with.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Anthropic",
+    externalLabel: "Anthropic",
+    sources: [
+      { label: "Wikipedia: Anthropic - January 2021 incorporation, founders, structure", url: "https://en.wikipedia.org/wiki/Anthropic" },
+      { label: "Contrary Research: Anthropic founding story and the OpenAI roles the founders held", url: "https://research.contrary.com/company/anthropic" },
+      { label: "OpenAI and Anthropic funding history - the Series A and Series B figures", url: "https://pinggy.io/blog/openai_anthropic_funding_history/" },
+    ],
+  },
+  {
+    // GOOGLE - added 2026-07-28 (PRIME: "mark the beginning of Google Search").
+    // Placed here rather than as a general Google entry: the marker asked for
+    // is the SEARCH ENGINE's beginning, which is why the founding year is the
+    // company's and the story stops at the point search was won.
+    // The AltaVista connection is the reason both entries exist: in 1998 Page
+    // and Brin tried to SELL PageRank to AltaVista for $1M and were turned
+    // down. Verified 2026-07-28.
+    slug: "google-search",
+    group: "contemporary",
+    name: "Google",
+    founded: 1998,
+    tagline: "Ranked pages by who linked to them rather than how often they said the word - and was nearly sold to AltaVista for a million dollars.",
+    intro:
+      "Larry Page and Sergey Brin met at Stanford in 1995 and began a research project in January 1996 called BackRub, which analysed which pages linked to which. The insight was that a link is a vote, and that votes from well-linked pages should count for more. They called the resulting algorithm PageRank.",
+    body: [
+      "Search engines at the time largely ranked results by how often a search term appeared on a page, which is trivially easy to game and was being gamed heavily. PageRank measured something a page's own author does not control: who else thought it was worth linking to.",
+      "In 1998 Page and Brin tried to sell PageRank to AltaVista for $1M, intending to go back to their studies. AltaVista did not buy it. They registered google.com on 15 September 1997 - the name a misspelling of googol, the digit one followed by a hundred zeros - and incorporated Google Inc. on 4 September 1998 in a friend's garage in Menlo Park.",
+      "The first cheque came from Andy Bechtolsheim, a co-founder of Sun Microsystems, followed by $25M from Kleiner Perkins and Sequoia in 1999. The IPO in 2004 raised $1.67B.",
+      "The homepage was deliberately bare while every competitor was becoming a portal. That was partly conviction and partly circumstance - neither founder was much of an HTML author - but it landed at exactly the moment AltaVista and its peers were adding shopping, email and news to the front page of a search engine.",
+      "A footnote worth keeping: RankDex, built by Robin Li in 1996, was exploring link-based ranking on a similar timeline. Li patented that work and later founded Baidu. PageRank was not the only idea of its kind; it was the one that got built into a company that wanted to be a search engine.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/History_of_Google",
+    externalLabel: "History of Google",
+    sources: [
+      { label: "EBSCO Research Starters: Google is founded - the AltaVista offer and the PageRank origin", url: "https://www.ebsco.com/research-starters/history/google-founded" },
+      { label: "History of Google - domain registration, incorporation date, BackRub, RankDex", url: "https://google.fandom.com/wiki/History_of_Google" },
+    ],
+  },
+  {
+    // SIXDEGREES - added 2026-07-28 (PRIME: "mark the beginning of social
+    // media"). A company with a real founding year, so it earns a timeline
+    // entry where a general "social media begins" marker would not: the
+    // timeline orders by founding, and an era has no founding year.
+    // It also ENDED, so it uses the `ended` field.
+    slug: "sixdegrees",
+    group: "other",
+    name: "SixDegrees.com",
+    founded: 1996,
+    ended: {
+      year: 2001,
+      note: "Sold to YouthStream Media Networks in December 2000 and shut down the following year.",
+    },
+    tagline: "The first social network, and it failed because not enough people were online yet.",
+    intro:
+      "SixDegrees.com is widely recognised as the first social networking site: the first to combine a user profile, a visible friends list, and the ability to browse other people's connections. Andrew Weinreich founded it in May 1996 and launched it in 1997, naming it after the six-degrees-of-separation idea.",
+    body: [
+      "The features are unremarkable now because everything copied them. Users could create a profile, list friends and family, invite people who were not yet members, send messages, and post to people in their first, second and third degrees - and, unusually, see how they were connected to any other member.",
+      "Weinreich filed the first patent on social networking, 'Method and apparatus for constructing a networking database and system', which is generally known as the Six Degrees patent.",
+      "It reached around 3.5 million users, which sounds like success and was not enough. The problem was structural: a social network is only useful if the people you know are on it, and in the late 1990s most people were not online at all. Millions of users spread across a world that was barely connected produced little engagement.",
+      "It was sold to YouthStream Media Networks in December 2000 and shut down in 2001 - three years before Facebook. The idea was correct and the infrastructure had not arrived, which is a different kind of failure from AltaVista's and worth keeping alongside it.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/SixDegrees.com",
+    externalLabel: "SixDegrees.com",
+    sources: [
+      { label: "SixDegrees.com - the first recognised social media platform, founded by Andrew Weinreich", url: "https://medium.com/@emijones/sixdegrees-com-the-start-of-social-media-86e287d46e9e" },
+      { label: "Evolution of social media - founding May 1996, launch 1997, 3.5M users, sale to YouthStream", url: "https://www.studocu.com/ph/document/technological-university-of-the-philippines/bachelor-of-science-in-civil-engineering/evolution-of-social-media/5477563" },
+    ],
+  },
+  {
+    // ALTAVISTA - added 2026-07-28 (PRIME). The first entry on this site to use
+    // the `ended` field, and a good argument for having it: a company that led
+    // its category and then stopped existing is a different fact from one that
+    // merely got smaller.
+    // Verified 2026-07-28 against Wikipedia, Grokipedia, and contemporaneous
+    // coverage of the CMGI and Overture transactions.
+    slug: "altavista",
+    group: "other",
+    name: "AltaVista",
+    founded: 1995,
+    ended: {
+      year: 2013,
+      note: "Shut down by Yahoo on 8 July 2013; the domain has redirected to Yahoo Search ever since.",
+    },
+    tagline:
+      "Built to stress-test a processor, it became the best search engine on the web - and was then turned into a portal.",
+    intro:
+      "AltaVista was not conceived as a search engine. DEC's Alpha 64-bit machines were so fast that the standard benchmarks of the day could not stress them, and a researcher on vacation sketched a way to generate a workload chaotic enough to try: point a crawler at the whole World Wide Web.",
+    body: [
+      "Paul Flaherty had the idea. Louis Monier wrote the crawler - Scooter - and Michael Burrows wrote the indexer, at DEC's Network Systems Laboratory and Western Research Laboratory in Palo Alto. It launched on 15 December 1995 at altavista.digital.com with an index of sixteen million documents, an enormous number at the time, offering full-text search with Boolean operators and natural-language queries when the alternative was a hand-maintained directory.",
+      "It worked immediately. By 1996 it was the exclusive search provider to Yahoo, which had itself begun as a directory. AltaVista also shipped Babel Fish, the web's first machine-translation service, named for the fish in Douglas Adams.",
+      "Then ownership changed hands four times in five years. Compaq acquired DEC in 1998 for $9.6B, the largest technology takeover to that point, and reportedly some Compaq executives did not know AltaVista existed. Compaq paid a further $3.3M for the altavista.com domain, which someone else had registered in 1994. Under a new chief executive the search engine was rebuilt as a portal - shopping, free email, news - to compete with Yahoo, which meant competing on everything except the thing it was best at.",
+      "In June 1999 Compaq sold 83% to CMGI for around $2.3B in stock. The planned IPO was cancelled when the bubble burst in 2000. AltaVista shed the portal features and refocused on search quality by 2002, which was good work arriving late: Google had taken the market. In February 2003 Overture bought it for $140M - roughly six percent of the CMGI valuation three years earlier - and Yahoo acquired Overture five months later.",
+      "By 2004 Scooter and the original ranking engine were switched off and AltaVista became a front end for Yahoo's results. It was formally shut down on 8 July 2013. The technology was not what failed; the decision to stop being a search engine was.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/AltaVista",
+    externalLabel: "AltaVista",
+    sources: [
+      { label: "Wikipedia: AltaVista - launch date, ownership chain, shutdown", url: "https://en.wikipedia.org/wiki/AltaVista" },
+      { label: "Grokipedia: AltaVista - the DEC labs, the 16-million-document index, the CMGI and Overture figures", url: "https://grokipedia.com/page/AltaVista" },
+      { label: "History of Domain Names: the altavista.com purchase and the portal turn", url: "https://historyofdomainnames.com/altavista-the-history-of-domain-names/" },
+    ],
+  },
+  {
+    // APACHE - added 2026-07-28 (PRIME). It belongs on this site for a reason
+    // more specific than "it is famous": Apache is what NGINX was written
+    // against. The concurrency problem NGINX solved was Apache's
+    // process-per-connection model meeting the traffic of the 2000s, so the
+    // vendor hub for NGINX has no origin story without this entry.
+    // Facts verified 2026-07-28 against the ASF's own history pages and the
+    // httpd project's ABOUT_APACHE.
+    slug: "apache",
+    group: "contemporary",
+    name: "The Apache Software Foundation",
+    founded: 1995,
+    tagline: "The web server that ran the web, built by eight people trading patches by email.",
+    intro:
+      "Apache began in February 1995 as a set of patches to a web server nobody was maintaining any more. Within a year it was the most-used server on the internet, and it held that position for most of two decades - the default answer to 'what serves this site' for a whole generation of the web.",
+    body: [
+      "The public-domain HTTP daemon written by Rob McCool at the National Center for Supercomputing Applications was the most popular server software on the web in early 1995, and its development had stalled when McCool left NCSA in mid-1994. Webmasters had each written their own fixes and extensions with no common place to put them. Brian Behlendorf - who had been patching the NCSA code so it could handle user registration for HotWired, Wired magazine's site - and Cliff Skolnick set up a mailing list and a shared machine in the Bay Area, with bandwidth donated by HotWired.",
+      "By the end of February 1995 eight core contributors had formed the Apache Group: Brian Behlendorf, Roy Fielding, Rob Hartill, David Robinson, Cliff Skolnick, Randy Terbush, Robert Thau and Andrew Wilson. The first public release, 0.6.2, came out in April 1995; version 1.0 followed on 1 December, and within a year Apache had passed NCSA httpd to become the most-used web server on the internet.",
+      "The name has two explanations and the project has given both. The original FAQ said the result of combining all those patches was 'a patchy server'. Behlendorf said in 2000 that it was chosen out of respect for the Apache people, then in 2007 said it was the patches after all. The ASF's own position today credits the tribe. Both stories are in the record, which is why both are here.",
+      "In June 1999 the Apache Group incorporated as the Apache Software Foundation, a Delaware non-profit, with Behlendorf as its first president - so that the project would outlast any individual volunteer. That structure is why the ASF now hosts hundreds of projects rather than one server.",
+      "Roy Fielding, one of the original eight, went on to co-author the HTTP/1.1 specification and to define REST in his doctoral dissertation. The people who wrote the server also wrote much of what the server speaks.",
+    ],
+    externalUrl: "https://httpd.apache.org/ABOUT_APACHE.html",
+    externalLabel: "About the Apache HTTP Server Project",
+    sources: [
+      { label: "Apache Software Foundation: ASF history and milestones", url: "https://apache.org/history/" },
+      { label: "httpd project: About the Apache HTTP Server", url: "https://httpd.apache.org/ABOUT_APACHE.html" },
+      { label: "ASF press: 15th anniversary release, with the founding eight named", url: "https://www.prnewswire.com/news-releases/the-apache-software-foundation-announces-the-15th-anniversary-of-the-apache-http-web-server-85036317.html" },
+    ],
+  },
+  {
     slug: "arista",
     group: "redu",
     name: "Arista Networks",

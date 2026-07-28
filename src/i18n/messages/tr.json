@@ -35,11 +35,11 @@
     },
     "credibility": {
       "title": "1996'dan beri bu işi yapan biri tarafından yapıldı.",
-      "body": "Kurumsal ağ ve güvenlikte otuz yıl, bir pazarlama sayfası tarafından değil, sahada aktif bir eğitmen tarafından sunuluyor. Dört platformda sertifikalı, yani buradaki karşılaştırmalar bir satış yapmak için değil, dürüstçe yapılıyor.",
+      "body": "Kurumsal ağ ve güvenlikte otuz yıl, bir pazarlama sayfası tarafından değil, sahada aktif bir eğitmen tarafından sunuluyor. Platformlarda sertifikalı, yani buradaki karşılaştırmalar bir satış yapmak için değil, dürüstçe yapılıyor.",
       "aboutCta": "Arkasındaki kişi hakkında daha fazlası"
     },
     "pillars": {
-      "title": "Dört platform, öğretiliyor ve güncel tutuluyor.",
+      "title": "Platformlar, öğretiliyor ve güncel tutuluyor.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -928,7 +928,7 @@
     "lede": "Kariyerinin çoğunu sadece slaytların önünde değil, uygulama tarafında geçirmiş bir uygulayıcı tarafından sunulan ağ ve güvenlik eğitimi. São Paulo merkezli, dünya genelinde, Portekizce ve İngilizce öğretiyor.",
     "now": {
       "title": "Şu an ne yapıyorum",
-      "body": "Dört güvenlik ve ağ platformunda resmi, sertifikalı, eğitmen liderliğinde eğitimler veriyorum. Gerçek sistemler üzerinde uygulamalı laboratuvarlar var ve temelleri zaten bilip pratik yapmaya gelenler için asıl mesele tam da bu: içinde çalışılacak gerçek ortamlar. Bir teknolojide daha yeni olan gruplar için zaman önce konunun dayandığı temelleri kurmaya gider; böylece uygulamalı çalışma anlam kazanır ve insanlar yalnızca hangi düğmelere basacaklarını değil, işlerin neden öyle davrandığını anlayarak ayrılır. İkisi de eşit derecede değerlidir ve denge, odada kimin olduğuna göre değişir. Öğretim ve teknik yetkinlik kazandırma, 1996'da uygulama tarafında başlayan bir kariyerin üzerine, 1990'ların sonundan beri işimin bir parçası.",
+      "body": "Güvenlik ve ağ platformlarında resmi, sertifikalı, eğitmen liderliğinde eğitimler veriyorum. Gerçek sistemler üzerinde uygulamalı laboratuvarlar var ve temelleri zaten bilip pratik yapmaya gelenler için asıl mesele tam da bu: içinde çalışılacak gerçek ortamlar. Bir teknolojide daha yeni olan gruplar için zaman önce konunun dayandığı temelleri kurmaya gider; böylece uygulamalı çalışma anlam kazanır ve insanlar yalnızca hangi düğmelere basacaklarını değil, işlerin neden öyle davrandığını anlayarak ayrılır. İkisi de eşit derecede değerlidir ve denge, odada kimin olduğuna göre değişir. Öğretim ve teknik yetkinlik kazandırma, 1996'da uygulama tarafında başlayan bir kariyerin üzerine, 1990'ların sonundan beri işimin bir parçası.",
       "basedLabel": "Merkez",
       "basedValue": "São Paulo, Brezilya",
       "teachesLabel": "Öğretiyor",
@@ -937,8 +937,8 @@
       "languagesValue": "Portekizce (ana dil), İngilizce (akıcı)"
     },
     "platforms": {
-      "title": "Dört platform, derinlemesine öğretiliyor",
-      "body": "Dört satıcıyla sertifikalı olmak, her birini doğru öğretebileceğim ve dürüstçe karşılaştırabileceğim anlamına geliyor. İşte şu an resmi eğitim vermeye yetkili olduğum platformlar.",
+      "title": "Platformlar, derinlemesine öğretiliyor",
+      "body": "Bu üreticiler için yetkili eğitmen olmak, her birini gerektiği gibi öğretebilmek ve onları dürüstçe karşılaştırabilmek anlamına geliyor.",
       "f5": "Eğitmen liderliğindeki müfredat boyunca BIG-IP: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, otomasyon ve sorun giderme.",
       "fortinet": "FCP yolu dahil, sertifikalı Fortinet eğitimi.",
       "extreme": "Extreme Networks anahtarlama, SD-WAN ve API ile otomasyon yolları; kurulum, yapılandırma, yönetim ve sorun gidermeyi kapsar.",
@@ -1046,7 +1046,7 @@
       "s2Title": "F5, en baştan",
       "s2Body": "F5, on yıldan fazla geriye uzanan BIG-IP çalışmasının üzerine kurulu olarak, bu dönemin başından beri çıpadır. Yetkili program, eğitmen liderliğindeki tüm BIG-IP kataloğunu kapsar: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, iRules geliştirme, otomasyon ve sorun giderme; bir günden dört güne kadar kurslar. Eğitime, uygulamalı bir tamamlayıcı eşlik eder: yönetilen bir F5 BIG-IP laboratuvar ortamı, böylece eğitimin her zaman gerçek bir yapacağı yer olur.",
       "s3Title": "Genişleme, platform platform",
-      "s3Body": "Son yılları ayıran şey, açık ve tarihli bir ilerlemedir. Extreme Networks eğitimi 2021'den itibaren eklendi; EXOS anahtarlama, SD-WAN ve otomasyonu kapsıyor. Fortinet 2024'ten itibaren, FCP FortiGate Administrator yoluna odaklanarak izledi. Netskope 2025'ten itibaren eklendi; Netskope Security Cloud'un operasyonunu, yönetimini, dağıtımını ve entegrasyonunu kapsıyor. Dört platform, her biri kasıtlı olarak eklendi, her biri altındaki aynı yirmi yıllık ağ ve güvenlik uygulamasının üzerinde duruyor.",
+      "s3Body": "Son yılları ayıran şey, açık ve tarihli bir ilerlemedir. Extreme Networks eğitimi 2021'den itibaren eklendi; EXOS anahtarlama, SD-WAN ve otomasyonu kapsıyor. Fortinet 2024'ten itibaren, FCP FortiGate Administrator yoluna odaklanarak izledi. Netskope 2025'ten itibaren eklendi; Netskope Security Cloud'un operasyonunu, yönetimini, dağıtımını ve entegrasyonunu kapsıyor. Platformlar, her biri kasıtlı olarak eklendi, her biri altındaki aynı yirmi yıllık ağ ve güvenlik uygulamasının üzerinde duruyor.",
       "s4Title": "Red Education aracılığıyla, dünyaya",
       "s4Body": "Bu küresel sunumun ana aracı, bölgelerdeki kuruluşlara resmi sertifikalı kurslar ileten yetkili bir eğitim merkezi olan Red Education'dır. Rol, küresel teknik eğitim eğitmenidir; São Paulo merkezi, iki pasaport ve seyahate duyulan içten sevgiyle mümkün olan uluslararası bir katılımcı kitlesine sunum yapar. Bu süregelen iş birliği, bireysel uzmanlığı, dünya genelindeki kuruluşların rezerve edip güvenebileceği bir şeye dönüştürür.",
       "closer": "İşte bu hikâyenin tamamı boyunca uzanan çizginin karşılığını verdiği yer burası. Erken yılların merakı, sahadaki yıllar boyunca uygulama derinliğine dönüştü ve o derinlik şimdi her katılımcının aldığı şey oldu: slayt okuyan bir konuşmacı değil, bu sistemleri kuran ve onların gerçekte nasıl, neden çalıştığını anlatan biri."
@@ -1127,8 +1127,8 @@
   },
   "training": {
     "eyebrow": "Verdiğim kurslar",
-    "title": "Dört platform, onları bizzat kullanmış biri tarafından öğretiliyor.",
-    "intro": "Modern ağ ve güvenliğin çekirdeğindeki dört platformda, {courses} kurs boyunca resmi, sertifikalı, eğitmen liderliğindeki eğitim. Her kurs, öğretimin ardında onlarca yıllık uygulamalı uygulama deneyimi olan yetkili bir eğitmen tarafından sunulur.",
+    "title": "Platformlar, onları bizzat kullanmış biri tarafından öğretiliyor.",
+    "intro": "Modern ağ ve güvenliğin çekirdeğindeki platformlarda, {courses} kurs boyunca resmi, sertifikalı, eğitmen liderliğindeki eğitim. Her kurs, öğretimin ardında onlarca yıllık uygulamalı uygulama deneyimi olan yetkili bir eğitmen tarafından sunulur.",
     "courseCount": "{count} kurs",
     "since": "şu tarihten beri",
     "representativeNote": "Bu katalog temsilidir, kapsayıcı değil. Kurs başlıkları, süreleri ve içerikleri güncel kamuya açık bilgileri yansıtır ve resmi açıklamalara göre düzenlenir.",
@@ -1163,9 +1163,9 @@
     "s3Title": "Uygulamalı, muğlak değil",
     "s3Body": "Teknik beceri yaparak gelişir; bu yüzden her kursta gerçek sistemler üzerinde uygulamalı laboratuvarlar vardır ve bunlar, pratiğin daima gerçek bir yerde gerçekleşmesini sağlayan yönetilen laboratuvar ortamlarıyla desteklenir. Temelleri zaten bilen ve teknolojiye eli dokunsun diye gelenler için tam da burada bulunma sebepleri budur ve iyi harcanmış bir zamandır. Konuya daha yeni olanlar için zaman önce laboratuvarların dayandığı temellere gider; böylece uygulamalı çalışma ezberden takip edilmek yerine anlam kazanır. İkisi de eşit derecede değerlidir ve denge yalnızca sınıfa göre değişir. Biçim, katılımcılara göre uyarlanır: dünya çapında sunulan, eğitmen liderliğinde canlı eğitim; daha uygun olduğunda yüz yüze; İngilizce veya Portekizce. Her hâlükârda insanlar elinde gerçek ve işe yarar bir şeyle ve bunun neden işe yaradığına dair gerçek bir anlayışla ayrılmalıdır.",
     "s4Title": "Tanınan, sertifikalı ve güncel",
-    "s4Body": "Bu eğitim, resmi tanınma temeli üzerinde durur. Üst üste üç yıl F5 DevCentral MVP, 2022, 2023 ve 2024'te. 2015'ten beri korunan F5 sertifikaları ve dört platformda eğitmen yetkisi: F5, Extreme Networks, Fortinet ve Netskope. Sunum, yetkili bir eğitim merkezi olan Red Education aracılığıyla Avustralya'ya, Singapur'a, Hindistan'a, Orta Avrupa'ya, ABD'ye ve Brezilya'ya ulaşır. Belgeler önemlidir, ama onların altındaki şeye giden bir kısayoldur: teknolojiye gerçek ve güncel hâkimiyet.",
+    "s4Body": "Bu eğitim, resmi tanınma temeli üzerinde durur. Üst üste üç yıl F5 DevCentral MVP, 2022, 2023 ve 2024'te. 2015'ten beri korunan F5 sertifikaları ve platformlarda eğitmen yetkisi: F5, Extreme Networks, Fortinet ve Netskope. Sunum, yetkili bir eğitim merkezi olan Red Education aracılığıyla Avustralya'ya, Singapur'a, Hindistan'a, Orta Avrupa'ya, ABD'ye ve Brezilya'ya ulaşır. Belgeler önemlidir, ama onların altındaki şeye giden bir kısayoldur: teknolojiye gerçek ve güncel hâkimiyet.",
     "platformsTitle": "Ne öğretiyorum",
-    "platformsBody": "Modern ağ ve güvenliğin çekirdeğindeki dört platformda resmi, sertifikalı, eğitmen liderliğindeki eğitim. Her biri kendi tam kurs kataloğuna götürür.",
+    "platformsBody": "Modern ağ ve güvenliğin çekirdeğindeki platformlarda resmi, sertifikalı, eğitmen liderliğindeki eğitim. Her biri kendi tam kurs kataloğuna götürür.",
     "s5Title": "Sınıfın ötesinde",
     "s5Body": "İyi eğitimi üreten aynı derinlik, iyi danışmanlığı da üretir. Uygulama dağıtımı, ağ güvenliği, kimlik ve altyapı boyunca, satıcı tarafında ve müşteri tarafında otuz yıl, sınıfın çok ötesine uzanan bir bakıştır; mimari kararlara, teknoloji seçimine ve bir müfredata sığmayan zorlu sorunlara kadar. Eğitim odaktır; ardındaki deneyim, tek bir kurstan fazlasına ihtiyaç duyan ekipler için kullanılabilir.",
     "toolsTitle": "Tahmin değil, hesaplayan araçlar",

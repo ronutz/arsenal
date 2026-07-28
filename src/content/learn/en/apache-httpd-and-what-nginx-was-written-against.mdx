@@ -1,0 +1,59 @@
+---
+slug: apache-httpd-and-what-nginx-was-written-against
+title: "Apache httpd: the server that ran the web, and the problem that produced NGINX"
+summary: "Apache began as patches to a server nobody was maintaining, and within a year it ran more of the web than anything else. The architecture that made it flexible is also the one that made it struggle under 2000s traffic, which is the problem NGINX was written to solve."
+concepts: ["apache", "httpd", "nginx", "web server", "ncsa httpd", "process per connection", "c10k", "prefork", "worker mpm", "event mpm", "open source", "apache software foundation"]
+relatedTools: ["nginx-location-matcher"]
+sub: nginx
+relatedArticles: ["nginx-location-matching-order", "nginx-configuration-tree-and-includes"]
+category: networking
+order: 126
+status: reviewed
+updated: "2026-07-28"
+---
+
+You cannot explain why NGINX exists without explaining Apache, because NGINX was written against a specific problem that Apache's architecture had, and understanding that problem explains most of what both servers do.
+
+## Where it came from
+
+In early 1995 the most-used web server was the public-domain HTTP daemon written by Rob McCool at the National Center for Supercomputing Applications. Its development had stopped when he left NCSA in mid-1994, and webmasters had each written their own fixes with nowhere common to put them.
+
+Brian Behlendorf — who had been patching that code so it could handle user registration for Wired magazine's HotWired site — set up a mailing list with Cliff Skolnick. By the end of February 1995, eight people were coordinating patches: Behlendorf, **Roy Fielding**, Rob Hartill, David Robinson, Skolnick, Randy Terbush, Robert Thau and Andrew Wilson.
+
+The first release was 0.6.2 in April 1995. Version 1.0 shipped that December, and within a year Apache had passed NCSA to become the most-used server on the internet — a position it held for most of two decades.
+
+Fielding, incidentally, went on to co-author HTTP/1.1 and to define REST. The people who wrote the server also wrote a good deal of what it speaks.
+
+## The architecture, and what it cost
+
+Apache's original model gives **each connection its own process**. A request arrives, a process handles it start to finish, and that process is yours alone until the connection closes.
+
+The advantages are real and are why Apache dominated for so long. A crash takes one process, not the server. Modules can be written in any style without worrying about blocking, because blocking only affects the one connection. `mod_php` running inside the server process was straightforward. Configuration could be overridden per directory with `.htaccess`, which made shared hosting practical.
+
+The cost is memory and context switching. Each process carries its own copy of the interpreter and its own stack. A few hundred concurrent connections is comfortable. Ten thousand is not — not because the server is badly written, but because ten thousand processes is ten thousand processes.
+
+This became the **C10K problem**: the observation, named around 1999, that handling ten thousand simultaneous connections needed a different model rather than a faster machine.
+
+## What Apache did about it
+
+Apache did not stand still. It gained **multi-processing modules**: `prefork` is the classic process-per-connection model; `worker` uses threads within processes, so a connection costs a thread rather than a process; `event` — the modern default — hands idle keep-alive connections to a small pool of listener threads instead of holding a worker for each.
+
+An Apache tuned with the event MPM is a genuinely different machine from the prefork one people remember, and comparisons that ignore this are comparing against 2005.
+
+## What NGINX did instead
+
+NGINX started from the other end. Rather than one process per connection, a small fixed number of worker processes each run an event loop and handle thousands of connections apiece. Nothing blocks; a worker moves between connections as each becomes ready.
+
+That is why the two servers feel so different to configure. Apache's per-directory `.htaccess` has no NGINX equivalent, and it never will, because checking for those files on every request is exactly the kind of per-request filesystem work an event loop is built to avoid. Apache's dynamic module loading and NGINX's compile-time modules come from the same difference.
+
+## Which is the right answer
+
+Genuinely both, and the honest version is that the gap narrowed.
+
+Apache with the event MPM handles concurrency far better than its reputation suggests, and its per-directory configuration and module ecosystem remain reasons to choose it. NGINX's model is a better fit for high-concurrency reverse proxying and static serving, which is why it became the default in front of application servers rather than the thing running them.
+
+The common deployment for years was both: NGINX in front for concurrency and TLS, Apache behind it running the application. Neither had won; they were doing different jobs.
+
+## What a learner should be able to state cold
+
+Apache began in February 1995 as coordinated patches to Rob McCool's stalled NCSA httpd, by eight contributors including Roy Fielding, who later co-authored HTTP/1.1 and defined REST; it passed NCSA within a year and the Apache Software Foundation incorporated in 1999. Its original model gives each connection a process, which is robust and flexible and expensive in memory — the constraint that became the C10K problem. Apache answered with multi-processing modules, and the event MPM is a very different machine from prefork. NGINX answered by inverting the model: few workers, each running an event loop over many connections. That difference explains the configuration differences, `.htaccess` most of all, and the two were commonly deployed together rather than one replacing the other.

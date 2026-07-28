@@ -35,11 +35,11 @@
     },
     "credibility": {
       "title": "Stworzone przez kogoś, kto robi tę robotę od 1996 roku.",
-      "body": "Trzydzieści lat w sieciach i bezpieczeństwie korporacyjnym, dostarczone przez aktywnego instruktora, a nie przez stronę marketingową. Certyfikowany na czterech platformach, więc porównania tutaj są robione uczciwie, a nie po to, żeby sprzedać.",
+      "body": "Trzydzieści lat w sieciach i bezpieczeństwie korporacyjnym, dostarczone przez aktywnego instruktora, a nie przez stronę marketingową. Certyfikowany na platformach, więc porównania tutaj są robione uczciwie, a nie po to, żeby sprzedać.",
       "aboutCta": "Więcej o twórcy"
     },
     "pillars": {
-      "title": "Cztery platformy, nauczane i utrzymywane na bieżąco.",
+      "title": "Platformy, nauczane i utrzymywane na bieżąco.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -928,7 +928,7 @@
     "lede": "Szkolenia z sieci i bezpieczeństwa prowadzone przez praktyka, który spędził karierę po stronie wdrożeń, a nie tylko przy slajdach. Z siedzibą w São Paulo, ucząc na całym świecie, po portugalsku i angielsku.",
     "now": {
       "title": "Czym się teraz zajmuję",
-      "body": "Prowadzę oficjalne, certyfikowane szkolenia prowadzone przez instruktora na czterech platformach bezpieczeństwa i sieci. Są praktyczne laboratoria na prawdziwych systemach, a dla tych, którzy znają już podstawy i przyszli poćwiczyć, o to właśnie chodzi: prawdziwe środowiska do pracy. Dla grup nowszych w danej technologii czas idzie najpierw w budowanie fundamentów, na których opiera się temat, aby praca praktyczna miała sens, a ludzie wychodzili, rozumiejąc, dlaczego rzeczy zachowują się tak, jak się zachowują, a nie tylko które przyciski nacisnąć. Oba są tak samo cenne, a równowaga przesuwa się w zależności od tego, kto jest na sali. Nauczanie i wsparcie techniczne są częścią mojej pracy od końca lat 90., w oparciu o karierę, która zaczęła się po stronie wdrożeń w 1996 roku.",
+      "body": "Prowadzę oficjalne, certyfikowane szkolenia prowadzone przez instruktora na platformach bezpieczeństwa i sieci. Są praktyczne laboratoria na prawdziwych systemach, a dla tych, którzy znają już podstawy i przyszli poćwiczyć, o to właśnie chodzi: prawdziwe środowiska do pracy. Dla grup nowszych w danej technologii czas idzie najpierw w budowanie fundamentów, na których opiera się temat, aby praca praktyczna miała sens, a ludzie wychodzili, rozumiejąc, dlaczego rzeczy zachowują się tak, jak się zachowują, a nie tylko które przyciski nacisnąć. Oba są tak samo cenne, a równowaga przesuwa się w zależności od tego, kto jest na sali. Nauczanie i wsparcie techniczne są częścią mojej pracy od końca lat 90., w oparciu o karierę, która zaczęła się po stronie wdrożeń w 1996 roku.",
       "basedLabel": "Siedziba",
       "basedValue": "São Paulo, Brazylia",
       "teachesLabel": "Uczy",
@@ -937,8 +937,8 @@
       "languagesValue": "Portugalski (ojczysty), angielski (biegle)"
     },
     "platforms": {
-      "title": "Cztery platformy, nauczane dogłębnie",
-      "body": "Bycie certyfikowanym u czterech producentów oznacza, że potrafię uczyć każdego z nich jak należy i porównywać je uczciwie. Oto platformy, na których jestem obecnie autoryzowany do prowadzenia oficjalnych szkoleń.",
+      "title": "Platformy, nauczane dogłębnie",
+      "body": "Bycie autoryzowanym instruktorem tych producentów oznacza, że potrafię uczyć każdego z nich jak należy i porównywać je uczciwie.",
       "f5": "BIG-IP w ramach całego programu z instruktorem: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automatyzacja i rozwiązywanie problemów.",
       "fortinet": "Certyfikowane szkolenia Fortinet, w tym ścieżka FCP.",
       "extreme": "Ścieżki switchingu, SD-WAN oraz API i automatyzacji Extreme Networks, obejmujące instalację, konfigurację, zarządzanie i rozwiązywanie problemów.",
@@ -1046,7 +1046,7 @@
       "s2Title": "F5, od samego początku",
       "s2Body": "F5 jest kotwicą od początku tej epoki, opartą na pracy z BIG-IP sięgającej ponad dekadę wstecz. Autoryzowany program obejmuje cały katalog BIG-IP z instruktorem: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, tworzenie iRules, automatyzację i rozwiązywanie problemów, od kursów jednodniowych po czterodniowe. Obok nauczania biegnie praktyczne uzupełnienie: zarządzane środowiska laboratoryjne F5 BIG-IP, żeby ćwiczenia zawsze miały prawdziwe miejsce, w którym mogą się odbywać.",
       "s3Title": "Ekspansja, platforma po platformie",
-      "s3Body": "To, co wyróżnia ostatnie lata, to wyraźna, datowana progresja. Szkolenia Extreme Networks zostały dodane od 2021 roku, obejmując switching EXOS, SD-WAN i automatyzację. Fortinet nastąpił od 2024 roku, z naciskiem na ścieżkę FCP FortiGate Administrator. Netskope dołączył od 2025 roku, obejmując działanie, administrację, wdrażanie i integrację Netskope Security Cloud. Cztery platformy, każda dodana świadomie, każda oparta na tych samych dwóch dekadach wdrożeń sieci i bezpieczeństwa poniżej.",
+      "s3Body": "To, co wyróżnia ostatnie lata, to wyraźna, datowana progresja. Szkolenia Extreme Networks zostały dodane od 2021 roku, obejmując switching EXOS, SD-WAN i automatyzację. Fortinet nastąpił od 2024 roku, z naciskiem na ścieżkę FCP FortiGate Administrator. Netskope dołączył od 2025 roku, obejmując działanie, administrację, wdrażanie i integrację Netskope Security Cloud. Platformy, każda dodana świadomie, każda oparta na tych samych dwóch dekadach wdrożeń sieci i bezpieczeństwa poniżej.",
       "s4Title": "Przez Red Education, w świat",
       "s4Body": "Głównym pojazdem tego globalnego świadczenia usług jest Red Education, autoryzowane centrum szkoleniowe, za którego pośrednictwem oficjalne, certyfikowane kursy docierają do organizacji w różnych regionach. Rolą jest global technical training instructor, ze świadczeniem usług dla rodzaju międzynarodowych odbiorców, których umożliwiają baza w São Paulo, dwa paszporty i szczera miłość do podróży. To trwałe relacje przekształcają indywidualną wiedzę w coś, co organizacje na całym świecie mogą zamówić i na czym mogą polegać.",
       "closer": "To tutaj nić przewodnia całej historii się opłaca. Ciekawość pierwszych lat stała się wdrożeniową głębią lat w terenie, a ta głębia jest teraz tym, co otrzymuje każdy uczestnik: nie prezenterem czytającym slajdy, ale kimś, kto zbudował te systemy i wyjaśnia, jak naprawdę działają, i dlaczego."
@@ -1127,8 +1127,8 @@
   },
   "training": {
     "eyebrow": "Szkolenia, które prowadzę",
-    "title": "Cztery platformy, nauczane przez kogoś, kto je obsługiwał.",
-    "intro": "Oficjalne, certyfikowane szkolenia z instruktorem w {courses} kursach na czterech platformach w sercu nowoczesnych sieci i bezpieczeństwa. Każdy kurs jest prowadzony przez autoryzowanego instruktora, z dekadami praktycznych wdrożeń za nauczaniem.",
+    "title": "Platformy, nauczane przez kogoś, kto je obsługiwał.",
+    "intro": "Oficjalne, certyfikowane szkolenia z instruktorem w {courses} kursach na platformach w sercu nowoczesnych sieci i bezpieczeństwa. Każdy kurs jest prowadzony przez autoryzowanego instruktora, z dekadami praktycznych wdrożeń za nauczaniem.",
     "courseCount": "{count} kursów",
     "since": "od",
     "representativeNote": "Ten katalog jest reprezentatywny, nie wyczerpujący. Nazwy kursów, czasy trwania i treści odzwierciedlają aktualne informacje publiczne i są dopracowane na podstawie oficjalnych kart danych.",
@@ -1163,9 +1163,9 @@
     "s3Title": "Praktycznie, nie mgliście",
     "s3Body": "Umiejętności techniczne buduje się przez działanie, dlatego każde szkolenie ma praktyczne laboratoria na prawdziwych systemach, wsparte zarządzanymi środowiskami laboratoryjnymi, gdzie ćwiczenie zawsze ma gdzie realnie się odbyć. Dla tych, którzy znają już podstawy i przyszli, by dotknąć technologii, to właśnie po to tu są, i to dobrze spożytkowany czas. Dla nowszych czas idzie najpierw w fundamenty, na których opierają się laboratoria, aby praktyka miała sens, a nie była odtwarzana z pamięci. Oba są tak samo cenne, a równowaga po prostu przesuwa się wraz z grupą. Format dostosowuje się do odbiorców: szkolenie na żywo prowadzone przez instruktora, dostarczane globalnie, stacjonarnie, gdy to lepiej służy, po angielsku lub portugalsku. Tak czy inaczej ludzie powinni wychodzić z czymś realnym i użytecznym w ręku oraz prawdziwym zrozumieniem, dlaczego to działa.",
     "s4Title": "Uznany, certyfikowany i aktualny",
-    "s4Body": "Nauczanie opiera się na fundamencie formalnego uznania. F5 DevCentral MVP przez trzy kolejne lata, w 2022, 2023 i 2024. Certyfikaty F5 utrzymywane od 2015 roku oraz autoryzacja instruktora na czterech platformach: F5, Extreme Networks, Fortinet i Netskope. Świadczenie usług sięga Australii, Singapuru, Indii, Europy Środkowej, Stanów Zjednoczonych i Brazylii, przez Red Education, autoryzowane centrum szkoleniowe. Kwalifikacje mają znaczenie, ale są skrótem do tego, co jest pod spodem: prawdziwego, aktualnego opanowania technologii.",
+    "s4Body": "Nauczanie opiera się na fundamencie formalnego uznania. F5 DevCentral MVP przez trzy kolejne lata, w 2022, 2023 i 2024. Certyfikaty F5 utrzymywane od 2015 roku oraz autoryzacja instruktora na platformach: F5, Extreme Networks, Fortinet i Netskope. Świadczenie usług sięga Australii, Singapuru, Indii, Europy Środkowej, Stanów Zjednoczonych i Brazylii, przez Red Education, autoryzowane centrum szkoleniowe. Kwalifikacje mają znaczenie, ale są skrótem do tego, co jest pod spodem: prawdziwego, aktualnego opanowania technologii.",
     "platformsTitle": "Czego uczę",
-    "platformsBody": "Oficjalne, certyfikowane szkolenia z instruktorem na czterech platformach w sercu nowoczesnych sieci i bezpieczeństwa. Każda prowadzi do swojego pełnego katalogu kursów.",
+    "platformsBody": "Oficjalne, certyfikowane szkolenia z instruktorem na platformach w sercu nowoczesnych sieci i bezpieczeństwa. Każda prowadzi do swojego pełnego katalogu kursów.",
     "s5Title": "Poza salą wykładową",
     "s5Body": "Ta sama głębia, która daje dobre nauczanie, daje dobre doradztwo. Trzydzieści lat przez dostarczanie aplikacji, bezpieczeństwo sieci, tożsamość i infrastrukturę, zarówno po stronie producenta, jak i klienta, to perspektywa, która sięga daleko poza salę szkoleniową, aż po decyzje architektoniczne, dobór technologii i trudne problemy, które nie mieszczą się w programie. Nauczanie jest skupieniem; doświadczenie za nim jest dostępne dla zespołów, które potrzebują czegoś więcej niż kursu.",
     "toolsTitle": "Narzędzia, które liczą, nigdy nie zgadują",

@@ -35,11 +35,11 @@
     },
     "credibility": {
       "title": "Gebouwd door iemand die het werk al sinds 1996 doet.",
-      "body": "Dertig jaar in enterprise-netwerken en -beveiliging, geleverd door een actieve trainer in plaats van een marketingpagina. Gecertificeerd op vier platforms, zodat de vergelijkingen hier eerlijk worden gemaakt, niet verkocht.",
+      "body": "Dertig jaar in enterprise-netwerken en -beveiliging, geleverd door een actieve trainer in plaats van een marketingpagina. Gecertificeerd op platforms, zodat de vergelijkingen hier eerlijk worden gemaakt, niet verkocht.",
       "aboutCta": "Meer over de persoon erachter"
     },
     "pillars": {
-      "title": "Vier platforms, onderwezen en actueel gehouden.",
+      "title": "De platforms, onderwezen en actueel gehouden.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -928,7 +928,7 @@
     "lede": "Netwerk- en beveiligingstrainingen, gegeven door een vakman die zijn loopbaan aan de implementatiekant heeft doorgebracht, niet alleen bij de slides. Gevestigd in São Paulo, wereldwijd lesgevend, in het Portugees en Engels.",
     "now": {
       "title": "Wat ik nu doe",
-      "body": "Ik geef officiële, gecertificeerde, door een instructeur geleide trainingen op vier beveiligings- en netwerkplatforms. Er zijn hands-on labs op echte systemen, en voor mensen die de basis al kennen en kwamen om te oefenen, is dat precies het punt: echte omgevingen om in te werken. Voor groepen die nieuwer zijn met een technologie gaat de tijd eerst naar het bouwen van de fundamenten waarop het onderwerp rust, zodat het praktische werk logisch is en mensen vertrekken met begrip van waarom dingen zich gedragen zoals ze doen, en niet alleen welke knoppen ze moeten indrukken. Beide zijn even waardevol, en de balans verschuift met wie er in de ruimte zit. Lesgeven en technische ondersteuning maken sinds eind jaren negentig deel uit van mijn werk, op een loopbaan die in 1996 aan de implementatiekant begon.",
+      "body": "Ik geef officiële, gecertificeerde, door een instructeur geleide trainingen op beveiligings- en netwerkplatforms. Er zijn hands-on labs op echte systemen, en voor mensen die de basis al kennen en kwamen om te oefenen, is dat precies het punt: echte omgevingen om in te werken. Voor groepen die nieuwer zijn met een technologie gaat de tijd eerst naar het bouwen van de fundamenten waarop het onderwerp rust, zodat het praktische werk logisch is en mensen vertrekken met begrip van waarom dingen zich gedragen zoals ze doen, en niet alleen welke knoppen ze moeten indrukken. Beide zijn even waardevol, en de balans verschuift met wie er in de ruimte zit. Lesgeven en technische ondersteuning maken sinds eind jaren negentig deel uit van mijn werk, op een loopbaan die in 1996 aan de implementatiekant begon.",
       "basedLabel": "Gevestigd in",
       "basedValue": "São Paulo, Brazilië",
       "teachesLabel": "Geeft les",
@@ -937,8 +937,8 @@
       "languagesValue": "Portugees (moedertaal), Engels (vloeiend)"
     },
     "platforms": {
-      "title": "Vier platforms, diepgaand onderwezen",
-      "body": "Gecertificeerd zijn op vier leveranciers betekent dat ik elk goed kan onderwijzen en ze eerlijk kan vergelijken. Dit zijn de platforms waarvoor ik momenteel geautoriseerd ben om officiële training te geven.",
+      "title": "De platforms, diepgaand onderwezen",
+      "body": "Geautoriseerd instructeur zijn voor deze leveranciers betekent dat ik elk goed kan onderwijzen en ze eerlijk kan vergelijken.",
       "f5": "BIG-IP over het volledige door een trainer geleide curriculum: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automatisering en troubleshooting.",
       "fortinet": "Gecertificeerde Fortinet-training, inclusief het FCP-traject.",
       "extreme": "Extreme Networks switching, SD-WAN, en API- en automatiseringstrajecten, over installatie, configuratie, beheer en troubleshooting.",
@@ -1046,7 +1046,7 @@
       "s2Title": "F5, vanaf het begin",
       "s2Body": "F5 is het anker sinds het begin van dit tijdperk, voortbouwend op werk met BIG-IP dat meer dan een decennium teruggaat. Het geautoriseerde curriculum dekt de volledige door een trainer geleide BIG-IP-catalogus: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, iRules-ontwikkeling, automatisering en troubleshooting, variërend van eendaagse tot vierdaagse cursussen. Naast het lesgeven loopt een praktische aanvulling: beheerde F5 BIG-IP-labomgevingen, zodat praktijkoefening altijd een echte plek heeft om plaats te vinden.",
       "s3Title": "De uitbreiding, platform voor platform",
-      "s3Body": "Wat de recente jaren onderscheidt is een duidelijke, gedateerde progressie. Extreme Networks-training werd toegevoegd vanaf 2021, met EXOS-switching, SD-WAN en automatisering. Fortinet volgde vanaf 2024, gericht op het FCP FortiGate Administrator-traject. Netskope kwam erbij vanaf 2025, met de werking, het beheer, de implementatie en de integratie van de Netskope Security Cloud. Vier platforms, elk bewust toegevoegd, elk rustend op dezelfde twee decennia netwerk- en beveiligingsimplementatie eronder.",
+      "s3Body": "Wat de recente jaren onderscheidt is een duidelijke, gedateerde progressie. Extreme Networks-training werd toegevoegd vanaf 2021, met EXOS-switching, SD-WAN en automatisering. Fortinet volgde vanaf 2024, gericht op het FCP FortiGate Administrator-traject. Netskope kwam erbij vanaf 2025, met de werking, het beheer, de implementatie en de integratie van de Netskope Security Cloud. De platforms, elk bewust toegevoegd, elk rustend op dezelfde twee decennia netwerk- en beveiligingsimplementatie eronder.",
       "s4Title": "Via Red Education, naar de wereld",
       "s4Body": "Het belangrijkste voertuig voor deze wereldwijde levering is Red Education, een geautoriseerd trainingscentrum waarlangs officiële gecertificeerde cursussen organisaties in verschillende regio's bereiken. De rol is global technical training instructor, met levering aan het soort internationale doelgroepen dat een basis in São Paulo, twee paspoorten en een oprechte reislust mogelijk maken. De duurzame relatie zet individuele expertise om in iets dat organisaties wereldwijd kunnen boeken en waarop ze kunnen vertrouwen.",
       "closer": "Hier betaalt de rode draad van de hele geschiedenis zich uit. De nieuwsgierigheid van de vroege jaren werd de implementatiediepte van de vakmanjaren, en die diepte is nu wat elke deelnemer ontvangt: geen presentator die slides voorleest, maar iemand die deze systemen heeft gebouwd en uitlegt hoe ze werkelijk werken, en waarom."
@@ -1127,8 +1127,8 @@
   },
   "training": {
     "eyebrow": "Trainingen die ik geef",
-    "title": "Vier platforms, onderwezen door iemand die ze heeft gedraaid.",
-    "intro": "Officiële, gecertificeerde, door een trainer geleide training over {courses} cursussen op de vier platforms in het hart van moderne netwerken en beveiliging. Elke cursus wordt gegeven door een geautoriseerde trainer, met decennia hands-on implementatie achter het onderwijs.",
+    "title": "De platforms, onderwezen door iemand die ze heeft gedraaid.",
+    "intro": "Officiële, gecertificeerde, door een trainer geleide training over {courses} cursussen op de platforms in het hart van moderne netwerken en beveiliging. Elke cursus wordt gegeven door een geautoriseerde trainer, met decennia hands-on implementatie achter het onderwijs.",
     "courseCount": "{count} cursussen",
     "since": "sinds",
     "representativeNote": "Deze catalogus is representatief, niet uitputtend. Cursusnamen, duur en inhoud weerspiegelen actuele openbare informatie en zijn verfijnd op basis van officiële datasheets.",
@@ -1163,9 +1163,9 @@
     "s3Title": "Hands-on, niet vaag",
     "s3Body": "Technische vaardigheid ontstaat door te doen, dus elke cursus heeft hands-on labs op echte systemen, ondersteund door beheerde labomgevingen waar oefening altijd ergens echt kan plaatsvinden. Voor mensen die de basis al kennen en kwamen om de technologie zelf aan te raken, is dat precies waarvoor ze hier zijn, en het is goed bestede tijd. Voor wie er nieuwer in is, gaat de tijd eerst naar de fundamenten waarop de labs rusten, zodat het praktische werk logisch is in plaats van uit het hoofd te worden gevolgd. Beide zijn even waardevol, en de balans verschuift gewoon met de groep. Het formaat past zich aan het publiek aan: virtuele, door een instructeur geleide training wereldwijd, in persoon wanneer dat beter uitkomt, in het Engels of Portugees. Hoe dan ook zouden mensen moeten vertrekken met iets echts en nuttigs in handen en een echt begrip van waarom het werkt.",
     "s4Title": "Erkend, gecertificeerd en actueel",
-    "s4Body": "Het onderwijs rust op een fundament van formele erkenning. F5 DevCentral MVP drie opeenvolgende jaren, in 2022, 2023 en 2024. F5-certificeringen aangehouden sinds 2015, en trainerautorisatie over vier platforms: F5, Extreme Networks, Fortinet en Netskope. De levering bereikt Australië, Singapore, India, Centraal-Europa, de Verenigde Staten en Brazilië, via Red Education, een geautoriseerd trainingscentrum. De kwalificaties tellen, maar ze zijn een afkorting voor wat eronder ligt: een oprechte, actuele beheersing van de technologie.",
+    "s4Body": "Het onderwijs rust op een fundament van formele erkenning. F5 DevCentral MVP drie opeenvolgende jaren, in 2022, 2023 en 2024. F5-certificeringen aangehouden sinds 2015, en trainerautorisatie over platforms: F5, Extreme Networks, Fortinet en Netskope. De levering bereikt Australië, Singapore, India, Centraal-Europa, de Verenigde Staten en Brazilië, via Red Education, een geautoriseerd trainingscentrum. De kwalificaties tellen, maar ze zijn een afkorting voor wat eronder ligt: een oprechte, actuele beheersing van de technologie.",
     "platformsTitle": "Wat ik onderwijs",
-    "platformsBody": "Officiële, gecertificeerde, door een trainer geleide training over vier platforms in het hart van moderne netwerken en beveiliging. Elk verwijst naar zijn volledige cursuscatalogus.",
+    "platformsBody": "Officiële, gecertificeerde, door een trainer geleide training over platforms in het hart van moderne netwerken en beveiliging. Elk verwijst naar zijn volledige cursuscatalogus.",
     "s5Title": "Voorbij het leslokaal",
     "s5Body": "Dezelfde diepte die goed onderwijs maakt, maakt goed advies. Dertig jaar over application delivery, netwerkbeveiliging, identiteit en infrastructuur, aan zowel de leverancierskant als de klantkant, is een perspectief dat ver buiten een trainingsruimte reikt, tot in architectuurbeslissingen, technologiekeuze en de moeilijke problemen die niet in een lesplan passen. Het onderwijs is de focus; de ervaring erachter is beschikbaar voor teams die meer nodig hebben dan een cursus.",
     "toolsTitle": "Tools die berekenen, nooit gokken",

@@ -14030,6 +14030,58 @@
       "ism-band": {
         "def": "Faixas industrial, científica e médica: espectro utilizável sem licença individual, sujeito a regras de potência e interferência.",
         "context": "Essas alocações tornaram possível o sem-fio de consumo. Wi-Fi e Bluetooth dividem 2,4 GHz com fornos de micro-ondas e muita coisa mais, e é exatamente por isso que a faixa é congestionada, enquanto as faixas de Wi-Fi em 5 e 6 GHz trocam alcance por espaço. O LoRa faz a aposta oposta nas alocações ISM abaixo de 1 GHz, aceitando taxas de dados muito baixas para obter quilômetros de alcance e anos de bateria. Isento de licença não significa sem regras: limites de ciclo de trabalho e de potência são o que mantém as faixas utilizáveis."
+      },
+      "apache-httpd": {
+        "def": "O servidor web que rodou boa parte da internet por quase duas décadas, iniciado em 1995 como remendos coordenados a um servidor que ninguém mantinha.",
+        "context": "Seu modelo original dá a cada conexão um processo próprio, o que é robusto, flexível e caro em memória. Esse custo é a restrição contra a qual o NGINX foi escrito, e os módulos de multiprocessamento posteriores do Apache - o event em especial - responderam a ela pelo outro lado."
+      },
+      "a-patchy-server": {
+        "def": "A explicação mais antiga de como o Apache ganhou o nome: era um servidor feito de remendos.",
+        "context": "O próprio FAQ do projeto dizia isso de 1996 a 2001. Brian Behlendorf disse em 2000 que o nome homenageava o povo Apache, depois disse em 2007 que eram os remendos afinal, e a fundação hoje credita a tribo. As duas versões estão no registro e nenhuma foi retirada de forma limpa, e é por isso que este verbete está marcado como disputado."
+      },
+      "apache-software-foundation": {
+        "def": "A entidade sem fins lucrativos constituída em junho de 1999 para que os projetos Apache sobrevivessem a qualquer voluntário individual.",
+        "context": "Formada a partir do grupo de oito pessoas, com Brian Behlendorf como primeiro presidente. Essa estrutura é a razão de a ASF hoje cuidar de centenas de projetos, e não de um servidor web."
+      },
+      "c10k": {
+        "def": "O problema, batizado em 1999, de atender dez mil conexões simultâneas numa só máquina.",
+        "context": "Não é questão de hardware e sim de arquitetura: um servidor que dá a cada conexão um processo ou thread esgota memória e escalonador muito antes de esgotar CPU. A resposta foi o laço de eventos, que é o que o NGINX e o módulo event do Apache usam."
+      },
+      "altavista": {
+        "def": "O buscador que liderou a web antes do Google, construído na DEC como forma de submeter um processador a estresse.",
+        "context": "Lançado em 15 de dezembro de 1995 com um índice de dezesseis milhões de documentos e busca booleana completa, numa época em que a alternativa era um diretório mantido à mão. Seus donos então o reconstruíram como portal para competir com o Yahoo, o que significava competir em tudo menos naquilo em que era melhor. Vendido à Overture em 2003 por cerca de seis por cento de sua avaliação três anos antes, e desligado pelo Yahoo em 8 de julho de 2013."
+      },
+      "babel-fish": {
+        "def": "O primeiro serviço de tradução automática da web, entregue pelo AltaVista.",
+        "context": "Batizado com o nome da criatura de O Guia do Mochileiro das Galáxias que traduz qualquer idioma ao ser colocada no ouvido. Sobreviveu ao seu criador sob a marca do Yahoo e hoje redireciona para o tradutor da Microsoft."
+      },
+      "scooter-crawler": {
+        "def": "O rastreador web do AltaVista, escrito por Louis Monier na DEC.",
+        "context": "A metade do AltaVista que de fato estressava o hardware, que era o propósito original do projeto. Desligado por volta de 2004, quando o Yahoo substituiu o motor pelo seu próprio, deixando a marca AltaVista como fachada para os resultados de outro."
+      },
+      "pagerank": {
+        "def": "A ideia de ranqueamento do Google: pontuar uma página por quem aponta para ela, dando mais peso a links vindos de páginas bem ligadas.",
+        "context": "Mede algo que o autor da própria página não controla, e é por isso que resistiu ao enchimento de palavras-chave que derrotava os buscadores de meados dos anos 1990. Começou como projeto de Stanford chamado BackRub em janeiro de 1996. Page e Brin o ofereceram ao AltaVista por um milhão de dólares em 1998 e foram recusados."
+      },
+      "googol": {
+        "def": "O algarismo um seguido de cem zeros, e a palavra Google é uma grafia errada dele.",
+        "context": "Escolhida para sugerir a escala do índice que os fundadores pretendiam construir. O próprio termo matemático foi cunhado por uma criança de nove anos a quem se pediu um nome para um número muito grande."
+      },
+      "six-degrees-of-separation": {
+        "def": "A ideia de que duas pessoas quaisquer estão ligadas por uma cadeia de cerca de seis conhecidos - e o nome da primeira rede social.",
+        "context": "O SixDegrees.com foi lançado em 1997 com perfis, listas de amigos e a possibilidade de ver como você se conectava a qualquer outro membro: cada recurso que as redes sociais ainda têm. Chegou a 3,5 milhões de usuários e falhou mesmo assim, porque no fim dos anos 1990 a maioria das pessoas que esses usuários conheciam não estava online. A ideia estava certa e a infraestrutura não havia chegado."
+      },
+      "large-language-model": {
+        "def": "Um modelo treinado em enormes quantidades de texto para prever o que vem a seguir, o que acaba bastando para fazer muitas outras coisas.",
+        "context": "A capacidade que surpreende as pessoas é emergente, não projetada: ninguém escreveu regras para resumir, traduzir ou escrever código. Vale ter isso em mente ao ler afirmações sobre o que esses sistemas 'entendem' - previsão do próximo token em escala é o que de fato acontece, e o quanto isso explica é genuinamente contestado."
+      },
+      "transformer-architecture": {
+        "def": "O desenho de rede neural de 2017 que tornou práticos os modelos de linguagem modernos, baseado em autoatenção.",
+        "context": "Apresentado num artigo do Google intitulado 'Attention Is All You Need'. Sua vantagem sobre o que veio antes é processar uma sequência inteira em paralelo em vez de um token por vez, o que tornou viável treinar em texto na escala da internet. Todo modelo de linguagem grande em uso hoje é descendente dele."
+      },
+      "generative-ai": {
+        "def": "Sistemas que produzem texto, imagens, áudio ou código novos, em vez de classificar ou ordenar material existente.",
+        "context": "A tecnologia não era nova em novembro de 2022; o acesso é que era. O lançamento do ChatGPT em 30 de novembro de 2022 chegou a cem milhões de usuários mensais em dois meses, e o que mudou foi que usar um modelo de linguagem deixou de exigir uma chave de API ou qualquer noção do que é um transformer. A capacidade vinha melhorando havia anos, à vista de todos."
       }
     },
     "totalCount": "{count} termos",

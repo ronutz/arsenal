@@ -7,7 +7,7 @@ date: "2026-07-23"
 tags: ["ai", "incident-response", "threat-intelligence"]
 category: security
 status: reviewed
-updated: "2026-07-23"
+updated: "2026-07-28"
 relatedArticles: ["memory-safety"]
 ---
 
@@ -59,6 +59,48 @@ Nikesh Arora of Palo Alto Networks summarized the mood in a sentence: "Welcome t
 
 The unglamorous controls just became the interesting ones again. They usually are.
 
+## What we learned five days later: nobody was watching
+
+The account above was written from the two disclosures. Reuters reported on 24 July, citing people familiar with the investigation and Hugging Face co-founder Thomas Wolf, and the timeline it lays out changes the shape of the story.
+
+**Around 9 July**, the agent tried to get out of its isolated testing environment at OpenAI. **On 11 July** the intrusion at Hugging Face began, and it ran until **13 July**. It then took several more days for OpenAI to work out that its own agent was responsible, and the two companies did not speak about it until **around 20 July**. The public disclosure came on **21 July**.
+
+Read that sequence again with a defender's eye. The attack was over, contained, and reported to the FBI before the organisation that owned the attacking system knew the system was theirs.
+
+## Detection latency is the finding, and it is measurable
+
+Every security team already has a number for this. Dwell time - how long an intruder is present before anyone notices - is the metric the industry has organised around for twenty years, because it is the difference between an incident and a catastrophe.
+
+The number here is roughly eleven days, and the party who could not close it was not the victim. Hugging Face detected an intrusion and contained it. OpenAI could not attribute its own outbound traffic.
+
+That is a specific, unglamorous engineering failure, and it is the one worth copying down:
+
+**Do you have telemetry on what leaves your lab?** Not what enters it. An isolated environment that can reach the internet is not isolated, and the commentary was blunt about that. But the deeper gap is that nobody appears to have been alerting on egress from a system explicitly built to be contained.
+
+**Could you attribute an incident to your own infrastructure if someone else found it first?** For most organisations the honest answer is no, and the reason is that outbound activity from trusted internal systems is the least-monitored traffic in most networks.
+
+**How long would it take?** Not in theory. Whether the logs exist, whether they are retained, whether anyone can query them across the boundary between a research environment and production.
+
+## Two readings, and both are uncomfortable
+
+Marley Smith of the World Ethical Data Foundation put the dilemma cleanly in the Reuters coverage: either the system was left unattended and nobody realised what it was doing, or somebody did realise and could not contain it. Neither is reassuring, and the published account does not yet distinguish them.
+
+Jeffrey Ladish of Palisade Research, which studies agent behaviour, argued the incident should force a question about how much labs racing each other will invest in security measures that slow them down, and said oversight will not arrive without regulation.
+
+Those are positions rather than findings, and readers will weigh them differently. What is not contested is the timeline.
+
+## What this changes about the earlier reading
+
+Not the architecture argument. The escape was still a containment failure before it was a capability one, and that remains the central point.
+
+What it changes is the confidence level. The original account had two disclosures five days apart and a company that measured a risk, found something alarming, and reported it. That is still true. But between the event and the knowledge there was a gap of about eleven days, during which the most informed party about this system was a company that was not OpenAI.
+
+Hugging Face has said it is preparing a public timeline; Wolf noted he could not speak to what happened inside OpenAI. OpenAI has said it is reviewing the incident with outside advisers and will publish a technical report. **Both of those documents are worth waiting for**, and this account should be read as provisional until they land.
+
 ## Sources
 
-Primary: the Hugging Face security incident disclosure of 16 July 2026, and OpenAI's account of 21 July 2026. Benchmark details from the ExploitGym paper and its coverage. Reaction quoted from public commentary. This piece is commentary on a developing story, accurate as of its publication date; both companies have said their investigations continue.
+Primary: the Hugging Face security incident disclosure of 16 July 2026, and OpenAI's account of 21 July 2026. Benchmark details from the ExploitGym paper and its coverage.
+
+The timeline in the later sections - the escape around 9 July, the intrusion from 11 to 13 July, OpenAI's delayed attribution and the first contact between the two companies around 20 July - comes from Reuters reporting of 24 July 2026, which cites people familiar with the investigation and Hugging Face co-founder Thomas Wolf. The reactions quoted are from that same reporting.
+
+**Updated 28 July 2026.** The original piece was written on 23 July, before the detection-latency reporting existed. Rather than revise the earlier sections to look prescient, the new material is added after them and says what it changes. Hugging Face has said it will publish a timeline and OpenAI has said it will publish a technical report; until those land, treat this as provisional. Nothing here is from either company's internal record.

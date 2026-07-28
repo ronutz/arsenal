@@ -1,0 +1,58 @@
+---
+slug: altavista-and-how-search-was-lost
+title: "AltaVista: built to break a processor, and lost by becoming a portal"
+summary: "AltaVista started as a benchmark. A researcher wanted a workload chaotic enough to stress DEC's new Alpha chips, so he pointed a crawler at the entire web. The result led search for years and then was dismantled by its own owners, which makes it the clearest case study in the industry of losing a market you already have."
+concepts: ["altavista", "search engine", "dec", "alpha", "web crawler", "babel fish", "google", "portal", "compaq", "yahoo", "product strategy"]
+relatedTools: []
+relatedArticles: ["apache-httpd-and-what-nginx-was-written-against"]
+category: networking
+order: 127
+status: reviewed
+updated: "2026-07-28"
+---
+
+The most instructive failure in the history of the web was not a technical one. AltaVista had the better index, the better crawler and the better hardware, and it lost anyway.
+
+## It was a benchmark
+
+In 1995 DEC was preparing its Alpha 64-bit systems, and they were fast enough that the standard benchmarks of the day could not stress them meaningfully. You cannot measure a hurricane with a wind vane.
+
+Paul Flaherty, a DEC researcher, sketched an answer while on vacation: stop using synthetic tests and point a crawler at the World Wide Web, which was chaotic, unpredictable and growing. He was not trying to organise the world's information. He wanted a workload big enough to break his own machines.
+
+**Louis Monier** wrote the crawler, called Scooter. **Michael Burrows** wrote the indexer. It launched on 15 December 1995 with sixteen million documents indexed — an extraordinary number then — offering full-text search with Boolean operators and natural-language queries, at a time when the main alternative was a directory maintained by hand.
+
+It was immediately the best thing available. By 1996 it was the exclusive search provider to Yahoo, which had itself started as a directory.
+
+## What it invented along the way
+
+**Babel Fish**, the web's first machine-translation service, named for the creature in *The Hitchhiker's Guide to the Galaxy* that translates any language when placed in your ear. It outlived its parent, and its descendants are still running.
+
+## How it was lost
+
+Ownership changed hands four times in five years, and each owner wanted it to be something else.
+
+Compaq acquired DEC in 1998 for **$9.6B**, then the largest technology takeover ever. AltaVista came along in the deal, and by several accounts Compaq executives were not aware it existed. Compaq then paid a further **$3.3M** for the `altavista.com` domain, which someone unrelated had registered in 1994.
+
+Then came the decision that mattered. Compaq rebuilt AltaVista as a **portal** — shopping, free email, news, directories — to compete with Yahoo. The reasoning was of its time: portals were where the money seemed to be. The effect was that the best search engine on the web started competing on everything except searching.
+
+In June 1999 Compaq sold 83% to CMGI for around **$2.3B** in stock. The IPO planned for April 2000 was cancelled when the bubble burst. By 2002, after layoffs and management changes, AltaVista had stripped the portal features back and returned to search quality — good work, arriving after Google had taken the market.
+
+In February 2003 Overture bought it for **$140M**, roughly six percent of the valuation three years earlier. Yahoo acquired Overture five months later. By 2004 Scooter and the original ranking engine were switched off and AltaVista became a front end for Yahoo's results — the brand still there, nothing of the machine behind it. Yahoo shut it down on **8 July 2013**.
+
+## What actually went wrong
+
+Not the technology. The index was excellent, the crawler was excellent, and the hardware was the fastest available.
+
+What went wrong is that **nobody who owned it wanted it to be a search engine**. DEC built it to sell Alphas. Compaq wanted a portal. CMGI wanted an IPO. Overture wanted advertising inventory. Yahoo wanted a competitor removed.
+
+Google's advantage was not only PageRank. It was being a company whose entire purpose was the thing AltaVista was best at, at the moment AltaVista's owners decided that thing was insufficiently interesting.
+
+## Why it belongs on a networking site
+
+Because the same pattern recurs, and it is worth recognising early. A product that leads its category gets acquired; the acquirer has a strategy of its own; the product is repositioned toward that strategy; the thing it was best at becomes a feature of something larger; a focused competitor takes the market.
+
+The lineage pages on this site are full of it. It is worth knowing what it looks like from the inside, and AltaVista is the cleanest example the industry has.
+
+## What a learner should be able to state cold
+
+AltaVista was built at DEC's Palo Alto labs to generate a workload heavy enough to stress the Alpha processors, launched on 15 December 1995 with sixteen million documents, and offered full-text Boolean search when the alternative was a hand-built directory. Flaherty had the idea, Monier wrote the crawler, Burrows wrote the indexer. It shipped Babel Fish, the first web translation service. Compaq acquired it with DEC in 1998, turned it into a portal, and sold a majority to CMGI at around $2.3B; Overture bought it in 2003 for $140M and Yahoo shut it down in 2013. The technology never failed — no owner wanted it to be a search engine, and a competitor that did took the market.

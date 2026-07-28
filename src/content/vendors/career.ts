@@ -75,6 +75,31 @@ export const VENDOR_CAREER_SLUGS: Record<string, string> = {
 // `key` is the i18n prefix under the "vendors" namespace, as above.
 // ============================================================================
 
+/** Career chapters that are ALSO Red Education training partners.
+ *
+ *  Populated 2026-07-28 (PRIME: "some should have two pills - Red Education's
+ *  and mine"). The list was declared here long ago and left empty, so the
+ *  industry timeline could only ever show one pill per company - and it showed
+ *  the career one, because that was the strand the entry came from.
+ *
+ *  The two facts are independent and both are true of these nine: Rodolfo
+ *  worked inside them AND Red Education delivers their authorized training.
+ *  The six career chapters NOT listed here - Cabletron/Enterasys, Riverstone,
+ *  IronPort, NetScreen/Juniper, FireEye/McAfee/Ixia and Pulse Secure - are
+ *  absent for a simple reason: they no longer exist independently, so there is
+ *  nobody left to partner with.
+ *
+ *  Source: the partner list rendered on /red-education, cross-checked against
+ *  the Group B scope map noted above. */
 export const REDU_CAREER_PARTNERS = [
+  "f5",
+  "fortinet",
+  "netskope",
+  "extreme",
+  "check-point",
+  "cisco",
+  "palo-alto",
+  "ping-identity",
+  "zscaler",
 ] as const;
 
