@@ -46,7 +46,7 @@ export const fortinetLineage: VendorLineage = {
     {
       name: "Fortinet",
       from: "2000",
-      note: "The name has not changed. Ken Xie had already founded and sold one firewall company - NetScreen, which Juniper acquired in 2004 - before starting this one.",
+      note: "The name has not changed. Ken Xie had already founded two security companies before this one: Systems Integration Solutions in 1993, and NetScreen in 1996 with Yan Ke and Feng Deng, all three Tsinghua alumni. He built the first ASIC-based firewall and VPN appliance in 1996, in a garage in Palo Alto - which is the same bet Fortinet was later built on.",
     },
   ],
 
@@ -54,6 +54,32 @@ export const fortinetLineage: VendorLineage = {
     "FortiGate, and the decision to put the inspection work in custom silicon rather than general-purpose CPUs. The FortiASIC is the reason a small appliance could do content inspection at line rate when competitors needed a much larger box, and it is the architectural bet the whole company was built on. FortiOS grew around it as the single operating system the rest of the portfolio would eventually be measured against.",
 
   acquisitions: [
+    {
+      year: 1996,
+      name: "NetScreen Technologies is founded (prehistory, not an acquisition)",
+      price: "n/a",
+      what: "Four years before Fortinet, Ken Xie founded NetScreen with Yan Ke and Feng Deng. He built the first ASIC-based firewall and VPN appliance that year, and the company was later acquired by Juniper Networks for $4B in stock. Ken Xie left in 2000, taking the silicon idea with him.",
+      became:
+        "Fortinet - founded that same year with his brother Michael Xie, on the same architectural bet. Recorded here because the FortiASIC is not a Fortinet original idea so much as a second attempt at one that had already worked.",
+      founder: "Yan Ke, Ken Xie and Feng Deng",
+      sourceNote:
+        "Included as prehistory rather than an acquisition, and labelled as such. NetScreen is a separate company that Fortinet never bought - the connection is a person.",
+      subAcquisitions: [
+        {
+          year: 2002,
+          name: "OneSecure (by NetScreen)",
+          price: "$40-45M in stock",
+          what: "The first intrusion prevention system, sitting behind the firewall to check that permitted packets were not malicious. It became NetScreen's core IPS technology.",
+          founder: "Nir Zuk and Rakesh Loonkar - Zuk had been one of Check Point's first employees",
+        },
+        {
+          year: 2004,
+          name: "NetScreen (by Juniper Networks)",
+          price: "$4B in stock",
+          what: "Juniper bought the company. Nir Zuk stayed, left in 2005, and founded Palo Alto Networks; Yan Ke and Feng Deng also left in 2005 and started Northern Light Venture Capital.",
+        },
+      ],
+    },
     {
       year: 2013,
       name: "Coyote Point Systems",
@@ -69,6 +95,13 @@ export const fortinetLineage: VendorLineage = {
       became:
         "The enterprise wireless line that became FortiWLC alongside the existing FortiAP. Reported as Fortinet's largest acquisition by disclosed price.",
       sourceNote: "Closed 8 July 2015.",
+      subAcquisitions: [
+        {
+          year: 2002,
+          name: "Meru Networks is founded",
+          what: "A single-channel wireless architecture that treated the whole WLAN as one radio cell - a genuinely different approach to the industry standard, and the reason Meru had its own following.",
+        },
+      ],
     },
     {
       year: 2016,

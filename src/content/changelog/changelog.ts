@@ -52,6 +52,36 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-28T03:43:10-03:00",
+    kind: "content",
+    title: "Cabletron joins the lineages, and it connects to two chapters of this site's own career",
+    body: "Extreme bought Enterasys in 2013, and Enterasys was not a startup. It was one of the pieces Cabletron Systems broke into. Cabletron started in a garage in March 1983 making Ethernet cable assemblies, founded by Robert Levine and Craig Benson, moved to New Hampshire, went public in 1989 and passed one point eight billion dollars in annual revenue before splitting itself apart. Its successors were Enterasys, Riverstone Networks, Aprisma and a services arm, and two of those, Enterasys and Riverstone, are chapters in this site's own career record. So the company whose switches were sold in São Paulo in the nineties is the same company whose management heritage now runs through the Extreme platform. The Bay Networks entry also gained its founders and its price: SynOptics was founded by Andrew Ludwick and Ronald Schmidt, who met at Xerox PARC where Schmidt was working on Ethernet, and their merger with Wellfleet in 1994 was a two point seven billion dollar deal. Founders are added only where they were verified during the work, which is why several entries still have none.",
+  },
+  {
+    date: "2026-07-28T03:10:57-03:00",
+    kind: "content",
+    title: "The lineages name the people now, and the people turn out to be the connection",
+    body: "Until now these pages listed companies buying companies. Adding the founders changes what the pages are about, because three of the vendor hubs on this site trace back through the same small group. NetScreen was founded in 1996 by Yan Ke, Ken Xie and Feng Deng, and Ken Xie built the first ASIC-based firewall appliance that year in a garage before leaving in 2000 to start Fortinet with his brother on the same architectural bet. NetScreen then bought OneSecure, which had been founded by Nir Zuk, who was one of Check Point's first employees and who left Juniper after it acquired NetScreen to found Palo Alto Networks, the company that overtook Check Point as the largest security vendor in 2014. And a senior NetScreen engineer, Changming Liu, went on to co-found Aerohive, which Extreme bought in 2019 and built its cloud platform around. So the Fortinet page now opens with NetScreen as prehistory rather than an acquisition, clearly labelled as such since Fortinet never bought it and the connection is a person. The Check Point page records what left the company as well as what it bought. Founders are only stated where they were verified during the work, which means several older entries still have none, and that is deliberate rather than finished.",
+  },
+  {
+    date: "2026-07-28T02:25:23-03:00",
+    kind: "content",
+    title: "The industry timeline is finally complete",
+    body: "It had been drawing from one list. The companies this career actually ran through, Cabletron and Cisco and Juniper and the rest, had chapters elsewhere on the site but were missing from the industry's own chronology, which is a strange omission for a page about where the industry came from. All fifteen are in it now, each marked as one that was worked inside rather than observed from outside. Their founding years were derived the same way the others were, from each company's own profile timeline, and cross-checked against the lineage pages wherever one exists. Seven of seven matched exactly, which is the reason to trust the other eight. Two entries were also quietly appearing twice in the career list, Cisco and Palo Alto Networks, which meant they rendered twice in the strip at the top of the page. That is fixed. The timeline now runs from an 1847 pointer telegraph to a 2012 SD-WAN startup with eighty-nine companies in it, ordered by when each story starts, with pills marking which were training partners and which were lived from the inside.",
+  },
+  {
+    date: "2026-07-28T01:36:49-03:00",
+    kind: "infra",
+    title: "Vendor pages lost a URL segment, and the training partners joined the timeline",
+    body: "Company profiles used to live under a path with the word partner in the middle of it, which described how this site organises its own data rather than anything a reader cares about. That segment is gone, so every company page is now a sibling of every other one under about slash vendors. It was safe because the two sets never overlapped: fifteen hand-written career pages, seventy-four generated profiles, no collisions, checked before anything moved. On the industry page, the Red Education training partners had a section of their own, which split the industry into companies whose training this site delivers and everyone else. That is a fact about a commercial relationship, not about the industry, and it was carving the chronology in half to show it. Those twelve companies now sit in the timeline with everyone else, each carrying a small red pill that says what the relationship is. Three of them needed a founding year before they could be placed, since they have no profile page to derive one from, so Amazon Web Services, Microsoft and EPI were each looked up individually rather than estimated. EPI turns out to have been incorporated in the United Kingdom in 1987 by Edward van Leent, well before the Singapore entity most people know it by.",
+  },
+  {
+    date: "2026-07-28T00:24:57-03:00",
+    kind: "content",
+    title: "Every vendor now has a guided reading path, not just half of them",
+    body: "Four of the eight vendors covered here had a curated route through their material and four did not. Check Point, NGINX, Extreme and Fortinet now do. Each is ordered the way the subject actually makes sense rather than the way a blueprint lists it. Check Point opens with the three-tier split, because nothing else on that platform makes sense until you know the management server and the gateway are separate machines with separate jobs, and only then moves to the rule base and the layer semantics that catch everyone. NGINX follows the order the confusions arrive in: the configuration tree first, since a fragment nothing includes is not read at all, then which location block wins, then what path the backend receives, then what gets cached and served to whom. Extreme starts with ExtremeXOS and then explains why VOSS feels so different, which is that it came from another company entirely, before building the fabric up from IS-IS to I-SIDs. Fortinet covers what appears once a FortiGate is not alone. The Extreme path was nearly missed, incidentally, because its articles are named after the operating systems rather than the vendor, so a search for the company name found nothing while seven articles sat there.",
+  },
+  {
     date: "2026-07-27T23:40:17-03:00",
     kind: "content",
     title: "The About page puts the career first and the credentials after it",

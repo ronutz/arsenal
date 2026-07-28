@@ -1,5 +1,15 @@
 // ============================================================================
-// src/app/[locale]/about/vendors/partner/[slug]/page.tsx
+// src/app/[locale]/about/vendors/[slug]/page.tsx
+//
+// FLATTENED 2026-07-28 (PRIME): was /about/vendors/<slug>. The extra
+// segment described how the site organised its own data - "these came from the
+// partner list" - which is not a distinction a reader has any reason to care
+// about. Both kinds of vendor page are now siblings under /about/vendors/.
+//
+// Safe because the two sets do not overlap: 15 static career pages, 74 dynamic
+// profile slugs, zero collisions (checked before moving). Next.js resolves a
+// static segment ahead of [slug], so /about/vendors/f5 keeps its hand-written
+// page and everything else falls through to this one.
 // ----------------------------------------------------------------------------
 // PARTNER / OTHER-VENDOR PAGE - a data-driven page for the non-career vendors
 // linked from the Vendors index (Red Education training partners Rodolfo does

@@ -67,16 +67,16 @@ const RED_EDUCATION_VENDORS: { name: string; href?: string }[] = [
   { name: "Palo Alto Networks", href: "/about/vendors/palo-alto" },
   { name: "Check Point", href: "/about/vendors/check-point" },
   { name: "Cisco", href: "/about/vendors/cisco" },
-  { name: "Nutanix", href: "/about/vendors/partner/nutanix" },
-  { name: "Arista", href: "/about/vendors/partner/arista" },
+  { name: "Nutanix", href: "/about/vendors/nutanix" },
+  { name: "Arista", href: "/about/vendors/arista" },
   { name: "Netskope", href: "/about/vendors/netskope" },
   { name: "Extreme Networks", href: "/about/vendors/extreme" },
-  { name: "CyberArk", href: "/about/vendors/partner/cyberark" },
+  { name: "CyberArk", href: "/about/vendors/cyberark" },
   { name: "ForgeRock", href: "/about/vendors/ping-identity" },
   { name: "Ping Identity", href: "/about/vendors/ping-identity" },
   { name: "Zscaler", href: "/about/vendors/zscaler" },
-  { name: "AWS", href: "/about/vendors/partner/aws" },
-  { name: "Riverbed", href: "/about/vendors/partner/riverbed" },
+  { name: "AWS", href: "/about/vendors/aws" },
+  { name: "Riverbed", href: "/about/vendors/riverbed" },
 ];
 
 // The public case study on rededucation.com that names Rodolfo (verified

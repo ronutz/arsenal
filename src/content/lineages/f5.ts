@@ -29,6 +29,10 @@ export interface Acquisition {
   became?: string;
   /** Optional footnote for a figure discrepancy or date nuance. */
   sourceNote?: string;
+  /** Who founded the acquired company. Same reasoning as the nested field
+   *  below: the people are what connect these companies to each other, and a
+   *  list of company names alone hides it. */
+  founder?: string;
   /**
    * What the ACQUIRED company had itself acquired before being bought.
    *
@@ -43,7 +47,25 @@ export interface Acquisition {
    * lineage and a family tree, and the third level is almost never what
    * anyone came to find out.
    */
-  subAcquisitions?: { year: number; name: string; price?: string; what: string }[];
+  subAcquisitions?: {
+    year: number;
+    name: string;
+    price?: string;
+    what: string;
+    /**
+     * Who founded it.
+     *
+     * PRIME 2026-07-28: "honoring all relevant founders". This is the point of
+     * the nested history rather than a decoration - the people are what
+     * connects these companies to each other. Ken Xie founded NetScreen and
+     * then Fortinet; Nir Zuk was one of Check Point's first employees, founded
+     * OneSecure, sold it to NetScreen, and then founded Palo Alto Networks;
+     * Changming Liu left NetScreen for Aerohive, which Extreme bought. Three
+     * vendor hubs on this site trace back through the same handful of people,
+     * and a list of company names alone hides that completely.
+     */
+    founder?: string;
+  }[];
 }
 
 export interface VendorLineage {

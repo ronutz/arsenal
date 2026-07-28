@@ -14191,9 +14191,11 @@
     "contemporaryEyebrow": "Contemporâneo do setor",
     "contemporaryCardTag": "contemporâneo",
     "timelineSectionTitle": "A linhagem, em ordem",
-    "timelineSectionNote": "Cada empresa cuja tecnologia ou cujas pessoas foram parar dentro das plataformas deste site, ordenada pelo ano em que sua história começa. Algumas seguem ativas e outras foram absorvidas há décadas; as que terminaram trazem o ano e o que aconteceu. Ordenar por fundação, e não por situação, evita um julgamento que vinha errando com frequência - boa parte dos nomes antigos daqui segue muito bem em atividade.",
+    "timelineSectionNote": "Cada empresa cuja tecnologia ou cujas pessoas foram parar dentro das plataformas deste site, ordenada pelo ano em que sua história começa. Algumas seguem ativas e outras foram absorvidas há décadas; as que terminaram trazem o ano e o que aconteceu. As marcadas como parceiras da Red Education são aquelas cujo treinamento autorizado a Red Education entrega. Ordenar por fundação, e não por situação, evita um julgamento que vinha errando com frequência - boa parte dos nomes antigos daqui segue muito bem em atividade.",
     "timelineSince": "{from} - hoje",
-    "timelineSpan": "{from} - {to}"
+    "timelineSpan": "{from} - {to}",
+    "reduPill": "Parceira Red Education",
+    "careerPill": "Vivido por dentro"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",
@@ -14268,6 +14270,22 @@
       "ping-identity-platform": {
         "title": "A Plataforma Ping Identity",
         "lede": "Todo o parque Ping em ordem de leitura: o mapa da plataforma PingOne e a linhagem ForgeRock primeiro, para que cada nome de produto se resolva; depois a política do PingAccess, a plataforma de dados PingDirectory e a orquestração DaVinci; fechando com a estante PingFederate - o núcleo autogerenciado de federação - na sua ordem de ensino estabelecida. A caminhada companheira dos guias Certified Professional no hub de certificações."
+      },
+      "checkpoint-security-administration": {
+        "title": "Administração de segurança Check Point",
+        "lede": "A plataforma na ordem em que o CCSA a ensina: primeiro a divisão em três camadas, porque nada mais faz sentido até você saber que o servidor de gerência e o gateway são máquinas diferentes com funções diferentes, depois a base de regras, depois a semântica de camadas que pega todo mundo."
+      },
+      "nginx-from-config-to-cache": {
+        "title": "NGINX, da configuração ao cache",
+        "lede": "Na ordem em que as confusões de fato chegam: a árvore de configuração, depois qual bloco location vence, depois que caminho o backend recebe, depois o que é cacheado e servido a quem."
+      },
+      "extreme-fabric-and-voss": {
+        "title": "Fabric da Extreme e os dois sistemas operacionais",
+        "lede": "ExtremeXOS para o modelo de configuração, depois por que o VOSS parece tão diferente (veio de outra empresa), depois o Fabric Connect construído do IS-IS aos I-SIDs até os recursos de resiliência."
+      },
+      "fortinet-fabric-and-operations": {
+        "title": "Fortinet além do firewall isolado",
+        "lede": "O que aparece quando um FortiGate não está sozinho: escolhas de inspeção, a malha da filial, integração com nuvem, o SOC, e a borda de tecnologia operacional."
       }
     },
     "expandAll": "Expandir tudo",

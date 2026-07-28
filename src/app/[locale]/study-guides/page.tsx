@@ -30,7 +30,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { ogImages } from "@/lib/og";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
-import { readingPathVendor } from "@/lib/reading-path-vendors";
+import { readingPathVendor, READING_PATH_VENDOR_KEYS } from "@/lib/reading-path-vendors";
 import ReadingPathSections, {
   type PathGroup,
 } from "@/components/ReadingPathSections";
@@ -73,9 +73,16 @@ export default async function StudyGuidesPage({
   //    specified (F5, Extreme, Fortinet, Netskope, Ping, Zscaler). Within a
   //    group, paths sort ALPHABETICALLY by localized title via localeCompare,
   //    so pt-BR accents order correctly rather than by raw code point.
-  const GROUP_ORDER = ["general", "f5", "extreme", "fortinet", "netskope", "ping", "zscaler"];
   // Vendor detection lives in src/lib/reading-path-vendors.ts so the vendor
   // hubs get the same answer (2026-07-27); two copies drift silently.
+  //
+  // GROUP_ORDER is DERIVED from that same list rather than written out again.
+  // It used to be a hand-maintained array, and it was missing Check Point and
+  // NGINX - both onboarded after it was written - so their reading paths fell
+  // into "general" here while the hubs grouped them correctly. That is the
+  // second place the same missing-vendor bug appeared in one turn, which is
+  // the argument for deriving rather than listing.
+  const GROUP_ORDER = ["general", ...READING_PATH_VENDOR_KEYS];
   const resolvedPaths = READING_PATHS.map((path) => {
     const steps = path.articles
       .map((slug) => getArticle(slug, locale))

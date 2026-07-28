@@ -66,6 +66,14 @@ export const extremeLineage: VendorLineage = {
         "The management and policy heritage that runs through Extreme Management Center and, later, ExtremeCloud IQ Site Engine. Extreme stated at the time that ExtremeXOS would be extended with Enterasys features and support both hardware platforms - the first of several 'two operating systems, one catalogue' problems the company took on.",
       sourceNote:
         "Announced 12 September 2013. This was Extreme's first acquisition, made when the company itself was struggling.",
+      subAcquisitions: [
+        {
+          year: 1983,
+          name: "Cabletron Systems (Enterasys's parent)",
+          what: "Enterasys was not a startup: it was one of the pieces Cabletron broke into. Cabletron began in a garage making Ethernet cable assemblies, moved to Rochester, New Hampshire in 1985, went public in 1989, and grew past $1.8B in annual revenue before splitting itself up. Its successors were Enterasys, Riverstone Networks, Aprisma and Global Network Technology Services - and two of those, Enterasys and Riverstone, are chapters in this site's own career record.",
+          founder: "Robert Levine and Craig Benson, in Levine's garage in March 1983",
+        },
+      ],
     },
     {
       year: 2016,
@@ -115,7 +123,10 @@ export const extremeLineage: VendorLineage = {
         {
           year: 1994,
           name: "Wellfleet + SynOptics = Bay Networks",
-          what: "Bay Networks itself was the merger of Wellfleet Communications and SynOptics Communications - two of the companies that built the first enterprise networks.",
+          price: "$2.7B merger",
+          what: "Bay Networks itself was the merger of Billerica-based Wellfleet Communications with Santa Clara-based SynOptics Communications, completed 6 July 1994 - two of the companies that built the first enterprise networks, joining to cover both layer 2 and layer 3.",
+          founder:
+            "SynOptics by Andrew K. Ludwick and Ronald V. Schmidt, who met at Xerox PARC in 1983 where Schmidt was working on Ethernet",
         },
       ],
     },
@@ -144,8 +155,9 @@ export const extremeLineage: VendorLineage = {
       what: "A cloud-managed wireless and network-access-control company, and a pioneer of controllerless Wi-Fi. Extreme paid $4.45 per share, a roughly 40% premium.",
       became:
         "ExtremeCloud IQ - the cloud management platform the modern portfolio is organised around, and the reason the company's revenue mix shifted toward subscription. Extreme valued the deal at $210M after subtracting Aerohive's $62M net cash.",
+      founder: "co-founded by Changming Liu, previously a senior engineer at NetScreen",
       sourceNote:
-        "Announced 26 June 2019, completed 9 August 2019. Both the headline $272M and the net-of-cash $210M were published; they describe the same transaction.",
+        "Announced 26 June 2019, completed 9 August 2019. Both the headline $272M and the net-of-cash $210M were published; they describe the same transaction. The founder detail is not trivia: NetScreen produced founders for Fortinet, Palo Alto Networks and - through Aerohive - the cloud platform Extreme's portfolio is now organised around.",
     },
     {
       year: 2021,

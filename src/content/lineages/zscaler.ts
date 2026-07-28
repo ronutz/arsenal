@@ -34,7 +34,7 @@ export const zscalerLineage: VendorLineage = {
     {
       name: "Zscaler",
       from: "2007",
-      note: "Founded by Jay Chaudhry, who had already built and sold several security companies. Listed on NASDAQ in 2018.",
+      note: "Founded by Jay Chaudhry, who had already built and sold several security companies before this one - SecureIT, CipherTrust, AirDefense and CoreHarbor among them. Zscaler was self-funded from those exits, which is why it took outside money late and listed on NASDAQ only in 2018.",
     },
   ],
 

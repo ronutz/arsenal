@@ -14191,9 +14191,11 @@
     "contemporaryEyebrow": "Industry contemporary",
     "contemporaryCardTag": "contemporary",
     "timelineSectionTitle": "The lineage, in order",
-    "timelineSectionNote": "Every company whose technology or people ended up inside the platforms on this site, ordered by the year its story starts. Some are still trading and some were absorbed decades ago; the ones that ended carry the year and what happened. Ordering by founding rather than by status avoids a judgement call that kept getting it wrong - plenty of the older names here are still very much in business.",
+    "timelineSectionNote": "Every company whose technology or people ended up inside the platforms on this site, ordered by the year its story starts. Some are still trading and some were absorbed decades ago; the ones that ended carry the year and what happened. Vendors marked as Red Education partners are ones whose authorized training Red Education delivers. Ordering by founding rather than by status avoids a judgement call that kept getting it wrong - plenty of the older names here are still very much in business.",
     "timelineSince": "{from} - present",
-    "timelineSpan": "{from} - {to}"
+    "timelineSpan": "{from} - {to}",
+    "reduPill": "Red Education partner",
+    "careerPill": "Worked inside"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",
@@ -14268,6 +14270,22 @@
       "ping-identity-platform": {
         "title": "The Ping Identity Platform",
         "lede": "The whole Ping estate in reading order: the PingOne platform map and the ForgeRock lineage first, so every product name resolves; then PingAccess policy, the PingDirectory data platform, and DaVinci orchestration; closing with the PingFederate shelf - the self-managed federation core - in its established teaching order. The companion walk to the Certified Professional guides on the certifications hub."
+      },
+      "checkpoint-security-administration": {
+        "title": "Check Point security administration",
+        "lede": "The platform in the order the CCSA teaches it: the three-tier split first, because nothing else makes sense until you know the management server and the gateway are different machines with different jobs, then the rule base, then the layer semantics that catch everyone."
+      },
+      "nginx-from-config-to-cache": {
+        "title": "NGINX, from configuration to cache",
+        "lede": "In the order the confusions actually arrive: the configuration tree, then which location block wins, then what path the backend receives, then what gets cached and served to whom."
+      },
+      "extreme-fabric-and-voss": {
+        "title": "Extreme fabric and the two operating systems",
+        "lede": "ExtremeXOS for the configuration model, then why VOSS feels so different (it came from another company entirely), then Fabric Connect built up from IS-IS through I-SIDs to the resilience features."
+      },
+      "fortinet-fabric-and-operations": {
+        "title": "Fortinet beyond the single firewall",
+        "lede": "What shows up once a FortiGate is not alone: inspection choices, the branch overlay, cloud integration, the SOC, and the operational technology edge."
       }
     },
     "expandAll": "Expand all",

@@ -57,6 +57,13 @@ export const netskopeLineage: VendorLineage = {
       became:
         "Borderless SD-WAN at general availability in April 2023, and now the foundation of the One SASE platform. This is the acquisition that moved Netskope from security service edge into full SASE.",
       sourceNote: "August 2022.",
+      subAcquisitions: [
+        {
+          year: 2018,
+          name: "Infiot is founded",
+          what: "Built as an edge-services platform rather than a classic SD-WAN box vendor, which is why it fitted a cloud-delivered security company instead of bolting an appliance line onto one. That distinction is the reason this acquisition changed Netskope's category rather than just its feature list.",
+        },
+      ],
     },
     {
       year: 2023,

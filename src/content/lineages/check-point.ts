@@ -47,6 +47,11 @@ export const checkPointLineage: VendorLineage = {
       from: "1993",
       note: "The name has never changed. Unusually for this industry, the company that shipped the first product still trades under the same name thirty years later.",
     },
+    {
+      name: "Check Point, as a source of other companies",
+      from: "1999",
+      note: "Worth recording alongside what Check Point bought: what left. Nir Zuk, one of its first employees, departed in 1999 and founded OneSecure, which NetScreen bought in 2002 and which became NetScreen's intrusion-prevention core. He stayed through Juniper's acquisition of NetScreen and left in 2005 to found Palo Alto Networks - the competitor that overtook Check Point as the largest security company in 2014. The stateful-inspection lineage runs through people as much as through products.",
+    },
   ],
 
   origin:
@@ -60,6 +65,7 @@ export const checkPointLineage: VendorLineage = {
       what: "The maker of ZoneAlarm, the personal firewall. It gave Check Point an endpoint product and, for the first time, a consumer business and consumer brand recognition.",
       became:
         "The start of the endpoint line that eventually became Harmony Endpoint. Zone Labs was run as a separate division and kept its brand for years.",
+      founder: "Gregor Freund",
       sourceNote:
         "Announced December 2003, expected to close Q1 2004.",
     },

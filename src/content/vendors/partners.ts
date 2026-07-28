@@ -147,6 +147,8 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "aws",
     group: "redu",
     name: "Amazon Web Services",
+    // Amazon Web Services launched S3 and EC2 in 2006; the brand had existed since 2002 but 2006 is when the cloud business as it is understood began.
+    founded: 2006,
     tagline: "The cloud platform that defined the category.",
     intro:
       "Amazon Web Services is the largest public cloud, the platform whose 2006 launch of S3 and EC2 turned computing into a utility and defined what the industry now means by cloud.",
@@ -185,6 +187,8 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "epi",
     group: "redu",
     name: "EPI",
+    // Originally incorporated in the UK in 1987 by Edward van Leent, later in Singapore in 1999, with a separate entity for training and certification from 2001.
+    founded: 1987,
     tagline: "Data-centre training and TIA-942 certification.",
     intro:
       "EPI (Enterprise Products Integration Pte Ltd) is the Singapore-headquartered body behind the vendor-neutral data-centre certification ladder - CDCP, CDCS, CDCE, CDFOM and peers - and one of the leading auditors certifying facilities against the ANSI/TIA-942 standard.",
@@ -205,6 +209,8 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "microsoft",
     group: "redu",
     name: "Microsoft",
+    // Founded 4 April 1975 in Albuquerque by Bill Gates and Paul Allen.
+    founded: 1975,
     tagline: "The platform company: Windows, Azure, and Microsoft 365.",
     intro:
       "Microsoft's operating systems, productivity suite, and Azure cloud form the substrate of most enterprise IT estates, which makes its technologies a standing presence in any serious training catalogue.",

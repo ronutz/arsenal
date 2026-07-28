@@ -45,6 +45,90 @@ export interface ReadingPath {
  */
 export const READING_PATHS: ReadingPath[] = [
   {
+    // Check Point in the order the CCSA teaches it: the three-tier split first,
+    // because nothing else makes sense until you know the management server
+    // and the gateway are different machines with different jobs. Then the
+    // rule base, then the layer semantics that catch everyone, then the
+    // inspection blades, and finally the expert-level material.
+    id: "checkpoint-security-administration",
+    category: "security",
+    articles: [
+      "checkpoint-three-tier-architecture-and-smartconsole",
+      "checkpoint-administrators-sessions-and-objects",
+      "checkpoint-security-policy-and-rule-base",
+      "checkpoint-policy-layers-ordered-and-inline",
+      "checkpoint-logging-and-monitoring",
+      "checkpoint-identity-awareness",
+      "checkpoint-https-inspection-and-web-control",
+      "checkpoint-threat-prevention-fundamentals",
+      "checkpoint-advanced-policy-and-nat",
+      "checkpoint-site-to-site-vpn",
+      "checkpoint-management-high-availability",
+      "checkpoint-smartevent-and-compliance",
+      "checkpoint-upgrades-and-migrations",
+      "checkpoint-elasticxl-cluster",
+    ],
+    tools: ["checkpoint-policy-layer-evaluator"],
+  },
+  {
+    // NGINX in the order the confusions arrive. The configuration tree first,
+    // because a fragment nothing includes is not read and that wastes more
+    // hours than anything else here. Then location matching, then proxying,
+    // then caching - each one the answer to "why did it do that".
+    id: "nginx-from-config-to-cache",
+    category: "networking",
+    articles: [
+      "nginx-configuration-tree-and-includes",
+      "nginx-location-matching-order",
+      "nginx-proxy-pass-uri-rewriting",
+      "nginx-proxy-cache-what-gets-stored",
+      "nginx-limiting-connections-and-rate",
+      "nginx-reload-signals-and-first-troubleshooting",
+    ],
+    tools: [
+      "nginx-location-matcher",
+      "nginx-proxy-pass-rewriter",
+      "nginx-proxy-cache-decision",
+    ],
+  },
+  {
+    // The Extreme fabric path. ExtremeXOS first for the configuration model,
+    // then the VOSS comparison that explains why the two operating systems
+    // feel so different (they came from different companies), then Fabric
+    // Connect built up from IS-IS through I-SIDs to the resilience features.
+    id: "extreme-fabric-and-voss",
+    category: "networking",
+    articles: [
+      "how-extremexos-config-is-structured",
+      "voss-vs-exos",
+      "voss-isis-and-nicknames",
+      "voss-fabric-connect-spbm",
+      "voss-i-sid-and-vsns",
+      "voss-fabric-attach",
+      "voss-smlt-and-vist",
+    ],
+    tools: ["exos-config-explainer"],
+  },
+  {
+    // Fortinet beyond the single firewall: the pieces that show up once a
+    // FortiGate is not alone, in the order they tend to be met.
+    id: "fortinet-fabric-and-operations",
+    category: "security",
+    articles: [
+      "fortinet-ssl-inspection-modes",
+      "fortinet-sd-branch-and-overlay-fabric",
+      "fortinet-cloud-automation-caas-and-native-integration",
+      "fortinet-soc-architecture-and-adversary-behaviour",
+      "fortinet-ot-security",
+    ],
+    tools: [
+      "fortigate-policy-lookup-explainer",
+      "fortigate-route-selection-explainer",
+      "fortigate-security-profile-coverage-checker",
+      "fortios-config-diff-explainer",
+    ],
+  },
+  {
     // THE F5 STUDY GUIDE (PRIME directive 2026-07-21): everything the retired
     // 101, 201, 301A, and 301B blueprints listed, delivered as this site's
     // articles in teaching order - the exam-free companion to the

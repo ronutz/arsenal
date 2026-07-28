@@ -19,9 +19,24 @@
 // appearing on one of the two surfaces. One exported function, used by both.
 // ============================================================================
 
-/** Tokens that mark a path id as belonging to a vendor.
- *  "bigip" is F5's product name rather than a separate vendor, and the Extreme
- *  operating systems are named on paths that never say "extreme". */
+import { VENDOR_FAMILIES } from "@/config/vendors";
+
+/** EXTRA tokens that mark a path id as belonging to a vendor, beyond the
+ *  vendor key itself.
+ *
+ *  This map holds EXCEPTIONS ONLY. Every vendor key matches itself by default
+ *  (see `tokensFor`), so onboarding a vendor needs no edit here unless its
+ *  paths are named after something other than the vendor - "bigip" for F5, or
+ *  the operating systems for Extreme, whose paths never say "extreme".
+ *
+ *  It did not always work that way, and the failure is worth recording: this
+ *  map originally listed every vendor explicitly, NGINX was onboarded after it
+ *  was written, and its reading path silently grouped as "general". The path
+ *  appeared on the study-guides index under the wrong heading and vanished
+ *  from the NGINX hub entirely, with no error anywhere - a missing key in a
+ *  lookup that falls back to a default is invisible by construction.
+ *  Defaulting to the vendor's own key removes the class of bug rather than
+ *  the instance. */
 const VENDOR_ALIASES: Record<string, string[]> = {
   f5: ["f5", "bigip"],
   extreme: ["extreme", "exos", "voss"],
@@ -31,6 +46,10 @@ const VENDOR_ALIASES: Record<string, string[]> = {
   zscaler: ["zscaler"],
   checkpoint: ["checkpoint", "check-point"],
 };
+
+/** Every token that marks a path as this vendor's: its own key, plus any
+ *  exceptions declared above. */
+const tokensFor = (vendor: string): string[] => [vendor, ...(VENDOR_ALIASES[vendor] ?? [])];
 
 /**
  * The vendor key a reading path belongs to, or "general" for the
@@ -43,11 +62,12 @@ const VENDOR_ALIASES: Record<string, string[]> = {
  */
 export function readingPathVendor(id: string, order: readonly string[]): string {
   return (
-    order.find(
-      (v) => v !== "general" && (VENDOR_ALIASES[v] ?? []).some((tok) => id.startsWith(tok)),
-    ) ?? "general"
+    order.find((v) => v !== "general" && tokensFor(v).some((tok) => id.startsWith(tok))) ??
+    "general"
   );
 }
 
-/** Vendor keys that have at least one alias, for callers that need the set. */
-export const READING_PATH_VENDOR_KEYS = Object.keys(VENDOR_ALIASES);
+/** The vendor keys to consider, derived from the live vendor families so a
+ *  newly onboarded vendor is included automatically. Ordered as the families
+ *  are, which keeps grouping stable and predictable. */
+export const READING_PATH_VENDOR_KEYS = VENDOR_FAMILIES.map((f) => f.key);

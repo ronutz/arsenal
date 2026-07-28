@@ -11,26 +11,40 @@
 // i18n prefix under the "vendors" namespace (name / years / tagline).
 // ============================================================================
 
-export const CAREER_VENDORS = [
-  { slug: "cabletron-enterasys", key: "cabletron" },
-  { slug: "riverstone", key: "riverstone" },
-  { slug: "cisco", key: "cisco" },
-  { slug: "ironport", key: "ironport" },
-  { slug: "netscreen-juniper", key: "juniper" },
-  { slug: "extreme", key: "extreme" },
-  { slug: "fireeye-mcafee-ixia", key: "distribution" },
+/** A career chapter: the vendor page slug, its i18n key, and the year the
+ *  company's story begins.
+ *
+ *  `founded` was added 2026-07-28 so these chapters can join the industry
+ *  lineage timeline, which orders by founding year. Each was DERIVED from that
+ *  vendor's own profile timeline (its earliest dated entry) and cross-checked
+ *  against the lineage files where one exists - seven of seven matched
+ *  exactly, which is the reason to trust the other eight. */
+export interface CareerVendor {
+  slug: string;
+  key: string;
+  founded?: number;
+}
+
+export const CAREER_VENDORS: CareerVendor[] = [
+  { slug: "cabletron-enterasys", key: "cabletron", founded: 1983 },
+  { slug: "riverstone", key: "riverstone", founded: 1996 },
+  { slug: "cisco", key: "cisco", founded: 1984 },
+  { slug: "ironport", key: "ironport", founded: 2000 },
+  { slug: "netscreen-juniper", key: "juniper", founded: 1996 },
+  { slug: "extreme", key: "extreme", founded: 1996 },
+  { slug: "fireeye-mcafee-ixia", key: "distribution", founded: 1987 },
   // Pulse Secure: distributed in the ScanSource year (PRIME 2026-07-16) - the
   // Neoteris/NetScreen/Juniper secure-access lineage as its own chapter.
-  { slug: "pulse-secure", key: "pulse" },
-  { slug: "palo-alto", key: "paloalto" },
+  { slug: "pulse-secure", key: "pulse", founded: 2003 },
+  { slug: "palo-alto", key: "paloalto", founded: 2005 },
   // The teaching-era chapters (PRIME directive 2026-07-15: career vendors
   // include ALL vendors to today). Chronological by first engagement:
-  { slug: "f5", key: "f5" },                     // certified 2015, instructor 2020
-  { slug: "fortinet", key: "fortinet" },         // NSE ladder 2022, FCT 2024
-  { slug: "netskope", key: "netskope" },         // accreditations 2024, instructor 2025
-  { slug: "ping-identity", key: "ping" },        // PingFederate Practitioner 2025
-  { slug: "zscaler", key: "zscaler" },           // chapter opening 2026; hub on the roadmap
-  { slug: "check-point", key: "checkpoint" },    // chapter opening 2026; studying toward CCSA/CCSE, no delivery claim
+  { slug: "f5", key: "f5", founded: 1996 },                     // certified 2015, instructor 2020
+  { slug: "fortinet", key: "fortinet", founded: 2000 },         // NSE ladder 2022, FCT 2024
+  { slug: "netskope", key: "netskope", founded: 2012 },         // accreditations 2024, instructor 2025
+  { slug: "ping-identity", key: "ping", founded: 2002 },        // PingFederate Practitioner 2025
+  { slug: "zscaler", key: "zscaler", founded: 2007 },           // chapter opening 2026; hub on the roadmap
+  { slug: "check-point", key: "checkpoint", founded: 1993 },    // chapter opening 2026; studying toward CCSA/CCSE, no delivery claim
 ] as const;
 
 // ============================================================================
@@ -62,7 +76,5 @@ export const VENDOR_CAREER_SLUGS: Record<string, string> = {
 // ============================================================================
 
 export const REDU_CAREER_PARTNERS = [
-  { slug: "cisco", key: "cisco" },
-  { slug: "palo-alto", key: "paloalto" },
 ] as const;
 

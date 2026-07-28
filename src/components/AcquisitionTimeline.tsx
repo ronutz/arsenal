@@ -90,6 +90,12 @@ export default function AcquisitionTimeline({ lineage, labels }: AcquisitionTime
                   <span className="lineage-deal-price mono">{a.price}</span>
                 </div>
                 <p className="lineage-deal-what">{a.what}</p>
+                {a.founder && (
+                  <p className="lineage-deal-founder">
+                    <span className="lineage-deal-became-label">{labels.founded}</span>
+                    {a.founder}
+                  </p>
+                )}
                 {a.subAcquisitions && a.subAcquisitions.length > 0 && (
                   /* What the acquired company had itself bought. The technology
                      that matters is often two owners deep, and stopping at one
@@ -101,6 +107,9 @@ export default function AcquisitionTimeline({ lineage, labels }: AcquisitionTime
                         <span className="lineage-sub-name">{sub.name}</span>
                         {sub.price ? <span className="lineage-sub-price mono"> {sub.price}</span> : null}
                         <span className="lineage-sub-what"> &mdash; {sub.what}</span>
+                        {sub.founder && (
+                          <span className="lineage-sub-founder"> Founded by {sub.founder}.</span>
+                        )}
                       </li>
                     ))}
                   </ul>

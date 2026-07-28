@@ -4,7 +4,7 @@
 // THE INDUSTRY HUB (PRIME directive 2026-07-15) - the discoverable, top-level
 // front door to the deep-research vendor histories: eight career pages
 // (/about/vendors/<slug>), the Red Education training partners, and the wider
-// industry lineage pages (/about/vendors/partner/<slug>).
+// industry lineage pages (/about/vendors/<slug>).
 //
 // Rationale: the research previously surfaced only through the About section
 // index (/about/vendors), which visitors did not find. This hub gives it a
@@ -57,13 +57,64 @@ export default async function IndustryHubPage({
   const ti = await getTranslations("industry"); // hub hero (new)
   const tNav = await getTranslations("nav");
 
-  const reduPartners = partnerVendors.filter((v) => v.group === "redu");
   // One chronological list: the old "other" and "contemporary" groups merged
   // and sorted by founding year. Cards without a year sort last rather than
   // being dropped, so a missing year is visible instead of silent.
-  const lineageTimeline = partnerVendors
-    .filter((v) => v.group === "other" || v.group === "contemporary")
-    .sort((a, b) => (a.founded ?? 9999) - (b.founded ?? 9999) || a.name.localeCompare(b.name));
+  // All three groups share one timeline (PRIME 2026-07-28). The Red Education
+  // partners used to sit in a section of their own, which split the industry
+  // into "companies whose training we deliver" and "everyone else" - a fact
+  // about this site's commercial relationships, not about the industry. They
+  // are marked with a pill instead, so the relationship is still visible
+  // without carving the chronology in half to show it.
+  // One timeline, built from BOTH sources so the chronology is complete
+  // (PRIME 2026-07-27). Until now it drew only from the partner list, so the
+  // fifteen companies this career ran through - Cabletron, Cisco, Juniper and
+  // the rest - were absent from the industry's own chronology while having
+  // chapters elsewhere on the site. A timeline of the industry that omits the
+  // companies the author worked inside is not a timeline of the industry.
+  //
+  // The two sources carry different shapes, so they are normalised here rather
+  // than in the markup: partner vendors bring their own name and tagline,
+  // career vendors take theirs from the vendor i18n namespace.
+  type TimelineEntry = {
+    slug: string;
+    name: string;
+    tagline: string;
+    founded?: number;
+    /** Set only where the company stopped existing independently. Career
+     *  chapters do not carry one - none of those companies has ended. */
+    ended?: { year: number; note: string };
+    href: string;
+    /** Which strand it came from, for the pill. */
+    kind: "industry" | "redu" | "career";
+  };
+
+  const fromPartners: TimelineEntry[] = partnerVendors
+    .filter(
+      (v) => v.group === "other" || v.group === "contemporary" || v.group === "redu",
+    )
+    .map((v) => ({
+      slug: v.slug,
+      name: v.name,
+      tagline: v.tagline,
+      founded: v.founded,
+      ended: v.ended,
+      href: `/about/vendors/${v.slug}`,
+      kind: v.group === "redu" ? ("redu" as const) : ("industry" as const),
+    }));
+
+  const fromCareer: TimelineEntry[] = CAREER_VENDORS.map((v) => ({
+    slug: v.slug,
+    name: t(`${v.key}.name`),
+    tagline: t(`${v.key}.tagline`),
+    founded: v.founded,
+    href: `/about/vendors/${v.slug}`,
+    kind: "career" as const,
+  }));
+
+  const lineageTimeline: TimelineEntry[] = [...fromPartners, ...fromCareer].sort(
+    (a, b) => (a.founded ?? 9999) - (b.founded ?? 9999) || a.name.localeCompare(b.name),
+  );
 
   return (
     <>
@@ -116,33 +167,6 @@ export default async function IndustryHubPage({
               </Link>
             </p>
 
-            <div className="vendor-divider">
-              <h2 className="vendor-divider-title">{tp("reduSectionTitle")}</h2>
-              <p className="vendor-divider-note">{tp("reduSectionNote")}</p>
-            </div>
-            <ul className="vendor-grid">
-              {reduPartners.map((v) => (
-                <li key={v.slug}>
-                  <Link href={`/about/vendors/partner/${v.slug}`} className="vendor-card">
-                    <span className="vendor-card-years mono">{tp("reduCardTag")}</span>
-                    <span className="vendor-card-name">{v.name}</span>
-                    <span className="vendor-card-tagline">{v.tagline}</span>
-                  </Link>
-                </li>
-              ))}
-              {/* Cisco and Palo Alto Networks are verified Red Education
-                  partners whose pages exist as career pages - the established
-                  Group B list includes them here (PRIME 2026-07-15). */}
-              {REDU_CAREER_PARTNERS.map((v) => (
-                <li key={v.slug}>
-                  <Link href={`/about/vendors/${v.slug}`} className="vendor-card">
-                    <span className="vendor-card-years mono">{tp("reduCardTag")}</span>
-                    <span className="vendor-card-name">{t(`${v.key}.name`)}</span>
-                    <span className="vendor-card-tagline">{t(`${v.key}.tagline`)}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
 
             {/* ---- The lineage timeline (PRIME 2026-07-27) ----
                  This replaced two sections, "the contemporaries - still writing
@@ -168,13 +192,21 @@ export default async function IndustryHubPage({
                   <span className="vendor-timeline-year mono" aria-hidden="true">
                     {v.founded}
                   </span>
-                  <Link href={`/about/vendors/partner/${v.slug}`} className="vendor-card">
+                  <Link href={v.href} className="vendor-card">
                     <span className="vendor-card-years mono">
                       {v.ended
                         ? tp("timelineSpan", { from: v.founded, to: v.ended.year })
                         : tp("timelineSince", { from: v.founded })}
                     </span>
-                    <span className="vendor-card-name">{v.name}</span>
+                    <span className="vendor-card-name">
+                      {v.name}
+                      {v.kind === "redu" && (
+                        <span className="vendor-partner-pill">{tp("reduPill")}</span>
+                      )}
+                      {v.kind === "career" && (
+                        <span className="vendor-career-pill">{tp("careerPill")}</span>
+                      )}
+                    </span>
                     <span className="vendor-card-tagline">{v.tagline}</span>
                     {v.ended && <span className="vendor-card-end">{v.ended.note}</span>}
                   </Link>

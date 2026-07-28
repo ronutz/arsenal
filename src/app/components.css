@@ -14878,3 +14878,64 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .learn-portal-lede {
   margin-bottom: 0;
 }
+
+/* ---------------------------------------------------------------------------
+   Red Education training-partner pill on the lineage timeline (PRIME
+   2026-07-28). These vendors used to have a section of their own, which split
+   the industry by this site's commercial relationships rather than by
+   anything about the industry. They now sit in the chronology with everyone
+   else and carry this instead.
+   Uses the warning token deliberately: it is the one accent that reads as a
+   red mark without introducing a new colour.
+--------------------------------------------------------------------------- */
+.vendor-partner-pill {
+  display: inline-block;
+  margin-left: 0.55rem;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--color-danger, var(--color-warning));
+  border-radius: 999px;
+  color: var(--color-danger, var(--color-warning));
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Career-chapter pill on the lineage timeline (PRIME 2026-07-28). The fifteen
+   companies this career ran through now sit in the chronology alongside the
+   rest of the industry; this marks which ones were worked inside rather than
+   observed. Accent rather than red, so it reads as a different KIND of fact
+   from the Red Education partner pill and not a competing severity. */
+.vendor-career-pill {
+  display: inline-block;
+  margin-left: 0.55rem;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--accent-primary);
+  border-radius: 999px;
+  color: var(--accent-primary);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Founder credit on a nested acquisition (PRIME 2026-07-28). Set apart from
+   the description because it is a different kind of fact: what the company did
+   versus who made it. Three vendor hubs on this site trace through the same
+   handful of people, and that only becomes visible when the names are shown. */
+.lineage-sub-founder {
+  color: var(--text-primary);
+}
+
+/* Founder credit on an acquisition (PRIME 2026-07-28). Same treatment as the
+   "became" line, because it answers a question of the same weight: not what
+   the company turned into, but who made it in the first place. */
+.lineage-deal-founder {
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
