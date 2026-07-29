@@ -6908,7 +6908,18 @@
       "tagline": "O proxy reverso que virou a resposta padrão - servidor web, balanceador e cache cujo modelo de configuração é uma árvore de arquivos e uma ordem de correspondência que vale entender antes de brigar com ela."
     },
     "allCompaniesTitle": "Todas as empresas com página aqui",
-    "allCompaniesLede": "As empresas cuja tecnologia, pessoas ou aquisições atravessam as plataformas que este site ensina, na ordem em que suas histórias começam. Algumas seguem ativas; outras terminaram dentro de outra, e trazem o ano."
+    "allCompaniesLede": "As empresas cuja tecnologia, pessoas ou aquisições atravessam as plataformas que este site ensina, na ordem em que suas histórias começam. Algumas seguem ativas; outras terminaram dentro de outra, e trazem o ano.",
+    "careerMetaSuffix": "um capítulo de carreira",
+    "certsTitle": "O que isso certificou",
+    "hubCardEyebrow": "Treinamento e ferramentas",
+    "hubCardTitle": "O hub do fabricante",
+    "hubCardDesc": "Cursos ministrados, ferramentas construídas e os artigos por trás delas.",
+    "hubCardCta": "Abrir o hub",
+    "historyCardEyebrow": "A empresa",
+    "historyCardTitle": "{name}: a história da empresa",
+    "historyCardDesc": "Quem a fundou, o que ela adquiriu, quem a adquiriu, e onde ela fica na linha do tempo do setor.",
+    "historyCardCta": "Ler a história",
+    "historyFoundedNote": "A empresa foi fundada em {year}. Esta página cobre apenas os anos de trabalho com ela."
   },
   "training": {
     "eyebrow": "Treinamentos que ministro",

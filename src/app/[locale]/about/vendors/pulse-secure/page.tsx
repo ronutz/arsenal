@@ -1,24 +1,45 @@
 // ============================================================================
-// Vendor page: Pulse Secure. The distribution chapter's secure-access thread
-// (ScanSource year, 2018-2019): Neoteris to NetScreen to Juniper to Siris to
-// Ivanti, one product family under five flags. Content in the "vendors"
-// namespace; rich corporate profile below the career narrative (same pattern
-// as the Extreme page). Chain: distribution -> pulse-secure -> palo-alto.
+// /about/vendors/pulse-secure - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/pulse-secure and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import { pulseSecureProfile } from "@/content/vendors/profiles/pulse-secure";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("pulse.name")} - ${t("careerMetaSuffix")}`,
+    description: t("pulse.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="pulse"
-      sections={["s1", "s2"]}
-      icons={["gateway", "firewall", "metro"]}
-      profile={pulseSecureProfile}
-      next={{ slug: "palo-alto", key: "paloalto" }}
+      slug="pulse-secure"
+      sections={2}
     />
   );
 }

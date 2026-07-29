@@ -1,24 +1,45 @@
 // ============================================================================
-// Vendor page: FireEye, McAfee and Ixia. A combined entry for the 2015–2018
-// value-added distribution years — three security and test-and-measurement
-// vendors carried into the Brazilian channel. The distributor names are left
-// out of the public copy by choice (as with the Extreme partner). Last-but-one
-// in the sequence, before Palo Alto. Content in the "vendors" namespace.
+// /about/vendors/fireeye-mcafee-ixia - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/fireeye-mcafee-ixia and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import { fireeyeMcafeeIxiaProfile } from "@/content/vendors/profiles/fireeye-mcafee-ixia";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("distribution.name")} - ${t("careerMetaSuffix")}`,
+    description: t("distribution.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="distribution"
-      sections={["s1", "s2"]}
-      icons={["firewall", "gateway"]}
-      profile={fireeyeMcafeeIxiaProfile}
-      next={{ slug: "pulse-secure", key: "pulse" }}
+      slug="fireeye-mcafee-ixia"
+      sections={2}
     />
   );
 }

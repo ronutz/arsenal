@@ -1,38 +1,45 @@
 // ============================================================================
-// Vendor page: NetScreen and Juniper. Includes the genealogy diagram
-// (NetScreen acquired by Juniper in 2004, becoming the SRX security line) and
-// original technology icons. Content in the "vendors" namespace.
+// /about/vendors/netscreen-juniper - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/netscreen-juniper and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import type { LineageStage } from "@/components/LineageDiagram";
-import { netscreenJuniperProfile } from "@/content/vendors/profiles/netscreen-juniper";
 
-const lineageStages: LineageStage[] = [
-  {
-    nodes: [{ label: "NetScreen", note: "SSG firewalls", tone: "default" }],
-  },
-  {
-    edgeLabel: "2004 acquisition",
-    nodes: [{ label: "Juniper Networks", note: "Worked here 2009 – 2010", tone: "default" }],
-  },
-  {
-    edgeLabel: "became",
-    nodes: [{ label: "SRX line", note: "Secure gateways", tone: "default" }],
-  },
-];
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("juniper.name")} - ${t("careerMetaSuffix")}`,
+    description: t("juniper.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="juniper"
-      sections={["s1", "s2"]}
-      icons={["firewall", "gateway", "switch", "router"]}
-      lineage={{ stages: lineageStages, titleKey: "juniper.lineageTitle", descKey: "juniper.lineageDesc" }}
-      profile={netscreenJuniperProfile}
-      next={{ slug: "extreme", key: "extreme" }}
+      slug="netscreen-juniper"
+      sections={2}
     />
   );
 }

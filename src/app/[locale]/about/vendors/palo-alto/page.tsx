@@ -1,21 +1,45 @@
 // ============================================================================
-// Vendor page: Palo Alto Networks. Original technology icons. Last in the
-// sequence (next: f5 - the teaching-era chapters follow, PRIME 2026-07-15). Content in the "vendors" namespace.
+// /about/vendors/palo-alto - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/palo-alto and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import { paloAltoProfile } from "@/content/vendors/profiles/palo-alto";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("paloalto.name")} - ${t("careerMetaSuffix")}`,
+    description: t("paloalto.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="paloalto"
-      sections={["s1", "s2"]}
-      icons={["firewall", "gateway"]}
-      profile={paloAltoProfile}
-      next={{ slug: "f5", key: "f5" }}
+      slug="palo-alto"
+      sections={2}
     />
   );
 }

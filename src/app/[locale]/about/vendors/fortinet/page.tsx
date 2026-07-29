@@ -1,22 +1,46 @@
 // ============================================================================
-// Vendor page: Fortinet. Second teaching pillar: NSE ladder 2022, Fortinet Certified Trainer 2024, five FCP courses; the Ken Xie / NetScreen bridge to the Juniper page.
-// Content in the "vendors" namespace; rich corporate profile below the
-// career narrative (same pattern as the Extreme page).
+// /about/vendors/fortinet - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/fortinet and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import { fortinetProfile } from "@/content/vendors/profiles/fortinet";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("fortinet.name")} - ${t("careerMetaSuffix")}`,
+    description: t("fortinet.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="fortinet"
-      sections={["s1", "s2"]}
-      icons={["firewall", "gateway", "switch"]}
-      profile={fortinetProfile}
-      next={{ slug: "netskope", key: "netskope" }}
+      slug="fortinet"
+      hubKey="fortinet"
+      sections={2}
     />
   );
 }

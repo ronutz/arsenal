@@ -199,7 +199,7 @@ export default async function VendorPage({
           {next && (
             <section className="section">
               <div className="container vendor-container">
-                <Link href={`/about/vendors/${next.slug}`} className="era-next">
+                <Link href={`/industry/${next.slug}`} className="era-next">
                   <span className="era-next-label">{t("readNext")}</span>
                   <span className="era-next-title">{t(`${next.key}.name`)} →</span>
                 </Link>

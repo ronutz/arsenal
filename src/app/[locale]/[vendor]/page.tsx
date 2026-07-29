@@ -195,7 +195,7 @@ export default async function VendorHubPage({
                     <div className="learn-portal-grid">
                       {careerSlug && (
                         <Link
-                          href={`/about/vendors/${careerSlug}`}
+                          href={`/industry/${careerSlug}`}
                           className="learn-portal-card"
                           style={{ "--note-accent": vendorColor(vendor) } as CSSProperties}
                         >

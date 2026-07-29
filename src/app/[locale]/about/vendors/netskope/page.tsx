@@ -1,22 +1,46 @@
 // ============================================================================
-// Vendor page: Netskope. The newest teaching pillar: accreditation sprint 2024-2026, Netskope Certified Cloud Security Instructor 2025.
-// Content in the "vendors" namespace; rich corporate profile below the
-// career narrative (same pattern as the Extreme page).
+// /about/vendors/netskope - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/netskope and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import { netskopeProfile } from "@/content/vendors/profiles/netskope";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("netskope.name")} - ${t("careerMetaSuffix")}`,
+    description: t("netskope.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="netskope"
-      sections={["s1", "s2"]}
-      icons={["gateway", "firewall", "wlan"]}
-      profile={netskopeProfile}
-      next={{ slug: "ping-identity", key: "ping" }}
+      slug="netskope"
+      hubKey="netskope"
+      sections={2}
     />
   );
 }

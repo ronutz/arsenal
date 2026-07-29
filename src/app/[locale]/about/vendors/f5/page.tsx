@@ -1,22 +1,46 @@
 // ============================================================================
-// Vendor page: F5. The platform Rodolfo teaches most: certified since 2015, F5 Authorized Instructor since 2020, DevCentral MVP 2022-2024. Newest career chapter block (2015 - present).
-// Content in the "vendors" namespace; rich corporate profile below the
-// career narrative (same pattern as the Extreme page).
+// /about/vendors/f5 - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/f5 and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import { f5Profile } from "@/content/vendors/profiles/f5";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("f5.name")} - ${t("careerMetaSuffix")}`,
+    description: t("f5.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="f5"
-      sections={["s1", "s2"]}
-      icons={["loadbalancer", "gateway", "firewall"]}
-      profile={f5Profile}
-      next={{ slug: "fortinet", key: "fortinet" }}
+      slug="f5"
+      hubKey="f5"
+      sections={2}
     />
   );
 }

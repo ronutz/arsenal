@@ -1,5 +1,16 @@
 // ============================================================================
-// src/app/[locale]/about/vendors/[slug]/page.tsx
+// src/app/[locale]/industry/[slug]/page.tsx
+//
+// MOVED 2026-07-29 (PRIME) from /about/vendors/<slug>.
+//
+// The two page types had been sharing one path and they are not the same
+// thing. `/about/vendors/<slug>` is autobiography - what PRIME did inside a
+// company. This is a COMPANY HISTORY, which belongs beside the industry
+// timeline it is reached from and shares its data with.
+//
+// Second move for these URLs this week (the /partner/ segment was flattened
+// out a few days ago), so `public/_redirects` carries rules for both old
+// shapes. The sitemap regenerates from the built pages and self-corrects.
 //
 // FLATTENED 2026-07-28 (PRIME): was /about/vendors/<slug>. The extra
 // segment described how the site organised its own data - "these came from the
@@ -222,7 +233,7 @@ export default async function PartnerVendorPage({
         <article>
           <section className="vendor-hero">
             <div className="container vendor-container">
-              <Link href="/about/vendors" className="article-back">
+              <Link href="/industry" className="article-back">
                 ← {t("backToVendors")}
               </Link>
               {/* The eyebrow says what the PAGE is (PRIME 2026-07-28). The

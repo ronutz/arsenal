@@ -62,21 +62,21 @@ const RED_EDUCATION_VENDORS: { name: string; href?: string }[] = [
   // the six authorized-through-Red-Education vendors go to their chapter
   // pages, the rest to their partner profiles. ForgeRock points to the Ping
   // Identity chapter, which tells the acquisition story.
-  { name: "F5", href: "/about/vendors/f5" },
-  { name: "Fortinet", href: "/about/vendors/fortinet" },
-  { name: "Palo Alto Networks", href: "/about/vendors/palo-alto" },
-  { name: "Check Point", href: "/about/vendors/check-point" },
-  { name: "Cisco", href: "/about/vendors/cisco" },
-  { name: "Nutanix", href: "/about/vendors/nutanix" },
-  { name: "Arista", href: "/about/vendors/arista" },
-  { name: "Netskope", href: "/about/vendors/netskope" },
-  { name: "Extreme Networks", href: "/about/vendors/extreme" },
-  { name: "CyberArk", href: "/about/vendors/cyberark" },
-  { name: "ForgeRock", href: "/about/vendors/ping-identity" },
-  { name: "Ping Identity", href: "/about/vendors/ping-identity" },
-  { name: "Zscaler", href: "/about/vendors/zscaler" },
-  { name: "AWS", href: "/about/vendors/aws" },
-  { name: "Riverbed", href: "/about/vendors/riverbed" },
+  { name: "F5", href: "/industry/f5" },
+  { name: "Fortinet", href: "/industry/fortinet" },
+  { name: "Palo Alto Networks", href: "/industry/palo-alto" },
+  { name: "Check Point", href: "/industry/check-point" },
+  { name: "Cisco", href: "/industry/cisco" },
+  { name: "Nutanix", href: "/industry/nutanix" },
+  { name: "Arista", href: "/industry/arista" },
+  { name: "Netskope", href: "/industry/netskope" },
+  { name: "Extreme Networks", href: "/industry/extreme" },
+  { name: "CyberArk", href: "/industry/cyberark" },
+  { name: "ForgeRock", href: "/industry/ping-identity" },
+  { name: "Ping Identity", href: "/industry/ping-identity" },
+  { name: "Zscaler", href: "/industry/zscaler" },
+  { name: "AWS", href: "/industry/aws" },
+  { name: "Riverbed", href: "/industry/riverbed" },
 ];
 
 // The public case study on rededucation.com that names Rodolfo (verified

@@ -104,7 +104,10 @@ export default async function IndustryHubPage({
       tagline: v.tagline,
       founded: v.founded,
       ended: v.ended,
-      href: `/about/vendors/${v.slug}`,
+      // Company histories live under /industry (PRIME 2026-07-29); the career
+      // chapters below keep /about/vendors, because those are a different kind
+      // of page about a different subject.
+      href: `/industry/${v.slug}`,
       isRedu: v.group === "redu",
       isCareer: false,
     }));
@@ -114,7 +117,7 @@ export default async function IndustryHubPage({
     name: t(`${v.key}.name`),
     tagline: t(`${v.key}.tagline`),
     founded: v.founded,
-    href: `/about/vendors/${v.slug}`,
+    href: `/industry/${v.slug}`,
     isRedu: REDU_CAREER_PARTNERS.includes(v.slug as (typeof REDU_CAREER_PARTNERS)[number]),
     isCareer: true,
   }));
@@ -161,7 +164,7 @@ export default async function IndustryHubPage({
             <ul className="career-strip">
               {CAREER_VENDORS.map((v) => (
                 <li key={v.slug}>
-                  <Link href={`/about/vendors/${v.slug}`} className="career-chip">
+                  <Link href={`/industry/${v.slug}`} className="career-chip">
                     <span className="career-chip-name">{t(`${v.key}.name`)}</span>
                     <span className="career-chip-years mono">{t(`${v.key}.years`)}</span>
                   </Link>

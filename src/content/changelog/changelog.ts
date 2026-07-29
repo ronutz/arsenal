@@ -52,6 +52,18 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-29T05:11:58-03:00",
+    kind: "content",
+    title: "Career chapters and company histories are now two different pages",
+    body: "Every company page moved to the industry section, which is where a company history belongs, and fifteen new pages went up in their place under the about section. Those fifteen are autobiography and nothing else: what the work actually was inside Cabletron, Riverstone, Cisco, IronPort, Juniper, Extreme, distribution, Pulse Secure, Palo Alto, F5, Fortinet, Netskope, Ping, Zscaler and Check Point. The dates lead the page, because on a career page the years are the subject rather than a detail about somebody else. Certifications earned in each chapter get their own block, since on a page like this they are evidence for the claims above rather than decoration. Each chapter ends with cards out: one to the vendor hub where a hub exists, meaning courses delivered and tools built, and one to that company's own history, meaning who founded it and who eventually bought it. Nothing was invented to fill the new pages. The autobiographical material already existed; it had simply been buried inside company profiles, where a reader looking for the company had to scroll past it and a reader looking for the person had to dig for it.",
+  },
+  {
+    date: "2026-07-29T04:43:15-03:00",
+    kind: "infra",
+    title: "Company histories move to the industry side, where they belong",
+    body: "Two different kinds of page had been sharing one path. A page about what somebody did inside a company is autobiography. A page about what the company did is history. Both were living under the vendors section of the about pages, which made the vendors index read as a company directory rather than a career record. The roughly ninety company histories now live under the industry section, reached from the timeline cards that share their data, and their back link returns to that timeline rather than to a career index they were never part of. The fifteen career chapters stay exactly where they were. Redirects cover both of the older shapes these URLs have had, including the partner segment that was flattened out days earlier, and they are written in two styles for a reason: the partner path can use one wildcard per language because no career page ever lived there, while the flat path needs every profile listed individually, because a wildcard would catch the fifteen career pages that must not move. That distinction is the whole reason the file is long.",
+  },
+  {
     date: "2026-07-29T03:17:49-03:00",
     kind: "content",
     title: "Ninety company pages existed and the vendors index linked to fifteen of them",

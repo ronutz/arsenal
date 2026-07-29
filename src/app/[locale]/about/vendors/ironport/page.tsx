@@ -1,23 +1,45 @@
 // ============================================================================
-// Vendor page: IronPort Systems. A brief, independent pre-acquisition
-// engagement (late 2004), promoted from a note on the Cisco page to its own
-// entry. IronPort was acquired by Cisco in 2007 — after this work — so it is
-// recorded here as its own company. Content in the "vendors" namespace.
+// /about/vendors/ironport - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/ironport and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import { ironportProfile } from "@/content/vendors/profiles/ironport";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("ironport.name")} - ${t("careerMetaSuffix")}`,
+    description: t("ironport.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="ironport"
-      sections={["s1", "s2"]}
-      icons={["gateway", "firewall"]}
-      profile={ironportProfile}
-      next={{ slug: "netscreen-juniper", key: "juniper" }}
+      slug="ironport"
+      sections={2}
     />
   );
 }

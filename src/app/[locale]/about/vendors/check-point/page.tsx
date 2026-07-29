@@ -1,29 +1,46 @@
 // ============================================================================
-// Vendor page: Check Point. The chapter that runs backwards - most vendors
-// here arrived to challenge an incumbent, and this one IS the incumbent that
-// created the category in 1993.
+// /about/vendors/check-point - CAREER CHAPTER
 //
-// NO authorized-instructor claim (PRIME 2026-07-26): Check Point is covered as
-// STUDY MATERIAL, like Ping and Zscaler. The CCSA/CCSE guides are built from
-// Check Point's own published blueprints and say nothing about who may deliver
-// their training. Content lives in the "vendors" namespace; the corporate
-// profile below the career narrative is the same partner profile the industry
-// timeline uses, so the facts stay in one place.
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/check-point and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import { checkPointProfile } from "@/content/vendors/profiles/check-point";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("checkpoint.name")} - ${t("careerMetaSuffix")}`,
+    description: t("checkpoint.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="checkpoint"
-      sections={["s1", "s2"]}
-      icons={["firewall", "gateway", "router"]}
-      profile={checkPointProfile}
-      next={null}
+      slug="check-point"
+      hubKey="checkpoint"
+      sections={2}
     />
   );
 }

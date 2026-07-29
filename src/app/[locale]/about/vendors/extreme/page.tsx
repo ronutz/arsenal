@@ -1,24 +1,46 @@
 // ============================================================================
-// Vendor page: Extreme Networks. The 2013–2014 field deployment of Extreme
-// across RNP's RedeComep metropolitan research networks (optical rings running
-// EAPS) plus EXOS training and knowledge transfer. Uniquely, Extreme is also a
-// platform taught today, and it closes the Enterasys -> Extreme (2013) circle
-// seen on the Cabletron/Enterasys page. Content in the "vendors" namespace.
+// /about/vendors/extreme - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/extreme and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import { extremeProfile } from "@/content/vendors/profiles/extreme";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("extreme.name")} - ${t("careerMetaSuffix")}`,
+    description: t("extreme.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="extreme"
-      sections={["s1", "s2"]}
-      icons={["switch", "router", "metro"]}
-      profile={extremeProfile}
-      next={{ slug: "fireeye-mcafee-ixia", key: "distribution" }}
+      slug="extreme"
+      hubKey="extreme"
+      sections={2}
     />
   );
 }

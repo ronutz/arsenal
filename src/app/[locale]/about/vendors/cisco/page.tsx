@@ -1,22 +1,45 @@
 // ============================================================================
-// Vendor page: Cisco Systems. Original technology icons; includes the IronPort
-// special note (accurate, clearly-separated pre-acquisition engagement).
-// Content in the "vendors" namespace.
+// /about/vendors/cisco - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/cisco and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import { ciscoProfile } from "@/content/vendors/profiles/cisco";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("cisco.name")} - ${t("careerMetaSuffix")}`,
+    description: t("cisco.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="cisco"
-      sections={["s1", "s2"]}
-      icons={["switch", "router", "firewall", "loadbalancer"]}
-      profile={ciscoProfile}
-      next={{ slug: "ironport", key: "ironport" }}
+      slug="cisco"
+      sections={2}
     />
   );
 }

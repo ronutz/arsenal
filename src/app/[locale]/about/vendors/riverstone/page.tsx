@@ -1,31 +1,45 @@
 // ============================================================================
-// Vendor page: Riverstone Networks. Includes the genealogy diagram (Yago,
-// acquired by Cabletron ~1998, spun off as Riverstone in 2001, acquired by
-// Alcatel-Lucent in 2006) and original technology icons. Content in "vendors".
+// /about/vendors/riverstone - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/riverstone and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import type { LineageStage } from "@/components/LineageDiagram";
-import { riverstoneProfile } from "@/content/vendors/profiles/riverstone";
 
-const lineageStages: LineageStage[] = [
-  { nodes: [{ label: "Yago", tone: "muted" }] },
-  { edgeLabel: "~1998", nodes: [{ label: "Cabletron Systems", tone: "default" }] },
-  { edgeLabel: "2001 spin-off", nodes: [{ label: "Riverstone", note: "Worked here 2000 – 2002", tone: "default" }] },
-  { edgeLabel: "2006", nodes: [{ label: "Alcatel-Lucent", tone: "muted" }] },
-];
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("riverstone.name")} - ${t("careerMetaSuffix")}`,
+    description: t("riverstone.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="riverstone"
-      sections={["s1", "s2"]}
-      icons={["metro", "router", "switch"]}
-      lineage={{ stages: lineageStages, titleKey: "riverstone.lineageTitle", descKey: "riverstone.lineageDesc" }}
-      profile={riverstoneProfile}
-      next={{ slug: "cisco", key: "cisco" }}
+      slug="riverstone"
+      sections={2}
     />
   );
 }

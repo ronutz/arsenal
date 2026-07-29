@@ -6908,7 +6908,18 @@
       "tagline": "The reverse proxy that became the default answer - a web server, load balancer and cache whose configuration model is one file tree and a matching order worth understanding before you fight it."
     },
     "allCompaniesTitle": "Every company with a page here",
-    "allCompaniesLede": "The companies whose technology, people or acquisitions run through the platforms this site teaches, in the order their stories start. Some are still trading; some ended inside somebody else, and carry the year."
+    "allCompaniesLede": "The companies whose technology, people or acquisitions run through the platforms this site teaches, in the order their stories start. Some are still trading; some ended inside somebody else, and carry the year.",
+    "careerMetaSuffix": "a career chapter",
+    "certsTitle": "What it certified",
+    "hubCardEyebrow": "Training and tools",
+    "hubCardTitle": "The vendor hub",
+    "hubCardDesc": "Courses delivered, tools built, and the articles behind them.",
+    "hubCardCta": "Open the hub",
+    "historyCardEyebrow": "The company",
+    "historyCardTitle": "{name}: the company history",
+    "historyCardDesc": "Who founded it, what it acquired, who acquired it, and where it sits on the industry timeline.",
+    "historyCardCta": "Read the history",
+    "historyFoundedNote": "The company was founded in {year}. This page covers only the years worked with it."
   },
   "training": {
     "eyebrow": "Training I deliver",

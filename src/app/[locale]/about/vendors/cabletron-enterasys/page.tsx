@@ -1,46 +1,45 @@
 // ============================================================================
-// Vendor page: Cabletron and Enterasys. Includes the corporate-genealogy
-// diagram (Cabletron's 2000 four-way split; Enterasys to Extreme in 2013) and
-// original technology icons. Content in the "vendors" namespace.
+// /about/vendors/cabletron-enterasys - CAREER CHAPTER
+//
+// Rodolfo's passage through this company. The company's own history lives at
+// /industry/cabletron-enterasys and is reached from a card below; it is deliberately not
+// repeated here.
 // ============================================================================
-import { setRequestLocale } from "next-intl/server";
-import VendorPage from "@/components/VendorPage";
-import type { LineageStage } from "@/components/LineageDiagram";
-import { cabletronEnterasysProfile } from "@/content/vendors/profiles/cabletron-enterasys";
 
-// The verified corporate lineage, as diagram stages.
-const lineageStages: LineageStage[] = [
-  {
-    nodes: [
-      { label: "Cabletron Systems", note: "Worked here 1996 – 2000", tone: "default" },
-    ],
-  },
-  {
-    edgeLabel: "2000 split",
-    nodes: [
-      { label: "Enterasys", note: "Worked here 2005 – 2007", tone: "default" },
-      { label: "Riverstone", tone: "muted" },
-      { label: "Aprisma", tone: "muted" },
-      { label: "GNTS", tone: "muted" },
-    ],
-  },
-  {
-    edgeLabel: "2013",
-    nodes: [{ label: "Extreme Networks", note: "Taught today", tone: "accent" }],
-  },
-];
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
+import CareerChapterPage from "@/components/CareerChapterPage";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "vendors" });
+  return {
+    title: `${t("cabletron.name")} - ${t("careerMetaSuffix")}`,
+    description: t("cabletron.tagline"),
+  };
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
   return (
-    <VendorPage
+    <CareerChapterPage
       vendorKey="cabletron"
-      sections={["s1", "multiproto", "ssr", "field", "customers", "s2", "s3"]}
-      icons={["switch", "router", "wlan", "firewall"]}
-      lineage={{ stages: lineageStages, titleKey: "cabletron.lineageTitle", descKey: "cabletron.lineageDesc" }}
-      profile={cabletronEnterasysProfile}
-      next={{ slug: "riverstone", key: "riverstone" }}
+      slug="cabletron-enterasys"
+      sections={3}
     />
   );
 }
