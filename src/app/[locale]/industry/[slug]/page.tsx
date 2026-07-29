@@ -346,7 +346,28 @@ export default async function PartnerVendorPage({
                 <div className="partner-sources">
                   <span className="partner-sources-label mono">{tp("sourcesLabel")}</span>
                   <ul className="partner-sources-list">
-                    {vendor.acquisitions && vendor.acquisitions.length > 0 && (
+                    {vendor.careerChapter && (
+                /* The link back to the person. Kept deliberately small and
+                   placed after the history rather than before it: this page is
+                   about the company, and the fact that somebody worked here is
+                   a footnote to that, not the headline. */
+                <section className="vendor-section">
+                  <div className="about-cred-cards">
+                    <Link
+                      href={`/about/vendors/${vendor.careerChapter.slug}`}
+                      className="about-cred-card"
+                    >
+                      <span className="about-cred-eyebrow">{tp("careerCardEyebrow")}</span>
+                      <span className="about-cred-title">
+                        {tp("careerCardTitle", { years: vendor.careerChapter.years })}
+                      </span>
+                      <span className="about-cred-desc">{tp("careerCardDesc")}</span>
+                      <span className="about-cred-cta">{tp("careerCardCta")} &rarr;</span>
+                    </Link>
+                  </div>
+                </section>
+              )}
+              {vendor.acquisitions && vendor.acquisitions.length > 0 && (
                 /* Same markup as the vendor-lineage pages, deliberately: the
                    nested-acquisition rule applies to both page types and a
                    reader should meet one idea, not two. */

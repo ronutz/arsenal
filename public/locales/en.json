@@ -14334,7 +14334,11 @@
     "lineageEyebrow": "Vendor lineage",
     "workedWithYears": "Worked with directly, {years}",
     "instructorPill": "Authorized instructor",
-    "acquisitionsHeading": "Acquisitions"
+    "acquisitionsHeading": "Acquisitions",
+    "careerCardEyebrow": "Worked with directly",
+    "careerCardTitle": "Inside this company, {years}",
+    "careerCardDesc": "What the work actually was: the accounts, the escalations, the technologies, and what it certified.",
+    "careerCardCta": "Read the career chapter"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",

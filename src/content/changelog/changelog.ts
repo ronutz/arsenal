@@ -52,6 +52,18 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-29T07:28:38-03:00",
+    kind: "infra",
+    title: "The redirects file had three faults and two of them would have failed silently",
+    body: "A warning about platform limits turned into a much better catch than expected. The first fault was the obvious one: the file had grown past the two thousand static redirect limit, and rules beyond a limit are dropped with no build error and no warning anywhere, so the failure would have been invisible until somebody reported a dead link. The second was ordering, because every static rule has to appear before every dynamic one and ours did not, which drops rules the same silent way. The third was the serious one, and it was self-inflicted by the restructure itself. Company histories for vendors worked inside directly are rendered by turning them into company entries, and the redirect generator reads that same list, so it had cheerfully written rules sending six career pages to their own histories. The pages built last week would have redirected away from themselves. All three are fixed, and a new build check now fails on any of them: over either limit, dynamic rules before static ones, or any career page appearing as a redirect source. Also worth recording is what does not work, since it looks like it should: a single wildcard cannot replace the per-page rules, because redirects are always followed whether or not a real page matches, so a wildcard over that path would capture the career pages too.",
+  },
+  {
+    date: "2026-07-29T06:30:12-03:00",
+    kind: "content",
+    title: "Six company histories rewritten as histories, with the memoir moved out",
+    body: "The pages for companies worked inside directly had been half history and half autobiography, which served neither. The autobiography now has its own page and these are being rewritten as company histories, six so far. Riverstone turns out to be a story about timing rather than engineering: the metro Ethernet thesis was right, the wire-speed switching was good enough that Cabletron built its next generation on it, and the company was spun out precisely as telecom spending collapsed. IronPort is a story about asking a different question, whether who sent a message predicts spam better than what it contains, which is the argument cloud security has repeated ever since. Cabletron chose to split itself into four companies rather than be broken up by anyone else, which is why three other entries on this timeline exist, and the enterprise line that began in a New Hampshire garage in 1983 now ships as Extreme. NetScreen is the most connected page here: one 1996 startup seeded Fortinet, seeded Palo Alto Networks through a founder who had been one of Check Point's first employees, and seeded part of Extreme, so four of the eight platforms this site teaches trace something to one building. Cisco did not invent the router but shipped the first that spoke everybody's protocol at once, and its certification ladder is the template every vendor here uses. Each history now ends with a small card back to the career chapter, placed after the company's own story rather than before it.",
+  },
+  {
     date: "2026-07-29T05:11:58-03:00",
     kind: "content",
     title: "Career chapters and company histories are now two different pages",

@@ -77,6 +77,17 @@ export interface PartnerVendor {
    * Same shape as `Acquisition` in the lineage files deliberately, so the two
    * page types stay consistent and a reader meets one idea rather than two.
    */
+  /**
+   * Slug of the career chapter at /about/vendors/<slug>, when PRIME worked
+   * with this company directly.
+   *
+   * Added 2026-07-29 (PRIME step 4). The company history and the career
+   * chapter are now separate pages; this is the link BACK from the company to
+   * the person, so a reader of the history can find out that somebody here
+   * actually ran the thing, without the history itself turning into memoir.
+   */
+  careerChapter?: { slug: string; years: string };
+
   acquisitions?: {
     year: number;
     name: string;
@@ -249,6 +260,187 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "SixDegrees.com - the first recognised social media platform, founded by Andrew Weinreich", url: "https://medium.com/@emijones/sixdegrees-com-the-start-of-social-media-86e287d46e9e" },
       { label: "Evolution of social media - founding May 1996, launch 1997, 3.5M users, sale to YouthStream", url: "https://www.studocu.com/ph/document/technological-university-of-the-philippines/bachelor-of-science-in-civil-engineering/evolution-of-social-media/5477563" },
+    ],
+  },
+  {
+    // CISCO - company history (PRIME step 4, 2026-07-29).
+    slug: "cisco",
+    group: "other",
+    name: "Cisco Systems",
+    founded: 1984,
+    careerChapter: { slug: "cisco", years: "2003 - 2008" },
+    tagline: "Did not invent the router, but was the first to sell one that spoke everybody's protocol at once.",
+    intro:
+      "Leonard Bosack and Sandy Lerner founded Cisco in December 1984, having worked on connecting incompatible networks at Stanford. The name is the tail of San Francisco and the logo is the Golden Gate Bridge, which tells you the whole company began as a local problem.",
+    body: [
+      "The problem was that the campus ran several networks that could not talk to each other, each with its own protocol. The multiprotocol router - one box that spoke TCP/IP, AppleTalk, IPX, DECnet and the rest simultaneously - was the answer, and it arrived exactly as organisations everywhere discovered they had the same mess.",
+      "That timing is most of the explanation for what followed. Cisco did not have to persuade anyone that internetworking mattered; it had to be the company with a shipping product when they worked it out for themselves. IOS became the language enterprise networking was described in, to the point that competitors shipped IOS-like command lines because that was what operators already knew.",
+      "The acquisition machine was the other half. Cisco bought more than two hundred companies, and the strategy was explicit: buy the category rather than build it, integrate the technology into the portfolio, and use the channel to sell it. Crescendo in 1993 became Catalyst. Grand Junction became Fast Ethernet. IronPort, which appears on this timeline in its own right, became the email security line in 2007. Splunk, also here, became the observability and security data business in 2024 at around $28B - the largest purchase in company history.",
+      "The certification programme deserves its own mention, because it changed how the industry hires. CCNA, CCNP and CCIE created a vendor-defined competency ladder that employers treated as a proxy for skill, and every vendor on this site with a certification track is working from a template Cisco established.",
+      "It has been challenged in every segment it occupies and has lost ground in several, but the shape of enterprise networking - the vocabulary, the certification model, the assumption that one vendor can supply the whole stack - is substantially Cisco's design.",
+    ],
+    acquisitions: [
+      { year: 1993, name: "Crescendo Communications", price: "$95M", what: "Switching technology, and Cisco's first major acquisition.", became: "The Catalyst line, which became the dominant enterprise switch family for two decades." },
+      { year: 2007, name: "IronPort Systems", price: "~$830M", what: "Email security built on sender reputation rather than content inspection.", became: "Cisco Email Security Appliance. IronPort has its own entry on this timeline.",
+        subAcquisitions: [ { year: 2000, name: "IronPort's SenderBase approach (origin, not a purchase)", what: "Founded on the argument that WHO sends a message predicts spam better than what it contains - an argument cloud security has repeated ever since." } ] },
+      { year: 2024, name: "Splunk", price: "~$28B", what: "Machine data search, observability and security analytics. Announced September 2023, completed 18 March 2024.", became: "Cisco's security and observability business, and the largest acquisition it has ever made. Splunk has its own entry here." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Cisco",
+    externalLabel: "Cisco Systems",
+    sources: [
+      { label: "Wikipedia: Cisco - founded December 1984 by Leonard Bosack and Sandy Lerner, the multiprotocol router, the acquisition history", url: "https://en.wikipedia.org/wiki/Cisco" },
+      { label: "Wikipedia: Splunk - the ~$28B Cisco acquisition completed 18 March 2024", url: "https://en.wikipedia.org/wiki/Splunk" },
+    ],
+  },
+  {
+    // PALO ALTO NETWORKS - company history (PRIME step 4, 2026-07-29).
+    slug: "palo-alto",
+    group: "other",
+    name: "Palo Alto Networks",
+    founded: 2005,
+    careerChapter: { slug: "palo-alto", years: "2013 - 2015" },
+    tagline: "Founded by a Check Point alumnus on the argument that port numbers had stopped meaning anything.",
+    intro:
+      "Nir Zuk founded Palo Alto Networks in 2005. He had been one of Check Point's first employees, then founded OneSecure, which NetScreen acquired in 2002 and Juniper acquired along with NetScreen in 2004. He left the year after and built the company that would overtake his first employer.",
+    body: [
+      "The founding observation was that traditional firewalls made decisions on ports and addresses, and applications had stopped respecting either. Everything tunnelled over 80 and 443, so a rule permitting web traffic permitted essentially anything, and the firewall's policy no longer described what was actually allowed.",
+      "The answer was App-ID: identify the application from the traffic itself rather than the port it arrived on, and write policy in those terms. That reframing is what the industry ended up calling the next-generation firewall, and every incumbent eventually shipped its own version - which is the clearest evidence the argument was correct.",
+      "It went public in 2012 and passed Check Point in firewall revenue around 2014, roughly nine years after being founded by someone who had helped build Check Point's first products.",
+      "Since then it has expanded by acquisition into endpoint, cloud security and security operations, and has been notably willing to buy categories rather than wait to build them - a pattern this timeline shows repeating in every generation of security vendor.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Palo_Alto_Networks",
+    externalLabel: "Palo Alto Networks",
+    sources: [
+      { label: "Wikipedia: Palo Alto Networks - founded 2005 by Nir Zuk, App-ID, the 2012 IPO", url: "https://en.wikipedia.org/wiki/Palo_Alto_Networks" },
+      { label: "Wikipedia: Nir Zuk - Check Point, OneSecure, NetScreen and Juniper before founding Palo Alto Networks", url: "https://en.wikipedia.org/wiki/Nir_Zuk" },
+    ],
+  },
+  {
+    // NETSCREEN / JUNIPER - company history (PRIME step 4, 2026-07-29).
+    // The NetScreen founder web was verified earlier this week and is the
+    // single most connected fact on this timeline: Ken Xie -> Fortinet,
+    // Nir Zuk -> Palo Alto, Changming Liu -> Aerohive -> Extreme.
+    slug: "netscreen-juniper",
+    group: "other",
+    name: "NetScreen and Juniper Networks",
+    founded: 1996,
+    careerChapter: { slug: "netscreen-juniper", years: "2009 - 2014" },
+    tagline: "One firewall company whose alumni went on to found or shape most of the others.",
+    intro:
+      "NetScreen was founded in 1996 by Yan Ke, Ken Xie and Feng Deng, on the argument that firewalling should be done in silicon rather than on a general-purpose processor. Juniper Networks, founded in 1996 by Pradeep Sindhu out of Xerox PARC, bought it in 2004 for roughly $4B in stock - and the more interesting story is who left.",
+    body: [
+      "The ASIC argument was the founding one. Software firewalls of the mid-1990s ran on commodity CPUs and slowed down as rules accumulated, so NetScreen built purpose-designed silicon and sold predictable throughput. That is the same argument every hardware security vendor has made since, and NetScreen made it first at scale.",
+      "Ken Xie left in 2000 and founded Fortinet with his brother Michael. Fortinet appears on this site as a vendor whose training is delivered by its author.",
+      "NetScreen bought OneSecure in 2002, which had been founded by Nir Zuk - one of Check Point's first employees. Zuk stayed through the Juniper acquisition, left in 2005, and founded Palo Alto Networks, which overtook Check Point in firewall revenue by 2014.",
+      "Changming Liu, also from NetScreen, co-founded Aerohive, which Extreme Networks acquired in 2019.",
+      "So a single 1996 startup seeded Fortinet, Palo Alto Networks and part of Extreme, and absorbed a company founded by an early Check Point employee on the way. Four of the eight vendors this site teaches trace some part of themselves to that one building.",
+      "Juniper itself was the other half of this chapter. Founded to build carrier routers that could survive internet-scale traffic, it made JUNOS - one operating system across the line, with a configuration model that committed atomically or not at all - and spent two decades as the credible alternative to Cisco in service provider networks. Its SSL VPN business was later carved out and sold, becoming Pulse Secure, which is a separate chapter here and ended inside Ivanti.",
+    ],
+    acquisitions: [
+      { year: 2002, name: "OneSecure", price: "$40-45M in stock", what: "Intrusion prevention.", founder: "Nir Zuk and Rakesh Loonkar. Zuk was one of Check Point's first employees.", became: "Zuk left in 2005 and founded Palo Alto Networks." },
+      { year: 2004, name: "NetScreen acquired BY Juniper", price: "~$4B in stock", what: "The firewall and VPN business, in one of the largest security acquisitions of its era.", became: "Juniper's security line; the SSL VPN part was later sold and became Pulse Secure.",
+        subAcquisitions: [ { year: 2002, name: "OneSecure (already inside NetScreen)", what: "So Juniper acquired Nir Zuk's company by acquiring the company that had acquired it - and lost him a year later to the firm that would become its competitor." } ] },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/NetScreen_Technologies",
+    externalLabel: "NetScreen Technologies",
+    sources: [
+      { label: "Wikipedia: NetScreen Technologies - founders Yan Ke, Ken Xie and Feng Deng; the OneSecure purchase; the $4B Juniper acquisition", url: "https://en.wikipedia.org/wiki/NetScreen_Technologies" },
+      { label: "Wikipedia: Nir Zuk - Check Point, OneSecure, NetScreen, and founding Palo Alto Networks in 2005", url: "https://en.wikipedia.org/wiki/Nir_Zuk" },
+      { label: "Wikipedia: Juniper Networks - founded 1996 by Pradeep Sindhu, JUNOS, and the security line", url: "https://en.wikipedia.org/wiki/Juniper_Networks" },
+    ],
+  },
+  {
+    // CABLETRON / ENTERASYS - company history (PRIME step 4, 2026-07-29).
+    // Founders verified earlier this week: Robert Levine and Craig Benson,
+    // March 1983, in Levine's garage. The four-way split is the reason three
+    // other entries on this timeline exist at all.
+    slug: "cabletron-enterasys",
+    group: "other",
+    name: "Cabletron Systems and Enterasys",
+    founded: 1983,
+    ended: {
+      year: 2013,
+      note: "Enterasys, the enterprise remnant of Cabletron, was acquired by Extreme Networks in 2013 for $180M.",
+    },
+    careerChapter: { slug: "cabletron-enterasys", years: "1996 - 2007" },
+    tagline: "Sold cable assemblies out of a garage, grew into Cisco's most serious rival, then dismantled itself on purpose.",
+    intro:
+      "Robert Levine and Craig Benson founded Cabletron Systems in Rochester, New Hampshire in March 1983, working out of Levine's garage and selling cable assemblies. It became one of the largest networking companies in the world, and for a period in the early 1990s it was the credible alternative to Cisco in the enterprise.",
+    body: [
+      "The product that made it was the MMAC hub, and later the SmartSwitch line, sold with an operating philosophy that was unusual for the era: Cabletron ran its own field service organisation rather than pushing everything through resellers, which is why it had a reputation for showing up.",
+      "It bought aggressively through the 1990s, and the acquisitions matter more than the revenue figures, because they are what the company eventually broke apart into.",
+      "In 2000 Cabletron announced it would split itself into four independent companies rather than be broken up by anyone else. Enterasys took the enterprise switching business, Riverstone took the carrier and metro routing business built on Yago, Aprisma took network management with the Spectrum platform, and GlobalNetwork Technology Services took professional services. It is one of the few examples of a large networking company choosing dissolution as a strategy.",
+      "Enterasys carried the enterprise name for a decade, weathering an accounting scandal that led to executive convictions, before being taken private and then acquired by Extreme Networks in 2013 for $180M. So the enterprise line that began in a New Hampshire garage in 1983 now ships as Extreme.",
+      "The through-line worth noticing is that four separate entries on this timeline - Enterasys, Riverstone, Aprisma and eventually Extreme - all trace to the same 1983 garage, and two of them appear here as chapters of a career as well as companies.",
+    ],
+    acquisitions: [
+      { year: 1998, name: "Yago Systems", price: "~$180M", what: "Wire-speed Layer 3 switching, which became the SmartSwitch Router.", became: "Spun out as Riverstone Networks in 2001, and an entry of its own on this timeline." },
+      { year: 1998, name: "Digital Equipment's network products business", price: "~$430M", what: "DEC's networking division, bought from Digital shortly before Compaq acquired the rest of it.",
+        subAcquisitions: [ { year: 1957, name: "Digital Equipment Corporation (origin, not a purchase)", what: "DEC was founded in 1957 and defined the minicomputer era; its networking arm ended up at Cabletron and the remainder at Compaq in 1998, which HP then acquired in 2002." } ] },
+      { year: 1996, name: "Network Express and ZeitNet", what: "ISDN remote access and ATM switching, bought in the same year as the market argued about which technology would carry the enterprise backbone." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Cabletron_Systems",
+    externalLabel: "Cabletron Systems",
+    sources: [
+      { label: "Wikipedia: Cabletron Systems - founded March 1983 by Robert Levine and Craig Benson, the 2000 four-way split into Enterasys, Riverstone, Aprisma and GNTS", url: "https://en.wikipedia.org/wiki/Cabletron_Systems" },
+      { label: "Wikipedia: Enterasys Networks - the enterprise successor and the 2013 Extreme acquisition at $180M", url: "https://en.wikipedia.org/wiki/Enterasys_Networks" },
+    ],
+  },
+  {
+    // RIVERSTONE NETWORKS - company history (PRIME step 4, 2026-07-29).
+    // The autobiography that used to live on this page now sits at
+    // /about/vendors/riverstone; what remains is the company itself. The
+    // lineage facts were already verified in the Cabletron research earlier
+    // this week.
+    slug: "riverstone",
+    group: "other",
+    name: "Riverstone Networks",
+    founded: 1996,
+    ended: {
+      year: 2006,
+      note: "Assets acquired by Lucent Technologies in early 2006 following a Chapter 11 filing, and absorbed into Alcatel-Lucent when the two merged later that year.",
+    },
+    careerChapter: { slug: "riverstone", years: "2000 - 2002" },
+    tagline: "Spun out of Cabletron to chase the metro Ethernet boom, and ran out of road when the boom stopped.",
+    intro:
+      "Riverstone began as Yago Systems, a startup building wire-speed Layer 3 switching, which Cabletron acquired in 1998 and used as the basis of its SmartSwitch Router line. When Cabletron broke itself into four companies at the turn of the millennium, the routing business became Riverstone Networks and was spun out as an independent public company in 2001.",
+    body: [
+      "Its market was metropolitan Ethernet: carriers replacing SONET and ATM gear with Ethernet in city-scale networks, delivering services to business customers over fibre rings. That was a genuinely new category around 2000, and Riverstone was among the companies that defined what the equipment for it should look like - Gigabit Ethernet, MPLS, and per-subscriber service delivery in boxes designed for a carrier's central office rather than an enterprise wiring closet.",
+      "The timing was the problem. The company was spun out precisely as telecom capital spending collapsed. Carriers that had been building metro networks stopped, and a vendor whose entire market was carrier expenditure had nowhere to go.",
+      "An accounting investigation into how revenue had been recognised made it worse, delaying filings and forcing restatements. Riverstone filed for Chapter 11 in February 2006 and its assets were bought by Lucent Technologies, which merged with Alcatel later the same year - so the technology ended up inside Alcatel-Lucent, and eventually inside Nokia.",
+      "The engineering was not what failed. Yago's wire-speed forwarding was good enough that Cabletron built its next generation on it, and the metro Ethernet thesis turned out to be correct - it simply arrived several years before the market was ready to pay for it, and Riverstone did not have the balance sheet to wait.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Riverstone_Networks",
+    externalLabel: "Riverstone Networks",
+    sources: [
+      { label: "Wikipedia: Riverstone Networks - Yago origins, Cabletron acquisition, 2001 spin-off, Chapter 11 and the Lucent asset purchase", url: "https://en.wikipedia.org/wiki/Riverstone_Networks" },
+      { label: "Wikipedia: Cabletron Systems - the four-way split that produced Riverstone, Enterasys, Aprisma and GNTS", url: "https://en.wikipedia.org/wiki/Cabletron_Systems" },
+    ],
+  },
+  {
+    // IRONPORT - company history (PRIME step 4, 2026-07-29).
+    slug: "ironport",
+    group: "other",
+    name: "IronPort Systems",
+    founded: 2000,
+    ended: {
+      year: 2007,
+      note: "Acquired by Cisco for approximately $830M, announced January 2007, and folded into Cisco's security business.",
+    },
+    careerChapter: { slug: "ironport", years: "2004 - 2005" },
+    tagline: "Worked out that the useful question about an email was not what it contained but who sent it.",
+    intro:
+      "IronPort was founded in 2000 by Scott Weiss and Scott Banister to build email security appliances at a moment when spam was moving from an annoyance to an operational cost. Its answer was not a better content filter but a different question entirely.",
+    body: [
+      "Content filtering asks whether a message looks like spam. That is an arms race, because the sender can rewrite the message. IronPort's SenderBase asked instead who was sending it, and how that sender had behaved everywhere else - volume, complaint rates, how long the address had been sending mail at all. A sender with no history and sudden volume is suspicious regardless of what the message says.",
+      "That reputation data was aggregated across every customer, which made the network itself the product: the more organisations used it, the better the signal. It is the same structural argument that cloud-delivered security has made ever since, and IronPort was making it about email in 2002.",
+      "The appliances ran a purpose-built mail transfer agent designed to hold enormous numbers of simultaneous connections, because a mail gateway under a spam flood fails on connection handling long before it fails on filtering.",
+      "Cisco announced the acquisition in January 2007 for around $830M. The technology became Cisco's Email Security Appliance line, and the reputation approach outlived the brand by decades.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/IronPort",
+    externalLabel: "IronPort Systems",
+    sources: [
+      { label: "Wikipedia: IronPort - founded 2000, SenderBase reputation, the 2007 Cisco acquisition at ~$830M", url: "https://en.wikipedia.org/wiki/IronPort" },
     ],
   },
   {

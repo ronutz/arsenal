@@ -14334,7 +14334,11 @@
     "lineageEyebrow": "Linhagem do fabricante",
     "workedWithYears": "Trabalhou diretamente, {years}",
     "instructorPill": "Instrutor autorizado",
-    "acquisitionsHeading": "Aquisições"
+    "acquisitionsHeading": "Aquisições",
+    "careerCardEyebrow": "Trabalhou diretamente",
+    "careerCardTitle": "Dentro desta empresa, {years}",
+    "careerCardDesc": "O que o trabalho foi de fato: as contas, os escalonamentos, as tecnologias e o que aquilo certificou.",
+    "careerCardCta": "Ler o capítulo de carreira"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",
