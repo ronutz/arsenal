@@ -25,6 +25,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
+import VendorTags from "@/components/VendorTags";
 import SiteFooter from "@/components/SiteFooter";
 import { getPartnerVendor, partnerVendorSlugs } from "@/content/vendors/partners";
 import { routing } from "@/i18n/routing";
@@ -224,9 +225,12 @@ export default async function PartnerVendorPage({
               <Link href="/about/vendors" className="article-back">
                 ← {t("backToVendors")}
               </Link>
-              <p className="vendor-years mono">
-                {isRedu ? tp("reduEyebrow") : vendor.group === "contemporary" ? tp("contemporaryEyebrow") : tp("otherEyebrow")}
-              </p>
+              {/* The eyebrow says what the PAGE is (PRIME 2026-07-28). The
+                  relationship - training partner, worked with, authorized to
+                  instruct - moves to the tag row, where more than one can be
+                  true at once. */}
+              <p className="vendor-years mono">{tp("lineageEyebrow")}</p>
+              <VendorTags reduPartner={isRedu} reduLabel={tp("reduPill")} />
               <h1 className="vendor-name">{vendor.name}</h1>
               <p className="vendor-tagline">{vendor.tagline}</p>
             </div>
@@ -331,7 +335,57 @@ export default async function PartnerVendorPage({
                 <div className="partner-sources">
                   <span className="partner-sources-label mono">{tp("sourcesLabel")}</span>
                   <ul className="partner-sources-list">
-                    {vendor.sources.map((s) => (
+                    {vendor.acquisitions && vendor.acquisitions.length > 0 && (
+                /* Same markup as the vendor-lineage pages, deliberately: the
+                   nested-acquisition rule applies to both page types and a
+                   reader should meet one idea, not two. */
+                <section className="vendor-section">
+                  <h2 className="vendor-section-title">{tp("acquisitionsHeading")}</h2>
+                  <ol className="lineage-acq-list">
+                    {[...vendor.acquisitions]
+                      .sort((a, b) => a.year - b.year)
+                      .map((a) => (
+                        <li className="lineage-deal" key={`${a.year}-${a.name}`}>
+                          <p className="lineage-deal-head">
+                            <span className="lineage-deal-year mono">{a.year}</span>{" "}
+                            <span className="lineage-deal-name">{a.name}</span>
+                            {a.price ? (
+                              <span className="lineage-deal-price mono"> {a.price}</span>
+                            ) : null}
+                          </p>
+                          <p className="lineage-deal-what">{a.what}</p>
+                          {a.founder && (
+                            <p className="lineage-deal-founder">{a.founder}</p>
+                          )}
+                          {a.subAcquisitions && a.subAcquisitions.length > 0 && (
+                            <ul className="lineage-sub-list">
+                              {a.subAcquisitions.map((sub) => (
+                                <li className="lineage-sub" key={`${sub.year}-${sub.name}`}>
+                                  <span className="lineage-sub-year mono">{sub.year}</span>{" "}
+                                  <span className="lineage-sub-name">{sub.name}</span>
+                                  {sub.price ? (
+                                    <span className="lineage-sub-price mono"> {sub.price}</span>
+                                  ) : null}
+                                  <span className="lineage-sub-what"> &mdash; {sub.what}</span>
+                                  {sub.founder && (
+                                    <span className="lineage-sub-founder"> Founded by {sub.founder}.</span>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          {a.became && (
+                            <p className="lineage-deal-became">{a.became}</p>
+                          )}
+                          {a.sourceNote && (
+                            <p className="lineage-deal-note">{a.sourceNote}</p>
+                          )}
+                        </li>
+                      ))}
+                  </ol>
+                </section>
+              )}
+              {vendor.sources.map((s) => (
                       <li key={s.url}>
                         <a
                           href={attributeRedEducationUrl(s.url, { vendor: vendor.slug, pageType: "vendor-partner", pageSlug: vendor.slug, locale, cta: "source-link" })}

@@ -52,7 +52,7 @@
     },
     "credibility": {
       "title": "Feito por quem coloca a mão na massa desde 1996.",
-      "body": "Trinta anos em redes e segurança corporativa, entregues por um instrutor que está na ativa, e não por uma página de marketing. Autorizado em cada fabricante ensinado aqui, então as comparações são feitas com honestidade, não para vender.",
+      "body": "Trinta anos em redes e segurança corporativa, entregues por um instrutor que está na ativa, e não por uma página de marketing. As comparações aqui são feitas com honestidade, não para vender.",
       "aboutCta": "Mais sobre quem está por trás"
     },
     "pillars": {
@@ -3507,7 +3507,9 @@
       "netskope": "Netskope",
       "extreme": "Extreme Networks",
       "zscaler": "Zscaler",
-      "ping": "Ping Identity"
+      "ping": "Ping Identity",
+      "checkpoint": "Check Point",
+      "nginx": "NGINX"
     },
     "x509": {
       "name": "Decodificador de certificados X.509",
@@ -6141,6 +6143,152 @@
       "kind_object-removed": "REMOVIDO",
       "kind_object-changed": "ALTERADO",
       "kind_object-moved": "ORDEM ALTERADA"
+    },
+    "checkpoint-policy-layer-evaluator": {
+      "name": "Avaliador de camadas de política Check Point",
+      "blurb": "Acompanhe uma conexão atravessando camadas ordenadas: qual regra casou em cada uma, se um aceite significou permitido ou apenas seguir adiante, e onde um descarte não registrou nada.",
+      "inputLabel": "Política e conexão de teste",
+      "placeholder": "layer Network ordered\n1 | permit internal | accept | src=10.0.0.0/8\n2 | cleanup | drop |\ntest src=10.1.1.5 dst=93.184.216.34 svc=443",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "privacy": "Tudo é avaliado no seu navegador. Nada é enviado a lugar algum, e endereço algum é resolvido.",
+      "parseErrorHeadline": "Não foi possível ler essa política",
+      "verdictHeading": "Veredito",
+      "verdictAllowed": "Permitida",
+      "verdictDropped": "Descartada",
+      "connectionSummary": "{src} para {dst} na porta {svc}",
+      "traceHeading": "Como chegou aí",
+      "inlineTag": "camada inline",
+      "outcomeProceed": "aceita, segue para a próxima camada",
+      "outcomeAllowed": "aceita pela última camada, portanto permitida",
+      "outcomeDropped": "descartada",
+      "outcomeInline": "entrou na camada inline",
+      "silentWarning": "Este descarte não registra nada. A conexão falha e entrada alguma aparece nos logs.",
+      "findingsHeading": "Sobre a própria política"
+    },
+    "nginx-location-matcher": {
+      "name": "Comparador de location do NGINX",
+      "blurb": "Cole seus blocos location e uma URI, e acompanhe a seleção de cinco passos do NGINX: exata, prefixo mais longo, a saída antecipada do circunflexo-til, regexes na ordem do arquivo, e então o retorno.",
+      "inputLabel": "Blocos location e uma URI de requisição",
+      "placeholder": "location /\nlocation /images/\nlocation ~ \\.(gif|jpg|png)$\n\nrequest /images/logo.gif",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "privacy": "Comparado inteiramente no seu navegador. Nada é enviado a lugar algum, e arquivo algum é lido.",
+      "parseErrorHeadline": "Não foi possível ler essa configuração",
+      "winnerHeading": "O bloco que vence",
+      "noMatch": "Nenhum location casa - isso cai para o bloco server",
+      "requested": "Requisição: {uri}",
+      "walkHeading": "Como o NGINX chegou lá",
+      "decisive": "decide",
+      "stageExact": "Correspondência exata",
+      "stagePrefix": "Rodada de prefixos (o mais longo vence)",
+      "stagePriority": "Saída antecipada do circunflexo-til",
+      "stageRegex": "Expressões regulares, na ordem do arquivo",
+      "stageFallback": "Retorno ao prefixo mais longo",
+      "findingsHeading": "Sobre a configuração"
+    },
+    "nginx-proxy-pass-rewriter": {
+      "name": "Reescritor de proxy_pass do NGINX",
+      "blurb": "Uma barra final decide se seu backend vê /app/page ou /page. Cole a diretiva e veja as duas respostas lado a lado.",
+      "inputLabel": "location, proxy_pass e uma URI de requisição",
+      "placeholder": "location /app/\nproxy_pass http://backend;\n\nrequest /app/page",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "privacy": "Calculado no seu navegador. O nome do upstream nunca é resolvido nem contatado.",
+      "parseErrorHeadline": "Não foi possível ler isso",
+      "resultHeading": "O que o backend recebe",
+      "refused": "O NGINX recusa esta configuração",
+      "counterpartHeading": "Com o interruptor invertido",
+      "findingsHeading": "Vale saber"
+    },
+    "nginx-proxy-cache-decision": {
+      "name": "Explicador de decisão de cache do NGINX",
+      "blurb": "Duas perguntas diferentes: esta resposta será armazenada, e uma requisição posterior será servida a partir dela. Cole as diretivas e a troca para ver as duas respostas e o porquê.",
+      "inputLabel": "Diretivas de cache, a requisição, e a resposta do upstream",
+      "placeholder": "proxy_cache zone1\nproxy_cache_valid 200 10m\n\nrequest GET /a\n\nresponse 200",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "privacy": "Decidido no seu navegador. Nada é buscado e upstream algum é contatado.",
+      "parseErrorHeadline": "Não foi possível ler isso",
+      "verdictHeading": "Os dois vereditos",
+      "storedYes": "ARMAZENADA - esta resposta é escrita no cache",
+      "storedNo": "NÃO ARMAZENADA - esta resposta nunca chega ao cache",
+      "servedYes": "SERVIDA - uma requisição posterior correspondente a recebe do cache",
+      "servedNo": "NÃO SERVIDA - uma requisição posterior vai ao upstream",
+      "keyLabel": "Chave de cache: {key}",
+      "storeHeading": "Por que é ou não armazenada",
+      "serveHeading": "Por que é ou não servida",
+      "warningsHeading": "Vale saber"
+    },
+    "extreme-spbm-multicast-mac": {
+      "name": "Construtor de endereço multicast SPBM",
+      "blurb": "Endereços de grupo SPBM são calculados, não aprendidos. Monte um a partir de um nickname e um I-SID, ou cole uma linha da FIB multicast e descubra de quem é a árvore.",
+      "buildHeading": "Montar um endereço",
+      "nicknameLabel": "Nickname do nó (x.yy.zz)",
+      "isidLabel": "I-SID (decimal, ou 0x para hexadecimal)",
+      "decodeHeading": "Ou desmonte um",
+      "macLabel": "Endereço de grupo da FIB multicast",
+      "exampleBuild": "Exemplo: montar",
+      "exampleDecode": "Exemplo: decodificar",
+      "clear": "Limpar",
+      "privacy": "Aritmética no seu navegador. Nada é resolvido nem consultado.",
+      "errorHeadline": "Não foi possível ler isso",
+      "resultBuild": "O endereço que todo nó vai calcular",
+      "resultDecode": "O que este endereço é",
+      "summary": "Nickname {nickname}, I-SID {isid}",
+      "workingsHeading": "Como ele é montado",
+      "notesHeading": "Vale saber"
+    },
+    "checkpoint-nat-proxy-arp": {
+      "name": "Verificador de alcance de NAT do Check Point",
+      "blurb": "Por que um NAT aparentemente correto não entrega nada. Calcula se algo vai responder ARP pelo endereço traduzido, que costuma ser onde o tráfego some.",
+      "methodLabel": "Como o NAT está configurado",
+      "methodManual": "Regra manual na base de NAT",
+      "methodAutomatic": "Automático, a partir do objeto",
+      "typeLabel": "Tipo de NAT",
+      "typeStatic": "Estático (publica um endereço)",
+      "typeHide": "Hide (apenas saída)",
+      "natIpLabel": "Endereço traduzido",
+      "gatewayLabel": "Interface do gateway voltada ao tráfego",
+      "prefixLabel": "Comprimento do prefixo dessa interface",
+      "autoArpLabel": "Global Properties: Automatic ARP configuration",
+      "autoArpOn": "Habilitado (padrão)",
+      "autoArpOff": "Desabilitado",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "privacy": "Aritmética no seu navegador. Nenhum ARP é enviado e gateway algum é contatado.",
+      "errorHeadline": "Não foi possível ler isso",
+      "verdictHeading": "O tráfego vai chegar?",
+      "verdictArrives": "SIM - nada aqui o impede na camada 2",
+      "verdictBlackHole": "NÃO - o pacote nunca alcança o gateway",
+      "subnetNote": "Sub-rede da interface: {network}",
+      "reasoningHeading": "Como isso foi decidido",
+      "remedyHeading": "O que fazer",
+      "findingsHeading": "Vale saber"
+    },
+    "netskope-dlp-match-predictor": {
+      "name": "Preditor de correspondência de DLP",
+      "blurb": "Por que uma regra de DLP disparou, ou não. Separa os três estágios que falham separadamente: candidatos encontrados, checksum aprovado, limiar atingido.",
+      "kindLabel": "Identificador de dados",
+      "kindCard": "Cartão de pagamento (Luhn)",
+      "kindCpf": "CPF (Brasil)",
+      "kindCnpj": "CNPJ (Brasil)",
+      "thresholdLabel": "Limiar da regra (correspondências necessárias)",
+      "textLabel": "Conteúdo a testar",
+      "placeholder": "Cole o texto que você espera que a regra detecte, ou o texto que surpreendeu ao ser detectado.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "privacy": "Tudo permanece neste navegador. Nada do que você cola é transmitido, armazenado ou registrado.",
+      "errorHeadline": "Não foi possível ler isso",
+      "verdictHeading": "A regra dispararia?",
+      "fires": "SIM - o limiar foi atingido",
+      "doesNotFire": "NÃO",
+      "stagesHeading": "Os três estágios",
+      "stageCandidates": "Candidatos encontrados pelo formato: {count}",
+      "stageMatches": "Aprovados no checksum: {count}",
+      "stageThreshold": "Limiar exigido: {count}",
+      "candidatesHeading": "Cada candidato",
+      "findingsHeading": "Vale saber"
     }
   },
   "privacy_page": {
@@ -6241,7 +6389,7 @@
     },
     "platforms": {
       "title": "As plataformas, ensinadas com profundidade",
-      "body": "Ser instrutor autorizado de cada fabricante aqui significa que posso ensinar cada um como deve ser e compará-los com honestidade. Estas são as plataformas que estou autorizado a ensinar.",
+      "body": "Ser instrutor autorizado destes fabricantes significa que posso ensinar cada um como deve ser e compará-los com honestidade.",
       "f5": "BIG-IP em todo o currículo conduzido por instrutor: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automação e troubleshooting.",
       "fortinet": "Treinamento certificado da Fortinet, incluindo a trilha FCP.",
       "extreme": "Trilhas de switching, SD-WAN, e API e automação da Extreme Networks, passando por instalação, configuração, gerenciamento e troubleshooting.",
@@ -6291,7 +6439,15 @@
       "endorsementsEyebrow": "Nas palavras deles",
       "endorsementsTitle": "Depoimentos",
       "endorsementsDesc": "Recomendações de colegas, parceiros e alunos ao longo de duas décadas de treinamento, citadas na íntegra.",
-      "endorsementsCta": "Ler os depoimentos"
+      "endorsementsCta": "Ler os depoimentos",
+      "historyEyebrow": "A versão longa",
+      "historyTitle": "Leia a história completa",
+      "historyDesc": "Trinta anos contados como deve ser: as empresas, as tecnologias, e as viradas que não estavam no plano.",
+      "historyCta": "Ler a história",
+      "recordEyebrow": "Fabricante a fabricante",
+      "recordTitle": "O registro da carreira",
+      "recordDesc": "Cada fabricante por onde esta carreira passou, cada um com seu capítulo e o que o trabalho de fato era.",
+      "recordCta": "Abrir o registro"
     }
   },
   "endorsements": {
@@ -6707,7 +6863,7 @@
       "s1Body": "Em 2025, Rodolfo concluiu o treinamento oficial de PingFederate da Ping Identity e obteve a credencial PingFederate Practitioner, mergulhando no servidor de federação que transformou o SAML de especificação em encanamento corporativo. Para quem ensina gestão de acesso em outras plataformas e constrói ferramentas de SAML e OIDC para este site, era a próxima pilha de protocolos natural a dominar por dentro.",
       "s2Title": "Identidade, decodificada neste site",
       "s2Body": "O ferramental de identidade deste site decodifica os mesmos artefatos que PingFederate e PingOne movem em produção: o decodificador SAML, os inspetores de JWT e OIDC e as ferramentas de PKCE e TOTP leem as asserções, tokens e fluxos sobre os quais a federação roda - localmente, no navegador. O curso de practitioner de PingFederate em 2025 marca o capítulo, e os padrões de federação que ele ensina são exatamente o que essas ferramentas tornam visível.",
-      "certs": "Instrutor autorizado da Ping Identity (habilitado em 2026). PingFederate Practitioner (2025), obtido pelo Ping Identity Training. Detalhes completos na página de credenciais.",
+      "certs": "PingFederate Practitioner (2025), obtido pelo Ping Identity Training. Detalhes completos na página de credenciais.",
       "lineageTitle": "Como três linhagens de identidade viraram uma",
       "lineageDesc": "A Ping nasceu da federação em Denver em 2002. A Sun abriu o código do seu stack de acesso como OpenSSO e do seu novo diretório Java como OpenDS; quando a Oracle absorveu a Sun em 2010, cinco engenheiros bifurcaram o código em Oslo como ForgeRock - OpenAM e OpenDJ. Uma terceira linha, o diretório UnboundID construído por veteranos de diretório da Sun em Austin, juntou-se à Ping em 2016 como PingDirectory. A Thoma Bravo fechou o capital de Ping e ForgeRock em 2022 e as combinou em 23 de agosto de 2023: uma plataforma, as três heranças, com o DaVinci como tecido de orquestração."
     },
@@ -6720,7 +6876,7 @@
       "s1Body": "Duas décadas deste registro atravessam firewalls, balanceadores e os perímetros que eles defendiam; a Zscaler é a empresa que apostou mais cedo que o perímetro se dissolveria numa nuvem global de inspeção. Estudar as arquiteturas do Zero Trust Exchange, do ZIA e do ZPA é a continuação natural do trabalho de SSE já em andamento no capítulo Netskope, do outro lado do mesmo mercado.",
       "s2Title": "Lendo a superfície TLS",
       "s2Body": "Os decodificadores JA4 e JA3 deste site leem a mesma superfície TLS que o Zero Trust Exchange inspeciona em escala: o handshake que um cliente oferece antes de qualquer política disparar, e tudo o que ele revela. É um par natural - uma nuvem que termina e inspeciona o TLS do mundo, e uma caixa de ferramentas que ensina o que esses handshakes dizem - com mais desse ferramental a caminho.",
-      "certs": "Instrutor autorizado da Zscaler (habilitado em 2026). As certificações da plataforma serão registradas na página de credenciais à medida que chegarem."
+      "certs": "As certificações da plataforma serão registradas na página de credenciais à medida que chegarem."
     },
     "pulse": {
       "name": "Pulse Secure",
@@ -6735,7 +6891,24 @@
     },
     "industryPointerTitle": "A árvore genealógica mais ampla",
     "industryPointerBody": "As linhagens pesquisadas a fundo dos parceiros de treinamento da Red Education e dos pioneiros que moldaram esta indústria - de Check Point a Nortel, de Symantec a Madge - vivem na página Indústria.",
-    "industryPointerLink": "Explorar as linhagens da indústria"
+    "industryPointerLink": "Explorar as linhagens da indústria",
+    "checkpoint": {
+      "name": "Check Point",
+      "tagline": "A empresa que transformou o firewall com estado num produto - e que ainda constrói o modelo de gerência com o qual todos os outros são comparados.",
+      "years": "2026 – hoje",
+      "intro": "A Check Point entra neste registro pela ponta oposta à de tudo ao seu redor. A maioria dos capítulos aqui é sobre uma empresa que chegou para resolver um problema que os estabelecidos haviam deixado em aberto. A Check Point É a estabelecida: ela entregou a inspeção com estado como produto em 1993 e criou, na prática, a categoria dentro da qual todo firewall deste site compete. Aprendê-la agora, depois de duas décadas nas plataformas que vieram desafiá-la, é um caminho estranho e útil.",
+      "s1Title": "A empresa que transformou o firewall num produto",
+      "s1Body": "A filtragem de pacotes existia antes de 1993 e a inspeção com estado não foi invenção da Check Point no sentido acadêmico. O que a Check Point fez foi transformá-la em algo que se podia comprar, instalar e administrar sem construir você mesmo, e então envolvê-la num modelo de gerência que tratava a política como banco de dados, e não como configuração de equipamento. Essa segunda decisão foi a que envelheceu melhor. Trinta anos depois, a separação entre servidor de gerência e ponto de aplicação, e a ideia de que se publica uma política antes de instalá-la, ainda é o que surpreende quem chega de outros fabricantes - e ainda é o modelo com o qual esses fabricantes são comparados.",
+      "s2Title": "Aprendendo de trás para frente",
+      "s2Body": "Os guias de estudo do CCSA e do CCSE deste site foram escritos a partir dos blueprints de prova publicados pela própria Check Point, e são deliberadamente inclinados ao que pega quem chega de FortiGate ou BIG-IP. Que a base de regras termina num descarte implícito que não registra nada. Que as camadas de política são um E, e não um OU, então aceitar numa camada só significa que o tráfego segue para a próxima. Que publicar e instalar são duas ações separadas e parar na primeira não muda nada. Nenhuma delas é difícil; todas são do tipo que se aprende uma vez, normalmente errando. A Red Education é um Check Point Authorized Training Center, nomeada Check Point Software Technologies Platinum Elite ATC Partner of the Year 2024, e foi assim que este capítulo começou.",
+      "certs": "Estudando para CCSA e CCSE. As certificações serão registradas na página de credenciais à medida que chegarem; os guias de estudo aqui são material de estudo e não constituem afirmação de entrega."
+    },
+    "nginx": {
+      "name": "NGINX",
+      "tagline": "O proxy reverso que virou a resposta padrão - servidor web, balanceador e cache cujo modelo de configuração é uma árvore de arquivos e uma ordem de correspondência que vale entender antes de brigar com ela."
+    },
+    "allCompaniesTitle": "Todas as empresas com página aqui",
+    "allCompaniesLede": "As empresas cuja tecnologia, pessoas ou aquisições atravessam as plataformas que este site ensina, na ordem em que suas histórias começam. Algumas seguem ativas; outras terminaram dentro de outra, e trazem o ano."
   },
   "training": {
     "eyebrow": "Treinamentos que ministro",
@@ -7185,7 +7358,8 @@
     "metaDescription": "Todas as ferramentas e todos os artigos de {vendor} no ronutz.com, em uma página: ferramentas agrupadas por família, depois a biblioteca completa de artigos.",
     "certsEyebrow": "Preparação para certificação",
     "certsCta": "Guia de estudo: {cert}",
-    "industryLink": "A história da {vendor} na seção de indústria"
+    "industryLink": "A história da {vendor} na seção de indústria",
+    "industryLede": "Como a {vendor} chegou até aqui: as aquisições, as viradas e as pessoas cujo trabalho foi parar dentro da plataforma."
   },
   "learn": {
     "eyebrow": "Aprender",
@@ -7203,7 +7377,15 @@
     "portalPaths": "{count} trilhas de leitura",
     "portalGuides": "{count} guias de prova",
     "portalObjectives": "{count} objetivos mapeados",
-    "portalStudyLede": "Trilhas de leitura curadas e guias de certificação mapeados por blueprint - cada objetivo ligado aos artigos que o ensinam e às ferramentas que o exercitam."
+    "portalStudyLede": "Trilhas de leitura curadas e guias de certificação mapeados por blueprint - cada objetivo ligado aos artigos que o ensinam e às ferramentas que o exercitam.",
+    "portalArticles": "O índice de artigos",
+    "portalArticlesLede": "A biblioteca independente de fabricante, agrupada por assunto. O conteúdo específico de cada fabricante fica nos hubs.",
+    "portalArticleCount": "{count} artigos",
+    "portalHubs": "Hubs de fabricantes",
+    "portalHubsLede": "Uma porta por fabricante: as ferramentas, os artigos e as certificações de cada plataforma.",
+    "portalHubCount": "{count} fabricantes",
+    "portalCerts": "Guias de estudo de certificação",
+    "portalCertsLede": "Blueprints de prova mapeados objetivo por objetivo aos artigos que os ensinam."
   },
   "meetingBingo": {
     "metaTitle": "Bingo de Reunião",
@@ -8684,7 +8866,6 @@
     "openHub": "Abrir hub",
     "comingSoon": "O hub abre com a sua primeira ferramenta",
     "note": "Cada hub é o único lugar que reúne tudo o que o site tem para um fornecedor: as ferramentas, agrupadas por família de produto, e a biblioteca completa de artigos daquele fornecedor, em uma só página. Os mesmos hubs são alcançáveis pela faixa nas listagens de Ferramentas e Aprender.",
-    "scopeNote": "Estes quatro são os fornecedores cujo treinamento o autor deste site está autorizado a ministrar. Ferramentas e artigos podem referenciar tecnologias de outros fornecedores quando relevante, mas um hub aqui significa uma relação de treinamento autorizado, não apenas cobertura.",
     "metaTitle": "Hubs de fornecedores - ronutz.com",
     "metaDescription": "Os hubs de fornecedores em ronutz.com: F5, Fortinet, Netskope, Extreme Networks, Zscaler e Ping Identity, cada um reunindo todas as ferramentas e artigos daquele fornecedor em uma página.",
     "blurbs": {
@@ -8693,9 +8874,10 @@
       "netskope": "Netskope One e SSE: o secure web gateway de nova geração, CASB, ZTNA, firewall em nuvem e as camadas de proteção de dados e de plataforma.",
       "extreme": "Extreme Networks: Platform ONE, o contínuo ExtremeCloud IQ, cabeado, sem fio e fabric, segurança de acesso e analytics.",
       "zscaler": "Zscaler e o Zero Trust Exchange: secure web gateway e firewall em nuvem (ZIA), acesso zero trust a aplicações privadas (ZPA), monitoramento de experiência digital (ZDX) e proteção de dados. Segurança entregue como nuvem global, não como appliance.",
-      "ping": "Ping Identity e ForgeRock: gestão de acesso no PingOne, PingFederate, PingAccess e na ForgeRock Identity Platform, com SSO, MFA, orquestração de identidade e serviços de diretório em escala corporativa."
-    },
-    "redEduCallout": "Por que esses fornecedores? Porque são as plataformas que Rodolfo é autorizado a ensinar pela <link>Red Education</link>, uma parceira global e premiada de treinamento autorizado: F5, Fortinet, Netskope, Extreme Networks, Ping Identity e Zscaler."
+      "ping": "Ping Identity e ForgeRock: gestão de acesso no PingOne, PingFederate, PingAccess e na ForgeRock Identity Platform, com SSO, MFA, orquestração de identidade e serviços de diretório em escala corporativa.",
+      "checkpoint": "Check Point Quantum e a arquitetura Infinity: gateways de segurança gerenciados a partir de um servidor de gerência separado, com um modelo de política construído sobre camadas, objetos e um banco de dados que é publicado antes de ser instalado. Os guias de estudo do CCSA e do CCSE o acompanham.",
+      "nginx": "NGINX como servidor web, proxy reverso, balanceador e cache: a árvore de configuração, a ordem de correspondência de location que decide qual bloco vence, e o comportamento de proxy que surpreende na primeira vez."
+    }
   },
   "glossary": {
     "title": "Glossário",
@@ -13920,6 +14102,58 @@
       "ism-band": {
         "def": "Faixas industrial, científica e médica: espectro utilizável sem licença individual, sujeito a regras de potência e interferência.",
         "context": "Essas alocações tornaram possível o sem-fio de consumo. Wi-Fi e Bluetooth dividem 2,4 GHz com fornos de micro-ondas e muita coisa mais, e é exatamente por isso que a faixa é congestionada, enquanto as faixas de Wi-Fi em 5 e 6 GHz trocam alcance por espaço. O LoRa faz a aposta oposta nas alocações ISM abaixo de 1 GHz, aceitando taxas de dados muito baixas para obter quilômetros de alcance e anos de bateria. Isento de licença não significa sem regras: limites de ciclo de trabalho e de potência são o que mantém as faixas utilizáveis."
+      },
+      "apache-httpd": {
+        "def": "O servidor web que rodou boa parte da internet por quase duas décadas, iniciado em 1995 como remendos coordenados a um servidor que ninguém mantinha.",
+        "context": "Seu modelo original dá a cada conexão um processo próprio, o que é robusto, flexível e caro em memória. Esse custo é a restrição contra a qual o NGINX foi escrito, e os módulos de multiprocessamento posteriores do Apache - o event em especial - responderam a ela pelo outro lado."
+      },
+      "a-patchy-server": {
+        "def": "A explicação mais antiga de como o Apache ganhou o nome: era um servidor feito de remendos.",
+        "context": "O próprio FAQ do projeto dizia isso de 1996 a 2001. Brian Behlendorf disse em 2000 que o nome homenageava o povo Apache, depois disse em 2007 que eram os remendos afinal, e a fundação hoje credita a tribo. As duas versões estão no registro e nenhuma foi retirada de forma limpa, e é por isso que este verbete está marcado como disputado."
+      },
+      "apache-software-foundation": {
+        "def": "A entidade sem fins lucrativos constituída em junho de 1999 para que os projetos Apache sobrevivessem a qualquer voluntário individual.",
+        "context": "Formada a partir do grupo de oito pessoas, com Brian Behlendorf como primeiro presidente. Essa estrutura é a razão de a ASF hoje cuidar de centenas de projetos, e não de um servidor web."
+      },
+      "c10k": {
+        "def": "O problema, batizado em 1999, de atender dez mil conexões simultâneas numa só máquina.",
+        "context": "Não é questão de hardware e sim de arquitetura: um servidor que dá a cada conexão um processo ou thread esgota memória e escalonador muito antes de esgotar CPU. A resposta foi o laço de eventos, que é o que o NGINX e o módulo event do Apache usam."
+      },
+      "altavista": {
+        "def": "O buscador que liderou a web antes do Google, construído na DEC como forma de submeter um processador a estresse.",
+        "context": "Lançado em 15 de dezembro de 1995 com um índice de dezesseis milhões de documentos e busca booleana completa, numa época em que a alternativa era um diretório mantido à mão. Seus donos então o reconstruíram como portal para competir com o Yahoo, o que significava competir em tudo menos naquilo em que era melhor. Vendido à Overture em 2003 por cerca de seis por cento de sua avaliação três anos antes, e desligado pelo Yahoo em 8 de julho de 2013."
+      },
+      "babel-fish": {
+        "def": "O primeiro serviço de tradução automática da web, entregue pelo AltaVista.",
+        "context": "Batizado com o nome da criatura de O Guia do Mochileiro das Galáxias que traduz qualquer idioma ao ser colocada no ouvido. Sobreviveu ao seu criador sob a marca do Yahoo e hoje redireciona para o tradutor da Microsoft."
+      },
+      "scooter-crawler": {
+        "def": "O rastreador web do AltaVista, escrito por Louis Monier na DEC.",
+        "context": "A metade do AltaVista que de fato estressava o hardware, que era o propósito original do projeto. Desligado por volta de 2004, quando o Yahoo substituiu o motor pelo seu próprio, deixando a marca AltaVista como fachada para os resultados de outro."
+      },
+      "pagerank": {
+        "def": "A ideia de ranqueamento do Google: pontuar uma página por quem aponta para ela, dando mais peso a links vindos de páginas bem ligadas.",
+        "context": "Mede algo que o autor da própria página não controla, e é por isso que resistiu ao enchimento de palavras-chave que derrotava os buscadores de meados dos anos 1990. Começou como projeto de Stanford chamado BackRub em janeiro de 1996. Page e Brin o ofereceram ao AltaVista por um milhão de dólares em 1998 e foram recusados."
+      },
+      "googol": {
+        "def": "O algarismo um seguido de cem zeros, e a palavra Google é uma grafia errada dele.",
+        "context": "Escolhida para sugerir a escala do índice que os fundadores pretendiam construir. O próprio termo matemático foi cunhado por uma criança de nove anos a quem se pediu um nome para um número muito grande."
+      },
+      "six-degrees-of-separation": {
+        "def": "A ideia de que duas pessoas quaisquer estão ligadas por uma cadeia de cerca de seis conhecidos - e o nome da primeira rede social.",
+        "context": "O SixDegrees.com foi lançado em 1997 com perfis, listas de amigos e a possibilidade de ver como você se conectava a qualquer outro membro: cada recurso que as redes sociais ainda têm. Chegou a 3,5 milhões de usuários e falhou mesmo assim, porque no fim dos anos 1990 a maioria das pessoas que esses usuários conheciam não estava online. A ideia estava certa e a infraestrutura não havia chegado."
+      },
+      "large-language-model": {
+        "def": "Um modelo treinado em enormes quantidades de texto para prever o que vem a seguir, o que acaba bastando para fazer muitas outras coisas.",
+        "context": "A capacidade que surpreende as pessoas é emergente, não projetada: ninguém escreveu regras para resumir, traduzir ou escrever código. Vale ter isso em mente ao ler afirmações sobre o que esses sistemas 'entendem' - previsão do próximo token em escala é o que de fato acontece, e o quanto isso explica é genuinamente contestado."
+      },
+      "transformer-architecture": {
+        "def": "O desenho de rede neural de 2017 que tornou práticos os modelos de linguagem modernos, baseado em autoatenção.",
+        "context": "Apresentado num artigo do Google intitulado 'Attention Is All You Need'. Sua vantagem sobre o que veio antes é processar uma sequência inteira em paralelo em vez de um token por vez, o que tornou viável treinar em texto na escala da internet. Todo modelo de linguagem grande em uso hoje é descendente dele."
+      },
+      "generative-ai": {
+        "def": "Sistemas que produzem texto, imagens, áudio ou código novos, em vez de classificar ou ordenar material existente.",
+        "context": "A tecnologia não era nova em novembro de 2022; o acesso é que era. O lançamento do ChatGPT em 30 de novembro de 2022 chegou a cem milhões de usuários mensais em dois meses, e o que mudou foi que usar um modelo de linguagem deixou de exigir uma chave de API ou qualquer noção do que é um transformer. A capacidade vinha melhorando havia anos, à vista de todos."
       }
     },
     "totalCount": "{count} termos",
@@ -13944,7 +14178,7 @@
     "targetsLabel": "Baseada em",
     "versionUnspecified": "Versão do produto não especificada no blueprint",
     "sourceLabel": "Fonte do blueprint",
-    "disclaimer": "Recurso de estudo independente, montado a partir do blueprint público da prova. Sem afiliação, autorização ou endosso da {vendor}. Objetivos, versões e disponibilidade das provas mudam, então sempre confira o blueprint oficial.",
+    "disclaimer": "Material de estudo independente, construído a partir do blueprint público da prova. Sem afiliação, autorização ou endosso da {vendor}. Os objetivos são transcritos e mapeados à mão, então esta página pode conter erros ou estar defasada em relação ao material atual do fabricante: objetivos, versões, numeração e disponibilidade mudam sem aviso. Trate o portal de certificação da própria {vendor} como a fonte da verdade e confira nele antes de agendar qualquer coisa.",
     "onThisSite": "Neste site",
     "toolsLabel": "Ferramentas",
     "manualLabel": "Manual oficial",
@@ -13974,7 +14208,8 @@
     "retirementNotice": "O {exam} pode ser prestado até {until}.",
     "retirementReplacedBy": "Ele é substituído pelo {exam}.",
     "retirementNoReplacement": "A página da Fortinet não nomeia um substituto.",
-    "sourceCaveatCourse": "Estes objetivos vêm da página do curso da Fortinet para este produto, e não de um blueprint de exame: a Fortinet ainda não publicou um para este exame. O material é o que o curso ensina, e um blueprint de exame pode organizá-lo ou ponderá-lo de outra forma."
+    "sourceCaveatCourse": "Estes objetivos vêm da página do curso da Fortinet para este produto, e não de um blueprint de exame: a Fortinet ainda não publicou um para este exame. O material é o que o curso ensina, e um blueprint de exame pode organizá-lo ou ponderá-lo de outra forma.",
+    "standaloneTrackLabel": "Fora do caminho de certificação"
   },
   "trainingCta": {
     "eyebrow": "Treinamento com instrutor",
@@ -14050,13 +14285,15 @@
     "nameChanges": "Mudanças de nome corporativo",
     "f5CardTitle": "F5, Inc.",
     "f5CardDesc": "De um único balanceador (1996) a uma plataforma de entrega e segurança de aplicações, via mais de 23 aquisições.",
-    "moreSoon": "Mais linhagens de fornecedores estão sendo pesquisadas e adicionadas - cada uma verificada em fontes primárias antes de publicar."
+    "titleFor": "Linhagem da {vendor}",
+    "backToHub": "Voltar para {vendor}",
+    "introFor": "Do que a {vendor} é feita, e quem a fez. Cada aquisição abaixo é verificada contra fontes primárias, com a linha de produto em que ela se transformou onde essa ligação é documentada, e não inferida."
   },
   "partnerVendors": {
     "reduEyebrow": "Parceiro de treinamento da Red Education",
     "otherEyebrow": "Linhagem do fornecedor",
     "disclaimerTag": "Observação",
-    "disclaimerText": "Rodolfo não ministra treinamento de {vendor}. Sua instrução autorizada abrange F5, Fortinet, Netskope, Extreme Networks, Ping Identity e Zscaler. {vendor} é ministrado pela equipe de instrutores da Red Education - entre as mais premiadas do setor, com reconhecimentos concedidos por diversos fornecedores.",
+    "disclaimerText": "Rodolfo não ministra treinamento de {vendor}. {vendor} é ministrado pela equipe de instrutores da Red Education - entre as mais premiadas do setor, com reconhecimentos concedidos por diversos fornecedores.",
     "awardsTitle": "Reconhecimentos da Red Education",
     "sourcesLabel": "Fontes",
     "reduSectionTitle": "Parceiros de treinamento da Red Education",
@@ -14076,7 +14313,17 @@
     "contemporarySectionTitle": "Os contemporâneos - ainda escrevendo seus capítulos",
     "contemporarySectionNote": "Empresas da era moderna cujas histórias ainda estão se desenrolando - sem associação de treinamento; perfiladas pelo que significam para o setor hoje.",
     "contemporaryEyebrow": "Contemporâneo do setor",
-    "contemporaryCardTag": "contemporâneo"
+    "contemporaryCardTag": "contemporâneo",
+    "timelineSectionTitle": "A linhagem, em ordem",
+    "timelineSectionNote": "Cada empresa cuja tecnologia ou cujas pessoas foram parar dentro das plataformas deste site, ordenada pelo ano em que sua história começa. Algumas seguem ativas e outras foram absorvidas há décadas; as que terminaram trazem o ano e o que aconteceu. As marcadas como parceiras da Red Education são aquelas cujo treinamento autorizado a Red Education entrega. Ordenar por fundação, e não por situação, evita um julgamento que vinha errando com frequência - boa parte dos nomes antigos daqui segue muito bem em atividade.",
+    "timelineSince": "{from} - hoje",
+    "timelineSpan": "{from} - {to}",
+    "reduPill": "Parceira Red Education",
+    "careerPill": "Vivido por dentro",
+    "lineageEyebrow": "Linhagem do fabricante",
+    "workedWithYears": "Trabalhou diretamente, {years}",
+    "instructorPill": "Instrutor autorizado",
+    "acquisitionsHeading": "Aquisições"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",
@@ -14106,11 +14353,11 @@
   "studyGuidesIndex": {
     "eyebrow": "Guias de estudo",
     "title": "Guias de estudo",
-    "lede": "Duas formas de estudar aqui, ambas gratuitas. As trilhas de leitura percorrem a biblioteca Learn em ordem didática - cada uma é uma sequência ordenada de artigos com as ferramentas para praticar. Os guias de estudo de certificação mapeiam os blueprints oficiais das provas, objetivo por objetivo, para artigos, ferramentas e os manuais do próprio fabricante.",
-    "pathsTitle": "Trilhas de leitura",
-    "pathsLede": "Cada trilha é um currículo sem prova: leia na ordem e pratique com as ferramentas pelo caminho. Tudo computa localmente e nada fica atrás de paywall.",
+    "lede": "Duas formas de estudar aqui, e elas respondem perguntas diferentes. As trilhas de leitura seguem uma tecnologia, e não uma prova: percorra a biblioteca Learn em ordem didática, com as ferramentas para praticar pelo caminho. Os guias de estudo de certificação ficam em página própria e fazem o oposto - partem do blueprint publicado pelo fabricante e o mapeiam objetivo por objetivo.",
+    "pathsTitle": "Trilhas de leitura curadas",
+    "pathsLede": "Uma trilha é um currículo sem prova por trás. Nada aqui é organizado em torno de um blueprint de certificação nem avaliado por um: a ordem é a ordem em que o assunto faz sentido, escolhida para que cada artigo prepare o seguinte. Leia de ponta a ponta, ou pare quando tiver o que veio buscar. Tudo computa localmente e nada fica atrás de paywall.",
     "certTitle": "Guias de estudo de certificação",
-    "certLede": "Guias mapeados por blueprint para as provas por trás das credenciais - cada objetivo ligado aos artigos que o ensinam, às ferramentas que o exercitam e às páginas do manual oficial, que continuam sendo a fonte da verdade.",
+    "certLede": "Estes são os que têm formato de prova, e ficam na página de certificações. Cada um segue o blueprint publicado pelo próprio fabricante, objetivo por objetivo, ligando cada objetivo aos artigos que o ensinam, às ferramentas que o exercitam, e às páginas de manual que seguem sendo a fonte da verdade.",
     "certAllCta": "Todas as certificações e guias",
     "stepsLabel": "Ordem de leitura",
     "practiceLabel": "Pratique com",
@@ -14151,6 +14398,22 @@
       "ping-identity-platform": {
         "title": "A Plataforma Ping Identity",
         "lede": "Todo o parque Ping em ordem de leitura: o mapa da plataforma PingOne e a linhagem ForgeRock primeiro, para que cada nome de produto se resolva; depois a política do PingAccess, a plataforma de dados PingDirectory e a orquestração DaVinci; fechando com a estante PingFederate - o núcleo autogerenciado de federação - na sua ordem de ensino estabelecida. A caminhada companheira dos guias Certified Professional no hub de certificações."
+      },
+      "checkpoint-security-administration": {
+        "title": "Administração de segurança Check Point",
+        "lede": "A plataforma na ordem em que o CCSA a ensina: primeiro a divisão em três camadas, porque nada mais faz sentido até você saber que o servidor de gerência e o gateway são máquinas diferentes com funções diferentes, depois a base de regras, depois a semântica de camadas que pega todo mundo."
+      },
+      "nginx-from-config-to-cache": {
+        "title": "NGINX, da configuração ao cache",
+        "lede": "Na ordem em que as confusões de fato chegam: a árvore de configuração, depois qual bloco location vence, depois que caminho o backend recebe, depois o que é cacheado e servido a quem."
+      },
+      "extreme-fabric-and-voss": {
+        "title": "Fabric da Extreme e os dois sistemas operacionais",
+        "lede": "ExtremeXOS para o modelo de configuração, depois por que o VOSS parece tão diferente (veio de outra empresa), depois o Fabric Connect construído do IS-IS aos I-SIDs até os recursos de resiliência."
+      },
+      "fortinet-fabric-and-operations": {
+        "title": "Fortinet além do firewall isolado",
+        "lede": "O que aparece quando um FortiGate não está sozinho: escolhas de inspeção, a malha da filial, integração com nuvem, o SOC, e a borda de tecnologia operacional."
       }
     },
     "expandAll": "Expandir tudo",

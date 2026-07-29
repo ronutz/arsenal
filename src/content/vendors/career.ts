@@ -103,3 +103,16 @@ export const REDU_CAREER_PARTNERS = [
   "zscaler",
 ] as const;
 
+/** Vendors whose OFFICIAL training Rodolfo is authorized to deliver.
+ *
+ *  Narrower than REDU_CAREER_PARTNERS on purpose. Red Education partners with
+ *  many vendors; Rodolfo personally holds instructor authorization for four.
+ *  Conflating the two would overclaim, which is the exact error the vendor
+ *  naming rules exist to prevent - so they are separate lists and the page
+ *  shows separate tags. */
+export const AUTHORIZED_INSTRUCTOR_VENDORS = [
+  "f5",
+  "fortinet",
+  "netskope",
+  "extreme",
+] as const;

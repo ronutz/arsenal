@@ -35,11 +35,11 @@
     },
     "credibility": {
       "title": "Bygd av en som har gjort jobben siden 1996.",
-      "body": "Tretti år innen bedriftsnettverk og sikkerhet, levert av en aktiv instruktør og ikke av en markedsføringsside. Sertifisert på fire plattformer, så sammenligningene her er gjort ærlig, ikke for å selge.",
+      "body": "Tretti år innen bedriftsnettverk og sikkerhet, levert av en aktiv instruktør og ikke av en markedsføringsside. Sertifisert på plattformer, så sammenligningene her er gjort ærlig, ikke for å selge.",
       "aboutCta": "Mer om personen bak"
     },
     "pillars": {
-      "title": "Fire plattformer, undervist og holdt oppdatert.",
+      "title": "Plattformene, undervist og holdt oppdatert.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -853,6 +853,9 @@
       "note2": "Dette er de planlagte datoene. F5 sender også når som helst sikkerhetsvarsler utenom planen og engineering-hotfixer for hastesaker, og beholder fleksibilitet til å justere tidspunktet for varsler.",
       "learnMore": "Ny med denne endringen?",
       "learnLink": "Les hva som endret seg og hvorfor"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {
@@ -925,7 +928,7 @@
     "lede": "Opplæring i nettverk og sikkerhet, levert av en fagperson som har tilbrakt karrieren på implementeringssiden, ikke bare ved lysbildene. Basert i São Paulo, underviser over hele verden, på portugisisk og engelsk.",
     "now": {
       "title": "Hva jeg gjør nå",
-      "body": "Jeg holder offisiell, sertifisert, instruktørledet opplæring på fire sikkerhets- og nettverksplattformer. Det finnes praktiske labber på ekte systemer, og for dem som allerede kan grunnleggende og kom for å øve, er det nettopp det som er poenget: ekte miljøer å jobbe i. For grupper som er nyere i en teknologi, går tiden først til å bygge grunnlaget temaet hviler på, slik at det praktiske gir mening og folk går derfra med forståelse for hvorfor ting oppfører seg som de gjør, ikke bare hvilke knapper de skal trykke på. Begge er like verdifulle, og balansen skifter med hvem som er i rommet. Undervisning og teknisk tilrettelegging har vært en del av arbeidet mitt siden slutten av 1990-tallet, på en karriere som begynte på implementeringssiden i 1996.",
+      "body": "Jeg holder offisiell, sertifisert, instruktørledet opplæring på sikkerhets- og nettverksplattformer. Det finnes praktiske labber på ekte systemer, og for dem som allerede kan grunnleggende og kom for å øve, er det nettopp det som er poenget: ekte miljøer å jobbe i. For grupper som er nyere i en teknologi, går tiden først til å bygge grunnlaget temaet hviler på, slik at det praktiske gir mening og folk går derfra med forståelse for hvorfor ting oppfører seg som de gjør, ikke bare hvilke knapper de skal trykke på. Begge er like verdifulle, og balansen skifter med hvem som er i rommet. Undervisning og teknisk tilrettelegging har vært en del av arbeidet mitt siden slutten av 1990-tallet, på en karriere som begynte på implementeringssiden i 1996.",
       "basedLabel": "Basert i",
       "basedValue": "São Paulo, Brasil",
       "teachesLabel": "Underviser",
@@ -934,8 +937,8 @@
       "languagesValue": "Portugisisk (morsmål), engelsk (flytende)"
     },
     "platforms": {
-      "title": "Fire plattformer, undervist i dybden",
-      "body": "Å være sertifisert hos fire leverandører betyr at jeg kan undervise i hver enkelt slik det skal være, og sammenligne dem ærlig. Dette er plattformene jeg for øyeblikket er autorisert til å levere offisiell opplæring på.",
+      "title": "Plattformene, undervist i dybden",
+      "body": "Å være autorisert instruktør hos disse leverandørene betyr at jeg kan undervise i hver enkelt slik det skal være, og sammenligne dem ærlig.",
       "f5": "BIG-IP på tvers av hele det instruktørledede kurstilbudet: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automatisering og feilsøking.",
       "fortinet": "Sertifisert Fortinet-opplæring, inkludert FCP-sporet.",
       "extreme": "Extreme Networks switching, SD-WAN samt API- og automatiseringsspor, gjennom installasjon, konfigurasjon, administrasjon og feilsøking.",
@@ -1043,7 +1046,7 @@
       "s2Title": "F5, helt fra begynnelsen",
       "s2Body": "F5 har vært ankeret siden denne epokens begynnelse, bygd på arbeid med BIG-IP som strekker seg mer enn et tiår tilbake. Det autoriserte kurstilbudet dekker hele den instruktørledede BIG-IP-katalogen: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, iRules-utvikling, automatisering og feilsøking, fra endags- til firedagerskurs. Ved siden av opplæringen løper et praktisk supplement: administrerte F5 BIG-IP-labmiljøer, slik at øvelsen alltid har et ekte sted å foregå.",
       "s3Title": "Utvidelsen, plattform for plattform",
-      "s3Body": "Det som kjennetegner de siste årene, er en tydelig, datert progresjon. Extreme Networks-opplæring ble lagt til fra 2021, med EXOS-svitsjing, SD-WAN og automatisering. Fortinet fulgte fra 2024, med fokus på FCP FortiGate Administrator-sporet. Netskope kom til fra 2025, med drift, administrasjon, implementering og integrasjon av Netskope Security Cloud. Fire plattformer, hver bevisst lagt til, hver hvilende på de samme to tiårene med nettverks- og sikkerhetsimplementering under.",
+      "s3Body": "Det som kjennetegner de siste årene, er en tydelig, datert progresjon. Extreme Networks-opplæring ble lagt til fra 2021, med EXOS-svitsjing, SD-WAN og automatisering. Fortinet fulgte fra 2024, med fokus på FCP FortiGate Administrator-sporet. Netskope kom til fra 2025, med drift, administrasjon, implementering og integrasjon av Netskope Security Cloud. Plattformene, hver bevisst lagt til, hver hvilende på de samme to tiårene med nettverks- og sikkerhetsimplementering under.",
       "s4Title": "Gjennom Red Education, ut i verden",
       "s4Body": "Det primære redskapet for denne globale leveringen er Red Education, et autorisert opplæringssenter som offisielle, sertifiserte kurs når organisasjoner i ulike regioner gjennom. Rollen er global technical training instructor, med levering til den typen internasjonalt publikum som en base i São Paulo, to pass og en ekte reiselyst gjør mulig. Det varige samarbeidet gjør individuell ekspertise om til noe organisasjoner verden over kan bestille og stole på.",
       "closer": "Det er her hele historiens røde tråd lønner seg. De første årenes nysgjerrighet ble felterårenes implementeringsdybde, og den dybden er nå det hver deltaker får: ikke en foredragsholder som leser lysbilder, men en som har bygd disse systemene og forklarer hvordan de virkelig fungerer, og hvorfor."
@@ -1124,8 +1127,8 @@
   },
   "training": {
     "eyebrow": "Kurs jeg leverer",
-    "title": "Fire plattformer, undervist av en som har kjørt dem.",
-    "intro": "Offisiell, sertifisert instruktørledet opplæring over {courses} kurs på de fire plattformene i hjertet av moderne nettverk og sikkerhet. Hvert kurs leveres av en autorisert instruktør, med tiår med praktisk implementering bak opplæringen.",
+    "title": "Plattformene, undervist av en som har kjørt dem.",
+    "intro": "Offisiell, sertifisert instruktørledet opplæring over {courses} kurs på de plattformene i hjertet av moderne nettverk og sikkerhet. Hvert kurs leveres av en autorisert instruktør, med tiår med praktisk implementering bak opplæringen.",
     "courseCount": "{count} kurs",
     "since": "siden",
     "representativeNote": "Denne katalogen er representativ, ikke uttømmende. Kursnavn, varigheter og innhold gjenspeiler aktuell offentlig informasjon og er finjustert ut fra offisielle datablader.",
@@ -1160,9 +1163,9 @@
     "s3Title": "Praktisk, ikke svevende",
     "s3Body": "Teknisk ferdighet bygges ved å gjøre, så hvert kurs har praktiske labber på ekte systemer, støttet av administrerte labbmiljøer der øving alltid har et virkelig sted å skje. For dem som allerede kan grunnleggende og kom for å få hendene på teknologien, er det nettopp derfor de er her, og det er vel anvendt tid. For dem som er nyere, går tiden først til grunnlaget labbene hviler på, slik at det praktiske gir mening i stedet for å følges utenat. Begge er like verdifulle, og balansen skifter ganske enkelt med gruppen. Formatet tilpasses publikum: virtuell, instruktørledet opplæring over hele verden, fysisk når det passer bedre, på engelsk eller portugisisk. Uansett bør folk gå derfra med noe ekte og nyttig i hånden og en reell forståelse av hvorfor det fungerer.",
     "s4Title": "Anerkjent, sertifisert og aktuell",
-    "s4Body": "Opplæringen hviler på et fundament av formell anerkjennelse. F5 DevCentral MVP tre år på rad, i 2022, 2023 og 2024. F5-sertifiseringer holdt siden 2015 og instruktørautorisasjon på fire plattformer: F5, Extreme Networks, Fortinet og Netskope. Leveringen når Australia, Singapore, India, Sentral-Europa, USA og Brasil, gjennom Red Education, et autorisert opplæringssenter. Kvalifikasjonene betyr noe, men de er en snarvei til det som ligger under: en ekte, aktuell beherskelse av teknologien.",
+    "s4Body": "Opplæringen hviler på et fundament av formell anerkjennelse. F5 DevCentral MVP tre år på rad, i 2022, 2023 og 2024. F5-sertifiseringer holdt siden 2015 og instruktørautorisasjon på plattformer: F5, Extreme Networks, Fortinet og Netskope. Leveringen når Australia, Singapore, India, Sentral-Europa, USA og Brasil, gjennom Red Education, et autorisert opplæringssenter. Kvalifikasjonene betyr noe, men de er en snarvei til det som ligger under: en ekte, aktuell beherskelse av teknologien.",
     "platformsTitle": "Hva jeg underviser i",
-    "platformsBody": "Offisiell, sertifisert instruktørledet opplæring på fire plattformer i hjertet av moderne nettverk og sikkerhet. Hver lenker til sin fulle kurskatalog.",
+    "platformsBody": "Offisiell, sertifisert instruktørledet opplæring på plattformer i hjertet av moderne nettverk og sikkerhet. Hver lenker til sin fulle kurskatalog.",
     "s5Title": "Utover klasserommet",
     "s5Body": "Den samme dybden som gir god opplæring, gir god rådgivning. Tretti år gjennom applikasjonslevering, nettverkssikkerhet, identitet og infrastruktur, både på leverandørsiden og på kundesiden, er et perspektiv som strekker seg langt utover et klasserom, helt inn i arkitekturbeslutninger, teknologivalg og de vanskelige problemene som ikke passer inn i en læreplan. Opplæringen er fokuset; erfaringen bak den er tilgjengelig for team som trenger mer enn et kurs.",
     "toolsTitle": "Verktøy som beregner, aldri gjetter",

@@ -1,0 +1,67 @@
+---
+slug: dlp-checksums-and-why-the-rule-did-not-fire
+title: "DLP tuning: the argument is almost always about a checksum"
+summary: "A predefined data identifier is a pattern plus a validation, and the validation is where the surprises are. A number that looks exactly like a card but fails Luhn is not a card to the engine, and a purchase order that happens to pass it is. Neither is fixable by editing the pattern."
+concepts: ["dlp", "data loss prevention", "luhn", "checksum", "cpf", "cnpj", "false positive", "false negative", "threshold", "netskope", "data identifier"]
+relatedTools: ["netskope-dlp-match-predictor"]
+sub: dlp
+relatedArticles: ["netskope-dlp-and-classification"]
+category: security
+order: 130
+status: reviewed
+updated: "2026-07-28"
+---
+
+Every DLP deployment produces the same two complaints, usually within a fortnight of each other, and usually from different people.
+
+*It is flagging things that are not sensitive.* And: *it missed something that obviously was.*
+
+Both are normally about the same mechanism, and it is not the pattern.
+
+## Three stages, and they fail separately
+
+A predefined data identifier does not simply match text. It works in stages, and a rule that did nothing failed at exactly one of them:
+
+1. **Candidates.** Strings with the right shape — sixteen digits in groups, say.
+2. **Matches.** Candidates that pass a **validation**, which for most numeric identifiers is a checksum.
+3. **Threshold.** Whether the number of matches reaches what the rule requires before it acts.
+
+Collapsing these into "did it match" throws away the only diagnostic information available. A rule that finds nothing and a rule that finds six things below a threshold of ten are broken in completely different ways.
+
+## The checksum is the interesting stage
+
+Payment card numbers carry a check digit computed with the **Luhn algorithm**. It exists to catch transcription errors: change one digit, or transpose two adjacent ones, and the arithmetic no longer works.
+
+That gives DLP a way to tell a card number from any other sixteen-digit string, and it is very good at it — but "very good" is not "perfect", and the failures run both ways:
+
+**The false positive.** A purchase order number, an account reference, an internal identifier — any sixteen-digit string has roughly a one-in-ten chance of passing Luhn by accident. In a document full of reference numbers, some will pass. The engine is not being stupid; it is being exactly as smart as the algorithm allows.
+
+**The false negative.** Someone types a card number with a digit wrong. It is unmistakably a card number to a human reader. It fails Luhn, so the engine does not count it at all — and no threshold change will make it count, because it never became a match in the first place.
+
+## Which is why threshold tuning disappoints
+
+The instinctive response to false positives is to raise the threshold: *require five matches, not one*. It works, in the sense that fewer alerts arrive. It also delays every real incident until the fifth record leaks, which is usually not what anyone intended when they wrote the policy.
+
+The count the rule sees is not the count a person reading the document would make. Tuning a number that means something different to you and to the engine is how policies end up both noisy and porous.
+
+Proximity keywords — requiring a word like *card* or *CPF* near the candidate — usually cost less accuracy than raising a count, because they add evidence rather than demanding volume.
+
+## The Brazilian identifiers
+
+**CPF** and **CNPJ** both carry two check digits computed mod 11, so the same reasoning applies, with one extra wrinkle worth knowing.
+
+Sequences of repeated digits — `111.111.111-11` and its siblings — **satisfy the check-digit arithmetic**. They are valid by calculation and are never issued, so every serious implementation rejects them explicitly. If you write your own validation and forget that, you will match every test record and placeholder in every system you scan.
+
+## What to check when a rule surprises you
+
+**Did it find candidates at all?** If not, the checksum never ran, and the problem is the shape — formatting the pattern does not accept, or content the file parser never extracted.
+
+**Did candidates fail validation?** Then the engine genuinely does not consider them instances of that identifier. Arguing about the threshold is beside the point.
+
+**Did matches fall below the threshold?** Then the identifier worked exactly as designed and the policy is set to wait.
+
+Three different answers, three different fixes, and one question that distinguishes them.
+
+## What a learner should be able to state cold
+
+A predefined data identifier is a pattern plus a validation, and rules act on the count of validated matches rather than on candidates. Payment cards validate with Luhn; Brazilian CPF and CNPJ validate with two mod-11 check digits, and repeated-digit sequences must be rejected explicitly despite satisfying the arithmetic. A sixteen-digit string that passes Luhn by chance is a real match to the engine, and a mistyped card number is not a match at all — so most tuning complaints are about the checksum rather than the pattern. Raising a threshold reduces noise by delaying detection, which is a trade rather than a fix; adding proximity evidence usually costs less.

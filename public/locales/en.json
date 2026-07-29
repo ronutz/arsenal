@@ -52,7 +52,7 @@
     },
     "credibility": {
       "title": "Built by someone who has done the work since 1996.",
-      "body": "Thirty years in enterprise networking and security, delivered as a working instructor rather than a marketing page. Authorized across every vendor taught here, so the comparisons are made honestly, not sold.",
+      "body": "Thirty years in enterprise networking and security, delivered as a working instructor rather than a marketing page. The comparisons here are made honestly, not sold.",
       "aboutCta": "More about who builds this"
     },
     "pillars": {
@@ -3507,7 +3507,9 @@
       "netskope": "Netskope",
       "extreme": "Extreme Networks",
       "zscaler": "Zscaler",
-      "ping": "Ping Identity"
+      "ping": "Ping Identity",
+      "checkpoint": "Check Point",
+      "nginx": "NGINX"
     },
     "x509": {
       "name": "X.509 Certificate Decoder",
@@ -6141,6 +6143,152 @@
       "kind_object-removed": "REMOVED",
       "kind_object-changed": "CHANGED",
       "kind_object-moved": "ORDER CHANGED"
+    },
+    "checkpoint-policy-layer-evaluator": {
+      "name": "Check Point policy layer evaluator",
+      "blurb": "Watch a connection cross ordered layers: which rule matched in each, whether an accept meant allowed or merely proceed, and where a drop logged nothing.",
+      "inputLabel": "Policy and test connection",
+      "placeholder": "layer Network ordered\n1 | permit internal | accept | src=10.0.0.0/8\n2 | cleanup | drop |\ntest src=10.1.1.5 dst=93.184.216.34 svc=443",
+      "example": "Example",
+      "clear": "Clear",
+      "privacy": "Everything is evaluated in your browser. Nothing is sent anywhere, and no address is resolved.",
+      "parseErrorHeadline": "That policy could not be read",
+      "verdictHeading": "Verdict",
+      "verdictAllowed": "Allowed",
+      "verdictDropped": "Dropped",
+      "connectionSummary": "{src} to {dst} on port {svc}",
+      "traceHeading": "How it got there",
+      "inlineTag": "inline layer",
+      "outcomeProceed": "accepted, proceeds to the next layer",
+      "outcomeAllowed": "accepted by the last layer, so allowed",
+      "outcomeDropped": "dropped",
+      "outcomeInline": "entered the inline layer",
+      "silentWarning": "This drop logs nothing. The connection fails and no entry appears in the logs.",
+      "findingsHeading": "About the policy itself"
+    },
+    "nginx-location-matcher": {
+      "name": "NGINX location matcher",
+      "blurb": "Paste your location blocks and a URI, and watch NGINX's five-step selection run: exact, longest prefix, the caret-tilde early exit, regexes in file order, then the fallback.",
+      "inputLabel": "Location blocks and a request URI",
+      "placeholder": "location /\nlocation /images/\nlocation ~ \\.(gif|jpg|png)$\n\nrequest /images/logo.gif",
+      "example": "Example",
+      "clear": "Clear",
+      "privacy": "Matched entirely in your browser. Nothing is sent anywhere, and no file is read.",
+      "parseErrorHeadline": "That configuration could not be read",
+      "winnerHeading": "The block that wins",
+      "noMatch": "No location matches - this falls through to the server block",
+      "requested": "Request: {uri}",
+      "walkHeading": "How NGINX got there",
+      "decisive": "decides it",
+      "stageExact": "Exact match",
+      "stagePrefix": "Prefix round (longest wins)",
+      "stagePriority": "Caret-tilde early exit",
+      "stageRegex": "Regular expressions, in file order",
+      "stageFallback": "Fallback to the longest prefix",
+      "findingsHeading": "About the configuration"
+    },
+    "nginx-proxy-pass-rewriter": {
+      "name": "NGINX proxy_pass rewriter",
+      "blurb": "One trailing slash decides whether your backend sees /app/page or /page. Paste the directive and see both answers side by side.",
+      "inputLabel": "location, proxy_pass and a request URI",
+      "placeholder": "location /app/\nproxy_pass http://backend;\n\nrequest /app/page",
+      "example": "Example",
+      "clear": "Clear",
+      "privacy": "Computed in your browser. The upstream name is never resolved or contacted.",
+      "parseErrorHeadline": "That could not be read",
+      "resultHeading": "What the backend receives",
+      "refused": "NGINX refuses this configuration",
+      "counterpartHeading": "With the switch flipped",
+      "findingsHeading": "Worth knowing"
+    },
+    "nginx-proxy-cache-decision": {
+      "name": "NGINX cache decision explainer",
+      "blurb": "Two different questions: will this response be stored, and will a later request be served from it. Paste the directives and the exchange to see both answers and why.",
+      "inputLabel": "Cache directives, the request, and the upstream response",
+      "placeholder": "proxy_cache zone1\nproxy_cache_valid 200 10m\n\nrequest GET /a\n\nresponse 200",
+      "example": "Example",
+      "clear": "Clear",
+      "privacy": "Decided in your browser. Nothing is fetched and no upstream is contacted.",
+      "parseErrorHeadline": "That could not be read",
+      "verdictHeading": "The two verdicts",
+      "storedYes": "STORED - this response is written to the cache",
+      "storedNo": "NOT STORED - this response never reaches the cache",
+      "servedYes": "SERVED - a later matching request gets it from cache",
+      "servedNo": "NOT SERVED - a later request goes upstream",
+      "keyLabel": "Cache key: {key}",
+      "storeHeading": "Why it is or is not stored",
+      "serveHeading": "Why it is or is not served",
+      "warningsHeading": "Worth knowing"
+    },
+    "extreme-spbm-multicast-mac": {
+      "name": "SPBM multicast address builder",
+      "blurb": "SPBM group addresses are computed, not learned. Build one from a nickname and an I-SID, or paste a line from the multicast FIB and get back whose tree it is.",
+      "buildHeading": "Build an address",
+      "nicknameLabel": "Node nickname (x.yy.zz)",
+      "isidLabel": "I-SID (decimal, or 0x for hex)",
+      "decodeHeading": "Or take one apart",
+      "macLabel": "Group address from the multicast FIB",
+      "exampleBuild": "Example: build",
+      "exampleDecode": "Example: decode",
+      "clear": "Clear",
+      "privacy": "Arithmetic in your browser. Nothing is resolved or looked up.",
+      "errorHeadline": "That could not be read",
+      "resultBuild": "The address every node will compute",
+      "resultDecode": "What this address is",
+      "summary": "Nickname {nickname}, I-SID {isid}",
+      "workingsHeading": "How it is assembled",
+      "notesHeading": "Worth knowing"
+    },
+    "checkpoint-nat-proxy-arp": {
+      "name": "Check Point NAT reachability checker",
+      "blurb": "Why a correct-looking NAT delivers nothing. Works out whether anything will answer ARP for the translated address, which is usually where the traffic disappears.",
+      "methodLabel": "How the NAT is configured",
+      "methodManual": "Manual rule in the NAT rule base",
+      "methodAutomatic": "Automatic, from the object",
+      "typeLabel": "NAT type",
+      "typeStatic": "Static (publishes an address)",
+      "typeHide": "Hide (outbound only)",
+      "natIpLabel": "Translated address",
+      "gatewayLabel": "Gateway interface facing the traffic",
+      "prefixLabel": "Prefix length of that interface",
+      "autoArpLabel": "Global Properties: Automatic ARP configuration",
+      "autoArpOn": "Enabled (default)",
+      "autoArpOff": "Disabled",
+      "example": "Example",
+      "clear": "Clear",
+      "privacy": "Arithmetic in your browser. No ARP is sent and no gateway is contacted.",
+      "errorHeadline": "That could not be read",
+      "verdictHeading": "Will traffic arrive?",
+      "verdictArrives": "YES - nothing here stops it at layer 2",
+      "verdictBlackHole": "NO - the packet never reaches the gateway",
+      "subnetNote": "Interface subnet: {network}",
+      "reasoningHeading": "How that was decided",
+      "remedyHeading": "What to do",
+      "findingsHeading": "Worth knowing"
+    },
+    "netskope-dlp-match-predictor": {
+      "name": "DLP match predictor",
+      "blurb": "Why a DLP rule fired, or did not. Separates the three stages that fail separately: candidates found, checksum passed, threshold reached.",
+      "kindLabel": "Data identifier",
+      "kindCard": "Payment card (Luhn)",
+      "kindCpf": "CPF (Brazil)",
+      "kindCnpj": "CNPJ (Brazil)",
+      "thresholdLabel": "Rule threshold (matches required)",
+      "textLabel": "Content to test",
+      "placeholder": "Paste the text you expect the rule to match, or the text that surprised you by matching.",
+      "example": "Example",
+      "clear": "Clear",
+      "privacy": "Everything stays in this browser. Nothing you paste is transmitted, stored or logged.",
+      "errorHeadline": "That could not be read",
+      "verdictHeading": "Would the rule fire?",
+      "fires": "YES - the threshold is met",
+      "doesNotFire": "NO",
+      "stagesHeading": "The three stages",
+      "stageCandidates": "Candidates found by shape: {count}",
+      "stageMatches": "Passed the checksum: {count}",
+      "stageThreshold": "Threshold required: {count}",
+      "candidatesHeading": "Each candidate",
+      "findingsHeading": "Worth knowing"
     }
   },
   "privacy_page": {
@@ -6241,7 +6389,7 @@
     },
     "platforms": {
       "title": "The platforms, taught in depth",
-      "body": "Being an authorized instructor for every vendor here means I can teach each one properly and compare them honestly. These are the platforms I am authorized to teach.",
+      "body": "Being an authorized instructor for these vendors means I can teach each one properly and compare them honestly.",
       "f5": "BIG-IP across the full instructor-led curriculum: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automation, and troubleshooting.",
       "fortinet": "Fortinet certified training, including the FCP track.",
       "extreme": "Extreme Networks switching, SD-WAN, and API and automation tracks, across installation, configuration, management, and troubleshooting.",
@@ -6291,7 +6439,15 @@
       "endorsementsEyebrow": "In their words",
       "endorsementsTitle": "Endorsements",
       "endorsementsDesc": "Recommendations from colleagues, partners, and students across two decades of training, quoted verbatim.",
-      "endorsementsCta": "Read the endorsements"
+      "endorsementsCta": "Read the endorsements",
+      "historyEyebrow": "The long version",
+      "historyTitle": "Read the full history",
+      "historyDesc": "Thirty years told properly: the companies, the technologies, and the turns that were not planned.",
+      "historyCta": "Read the history",
+      "recordEyebrow": "Vendor by vendor",
+      "recordTitle": "The career record",
+      "recordDesc": "Every vendor this career ran through, each with its own chapter and what the work actually was.",
+      "recordCta": "Open the record"
     }
   },
   "endorsements": {
@@ -6707,7 +6863,7 @@
       "s1Body": "In 2025 Rodolfo completed Ping Identity's official PingFederate training and earned the PingFederate Practitioner credential, deep-diving the federation server that turned SAML from a specification into enterprise plumbing. For someone who teaches access management on other platforms and builds SAML and OIDC tooling for this site, it was the natural next protocol stack to master from the inside.",
       "s2Title": "Identity, decoded on this site",
       "s2Body": "The identity toolset on this site decodes the same artifacts PingFederate and PingOne move in production: the SAML decoder, the JWT and OIDC inspectors, and the PKCE and TOTP tools all read the assertions, tokens, and flows federation runs on - locally, in the browser. The chapter's coursework runs through PingFederate practitioner training in 2025, and the federation patterns it teaches are exactly what those tools make visible.",
-      "certs": "Authorized Ping Identity instructor (cleared 2026). PingFederate Practitioner (2025), earned through Ping Identity Training. Full detail on the credentials page.",
+      "certs": "PingFederate Practitioner (2025), earned through Ping Identity Training. Full detail on the credentials page.",
       "lineageTitle": "How three identity bloodlines became one",
       "lineageDesc": "Ping was founded on federation in Denver in 2002. Sun open-sourced its access stack as OpenSSO and its new Java directory as OpenDS; when Oracle absorbed Sun in 2010, five engineers forked the code in Oslo as ForgeRock - OpenAM and OpenDJ. A third line, the UnboundID directory built by Sun directory alumni in Austin, joined Ping in 2016 as PingDirectory. Thoma Bravo took Ping and ForgeRock private in 2022 and combined them on August 23, 2023: one platform, all three heritages, with DaVinci as the orchestration tissue."
     },
@@ -6720,7 +6876,7 @@
       "s1Body": "Two decades of this record run through firewalls, load balancers, and the perimeters they defended; Zscaler is the company that bet earliest that the perimeter would dissolve into a global inspection cloud. Studying the Zero Trust Exchange, ZIA, and ZPA architectures is the natural continuation of the SSE work already underway in the Netskope chapter, from the other side of the same market.",
       "s2Title": "Reading the TLS surface",
       "s2Body": "The JA4 and JA3 decoders on this site read the same TLS surface the Zero Trust Exchange inspects at scale: the handshake a client offers before any policy fires, and everything it reveals. It is a natural pairing - a cloud that terminates and inspects the world's TLS, and a toolbox that teaches what those handshakes say - with more of that tooling to follow.",
-      "certs": "Authorized Zscaler instructor (cleared 2026). Platform certifications will be recorded on the credentials page as they land."
+      "certs": "Platform certifications will be recorded on the credentials page as they land."
     },
     "pulse": {
       "name": "Pulse Secure",
@@ -6735,7 +6891,24 @@
     },
     "industryPointerTitle": "The wider family tree",
     "industryPointerBody": "Deep-research lineages of the Red Education training partners and the pioneers that shaped this industry - Check Point to Nortel, Symantec to Madge - live on the Industry page.",
-    "industryPointerLink": "Explore the industry lineages"
+    "industryPointerLink": "Explore the industry lineages",
+    "checkpoint": {
+      "name": "Check Point",
+      "tagline": "The company that made the stateful firewall a product - and still builds the management model everything else is compared against.",
+      "years": "2026 – present",
+      "intro": "Check Point enters this record from the opposite end of the story to everything around it. Most chapters here are about a company that arrived to solve a problem the incumbents had left open. Check Point IS the incumbent: it shipped stateful inspection as a product in 1993 and effectively created the category every firewall on this site competes inside. Learning it now, after two decades spent on the platforms that came to challenge it, is a strange and useful way round.",
+      "s1Title": "The company that made the firewall a product",
+      "s1Body": "Packet filtering existed before 1993 and stateful inspection was not a Check Point invention in the academic sense. What Check Point did was turn it into something you could buy, install and administer without building it yourself, and then wrap it in a management model that treated policy as a database rather than a device configuration. That second decision is the one that aged best. Thirty years later the separation of management server from enforcement point, and the idea that you publish a policy before you install it, is still the thing that surprises people arriving from other vendors - and it is still the model those vendors are compared against.",
+      "s2Title": "Learning it backwards",
+      "s2Body": "The CCSA and CCSE study guides on this site were written from Check Point's own published exam blueprints, and they are deliberately weighted toward what catches someone arriving from FortiGate or BIG-IP. That the rule base ends in an implicit drop that logs nothing. That policy layers are an AND rather than an OR, so accepting in one layer only means the traffic proceeds to the next. That publish and install are two separate actions and stopping after the first changes nothing. None of these is difficult; all of them are the kind of thing you learn once, usually by getting them wrong. Red Education is a Check Point Authorized Training Center, named Check Point Software Technologies Platinum Elite ATC Partner of the Year 2024, which is how this chapter opened.",
+      "certs": "Studying toward CCSA and CCSE. Certifications will be recorded on the credentials page as they land; the study guides here are study material and carry no delivery claim."
+    },
+    "nginx": {
+      "name": "NGINX",
+      "tagline": "The reverse proxy that became the default answer - a web server, load balancer and cache whose configuration model is one file tree and a matching order worth understanding before you fight it."
+    },
+    "allCompaniesTitle": "Every company with a page here",
+    "allCompaniesLede": "The companies whose technology, people or acquisitions run through the platforms this site teaches, in the order their stories start. Some are still trading; some ended inside somebody else, and carry the year."
   },
   "training": {
     "eyebrow": "Training I deliver",
@@ -7185,7 +7358,8 @@
     "metaDescription": "Every {vendor} tool and every {vendor} article on ronutz.com, on one page: tools grouped by family, then the full article library.",
     "certsEyebrow": "Certification prep",
     "certsCta": "Study guide: {cert}",
-    "industryLink": "The {vendor} story in the industry section"
+    "industryLink": "The {vendor} story in the industry section",
+    "industryLede": "How {vendor} got here: the acquisitions, the pivots, and the people whose work ended up inside the platform."
   },
   "learn": {
     "eyebrow": "Learn",
@@ -7203,7 +7377,15 @@
     "portalPaths": "{count} reading paths",
     "portalGuides": "{count} exam guides",
     "portalObjectives": "{count} objectives mapped",
-    "portalStudyLede": "Curated reading paths and blueprint-mapped certification guides - every objective tied to the articles that teach it and the tools that exercise it."
+    "portalStudyLede": "Curated reading paths and blueprint-mapped certification guides - every objective tied to the articles that teach it and the tools that exercise it.",
+    "portalArticles": "The article index",
+    "portalArticlesLede": "The vendor-neutral library, grouped by subject. Vendor-specific writing lives on the hubs.",
+    "portalArticleCount": "{count} articles",
+    "portalHubs": "Vendor hubs",
+    "portalHubsLede": "One door per vendor: the tools, the articles, and the certifications that belong to each platform.",
+    "portalHubCount": "{count} vendors",
+    "portalCerts": "Certification study guides",
+    "portalCertsLede": "Exam blueprints mapped objective by objective to the articles that teach them."
   },
   "meetingBingo": {
     "metaTitle": "Meeting Bingo",
@@ -8684,7 +8866,6 @@
     "openHub": "Open hub",
     "comingSoon": "Hub opens with its first tool",
     "note": "Each hub is the single place that gathers everything the site holds for a vendor: the tools, grouped by product family, and the full article library for that vendor, on one page. The same hubs are reachable from the strip on the Tools and Learn listings.",
-    "scopeNote": "These four are the vendors whose training this site's author is authorized to deliver. Tools and articles may reference other vendors' technologies where relevant, but a hub here means an authorized-training relationship, not just coverage.",
     "metaTitle": "Vendor hubs - ronutz.com",
     "metaDescription": "The vendor hubs on ronutz.com: F5, Fortinet, Netskope, Extreme Networks, Zscaler, and Ping Identity, each gathering every tool and article for that vendor on one page.",
     "blurbs": {
@@ -8693,9 +8874,10 @@
       "netskope": "Netskope One and SSE: the next-gen secure web gateway, CASB, ZTNA, cloud firewall, and the data-protection and platform layers.",
       "extreme": "Extreme Networks: Platform ONE, the ExtremeCloud IQ continuum, wired and wireless and fabric, access security, and analytics.",
       "zscaler": "Zscaler and the Zero Trust Exchange: cloud secure web gateway and firewall (ZIA), zero trust access to private applications (ZPA), digital experience monitoring (ZDX), and data protection. Security delivered as a global cloud, not an appliance.",
-      "ping": "Ping Identity and ForgeRock: access management across PingOne, PingFederate, PingAccess, and the ForgeRock Identity Platform, with SSO, MFA, identity orchestration, and directory services at enterprise scale."
-    },
-    "redEduCallout": "Why these vendors? Because they are the platforms Rodolfo is authorized to teach through <link>Red Education</link>, a global award-winning authorized training partner: F5, Fortinet, Netskope, Extreme Networks, Ping Identity, and Zscaler."
+      "ping": "Ping Identity and ForgeRock: access management across PingOne, PingFederate, PingAccess, and the ForgeRock Identity Platform, with SSO, MFA, identity orchestration, and directory services at enterprise scale.",
+      "checkpoint": "Check Point Quantum and the Infinity architecture: security gateways managed from a separate management server, with a policy model built on layers, objects and a database that is published before it is installed. The CCSA and CCSE study guides follow it.",
+      "nginx": "NGINX as web server, reverse proxy, load balancer and cache: the configuration tree, the location matching order that decides which block wins, and the proxying behaviour that surprises people the first time."
+    }
   },
   "glossary": {
     "title": "Glossary",
@@ -13920,6 +14102,58 @@
       "ism-band": {
         "def": "Industrial, scientific and medical bands: spectrum usable without an individual licence, subject to power and interference rules.",
         "context": "These allocations made consumer wireless possible. Wi-Fi and Bluetooth share 2.4 GHz with microwave ovens and much else, which is exactly why that band is congested, and the 5 and 6 GHz Wi-Fi bands trade range for room. LoRa takes the opposite bet in the sub-GHz ISM allocations, accepting very low data rates to get kilometres of range and years of battery life. Licence-exempt does not mean rule-free: duty cycle and power limits are what keep the bands usable."
+      },
+      "apache-httpd": {
+        "def": "The web server that ran most of the internet for the best part of two decades, begun in 1995 as coordinated patches to a server nobody was maintaining.",
+        "context": "Its original model gives every connection its own process, which is robust and flexible and expensive in memory. That cost is the constraint NGINX was written against, and later Apache multi-processing modules - especially event - answered it from the other direction."
+      },
+      "a-patchy-server": {
+        "def": "The oldest explanation of how Apache got its name: it was a server made of patches.",
+        "context": "The project's own FAQ said so from 1996 to 2001. Brian Behlendorf said in 2000 that the name honoured the Apache people, then said in 2007 that it was the patches after all, and the foundation today credits the tribe. Both stories are in the record and neither has been retracted cleanly, which is why this entry is marked disputed."
+      },
+      "apache-software-foundation": {
+        "def": "The non-profit incorporated in June 1999 so the Apache projects would outlive any individual volunteer.",
+        "context": "Formed from the eight-person Apache Group with Brian Behlendorf as first president. The structure is the reason the ASF now stewards hundreds of projects rather than one web server."
+      },
+      "c10k": {
+        "def": "The problem, named in 1999, of handling ten thousand simultaneous connections on one machine.",
+        "context": "Not a hardware question but an architectural one: a server giving each connection its own process or thread runs out of memory and scheduler long before it runs out of CPU. The answer was the event loop, which is what NGINX and Apache's event module both use."
+      },
+      "altavista": {
+        "def": "The search engine that led the web before Google, built at DEC as a way to stress-test a processor.",
+        "context": "Launched 15 December 1995 with an index of sixteen million documents and full Boolean search, at a time when the alternative was a hand-maintained directory. Its owners then rebuilt it as a portal to compete with Yahoo, which meant competing on everything except the thing it was best at. Sold to Overture in 2003 for about six percent of its valuation three years earlier, and shut down by Yahoo on 8 July 2013."
+      },
+      "babel-fish": {
+        "def": "The web's first machine-translation service, shipped by AltaVista.",
+        "context": "Named for the creature in The Hitchhiker's Guide to the Galaxy that translates any language when placed in your ear. It outlived its parent under Yahoo's brand and now redirects to Microsoft's translator."
+      },
+      "scooter-crawler": {
+        "def": "AltaVista's web crawler, written by Louis Monier at DEC.",
+        "context": "The half of AltaVista that actually stressed the hardware, which was the original point of the project. Switched off around 2004 when Yahoo replaced the engine with its own, leaving the AltaVista brand as a front end for someone else's results."
+      },
+      "pagerank": {
+        "def": "Google's ranking idea: score a page by who links to it, weighting links from well-linked pages more heavily.",
+        "context": "It measures something a page's own author does not control, which is why it resisted the keyword-stuffing that was defeating the search engines of the mid-1990s. Begun as a Stanford project called BackRub in January 1996. Page and Brin offered it to AltaVista for a million dollars in 1998 and were turned down."
+      },
+      "googol": {
+        "def": "The digit one followed by a hundred zeros, and the word Google is a misspelling of it.",
+        "context": "Chosen to suggest the scale of the index the founders intended to build. The mathematical term itself was coined by a nine-year-old asked to name a very large number."
+      },
+      "six-degrees-of-separation": {
+        "def": "The idea that any two people are connected by a chain of about six acquaintances - and the name of the first social network.",
+        "context": "SixDegrees.com launched in 1997 with profiles, friends lists and the ability to see how you connected to any other member: every feature social networks still have. It reached 3.5 million users and failed anyway, because in the late 1990s most of the people those users knew were not online at all. The idea was right and the infrastructure had not arrived."
+      },
+      "large-language-model": {
+        "def": "A model trained on very large amounts of text to predict what comes next, which turns out to be enough to do a great many other things.",
+        "context": "The capability people find surprising is emergent rather than designed: nobody wrote rules for summarising or translating or writing code. Worth holding onto when reading claims about what these systems 'understand' - next-token prediction at scale is what is actually happening, and how much that explains is genuinely contested."
+      },
+      "transformer-architecture": {
+        "def": "The 2017 neural-network design that made modern language models practical, built on self-attention.",
+        "context": "Introduced in a Google paper titled 'Attention Is All You Need'. Its advantage over what came before is that it processes a whole sequence in parallel rather than one token at a time, which is what made training on internet-scale text affordable. Every large language model in current use is a descendant."
+      },
+      "generative-ai": {
+        "def": "Systems that produce new text, images, audio or code rather than classifying or ranking existing material.",
+        "context": "The technology was not new in November 2022; the access was. ChatGPT's launch on 30 November 2022 reached a hundred million monthly users in two months, and what changed was that using a language model stopped requiring an API key or any idea of what a transformer is. Capability had been improving for years in public view."
       }
     },
     "totalCount": "{count} terms",
@@ -13944,7 +14178,7 @@
     "targetsLabel": "Targets",
     "versionUnspecified": "Product version not specified in the blueprint",
     "sourceLabel": "Blueprint source",
-    "disclaimer": "Independent study aid built from the public exam blueprint. Not affiliated with, authorized by, or endorsed by {vendor}. Exam objectives, versions, and availability change, so always verify against the official blueprint.",
+    "disclaimer": "Independent study aid built from the public exam blueprint. Not affiliated with, authorized by, or endorsed by {vendor}. Objectives are transcribed and mapped by hand, so this page may contain mistakes or may have fallen behind the vendor's current material: exam objectives, versions, numbering and availability all change without notice. Treat {vendor}'s own certification portal as the source of truth and verify against it before you book anything.",
     "onThisSite": "On this site",
     "toolsLabel": "Tools",
     "manualLabel": "Official manual",
@@ -13974,7 +14208,8 @@
     "retirementNotice": "{exam} can be sat until {until}.",
     "retirementReplacedBy": "It is replaced by {exam}.",
     "retirementNoReplacement": "Fortinet's page does not name a replacement.",
-    "sourceCaveatCourse": "These objectives come from Fortinet's course page for this product, not from an exam blueprint: Fortinet has not published one for this exam yet. The material is what the course teaches, and an exam blueprint may organise or weight it differently."
+    "sourceCaveatCourse": "These objectives come from Fortinet's course page for this product, not from an exam blueprint: Fortinet has not published one for this exam yet. The material is what the course teaches, and an exam blueprint may organise or weight it differently.",
+    "standaloneTrackLabel": "Outside the certification path"
   },
   "trainingCta": {
     "eyebrow": "Instructor-led training",
@@ -14050,13 +14285,15 @@
     "nameChanges": "Corporate name changes",
     "f5CardTitle": "F5, Inc.",
     "f5CardDesc": "From one load balancer (1996) to an app delivery and security platform, via 23+ acquisitions.",
-    "moreSoon": "More vendor lineages are being researched and added - each verified against primary sources before it ships."
+    "titleFor": "{vendor} lineage",
+    "backToHub": "Back to {vendor}",
+    "introFor": "What {vendor} is made of, and who made it. Every acquisition below is verified against primary sources, with the product line it turned into where that connection is documented rather than inferred."
   },
   "partnerVendors": {
     "reduEyebrow": "Red Education training partner",
     "otherEyebrow": "Vendor lineage",
     "disclaimerTag": "Note",
-    "disclaimerText": "Rodolfo does not deliver {vendor} training. His own authorized instruction covers F5, Fortinet, Netskope, Extreme Networks, Ping Identity, and Zscaler. {vendor} is taught by Red Education's instructor team - among the most awarded in the industry, with recognition granted by multiple vendors.",
+    "disclaimerText": "Rodolfo does not deliver {vendor} training. {vendor} is taught by Red Education's instructor team - among the most awarded in the industry, with recognition granted by multiple vendors.",
     "awardsTitle": "Red Education recognition",
     "sourcesLabel": "Sources",
     "reduSectionTitle": "Red Education training partners",
@@ -14076,7 +14313,17 @@
     "contemporarySectionTitle": "The contemporaries - still writing their chapters",
     "contemporarySectionNote": "Companies of the modern era whose stories are still unfolding - no training association; profiled for what they mean to the industry today.",
     "contemporaryEyebrow": "Industry contemporary",
-    "contemporaryCardTag": "contemporary"
+    "contemporaryCardTag": "contemporary",
+    "timelineSectionTitle": "The lineage, in order",
+    "timelineSectionNote": "Every company whose technology or people ended up inside the platforms on this site, ordered by the year its story starts. Some are still trading and some were absorbed decades ago; the ones that ended carry the year and what happened. Vendors marked as Red Education partners are ones whose authorized training Red Education delivers. Ordering by founding rather than by status avoids a judgement call that kept getting it wrong - plenty of the older names here are still very much in business.",
+    "timelineSince": "{from} - present",
+    "timelineSpan": "{from} - {to}",
+    "reduPill": "Red Education partner",
+    "careerPill": "Worked inside",
+    "lineageEyebrow": "Vendor lineage",
+    "workedWithYears": "Worked with directly, {years}",
+    "instructorPill": "Authorized instructor",
+    "acquisitionsHeading": "Acquisitions"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",
@@ -14106,11 +14353,11 @@
   "studyGuidesIndex": {
     "eyebrow": "Study guides",
     "title": "Study guides",
-    "lede": "Two ways to study here, both free. Curated reading paths walk the Learn library in teaching order - each one an ordered sequence of articles with the tools to practice on. Certification study guides map official exam blueprints objective by objective to articles, tools, and the vendor's own manuals.",
+    "lede": "Two ways to study here, and they answer different questions. Curated reading paths follow a technology rather than an exam: read the Learn library in teaching order, with the tools to practise on as you go. Certification study guides live on their own page and do the opposite - they start from a vendor's published exam blueprint and map it objective by objective.",
     "pathsTitle": "Curated reading paths",
-    "pathsLede": "Each path is a syllabus without an exam: read in order, practice with the tools as you go. Everything computes locally and nothing is paywalled.",
+    "pathsLede": "A path is a syllabus with no exam behind it. Nothing here is organised around a certification blueprint or scored against one: the order is the order the subject makes sense in, chosen so each article earns the next. Read straight through, or stop when you have what you came for. Everything computes locally and nothing is paywalled.",
     "certTitle": "Certification study guides",
-    "certLede": "Blueprint-mapped guides for the exams behind the credentials - every objective tied to the articles that teach it, the tools that exercise it, and the official manual pages that remain the source of truth.",
+    "certLede": "These are the exam-shaped ones, and they live on the certifications page. Each follows a vendor's own published blueprint objective by objective, tying every objective to the articles that teach it, the tools that exercise it, and the manual pages that remain the source of truth.",
     "certAllCta": "All certifications and guides",
     "stepsLabel": "Reading order",
     "practiceLabel": "Practice with",
@@ -14151,6 +14398,22 @@
       "ping-identity-platform": {
         "title": "The Ping Identity Platform",
         "lede": "The whole Ping estate in reading order: the PingOne platform map and the ForgeRock lineage first, so every product name resolves; then PingAccess policy, the PingDirectory data platform, and DaVinci orchestration; closing with the PingFederate shelf - the self-managed federation core - in its established teaching order. The companion walk to the Certified Professional guides on the certifications hub."
+      },
+      "checkpoint-security-administration": {
+        "title": "Check Point security administration",
+        "lede": "The platform in the order the CCSA teaches it: the three-tier split first, because nothing else makes sense until you know the management server and the gateway are different machines with different jobs, then the rule base, then the layer semantics that catch everyone."
+      },
+      "nginx-from-config-to-cache": {
+        "title": "NGINX, from configuration to cache",
+        "lede": "In the order the confusions actually arrive: the configuration tree, then which location block wins, then what path the backend receives, then what gets cached and served to whom."
+      },
+      "extreme-fabric-and-voss": {
+        "title": "Extreme fabric and the two operating systems",
+        "lede": "ExtremeXOS for the configuration model, then why VOSS feels so different (it came from another company entirely), then Fabric Connect built up from IS-IS through I-SIDs to the resilience features."
+      },
+      "fortinet-fabric-and-operations": {
+        "title": "Fortinet beyond the single firewall",
+        "lede": "What shows up once a FortiGate is not alone: inspection choices, the branch overlay, cloud integration, the SOC, and the operational technology edge."
       }
     },
     "expandAll": "Expand all",

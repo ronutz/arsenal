@@ -138,10 +138,16 @@ import CheckpointPolicyLayerEvaluatorTool from "@/components/CheckpointPolicyLay
 import NginxLocationMatcherTool from "@/components/NginxLocationMatcherTool";
 import NginxProxyPassRewriterTool from "@/components/NginxProxyPassRewriterTool";
 import NginxProxyCacheDecisionTool from "@/components/NginxProxyCacheDecisionTool";
+import ExtremeSpbmMulticastMacTool from "@/components/ExtremeSpbmMulticastMacTool";
+import CheckpointNatProxyArpTool from "@/components/CheckpointNatProxyArpTool";
+import NetskopeDlpMatchPredictorTool from "@/components/NetskopeDlpMatchPredictorTool";
 import { manifest as checkpointLayerManifest } from "@/lib/tools/checkpoint-policy-layer-evaluator";
 import { manifest as nginxLocationManifest } from "@/lib/tools/nginx-location-matcher";
 import { manifest as nginxProxyManifest } from "@/lib/tools/nginx-proxy-pass-rewriter";
 import { manifest as nginxCacheManifest } from "@/lib/tools/nginx-proxy-cache-decision";
+import { manifest as spbmManifest } from "@/lib/tools/extreme-spbm-multicast-mac";
+import { manifest as cpNatManifest } from "@/lib/tools/checkpoint-nat-proxy-arp";
+import { manifest as dlpManifest } from "@/lib/tools/netskope-dlp-match-predictor";
 import ZscalerSslBypassPlannerTool from "@/components/ZscalerSslBypassPlannerTool";
 import ZdxScoreFactorExplainerTool from "@/components/ZdxScoreFactorExplainerTool";
 import ZccForwardingDecisionExplainerTool from "@/components/ZccForwardingDecisionExplainerTool";
@@ -689,6 +695,18 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "zscaler-firewall-rule-order-simulator": {
     Component: ZscalerFirewallRuleOrderSimulatorTool,
     sources: zscalerFwManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "netskope-dlp-match-predictor": {
+    Component: NetskopeDlpMatchPredictorTool,
+    sources: dlpManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "checkpoint-nat-proxy-arp": {
+    Component: CheckpointNatProxyArpTool,
+    sources: cpNatManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "extreme-spbm-multicast-mac": {
+    Component: ExtremeSpbmMulticastMacTool,
+    sources: spbmManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "nginx-proxy-cache-decision": {
     Component: NginxProxyCacheDecisionTool,

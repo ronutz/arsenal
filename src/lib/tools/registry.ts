@@ -316,6 +316,12 @@ export const API_EXCLUDED: Record<string, string> = {
     "Interactive six-question chooser: the value is the sourced elimination walk-through rendered in the UI; the structured-object input is not a stable text API contract.",
   "zscaler-firewall-rule-order-simulator":
     "Policy teaching simulator: the value is the rendered trace, verdict, and shadow findings; the rule grammar is a deliberate teaching subset, not a stable API contract.",
+  "netskope-dlp-match-predictor":
+    "Checksum-stage modelling: the value is the separation of candidates from matches from threshold. Not a reimplementation of any vendor DLP engine, and says so.",
+  "checkpoint-nat-proxy-arp":
+    "Reachability reasoning: the value is the ordered explanation and the remedy, not the boolean. Deliberately does not rank the NAT rule base, because the sources disagree on that order.",
+  "extreme-spbm-multicast-mac":
+    "Deterministic address arithmetic: the value is the derivation shown alongside the answer, and the declared ambiguity where a nickname collides with the fixed prefix.",
   "nginx-proxy-cache-decision":
     "Config teaching explainer: the value is the two rendered rule walks and the leak warnings; the directive grammar is a deliberate teaching subset, not a stable API contract.",
   "nginx-proxy-pass-rewriter":

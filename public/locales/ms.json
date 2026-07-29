@@ -35,11 +35,11 @@
     },
     "credibility": {
       "title": "Dibina oleh seseorang yang telah melakukan kerja ini sejak 1996.",
-      "body": "Tiga puluh tahun dalam rangkaian dan keselamatan perusahaan, dibawa oleh seorang jurulatih yang aktif, bukan halaman pemasaran. Disahkan merentasi empat platform, jadi perbandingan di sini dibuat dengan jujur, bukan untuk membuat jualan.",
+      "body": "Tiga puluh tahun dalam rangkaian dan keselamatan perusahaan, dibawa oleh seorang jurulatih yang aktif, bukan halaman pemasaran. Disahkan merentasi platform, jadi perbandingan di sini dibuat dengan jujur, bukan untuk membuat jualan.",
       "aboutCta": "Lebih lanjut tentang orang di sebaliknya"
     },
     "pillars": {
-      "title": "Empat platform, diajar dan dikekalkan terkini.",
+      "title": "Platform, diajar dan dikekalkan terkini.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -853,6 +853,9 @@
       "note2": "Ini ialah tarikh yang dijadualkan. F5 juga mengeluarkan amaran keselamatan luar jadual dan pembaikan kejuruteraan (hotfix) untuk isu mendesak pada bila-bila masa, dan mengekalkan fleksibiliti untuk melaraskan masa pemberitahuan.",
       "learnMore": "Baharu dengan perubahan ini?",
       "learnLink": "Baca apa yang berubah dan mengapa"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {
@@ -925,7 +928,7 @@
     "lede": "Latihan rangkaian dan keselamatan yang dibawa oleh seorang pengamal yang menghabiskan kerjayanya di pihak pelaksanaan, bukan hanya di hadapan slaid. Berpangkalan di São Paulo, mengajar di seluruh dunia, dalam bahasa Portugis dan Inggeris.",
     "now": {
       "title": "Apa yang saya lakukan sekarang",
-      "body": "Saya menyampaikan latihan rasmi bertauliah yang dikendalikan pengajar merentas empat platform keselamatan dan rangkaian. Ada makmal amali pada sistem sebenar, dan bagi mereka yang sudah tahu asasnya dan datang untuk berlatih, itulah tepatnya intinya: persekitaran sebenar untuk bekerja. Bagi kumpulan yang lebih baharu dalam sesuatu teknologi, masa pergi dahulu untuk membina asas yang menjadi sandaran topik itu, supaya kerja amali masuk akal dan orang pulang dengan memahami mengapa sesuatu berkelakuan sedemikian, bukan sekadar butang mana yang perlu ditekan. Kedua-duanya sama berharga, dan keseimbangan beralih mengikut siapa yang ada dalam bilik. Pengajaran dan pemerkasaan teknikal telah menjadi sebahagian daripada kerja saya sejak akhir 1990-an, atas kerjaya yang bermula di sisi pelaksanaan pada 1996.",
+      "body": "Saya menyampaikan latihan rasmi bertauliah yang dikendalikan pengajar merentas platform keselamatan dan rangkaian. Ada makmal amali pada sistem sebenar, dan bagi mereka yang sudah tahu asasnya dan datang untuk berlatih, itulah tepatnya intinya: persekitaran sebenar untuk bekerja. Bagi kumpulan yang lebih baharu dalam sesuatu teknologi, masa pergi dahulu untuk membina asas yang menjadi sandaran topik itu, supaya kerja amali masuk akal dan orang pulang dengan memahami mengapa sesuatu berkelakuan sedemikian, bukan sekadar butang mana yang perlu ditekan. Kedua-duanya sama berharga, dan keseimbangan beralih mengikut siapa yang ada dalam bilik. Pengajaran dan pemerkasaan teknikal telah menjadi sebahagian daripada kerja saya sejak akhir 1990-an, atas kerjaya yang bermula di sisi pelaksanaan pada 1996.",
       "basedLabel": "Berpangkalan di",
       "basedValue": "São Paulo, Brazil",
       "teachesLabel": "Mengajar",
@@ -934,8 +937,8 @@
       "languagesValue": "Portugis (ibunda), Inggeris (fasih)"
     },
     "platforms": {
-      "title": "Empat platform, diajar secara mendalam",
-      "body": "Disahkan dengan empat vendor bermakna saya boleh mengajar setiap satu dengan betul dan membandingkannya dengan jujur. Berikut ialah platform yang saya kini diberi kuasa untuk menyampaikan latihan rasmi.",
+      "title": "Platform, diajar secara mendalam",
+      "body": "Menjadi jurulatih sah bagi vendor-vendor ini bermakna saya boleh mengajar setiap satu dengan betul dan membandingkannya dengan jujur.",
       "f5": "BIG-IP merentasi kurikulum dipimpin jurulatih: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automasi dan penyelesaian masalah.",
       "fortinet": "Latihan Fortinet yang diperakui, termasuk trek FCP.",
       "extreme": "Trek pensuisan, SD-WAN, serta API dan automasi Extreme Networks, merangkumi pemasangan, konfigurasi, pentadbiran dan penyelesaian masalah.",
@@ -1043,7 +1046,7 @@
       "s2Title": "F5, dari awal",
       "s2Body": "F5 ialah sauh sejak permulaan era ini, dibina atas kerja BIG-IP yang menjangkau lebih sedekad ke belakang. Program yang diberi kuasa merangkumi keseluruhan katalog BIG-IP yang dipimpin jurulatih: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, pembangunan iRules, automasi dan penyelesaian masalah, daripada kursus sehari hingga empat hari. Bersama latihan ialah pelengkap praktikal: persekitaran makmal F5 BIG-IP terurus, supaya latihan sentiasa mempunyai tempat sebenar untuk berlaku.",
       "s3Title": "Pengembangan, platform demi platform",
-      "s3Body": "Yang membezakan tahun-tahun kebelakangan ini ialah pergerakan yang jelas dan bertarikh. Latihan Extreme Networks ditambah sejak 2021, merangkumi pensuisan EXOS, SD-WAN dan automasi. Fortinet menyusul sejak 2024, dengan tumpuan pada trek FCP FortiGate Administrator. Netskope ditambah sejak 2025, merangkumi operasi, pentadbiran, penggunaan dan penyepaduan Netskope Security Cloud. Empat platform, setiap satu ditambah dengan sengaja, setiap satu berdiri di atas dua dekad pelaksanaan rangkaian dan keselamatan yang sama di bawahnya.",
+      "s3Body": "Yang membezakan tahun-tahun kebelakangan ini ialah pergerakan yang jelas dan bertarikh. Latihan Extreme Networks ditambah sejak 2021, merangkumi pensuisan EXOS, SD-WAN dan automasi. Fortinet menyusul sejak 2024, dengan tumpuan pada trek FCP FortiGate Administrator. Netskope ditambah sejak 2025, merangkumi operasi, pentadbiran, penggunaan dan penyepaduan Netskope Security Cloud. Platform, setiap satu ditambah dengan sengaja, setiap satu berdiri di atas dua dekad pelaksanaan rangkaian dan keselamatan yang sama di bawahnya.",
       "s4Title": "Melalui Red Education, ke dunia",
       "s4Body": "Wadah utama penyampaian global ini ialah Red Education, sebuah pusat latihan yang diberi kuasa yang menyalurkan kursus rasmi yang diperakui kepada organisasi merentasi rantau. Perananya ialah jurulatih latihan teknikal global, menyampaikan kepada khalayak antarabangsa yang dimungkinkan oleh pangkalan di São Paulo, dua pasport dan kecintaan tulen terhadap perjalanan. Kerjasama berterusan ini menukar kepakaran individu menjadi sesuatu yang boleh ditempah dan dipercayai oleh organisasi di seluruh dunia.",
       "closer": "Di sinilah benang yang menjalar di seluruh kisah ini berbaloi. Rasa ingin tahu tahun-tahun awal menjadi kedalaman pelaksanaan melalui tahun-tahun di lapangan, dan kedalaman itu kini menjadi apa yang diterima oleh setiap peserta: bukan penceramah yang membaca slaid, tetapi seseorang yang membina sistem ini dan menerangkan cara ia benar-benar berfungsi, dan mengapa."
@@ -1124,8 +1127,8 @@
   },
   "training": {
     "eyebrow": "Kursus yang saya sampaikan",
-    "title": "Empat platform, diajar oleh seseorang yang telah mengendalikannya.",
-    "intro": "Latihan rasmi, diperakui dan dipimpin jurulatih merentasi {courses} kursus pada empat platform di teras rangkaian dan keselamatan moden. Setiap kursus disampaikan oleh jurulatih yang diberi kuasa, dengan berdekad-dekad pelaksanaan praktikal di sebalik pengajaran.",
+    "title": "Platform, diajar oleh seseorang yang telah mengendalikannya.",
+    "intro": "Latihan rasmi, diperakui dan dipimpin jurulatih merentasi {courses} kursus pada platform di teras rangkaian dan keselamatan moden. Setiap kursus disampaikan oleh jurulatih yang diberi kuasa, dengan berdekad-dekad pelaksanaan praktikal di sebalik pengajaran.",
     "courseCount": "{count} kursus",
     "since": "sejak",
     "representativeNote": "Katalog ini mewakili, bukan menyeluruh. Tajuk kursus, tempoh dan kandungan mencerminkan maklumat awam semasa dan diperhalusi berdasarkan huraian rasmi.",
@@ -1160,9 +1163,9 @@
     "s3Title": "Praktikal, bukan kabur",
     "s3Body": "Kemahiran teknikal dibina dengan melakukan, jadi setiap kursus mempunyai makmal amali pada sistem sebenar, disokong oleh persekitaran makmal terurus di mana latihan sentiasa ada tempat sebenar untuk berlaku. Bagi mereka yang sudah tahu asasnya dan datang untuk menyentuh teknologi itu sendiri, itulah sebenarnya tujuan mereka di sini, dan ia masa yang digunakan dengan baik. Bagi yang lebih baharu, masa pergi dahulu kepada asas yang menjadi sandaran makmal, supaya kerja amali itu masuk akal dan bukannya diikut secara hafalan. Kedua-duanya sama berharga, dan keseimbangan cuma beralih mengikut kelas. Formatnya menyesuaikan diri dengan hadirin: latihan langsung dikendalikan pengajar dan disampaikan ke seluruh dunia, secara bersemuka apabila itu lebih sesuai, dalam bahasa Inggeris atau Portugis. Apa pun, orang seharusnya pulang dengan sesuatu yang nyata dan berguna di tangan serta pemahaman sebenar tentang sebab ia berfungsi.",
     "s4Title": "Diiktiraf, diperakui dan semasa",
-    "s4Body": "Latihan ini berdiri di atas asas pengiktirafan formal. F5 DevCentral MVP tiga tahun berturut-turut, pada 2022, 2023 dan 2024. Sijil F5 dikekalkan sejak 2015, dan kuasa jurulatih merentasi empat platform: F5, Extreme Networks, Fortinet dan Netskope. Penyampaian mencapai Australia, Singapura, India, Eropah Tengah, AS dan Brazil, melalui Red Education, sebuah pusat latihan yang diberi kuasa. Kelayakan penting, tetapi ia jalan pintas kepada apa yang ada di bawahnya: penguasaan teknologi yang nyata dan semasa.",
+    "s4Body": "Latihan ini berdiri di atas asas pengiktirafan formal. F5 DevCentral MVP tiga tahun berturut-turut, pada 2022, 2023 dan 2024. Sijil F5 dikekalkan sejak 2015, dan kuasa jurulatih merentasi platform: F5, Extreme Networks, Fortinet dan Netskope. Penyampaian mencapai Australia, Singapura, India, Eropah Tengah, AS dan Brazil, melalui Red Education, sebuah pusat latihan yang diberi kuasa. Kelayakan penting, tetapi ia jalan pintas kepada apa yang ada di bawahnya: penguasaan teknologi yang nyata dan semasa.",
     "platformsTitle": "Apa yang saya ajar",
-    "platformsBody": "Latihan rasmi, diperakui dan dipimpin jurulatih merentasi empat platform di teras rangkaian dan keselamatan moden. Setiap satu menuju ke katalog kursus penuhnya.",
+    "platformsBody": "Latihan rasmi, diperakui dan dipimpin jurulatih merentasi platform di teras rangkaian dan keselamatan moden. Setiap satu menuju ke katalog kursus penuhnya.",
     "s5Title": "Di luar bilik darjah",
     "s5Body": "Kedalaman yang sama yang menghasilkan latihan yang baik menghasilkan perundingan yang baik. Tiga puluh tahun merentasi penyampaian aplikasi, keselamatan rangkaian, identiti dan infrastruktur, di pihak vendor dan pihak pelanggan, ialah perspektif yang menjangkau jauh melangkaui bilik darjah, sehingga ke keputusan seni bina, pemilihan teknologi dan masalah sukar yang tidak muat dalam silibus. Latihan ialah tumpuannya; pengalaman di sebaliknya tersedia untuk pasukan yang memerlukan lebih daripada satu kursus.",
     "toolsTitle": "Alat yang mengira, bukan meneka",

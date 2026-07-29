@@ -1,0 +1,61 @@
+---
+slug: checkpoint-nat-proxy-arp-and-the-silent-black-hole
+title: "NAT do Check Point que não registra nada: proxy ARP e a falha uma camada abaixo"
+summary: "Um NAT estático manual sobre um endereço na própria sub-rede do gateway instala limpo, parece correto e não entrega nada. Não há drop nos logs porque nada chegou para ser registrado. A resposta está na camada 2, e o NAT automático cuida disso enquanto o manual nunca cuidou."
+concepts: ["check point", "nat", "proxy arp", "nat estático", "hide nat", "nat manual", "nat automático", "local.arp", "global properties", "investigação"]
+relatedTools: ["checkpoint-nat-proxy-arp"]
+sub: quantum
+relatedArticles: ["checkpoint-advanced-policy-and-nat", "checkpoint-policy-layers-ordered-and-inline"]
+category: security
+order: 129
+status: reviewed
+updated: "2026-07-28"
+---
+
+Existe um tipo específico de silêncio no Check Point que vale reconhecer de imediato. A regra de NAT está lá. A política instalou sem reclamar. O servidor atrás dela está saudável e responde localmente. E os logs do firewall não mostram nada — nem drop, nem reject, nada.
+
+Essa combinação quase nunca é problema de política, porque problema de política gera entrada de log. Nada nos logs significa que nada chegou.
+
+## Para onde o tráfego vai
+
+Se o endereço traduzido fica dentro de uma sub-rede à qual o gateway está diretamente conectado, alcançá-lo é uma questão de ARP antes de ser de roteamento. O roteador acima tem rota conectada para aquela sub-rede, então não encaminha o pacote a lugar algum — ele transmite *who has 203.0.113.50* e espera.
+
+Se nada responde, o pacote nunca é enviado. Ele não alcança o firewall, então o firewall não pode registrá-lo, descartá-lo nem traduzi-lo. A base de regras é irrelevante porque a base de regras nunca foi consultada.
+
+## O que responde, e o que não responde
+
+O **NAT automático** — a tradução configurada no próprio objeto — acrescenta a entrada de proxy ARP durante a instalação da política. O gateway assume a responsabilidade pelo endereço e responde àquele broadcast. É por isso que o NAT automático costuma simplesmente funcionar.
+
+O **NAT manual** — uma regra que você escreve na base de NAT — não. Nunca fez. A regra traduz corretamente no instante em que um pacote chega, mas nada providenciou para que um pacote chegue.
+
+Essa assimetria é o artigo inteiro. O NAT manual dá controle sobre cada campo e, em troca, deixa de fazer justamente aquilo em que você não estava pensando.
+
+## O caso que pega quem usou NAT automático
+
+O NAT automático cria a entrada *porque uma opção em Global Properties manda*. Se **Automatic ARP configuration** estiver desligado — e pode estar, deliberadamente, em ambientes que gerenciam ARP à mão — então as regras automáticas também não criam nada, e a falha é idêntica.
+
+Então "use NAT automático" não é conselho suficiente. A versão exata é: o NAT automático cria a entrada quando a opção global permite.
+
+E se você mantém entradas à mão junto das automáticas, **Merge manual proxy ARP configuration** precisa estar habilitado, ou os dois conjuntos não coexistem.
+
+## Quando proxy ARP é o lugar errado para olhar
+
+Se o endereço traduzido **não** está numa sub-rede conectada, nada disso se aplica. Ninguém no segmento fará ARP por ele, porque o roteador acima não considera o endereço local. Ele consultará a tabela de rotas — e se não houver rota apontando para o gateway, o pacote vai para outro lugar, ou para lugar nenhum.
+
+Mesmo sintoma, causa completamente diferente. Vale conferir primeiro, porque a aritmética de sub-rede leva dez segundos e elimina metade das possibilidades.
+
+## Como confirmar em trinta segundos
+
+Capture na interface externa e procure ARP. Você procura requisições *who has* repetidas para o endereço traduzido sem nenhuma resposta *is at*. Essa é a assinatura, e ela é inequívoca.
+
+Se o ARP está sendo respondido e o tráfego ainda falha, o problema se moveu para onde os logs enxergam, e os logs voltam a ser úteis.
+
+## Uma nota sobre ordem de regras, deixada aberta de propósito
+
+Você encontrará afirmações confiantes de que regras manuais de NAT são avaliadas antes das automáticas, e afirmações igualmente confiantes de que as camadas automáticas vêm primeiro. O próprio guia de administração do Check Point diz que regras automáticas e manuais são aplicadas de formas diferentes, e que a primeira regra manual que casa é aplicada, sem resolver a ordem relativa das duas seções.
+
+Este artigo não resolve isso, e a ferramenta que o acompanha também não, porque a posição honesta é que as fontes discordam. Se o seu desenho depende da resposta, converta tudo em regras manuais e controle a ordem explicitamente, em vez de depender de um comportamento que ninguém documenta igual duas vezes.
+
+## O que quem estuda precisa saber de cor
+
+Um NAT que não produz entrada alguma de log quase certamente não recebeu tráfego, porque uma falha de política registraria. Se o endereço traduzido está numa sub-rede conectada ao gateway, algo precisa responder ARP por ele: o NAT automático acrescenta essa entrada na instalação da política quando *Automatic ARP configuration* está habilitado, e o NAT manual nunca a acrescenta. Um endereço fora de toda sub-rede conectada é questão de roteamento, e proxy ARP é irrelevante. O Hide NAT não publica endereço de entrada algum, então nunca precisa de um. Confirme com uma captura mostrando requisições ARP sem resposta na interface externa.

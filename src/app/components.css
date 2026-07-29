@@ -14939,3 +14939,30 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   font-size: 0.9rem;
   color: var(--text-secondary);
 }
+
+/* ---------------------------------------------------------------------------
+   Vendor page tag row (PRIME 2026-07-28). Up to three independent tags, and
+   several vendors carry all three, so they must sit side by side rather than
+   compete for one slot. Three colours for three KINDS of claim: accent for
+   autobiography, danger for the Red Education relationship, success for the
+   narrowest claim - authorization to deliver official training.
+--------------------------------------------------------------------------- */
+.vendor-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.6rem 0 0.2rem;
+}
+
+.vendor-instructor-pill {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--color-success, var(--accent-primary));
+  border-radius: 999px;
+  color: var(--color-success, var(--accent-primary));
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}

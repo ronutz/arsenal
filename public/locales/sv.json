@@ -35,11 +35,11 @@
     },
     "credibility": {
       "title": "Byggt av någon som har gjort jobbet sedan 1996.",
-      "body": "Trettio år inom företagsnätverk och säkerhet, levererat av en aktiv instruktör och inte av en marknadsföringssida. Certifierad på fyra plattformar, så att jämförelserna här görs ärligt, inte för att sälja.",
+      "body": "Trettio år inom företagsnätverk och säkerhet, levererat av en aktiv instruktör och inte av en marknadsföringssida. Certifierad på plattformar, så att jämförelserna här görs ärligt, inte för att sälja.",
       "aboutCta": "Mer om personen bakom"
     },
     "pillars": {
-      "title": "Fyra plattformar, undervisade och hållna aktuella.",
+      "title": "Plattformarna, undervisade och hållna aktuella.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -853,6 +853,9 @@
       "note2": "Detta är de planerade datumen. F5 skickar även när som helst säkerhetsvarningar utanför schemat och engineering-hotfixar för brådskande problem, och behåller flexibilitet att justera tidpunkten för aviseringar.",
       "learnMore": "Ny med den här ändringen?",
       "learnLink": "Läs vad som ändrades och varför"
+    },
+    "vendors": {
+      "checkpoint": "Check Point"
     }
   },
   "privacy_page": {
@@ -925,7 +928,7 @@
     "lede": "Utbildning inom nätverk och säkerhet, hållen av en yrkesperson som har tillbringat karriären på implementeringssidan, inte bara vid bildspelen. Baserad i São Paulo, undervisar i hela världen, på portugisiska och engelska.",
     "now": {
       "title": "Vad jag gör nu",
-      "body": "Jag håller officiell, certifierad, instruktörsledd utbildning på fyra säkerhets- och nätverksplattformar. Det finns praktiska labb på riktiga system, och för dem som redan kan grunderna och kom för att öva är det precis det som är poängen: riktiga miljöer att arbeta i. För grupper som är nyare inför en teknik går tiden först till att bygga grunderna som ämnet vilar på, så att det praktiska blir begripligt och folk går därifrån med förståelse för varför saker beter sig som de gör, inte bara vilka knappar de ska trycka på. Båda är lika värdefulla, och balansen skiftar med vilka som är i rummet. Undervisning och tekniskt möjliggörande har varit en del av mitt arbete sedan slutet av 1990-talet, på en karriär som började på implementeringssidan 1996.",
+      "body": "Jag håller officiell, certifierad, instruktörsledd utbildning på säkerhets- och nätverksplattformar. Det finns praktiska labb på riktiga system, och för dem som redan kan grunderna och kom för att öva är det precis det som är poängen: riktiga miljöer att arbeta i. För grupper som är nyare inför en teknik går tiden först till att bygga grunderna som ämnet vilar på, så att det praktiska blir begripligt och folk går därifrån med förståelse för varför saker beter sig som de gör, inte bara vilka knappar de ska trycka på. Båda är lika värdefulla, och balansen skiftar med vilka som är i rummet. Undervisning och tekniskt möjliggörande har varit en del av mitt arbete sedan slutet av 1990-talet, på en karriär som började på implementeringssidan 1996.",
       "basedLabel": "Baserad i",
       "basedValue": "São Paulo, Brasilien",
       "teachesLabel": "Undervisar",
@@ -934,8 +937,8 @@
       "languagesValue": "Portugisiska (modersmål), engelska (flytande)"
     },
     "platforms": {
-      "title": "Fyra plattformar, undervisade på djupet",
-      "body": "Att vara certifierad på fyra leverantörer innebär att jag kan undervisa i var och en som det ska och jämföra dem ärligt. Det här är plattformarna som jag för närvarande är auktoriserad att hålla officiell utbildning på.",
+      "title": "Plattformarna, undervisade på djupet",
+      "body": "Att vara auktoriserad instruktör hos dessa leverantörer innebär att jag kan undervisa i var och en som det ska och jämföra dem ärligt.",
       "f5": "BIG-IP över hela det instruktörsledda kursutbudet: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automation och felsökning.",
       "fortinet": "Certifierad Fortinet-utbildning, inklusive FCP-spåret.",
       "extreme": "Extreme Networks switching, SD-WAN, och API- och automationsspår, genom installation, konfiguration, hantering och felsökning.",
@@ -1043,7 +1046,7 @@
       "s2Title": "F5, från början",
       "s2Body": "F5 har varit ankaret sedan den här epokens början, byggt på arbete med BIG-IP som sträcker sig mer än ett decennium tillbaka. Det auktoriserade kursutbudet täcker hela den instruktörsledda BIG-IP-katalogen: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, iRules-utveckling, automation och felsökning, från endagskurser till fyradagarskurser. Vid sidan av undervisningen löper ett praktiskt komplement: hanterade F5 BIG-IP-labbmiljöer, så att övningen alltid har en riktig plats att äga rum på.",
       "s3Title": "Expansionen, plattform för plattform",
-      "s3Body": "Det som utmärker de senaste åren är en tydlig, daterad progression. Extreme Networks-utbildning lades till från 2021, med EXOS-switchning, SD-WAN och automation. Fortinet följde från 2024, med fokus på FCP FortiGate Administrator-spåret. Netskope tillkom från 2025, med drift, administration, implementering och integration av Netskope Security Cloud. Fyra plattformar, var och en medvetet tillagd, var och en vilande på samma två decennier av nätverks- och säkerhetsimplementering under.",
+      "s3Body": "Det som utmärker de senaste åren är en tydlig, daterad progression. Extreme Networks-utbildning lades till från 2021, med EXOS-switchning, SD-WAN och automation. Fortinet följde från 2024, med fokus på FCP FortiGate Administrator-spåret. Netskope tillkom från 2025, med drift, administration, implementering och integration av Netskope Security Cloud. Plattformarna, var och en medvetet tillagd, var och en vilande på samma två decennier av nätverks- och säkerhetsimplementering under.",
       "s4Title": "Genom Red Education, ut i världen",
       "s4Body": "Det huvudsakliga fordonet för denna globala leverans är Red Education, ett auktoriserat utbildningscenter genom vilket officiella, certifierade kurser når organisationer i olika regioner. Rollen är global technical training instructor, med leverans till den sortens internationella publik som en bas i São Paulo, två pass och en genuin reslust gör möjlig. Det varaktiga samarbetet förvandlar individuell expertis till något som organisationer världen över kan boka och förlita sig på.",
       "closer": "Det är här hela historiens röda tråd ger utdelning. De första årens nyfikenhet blev fältårens implementeringsdjup, och det djupet är nu vad varje deltagare får: inte en presentatör som läser bilder, utan någon som har byggt dessa system och förklarar hur de verkligen fungerar, och varför."
@@ -1124,8 +1127,8 @@
   },
   "training": {
     "eyebrow": "Kurser jag håller",
-    "title": "Fyra plattformar, undervisade av någon som har kört dem.",
-    "intro": "Officiell, certifierad och instruktörsledd utbildning över {courses} kurser på de fyra plattformarna i hjärtat av modern nätverk och säkerhet. Varje kurs hålls av en auktoriserad instruktör, med decennier av praktisk implementering bakom undervisningen.",
+    "title": "Plattformarna, undervisade av någon som har kört dem.",
+    "intro": "Officiell, certifierad och instruktörsledd utbildning över {courses} kurser på de plattformarna i hjärtat av modern nätverk och säkerhet. Varje kurs hålls av en auktoriserad instruktör, med decennier av praktisk implementering bakom undervisningen.",
     "courseCount": "{count} kurser",
     "since": "sedan",
     "representativeNote": "Den här katalogen är representativ, inte uttömmande. Kursnamn, längder och innehåll speglar aktuell offentlig information och är förfinade utifrån officiella datablad.",
@@ -1160,9 +1163,9 @@
     "s3Title": "Praktiskt, inte luddigt",
     "s3Body": "Teknisk skicklighet byggs genom att göra, så varje kurs har praktiska labb på riktiga system, med stöd av hanterade labbmiljöer där övning alltid har någonstans verkligt att ske. För dem som redan kan grunderna och kom för att få händerna på tekniken är det precis därför de är här, och det är väl använd tid. För dem som är nyare går tiden först till grunderna som labben vilar på, så att det praktiska blir begripligt i stället för att följas utantill. Båda är lika värdefulla, och balansen skiftar helt enkelt med gruppen. Formatet anpassas efter publiken: virtuell, instruktörsledd utbildning över hela världen, på plats när det passar bättre, på engelska eller portugisiska. Oavsett vilket bör deltagarna gå därifrån med något verkligt och användbart i handen och en verklig förståelse för varför det fungerar.",
     "s4Title": "Erkänd, certifierad och aktuell",
-    "s4Body": "Undervisningen vilar på en grund av formellt erkännande. F5 DevCentral MVP tre år i rad, 2022, 2023 och 2024. F5-certifieringar hållna sedan 2015, och instruktörsauktorisation på fyra plattformar: F5, Extreme Networks, Fortinet och Netskope. Leveransen når Australien, Singapore, Indien, Centraleuropa, USA och Brasilien, genom Red Education, ett auktoriserat utbildningscenter. Kvalifikationerna spelar roll, men de är en genväg till det som finns under: ett genuint, aktuellt behärskande av tekniken.",
+    "s4Body": "Undervisningen vilar på en grund av formellt erkännande. F5 DevCentral MVP tre år i rad, 2022, 2023 och 2024. F5-certifieringar hållna sedan 2015, och instruktörsauktorisation på plattformar: F5, Extreme Networks, Fortinet och Netskope. Leveransen når Australien, Singapore, Indien, Centraleuropa, USA och Brasilien, genom Red Education, ett auktoriserat utbildningscenter. Kvalifikationerna spelar roll, men de är en genväg till det som finns under: ett genuint, aktuellt behärskande av tekniken.",
     "platformsTitle": "Vad jag undervisar i",
-    "platformsBody": "Officiell, certifierad och instruktörsledd utbildning på fyra plattformar i hjärtat av modern nätverk och säkerhet. Var och en länkar till sin fullständiga kurskatalog.",
+    "platformsBody": "Officiell, certifierad och instruktörsledd utbildning på plattformar i hjärtat av modern nätverk och säkerhet. Var och en länkar till sin fullständiga kurskatalog.",
     "s5Title": "Bortom klassrummet",
     "s5Body": "Samma djup som ger god undervisning ger god rådgivning. Trettio år genom applikationsleverans, nätverkssäkerhet, identitet och infrastruktur, både på leverantörssidan och på kundsidan, är ett perspektiv som färdas långt bortom ett utbildningsrum, ända in i arkitekturbeslut, teknikval och de svåra problem som inte ryms i en kursplan. Undervisningen är fokus; erfarenheten bakom den finns tillgänglig för team som behöver mer än en kurs.",
     "toolsTitle": "Verktyg som beräknar, aldrig gissar",

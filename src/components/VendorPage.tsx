@@ -20,6 +20,12 @@ import VendorProfileSections from "@/components/VendorProfileSections";
 import type { VendorProfile } from "@/content/vendors/profile-types";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
+import VendorTags from "@/components/VendorTags";
+import {
+  CAREER_VENDORS,
+  REDU_CAREER_PARTNERS,
+  AUTHORIZED_INSTRUCTOR_VENDORS,
+} from "@/content/vendors/career";
 import SiteFooter from "@/components/SiteFooter";
 import TechIcon, { type TechIconName } from "@/components/TechIcons";
 import LineageDiagram, { type LineageStage } from "@/components/LineageDiagram";
@@ -50,6 +56,9 @@ export default async function VendorPage({
   lineage,
   profile,
 }: VendorPageProps) {
+  // CAREER_VENDORS pairs each slug with its i18n key, so the slug is derivable
+  // here and the fifteen call sites need no new prop.
+  const vendorSlug = CAREER_VENDORS.find((v) => v.key === vendorKey)?.slug ?? vendorKey;
   const t = await getTranslations("vendors");
   const tp = await getTranslations("partnerVendors");
   const tNav = await getTranslations("nav");
@@ -69,7 +78,24 @@ export default async function VendorPage({
               <Link href="/about/vendors" className="article-back">
                 ← {t("backToVendors")}
               </Link>
-              <p className="vendor-years mono">{t(`${vendorKey}.years`)}</p>
+              {/* The eyebrow says what the PAGE is (PRIME 2026-07-28). It used
+                  to carry the years of involvement, which made every vendor
+                  page look like a CV entry rather than a vendor history. The
+                  years have not been lost - they move into the timeline below,
+                  marked as the period worked with this vendor. */}
+              <p className="vendor-years mono">{tp("lineageEyebrow")}</p>
+              <VendorTags
+                workedWith
+                workedWithLabel={tp("workedWithYears", { years: t(`${vendorKey}.years`) })}
+                reduPartner={REDU_CAREER_PARTNERS.includes(
+                  vendorSlug as (typeof REDU_CAREER_PARTNERS)[number],
+                )}
+                reduLabel={tp("reduPill")}
+                authorizedInstructor={AUTHORIZED_INSTRUCTOR_VENDORS.includes(
+                  vendorSlug as (typeof AUTHORIZED_INSTRUCTOR_VENDORS)[number],
+                )}
+                instructorLabel={tp("instructorPill")}
+              />
               <h1 className="vendor-name">{t(`${vendorKey}.name`)}</h1>
               <p className="vendor-tagline">{t(`${vendorKey}.tagline`)}</p>
 

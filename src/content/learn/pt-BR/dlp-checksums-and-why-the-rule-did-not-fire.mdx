@@ -1,0 +1,67 @@
+---
+slug: dlp-checksums-and-why-the-rule-did-not-fire
+title: "Ajuste de DLP: a discussão quase sempre é sobre um checksum"
+summary: "Um identificador de dados predefinido é um padrão mais uma validação, e a validação é onde estão as surpresas. Um número idêntico a um cartão que falha no Luhn não é um cartão para o motor, e um pedido de compra que por acaso passa é. Nenhum dos dois se resolve editando o padrão."
+concepts: ["dlp", "prevenção de perda de dados", "luhn", "checksum", "cpf", "cnpj", "falso positivo", "falso negativo", "limiar", "netskope", "identificador de dados"]
+relatedTools: ["netskope-dlp-match-predictor"]
+sub: dlp
+relatedArticles: ["netskope-dlp-and-classification"]
+category: security
+order: 130
+status: reviewed
+updated: "2026-07-28"
+---
+
+Toda implantação de DLP produz as mesmas duas queixas, normalmente com quinze dias de diferença e normalmente de pessoas diferentes.
+
+*Está marcando coisas que não são sensíveis.* E: *deixou passar algo que obviamente era.*
+
+As duas costumam ser sobre o mesmo mecanismo, e não é o padrão.
+
+## Três estágios, e eles falham separadamente
+
+Um identificador de dados predefinido não simplesmente casa texto. Ele trabalha em estágios, e uma regra que não fez nada falhou em exatamente um deles:
+
+1. **Candidatos.** Cadeias com o formato certo — dezesseis dígitos em grupos, por exemplo.
+2. **Correspondências.** Candidatos que passam por uma **validação**, que para a maioria dos identificadores numéricos é um checksum.
+3. **Limiar.** Se o número de correspondências atinge o que a regra exige antes de agir.
+
+Juntar isso em "casou ou não" joga fora a única informação de diagnóstico disponível. Uma regra que não acha nada e uma que acha seis coisas abaixo de um limiar de dez estão quebradas de formas completamente diferentes.
+
+## O checksum é o estágio interessante
+
+Números de cartão carregam um dígito verificador calculado pelo **algoritmo de Luhn**. Ele existe para pegar erros de transcrição: mude um dígito, ou troque dois adjacentes, e a aritmética deixa de fechar.
+
+Isso dá ao DLP uma forma de distinguir um número de cartão de qualquer outra cadeia de dezesseis dígitos, e ele é muito bom nisso — mas "muito bom" não é "perfeito", e as falhas vão nos dois sentidos:
+
+**O falso positivo.** Um número de pedido, uma referência de conta, um identificador interno — qualquer cadeia de dezesseis dígitos tem cerca de uma chance em dez de passar no Luhn por acaso. Num documento cheio de números de referência, alguns vão passar. O motor não está sendo burro; está sendo exatamente tão inteligente quanto o algoritmo permite.
+
+**O falso negativo.** Alguém digita um número de cartão com um dígito errado. Para um leitor humano é inconfundivelmente um cartão. Ele falha no Luhn, então o motor não o conta — e mudança alguma de limiar fará com que conte, porque ele nunca virou correspondência.
+
+## É por isso que ajustar o limiar decepciona
+
+A resposta instintiva a falsos positivos é subir o limiar: *exija cinco correspondências, não uma*. Funciona, no sentido de que chegam menos alertas. Também adia todo incidente real até o quinto registro vazar, o que normalmente não era a intenção de quem escreveu a política.
+
+A contagem que a regra vê não é a contagem que uma pessoa lendo o documento faria. Ajustar um número que significa coisas diferentes para você e para o motor é como políticas acabam simultaneamente barulhentas e furadas.
+
+Palavras-chave por proximidade — exigir um termo como *cartão* ou *CPF* perto do candidato — normalmente custam menos precisão do que exigir volume, porque acrescentam evidência em vez de quantidade.
+
+## Os identificadores brasileiros
+
+**CPF** e **CNPJ** carregam dois dígitos verificadores calculados mod 11, então vale o mesmo raciocínio, com um detalhe extra que convém conhecer.
+
+Sequências de dígitos repetidos — `111.111.111-11` e parentes — **satisfazem a aritmética dos dígitos verificadores**. São válidas por cálculo e nunca são emitidas, então toda implementação séria as rejeita explicitamente. Se você escrever sua própria validação e esquecer disso, vai casar com todo registro de teste e todo preenchimento provisório de todo sistema que varrer.
+
+## O que conferir quando uma regra surpreende
+
+**Ela achou candidatos?** Se não, o checksum nunca rodou, e o problema é o formato — formatação que o padrão não aceita, ou conteúdo que o interpretador de arquivo nunca extraiu.
+
+**Os candidatos falharam na validação?** Então o motor genuinamente não os considera instâncias daquele identificador. Discutir o limiar é irrelevante.
+
+**As correspondências ficaram abaixo do limiar?** Então o identificador funcionou como projetado e a política está configurada para esperar.
+
+Três respostas diferentes, três correções diferentes, e uma pergunta que as distingue.
+
+## O que quem estuda precisa saber de cor
+
+Um identificador de dados predefinido é um padrão mais uma validação, e as regras agem sobre a contagem de correspondências validadas, não de candidatos. Cartões validam com Luhn; CPF e CNPJ validam com dois dígitos verificadores mod 11, e sequências de dígitos repetidos precisam ser rejeitadas explicitamente apesar de satisfazerem a aritmética. Uma cadeia de dezesseis dígitos que passa no Luhn por acaso é correspondência real para o motor, e um número de cartão digitado errado não é correspondência alguma — então a maioria das queixas de ajuste é sobre o checksum, não sobre o padrão. Subir o limiar reduz ruído adiando a detecção, o que é uma troca e não uma correção; acrescentar evidência de proximidade normalmente custa menos.

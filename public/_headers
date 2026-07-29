@@ -36,3 +36,25 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+
+# ---------------------------------------------------------------------------
+# Explicit content types for the machine-readable outputs (2026-07-28).
+#
+# PRIME observed that /sitemap.xml "does not appear to be in XML format" in a
+# browser. The file IS well-formed XML - it opens with an XML declaration and a
+# correct urlset namespace - but nothing here declared its type, and the
+# `X-Content-Type-Options: nosniff` above means the browser will NOT infer one.
+# So it arrives as an undeclared blob and is rendered as plain text.
+#
+# Declaring the type fixes the display and, more importantly, makes the file
+# unambiguous to anything that checks the header before parsing.
+# ---------------------------------------------------------------------------
+
+/sitemap.xml
+  Content-Type: application/xml; charset=utf-8
+
+/feed.xml
+  Content-Type: application/rss+xml; charset=utf-8
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8

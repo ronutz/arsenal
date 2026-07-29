@@ -63,6 +63,37 @@ export interface PartnerVendor {
   externalLabel?: string;
   /** Source list for provenance. */
   sources?: { label: string; url: string }[];
+  /**
+   * Acquisitions this company made, with the acquisitions THEIR targets had
+   * made nested beneath.
+   *
+   * Added 2026-07-29 (PRIME). The nested-acquisition rule was established for
+   * the vendor LINEAGE pages and has been in use there since - Extreme carries
+   * seven sub-entries, Fortinet three, and so on. Profile pages had no
+   * acquisitions FIELD at all, so the same facts were being written as prose:
+   * true and sourced, but not data, and therefore not renderable as the
+   * indented lists the lineage pages use and not checkable by anything.
+   *
+   * Same shape as `Acquisition` in the lineage files deliberately, so the two
+   * page types stay consistent and a reader meets one idea rather than two.
+   */
+  acquisitions?: {
+    year: number;
+    name: string;
+    price?: string;
+    what: string;
+    became?: string;
+    founder?: string;
+    sourceNote?: string;
+    /** What the acquired company had itself acquired. One level, by design. */
+    subAcquisitions?: {
+      year: number;
+      name: string;
+      price?: string;
+      what: string;
+      founder?: string;
+    }[];
+  }[];
   /** Optional accuracy note rendered as an aside (e.g. training-delivery facts). */
   note?: string;
 }
@@ -218,6 +249,290 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "SixDegrees.com - the first recognised social media platform, founded by Andrew Weinreich", url: "https://medium.com/@emijones/sixdegrees-com-the-start-of-social-media-86e287d46e9e" },
       { label: "Evolution of social media - founding May 1996, launch 1997, 3.5M users, sale to YouthStream", url: "https://www.studocu.com/ph/document/technological-university-of-the-philippines/bachelor-of-science-in-civil-engineering/evolution-of-social-media/5477563" },
+    ],
+  },
+  {
+    // TANDY / RADIOSHACK - added 2026-07-29 (PRIME).
+    // The deep point here is DISTRIBUTION, not hardware - Tandy outsold Apple
+    // three to one in 1980 on a technically inferior machine because it had
+    // 7,000 shops. This site has a distribution career chapter (2015-2019), so
+    // the lesson is not abstract.
+    // Verified against IEEE Spectrum, TIME, Google Arts & Culture and
+    // History-Computer. NOTE: sources give both $399 and $600 for the Model I
+    // launch price; both are recorded rather than one being chosen.
+    slug: "tandy-radioshack",
+    group: "other",
+    name: "Tandy and RadioShack",
+    founded: 1977,
+    ended: {
+      year: 1993,
+      note: "Tandy exited computer manufacturing in May 1993, selling the business to AST. The RadioShack chain continued long after the machines stopped.",
+    },
+    tagline: "Outsold Apple three to one with a worse computer, because it had seven thousand shops.",
+    intro:
+      "In 1975 Don French, a RadioShack buyer on the West Coast, bought an MITS Altair to run inventory and became fascinated enough to start designing his own. He spent a year persuading John Roach, then vice president of manufacturing, that a chain of electronics shops should sell a computer. In November 1976 they hired a 24-year-old from National Semiconductor named Steve Leininger - a Homebrew Computer Club member, like Jobs and Wozniak - to design it.",
+    body: [
+      "The prototype was demonstrated to Charles Tandy in February 1977, running a tax-accounting program. Tandy himself was a Texan who had built the business out of his father's Fort Worth leather company; the electronics chain was an acquisition that outgrew everything else.",
+      "Roach committed to building 3,000 units, a number chosen because it matched the number of RadioShack stores - if they never sold one, each shop could use it for accounting. Leininger argued for at least 50,000 and was laughed at. The TRS-80 was announced on 3 August 1977 and sold roughly 50,000 in its first month.",
+      "It was, on the merits, the weakest of what Byte magazine christened the 1977 Trinity. The Apple II had colour graphics and expansion slots; the Commodore PET had an integrated design; the TRS-80 had a Zilog Z80 chosen because it cost $25, a cassette recorder from the shop shelf for storage, and quality complaints that were entirely justified. It also cost roughly half what an Apple II did.",
+      "And it won, for years. By 1979 it had the largest software library in the microcomputer market. In 1980 Tandy shipped three times as many computers as Apple. RadioShack was the largest retailer of personal computers in the world through 1982, with a claimed 7,000 stores in 40 countries.",
+      "The reason is the whole lesson: everyone else sold computers by mail order or through a handful of specialist dealers, and Tandy sold them off a shelf that customers were already walking past. RadioShack did not adopt superstore retailing until 1991, by which time the advantage had inverted - IBM compatibles and the Macintosh were sold everywhere, and being in your own shops was no longer being everywhere. Tandy left computer manufacturing in May 1993.",
+      "It is worth sitting with, because the pattern recurs constantly and is usually described the wrong way round. Tandy did not beat Apple on technology; it beat Apple on reach, and then lost when reach became commoditised. Anyone who has worked in distribution recognises both halves of that.",
+    ],
+    externalUrl: "https://spectrum.ieee.org/the-consumer-electronics-hall-of-fame-tandyradioshack-trs80-model-1",
+    externalLabel: "IEEE Spectrum: the TRS-80 Model 1",
+    sources: [
+      { label: "IEEE Spectrum: Consumer Electronics Hall of Fame - the Z80 at $25, cassette storage, largest PC retailer through 1982", url: "https://spectrum.ieee.org/the-consumer-electronics-hall-of-fame-tandyradioshack-trs80-model-1" },
+      { label: "History-Computer: Don French and the Altair, hiring Leininger from National Semiconductor, the February 1977 demo to Charles Tandy, 3x Apple's volume in 1980", url: "https://history-computer.com/trs-80-guide/" },
+      { label: "TIME: the 3 August 1977 launch and Tandy's role in the mass-market personal computer", url: "https://time.com/3968790/tandy-trs-80-history/" },
+      { label: "CyberNews: the 3,000-unit commitment, Leininger's 50,000 estimate, and the May 1993 exit", url: "https://cybernews.com/editorial/from-hero-to-zero-meteoric-rise-and-fall-of-tandy-computers/" },
+      { label: "Google Arts & Culture: the 1977 Trinity and RadioShack's retail advantage", url: "https://artsandculture.google.com/story/booting-up-the-rise-of-the-pc-the-henry-ford/0gWhveNQO9qRKg" },
+    ],
+  },
+  {
+    // CROWDSTRIKE - added 2026-07-29 (PRIME). Closes a McAfee loop: Kurtz was
+    // McAfee's CTO, and McAfee appears on this site both as a lineage entry and
+    // inside a career chapter. The July 2024 outage is included in full,
+    // because a page that records what vendors got right and omits the largest
+    // IT failure in history would not be worth reading.
+    // Verified against Wikipedia, Grokipedia, Forbes and contemporaneous
+    // reporting.
+    slug: "crowdstrike",
+    group: "contemporary",
+    name: "CrowdStrike",
+    founded: 2011,
+    tagline: "Built on the argument that you should hunt the attacker rather than the malware - then proved, in one morning, what a lightweight agent everywhere really means.",
+    intro:
+      "CrowdStrike was incorporated on 7 November 2011 by George Kurtz, Dmitri Alperovitch and Gregg Marston. Kurtz had been chief technology officer at McAfee, having sold it his previous company, Foundstone, in 2004. He resigned, spent a spell as an entrepreneur in residence at Warburg Pincus, and left with a $26M cheque from them to build the thing he thought McAfee could not.",
+    body: [
+      "The founding argument was specific rather than promotional. Signature-based antivirus asks 'have I seen this file before', which is answerable only about attacks that have already happened somewhere else, and the scanning it requires is heavy enough that users disable it. Alperovitch had attributed the 2009 Operation Aurora intrusions to Chinese actors while at McAfee, and the lesson both founders took was that the interesting question is not which malware is present but which adversary is operating - and adversaries reuse behaviour even when they change their tools.",
+      "So Falcon, shipped in 2013, inverted the model: a deliberately light agent that streams telemetry to a cloud where behaviour is correlated across every customer at once. One organisation seeing something odd becomes every organisation knowing about it. That is a genuinely different product from an on-premises scanner, and it is why the company grew as fast as it did.",
+      "The investigations made the name. Sony Pictures in 2014, the Democratic National Committee intrusions in 2015 and 2016 - work that put a private company in the middle of a national political argument, which is a position security vendors had not previously occupied.",
+      "It went public in June 2019 at roughly $14B, rose over 70% on the first day, and joined the S&P 500 in 2024.",
+      "Then, on 19 July 2024 at 04:09 UTC, a faulty configuration update to the Falcon sensor crashed an estimated 8.5 million Windows machines and left them unable to restart. Airlines, hospitals, banks, broadcasters and payment terminals stopped. It is generally described as the largest IT outage in history, with damage estimated near $10B, and it produced duelling lawsuits between CrowdStrike and Delta Air Lines.",
+      "The uncomfortable part is that the outage was not a failure of the architecture so much as its logical conclusion. A lightweight agent with kernel access on millions of machines, updated centrally and rapidly, is exactly what made the detection model work - and exactly what made one bad file global before anyone could intervene. Every property that made the product good made the failure big. That trade is worth understanding before deploying anything shaped the same way, which is most of modern security.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/CrowdStrike",
+    externalLabel: "CrowdStrike",
+    sources: [
+      { label: "Wikipedia: CrowdStrike - founders, 2019 IPO, S&P 500 in 2024, the 19 July 2024 outage and the Delta litigation", url: "https://en.wikipedia.org/wiki/CrowdStrike" },
+      { label: "Grokipedia: CrowdStrike - Kurtz as McAfee CTO, Alperovitch and Operation Aurora, Warburg Pincus funding, IPO valuation", url: "https://grokipedia.com/page/CrowdStrike" },
+      { label: "TechCrunch: the $26M Series A and Kurtz's move from McAfee via Warburg Pincus", url: "https://techcrunch.com/?p=507029" },
+      { label: "Forbes: George Kurtz - Foundstone founded 1999, acquired by McAfee 2004", url: "https://www.forbes.com/profile/george-kurtz/" },
+    ],
+  },
+  {
+    // SPLUNK - added 2026-07-29 (PRIME). Closes another loop: it ended inside
+    // CISCO, which is a career chapter on this site. Verified against
+    // Wikipedia, Grokipedia and contemporaneous coverage of the acquisition.
+    slug: "splunk",
+    group: "contemporary",
+    name: "Splunk",
+    founded: 2003,
+    ended: {
+      year: 2024,
+      note: "Acquired by Cisco for approximately $28B, announced 21 September 2023 and completed 18 March 2024. It continues as a Cisco business unit.",
+    },
+    tagline: "Named after caving, because that is what searching your own logs felt like.",
+    intro:
+      "Michael Baum, Rob Das and Erik Swan founded Splunk in San Francisco in October 2003, having each spent years on infrastructure software and arrived at the same complaint: finding anything in machine-generated logs meant crawling through them by hand. They named the company after spelunking.",
+    body: [
+      "The technical decision that made it work was schema-on-read. A relational database demands you decide the shape of your data before you store it, which is impossible when the data is whatever a hundred different systems happen to emit. Splunk indexed the text as it arrived and let structure be applied at search time instead. That inversion is why it could ingest anything, and it is the idea the whole product rests on.",
+      "The go-to-market was equally deliberate: a free tier of 500MB a day, adopted by engineers who then brought it into their employers. Bottom-up rather than top-down, years before that was a recognised strategy.",
+      "It raised about $40M in total - modest for what it became - was profitable by 2009, and went public in 2012 at roughly $1.6B. Baum had stepped down as chief executive in 2009; he moved to Burgundy in 2014 and bought a winery, which is a more graceful exit than most of this timeline offers.",
+      "Cisco announced the acquisition on 21 September 2023 and completed it on 18 March 2024 for approximately $28B, one of the largest software deals ever made. Cisco is a chapter in this site's own career record, so the two ends of that transaction both appear on this page.",
+    ],
+    acquisitions: [
+      { year: 2013, name: "BugSense and Cloudmeter", what: "Mobile analytics and network data capture, bought within months of each other.", became: "Mobile intelligence and wire-data ingestion." },
+      { year: 2018, name: "VictorOps", price: "$120M", what: "On-call incident management.", became: "Splunk On-Call." },
+      { year: 2019, name: "SignalFx", price: "$1.05B", what: "Real-time cloud monitoring, and the largest purchase Splunk made.", became: "Splunk Observability Cloud - the second half of a story that had been only about logs." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Splunk",
+    externalLabel: "Splunk",
+    sources: [
+      { label: "Wikipedia: Splunk - founded October 2003, the three founders, IPO 2012, Cisco parent", url: "https://en.wikipedia.org/wiki/Splunk" },
+      { label: "Grokipedia: Splunk - wholly-owned Cisco subsidiary from 18 March 2024, ~$28B", url: "https://grokipedia.com/page/Splunk" },
+      { label: "CNBC: the $28B sale, Baum's tenure to 2009 and his move to Burgundy", url: "https://www.cnbc.com/2023/09/23/splunk-sold-for-28-billion-steve-jobs-inspired-co-founder-in-college.html" },
+    ],
+  },
+  {
+    // NETAPP - added 2026-07-29 (PRIME). Another entry that closes loops:
+    // co-founder Michael Malcolm had worked at Sun, Tandem and Auspex - the
+    // first two now on this timeline with end-years - and went on to found
+    // CacheFlow, which became Blue Coat, also already here. NetApp then SOLD a
+    // product line to Blue Coat in 2006.
+    // Verified against Wikipedia and Grokipedia.
+    slug: "netapp",
+    group: "contemporary",
+    name: "NetApp",
+    founded: 1992,
+    tagline: "Named itself after exactly what it sold, which turned out to be most of the strategy.",
+    intro:
+      "Network Appliance was founded in Sunnyvale in 1992 by David Hitz, James Lau and Michael Malcolm, on the observation that building file storage out of general-purpose servers was harder than it needed to be. The product was an appliance: a box that did one job, with an operating system - Data ONTAP - written for that job alone.",
+    body: [
+      "The name said what it was, which was an advantage in a market where everything else was assembled from parts. The first filer shipped in 1993, Sequoia funded the company in 1994, and it went public in 1995.",
+      "Its main competitor at the outset was Auspex Systems, where both Hitz and Malcolm had previously worked - which is the ordinary way storage companies begin, with people leaving one to build the thing it would not.",
+      "The dot-com years took NetApp past $1B in annual revenue. When the bubble burst, revenue fell to around $800M in fiscal 2002, and the recovery from there was slow and unglamorous rather than dramatic. It changed its legal name from Network Appliance to NetApp in 2008.",
+      "Two threads worth following from here. Michael Malcolm left the chief executive role in 1994 and founded CacheFlow in 1996, which became Blue Coat Systems - and in 2006 NetApp sold its NetCache product line to Blue Coat, so a company sold a business to the firm its own co-founder had built. Malcolm's earlier career had run through Sun Microsystems and Tandem Computers, both of which appear on this timeline having ended inside somebody else.",
+      "Hitz and Lau shared the IEEE Reynold B. Johnson Information Storage Systems Award in 2007. Hitz retired in 2019.",
+    ],
+    acquisitions: [
+      { year: 2003, name: "Spinnaker Networks", price: "$300M", what: "Clustered storage technology.", became: "The clustered Data ONTAP architecture." },
+      { year: 2008, name: "Onaro", price: "$120M", what: "Storage service management.", became: "SANscreen, later OnCommand Insight." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/NetApp",
+    externalLabel: "NetApp",
+    sources: [
+      { label: "Wikipedia: NetApp - 1992 founding, the three founders, Auspex as first competitor, Sequoia 1994, IPO 1995, name change 2008", url: "https://en.wikipedia.org/wiki/NetApp" },
+      { label: "Grokipedia: Michael Malcolm - first CEO 1992-1994, prior roles at Sun, Quantum, Auspex and Tandem, and founding CacheFlow which became Blue Coat", url: "https://grokipedia.com/page/michael_malcolm" },
+      { label: "Wikipedia: David Hitz - the 2007 IEEE award and 2019 retirement", url: "https://en.wikipedia.org/wiki/David_Hitz" },
+    ],
+  },
+  {
+    // SOPHOS - added 2026-07-29 (PRIME). One of the few security companies old
+    // enough to predate the commercial internet, and still trading under its
+    // own name forty years on - which on this timeline is genuinely unusual.
+    // Verified against Wikipedia.
+    slug: "sophos",
+    group: "contemporary",
+    name: "Sophos",
+    founded: 1985,
+    tagline: "Started in Oxford the year before the first PC virus spread, and is still here under its own name.",
+    intro:
+      "Jan Hruska and Peter Lammer founded Sophos at Oxford in September 1985, writing virus detection for the IBM PC before most people had encountered a virus. The name is the Greek for wisdom, chosen to signal a research-led posture rather than a product one.",
+    body: [
+      "The early business was deliberately narrow: corporate and educational customers in Britain and Europe, largely self-funded, at a time when antivirus was a cottage industry of individual researchers trading samples. By the early 1990s it was protecting thousands of enterprise endpoints.",
+      "It expanded into encryption, then into unified threat management, and became one of the few security vendors whose product line spans endpoint and network without either half having been bought in late.",
+      "Sophos listed on the London Stock Exchange in 2015 and was taken private by Thoma Bravo in 2020 - the same firm that appears elsewhere on this timeline holding LANDESK before Ivanti, and Ping Identity before ForgeRock. It has since acquired Secureworks.",
+      "What makes it notable here is longevity of a specific kind. Almost every company on this page that started in the 1980s has ended inside another one. Sophos is forty years old, privately held, and still trading under the name its founders chose.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Sophos",
+    externalLabel: "Sophos",
+    sources: [
+      { label: "Wikipedia: Sophos - founded 1985 by Jan Hruska and Peter Lammer, Abingdon, LSE 2015-2020, Thoma Bravo, Secureworks", url: "https://en.wikipedia.org/wiki/Sophos" },
+    ],
+  },
+  {
+    // IVANTI - added 2026-07-29 (PRIME). It closes THREE loops at once, which
+    // is why it earns a longer entry than its age suggests:
+    //   * MobileIron - a Red Education partner on this site - ended here
+    //   * Pulse Secure - a CAREER chapter on this site - ended here, same day
+    //   * Avocent, already present in the cyclades-avocent-vertiv entry, owned
+    //     LANDESK before Thoma Bravo did
+    // Verified against Ivanti's own history pages, Wikipedia and Grokipedia.
+    slug: "ivanti",
+    group: "contemporary",
+    name: "Ivanti",
+    founded: 2017,
+    tagline: "A 2017 company assembled from forty years of other people's software, and the place two vendors on this site came to rest.",
+    intro:
+      "Ivanti was created on 23 January 2017 when Clearlake Capital bought LANDESK from Thoma Bravo and merged it with HEAT Software. Neither half was new: the lineage behind it runs back to 1985, and almost nothing in the portfolio was written by the company whose name is on it.",
+    body: [
+      "The LANDESK side began as LANSystems in 1985, was acquired by Intel in 1991 and run as its LANDESK division, and was spun out as an independent company in 2002. Avocent bought it in 2006 for $416M - the same Avocent that appears elsewhere on this timeline in the Cyclades lineage - and Thoma Bravo took it in 2010. Along the way LANDESK absorbed Wavelink (2012), Shavlik from VMware (2013), Naurtech (2014), Xtraction (2015) and AppSense (2016).",
+      "The HEAT side was itself assembled, formed in 2015 from FrontRange Solutions and Lumension Security. Lumension had started as High Tech Software in 1991 and been renamed PatchLink in 1999.",
+      "Ivanti kept buying: Concorde Solutions and RES Software in 2017, then Cherwell and RiskSense. In September 2020 it announced the acquisition of both MobileIron and Pulse Secure, completing on 1 December that year - which is how two companies that appear elsewhere on this site came to end on the same day, in the same place.",
+      "MobileIron had been founded in 2007 by Ajay Mishra and Suresh Batchu and taken public on NASDAQ in 2014. Pulse Secure carried Juniper's SSL VPN business, sold to Siris Capital in 2014.",
+      "The company became more widely known after serious vulnerabilities in the VPN appliances it sells, which is worth recording rather than omitting: a portfolio assembled from a dozen acquisitions inherits a dozen codebases, and the security posture of the whole is the security posture of the weakest piece.",
+    ],
+    acquisitions: [
+      { year: 2017, name: "Concorde Solutions and RES Software", what: "Software asset management from the UK, and workspace automation and identity from the Netherlands and US.", became: "The service-management and automation layers." },
+      { year: 2020, name: "MobileIron", what: "Mobile device management and zero-trust access for endpoints. Announced September 2020, completed 1 December.", became: "Ivanti Neurons for MDM. MobileIron appears on this site in its own right as a Red Education training partner.", founder: "Ajay Mishra and Suresh Batchu, 2007; IPO on NASDAQ 2014" },
+      { year: 2020, name: "Pulse Secure", what: "Hybrid secure access, acquired in the same announcement and completed the same day as MobileIron.", became: "Ivanti Connect Secure - the VPN line that later drew serious vulnerability disclosures.",
+        subAcquisitions: [ { year: 2014, name: "Juniper's SSL VPN business (by Siris Capital)", what: "Pulse Secure was carved out of Juniper and sold to private equity, which is why a company founded in 2014 carried a product line older than itself. Juniper is a chapter in this site's own career record." } ] },
+    ],
+    externalUrl: "https://www.ivanti.com/company/history",
+    externalLabel: "Ivanti: mergers, acquisitions and milestones",
+    sources: [
+      { label: "Ivanti: LANDESK history - LANSystems 1985, Intel 1991, spin-off 2002, Thoma Bravo, the acquisition list", url: "https://www.ivanti.com/company/history/landesk" },
+      { label: "Wikipedia: Ivanti - formation January 2017, Avocent's $416M purchase, HEAT from FrontRange and Lumension", url: "https://en.wikipedia.org/wiki/Ivanti" },
+      { label: "Wikipedia: MobileIron - founded 2007, IPO 2014, acquired by Ivanti", url: "https://en.wikipedia.org/wiki/MobileIron" },
+      { label: "Redmond Magazine: Ivanti buys MobileIron and Pulse Secure (September 2020)", url: "https://redmondmag.com/articles/2020/09/28/ivanti-buys-mobileiron-and-pulse-secure.aspx" },
+    ],
+  },
+  {
+    // EMC - added 2026-07-28 (PRIME). It closes a loop opened the same day:
+    // Data General was marked as ending in 1999 because EMC bought it, and EMC
+    // itself then ended inside Dell. The timeline can now show both halves.
+    // Verified against EMC's own SEC merger filings and Wikipedia.
+    slug: "emc",
+    group: "other",
+    name: "EMC Corporation",
+    founded: 1979,
+    ended: {
+      year: 2016,
+      note: "Acquired by Dell for $67B - the largest technology acquisition ever at the time - forming Dell Technologies. The Dell EMC brand persisted on products until around 2020.",
+    },
+    tagline: "Made storage a category of its own, then became the largest technology acquisition in history.",
+    intro:
+      "EMC was incorporated in Massachusetts in August 1979 by Richard Egan and Roger Marino, whose initials are the E and the M. It began selling memory boards and became the company that made enterprise storage a purchase decision in its own right rather than something bundled with a server.",
+    body: [
+      "The strategy was unusual and deliberate: persuade customers to choose storage independently of who supplied the rest of their infrastructure. That is why EMC ended up selling into IBM, HP and Sun accounts alike, and why 'best of breed' became a phrase storage buyers used.",
+      "It bought heavily. Data General in 1999, largely for the CLARiiON array line, which is how one of the first minicomputer companies ended up inside a storage vendor. Documentum and Legato in 2003. RSA Security in 2006, which put a security business inside a storage company. VMware in 2004, for $625M, which turned out to be the most consequential of them all.",
+      "Iomega followed in 2008, later rebranded LenovoEMC through a 2013 joint venture that dissolved when Dell arrived.",
+      "In 2016 Dell acquired EMC for $67B, the largest technology acquisition ever recorded at the time, forming Dell Technologies. The VMware stake EMC had bought for $625M twelve years earlier was a substantial part of what made the price sensible.",
+    ],
+    acquisitions: [
+      { year: 1999, name: "Data General", what: "One of the first minicomputer companies, bought largely for the CLARiiON storage array line.", became: "The mid-range array business.",
+        subAcquisitions: [ { year: 1968, name: "Data General is founded (origin, not a purchase)", what: "Founded by ex-DEC engineers; it defined the minicomputer market before ending inside a storage vendor thirty-one years later." } ] },
+      { year: 2003, name: "Documentum and Legato", what: "Content management and backup software, bought in the same year.", became: "The software half of what became the EMC federation." },
+      { year: 2004, name: "VMware", price: "$625M", what: "Server virtualisation, bought before virtualisation was a category most buyers had a budget line for.", became: "By 2016 a large part of what made a $67B price for EMC sensible. The most consequential purchase EMC ever made." },
+      { year: 2006, name: "RSA Security", price: "$2.1B", what: "Encryption and authentication, which put a security business inside a storage company.", became: "RSA, later divested." },
+      { year: 2008, name: "Iomega", what: "Consumer and small-business storage.", became: "Rebranded LenovoEMC through a 2013 joint venture, dissolved when Dell arrived." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/EMC_Corporation",
+    externalLabel: "EMC Corporation",
+    sources: [
+      { label: "EMC SEC merger filing (DEFM14A, 2016): incorporation in Massachusetts in 1979", url: "https://www.sec.gov/Archives/edgar/data/0000790070/000119312516614138/d59207ddefm14a.htm" },
+      { label: "Wikipedia: EMC Corporation - founders, defunct September 2016, Dell Technologies", url: "https://en.wikipedia.org/wiki/EMC_Corporation" },
+      { label: "World Economic Forum: the $67B Dell-EMC deal as the largest tech acquisition of its time", url: "https://www.weforum.org/stories/2015/10/the-12-biggest-technology-acquisitions-of-all-time/" },
+    ],
+  },
+  {
+    // EDS - added 2026-07-28 (PRIME). The company that invented IT outsourcing
+    // as a business, and a reminder that services lineages matter as much as
+    // product ones. Verified against contemporaneous coverage of the HP deal.
+    slug: "eds",
+    group: "other",
+    name: "Electronic Data Systems (EDS)",
+    founded: 1962,
+    ended: {
+      year: 2008,
+      note: "Acquired by Hewlett-Packard for nearly $14B, completed August 2008, and folded into HP Enterprise Services.",
+    },
+    tagline: "Invented the idea that a company could hand its computing to somebody else entirely.",
+    intro:
+      "Ross Perot founded Electronic Data Systems in 1962 in Dallas, on a proposition that barely existed as a market: that organisations would rather pay someone else to run their data processing than run it themselves. Every managed service and every outsourcing contract since descends from that bet.",
+    body: [
+      "EDS built systems that became invisible infrastructure, including the networks that let bank machines accept and dispense money. Its business was never the hardware; it was operating the thing on somebody else's behalf, under contract, at a price agreed in advance.",
+      "General Motors bought EDS in 1984 and spun it back out in 1996. Hewlett-Packard acquired it in 2008 for nearly $14B and folded it into HP Enterprise Services.",
+      "It belongs on this timeline because the services model it created is the one every vendor on the rest of this page now sells alongside their products - and because an instructor-led training business is itself a descendant of the same idea, that expertise can be contracted rather than hired.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Electronic_Data_Systems",
+    externalLabel: "Electronic Data Systems",
+    sources: [
+      { label: "World Economic Forum: HP completed the EDS purchase for nearly $14B in August 2008", url: "https://www.weforum.org/stories/2015/10/the-12-biggest-technology-acquisitions-of-all-time/" },
+    ],
+  },
+  {
+    // GETRONICS - added 2026-07-28 (PRIME). Verified during the Wang research
+    // the same day: it is the company Wang Laboratories ended inside.
+    slug: "getronics",
+    group: "other",
+    name: "Getronics",
+    founded: 1887,
+    tagline: "A Dutch electrical firm from the 1880s that ended up owning what was left of Wang Laboratories.",
+    intro:
+      "Getronics traces to Groeneveld, van der Poll & Co., a Dutch electrotechnical business of the late nineteenth century. It is on this timeline for one reason: in 1999 it acquired Wang Global, and so became the place a company that had defined word processing came to rest.",
+    body: [
+      "Wang Laboratories had peaked at around $3B in revenue in the 1980s and employed 33,000 people. By 1999 what Getronics bought was Wang Global, the services business that remained after the hardware era ended.",
+      "The pieces continued to move. Getronics North America was sold to KPN in 2007, and on to CompuCom of Dallas in 2008 - so the residue of Wang passed through three more owners after the acquisition that supposedly concluded it.",
+      "That trajectory is the ordinary shape of a technology ending. Companies rarely stop; they are absorbed, split, and resold until the original name survives only in a lineage page like this one.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Getronics",
+    externalLabel: "Getronics",
+    sources: [
+      { label: "Wikipedia: Wang Laboratories - acquisition by Getronics in 1999 and the subsequent sales to KPN and CompuCom", url: "https://en.wikipedia.org/wiki/Wang_Laboratories" },
+      { label: "Wang Laboratories SEC filing (SC 14D1, 1999) on the Getronics transaction", url: "https://www.sec.gov/Archives/edgar/data/0000104519/000095013099002847/0000950130-99-002847.txt/seq-7" },
     ],
   },
   {
@@ -409,6 +724,10 @@ export const partnerVendors: PartnerVendor[] = [
     group: "redu",
     name: "MobileIron",
     founded: 2007,
+    ended: {
+      year: 2020,
+      note: "Acquired by Ivanti, announced September 2020 and completed 1 December, alongside Pulse Secure.",
+    },
     tagline: "Mobile device management pioneer, now part of Ivanti.",
     intro:
       "MobileIron was one of the pioneers of mobile device management, building the platform enterprises first used to enroll, secure, and wipe fleets of smartphones as they flooded into the workplace.",
@@ -674,6 +993,10 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Sun Microsystems - the network is the computer",
     founded: 1982,
+    ended: {
+      year: 2010,
+      note: "Acquired by Oracle in 2010. Java, Solaris, ZFS and the identity stack that became ForgeRock all passed with it.",
+    },
     tagline: "Four Stanford-orbit founders, SPARC, Solaris, Java - the dot in dot-com, absorbed by Oracle in 2010.",
     intro: "Sun packed more industry-shaping ideas into 28 years than most vendors manage in a century: the workstation, the network-first slogan it took the world decades to catch up with, NFS, SPARC, Solaris, and Java. Its 2010 end inside Oracle scattered a diaspora that still runs the industry - including the ForgeRock and Arista stories elsewhere in this section.",
     body: ["From Andy Bechtolsheim's Stanford University Network workstation to Java running on billions of devices, Sun's arc is the arc of open systems itself - told in full in the profile below, with the bloodlines that lead out of it."],
@@ -792,6 +1115,10 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Compaq - the clone that became the king",
     founded: 1982,
+    ended: {
+      year: 2002,
+      note: "Acquired by Hewlett-Packard in 2002, and retired as a brand by 2010. It had itself absorbed Tandem in 1997 and DEC in 1998, so three companies ended inside one lineage.",
+    },
     tagline: "Three ex-TI engineers sketched a portable on a placemat, clean-roomed the IBM BIOS, and built the fastest company to a billion dollars - then bought DEC and merged into HP.",
     intro: "Compaq legitimized the PC-compatible industry: its 1982 clean-room BIOS made 'IBM compatible' a legal product category, its Deskpro 386 beat IBM to Intel's 386, and by the mid-1990s it was the world's largest PC maker. Its acquisitions of Tandem and DEC made it, briefly, the industry's everything-company - until the 2002 HP merger closed the arc.",
     body: ["The profile runs from the Houston placemat sketch to the proxy-fight merger, with the DEC bloodline this section tells separately flowing through it."],
@@ -828,6 +1155,10 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Data General - the soul of a new machine",
     founded: 1968,
+    ended: {
+      year: 1999,
+      note: "Purchased by EMC in 1999, largely for its CLARiiON storage array line.",
+    },
     tagline: "Edson de Castro left DEC to build the Nova; Tracy Kidder's Pulitzer immortalized the Eagle; CLARiiON storage carried the DNA into EMC in 1999.",
     intro: "Data General was born from the industry's most famous walkout: Edson de Castro, designer of DEC's PDP-8, left when Ken Olsen shelved his next design, and the 1969 Nova - elegant, cheap, sixteen bits - forced the entire minicomputer market to respond. Tracy Kidder's The Soul of a New Machine made its Eagle project the most celebrated engineering story ever written.",
     body: ["The profile follows the Nova and Eclipse decades, the AViiON pivot, and the CLARiiON storage line whose 1999 acquisition by EMC seeded the midrange-storage dynasty that lives on at Dell today."],
@@ -847,6 +1178,10 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Wang Laboratories - the office before the PC",
     founded: 1951,
+    ended: {
+      year: 1999,
+      note: "Acquired by Getronics of the Netherlands in 1999. Getronics North America passed to KPN in 2007 and CompuCom in 2008.",
+    },
     tagline: "An Wang's core-memory patents funded a word-processing empire that owned the office of the late 1970s - and the PC unmade it inside a decade.",
     intro: "Before the PC, the office ran on Wang: dedicated word-processing systems so dominant that secretaries listed 'Wang' as a skill. Dr. An Wang - who sold his magnetic-core memory patents to IBM and built the Massachusetts Miracle's signature company - saw the minicomputer and the office converge before almost anyone. The general-purpose PC running WordPerfect erased the category he created.",
     body: ["From the 1951 Boston founding through the WPS and VS golden years, the failed succession, and the 1992 Chapter 11, the profile tells the sharpest single-product rise and fall in this section."],
@@ -856,6 +1191,10 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Tandem Computers - the machine that never stops",
     founded: 1974,
+    ended: {
+      year: 1997,
+      note: "Acquired by Compaq in 1997 for $3B, and with Compaq into HP in 2002. The NonStop line survives as an HPE division, so the technology outlived the company by decades.",
+    },
     tagline: "Jimmy Treybig's NonStop architecture made fault tolerance a product in 1976; it still runs stock exchanges and card networks today, as HPE NonStop.",
     intro: "Tandem built computers on one premise: no single point of failure - paired processors, mirrored everything, hardware and software designed so the system survives any one fault mid-transaction. ATMs, card networks, stock exchanges, and 911 systems standardized on NonStop, and half a century later the architecture is still sold, by HPE, doing the same jobs.",
     body: ["The profile covers the 1974 founding, the process-pair architecture, the legendary company culture, the ServerNet interconnect whose ideas fed InfiniBand, and the 1997 Compaq acquisition that carried NonStop into HP."],

@@ -16,6 +16,11 @@ import SiteFooter from "@/components/SiteFooter";
 // Career pages registry - single source shared with the /industry hub
 // (extracted 2026-07-15; see src/content/vendors/career.ts).
 import { CAREER_VENDORS as VENDORS } from "@/content/vendors/career";
+// NOTE (PRIME, 2026-07-29): this index lists CAREER CHAPTERS ONLY - the
+// companies worked inside directly. It is autobiography, not a company
+// directory. Company histories belong on the /industry side, and an earlier
+// change that listed all ~90 profiles here was reverted for exactly that
+// reason: it turned a career record into a catalogue.
 
 export default async function VendorsIndexPage({
   params,

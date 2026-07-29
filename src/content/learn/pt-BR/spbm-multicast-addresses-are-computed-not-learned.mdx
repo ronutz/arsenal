@@ -1,0 +1,60 @@
+---
+slug: spbm-multicast-addresses-are-computed-not-learned
+title: "Multicast SPBM: o endereço é aritmética, não consulta"
+summary: "Um endereço de grupo de backbone no SPBM nunca é aprendido nem configurado. Ele é montado a partir do nickname do nó raiz e do I-SID do serviço, e é por isso que todo nó chega à mesma resposta sozinho e que a FIB multicast pode ser lida diretamente quando se conhece a regra."
+concepts: ["spbm", "802.1aq", "shortest path bridging", "i-sid", "nickname", "spsourceid", "b-mac", "fib multicast", "fabric connect", "voss", "extreme"]
+relatedTools: ["extreme-spbm-multicast-mac"]
+sub: fabric
+relatedArticles: ["voss-fabric-connect-spbm", "voss-i-sid-and-vsns"]
+category: networking
+order: 128
+status: reviewed
+updated: "2026-07-28"
+---
+
+A maior parte do estado de encaminhamento multicast é construída observando tráfego ou ouvindo um protocolo. O SPBM não constrói nada disso assim. O endereço de grupo de um serviço é um cálculo que as duas pontas conseguem fazer, e quando você também consegue fazê-lo, a FIB multicast deixa de ser opaca.
+
+## A regra
+
+Um MAC de grupo de backbone tem duas metades:
+
+- **os primeiros três bytes** são o prefixo fixo `0x30000` combinado com o **nickname** de 20 bits do nó que enraíza a árvore
+- **os últimos três bytes** são o **I-SID** de 24 bits do serviço
+
+O nickname `0.00.10` carregando o I-SID 100 dá `03:00:10:00:00:64`. O nickname `0.40.01` carregando o I-SID 200 dá `03:40:01:00:00:c8`.
+
+É só isso. Não há etapa de alocação, negociação, nem tabela a sincronizar.
+
+## Por que esse desenho importa
+
+**Sem aprendizado de MAC no backbone.** Todo nó tem a base link-state, então todo nó conhece o nickname de todos os outros. Dado um I-SID, todos calculam o mesmo endereço de grupo sem trocar uma única mensagem adicional. Uma bridge convencional aprende MACs observando quadros chegarem; o SPBM não precisa, porque não há nada a descobrir.
+
+**Uma árvore por raiz, não uma por serviço.** O mesmo I-SID enraizado em outro nó produz endereço diferente — `03:40:01:00:00:c8` e `03:40:02:00:00:c8` são o mesmo serviço vindo de duas fontes. É multicast específico de fonte expresso no próprio endereço, o que permite ao fabric podar por fonte em vez de inundar uma árvore compartilhada.
+
+**Desconhecido é descartado.** Como os endereços são derivados e não aprendidos, um quadro com endereço de backbone que ninguém calculou não é uma falha de cache a ser inundada. Ele simplesmente não é encaminhado.
+
+## Lendo a FIB multicast
+
+É aqui que a regra se paga. O `show isis spbm multicast-fib` imprime uma coluna de endereços de grupo, e os dois fatos que você quer estão dentro de cada um.
+
+`03:00:41:00:04:4d` se divide em `03:00:41` e `00:04:4d` — nickname `0.00.41`, I-SID 1101. A linha seguinte, `03:00:41:00:04:4f`, é a mesma raiz carregando o I-SID 1103. Dois serviços de um nó, e os endereços diferem por dois.
+
+Um serviço maior não parece diferente: `03:00:07:e4:e2:02` é o nickname `0.00.07` carregando o I-SID 15000066, porque `0xe4e202` é esse número. Quando você vê duas entradas cujos últimos três bytes coincidem e cujos bytes do meio diferem, está olhando para um serviço com duas raízes.
+
+Cruze o nickname com a coluna SYSID ou HOST-NAME da mesma saída e a entrada ganha um nome.
+
+## Onde a aritmética para
+
+O B-MAC **unicast** não é derivado de nada. É o endereço do chassi, e conhecer o nickname não o produz. Só os endereços de grupo são calculados.
+
+O **B-VID** é escolha separada. O SPBM normalmente roda duas VLANs de backbone para que o tráfego se espalhe por caminhos de custo igual, e qual delas um serviço usa é configuração, não derivação.
+
+E o **número do I-SID** em si não significa nada para esse cálculo. Se 1101 é uma L2 VSN, uma L3 VSN ou um serviço multicast é questão de como foi configurado, não de algo visível no endereço.
+
+## Uma borda que vale conhecer
+
+Os bits 16 e 17 daquela primeira metade pertencem ao prefixo fixo. Um nickname cujo primeiro campo os sobrepõe gera um endereço que não pode ser decodificado de volta a exatamente um nickname. Todo exemplo da documentação do fabricante usa primeiro campo `0`, e na prática as implantações seguem isso. Se você encontrar um que não segue, o endereço continua válido e continua encaminhando — você apenas não consegue revertê-lo com certeza, e deve ler o nickname no nó, não no MAC.
+
+## O que quem estuda precisa saber de cor
+
+Um B-MAC de grupo SPBM é o prefixo fixo `0x30000` combinado com o nickname de 20 bits da raiz da árvore, seguido do I-SID de 24 bits. Nickname `0.00.10` com I-SID 100 é `03:00:10:00:00:64`. Nada é aprendido nem alocado: todo nó deriva o mesmo endereço da base link-state, e é por isso que o SPBM não aprende MACs de backbone e descarta destinos de backbone desconhecidos em vez de inundá-los. O mesmo serviço enraizado em outro lugar recebe endereço diferente, uma árvore por raiz. Ler a FIB multicast é portanto direto — os bytes do meio nomeiam a raiz, os últimos três nomeiam o serviço. O B-MAC unicast é o endereço do chassi e não é derivado, e o B-VID é escolhido, não calculado.
