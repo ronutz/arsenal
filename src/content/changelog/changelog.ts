@@ -52,6 +52,18 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-29T14:45:33-03:00",
+    kind: "content",
+    title: "The last five histories, and one argument that keeps being rediscovered",
+    body: "F5 was named after the most powerful tornado category, which is the sort of thing a networking startup called itself in the nineties, and spent thirty years moving up the stack: once you terminate a connection to load balance it you can inspect it, and once you inspect it you can rewrite, authenticate, offload and block, which is how a load balancer became a platform. Fortinet was founded by the man who had already built one firewall company, taking the same silicon argument further, that if you are making custom chips anyway you should inspect everything in one pass rather than chain boxes that each re-read the same packets. Netskope started from a question anyone can verify, which is that organisations underestimate how many cloud applications their own staff use by an order of magnitude, and found the hard part was not seeing the traffic but telling apart an upload to a corporate account from the same upload to a personal one. Ping bet in 2002 that identity would have to work between organisations rather than inside one, and the idea underneath is worth stating plainly: an assertion signed by someone you trust beats a credential you have to store. Zscaler argued that if the users have left the office and the applications have left the data centre, sending traffic between them through the office is indefensible. That last entry notes something the timeline now shows three times over: a shared platform that inspects everyone's traffic learns from all of it, which is the argument IronPort made about email in 2002, CrowdStrike made about endpoints in 2013, and Zscaler made about web traffic in between.",
+  },
+  {
+    date: "2026-07-29T07:49:17-03:00",
+    kind: "content",
+    title: "Four more company histories, including two that explain the rest of the timeline",
+    body: "Pulse Secure is an unusual founding: it existed on day one in 2014 with a mature product, an installed base and a support obligation, and no history of its own, because Juniper sold it a business rather than starting one. The code predated the company by more than a decade and had passed through two acquisitions before the carve-out, which is a specific kind of risk that this timeline shows repeatedly, and the vulnerabilities that later drew emergency directives from national agencies were structural rather than careless. The FireEye, McAfee and Ixia entry covers three lineages that shared a distribution portfolio and almost nothing else, which is what distribution actually looks like from the inside: a portfolio assembled from whatever the market wanted, whose only common factor is the person carrying it. Extreme grew mostly by buying the enterprise businesses larger companies had stopped wanting, so its product line is an accumulation of other lineages and its installed base includes customers who bought from four companies that no longer exist. And Check Point patented stateful inspection, invented the commercial firewall market, and then watched its own alumni build much of the competition, including the company that overtook it. The idea itself is worth knowing: a packet filter cannot tell a reply from an unsolicited connection, a proxy understands conversations but terminates them, and tracking connection state gave the security of one at nearly the speed of the other.",
+  },
+  {
     date: "2026-07-29T07:28:38-03:00",
     kind: "infra",
     title: "The redirects file had three faults and two of them would have failed silently",

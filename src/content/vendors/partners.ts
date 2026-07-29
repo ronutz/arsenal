@@ -263,6 +263,235 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // F5 - company history (PRIME step 4, 2026-07-29). Hub + lineage page
+    // already carry the deal detail; this is the company and the idea.
+    slug: "f5",
+    group: "other",
+    name: "F5",
+    founded: 1996,
+    careerChapter: { slug: "f5", years: "2015 - present" },
+    tagline: "Named after a tornado, and spent thirty years moving up the stack from ports to applications.",
+    intro:
+      "F5 Labs was founded in Seattle in 1996 by Jeff Hussey and Michael Almquist. The name comes from the Fujita scale: F5 is the most powerful tornado category, which was the sort of thing a networking startup called itself in the nineties.",
+    body: [
+      "The first product, BIG-IP, was a load balancer, and the founding problem was mundane: a website outgrows one server, and something has to decide which server each request goes to. Doing that well turns out to require understanding the traffic rather than just counting connections, and that is the direction the whole company travelled.",
+      "The consequential decision was moving up the stack. A load balancer that terminates the connection can inspect what is inside it, and once you are inspecting you can rewrite, authenticate, offload cryptography, enforce policy and block attacks. BIG-IP became a platform of modules rather than a product - traffic management, DNS, access, application firewalling - because each was another thing you could do once you were already in the path.",
+      "iRules, introduced in the early 2000s, let administrators write TCL that ran per connection. That is unusual and it is why so much F5 knowledge is specific rather than general: the box does what the local script says, and two deployments of the same product can behave nothing alike.",
+      "The acquisitions since 2019 mark a deliberate change of shape. NGINX brought a software proxy with an enormous open-source installed base and a very different deployment model. Shape Security brought bot and fraud detection. Volterra brought edge and multicloud application delivery, which became Distributed Cloud. The company that sold appliances into data centres has spent a decade trying to be relevant where applications actually run now.",
+      "The full deal list, with what each acquired company had itself acquired, is on the vendor lineage page rather than repeated here.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/F5,_Inc.",
+    externalLabel: "F5, Inc.",
+    sources: [
+      { label: "Wikipedia: F5, Inc. - founded 1996 in Seattle, the Fujita-scale name, BIG-IP, and the NGINX, Shape Security and Volterra acquisitions", url: "https://en.wikipedia.org/wiki/F5,_Inc." },
+    ],
+  },
+  {
+    // FORTINET - company history (PRIME step 4, 2026-07-29).
+    slug: "fortinet",
+    group: "other",
+    name: "Fortinet",
+    founded: 2000,
+    careerChapter: { slug: "fortinet", years: "2022 - present" },
+    tagline: "Founded by the man who had already built one firewall company, on the same argument taken further.",
+    intro:
+      "Ken Xie founded Fortinet in 2000 with his brother Michael. He had co-founded NetScreen in 1996 and left it, and NetScreen appears elsewhere on this timeline as the startup whose alumni seeded a remarkable share of the security industry - Fortinet being the first of them.",
+    body: [
+      "The NetScreen argument had been that firewalling belongs in purpose-built silicon rather than on a general-purpose processor. Fortinet took that further: if you are building custom silicon anyway, build it to do everything the traffic needs in one pass - firewalling, antivirus, intrusion prevention, web filtering - rather than chaining separate boxes that each re-inspect the same packets.",
+      "That became unified threat management, and the FortiASIC is the reason the claim was credible rather than marketing. Inspecting content at line rate is genuinely hard on commodity hardware, which is why competitors selling software on servers had to choose between features and throughput.",
+      "The commercial consequence mattered more than the technical one. UTM made real security affordable for organisations that could not staff a security team, and Fortinet's growth came substantially from the mid-market and from the channel rather than from displacing incumbents in large enterprises.",
+      "The portfolio has since expanded well beyond the firewall into switching, wireless, endpoint, SIEM and SD-WAN, held together by a management fabric - the same one-vendor-for-the-whole-stack proposition that Cisco made for networking, applied to security.",
+      "Its acquisitions, and what those companies had themselves bought, are on the vendor lineage page.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Fortinet",
+    externalLabel: "Fortinet",
+    sources: [
+      { label: "Wikipedia: Fortinet - founded 2000 by Ken Xie and Michael Xie, FortiGate, the ASIC approach", url: "https://en.wikipedia.org/wiki/Fortinet" },
+      { label: "Wikipedia: NetScreen Technologies - Ken Xie as co-founder before leaving to start Fortinet", url: "https://en.wikipedia.org/wiki/NetScreen_Technologies" },
+    ],
+  },
+  {
+    // NETSKOPE - company history (PRIME step 4, 2026-07-29).
+    slug: "netskope",
+    group: "other",
+    name: "Netskope",
+    founded: 2012,
+    careerChapter: { slug: "netskope", years: "2024 - present" },
+    tagline: "Started from the observation that nobody knew which cloud applications their own staff were using.",
+    intro:
+      "Netskope was founded in 2012 by Sanjay Beri and others, at the point where software as a service had quietly become the way work was done and security teams had no visibility into any of it.",
+    body: [
+      "The founding observation was specific and easy to verify: ask an organisation how many cloud applications it uses, and the answer is invariably an order of magnitude lower than the truth. Staff adopt tools without procurement, data moves into services nobody approved, and a perimeter firewall sees encrypted traffic to a hosting provider and can say nothing useful about it.",
+      "Cloud access security brokers answered the visibility half. The harder half was doing something about it without blocking work, which requires understanding the ACTIVITY inside an application rather than the application itself - the difference between uploading to a corporate tenant and uploading the same file to a personal one, which look nearly identical on the wire.",
+      "That distinction is why the product had to understand application semantics rather than just domains, and it is the reason the category could not be served by a proxy that only saw hostnames.",
+      "The market has since folded CASB into security service edge, combining it with secure web gateway and zero-trust access, and Netskope built its own global network, NewEdge, rather than renting capacity - a capital decision that only makes sense if you believe inspection has to happen close to the user.",
+      "Its acquisitions are on the vendor lineage page.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Netskope",
+    externalLabel: "Netskope",
+    sources: [
+      { label: "Wikipedia: Netskope - founded 2012, CASB origins, the SSE platform and the NewEdge network", url: "https://en.wikipedia.org/wiki/Netskope" },
+    ],
+  },
+  {
+    // PING IDENTITY - company history (PRIME step 4, 2026-07-29).
+    slug: "ping-identity",
+    group: "other",
+    name: "Ping Identity",
+    founded: 2002,
+    careerChapter: { slug: "ping-identity", years: "2025 - present" },
+    tagline: "Bet early that identity would have to work between organisations, not just inside one.",
+    intro:
+      "Andre Durand founded Ping Identity in Denver in 2002, on a bet that looks obvious now and did not then: that the hard identity problem was not authenticating your own staff but letting one organisation's users into another organisation's applications without either side sharing a password database.",
+    body: [
+      "Federation is the answer, and the standards that make it work - SAML, and later OAuth and OpenID Connect - were being written at roughly the moment the company was founded. Ping built products against them early, and became one of the vendors whose implementations defined what interoperability meant in practice.",
+      "The idea underneath is worth stating because it is easy to miss: an assertion signed by a party you trust is better than a credential you have to store. It moves the security problem from protecting secrets to verifying signatures, and every single-sign-on deployment since rests on that trade.",
+      "Ownership has changed repeatedly. Vista Equity Partners took it private in 2016, it returned to public markets in 2019, and Thoma Bravo took it private again in 2022 - the same firm that appears elsewhere on this timeline holding Sophos and LANDESK.",
+      "In 2023 Thoma Bravo acquired ForgeRock and combined it with Ping, bringing together two of the largest independent identity vendors, and giving the combined portfolio two overlapping product lines to reconcile.",
+      "Its acquisitions, and ForgeRock's own, are on the vendor lineage page.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Ping_Identity",
+    externalLabel: "Ping Identity",
+    sources: [
+      { label: "Wikipedia: Ping Identity - founded 2002 by Andre Durand, federation standards, Vista and Thoma Bravo ownership, the ForgeRock combination", url: "https://en.wikipedia.org/wiki/Ping_Identity" },
+    ],
+  },
+  {
+    // ZSCALER - company history (PRIME step 4, 2026-07-29).
+    slug: "zscaler",
+    group: "other",
+    name: "Zscaler",
+    founded: 2007,
+    careerChapter: { slug: "zscaler", years: "2026 - present" },
+    tagline: "Argued that if users are not in the office, the security stack should not be either.",
+    intro:
+      "Jay Chaudhry founded Zscaler in 2007, having already founded and sold several security companies before it. The argument was that backhauling remote users through a corporate data centre to reach the internet was about to stop making sense.",
+    body: [
+      "The traditional design put inspection where the users were, which was the office, and sent everything else back there over a VPN. That worked while applications lived in the data centre too. Once the applications moved to the cloud and the users moved out of the office, the traffic was travelling to a building neither the user nor the application had any reason to visit.",
+      "Zscaler moved the inspection into a distributed set of points of presence, so a user connects to a nearby one, is inspected there, and goes on to wherever the application actually is. That removes the hairpin, and it means capacity is a property of the provider rather than of each office's appliance.",
+      "It also changes the economics of scale in a way worth understanding. A shared inspection platform sees traffic from every customer, so a threat identified for one becomes blocked for all - the same structural argument IronPort made about email reputation in 2002 and CrowdStrike made about endpoints in 2013. This timeline shows that argument being rediscovered for each layer of the stack in turn.",
+      "The company went public in 2018 and the category it defined became security service edge, in which it competes directly with Netskope, which is also on this site and reached the same place from the visibility problem rather than the routing one.",
+      "Its acquisitions are on the vendor lineage page.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Zscaler",
+    externalLabel: "Zscaler",
+    sources: [
+      { label: "Wikipedia: Zscaler - founded 2007 by Jay Chaudhry, the cloud proxy architecture, the 2018 IPO", url: "https://en.wikipedia.org/wiki/Zscaler" },
+    ],
+  },
+  {
+    // EXTREME NETWORKS - company history (PRIME step 4, 2026-07-29).
+    // Extreme has a vendor hub AND a lineage page with the full deal list, so
+    // this entry tells the COMPANY STORY and leaves the acquisition detail
+    // where it already lives rather than duplicating it.
+    slug: "extreme",
+    group: "other",
+    name: "Extreme Networks",
+    founded: 1996,
+    careerChapter: { slug: "extreme", years: "2013 - 2014" },
+    tagline: "Grew mostly by buying the enterprise businesses that larger companies had stopped wanting.",
+    intro:
+      "Extreme Networks was founded in 1996 in Santa Clara by Gordon Stitt, Herb Schneider and Stephen Haddock, all from SynOptics, to build Gigabit Ethernet switches for the enterprise. Its early identity was hardware-led: purpose-built silicon, a single operating system, and a deliberately narrow product line at a time when competitors sold catalogues.",
+      body: [
+      "The strategy that defines it came later, and it is unusual. Rather than compete for greenfield share against Cisco, Extreme bought the enterprise networking businesses that larger companies were exiting - Enterasys in 2013, Zebra's wireless line in 2016, Avaya's networking business in 2017, Brocade's data centre business in 2017, and Aerohive in 2019.",
+      "Each of those was somebody else's strategic retreat. Enterasys was what remained of Cabletron, a company that had once been Cisco's most serious rival. Avaya's networking arm traced to Nortel. Brocade's had come from Foundry. Aerohive had been founded by people out of NetScreen. So Extreme's product line is an accumulation of lineages that this timeline covers separately, and its installed base includes customers who bought from four companies that no longer exist.",
+      "That creates a specific engineering problem, and the company has been candid about it: several operating systems inherited at once, and a decade of work convincing an installed base to converge on fewer of them. EXOS and VOSS both persist because both came with customers who had no reason to migrate.",
+      "The Fabric Connect work, inherited with the Avaya line and originally from Nortel, is the most technically distinctive thing in the portfolio - shortest path bridging used to make service provisioning an edge-only operation. It is the subject of one of this site's tools, and it arrived through an acquisition of an acquisition.",
+      "The full deal list, with what each acquired company had itself acquired, is on the vendor lineage page rather than repeated here.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Extreme_Networks",
+    externalLabel: "Extreme Networks",
+    sources: [
+      { label: "Wikipedia: Extreme Networks - 1996 founding by Gordon Stitt, Herb Schneider and Stephen Haddock from SynOptics, and the acquisition history", url: "https://en.wikipedia.org/wiki/Extreme_Networks" },
+      { label: "Wikipedia: Enterasys Networks - the Cabletron successor acquired by Extreme in 2013", url: "https://en.wikipedia.org/wiki/Enterasys_Networks" },
+    ],
+  },
+  {
+    // CHECK POINT - company history (PRIME step 4, 2026-07-29).
+    // The lineage page carries the deals; this is the company and the idea.
+    slug: "check-point",
+    group: "other",
+    name: "Check Point Software Technologies",
+    founded: 1993,
+    careerChapter: { slug: "check-point", years: "2026 - present" },
+    tagline: "Patented stateful inspection, invented the firewall market, and then watched its own alumni build the competition.",
+    intro:
+      "Gil Shwed, Marius Nacht and Shlomo Kramer founded Check Point in Tel Aviv in 1993. Shwed had worked on network access separation during military service, and the company's founding product, FireWall-1, introduced stateful inspection to a commercial market that had been making do with packet filters and application proxies.",
+    body: [
+      "Stateful inspection is the idea worth understanding, because everything since assumes it. A packet filter judges each packet alone, which means it cannot tell a reply from an unsolicited connection and has to leave return ports open. An application proxy understands conversations but terminates them, which is slow and needs code per protocol. Stateful inspection tracked connections in a table and judged packets against that state - the security of understanding the conversation, at close to the speed of filtering.",
+      "Check Point patented it, sold it as software on general-purpose hardware, and effectively created the commercial firewall category. Through the late 1990s it held a dominant share of a market it had defined.",
+      "What happened next is the more interesting half. Nir Zuk, one of the first employees, left and eventually founded Palo Alto Networks, which overtook Check Point in firewall revenue around 2014. Shlomo Kramer, a co-founder, went on to found Imperva and later Cato Networks. The company's alumni network seeded a substantial part of the Israeli security industry, and several of its competitors.",
+      "Check Point itself remained independent, profitable and conservative through decades of consolidation - which on this timeline is genuinely rare. Almost every peer from 1993 has been acquired, split or renamed. It has been criticised for moving slowly on next-generation firewall features and cloud, and it is still here, still under its own name, still run for much of that time by a founder.",
+      "The acquisitions it did make, and what those companies had themselves bought, are on the vendor lineage page.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Check_Point",
+    externalLabel: "Check Point Software Technologies",
+    sources: [
+      { label: "Wikipedia: Check Point - founded 1993 by Gil Shwed, Marius Nacht and Shlomo Kramer; FireWall-1 and stateful inspection", url: "https://en.wikipedia.org/wiki/Check_Point" },
+      { label: "Wikipedia: Nir Zuk - an early Check Point employee who founded Palo Alto Networks", url: "https://en.wikipedia.org/wiki/Nir_Zuk" },
+      { label: "Wikipedia: Shlomo Kramer - Check Point co-founder, later Imperva and Cato Networks", url: "https://en.wikipedia.org/wiki/Shlomo_Kramer" },
+    ],
+  },
+  {
+    // PULSE SECURE - company history (PRIME step 4, 2026-07-29).
+    // Its ending is already recorded from the Ivanti research: acquired
+    // alongside MobileIron, completing 1 December 2020.
+    slug: "pulse-secure",
+    group: "other",
+    name: "Pulse Secure",
+    founded: 2014,
+    ended: {
+      year: 2020,
+      note: "Acquired by Ivanti alongside MobileIron, announced September 2020 and completed 1 December.",
+    },
+    careerChapter: { slug: "pulse-secure", years: "2018 - 2019" },
+    tagline: "A company created to hold a product line older than itself.",
+    intro:
+      "Pulse Secure was formed in 2014 when Juniper sold its Junos Pulse business to Siris Capital. That is an unusual founding: the company existed on day one with a mature product, an installed base and a support obligation, and no history of its own at all.",
+    body: [
+      "The product was SSL VPN, which Juniper had acquired with NetScreen in 2004 and NetScreen had built on technology from Neoteris. So the code predates the company selling it by more than a decade, and the lineage runs through two acquisitions before the carve-out.",
+      "The market it served was the ordinary one: remote users needing access to internal applications without a full network-layer tunnel, authenticated at the edge and given only what policy allowed. Pulse Connect Secure appliances sat at that boundary in a very large number of enterprises and government networks, which is the detail that matters for what happened later.",
+      "Being a carve-out shapes a company. Private-equity ownership meant a focus on the installed base and maintenance revenue rather than on reinvention, and the codebase carried a decade of accumulated decisions made inside two previous owners.",
+      "Ivanti acquired Pulse Secure in the same announcement as MobileIron, completing on 1 December 2020. Serious vulnerabilities in those VPN appliances were subsequently exploited widely enough to draw emergency directives from national cyber agencies - which is the part of this history that most affected people who never bought anything from the company, since the appliances were sitting in front of networks that mattered.",
+      "It is a useful entry precisely because the failure was structural rather than careless. A product line inherited across three owners, each with different priorities and none having written it, is a specific kind of risk, and this timeline shows it happening repeatedly.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Pulse_Secure",
+    externalLabel: "Pulse Secure",
+    sources: [
+      { label: "Wikipedia: Pulse Secure - the 2014 carve-out from Juniper to Siris Capital and the 2020 Ivanti acquisition", url: "https://en.wikipedia.org/wiki/Pulse_Secure" },
+      { label: "Redmond Magazine: Ivanti buys MobileIron and Pulse Secure (September 2020)", url: "https://redmondmag.com/articles/2020/09/28/ivanti-buys-mobileiron-and-pulse-secure.aspx" },
+    ],
+  },
+  {
+    // FIREEYE / McAFEE / IXIA - company history (PRIME step 4, 2026-07-29).
+    // This slug covers the DISTRIBUTION-era portfolio rather than one company,
+    // so the history is written as three lineages that happen to share a
+    // chapter. McAfee's fuller story lives at mcafee-fireeye-trellix.
+    slug: "fireeye-mcafee-ixia",
+    group: "other",
+    name: "FireEye, McAfee and Ixia",
+    founded: 1987,
+    careerChapter: { slug: "fireeye-mcafee-ixia", years: "2015 - 2019" },
+    tagline: "Three companies that shared a distribution portfolio and almost nothing else.",
+    intro:
+      "This entry covers three separate lineages carried together through Brazilian value-added distribution: McAfee, founded 1987, the oldest antivirus brand still trading under a version of its name; FireEye, founded 2004, which made its reputation on incident response rather than product; and Ixia, founded 1997, which measured networks rather than defending them.",
+    body: [
+      "**McAfee** was founded by John McAfee in 1987, sold to Intel in 2011 for around $7.7B, rebranded Intel Security, then spun back out under the McAfee name in 2017 when Intel sold a majority stake to TPG. The enterprise business was later separated and combined with FireEye's products in 2022 to form Trellix, while the consumer business kept the McAfee name.",
+      "**FireEye** built its reputation on Mandiant, which it acquired in 2014 for about $1B - a company whose value was its incident responders rather than its software, and which had published the APT1 report in 2013 attributing a large intrusion campaign to a specific unit of the Chinese military. That report changed what security vendors were willing to say publicly about attribution.",
+      "In 2021 FireEye sold its products business to Symphony Technology Group and kept the Mandiant name and services, reversing the acquisition in substance: the consultancy shed the product company. Google then acquired Mandiant in 2022 for about $5.4B.",
+      "**Ixia** was a test and measurement company - traffic generation, network emulation, and the equipment used to prove that other vendors' equipment does what the datasheet claims. Keysight Technologies acquired it in 2017 for about $1.6B. It belongs beside the other two here because a distribution portfolio does not organise itself by conceptual coherence; it organises by what a channel can sell into the same accounts.",
+      "The reason all three appear on one page is that this is what distribution actually looks like from the inside: a portfolio assembled from whatever the market wanted, whose only common factor is the person carrying it.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Trellix",
+    externalLabel: "Trellix (the McAfee and FireEye successor)",
+    sources: [
+      { label: "Wikipedia: McAfee - 1987 founding, the Intel acquisition and the 2017 spin-out", url: "https://en.wikipedia.org/wiki/McAfee" },
+      { label: "Wikipedia: FireEye - the Mandiant acquisition, the 2021 products sale to STG, and Trellix", url: "https://en.wikipedia.org/wiki/Trellix" },
+      { label: "Wikipedia: Mandiant - the APT1 report and the 2022 Google acquisition at ~$5.4B", url: "https://en.wikipedia.org/wiki/Mandiant" },
+      { label: "Wikipedia: Ixia - test and measurement, acquired by Keysight in 2017", url: "https://en.wikipedia.org/wiki/Ixia_(company)" },
+    ],
+  },
+  {
     // CISCO - company history (PRIME step 4, 2026-07-29).
     slug: "cisco",
     group: "other",
