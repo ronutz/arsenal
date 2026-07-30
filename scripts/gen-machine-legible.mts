@@ -335,6 +335,12 @@ L.push(
   `- [About](${ORIGIN}/${SOURCE_LOCALE}/about): background, credentials, and history`,
   `- [Training](${ORIGIN}/${SOURCE_LOCALE}/training): instructor-led course offerings`,
   `- [Learn RSS feed](${ORIGIN}/feed.xml): most recent articles`,
+  // The Importance Meter is UNLISTED in the site's own navigation - nothing
+  // links to it - but PRIME asked for it to appear in the machine-readable
+  // indexes. The sitemap picks it up automatically because that is generated
+  // from the built pages; llms.txt is generated from the tools and articles
+  // registries, and this is in neither, so it is listed here explicitly.
+  `- [Importance Meter](${ORIGIN}/${SOURCE_LOCALE}/dev/fun/importance-meter): measures how many fucks a matter warrants; the arithmetic is real and the answer is always zero`,
   "",
 );
 fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");

@@ -52,6 +52,18 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-30T17:50:22-03:00",
+    kind: "infra",
+    title: "Two more headings that had been rendering with no styling",
+    body: "While building something else, the same defect turned up on two of the toy pages: the main heading on the meeting bingo and cat distribution pages used a class name that exists in no stylesheet, so both had been rendering as plain browser defaults. Both now use a heading class that is actually defined. A sweep of every page and component under the developer section then turned up several more class names with no rules attached, and the honest finding is that most of them are fine. They sit alongside other classes that are styled, or on elements whose parent already sets the colour, font and spacing directly, which is what the retro screens do. Those are semantic hooks rather than mistakes, and changing them would be churn for its own sake. The distinction worth keeping is between a class that adds nothing to an already-styled element and a class that is the only one on an element, because the second means that element has no styling at all. Only the two headings were in the second category.",
+  },
+  {
+    date: "2026-07-30T09:22:05-03:00",
+    kind: "content",
+    title: "HCL, which exists partly because IBM left India and later bought IBM's software",
+    body: "India's foreign exchange rules in the nineteen seventies required multinationals to dilute their equity to local shareholders, and IBM left the country rather than comply. That removed the dominant supplier from a market with, by one contemporary count, about two hundred and fifty computers in it. A group of engineers from a textile company incorporated HCL in August 1976 into exactly that gap, working from a rooftop apartment in Delhi with about twenty-two thousand dollars, and funding the computers they wanted to build by selling calculators first. By 1978 they shipped an indigenously designed microcomputer, the same year as Apple's early machines and three years before the IBM PC. Then in 2019 the company completed a one point eight billion dollar purchase of seven IBM software products, including Notes and Domino, which is why Notes is still sold and supported today. So a company that exists partly because IBM withdrew now owns the software IBM had bought Lotus for in 1995, at roughly half what IBM paid, twenty-four years later. Two disagreements between sources are left visible rather than tidied. The founding roster is given as six people in some accounts and eight in others, and while four names appear everywhere the rest differ, so the four are named and the dispute is stated. And the acquisition is dated 2018 in some places and 2019 in others, which is simply announcement against completion, so both are given with their meanings attached.",
+  },
+  {
     date: "2026-07-30T08:41:03-03:00",
     kind: "infra",
     title: "The career pages were shipping with no styling at all",

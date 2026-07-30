@@ -99,7 +99,7 @@ export default async function CatDistributionPage({
               <p className="bingo-devfun mono">
                 <Link href="/dev/fun" className="bingo-devfun-link" title={t("devFunTitle")}>/dev/fun</Link>
               </p>
-              <h1 className="bingo-title">{t("title")}</h1>
+              <h1 className="article-title">{t("title")}</h1>
               <p className="bingo-tagline">{t("tagline")}</p>
               <p className="bingo-intro">{t("intro")}</p>
             </div>

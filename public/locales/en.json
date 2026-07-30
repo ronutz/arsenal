@@ -14540,5 +14540,47 @@
     "empty": "No posts yet.",
     "furtherReading": "Further reading",
     "furtherReadingAria": "Further reading"
+  },
+  "importanceMeter": {
+    "metaTitle": "Importance Meter",
+    "metaDescription": "Measures how much of your attention a thing has actually earned. The arithmetic is real.",
+    "title": "Importance Meter",
+    "tagline": "Measures, to a defensible standard, how many fucks are warranted.",
+    "intro": "Enter the matter and its circumstances. Each factor is weighted, the weights are shown, and the subtotal is genuinely computed - it will move as you change things, sometimes dramatically. The subtotal is then multiplied by the bearing the matter has on the work you are accountable for. Results are reproducible.",
+    "subjectLabel": "The matter",
+    "subjectPlaceholder": "Re: Re: FW: quick question",
+    "urgentLabel": "URGENT appears in the subject line, in capitals",
+    "ccLabel": "People copied who did not need to be",
+    "escalationLabel": "How far it has been escalated",
+    "escalationOptions": [
+      "Nobody yet",
+      "Your manager",
+      "Their manager",
+      "A director",
+      "The board"
+    ],
+    "deadlineLabel": "Hours until the stated deadline",
+    "raisedLabel": "Raised in a meeting you were not invited to",
+    "movedLabel": "The deadline has already moved once",
+    "yes": "Yes",
+    "no": "No",
+    "measureButton": "Measure",
+    "resetButton": "Reset",
+    "workingsHeading": "Contributions",
+    "subtotalLabel": "Apparent urgency",
+    "coefficientLabel": "Bearing on your actual objectives",
+    "coefficientNote": "This coefficient is a constant. It is not affected by any input above, and it has never been observed to take another value.",
+    "resultHeading": "Result",
+    "unitLabel": "Unit: fucks given. Computed locally, as always.",
+    "remarks": {
+      "trivial": "Nothing here registers. Unusual, and slightly suspicious.",
+      "ordinary": "An ordinary Tuesday.",
+      "elevated": "Elevated. Somebody has begun using capital letters.",
+      "considerable": "Considerable. There is now a recurring meeting about it.",
+      "spectacular": "Spectacular. This will be referred to for years as a lesson, by people who were not involved."
+    },
+    "methodHeading": "Method",
+    "methodBody": "The weights above are arbitrary but consistent: identical inputs always produce an identical subtotal, which is the only property this needed. Nothing is rounded to reach the result and nothing is discarded. The subtotal is multiplied by the coefficient and the product is reported exactly. This tool computes rather than guesses, in keeping with the rest of the site. It happens to be computing something whose answer does not vary.",
+    "footnote": "Unlisted by design. If you are reading this, somebody gave you the address."
   }
 }

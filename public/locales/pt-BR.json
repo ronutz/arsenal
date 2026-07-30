@@ -14540,5 +14540,47 @@
     "empty": "Ainda não há publicações.",
     "furtherReading": "Leitura complementar",
     "furtherReadingAria": "Leitura complementar"
+  },
+  "importanceMeter": {
+    "metaTitle": "Medidor de Importância",
+    "metaDescription": "Mede quanto da sua atenção uma coisa realmente merece. A aritmética é real.",
+    "title": "Medidor de Importância",
+    "tagline": "Mede, com rigor defensável, quantos fodas-se são cabíveis.",
+    "intro": "Informe o assunto e as circunstâncias. Cada fator é ponderado, os pesos são exibidos, e o subtotal é calculado de verdade - ele muda conforme você altera os campos, às vezes bastante. O subtotal é então multiplicado pela relevância do assunto para o trabalho pelo qual você responde. Os resultados são reproduzíveis.",
+    "subjectLabel": "O assunto",
+    "subjectPlaceholder": "Re: Re: ENC: dúvida rápida",
+    "urgentLabel": "URGENTE aparece no assunto, em maiúsculas",
+    "ccLabel": "Pessoas em cópia que não precisavam estar",
+    "escalationLabel": "Até onde foi escalado",
+    "escalationOptions": [
+      "Ninguém ainda",
+      "Seu gestor",
+      "O gestor dele",
+      "Um diretor",
+      "O conselho"
+    ],
+    "deadlineLabel": "Horas até o prazo informado",
+    "raisedLabel": "Levantado numa reunião para a qual você não foi convidado",
+    "movedLabel": "O prazo já mudou uma vez",
+    "yes": "Sim",
+    "no": "Não",
+    "measureButton": "Medir",
+    "resetButton": "Limpar",
+    "workingsHeading": "Contribuições",
+    "subtotalLabel": "Urgência aparente",
+    "coefficientLabel": "Relevância para os seus objetivos reais",
+    "coefficientNote": "Este coeficiente é constante. Não é afetado por nenhum campo acima, e nunca se observou que assumisse outro valor.",
+    "resultHeading": "Resultado",
+    "unitLabel": "Unidade: fodas-se dados. Calculado localmente, como sempre.",
+    "remarks": {
+      "trivial": "Nada aqui registra. Incomum, e levemente suspeito.",
+      "ordinary": "Uma terça-feira comum.",
+      "elevated": "Elevado. Alguém começou a usar letras maiúsculas.",
+      "considerable": "Considerável. Já existe uma reunião recorrente sobre o assunto.",
+      "spectacular": "Espetacular. Isto será citado por anos como lição, por gente que não estava envolvida."
+    },
+    "methodHeading": "Método",
+    "methodBody": "Os pesos acima são arbitrários porém consistentes: entradas idênticas sempre produzem o mesmo subtotal, que era a única propriedade necessária. Nada é arredondado para chegar ao resultado e nada é descartado. O subtotal é multiplicado pelo coeficiente e o produto é informado exatamente. Esta ferramenta calcula em vez de adivinhar, como o resto do site. Acontece que ela calcula algo cuja resposta não varia.",
+    "footnote": "Não listada, de propósito. Se você está lendo isto, alguém lhe passou o endereço."
   }
 }

@@ -305,6 +305,47 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // HCL - added 2026-07-30 (PRIME). Completes the Notes chain: Lotus -> IBM
+    // (1995) -> HCL (announced Dec 2018, completed 1 July 2019).
+    //
+    // TWO DISCREPANCIES RECORDED RATHER THAN RESOLVED:
+    //   * FOUNDER COUNT: sources say six or eight, and the NAMES disagree -
+    //     four are consistent everywhere, the rest are not.
+    //   * ACQUISITION YEAR: 2018 and 2019 both appear; that is announcement
+    //     versus completion and both are given with their meaning.
+    slug: "hcl",
+    group: "other",
+    name: "HCLTech",
+    founded: 1976,
+    tagline: "Started because IBM left India, and forty-one years later bought IBM's software.",
+    intro:
+      "A group of engineers from Delhi Cloth & General Mills, led by Shiv Nadar, incorporated the company on 11 August 1976, renaming it that day from Microcomp Limited to Hindustan Computers Limited. They worked from a barsaati - a Delhi rooftop apartment - with about ₹1.83 lakh of capital, roughly $22,000 at the time, and funded the computers they actually wanted to build by selling teledigital calculators first.",
+    body: [
+      "**The context is the whole story.** India's foreign exchange regulations required multinationals to dilute equity to local shareholders, and IBM left the country rather than comply. That removed the dominant supplier from a market where there were, by one contemporary count, about 250 computers in the entire country. HCL was one of the companies that formed in the space this created.",
+      "In 1978 it shipped an indigenously designed 8-bit microcomputer - the same year as Apple's early machines and three years before the IBM PC. A networking operating system and client-server architecture followed in 1983, and a fine-grained multiprocessor UNIX in 1988, which the company notes was three years ahead of Sun and HP.",
+      "**In 1982 Nadar founded NIIT**, a computer training institute, on the reasoning that a domestic technology industry cannot grow faster than the supply of people who can staff it. That is a training business created as infrastructure for an industry rather than as a product, and it is the sort of decision that only looks obvious afterwards.",
+      "The software services arm was spun out on 12 November 1991, initially as HCL Overseas Limited, becoming HCL Consulting in 1994 and HCL Technologies in 1999. It listed in January 2000, crossed $10B of revenue in 2021, and renamed itself HCLTech in 2022.",
+      "**And then the reversal.** IBM announced the sale of Notes and Domino to HCL on 6 December 2018, and the wider transaction completed on 1 July 2019: seven software products - Notes and Domino, AppScan, BigFix, Commerce, Connections, Digital Experience, and Unica - for $1.8B, the largest acquisition by an Indian IT company at that point. Both years appear in sources because one is the announcement and the other the completion.",
+      "So the company that exists partly because IBM withdrew from India in the 1970s now owns and develops software IBM bought Lotus for in 1995. **Lotus Notes has had three owners across four decades, and its current one was founded by people who started out selling calculators to fund a computer nobody else would sell them.**",
+      "Two further notes worth recording. Roshni Nadar Malhotra succeeded her father as chair, becoming the first woman to chair a listed Indian IT company. And the founding roster itself is genuinely disputed: sources give six founders or eight, and while Shiv Nadar, Arjun Malhotra, Ajai Chowdhry and Yogesh Vaidya appear consistently, the remaining names differ between accounts. That disagreement is left visible here rather than resolved by picking the version that reads best.",
+    ],
+    acquisitions: [
+      { year: 2019, name: "Seven IBM software products", price: "$1.8B", what: "Notes and Domino, AppScan, BigFix, Commerce, Connections, Digital Experience, and Unica. Announced 6 December 2018 and completed 1 July 2019; the largest acquisition by an Indian IT company at the time.", became: "HCL Software, and the reason Notes is still sold and supported today.",
+        subAcquisitions: [ { year: 1995, name: "Lotus Development (already inside IBM)", price: "$3.5B", what: "IBM had bought Lotus in 1995 principally to obtain Notes. So this deal transferred, at roughly half the original price and twenty-four years later, the asset that had justified it.", founder: "Mitch Kapor and Jonathan Sachs, 1982" } ] },
+      { year: 2018, name: "Actian", price: "$330M, with Sumeru Equity Partners", what: "Data management and analytics, including the Ingres database lineage. HCL America bought the remaining 19.6% in 2021 for $100.2M.", became: "The data and analytics division of HCL Software." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/HCLTech",
+    externalLabel: "HCLTech",
+    sources: [
+      { label: "Wikipedia: HCLTech - founded 11 August 1976, the 1978 indigenous microcomputer, the 1983 networking OS and client-server work, the 12 November 1991 spin-off, and the product list", url: "https://en.wikipedia.org/wiki/HCLTech" },
+      { label: "Companies History: the barsaati rooftop origin, roughly 250 computers in India at the time, the 1988 multiprocessor UNIX three years ahead of Sun and HP, and the $1.8B purchase of seven IBM products", url: "https://www.companieshistory.com/hcl-technologies/" },
+      { label: "MatrixBCG: incorporation on 11 August 1976 with ₹1.83 lakh (about $22,000), the founders as DCM engineers, and IBM's exit under FERA creating the opening", url: "https://matrixbcg.com/blogs/brief-history/hcltech" },
+      { label: "Bharatpedia: the 1 July 2019 completion and the full list of transferred products, plus an alternative founder roster", url: "https://en.bharatpedia.org/wiki/HCL_Technologies" },
+      { label: "Business Today: the calculators sold to fund the computer, NIIT founded in 1982, and Roshni Nadar Malhotra as the first woman to chair a listed Indian IT firm - and an eight-founder account", url: "https://www.businesstoday.in/visualstories/corporates/time-travel-with-hcl-tech-heres-how-a-company-founded-by-shiv-nadar-led-group-of-8-engineers-became-one-of-indias-it-giants-check-hcl-tech-share-price-today-47782-09-07-2023" },
+      { label: "Infinity Learn: the Microcomp Limited renaming on 11 August 1976, the Actian purchase, and the 2022 rename to HCLTech", url: "https://infinitylearn.com/surge/full-form/hcl-full-form/" },
+    ],
+  },
+  {
     // LOTUS - added 2026-07-30 (PRIME), who noted that companies still run
     // Notes today. That is the entry's spine: software outliving three owners
     // and four decades.
