@@ -6746,7 +6746,7 @@
       "tagline": "O switching corporativo e os gateways de segurança que cresceram da NetScreen até a linha SRX da Juniper.",
       "intro": "A Juniper Networks adquiriu a NetScreen, a empresa de firewalls, em 2004, e a tecnologia de segurança da NetScreen virou a base da linha de gateways seguros da Juniper. Trabalhar com ambas reflete uma linhagem contínua: os firewalls SSG da NetScreen e os gateways SRX que os sucederam. A relação correu diretamente pela Juniper a partir de 2009, e continuou depois pelo canal de distribuição.",
       "s1Title": "Juniper Networks, 2009 a 2010",
-      "s1Body": "Contratado através da Juniper Professional Services para o Brasil, o cargo foi a promoção de novos produtos para as linhas corporativas recém-lançadas: os gateways seguros da série SRX e os switches da série EX. A colaboração principal foi com o parceiro estratégico Telefónica Empresas no Brasil. Além da promoção de pré-vendas, esse período rendeu instrução de verdade: treinamento sobre o sistema operacional de rede JUNOS e a operação dos gateways seguros SRX para parceiros de canal e clientes, incluindo treinamento operacional para a equipe do centro de operações de rede da Level 3 Communications no Brasil e na Argentina.",
+      "s1Body": "Contratado através da Juniper Professional Services para o Brasil, o cargo foi a promoção de novos produtos para as linhas corporativas recém-lançadas: os gateways seguros da série SRX e os switches da série EX. A colaboração principal foi com o parceiro estratégico Telefónica Empresas no Brasil. Além da promoção de pré-vendas, esse período rendeu instrução de verdade: treinamento sobre o sistema operacional de rede JUNOS e a operação dos gateways seguros SRX para parceiros de canal e clientes, incluindo treinamento operacional prático de JUNOS para a equipe do centro de operações de rede da Level 3 Communications no Brasil e na Argentina, ministrado em Cotia, São Paulo.",
       "s2Title": "Pelo canal, 2010 a 2014",
       "s2Body": "A relação com Juniper e NetScreen continuou através de integradores de sistemas e revendas. Na CYLK, o trabalho abrangeu desenvolvimento de configurações, testes de prova de conceito e interoperabilidade, e implementação e troubleshooting em produção sobre Juniper, NetScreen e F5. Na TDec, a Juniper se somou a uma prática de consultoria e treinamento multifabricante. A gama de produtos na prática ao longo desses anos foi ampla: switches EX, firewalls SRX e NetScreen SSG, SSL-VPN SA, roteadores da série J e Wi-Fi gerenciado AX.",
       "certs": "Juniper Networks Sales Specialist, Enterprise Networking (JNSS-EN), 2010. Juniper Networks Sales Associate, Enterprise Networking (JNSA-EN), 2010.",
@@ -7370,7 +7370,9 @@
     "certsEyebrow": "Preparação para certificação",
     "certsCta": "Guia de estudo: {cert}",
     "industryLink": "A história da {vendor} na seção de indústria",
-    "industryLede": "Como a {vendor} chegou até aqui: as aquisições, as viradas e as pessoas cujo trabalho foi parar dentro da plataforma."
+    "industryLede": "Como a {vendor} chegou até aqui: as aquisições, as viradas e as pessoas cujo trabalho foi parar dentro da plataforma.",
+    "careerLink": "Trabalhando com {vendor}",
+    "careerLede": "O capítulo de carreira: o que o trabalho com {vendor} foi de fato, quais contas, quais escalonamentos e o que aquilo certificou."
   },
   "learn": {
     "eyebrow": "Aprender",

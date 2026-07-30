@@ -193,6 +193,27 @@ export default async function VendorHubPage({
                   {/* -- Band 1: the story -- */}
                   {(careerSlug || hasLineage) && (
                     <div className="learn-portal-grid">
+                      {/* Two different pages, two different cards (PRIME
+                          2026-07-29). The company history says what the vendor
+                          did; the career chapter says what Rodolfo did inside
+                          it. Before the split these were one page, and one card
+                          was enough. */}
+                      {careerSlug && (
+                        <Link
+                          href={`/about/vendors/${careerSlug}`}
+                          className="learn-portal-card"
+                          style={{ "--note-accent": vendorColor(vendor) } as CSSProperties}
+                        >
+                          <span className="learn-portal-ornament" aria-hidden>
+                            &#9670;
+                          </span>
+                          <p className="learn-portal-title">
+                            {tHub("careerLink", { vendor: label })}{" "}
+                            <span className="learn-portal-arrow">&#8594;</span>
+                          </p>
+                          <p className="learn-portal-lede">{tHub("careerLede", { vendor: label })}</p>
+                        </Link>
+                      )}
                       {careerSlug && (
                         <Link
                           href={`/industry/${careerSlug}`}

@@ -122,7 +122,21 @@ export default async function IndustryHubPage({
     isCareer: true,
   }));
 
-  const lineageTimeline: TimelineEntry[] = [...fromPartners, ...fromCareer].sort(
+  // DEDUPLICATED 2026-07-29. Step 4 converted all fifteen career vendors into
+  // partnerVendors entries so their histories render from the shared route -
+  // which means every one of them is now in BOTH lists, and merging the two
+  // put each on the timeline twice. Combined with the career chips above, the
+  // built page showed fifteen companies three times each.
+  //
+  // The partner entry is the better source: it carries the founding year, the
+  // end year where there is one, the structured acquisitions, and a
+  // careerChapter field with the years and a link back. So a career entry is
+  // only included when no partner entry exists for that slug - which today is
+  // none of them, and the filter is kept because the next vendor added to
+  // CAREER_VENDORS should appear until its history is written.
+  const partnerSlugs = new Set(fromPartners.map((v) => v.slug));
+  const careerOnly = fromCareer.filter((v) => !partnerSlugs.has(v.slug));
+  const lineageTimeline: TimelineEntry[] = [...fromPartners, ...careerOnly].sort(
     (a, b) => (a.founded ?? 9999) - (b.founded ?? 9999) || a.name.localeCompare(b.name),
   );
 
@@ -164,7 +178,11 @@ export default async function IndustryHubPage({
             <ul className="career-strip">
               {CAREER_VENDORS.map((v) => (
                 <li key={v.slug}>
-                  <Link href={`/industry/${v.slug}`} className="career-chip">
+                  {/* Career chips point at the CAREER CHAPTERS, per the note
+                      above. They were repointed to /industry during the step-2
+                      move, when the career pages briefly lived there; step 3
+                      put them back at /about/vendors, so these follow. */}
+                  <Link href={`/about/vendors/${v.slug}`} className="career-chip">
                     <span className="career-chip-name">{t(`${v.key}.name`)}</span>
                     <span className="career-chip-years mono">{t(`${v.key}.years`)}</span>
                   </Link>

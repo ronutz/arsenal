@@ -263,6 +263,292 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // APPLE - added 2026-07-30 (PRIME). Completes the 1977 Trinity comparison
+    // set up in the Tandy entry, which records that Tandy outsold Apple three
+    // to one in 1980. This entry explains why that reversed.
+    //
+    // The NeXT purchase price is deliberately NOT given: this session's sources
+    // did not state it, and the commonly quoted figures vary. Better absent
+    // than approximated.
+    slug: "apple",
+    group: "other",
+    name: "Apple",
+    founded: 1976,
+    tagline: "Lost the first round of the personal computer market badly, and won every round after it.",
+    intro:
+      "Apple Computer Company was founded on 1 April 1976 by Steve Jobs, Steve Wozniak and Ronald Wayne, in Cupertino, to sell a hand-built computer Wozniak had designed. Jobs and Wozniak each took 45% and Wayne 10%. Eleven days later Wayne sold his share back for $800, later receiving a further $1,500 to settle it - a decision routinely called the most expensive in the history of startups, and one he made because he had a family and could not carry the risk.",
+    body: [
+      "The funding was a Volkswagen minibus and a programmable calculator. Jobs sold the van, Wozniak sold his HP-65, and the Apple I went out as a bare circuit board at $666.66 - no case, no keyboard, no monitor, because a fully assembled board was itself the innovation when the alternative was a kit. Around two hundred were sold, and the order that mattered came from Paul Terrell of the Byte Shop, who took fifty.",
+      "Wozniak had shown the machine at the **Homebrew Computer Club**, and that detail links this entry to another on this timeline. Steve Leininger, the engineer Tandy hired to design the TRS-80, was a Homebrew member too. **Two of the three machines in what Byte magazine called the 1977 Trinity came out of the same hobbyist meeting in Silicon Valley**, which is a reasonable claim for the most productive room in the history of the industry.",
+      "Mike Markkula, an Intel veteran, provided $250,000 and the adult supervision, and the company incorporated in January 1977 - by which time Wayne was already gone. The Apple II arrived that April with a case, a keyboard, colour graphics and expansion slots, and it is the machine that made personal computing a market rather than a hobby.",
+      "**And then it lost.** The Tandy entry on this timeline records that in 1980 Tandy shipped three times as many computers as Apple, because Tandy had seven thousand shops and Apple had dealers. Apple's advantage was slower and more durable: open expansion slots meant other companies could build cards for it, and VisiCalc - the first spreadsheet - shipped on the Apple II first. A machine that other people can extend and write software for accumulates reasons to buy it. A machine sold off a convenient shelf accumulates only sales.",
+      "The 1980 listing raised $110M. The Lisa in 1983 cost $9,995 and failed. The Macintosh in 1984 was the right idea shipped underpowered. Jobs recruited John Sculley from Pepsi with a line that has outlived both products - whether he wanted to sell sugared water for the rest of his life, or come and change the world - and in September 1985 Sculley removed him from the company. Wozniak had already left in February to become a schoolteacher.",
+      "**The interesting decade is the bad one.** Apple spent the 1990s demonstrating the limits of a closed system in a market that had standardised on somebody else's, and by 1997 its worldwide share was around three per cent. Jobs, meanwhile, had founded NeXT and bought Lucasfilm's computer graphics division, which became Pixar.",
+      "So the return happened through an acquisition, and it is the most consequential one on this page: **Apple bought NeXT, and NeXT's operating system became the foundation of macOS, and NeXT's founder became Apple's chief executive.** A company acquired a supplier and got a new leader, a new kernel and a new decade out of it. Every iPhone runs a descendant of software written by the company Apple's ousted founder built while he was gone.",
+      "What follows is well documented elsewhere and does not need retelling here. The part worth keeping on a page about lineage is the shape: **Apple is the only company on this timeline that was overtaken, nearly died, bought the company its exiled founder had built, and came back to become the first American company worth three trillion dollars.** Every other recovery story here ends in an acquisition by somebody else.",
+    ],
+    acquisitions: [
+      { year: 1997, name: "NeXT", what: "Steve Jobs's company, founded after his 1985 removal from Apple. Its object-oriented operating system was the technology Apple needed and could not build in time.", became: "Mac OS X and every descendant of it - macOS, iOS, watchOS, tvOS. The acquisition also returned Jobs, who became chief executive.", founder: "Steve Jobs, 1985", sourceNote: "The purchase price is omitted here because this session's sources did not state it and commonly quoted figures vary." },
+      { year: 1986, name: "Lucasfilm's Computer Graphics Division (by Jobs personally, not Apple)", what: "Bought by Jobs while he was outside Apple, and renamed Pixar. Included here because it is part of the same lineage of decisions, not because Apple bought it.", became: "Pixar Animation Studios, later acquired by Disney." },
+    ],
+    externalUrl: "https://guides.loc.gov/this-month-in-business-history/april/apple-computer-founded",
+    externalLabel: "Library of Congress: the founding of Apple Computer",
+    sources: [
+      { label: "Cult of Mac: the 1 April 1976 founding, the 45/45/10 split, Wayne cashing out for $800 eleven days later plus a further $1,500, and meeting Wayne at Atari", url: "https://www.cultofmac.com/apple-history/apple-computer-founded" },
+      { label: "Britannica: Markkula's $250,000 and January 1977 incorporation, the Apple I at $666.66 and 200 units, Jobs's removal by Sculley in September 1985, Wozniak leaving in February 1985, the ~3% share by 1997 and the NeXT technology becoming the basis of macOS", url: "https://www.britannica.com/money/Apple-Inc" },
+      { label: "Library of Congress: the founding and the intent to make computers people would have at home", url: "https://guides.loc.gov/this-month-in-business-history/april/apple-computer-founded" },
+      { label: "Mac History timeline: Paul Terrell's fifty-unit Byte Shop order, the Homebrew presentation, the Lisa at $9,995 falling to $6,995, and the Sculley recruitment", url: "https://www.mac-history.net/2022/12/16/timeline-the-history-of-apple-since-1976/" },
+      { label: "Qorval: the VW minibus and HP-65 calculator funding, the Apple II's open architecture, and the January 2022 three-trillion-dollar market capitalisation", url: "https://qorval.com/blog/apple-inc-from-garage-startup-to-global-icon/" },
+    ],
+  },
+  {
+    // KASPERSKY - added 2026-07-29 (PRIME).
+    //
+    // *** THIS ENTRY IS DELIBERATELY BALANCED AND MUST STAY THAT WAY. ***
+    // Two things are simultaneously true and both are documented: the company's
+    // researchers are genuinely first-rate and have published on operations
+    // attributed to Russia, the United States AND Israel; and several
+    // governments have banned its software on national-security grounds the
+    // company denies. Public sources do not settle the underlying question, so
+    // this page does not either. Allegations are ATTRIBUTED to who made them,
+    // the denial is stated, and no verdict is offered.
+    //
+    // Natalya Kaspersky's role is foregrounded because it is routinely omitted:
+    // she launched the company foundation, named it, built the commercial
+    // operation from a few hundred dollars a month to over a million a year,
+    // and was chief executive for more than a decade.
+    slug: "kaspersky",
+    group: "other",
+    name: "Kaspersky",
+    founded: 1997,
+    tagline: "World-class malware research and a geopolitical problem, in the same company, both real.",
+    intro:
+      "Kaspersky Lab was founded in Moscow in 1997 by four people: Eugene Kaspersky, Natalya Kaspersky, Alexey De-Monderik and Vadim Bogdanov, who left a company called KAMI to keep developing the antivirus engine they had been building since 1991. It was called AVP, for AntiViral Toolkit Pro, and was renamed Kaspersky Anti-Virus after an American firm registered the AVP trademark in the United States.",
+    body: [
+      "Eugene Kaspersky's route into the field is unusual and it is the fact most often cited about him. At sixteen he entered the Technical Faculty of the KGB Higher School, graduating in 1987 with a degree in mathematical engineering, and served as a software engineer in Soviet military intelligence. His interest in security began prosaically: in 1989 his work computer caught the Cascade virus and he wrote a program to remove it.",
+      "**Natalya Kaspersky built the business, and that is usually left out.** She took over distribution of the toolkit in September 1994, when it was earning one or two hundred dollars a month. Within a year it was making $130,000, in 1996 over $600,000, and in 1997 more than a million - which is what made founding an independent company possible. She launched the company foundation in June 1997, was central to choosing the name, and served as chief executive for more than ten years. The initial split was Eugene 50%, De-Monderik and Bogdanov 20% each, and Natalya 10%.",
+      "The break came in 1998. A Taiwanese student released CIH, a virus that overwrote the BIOS and could leave a machine unable to boot at all, and for the first three weeks of the outbreak Kaspersky's product was the only one that could remove it. That single fact produced licensing deals with antivirus companies in Japan, Finland and Germany, and revenue grew 280% between 1998 and 2000 with most of it coming from outside Russia.",
+      "**The research is the part of this company that its critics rarely dispute.** Its teams published on Stuxnet, Flame, Duqu, Red October, Equation Group and ProjectSauron - and the significance is who those operations are attributed to. Stuxnet and Flame are widely attributed to the United States and Israel; Equation Group's toolset was linked to American intelligence. A Russian company built much of its reputation by publishing detailed analysis of Western intelligence operations, while also publishing on Russian-attributed campaigns. Sergey Ulasen, working at a Belarusian firm later acquired into Kaspersky, is generally credited with first identifying Stuxnet.",
+      "**And then the other half, stated plainly.** On 13 September 2017 the US Department of Homeland Security prohibited Kaspersky products across federal agencies, alleging the company had worked on projects with Russia's Federal Security Service. In October 2017, press reports alleged that Russian government hackers had obtained classified material from a contractor's home computer running the software. On 20 June 2024 the US Commerce Department went further, prohibiting sale and use of the software in the United States, and the Treasury sanctioned company leadership. Germany's federal security office had warned against it in March 2022, and the United Kingdom and Australia have imposed restrictions of their own.",
+      "The company has denied intelligence ties consistently, describing the allegations as speculation without evidence, and has offered third-party source-code audits and transparency centres in an attempt to address them. Those measures have not changed any government's position.",
+      "**This page does not resolve that, because the public record does not.** What can be said is narrower and more useful: a security product requires more trust than almost any other software, because it runs with the highest privileges, sees everything on the machine, and updates itself continuously from its vendor. The SolarWinds and CrowdStrike entries on this timeline show what happens when that trust is misplaced by accident and by attack. A government reasoning about a vendor subject to a foreign legal system is reasoning about the same property - and it can reach a restrictive conclusion without any specific wrongdoing having been proven.",
+      "That is the genuinely instructive thing here, and it applies well beyond one company. **Jurisdiction is part of a product's threat model.** Where a vendor's engineers can be legally compelled, and by whom, is a security property of the software, and it is not visible in any feature comparison.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Kaspersky_Lab",
+    externalLabel: "Kaspersky Lab",
+    sources: [
+      { label: "Wikipedia: Kaspersky Lab - the four founders, the departure from KAMI, the AVP trademark rename, and the 1998 CIH outbreak in which its product was the only one able to remove the virus", url: "https://en.wikipedia.org/wiki/Kaspersky_Lab" },
+      { label: "Wikipedia: Natalya Kaspersky - taking over distribution in September 1994, revenue from $100-200 a month to over $1M in 1997, launching the foundation in June 1997, naming the company, a decade as CEO, and the initial equity split", url: "https://en.wikipedia.org/wiki/Natalya_Kaspersky" },
+      { label: "Wikipedia: Eugene Kaspersky - the KGB Higher School cryptology faculty, the 1987 degree, Soviet military service, and the 1989 Cascade virus", url: "https://en.wikipedia.org/wiki/Eugene_Kaspersky" },
+      { label: "Wikipedia: Kaspersky bans and allegations of Russian government ties - the 13 September 2017 DHS directive, the October 2017 reports, and the German warning of March 2022, with the company's denials", url: "https://en.wikipedia.org/wiki/Kaspersky_bans_and_allegations_of_Russian_government_ties" },
+      { label: "CNN: the 20 June 2024 US prohibition on sale and use, and the recognition of Kaspersky researchers as top-tier analysts of operations attributed to several governments including Russia, the US and Israel", url: "https://www.cnn.com/2024/06/20/politics/biden-administration-bans-kaspersky-software/index.html" },
+      { label: "Kaspersky's own account of its research record, including Stuxnet, Flame and Red October", url: "https://www.kaspersky.com/about/team/eugene-kaspersky" },
+    ],
+  },
+  {
+    // SOLARWINDS - added 2026-07-29 (PRIME).
+    //
+    // This is the most instructive entry on the timeline and it is written at
+    // length deliberately. It is also the EXACT INVERSE of the CrowdStrike
+    // outage already on this site: the same architecture - a trusted agent
+    // updated centrally across thousands of organisations - failing once by
+    // accident and once by design.
+    //
+    // The SEC action is presented with BOTH sides and its outcome, because most
+    // of it was dismissed in 2024 and writing only the charge would be unfair.
+    // The 18,000 figure is given with the caveat the US government itself
+    // attached to it, which is almost always dropped in retellings.
+    slug: "solarwinds",
+    group: "contemporary",
+    name: "SolarWinds",
+    founded: 1999,
+    tagline: "Sold the software that watches everything, which is exactly why somebody wanted it.",
+    intro:
+      "SolarWinds was founded in 1999 in Tulsa, Oklahoma by two brothers, Donald Yonce - a former Walmart executive - and David Yonce. The business was unglamorous and very good: affordable network monitoring for the people who actually run networks, sold without the enterprise sales apparatus that made competitors expensive. It moved to Austin, and by 2020 its Orion platform sat inside a very large share of the organisations that matter.",
+    body: [
+      "The commercial insight was that monitoring was overpriced and oversold. A network engineer who needed to know whether a link was saturated did not want a six-month procurement cycle, and SolarWinds built a catalogue of tools that could be downloaded, trialled and bought on a card. That model took it from Tulsa to a public listing in October 2018, and it bought its way into adjacent categories along the way: Pingdom for external uptime checks, Papertrail for log aggregation, Loggly, AppOptics.",
+      "**And then the thing that makes this page worth reading.** In October 2019, attackers who had already been inside SolarWinds began testing whether they could inject code into the Orion build. Roughly four months later they succeeded, and from 26 March 2020 SolarWinds itself distributed the result - a backdoor the industry named SUNBURST - inside signed, legitimate updates to Orion versions 2019.4 through 2020.2.1.",
+      "It was not discovered until December 2020, and not by SolarWinds. FireEye found it while investigating its own compromise, which is worth noting because FireEye appears on this timeline too: a security company found the largest supply chain attack in history by looking into how it had itself been broken into. In April 2021 the US and UK governments attributed the operation to Russia's foreign intelligence service, the SVR - the group tracked as APT29 or Cozy Bear.",
+      "**The number everyone quotes needs its caveat.** Around 18,000 customers received the backdoored update. The US government's own assessment was that a much smaller number were actually compromised by follow-on activity, because the backdoor was a door rather than an occupation - the attackers chose where to walk through it, and they were extremely selective. Repeating 18,000 as a count of victims overstates it, and the distinction between having the malware and being exploited by it is precisely the distinction a security professional is paid to understand.",
+      "The response detail that stays with people: SolarWinds could not use its own email to coordinate the investigation, because the attackers were reading it. Staff worked by telephone and outside accounts, during a pandemic, from home. The chief executive later joked that every comma in the initial regulatory filing cost the company $20,000 in legal fees.",
+      "**Then the argument about blame, which is not settled and is presented here as unsettled.** In October 2023 the SEC charged SolarWinds and its chief information security officer, Timothy Brown, with fraud - alleging that from the 2018 listing onward the company disclosed only generic risks while internally knowing about specific deficiencies. SolarWinds called the action an attempt to \"revictimise the victim\" and said its disclosures were accurate. In July 2024 a federal judge **dismissed most of the case**, including everything relating to disclosures made after the attack, while allowing the claim based on the company's published security statement to proceed.",
+      "That outcome is the part with teeth for anyone who works in this field. A named individual was personally charged over how a breach was described, and while most of the case did not survive, the surviving part concerns a marketing page about security practices. What a company says about its own posture became a matter of securities law, and every CISO reading this now writes differently because of it.",
+      "The lesson for practitioners is architectural rather than moral, and this site already carries its twin. CrowdStrike's July 2024 outage broke 8.5 million machines because a trusted agent with deep access is updated centrally and rapidly. SUNBURST compromised thousands of networks for the same structural reason. **One was an accident and one was an intelligence operation, and the property they exploited was identical: we have built an industry on software that updates itself from a single source, and the trust in that channel is load-bearing.**",
+    ],
+    acquisitions: [
+      { year: 2014, name: "Pingdom", what: "External uptime and performance monitoring, checked from outside the network rather than within it.", became: "The SolarWinds cloud monitoring line." },
+      { year: 2015, name: "Papertrail", what: "Hosted log aggregation and live tail, popular with small engineering teams for being immediately useful.", became: "Part of the same cloud portfolio, kept under its own name." },
+      { year: 2015, name: "Librato and TraceView", what: "Metrics and application tracing, bought from AppNeta.", became: "AppOptics, which merged both into one product." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/SolarWinds",
+    externalLabel: "SolarWinds",
+    sources: [
+      { label: "Wikipedia: SolarWinds - founded 1999 in Tulsa by Donald and David Yonce; Brad Smith's assessment of the attack", url: "https://en.wikipedia.org/wiki/SolarWinds" },
+      { label: "MITRE ATT&CK campaign C0024 - the April 2021 US and UK attribution to Russia's SVR, and the government assessment that far fewer than the ~18,000 recipients were actually compromised", url: "https://attack.mitre.org/campaigns/C0024/" },
+      { label: "Fortinet: the timeline - testing code injection in October 2019, SUNBURST injected about four months later, distribution beginning 26 March 2020", url: "https://www.fortinet.com/resources/cyberglossary/solarwinds-cyber-attack" },
+      { label: "SEC litigation release: the October 2023 charges against SolarWinds and CISO Timothy Brown, and the ~25% and ~35% share price falls after the 14 December 2020 filing", url: "https://www.sec.gov/enforcement-litigation/litigation-releases/lr-25887" },
+      { label: "Cybersecurity Dive: the July 2024 ruling dismissing most of the SEC case while sustaining the claim based on the security statement", url: "https://www.cybersecuritydive.com/news/majority-sec-fraud-solarwinds-dismissed/721753/" },
+      { label: "The Register: SolarWinds' own characterisation of the SEC action as revictimising the victim", url: "https://www.theregister.com/2024/01/29/solarwinds_sec_lawsuit/" },
+      { label: "Zscaler: the affected Orion versions 2019.4 through 2020.2.1 and the breadth of US government customers", url: "https://www.zscaler.com/resources/security-terms-glossary/what-is-the-solarwinds-cyberattack" },
+    ],
+  },
+  {
+    // TENABLE - added 2026-07-29 (PRIME). Closes an Enterasys loop: Ron Gula
+    // sold his previous company to Enterasys, which is on this timeline as the
+    // enterprise remnant of Cabletron.
+    // NOTE: founding date is given as 16 September 2002 by most sources and
+    // 4 October 2002 by one; both recorded rather than one chosen.
+    slug: "tenable",
+    group: "contemporary",
+    name: "Tenable",
+    founded: 2002,
+    tagline: "Built on a scanner a seventeen-year-old wrote, and then closed the source to fund the company.",
+    intro:
+      "In April 1998, aged seventeen, Renaud Deraison released the first version of Nessus. In September 2002 he folded it into a company founded with Ron Gula and Jack Huffard, in Columbia, Maryland. Most sources date the incorporation to 16 September 2002; one gives 4 October, and both are recorded here rather than one being chosen.",
+    body: [
+      "Ron Gula had worked at the National Security Agency in the 1990s and written the Dragon intrusion detection system, and the company he founded before this one was sold to Enterasys Networks - which appears elsewhere on this timeline as the enterprise remnant of Cabletron. Marcus Ranum, one of the people who built the first commercial firewalls, joined as chief security officer in 2004.",
+      "The decision that defines the company came in October 2005. With the release of Nessus 3 the scanner became proprietary, and the stated reasons were both of them honest: to generate income, and to stop giving competitors a free product to resell. The community forked the last open version, and that fork became OpenVAS, which still exists.",
+      "That is worth sitting with rather than judging quickly. A free tool written by a teenager became the default vulnerability scanner in the industry, and the only way to fund the engineering it then needed was to stop it being free. Both the closing and the fork were reasonable responses to the same fact.",
+      "Tenable was bootstrapped for a decade. Its first institutional money was a $50M Series A from Accel in September 2012 - ten years in, which is not how the funding narrative usually goes. It went public in 2018, and by 2023 was reporting around $799M in revenue and roughly 44,000 customers including a majority of the Fortune 500.",
+      "The product argument has since moved from scanning to prioritisation, because the finding that changed the category was that nobody can patch everything. Risk scoring, and CISA's catalogue of vulnerabilities known to be exploited, replaced completeness with triage - and every vendor in this segment made the same move at roughly the same time.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Tenable,_Inc.",
+    externalLabel: "Tenable, Inc.",
+    sources: [
+      { label: "Wikipedia: Tenable - founded September 2002 by Gula, Huffard and Deraison; Nessus written in April 1998 at 17; Gula's NSA background and the sale of his prior company to Enterasys; Nessus 3 closing the source in October 2005 and the OpenVAS fork", url: "https://en.wikipedia.org/wiki/Tenable,_Inc." },
+      { label: "Tenable's own profile of Renaud Deraison - first Nessus release at 17, and the CVE editorial board", url: "https://www.tenable.com/profile/renaud-deraison" },
+      { label: "Company history: incorporation on 16 September 2002, bootstrapped until the $50M Accel Series A in September 2012", url: "https://dcf-model.com/blogs/history/tenb" },
+      { label: "Alternative date of 4 October 2002 for incorporation, recorded as a discrepancy", url: "https://businessmodelcanvastemplate.com/blogs/brief-history/tenable-brief-history" },
+    ],
+  },
+  {
+    // RAPID7 - added 2026-07-29 (PRIME). The deliberate mirror of Tenable:
+    // Tenable closed an open-source project to fund itself; Rapid7 BOUGHT one.
+    slug: "rapid7",
+    group: "contemporary",
+    name: "Rapid7",
+    founded: 2000,
+    tagline: "Bought the industry's best-known attack toolkit, which is the opposite of what its main competitor did with open source.",
+    intro:
+      "Rapid7 was founded in 2000 in Boston, and the decision that gave it a distinct position came nine years later: in 2009 it acquired the Metasploit Framework, the open-source exploitation toolkit HD Moore had created in 2003, and brought Moore with it.",
+    body: [
+      "The significance is best seen against Tenable, which is on this timeline too. Tenable was built on an open-source scanner and closed it in 2005 to fund the company. Rapid7 went the other way and bought an open-source project outright, kept it open, and used it as the reason to trust the commercial products beside it. Two vendors in one market took opposite positions on the same question about open source, and both are still trading.",
+      "Owning Metasploit also changed what Rapid7 could say. A scanner reports that a host is probably vulnerable; an exploitation framework demonstrates that it is. Holding both meant the company could close the gap between a finding and a proof, and that distinction is the whole argument for penetration testing over scanning alone.",
+      "The problem the segment has spent two decades on is not detection but volume. A large organisation's scan returns tens of thousands of findings and nobody can act on all of them, so the useful work became ranking - which is why every vendor here, Rapid7 included, ended up shipping a risk score and leaning on the public catalogue of vulnerabilities known to be actively exploited.",
+      "Rapid7 went public in 2015 and has expanded into detection and response, cloud posture and managed services, on the same logic every security company on this page eventually follows: once you are the system of record for one kind of risk, the adjacent kinds are the cheapest thing you can sell next.",
+    ],
+    acquisitions: [
+      { year: 2009, name: "Metasploit Framework", what: "The most widely used open-source exploitation toolkit, kept open after the acquisition.", founder: "HD Moore, 2003", became: "Metasploit Pro alongside the community edition, and the reason Rapid7 could prove exploitability rather than only report it." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Rapid7",
+    externalLabel: "Rapid7",
+    sources: [
+      { label: "Origin of vulnerability management: Rapid7's 2009 Metasploit acquisition, Moore's 2003 authorship, and the risk-scoring convergence across Tenable, Qualys and Rapid7 after CISA's KEV catalogue in November 2021", url: "https://artiflexit.com/blog/origin-vulnerability-management" },
+    ],
+  },
+  {
+    // LUMEN / CENTURYLINK / LEVEL 3 / GLOBAL CROSSING / IMPSAT - added
+    // 2026-07-29 (PRIME), as one chain because that is how it happened.
+    //
+    // TWO PRICE DISCREPANCIES ARE RECORDED RATHER THAN RESOLVED:
+    //   * Embarq 2009: $5.8B stock-for-stock in one source, ~$11.6B in another
+    //   * Level 3 2017: $25.6B as announced, ~$34B where debt is included
+    // Both are stated with their framing instead of one being chosen, which is
+    // the standing rule when sources disagree on a number.
+    slug: "lumen-centurylink-level3",
+    group: "other",
+    name: "Lumen, CenturyLink, Level 3 and Global Crossing",
+    founded: 1968,
+    tagline: "A rural Louisiana phone company that ended up owning one of the internet's largest backbones.",
+    intro:
+      "This is one company by succession and four or five by history. It was incorporated in 1968 as Central Telephone and Electronics Corporation, renamed Century Telephone Enterprises in 1971, and spent four decades as CenturyTel - a rural local exchange carrier headquartered in Monroe, Louisiana, growing by buying other rural carriers. It is now Lumen Technologies, and it operates AS3356.",
+    body: [
+      "The rural-carrier era is the least glamorous and most instructive part. Buying small local exchange carriers one at a time is unfashionable, capital-intensive and slow, and by 2008 it had made CenturyTel one of the largest rural operators in the United States - which is to say, large enough to buy things that were much better known than it was.",
+      "Embarq followed in 2009, the former Sprint wireline business, itself descended from United Telephone. Sources differ on the price: $5.8B stock-for-stock in one account, roughly $11.6B in another, and the difference is almost certainly whether debt is counted. The merged company took the name CenturyLink.",
+      "Qwest came in 2011 for about $12.2B, and Qwest was itself a Bell company by descent - US West, formerly Mountain Bell, serving fourteen western and midwestern states. That made CenturyLink the third largest wireline operator in the country behind Verizon and AT&T.",
+      "Then Level 3, completing on 1 November 2017. Announced at $25.6B, commonly reported at around $34B once debt is included. Level 3 was founded in 1985, based in Broomfield, Colorado, and was the largest competitive local exchange carrier in the United States and one of the largest fibre operators anywhere - the company whose autonomous system number, AS3356, appears in more traceroutes than almost any other.",
+      "**And Level 3 had itself been assembling.** WilTel, Broadwing, Looking Glass, Progress Telecom, TelCove, TW Telecom in 2014, and Global Crossing in 2011 - which is the entry inside this entry worth reading.",
+      "Global Crossing was founded in March 1997 by Gary Winnick and David L. Lee to lay submarine cable, and during the 1999 bubble it was valued at $47B. **It never had a single profitable year.** In 2002 it filed one of the largest bankruptcies in history, its executives were accused of covering up an accounting scandal, and in 2011 Level 3 bought what remained for $3B including the assumption of $1.1B in debt. Its chief executive at the time was John Legere, who later ran T-Mobile.",
+      "Global Crossing had also bought Impsat, the Latin American network operator, which is how fibre built for Argentina, Brazil and the region ended up inside a Louisiana rural carrier by way of a Bermudan bankruptcy.",
+      "In 2022 Lumen sold its local exchange operations in twenty states to Brightspeed, keeping a western footprint and the fibre business. So the company spent fifty years acquiring rural telephone lines and then sold most of them, having used them to buy a global backbone.",
+    ],
+    acquisitions: [
+      { year: 2009, name: "Embarq", price: "$5.8B stock-for-stock, or ~$11.6B depending on the source", what: "The former Sprint wireline business, serving eighteen states.", became: "The merged company was renamed CenturyLink.", sourceNote: "Sources disagree on the figure; both are given rather than one chosen. The gap is most likely debt.",
+        subAcquisitions: [ { year: 1899, name: "United Telephone (origin, not a purchase)", what: "Embarq descended from United Telephone, which became Sprint's local operations before being spun out - so this deal bought a lineage older than the buyer." } ] },
+      { year: 2011, name: "Qwest Communications", price: "~$12.2B", what: "Fourteen western and midwestern states, long-haul fibre and enterprise customers.", became: "The third largest US wireline operator, behind Verizon and AT&T.",
+        subAcquisitions: [ { year: 1984, name: "US West / Mountain Bell (by descent)", what: "Qwest was a Bell company by lineage, having merged with US West in 2000 - itself one of the regional operators created when the Bell System was broken up." } ] },
+      { year: 2017, name: "Level 3 Communications", price: "$25.6B announced; ~$34B commonly reported with debt", what: "The largest US competitive local exchange carrier and operator of AS3356, one of the internet's principal backbones. Completed 1 November 2017.", became: "The combined company became Lumen Technologies, and the backbone is the reason the name is known outside Louisiana.", sourceNote: "The two figures reflect equity value versus enterprise value; both appear in reputable coverage.",
+        subAcquisitions: [
+          { year: 2011, name: "Global Crossing", price: "$3B including $1.1B assumed debt", what: "Valued at $47B in 1999, never profitable in any year, bankrupt in 2002 in one of the largest filings in history, and sold for a fraction of its peak twelve years later. It had itself acquired Impsat, the Latin American operator - which is how regional fibre for Brazil and Argentina entered this lineage.", founder: "Gary Winnick and David L. Lee, March 1997" },
+          { year: 2014, name: "TW Telecom", what: "Metro fibre and Ethernet across US markets, which is where a large part of Lumen's data centre footprint came from." },
+          { year: 2005, name: "WilTel Communications", what: "One of several long-haul networks Level 3 consolidated during the post-bubble years, when capacity built for 1999 demand was selling for a fraction of its cost." },
+        ] },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Lumen_Technologies",
+    externalLabel: "Lumen Technologies",
+    sources: [
+      { label: "Grokipedia: Lumen operating companies - 1968 incorporation as Central Telephone and Electronics, 1971 rename, Embarq at $5.8B closing 1 July 2009, Qwest at $12.2B, the 2022 Brightspeed divestiture", url: "https://grokipedia.com/page/List_of_Lumen_Technologies_operating_companies" },
+      { label: "Wikipedia: Global Crossing - founded March 1997 by Gary Winnick and David L. Lee, $47B valuation in 1999, never profitable, 2002 bankruptcy, acquired by Level 3 on 3 October 2011 for $3B including $1.1B debt", url: "https://en.wikipedia.org/wiki/Global_Crossing" },
+      { label: "Wikipedia: Level 3 Communications - founded 1985, Broomfield, largest US CLEC, AS3356, defunct 1 November 2017", url: "https://en.wikipedia.org/wiki/Level_3_Communications" },
+      { label: "MarketScreener: the Level 3 agreement announced at $25.6B on 31 October 2016", url: "https://www.marketscreener.com/quote/stock/LUMEN-TECHNOLOGIES-INC-14056214/news/CenturyLink-Inc-completed-the-acquisition-of-Level-3-Communications-Inc-from-STT-Crossing-Ltd-a-34920279/" },
+      { label: "Inside Towers: the CenturyTel rural-carrier origins in Monroe, Louisiana and the succession through Embarq, Qwest and Level 3", url: "https://insidetowers.com/cell-tower-news-lumen-aligns-for-growth/" },
+    ],
+  },
+  {
+    // AKAMAI - added 2026-07-29 (PRIME).
+    // Danny Lewin's death is recorded because it is a documented fact about a
+    // founder, sourced to MIT's own alumni association, and omitting it would
+    // be a strange kind of tidiness. It is stated plainly and not dramatised.
+    slug: "akamai",
+    group: "other",
+    name: "Akamai Technologies",
+    founded: 1998,
+    tagline: "Answered a question Tim Berners-Lee posed about congestion, and the answer became most of how the web is delivered.",
+    intro:
+      "Akamai was incorporated on 20 August 1998 by Tom Leighton, an MIT professor of applied mathematics, and Danny Lewin, his graduate student, with Jonathan Seelig, Preetish Nijhawan and Randall Kaplan. It began as a response to a challenge Tim Berners-Lee had put to MIT: the web was going to get congested, and somebody should work out what to do about it.",
+    body: [
+      "The specific problem was the flash crowd. A site becomes briefly famous, traffic arrives faster than the origin server can answer, and the site falls over precisely when the most people are looking at it. Adding capacity does not help, because the capacity is needed for an hour a year.",
+      "Leighton and Lewin's answer was mathematical rather than architectural. Consistent hashing lets a large, changing set of caches agree on which of them holds which object without any of them coordinating - crucially, adding or removing a server only remaps a small fraction of the keys, so the network can grow and lose nodes continuously without churning everything. That algorithm is the reason a distributed cache can be operated at all at scale, and it is used far beyond content delivery today.",
+      "The business plan reached the finals of MIT's $50K competition, the company licensed the intellectual property from MIT, and most of the early employees were the students who had worked on it. FreeFlow launched commercially in 1999 with Yahoo as an early customer, and the IPO that year was one of the era's most dramatic: shares opened at $26 and closed the first day above $145.",
+      "Danny Lewin was killed on 11 September 2001. He was a passenger on American Airlines Flight 11, the first aircraft flown into the World Trade Center, and is credited with attempting to stop the hijackers - he had served as an officer in the Israeli Defense Forces. He was 31. In 2017 he and Leighton were inducted into the National Inventors Hall of Fame for the algorithms behind the company.",
+      "Akamai has since moved a majority of its revenue away from pure content delivery into security and cloud, buying Prolexic for DDoS mitigation, SOASTA for performance measurement, and Linode to offer compute at the edge rather than only caching. The network is measured in hundreds of thousands of servers across more than a hundred countries.",
+    ],
+    externalUrl: "https://www.akamai.com/company/company-history",
+    externalLabel: "Akamai: company history",
+    sources: [
+      { label: "Akamai's own company history - incorporation 20 August 1998, the MIT $50K competition, the founding team and the MIT licence", url: "https://www.akamai.com/company/company-history" },
+      { label: "MIT Alumni Association - Leighton and Lewin in the National Inventors Hall of Fame, and Lewin's death on Flight 11", url: "https://alum.mit.edu/node/58" },
+      { label: "Business model history: the Berners-Lee challenge, consistent hashing, FreeFlow, and the 1999 IPO from $26 to over $145", url: "https://businessmodelcanvastemplate.com/blogs/brief-history/akamai-technologies-brief-history" },
+    ],
+  },
+  {
+    // CLOUDFLARE - added 2026-07-29 (PRIME).
+    // A FOURTH instance of the shared-platform argument this timeline already
+    // shows at IronPort (2002), Zscaler (2007) and CrowdStrike (2013) - and
+    // this one started, like IronPort, from a spam question.
+    slug: "cloudflare",
+    group: "contemporary",
+    name: "Cloudflare",
+    founded: 2009,
+    tagline: "Began as a project asking where spam came from, and became infrastructure after users asked it to stop the spam instead.",
+    intro:
+      "In 2004 Matthew Prince and Lee Holloway built Project Honey Pot to answer a narrow question: where does email spam actually come from? Anyone with a website could participate, and thousands in more than 185 countries did. The users kept making the same request - do not just track them, stop them - and five years later that request became a company.",
+    body: [
+      "Prince met Michelle Zatlyn at Harvard Business School during a sabbatical, described the project, and the two of them plus Holloway founded Cloudflare in July 2009. It won the school's business plan competition that April and closed a $2.1M Series A in November from Venrock and Pelion.",
+      "The product was a reverse proxy you joined by changing your DNS, which is a genuinely low barrier: no hardware, no software, no contract, and a free tier from the beginning. That freemium decision was strategic rather than generous. Every free site sends traffic through the network, and every attack against a free site is an attack the network learns to recognise for everyone else.",
+      "**That is the same argument this timeline shows three times before.** IronPort made it about email sender reputation in 2002. Zscaler made it about web traffic in 2007. CrowdStrike made it about endpoint behaviour in 2013. Cloudflare made it about the web itself, and got its initial threat data from a spam-tracking project - which is where IronPort had started too.",
+      "Public launch was at TechCrunch Disrupt in September 2010, and traffic went from roughly 50 million page views a month to over 5 billion within the first year.",
+      "The company has since become something harder to categorise: DDoS mitigation, WAF, DNS, zero-trust access, and a serverless compute platform that runs code in the same points of presence that serve the cache - which turns a content network into somewhere applications actually execute. It went public in 2019, and its network now spans more than 300 cities.",
+      "It also occupies an awkward position it did not entirely choose. A company that will serve almost anyone, at scale, for free, ends up making decisions about who may remain online - and has been criticised both for acting and for declining to.",
+    ],
+    externalUrl: "https://www.cloudflare.com/our-story/",
+    externalLabel: "Cloudflare: our story",
+    sources: [
+      { label: "Cloudflare's own account - Project Honey Pot in 2004, the users asking them to stop the attacks, meeting at HBS, the November 2009 Series A with Venrock and Pelion", url: "https://www.cloudflare.com/our-story/" },
+      { label: "Company history: founded July 2009, the April 2009 HBS competition win, TechCrunch Disrupt launch, 50M to 5B page views in the first year", url: "https://portersfiveforce.com/blogs/brief-history/cloudflare" },
+    ],
+  },
+  {
     // F5 - company history (PRIME step 4, 2026-07-29). Hub + lineage page
     // already carry the deal detail; this is the company and the idea.
     slug: "f5",

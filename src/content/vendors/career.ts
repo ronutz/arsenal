@@ -61,6 +61,10 @@ export const VENDOR_CAREER_SLUGS: Record<string, string> = {
   extreme: "extreme",
   ping: "ping-identity",
   zscaler: "zscaler",
+  // Check Point's hub key is one word while its career slug is hyphenated,
+  // which is why it was missing: nothing failed and no check complained, the
+  // career card simply never rendered on that one hub. Added 2026-07-29.
+  checkpoint: "check-point",
 };
 
 // ============================================================================
