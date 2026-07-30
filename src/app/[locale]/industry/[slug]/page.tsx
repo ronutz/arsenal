@@ -351,8 +351,8 @@ export default async function PartnerVendorPage({
                    placed after the history rather than before it: this page is
                    about the company, and the fact that somebody worked here is
                    a footnote to that, not the headline. */
-                <section className="vendor-section">
-                  <div className="about-cred-cards">
+                <section className="section">
+                  <div className="about-cred-grid">
                     <Link
                       href={`/about/vendors/${vendor.careerChapter.slug}`}
                       className="about-cred-card"
@@ -371,14 +371,14 @@ export default async function PartnerVendorPage({
                 /* Same markup as the vendor-lineage pages, deliberately: the
                    nested-acquisition rule applies to both page types and a
                    reader should meet one idea, not two. */
-                <section className="vendor-section">
-                  <h2 className="vendor-section-title">{tp("acquisitionsHeading")}</h2>
-                  <ol className="lineage-acq-list">
+                <section className="section">
+                  <h2 className="section-title">{tp("acquisitionsHeading")}</h2>
+                  <ol className="lineage-timeline">
                     {[...vendor.acquisitions]
                       .sort((a, b) => a.year - b.year)
                       .map((a) => (
                         <li className="lineage-deal" key={`${a.year}-${a.name}`}>
-                          <p className="lineage-deal-head">
+                          <p className="lineage-deal-top">
                             <span className="lineage-deal-year mono">{a.year}</span>{" "}
                             <span className="lineage-deal-name">{a.name}</span>
                             {a.price ? (

@@ -263,6 +263,203 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // GENESYS - added 2026-07-30 (PRIME, who confirmed genesys.com rather than
+    // any other "Genesis"). Closes TWO loops on this site:
+    //   * Miloslavsky worked for Steve Jobs at PIXAR - and the Apple entry
+    //     records Jobs buying Lucasfilm's graphics division and renaming it
+    //   * Alcatel-Lucent, which owned Genesys for twelve years, is also where
+    //     RIVERSTONE's assets ended up - and Riverstone is a career chapter
+    //
+    // DATE DISCREPANCY RECORDED: the Alcatel acquisition is given as 1999 by
+    // several sources and January 2000 by others; that is almost certainly
+    // announcement versus completion, and both are stated.
+    slug: "genesys",
+    group: "other",
+    name: "Genesys",
+    founded: 1990,
+    tagline: "Two sons of Soviet emigres met at a card game and decided the phone call and the customer record should arrive together.",
+    intro:
+      "Genesys Telecommunications Laboratories was founded in October 1990 by Gregory Shenkman and Alec Miloslavsky. Their parents had fled the Soviet Union in 1980 and settled in the Russian community in San Francisco; the two men met years later at a card game. The seed capital was $150,000 in loans from their families, and the first office was in Daly City.",
+    body: [
+      "Miloslavsky had studied civil engineering at Berkeley and worked for Steve Jobs at Pixar - which connects this page to the Apple entry on this timeline, where Jobs's purchase of Lucasfilm's computer graphics division is recorded. Shenkman had been a telecommunications salesman. Neither combination obviously produces a contact centre company.",
+      "**The idea was small, precise and turned out to be enormous.** When a call arrived at a business in 1990, the telephone system knew the number and the computer system knew the customer, and the two never spoke to each other. So an agent answered, asked who you were, and typed it in - every time, for every call. Computer telephony integration joined those two systems, and the visible result was the screen pop: the phone rings and the customer's record is already open.",
+      "Genesys shipped T-Server in 1991 to do that, and then went further than the pop - routing calls on skills rather than on whoever was free, which means the question stops being *is a person available* and becomes *is the right person available*. That reframing is the whole of modern contact-centre design, and the software sat as middleware between switches the customer already owned.",
+      "It listed on NASDAQ in June 1997 as GCTI, raising $45M at $18 a share. **Alcatel then bought it for $1.5B**, announced in 1999 and completed in January 2000 depending on which source you read, and it disappeared into a telecommunications giant for twelve years.",
+      "**Alcatel-Lucent is a second connection to this timeline.** Riverstone Networks, a career chapter on this site, had its assets bought by Lucent in 2006 and absorbed into Alcatel-Lucent when the two merged that year. So a metro Ethernet business from a Cabletron spin-off and a call-routing company from a Daly City garage ended up inside the same French-American parent by entirely different routes.",
+      "**In February 2012 Permira and TCV bought Genesys out of Alcatel-Lucent for $1.5B** - the same figure Alcatel had paid twelve years earlier. A company can be worth exactly what it cost, a dozen years on, and that fact says more about who owned it than about what it built.",
+      "Independence produced the cloud pivot the parent had not. Hellman & Friedman took a $900M stake in 2016 at a $3.8B valuation, Interactive Intelligence was bought the same year for $1.4B, and revenue passed $2B by 2022. The company that started by making a telephone talk to a database now describes itself in terms of orchestration and AI, which is the same problem restated: the interaction and the context about it should not arrive separately.",
+    ],
+    acquisitions: [
+      { year: 2016, name: "Interactive Intelligence", price: "$1.4B", what: "A cloud contact-centre platform, bought the same year Hellman & Friedman took its stake.", became: "The basis of the cloud line that carried the company past $2B in revenue." },
+      { year: 2018, name: "AltoCloud", what: "Customer journey analytics - predicting what a customer is trying to do before they say it." },
+      { year: 2021, name: "Bold360", what: "Digital engagement, bought from LogMeIn.", became: "Part of the digital and AI-facing product set." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Genesys_(company)",
+    externalLabel: "Genesys",
+    sources: [
+      { label: "Wikipedia: Genesys - founded October 1990 by Gregory Shenkman and Alec Miloslavsky, $150,000 in family loans as seed funding, the June 1997 NASDAQ IPO under GCTI, and the February 2012 Permira and TCV acquisition", url: "https://en.wikipedia.org/wiki/Genesys_(company)" },
+      { label: "Martechvibe: the founders' parents leaving the Soviet Union in 1980, the two meeting at a card game, Miloslavsky's civil engineering at Berkeley and his work for Steve Jobs at Pixar, and Shenkman's telecoms sales background", url: "https://martechvibe.com/article/company-closeup-genesys-putting-customer-experience-on-top/" },
+      { label: "Preqin: incorporation in October 1990, the June 1997 IPO raising $45M at $18 a share, Alcatel taking the company private in January 2000 for $1.5B, and the February 2012 sale to Permira and TCV for $1.5B", url: "https://www.preqin.com/data/profile/asset/genesys-cloud-services-inc-/66170" },
+      { label: "Company history: incorporated 1 October 1990, the Daly City office, T-Server and the screen pop, and the name reflecting the genesis of intelligent communication software", url: "https://businessmodelcanvastemplate.com/blogs/brief-history/genesys-brief-history" },
+      { label: "Ownership history: the Hellman & Friedman stake in 2016 at a $3.8B valuation and the ~$1.4B Interactive Intelligence acquisition", url: "https://businessmodelcanvastemplate.com/blogs/owners/genesys-who-owns" },
+    ],
+  },
+  {
+    // LOTUS - added 2026-07-30 (PRIME), who noted that companies still run
+    // Notes today. That is the entry's spine: software outliving three owners
+    // and four decades.
+    //
+    // THREE LOOPS INTO EXISTING ENTRIES:
+    //   * VisiCalc - named in the APPLE entry as the software that made the
+    //     Apple II worth buying. Kapor came from its distributor, and Lotus
+    //     later bought the company that WROTE it.
+    //   * cc:Mail - the QUALYS entry records Philippe Courtot selling it to
+    //     Lotus in 1991.
+    //   * HCL - on PRIME's queue - has owned Notes and Domino since 2019.
+    slug: "lotus",
+    group: "other",
+    name: "Lotus Development",
+    founded: 1982,
+    ended: {
+      year: 1995,
+      note: "Acquired by IBM for $3.5B, primarily to obtain Notes. The brand persisted for years afterwards, and the Notes and Domino products were sold on to HCL in a deal announced 6 December 2018 for $1.8B.",
+    },
+    tagline: "Forecast a million dollars in its first year, made fifty-three, and shipped software still running four decades later.",
+    intro:
+      "Mitch Kapor and Jonathan Sachs founded Lotus in April 1982 with backing from Ben Rosen. Kapor was 32 and had been head of development at VisiCorp, the distributor of VisiCalc, where he wrote VisiPlot and VisiTrend and was bought out of his rights for $1.7M. Sachs then spent ten months writing Lotus 1-2-3 in assembly language for the IBM PC.",
+    body: [
+      "1-2-3 shipped on 26 January 1983, and the name described three uses - spreadsheet, graphics, database - of which people overwhelmingly used the first. What made it win was less romantic than the name: it was fast, it recalculated quickly, and it was written to exploit machines with 256K of memory rather than the smaller ones its predecessor had targeted.",
+      "**The numbers from that first year are worth stating in full.** The business plan forecast $1M of sales. Lotus did **$53M**, and was the world's third largest microcomputer software company by 1983. Very few companies on this timeline missed their own projection by a factor of fifty in the right direction.",
+      "**Its predecessor is already on this site.** The Apple entry records VisiCalc as the software that made the Apple II worth buying - the first spreadsheet, and the reason a business would justify a personal computer at all. Kapor came from the company that distributed it and built the product that replaced it. Then in 1985 **Lotus acquired Software Arts, the company that actually wrote VisiCalc, and discontinued it.** The successor bought the predecessor and switched it off.",
+      "Jim Manzi arrived in 1982 as a McKinsey consultant, became an employee four months later, president by October 1984, and chief executive in April 1986 when Kapor stepped down. He ran the company until it was sold.",
+      "**And then the product that outlived everything else.** Lotus Notes came out of Ray Ozzie's Iris Associates, and it was not a spreadsheet, an email client or a database, but a thing built out of all three: replicated document stores that worked when disconnected, with application logic attached. That is an unusual design and it is exactly why it survived - organisations built their actual business processes inside it, and a business process is far harder to migrate than a file format.",
+      "**IBM bought Lotus in 1995 for $3.5B**, primarily for Notes, and specifically to get into client-server computing as its own host-based OfficeVision was being made obsolete. Along the way Lotus had also acquired cc:Mail in 1991 - which appears on this timeline in the Qualys entry, because cc:Mail's founder Philippe Courtot went on to run Qualys for two decades.",
+      "**On 6 December 2018 IBM announced the sale of Notes and Domino to HCL for $1.8B.** So the software has now had three owners across more than thirty years, and it is still sold, still supported, and still running the internal processes of organisations that built them in the 1990s and never found a reason expensive enough to justify leaving.",
+      "That is the fact worth carrying away, and it contradicts how this industry usually talks about itself. **Most of the companies on this timeline were bought for a technology that was quietly retired within a few years. Lotus was bought for one that outlasted the buyer's interest, the buyer's strategy, and eventually the buyer.**",
+      "Two footnotes about the founders, both good. Sachs left in 1985 to write photo-editing software and has been shipping it since 1994. Kapor dropped out of a master's degree at MIT Sloan in 1979 to go and start all this, and finished it in 2025 - forty-six years later.",
+    ],
+    acquisitions: [
+      { year: 1985, name: "Software Arts", what: "The company that wrote VisiCalc, the first spreadsheet and the software that made the Apple II a business purchase.", became: "VisiCalc was discontinued. The product Lotus had beaten in the market was bought and switched off by the company that beat it." },
+      { year: 1991, name: "cc:Mail", price: "reported around $50M", what: "The dominant corporate email platform of its era, at roughly 40% market share.", founder: "Philippe Courtot, 1988 - he later ran Qualys for twenty years, and appears on this timeline in his own right.", became: "Lotus's email business, later overtaken by Notes itself.", sourceNote: "The purchase figure is commonly reported rather than confirmed in this session's sources; treat it as approximate." },
+      { year: 1994, name: "Iris Associates", what: "Ray Ozzie's company, which had developed Notes under contract to Lotus since the 1980s.", became: "Notes and later Domino - the products that survived two further owners and are still sold today." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Lotus_Software",
+    externalLabel: "Lotus Software",
+    sources: [
+      { label: "Wikipedia: Lotus Software - founded 1982 by Kapor and Sachs with Ben Rosen's backing, Notes from Ray Ozzie's Iris Associates, IBM's $3.5B purchase in 1995 to displace OfficeVision, and the 6 December 2018 sale of Notes and Domino to HCL for $1.8B", url: "https://en.wikipedia.org/wiki/Lotus_Software" },
+      { label: "Encyclopedia.com / FundingUniverse company history - Kapor at 32, VisiPlot and VisiTrend, the $1.7M buyout, Sachs's ten months writing 1-2-3 in assembly, and the 256K memory decision", url: "https://www.encyclopedia.com/social-sciences-and-law/economics-business-and-labor/businesses-and-occupations/lotus-development-corp" },
+      { label: "HandWiki: $53M in first-year sales against a $1M business plan forecast, third largest microcomputer software company by 1983, and Jim Manzi's rise from McKinsey consultant to CEO in 1986", url: "https://handwiki.org/wiki/Company:Lotus_Software" },
+      { label: "Wikipedia: Mitch Kapor - leaving VisiCorp, the 26 January 1983 release of 1-2-3 and what its name meant, and finishing his MIT Sloan master's in 2025 having started in 1979", url: "https://en.wikipedia.org/wiki/Mitch_Kapor" },
+      { label: "Wikipedia: Jonathan Sachs - born 1947, MIT, leaving Lotus in 1985 for Digital Light & Color, shipping Picture Window since 1994", url: "https://en.wikipedia.org/wiki/Jonathan_Sachs" },
+    ],
+  },
+  {
+    // QUALYS - added 2026-07-30 (PRIME). Completes the vulnerability-management
+    // trio with Tenable and Rapid7 on a DIFFERENT axis: not open-source
+    // strategy but DELIVERY MODEL - it never shipped software at all.
+    //
+    // FOUNDER DISCREPANCY RECORDED: most sources say Philippe Langlois and
+    // Gilles Samoun founded it and Philippe Courtot invested in 1999 before
+    // becoming CEO in March 2001. One reference work states Courtot founded it,
+    // and contradicts itself in the same article. The majority account is given
+    // and the disagreement noted rather than silently resolved.
+    slug: "qualys",
+    group: "contemporary",
+    name: "Qualys",
+    founded: 1999,
+    tagline: "Delivered security scanning as a service in 2000, before anybody had a word for that.",
+    intro:
+      "Qualys was founded in 1999 by Philippe Langlois and Gilles Samoun, incorporated in Delaware at the end of that December, with Langlois as chief technology officer and Samoun as chief executive. Philippe Courtot invested in 1999 and became chief executive and chairman in March 2001, and it is his tenure the company is usually remembered for. Some sources describe Courtot as a founder; the majority record him as the early investor who then ran it for twenty years, and that is the account used here.",
+    body: [
+      "QualysGuard launched in 2000, and the decision that made it distinctive was not what it scanned but how it arrived. Competitors sold software you installed. Qualys sold a subscription to a service, at a time when software as a service barely existed as a phrase - and the argument for it was specific rather than fashionable: **vulnerability data ages badly.** A scanner is only as good as its knowledge of what to look for, and installed software is exactly as current as its last update, which in most organisations is not very. A service updated centrally is current for everyone at once.",
+      "**That is the same argument this timeline shows repeatedly, arriving for a fifth time.** IronPort made it about email sender reputation in 2002, Zscaler about web traffic in 2007, Cloudflare about the web in 2009, CrowdStrike about endpoint behaviour in 2013. Qualys made it about vulnerability knowledge in 2000, which makes it the earliest instance on this page. The idea that a centrally operated platform beats locally installed software because it is never stale was worked out in this segment first.",
+      "**And it completes a trio here on a different axis.** Tenable, Rapid7 and Qualys compete in the same market and the other two entries contrast them on open source - one closed a project to fund itself, one bought a project and kept it open. Qualys differs on something else entirely: **it never shipped software to be run by the customer at all.** Three companies, three strategies, three answers to what a security vendor actually sells.",
+      "**Philippe Courtot's career before Qualys is worth its own paragraph.** In 1988 he founded cc:Mail, took it to roughly forty per cent of the email platform market, and sold it to Lotus in 1991. In 1993 he became chief executive of Verity, taking it public in 1995. He then led Signio through its acquisition by VeriSign. Qualys was his fifth chief executive role, and he ran it for two decades.",
+      "He also spent that time on work with no commercial return attached: helping found the Cloud Security Alliance in 2008, starting the Trustworthy Internet Movement and the CSO Interchange, and serving as a trustee of the Internet Society. He stepped down in March 2021 for health reasons and died on 5 June that year, aged 76.",
+      "The company went public in 2012 and reported revenue of $669M for 2025 with around 2,625 staff. The product argument has moved where every vendor in this segment moved, from finding everything to ranking what matters, because the constraint stopped being detection a long time ago and became the fact that nobody can patch it all.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Qualys",
+    externalLabel: "Qualys",
+    sources: [
+      { label: "Wikipedia: Qualys - founders Philippe Langlois and Gilles Samoun, Courtot investing in 1999 and becoming CEO and chair in 2001, QualysGuard in 2000 as one of the first entrants in vulnerability management, and 2025 revenue", url: "https://en.wikipedia.org/wiki/Qualys" },
+      { label: "Qualys announcement of Courtot's death - cc:Mail founded 1988 and sold to Lotus in 1991 at ~40% market share, Verity CEO from 1993 with a 1995 IPO, Signio through to the VeriSign acquisition, the Cloud Security Alliance in 2008, the Trustworthy Internet Movement, the CSO Interchange, Internet Society trusteeship, and his death on 5 June 2021 aged 76", url: "https://www.qualys.com/company/newsroom/news-releases/usa/qualys-passing-of-former-ceo-and-industry-visionary-philippe-courtot" },
+      { label: "Wikipedia: Philippe Courtot - born 26 August 1944 in France, a five-time chief executive who led two companies to IPO", url: "https://en.wikipedia.org/wiki/Philippe_Courtot" },
+      { label: "Company history - Delaware incorporation on 30 December 1999, QualysGuard Vulnerability Management launched 2000, and the SaaS model as unusual for a security vendor at the time", url: "https://swottemplate.com/blogs/brief-history/qualys-brief-history" },
+      { label: "Ownership history - $28.4M raised across two rounds including a $20M Series B in April 2001 with Bessemer Venture Partners, and Courtot stepping down in March 2021 for health reasons", url: "https://matrixbcg.com/blogs/owners/qualys" },
+    ],
+  },
+  {
+    // ILLUMIO - added 2026-07-30 (PRIME). Closes a Juniper loop: PJ Kirner was
+    // a distinguished engineer in Juniper's security CTO office, and Juniper is
+    // a career chapter on this site.
+    slug: "illumio",
+    group: "contemporary",
+    name: "Illumio",
+    founded: 2013,
+    tagline: "Assumed the attacker is already inside, and made the whole product about what happens next.",
+    intro:
+      "Andrew Rubin and PJ Kirner founded Illumio on 23 January 2013 in Sunnyvale, having both left Cymtec the month before. They had met through a mutual friend's introduction over lunch, which Kirner has described as feeling like a blind date. Rubin took the commercial side, Kirner the technical - he had been a distinguished engineer in the security CTO office at Juniper Networks, which appears on this site as a career chapter of its own.",
+    body: [
+      "The founding thesis was unfashionable in 2013 and is now close to consensus: **perimeter security alone is not enough, breaches are inevitable, and the useful question is what an attacker can reach once inside.** Most security spending at the time went on keeping people out. Illumio's argument was that the containment problem deserved its own product.",
+      "The technical decision that follows is the interesting one. Segmentation had historically been a network problem - VLANs, zones, firewalls between them - which means the policy lives in the topology, and a workload's security depends on where it happens to sit. Illumio put enforcement at the workload instead, with policy computed centrally and pushed to hosts, so **the rule travels with the application rather than with the wiring**. That is why it works in a cloud where you do not own the network, and it is the reason a software-first approach could do what hardware segmentation could not keep up with.",
+      "**And then the part everyone underestimates, which the company has been honest about.** You cannot enforce a rule that nothing talks unless it has a reason to until you know what actually talks to what. In a data centre of any age, nobody does. So the first product problem was not enforcement at all but **real-time dependency mapping** - working out the actual conversation graph of a running estate - and the name comes from illuminate for exactly that reason.",
+      "That is also why the company spent **twenty-two months in stealth** before showing anything. It raised $12.5M from Andreessen Horowitz and General Catalyst in early 2013, emerged in October 2014 with a $30.2M Series B, and had Morgan Stanley and Plantronics as customers in the first year. A $100M round in 2015 took it past a billion.",
+      "Today the framing is zero-trust segmentation and breach containment, and the numbers reported are $557M raised, a $2.75B valuation, revenue past $100M a year, and roughly a fifth of the Fortune 100. Kirner stepped down as chief technology officer in May 2023 after a decade, staying on as an adviser.",
+      "**Read next to two other entries here, it completes a picture of how the perimeter dissolved.** Zscaler moved inspection out to where the users went. Netskope tackled what people were doing inside applications nobody had approved. Illumio addressed the inside of the data centre itself, on the assumption that the other two would sometimes fail. Three companies, three different pieces of the same admission: the boundary that security was organised around had stopped describing anything real.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Illumio",
+    externalLabel: "Illumio",
+    sources: [
+      { label: "Wikipedia: Illumio - founded 2013 by Andrew Rubin and P.J. Kirner, Sunnyvale, breach containment and lateral movement", url: "https://en.wikipedia.org/wiki/Illumio" },
+      { label: "Verdict CTO Talk with PJ Kirner - his time on Juniper Networks' security team in the CTO office, and the blind-date introduction to Rubin", url: "https://www.verdict.co.uk/illumio-cto-pj-kirner/" },
+      { label: "Contrary Research - both founders leaving Cymtec in December 2012, and Kirner stepping down as CTO in May 2023 while remaining an adviser", url: "https://research.contrary.com/company/illumio" },
+      { label: "Company history - the 23 January 2013 founding, 22 months in stealth building real-time dependency mapping, the $12.5M Series A from Andreessen Horowitz and General Catalyst, the October 2014 emergence with $30.2M, Morgan Stanley and Plantronics as early customers, and the name deriving from illuminate", url: "https://businessmodelcanvastemplate.com/blogs/brief-history/illumio-brief-history" },
+      { label: "Interview with Andrew Rubin - $557M raised, $2.75B valuation, revenue past $100M, roughly 20% of the Fortune 100, and Kirner's Cornell background", url: "https://thesecuritypodcastofsiliconvalley.com/blog/building-a-cybersecurity-startup.-lessons-from-illumio-ceo-andrew-rubin" },
+    ],
+  },
+  {
+    // ELASTIC - added 2026-07-30 (PRIME).
+    //
+    // The THIRD answer to the open-source question already on this timeline:
+    // Tenable closed its project to fund the company; Rapid7 bought one and
+    // kept it open; Elastic closed one, got forked, and then partly reopened.
+    //
+    // *** THREE CONFLICTING ACCOUNTS OF MOTIVE ARE ALL RECORDED AND NONE IS
+    // ADJUDICATED. *** Elastic's 2021 statement, Banon's different 2024
+    // emphasis, and a former AWS executive's contrary version. This is a live
+    // dispute between named parties and the page must not pick a winner.
+    //
+    // The widely repeated "recipe app for his wife" origin story is OMITTED:
+    // it was not in this session's verified sources.
+    slug: "elastic",
+    group: "contemporary",
+    name: "Elastic",
+    founded: 2012,
+    tagline: "Changed its licence to stop a cloud provider, got forked, and changed it back three years later.",
+    intro:
+      "Shay Banon built Elasticsearch on top of Apache Lucene, having previously written a search library called Compass, and the company around it was founded in 2012. The product did something genuinely useful: it made full-text search over arbitrary JSON documents something a developer could stand up in an afternoon, with a query language that did not require a database administrator.",
+    body: [
+      "Elasticsearch and Kibana were Apache 2.0, and that licence is permissive by design - anyone may take the code and sell a service built on it, with no obligation to contribute anything back. In 2015 Amazon Web Services began offering exactly that: a managed Elasticsearch service. In 2019, after Elastic released parts of its commercial x-pack features under restrictive licences, AWS launched Open Distro for Elasticsearch as an alternative packaging.",
+      "**In January 2021, with release 7.11, Elastic moved Elasticsearch and Kibana off Apache 2.0** to a dual licence: the Server Side Public License, originally written by MongoDB, and the new Elastic License. Neither is approved by the Open Source Initiative. Elastic's stated intent at the time was to prevent companies providing its products as a service without collaborating with it, and AWS was named explicitly.",
+      "**Three different accounts of why exist, and all three are recorded here.** Elastic's 2021 position was about resale without collaboration. In 2024 Banon put the emphasis elsewhere, saying the problem was never AWS providing the software - Apache 2.0 permitted that - but calling it Amazon Elasticsearch, which he characterised as clear trademark infringement met with a thousand lawyers. Adrian Cockcroft, formerly of AWS, gave a third version: that AGPL alone would have blocked AWS, and that the real disagreement was AWS wanting to contribute security features to the open project while Elastic wanted to keep security commercial. **These accounts are not compatible, they come from named participants, and this page does not adjudicate between them.**",
+      "**In April 2021 AWS forked Elasticsearch and Kibana at version 7.10.2 and created OpenSearch**, under Apache 2.0, later placed with the Linux Foundation. Elastic then made its client libraries incompatible with OpenSearch, and OpenSearch wrote its own.",
+      "The community reaction is worth quoting rather than summarising, because it is the part that outlasted the argument. Drew DeVault noted that Elasticsearch belonged to its 1,573 contributors, who had granted Elastic a licence to distribute their work and not to relicense it. Simon Phipps of the Open Source Initiative said Elastic had taken what benefit it could from open source and was now spitting out the bones. Corey Quinn's version was shorter: anyone relying on assurances from Elastic should make other plans.",
+      "**In September 2024 Elastic added AGPLv3**, an OSI-approved licence, alongside SSPL and the Elastic License - triple-licensing the core products and making them open source again by any standard definition. Banon's announcement had its sections titled after Kendrick Lamar songs, which is a genuinely unusual document to find in a licensing archive. He said the change had worked: Amazon was fully invested in its fork, the market confusion was mostly resolved, and the partnership with AWS was stronger than ever. **He also explicitly denied that the 2021 change had been a mistake.**",
+      "The commercial reasoning is coherent and the outcome is instructive anyway. **The fork did not come back.** Practitioners quoted at the time were direct about why: contributors who had watched their Apache-licensed work become someone else's exclusive asset had no reason to return, and trust takes far longer to rebuild than to lose. OpenSearch continues, and the ecosystem that was one project in 2020 is two.",
+      "**Read alongside two other entries on this timeline, a pattern appears.** Tenable closed its open-source scanner in 2005 to fund the company, and the community forked it into OpenVAS. Rapid7 bought an open-source project and kept it open. Elastic closed one, was forked, and reopened it. **Three companies, three strategies, and in two of the three the fork is still running.** Whether a permissive licence is a gift or a liability depends entirely on who else can afford to operate your software at scale - which is a question nobody had to ask before hyperscale cloud existed.",
+    ],
+    externalUrl: "https://www.elastic.co/pricing/faq/licensing",
+    externalLabel: "Elastic: software licensing FAQ",
+    sources: [
+      { label: "Elastic's own licensing FAQ - the January 2021 move off Apache 2.0 at release 7.11, and the September 2024 addition of AGPLv3 before 8.16", url: "https://www.elastic.co/pricing/faq/licensing" },
+      { label: "InfoQ (2021): Elastic's stated intent, the Open Distro dispute, and the community reactions from Drew DeVault and Corey Quinn including the 1,573 contributors point", url: "https://www.infoq.com/news/2021/01/elastic-aws-open-source" },
+      { label: "Socket: Banon's 2024 clarification that the issue was trademark rather than resale, Adrian Cockcroft's contrary account about security features, and Simon Phipps's response", url: "https://socket.dev/blog/developers-burned-by-elasticsearch-license-change-arent-going-back" },
+      { label: "DevClass: the April 2021 OpenSearch fork from 7.10.2, what SSPL and ELv2 require, and Banon's assessment that the change worked", url: "https://www.devclass.com/databases/2024/09/02/elasticsearch-will-be-open-source-again-as-cto-declares-changed-landscape/1618331" },
+      { label: "Simon Willison: the triple-licensing detail and the sequence of events", url: "https://simonwillison.net/2024/Aug/29/elasticsearch-is-open-source-again/" },
+      { label: "TechHQ: OpenSearch moving to the Linux Foundation and what the AGPL return does and does not change", url: "https://techhq.com/news/elasticsearch-cloud-news-open-source-license-latest-licensing-situation/" },
+    ],
+  },
+  {
     // APPLE - added 2026-07-30 (PRIME). Completes the 1977 Trinity comparison
     // set up in the Tandy entry, which records that Tandy outsold Apple three
     // to one in 1980. This entry explains why that reversed.

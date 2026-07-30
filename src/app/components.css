@@ -14928,6 +14928,12 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    versus who made it. Three vendor hubs on this site trace through the same
    handful of people, and that only becomes visible when the names are shown. */
 .lineage-sub-founder {
+
+/* The inline description of a nested sub-acquisition. Added 2026-07-30:
+   the profile pages render nested deals with the same markup as the
+   lineage pages, and this one class had no definition, so the text sat
+   unstyled inside otherwise styled rows. */
+.lineage-sub-what { color: var(--text-secondary); }
   color: var(--text-primary);
 }
 

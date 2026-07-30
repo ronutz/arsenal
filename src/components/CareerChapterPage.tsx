@@ -117,35 +117,55 @@ export default async function CareerChapterPage({
             </div>
           </section>
 
-          <section className="vendor-section">
+          {/* Classes here mirror the company profile pages exactly. An
+              earlier version invented `vendor-intro`, `vendor-body`,
+              `vendor-section-title` and `vendor-section`, none of which exist
+              in any stylesheet, so every career page shipped as unstyled
+              browser defaults. */}
+          <section className="section">
             <div className="container vendor-container">
-              <p className="vendor-intro">{t(`${vendorKey}.intro`)}</p>
+              <p className="era-intro">{t(`${vendorKey}.intro`)}</p>
             </div>
           </section>
 
           {bodies.map((s, i) => (
-            <section className="vendor-section" key={i}>
+            <section className="section" key={i}>
               <div className="container vendor-container">
-                <h2 className="vendor-section-title">{s.title}</h2>
-                <p className="vendor-body">{s.body}</p>
+                <h2 className="section-title">{s.title}</h2>
+                <div className="partner-body">
+                  {/* Split on blank lines so an author can paragraph a section
+                      simply by leaving one, and a single-block string still
+                      renders as one properly styled paragraph. */}
+                  {s.body
+                    .split(/\n\s*\n/)
+                    .map((para) => para.trim())
+                    .filter(Boolean)
+                    .map((para, j) => (
+                      <p className="partner-body-p" key={j}>
+                        {para}
+                      </p>
+                    ))}
+                </div>
               </div>
             </section>
           ))}
 
           {certs && !certs.startsWith("vendors.") && (
-            <section className="vendor-section">
+            <section className="section">
               <div className="container vendor-container">
-                <h2 className="vendor-section-title">{t("certsTitle")}</h2>
+                <h2 className="section-title">{t("certsTitle")}</h2>
                 {/* Certifications sit in their own block because on a career
                     page they are evidence for the claims above, not trivia. */}
-                <p className="vendor-body">{certs}</p>
+                <div className="partner-body">
+                  <p className="partner-body-p">{certs}</p>
+                </div>
               </div>
             </section>
           )}
 
-          <section className="vendor-section">
+          <section className="section">
             <div className="container vendor-container">
-              <div className="about-cred-cards">
+              <div className="about-cred-grid">
                 {hubKey && (
                   <Link href={`/${hubKey}`} className="about-cred-card">
                     <span className="about-cred-eyebrow">{t("hubCardEyebrow")}</span>
