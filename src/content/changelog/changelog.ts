@@ -52,6 +52,30 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-31T19:11:58-03:00",
+    kind: "content",
+    title: "The importance meter is now English only, and says its unit properly",
+    body: "The unit now sits directly under the answer at the same size and in the same colour, so the two read as one statement rather than a figure with a caption underneath it, and the note about local computation has gone because it was doing nothing there. Everything below the result is centred. The line explaining the deadline weighting used to describe how the number felt; it now tells you how long you actually have, in minutes when that is under an hour, because nobody says nought point five hours. And the Portuguese version of this page is gone. The joke is an English idiom and it did not survive translation: rendered literally it read as a description of a rude phrase rather than as a deadpan corporate instrument, which is the opposite of funny. The page now generates in English only and every other language redirects there rather than hitting a dead end. It is the only page on the site that opts out of the language set, and it does so because the content genuinely cannot be localised rather than because translating it was inconvenient.",
+  },
+  {
+    date: "2026-07-31T18:44:21-03:00",
+    kind: "feature",
+    title: "Fullscreen for the importance meter",
+    body: "The meter can now take over the screen, which suits a page whose whole point is two gauges disagreeing with each other. It follows the approach already used by the mega brain rather than inventing a second one, and that approach exists for a specific reason: Safari on iPhone will not put an arbitrary element into fullscreen, so there is a styling fallback that produces the same result when the real interface is unavailable or declines. Both paths are styled identically, so a reader cannot tell which one they got. The button also listens for the browser's own fullscreen change, so leaving with the escape key updates it correctly instead of leaving it claiming to be in a state it is not. In fullscreen the answer grows, the dial grows, and the input columns widen.",
+  },
+  {
+    date: "2026-07-31T18:19:24-03:00",
+    kind: "infra",
+    title: "A shorter address for the importance meter",
+    body: "The short address for the importance meter is now two letters, matching the pattern already used by the other two toys. The longer form it replaces was added a day earlier and never published anywhere, so nothing external pointed at it and dropping it costs nothing.",
+  },
+  {
+    date: "2026-07-31T18:07:57-03:00",
+    kind: "content",
+    title: "ArcSight, and two opposite bets on the same problem",
+    body: "A large network produces millions of log lines a day in a dozen formats, none of which means anything alone. A failed login is noise. Four hundred failed logins from one address, then one success, then an outbound transfer, is an incident, and somebody has to notice the difference at three in the morning. ArcSight's answer was to normalise every event into a common shape first, so a firewall denial and a Windows audit failure became comparable, and then run correlation rules across the stream. That is a real commitment, because the rules encode what you already know matters, which means deciding in advance what an incident looks like. Read that against the other entry on this site from the same era and you get two opposite bets. One indexed the raw data and let you search it afterwards, deciding what mattered once you had a reason to ask. The other decided first and then watched. Rules catch what you anticipated at the moment it happens; search finds what you did not anticipate, after you know to look. Neither is wrong and most mature teams end up running something of each. What differed was the ending. The one that stayed independent for two decades was eventually bought as a strategic centrepiece for a very large sum. This one sold early, in 2010, and was then carried through three further transactions as a line item in somebody else's portfolio, ending up with its fourth owner in thirteen years, none of whom wrote it. Same market, same era, comparable achievement, and the difference had more to do with when each sold than with which design was better.",
+  },
+  {
     date: "2026-07-31T15:47:17-03:00",
     kind: "infra",
     title: "A page that listens for typed sequences now owns the alphabet",

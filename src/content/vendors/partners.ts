@@ -305,6 +305,45 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // ARCSIGHT - added 2026-07-31 (PRIME). Pairs with SPLUNK, already here: two
+    // answers to the same problem, and two different fates.
+    //
+    // *** FOUNDER DISCREPANCY, SUBSTANTIAL. *** Sources name different people.
+    // Hugh Njemanze appears in every account; Alex Daly is the founding CEO per
+    // Wikipedia; one source adds Pravin Kothari; another names Tom Reilly, who
+    // was a LATER chief executive rather than a founder. Only the consistent
+    // names are stated and the disagreement is recorded.
+    slug: "arcsight",
+    group: "other",
+    name: "ArcSight",
+    founded: 2000,
+    ended: {
+      year: 2010,
+      note: "Acquired by HP for about $1.5B, completing 22 October 2010. The product line then passed to HPE in the 2015 split, to Micro Focus on 1 September 2017, and to OpenText in 2023 - four owners in thirteen years.",
+    },
+    tagline: "Decided in advance what mattered, which is the opposite of what its main rival decided.",
+    intro:
+      "ArcSight was incorporated in Delaware on 3 May 2000 under the name Wahoo Technologies, and renamed before it shipped anything. Hugh Njemanze was its founding chief technology officer and is the one name every account agrees on - he has been described as the initial architect of security information and event management, and holds more than twenty patents in the field. Alex Daly is recorded as founding chief executive. Other sources name other founders, and they do not reconcile, so only the consistent names appear here.",
+    body: [
+      "**The problem it existed to solve is worth stating in plain terms.** A large network produces millions of log lines a day from firewalls, servers, applications and intrusion sensors, each in its own format, none of which means anything alone. A failed login is noise. Four hundred failed logins from one address, followed by one success, followed by an outbound transfer, is an incident. Somebody has to notice the difference at three in the morning.",
+      "ArcSight's answer was ESM, and the architecture is the interesting part. It **normalised** every event into a common schema first, so a Cisco denial and a Windows audit failure became comparable objects, and then ran **correlation rules** over that stream. The rules encode what you already know matters. That is a real commitment: you decide in advance what an incident looks like, and the system watches for it continuously.",
+      "**Set that against Splunk, which is also on this timeline, and you have two opposite bets.** Splunk indexed the raw data and let you search it afterwards, deciding what mattered once you had a reason to ask. ArcSight decided first and watched. Rules catch what you anticipated, at the moment it happens; search finds what you did not anticipate, after you know to look. Neither is wrong, and most mature security teams eventually run something of each - but the two designs pulled the market in different directions for a decade.",
+      "The company's backing is a detail worth noticing: alongside Kleiner Perkins, its early investors included **In-Q-Tel**, the venture arm of the CIA. It went public in 2008, and by its 2010 fiscal year was reporting $181.4M of revenue from over a thousand customers with 512 employees, having grown at roughly forty per cent a year.",
+      "**HP acquired it in 2010** at $43.50 a share, all cash, about $1.5B, completing on 22 October. Then the ownership chain that this timeline keeps producing: the 2015 HP split sent it to Hewlett Packard Enterprise; HPE merged its software business into **Micro Focus**, finalised 1 September 2017; and **OpenText acquired Micro Focus in 2023**. Four owners in thirteen years, none of whom wrote it.",
+      "**And that is the contrast that makes the pair worth reading together.** Splunk stayed independent for two decades and was bought by Cisco in 2024 for around $28B as a strategic centrepiece. ArcSight was bought early, then carried along through three further transactions as one line item in somebody else's portfolio. Same market, same era, comparable technical achievement - and the difference in outcome had far more to do with when each sold than with which architecture was better.",
+      "Njemanze went on to run engineering and research for HP's enterprise security group, and later became chief executive of ThreatStream, which became Anomali.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/ArcSight",
+    externalLabel: "ArcSight",
+    sources: [
+      { label: "Wikipedia: ArcSight - incorporated May 2000 in Cupertino, Alex Daly as founding CEO and Hugh Njemanze as founding CTO, the HP acquisition in 2010, transfer to HPE in the split, sale to Micro Focus, and OpenText acquiring Micro Focus in 2023", url: "https://en.wikipedia.org/wiki/ArcSight" },
+      { label: "OpenText community: incorporated in Delaware on 3 May 2000 as Wahoo Technologies before the rename; HP's acquisition completing 22 October 2010; the Micro Focus merger finalised 1 September 2017", url: "https://community.opentext.com/cybersec/b/cybersecurity-blog/posts/celebrating-20-years-of-arcsight-and-the-evolution-of-siem" },
+      { label: "SEC filing (HP tender offer, 2010): $43.50 per share all cash, 512 employees, 1,000+ customers, FY10 revenue of $181.4M and roughly 40% CAGR over three years", url: "https://www.sec.gov/Archives/edgar/data/0001368582/000110465910048334/a10-17787_2ex99d1.htm" },
+      { label: "Channel Futures: Njemanze described as the initial architect of SIEM, with more than twenty issued patents, leading HP enterprise security engineering after the acquisition and later becoming CEO of ThreatStream", url: "https://www.channelfutures.com/channel-business/threatstream-appoints-arcsight-co-founder-hugh-njemanze-as-ceo" },
+      { label: "Startup profile: Kleiner Perkins and In-Q-Tel among early investors, the 2008 IPO, and an alternative founder attribution naming Pravin Kothari - recorded here as a discrepancy", url: "https://startupintros.com/orgs/arcsight-inc" },
+    ],
+  },
+  {
     // COMPTIA - added 2026-07-31 (PRIME). The COUNTERPOINT to the certification
     // thread in the Cisco entry: Cisco built the vendor-defined competency
     // ladder every vendor here copies; CompTIA is the vendor-NEUTRAL answer,

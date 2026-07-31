@@ -14577,7 +14577,7 @@
     "coefficientLabel": "Bearing on your actual objectives",
     "coefficientNote": "This coefficient is a constant. It is not affected by any input above, and it has never been observed to take another value.",
     "resultHeading": "Result",
-    "unitLabel": "Unit: fucks given. Computed locally, as always.",
+    "unitLabel": "fucks given",
     "remarks": {
       "trivial": "Nothing here registers. Unusual, and slightly suspicious.",
       "ordinary": "An ordinary Tuesday.",
@@ -14592,6 +14592,8 @@
     "overrideConsequenceLabel": "What this entails:",
     "overrideRevert": "Rescind",
     "overrideHint": "The coefficient has resisted every attempt to change it through the interface. Whether it can be changed by other means is not documented.",
-    "measureButton": "Calculate"
+    "measureButton": "Calculate",
+    "fullscreenEnter": "Fullscreen",
+    "fullscreenExit": "Exit fullscreen"
   }
 }

@@ -25,7 +25,7 @@
 // palette.
 // ============================================================================
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   measure,
   overrideFor,
@@ -71,6 +71,8 @@ export interface ImportanceMeterLabels {
   overrideConsequenceLabel: string;
   overrideRevert: string;
   overrideHint: string;
+  fullscreenEnter: string;
+  fullscreenExit: string;
 }
 
 const DEFAULTS = {
@@ -141,6 +143,57 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
   // away again, so the answer is always something the reader requested.
   const [shown, setShown] = useState(false);
 
+  // ---- Fullscreen --------------------------------------------------------
+  // Follows the Mega Brain's approach on this site, which handles the case that
+  // matters: iPhone Safari will not fullscreen an arbitrary element, so a CSS
+  // fallback reaches the same look when the real API is unavailable or refuses.
+  // Listening for fullscreenchange keeps the button honest when the reader
+  // leaves via Escape rather than the button.
+  const shellRef = useRef<HTMLDivElement>(null);
+  const [nativeFs, setNativeFs] = useState(false);
+  const [cssFs, setCssFs] = useState(false);
+  const isFullscreen = nativeFs || cssFs;
+
+  useEffect(() => {
+    const sync = () => {
+      const doc = document as Document & { webkitFullscreenElement?: Element | null };
+      const el = document.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
+      setNativeFs(el === shellRef.current);
+    };
+    document.addEventListener("fullscreenchange", sync);
+    document.addEventListener("webkitfullscreenchange", sync);
+    return () => {
+      document.removeEventListener("fullscreenchange", sync);
+      document.removeEventListener("webkitfullscreenchange", sync);
+    };
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    const el = shellRef.current;
+    if (!el) return;
+    const doc = document as Document & {
+      webkitExitFullscreen?: () => void;
+      webkitFullscreenElement?: Element | null;
+      webkitFullscreenEnabled?: boolean;
+    };
+    const node = el as HTMLDivElement & { webkitRequestFullscreen?: () => void };
+    if (cssFs) {
+      setCssFs(false);
+      return;
+    }
+    if (document.fullscreenElement ?? doc.webkitFullscreenElement) {
+      (document.exitFullscreen?.bind(document) ?? doc.webkitExitFullscreen?.bind(doc))?.();
+      return;
+    }
+    const request = node.requestFullscreen?.bind(node) ?? node.webkitRequestFullscreen?.bind(node);
+    const enabled = document.fullscreenEnabled ?? doc.webkitFullscreenEnabled ?? false;
+    if (request && enabled) {
+      Promise.resolve(request()).catch(() => setCssFs(true));
+    } else {
+      setCssFs(true);
+    }
+  }, [cssFs]);
+
   // Key sequence listener. Ignores keystrokes aimed at the text field, so
   // typing the subject line does not accidentally arm anything.
   useEffect(() => {
@@ -188,7 +241,18 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
   const needleAngle = -90 + Math.min(1, result.total / needleScale) * 180;
 
   return (
-    <>
+    <div ref={shellRef} className={"im-shell" + (cssFs ? " im-fs" : "")}>
+      <div className="im-fs-bar">
+        <button
+          type="button"
+          className="im-fs-toggle"
+          aria-pressed={isFullscreen}
+          onClick={toggleFullscreen}
+        >
+          {isFullscreen ? labels.fullscreenExit : labels.fullscreenEnter}
+        </button>
+      </div>
+
       <div className="ztc-result">
         <label className="cidr-label" htmlFor="im-subject">
           {labels.subjectLabel}
@@ -375,7 +439,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
           </text>
         </svg>
         <p className="im-big mono">{result.display}</p>
-        <p className="cidr-privacy">{labels.unitLabel}</p>
+        <p className="im-big im-unit mono">{labels.unitLabel}</p>
       </div>
       )}
 
@@ -413,6 +477,6 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         <p className="cidr-privacy">{labels.overrideHint}</p>
       </div>
       )}
-    </>
+    </div>
   );
 }

@@ -127,9 +127,16 @@ export function measure(
   if (hrs <= 72) {
     // Inverse: the closer the deadline, the louder it gets.
     const v = Math.round(2000 / (hrs + 0.5));
+    // The detail quotes the time actually remaining rather than describing how
+    // the number feels. Sub-hour deadlines are given in minutes, because "0.5
+    // hours remaining" is not how anyone says it.
+    const remaining =
+      hrs < 1
+        ? `${Math.max(1, Math.round(hrs * 60))} minutes`
+        : `${hrs === Math.round(hrs) ? hrs : hrs.toFixed(1)} hour${hrs === 1 ? "" : "s"}`;
     workings.push({
       label: hrs <= 1 ? "Deadline within the hour" : `${hrs} hours to the deadline`,
-      detail: "Inverse to time remaining, which is why it shouts.",
+      detail: `Inverse to time remaining, you have ${remaining} remaining.`,
       value: v,
     });
   }

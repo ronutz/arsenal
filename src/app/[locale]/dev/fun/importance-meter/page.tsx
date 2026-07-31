@@ -31,6 +31,23 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import SuppressLetterShortcuts from "@/components/SuppressLetterShortcuts";
 import ImportanceMeter from "@/components/dev/fun/ImportanceMeter";
 
+/**
+ * ENGLISH ONLY (PRIME 2026-07-31).
+ *
+ * The joke is an English idiom and does not survive translation: the pt-BR
+ * version read as a literal description of a rude phrase rather than as a
+ * deadpan corporate instrument, which is the opposite of funny. So this page
+ * generates for `en` alone, and the other locales redirect here rather than
+ * 404 - see public/_redirects.
+ *
+ * This is the ONLY page on the site that opts out of the locale set, and it
+ * does so because the content genuinely cannot be localised, not because
+ * translating it was inconvenient.
+ */
+export function generateStaticParams() {
+  return [{ locale: "en" }];
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -88,6 +105,8 @@ export default async function ImportanceMeterPage({
     overrideConsequenceLabel: t("overrideConsequenceLabel"),
     overrideRevert: t("overrideRevert"),
     overrideHint: t("overrideHint"),
+    fullscreenEnter: t("fullscreenEnter"),
+    fullscreenExit: t("fullscreenExit"),
   };
 
   return (

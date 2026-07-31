@@ -14577,7 +14577,7 @@
     "coefficientLabel": "Relevância para os seus objetivos reais",
     "coefficientNote": "Este coeficiente é constante. Não é afetado por nenhum campo acima, e nunca se observou que assumisse outro valor.",
     "resultHeading": "Resultado",
-    "unitLabel": "Unidade: fodas-se dados. Calculado localmente, como sempre.",
+    "unitLabel": "fucks given",
     "remarks": {
       "trivial": "Nada aqui registra. Incomum, e levemente suspeito.",
       "ordinary": "Uma terça-feira comum.",
@@ -14592,6 +14592,8 @@
     "overrideConsequenceLabel": "O que isso implica:",
     "overrideRevert": "Revogar",
     "overrideHint": "O coeficiente resistiu a toda tentativa de alteração pela interface. Se pode ser alterado por outros meios não está documentado.",
-    "measureButton": "Calcular"
+    "measureButton": "Calcular",
+    "fullscreenEnter": "Tela cheia",
+    "fullscreenExit": "Sair da tela cheia"
   }
 }

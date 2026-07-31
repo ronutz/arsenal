@@ -887,6 +887,29 @@
 
 # Dynamic LAST. The /partner/ segment only ever held company profiles.
 
+
+# ===========================================================================
+# The Importance Meter is ENGLISH ONLY - the joke is an idiom that does not
+# survive translation. It generates for /en only, so every other locale is
+# sent there rather than hitting a 404. Static rules, placed before the
+# dynamic block below as Cloudflare requires.
+# ===========================================================================
+/da/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/de/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/es/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/fil/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/fr/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/it/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/ms/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/nb/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/nl/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/pl/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/pt-BR/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/ru/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/sv/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/tr/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+/zh-Hans/dev/fun/importance-meter/ /en/dev/fun/importance-meter/ 301
+
 /da/about/vendors/partner/* /da/industry/:splat 301
 /de/about/vendors/partner/* /de/industry/:splat 301
 /en/about/vendors/partner/* /en/industry/:splat 301
