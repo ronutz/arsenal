@@ -7882,6 +7882,10 @@
       "catDistribution": {
         "name": "Sistema Global de Distribuição de Gatos",
         "desc": "Um console de rastreamento para a rede que atribui gatos de rua a humanos. Determinístico: o mesmo nome sempre recebe o mesmo gato. Consentimento não é exigido."
+      },
+      "importanceMeter": {
+        "name": "Medidor de Importância",
+        "desc": "Pesa uma solicitação contra o trabalho pelo qual você realmente responde. A aritmética é real e o resultado é reproduzível."
       }
     }
   },
@@ -7941,7 +7945,7 @@
     "gohFineLink": "eXtreme Go Horse (XGH)",
     "gohFinePost": ". O botão vermelho restaura o Mega Brain.",
     "gohFinePre": "Homenagem ao lendário ",
-    "gohLine": "🐴 FAIL-SAFE ATIVADO: ENGAGE GO-HORSE FTW!",
+    "gohLine": "🐴 FAIL-SAFE ATIVADO: MODO EXTREME GO-HORSE ENGAJADO FTW!",
     "gohSub": "pensar: DESATIVADO · produtividade: ∞ · qualidade: detalhe",
     "homeTitle": "ronutz.com",
     "leverAria": "Força do Mega Brain",
@@ -7989,7 +7993,10 @@
       "Rollback é para quem planejou ter volta.",
       "“Funciona na minha máquina” agora é SLA.",
       "Estimativa de prazo: era pra ontem, então relaxa."
-    ]
+    ],
+    "godLine": "MODO SEM DIPLOMA ATIVADO",
+    "godSub": "burnout limpo · go-horse desengajado · capacidade restaurada a 100%",
+    "godOff": "Desligar"
   },
   "shortcuts": {
     "actionBingo": "Buzzword Bingo",
@@ -14564,7 +14571,6 @@
     "movedLabel": "O prazo já mudou uma vez",
     "yes": "Sim",
     "no": "Não",
-    "measureButton": "Medir",
     "resetButton": "Limpar",
     "workingsHeading": "Contribuições",
     "subtotalLabel": "Urgência aparente",
@@ -14581,6 +14587,13 @@
     },
     "methodHeading": "Método",
     "methodBody": "Os pesos acima são arbitrários porém consistentes: entradas idênticas sempre produzem o mesmo subtotal, que era a única propriedade necessária. Nada é arredondado para chegar ao resultado e nada é descartado. O subtotal é multiplicado pelo coeficiente e o produto é informado exatamente. Esta ferramenta calcula em vez de adivinhar, como o resto do site. Acontece que ela calcula algo cuja resposta não varia.",
-    "footnote": "Não listada, de propósito. Se você está lendo isto, alguém lhe passou o endereço."
+    "footnote": "Não listada, de propósito. Se você está lendo isto, alguém lhe passou o endereço.",
+    "gaugeAria": "Medidor de resultado. O ponteiro repousa em zero.",
+    "hoursSuffix": "h",
+    "peopleSuffix": "pessoas",
+    "overrideBanner": "Override acionado",
+    "overrideConsequenceLabel": "O que isso implica:",
+    "overrideRevert": "Revogar",
+    "overrideHint": "O coeficiente resistiu a toda tentativa de alteração pela interface. Se pode ser alterado por outros meios não está documentado."
   }
 }

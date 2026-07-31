@@ -305,6 +305,41 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // FREERADIUS - added 2026-07-30 (PRIME). The COUNTER-EXAMPLE to the
+    // open-source thread already on this timeline: Tenable closed its project,
+    // Rapid7 bought one, Elastic closed and reopened one - and this one simply
+    // stayed open for twenty-six years and became infrastructure.
+    //
+    // DATE NOTE: sources give June 1999 and August 1999. They are describing
+    // different events - founding and first public alpha - and both are stated.
+    slug: "freeradius",
+    group: "other",
+    name: "FreeRADIUS",
+    founded: 1999,
+    tagline: "Authenticates about a third of the people on the internet, and has had the same project leader since 1999.",
+    intro:
+      "FreeRADIUS was founded in June 1999 by Miquel van Smoorenburg and Alan DeKok, with the first public alpha in August - which is why sources give both months. It was a fork of the Cistron RADIUS server, which van Smoorenburg had written himself and which had been widely adopted for a specific reason: the original RADIUS server had stopped being maintained.",
+    body: [
+      "**The protocol has a precise origin.** In 1991 Merit Network, a non-profit internet provider, needed to manage dial-in access across points of presence run by different organisations. It did not want to distribute usernames and passwords to every remote access server, so it wanted those servers to ask a central one and receive back a yes or a no. Livingston Enterprises built that, and called it Remote Authentication Dial-In User Service.",
+      "Livingston is worth a paragraph of its own. Founded in 1986 by Ronald Willens and his son Steven in Pleasanton, California, financed by its founders and then by its own operating profits rather than venture capital, it made the **PortMaster** access server - which by the mid-1990s held something like two-thirds of the ISP market and served over two thousand providers. It had ninety employees. **Lucent acquired it in 1997**, and the RADIUS server it had given away stopped being maintained.",
+      "That is the gap Cistron filled, and then FreeRADIUS forked Cistron. So the software authenticating a large fraction of the internet today descends, by two forks, from a program written to solve one non-profit's dial-up problem in 1991.",
+      "**The numbers are the part people do not believe.** A survey in November 2006 with over five hundred respondents put daily usage at around a hundred million people - roughly a third of global internet access at the time. More than fifty thousand sites run it, from installations with ten users to ones with over ten million. It underpins **eduroam**, the roaming authentication network used across universities worldwide. If you have ever connected to campus wireless anywhere in Europe, this is what said yes.",
+      "It supports more authentication types than any other open-source RADIUS server, and was for a long time the only open-source one implementing EAP at all - which matters because EAP is what 802.1X wireless authentication runs on. Version 2.0.0 in 2008 added virtual servers, IPv6 and a policy language; 3.0.0 in 2013 added RadSec, carrying RADIUS over TLS, which fixed a protocol whose original transport security was a shared secret and MD5.",
+      "**And here is why it belongs beside three other entries on this timeline.** Tenable closed its open-source scanner in 2005 to fund the company, and was forked. Rapid7 bought an open-source project and kept it open as a commercial differentiator. Elastic closed one, was forked, and reopened it three years later. **FreeRADIUS did none of that. It stayed open, and became the thing everyone else builds against.** Commercial support exists through a company built around it, which is a different arrangement from selling the software or restricting it.",
+      "Alan DeKok has led the project since 1999 - twenty-six years, with a core team that accumulated slowly: Alexander Clouter in 2009, Arran Cudbard-Bell in 2012, Matthew Newton in 2016. **On a timeline mostly composed of acquisitions, rebrands and strategic exits, a piece of infrastructure quietly maintained by the same person for a quarter of a century is the genuinely unusual entry.**",
+    ],
+    externalUrl: "https://www.freeradius.org/about/",
+    externalLabel: "The FreeRADIUS project",
+    sources: [
+      { label: "FreeRADIUS project: founded June 1999 by van Smoorenburg and DeKok, first alpha August 1999, 0.1 in May 2001, the November 2006 survey of 500+ respondents putting usage at ~100 million people and about a third of internet users, and 50,000+ sites", url: "https://www.freeradius.org/about/" },
+      { label: "FreeRADIUS documentation: the fork from Cistron, which had been adopted after the Livingston server was no longer in service, and the modular design goal", url: "https://www.freeradius.org/documentation/freeradius-server/3.2.9/concepts/freeradius.html" },
+      { label: "FreeRADIUS technical guide: RADIUS created by Livingston Enterprises in 1991 for Merit Network, and FreeRADIUS as the only open-source RADIUS server supporting EAP and virtual servers", url: "https://networkradius.com/doc/FreeRADIUS-Technical-Guide.pdf" },
+      { label: "Grokipedia: version milestones - 1.0.0 on 17 July 2004, 2.0.0 on 10 January 2008 with virtual servers and IPv6, 3.0.0 on 7 October 2013 with RadSec; eduroam; DeKok leading since inception with Clouter (2009), Cudbard-Bell (2012) and Newton (2016)", url: "https://grokipedia.com/page/FreeRADIUS" },
+      { label: "Grokipedia: Livingston Enterprises - founded 1986 by Ronald and Steven Willens in Pleasanton, funded by founders and operating profits rather than venture capital, PortMaster at roughly 67% of the ISP market and 2,200+ ISPs", url: "https://grokipedia.com/page/livingston_enterprises" },
+      { label: "Wikipedia: Livingston Enterprises - acquired by Lucent Technologies in 1997; the original author of the RADIUS standard", url: "https://en.wikipedia.org/wiki/Livingston_Enterprises" },
+    ],
+  },
+  {
     // HCL - added 2026-07-30 (PRIME). Completes the Notes chain: Lotus -> IBM
     // (1995) -> HCL (announced Dec 2018, completed 1 July 2019).
     //

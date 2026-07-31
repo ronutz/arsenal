@@ -8617,7 +8617,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .mb-console.mb-tier-4 { box-shadow: 0 0 40px rgba(255,45,149,0.25), 0 20px 60px rgba(0,0,0,0.5); }
 .mb-console.mb-tier-5 {
   box-shadow: 0 0 70px rgba(255,45,149,0.5), 0 0 40px rgba(34,211,238,0.35);
-  animation: mb-shake 0.09s infinite;
+  animation: mb-shake 0.18s infinite;
 }
 .mb-titlebar {
   display: flex; align-items: center; gap: 0.4rem;
@@ -8862,8 +8862,8 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 @keyframes mb-pop { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
 @keyframes mb-banner-in { 0% { transform: scale(0.94); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 @keyframes mb-shake {
-  0% { transform: translate(0,0); } 25% { transform: translate(-1.5px,1px); }
-  50% { transform: translate(1.5px,-1px); } 75% { transform: translate(-1px,-1.5px); } 100% { transform: translate(1px,1.5px); }
+  0% { transform: translate(0,0); } 25% { transform: translate(-0.75px,0.5px); }
+  50% { transform: translate(0.75px,-0.5px); } 75% { transform: translate(-0.5px,-0.75px); } 100% { transform: translate(0.5px,0.75px); }
 }
 
 /* PRIME 05/07/2026: keep the EXPLANATORY BANNERS readable while the console
@@ -8875,18 +8875,18 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
      - .mb-total-banner  shows at TOTAL (tier-5 -> mb-shake)         -> counter it
      - .mb-goh-banner    shows in burnout (mb-burnout-shake) and Go Horse -> counter
    (Go Horse itself does not shake, so the counter simply resolves to no motion.) */
-.mb-console.mb-tier-5 .mb-total-banner { animation: mb-banner-in 0.4s ease, mb-shake-counter 0.09s infinite; }
-.mb-console.mb-burnout .mb-goh-banner { animation: mb-banner-in 0.35s ease, mb-burnout-shake-counter 0.4s ease-in-out infinite; }
+.mb-console.mb-tier-5 .mb-total-banner { animation: mb-banner-in 0.4s ease, mb-shake-counter 0.18s infinite; }
+.mb-console.mb-burnout .mb-goh-banner { animation: mb-banner-in 0.35s ease, mb-burnout-shake-counter 0.8s ease-in-out infinite; }
 @keyframes mb-shake-counter {
-  0% { transform: translate(0,0); } 25% { transform: translate(1.5px,-1px); }
-  50% { transform: translate(-1.5px,1px); } 75% { transform: translate(1px,1.5px); } 100% { transform: translate(-1px,-1.5px); }
+  0% { transform: translate(0,0); } 25% { transform: translate(0.75px,-0.5px); }
+  50% { transform: translate(-0.75px,0.5px); } 75% { transform: translate(0.5px,0.75px); } 100% { transform: translate(-0.5px,-0.75px); }
 }
 @keyframes mb-burnout-shake-counter {
   0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(5px) rotate(0.3deg); }
-  40% { transform: translateX(-5px) rotate(-0.3deg); }
-  60% { transform: translateX(4px); }
-  80% { transform: translateX(-4px); }
+  20% { transform: translateX(2.5px) rotate(0.15deg); }
+  40% { transform: translateX(-2.5px) rotate(-0.15deg); }
+  60% { transform: translateX(2px); }
+  80% { transform: translateX(-2px); }
 }
 
 /* --- Brain-click vibration, scaled by strength tier (PRIME). data-vibe (1..4)
@@ -9538,13 +9538,13 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 }
 
 /* Burnout: the whole console shudders and flushes red for ~1.5s. */
-.mb-burnout { animation: mb-burnout-shake 0.4s ease-in-out infinite; box-shadow: 0 0 28px rgba(255,70,70,0.55); }
+.mb-burnout { animation: mb-burnout-shake 0.8s ease-in-out infinite; box-shadow: 0 0 28px rgba(255,70,70,0.55); }
 @keyframes mb-burnout-shake {
   0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-5px) rotate(-0.3deg); }
-  40% { transform: translateX(5px) rotate(0.3deg); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+  20% { transform: translateX(-2.5px) rotate(-0.15deg); }
+  40% { transform: translateX(2.5px) rotate(0.15deg); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
 }
 
 /* Go Horse mode: warm amber cast on the console, and a horse gallops across
@@ -14972,3 +14972,51 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   text-transform: uppercase;
   white-space: nowrap;
 }
+
+/* ---------------------------------------------------------------------------
+   Importance Meter (/dev/fun/importance-meter). Two gauges whose disagreement
+   is the joke: a bar that climbs enthusiastically, and a dial whose needle is
+   drawn from the real computed total and therefore never leaves zero.
+   Colours come from theme tokens so it follows the site's palettes.
+--------------------------------------------------------------------------- */
+.im-field { display: flex; flex-direction: column; gap: 0.35rem; margin: 0.9rem 0; }
+
+.im-segmented { display: inline-flex; border: 1px solid var(--border-subtle); border-radius: var(--radius-md, 8px); overflow: hidden; width: fit-content; }
+.im-seg { padding: 0.32rem 0.95rem; background: transparent; border: 0; color: var(--text-secondary); font: inherit; font-size: 0.85rem; cursor: pointer; transition: background 0.14s ease, color 0.14s ease; }
+.im-seg + .im-seg { border-left: 1px solid var(--border-subtle); }
+.im-seg:hover { color: var(--text-primary); }
+.im-seg-on { background: var(--accent-primary); color: var(--surface-base); font-weight: 650; }
+
+.im-big { font-size: 2rem; font-weight: 700; letter-spacing: 0.02em; color: var(--accent-primary); margin: 0.2rem 0 0.5rem; }
+
+.im-bar { display: block; width: 100%; height: auto; margin: 0.3rem 0 0.7rem; }
+.im-bar-track { fill: var(--surface-base); stroke: var(--border-subtle); stroke-width: 1; }
+.im-bar-fill { fill: var(--accent-primary); transition: width 0.25s ease; }
+.im-bar-tick { stroke: var(--border-subtle); stroke-width: 1; }
+
+.im-gauge { display: block; width: 100%; max-width: 340px; height: auto; margin: 0.4rem auto 0.6rem; }
+.im-gauge-arc { stroke: var(--border-subtle); }
+.im-gauge-tick { stroke: var(--text-secondary); stroke-width: 2; opacity: 0.55; }
+.im-gauge-needle { stroke: var(--accent-primary); stroke-width: 4; stroke-linecap: round; transition: transform 0.3s ease; }
+.im-gauge-hub { fill: var(--accent-primary); }
+.im-gauge-zero { fill: var(--accent-primary); font-size: 13px; font-weight: 700; }
+
+/* Sequence progress and the override banner. The keys appear one at a time and
+   the whole strip clears on a wrong press, which is handled in the component. */
+.im-seq { display: flex; gap: 0.4rem; margin: 0; font-size: 1.4rem; letter-spacing: 0.1em; }
+.im-seq-key { display: inline-block; min-width: 1.1em; text-align: center; color: var(--text-secondary); opacity: 0.35; font-family: var(--font-mono, monospace); }
+.im-seq-key-on { color: var(--accent-primary); opacity: 1; text-shadow: 0 0 12px var(--accent-primary); }
+
+.im-override { border-color: var(--accent-primary); }
+.im-override-banner { font-size: 1.15rem; font-weight: 750; letter-spacing: 0.06em; color: var(--accent-primary); margin: 0 0 0.5rem; }
+
+/* IDDQD: sequence progress and the degreelessness banner. Green rather than the
+   fail-safe red, because it is the thing that just cancelled the red one. */
+.mb-seq { display: flex; gap: 0.35rem; justify-content: center; margin: 0.4rem 0; font-size: 1.2rem; letter-spacing: 0.1em; }
+.mb-seq-key { display: inline-block; min-width: 1.05em; text-align: center; color: #7fdca4; opacity: 0.3; font-family: var(--font-mono, monospace); }
+.mb-seq-key-on { opacity: 1; text-shadow: 0 0 12px #7fdca4; }
+
+.mb-god-banner { border: 1px solid #7fdca4; border-radius: 10px; padding: 0.7rem 1rem; margin: 0.5rem 0; text-align: center; background: rgba(40,120,70,0.16); box-shadow: 0 0 24px rgba(127,220,164,0.28); }
+.mb-god-line { margin: 0; font-weight: 800; letter-spacing: 0.08em; color: #a8f0c4; }
+.mb-god-sub { margin: 0.25rem 0 0; font-size: 0.82rem; color: #7fdca4; opacity: 0.9; }
+.mb-god-off { margin-top: 0.5rem; background: transparent; border: 1px solid #7fdca4; color: #a8f0c4; border-radius: 999px; padding: 0.18rem 0.8rem; font: inherit; font-size: 0.78rem; cursor: pointer; }

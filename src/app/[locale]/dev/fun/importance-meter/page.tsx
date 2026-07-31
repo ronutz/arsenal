@@ -63,7 +63,6 @@ export default async function ImportanceMeterPage({
     movedLabel: t("movedLabel"),
     yes: t("yes"),
     no: t("no"),
-    measureButton: t("measureButton"),
     resetButton: t("resetButton"),
     workingsHeading: t("workingsHeading"),
     subtotalLabel: t("subtotalLabel"),
@@ -80,6 +79,13 @@ export default async function ImportanceMeterPage({
     },
     methodHeading: t("methodHeading"),
     methodBody: t("methodBody"),
+    gaugeAria: t("gaugeAria"),
+    hoursSuffix: t("hoursSuffix"),
+    peopleSuffix: t("peopleSuffix"),
+    overrideBanner: t("overrideBanner"),
+    overrideConsequenceLabel: t("overrideConsequenceLabel"),
+    overrideRevert: t("overrideRevert"),
+    overrideHint: t("overrideHint"),
   };
 
   return (

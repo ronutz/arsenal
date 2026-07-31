@@ -7882,6 +7882,10 @@
       "catDistribution": {
         "name": "The Global Cat Distribution System",
         "desc": "A tracking console for the network that assigns stray cats to humans. Deterministic: the same name always receives the same cat. Consent not required."
+      },
+      "importanceMeter": {
+        "name": "Importance Meter",
+        "desc": "Weighs a request against the work you are actually accountable for. The arithmetic is real and the result is reproducible."
       }
     }
   },
@@ -7941,7 +7945,7 @@
     "gohFineLink": "eXtreme Go Horse (XGH)",
     "gohFinePost": ". The red button restores the Mega Brain.",
     "gohFinePre": "Tribute to the legendary ",
-    "gohLine": "🐴 FAIL-SAFE ACTIVATED: ENGAGE GO-HORSE FTW!",
+    "gohLine": "🐴 FAIL-SAFE ACTIVATED: EXTREME GO-HORSE MODE ENGAGED FTW!",
     "gohSub": "thinking: DISABLED · productivity: ∞ · quality: a detail",
     "homeTitle": "ronutz.com",
     "leverAria": "Mega Brain power",
@@ -7989,7 +7993,10 @@
       "Rollback is for people who planned on coming back.",
       "“Works on my machine” is now an SLA.",
       "Deadline estimate: it was due yesterday, so relax."
-    ]
+    ],
+    "godLine": "DEGREELESSNESS MODE ON",
+    "godSub": "burnout cleared · go-horse disengaged · capacity restored to 100%",
+    "godOff": "Turn it off"
   },
   "shortcuts": {
     "actionBingo": "Buzzword Bingo",
@@ -14564,7 +14571,6 @@
     "movedLabel": "The deadline has already moved once",
     "yes": "Yes",
     "no": "No",
-    "measureButton": "Measure",
     "resetButton": "Reset",
     "workingsHeading": "Contributions",
     "subtotalLabel": "Apparent urgency",
@@ -14581,6 +14587,13 @@
     },
     "methodHeading": "Method",
     "methodBody": "The weights above are arbitrary but consistent: identical inputs always produce an identical subtotal, which is the only property this needed. Nothing is rounded to reach the result and nothing is discarded. The subtotal is multiplied by the coefficient and the product is reported exactly. This tool computes rather than guesses, in keeping with the rest of the site. It happens to be computing something whose answer does not vary.",
-    "footnote": "Unlisted by design. If you are reading this, somebody gave you the address."
+    "footnote": "Unlisted by design. If you are reading this, somebody gave you the address.",
+    "gaugeAria": "Result gauge. The needle rests at zero.",
+    "hoursSuffix": "h",
+    "peopleSuffix": "people",
+    "overrideBanner": "Override engaged",
+    "overrideConsequenceLabel": "What this entails:",
+    "overrideRevert": "Rescind",
+    "overrideHint": "The coefficient has resisted every attempt to change it through the interface. Whether it can be changed by other means is not documented."
   }
 }

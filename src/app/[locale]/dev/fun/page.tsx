@@ -29,6 +29,10 @@ const TOYS = [
   { key: "meetingBingo", href: "/dev/fun/meeting-bingo", badged: false },
   { key: "bossScreens", href: "/dev/fun/boss-screens", badged: false },
   { key: "catDistribution", href: "/dev/fun/cat-distribution", badged: false },
+  // Added 2026-07-30 (PRIME): an inconspicuous card, last on the shelf. It was
+  // built unlisted and stays modest here on purpose - the copy does not say
+  // what it measures, so it still rewards the person who opens it.
+  { key: "importanceMeter", href: "/dev/fun/importance-meter", badged: false },
 ] as const;
 
 export async function generateMetadata({

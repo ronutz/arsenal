@@ -124,6 +124,9 @@ const MERGED_GLOSSARY_SLUGS = new Map<string, string>([
 const VANITY_REDIRECTS = new Map<string, string>([
   ["/mb", "/pt-BR/dev/fun/mega-brain/"],
   ["/bingo", "/en/dev/fun/meeting-bingo/"],
+  // PRIME 2026-07-30. The long form is the real path; this is the one people
+  // will actually type or read out loud.
+  ["/importance-meter", "/en/dev/fun/importance-meter/"],
 ]);
 
 export default {

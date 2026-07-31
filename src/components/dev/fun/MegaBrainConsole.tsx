@@ -77,6 +77,9 @@ export interface MegaBrainLabels {
   gohFinePost: string;
   burnoutLine: string;
   burnoutSub: string;
+  godLine: string;
+  godSub: string;
+  godOff: string;
   disclaimer: string;
   bossHint: string;
   bossDismiss: string;
@@ -203,7 +206,49 @@ export default function MegaBrainConsole({
   const [goHorse, setGoHorse] = useState(false);
   const [axiomIdx, setAxiomIdx] = useState(0);
   const failTimerRef = useRef<number | null>(null);
+  // ---- IDDQD (PRIME 2026-07-30) ------------------------------------------
+  // Degreelessness mode. Deliberately works DURING burnout and Go Horse: those
+  // are the states where the console has already given up, which is precisely
+  // when a cheat code should be available. Engaging it clears both.
+  //
+  // Progress is shown a key at a time and WIPED ENTIRELY on a wrong press - no
+  // partial credit, no forgiving prefix match - and typing into a field never
+  // arms it.
+  const IDDQD = "IDDQD";
+  const [godTyped, setGodTyped] = useState("");
+  const [godMode, setGodMode] = useState(false);
+
   const prevPowerRef = useRef(0);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const el = e.target as HTMLElement | null;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA")) return;
+      if (e.key.length !== 1) return;
+      const k = e.key.toUpperCase();
+      setGodTyped((prev) => {
+        const next = prev + k;
+        if (IDDQD.startsWith(next)) return next;
+        return k === IDDQD[0] ? k : "";
+      });
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  useEffect(() => {
+    if (godTyped !== IDDQD) return;
+    setGodTyped("");
+    setGodMode(true);
+    // Whatever state the console had collapsed into, it is over.
+    if (failTimerRef.current !== null) {
+      window.clearTimeout(failTimerRef.current);
+      failTimerRef.current = null;
+    }
+    setBurnout(false);
+    setGoHorse(false);
+    setPower(100);
+  }, [godTyped]);
 
   // --- Brain click: vibration (scaled by tier) + a witty popup phrase. ---
   // vibeLevel 0 = idle; 1..4 map to tiers 1..4 (tier 5 is TOTAL FORCE, whose
@@ -515,6 +560,30 @@ export default function MegaBrainConsole({
           {goHorse ? xgh[axiomIdx] : burnout ? labels.burnoutReadout : milestoneLine(power)}
         </div>
       </div>
+
+      {/* IDDQD progress. Only shows once the reader is part-way in, so it does
+          not advertise itself. Clears entirely on a wrong key. */}
+      {godTyped.length > 0 && !godMode && (
+        <p className="mb-seq" aria-live="polite">
+          {"IDDQD".split("").map((ch, i) => (
+            <span key={i} className={"mb-seq-key" + (i < godTyped.length ? " mb-seq-key-on" : "")}>
+              {i < godTyped.length ? ch : "\u00B7"}
+            </span>
+          ))}
+        </p>
+      )}
+
+      {/* Degreelessness mode. Sits above the fail-safe banner because it is the
+          thing that just overrode it. */}
+      {godMode && (
+        <div className="mb-god-banner" role="status">
+          <p className="mb-god-line">{labels.godLine}</p>
+          <p className="mb-god-sub mono">{labels.godSub}</p>
+          <button type="button" className="mb-god-off" onClick={() => setGodMode(false)}>
+            {labels.godOff}
+          </button>
+        </div>
+      )}
 
       {/* PRIME 05/07/2026: the fail-safe / Go Horse banner sits ABOVE the
           slider now (was below the buttons). */}
