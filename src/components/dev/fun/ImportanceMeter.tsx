@@ -66,8 +66,6 @@ export interface ImportanceMeterLabels {
   methodHeading: string;
   methodBody: string;
   gaugeAria: string;
-  hoursSuffix: string;
-  peopleSuffix: string;
   overrideBanner: string;
   overrideConsequenceLabel: string;
   overrideRevert: string;
@@ -198,90 +196,85 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
           onChange={(e) => set("subject", e.target.value)}
         />
 
-        <div className="im-field">
-          <span className="cidr-slider-label">
+        {/* Laid out in a responsive grid (PRIME 2026-07-30): two to four fields
+            per row on a wide screen, one per row on a narrow one, so the page
+            stops being a single tall column. Numeric fields are plain text
+            inputs again - a slider hides the exact figure, and the exact figure
+            is what the workings are quoting back. */}
+        <div className="im-grid">
+          <div className="im-field">
             <label className="cidr-label" htmlFor="im-cc">
               {labels.ccLabel}
             </label>
-            <span className="cidr-slider-value mono">
-              {form.ccCount} {labels.peopleSuffix}
-            </span>
-          </span>
-          <input
-            id="im-cc"
-            className="cidr-slider"
-            type="range"
-            min={0}
-            max={120}
-            value={form.ccCount}
-            onChange={(e) => set("ccCount", Number(e.target.value))}
-          />
-        </div>
+            <input
+              id="im-cc"
+              className="cidr-input mono"
+              inputMode="numeric"
+              value={String(form.ccCount)}
+              onChange={(e) => set("ccCount", Number(e.target.value.replace(/\D/g, "")) || 0)}
+            />
+          </div>
 
-        <div className="im-field">
-          <span className="cidr-slider-label">
+          <div className="im-field">
             <label className="cidr-label" htmlFor="im-deadline">
               {labels.deadlineLabel}
             </label>
-            <span className="cidr-slider-value mono">
-              {form.hoursToDeadline} {labels.hoursSuffix}
-            </span>
-          </span>
-          <input
-            id="im-deadline"
-            className="cidr-slider"
-            type="range"
-            min={0}
-            max={168}
-            value={form.hoursToDeadline}
-            onChange={(e) => set("hoursToDeadline", Number(e.target.value))}
-          />
-        </div>
+            <input
+              id="im-deadline"
+              className="cidr-input mono"
+              inputMode="decimal"
+              value={String(form.hoursToDeadline)}
+              onChange={(e) =>
+                set("hoursToDeadline", Number(e.target.value.replace(/[^\d.]/g, "")) || 0)
+              }
+            />
+          </div>
 
-        <div className="im-field">
-          <span className="cidr-slider-label">
+          <div className="im-field">
             <label className="cidr-label" htmlFor="im-esc">
               {labels.escalationLabel}
             </label>
-            <span className="cidr-slider-value mono">
-              {labels.escalationOptions[form.escalation]}
-            </span>
-          </span>
-          <input
-            id="im-esc"
-            className="cidr-slider"
-            type="range"
-            min={0}
-            max={4}
-            value={form.escalation}
-            onChange={(e) => set("escalation", Number(e.target.value))}
-          />
+            <select
+              id="im-esc"
+              className="cidr-input mono"
+              value={String(form.escalation)}
+              onChange={(e) => set("escalation", Number(e.target.value))}
+            >
+              {labels.escalationOptions.map((o, i) => (
+                <option key={i} value={String(i)}>
+                  {o}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <Segmented
-          id="im-urgent"
-          label={labels.urgentLabel}
-          value={form.markedUrgent}
-          onChange={(v) => set("markedUrgent", v)}
-          yes={labels.yes}
-          no={labels.no}
-        />
-        <Segmented
-          id="im-raised"
-          label={labels.raisedLabel}
-          value={form.raisedElsewhere}
-          onChange={(v) => set("raisedElsewhere", v)}
-          yes={labels.yes}
-          no={labels.no}
-        />
-        <Segmented
-          id="im-moved"
-          label={labels.movedLabel}
-          value={form.deadlineMoved}
-          onChange={(v) => set("deadlineMoved", v)}
-          yes={labels.yes}
-          no={labels.no}
-        />
+        <div className="im-grid">
+          <Segmented
+            id="im-urgent"
+            label={labels.urgentLabel}
+            value={form.markedUrgent}
+            onChange={(v) => set("markedUrgent", v)}
+            yes={labels.yes}
+            no={labels.no}
+          />
+          <Segmented
+            id="im-raised"
+            label={labels.raisedLabel}
+            value={form.raisedElsewhere}
+            onChange={(v) => set("raisedElsewhere", v)}
+            yes={labels.yes}
+            no={labels.no}
+          />
+          <Segmented
+            id="im-moved"
+            label={labels.movedLabel}
+            value={form.deadlineMoved}
+            onChange={(v) => set("deadlineMoved", v)}
+            yes={labels.yes}
+            no={labels.no}
+          />
+        </div>
 
         <div className="dig-input-head">
           <button type="button" className="btn btn-secondary" onClick={() => setForm(DEFAULTS)}>

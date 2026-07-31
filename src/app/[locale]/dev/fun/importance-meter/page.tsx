@@ -80,8 +80,6 @@ export default async function ImportanceMeterPage({
     methodHeading: t("methodHeading"),
     methodBody: t("methodBody"),
     gaugeAria: t("gaugeAria"),
-    hoursSuffix: t("hoursSuffix"),
-    peopleSuffix: t("peopleSuffix"),
     overrideBanner: t("overrideBanner"),
     overrideConsequenceLabel: t("overrideConsequenceLabel"),
     overrideRevert: t("overrideRevert"),

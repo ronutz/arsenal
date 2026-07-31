@@ -14981,6 +14981,12 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 --------------------------------------------------------------------------- */
 .im-field { display: flex; flex-direction: column; gap: 0.35rem; margin: 0.9rem 0; }
 
+/* Two to four fields per row on a wide screen, one per row on a narrow one.
+   auto-fit with a minimum width means the browser decides how many fit rather
+   than a fixed column count fighting the container. */
+.im-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0 1.1rem; align-items: end; }
+.im-grid .im-field { margin: 0.7rem 0; }
+
 .im-segmented { display: inline-flex; border: 1px solid var(--border-subtle); border-radius: var(--radius-md, 8px); overflow: hidden; width: fit-content; }
 .im-seg { padding: 0.32rem 0.95rem; background: transparent; border: 0; color: var(--text-secondary); font: inherit; font-size: 0.85rem; cursor: pointer; transition: background 0.14s ease, color 0.14s ease; }
 .im-seg + .im-seg { border-left: 1px solid var(--border-subtle); }

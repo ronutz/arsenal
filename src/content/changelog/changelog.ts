@@ -52,6 +52,12 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-31T12:20:52-03:00",
+    kind: "content",
+    title: "The importance meter stops spoiling its own ending",
+    body: "The line under the title was giving away the punchline before anyone had entered anything, which ruins a joke that depends entirely on arriving at it. It now describes what the tool does without saying what it concludes, and the only place the answer's unit is named is at the bottom, beside the answer, which is where it belongs. The sliders introduced last time are gone as well. They looked good and they hid the exact number, and the exact number is precisely what the workings quote back at you line by line, so a control that obscured it was working against the page. Plain fields again. The questions now sit two to four across on a wide screen and stack on a narrow one, which cuts the height of the page by more than half and means the gauges are visible while you are still adjusting the inputs. That matters more than tidiness here, because the whole point is watching one gauge climb while the other refuses to move, and that only works if both are on screen at the same time as the controls.",
+  },
+  {
     date: "2026-07-30T22:53:14-03:00",
     kind: "feature",
     title: "Two cheat codes, and the shaking calmed down",
