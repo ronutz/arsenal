@@ -16,6 +16,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
+import SuppressLetterShortcuts from "@/components/SuppressLetterShortcuts";
 import SiteFooter from "@/components/SiteFooter";
 import MegaBrainConsole, { type MegaBrainLabels } from "@/components/dev/fun/MegaBrainConsole";
 import PageCapabilities from "@/components/PageCapabilities";
@@ -139,6 +140,9 @@ export default async function MegaBrainPage({
     <>
       <Header />
       <main id="main">
+        {/* This page listens for a typed sequence; single-letter navigation
+            shortcuts would make it impossible to complete. */}
+        <SuppressLetterShortcuts />
         {/* Slim top: the console is its own framed box, so the section's
             large top padding just stranded it below the header (PRIME). */}
         <section className="section mb-section">

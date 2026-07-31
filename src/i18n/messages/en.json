@@ -14587,11 +14587,11 @@
     },
     "methodHeading": "Method",
     "methodBody": "The weights above are arbitrary but consistent: identical inputs always produce an identical subtotal, which is the only property this needed. Nothing is rounded to reach the result and nothing is discarded. The subtotal is multiplied by the coefficient and the product is reported exactly. This tool computes rather than guesses, in keeping with the rest of the site. It happens to be computing something whose answer does not vary.",
-    "footnote": "Unlisted by design. If you are reading this, somebody gave you the address.",
     "gaugeAria": "Result gauge. The needle rests at zero.",
     "overrideBanner": "Override engaged",
     "overrideConsequenceLabel": "What this entails:",
     "overrideRevert": "Rescind",
-    "overrideHint": "The coefficient has resisted every attempt to change it through the interface. Whether it can be changed by other means is not documented."
+    "overrideHint": "The coefficient has resisted every attempt to change it through the interface. Whether it can be changed by other means is not documented.",
+    "measureButton": "Calculate"
   }
 }

@@ -14993,7 +14993,14 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .im-seg:hover { color: var(--text-primary); }
 .im-seg-on { background: var(--accent-primary); color: var(--surface-base); font-weight: 650; }
 
-.im-big { font-size: 2rem; font-weight: 700; letter-spacing: 0.02em; color: var(--accent-primary); margin: 0.2rem 0 0.5rem; }
+/* The answer is amber, not the site accent: it is the punchline and it should
+   read as its own thing. Results are centred; the input block stays left. */
+.im-big { font-size: 2.4rem; font-weight: 750; letter-spacing: 0.03em; color: var(--accent-amber, #F59E0B); margin: 0.2rem 0 0.5rem; text-align: center; }
+.im-result-centred { text-align: center; }
+.im-result-centred .ztc-section-title,
+.im-result-centred .ztc-notes,
+.im-result-centred .cidr-privacy,
+.im-result-centred .tmsh-object-head { text-align: center; }
 
 .im-bar { display: block; width: 100%; height: auto; margin: 0.3rem 0 0.7rem; }
 .im-bar-track { fill: var(--surface-base); stroke: var(--border-subtle); stroke-width: 1; }
@@ -15003,9 +15010,9 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .im-gauge { display: block; width: 100%; max-width: 340px; height: auto; margin: 0.4rem auto 0.6rem; }
 .im-gauge-arc { stroke: var(--border-subtle); }
 .im-gauge-tick { stroke: var(--text-secondary); stroke-width: 2; opacity: 0.55; }
-.im-gauge-needle { stroke: var(--accent-primary); stroke-width: 4; stroke-linecap: round; transition: transform 0.3s ease; }
-.im-gauge-hub { fill: var(--accent-primary); }
-.im-gauge-zero { fill: var(--accent-primary); font-size: 13px; font-weight: 700; }
+.im-gauge-needle { stroke: var(--accent-amber, #F59E0B); stroke-width: 4; stroke-linecap: round; transition: transform 0.3s ease; }
+.im-gauge-hub { fill: var(--accent-amber, #F59E0B); }
+.im-gauge-zero { fill: var(--accent-amber, #F59E0B); font-size: 13px; font-weight: 700; }
 
 /* Sequence progress and the override banner. The keys appear one at a time and
    the whole strip clears on a wrong press, which is handled in the component. */

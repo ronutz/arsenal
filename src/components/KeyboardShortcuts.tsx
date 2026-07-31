@@ -46,6 +46,8 @@ import { ACTION_BY_ID, DEFAULT_BINDINGS } from "@/config/shortcuts";
 import {
   getPageCapabilities,
   subscribePageCapabilities,
+  areLetterShortcutsSuppressed,
+  subscribeLetterShortcuts,
   type PageCapabilitySet,
   type PageCapability,
 } from "@/lib/pageCapabilities";
@@ -258,6 +260,11 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
     [openRandomBoss],
   );
 
+  // Re-render when a page claims or releases the alphabet, so the handler is
+  // rebuilt and the check below reads the current value.
+  const [, forceLetters] = useState(0);
+  useEffect(() => subscribeLetterShortcuts(() => forceLetters((n) => n + 1)), []);
+
   const onKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey || e.altKey) return; // never shadow chords
@@ -310,6 +317,14 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
 
       // Normalize: letters lowercased; punctuation/digits as-is.
       const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+
+      // A page listening for its own typed sequence owns the alphabet while it
+      // is mounted. Without this, a single-letter binding does not just compete
+      // with the sequence - it navigates away mid-code, making any sequence
+      // containing that letter impossible to finish. Punctuation is untouched,
+      // so search, help and the context panel keep working.
+      if (/^[a-z]$/.test(key) && areLetterShortcutsSuppressed()) return;
+
       const actionId = bindings[key];
       if (!actionId) return;
       e.preventDefault();

@@ -121,3 +121,35 @@ export function subscribePageCapabilities(fn: () => void): () => void {
     listeners.delete(fn);
   };
 }
+
+// ============================================================================
+// LETTER-SHORTCUT SUPPRESSION
+// ---------------------------------------------------------------------------
+// Some pages listen for typed sequences of their own. The site's single-letter
+// navigation shortcuts make those sequences IMPOSSIBLE rather than merely
+// awkward: "f" navigates to /dev/fun, so a code containing an F can never be
+// finished - the page is gone before the next key arrives.
+//
+// A page that owns the alphabet says so here, and the shortcut island skips
+// SINGLE-LETTER bindings while it is mounted. Punctuation keys are untouched,
+// so search ("/"), help ("?") and the context panel (".") keep working, and
+// Escape is never affected.
+// ============================================================================
+
+let lettersSuppressed = false;
+const letterListeners = new Set<() => void>();
+
+/** Called by <SuppressLetterShortcuts> on mount and unmount. */
+export function setLetterShortcutsSuppressed(v: boolean): void {
+  lettersSuppressed = v;
+  letterListeners.forEach((fn) => fn());
+}
+
+export function areLetterShortcutsSuppressed(): boolean {
+  return lettersSuppressed;
+}
+
+export function subscribeLetterShortcuts(fn: () => void): () => void {
+  letterListeners.add(fn);
+  return () => letterListeners.delete(fn);
+}

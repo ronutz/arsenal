@@ -305,6 +305,44 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // COMPTIA - added 2026-07-31 (PRIME). The COUNTERPOINT to the certification
+    // thread in the Cisco entry: Cisco built the vendor-defined competency
+    // ladder every vendor here copies; CompTIA is the vendor-NEUTRAL answer,
+    // created by dealers who sold everybody's products.
+    //
+    // *** THE 2024 SALE IS A LIVE, UNRESOLVED QUESTION AND IS WRITTEN THAT
+    // WAY. *** The company's assurance and the practitioners' doubt are both
+    // recorded; no verdict is offered.
+    //
+    // NO PRICE IS GIVEN: this session's sources did not state one.
+    slug: "comptia",
+    group: "other",
+    name: "CompTIA",
+    founded: 1982,
+    tagline: "Its entire value was being owned by nobody, and in 2024 it was bought.",
+    intro:
+      "CompTIA began in 1982 as the Association of Better Computer Dealers - ABCD - a trade group for computer resellers. That origin explains everything about it. Dealers sold hardware and software from many manufacturers at once, and what they needed was not another manufacturer's badge but a standard that belonged to none of them: common benchmarks for compatibility, for sales practice, and for whether a technician actually knew the job.",
+    body: [
+      "**Vendor neutrality was not a marketing position adopted later. It was the founding condition**, and it distinguished the association from proprietary vendor programmes from day one. The name changed to the Computing Technology Industry Association by the late 1980s as the scope widened past dealerships into education and workforce development.",
+      "The A+ certification arrived in the early 1990s, and the idea behind it is worth stating because it is easy to take for granted now: a credential that says you can do the work, rather than that you can operate one company's products. Network+, Security+ and the rest followed the same logic. More than 3.5 million certifications have been awarded.",
+      "**Read that against the Cisco entry on this timeline and the two halves of an argument appear.** Cisco's CCNA, CCNP and CCIE created the vendor-defined competency ladder, and every vendor on this site with a certification track is working from that template - including the four whose official training this site's author delivers. CompTIA is the other answer to the same question: that a technician's competence is a property of the technician, not of a supplier relationship. Both models are still standing, and most working engineers hold credentials of both kinds.",
+      "There is a detail here that matters to anyone who teaches. **CTT+, the Certified Technical Trainer credential, was vendor-neutral certification for the act of instruction itself** - acquired from the Chauncey Institute and built with the IT Training Association and the Computer Education Management Association. It was **retired on 31 October 2023**. Existing holders remain certified. There is no direct replacement, which means the one widely recognised credential for teaching technology, independent of what was being taught, no longer exists.",
+      "**And then the part that is not settled.** In November 2024, H.I.G. Capital and Thoma Bravo agreed to acquire the CompTIA brand and its certification and training business. The transaction closed in early 2025 and split the organisation in two: the certification business now operates **for profit** under private-equity ownership, while the membership-based 501(c)(6) nonprofit association separates and continues. Forty-two years of operating as a non-profit ended.",
+      "The company's position is that nothing material changes - the certifications remain ANSI accredited and vendor-neutral, and the ownership brings resources to expand. Practitioners in its own instructor community were less certain, and their objection is specific rather than sentimental: **the asset being bought is neutrality, and neutrality is the one thing that cannot be bought without raising the question of whether it survived the purchase.** One put it as having more faith in a certification body run as a non-profit, because non-profits answer to a mission and companies answer to a number.",
+      "**This page does not resolve that, because it is not yet resolvable.** The assurance is on record and so is the doubt, and the only honest thing to say is that the answer arrives over years, in whether the exam objectives keep describing the job or start describing somebody's product.",
+      "Worth noting who the buyer is: **Thoma Bravo now appears in four entries on this timeline** - holding Sophos, holding LANDESK before it became Ivanti, taking Ping Identity private twice and combining it with ForgeRock, and now this. On a page about lineage, the recurring name is not a vendor at all.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/CompTIA",
+    externalLabel: "CompTIA",
+    sources: [
+      { label: "Wikipedia: CompTIA - founded 1 January 1982, vendor-neutral certifications, three-year expiry requiring retesting, CTT+ acquired from the Chauncey Institute and retired 31 October 2023, and H.I.G. Capital and Thoma Bravo as owners", url: "https://en.wikipedia.org/wiki/CompTIA" },
+      { label: "Grokipedia: founded as the Association of Better Computer Dealers, a trade group for resellers seeking benchmarks that did not favour specific manufacturers - vendor neutrality as a founding principle, not a later position", url: "https://grokipedia.com/page/CompTIA" },
+      { label: "H.I.G. Capital and Thoma Bravo announcement (4 November 2024): acquisition of the brand and the certification and training business; the business becomes for-profit while the 501(c)(6) association separates and continues; over 3.5 million certifications awarded", url: "https://www.thomabravo.com/press-releases/h.i.g.-capital-and-thoma-bravo-to-acquire-comptia-brand-and-products" },
+      { label: "ChannelE2E: forty-two years as a non-profit ending, and the split into a for-profit unit and a separate non-profit association from 2025", url: "https://www.channele2e.com/feature/comptia-acquired-by-investment-firms-h-i-g-capital-and-thoma-bravo" },
+      { label: "CompTIA Instructors Network discussion: the neutrality objection stated by practitioners, and the company's assurance that certifications remain ANSI accredited and vendor-neutral", url: "https://cin.comptia.org/threads/h-i-g-capital-and-thoma-bravo-to-acquire-comptia-brand-and-products.1992/" },
+    ],
+  },
+  {
     // FREERADIUS - added 2026-07-30 (PRIME). The COUNTER-EXAMPLE to the
     // open-source thread already on this timeline: Tenable closed its project,
     // Rapid7 bought one, Elastic closed and reopened one - and this one simply

@@ -27,6 +27,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { Link } from "@/i18n/navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import SuppressLetterShortcuts from "@/components/SuppressLetterShortcuts";
 import ImportanceMeter from "@/components/dev/fun/ImportanceMeter";
 
 export async function generateMetadata({
@@ -50,6 +52,7 @@ export default async function ImportanceMeterPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("importanceMeter");
+  const tNav = await getTranslations("nav");
 
   const labels = {
     subjectLabel: t("subjectLabel"),
@@ -63,6 +66,7 @@ export default async function ImportanceMeterPage({
     movedLabel: t("movedLabel"),
     yes: t("yes"),
     no: t("no"),
+    measureButton: t("measureButton"),
     resetButton: t("resetButton"),
     workingsHeading: t("workingsHeading"),
     subtotalLabel: t("subtotalLabel"),
@@ -90,8 +94,18 @@ export default async function ImportanceMeterPage({
     <>
       <Header />
       <main id="main">
+        {/* This page listens for a typed sequence; single-letter navigation
+            shortcuts would make it impossible to complete. */}
+        <SuppressLetterShortcuts />
         <section className="section">
           <div className="container bingo-page-container">
+            <Breadcrumbs
+              items={[
+                { label: tNav("home"), href: "/" },
+                { label: "/dev/fun", href: "/dev/fun" },
+                { label: t("title") },
+              ]}
+            />
             <div className="bingo-head">
               <p className="bingo-devfun mono">
                 <Link href="/dev/fun" className="bingo-devfun-link">
@@ -105,7 +119,6 @@ export default async function ImportanceMeterPage({
 
             <ImportanceMeter labels={labels} />
 
-            <p className="bingo-credit">{t("footnote")}</p>
           </div>
         </section>
       </main>

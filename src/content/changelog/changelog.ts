@@ -52,6 +52,24 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-31T15:47:17-03:00",
+    kind: "infra",
+    title: "A page that listens for typed sequences now owns the alphabet",
+    body: "A reader pointed out that one of the hidden sequences could never be completed, and the reason turned out to be worse than a conflict. The site binds single letters to navigation, and one of those letters appears in the sequence, so pressing it did not merely compete with the code, it navigated away before the next key could arrive. The sequence was impossible on every page, not inconvenient. Pages that listen for their own typed input now claim the alphabet while they are open and release it when you leave. Punctuation is deliberately untouched, so search, help and the context panel keep working, and Escape is never affected. The result on the importance meter is now amber rather than the site accent, because it is the punchline and deserves to read as its own thing, and the result blocks are centred while the inputs stay left-aligned where they belong. The needle, the hub and the zero on the dial follow the same amber, using the existing theme token so it still adapts across all six palettes rather than hard-coding a colour.",
+  },
+  {
+    date: "2026-07-31T15:07:06-03:00",
+    kind: "feature",
+    title: "The importance meter stopped answering questions nobody had asked",
+    body: "Making it recompute live was a mistake, and a reader caught it immediately: the answer was sitting there before anyone had typed a thing, which gives away the ending on arrival. The calculate button is back, the result stays hidden until it is asked for, and touching any input hides it again, so the answer is always something the reader requested rather than something the page volunteered. One thing deliberately stays live, and it is worth saying why. The bar showing apparent urgency is not the result; it is the sum of what you entered, the way a calculator shows your working before you press equals. Watching it climb as you copy more people in and pull the deadline closer is what builds the expectation that the answer then declines to meet, and that only works if the climbing happens while you are still typing. The line at the bottom about the page being unlisted is gone, and there is now a breadcrumb trail at the top, because a page nobody links to is exactly the page a reader most needs a way out of.",
+  },
+  {
+    date: "2026-07-31T14:20:54-03:00",
+    kind: "content",
+    title: "CompTIA, whose entire value was being owned by nobody",
+    body: "It began in 1982 as a trade group for computer dealers, and that origin explains the whole organisation. Dealers sold hardware from many manufacturers at once, so what they needed was not another manufacturer's badge but a standard belonging to none of them. Vendor neutrality was the founding condition rather than a marketing position adopted later. Read beside the Cisco entry already here, the two halves of an argument appear. Cisco's certification ladder created the vendor-defined model that every vendor on this site copies, including the four whose official training the author of this site delivers. This is the other answer to the same question, that a technician's competence belongs to the technician rather than to a supplier relationship, and both models are still standing. One detail matters to anyone who teaches: the vendor-neutral credential for the act of instruction itself was retired at the end of October 2023, with no direct replacement, so the one widely recognised qualification for teaching technology independent of what was being taught no longer exists. And then the unresolved part. In November 2024 two private equity firms agreed to buy the brand and the certification business, ending forty-two years as a non-profit and splitting the organisation in two. The company says nothing material changes and the accreditation and neutrality remain. Practitioners in its own instructor community were less sure, and their objection is specific rather than sentimental: the asset being bought is neutrality, and neutrality cannot be bought without raising the question of whether it survived the purchase. This page does not resolve that, because it is not yet resolvable. The answer arrives over years, in whether the exam objectives keep describing the job or start describing somebody's product.",
+  },
+  {
     date: "2026-07-31T12:20:52-03:00",
     kind: "content",
     title: "The importance meter stops spoiling its own ending",

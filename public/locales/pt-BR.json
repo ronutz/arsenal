@@ -14587,11 +14587,11 @@
     },
     "methodHeading": "Método",
     "methodBody": "Os pesos acima são arbitrários porém consistentes: entradas idênticas sempre produzem o mesmo subtotal, que era a única propriedade necessária. Nada é arredondado para chegar ao resultado e nada é descartado. O subtotal é multiplicado pelo coeficiente e o produto é informado exatamente. Esta ferramenta calcula em vez de adivinhar, como o resto do site. Acontece que ela calcula algo cuja resposta não varia.",
-    "footnote": "Não listada, de propósito. Se você está lendo isto, alguém lhe passou o endereço.",
     "gaugeAria": "Medidor de resultado. O ponteiro repousa em zero.",
     "overrideBanner": "Override acionado",
     "overrideConsequenceLabel": "O que isso implica:",
     "overrideRevert": "Revogar",
-    "overrideHint": "O coeficiente resistiu a toda tentativa de alteração pela interface. Se pode ser alterado por outros meios não está documentado."
+    "overrideHint": "O coeficiente resistiu a toda tentativa de alteração pela interface. Se pode ser alterado por outros meios não está documentado.",
+    "measureButton": "Calcular"
   }
 }

@@ -55,6 +55,7 @@ export interface ImportanceMeterLabels {
   movedLabel: string;
   yes: string;
   no: string;
+  measureButton: string;
   resetButton: string;
   workingsHeading: string;
   subtotalLabel: string;
@@ -136,6 +137,9 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
   const [form, setForm] = useState(DEFAULTS);
   const [typed, setTyped] = useState("");
   const [override, setOverride] = useState<Override | null>(null);
+  // The result is not shown until asked for. Any change to the inputs puts it
+  // away again, so the answer is always something the reader requested.
+  const [shown, setShown] = useState(false);
 
   // Key sequence listener. Ignores keystrokes aimed at the text field, so
   // typing the subject line does not accidentally arm anything.
@@ -170,8 +174,10 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
     }
   }, [typed, form]);
 
-  const set = <K extends keyof typeof DEFAULTS>(k: K, v: (typeof DEFAULTS)[K]) =>
+  const set = <K extends keyof typeof DEFAULTS>(k: K, v: (typeof DEFAULTS)[K]) => {
     setForm((f) => ({ ...f, [k]: v }));
+    setShown(false);
+  };
 
   const fill = fillFraction(result.apparentUrgency);
 
@@ -277,7 +283,17 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         </div>
 
         <div className="dig-input-head">
-          <button type="button" className="btn btn-secondary" onClick={() => setForm(DEFAULTS)}>
+          <button type="button" className="btn btn-primary" onClick={() => setShown(true)}>
+            {labels.measureButton}
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => {
+              setForm(DEFAULTS);
+              setShown(false);
+            }}
+          >
             {labels.resetButton}
           </button>
         </div>
@@ -311,7 +327,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         </div>
       )}
 
-      <div className="ztc-result">
+      <div className="ztc-result im-result-centred">
         <h2 className="ztc-section-title">{labels.subtotalLabel}</h2>
         <p className="im-big mono">{result.apparentUrgency.toLocaleString()}</p>
         <svg className="im-bar" viewBox="0 0 400 26" role="img" aria-hidden="true">
@@ -324,7 +340,8 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         <p className="ztc-notes">{labels.remarks[result.remark]}</p>
       </div>
 
-      <div className="ztc-result">
+      {shown && (
+      <div className="ztc-result im-result-centred">
         <h2 className="ztc-section-title">{labels.resultHeading}</h2>
         <svg className="im-gauge" viewBox="0 0 240 148" role="img" aria-label={labels.gaugeAria}>
           <path
@@ -360,16 +377,19 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         <p className="im-big mono">{result.display}</p>
         <p className="cidr-privacy">{labels.unitLabel}</p>
       </div>
+      )}
 
-      <div className="ztc-result">
+      {shown && (
+      <div className="ztc-result im-result-centred">
         <h2 className="ztc-section-title">{labels.coefficientLabel}</h2>
         <p className="tmsh-object-head mono">
           {result.apparentUrgency.toLocaleString()} &times; {result.coefficient} = {result.display}
         </p>
         <p className="ztc-notes">{labels.coefficientNote}</p>
       </div>
+      )}
 
-      {result.workings.length > 0 && (
+      {shown && result.workings.length > 0 && (
         <div className="ztc-result">
           <h2 className="ztc-section-title">{labels.workingsHeading}</h2>
           <ul className="lbm-facts">
@@ -386,11 +406,13 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         </div>
       )}
 
+      {shown && (
       <div className="ztc-result">
         <h2 className="ztc-section-title">{labels.methodHeading}</h2>
         <p className="ztc-notes">{labels.methodBody}</p>
         <p className="cidr-privacy">{labels.overrideHint}</p>
       </div>
+      )}
     </>
   );
 }
