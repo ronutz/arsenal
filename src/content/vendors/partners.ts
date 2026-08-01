@@ -62,7 +62,19 @@ export interface PartnerVendor {
   /** Optional label for the external link. */
   externalLabel?: string;
   /** Source list for provenance. */
-  sources?: { label: string; url: string }[];
+  sources?: {
+    label: string;
+    url: string;
+    /**
+     * Optional qualification of the source itself - what it is good for and
+     * what it is not. Added 2026-08-01 for the Brazilian entries, where the
+     * available material is often a business directory or an aggregator
+     * carrying a company's own copy. Being able to say "this page is used for
+     * the self-description and NOT for the revenue figure printed beside it"
+     * is the difference between citing a source and hiding behind one.
+     */
+    sourceNote?: string;
+  }[];
   /**
    * Acquisitions this company made, with the acquisitions THEIR targets had
    * made nested beneath.
@@ -341,6 +353,115 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "SEC filing (HP tender offer, 2010): $43.50 per share all cash, 512 employees, 1,000+ customers, FY10 revenue of $181.4M and roughly 40% CAGR over three years", url: "https://www.sec.gov/Archives/edgar/data/0001368582/000110465910048334/a10-17787_2ex99d1.htm" },
       { label: "Channel Futures: Njemanze described as the initial architect of SIEM, with more than twenty issued patents, leading HP enterprise security engineering after the acquisition and later becoming CEO of ThreatStream", url: "https://www.channelfutures.com/channel-business/threatstream-appoints-arcsight-co-founder-hugh-njemanze-as-ceo" },
       { label: "Startup profile: Kleiner Perkins and In-Q-Tel among early investors, the 2008 IPO, and an alternative founder attribution naming Pravin Kothari - recorded here as a discrepancy", url: "https://startupintros.com/orgs/arcsight-inc" },
+    ],
+  },
+  {
+    // COMPUGRAF / CG ONE - added 2026-08-01 (PRIME). First of the Brazilian
+    // integrators.
+    //
+    // *** SOURCING IS THINNER THAN FOR THE INTERNATIONAL ENTRIES AND THIS
+    // ENTRY IS DELIBERATELY SHORTER BECAUSE OF IT. *** The founding date comes
+    // from the company registry, which is authoritative for that and for very
+    // little else. The narrative of the pivot is the company's own account as
+    // repeated by business directories, and is labelled as such. Employee and
+    // client figures are the company's own. NO REVENUE FIGURE IS GIVEN: the
+    // only one available came from a contact-data aggregator, which is not a
+    // source this site should treat as reliable.
+    //
+    // An entry should be as long as its evidence, not as long as its
+    // neighbours.
+    slug: "compugraf",
+    group: "other",
+    name: "Compugraf (now CG One)",
+    founded: 1982,
+    tagline: "A computer graphics company that became a security company, and kept the name for forty years.",
+    intro:
+      "The name is the story. Compugraf was registered in São Paulo in April 1982, and it did what it said: computação gráfica, computer graphics. Somewhere in the 1990s it moved into information security, and then stayed there for three decades under a name that had stopped describing it.",
+    body: [
+      "That is a more common pattern in this industry than the tidy histories suggest, and this timeline has several instances of it. Companies rarely rename themselves when their business changes, because the name is the thing customers already trust - so the trading name becomes a fossil of what the company used to do. Anyone meeting Compugraf as a security integrator in 2010 had no particular reason to know it had once sold graphics systems.",
+      "The security business settled into the shape most Brazilian integrators of its generation took: network and information security for large domestic customers across industry, financial services and energy, sold and supported locally rather than through a multinational's channel. The company describes itself as one hundred per cent Brazilian, with over 150 staff and more than five hundred client companies served across two decades.",
+      "**In 2024 it finally renamed, to CG One** - which keeps the initials of the graphics business while abandoning the word. Forty-two years is a long time to carry a name you have outgrown, and shortening it to two letters is the usual compromise between continuity and accuracy.",
+      "**A note on what this entry does not say.** Sourcing for Brazilian integrators of this size is thin compared with the international companies elsewhere on this timeline. The founding date here comes from the commercial register, which is reliable for exactly that. The account of the pivot from graphics to security is the company's own, repeated by business directories, and should be read as such. No revenue figure is given, because the only one available came from a contact-data aggregator rather than from a filing or a credible report - and a number with no provenance is worse than no number.",
+    ],
+    externalUrl: "https://www.cgone.com.br/",
+    externalLabel: "CG One",
+    sources: [
+      { label: "Econodata company register: Compugraf Serviços Ltda, CNPJ 49.916.513/0001-36, registered 06/04/1982, Avenida Angélica, São Paulo; the description of a 1982 founding in computer graphics, the 1990s move into cybersecurity, and the 2024 change to CG One", url: "https://www.econodata.com.br/consulta-empresa/49916513000136-compugraf-servicos-ltda" },
+      { label: "Serasa Experian register: Compugraf Segurança da Informação Ltda, CNPJ 41.896.287/0001-67, active, São Paulo - one of several entities under the group", url: "https://empresas.serasaexperian.com.br/consulta-gratis/COMPUGRAF-SEGURANCA-DA-INFORMACAO-LTDA-41896287000167" },
+      { label: "Company self-description: four decades in the market, one hundred per cent Brazilian, focused on information security, data privacy and governance, with more than 150 staff and over 500 client companies in twenty years", url: "https://rocketreach.co/compugraf-profile_b4b9ff3afb07e0a5", sourceNote: "Aggregator page carrying the company's own copy. Used only for the company's self-description; the revenue figure on the same page is not used." },
+    ],
+  },
+  {
+    // EQUINIX - added 2026-08-01 (PRIME).
+    //
+    // FIFTH entry on the neutrality thread, and the purest: here neutrality is
+    // not an asset that might survive an acquisition (CompTIA), nor one that
+    // arrived when ownership ended (Kyndryl), nor a licence choice (FreeRADIUS).
+    // It is THE ENTIRE PRODUCT, and it is in the company's name.
+    //
+    // Also loops to DEC, already on this timeline: both founders came from
+    // there, PAIX was DEC's, and Equinix later bought PAIX back.
+    slug: "equinix",
+    group: "other",
+    name: "Equinix",
+    founded: 1998,
+    tagline: "Two facilities managers left DEC because the telcos were refereeing a game they were playing in.",
+    intro:
+      "Equinix was incorporated on 22 June 1998 by Al Avery and Jay Adelson, two facilities managers from Digital Equipment Corporation who had built and run PAIX, the Palo Alto Internet Exchange, which DEC owned. It was briefly called Quark Communications. The name it settled on is an argument compressed into eight letters: EQUality, Neutrality, Internet eXchange.",
+    body: [
+      "**The problem they left to solve is specific and still worth understanding.** Networks have to meet somewhere to exchange traffic. In the 1990s the places they met were largely owned by telecommunications carriers, who were also participants - and a referee who is playing in the game will favour his own traffic, whether by design or by the ordinary gravity of self-interest. Congestion at those exchange points was not only a capacity problem; it was a governance problem.",
+      "The answer was a building owned by somebody with no network of their own. If the landlord sells no transit, has no traffic to prioritise and competes with none of the tenants, then rival carriers can meet inside without either of them conceding anything. **Neutrality here is not a virtue the company advertises. It is the product.**",
+      "PAIX itself deserves a line, because it is where the idea was proven. It began operating in 1996 under DEC, and in its earliest days the interconnection fabric was a DELNI - Digital's own Ethernet concentrator, a box designed for office networks, pressed into service as the meeting point for the commercial internet. Adelson worked there alongside Stephen Stuart and Paul Vixie, whose name is on BIND and therefore on most of the DNS this site's tools take apart.",
+      "The funding tells you who agreed with the thesis: a $12M round led by Benchmark Capital, with **Cisco and Microsoft** as strategic investors - a network vendor and a software company, neither of which sells transit, both of which benefit from an internet that interconnects cleanly.",
+      "**The business model insight came slightly later and is the more valuable one.** They began by selling floor space, power and cooling. What they discovered was that the money and the durability were in **the cross-connect** - the physical cable between two tenants. A customer chooses a building because of who is already inside it, and every new tenant makes the building more valuable to the next. That is a network effect expressed in concrete and copper, and it is why colocation consolidated into a handful of operators rather than staying a commodity property business.",
+      "**And then a loop.** Equinix acquired Switch and Data in 2010, and Switch and Data owned PAIX. The founders had left DEC to build a neutral exchange because the one they ran was not theirs; twelve years later their company bought it.",
+      "It listed on NASDAQ in August 2000, survived the dot-com collapse that removed most of its contemporaries, converted to a real estate investment trust in January 2015 - an acknowledgement that it is, structurally, a landlord - and by 2025 reported around 260 data centres in 33 countries and revenue of about $9.22B.",
+      "**Read beside four other entries here, the pattern is hard to miss.** CompTIA's value rests on belonging to no vendor, and whether that survives private equity is unresolved. Kyndryl's advice became worth more the moment IBM stopped owning it. FreeRADIUS stayed open and became the thing everyone builds against. Equinix went furthest: **it did not merely benefit from neutrality, it discovered that neutrality could be sold by the square foot.**",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Equinix",
+    externalLabel: "Equinix",
+    sources: [
+      { label: "Wikipedia: Equinix - founded 1998 by Al Avery and Jay Adelson, two facilities managers at Digital Equipment Corporation; REIT conversion in January 2015; ~260 data centres in 33 countries and $9.22B revenue in 2025", url: "https://en.wikipedia.org/wiki/Equinix" },
+      { label: "Wikipedia: Jay Adelson - building and operating PAIX at DEC alongside Stephen Stuart and Paul Vixie, leaving DEC in June 1998, the company briefly named Quark Communications, and PAIX arriving at Equinix through the Switch and Data acquisition", url: "https://en.wikipedia.org/wiki/Jay_Adelson" },
+      { label: "Wikipedia: PAIX - operating from 1996 under Digital Equipment Corporation, using a DELNI as its early interconnection infrastructure", url: "https://en.wikipedia.org/wiki/PAIX" },
+      { label: "Business model history: incorporation on 22 June 1998; early peering points dominated by telcos favouring their own traffic; the $12M Benchmark round with Cisco and Microsoft; the name as Equality, Neutrality and Internet Exchange", url: "https://businessmodelcanvastemplate.com/blogs/brief-history/equinix-brief-history" },
+      { label: "MatrixBCG: the shift from selling colocation floor space to monetising interconnection through paid cross-connects, which proved higher margin and stickier", url: "https://matrixbcg.com/blogs/brief-history/equinix" },
+      { label: "Companies History: the vendor-neutral multitenant model where competing networks could connect, and the i-STT, IXEurope and Switch and Data acquisitions", url: "https://www.companieshistory.com/equinix-incorporated/" },
+    ],
+  },
+  {
+    // TIVIT - added 2026-08-01 (PRIME). Second of the Brazilian services
+    // cluster, and the deliberate CONTRAST with Stefanini: one grew organically
+    // from a spare room, the other was assembled by a holding company out of
+    // parts it already owned.
+    //
+    // DATE DISCREPANCY RECORDED: the company's own timeline dates the brand to
+    // 2004; Wikipedia, TI INSIDE (reporting the merger contemporaneously on
+    // 15 August 2005) and Exame all say 2005. Both given.
+    slug: "tivit",
+    group: "other",
+    name: "TIVIT",
+    founded: 2005,
+    tagline: "A professional tennis player, a nightclub, and a company built by merging two others somebody already owned.",
+    intro:
+      "TIVIT did not start in a garage. It was assembled. In 2005 Votorantim Novos Negócios merged two companies from its own portfolio - Optiglobe, bought in 2002, and Proceda, bought about eight months earlier - and named the result TIVIT. It arrived with roughly two thousand staff and over two hundred clients including Petrobras, Xerox and White Martins. The company's own timeline dates the brand to 2004; contemporaneous press coverage of the merger is dated August 2005, and both are recorded here.",
+    body: [
+      "**The person behind it had an unusual previous career.** Luiz Mattar spent ten years as a professional tennis player before going into business. His first venture as an investor was a combined brewery and nightclub. Shortly after, with four partners and R$150,000, he started Telefutura - a call centre and business process outsourcing company - which sold 20% to Votorantim Novos Negócios in 2001, a transaction that mattered less for the money than for the credibility it bought with financial-sector clients.",
+      "The idea Mattar kept pressing was a **one stop shop**: a customer able to buy every kind of IT service from a single supplier rather than assembling one from many. Votorantim eventually concluded it owned the pieces to build that, and did - which is why TIVIT exists as a merger rather than a founding. Telefutura itself was folded in during 2007.",
+      "**The listing is a detail worth keeping.** TIVIT went public on BM&FBovespa's Novo Mercado in September 2009 at R$15 a share, raising over R$660M, after two earlier attempts had been abandoned because of market conditions. At the time it was **the only IT services company listed on the Brazilian exchange** - the other technology listings were hardware makers like Positivo, Itautec and Bematech, or software, like Totvs. A services business is harder to explain to public markets than a factory, and for a while nobody else tried.",
+      "It did not stay listed long. In 2010 Apax Partners bought control, paying a premium of twenty to thirty per cent over a market capitalisation of about R$1.47B, and it was **Apax's first investment in Brazil**. Under that ownership the company expanded across the region, acquiring Synapsis in 2014 and reaching ten Latin American countries.",
+      "What followed is the ordinary arc of a services business in this period: a cloud platform in 2016, a digital solutions arm, an innovation unit, a cybersecurity practice that reported around ninety per cent growth in 2023, a separation of the data centre business under the Takoda name, and an acquisition by the Italian group Almaviva.",
+      "**Read against the Stefanini entry, the two are opposite constructions of the same thing.** Stefanini began with one man teaching classes in a spare room and grew outward for decades. TIVIT began fully formed, with two thousand employees and a client list, because a holding company decided the market wanted something and merged its way to it. **Both are large Brazilian technology services firms; neither could have been built the other's way.** One needed patience and one needed capital, and the interesting question is which model travels better - Stefanini went abroad on its own account, while TIVIT's regional expansion arrived with private equity attached.",
+    ],
+    externalUrl: "https://pt.wikipedia.org/wiki/TIVIT",
+    externalLabel: "TIVIT (Wikipédia)",
+    sources: [
+      { label: "Wikipédia (pt): the 2001 sale of 20% of Telefutura to Votorantim Novos Negócios, the one-stop-shop idea, and the 2005 merger of Optiglobe and Proceda into TIVIT", url: "https://pt.wikipedia.org/wiki/TIVIT" },
+      { label: "Exame: Luiz Mattar's ten years as a professional tennis player, the brewery and nightclub venture, and Telefutura started with four partners and R$150,000", url: "https://exame.com/negocios/qual-e-o-novo-foco-da-bilionaria-brasileira-de-tecnologia-tivit-e-o-que-o-pix-tem-a-ver-com-isso/" },
+      { label: "TI INSIDE, 15 August 2005: the merger officialised that day, the one-stop-shop rationale, and the new company's client list including White Martins, Xerox, Petrobras and BankBoston", url: "https://tiinside.com.br/15/08/2005/votorantim-cria-a-tivit-para-disputar-mercado-de-outsourcing/" },
+      { label: "InvestSP: the September 2009 IPO at R$15 after two abandoned attempts, TIVIT as the only IT services company listed on BM&FBovespa, and Apax buying control in 2010 at a 20-30% premium to a ~R$1.47B market capitalisation", url: "https://investsp.org.br/fundo-apax-compra-controle-da-tivit/" },
+      { label: "TIVIT's own timeline: two data centres inaugurated in 2000, the brand created after the Proceda acquisition, the R$660M IPO, Apax's first Latin American investment, Synapsis in 2014 and TIVIT Cloud in 2016", url: "https://tivit.com/en/a-tivit/" },
+      { label: "BTW Media: the company's own chronology dating the brand to 2004, the Takoda data centre separation, and the argument that its data centre heritage is what distinguishes it from a smaller hyperscaler", url: "https://btw.media/en/tivit-hosting-services-sells-brazilian-enterprise-trust-not-a-smaller-hyperscaler" },
     ],
   },
   {

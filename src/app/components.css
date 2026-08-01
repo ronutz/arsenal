@@ -14568,6 +14568,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   flex-direction: column;
   gap: 0.3rem;
 }
+.partner-source-note { margin: 0.15rem 0 0.4rem; font-size: 0.82rem; color: var(--text-secondary); opacity: 0.85; }
 .partner-source-link {
   font-size: 0.82rem;
   color: var(--accent-primary);
@@ -15009,11 +15010,16 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .im-result-centred ul,
 .im-result-centred li { text-align: center; }
 .im-result-centred ul { list-style: none; padding-left: 0; }
-.im-result-centred .provenance-source,
-.im-result-centred .provenance-source-link,
+.im-result-centred,
+.im-result-centred * { text-align: center; }
+.im-result-centred ul,
+.im-result-centred ol,
 .im-result-centred .lbm-facts,
-.im-result-centred .lbm-facts li { text-align: center; list-style: none; padding-left: 0; margin-left: 0; }
-.im-result-centred .provenance-source-link { display: inline-block; }
+.im-result-centred .provenance-source {
+  list-style: none; padding-left: 0; margin-left: 0; margin-right: 0;
+}
+.im-result-centred li { text-align: center; }
+.im-result-centred a { display: inline-block; }
 /* The note reads better as a measured column than as full-width centred text. */
 .im-result-centred .ztc-notes { max-width: 68ch; margin-left: auto; margin-right: auto; }
 
@@ -15093,6 +15099,20 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .im-calculate:active { transform: translateY(0); }
 .im-calculate:focus-visible { outline: 2px solid var(--accent-amber, #F59E0B); outline-offset: 3px; }
 .im-calculate-arrow { font-size: 1.05em; line-height: 1; }
+
+/* Reset is the destructive half of the pair, so it is red and outlined rather
+   than filled - present, but visibly not the thing to press. */
+.im-reset {
+  padding: 0.6rem 1.5rem;
+  font: inherit; font-size: 0.95rem; font-weight: 650;
+  color: var(--color-danger, #ef4444);
+  background: transparent;
+  border: 1px solid var(--color-danger, #ef4444);
+  border-radius: 999px; cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+.im-reset:hover { background: var(--color-danger, #ef4444); color: var(--surface-base); }
+.im-reset:focus-visible { outline: 2px solid var(--color-danger, #ef4444); outline-offset: 3px; }
 
 @keyframes im-calc-pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55); }

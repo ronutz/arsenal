@@ -153,6 +153,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
   // Listening for fullscreenchange keeps the button honest when the reader
   // leaves via Escape rather than the button.
   const shellRef = useRef<HTMLDivElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
   const [nativeFs, setNativeFs] = useState(false);
   const [cssFs, setCssFs] = useState(false);
   const isFullscreen = nativeFs || cssFs;
@@ -353,7 +354,13 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
           <button
             type="button"
             className={"im-calculate" + (shown ? "" : " im-calculate-waiting")}
-            onClick={() => setShown(true)}
+            onClick={() => {
+              setShown(true);
+              // Let the newly revealed blocks mount before scrolling to them.
+              requestAnimationFrame(() =>
+                resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+              );
+            }}
           >
             {labels.measureButton}
             <span aria-hidden="true" className="im-calculate-arrow">
@@ -362,7 +369,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
           </button>
           <button
             type="button"
-            className="btn btn-secondary"
+            className="im-reset"
             onClick={() => {
               setForm(DEFAULTS);
               setShown(false);
@@ -400,6 +407,9 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
           </div>
         </div>
       )}
+
+      {/* Anchor for the post-Calculate scroll. */}
+      <div ref={resultsRef} />
 
       {shown && (
       <div className="ztc-result im-result-centred">

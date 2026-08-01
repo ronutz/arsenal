@@ -427,6 +427,13 @@ export default async function PartnerVendorPage({
                         >
                           {s.label}
                         </a>
+                        {/* A qualification of the source itself, where one is
+                            needed - what it is good for and what it is not.
+                            Rendered rather than left in the data, because a
+                            caveat nobody can see is not a caveat. */}
+                        {s.sourceNote && (
+                          <p className="partner-source-note">{s.sourceNote}</p>
+                        )}
                       </li>
                     ))}
                   </ul>
