@@ -15009,6 +15009,13 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .im-result-centred ul,
 .im-result-centred li { text-align: center; }
 .im-result-centred ul { list-style: none; padding-left: 0; }
+.im-result-centred .provenance-source,
+.im-result-centred .provenance-source-link,
+.im-result-centred .lbm-facts,
+.im-result-centred .lbm-facts li { text-align: center; list-style: none; padding-left: 0; margin-left: 0; }
+.im-result-centred .provenance-source-link { display: inline-block; }
+/* The note reads better as a measured column than as full-width centred text. */
+.im-result-centred .ztc-notes { max-width: 68ch; margin-left: auto; margin-right: auto; }
 
 .im-bar { display: block; width: 100%; height: auto; margin: 0.3rem 0 0.7rem; }
 .im-bar-track { fill: var(--surface-base); stroke: var(--border-subtle); stroke-width: 1; }
@@ -15064,3 +15071,35 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .im-shell.im-fs .im-big { font-size: 3.2rem; }
 .im-shell:fullscreen .im-gauge,
 .im-shell.im-fs .im-gauge { max-width: 460px; }
+
+/* The Calculate button.
+   It must not look like a selected toggle: the Yes/No choosers on this page use
+   a filled accent to mean "this is the current state", so a filled accent
+   button reads as state rather than as an instruction. This is therefore its
+   own control - larger, wider, with a downward arrow pointing at where the
+   answer will appear, and a slow pulse while it is still waiting to be pressed.
+   Nothing else on the page moves, so movement is unambiguous. The pulse stops
+   the moment it has been used, and respects reduced-motion. */
+.im-calculate {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  padding: 0.62rem 1.9rem;
+  font: inherit; font-size: 1rem; font-weight: 700; letter-spacing: 0.02em;
+  color: var(--surface-base);
+  background: var(--accent-amber, #F59E0B);
+  border: 0; border-radius: 999px; cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.im-calculate:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.im-calculate:active { transform: translateY(0); }
+.im-calculate:focus-visible { outline: 2px solid var(--accent-amber, #F59E0B); outline-offset: 3px; }
+.im-calculate-arrow { font-size: 1.05em; line-height: 1; }
+
+@keyframes im-calc-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55); }
+  50%      { box-shadow: 0 0 0 9px rgba(245, 158, 11, 0); }
+}
+.im-calculate-waiting { animation: im-calc-pulse 2.2s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .im-calculate-waiting { animation: none; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.35); }
+}

@@ -344,6 +344,75 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // STEFANINI - added 2026-07-31 (PRIME). First of the Brazilian services
+    // cluster, and the one with the most direct bearing on this site: it began
+    // as a TRAINING company, and teaching was the skill that won its first
+    // work.
+    //
+    // Mirrors NIIT in the HCL entry, but inverted. NIIT was founded BY a
+    // technology company's founder as infrastructure for an industry.
+    // Stefanini was a training company that BECAME the technology company.
+    slug: "stefanini",
+    group: "other",
+    name: "Stefanini",
+    founded: 1987,
+    tagline: "A teacher started it in a spare room, and teaching is what won the first work.",
+    intro:
+      "Marco Stefanini founded the company in 1987 in a bedroom of his own house in São Paulo, aged 26. It was not a consultancy. It began as a training business, running programming and technology courses for the staff of large companies, and only pivoted to IT consulting about two years later.",
+    body: [
+      "**The route in is worth telling, because almost none of it was planned.** He read geology at the University of São Paulo, spent a month at a cassiterite mine in the interior of Goiás and concluded the profession was not for him. Struggling to find work in São Paulo, he moved into technology at his sister's encouragement - she was already at Serpro, the federal data processing service - took a systems analysis course, and joined the IT department at Bradesco. He also worked at Engesa, the military vehicle manufacturer, and at IBM.",
+      "**And he was teaching at the time, which is the detail that matters.** In his own account, because he was already giving classes, moving into training was straightforward, and that skill is what won the company its first projects. A teacher's business became a technology business rather than the other way round.",
+      "The first office was thirty-eight square metres. The timing was good: Brazil's large banks and industrial groups were computerising, and a firm that could both train people and supply them found no shortage of work. Systems development and IT outsourcing followed, and for its first years the company was entirely domestic.",
+      "**Then it went abroad, which Brazilian technology companies mostly did not.** Expansion into other markets became the central growth strategy rather than an afterthought, and the result is a genuinely unusual company: a Brazilian multinational in a sector where the multinationals almost always arrive from somewhere else. By 2025 it reported operations in 41 countries and more than 35,000 staff speaking 45 languages, with revenue around $1.4B for 2024. A Fundação Dom Cabral study once ranked it the fifth most internationalised Brazilian company of any kind.",
+      "Growth has been substantially by acquisition and the company says so plainly, with a stated target of R$2B of purchases by 2027, and it makes a point of being unleveraged - which in a high interest rate environment is less a boast than an explanation of why it can keep buying when others cannot.",
+      "**Read beside the HCL entry, the two make a matched pair, inverted.** There, the founder of a technology company started a training institute in 1982 because a domestic industry cannot grow faster than the supply of people who can staff it - training built as infrastructure for a business. Here, the training came first and the business grew out of it. **Both companies concluded that teaching and technology services are the same trade approached from different ends**, which is a conclusion this site has some sympathy with.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Stefanini_IT_Solutions",
+    externalLabel: "Stefanini IT Solutions",
+    sources: [
+      { label: "Wikipedia: Stefanini IT Solutions - founded 1987 by Marco Stefanini, headquarters in São Paulo and Jaguariúna, revenue of about US$1.4B for 2024", url: "https://en.wikipedia.org/wiki/Stefanini_IT_Solutions" },
+      { label: "Brazil Journal: the company was born in Marco's house and began as a training business running programming and technology courses for large companies' staff, pivoting to IT consulting two years later; the R$2B acquisition target to 2027 and the unleveraged position", url: "https://braziljournal.com/stefanini-compra-empresa-de-servicos-na-nuvem-e-cresce-receita-em-us-100-mi/" },
+      { label: "iHUB Lounge interview with Marco Stefanini - geology at USP, a month at a cassiterite mine in Goiás, his sister at Serpro encouraging the move, the systems analysis course, Bradesco, founding at 26, and teaching being the skill that won the first projects", url: "https://ihublounge.com.br/por-dentro-das-empresas/por-dentro-das-empresas-stefanini/" },
+      { label: "ISTOÉ Dinheiro: the 38-square-metre first office, work at Engesa and IBM, teaching at Objetivo, and the Fundação Dom Cabral ranking as the fifth most internationalised Brazilian company", url: "https://istoedinheiro.com.br/stefanini-metade-dos-nossos-24-mol-funcionarios-trabalha-no-exterior/" },
+      { label: "Grokipedia: 41 countries, over 35,000 professionals speaking 45 languages as of 2025, 97% client retention and an average client relationship of 11.9 years", url: "https://grokipedia.com/page/Stefanini_IT_Solutions" },
+      { label: "Lumnis case study: beginning as a technology training company, migrating to systems development and IT outsourcing on the wave of computerisation at Brazil's large banks and industries, with the first years entirely domestic", url: "https://lumnis.com.br/estudostefanini/" },
+    ],
+  },
+  {
+    // KYNDRYL - added 2026-07-31 (PRIME). Third IBM-divestment entry on this
+    // timeline, after Lotus (bought 1995) and HCL (bought Notes from IBM 2019).
+    //
+    // The interesting claim is NOT that it was spun off. It is WHY independence
+    // was the product: a services business owned by a cloud vendor cannot
+    // credibly recommend a competitor's cloud.
+    slug: "kyndryl",
+    group: "contemporary",
+    name: "Kyndryl",
+    founded: 2021,
+    tagline: "The largest technology spin-off by headcount, and independence was the point rather than the price.",
+    intro:
+      "IBM announced in October 2020 that it would separate its managed infrastructure business. The unit was named Kyndryl in April 2021 - kyn from kinship, dryl from tendril, a construction that drew a certain amount of press amusement - and the separation completed on 4 November 2021, when it began trading on the New York Stock Exchange with about 90,000 employees. It was, and remains, the largest technology spin-off by headcount.",
+    body: [
+      "The scale is easier to grasp from the other side. The Financial Times described it as IBM shedding a quarter of its business, and the unit taking with it the bulk of what had been IBM Global Technology Services: roughly 4,400 customers including around three quarters of the Fortune 100, operations in sixty-three countries, and some four hundred data centres.",
+      "**The reason usually given is decline, and it is true but incomplete.** Inside IBM the business had struggled through the cloud era, because customers were moving workloads to hyperscalers and few had any appetite left for the long, large outsourcing contracts the unit was built around. Shedding a shrinking business to concentrate on hybrid cloud is a legible strategy and it is what the coverage led with.",
+      "**The more interesting reason is structural, and it is the one worth taking away.** A managed services business owned by a cloud vendor cannot credibly recommend a competitor's cloud. Whatever the engineers actually think, the advice arrives from a company whose parent sells the alternative, and the customer discounts it accordingly. Independence was not the consolation prize for being unwanted - it was the thing that made the business sellable again.",
+      "The evidence is in the calendar. Kyndryl announced a partnership with Microsoft in November 2021, the same month it separated, and with Google Cloud in December. Neither was available on those terms to a division of IBM.",
+      "**That is the same argument this timeline records elsewhere, in a different setting.** CompTIA's certifications are valuable precisely because they belong to no vendor, and the open question there is whether that survives private-equity ownership. Kyndryl is the mirror image: a business whose advice was worth less while it was owned, and worth more once it was not. In both cases the asset is neutrality, and neutrality is a property of who owns you rather than of what you know.",
+      "Martin Schroeter, who had been IBM's chief financial officer and later a senior vice president, left the company in June 2020 and returned in January 2021 to lead the new one. The market's first verdict was cool: the shares closed their opening day at $26.38, down about seven per cent, and slipped further after hours.",
+      "**And it is the third time IBM appears on this timeline handing something over.** It bought Lotus in 1995 for the Notes technology, sold Notes and Domino to HCL in a deal announced in 2018, and separated this business in 2021. A company that spent decades acquiring is now most visible here for what it has let go.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Kyndryl",
+    externalLabel: "Kyndryl",
+    sources: [
+      { label: "Kyndryl SEC Form 8-K (4 November 2021): separation completed, NYSE ticker KD, about 90,000 employees, Martin Schroeter as chairman and chief executive", url: "https://www.sec.gov/Archives/edgar/data/1867072/000110465921134456/tm2131654d1_ex99-1.htm" },
+      { label: "HandWiki: formed from the bulk of IBM Global Technology Services; ~4,400 customers including 75% of the Fortune 100; 63 countries and around 400 data centres; the Microsoft partnership in November 2021 and Google Cloud in December", url: "https://handwiki.org/wiki/Company:Kyndryl" },
+      { label: "SDxCentral: the name announced April 2021, kyn from kinship and dryl from tendril, following Arvind Krishna's October 2020 announcement", url: "https://www.sdxcentral.com/news/ibms-infrastructure-spinoff-gets-a-name/" },
+      { label: "The Register: the business had struggled inside IBM as customers moved to hyperscalers and lost appetite for large multi-year outsourcing; first-day close at $26.38, down 6.7%", url: "https://www.theregister.com/2021/11/04/kyndryl_ibm_spinoff/" },
+      { label: "MatrixBCG: the 80.1% pro-rata distribution to IBM shareholders with 19.9% retained for later sale, and the work of disentangling thousands of contracts while maintaining continuous operations", url: "https://matrixbcg.com/blogs/brief-history/kyndryl" },
+      { label: "Futurum Research: Schroeter leaving IBM in June 2020 and returning in January 2021, and the business model of serving organisations that do not treat IT delivery as core", url: "https://futurumresearch.com/wp-content/uploads/2021/10/Futurum.The-IBM-Spinoff-of-Kyndryl.pdf" },
+    ],
+  },
+  {
     // COMPTIA - added 2026-07-31 (PRIME). The COUNTERPOINT to the certification
     // thread in the Cisco entry: Cisco built the vendor-defined competency
     // ladder every vendor here copies; CompTIA is the vendor-NEUTRAL answer,

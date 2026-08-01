@@ -350,8 +350,15 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         </div>
 
         <div className="dig-input-head">
-          <button type="button" className="btn btn-primary" onClick={() => setShown(true)}>
+          <button
+            type="button"
+            className={"im-calculate" + (shown ? "" : " im-calculate-waiting")}
+            onClick={() => setShown(true)}
+          >
             {labels.measureButton}
+            <span aria-hidden="true" className="im-calculate-arrow">
+              &#8595;
+            </span>
           </button>
           <button
             type="button"
@@ -381,7 +388,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
       )}
 
       {override && (
-        <div className="ztc-result im-override">
+        <div className="ztc-result im-override im-result-centred">
           <p className="im-override-banner mono">{override.label}</p>
           <p className="ztc-notes">
             <strong>{labels.overrideConsequenceLabel}</strong> {override.consequence}
@@ -394,6 +401,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         </div>
       )}
 
+      {shown && (
       <div className="ztc-result im-result-centred">
         <h2 className="ztc-section-title">{labels.subtotalLabel}</h2>
         <p className="im-big mono">{result.apparentUrgency.toLocaleString()}</p>
@@ -406,6 +414,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         </svg>
         <p className="ztc-notes">{labels.remarks[result.remark]}</p>
       </div>
+      )}
 
       {shown && (
       <div className="ztc-result im-result-centred">
@@ -457,7 +466,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
       )}
 
       {shown && result.workings.length > 0 && (
-        <div className="ztc-result">
+        <div className="ztc-result im-result-centred">
           <h2 className="ztc-section-title">{labels.workingsHeading}</h2>
           <ul className="lbm-facts">
             {result.workings.map((w, i) => (
@@ -474,17 +483,19 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
       )}
 
       {shown && (
-      <div className="ztc-result">
+      <div className="ztc-result im-result-centred">
         <h2 className="ztc-section-title">{labels.methodHeading}</h2>
         <p className="ztc-notes">{labels.methodBody}</p>
         <p className="cidr-privacy">{labels.overrideHint}</p>
       </div>
       )}
 
-      {/* Always shown, and last. This is context for readers whose first
-          language is not English, not part of the result - so it does not sit
-          behind the Calculate gate and it does not give anything away above. */}
-      <div className="ztc-result">
+      {/* Gated with everything else. An earlier version left this outside the
+          gate on the grounds that it is context rather than result - but it
+          QUOTES THE PHRASE, and anything quoting the phrase is a spoiler no
+          matter which category it belongs to. */}
+      {shown && (
+      <div className="ztc-result im-result-centred">
         <h2 className="ztc-section-title">{labels.disclaimerHeading}</h2>
         <p className="ztc-notes">{labels.disclaimerBody}</p>
         <p className="ztc-notes">
@@ -523,6 +534,7 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
           </li>
         </ul>
       </div>
+      )}
     </div>
   );
 }

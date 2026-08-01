@@ -52,6 +52,30 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-08-01T00:19:59-03:00",
+    kind: "content",
+    title: "Stefanini, which was a training company before it was a technology company",
+    body: "A geologist who had spent a month at a tin mine in the interior of Goias and decided the profession was not for him moved into technology at his sister's suggestion, took a systems analysis course, worked in a bank's IT department, and in 1987 started a company in a bedroom of his own house at the age of twenty-six. It was not a consultancy. It was a training business, running programming courses for the staff of large companies, and it only became an IT consultancy about two years later. The detail that matters is why training was the obvious place to start: he was already teaching, and in his own account that skill is what won the first projects. A teacher's business became a technology business rather than the other way round. The first office was thirty-eight square metres. Brazil's banks and industrial groups were computerising, and a firm that could both train people and supply them was not short of work. What happened next is genuinely unusual, because it went abroad, and Brazilian technology companies mostly did not. It now reports operations in forty-one countries and more than thirty-five thousand staff, in a sector where the multinationals almost always arrive from somewhere else rather than departing from here. Read beside the entry on the Indian company that bought Lotus Notes, the two make an inverted pair: there a technology founder started a training institute because an industry cannot grow faster than the supply of people who can staff it, and here the training came first and the business grew out of it. Both arrived at the same conclusion, that teaching and technology services are one trade approached from opposite ends.",
+  },
+  {
+    date: "2026-07-31T23:43:48-03:00",
+    kind: "infra",
+    title: "The explanatory note was itself the spoiler",
+    body: "The note added yesterday for readers whose first language is not English was deliberately left outside the calculate gate, on the reasoning that it is context rather than result and therefore harmless above the fold. That reasoning was wrong for one decisive reason: the note quotes the phrase. Anything that quotes the phrase gives the ending away regardless of which category it belongs to, and a category argument is no defence against a reader who can simply see the words. It is now gated with everything else and appears only after the answer it explains. Everything below the inputs is also properly centred now, including the workings, the method note, the override banner and the reading list, with the prose held to a readable column width rather than stretched across the full page. The lesson worth keeping is that the test for a spoiler is not what a block is for, it is what a block contains.",
+  },
+  {
+    date: "2026-07-31T23:13:45-03:00",
+    kind: "feature",
+    title: "The calculate button looked like it had already been pressed",
+    body: "A screenshot made the problem obvious in a way the description had not. Two things were working against the button. The first was mine to own: the apparent urgency figure was still updating live, so the page had visibly already produced a number, and a page that has produced a number looks like a page whose button has been pressed. I had kept that live on purpose, to build anticipation before the answer refused to arrive, and it simply did not survive contact with a real screen. Nothing appears now until it is asked for. The second was a collision of visual language. The yes and no choosers use a filled accent to mean this is the current state, so a filled accent button in the same colour reads as a state too, not as an instruction. The button is now its own control rather than a generic one: larger, wider, in the same amber as the answer it produces, with a downward arrow pointing at where that answer will appear, and a slow pulse while it is still waiting. Nothing else on the page moves, which makes the movement unambiguous. The pulse stops the moment it is used, and it is replaced by a static ring for readers who have asked their system to reduce motion.",
+  },
+  {
+    date: "2026-07-31T23:08:53-03:00",
+    kind: "content",
+    title: "Kyndryl, where independence was the product rather than the consolation",
+    body: "IBM separated its managed infrastructure business in November 2021, sending ninety thousand people into the largest technology spin-off by headcount. The reason usually given is decline, and it is true as far as it goes: inside IBM the unit had struggled through the cloud era, because customers were moving workloads to hyperscalers and few had any appetite left for the long outsourcing contracts it was built around. The more interesting reason is structural. A managed services business owned by a cloud vendor cannot credibly recommend a competitor's cloud, because whatever its engineers actually think, the advice arrives from a company whose parent sells the alternative and the customer discounts it accordingly. Independence was not the consolation prize for being unwanted. It was the thing that made the business sellable again, and the evidence is in the calendar: it announced a partnership with one hyperscaler the same month it separated and another the following month, neither of which was available to a division of IBM. That is the same argument this site records elsewhere in a different setting, where a certification body's value rests on belonging to no vendor and the open question is whether that survives being bought. This is the mirror image, a business whose advice was worth less while it was owned and worth more once it was not. In both cases the asset is neutrality, and neutrality turns out to be a property of who owns you rather than of what you know.",
+  },
+  {
     date: "2026-07-31T20:55:56-03:00",
     kind: "content",
     title: "A note on the phrase, for readers whose first language is not English",
