@@ -107,6 +107,9 @@ export default async function ImportanceMeterPage({
     overrideHint: t("overrideHint"),
     fullscreenEnter: t("fullscreenEnter"),
     fullscreenExit: t("fullscreenExit"),
+    disclaimerHeading: t("disclaimerHeading"),
+    disclaimerBody: t("disclaimerBody"),
+    disclaimerSourcesHeading: t("disclaimerSourcesHeading"),
   };
 
   return (

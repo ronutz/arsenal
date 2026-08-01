@@ -14594,6 +14594,9 @@
     "overrideHint": "The coefficient has resisted every attempt to change it through the interface. Whether it can be changed by other means is not documented.",
     "measureButton": "Calculate",
     "fullscreenEnter": "Fullscreen",
-    "fullscreenExit": "Exit fullscreen"
+    "fullscreenExit": "Exit fullscreen",
+    "disclaimerHeading": "A note on the phrase",
+    "disclaimerBody": "If English is not your first language: “zero fucks given” is a common informal expression meaning complete indifference — that something does not concern you in the slightest. It is vulgar, and it is used humorously far more often than aggressively, usually about bureaucracy, pointless urgency and work theatre rather than about people. The idea is not particular to English. Most European languages have their own idiom for the same shrug, built variously from food, animals, weather or anatomy, and several are a good deal more colourful than the English one. Register matters more than the words: it belongs in casual speech among people who know each other, and not in professional writing, a customer email or anything with your employer’s name on it.",
+    "disclaimerSourcesHeading": "Where to read more"
   }
 }

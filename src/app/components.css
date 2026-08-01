@@ -15028,8 +15028,8 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .im-seq-key { display: inline-block; min-width: 1.1em; text-align: center; color: var(--text-secondary); opacity: 0.35; font-family: var(--font-mono, monospace); }
 .im-seq-key-on { color: var(--accent-primary); opacity: 1; text-shadow: 0 0 12px var(--accent-primary); }
 
-.im-override { border-color: var(--accent-primary); }
-.im-override-banner { font-size: 1.15rem; font-weight: 750; letter-spacing: 0.06em; color: var(--accent-primary); margin: 0 0 0.5rem; }
+.im-override { border-color: var(--accent-amber, #F59E0B); }
+.im-override-banner { font-size: 1.15rem; font-weight: 750; letter-spacing: 0.06em; color: var(--accent-amber, #F59E0B); margin: 0 0 0.5rem; }
 
 /* IDDQD: sequence progress and the degreelessness banner. Green rather than the
    fail-safe red, because it is the thing that just cancelled the red one. */

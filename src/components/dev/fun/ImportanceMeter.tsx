@@ -73,6 +73,9 @@ export interface ImportanceMeterLabels {
   overrideHint: string;
   fullscreenEnter: string;
   fullscreenExit: string;
+  disclaimerHeading: string;
+  disclaimerBody: string;
+  disclaimerSourcesHeading: string;
 }
 
 const DEFAULTS = {
@@ -477,6 +480,49 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
         <p className="cidr-privacy">{labels.overrideHint}</p>
       </div>
       )}
+
+      {/* Always shown, and last. This is context for readers whose first
+          language is not English, not part of the result - so it does not sit
+          behind the Calculate gate and it does not give anything away above. */}
+      <div className="ztc-result">
+        <h2 className="ztc-section-title">{labels.disclaimerHeading}</h2>
+        <p className="ztc-notes">{labels.disclaimerBody}</p>
+        <p className="ztc-notes">
+          <strong>{labels.disclaimerSourcesHeading}</strong>
+        </p>
+        <ul className="lbm-facts">
+          <li className="provenance-source">
+            <a
+              className="provenance-source-link"
+              href="https://www.dictionary.com/e/slang/zero-fucks/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Dictionary.com: the phrase, its sense and its history
+            </a>
+          </li>
+          <li className="provenance-source">
+            <a
+              className="provenance-source-link"
+              href="https://www.urbandictionary.com/define.php?term=Zero%20fucks%20given"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Urban Dictionary: how speakers actually use it
+            </a>
+          </li>
+          <li className="provenance-source">
+            <a
+              className="provenance-source-link"
+              href="https://www.quora.com/What-does-I-give-zero-F-s-mean"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Quora: what it means, explained for learners
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }

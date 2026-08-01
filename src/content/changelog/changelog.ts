@@ -52,6 +52,18 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-07-31T20:55:56-03:00",
+    kind: "content",
+    title: "A note on the phrase, for readers whose first language is not English",
+    body: "The importance meter now ends with an explanation of the expression it is built around, because a page that is only funny if you already know the idiom is not much use to a site read in sixteen languages. The note says what the phrase means, which is complete indifference, that it is vulgar but used humorously far more often than aggressively, and that it is usually aimed at bureaucracy and pointless urgency rather than at people. It also makes the point that the idea is not particular to English at all. Most European languages have their own version of the same shrug, built variously from food, animals, weather or anatomy, and a fair number are considerably more colourful than the English one. The advice that actually matters is about register rather than vocabulary: it belongs in casual speech among people who know each other, and not in a customer email or anything carrying your employer's name. Three references are linked for anyone who wants to read further. The note sits outside the calculate gate, since it is context rather than result, and it is placed last so it does not give anything away.",
+  },
+  {
+    date: "2026-07-31T19:59:33-03:00",
+    kind: "infra",
+    title: "Nothing was checking that the two main languages carried the same keys",
+    body: "The request was to teach the language-parity check about an exception. It could not be taught, because it checks articles rather than interface strings, and it turned out that nothing at all was checking those. A key added to English and forgotten in Portuguese would ship a page that showed Brazilian readers the raw key name, and every existing check would have stayed green while it did. That is not hypothetical: it happened this month, when a card was written with the wrong field name, and the only thing that caught it was a count in the build log which only notices keys that a page built that day actually reads. There is now a check for it, and it does three things. It compares the two languages in both directions, so an orphaned translation is caught as well as a missing one. It compares nested structure rather than top-level names, so a key buried three levels down cannot slip through. And it carries a short list of namespaces that are English by design, currently containing one entry, for a page whose joke is an idiom that does not survive translation. That list also validates itself: if something on it turns out to exist in Portuguese after all, the check fails, because a stale exception hides exactly the drift it was meant to permit. Nearly ten thousand keys are compared on every build.",
+  },
+  {
     date: "2026-07-31T19:11:58-03:00",
     kind: "content",
     title: "The importance meter is now English only, and says its unit properly",
