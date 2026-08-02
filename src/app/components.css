@@ -1739,6 +1739,7 @@
   letter-spacing: -0.01em;
   margin-bottom: 0.6rem;
 }
+.vendor-card-tags { display: block; margin-top: 0.35rem; font-size: 0.72rem; letter-spacing: 0.06em; color: var(--text-secondary); opacity: 0.75; }
 .vendor-card-tagline {
   font-size: 0.95rem;
   color: var(--text-secondary);
@@ -15023,7 +15024,22 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 /* The note reads better as a measured column than as full-width centred text. */
 .im-result-centred .ztc-notes { max-width: 68ch; margin-left: auto; margin-right: auto; }
 
-.im-bar { display: block; width: 100%; height: auto; margin: 0.3rem 0 0.7rem; }
+/* Apparent urgency, compressed from four stacked blocks to one row (PRIME
+   2026-08-01). The bar flexes to fill whatever is left after the label, the
+   figure and the remark, and the whole thing wraps on narrow screens rather
+   than squeezing. The figure is 1.75rem rather than the 2.4rem used for the
+   answer: it should read clearly without being the tallest thing on the page,
+   because the ANSWER deserves that. */
+.im-urgency { padding-top: 0.9rem; padding-bottom: 0.9rem; }
+.im-urgency-row {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 0.5rem 0.9rem; justify-content: center;
+}
+.im-urgency-label { font-size: 0.78rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
+.im-urgency-value { font-size: 1.75rem; font-weight: 750; line-height: 1; color: var(--accent-amber, #F59E0B); white-space: nowrap; }
+.im-urgency-remark { font-size: 0.85rem; color: var(--text-secondary); flex: 1 1 14rem; text-align: left; min-width: 12rem; }
+
+.im-bar { display: block; flex: 2 1 10rem; height: 12px; min-width: 8rem; margin: 0; }
 .im-bar-track { fill: var(--surface-base); stroke: var(--border-subtle); stroke-width: 1; }
 .im-bar-fill { fill: var(--accent-primary); transition: width 0.25s ease; }
 .im-bar-tick { stroke: var(--border-subtle); stroke-width: 1; }
@@ -15123,3 +15139,12 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 @media (prefers-reduced-motion: reduce) {
   .im-calculate-waiting { animation: none; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.35); }
 }
+
+/* Filter chips on the industry timeline. Chips with a zero count are not
+   rendered at all - a filter that leads to an empty page is a broken promise,
+   and the count is computed rather than written so it cannot disagree with the
+   page it links to. */
+.industry-tag-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1.6rem; }
+.industry-tag-chip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.28rem 0.85rem; border: 1px solid var(--border-subtle); border-radius: 999px; font-size: 0.82rem; color: var(--text-secondary); text-decoration: none; transition: border-color 0.14s ease, color 0.14s ease; }
+.industry-tag-chip:hover { border-color: var(--accent-primary); color: var(--text-primary); }
+.industry-tag-chip-n { font-size: 0.74rem; opacity: 0.7; }

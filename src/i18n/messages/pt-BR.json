@@ -14547,5 +14547,51 @@
     "empty": "Ainda não há publicações.",
     "furtherReading": "Leitura complementar",
     "furtherReadingAria": "Leitura complementar"
+  },
+  "industryTags": {
+    "eyebrow": "Visão filtrada",
+    "count": "{count, plural, =0 {Nenhuma empresa ainda} one {# empresa} other {# empresas}}",
+    "empty": "Nada carrega esta etiqueta ainda. As fichas são escritas antes de serem classificadas, então uma lista vazia aqui significa que a escrita não chegou a este canto da indústria, não que o canto esteja vazio.",
+    "backToAll": "Todas as empresas, em ordem",
+    "vendor": {
+      "title": "Fabricantes",
+      "short": "fabricante",
+      "intro": "Empresas que fazem o produto. A maior parte desta linha do tempo está aqui, porque a maioria das histórias do setor é sobre alguém construir uma coisa e depois descobrir para que servia."
+    },
+    "distributor": {
+      "title": "Distribuidores",
+      "short": "distribuidor",
+      "intro": "Distribuição em dois níveis: vendem para revendas, não para as organizações que usam o equipamento. Uma camada invisível para a maioria dos engenheiros, e a que decide quais produtos são viáveis de comprar em cada país."
+    },
+    "reseller": {
+      "title": "Revendas e integradores",
+      "short": "revenda",
+      "intro": "As empresas que de fato instalam a coisa. Carregam produtos de terceiros, e sua habilidade está em fazer um portfólio montado por razões comerciais se comportar como um sistema."
+    },
+    "services": {
+      "title": "Serviços e consultoria",
+      "short": "serviços",
+      "intro": "Terceirização, consultoria, operação gerenciada. Vendem pessoas e processo em vez de produto, o que é mais difícil de explicar a um mercado e mais difícil de escalar."
+    },
+    "carrier": {
+      "title": "Operadoras",
+      "short": "operadora",
+      "intro": "Operadoras que transportam o tráfego de terceiros. O substrato físico que tudo acima delas pressupõe, e a razão de várias fichas aqui tratarem na verdade de direitos de passagem e cabos submarinos."
+    },
+    "datacentre": {
+      "title": "Data centers e interconexão",
+      "short": "data center",
+      "intro": "Colocation, hospedagem e os lugares onde as redes se encontram. Negócios imobiliários com efeito de rede, uma combinação mais estranha do que parece."
+    },
+    "training": {
+      "title": "Treinamento e certificação",
+      "short": "treinamento",
+      "intro": "As empresas e entidades que decidem como é a competência e quem pode reivindicá-la. Num site feito por um instrutor, isso não é nota de rodapé."
+    },
+    "standards": {
+      "title": "Padrões, pesquisa e protocolos",
+      "short": "padrões",
+      "intro": "Não são empresas vendendo algo, ou não apenas isso: os laboratórios, fundações e especificações sobre os quais as fichas comerciais foram construídas."
+    }
   }
 }

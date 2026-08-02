@@ -25,6 +25,52 @@
 //     reputable press. Pages for unverified vendors are omitted until checked.
 // ============================================================================
 
+/**
+ * WHAT A COMPANY IS, for filtering. Ratified by PRIME on 2026-08-01.
+ *
+ * A company may hold SEVERAL of these and most large ones do: NTT is a carrier,
+ * a services firm and a data centre operator at once. That is the point of tags
+ * rather than a single category - the existing `group` field could only ever
+ * say one thing, and said very little.
+ *
+ * These also make `/industry/distributors` and `/industry/resellers` derived
+ * views rather than hand-maintained lists, which is how PRIME originally asked
+ * for them. A list somebody maintains by hand drifts; a filter cannot.
+ *
+ * The vocabulary is CLOSED. A guard fails the build on anything not in it, so
+ * adding a tag is a deliberate act rather than a typo that quietly creates a
+ * ninth category.
+ */
+export type VendorTag =
+  /** Makes the product. F5, Cisco, Fortinet, Nozomi, Elastic. */
+  | "vendor"
+  /** Two-tier distribution: sells to resellers, not to end users. */
+  | "distributor"
+  /** Value-added reseller or integrator: sells and implements for end users. */
+  | "reseller"
+  /** Consulting, outsourcing, managed services, BPO. */
+  | "services"
+  /** Telecommunications operator carrying somebody else's traffic. */
+  | "carrier"
+  /** Colocation, hosting, interconnection. */
+  | "datacentre"
+  /** Certification, education and training. */
+  | "training"
+  /** Standards bodies and industry associations. */
+  | "standards";
+
+/** The closed vocabulary, for the guard and for filter UIs. */
+export const VENDOR_TAGS: readonly VendorTag[] = [
+  "vendor",
+  "distributor",
+  "reseller",
+  "services",
+  "carrier",
+  "datacentre",
+  "training",
+  "standards",
+] as const;
+
 export interface PartnerVendor {
   slug: string;
   group: "redu" | "other" | "contemporary";
@@ -62,6 +108,12 @@ export interface PartnerVendor {
   /** Optional label for the external link. */
   externalLabel?: string;
   /** Source list for provenance. */
+  /**
+   * What this company IS. Several may apply. See VendorTag.
+   * Optional in the type so the field can be rolled out without breaking the
+   * build; the guard requires at least one on every entry.
+   */
+  tags?: VendorTag[];
   sources?: {
     label: string;
     url: string;
@@ -138,6 +190,7 @@ export const partnerVendors: PartnerVendor[] = [
   // ---- GROUP: Red Education training partners (Rodolfo does NOT teach these) ----
   {
     slug: "nutanix",
+    tags: ["vendor"],
     group: "redu",
     name: "Nutanix",
     founded: 2009,
@@ -166,6 +219,7 @@ export const partnerVendors: PartnerVendor[] = [
     // Verified 2026-07-28. Note the founding-date sources differ by three days
     // (8 vs 11 December 2015); the 11th is the public announcement and is used.
     slug: "openai",
+    tags: ["vendor"],
     group: "contemporary",
     name: "OpenAI",
     founded: 2015,
@@ -195,6 +249,7 @@ export const partnerVendors: PartnerVendor[] = [
     // the sources) and the copy states what the company IS rather than
     // advertising it. If this entry ever reads like promotion, it is wrong.
     slug: "anthropic",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Anthropic",
     founded: 2021,
@@ -224,6 +279,7 @@ export const partnerVendors: PartnerVendor[] = [
     // and Brin tried to SELL PageRank to AltaVista for $1M and were turned
     // down. Verified 2026-07-28.
     slug: "google-search",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Google",
     founded: 1998,
@@ -251,6 +307,7 @@ export const partnerVendors: PartnerVendor[] = [
     // timeline orders by founding, and an era has no founding year.
     // It also ENDED, so it uses the `ended` field.
     slug: "sixdegrees",
+    tags: ["vendor"],
     group: "other",
     name: "SixDegrees.com",
     founded: 1996,
@@ -286,6 +343,7 @@ export const partnerVendors: PartnerVendor[] = [
     // several sources and January 2000 by others; that is almost certainly
     // announcement versus completion, and both are stated.
     slug: "genesys",
+    tags: ["vendor"],
     group: "other",
     name: "Genesys",
     founded: 1990,
@@ -326,6 +384,7 @@ export const partnerVendors: PartnerVendor[] = [
     // was a LATER chief executive rather than a founder. Only the consistent
     // names are stated and the disagreement is recorded.
     slug: "arcsight",
+    tags: ["vendor"],
     group: "other",
     name: "ArcSight",
     founded: 2000,
@@ -356,6 +415,132 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // ACCENTURE - added 2026-08-01 (PRIME).
+    //
+    // The entry is built on one irony, and it is a documented one rather than a
+    // rhetorical one: they fought for years to keep a name, LOST that argument,
+    // were forced to abandon it at great cost - and eighteen months later the
+    // name was radioactive.
+    //
+    // TWO DISCREPANCIES RECORDED: the settlement is reported at ~$1B and
+    // ~$1.2B; and the employee who proposed the name is described as based in
+    // Oslo by most sources and as Danish by one.
+    slug: "accenture",
+    tags: ["services"],
+    group: "other",
+    name: "Accenture",
+    founded: 1989,
+    tagline: "Spent years fighting to keep a name, lost, and it was the luckiest defeat in consulting.",
+    intro:
+      "The consulting practice grew inside Arthur Andersen, the accounting firm founded in 1913. It was formally constituted as Andersen Consulting in 1989 under a Swiss holding entity, with an arrangement that would cause everything that followed: the consultants generated most of the revenue and shared a portion of it with the accountants.",
+    body: [
+      "**One early engagement belongs on this timeline for its own sake.** In 1953 the practice ran a feasibility study for General Electric that led to the installation of a UNIVAC I - among the first uses of a computer for ordinary business administration rather than for science or defence. UNIVAC appears elsewhere here as one of the BUNCH, the five manufacturers that spent the 1960s competing with IBM.",
+      "The relationship soured over exactly what you would expect. By the 1980s the consultants were producing the larger share of income while paying it upward, and in 1995 Arthur Andersen established a consulting arm of its own - which the consultants regarded as a breach of the spirit of the agreement, whatever the letter said. In December 1997 the Andersen Consulting partners voted unanimously to dissolve the partnership, citing serious breaches of contract and irreconcilable differences, and took it to arbitration at the International Chamber of Commerce.",
+      "**The ruling, on 7 August 2000, went against them on the question they had asked.** The arbitrator, Guillermo Gamba, found that Arthur Andersen had not technically breached the 1989 agreement. He granted full separation anyway - but required the consultancy to pay a settlement, reported at around $1B and in some accounts $1.2B, **and to give up the Andersen name entirely by 1 January 2001.**",
+      "So they had four months to rename a global firm. An internal competition produced **Accenture**, submitted by an employee named Kim Petersen working in Oslo, from *accent on the future*. It was widely mocked as management-consultant nonsense, and the change cost somewhere between $100M and $175M to execute and promote. The firm listed on the New York Stock Exchange in July 2001, raising about $1.7B at $14.50 a share.",
+      "**And then Enron.** In 2002 Arthur Andersen was convicted on an obstruction charge connected to the Enron audits, and the firm collapsed. The name Andersen went from an eighty-year-old mark of professional respectability to a synonym for shredded documents in a matter of months.",
+      "**Which makes this the luckiest defeat in the history of consulting.** They had fought for years to escape a parent while keeping the brand. They lost that argument, paid a billion dollars, and were ordered to abandon the name at enormous expense. Eighteen months later the thing they had been forced to give up would have destroyed them. Forbes put it best at the time: after Enron, any name was better than Andersen.",
+      "It is worth being precise about what the arbitration actually did, because that is the part with a lesson in it. **The ruling did not merely rename them - it established them as a legally separate entity**, which is why Arthur Andersen's criminal conviction did not reach across and take the consultancy with it. The firewall was a condition they resented and it turned out to be the thing that saved them.",
+      "What followed is the ordinary arc at extraordinary scale: offshore delivery hubs in India and the Philippines, expansion into outsourcing and business process work, and growth from around $9B of revenue in 1998 to roughly $64B by 2024, with a headcount now approaching 800,000 across more than 120 countries.",
+    ],
+    externalUrl: "https://www.britannica.com/money/Accenture",
+    externalLabel: "Accenture (Britannica)",
+    sources: [
+      { label: "Britannica: formal establishment as Andersen Consulting in 1989, the 2000 arbitration allowing separation while forfeiting the Andersen name, the 1 January 2001 rename and Bermuda incorporation, the July 2001 IPO, and the timing relative to the SEC sanctions and the Enron obstruction case that ended Arthur Andersen", url: "https://www.britannica.com/money/Accenture" },
+      { label: "Grokipedia: the 1989 fee arrangement, Arthur Andersen establishing its own consulting unit in 1995, the unanimous December 1997 vote to dissolve, and arbitrator Guillermo Gamba's 7 August 2000 finding that there had been no technical breach while granting separation for a settlement estimated at $1B", url: "https://grokipedia.com/page/Accenture" },
+      { label: "TIME: the internal competition, the Oslo employee's submission of Accenture from 'accent on the future', the reception it got, and an execution cost estimated at $100M", url: "https://content.time.com/time/specials/packages/article/0,28804,1914815_1914808_1914804,00.html" },
+      { label: "Forbes (March 2002): $175M spent promoting the new name, and the observation that after Enron any tag was better than Andersen", url: "https://www.forbes.com/global/2002/0304/060.html" },
+      { label: "Company history: the 1953 General Electric feasibility study leading to a UNIVAC I installation, and the naming attributed to Kim Petersen", url: "https://swottemplate.com/blogs/brief-history/accenture-brief-history", sourceNote: "This source describes Petersen as Danish; others place him in Oslo. The submission itself is consistently attributed." },
+      { label: "Arbitration detail: the ICC ruling granting independence for a payment reported at $1.2B and requiring the name change by 1 January 2001, and the point that separate-entity status meant no spin-off liability when Arthur Andersen collapsed", url: "https://www.useluminix.com/reports/company-overviews/accenture-company-overview-business-segments-financials-and-global-market-position-2026/source/0", sourceNote: "Reports the settlement at $1.2B where others say ~$1B; both figures are given in the text above." },
+    ],
+  },
+  {
+    // HONEYWELL - added 2026-08-01 (PRIME), prompted by its appearance as a
+    // Nozomi investor.
+    //
+    // The reason this belongs on a networking and systems timeline is MULTICS:
+    // Honeywell inherited the project with GE's computer division in 1970, and
+    // Multics is what Unix was named against. Everything else here is context
+    // for that.
+    slug: "honeywell",
+    tags: ["vendor"],
+    group: "other",
+    name: "Honeywell",
+    founded: 1906,
+    tagline: "A thermostat company that became a mainframe company and then went back to controlling physical things.",
+    intro:
+      "Mark Honeywell founded the Honeywell Heating Specialty Company in Wabash, Indiana in 1906. The other half of the lineage is older still: Albert Butz had formed the Butz Thermo-Electric Regulator Company in 1886 to commercialise a device that opened and closed a furnace damper on its own, and that business became the Minneapolis Heat Regulator Company. The two merged in 1927 as Minneapolis-Honeywell, and for its first fifty years the company's business was regulating temperature.",
+    body: [
+      "**Then it became a computer company, which most people have forgotten.** It entered through a 1955 joint venture with Raytheon, bought out its partner, acquired Computer Control Corporation in 1966, and through the 1960s was one of the manufacturers collectively nicknamed **Snow White and the Seven Dwarfs** - IBM being Snow White. As the field thinned to five the survivors were renamed after their initials: Burroughs, UNIVAC, NCR, Control Data and Honeywell. **The BUNCH.**",
+      "**In 1970 it bought General Electric's computer division, and that is the transaction that matters here.** It rebranded the GE-600 mainframes as the Honeywell 6000 series - and it inherited GE's ongoing operating system project, **Multics**.",
+      "**Multics is the reason this entry exists on a site about networks and systems.** It was an enormously ambitious timesharing system, and it set the standard for what such a system should do about security in particular - rings of protection, access control on segments, the idea that a machine shared by mutually distrustful users needs the operating system to enforce that distrust. Its influence on **Unix** is not a matter of vague inheritance: the name Unix was coined in deliberate contrast to it. Every Unix-derived system in use today, including the ones this site's tools run on, is downstream of an argument about Multics.",
+      "Honeywell also became a serious force in storage. Its joint venture with Bull and Control Data, Magnetic Peripherals, was the world leader in fourteen-inch disk drives through the 1970s and early 1980s.",
+      "**And then it left.** It merged its computer operations with Bull and NEC in 1986, sold the division outright to Groupe Bull, and by 1991 was out of the computer business entirely. In 1986 it had bought Sperry Aerospace - a piece of a fellow BUNCH member - and turned back toward avionics and control systems.",
+      "**The 1999 transaction is worth stating precisely, because it is usually said backwards.** AlliedSignal acquired Honeywell, and then took the Honeywell name for itself, because the name was worth more than its own. The acquired company's brand survived the acquirer's.",
+      "What it does now closes a circle. Honeywell builds industrial automation, building control and aerospace systems - which is to say it is once again in the business of controlling physical things, having spent thirty-five years in the business of computing them. **And it is an investor in Nozomi Networks**, which appears on this timeline for monitoring the security of industrial control systems. A company that spent the 1970s running the operating system that taught the industry about protection domains now funds the people watching its own controllers for intrusions.",
+    ],
+    acquisitions: [
+      { year: 1970, name: "General Electric's computer division", what: "GE's mainframe business, rebranded as the Honeywell 6000 series.", became: "Honeywell Information Systems - and custody of the Multics project, whose design shaped Unix and therefore most of what came after.", sourceNote: "GE's process control business followed separately in 1974." },
+      { year: 1975, name: "Xerox Data Systems", what: "The Sigma line, which had a small but committed customer base.", became: "Absorbed into Honeywell's range; the CP-6 operating system descended from this side of the house." },
+      { year: 1986, name: "Sperry Aerospace Group", price: "~$1.03B", what: "Bought from Unisys - which is to say, from the merged remains of two other BUNCH members.", became: "The foundation of Honeywell's modern avionics business." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Honeywell",
+    externalLabel: "Honeywell",
+    sources: [
+      { label: "Britannica: the lineage back to Albert Butz's 1886 thermostat company, Mark Honeywell's 1906 founding, the 1927 merger, and the 1934 acquisition of Brown Instrument", url: "https://www.britannica.com/money/Honeywell-International-Inc" },
+      { label: "Computer History Museum: entering computing via the 1955 Raytheon joint venture, buying Computer Control Corporation, acquiring GE's computer division in 1970 and with it Multics - which set the standard for timesharing systems, particularly on security - then Honeywell-Bull in 1986 and exit by 1991", url: "https://www.computerhistory.org/brochures/g-i/honeywell-information-systems-inc/" },
+      { label: "Kiddle/Wikipedia summary: Snow White and the Seven Dwarfs, the BUNCH, the GE-600 rebrand as the Honeywell 6000 series running GCOS, Multics and CP-6, Multics' influence on Unix, and Magnetic Peripherals leading fourteen-inch disk drives", url: "https://kids.kiddle.co/Honeywell" },
+      { label: "Wikipedia: Honeywell 6000 series - manufactured 1970 to 1989, sold to Groupe Bull in 1989", url: "https://en.wikipedia.org/wiki/Honeywell_6000_series" },
+      { label: "Honeywell's own history: AlliedSignal acquiring Honeywell in 1999 and electing to retain the Honeywell name for its brand recognition, with the headquarters moving to Morristown", url: "https://www.honeywell.com/us/en/company/history" },
+      { label: "HRAC Arizona timeline: the 1974 purchase of GE's process control business which became the Process Solutions division, the 1986 Sperry Aerospace acquisition at $1.029B, and the 1991 sale of Honeywell Information Systems to Bull", url: "https://hracaz.org/honeywell" },
+    ],
+  },
+  {
+    // NOTE (2026-08-01): a SECOND entry for this company was created in error
+    // under the slug `nozomi` and removed the same session. Before adding any
+    // company, check whether it is already present BY NAME - checking the slug
+    // is not enough, because the slug is exactly the thing that can differ.
+
+    // NOZOMI NETWORKS - added 2026-08-01 (PRIME). First OT/ICS security entry
+    // on the timeline.
+    //
+    // SIXTH entry on the neutrality thread, and the only one where the question
+    // is CURRENTLY OPEN: an industrial automation vendor now owns the company
+    // that monitors industrial automation equipment, and the company says its
+    // vendor-neutrality is unaffected. That is precisely the CompTIA question,
+    // live.
+    //
+    // One source carried an aside about an Anthropic programme. It is
+    // tangential to the company's history, oddly phrased, and concerns the
+    // maker of the model writing this entry. DELIBERATELY OMITTED.
+    slug: "nozomi-networks",
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Nozomi Networks",
+    founded: 2013,
+    tagline: "Built on the constraint that you cannot scan an industrial network without risking the plant.",
+    intro:
+      "Andrea Carcano and Moreno Carullo founded Nozomi Networks in Switzerland in 2013, with European operations in Mendrisio and a later headquarters in San Francisco. Carcano had done security engineering at Eni, the Italian energy company, and research for the European Commission, and had published academic work including a description of early malware targeting SCADA systems. Carullo holds a doctorate in artificial intelligence and has served on IEC TC57 WG15, the subcommittee that writes security standards for power system communications,. Between them that is the exact pair of backgrounds the problem needed.",
+    body: [
+      "**The constraint that defines this whole category is worth stating first, because it explains the product.** In ordinary IT security you find out what is on a network by scanning it: you send traffic to a device and read what comes back. On an industrial control network you cannot do that. A programmable logic controller running a production line may be twenty years old, may have a network stack that predates the idea of hostile input, and can be knocked over by an unexpected packet. **The scan that inventories your office safely can stop a plant.**",
+      "So OT security had to be built the other way round: **passively**. You watch the traffic that is already flowing, infer from it what devices exist, what they are, what they normally say to each other, and then notice when that changes. The flagship product was named SCADAguardian, and the technique is network behavioural analytics applied to a place where behaviour is unusually predictable - which is the one advantage of industrial networks. An office network is chaos; a bottling line does roughly the same thing every day, so an anomaly actually means something.",
+      "The founders ran it themselves until about 2016, when they recruited Edgard Capdevielle to build a commercial organisation while they concentrated on the product. That arrangement lasted a decade, during which the company passed $100M in annual recurring revenue and, by its own account, became the first privately held OT security company to reach sustained cash-flow break-even. Its platform reportedly runs at five of the ten largest oil and gas companies, seven of the top ten pharmaceutical manufacturers and seven of the top ten utilities.",
+      "**Then the ownership question.** Mitsubishi Electric acquired the company for about $1B, completing in 2026, and on 28 July 2026 Carcano returned as chief executive with Capdevielle moving to an advisory role. The company states that it continues to operate independently and that its vendor-neutral approach is unaffected.",
+      "**That claim deserves attention rather than acceptance, and this timeline is the right place to say why.** Mitsubishi Electric manufactures industrial automation equipment. Nozomi's product monitors industrial automation equipment - including, necessarily, its new owner's. The strategic investors on the cap table before the acquisition were already the same shape: Honeywell, Schneider Electric and Johnson Controls, all of them vendors of the very equipment being watched.",
+      "**Read against three other entries here, the question is exactly the one this site keeps arriving at.** CompTIA's certifications are valuable because they belong to no vendor, and whether that survives private equity is unresolved. Kyndryl's advice became worth more the moment IBM stopped owning it, because a services arm of a cloud vendor cannot credibly recommend a competitor's cloud. Equinix built an entire business on being a landlord with no network of its own. **Nozomi is the live case: a monitoring company owned by a manufacturer of the things it monitors, asserting that this changes nothing.** It may well be right. The point is that the assertion is the thing to watch, and the answer arrives over years in whether its findings about one vendor's equipment read the same as its findings about another's.",
+    ],
+    externalUrl: "https://www.nozominetworks.com/company/leadership",
+    externalLabel: "Nozomi Networks: leadership",
+    sources: [
+      { label: "Nozomi Networks leadership page: Carcano's academic work including a description of early SCADA-targeting malware, and Carullo's doctorate in artificial intelligence", url: "https://www.nozominetworks.com/company/leadership" },
+      { label: "PR Newswire, 28 July 2026: Carcano resuming the chief executive role, Capdevielle's decade as CEO and move to executive advisor, passing $100M in annual recurring revenue, and the ~$1B Mitsubishi Electric acquisition", url: "https://www.prnewswire.com/news-releases/nozomi-networks-appoints-co-founder-andrea-carcano-as-ceo-to-accelerate-ai-driven-innovation-in-its-next-phase-of-growth-302836025.html" },
+      { label: "citybiz: the customer figures across oil and gas, pharmaceuticals and utilities, and the company's statement that the acquisition allows it to continue operating independently and maintain its vendor-neutral approach", url: "https://www.citybiz.co/article/880246/nozomi-networks-names-co-founder-andrea-carcano-ceo-following-mitsubishi-electric-acquisition/" },
+      { label: "SDxCentral: Carcano's prior security engineering at Eni and research for the European Commission, the 2013-2016 CEO period, and the wider OT consolidation including ServiceNow's purchase of Armis", url: "https://www.sdxcentral.com/news/nozomi-networks-crowns-co-founder-andrea-carcano-as-ceo/", sourceNote: "Used for the founder background and market context. An aside in the same article about an unrelated programme is not used." },
+      { label: "StarLink vendor profile: SCADAguardian applying network behavioural analytics to ICS environments for real-time visibility into process network communications", url: "https://www.starlinkme.net/vendors/nozomi-networks/56", sourceNote: "Distributor marketing page. Used only for the product description, which matches the company's own." },
+      { label: "Ownership analysis: the strategic investor group of Honeywell Ventures, Mitsubishi Electric, Schneider Electric and Johnson Controls acting as customer-owners alongside GGV and Lux Capital", url: "https://businessmodelcanvastemplate.com/blogs/owners/nozomi-networks-who-owns" },
+    ],
+  },
+  {
     // COMPUGRAF / CG ONE - added 2026-08-01 (PRIME). First of the Brazilian
     // integrators.
     //
@@ -371,6 +556,7 @@ export const partnerVendors: PartnerVendor[] = [
     // An entry should be as long as its evidence, not as long as its
     // neighbours.
     slug: "compugraf",
+    tags: ["reseller"],
     group: "other",
     name: "Compugraf (now CG One)",
     founded: 1982,
@@ -402,6 +588,7 @@ export const partnerVendors: PartnerVendor[] = [
     // Also loops to DEC, already on this timeline: both founders came from
     // there, PAIX was DEC's, and Equinix later bought PAIX back.
     slug: "equinix",
+    tags: ["datacentre"],
     group: "other",
     name: "Equinix",
     founded: 1998,
@@ -439,6 +626,7 @@ export const partnerVendors: PartnerVendor[] = [
     // 2004; Wikipedia, TI INSIDE (reporting the merger contemporaneously on
     // 15 August 2005) and Exame all say 2005. Both given.
     slug: "tivit",
+    tags: ["services", "datacentre"],
     group: "other",
     name: "TIVIT",
     founded: 2005,
@@ -474,6 +662,7 @@ export const partnerVendors: PartnerVendor[] = [
     // technology company's founder as infrastructure for an industry.
     // Stefanini was a training company that BECAME the technology company.
     slug: "stefanini",
+    tags: ["services", "training"],
     group: "other",
     name: "Stefanini",
     founded: 1987,
@@ -507,6 +696,7 @@ export const partnerVendors: PartnerVendor[] = [
     // was the product: a services business owned by a cloud vendor cannot
     // credibly recommend a competitor's cloud.
     slug: "kyndryl",
+    tags: ["services"],
     group: "contemporary",
     name: "Kyndryl",
     founded: 2021,
@@ -545,6 +735,7 @@ export const partnerVendors: PartnerVendor[] = [
     //
     // NO PRICE IS GIVEN: this session's sources did not state one.
     slug: "comptia",
+    tags: ["training", "standards"],
     group: "other",
     name: "CompTIA",
     founded: 1982,
@@ -580,6 +771,7 @@ export const partnerVendors: PartnerVendor[] = [
     // DATE NOTE: sources give June 1999 and August 1999. They are describing
     // different events - founding and first public alpha - and both are stated.
     slug: "freeradius",
+    tags: ["standards", "vendor"],
     group: "other",
     name: "FreeRADIUS",
     founded: 1999,
@@ -616,6 +808,7 @@ export const partnerVendors: PartnerVendor[] = [
     //   * ACQUISITION YEAR: 2018 and 2019 both appear; that is announcement
     //     versus completion and both are given with their meaning.
     slug: "hcl",
+    tags: ["services", "vendor", "training"],
     group: "other",
     name: "HCLTech",
     founded: 1976,
@@ -660,6 +853,7 @@ export const partnerVendors: PartnerVendor[] = [
     //     Lotus in 1991.
     //   * HCL - on PRIME's queue - has owned Notes and Domino since 2019.
     slug: "lotus",
+    tags: ["vendor"],
     group: "other",
     name: "Lotus Development",
     founded: 1982,
@@ -707,6 +901,7 @@ export const partnerVendors: PartnerVendor[] = [
     // and contradicts itself in the same article. The majority account is given
     // and the disagreement noted rather than silently resolved.
     slug: "qualys",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Qualys",
     founded: 1999,
@@ -736,6 +931,7 @@ export const partnerVendors: PartnerVendor[] = [
     // a distinguished engineer in Juniper's security CTO office, and Juniper is
     // a career chapter on this site.
     slug: "illumio",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Illumio",
     founded: 2013,
@@ -775,6 +971,7 @@ export const partnerVendors: PartnerVendor[] = [
     // The widely repeated "recipe app for his wife" origin story is OMITTED:
     // it was not in this session's verified sources.
     slug: "elastic",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Elastic",
     founded: 2012,
@@ -811,6 +1008,7 @@ export const partnerVendors: PartnerVendor[] = [
     // did not state it, and the commonly quoted figures vary. Better absent
     // than approximated.
     slug: "apple",
+    tags: ["vendor"],
     group: "other",
     name: "Apple",
     founded: 1976,
@@ -858,6 +1056,7 @@ export const partnerVendors: PartnerVendor[] = [
     // operation from a few hundred dollars a month to over a million a year,
     // and was chief executive for more than a decade.
     slug: "kaspersky",
+    tags: ["vendor"],
     group: "other",
     name: "Kaspersky",
     founded: 1997,
@@ -899,6 +1098,7 @@ export const partnerVendors: PartnerVendor[] = [
     // The 18,000 figure is given with the caveat the US government itself
     // attached to it, which is almost always dropped in retellings.
     slug: "solarwinds",
+    tags: ["vendor"],
     group: "contemporary",
     name: "SolarWinds",
     founded: 1999,
@@ -939,6 +1139,7 @@ export const partnerVendors: PartnerVendor[] = [
     // NOTE: founding date is given as 16 September 2002 by most sources and
     // 4 October 2002 by one; both recorded rather than one chosen.
     slug: "tenable",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Tenable",
     founded: 2002,
@@ -965,6 +1166,7 @@ export const partnerVendors: PartnerVendor[] = [
     // RAPID7 - added 2026-07-29 (PRIME). The deliberate mirror of Tenable:
     // Tenable closed an open-source project to fund itself; Rapid7 BOUGHT one.
     slug: "rapid7",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Rapid7",
     founded: 2000,
@@ -996,6 +1198,7 @@ export const partnerVendors: PartnerVendor[] = [
     // Both are stated with their framing instead of one being chosen, which is
     // the standing rule when sources disagree on a number.
     slug: "lumen-centurylink-level3",
+    tags: ["carrier"],
     group: "other",
     name: "Lumen, CenturyLink, Level 3 and Global Crossing",
     founded: 1968,
@@ -1040,6 +1243,7 @@ export const partnerVendors: PartnerVendor[] = [
     // founder, sourced to MIT's own alumni association, and omitting it would
     // be a strange kind of tidiness. It is stated plainly and not dramatised.
     slug: "akamai",
+    tags: ["vendor", "services"],
     group: "other",
     name: "Akamai Technologies",
     founded: 1998,
@@ -1067,6 +1271,7 @@ export const partnerVendors: PartnerVendor[] = [
     // shows at IronPort (2002), Zscaler (2007) and CrowdStrike (2013) - and
     // this one started, like IronPort, from a spam question.
     slug: "cloudflare",
+    tags: ["vendor", "services"],
     group: "contemporary",
     name: "Cloudflare",
     founded: 2009,
@@ -1092,6 +1297,7 @@ export const partnerVendors: PartnerVendor[] = [
     // F5 - company history (PRIME step 4, 2026-07-29). Hub + lineage page
     // already carry the deal detail; this is the company and the idea.
     slug: "f5",
+    tags: ["vendor"],
     group: "other",
     name: "F5",
     founded: 1996,
@@ -1115,6 +1321,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // FORTINET - company history (PRIME step 4, 2026-07-29).
     slug: "fortinet",
+    tags: ["vendor"],
     group: "other",
     name: "Fortinet",
     founded: 2000,
@@ -1139,6 +1346,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // NETSKOPE - company history (PRIME step 4, 2026-07-29).
     slug: "netskope",
+    tags: ["vendor"],
     group: "other",
     name: "Netskope",
     founded: 2012,
@@ -1162,6 +1370,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // PING IDENTITY - company history (PRIME step 4, 2026-07-29).
     slug: "ping-identity",
+    tags: ["vendor"],
     group: "other",
     name: "Ping Identity",
     founded: 2002,
@@ -1185,6 +1394,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // ZSCALER - company history (PRIME step 4, 2026-07-29).
     slug: "zscaler",
+    tags: ["vendor"],
     group: "other",
     name: "Zscaler",
     founded: 2007,
@@ -1211,6 +1421,7 @@ export const partnerVendors: PartnerVendor[] = [
     // this entry tells the COMPANY STORY and leaves the acquisition detail
     // where it already lives rather than duplicating it.
     slug: "extreme",
+    tags: ["vendor"],
     group: "other",
     name: "Extreme Networks",
     founded: 1996,
@@ -1236,6 +1447,7 @@ export const partnerVendors: PartnerVendor[] = [
     // CHECK POINT - company history (PRIME step 4, 2026-07-29).
     // The lineage page carries the deals; this is the company and the idea.
     slug: "check-point",
+    tags: ["vendor"],
     group: "other",
     name: "Check Point Software Technologies",
     founded: 1993,
@@ -1263,6 +1475,7 @@ export const partnerVendors: PartnerVendor[] = [
     // Its ending is already recorded from the Ivanti research: acquired
     // alongside MobileIron, completing 1 December 2020.
     slug: "pulse-secure",
+    tags: ["vendor"],
     group: "other",
     name: "Pulse Secure",
     founded: 2014,
@@ -1294,6 +1507,7 @@ export const partnerVendors: PartnerVendor[] = [
     // so the history is written as three lineages that happen to share a
     // chapter. McAfee's fuller story lives at mcafee-fireeye-trellix.
     slug: "fireeye-mcafee-ixia",
+    tags: ["vendor"],
     group: "other",
     name: "FireEye, McAfee and Ixia",
     founded: 1987,
@@ -1320,6 +1534,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // CISCO - company history (PRIME step 4, 2026-07-29).
     slug: "cisco",
+    tags: ["vendor"],
     group: "other",
     name: "Cisco Systems",
     founded: 1984,
@@ -1350,6 +1565,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // PALO ALTO NETWORKS - company history (PRIME step 4, 2026-07-29).
     slug: "palo-alto",
+    tags: ["vendor"],
     group: "other",
     name: "Palo Alto Networks",
     founded: 2005,
@@ -1376,6 +1592,7 @@ export const partnerVendors: PartnerVendor[] = [
     // single most connected fact on this timeline: Ken Xie -> Fortinet,
     // Nir Zuk -> Palo Alto, Changming Liu -> Aerohive -> Extreme.
     slug: "netscreen-juniper",
+    tags: ["vendor"],
     group: "other",
     name: "NetScreen and Juniper Networks",
     founded: 1996,
@@ -1410,6 +1627,7 @@ export const partnerVendors: PartnerVendor[] = [
     // March 1983, in Levine's garage. The four-way split is the reason three
     // other entries on this timeline exist at all.
     slug: "cabletron-enterasys",
+    tags: ["vendor"],
     group: "other",
     name: "Cabletron Systems and Enterasys",
     founded: 1983,
@@ -1448,6 +1666,7 @@ export const partnerVendors: PartnerVendor[] = [
     // lineage facts were already verified in the Cabletron research earlier
     // this week.
     slug: "riverstone",
+    tags: ["vendor"],
     group: "other",
     name: "Riverstone Networks",
     founded: 1996,
@@ -1475,6 +1694,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // IRONPORT - company history (PRIME step 4, 2026-07-29).
     slug: "ironport",
+    tags: ["vendor"],
     group: "other",
     name: "IronPort Systems",
     founded: 2000,
@@ -1508,6 +1728,7 @@ export const partnerVendors: PartnerVendor[] = [
     // History-Computer. NOTE: sources give both $399 and $600 for the Model I
     // launch price; both are recorded rather than one being chosen.
     slug: "tandy-radioshack",
+    tags: ["vendor", "reseller"],
     group: "other",
     name: "Tandy and RadioShack",
     founded: 1977,
@@ -1545,6 +1766,7 @@ export const partnerVendors: PartnerVendor[] = [
     // Verified against Wikipedia, Grokipedia, Forbes and contemporaneous
     // reporting.
     slug: "crowdstrike",
+    tags: ["vendor"],
     group: "contemporary",
     name: "CrowdStrike",
     founded: 2011,
@@ -1573,6 +1795,7 @@ export const partnerVendors: PartnerVendor[] = [
     // CISCO, which is a career chapter on this site. Verified against
     // Wikipedia, Grokipedia and contemporaneous coverage of the acquisition.
     slug: "splunk",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Splunk",
     founded: 2003,
@@ -1610,6 +1833,7 @@ export const partnerVendors: PartnerVendor[] = [
     // product line to Blue Coat in 2006.
     // Verified against Wikipedia and Grokipedia.
     slug: "netapp",
+    tags: ["vendor"],
     group: "contemporary",
     name: "NetApp",
     founded: 1992,
@@ -1641,6 +1865,7 @@ export const partnerVendors: PartnerVendor[] = [
     // own name forty years on - which on this timeline is genuinely unusual.
     // Verified against Wikipedia.
     slug: "sophos",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Sophos",
     founded: 1985,
@@ -1668,6 +1893,7 @@ export const partnerVendors: PartnerVendor[] = [
     //     LANDESK before Thoma Bravo did
     // Verified against Ivanti's own history pages, Wikipedia and Grokipedia.
     slug: "ivanti",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Ivanti",
     founded: 2017,
@@ -1702,6 +1928,7 @@ export const partnerVendors: PartnerVendor[] = [
     // itself then ended inside Dell. The timeline can now show both halves.
     // Verified against EMC's own SEC merger filings and Wikipedia.
     slug: "emc",
+    tags: ["vendor"],
     group: "other",
     name: "EMC Corporation",
     founded: 1979,
@@ -1739,6 +1966,7 @@ export const partnerVendors: PartnerVendor[] = [
     // as a business, and a reminder that services lineages matter as much as
     // product ones. Verified against contemporaneous coverage of the HP deal.
     slug: "eds",
+    tags: ["services"],
     group: "other",
     name: "Electronic Data Systems (EDS)",
     founded: 1962,
@@ -1764,6 +1992,7 @@ export const partnerVendors: PartnerVendor[] = [
     // GETRONICS - added 2026-07-28 (PRIME). Verified during the Wang research
     // the same day: it is the company Wang Laboratories ended inside.
     slug: "getronics",
+    tags: ["services", "vendor"],
     group: "other",
     name: "Getronics",
     founded: 1887,
@@ -1790,6 +2019,7 @@ export const partnerVendors: PartnerVendor[] = [
     // Verified 2026-07-28 against Wikipedia, Grokipedia, and contemporaneous
     // coverage of the CMGI and Overture transactions.
     slug: "altavista",
+    tags: ["vendor"],
     group: "other",
     name: "AltaVista",
     founded: 1995,
@@ -1825,6 +2055,7 @@ export const partnerVendors: PartnerVendor[] = [
     // Facts verified 2026-07-28 against the ASF's own history pages and the
     // httpd project's ABOUT_APACHE.
     slug: "apache",
+    tags: ["standards", "vendor"],
     group: "contemporary",
     name: "The Apache Software Foundation",
     founded: 1995,
@@ -1848,6 +2079,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "arista",
+    tags: ["vendor"],
     group: "redu",
     name: "Arista Networks",
     founded: 2004,
@@ -1867,6 +2099,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "avaya",
+    tags: ["vendor"],
     group: "redu",
     name: "Avaya",
     founded: 2000,
@@ -1887,6 +2120,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "aws",
+    tags: ["vendor", "datacentre", "services"],
     group: "redu",
     name: "Amazon Web Services",
     // Amazon Web Services launched S3 and EC2 in 2006; the brand had existed since 2002 but 2006 is when the cloud business as it is understood began.
@@ -1906,6 +2140,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "cyberark",
+    tags: ["vendor"],
     group: "redu",
     name: "CyberArk",
     founded: 1999,
@@ -1927,6 +2162,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "epi",
+    tags: ["training"],
     group: "redu",
     name: "EPI",
     // Originally incorporated in the UK in 1987 by Edward van Leent, later in Singapore in 1999, with a separate entity for training and certification from 2001.
@@ -1949,6 +2185,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "microsoft",
+    tags: ["vendor"],
     group: "redu",
     name: "Microsoft",
     // Founded 4 April 1975 in Albuquerque by Bill Gates and Paul Allen.
@@ -1968,6 +2205,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "mobileiron",
+    tags: ["vendor"],
     group: "redu",
     name: "MobileIron",
     founded: 2007,
@@ -1990,6 +2228,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "paessler",
+    tags: ["vendor"],
     group: "redu",
     name: "Paessler",
     founded: 1997,
@@ -2011,6 +2250,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "red-hat",
+    tags: ["vendor"],
     group: "redu",
     name: "Red Hat",
     founded: 1994,
@@ -2030,6 +2270,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "riverbed",
+    tags: ["vendor"],
     group: "redu",
     name: "Riverbed",
     founded: 2002,
@@ -2048,6 +2289,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "symantec",
+    tags: ["vendor"],
     group: "redu",
     name: "Symantec",
     founded: 1982,
@@ -2066,6 +2308,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "hpe-juniper-aruba",
+    tags: ["vendor"],
     group: "other",
     name: "HPE Networking - HP, 3Com, Aruba, Juniper",
     founded: 1939,
@@ -2086,6 +2329,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "brocade-broadcom",
+    tags: ["vendor"],
     group: "other",
     name: "Brocade & Foundry - the Broadcom diaspora",
     founded: 1995,
@@ -2107,6 +2351,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "mcafee-fireeye-trellix",
+    tags: ["vendor"],
     group: "other",
     name: "McAfee, FireEye & Mandiant - the road to Trellix",
     founded: 1987,
@@ -2127,6 +2372,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "mikrotik",
+    tags: ["vendor"],
     group: "other",
     name: "MikroTik - Latvia's quiet giant",
     founded: 1996,
@@ -2143,6 +2389,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "radware",
+    tags: ["vendor"],
     group: "other",
     name: "Radware - the Zisapel lineage",
     founded: 1997,
@@ -2160,6 +2407,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "imperva-thales",
+    tags: ["vendor"],
     group: "other",
     name: "Imperva - from WebCohort to Thales",
     founded: 2002,
@@ -2177,6 +2425,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "versa",
+    tags: ["vendor"],
     group: "other",
     name: "Versa Networks - the SASE independent",
     founded: 2012,
@@ -2194,6 +2443,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nortel-bay",
+    tags: ["vendor"],
     group: "other",
     name: "Nortel & Bay Networks - the giant that vanished",
     founded: 1895,
@@ -2216,6 +2466,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "madge",
+    tags: ["vendor"],
     group: "other",
     name: "Madge Networks - Token Ring's standard-bearer",
     founded: 1986,
@@ -2237,6 +2488,7 @@ export const partnerVendors: PartnerVendor[] = [
   // of the industry itself, each with a full lineage profile. ----
   {
     slug: "sun-microsystems",
+    tags: ["vendor"],
     group: "other",
     name: "Sun Microsystems - the network is the computer",
     founded: 1982,
@@ -2250,6 +2502,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "silicon-graphics",
+    tags: ["vendor"],
     group: "other",
     name: "Silicon Graphics - the geometry of Hollywood",
     founded: 1982,
@@ -2259,6 +2512,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "xerox",
+    tags: ["vendor", "standards"],
     group: "other",
     name: "Xerox - the company that fumbled the future",
     founded: 1906,
@@ -2268,6 +2522,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dec",
+    tags: ["vendor"],
     group: "other",
     name: "Digital Equipment Corporation - the minicomputer king",
     founded: 1957,
@@ -2277,6 +2532,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nokia",
+    tags: ["vendor"],
     group: "other",
     name: "Nokia - from paper mill to network giant",
     founded: 1865,
@@ -2286,6 +2542,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "ericsson",
+    tags: ["vendor"],
     group: "other",
     name: "Ericsson - 150 years of telephony",
     founded: 1876,
@@ -2295,6 +2552,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "huawei",
+    tags: ["vendor"],
     group: "other",
     name: "Huawei - the Shenzhen ascent",
     founded: 1987,
@@ -2304,6 +2562,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "siemens",
+    tags: ["vendor", "services"],
     group: "other",
     name: "Siemens - the 1847 telegraph startup",
     founded: 1847,
@@ -2313,6 +2572,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "novell",
+    tags: ["vendor"],
     group: "other",
     name: "Novell - the network operating system",
     founded: 1983,
@@ -2322,6 +2582,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "oracle",
+    tags: ["vendor"],
     group: "other",
     name: "Oracle - the database empire",
     founded: 1977,
@@ -2331,6 +2592,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "ibm",
+    tags: ["vendor", "services"],
     group: "other",
     name: "IBM - the century company",
     founded: 1911,
@@ -2340,6 +2602,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "sap",
+    tags: ["vendor"],
     group: "other",
     name: "SAP - five engineers against the mainframe",
     founded: 1972,
@@ -2350,6 +2613,7 @@ export const partnerVendors: PartnerVendor[] = [
   // ---- Pioneer wave 2 (PRIME 2026-07-16): six more founders of the industry. ----
   {
     slug: "3com",
+    tags: ["vendor"],
     group: "other",
     name: "3Com - Ethernet leaves the lab",
     founded: 1979,
@@ -2359,6 +2623,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "compaq",
+    tags: ["vendor"],
     group: "other",
     name: "Compaq - the clone that became the king",
     founded: 1982,
@@ -2372,6 +2637,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "netscape",
+    tags: ["vendor"],
     group: "other",
     name: "Netscape - the company that opened the web",
     founded: 1994,
@@ -2381,6 +2647,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "motorola",
+    tags: ["vendor"],
     group: "other",
     name: "Motorola - the radio century",
     founded: 1928,
@@ -2390,6 +2657,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "unisys",
+    tags: ["vendor", "services"],
     group: "other",
     name: "Unisys - computing's oldest bloodlines",
     founded: 1886,
@@ -2399,6 +2667,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "data-general",
+    tags: ["vendor"],
     group: "other",
     name: "Data General - the soul of a new machine",
     founded: 1968,
@@ -2413,6 +2682,7 @@ export const partnerVendors: PartnerVendor[] = [
   // ---- Pioneer wave 3 (PRIME 2026-07-16): the deep bench. ----
   {
     slug: "marconi",
+    tags: ["vendor", "carrier"],
     group: "other",
     name: "Marconi - wireless itself, then the bubble",
     founded: 1897,
@@ -2422,6 +2692,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "wang",
+    tags: ["vendor"],
     group: "other",
     name: "Wang Laboratories - the office before the PC",
     founded: 1951,
@@ -2435,6 +2706,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "tandem",
+    tags: ["vendor"],
     group: "other",
     name: "Tandem Computers - the machine that never stops",
     founded: 1974,
@@ -2448,6 +2720,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "banyan",
+    tags: ["vendor"],
     group: "other",
     name: "Banyan Systems - the directory pioneer",
     founded: 1983,
@@ -2457,6 +2730,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "fujitsu",
+    tags: ["vendor", "services"],
     group: "other",
     name: "Fujitsu - Japan's computing standard-bearer",
     founded: 1935,
@@ -2466,6 +2740,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nec",
+    tags: ["vendor", "services"],
     group: "other",
     name: "NEC - Japan's first joint venture",
     founded: 1899,
@@ -2475,6 +2750,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "bell-labs-lucent-alcatel",
+    tags: ["vendor", "standards"],
     group: "other",
     name: "Bell Labs, Lucent & Alcatel - the transistor's bloodline",
     founded: 1898,
@@ -2484,6 +2760,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "intel-amd",
+    tags: ["vendor"],
     group: "other",
     name: "Intel & AMD - Fairchild's children: the x86 rivalry",
     founded: 1968,
@@ -2493,6 +2770,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "rand",
+    tags: ["standards"],
     group: "other",
     name: "RAND Corporation - where packet switching was imagined",
     founded: 1948,
@@ -2502,6 +2780,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "cyclades-network",
+    tags: ["standards"],
     group: "other",
     name: "CYCLADES (IRIA, France)",
     founded: 1971,
@@ -2518,6 +2797,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "toshiba",
+    tags: ["vendor"],
     group: "other",
     name: "Toshiba - the company that gave the world flash",
     founded: 1875,
@@ -2527,6 +2807,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "hitachi",
+    tags: ["vendor", "services"],
     group: "other",
     name: "Hitachi - the industrial giant that stores the world",
     founded: 1910,
@@ -2536,6 +2817,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "bull",
+    tags: ["vendor", "services"],
     group: "other",
     name: "Bull - Europe's computing champion",
     founded: 1931,
@@ -2545,6 +2827,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "ncsa",
+    tags: ["standards"],
     group: "other",
     name: "NCSA - the campus lab that made the web visible",
     founded: 1986,
@@ -2554,6 +2837,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "ciena",
+    tags: ["vendor"],
     group: "other",
     name: "Ciena - the company that taught fiber to carry colors",
     founded: 1992,
@@ -2563,6 +2847,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "sniffer-lineage",
+    tags: ["vendor"],
     group: "other",
     name: "The Sniffer lineage - Network General to NetScout",
     founded: 1984,
@@ -2572,6 +2857,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dolch",
+    tags: ["vendor"],
     group: "other",
     name: "Dolch (Kontron / Azonix lineage)",
     founded: 1987,
@@ -2589,6 +2875,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "blue-coat-packeteer",
+    tags: ["vendor"],
     group: "other",
     name: "Blue Coat & Packeteer - the checkpoint companies",
     founded: 1996,
@@ -2598,6 +2885,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "cyclades-avocent-vertiv",
+    tags: ["vendor"],
     group: "other",
     name: "Cyclades, Avocent & Vertiv - the physical layer of uptime",
     founded: 1965,
@@ -2607,6 +2895,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dell-force10",
+    tags: ["vendor"],
     group: "other",
     name: "Dell & Force10 - the direct model and its fabric",
     founded: 1984,
@@ -2616,6 +2905,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "zte",
+    tags: ["vendor"],
     group: "other",
     name: "ZTE - China's other giant",
     founded: 1985,
@@ -2625,6 +2915,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "fluke",
+    tags: ["vendor"],
     group: "other",
     name: "Fluke - the meters and certifiers in every field bag",
     founded: 1948,
@@ -2634,6 +2925,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dns-bind",
+    tags: ["standards"],
     group: "other",
     name: "DNS & BIND - the internet's phone book and its reference implementation",
     founded: 1983,
@@ -2643,6 +2935,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "http-gopher",
+    tags: ["standards"],
     group: "other",
     name: "HTTP & Gopher - the web's protocol and the rival it eclipsed",
     founded: 1989,
@@ -2652,6 +2945,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nvidia",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Nvidia - the GPU company that runs the fabric",
     founded: 1993,
@@ -2661,6 +2955,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "ubiquiti",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Ubiquiti - enterprise features at prosumer prices",
     founded: 2005,
@@ -2670,6 +2965,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "access-home-fleet",
+    tags: ["vendor"],
     group: "contemporary",
     name: "The access & home fleet - Netgear, TP-Link, Zyxel, Asus & Askey, Allied Telesis",
     founded: 1987,
@@ -2679,6 +2975,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "watchguard",
+    tags: ["vendor"],
     group: "contemporary",
     name: "WatchGuard - the red box that made the firewall an appliance",
     founded: 1996,
@@ -2688,6 +2985,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "a10-kemp",
+    tags: ["vendor"],
     group: "contemporary",
     name: "A10 & Kemp - the ADC challengers",
     founded: 2000,
@@ -2697,6 +2995,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "datacom",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Datacom - Brazil's networking manufacturer",
     founded: 1998,
@@ -2707,6 +3006,7 @@ export const partnerVendors: PartnerVendor[] = [
   // ---- Contemporary additions, PRIME roster 2026-07-22, importance-ranked ----
   {
     slug: "asus-askey",
+    tags: ["vendor"],
     group: "contemporary",
     name: "ASUS + Askey",
     founded: 1989,
@@ -2723,6 +3023,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "netgear",
+    tags: ["vendor"],
     group: "contemporary",
     name: "NETGEAR",
     founded: 1996,
@@ -2738,6 +3039,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "tp-link",
+    tags: ["vendor"],
     group: "contemporary",
     name: "TP-Link",
     founded: 1996,
@@ -2753,6 +3055,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "zyxel",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Zyxel",
     founded: 1988,
@@ -2769,6 +3072,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "allied-telesis",
+    tags: ["vendor"],
     group: "contemporary",
     name: "Allied Telesis",
     founded: 1987,
@@ -2792,3 +3096,40 @@ export function getPartnerVendor(slug: string): PartnerVendor | undefined {
 
 /** All slugs, for static generation. */
 export const partnerVendorSlugs = partnerVendors.map((v) => v.slug);
+
+
+/**
+ * TAG ROUTE SLUGS. `/industry/<this>` renders a filtered timeline.
+ *
+ * Plural where English is plural, which is why the map exists at all rather
+ * than just appending an "s": `services`, `training` and `standards` are
+ * already plural or uncountable, and "trainings" is not a word anyone should
+ * have to read.
+ *
+ * *** THESE MUST NEVER COLLIDE WITH A COMPANY SLUG OR A CAREER SLUG. *** They
+ * share the `/industry/[slug]` route, so a company called "vendors" would be
+ * unreachable and nobody would notice until somebody went looking for it. A
+ * guard checks this.
+ */
+export const TAG_ROUTES: Record<string, VendorTag> = {
+  vendors: "vendor",
+  distributors: "distributor",
+  resellers: "reseller",
+  services: "services",
+  carriers: "carrier",
+  datacentres: "datacentre",
+  training: "training",
+  standards: "standards",
+};
+
+/** Reverse lookup: tag -> the URL segment that lists it. */
+export const TAG_ROUTE_FOR: Record<VendorTag, string> = Object.fromEntries(
+  Object.entries(TAG_ROUTES).map(([route, tag]) => [tag, route]),
+) as Record<VendorTag, string>;
+
+/** Every company carrying a given tag, in the timeline's chronological order. */
+export function vendorsByTag(tag: VendorTag): PartnerVendor[] {
+  return partnerVendors
+    .filter((v) => v.tags?.includes(tag))
+    .sort((a, b) => (a.founded ?? 0) - (b.founded ?? 0));
+}

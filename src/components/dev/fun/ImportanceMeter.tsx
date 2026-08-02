@@ -412,17 +412,34 @@ export default function ImportanceMeter({ labels }: { labels: ImportanceMeterLab
       <div ref={resultsRef} />
 
       {shown && (
-      <div className="ztc-result im-result-centred">
-        <h2 className="ztc-section-title">{labels.subtotalLabel}</h2>
-        <p className="im-big mono">{result.apparentUrgency.toLocaleString()}</p>
-        <svg className="im-bar" viewBox="0 0 400 26" role="img" aria-hidden="true">
-          <rect className="im-bar-track" x="0" y="8" width="400" height="10" rx="5" />
-          <rect className="im-bar-fill" x="0" y="8" width={Math.max(0, fill * 400)} height="10" rx="5" />
-          <line className="im-bar-tick" x1="100" y1="4" x2="100" y2="22" />
-          <line className="im-bar-tick" x1="200" y1="4" x2="200" y2="22" />
-          <line className="im-bar-tick" x1="300" y1="4" x2="300" y2="22" />
-        </svg>
-        <p className="ztc-notes">{labels.remarks[result.remark]}</p>
+      <div className="ztc-result im-urgency">
+        <div className="im-urgency-row">
+          <span className="im-urgency-label">{labels.subtotalLabel}</span>
+          <span className="im-urgency-value mono">
+            {result.apparentUrgency.toLocaleString()}
+          </span>
+          <svg
+            className="im-bar"
+            viewBox="0 0 400 12"
+            preserveAspectRatio="none"
+            role="img"
+            aria-hidden="true"
+          >
+            <rect className="im-bar-track" x="0" y="1" width="400" height="10" rx="5" />
+            <rect
+              className="im-bar-fill"
+              x="0"
+              y="1"
+              width={Math.max(0, fill * 400)}
+              height="10"
+              rx="5"
+            />
+            <line className="im-bar-tick" x1="100" y1="0" x2="100" y2="12" />
+            <line className="im-bar-tick" x1="200" y1="0" x2="200" y2="12" />
+            <line className="im-bar-tick" x1="300" y1="0" x2="300" y2="12" />
+          </svg>
+          <span className="im-urgency-remark">{labels.remarks[result.remark]}</span>
+        </div>
       </div>
       )}
 

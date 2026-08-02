@@ -14598,5 +14598,51 @@
     "disclaimerHeading": "A note on the phrase",
     "disclaimerBody": "If English is not your first language: “zero fucks given” is a common informal expression meaning complete indifference — that something does not concern you in the slightest. It is vulgar, and it is used humorously far more often than aggressively, usually about bureaucracy, pointless urgency and work theatre rather than about people. The idea is not particular to English. Most European languages have their own idiom for the same shrug, built variously from food, animals, weather or anatomy, and several are a good deal more colourful than the English one. Register matters more than the words: it belongs in casual speech among people who know each other, and not in professional writing, a customer email or anything with your employer’s name on it.",
     "disclaimerSourcesHeading": "Where to read more"
+  },
+  "industryTags": {
+    "eyebrow": "Filtered view",
+    "count": "{count, plural, =0 {No companies yet} one {# company} other {# companies}}",
+    "empty": "Nothing carries this tag yet. The entries are written before they are filed, so an empty list here means the writing has not reached this corner of the industry rather than that the corner is empty.",
+    "backToAll": "All companies, in order",
+    "vendor": {
+      "title": "Vendors",
+      "short": "vendor",
+      "intro": "Companies that make the product. Most of this timeline is here, because most of the industry's stories are about somebody building a thing and then discovering what it was for."
+    },
+    "distributor": {
+      "title": "Distributors",
+      "short": "distributor",
+      "intro": "Two-tier distribution: they sell to resellers rather than to the organisations that use the equipment. An invisible layer to most engineers, and the one that decides which products are practical to buy in a given country."
+    },
+    "reseller": {
+      "title": "Resellers and integrators",
+      "short": "reseller",
+      "intro": "The companies that actually install the thing. They carry other people's products, and their skill is in making a portfolio assembled for commercial reasons behave like a system."
+    },
+    "services": {
+      "title": "Services and consulting",
+      "short": "services",
+      "intro": "Outsourcing, consulting, managed operations. They sell people and process rather than product, which is a harder thing to explain to a market and a harder thing to scale."
+    },
+    "carrier": {
+      "title": "Carriers",
+      "short": "carrier",
+      "intro": "Operators that move somebody else's traffic. The physical substrate everything above them assumes, and the reason several entries here are really about rights of way and undersea cable."
+    },
+    "datacentre": {
+      "title": "Data centres and interconnection",
+      "short": "data centre",
+      "intro": "Colocation, hosting and the places networks meet. Property businesses with network effects, which is a stranger combination than it sounds."
+    },
+    "training": {
+      "title": "Training and certification",
+      "short": "training",
+      "intro": "The companies and bodies that decide what competence looks like and who is allowed to claim it. On a site built by an instructor these are not a footnote."
+    },
+    "standards": {
+      "title": "Standards, research and protocols",
+      "short": "standards",
+      "intro": "Not companies selling anything, or not only that: the laboratories, foundations and specifications the commercial entries are built on top of."
+    }
   }
 }

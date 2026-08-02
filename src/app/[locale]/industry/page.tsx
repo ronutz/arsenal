@@ -29,6 +29,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { partnerVendors } from "@/content/vendors/partners";
+import { TAG_ROUTES, vendorsByTag } from "@/content/vendors/partners";
 import { CAREER_VENDORS, REDU_CAREER_PARTNERS } from "@/content/vendors/career";
 
 export async function generateMetadata({
@@ -52,7 +53,8 @@ export default async function IndustryHubPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations("vendors"); // career card copy (name/years/tagline)
+  const t = await getTranslations("vendors");
+  const tTags = await getTranslations({ locale, namespace: "industryTags" }); // career card copy (name/years/tagline)
   const tp = await getTranslations("partnerVendors"); // partner cards + section headings
   const ti = await getTranslations("industry"); // hub hero (new)
   const tNav = await getTranslations("nav");
@@ -215,6 +217,24 @@ export default async function IndustryHubPage({
               <p className="vendor-divider-note">{tp("timelineSectionNote")}</p>
             </div>
             <ol className="vendor-timeline">
+              {/* Filter chips. These lead to tag-filtered views of the same
+                  data, which is how the distributor and reseller pages PRIME
+                  asked for are built - as views rather than as lists somebody
+                  maintains. Counts are computed, so a chip cannot claim a
+                  number the page then contradicts. */}
+              <div className="industry-tag-chips">
+                {Object.entries(TAG_ROUTES).map(([route, tag]) => {
+                  const n = vendorsByTag(tag).length;
+                  if (n === 0) return null;
+                  return (
+                    <Link className="industry-tag-chip" href={`/industry/${route}`} key={route}>
+                      {tTags(`${tag}.short`)}
+                      <span className="industry-tag-chip-n mono">{n}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+
               {lineageTimeline.map((v) => (
                 <li key={v.slug} className="vendor-timeline-item">
                   <span className="vendor-timeline-year mono" aria-hidden="true">

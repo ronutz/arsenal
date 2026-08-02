@@ -38,7 +38,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import VendorTags from "@/components/VendorTags";
 import SiteFooter from "@/components/SiteFooter";
-import { getPartnerVendor, partnerVendorSlugs } from "@/content/vendors/partners";
+import { TAG_ROUTES, vendorsByTag, TAG_ROUTE_FOR, getPartnerVendor, partnerVendorSlugs } from "@/content/vendors/partners";
 import { routing } from "@/i18n/routing";
 import VendorProfileSections from "@/components/VendorProfileSections";
 import type { VendorProfile } from "@/content/vendors/profile-types";
@@ -200,9 +200,15 @@ const PROFILES: Record<string, VendorProfile> = {
 };
 
 export function generateStaticParams() {
-  return routing.locales.flatMap((locale) =>
-    partnerVendorSlugs.map((slug) => ({ locale, slug })),
-  );
+  // Company pages AND the tag-filtered lists share this route. They cannot be
+  // separate dynamic segments at the same level, so the page branches on
+  // whether the slug is a tag route. A guard forbids collisions between the
+  // two sets, because a company whose slug matched a tag route would simply be
+  // unreachable and nothing would say so.
+  return routing.locales.flatMap((locale) => [
+    ...partnerVendorSlugs.map((slug) => ({ locale, slug })),
+    ...Object.keys(TAG_ROUTES).map((slug) => ({ locale, slug })),
+  ]);
 }
 
 export default async function PartnerVendorPage({
@@ -212,6 +218,72 @@ export default async function PartnerVendorPage({
 }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
+
+  // ---- TAG-FILTERED LIST -------------------------------------------------
+  // If the slug names a tag route, this is a filtered timeline rather than a
+  // company. Rendered from the same data the tags live on, so it cannot drift:
+  // tag a company and it appears here, untag it and it leaves. That is the
+  // whole reason PRIME's request for distributor and reseller pages was built
+  // this way rather than as hand-maintained lists.
+  const tag = TAG_ROUTES[slug];
+  if (tag) {
+    const listed = vendorsByTag(tag);
+    const tTag = await getTranslations({ locale, namespace: "industryTags" });
+    return (
+      <>
+        <Header />
+        <main id="main">
+          <section className="section">
+            <div className="container vendor-container">
+              <p className="vendor-eyebrow mono">{tTag("eyebrow")}</p>
+              <h1 className="article-title">{tTag(`${tag}.title`)}</h1>
+              <p className="era-intro">{tTag(`${tag}.intro`)}</p>
+              <p className="ztc-notes mono">
+                {tTag("count", { count: listed.length })}
+              </p>
+
+              {listed.length === 0 ? (
+                <p className="ztc-notes">{tTag("empty")}</p>
+              ) : (
+                <div className="vendor-timeline">
+                  {listed.map((v) => (
+                    <div className="vendor-timeline-row" key={v.slug}>
+                      <span className="vendor-timeline-year mono" aria-hidden="true">
+                        {v.founded}
+                      </span>
+                      <Link className="vendor-card" href={`/industry/${v.slug}`}>
+                        <span className="vendor-card-years mono">
+                          {v.founded}
+                          {v.ended ? ` - ${v.ended.year}` : " - present"}
+                        </span>
+                        <span className="vendor-card-name">{v.name}</span>
+                        <span className="vendor-card-tagline">{v.tagline}</span>
+                        {/* Other tags this company holds, so a reader can move
+                            sideways rather than back. */}
+                        {(v.tags ?? []).filter((x) => x !== tag).length > 0 && (
+                          <span className="vendor-card-tags mono">
+                            {(v.tags ?? [])
+                              .filter((x) => x !== tag)
+                              .map((x) => tTag(`${x}.short`))
+                              .join(" · ")}
+                          </span>
+                        )}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <p className="ztc-notes">
+                <Link href="/industry">{tTag("backToAll")}</Link>
+              </p>
+            </div>
+          </section>
+        </main>
+        <SiteFooter />
+      </>
+    );
+  }
 
   const vendor = getPartnerVendor(slug);
   if (!vendor) notFound();
