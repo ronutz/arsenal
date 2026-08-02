@@ -1,0 +1,62 @@
+---
+slug: ognl-injection-in-waf-logs
+title: "Lendo OGNL num log de WAF: o que a carga pretendia fazer"
+summary: "Uma carga OGNL num log tem duas metades que vale distinguir: algo que tenta desligar o sandbox de expressões e algo que tenta executar um comando. Com as duas, é tentativa de exploração. Só com a segunda, normalmente é um scanner percorrendo uma lista. Sem nenhuma das duas, é sondagem verificando se a entrada é avaliada - e essa resposta decide se qualquer outra coisa da lista teria chance."
+concepts: ["ognl", "struts", "linguagem de expressão", "injeção", "waf", "rce", "cve-2017-5638", "cve-2018-11776", "segurança", "análise de log"]
+relatedTools: ["ognl-injection-decoder", "url-inspector", "base64"]
+relatedArticles: ["awaf-evasion-techniques"]
+category: security
+order: 9
+status: reviewed
+updated: "2026-08-01"
+---
+
+Você está de plantão, soa um alerta, e o evento contém isto:
+
+```
+%{(#_memberAccess["allowStaticMethodAccess"]=true).(@java.lang.Runtime@getRuntime().exec("id"))}
+```
+
+A pergunta útil não é "isso é ruim" - obviamente é -, mas **o que a carga pretendia fazer e se teria alguma chance aqui**. São perguntas diferentes, com respostas diferentes, e a própria carga diz bastante sobre as duas.
+
+## O que é OGNL, e por que um framework avaliaria uma
+
+Object-Graph Navigation Language é uma linguagem de expressão para ler e escrever propriedades de objetos Java. Um framework a usa para que a configuração alcance a aplicação em execução: buscar esta propriedade, chamar aquele método, formatar o resultado. É um recurso razoável. E é o problema inteiro, porque **uma expressão capaz de chamar métodos em objetos vivos só é segura enquanto toda expressão avaliada tiver sido escrita por alguém de confiança**.
+
+O Apache Struts passou anos corrigindo uma família de falhas com um mesmo formato: entrada de uma requisição chegava a um avaliador que a tratava como configuração. A mais conhecida, em 2017, estava no parser multipart de upload, em que um cabeçalho `Content-Type` malformado era avaliado enquanto o framework montava a mensagem de erro sobre ele. A requisição não precisava dar certo. Precisava falhar do jeito certo.
+
+## As duas metades
+
+Uma tentativa funcional precisava de duas coisas separadas, e distingui-las é quase todo o valor diagnóstico de uma carga.
+
+**A fuga do sandbox.** A OGNL restringe o que uma expressão pode tocar, por um objeto interno chamado `_memberAccess`. Por padrão ele recusa chamadas estáticas, que é o que impede uma expressão de alcançar toda a biblioteca de classes Java. A fuga consiste em alcançar esse objeto e desligar a restrição:
+
+```
+#_memberAccess["allowStaticMethodAccess"]=true
+```
+
+**A primitiva de execução.** Uma vez permitido o acesso estático, o objeto `Runtime` da JVM está a uma chamada de distância, e `exec` inicia um processo do sistema:
+
+```
+@java.lang.Runtime@getRuntime().exec("id")
+```
+
+## O que cada combinação diz
+
+**As duas presentes.** Tentativa real de exploração, montada por quem entendeu o mecanismo. Apure se a requisição foi bloqueada, se o runtime está corrigido e o que a aplicação fez com ela. Trate o horário como a parte interessante da linha, não a carga.
+
+**Execução sem fuga.** Comum, e bem menos alarmante. Em qualquer runtime corrigido a chamada estática é recusada, então a carga não sai da avaliação de expressão para a criação de processo. Normalmente significa que um scanner percorre uma lista, não que alguém olhou especificamente para a sua aplicação.
+
+**Fuga sem execução.** Muitas vezes a primeira etapa de uma tentativa em duas partes, ou uma sondagem verificando se a manipulação é possível antes de enviar algo caro.
+
+**Nenhuma das duas, mas com sintaxe de expressão.** Algo como `%{1+1}`. É uma sondagem com uma única pergunta: *esta entrada é avaliada?* Se a resposta for não, nada do resto da lista funciona, o que torna esta a requisição mais barata e mais informativa que o atacante pode enviar. É também a que mais se descarta como ruído.
+
+## O erro a evitar
+
+**Uma leitura limpa de uma carga codificada fala da codificação, não do ataque.** Cargas OGNL são rotineiramente codificadas em URL, duplamente codificadas ou divididas entre parâmetros que a aplicação concatena depois. Se você colar `%25%7B` num decodificador e ele não achar nada, essa é a resposta certa para a pergunta errada. Decodifique primeiro, leia depois.
+
+E uma carga prova o que foi *tentado*, nunca o que estava *presente*. Não diz a versão do framework, a configuração, nem se a requisição chegou à aplicação. Isso está no evento do WAF e no log da aplicação - a carga é apenas a pergunta que alguém fez.
+
+## A outra metade desta história
+
+A mesma linguagem é recurso de configuração suportado em outros produtos, onde administradores escrevem expressões de propósito. O PingFederate é o exemplo mais claro: expressões são úteis o bastante para manter, e perigosas o bastante para que escrevê-las seja um **papel administrativo separado** de configurar o restante. É a mesma propriedade deste artigo, vista do lado em que alguém pensou nela com antecedência.

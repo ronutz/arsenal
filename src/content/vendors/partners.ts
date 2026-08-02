@@ -578,6 +578,254 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // ARROW ELECTRONICS - added 2026-08-02 (PRIME). Completes the distributor
+    // set on this timeline.
+    //
+    // *** THE 1980 FIRE IS HANDLED PLAINLY, NOT DRAMATICALLY. *** Thirteen
+    // people died. The facts are corroborated across seven independent sources
+    // and they are stated once, in order, without adjectives doing work the
+    // facts already do. Lynn Glenn's remark to the staff is PARAPHRASED rather
+    // than quoted - it runs past this site's quotation limit, and paraphrase
+    // also avoids turning a widow's sentence into a pull quote.
+    slug: "arrow-electronics",
+    group: "other",
+    name: "Arrow Electronics",
+    founded: 1935,
+    tags: ["distributor"],
+    tagline: "Started on Radio Row selling used radios; lost thirteen of its leaders in one afternoon and rebuilt.",
+    intro:
+      "Arrow Radio opened in 1935 on Cortlandt Street, in the part of lower Manhattan known as Radio Row, selling second-hand radios and parts. Its founder was Maurice Goldberg. Two of his neighbours on that street were Charles Avnet and Seymour Schweber, and all three names ended up on distribution businesses - which is why Radio Row has a reasonable claim to being where electronics distribution started.",
+    body: [
+      "**The company as it exists dates from 1968**, when three recent Harvard Business School graduates working at a New York investment bank - B. Duke Glenn Jr., Roger E. Green and John C. Waddell - led an investor group that bought control for about $1M of borrowed money. They also bought a business that reclaimed lead from old car batteries, which tells you something about the state of the opportunity as they found it.",
+      "They were right about electronic parts distribution. By 1979 Arrow had acquired Cramer Electronics, then the second largest distributor of electronic parts in the United States at around $150M of annual sales, and was a serious national business.",
+      "**On 4 December 1980 the senior management team gathered at a hotel conference centre in Harrison, New York for the annual budget meetings. A fire in the building killed thirteen of them.** The dead included Glenn, by then chairman, Green, then an executive vice-president, and every department head of the electronics distribution division. Waddell survived because he was not there: he had stayed at headquarters to field questions about a two-for-one stock split announced earlier that day.",
+      "The day after the fire, Lynn Glenn - the chief executive's widow - came to the company's headquarters and spoke to the staff. She told them she did not know their faces but would know their names, because her husband had talked about them.",
+      "**Waddell took over a company that had lost most of the people who knew how it worked.** He recruited Stephen Kaufman from McKinsey in 1982; Kaufman became chief executive in 1986 and chairman in 1994, and led the consolidation of American electronics distribution and the expansion into Europe and Asia. Arrow recovered within about three years, and the episode produced changes in succession planning that a company only makes after it has needed them.",
+      "The 1988 acquisition of Kierulff Electronics shows the method: Arrow closed all four of Kierulff's warehouses, and the combined business went from a $16M loss in 1987 to $10M of operating profit within a year. That is distribution economics in one sentence - the value is in the network and the working capital, not in the buildings.",
+      "**Read beside the other distributors here, Arrow is the oldest and the one whose history is least about strategy.** Ingram Micro was founded by teachers, ScanSource by a thesis about transitional products, Westcon by acquisition and Network1 by being bought. Arrow's defining moment was an afternoon nobody planned for, and what it demonstrates is something no strategy document covers: that an organisation is not only its people, because this one lost thirteen of the most senior at once and still existed three years later - and also that it is nothing but its people, because rebuilding took three years and a stranger from a consulting firm.",
+    ],
+    acquisitions: [
+      { year: 1979, name: "Cramer Electronics", what: "Then the second largest distributor of electronic parts in the United States, at around $150M of annual sales, strong on the west coast.", became: "Arrow's first major industry acquisition and its route into western US markets." },
+      { year: 1988, name: "Kierulff Electronics", what: "A competitor acquired as part of an explicit growth-by-consolidation strategy under Stephen Kaufman.", became: "Absorbed - all four Kierulff warehouses were closed, and the combined business swung from a $16M loss in 1987 to $10M of operating profit within a year." },
+    ],
+    externalUrl: "https://www.arrow.com/company/overview/history",
+    externalLabel: "Arrow Electronics history",
+    sources: [
+      { label: "Arrow Electronics' own history: founded 1935 as Arrow Radio on Cortlandt Street in Radio Row by Maurice Goldberg; Charles Avnet and Seymour Schweber as neighbouring pioneers; the 1968 purchase by Glenn, Green and Waddell; the 1980 fire; Kaufman's recruitment in 1982 and succession in 1986 and 1994", url: "https://www.arrow.com/company/overview/history" },
+      { label: "FundingUniverse: the $1M of borrowed capital and the lead-reclamation business bought alongside; the December 1980 fire at Harrison during the annual budget meetings, killing thirteen including all the electronics distribution department heads; Waddell surviving because he had stayed at headquarters over the two-for-one stock split; Lynn Glenn addressing employees the following day", url: "https://www.fundinguniverse.com/company-histories/arrow-electronics-inc-history/" },
+      { label: "Wikipedia: the fire dated 4 December 1980 at Stouffer's Inn; the 1979 Cramer Electronics acquisition as the first major one; the 1988 Kierulff acquisition", url: "https://en.wikipedia.org/wiki/Arrow_Electronics" },
+      { label: "HandWiki: Forbes' account of the Kierulff integration - all four warehouses closed, and a swing from a $16M loss in 1987 to $10M of operating profit within a year", url: "https://handwiki.org/wiki/Company:Arrow_Electronics" },
+      { label: "Encyclopedia.com and Company Histories: independent accounts of the same sequence, corroborating the thirteen deaths, the roles of those killed, and Waddell's absence", url: "https://www.encyclopedia.com/social-sciences-and-law/economics-business-and-labor/businesses-and-occupations/arrow-electronics-inc" },
+      { label: "Reference.org: headquarters in Centennial, Colorado, and a 2025 Fortune 500 ranking of 154", url: "https://reference.org/facts/Arrow_Electronics/cEjuRaYk" },
+    ],
+  },
+  {
+    // TECH DATA + SYNNEX = TD SYNNEX - added 2026-08-02 (PRIME).
+    //
+    // Written as ONE entry because they are one company now, the same way the
+    // Lumen chain is written. PRIME's queue listed Tech Data, SYNNEX and
+    // TD SYNNEX separately; they merged in 2021 and separate entries would
+    // imply three companies where there is one lineage.
+    //
+    // *** THIS CLOSES THE DISTRIBUTOR LOOP ON THIS TIMELINE: *** SYNNEX bought
+    // Westcon-Comstor's Americas business in 2017, then merged with Tech Data
+    // in 2021 - so the Westcon Americas operation ended up inside TD SYNNEX,
+    // and ScanSource competes with the result.
+    slug: "tech-data-synnex",
+    group: "other",
+    name: "Tech Data and SYNNEX (now TD SYNNEX)",
+    founded: 1974,
+    tags: ["distributor"],
+    tagline: "A father sold it to his son for ten thousand dollars; it is now the largest technology distributor in the world.",
+    intro:
+      "Edward C. Raymund incorporated Tech Data in Clearwater, Florida on 19 November 1974, selling tapes and disks - data processing supplies for mini and mainframe computers. Around 1984 he sold the business to his son Steven for $10,000. That company merged with SYNNEX in 2021 to create TD SYNNEX, which reported $58.5B of revenue for its 2024 financial year.",
+    body: [
+      "**The ten thousand dollars is not a rounding error in a larger deal - it is the whole transaction**, and it is the sort of detail that gets lost when a company becomes large enough for its history to be written by its communications department. Steven Raymund then did the thing that mattered: from 1983 he turned a reseller of mainframe supplies into a full-line national distributor of personal computer products, which is a different business wearing the same name. He became chief executive in 1986, the year the company listed on NASDAQ.",
+      "**SYNNEX is the other half and started somewhere unrecognisable.** Robert T. Huang founded it in Fremont, California in 1980 as Compac Microelectronics, doing contract assembly and sourcing components from Asia. MiTAC International took majority control in 1992, and the company listed on the New York Stock Exchange in 2003 with Huang still its largest individual shareholder. It spent the intervening decades acquiring: game distribution, business process outsourcing, and in 2013 IBM's worldwide customer care operation - which it eventually spun out as Concentrix in 2020.",
+      "**Then the two came together, and the sequence matters.** Apollo Global Management took Tech Data private in 2020 for about $6B. The following year Apollo merged it with SYNNEX in a transaction valued around $7.2B, completing on 1 September 2021. Former SYNNEX shareholders held 55% of the result and Apollo 45%, and Apollo has since exited in stages. The combined company trades in Fremont and Clearwater both, which is what happens when two headquarters merge and neither loses.",
+      "**And here the distributor entries on this timeline close a circle.** SYNNEX bought Westcon-Comstor's Americas business in 2017 for $600M. Four years later SYNNEX merged with Tech Data. So the Westcon Americas operation - the one that had been Datatec's, in the same group as Logicalis - now sits inside TD SYNNEX, alongside what used to be Tech Data. Four of the distributors written up here are connected by ownership, and the fifth, ScanSource, competes with the result while having assembled its own Latin American business the same way.",
+      "**The scale is worth stating because it is the argument for broadline distribution.** TD SYNNEX turns over more than Ingram Micro. Neither is a technology company in any useful sense: they are logistics and credit businesses that happen to move technology, holding inventory on their own balance sheets so that a reseller does not have to. That is unglamorous, capital-intensive and almost invisible from inside an engineering team - and nothing an engineer buys arrives without passing through one of them.",
+    ],
+    acquisitions: [
+      { year: 2017, name: "Westcon-Comstor Americas (by SYNNEX)", price: "$600M cash, plus $30M for 10% of the international business", what: "The North and Latin American distribution business of Westcon-Comstor, then owned by Datatec.", became: "Part of SYNNEX, and therefore part of TD SYNNEX after 2021 - which is how a Datatec business ended up inside the largest technology distributor in the world." },
+      { year: 2020, name: "Tech Data (by Apollo Global Management)", price: "~$6B", what: "The take-private that set up the merger. Founder-family stakes were largely cashed out.", became: "Apollo-owned, then 45% of TD SYNNEX a year later." },
+      { year: 2021, name: "The merger itself", price: "~$7.2B", what: "Tech Data and SYNNEX combined, completing 1 September 2021.", became: "TD SYNNEX - over 100 countries, and revenue larger than any other technology distributor.", sourceNote: "Combined revenue is reported variously around $57-60B depending on the period counted; the 2024 financial-year figure of $58.5B is the one used above." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Tech_Data",
+    externalLabel: "Tech Data",
+    sources: [
+      { label: "Wikipedia: Tech Data founded in Clearwater by Edward C. Raymund in November 1974 marketing data processing supplies for mini and mainframe computers; the 1983 transition to full-line PC distribution led by Steven A. Raymund; Steven succeeding as chief executive in 1986, the year of the NASDAQ listing", url: "https://en.wikipedia.org/wiki/Tech_Data" },
+      { label: "Grokipedia: incorporation on 19 November 1974; Edward Raymund selling the business to his son Steven for $10,000 around 1984; at merger, operations in more than 100 countries, around 15,000 employees and revenue exceeding $30B", url: "https://grokipedia.com/page/Tech_Data" },
+      { label: "MatrixBCG: SYNNEX founded 1980 in Fremont as Compac Microelectronics by Robert T. Huang with backing from MiTAC's Matthew Miau; Apollo's 2020 acquisition of Tech Data at $6B; the 2021 merger at $7.2B", url: "https://matrixbcg.com/blogs/brief-history/tdsynnex" },
+      { label: "Pestel-analysis: MiTAC International taking majority control of SYNNEX in 1992; the 2003 NYSE listing; post-merger ownership of 55% former SYNNEX shareholders and 45% Apollo; $58.5B revenue for financial year 2024", url: "https://pestel-analysis.com/blogs/owners/tdsynnex" },
+      { label: "PortersFiveForce: the merger completing 1 September 2021; Huang as largest individual shareholder at the 2003 IPO; the 2020 Concentrix spin-off; Apollo's staged exits", url: "https://portersfiveforce.com/blogs/owners/tdsynnex", sourceNote: "Secondary analysis. Used for dates and ownership percentages that are corroborated by the other sources here, not for interpretation." },
+      { label: "BusinessABC: TD SYNNEX across more than 100 countries with 22,000 staff, and SYNNEX's earlier acquisitions including Jack of All Games in 2009 and IBM's worldwide customer care business process outsourcing in 2013", url: "https://businessabc.net/wiki/td-synnex" },
+    ],
+  },
+  {
+    // INGRAM MICRO - added 2026-08-02 (PRIME). The BROADLINE distributor that
+    // ScanSource's entry defines itself against, which makes that contrast
+    // readable rather than asserted.
+    //
+    // And a THIRD teaching origin on this timeline: founded by two
+    // schoolteachers, after Stefanini (a teacher whose training business became
+    // the company) and NIIT inside the HCL entry (training built as
+    // infrastructure for an industry).
+    slug: "ingram-micro",
+    group: "other",
+    name: "Ingram Micro",
+    founded: 1979,
+    tags: ["distributor"],
+    tagline: "Two schoolteachers started it, and it now moves fifty billion dollars of other people's products a year.",
+    intro:
+      "Micro D, Inc. was founded in July 1979 in Southern California by Geza Czige and Lorraine Mecca, a husband and wife who were both schoolteachers. Their own company's history says they brought an academic approach to logistics. First-year sales were around $3.5M; by 1988 they were $553M, and the business that grew out of it reported $52.6B of revenue in 2025.",
+    body: [
+      "**The teaching origin is the third on this timeline and worth noting as a pattern rather than a coincidence.** Stefanini was founded by a man already giving classes, whose training business became a technology company. HCL's founder started a training institute in 1982 because a domestic industry cannot grow faster than the supply of people who can staff it. And the largest technology distributor in the world was started by two teachers. Distribution and instruction turn out to share a discipline: both are about getting something complicated from the people who made it to the people who need it, in a form they can use.",
+      "**The company as it exists is a merger of two competitors, and the logic is the instructive part.** In 1982 Ronald Schreiber, Irwin Schreiber, Gerald Lippes and Paul Willax founded Software Distribution Services in Buffalo, New York. Ingram Industries bought it in 1985, renamed it Ingram Software and then Ingram Computer. Ingram had also been buying Micro D - a majority in February 1986, the rest in March 1989 at $14.75 a share, about $44M for the remaining 41 per cent - and then merged the two.",
+      "They fitted because they sold to different people: **Micro D specialised in the large retail computer chains, while Ingram served value-added resellers and smaller retailers.** The combination became Ingram Micro D, the microcomputer industry's first billion-dollar wholesale distributor, headquartered in Santa Ana with the East Coast operation kept in Buffalo. The D was dropped in January 1991, and the company listed on the New York Stock Exchange in 1996.",
+      "**Set against ScanSource, this is the other kind of distributor and the contrast is the point.** ScanSource's founding thesis was to catch products on their way to commodity - specialist, deep in a few categories, arriving before the broadline houses turned up to sell on price. Ingram Micro *is* the broadline house. Its business is described in its own filings as inventory-intensive and capital-intensive rather than asset-light: it buys hardware, software and cloud services and holds them on its balance sheet. **The specialist sells expertise; the broadline distributor sells scale, and the two are not competing for the same thing until a category has finished transitioning.**",
+      "The ownership since has been eventful. China's HNA Group took it private in 2016 for around $6B. Platinum Equity bought it from HNA affiliates for approximately $7.2B, closing on 2 July 2021, with up to $325M more contingent on adjusted EBITDA through 2023 - a payment earned in full and made in April 2022. It returned to the New York Stock Exchange in 2024.",
+      "One footnote with a long reach: Ingram Industries, the family business that assembled all this, traces to the 1830s and made its money in lumber and shipping before moving through petroleum refining, river barges and book distribution. **Computer products were a 1980s diversification for a company that had been moving other people's goods for a century and a half** - which is a reasonable description of what distribution is.",
+    ],
+    acquisitions: [
+      { year: 1985, name: "Software Distribution Services", what: "Founded in Buffalo, New York in 1982 by Ronald Schreiber, Irwin Schreiber, Gerald Lippes and Paul Willax. Bought by Ingram Distribution Group in the spring of 1985.", became: "Ingram Software, then Ingram Computer in February 1988, then half of Ingram Micro D." },
+      { year: 1989, name: "Micro D", price: "$14.75 a share for the remaining 41%, about $44M, after taking a majority in February 1986", what: "The Southern California distributor founded by Czige and Mecca in 1979, strong in the large retail computer chains.", became: "Merged with Ingram Computer to create Ingram Micro D - the microcomputer industry's first billion-dollar wholesale distributor.", founder: "Geza Czige and Lorraine Mecca, July 1979" },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Ingram_Micro",
+    externalLabel: "Ingram Micro",
+    sources: [
+      { label: "Ingram Micro investor relations, 40th anniversary release: Micro D founded July 1979 by Geza Czige and Lorraine Mecca, public in 1983; Software Distribution Services founded 1982 in Buffalo and acquired in spring 1985, renamed Ingram Software then Ingram Computer in February 1988", url: "https://ir.ingrammicro.com/press-releases/detail/87/ingram-micro-celebrates-40th-birthday" },
+      { label: "HandWiki: both founders were teachers; the company started in Southern California with roughly $3.5M of first-year sales", url: "https://www.handwiki.org/wiki/Company:Ingram_Micro" },
+      { label: "FundingUniverse: the March 1989 tender at $14.75 a share for the remaining 41% (about $44M); the complementary fit - Micro D in large retail chains, Ingram serving VARs and smaller retailers; the first billion-dollar wholesale distributor; Micro D's $553M of 1988 sales", url: "https://www.fundinguniverse.com/company-histories/ingram-micro-inc-history/" },
+      { label: "Justapedia: Ingram Industries taking a majority in February 1986 and the remainder in March 1989; headquarters in Santa Ana with the Buffalo East Coast operation retained; the D dropped in January 1991; the 1996 NYSE listing", url: "https://justapedia.org/wiki/Ingram_Micro" },
+      { label: "Ingram Micro SEC filing (Form DRS/A): Platinum Equity's acquisition from HNA affiliates for approximately $7.2B, closing 2 July 2021, with up to $325M contingent on adjusted EBITDA through 2023, earned in full and paid 11 April 2022", url: "https://www.sec.gov/Archives/edgar/data/1897762/000095012324006167/filename1.htm" },
+      { label: "Orange County Business Journal: HNA Group taking the company private in 2016 for $6B; Ingram Industries' roots in the 1830s in lumber and shipping, later petroleum, barges and book distribution", url: "https://www.ocbj.com/technology/ingram-micro-set-for-return-to-wall-street/" },
+      { label: "Wikipedia: 2025 revenue of $52.6B, 23,500 employees, Irvine headquarters, and the description of wholesale distribution as inventory- and capital-intensive rather than asset-light", url: "https://en.wikipedia.org/wiki/Ingram_Micro" },
+    ],
+  },
+  {
+    // NETWORK1 - added 2026-08-02 (PRIME: "Network1 lineage is worth adding").
+    //
+    // He was right, and the lineage is better than expected: ScanSource bought
+    // Network1 THROUGH CDC BRASIL, the Brazilian distributor it had itself
+    // bought in 2011. One acquisition was the vehicle for the next.
+    //
+    // *** CORRECTION, SAME SESSION: the first draft of this entry carried
+    // `founded: 2003`, which I had invented - no source stated it. ScanSource's
+    // own release says 2004. The date is now sourced. ***
+    //
+    // REVENUE DISCREPANCY RECORDED: 2014 net sales appear as ~R$720M
+    // (~US$306M) on a US-GAAP-adjusted basis and as ~R$850M (~US$374M)
+    // unadjusted. Both given, with the reason for the gap.
+    slug: "network1",
+    group: "other",
+    name: "Network1",
+    founded: 2004,
+    tags: ["distributor"],
+    ended: {
+      year: 2015,
+      note: "Acquired by ScanSource - announced 15 August 2014 and completed in January 2015. Traded as Network1-ScanSource for years afterwards and became ScanSource's Latin American communications business.",
+    },
+    tagline: "Bought by the company its own buyer had bought four years earlier.",
+    intro:
+      "Network1 - legally Intersmart Comércio Importação Exportação de Equipamentos Eletrônicos - was founded in 2004 and headquartered in São Paulo. By 2014 it was one of Brazil's leading value-added distributors of communications equipment, with operations in Brazil, Mexico, Colombia, Chile and Peru, more than 60 vendors, 8,000 customers and close to 400 staff.",
+    body: [
+      "**The line card is worth reading as a document in itself**, because it is a snapshot of what a Latin American enterprise buyer could actually get in the mid-2010s: Avaya, Axis, Check Point, Dell, Extreme, F5, HP, Juniper, Polycom, Microsoft, Riverbed, Schneider Electric. Several of those have their own entries on this timeline, and several no longer trade under those names - which is what any distributor's catalogue looks like a decade on.",
+      "It also ran an authorised training centre, which is the part of value-added distribution most explanations skip. A distributor carrying sixty vendors has resellers who need certifying on products they began selling last quarter, and the vendors' own courses are neither frequent enough nor local enough to cover it.",
+      "**The acquisition has a detail worth the whole entry.** ScanSource announced the purchase on 15 August 2014 and completed it in January 2015, for **R$156,928,000** plus payments tied to EBITA over the following four years - and it bought Network1 **through CDC Brasil**, the Brazilian distributor ScanSource had itself acquired in 2011. One acquisition was the vehicle for the next. The American company's Latin American business was not built; it was bought twice, and the second purchase was made by the first.",
+      "It was the largest acquisition ScanSource had made to that point. Reported 2014 net sales differ depending on the basis: about **R$720M (US$306M)** on a US-GAAP-adjusted footing in the legal advisers' account, and about **R$850M (US$374M)** in the Portuguese-language release. Both are recorded here; the gap is the adjustment, not a disagreement about the business.",
+      "The geography is the practical part. The deal added units in **Goiás, Pernambuco and Espírito Santo** to ScanSource's existing Brazilian presence in São Paulo and Paraná - which is how a distributor actually grows, since serving a reseller in Recife from São Paulo is a different proposition from serving one down the road. Rafael Paloni, Network1's chief executive, went on to run ScanSource's Latin American communications business.",
+      "**So the loop closes.** ScanSource appears on this timeline as a specialist distributor from Greenville, South Carolina, whose founding thesis was catching products on their way to becoming commodities. Anyone working for ScanSource in Brazil after 2015 was working inside what had been Network1, under a brand that read Network1-ScanSource for years.",
+    ],
+    externalUrl: "https://www.businesswire.com/news/home/20140815005219/en/ScanSource-Announces-Agreement-to-Acquire-Brazil%E2%80%99s-Leading-Communications-Distributor-Network1",
+    externalLabel: "ScanSource announcement, 15 August 2014",
+    sources: [
+      { label: "ScanSource investor release (Portuguese): founded 2004, headquartered in São Paulo, around 400 staff across Latin America; 2014 net sales estimated at approximately R$850M (US$374M); Mike Baur on entering Brazil in 2011 via CDC Brasil", url: "https://www.scansource.com/~/media/C768332F1FB04580B05DBF15380B788F.pdf" },
+      { label: "Demarest / Latin Counsel (legal advisers to ScanSource): acquisition of 100% of Intersmart for BRL 156,928,000 plus EBITA-linked earn-outs over four years, made THROUGH CDC Brasil Distribuidora de Tecnologias Especiais; 2014 net sales of approximately R$720M (US$306M) on a US-GAAP-adjusted basis; over 60 vendors, 8,000 customers, nearly 400 employees", url: "https://www.latincounsel.com/?Noticias=Acquisition_of_Intersmart_Comercio_Importaiio_e_Exportaiio_de_Equipamentos_Eletrinicos_SA_Network1" },
+      { label: "Business Wire, 15 August 2014: the agreement announced, and Rafael Paloni going on to lead ScanSource's communications business in Latin America", url: "https://www.businesswire.com/news/home/20140815005219/en/ScanSource-Announces-Agreement-to-Acquire-Brazil%E2%80%99s-Leading-Communications-Distributor-Network1" },
+      { label: "Fusões & Aquisições: completion at R$157 million, and the added Brazilian units in Goiás, Pernambuco and Espírito Santo alongside the existing São Paulo and Paraná operations", url: "https://fusoesaquisicoes.com/acontece-no-setor/scansource-conclui-compra-da-network1/" },
+      { label: "Datacenter Dynamics Brasil: the full vendor line card and the authorised training centre", url: "https://www.datacenterdynamics.com/br/not%C3%ADcias/scansource-assina-acordo-definitivo-para-adquirir-a-network1/" },
+    ],
+  },
+  {
+    // SCANSOURCE - added 2026-08-02 (PRIME). Second `distributor`.
+    //
+    // Worth more than a company sketch because its founding thesis is
+    // genuinely distinctive and still legible: distribute products that are
+    // TRANSITIONING, and catch them on the way to commodity.
+    //
+    // FOUNDER COUNT DISCREPANCY RECORDED: most sources name Mike Baur and Steve
+    // Owings; one says six founders led by Baur. Both stated.
+    slug: "scansource",
+    group: "other",
+    name: "ScanSource",
+    founded: 1992,
+    tags: ["distributor"],
+    tagline: "Distributed products that were on their way to becoming commodities, and tried to arrive first.",
+    intro:
+      "Mike Baur and Steve Owings founded ScanSource in Greenville, South Carolina in December 1992, to distribute barcode and point-of-sale equipment. Most accounts name the two of them; one describes six founders with Baur as the architect, and both are recorded here. It listed in 1994, raising $5.5M.",
+    body: [
+      "**The founding thesis is the part worth keeping, because it is a real strategy rather than a description.** Baur's stated aim was to be a distributor of *transitional* products, and he named the two transitions he was hunting: proprietary moving to open, and high-cost moving to low-cost. The idea was to find products heading for commodity status and get there early - while a specialist channel still needed explaining to, and before the broadline distributors arrived to sell them on price.",
+      "**And the arbitrage underneath it is the clearest illustration of what a distributor sells.** The number of barcode-focused resellers was in the hundreds. The number of computer-focused resellers was in the hundreds of thousands. What ScanSource offered the barcode manufacturers was not warehousing; it was access to a channel three orders of magnitude larger than the one they already knew about. That is the distributor's product, stated as plainly as it ever gets.",
+      "The channel-only policy followed from the same logic: no direct sales to end customers, ever. A distributor that sells directly is competing with the resellers it depends on, and resellers can count. Holding that line is what makes the rest of the arrangement work.",
+      "The portfolio widened the way these businesses do - Catalyst Telecom for business telephony, later communications, physical security, and eventually cloud and payments through acquisitions including Imago, POS Portal and intY. It is a Fortune 1000 company today, around $3B, with roughly 2,100 staff **in North America and Brazil** - Brazil being unusual enough in a US distributor's footprint to be worth noticing.",
+      "**Set beside Westcon-Comstor, the two make a useful pair.** Both are specialist distributors rather than broadline ones, and both grew by being the people who could explain a category. But they specialised in different directions: Westcon went deep on networking and security, Comstor specifically on Cisco, while ScanSource went deep on the things that read and print - scanners, terminals, printers - and then followed its resellers outward into telephony and security. Neither tried to carry everything, which is precisely what distinguishes them from Ingram Micro and Tech Data, the broadline houses whose arrival in a category is the signal that it has finished transitioning.",
+    ],
+    acquisitions: [
+      { year: 1993, name: "Alpha Data Systems", what: "A ten-year-old company in Marietta, Georgia, bought in May 1993 - months after ScanSource itself was founded.", became: "Early scale in the AIDC business, and the first of a long line of tuck-in acquisitions." },
+      { year: 2011, name: "CDC Brasil", what: "Then the largest value-added distributor of commercial automation in the region. ScanSource's entry into Brazil.", became: "The first half of a Latin American business assembled by purchase rather than built." },
+      { year: 2015, name: "Network1 (Intersmart)", price: "R$156,928,000 plus EBITA-linked earn-outs over four years", what: "A leading Brazilian value-added distributor founded in 2004, operating across Brazil, Mexico, Colombia, Chile and Peru with ~400 staff, 8,000 customers and 60+ vendors. Announced 15 August 2014, completed January 2015 - the largest acquisition ScanSource had made to that point.", became: "Network1-ScanSource, and ScanSource's Latin American communications business.", sourceNote: "Bought THROUGH CDC Brasil, the subsidiary acquired in 2011 - so one acquisition was the vehicle for the next." },
+    ],
+    externalUrl: "https://www.scansource.com/",
+    externalLabel: "ScanSource",
+    sources: [
+      { label: "Channel Futures interview with Mike Baur: the transitional-products thesis - proprietary to open, high-cost to low-cost, 'catch them early' - the 1994 IPO raising $5.5M, and the arbitrage between hundreds of barcode VARs and hundreds of thousands of computer-focused VARs", url: "https://www.channelfutures.com/distribution/scansource-ceo-mike-baur-science-seeing-future" },
+      { label: "Company Histories: formed at the end of 1992 to serve POS and AutoID resellers; the May 1993 purchase of Alpha Data Systems of Marietta, Georgia; Catalyst Telecom and the move into telephony", url: "https://www.company-histories.com/ScanSource-Inc-Company-History.html" },
+      { label: "Encyclopedia.com: the AutoID and POS product range, and Ingram Micro and Tech Data moving into the POS arena as broadline competitors", url: "https://www.encyclopedia.com/social-sciences-and-law/economics-business-and-labor/businesses-and-occupations/scansource-inc" },
+      { label: "Greenville Business Magazine: Baur as co-founder in 1992, president from inception to 2000 then chief executive, and the company at roughly $3B with 2,100 employees in North America and Brazil", url: "https://www.greenvillebusinessmag.com/stories/mike_baur_biography,24035" },
+      { label: "PortersFiveForce: founding on 18 December 1992 in Greenville by Baur and Owings, the channel-only policy with no direct sales to end customers, and the Imago, POS Portal and intY acquisitions between 2014 and 2019", url: "https://portersfiveforce.com/blogs/brief-history/scansource", sourceNote: "Secondary summary. Used for the specific founding date, the channel-only policy and the acquisition list; the founder count here agrees with the majority account." },
+      { label: "MatrixBCG: an alternative account describing six founders led by Baur, and the value-added distribution model built on technical services, training and financing rather than competing with resellers", url: "https://matrixbcg.com/blogs/brief-history/scansource", sourceNote: "Minority account on the founder count, recorded because it differs from the majority rather than because it is preferred." },
+    ],
+  },
+  {
+    // WESTCON-COMSTOR - added 2026-08-02 (PRIME). THE FIRST `distributor`
+    // ENTRY, which finally populates a tag that has been legitimately empty
+    // since the tagging pass.
+    //
+    // It also earns a paragraph explaining what two-tier distribution IS,
+    // because it is the layer most engineers never see and cannot picture -
+    // and this timeline has been carrying a `distributor` tag with nothing
+    // behind it to explain the word.
+    slug: "westcon-comstor",
+    group: "other",
+    name: "Westcon-Comstor",
+    founded: 1985,
+    tags: ["distributor"],
+    tagline: "The layer between the vendor and the reseller, which decides what is practical to buy in your country.",
+    intro:
+      "Westcon was founded in 1985 and Comstor in 1986 in Chantilly, Virginia. They became one company in August 1999, when Westcon bought Comstor for $95M, and the combined business has spent the decades since doing something most engineers have never had to think about: standing between the companies that make networking and security equipment and the companies that install it.",
+    body: [
+      "**What a distributor actually does, since this is the first one on this timeline.** A vendor like Cisco or F5 does not want a commercial relationship with every reseller in every country - the credit checks alone would be a business. A reseller does not want a separate contract, currency, logistics arrangement and support escalation with each of the forty vendors in its portfolio. The distributor sits between them and absorbs that: it holds stock, extends credit, handles import and customs, aggregates the paperwork, and trains the resellers on products they have just started carrying.",
+      "That last part is the reason distribution appears on a site about teaching at all. **A vendor's certified training is expensive and aimed at the vendor's own priorities; a distributor's enablement is aimed at whatever its resellers are failing to sell.** The two are not the same curriculum, and the second one tells you more about what the market is actually struggling with.",
+      "The strategic consequence is the interesting bit: **a distributor decides what is practical to buy in a country.** A product with no distribution in Brazil is not unavailable exactly, but every reseller quoting it must import it themselves, carry the currency risk, and explain a longer lead time to the customer - which in practice means they quote something else. Market share in a region often reflects distribution agreements more than it reflects the product.",
+      "**The corporate history is a chain of ownership rather than a chain of invention.** Datatec, a South African group, acquired Westcon in 1998. Westcon added RBR Group in the UK in September 1998 and then Comstor in August 1999 - Comstor having been founded in 1986, sold to GE Capital IT Solutions around 1996, and doing some $500M a year by the time it changed hands. Cisco distribution began in 1999 and Avaya in 2000. The combined company was doing about $1.5B, and $1.85B by 2004.",
+      "In 2017 SYNNEX bought the **Americas** business for $600M in cash, plus $30M for a tenth of the international operations, assuming around $190M of debt with up to $200M more contingent on targets. The Americas business had been turning about $2.2B of revenue. Westcon-Comstor's EMEA and Asia-Pacific operations stayed with Datatec, which is why the same brand can be a SYNNEX subsidiary in one hemisphere and a Datatec business in another.",
+      "**And a connection worth following.** Datatec ran three divisions: technology distribution as Westcon-Comstor, integration and managed services as **Logicalis**, and consulting as Analysys Mason. So the distributor and the integrator were siblings under one holding company - two layers of the same supply chain, owned by the same people, which is an arrangement worth noticing when you are trying to work out why a particular product kept appearing in a particular market.",
+    ],
+    acquisitions: [
+      { year: 1999, name: "Comstor", price: "$95M", what: "A Cisco specialist distributor founded in Chantilly, Virginia in 1986, sold to GE Capital IT Solutions around 1996, and turning roughly $500M a year by 1999.", became: "The Comstor division, which is why the combined company carries both names to this day.", founder: "founded 1986, Chantilly, Virginia" },
+      { year: 1998, name: "RBR Group Limited", what: "A Cisco distributor in the United Kingdom, acquired in September 1998.", became: "The beginning of the Cisco specialisation that Comstor completed a year later." },
+    ],
+    externalUrl: "https://www.westconcomstor.com/",
+    externalLabel: "Westcon-Comstor",
+    sources: [
+      { label: "Company Histories: founded 1985, Datatec's 1998 acquisition, RBR Group in September 1998, Comstor for $95M in August 1999, Cisco distribution from 1999 and Avaya from 2000, and $1.85B of sales in 2004", url: "https://www.company-histories.com/Westcon-Group-Inc-Company-History.html" },
+      { label: "Encyclopedia.com: Comstor founded in Chantilly, Virginia in 1986, acquired by GE Capital IT Solutions about ten years later, doing $500M annually; the combined company at $1.5B across two divisions", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/westcon-group-inc" },
+      { label: "SYNNEX SEC filing (5 June 2017): the Americas business at approximately $2.2B revenue and $89M EBITDA for the year to February 2017; Datatec's three divisions named as Westcon-Comstor, Logicalis and Analysys Mason", url: "https://www.sec.gov/Archives/edgar/data/1177394/000117739417000026/exh9916-5x2017.htm" },
+      { label: "ChannelPro: final terms - $600M cash for the Americas, $30M for a 10% stake in the overseas businesses, roughly $190M of assumed debt and up to $200M of earn-out", url: "https://www.channelpronetwork.com/2017/09/01/synnex-closes-acquisition-of-westcon-comstors-north-and-latin-american-units/" },
+    ],
+  },
+  {
     // EQUINIX - added 2026-08-01 (PRIME).
     //
     // FIFTH entry on the neutrality thread, and the purest: here neutrality is

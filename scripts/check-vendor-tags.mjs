@@ -42,14 +42,27 @@ if (!vocabBlock) {
 }
 const vocab = [...vocabBlock[1].matchAll(/"([a-z]+)"/g)].map((m) => m[1]);
 
-// Pair each entry's slug with the tags line that follows it.
+// Pair each entry's slug with its tags.
+//
+// ORDER-INDEPENDENT ON PURPOSE. An earlier version required `tags` to sit on
+// the line immediately after `slug`, which was true only because the tagging
+// pass inserted them that way. The first hand-written entry afterwards put
+// `tags` further down the object - a perfectly reasonable thing to do - and the
+// guard reported it as untagged. A check that enforces field ORDER while
+// claiming to check field PRESENCE will keep producing that false alarm, and a
+// guard that cries wolf gets ignored or, worse, "fixed" by editing the data to
+// suit it. So this slices each entry's block and looks for tags anywhere inside.
 const entries = [];
-const re = /\n    slug: "([a-z0-9-]+)",\n    tags: \[([^\]]*)\],/g;
-let m;
-while ((m = re.exec(src)) !== null) {
+const slugRe = /\n    slug: "([a-z0-9-]+)",/g;
+const slugHits = [...src.matchAll(slugRe)];
+for (let i = 0; i < slugHits.length; i++) {
+  const start = slugHits[i].index ?? 0;
+  const end = i + 1 < slugHits.length ? (slugHits[i + 1].index ?? src.length) : src.length;
+  const block = src.slice(start, end);
+  const tagsMatch = block.match(/\n    tags: \[([^\]]*)\],/);
   entries.push({
-    slug: m[1],
-    tags: [...m[2].matchAll(/"([a-z]+)"/g)].map((x) => x[1]),
+    slug: slugHits[i][1],
+    tags: tagsMatch ? [...tagsMatch[1].matchAll(/"([a-z]+)"/g)].map((x) => x[1]) : [],
   });
 }
 
@@ -57,7 +70,7 @@ const allSlugs = [...src.matchAll(/\n    slug: "([a-z0-9-]+)",/g)].map((x) => x[
 const failures = [];
 
 // 1. every entry tagged
-const missing = allSlugs.filter((s) => !entries.some((e) => e.slug === s));
+const missing = entries.filter((e) => e.tags.length === 0).map((e) => e.slug);
 if (missing.length) {
   failures.push(
     `${missing.length} entr${missing.length === 1 ? "y has" : "ies have"} no tags: ${missing.join(", ")}`,

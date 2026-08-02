@@ -6289,6 +6289,18 @@
       "stageThreshold": "Limiar exigido: {count}",
       "candidatesHeading": "Cada candidato",
       "findingsHeading": "Vale saber"
+    },
+    "ognl-injection-decoder": {
+      "name": "Decodificador de injeção OGNL",
+      "blurb": "Cole uma carga OGNL encontrada num log de WAF ou de aplicação e leia o que ela pretendia fazer. Separa a fuga do sandbox da chamada de execução, nomeia a família de boletim compatível com o formato e sempre declara o que não determinou. Só decodifica - nunca avalia a carga e não guarda modelos.",
+      "runsLocally": "Roda inteiramente no seu navegador. Nada é enviado e nada da carga é executado.",
+      "empty": "Cole uma carga de uma entrada de log. Decodifique a URL antes, se ela chegou codificada."
+    },
+    "pingfederate-ognl-explainer": {
+      "name": "Explicador de expressões OGNL do PingFederate",
+      "blurb": "Lê uma expressão de mapeamento de atributo ou de critério de emissão e a explica construção por construção, e então sinaliza o que quebra em produção e não em teste: atributos lidos sem verificação de nulo, chamadas estáticas a Java e critérios que nunca comparam nada. Só analisa - nunca avalia a expressão.",
+      "runsLocally": "Roda inteiramente no seu navegador. A expressão é analisada e descrita, nunca avaliada.",
+      "empty": "Cole uma expressão de um mapeamento de atributo ou de um critério de emissão."
     }
   },
   "privacy_page": {
@@ -14174,6 +14186,10 @@
       "generative-ai": {
         "def": "Sistemas que produzem texto, imagens, áudio ou código novos, em vez de classificar ou ordenar material existente.",
         "context": "A tecnologia não era nova em novembro de 2022; o acesso é que era. O lançamento do ChatGPT em 30 de novembro de 2022 chegou a cem milhões de usuários mensais em dois meses, e o que mudou foi que usar um modelo de linguagem deixou de exigir uma chave de API ou qualquer noção do que é um transformer. A capacidade vinha melhorando havia anos, à vista de todos."
+      },
+      "ognl": {
+        "def": "Uma linguagem de expressão para ler e escrever propriedades de objetos Java, usada como recurso de configuração por alguns produtos e como vetor de ataque contra outros.",
+        "context": "As duas metades dessa frase são o mesmo fato. OGNL é poderosa porque uma expressão alcança os objetos de uma aplicação em execução e chama métodos neles, que é precisamente o que a torna útil para mapear um atributo num produto de identidade e catastrófica quando uma aplicação avalia algo enviado por um desconhecido. O Apache Struts passou anos corrigindo uma família de falhas com um mesmo formato: alcançar o objeto que impõe as restrições da própria OGNL, desligá-lo e então chamar qualquer coisa. O PingFederate trata o mesmo poder pelo caminho oposto, restringindo a autoria de expressões a um papel administrativo separado daquele que configura o restante, pelo raciocínio de que quem escreve expressões executa código no servidor, e isso é uma permissão diferente de configurar uma conexão."
       }
     },
     "totalCount": "{count} termos",
@@ -14592,6 +14608,40 @@
       "title": "Padrões, pesquisa e protocolos",
       "short": "padrões",
       "intro": "Não são empresas vendendo algo, ou não apenas isso: os laboratórios, fundações e especificações sobre os quais as fichas comerciais foram construídas."
+    },
+    "milestonesLink": "Antes de todas estas empresas: os marcos sobre os quais foram construídas"
+  },
+  "milestones": {
+    "eyebrow": "Antes das empresas",
+    "title": "Marcos: o chão em que o setor se apoia",
+    "intro": "A linha do tempo das empresas começa no século XIX quase por acaso. Esta página é a outra história: a física e a engenharia que precisaram existir antes, de uma pilha de discos de zinco e cobre em 1800 até a primeira fibra atravessando o Atlântico.",
+    "test": "O critério de inclusão aqui é estreito e proposital. Não \"eventos importantes da ciência\", mas: o dia de trabalho de um engenheiro de redes poderia ser explicado sem isso? Indução, amplificação, capacidade de canal de Shannon, acesso aleatório, comutação por pacotes. Coisas a montante do ofício, não ao lado dele. Cada entrada diz por que importa, não apenas o que aconteceu.",
+    "count": "{count} marcos, de {from} a {to}",
+    "backToCompanies": "As empresas construídas sobre isso",
+    "breadcrumbHome": "Início",
+    "breadcrumbIndustry": "Setor",
+    "breadcrumbHere": "Marcos",
+    "strands": {
+      "electricity": {
+        "name": "Eletricidade",
+        "blurb": "Gerar, transportar e descobrir o que é. Cinco resultados entre 1800 e 1887 que transformam uma curiosidade num campo, terminando na demonstração de ondas previstas no papel vinte anos antes."
+      },
+      "electronics": {
+        "name": "Eletrônica",
+        "blurb": "Controlar. O salto de conduzir um sinal para agir sobre ele: retificação, depois amplificação, depois as duas em estado sólido, depois um milhão de vezes num único pedaço de silício."
+      },
+      "digital": {
+        "name": "Digital",
+        "blurb": "Representar informação como símbolos discretos e raciocinar sobre ela com rigor. Três artigos, dois deles da mesma pessoa, que juntos definem o que é um computador, o que ele não pode fazer e quanto cabe num fio ruidoso."
+      },
+      "storage": {
+        "name": "Armazenamento",
+        "blurb": "Guardar. O arco do sequencial ao endereçável ao estado sólido, cada passo mudando não só a capacidade mas o que um sistema pode razoavelmente supor sobre quanto demora uma leitura."
+      },
+      "transfer": {
+        "name": "Transmissão",
+        "blurb": "Mover. Da primeira separação entre mensagem e mensageiro até a fibra sob o oceano, passando pelas duas decisões de projeto - pacotes em vez de circuitos, e interconexão de redes em vez de uma rede só - que produziram tudo desde então."
+      }
     }
   }
 }

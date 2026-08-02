@@ -223,6 +223,10 @@ import F5BigipLicenseExplainerTool from "@/components/F5BigipLicenseExplainerToo
 import { manifest as f5BigipLicenseManifest } from "@/lib/tools/f5-bigip-license-explainer";
 import F5AwafDeclarativePolicyExplainerTool from "@/components/F5AwafDeclarativePolicyExplainerTool";
 import F5AwafEvasionExplainerTool from "@/components/F5AwafEvasionExplainerTool";
+import OgnlInjectionDecoderTool from "@/components/OgnlInjectionDecoderTool";
+import PingFederateOgnlExplainerTool from "@/components/PingFederateOgnlExplainerTool";
+import { manifest as ognlDecoderManifest } from "@/lib/tools/ognl-injection-decoder";
+import { manifest as pfOgnlManifest } from "@/lib/tools/pingfederate-ognl-explainer";
 import F5AwafLearningPoisoningEstimatorTool from "@/components/F5AwafLearningPoisoningEstimatorTool";
 import As3ExplainerValidatorTool from "@/components/As3ExplainerValidatorTool";
 import IqueryProtocolExplainerTool from "@/components/IqueryProtocolExplainerTool";
@@ -571,6 +575,14 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-awaf-declarative-policy-explainer": {
     Component: F5AwafDeclarativePolicyExplainerTool,
     sources: f5AwafManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "ognl-injection-decoder": {
+    Component: OgnlInjectionDecoderTool,
+    sources: ognlDecoderManifest.sources.map((x) => ({ id: x.id, label: x.label, url: x.url })),
+  },
+  "pingfederate-ognl-explainer": {
+    Component: PingFederateOgnlExplainerTool,
+    sources: pfOgnlManifest.sources.map((x) => ({ id: x.id, label: x.label, url: x.url })),
   },
   "f5-awaf-evasion-explainer": {
     Component: F5AwafEvasionExplainerTool,

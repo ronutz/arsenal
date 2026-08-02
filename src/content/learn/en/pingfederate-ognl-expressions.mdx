@@ -1,0 +1,76 @@
+---
+slug: pingfederate-ognl-expressions
+title: "PingFederate OGNL Expressions: Mappings, Criteria, and Why Authoring Is Its Own Role"
+summary: "PingFederate lets you write OGNL in attribute mappings and issuance criteria. A mapping returns a value; a criterion must return true or false, and confusing the two fails quietly in a way that looks like an authorisation problem elsewhere. Expression authoring is gated behind a separate administrative role for one reason: an expression runs code on the server, which is a different permission from configuring a connection."
+concepts: ["pingfederate", "ognl", "attribute mapping", "issuance criteria", "expressions", "identity", "rbac", "least privilege", "saml", "oidc"]
+relatedTools: ["pingfederate-ognl-explainer", "saml-decoder", "jwt-decoder"]
+relatedArticles: ["pingfederate-admin-access-and-rbac"]
+category: identity
+order: 6
+status: reviewed
+updated: "2026-08-01"
+---
+
+Most attribute mappings in PingFederate do not need an expression. You pick a source attribute, you map it to a target, and you move on. Expressions exist for the cases where that is not enough - where a value needs transforming, defaulting, testing or assembling from more than one input - and they are worth understanding well, because the same feature that makes them useful is the reason they are a privileged operation.
+
+## Two places, two different obligations
+
+**An attribute mapping** produces a value. Whatever the expression evaluates to becomes the attribute sent onward in the assertion or the token.
+
+**An issuance criterion** produces a decision. It must evaluate to `true` or `false`, and issuance proceeds only when it is true.
+
+Confusing them is a common configuration error and it does not announce itself. A criterion that returns a string rather than a boolean will behave in ways that look like an authorisation problem in some other part of the system entirely, and you can lose an afternoon to it before the cause becomes obvious.
+
+## The constructs you will actually meet
+
+Reading an attribute:
+
+```
+#this.get("mail")
+```
+
+Reading it safely, which is the same thing written by somebody who has been burnt:
+
+```
+#this.get("mail") == null ? "" : #this.get("mail").toString().toLowerCase()
+```
+
+The difference between those two lines is the single most common cause of an expression that works in testing and fails in production. **The accounts used for testing are tidier than the directory.** An attribute that is always present on your own account is not always present on everyone's, absent is not the same as empty, and both occur in any directory that has been running for a few years.
+
+Testing membership, which in a criterion is usually the entire decision:
+
+```
+#this.get("memberOf").toString().contains("cn=engineering")
+```
+
+And translating one vocabulary into another, which a map literal does more legibly than a chain of conditionals:
+
+```
+#{"cn=eng":"engineer", "cn=fin":"finance"}.get(#this.get("dept"))
+```
+
+## Why authoring is a separate role
+
+PingFederate separates the ability to write expressions from the ability to configure everything else. That is not administrative fussiness. Consider:
+
+```
+@java.lang.String@format("%s", #this.get("uid"))
+```
+
+This is a static Java method call. It is legitimate, supported, and occasionally the right answer. It is also the construct that turns "reading attributes" into "reaching the class library" - **the same construct that formats a date can reach a great deal more than a date**.
+
+An administrator who can write expressions can run code on the server. An administrator who can configure a connection cannot. Those are different powers, so they are different permissions, and the product is right to treat them that way. If you have the expression role, you are holding something worth being deliberate about.
+
+## Practical advice that survives handover
+
+**Prefer a plain mapping when one will do.** A mapping is visible to every administrator; an expression is editable only by the expression role. The person debugging your configuration in two years may not have that role, and may not have you either.
+
+**Check for null unless you can prove you do not need to.** See above about tidy test accounts.
+
+**Keep expressions short enough to read.** A long expression is hard to review, harder to hand over, and invisible to most of the people who will eventually be responsible for it.
+
+**Test in a non-production environment.** No amount of reading an expression tells you what it returns for a real user with real directory data. That is what a test connection is for.
+
+## The same language, elsewhere
+
+OGNL appears on this site in a second, less friendly context: as the vehicle for a well-known family of remote code execution flaws in Apache Struts, where applications evaluated expressions that arrived in requests. It is the same property in both places - an expression can reach into a running application and call methods on it. Here somebody decided that on purpose and put a role in front of it. There, nobody had decided anything, and the framework evaluated whatever turned up.

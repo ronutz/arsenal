@@ -113,6 +113,23 @@ export interface GlossaryEntry {
 
 export const GLOSSARY: GlossaryEntry[] = [
   {
+    // OGNL is unusual: the same language is a supported configuration feature
+    // in one product and the vehicle for a famous class of remote code
+    // execution in another. Both facts belong in one entry, because the reason
+    // they are the same fact is the useful part.
+    slug: "ognl",
+    headword: "OGNL (Object-Graph Navigation Language)",
+    kind: "acronym",
+    domains: ["programming", "cyber-security", "enterprise-networking"],
+    aliases: ["object-graph navigation language", "ognl expression"],
+    relatedTerms: ["sql-injection", "privilege-escalation", "least-privilege"],
+    sources: [
+      { label: "Apache Struts security bulletins S2-045, S2-046 and S2-057" },
+      { label: "Ping Identity: PingFederate expression support and the Expression Administrator role" },
+    ],
+  },
+
+  {
     slug: "large-language-model",
     headword: "large language model (LLM)",
     kind: "acronym",

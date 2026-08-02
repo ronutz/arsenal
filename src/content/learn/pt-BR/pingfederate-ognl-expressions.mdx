@@ -1,0 +1,76 @@
+---
+slug: pingfederate-ognl-expressions
+title: "Expressões OGNL no PingFederate: mapeamentos, critérios e por que escrever é um papel à parte"
+summary: "O PingFederate permite escrever OGNL em mapeamentos de atributos e critérios de emissão. Um mapeamento devolve um valor; um critério precisa devolver verdadeiro ou falso, e confundir os dois falha em silêncio de um jeito que parece problema de autorização em outro lugar. A autoria de expressões fica atrás de um papel administrativo separado por um motivo: uma expressão executa código no servidor, e isso é permissão diferente de configurar uma conexão."
+concepts: ["pingfederate", "ognl", "mapeamento de atributos", "critérios de emissão", "expressões", "identidade", "rbac", "menor privilégio", "saml", "oidc"]
+relatedTools: ["pingfederate-ognl-explainer", "saml-decoder", "jwt-decoder"]
+relatedArticles: ["pingfederate-admin-access-and-rbac"]
+category: identity
+order: 6
+status: reviewed
+updated: "2026-08-01"
+---
+
+A maioria dos mapeamentos de atributo no PingFederate não precisa de expressão. Você escolhe um atributo de origem, mapeia para um destino e segue em frente. Expressões existem para quando isso não basta - quando um valor precisa ser transformado, ter padrão, ser testado ou montado a partir de mais de uma entrada - e vale entendê-las bem, porque o mesmo recurso que as torna úteis é a razão de serem operação privilegiada.
+
+## Dois lugares, duas obrigações diferentes
+
+**Um mapeamento de atributo** produz um valor. O que a expressão devolver vira o atributo enviado adiante na asserção ou no token.
+
+**Um critério de emissão** produz uma decisão. Precisa avaliar para `true` ou `false`, e a emissão só prossegue quando for verdadeiro.
+
+Confundir os dois é erro comum de configuração e não se anuncia. Um critério que devolve string em vez de booleano se comporta de um jeito que parece problema de autorização em outra parte do sistema, e dá para perder uma tarde nisso antes de a causa ficar óbvia.
+
+## As construções que você realmente vai encontrar
+
+Ler um atributo:
+
+```
+#this.get("mail")
+```
+
+Ler com segurança, que é a mesma coisa escrita por quem já se queimou:
+
+```
+#this.get("mail") == null ? "" : #this.get("mail").toString().toLowerCase()
+```
+
+A diferença entre essas duas linhas é a causa mais comum de expressão que funciona em teste e falha em produção. **As contas usadas para testar são mais arrumadas que o diretório.** Um atributo sempre presente na sua conta não está sempre presente na de todo mundo, ausente não é o mesmo que vazio, e os dois ocorrem em qualquer diretório com alguns anos de estrada.
+
+Testar pertencimento, que num critério costuma ser a decisão inteira:
+
+```
+#this.get("memberOf").toString().contains("cn=engenharia")
+```
+
+E traduzir um vocabulário em outro, o que um literal de mapa faz de forma mais legível que uma sequência de condicionais:
+
+```
+#{"cn=eng":"engenheiro", "cn=fin":"financeiro"}.get(#this.get("dept"))
+```
+
+## Por que a autoria é um papel separado
+
+O PingFederate separa a capacidade de escrever expressões da de configurar o restante. Não é preciosismo administrativo. Considere:
+
+```
+@java.lang.String@format("%s", #this.get("uid"))
+```
+
+É uma chamada estática a método Java. É legítima, suportada e ocasionalmente a resposta certa. É também a construção que transforma "ler atributos" em "alcançar a biblioteca de classes" - **a mesma construção que formata uma data alcança bem mais que uma data**.
+
+Um administrador que escreve expressões executa código no servidor. Um administrador que configura uma conexão, não. São poderes diferentes, então são permissões diferentes, e o produto acerta ao tratá-los assim. Se você tem o papel de expressões, está segurando algo que merece deliberação.
+
+## Conselho prático que sobrevive ao repasse
+
+**Prefira um mapeamento simples quando ele resolver.** Um mapeamento é visível a todo administrador; uma expressão só é editável pelo papel de expressões. Quem for depurar sua configuração daqui a dois anos pode não ter esse papel, e pode não ter você também.
+
+**Verifique nulo, a menos que consiga provar que não precisa.** Ver acima, sobre contas de teste arrumadas.
+
+**Mantenha expressões curtas o bastante para ler.** Uma expressão longa é difícil de revisar, mais difícil de repassar e invisível à maioria de quem um dia responderá por ela.
+
+**Teste fora de produção.** Nenhuma leitura de expressão diz o que ela devolve para um usuário real com dados reais de diretório. É para isso que existe uma conexão de teste.
+
+## A mesma linguagem, em outro lugar
+
+A OGNL aparece neste site num segundo contexto, menos amistoso: como veículo de uma família conhecida de falhas de execução remota no Apache Struts, onde aplicações avaliavam expressões que chegavam em requisições. É a mesma propriedade nos dois casos - uma expressão alcança uma aplicação em execução e chama métodos nela. Aqui alguém decidiu isso de propósito e pôs um papel na frente. Lá, ninguém decidiu nada, e o framework avaliava o que aparecesse.

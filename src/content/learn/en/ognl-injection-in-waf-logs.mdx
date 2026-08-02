@@ -1,0 +1,62 @@
+---
+slug: ognl-injection-in-waf-logs
+title: "Reading OGNL in a WAF Log: What the Payload Was Trying to Do"
+summary: "An OGNL payload in a log has two halves worth telling apart: something that tries to switch off the expression sandbox, and something that tries to run a command. A payload with both is an exploitation attempt. A payload with only the second is usually a scanner working through a list. A payload with neither is a probe checking whether input gets evaluated at all - and that answer decides whether anything else in the list could ever work."
+concepts: ["ognl", "struts", "expression language", "injection", "waf", "rce", "cve-2017-5638", "cve-2018-11776", "security", "log analysis"]
+relatedTools: ["ognl-injection-decoder", "url-inspector", "base64"]
+relatedArticles: ["awaf-evasion-techniques"]
+category: security
+order: 9
+status: reviewed
+updated: "2026-08-01"
+---
+
+You are on call, there is an alert, and the event contains this:
+
+```
+%{(#_memberAccess["allowStaticMethodAccess"]=true).(@java.lang.Runtime@getRuntime().exec("id"))}
+```
+
+The useful question is not "is this bad" - it obviously is - but **what was it trying to do, and did it have any chance of working here**. Those are different questions with different answers, and the payload can tell you a surprising amount about both.
+
+## What OGNL is, and why a framework would evaluate one
+
+Object-Graph Navigation Language is an expression language for reading and writing the properties of Java objects. A framework uses it so that configuration can reach into a running application: fetch this property, call that method, format the result for display. It is a reasonable feature. It is also the entire problem, because **an expression that can call methods on live objects is only safe while every expression being evaluated was written by someone you trust**.
+
+Apache Struts spent several years patching a family of flaws that all shared one shape: input from a request reached an evaluator that treated it as configuration. The most famous of them, in 2017, was in the multipart file-upload parser, where a malformed `Content-Type` header was evaluated while the framework was constructing the error message about it. The request did not have to succeed. It had to fail in the right way.
+
+## The two halves
+
+A working attempt needed two separate things, and telling them apart is most of the diagnostic value in a payload.
+
+**The sandbox escape.** OGNL restricts what an expression may touch, through an internal object called `_memberAccess`. By default it refuses static method calls, which is what stops an expression from reaching the whole Java class library. The escape works by reaching that object and switching the restriction off:
+
+```
+#_memberAccess["allowStaticMethodAccess"]=true
+```
+
+**The execution primitive.** Once static access is permitted, the JVM's `Runtime` object is one call away, and `exec` starts an operating system process:
+
+```
+@java.lang.Runtime@getRuntime().exec("id")
+```
+
+## What each combination tells you
+
+**Both present.** This is a genuine exploitation attempt, assembled by somebody who understood the mechanism. Establish whether the request was blocked, whether the runtime is patched, and what the application did with it. Treat the timestamp as the interesting part of the log line, not the payload.
+
+**Execution without escape.** Common, and far less alarming. On any patched runtime the static call is refused, so the payload cannot get from expression evaluation to process creation. This usually means a scanner is working through a list rather than that anyone has looked at your application specifically.
+
+**Escape without execution.** Often the first stage of a two-part attempt, or a probe checking whether the manipulation is even possible before sending anything expensive.
+
+**Neither, but expression syntax present.** Something like `%{1+1}`. This is a probe asking one question: *does this input get evaluated at all?* If the answer is no, nothing else in the attacker's list will work either, which makes this the cheapest and most informative request they can send. It is also the one most likely to be dismissed as noise.
+
+## The mistake to avoid
+
+**A clean reading of an encoded payload tells you about the encoding, not the attack.** OGNL payloads are routinely URL-encoded, double-encoded, or split across parameters that the application concatenates later. If you paste `%25%7B` into a decoder and it finds nothing, that is a correct answer to the wrong question. Decode first, then read.
+
+And a payload proves what was *attempted*, never what was *present*. It does not tell you your framework version, your configuration, or whether the request reached the application at all. Those answers are in the WAF event and the application log - the payload is only the question somebody asked.
+
+## The other half of this story
+
+The same language is a supported configuration feature in other products, where administrators write expressions on purpose. PingFederate is the clearest example: expressions are useful enough to keep, and dangerous enough that authoring them is a **separate administrative role** from configuring everything else. That is the same property this article is about, viewed from the side where somebody thought about it in advance.

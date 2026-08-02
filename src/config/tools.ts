@@ -160,6 +160,8 @@ export const tools: ToolEntry[] = [
   { id: "http-request-translator", href: "/tools/http-request-translator", category: "web", available: true },
   { id: "ssrf-url-classifier", href: "/tools/ssrf-url-classifier", category: "security", available: true },
   { id: "f5-awaf-declarative-policy-explainer", sub: "asm-awaf", href: "/tools/f5-awaf-declarative-policy-explainer", category: "security", vendors: ["f5"], available: true },
+  { id: "ognl-injection-decoder", sub: "asm-awaf", href: "/tools/ognl-injection-decoder", category: "security", vendors: [], available: true },
+  { id: "pingfederate-ognl-explainer", sub: "identity", href: "/tools/pingfederate-ognl-explainer", category: "identity", vendors: ["ping"], available: true },
   { id: "f5-awaf-evasion-explainer", sub: "asm-awaf", href: "/tools/f5-awaf-evasion-explainer", category: "security", vendors: ["f5"], available: true },
   { id: "f5-awaf-learning-poisoning-estimator", sub: "asm-awaf", href: "/tools/f5-awaf-learning-poisoning-estimator", category: "security", vendors: ["f5"], available: true },
   { id: "as3-explainer-validator", sub: "automation", href: "/tools/as3-explainer-validator", category: "networking", vendors: ["f5"], available: true },

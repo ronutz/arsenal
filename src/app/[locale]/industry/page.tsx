@@ -222,6 +222,14 @@ export default async function IndustryHubPage({
                   asked for are built - as views rather than as lists somebody
                   maintains. Counts are computed, so a chip cannot claim a
                   number the page then contradicts. */}
+              {/* The milestones page is the other half of this story - the
+                  physics the companies were built on. Linked first, before the
+                  tag filters, because it is a different KIND of thing rather
+                  than another filter. */}
+              <p className="ztc-notes">
+                <Link href="/industry/milestones">{tTags("milestonesLink")}</Link>
+              </p>
+
               <div className="industry-tag-chips">
                 {Object.entries(TAG_ROUTES).map(([route, tag]) => {
                   const n = vendorsByTag(tag).length;

@@ -6289,6 +6289,18 @@
       "stageThreshold": "Threshold required: {count}",
       "candidatesHeading": "Each candidate",
       "findingsHeading": "Worth knowing"
+    },
+    "ognl-injection-decoder": {
+      "name": "OGNL injection decoder",
+      "blurb": "Paste an OGNL payload you found in a WAF or application log and read what it was trying to do. Separates a sandbox escape from an execution call, names the advisory family the shape is consistent with, and always states what it did not determine. Decodes only - it never evaluates the payload and holds no templates.",
+      "runsLocally": "Runs entirely in your browser. Nothing is uploaded and nothing in the payload is executed.",
+      "empty": "Paste a payload from a log entry. URL-decode it first if it arrived encoded."
+    },
+    "pingfederate-ognl-explainer": {
+      "name": "PingFederate OGNL expression explainer",
+      "blurb": "Reads an expression from an attribute mapping or an issuance criterion and explains it construct by construct, then flags what breaks in production rather than in testing: attributes read without a null check, static Java calls, and criteria that never actually compare anything. Parses only - it never evaluates the expression.",
+      "runsLocally": "Runs entirely in your browser. The expression is parsed and described, never evaluated.",
+      "empty": "Paste an expression from an attribute mapping or an issuance criterion."
     }
   },
   "privacy_page": {
@@ -14174,6 +14186,10 @@
       "generative-ai": {
         "def": "Systems that produce new text, images, audio or code rather than classifying or ranking existing material.",
         "context": "The technology was not new in November 2022; the access was. ChatGPT's launch on 30 November 2022 reached a hundred million monthly users in two months, and what changed was that using a language model stopped requiring an API key or any idea of what a transformer is. Capability had been improving for years in public view."
+      },
+      "ognl": {
+        "def": "An expression language for reading and writing Java object properties, used as a configuration feature by some products and as an attack vehicle against others.",
+        "context": "The two halves of that sentence are the same fact. OGNL is powerful because an expression can reach into a running application's objects and call methods on them, which is exactly what makes it useful for mapping an attribute in an identity product and catastrophic when an application evaluates something a stranger sent. Apache Struts spent years patching a family of flaws with one shape: reach the object that enforces OGNL's own restrictions, switch it off, then call anything. PingFederate takes the opposite approach to the same power, gating expression authoring behind an administrative role separate from the one that configures everything else, on the reasoning that someone who can write expressions can run code on the server and that is a different permission from configuring a connection."
       }
     },
     "totalCount": "{count} terms",
@@ -14643,6 +14659,40 @@
       "title": "Standards, research and protocols",
       "short": "standards",
       "intro": "Not companies selling anything, or not only that: the laboratories, foundations and specifications the commercial entries are built on top of."
+    },
+    "milestonesLink": "Before any of these companies: the milestones they were built on"
+  },
+  "milestones": {
+    "eyebrow": "Before the companies",
+    "title": "Milestones: the ground the industry stands on",
+    "intro": "The company timeline begins in the nineteenth century almost by accident. This page is the other history: the physics and engineering that had to exist first, from a stack of zinc and copper discs in 1800 to the first fibre laid across the Atlantic.",
+    "test": "The test for inclusion here is narrow and deliberate. Not \"important events in science\", but: could a network engineer's working day be explained without it? Induction, amplification, Shannon's channel capacity, random access, packet switching. Things upstream of the job rather than beside it. Every entry says why it matters, not only what happened.",
+    "count": "{count} milestones, {from} to {to}",
+    "backToCompanies": "The companies that were built on top of this",
+    "breadcrumbHome": "Home",
+    "breadcrumbIndustry": "Industry",
+    "breadcrumbHere": "Milestones",
+    "strands": {
+      "electricity": {
+        "name": "Electricity",
+        "blurb": "Making it, moving it, and working out what it is. Five results between 1800 and 1887 that turn a curiosity into a field, ending with the demonstration of waves that had been predicted on paper twenty years earlier."
+      },
+      "electronics": {
+        "name": "Electronics",
+        "blurb": "Controlling it. The step from conducting a signal to acting on one: rectification, then amplification, then doing both in solid state, then doing it a million times on one piece of silicon."
+      },
+      "digital": {
+        "name": "Digital",
+        "blurb": "Representing information as discrete symbols and reasoning about it rigorously. Three papers, two of them by the same person, that between them define what a computer is, what it cannot do, and how much can be sent down a noisy wire."
+      },
+      "storage": {
+        "name": "Storage",
+        "blurb": "Keeping it. The arc from sequential to addressable to solid-state, each step changing not just capacity but what a system can reasonably assume about how long a read takes."
+      },
+      "transfer": {
+        "name": "Transfer",
+        "blurb": "Moving it. From the first separation of a message from its messenger to the fibre under the ocean, by way of the two design decisions - packets rather than circuits, and internetworking rather than one network - that produced everything since."
+      }
     }
   }
 }
