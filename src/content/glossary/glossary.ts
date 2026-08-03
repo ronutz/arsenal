@@ -113,6 +113,239 @@ export interface GlossaryEntry {
 
 export const GLOSSARY: GlossaryEntry[] = [
   {
+    slug: "darpa",
+    headword: "DARPA (Defense Advanced Research Projects Agency)",
+    kind: "acronym",
+    domains: ["cyber-security", "enterprise-networking", "ops-culture"],
+    aliases: ["arpa", "advanced research projects agency", "defense advanced research projects agency"],
+    relatedTerms: ["arpanet", "dod", "internet-gateway"],
+    sources: [
+      { label: "DARPA's own published history, including its founding in February 1958 following Sputnik" },
+      { label: "Licklider's 1960 paper Man-Computer Symbiosis and his 1963 memoranda to the 'Intergalactic Computer Network'" },
+    ],
+  },
+  {
+    slug: "arpanet",
+    headword: "ARPANET",
+    kind: "term",
+    domains: ["enterprise-networking", "isp-telecom"],
+    aliases: ["arpa network", "advanced research projects agency network"],
+    relatedTerms: ["darpa", "internet-gateway", "rnp"],
+    sources: [
+      { label: "The first four ARPANET nodes, October-December 1969: UCLA, SRI, UC Santa Barbara and the University of Utah" },
+      { label: "Baran (RAND) and Davies (NPL) on packet switching, developed independently in the early 1960s" },
+      { label: "Cerf and Kahn, A Protocol for Packet Network Intercommunication, 1974; the TCP/IP cutover of 1 January 1983" },
+    ],
+  },
+
+  {
+    slug: "sntp",
+    headword: "SNTP (Simple Network Time Protocol)",
+    kind: "acronym",
+    domains: ["enterprise-networking", "programming"],
+    aliases: ["simple network time protocol", "rfc 4330"],
+    relatedTerms: ["ntp", "ptp"],
+    sources: [
+      { label: "RFC 4330 and RFC 5905 - SNTP is defined as a subset of NTP, wire-compatible with it" },
+    ],
+  },
+  {
+    slug: "ptp",
+    headword: "PTP (Precision Time Protocol)",
+    kind: "acronym",
+    domains: ["enterprise-networking", "programming"],
+    aliases: ["precision time protocol", "ieee 1588", "1588v2"],
+    relatedTerms: ["ntp", "sntp"],
+    sources: [
+      { label: "IEEE 1588, Precision Time Protocol, and IEEE 1588-2008 (PTPv2)" },
+      { label: "Telecom and financial-market profiles of PTP, including ITU-T G.8275.1 and MiFID II timestamping requirements" },
+    ],
+  },
+
+  {
+    // RNP - added 2026-08-03 (PRIME). The fullest of the Brazilian network
+    // entries, because this is where the Brazilian internet actually started.
+    //
+    // The LNCC-versus-FAPESP point is the reason to write it carefully: the
+    // FIRST link was not the one that mattered, and the sources are explicit
+    // about why.
+    slug: "rnp",
+    headword: "RNP (Rede Nacional de Ensino e Pesquisa)",
+    kind: "acronym",
+    domains: ["isp-telecom", "enterprise-networking"],
+    aliases: ["rede nacional de pesquisa", "rede ipe", "brazilian academic network"],
+    relatedTerms: ["internet-gateway", "siscomis", "dns"],
+    sources: [
+      { label: "RNP's own history: created September 1989 by CNPq to build a national academic network infrastructure and to disseminate the use of networks in the country" },
+      { label: "RNP archive, A Evolução das Redes Acadêmicas no Brasil: the LNCC-Maryland link at 9,600 bps, the FAPESP-Fermilab link at 4,800 bps from November 1988 using DECnet, and the three separate BITNET islands by May 1989" },
+      { label: "IME-USP history of networks in Brazil: the LNCC line preceding FAPESP by three months, never evolving, and being decommissioned in 1996 at its original speed; Professor Oscar Sala's role; the first national TCP/IP connection by FAPESP in February 1991" },
+      { label: "FAPESP and RNP materials: the 1992 backbone serving Rio-92, the 1995 decision to carry commercial traffic, and the RNP2 backbone of 1999" },
+    ],
+  },
+
+  {
+    // DCWF - added 2026-08-03 (PRIME). Written alongside the NICE Framework
+    // entry, because the two are now formally related: NICE moved two Work
+    // Role Categories INTO the DCWF in March 2025.
+    slug: "dod-cyber-workforce-framework",
+    headword: "DCWF (DoD Cyber Workforce Framework)",
+    kind: "acronym",
+    domains: ["cyber-security", "grc"],
+    aliases: ["dcwf", "dod cyber workforce framework", "dod 8140"],
+    relatedTerms: ["nice-framework-work-role-categories", "dod"],
+    sources: [
+      { label: "DoD Directive 8140 and the DoD Cyber Workforce Framework work role catalogue" },
+      { label: "NICE Framework Components v2.0.0 Summary of Changes (March 2025), recording the transfer of two Work Role Categories to the DCWF" },
+    ],
+  },
+  {
+    // The three-network model. Written as ONE conceptual family across three
+    // entries because the ARCHITECTURE is the teaching point, not any one
+    // network. All material is from public description of the model; nothing
+    // operational.
+    slug: "niprnet",
+    headword: "NIPRNet",
+    kind: "acronym",
+    domains: ["enterprise-networking", "cyber-security"],
+    aliases: ["nipr", "non-classified internet protocol router network"],
+    relatedTerms: ["siprnet", "jwics", "air-gap"],
+    sources: [
+      { label: "US Department of Defense public descriptions of its network tiers" },
+    ],
+  },
+  {
+    slug: "siprnet",
+    headword: "SIPRNet",
+    kind: "acronym",
+    domains: ["enterprise-networking", "cyber-security"],
+    aliases: ["sipr", "secret internet protocol router network"],
+    relatedTerms: ["niprnet", "jwics", "air-gap"],
+    sources: [
+      { label: "US Department of Defense public descriptions of its network tiers" },
+      { label: "Public reporting on the 2010 diplomatic cable disclosures, which turned on access controls rather than on the network's separation" },
+    ],
+  },
+  {
+    slug: "jwics",
+    headword: "JWICS",
+    kind: "acronym",
+    domains: ["enterprise-networking", "cyber-security"],
+    aliases: ["joint worldwide intelligence communications system"],
+    relatedTerms: ["niprnet", "siprnet", "air-gap"],
+    sources: [
+      { label: "US intelligence community public descriptions of its top-secret network tier" },
+    ],
+  },
+  {
+    slug: "siscomis",
+    headword: "SISCOMIS (Sistema de Comunicações Militares por Satélite)",
+    kind: "acronym",
+    domains: ["enterprise-networking", "isp-telecom"],
+    aliases: ["siscomis", "brazilian military satellite communications"],
+    relatedTerms: ["air-gap", "siprnet"],
+    sources: [
+      { label: "Brazilian Ministry of Defence doctrine MD-31-M-03 (SISMC²) and published normative instructions on SISCOMIS" },
+      { label: "Brazilian Air Force and Senate materials on the SGDC satellite, its X band for defence use and Ka band for the national broadband programme" },
+    ],
+  },
+
+  {
+    slug: "dod",
+    headword: "DoD (United States Department of Defense)",
+    kind: "acronym",
+    domains: ["cyber-security", "grc"],
+    aliases: ["department of defense", "us dod", "pentagon"],
+    relatedTerms: ["nice-framework-work-role-categories"],
+    sources: [
+      { label: "US Department of Defense public materials, including the DoD Cyber Workforce Framework" },
+    ],
+  },
+  {
+    slug: "nist-csrc",
+    headword: "NIST CSRC (Computer Security Resource Center)",
+    kind: "acronym",
+    domains: ["cyber-security", "grc"],
+    aliases: ["csrc", "computer security resource center"],
+    relatedTerms: ["nist", "nist-csf"],
+    sources: [
+      { label: "NIST Computer Security Resource Center, csrc.nist.gov" },
+    ],
+  },
+  {
+    slug: "nist-csf",
+    headword: "NIST CSF (Cybersecurity Framework)",
+    kind: "acronym",
+    domains: ["cyber-security", "grc"],
+    aliases: ["cybersecurity framework", "csf", "nist cybersecurity framework", "csf 2.0"],
+    relatedTerms: ["nist", "nist-csrc", "nice-framework-work-role-categories"],
+    sources: [
+      { label: "NIST Cybersecurity Framework, nist.gov/cyberframework" },
+      { label: "CSF 2.0, released February 2024" },
+    ],
+  },
+  {
+    slug: "inmetro",
+    headword: "Inmetro",
+    kind: "acronym",
+    domains: ["grc", "enterprise-networking"],
+    aliases: ["instituto nacional de metrologia", "metrologia qualidade e tecnologia"],
+    relatedTerms: ["abnt"],
+    sources: [
+      { label: "Inmetro - Instituto Nacional de Metrologia, Qualidade e Tecnologia (Brazil)" },
+    ],
+  },
+  {
+    slug: "abnt",
+    headword: "ABNT (Associação Brasileira de Normas Técnicas)",
+    kind: "acronym",
+    domains: ["grc", "enterprise-networking"],
+    aliases: ["associacao brasileira de normas tecnicas", "nbr", "abnt nbr"],
+    relatedTerms: ["inmetro", "iso-27001"],
+    sources: [
+      { label: "ABNT - Brazil's national standards body and ISO member" },
+    ],
+  },
+  {
+    slug: "hyperlink",
+    headword: "Hyperlink",
+    kind: "term",
+    domains: ["web-development", "programming"],
+    aliases: ["link", "anchor", "href"],
+    relatedTerms: ["http-query-method", "deep-web", "dns"],
+    sources: [
+      { label: "Berners-Lee's World Wide Web proposal, CERN, 1989-1991" },
+      { label: "HTML anchor element specification" },
+    ],
+  },
+  {
+    // NICE FRAMEWORK WORK ROLE CATEGORIES - added 2026-08-03 (PRIME).
+    //
+    // *** WRITTEN FROM NIST'S OWN CHANGE LOG, NOT FROM MEMORY OR SECONDARY
+    // SOURCES. *** The framework went from SEVEN categories to FIVE on
+    // 5 March 2025, when Cyberspace Effects and Cyberspace Intelligence moved
+    // to the DoD Cyber Workforce Framework. A great many current articles,
+    // course outlines and study guides still say seven. That is the single most
+    // useful thing this entry can tell a reader, so it is stated plainly.
+    slug: "nice-framework-work-role-categories",
+    headword: "NICE Framework Work Role Categories",
+    kind: "term",
+    domains: ["cyber-security", "grc", "ops-culture"],
+    aliases: [
+      "nice framework",
+      "nice workforce framework for cybersecurity",
+      "nist sp 800-181",
+      "work role categories",
+      "nice work roles",
+    ],
+    relatedTerms: ["least-privilege", "privilege-escalation", "single-source-of-truth"],
+    sources: [
+      { label: "NIST, NICE Framework Components change log - the authoritative record of which version changed what, and when" },
+      { label: "NIST SP 800-181 Revision 1 (November 2020), and NIST IR 8355 on Competency Areas" },
+      { label: "NICE Framework Components v2.0.0 Summary of Changes (March 2025)" },
+    ],
+  },
+
+  {
     // OGNL is unusual: the same language is a supported configuration feature
     // in one product and the vehicle for a famous class of remote code
     // execution in another. Both facts belong in one entry, because the reason

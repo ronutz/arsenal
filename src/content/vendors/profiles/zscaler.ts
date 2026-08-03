@@ -1,13 +1,14 @@
 // ============================================================================
 // src/content/vendors/profiles/zscaler.ts
 // ----------------------------------------------------------------------------
-// ZSCALER - the newest chapter. AUTHORIZATION (PRIME 2026-07-26, SUPERSEDES
-// 2026-07-15): NO authorized-instructor claim is made for Zscaler. Same
-// treatment as Check Point: the hub is study material, not a delivery claim.
-// The hub is open
-// (JA3/JA4 tools carry the zscaler tag) and the i18n narrative states the
-// authorization (the earlier disclaimer is retired). Sixth vendor in the
-// teaching portfolio.
+// ZSCALER - the newest chapter.
+//
+// INSTRUCTOR AUTHORISATION IS NOT DISCUSSED IN THIS FILE, in either
+// direction. It is declared once, per company, in `relationships` in
+// partners.ts, and nowhere else. Do not add a claim here and do not add a
+// denial: both go stale when an authorisation changes, and a stale denial
+// is the more damaging of the two.
+
 //
 // Verified 2026-07-15: Wikipedia (founded 2007 by Jay Chaudhry and K.
 // Kailash; platform launched 2008; IPO March 2018 raising $192M, Nasdaq ZS;

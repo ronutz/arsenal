@@ -87,8 +87,18 @@ export default async function IndustryHubPage({
      *  chapters do not carry one - none of those companies has ended. */
     ended?: { year: number; note: string };
     href: string;
-    /** Red Education delivers this vendor's authorized training. */
+    /** Red Education is a partner of this vendor.
+     *  SOURCE CHANGED 2026-08-02: this used to be derived from the `group`
+     *  field being "redu", which was a PROXY and therefore wrong at the edges -
+     *  the partner list and the group membership had drifted apart, and the
+     *  timeline was showing whichever the group happened to say. It now reads
+     *  the explicit `relationships` declaration, so the pill states a fact
+     *  somebody wrote down rather than one inferred from a category. */
     isRedu: boolean;
+    /** PRIME is an authorised instructor for this vendor.
+     *  A PUBLIC CLAIM ABOUT AUTHORISATION. Four vendors only, and it must never
+     *  be inferred from partnership, certification or a delivered course. */
+    isInstructor: boolean;
     /** A chapter this career was lived inside.
      *  These two are INDEPENDENT, not alternatives: nine companies are both,
      *  and modelling them as one category meant only one pill could ever
@@ -110,17 +120,41 @@ export default async function IndustryHubPage({
       // chapters below keep /about/vendors, because those are a different kind
       // of page about a different subject.
       href: `/industry/${v.slug}`,
-      isRedu: v.group === "redu",
+      isRedu: v.relationships?.includes("red-education-partner") ?? false,
+      isInstructor: v.relationships?.includes("authorized-instructor") ?? false,
       isCareer: false,
     }));
 
-  const fromCareer: TimelineEntry[] = CAREER_VENDORS.map((v) => ({
+  // CAREER VENDORS WITHOUT AN INDUSTRY ENTRY ARE SKIPPED (2026-08-02).
+  // This timeline is company histories, and every card links to one. When the
+  // combined FireEye/McAfee/Ixia entry was dissolved, its career vendor stayed
+  // in the career list - and this branch happily rendered a card pointing at a
+  // company page that no longer existed. A 404 reachable from the timeline,
+  // introduced by a deletion that was otherwise correct.
+  //
+  // The chapter itself is NOT orphaned: the two entries that inherited its
+  // subject matter both link to it, which is where a reader should meet it.
+  const fromCareer: TimelineEntry[] = CAREER_VENDORS.filter((v) =>
+    partnerVendors.some((p) => p.slug === v.slug),
+  ).map((v) => ({
     slug: v.slug,
     name: t(`${v.key}.name`),
     tagline: t(`${v.key}.tagline`),
     founded: v.founded,
     href: `/industry/${v.slug}`,
-    isRedu: REDU_CAREER_PARTNERS.includes(v.slug as (typeof REDU_CAREER_PARTNERS)[number]),
+    // SINGLE SOURCE (2026-08-02): both branches read the same `relationships`
+    // declaration. This one used to consult its own hardcoded list, so the
+    // timeline could say one thing for a company reached as a partner and
+    // another for the same company reached as a career chapter. Two lists
+    // describing one fact is exactly how they drifted apart.
+    isRedu:
+      partnerVendors.find((p) => p.slug === v.slug)?.relationships?.includes(
+        "red-education-partner",
+      ) ?? false,
+    isInstructor:
+      partnerVendors.find((p) => p.slug === v.slug)?.relationships?.includes(
+        "authorized-instructor",
+      ) ?? false,
     isCareer: true,
   }));
 
@@ -258,6 +292,9 @@ export default async function IndustryHubPage({
                       {v.name}
                       {v.isRedu && (
                         <span className="vendor-partner-pill">{tp("reduPill")}</span>
+                      )}
+                      {v.isInstructor && (
+                        <span className="vendor-instructor-pill">{tp("instructorPill")}</span>
                       )}
                       {v.isCareer && (
                         <span className="vendor-career-pill">{tp("careerPill")}</span>

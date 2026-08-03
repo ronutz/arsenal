@@ -71,6 +71,33 @@ export const VENDOR_TAGS: readonly VendorTag[] = [
   "standards",
 ] as const;
 
+/**
+ * PRIME'S RELATIONSHIP TO A COMPANY. A SECOND AXIS, kept separate from `tags`
+ * on purpose (PRIME 2026-08-02).
+ *
+ * `tags` say what a company IS - vendor, distributor, carrier. These say what
+ * the relationship to it is. Filtering "show me distributors" and filtering
+ * "show me what I am authorised to teach" are different questions, and folding
+ * them into one closed vocabulary would make both filters incoherent: a list
+ * containing `distributor`, `carrier` and `authorized-instructor` is not a
+ * classification, it is two classifications in a trenchcoat.
+ *
+ * *** THESE ARE PUBLIC CLAIMS ABOUT AUTHORISATION AND MUST BE EXACT. ***
+ * `authorized-instructor` is asserted for FOUR vendors only, on PRIME's
+ * explicit instruction of 2026-08-02. It must never be inferred from a
+ * partnership, a certification or a delivered course.
+ */
+export type VendorRelationship =
+  /** Red Education is a partner of this vendor. */
+  | "red-education-partner"
+  /** PRIME is an authorised instructor for this vendor. Four only. */
+  | "authorized-instructor";
+
+export const VENDOR_RELATIONSHIPS: readonly VendorRelationship[] = [
+  "red-education-partner",
+  "authorized-instructor",
+] as const;
+
 export interface PartnerVendor {
   slug: string;
   group: "redu" | "other" | "contemporary";
@@ -114,6 +141,12 @@ export interface PartnerVendor {
    * build; the guard requires at least one on every entry.
    */
   tags?: VendorTag[];
+  /**
+   * Relationship to this company. Separate axis from `tags`. See
+   * VendorRelationship - and note that `authorized-instructor` is a public
+   * claim about authorisation, not a description of experience.
+   */
+  relationships?: VendorRelationship[];
   sources?: {
     label: string;
     url: string;
@@ -187,7 +220,12 @@ const REDU_SOURCES = [
 ];
 
 export const partnerVendors: PartnerVendor[] = [
-  // ---- GROUP: Red Education training partners (Rodolfo does NOT teach these) ----
+  // ---- GROUP: Red Education training partners ----
+  // Instructor authorisation is declared per company in `relationships` and
+  // NOWHERE ELSE. Do not restate it here, and do not state its absence: this
+  // file describes companies, and a comment asserting who does or does not
+  // teach a vendor goes stale the moment an authorisation changes - which is
+  // exactly what happened to the sentence that used to sit on this line.
   {
     slug: "nutanix",
     tags: ["vendor"],
@@ -575,6 +613,615 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Econodata company register: Compugraf Serviços Ltda, CNPJ 49.916.513/0001-36, registered 06/04/1982, Avenida Angélica, São Paulo; the description of a 1982 founding in computer graphics, the 1990s move into cybersecurity, and the 2024 change to CG One", url: "https://www.econodata.com.br/consulta-empresa/49916513000136-compugraf-servicos-ltda" },
       { label: "Serasa Experian register: Compugraf Segurança da Informação Ltda, CNPJ 41.896.287/0001-67, active, São Paulo - one of several entities under the group", url: "https://empresas.serasaexperian.com.br/consulta-gratis/COMPUGRAF-SEGURANCA-DA-INFORMACAO-LTDA-41896287000167" },
       { label: "Company self-description: four decades in the market, one hundred per cent Brazilian, focused on information security, data privacy and governance, with more than 150 staff and over 500 client companies in twenty years", url: "https://rocketreach.co/compugraf-profile_b4b9ff3afb07e0a5", sourceNote: "Aggregator page carrying the company's own copy. Used only for the company's self-description; the revenue figure on the same page is not used." },
+    ],
+  },
+  {
+    // THE BRAZILIAN MARKET RESERVE - added 2026-08-02 (PRIME).
+    //
+    // *** PRIME'S BRIEF: "always from the perspective tied to our theme." ***
+    // So this is NOT a history of Brazilian computing. It is about what the
+    // period did to the SUPPLY OF ENGINEERS, and where those people went - both
+    // of which are documented and both of which are still visible.
+    //
+    // *** POLITICALLY LOADED. Handled by putting the strongest evidence on BOTH
+    // sides in the entry and declining to score it. *** The pro case has real
+    // numbers (employment, growth, market share). So does the case against
+    // (clones, a copied operating system, US trade retaliation, every
+    // semiconductor plant leaving). Both are here.
+    slug: "brazilian-market-reserve",
+    group: "other",
+    name: "The Brazilian market reserve (Cobra, Scopus, Itautec)",
+    founded: 1974,
+    tags: ["vendor", "standards", "training"],
+    ended: {
+      year: 1992,
+      note: "The Informatics Law had a fixed eight-year term written into it from the start and expired in 1992. The companies survived by changing what they made.",
+    },
+    tagline: "A policy that failed at its stated goal and succeeded at one nobody wrote down.",
+    intro:
+      "Cobra - Computadores e Sistemas Brasileiros - was founded in 1974 and was the first Brazilian company to design, build and sell computers, reaching commercial production in 1976. Ten years later, Law 7.232 of 29 October 1984 made that a national policy: the domestic market for computing equipment was reserved for Brazilian-owned companies, with a term of eight years written into the law from the outset. It passed Congress unanimously.",
+    body: [
+      "**The reasoning was explicit and it was not stupid.** Brazil had a balance-of-payments crisis and an import-substitution strategy. The argument was that protected for a decade, domestic firms would build genuine capability and could then compete openly - and Japan and the United States were both cited as precedents for protectionism that had worked. Academics, industry, the press, the government and the opposition all supported it.",
+      "**The case against it is substantial and should be stated first, because it is the one usually left out of nostalgic accounts.** Freed of foreign competition, several manufacturers did not pioneer; they cloned. Machines closely modelled on Apple, Tandy, Atari and Commodore products appeared under Brazilian names. Scopus copied Microsoft's MS-DOS and shipped it as SISNE, drawing a piracy threat from Microsoft. In 1985 the United States formally accused Brazil of unfair trade practices and applied retaliation. And between 1989 and 1992 every semiconductor plant in the country closed or left. Smuggling was widespread enough that a police operation seizing contraband machines produced public anger rather than approval.",
+      "**And the case for it also has numbers, which is why the argument has never been settled.** Between 1984 and 1987 the Brazilian microcomputer market grew at about 7.4 per cent a year, the highest rate in the capitalist world at the time. Domestic firms went from 23 per cent of the market in 1979 to 40 per cent by 1982. Installed computers went from 1,200 units in 1974 to 23,200 by 1982.",
+      "**The figure that matters most for this site is a different one. Employment in informatics and automation went from about 42,000 people in 1984 to about 74,000 by 1989.** Whatever those companies were building, they were hiring, training and pulling technology through the economy - and a generation of Brazilian engineers learned the trade inside them.",
+      "**That is the part that outlasted the policy.** The law expired in 1992 as scheduled and most of the manufacturers did not survive contact with open competition. But the people did, and they went into the distributors, integrators, carriers and banks that appear elsewhere on this timeline. **A protectionist industrial policy failed at building a computer industry and succeeded at building a workforce, which was not its stated aim.**",
+      "**Where the companies went is the second finding, and it is not a coincidence.** Cobra was acquired by Banco do Brasil. Scopus was bought by Bradesco, and later passed to IBM Brasil. Itautec became a division of Itaú. Microsiga renamed itself Totvs and went into enterprise software. Three of the largest surviving names were absorbed by banks and turned to banking automation - **which is a substantial part of why Brazilian banking technology became unusually advanced.** A protected computer industry, unable to compete on hardware, was reabsorbed by its largest customers and became very good at exactly one thing.",
+      "**Read against the rest of this timeline, the pattern is familiar and uncomfortable.** Every argument about domestic technology capability - who builds it, who is allowed to buy it, what happens to the people trained under it - is a re-run of this one, with different vocabulary. The honest summary is that the policy achieved something real and did not achieve the thing it was for, and that both halves are usually reported separately by people who prefer one of them.",
+    ],
+    externalUrl: "https://pt.wikipedia.org/wiki/Pol%C3%ADtica_Nacional_de_Inform%C3%A1tica",
+    externalLabel: "Política Nacional de Informática",
+    sources: [
+      { label: "Wikipédia (pt): Law 7.232 approved 29 October 1984 with an eight-year term written in; the idea forming in the early 1970s under the military government", url: "https://pt.wikipedia.org/wiki/Pol%C3%ADtica_Nacional_de_Inform%C3%A1tica" },
+      { label: "IT Forum, citing Schmitz and Hewitt's 1992 assessment: microcomputer market growth averaging 7.4% a year between 1984 and 1987, the highest in the capitalist world; informatics and automation employment rising from 42,000 in 1984 to 74,000 by 1989; Cobra founded 1974 as the first Brazilian company to develop, manufacture and sell computers", url: "https://itforum.com.br/noticias/6-empresas-historia-informatica-brasil/" },
+      { label: "ISTOÉ Dinheiro: commercial-scale production beginning with Cobra in 1976; more than 50 companies with microcomputer projects; domestic market share rising from 23% in 1979 to 40% in 1982; installed base from 1,200 units in 1974 to 23,200 in 1982", url: "https://istoedinheiro.com.br/os-efeitos-colaterais-da-lei-de-informatica" },
+      { label: "DIO (Fernando Araujo): the cloning of foreign designs rather than original development; the acquisition outcomes - Cobra to Banco do Brasil, Scopus to Bradesco and later IBM Brasil, Itautec as an Itaú division focused on banking infrastructure, Microsiga becoming Totvs; every semiconductor plant leaving between 1989 and 1992", url: "https://www.dio.me/articles/direto-ao-ponto-16-a-reserva-de-mercado-da-informatica-no-brasil-1984-1992" },
+      { label: "Revista de Administração de Empresas (SciELO, 1988): the contemporary debate, including Scopus shipping a copy of MS-DOS as SISNE and Microsoft's piracy threat, and public anger at operations seizing smuggled machines", url: "https://www.scielo.br/scielo.php?script=sci_arttext&pid=S0034-75901988000300012", sourceNote: "A contemporary survey of the argument as it was being had, which is why it is cited for the criticisms rather than for outcomes - it was published four years before the policy ended." },
+      { label: "Metrópoles (Luiz Paulo Vellozo Lucas): the unanimous congressional approval and the breadth of support across academia, business, press, government and opposition; the balance-of-payments and import-substitution context", url: "https://www.metropoles.com/blog-do-noblat/artigos/a-lei-de-informatica-por-luiz-paulo-vellozo-lucas", sourceNote: "An opinion column by a former mayor and federal deputy. Used for the political context and the fact of unanimity, not for its evaluation of the policy." },
+      { label: "Blog Cidadania & Cultura: Itautec as the last survivor in computers, with Scopus and Cobra Tecnologia having moved to banking automation; the policy ending in 1992", url: "https://fernandonogueiracosta.wordpress.com/2013/05/29/fim-da-era-da-reserva-de-mercado/" },
+    ],
+  },
+  {
+    // CPqD - added 2026-08-02 (PRIME: "CPqD and Brasil Telecom are worth adding
+    // into the story").
+    //
+    // He is right, and CPqD is the more interesting of the two: it is the ONLY
+    // institution in the Telebrás story that outlived the system, and it is on
+    // this timeline as a research organisation rather than a company - which is
+    // why it carries `standards` alongside `services`.
+    slug: "cpqd",
+    group: "other",
+    name: "CPqD",
+    founded: 1976,
+    tags: ["standards", "services", "training"],
+    tagline: "The state research centre that survived the privatisation of the state.",
+    intro:
+      "Telebrás created the Centro de Pesquisa e Desenvolvimento em Telecomunicações in 1976, in Campinas, with a brief that was explicitly industrial rather than academic: develop domestic telecommunications technology so that Brazil bought less of it from abroad. When the Telebrás system was broken up and sold in 1998, CPqD did not go with it. It became an independent foundation and is still operating.",
+    body: [
+      "**The brief is what makes it unusual.** A great many countries have run state telecommunications monopolies. Rather fewer built a research institute inside one and told it to produce technology rather than papers. CPqD worked on switching systems, transmission, network management and digital telephony, at a time when every one of those was imported, and it did so on behalf of an operator that could guarantee it a customer - which is a structural advantage no independent laboratory has.",
+      "**Then the customer was dismantled.** The 1998 privatisation split the Telebrás system into twelve holdings sold to different owners, and an in-house research centre serving a monopoly has no obvious place in that arrangement. CPqD was converted into an independent private foundation, and had to find work from operators that were now competitors of one another, and from government.",
+      "That transition is the part worth studying. **An institution built to serve one guaranteed customer had to learn to sell**, and most such institutions do not survive the lesson. This one has been going for close to five decades in total and around three of them without the parent that created it.",
+      "It remains a research and development organisation rather than a vendor: telecommunications, energy, digital government, and the certification and testing work that a country needs somebody neutral to do. **That neutrality is the thread this site keeps finding.** CPqD is useful to competing operators for the same reason a carrier-neutral exchange is useful to competing carriers, and for the same reason a vendor-neutral certification is worth more than a vendor's own - because it belongs to none of them.",
+      "It also trains, which is why it carries that tag here: a research institute in a country that imports most of its technology is one of the few places domestic expertise is deliberately manufactured rather than hired.",
+    ],
+    externalUrl: "https://www.cpqd.com.br/",
+    externalLabel: "CPqD",
+    sources: [
+      { label: "Telebrás 50th anniversary account: CPqD created in 1976 for research and development of products, networks, switching systems and digital systems with a focus on developing national technology, and continuing independently since 1998", url: "https://www.telebras.com.br/50anos/" },
+      { label: "Wikipédia (pt) on the Telebrás system: CPqD listed among the system's components from 1976 to 1998, operating since then as an independent organisation", url: "https://pt.wikipedia.org/wiki/Telecomunica%C3%A7%C3%B5es_Brasileiras_S.A." },
+      { label: "CPqD (own site): current activity across telecommunications, energy and digital government, including testing and certification work", url: "https://www.cpqd.com.br/" },
+    ],
+  },
+  {
+    // BRASIL TELECOM - added 2026-08-02 (PRIME). One of the three fixed-line
+    // holdings created by the 1998 split, and the one whose subsequent path
+    // shows what the split actually produced: reconsolidation.
+    slug: "brasil-telecom",
+    group: "other",
+    name: "Brasil Telecom",
+    founded: 1998,
+    tags: ["carrier"],
+    ended: {
+      year: 2009,
+      note: "Acquired by Oi (then Telemar), reuniting two of the three fixed-line holdings the 1998 privatisation had separated.",
+    },
+    tagline: "One of the twelve pieces, which spent a decade becoming part of a larger piece again.",
+    intro:
+      "Brasil Telecom was one of the three fixed-line holding companies created when the Telebrás system was auctioned on 29 July 1998, covering the south, centre-west and part of the north of the country. It lasted about eleven years as an independent company.",
+    body: [
+      "**Its history is the argument about the privatisation, in miniature.** The system was split in order to create competition, on the reasoning that several operators would serve customers better than one. What happened over the following decade is that the pieces began buying each other: Brasil Telecom was acquired by Oi, the group built on Telemar, another of the three fixed-line holdings, in a deal completed in 2009.",
+      "So two of the three parts the state had deliberately separated were back together inside eleven years, and the third - the São Paulo operator, Telesp - had become the Brazilian business of a Spanish multinational. **Nine hundred companies had become one, then twelve, and were now heading back toward a handful.**",
+      "**Whether that is a failure of the design or simply what telecommunications does is a fair question and this entry does not answer it.** Networks have strong economies of scale and interconnection costs that reward consolidation; regulators know this and try to hold the line against it. The pattern is not particular to Brazil, and any argument that it proves something about privatisation has to explain why the same consolidation happened in countries that privatised differently, and in some that did not privatise at all.",
+      "The company's later years were also marked by a long and public shareholder dispute, and the group that emerged from the merger has had a difficult financial history of its own. Readers should check the current position rather than take a state of affairs from a page like this one.",
+    ],
+    externalUrl: "https://pt.wikipedia.org/wiki/Brasil_Telecom",
+    externalLabel: "Brasil Telecom",
+    sources: [
+      { label: "Correio Braziliense: the 29 July 1998 auction creating three fixed-line holdings, one long-distance carrier and eight mobile holdings from the Telebrás system", url: "https://www.correiobraziliense.com.br/app/noticia/economia/2008/07/29/internas_economia,22069/saiba-como-foi-a-privatizacao-da-telebras.shtml" },
+      { label: "Museu Capixaba do Computador: the twelve regional companies produced by the split, giving rise to Telemar, Brasil Telecom and Telefônica among others", url: "https://museucapixaba.com.br/hoje/fundacao-da-empresa-telebras-de-1972/" },
+      { label: "Wikipédia (pt) on the Telebrás privatisation: the successor companies and their consolidation into Oi and Vivo", url: "https://pt.wikipedia.org/wiki/Privatiza%C3%A7%C3%A3o_da_Telebr%C3%A1s", sourceNote: "Used for the consolidation chronology. Corporate and financial developments after the merger are not detailed here; check current sources." },
+    ],
+  },
+  {
+    // TELEBRÁS SYSTEM - added 2026-08-02 (PRIME). Telebrás, Telesp and Embratel
+    // written as ONE entry, because they are one system: a holding company, its
+    // state operators and its long-distance carrier.
+    //
+    // *** POLITICALLY CONTESTED TERRITORY, HANDLED CAREFULLY. *** The 1998
+    // privatisation is still argued about in Brazil and one of the sources
+    // consulted calls it a crime in its headline. The entry states the figures
+    // and the outcomes, notes that the judgement remains contested, and takes
+    // no side. Numbers, dates and ownership chains are verifiable; whether it
+    // was a good idea is not this site's call.
+    slug: "telebras-system",
+    group: "other",
+    name: "The Telebrás System (Telebrás, Telesp, Embratel)",
+    founded: 1972,
+    tags: ["carrier", "standards"],
+    ended: {
+      year: 1998,
+      note: "The system was privatised on 29 July 1998 and split into twelve regional holdings. Telebrás itself was reactivated in 2010 with a different mandate.",
+    },
+    tagline: "Nine hundred telephone companies became one, then twelve, then a handful owned elsewhere.",
+    intro:
+      "Before 1972 there were more than nine hundred telecommunications companies operating in Brazil. Law 5.792 of 11 July 1972 authorised a single state holding company, and Telecomunicações Brasileiras S.A. was installed on 9 November that year, during the military government. Within a few years it had absorbed nearly all of them: twenty-seven state operators plus Embratel, the long-distance carrier, together known as the Sistema Telebrás.",
+    body: [
+      "**The problem it was built to solve was real.** Nine hundred operators meant nine hundred technical standards, numbering plans and interconnection arrangements, in a country of continental scale where a call between two states might cross several incompatible networks. Centralising it produced a national network with satellites, submarine cables and a dense terrestrial mesh, and telephony reached essentially the whole territory.",
+      "**One figure captures both the achievement and the argument.** Installing a telephone line cost about five thousand US dollars in the 1970s. By 1998 it cost about twenty. The heavy infrastructure had been built, and the technology had changed underneath it - which is precisely why private capital, uninterested for decades, became interested.",
+      "**In 1976 Telebrás created CPqD**, its research and development centre, which worked on switching systems, networks and digital telephony with an explicit brief to develop domestic technology. It is one of the few institutions here that outlived the system that created it: CPqD has operated independently since 1998 and still exists.",
+      "The system was privatised on 29 July 1998, at the Rio de Janeiro stock exchange, following the 1995 constitutional amendment and the General Telecommunications Law. Twenty per cent of the shares - the controlling blocks - were sold, splitting the system into twelve holdings: three fixed-line, one long-distance, and eight mobile. **It raised R$22.058B, a premium of 63.7% over the minimum price, and remains the largest privatisation in the country's history.** In its final year the system had reported around R$2B of net profit.",
+      "**What happened to Embratel afterwards is the part worth following.** The long-distance carrier was bought by MCI WorldCom of the United States. WorldCom filed for bankruptcy in 2002 in what was then the largest corporate failure in American history. In 2004 a New York court approved Embratel's sale to Telmex of Mexico, and in 2015 it was absorbed into Claro, part of América Móvil. **A Brazilian state carrier passed to an American company, through a bankruptcy court, to a Mexican group, in seventeen years.**",
+      "The fixed-line holdings became Telemar, Brasil Telecom and Telefônica - Telesp, the São Paulo operator, being the piece that became Telefônica's Brazilian business - and the successors eventually consolidated into Oi and Vivo. **Nine hundred companies became one, then twelve, then a handful, most of them controlled from outside the country.** Whether that arc is a success or a loss is still argued about in Brazil, and this entry does not settle it: the figures above are verifiable, and the judgement is not a technical question.",
+      "Telebrás itself was reactivated in 2010, as a mixed-economy company with a narrower brief - connectivity for federal public administration and the national broadband plan, including schools and health and security facilities. **The name survived the system it named.**",
+    ],
+    externalUrl: "https://pt.wikipedia.org/wiki/Telecomunica%C3%A7%C3%B5es_Brasileiras_S.A.",
+    externalLabel: "Telecomunicações Brasileiras S.A.",
+    sources: [
+      { label: "Wikipédia (pt): creation under Law 5.792 of 11 July 1972, installed 9 November 1972; the monopoly from 1972 to 1998; the twelve regional holdings; Embratel's route from MCI WorldCom through the 2002 bankruptcy and the 2004 New York court approval to Telmex, and absorption into Claro in 2015; reactivation in 2010", url: "https://pt.wikipedia.org/wiki/Telecomunica%C3%A7%C3%B5es_Brasileiras_S.A." },
+      { label: "Telebrás 50th anniversary (own account): installation on 9 November 1972; twenty-seven state operators plus Embratel forming the Sistema Telebrás; CPqD created in 1976 and independent since 1998; the 2010 reactivation for the national broadband plan", url: "https://www.telebras.com.br/50anos/" },
+      { label: "Correio Braziliense: the auction of 29 July 1998 at the Rio de Janeiro exchange; twenty per cent of shares carrying control; three fixed-line holdings, one long-distance and eight mobile; R$22.058B raised at a 63.7% premium; the largest privatisation in the country's history", url: "https://www.correiobraziliense.com.br/app/noticia/economia/2008/07/29/internas_economia,22069/saiba-como-foi-a-privatizacao-da-telebras.shtml" },
+      { label: "Zambon: more than 900 telecommunications companies operating before the 1972 consolidation; near-total monopoly achieved within three years", url: "https://zambonpericia.com.br/o-que-aconteceu-com-a-telebras/" },
+      { label: "Diário Causa Operária: the founding companies (Embratel, CTB, CTMG, CTES, Cotelb); the fall in the cost of installing a line from about US$5,000 in the 1970s to about US$20 by 1998; net profit of around R$2B in 1998", url: "https://causaoperaria.org.br/2019/29-de-julho-de-1998-o-crime-da-privatizacao-da-telebras/", sourceNote: "An openly partisan source - its headline calls the privatisation a crime. Used ONLY for the factual details listed, each of which is consistent with the other sources here. Its judgement of the privatisation is not adopted; the entry deliberately takes no side." },
+      { label: "Museu Capixaba do Computador: the subdivision into twelve regional companies at privatisation, and the successor companies Telemar, Brasil Telecom and Telefônica", url: "https://museucapixaba.com.br/hoje/fundacao-da-empresa-telebras-de-1972/" },
+    ],
+  },
+  {
+    // PROMON + LOGICALIS - added 2026-08-02 (PRIME).
+    //
+    // *** THIS CLOSES A LOOP THE SITE ALREADY OPENED. *** The Westcon-Comstor
+    // entry names Logicalis as its sibling division under Datatec. This is that
+    // sibling, and the Brazilian half of it turns out to have an ownership
+    // model that is the opposite of everything else on this timeline.
+    //
+    // LAVA JATO IS RECORDED. Promon Engenharia was investigated from 2014 and
+    // barred by Petrobras from new contracts. Omitting it would be dishonest;
+    // it is stated factually, with its status, and without editorialising.
+    slug: "promon-logicalis",
+    group: "other",
+    name: "Promon and Logicalis",
+    founded: 1960,
+    tags: ["services", "reseller"],
+    tagline: "An engineering firm owned entirely by the people who work there, in a joint venture with a South African holding company's British subsidiary.",
+    intro:
+      "Promon was founded in São Paulo in December 1960 as a joint venture between the American company Procon and the Brazilian Montreal Montagem e Representação Industrial, formed to deliver four new units at Petrobras' Presidente Bernardes refinery in Cubatão - a project of a kind not previously done in Brazil. Both original partners eventually left. What remained became something unusual.",
+    body: [
+      "**Promon's only shareholders are the professionals who work there, or who used to.** Not a founding family, not a fund, not a listed float - the people doing the work own the firm, and they join the shareholding voluntarily. That model has survived since the 1970s, when Procon wound up its Brazilian operations and the company separated from Montreal, and it is reinforced by a pension foundation established in 1975 exclusively for people who work or have worked in the group.",
+      "The cultural document that goes with it is called the Campos do Jordão Charter, written in the same period and still described by the company as a defining symbol. **A firm that is owned by its staff has to write down what it is for, because there is no proprietor to decide.**",
+      "The engineering record is substantial: refinery work for Petrobras from 1961, a fertiliser plant at Cubatão in 1962, then expansion through the 1970s into electrical energy, mining and metals, and infrastructure including the São Paulo Metro. Clients over the decades include Vale, CESP, Light, Ford, General Motors, Volkswagen, Renault and Suzano.",
+      "**In 2008 the group's technology arm merged with Logicalis' Latin American operations**, creating what was then described as the largest independent ICT integrator in Latin America. Logicalis had been founded in the United Kingdom in 1997 and internationalised under Datatec; the joint venture trades as Logicalis across the region, with roughly 3,000 staff in eleven or twelve Latin American countries.",
+      "**And that is where a thread on this timeline closes.** Datatec ran three divisions: technology distribution as Westcon-Comstor, integration and managed services as Logicalis, and consulting as Analysys Mason. So the distributor and the integrator were siblings under one holding company - and the integrator's Latin American arm is half-owned by a Brazilian firm whose shareholders are its own employees. **Two opposite theories of who should own a company, operating as one business.**",
+      "**Promon Engenharia was drawn into Operação Lava Jato from 2014**, and Petrobras barred it from new contracts; a federal police inquiry followed in January 2015. The engineering business and the technology joint venture are separate companies under the same holding, and this entry records the investigation because leaving it out would misrepresent the group's history. Readers should look up the current legal status rather than take a date from here.",
+      "The holding today describes itself as an investment company with two businesses: Promon Engenharia, wholly owned, and Logicalis Latin America, the joint venture. **Sixty-five years, two original partners both gone, one ownership idea that outlasted them.**",
+    ],
+    externalUrl: "https://www.promon.com.br/",
+    externalLabel: "Promon",
+    sources: [
+      { label: "Promon Engenharia (own account, English): founded December 1960 as an alliance between Procon of North America and Montreal Montagem e Representação Industrial, having won an international tender for four units at the Presidente Bernardes refinery; Procon later winding up its Brazilian business; the 1970s expansion into infrastructure including the São Paulo Metro; the Campos do Jordão Charter", url: "https://promonengenharia.com.br/en/who-we-are/" },
+      { label: "Holding Promon S.A.: the shareholder model in which the only shareholders are professionals linked to the organisation; the Fundação Promon de Previdência created in 1975; PromonLogicalis Latin America as a joint venture with Logicalis Group Limited trading as Logicalis across Latin America", url: "https://www.promon.com.br/" },
+      { label: "Promon annual report 2022s: the holding's two businesses - Promon Engenharia wholly owned, and Logicalis Latin America from the 2008 joint venture with Logicalis Group Limited; shareholders being current and former employees of the group companies", url: "https://www.promon.com.br/relatorioanual/2022s/" },
+      { label: "Wikipédia (pt) Logicalis: founded 1997 in the United Kingdom, internationalised to 2002 under Datatec; Logicalis Latin America formed in 2008 from the merger of Promon Tecnologia with Logicalis' Latin American operations; around 3,000 staff across eleven countries; group revenue of about US$1.5B", url: "https://pt.wikipedia.org/wiki/Logicalis" },
+      { label: "Wikipédia (pt) Promon Engenharia: founding in 1960; the 1961 Presidente Bernardes contract, the 1962 Cubatão fertiliser plant and the 1963 Betim contract; 2010 revenue of US$536M on 36% growth; the 2014 Lava Jato investigation and the Petrobras contracting ban; the January 2015 federal police inquiry", url: "https://pt.wikipedia.org/wiki/Promon_Engenharia", sourceNote: "Used for the contract chronology, the revenue figure and the fact and dating of the investigation. Legal outcomes are not stated here; readers should check current status." },
+      { label: "BNamericas: PromonLogicalis formed in 2008 as a joint venture between the UK-based Logicalis group and Brazil's Promon, based in São Paulo", url: "https://www.bnamericas.com/en/company-profile/promonlogicalis" },
+    ],
+  },
+  {
+    // OFFSEC - added 2026-08-03 (PRIME). Completes the cluster's argument by
+    // being the OPPOSITE model: the exam is the work, not a proxy for it.
+    //
+    // *** THE 2019 BRAIN-DUMP CONTROVERSY IS RECORDED, because it is the exact
+    // failure mode of this model *** - and putting it beside the MCQ failure
+    // mode is the point of having both entries.
+    slug: "offsec",
+    group: "contemporary",
+    name: "OffSec (Offensive Security)",
+    founded: 2007,
+    tags: ["training", "vendor"],
+    tagline: "Gives the tool away and charges for the proof that you can use it.",
+    intro:
+      "Mati Aharoni started what became Offensive Security around 2007 - the company was incorporated in 2008 - working from his living room with his wife Iris, and Wikipedia names Devon Kearns as co-founder. It makes Kali Linux, maintains ExploitDB, and issues the OSCP, whose 24-hour practical examination has a reputation that most certifications would trade a great deal for.",
+    body: [
+      "**The lineage of the tool runs backwards through two mergers.** BackTrack first appeared in May 2006, formed by combining WHAX - Aharoni's own Slax-based distribution, earlier called Whoppix and based on Knoppix - with the Auditor Security Collection. It ran on Slackware for three versions, moved to Ubuntu for two more, and ended at 5 R3 in August 2012. In March 2013 the team rebuilt it on Debian and released it as **Kali Linux**, which is a harder decision than it sounds: throwing away a distribution with an established name and a large user base, in favour of a foundation that made packaging and long-term maintenance tractable. **They chose the maintainable base over the familiar name, which is the correct call and almost never the popular one.**",
+      "**The business model is worth stating plainly because it inverts the usual one. The tool is free and the proof is expensive.** Kali costs nothing, is open source, and is used by people who will never buy anything. What OffSec sells is training and certification - and the free tool is what builds the audience for it. **Compare that with the vendors elsewhere on this timeline who sell the product and give away the training**; both models work, and they select for entirely different kinds of customer.",
+      "**And then the assessment, which is the reason this entry sits beside Pearson VUE and Prometric rather than apart from them.** Those companies exist to run controlled examinations in supervised rooms, where the question is whether the right person answered. The OSCP does the opposite: twenty-four hours, real machines on a test network, compromise them, then write the report. **The exam is the work rather than a proxy for it.** You cannot bluff a shell you did not get.",
+      "**That inverts the trust problem rather than solving it, and the inversion has a documented cost.** A multiple-choice examination can be memorised, which is why the delivery companies invest so heavily in verifying that the person in the chair is the candidate. A practical examination cannot be bluffed - but the target machines are reusable, so knowing them in advance is the cheat. In 2019 a critic published a walkthrough of one exam machine and threatened more, alleging that cheating was widespread and that the certification's value was being eroded from inside.",
+      "**Put the two failure modes side by side and the general principle falls out. Every assessment model is vulnerable in exactly the place its strength comes from.** Standardisation makes an exam scalable and memorisable. Realism makes an exam unfakeable and leakable. There is no design that is strong in both directions, which is why the serious question about any certification is not whether it can be gamed but **which way it can be gamed, and whether the people relying on it know.**",
+      "Aharoni left in 2019 after more than two decades in security. Jim O'Gorman took over as Kali project lead, with Raphaël Hertzog - a Debian developer - as a third technical pillar. **The founder leaving without the project faltering is worth noting**, because the timeline elsewhere records several tools that did not survive their author's departure.",
+      "The distribution also carries a cultural footprint disproportionate to its user count, having appeared repeatedly in *Mr. Robot* - which is the rare case of screen technology being accurate enough that practitioners were not embarrassed by it.",
+    ],
+    externalUrl: "https://www.offsec.com/",
+    externalLabel: "OffSec",
+    sources: [
+      { label: "Wikipedia: Offensive Security from around 2007, founders Mati Aharoni and Devon Kearns; products including Kali Linux, Kali NetHunter, the defunct BackTrack, and the OSCP; ExploitDB", url: "https://en.wikipedia.org/wiki/Offensive_Security" },
+      { label: "Wikipedia: BackTrack's first release on 26 May 2006 from the merger of WHAX (Aharoni's Slax-based distribution, earlier Whoppix and Knoppix-based) and the Auditor Security Collection; final release 5 R3 in August 2012; rebuilt on Debian and released as Kali Linux in March 2013", url: "https://en.wikipedia.org/wiki/BackTrack" },
+      { label: "Wikipedia: Kali Linux initial release 13 March 2013, based on the Debian testing branch, rolling release, GPLv3; developed by Aharoni and Kearns as a rewrite of BackTrack; featured in Mr. Robot", url: "https://en.wikipedia.org/wiki/Kali_Linux" },
+      { label: "CSO Online (2019): the OSCP's 24-hour examination requiring students to hack machines on a test network; the controversy when a critic published a walkthrough of an exam machine and threatened more, alleging widespread cheating and raising questions about the certification's integrity", url: "https://www.csoonline.com/article/566815/oscp-cheating-allegations-a-reminder-to-verify-hacking-skills-when-hiring.html" },
+      { label: "Korben: the company beginning in 2006-2007 from Aharoni's living room with his wife Iris and incorporating in 2008; the Try Harder philosophy of no multiple-choice questions and no abstract theory; Aharoni's departure in 2019, Jim O'Gorman taking over as Kali project lead and Raphaël Hertzog as a third technical pillar", url: "https://korben.info/en/kali-linux-underground-tool-global-reference.html", sourceNote: "A retrospective feature rather than a reference work. Used for the founding circumstances, the philosophy and the succession, each corroborated in outline by the encyclopedic sources above." },
+    ],
+  },
+  {
+    // PROMETRIC - added 2026-08-03 (PRIME). The other half of the test-delivery
+    // duopoly, and the entry that supplies the parallel the Credly entry raised
+    // in the abstract: an exam AUTHOR owning an exam DELIVERER, for eleven
+    // years, and then separating.
+    slug: "prometric",
+    group: "other",
+    name: "Prometric",
+    founded: 1990,
+    tags: ["training", "services"],
+    tagline: "Six owners in thirty-five years, and the layer that deliberately does not write the questions it delivers.",
+    intro:
+      "Drake International started Drake Prometric in 1990 to run computerised testing centres. Sylvan Learning bought it in 1995 for about $44.5M in cash and stock, Thomson Corporation bought it in 2000 for roughly $775M, Educational Testing Service bought it in 2007 for $435M, Baring Private Equity Asia bought it in 2018, and EQT holds it now. Six owners in thirty-five years, for a business whose entire product is being trusted.",
+    body: [
+      "**The structural fact is the one most people get wrong, and it is worth stating first: Prometric does not write the exams.** Its clients develop the content, write the questions and set the passing standards. Prometric supplies secure delivery, identity verification, proctoring and score reporting. That separation is deliberate and it is the source of the industry's credibility - **the organisation that decides what competence means is not the organisation that decides whether you demonstrated it**, and neither can quietly adjust the other's work.",
+      "**Which makes one period of its history genuinely interesting.** From 2007 to 2018 Prometric was owned by Educational Testing Service - the author of the SAT and GRE. For eleven years a major writer of examinations owned a major deliverer of examinations. Nothing improper has been alleged, and ETS's own tests were not the bulk of what Prometric delivered. But the arrangement is precisely the one the industry's separation of powers is designed to avoid, and it ended: ETS sold in 2018. **The same question sits, unresolved, over the exam and credential businesses that share an owner today, and this entry notes the parallel because the site should apply its scepticism evenly rather than selectively.**",
+      "**The price arc is the cleanest illustration of a bubble on this timeline.** Sylvan paid about $44.5M in 1995. Thomson paid roughly $775M in 2000, at the height of the dot-com boom. ETS paid $435M in 2007 - **little more than half what Thomson had paid seven years earlier.** The business had not shrunk. The market's opinion of what a testing network was worth had.",
+      "A smaller detail worth keeping: ETS had sold a testing business called CapStar to Thomson for about $200M in 2004, and received it back three years later as part of the Prometric purchase. **Selling something and buying it back inside a larger deal is more common in this industry than anyone likes to admit.**",
+      "The client list explains why the stakes are higher than technology certification alone: the United States Medical Licensing Examination, the nursing boards, financial regulatory licensing, the architecture registration examination. **These are not credentials that improve a curriculum vitae - they are the ones that decide whether somebody may practise.** A delivery failure in that context is not an inconvenience.",
+      "**And delivery does fail.** The August 2023 administration of the Law School Admission Test drew widespread complaints from candidates, particularly those testing remotely. This site records that for the same reason it records criticism elsewhere: **an infrastructure company's failures are the only part of its work that becomes visible**, and pretending they do not happen would be a strange way to describe a business whose product is reliability.",
+      "**Read beside Pearson VUE the pair defines the market.** Both run global centre networks, both added remote proctoring, both deliver for hundreds of credentialing bodies, and neither writes what it delivers. The interesting difference is ownership history rather than capability: one has been inside a single education group for a quarter of a century, the other has passed through a staffing company, a tutoring chain, a media conglomerate, a test author and two private equity firms. **Whether stability or circulation produces the better custodian of other people's examinations is not a question the record settles.**",
+    ],
+    acquisitions: [
+      { year: 1995, name: "Drake Prometric (by Sylvan Learning)", price: "~$44.5M in cash and stock", what: "The computerised testing business started by Drake International in 1990.", became: "Sylvan Prometric." },
+      { year: 2000, name: "Sylvan Prometric (by Thomson)", price: "~$775M", what: "Bought at the height of the dot-com boom.", became: "Thomson Prometric - and a valuation the next sale would not match." },
+      { year: 2007, name: "Prometric (by ETS)", price: "$435M", what: "Sold by Thomson as it exited education; ETS also recovered CapStar, which it had sold to Thomson for about $200M in 2004.", became: "Eleven years under the ownership of a major exam author.", sourceNote: "The price is little more than half what Thomson paid seven years earlier - the clearest single illustration of the 2000 valuation peak on this timeline." },
+      { year: 2018, name: "Prometric (by Baring Private Equity Asia)", what: "ETS divested; BPEA later became part of EQT.", became: "Private-equity ownership, and the end of the author-owns-deliverer arrangement." },
+    ],
+    externalUrl: "https://www.prometric.com/",
+    externalLabel: "Prometric",
+    sources: [
+      { label: "Wikipedia and HandWiki: founded by Drake International in 1990 as Drake Prometric; sold to Sylvan Learning in 1995 for approximately $44.5M in cash and stock; renamed Sylvan Prometric and sold to Thomson in 2000; ETS closing its acquisition on 15 October 2007; Baring Private Equity Asia in 2018", url: "https://en.wikipedia.org/wiki/Prometric" },
+      { label: "Baltimore Sun (July 2007): ETS buying Prometric for $435M, more than half of what Thomson paid Sylvan in 2000 at the height of the dot-com boom (about $775M); ETS also receiving CapStar, which it had sold to Thomson for about $200M in 2004", url: "https://www.baltimoresun.com/2007/07/03/ets-buys-prometric/" },
+      { label: "Altss company profile: Prometric does not write or own exam questions - client organisations develop the content and set passing standards, while Prometric provides secure delivery infrastructure, proctoring and score reporting; clients including the USMLE programme, the National Council of State Boards of Nursing, FINRA and the Architect Registration Examination; EQT acquiring from Baring in 2023", url: "https://altss.com/profile/prometric-llc", sourceNote: "An OSINT-compiled profile rather than a primary source. Used for the content-versus-delivery separation and the client list, both consistent with Prometric's own published descriptions; the 2023 EQT transfer is described elsewhere as BPEA becoming part of EQT rather than a separate sale, and the entry does not assert which framing is correct." },
+      { label: "Grokipedia: the ownership chain through Drake, Sylvan, Thomson and ETS to EQT via the BPEA fund; headquarters in Maryland; the August 2023 LSAT administration drawing complaints, particularly from remote test takers", url: "https://grokipedia.com/page/Prometric" },
+    ],
+  },
+  {
+    // CREDLY - added 2026-08-03 (PRIME). Written immediately after Pearson VUE
+    // because it completes the same chain: VUE verifies THE PERSON, Credly
+    // verifies THE CREDENTIAL - and both are now owned by Pearson.
+    //
+    // *** THE PATENT TENSION IS RECORDED, INCLUDING THE UNRESOLVED PART. ***
+    // An open standard with patents held over it by the market leader is a
+    // genuine issue, the promise not to assert is a promise rather than a
+    // property of the standard, and the reporting notes nobody had taken up the
+    // offered licence. All of that is stated; none of it is adjudicated.
+    slug: "credly",
+    group: "contemporary",
+    name: "Credly",
+    founded: 2012,
+    tags: ["training", "vendor"],
+    tagline: "Verifies the credential, as its owner verifies the person - and the small company bought the big one's product before the big one bought it.",
+    intro:
+      "Jonathan Finkelstein founded Credly in New York in 2012 to issue digital credentials - badges carrying machine-readable metadata about what was earned, who issued it, when, and what it required - built on Open Badges, the open specification Mozilla launched in 2011 and later handed to a standards body. He had previously founded LearningTimes and co-founded HorizonLive, which Blackboard acquired.",
+    body: [
+      "**The problem it addresses is the half of certification that the exam does not solve.** A test centre establishes that the right person sat the exam. It says nothing afterwards: a PDF certificate can be edited, a line on a CV cannot be checked without contacting the issuer, and neither carries an expiry that anyone can see. A digital credential is a verifiable object - click it and the issuer's own record answers, including whether it has since lapsed or been revoked. **The chain is only as strong as its weakest link, and for years the weakest link was not the exam, it was the claim about the exam.**",
+      "**Which is why the ownership matters and is worth saying plainly.** Verification of the person and verification of the credential are now under one owner: Pearson operates the test centres and, since 2022, owns Credly. That is not an accusation - the pieces genuinely work better joined, and nobody has alleged otherwise. It is an observation this site makes routinely about other layers, and consistency requires making it here: **when the same organisation attests that you sat the exam and that your certificate is real, the independence between those two attestations is organisational rather than structural.**",
+      "**The corporate sequence is a neat reversal.** Pearson launched a badging platform called Acclaim in 2014. In 2018 Credly - much the smaller company - acquired it, with Pearson taking a minority stake of around twenty per cent and a board seat. Pearson then invested again in the 2019 funding round. In January 2022 Pearson acquired Credly outright. **The small company absorbed the large company's product, and four years later the large company absorbed the small one.** The badging product is now marketed under both names.",
+      "**And then the part that deserves careful handling, because it is genuinely unresolved.** Credly holds United States patents covering the creation, management and tracking of digital credentials. That alarmed the Open Badges community, whose whole premise is an open specification anyone may implement, and whose platform predated the patents. The company said it had no intention of asserting against that community and offered a reasonable-and-non-discriminatory licence, later broadening it to cover both mandatory and optional elements of the standard.",
+      "**The objection that remains is structural rather than about intent.** A promise not to assert is a promise, and promises survive at the discretion of whoever owns the patent next - which, as of 2022, is a different company from the one that made it. Reporting at the time also noted that nobody had actually requested one of the offered licences, which can be read as the community being reassured or as the licence being beside the point. **This site does not adjudicate that**, and records it because an open standard with patents held over it by the market leader is exactly the kind of arrangement a reader should know about before building on it.",
+      "**Read beside two other entries here, the shape is familiar.** USRobotics defended proprietary protocols until standards took the advantage away. Dynatrace held a patent and then helped build the open standard that generalised it. Credly is a third position: **implement the open standard, become its largest implementer, and hold patents beside it.** Whether that is a moat, insurance, or simply what a company's lawyers do without anyone deciding anything is not something the public record settles.",
+    ],
+    acquisitions: [
+      { year: 2018, name: "Acclaim (from Pearson)", what: "Pearson's Open Badge platform, launched 2014, used by Microsoft, IBM and the American Council on Education among others.", became: "Merged into Credly, with Pearson taking a minority stake of about 20% and a board seat - which set up the reverse acquisition four years later." },
+    ],
+    externalUrl: "https://www.credly.com/",
+    externalLabel: "Credly",
+    sources: [
+      { label: "Credly's own announcement of the Pearson acquisition, from founder Jonathan Finkelstein, and the company's description of its Open Badge platform", url: "https://learn.credly.com/blog/announcing-credly-acquisition-by-pearson" },
+      { label: "VentureBeat (April 2019): the $11.1M Series A led by Zoma Capital and Strada Education Network with Pearson among the existing investors, bringing total funding to $18.2M; Credly's 2018 acquisition of Pearson's Acclaim; Open Badges as a Mozilla-architected specification; Mozilla retiring its Backpack in 2018", url: "https://venturebeat.com/business/credly-raises-11-1-million-to-issue-and-manage-digital-badges" },
+      { label: "Tracxn: founded 2012 in New York by Jonathan Finkelstein; acquired by Pearson on 30 January 2022; $18.2M raised across its funding history", url: "https://tracxn.com/d/companies/credly/__qgAPaazcGcqhY_5o1bJ5Cfw5zL3Wl3OOD9fUDXyOrEY", sourceNote: "Funding database. Used for dates and totals, which such databases track reliably; the acquisition price is not disclosed there and is not stated in this entry." },
+      { label: "EdSurge: the two US patents granted for creating, managing and tracking digital credentials and the reaction from the Open Badges community; Finkelstein's statement that Credly would not assert against that community, the RAND licence honoured from Pearson's arrangement with IMS, its later broadening to mandatory and optional elements, and the observation that nobody had requested one", url: "https://www.edsurge.com/news/2019-03-12-who-owns-digital-badges-a-company-s-patent-on-credentials-raises-questions" },
+      { label: "Forbes: Acclaim launched by Pearson in 2014 with Peter Janzow, acquired by Credly in 2018; customers including Dell, IBM and Oracle", url: "https://www.forbes.com/sites/tomvanderark/2019/06/12/leading-the-show-what-you-know-revolution-digital-credentials-from-credly/" },
+      { label: "Secondary account of the 2022 transaction describing Pearson's pre-existing stake of nearly 20% and the acquisition as a reverse of the 2018 deal", url: "https://blog.certopus.com/what-is-credly-and-how-to-use-it", sourceNote: "A competitor's blog, and it editorialises about Credly elsewhere on the same page. Used ONLY for the stake figure and the characterisation of the deal as a reversal, both corroborated by the funding and acquisition records cited above." },
+    ],
+  },
+  {
+    // PEARSON VUE - added 2026-08-03 (PRIME: "One rich entry for Pearson and
+    // VUE"). First of cluster 9, the exam and lab delivery layer.
+    //
+    // THE ANGLE: a certification is worth exactly what its verification is
+    // worth, and this is the company that manufactures the verification. That
+    // makes it directly relevant to a site built by an instructor.
+    //
+    // TWO DISCREPANCIES RECORDED: the acquisition year (2000 in most sources,
+    // 2006 in one) and the test-centre count, which is quoted as 4,600, 5,500
+    // and nearly 20,000 in different places - almost certainly counting
+    // different things.
+    slug: "pearson-vue",
+    group: "other",
+    name: "Pearson VUE",
+    founded: 1994,
+    tags: ["training", "services"],
+    tagline: "A certification is worth exactly what its verification is worth, and this is where the verification happens.",
+    intro:
+      "Virtual University Enterprises was founded in 1994 - the company's own account names Clarke Porter, Steve Nordberg and Kirk Lundeen; some sources credit E. Clarke Porter alone. It expanded to the Netherlands and Australia the following year, was acquired by NCS and then by Pearson in 2000, and became Pearson VUE. It now delivers something like 21 million exams a year across more than 180 countries.",
+    body: [
+      "**The reason this belongs on a site about teaching is a chain of trust that almost nobody examines.** A vendor defines what competence means and issues a credential. A training company teaches toward it. And somewhere in the middle a stranger has to establish that the person sitting at the keyboard is the person named on the certificate, that they had no help, and that they did not see the questions in advance. **A credential is worth exactly what that verification is worth, and no more.** Every argument about whether certifications mean anything is really an argument about this layer.",
+      "So the security apparatus is the product: identity documents checked against the booking, signature capture, palm-vein scanning in some centres, surveillance, a proctor who watches, and a room stripped of everything a candidate might otherwise consult. The Pearson Professional Centers, introduced in 2002, exist to standardise exactly that - because a certification delivered inconsistently across five thousand sites is a certification whose value varies by postcode.",
+      "**One piece of timing deserves noting without over-reading.** OnVUE, the online-proctored delivery platform, launched in **2019**. The following year, test centres worldwide closed and remote proctoring became the only way most certifications could be earned at all. The capability existed a year before it became indispensable, which is luck rather than foresight - but the alternative, an industry that had to invent remote proctoring under lockdown conditions, would have gone considerably worse.",
+      "**Remote proctoring also moved the trust problem rather than solving it.** In a test centre the environment is controlled by the examiner; at a kitchen table it is controlled by the candidate, and the verification becomes a camera, a room scan and behavioural monitoring. That is a weaker guarantee honestly described, and the industry has been arguing about the trade ever since - alongside a second argument about surveillance of people in their own homes, which is a different objection and a fair one.",
+      "The parent company is the other half of the story. **Pearson dates to 1844 and began as a construction firm** - S. Pearson & Son, contractors - before becoming a publisher and then an education company. **That is the second business on this timeline that spent its first century moving physical things and its second moving information**, after Ingram Industries, which was in lumber and shipping from the 1830s before it ended up distributing computers. Two of the oldest names here arrived from heavy industry, which is not a coincidence so much as a reminder that the durable thing about a company is rarely its product.",
+      "The exam-delivery portfolio was assembled by purchase - Goal Designs in 2001, Promissor in 2006, Integral7 in 2010, Exam Design in 2013 - and the business now delivers well beyond technology certification: academic admissions tests, healthcare and finance licensing, and government programmes including driving theory examinations. **Most people who have sat a Pearson VUE exam have never heard the name**, which is the ordinary condition of infrastructure.",
+    ],
+    acquisitions: [
+      { year: 2000, name: "Virtual University Enterprises", what: "The 1994 computer-based testing company, acquired by NCS and then by Pearson.", became: "Pearson VUE.", sourceNote: "Most sources date the Pearson acquisition to 2000; one secondary source says 2006 and is not followed here." },
+      { year: 2001, name: "Goal Designs", what: "Certification programme management consulting.", became: "Part of the exam development portfolio." },
+      { year: 2006, name: "Promissor", what: "Licensing and certification testing.", became: "Expansion beyond IT into regulated professions." },
+      { year: 2013, name: "Exam Design", what: "Exam authoring and psychometrics tooling.", became: "Support for performance-based testing and simulation items." },
+    ],
+    externalUrl: "https://www.pearsonvue.com/",
+    externalLabel: "Pearson VUE",
+    sources: [
+      { label: "Pearson VUE's own vision page: VUE launched in 1994 by Clarke Porter, Steve Nordberg and Kirk Lundeen; acquired by NCS and then Pearson in 2000; Goal Designs 2001, Promissor 2006, Integral7 2010, Exam Design 2013; Pearson Professional Centers introduced 2002; OnVUE launched 2019", url: "https://www.pearsonvue.com/us/en/about/vision.html" },
+      { label: "Wikipedia: Pearson acquiring Virtual University Enterprises in 2000 and renaming it Pearson VUE; Pearson plc headquartered in London", url: "https://en.wikipedia.org/wiki/Pearson_VUE" },
+      { label: "Learn & Work Ecosystem Library: Pearson founded 1844; Pearson VUE delivering nearly 21 million exams annually through test centres and OnVUE", url: "https://learnworkecosystemlibrary.com/organizations/pearson-and-pearson-vue/" },
+      { label: "Pearson VUE regional release: nearly 20,000 test centres and around 500 client programmes; testing across more than 180 countries", url: "https://www.pearsonvue.com/gb/en/about/news/highlights/pearson-vues-innovative-solutions-revolutionize-t.html", sourceNote: "Company communications. Centre counts vary widely across sources - 4,600, 5,500 and nearly 20,000 all appear - almost certainly counting different things (wholly operated centres, authorised centres, and total seats). No single figure is asserted in this entry." },
+      { label: "Test-centre procedure descriptions: identity verification including physical identification checks, signature and in some centres palm-vein scanning, surveillance and trained proctors", url: "https://bitts.ca/pearson-vue-testing-centres/", sourceNote: "A test-centre operator's page rather than a primary source. Used only for the description of standard centre procedure, which is consistent with Pearson VUE's own published candidate rules." },
+    ],
+  },
+  {
+    // DYNATRACE - added 2026-08-03 (PRIME). Pairs with Kentik: both
+    // observability, approached from opposite ends of the stack.
+    //
+    // *** INVERTS THE USROBOTICS PATTERN. *** That company defended proprietary
+    // protocols until standards arrived and took the advantage away. This one
+    // held a patented tracing method and then helped build the open standard
+    // that generalised it. Same situation, opposite response.
+    //
+    // FOUNDING-DATE AND FOUNDER-LIST DISCREPANCIES RECORDED.
+    slug: "dynatrace",
+    group: "contemporary",
+    name: "Dynatrace",
+    founded: 2005,
+    tags: ["vendor"],
+    tagline: "Rewrote its entire platform from scratch under private-equity ownership, which is not how that story usually goes.",
+    intro:
+      "dynaTrace Software GmbH was founded in Linz, Austria in 2005 by Bernd Greifeneder with Sok-Kheng Taing and Hubert Gerstmayr; some accounts add Alois Reitbauer, and the founding date appears as both 2 February and 1 July. The problem it set out to solve was specific: applications had become distributed enough that nobody could say which component was slow.",
+    body: [
+      "**PurePath, patented in 2006, is the technical contribution.** It traced a single transaction end to end - browser to database - across every service it touched, at code level, with overhead low enough to leave running in production. That last clause is the hard part. Tracing that is only safe in a test environment tells you about a test environment, and the interesting failures do not happen there.",
+      "Bain Capital Ventures invested a year after founding and Bay Partners three years later, together taking around two-thirds of the company. **In 2011 Compuware bought it for $256M**, by which point it had roughly 180 staff and over 500 customers. Two of the founders took the exit; Greifeneder stayed, and by his own account the point had never been the money.",
+      "**Then 2014, and the part worth the entry.** Thoma Bravo bought Compuware for around $2.4B and carved out the monitoring business as a standalone company. Greifeneder's own recollection is blunt about the culture clash: the new owner specialised in businesses with a good product and ineffective leadership, and was unaccustomed to waiting between investment and output. His startup habits were not what they had bought.",
+      "**What happened next is the opposite of what private-equity ownership is usually accused of producing.** He took three months with his best product people and came back with a recommendation to start again - a separate team, an entirely new platform, written from scratch, on the argument that the disruption of cloud was an opening to leap ahead rather than a problem to survive. **They agreed to it.** A company under debt-funded ownership, expected to produce returns, rebuilt its product from nothing. It listed on the New York Stock Exchange in August 2019 at $16 a share and rose 49% on debut.",
+      "**And here it inverts a pattern this timeline records elsewhere.** USRobotics won three times with proprietary protocols and lost the advantage each time a standard arrived. Dynatrace held a patent on distributed tracing from 2006 - and then contributed to **OpenTelemetry, W3C Trace Context, Keptn and OpenFeature**, the open standards that generalise exactly what PurePath did privately. **Faced with the same situation, one company defended the moat and the other helped dig the canal.** Which is right depends on whether your advantage is the mechanism or the thing you build on top of it.",
+      "Thoma Bravo sold down its holding between 2019 and 2024, leaving a widely held public company reporting around $1.6B of revenue for its 2024 financial year. **That is the fifth appearance of Thoma Bravo on this timeline**, after Sophos, LANDESK, Ping and CompTIA - a reminder that a handful of firms have shaped more of this industry's ownership than any of the vendors have.",
+      "The headquarters moved to Massachusetts, but engineering stayed in Linz - a university town in upper Austria that is not on anyone's list of places software platforms come from, which is rather the point.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Dynatrace",
+    externalLabel: "Dynatrace",
+    sources: [
+      { label: "Grokipedia: founded 2005 in Linz as dynaTrace Software GmbH by Bernd Greifeneder, Sok-kheng Tang and Hubert Gerstmeyr; PurePath patented in 2006 enabling end-to-end transaction tracing from browser to database at code level; approximately 180 employees and over 500 customers by 2011; the NYSE listing in 2019", url: "https://grokipedia.com/page/Dynatrace" },
+      { label: "Forbes (August 2019): the 49% climb on market debut; the 2011 Compuware purchase for $256M; Thoma Bravo acquiring Compuware three years later for $2.4B and spinning Dynatrace out; the dinner in Linz and Greifeneder returning after three months with a team of his best product people to recommend building an entirely new platform from scratch", url: "https://www.forbes.com/sites/kenrickcai/2019/08/01/dynatrace-software-ipo-trading-debut/" },
+      { label: "Dynatrace Engineering (Medium), translating an Austrian profile: Bain Capital Ventures investing a year after founding and Bay Partners three years later, together holding two-thirds after a second round of about $13M; co-founders Sok-Kheng Taing and Hubert Gerstmayr exiting at the Compuware acquisition while Greifeneder stayed; his characterisation of the new owner as specialising in companies with a good product and ineffective leadership", url: "https://medium.com/dynatrace-engineering/doping-for-the-internet-c170393b35e0", sourceNote: "Published by the company's own engineering blog as a translation of an external profile. Used for the funding sequence and for Greifeneder's characterisation of the ownership change, which is his account of it rather than a neutral one." },
+      { label: "Wikipedia: acquired by Compuware in 2011, taken private by Thoma Bravo in 2014 and renamed Dynatrace; contributions to CNCF and related projects including Keptn, W3C Trace Context, OpenTelemetry and OpenFeature", url: "https://en.wikipedia.org/wiki/Dynatrace" },
+      { label: "MatrixBCG: the 2019 IPO priced at $16 per share; Thoma Bravo's gradual sell-down from 2019 to 2024; annual recurring revenue reaching an estimated $1.6B by fiscal 2025", url: "https://matrixbcg.com/blogs/owners/dynatrace" },
+      { label: "SWOTTemplate and PortersFiveForce: the founding date given as 2 February 2005 in one account and 1 July 2005 in another, and Alois Reitbauer named among the founders alongside Greifeneder", url: "https://swottemplate.com/blogs/brief-history/dynatrace-brief-history", sourceNote: "Secondary business summaries that disagree with each other on the founding date and the founder list. Cited precisely because they disagree; both readings are stated in the entry rather than one being chosen." },
+    ],
+  },
+  {
+    // KENTIK - added 2026-08-03 (PRIME).
+    //
+    // Worth the entry because its founding team is where several companies
+    // ALREADY on this timeline converge: Akamai, Cloudflare, Netflix, YouTube.
+    // It is the operators building the tool the vendors had not.
+    //
+    // FOUNDER-LIST DISCREPANCY RECORDED: sources give four or five names.
+    // Both counts stated rather than one chosen.
+    slug: "kentik",
+    group: "contemporary",
+    name: "Kentik",
+    founded: 2014,
+    tags: ["vendor"],
+    tagline: "The people who ran the networks built the tool they could not buy.",
+    intro:
+      "Kentik was founded in San Francisco in 2014 as CloudHelix, taking its current name in 2015. The founding list is given as four names in most accounts - Avi Freedman, Ian Applegate, Ian Pye and Justin Biegel - and as five in others, adding Dan Ellis; both are recorded here. What is not in dispute is where they came from.",
+    body: [
+      "**Avi Freedman started Philadelphia's first internet service provider, netaxs, in 1992.** He went on to run network operations at Akamai for over a decade, as vice-president of network infrastructure and then chief network scientist, and also ran the network at AboveNet and served as chief technology officer of ServerCentral. Ian Pye is described as Cloudflare's first employee; Ian Applegate came from Cloudflare too. Dan Ellis came from Netflix. Biegel came from Internap.",
+      "**So the founding team is a convergence of companies already on this timeline** - Akamai and Cloudflare both have their own entries here, and both were built on the same insight about where traffic actually goes. The people who had operated those networks left to build something for the people still operating them.",
+      "**The reason they gave is the entry.** In Freedman's account, large web companies, enterprises and service providers kept telling them that the analytics available inside cloud-scale companies were simply not available in the commercial market - particularly for internet visibility and for architectures that had stopped looking like a data centre. So they built what they had wanted and could not buy. **That is a specific and recurring shape: a category exists because the people who needed it were senior enough to build it instead of waiting.**",
+      "The product ingests what a network actually emits rather than what a monitoring tool wishes it emitted: NetFlow, IPFIX and sFlow records, SNMP, streaming telemetry, cloud flow logs, host agents, synthetic tests and BGP routing. **Flow records are the interesting part for anyone who has tried this at scale**, because they arrive in enormous volume, they are lossy by design, and the analytical question is almost never about one record - which is why the problem is a data problem wearing a networking costume.",
+      "Traction was unusually quick: seed funding of $3.1M in September 2014, a $12.1M Series A in June 2015, deployments within months and more than twenty large paying customers inside a year, including Yelp and Box. Later rounds brought total funding to somewhere between $102M and $118M depending on which tally is used.",
+      "**One public contribution deserves recording**, because it is the kind of thing this class of tooling makes possible: Kentik was among those that identified a substantial IP address hijacking in the period before the 2021 United States presidential inauguration. Routing hijacks are visible only to somebody watching the global routing table closely enough to notice that an address block has started being announced from the wrong place. The company also employs Doug Madory, whose internet-routing analysis is widely cited.",
+      "It was acquired by Infoblox in 2026. **The arc is a familiar one on this timeline** - an independent tool built by practitioners is eventually bought by a platform vendor who wants the capability inside their own product - and whether that improves the tool or merely absorbs it is a question this site is not in a position to answer yet.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Kentik",
+    externalLabel: "Kentik",
+    sources: [
+      { label: "Wikipedia: founded 2014 in San Francisco as CloudHelix by Avi Freedman, Ian Applegate, Ian Pye and Justin Biegel; renamed Kentik in 2015; the role in uncovering an IP hijacking before the 2021 presidential inauguration; Doug Madory among key people", url: "https://en.wikipedia.org/wiki/Kentik" },
+      { label: "451 Research reprint (July 2015): originally CloudHelix; $3.1M seed in September 2014 from First Round Capital, Data Collective and Webb Investment Network; a $12.1M Series A in June 2015 led by August Capital; deployments within months and 20-plus large paying customers within a year including Yelp and Box; the founding team's origins at Akamai, CloudFlare, Netflix and Internap", url: "https://info.kentik.com/rs/869-PAD-887/images/451-ResearchReprint_Kentik_07Jul151.pdf" },
+      { label: "Forbes Technology Council profile: Freedman starting Philadelphia's first ISP, netaxs, in 1992; over a decade at Akamai as VP of network infrastructure then chief network scientist; running the network at AboveNet and serving as CTO of ServerCentral", url: "https://councils.forbes.com/profile/Avi-Freedman-CEO-Co-Founder-Kentik/938f959c-a4e0-4cc0-a266-a96f61a66b3f" },
+      { label: "VentureBeat (October 2021): the five-name founder list including Dan Ellis; Freedman's account that analytics available to cloud-scale companies were lacking in the commercial market, particularly around internet visibility and cloud-native architectures; the $40M Series C", url: "https://venturebeat.com/2021/10/07/network-observability-startup-kentik-lands-40m" },
+      { label: "Grokipedia: the telemetry sources ingested - SNMP, streaming telemetry, NetFlow, IPFIX and sFlow, cloud flow logs, host agents and synthetic testing; founders described as network operators from Akamai, Netflix, YouTube and Cloudflare", url: "https://grokipedia.com/page/Kentik" },
+      { label: "SDxCentral: the Infoblox acquisition; Ian Pye described as Cloudflare's first-ever employee and serving as Kentik's chief scientist and CTO; the 2021 Series C bringing total funding to approximately $102M", url: "https://www.sdxcentral.com/news/infoblox-collects-kentik-for-network-observability-out-of-the-box/", sourceNote: "Trade coverage. Used for the acquisition and the funding total; note that Tracxn gives $118M across five rounds, and both figures are stated in the entry rather than reconciled." },
+    ],
+  },
+  {
+    // BRIGHTCLOUD - added 2026-08-03 (PRIME). Written immediately after
+    // Websense/Forcepoint because it is the layer BELOW it, and the two
+    // explain each other.
+    //
+    // The founder loop is real and worth the space: BrightCloud's founder was
+    // Websense's director of product management.
+    slug: "brightcloud",
+    group: "other",
+    name: "BrightCloud",
+    founded: 2005,
+    tags: ["vendor"],
+    tagline: "The classification layer underneath other people's security products, including its founder's former employer's competitors.",
+    intro:
+      "Quinn Curtis founded BrightCloud in San Diego in 2005. He had been director of product management at Websense, and before that spent nearly nine years at Microsoft, on the team that built and shipped the first version of Exchange. The company did one thing: classify the web - reputation and content categories across, by the time Webroot bought it in July 2010, more than 200 million URLs and IP addresses.",
+    body: [
+      "**What makes this worth an entry is the business model rather than the product.** BrightCloud did not sell filtering to enterprises. It sold classification to the companies that sell filtering to enterprises. The data was licensed to partners who built it into their own gateways, firewalls and proxies, and the customer never saw the name.",
+      "**Which produces a fact most engineers have never considered: two competing security products can be making the same judgement, because they buy it from the same place.** When a firewall from one vendor and a web gateway from another agree that a site is malicious, that agreement may be evidence, or it may be one supplier's opinion arriving twice. The categories elsewhere on this timeline are described as judgements made at scale by people the affected user will never meet - and this entry is where those people actually work.",
+      "**The founder loop is the other half.** Curtis had run product management at Websense, whose entire product was acting on classifications. He left to build the classification itself, one layer down, and sell it to everyone - including, necessarily, companies competing with his former employer. **The layer below a market is often a better business than the market**, because it has fewer customers, they are stickier, and they compete with each other rather than with you.",
+      "Webroot acquired the company on 7 July 2010, terms undisclosed, and folded the team into its cloud engineering group. Webroot itself had been founded in 1997 in Broomfield, Colorado, and by its 2018 financial year was turning about $215M with more than 14,000 managed-service partners. Carbonite bought Webroot in 2019; OpenText bought Carbonite later the same year. **The classification service is still sold under the BrightCloud name to other security vendors, three owners later** - which tells you something about how durable an infrastructure position is compared with a product one.",
+      "**One caution belongs here rather than in a footnote.** A shared classification source means a shared blind spot. If the database miscategorises something, every product consuming it miscategorises the same thing, at the same moment, and the diversity that customers believe they bought by choosing different vendors is not there. That is the same argument this timeline makes about shared platforms and trusted update channels, arriving from a direction most people do not look.",
+    ],
+    externalUrl: "https://www.brightcloud.com/",
+    externalLabel: "BrightCloud",
+    sources: [
+      { label: "TechCrunch, 7 July 2010: the acquisition announced, terms undisclosed; BrightCloud founded 2005 in San Diego; founder and chief executive Quinn Curtis previously director of product management at Websense and before that almost nine years at Microsoft on the team that built and launched the first version of Exchange", url: "https://techcrunch.com/2010/07/07/webroot-brightcloud/" },
+      { label: "Dark Reading: BrightCloud maintaining information on more than 200 million URLs and IP addresses, and the technology being used by partners to add a layer of security and policy management for their own customers", url: "https://www.darkreading.com/cyber-risk/webroot-acquires-brightcloud" },
+      { label: "SecurityWeek: the BrightCloud team joining Webroot's cloud engineering group with an expanded focus on hosted security services", url: "https://www.securityweek.com/webroot-acquires-web-site-classification-and-reputation-services-provider-brightcloud/" },
+      { label: "Carbonite SEC filings (2019): Webroot founded 1997 with executive offices in Broomfield, Colorado; approximately $215M of revenue in the financial year ended June 2018; more than 14,000 managed service provider partners and over 600 employees", url: "https://www.sec.gov/Archives/edgar/data/1340127/000134012719000019/finalcarboniteinvestorsl.htm" },
+      { label: "Carbonite SEC filing (2019): the agreement under which OpenText would acquire Carbonite, with the threat intelligence business named among the reasons", url: "https://www.sec.gov/Archives/edgar/data/1340127/000119312519292403/d810668dex991.htm" },
+      { label: "BrightCloud threat intelligence datasheet (OpenText): the service sold to other technology providers, and the 2019 OpenText acquisition", url: "https://www-cdn.webroot.com/7616/4554/8137/BrightCloud_Threat_Intelligence_Services_DS_AMER_EN.pdf", sourceNote: "Vendor marketing material. Used for the ownership fact and the fact that the service is licensed to other providers, not for its performance claims." },
+    ],
+  },
+  {
+    // WEBSENSE -> FORCEPOINT - added 2026-08-03 (PRIME). One entry, because it
+    // is one company under four names and five owners.
+    //
+    // The "censorware" criticism is RECORDED rather than omitted: a filtering
+    // product's failure mode is over-blocking, and a site that teaches web
+    // security should say so plainly instead of describing only the mechanism.
+    slug: "websense-forcepoint",
+    group: "other",
+    name: "Websense and Forcepoint",
+    founded: 1994,
+    tags: ["vendor"],
+    tagline: "A reseller that became a filter, then a bubble IPO, then a defence contractor's cyber arm, then private equity again.",
+    intro:
+      "Phil Trubey founded NetPartners in Sorrento Valley, San Diego in 1994, reselling other people's network security products. What made the company was the thing it built rather than resold: software for controlling what employees could reach on the internet. It was renamed Websense in June 1999, and in March 2000 - the actual peak of the dot-com bubble - it raised $72M in an IPO whose share price doubled on the first day.",
+    body: [
+      "**The founder was not there for it.** In 1998, with $6M of venture funding raised and $6M of annual revenue, the investors removed Trubey from the chief executive's job and appointed John Carrington. The renaming, the IPO and everything after happened without the person who started it - which is common enough to be unremarkable in aggregate and worth naming in the particular.",
+      "**What the product actually did is worth stating precisely, because the mechanism explains the criticism.** A category database classifies sites; a policy decides which categories a given user may reach; the enforcement point sits between the user and the web. That is the same architecture as the proxies elsewhere on this timeline, and it has the same unavoidable weakness: **a classification is a judgement, made at scale, by people the affected user will never meet.**",
+      "**So the product was called censorware, and the complaint was not baseless.** Over-blocking caught sexual health information, political material and plenty of ordinary sites that fell on the wrong side of a category boundary. That is not a bug that gets fixed; it is the failure mode of the entire approach, and any honest account of web filtering has to say so. The defence is that an employer restricting its own network is a different question from a state restricting a population - but the same product served both, and it usually does.",
+      "The company grew by buying capability: PortAuthority in 2006 for data fingerprinting, SurfControl in 2007 for email security, Defensio in 2009 for social spam. **By 2011 Facebook was using it to scan every link posted on the platform**, which is a striking measure of how far a corporate filtering product had travelled from the corporate network.",
+      "**Then the ownership carousel, which is the other half of the story.** Vista Equity Partners took it private in 2013 for $906M at $24.75 a share, and moved it from San Diego to Austin. In April 2015 Raytheon - a defence contractor - bought 80% for $1.9B net of cash, contributing its own Raytheon Cyber Products valued around $400M and creating a joint venture worth roughly $2.3B, with Vista keeping the rest. That October it bought Stonesoft and Sidewinder from Intel for $389M, Stonesoft having been McAfee's next-generation firewall. On 14 January 2016 the whole thing was renamed Forcepoint. Raytheon took the remaining 20% in 2019, and in January 2021 sold the company to Francisco Partners.",
+      "**Four names, five owners, thirty years.** NetPartners, Websense, Raytheon|Websense, Forcepoint. What the defence-contractor period bought was not technology so much as clearance: government work needs a supplier who can hold it, and a commercial filtering company could not. **The product went where the ownership could take it**, which is a more honest description of most security-industry consolidation than the strategy language used at the time.",
+    ],
+    acquisitions: [
+      { year: 2006, name: "PortAuthority Technologies", what: "Data fingerprinting - identifying sensitive content by its shape rather than by rule.", became: "The beginning of the data-loss prevention line that eventually mattered more than the filtering." },
+      { year: 2007, name: "SurfControl", what: "A web and email filtering competitor.", became: "Consolidation of the filtering market into fewer hands." },
+      { year: 2015, name: "Stonesoft and Sidewinder", price: "$389M", what: "Bought from Intel. Stonesoft had been sold as McAfee Next-Generation Firewall.", became: "Forcepoint's firewall line - and another piece of McAfee's estate changing hands, which this timeline records repeatedly." },
+      { year: 2015, name: "Foreground Security", price: "$62M", what: "Security operations and managed detection.", became: "Services capability alongside the products." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Forcepoint",
+    externalLabel: "Forcepoint",
+    sources: [
+      { label: "Wikipedia: founded 1994 as NetPartners in Sorrento Valley, San Diego by Phil Trubey; a reseller before building employee internet-use software; $6M of venture funding and $6M revenue in 1998, when investors replaced Trubey with John Carrington; renamed Websense June 1999; $72M IPO March 2000 with the price doubling on the first day; the ownership chain through Vista, Raytheon and Francisco Partners", url: "https://en.wikipedia.org/wiki/Forcepoint" },
+      { label: "HandWiki: Vista's $906M acquisition in 2013 and the move to Austin in 2014; Raytheon's 80% purchase for ~$1.9B forming Raytheon|Websense; Foreground Security for $62M and Stonesoft with Sidewinder for $389M in October 2015; the 2016 rename", url: "https://handwiki.org/wiki/Company:Forcepoint" },
+      { label: "Grokipedia: the deal closing May 2015 at roughly $2.3B enterprise value with Vista retaining 20%; the rebrand to Forcepoint on 14 January 2016; Francisco Partners ownership from 2021", url: "https://grokipedia.com/page/Forcepoint" },
+      { label: "SafeLogic: Raytheon's $1.9B net of cash, of which $600M was an intercompany loan to the joint venture, plus Raytheon Cyber Products assets valued at $400M", url: "https://www.safelogic.com/our-customers/forcepoint" },
+      { label: "Definitions.net summary of the Wikipedia article: the classification-engine and category mechanism, and the censorware criticism - blocking innocent sites and protected speech, whether deliberately as censorship or accidentally through over-reaching categories", url: "https://www.definitions.net/definition/Websense", sourceNote: "A mirror of encyclopedic text rather than a primary source. Used for the criticism as it is commonly stated; the substance is corroborated by the product's own documented category mechanism." },
+      { label: "Forcepoint history summary: PortAuthority in 2006, SurfControl in 2007, Defensio in 2009, and Facebook using the product from 2011 to examine links posted on the platform", url: "https://www.yourtechstory.com/2022/09/06/forcepoint-a-leading-provider-of-cybersecurity-services/" },
+    ],
+  },
+  {
+    // USROBOTICS - added 2026-08-02 (PRIME). He owned the Sportster line
+    // through every speed step and was given Couriers by a client, which is
+    // exactly the segmentation this entry is about.
+    //
+    // Pairs with the `first-modem` milestone: that entry explains what a modem
+    // is FOR, this one explains what happened when everybody wanted one.
+    slug: "usrobotics",
+    group: "other",
+    name: "USRobotics",
+    founded: 1976,
+    tags: ["vendor"],
+    tagline: "Won three times with proprietary protocols, and gave up all three the moment a standard arrived.",
+    intro:
+      "Casey Cowell and four partners founded U.S. Robotics in a garage in Skokie, Illinois in 1976, naming it after the fictional company in Asimov's robot stories. The first modem shipped in 1979, and the business only opened to the general public after the AT&T breakup in 1984 made it legal for anyone to attach equipment to the telephone network.",
+    body: [
+      "**The two product lines are the story, and the relationship between them is better than either.** The Courier was built for bulletin board operators and businesses: rugged, remote-diagnosable, and using an upgradeable digital signal processor, so a Courier bought in 1994 as V.34 Ready shipped speaking V.FC because V.34 had not been finished yet, and was upgraded in the field when it was. That is why the line was eventually called V.Everything. The Sportster, launched in 1991, was the consumer line, and by the mid-1990s a 28.8 model sold for around $149.",
+      "**They shared a motherboard.** On certain 14.4 Sportsters, a sequence of AT commands would enable the faster 16.8 HST mode the Couriers were sold for. The hardware was the same; the difference between the consumer modem and the professional one was firmware and price. **Segmentation by software rather than silicon is now so normal it has a name, and this is one of the places it was learned.**",
+      "**The company's actual pattern is proprietary-then-standard, three times over.** HST was USR's own high-speed protocol, and it worked: if the board you dialled had a Courier, transfers ran faster than anyone else could manage, which is why HST spread through the bulletin board world and made FidoNet mail runs bearable. Then V.32bis arrived and HST stopped mattering. Years later the same play ran again with x2 against a rival consortium's K56flex, and neither won, because everybody could see V.90 coming. USR dropped x2 when it arrived.",
+      "**That is worth stating plainly, because it cuts against a thread this site returns to often.** Elsewhere the timeline records neutrality and openness paying off - carrier-neutral exchanges, vendor-neutral certification, protocols that stayed open and became infrastructure. USRobotics did the opposite and it worked repeatedly: a proprietary protocol bought real advantage for real years. **What it did not buy was permanence.** Every time a standard arrived, the advantage evaporated, and the company was sensible enough to stop defending it.",
+      "Scale followed the Sportster. Revenue was $889M in 1995 and $1.98B in the year to September 1996, a 122 per cent increase. The company bought Palm in 1995, acquiring the PalmPilot, and was itself acquired by 3Com in June 1997. It was later spun back out, moved to Schaumburg, Illinois, and now belongs to UNICOM Global.",
+      "One detail from the operators' side deserves recording: the first large-scale Courier deployment on CompuServe's network uncovered a bug that crashed the modems and stopped them answering calls under heavy call volume. **The most reliable modem on the market found its limit the way everything does - at a scale nobody had tested.**",
+    ],
+    acquisitions: [
+      { year: 1995, name: "Palm, Inc.", what: "The company behind the PalmPilot handheld.", became: "Part of USRobotics, then of 3Com, and later independent again - a corporate path more eventful than the product's." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/USRobotics",
+    externalLabel: "USRobotics",
+    sources: [
+      { label: "Wikipedia: HST making FidoNet transfers faster; the Sportster line in the 1990s; the V.Everything line released 1996; the shared motherboard and the AT command sequence enabling 16.8 HST on certain 14.4 Sportsters; the CompuServe deployment bug under high call volume; x2 against K56flex and the switch to V.90", url: "https://en.wikipedia.org/wiki/USRobotics" },
+      { label: "Grokipedia: founded 1976 in a garage in Skokie, Illinois by Casey Cowell and four partners; the name taken from Asimov's U.S. Robots and Mechanical Men; first modem in 1979; the Courier's rugged design and remote diagnostics; the Sportster launched 1991 with a low-cost DSP, around $149 for 28.8 by the mid-1990s", url: "https://grokipedia.com/page/USRobotics" },
+      { label: "HandWiki: the Courier V.Everything shipping in 1994 as V.34 Ready with only V.FC support because V.34 had not been released, and the upgradeable DSP design that allowed it to be brought up to standard later", url: "https://handwiki.org/wiki/Company:USRobotics" },
+      { label: "Encyclopedia.com: revenue of $1.98B for the fiscal year ended September 1996, up 122% on $889M in 1995; the Courier, Megahertz, Sportster, Total Control and PalmPilot product lines; 3Com attributing $2.5B of its FY1997 sales to USR", url: "https://www.encyclopedia.com/economics/economics-magazines/us-robotics" },
+      { label: "Medium (Richard Baguley): founded 1976, first modem 1979, and modems sold to the public following the 1984 AT&T breakup; HST reaching 16.8 kbps against slower competitors", url: "https://medium.com/people-gadgets/the-gadget-we-miss-the-us-robotics-courier-modem-3d43eac5f1de", sourceNote: "A retrospective feature rather than a reference work. Used for the founding and first-product dates, both corroborated elsewhere here." },
+    ],
+  },
+  {
+    // RED EDUCATION - added 2026-08-02 (PRIME: "Add Red Education to the
+    // timeline").
+    //
+    // *** WRITTEN AS A COMPANY HISTORY, NOT AS AUTOBIOGRAPHY. *** PRIME works
+    // here, and §9.4 permits naming Red Education in ordinary public copy - but
+    // the entry earns its place because the company is a genuine instance of a
+    // pattern this timeline already documents, not because of who works there.
+    // No statement is made here about which vendors any individual is
+    // authorised to teach; that lives in `relationships` and nowhere else.
+    slug: "red-education",
+    group: "other",
+    name: "Red Education",
+    founded: 2005,
+    tags: ["training", "services"],
+    tagline: "Training is distributed the same way products are, and this is what that looks like.",
+    intro:
+      "Daniel Storey was working at F5 Networks when they offered him a training role. He took it, spent a period delivering technical training across Asia Pacific, and concluded there was a business in doing it properly. Red Education was founded in Sydney in 2005. By its own account F5 was its first vendor and, at the start, its only one. Twenty years later it delivers vendor-accredited training across Asia Pacific, the Americas, Europe, India and the Middle East, and reports having passed 100,000 training seats.",
+    body: [
+      "**The structural point is the one worth taking, and this timeline has been circling it for weeks.** A vendor does not want to run a training operation in every country it sells into. Certifying instructors, maintaining lab equipment, scheduling classes in the right timezone and language, and doing it at a quality that reflects on the brand is a business in itself - and it is not the business of building the product. So vendors authorise partners to do it, on much the same logic that leads them to authorise distributors to hold stock and extend credit.",
+      "**Training is distributed. Once you see that, the shape of the industry makes more sense**: an authorised training company is to a vendor's courseware roughly what a distributor is to its hardware, and the vendors it carries appear on its line card in the same way.",
+      "The early years are described by the founder as a few boxes of hardware and a heavy flight schedule - the classrooms travelled on planes with the instructor. Growth came as more vendors decided they wanted a partner they could trust to represent them, which is the same trust problem a distributor solves and the same answer.",
+      "**The instructor sourcing is the detail that determines whether any of this works.** The company describes its trainers as seasoned practitioners, many of them former vendor or large-customer technical staff. That is not incidental: a course taught by someone who has only ever taught it is a different course from one taught by someone who has run the product in production and been called at three in the morning when it failed. The second kind can answer the question that is not in the material.",
+      "The vendor list has grown well beyond F5 - Palo Alto Networks, Cisco, Check Point, Fortinet, Nutanix, AWS, Arista, Red Hat, VMware, AlgoSec, Paessler, EPI and others - and the company has collected the kind of recognition that follows: Check Point named it Authorised Training Company of the Year at CPX 2024 in Bangkok and a Platinum Elite ATC partner, and in 2025 the partnership took a Gold Stevie Award for Global Partnership of the Year.",
+      "**Read beside the other training entries here, it completes a set.** CompTIA is certification owned by nobody, defining what competence means across vendors. EPI is a specialist body for one domain. The market-reserve entry shows a whole country's engineering workforce being trained inside protected manufacturers. And this is the fourth model: **independent delivery of somebody else's curriculum, under their authorisation** - which is how most vendor training in most countries actually reaches the person sitting in the room.",
+    ],
+    externalUrl: "https://www.rededucation.com/",
+    externalLabel: "Red Education",
+    sources: [
+      { label: "Red Education's own twentieth-anniversary interview with founder Daniel Storey: working at F5 Networks when offered a training role, delivering across Asia Pacific, F5 as the first and only vendor at the start, the early years of boxes of hardware and flight schedules, and growth as more vendors sought a partner to represent them", url: "https://www.rededucation.com/red-education-is-20-daniel-storey-reflects-on-two-decades-of-building-a-global-business/" },
+      { label: "Red Education: vendor-accredited training delivered in classrooms, virtually or on site; over 100,000 training seats since 2005; regions across the Americas, Australasia, SAARC, ASEAN and EMEA", url: "https://www.rededucation.com/" },
+      { label: "Red Education about page: trainers described as seasoned IT professionals, many former vendor and large-customer technical staff, certified to high levels; lab equipment and materials provided", url: "https://www.rededucation.com/about-us/" },
+      { label: "CB Insights: founded 2005, headquartered in Sydney, New South Wales; the 2025 Gold Stevie Award for Global Partnership of the Year with Check Point, and a second Gold Stevie for achievement in certification programs", url: "https://www.cbinsights.com/company/red-education/" },
+      { label: "Red Education on LinkedIn: the vendor list including Palo Alto Networks, F5, Check Point, Nutanix, AWS, AlgoSec, EPI, Paessler, Arista, Fortinet, VMware, Red Hat, ForgeRock and Cisco; Check Point naming it Authorised Training Company of the Year at CPX 2024 in Bangkok", url: "https://au.linkedin.com/company/red-education" },
+      { label: "M&T Resources (2021) and Crunchbase: earlier seat figures of 75,000 and 85,000, which together with the current 100,000+ give the trajectory rather than a single snapshot", url: "https://www.crunchbase.com/organization/red-education", sourceNote: "Three seat figures from three dates are cited deliberately: a single number would read as a claim, while the sequence shows growth and dates itself." },
+    ],
+  },
+  {
+    // IXIA + KEYSIGHT - added 2026-08-02 (PRIME: "Ixia and Keysight deserve a
+    // card"). Replaces the dissolved fireeye-mcafee-ixia entry, whose own
+    // tagline conceded the problem: three companies that shared a distribution
+    // portfolio and almost nothing else.
+    //
+    // The lineage is why it deserves a card: Keysight IS Hewlett-Packard's
+    // original test and measurement business, spun out twice.
+    slug: "ixia-keysight",
+    // The distribution-years chapter covers Ixia among others; it
+    // lost its original home when the combined entry was dissolved, and both
+    // surviving lineages point at it so neither reader path misses it.
+    careerChapter: { slug: "fireeye-mcafee-ixia", years: "2015 - 2019" },
+    group: "other",
+    name: "Ixia and Keysight",
+    founded: 1997,
+    tags: ["vendor"],
+    tagline: "Network test, bought by the part of Hewlett-Packard that Hewlett and Packard actually started.",
+    intro:
+      "Ixia was founded on 1 January 1997 in Calabasas, California, to test IP networks: generate traffic at line rate, break things deliberately, and measure what happened. When Keysight completed its acquisition in April 2017 for about $1.6B, Ixia served the top fifteen network equipment manufacturers, forty-seven of the top fifty carriers and seventy-seven of the Fortune 100, with more than 400 patents issued and pending.",
+    body: [
+      "**The category is worth explaining, because most engineers never buy from it and everything they do buy passed through it.** Before a switch, firewall or load balancer ships, somebody establishes what it actually does at line rate, under attack, with malformed input, and at the exact point it falls over. Datasheets quote numbers; test equipment is where those numbers come from, and where a competitor checks them.",
+      "Ixia grew by acquisition, and the direction is the interesting part: Anue Systems in June 2012, BreakingPoint Systems that August, Net Optics in October 2013. Anue and Net Optics were visibility and tap aggregation; BreakingPoint was security testing. **It moved from testing networks in a lab to seeing inside them in production - the same instrument that proves a device works becoming the instrument that watches it working.**",
+      "**Then the acquirer, which is where the lineage repays attention.** Keysight was spun out of Agilent in 2014. Agilent had been spun out of Hewlett-Packard in 1999, in an IPO that raised $2.1B and was the largest in Silicon Valley history at the time. **Keysight is HP's original test and measurement business** - the line of work that began with the 200A audio oscillator Bill Hewlett and Dave Packard built in a garage in 1939, which was the company's first product.",
+      "So the oldest thing HP ever did was spun off twice and now trades under its own name, while the businesses that kept the letters make printers, PCs and enterprise infrastructure. **The part everyone remembers from the garage story is the part that left.**",
+      "The deal closed on 18 April 2017 at $19.65 a share in cash, Keysight's largest since becoming independent - bigger than Anite at $606M in 2015. Ixia became the Ixia Solutions Group. Its chief executive at the time, Bethany Mayer, had come from HP, which makes it a smaller reunion than it appears.",
+      "**A note on why this card replaced another.** Ixia previously appeared here grouped with FireEye and McAfee, in an entry whose own tagline admitted the three shared a distribution portfolio and almost nothing else. **A shared line card is a fact about a distributor, not a relationship between companies**, and it belongs in a career chapter rather than a company history. FireEye and McAfee are covered by the Trellix lineage entry.",
+    ],
+    acquisitions: [
+      { year: 2012, name: "Anue Systems", price: "~$145-155M", what: "Network visibility software and tap aggregation, founded by Kevin Przybocki, Hemi Thaker and Chip Webb.", became: "Ixia's move from lab testing into production visibility.", sourceNote: "Reported at $145M at announcement and around $155M afterwards; both figures circulate." },
+      { year: 2012, name: "BreakingPoint Systems", price: "~$160M", what: "Network security testing - generating realistic attack traffic against devices under test.", became: "The security half of the test portfolio." },
+      { year: 2013, name: "Net Optics", price: "~$190M", what: "Network taps and monitoring access.", became: "Completed the visibility line Keysight later cited as a reason for buying the company." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Ixia_(company)",
+    externalLabel: "Ixia",
+    sources: [
+      { label: "Keysight SEC Form 8-K, 18 April 2017: acquisition completed at approximately $1.6B, $19.65 per share in cash; Ixia serving the top 15 network equipment manufacturers, 47 of the top 50 carriers and 77 of the Fortune 100; over 400 patents and more than 1,800 staff; reported as the Ixia Solutions Group", url: "https://www.sec.gov/Archives/edgar/data/0001601046/000090342317000272/keysight8kex991_0417.htm" },
+      { label: "Keysight Form 10-Q: merger agreement entered 30 January 2017, all-cash and approximately $1.6B net of cash acquired", url: "https://www.sec.gov/Archives/edgar/data/0001601046/000160104617000009/keys-01312017x10q.htm" },
+      { label: "Wikipedia: Ixia founded 1 January 1997 in Calabasas, traded as Nasdaq XXIA, revenue $464M in 2014; the Anue, BreakingPoint and Net Optics acquisitions with dates", url: "https://en.wikipedia.org/wiki/Ixia_(company)" },
+      { label: "Keysight's own history: the business dating to Hewlett and Packard's 1939 garage and the 200A audio oscillator; Agilent spun off from HP in 1999 with a $2.1B IPO, the largest in Silicon Valley history at the time; Keysight spun off from Agilent in 2014", url: "https://www.keysight.com/us/en/about/keysight-technologies-history.html/1000" },
+      { label: "RCR Wireless: Keysight as HP's original test and measurement business; Ixia the largest acquisition since independence, after Anite at $606M in 2015; Bethany Mayer having come to Ixia from HP", url: "https://www.rcrwireless.com/20170612/telecom-software/20170609softwarekeysight-ixia-tag6" },
+      { label: "TheStreet: Net Optics at $190M in 2013, Anue at $155M and BreakingPoint at $160M in 2012", url: "https://www.thestreet.com/technology/keysight-technologies-to-grab-ixia-for-1-6-billion-13971115" },
     ],
   },
   {
@@ -1545,6 +2192,7 @@ export const partnerVendors: PartnerVendor[] = [
     // F5 - company history (PRIME step 4, 2026-07-29). Hub + lineage page
     // already carry the deal detail; this is the company and the idea.
     slug: "f5",
+    relationships: ["red-education-partner", "authorized-instructor"],
     tags: ["vendor"],
     group: "other",
     name: "F5",
@@ -1569,6 +2217,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // FORTINET - company history (PRIME step 4, 2026-07-29).
     slug: "fortinet",
+    relationships: ["red-education-partner", "authorized-instructor"],
     tags: ["vendor"],
     group: "other",
     name: "Fortinet",
@@ -1594,6 +2243,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // NETSKOPE - company history (PRIME step 4, 2026-07-29).
     slug: "netskope",
+    relationships: ["red-education-partner", "authorized-instructor"],
     tags: ["vendor"],
     group: "other",
     name: "Netskope",
@@ -1618,6 +2268,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // PING IDENTITY - company history (PRIME step 4, 2026-07-29).
     slug: "ping-identity",
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "other",
     name: "Ping Identity",
@@ -1642,6 +2293,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // ZSCALER - company history (PRIME step 4, 2026-07-29).
     slug: "zscaler",
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "other",
     name: "Zscaler",
@@ -1669,6 +2321,7 @@ export const partnerVendors: PartnerVendor[] = [
     // this entry tells the COMPANY STORY and leaves the acquisition detail
     // where it already lives rather than duplicating it.
     slug: "extreme",
+    relationships: ["red-education-partner", "authorized-instructor"],
     tags: ["vendor"],
     group: "other",
     name: "Extreme Networks",
@@ -1695,6 +2348,7 @@ export const partnerVendors: PartnerVendor[] = [
     // CHECK POINT - company history (PRIME step 4, 2026-07-29).
     // The lineage page carries the deals; this is the company and the idea.
     slug: "check-point",
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "other",
     name: "Check Point Software Technologies",
@@ -1750,38 +2404,9 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
-    // FIREEYE / McAFEE / IXIA - company history (PRIME step 4, 2026-07-29).
-    // This slug covers the DISTRIBUTION-era portfolio rather than one company,
-    // so the history is written as three lineages that happen to share a
-    // chapter. McAfee's fuller story lives at mcafee-fireeye-trellix.
-    slug: "fireeye-mcafee-ixia",
-    tags: ["vendor"],
-    group: "other",
-    name: "FireEye, McAfee and Ixia",
-    founded: 1987,
-    careerChapter: { slug: "fireeye-mcafee-ixia", years: "2015 - 2019" },
-    tagline: "Three companies that shared a distribution portfolio and almost nothing else.",
-    intro:
-      "This entry covers three separate lineages carried together through Brazilian value-added distribution: McAfee, founded 1987, the oldest antivirus brand still trading under a version of its name; FireEye, founded 2004, which made its reputation on incident response rather than product; and Ixia, founded 1997, which measured networks rather than defending them.",
-    body: [
-      "**McAfee** was founded by John McAfee in 1987, sold to Intel in 2011 for around $7.7B, rebranded Intel Security, then spun back out under the McAfee name in 2017 when Intel sold a majority stake to TPG. The enterprise business was later separated and combined with FireEye's products in 2022 to form Trellix, while the consumer business kept the McAfee name.",
-      "**FireEye** built its reputation on Mandiant, which it acquired in 2014 for about $1B - a company whose value was its incident responders rather than its software, and which had published the APT1 report in 2013 attributing a large intrusion campaign to a specific unit of the Chinese military. That report changed what security vendors were willing to say publicly about attribution.",
-      "In 2021 FireEye sold its products business to Symphony Technology Group and kept the Mandiant name and services, reversing the acquisition in substance: the consultancy shed the product company. Google then acquired Mandiant in 2022 for about $5.4B.",
-      "**Ixia** was a test and measurement company - traffic generation, network emulation, and the equipment used to prove that other vendors' equipment does what the datasheet claims. Keysight Technologies acquired it in 2017 for about $1.6B. It belongs beside the other two here because a distribution portfolio does not organise itself by conceptual coherence; it organises by what a channel can sell into the same accounts.",
-      "The reason all three appear on one page is that this is what distribution actually looks like from the inside: a portfolio assembled from whatever the market wanted, whose only common factor is the person carrying it.",
-    ],
-    externalUrl: "https://en.wikipedia.org/wiki/Trellix",
-    externalLabel: "Trellix (the McAfee and FireEye successor)",
-    sources: [
-      { label: "Wikipedia: McAfee - 1987 founding, the Intel acquisition and the 2017 spin-out", url: "https://en.wikipedia.org/wiki/McAfee" },
-      { label: "Wikipedia: FireEye - the Mandiant acquisition, the 2021 products sale to STG, and Trellix", url: "https://en.wikipedia.org/wiki/Trellix" },
-      { label: "Wikipedia: Mandiant - the APT1 report and the 2022 Google acquisition at ~$5.4B", url: "https://en.wikipedia.org/wiki/Mandiant" },
-      { label: "Wikipedia: Ixia - test and measurement, acquired by Keysight in 2017", url: "https://en.wikipedia.org/wiki/Ixia_(company)" },
-    ],
-  },
-  {
     // CISCO - company history (PRIME step 4, 2026-07-29).
     slug: "cisco",
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "other",
     name: "Cisco Systems",
@@ -1813,6 +2438,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // PALO ALTO NETWORKS - company history (PRIME step 4, 2026-07-29).
     slug: "palo-alto",
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "other",
     name: "Palo Alto Networks",
@@ -2599,6 +3225,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "mcafee-fireeye-trellix",
+    // The distribution-years chapter covers FireEye and McAfee among others; it
+    // lost its original home when the combined entry was dissolved, and both
+    // surviving lineages point at it so neither reader path misses it.
+    careerChapter: { slug: "fireeye-mcafee-ixia", years: "2015 - 2019" },
     tags: ["vendor"],
     group: "other",
     name: "McAfee, FireEye & Mandiant - the road to Trellix",
@@ -3125,10 +3755,10 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "blue-coat-packeteer",
     tags: ["vendor"],
     group: "other",
-    name: "Blue Coat & Packeteer - the checkpoint companies",
+    name: "Blue Coat & Packeteer - the chokepoint companies",
     founded: 1996,
     tagline: "CacheFlow's pivot made the proxy a security platform; PacketShaper created traffic shaping - together, the prehistory of the SSE category.",
-    intro: "Two 1996 companies that answered the same question - what happens at the checkpoint - for content and for bandwidth. Blue Coat (born CacheFlow) made the inline proxy the enterprise web's enforcement point, SSL inspection included; Packeteer's PacketShaper taught the WAN that traffic has identity. Merged in 2008, carried through Symantec into Broadcom, their architecture is what every cloud secure web gateway runs today.",
+    intro: "Two 1996 companies that answered the same question - what happens at the chokepoint, the point all traffic must pass through - for content and for bandwidth. Blue Coat (born CacheFlow) made the inline proxy the enterprise web's enforcement point, SSL inspection included; Packeteer's PacketShaper taught the WAN that traffic has identity. Merged in 2008, carried through Symantec into Broadcom, their architecture is what every cloud secure web gateway runs today.",
     body: ["The profile covers the legendary CacheFlow IPO, the 2002 pivot to Blue Coat, PacketShaper's category creation, the 2008 acquisition, the private-equity years, and the Symantec-to-Broadcom passage."],
   },
   {

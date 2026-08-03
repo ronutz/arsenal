@@ -113,14 +113,29 @@ export default async function VendorHubPage({
     .filter((a: Article) => getArticleVendors(a).includes(vendor))
     .sort((a: Article, b: Article) => a.title.localeCompare(b.title, locale));
 
-  const subIds = [...subsOf(vendor).map((s) => s.id), "other"];
+  // *** FIXED 2026-08-03. *** The comment above claimed the trailing "other"
+  // bucket caught anything unmapped. It did not. The filter compared
+  // `(tool.sub ?? "other") === id`, so a tool whose sub was a real string that
+  // simply was not in this vendor's taxonomy - `quantum` on the Check Point
+  // tools, where VENDOR_SUBS has no `checkpoint` key at all - matched NO
+  // bucket and vanished from the hub. Two tools and every article were
+  // invisible on a page that built cleanly and reported no error.
+  //
+  // A comment promising a safety net that the code does not implement is worse
+  // than no comment: it stops the next person looking. The bucket is now
+  // computed rather than assumed.
+  const taxonomy = subsOf(vendor).map((s) => s.id);
+  const bucketFor = (sub: string | null | undefined) =>
+    sub && taxonomy.includes(sub) ? sub : "other";
+
+  const subIds = [...taxonomy, "other"];
   const subGroups = subIds
     .map((id) => ({
       id,
       tools: vendorTools
-        .filter((tool) => (tool.sub ?? "other") === id)
+        .filter((tool) => bucketFor(tool.sub) === id)
         .sort((a, b) => t(`${a.id}.name`).localeCompare(t(`${b.id}.name`), locale)),
-      articles: vendorArticles.filter((a) => (getArticleSub(a, vendor) ?? "other") === id),
+      articles: vendorArticles.filter((a) => bucketFor(getArticleSub(a, vendor)) === id),
     }))
     .filter((g) => g.tools.length > 0 || g.articles.length > 0);
   const subLabel = (id: string) => (id === "other" ? t("subs.other") : t(`subs.${vendor}.${id}`));

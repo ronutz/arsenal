@@ -1,12 +1,14 @@
 // ============================================================================
 // src/content/vendors/profiles/ping-identity.ts
 // ----------------------------------------------------------------------------
-// PING IDENTITY - the identity chapter. AUTHORIZATION (PRIME 2026-07-26,
-// SUPERSEDES 2026-07-15): NO authorized-instructor claim is made for Ping.
-// Same treatment as Check Point: the hub and its study guides are study
-// material, not a statement about who may deliver Ping training.
-// the i18n career narrative now states the authorization (the earlier
-// disclaimer is retired). Fifth vendor in the teaching portfolio.
+// PING IDENTITY - the identity chapter.
+//
+// INSTRUCTOR AUTHORISATION IS NOT DISCUSSED IN THIS FILE, in either
+// direction. It is declared once, per company, in `relationships` in
+// partners.ts, and nowhere else. Do not add a claim here and do not add a
+// denial: both go stale when an authorisation changes, and a stale denial
+// is the more damaging of the two.
+
 //
 // Verified 2026-07-15: Thoma Bravo press releases (Ping take-private
 // completed October 18, 2022, ~$2.8B all cash, $28.50/share, delisted from

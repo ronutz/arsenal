@@ -23,7 +23,7 @@ export const blueCoatPacketeerProfile: VendorProfile = {
       place: "Sunnyvale, California",
       founders: ["Michael Malcolm"],
       story:
-        "CacheFlow built appliances that stored the web closer to its readers - and rode the bubble to one of the most spectacular IPO first days of 1999. When the caching market deflated with the bubble, the company executed one of the era's cleanest pivots: the same box in the same place - between users and the internet - resold as a SECURITY control. Renamed Blue Coat in 2002, the ProxySG became the enterprise web proxy: authentication, filtering, and eventually SSL inspection, the checkpoint through which corporate web traffic learned to pass.",
+        "CacheFlow built appliances that stored the web closer to its readers - and rode the bubble to one of the most spectacular IPO first days of 1999. When the caching market deflated with the bubble, the company executed one of the era's cleanest pivots: the same box in the same place - between users and the internet - resold as a SECURITY control. Renamed Blue Coat in 2002, the ProxySG became the enterprise web proxy: authentication, filtering, and eventually SSL inspection, the chokepoint through which corporate web traffic learned to pass.",
     },
     {
       company: "Packeteer",
@@ -55,6 +55,6 @@ export const blueCoatPacketeerProfile: VendorProfile = {
     "The lineage persists inside Broadcom's Symantec enterprise portfolio - and conceptually everywhere: every cloud proxy inspecting TLS at scale is running Blue Coat's play.",
   ],
   analyst: [
-    "A consolidated entry because the two companies answered the same question - what happens at the checkpoint - for content and for bandwidth; together they are the prehistory of the SSE category this site's Zscaler and Netskope chapters teach.",
+    "A consolidated entry because the two companies answered the same question - what happens at the chokepoint, the point all traffic must pass through - for content and for bandwidth; together they are the prehistory of the SSE category this site's Zscaler and Netskope chapters teach.",
   ],
 };
