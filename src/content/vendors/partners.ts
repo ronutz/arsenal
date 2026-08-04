@@ -2623,11 +2623,16 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "F5 Labs was founded in Seattle in 1996 by Jeff Hussey and Michael Almquist. The name comes from the Fujita scale: F5 is the most powerful tornado category, which was the sort of thing a networking startup called itself in the nineties.",
     body: [
-      "The first product, BIG-IP, was a load balancer, and the founding problem was mundane: a website outgrows one server, and something has to decide which server each request goes to. Doing that well turns out to require understanding the traffic rather than just counting connections, and that is the direction the whole company travelled.",
-      "The consequential decision was moving up the stack. A load balancer that terminates the connection can inspect what is inside it, and once you are inspecting you can rewrite, authenticate, offload cryptography, enforce policy and block attacks. BIG-IP became a platform of modules rather than a product - traffic management, DNS, access, application firewalling - because each was another thing you could do once you were already in the path.",
-      "iRules, introduced in the early 2000s, let administrators write TCL that ran per connection. That is unusual and it is why so much F5 knowledge is specific rather than general: the box does what the local script says, and two deployments of the same product can behave nothing alike.",
-      "The acquisitions since 2019 mark a deliberate change of shape. NGINX brought a software proxy with an enormous open-source installed base and a very different deployment model. Shape Security brought bot and fraud detection. Volterra brought edge and multicloud application delivery, which became Distributed Cloud. The company that sold appliances into data centres has spent a decade trying to be relevant where applications actually run now.",
-      "The full deal list, with what each acquired company had itself acquired, is on the vendor lineage page rather than repeated here.",
+      // BODY REDUCED 2026-08-04. The profile below now carries the founding,
+      // the timeline, the products and the innovations, and this prose was
+      // telling the same story alongside it - NGINX appeared eight times on the
+      // rendered page, Shape six. Ubiquiti is the model: intro carries the
+      // thesis, body is a short signpost, the profile does the work.
+      //
+      // What survives is the one thing the profile does not say: what the
+      // architecture means for somebody learning the platform.
+      "The profile below covers the 1996 founding, the BIG-IP franchise, the TMOS full-proxy rewrite, the acquisitions from NGINX onward, and the shift into application security.",
+      "One consequence is worth stating for anyone learning the platform. Because iRules run TCL per connection on the data path, a great deal of F5 knowledge is specific rather than general: the concepts transfer, but the fluency does not. That is why the certification track is long, and why practitioners tend to be deep in F5 rather than broadly across delivery controllers.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/F5,_Inc.",
     externalLabel: "F5, Inc.",
