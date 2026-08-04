@@ -103,6 +103,21 @@ import { httpGopherProfile } from "@/content/vendors/profiles/http-gopher";
 import { nvidiaProfile } from "@/content/vendors/profiles/nvidia";
 import { aristaProfile } from "@/content/vendors/profiles/arista";
 import { ubiquitiProfile } from "@/content/vendors/profiles/ubiquiti";
+import { cabletronEnterasysProfile } from "@/content/vendors/profiles/cabletron-enterasys";
+import { ciscoProfile } from "@/content/vendors/profiles/cisco";
+import { extremeProfile } from "@/content/vendors/profiles/extreme";
+import { f5Profile } from "@/content/vendors/profiles/f5";
+import { fortinetProfile } from "@/content/vendors/profiles/fortinet";
+import { ironportProfile } from "@/content/vendors/profiles/ironport";
+import { netscreenJuniperProfile } from "@/content/vendors/profiles/netscreen-juniper";
+import { netskopeProfile } from "@/content/vendors/profiles/netskope";
+import { paloAltoProfile } from "@/content/vendors/profiles/palo-alto";
+import { pingIdentityProfile } from "@/content/vendors/profiles/ping-identity";
+import { pulseSecureProfile } from "@/content/vendors/profiles/pulse-secure";
+import { riverstoneProfile } from "@/content/vendors/profiles/riverstone";
+import { zscalerProfile } from "@/content/vendors/profiles/zscaler";
+import { cloudflareProfile } from "@/content/vendors/profiles/cloudflare";
+import { parxtechProfile } from "@/content/vendors/profiles/parxtech";
 import { accessHomeFleetProfile } from "@/content/vendors/profiles/access-home-fleet";
 import { watchguardProfile } from "@/content/vendors/profiles/watchguard";
 import { a10KempProfile } from "@/content/vendors/profiles/a10-kemp";
@@ -120,6 +135,21 @@ import { alliedTelesisProfile } from "@/content/vendors/profiles/allied-telesis"
 
 // Rich profiles, keyed by slug. Vendors without a profile render the simple layout.
 const PROFILES: Record<string, VendorProfile> = {
+  [cabletronEnterasysProfile.slug]: cabletronEnterasysProfile,
+  [ciscoProfile.slug]: ciscoProfile,
+  [extremeProfile.slug]: extremeProfile,
+  [f5Profile.slug]: f5Profile,
+  [fortinetProfile.slug]: fortinetProfile,
+  [ironportProfile.slug]: ironportProfile,
+  [netscreenJuniperProfile.slug]: netscreenJuniperProfile,
+  [netskopeProfile.slug]: netskopeProfile,
+  [paloAltoProfile.slug]: paloAltoProfile,
+  [pingIdentityProfile.slug]: pingIdentityProfile,
+  [pulseSecureProfile.slug]: pulseSecureProfile,
+  [riverstoneProfile.slug]: riverstoneProfile,
+  [zscalerProfile.slug]: zscalerProfile,
+  [cloudflareProfile.slug]: cloudflareProfile,
+  [parxtechProfile.slug]: parxtechProfile,
   [hpeJuniperArubaProfile.slug]: hpeJuniperArubaProfile,
   [brocadeBroadcomProfile.slug]: brocadeBroadcomProfile,
   [mcafeeFireeyeTrellixProfile.slug]: mcafeeFireeyeTrellixProfile,
@@ -210,6 +240,23 @@ export function generateStaticParams() {
     ...Object.keys(TAG_ROUTES).map((slug) => ({ locale, slug })),
   ]);
 }
+
+/**
+ * Entry slug -> vendor hub key, for the seven company histories whose
+ * acquisitions live on a hub's vendor-lineage page. Deliberately explicit:
+ * two of the seven do not match by string (`check-point` vs `checkpoint`,
+ * `ping-identity` vs `ping`), and a silent mismatch here would produce exactly
+ * the failure this map was added to fix - a reference with nowhere to go.
+ */
+const LINEAGE_HUB_KEY: Record<string, string> = {
+  f5: "f5",
+  fortinet: "fortinet",
+  netskope: "netskope",
+  extreme: "extreme",
+  zscaler: "zscaler",
+  "ping-identity": "ping",
+  "check-point": "checkpoint",
+};
 
 export default async function PartnerVendorPage({
   params,
@@ -337,17 +384,22 @@ export default async function PartnerVendorPage({
             </section>
           )}
 
-          {/* Disclaimer (redu group): Rodolfo does not teach this vendor. */}
-          {isRedu && (
-            <section className="section">
-              <div className="container vendor-container">
-                <aside className="partner-disclaimer">
-                  <span className="partner-disclaimer-tag mono">{tp("disclaimerTag")}</span>
-                  <p className="partner-disclaimer-text">{tp("disclaimerText", { vendor: vendor.name })}</p>
-                </aside>
-              </div>
-            </section>
-          )}
+          {/* REMOVED 2026-08-04 (PRIME). This block rendered a note reading
+              "Rodolfo does not deliver {vendor} training" on twelve vendor
+              pages. It was a deliberate July design - an honest disclaimer on
+              pages for vendors Red Education is authorised for but PRIME does
+              not personally teach - and it is now forbidden by a later standing
+              rule: NEVER state that he teaches something, and never state that
+              he does not.
+
+              The reasoning recorded when that rule was applied to three other
+              vendors holds here too: a stale denial is more damaging than a
+              stale claim, because it is public, searchable, and contradicts an
+              authorisation the moment one is granted.
+
+              These are corporate-history pages. They carry no training claim in
+              either direction, which is what the `group: "other"` pages have
+              always done and what these now do too. */}
 
           {/* Body */}
           <section className="section era-body-section">
@@ -395,6 +447,87 @@ export default async function PartnerVendorPage({
             </section>
           )}
 
+                {vendor.careerChapter && (
+            /* The link back to the person. Kept deliberately small and
+               placed after the history rather than before it: this page is
+               about the company, and the fact that somebody worked here is
+               a footnote to that, not the headline. */
+            <section className="section">
+              <div className="about-cred-grid">
+                <Link
+                  href={`/about/vendors/${vendor.careerChapter.slug}`}
+                  className="about-cred-card"
+                >
+                  <span className="about-cred-eyebrow">{tp("careerCardEyebrow")}</span>
+                  <span className="about-cred-title">
+                    {tp("careerCardTitle", { years: vendor.careerChapter.years })}
+                  </span>
+                  <span className="about-cred-desc">{tp("careerCardDesc")}</span>
+                  <span className="about-cred-cta">{tp("careerCardCta")} &rarr;</span>
+                </Link>
+              </div>
+            </section>
+          )}
+
+          {vendor.acquisitions && vendor.acquisitions.length > 0 && (
+            /* Same markup as the vendor-lineage pages, deliberately: the
+               nested-acquisition rule applies to both page types and a
+               reader should meet one idea, not two. */
+            <section className="section">
+              {/* CONTAINER ADDED 2026-08-04 (PRIME reported this section as
+                  badly formatted). Every other section on this page wraps its
+                  content in `container vendor-container`; this one did not, so
+                  the list ran full-bleed at whatever width the viewport was.
+                  It was ALSO nested inside the sources <ul> until the same
+                  pass - two separate faults producing one visible symptom. */}
+              <div className="container vendor-container">
+                <h2 className="section-title">{tp("acquisitionsHeading")}</h2>
+                <ol className="lineage-timeline">
+                  {[...vendor.acquisitions]
+                    .sort((a, b) => a.year - b.year)
+                    .map((a) => (
+                      <li className="lineage-deal" key={`${a.year}-${a.name}`}>
+                        <p className="lineage-deal-top">
+                          <span className="lineage-deal-year mono">{a.year}</span>{" "}
+                          <span className="lineage-deal-name">{a.name}</span>
+                          {a.price ? (
+                            <span className="lineage-deal-price mono"> {a.price}</span>
+                          ) : null}
+                        </p>
+                        <p className="lineage-deal-what">{a.what}</p>
+                        {a.founder && (
+                          <p className="lineage-deal-founder">{a.founder}</p>
+                        )}
+                        {a.subAcquisitions && a.subAcquisitions.length > 0 && (
+                          <ul className="lineage-sub-list">
+                            {a.subAcquisitions.map((sub) => (
+                              <li className="lineage-sub" key={`${sub.year}-${sub.name}`}>
+                                <span className="lineage-sub-year mono">{sub.year}</span>{" "}
+                                <span className="lineage-sub-name">{sub.name}</span>
+                                {sub.price ? (
+                                  <span className="lineage-sub-price mono"> {sub.price}</span>
+                                ) : null}
+                                <span className="lineage-sub-what"> &mdash; {sub.what}</span>
+                                {sub.founder && (
+                                  <span className="lineage-sub-founder"> Founded by {sub.founder}.</span>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        {a.became && (
+                          <p className="lineage-deal-became">{a.became}</p>
+                        )}
+                        {a.sourceNote && (
+                          <p className="lineage-deal-note">{a.sourceNote}</p>
+                        )}
+                      </li>
+                    ))}
+                </ol>
+              </div>
+            </section>
+          )}
+
           {/* External link */}
           {vendor.externalUrl && (
             <section className="section">
@@ -411,6 +544,29 @@ export default async function PartnerVendorPage({
             </section>
           )}
 
+          {/* VENDOR LINEAGE LINK - added 2026-08-04 (PRIME).
+              Seven entries carry the sentence "its acquisitions are on the
+              vendor lineage page". The page exists and holds the deals - but
+              nothing on this page LINKED to it, so a reader was told where to
+              go and given no way to get there.
+
+              The slugs differ from the hub keys (`check-point` -> `checkpoint`,
+              `ping-identity` -> `ping`), which is why this needs an explicit
+              map rather than a string match. Only these vendors have a hub and
+              therefore a lineage page; everyone else renders nothing. */}
+          {LINEAGE_HUB_KEY[vendor.slug] && (
+            <section className="section">
+              <div className="container vendor-container">
+                <Link
+                  href={`/${LINEAGE_HUB_KEY[vendor.slug]}/vendor-lineage`}
+                  className="partner-lineage-link"
+                >
+                  {tp("lineageLink")} &rarr;
+                </Link>
+              </div>
+            </section>
+          )}
+
           {/* Sources */}
           {vendor.sources && vendor.sources.length > 0 && (
             <section className="section">
@@ -418,77 +574,6 @@ export default async function PartnerVendorPage({
                 <div className="partner-sources">
                   <span className="partner-sources-label mono">{tp("sourcesLabel")}</span>
                   <ul className="partner-sources-list">
-                    {vendor.careerChapter && (
-                /* The link back to the person. Kept deliberately small and
-                   placed after the history rather than before it: this page is
-                   about the company, and the fact that somebody worked here is
-                   a footnote to that, not the headline. */
-                <section className="section">
-                  <div className="about-cred-grid">
-                    <Link
-                      href={`/about/vendors/${vendor.careerChapter.slug}`}
-                      className="about-cred-card"
-                    >
-                      <span className="about-cred-eyebrow">{tp("careerCardEyebrow")}</span>
-                      <span className="about-cred-title">
-                        {tp("careerCardTitle", { years: vendor.careerChapter.years })}
-                      </span>
-                      <span className="about-cred-desc">{tp("careerCardDesc")}</span>
-                      <span className="about-cred-cta">{tp("careerCardCta")} &rarr;</span>
-                    </Link>
-                  </div>
-                </section>
-              )}
-              {vendor.acquisitions && vendor.acquisitions.length > 0 && (
-                /* Same markup as the vendor-lineage pages, deliberately: the
-                   nested-acquisition rule applies to both page types and a
-                   reader should meet one idea, not two. */
-                <section className="section">
-                  <h2 className="section-title">{tp("acquisitionsHeading")}</h2>
-                  <ol className="lineage-timeline">
-                    {[...vendor.acquisitions]
-                      .sort((a, b) => a.year - b.year)
-                      .map((a) => (
-                        <li className="lineage-deal" key={`${a.year}-${a.name}`}>
-                          <p className="lineage-deal-top">
-                            <span className="lineage-deal-year mono">{a.year}</span>{" "}
-                            <span className="lineage-deal-name">{a.name}</span>
-                            {a.price ? (
-                              <span className="lineage-deal-price mono"> {a.price}</span>
-                            ) : null}
-                          </p>
-                          <p className="lineage-deal-what">{a.what}</p>
-                          {a.founder && (
-                            <p className="lineage-deal-founder">{a.founder}</p>
-                          )}
-                          {a.subAcquisitions && a.subAcquisitions.length > 0 && (
-                            <ul className="lineage-sub-list">
-                              {a.subAcquisitions.map((sub) => (
-                                <li className="lineage-sub" key={`${sub.year}-${sub.name}`}>
-                                  <span className="lineage-sub-year mono">{sub.year}</span>{" "}
-                                  <span className="lineage-sub-name">{sub.name}</span>
-                                  {sub.price ? (
-                                    <span className="lineage-sub-price mono"> {sub.price}</span>
-                                  ) : null}
-                                  <span className="lineage-sub-what"> &mdash; {sub.what}</span>
-                                  {sub.founder && (
-                                    <span className="lineage-sub-founder"> Founded by {sub.founder}.</span>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                          {a.became && (
-                            <p className="lineage-deal-became">{a.became}</p>
-                          )}
-                          {a.sourceNote && (
-                            <p className="lineage-deal-note">{a.sourceNote}</p>
-                          )}
-                        </li>
-                      ))}
-                  </ol>
-                </section>
-              )}
               {vendor.sources.map((s) => (
                       <li key={s.url}>
                         <a

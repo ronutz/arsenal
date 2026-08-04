@@ -122,7 +122,17 @@ export default async function IndustryHubPage({
       href: `/industry/${v.slug}`,
       isRedu: v.relationships?.includes("red-education-partner") ?? false,
       isInstructor: v.relationships?.includes("authorized-instructor") ?? false,
-      isCareer: false,
+      // FIXED 2026-08-04 (PRIME spotted it on one card; it affected all
+      // sixteen). This was hardcoded `false`, which killed the career chip
+      // site-wide on 2026-07-29 when the dedup landed: that change made the
+      // career branch always empty - correctly, since every career vendor now
+      // has a partner entry - so EVERY card comes from this branch, and this
+      // branch never asked whether the company had a career chapter.
+      //
+      // The dedup removed duplicate cards and took the chip with them. Nobody
+      // noticed for a week, because a missing chip looks like a company you
+      // simply did not work at.
+      isCareer: v.careerChapter !== undefined,
     }));
 
   // CAREER VENDORS WITHOUT AN INDUSTRY ENTRY ARE SKIPPED (2026-08-02).

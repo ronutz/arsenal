@@ -14146,7 +14146,7 @@
       },
       "a-patchy-server": {
         "def": "The oldest explanation of how Apache got its name: it was a server made of patches.",
-        "context": "The project's own FAQ said so from 1996 to 2001. Brian Behlendorf said in 2000 that the name honoured the Apache people, then said in 2007 that it was the patches after all, and the foundation today credits the tribe. Both stories are in the record and neither has been retracted cleanly, which is why this entry is marked disputed."
+        "context": "The project's own FAQ said so from 1996 to 2001. Brian Behlendorf said in 2000 that the name honoured the Apache people, then said in 2007 that it was the patches after all, and the foundation today credits the tribe. Both stories are in the record and neither has been retracted cleanly, which is why the origin is treated as disputed."
       },
       "apache-software-foundation": {
         "def": "The non-profit incorporated in June 1999 so the Apache projects would outlive any individual volunteer.",
@@ -14304,7 +14304,7 @@
       "winrar-licence": {
         "def": "WinRAR's forty-day trial has never stopped working, on any version, for about thirty years - which turns out to be a business model rather than an oversight.",
         "context": "WinRAR's forty-day trial has never stopped working, on any version, for about thirty years - which turns out to be a business model rather than an oversight.",
-        "depth": "WinRAR ships with a forty-day evaluation period. When it ends, the software displays a reminder asking you to buy a licence, and then continues working. It has behaved this way for roughly three decades, across every version, on hundreds of millions of installations, and RARLAB has never changed it. The result is one of the most-used pieces of commercial software on Earth being one of the least-paid-for, and a running joke that has outlived most of the people who started telling it. The interesting part is not the joke. It is that the arrangement is deliberate and appears to work. A nag screen that never escalates is a business model built on the observation that individuals will not pay and organisations will, because an organisation cannot run unlicensed software that displays a purchase reminder on a projector during an audit. So the trial that never expires is not a failure of enforcement; it is enforcement aimed precisely at the population that can be enforced against, and a gift to everyone else. Compare that with the two alternatives actually available - crippleware that stops working, driving people to a crack, or free-with-advertising, driving people to something quieter - and the strange middle option looks less like an oversight than like somebody who understood their market. There is a second, smaller thing worth saying, and it is the reason this entry exists rather than merely being funny. Buying a WinRAR licence is a genuinely unusual act. It costs little, nobody checks, the software works either way, and the only person who knows is you. A tool you have used for twenty years without paying is a debt in the only sense that matters, which is that somebody did work you benefited from. The author of this site bought one. It is recorded here because the entire point of the lore is that almost nobody does, and a piece of lore about non-payment is improved by containing a counterexample."
+        "depth": "WinRAR ships with a forty-day evaluation period. When it ends, the software displays a reminder asking you to buy a licence, and then continues working. It has behaved this way for roughly three decades, across every version, on hundreds of millions of installations, and RARLAB has never changed it. The result is one of the most-used pieces of commercial software on Earth being one of the least-paid-for, and a running joke that has outlived most of the people who started telling it. The interesting part is not the joke. It is that the arrangement is deliberate and appears to work. A nag screen that never escalates is a business model built on the observation that individuals will not pay and organisations will, because an organisation cannot run unlicensed software that displays a purchase reminder on a projector during an audit. So the trial that never expires is not a failure of enforcement; it is enforcement aimed precisely at the population that can be enforced against, and a gift to everyone else. Compare that with the two alternatives actually available - crippleware that stops working, driving people to a crack, or free-with-advertising, driving people to something quieter - and the strange middle option looks less like an oversight than like somebody who understood their market. There is a second, smaller thing, and it is the part that is not a joke. Buying a WinRAR licence is a genuinely unusual act. It costs little, nobody checks, the software works either way, and the only person who knows is you. A tool you have used for twenty years without paying is a debt in the only sense that matters, which is that somebody did work you benefited from. The author of this site bought one, which almost nobody does."
       },
       "zip-and-the-lawsuit": {
         "def": "The 1988 lawsuit that was meant to protect the ARC format, and instead produced ZIP.",
@@ -14463,8 +14463,6 @@
   "partnerVendors": {
     "reduEyebrow": "Red Education training partner",
     "otherEyebrow": "Vendor lineage",
-    "disclaimerTag": "Note",
-    "disclaimerText": "Rodolfo does not deliver {vendor} training. {vendor} is taught by Red Education's instructor team - among the most awarded in the industry, with recognition granted by multiple vendors.",
     "awardsTitle": "Red Education recognition",
     "sourcesLabel": "Sources",
     "reduSectionTitle": "Red Education training partners",
@@ -14498,7 +14496,9 @@
     "careerCardEyebrow": "Worked with directly",
     "careerCardTitle": "Inside this company, {years}",
     "careerCardDesc": "What the work actually was: the accounts, the escalations, the technologies, and what it certified.",
-    "careerCardCta": "Read the career chapter"
+    "careerCardCta": "Read the career chapter",
+    "disclaimerTag": "Note",
+    "lineageLink": "See the full acquisition lineage"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",

@@ -60,7 +60,7 @@ export const fortinetLineage: VendorLineage = {
       price: "n/a",
       what: "Four years before Fortinet, Ken Xie founded NetScreen with Yan Ke and Feng Deng. He built the first ASIC-based firewall and VPN appliance that year, and the company was later acquired by Juniper Networks for $4B in stock. Ken Xie left in 2000, taking the silicon idea with him.",
       became:
-        "Fortinet - founded that same year with his brother Michael Xie, on the same architectural bet. Recorded here because the FortiASIC is not a Fortinet original idea so much as a second attempt at one that had already worked.",
+        "Fortinet - founded that same year with his brother Michael Xie, on the same architectural bet. The FortiASIC is not a Fortinet original idea so much as a second attempt at one that had already worked.",
       founder: "Yan Ke, Ken Xie and Feng Deng",
       sourceNote:
         "Included as prehistory rather than an acquisition, and labelled as such. NetScreen is a separate company that Fortinet never bought - the connection is a person.",

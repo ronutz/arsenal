@@ -37,110 +37,164 @@ export default function VendorProfileSections({
   // Oldest-first: a vendor's story reads as a chronological history (founding
   // era -> milestones -> today), matching the career-vendor list order and the
   // forward name-evolution in the lineage rail.
-  const events = [...profile.timeline].sort((a, b) => a.year - b.year);
+  const events = [...(profile.timeline ?? [])].sort((a, b) => a.year - b.year);
 
   return (
     <div className="vprofile">
-      {/* Founding stories - one block per converging company */}
-      <section className="vprofile-block">
-        <h2 className="vprofile-title">{labels.founding}</h2>
-        <div className="vprofile-foundings">
-          {profile.foundings.map((f) => (
-            <article className="vprofile-founding" key={f.company}>
-              <header className="vprofile-founding-head">
-                <span className="vprofile-founding-year mono">{f.year}</span>
-                <div>
-                  <h3 className="vprofile-founding-company">{f.company}</h3>
-                  <p className="vprofile-founding-meta">
-                    {f.place} · <span className="vprofile-founders-label">{labels.founders}:</span>{" "}
-                    {f.founders.join(", ")}
-                  </p>
+      {/* foundings: rendered only when the research produced it. PRIME's rule,
+          2026-08-04: a section is added when reputable information exists and
+          omitted when it does not. An empty heading is worse than a shorter
+          page, because it tells the reader something is missing rather than
+          that it was never claimed. */}
+      {(profile.foundings?.length ?? 0) > 0 && (
+        <>
+        {/* Founding stories - one block per converging company */}
+        <section className="vprofile-block">
+          <h2 className="vprofile-title">{labels.founding}</h2>
+          <div className="vprofile-foundings">
+            {(profile.foundings ?? []).map((f) => (
+              <article className="vprofile-founding" key={f.company}>
+                <header className="vprofile-founding-head">
+                  <span className="vprofile-founding-year mono">{f.year}</span>
+                  <div>
+                    <h3 className="vprofile-founding-company">{f.company}</h3>
+                    <p className="vprofile-founding-meta">
+                      {f.place} · <span className="vprofile-founders-label">{labels.founders}:</span>{" "}
+                      {f.founders.join(", ")}
+                    </p>
+                  </div>
+                </header>
+                <p className="vprofile-founding-story">{f.story}</p>
+                {f.sourceNote && <p className="lineage-deal-note">{f.sourceNote}</p>}
+              </article>
+            ))}
+          </div>
+        </section>
+
+        </>
+      )}
+      {/* timeline: rendered only when the research produced it. PRIME's rule,
+          2026-08-04: a section is added when reputable information exists and
+          omitted when it does not. An empty heading is worse than a shorter
+          page, because it tells the reader something is missing rather than
+          that it was never claimed. */}
+      {(events?.length ?? 0) > 0 && (
+        <>
+        {/* Converged corporate timeline - reuses the lineage ledger styling */}
+        <section className="vprofile-block">
+          <h2 className="vprofile-title">{labels.timeline}</h2>
+          <ol className="lineage-timeline">
+            {events.map((e, i) => (
+              <li
+                className={e.personal ? "lineage-deal lineage-deal--personal" : "lineage-deal"}
+                key={`${e.year}-${e.title}`}
+                data-first={i === 0 ? "true" : undefined}
+              >
+                <div className="lineage-deal-rail" aria-hidden="true">
+                  <span className="lineage-deal-year mono">{e.year}</span>
+                  <span className="lineage-deal-dot" />
                 </div>
-              </header>
-              <p className="vprofile-founding-story">{f.story}</p>
-              {f.sourceNote && <p className="lineage-deal-note">{f.sourceNote}</p>}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {/* Converged corporate timeline - reuses the lineage ledger styling */}
-      <section className="vprofile-block">
-        <h2 className="vprofile-title">{labels.timeline}</h2>
-        <ol className="lineage-timeline">
-          {events.map((e, i) => (
-            <li
-              className={e.personal ? "lineage-deal lineage-deal--personal" : "lineage-deal"}
-              key={`${e.year}-${e.title}`}
-              data-first={i === 0 ? "true" : undefined}
-            >
-              <div className="lineage-deal-rail" aria-hidden="true">
-                <span className="lineage-deal-year mono">{e.year}</span>
-                <span className="lineage-deal-dot" />
-              </div>
-              <div className="lineage-deal-card">
-                <div className="lineage-deal-top">
-                  <span className="lineage-deal-name">{e.title}</span>
-                  {/* Personal-involvement marker: the localized chip makes the
-                      career connection findable at a glance (2026-07-16). */}
-                  {e.personal && (
-                    <span className="lineage-deal-chip mono">{labels.personalChip}</span>
-                  )}
+                <div className="lineage-deal-card">
+                  <div className="lineage-deal-top">
+                    <span className="lineage-deal-name">{e.title}</span>
+                    {/* Personal-involvement marker: the localized chip makes the
+                        career connection findable at a glance (2026-07-16). */}
+                    {e.personal && (
+                      <span className="lineage-deal-chip mono">{labels.personalChip}</span>
+                    )}
+                  </div>
+                  <p className="lineage-deal-what">{e.detail}</p>
+                  {e.sourceNote && <p className="lineage-deal-note">{e.sourceNote}</p>}
                 </div>
-                <p className="lineage-deal-what">{e.detail}</p>
-                {e.sourceNote && <p className="lineage-deal-note">{e.sourceNote}</p>}
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
+              </li>
+            ))}
+          </ol>
+        </section>
 
-      {/* Flagship products */}
-      <section className="vprofile-block">
-        <h2 className="vprofile-title">{labels.products}</h2>
-        <ul className="vprofile-products">
-          {profile.products.map((p) => (
-            <li className="vprofile-product" key={p.name}>
-              <span className="vprofile-product-name">{p.name}</span>
-              <span className="vprofile-product-what">{p.what}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
+        </>
+      )}
+      {/* products: rendered only when the research produced it. PRIME's rule,
+          2026-08-04: a section is added when reputable information exists and
+          omitted when it does not. An empty heading is worse than a shorter
+          page, because it tells the reader something is missing rather than
+          that it was never claimed. */}
+      {(profile.products?.length ?? 0) > 0 && (
+        <>
+        {/* Flagship products */}
+        <section className="vprofile-block">
+          <h2 className="vprofile-title">{labels.products}</h2>
+          <ul className="vprofile-products">
+            {(profile.products ?? []).map((p) => (
+              <li className="vprofile-product" key={p.name}>
+                <span className="vprofile-product-name">{p.name}</span>
+                <span className="vprofile-product-what">{p.what}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-      {/* Key innovations */}
-      <section className="vprofile-block">
-        <h2 className="vprofile-title">{labels.innovations}</h2>
-        <ul className="vprofile-innovs">
-          {profile.innovations.map((n) => (
-            <li className="vprofile-innov" key={n.title}>
-              <span className="vprofile-innov-title">{n.title}</span>
-              <span className="vprofile-innov-detail">{n.detail}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
+        </>
+      )}
+      {/* innovations: rendered only when the research produced it. PRIME's rule,
+          2026-08-04: a section is added when reputable information exists and
+          omitted when it does not. An empty heading is worse than a shorter
+          page, because it tells the reader something is missing rather than
+          that it was never claimed. */}
+      {(profile.innovations?.length ?? 0) > 0 && (
+        <>
+        {/* Key innovations */}
+        <section className="vprofile-block">
+          <h2 className="vprofile-title">{labels.innovations}</h2>
+          <ul className="vprofile-innovs">
+            {(profile.innovations ?? []).map((n) => (
+              <li className="vprofile-innov" key={n.title}>
+                <span className="vprofile-innov-title">{n.title}</span>
+                <span className="vprofile-innov-detail">{n.detail}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-      {/* Markets */}
-      <section className="vprofile-block">
-        <h2 className="vprofile-title">{labels.markets}</h2>
-        <div className="partner-body">
-          {profile.markets.map((m, i) => (
-            <p className="partner-body-p" key={i}>{m}</p>
-          ))}
-        </div>
-      </section>
+        </>
+      )}
+      {/* markets: rendered only when the research produced it. PRIME's rule,
+          2026-08-04: a section is added when reputable information exists and
+          omitted when it does not. An empty heading is worse than a shorter
+          page, because it tells the reader something is missing rather than
+          that it was never claimed. */}
+      {(profile.markets?.length ?? 0) > 0 && (
+        <>
+        {/* Markets */}
+        <section className="vprofile-block">
+          <h2 className="vprofile-title">{labels.markets}</h2>
+          <div className="partner-body">
+            {(profile.markets ?? []).map((m, i) => (
+              <p className="partner-body-p" key={i}>{m}</p>
+            ))}
+          </div>
+        </section>
 
-      {/* Analyst standing */}
-      <section className="vprofile-block">
-        <h2 className="vprofile-title">{labels.analyst}</h2>
-        <ul className="partner-awards-list">
-          {profile.analyst.map((a) => (
-            <li className="partner-award" key={a}>{a}</li>
-          ))}
-        </ul>
-      </section>
+        </>
+      )}
+      {/* analyst: rendered only when the research produced it. PRIME's rule,
+          2026-08-04: a section is added when reputable information exists and
+          omitted when it does not. An empty heading is worse than a shorter
+          page, because it tells the reader something is missing rather than
+          that it was never claimed. */}
+      {(profile.analyst?.length ?? 0) > 0 && (
+        <>
+        {/* Analyst standing */}
+        <section className="vprofile-block">
+          <h2 className="vprofile-title">{labels.analyst}</h2>
+          <ul className="partner-awards-list">
+            {(profile.analyst ?? []).map((a) => (
+              <li className="partner-award" key={a}>{a}</li>
+            ))}
+          </ul>
+        </section>
 
+        </>
+      )}
       {/* Cross-link to the career page, when one exists */}
       {profile.careerLink && (
         <section className="vprofile-block">

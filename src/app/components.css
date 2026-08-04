@@ -15148,3 +15148,21 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .industry-tag-chip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.28rem 0.85rem; border: 1px solid var(--border-subtle); border-radius: 999px; font-size: 0.82rem; color: var(--text-secondary); text-decoration: none; transition: border-color 0.14s ease, color 0.14s ease; }
 .industry-tag-chip:hover { border-color: var(--accent-primary); color: var(--text-primary); }
 .industry-tag-chip-n { font-size: 0.74rem; opacity: 0.7; }
+
+/* Link from a company history to its hub's vendor-lineage page. Added
+   2026-08-04: seven entries referred to that page in prose with nothing to
+   click. Styled as a quiet inline action rather than a button, because it is a
+   cross-reference and not a call to action. */
+.partner-lineage-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--accent-primary);
+  font-size: 0.9375rem;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+.partner-lineage-link:hover,
+.partner-lineage-link:focus-visible {
+  border-bottom-color: var(--accent-primary);
+}

@@ -52,6 +52,12 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-08-04T14:38:55-03:00",
+    kind: "infra",
+    title: "A reader came for the company, not the method",
+    body: "A reader reported two problems on one page, and both turned out to be site-wide. The first was mechanical: the company pages print their paragraphs as plain text, with no markdown parser, so emphasis written into those strings appeared on live pages as literal asterisks. Fifty-six of a hundred and sixty-two entries were affected, for days. The same defect had been found and fixed in the glossary a day earlier, and the question of whether any other field had it was never asked, which is the more useful lesson of the two. The second was worse because it was not mechanical. Twenty entries contained sentences about how the entry had been written rather than about the company: that the entry was short because the evidence was short, that an entry should be as long as its evidence, that the site does not manufacture what it cannot source. That is working-note reasoning, the sort that belongs in a commit message, published on a page somebody reached by searching for a company. All of it is gone. Where the underlying point was worth keeping it has been rewritten to speak about the subject instead of about the writing, and where it was purely procedural it has been deleted outright. There is a new build check covering both, and it deliberately exempts citation notes, because a source note saying a figure is disputed is doing its job. Sourcing talk belongs with the sources. It does not belong in the prose.",
+  },
+  {
     date: "2026-08-04T08:37:53-03:00",
     kind: "content",
     title: "The profitable event did not out-compete the community event in any market",

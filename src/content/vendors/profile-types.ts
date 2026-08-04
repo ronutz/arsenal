@@ -56,15 +56,28 @@ export interface ProfileInnovation {
 export interface VendorProfile {
   /** Matches the PartnerVendor slug that hosts this profile. */
   slug: string;
-  foundings: FoundingStory[];
+  /*
+   * EVERY SECTION BELOW IS OPTIONAL (PRIME, 2026-08-04).
+   *
+   * A profile carries the sections its research actually produced and no
+   * others. Where reputable information exists for flagship products, the
+   * section appears; where it does not, the section is absent rather than
+   * present-and-thin, and the renderer skips anything missing or empty.
+   *
+   * That is the design decision, not a convenience: a page's richness is a
+   * readout of the evidence behind it rather than a template to be filled.
+   * Two sections backed by sources beat six where four are padding, and a
+   * reader can tell the difference even when they cannot say why.
+   */
+  foundings?: FoundingStory[];
   /** Converged corporate timeline (rendered newest-first). */
-  timeline: TimelineEvent[];
-  products: ProfileProduct[];
-  innovations: ProfileInnovation[];
+  timeline?: TimelineEvent[];
+  products?: ProfileProduct[];
+  innovations?: ProfileInnovation[];
   /** Markets paragraph(s). */
-  markets: string[];
+  markets?: string[];
   /** Verified analyst-standing statements (historical + current). */
-  analyst: string[];
+  analyst?: string[];
   /** Optional cross-link to a career page on this site. */
   careerLink?: { href: string; label: string };
 }

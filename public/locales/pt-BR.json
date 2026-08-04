@@ -14146,7 +14146,7 @@
       },
       "a-patchy-server": {
         "def": "A explicação mais antiga de como o Apache ganhou o nome: era um servidor feito de remendos.",
-        "context": "O próprio FAQ do projeto dizia isso de 1996 a 2001. Brian Behlendorf disse em 2000 que o nome homenageava o povo Apache, depois disse em 2007 que eram os remendos afinal, e a fundação hoje credita a tribo. As duas versões estão no registro e nenhuma foi retirada de forma limpa, e é por isso que este verbete está marcado como disputado."
+        "context": "O próprio FAQ do projeto dizia isso de 1996 a 2001. Brian Behlendorf disse em 2000 que o nome homenageava o povo Apache, depois disse em 2007 que eram os remendos afinal, e a fundação hoje credita a tribo. As duas versões estão no registro e nenhuma foi retirada de forma limpa, e por isso a origem é tratada como disputada."
       },
       "apache-software-foundation": {
         "def": "A entidade sem fins lucrativos constituída em junho de 1999 para que os projetos Apache sobrevivessem a qualquer voluntário individual.",
@@ -14304,7 +14304,7 @@
       "winrar-licence": {
         "def": "O teste de quarenta dias do WinRAR nunca parou de funcionar, em versão nenhuma, por cerca de trinta anos - o que acaba sendo modelo de negócio e não descuido.",
         "context": "O teste de quarenta dias do WinRAR nunca parou de funcionar, em versão nenhuma, por cerca de trinta anos - o que acaba sendo modelo de negócio e não descuido.",
-        "depth": "O WinRAR vem com um período de avaliação de quarenta dias. Quando ele acaba, o programa exibe um lembrete pedindo que você compre uma licença, e continua funcionando. Comporta-se assim há cerca de três décadas, em todas as versões, em centenas de milhões de instalações, e a RARLAB nunca mudou isso. O resultado é que um dos softwares comerciais mais usados do planeta é um dos menos pagos, e uma piada corrente que sobreviveu à maioria de quem começou a contá-la. A parte interessante não é a piada. É que o arranjo é deliberado e parece funcionar. Uma tela de aviso que nunca escala é um modelo de negócio construído sobre a observação de que indivíduos não pagam e organizações pagam, porque uma organização não pode rodar software sem licença que exibe um lembrete de compra num projetor durante uma auditoria. Então o teste que nunca expira não é falha de fiscalização; é fiscalização mirada exatamente na população contra a qual se pode fiscalizar, e presente para todo o resto. Compare com as duas alternativas realmente disponíveis - software que para de funcionar, empurrando as pessoas para um crack, ou gratuito com publicidade, empurrando as pessoas para algo mais silencioso - e a estranha opção do meio parece menos um descuido e mais alguém que entendeu seu mercado. Há uma segunda coisa, menor, que vale dizer, e é a razão desta ficha existir em vez de ser apenas engraçada. Comprar uma licença do WinRAR é um ato genuinamente incomum. Custa pouco, ninguém confere, o programa funciona de todo jeito, e a única pessoa que sabe é você. Uma ferramenta que você usou por vinte anos sem pagar é uma dívida no único sentido que importa, que é o de alguém ter feito um trabalho do qual você se beneficiou. O autor deste site comprou uma. Fica registrado aqui porque o ponto inteiro do folclore é que quase ninguém compra, e um folclore sobre não pagar melhora quando contém um contraexemplo."
+        "depth": "O WinRAR vem com um período de avaliação de quarenta dias. Quando ele acaba, o programa exibe um lembrete pedindo que você compre uma licença, e continua funcionando. Comporta-se assim há cerca de três décadas, em todas as versões, em centenas de milhões de instalações, e a RARLAB nunca mudou isso. O resultado é que um dos softwares comerciais mais usados do planeta é um dos menos pagos, e uma piada corrente que sobreviveu à maioria de quem começou a contá-la. A parte interessante não é a piada. É que o arranjo é deliberado e parece funcionar. Uma tela de aviso que nunca escala é um modelo de negócio construído sobre a observação de que indivíduos não pagam e organizações pagam, porque uma organização não pode rodar software sem licença que exibe um lembrete de compra num projetor durante uma auditoria. Então o teste que nunca expira não é falha de fiscalização; é fiscalização mirada exatamente na população contra a qual se pode fiscalizar, e presente para todo o resto. Compare com as duas alternativas realmente disponíveis - software que para de funcionar, empurrando as pessoas para um crack, ou gratuito com publicidade, empurrando as pessoas para algo mais silencioso - e a estranha opção do meio parece menos um descuido e mais alguém que entendeu seu mercado. Há uma segunda coisa, menor, e é a parte que não é piada. Comprar uma licença do WinRAR é um ato genuinamente incomum. Custa pouco, ninguém confere, o programa funciona de todo jeito, e a única pessoa que sabe é você. Uma ferramenta que você usou por vinte anos sem pagar é uma dívida no único sentido que importa, que é o de alguém ter feito um trabalho do qual você se beneficiou. O autor deste site comprou uma, o que quase ninguém faz."
       },
       "zip-and-the-lawsuit": {
         "def": "O processo de 1988 que pretendia proteger o formato ARC e acabou produzindo o ZIP.",
@@ -14463,8 +14463,6 @@
   "partnerVendors": {
     "reduEyebrow": "Parceiro de treinamento da Red Education",
     "otherEyebrow": "Linhagem do fornecedor",
-    "disclaimerTag": "Observação",
-    "disclaimerText": "Rodolfo não ministra treinamento de {vendor}. {vendor} é ministrado pela equipe de instrutores da Red Education - entre as mais premiadas do setor, com reconhecimentos concedidos por diversos fornecedores.",
     "awardsTitle": "Reconhecimentos da Red Education",
     "sourcesLabel": "Fontes",
     "reduSectionTitle": "Parceiros de treinamento da Red Education",
@@ -14498,7 +14496,9 @@
     "careerCardEyebrow": "Trabalhou diretamente",
     "careerCardTitle": "Dentro desta empresa, {years}",
     "careerCardDesc": "O que o trabalho foi de fato: as contas, os escalonamentos, as tecnologias e o que aquilo certificou.",
-    "careerCardCta": "Ler o capítulo de carreira"
+    "careerCardCta": "Ler o capítulo de carreira",
+    "disclaimerTag": "Observação",
+    "lineageLink": "Ver a linhagem completa de aquisições"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",

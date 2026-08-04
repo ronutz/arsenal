@@ -84,6 +84,6 @@ export const accessHomeFleetProfile: VendorProfile = {
   ],
   analyst: [
     "The SOHO fleet is where the industry's ideas either become universal or stay niche: Wi-Fi generations, mesh, cloud management, and WPA transitions all prove themselves here, at scale, on hardware bought for the price of a dinner.",
-    "It is also the industry's largest attack surface - default credentials, abandoned firmware, and botnet recruitment happen at this tier - which is why the hardening and fingerprinting material on this site keeps circling back to the humble home gateway.",
+    "It is also the industry's largest attack surface - default credentials, abandoned firmware, and botnet recruitment happen at this tier - which is why hardening and fingerprinting work keeps returning to the humble home gateway.",
   ],
 };
