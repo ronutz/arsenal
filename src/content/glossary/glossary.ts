@@ -113,6 +113,158 @@ export interface GlossaryEntry {
 
 export const GLOSSARY: GlossaryEntry[] = [
   {
+    slug: "bhack",
+    headword: "BHack",
+    kind: "lore",
+    domains: ["cyber-security", "ops-culture"],
+    aliases: ["bhack conference", "bhack belo horizonte"],
+    relatedTerms: ["mind-the-sec", "security-leaders", "roadsec"],
+    sources: [
+      { label: "Anchises Moraes' annual Brazilian security event surveys, which have tracked BHack since its early editions" },
+      { label: "SegInfo coverage of the seventh edition, November in Belo Horizonte" },
+    ],
+  },
+  {
+    slug: "security-leaders",
+    headword: "Security Leaders",
+    kind: "lore",
+    domains: ["cyber-security", "grc", "ops-culture"],
+    aliases: ["security leaders brasil", "security leaders congresso"],
+    relatedTerms: ["mind-the-sec", "bhack", "roadsec"],
+    sources: [
+      { label: "Anchises Moraes' Brazilian security event surveys, recording seven regional Security Leaders editions in 2024" },
+      { label: "SegInfo coverage describing it among the largest Brazilian information security and risk events, aimed at technology and security executives" },
+    ],
+  },
+
+  {
+    // DEFLATE + GZIP + ZLIB - added 2026-08-04 (PRIME). One entry, because the
+    // three are an algorithm, a file format and a library implementing the
+    // same thing, and separating them would teach the confusion rather than
+    // clear it.
+    //
+    // *** LINKS TO EXISTING LORE: crime and breach are already in this
+    // glossary. *** The compression-leaks-secrets point is not invented for
+    // this entry; it connects to attacks the site already documents.
+    slug: "deflate",
+    headword: "DEFLATE, gzip and zlib",
+    kind: "term",
+    domains: ["programming", "web-development", "cyber-security"],
+    aliases: ["deflate", "gzip", "zlib", "gz", "content-encoding gzip", "rfc 1951", "rfc 1952"],
+    relatedTerms: ["archive-formats", "crime", "breach"],
+    sources: [
+      { label: "RFC 1951 (DEFLATE compressed data format), RFC 1952 (gzip file format) and RFC 1950 (zlib format), all authored by Peter Deutsch" },
+      { label: "gzip written by Jean-loup Gailly and Mark Adler as a patent-free replacement for Unix compress, whose LZW algorithm was covered by Unisys patents" },
+      { label: "zlib, by Gailly and Adler, and the Adler-32 checksum; DEFLATE's use in PNG, HTTP content encoding, Git object storage and the ZIP format" },
+    ],
+  },
+
+  {
+    // ARCHIVE FORMATS - added 2026-08-04 (PRIME). The explainer.
+    slug: "archive-formats",
+    headword: "archive formats (zip, tar, gz, 7z, rar, iso, cab)",
+    kind: "term",
+    domains: ["programming", "ops-culture", "cyber-security"],
+    aliases: ["zip", "tar", "tar.gz", "tarball", "gzip", "7z", "rar", "iso", "cab", "compressed archive"],
+    relatedTerms: ["winrar-licence", "zip-and-the-lawsuit", "vlc"],
+    sources: [
+      { label: "PKWARE's APPNOTE, the ZIP specification, and the DEFLATE algorithm standardised as RFC 1951" },
+      { label: "POSIX tar, GNU tar and gzip documentation; ISO 9660 for optical disc images" },
+      { label: "7-Zip and the LZMA SDK, released by Igor Pavlov under the GNU LGPL" },
+    ],
+  },
+  {
+    // WINRAR LICENCE - added 2026-08-04 (PRIME: "Add lore: winrar paid
+    // license"). *** PRIME BOUGHT ONE, and said so. That is recorded, because
+    // the whole point of the entry is that almost nobody does. ***
+    slug: "winrar-licence",
+    headword: "the WinRAR licence",
+    kind: "lore",
+    domains: ["ops-culture", "programming"],
+    aliases: ["winrar trial", "winrar 40 days", "winrar nag screen"],
+    relatedTerms: ["archive-formats", "zip-and-the-lawsuit"],
+    sources: [
+      { label: "WinRAR's own trial terms: a 40-day evaluation period, after which the software continues to function while displaying a purchase reminder" },
+      { label: "Two decades of public commentary treating the expired-but-working trial as a running joke; RARLAB has never changed the behaviour" },
+    ],
+  },
+  {
+    // THE LAWSUIT THAT CREATED ZIP - added 2026-08-04. Lore, and it is the
+    // reason the explainer exists in the shape it does.
+    slug: "zip-and-the-lawsuit",
+    headword: "the lawsuit that created ZIP",
+    kind: "lore",
+    domains: ["programming", "ops-culture"],
+    aliases: ["phil katz", "pkzip", "pkarc", "sea arc lawsuit"],
+    relatedTerms: ["archive-formats", "winrar-licence"],
+    sources: [
+      { label: "System Enhancement Associates v. PKWARE (1988), over Katz's PKARC implementation of the ARC format" },
+      { label: "PKWARE's release of the ZIP format specification for free use, and its subsequent adoption as a de facto standard" },
+      { label: "Contemporary and retrospective accounts of Phil Katz's later life and his death in 2000 at the age of 37" },
+    ],
+  },
+
+  {
+    // VLC - added 2026-08-04 (PRIME: "VLC deserves at least a rich Glossary
+    // entry"), prompted by the Datadog entry noting Pomel co-authored it.
+    //
+    // *** SOURCING CARE REQUIRED. *** The "refused millions" story went viral
+    // in late 2025 and is now repeated across dozens of low-quality sites all
+    // tracing to one interview. It is ATTRIBUTED here, not asserted. The
+    // founding facts, the GPL date, the non-profit separation and the European
+    // Parliament bug bounty are the encyclopedic layer and are stated plainly.
+    slug: "vlc",
+    headword: "VLC (VideoLAN Client)",
+    kind: "term",
+    domains: ["programming", "web-development", "ops-culture"],
+    aliases: ["videolan", "vlc media player", "the traffic cone"],
+    relatedTerms: ["hyperlink", "internet-gateway", "rnp"],
+    sources: [
+      { label: "Wikipedia (VideoLAN): the project separated from École Centrale Paris in 2009 and constituted as a non-profit; VLC standing for VideoLAN Client, a portable player, encoder and streamer" },
+      { label: "Wikipedia (Jean-Baptiste Kempf): joining École Centrale Paris in 2003; one million downloads by 2004; taking a leadership role around 2006 when the project had lost momentum, restructuring the team and cleaning up the codebase" },
+      { label: "VideoLAN and press coverage: origin in 1996 as a student project to stream video across the campus network; GPL release in 2001; the traffic cone referencing cones collected by the school's networking students' association; six billion downloads announced January 2025; European Parliament funding for a VLC bug bounty in 2017" },
+    ],
+  },
+
+  {
+    slug: "infovia-brasilia",
+    headword: "Infovia Brasília",
+    kind: "term",
+    domains: ["enterprise-networking", "isp-telecom"],
+    aliases: ["infovia", "serpro infovia"],
+    relatedTerms: ["rnp", "siscomis", "internet-gateway"],
+    sources: [
+      { label: "Serpro: Infovia Brasília past twenty years connecting federal public administration bodies; running on optical fibre owned by the Ministry of Management and Innovation in Public Services, operated by Serpro, exclusive to public entities" },
+      { label: "Brazilian Senate archive: protection of the Esplanada dos Ministérios infovia assigned to Serpro following attacks on federal government sites" },
+    ],
+  },
+  {
+    slug: "cdciber",
+    headword: "CDCiber (Centro de Defesa Cibernética)",
+    kind: "acronym",
+    domains: ["cyber-security", "enterprise-networking"],
+    aliases: ["cdciber", "comdciber", "centro de defesa cibernetica"],
+    relatedTerms: ["sisbin", "infovia-brasilia", "siscomis"],
+    sources: [
+      { label: "Wikipédia (pt): created by Portaria Normativa 666 of 4 August 2010, inaugurated 2011, under the Ministry of Defence; first mission monitoring the Rio+20 network in June 2012 with a joint team of army, air force, navy, federal police and telecommunications regulator staff" },
+      { label: "Serpro: the 2014 cooperation agreement between Serpro and CDCiber for shared cyber defence practice and personnel training" },
+    ],
+  },
+  {
+    slug: "sisbin",
+    headword: "SISBIN (Sistema Brasileiro de Inteligência)",
+    kind: "acronym",
+    domains: ["cyber-security", "grc"],
+    aliases: ["sisbin", "abin", "sistema brasileiro de inteligencia"],
+    relatedTerms: ["cdciber", "infovia-brasilia"],
+    sources: [
+      { label: "Brazilian Law 9.883/1999 establishing the Sistema Brasileiro de Inteligência with ABIN as its central organ" },
+      { label: "Civil society technical note to the Brazilian cybercrime inquiry: CEPESC created in 1982 within ABIN to address the country's inability to guarantee confidentiality of state communications, developing state cryptographic algorithms; the map of Brazilian incident-response groups including CTIR Gov and CERT.br" },
+      { label: "Decree 11.693 reducing the SISBIN collegiate body and refocusing it on specialists from member organs" },
+    ],
+  },
+
+  {
     slug: "darpa",
     headword: "DARPA (Defense Advanced Research Projects Agency)",
     kind: "acronym",
@@ -1468,7 +1620,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     domains: ["events", "hacking", "cyber-security"],
     expansion: "Roadsec - Latin America's largest hacker festival",
     aliases: ["roadsec", "hackaflag"],
-    relatedTerms: ["defcon", "bsides-sao-paulo", "h2hc", "ysts"],
+    relatedTerms: ["defcon", "bsides-sao-paulo", "h2hc", "ysts", "bhack", "security-leaders"],
     sources: [{ label: "Roadsec (official)", href: "https://roadsec.com.br" }, { label: "Roadsec on LinkedIn", href: "https://www.linkedin.com/showcase/roadsec/" }],
   },
   {
@@ -1649,7 +1801,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     domains: ["cyber-security", "grc", "events"],
     expansion: "Mind the Sec",
     aliases: ["mind the sec", "mindthesec"],
-    relatedTerms: ["h2hc", "ysts"],
+    relatedTerms: ["h2hc", "ysts", "bhack", "security-leaders"],
     sources: [{ label: "Mind the Sec (official)", href: "https://www.mindthesec.com.br" }],
   },
   {

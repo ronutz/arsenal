@@ -805,6 +805,406 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    // DATADOG - added 2026-08-03 (PRIME). Completes an observability trio with
+    // Dynatrace and Kentik, and the entry's job is to say what makes the three
+    // different rather than describing a third monitoring product.
+    //
+    // *** THE PRICING OBSERVATION IS STRUCTURAL, NOT AN ACCUSATION. *** It
+    // follows from the usage-based model itself, which is sourced. No specific
+    // billing controversy is asserted, because none was verified here.
+    slug: "datadog",
+    group: "contemporary",
+    name: "Datadog",
+    founded: 2010,
+    tags: ["vendor"],
+    tagline: "The founding problem was two teams looking at different data during the same outage.",
+    intro:
+      "Olivier Pomel and Alexis Lê-Quôc met as students at École Centrale Paris and later spent nine years working together at Wireless Generation, an educational software company. When News Corp acquired it in 2010 they left and founded Datadog in New York. By 2025 it was turning $3.43B with around 8,100 staff.",
+    body: [
+      "**The problem they set out to solve was organisational rather than technical, and that is the whole entry.** At Wireless Generation they watched developers and operations staff work from different, incompatible data during incidents - each convinced the fault lay with the other, each holding evidence the other could not see. **The finger-pointing was not a failure of goodwill. It was the predictable result of two teams looking at different instruments and describing the same event in incompatible terms.**",
+      "**So the product's founding insight is not a monitoring feature.** It is that an argument about what is happening cannot be settled while the parties hold different data, and that a shared view ends the argument not by resolving it but by removing the ambiguity that fed it. Everything about the platform follows from that: one pane covering infrastructure, applications, logs, network and user experience, because **the moment any of those lives in a separate tool with a separate login, the old argument becomes available again.**",
+      "**Read against the two other observability companies on this timeline, the three approached the same destination from three different directions**, and the difference in starting point still shows in what each is best at. **Dynatrace** came from inside the application, tracing a transaction through code. **Kentik** came from the network, reading flow records and routing. **Datadog** came from the infrastructure, monitoring hosts and then everything attached to them. Three origins, one convergence - and the reason they converged is that an outage does not respect the boundary between an application, a host and a network, so any tool that does will eventually be asked to stop.",
+      "**One founder detail is worth keeping.** Pomel is an original author of the VLC media player - the open-source thing on almost every computer of a certain era, which played the file nothing else would. **There is a straight line from writing software that copes with malformed input from the whole world to building a platform that ingests telemetry from every system a company runs**, and it is not a coincidence that both jobs are mostly about handling what you were not expecting.",
+      "The commercial model is usage-based across more than twenty products, sold by landing in one team and expanding across others. **That model has a structural tension worth naming, because it applies to every observability vendor and not only this one: when the bill scales with how much you instrument, the customer's incentive is to observe less.** Nobody designs that deliberately, and it is the honest cost of metered infrastructure - **you are asking a customer to pay in proportion to how carefully they watch, at exactly the moments when watching carefully matters most.**",
+      "It launched infrastructure monitoring in 2012, which put it in position as containers arrived and made the number of things worth monitoring jump by an order of magnitude overnight, and listed on NASDAQ in September 2019. **It was also built in New York rather than California**, which its own commentators note - and which is a smaller point than it sounds, except that the customers who needed it first were banks and media companies rather than startups.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Datadog",
+    externalLabel: "Datadog",
+    sources: [
+      { label: "Wikipedia: founded in New York City in 2010 by Olivier Pomel and Alexis Lê-Quôc, who met as undergraduates at École Centrale Paris and later worked together for nine years at Wireless Generation; the company formed after News Corp's acquisition, to reduce the friction between developer and systems administration teams working at cross-purposes; 2025 revenue of $3.43B and around 8,100 employees", url: "https://en.wikipedia.org/wiki/Datadog" },
+      { label: "Datadog's S-1 shareholder letter (2019), summarised: Pomel previously VP of Technology at Wireless Generation and before that a software engineer at Silicongo, Neomeo and IBM Research, and an original author of the VLC media player; Lê-Quôc previously Director of Live Operations at Wireless Generation and an engineer at IBM Research, France Télécom, Neomeo and Orange", url: "https://aletteraday.substack.com/p/letter-252-olivier-pomel-and-alexis" },
+      { label: "Market analysis: the founding motivated by the silo between systems administrators and developers looking at different data sets and finger-pointing during outages; infrastructure monitoring launched 2012, positioning the company for containerisation; NASDAQ listing September 2019; usage-based pricing across more than twenty integrated products with a land-and-expand model", url: "https://markets.financialcontent.com/observerreporter/article/finterra-2026-1-27-datadog-ddog-and-the-2026-observability-frontier-navigating-the-ai-re-architecting-phase", sourceNote: "Financial-market commentary rather than a reference work. Used for the product chronology and the pricing model, both corroborated elsewhere. The observation this entry draws about metered observability pricing is ANVIL's own reasoning from that model, not a reported controversy, and no specific billing dispute is asserted." },
+      { label: "SaaStr interview with Pomel: the founders not initially understanding how large cloud adoption would become, and recognising that bringing development and operations together was not a feature of the new environment but one of the reasons organisations were moving to it", url: "https://www.saastr.com/how-to-build-and-sell-a-product-that-customers-love-video-transcript/" },
+    ],
+  },
+  {
+    // OLITEL - added 2026-08-03 (PRIME).
+    //
+    // *** DATE RULING: PRIME said "go by the site." *** The company's own
+    // figure (43-44 years as of 2024-25) puts founding around 1981-82; its
+    // LinkedIn says 36 years, implying 1989-90. The site is followed, the
+    // conflict is stated in the entry, and 1981 is written as approximate.
+    //
+    // The angle: a founding date around 1981 means this company predates the
+    // market reserve law, the Telebrás privatisation and IP telephony. It has
+    // lived through the entire arc this timeline documents.
+    slug: "olitel",
+    group: "other",
+    name: "Olitel",
+    founded: 1981,
+    tags: ["reseller", "services"],
+    tagline: "Has been making other people's telephones work for forty years, through four incompatible technologies.",
+    intro:
+      "Grupo Olitel - Olitel Brasil S/A and Olibras Telecomunicações - is a São Paulo integrator of communications technology, wholly Brazilian-owned, around seventy staff. The company puts its own age at 43 to 44 years as of 2024-25, which places its founding around 1981; its LinkedIn profile says 36 years, which would put it at 1989-90. **This entry follows the company's own figure and records the discrepancy rather than hiding it.**",
+    body: [
+      "**If the earlier date is right, the span is the story.** A company founded around 1981 in Brazilian communications began work **before the informatics market reserve became law in 1984**, well before the Telebrás system was privatised in 1998, and roughly fifteen years before anybody sold voice over IP to an enterprise. Every one of those upheavals has its own entry on this timeline. **This company worked through all of them.**",
+      "**And the through-line is a single unglamorous function performed four incompatible ways.** Making an organisation's telephones work meant, in sequence: private branch exchanges with proprietary handsets and physical extension wiring; digital PABX with computer-telephony integration bolted on; IP telephony, where the phone became an endpoint on the data network and the telephony team lost their private empire to the networking team; and now unified communications delivered as a service, where the platform is somebody else's and the integrator's job is connecting to it. **The customer's requirement never changed. The skill required to satisfy it changed completely, four times.**",
+      "**That is the actual career risk in this industry and it is worth stating plainly.** Nobody in 1981 was made redundant by the arrival of IP telephony. They were made redundant by not learning it - and the interval between a technology becoming visible and becoming mandatory has generally been about a decade, which is long enough to ignore comfortably and short enough to be caught by. **A company that survives four of those transitions has re-skilled its people four times**, which is a harder achievement than any product it sells.",
+      "The present portfolio reflects the fourth transition: unified communications and contact centre delivered as a service, desk and SIP phones, headsets, videoconferencing, call recording, workforce management, billing and tariffing, structured cabling, and integration with generative-AI customer service platforms. Partners include Twilio and Yealink.",
+      "**One detail is worth singling out because it is a trust mechanism of a kind this site keeps finding.** The company holds a TRACE certification - a third-party anti-bribery due-diligence credential. For a business selling communications infrastructure to large Brazilian enterprises, that is a deliberate signal, and it works exactly like the neutral certifications and standards elsewhere on this timeline: **an assertion that would be worthless from the company itself becomes worth something when an outside body makes it.** The subject differs; the mechanism is identical.",
+    ],
+    externalUrl: "https://www.olitel.com.br/",
+    externalLabel: "Olitel",
+    sources: [
+      { label: "Olitel: Grupo Olitel comprising Olitel Brasil S/A and Olibras Telecomunicações; wholly Brazilian-owned; integration of unified communications, IP telephony, contact centre, recording, workforce management, videoconferencing, security and tariffing; competencies in structured cabling, cloud, mobility, networking and performance; TRACE certification; partnerships including Twilio and Yealink", url: "https://www.olitel.com.br/empresa/", sourceNote: "The company's own materials give its age as 43 years on the site and 44 in a 2025 anniversary post, implying a founding around 1981-82, while its LinkedIn page says 36 years, implying 1989-90. PRIME ruled on 2026-08-03 that the site governs. The founding year here is therefore approximate and follows the company's own account." },
+      { label: "RocketReach: São Paulo headquarters, approximately 70 employees and around $18.3M of revenue; described as an integrator building IT projects for small, medium and large companies across converged voice and data networks, contact centre, IVR, CTI, VPN, VoIP, videoconferencing, access routers and network security", url: "https://rocketreach.co/olitel-telecom-profile_b44758affae69990", sourceNote: "A business-contact database. Used for scale figures, which such databases estimate rather than report; treat as an order of magnitude." },
+      { label: "Grupo Olitel on LinkedIn: national presence, describing itself as one of Brazil's larger providers of services and distribution of technology equipment with wholly national capital", url: "https://br.linkedin.com/company/olitelbrasil", sourceNote: "Also the source of the conflicting 36-year figure noted above." },
+    ],
+  },
+  {
+    // NIVA + NV7 - added 2026-08-03. ONE ENTRY per PRIME's ruling that NV7 is a
+    // branch or spin-off of Niva IT - the same shape as the Nava/Unicom/
+    // FlexVision ruling.
+    //
+    // *** DELIBERATELY SHORT. *** The public record is a company page and a
+    // partner list. Under the standing reconciliation an entry is as long as
+    // its evidence; padding this to match its neighbours would be inventing.
+    slug: "niva",
+    group: "other",
+    name: "Niva and NV7",
+    // NO `founded` FIELD. The year is not in the public record, and the field
+    // is optional precisely so that it can be left out. A sentinel value here
+    // would be the Network1 mistake exactly: a field wanting a value is not a
+    // reason to supply one.
+    tags: ["reseller", "services"],
+    tagline: "An integrator whose partner list is a map of this timeline.",
+    intro:
+      "Niva Tecnologia da Informação is a São Paulo integrator working across three lines: information security, electronic security and data centre. NV7 is a branch or spin-off of the same business, which is why both appear here as one entry rather than two.",
+    body: [
+      "**The partner list is the most informative thing in the public record, and it is worth reading as a document rather than a roster:** F5, Palo Alto Networks, NetApp, CrowdStrike, Forescout, Netskope, Citrix, Avigilon, Furukawa and Lenel. **Six of those are network and security vendors; two are physical security; one is structured cabling; one is storage.**",
+      "**That combination describes a specific kind of company, and one this timeline has documented from every side except this one.** An integrator carrying both information security and electronic security is selling into a building rather than into a network - firewalls and door controllers, network access control and cameras, on the same project, for the same customer, who has one budget and one set of contractors. **The distinction between the two disciplines is much sharper in the vendor catalogues than it is on a construction site.**",
+      "**The Furukawa entry in that list is the tell.** Structured cabling sits underneath both the security camera and the firewall, and the company that pulls the cable is well placed to sell what hangs off it - which is the same observation the Anixter entry makes from the distribution side, arriving here from the installation side.",
+      "**This entry is short because the evidence is short.** Niva has a company page, a service description and a partner list. There is no published founding date, no founder account and no ownership history, and this site does not manufacture those. **An entry should be as long as its evidence, not as long as its neighbours** - and the alternative, padding it out with what companies of this type usually do, would be writing fiction with a real company's name on it.",
+    ],
+    externalUrl: "https://br.linkedin.com/company/nivati",
+    externalLabel: "Niva Tecnologia da Informação",
+    sources: [
+      { label: "Niva Tecnologia da Informação: an integrator of complex IT solutions across information security, electronic security and data centre, working with F5 Networks, Palo Alto Networks, NetApp, CrowdStrike, Forescout, Netskope, Citrix, Avigilon, Furukawa and Lenel; services spanning project design, configuration, installation, maintenance and performance management", url: "https://br.linkedin.com/company/nivati", sourceNote: "A company page is the whole of the public record found for this business. No founding date, founder or ownership history could be established, which is why this entry is short and says so." },
+      { label: "PRIME, 2026-08-03: NV7 is a branch or spin-off of Niva IT, and the two are recorded here as one entry", url: "" },
+    ],
+  },
+  {
+    // PARXTECH - added 2026-08-03. PRIME confirmed the spelling: parxtech.com.br
+    // is the company, not "ParXtec".
+    //
+    // Short by the same rule as Niva: a founding year, a service line and a
+    // positioning statement is what exists.
+    slug: "parxtech",
+    group: "other",
+    name: "Parxtech",
+    founded: 1992,
+    tags: ["reseller", "services"],
+    tagline: "Sells the layer nobody photographs: cable, containment, power and the survey that decides where they go.",
+    intro:
+      "Parxtech was founded in São Paulo in 1992 to provide connectivity and information technology services, and describes itself as wholly Brazilian-owned with national delivery capability. Its lines are networking, structured cabling, CCTV, wireless intrusion prevention, electrical work and outsourcing.",
+    body: [
+      "**That combination is worth pausing on, because it is a physical-layer business with a security product bolted on**, and the two halves are more related than they look. Networking, cabling, CCTV and electrical are all site work - somebody measures a building, decides where things go, pulls cable through it and terminates both ends. Wireless intrusion prevention is the odd one out on paper and not in practice: **detecting a rogue access point is a survey problem before it is a software problem**, and the company already owns the ladder.",
+      "**The electrical line is the detail that identifies the business type.** A great many integrators stop at the patch panel. A company that will also do the power is selling to the person who has to make the room work, not to the person who has to make the network work - and those are frequently different people with different budgets, which is why most vendors' channel programmes have no idea how to categorise a company like this.",
+      "**Short entry, deliberately.** What exists publicly is a founding year, a service list and a positioning statement. There is no founder account, no ownership history and no archival coverage, and this site does not invent them. **The record supports what is written here and no more.**",
+    ],
+    externalUrl: "https://parxtech.com.br/",
+    externalLabel: "Parxtech",
+    sources: [
+      { label: "Parxtech: founded 1992 to provide connectivity and information technology solutions, wholly Brazilian-owned, headquartered in São Paulo with national delivery capability; services across networking, cabling, CCTV, WIPS, electrical and outsourcing", url: "https://parxtech.com.br/", sourceNote: "The company's own site is the entire public record found. Spelling confirmed by PRIME on 2026-08-03 as Parxtech." },
+    ],
+  },
+  {
+    // KA SOLUTION - added 2026-08-03 (PRIME).
+    //
+    // *** THE SIXTH TRAINING MODEL ON THIS TIMELINE, and the one closest to
+    // where most people actually get certified. *** Red Education is authorised
+    // delivery seen from the vendor-partner side; this is the same function
+    // seen from a city-centre classroom that carries fifteen vendors at once.
+    slug: "ka-solution",
+    group: "other",
+    name: "Ka Solution",
+    founded: 1993,
+    tags: ["training", "services"],
+    tagline: "Carries fifteen vendors' official curricula at once, which is a different business from carrying one.",
+    intro:
+      "Ka Solution has been running technology training and consultancy in São Paulo since 1993. It describes itself as the largest official SAP training centre in Latin America and the largest official Microsoft and Oracle centre in Brazil, and reports training over 15,000 students a year across two São Paulo locations.",
+    body: [
+      "**The vendor list is the entry, because of what carrying that many at once actually requires.** SAP, Microsoft, AWS, Oracle, Java, VMware, Citrix, Dell EMC, Cisco, CompTIA, EC-Council, EXIN, (ISC)² and Dynatrace - **four of which have their own entries on this timeline.** Each of those authorisations is a separate agreement, a separate instructor certification path, a separate courseware licence, a separate audit, and a separate set of lab requirements that rarely resemble each other.",
+      "**So the difficulty is administrative before it is pedagogical**, and that is the part outsiders consistently underestimate. An instructor certified for one vendor is not certified for another; a classroom configured for one vendor's labs is not configured for another's; a schedule that fills a SAP academy does not fill a security course. **A multi-vendor school is running a dozen small businesses that happen to share a reception desk.**",
+      "**Which makes it the sixth distinct training model recorded here, and worth placing against the others.** CompTIA is certification owned by nobody. EPI is a specialist body for one domain. The market reserve trained a workforce inside protected manufacturers. Microcamp taught the general public. Red Education delivers authorised curricula as a vendor partner, internationally. **This is the same authorised-delivery function as Red Education, arranged differently: one city, many vendors, walk-in enrolment, and a business model closer to a language school than to a consultancy.**",
+      "**The market it serves is the one this site rarely describes.** Most certification discussion assumes a corporate employer paying for training as part of a project. A commercial school in a city centre serves a different customer: the individual paying their own money, at night, to change what they are qualified to do. **Those two customers want different things from the same course** - the first wants their team productive on a product they have already bought, the second wants a credential an employer will recognise - and a school carrying fifteen vendors is structurally serving the second.",
+      "The offer around the training reflects that: instalment payment plans, evening and remote live-instructor classes, and career placement arrangements with consultancies. **The credential is the product, and everything else is arranged to get people through it** - which is the honest description of a large part of this industry, and one the industry does not often use about itself.",
+    ],
+    externalUrl: "https://www.kasolution.com.br/",
+    externalLabel: "Ka Solution",
+    sources: [
+      { label: "Ka Solution's own site and LinkedIn: operating since 1993; described as the largest official SAP training centre in Latin America and the largest official Microsoft and Oracle training centre in Brazil; official academies and courses across SAP, Microsoft, AWS, Oracle, Java, (ISC)², Dell EMC, Citrix, VMware, Dynatrace and Mastersaf; more than 15,000 students trained annually across units near Shopping Morumbi and in central São Paulo", url: "https://br.linkedin.com/company/ka-solution", sourceNote: "Company self-description. The superlative claims - largest in Latin America, largest in Brazil - are the company's own and are reported as such rather than independently verified." },
+      { label: "Ka Solution course listings: official courses spanning AWS, CompTIA, Citrix, Cisco, EC-Council, EXIN, (ISC)², Java, Microsoft and SAP, with instalment payment and live-instructor remote delivery", url: "https://www.kasolution.com.br/Home" },
+      { label: "Educaedu profile: trading since 1993, structured across five business lines - official Microsoft training, e-learning, IT consulting, outsourcing and mobile solutions", url: "https://www.educaedu-brasil.com/centros/ka-solution-uni1692", sourceNote: "A course-directory listing, and the business-line description it quotes is roughly fifteen years old. Used for the founding year and the historical shape of the business, not for its current structure." },
+    ],
+  },
+  {
+    // AUDIOCODES - added 2026-08-03 (PRIME).
+    //
+    // *** SECOND CONSECUTIVE ENTRY WHERE A COMPANY'S OWN SPECIFICATION BECAME
+    // AN INTERNATIONAL STANDARD. *** Anixter's Levels became TIA Categories;
+    // AudioCodes' work on G.723.1 became an ITU codec. Two different decades,
+    // two different industries, same mechanism - and the thread is named here.
+    slug: "audiocodes",
+    group: "other",
+    name: "AudioCodes",
+    founded: 1993,
+    tags: ["vendor"],
+    tagline: "Made the codec, then the board, then the gateway, then the software - and kept the same chief executive for thirty-three years.",
+    intro:
+      "AudioCodes was founded in Israel in 1993 - sources give both 9 May and 1 July - by Shabtai Adlersberg and Leon Bialik, with some accounts naming additional founders. Both came out of DSP Group, the Israeli semiconductor company Adlersberg had co-founded in 1987. It started by licensing voice compression algorithms and selling signal-processing boards to telecoms manufacturers, listed on NASDAQ in May 1999, and now turns around $242M.",
+    body: [
+      "**The founding problem was arithmetic.** A telephone call digitised the standard way consumes 64 kbps, and a packet network of the early 1990s could not carry many of those. Everything that became voice over IP depended on compressing speech hard enough to fit, without the result sounding like a machine. **That is a signal-processing problem before it is a networking problem**, which is exactly why the founders were chip people rather than network people.",
+      "**And their codec work went into an international standard.** AudioCodes' speech coding contributed to G.723.1, adopted by the ITU - the low-bit-rate coder that a great deal of early VoIP ran on. **A company's own specification becoming the standard everybody implements is the second instance of that pattern in as many entries on this timeline**: Anixter's Levels programme became the TIA's Categories, and this became an ITU recommendation.",
+      "**Which is worth naming as a mechanism rather than treating as two coincidences.** Standards bodies rarely invent; they ratify. What they ratify is usually the thing already built by whoever needed it badly enough to build it, and the reward for that company is not the licence income - it is that the industry's default now has your fingerprints on it, and every competitor implements a thing you understand better than they do. **The moat is not the patent. It is the head start.**",
+      "The product line climbed one layer at a time and the sequence is unusually clean: **codec, then the board carrying the codec, then the media gateway carrying the boards, then the session border controller carrying the gateway's function in software, then the management and analytics around it.** Most component companies get commoditised as their layer becomes a feature of the layer above. This one kept moving up before that happened, which is a strategy easy to describe and hard to execute, because it means competing with your own customers.",
+      "**Then a structural fact that this site keeps finding relevant.** Adlersberg has been chief executive since 1993 - a thirty-three-year run, among the longest of any founder still leading a listed company. Its peers in enterprise voice cycled through leadership repeatedly and, as one analysis puts it, oscillated between growth mandates and restructuring mandates. **A company that changes chief executive every four years cannot run a strategy that takes ten**, and the enterprise-voice graveyard is full of businesses that were three years into a transition when the person who started it left.",
+      "The Israeli lineage is the other half of the context. Adlersberg co-founded DSP Group in 1987, built a digital cellular research team there that was spun out as DSP Communications in 1992, and founded AudioCodes the following year. **Three companies from one engineering group inside a decade** - which is what a functioning technical ecosystem looks like from the inside, and is the same shape the Kentik entry describes for network operations in California.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/AudioCodes",
+    externalLabel: "AudioCodes",
+    sources: [
+      { label: "AudioCodes executive team page: Adlersberg co-founding the company in 1993 and serving as president and chief executive since inception; co-founding DSP Group in 1987, serving as VP of Engineering and then VP of Advanced Technology, and establishing the digital cellular research team spun off in 1992 as DSP Communications", url: "https://www.audiocodes.com/corporate/executive-team" },
+      { label: "Wikipedia: Israeli company headquartered in Or Yehuda; products spanning session border controllers, media gateways, IP phones, multi-service business routers and voice network management; revenue of $242.2M in 2024; dual listed on NASDAQ and the Tel Aviv exchange", url: "https://en.wikipedia.org/wiki/AudioCodes" },
+      { label: "Secondary company histories: founding in 1993 with the initial business licensing voice compression algorithms and selling DSP-based boards to telecom manufacturers; early products targeting the G.723.1 and G.729 codecs for voice over IP and ATM; the NASDAQ IPO in May 1999; the later move from components into software and services", url: "https://portersfiveforce.com/blogs/brief-history/audiocodes", sourceNote: "Business-analysis blogs of the kind that proliferate around listed companies. They disagree on the founding date (9 May versus 1 July 1993) and on the founder list (some naming Moshe Zion or Stanley Cohen alongside Adlersberg and Bialik), and both variations are noted in the entry. Used for the product chronology, which is consistent across all of them and with the company's own materials." },
+      { label: "Independent analysis of the company's platform cycles: both founders coming out of DSP Group; the progression from VoIP infrastructure through unified communications to conversational AI; the thirty-three-year founder-chief-executive tenure contrasted with peers that cycled through leadership and alternated growth and restructuring mandates", url: "https://olam.business/audiocodes", sourceNote: "An independent analysis rather than a reference work. Its characterisation of competitors' leadership churn is an interpretation, and is attributed here rather than asserted." },
+      { label: "DCFmodeling: the company beginning in Lod before moving to Or Yehuda, and the deliberate shift from component supplier to software and services vendor described as its most transformative move", url: "https://www.dcfmodeling.com/blogs/history/audc-history-mission-ownership" },
+    ],
+  },
+  {
+    // VEEAM - added 2026-08-03 (PRIME).
+    //
+    // *** THE PATTERN WORTH NAMING: the side project ate the main business. ***
+    // The e-commerce store was the company; the NT admin tools were a sideline;
+    // the sideline out-earned the store, so they built a company around it.
+    // That is a shape this timeline has not yet named and should.
+    slug: "veeam",
+    group: "contemporary",
+    name: "Veeam",
+    founded: 2006,
+    tags: ["vendor"],
+    tagline: "The side project ate the main business, twice - and a previous exit was the only funding round for a decade.",
+    intro:
+      "Ratmir Timashev and Andrei Baronov were roommates at Ohio State. In 1995, while Timashev was still a graduate student in chemical physics, they started an online shop selling computer parts. In 1996 they built some tools for Windows NT administrators on the side. **The tools out-earned the shop**, so they founded a company around them: Aelita Software, sold to Quest in 2004 for about $115M. Veeam followed in 2006.",
+    body: [
+      "**That sequence is a pattern this timeline has not yet named, and it recurs constantly.** The thing built to support the business becomes the business, because the supporting thing solves a problem the builder actually had, while the main business was a guess about a problem somebody else might have. **Anyone who has written an internal tool that colleagues in other departments started asking for has seen the beginning of it.** The usual mistake is treating the sideline as a distraction from the plan, rather than as evidence that the plan was aimed at the wrong problem.",
+      "**Veeam was funded by the Aelita exit and by nothing else for well over a decade.** The founders held close to all the equity, took no institutional money until Insight Partners put in $500M in January 2019, and reinvested profits instead. That is a second route this site has now recorded twice - CloudShare's founder bought his company back from investors for four dollars and grew it on revenue. **The venture path is not the only one that reaches a billion dollars; it is the one that gets written about, because the people who write about it are participants in it.**",
+      "**The technical timing was the whole opportunity, and it is worth being precise about why.** VMware was consolidating many physical servers onto few physical hosts. Backup software of the period ran an agent inside each machine and read the filesystem, which had been fine when each machine had its own disks and its own spare capacity - and became untenable when thirty agents woke up on one host and competed for the same spindles and the same network card. **The old method did not stop working; it stopped being affordable**, which is a distinction most product histories blur. Veeam's answer was to back up at the hypervisor level - copy the virtual disk, ignore the guest - which is only possible because the hypervisor exists.",
+      "**And the first products were not backup at all.** Veeam Monitor and Veeam Reporter did monitoring, reporting and documentation of virtual infrastructure. The backup business began with **FastSCP in 2007, released free** - a tool for copying VM files - which became the foundation for the data protection products that followed. **Free tool first, paid product after, is the same shape as the Kali entry elsewhere on this site**: the giveaway is not marketing spend, it is how you find out which problem people actually have.",
+      "Insight Partners bought the company for **$5B in January 2020**, the founders stepped back, and the business completed a shift from perpetual licences to subscription - which is what that kind of owner is for, and is a harder transition than it sounds, because it converts a large payment today into a small one repeated, and the years in between look like decline on every chart.",
+      "**One consequence of the acquisition is structural and deserves recording.** Veeam was registered in Baar, Switzerland; the acquisition moved the corporate domicile to Columbus, Ohio - where Timashev had studied and built Aelita. **A United States domicile makes a company eligible to bid for federal contracts.** That is a plain fact about how procurement works, and it belongs beside the sovereignty entries elsewhere here: those record countries building their own infrastructure so that ownership cannot be used against them, and this records a company changing its own nationality so that ownership could be used for it. **The same mechanism, pointed in opposite directions.**",
+    ],
+    acquisitions: [
+      { year: 2018, name: "N2WS", what: "Cloud-native backup and disaster recovery for Amazon Web Services.", became: "Veeam's route into backing up what runs in a public cloud rather than on a hypervisor it can see." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Veeam",
+    externalLabel: "Veeam",
+    sources: [
+      { label: "Wikipedia on Ratmir Timashev: meeting Baronov as a college roommate at Ohio State; the 1995 online computer-parts store started while a graduate student; building Windows NT administrator tools in 1996 whose sales soon exceeded the parts revenue, leading to Aelita Software; Object First founded in 2022 after the Veeam sale", url: "https://en.wikipedia.org/wiki/Ratmir_Timashev" },
+      { label: "Wikipedia and HandWiki on Veeam: founded 2006 by Timashev and Baronov after selling Aelita to Quest in 2004; first office in Saint Petersburg as the main R&D facility; first products Veeam Monitor and Veeam Reporter for virtual infrastructure monitoring; the free FastSCP VM backup copy tool in 2007 becoming the basis of the data protection software; Quest passing to Dell in 2012 and then to Francisco Partners and Elliott in 2016", url: "https://en.wikipedia.org/wiki/Veeam" },
+      { label: "Blocks & Files (January 2020): Insight Partners acquiring Veeam for $5B; the founders taking no outside funding until Insight's $500M injection in January 2019; the N2WS acquisition in 2018", url: "https://www.blocksandfiles.com/data-management/2020/01/09/insight-partners-buys-veeam-for-5bn/1600270" },
+      { label: "LegalClarity: the Aelita sale at approximately $115M in 2004; Veeam originally registered in Baar, Switzerland with the Insight acquisition triggering a move to Columbus, Ohio; a US domicile making the company eligible to bid on federal government contracts", url: "https://legalclarity.org/who-owns-veeam-ownership-founders-and-leadership/", sourceNote: "A secondary explainer rather than a primary source. Used for the domicile change and its procurement consequence, which is consistent with how US federal contracting eligibility is generally described; the underlying acquisition facts are corroborated above." },
+      { label: "Trade coverage of the post-acquisition period: the founders stepping down from operating roles, William Largent returning as chief executive and Anand Eswaran appointed in December 2021; the completed transition to subscription revenue and reported annual recurring revenue above $1.5B", url: "https://everything-pr.com/veeam-data-resilience-standard", sourceNote: "A public-relations industry publication. Used for the leadership sequence and the subscription transition; its valuation and customer-count figures are the company's own and are not asserted here." },
+    ],
+  },
+  {
+    // ANIXTER - added 2026-08-03 (PRIME, who wrote "Anixster"; standard
+    // spelling used). The seventh distributor.
+    //
+    // *** THE FIND: Anixter's 1989 "Levels" programme was the first written
+    // performance specification for data cabling, and the TIA renamed Levels to
+    // CATEGORIES. *** Every engineer who says "Cat 6" is using a vocabulary a
+    // DISTRIBUTOR invented. That is the entry.
+    slug: "anixter",
+    group: "other",
+    name: "Anixter",
+    founded: 1957,
+    tags: ["distributor"],
+    tagline: "A distributor wrote the specification that became Cat 5 and Cat 6.",
+    intro:
+      "Alan and Bill Anixter started a wire and cable distribution business outside Chicago in 1957 - Wikipedia dates the start to 1956 - on a family loan the company puts at $10,000 and Wikipedia at $20,000 from their mother. Within a decade it was turning $10M. When WESCO bought it in 2020 for about $4.5B it had roughly 130,000 customers, 600,000 products and 316 warehouses across some fifty countries.",
+    body: [
+      "**Here is the thing worth knowing, and almost nobody does.** In 1989 Anixter published the **Levels** programme - the first written performance specification for data cabling systems. It was a distributor's document, produced so that customers could compare cable on measured performance rather than on the manufacturer's assurances. **The TIA standards body adopted it and renamed Levels to Categories.**",
+      "**Which means every network engineer alive who says Cat 5, Cat 5e or Cat 6 is using a vocabulary invented by a cable distributor**, for commercial reasons, and subsequently promoted into an international standard. That is a genuinely unusual route for a specification to travel, and it says something specific about where useful standards come from: **not always from the manufacturers, who have an interest in incomparability, nor from committees, who need something to standardise, but sometimes from whoever is stuck explaining the difference to a buyer.**",
+      "**The 1995 laboratory follows the same logic and is the other half of the argument.** Anixter opened an interoperability lab in Illinois with UL-verified test processes, and described itself as the only distributor with one. A distributor testing what it sells is doing something structurally odd - it is not the manufacturer, so it has no product to defend, and it is not the customer, so it has the volume to justify equipment nobody buying a single reel could afford. **That is the same neutrality argument this timeline makes about carrier-neutral exchanges and vendor-neutral certification, arriving in the least likely place: the middle of a supply chain.**",
+      "The growth mechanism was acquisition and it was explicit. Alan Anixter told the Chicago Tribune he carried a list of acquisition targets in his pocket, and the company bought nineteen businesses by the end of the 1960s. It listed on the American exchange in 1967 and the New York exchange in 1975, was acquired by the Itel holding company and later took the Anixter International name, passed $1B of sales in 1991 and $3B by 1999.",
+      "**The ending is one of the better-documented bidding wars in distribution.** Clayton, Dubilier & Rice bid $3.8B in October 2019, with a forty-day window allowing Anixter to seek better offers. WESCO appeared, and the price climbed through $3.9B, $4.0B, $4.3B and finally **$4.5B in January 2020**, at which point CD&R waived its matching rights. The combined business had pro-forma revenues around $17B, and the announcement projected $200M of annual cost savings by year three - **which in distribution means branches and distribution centres, because that is where the duplication is.**",
+      "**Read beside the other six distributors here, Anixter is the one that shaped what it sold rather than only moving it.** Ingram and Tech Data built logistics and credit; ScanSource picked a product thesis; Westcon and Arrow consolidated. This one wrote a specification the entire industry still speaks. **A distributor is usually described as a layer that adds cost between manufacturer and customer, and the strongest counterargument is that somebody in that layer had to define what the products even were before they could be compared.**",
+    ],
+    acquisitions: [
+      { year: 1998, name: "Pacer Electronics", what: "Electronic wire, cable and connector distribution.", became: "Part of Anixter's expansion into OEM supply." },
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Anixter",
+    externalLabel: "Anixter",
+    sources: [
+      { label: "Anixter's own company history: the 1989 Levels programme as the first written performance specification for data cabling systems, and the TIA renaming Levels to Categories; the 1995 Interoperability Lab in Mt. Prospect with UL-verified structured cabling test processes, described as the only such distributor lab; The Blue Book in 1968 at $10M of sales and 700 employees; $1B of sales in 1991; the Itel acquisition and rename to Anixter International", url: "https://www.anixter.com/en_gb/about-us/company-overview/company-history.html", sourceNote: "The company's own history, and the Levels-to-Categories claim is its own. It is consistent with the TIA category system's documented origins and with independent accounts of Anixter's cabling standards work, but readers wanting the standards-body side should consult TIA's own record." },
+      { label: "Wikipedia: started in 1956 by brothers Alan and Bill Anixter with a $20,000 loan from their mother; headquarters moved to Skokie in 1969; Alan Anixter's account of carrying a list of acquisitions, with nineteen companies bought by the end of the 1960s; public on the American Stock Exchange in 1967 and expansion to the UK in 1972", url: "https://en.wikipedia.org/wiki/Anixter", sourceNote: "Dates the founding to 1956 and the family loan at $20,000, where the company's own history says 1957 and $10,000. Both readings are stated in the entry rather than one being chosen." },
+      { label: "WESCO/Anixter merger news release (SEC Form 425, 13 January 2020): the transaction valued at approximately $4.5B; Anixter's roughly 130,000 customers, nearly 600,000 products, over $1.0B of inventory and 316 warehouse and branch locations across about fifty countries; pro-forma combined 2019 revenues of approximately $17B and over $200M of expected annual run-rate cost synergies by end of year three; the termination of the prior CD&R agreement following its waiver of matching rights", url: "https://www.sec.gov/Archives/edgar/data/52795/000114036120000665/nc10007564x2_ex99-1.htm" },
+      { label: "ChannelE2E: the bidding war beginning with CD&R's $3.8B offer in October 2019 and a forty-day go-shop period, climbing through $3.9B, $4.0B and $4.3B to the final $4.5B", url: "https://www.channele2e.com/news/wesco-anixter-deal" },
+      { label: "Encyclopedia.com: incorporation in 1957 as Anixter Brothers Inc.; over 350,000 items from more than 5,000 suppliers to around 95,000 customers as of the mid-2000s; competitors listed as Consolidated Electrical Distributors, Graybar and WESCO - the eventual acquirer", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/anixter-international-inc" },
+    ],
+  },
+  {
+    // MICROCAMP - added 2026-08-03 (PRIME). The education half of cluster 8,
+    // and the one PRIME's brief pointed at most directly: private technical
+    // training at scale.
+    //
+    // *** IT CLOSES THE TWO HALVES OF THE CLUSTER IN ONE FACT: *** the school
+    // equipped itself with CP 500 and TK 85 machines - the domestically built
+    // clones the market reserve produced. The reserve made the hardware; this
+    // made the users.
+    slug: "microcamp",
+    group: "other",
+    name: "Microcamp",
+    founded: 1977,
+    tags: ["training"],
+    tagline: "The pioneering was the audience, not the technology - and it taught on the machines the market reserve built.",
+    intro:
+      "Eloy Tuffi opened Flama Microinformática in Vila Mariana, São Paulo, in 1977, and it became Microcamp after he moved to Campinas in 1981. It is generally described as Brazil's first computer school. Over four decades it reports having taught more than two million students in Brazil, Portugal, Spain and Argentina.",
+    body: [
+      "**The founder was not a technologist. He already owned four English-language schools**, having started selling books and English courses at eighteen, and he came to computing as somebody who understood how to sell instruction to ordinary people. That matters more than it sounds, and it explains the shape of everything that followed.",
+      "**Because the pioneering thing was the audience, not the technology.** Courses in computing already existed in Brazil in 1977. They were for programmers, attached to the mainframes that were the only computers most organisations had, and they were expensive and restricted. Tuffi's proposition was that ordinary people - not future programmers, just people - would pay for computer instruction if it were affordable. **That is the founding insight of essentially every technical training business since, and it was not obvious at the time.**",
+      "**The pedagogy came from language teaching, and it fits better than anyone expected.** A language school runs on monthly fees, graded levels, small classes and the assumption that competence is built by repeated practice over months rather than transferred in a week. **Apply that structure to computing and it works, for exactly the same reason: both are skills, not bodies of knowledge**, and a skill acquired in a five-day intensive decays at a rate that surprises the person who paid for it. The group later ran schools combining English with computing, which is the same recognition from the other direction.",
+      "**And here the two halves of this timeline's market-reserve story meet in one detail.** Tuffi equipped his first school with twelve microcomputers: **CP 500 and TK 85 machines** - domestically built, the products of exactly the protected industry written up elsewhere on this site. **The reserve manufactured the hardware; schools like this manufactured the users.** Neither half works without the other, and the policy documents of the period discuss the first at length and the second barely at all.",
+      "The commercial history is a franchising history: first branch in Ribeirão Preto in 1986, Portugal in 1989, a franchise system launched in 1994 and taken abroad the following year, a training institute for its own staff and franchisees in 1995. **Franchising is what let a teaching method scale beyond the reach of the person who invented it**, and the institute exists because a franchised school is only as good as its worst instructor - which is the same problem the authorised-training entries on this site describe from the vendor's side.",
+      "**The number worth carrying away is the denominator.** The market reserve entry records employment in informatics and automation rising from about 42,000 to about 74,000 people across the 1980s - that is the industry. Two million people passed through these classrooms. **Most of them did not become engineers, and that is the point: a country does not become able to use computers by training its computer industry, it does so by training everybody else.** The reserve gets the policy histories; this got the students.",
+    ],
+    externalUrl: "https://pt.wikipedia.org/wiki/Microcamp",
+    externalLabel: "Microcamp",
+    sources: [
+      { label: "Wikipédia (pt): founded 1977 as Flama Microinformática and described as Brazil's first computer school; Eloy Tuffi equipping it with twelve CP 500 and TK 85 microcomputers at a time when Brazil had only large computers and courses for programmers; the Instituto Microcamp in March 1995 and the holding company in Campinas in April 1996", url: "https://pt.wikipedia.org/wiki/Microcamp" },
+      { label: "Sua Franquia interview with the founder: already owning four English-language schools and identifying a market in affordable computing courses for lay users; moving to Campinas in 1981 after leaving the business to a partner; franchising from 1994 as the fastest and safest route to expansion", url: "https://www.suafranquia.com/noticias/educacao-e-treinamento/2014/07/fundador-apresenta-informacoes-sobre-a-microcamp-/", sourceNote: "The founder's own account of his motives, in a franchising trade publication. Used for the sequence and the stated reasoning, which is corroborated on dates by the encyclopedic sources." },
+      { label: "Educaedu and the founder's own site: founding in Vila Mariana, headquarters moving to Campinas in 1981, first branch in Ribeirão Preto in 1986, Portugal from 1989, franchising in Brazil from August 1994 and abroad from 1995; the group later including the ABC schools combining English with computing and Spanish", url: "https://www.educaedu-brasil.com/centros/microcamp-tecnologia-uni3154" },
+      { label: "Microcamp corporate materials: more than two million students taught across Brazil, Portugal, Spain and Argentina in over forty years; student and school counts that vary between sources and dates", url: "https://br.linkedin.com/company/microcamp", sourceNote: "Company self-description. School and student counts differ substantially across sources and years - 150 schools and 110,000 students in one account, 65 units and 120,000 in another - so the entry cites the cumulative figure the company reports and does not assert a current network size." },
+      { label: "Unicamp's Centro de Memória researched the company and its founder over two years, publishing Do BASIC ao TI on its first thirty years", url: "https://www.eloytuffi.com.br/microcamp.php", sourceNote: "The founder's own website, cited only for the existence of the Unicamp research project and the resulting book." },
+    ],
+  },
+  {
+    // CLOUDSHARE - added 2026-08-03 (PRIME). Closes cluster 9.
+    //
+    // *** THE $4 BUYBACK IS FROM CLOUDSHARE'S OWN TEAM PAGE. *** Extraordinary
+    // enough to want corroboration, and the corroboration is that they publish
+    // it themselves - a company does not invent a story in which its investors
+    // valued it at four dollars.
+    //
+    // Also connects to the channel SE article written from PRIME's own account:
+    // the demo/PoC distinction.
+    slug: "cloudshare",
+    group: "contemporary",
+    name: "CloudShare",
+    founded: 2007,
+    tags: ["training", "services"],
+    tagline: "Its founder bought it back from the investors for four dollars, then ran it profitably for a decade.",
+    intro:
+      "CloudShare was founded in Tel Aviv in January 2007 as IT Structures - Wikipedia names Avner Rosenan, Ophir Kra-Oz and Zvi Guterman, other sources two of the three - and moved to California in 2009. It builds virtual laboratory environments: replicas of complex on-premises systems, running in the cloud, for training, demonstrations and proofs of concept.",
+    body: [
+      "**The company's own team page contains a sentence most companies would not print.** Guterman, it says, purchased CloudShare from its investors for four dollars, and then built it into the market leader in laboratory environments. The company had raised around $26M across three rounds. **A business does not invent a story in which its own investors valued it at four dollars**, which is the best reason to believe it - and the ending is that it was sold to a Denver asset manager at a reported $60M to $80M after roughly a decade of bootstrapped, profitable growth.",
+      "**That sequence is worth sitting with, because it inverts the standard narrative this timeline records over and over.** Raise money, grow fast, sell. Here: raise money, have the investors write it off entirely, buy it back for a nominal sum, and then grow slowly on your own revenue until it is worth tens of millions. **The venture route is the one that gets written about, and it is not the only one that works.**",
+      "**The technical problem is specific and is one this site's readers will recognise instantly.** Enterprise software assumes a data centre: several machines, particular network topology, licences, an installed state that takes a day to reach. Anyone who has taught such a product knows the real constraint is not the material - **it is that thirty students each need a working copy of an environment that takes hours to build and that they will inevitably break.** CloudShare's answer is to snapshot a fully configured environment and hand every user an independent replica in about a minute.",
+      "**The insight in the business model is that a training lab and a sales demonstration are the same artifact.** Both are a working replica of a system the audience does not yet have, in a state that shows it doing something useful. The difference is what the audience is asked to do afterwards, and that difference is entirely in the framing rather than the infrastructure - which is why one platform serves training, presales demos and proofs of concept.",
+      "**Which is where this entry meets an argument already on this site.** A proof of concept is supposed to be a test that can fail; a demonstration is supposed to succeed. When both run on identical infrastructure, prepared by the same people, the line between them is a matter of intent rather than of setup - **and a proof of concept designed so it cannot fail is a demonstration wearing a different name.** Good lab platforms make honest testing easier and dishonest testing easier by exactly the same amount.",
+      "Customers include Palo Alto Networks, Atlassian, HP, Microsoft, RSA, Salesforce and ForgeRock - **several of which appear elsewhere on this timeline**, which is the ordinary condition of the layer this cluster documents: the companies you have heard of run on companies you have not.",
+      "**And it closes the cluster where it began.** Kryterion partners with CloudShare to add proctoring to hands-on labs, which is the industry converging on the hybrid: **the realism of a practical assessment, in a reproducible environment, with the identity verification of a supervised exam.** Every piece of that sentence is a different company, and none of them writes the questions.",
+    ],
+    externalUrl: "https://www.cloudshare.com/",
+    externalLabel: "CloudShare",
+    sources: [
+      { label: "CloudShare's own executive team page: Guterman purchasing CloudShare from investors for four dollars and building it into the market leader in IT lab environments; clients including Atlassian, Microsoft and Palo Alto Networks", url: "https://www.cloudshare.com/meet-the-team/", sourceNote: "The four-dollar purchase is an extraordinary claim and it is the company's own published statement about its own founder. Recorded on that basis - a company is unlikely to invent a story in which its investors valued it at nothing." },
+      { label: "Wikipedia: founded in Tel Aviv in January 2007 as IT Structures by Avner Rosenan, Ophir Kra-Oz and Zvi Guterman; headquarters moved to California in 2009; environments saved, replicated and shared as independent snapshots", url: "https://en.wikipedia.org/wiki/CloudShare" },
+      { label: "Tracxn: founded 2007, $26M raised across three rounds, around 92 employees; virtual IT labs for training, demos and proofs of concept", url: "https://tracxn.com/d/companies/cloudshare/__jRltKQoL6hJ_41DC3Xc_PHf7ISlQ5gw1sqhoG_lCAdA", sourceNote: "Funding database, which names two founders where Wikipedia names three. Both counts are noted in the entry rather than one being chosen." },
+      { label: "Startup Nation Central: the acquisition by a Denver-based alternative asset manager at an estimated $60-80M, described as an exit after a decade of bootstrapped growth and profitability", url: "https://finder.startupnationcentral.org/company_page/cloudshare", sourceNote: "The price is reported as an estimate and is stated as such here; the parties did not disclose it." },
+      { label: "Forbes Technology Council profile: Guterman previously co-founder and CTO of Safend and chief architect in the IP infrastructure group of ECTEL, with a PhD in computer science from Hebrew University; more than 500 customers in over 100 countries", url: "https://councils.forbes.com/profile/Zvi-Guterman-CEO-founder-CloudShare/398349ac-c990-47bc-8c4e-14571d5818c5" },
+    ],
+  },
+  {
+    // KRYTERION - added 2026-08-03 (PRIME). Cluster 9.
+    //
+    // *** THE FIND: Drake International founded Prometric in 1990, sold it to
+    // Sylvan in 1995, and then started Kryterion. *** The same parent, twice,
+    // in the same industry - which the Prometric entry did not know when it was
+    // written two turns ago.
+    slug: "kryterion",
+    group: "other",
+    name: "Kryterion",
+    founded: 2001,
+    tags: ["training", "services"],
+    tagline: "The same parent that founded Prometric, doing it a second time - and proctoring online fourteen years before everyone had to.",
+    intro:
+      "Kryterion began as a division of Drake International around 2000 or 2001, depending on which source is followed. Drake had founded Drake Prometric in 1990 and sold it to Sylvan Learning in 1995. **So the company that created one of the two dominant test-delivery networks sold it, and then built another one.** Kryterion runs from Phoenix, Arizona, with offices in the United Kingdom, South Africa and Asia.",
+    body: [
+      "**Its first genuine claim to precedence is worth checking against the rest of this cluster. Kryterion says it introduced online proctoring in 2005** - fourteen years before Pearson VUE launched OnVUE, and fifteen before the pandemic made remote delivery the only option. The claim comes from the company's own history page and should be read as such, but the direction is clear enough: **the capability existed, was commercially available, and was not widely adopted until circumstances removed the alternative.** That is the ordinary pattern for infrastructure, and worth remembering next time something is described as unprecedented.",
+      "**The business model is the real difference from the two larger networks, and it is a genuine architectural choice rather than a marketing distinction.** Pearson VUE and Prometric are full-service: the client hands over an exam and the network delivers it. Kryterion sells **Webassessor**, a platform on which clients build, modify and publish their own examinations - with the explicit selling point that changing an item does not incur a publishing fee. **One model treats the exam as something you outsource; the other treats it as something you operate.** Which suits an organisation depends entirely on whether its examinations change often, and organisations reliably underestimate how often theirs will.",
+      "The centre network is around a thousand locations against several thousand for the larger networks, which is a real limitation and an honest one. **A smaller network is a smaller reach**, and the answer to it is the online and event-based delivery the company leaned on early.",
+      "**And then the strategic difference that makes this entry worth reading beside Credly's.** Kryterion assembles its stack by partnership: **CloudShare for virtual lab environments, TrueAbility for performance-based assessment, and Credly for digital credentials** - the same Credly that Pearson bought outright in 2022. **The identical functional stack, assembled by acquisition on one side and by partnership on the other.**",
+      "Neither is obviously correct. Acquisition guarantees the capability is there and can be integrated deeply; it also concentrates the trust chain in one owner, which is the observation this site made about Pearson and repeated about ETS's ownership of Prometric. Partnership keeps the pieces independent, so a customer's credential provider is not their exam provider's subsidiary; it also means the pieces can change hands, be discontinued, or start competing with you. **The question is not which structure is better but which failure you would rather have**, and that is a question most buyers never realise they are answering.",
+      "Kryterion also supports third-party performance-based examinations inside a proctored browser, which is the hybrid the whole cluster has been converging on: **the realism of a practical assessment with the identity verification of a supervised one.** Whether that combination inherits the strengths of both models or the weaknesses is not yet answerable from the public record - the approach is too new, and the failure modes of assessment take years to surface.",
+    ],
+    externalUrl: "https://www.kryterion.com/",
+    externalLabel: "Kryterion",
+    sources: [
+      { label: "Kryterion's own about page: Drake International's Kryterion division pioneering online global assessment in 2001, and the introduction of online proctoring in 2005; the Webassessor self-service platform allowing clients to modify and publish exams without additional publishing fees; offices in Phoenix, the United Kingdom, Cape Town and Asia", url: "https://www.kryterion.com/about-kryterion/", sourceNote: "Company history in the company's own words. The 2005 online-proctoring precedence is Kryterion's own claim and is presented as such rather than as an established fact." },
+      { label: "Kryterion partner page: CloudShare for virtual lab environments, TrueAbility for performance-based assessment, and Credly for digital credentials", url: "https://www.kryterion.com/strategic-partners/" },
+      { label: "Kryterion test delivery page: over 1,000 test centres alongside live remote proctoring, event-based testing and client-controlled proctoring options", url: "https://www.kryterion.com/test-delivery/" },
+      { label: "Kryterion performance-based testing page: third-party performance-based exams delivered with live online proctoring inside a secure browser environment, bundled with or separate from Webassessor qualifying exams", url: "https://www.kryterion.com/performance-based-testing/" },
+      { label: "ZoomInfo and LeadIQ: founding dated 2000 in one and 2001 in the other; Phoenix headquarters; 201-500 employees", url: "https://www.zoominfo.com/c/kryterion-inc/105498064", sourceNote: "Business databases, which disagree with each other on the founding year. Both readings are stated in the entry rather than one being chosen." },
+    ],
+  },
+  {
+    // EC-COUNCIL - added 2026-08-03 (PRIME). Cluster 9.
+    //
+    // *** THE CRITICISM IS SUBSTANTIAL AND MUST BE HANDLED FAIRLY, WHICH MEANS
+    // NEITHER GLOSSING IT NOR JOINING IN. *** The approach taken: lead with the
+    // criticism that is verifiable from EC-Council's OWN published words (the
+    // CNDA/CEH identical-exam FAQ), state the accreditations honestly, and then
+    // offer the structural explanation that accounts for BOTH the recognition
+    // and the hostility without endorsing either camp.
+    slug: "ec-council",
+    group: "other",
+    name: "EC-Council",
+    founded: 2001,
+    tags: ["training", "standards"],
+    tagline: "The most required certification in its field, and the most argued about, which are the same fact seen twice.",
+    intro:
+      "The International Council of E-Commerce Consultants was founded in 2001, in response to the September 11 attacks and the question of whether the security community was equipped for an equivalent attack on commercial infrastructure. It launched the Certified Ethical Hacker in 2003, and CEH became the most widely required security certification in the world - and the most persistently criticised. Those two facts are connected.",
+    body: [
+      "**Start with the criticism that does not depend on anybody's opinion, because EC-Council published it themselves.** The Certified Network Defence Architect was marketed as a defensive credential. EC-Council's own frequently-asked-questions page stated that apart from the title, the content of the exam was the same as CEH. **One examination, two names, sold to two audiences as different qualifications.** Whatever one concludes about the rest, that is documented in the organisation's own words and is difficult to defend.",
+      "The wider criticism is long-running and easily found: the security researchers at attrition.org maintain a page arguing the case, allegations of comment-spam marketing that the organisation's president dismissed as a fictional theory, published advice in 2015 that women should wear a trouser suit with heels to be credible on a penetration test, and website security incidents at an organisation selling website security. **A site that records the criticism of CompTIA, of web filtering and of practical exams should record this too, and does.**",
+      "**And the accreditation is real, which is the other half of an honest account.** EC-Council holds ISO/IEC 17024 accreditation for personnel certification bodies, and CEH is recognised under United States Department of Defense Directive 8140 - previously 8570 - which means it satisfies a mandatory requirement for certain defence roles. That recognition is not marketing. **It is why the certification appears in job requirements written by people who have never heard the criticism.**",
+      "**Here is the structural explanation, and it is the reason this entry exists rather than a verdict.** A certification that becomes mandatory acquires enormous volume, because people take it who would not otherwise have chosen it. Volume produces variance: among hundreds of thousands of holders there will be excellent practitioners and people who memorised a question bank, and both hold the same credential. Variance produces the anecdote - everybody in this industry has met a certificate holder who could not do the thing - and the anecdote travels much further than the median. **Being required is what makes a certification valuable and what degrades what holding it signals, and there is no version of mandating a credential that avoids this.**",
+      "**Which lands exactly where the rest of this cluster does.** Standardised exams are scalable and memorisable. Practical exams are unfakeable and leakable. Mandated exams are universally recognised and universally diluted. **Every mechanism that makes a credential useful attacks the thing that made it worth having**, and the honest position for anyone hiring is that no certification is evidence of capability - it is evidence that somebody passed a specific test on a specific day, which is a smaller and more useful claim.",
+      "EQT Private Equity invested in September 2021. **That is the second EQT holding on this timeline**, after Prometric - a reminder that the certification industry's ownership is concentrated in a smaller number of hands than its variety of brands suggests. Reported certification totals vary widely between EC-Council's own materials and its press releases, from fifty thousand to over four hundred thousand, and this entry asserts neither.",
+    ],
+    externalUrl: "https://www.eccouncil.org/",
+    externalLabel: "EC-Council",
+    sources: [
+      { label: "Wikipedia and HandWiki: founded 2001 as the International Council of E-Commerce Consultants in response to the September 11 attacks; CEH launched 2003; EQT Private Equity investing September 2021; the recorded criticisms including comment-spam allegations dismissed by the president as a fictional theory and the 2015 published advice about women's dress on penetration tests", url: "https://en.wikipedia.org/wiki/EC-Council" },
+      { label: "attrition.org: the long-running criticism page, including EC-Council's own FAQ stating that apart from the title, the CNDA exam content is the same as the CEH exam", url: "https://attrition.org/errata/charlatan/ec-council/history_and_criticism.html", sourceNote: "An openly critical source maintained by security researchers, and it says so. Cited here for the CNDA/CEH identical-exam point specifically, which rests on EC-Council's own published FAQ rather than on the site's opinion - and that is why this entry leads with that point rather than the rest." },
+      { label: "EC-Council press materials: ISO/IEC 17024 accreditation, recognition under US Department of Defense Directive 8140/8570, operation across 145 to 170 countries, and certification totals that differ between documents", url: "https://www.businesswire.com/news/home/20230216005048/en/5390372/100-Elite-Ethical-Hackers-Inducted-into-EC-Councils-2023-Certified-Ethical-Hacker-CEH-Hall-of-Fame", sourceNote: "Company press release. Used for the accreditation facts, which are verifiable independently; its certification counts conflict with the company's own About page (50,000 versus over 400,000) and neither figure is asserted here." },
+      { label: "EC-Council's own About page: the founding account following the 9/11 attacks and the question posed by Jay Bavisi", url: "https://www.eccouncil.org/about/" },
+      { label: "Secondary accounts differing on the founding: Haja Mohideen credited as creator of the CEH, CHFI and ECSA/LPT programmes, and one account stating Bavisi bought the company in 2015", url: "https://en.everybodywiki.com/EC-Council", sourceNote: "A user-editable wiki whose account of the founding conflicts with EC-Council's own and with Wikipedia. Recorded because the discrepancy exists, not because it is resolved." },
+    ],
+  },
+  {
     // OFFSEC - added 2026-08-03 (PRIME). Completes the cluster's argument by
     // being the OPPOSITE model: the exam is the work, not a proxy for it.
     //
@@ -850,7 +1250,7 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["training", "services"],
     tagline: "Six owners in thirty-five years, and the layer that deliberately does not write the questions it delivers.",
     intro:
-      "Drake International started Drake Prometric in 1990 to run computerised testing centres. Sylvan Learning bought it in 1995 for about $44.5M in cash and stock, Thomson Corporation bought it in 2000 for roughly $775M, Educational Testing Service bought it in 2007 for $435M, Baring Private Equity Asia bought it in 2018, and EQT holds it now. Six owners in thirty-five years, for a business whose entire product is being trusted.",
+      "Drake International started Drake Prometric in 1990 to run computerised testing centres - and, having sold it, went on to start Kryterion, which appears separately on this timeline. Sylvan Learning bought it in 1995 for about $44.5M in cash and stock, Thomson Corporation bought it in 2000 for roughly $775M, Educational Testing Service bought it in 2007 for $435M, Baring Private Equity Asia bought it in 2018, and EQT holds it now. Six owners in thirty-five years, for a business whose entire product is being trusted.",
     body: [
       "**The structural fact is the one most people get wrong, and it is worth stating first: Prometric does not write the exams.** Its clients develop the content, write the questions and set the passing standards. Prometric supplies secure delivery, identity verification, proctoring and score reporting. That separation is deliberate and it is the source of the industry's credibility - **the organisation that decides what competence means is not the organisation that decides whether you demonstrated it**, and neither can quietly adjust the other's work.",
       "**Which makes one period of its history genuinely interesting.** From 2007 to 2018 Prometric was owned by Educational Testing Service - the author of the SAT and GRE. For eleven years a major writer of examinations owned a major deliverer of examinations. Nothing improper has been alleged, and ETS's own tests were not the bulk of what Prometric delivered. But the arrangement is precisely the one the industry's separation of powers is designed to avoid, and it ended: ETS sold in 2018. **The same question sits, unresolved, over the exam and credential businesses that share an owner today, and this entry notes the parallel because the site should apply its scepticism evenly rather than selectively.**",
