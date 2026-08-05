@@ -8048,9 +8048,8 @@
     "hubMapLabel": "Jump to a family section",
     "manPageDetail": "Read this tool's full documentation without leaving the page.",
     "manPageLabel": "Open the man page",
-    "actionGreenRoom": "Green room - full-screen ambient light",
-    "actionRedRoom": "Red room - night-vision screen",
-    "roomHint": "Any key or click to leave"
+    "actionGreenRoom": "Green room - the /dev/other index",
+    "actionRedRoom": "Red room - the /dev/out index"
   },
   "settings_page": {
     "eyebrow": "Preferences",

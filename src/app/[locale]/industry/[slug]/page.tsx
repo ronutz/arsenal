@@ -127,6 +127,8 @@ import { rapid7Profile } from "@/content/vendors/profiles/rapid7";
 import { elasticProfile } from "@/content/vendors/profiles/elastic";
 import { sophosProfile } from "@/content/vendors/profiles/sophos";
 import { kasperskyProfile } from "@/content/vendors/profiles/kaspersky";
+import { solarwindsProfile } from "@/content/vendors/profiles/solarwinds";
+import { ivantiProfile } from "@/content/vendors/profiles/ivanti";
 import { parxtechProfile } from "@/content/vendors/profiles/parxtech";
 import { accessHomeFleetProfile } from "@/content/vendors/profiles/access-home-fleet";
 import { watchguardProfile } from "@/content/vendors/profiles/watchguard";
@@ -145,6 +147,8 @@ import { alliedTelesisProfile } from "@/content/vendors/profiles/allied-telesis"
 
 // Rich profiles, keyed by slug. Vendors without a profile render the simple layout.
 const PROFILES: Record<string, VendorProfile> = {
+  [ivantiProfile.slug]: ivantiProfile,
+  [solarwindsProfile.slug]: solarwindsProfile,
   [sophosProfile.slug]: sophosProfile,
   [kasperskyProfile.slug]: kasperskyProfile,
   [elasticProfile.slug]: elasticProfile,

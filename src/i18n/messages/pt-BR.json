@@ -8048,9 +8048,8 @@
     "hubMapLabel": "Ir para uma seção de família",
     "manPageDetail": "Leia a documentação completa desta ferramenta sem sair da página.",
     "manPageLabel": "Abrir o manual",
-    "actionGreenRoom": "Sala verde - luz ambiente em tela cheia",
-    "actionRedRoom": "Sala vermelha - tela de visão noturna",
-    "roomHint": "Qualquer tecla ou clique para sair"
+    "actionGreenRoom": "Sala verde - o índice /dev/other",
+    "actionRedRoom": "Sala vermelha - o índice /dev/out"
   },
   "settings_page": {
     "eyebrow": "Preferências",

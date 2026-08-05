@@ -52,6 +52,12 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-08-05T01:38:49-03:00",
+    kind: "feature",
+    title: "Two keys named after rooms they did not open",
+    body: "The G and R shortcuts were introduced as the green room and the red room, and they did not go to either. They painted a full-screen green or red panel over whatever you were reading - a work light and a night-vision screen, dismissed by any key. Useful in their way, and named after two rooms that already exist on this site: the green room is the index of tools whose input is not deterministic text, and the red room is the index of tools that reach out to the real internet. Both have their own pages. Neither was reachable by the key named after it. The person who reported this wrote both the shortcuts and the rooms, and still expected the keys to navigate, which is about as clear a signal as a naming collision can send: if the author cannot hold the distinction, nobody can. The overlays are gone rather than renamed. G now opens the green room index and R opens the red room index, which is what both keys have appeared to promise since the day they shipped. The settings page describes them that way too. Anything that only existed to support the old behaviour - the dismissal handler, the hint text, the stylesheet rules - has been removed rather than left orphaned.",
+  },
+  {
     date: "2026-08-04T14:38:55-03:00",
     kind: "infra",
     title: "A reader came for the company, not the method",

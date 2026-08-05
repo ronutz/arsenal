@@ -14312,26 +14312,6 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    (green: ambient light / improvised chroma; red: darkroom and night-vision,
    preserving dark adaptation), not themed surfaces. Highest z-index on the
    site; any key or click leaves. */
-.ambient-room {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  cursor: pointer;
-}
-.ambient-room--green { background: #00ff41; }
-.ambient-room--red { background: #ff0000; }
-.ambient-room-hint {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: rgba(0, 0, 0, 0.45);
-  padding-bottom: 18px;
-  user-select: none;
-}
-
-/* Human sitemap (2026-07-16): curated section map linked from the footer. */
 .sitemap-tools-count { color: var(--text-tertiary); font-size: 13px; margin-top: 4px; }
 .sitemap-groups {
   display: grid;
