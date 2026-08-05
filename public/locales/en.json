@@ -6418,7 +6418,8 @@
       "cisco": "Network consulting engineer, acting as the single point of contact for key customers including SERPRO and Correios. Escalation and customer-satisfaction management.",
       "enterasys": "Network engineer and instructor. Enterprise networks, IP routing, user access control and NAC, IDS and IPS.",
       "juniper": "Channel support engineer and instructor for enterprise switches and firewalls. Technical sales enablement and Junos-SRX operations training.",
-      "f5channel": "Channel-facing sales and pre-sales engineering for F5, providing technical enablement, proof-of-concept execution, and partner training across distribution.",
+      "implementation": "Deploying and integrating security and network platforms for end customers, mostly under contracts held by resellers and occasionally direct. Juniper SSG, SRX, EX and Secure Access - the line that became MAG and then Pulse Secure - alongside Cisco ASA, Palo Alto Networks next-generation firewalls, and Extreme Networks Summit and BlackDiamond switches.",
+      "f5channel": "Channel-facing sales and pre-sales engineering for F5, providing technical enablement, proof-of-concept execution, and partner training across distribution. Secondary work in the same years covered FireEye, McAfee, VMware, Ixia and Keysight, and Pulse Secure.",
       "rededucation": "Authorized training instructor delivering official certified courses across F5, Fortinet, Extreme Networks, and Netskope to organizations worldwide.",
       "fullHistory": "Read the full history",
       "vendorsLink": "The career record",
@@ -14497,7 +14498,8 @@
     "careerCardDesc": "What the work actually was: the accounts, the escalations, the technologies, and what it certified.",
     "careerCardCta": "Read the career chapter",
     "disclaimerTag": "Note",
-    "lineageLink": "See the full acquisition lineage"
+    "lineageLink": "See the full acquisition lineage",
+    "workedWithPill": "Worked with directly"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",

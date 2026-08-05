@@ -103,7 +103,10 @@ export default async function IndustryHubPage({
      *  These two are INDEPENDENT, not alternatives: nine companies are both,
      *  and modelling them as one category meant only one pill could ever
      *  show (PRIME 2026-07-28). */
-    isCareer: boolean;
+    // TWO SEPARATE CLAIMS (2026-08-05, PRIME). Employment and partnership are
+    // different relationships and were being rendered as one pill.
+    isInside: boolean;
+    isDirect: boolean;
   };
 
   const fromPartners: TimelineEntry[] = partnerVendors
@@ -132,7 +135,15 @@ export default async function IndustryHubPage({
       // The dedup removed duplicate cards and took the chip with them. Nobody
       // noticed for a week, because a missing chip looks like a company you
       // simply did not work at.
-      isCareer: v.careerChapter !== undefined,
+      //
+      // CHANGED 2026-08-05 (PRIME): no longer inferred from careerChapter.
+      // Having a career chapter says a company is part of the record; it does
+      // not say he was employed there. Eleven of the sixteen were partners,
+      // resellers or vendors he worked with from a distributor - and five of
+      // those should carry no working claim at all. The pill now reads the
+      // declared relationship.
+      isInside: v.relationships?.includes("worked-inside") ?? false,
+      isDirect: v.relationships?.includes("worked-with-directly") ?? false,
     }));
 
   // CAREER VENDORS WITHOUT AN INDUSTRY ENTRY ARE SKIPPED (2026-08-02).
@@ -165,7 +176,13 @@ export default async function IndustryHubPage({
       partnerVendors.find((p) => p.slug === v.slug)?.relationships?.includes(
         "authorized-instructor",
       ) ?? false,
-    isCareer: true,
+    isInside:
+      partnerVendors.find((p) => p.slug === v.slug)?.relationships?.includes("worked-inside") ??
+      false,
+    isDirect:
+      partnerVendors
+        .find((p) => p.slug === v.slug)
+        ?.relationships?.includes("worked-with-directly") ?? false,
   }));
 
   // DEDUPLICATED 2026-07-29. Step 4 converted all fifteen career vendors into
@@ -306,8 +323,11 @@ export default async function IndustryHubPage({
                       {v.isInstructor && (
                         <span className="vendor-instructor-pill">{tp("instructorPill")}</span>
                       )}
-                      {v.isCareer && (
+                      {v.isInside && (
                         <span className="vendor-career-pill">{tp("careerPill")}</span>
+                      )}
+                      {v.isDirect && (
+                        <span className="vendor-career-pill">{tp("workedWithPill")}</span>
                       )}
                     </span>
                     <span className="vendor-card-tagline">{v.tagline}</span>

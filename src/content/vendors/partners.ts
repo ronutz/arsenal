@@ -91,11 +91,32 @@ export type VendorRelationship =
   /** Red Education is a partner of this vendor. */
   | "red-education-partner"
   /** PRIME is an authorised instructor for this vendor. Four only. */
-  | "authorized-instructor";
+  | "authorized-instructor"
+  /**
+   * PRIME was employed by this company.
+   *
+   * ADDED 2026-08-05 (PRIME). The card pill was previously derived from
+   * whether a vendor had a careerChapter, which made every company in the
+   * career record read as an employer. Most were not: several were vendors he
+   * worked WITH from a partner, reseller or distributor position. That is a
+   * different claim, and the kind that matters on a public page about
+   * somebody's working life.
+   *
+   * The distinction is now data rather than inference.
+   */
+  | "worked-inside"
+  /**
+   * PRIME worked with this vendor directly from a partner, reseller or
+   * distributor position - not as an employee. Rendered as "Worked with
+   * directly", which is the phrase the career pages already use.
+   */
+  | "worked-with-directly";
 
 export const VENDOR_RELATIONSHIPS: readonly VendorRelationship[] = [
   "red-education-partner",
   "authorized-instructor",
+  "worked-inside",
+  "worked-with-directly",
 ] as const;
 
 export interface PartnerVendor {
@@ -1611,6 +1632,7 @@ export const partnerVendors: PartnerVendor[] = [
     // The lineage is why it deserves a card: Keysight IS Hewlett-Packard's
     // original test and measurement business, spun out twice.
     slug: "ixia-keysight",
+    relationships: ["worked-with-directly"],
     // The distribution-years chapter covers Ixia among others; it
     // lost its original home when the combined entry was dissolved, and both
     // surviving lineages point at it so neither reader path misses it.
@@ -2615,7 +2637,7 @@ export const partnerVendors: PartnerVendor[] = [
     // F5 - company history (PRIME step 4, 2026-07-29). Hub + lineage page
     // already carry the deal detail; this is the company and the idea.
     slug: "f5",
-    relationships: ["red-education-partner", "authorized-instructor"],
+    relationships: ["red-education-partner", "authorized-instructor", "worked-with-directly"],
     tags: ["vendor"],
     group: "other",
     name: "F5",
@@ -2745,7 +2767,7 @@ export const partnerVendors: PartnerVendor[] = [
     // this entry tells the COMPANY STORY and leaves the acquisition detail
     // where it already lives rather than duplicating it.
     slug: "extreme",
-    relationships: ["red-education-partner", "authorized-instructor"],
+    relationships: ["red-education-partner", "authorized-instructor", "worked-with-directly"],
     tags: ["vendor"],
     group: "other",
     name: "Extreme Networks",
@@ -2799,6 +2821,7 @@ export const partnerVendors: PartnerVendor[] = [
     // Its ending is already recorded from the Ivanti research: acquired
     // alongside MobileIron, completing 1 December 2020.
     slug: "pulse-secure",
+    relationships: ["worked-with-directly"],
     tags: ["vendor"],
     group: "other",
     name: "Pulse Secure",
@@ -2828,7 +2851,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // CISCO - company history (PRIME step 4, 2026-07-29).
     slug: "cisco",
-    relationships: ["red-education-partner"],
+    relationships: ["red-education-partner", "worked-inside"],
     tags: ["vendor"],
     group: "other",
     name: "Cisco Systems",
@@ -2860,7 +2883,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // PALO ALTO NETWORKS - company history (PRIME step 4, 2026-07-29).
     slug: "palo-alto",
-    relationships: ["red-education-partner"],
+    relationships: ["red-education-partner", "worked-with-directly"],
     tags: ["vendor"],
     group: "other",
     name: "Palo Alto Networks",
@@ -2888,6 +2911,7 @@ export const partnerVendors: PartnerVendor[] = [
     // single most connected fact on this timeline: Ken Xie -> Fortinet,
     // Nir Zuk -> Palo Alto, Changming Liu -> Aerohive -> Extreme.
     slug: "netscreen-juniper",
+    relationships: ["worked-inside"],
     tags: ["vendor"],
     group: "other",
     name: "NetScreen and Juniper Networks",
@@ -2923,6 +2947,7 @@ export const partnerVendors: PartnerVendor[] = [
     // March 1983, in Levine's garage. The four-way split is the reason three
     // other entries on this timeline exist at all.
     slug: "cabletron-enterasys",
+    relationships: ["worked-inside"],
     tags: ["vendor"],
     group: "other",
     name: "Cabletron Systems and Enterasys",
@@ -2962,6 +2987,7 @@ export const partnerVendors: PartnerVendor[] = [
     // lineage facts were already verified in the Cabletron research earlier
     // this week.
     slug: "riverstone",
+    relationships: ["worked-inside"],
     tags: ["vendor"],
     group: "other",
     name: "Riverstone Networks",
@@ -2990,6 +3016,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // IRONPORT - company history (PRIME step 4, 2026-07-29).
     slug: "ironport",
+    relationships: ["worked-inside"],
     tags: ["vendor"],
     group: "other",
     name: "IronPort Systems",
@@ -3274,7 +3301,6 @@ export const partnerVendors: PartnerVendor[] = [
       "Ross Perot founded Electronic Data Systems in 1962 in Dallas, on a proposition that barely existed as a market: that organisations would rather pay someone else to run their data processing than run it themselves. Every managed service and every outsourcing contract since descends from that bet.",
     body: [
       "EDS built systems that became invisible infrastructure, including the networks that let bank machines accept and dispense money. Its business was never the hardware; it was operating the thing on somebody else's behalf, under contract, at a price agreed in advance.",
-      "General Motors bought EDS in 1984 and spun it back out in 1996. Hewlett-Packard acquired it in 2008 for nearly $14B and folded it into HP Enterprise Services.",
       "It belongs on this timeline because the services model it created is the one every vendor on the rest of this page now sells alongside their products - and because an instructor-led training business is itself a descendant of the same idea, that expertise can be contracted rather than hired.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Electronic_Data_Systems",
@@ -3646,6 +3672,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "mcafee-fireeye-trellix",
+    relationships: ["worked-with-directly"],
     // The distribution-years chapter covers FireEye and McAfee among others; it
     // lost its original home when the combined entry was dissolved, and both
     // surviving lineages point at it so neither reader path misses it.
@@ -4283,14 +4310,40 @@ export const partnerVendors: PartnerVendor[] = [
     body: ["The profile covers the Firebox, the 1999 IPO and 2006 take-private, the UTM years on Fireware, AuthPoint, the Panda Security acquisition, and the MSP-first present."],
   },
   {
-    slug: "a10-kemp",
+    // SPLIT 2026-08-05 (PRIME): "split A10 and Kemp into two separate entries,
+    // they may reference each other, but each company with its own entry."
+    // Previously one combined entry at slug a10-kemp, which is now redirected.
+    slug: "a10",
+    group: "other",
+    name: "A10 Networks",
+    founded: 2004,
     tags: ["vendor"],
-    group: "contemporary",
-    name: "A10 & Kemp - the ADC challengers",
+    tagline: "Attacked application delivery from the throughput flank, where the traffic is heaviest.",
+    intro:
+      "Lee Chen founded A10 in San Jose in 2004, having already co-founded Centillion Networks and Foundry Networks. Rather than contest the enterprise data centre feature for feature, it went where volume decides: carrier-grade NAT, DDoS absorption and the service-provider tier measured in millions of concurrent sessions.",
+    body: [
+      "The profile below covers the founding, the Brocade litigation, the 2014 listing, the CGNAT decade and the move into DDoS and 5G infrastructure.",
+      "It is worth reading beside Kemp, which appears separately here and attacked the same category from the opposite direction - down on price rather than up on throughput. Between them they are the reason application delivery never became a single vendor's market.",
+    ],
+    externalUrl: "https://www.a10networks.com/",
+    externalLabel: "A10 Networks",
+  },
+  {
+    // SPLIT 2026-08-05 (PRIME). The Kemp half of the former a10-kemp entry.
+    slug: "kemp",
+    group: "other",
+    name: "Kemp Technologies",
     founded: 2000,
-    tagline: "The second tier that kept the load-balancing leaders honest: A10 from the throughput flank, Kemp from below.",
-    intro: "Application delivery never became a monopoly, and these two are why. Lee Chen's A10 built its franchise where traffic is heaviest - CGNAT, DDoS, the service-provider tier - while Kemp's LoadMaster priced the ADC for the Exchange administrator and went virtual before the market did. Every leader's quote was written knowing they existed.",
-    body: ["The profile covers both foundings, the Brocade litigation chapter, the 2014 A10 IPO, the CGNAT decade, Thunder TPS, Kemp's virtual-first bet, and the 2021 Progress acquisition."],
+    tags: ["vendor"],
+    tagline: "Priced the load balancer for the administrator rather than the committee, and went virtual before the market did.",
+    intro:
+      "Kemp was founded in New York in 2000, into a market where an application delivery controller meant a six-figure chassis and a procurement cycle. LoadMaster sold for the price of a server, to the person who simply needed a workload to stay up. Progress Software acquired the company in 2021.",
+    body: [
+      "The profile below covers the founding, the early move to virtual appliances, and the 2021 acquisition.",
+      "It is worth reading beside A10, which appears separately here and attacked the same category from above on throughput. The two escape routes from a dominant incumbent's pricing are down and sideways, and these are the companies that took them.",
+    ],
+    externalUrl: "https://kemptechnologies.com/",
+    externalLabel: "Kemp Technologies",
   },
   {
     slug: "datacom",

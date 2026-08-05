@@ -788,7 +788,8 @@
 /en/about/vendors/ubiquiti/ /en/industry/ubiquiti/ 301
 /en/about/vendors/access-home-fleet/ /en/industry/access-home-fleet/ 301
 /en/about/vendors/watchguard/ /en/industry/watchguard/ 301
-/en/about/vendors/a10-kemp/ /en/industry/a10-kemp/ 301
+/en/about/vendors/a10-kemp/ /en/industry/a10/ 301
+/en/industry/a10-kemp/ /en/industry/a10/ 301
 /en/about/vendors/datacom/ /en/industry/datacom/ 301
 /en/about/vendors/asus-askey/ /en/industry/asus-askey/ 301
 /en/about/vendors/netgear/ /en/industry/netgear/ 301
@@ -877,7 +878,8 @@
 /pt-BR/about/vendors/ubiquiti/ /pt-BR/industry/ubiquiti/ 301
 /pt-BR/about/vendors/access-home-fleet/ /pt-BR/industry/access-home-fleet/ 301
 /pt-BR/about/vendors/watchguard/ /pt-BR/industry/watchguard/ 301
-/pt-BR/about/vendors/a10-kemp/ /pt-BR/industry/a10-kemp/ 301
+/pt-BR/about/vendors/a10-kemp/ /pt-BR/industry/a10/ 301
+/pt-BR/industry/a10-kemp/ /pt-BR/industry/a10/ 301
 /pt-BR/about/vendors/datacom/ /pt-BR/industry/datacom/ 301
 /pt-BR/about/vendors/asus-askey/ /pt-BR/industry/asus-askey/ 301
 /pt-BR/about/vendors/netgear/ /pt-BR/industry/netgear/ 301

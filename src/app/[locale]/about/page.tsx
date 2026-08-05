@@ -183,6 +183,15 @@ export default async function AboutPage({
                 <span className="about-era-where">Juniper Networks · São Paulo</span>
                 <span className="about-era-what">{t("path.juniper")}</span>
               </li>
+              {/* ADDED 2026-08-05 (PRIME). The record jumped from 2010 to 2015
+                  with no entry for the four years in between, which read as a
+                  gap rather than as what it was: implementation work through
+                  resellers and direct engagements. Supplied first-hand. */}
+              <li className="about-era">
+                <span className="about-era-years mono">2011 – 2014</span>
+                <span className="about-era-where">Implementation · via CYLK, TDeC and direct engagements</span>
+                <span className="about-era-what">{t("path.implementation")}</span>
+              </li>
               <li className="about-era">
                 <span className="about-era-years mono">2015 – 2019</span>
                 <span className="about-era-where">F5 Networks · channel (Westcon, ScanSource)</span>

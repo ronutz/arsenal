@@ -6418,7 +6418,8 @@
       "cisco": "Engenheiro consultivo de redes, como ponto de contato único para clientes-chave como SERPRO e Correios. Gestão de escalonamento e de satisfação do cliente.",
       "enterasys": "Engenheiro de redes e instrutor. Redes corporativas, roteamento IP, controle de acesso de usuários e NAC, IDS e IPS.",
       "juniper": "Engenheiro de suporte de canal e instrutor para switches e firewalls corporativos. Capacitação técnica de vendas e treinamento operacional de Junos-SRX.",
-      "f5channel": "Engenharia de vendas e pré-vendas voltada ao canal para a F5, com capacitação técnica, execução de provas de conceito e treinamento de parceiros ao longo da distribuição.",
+      "implementation": "Implantação e integração de plataformas de segurança e rede para clientes finais, em geral sob contratos de revendas e ocasionalmente direto. Juniper SSG, SRX, EX e Secure Access - a linha que virou MAG e depois Pulse Secure - além de Cisco ASA, firewalls de nova geração da Palo Alto Networks e switches Summit e BlackDiamond da Extreme Networks.",
+      "f5channel": "Vendas e pré-vendas voltadas ao canal para F5, com capacitação técnica, execução de provas de conceito e treinamento de parceiros na distribuição. Nos mesmos anos, trabalho secundário com FireEye, McAfee, VMware, Ixia e Keysight, e Pulse Secure.",
       "rededucation": "Instrutor de treinamento autorizado que ministra cursos oficiais e certificados sobre F5, Fortinet, Extreme Networks e Netskope para organizações no mundo todo.",
       "fullHistory": "Ler a história completa",
       "vendorsLink": "O registro de carreira",
@@ -14497,7 +14498,8 @@
     "careerCardDesc": "O que o trabalho foi de fato: as contas, os escalonamentos, as tecnologias e o que aquilo certificou.",
     "careerCardCta": "Ler o capítulo de carreira",
     "disclaimerTag": "Observação",
-    "lineageLink": "Ver a linhagem completa de aquisições"
+    "lineageLink": "Ver a linhagem completa de aquisições",
+    "workedWithPill": "Trabalhou diretamente"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",

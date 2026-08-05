@@ -129,10 +129,12 @@ import { sophosProfile } from "@/content/vendors/profiles/sophos";
 import { kasperskyProfile } from "@/content/vendors/profiles/kaspersky";
 import { solarwindsProfile } from "@/content/vendors/profiles/solarwinds";
 import { ivantiProfile } from "@/content/vendors/profiles/ivanti";
+import { edsProfile } from "@/content/vendors/profiles/eds";
 import { parxtechProfile } from "@/content/vendors/profiles/parxtech";
 import { accessHomeFleetProfile } from "@/content/vendors/profiles/access-home-fleet";
 import { watchguardProfile } from "@/content/vendors/profiles/watchguard";
-import { a10KempProfile } from "@/content/vendors/profiles/a10-kemp";
+import { a10Profile } from "@/content/vendors/profiles/a10";
+import { kempProfile } from "@/content/vendors/profiles/kemp";
 import { datacomProfile } from "@/content/vendors/profiles/datacom";
 import { banyanProfile } from "@/content/vendors/profiles/banyan";
 import { fujitsuProfile } from "@/content/vendors/profiles/fujitsu";
@@ -147,6 +149,7 @@ import { alliedTelesisProfile } from "@/content/vendors/profiles/allied-telesis"
 
 // Rich profiles, keyed by slug. Vendors without a profile render the simple layout.
 const PROFILES: Record<string, VendorProfile> = {
+  [edsProfile.slug]: edsProfile,
   [ivantiProfile.slug]: ivantiProfile,
   [solarwindsProfile.slug]: solarwindsProfile,
   [sophosProfile.slug]: sophosProfile,
@@ -246,7 +249,8 @@ const PROFILES: Record<string, VendorProfile> = {
   [alliedTelesisProfile.slug]: alliedTelesisProfile,
   [accessHomeFleetProfile.slug]: accessHomeFleetProfile,
   [watchguardProfile.slug]: watchguardProfile,
-  [a10KempProfile.slug]: a10KempProfile,
+  [a10Profile.slug]: a10Profile,
+  [kempProfile.slug]: kempProfile,
   [datacomProfile.slug]: datacomProfile,
   [banyanProfile.slug]: banyanProfile,
   [fujitsuProfile.slug]: fujitsuProfile,

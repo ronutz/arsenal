@@ -52,6 +52,18 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-08-05T02:40:51-03:00",
+    kind: "content",
+    title: "Working with a vendor and working for one are different claims",
+    body: "The industry timeline carried a single pill reading worked inside, applied to every company with a career chapter. That was inferred rather than declared, and it was wrong for most of them. Having a chapter in the career record means a company is part of the story; it does not mean it was an employer. Sixteen companies carried the pill. Five were actual employment. Six were vendors worked with directly from a partner, reseller or distributor position, which is a real relationship and a different one, and those now say so. Five should carry no working claim at all, and now carry none. The wording for the middle group is not new: worked with directly is the phrase the career pages have always used, so the card now agrees with the page it links to. Underneath, the distinction is data rather than inference. Two new relationship values were added alongside the existing partner and instructor ones, and the pill reads what is declared instead of guessing from whether a chapter exists. Anyone adding a company in future has to state which relationship applies, which is the point. The authorised instructor pill was checked at the same time and was already correct on exactly four vendors, unchanged.",
+  },
+  {
+    date: "2026-08-05T02:20:46-03:00",
+    kind: "content",
+    title: "Four years that were not a gap, and two companies that were not one company",
+    body: "The career summary jumped from 2010 to 2015 with nothing between, which read as absence rather than as what it was. Those four years were implementation work: deploying and integrating security and network platforms for end customers, usually under contracts held by resellers and occasionally direct. The kit is now named, because it is the part a reader can actually use - the Juniper firewall and switching lines, the remote access product that changed names twice before becoming Pulse Secure, Cisco's firewall line, next-generation firewalls from Palo Alto Networks, and Extreme's Summit and BlackDiamond switches. The entry for the following period has been extended too: the main focus in those years was one vendor, but the secondary work covered five others and saying so is more accurate than implying singular attention. Separately, two companies that had shared one entry now have their own. They belonged together thematically, since both spent two decades keeping the application delivery leaders honest, one from above on throughput and one from below on price. But a shared theme is not a shared history: different founders, different countries, different decades, different endings. Each now has its own page and each points at the other, which is what the relationship actually is. The old address redirects rather than breaking.",
+  },
+  {
     date: "2026-08-05T01:38:49-03:00",
     kind: "feature",
     title: "Two keys named after rooms they did not open",
