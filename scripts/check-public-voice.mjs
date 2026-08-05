@@ -108,6 +108,11 @@ const contentLines = src
     if (/^\{\s*label:/.test(t) || /^sourceNote:/.test(t)) {
       return /this (entry|site|card)/i.test(t);
     }
+    // A sourceNote long enough to wrap puts its later lines beyond the test
+    // above, so a citation caveat on a continuation line reads as prose to this
+    // check. Treat a line that is plainly mid-citation as apparatus: it names a
+    // source, a document, or an attribution verb, and has no sentence start.
+    if (/^(per |according to |sources? |cited |reported |verified )/i.test(t)) return false;
     return true;
   });
 

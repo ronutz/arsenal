@@ -117,6 +117,16 @@ import { pulseSecureProfile } from "@/content/vendors/profiles/pulse-secure";
 import { riverstoneProfile } from "@/content/vendors/profiles/riverstone";
 import { zscalerProfile } from "@/content/vendors/profiles/zscaler";
 import { cloudflareProfile } from "@/content/vendors/profiles/cloudflare";
+import { akamaiProfile } from "@/content/vendors/profiles/akamai";
+import { equinixProfile } from "@/content/vendors/profiles/equinix";
+import { crowdstrikeProfile } from "@/content/vendors/profiles/crowdstrike";
+import { splunkProfile } from "@/content/vendors/profiles/splunk";
+import { tenableProfile } from "@/content/vendors/profiles/tenable";
+import { qualysProfile } from "@/content/vendors/profiles/qualys";
+import { rapid7Profile } from "@/content/vendors/profiles/rapid7";
+import { elasticProfile } from "@/content/vendors/profiles/elastic";
+import { sophosProfile } from "@/content/vendors/profiles/sophos";
+import { kasperskyProfile } from "@/content/vendors/profiles/kaspersky";
 import { parxtechProfile } from "@/content/vendors/profiles/parxtech";
 import { accessHomeFleetProfile } from "@/content/vendors/profiles/access-home-fleet";
 import { watchguardProfile } from "@/content/vendors/profiles/watchguard";
@@ -135,6 +145,16 @@ import { alliedTelesisProfile } from "@/content/vendors/profiles/allied-telesis"
 
 // Rich profiles, keyed by slug. Vendors without a profile render the simple layout.
 const PROFILES: Record<string, VendorProfile> = {
+  [sophosProfile.slug]: sophosProfile,
+  [kasperskyProfile.slug]: kasperskyProfile,
+  [elasticProfile.slug]: elasticProfile,
+  [tenableProfile.slug]: tenableProfile,
+  [qualysProfile.slug]: qualysProfile,
+  [rapid7Profile.slug]: rapid7Profile,
+  [splunkProfile.slug]: splunkProfile,
+  [crowdstrikeProfile.slug]: crowdstrikeProfile,
+  [equinixProfile.slug]: equinixProfile,
+  [akamaiProfile.slug]: akamaiProfile,
   [cabletronEnterasysProfile.slug]: cabletronEnterasysProfile,
   [ciscoProfile.slug]: ciscoProfile,
   [extremeProfile.slug]: extremeProfile,

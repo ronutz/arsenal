@@ -1918,7 +1918,6 @@ export const partnerVendors: PartnerVendor[] = [
       "The funding tells you who agreed with the thesis: a $12M round led by Benchmark Capital, with Cisco and Microsoft as strategic investors - a network vendor and a software company, neither of which sells transit, both of which benefit from an internet that interconnects cleanly.",
       "The business model insight came slightly later and is the more valuable one. They began by selling floor space, power and cooling. What they discovered was that the money and the durability were in the cross-connect - the physical cable between two tenants. A customer chooses a building because of who is already inside it, and every new tenant makes the building more valuable to the next. That is a network effect expressed in concrete and copper, and it is why colocation consolidated into a handful of operators rather than staying a commodity property business.",
       "And then a loop. Equinix acquired Switch and Data in 2010, and Switch and Data owned PAIX. The founders had left DEC to build a neutral exchange because the one they ran was not theirs; twelve years later their company bought it.",
-      "It listed on NASDAQ in August 2000, survived the dot-com collapse that removed most of its contemporaries, converted to a real estate investment trust in January 2015 - an acknowledgement that it is, structurally, a landlord - and by 2025 reported around 260 data centres in 33 countries and revenue of about $9.22B.",
       "Read beside four other entries here, the pattern is hard to miss. CompTIA's value rests on belonging to no vendor, and whether that survives private equity is unresolved. Kyndryl's advice became worth more the moment IBM stopped owning it. FreeRADIUS stayed open and became the thing everyone builds against. Equinix went furthest: it did not merely benefit from neutrality, it discovered that neutrality could be sold by the square foot.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Equinix",
@@ -2567,11 +2566,14 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Akamai was incorporated on 20 August 1998 by Tom Leighton, an MIT professor of applied mathematics, and Danny Lewin, his graduate student, with Jonathan Seelig, Preetish Nijhawan and Randall Kaplan. It began as a response to a challenge Tim Berners-Lee had put to MIT: the web was going to get congested, and somebody should work out what to do about it.",
     body: [
-      "The specific problem was the flash crowd. A site becomes briefly famous, traffic arrives faster than the origin server can answer, and the site falls over precisely when the most people are looking at it. Adding capacity does not help, because the capacity is needed for an hour a year.",
-      "Leighton and Lewin's answer was mathematical rather than architectural. Consistent hashing lets a large, changing set of caches agree on which of them holds which object without any of them coordinating - crucially, adding or removing a server only remaps a small fraction of the keys, so the network can grow and lose nodes continuously without churning everything. That algorithm is the reason a distributed cache can be operated at all at scale, and it is used far beyond content delivery today.",
-      "The business plan reached the finals of MIT's $50K competition, the company licensed the intellectual property from MIT, and most of the early employees were the students who had worked on it. FreeFlow launched commercially in 1999 with Yahoo as an early customer, and the IPO that year was one of the era's most dramatic: shares opened at $26 and closed the first day above $145.",
-      "Danny Lewin was killed on 11 September 2001. He was a passenger on American Airlines Flight 11, the first aircraft flown into the World Trade Center, and is credited with attempting to stop the hijackers - he had served as an officer in the Israeli Defense Forces. He was 31. In 2017 he and Leighton were inducted into the National Inventors Hall of Fame for the algorithms behind the company.",
-      "Akamai has since moved a majority of its revenue away from pure content delivery into security and cloud, buying Prolexic for DDoS mitigation, SOASTA for performance measurement, and Linode to offer compute at the edge rather than only caching. The network is measured in hundreds of thousands of servers across more than a hundred countries.",
+      // BODY REDUCED 2026-08-04, when the profile below was written. The prose
+      // covered the flash crowd, consistent hashing, the $50K competition and
+      // 11 September, all of which the profile now carries with sources.
+      //
+      // Kept: the MIT licensing arrangement and the Prolexic line, neither of
+      // which the profile states.
+      "The profile below covers the founding, consistent hashing, the 1999 listing, 11 September 2001, and the move from delivery into security and compute.",
+      "Two details sit outside that account. The intellectual property was licensed from MIT rather than owned outright at the start, which is the ordinary arrangement for a university spin-out and a real constraint on an early company. And the security business was assembled as much by purchase as by extension - Prolexic for denial-of-service scrubbing in 2014, later Guardicore for segmentation - on top of capacity that already existed for delivery.",
     ],
     externalUrl: "https://www.akamai.com/company/company-history",
     externalLabel: "Akamai: company history",
@@ -2657,7 +2659,6 @@ export const partnerVendors: PartnerVendor[] = [
       "That became unified threat management, and the FortiASIC is the reason the claim was credible rather than marketing. Inspecting content at line rate is genuinely hard on commodity hardware, which is why competitors selling software on servers had to choose between features and throughput.",
       "The commercial consequence mattered more than the technical one. UTM made real security affordable for organisations that could not staff a security team, and Fortinet's growth came substantially from the mid-market and from the channel rather than from displacing incumbents in large enterprises.",
       "The portfolio has since expanded well beyond the firewall into switching, wireless, endpoint, SIEM and SD-WAN, held together by a management fabric - the same one-vendor-for-the-whole-stack proposition that Cisco made for networking, applied to security.",
-      "Its acquisitions, and what those companies had themselves bought, are on the vendor lineage page.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Fortinet",
     externalLabel: "Fortinet",
@@ -2683,7 +2684,6 @@ export const partnerVendors: PartnerVendor[] = [
       "Cloud access security brokers answered the visibility half. The harder half was doing something about it without blocking work, which requires understanding the ACTIVITY inside an application rather than the application itself - the difference between uploading to a corporate tenant and uploading the same file to a personal one, which look nearly identical on the wire.",
       "That distinction is why the product had to understand application semantics rather than just domains, and it is the reason the category could not be served by a proxy that only saw hostnames.",
       "The market has since folded CASB into security service edge, combining it with secure web gateway and zero-trust access, and Netskope built its own global network, NewEdge, rather than renting capacity - a capital decision that only makes sense if you believe inspection has to happen close to the user.",
-      "Its acquisitions are on the vendor lineage page.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Netskope",
     externalLabel: "Netskope",
@@ -2708,7 +2708,6 @@ export const partnerVendors: PartnerVendor[] = [
       "The idea underneath is worth stating because it is easy to miss: an assertion signed by a party you trust is better than a credential you have to store. It moves the security problem from protecting secrets to verifying signatures, and every single-sign-on deployment since rests on that trade.",
       "Ownership has changed repeatedly. Vista Equity Partners took it private in 2016, it returned to public markets in 2019, and Thoma Bravo took it private again in 2022 - the same firm that appears elsewhere on this timeline holding Sophos and LANDESK.",
       "In 2023 Thoma Bravo acquired ForgeRock and combined it with Ping, bringing together two of the largest independent identity vendors, and giving the combined portfolio two overlapping product lines to reconcile.",
-      "Its acquisitions, and ForgeRock's own, are on the vendor lineage page.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Ping_Identity",
     externalLabel: "Ping Identity",
@@ -2733,7 +2732,6 @@ export const partnerVendors: PartnerVendor[] = [
       "Zscaler moved the inspection into a distributed set of points of presence, so a user connects to a nearby one, is inspected there, and goes on to wherever the application actually is. That removes the hairpin, and it means capacity is a property of the provider rather than of each office's appliance.",
       "It also changes the economics of scale in a way worth understanding. A shared inspection platform sees traffic from every customer, so a threat identified for one becomes blocked for all - the same structural argument IronPort made about email reputation in 2002 and CrowdStrike made about endpoints in 2013. This timeline shows that argument being rediscovered for each layer of the stack in turn.",
       "The company went public in 2018 and the category it defined became security service edge, in which it competes directly with Netskope, which is also on this site and reached the same place from the visibility problem rather than the routing one.",
-      "Its acquisitions are on the vendor lineage page.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Zscaler",
     externalLabel: "Zscaler",
@@ -2761,7 +2759,6 @@ export const partnerVendors: PartnerVendor[] = [
       "Each of those was somebody else's strategic retreat. Enterasys was what remained of Cabletron, a company that had once been Cisco's most serious rival. Avaya's networking arm traced to Nortel. Brocade's had come from Foundry. Aerohive had been founded by people out of NetScreen. So Extreme's product line is an accumulation of lineages that this timeline covers separately, and its installed base includes customers who bought from four companies that no longer exist.",
       "That creates a specific engineering problem, and the company has been candid about it: several operating systems inherited at once, and a decade of work convincing an installed base to converge on fewer of them. EXOS and VOSS both persist because both came with customers who had no reason to migrate.",
       "The Fabric Connect work, inherited with the Avaya line and originally from Nortel, is the most technically distinctive thing in the portfolio - shortest path bridging used to make service provisioning an edge-only operation. It is the subject of one of this site's tools, and it arrived through an acquisition of an acquisition.",
-      "The full deal list, with what each acquired company had itself acquired, is on the vendor lineage page rather than repeated here.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Extreme_Networks",
     externalLabel: "Extreme Networks",
@@ -2788,7 +2785,6 @@ export const partnerVendors: PartnerVendor[] = [
       "Check Point patented it, sold it as software on general-purpose hardware, and effectively created the commercial firewall category. Through the late 1990s it held a dominant share of a market it had defined.",
       "What happened next is the more interesting half. Nir Zuk, one of the first employees, left and eventually founded Palo Alto Networks, which overtook Check Point in firewall revenue around 2014. Shlomo Kramer, a co-founder, went on to found Imperva and later Cato Networks. The company's alumni network seeded a substantial part of the Israeli security industry, and several of its competitors.",
       "Check Point itself remained independent, profitable and conservative through decades of consolidation - which on this timeline is genuinely rare. Almost every peer from 1993 has been acquired, split or renamed. It has been criticised for moving slowly on next-generation firewall features and cloud, and it is still here, still under its own name, still run for much of that time by a founder.",
-      "The acquisitions it did make, and what those companies had themselves bought, are on the vendor lineage page.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Check_Point",
     externalLabel: "Check Point Software Technologies",
@@ -3077,7 +3073,6 @@ export const partnerVendors: PartnerVendor[] = [
       "The founding argument was specific rather than promotional. Signature-based antivirus asks 'have I seen this file before', which is answerable only about attacks that have already happened somewhere else, and the scanning it requires is heavy enough that users disable it. Alperovitch had attributed the 2009 Operation Aurora intrusions to Chinese actors while at McAfee, and the lesson both founders took was that the interesting question is not which malware is present but which adversary is operating - and adversaries reuse behaviour even when they change their tools.",
       "So Falcon, shipped in 2013, inverted the model: a deliberately light agent that streams telemetry to a cloud where behaviour is correlated across every customer at once. One organisation seeing something odd becomes every organisation knowing about it. That is a genuinely different product from an on-premises scanner, and it is why the company grew as fast as it did.",
       "The investigations made the name. Sony Pictures in 2014, the Democratic National Committee intrusions in 2015 and 2016 - work that put a private company in the middle of a national political argument, which is a position security vendors had not previously occupied.",
-      "It went public in June 2019 at roughly $14B, rose over 70% on the first day, and joined the S&P 500 in 2024.",
       "Then, on 19 July 2024 at 04:09 UTC, a faulty configuration update to the Falcon sensor crashed an estimated 8.5 million Windows machines and left them unable to restart. Airlines, hospitals, banks, broadcasters and payment terminals stopped. It is generally described as the largest IT outage in history, with damage estimated near $10B, and it produced duelling lawsuits between CrowdStrike and Delta Air Lines.",
       "The uncomfortable part is that the outage was not a failure of the architecture so much as its logical conclusion. A lightweight agent with kernel access on millions of machines, updated centrally and rapidly, is exactly what made the detection model work - and exactly what made one bad file global before anyone could intervene. Every property that made the product good made the failure big. That trade is worth understanding before deploying anything shaped the same way, which is most of modern security.",
     ],
