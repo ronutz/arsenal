@@ -15146,3 +15146,48 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .partner-lineage-link:focus-visible {
   border-bottom-color: var(--accent-primary);
 }
+
+/* ---------------------------------------------------------------------------
+   INDUSTRY CARD: COUNTRY FLAG AND CATEGORY PILLS (PRIME 2026-08-06)
+   ---------------------------------------------------------------------------
+   Two additions to the timeline cards: where a company came from, and what
+   kind of company it is. Both were requested so a reader can scan 164 entries
+   and place each one without opening it.
+
+   These are the first new classes added to this file in some time, and they
+   follow the existing pill geometry exactly - same radius, same padding, same
+   uppercase treatment - so the row reads as one family rather than as two
+   design eras. The only deliberate difference is COLOUR: relationship pills
+   (partner, instructor, career) use accent and danger tones because they are
+   claims about Rodolfo, while category pills use a muted border because they
+   are neutral facts about the company. A reader should be able to tell those
+   two kinds of statement apart at a glance without reading either. */
+
+.vendor-card-flag {
+  /* Sits before the name, at text size rather than enlarged: the flag is an
+     annotation on the name, not a graphic element competing with it. */
+  margin-right: 0.45rem;
+  font-size: 1.05rem;
+  line-height: 1;
+  vertical-align: baseline;
+}
+
+.vendor-card-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.vendor-cat-pill {
+  display: inline-block;
+  padding: 0.08rem 0.45rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}

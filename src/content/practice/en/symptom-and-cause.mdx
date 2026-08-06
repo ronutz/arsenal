@@ -1,0 +1,74 @@
+---
+slug: symptom-and-cause
+title: "The difference between a symptom and a cause"
+thesis: "Root cause is not discovered, it is chosen. Every causal chain continues indefinitely in both directions, and the professional judgement is where to stop, which should be the point where you actually have leverage."
+stance: practised
+part: breaks
+order: 6
+roles: ["second-line", "design", "management"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["layer-by-layer"]
+artefact: "Three tests for whether you have found a cause or a link"
+updated: "2026-08-06"
+---
+
+## The chain does not end
+
+A service was unavailable for forty minutes. Why?
+
+The application could not reach its database. Why? The connection pool was exhausted. Why? Connections were not being returned because a query was hanging. Why? The query had no index and the table had grown. Why? Nobody reviewed table growth. Why? There is no capacity review process. Why? The team that ran it was reorganised two years ago and the process was not reassigned. Why? The reorganisation had no handover checklist. Why?
+
+You can keep going. You will always be able to keep going, in both directions, until you arrive at somebody's founding of the company or the heat death of the universe, and neither is a useful thing to put in a report.
+
+**This is the fact the technique conceals: causal chains do not terminate.** The famous method of asking why five times does not find the root cause. It generates a chain of length five and then stops because you ran out of fingers.
+
+## Root cause is a decision
+
+Once you accept that the chain is unbounded, the question changes from *what was the root cause* to *where should we stop*, and that is a judgement somebody has to make and own.
+
+The right place to stop is **where you have leverage**. Not the deepest point you can reach, and not the first one that sounds satisfying — the point at which a change is available to you that would prevent recurrence.
+
+In the example above, several stopping points are defensible. Add the index: cheap, fast, fixes this query and nothing else. Add pool exhaustion alarming: catches the whole class of fault next time, does not prevent it. Restore capacity review: prevents a family of faults, costs an ongoing commitment somebody must fund. Fix reorganisation handovers: enormous leverage, and now you are writing an organisational recommendation from a database incident, which may be exactly right and will need a different audience.
+
+The mistake is not choosing wrong. It is **choosing without saying that you chose**, so the report reads as though the universe handed you a root cause rather than as though a person selected one stopping point from several.
+
+## Three tests
+
+When you think you have a cause rather than a link in the chain, these are worth applying in order.
+
+**The removal test.** If this had not been true, would the incident have happened anyway? If yes, you have found a contributing factor, not a cause. Many things were true during the outage; most of them were bystanders.
+
+**The recurrence test.** If you fix only this, will the same incident happen again? If yes, you have found the proximate mechanism and stopped too early. The index fixes today's query and not next quarter's.
+
+**The leverage test.** Do you have the authority, budget and access to change this? If no, you have not found a cause — you have found something to escalate, and the honest report says so rather than recommending an action nobody in the room can take.
+
+A statement that passes all three is worth calling a cause. One that passes two is worth writing down anyway, clearly labelled as what it is.
+
+## Stopping at human error is stopping too early
+
+The most common premature stop in this industry, and worth refusing on principle.
+
+*"An engineer applied the wrong configuration."* That is not a cause; it is the last human-shaped object in the chain, and it is attractive because it feels like an answer and because it ends the conversation.
+
+The questions after it are the useful ones. Why was the wrong configuration available to apply? Why did nothing check it before it took effect? Why did the interface make the wrong action as easy as the right one? Why was one person able to do this alone at eleven at night? Why did it take forty minutes to notice?
+
+None of those excuse the mistake. All of them describe a system in which that mistake was possible, and the system is the thing you can change. The engineer will be more careful for about three weeks, and then a different engineer will do the same thing, because the conditions did not move.
+
+There is also a practical consequence: teams that stop at human error stop being told about mistakes. The person who breaks something at eleven at night and knows the report will name them will try to fix it quietly first, and that hour is usually the most expensive hour of the whole incident.
+
+## Symptoms are worth recording precisely anyway
+
+None of this makes symptoms unimportant. It makes them evidence rather than conclusions.
+
+Record them exactly and separately: what was observed, by whom, at what time, in what order. *"Users reported slowness from 14:05, monitoring alerted at 14:12, the first error in the application log is 14:03:40."* Those three timestamps not agreeing is itself a finding, and it will be invisible if somebody has already summarised all of it into *"the application was slow."*
+
+The [incident timeline builder](/tools/incident-timeline-rca-builder) exists to keep that separation intact, because the moment observations and conclusions are written in the same voice, the analysis is contaminated and cannot be un-contaminated by anybody reading it later.
+
+## Write down where you stopped, and why
+
+The single practice that improves this most costs one paragraph.
+
+State the chain as far as you followed it. State where you stopped. State why you stopped there — leverage, cost, authority, or a judgement that further links were outside the scope of this incident. State what you are choosing not to fix, and say who would need to own it if somebody decided to.
+
+That paragraph converts an analysis from a claim about reality into a documented decision. It survives review, it tells the next person what was already considered, and when the same fault recurs eighteen months later it shows precisely which link somebody chose not to address — which is a far more useful thing to inherit than a report asserting that the root cause was a missing index.

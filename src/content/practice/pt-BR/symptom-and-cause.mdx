@@ -1,0 +1,74 @@
+---
+slug: symptom-and-cause
+title: "A diferença entre sintoma e causa"
+thesis: "Causa raiz não é descoberta, é escolhida. Toda cadeia causal continua indefinidamente nas duas direções, e o julgamento profissional está em onde parar, que deve ser o ponto onde você de fato tem alavancagem."
+stance: practised
+part: breaks
+order: 6
+roles: ["second-line", "design", "management"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["layer-by-layer"]
+artefact: "Três testes para saber se você achou uma causa ou um elo"
+updated: "2026-08-06"
+---
+
+## A cadeia não termina
+
+Um serviço ficou indisponível por quarenta minutos. Por quê?
+
+A aplicação não conseguia alcançar o banco de dados. Por quê? O pool de conexões esgotou. Por quê? As conexões não estavam sendo devolvidas porque uma consulta travava. Por quê? A consulta não tinha índice e a tabela cresceu. Por quê? Ninguém revisou o crescimento da tabela. Por quê? Não existe processo de revisão de capacidade. Por quê? O time que o conduzia foi reorganizado há dois anos e o processo não foi reatribuído. Por quê? A reorganização não teve lista de passagem. Por quê?
+
+Você pode continuar. Você sempre vai conseguir continuar, nas duas direções, até chegar à fundação da empresa ou à morte térmica do universo, e nenhuma das duas é coisa útil de colocar num relatório.
+
+**Este é o fato que a técnica esconde: cadeias causais não terminam.** O famoso método de perguntar por quê cinco vezes não encontra a causa raiz. Ele gera uma cadeia de comprimento cinco e para porque acabaram os dedos.
+
+## Causa raiz é uma decisão
+
+Uma vez aceito que a cadeia é ilimitada, a pergunta muda de *qual foi a causa raiz* para *onde devemos parar*, e isso é um julgamento que alguém precisa fazer e assumir.
+
+O lugar certo de parar é **onde você tem alavancagem**. Não o ponto mais profundo que você alcança, nem o primeiro que soa satisfatório — o ponto em que existe, ao seu alcance, uma mudança que evitaria a recorrência.
+
+No exemplo acima, vários pontos de parada são defensáveis. Criar o índice: barato, rápido, resolve esta consulta e nenhuma outra. Alarmar o esgotamento do pool: pega a classe inteira de falha na próxima vez, mas não previne. Restabelecer a revisão de capacidade: previne uma família de falhas, e custa um compromisso contínuo que alguém precisa bancar. Corrigir a passagem em reorganizações: alavancagem enorme, e agora você está escrevendo uma recomendação organizacional a partir de um incidente de banco de dados, o que pode ser exatamente certo e vai precisar de outra plateia.
+
+O erro não é escolher errado. É **escolher sem dizer que escolheu**, de modo que o relatório soe como se o universo tivesse entregue uma causa raiz, em vez de uma pessoa ter selecionado um ponto de parada entre vários.
+
+## Três testes
+
+Quando você achar que tem uma causa e não um elo da cadeia, vale aplicar estes, nesta ordem.
+
+**O teste da remoção.** Se isto não fosse verdade, o incidente teria acontecido mesmo assim? Se sim, você achou um fator contribuinte, não uma causa. Muitas coisas eram verdade durante a indisponibilidade; a maioria era espectadora.
+
+**O teste da recorrência.** Se você corrigir apenas isto, o mesmo incidente acontece de novo? Se sim, você achou o mecanismo próximo e parou cedo demais. O índice resolve a consulta de hoje e não a do próximo trimestre.
+
+**O teste da alavancagem.** Você tem autoridade, orçamento e acesso para mudar isto? Se não, você não achou uma causa — achou algo para escalar, e o relatório honesto diz isso em vez de recomendar uma ação que ninguém na sala pode executar.
+
+Uma afirmação que passa nos três merece ser chamada de causa. Uma que passa em dois merece ser escrita assim mesmo, claramente rotulada pelo que é.
+
+## Parar em erro humano é parar cedo demais
+
+A parada prematura mais comum desta indústria, e que vale recusar por princípio.
+
+*"Um engenheiro aplicou a configuração errada."* Isso não é causa; é o último objeto em formato de gente na cadeia, e é atraente porque parece uma resposta e porque encerra a conversa.
+
+As perguntas depois dela é que são úteis. Por que a configuração errada estava disponível para ser aplicada? Por que nada a conferiu antes de entrar em vigor? Por que a interface tornava a ação errada tão fácil quanto a certa? Por que uma pessoa sozinha conseguia fazer isso às onze da noite? Por que levou quarenta minutos para alguém perceber?
+
+Nenhuma delas desculpa o erro. Todas descrevem um sistema no qual aquele erro era possível, e o sistema é a coisa que você pode mudar. O engenheiro vai ficar mais cuidadoso por umas três semanas, e então outro engenheiro vai fazer a mesma coisa, porque as condições não se moveram.
+
+Há também uma consequência prática: times que param em erro humano deixam de ficar sabendo dos erros. Quem quebra algo às onze da noite e sabe que o relatório vai citar seu nome vai tentar consertar em silêncio primeiro, e essa hora costuma ser a mais cara do incidente inteiro.
+
+## Sintomas merecem registro preciso mesmo assim
+
+Nada disso torna os sintomas sem importância. Torna-os evidência, e não conclusão.
+
+Registre-os com exatidão e separadamente: o que foi observado, por quem, a que horas, em que ordem. *"Usuários relataram lentidão a partir das 14:05, o monitoramento alarmou às 14:12, o primeiro erro no log da aplicação é 14:03:40."* Esses três carimbos de tempo não concordarem é em si um achado, e será invisível se alguém já tiver resumido tudo como *"a aplicação estava lenta"*.
+
+O [montador de linha do tempo de incidente](/tools/incident-timeline-rca-builder) existe para manter essa separação intacta, porque no instante em que observações e conclusões são escritas na mesma voz, a análise está contaminada e ninguém que a leia depois consegue descontaminar.
+
+## Escreva onde você parou, e por quê
+
+A única prática que mais melhora isto custa um parágrafo.
+
+Enuncie a cadeia até onde você a seguiu. Diga onde parou. Diga por que parou ali — alavancagem, custo, autoridade, ou um julgamento de que os elos seguintes estavam fora do escopo deste incidente. Diga o que você está escolhendo não corrigir, e quem precisaria assumir isso se alguém decidisse.
+
+Esse parágrafo converte uma análise de uma afirmação sobre a realidade para uma decisão documentada. Ele sobrevive à revisão, diz à próxima pessoa o que já foi considerado, e quando a mesma falha voltar dezoito meses depois vai mostrar exatamente qual elo alguém escolheu não tratar — o que é uma herança bem mais útil do que um relatório afirmando que a causa raiz foi um índice ausente.

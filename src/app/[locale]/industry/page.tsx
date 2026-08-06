@@ -31,6 +31,10 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { partnerVendors } from "@/content/vendors/partners";
 import { TAG_ROUTES, vendorsByTag } from "@/content/vendors/partners";
 import { CAREER_VENDORS } from "@/content/vendors/career";
+// Country of origin per entry, and the flag computed from the ISO code rather
+// than stored (PRIME 2026-08-06). See origins.ts for what "origin" means here:
+// where the company was FOUNDED, not where it is domiciled or who owns it now.
+import { VENDOR_ORIGINS, flagFor } from "@/content/vendors/origins";
 
 export async function generateMetadata({
   params,
@@ -94,6 +98,8 @@ export default async function IndustryHubPage({
      *  timeline was showing whichever the group happened to say. It now reads
      *  the explicit `relationships` declaration, so the pill states a fact
      *  somebody wrote down rather than one inferred from a category. */
+    /** Category keys from the entry's own tags, for the category pills. */
+    tags: readonly string[];
     isRedu: boolean;
     /** PRIME is an authorised instructor for this vendor.
      *  A PUBLIC CLAIM ABOUT AUTHORISATION. Four vendors only, and it must never
@@ -123,6 +129,7 @@ export default async function IndustryHubPage({
       // chapters below keep /about/vendors, because those are a different kind
       // of page about a different subject.
       href: `/industry/${v.slug}`,
+      tags: v.tags ?? [],
       isRedu: v.relationships?.includes("red-education-partner") ?? false,
       isInstructor: v.relationships?.includes("authorized-instructor") ?? false,
       // FIXED 2026-08-04 (PRIME spotted it on one card; it affected all
@@ -162,6 +169,9 @@ export default async function IndustryHubPage({
     name: t(`${v.key}.name`),
     tagline: t(`${v.key}.tagline`),
     founded: v.founded,
+    // Career vendors read their category tags from the matching industry entry,
+    // so a company shows the same pills wherever it is rendered from.
+    tags: partnerVendors.find((p) => p.slug === v.slug)?.tags ?? [],
     href: `/industry/${v.slug}`,
     // SINGLE SOURCE (2026-08-02): both branches read the same `relationships`
     // declaration. This one used to consult its own hardcoded list, so the
@@ -297,6 +307,20 @@ export default async function IndustryHubPage({
                         : tp("timelineSince", { from: v.founded })}
                     </span>
                     <span className="vendor-card-name">
+                      {/* Country of origin. Rendered as a flag with the ISO code
+                          as its accessible label, because a flag alone is
+                          meaningless to a screen reader and ambiguous to anyone
+                          who does not recognise it. */}
+                      {VENDOR_ORIGINS[v.slug] && (
+                        <span
+                          className="vendor-card-flag"
+                          role="img"
+                          aria-label={VENDOR_ORIGINS[v.slug]}
+                          title={VENDOR_ORIGINS[v.slug]}
+                        >
+                          {flagFor(VENDOR_ORIGINS[v.slug])}
+                        </span>
+                      )}
                       {v.name}
                       {v.isRedu && (
                         <span className="vendor-partner-pill">{tp("reduPill")}</span>
@@ -311,6 +335,23 @@ export default async function IndustryHubPage({
                         <span className="vendor-career-pill">{tp("workedWithPill")}</span>
                       )}
                     </span>
+                    {/* CATEGORY PILLS. These come from the entry's own `tags`,
+                        which already carried the eight-category vocabulary -
+                        vendor, services, training, standards, reseller,
+                        distributor, carrier, datacentre - so this is a
+                        presentation change rather than new data. Entries carry
+                        more than one where they genuinely span categories, and
+                        the labels are translated rather than showing the raw
+                        tag key. */}
+                    {v.tags.length > 0 && (
+                      <span className="vendor-card-cats">
+                        {v.tags.map((tag) => (
+                          <span key={tag} className="vendor-cat-pill">
+                            {tp(`cat.${tag}`)}
+                          </span>
+                        ))}
+                      </span>
+                    )}
                     <span className="vendor-card-tagline">{v.tagline}</span>
                     {v.ended && <span className="vendor-card-end">{v.ended.note}</span>}
                   </Link>

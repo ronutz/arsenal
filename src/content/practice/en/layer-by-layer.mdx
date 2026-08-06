@@ -1,0 +1,88 @@
+---
+slug: layer-by-layer
+title: "Layer by layer: working the stack without skipping"
+thesis: "The layered model is a search order, not a description of reality. Its value is that it is shared and ordered, and the first question in any real fault is not which layer but which stack, because encapsulation means there is usually more than one."
+stance: practised
+part: breaks
+order: 5
+roles: ["first-line", "second-line", "field"]
+relatedTools: ["fault-hypothesis-builder", "sslo-troubleshooting-flow"]
+relatedIndustry: []
+relatedPractice: ["bisection", "symptom-and-cause"]
+artefact: "Which stack am I in? A question to ask before which layer"
+updated: "2026-08-06"
+---
+
+## What the model is actually for
+
+Everybody who has sat a networking exam can recite the layers. Rather fewer can say what the model is for during an incident, and the answer is narrower and more useful than the exam version.
+
+It is not a description of how data physically moves. It is **a search order that two strangers can agree on**. When you say the problem is below layer three, an engineer you have never met — at a vendor, at a carrier, at three in the morning — knows what you have ruled out and what you have not. That shared vocabulary is worth more during an escalation than any technical property of the model.
+
+Which means the model earns its keep as a discipline for covering ground in an agreed sequence, and that is how it should be used: not because packets respect it, but because people do.
+
+## The question before "which layer"
+
+Here is the thing the exam version leaves out, and it is the single most useful correction available to somebody who already knows the model.
+
+**Ask which stack before you ask which layer.**
+
+A modern path almost never has one stack. A user on a virtual private network has an inner stack riding inside an outer one. A tunnel between sites means the same. A proxy or load balancer terminates one connection and originates another, so the client-side flow and the server-side flow are two different conversations that happen to be adjacent in one device. Encrypted transport wraps a session inside another session. Containers add a virtual layer two that exists only inside a host.
+
+So when somebody says the fault is at layer four, the immediate question is: **layer four of which conversation?** Client to proxy, or proxy to server? Inside the tunnel or outside it? Those are different objects with different maximum segment sizes, different reset behaviour, different timeouts, and they fail in different ways.
+
+Getting this wrong is how an afternoon disappears. The capture is clean, the counters are healthy, everything at layer four looks correct — and you were looking at the outer stack while the fault was inside the tunnel.
+
+## Bottom-up, top-down, or middle-out
+
+Three approaches, each correct in different circumstances, and the choice is a judgement rather than a rule.
+
+**Bottom-up** — start at the physical layer and climb. Correct when something has been physically touched: a new installation, a move, a maintenance window, anything where a hand was near the equipment. Also correct when several unrelated services fail together, which usually means something shared and low.
+
+**Top-down** — start at the application and descend. Correct when one application misbehaves and everything else on the same path is fine. If the user's email works and the file share works and only the one application is broken, the physical layer is answering the question for you already, and walking it is theatre.
+
+**Middle-out** — start at layer three and go in whichever direction the answer points. This is what experienced people actually do, and it is not laziness. Layer three is where the most information is cheaply available: can it resolve, can it reach, is the path what you expected. One traceroute frequently eliminates four layers in a direction, and then you are bisecting rather than climbing.
+
+The instruction to always start at the bottom is good advice for people who do not yet know how to choose, and it is a habit worth outgrowing deliberately rather than accidentally.
+
+## The rule about skipping is not the rule people repeat
+
+Everybody says never skip a layer. Everybody skips layers, including the people who say it, because checking a cable that five hundred working users are sharing is not diligence, it is ritual.
+
+The real rule is narrower and it is worth stating carefully:
+
+**You may skip a layer. You may not forget that you skipped it.**
+
+The failure mode is not the skip. It is the moment two hours later when you are certain the problem is in the application because you have exhausted everything else — except you never actually verified the physical path, you assumed it, and the assumption has silently become a finding in your head.
+
+Keeping a written list of what has been *verified* versus what has been *assumed* costs almost nothing and is the difference between a search that converges and one that goes round. Assumptions are fine. Unlabelled assumptions are not.
+
+## The layer of the fault is not the layer of the symptom
+
+This is where most misdiagnosis lives, and it deserves stating plainly.
+
+Slow name resolution presents as a slow application. Every name eventually resolves, so the check passes and somebody writes that resolution is fine — while every page load is paying an extra two seconds up front.
+
+A maximum transmission unit mismatch presents as an application that works for small requests and hangs on large ones, which reads exactly like an application bug and is not.
+
+An expired certificate presents as an application error page, and half the reports will say the application is down.
+
+Packet loss of two per cent presents as a slow database, because the retransmissions are invisible to everybody except the person looking at the right counters.
+
+In all four cases the symptom sits high, the fault sits low, and the fastest path to the answer is to distrust the layer where the complaint arrived. **The complaint tells you where somebody noticed. It does not tell you where the fault is**, and treating those as the same thing is the most common reason a fault survives its first day.
+
+## The layers that are not in the model
+
+Practitioners joke about layer eight, and the joke is load-bearing.
+
+Faults that look technical and are not: a licence that expired, an invoice that was not paid so a service was suspended, a firewall rule that a security team removed on purpose without telling anybody, an account disabled by a leaver process, a change frozen because it is quarter end.
+
+These are not exotic. Over thirty years they are a substantial share of the total, and the tell is usually that the technical evidence is *too* clean — everything is configured correctly, everything is up, and the thing still does not work. When the stack looks perfect, stop climbing it and go and ask who changed what, who was invoiced, and who has authority over the thing that stopped.
+
+## And the honest limitation
+
+The model does not fit modern infrastructure very well, and pretending otherwise causes arguments rather than resolutions.
+
+Encryption does not sit at a layer so much as wrap several. A load balancer that inspects application content while making transport decisions is operating at two layers at once by design. Cloud infrastructure hides layers one through three entirely, and no amount of insisting on the model will get you a look at them.
+
+None of that makes the model useless. It makes it **a shared vocabulary rather than a map of the territory** — and a shared vocabulary is exactly what you need at the point where you have to hand the problem to somebody who was not there, which is the subject of the next part.

@@ -14499,7 +14499,17 @@
     "careerCardCta": "Ler o capítulo de carreira",
     "disclaimerTag": "Observação",
     "lineageLink": "Ver a linhagem completa de aquisições",
-    "workedWithPill": "Trabalhou diretamente"
+    "workedWithPill": "Trabalhou diretamente",
+    "cat": {
+      "vendor": "Fabricante",
+      "services": "Serviços",
+      "training": "Treinamento",
+      "standards": "Padrões",
+      "reseller": "Revenda",
+      "distributor": "Distribuição",
+      "carrier": "Operadora",
+      "datacentre": "Data center"
+    }
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",

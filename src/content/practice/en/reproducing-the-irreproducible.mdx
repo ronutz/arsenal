@@ -1,0 +1,90 @@
+---
+slug: reproducing-the-irreproducible
+title: "Reproducing a fault you cannot reproduce"
+thesis: "Cannot reproduce is a statement about your setup, not about the fault. It reproduces perfectly well for the person who reported it, which means the conditions differ and you have not found the one that matters."
+stance: practised
+part: breaks
+order: 3
+roles: ["second-line", "field"]
+relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder"]
+relatedIndustry: []
+relatedPractice: ["triage-and-severity", "bisection"]
+artefact: "A conditions checklist for faults that will not reproduce"
+updated: "2026-08-06"
+---
+
+## The Tuesday problem
+
+A user reports that the application logs them out mid-session. You try it. It does not log you out. You try it eleven more times across two days, on their machine, from their desk, using their account. Nothing.
+
+You are now at the point where most tickets die. Somebody writes *cannot reproduce*, the ticket closes, and three weeks later it reopens with four more reporters attached and a director's name in the copy line.
+
+Here is the thing worth internalising early, because it changes how you work for the rest of your career: **the fault reproduces beautifully.** It reproduces for that user, reliably enough that they were annoyed enough to raise a ticket. What you have failed to reproduce is not the fault. It is the *conditions*, and the conditions are a set you have not fully enumerated.
+
+"Cannot reproduce" describes your laboratory. It does not describe reality.
+
+## Faults have conditions, not steps
+
+The reproduction instructions people write are steps: click here, then here, then this happens. Steps are what the reporter noticed. Conditions are what was true at the time, and almost none of them are visible to the person clicking.
+
+Which network path they were on. Which of four load-balanced servers took the session. Whether the token had been issued eleven hours ago or eleven minutes. Whether a colleague had opened the same record. Whether it was after the nightly job. Whether they were on the wireless network that hands out a different maximum transmission unit, or MTU, and quietly fragments what the wired network does not.
+
+When a fault will not reproduce, you have matched the steps and missed a condition. The work is not to repeat the steps harder. It is to widen the list of things that might have been true.
+
+## Stop trying to trigger it. Start trying to catch it.
+
+This is the turn that separates people who solve intermittent faults from people who escalate them.
+
+Trying to trigger a fault is a search over a space you cannot see, and every failed attempt teaches you almost nothing, because *it did not happen this time* is consistent with every hypothesis you hold. Trying to catch it is different. You accept that it will happen on its own schedule, and you make sure that when it does, the evidence survives.
+
+Setting a trap looks like this. Continuous capture with a ring buffer, so the last few minutes always exist without filling a disk. Logging raised on the specific components involved and nowhere else, because logging everything produces a volume nobody will read. A trigger, where the platform supports one, that freezes the buffer on the symptom. And crucially, **a way for the user to mark the moment** — a note, a message, anything with a timestamp — because the difference between forty gigabytes of capture and a useful capture is knowing which second to look at.
+
+Then you wait. Waiting feels like not working, which is why people go back to clicking. It is the more productive activity by a wide margin.
+
+## The observer effect is real
+
+Sometimes the fault stops when you watch it, and this is not superstition.
+
+Attaching a packet capture can change interface behaviour. Turning on debug logging changes timing, and a race condition that needed forty milliseconds of slack may not fire when every operation is being written to disk. Sitting beside the user changes what the user does: they type more carefully, they wait for pages to load, they stop double-clicking the button they always double-click.
+
+When a fault disappears under observation, that is not a dead end. It is a finding, and it is often the most valuable one you will get, because it narrows the space enormously. A fault sensitive to timing is a different animal from one sensitive to state, and you have just learned which you have.
+
+The move is to observe less invasively rather than to give up: capture at a mirror port rather than on the host, raise logging on one subsystem instead of all of them, and stop standing behind the person.
+
+## The conditions worth enumerating
+
+When a fault will not reproduce, walk the list rather than the steps.
+
+**Identity and entitlement.** Which account, which groups, which licence. Faults that follow a person rather than a machine live here.
+
+**Path.** Which network, which interface, which of several equivalent servers. Load balancing means the second attempt is often not the same test as the first.
+
+**Time.** Time of day, day of week, position relative to scheduled jobs, and how long the session or the token or the cache had been alive. Age is a condition and it is almost never recorded.
+
+**State.** What else was open, what had been done before, what was cached, whether it was the first attempt after a restart.
+
+**Scale.** How many users were on, how deep the queue was, how large the record was. Faults that only appear at volume will never appear in your quiet afternoon test.
+
+**Client.** Version, browser, operating system, whether the corporate build differs from yours. Yours is almost certainly not theirs.
+
+The [fault hypothesis builder](/tools/fault-hypothesis-builder) on this site exists for exactly this stage: it forces the hypothesis to be written down as something falsifiable rather than carried in your head as a hunch, which matters because a hunch quietly rewrites itself to fit whatever you just saw.
+
+## What "cannot reproduce" should mean
+
+There is a legitimate use of the phrase and it is narrower than its common use.
+
+Not: *I tried and it did not happen.*
+
+But: *I have enumerated the conditions I can identify, matched them, attempted it N times over a stated period, instrumented for capture, and it has not occurred. Here is what I ruled out and here is what I could not test.*
+
+The second version is a result. It tells the next person where not to look, it is honest about coverage, and it can be handed to a vendor without embarrassment. The first version is a shrug with a ticket number attached.
+
+If you must close, close with the trap still set and tell the reporter what to do when it happens again. A ticket closed with instrumentation running and a user who knows to shout is worth more than one held open with nobody looking at it.
+
+## And the uncomfortable ending
+
+Sometimes you change something and it goes away, and you do not know why.
+
+You are allowed to take the win. You are not allowed to write *resolved* and move on, because an unexplained disappearance is a fault that has changed its schedule rather than one that has ended. Write down exactly what changed and exactly when, and say plainly in the record that causation was not established.
+
+That sentence is uncomfortable to write and it is the difference between a team that learns and a team that is surprised twice.

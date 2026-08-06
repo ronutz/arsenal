@@ -14499,7 +14499,17 @@
     "careerCardCta": "Read the career chapter",
     "disclaimerTag": "Note",
     "lineageLink": "See the full acquisition lineage",
-    "workedWithPill": "Worked with directly"
+    "workedWithPill": "Worked with directly",
+    "cat": {
+      "vendor": "Vendor",
+      "services": "Services",
+      "training": "Training",
+      "standards": "Standards",
+      "reseller": "Reseller",
+      "distributor": "Distributor",
+      "carrier": "Carrier",
+      "datacentre": "Data centre"
+    }
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",

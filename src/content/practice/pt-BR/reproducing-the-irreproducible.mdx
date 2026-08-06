@@ -1,0 +1,90 @@
+---
+slug: reproducing-the-irreproducible
+title: "Reproduzir uma falha que não se reproduz"
+thesis: "Não reproduz é uma afirmação sobre o seu ambiente, não sobre a falha. Ela reproduz muito bem para quem a reportou, o que significa que as condições diferem e você não achou a que importa."
+stance: practised
+part: breaks
+order: 3
+roles: ["second-line", "field"]
+relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder"]
+relatedIndustry: []
+relatedPractice: ["triage-and-severity", "bisection"]
+artefact: "Uma lista de condições para falhas que não reproduzem"
+updated: "2026-08-06"
+---
+
+## O problema da terça-feira
+
+Um usuário relata que a aplicação o desconecta no meio da sessão. Você testa. Não desconecta. Você testa mais onze vezes ao longo de dois dias, na máquina dele, na mesa dele, com a conta dele. Nada.
+
+Você chegou ao ponto em que a maioria dos chamados morre. Alguém escreve *não reproduz*, o chamado fecha, e três semanas depois ele reabre com mais quatro pessoas relatando e o nome de um diretor em cópia.
+
+Eis o que vale internalizar cedo, porque muda a forma como você trabalha pelo resto da carreira: **a falha reproduz lindamente.** Ela reproduz para aquele usuário, de forma confiável o bastante para ele ter se irritado a ponto de abrir um chamado. O que você não conseguiu reproduzir não é a falha. São as *condições*, e as condições são um conjunto que você ainda não enumerou por completo.
+
+"Não reproduz" descreve o seu laboratório. Não descreve a realidade.
+
+## Falhas têm condições, não passos
+
+As instruções de reprodução que as pessoas escrevem são passos: clique aqui, depois aqui, e então isto acontece. Passos são o que quem relatou percebeu. Condições são o que era verdade naquele momento, e quase nenhuma delas é visível para quem está clicando.
+
+Por qual caminho de rede ele estava. Qual dos quatro servidores balanceados pegou a sessão. Se o token tinha sido emitido há onze horas ou há onze minutos. Se um colega tinha aberto o mesmo registro. Se foi depois da rotina noturna. Se ele estava na rede sem fio, que entrega uma unidade máxima de transmissão diferente, ou MTU, sigla em inglês para maximum transmission unit, e fragmenta silenciosamente o que a rede cabeada não fragmenta.
+
+Quando uma falha não reproduz, você acertou os passos e errou uma condição. O trabalho não é repetir os passos com mais força. É ampliar a lista do que poderia ser verdade.
+
+## Pare de tentar disparar. Comece a tentar capturar.
+
+Esta é a virada que separa quem resolve falhas intermitentes de quem as escala.
+
+Tentar disparar uma falha é uma busca num espaço que você não enxerga, e cada tentativa fracassada ensina quase nada, porque *não aconteceu desta vez* é compatível com todas as hipóteses que você tem. Tentar capturar é diferente. Você aceita que ela vai acontecer no ritmo dela, e garante que, quando acontecer, a evidência sobreviva.
+
+Armar a armadilha é assim. Captura contínua com buffer circular, para que os últimos minutos sempre existam sem encher o disco. Log elevado nos componentes específicos envolvidos e em nenhum outro, porque logar tudo produz um volume que ninguém vai ler. Um gatilho, onde a plataforma suportar, que congele o buffer no sintoma. E, crucialmente, **um jeito de o usuário marcar o momento** — um recado, uma mensagem, qualquer coisa com carimbo de tempo — porque a diferença entre quarenta gigabytes de captura e uma captura útil é saber em qual segundo olhar.
+
+Depois você espera. Esperar parece não estar trabalhando, e é por isso que as pessoas voltam a clicar. É a atividade mais produtiva por larga margem.
+
+## O efeito do observador é real
+
+Às vezes a falha some quando você olha, e isso não é superstição.
+
+Ligar uma captura de pacotes pode mudar o comportamento da interface. Ligar log de depuração muda a temporização, e uma condição de corrida que precisava de quarenta milissegundos de folga pode não disparar quando cada operação está sendo gravada em disco. Sentar ao lado do usuário muda o que o usuário faz: ele digita com mais cuidado, espera a página carregar, para de dar duplo clique no botão em que sempre dá duplo clique.
+
+Quando uma falha desaparece sob observação, isso não é beco sem saída. É um achado, e frequentemente o mais valioso que você vai obter, porque estreita o espaço enormemente. Uma falha sensível a tempo é um bicho diferente de uma sensível a estado, e você acabou de descobrir qual das duas você tem.
+
+A jogada é observar de forma menos invasiva, e não desistir: capturar numa porta espelhada em vez de no host, elevar o log de um subsistema em vez de todos, e parar de ficar em pé atrás da pessoa.
+
+## As condições que vale enumerar
+
+Quando uma falha não reproduz, percorra a lista em vez dos passos.
+
+**Identidade e permissão.** Qual conta, quais grupos, qual licença. Falhas que seguem a pessoa em vez da máquina moram aqui.
+
+**Caminho.** Qual rede, qual interface, qual de vários servidores equivalentes. Balanceamento significa que a segunda tentativa muitas vezes não é o mesmo teste que a primeira.
+
+**Tempo.** Hora do dia, dia da semana, posição em relação às rotinas agendadas, e há quanto tempo a sessão, o token ou o cache estavam vivos. Idade é uma condição e quase nunca é registrada.
+
+**Estado.** O que mais estava aberto, o que tinha sido feito antes, o que estava em cache, se era a primeira tentativa depois de um reinicio.
+
+**Escala.** Quantos usuários estavam ativos, quão funda estava a fila, quão grande era o registro. Falhas que só aparecem em volume nunca vão aparecer no seu teste de uma tarde tranquila.
+
+**Cliente.** Versão, navegador, sistema operacional, se a imagem corporativa difere da sua. A sua quase certamente não é a dele.
+
+O [montador de hipótese de falha](/tools/fault-hypothesis-builder) neste site existe exatamente para esta etapa: ele obriga a hipótese a ser escrita como algo falsificável, em vez de carregada na cabeça como um palpite — o que importa, porque um palpite se reescreve silenciosamente para caber no que você acabou de ver.
+
+## O que "não reproduz" deveria significar
+
+Existe um uso legítimo da expressão, e ele é mais estreito do que o uso comum.
+
+Não: *tentei e não aconteceu.*
+
+E sim: *enumerei as condições que consegui identificar, igualei essas condições, tentei N vezes ao longo de um período declarado, instrumentei para captura, e não ocorreu. Aqui está o que descartei e aqui está o que não consegui testar.*
+
+A segunda versão é um resultado. Diz à próxima pessoa onde não procurar, é honesta quanto à cobertura, e pode ser entregue a um fabricante sem constrangimento. A primeira versão é um dar de ombros com número de chamado.
+
+Se precisar fechar, feche com a armadilha ainda armada e diga a quem relatou o que fazer quando acontecer de novo. Um chamado fechado com instrumentação rodando e um usuário que sabe que deve avisar vale mais do que um mantido aberto sem ninguém olhando.
+
+## E o final desconfortável
+
+Às vezes você muda alguma coisa e a falha some, e você não sabe por quê.
+
+Você tem o direito de aceitar a vitória. Não tem o direito de escrever *resolvido* e seguir em frente, porque um desaparecimento inexplicado é uma falha que mudou de horário, não uma falha que acabou. Anote exatamente o que mudou e exatamente quando, e diga com todas as letras no registro que a causalidade não foi estabelecida.
+
+Essa frase é desconfortável de escrever e é a diferença entre um time que aprende e um time que se surpreende duas vezes.

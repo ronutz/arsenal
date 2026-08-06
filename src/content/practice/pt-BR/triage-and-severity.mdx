@@ -1,0 +1,86 @@
+---
+slug: triage-and-severity
+title: "Triagem, e por que severidade é uma pergunta de negócio"
+thesis: "Engenheiros classificam falhas pelo que está quebrado. O negócio classifica pelo que parou. Esses dois ordenamentos raramente coincidem, e a discussão sobre qual deles vence é a triagem inteira."
+stance: practised
+part: breaks
+order: 2
+roles: ["first-line", "second-line", "management"]
+relatedTools: ["incident-timeline-rca-builder", "tac-escalation-packet-builder"]
+relatedIndustry: []
+relatedPractice: ["problem-report-intake", "reproducing-the-irreproducible"]
+artefact: "Uma matriz de severidade que sobrevive ao encontro com um diretor"
+updated: "2026-08-06"
+---
+
+## Dois chamados
+
+Um switch de núcleo perdeu um de dois uplinks. O tráfego está correndo pelo sobrevivente, ninguém percebeu, e se o segundo cair o site apaga.
+
+Uma impressora no décimo quarto andar não imprime. Uma pessoa não consegue imprimir. Essa pessoa é o diretor financeiro, e o que ele não consegue imprimir vai para um órgão regulador esta tarde.
+
+Ordene os dois. O instinto de qualquer engenheiro diz que o primeiro é grave e o segundo não é, e por qualquer medida técnica isso está correto: um é falha de redundância em infraestrutura que serve centenas de pessoas, o outro é um único ponto final. Agora pergunte ao diretor financeiro, que vai dizer sem hesitar que a impressora é a emergência e o switch é tarefa de manutenção.
+
+Os dois estão certos, porque estão respondendo perguntas diferentes. O engenheiro ordena pelo **que está quebrado**. O negócio ordena pelo **que parou**. Triagem é a disciplina de sustentar os dois ordenamentos ao mesmo tempo e saber sobre qual deles você está sendo pago para agir.
+
+## Severidade não é prioridade
+
+As duas palavras são usadas como sinônimos e não são a mesma coisa, e quase toda discussão sobre um chamado é, na verdade, uma discussão causada por confundi-las.
+
+**Severidade** descreve a falha: quanto está afetado, com que gravidade, e se está se degradando. É um julgamento técnico e o engenheiro deve ser dono dele.
+
+**Prioridade** descreve a resposta: o que será trabalhado primeiro. É um julgamento de negócio e o engenheiro não deve ser dono dele sozinho.
+
+Uma falha pode ser de baixa severidade e alta prioridade — a impressora. Pode ser de alta severidade e prioridade menor — o uplink, que será resolvido hoje, mas não antes de o documento do regulador sair do prédio. Quando os dois são campos separados, as duas conversas podem acontecer sem que nenhum dos lados precise estar errado. Quando existe um único campo chamado "prioridade", toda conversa sobre ele vira uma negociação de status, e quem grita mais alto define a fila.
+
+Se você herdou um sistema com um campo só, a melhoria útil mais barata disponível é acrescentar o segundo.
+
+## O que o relógio faz
+
+A maioria dos contratos de suporte associa um acordo de nível de serviço, ou SLA, sigla em inglês para service level agreement, à severidade. Atribuir uma severidade não apenas descreve o problema; dispara um relógio, e frequentemente um relógio para resposta e outro para solução.
+
+Isso tem duas consequências que as pessoas descobrem tarde.
+
+A primeira é que **classificar para cima custa algo real**. Se tudo é severidade um, a resposta de severidade um — o acionamento, a ponte, a atualização de hora em hora — é devida em tudo, e um time que deve atualizações horárias em nove chamados é um time escrevendo atualizações em vez de corrigir falhas. A inflação não é de graça; ela é paga com a atenção de quem estaria trabalhando.
+
+A segunda é que **classificar para baixo é o erro mais perigoso**, porque é invisível. Um chamado classificado alto demais se anuncia: alguém é acordado e fica irritado. Um chamado classificado baixo demais fica na fila comum se comportando exatamente como todos os outros até o momento em que é um desastre, e aí os carimbos de tempo mostram uma falha reportada às dez da manhã e tocada às quatro da tarde, que é a frase que ninguém quer na análise.
+
+Diante de um caso genuinamente ambíguo, classifique para cima. É o erro sobre o qual você vai ficar sabendo enquanto ainda há tempo.
+
+## As perguntas que de fato decidem
+
+A triagem é rápida quando você pergunta as coisas certas, e as coisas certas não são técnicas.
+
+**Está se degradando?** Uma falha estável é um objeto diferente de uma que está se espalhando. Redundância já consumida é o caso clássico: nada está errado ainda e a margem acabou.
+
+**Existe contorno, e alguém está usando?** Um contorno que ninguém foi informado não é um contorno. É um fato conhecido por você.
+
+**Quem está bloqueado, e de fazer o quê?** Não quantas pessoas — que trabalho parou. Duzentos usuários levemente incomodados podem importar menos do que um time que não consegue fechar o mês.
+
+**Existe um prazo fora do seu controle?** Reguladores, mercados, voos, transmissões, folha de pagamento. Eles não se movem porque o seu chamado é complicado, e são a razão pela qual uma impressora pode superar um switch.
+
+**O que acontece se você não fizer nada até amanhã?** A pergunta mais esclarecedora do conjunto, e a que mais frequentemente revela que um problema reportado aos gritos pode, sim, esperar — ou que um problema silencioso não pode.
+
+## Reclassifique, e diga que reclassificou
+
+A severidade definida na abertura é uma hipótese formada com a menor quantidade de informação que você terá sobre aquela falha. Ela deve mudar.
+
+A falha não é mudar. A outra falha é mudar em silêncio, o que soa para todo mundo que está assistindo como uma admissão ou uma manobra.
+
+Reclassificar é um evento normal e deve ser anunciado como tal: a nova severidade, o motivo, e o que muda em consequência. *"Elevando para severidade dois: o segundo uplink está oscilando, então não temos mais um fallback estável."* Essa frase custa oito segundos e evita toda a classe de conversa em que alguém descobre uma semana depois que o chamado no qual estava confiando havia sido silenciosamente rebaixado.
+
+As duas direções precisam ser anunciadas. Rebaixar sem avisar é como um cliente descobre, durante a análise, que você parou de tratar o problema dele como urgente e não comentou.
+
+## A parte que ninguém escreve
+
+Severidade é negociada. É apresentada como medição, a matriz é impressa e pregada na parede, e na prática o número no chamado é o resultado de uma conversa entre pessoas com informações diferentes e exposições diferentes.
+
+Isso não é corrupção, e tratá-lo como corrupção é um erro que os mais novos cometem e depois carregam por anos. O diretor financeiro sabe genuinamente algo que você não sabe: para que serve aquele documento e o que acontece se ele atrasar. Seu trabalho não é defender a matriz contra ele. É garantir que os fatos técnicos estejam na sala — que o switch não tem mais redundância, que se ele cair não haverá impressora nenhuma — e então aceitar uma decisão tomada com as duas metades presentes.
+
+Os engenheiros em quem se confia para fazer triagem são os que conseguem dizer *"eu entendo por que você precisa disto primeiro, e aqui está o que estamos escolhendo deixar exposto enquanto fazemos"*. Isso não é concessão. É a frase que torna o próximo escalonamento fácil, porque a pessoa do outro lado já sabe que você vai dizer a verdade sobre o custo.
+
+## Para levar
+
+Mantenha dois campos. Pergunte o que parou, e não o que quebrou. Classifique para cima quando estiver genuinamente incerto, e anuncie toda reclassificação nas duas direções.
+
+E anote a severidade com o motivo junto, porque o [montador de linha do tempo de incidente](/tools/incident-timeline-rca-builder) vai querer isso depois, e *"P2 porque o fallback ainda estava saudável às 09:40"* é evidência. *"P2"* sozinho é um número que alguém vai contestar numa sala onde ninguém lembra o porquê.

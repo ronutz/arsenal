@@ -1,0 +1,86 @@
+---
+slug: triage-and-severity
+title: "Triage, and why severity is a business question"
+thesis: "Engineers classify faults by what is broken. The business classifies them by what has stopped. Those two rankings rarely match, and the argument about which one wins is the whole of triage."
+stance: practised
+part: breaks
+order: 2
+roles: ["first-line", "second-line", "management"]
+relatedTools: ["incident-timeline-rca-builder", "tac-escalation-packet-builder"]
+relatedIndustry: []
+relatedPractice: ["problem-report-intake", "reproducing-the-irreproducible"]
+artefact: "A severity matrix that survives contact with a director"
+updated: "2026-08-06"
+---
+
+## Two tickets
+
+A core switch has lost one of two uplinks. Traffic is running on the survivor, nobody has noticed, and if the second one fails the site goes dark.
+
+A printer on the fourteenth floor will not print. One person cannot print. That person is the chief financial officer, and the thing they cannot print is going to a regulator this afternoon.
+
+Rank those. Every engineer's instinct says the first is serious and the second is not, and by any technical measure that is correct: one is a redundancy failure on infrastructure serving hundreds of people, the other is a single endpoint. Now ask the finance director, who will tell you without hesitating that the printer is the emergency and the switch is a maintenance task.
+
+Both are right, because they are answering different questions. The engineer is ranking by **what is broken**. The business is ranking by **what has stopped**. Triage is the discipline of holding both rankings at once and knowing which one you are being paid to act on.
+
+## Severity is not priority
+
+These get used interchangeably and they are not the same thing, and almost every argument about a ticket is really an argument caused by conflating them.
+
+**Severity** describes the fault: how much is affected, how badly, and whether it is degrading. It is a technical judgement and an engineer should own it.
+
+**Priority** describes the response: what gets worked first. It is a business judgement and an engineer should not own it alone.
+
+A fault can be low severity and high priority — the printer. It can be high severity and lower priority — the uplink, which will be fixed today but not before the regulator's document is out of the building. When the two are separate fields, both conversations can happen without either side having to be wrong. When there is only one field called "priority", every conversation about it becomes a negotiation about status, and the person who shouts loudest sets the queue.
+
+If you inherit a system with one field, the cheapest useful improvement available to you is to add the second one.
+
+## What the clock does
+
+Most support arrangements attach a service level agreement, an SLA, to severity. Assigning a severity does not just describe the problem; it starts a clock, and often a different clock for response than for resolution.
+
+That has two consequences people discover late.
+
+The first is that **over-classifying costs you something real**. If everything is severity one, the severity-one response — the callout, the bridge, the hourly update — is owed on everything, and a team that owes hourly updates on nine tickets is a team writing updates rather than fixing faults. Inflation is not free; it is paid in the attention of the people who would otherwise be working.
+
+The second is that **under-classifying is the more dangerous error**, because it is invisible. An over-classified ticket announces itself: somebody gets woken up and is annoyed. An under-classified ticket sits in the ordinary queue behaving exactly like every other ticket until the moment it is a disaster, and the timestamps then show a fault that was reported at ten in the morning and touched at four in the afternoon, which is the sentence nobody wants in the review.
+
+Given a genuinely ambiguous case, classify up. It is the error you will find out about while there is still time.
+
+## The questions that actually decide it
+
+Triage is fast when you ask the right things, and the right things are not technical.
+
+**Is it degrading?** A fault that is stable is a different object from one that is spreading. Redundancy already consumed is the classic case: nothing is wrong yet and the margin is gone.
+
+**Is there a workaround, and is anybody using it?** A workaround nobody has been told about is not a workaround. It is a fact known to you.
+
+**Who is blocked, and from doing what?** Not how many people — what work has stopped. Two hundred users mildly inconvenienced may matter less than one team that cannot close the month.
+
+**Is there a deadline outside your control?** Regulators, markets, flights, broadcasts, payroll. These do not move because your ticket is complicated, and they are the reason a printer can outrank a switch.
+
+**What happens if you do nothing until tomorrow?** The most clarifying question in the set, and the one that most often reveals that a loudly-reported problem can in fact wait, or that a quiet one cannot.
+
+## Reclassify, and say so
+
+Severity set at intake is a hypothesis formed with the least information you will ever have about the fault. It should change.
+
+The failure is not changing it. The other failure is changing it silently, which reads to everybody watching as either an admission or a manoeuvre.
+
+Reclassification is a normal event and it should be announced like one: the new severity, the reason, and what changes as a result. *"Raising this to severity two: the second uplink is now flapping, so we no longer have a stable fallback."* That sentence costs eight seconds and it prevents the entire class of conversation in which somebody discovers a week later that the ticket they were relying on had quietly been downgraded.
+
+Both directions need announcing. Downgrading without saying so is how a customer finds out during the review that you stopped treating their problem as urgent and did not mention it.
+
+## The part nobody writes down
+
+Severity is negotiated. It is presented as a measurement, the matrix is printed and pinned up, and in practice the number on the ticket is the output of a conversation between people with different information and different exposure.
+
+That is not corruption, and treating it as corruption is a mistake juniors make and then carry for years. The finance director genuinely knows something you do not: what the document is for and what happens if it is late. Your job is not to defend the matrix against them. It is to make sure the technical facts are in the room — that the switch has no redundancy left, that if it fails there is no printer at all — and then to accept a decision made with both halves present.
+
+The engineers who are trusted with triage are the ones who can say *"I understand why you need this first, and here is what we are choosing to leave exposed while we do it."* That is not a concession. It is the sentence that makes the next escalation easy, because the person on the other end already knows you will tell them the truth about what it costs.
+
+## What to take away
+
+Keep two fields. Ask what has stopped rather than what is broken. Classify up when genuinely uncertain, and announce every reclassification in both directions.
+
+And write the severity down with its reason attached, because the [incident timeline builder](/tools/incident-timeline-rca-builder) will want it later, and *"P2 because the fallback was still healthy at 09:40"* is evidence. *"P2"* on its own is a number somebody will argue with in a room where nobody remembers why.

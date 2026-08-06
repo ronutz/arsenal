@@ -898,6 +898,9 @@ export const partnerVendors: PartnerVendor[] = [
     // NV7 - added 2026-08-04 (PRIME), from nv7.com.br. Split out of the Niva
     // entry at his instruction.
     slug: "nv7",
+    // Founded 2018, per the company's own LinkedIn profile (PRIME 2026-08-06). The entry
+    // previously carried no founding year at all.
+    founded: 2018,
     group: "other",
     name: "NV7 Soluções Tecnológicas",
     tags: ["reseller", "services"],
@@ -929,6 +932,9 @@ export const partnerVendors: PartnerVendor[] = [
     // partner list. Under the standing reconciliation an entry is as long as
     // its evidence; padding this to match its neighbours would be inventing.
     slug: "niva",
+    // Founded 2007, per Serasa Experian company register, CNPJ 09.053.350/0001-90 (PRIME 2026-08-06). The entry
+    // previously carried no founding year at all.
+    founded: 2007,
     group: "other",
     name: "Niva",
     // NO `founded` FIELD. The year is not in the public record, and the field

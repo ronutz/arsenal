@@ -1,0 +1,72 @@
+---
+slug: bisection
+title: "Bissecção: dividir o espaço do problema ao meio"
+thesis: "Verificar as coisas em ordem encontra a falha na metade da lista, em média. Cortar a lista ao meio a cada passo encontra no logaritmo da lista, e a diferença entre as duas é a diferença entre uma tarde e uma semana."
+stance: practised
+part: breaks
+order: 4
+roles: ["second-line", "field", "design"]
+relatedTools: ["fault-hypothesis-builder", "sslo-troubleshooting-flow"]
+relatedIndustry: []
+relatedPractice: ["reproducing-the-irreproducible", "layer-by-layer"]
+artefact: "Onde cortar: escolher o ponto médio de um caminho"
+updated: "2026-08-06"
+---
+
+## A conta que ninguém faz
+
+Um usuário de um escritório não alcança uma aplicação em um data center. Entre os dois: um notebook, um ponto de acesso sem fio, um switch, um firewall, um enlace de longa distância, outro firewall, um balanceador e um servidor. Oito coisas.
+
+Verifique em ordem e você encontra a falha, em média, depois de quatro verificações. Às vezes uma, às vezes oito. Isso não é um desastre com oito elementos.
+
+Agora torne realista. Cada um desses equipamentos tem interfaces, listas de controle de acesso, rotas e políticas. O espaço real não é de oito itens; é mais perto de mil. Verificado em ordem, mil candidatos são quinhentas verificações em média, o que não é um dia de trabalho, é uma carreira.
+
+Corte ao meio e mil candidatos viram **dez testes**. Não quinhentos. Dez.
+
+Esse é o argumento inteiro da bissecção, e ele é aritmética, não opinião. A razão de não ser usada não é que as pessoas discordem. É que dividir ao meio exige achar o meio, e achar o meio exige entender o caminho — o que é mais difícil do que abrir o primeiro equipamento e olhar.
+
+## O pré-requisito que todo mundo pula
+
+A bissecção precisa de uma coisa antes de começar: **um teste que você possa repetir e que dê sempre a mesma resposta.**
+
+Sem isso, cada resultado é ruído. Você corta o espaço ao meio, testa, recebe um "passou", e segue — mas o "passou" foi porque a falha intermitente não disparou neste minuto, e não porque aquela metade está limpa. Você acabou de descartar a metade que continha a sua falha e vai passar o resto do dia no hemisfério errado.
+
+É por isso que o artigo anterior desta parte vem antes. Se a falha não reproduz de forma confiável, não bissecte. Instrumente, capture, estabeleça um sinal em que você confie, e só então comece a cortar. Bissectar sobre um teste não confiável é pior do que não bissectar, porque produz respostas erradas com confiança em vez de respostas lentas e honestas.
+
+O teste não precisa ser o sintoma do usuário. Normalmente não deveria ser. Um curl a partir de um host de salto, um ping com tamanho específico e o bit de não fragmentar ligado, uma única consulta — qualquer coisa que falhe quando a falha está presente e passe quando não está, em menos de dez segundos.
+
+## Três eixos para cortar
+
+**O caminho.** O óbvio. Chegue ao meio da cadeia e pergunte se o tráfego está correto ali. Tudo antes disso fica suspeito ou liberado num único movimento. A habilidade está em saber onde o meio realmente fica, que raramente é onde fica o meio do diagrama: corte onde você consegue *observar*, porque um ponto médio que você não enxerga não é um ponto médio.
+
+**A configuração.** Quando um equipamento funciona com a configuração padrão e falha com a sua, a falha está na diferença. Divida a diferença ao meio. Remova metade das políticas, teste, restaure, remova a outra metade. Tedioso, mecânico, e converge em poucas iterações sobre um arquivo de centenas de linhas.
+
+**O tempo.** O eixo mais subutilizado. Se funcionava na terça e falha na quinta, a causa está no registro de mudanças entre as duas datas, e registros de mudança bissectam exatamente como qualquer outra coisa. Pegue a mudança do meio, pergunte se a falha é anterior a ela, e divida. É o eixo que encontra falhas que ninguém causou diretamente — o certificado que expirou, a licença que venceu, a rotina agendada que começou a rodar.
+
+## Mude uma coisa, e desfaça
+
+A disciplina que faz a bissecção funcionar, e a que as pessoas abandonam sob pressão.
+
+**Uma variável por teste.** Se você troca o cabo e reinicia a interface e passa a funcionar, você corrigiu a falha e não aprendeu nada, e não faz ideia de qual das duas coisas escrever no relatório ou qual corrigir em definitivo.
+
+**Desfaça antes do próximo teste.** Uma bissecção em que cada passo deixa sua alteração no lugar deixa de ser bissecção por volta do terceiro passo, porque você passa a testar uma configuração que nunca existiu antes de você construí-la. Quando alguém diz que um sistema ficou instável durante a investigação, foi quase sempre isto.
+
+**Anote cada corte e seu resultado enquanto avança.** Quatro cortes adiante, sob pressão, com alguém pedindo atualização, você não vai lembrar se o terceiro teste passou. O [montador de hipótese de falha](/tools/fault-hypothesis-builder) existe para segurar esse estado, e uma folha de papel também serve. O que não serve é a sua memória aos noventa minutos de incidente.
+
+## Quando a bissecção não funciona
+
+Vale conhecer os formatos em que ela falha, porque forçá-la desperdiça mais tempo do que não tentar.
+
+**Falhas emergentes.** Quando o problema é a interação entre dois elementos individualmente corretos, nenhum corte isolado o separa. A bissecção diz que a falha está na metade que contém os dois, depois no quarto que contém os dois, e então para de informar. Um problema de unidade máxima de transmissão de caminho é o exemplo clássico: cada equipamento está configurado corretamente e a combinação não está.
+
+**Falhas com estado.** Quando testar o ponto médio muda o estado que você tenta observar — limpando uma tabela, reiniciando uma sessão, expirando um cache — o ato de medir destrói a evidência, e cada teste começa de um sistema mais limpo do que aquele que falhou.
+
+**Falhas em que você não consegue observar o meio.** A rede de uma operadora, a plataforma de um provedor, um appliance sem diagnóstico. Aqui o corte não está disponível, e fingir o contrário produz uma bissecção da parte que você enxerga enquanto a falha está na parte que você não enxerga.
+
+Nos três casos, a jogada honesta é dizer isso e mudar de técnica, em vez de continuar dividindo algo que não está convergindo.
+
+## Por que vale praticar de propósito
+
+Bissecção não é intuitiva sob pressão. O instinto, quando um sistema está fora, é ir olhar aquilo que você conhece melhor, o que é uma busca ordenada por familiaridade e não por informação.
+
+Os engenheiros rápidos nisso não pensam mais rápido. Eles apenas criaram o hábito de perguntar *qual teste único corta isto ao meio* antes de tocar em qualquer coisa, e essa pergunta leva quatro segundos e costuma poupar horas. É o maior retorno sobre um único hábito em todo este trabalho.

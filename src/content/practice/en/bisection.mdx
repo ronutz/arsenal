@@ -1,0 +1,72 @@
+---
+slug: bisection
+title: "Bisection: halving the problem space"
+thesis: "Checking things in order finds the fault in half the list on average. Cutting the list in half each time finds it in the logarithm of the list, and the difference between those two is the difference between an afternoon and a week."
+stance: practised
+part: breaks
+order: 4
+roles: ["second-line", "field", "design"]
+relatedTools: ["fault-hypothesis-builder", "sslo-troubleshooting-flow"]
+relatedIndustry: []
+relatedPractice: ["reproducing-the-irreproducible", "layer-by-layer"]
+artefact: "Where to cut: choosing the midpoint of a path"
+updated: "2026-08-06"
+---
+
+## The arithmetic nobody does
+
+A user in one office cannot reach an application in one data centre. Between them: a laptop, a wireless access point, a switch, a firewall, a wide area link, another firewall, a load balancer, and a server. Eight things.
+
+Check them in order and you will find the fault, on average, after four checks. Sometimes one, sometimes eight. That is not a disaster with eight elements.
+
+Now make it realistic. Each of those devices has interfaces, access control lists, routes, and policies. The real space is not eight items; it is closer to a thousand. Checked in order, a thousand candidates is five hundred checks on average, which is not a working day, it is a career.
+
+Cut it in half instead and a thousand candidates is **ten tests**. Not five hundred. Ten.
+
+That is the entire argument for bisection, and it is arithmetic rather than opinion. The reason it does not get used is not that people disagree with it. It is that halving requires you to find the middle, and finding the middle requires you to understand the path — which is harder than opening the first device and looking at it.
+
+## The prerequisite everybody skips
+
+Bisection needs one thing before it can start: **a test you can run repeatedly that gives the same answer.**
+
+Without that, every result is noise. You cut the space in half, test, get a pass, and move on — but the pass was because the intermittent fault did not fire this minute, not because that half is clean. You have now discarded the half containing your fault and you will spend the rest of the day in the wrong hemisphere.
+
+This is why the previous article in this part comes first. If the fault will not reproduce reliably, do not bisect. Instrument, catch it, establish a signal you trust, and only then start cutting. Bisecting on an unreliable test is worse than not bisecting, because it produces confident wrong answers rather than honest slow ones.
+
+The test does not have to be the user's symptom. It usually should not be. A curl from a jump host, a ping with a specific size and the do-not-fragment bit set, a single query — anything that fails when the fault is present and passes when it is not, in under ten seconds.
+
+## Three axes to cut on
+
+**The path.** The obvious one. Get to the middle of the chain and ask whether the traffic is correct there. Everything before it is now suspect or cleared in one move. The skill is knowing where the middle actually is, which is rarely where the diagram's middle is: cut where you can *observe*, because a midpoint you cannot see is not a midpoint.
+
+**The configuration.** When a device works with the default configuration and fails with yours, the fault is in the difference. Halve the difference. Remove half the policies, test, restore, remove the other half. Tedious, mechanical, and it converges in a handful of iterations on a config file with hundreds of lines.
+
+**Time.** The most underused axis. If it worked on Tuesday and fails on Thursday, the cause is in the change record between them, and change records bisect exactly like anything else. Take the middle change, ask whether the fault predates it, and halve. This is the axis that finds faults nobody caused directly — the certificate that expired, the licence that lapsed, the scheduled job that started running.
+
+## Change one thing, and change it back
+
+The discipline that makes bisection work, and the one people abandon under pressure.
+
+**One variable per test.** If you swap the cable and restart the interface and it starts working, you have fixed the fault and learned nothing, and you have no idea which of two things to write in the report or which to fix permanently.
+
+**Undo before the next test.** A bisection where each step leaves its change in place stops being a bisection after about the third step, because you are now testing a configuration that never existed before you built it. When people say a system became unstable during troubleshooting, this is almost always what happened.
+
+**Write down each cut and its result as you go.** Four cuts in, under pressure, with somebody asking for updates, you will not remember whether the third test passed. The [fault hypothesis builder](/tools/fault-hypothesis-builder) exists to hold that state, and a sheet of paper does the job too. What does not do the job is your memory at the ninety-minute mark of an incident.
+
+## When bisection does not work
+
+It is worth knowing the shapes it fails on, because forcing it wastes more time than not trying.
+
+**Emergent faults.** When the problem is an interaction between two elements that are each individually correct, no single cut isolates it. Bisection tells you the fault is in the half containing both, then in the quarter containing both, and then stops being informative. A path maximum transmission unit problem is the classic example: every device is configured correctly and the combination is not.
+
+**Stateful faults.** When testing the midpoint changes the state you are trying to observe — clearing a table, resetting a session, expiring a cache — the act of measuring destroys the evidence, and each test starts from a cleaner system than the one that failed.
+
+**Faults where you cannot observe the middle.** A carrier's network, a provider's platform, an appliance without the diagnostics. Here the cut is not available, and pretending otherwise produces a bisection of the part you can see while the fault sits in the part you cannot.
+
+In all three cases the honest move is to say so and change technique, rather than to keep halving something that is not converging.
+
+## Why this is worth practising deliberately
+
+Bisection is not intuitive under pressure. The instinct when a system is down is to go and look at the thing you know best, which is a search ordered by familiarity rather than by information.
+
+The engineers who are fast at this are not faster thinkers. They have simply built the habit of asking *what single test cuts this in half* before touching anything, and that question takes four seconds and typically saves hours. It is the highest return on a single habit anywhere in this work.
