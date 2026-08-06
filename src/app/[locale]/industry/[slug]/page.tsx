@@ -130,6 +130,41 @@ import { kasperskyProfile } from "@/content/vendors/profiles/kaspersky";
 import { solarwindsProfile } from "@/content/vendors/profiles/solarwinds";
 import { ivantiProfile } from "@/content/vendors/profiles/ivanti";
 import { edsProfile } from "@/content/vendors/profiles/eds";
+import { netappProfile } from "@/content/vendors/profiles/netapp";
+import { kyndrylProfile } from "@/content/vendors/profiles/kyndryl";
+import { nozomiProfile } from "@/content/vendors/profiles/nozomi-networks";
+import { illumioProfile } from "@/content/vendors/profiles/illumio";
+import { lotusProfile } from "@/content/vendors/profiles/lotus";
+import { altavistaProfile } from "@/content/vendors/profiles/altavista";
+import { emcProfile } from "@/content/vendors/profiles/emc";
+import { genesysProfile } from "@/content/vendors/profiles/genesys";
+import { apacheProfile } from "@/content/vendors/profiles/apache";
+import { arcsightProfile } from "@/content/vendors/profiles/arcsight";
+import { lumenProfile } from "@/content/vendors/profiles/lumen-centurylink-level3";
+import { usroboticsProfile } from "@/content/vendors/profiles/usrobotics";
+import { freeradiusProfile } from "@/content/vendors/profiles/freeradius";
+import { honeywellProfile } from "@/content/vendors/profiles/honeywell";
+import { tandyProfile } from "@/content/vendors/profiles/tandy-radioshack";
+import { cpqdProfile } from "@/content/vendors/profiles/cpqd";
+import { telebrasProfile } from "@/content/vendors/profiles/telebras-system";
+import { brasilTelecomProfile } from "@/content/vendors/profiles/brasil-telecom";
+import { stefaniniProfile } from "@/content/vendors/profiles/stefanini";
+import { offsecProfile } from "@/content/vendors/profiles/offsec";
+import { googleSearchProfile } from "@/content/vendors/profiles/google-search";
+import { forcepointProfile } from "@/content/vendors/profiles/websense-forcepoint";
+import { pearsonVueProfile } from "@/content/vendors/profiles/pearson-vue";
+import { comptiaProfile } from "@/content/vendors/profiles/comptia";
+import { credlyProfile } from "@/content/vendors/profiles/credly";
+import { ingramMicroProfile } from "@/content/vendors/profiles/ingram-micro";
+import { westconProfile } from "@/content/vendors/profiles/westcon-comstor";
+import { scansourceProfile } from "@/content/vendors/profiles/scansource";
+import { arrowProfile } from "@/content/vendors/profiles/arrow-electronics";
+import { techDataSynnexProfile } from "@/content/vendors/profiles/tech-data-synnex";
+import { anixterProfile } from "@/content/vendors/profiles/anixter";
+import { hclProfile } from "@/content/vendors/profiles/hcl";
+import { accentureProfile } from "@/content/vendors/profiles/accenture";
+import { promonLogicalisProfile } from "@/content/vendors/profiles/promon-logicalis";
+import { tivitProfile } from "@/content/vendors/profiles/tivit";
 import { parxtechProfile } from "@/content/vendors/profiles/parxtech";
 import { accessHomeFleetProfile } from "@/content/vendors/profiles/access-home-fleet";
 import { watchguardProfile } from "@/content/vendors/profiles/watchguard";
@@ -149,6 +184,41 @@ import { alliedTelesisProfile } from "@/content/vendors/profiles/allied-telesis"
 
 // Rich profiles, keyed by slug. Vendors without a profile render the simple layout.
 const PROFILES: Record<string, VendorProfile> = {
+  [tivitProfile.slug]: tivitProfile,
+  [promonLogicalisProfile.slug]: promonLogicalisProfile,
+  [accentureProfile.slug]: accentureProfile,
+  [hclProfile.slug]: hclProfile,
+  [anixterProfile.slug]: anixterProfile,
+  [techDataSynnexProfile.slug]: techDataSynnexProfile,
+  [arrowProfile.slug]: arrowProfile,
+  [scansourceProfile.slug]: scansourceProfile,
+  [westconProfile.slug]: westconProfile,
+  [ingramMicroProfile.slug]: ingramMicroProfile,
+  [credlyProfile.slug]: credlyProfile,
+  [comptiaProfile.slug]: comptiaProfile,
+  [pearsonVueProfile.slug]: pearsonVueProfile,
+  [forcepointProfile.slug]: forcepointProfile,
+  [googleSearchProfile.slug]: googleSearchProfile,
+  [offsecProfile.slug]: offsecProfile,
+  [stefaniniProfile.slug]: stefaniniProfile,
+  [brasilTelecomProfile.slug]: brasilTelecomProfile,
+  [telebrasProfile.slug]: telebrasProfile,
+  [cpqdProfile.slug]: cpqdProfile,
+  [tandyProfile.slug]: tandyProfile,
+  [honeywellProfile.slug]: honeywellProfile,
+  [freeradiusProfile.slug]: freeradiusProfile,
+  [usroboticsProfile.slug]: usroboticsProfile,
+  [lumenProfile.slug]: lumenProfile,
+  [arcsightProfile.slug]: arcsightProfile,
+  [apacheProfile.slug]: apacheProfile,
+  [genesysProfile.slug]: genesysProfile,
+  [emcProfile.slug]: emcProfile,
+  [altavistaProfile.slug]: altavistaProfile,
+  [lotusProfile.slug]: lotusProfile,
+  [illumioProfile.slug]: illumioProfile,
+  [nozomiProfile.slug]: nozomiProfile,
+  [kyndrylProfile.slug]: kyndrylProfile,
+  [netappProfile.slug]: netappProfile,
   [edsProfile.slug]: edsProfile,
   [ivantiProfile.slug]: ivantiProfile,
   [solarwindsProfile.slug]: solarwindsProfile,

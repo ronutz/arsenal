@@ -1636,6 +1636,12 @@ export const partnerVendors: PartnerVendor[] = [
     // The distribution-years chapter covers Ixia among others; it
     // lost its original home when the combined entry was dissolved, and both
     // surviving lineages point at it so neither reader path misses it.
+    // PER-VENDOR SPANS, established by PRIME across two messages on 2026-08-05:
+    //   FireEye        2015 - 2018   (the Westcon-Comstor half)
+    //   McAfee, Ixia   2018 - 2019   (the ScanSource half)
+    //
+    // The chapter therefore spans 2015 - 2019, which is what it said before -
+    // but for a reason that was not written down. It is now.
     careerChapter: { slug: "fireeye-mcafee-ixia", years: "2015 - 2019" },
     group: "other",
     name: "Ixia and Keysight",
@@ -3676,6 +3682,12 @@ export const partnerVendors: PartnerVendor[] = [
     // The distribution-years chapter covers FireEye and McAfee among others; it
     // lost its original home when the combined entry was dissolved, and both
     // surviving lineages point at it so neither reader path misses it.
+    // PER-VENDOR SPANS, established by PRIME across two messages on 2026-08-05:
+    //   FireEye        2015 - 2018   (the Westcon-Comstor half)
+    //   McAfee, Ixia   2018 - 2019   (the ScanSource half)
+    //
+    // The chapter therefore spans 2015 - 2019, which is what it said before -
+    // but for a reason that was not written down. It is now.
     careerChapter: { slug: "fireeye-mcafee-ixia", years: "2015 - 2019" },
     tags: ["vendor"],
     group: "other",
