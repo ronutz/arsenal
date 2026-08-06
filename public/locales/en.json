@@ -7001,7 +7001,13 @@
     },
     "envTitle": "Remote training environments",
     "envBody1": "Live online classes (vILT) run on Zoom by preference, with Google Meet and Microsoft Teams equally supported when a customer's platform policy calls for it.",
-    "envBody2": "Hands-on labs are delivered through self-hosted lab environments that Rodolfo builds and maintains, through Red Education's lab infrastructure, and through platforms such as CloudShare, Skytap, ReadyTech Axis, and Amazon WorkSpaces - whichever fits the course and the customer."
+    "envBody2": "Hands-on labs are delivered through self-hosted lab environments that Rodolfo builds and maintains, through Red Education's lab infrastructure, and through platforms such as CloudShare, Skytap, ReadyTech Axis, and Amazon WorkSpaces - whichever fits the course and the customer.",
+    "navTitle": "Where to go next",
+    "navLede": "The course catalogue, the certifications these courses prepare for, and the free material you can read before deciding anything.",
+    "navCerts": "Certification guides",
+    "navCertsLede": "What each exam actually tests, and what to study for it. Free, and useful whether or not you book a course.",
+    "navLearn": "Learn",
+    "navLearnLede": "Hundreds of technical articles written by the same instructor, on the protocols and products the courses cover."
   },
   "contact": {
     "title": "Get in touch",

@@ -91,11 +91,23 @@ export default async function AboutPage({
           </div>
         </section>
 
-        {/* --- WHAT I DO NOW --- */}
+        {/* --- THE FACTS ---
+             "What I do now" (heading and body) MOVED TO /training on 2026-08-06
+             at PRIME's instruction: the text describes how courses are taught,
+             which is a question a reader has on the training page and not one
+             they arrived at the biography with.
+
+             The facts below did NOT move, because they are biographical rather
+             than pedagogical - where he is, what he teaches, which languages.
+             They kept their `now.*` message keys so the move needed no
+             retranslation in sixteen locales.
+
+             They now render WITHOUT a heading, directly under the hero, because
+             the heading that used to introduce them has gone and inventing a
+             replacement was not asked for. Read as hero metadata, which is what
+             they are. */}
         <section className="section">
           <div className="container section-narrow">
-            <h2 className="section-title">{t("now.title")}</h2>
-            <p className="section-body">{t("now.body")}</p>
             <ul className="about-facts">
               <li className="about-fact">
                 <span className="about-fact-label">{t("now.basedLabel")}</span>

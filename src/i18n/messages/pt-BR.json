@@ -7001,7 +7001,13 @@
     },
     "envTitle": "Ambientes de treinamento remoto",
     "envBody1": "As turmas ao vivo online (vILT) acontecem preferencialmente pelo Zoom, com Google Meet e Microsoft Teams igualmente atendidos quando a política de plataforma do cliente exigir.",
-    "envBody2": "Os laboratórios práticos são entregues em ambientes de laboratório próprios que o Rodolfo constrói e mantém, na infraestrutura de laboratórios da Red Education e em plataformas como CloudShare, Skytap, ReadyTech Axis e Amazon WorkSpaces - o que melhor servir ao curso e ao cliente."
+    "envBody2": "Os laboratórios práticos são entregues em ambientes de laboratório próprios que o Rodolfo constrói e mantém, na infraestrutura de laboratórios da Red Education e em plataformas como CloudShare, Skytap, ReadyTech Axis e Amazon WorkSpaces - o que melhor servir ao curso e ao cliente.",
+    "navTitle": "Para onde ir agora",
+    "navLede": "O catálogo de cursos, as certificações para as quais estes cursos preparam, e o material gratuito que você pode ler antes de decidir qualquer coisa.",
+    "navCerts": "Guias de certificação",
+    "navCertsLede": "O que cada exame de fato cobra, e o que estudar para ele. Gratuito, e útil tendo você contratado um curso ou não.",
+    "navLearn": "Aprender",
+    "navLearnLede": "Centenas de artigos técnicos escritos pelo mesmo instrutor, sobre os protocolos e produtos que os cursos cobrem."
   },
   "contact": {
     "title": "Entre em contato",
