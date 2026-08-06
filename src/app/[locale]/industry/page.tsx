@@ -228,35 +228,16 @@ export default async function IndustryHubPage({
               {ti("lede")}
             </p>
 
-            {/* Career vendors (worked with, 1996-2020, chronological). */}
-            {/* Career vendors as a compact chronological CHIP STRIP (Option B,
-                PRIME-ratified 2026-07-16): the encyclopedia keeps the partners
-                and pioneers as full cards; the personal record renders as slim
-                chips linking to the career pages, whose timelines carry the
-                "Rodolfo's chapter" markers. Full telling: /about/vendors. */}
-            <div className="vendor-divider">
-              <h2 className="vendor-divider-title">{ti("careerStripTitle")}</h2>
-              <p className="vendor-divider-note">{ti("careerStripNote")}</p>
-            </div>
-            <ul className="career-strip">
-              {CAREER_VENDORS.map((v) => (
-                <li key={v.slug}>
-                  {/* Career chips point at the CAREER CHAPTERS, per the note
-                      above. They were repointed to /industry during the step-2
-                      move, when the career pages briefly lived there; step 3
-                      put them back at /about/vendors, so these follow. */}
-                  <Link href={`/about/vendors/${v.slug}`} className="career-chip">
-                    <span className="career-chip-name">{t(`${v.key}.name`)}</span>
-                    <span className="career-chip-years mono">{t(`${v.key}.years`)}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <p className="vendor-index-pointer">
-              <Link href="/about/vendors" className="btn btn-secondary">
-                {ti("careerStripLink")}
-              </Link>
-            </p>
+            {/* The career chip strip MOVED TO THE HOMEPAGE (PRIME 2026-08-06),
+                where it now sits inside the credibility section, between the
+                "not sold" claim and the link to /about. The reasoning is that
+                the strip is an argument about the AUTHOR rather than about the
+                industry: it belongs where a first-time reader is deciding
+                whether to trust the site, not partway down a lineage index they
+                reached deliberately. This page keeps the timeline, which is the
+                thing it is actually for; the career chapters remain reachable
+                from the homepage strip, from /about/vendors, and from the
+                "Rodolfo's chapter" markers on the individual vendor pages. */}
 
 
             {/* ---- The lineage timeline (PRIME 2026-07-27) ----

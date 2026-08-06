@@ -29,6 +29,9 @@ import ToolFunding from "@/components/ToolFunding";
 import { fundingFor, hasFunding, fundingLinksFor } from "@/config/toolFunding";
 import { Link } from "@/i18n/navigation";
 import HomeStats from "@/components/HomeStats";
+// Career chip strip, moved here from /industry (PRIME 2026-08-06). The data
+// lives in the career module so the homepage and /about/vendors cannot drift.
+import { CAREER_VENDORS } from "@/content/vendors/career";
 import { CATALOGUE } from "@/content/catalogue/catalogue";
 import { getAllArticles } from "@/lib/learn";
 
@@ -54,6 +57,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // NOT the useTranslations hook (which is for client/sync components).
   const t = await getTranslations("home");
   const tNav = await getTranslations("nav");
+  // Career strip copy: headings from the "industry" namespace, per-vendor
+  // name/years from "vendors". Both reused verbatim so the move requires no
+  // retranslation in any of the sixteen locales.
+  const ti = await getTranslations("industry");
+  const tVendors = await getTranslations("vendors");
 
   // Toolbox totals, derived from the canonical sources (canon rule D-63): live
   // tools from the catalogue, articles from the EN Learn corpus. These are never
@@ -97,6 +105,36 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <div className="container section-narrow">
             <h2 className="section-title">{t("credibility.title")}</h2>
             <p className="section-body">{t("credibility.body")}</p>
+
+            {/* ---- The chapters lived from inside (moved here 2026-08-06) ----
+                 The claim above is that the work was done rather than marketed.
+                 This is the evidence for it, and it belongs immediately after
+                 the claim rather than on a page the reader may never reach:
+                 sixteen vendors, each with its years, each linking to the
+                 chapter that says what the job actually was.
+
+                 Rendered from CAREER_VENDORS so the homepage cannot fall out of
+                 step with /about/vendors - one list, two places that read it. */}
+            <div className="vendor-divider">
+              <h2 className="vendor-divider-title">{ti("careerStripTitle")}</h2>
+              <p className="vendor-divider-note">{ti("careerStripNote")}</p>
+            </div>
+            <ul className="career-strip">
+              {CAREER_VENDORS.map((v) => (
+                <li key={v.slug}>
+                  <Link href={`/about/vendors/${v.slug}`} className="career-chip">
+                    <span className="career-chip-name">{tVendors(`${v.key}.name`)}</span>
+                    <span className="career-chip-years mono">{tVendors(`${v.key}.years`)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="vendor-index-pointer">
+              <Link href="/about/vendors" className="btn btn-secondary">
+                {ti("careerStripLink")}
+              </Link>
+            </p>
+
             <p className="section-cta">
               <Link href="/about" className="section-cta-link">
                 {t("credibility.aboutCta")} →

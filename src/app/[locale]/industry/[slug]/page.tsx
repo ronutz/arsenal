@@ -165,6 +165,7 @@ import { hclProfile } from "@/content/vendors/profiles/hcl";
 import { accentureProfile } from "@/content/vendors/profiles/accenture";
 import { promonLogicalisProfile } from "@/content/vendors/profiles/promon-logicalis";
 import { tivitProfile } from "@/content/vendors/profiles/tivit";
+import { compugrafProfile } from "@/content/vendors/profiles/compugraf";
 import { parxtechProfile } from "@/content/vendors/profiles/parxtech";
 import { accessHomeFleetProfile } from "@/content/vendors/profiles/access-home-fleet";
 import { watchguardProfile } from "@/content/vendors/profiles/watchguard";
@@ -184,6 +185,7 @@ import { alliedTelesisProfile } from "@/content/vendors/profiles/allied-telesis"
 
 // Rich profiles, keyed by slug. Vendors without a profile render the simple layout.
 const PROFILES: Record<string, VendorProfile> = {
+  [compugrafProfile.slug]: compugrafProfile,
   [tivitProfile.slug]: tivitProfile,
   [promonLogicalisProfile.slug]: promonLogicalisProfile,
   [accentureProfile.slug]: accentureProfile,

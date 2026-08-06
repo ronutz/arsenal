@@ -35,17 +35,14 @@ export default async function Header() {
           <Link href="/learn" className="site-nav-link">
             {t("learn")}
           </Link>
-          {/* Certification study guides (candidate-facing): a high-intent
-              destination promoted to the primary nav (PRIME 2026-07-09). */}
-          <Link href="/certifications" className="site-nav-link">
-            {t("certifications")}
-          </Link>
-          {/* Vendors home (T-HUB): the front door to the per-vendor hubs. The
-              individual hubs are still reached from here and from the strip on
-              the Tools and Learn listings; this adds one explore entry. */}
-          <Link href="/vendor-hubs" className="site-nav-link">
-            {t("vendors")}
-          </Link>
+          {/* Certifications and Vendors were removed from the primary nav
+              (PRIME 2026-08-06). Both remain fully reachable as cards on the
+              Learn index, which is where somebody looking for study material or
+              a vendor hub actually starts. The nav had grown to seven items;
+              two of them duplicated a destination one click away, and a nav
+              that lists everything ranks nothing. /certifications and
+              /vendor-hubs are unchanged and still linked from Learn, from the
+              Tools and Learn vendor strips, and from search. */}
           {/* Industry hub (PRIME 2026-07-15): the front door to the
               deep-research vendor histories and lineages. */}
           <Link href="/industry" className="site-nav-link">
