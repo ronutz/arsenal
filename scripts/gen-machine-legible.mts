@@ -121,6 +121,66 @@ function cleanCompanions() {
 }
 cleanCompanions();
 
+// ---- 0b. The Practice corpus ---------------------------------------------
+// The Practice is a second body of authored prose (see src/lib/practice.ts) and
+// it earns the same machine-legible twin as /learn: a reader who wants the
+// Markdown, and a crawler that would rather not parse HTML, get the same
+// affordance in both sections. Loaded here rather than in a separate script so
+// the two corpora cannot drift apart in how they are published.
+const PRACTICE_DIR = path.join(process.cwd(), "src", "content", "practice");
+interface Prac {
+  slug: string;
+  title: string;
+  thesis?: string;
+  stance?: string;
+  updated?: string;
+  body: string;
+}
+function loadPractice(locale: string): Prac[] {
+  const dir = path.join(PRACTICE_DIR, locale);
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith(".mdx"))
+    .map((f) => {
+      const parsed = matter(fs.readFileSync(path.join(dir, f), "utf8"));
+      const d = parsed.data as Record<string, unknown>;
+      return {
+        slug: String(d.slug ?? ""),
+        title: String(d.title ?? ""),
+        thesis: d.thesis ? String(d.thesis) : undefined,
+        stance: d.stance ? String(d.stance) : undefined,
+        updated: d.updated ? String(d.updated) : undefined,
+        body: parsed.content,
+      };
+    });
+}
+
+function practiceMarkdown(a: Prac, locale: string): string {
+  const canonical = `${ORIGIN}/${locale}/practice/${a.slug}`;
+  const out: string[] = [`# ${a.title}`, ""];
+  if (a.thesis) out.push(`> ${a.thesis}`, "");
+  const meta = [`Source: ${canonical}`];
+  // The stance travels into the Markdown twin as well. An article's provenance
+  // is not a presentation detail - a machine reading this corpus should be able
+  // to tell testimony from scholarship exactly as a human reader can.
+  if (a.stance) meta.push(`Stance: ${a.stance}`);
+  if (a.updated) meta.push(`Updated: ${a.updated}`);
+  out.push(meta.join("  \n"), "", "---", "", absolutize(a.body, locale).trim(), "");
+  return out.join("\n");
+}
+
+let practiceCount = 0;
+for (const locale of DOC_LOCALES) {
+  for (const a of loadPractice(locale)) {
+    if (!a.slug || !a.title) continue;
+    const dir = path.join(OUT, locale, "practice");
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, `${a.slug}.md`), practiceMarkdown(a, locale), "utf8");
+    practiceCount++;
+  }
+}
+
 // ---- 1. article .md twins (all locales) ----------------------------------
 function articleMarkdown(a: Art, locale: string): string {
   const canonical = `${ORIGIN}/${locale}/learn/${a.slug}`;
@@ -420,7 +480,7 @@ fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
 }
 
 console.log(
-  `[gen-machine-legible] ${mdCount} article .md (${DOC_LOCALES.length} locales), ` +
+  `[gen-machine-legible] ${mdCount} article .md, ${practiceCount} practice .md (${DOC_LOCALES.length} locales), ` +
     `${toolDocCount} tool .md (${DOC_LOCALES.length} locales), feed.xml (${feedItems.length} items), ` +
     `llms.txt (${liveTools.length} tools, ${enArticles.length} EN articles).`,
 );

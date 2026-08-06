@@ -1,0 +1,66 @@
+---
+slug: problem-report-intake
+title: "Abertura de chamado: o que um bom relato de problema contém"
+thesis: "A maior parte do tempo perdido num incidente é perdida antes de alguém começar a trabalhar nele, no intervalo entre o que quem relatou disse e o que de fato está errado."
+stance: practised
+part: breaks
+order: 1
+roles: ["first-line", "second-line"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder", "tac-escalation-packet-builder"]
+relatedIndustry: []
+relatedPractice: []
+artefact: "Seis perguntas para a abertura do chamado"
+updated: "2026-08-06"
+---
+
+## O intervalo que custa mais caro
+
+Um problema de rede chega como uma frase. "A aplicação está lenta." "Ninguém no escritório de Recife consegue entrar." "Quebrou depois da manutenção." Cada uma dessas é a descrição de um efeito sobre o dia de trabalho de alguém, e nenhuma delas é a descrição de uma falha.
+
+O tempo perdido num incidente raramente é perdido durante o diagnóstico. Ele é perdido nas horas entre a chegada do relato e o momento em que alguém estabelece o que o relato de fato significa, e é perdido em silêncio, porque durante essas horas todo mundo acredita que há trabalho acontecendo. Um engenheiro está investigando uma aplicação lenta. A aplicação não está lenta. Um relato, de um usuário, numa filial, aconteceu de ser lento uma vez, e o parque está saudável.
+
+A abertura do chamado é a disciplina de fechar esse intervalo antes que ele se abra.
+
+## O que quem relata pode e o que não pode dizer
+
+Quem relata pode dizer o que observou, quando, e o que mudou para ele. Não pode dizer o que está errado, e não deveria ser cobrado por isso, embora quase sempre ofereça uma teoria e a teoria quase sempre esteja errada de um jeito instrutivo.
+
+Aceite a teoria mesmo assim. "Começou depois que trocaram o firewall" não é um diagnóstico, mas é um carimbo de tempo, e um carimbo de tempo vale mais do que uma opinião. O que quem relata tem e mais ninguém tem é o momento. Ele sabe quando começou, ou pelo menos quando percebeu, e a distância entre essas duas coisas é por si só um dado que vale registrar.
+
+## As seis perguntas
+
+A abertura de chamado com que eu fiquei pergunta seis coisas, e as pergunta antes de alguém abrir um terminal.
+
+**O que exatamente você viu?** Não "estava lento", e sim o que estava na tela, o que a mensagem de erro dizia, o que o cronômetro marcava. Se há mensagem, as palavras exatas. As pessoas parafraseiam mensagens de erro até a inutilidade em menos de um dia.
+
+**Quando começou, e quando você percebeu?** Duas perguntas diferentes com duas respostas diferentes. O intervalo entre elas costuma ser onde a causa mora.
+
+**Quem mais está afetado?** Um usuário, um andar, um site, todo mundo. Essa única resposta elimina mais espaço de busca do que qualquer captura de pacotes, porque traça uma fronteira em volta da falha antes de alguém sair procurando por ela.
+
+**É constante ou intermitente?** E, se intermitente, qual o formato: a cada poucos minutos, só de manhã, só quando o relatório roda. Uma falha com ritmo tem uma causa com ritmo.
+
+**O que mudou?** Pergunte a quem relatou, e depois pergunte ao registro de mudanças, porque essas duas respostas são frequentemente diferentes e a diferença é o achado.
+
+**Já funcionou antes, e quando você viu funcionar pela última vez?** A mais útil das seis e a mais pulada. "Nunca funcionou a partir deste notebook" e "funcionou às nove da manhã" descrevem duas investigações completamente diferentes, e até alguém perguntar, as duas são compatíveis com a mesma frase de abertura.
+
+## Escrever o relato que quem relatou não escreveu
+
+O resultado da abertura não é um formulário preenchido. É um parágrafo, escrito por quem atendeu, que um colega consiga ler friamente às três da manhã e entender.
+
+Esse parágrafo diz o que se observa, onde fica a fronteira do efeito, quando começou, o que mudou por perto, e o que já foi descartado. Ele não diz o que está errado, porque ninguém sabe ainda, e uma teoria anotada na abertura tem o hábito de sobreviver até a análise pós-incidente independentemente das evidências.
+
+A disciplina está em escrever o parágrafo antes da investigação, e não depois dela. Um relato escrito depois é um resumo do que foi encontrado. Um relato escrito na abertura é aquilo contra o que a investigação será medida, e é o único artefato que mais tarde vai mostrar se o problema certo foi trabalhado.
+
+## Para onde esse parágrafo vai depois
+
+Esse parágrafo tem dois futuros, e os dois ficam mais fáceis se ele foi escrito direito.
+
+Se a falha for escalada para um fabricante, o parágrafo de abertura é a primeira coisa de que o caso precisa, e um engenheiro de suporte em outro continente vai formar toda a imagem que terá do seu problema a partir dele. O [montador de pacote de escalonamento para o TAC](/tools/tac-escalation-packet-builder) neste site existe porque essa passagem de bastão perde mais tempo do que qualquer outra etapa isolada do processo. TAC, sigla em inglês para centro de assistência técnica, é como a maioria dos fabricantes chama seu suporte de segundo nível.
+
+Se a falha virar um incidente com análise posterior, o parágrafo de abertura é a primeira entrada da linha do tempo, e é a única escrita antes de alguém saber a resposta. Toda entrada seguinte está contaminada pela visão retrospectiva. O [montador de linha do tempo de incidente](/tools/incident-timeline-rca-builder) monta o resto, e a qualidade da primeira linha determina a qualidade de toda a reconstrução.
+
+## Por que este é o primeiro artigo desta parte
+
+Toda técnica que vem a seguir nesta seção pressupõe que você sabe o que está procurando. Bisseção pressupõe um espaço de problema definido. Trabalho camada a camada pressupõe um sintoma definido. Escalonamento pressupõe um caso definido, e formular uma hipótese — para o que serve o [montador de hipótese de falha](/tools/fault-hypothesis-builder) — pressupõe que exista um sintoma declarado contra o qual construí-la.
+
+Se a abertura foi malfeita, todas elas avançam com eficiência na direção errada, e é justamente a eficiência que torna isso difícil de perceber. Um time pode passar um dia inteiro sendo produtivo a respeito da falha errada, e ter os carimbos de tempo para provar o quanto trabalhou.

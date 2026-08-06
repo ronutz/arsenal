@@ -30,7 +30,7 @@ import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { partnerVendors } from "@/content/vendors/partners";
 import { TAG_ROUTES, vendorsByTag } from "@/content/vendors/partners";
-import { CAREER_VENDORS, REDU_CAREER_PARTNERS } from "@/content/vendors/career";
+import { CAREER_VENDORS } from "@/content/vendors/career";
 
 export async function generateMetadata({
   params,

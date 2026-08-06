@@ -1,0 +1,66 @@
+---
+slug: problem-report-intake
+title: "Intake: what a good problem report contains"
+thesis: "Most of the time lost to an incident is lost before anyone starts working on it, in the gap between what the reporter said and what is actually wrong."
+stance: practised
+part: breaks
+order: 1
+roles: ["first-line", "second-line"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder", "tac-escalation-packet-builder"]
+relatedIndustry: []
+relatedPractice: []
+artefact: "Six questions to ask on intake"
+updated: "2026-08-06"
+---
+
+## The gap that costs the most
+
+A network problem arrives as a sentence. "The application is slow." "Nobody in the Recife office can log in." "It broke after the maintenance." Each of those is a description of an effect on somebody's working day, and none of them is a description of a fault.
+
+The time lost in an incident is rarely lost during diagnosis. It is lost in the hours between the report arriving and somebody establishing what the report actually means, and it is lost silently, because during those hours everyone believes work is happening. An engineer is investigating a slow application. The application is not slow. One report from one user in one branch office happens to have been slow once, and the estate is fine.
+
+Intake is the discipline of closing that gap before it opens.
+
+## What the reporter can and cannot tell you
+
+A reporter can tell you what they observed, when, and what changed for them. They cannot tell you what is wrong, and they should not be asked to, though they will usually offer a theory and the theory will usually be wrong in an instructive way.
+
+Take the theory anyway. "It started after they upgraded the firewall" is not a diagnosis, but it is a timestamp, and a timestamp is worth more than an opinion. What the reporter has that nobody else has is the moment. They know when it started, or at least when they noticed, and the distance between those two is itself a fact worth writing down.
+
+## The six questions
+
+The intake I settled on asks six things, and asks them before anybody opens a terminal.
+
+**What exactly did you see?** Not "it was slow" but what was on the screen, what the error said, what the timer showed. If there is a message, the exact words. People paraphrase error messages into uselessness within a day.
+
+**When did it start, and when did you notice?** Two different questions with two different answers. The gap between them is often where the cause sits.
+
+**Who else is affected?** One user, one floor, one site, everybody. This single answer eliminates more of the search space than any packet capture, because it draws a boundary around the fault before anybody looks for it.
+
+**Is it constant or intermittent?** And if intermittent, what is the shape: every few minutes, only in the morning, only when the report runs. A fault with a rhythm has a cause with a rhythm.
+
+**What changed?** Ask it of the reporter, and then ask it of the change record, because those two answers are frequently different and the difference is the finding.
+
+**Has it worked before, and when did you last see it work?** The most useful question of the six and the one most often skipped. "It has never worked from this laptop" and "it worked at nine this morning" describe two entirely different investigations, and until somebody asks, both are consistent with the same opening sentence.
+
+## Writing the report the reporter did not write
+
+The output of intake is not a filled-in form. It is one paragraph, written by whoever took the call, that a colleague could read cold at three in the morning and understand.
+
+That paragraph says what is observed, where the boundary of the effect sits, when it began, what changed nearby, and what has been ruled out. It does not say what is wrong, because nobody knows yet, and a theory written down at intake has a habit of surviving all the way to the postmortem regardless of the evidence.
+
+The discipline is to write the paragraph before the investigation rather than after it. A report written afterwards is a summary of what was found. A report written at intake is the thing the investigation is measured against, and it is the only artefact that will later show whether the right problem was worked on.
+
+## Where the paragraph goes next
+
+That paragraph has two futures, and both of them are easier if it was written properly.
+
+If the fault is escalated to a vendor, the intake paragraph is the first thing the case needs, and a support engineer on another continent will form their entire picture of your problem from it. The [TAC escalation packet builder](/tools/tac-escalation-packet-builder) on this site exists because that handover loses more time than any other single step in the process. TAC stands for technical assistance centre, which is what most manufacturers call the second-line support you reach once your own escalation path has run out.
+
+If the fault becomes an incident with a review afterwards, the intake paragraph is the first entry in the timeline, and it is the only one written before anybody knew the answer. Every later entry is contaminated by hindsight. The [incident timeline builder](/tools/incident-timeline-rca-builder) assembles the rest, and the quality of the first line sets the quality of the whole reconstruction.
+
+## Why this is the first article in this part
+
+Every technique that follows in this section assumes you know what you are looking for. Bisection assumes a defined problem space. Layer-by-layer work assumes a defined symptom. Escalation assumes a defined case, and building a hypothesis at all — which the [fault hypothesis builder](/tools/fault-hypothesis-builder) is for — assumes there is a stated symptom to build one against.
+
+If intake was done badly, all of them proceed efficiently in the wrong direction, and the efficiency is what makes it hard to notice. A team can spend a day being productive about the wrong fault and have the timestamps to prove how hard they worked.

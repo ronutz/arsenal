@@ -11,6 +11,8 @@
 // i18n prefix under the "vendors" namespace (name / years / tagline).
 // ============================================================================
 
+import { partnerVendors } from "./partners";
+
 /** A career chapter: the vendor page slug, its i18n key, and the year the
  *  company's story begins.
  *
@@ -95,17 +97,29 @@ export const VENDOR_CAREER_SLUGS: Record<string, string> = {
  *
  *  Source: the partner list rendered on /red-education, cross-checked against
  *  the Group B scope map noted above. */
-export const REDU_CAREER_PARTNERS = [
-  "f5",
-  "fortinet",
-  "netskope",
-  "extreme",
-  "check-point",
-  "cisco",
-  "palo-alto",
-  "ping-identity",
-  "zscaler",
-] as const;
+/**
+ * Red Education's vendor partnerships, DERIVED rather than declared.
+ *
+ * *** THIS WAS A HAND-MAINTAINED ARRAY OF NINE UNTIL 2026-08-06, AND IT WAS
+ * WRONG. *** PRIME spotted that Avaya carried no partner pill on the industry
+ * timeline; the cause was that Red Education partners with twenty-one vendors
+ * represented on this site and only nine were listed here. Twelve companies -
+ * Avaya, CyberArk, EPI, Nutanix, Paessler, Arista, Red Hat, Riverbed, Symantec,
+ * MobileIron, Microsoft and AWS - were silently missing.
+ *
+ * The file already carried a comment warning that "two lists describing one
+ * fact is exactly how they drifted apart", written after an earlier drift
+ * between this list and the card renderer. The warning was right and the second
+ * list survived it anyway. So the list is now COMPUTED from the `relationships`
+ * declaration on each vendor, which is the same source the industry timeline
+ * reads. It cannot disagree with the cards any more, because it is the cards.
+ *
+ * To change who is a partner, edit that vendor's `relationships` in
+ * partners.ts. There is nothing to keep in step here.
+ */
+export const REDU_CAREER_PARTNERS: readonly string[] = partnerVendors
+  .filter((v) => v.relationships?.includes("red-education-partner"))
+  .map((v) => v.slug);
 
 /** Vendors whose OFFICIAL training Rodolfo is authorized to deliver.
  *

@@ -14864,7 +14864,6 @@
     "independenceLinkTools": "The tools",
     "corpusTitle": "The practice itself",
     "corpusBody": "A separate body of writing covers the work rather than the offer: how technical support and network operations are actually run, the routines and checks that hold, the scripts worth keeping, and the failures worth knowing about. It is written from thirty years of doing it, and it is free to read.",
-    "corpusPending": "In preparation.",
     "howTitle": "How an engagement runs",
     "howStep1": "A conversation about the decision you are facing, at no charge, to establish whether I am the right person for it.",
     "howStep2": "A written scope: the question, the deliverable, the dates and the fee. Fixed price per engagement rather than by the hour.",
@@ -14872,7 +14871,8 @@
     "howStep4": "A written answer you can circulate internally, and a call to walk through it.",
     "ctaTitle": "If there is a decision on your desk",
     "ctaBody": "The useful first message says what the decision is and when it has to be made.",
-    "ctaButton": "Start a conversation"
+    "ctaButton": "Start a conversation",
+    "corpusLink": "Read The Practice"
   },
   "speaking": {
     "eyebrow": "Speaking",
@@ -14895,5 +14895,69 @@
     "bookTitle": "Booking",
     "bookBody": "The useful first message says the event, the date, the audience and roughly how long you want. Fees, travel and recording rights are agreed before anything is confirmed.",
     "bookButton": "Get in touch"
+  },
+  "practice": {
+    "navLabel": "The Practice",
+    "eyebrow": "The Practice",
+    "title": "How the work is actually done.",
+    "lede": "Networks and security, from the inside: triage, escalation, evidence, handover, the rota. Not how the technology works, which is covered elsewhere on this site, but how the job is done by the people who do it.",
+    "howTitle": "Two ways to read this",
+    "howBody": "The parts below are in order, and the order is the life of a system: before it breaks, when it breaks, when it will not yield, after it is over, the life around it, and the craft underneath all of it. Read top to bottom and you have been walked through the whole arc.",
+    "howSearch": "Or arrive holding one question, read one article, and leave. Each entry shows what it argues rather than what it covers, because somebody scanning for the one about escalation is matching a question to an argument.",
+    "stanceTitle": "Where each article's authority comes from",
+    "stanceIntro": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything. So every article declares which it is, and the marker sits above the text rather than below it.",
+    "stanceWhy": "The reason is simple: a corpus this size, published under one name, would otherwise imply first-hand experience of every subject in it. That would not be true, and a site whose tools compute rather than guess should not make claims it cannot support.",
+    "stance": {
+      "practised": {
+        "label": "Practised",
+        "note": "Work done repeatedly, in production, by the author."
+      },
+      "witnessed": {
+        "label": "Witnessed",
+        "note": "Work the author was present for or adjacent to, but did not own."
+      },
+      "documented": {
+        "label": "Documented",
+        "note": "The established discipline, described and sourced. No first-hand claim is made."
+      }
+    },
+    "parts": {
+      "before": {
+        "title": "I. Before it breaks",
+        "short": "Before it breaks",
+        "note": "The work that decides how bad the next two years will be, done while nothing is wrong and nobody is watching."
+      },
+      "breaks": {
+        "title": "II. When it breaks",
+        "short": "When it breaks",
+        "note": "The arc of a single incident, from the moment somebody notices to the moment service is restored."
+      },
+      "yield": {
+        "title": "III. When it will not yield",
+        "short": "When it will not yield",
+        "note": "What happens when the ordinary path fails: escalation, the vendor, the war room, and decisions made without enough information."
+      },
+      "after": {
+        "title": "IV. After it is over",
+        "short": "After it is over",
+        "note": "The half of the job that gets skipped, and the reason the same outage comes back."
+      },
+      "life": {
+        "title": "V. The life",
+        "short": "The life",
+        "note": "The rota, the queue, the pager, the people. The part no runbook covers and every practitioner recognises."
+      },
+      "craft": {
+        "title": "VI. The craft",
+        "short": "The craft",
+        "note": "Evidence, capture, tooling, and the honest limits of automation."
+      }
+    },
+    "artefactLabel": "Take away",
+    "readNext": "Read next",
+    "relatedAria": "Related articles in The Practice",
+    "backToIndex": "All of The Practice",
+    "progressTitle": "Where this has got to",
+    "progressBody": "{published} of a planned {planned} articles are published. The corpus is written a part at a time and finished rather than sketched, so an empty part below means it has not been started, not that it was forgotten."
   }
 }

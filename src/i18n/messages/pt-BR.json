@@ -14813,7 +14813,6 @@
     "independenceLinkTools": "As ferramentas",
     "corpusTitle": "A prática em si",
     "corpusBody": "Um conjunto separado de textos trata do trabalho, e não da oferta: como suporte técnico e operações de rede são de fato conduzidos, as rotinas e verificações que se sustentam, os scripts que vale a pena guardar, e as falhas que vale a pena conhecer. É escrito a partir de trinta anos fazendo isso, e é de leitura gratuita.",
-    "corpusPending": "Em preparação.",
     "howTitle": "Como funciona uma contratação",
     "howStep1": "Uma conversa sobre a decisão que você tem pela frente, sem custo, para estabelecer se sou a pessoa certa para ela.",
     "howStep2": "Um escopo por escrito: a pergunta, a entrega, as datas e o valor. Preço fechado por contratação, não por hora.",
@@ -14821,7 +14820,8 @@
     "howStep4": "Uma resposta por escrito que você possa circular internamente, e uma call para percorrê-la.",
     "ctaTitle": "Se há uma decisão sobre a sua mesa",
     "ctaBody": "A primeira mensagem útil diz qual é a decisão e quando ela precisa ser tomada.",
-    "ctaButton": "Iniciar uma conversa"
+    "ctaButton": "Iniciar uma conversa",
+    "corpusLink": "Leia A Prática"
   },
   "speaking": {
     "eyebrow": "Palestras",
@@ -14844,5 +14844,69 @@
     "bookTitle": "Contratação",
     "bookBody": "A primeira mensagem útil diz qual é o evento, a data, o público e mais ou menos quanto tempo você quer. Cachê, viagem e direitos de gravação são acordados antes de qualquer confirmação.",
     "bookButton": "Entrar em contato"
+  },
+  "practice": {
+    "navLabel": "A Prática",
+    "eyebrow": "A Prática",
+    "title": "Como o trabalho é de fato feito.",
+    "lede": "Redes e segurança por dentro: triagem, escalonamento, evidências, passagem de bastão, escala de plantão. Não é sobre como a tecnologia funciona, o que está coberto em outra parte deste site, e sim sobre como o trabalho é feito por quem o faz.",
+    "howTitle": "Duas formas de ler isto",
+    "howBody": "As partes abaixo estão em ordem, e a ordem é a vida de um sistema: antes de quebrar, quando quebra, quando não cede, depois que passa, a vida em volta, e o ofício por baixo de tudo. Leia de cima a baixo e você terá percorrido o arco inteiro.",
+    "howSearch": "Ou chegue com uma pergunta única, leia um artigo, e vá embora. Cada entrada mostra o que ela defende, e não o que ela cobre, porque quem procura aquele sobre escalonamento está casando uma pergunta com um argumento.",
+    "stanceTitle": "De onde vem a autoridade de cada artigo",
+    "stanceIntro": "Trinta anos são tempo suficiente para ter feito muita coisa e nem de longe suficiente para ter feito tudo. Então cada artigo declara o que ele é, e a marca fica acima do texto, não abaixo dele.",
+    "stanceWhy": "A razão é simples: um conjunto deste tamanho, publicado sob um único nome, implicaria experiência direta em todos os assuntos que contém. Isso não seria verdade, e um site cujas ferramentas calculam em vez de estimar não deveria fazer afirmações que não consegue sustentar.",
+    "stance": {
+      "practised": {
+        "label": "Praticado",
+        "note": "Trabalho feito repetidamente, em produção, pelo autor."
+      },
+      "witnessed": {
+        "label": "Presenciado",
+        "note": "Trabalho que o autor acompanhou de perto, mas que não era dele."
+      },
+      "documented": {
+        "label": "Documentado",
+        "note": "A disciplina estabelecida, descrita e referenciada. Nenhuma experiência direta é alegada."
+      }
+    },
+    "parts": {
+      "before": {
+        "title": "I. Antes de quebrar",
+        "short": "Antes de quebrar",
+        "note": "O trabalho que decide o quão ruins serão os próximos dois anos, feito enquanto nada está errado e ninguém está olhando."
+      },
+      "breaks": {
+        "title": "II. Quando quebra",
+        "short": "Quando quebra",
+        "note": "O arco de um único incidente, do instante em que alguém percebe até o instante em que o serviço volta."
+      },
+      "yield": {
+        "title": "III. Quando não cede",
+        "short": "Quando não cede",
+        "note": "O que acontece quando o caminho comum falha: escalonamento, o fabricante, a sala de guerra, e decisões tomadas sem informação suficiente."
+      },
+      "after": {
+        "title": "IV. Depois que passa",
+        "short": "Depois que passa",
+        "note": "A metade do trabalho que costuma ser pulada, e a razão pela qual a mesma indisponibilidade volta."
+      },
+      "life": {
+        "title": "V. A vida",
+        "short": "A vida",
+        "note": "A escala, a fila, o pager, as pessoas. A parte que nenhum runbook cobre e que todo profissional reconhece."
+      },
+      "craft": {
+        "title": "VI. O ofício",
+        "short": "O ofício",
+        "note": "Evidências, captura, ferramental, e os limites honestos da automação."
+      }
+    },
+    "artefactLabel": "Para levar",
+    "readNext": "Leia a seguir",
+    "relatedAria": "Artigos relacionados em A Prática",
+    "backToIndex": "Todo o A Prática",
+    "progressTitle": "Onde isto chegou",
+    "progressBody": "{published} de {planned} artigos planejados estão publicados. O conjunto é escrito uma parte por vez e terminado em vez de esboçado, então uma parte vazia abaixo significa que ela não começou, e não que foi esquecida."
   }
 }

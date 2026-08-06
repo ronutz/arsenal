@@ -249,6 +249,9 @@ export const partnerVendors: PartnerVendor[] = [
   // exactly what happened to the sentence that used to sit on this line.
   {
     slug: "nutanix",
+    // Red Education partner (Courses by Vendor nav + every regional menu). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "redu",
     name: "Nutanix",
@@ -3406,6 +3409,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "arista",
+    // Red Education partner (every regional menu; professional-services page states Red Education delivers Arista training). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "redu",
     name: "Arista Networks",
@@ -3426,6 +3432,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "avaya",
+    // Red Education partner (Courses by Vendor nav + every regional menu + course catalogue). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "redu",
     name: "Avaya",
@@ -3447,6 +3456,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "aws",
+    // Red Education partner (course-finder vendor selector only; footer link is an unpublished page_id - WEAKEST EVIDENCE, flagged for PRIME). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["vendor", "datacentre", "services"],
     group: "redu",
     name: "Amazon Web Services",
@@ -3467,6 +3479,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "cyberark",
+    // Red Education partner (Courses by Vendor nav + Australasia/SAARC/ASEAN menus). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "redu",
     name: "CyberArk",
@@ -3489,6 +3504,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "epi",
+    // Red Education partner (Courses by Vendor nav + Americas/Australasia/SAARC/EMEA menus). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["training"],
     group: "redu",
     name: "EPI",
@@ -3512,6 +3530,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "microsoft",
+    // Red Education partner (course-finder vendor selector). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "redu",
     name: "Microsoft",
@@ -3532,6 +3553,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "mobileiron",
+    // Red Education partner (Australasia/SAARC/ASEAN regional menus). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "redu",
     name: "MobileIron",
@@ -3555,6 +3579,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "paessler",
+    // Red Education partner (Courses by Vendor nav + every regional menu). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "redu",
     name: "Paessler",
@@ -3577,6 +3604,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "red-hat",
+    // Red Education partner (Australasia menu + dedicated rededucation.com/red-hat/ page). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "redu",
     name: "Red Hat",
@@ -3597,6 +3627,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "riverbed",
+    // Red Education partner (Australasia/SAARC/ASEAN menus; professional-services page states Riverbed Authorised Consulting Partner since 2008). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "redu",
     name: "Riverbed",
@@ -3616,6 +3649,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "symantec",
+    // Red Education partner (Australasia/SAARC/ASEAN regional menus). Verified against
+    // rededucation.com 2026-08-06.
+    relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "redu",
     name: "Symantec",

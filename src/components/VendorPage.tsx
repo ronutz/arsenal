@@ -87,9 +87,7 @@ export default async function VendorPage({
               <VendorTags
                 workedWith
                 workedWithLabel={tp("workedWithYears", { years: t(`${vendorKey}.years`) })}
-                reduPartner={REDU_CAREER_PARTNERS.includes(
-                  vendorSlug as (typeof REDU_CAREER_PARTNERS)[number],
-                )}
+                reduPartner={REDU_CAREER_PARTNERS.includes(vendorSlug)}
                 reduLabel={tp("reduPill")}
                 authorizedInstructor={AUTHORIZED_INSTRUCTOR_VENDORS.includes(
                   vendorSlug as (typeof AUTHORIZED_INSTRUCTOR_VENDORS)[number],

@@ -105,9 +105,7 @@ export default async function CareerChapterPage({
               <VendorTags
                 workedWith
                 workedWithLabel={tp("workedWithYears", { years })}
-                reduPartner={REDU_CAREER_PARTNERS.includes(
-                  slug as (typeof REDU_CAREER_PARTNERS)[number],
-                )}
+                reduPartner={REDU_CAREER_PARTNERS.includes(slug)}
                 reduLabel={tp("reduPill")}
                 authorizedInstructor={AUTHORIZED_INSTRUCTOR_VENDORS.includes(
                   slug as (typeof AUTHORIZED_INSTRUCTOR_VENDORS)[number],

@@ -179,7 +179,11 @@ export default async function AdvisoryPage({
             <div className="container section-narrow">
               <h2 className="section-title">{t("corpusTitle")}</h2>
               <p className="section-body">{t("corpusBody")}</p>
-              <p className="vendor-note-body mono">{t("corpusPending")}</p>
+              <p className="section-cta">
+                <Link href="/practice" className="section-cta-link">
+                  {t("corpusLink")} &rarr;
+                </Link>
+              </p>
             </div>
           </section>
 
