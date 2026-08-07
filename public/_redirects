@@ -433,166 +433,38 @@
 # /dev-fun moved to /dev/fun (2026-07-08). Static rules per D-82 policy.
 /da/dev-fun/ /da/dev/fun/ 301
 /da/dev-fun /da/dev/fun/ 301
-/da/dev-fun/mega-brain/ /da/dev/fun/mega-brain/ 301
-/da/dev-fun/mega-brain /da/dev/fun/mega-brain/ 301
-/da/dev-fun/meeting-bingo/ /da/dev/fun/meeting-bingo/ 301
-/da/dev-fun/meeting-bingo /da/dev/fun/meeting-bingo/ 301
-/da/dev-fun/boss-screens/ /da/dev/fun/boss-screens/ 301
-/da/dev-fun/boss-screens /da/dev/fun/boss-screens/ 301
 /de/dev-fun/ /de/dev/fun/ 301
 /de/dev-fun /de/dev/fun/ 301
-/de/dev-fun/mega-brain/ /de/dev/fun/mega-brain/ 301
-/de/dev-fun/mega-brain /de/dev/fun/mega-brain/ 301
-/de/dev-fun/meeting-bingo/ /de/dev/fun/meeting-bingo/ 301
-/de/dev-fun/meeting-bingo /de/dev/fun/meeting-bingo/ 301
-/de/dev-fun/boss-screens/ /de/dev/fun/boss-screens/ 301
-/de/dev-fun/boss-screens /de/dev/fun/boss-screens/ 301
 /en/dev-fun/ /en/dev/fun/ 301
 /en/dev-fun /en/dev/fun/ 301
-/en/dev-fun/mega-brain/ /en/dev/fun/mega-brain/ 301
-/en/dev-fun/mega-brain /en/dev/fun/mega-brain/ 301
-/en/dev-fun/meeting-bingo/ /en/dev/fun/meeting-bingo/ 301
-/en/dev-fun/meeting-bingo /en/dev/fun/meeting-bingo/ 301
-/en/dev-fun/boss-screens/ /en/dev/fun/boss-screens/ 301
-/en/dev-fun/boss-screens /en/dev/fun/boss-screens/ 301
 /es/dev-fun/ /es/dev/fun/ 301
 /es/dev-fun /es/dev/fun/ 301
-/es/dev-fun/mega-brain/ /es/dev/fun/mega-brain/ 301
-/es/dev-fun/mega-brain /es/dev/fun/mega-brain/ 301
-/es/dev-fun/meeting-bingo/ /es/dev/fun/meeting-bingo/ 301
-/es/dev-fun/meeting-bingo /es/dev/fun/meeting-bingo/ 301
-/es/dev-fun/boss-screens/ /es/dev/fun/boss-screens/ 301
-/es/dev-fun/boss-screens /es/dev/fun/boss-screens/ 301
 /fil/dev-fun/ /fil/dev/fun/ 301
 /fil/dev-fun /fil/dev/fun/ 301
-/fil/dev-fun/mega-brain/ /fil/dev/fun/mega-brain/ 301
-/fil/dev-fun/mega-brain /fil/dev/fun/mega-brain/ 301
-/fil/dev-fun/meeting-bingo/ /fil/dev/fun/meeting-bingo/ 301
-/fil/dev-fun/meeting-bingo /fil/dev/fun/meeting-bingo/ 301
-/fil/dev-fun/boss-screens/ /fil/dev/fun/boss-screens/ 301
-/fil/dev-fun/boss-screens /fil/dev/fun/boss-screens/ 301
 /fr/dev-fun/ /fr/dev/fun/ 301
 /fr/dev-fun /fr/dev/fun/ 301
-/fr/dev-fun/mega-brain/ /fr/dev/fun/mega-brain/ 301
-/fr/dev-fun/mega-brain /fr/dev/fun/mega-brain/ 301
-/fr/dev-fun/meeting-bingo/ /fr/dev/fun/meeting-bingo/ 301
-/fr/dev-fun/meeting-bingo /fr/dev/fun/meeting-bingo/ 301
-/fr/dev-fun/boss-screens/ /fr/dev/fun/boss-screens/ 301
-/fr/dev-fun/boss-screens /fr/dev/fun/boss-screens/ 301
 /it/dev-fun/ /it/dev/fun/ 301
 /it/dev-fun /it/dev/fun/ 301
-/it/dev-fun/mega-brain/ /it/dev/fun/mega-brain/ 301
-/it/dev-fun/mega-brain /it/dev/fun/mega-brain/ 301
-/it/dev-fun/meeting-bingo/ /it/dev/fun/meeting-bingo/ 301
-/it/dev-fun/meeting-bingo /it/dev/fun/meeting-bingo/ 301
-/it/dev-fun/boss-screens/ /it/dev/fun/boss-screens/ 301
-/it/dev-fun/boss-screens /it/dev/fun/boss-screens/ 301
 /ms/dev-fun/ /ms/dev/fun/ 301
 /ms/dev-fun /ms/dev/fun/ 301
-/ms/dev-fun/mega-brain/ /ms/dev/fun/mega-brain/ 301
-/ms/dev-fun/mega-brain /ms/dev/fun/mega-brain/ 301
-/ms/dev-fun/meeting-bingo/ /ms/dev/fun/meeting-bingo/ 301
-/ms/dev-fun/meeting-bingo /ms/dev/fun/meeting-bingo/ 301
-/ms/dev-fun/boss-screens/ /ms/dev/fun/boss-screens/ 301
-/ms/dev-fun/boss-screens /ms/dev/fun/boss-screens/ 301
 /nb/dev-fun/ /nb/dev/fun/ 301
 /nb/dev-fun /nb/dev/fun/ 301
-/nb/dev-fun/mega-brain/ /nb/dev/fun/mega-brain/ 301
-/nb/dev-fun/mega-brain /nb/dev/fun/mega-brain/ 301
-/nb/dev-fun/meeting-bingo/ /nb/dev/fun/meeting-bingo/ 301
-/nb/dev-fun/meeting-bingo /nb/dev/fun/meeting-bingo/ 301
-/nb/dev-fun/boss-screens/ /nb/dev/fun/boss-screens/ 301
-/nb/dev-fun/boss-screens /nb/dev/fun/boss-screens/ 301
 /nl/dev-fun/ /nl/dev/fun/ 301
 /nl/dev-fun /nl/dev/fun/ 301
-/nl/dev-fun/mega-brain/ /nl/dev/fun/mega-brain/ 301
-/nl/dev-fun/mega-brain /nl/dev/fun/mega-brain/ 301
-/nl/dev-fun/meeting-bingo/ /nl/dev/fun/meeting-bingo/ 301
-/nl/dev-fun/meeting-bingo /nl/dev/fun/meeting-bingo/ 301
-/nl/dev-fun/boss-screens/ /nl/dev/fun/boss-screens/ 301
-/nl/dev-fun/boss-screens /nl/dev/fun/boss-screens/ 301
 /pl/dev-fun/ /pl/dev/fun/ 301
 /pl/dev-fun /pl/dev/fun/ 301
-/pl/dev-fun/mega-brain/ /pl/dev/fun/mega-brain/ 301
-/pl/dev-fun/mega-brain /pl/dev/fun/mega-brain/ 301
-/pl/dev-fun/meeting-bingo/ /pl/dev/fun/meeting-bingo/ 301
-/pl/dev-fun/meeting-bingo /pl/dev/fun/meeting-bingo/ 301
-/pl/dev-fun/boss-screens/ /pl/dev/fun/boss-screens/ 301
-/pl/dev-fun/boss-screens /pl/dev/fun/boss-screens/ 301
 /pt-BR/dev-fun/ /pt-BR/dev/fun/ 301
 /pt-BR/dev-fun /pt-BR/dev/fun/ 301
-/pt-BR/dev-fun/mega-brain/ /pt-BR/dev/fun/mega-brain/ 301
-/pt-BR/dev-fun/mega-brain /pt-BR/dev/fun/mega-brain/ 301
-/pt-BR/dev-fun/meeting-bingo/ /pt-BR/dev/fun/meeting-bingo/ 301
-/pt-BR/dev-fun/meeting-bingo /pt-BR/dev/fun/meeting-bingo/ 301
-/pt-BR/dev-fun/boss-screens/ /pt-BR/dev/fun/boss-screens/ 301
-/pt-BR/dev-fun/boss-screens /pt-BR/dev/fun/boss-screens/ 301
 /ru/dev-fun/ /ru/dev/fun/ 301
 /ru/dev-fun /ru/dev/fun/ 301
-/ru/dev-fun/mega-brain/ /ru/dev/fun/mega-brain/ 301
-/ru/dev-fun/mega-brain /ru/dev/fun/mega-brain/ 301
-/ru/dev-fun/meeting-bingo/ /ru/dev/fun/meeting-bingo/ 301
-/ru/dev-fun/meeting-bingo /ru/dev/fun/meeting-bingo/ 301
-/ru/dev-fun/boss-screens/ /ru/dev/fun/boss-screens/ 301
-/ru/dev-fun/boss-screens /ru/dev/fun/boss-screens/ 301
 /sv/dev-fun/ /sv/dev/fun/ 301
 /sv/dev-fun /sv/dev/fun/ 301
-/sv/dev-fun/mega-brain/ /sv/dev/fun/mega-brain/ 301
-/sv/dev-fun/mega-brain /sv/dev/fun/mega-brain/ 301
-/sv/dev-fun/meeting-bingo/ /sv/dev/fun/meeting-bingo/ 301
-/sv/dev-fun/meeting-bingo /sv/dev/fun/meeting-bingo/ 301
-/sv/dev-fun/boss-screens/ /sv/dev/fun/boss-screens/ 301
-/sv/dev-fun/boss-screens /sv/dev/fun/boss-screens/ 301
 /tr/dev-fun/ /tr/dev/fun/ 301
 /tr/dev-fun /tr/dev/fun/ 301
-/tr/dev-fun/mega-brain/ /tr/dev/fun/mega-brain/ 301
-/tr/dev-fun/mega-brain /tr/dev/fun/mega-brain/ 301
-/tr/dev-fun/meeting-bingo/ /tr/dev/fun/meeting-bingo/ 301
-/tr/dev-fun/meeting-bingo /tr/dev/fun/meeting-bingo/ 301
-/tr/dev-fun/boss-screens/ /tr/dev/fun/boss-screens/ 301
-/tr/dev-fun/boss-screens /tr/dev/fun/boss-screens/ 301
 /zh-Hans/dev-fun/ /zh-Hans/dev/fun/ 301
 /zh-Hans/dev-fun /zh-Hans/dev/fun/ 301
-/zh-Hans/dev-fun/mega-brain/ /zh-Hans/dev/fun/mega-brain/ 301
-/zh-Hans/dev-fun/mega-brain /zh-Hans/dev/fun/mega-brain/ 301
-/zh-Hans/dev-fun/meeting-bingo/ /zh-Hans/dev/fun/meeting-bingo/ 301
-/zh-Hans/dev-fun/meeting-bingo /zh-Hans/dev/fun/meeting-bingo/ 301
-/zh-Hans/dev-fun/boss-screens/ /zh-Hans/dev/fun/boss-screens/ 301
-/zh-Hans/dev-fun/boss-screens /zh-Hans/dev/fun/boss-screens/ 301
 
 # /dev/other/rdap-lookup -> /dev/out/rdap-lookup (room split: egress class moved to the red room, 2026-07-08)
-/da/dev/other/rdap-lookup/ /da/dev/out/rdap-lookup/ 301
-/da/dev/other/rdap-lookup /da/dev/out/rdap-lookup/ 301
-/de/dev/other/rdap-lookup/ /de/dev/out/rdap-lookup/ 301
-/de/dev/other/rdap-lookup /de/dev/out/rdap-lookup/ 301
-/en/dev/other/rdap-lookup/ /en/dev/out/rdap-lookup/ 301
-/en/dev/other/rdap-lookup /en/dev/out/rdap-lookup/ 301
-/es/dev/other/rdap-lookup/ /es/dev/out/rdap-lookup/ 301
-/es/dev/other/rdap-lookup /es/dev/out/rdap-lookup/ 301
-/fil/dev/other/rdap-lookup/ /fil/dev/out/rdap-lookup/ 301
-/fil/dev/other/rdap-lookup /fil/dev/out/rdap-lookup/ 301
-/fr/dev/other/rdap-lookup/ /fr/dev/out/rdap-lookup/ 301
-/fr/dev/other/rdap-lookup /fr/dev/out/rdap-lookup/ 301
-/it/dev/other/rdap-lookup/ /it/dev/out/rdap-lookup/ 301
-/it/dev/other/rdap-lookup /it/dev/out/rdap-lookup/ 301
-/ms/dev/other/rdap-lookup/ /ms/dev/out/rdap-lookup/ 301
-/ms/dev/other/rdap-lookup /ms/dev/out/rdap-lookup/ 301
-/nb/dev/other/rdap-lookup/ /nb/dev/out/rdap-lookup/ 301
-/nb/dev/other/rdap-lookup /nb/dev/out/rdap-lookup/ 301
-/nl/dev/other/rdap-lookup/ /nl/dev/out/rdap-lookup/ 301
-/nl/dev/other/rdap-lookup /nl/dev/out/rdap-lookup/ 301
-/pl/dev/other/rdap-lookup/ /pl/dev/out/rdap-lookup/ 301
-/pl/dev/other/rdap-lookup /pl/dev/out/rdap-lookup/ 301
-/pt-BR/dev/other/rdap-lookup/ /pt-BR/dev/out/rdap-lookup/ 301
-/pt-BR/dev/other/rdap-lookup /pt-BR/dev/out/rdap-lookup/ 301
-/ru/dev/other/rdap-lookup/ /ru/dev/out/rdap-lookup/ 301
-/ru/dev/other/rdap-lookup /ru/dev/out/rdap-lookup/ 301
-/sv/dev/other/rdap-lookup/ /sv/dev/out/rdap-lookup/ 301
-/sv/dev/other/rdap-lookup /sv/dev/out/rdap-lookup/ 301
-/tr/dev/other/rdap-lookup/ /tr/dev/out/rdap-lookup/ 301
-/tr/dev/other/rdap-lookup /tr/dev/out/rdap-lookup/ 301
-/zh-Hans/dev/other/rdap-lookup/ /zh-Hans/dev/out/rdap-lookup/ 301
-/zh-Hans/dev/other/rdap-lookup /zh-Hans/dev/out/rdap-lookup/ 301
 
 # Route rename: /vendors -> /vendor-hubs (PRIME 2026-07-15).
 # Two forms per live locale: trailing-slash page and bare page.
@@ -936,9 +808,6 @@
 /en/about/vendors/riverstone/  /en/industry/chapters/riverstone/  301
 /en/about/vendors/zscaler/  /en/industry/chapters/zscaler/  301
 /en/about/history/  /en/about/  301
-/en/about/history/pre-1996/  /en/about/pre-1996/  301
-/en/about/history/1996-2020/  /en/about/1996-2020/  301
-/en/about/history/2020-present/  /en/about/2020-present/  301
 /pt-BR/about/vendors/  /pt-BR/industry/chapters/  301
 /pt-BR/about/vendors/cabletron-enterasys/  /pt-BR/industry/chapters/cabletron-enterasys/  301
 /pt-BR/about/vendors/check-point/  /pt-BR/industry/chapters/check-point/  301
@@ -956,9 +825,6 @@
 /pt-BR/about/vendors/riverstone/  /pt-BR/industry/chapters/riverstone/  301
 /pt-BR/about/vendors/zscaler/  /pt-BR/industry/chapters/zscaler/  301
 /pt-BR/about/history/  /pt-BR/about/  301
-/pt-BR/about/history/pre-1996/  /pt-BR/about/pre-1996/  301
-/pt-BR/about/history/1996-2020/  /pt-BR/about/1996-2020/  301
-/pt-BR/about/history/2020-present/  /pt-BR/about/2020-present/  301
 /de/about/vendors/  /de/industry/chapters/  301
 /de/about/vendors/cabletron-enterasys/  /de/industry/chapters/cabletron-enterasys/  301
 /de/about/vendors/check-point/  /de/industry/chapters/check-point/  301
@@ -976,9 +842,6 @@
 /de/about/vendors/riverstone/  /de/industry/chapters/riverstone/  301
 /de/about/vendors/zscaler/  /de/industry/chapters/zscaler/  301
 /de/about/history/  /de/about/  301
-/de/about/history/pre-1996/  /de/about/pre-1996/  301
-/de/about/history/1996-2020/  /de/about/1996-2020/  301
-/de/about/history/2020-present/  /de/about/2020-present/  301
 /fr/about/vendors/  /fr/industry/chapters/  301
 /fr/about/vendors/cabletron-enterasys/  /fr/industry/chapters/cabletron-enterasys/  301
 /fr/about/vendors/check-point/  /fr/industry/chapters/check-point/  301
@@ -996,9 +859,6 @@
 /fr/about/vendors/riverstone/  /fr/industry/chapters/riverstone/  301
 /fr/about/vendors/zscaler/  /fr/industry/chapters/zscaler/  301
 /fr/about/history/  /fr/about/  301
-/fr/about/history/pre-1996/  /fr/about/pre-1996/  301
-/fr/about/history/1996-2020/  /fr/about/1996-2020/  301
-/fr/about/history/2020-present/  /fr/about/2020-present/  301
 /es/about/vendors/  /es/industry/chapters/  301
 /es/about/vendors/cabletron-enterasys/  /es/industry/chapters/cabletron-enterasys/  301
 /es/about/vendors/check-point/  /es/industry/chapters/check-point/  301
@@ -1016,9 +876,6 @@
 /es/about/vendors/riverstone/  /es/industry/chapters/riverstone/  301
 /es/about/vendors/zscaler/  /es/industry/chapters/zscaler/  301
 /es/about/history/  /es/about/  301
-/es/about/history/pre-1996/  /es/about/pre-1996/  301
-/es/about/history/1996-2020/  /es/about/1996-2020/  301
-/es/about/history/2020-present/  /es/about/2020-present/  301
 /it/about/vendors/  /it/industry/chapters/  301
 /it/about/vendors/cabletron-enterasys/  /it/industry/chapters/cabletron-enterasys/  301
 /it/about/vendors/check-point/  /it/industry/chapters/check-point/  301
@@ -1036,9 +893,6 @@
 /it/about/vendors/riverstone/  /it/industry/chapters/riverstone/  301
 /it/about/vendors/zscaler/  /it/industry/chapters/zscaler/  301
 /it/about/history/  /it/about/  301
-/it/about/history/pre-1996/  /it/about/pre-1996/  301
-/it/about/history/1996-2020/  /it/about/1996-2020/  301
-/it/about/history/2020-present/  /it/about/2020-present/  301
 /nl/about/vendors/  /nl/industry/chapters/  301
 /nl/about/vendors/cabletron-enterasys/  /nl/industry/chapters/cabletron-enterasys/  301
 /nl/about/vendors/check-point/  /nl/industry/chapters/check-point/  301
@@ -1056,9 +910,6 @@
 /nl/about/vendors/riverstone/  /nl/industry/chapters/riverstone/  301
 /nl/about/vendors/zscaler/  /nl/industry/chapters/zscaler/  301
 /nl/about/history/  /nl/about/  301
-/nl/about/history/pre-1996/  /nl/about/pre-1996/  301
-/nl/about/history/1996-2020/  /nl/about/1996-2020/  301
-/nl/about/history/2020-present/  /nl/about/2020-present/  301
 /pl/about/vendors/  /pl/industry/chapters/  301
 /pl/about/vendors/cabletron-enterasys/  /pl/industry/chapters/cabletron-enterasys/  301
 /pl/about/vendors/check-point/  /pl/industry/chapters/check-point/  301
@@ -1076,9 +927,6 @@
 /pl/about/vendors/riverstone/  /pl/industry/chapters/riverstone/  301
 /pl/about/vendors/zscaler/  /pl/industry/chapters/zscaler/  301
 /pl/about/history/  /pl/about/  301
-/pl/about/history/pre-1996/  /pl/about/pre-1996/  301
-/pl/about/history/1996-2020/  /pl/about/1996-2020/  301
-/pl/about/history/2020-present/  /pl/about/2020-present/  301
 /ru/about/vendors/  /ru/industry/chapters/  301
 /ru/about/vendors/cabletron-enterasys/  /ru/industry/chapters/cabletron-enterasys/  301
 /ru/about/vendors/check-point/  /ru/industry/chapters/check-point/  301
@@ -1096,9 +944,6 @@
 /ru/about/vendors/riverstone/  /ru/industry/chapters/riverstone/  301
 /ru/about/vendors/zscaler/  /ru/industry/chapters/zscaler/  301
 /ru/about/history/  /ru/about/  301
-/ru/about/history/pre-1996/  /ru/about/pre-1996/  301
-/ru/about/history/1996-2020/  /ru/about/1996-2020/  301
-/ru/about/history/2020-present/  /ru/about/2020-present/  301
 /sv/about/vendors/  /sv/industry/chapters/  301
 /sv/about/vendors/cabletron-enterasys/  /sv/industry/chapters/cabletron-enterasys/  301
 /sv/about/vendors/check-point/  /sv/industry/chapters/check-point/  301
@@ -1116,9 +961,6 @@
 /sv/about/vendors/riverstone/  /sv/industry/chapters/riverstone/  301
 /sv/about/vendors/zscaler/  /sv/industry/chapters/zscaler/  301
 /sv/about/history/  /sv/about/  301
-/sv/about/history/pre-1996/  /sv/about/pre-1996/  301
-/sv/about/history/1996-2020/  /sv/about/1996-2020/  301
-/sv/about/history/2020-present/  /sv/about/2020-present/  301
 /da/about/vendors/  /da/industry/chapters/  301
 /da/about/vendors/cabletron-enterasys/  /da/industry/chapters/cabletron-enterasys/  301
 /da/about/vendors/check-point/  /da/industry/chapters/check-point/  301
@@ -1136,9 +978,6 @@
 /da/about/vendors/riverstone/  /da/industry/chapters/riverstone/  301
 /da/about/vendors/zscaler/  /da/industry/chapters/zscaler/  301
 /da/about/history/  /da/about/  301
-/da/about/history/pre-1996/  /da/about/pre-1996/  301
-/da/about/history/1996-2020/  /da/about/1996-2020/  301
-/da/about/history/2020-present/  /da/about/2020-present/  301
 /nb/about/vendors/  /nb/industry/chapters/  301
 /nb/about/vendors/cabletron-enterasys/  /nb/industry/chapters/cabletron-enterasys/  301
 /nb/about/vendors/check-point/  /nb/industry/chapters/check-point/  301
@@ -1156,9 +995,6 @@
 /nb/about/vendors/riverstone/  /nb/industry/chapters/riverstone/  301
 /nb/about/vendors/zscaler/  /nb/industry/chapters/zscaler/  301
 /nb/about/history/  /nb/about/  301
-/nb/about/history/pre-1996/  /nb/about/pre-1996/  301
-/nb/about/history/1996-2020/  /nb/about/1996-2020/  301
-/nb/about/history/2020-present/  /nb/about/2020-present/  301
 /tr/about/vendors/  /tr/industry/chapters/  301
 /tr/about/vendors/cabletron-enterasys/  /tr/industry/chapters/cabletron-enterasys/  301
 /tr/about/vendors/check-point/  /tr/industry/chapters/check-point/  301
@@ -1176,9 +1012,6 @@
 /tr/about/vendors/riverstone/  /tr/industry/chapters/riverstone/  301
 /tr/about/vendors/zscaler/  /tr/industry/chapters/zscaler/  301
 /tr/about/history/  /tr/about/  301
-/tr/about/history/pre-1996/  /tr/about/pre-1996/  301
-/tr/about/history/1996-2020/  /tr/about/1996-2020/  301
-/tr/about/history/2020-present/  /tr/about/2020-present/  301
 /ms/about/vendors/  /ms/industry/chapters/  301
 /ms/about/vendors/cabletron-enterasys/  /ms/industry/chapters/cabletron-enterasys/  301
 /ms/about/vendors/check-point/  /ms/industry/chapters/check-point/  301
@@ -1196,9 +1029,6 @@
 /ms/about/vendors/riverstone/  /ms/industry/chapters/riverstone/  301
 /ms/about/vendors/zscaler/  /ms/industry/chapters/zscaler/  301
 /ms/about/history/  /ms/about/  301
-/ms/about/history/pre-1996/  /ms/about/pre-1996/  301
-/ms/about/history/1996-2020/  /ms/about/1996-2020/  301
-/ms/about/history/2020-present/  /ms/about/2020-present/  301
 /fil/about/vendors/  /fil/industry/chapters/  301
 /fil/about/vendors/cabletron-enterasys/  /fil/industry/chapters/cabletron-enterasys/  301
 /fil/about/vendors/check-point/  /fil/industry/chapters/check-point/  301
@@ -1216,9 +1046,6 @@
 /fil/about/vendors/riverstone/  /fil/industry/chapters/riverstone/  301
 /fil/about/vendors/zscaler/  /fil/industry/chapters/zscaler/  301
 /fil/about/history/  /fil/about/  301
-/fil/about/history/pre-1996/  /fil/about/pre-1996/  301
-/fil/about/history/1996-2020/  /fil/about/1996-2020/  301
-/fil/about/history/2020-present/  /fil/about/2020-present/  301
 /zh-Hans/about/vendors/  /zh-Hans/industry/chapters/  301
 /zh-Hans/about/vendors/cabletron-enterasys/  /zh-Hans/industry/chapters/cabletron-enterasys/  301
 /zh-Hans/about/vendors/check-point/  /zh-Hans/industry/chapters/check-point/  301
@@ -1236,9 +1063,6 @@
 /zh-Hans/about/vendors/riverstone/  /zh-Hans/industry/chapters/riverstone/  301
 /zh-Hans/about/vendors/zscaler/  /zh-Hans/industry/chapters/zscaler/  301
 /zh-Hans/about/history/  /zh-Hans/about/  301
-/zh-Hans/about/history/pre-1996/  /zh-Hans/about/pre-1996/  301
-/zh-Hans/about/history/1996-2020/  /zh-Hans/about/1996-2020/  301
-/zh-Hans/about/history/2020-present/  /zh-Hans/about/2020-present/  301
 
 # --- /industry/history -> /about (PRIME 2026-08-06) ---
 # The history index is deleted and its three era chapters now live directly
@@ -1261,3 +1085,34 @@
 /sv/about/vendors/partner/* /sv/industry/:splat 301
 /tr/about/vendors/partner/* /tr/industry/:splat 301
 /zh-Hans/about/vendors/partner/* /zh-Hans/industry/:splat 301
+
+# --- TIER 1 PLACEHOLDER COLLAPSE (PRIME 2026-08-06) ---
+# Three rules replacing 112 static ones, using TWO placeholders each: the
+# locale and the trailing slug. Cloudflare documents both (:name matches all
+# characters except the path delimiter, and each name may appear once in the
+# source and once in the destination).
+#
+# *** THIS IS A DELIBERATE PROBE, NOT THE FULL COLLAPSE. ***
+# A full locale-collapse would take the file from 1,163 rules to 245 - a 79%
+# reduction - but it would consume all 100 dynamic slots and stake ~1,000 live
+# URLs on a mechanism verified only from documentation. A 2023 wrangler bug
+# (workers-sdk#2671) had placeholders resolving to the literal token on direct
+# upload; that was Pages, and this deploys to Workers, but it has not been
+# proven on THIS path.
+#
+# These three cover dev-fun, about/history and dev/other - low-traffic paths
+# where a failure costs little. If they resolve correctly in production, the
+# mechanism is proven and the remaining 890 rules can follow safely.
+
+/:locale/dev-fun/:slug/  /:locale/dev/fun/:slug/  301
+/:locale/about/history/:slug/  /:locale/about/:slug/  301
+/:locale/dev/other/:slug/  /:locale/dev/out/:slug/  301
+
+# Same three collapses for the NO-TRAILING-SLASH variants. Every path in this
+# file exists twice - with and without the slash - so a placeholder rule that
+# ends in / only covers half of them. Caught by the render probe, which found
+# the unslashed statics still present after the first pass.
+
+/:locale/dev-fun/:slug  /:locale/dev/fun/:slug/  301
+/:locale/about/history/:slug  /:locale/about/:slug/  301
+/:locale/dev/other/:slug  /:locale/dev/out/:slug/  301

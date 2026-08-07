@@ -1,0 +1,82 @@
+---
+slug: verifying-without-trusting
+title: "Verifying without trusting"
+thesis: "Verification is the discipline of trying to prove yourself wrong, and every force acting on the moment after a fix pushes the other way. The person who made the change is the worst available verifier, because they will confirm the model that produced it."
+stance: practised
+part: breaks
+order: 9
+roles: ["first-line", "second-line", "field"]
+relatedTools: ["incident-timeline-rca-builder", "packet-capture-plan-builder"]
+relatedIndustry: []
+relatedPractice: ["workaround-and-fix", "not-your-problem"]
+artefact: "What has to be true before you close it"
+updated: "2026-08-06"
+---
+
+## The most dangerous sentence in the work
+
+**"It's working now."**
+
+It is dangerous because it is usually true, and because being true is not the same as being sufficient. It reports an observation at one moment, from one vantage point, by one person who very much wants it to be over.
+
+What it does not establish is whether the fault is gone, whether the thing that is working is the thing that was broken, or whether it will still be working in an hour when the conditions that produced the failure come back around.
+
+Verification is the work of separating those. It is not a formality after the fix — **it is the only part of the sequence that can tell you the fix was one.**
+
+## Why the person who made the change cannot do it
+
+Not a question of honesty. It is a question of what they are checking against.
+
+Somebody who changes a configuration has a model in their head of why the change should work. When they verify, they test **that model**. They look at the thing they changed, in the way that would show it behaving as intended, and it does, because that is what they built it to do.
+
+What they do not test is the part of the system their model does not include — which is precisely where the fault might still live, because a mental model that had been complete would not have allowed the fault in the first place.
+
+**The practical form of this is simple and almost never followed: whoever made the change should say what they expect to see, and somebody else should go and look.** The gap between those two people is where verification actually happens.
+
+## Absence of a symptom is not evidence of a fix
+
+For an intermittent fault, the fix and the fault's own quiet period are indistinguishable at the moment you check.
+
+The question is never *"is it happening now"*. It is **"how long would it have to not happen before I would be surprised"**. And that number comes from the fault's own history, not from how long anybody feels like waiting: if it fired roughly every forty minutes, twenty minutes of quiet means nothing at all, and four hours means something.
+
+This is the single most common way a closed ticket reopens. Somebody restarts a process, watches for five minutes, sees nothing, and closes. The interval that would have been meaningful was two hours, and nobody worked it out because nobody asked.
+
+Where you have a capture running, this is the moment it pays for itself — you can look for the *signature* of the fault rather than the absence of a complaint.
+
+## Verify from where the user stands
+
+A change verified at the point of change tells you the change took effect. It does not tell you the person who reported the problem can do their job.
+
+These come apart constantly. The route is correct and the application still times out because something else in the path also needed changing. The policy allows the traffic and the client still fails because it is using a cached negative result. The interface is up and the service behind it did not restart cleanly.
+
+**The report was made by a person who could not do something. Verification means that person can now do it** — ideally them, in their own words, doing the actual task. Everything else is an intermediate check, useful but not conclusive.
+
+## The tool that missed it will miss it again
+
+If monitoring did not catch the fault, monitoring is not the instrument to confirm it is gone. This sounds obvious written down and is violated constantly, because the dashboard is right there and it is green.
+
+The dashboard was green during the outage too. That is what the incident just proved.
+
+Verifying with a blind instrument is worse than not verifying, because it manufactures confidence. **The instrument has to be one that would have shown the fault** — which means knowing the failure signature, not just the success signature, and is a good argument for having captured one while the system was down.
+
+## What has to be true before you close it
+
+Four statements. If any cannot be made honestly, the ticket is not finished — it is merely quiet.
+
+**The reported symptom is gone, checked by the person who reported it.** Not by you, and not by a proxy metric.
+
+**The observation window was long enough to be meaningful**, derived from how often the fault occurred rather than from anybody's patience.
+
+**The instrument used would have detected the original fault.** If it would not, it has told you nothing.
+
+**Somebody other than the person who made the change has looked.** Even briefly. Even a colleague on a screen share.
+
+## The pressure that makes this hard
+
+None of this is intellectually difficult, and it is skipped constantly, for reasons worth naming rather than moralising about.
+
+The outage is over and the room's attention has already left. The person who fixed it is tired and would like to stop. There is a queue behind this, and a metric that counts closures. And there is a genuine social cost to saying *"I am not sure yet"* when everybody else has moved on.
+
+That last one is the real obstacle. **The engineer who keeps a ticket open for two more hours is absorbing a small, visible cost to prevent a large, invisible one** — and if the fix was good, nobody will ever know what they prevented.
+
+That is the job. It is also why it is worth writing down what you verified and how, because it is the only record that the caution was exercised at all.

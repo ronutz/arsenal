@@ -1,0 +1,74 @@
+---
+slug: workaround-and-fix
+title: "O contorno e a correção"
+thesis: "Contornar uma falha ou corrigi-la é perguntado como questão técnica e quase nunca é uma. É uma questão sobre quem carrega o custo e por quanto tempo, e a resposta só se sustenta quando alguém decidiu, em vez de ter escorregado para ela."
+stance: practised
+part: breaks
+order: 8
+roles: ["second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "change-risk-scorer"]
+relatedIndustry: []
+relatedPractice: ["containment-before-cure", "verifying-without-trusting"]
+artefact: "As quatro perguntas antes de manter um contorno"
+updated: "2026-08-06"
+---
+
+## A pergunta está fantasiada
+
+O serviço voltou. A pressão imediata passou. Agora alguém pergunta se deve corrigir o problema de raiz ou deixar o contorno onde está, e a conversa que se segue é conduzida inteiramente em vocabulário técnico — versões, patches, janelas de manutenção, risco de regressão.
+
+Quase nada disso é uma questão técnica.
+
+**É uma questão sobre quem carrega o custo, em que moeda, e por quanto tempo.** O contorno custa alguma coisa a alguém todo dia em que existe: um operador que precisa lembrar dele, uma lacuna de monitoramento que ninguém está olhando, uma margem de capacidade silenciosamente consumida, um pedaço de configuração que vai confundir quem o encontrar depois. A correção custa a outro grupo alguma coisa uma vez: horas de engenharia, uma janela de mudança, o risco da própria mudança, às vezes dinheiro.
+
+Os times discutem os méritos técnicos porque esse é o vocabulário que compartilham. A discordância costuma ser sobre de quem é o orçamento e de quem é o fim de semana.
+
+## O que separa os dois
+
+Um **contorno** restaura a função sem tratar do porquê de ela ter quebrado. Desviar do enlace com defeito. Fixar a versão. Desabilitar a funcionalidade que dispara o bug. Adicionar a retentativa. Aumentar o timeout.
+
+Uma **correção** remove a causa, de modo que o contorno se torna desnecessário e pode ser retirado.
+
+A distinção que importa na prática não é qual dos dois é melhor — é que **apenas um deles tem fim.** Uma correção conclui. Um contorno continua até que alguém ativamente o encerre, e o comportamento padrão de toda organização sob carga é não encerrar coisas.
+
+## As quatro perguntas
+
+Antes de manter um contorno, quatro coisas precisam de resposta. Não um formulário a preencher — quatro coisas que alguém deveria conseguir dizer em voz alta.
+
+**Quem carrega?** Não qual time é dono do sistema: quem, pessoalmente, precisa saber que isto existe. Se a resposta for "quem estiver de plantão", o contorno não tem dono e vai sobreviver a todos que o entendem.
+
+**Quanto custa por dia?** Em redundância perdida, em superfície não monitorada, em uma capacidade que o negócio deixou de ter. Se ninguém sabe dizer o custo diário, isso não é evidência de que o custo seja zero.
+
+**O que precisaria ser verdade para remover?** Uma condição, não uma data. *"Retirar quando o fabricante publicar a correção na 17.2"* pode ser avaliado por quem não estava na sala. *"Revisitar no próximo trimestre"* não pode.
+
+**O que acontece se ele falhar?** Um contorno é infraestrutura estrutural que nunca foi projetada. A retentativa que mascara uma dependência lenta vira uma avalanche quando a dependência para de vez.
+
+## A taxa de juros
+
+Todo contorno é uma dívida, e a parte útil dessa metáfora não é o empréstimo — é que **dívidas têm taxas de juros, e elas variam enormemente.**
+
+Alguns contornos são praticamente gratuitos. Uma versão fixada num componente estável, documentada, com dono, custa quase nada para carregar por anos.
+
+Outros compõem viciosamente. Um contorno sobre o qual outras coisas passam a ser construídas vira estrutural, e o custo de removê-lo sobe a cada mês, conforme mais coisas dependem do formato que ele criou. É assim que uma exceção temporária de roteamento vira, quatro anos depois, algo que ninguém ousa tocar — não porque piorou, mas porque o parque cresceu em volta.
+
+**A pergunta não é "isto é débito técnico" — quase tudo é. É se este débito específico está amortizando ou compondo**, e isso costuma ser respondível em um minuto perguntando se algo novo será construído assumindo o comportamento do contorno.
+
+## Quando o contorno é a resposta permanente certa
+
+Vale dizer com clareza, porque o instinto de engenharia trata "corrigir direito" como sempre correto, e não é.
+
+**Quando o fabricante não vai corrigir.** O produto está em fim de vida, o bug foi reconhecido e adiado, a correção está numa versão maior que você não pode adotar. O contorno não é um meio-termo; é a única engenharia disponível.
+
+**Quando a correção custa mais que a falha.** Um defeito que afeta um relatório, uma vez por mês, contornado em trinta segundos, não justifica uma migração.
+
+**Quando a correção é mais arriscada.** Substituir um sistema que funciona traz seus próprios modos de falha, e um contorno estável num sistema que você entende pode ser melhor que uma solução limpa num que você não entende.
+
+Em cada caso, o movimento honesto é **parar de chamar aquilo de contorno.** Escreva como decisão de projeto, com o motivo. O que torna um contorno permanente perigoso não é a permanência — é que todo mundo continua descrevendo como temporário, então ninguém nunca o documenta como arquitetura.
+
+## O que isso custa quando dá errado
+
+Não a indisponibilidade. A indisponibilidade foi superada.
+
+O que custa é a pessoa dois anos depois, às duas da manhã, que encontra uma configuração sem sentido, não consegue saber se ela é estrutural, e não tem como descobrir. Ela vai fazer uma de duas coisas, e as duas são ruins: deixar quieto e contornar o contorno, ou remover e descobrir o que aquilo estava sustentando.
+
+**É por essa pessoa que se está decidindo.** As quatro perguntas existem para ela, e levam uns cinco minutos para responder num momento em que todos os envolvidos ainda lembram o que aconteceu.

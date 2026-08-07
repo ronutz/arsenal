@@ -1,0 +1,74 @@
+---
+slug: workaround-and-fix
+title: "The workaround and the fix"
+thesis: "Whether to work around a fault or repair it is asked as a technical question and is almost never one. It is a question about who carries the cost and for how long, and the answer is only defensible when somebody has decided that rather than defaulted into it."
+stance: practised
+part: breaks
+order: 8
+roles: ["second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "change-risk-scorer"]
+relatedIndustry: []
+relatedPractice: ["containment-before-cure", "verifying-without-trusting"]
+artefact: "The four questions before you keep a workaround"
+updated: "2026-08-06"
+---
+
+## The question is wearing a costume
+
+Service is back. The immediate pressure is off. Now somebody asks whether to fix the underlying problem properly or leave the workaround in place, and the conversation that follows is conducted entirely in technical vocabulary — versions, patches, maintenance windows, regression risk.
+
+Almost none of it is a technical question.
+
+**It is a question about who carries the cost, in what currency, and for how long.** The workaround costs somebody something every day it exists: an operator who has to remember it, a monitoring gap nobody is watching, a capacity margin quietly consumed, a piece of configuration that will confuse whoever meets it next. The fix costs a different group something once: engineering time, a change window, the risk of the change itself, sometimes money.
+
+Teams argue about the technical merits because that is the vocabulary they share. The disagreement is usually about whose budget and whose weekend.
+
+## What separates the two
+
+A **workaround** restores the function without addressing why it broke. Route around the failing link. Pin the version. Disable the feature that triggers the bug. Add the retry. Increase the timeout.
+
+A **fix** removes the cause, so the workaround becomes unnecessary and can be withdrawn.
+
+The distinction that matters in practice is not which one is better — it is that **only one of them has an end.** A fix concludes. A workaround continues until somebody actively ends it, and the default behaviour of every organisation under load is not to end things.
+
+## The four questions
+
+Before keeping a workaround, four things need answers. Not a form to fill in — four things somebody should be able to say out loud.
+
+**Who carries it?** Not which team owns the system: who personally has to know this exists. If the answer is "whoever is on shift", the workaround has no owner and will outlive everybody who understands it.
+
+**What does it cost per day?** In lost redundancy, in unmonitored surface, in a capability the business no longer has. If nobody can name the daily cost, that is not evidence the cost is zero.
+
+**What would have to be true to remove it?** A condition, not a date. *"Withdraw when the vendor ships the fix in 17.2"* can be evaluated by somebody who was not in the room. *"Revisit next quarter"* cannot.
+
+**What happens if it fails?** A workaround is load-bearing infrastructure that was never designed. The retry that masks a slow dependency becomes a thundering herd when the dependency stops entirely.
+
+## The interest rate
+
+Every workaround is a debt, and the useful part of that metaphor is not the borrowing — it is that **debts have interest rates, and they differ enormously.**
+
+Some workarounds are nearly free. A pinned version on a stable component, documented, with an owner, costs almost nothing to carry for years.
+
+Some compound viciously. A workaround that other things get built on top of becomes load-bearing, and the cost of removing it rises every month as more depends on the shape it created. This is how a temporary routing exception becomes something nobody dares touch four years later — not because it got worse, but because the estate grew around it.
+
+**The question is not "is this technical debt" — nearly everything is. It is whether this particular debt is amortising or compounding**, and that is usually answerable in a minute by asking whether anything new will be built assuming the workaround's behaviour.
+
+## When the workaround is the right permanent answer
+
+Worth saying plainly, because the engineering instinct treats "fix it properly" as always correct and it is not.
+
+**When the vendor will not fix it.** The product is end-of-life, the bug is acknowledged and deferred, the fix is in a major version you cannot take. The workaround is not a compromise; it is the only available engineering.
+
+**When the fix costs more than the fault.** A defect that affects one report, once a month, worked around in thirty seconds, does not justify a migration.
+
+**When the fix is riskier.** Replacing a working system carries its own failure modes, and a stable workaround on a system you understand can be better than a clean solution on one you do not.
+
+In each case the honest move is to **stop calling it a workaround.** Write it down as a design decision with a reason. The thing that makes a permanent workaround dangerous is not its permanence — it is that everybody keeps describing it as temporary, so nobody ever documents it as architecture.
+
+## What this costs when it goes wrong
+
+Not the outage. The outage was survived.
+
+What it costs is the person two years later, at two in the morning, who finds configuration that makes no sense, cannot tell whether it is load-bearing, and has no way to find out. They will do one of two things, and both are bad: leave it alone and work around the workaround, or remove it and discover what it was holding up.
+
+**That person is the one being decided for.** The four questions exist for them, and they take about five minutes to answer at a point when everybody involved still remembers what happened.

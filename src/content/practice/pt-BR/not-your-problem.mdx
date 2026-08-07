@@ -1,0 +1,80 @@
+---
+slug: not-your-problem
+title: "Saber quando o problema não é seu"
+thesis: "A pergunta útil durante um incidente não é se você consegue resolver, mas se você é o caminho mais rápido até a solução. São perguntas diferentes, e a primeira o bajula a ficar tempo demais."
+stance: practised
+part: breaks
+order: 10
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder"]
+relatedIndustry: []
+relatedPractice: ["verifying-without-trusting", "triage-and-severity"]
+artefact: "O teste de convergência"
+updated: "2026-08-06"
+---
+
+## Duas maneiras de errar nisso
+
+**Escalar cedo demais** desperdiça o tempo de gente mais escassa que você, não lhe ensina nada e, com o tempo, constrói uma reputação que chega nas salas antes de você.
+
+**Escalar tarde demais** é pior e bem mais comum entre quem é bom nisto. O serviço continua fora enquanto alguém competente trabalha sozinho no problema, aprendendo muito, a um custo pago por outras pessoas.
+
+O segundo é a falha do competente. Vem de uma substituição tão rápida que passa quase invisível: **"eu conseguiria resolver" vira "eu deveria resolver"**, e essas não são a mesma afirmação. A primeira fala da sua capacidade. A segunda fala do que a situação exige, e a situação com frequência exige outra pessoa.
+
+## A pergunta que de fato decide
+
+Não *eu consigo resolver isto*. **Eu sou o caminho mais rápido até isto ser resolvido.**
+
+Você pode ser, mesmo sem o conhecimento mais profundo — porque tem o contexto, os acessos e o histórico, e o especialista precisaria de quarenta minutos de briefing antes de começar.
+
+Você pode não ser, mesmo com bom conhecimento — porque alguém dois andares adiante já viu exatamente esta falha três vezes e vai reconhecê-la numa frase.
+
+A pergunta tem resposta, e a resposta não vem de avaliar o quanto você se sente esperto. Vem de saber se você está convergindo.
+
+## O teste de convergência
+
+A medida honesta de continuar ou não não é dificuldade, nem tempo decorrido. É direção.
+
+**Suas hipóteses estão estreitando ou se multiplicando?**
+
+Convergir se parece com: cinco causas candidatas, depois três, depois uma, cada teste eliminando algo. Mesmo devagar, isso é progresso, e interromper para repassar costuma custar mais do que poupa.
+
+Não convergir se parece com: cada teste abre duas perguntas novas, a lista do que pode estar errado está maior do que há uma hora, e você começou a reconferir coisas que já conferiu. **Isso não é persistência. São os mesmos vinte minutos se repetindo** — e o fato de parecer trabalho é exatamente o que torna difícil perceber.
+
+A forma prática é uma anotação no início: a hora e as hipóteses. Olhe para ela quarenta minutos depois. Se a lista cresceu, escale — não porque você fracassou, mas porque a evidência diz que ao seu modelo falta algo que outro modelo talvez tenha.
+
+## As quatro coisas diferentes que "não é meu" significa
+
+A expressão junta quatro situações que pedem respostas diferentes.
+
+**Não é minha alçada.** Você sabe o que mudar e não tem permissão para mudar. Isto não é um problema de engenharia e nenhuma investigação adicional vai ajudar. Escale de imediato; só resolve quem tem o direito.
+
+**Não é meu conhecimento.** Outra pessoa ou time tem profundidade que você não tem. Legítimo, e a única versão em que a maioria pensa.
+
+**Não é minha propriedade.** A falha está num sistema que outro time opera. Real, mas a mais abusada das quatro — é a versão que as pessoas usam quando querem o chamado longe em vez de resolvido, e é por isso que *"não é nosso sistema"* tem a má fama que tem.
+
+**Não é um problema técnico.** O certificado venceu porque ninguém é dono das renovações. A capacidade acabou porque a previsão foi ignorada. Você consegue restaurar o serviço, e nenhuma quantidade de engenharia vai impedir a recorrência, porque a causa é uma decisão que ninguém tomou. **Aqui o escalonamento vai para o lado ou para cima, não para outro engenheiro** — e é o caso mais mal conduzido, porque engenheiros insistem em resolvê-lo com engenharia.
+
+## Repassar é uma habilidade, e é a coisa toda
+
+Escalar não é "largar o chamado". É transferir um estado de entendimento, e é feito mal com muito mais frequência do que é feito tarde.
+
+Uma boa passagem é curta e contém: o que foi relatado, o que você estabeleceu como **verdadeiro** e não como suspeita, o que descartou e como, o que ia tentar em seguida, e o que já alterou. Este último não é opcional. As passagens mais caras são aquelas em que quem recebe gasta uma hora descobrindo que o sistema não está no estado que a documentação descreve porque alguém mudou três coisas e não contou.
+
+Tudo o que foi capturado nos primeiros sessenta segundos se paga aqui. **A passagem é onde a disciplina de toda a sequência aparece — ou não aparece.**
+
+## A parte que não é culpa do indivíduo
+
+As pessoas escalam tarde porque escalar é tratado como confissão, e nenhum conselho dado a indivíduos conserta uma cultura que premia heroísmo e lembra quem pediu ajuda.
+
+Se você tem alguma senioridade, esta é a alavanca. **O engenheiro que escala aos quarenta minutos com uma passagem limpa fez o trabalho melhor do que o que resolveu sozinho em quatro horas** — e, a menos que isso seja dito em voz alta, por alguém cuja opinião pesa, todo mundo vai continuar escolhendo silenciosamente as quatro horas.
+
+## E quando é seu mesmo assim
+
+A exceção honesta, porque a versão limpa deste conselho falha em organizações reais.
+
+Às vezes o problema realmente não é seu e não há a quem repassar. O time dono não existe mais, ou só responde segunda-feira, ou é uma pessoa que está de férias. A resposta limpa manda escalar; a situação diz que o serviço está fora e ninguém vem.
+
+Então é seu, e o que se protege é o registro: **o que você tocou, por quê, e o que não conseguiu conferir.** Você está trabalhando fora do seu conhecimento no sistema de outra pessoa, o que é defensável numa emergência e indefensável em silêncio.
+
+Escreva enquanto faz. A próxima pessoa merece saber exatamente o que um estranho fez no sistema dela às três da manhã — e um dia a próxima pessoa será você.

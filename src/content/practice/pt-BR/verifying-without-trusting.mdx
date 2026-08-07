@@ -1,0 +1,82 @@
+---
+slug: verifying-without-trusting
+title: "Verificar sem confiar"
+thesis: "Verificar é a disciplina de tentar provar que você está errado, e toda força que age sobre o momento seguinte a uma correção empurra para o outro lado. Quem fez a mudança é o pior verificador disponível, porque vai confirmar o modelo que a produziu."
+stance: practised
+part: breaks
+order: 9
+roles: ["first-line", "second-line", "field"]
+relatedTools: ["incident-timeline-rca-builder", "packet-capture-plan-builder"]
+relatedIndustry: []
+relatedPractice: ["workaround-and-fix", "not-your-problem"]
+artefact: "O que precisa ser verdade antes de fechar"
+updated: "2026-08-06"
+---
+
+## A frase mais perigosa do ofício
+
+**"Agora está funcionando."**
+
+É perigosa porque costuma ser verdade, e porque ser verdade não é o mesmo que ser suficiente. Ela relata uma observação em um instante, de um ponto de vista, feita por alguém que deseja muito que aquilo tenha acabado.
+
+O que ela não estabelece é se a falha se foi, se aquilo que está funcionando é aquilo que estava quebrado, ou se continuará funcionando daqui a uma hora, quando as condições que produziram a falha voltarem.
+
+Verificar é o trabalho de separar essas coisas. Não é formalidade depois da correção — **é a única parte da sequência capaz de dizer que a correção foi uma correção.**
+
+## Por que quem fez a mudança não pode verificar
+
+Não é questão de honestidade. É questão de contra o quê a pessoa está conferindo.
+
+Quem altera uma configuração tem na cabeça um modelo de por que aquilo deveria funcionar. Ao verificar, testa **esse modelo**. Olha para o que mudou, do jeito que mostraria o comportamento pretendido, e o comportamento aparece — porque foi para isso que a mudança foi feita.
+
+O que não é testado é a parte do sistema que o modelo não inclui — que é exatamente onde a falha pode continuar morando, porque um modelo mental completo não teria deixado a falha entrar em primeiro lugar.
+
+**A forma prática disto é simples e quase nunca seguida: quem fez a mudança diz o que espera ver, e outra pessoa vai olhar.** A distância entre essas duas pessoas é onde a verificação de fato acontece.
+
+## Ausência de sintoma não é evidência de correção
+
+Numa falha intermitente, a correção e o próprio período de silêncio da falha são indistinguíveis no instante em que você confere.
+
+A pergunta nunca é *"está acontecendo agora"*. É **"por quanto tempo teria de não acontecer para que eu me surpreendesse"**. E esse número vem do histórico da própria falha, não de quanto tempo alguém tem paciência de esperar: se disparava a cada quarenta minutos, vinte minutos de silêncio não significam nada, e quatro horas significam alguma coisa.
+
+Esta é de longe a forma mais comum de um chamado fechado reabrir. Alguém reinicia um processo, observa por cinco minutos, não vê nada e fecha. O intervalo que teria significado era de duas horas, e ninguém calculou porque ninguém perguntou.
+
+Onde houver uma captura rodando, este é o momento em que ela se paga — dá para procurar a *assinatura* da falha, em vez da ausência de reclamação.
+
+## Verifique de onde o usuário está
+
+Uma mudança verificada no ponto da mudança diz que a mudança surtiu efeito. Não diz que a pessoa que reportou o problema consegue fazer seu trabalho.
+
+Essas duas coisas se separam o tempo todo. A rota está correta e a aplicação continua estourando timeout porque outra coisa no caminho também precisava mudar. A política permite o tráfego e o cliente continua falhando porque está usando um resultado negativo em cache. A interface está up e o serviço por trás dela não subiu direito.
+
+**O chamado foi aberto por uma pessoa que não conseguia fazer algo. Verificar significa que essa pessoa agora consegue** — de preferência ela mesma, com as próprias palavras, fazendo a tarefa real. Todo o resto é conferência intermediária: útil, mas não conclusiva.
+
+## O instrumento que não viu vai deixar de ver de novo
+
+Se o monitoramento não pegou a falha, o monitoramento não é o instrumento para confirmar que ela se foi. Isso parece óbvio quando escrito e é violado o tempo todo, porque o painel está ali e está verde.
+
+O painel estava verde durante a indisponibilidade também. É justamente o que o incidente acabou de provar.
+
+Verificar com um instrumento cego é pior do que não verificar, porque fabrica confiança. **O instrumento precisa ser um que teria mostrado a falha** — o que exige conhecer a assinatura do defeito, e não só a do funcionamento, e é um bom argumento para ter capturado uma enquanto o sistema estava fora.
+
+## O que precisa ser verdade antes de fechar
+
+Quatro afirmações. Se alguma não puder ser feita com honestidade, o chamado não está concluído — está apenas quieto.
+
+**O sintoma relatado sumiu, conferido por quem o relatou.** Não por você, nem por uma métrica que sirva de procuração.
+
+**A janela de observação foi longa o bastante para significar algo**, derivada da frequência da falha e não da paciência de alguém.
+
+**O instrumento usado teria detectado a falha original.** Se não teria, ele não disse nada.
+
+**Alguém que não fez a mudança olhou.** Ainda que brevemente. Ainda que um colega num compartilhamento de tela.
+
+## A pressão que torna isso difícil
+
+Nada disso é intelectualmente difícil, e é pulado o tempo todo, por motivos que vale nomear em vez de moralizar.
+
+A indisponibilidade acabou e a atenção da sala já foi embora. Quem corrigiu está cansado e gostaria de parar. Há fila atrás deste chamado, e uma métrica que conta fechamentos. E existe um custo social real em dizer *"ainda não tenho certeza"* quando todo mundo já seguiu adiante.
+
+Esse último é o obstáculo de verdade. **O engenheiro que mantém um chamado aberto por mais duas horas está absorvendo um custo pequeno e visível para evitar um custo grande e invisível** — e, se a correção era boa, ninguém jamais saberá o que ele evitou.
+
+É o trabalho. E também é por isso que vale escrever o que foi verificado e como: é o único registro de que a cautela chegou a ser exercida.

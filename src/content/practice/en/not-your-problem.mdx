@@ -1,0 +1,80 @@
+---
+slug: not-your-problem
+title: "Knowing when it is not your problem"
+thesis: "The useful question during an incident is not whether you can solve it but whether you are the fastest path to it being solved. Those are different questions, and the first one flatters you into staying too long."
+stance: practised
+part: breaks
+order: 10
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder"]
+relatedIndustry: []
+relatedPractice: ["verifying-without-trusting", "triage-and-severity"]
+artefact: "The convergence test"
+updated: "2026-08-06"
+---
+
+## Two ways to get this wrong
+
+**Escalating too early** wastes the time of people who are scarcer than you, teaches you nothing, and eventually gets you a reputation that follows you into rooms before you do.
+
+**Escalating too late** is worse and much more common among people who are good at this. The service stays down while somebody capable works the problem alone, learning a great deal, at a cost being paid by other people.
+
+The second is the failure of the competent. It comes from a substitution that happens so quickly it is almost invisible: **"I could work this out" becomes "I should work this out",** and those are not the same claim. The first is about your ability. The second is about what the situation needs, and the situation frequently needs somebody else.
+
+## The question that actually decides it
+
+Not *can I solve this*. **Am I the fastest path to it being solved.**
+
+You might be, even without the deepest knowledge — because you have the context, the access, and the history, and the specialist would need forty minutes of briefing before they could begin.
+
+You might not be, even with strong knowledge — because somebody two floors away has seen this exact failure three times and will recognise it in a sentence.
+
+The question is answerable, and it is not answerable by asking how clever you feel. It is answered by whether you are converging.
+
+## The convergence test
+
+The honest measure of whether to continue is not difficulty and not time elapsed. It is direction.
+
+**Are your hypotheses narrowing or multiplying?**
+
+Converging looks like: five candidate causes, then three, then one, each test eliminating something. Even slowly, that is progress, and interrupting it to hand over often costs more than it saves.
+
+Not converging looks like: every test opens two new questions, the list of things that might be wrong is longer than it was an hour ago, and you have started re-checking things you already checked. **That is not persistence. It is the same twenty minutes repeating,** and the fact that it feels like work is exactly what makes it hard to notice.
+
+The practical form is a note at the start: the time, and the hypotheses. Look at it forty minutes later. If the list has grown, escalate — not because you failed, but because the evidence says your model is missing something a different model might have.
+
+## The four different things "not mine" means
+
+The phrase collapses four situations that need different responses.
+
+**Not my authority.** You know what to change and are not permitted to change it. This is not an engineering problem and no further investigation will help. Escalate immediately; the only thing that resolves it is somebody with the rights.
+
+**Not my knowledge.** Another person or team has depth you do not. Legitimate, and the only version most people think of.
+
+**Not my ownership.** The fault sits in a system another team runs. Real, but the most abused of the four — it is the version people reach for when they want the ticket gone rather than solved, and it is why *"not our system"* has such a bad reputation as a response.
+
+**Not a technical problem.** The certificate expired because nobody owns renewals. The capacity ran out because the forecast was ignored. You can restore service, and no amount of engineering will stop it recurring, because the cause is a decision nobody has made. **The escalation here goes sideways or upward, not to another engineer** — and this is the one most often mishandled, because engineers keep trying to solve it with engineering.
+
+## Handing over is a skill, and it is the whole thing
+
+Escalation is not "letting go of the ticket". It is transferring a state of understanding, and it is done badly far more often than it is done late.
+
+A good handover is short and contains: what was reported, what you have established as **true** rather than suspected, what you have ruled out and how, what you were about to try, and what you have already changed. That last one is not optional. The most expensive handovers are the ones where the receiving engineer spends an hour discovering that the system is not in the state the documentation describes because somebody changed three things and did not say.
+
+Everything captured in the first sixty seconds pays out here. **The handover is where the discipline of the whole sequence either shows up or does not.**
+
+## The part that is not the individual's fault
+
+People escalate too late because escalating is treated as a confession, and no amount of advice to individuals fixes a culture that rewards heroism and remembers who asked for help.
+
+If you have any seniority, this is the lever. **The engineer who escalates at forty minutes with a clean handover has done the job better than the one who solved it alone at four hours**, and unless that is said out loud, by someone whose opinion carries, everybody will keep quietly choosing the four hours.
+
+## And when it is yours anyway
+
+The honest exception, because the clean version of this advice fails in real organisations.
+
+Sometimes it is genuinely not your problem and there is nobody to hand it to. The team that owns it does not exist any more, or will not answer until Monday, or is one person who is on leave. The clean answer says escalate; the situation says the service is down and nobody is coming.
+
+Then it is yours, and the thing to protect is the record: **what you touched, why, and what you could not check.** You are working outside your knowledge in somebody else's system, which is defensible in an emergency and indefensible silently.
+
+Write it down as you go. The next person deserves to know exactly what a stranger did to their system at three in the morning, and one day the next person will be you.
