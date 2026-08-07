@@ -220,6 +220,70 @@ export default async function RedEducationPage({
           {/* Red Education's vendor authorizations + named recognitions. */}
           <section className="section">
             <div className="container redu-container">
+              {/* --- CASE STUDIES + THE BENCH (PRIME 2026-08-06) ---
+                   Red Education publishes selected engagements as case studies
+                   and names me in two. The summaries below are WRITTEN HERE,
+                   not reproduced: their pages carry "Copyright © Red Education
+                   All Rights Reserved", and attribution is not a licence. What
+                   is quoted is one sentence of the CLIENT's own words, which is
+                   short, attributed, and about the engagement rather than their
+                   copy. Both originals are linked prominently.
+
+                   Verified live 2026-08-06 with no-cache headers, after a
+                   previous fetch of a different Red Education page returned
+                   stale cached content that had in fact been taken down. */}
+              <h2 className="redu-section-title">{t("casesTitle")}</h2>
+              <p className="redu-body">{t("casesIntro")}</p>
+
+              <h3 className="redu-awards-title">{t("case1Title")}</h3>
+              <p className="redu-body">{t("case1Body")}</p>
+              <blockquote className="redu-body">
+                &ldquo;{t("case1Quote")}&rdquo;
+                <br />
+                <span className="vendor-note-body">&mdash; {t("case1QuoteAttr")}</span>
+              </blockquote>
+
+              <h3 className="redu-awards-title">{t("case2Title")}</h3>
+              <p className="redu-body">{t("case2Body")}</p>
+
+              <p className="vendor-note-body">{t("casesRights")}</p>
+              <ul className="course-list">
+                <li>
+                  <a href="https://www.rededucation.com/case-studies/high-impact-fortinet-training-at-scale-for-global-it-leader/" target="_blank" rel="noopener noreferrer">
+                    {t("case1Link")} &#8599;
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.rededucation.com/case-studies/enhancing-f5-big-ip-platform-capabilities-with-irules-training/" target="_blank" rel="noopener noreferrer">
+                    {t("case2Link")} &#8599;
+                  </a>
+                </li>
+              </ul>
+
+              {/* THE BENCH. Aggregate figures and externally conferred awards
+                  only - no individual bios. Red Education took its instructors
+                  page down in 2026, and republishing bios a company has removed
+                  is not ours to do. One colleague is named because his award is
+                  a matter of public record on Red Education's own site. */}
+              <h2 className="redu-section-title">{t("benchTitle")}</h2>
+              <p className="redu-body">{t("benchIntro")}</p>
+              <ul className="course-list">
+                <li>{t("benchStat1")}</li>
+                <li>{t("benchStat2")}</li>
+                <li>{t("benchStat3")}</li>
+                <li>{t("benchStat4")}</li>
+                <li>{t("benchStat5")}</li>
+              </ul>
+              <h3 className="redu-awards-title">{t("benchAwardsTitle")}</h3>
+              <ul className="course-list">
+                <li>{t("benchAward1")}</li>
+                <li>{t("benchAward2")}</li>
+                <li>{t("benchAward3")}</li>
+                <li>{t("benchAward4")}</li>
+                <li>{t("benchAward5")}</li>
+              </ul>
+              <p className="redu-body">{t("benchColleague")}</p>
+
               <h2 className="redu-section-title">{t("authTitle")}</h2>
               <p className="redu-body"><ReduBrand linked={false}>{t("authIntro")}</ReduBrand></p>
               <ul className="redu-vendor-list">

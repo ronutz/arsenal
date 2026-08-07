@@ -40,6 +40,22 @@ export interface Testimonial {
 
 export const TESTIMONIALS: Testimonial[] = [
   {
+    "id": "82",
+    "source": "Red Education published case study",
+    "author": "Client project sponsor (named company withheld in the source)",
+    "title": "Multinational IT services firm, 200,000+ staff across 60 countries",
+    "date": "2025-09",
+    "relationship": "FCP Fundamentals FortiGate Administrator, 43 participants",
+    "rating": null,
+    "lang": "EN",
+    "text": "Dear Nandagopal Siddegowda, Rodolfo Nutzmann and the Red Education team, I want to extend my sincere gratitude for the exceptional effort and dedication you both put into the successful completion of the FortiGate Administrator training for all 43 members at (our company). Your expertise, hard work, and commitment played a pivotal role in making this training a success. The feedback has been overwhelmingly positive, and it is a testament to your outstanding teaching abilities and the effort you invested in each session.",
+    "ownerResponse": null,
+    "note": "Published by Red Education in the case study \"High-impact Fortinet training at scale for a global IT leader\". Verified live 2026-08-06 with no-cache headers. The client wrote this unprompted and named both instructors; the engagement enabled a deal the customer had already won but could not staff. Source: https://www.rededucation.com/case-studies/high-impact-fortinet-training-at-scale-for-global-it-leader/",
+    "provenance": "rededucation.com case study, fetched 2026-08-06",
+    "textEnglish": null,
+    "translationStatus": "original"
+  },
+  {
     "id": "9",
     "source": "Verified Student review (Red Education)",
     "author": "A (anonymized)",
