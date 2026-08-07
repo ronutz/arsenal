@@ -75,6 +75,6 @@ export const brocadeBroadcomProfile: VendorProfile = {
   ],
   careerLink: {
     href: "/industry/chapters/extreme",
-    label: "The Foundry data-center line (SLX, VDX, MLX) lives on at Extreme Networks - see Rodolfo's Extreme page",
+    label: "The Foundry data-center line (SLX, VDX, MLX) lives on at Extreme Networks - see my Extreme page",
   },
 };

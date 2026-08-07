@@ -57,6 +57,6 @@ export const radwareProfile: VendorProfile = {
   ],
   careerLink: {
     href: "/f5",
-    label: "Radware competes in the ADC market Rodolfo teaches daily - the F5 hub",
+    label: "Radware competes in the ADC market I teach daily - the F5 hub",
   },
 };

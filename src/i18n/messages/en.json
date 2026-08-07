@@ -114,7 +114,21 @@
       "certsBadge": "{count} guides",
       "advisory": "Advisory",
       "advisoryLede": "Independent judgement on decisions that have not been made yet. Scoped work, written answer, no on-call.",
-      "advisoryBadge": "By engagement"
+      "advisoryBadge": "By engagement",
+      "hubs": "Vendor hubs",
+      "hubsLede": "One door per platform: the tools, articles and certification material for that vendor, gathered in one place.",
+      "glossary": "Glossary",
+      "glossaryLede": "Every term and acronym used across this site, defined once and cross-referenced. The thing to open mid-article.",
+      "guides": "Study guides",
+      "guidesLede": "Objective-by-objective walkthroughs for the exams, showing what is covered here and, honestly, what is not.",
+      "training": "Training I teach",
+      "trainingLede": "Authorized instructor-led courses across four platforms, delivered through Red Education.",
+      "about": "About",
+      "aboutLede": "Who is writing all of this, what I have done, and why any of it should be trusted.",
+      "career": "The career record",
+      "careerLede": "Fifteen chapters from 1996 onward, each told from inside the company it happened in.",
+      "redu": "Red Education",
+      "reduLede": "The global authorized training centre my courses are delivered through, and the story of how it got there."
     }
   },
   "tools": {

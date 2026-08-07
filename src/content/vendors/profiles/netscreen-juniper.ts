@@ -60,7 +60,7 @@ export const netscreenJuniperProfile: VendorProfile = {
     { year: 2002, title: "NetScreen buys its future rivals' founders", detail: "OneSecure, for $45 million in stock, brings in-line intrusion prevention - and its co-founders: Nir Zuk, one of Check Point's earliest employees, becomes NetScreen's CTO; Rakesh Loonkar later co-founds Trusteer. In 2003, Neoteris adds SSL VPN for roughly $245 million in stock plus $20 million cash.", sourceNote: "OneSecure reported at $45M (some accounts $40M); Neoteris terms per EE Times, Oct 2003." },
     { year: 2004, title: "Juniper pays $4 billion for NetScreen", detail: "Announced February 9, 2004 - 1.404 Juniper shares per NetScreen share, about $4 billion in stock - and completed April 16. Juniper gets ScreenOS, the ASIC security franchise, and Japan's top firewall vendor; the lineage becomes the SSG series and then the SRX.", sourceNote: "SEC Form 425 filings; completion per Juniper's April 16, 2004 release." },
     { year: 2005, title: "The NetScreen mafia disperses", detail: "Nir Zuk leaves Juniper to found Palo Alto Networks; Yan Ke and Feng Deng leave to start Northern Light Venture Capital; Ken Xie's Fortinet is already four years old. One Sunnyvale startup has now seeded three of security's defining institutions." },
-    { year: 2008, personal: true, title: "The enterprise push - and Rodolfo's on-ramp", detail: "Juniper ships its first Ethernet switch, the EX 4200, and launches the SRX services gateways; Kriens becomes chairman and Microsoft's Kevin Johnson takes the CEO chair. The MX edge routers (2006) - built by a team led by Kumar and Apurva Mehta, later of Versa - anchor the portfolio Rodolfo represents when he joins Juniper in Brazil in 2009, through 2010." },
+    { year: 2008, personal: true, title: "The enterprise push - and my on-ramp", detail: "Juniper ships its first Ethernet switch, the EX 4200, and launches the SRX services gateways; Kriens becomes chairman and Microsoft's Kevin Johnson takes the CEO chair. The MX edge routers (2006) - built by a team led by Kumar and Apurva Mehta, later of Versa - anchor the portfolio I represent when he joins Juniper in Brazil in 2009, through 2010." },
     { year: 2014, title: "Pulse departs; employee #32 takes over", detail: "The SSL VPN line descended from Neoteris is spun off to private equity for $250 million as Pulse Secure. Rami Rahim - Juniper employee number 32 - becomes CEO." },
     { year: 2015, title: "The ScreenOS disclosure", detail: "December 2015: Juniper announces it found unauthorized code in ScreenOS, present since 2012 - a root-access backdoor and an altered Dual_EC_DRBG constant enabling passive decryption. One of the most studied supply-chain incidents in security history." },
     { year: 2019, title: "Mist: the AI turn", detail: "Closed April 1, 2019 - announced at $405 million ($359.2 million net per the 10-Q) - Mist's AI-driven wireless becomes the center of Juniper's enterprise story and, later, the asset the regulators care most about.", sourceNote: "R1 canon: Juniper 10-Q." },
@@ -70,7 +70,7 @@ export const netscreenJuniperProfile: VendorProfile = {
     { name: "Junos", what: "The industry's first backbone-specific routing OS (December 1997) - and Juniper's one-OS discipline across routing, switching, and security for two decades." },
     { name: "M-series and T-series", what: "The core routers that broke the monopoly: the M40's silicon forwarding plane, then the M160, T-series, and the multichassis core that carried the 2000s Internet." },
     { name: "MX edge routers", what: "The 2006 edge platform - engineering led by Kumar and Apurva Mehta, later founders of Versa - that became Juniper's workhorse franchise." },
-    { name: "ScreenOS, SSG, and SRX", what: "The NetScreen lineage: ASIC firewalls and ScreenOS, evolved into the SSG series and then the SRX services gateways - the security line of Rodolfo's Juniper years." },
+    { name: "ScreenOS, SSG, and SRX", what: "The NetScreen lineage: ASIC firewalls and ScreenOS, evolved into the SSG series and then the SRX services gateways - the security line of my Juniper years." },
     { name: "EX switching and Mist AI", what: "The 2008 enterprise switch entry and the 2019 Mist acquisition - the AI-driven wireless and wired portfolio that HPE valued enough to buy the whole company, and the DOJ valued enough to force open." },
   ],
   innovations: [
@@ -89,6 +89,6 @@ export const netscreenJuniperProfile: VendorProfile = {
   ],
   careerLink: {
     href: "/fortinet",
-    label: "NetScreen co-founder Ken Xie went on to found Fortinet - Rodolfo's Fortinet hub",
+    label: "NetScreen co-founder Ken Xie went on to found Fortinet - my Fortinet hub",
   },
 };

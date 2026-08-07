@@ -28,7 +28,7 @@ export const versaProfile: VendorProfile = {
       place: "Santa Clara, California",
       founders: ["Kumar Mehta", "Apurva Mehta"],
       story:
-        "Two brothers who had spent eight years at Juniper building the MX series - Kumar as VP of Engineering, Apurva as CTO and chief architect of the mobility business unit - left to rebuild the WAN as software. Their pre-Juniper resumes trace this site's own lineage: both held senior roles at Riverstone Networks (where Rodolfo worked in Santa Clara, 2000-2002) and Yago Systems, and Apurva had earlier architected ATM software at Centillion Networks, Foundry founder Bobby Johnson's first company. The founding bet: networking and security functions as multi-tenant software on commodity hardware.",
+        "Two brothers who had spent eight years at Juniper building the MX series - Kumar as VP of Engineering, Apurva as CTO and chief architect of the mobility business unit - left to rebuild the WAN as software. Their pre-Juniper resumes trace this site's own lineage: both held senior roles at Riverstone Networks (where I worked in Santa Clara, 2000-2002) and Yago Systems, and Apurva had earlier architected ATM software at Centillion Networks, Foundry founder Bobby Johnson's first company. The founding bet: networking and security functions as multi-tenant software on commodity hardware.",
     },
   ],
   timeline: [
@@ -52,7 +52,7 @@ export const versaProfile: VendorProfile = {
   ],
   markets: [
     "Versa competes in unified SASE against the largest names in networking and security - the converged SD-WAN and SSE market that Gartner's category now defines. Its customers span thousands of enterprises and the service providers who resell it as managed offerings.",
-    "For this site, Versa is also a lineage marker: its founders' path runs through Riverstone Networks - the same Santa Clara company where Rodolfo worked from 2000 to 2002 - and back to Centillion, connecting the SASE era to the switch wars of the 1990s.",
+    "For this site, Versa is also a lineage marker: its founders' path runs through Riverstone Networks - the same Santa Clara company where I worked from 2000 to 2002 - and back to Centillion, connecting the SASE era to the switch wars of the 1990s.",
   ],
   analyst: [
     "Versa's VOS received the highest score in the Large Global WAN use case of Gartner's 2022 Critical Capabilities for SD-WAN.",
@@ -60,6 +60,6 @@ export const versaProfile: VendorProfile = {
   ],
   careerLink: {
     href: "/industry/chapters/riverstone",
-    label: "Versa's founders built at Riverstone Networks before Juniper - Rodolfo's Riverstone page",
+    label: "Versa's founders built at Riverstone Networks before Juniper - my Riverstone page",
   },
 };

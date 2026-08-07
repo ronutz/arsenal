@@ -61,7 +61,7 @@ export const mcafeeFireeyeTrellixProfile: VendorProfile = {
     { year: 2022, title: "The remix completes", detail: "January 19: STG launches Trellix - McAfee Enterprise plus FireEye, an XDR company with ~40,000 customers, ~5,000 employees and nearly $2B in revenue, led by Bryan Palma. March: the SSE portfolio spins out as Skyhigh Security, and an Advent/Permira-led group takes McAfee's consumer business private for over $14 billion (closed March 1). September 12: Google closes its acquisition of Mandiant.", sourceNote: "Announced at $5.4B; Alphabet's 10-K records a $6.1B total purchase price including cash and debt - Google's second-largest acquisition after Motorola Mobility." },
     { year: 2024, title: "Mandia steps back", detail: "Kevin Mandia transitions to an advisory role at Google on May 31, 2024, two decades after founding the firm." },
     { year: 2025, title: "Trellix changes hands at the top", detail: "STG names Vishal Rao as Trellix CEO in January 2025." },
-    { year: 2015, personal: true, title: "My chapter: the distribution side", detail: "2015 to 2019: FireEye and McAfee ran through the portfolios Rodolfo carried at Westcon-Comstor and ScanSource in Brazil - pre-sales architecture, demonstrations, and channel enablement on both lines. The distribution career page tells the story." },
+    { year: 2015, personal: true, title: "My chapter: the distribution side", detail: "2015 to 2019: FireEye and McAfee ran through the portfolios I carried at Westcon-Comstor and ScanSource in Brazil - pre-sales architecture, demonstrations, and channel enablement on both lines. The distribution career page tells the story." },
   ],
   products: [
     { name: "VirusScan and ePolicy Orchestrator (ePO)", what: "The endpoint suite and the management console that ran a generation of enterprise endpoints - ePO's centralized policy model became the template for the category." },
@@ -79,7 +79,7 @@ export const mcafeeFireeyeTrellixProfile: VendorProfile = {
   ],
   markets: [
     "The lineage now spans four owners and four markets: Trellix (STG) sells XDR and endpoint security to enterprises, launched with roughly 40,000 customers and nearly $2 billion in revenue; Skyhigh Security (STG) carries the SSE portfolio; Mandiant operates inside Google Cloud as its threat-intelligence and incident-response arm; and McAfee's consumer business protects home users as a private company under an Advent/Permira-led group.",
-    "Rodolfo's own connection to this lineage is from the distribution side: he carried the FireEye and McAfee lines in Brazil during his Westcon-Comstor and ScanSource years.",
+    "My own connection to this lineage is from the distribution side: he carried the FireEye and McAfee lines in Brazil during his Westcon-Comstor and ScanSource years.",
   ],
   analyst: [
     "At launch in January 2022, Trellix combined roughly 40,000 customers, 5,000 employees, and nearly $2 billion in revenue - immediately one of the largest pure-play enterprise security vendors.",
@@ -87,6 +87,6 @@ export const mcafeeFireeyeTrellixProfile: VendorProfile = {
   ],
   careerLink: {
     href: "/industry/chapters/fireeye-mcafee-ixia",
-    label: "Rodolfo distributed FireEye and McAfee in Brazil - see the career page",
+    label: "I distributed FireEye and McAfee in Brazil - see the career page",
   },
 };

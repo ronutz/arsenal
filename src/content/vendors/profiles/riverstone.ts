@@ -42,13 +42,13 @@ export const riverstoneProfile: VendorProfile = {
       place: "Santa Clara, California",
       founders: ["Romulus Pereira", "the Yago engineering team"],
       story:
-        "Born in Cabletron's February 2000 four-way split as the service-provider company: roughly 250 people around the Yago-derived SmartSwitch Router line, led by Pereira as CEO, aimed at the metro networks carriers were racing to build. This is where Rodolfo worked from 2000 to 2002 - Santa Clara, at the center of the carrier Ethernet wave, in the company whose engineering DNA later resurfaced in Versa Networks.",
+        "Born in Cabletron's February 2000 four-way split as the service-provider company: roughly 250 people around the Yago-derived SmartSwitch Router line, led by Pereira as CEO, aimed at the metro networks carriers were racing to build. This is where I worked from 2000 to 2002 - Santa Clara, at the center of the carrier Ethernet wave, in the company whose engineering DNA later resurfaced in Versa Networks.",
     },
   ],
   timeline: [
     { year: 1996, title: "Yago Systems founded", detail: "September 1996, Sunnyvale: wire-speed routing and Layer-4 switching for the Gigabit Ethernet era, from a three-founder team including Piyush Patel and ex-Cisco, ex-Kalpana engineer Romulus Pereira." },
     { year: 1998, title: "Cabletron closes on Yago", detail: "Announced in January at about $90 million and closed March 17, 1998 at a recorded cost of $165.7 million in stock, with $150 million written to in-process R&D. Cabletron renames Yago to Riverstone; the SmartSwitch Router becomes the group's flagship.", sourceNote: "Cabletron 10-Q/A and Riverstone 424B4 SEC filings." },
-    { year: 2000, personal: true, title: "The split creates Riverstone", detail: "February 2000: Cabletron's four-way split makes Riverstone the service-provider company - Santa Clara, Pereira as CEO, carrier-focused spins of the Yago line. Rodolfo joins the same year." },
+    { year: 2000, personal: true, title: "The split creates Riverstone", detail: "February 2000: Cabletron's four-way split makes Riverstone the service-provider company - Santa Clara, Pereira as CEO, carrier-focused spins of the Yago line. I join the same year." },
     { year: 2001, title: "IPO and independence", detail: "February 16, 2001: Riverstone sells 10.0 million shares at $12 for net proceeds of $108.8 million - one of the few networking IPOs to get out after the bubble burst. That August, Cabletron distributes its 87 percent stake to shareholders and dissolves; Riverstone is the split's only true spin-off.", sourceNote: "Enterasys 10-K FY2002; Cabletron 8-K, Jul 30, 2001." },
     { year: 2002, title: "The SEC comes calling", detail: "Riverstone discloses an SEC investigation into its revenue accounting; the stock halves to $7.70, erasing nearly a billion dollars of value as the telecom collapse guts carrier spending." },
     { year: 2003, title: "The restatement", detail: "August 2003: fiscal 2002 and 2003 results are restated - the SEC's later complaint put the inflated revenue at nearly $30 million from improper deals. Quarterly revenue falls to $12.7 million from $30.1 million a year earlier." },
@@ -70,7 +70,7 @@ export const riverstoneProfile: VendorProfile = {
   ],
   markets: [
     "Riverstone competed in metro and carrier Ethernet against Cisco, Extreme, and Foundry, selling to carriers, ISPs, and cable operators building triple-play networks. The 2002-2003 accounting scandal and the telecom depression broke its independence; the technology was valuable enough that Lucent and Ericsson bid against each other for the remains.",
-    "The alumni network is this page's living legacy: Kumar and Apurva Mehta, both senior at Riverstone and Yago before their Juniper years, went on to found Versa Networks - and Rodolfo, who worked here from 2000 to 2002, teaches the successor technologies of this whole era today.",
+    "The alumni network is this page's living legacy: Kumar and Apurva Mehta, both senior at Riverstone and Yago before their Juniper years, went on to found Versa Networks - and I, who worked here from 2000 to 2002, teaches the successor technologies of this whole era today.",
   ],
   analyst: [
     "The auction verdict on the technology: Lucent raised its own stalking-horse bid by $37 million to win at $207 million over Ericsson's $178 million - both giants wanted the metro Ethernet portfolio to fill data gaps.",

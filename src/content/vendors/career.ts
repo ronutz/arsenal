@@ -121,7 +121,7 @@ export const REDU_CAREER_PARTNERS: readonly string[] = partnerVendors
   .filter((v) => v.relationships?.includes("red-education-partner"))
   .map((v) => v.slug);
 
-/** Vendors whose OFFICIAL training Rodolfo is authorized to deliver.
+/** Vendors whose OFFICIAL training I am authorized to deliver.
  *
  *  Narrower than REDU_CAREER_PARTNERS on purpose. Red Education partners with
  *  many vendors; Rodolfo personally holds instructor authorization for four.

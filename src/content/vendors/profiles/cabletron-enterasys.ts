@@ -45,7 +45,7 @@ export const cabletronEnterasysProfile: VendorProfile = {
     { year: 2001, title: "Cabletron ceases to exist", detail: "Riverstone IPOs in February 2001 and is distributed to shareholders that summer - the only true spin-off. The holding company folds into Enterasys in August 2001, and the Cabletron name passes into history eighteen years after the garage." },
     { year: 2003, title: "Enterasys pays for its numbers", detail: "A 2002 revenue-recognition restatement erases the first post-spin profits; the SEC investigation and shareholder suits settle in October 2003 for $50.4 million, and in December 2006 four former executives are sentenced to prison." },
     { year: 2006, title: "Private under Gores", detail: "The Gores Group and Tennenbaum Capital take Enterasys private for about $386 million (announced November 2005, closed March 2006); in 2008 Gores pairs it with a 51 percent stake in Siemens Enterprise Communications in a $550 million transaction." },
-    { year: 2013, title: "The DNA lands at Extreme", detail: "September 12, 2013: Extreme Networks announces the acquisition of Enterasys for about $180 million in cash ($105 million from hand, $75 million borrowed), roughly doubling Extreme's revenue. The Cabletron lineage - and the customer base Rodolfo served from Brazil - lives on at one of the vendors he teaches today.", sourceNote: "Network World and Network Computing, Sep 2013." },
+    { year: 2013, title: "The DNA lands at Extreme", detail: "September 12, 2013: Extreme Networks announces the acquisition of Enterasys for about $180 million in cash ($105 million from hand, $75 million borrowed), roughly doubling Extreme's revenue. The Cabletron lineage - and the customer base I served from Brazil - lives on at one of the vendors I teach today.", sourceNote: "Network World and Network Computing, Sep 2013." },
     { year: 1996, personal: true, title: "My chapter opens", detail: "1996 to 2000 at Cabletron Systems in Brazil - the first job of a career that begins in the thick of the hub wars - and a second tour, 2005 to 2007, at Enterasys, inside the same lineage after the split." },
   ],
   products: [
@@ -62,7 +62,7 @@ export const cabletronEnterasysProfile: VendorProfile = {
   ],
   markets: [
     "Cabletron was one of networking's 'big four' of the 1990s - with Cisco, Bay Networks, and 3Com - peaking past US$1.8 billion in revenue and 6,600 employees before the LAN hub market it dominated commoditized underneath it.",
-    "Every thread found a home: the enterprise line through Enterasys to Extreme Networks (2013), the Yago routing line through Riverstone to a 2006 bankruptcy sale to Lucent, and SPECTRUM through Aprisma and Concord to Computer Associates. Rodolfo lived two chapters from Brazil - Cabletron 1996-2000 and Enterasys 2005-2007 - and teaches the surviving lineage at Extreme today.",
+    "Every thread found a home: the enterprise line through Enterasys to Extreme Networks (2013), the Yago routing line through Riverstone to a 2006 bankruptcy sale to Lucent, and SPECTRUM through Aprisma and Concord to Computer Associates. I lived two chapters from Brazil - Cabletron 1996-2000 and Enterasys 2005-2007 - and teaches the surviving lineage at Extreme today.",
   ],
   analyst: [
     "Joel Conover, Current Analysis, on the 1998 deal that mattered: 'The Yago group was the best thing Cabletron ever bought into' - its technology and people powered both Enterasys and Riverstone after the split.",

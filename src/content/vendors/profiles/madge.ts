@@ -70,7 +70,7 @@ export const madgeProfile: VendorProfile = {
     { title: "The cautionary canon", detail: "ATM investment with zero return, an abandoned Ethernet hedge, a late wireless pivot - Madge's endgame is the textbook case its own founder later acknowledged: when a technology declines, merging or selling is the logical course. He kept it independent because it carried his name." },
   ],
   markets: [
-    "Madge is the missing chapter of this section's hub wars: every other page tells the story from Ethernet's side. In the mid-1990s the outcome was genuinely uncertain - Token Ring owned the IBM-centric enterprise, and nowhere more than in markets like Brazil, where mainframe shops made the ring the incumbent Rodolfo's Cabletron fought against from 1996 to 2000.",
+    "Madge is the missing chapter of this section's hub wars: every other page tells the story from Ethernet's side. In the mid-1990s the outcome was genuinely uncertain - Token Ring owned the IBM-centric enterprise, and nowhere more than in markets like Brazil, where mainframe shops made the ring the incumbent my Cabletron fought against from 1996 to 2000.",
     "The trajectory of its own SEC numbers tells the whole tragedy: Token Ring was 65 percent of sales in 1996 and 81 percent by 1999 - not because the ring grew, but because everything else was sold or shut. The last consolidator of a vanishing market.",
   ],
   analyst: [
@@ -79,6 +79,6 @@ export const madgeProfile: VendorProfile = {
   ],
   careerLink: {
     href: "/industry/chapters/cabletron-enterasys",
-    label: "Rodolfo fought the Token Ring versus Ethernet war from the other side - the Cabletron page",
+    label: "I fought the Token Ring versus Ethernet war from the other side - the Cabletron page",
   },
 };

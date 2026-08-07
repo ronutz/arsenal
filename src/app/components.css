@@ -4587,9 +4587,9 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
 .footer-redu .footer-built-link {
   color: color-mix(in srgb, var(--text-secondary) 67%, var(--text-tertiary) 33%);
 }
-.footer-redu .footer-built-link:hover { color: var(--text-secondary); text-decoration: underline; text-decoration-color: #a8605f; }
+.footer-redu .footer-built-link:hover { color: var(--text-secondary); text-decoration: underline; text-decoration-color: var(--redu-brand); }
 .footer-redu .brand {
-  color: #a8605f;
+  color: var(--redu-brand);
   font-weight: 600;
   /* Keep the brand name "Red Education" from splitting across lines - on narrow
      screens the browser was breaking it as "...Red" / "Education". */
@@ -15335,11 +15335,11 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 
 .advisory-redu-link:hover {
   text-decoration: underline;
-  text-decoration-color: #a8605f;
+  text-decoration-color: var(--redu-brand);
 }
 
 .advisory-exclusions .brand {
-  color: #a8605f;
+  color: var(--redu-brand);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -15374,20 +15374,20 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   text-underline-offset: 0.35em;
 }
 
-/* Training takes the Red Education brand colour, the same #a8605f the footer
+/* Training takes the Red Education brand colour, the same var(--redu-brand) the footer
    credit uses. A RAW HEX IS CORRECT HERE and not a lapse: this is a partner's
    brand colour rather than a site colour, so it must NOT shift with the theme -
    for the same reason the footer hardcodes it. */
 .site-nav-link.nav-training {
-  color: #a8605f;
+  color: var(--redu-brand);
   font-weight: 600;
 }
 
 .site-nav-link.nav-training:hover {
-  color: #a8605f;
+  color: var(--redu-brand);
   text-decoration: underline;
   text-underline-offset: 0.35em;
-  text-decoration-color: #a8605f;
+  text-decoration-color: var(--redu-brand);
 }
 
 /* The quiet pair keeps the inherited .site-nav-link colour and weight. Declared
@@ -15412,11 +15412,11 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    RED EDUCATION, IN PROSE (PRIME 2026-08-06)
    ---------------------------------------------------------------------------
    Applied by <ReduBrand>, which wraps the name wherever it appears in a
-   translated string. Same #a8605f as the footer credit, the nav item and the
+   translated string. Same var(--redu-brand) as the footer credit, the nav item and the
    advisory exclusion list - a raw hex on purpose, because this is a partner's
    brand colour and must not shift with any of the twenty-three themes. */
 .redu-brand {
-  color: #a8605f;
+  color: var(--redu-brand);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -15432,6 +15432,6 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .redu-brand-link:hover,
 .redu-brand-link:focus-visible {
   text-decoration: underline;
-  text-decoration-color: #a8605f;
+  text-decoration-color: var(--redu-brand);
   text-underline-offset: 0.2em;
 }

@@ -44,7 +44,7 @@ export const mikrotikProfile: VendorProfile = {
     { title: "One OS across the whole line", detail: "RouterOS is the same system everywhere, so skills, scripts, and configurations transfer from the smallest device to the data center edge." },
   ],
   markets: [
-    "MikroTik is one of the most widely deployed networking brands among ISPs and wireless ISPs worldwide, with particular strength in emerging markets - including Brazil, where MikroTik gear forms the backbone of countless provider networks in the ISP world Rodolfo grew up in professionally.",
+    "MikroTik is one of the most widely deployed networking brands among ISPs and wireless ISPs worldwide, with particular strength in emerging markets - including Brazil, where MikroTik gear forms the backbone of countless provider networks in the ISP world I grew up in professionally.",
     "The company remains privately held and independent in an industry defined by consolidation - no IPO, no acquisition, no outside control: the counter-example to every other story in this section.",
   ],
   analyst: [

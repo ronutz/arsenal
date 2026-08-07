@@ -206,6 +206,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               {t("map.lede")}
             </p>
             <div className="learn-portal-grid">
+              <Link href="/vendor-hubs" className="learn-portal-card" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
+                <p className="learn-portal-title">
+                  {t("map.hubs")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.hubsLede")}</p>
+              </Link>
               <Link href="/tools" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
                 <p className="learn-portal-title">
@@ -228,6 +235,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </p>
               </Link>
 
+              <Link href="/glossary" className="learn-portal-card" style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
+                <p className="learn-portal-title">
+                  {t("map.glossary")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.glossaryLede")}</p>
+              </Link>
               <Link href="/industry" className="learn-portal-card" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
                 <p className="learn-portal-title">
@@ -267,6 +281,20 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </p>
               </Link>
 
+              <Link href="/study-guides" className="learn-portal-card" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#10003;</span>
+                <p className="learn-portal-title">
+                  {t("map.guides")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.guidesLede")}</p>
+              </Link>
+              <Link href="/training" className="learn-portal-card" style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
+                <p className="learn-portal-title">
+                  {t("map.training")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.trainingLede")}</p>
+              </Link>
               <Link href="/advisory" className="learn-portal-card" style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9671;</span>
                 <p className="learn-portal-title">
@@ -276,6 +304,27 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 <p className="learn-portal-badges">
                   <span className="learn-portal-badge">{t("map.advisoryBadge")}</span>
                 </p>
+              </Link>
+              <Link href="/about" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9671;</span>
+                <p className="learn-portal-title">
+                  {t("map.about")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.aboutLede")}</p>
+              </Link>
+              <Link href="/industry/chapters" className="learn-portal-card" style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
+                <p className="learn-portal-title">
+                  {t("map.career")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.careerLede")}</p>
+              </Link>
+              <Link href="/red-education" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
+                <p className="learn-portal-title">
+                  {t("map.redu")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.reduLede")}</p>
               </Link>
             </div>
           </div>

@@ -48,7 +48,7 @@ export const impervaThalesProfile: VendorProfile = {
     { title: "The founders' diaspora", detail: "All three founders moved on to build again - Kramer founded Cato Networks, Boodaei founded Trusteer and Transmit Security, Shulman co-founded Nokod Security - a measure of the talent that started here." },
   ],
   markets: [
-    "Imperva competes in web application and API protection (WAAP) - the market where Rodolfo teaches F5's Advanced WAF daily - and in data security, now as the application-security arm of Thales, the French aerospace and defense group.",
+    "Imperva competes in web application and API protection (WAAP) - the market where I teach F5's Advanced WAF daily - and in data security, now as the application-security arm of Thales, the French aerospace and defense group.",
     "The company's arc is the full lifecycle of a security vendor: Israeli startup, category pioneer, NYSE listing, private-equity ownership, and finally strategic acquisition by a defense conglomerate.",
   ],
   analyst: [
@@ -56,6 +56,6 @@ export const impervaThalesProfile: VendorProfile = {
   ],
   careerLink: {
     href: "/f5",
-    label: "Imperva pioneered the WAF market Rodolfo teaches through F5 Advanced WAF - the F5 hub",
+    label: "Imperva pioneered the WAF market I teach through F5 Advanced WAF - the F5 hub",
   },
 };

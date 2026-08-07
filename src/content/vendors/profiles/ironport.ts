@@ -59,7 +59,7 @@ export const ironportProfile: VendorProfile = {
   ],
   markets: [
     "IronPort defined the enterprise email security appliance market of the 2000s, guarding the mail edges of the biggest ISPs and a fifth of the world's largest enterprises before Cisco absorbed it. The category it created later moved to the cloud - where Cisco's successor service still carries IronPort's initials in its DNS.",
-    "Rodolfo's engagement, in late 2004 and 2005, belongs to the independent era - recorded here as its own chapter precisely because the acquisition came two years later.",
+    "My engagement, in late 2004 and 2005, belongs to the independent era - recorded here as its own chapter precisely because the acquisition came two years later.",
   ],
   analyst: [
     "SenderBase at the time of the acquisition: telemetry from more than 100,000 organizations, 110+ parameters per mail server, over 5 billion queries a day - the largest email monitoring network in the world, per contemporary coverage.",

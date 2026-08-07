@@ -19,6 +19,14 @@
 
 
 :root {
+  /* RED EDUCATION BRAND COLOUR (PRIME 2026-08-06).
+     A partner's brand colour, so it does not follow the theme - EXCEPT on the
+     six themes whose own accent is already red, where an unchanged #a8605f
+     stops distinguishing the Training nav item from Tools/Learn/Industry and
+     the whole three-tier scheme collapses. Those six override it below to a
+     hue that still reads as "the partner" without competing with the accent. */
+  --redu-brand: #a8605f;
+
   /* Semantic status tokens (D-71). Generic base = dark defaults, inherited by the
      18 dark themes; the 8 light themes override the generics below. */
   --color-neutral: #94a3b8;
@@ -104,6 +112,9 @@
 
 /* Penumbra — dark, amber accent. (nods to Eclipse) */
 :root[data-theme="penumbra"] {
+  /* accent is orange #fb923c - a cool indigo separates cleanly */
+  --redu-brand: #7c8cd6;
+
   --canvas-primary: #14100a;
   --surface-base: #201810;
   --surface-elevated: #2f2519;
@@ -188,6 +199,9 @@
 
 /* Kevlar — light, red accent. (nods to Security Fabric) */
 :root[data-theme="kevlar"] {
+  /* accent is a hard red #dc2626 - a warm tan reads as distinct without clashing */
+  --redu-brand: #c98a6b;
+
   /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
      aliases inherited from :root resolve through these. */
   --color-neutral: #475569;
@@ -293,6 +307,9 @@
 
 /* Retro · CoCo — TRS-80 Color Computer green text screen, with artifact orange. */
 :root[data-theme="retro-coco"] {
+  /* accent is burnt orange #c84b1e - the era palette's green is the natural partner hue */
+  --redu-brand: #7fb069;
+
   --canvas-primary: #9bd17f;   /* CoCo VDG green (lightened for legibility) */
   --surface-base: #8ac76e;
   --surface-elevated: #a8d98d;
@@ -346,6 +363,9 @@
 
 /* Retro · Amiga — Workbench 1.x: azure blue with the iconic Workbench orange. */
 :root[data-theme="retro-amiga"] {
+  /* accent is amber #ff8800 - Amiga blue is period-correct and maximally separate */
+  --redu-brand: #8ba3d9;
+
   --canvas-primary: #0058a8;   /* Workbench blue */
   --surface-base: #15639f;
   --surface-elevated: #1e6da8;
@@ -430,6 +450,9 @@
 
 /* Matrix · Red — red-pill rain. */
 :root[data-theme="matrix-red"] {
+  /* accent is bright red #ff3030 - amber holds against it and stays in the theme */
+  --redu-brand: #d4a05f;
+
   --canvas-primary: #000000;
   --surface-base: #0a0202;
   --surface-elevated: #140404;
@@ -477,6 +500,9 @@
 
 /* Web · Reddit — light grey with OrangeRed; softly rounded. */
 :root[data-theme="web-reddit"] {
+  /* accent is Reddit orange #ff4500 - the complementary blue is unmistakable */
+  --redu-brand: #5a8fc7;
+
   /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
      aliases inherited from :root resolve through these. */
   --color-neutral: #475569;

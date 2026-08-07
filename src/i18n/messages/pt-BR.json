@@ -114,7 +114,21 @@
       "certsBadge": "{count} guias",
       "advisory": "Consultoria",
       "advisoryLede": "Julgamento independente sobre decisões ainda não tomadas. Trabalho delimitado, resposta por escrito, sem plantão.",
-      "advisoryBadge": "Sob contratação"
+      "advisoryBadge": "Sob contratação",
+      "hubs": "Hubs de fabricantes",
+      "hubsLede": "Uma porta por plataforma: as ferramentas, artigos e material de certificação daquele fabricante, reunidos num só lugar.",
+      "glossary": "Glossário",
+      "glossaryLede": "Cada termo e sigla usados neste site, definidos uma vez e com referências cruzadas. O que se abre no meio de um artigo.",
+      "guides": "Guias de estudo",
+      "guidesLede": "Passo a passo objetivo por objetivo para os exames, mostrando o que está coberto aqui e, honestamente, o que não está.",
+      "training": "Treinamentos que ministro",
+      "trainingLede": "Cursos autorizados com instrutor em quatro plataformas, entregues através da Red Education.",
+      "about": "Sobre",
+      "aboutLede": "Quem escreve tudo isto, o que eu fiz, e por que algo disso mereceria confiança.",
+      "career": "O registro da carreira",
+      "careerLede": "Quinze capítulos a partir de 1996, cada um contado de dentro da empresa em que aconteceu.",
+      "redu": "Red Education",
+      "reduLede": "O centro de treinamento autorizado global através do qual meus cursos são entregues, e a história de como chegou lá."
     }
   },
   "tools": {
