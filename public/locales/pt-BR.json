@@ -14829,8 +14829,7 @@
     "scopeOutImpl": "Implantação e configuração. Reviso o que está planejado e audito o que foi construído, mas não sou as mãos que constroem.",
     "scopeOutOncall": "Plantão, sobreaviso e responsabilidade operacional. Nada aqui me coloca em escala de plantão ou em cadeia de escalonamento.",
     "scopeOutStaff": "Alocação de mão de obra. Isto não é um corpo para preencher uma vaga.",
-    "scopeOutTraining": "Treinamento e capacitação, em qualquer formato. Todo curso, workshop e trilha de certificação que ministro é entregue através da Red Education, e consultas sobre eles pertencem a lá, não aqui.",
-    "offersTitle": "Os tipos de trabalho",
+    "offersTitle": "Onde eu agrego mais valor",
     "offerReviewTitle": "Revisão de projeto e arquitetura",
     "offerReviewBody": "Uma leitura independente de um projeto proposto, antes de ser construído e pago. O que ele pressupõe, onde vai sofrer, quanto vai custar para operar, e quais partes são decisões e não apenas padrões de fábrica.",
     "offerSpecTitle": "Especificação e redação de RFP",
@@ -14852,7 +14851,11 @@
     "ctaBody": "A primeira mensagem útil diz qual é a decisão e quando ela precisa ser tomada.",
     "ctaButton": "Iniciar uma conversa",
     "offerArrangementTitle": "Sob combinação especial",
-    "offerArrangementBody": "Presença sênior em tempo real, presencial ou remota, durante uma operação que não pode ser repetida: uma janela de migração, uma virada, um teste de contingência planejado."
+    "offerArrangementBody": "Presença sênior em tempo real, presencial ou remota, durante uma operação que não pode ser repetida: uma janela de migração, uma virada, um teste de contingência planejado.",
+    "scopeOutTrainingPre": "Treinamento e capacitação, em qualquer formato. Todo curso, workshop e trilha de certificação que ministro é entregue através da ",
+    "scopeOutTrainingPost": ".",
+    "disclaimerTitle": "Antes de continuar a ler",
+    "disclaimerBody": "Trabalho em tempo integral para a Red Education. O trabalho de consultoria descrito nesta página é deliberadamente limitado em volume, e acontece fora das horas em que trabalho para eles. Se você precisa de treinamento, isso passa pela Red Education, e não por mim."
   },
   "speaking": {
     "eyebrow": "Palestras",

@@ -1,0 +1,82 @@
+---
+slug: containment-before-cure
+title: "Containment before cure"
+thesis: "Restoring service and understanding the fault are different jobs competing for the same system, because almost every containment action destroys the evidence you would have diagnosed from. The sequence that resolves this is capture, contain, then diagnose from what you captured."
+stance: practised
+part: breaks
+order: 7
+roles: ["second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "packet-capture-plan-builder"]
+relatedIndustry: []
+relatedPractice: ["symptom-and-cause"]
+artefact: "The sixty seconds before you contain"
+updated: "2026-08-06"
+---
+
+## Two clocks, and only one of them is visible
+
+From the moment a service goes down, two clocks run.
+
+The first is the one everybody can see: how long the service is unavailable. It has a number, somebody is watching it, and it appears in the report.
+
+The second is the one that decides whether this happens again: how much you understand about why. Nobody is watching it, it has no number, and it is invisible in every report ever written about an outage.
+
+The two are in direct conflict, and the conflict is not a matter of discipline or priorities. It is mechanical: **almost every action that stops the first clock destroys the information feeding the second.** Restart the process and the memory state is gone. Fail over and the faulty node is now idle and behaving perfectly. Clear the table, flush the cache, roll back the change — each one restores service and deletes the thing you would have used to explain it.
+
+Understanding this is what separates people who fix outages from people who fix them repeatedly.
+
+## Containment is not the fix
+
+The word means something specific and it is worth being precise, because teams that blur it lose hours arguing past each other.
+
+**Containment** limits how much is affected. It does not address why. Failing over to the standby, disabling the feature that is misbehaving, blocking the source of a flood, rate limiting, isolating a segment, taking one node out of the pool: none of these repair anything. They put a boundary around the damage.
+
+**The cure** addresses the cause and is frequently unavailable during the incident, because it needs a code change, a vendor, a maintenance window, or a purchase.
+
+Most incidents end at containment. That is not failure, it is the normal shape of the work, and pretending otherwise produces reports that describe as *resolved* something that is actually *bounded*.
+
+## The sixty seconds that decide the review
+
+Here is the discipline that resolves the conflict between the two clocks, and it costs almost nothing.
+
+Before you take any containment action, spend one minute capturing state. Not five minutes, not a full investigation — one minute, on a system that is already down.
+
+What to grab depends on the layer, but the shape is always the same: the counters, the current sessions or connections, the log tail, the running configuration, a screenshot of whatever the monitoring is showing, and the exact time. If a capture is already running, mark the moment rather than stopping it.
+
+Then contain.
+
+Nobody objects to sixty seconds. What people object to is *"hold on, I want to understand this first"* during an outage, which is a different request and a much worse one. The distinction is between taking a photograph and conducting an investigation, and if you frame it as the first you will get it every time.
+
+The [packet capture planner](/tools/packet-capture-plan-builder) exists partly for this: deciding what to capture *while* a system is down is how the minute becomes fifteen.
+
+## What containment costs, stated honestly
+
+**It can make things worse.** Failing over to a standby that shares the fault takes down the survivor. Blocking a source that turns out to be legitimate creates a second outage inside the first. Restarting to clear a condition can trigger a slow reconvergence that is longer than the fault was.
+
+**It hides the fault from monitoring.** A contained problem often stops alerting, which is the point, and also means nobody is watching the thing you have not fixed.
+
+**It moves load somewhere.** Whatever you isolated was doing work, and that work is now elsewhere, on something sized for a normal day.
+
+None of these argue against containing. They argue for saying out loud what the containment costs, at the moment you do it, so that the cost is a decision somebody made rather than a surprise somebody discovers.
+
+## The temporary that is not temporary
+
+The uncomfortable pattern, and the one every long career accumulates examples of.
+
+Containment applied under pressure becomes permanent. The feature stays disabled. The node stays out of the pool. The rule stays in the firewall. Three years later somebody finds a configuration nobody can explain, and the person who applied it has left, and the ticket number in the comment points at a system that was decommissioned.
+
+The prevention is one line of writing at the moment you contain: **what was changed, why, what it costs, and what would have to be true to reverse it.** Not a date, because a date will pass and nothing will happen. A *condition* — "revert once the vendor confirms the fix in 17.1" — which somebody can later evaluate.
+
+That single line is the difference between a workaround and a piece of unexplained configuration, and it takes about as long to write as this sentence took to read.
+
+## When not to contain
+
+Worth stating, because the instinct to act is strong and occasionally wrong.
+
+**When the containment action is riskier than the fault.** A degraded service that is limping is sometimes better than a failover you have never tested.
+
+**When you cannot describe what it will do.** If nobody in the room can say what happens after the command, that is not containment, it is a hope.
+
+**When the fault is already bounded.** Something affecting one user, not spreading, with a workaround in place, does not need an emergency action at eleven at night. It needs a ticket and a morning.
+
+The professional judgement is not *contain fast*, it is **know which clock you are being paid to stop, and know what stopping it will cost the other one.**

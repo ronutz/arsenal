@@ -14880,8 +14880,7 @@
     "scopeOutImpl": "Implementation and configuration. I will review what is planned and audit what was built, but I am not the pair of hands that builds it.",
     "scopeOutOncall": "On-call, standby, and operational duty. Nothing here places me on a rota or an escalation path.",
     "scopeOutStaff": "Staff augmentation. This is not a body for a headcount gap.",
-    "scopeOutTraining": "Training and enablement, in any form. Every course, workshop and certification path I deliver is delivered through Red Education, and enquiries about them belong there rather than here.",
-    "offersTitle": "The kinds of work",
+    "offersTitle": "Where I bring the most value",
     "offerReviewTitle": "Design and architecture review",
     "offerReviewBody": "An independent read of a proposed design before it is built and paid for. What it assumes, where it will strain, what it will cost to operate, and which parts are decisions rather than defaults.",
     "offerSpecTitle": "Specification and RFP authoring",
@@ -14903,7 +14902,11 @@
     "ctaBody": "The useful first message says what the decision is and when it has to be made.",
     "ctaButton": "Start a conversation",
     "offerArrangementTitle": "By special arrangement",
-    "offerArrangementBody": "Senior-level real time presence, on site or remotely, during an operation that cannot be repeated: a migration window, a cutover, a planned failover."
+    "offerArrangementBody": "Senior-level real time presence, on site or remotely, during an operation that cannot be repeated: a migration window, a cutover, a planned failover.",
+    "scopeOutTrainingPre": "Training and enablement, in any form. Every course, workshop and certification path I deliver is delivered through ",
+    "scopeOutTrainingPost": ".",
+    "disclaimerTitle": "Before you read further",
+    "disclaimerBody": "I work full time for Red Education. The advisory work described on this page is deliberately limited in volume, and it happens outside the hours I work for them. If you need training, that goes through Red Education and not through me."
   },
   "speaking": {
     "eyebrow": "Speaking",

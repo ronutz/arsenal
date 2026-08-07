@@ -15278,3 +15278,107 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .teach-tight .teach-hero {
   padding-block-end: clamp(1rem, 2.67vw, 2rem);
 }
+
+
+/* ---------------------------------------------------------------------------
+   ADVISORY: THE EXCLUSIONS LIST AND THE RED EDUCATION LINK (PRIME 2026-08-06)
+   ---------------------------------------------------------------------------
+   The "Not offered here" list was using .course-list, which sets
+   list-style:none - correct for a course catalogue, wrong for four prose
+   exclusions, which rendered as unmarked lines with nothing separating them.
+   These are the most load-bearing sentences on the page, so they get markers
+   and space. */
+.advisory-exclusions {
+  list-style: none;
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+.advisory-exclusions > li {
+  position: relative;
+  padding-left: 1.25rem;
+  line-height: 1.6;
+}
+
+.advisory-exclusions > li::before {
+  /* An en dash rather than a bullet: these are statements being struck off,
+     and a dash reads as exclusion where a bullet reads as an offer. */
+  content: "\2013";
+  position: absolute;
+  left: 0;
+  color: var(--text-tertiary);
+}
+
+/* Matches the footer credit exactly - .brand supplies the colour and weight,
+   this supplies the inherited text colour and the hover, so the two places the
+   site names Red Education are visibly the same gesture. */
+.advisory-redu-link {
+  color: inherit;
+  transition: color 0.15s ease;
+}
+
+.advisory-redu-link:hover {
+  text-decoration: underline;
+  text-decoration-color: #a8605f;
+}
+
+.advisory-exclusions .brand {
+  color: #a8605f;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   NAV HIERARCHY IN THREE GROUPS (PRIME 2026-08-06)
+   ---------------------------------------------------------------------------
+   Tools / Learn / Industry     the substance, and free
+   Training                     the commercial offer, delivered via Red Education
+   Advisory / About             secondary, quiet
+
+   *** COLOUR CANNOT CARRY THIS ALONE, AND HERE IS WHY. ***
+   This site ships TWENTY-THREE themes and --accent-primary is a different hue
+   in each. On several of them it is already red: matrix-red #dc2626, swagger
+   #ff3030, web-reddit #ff4500. On those themes the "primary" group and the
+   Red Education group land in the same part of the spectrum and a
+   colour-only distinction collapses.
+
+   So each group also carries a WEIGHT difference, which is theme-independent.
+   A reader on a red theme still sees three tiers; they are simply closer in
+   hue than on the default. That is also the accessibility position: colour is
+   never the only channel. */
+
+.site-nav-link.nav-primary {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.site-nav-link.nav-primary:hover {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+
+/* Training takes the Red Education brand colour, the same #a8605f the footer
+   credit uses. A RAW HEX IS CORRECT HERE and not a lapse: this is a partner's
+   brand colour rather than a site colour, so it must NOT shift with the theme -
+   for the same reason the footer hardcodes it. */
+.site-nav-link.nav-training {
+  color: #a8605f;
+  font-weight: 600;
+}
+
+.site-nav-link.nav-training:hover {
+  color: #a8605f;
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+  text-decoration-color: #a8605f;
+}
+
+/* The quiet pair keeps the inherited .site-nav-link colour and weight. Declared
+   explicitly anyway, so that "unchanged" is a decision in the file rather than
+   an absence somebody later reads as an oversight. */
+.site-nav-link.nav-quiet {
+  color: var(--text-secondary);
+  font-weight: 400;
+}

@@ -1,0 +1,82 @@
+---
+slug: containment-before-cure
+title: "Conter antes de curar"
+thesis: "Restaurar o serviço e entender a falha são trabalhos diferentes disputando o mesmo sistema, porque quase toda ação de contain destrói a evidência com a qual você teria diagnosticado. A sequência que resolve isso é capturar, conter, e então diagnosticar a partir do que foi capturado."
+stance: practised
+part: breaks
+order: 7
+roles: ["second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "packet-capture-plan-builder"]
+relatedIndustry: []
+relatedPractice: ["symptom-and-cause"]
+artefact: "Os sessenta segundos antes de conter"
+updated: "2026-08-06"
+---
+
+## Dois relógios, e só um deles é visível
+
+A partir do instante em que um serviço cai, dois relógios correm.
+
+O primeiro é o que todo mundo enxerga: quanto tempo o serviço fica indisponível. Tem um número, alguém está olhando, e aparece no relatório.
+
+O segundo é o que decide se isso vai acontecer de novo: o quanto você entende sobre o porquê. Ninguém está olhando, ele não tem número, e é invisível em todo relatório de indisponibilidade já escrito.
+
+Os dois estão em conflito direto, e o conflito não é questão de disciplina ou de prioridade. É mecânico: **quase toda ação que para o primeiro relógio destrói a informação que alimenta o segundo.** Reinicie o processo e o estado em memória se foi. Faça o failover e o nó defeituoso agora está ocioso e se comportando perfeitamente. Limpe a tabela, esvazie o cache, reverta a mudança — cada uma restaura o serviço e apaga aquilo que você usaria para explicar o ocorrido.
+
+Entender isso é o que separa quem resolve indisponibilidades de quem as resolve repetidamente.
+
+## Conter não é corrigir
+
+A palavra significa uma coisa específica e vale a precisão, porque times que borram isso perdem horas falando um por cima do outro.
+
+**Conter** limita o quanto é afetado. Não trata do porquê. Fazer failover para o standby, desabilitar a funcionalidade que está se comportando mal, bloquear a origem de uma inundação, limitar taxa, isolar um segmento, tirar um nó do pool: nada disso conserta coisa alguma. Coloca uma fronteira em volta do estrago.
+
+**A cura** trata da causa e frequentemente não está disponível durante o incidente, porque exige uma mudança de código, um fabricante, uma janela de manutenção ou uma compra.
+
+A maioria dos incidentes termina na continência. Isso não é fracasso, é o formato normal do trabalho, e fingir o contrário produz relatórios que descrevem como *resolvido* algo que na verdade está *delimitado*.
+
+## Os sessenta segundos que decidem a análise
+
+Eis a disciplina que resolve o conflito entre os dois relógios, e ela não custa quase nada.
+
+Antes de qualquer ação de continência, gaste um minuto capturando estado. Não cinco minutos, não uma investigação completa — um minuto, num sistema que já está fora.
+
+O que pegar depende da camada, mas o formato é sempre o mesmo: os contadores, as sessões ou conexões atuais, o final do log, a configuração em execução, uma captura de tela do que o monitoramento está mostrando, e a hora exata. Se já houver uma captura rodando, marque o momento em vez de pará-la.
+
+Depois contenha.
+
+Ninguém se opõe a sessenta segundos. As pessoas se opõem a *"espera aí, eu quero entender isso primeiro"* durante uma indisponibilidade, que é outro pedido, e bem pior. A distinção é entre tirar uma fotografia e conduzir uma investigação, e se você enquadrar como a primeira, vai conseguir sempre.
+
+O [planejador de captura de pacotes](/tools/packet-capture-plan-builder) existe em parte para isso: decidir o que capturar *enquanto* um sistema está fora é como o minuto vira quinze.
+
+## O que a continência custa, dito com honestidade
+
+**Pode piorar.** Fazer failover para um standby que compartilha a falha derruba o sobrevivente. Bloquear uma origem que se revela legítima cria uma segunda indisponibilidade dentro da primeira. Reiniciar para limpar uma condição pode disparar uma reconvergência lenta, mais longa do que a falha era.
+
+**Esconde a falha do monitoramento.** Um problema contido costuma parar de alarmar, o que é justamente o objetivo, e também significa que ninguém está olhando para aquilo que você não corrigiu.
+
+**Move carga para algum lugar.** O que você isolou estava fazendo trabalho, e esse trabalho agora está em outro lugar, sobre algo dimensionado para um dia normal.
+
+Nada disso é argumento contra conter. É argumento para dizer em voz alta o que a continência custa, no momento em que você a aplica, de modo que o custo seja uma decisão que alguém tomou, e não uma surpresa que alguém descobre.
+
+## O temporário que não é temporário
+
+O padrão desconfortável, e aquele de que toda carreira longa acumula exemplos.
+
+Continência aplicada sob pressão vira permanente. A funcionalidade continua desabilitada. O nó continua fora do pool. A regra continua no firewall. Três anos depois alguém encontra uma configuração que ninguém sabe explicar, e quem a aplicou já saiu, e o número de chamado no comentário aponta para um sistema que foi desativado.
+
+A prevenção é uma linha escrita no momento em que você contém: **o que foi mudado, por quê, quanto custa, e o que precisaria ser verdade para reverter.** Não uma data, porque a data vai passar e nada vai acontecer. Uma *condição* — "reverter quando o fabricante confirmar a correção na 17.1" — que alguém possa avaliar depois.
+
+Essa única linha é a diferença entre um contorno e um pedaço de configuração inexplicada, e leva mais ou menos o tempo que você levou para ler esta frase.
+
+## Quando não conter
+
+Vale enunciar, porque o instinto de agir é forte e ocasionalmente está errado.
+
+**Quando a ação de continência é mais arriscada que a falha.** Um serviço degradado que está mancando às vezes é melhor do que um failover que você nunca testou.
+
+**Quando você não consegue descrever o que ela vai fazer.** Se ninguém na sala sabe dizer o que acontece depois do comando, isso não é continência, é esperança.
+
+**Quando a falha já está delimitada.** Algo que afeta um usuário, não está se espalhando, com contorno aplicado, não precisa de ação emergencial às onze da noite. Precisa de um chamado e de uma manhã.
+
+O julgamento profissional não é *contenha rápido*, é **saber qual relógio você está sendo pago para parar, e saber o que pará-lo vai custar ao outro.**

@@ -29,10 +29,10 @@ export default async function Header() {
         </Link>
 
         <nav className="site-nav" aria-label={t("primaryAria")}>
-          <Link href="/tools" className="site-nav-link">
+          <Link href="/tools" className="site-nav-link nav-primary">
             {t("tools")}
           </Link>
-          <Link href="/learn" className="site-nav-link">
+          <Link href="/learn" className="site-nav-link nav-primary">
             {t("learn")}
           </Link>
           {/* Certifications and Vendors were removed from the primary nav
@@ -45,13 +45,10 @@ export default async function Header() {
               Tools and Learn vendor strips, and from search. */}
           {/* Industry hub (PRIME 2026-07-15): the front door to the
               deep-research vendor histories and lineages. */}
-          <Link href="/industry" className="site-nav-link">
+          <Link href="/industry" className="site-nav-link nav-primary">
             {t("industry")}
           </Link>
-          <Link href="/about" className="site-nav-link">
-            {t("about")}
-          </Link>
-          <Link href="/training" className="site-nav-link">
+          <Link href="/training" className="site-nav-link nav-training">
             {t("training")}
           </Link>
           {/* ADVISORY (schema D, PRIME 2026-08-06). The commercial offer had no
@@ -61,8 +58,15 @@ export default async function Header() {
               /speaking is reached FROM advisory rather than from here, because
               event organisers arrive by referral and search, not by browsing a
               navigation bar. */}
-          <Link href="/advisory" className="site-nav-link">
+          <Link href="/advisory" className="site-nav-link nav-quiet">
             {t("advisory")}
+          </Link>
+          {/* About moves to LAST (PRIME 2026-08-06). It is the least
+              transactional item in the bar - nobody arrives at this site to
+              read a biography - so it sits where the eye finishes rather than
+              in the middle of the substance. */}
+          <Link href="/about" className="site-nav-link nav-quiet">
+            {t("about")}
           </Link>
           {/* Contact intentionally lives in the footer (nav option (a), sleek
               4-item explore bar); /contact remains fully reachable. */}

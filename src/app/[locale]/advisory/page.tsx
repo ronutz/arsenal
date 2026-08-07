@@ -88,6 +88,25 @@ export default async function AdvisoryPage({
 
       <main id="main">
         <article>
+          {/* DISCLAIMER, ABOVE EVERYTHING (PRIME 2026-08-06).
+              It sits before the eyebrow deliberately. A reader who is going to
+              be disappointed by the availability constraint should meet it in
+              the first thing they read, not after five sections have persuaded
+              them - and a page that leads with its own limitation is more
+              credible about everything that follows, not less.
+
+              It also does the redirect work up front: somebody who arrived
+              wanting training now knows where to go before reading a page that
+              does not offer any. */}
+          <section className="section">
+            <div className="container section-narrow">
+              <div className="vendor-note">
+                <p className="vendor-note-title">{t("disclaimerTitle")}</p>
+                <p className="vendor-note-body">{t("disclaimerBody")}</p>
+              </div>
+            </div>
+          </section>
+
           {/* Hero */}
           <section className="section">
             <div className="container section-narrow">
@@ -115,14 +134,23 @@ export default async function AdvisoryPage({
               <p className="section-body">{t("scopeIn")}</p>
 
               <h3 className="vendor-note-title">{t("scopeOutTitle")}</h3>
-              <ul className="course-list">
+              <ul className="advisory-exclusions">
                 <li>{t("scopeOutImpl")}</li>
                 <li>{t("scopeOutOncall")}</li>
                 <li>{t("scopeOutStaff")}</li>
                 {/* Training is listed last and stated in full: every course
                     goes through Red Education. This is the one exclusion that
                     redirects rather than simply declines. */}
-                <li>{t("scopeOutTraining")}</li>
+                {/* "Red Education" is a link styled like the footer credit -
+                    same brand colour, same weight, same no-wrap - so the one
+                    place this page names an employer looks deliberate rather
+                    than like stray bold text. */}
+                <li>
+                  {t("scopeOutTrainingPre")}
+                  <Link href="/red-education" className="advisory-redu-link">
+                    <span className="brand">Red Education</span>
+                  </Link>{t("scopeOutTrainingPost")}
+                </li>
               </ul>
             </div>
           </section>
