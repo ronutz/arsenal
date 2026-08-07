@@ -15230,3 +15230,51 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .about-tight .section {
   padding-block: clamp(0.83rem, 2.33vw, 1.67rem);
 }
+
+/* ---------------------------------------------------------------------------
+   ABOUT + TRAINING SPACING (PRIME 2026-08-06)
+   ---------------------------------------------------------------------------
+   Both pages were built on the site-wide .section rhythm, which suits a page
+   of long prose and reads as slack on a page of short blocks and card grids.
+   These rules are SCOPED to the two pages rather than applied to .section
+   globally, because the instruction was about these pages and a global change
+   would re-space every page on the site. */
+
+/* --- ABOUT: tighten the hero stack and the run into the first section ---
+   Name, role and lede are one identity block read in a single glance, so the
+   gaps between them were doing no work. The hero's own bottom padding and the
+   first section's top padding compounded into a large void either side of the
+   rule. */
+.about-hero {
+  padding-block: clamp(2.25rem, 5vw, 3.5rem) clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+.about-hero .hero-eyebrow {
+  margin-bottom: 0.5rem;
+}
+
+.about-hero .page-hero-title {
+  margin-bottom: 0.3rem;
+}
+
+.about-hero .about-role {
+  margin-bottom: 0.55rem;
+}
+
+.about-tight .section:first-of-type {
+  padding-block-start: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+/* --- TRAINING: sections and separators at one third ---
+   The global rhythm is clamp(2.5rem, 7vw, 5rem). A third of each bound gives
+   the values below, applied to this page only via .teach-tight on <main>. The
+   hero's bottom padding is reduced on the same ratio so the subtitle does not
+   sit in a pocket of its own. */
+.teach-tight .section {
+  padding-block: clamp(0.83rem, 2.33vw, 1.67rem);
+}
+
+.teach-tight.teach-hero,
+.teach-tight .teach-hero {
+  padding-block-end: clamp(1rem, 2.67vw, 2rem);
+}

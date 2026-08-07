@@ -71,6 +71,12 @@ export default async function AdvisoryPage({
     { key: "offerAssess" },
     { key: "offerSelect" },
     { key: "offerPostmortem" },
+    // The by-arrangement tier, promoted from its own section into the card set
+    // (PRIME 2026-08-06). It was previously set apart and deliberately
+    // unfeatured; as a card it reads as one of the things on offer, which it
+    // is, without the separate section implying it is a different class of
+    // thing that needs explaining.
+    { key: "offerArrangement" },
   ] as const;
 
   return (
@@ -141,51 +147,26 @@ export default async function AdvisoryPage({
             </div>
           </section>
 
-          {/* The by-arrangement tier. PRIME: "Really not featured, but
-              available." So it is present, plainly worded, and given no visual
-              emphasis - no card, no button, no price. */}
-          <section className="section">
-            <div className="container section-narrow">
-              <h2 className="section-title">{t("premiumTitle")}</h2>
-              <p className="section-body">{t("premiumBody")}</p>
-            </div>
-          </section>
-
           {/* Independence. The argument the whole page rests on, and the one
               thing here that cannot be copied by someone with a similar CV. */}
           <section className="section section-accent">
             <div className="container section-narrow">
               <h2 className="section-title">{t("independenceTitle")}</h2>
+              {/* The evidence paragraph and its two callouts were REMOVED
+                  (PRIME 2026-08-06). They pointed at the industry timeline and
+                  the tools as proof of judgement, which turned a claim about
+                  independence into a claim about output - and sent a reader
+                  weighing an engagement off to read company histories. The
+                  independence argument stands on the first paragraph alone:
+                  no product, no quota, no margin. */}
               <p className="section-body">{t("independenceBody")}</p>
-              <p className="section-body">{t("independenceEvidence")}</p>
-              <p className="section-cta">
-                <Link href="/industry" className="section-cta-link">
-                  {t("independenceLinkIndustry")} &rarr;
-                </Link>
-              </p>
-              <p className="section-cta">
-                <Link href="/tools" className="section-cta-link">
-                  {t("independenceLinkTools")} &rarr;
-                </Link>
-              </p>
             </div>
           </section>
 
-          {/* The practice corpus. The section exists now and its content does
-              not; the link is deliberately omitted until there is something
-              behind it, and the marker says so rather than pointing at an empty
-              index. See the structure proposal in the session wrap. */}
-          <section className="section">
-            <div className="container section-narrow">
-              <h2 className="section-title">{t("corpusTitle")}</h2>
-              <p className="section-body">{t("corpusBody")}</p>
-              <p className="section-cta">
-                <Link href="/practice" className="section-cta-link">
-                  {t("corpusLink")} &rarr;
-                </Link>
-              </p>
-            </div>
-          </section>
+          {/* THE PRACTICE SECTION REMOVED (PRIME 2026-08-06). The corpus is
+              still linked from the homepage map and the Learn index, so it
+              loses a door here and keeps two - which is the right ratio for
+              free writing on a page about paid work. */}
 
           {/* How an engagement runs */}
           <section className="section">

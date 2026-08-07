@@ -57,7 +57,11 @@ export default async function TrainingLandingPage({
       </a>
       <Header />
 
-      <main id="main">
+      {/* teach-tight: section rhythm at one third of the site default (PRIME
+          2026-08-06). Scoped here rather than changed on .section globally,
+          because this page is short blocks and card grids where the standard
+          rhythm reads as slack, and every other page is not. */}
+      <main id="main" className="teach-tight">
         <article>
           {/* Hero */}
           <section className="teach-hero">
@@ -86,68 +90,6 @@ export default async function TrainingLandingPage({
                   <h2 className="teach-instructor-name">Rodolfo Nützmann</h2>
                   <p className="teach-instructor-body">{t("instructor.body")}</p>
                 </div>
-              </div>
-            </div>
-          </section>
-
-          {/* --- WHERE TO GO NEXT (PRIME 2026-08-06) ---
-               Navigation cards in the /learn idiom, placed after the instructor
-               section because that is the point at which a reader has decided
-               whether they trust the person and needs somewhere to go.
-
-               ORDER IS DELIBERATE and follows commitment rather than
-               importance: the catalogue first for somebody ready to book, the
-               certification guides next for somebody deciding what to book, and
-               then the two FREE bodies of writing for somebody not ready to
-               book anything. A page that leads with what it wants to sell and
-               ends with what it gives away reads correctly in both directions.
-
-               Reuse-only, as with the instructor portals above: the
-               learn-portal-* vocabulary, no new classes. */}
-          <section className="section">
-            <div className="container teach-container">
-              <h2 className="teach-block-title">{t("navTitle")}</h2>
-              <p className="teach-block-body">{t("navLede")}</p>
-              <div className="learn-portal-grid">
-                <Link
-                  href="/certifications"
-                  className="learn-portal-card"
-                  style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
-                >
-                  <span className="learn-portal-ornament" aria-hidden>
-                    &#9679;
-                  </span>
-                  <p className="learn-portal-title">
-                    {t("navCerts")} <span className="learn-portal-arrow">&#8594;</span>
-                  </p>
-                  <p className="learn-portal-lede">{t("navCertsLede")}</p>
-                </Link>
-                <Link
-                  href="/learn"
-                  className="learn-portal-card"
-                  style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
-                >
-                  <span className="learn-portal-ornament" aria-hidden>
-                    &#9632;
-                  </span>
-                  <p className="learn-portal-title">
-                    {t("navLearn")} <span className="learn-portal-arrow">&#8594;</span>
-                  </p>
-                  <p className="learn-portal-lede">{t("navLearnLede")}</p>
-                </Link>
-                <Link
-                  href="/tools"
-                  className="learn-portal-card"
-                  style={{ "--note-accent": "var(--color-success)" } as CSSProperties}
-                >
-                  <span className="learn-portal-ornament" aria-hidden>
-                    &#9670;
-                  </span>
-                  <p className="learn-portal-title">
-                    {t("toolsCta")} <span className="learn-portal-arrow">&#8594;</span>
-                  </p>
-                  <p className="learn-portal-lede">{t("toolsBody")}</p>
-                </Link>
               </div>
             </div>
           </section>
@@ -293,18 +235,73 @@ export default async function TrainingLandingPage({
             </div>
           </section>
 
-          {/* Subtle tool promotion */}
+          {/* --- WHERE TO GO NEXT (PRIME 2026-08-06) ---
+               Navigation cards in the /learn idiom, placed after the instructor
+               section because that is the point at which a reader has decided
+               whether they trust the person and needs somewhere to go.
+
+               ORDER IS DELIBERATE and follows commitment rather than
+               importance: the catalogue first for somebody ready to book, the
+               certification guides next for somebody deciding what to book, and
+               then the two FREE bodies of writing for somebody not ready to
+               book anything. A page that leads with what it wants to sell and
+               ends with what it gives away reads correctly in both directions.
+
+               Reuse-only, as with the instructor portals above: the
+               learn-portal-* vocabulary, no new classes. */}
           <section className="section">
             <div className="container teach-container">
-              <div className="teach-tools">
-                <h2 className="teach-tools-title">{t("toolsTitle")}</h2>
-                <p className="teach-tools-body">{t("toolsBody")}</p>
-                <Link href="/tools" className="btn btn-secondary">
-                  {t("toolsCta")} →
+              <h2 className="teach-block-title">{t("navTitle")}</h2>
+              <p className="teach-block-body">{t("navLede")}</p>
+              <div className="learn-portal-grid">
+                <Link
+                  href="/certifications"
+                  className="learn-portal-card"
+                  style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    &#9679;
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("navCerts")} <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("navCertsLede")}</p>
+                </Link>
+                <Link
+                  href="/learn"
+                  className="learn-portal-card"
+                  style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    &#9632;
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("navLearn")} <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("navLearnLede")}</p>
+                </Link>
+                <Link
+                  href="/tools"
+                  className="learn-portal-card"
+                  style={{ "--note-accent": "var(--color-success)" } as CSSProperties}
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    &#9670;
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("navTools")} <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("navToolsLede")}</p>
                 </Link>
               </div>
             </div>
           </section>
+
+
+          {/* TOOLS PROMOTION REMOVED (PRIME 2026-08-06). The page already
+              points at the tools from the "Where to go next" cards further
+              down, and a second pitch for a free thing in the middle of a page
+              selling training interrupted the argument it was making. */}
 
           {/* History link */}
           <section className="section">

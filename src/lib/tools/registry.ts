@@ -330,6 +330,21 @@ export const API_EXCLUDED: Record<string, string> = {
     "Config teaching matcher: the value is the rendered five-step walk and the config findings; the location grammar is a deliberate teaching subset, not a stable API contract.",
   "checkpoint-policy-layer-evaluator":
     "Policy teaching evaluator: the value is the rendered per-layer trace and the findings; the layer grammar is a deliberate teaching subset, not a stable API contract.",
+  // ---- OGNL PAIR (added 2026-08-06 with their catalogue registration) -----
+  // Registering these two in the catalogue was what surfaced them here: D-72
+  // requires an expose-or-exclude decision for every BUILT tool, and a tool
+  // absent from the catalogue was never "built" as far as this check was
+  // concerned. Two missing registrations hiding a third - which is the whole
+  // argument for the guard: it refused the build the moment the tools became
+  // visible to it, rather than letting them ship undecided.
+  //
+  // Both are excluded on the established grounds: the value is the rendered
+  // reasoning, and the expression grammar each accepts is a teaching subset
+  // rather than a contract anybody should build against.
+  "ognl-injection-decoder":
+    "Static expression explainer: the value is the rendered evaluation walk and the flagged injection constructs, not a verdict. Nothing is executed, and the OGNL subset parsed is a teaching subset, not a stable API contract.",
+  "pingfederate-ognl-explainer":
+    "Vendor-context explainer: the value is the rendered attribute-source walk and the silent-failure warnings. The PingFederate mapping grammar is a deliberate teaching subset, not a stable API contract.",
   "hash-preimage-finder":
     "Bounded brute-force preimage search: compute-heavy and abuse-prone on a shared edge. Browser-only by design.",
 };

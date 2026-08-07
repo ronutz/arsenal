@@ -389,6 +389,32 @@ export const CATALOGUE: CatalogueEntry[] = [
   { slug: "ja3-tls-fingerprint", name: "JA3 / JA3N passive TLS fingerprint", family: "Fingerprinting", status: "live", posture: "compute (deterministic)", disposition: "built", vectors: 16, isNew: true, note: "Paste a JA3 string - the five ClientHello fields (TLS version, ciphers, extensions, elliptic curves, point formats), comma-separated and dash-delimited - and it recomputes the JA3 MD5 fingerprint, computes the permutation-stable JA3N (extensions sorted), decodes each field with counts, and flags GREASE values (RFC 8701), which it strips before hashing. It explains the JA3 churn caused by Chrome/Firefox extension-order randomization and why JA3N or JA4 is more stable. The passive TLS client fingerprint that bot-detection, SSE, and device-risk systems key on; pairs with the JA4 fingerprint decoder. Pinned to Salesforce own published string-to-hash vectors." },
   { slug: "syslog-message-parser", name: "Syslog message parser", family: "Protocol & packet decoders", status: "queued", posture: "decode / explain", disposition: "accept", rank: 35, specs: ["RFC 5424", "RFC 3164"], note: "Parses a full syslog line (PRI, version, timestamp, hostname, app-name, procid, msgid, structured data, message) for both RFC 5424 and legacy BSD RFC 3164. Reuses the PRI decoder." },
   // API: ranked by value; jwks completes the shipped JWT + OIDC story.
+  // ---- OGNL PAIR, REGISTERED 2026-08-06 -----------------------------------
+  // Both tools have existed, built and shipped since the OGNL release, and
+  // NEITHER WAS EVER ADDED HERE. Invisible until the homepage began counting:
+  // llms.txt reported 138 tools from config/tools.ts while this catalogue held
+  // 136, and the two-tool gap was these.
+  //
+  // *** A CORRECTION IS RECORDED HERE DELIBERATELY. ***
+  // The first diagnosis of this was WRONG. Seeing that
+  // pingfederate-ognl-explainer was absent from /tools, it was reported as
+  // "live, in llms.txt, and unreachable by any human browsing the site".
+  //
+  // It was never unreachable. /tools lists AGNOSTIC tools only - available and
+  // either vendorless or explicitly vendorNeutral - because vendor-specific
+  // tools belong to their vendor hub. This tool carries vendors:["ping"] with
+  // no vendorNeutral flag, so its absence from that grid is CORRECT BEHAVIOUR,
+  // and it is linked from the Ping hub, the sitemap, the colophon and the
+  // identity category page.
+  //
+  // What was genuinely wrong was only the count: two tools built and shipped
+  // without a catalogue entry, so llms.txt said 138 from config/tools.ts while
+  // the catalogue held 136. Registering them closes that, and nothing else was
+  // ever broken. The wrong diagnosis is left in the record rather than deleted,
+  // because "absent from the index I happened to check" is not the same finding
+  // as "unreachable", and the difference is one grep.
+  { slug: "ognl-injection-decoder", name: "OGNL injection decoder", family: "Security & risk", status: "live", posture: "decode / explain", disposition: "built", specs: ["CVE-2017-5638", "CVE-2018-11776"], note: "Decodes an Object-Graph Navigation Language expression and explains what it would evaluate to, flagging the constructs used in known injection chains. Static analysis only: nothing is executed." },
+  { slug: "pingfederate-ognl-explainer", name: "PingFederate OGNL explainer", family: "Identity & tokens", status: "live", posture: "decode / explain", disposition: "built", note: "Explains an OGNL expression in PingFederate attribute-mapping context: which attribute sources it reaches, what it returns, and where it fails silently. Static analysis only." },
   { slug: "jwks-explainer", name: "JWKS explainer + key matcher", family: "Identity & tokens", status: "live", posture: "decode / explain", disposition: "built", specs: ["RFC 7517", "RFC 7518", "RFC 8037"], vectors: 13, note: "Explains a JSON Web Key Set, flags any private or symmetric key material, and matches a kid against a JWT header. Completes the JWT plus OIDC verification story. Never fetches the jwks_uri." },
   { slug: "cors-preflight-explainer", name: "CORS preflight explainer", family: "HTTP & web", status: "queued", posture: "explain", disposition: "accept", rank: 19, specs: ["Fetch CORS protocol", "RFC 9110"], note: "Paste request and response headers and get a verdict on whether a CORS preflight passes and why. Pairs with secure-headers and the URL inspector." },
   { slug: "webhook-signature-verifier", name: "Webhook signature verifier", family: "Hashing", status: "queued", posture: "verify", disposition: "accept", rank: 51, specs: ["RFC 2104", "HMAC"], note: "Verifies HMAC webhook signatures (GitHub and Stripe style) against a payload and secret. Complements the HMAC tool. Client-side." },

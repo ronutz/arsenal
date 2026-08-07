@@ -6410,11 +6410,11 @@
     "light": "Light"
   },
   "about": {
-    "eyebrow": "The instructor",
+    "eyebrow": "About me",
     "role": "Senior Technical Instructor",
     "lede": "Network and security training delivered by a practitioner who has spent his career on the implementation side.",
     "now": {
-      "title": "What I do now",
+      "title": "What I do",
       "body": "I deliver official, certified instructor-led training across security and networking platforms. There are hands-on labs on real systems, and for people who already know the fundamentals and came to practice, that is exactly the point: real environments to work in. For groups newer to a technology, the time goes first into building the foundations the topic rests on, so the hands-on work makes sense and people leave understanding why things behave the way they do, not just which buttons to press. Both are equally valuable, and the balance shifts with who is in the room. Teaching and technical enablement have been part of my work since the late 1990s, on a career that began on the implementation side in 1996.",
       "basedLabel": "Based in",
       "basedValue": "São Paulo, Brazil",
@@ -6458,10 +6458,8 @@
       "body": "I chose to specialize in training because it combines deep technical knowledge with the part of the work I enjoy most: explaining complex concepts simply. The strongest sessions connect each concept to the job the learner actually has to do, so the content has somewhere to land. Real-world examples, real labs, and a focus on understanding over memorization."
     },
     "cta": {
-      "title": "Start with the concepts",
-      "body": "The Learn section explains the ideas behind the tools, and the tools let you work with them directly, all in your browser.",
-      "learnButton": "Read the Learn section",
-      "toolsButton": "Open the tools",
+      "title": "Get in touch",
+      "body": "If you have a training need, a decision you are weighing, or an event to fill, the useful first message says what it is and roughly when.",
       "contactButton": "Get in touch"
     },
     "credibility": {
@@ -6999,9 +6997,6 @@
     "platformsBody": "Official, certified instructor-led training across the platforms at the center of modern networking and security. Each links to its full course catalog.",
     "s5Title": "Beyond the classroom",
     "s5Body": "The same depth that makes for good teaching makes for good counsel. Thirty years across application delivery, network security, identity, and infrastructure, on both the vendor and the integrator side, with a consistent record of customer advocacy, is a perspective that travels well beyond a training room, into architecture decisions, technology selection, and the hard problems that do not fit a syllabus. The teaching is the focus; the experience behind it is available to teams that need more than a course.",
-    "toolsTitle": "Tools that compute, never guess",
-    "toolsBody": "Alongside the training sits a growing set of free, privacy-first network and security tools, deterministic utilities that run entirely in your browser and never send your input anywhere. Subnet and CIDR math, IPv6, certificate and token inspection, and more, the kind of everyday tools a working engineer reaches for. They are built in the same spirit as the teaching: precise, practical, and genuinely useful. Try them, no sign-up, no tracking.",
-    "toolsCta": "Explore the tools",
     "historyTitle": "Three decades, one through-line",
     "historyBody": "From building computers as a teenager in 1991, through two decades inside the networking and security industry, to full-time global instruction since 2020. The whole story is worth reading if you want to understand the experience behind the teaching.",
     "historyCta": "Read the full history",
@@ -7027,7 +7022,9 @@
     "navCerts": "Certification guides",
     "navCertsLede": "What each exam actually tests, and what to study for it. Free, and useful whether or not you book a course.",
     "navLearn": "Learn",
-    "navLearnLede": "Hundreds of technical articles written by the same instructor, on the protocols and products the courses cover."
+    "navLearnLede": "Hundreds of technical articles written by the same instructor, on the protocols and products the courses cover.",
+    "navTools": "Tools",
+    "navToolsLede": "Free calculators and explainers for the same platforms the courses cover. They compute in your browser and send nothing anywhere."
   },
   "contact": {
     "title": "Get in touch",
@@ -14895,15 +14892,8 @@
     "offerSelectBody": "Stay or move, consolidate or keep two, on-premises or as a service. A defined question, the trade-offs stated in both directions, and a recommendation that says which way and why.",
     "offerPostmortemTitle": "Post-incident review",
     "offerPostmortemBody": "Not incident response. The review afterwards, when the fire is out and somebody has to give an honest account of what happened and what should change. Scheduled work, weeks after the event, written for an audience that includes people who were not in the room.",
-    "premiumTitle": "By arrangement",
-    "premiumBody": "There is a narrower category of engagement that does involve being present in real time, on site or remotely, during an operation that cannot be repeated: a migration window, a cutover, a planned failover. It is available, it is priced accordingly, and it is arranged case by case rather than booked. It is mentioned here for completeness rather than offered as a routine service.",
     "independenceTitle": "Why independent matters here",
-    "independenceBody": "I hold current instructor authorizations across six vendors' platforms and sell none of them. There is no product on this side of the table, no quota, and no partner margin behind the recommendation. When the answer is that the incumbent is fine and the project is unnecessary, that answer costs me nothing to give.",
-    "independenceEvidence": "The judgement is on public record rather than asserted: the industry timeline on this site runs to more than a hundred and sixty company histories, and the tools compute their answers rather than estimating them.",
-    "independenceLinkIndustry": "The industry record",
-    "independenceLinkTools": "The tools",
-    "corpusTitle": "The practice itself",
-    "corpusBody": "A separate body of writing covers the work rather than the offer: how technical support and network operations are actually run, the routines and checks that hold, the scripts worth keeping, and the failures worth knowing about. It is written from thirty years of doing it, and it is free to read.",
+    "independenceBody": "I hold current instructor authorizations across six vendors' platforms and sell none of them. There is no product on this side of the table, no quota, and no partner margin behind the recommendation.",
     "howTitle": "How an engagement runs",
     "howStep1": "A conversation about the decision you are facing, at no charge, to establish whether I am the right person for it.",
     "howStep2": "A written scope: the question, the deliverable, the dates and the fee. Fixed price per engagement rather than by the hour.",
@@ -14912,7 +14902,8 @@
     "ctaTitle": "If there is a decision on your desk",
     "ctaBody": "The useful first message says what the decision is and when it has to be made.",
     "ctaButton": "Start a conversation",
-    "corpusLink": "Read The Practice"
+    "offerArrangementTitle": "By special arrangement",
+    "offerArrangementBody": "Senior-level real time presence, on site or remotely, during an operation that cannot be repeated: a migration window, a cutover, a planned failover."
   },
   "speaking": {
     "eyebrow": "Speaking",

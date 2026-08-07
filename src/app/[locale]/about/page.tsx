@@ -310,18 +310,17 @@ export default async function AboutPage({
         {/* --- CTA --- */}
         <section className="section">
           <div className="container section-narrow about-cta">
+            {/* CTA REPLACED (PRIME 2026-08-06): "Start with the concepts" sent
+                a reader who had just finished a biography off to Learn and
+                Tools, which are one click away in the nav and were never what
+                this page was building toward. A page about a person ends by
+                letting you contact the person. */}
             <h2 className="section-title">{t("cta.title")}</h2>
             <p className="section-body" style={{ marginBottom: "1.5rem" }}>
               {t("cta.body")}
             </p>
             <div className="hero-cta">
-              <Link href="/learn" className="btn btn-primary">
-                {t("cta.learnButton")}
-              </Link>
-              <Link href="/tools" className="btn btn-secondary">
-                {t("cta.toolsButton")}
-              </Link>
-              <Link href="/contact" className="btn btn-secondary">
+              <Link href="/contact" className="btn btn-primary">
                 {t("cta.contactButton")}
               </Link>
             </div>

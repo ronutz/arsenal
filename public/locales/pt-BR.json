@@ -6410,11 +6410,11 @@
     "light": "Claro"
   },
   "about": {
-    "eyebrow": "O instrutor",
+    "eyebrow": "Sobre mim",
     "role": "Instrutor técnico sênior",
     "lede": "Treinamentos de rede e segurança ministrados por quem passou a carreira no lado da implementação.",
     "now": {
-      "title": "O que faço agora",
+      "title": "O que eu faço",
       "body": "Ministro treinamentos oficiais e certificados, conduzidos por instrutor, em plataformas de segurança e redes. Há laboratórios práticos em sistemas reais e, para quem já conhece os fundamentos e veio para praticar, é exatamente esse o ponto: ambientes reais para trabalhar. Para turmas mais novas em uma tecnologia, o tempo vai primeiro para construir as fundações sobre as quais o tema se apoia, de modo que a parte prática faça sentido e as pessoas saiam entendendo por que as coisas se comportam como se comportam, não apenas quais botões apertar. Ambos têm igual valor, e o equilíbrio muda conforme quem está na sala. O ensino e a capacitação técnica fazem parte do meu trabalho desde o fim dos anos 1990, sobre uma carreira que começou no lado da implementação em 1996.",
       "basedLabel": "Com base em",
       "basedValue": "São Paulo, Brasil",
@@ -6458,10 +6458,8 @@
       "body": "Escolhi me especializar em treinamento porque ele combina conhecimento técnico profundo com a parte do trabalho de que mais gosto: explicar conceitos complexos de forma simples. As melhores sessões conectam cada conceito à tarefa que a pessoa de fato precisa executar, para que o conteúdo tenha onde se fixar. Exemplos do mundo real, laboratórios de verdade, e o foco na compreensão acima da memorização."
     },
     "cta": {
-      "title": "Comece pelos conceitos",
-      "body": "A seção Aprender explica as ideias por trás das ferramentas, e as ferramentas permitem que você trabalhe com elas diretamente, tudo no seu navegador.",
-      "learnButton": "Ler a seção Aprender",
-      "toolsButton": "Abrir as ferramentas",
+      "title": "Entre em contato",
+      "body": "Se você tem uma necessidade de treinamento, uma decisão em avaliação, ou um evento a preencher, a primeira mensagem útil diz qual é e mais ou menos quando.",
       "contactButton": "Fale comigo"
     },
     "credibility": {
@@ -6999,9 +6997,6 @@
     "platformsBody": "Treinamento oficial e certificado, conduzido por instrutor, nas plataformas no centro das redes e da segurança modernas. Cada uma leva ao seu catálogo de cursos completo.",
     "s5Title": "Além da sala de aula",
     "s5Body": "A mesma profundidade que produz um bom ensino produz uma boa consultoria. Trinta anos atravessando entrega de aplicações, segurança de rede, identidade e infraestrutura, tanto no lado do fabricante quanto no do cliente, são uma perspectiva que viaja muito além de uma sala de treinamento, até as decisões de arquitetura, a seleção de tecnologia e os problemas difíceis que não cabem em um conteúdo programático. O ensino é o foco; a experiência por trás dele está disponível para equipes que precisam de mais do que um curso.",
-    "toolsTitle": "Ferramentas que calculam, nunca chutam",
-    "toolsBody": "Ao lado do treinamento há um conjunto crescente de ferramentas de rede e segurança gratuitas e que respeitam a privacidade, utilitários determinísticos que rodam inteiramente no seu navegador e nunca enviam sua informação a lugar nenhum. Cálculo de sub-redes e CIDR, IPv6, inspeção de certificados e tokens, e mais, o tipo de ferramenta do dia a dia a que um engenheiro na ativa recorre. São feitas com o mesmo espírito do ensino: precisas, práticas e de fato úteis. Experimente, sem cadastro, sem rastreamento.",
-    "toolsCta": "Explorar as ferramentas",
     "historyTitle": "Três décadas, um fio condutor",
     "historyBody": "De montar computadores ainda adolescente em 1991, passando por duas décadas dentro da indústria de redes e segurança, até a instrução global em tempo integral desde 2020. Vale a pena ler a história completa se você quiser entender a experiência por trás do ensino.",
     "historyCta": "Ler a história completa",
@@ -7027,7 +7022,9 @@
     "navCerts": "Guias de certificação",
     "navCertsLede": "O que cada exame de fato cobra, e o que estudar para ele. Gratuito, e útil tendo você contratado um curso ou não.",
     "navLearn": "Aprender",
-    "navLearnLede": "Centenas de artigos técnicos escritos pelo mesmo instrutor, sobre os protocolos e produtos que os cursos cobrem."
+    "navLearnLede": "Centenas de artigos técnicos escritos pelo mesmo instrutor, sobre os protocolos e produtos que os cursos cobrem.",
+    "navTools": "Ferramentas",
+    "navToolsLede": "Calculadoras e explicadores gratuitos para as mesmas plataformas que os cursos cobrem. Calculam no seu navegador e não enviam nada a lugar nenhum."
   },
   "contact": {
     "title": "Entre em contato",
@@ -14844,15 +14841,8 @@
     "offerSelectBody": "Ficar ou trocar, consolidar ou manter dois, no data center próprio ou como serviço. Uma pergunta definida, os prós e contras declarados nos dois sentidos, e uma recomendação que diz para qual lado e por quê.",
     "offerPostmortemTitle": "Análise pós-incidente",
     "offerPostmortemBody": "Não é resposta a incidente. É a análise posterior, quando o incêndio já foi apagado e alguém precisa dar uma explicação honesta do que aconteceu e do que deve mudar. Trabalho agendado, semanas depois do evento, escrito para um público que inclui quem não estava na sala.",
-    "premiumTitle": "Sob combinação",
-    "premiumBody": "Existe uma categoria mais restrita de contratação que envolve, sim, estar presente em tempo real, presencialmente ou remotamente, durante uma operação que não pode ser repetida: uma janela de migração, uma virada, um teste de contingência planejado. Está disponível, é precificada de acordo, e é combinada caso a caso em vez de agendada. Consta aqui por completude, não como serviço de rotina.",
     "independenceTitle": "Por que independência importa aqui",
-    "independenceBody": "Mantenho autorizações vigentes de instrutor nas plataformas de seis fabricantes e não vendo nenhuma delas. Não há produto deste lado da mesa, nem meta de vendas, nem margem de canal por trás da recomendação. Quando a resposta é que o equipamento atual está adequado e o projeto é desnecessário, essa resposta não me custa nada.",
-    "independenceEvidence": "O julgamento está em registro público, não apenas afirmado: a linha do tempo da indústria neste site reúne mais de cento e sessenta históricos de empresas, e as ferramentas calculam suas respostas em vez de estimá-las.",
-    "independenceLinkIndustry": "O registro da indústria",
-    "independenceLinkTools": "As ferramentas",
-    "corpusTitle": "A prática em si",
-    "corpusBody": "Um conjunto separado de textos trata do trabalho, e não da oferta: como suporte técnico e operações de rede são de fato conduzidos, as rotinas e verificações que se sustentam, os scripts que vale a pena guardar, e as falhas que vale a pena conhecer. É escrito a partir de trinta anos fazendo isso, e é de leitura gratuita.",
+    "independenceBody": "Mantenho autorizações vigentes de instrutor nas plataformas de seis fabricantes e não vendo nenhuma delas. Não há produto deste lado da mesa, nem meta de vendas, nem margem de canal por trás da recomendação.",
     "howTitle": "Como funciona uma contratação",
     "howStep1": "Uma conversa sobre a decisão que você tem pela frente, sem custo, para estabelecer se sou a pessoa certa para ela.",
     "howStep2": "Um escopo por escrito: a pergunta, a entrega, as datas e o valor. Preço fechado por contratação, não por hora.",
@@ -14861,7 +14851,8 @@
     "ctaTitle": "Se há uma decisão sobre a sua mesa",
     "ctaBody": "A primeira mensagem útil diz qual é a decisão e quando ela precisa ser tomada.",
     "ctaButton": "Iniciar uma conversa",
-    "corpusLink": "Leia A Prática"
+    "offerArrangementTitle": "Sob combinação especial",
+    "offerArrangementBody": "Presença sênior em tempo real, presencial ou remota, durante uma operação que não pode ser repetida: uma janela de migração, uma virada, um teste de contingência planejado."
   },
   "speaking": {
     "eyebrow": "Palestras",
