@@ -92,6 +92,29 @@
       "tools": "Ferramentas",
       "articles": "Artigos",
       "sectionLabel": "O conjunto de ferramentas em números"
+    },
+    "map": {
+      "title": "O que há aqui",
+      "lede": "Seis seções, construídas ao longo de anos em vez de montadas para um lançamento. Cada número abaixo é lido da própria coisa no momento do build, então nenhum deles pode divergir do que você vai de fato encontrar.",
+      "tools": "Ferramentas",
+      "toolsLede": "Calculadoras e explicadores determinísticos para redes, segurança e identidade. Calculam no seu navegador e não enviam nada a lugar nenhum.",
+      "toolsBadge": "{count} no ar",
+      "learn": "Aprender",
+      "learnLede": "Artigos técnicos sobre os protocolos e produtos por trás das ferramentas, escritos para serem lidos, e não folheados.",
+      "learnBadge": "{count} artigos",
+      "industry": "Indústria",
+      "industryLede": "Histórias de empresas desde o início das redes até hoje, incluindo as que fracassaram e as de que ninguém se lembra.",
+      "industryBadge": "{count} empresas",
+      "anniversary": "{count} delas fazem {age} anos neste ano",
+      "practice": "A Prática",
+      "practiceLede": "Como o trabalho é de fato feito, e não como a tecnologia funciona. Triagem, escalonamento, evidências, passagem de bastão.",
+      "practiceBadge": "{count} de 48 publicados",
+      "certs": "Guias de certificação",
+      "certsLede": "O que cada exame cobra e o que estudar para ele. Gratuito, e útil tendo você contratado um curso ou não.",
+      "certsBadge": "{count} guias",
+      "advisory": "Consultoria",
+      "advisoryLede": "Julgamento independente sobre decisões ainda não tomadas. Trabalho delimitado, resposta por escrito, sem plantão.",
+      "advisoryBadge": "Sob contratação"
     }
   },
   "tools": {

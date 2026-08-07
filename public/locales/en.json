@@ -92,6 +92,29 @@
       "tools": "Tools",
       "articles": "Articles",
       "sectionLabel": "The toolbox at a glance"
+    },
+    "map": {
+      "title": "What is here",
+      "lede": "Six sections, built over years rather than assembled for a launch. Every count below is read from the thing itself at build time, so none of them can drift from what you will actually find.",
+      "tools": "Tools",
+      "toolsLede": "Deterministic calculators and explainers for networks, security and identity. They compute in your browser and send nothing anywhere.",
+      "toolsBadge": "{count} live",
+      "learn": "Learn",
+      "learnLede": "Technical articles on the protocols and products behind the tools, written to be read rather than skimmed.",
+      "learnBadge": "{count} articles",
+      "industry": "Industry",
+      "industryLede": "Company histories from the beginning of networking to now, including the ones that failed and the ones nobody remembers.",
+      "industryBadge": "{count} companies",
+      "anniversary": "{count} of them turn {age} this year",
+      "practice": "The Practice",
+      "practiceLede": "How the work is actually done rather than how the technology works. Triage, escalation, evidence, handover.",
+      "practiceBadge": "{count} of 48 published",
+      "certs": "Certification guides",
+      "certsLede": "What each exam tests and what to study for it. Free, and useful whether or not you ever book a course.",
+      "certsBadge": "{count} guides",
+      "advisory": "Advisory",
+      "advisoryLede": "Independent judgement on decisions that have not been made yet. Scoped work, written answer, no on-call.",
+      "advisoryBadge": "By engagement"
     }
   },
   "tools": {
