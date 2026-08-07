@@ -80,7 +80,11 @@ export default async function AboutPage({
       </a>
       <Header />
 
-      <main id="main">
+      {/* about-tight: section padding reduced to a third of the site
+          default (PRIME 2026-08-06). Scoped to this page rather than changed
+          on .section globally, because the instruction was about /about and a
+          global change would have re-spaced every page on the site. */}
+      <main id="main" className="about-tight">
         {/* --- HERO --- */}
         <section className="about-hero">
           <div className="container">
@@ -150,20 +154,61 @@ export default async function AboutPage({
                 <span className="about-platform-detail">{t("platforms.netskope")}</span>
               </li>
             </ul>
+
+            {/* "How I teach" MOVED HERE (PRIME 2026-08-06), inside the
+                platforms section and after the cards. It reads as the answer
+                to the question the cards raise: having just listed four
+                platforms taught in depth, the obvious next thought is how.
+                Kept as an h3 inside this section rather than an h2 of its own,
+                because it is now subordinate to the platforms heading rather
+                than a peer of it. */}
+            <h3 className="vendor-note-title">{t("approach.title")}</h3>
+            <p className="section-body">{t("approach.body")}</p>
+            <Gap note="Expand teaching-philosophy copy with Rodolfo's own words if desired (current text is from the verified bio only)." />
           </div>
         </section>
 
-        {/* --- RECOGNITION (F5 MVP, past achievement) --- */}
-        <section className="section">
-          <div className="container section-narrow">
-            <h2 className="section-title">{t("recognition.title")}</h2>
-            <p className="section-body">{t("recognition.body")}</p>
-          </div>
-        </section>
+        {/* --- RECOGNITION: REMOVED, NOT MOVED (PRIME 2026-08-06) ---
+             The instruction was to move the F5 DevCentral MVP section to the
+             F5 training and F5 career pages, and to evaluate what those pages
+             already said. They already say it, in both cases with more context
+             than this section had:
 
-        {/* --- THE PATH (career history, from the verified timeline) --- */}
+               /industry/chapters/f5, section "The instructor's chair and
+               DevCentral" - "F5's DevCentral community named Rodolfo an MVP
+               three consecutive years, 2022 through 2024", sitting beside the
+               instructor authorization and the twelve courses.
+
+               /training, section "Recognized, certified, and current" - "F5
+               DevCentral MVP for three consecutive years, in 2022, 2023, and
+               2024", sitting beside the certifications and the delivery
+               regions.
+
+             It is also in the F5 vendor profile timeline and in the
+             certifications data as a formal award record. Moving this section
+             would have produced a FOURTH statement of the same fact. So it is
+             deleted here rather than relocated, and the about page loses a
+             claim it was making twice on the same site. */}
+
+        {/* --- WHERE IT STARTED + THE PATH (PRIME 2026-08-06) ---
+             One section, not two. "Where it started" moved up to sit directly
+             above "The path here" with NO separator between them, because they
+             are one continuous account: the origin and then the route from it.
+             Two <section> wrappers would have drawn a divider between a
+             sentence and its own continuation.
+
+             They share a single container for that reason. The origin keeps an
+             h2 because it now opens the account; the path follows it as a
+             second h2 within the same block, which is correct - these are two
+             headings of equal weight in one narrative, not a heading and a
+             subheading. */}
         <section className="section">
           <div className="container section-narrow">
+            <h2 className="section-title">{t("origins.title")}</h2>
+            <p className="section-body" style={{ marginBottom: "2.5rem" }}>
+              {t("origins.body")}
+            </p>
+
             <h2 className="section-title">{t("path.title")}</h2>
             <p className="section-body" style={{ marginBottom: "2rem" }}>
               {t("path.intro")}
@@ -259,26 +304,6 @@ export default async function AboutPage({
                 </span>
               </Link>
             </div>
-          </div>
-        </section>
-
-        {/* --- ORIGINS (the early years, verified to 1991/1995) --- */}
-        <section className="section section-accent">
-          <div className="container section-narrow">
-            <h2 className="section-title">{t("origins.title")}</h2>
-            <p className="section-body">{t("origins.body")}</p>
-          </div>
-        </section>
-
-        {/* --- APPROACH / TEACHING PHILOSOPHY --- */}
-        <section className="section">
-          <div className="container section-narrow">
-            <h2 className="section-title">{t("approach.title")}</h2>
-            <p className="section-body">{t("approach.body")}</p>
-            {/* This narrative is drawn from the verified bio's own framing of
-                why he specialized in training. Any expansion beyond the bio is
-                flagged for review rather than invented. */}
-            <Gap note="Expand teaching-philosophy copy with Rodolfo's own words if desired (current text is from the verified bio only)." />
           </div>
         </section>
 

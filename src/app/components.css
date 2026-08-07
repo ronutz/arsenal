@@ -15164,19 +15164,35 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    two kinds of statement apart at a glance without reading either. */
 
 .vendor-card-origin {
-  /* Country of origin, on the metadata line ahead of the founding year.
-     REPLACED .vendor-card-flag on 2026-08-06: flag emoji do not render on
-     Windows, which shows the bare regional-indicator letters instead, so the
-     card now carries "BR (Brazil)" as text. Separated from the year by a
-     middot rather than whitespace, because two bare tokens on one line read as
-     one value. */
-  margin-right: 0.5rem;
+  /* Origin, AFTER the years on the metadata line (PRIME 2026-08-06). The
+     separator is generous on purpose: two short tokens sharing a line read as
+     one value when the gap is tight, and this line now carries three parts. */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
-.vendor-card-origin::after {
+.vendor-card-origin::before {
   content: "\00b7";
-  margin-left: 0.5rem;
-  opacity: 0.55;
+  margin: 0 0.75rem 0 0.65rem;
+  opacity: 0.45;
+}
+
+.vendor-card-origin-label {
+  /* Slightly recessive: the label names the field, the value carries it. */
+  opacity: 0.7;
+}
+
+.country-flag {
+  /* Sized to the cap height of the text beside it so the row sits on one
+     optical line. The hairline border stops white-field flags - Japan, Israel,
+     Switzerland's white cross - from bleeding into a light background. */
+  width: 1.15em;
+  height: calc(1.15em * 2 / 3);
+  border-radius: 1px;
+  border: 0.5px solid var(--color-border);
+  flex: none;
+  display: block;
 }
 
 .vendor-card-cats {
@@ -15197,4 +15213,20 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   letter-spacing: 0.03em;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   ABOUT PAGE: TIGHTER SECTION RHYTHM (PRIME 2026-08-06)
+   ---------------------------------------------------------------------------
+   The site default is padding-block: clamp(2.5rem, 7vw, 5rem), which suits
+   pages whose sections are long reads. The about page is a short biography
+   with several small blocks - the facts list, the platforms, the timeline -
+   and at the default the gaps were larger than the content between them.
+
+   Reduced to A THIRD of the default, per instruction ("reduce by two thirds").
+   Scoped to .about-tight rather than changed on .section, because every other
+   page on the site reads correctly at the default and a global change would
+   have moved all of them to fix one. */
+.about-tight .section {
+  padding-block: clamp(0.83rem, 2.33vw, 1.67rem);
 }

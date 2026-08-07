@@ -6389,7 +6389,7 @@
   "about": {
     "eyebrow": "O instrutor",
     "role": "Instrutor técnico sênior",
-    "lede": "Treinamentos de rede e segurança ministrados por quem passou a carreira no lado da implementação, e não apenas nos slides. Com base em São Paulo, ensinando para o mundo todo, em português e inglês.",
+    "lede": "Treinamentos de rede e segurança ministrados por quem passou a carreira no lado da implementação.",
     "now": {
       "title": "O que faço agora",
       "body": "Ministro treinamentos oficiais e certificados, conduzidos por instrutor, em plataformas de segurança e redes. Há laboratórios práticos em sistemas reais e, para quem já conhece os fundamentos e veio para praticar, é exatamente esse o ponto: ambientes reais para trabalhar. Para turmas mais novas em uma tecnologia, o tempo vai primeiro para construir as fundações sobre as quais o tema se apoia, de modo que a parte prática faça sentido e as pessoas saiam entendendo por que as coisas se comportam como se comportam, não apenas quais botões apertar. Ambos têm igual valor, e o equilíbrio muda conforme quem está na sala. O ensino e a capacitação técnica fazem parte do meu trabalho desde o fim dos anos 1990, sobre uma carreira que começou no lado da implementação em 1996.",
@@ -6440,10 +6440,6 @@
       "learnButton": "Ler a seção Aprender",
       "toolsButton": "Abrir as ferramentas",
       "contactButton": "Fale comigo"
-    },
-    "recognition": {
-      "title": "Reconhecimento",
-      "body": "Reconhecido como F5 DevCentral MVP por três anos consecutivos, em 2022, 2023 e 2024, pelas contribuições à comunidade técnica da F5."
     },
     "credibility": {
       "certsEyebrow": "Verificado",
@@ -14519,7 +14515,8 @@
       "distributor": "Distribuição",
       "carrier": "Operadora",
       "datacentre": "Data center"
-    }
+    },
+    "originLabel": "Origem:"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",

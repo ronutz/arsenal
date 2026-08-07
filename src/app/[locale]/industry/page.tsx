@@ -35,6 +35,7 @@ import { CAREER_VENDORS } from "@/content/vendors/career";
 // than stored (PRIME 2026-08-06). See origins.ts for what "origin" means here:
 // where the company was FOUNDED, not where it is domiciled or who owns it now.
 import { VENDOR_ORIGINS, countryLabel } from "@/content/vendors/origins";
+import CountryFlag from "@/components/CountryFlag";
 
 export async function generateMetadata({
   params,
@@ -301,26 +302,34 @@ export default async function IndustryHubPage({
                     {v.founded}
                   </span>
                   <Link href={v.href} className="vendor-card">
-                    {/* METADATA LINE: country of origin, then the founding
-                        year. Country first because it is the coarser filter -
-                        a reader scanning for Brazilian companies discards on
-                        the first token and never reads the second.
+                    {/* METADATA LINE (PRIME 2026-08-06): years first, a spaced
+                        separator, then the origin labelled and carrying an
+                        inline SVG flag.
 
-                        SHOWN AS "BR (Brazil)" RATHER THAN A FLAG EMOJI.
-                        Windows ships no country flag glyphs, so every Windows
-                        browser rendered the regional indicator pair as the
-                        bare letters while macOS showed a flag. Text renders
-                        identically on every platform, and carries the country
-                        name for anybody who does not read ISO codes. */}
+                        THE FLAG IS SVG, NOT EMOJI. Windows ships no country
+                        flag glyphs, so emoji rendered as the bare regional
+                        indicator letters for most of this site's desktop
+                        readers. See CountryFlag.tsx for why inline rather than
+                        files or a sprite CDN.
+
+                        The code and name stay beside the flag rather than
+                        being replaced by it: at 18x12 a flag is recognisable
+                        to somebody who already knows it and meaningless to
+                        everybody else, so the text carries the information and
+                        the flag carries the glance. */}
                     <span className="vendor-card-years mono">
-                      {VENDOR_ORIGINS[v.slug] && (
-                        <span className="vendor-card-origin">
-                          {countryLabel(VENDOR_ORIGINS[v.slug])}
-                        </span>
-                      )}
                       {v.ended
                         ? tp("timelineSpan", { from: v.founded, to: v.ended.year })
                         : tp("timelineSince", { from: v.founded })}
+                      {VENDOR_ORIGINS[v.slug] && (
+                        <span className="vendor-card-origin">
+                          <span className="vendor-card-origin-label">
+                            {tp("originLabel")}
+                          </span>
+                          <CountryFlag code={VENDOR_ORIGINS[v.slug]} />
+                          {countryLabel(VENDOR_ORIGINS[v.slug])}
+                        </span>
+                      )}
                     </span>
                     <span className="vendor-card-name">
                       {v.name}

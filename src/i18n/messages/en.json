@@ -6389,7 +6389,7 @@
   "about": {
     "eyebrow": "The instructor",
     "role": "Senior Technical Instructor",
-    "lede": "Network and security training delivered by a practitioner who has spent his career on the implementation side, not just the slides. Based in São Paulo, teaching globally, in Portuguese and English.",
+    "lede": "Network and security training delivered by a practitioner who has spent his career on the implementation side.",
     "now": {
       "title": "What I do now",
       "body": "I deliver official, certified instructor-led training across security and networking platforms. There are hands-on labs on real systems, and for people who already know the fundamentals and came to practice, that is exactly the point: real environments to work in. For groups newer to a technology, the time goes first into building the foundations the topic rests on, so the hands-on work makes sense and people leave understanding why things behave the way they do, not just which buttons to press. Both are equally valuable, and the balance shifts with who is in the room. Teaching and technical enablement have been part of my work since the late 1990s, on a career that began on the implementation side in 1996.",
@@ -6440,10 +6440,6 @@
       "learnButton": "Read the Learn section",
       "toolsButton": "Open the tools",
       "contactButton": "Get in touch"
-    },
-    "recognition": {
-      "title": "Recognition",
-      "body": "Recognized as an F5 DevCentral MVP for three consecutive years, in 2022, 2023, and 2024, for contributions to the F5 technical community."
     },
     "credibility": {
       "certsEyebrow": "Verified",
@@ -14519,7 +14515,8 @@
       "distributor": "Distributor",
       "carrier": "Carrier",
       "datacentre": "Data centre"
-    }
+    },
+    "originLabel": "Origin:"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",
