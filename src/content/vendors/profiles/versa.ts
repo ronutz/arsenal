@@ -59,7 +59,7 @@ export const versaProfile: VendorProfile = {
     "Total funding of roughly $316 million over six rounds (through October 2022) from investors including Sequoia Capital, Mayfield, BlackRock, and Verizon Ventures - with leadership publicly favoring an IPO path over acquisition.",
   ],
   careerLink: {
-    href: "/about/vendors/riverstone",
+    href: "/industry/chapters/riverstone",
     label: "Versa's founders built at Riverstone Networks before Juniper - Rodolfo's Riverstone page",
   },
 };

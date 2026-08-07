@@ -30,7 +30,7 @@ import { fundingFor, hasFunding, fundingLinksFor } from "@/config/toolFunding";
 import { Link } from "@/i18n/navigation";
 import HomeStats from "@/components/HomeStats";
 // Career chip strip, moved here from /industry (PRIME 2026-08-06). The data
-// lives in the career module so the homepage and /about/vendors cannot drift.
+// lives in the career module so the homepage and /industry/chapters cannot drift.
 import { CAREER_VENDORS } from "@/content/vendors/career";
 import { CATALOGUE } from "@/content/catalogue/catalogue";
 import { getAllArticles } from "@/lib/learn";
@@ -114,7 +114,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                  chapter that says what the job actually was.
 
                  Rendered from CAREER_VENDORS so the homepage cannot fall out of
-                 step with /about/vendors - one list, two places that read it. */}
+                 step with /industry/chapters - one list, two places that read it. */}
             <div className="vendor-divider">
               <h2 className="vendor-divider-title">{ti("careerStripTitle")}</h2>
               <p className="vendor-divider-note">{ti("careerStripNote")}</p>
@@ -122,7 +122,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <ul className="career-strip">
               {CAREER_VENDORS.map((v) => (
                 <li key={v.slug}>
-                  <Link href={`/about/vendors/${v.slug}`} className="career-chip">
+                  <Link href={`/industry/chapters/${v.slug}`} className="career-chip">
                     <span className="career-chip-name">{tVendors(`${v.key}.name`)}</span>
                     <span className="career-chip-years mono">{tVendors(`${v.key}.years`)}</span>
                   </Link>
@@ -130,7 +130,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               ))}
             </ul>
             <p className="vendor-index-pointer">
-              <Link href="/about/vendors" className="btn btn-secondary">
+              <Link href="/industry/chapters" className="btn btn-secondary">
                 {ti("careerStripLink")}
               </Link>
             </p>

@@ -1,10 +1,10 @@
 // ============================================================================
 // src/app/[locale]/industry/[slug]/page.tsx
 //
-// MOVED 2026-07-29 (PRIME) from /about/vendors/<slug>.
+// MOVED 2026-07-29 (PRIME) from /industry/chapters/<slug>.
 //
 // The two page types had been sharing one path and they are not the same
-// thing. `/about/vendors/<slug>` is autobiography - what PRIME did inside a
+// thing. `/industry/chapters/<slug>` is autobiography - what PRIME did inside a
 // company. This is a COMPANY HISTORY, which belongs beside the industry
 // timeline it is reached from and shares its data with.
 //
@@ -12,14 +12,14 @@
 // out a few days ago), so `public/_redirects` carries rules for both old
 // shapes. The sitemap regenerates from the built pages and self-corrects.
 //
-// FLATTENED 2026-07-28 (PRIME): was /about/vendors/<slug>. The extra
+// FLATTENED 2026-07-28 (PRIME): was /industry/chapters/<slug>. The extra
 // segment described how the site organised its own data - "these came from the
 // partner list" - which is not a distinction a reader has any reason to care
-// about. Both kinds of vendor page are now siblings under /about/vendors/.
+// about. Both kinds of vendor page are now siblings under /industry/chapters/.
 //
 // Safe because the two sets do not overlap: 15 static career pages, 74 dynamic
 // profile slugs, zero collisions (checked before moving). Next.js resolves a
-// static segment ahead of [slug], so /about/vendors/f5 keeps its hand-written
+// static segment ahead of [slug], so /industry/chapters/f5 keeps its hand-written
 // page and everything else falls through to this one.
 // ----------------------------------------------------------------------------
 // PARTNER / OTHER-VENDOR PAGE - a data-driven page for the non-career vendors
@@ -555,7 +555,7 @@ export default async function PartnerVendorPage({
             <section className="section">
               <div className="about-cred-grid">
                 <Link
-                  href={`/about/vendors/${vendor.careerChapter.slug}`}
+                  href={`/industry/chapters/${vendor.careerChapter.slug}`}
                   className="about-cred-card"
                 >
                   <span className="about-cred-eyebrow">{tp("careerCardEyebrow")}</span>

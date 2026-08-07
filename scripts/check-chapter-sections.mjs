@@ -34,7 +34,10 @@
 
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 
-const DIR = "src/app/[locale]/about/vendors";
+// Path updated 2026-08-06: the career chapters moved to /industry/chapters
+// under schema D. The redirect guard is what keeps the OLD urls working;
+// this one checks the pages themselves, so it follows them.
+const DIR = "src/app/[locale]/industry/chapters";
 const messages = JSON.parse(readFileSync("src/i18n/messages/en.json", "utf8"));
 const vendors = messages.vendors ?? {};
 

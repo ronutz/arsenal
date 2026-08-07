@@ -66,7 +66,7 @@ export const ironportProfile: VendorProfile = {
     "The $830 million Cisco paid in 2007 bought a company running $25 million quarters with 408 employees - and a reputation network whose descendant, Talos, now analyzes roughly 600 billion emails a day.",
   ],
   careerLink: {
-    href: "/about/vendors/cisco",
+    href: "/industry/chapters/cisco",
     label: "IronPort became Cisco's email security lineage in 2007 - the Cisco page",
   },
 };

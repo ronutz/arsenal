@@ -86,7 +86,7 @@ export const mcafeeFireeyeTrellixProfile: VendorProfile = {
     "Google's purchase of Mandiant closed as the company's second-largest acquisition ever, behind only the $12.5 billion Motorola Mobility deal - a measure of what incident-response credibility had become worth.",
   ],
   careerLink: {
-    href: "/about/vendors/fireeye-mcafee-ixia",
+    href: "/industry/chapters/fireeye-mcafee-ixia",
     label: "Rodolfo distributed FireEye and McAfee in Brazil - see the career page",
   },
 };

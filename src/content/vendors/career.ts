@@ -3,11 +3,11 @@
 // ----------------------------------------------------------------------------
 // CAREER VENDOR REGISTRY - the eight deep-research career pages, in
 // chronological order of first engagement (1996 onward). Extracted from
-// /about/vendors/page.tsx on 2026-07-15 so the /industry hub and the About
+// /industry/chapters/page.tsx on 2026-07-15 so the /industry hub and the About
 // index share one source of truth (PRIME directive: /industry is the new
 // discoverable front door to this research).
 //
-// `slug` is the route segment under /about/vendors/<slug>; `key` is the
+// `slug` is the route segment under /industry/chapters/<slug>; `key` is the
 // i18n prefix under the "vendors" namespace (name / years / tagline).
 // ============================================================================
 
@@ -52,7 +52,7 @@ export const CAREER_VENDORS: CareerVendor[] = [
 // ============================================================================
 // VENDOR HUB -> CAREER PAGE MAP (PRIME directive 2026-07-15, item 1):
 // each /[vendor] hub links at the top to that vendor's page in the industry
-// section (/about/vendors/<slug>). Keyed by the vendor KEY from
+// section (/industry/chapters/<slug>). Keyed by the vendor KEY from
 // src/config/vendors.ts; every current key has a career page.
 // ============================================================================
 

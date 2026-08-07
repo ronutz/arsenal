@@ -36,7 +36,8 @@
     "roadmap": "Roadmap",
     "contribute": "Contribuir",
     "colophon": "Colofão",
-    "devFun": "Laboratório de diversão"
+    "devFun": "Laboratório de diversão",
+    "advisory": "Consultoria"
   },
   "languageSwitcher": {
     "label": "Idioma",
@@ -7419,7 +7420,10 @@
     "portalHubsLede": "Uma porta por fabricante: as ferramentas, os artigos e as certificações de cada plataforma.",
     "portalHubCount": "{count} fabricantes",
     "portalCerts": "Guias de estudo de certificação",
-    "portalCertsLede": "Blueprints de prova mapeados objetivo por objetivo aos artigos que os ensinam."
+    "portalCertsLede": "Blueprints de prova mapeados objetivo por objetivo aos artigos que os ensinam.",
+    "portalPractice": "A Prática",
+    "portalPracticeLede": "Como o trabalho é de fato feito, e não como a tecnologia funciona. Triagem, escalonamento, evidências, passagem de bastão, e as partes que nenhum runbook cobre.",
+    "portalPracticeCount": "{count} de 48 publicados"
   },
   "meetingBingo": {
     "metaTitle": "Bingo de Reunião",

@@ -93,7 +93,7 @@ export const hpeJuniperArubaProfile: VendorProfile = {
     "Aruba (as HPE) and Juniper each spent years as fixtures of that same Magic Quadrant's Leaders quadrant before the merger united their portfolios.",
   ],
   careerLink: {
-    href: "/about/vendors/netscreen-juniper",
+    href: "/industry/chapters/netscreen-juniper",
     label: "Rodolfo's own NetScreen and Juniper years (career page)",
   },
 };

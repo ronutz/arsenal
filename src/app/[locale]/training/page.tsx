@@ -314,7 +314,7 @@ export default async function TrainingLandingPage({
                   <h2 className="teach-block-title">{t("historyTitle")}</h2>
                   <p className="teach-block-body">{t("historyBody")}</p>
                 </div>
-                <Link href="/about/history" className="btn btn-secondary teach-history-btn">
+                <Link href="/industry/history" className="btn btn-secondary teach-history-btn">
                   {t("historyCta")} →
                 </Link>
               </div>

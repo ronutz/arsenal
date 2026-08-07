@@ -71,7 +71,7 @@ export default async function SitemapPage({
       title: t("gAbout"),
       links: [
         { href: "/about", label: tNav("about") },
-        { href: "/about/vendors", label: tNav("careerRecord") },
+        { href: "/industry/chapters", label: tNav("careerRecord") },
         { href: "/about/credentials", label: tNav("credentials") },
         { href: "/contact", label: tNav("contact") },
       ],

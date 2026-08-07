@@ -3,11 +3,11 @@
 // ----------------------------------------------------------------------------
 // THE INDUSTRY HUB (PRIME directive 2026-07-15) - the discoverable, top-level
 // front door to the deep-research vendor histories: eight career pages
-// (/about/vendors/<slug>), the Red Education training partners, and the wider
-// industry lineage pages (/about/vendors/<slug>).
+// (/industry/chapters/<slug>), the Red Education training partners, and the wider
+// industry lineage pages (/industry/chapters/<slug>).
 //
 // Rationale: the research previously surfaced only through the About section
-// index (/about/vendors), which visitors did not find. This hub gives it a
+// index (/industry/chapters), which visitors did not find. This hub gives it a
 // primary-nav home. The individual profile pages stay at their existing URLs;
 // this page only links. The About index remains as the About-side entrance.
 //
@@ -34,7 +34,7 @@ import { CAREER_VENDORS } from "@/content/vendors/career";
 // Country of origin per entry, and the flag computed from the ISO code rather
 // than stored (PRIME 2026-08-06). See origins.ts for what "origin" means here:
 // where the company was FOUNDED, not where it is domiciled or who owns it now.
-import { VENDOR_ORIGINS, flagFor } from "@/content/vendors/origins";
+import { VENDOR_ORIGINS, countryLabel } from "@/content/vendors/origins";
 
 export async function generateMetadata({
   params,
@@ -126,7 +126,7 @@ export default async function IndustryHubPage({
       founded: v.founded,
       ended: v.ended,
       // Company histories live under /industry (PRIME 2026-07-29); the career
-      // chapters below keep /about/vendors, because those are a different kind
+      // chapters below keep /industry/chapters, because those are a different kind
       // of page about a different subject.
       href: `/industry/${v.slug}`,
       tags: v.tags ?? [],
@@ -246,7 +246,7 @@ export default async function IndustryHubPage({
                 whether to trust the site, not partway down a lineage index they
                 reached deliberately. This page keeps the timeline, which is the
                 thing it is actually for; the career chapters remain reachable
-                from the homepage strip, from /about/vendors, and from the
+                from the homepage strip, from /industry/chapters, and from the
                 "Rodolfo's chapter" markers on the individual vendor pages. */}
 
 
@@ -301,26 +301,28 @@ export default async function IndustryHubPage({
                     {v.founded}
                   </span>
                   <Link href={v.href} className="vendor-card">
+                    {/* METADATA LINE: country of origin, then the founding
+                        year. Country first because it is the coarser filter -
+                        a reader scanning for Brazilian companies discards on
+                        the first token and never reads the second.
+
+                        SHOWN AS "BR (Brazil)" RATHER THAN A FLAG EMOJI.
+                        Windows ships no country flag glyphs, so every Windows
+                        browser rendered the regional indicator pair as the
+                        bare letters while macOS showed a flag. Text renders
+                        identically on every platform, and carries the country
+                        name for anybody who does not read ISO codes. */}
                     <span className="vendor-card-years mono">
+                      {VENDOR_ORIGINS[v.slug] && (
+                        <span className="vendor-card-origin">
+                          {countryLabel(VENDOR_ORIGINS[v.slug])}
+                        </span>
+                      )}
                       {v.ended
                         ? tp("timelineSpan", { from: v.founded, to: v.ended.year })
                         : tp("timelineSince", { from: v.founded })}
                     </span>
                     <span className="vendor-card-name">
-                      {/* Country of origin. Rendered as a flag with the ISO code
-                          as its accessible label, because a flag alone is
-                          meaningless to a screen reader and ambiguous to anyone
-                          who does not recognise it. */}
-                      {VENDOR_ORIGINS[v.slug] && (
-                        <span
-                          className="vendor-card-flag"
-                          role="img"
-                          aria-label={VENDOR_ORIGINS[v.slug]}
-                          title={VENDOR_ORIGINS[v.slug]}
-                        >
-                          {flagFor(VENDOR_ORIGINS[v.slug])}
-                        </span>
-                      )}
                       {v.name}
                       {v.isRedu && (
                         <span className="vendor-partner-pill">{tp("reduPill")}</span>

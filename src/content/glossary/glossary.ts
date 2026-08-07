@@ -3412,7 +3412,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     expansion: "DECnet (Digital Equipment Corporation network protocols)",
     aliases: ["decnet", "dna", "digital network architecture", "phase iv", "phase v"],
     relatedTerms: ["xns", "sna", "ethernet"],
-    sources: [{ label: "DEC vendor profile", href: "/about/vendors/dec" }],
+    sources: [{ label: "DEC vendor profile", href: "/industry/chapters/dec" }],
   },
   {
     slug: "xns",
@@ -3441,7 +3441,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     expansion: "Internetwork Packet Exchange / Sequenced Packet Exchange",
     aliases: ["ipx", "spx", "ipx/spx", "netware protocol"],
     relatedTerms: ["xns", "novell-sap", "appletalk"],
-    sources: [{ label: "Novell vendor profile", href: "/about/vendors/novell" }],
+    sources: [{ label: "Novell vendor profile", href: "/industry/chapters/novell" }],
   },
   {
     slug: "novell-sap",
@@ -3451,7 +3451,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     expansion: "Service Advertising Protocol (Novell NetWare)",
     aliases: ["novell sap", "service advertising protocol", "sap protocol", "netware sap"],
     relatedTerms: ["ipx", "xns"],
-    sources: [{ label: "Novell vendor profile", href: "/about/vendors/novell" }],
+    sources: [{ label: "Novell vendor profile", href: "/industry/chapters/novell" }],
   },
   {
     slug: "sna",
@@ -3461,7 +3461,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     expansion: "Systems Network Architecture (IBM)",
     aliases: ["sna", "systems network architecture", "appn", "vtam"],
     relatedTerms: ["sdlc", "hdlc", "token-ring"],
-    sources: [{ label: "IBM vendor profile", href: "/about/vendors/ibm" }],
+    sources: [{ label: "IBM vendor profile", href: "/industry/chapters/ibm" }],
   },
   {
     slug: "ppp",
@@ -3618,7 +3618,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     expansion: "Synchronous Data Link Control (IBM)",
     aliases: ["sdlc", "synchronous data link control"],
     relatedTerms: ["hdlc", "sna"],
-    sources: [{ label: "IBM vendor profile", href: "/about/vendors/ibm" }],
+    sources: [{ label: "IBM vendor profile", href: "/industry/chapters/ibm" }],
   },
   {
     slug: "frame-relay",

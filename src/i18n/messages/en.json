@@ -36,7 +36,8 @@
     "roadmap": "Roadmap",
     "contribute": "Contribute",
     "colophon": "Colophon",
-    "devFun": "Fun lab"
+    "devFun": "Fun lab",
+    "advisory": "Advisory"
   },
   "languageSwitcher": {
     "label": "Language",
@@ -7419,7 +7420,10 @@
     "portalHubsLede": "One door per vendor: the tools, the articles, and the certifications that belong to each platform.",
     "portalHubCount": "{count} vendors",
     "portalCerts": "Certification study guides",
-    "portalCertsLede": "Exam blueprints mapped objective by objective to the articles that teach them."
+    "portalCertsLede": "Exam blueprints mapped objective by objective to the articles that teach them.",
+    "portalPractice": "The Practice",
+    "portalPracticeLede": "How the work is actually done, rather than how the technology works. Triage, escalation, evidence, handover, and the parts no runbook covers.",
+    "portalPracticeCount": "{count} of 48 published"
   },
   "meetingBingo": {
     "metaTitle": "Meeting Bingo",

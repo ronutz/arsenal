@@ -222,7 +222,7 @@ export default async function AboutPage({
                 timeline, not before it. The vendor-lineage link is gone - it
                 belongs on the vendor hubs, which is where it now lives. */}
             <div className="about-cred-grid" style={{ marginTop: "2rem" }}>
-              <Link href="/about/history" className="about-cred-card">
+              <Link href="/industry/history" className="about-cred-card">
                 <span className="about-cred-eyebrow">{t("credibility.historyEyebrow")}</span>
                 <span className="about-cred-title">{t("credibility.historyTitle")}</span>
                 <span className="about-cred-desc">{t("credibility.historyDesc")}</span>
@@ -231,7 +231,7 @@ export default async function AboutPage({
                   <span aria-hidden="true"> →</span>
                 </span>
               </Link>
-              <Link href="/about/vendors" className="about-cred-card">
+              <Link href="/industry/chapters" className="about-cred-card">
                 <span className="about-cred-eyebrow">{t("credibility.recordEyebrow")}</span>
                 <span className="about-cred-title">{t("credibility.recordTitle")}</span>
                 <span className="about-cred-desc">{t("credibility.recordDesc")}</span>

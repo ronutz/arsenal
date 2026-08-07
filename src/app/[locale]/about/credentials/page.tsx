@@ -5,8 +5,8 @@
 //
 // Moved here from the former top-level /certifications route (2026-07-09): the
 // top-level Certifications section is now a candidate-facing STUDY-AID hub, so
-// Rodolfo's OWN credentials live under About, alongside /about/vendors and
-// /about/history, reached from the About page's credentials card.
+// Rodolfo's OWN credentials live under About, alongside /industry/chapters and
+// /industry/history, reached from the About page's credentials card.
 //
 // Content is a verbatim move of the former page: it leads with what is CURRENT
 // (instructor authorizations and currently-valid certifications) as prominent

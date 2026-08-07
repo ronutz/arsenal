@@ -74,7 +74,7 @@ export const brocadeBroadcomProfile: VendorProfile = {
     "Brocade's own July 2008 merger materials positioned Foundry as the innovator with performance leadership in the then-emerging 10 Gigabit Ethernet market.",
   ],
   careerLink: {
-    href: "/about/vendors/extreme",
+    href: "/industry/chapters/extreme",
     label: "The Foundry data-center line (SLX, VDX, MLX) lives on at Extreme Networks - see Rodolfo's Extreme page",
   },
 };

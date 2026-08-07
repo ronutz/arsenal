@@ -36,7 +36,21 @@ export type CountryCode = string;
 
 /**
  * Turn "BR" into the flag emoji by offsetting each letter into the regional
- * indicator block. No lookup table, no stored emoji, nothing to keep in step.
+ * indicator block.
+ *
+ * *** RETAINED BUT NO LONGER USED ON THE TIMELINE (PRIME 2026-08-06). ***
+ *
+ * Flag emoji DO NOT RENDER ON WINDOWS. Microsoft has never shipped country flag
+ * glyphs in Segoe UI Emoji, so Chrome, Edge and Firefox on Windows fall back to
+ * displaying the two regional indicator letters - a reader on Windows 11 saw
+ * "BR" where a reader on macOS saw the Brazilian flag. That is a platform
+ * decision, not a font-stack or CSS problem, and no amount of styling fixes it.
+ *
+ * Since Windows is most of this site's desktop audience, the cards now show the
+ * ISO code with the country name beside it, which renders identically
+ * everywhere. The function stays because it is correct and costs nothing, and
+ * because a future decision to bundle SVG flags would want the code-to-country
+ * mapping that sits beside it.
  */
 export function flagFor(code: CountryCode): string {
   if (!/^[A-Z]{2}$/.test(code)) return "";
@@ -45,6 +59,46 @@ export function flagFor(code: CountryCode): string {
     A + code.charCodeAt(0) - 65,
     A + code.charCodeAt(1) - 65,
   );
+}
+
+/**
+ * Country names for the codes this timeline actually uses.
+ *
+ * ENGLISH SHORT FORMS, deliberately: "United Kingdom" rather than "Great
+ * Britain", because GB the ISO code covers the United Kingdom of Great Britain
+ * AND Northern Ireland, and Great Britain excludes Northern Ireland. The two
+ * are not synonyms and a site that argues about precision elsewhere should not
+ * be loose here. Likewise "United States" rather than the full formal name,
+ * which appears 108 times on one page and would dominate it.
+ */
+export const COUNTRY_NAMES: Record<CountryCode, string> = {
+  AT: "Austria",
+  AU: "Australia",
+  BR: "Brazil",
+  CA: "Canada",
+  CH: "Switzerland",
+  CN: "China",
+  DE: "Germany",
+  FI: "Finland",
+  FR: "France",
+  GB: "United Kingdom",
+  IE: "Ireland",
+  IL: "Israel",
+  IN: "India",
+  IT: "Italy",
+  JP: "Japan",
+  LV: "Latvia",
+  NL: "Netherlands",
+  RU: "Russia",
+  SE: "Sweden",
+  TW: "Taiwan",
+  US: "United States",
+};
+
+/** "BR" -> "BR (Brazil)". Falls back to the bare code if a name is missing. */
+export function countryLabel(code: CountryCode): string {
+  const name = COUNTRY_NAMES[code];
+  return name ? `${code} (${name})` : code;
 }
 
 /**

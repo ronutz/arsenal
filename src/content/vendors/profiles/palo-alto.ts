@@ -76,7 +76,7 @@ export const paloAltoProfile: VendorProfile = {
     "The scale, in primary figures: fiscal 2024 revenue of $8.03 billion; 85 of the Fortune 100 as customers; and a CyberArk purchase recorded at $21.1 billion in consideration against a ~$25 billion announced value - the largest transaction in cybersecurity history.",
   ],
   careerLink: {
-    href: "/about/vendors/netscreen-juniper",
+    href: "/industry/chapters/netscreen-juniper",
     label: "Nir Zuk's road runs through the NetScreen page - where this section's security circle begins",
   },
 };

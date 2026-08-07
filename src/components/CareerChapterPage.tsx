@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 // A CAREER CHAPTER: what Rodolfo did inside one company.
 //
-// PRIME, 2026-07-29: "/about/vendors/<slug> should talk about MY experience
+// PRIME, 2026-07-29: "/industry/chapters/<slug> should talk about MY experience
 // with that vendor, and show cards to link to the vendor-hub and the vendor's
 // /industry profile page."
 //
@@ -90,10 +90,10 @@ export default async function CareerChapterPage({
               <Breadcrumbs
                 items={[
                   { href: "/about", label: tNav("about") },
-                  { href: "/about/vendors", label: t("indexTitle") },
+                  { href: "/industry/chapters", label: t("indexTitle") },
                 ]}
               />
-              <Link href="/about/vendors" className="article-back">
+              <Link href="/industry/chapters" className="article-back">
                 ← {t("backToVendors")}
               </Link>
               {/* On a career page the years ARE the subject, so they lead -

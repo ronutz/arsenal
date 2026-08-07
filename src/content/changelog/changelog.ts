@@ -2183,7 +2183,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "content",
     title: "Pre-1996: the record corrected, and a dream kept",
     body: "Three refinements from the source. The academic internet moves to 1991, where it actually happened — the university shell account over a modem — and 1993 earns its own beat: a program compiled on that shell account turned the dial-up session itself into a SLIP/PPP tunnel, and through it NCSA Mosaic opened the first glimpse of the World Wide Web. The phreaking movement gains its flash-forward: the payphone-modem dream of 1990, recognized seventeen years later in a jailbroken first-generation iPhone running community-made apps. And the Brazilian Portuguese telling of the father thread now carries the author's own ratified wording.",
-    links: [{ label: "Read the chapter", href: "/about/history/pre-1996" }],
+    links: [{ label: "Read the chapter", href: "/industry/history/pre-1996" }],
   },
   {
     date: "2026-07-17",
@@ -2191,7 +2191,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "content",
     title: "Pre-1996: the father at the root",
     body: "The origin story now starts where it truly did. The ham-radio movement is reframed around Rodolfo's father — an engineer and avid amateur operator whose call sign and QSL cards were the first proof that a signal could cross the world — and the national-micros movement opens a scene earlier, with a nine-year-old watching him load a cassette program onto the family television before the watching turned into doing. The timeline beats for the 1984 TK-82C and the amateur-radio years follow suit. Authored natively in English and Brazilian Portuguese.",
-    links: [{ label: "Read the chapter", href: "/about/history/pre-1996" }],
+    links: [{ label: "Read the chapter", href: "/industry/history/pre-1996" }],
   },
   {
     date: "2026-07-17",
@@ -2205,7 +2205,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "12:00",
     kind: "content",
     title: "The pre-1996 story, told in full",
-    body: "The origin chapter at /about/history/pre-1996 is rebuilt from a flat summary into a proper telling: a dated timeline from the 1984 Microdigital TK-82C to the 1995 first role, a six-movement narrative (ham radio and QSL cards, the national micros, the bulletin-board and FidoNet years, the phreaking scene of the orelhao and the blue-box dreams, the 1993 academic internet, and the turn from hobby to trade), and a field guide of eleven era terms for readers who arrived after it - two of them, phreaking and the blue box, opening into the glossary's phone-phreaking lineage. Authored natively in English and Brazilian Portuguese.",
+    body: "The origin chapter at /industry/history/pre-1996 is rebuilt from a flat summary into a proper telling: a dated timeline from the 1984 Microdigital TK-82C to the 1995 first role, a six-movement narrative (ham radio and QSL cards, the national micros, the bulletin-board and FidoNet years, the phreaking scene of the orelhao and the blue-box dreams, the 1993 academic internet, and the turn from hobby to trade), and a field guide of eleven era terms for readers who arrived after it - two of them, phreaking and the blue box, opening into the glossary's phone-phreaking lineage. Authored natively in English and Brazilian Portuguese.",
   },
   {
     date: "2026-07-17",

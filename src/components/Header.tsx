@@ -54,6 +54,16 @@ export default async function Header() {
           <Link href="/training" className="site-nav-link">
             {t("training")}
           </Link>
+          {/* ADVISORY (schema D, PRIME 2026-08-06). The commercial offer had no
+              entry point at all: /advisory had zero inbound links while sitting
+              built and reachable only by typing the URL. Training was in the
+              nav and advisory was not, which described the business backwards.
+              /speaking is reached FROM advisory rather than from here, because
+              event organisers arrive by referral and search, not by browsing a
+              navigation bar. */}
+          <Link href="/advisory" className="site-nav-link">
+            {t("advisory")}
+          </Link>
           {/* Contact intentionally lives in the footer (nav option (a), sleek
               4-item explore bar); /contact remains fully reachable. */}
         </nav>

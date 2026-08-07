@@ -93,7 +93,7 @@ export const fireeyeMcafeeIxiaProfile: VendorProfile = {
     "The three endgames diverged completely: Ixia into a test-and-measurement dynasty (2017), McAfee and FireEye recombined by STG into Trellix with some 40,000 customers (2022), and Mandiant into Google - three channel line cards, three different fates.",
   ],
   careerLink: {
-    href: "/about/vendors/mcafee-fireeye-trellix",
+    href: "/industry/chapters/mcafee-fireeye-trellix",
     label: "The full McAfee, FireEye, Mandiant and Trellix corporate saga - the Trellix partner page",
   },
 };

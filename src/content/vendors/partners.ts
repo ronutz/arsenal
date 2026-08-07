@@ -196,7 +196,7 @@ export interface PartnerVendor {
    * page types stay consistent and a reader meets one idea rather than two.
    */
   /**
-   * Slug of the career chapter at /about/vendors/<slug>, when PRIME worked
+   * Slug of the career chapter at /industry/chapters/<slug>, when PRIME worked
    * with this company directly.
    *
    * Added 2026-07-29 (PRIME step 4). The company history and the career
@@ -2998,7 +2998,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // RIVERSTONE NETWORKS - company history (PRIME step 4, 2026-07-29).
     // The autobiography that used to live on this page now sits at
-    // /about/vendors/riverstone; what remains is the company itself. The
+    // /industry/chapters/riverstone; what remains is the company itself. The
     // lineage facts were already verified in the Cabletron research earlier
     // this week.
     slug: "riverstone",

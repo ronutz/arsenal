@@ -78,7 +78,7 @@ export const madgeProfile: VendorProfile = {
     "The Register's 2003 verdict stands as the epitaph for the whole protocol war: Token Ring, though technically superior, became 'the Betamax of the networking world' - and Madge, its greatest independent champion, followed it down.",
   ],
   careerLink: {
-    href: "/about/vendors/cabletron-enterasys",
+    href: "/industry/chapters/cabletron-enterasys",
     label: "Rodolfo fought the Token Ring versus Ethernet war from the other side - the Cabletron page",
   },
 };

@@ -11,11 +11,25 @@
 //
 // It checks three things, each of which has already gone wrong once:
 //
-//   1. NO CAREER SLUG IS REDIRECTED. /about/vendors/<career-slug> serves a live
-//      career page. Step 4 converts career vendors into partnerVendors entries
-//      so their history renders from the shared route - which means any
-//      generator reading partnerVendors will cheerfully emit a redirect that
-//      kills the career page. It did, for six of them.
+//   1. EVERY CAREER PAGE STILL RESOLVES. This rule was written after a
+//      generator reading partnerVendors emitted redirects that killed six
+//      career pages, and it originally forbade ANY redirect away from
+//      /about/vendors/<slug>.
+//
+//      *** UPDATED 2026-08-06, WHEN THOSE PAGES DELIBERATELY MOVED. ***
+//      Schema D moved the career chapters to /industry/chapters/<slug> and the
+//      history pages to /industry/history/*, because they are industry content
+//      that happens to be autobiographical. The old rule forbade exactly the
+//      redirects that move requires, and it fired 240 times - correctly, since
+//      a rule that cannot tell a deliberate migration from an accidental
+//      deletion should stop both and make a person look.
+//
+//      The replacement is STRICTER rather than weaker. It no longer asks
+//      "is this page being redirected away", which a legitimate move must do.
+//      It asks "does the destination exist": a redirect from a career page must
+//      point at that career slug's new home, and the route for it must be on
+//      disk. Forbidding movement protected the pages by accident; verifying the
+//      destination protects them on purpose.
 //
 //   2. LIMITS: 2,000 static and 100 dynamic.
 //
@@ -23,7 +37,7 @@
 //      requires and which silently drops rules when violated.
 // ============================================================================
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 
 const FILE = "public/_redirects";
 const raw = readFileSync(FILE, "utf8");
@@ -53,15 +67,32 @@ if (statics.length && dynamic.length) {
   }
 }
 
-// Career slugs must never be redirected away from /about/vendors/<slug>.
+// Every career page must still resolve somewhere real. See rule 1 above for why
+// this checks the destination rather than forbidding the redirect.
 const career = [
   ...readFileSync("src/content/vendors/career.ts", "utf8").matchAll(/\{ slug: "([a-z0-9-]+)"/g),
 ].map((m) => m[1]);
-for (const r of rules) {
-  for (const slug of career) {
-    if (new RegExp(`^/[a-zA-Z-]+/about/vendors/${slug}/\\s`).test(r.t)) {
+
+const CHAPTER_ROUTE = "src/app/[locale]/industry/chapters";
+
+for (const slug of career) {
+  // (a) the route has to exist on disk. If somebody deletes the page and leaves
+  //     the redirect, every old link lands on a 404 with a 301 in front of it.
+  if (!existsSync(`${CHAPTER_ROUTE}/${slug}/page.tsx`)) {
+    failures.push(
+      `Career slug "${slug}" has no page at ${CHAPTER_ROUTE}/${slug}/page.tsx. The chapter is unreachable.`,
+    );
+  }
+
+  // (b) any redirect FROM the old location must point at the new one, not at
+  //     the index, not at the industry entry, and not anywhere else. Landing a
+  //     reader on a plausible-but-wrong page is worse than a 404, because
+  //     nobody reports it.
+  for (const r of rules) {
+    const m = r.t.match(new RegExp(`^/([a-zA-Z-]+)/about/vendors/${slug}/\\s+(\\S+)`));
+    if (m && m[2] !== `/${m[1]}/industry/chapters/${slug}/`) {
       failures.push(
-        `Line ${r.i + 1} redirects the CAREER page /about/vendors/${slug} away. That page is live; remove the rule.\n      ${r.t}`,
+        `Line ${r.i + 1} redirects career page "${slug}" to ${m[2]}, not to /${m[1]}/industry/chapters/${slug}/.\n      ${r.t}`,
       );
     }
   }
@@ -75,5 +106,5 @@ if (failures.length) {
 }
 
 console.log(
-  `[check-redirects] OK: ${statics.length}/2000 static, ${dynamic.length}/100 dynamic, ordering correct, no career page redirected.`,
+  `[check-redirects] OK: ${statics.length}/2000 static, ${dynamic.length}/100 dynamic, ordering correct, all ${career.length} career chapters resolve.`,
 );

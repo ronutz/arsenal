@@ -15163,13 +15163,20 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    are neutral facts about the company. A reader should be able to tell those
    two kinds of statement apart at a glance without reading either. */
 
-.vendor-card-flag {
-  /* Sits before the name, at text size rather than enlarged: the flag is an
-     annotation on the name, not a graphic element competing with it. */
-  margin-right: 0.45rem;
-  font-size: 1.05rem;
-  line-height: 1;
-  vertical-align: baseline;
+.vendor-card-origin {
+  /* Country of origin, on the metadata line ahead of the founding year.
+     REPLACED .vendor-card-flag on 2026-08-06: flag emoji do not render on
+     Windows, which shows the bare regional-indicator letters instead, so the
+     card now carries "BR (Brazil)" as text. Separated from the year by a
+     middot rather than whitespace, because two bare tokens on one line read as
+     one value. */
+  margin-right: 0.5rem;
+}
+
+.vendor-card-origin::after {
+  content: "\00b7";
+  margin-left: 0.5rem;
+  opacity: 0.55;
 }
 
 .vendor-card-cats {

@@ -74,7 +74,7 @@ export const ciscoProfile: VendorProfile = {
     "Per Wikipedia's acquisition history, purchases have constituted 50 percent of Cisco's business activity since 1993 - roughly 170 companies by late 2014, crowned by the $28 billion Splunk close in March 2024.",
   ],
   careerLink: {
-    href: "/about/vendors/riverstone",
+    href: "/industry/chapters/riverstone",
     label: "Kalpana's switching DNA runs through Riverstone - co-founder Pereira built there before Yago - the Riverstone page",
   },
 };

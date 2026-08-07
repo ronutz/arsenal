@@ -87,7 +87,7 @@ export const nortelBayProfile: VendorProfile = {
     "The Rockstar auction's $4.5 billion was five times Google's $900 million stalking-horse bid and, at the time, the largest patent sale in history.",
   ],
   careerLink: {
-    href: "/about/vendors/cabletron-enterasys",
+    href: "/industry/chapters/cabletron-enterasys",
     label: "Rodolfo fought the hub-and-switch wars from the other side, at Cabletron (1996-2000) - the Cabletron page",
   },
 };

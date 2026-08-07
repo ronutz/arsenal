@@ -22,6 +22,7 @@ import FamilyChip from "@/components/FamilyChip";
 import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
 import { VENDOR_FAMILIES } from "@/config/vendors";
+import { getPracticeArticles } from "@/lib/practice";
 import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
@@ -60,6 +61,8 @@ export default async function LearnIndexPage({
   // resolved label, locale-aware, to mirror the Tools index taxonomy.
   // Total across the category groups - the badge on the jump-to-articles card.
   const articleCount = getArticlesByCategory(locale).reduce((n, g) => n + g.articles.length, 0);
+  // Computed, never written down: the card and the section read one source.
+  const practiceCount = getPracticeArticles(locale).length;
   const groups = getArticlesByCategory(locale).sort((a, b) =>
     tTools(`categories.${a.category}`).localeCompare(
       tTools(`categories.${b.category}`),
@@ -124,6 +127,34 @@ export default async function LearnIndexPage({
                 <p className="learn-portal-lede">{t("portalHubsLede")}</p>
                 <p className="learn-portal-badges">
                   <span className="learn-portal-badge">{t("portalHubCount", { count: VENDOR_FAMILIES.length })}</span>
+                </p>
+              </Link>
+              {/* THE PRACTICE (PRIME 2026-08-06). A SIBLING card, not a nested
+                  section: PRIME asked whether the corpus should live under
+                  /learn and the answer was no. Learn holds 528 articles on how
+                  the TECHNOLOGY works; The Practice holds writing on how the
+                  WORK is done. A reader arrives here with a protocol question
+                  and there with a professional one, and nesting the second
+                  under the first would have made it look like product
+                  documentation and buried 48 articles under 528.
+
+                  The count is COMPUTED from the corpus rather than written
+                  down, so the card cannot claim a number the section then
+                  contradicts. */}
+              <Link
+                href="/practice"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-danger)" } as React.CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
+                <p className="learn-portal-title">
+                  {t("portalPractice")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("portalPracticeLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">
+                    {t("portalPracticeCount", { count: practiceCount })}
+                  </span>
                 </p>
               </Link>
               <Link
