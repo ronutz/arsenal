@@ -43,7 +43,7 @@ export default async function EraPage({ eraKey, sections, next }: EraPageProps) 
           {/* Hero */}
           <section className="era-hero">
             <div className="container era-container">
-              <Link href="/industry/history" className="article-back">
+              <Link href="/about" className="article-back">
                 ← {t("backToHistory")}
               </Link>
               <p className="era-years mono">{t(`${eraKey}.years`)}</p>
@@ -87,7 +87,7 @@ export default async function EraPage({ eraKey, sections, next }: EraPageProps) 
           {next && (
             <section className="section">
               <div className="container era-container">
-                <Link href={`/industry/history/${next.slug}`} className="era-next">
+                <Link href={`/about/${next.slug}`} className="era-next">
                   <span className="era-next-label">{t("readNext")}</span>
                   <span className="era-next-years mono">{t(`${next.key}.years`)}</span>
                   <span className="era-next-title">{t(`${next.key}.title`)} →</span>

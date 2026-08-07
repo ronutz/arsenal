@@ -6471,15 +6471,18 @@
       "endorsementsTitle": "Depoimentos",
       "endorsementsDesc": "Recomendações de colegas, parceiros e alunos ao longo de duas décadas de treinamento, citadas na íntegra.",
       "endorsementsCta": "Ler os depoimentos",
-      "historyEyebrow": "A versão longa",
-      "historyTitle": "Leia a história completa",
-      "historyDesc": "Trinta anos contados como deve ser: as empresas, as tecnologias, e as viradas que não estavam no plano.",
-      "historyCta": "Ler a história",
       "recordEyebrow": "Fabricante a fabricante",
       "recordTitle": "O registro da carreira",
       "recordDesc": "Cada fabricante por onde esta carreira passou, cada um com seu capítulo e o que o trabalho de fato era.",
-      "recordCta": "Abrir o registro"
-    }
+      "recordCta": "Abrir o registro",
+      "coursesEyebrow": "Treinamento",
+      "coursesTitle": "Cursos que ministro",
+      "coursesDesc": "O catálogo completo por plataforma, com os objetivos que cada curso cobre.",
+      "coursesCta": "Ver o catálogo",
+      "blogTitle": "Blog",
+      "blogDesc": "Textos ocasionais sobre a indústria, o ofício, e o que quer que eu tenha acabado de discutir."
+    },
+    "historySectionTitle": "A História"
   },
   "endorsements": {
     "eyebrow": "Depoimentos",
@@ -6862,7 +6865,7 @@
       "s1Title": "A escada de certificações",
       "s1Body": "O capítulo abre em 2015 com o F5 Certified Administrator, obtido enquanto distribuía a plataforma comercialmente. Veio então a escada de especialista: Certified Technology Specialist em LTM, DNS, ASM e APM, e depois os dois picos de solution expert, F5-CSE Cloud (2021) e F5-CSE Security (2022). Subir cada módulo do BIG-IP um exame por vez é exatamente a preparação de que um instrutor em tempo integral precisa, e foi aonde isso levou.",
       "s2Title": "A cadeira de instrutor e o DevCentral",
-      "s2Body": "F5 Authorized Instructor desde 2020, ministrando doze cursos oficiais de BIG-IP e TMOS, dos fundamentos de administração a LTM, DNS, ASM/AWAF, APM, iRules e troubleshooting. A comunidade DevCentral da F5 nomeou Rodolfo MVP por três anos consecutivos, de 2022 a 2024. Neste site, a F5 é o carro-chefe: o maior hub de fornecedor, com calculadoras, decodificadores e explicadores construídos para os mesmos engenheiros que sentam nessas aulas.",
+      "s2Body": "F5 Authorized Instructor desde 2020, ministrando doze cursos oficiais de BIG-IP e TMOS, dos fundamentos de administração a LTM, DNS, ASM/AWAF, APM, iRules e troubleshooting. A comunidade DevCentral da F5 me nomeou MVP por três anos consecutivos, de 2022 a 2024. Neste site, a F5 é o carro-chefe: o maior hub de fornecedor, com calculadoras, decodificadores e explicadores construídos para os mesmos engenheiros que sentam nessas aulas.",
       "certs": "F5 Authorized Instructor (desde 2020). Certificações atuais: F5-CSE Security, F5-CSE Cloud, F5-CTS LTM / DNS / ASM / APM, F5-CA. DevCentral MVP 2022, 2023, 2024. Detalhes completos na página de credenciais."
     },
     "fortinet": {
@@ -6873,7 +6876,7 @@
       "s1Title": "A escada NSE, duas vezes",
       "s1Body": "A escada foi subida uma vez em 2022, NSE 1 a NSE 4 no programa legado, e de novo quando a Fortinet reorganizou a certificação nas trilhas FCF, FCA e FCP: Fundamentals e Associate em Cybersecurity, Professional em Network Security, com os badges de administrador de FortiGate, FortiAnalyzer, FortiManager e FortiAuthenticator ao lado. Em 2024 veio a credencial que mais importa a um professor: Fortinet Certified Trainer.",
       "s2Title": "Cinco cursos e uma transição de programa",
-      "s2Body": "Como FCT, Rodolfo ministra cinco cursos FCP oficiais cobrindo a pilha do FortiGate e seu plano de gerenciamento. Em 15 de julho de 2026, a Fortinet aposentou os nomes da era FCP e FCSS e restaurou a progressão de oito níveis NSE, convertendo as certificações ativas, de modo que as credenciais deste capítulo voltam a se ler NSE 1 a NSE 4, exatamente onde começaram, uma geração de programa depois. A página de credenciais registra essa transição em primeira mão.",
+      "s2Body": "Como FCT, ministro cinco cursos FCP oficiais cobrindo a pilha do FortiGate e seu plano de gerenciamento. Em 15 de julho de 2026, a Fortinet aposentou os nomes da era FCP e FCSS e restaurou a progressão de oito níveis NSE, convertendo as certificações ativas, de modo que as credenciais deste capítulo voltam a se ler NSE 1 a NSE 4, exatamente onde começaram, uma geração de programa depois. A página de credenciais registra essa transição em primeira mão.",
       "certs": "Fortinet Certified Trainer (2025 – 2027). Certificações atuais: Fortinet NSE 4 em FortiOS, NSE 3 / NSE 2 / NSE 1 em Cybersecurity (programa de 2026, convertidas de FCP-NS, FCA e FCF). Detalhes completos na página de credenciais."
     },
     "netskope": {
@@ -6893,7 +6896,7 @@
       "tagline": "O capítulo de identidade: duas linhagens, uma plataforma - a federação de Denver e o open source da Sun resgatado em Oslo.",
       "intro": "A Ping Identity abre a era de identidade deste registro - e carrega duas heranças. A pioneira de federação de Denver por trás do PingFederate e a ForgeRock, o fork norueguês que salvou a pilha de identidade open source da Sun Microsystems, foram combinadas pela Thoma Bravo em agosto de 2023 na plataforma que esta página perfila. Em 2025, esse alinhamento virou treinamento formal.",
       "s1Title": "PingFederate, estudado a sério",
-      "s1Body": "Em 2025, Rodolfo concluiu o treinamento oficial de PingFederate da Ping Identity e obteve a credencial PingFederate Practitioner, mergulhando no servidor de federação que transformou o SAML de especificação em encanamento corporativo. Para quem ensina gestão de acesso em outras plataformas e constrói ferramentas de SAML e OIDC para este site, era a próxima pilha de protocolos natural a dominar por dentro.",
+      "s1Body": "Em 2025, concluí o treinamento oficial de PingFederate da Ping Identity e obteve a credencial PingFederate Practitioner, mergulhando no servidor de federação que transformou o SAML de especificação em encanamento corporativo. Para quem ensina gestão de acesso em outras plataformas e constrói ferramentas de SAML e OIDC para este site, era a próxima pilha de protocolos natural a dominar por dentro.",
       "s2Title": "Identidade, decodificada neste site",
       "s2Body": "O ferramental de identidade deste site decodifica os mesmos artefatos que PingFederate e PingOne movem em produção: o decodificador SAML, os inspetores de JWT e OIDC e as ferramentas de PKCE e TOTP leem as asserções, tokens e fluxos sobre os quais a federação roda - localmente, no navegador. O curso de practitioner de PingFederate em 2025 marca o capítulo, e os padrões de federação que ele ensina são exatamente o que essas ferramentas tornam visível.",
       "certs": "PingFederate Practitioner (2025), obtido pelo Ping Identity Training. Detalhes completos na página de credenciais.",
@@ -6915,11 +6918,11 @@
       "name": "Pulse Secure",
       "years": "2018 – 2019",
       "tagline": "O fio de acesso seguro do capítulo de distribuição: DNA da Neoteris, carregado por cinco bandeiras.",
-      "intro": "A Pulse Secure entrou neste registro pelo lado da distribuição: no ano de ScanSource, sua linha de acesso seguro fazia parte do portfólio que Rodolfo arquitetava e demonstrava pelo Brasil - o SSL VPN que ele conhecera primeiro de dentro da Juniper, justamente nos anos em que o Junos Pulse tomava forma.",
+      "intro": "A Pulse Secure entrou neste registro pelo lado da distribuição: no ano de ScanSource, sua linha de acesso seguro fazia parte do portfólio que eu arquitetava e demonstrava pelo Brasil - o SSL VPN que ele conhecera primeiro de dentro da Juniper, justamente nos anos em que o Junos Pulse tomava forma.",
       "s1Title": "Distribuindo acesso seguro",
       "s1Body": "O trabalho era distribuição de valor agregado no seu ponto mais técnico: arquitetar projetos de acesso remoto em torno do Pulse Connect Secure, conduzir demonstrações e provas de conceito e capacitar parceiros de canal em um produto que vendia para qualquer vertical com força de trabalho fora do escritório. O Policy Secure trazia a conversa de NAC para a mesma plataforma, e o papel do distribuidor era fazer os dois fazerem sentido nas redes corporativas brasileiras - dimensionamento, pontos de integração e os limites honestos.",
       "s2Title": "Um produto, cinco bandeiras",
-      "s2Body": "O produto que Rodolfo distribuía carregava mais história que muitas empresas: nasceu como o Instant Virtual Extranet da Neoteris, o appliance que definiu o SSL VPN sem cliente; foi adquirido pela NetScreen em 2003; entrou na Juniper com a aquisição da NetScreen em 2004, onde virou a série SA e depois o Junos Pulse - o capítulo que se sobrepôs aos anos do próprio Rodolfo dentro da Juniper. A Siris Capital destacou o negócio em 2014 como Pulse Secure, e a Ivanti concluiu sua aquisição em 1º de dezembro de 2020, ao lado da MobileIron - a genealogia completa está nesta página, abaixo, e o capítulo NetScreen tem página própria neste registro.",
+      "s2Body": "O produto que eu distribuía carregava mais história que muitas empresas: nasceu como o Instant Virtual Extranet da Neoteris, o appliance que definiu o SSL VPN sem cliente; foi adquirido pela NetScreen em 2003; entrou na Juniper com a aquisição da NetScreen em 2004, onde virou a série SA e depois o Junos Pulse - o capítulo que se sobrepôs aos meus próprios anos dentro da Juniper. A Siris Capital destacou o negócio em 2014 como Pulse Secure, e a Ivanti concluiu sua aquisição em 1º de dezembro de 2020, ao lado da MobileIron - a genealogia completa está nesta página, abaixo, e o capítulo NetScreen tem página própria neste registro.",
       "certs": "Sem certificações específicas de Pulse; o trabalho foi de pré-vendas e capacitação no lado do distribuidor. A linhagem de acesso seguro continua hoje como Ivanti Connect Secure."
     },
     "industryPointerTitle": "A árvore genealógica mais ampla",
@@ -6992,11 +6995,9 @@
     "s3Title": "Mão na massa, não vago",
     "s3Body": "A habilidade técnica se constrói fazendo, então todo curso tem laboratórios práticos em sistemas reais, apoiados por ambientes de laboratório gerenciados onde a prática sempre tem um lugar real para acontecer. Para quem já conhece os fundamentos e veio para colocar a mão na tecnologia, é exatamente isso que essas pessoas buscam, e é tempo bem gasto. Para quem é mais novo no assunto, o tempo vai primeiro para as fundações sobre as quais os laboratórios se apoiam, de modo que a parte prática faça sentido em vez de ser seguida de forma mecânica. Ambos têm igual valor, e o equilíbrio simplesmente muda conforme a turma. O formato se adapta ao público: treinamento ao vivo conduzido por instrutor e entregue globalmente, presencial quando isso for melhor, em inglês ou português. De um jeito ou de outro, as pessoas devem sair com algo real e útil em mãos e uma compreensão real de por que aquilo funciona.",
     "s4Title": "Reconhecido, certificado e atualizado",
-    "s4Body": "O ensino se apoia em uma base de reconhecimento formal. F5 DevCentral MVP por três anos consecutivos, em 2022, 2023 e 2024. Certificações F5 mantidas desde 2015, e autorização de instrutor em F5, Extreme Networks, Fortinet e Netskope. A entrega alcança Austrália, Singapura, Índia, Europa Central, Estados Unidos e Brasil, através da Red Education, um centro de treinamento autorizado. As credenciais importam, mas são um atalho para o que está por baixo: um domínio genuíno e atual da tecnologia.",
+    "s4Body": "F5 DevCentral MVP por três anos consecutivos, em 2022, 2023 e 2024. Certificações F5 desde 2015, e autorização de instrutor em F5, Extreme Networks, Fortinet e Netskope. A entrega alcança Austrália, Cingapura, Índia, Europa Central, Estados Unidos e Brasil, através da Red Education, um centro de treinamento autorizado.",
     "platformsTitle": "O que eu ensino",
     "platformsBody": "Treinamento oficial e certificado, conduzido por instrutor, nas plataformas no centro das redes e da segurança modernas. Cada uma leva ao seu catálogo de cursos completo.",
-    "s5Title": "Além da sala de aula",
-    "s5Body": "A mesma profundidade que produz um bom ensino produz uma boa consultoria. Trinta anos atravessando entrega de aplicações, segurança de rede, identidade e infraestrutura, tanto no lado do fabricante quanto no do cliente, são uma perspectiva que viaja muito além de uma sala de treinamento, até as decisões de arquitetura, a seleção de tecnologia e os problemas difíceis que não cabem em um conteúdo programático. O ensino é o foco; a experiência por trás dele está disponível para equipes que precisam de mais do que um curso.",
     "historyTitle": "Três décadas, um fio condutor",
     "historyBody": "De montar computadores ainda adolescente em 1991, passando por duas décadas dentro da indústria de redes e segurança, até a instrução global em tempo integral desde 2020. Vale a pena ler a história completa se você quiser entender a experiência por trás do ensino.",
     "historyCta": "Ler a história completa",
@@ -7006,7 +7007,7 @@
     "coursesButton": "Veja os cursos que ministro",
     "instructor": {
       "eyebrow": "Seu instrutor",
-      "body": "Estes cursos são ministrados por Rodolfo Nützmann, instrutor técnico sênior que entrega treinamentos oficiais F5, Fortinet, Extreme Networks e Netskope no mundo todo, apoiado em uma carreira em redes e segurança iniciada em 1996 no lado da implementação. As credenciais, e o que dizem alunos anteriores, estão a um clique.",
+      "body": "Ministro estes cursos como instrutor técnico sênior, e entrega treinamentos oficiais F5, Fortinet, Extreme Networks e Netskope no mundo todo, apoiado em uma carreira em redes e segurança iniciada em 1996 no lado da implementação. As credenciais, e o que dizem alunos anteriores, estão a um clique.",
       "about": "Sobre",
       "certs": "Credenciais",
       "endorsements": "Depoimentos",
@@ -7016,7 +7017,7 @@
     },
     "envTitle": "Ambientes de treinamento remoto",
     "envBody1": "As turmas ao vivo online (vILT) acontecem preferencialmente pelo Zoom, com Google Meet e Microsoft Teams igualmente atendidos quando a política de plataforma do cliente exigir.",
-    "envBody2": "Os laboratórios práticos são entregues em ambientes de laboratório próprios que o Rodolfo constrói e mantém, na infraestrutura de laboratórios da Red Education e em plataformas como CloudShare, Skytap, ReadyTech Axis e Amazon WorkSpaces - o que melhor servir ao curso e ao cliente.",
+    "envBody2": "Os laboratórios práticos são entregues através da infraestrutura de laboratório da Red Education, e através de plataformas como CloudShare, Skytap, ReadyTech Axis e Amazon WorkSpaces - o ambiente de laboratório oficial de cada curso é.",
     "navTitle": "Para onde ir agora",
     "navLede": "O catálogo de cursos, as certificações para as quais estes cursos preparam, e o material gratuito que você pode ler antes de decidir qualquer coisa.",
     "navCerts": "Guias de certificação",
@@ -7024,7 +7025,9 @@
     "navLearn": "Aprender",
     "navLearnLede": "Centenas de artigos técnicos escritos pelo mesmo instrutor, sobre os protocolos e produtos que os cursos cobrem.",
     "navTools": "Ferramentas",
-    "navToolsLede": "Calculadoras e explicadores gratuitos para as mesmas plataformas que os cursos cobrem. Calculam no seu navegador e não enviam nada a lugar nenhum."
+    "navToolsLede": "Calculadoras e explicadores gratuitos para as mesmas plataformas que os cursos cobrem. Calculam no seu navegador e não enviam nada a lugar nenhum.",
+    "navGlossary": "Glossário",
+    "navGlossaryLede": "Cada termo usado nos cursos e nos textos, definido uma vez e com referências cruzadas. Útil durante o curso e útil depois dele."
   },
   "contact": {
     "title": "Entre em contato",
@@ -14410,7 +14413,7 @@
   },
   "trainingCta": {
     "eyebrow": "Treinamento com instrutor",
-    "body": "Prefere aprender com um instrutor? Rodolfo Nützmann e outros instrutores autorizados ministram estes cursos ao vivo na <redu>Red Education</redu>, um Centro de Treinamento Autorizado global.",
+    "body": "Prefere aprender com um instrutor? Eu e outros instrutores autorizados ministram estes cursos ao vivo na <redu>Red Education</redu>, um Centro de Treinamento Autorizado global.",
     "link": "Conhecer os treinamentos com instrutor"
   },
   "redEducation": {
@@ -14453,7 +14456,7 @@
     "ctaTitle": "Reserve um treinamento com instrutor",
     "ctaBody": "Os cursos ministrados por Rodolfo Nützmann e outros instrutores autorizados podem ser reservados diretamente na Red Education, no mundo todo, nos formatos presencial, virtual ou in-company.",
     "ctaButton": "Visitar a Red Education",
-    "aboutLink": "Em parceria com a Red Education"
+    "aboutLink": "A entrega dos treinamentos é conduzida pelo principal centro de treinamento global Red Education"
   },
   "toolDocs": {
     "titleSuffix": "documentação",
@@ -14492,7 +14495,7 @@
     "awardsTitle": "Reconhecimentos da Red Education",
     "sourcesLabel": "Fontes",
     "reduSectionTitle": "Parceiros de treinamento da Red Education",
-    "reduSectionNote": "Fornecedores para os quais a Red Education é autorizada a ministrar treinamento. Estes não fazem parte da instrução autorizada do Rodolfo - a dele abrange F5, Fortinet, Netskope e Extreme Networks.",
+    "reduSectionNote": "Fornecedores para os quais a Red Education é autorizada a ministrar treinamento. Estes ficam fora da minha instrução autorizada, que abrange F5, Fortinet, Netskope e Extreme Networks.",
     "reduCardTag": "Trilha de parceiro",
     "otherSectionTitle": "Outros fornecedores - linhagens dos pioneiros",
     "otherSectionNote": "Genealogias corporativas das empresas que moldaram redes, telecom e cibersegurança - quem as fundou, o que construíram e onde sua PI e suas pessoas vivem hoje. Páginas de história apenas: nenhuma associação de treinamento é implicada.",
@@ -14504,7 +14507,7 @@
     "innovationsTitle": "Inovações-chave",
     "marketsTitle": "Principais mercados",
     "analystTitle": "Posição nos relatórios de analistas",
-    "personalChipLabel": "Capítulo do Rodolfo",
+    "personalChipLabel": "Meu capítulo",
     "contemporarySectionTitle": "Os contemporâneos - ainda escrevendo seus capítulos",
     "contemporarySectionNote": "Empresas da era moderna cujas histórias ainda estão se desenrolando - sem associação de treinamento; perfiladas pelo que significam para o setor hoje.",
     "contemporaryEyebrow": "Contemporâneo do setor",
@@ -14547,7 +14550,7 @@
     "careerTitle": "Os fabricantes da carreira",
     "careerNote": "Relação direta de trabalho entre 1996 e 2020, em ordem cronológica do primeiro contato.",
     "careerStripTitle": "Os capítulos vividos por dentro",
-    "careerStripNote": "Estes catorze também são capítulos do registro do próprio autor - cada linha do tempo leva um marcador Capítulo do Rodolfo. A narrativa completa vive no registro de carreira.",
+    "careerStripNote": "Estes catorze também são capítulos do meu próprio registro - cada linha do tempo leva um marcador Meu capítulo. A narrativa completa vive no registro de carreira.",
     "careerStripLink": "Ler o registro de carreira"
   },
   "sitemap": {
@@ -14826,9 +14829,6 @@
     "scopeTitle": "O que é, e o que não é",
     "scopeIn": "Julgamento técnico sobre uma decisão: revisar um projeto antes de o orçamento ser comprometido, escrever a especificação, avaliar a proposta de terceiros, escolher entre alternativas, ou explicar depois do ocorrido por que algo falhou e o que deveria mudar.",
     "scopeOutTitle": "Não faz parte do escopo",
-    "scopeOutImpl": "Implantação e configuração. Reviso o que está planejado e audito o que foi construído, mas não sou as mãos que constroem.",
-    "scopeOutOncall": "Plantão, sobreaviso e responsabilidade operacional. Nada aqui me coloca em escala de plantão ou em cadeia de escalonamento.",
-    "scopeOutStaff": "Alocação de mão de obra. Isto não é um corpo para preencher uma vaga.",
     "offersTitle": "Onde eu agrego mais valor",
     "offerReviewTitle": "Revisão de projeto e arquitetura",
     "offerReviewBody": "Uma leitura independente de um projeto proposto, antes de ser construído e pago. O que ele pressupõe, onde vai sofrer, quanto vai custar para operar, e quais partes são decisões e não apenas padrões de fábrica.",
@@ -14852,10 +14852,18 @@
     "ctaButton": "Iniciar uma conversa",
     "offerArrangementTitle": "Sob combinação especial",
     "offerArrangementBody": "Presença sênior em tempo real, presencial ou remota, durante uma operação que não pode ser repetida: uma janela de migração, uma virada, um teste de contingência planejado.",
-    "scopeOutTrainingPre": "Treinamento e capacitação, em qualquer formato. Todo curso, workshop e trilha de certificação que ministro é entregue através da ",
-    "scopeOutTrainingPost": ".",
     "disclaimerTitle": "Antes de continuar a ler",
-    "disclaimerBody": "Trabalho em tempo integral para a Red Education. O trabalho de consultoria descrito nesta página é deliberadamente limitado em volume, e acontece fora das horas em que trabalho para eles. Se você precisa de treinamento, isso passa pela Red Education, e não por mim."
+    "disclaimerBody": "Trabalho em tempo integral para a Red Education. O trabalho de consultoria descrito nesta página é deliberadamente limitado em volume, e acontece fora das horas em que trabalho para eles. Se você precisa de treinamento, isso passa pela Red Education, e não por mim.",
+    "exclusion1Term": "Implantação e configuração",
+    "exclusion1Body": "Reviso o que está planejado e audito o que foi construído, mas não sou as mãos que constroem.",
+    "exclusion2Term": "Plantão, sobreaviso e responsabilidade operacional",
+    "exclusion2Body": "Nada aqui me coloca em escala de plantão ou em cadeia de escalonamento.",
+    "exclusion3Term": "Alocação de mão de obra",
+    "exclusion3Body": "Isto não é um corpo para preencher uma vaga.",
+    "exclusion4Term": "Treinamento e capacitação, em qualquer formato",
+    "exclusion4Body": "Todo curso, workshop e trilha de certificação que ministro é entregue através da Red Education.",
+    "offerSpeakingTitle": "Palestras",
+    "offerSpeakingBody": "Palestras em eventos e sessões internas sobre de onde veio esta indústria e como era estar dentro dela. Duas palestras prontas, e outros temas sob combinação."
   },
   "speaking": {
     "eyebrow": "Palestras",

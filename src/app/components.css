@@ -15291,8 +15291,8 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .advisory-exclusions {
   list-style: none;
   display: grid;
-  gap: 0.9rem;
-  margin-top: 0.75rem;
+  gap: 1.15rem;
+  margin-top: 1rem;
 }
 
 .advisory-exclusions > li {
@@ -15308,6 +15308,21 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   position: absolute;
   left: 0;
   color: var(--text-tertiary);
+}
+
+/* The term leads on its own line so the four exclusions can be SCANNED. The
+   previous version ran term and explanation together, which meant a reader had
+   to parse a full sentence to find out whether each line applied to them. */
+.advisory-exclusion-term {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.15rem;
+}
+
+.advisory-exclusion-body {
+  display: block;
+  color: var(--text-secondary);
 }
 
 /* Matches the footer credit exactly - .brand supplies the colour and weight,
@@ -15379,6 +15394,44 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    explicitly anyway, so that "unchanged" is a decision in the file rather than
    an absence somebody later reads as an oversight. */
 .site-nav-link.nav-quiet {
+  /* WEIGHT EQUALISED ACROSS ALL SIX ITEMS (PRIME 2026-08-06). The earlier
+     version used weight as a second channel because --accent-primary is red on
+     several of the twenty-three themes, and colour alone cannot separate the
+     groups there. PRIME's ruling is that boldness should be uniform and colour
+     should be the only difference - so all six now sit at 600 and the tiering
+     is carried by hue.
+
+     THE CONSEQUENCE, STATED: on matrix-red, swagger and web-reddit the primary
+     group and Training will read as one group rather than two. That is the
+     accepted trade for a bar that looks deliberate on the other twenty. */
   color: var(--text-secondary);
-  font-weight: 400;
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------------
+   RED EDUCATION, IN PROSE (PRIME 2026-08-06)
+   ---------------------------------------------------------------------------
+   Applied by <ReduBrand>, which wraps the name wherever it appears in a
+   translated string. Same #a8605f as the footer credit, the nav item and the
+   advisory exclusion list - a raw hex on purpose, because this is a partner's
+   brand colour and must not shift with any of the twenty-three themes. */
+.redu-brand {
+  color: #a8605f;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* The linked variant. Underlined only on hover: the name appears many times in
+   some paragraphs, and a permanent underline on each would shred the line. The
+   colour already signals that it is not ordinary text. */
+.redu-brand-link {
+  text-decoration: none;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.redu-brand-link:hover,
+.redu-brand-link:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: #a8605f;
+  text-underline-offset: 0.2em;
 }

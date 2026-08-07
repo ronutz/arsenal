@@ -67,7 +67,7 @@ export const ciscoProfile: VendorProfile = {
   ],
   markets: [
     "Cisco is the constant on every other page of this section: the rival Wellfleet held to 20 percent, the winner of the hub wars against Cabletron and SynOptics, Brocade's only SAN peer, the standard Nortel and Bay could not beat, and - per the DOJ's 2025 HPE-Juniper settlement - still, with HPE, more than 70 percent of US enterprise networking four decades on.",
-    "Rodolfo's chapter was Brasilia, 2003-2004: the government-sector front line in Brazil, in the narrow window between the post-bubble trough and the CRS-1's Guinness record - the giant relearning how to grow.",
+    "My chapter was Brasilia, 2003-2004: the government-sector front line in Brazil, in the narrow window between the post-bubble trough and the CRS-1's Guinness record - the giant relearning how to grow.",
   ],
   analyst: [
     "March 2000: a market capitalization above $500 billion made Cisco the most valuable company in the world - followed by an 80 percent fall by 2002, the era's defining round trip.",

@@ -37,6 +37,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 
+import ReduBrand from "@/components/ReduBrand";
 export async function generateMetadata({
   params,
 }: {
@@ -133,7 +134,7 @@ export default async function SpeakingPage({
           <section className="section">
             <div className="container section-narrow">
               <h2 className="section-title">{t("notTitle")}</h2>
-              <p className="section-body">{t("notBody")}</p>
+              <p className="section-body"><ReduBrand>{t("notBody")}</ReduBrand></p>
             </div>
           </section>
 

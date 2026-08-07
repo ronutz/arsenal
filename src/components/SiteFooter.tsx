@@ -66,15 +66,9 @@ export default async function SiteFooter() {
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           {/* The Blog: dated commentary, placed immediately after the guide per
               PRIME's ruling 2026-07-23, ahead of the glossary. */}
-          <Link href="/blog" className="footer-contribute-link">
-            {t("blog")}
-          </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           {/* The Glossary: a content destination alongside the guide, ahead of
               the participation + legal clusters. */}
-          <Link href="/glossary" className="footer-contribute-link">
-            {t("glossary")}
-          </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/contribute/tools" className="footer-contribute-link">
             {t("contributeTools")}

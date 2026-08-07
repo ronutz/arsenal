@@ -81,7 +81,7 @@ export const netscreenJuniperProfile: VendorProfile = {
   ],
   markets: [
     "Juniper turned core routing from a monopoly into a duopoly - 37 percent share by 2001 - then spent two decades expanding into edge, security, switching, and AI-driven enterprise networking, ending as the $13.4 billion centerpiece of HPE's networking ambitions in 2025.",
-    "Rodolfo's chapter was Brazil, 2009-2010: the EX and SRX enterprise wave, Junos as the one-OS pitch, and the NetScreen-descended security line - the same years the MX franchise built by Riverstone alumni carried the carrier business.",
+    "My chapter was Brazil, 2009-2010: the EX and SRX enterprise wave, Junos as the one-OS pitch, and the NetScreen-descended security line - the same years the MX franchise built by Riverstone alumni carried the carrier business.",
   ],
   analyst: [
     "The duopoly, by the numbers: Cisco above 90 percent of core routing in 1998; Juniper at 37 percent by 2001 - the fastest share shift the router market has seen.",

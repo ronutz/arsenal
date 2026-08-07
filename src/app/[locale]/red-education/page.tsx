@@ -52,6 +52,7 @@ import {
   externalRel,
 } from "@/config/redEducation";
 
+import ReduBrand from "@/components/ReduBrand";
 // Red Education's authorized-vendor list (proper nouns, rendered verbatim).
 // This is THEIR list; Rodolfo's own vendors are named separately below. Each
 // entry optionally links to that vendor's page on this site. Verified 2026-07-14
@@ -154,7 +155,7 @@ export default async function RedEducationPage({
           <section className="redu-hero">
             <div className="container redu-container">
               <p className="hero-eyebrow">{t("eyebrow")}</p>
-              <h1 className="page-hero-title">{t("title")}</h1>
+              <h1 className="page-hero-title"><ReduBrand linked={false}>{t("title")}</ReduBrand></h1>
               <p className="page-hero-lede">{t("lede")}</p>
             </div>
           </section>
@@ -165,7 +166,7 @@ export default async function RedEducationPage({
           <section className="section redu-cta-section">
             <div className="container redu-container">
               <h2 className="redu-section-title">{t("ctaTitle")}</h2>
-              <p className="redu-body">{t("ctaBody")}</p>
+              <p className="redu-body"><ReduBrand linked={false}>{t("ctaBody")}</ReduBrand></p>
               <div className="redu-cta-buttons">
                 <a
                   href={reduUrl}
@@ -186,7 +187,7 @@ export default async function RedEducationPage({
           <section className="section">
             <div className="container redu-container">
               <h2 className="redu-section-title">{t("whoTitle")}</h2>
-              <p className="redu-body">{t("whoBody1")}</p>
+              <p className="redu-body"><ReduBrand linked={false}>{t("whoBody1")}</ReduBrand></p>
               <p className="redu-body">{t("whoBody2")}</p>
             </div>
           </section>
@@ -200,7 +201,7 @@ export default async function RedEducationPage({
           <section className="section">
             <div className="container redu-container">
               <h2 className="redu-section-title">{t("dnaTitle")}</h2>
-              <p className="redu-body">{t("dnaIntro")}</p>
+              <p className="redu-body"><ReduBrand linked={false}>{t("dnaIntro")}</ReduBrand></p>
               <h3 className="redu-awards-title">{t("visionTitle")}</h3>
               <p className="redu-body">{t("visionBody1")}</p>
               <p className="redu-body">{t("visionBody2")}</p>
@@ -220,7 +221,7 @@ export default async function RedEducationPage({
           <section className="section">
             <div className="container redu-container">
               <h2 className="redu-section-title">{t("authTitle")}</h2>
-              <p className="redu-body">{t("authIntro")}</p>
+              <p className="redu-body"><ReduBrand linked={false}>{t("authIntro")}</ReduBrand></p>
               <ul className="redu-vendor-list">
                 {RED_EDUCATION_VENDORS.map((v) =>
                   v.href ? (
@@ -247,10 +248,10 @@ export default async function RedEducationPage({
           {/* Rodolfo at Red Education: HIS four vendors + verifiable proof. */}
           <section className="section">
             <div className="container redu-container">
-              <h2 className="redu-section-title">{t("rodolfoTitle")}</h2>
-              <p className="redu-body">{t("rodolfoBody")}</p>
+              <h2 className="redu-section-title"><ReduBrand linked={false}>{t("rodolfoTitle")}</ReduBrand></h2>
+              <p className="redu-body"><ReduBrand linked={false}>{t("rodolfoBody")}</ReduBrand></p>
               <p className="redu-body">
-                {t("caseStudyNote")}{" "}
+                <ReduBrand linked={false}>{t("caseStudyNote")}</ReduBrand>{" "}
                 <a
                   href={attributeRedEducationUrl(CASE_STUDY_URL, { pageType: "red-education", locale, cta: "case-study" })}
                   className="redu-inline-link"
@@ -276,7 +277,7 @@ export default async function RedEducationPage({
             <div className="container redu-container">
               <blockquote className="redu-tribute">
                 <h2 className="redu-tribute-title">{t("tributeTitle")}</h2>
-                <p className="redu-tribute-body">{t("tribute")}</p>
+                <p className="redu-tribute-body"><ReduBrand linked={false}>{t("tribute")}</ReduBrand></p>
                 <footer className="redu-tribute-sig">{t("tributeSignature")}</footer>
               </blockquote>
             </div>
@@ -286,7 +287,7 @@ export default async function RedEducationPage({
           <section className="section redu-cta-section">
             <div className="container redu-container">
               <h2 className="redu-section-title">{t("ctaTitle")}</h2>
-              <p className="redu-body">{t("ctaBody")}</p>
+              <p className="redu-body"><ReduBrand linked={false}>{t("ctaBody")}</ReduBrand></p>
               <div className="redu-cta-buttons">
                 <a
                   href={reduUrl}

@@ -23,6 +23,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { PLATFORMS, COURSE_COUNT } from "@/content/training/courses";
 
+import ReduBrand from "@/components/ReduBrand";
 export async function generateMetadata({
   params,
 }: {
@@ -136,7 +137,7 @@ export default async function TrainingLandingPage({
           <section className="section teach-credibility">
             <div className="container teach-container">
               <h2 className="teach-block-title">{t("s4Title")}</h2>
-              <p className="teach-block-body">{t("s4Body")}</p>
+              <p className="teach-block-body"><ReduBrand>{t("s4Body")}</ReduBrand></p>
             </div>
           </section>
 
@@ -170,70 +171,22 @@ export default async function TrainingLandingPage({
             <div className="container teach-container">
               <h2 className="teach-block-title">{t("envTitle")}</h2>
               <p className="teach-block-body">{t("envBody1")}</p>
-              <p className="teach-block-body">{t("envBody2")}</p>
+              <p className="teach-block-body"><ReduBrand>{t("envBody2")}</ReduBrand></p>
             </div>
           </section>
 
-          {/* Beyond the classroom (advisor/consultant implication) */}
-          <section className="section teach-advisor">
-            <div className="container teach-container">
-              <h2 className="teach-block-title">{t("s5Title")}</h2>
-              <p className="teach-block-body">{t("s5Body")}</p>
-            </div>
-          </section>
-
-          {/* Showcase destinations - about, credentials, endorsements.
-              PRIME 2026-07-27: these had been portal cards ABOVE the instructor
-              bio (their own earlier placement, 2026-07-24). At the top of the
-              page they steered a reader AWAY from the training material before
-              they had read any of it. Moved below "Beyond the classroom", where
-              a reader who has finished the page is ready to go somewhere else -
-              which is exactly when a pointer helps rather than distracts. */}
-          <section className="section">
-            <div className="container teach-container">
-            <div className="learn-portal-grid">
-              <Link
-                href="/about"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>
-                  RN
-                </span>
-                <p className="learn-portal-title">
-                  {t("instructor.about")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("instructor.aboutLede")}</p>
-              </Link>
-              <Link
-                href="/about/credentials"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>
-                  &#10003;
-                </span>
-                <p className="learn-portal-title">
-                  {t("instructor.certs")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("instructor.certsLede")}</p>
-              </Link>
-              <Link
-                href="/endorsements"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--color-success)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>
-                  &#8220;&#8221;
-                </span>
-                <p className="learn-portal-title">
-                  {t("instructor.endorsements")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("instructor.endorsementsLede")}</p>
-              </Link>
-            </div>
-            </div>
-          </section>
+          {/* "BEYOND THE CLASSROOM" DELETED, NOT MOVED (PRIME 2026-08-06
+              left the choice open).
+              Two reasons for deleting rather than relocating. First, /advisory
+              now says this properly and specifically - "the experience behind
+              it is available to teams that need more than a course" is a
+              vaguer version of a page that already exists, and running both
+              would be two claims about one offer. Second, and more
+              importantly, IT CONTRADICTS THAT PAGE: /advisory opens by stating
+              the work is deliberately limited and happens outside Red
+              Education hours, while this section implied open availability for
+              "the hard problems that do not fit a syllabus".
+              Advisory is in the primary nav, which is the door. */}
 
           {/* --- WHERE TO GO NEXT (PRIME 2026-08-06) ---
                Navigation cards in the /learn idiom, placed after the instructor
@@ -293,6 +246,69 @@ export default async function TrainingLandingPage({
                   </p>
                   <p className="learn-portal-lede">{t("navToolsLede")}</p>
                 </Link>
+
+                {/* GLOSSARY (PRIME 2026-08-06). A course leaves people with
+                    vocabulary they half-remember; this is where they check it
+                    afterwards, which makes it a training destination rather
+                    than a reference curiosity. */}
+                <Link
+                  href="/glossary"
+                  className="learn-portal-card"
+                  style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    &#9679;
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("navGlossary")} <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("navGlossaryLede")}</p>
+                </Link>
+
+                {/* About / Credentials / Endorsements MOVED IN from their own
+                    section below (PRIME 2026-08-06). They were a second card
+                    grid doing the same job a few hundred pixels further down;
+                    one grid of seven doors reads as a map, two grids of three
+                    and four read as indecision. */}
+                <Link
+                href="/about"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>
+                  RN
+                </span>
+                <p className="learn-portal-title">
+                  {t("instructor.about")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("instructor.aboutLede")}</p>
+              </Link>
+                <Link
+                href="/about/credentials"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>
+                  &#10003;
+                </span>
+                <p className="learn-portal-title">
+                  {t("instructor.certs")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("instructor.certsLede")}</p>
+              </Link>
+                <Link
+                href="/endorsements"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-success)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>
+                  &#8220;&#8221;
+                </span>
+                <p className="learn-portal-title">
+                  {t("instructor.endorsements")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("instructor.endorsementsLede")}</p>
+              </Link>
               </div>
             </div>
           </section>
@@ -311,7 +327,7 @@ export default async function TrainingLandingPage({
                   <h2 className="teach-block-title">{t("historyTitle")}</h2>
                   <p className="teach-block-body">{t("historyBody")}</p>
                 </div>
-                <Link href="/industry/history" className="btn btn-secondary teach-history-btn">
+                <Link href="/about" className="btn btn-secondary teach-history-btn">
                   {t("historyCta")} →
                 </Link>
               </div>
@@ -335,7 +351,13 @@ export default async function TrainingLandingPage({
                   (PRIME 2026-07-09): the ATC these courses are booked through. */}
               <p className="teach-redu-link-row">
                 <Link href="/red-education" className="redu-inline-link">
-                  {tRedu("aboutLink")} <span aria-hidden="true">&#8594;</span>
+                  {/* linked={false} because this text is ALREADY inside a Link to
+                      /red-education. Wrapping it would nest an anchor inside an
+                      anchor, which is invalid HTML and which browsers recover
+                      from inconsistently. The enclosing link does the
+                      navigation; ReduBrand does only the colour. */}
+                  <ReduBrand linked={false}>{tRedu("aboutLink")}</ReduBrand>{" "}
+                  <span aria-hidden="true">&#8594;</span>
                 </Link>
               </p>
             </div>

@@ -4,23 +4,23 @@
 // English is the source language, so its coverage is 1 by definition.
 
 export const LOCALE_COVERAGE: Record<string, number> = {
-  "da": 0.1208,
-  "de": 0.1221,
+  "da": 0.1206,
+  "de": 0.1218,
   "en": 1,
-  "es": 0.1221,
-  "fil": 0.1208,
-  "fr": 0.1235,
-  "it": 0.1235,
-  "ms": 0.1208,
-  "nb": 0.1208,
-  "nl": 0.1235,
-  "pl": 0.1208,
+  "es": 0.1218,
+  "fil": 0.1206,
+  "fr": 0.1232,
+  "it": 0.1232,
+  "ms": 0.1206,
+  "nb": 0.1206,
+  "nl": 0.1232,
+  "pl": 0.1206,
   "pt-BR": 0.9961,
-  "ru": 0.1208,
-  "sv": 0.1208,
-  "tr": 0.1208,
-  "zh-Hans": 0.1208,
+  "ru": 0.1206,
+  "sv": 0.1206,
+  "tr": 0.1206,
+  "zh-Hans": 0.1206,
 };
 
 /** English keys counted at generation time (the denominator). */
-export const LOCALE_COVERAGE_DENOMINATOR = 10253;
+export const LOCALE_COVERAGE_DENOMINATOR = 10261;

@@ -122,6 +122,10 @@ export default function Testimonials() {
       </div>
 
       <ul className="tm-list">
+        {/* repliedLabel is NOT brand-wrapped: it is typed `string` and passed
+            down to TestimonialCard, so an element cannot go there. Styling it
+            would mean widening that prop to ReactNode and threading it through
+            a shared component for one word of colour. Left plain on purpose. */}
         {filtered.map((x) => (
           <TestimonialCard
             key={x.id}

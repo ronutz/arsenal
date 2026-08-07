@@ -21,6 +21,7 @@ import {
   testimonialSourceCounts,
 } from "@/content/testimonials/data";
 
+import ReduBrand from "@/components/ReduBrand";
 // Dev-only reminder that machine translations need review. Renders nothing in
 // production, so visitors never see it; the public-facing per-card disclaimer
 // is the only translation caveat that ships.
@@ -75,7 +76,7 @@ export default async function EndorsementsPage({
               {t("intro", { count: TESTIMONIAL_COUNT })}
             </p>
             <p className="section-body" style={{ fontSize: "0.9rem", color: "var(--text-tertiary)" }}>
-              {t("provenance")}
+              <ReduBrand>{t("provenance")}</ReduBrand>
             </p>
 
             <ReviewReminder count={MACHINE_TRANSLATED_COUNT} />

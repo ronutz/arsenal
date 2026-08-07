@@ -40,6 +40,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 
+import ReduBrand from "@/components/ReduBrand";
 export async function generateMetadata({
   params,
 }: {
@@ -77,6 +78,9 @@ export default async function AdvisoryPage({
     // is, without the separate section implying it is a different class of
     // thing that needs explaining.
     { key: "offerArrangement" },
+    // Speaking, added 2026-08-06: it is a paid engagement like the others and
+    // was reachable only from the nav-less /speaking page.
+    { key: "offerSpeaking" },
   ] as const;
 
   return (
@@ -102,7 +106,7 @@ export default async function AdvisoryPage({
             <div className="container section-narrow">
               <div className="vendor-note">
                 <p className="vendor-note-title">{t("disclaimerTitle")}</p>
-                <p className="vendor-note-body">{t("disclaimerBody")}</p>
+                <p className="vendor-note-body"><ReduBrand>{t("disclaimerBody")}</ReduBrand></p>
               </div>
             </div>
           </section>
@@ -135,22 +139,23 @@ export default async function AdvisoryPage({
 
               <h3 className="vendor-note-title">{t("scopeOutTitle")}</h3>
               <ul className="advisory-exclusions">
-                <li>{t("scopeOutImpl")}</li>
-                <li>{t("scopeOutOncall")}</li>
-                <li>{t("scopeOutStaff")}</li>
-                {/* Training is listed last and stated in full: every course
-                    goes through Red Education. This is the one exclusion that
-                    redirects rather than simply declines. */}
-                {/* "Red Education" is a link styled like the footer credit -
-                    same brand colour, same weight, same no-wrap - so the one
-                    place this page names an employer looks deliberate rather
-                    than like stray bold text. */}
-                <li>
-                  {t("scopeOutTrainingPre")}
-                  <Link href="/red-education" className="advisory-redu-link">
-                    <span className="brand">Red Education</span>
-                  </Link>{t("scopeOutTrainingPost")}
-                </li>
+                {/* Each exclusion is a TERM and an EXPLANATION, which is how the
+                    copy was always written - it was previously rendered as one
+                    undifferentiated run of prose per line, so four long
+                    sentences sat under a heading with nothing to scan. The term
+                    now leads on its own line and the explanation follows, which
+                    is the difference between a list somebody reads and a list
+                    somebody skips. */}
+                {[1, 2, 3, 4].map((n) => (
+                  <li key={n}>
+                    <span className="advisory-exclusion-term">
+                      {t(`exclusion${n}Term`)}
+                    </span>
+                    <span className="advisory-exclusion-body">
+                      <ReduBrand>{t(`exclusion${n}Body`)}</ReduBrand>
+                    </span>
+                  </li>
+                ))}
               </ul>
             </div>
           </section>

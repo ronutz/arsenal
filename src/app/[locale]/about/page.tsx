@@ -22,6 +22,7 @@
 // This is a server component (static). The GAP banner is dev-only.
 // ============================================================================
 
+import type { CSSProperties } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
@@ -62,6 +63,13 @@ export async function generateMetadata({
   return { ...ogImages("page", "about", locale, alt) };
 }
 
+/** The three era chapters, now living under /about. */
+const ERAS = [
+  { slug: "pre-1996", key: "pre1996" },
+  { slug: "1996-2020", key: "era19962020" },
+  { slug: "2020-present", key: "era2020present" },
+] as const;
+
 export default async function AboutPage({
   params,
 }: {
@@ -71,6 +79,9 @@ export default async function AboutPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("about");
+  // The era copy keeps its own namespace: the strings did not move, only the
+  // pages that render them.
+  const tHistory = await getTranslations("history");
   const tNav = await getTranslations("nav");
 
   return (
@@ -261,47 +272,112 @@ export default async function AboutPage({
               </li>
             </ol>
 
+            {/* --- THE HISTORY (moved here from /industry/history, PRIME
+                 2026-08-06) ---
+                 The index page is deleted and its contents live here, which
+                 removes a page that existed only to introduce three others.
+                 The three era pages moved with it, to /about/<slug>.
+
+                 Rendered with the ORIGINAL history-era-* classes rather than
+                 restyled: PRIME asked for the cards "just like" the page they
+                 came from, and the stylesheet already held every class they
+                 need. */}
+            <h2 className="section-title" style={{ marginTop: "3rem" }}>
+              {t("historySectionTitle")}
+            </h2>
+            <p className="section-body">{tHistory("indexLede")}</p>
+
+            <ol className="history-eras">
+              {ERAS.map((era, i) => (
+                <li key={era.slug}>
+                  <Link href={`/about/${era.slug}`} className="history-era-card">
+                    <span className="history-era-num mono">
+                      {tHistory("eraLabel")} {i + 1}
+                    </span>
+                    <span className="history-era-years mono">
+                      {tHistory(`${era.key}.years`)}
+                    </span>
+                    <span className="history-era-title">
+                      {tHistory(`${era.key}.title`)}
+                    </span>
+                    <span className="history-era-subtitle">
+                      {tHistory(`${era.key}.subtitle`)}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+
             {/* Four cards where three buttons used to be (PRIME 2026-07-27).
                 Certifications and endorsements moved down from the top of the
                 page to join them: they are where a reader goes AFTER the career
                 timeline, not before it. The vendor-lineage link is gone - it
                 belongs on the vendor hubs, which is where it now lives. */}
-            <div className="about-cred-grid" style={{ marginTop: "2rem" }}>
-              <Link href="/industry/history" className="about-cred-card">
-                <span className="about-cred-eyebrow">{t("credibility.historyEyebrow")}</span>
-                <span className="about-cred-title">{t("credibility.historyTitle")}</span>
-                <span className="about-cred-desc">{t("credibility.historyDesc")}</span>
-                <span className="about-cred-cta">
-                  {t("credibility.historyCta")}
-                  <span aria-hidden="true"> →</span>
-                </span>
+            <div className="learn-portal-grid" style={{ marginTop: "2rem" }}>
+              {/* RESTYLED into the learn-portal idiom (PRIME 2026-08-06), which
+                  is the vocabulary the homepage, Learn and Training already use
+                  for "where to go next". Four cards where there were four, one
+                  of them replaced: the history card is gone because the history
+                  is now a section above, and Courses takes its place because a
+                  reader who has just read a career record is the most likely
+                  person on this site to want the catalogue. */}
+              <Link
+                href="/industry/chapters"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
+                <p className="learn-portal-title">
+                  {t("credibility.recordTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("credibility.recordDesc")}</p>
               </Link>
-              <Link href="/industry/chapters" className="about-cred-card">
-                <span className="about-cred-eyebrow">{t("credibility.recordEyebrow")}</span>
-                <span className="about-cred-title">{t("credibility.recordTitle")}</span>
-                <span className="about-cred-desc">{t("credibility.recordDesc")}</span>
-                <span className="about-cred-cta">
-                  {t("credibility.recordCta")}
-                  <span aria-hidden="true"> →</span>
-                </span>
+              <Link
+                href="/about/credentials"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#10003;</span>
+                <p className="learn-portal-title">
+                  {t("credibility.certsTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("credibility.certsDesc")}</p>
               </Link>
-              <Link href="/about/credentials" className="about-cred-card">
-                <span className="about-cred-eyebrow">{t("credibility.certsEyebrow")}</span>
-                <span className="about-cred-title">{t("credibility.certsTitle")}</span>
-                <span className="about-cred-desc">{t("credibility.certsDesc")}</span>
-                <span className="about-cred-cta">
-                  {t("credibility.certsCta")}
-                  <span aria-hidden="true"> →</span>
-                </span>
+              <Link
+                href="/endorsements"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-success)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#8220;&#8221;</span>
+                <p className="learn-portal-title">
+                  {t("credibility.endorsementsTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("credibility.endorsementsDesc")}</p>
               </Link>
-              <Link href="/endorsements" className="about-cred-card">
-                <span className="about-cred-eyebrow">{t("credibility.endorsementsEyebrow")}</span>
-                <span className="about-cred-title">{t("credibility.endorsementsTitle")}</span>
-                <span className="about-cred-desc">{t("credibility.endorsementsDesc")}</span>
-                <span className="about-cred-cta">
-                  {t("credibility.endorsementsCta")}
-                  <span aria-hidden="true"> →</span>
-                </span>
+              <Link
+                href="/training#catalog"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
+                <p className="learn-portal-title">
+                  {t("credibility.coursesTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("credibility.coursesDesc")}</p>
+              </Link>
+              {/* BLOG (PRIME 2026-08-06), moved out of the footer where it was
+                  one link among fifteen. On this page it sits beside the other
+                  things somebody reads after the career record. */}
+              <Link
+                href="/blog"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#9671;</span>
+                <p className="learn-portal-title">
+                  {t("credibility.blogTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("credibility.blogDesc")}</p>
               </Link>
             </div>
           </div>
