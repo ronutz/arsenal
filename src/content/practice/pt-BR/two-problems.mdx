@@ -1,0 +1,93 @@
+---
+slug: two-problems
+title: "Quando são dois problemas"
+thesis: "Quase toda técnica do repertório pressupõe uma causa única, e nenhuma delas avisa quando essa premissa deixa de valer. Duas falhas simultâneas não produzem resultados aleatórios — produzem resultados parciais, e ler resposta parcial como assinatura, e não como ruído, é a maior parte da habilidade."
+stance: practised
+part: yield
+order: 17
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["bisection", "the-assumption-you-cannot-see", "reproducing-the-irreproducible"]
+artefact: "A checagem do resíduo — o que a sua melhor hipótese ainda não explica"
+updated: "2026-08-08"
+---
+
+## A correção que ajudou
+
+Você fez uma mudança e a taxa de erro caiu dois terços. O gráfico se mexeu, o telefone parou de tocar com a mesma frequência, e alguém disse a palavra *"progresso"*.
+
+É progresso, e é também o momento mais confiável para uma investigação sair do trilho, porque a partir daqui duas situações completamente diferentes têm a mesma aparência. Ou a sua correção foi parcialmente eficaz contra uma causa, ou foi totalmente eficaz contra uma de duas causas.
+
+**As duas exigem passos seguintes opostos.** A primeira diz para continuar empurrando a mesma teoria. A segunda diz para parar, porque a teoria que você está empurrando já entregou tudo o que tinha para entregar.
+
+## Resposta parcial é assinatura, não ruído
+
+O instinto é tratar resultado inconsistente como ruído de medição, reprodução instável ou alguém reportando errado. Às vezes é isso mesmo.
+
+Mas duas falhas simultâneas não produzem comportamento aleatório. **Produzem comportamento parcialmente responsivo a tudo que você tenta**, e esse é um formato específico e reconhecível:
+
+- Uma correção que melhora os números sem eliminar o sintoma
+- Uma reprodução que funciona umas vezes sim, outras não, sem nenhuma variável encontrável que preveja qual
+- Uma descrição de escopo que se contradiz — *todo mundo* é afetado, e ao mesmo tempo só este cliente apresenta
+- Uma linha do tempo com dois inícios que ninguém separou, porque o segundo estava dentro do ruído do primeiro
+
+Nenhum desses é prova. Todos merecem um pensamento explícito, e o pensamento leva dez segundos: **isso pode ser duas coisas?**
+
+## Por que o método esconde isso
+
+Não é falha de atenção. Está embutido nas técnicas.
+
+A [bisseção](/practice/bisection) funciona partindo o sistema e perguntando qual metade se comporta mal. Com duas falhas em lados opostos do corte, as duas metades se comportam mal, e a técnica devolve a única coisa que não pode significar.
+
+A eliminação funciona removendo candidatos até sobrar um. Com duas causas, remover a primeira causa verdadeira não limpa o sintoma, então ela volta para a pilha marcada como *"testado, não é"* — e agora a causa real foi descartada por escrito.
+
+Mudar uma coisa de cada vez funciona atribuindo cada variação à mudança que a precedeu. Com duas falhas, as variações são parciais e as atribuições ficam erradas de um jeito que se mantém internamente coerente por horas.
+
+**Cada técnica é sólida. Cada uma carrega a mesma premissa não declarada. Nenhuma levanta a mão quando a premissa deixa de valer** — que é o problema geral da [suposição que você não enxerga](/practice/the-assumption-you-cannot-see), no lugar específico em que ele custa mais tempo.
+
+O [construtor de hipóteses de falha](/tools/fault-hypothesis-builder) deste site herda a mesma premissa, e com honestidade: ele ordena causas candidatas, e uma delas deveria ser a resposta. Ele avisa quando os sinais de escopo se contradizem — *todos afetados* junto com indicadores locais do cliente — e manda reconferir o escopo antes de gastar mais esforço. **Esse é o primeiro movimento certo, e costuma estar certo.** Mas se o escopo sobrevive à reconferência e a contradição continua lá, ela não era erro de relato. Era o formato de duas falhas.
+
+## Preste contas de toda observação, não das melhores
+
+A única técnica que encontra isso de forma confiável: pare de perguntar qual hipótese é mais provável e comece a perguntar **o que a hipótese principal não explica.**
+
+Escreva as observações em lista. Pegue a sua melhor teoria. Percorra a lista marcando cada item como *explicado* ou *não explicado por isto*. O resíduo é a parte interessante, e a disciplina é recusar-se a arredondá-lo.
+
+Uma observação que não encaixa costuma ser descartada com uma frase de um repertório pequeno — *aquilo provavelmente não tinha relação*, *aquele usuário devia estar no cliente antigo*, *aquele pico era o backup*. Cada uma pode ser verdade. Cada uma é também exatamente com o que a segunda falha se parece, vista de dentro da primeira investigação. **Diga o descarte em voz alta, porque um resíduo explicado por um palpite é um resíduo que você manteve.**
+
+Se a sua melhor teoria explica seis de oito observações e as duas sobras não têm nada em comum entre si, você tem um problema e algum ruído. Se as duas sobras têm algo em comum *uma com a outra*, você tem dois problemas, e o segundo já tem forma.
+
+## Por que isso acontece mais do que deveria
+
+**Incidentes fabricam as próprias segundas falhas.** Sob pressão, as pessoas aplicam contornos: aumentam um timeout, desligam uma verificação de saúde, forçam um failover, reiniciam por agendamento. Cada um é uma mudança no sistema feita sem janela, e alguns continuam lá uma semana depois. O incidente vira a própria causa.
+
+**Janelas de mudança agrupam.** Dez mudanças entram no sábado. Duas são ruins. A premissa de causa única sobrevive ao contato com os sintomas de segunda-feira por um tempo surpreendente.
+
+**E a que vale conhecer**: uma falha latente antiga, inofensiva por um ano porque outra coisa a absorvia. Uma retentativa que sempre dava certo na segunda tentativa. Uma fila que nunca enchia porque a vazão nunca chegava lá. A falha nova não causa a antiga — **ela consome a folga que escondia a antiga.** Duas coisas então parecem quebrar ao mesmo tempo, e só uma delas é nova. A outra está em produção desde um projeto em que ninguém na sala trabalhou.
+
+## Como separar as duas
+
+**Corrija uma e confirme que o resíduo continua igual.** Não menor — igual em natureza. Se a sua primeira correção removeu uma causa, o sintoma restante deve manter a forma e perder o volume. Se o sintoma restante mudou de caráter, talvez você esteja no terceiro problema.
+
+**Particione em vez de iterar.** Separe por população, por caminho, por horário. Duas falhas costumam ter partições diferentes, e achar uma partição em que só uma delas dispara dá um ambiente limpo para trabalhar — o mais próximo de um laboratório que você não recebeu.
+
+**Aceite série em vez de paralelo.** A segunda falha é frequentemente invisível até a primeira sumir. Isso não é falha da sua investigação; é propriedade do sistema. Planeje um segundo ciclo em vez de prometer uma causa raiz única, e diga isso cedo o bastante para ser previsão e não desculpa.
+
+## A parte que não é técnica
+
+A sala quer o incidente encerrado depois da primeira correção, e *"melhorou"* é lido como *"resolvido"* num relatório de status, num nível da organização onde ninguém enxerga o resíduo.
+
+Seja específico por escrito. **"A taxa de erro caiu de 9% para 3% depois da mudança no pool de conexões. Os 3% restantes têm perfil diferente — concentram-se em dois sites de filial e não acompanham a carga, então acredito ser uma segunda falha, sem relação, e estou tratando como tal."** Essa frase compra o segundo ciclo, e sobrevive a ser encaminhada para quem vai ler só a primeira linha.
+
+## A checagem do resíduo
+
+No ponto em que uma correção ajudou e o sintoma permanece:
+
+- O que exatamente a correção mudou, e em que magnitude?
+- O sintoma restante manteve a forma, ou mudou de caráter?
+- Liste toda observação. Quais são explicadas pela teoria atual?
+- Para cada não explicada, qual descarte estou usando — e eu o escreveria?
+- As observações não explicadas têm algo em comum entre si?
+- Existe uma partição — usuários, caminho, horário — em que só uma das duas dispara?
+- Alguma coisa mudada durante o incidente continua no ar?

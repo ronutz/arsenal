@@ -7043,6 +7043,8 @@
     "envBody2": "Hands-on labs are delivered through Red Education's lab infrastructure, and through platforms such as CloudShare, Skytap, ReadyTech Axis, and Amazon WorkSpaces - whichever the official lab environment for each course is.",
     "navTitle": "Where to go next",
     "navLede": "The course catalogue, the certifications these courses prepare for, and the free material you can read before deciding anything.",
+    "navCatalog": "The course catalogue",
+    "navCatalogLede": "The four platforms I am authorized to teach, and the courses under each. Start here if you already know what you need.",
     "navCerts": "Certification guides",
     "navCertsLede": "What each exam actually tests, and what to study for it. Free, and useful whether or not you book a course.",
     "navLearn": "Learn",
@@ -15070,6 +15072,7 @@
     "stanceIntro": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything. So every article declares which it is, and the marker sits above the text rather than below it.",
     "stanceWhy": "The reason is simple: a corpus this size, published under one name, would otherwise imply first-hand experience of every subject in it. That would not be true, and a site whose tools compute rather than guess should not make claims it cannot support.",
     "stance": {
+      "count": "{n, plural, =0 {no articles yet} one {# article} other {# articles}}",
       "practised": {
         "label": "Practised",
         "note": "Work done repeatedly, in production, by the author."
@@ -15118,9 +15121,7 @@
     "artefactLabel": "Take away",
     "readNext": "Read next",
     "relatedAria": "Related articles in The Practice",
-    "backToIndex": "All of The Practice",
-    "progressTitle": "Where this has got to",
-    "progressBody": "{published} of a planned {planned} articles are published. The corpus is written a part at a time and finished rather than sketched, so an empty part below means it has not been started, not that it was forgotten."
+    "backToIndex": "All of The Practice"
   },
   "contributeTools": {
     "translationsTitle": "Improve the translations",

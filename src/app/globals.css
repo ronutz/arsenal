@@ -19,6 +19,13 @@
 
 
 :root {
+  /* Offset for in-page anchors on index pages: the sticky site header (4rem)
+     plus the sticky .nav-utility-bar beneath it, plus air. Declared once so the
+     anchor targets and .category-section cannot drift apart - they are the same
+     fact. (PRIME 2026-08-08: the /learn #articles heading was landing under the
+     filter bar because its anchor carried a smaller, separately-typed value.) */
+  --sticky-anchor-offset: 9.5rem;
+
   /* RED EDUCATION BRAND COLOUR (PRIME 2026-08-06).
      A partner's brand colour, so it does not follow the theme - EXCEPT on the
      six themes whose own accent is already red, where an unchanged #a8605f

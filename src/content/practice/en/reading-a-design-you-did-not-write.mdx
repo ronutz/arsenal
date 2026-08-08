@@ -1,0 +1,100 @@
+---
+slug: reading-a-design-you-did-not-write
+title: "Reading a design you did not write"
+thesis: "You will spend more of your career inside systems somebody else designed than inside ones you designed, and the first act is not to judge the design but to recover the constraints it was answering. Most of what looks wrong is a decision whose reason has left the building — and the parts that are genuinely wrong are indistinguishable from those until you can tell the difference."
+stance: practised
+part: before
+order: 1
+roles: ["second-line", "field", "design"]
+relatedTools: ["exos-config-explainer", "fortios-config-diff-explainer", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["layer-by-layer", "the-assumption-you-cannot-see", "verifying-without-trusting"]
+artefact: "The newcomer's question list — written in week one, because it expires"
+updated: "2026-08-08"
+---
+
+## The system arrives without its reasons
+
+You inherit a network, a platform, an estate. What you receive is the current state: configurations, a diagram of uncertain age, some tickets, and two or three people who know things they have never had cause to write down.
+
+What you do not receive is **why any of it is the way it is**. The outage that produced that timeout value, the auditor who required that segment, the vendor limitation that has since been fixed, the project that was cancelled halfway and left its addressing behind — all of that was real, and none of it is in the config.
+
+**The design is the residue of constraints, and the constraints are gone.** What remains looks like a set of choices somebody made freely, which is almost never what it was.
+
+The reflex on arrival is to evaluate: this is fine, that is wrong, this is what I would have done. That reflex is not useless, but it is premature, and acting on it early is how a competent engineer becomes the person who broke something that had been quietly load-bearing for six years.
+
+## Three things that look identical in a configuration
+
+Every estate contains all three, and they are visually indistinguishable:
+
+**A decision.** Somebody understood the trade-off and chose. The reason may no longer apply, but it was a reason.
+
+**An accident.** A default nobody changed, a copy-paste from a device with a different role, a value typed once and propagated by template. It never had a reason, and it has been in production for years without causing harm — which is not the same as being correct.
+
+**An accretion.** A decision that was right, then repeatedly extended by people who assumed the original was deliberate. This is the most expensive kind, because each layer is locally sensible and the stack is collectively indefensible. Nobody made this. It happened.
+
+You cannot fix an accretion by arguing with any single layer of it, and you cannot safely remove an accident until you have established it is not a decision. **Sorting one from another is most of the work, and it is done by asking rather than by reading.**
+
+## The running configuration is the design; the document is a claim about it
+
+Take the diagram seriously as evidence of intent and never as evidence of state. It was accurate on a date, and the date is not written on it.
+
+The running configuration is the only artefact that is definitionally current — it is what the device is doing. Read it as the primary source and treat everything else as testimony, in the sense of [verifying without trusting](/practice/verifying-without-trusting): useful, motivated, and not to be confused with the thing itself.
+
+Where a document and a device disagree, you have learned something more valuable than either: **you have found the point where the estate stopped being maintained as designed**, and that point usually has a date and a story attached to it.
+
+## Dating the layers
+
+Configurations have strata, and you can read them.
+
+Naming conventions change when teams change. Cipher suites and key lengths date themselves precisely. A block of rules with a different comment style, a different indentation, a different idea of what a description field is for — that is a different author, and usually a different year.
+
+This is not archaeology for its own sake. **Knowing roughly when a thing was added tells you which constraints were live at the time**, and that is exactly the information the config is missing. A rule written the year of an audit means something different from the same rule written during a migration.
+
+## The question that gets an answer
+
+*"Why is this here?"* asked plainly, of the person who built it, is the highest-yield question available to you, and it fails constantly because of how it lands. To the person who made the decision, it is heard as *"why did you do this?"* — and defensiveness produces retrospective justification, which is worse than silence because it sounds like the reason.
+
+What works better is asking for the situation rather than the rationale. *"What was going on when this went in?"* invites a story instead of a defence, and stories carry the constraints: the deadline, the incident, the auditor, the thing that was only supposed to be temporary.
+
+The other reliable form is to state your understanding and let them correct it. People who will not answer an open question will readily fix a wrong one.
+
+## What reading cannot tell you
+
+Some things are simply not in the artefacts, and knowing which ones saves you from concluding they do not exist:
+
+- **What is load-bearing.** The config does not say which of these things something else depends on.
+- **What has already been tried.** The elegant approach you are about to propose may have been attempted twice.
+- **What is politically fixed.** A technically arbitrary decision can be organisationally immovable, and no amount of reading reveals that.
+- **What is about to change.** A design that looks odd may be halfway through a migration whose second half is funded.
+
+These are the questions that go on the list below rather than into a change proposal.
+
+## Read for blast radius before you read for quality
+
+The useful first pass is not *is this good* but **what happens to this estate if this element stops working** — which things share it, which paths traverse it, which failure would be quiet.
+
+That ordering matters because it front-loads the knowledge that protects you and the estate. You can defer an opinion about a design's elegance indefinitely. You cannot defer knowing that the box you were about to reboot is the one carrying the out-of-band management path.
+
+## When it really is wrong
+
+Eventually some of it is genuinely wrong — not misunderstood, not constrained, wrong. The signal is that you can state the failure mode concretely and nobody can supply a constraint that explains it.
+
+At that point the case is made in terms of consequence rather than taste: what fails, under what conditions, with what impact. *"This is not how I would have built it"* is not an argument, and it is the sentence most likely to end the conversation you need.
+
+And the honest half: **a system running in production is evidence.** It has survived conditions you have not seen yet. That is not proof it is right, but it is a fact about it that your reasoning does not have, and it deserves to be weighed rather than dismissed.
+
+## Write down your ignorance while you still have it
+
+The artefact, and the reason to do it in the first fortnight:
+
+**Your questions are a perishable asset.** In week one you can see everything that is strange, because none of it is normal to you yet. Within a month you will have acclimatised, stopped noticing, and become one more person who cannot say why it is like that. The list you write now is the only version of it that will ever exist.
+
+- What surprised me, and what I expected instead
+- Which elements did I assume were deliberate, and on what evidence?
+- Where do the document and the device disagree, and how old is the gap?
+- What did somebody tell me that I have not verified?
+- What is here that nobody has been able to explain?
+- Which single element, if it stopped, would take the most with it?
+
+Date it. Review it in three months, when you know enough to answer some of it and have forgotten why you asked the rest.

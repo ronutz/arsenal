@@ -123,21 +123,13 @@ export default async function TrainingLandingPage({
           <section className="section">
             <div className="container teach-container">
               <div className="teach-blocks">
-                {["s1", "s2", "s3"].map((s) => (
+                {["s1"].map((s) => (
                   <div className="teach-block" key={s}>
                     <h2 className="teach-block-title">{t(`${s}Title`)}</h2>
                     <p className="teach-block-body">{t(`${s}Body`)}</p>
                   </div>
                 ))}
               </div>
-            </div>
-          </section>
-
-          {/* Credibility */}
-          <section className="section teach-credibility">
-            <div className="container teach-container">
-              <h2 className="teach-block-title">{t("s4Title")}</h2>
-              <p className="teach-block-body"><ReduBrand>{t("s4Body")}</ReduBrand></p>
             </div>
           </section>
 
@@ -175,6 +167,33 @@ export default async function TrainingLandingPage({
             </div>
           </section>
 
+          {/* MOVED HERE 2026-08-08 (PRIME): "Complex made clear",
+              "Hands-on, not hand-wavy" and "Recognized, certified, and current"
+              now sit AFTER the environments section and BEFORE "Where to go
+              next". "Why this matters in a classroom" (s1) deliberately stays
+              up top, where it introduces the page. */}
+          <section className="section">
+            <div className="container teach-container">
+              <div className="teach-blocks">
+                {["s2", "s3"].map((s) => (
+                  <div className="teach-block" key={s}>
+                    <h2 className="teach-block-title">{t(`${s}Title`)}</h2>
+                    <p className="teach-block-body">{t(`${s}Body`)}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Credibility */}
+          <section className="section teach-credibility">
+            <div className="container teach-container">
+              <h2 className="teach-block-title">{t("s4Title")}</h2>
+              <p className="teach-block-body"><ReduBrand>{t("s4Body")}</ReduBrand></p>
+            </div>
+          </section>
+
+
           {/* "BEYOND THE CLASSROOM" DELETED, NOT MOVED (PRIME 2026-08-06
               left the choice open).
               Two reasons for deleting rather than relocating. First, /advisory
@@ -207,6 +226,24 @@ export default async function TrainingLandingPage({
               <h2 className="teach-block-title">{t("navTitle")}</h2>
               <p className="teach-block-body">{t("navLede")}</p>
               <div className="learn-portal-grid">
+                {/* The catalogue leads and takes the row on its own (PRIME
+                    2026-08-08): it is what this page is for, and the cards
+                    below it are the free material for readers not ready to
+                    book. Jumps to the #catalog section on this page, so the
+                    arrow points UP rather than across. */}
+                <a
+                  href="#catalog"
+                  className="learn-portal-card learn-portal-card-lead"
+                  style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    &#9632;
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("navCatalog")} <span className="learn-portal-arrow">&#8593;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("navCatalogLede")}</p>
+                </a>
                 <Link
                   href="/certifications"
                   className="learn-portal-card"

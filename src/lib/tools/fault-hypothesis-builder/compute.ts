@@ -105,7 +105,42 @@ export interface FhbResult {
   /** Every rule that fired, in registry order - the "Why this result?" feed. */
   firedRuleIds: string[];
   presetUsed: PresetId;
+  /**
+   * RESIDUAL (PRIME ratified 2026-08-08) - the observations the leading
+   * hypothesis does NOT account for. See the Practice article "when it is two
+   * problems": every technique here assumes a single cause, and none of them
+   * announce it. This is the one output that can.
+   */
+  residual: Residual;
   artifact: ExportArtifact;
+}
+
+/** One reported observation that contributed nothing to the leading hypothesis. */
+export interface ResidualObservation {
+  /** Which input field it came from. */
+  field: "changed" | "clues";
+  /** The enum value the user selected. */
+  value: string;
+  /**
+   * Hypotheses this observation DOES support, if any, discovered by ablation.
+   * Empty means the engine has no rule for it at all - which is a statement
+   * about the rule set, not about the observation.
+   */
+  supportsInstead: string[];
+}
+
+export interface Residual {
+  /** The hypothesis the residual is measured against (the top-ranked one). */
+  leadingHypothesisId: string | null;
+  /** Observations that contributed no points to the leading hypothesis. */
+  unaccountedFor: ResidualObservation[];
+  /**
+   * Set when two or more unaccounted-for observations converge on the SAME
+   * other hypothesis. That convergence is the two-fault signature: the
+   * leftovers have something in common with each other, so the second problem
+   * already has a shape. Null when they share nothing.
+   */
+  coherentAlternative: { hypothesisId: string; observations: string[] } | null;
 }
 
 export class FhbError extends Error {
@@ -683,6 +718,88 @@ export function validateInput(raw: unknown): FhbInput {
   return i as FhbInput;
 }
 
+// ----------------------------------------------------------------------------
+// RESIDUAL - what the leading hypothesis fails to account for.
+//
+// WHY ABLATION RATHER THAN ANNOTATION: attributing an observation to a
+// hypothesis needs to know which inputs each rule reads. Declaring that per
+// rule would create a SECOND registry of the same fact, and a hand-maintained
+// list beside an automated one drifts silently (the two-registries failure
+// recorded in the build recipe). Instead the attribution is DERIVED: remove
+// one observation, re-fire the real rule set, and see whether the leading
+// hypothesis loses points. The engine is the only source, so this cannot
+// disagree with the ranking it is measured against.
+//
+// Only `clues` and `changed` are ablated. They are the OBSERVATIONS - the
+// things the user reports seeing. `symptom`, `scope` and `timing` frame the
+// question rather than answer it, and have no neutral value to ablate to.
+// ----------------------------------------------------------------------------
+
+/** Score every hypothesis for an input, using the live registry. */
+function scoreByHypothesis(i: FhbInput): Map<string, number> {
+  const m = new Map<string, number>();
+  for (const r of RULES) {
+    if (r.when(i)) m.set(r.hypothesis, (m.get(r.hypothesis) ?? 0) + r.points);
+  }
+  return m;
+}
+
+function computeResidual(input: FhbInput, ranked: Hypothesis[]): Residual {
+  const leading = ranked[0]?.id ?? null;
+  if (!leading) return { leadingHypothesisId: null, unaccountedFor: [], coherentAlternative: null };
+
+  const baseline = scoreByHypothesis(input);
+  const baseLeading = baseline.get(leading) ?? 0;
+
+  // "nothing-known" is the absence of an observation, never an observation.
+  const observations: { field: "changed" | "clues"; value: string }[] = [
+    ...input.changed.filter((c) => c !== "nothing-known").map((c) => ({ field: "changed" as const, value: c })),
+    ...input.clues.map((c) => ({ field: "clues" as const, value: c })),
+  ];
+
+  const unaccountedFor: ResidualObservation[] = [];
+
+  for (const obs of observations) {
+    const ablated: FhbInput = {
+      ...input,
+      changed: obs.field === "changed" ? input.changed.filter((c) => c !== obs.value) : input.changed,
+      clues: obs.field === "clues" ? input.clues.filter((c) => c !== obs.value) : input.clues,
+    };
+    // validateInput requires a non-empty `changed`; restore the neutral marker
+    // so ablation never trips the validator rather than the rules.
+    if (ablated.changed.length === 0) ablated.changed = ["nothing-known"];
+
+    const without = scoreByHypothesis(ablated);
+    const contributedToLeading = baseLeading - (without.get(leading) ?? 0) > 0;
+    if (contributedToLeading) continue;
+
+    // It explains nothing about the leading hypothesis. What DOES it support?
+    const supportsInstead: string[] = [];
+    for (const [hid, score] of baseline) {
+      if (hid === leading) continue;
+      if (score - (without.get(hid) ?? 0) > 0) supportsInstead.push(hid);
+    }
+    unaccountedFor.push({ field: obs.field, value: obs.value, supportsInstead });
+  }
+
+  // Do the leftovers have something in common with EACH OTHER? Registry order
+  // of first appearance breaks ties, keeping the output deterministic.
+  let coherentAlternative: Residual["coherentAlternative"] = null;
+  const tally = new Map<string, string[]>();
+  for (const o of unaccountedFor) {
+    for (const hid of o.supportsInstead) {
+      tally.set(hid, [...(tally.get(hid) ?? []), o.value]);
+    }
+  }
+  for (const [hid, values] of tally) {
+    if (values.length >= 2 && (!coherentAlternative || values.length > coherentAlternative.observations.length)) {
+      coherentAlternative = { hypothesisId: hid, observations: values };
+    }
+  }
+
+  return { leadingHypothesisId: leading, unaccountedFor, coherentAlternative };
+}
+
 /**
  * run - fire the rule registry over a structured input and return ranked
  * hypotheses to test, quality warnings, the fired-rule trail, and the
@@ -724,6 +841,32 @@ export function run(rawInput: FhbInput | unknown): FhbResult {
     .sort((a, b) => b.score - a.score || order.indexOf(a.id) - order.indexOf(b.id));
 
   const warnings = computeWarnings(input, fired);
+  const residual = computeResidual(input, hypotheses);
+
+  const residualLines: string[] = [];
+  if (residual.unaccountedFor.length) {
+    residualLines.push(
+      "The leading hypothesis does not account for these reported observations:",
+      ...residual.unaccountedFor.map(
+        (o) =>
+          `- ${o.value}` +
+          (o.supportsInstead.length ? ` (supports instead: ${o.supportsInstead.join(", ")})` : " (no rule in this engine covers it)"),
+      ),
+    );
+    if (residual.coherentAlternative) {
+      residualLines.push(
+        "",
+        `These leftovers agree with each other on ${residual.coherentAlternative.hypothesisId}: ` +
+          `${residual.coherentAlternative.observations.join(", ")}. Unexplained observations that cohere ` +
+          "are the signature of a SECOND, separate fault - consider testing it as one rather than folding it into the first.",
+      );
+    } else {
+      residualLines.push(
+        "",
+        "They share no common alternative, so this is more likely noise or detail the rule set does not model than a second fault.",
+      );
+    }
+  }
 
   // 4. The worksheet artifact (usable, not decorative).
   const situationLines = [
@@ -755,6 +898,9 @@ export function run(rawInput: FhbInput | unknown): FhbResult {
           "Would weaken: " + h.weakens.join("; "),
         ].join("\n"),
       ]),
+      ...(residualLines.length
+        ? ([["Unaccounted for (residual)", residualLines.join("\n")]] as [string, string][])
+        : []),
       [
         "Method note",
         "This worksheet structures hypotheses to TEST, ranked by deterministic rules over the described situation. It is not a diagnosis; evidence decides. Generated locally in the browser - nothing was uploaded.",
@@ -762,7 +908,7 @@ export function run(rawInput: FhbInput | unknown): FhbResult {
     ],
   };
 
-  return { hypotheses, warnings, firedRuleIds: fired.map((r) => r.id), presetUsed: input.preset, artifact };
+  return { hypotheses, warnings, firedRuleIds: fired.map((r) => r.id), presetUsed: input.preset, residual, artifact };
 }
 
 /** API-parity entry (D-72): structured JSON string in, result out. */

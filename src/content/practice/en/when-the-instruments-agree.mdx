@@ -1,0 +1,93 @@
+---
+slug: when-the-instruments-agree
+title: "When the instruments agree"
+thesis: "Agreement between measurements is evidence only if the measurements are independent, and most of them are not — they share a collector, a clock, an averaging window or a definition. A fault in the shared layer produces unanimous, confident, wrong answers, so the investigation's certainty rises at exactly the moment it should fall."
+stance: practised
+part: yield
+order: 16
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["incident-timeline-rca-builder", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["when-the-evidence-disagrees", "verifying-without-trusting", "the-assumption-you-cannot-see"]
+artefact: "The independence inventory — which of your measurements can actually corroborate which"
+updated: "2026-08-08"
+---
+
+## Four dashboards, one answer, and a room that stops asking
+
+The application team's graph shows normal latency. The platform team's graph shows normal latency. The synthetic monitor is green and the capacity dashboard has nothing above eighty per cent. Four independent sources, four clean results, and a customer who is still telling you the service is unusable.
+
+At this point the conversation reliably turns to whether the customer is wrong. That turn feels justified — four measurements agree, and one anecdote does not outweigh four measurements.
+
+It would not, if they were four measurements. Often they are one measurement displayed four times.
+
+**Agreement is only evidence when the things agreeing are independent, and in a single estate they are usually not.**
+
+## The corroboration that is really a shared derivation
+
+[When the evidence disagrees with itself](/practice/when-the-evidence-disagrees) argues that a contradiction is a location — the most precise thing you have, because two sources cannot both be right and the fault lives between them.
+
+This is the mirror, and it is more dangerous, because a contradiction announces itself and unanimity does not. Four dashboards drawing from the same collector are not four witnesses. They are one witness quoted four times, and the confidence you take from their agreement is manufactured entirely by the layout of your monitoring stack.
+
+The question to ask of any agreement is not *do these sources agree* but **what would have to break for all of them to be wrong at once** — and then whether that thing exists.
+
+## Where the shared layer usually is
+
+**The collector or agent.** One daemon scrapes the counters, and everything downstream inherits whatever it got. If it is sampling the wrong interface, reading a counter that stopped incrementing after a module reload, or silently dropping metrics above a cardinality limit, every consumer of that feed is wrong in the same direction.
+
+**The clock.** Timestamps from different devices are only comparable if those devices agree on the time, which is an assumption almost nobody re-checks during an incident. Drift of a few seconds is enough to reorder cause and effect in a correlation you are about to build an entire theory on.
+
+**The averaging window.** A five-minute mean cannot represent a ten-second stall. The shape was removed before the graph was drawn, and no amount of staring at the graph will restore it.
+
+**The definition.** What counts as an "error" was decided by somebody, once. If the health check tests that the port accepts a connection, then a backend returning HTTP 500 to every request is, by that definition, healthy — and it will be reported as healthy by every system that consumes the definition.
+
+**The vantage point.** Everything measured from inside the data centre shares the data centre's view. A fault in the path between the customer and you is invisible to all of it, unanimously.
+
+## Averaging is the most common liar, and the most respectable
+
+This deserves its own space because it is not a defect. It is a deliberate, sensible engineering decision, made for storage and for legibility, and it destroys exactly the information an incident is about.
+
+Percentiles help and are not sufficient — a p99 computed over five-minute buckets still hides a two-second freeze that hit forty users. If the complaint is *"it hangs sometimes"* and your instrument's finest resolution is a one-minute mean, **you do not have an instrument for this problem.** Saying so is a finding. Continuing to consult the graph is not.
+
+## Silence is not a measurement
+
+The single most expensive confusion in monitoring: **zero and no-data look identical on most dashboards, and mean opposite things.**
+
+"No errors reported" is a claim about the error count. "No data received" is a claim about the pipeline, and it is compatible with any error count at all, including catastrophic. A flat line at the bottom of a graph is one of these two and the graph rarely tells you which.
+
+When a metric goes quiet during an incident, treat that as its own event with its own cause until proven otherwise. The collector dying *because* of the fault you are chasing is common, and it converts your best instrument into your most reassuring one at precisely the wrong moment.
+
+## Establishing independence, cheaply
+
+You do not need a second monitoring stack. You need one measurement that does not share the suspect layer.
+
+**Different layer.** A packet capture on the wire does not care what the device's counters believe. This is the highest-value independence you can buy in a network problem, because it bypasses the agent, the counter and the definition in one step.
+
+**Different vantage point.** Measure from where the user is, not from where the servers are. A synthetic probe inside the same data centre shares the fate of everything else inside it.
+
+**Different implementation.** Two vendors' tools embody two sets of assumptions. Where they agree, the agreement means something, because the shared layer is much thinner.
+
+**Measure the measurement.** Does the collector export its own health, its own drop count, its last successful scrape? A monitoring system that cannot tell you when it stopped working is not reporting on the estate; it is reporting on itself, badly.
+
+This is also why the [incident timeline builder](/tools/incident-timeline-rca-builder) on this site **never reads a clock**. Ordering is supplied by the person, and spans are expressed in events rather than wall-clock time, precisely because timestamps gathered from several devices are not the independent evidence they appear to be. A tool that silently sorted by timestamp would be manufacturing exactly the false corroboration this article is about.
+
+## When you cannot get an independent measurement
+
+Sometimes there is no second vantage point, no capture point, and no budget. The answer is not to pretend the measurements are stronger than they are.
+
+**Say what your conclusion depends on.** *"Latency is normal, as measured by the platform collector — every source I have derives from that collector, so if it is misreporting, all of this is wrong together."* That sentence costs nothing, and it is the difference between a finding and an assumption dressed as one. It also tells whoever reads it later exactly which single thing to check first.
+
+Downgrading your own confidence in writing is uncomfortable in a room that wants an answer. It is considerably less uncomfortable than defending four dashboards for a week.
+
+## The independence inventory
+
+For each measurement you are relying on:
+
+- What produces it — which agent, which counter, which probe?
+- What does it share with the others: collector, clock, window, definition, vantage point?
+- What is its finest resolution, and is that finer than the symptom?
+- Can it distinguish zero from no-data, and can I see which one I am looking at?
+- If it were wrong, what would look different? If the answer is *nothing*, it is not currently evidence.
+- Which single measurement, if I could add one, would share the least with what I already have?
+
+That last question is usually answerable in a minute and is usually a capture.

@@ -7043,6 +7043,8 @@
     "envBody2": "Os laboratórios práticos são entregues através da infraestrutura de laboratório da Red Education, e através de plataformas como CloudShare, Skytap, ReadyTech Axis e Amazon WorkSpaces — seja qual for o ambiente de laboratório oficial de cada curso.",
     "navTitle": "Para onde ir agora",
     "navLede": "O catálogo de cursos, as certificações para as quais estes cursos preparam, e o material gratuito que você pode ler antes de decidir qualquer coisa.",
+    "navCatalog": "O catálogo de cursos",
+    "navCatalogLede": "As quatro plataformas que sou autorizado a ensinar, e os cursos de cada uma. Comece aqui se você já sabe do que precisa.",
     "navCerts": "Guias de certificação",
     "navCertsLede": "O que cada exame de fato cobra, e o que estudar para ele. Gratuito, e útil tendo você contratado um curso ou não.",
     "navLearn": "Aprender",
@@ -15019,6 +15021,7 @@
     "stanceIntro": "Trinta anos são tempo suficiente para ter feito muita coisa e nem de longe suficiente para ter feito tudo. Então cada artigo declara o que ele é, e a marca fica acima do texto, não abaixo dele.",
     "stanceWhy": "A razão é simples: um conjunto deste tamanho, publicado sob um único nome, implicaria experiência direta em todos os assuntos que contém. Isso não seria verdade, e um site cujas ferramentas calculam em vez de estimar não deveria fazer afirmações que não consegue sustentar.",
     "stance": {
+      "count": "{n, plural, =0 {nenhum artigo ainda} one {# artigo} other {# artigos}}",
       "practised": {
         "label": "Praticado",
         "note": "Trabalho feito repetidamente, em produção, pelo autor."
@@ -15067,9 +15070,7 @@
     "artefactLabel": "Para levar",
     "readNext": "Leia a seguir",
     "relatedAria": "Artigos relacionados em A Prática",
-    "backToIndex": "Todo o A Prática",
-    "progressTitle": "Onde isto chegou",
-    "progressBody": "{published} de {planned} artigos planejados estão publicados. O conjunto é escrito uma parte por vez e terminado em vez de esboçado, então uma parte vazia abaixo significa que ela não começou, e não que foi esquecida."
+    "backToIndex": "Todo o A Prática"
   },
   "contributeTools": {
     "translationsTitle": "Melhorar as traduções",

@@ -29,6 +29,17 @@ interface SnapshotVector {
     firedRuleIds: string[];
     ranked: { id: string; score: number; signal: SignalStrength }[];
     warningIds: string[];
+    /**
+     * Optional (PRIME ratified 2026-08-08). Pins the RESIDUAL: which reported
+     * observations the leading hypothesis fails to account for, and whether
+     * the leftovers converge on a single other hypothesis - the two-fault
+     * signature. Omitted on vectors written before the residual existed, which
+     * keeps every pre-existing vector asserting exactly what it did.
+     */
+    residual?: {
+      unaccountedFor: string[];
+      coherentAlternativeId: string | null;
+    };
   };
 }
 
@@ -41,6 +52,33 @@ interface RejectVector {
 }
 
 export const FHB_SNAPSHOT_VECTORS: SnapshotVector[] = [
+  {
+    id: "two-faults-residual-coheres",
+    description:
+      "A DNS fault and a deploy regression reported together. DNS leads on score, but the deploy and the 5xx are unaccounted for by it and agree with EACH OTHER on change-regression - the two-fault signature from the Practice article 'when it is two problems'. Pins the residual, which is derived by ablating the live rule set rather than by any second registry.",
+    input: {
+      symptom: "errors-for-some",
+      scope: "some-users",
+      changed: ["software-deploy"],
+      timing: "since-change",
+      clues: ["http-5xx", "dns-fails", "works-by-ip-not-name"],
+      preset: "generic",
+    },
+    expect: {
+      firedRuleIds: ["R-CHG-ALIGN", "R-CHG-DEPLOY-5XX", "R-DNS-BYNAME", "R-DNS-FAILS", "R-PARTIAL-INTERMIT", "R-PARTIAL-5XX", "R-APP-5XX"],
+      ranked: [
+        { id: "H-DNS-RESOLUTION", score: 80, signal: "strong" },
+        { id: "H-CHANGE-REGRESSION", score: 60, signal: "strong" },
+        { id: "H-PARTIAL-BACKEND", score: 50, signal: "moderate" },
+        { id: "H-APP-BACKEND", score: 20, signal: "weak" },
+      ],
+      warningIds: [],
+      residual: {
+        unaccountedFor: ["software-deploy", "http-5xx"],
+        coherentAlternativeId: "H-CHANGE-REGRESSION",
+      },
+    },
+  },
   {
     id: "deploy-5xx-regression",
     description:
@@ -237,9 +275,14 @@ export function verifyVectors(): VectorReport {
             h.signal === v.expect.ranked[i].signal,
         );
       const warnOk = JSON.stringify(r.warnings.map((w) => w.id)) === JSON.stringify(v.expect.warningIds);
-      if (!firedOk || !rankedOk || !warnOk) {
+      // Residual is asserted only where a vector declares it.
+      const residualOk =
+        v.expect.residual === undefined ||
+        (JSON.stringify(r.residual.unaccountedFor.map((o) => o.value)) === JSON.stringify(v.expect.residual.unaccountedFor) &&
+          (r.residual.coherentAlternative?.hypothesisId ?? null) === v.expect.residual.coherentAlternativeId);
+      if (!firedOk || !rankedOk || !warnOk || !residualOk) {
         failures.push(
-          `${v.id}: fired=${firedOk} ranked=${rankedOk} warn=${warnOk} (got fired=${JSON.stringify(r.firedRuleIds)} ranked=${JSON.stringify(r.hypotheses.map((h) => [h.id, h.score, h.signal]))} warn=${JSON.stringify(r.warnings.map((w) => w.id))})`,
+          `${v.id}: fired=${firedOk} ranked=${rankedOk} warn=${warnOk} residual=${residualOk} (got fired=${JSON.stringify(r.firedRuleIds)} ranked=${JSON.stringify(r.hypotheses.map((h) => [h.id, h.score, h.signal]))} warn=${JSON.stringify(r.warnings.map((w) => w.id))})`,
         );
       }
     } catch (e) {

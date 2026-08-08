@@ -264,7 +264,7 @@ export default async function LearnIndexPage({
                 article index is what this page is for, and nothing pointed at
                 it. Self-closing anchor rather than a wrapper - no closing tag
                 to misplace - with the offset that clears the sticky header. */}
-            <div id="articles" aria-hidden style={{ scrollMarginTop: "5.5rem" }} />
+            <div id="articles" aria-hidden className="learn-articles-anchor" />
 
             {/* One block per category, mirroring the tools index taxonomy. */}
             {groups.map((group) => (

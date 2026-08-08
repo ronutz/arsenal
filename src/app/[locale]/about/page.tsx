@@ -121,7 +121,7 @@ export default async function AboutPage({
              the heading that used to introduce them has gone and inventing a
              replacement was not asked for. Read as hero metadata, which is what
              they are. */}
-        <section className="section">
+        <section className="section about-facts-section">
           <div className="container section-narrow">
             <ul className="about-facts">
               <li className="about-fact">
@@ -173,7 +173,9 @@ export default async function AboutPage({
                 Kept as an h3 inside this section rather than an h2 of its own,
                 because it is now subordinate to the platforms heading rather
                 than a peer of it. */}
-            <h3 className="vendor-note-title">{t("approach.title")}</h3>
+            <h3 className="vendor-note-title" style={{ marginTop: "2.5rem" }}>
+              {t("approach.title")}
+            </h3>
             <p className="section-body">{t("approach.body")}</p>
             <Gap note="Expand teaching-philosophy copy with Rodolfo's own words if desired (current text is from the verified bio only)." />
           </div>

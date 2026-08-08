@@ -1,0 +1,93 @@
+---
+slug: two-problems
+title: "When it is two problems"
+thesis: "Almost every technique in the toolkit assumes a single cause, and none of them announce that assumption when it stops holding. Two concurrent faults do not produce random results — they produce partial ones, and reading partial response as a signature rather than as noise is most of the skill."
+stance: practised
+part: yield
+order: 17
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["bisection", "the-assumption-you-cannot-see", "reproducing-the-irreproducible"]
+artefact: "The residual check — what your best hypothesis still fails to explain"
+updated: "2026-08-08"
+---
+
+## The fix that helped
+
+You made a change and the error rate fell by two thirds. The graph moved, the phone stopped ringing quite so often, and somebody said the word *"progress"*.
+
+It is progress, and it is also the single most reliable moment for an investigation to go wrong, because from here two entirely different situations look the same. Either your fix was partially effective against one cause, or it was completely effective against one of two causes.
+
+**Those require opposite next moves.** The first says keep pushing on the same theory. The second says stop, because the theory you are pushing on has already delivered everything it is going to.
+
+## Partial response is a signature, not noise
+
+The instinct is to treat inconsistent results as measurement noise, an unreliable reproduction, or somebody misreporting. Sometimes that is what they are.
+
+But two concurrent faults do not produce random behaviour. **They produce behaviour that is partially responsive to everything you try**, and that is a specific and recognisable shape:
+
+- A fix that improves the numbers without eliminating the symptom
+- A reproduction that succeeds perhaps half the time, with no variable you can find that predicts which
+- A scope description that contradicts itself — *everyone* is affected, and also only this one client does it
+- A timeline with two onsets that nobody separated, because the second was inside the noise of the first
+
+None of these is proof. All of them are worth an explicit thought, and the thought takes ten seconds: **could this be two things?**
+
+## Why the method hides it
+
+This is not a failure of attention. It is built into the techniques.
+
+[Bisection](/practice/bisection) works by splitting the system and asking which half misbehaves. With two faults on opposite sides of the cut, both halves misbehave, and the technique reports the one thing it cannot mean.
+
+Elimination works by removing candidates until one remains. With two causes, removing the true first cause does not clear the symptom, so it gets returned to the pool as *"tested, not it"* — and now the real cause has been ruled out in writing.
+
+Change-one-thing-at-a-time works by attributing each delta to the change that preceded it. With two faults, the deltas are partial and the attributions are wrong in a way that stays internally consistent for hours.
+
+**Each technique is sound. Each carries the same unstated premise. None of them raise their hand when it stops being true** — which is the general problem of [the assumption you cannot see](/practice/the-assumption-you-cannot-see), in the specific place it costs the most time.
+
+The [fault hypothesis builder](/tools/fault-hypothesis-builder) on this site inherits the same premise honestly: it ranks candidate causes, one of which is meant to be the answer. It does warn when scope signals contradict each other — *everyone affected* alongside client-local indicators — and tells you to re-verify the scope before spending more effort. **That is the right first move and it is usually right.** But if the scope survives re-verification and the contradiction is still there, the contradiction was not a reporting error. It was the shape of two faults.
+
+## Account for every observation, not for the best ones
+
+The single technique that finds this reliably: stop asking which hypothesis is most likely, and start asking **what the leading hypothesis fails to explain.**
+
+Write the observations down as a list. Take your best theory. Go through the list and mark each one *explained* or *not explained by this*. The residual is the interesting part, and the discipline is refusing to round it away.
+
+An observation that does not fit is usually dismissed with one of a small set of phrases — *that was probably unrelated*, *that user may have been on the old client*, *that spike was the backup*. Each may be true. Each is also exactly what the second fault looks like from inside the first investigation. **Say the dismissal out loud, because a residual explained by a guess is a residual you kept.**
+
+If your best theory explains six of eight observations and the two leftovers have nothing in common with each other, you have one problem and some noise. If the two leftovers have something in common with *each other*, you have two problems, and the second one already has a shape.
+
+## Why it happens more than it should
+
+**Incidents manufacture their own second faults.** Under pressure people apply workarounds: raise a timeout, disable a health check, fail over, restart on a schedule. Each is a change to the system made without a change window, and some of them are still in place a week later. The incident becomes its own cause.
+
+**Change windows bundle.** Ten changes go in on Saturday. Two of them are bad. The single-cause assumption survives contact with the Monday symptoms for a surprisingly long time.
+
+**And the one worth knowing about**: a long-standing latent fault that has been harmless for a year because something else absorbed it. A retry that always succeeded on the second attempt. A queue that never filled because throughput never got there. The new fault does not cause the old one — **it consumes the margin that was hiding it.** Two things then appear to break at once, and only one of them is new. The other has been in production since a project nobody in the room worked on.
+
+## Separating them
+
+**Fix one, and confirm the residual is unchanged.** Not smaller — unchanged in kind. If your first fix removed a cause, the remaining symptom should keep its shape and lose its volume. If the remaining symptom is different in character, you may be on your third problem.
+
+**Partition rather than iterate.** Split by population, by path, by time-of-day. Two faults usually have different partitions, and finding one partition where only one of them fires gives you a clean environment to work in — the closest thing available to a lab you were never given.
+
+**Accept series over parallel.** The second fault is frequently invisible until the first is gone. That is not a failure of your investigation; it is a property of the system. Plan for a second cycle rather than promising a single root cause, and say so early enough that it is a forecast rather than an excuse.
+
+## The part that is not technical
+
+The room wants the incident closed after the first fix, and *"improved"* reads as *"resolved"* in a status update at a level of the organisation where nobody sees the residual.
+
+Be specific in writing instead. **"Error rate fell from 9% to 3% after the connection-pool change. The remaining 3% has a different profile — it is concentrated on two branch sites and does not correlate with load, so I believe it is a second, unrelated fault and I am treating it as one."** That sentence buys the second cycle, and it survives being forwarded to somebody who will read only the first line.
+
+## The residual check
+
+At the point where a fix has helped and the symptom remains:
+
+- What exactly did the fix change, and by how much?
+- Did the remaining symptom keep its shape, or change character?
+- List every observation. Which are explained by the current theory?
+- For each unexplained one, what dismissal am I using — and would I write it down?
+- Do the unexplained observations have anything in common with each other?
+- Is there a partition — users, path, time — where only one of the two fires?
+- Was anything changed during the incident that is still in place?

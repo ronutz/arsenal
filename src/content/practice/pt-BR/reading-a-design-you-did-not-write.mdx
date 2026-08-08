@@ -1,0 +1,100 @@
+---
+slug: reading-a-design-you-did-not-write
+title: "Lendo um projeto que não foi você quem fez"
+thesis: "Você vai passar mais tempo da carreira dentro de sistemas projetados por outras pessoas do que dentro dos que projetou, e o primeiro ato não é julgar o projeto, é recuperar as restrições que ele estava respondendo. Quase tudo que parece errado é uma decisão cuja razão já saiu do prédio — e as partes que estão realmente erradas são indistinguíveis dessas até você conseguir separar as duas coisas."
+stance: practised
+part: before
+order: 1
+roles: ["second-line", "field", "design"]
+relatedTools: ["exos-config-explainer", "fortios-config-diff-explainer", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["layer-by-layer", "the-assumption-you-cannot-see", "verifying-without-trusting"]
+artefact: "A lista de perguntas de quem chegou agora — escrita na primeira semana, porque ela vence"
+updated: "2026-08-08"
+---
+
+## O sistema chega sem as razões dele
+
+Você herda uma rede, uma plataforma, um parque. O que você recebe é o estado atual: configurações, um diagrama de idade incerta, alguns chamados, e duas ou três pessoas que sabem coisas que nunca tiveram motivo para escrever.
+
+O que você não recebe é **por que aquilo tudo está do jeito que está**. A indisponibilidade que produziu aquele valor de timeout, o auditor que exigiu aquele segmento, a limitação do fabricante que desde então foi corrigida, o projeto cancelado pela metade que deixou o endereçamento para trás — tudo isso foi real, e nada disso está na configuração.
+
+**O projeto é o resíduo de restrições, e as restrições sumiram.** O que sobra parece um conjunto de escolhas que alguém fez livremente, que quase nunca é o que foi.
+
+O reflexo na chegada é avaliar: isto está bom, aquilo está errado, isto eu teria feito diferente. O reflexo não é inútil, mas é prematuro, e agir sobre ele cedo é como um profissional competente vira a pessoa que quebrou algo que sustentava a estrutura em silêncio havia seis anos.
+
+## Três coisas que parecem idênticas numa configuração
+
+Todo parque contém as três, e elas são visualmente indistinguíveis:
+
+**Uma decisão.** Alguém entendeu o compromisso e escolheu. A razão pode não valer mais, mas era uma razão.
+
+**Um acidente.** Um padrão que ninguém mudou, um copiar-e-colar de um equipamento com outro papel, um valor digitado uma vez e propagado por template. Nunca teve razão, e está em produção há anos sem causar dano — o que não é a mesma coisa que estar correto.
+
+**Uma acreção.** Uma decisão que era certa e foi sendo estendida por pessoas que supuseram que a original era deliberada. É a mais cara das três, porque cada camada é localmente sensata e a pilha é coletivamente indefensável. Ninguém fez isso. Isso aconteceu.
+
+Não dá para corrigir uma acreção discutindo com uma camada isolada dela, e não dá para remover um acidente com segurança antes de estabelecer que ele não é uma decisão. **Separar um do outro é a maior parte do trabalho, e se faz perguntando, não lendo.**
+
+## A configuração em execução é o projeto; o documento é uma afirmação sobre ele
+
+Leve o diagrama a sério como evidência de intenção e nunca como evidência de estado. Ele esteve correto numa data, e a data não está escrita nele.
+
+A configuração em execução é o único artefato definitivamente atual — é o que o equipamento está fazendo. Leia como fonte primária e trate o resto como testemunho, no sentido de [verificar sem confiar](/practice/verifying-without-trusting): útil, interessado, e que não se confunde com a coisa em si.
+
+Onde documento e equipamento discordam, você aprendeu algo mais valioso que qualquer um dos dois: **encontrou o ponto em que o parque deixou de ser mantido conforme projetado**, e esse ponto costuma ter uma data e uma história junto.
+
+## Datando as camadas
+
+Configurações têm estratos, e dá para lê-los.
+
+Convenções de nomenclatura mudam quando os times mudam. Conjuntos de cifras e tamanhos de chave se datam com precisão. Um bloco de regras com outro estilo de comentário, outra indentação, outra ideia do que serve um campo de descrição — aquilo é outro autor, e normalmente outro ano.
+
+Não é arqueologia por esporte. **Saber mais ou menos quando algo entrou diz quais restrições estavam vivas na época**, e essa é exatamente a informação que falta na configuração. Uma regra escrita no ano de uma auditoria significa outra coisa que a mesma regra escrita durante uma migração.
+
+## A pergunta que recebe resposta
+
+*"Por que isto está aqui?"*, feita direto a quem construiu, é a pergunta de maior rendimento disponível, e falha o tempo todo pelo jeito como aterrissa. Para quem tomou a decisão, ela soa como *"por que você fez isso?"* — e defensividade produz justificativa retrospectiva, que é pior que silêncio, porque soa como se fosse a razão.
+
+Funciona melhor pedir a situação em vez da justificativa. *"O que estava acontecendo quando isto entrou?"* convida a uma história em vez de uma defesa, e histórias carregam as restrições: o prazo, o incidente, o auditor, a coisa que era só para ser temporária.
+
+A outra forma confiável é enunciar o seu entendimento e deixar a pessoa corrigir. Quem não responde a uma pergunta aberta corrige de bom grado uma errada.
+
+## O que a leitura não conta
+
+Algumas coisas simplesmente não estão nos artefatos, e saber quais evita concluir que não existem:
+
+- **O que sustenta a estrutura.** A configuração não diz de qual daquelas coisas outra coisa depende.
+- **O que já foi tentado.** A abordagem elegante que você vai propor pode já ter sido tentada duas vezes.
+- **O que é politicamente fixo.** Uma decisão tecnicamente arbitrária pode ser organizacionalmente inamovível, e nenhuma leitura revela isso.
+- **O que está prestes a mudar.** Um projeto que parece estranho pode estar no meio de uma migração cuja segunda metade já tem verba.
+
+Essas são as perguntas que vão para a lista abaixo, não para uma proposta de mudança.
+
+## Leia pelo raio de impacto antes de ler pela qualidade
+
+A primeira passada útil não é *isto está bom*, e sim **o que acontece com este parque se este elemento parar** — o que compartilha dele, quais caminhos o atravessam, qual falha seria silenciosa.
+
+A ordem importa porque adianta o conhecimento que protege você e o parque. Dá para adiar indefinidamente uma opinião sobre a elegância de um projeto. Não dá para adiar saber que o equipamento que você ia reiniciar é o que carrega o acesso de gerência fora de banda.
+
+## Quando está mesmo errado
+
+Em algum momento parte daquilo está genuinamente errada — não mal compreendida, não restringida, errada. O sinal é que você consegue enunciar o modo de falha de forma concreta e ninguém consegue fornecer uma restrição que o explique.
+
+Nesse ponto o argumento se faz em termos de consequência, não de gosto: o que falha, sob quais condições, com qual impacto. *"Não é assim que eu teria construído"* não é argumento, e é a frase com maior probabilidade de encerrar a conversa de que você precisa.
+
+E a metade honesta: **um sistema rodando em produção é evidência.** Ele sobreviveu a condições que você ainda não viu. Isso não prova que está certo, mas é um fato sobre ele que o seu raciocínio não tem, e merece ser pesado em vez de descartado.
+
+## Escreva a sua ignorância enquanto ainda a tem
+
+O artefato, e a razão de fazê-lo na primeira quinzena:
+
+**As suas perguntas são um ativo perecível.** Na primeira semana você enxerga tudo que é estranho, porque nada daquilo é normal para você ainda. Em um mês você terá se aclimatado, parado de notar, e virado mais uma pessoa incapaz de dizer por que aquilo é assim. A lista que você escrever agora é a única versão dela que vai existir.
+
+- O que me surpreendeu, e o que eu esperava no lugar
+- Quais elementos supus deliberados, e com base em qual evidência?
+- Onde documento e equipamento discordam, e qual a idade da diferença?
+- O que me disseram que eu ainda não verifiquei?
+- O que está aqui que ninguém conseguiu explicar?
+- Qual elemento, sozinho, se parasse levaria mais coisa junto?
+
+Ponha a data. Revise em três meses, quando souber o bastante para responder parte e já tiver esquecido por que perguntou o resto.

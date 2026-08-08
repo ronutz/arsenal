@@ -37,7 +37,6 @@ import SiteFooter from "@/components/SiteFooter";
 import {
   practiceByPart,
   practiceStanceCounts,
-  getPracticeArticles,
   PRACTICE_STANCES,
 } from "@/lib/practice";
 
@@ -64,7 +63,6 @@ export default async function PracticeIndexPage({
 
   const groups = practiceByPart(locale);
   const counts = practiceStanceCounts(locale);
-  const total = getPracticeArticles(locale).length;
 
   return (
     <>
@@ -109,13 +107,30 @@ export default async function PracticeIndexPage({
             <div className="container section-narrow">
               <h2 className="section-title">{t("stanceTitle")}</h2>
               <p className="section-body">{t("stanceIntro")}</p>
-              <ul className="course-list">
+              {/* Cards rather than list items: this is the corpus's central
+                  honesty claim, and it was rendering as a bare bullet. The
+                  accent descends with the strength of the claim being made
+                  (practised → witnessed → documented), which is the one true
+                  structural fact about the trio. Counts are computed. */}
+              <ul className="stance-legend">
                 {PRACTICE_STANCES.map((s) => (
-                  <li key={s}>
-                    <strong>{t(`stance.${s}.label`)}</strong>
-                    {" — "}
-                    {t(`stance.${s}.note`)}{" "}
-                    <span className="mono">({counts[s]})</span>
+                  <li
+                    key={s}
+                    className="stance-card"
+                    style={
+                      {
+                        "--stance-accent":
+                          s === "practised"
+                            ? "var(--accent-primary)"
+                            : s === "witnessed"
+                              ? "var(--accent-amber)"
+                              : "var(--text-tertiary)",
+                      } as React.CSSProperties
+                    }
+                  >
+                    <span className="stance-count">{t("stance.count", { n: counts[s] })}</span>
+                    <span className="stance-label">{t(`stance.${s}.label`)}</span>
+                    <p className="stance-note">{t(`stance.${s}.note`)}</p>
                   </li>
                 ))}
               </ul>
@@ -159,18 +174,6 @@ export default async function PracticeIndexPage({
               </div>
             </section>
           ))}
-
-          {/* PROGRESS, STATED HONESTLY. The roster is 48 and the corpus is not
-              finished. Saying so is better than an index that silently implies
-              completeness, and it is the same instinct as the stance field. */}
-          <section className="section">
-            <div className="container section-narrow">
-              <h2 className="section-title">{t("progressTitle")}</h2>
-              <p className="section-body">
-                {t("progressBody", { published: total, planned: 48 })}
-              </p>
-            </div>
-          </section>
         </article>
       </main>
 

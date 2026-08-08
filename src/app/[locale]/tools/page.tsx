@@ -101,7 +101,7 @@ export default async function ToolsPage({
               <a href="#tools-index" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--accent-primary)" } as React.CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9660;</span>
                 <p className="learn-portal-title">
-                  {tp("jumpTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                  {tp("jumpTitle")} <span className="learn-portal-arrow">&#8595;</span>
                 </p>
                 <p className="learn-portal-lede">{tp("jumpLede")}</p>
               </a>
