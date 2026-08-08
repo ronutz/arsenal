@@ -15494,3 +15494,87 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   color: var(--text-tertiary);
   margin-left: auto;
 }
+
+
+/* ---------------------------------------------------------------------------
+   RED EDUCATION PAGE LISTS (PRIME 2026-08-06)
+   ---------------------------------------------------------------------------
+   These were using .course-list, which sets list-style:none - the SAME defect
+   already diagnosed and fixed on /advisory, then reintroduced here by reusing
+   the same wrong class. A list of facts with no markers and no spacing reads as
+   a paragraph that has been broken badly.
+
+   Two shapes, because the page has two jobs:
+   .redu-facts   - the bench statistics and awards. Dashes, since these are
+                   assertions rather than steps or choices.
+   .redu-links   - the outbound case-study links. No markers at all: each item
+                   is already a link with a trailing arrow, and a bullet in
+                   front of an arrow is two pieces of punctuation fighting. */
+.redu-facts {
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+  margin: 1rem 0 0;
+}
+
+.redu-facts > li {
+  position: relative;
+  padding-left: 1.25rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.redu-facts > li::before {
+  content: "\2013";
+  position: absolute;
+  left: 0;
+  color: var(--text-tertiary);
+}
+
+.redu-links {
+  list-style: none;
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.85rem 0 0;
+}
+
+.redu-links > li > a {
+  display: inline-block;
+  padding: 0.35rem 0;
+  font-weight: 500;
+}
+
+/* ---------------------------------------------------------------------------
+   WIDE PORTAL CARDS (PRIME 2026-08-06)
+   ---------------------------------------------------------------------------
+   PRIME's preference over a callout, and the right one: each card carries a
+   sentence of explanation, and a tall card wastes the width that sentence needs
+   while pushing the content further down - which is exactly what the first card
+   exists to counteract. Two per row on desktop, one on narrow. */
+.learn-portal-grid-wide {
+  grid-template-columns: repeat(auto-fit, minmax(min(24rem, 100%), 1fr));
+}
+
+.learn-portal-card-wide {
+  min-height: 0;
+}
+
+.learn-portal-card-wide .learn-portal-lede {
+  max-width: 58ch;
+}
+
+/* ---------------------------------------------------------------------------
+   IN-PAGE JUMP TARGETS (PRIME 2026-08-06)
+   ---------------------------------------------------------------------------
+   The header is position:sticky, so an anchor scrolled to the top of the
+   viewport lands UNDER it - taking the first section heading with it. The
+   reader arrives at a list whose title they never see.
+
+   scroll-margin-top reserves the header's height plus a little air, so the
+   heading is the first thing visible rather than the first thing hidden.
+   9.5rem matches .category-section, which already solved this for the tool
+   category anchors; these two were simply never given the same treatment. */
+#articles,
+#tools-index {
+  scroll-margin-top: 9.5rem;
+}

@@ -6339,6 +6339,16 @@
       "blurb": "Lê uma expressão de mapeamento de atributo ou de critério de emissão e a explica construção por construção, e então sinaliza o que quebra em produção e não em teste: atributos lidos sem verificação de nulo, chamadas estáticas a Java e critérios que nunca comparam nada. Só analisa - nunca avalia a expressão.",
       "runsLocally": "Roda inteiramente no seu navegador. A expressão é analisada e descrita, nunca avaliada.",
       "empty": "Cole uma expressão de um mapeamento de atributo ou de um critério de emissão."
+    },
+    "portal": {
+      "jumpTitle": "Direto às ferramentas",
+      "jumpLede": "Pule a sinalização e vá para o índice abaixo: todas as ferramentas, filtráveis por fabricante e categoria.",
+      "hubsTitle": "Hubs de fabricantes",
+      "hubsLede": "Uma página por plataforma, reunindo suas ferramentas, artigos e material de certificação num só lugar. O caminho de entrada quando você já sabe em qual fabricante está trabalhando.",
+      "guidesTitle": "Guias de estudo de tecnologia",
+      "guidesLede": "Percursos pelos próprios protocolos e mecanismos, sem exame associado. Leia para entender a coisa, e não para passar em algo.",
+      "examsTitle": "Guias de exames de certificação",
+      "examsLede": "Objetivo por objetivo de cada exame, mostrando o que está coberto aqui e, honestamente, o que não está."
     }
   },
   "privacy_page": {
@@ -6384,7 +6394,6 @@
     "redEducation": "Reserve treinamento oficial de fornecedores com a <b>Red Education</b>, potência global de treinamento multipremiada",
     "builtWith": "Feito por Rodolfo Nützmann com CONCORD",
     "colophon": "Como isto foi construído",
-    "contribute": "Ajude a melhorar as traduções",
     "feedback": "Contato",
     "privacy": "Privacidade",
     "api": "Referência da API",
@@ -6441,7 +6450,7 @@
       "title": "As plataformas, ensinadas com profundidade",
       "body": "Ser instrutor autorizado destes fabricantes significa que posso ensinar cada um como deve ser e compará-los com honestidade.",
       "f5": "BIG-IP em todo o currículo conduzido por instrutor: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automação e troubleshooting.",
-      "fortinet": "Treinamento certificado da Fortinet, incluindo a trilha FCP.",
+      "fortinet": "Treinamento Fortinet certificado nos níveis NSE 4, 5 e 6.",
       "extreme": "Trilhas de switching, SD-WAN, e API e automação da Extreme Networks, passando por instalação, configuração, gerenciamento e troubleshooting.",
       "netskope": "Treinamento conduzido por instrutor sobre a Netskope Security Cloud.",
       "ping": "Gestão de acesso e federação Ping Identity.",
@@ -6494,7 +6503,7 @@
       "coursesDesc": "O catálogo completo por plataforma, com os objetivos que cada curso cobre.",
       "coursesCta": "Ver o catálogo",
       "blogTitle": "Blog",
-      "blogDesc": "Textos ocasionais sobre a indústria, o ofício, e o que quer que eu tenha acabado de discutir."
+      "blogDesc": "Textos ocasionais sobre a indústria, o ofício, e o que quer que eu esteja destrinchando no momento."
     },
     "historySectionTitle": "A História"
   },
@@ -7031,7 +7040,7 @@
     },
     "envTitle": "Ambientes de treinamento remoto",
     "envBody1": "As turmas ao vivo online (vILT) acontecem preferencialmente pelo Zoom, com Google Meet e Microsoft Teams igualmente atendidos quando a política de plataforma do cliente exigir.",
-    "envBody2": "Os laboratórios práticos são entregues através da infraestrutura de laboratório da Red Education, e através de plataformas como CloudShare, Skytap, ReadyTech Axis e Amazon WorkSpaces - o ambiente de laboratório oficial de cada curso é.",
+    "envBody2": "Os laboratórios práticos são entregues através da infraestrutura de laboratório da Red Education, e através de plataformas como CloudShare, Skytap, ReadyTech Axis e Amazon WorkSpaces — seja qual for o ambiente de laboratório oficial de cada curso.",
     "navTitle": "Para onde ir agora",
     "navLede": "O catálogo de cursos, as certificações para as quais estes cursos preparam, e o material gratuito que você pode ler antes de decidir qualquer coisa.",
     "navCerts": "Guias de certificação",
@@ -7085,7 +7094,8 @@
     "feedbackLink": "Compartilhe na página de ideias",
     "takedownHeading": "Remoção e correção de conteúdo",
     "takedownBody": "Se você detém direitos sobre material publicado neste site e entende que ele deve ser removido, corrigido ou atribuído de outra forma, escreva para o endereço acima informando a URL ou as URLs exatas e, quando possível, uma breve nota sobre qual é o problema. Esse contexto é genuinamente útil, e não uma formalidade: permite corrigir o erro direito, em todo o site, em vez de página por página. Os pedidos são analisados com rapidez e boa-fé.",
-    "takedownLink": "Ler o aviso legal completo"
+    "takedownLink": "Ler o aviso legal completo",
+    "translations": "Está lendo este site em um dos idiomas traduzidos por máquina e viu algo errado? Correções são bem-vindas, e as pequenas são as mais úteis."
   },
   "certs": {
     "title": "Certificações e credenciais",
@@ -10350,9 +10360,9 @@
         "context": "Eric Brewer o conjecturou numa palestra de 2000 e Gilbert e Lynch o provaram em 2002: quando os nós não conseguem se falar, o sistema ou recusa respostas (consistente, indisponível) ou responde com dados possivelmente velhos (disponível, inconsistente). Partições não são opcionais em redes reais, então o teorema é, na verdade, sobre qual modo de falha você pré-seleciona. A página de marketing de todo banco de dados é um artigo de posição sobre CAP, diga isso ou não."
       },
       "year-2038-problem": {
-        "def": "O tempo Unix de 32 bits com sinal estoura às 03:14:07 UTC de 19 de janeiro de 2038, rebobinando o relógio para 1901.",
-        "context": "O Unix conta segundos desde 1970 no que historicamente era um inteiro de 32 bits com sinal, que se esgota em janeiro de 2038; sistemas afetados passarão de repente a acreditar que é dezembro de 1901. As plataformas modernas já moveram o time_t para 64 bits, mas o problema sobrevive em dispositivos embarcados, formatos de arquivo, protocolos e bancos de dados com décadas de vida útil. É o irmão mais quieto do Y2K: mais bem compreendido, mais distante e enterrado mais fundo.",
-        "depth": "Sistemas que guardam o tempo como uma contagem de segundos com sinal em 32 bits desde 1970 vão estourar em 19 de janeiro de 2038, e o contador virará um número grande e negativo. É o mesmo formato de problema do Y2K, chegando com mais aviso e menos atenção.\n\nA razão de ser mais difícil em certos aspectos é onde o código mora. O Y2K estava sobretudo em aplicações de negócio que alguém possuía e podia recompilar; valores de tempo em 32 bits estão em sistemas embarcados, controladores industriais, formatos de sistema de arquivos e protocolos de rede, muitos dos quais ainda estarão rodando em 2038 sem mecanismo de atualização e sem ninguém que saiba como. Um sistema de automação predial instalado hoje pode perfeitamente estar em operação lá.\n\nA correção em sistemas de uso geral está essencialmente feita, já que contadores de 64 bits empurram o estouro para além de qualquer horizonte relevante. O que resta é a parte sem glamour: encontrar os formatos em disco, os campos de protocolo e os dispositivos dentro das paredes, e tratá-los antes da data, e não durante. É um bom teste de se a indústria aprendeu algo da última vez, e a resposta honesta estará disponível em 2038."
+        "def": "O tempo Unix de 32 bits com sinal transborda às 03:14:07 UTC de 19 de janeiro de 2038, girando o relógio para dezembro de 1901. Diferente do Y2K, é um limite duro de representação, e não uma convenção de formato: não há contorno sem alargar o campo.",
+        "context": "O Unix conta segundos desde 1970 no que historicamente era um inteiro de 32 bits com sinal. As plataformas modernas migraram o time_t para 64 bits há anos, e por isso o problema é dado como resolvido sem estar: ele sobrevive onde a largura é fixada por algo que não é o compilador - cabeçalhos de protocolo, registros em disco e firmware que nunca receberá outra versão.",
+        "depth": "QUATRO LUGARES PARA OLHAR, na ordem em que mordem.\n\nFormatos de arquivo e de protocolo fixam a largura independentemente do host. Um timestamp de 32 bits num cabeçalho ou num registro em disco continua com 32 bits numa máquina de 64, então recompilar não muda nada.\n\nFirmware de equipamentos é a maior exposição num parque de rede. Aparelhos com vida útil de dez a quinze anos comprados hoje ainda estarão em rack em 2038, e muitos jamais receberão outra versão.\n\nCertificados e licenças falham antes, e não no dia, porque a data de validade é calculada para a frente. Um certificado de quinze anos emitido em 2024 já transborda numa pilha de 32 bits, e por isso as primeiras falhas reais chegam bem antes de 2038.\n\nBancos de dados e código carregam o problema em inteiros de época armazenados, em tipos de coluna e em qualquer aritmética que some um intervalo ao agora.\n\nPLANEJAMENTO DE PREPARAÇÃO, que é a parte que ninguém faz.\n\nInventarie a largura, não a garantia do fabricante. O que armazena ou transmite um timestamp, em quantos bits, e de quem é. Um parque que não responde a isso ainda não começou.\n\nTeste movendo o relógio, e não lendo datasheets. Ponha um sistema de laboratório depois da fronteira e observe. As falhas raramente são uma data errada na tela - são validação de certificado recusando, agendadores disparando sem parar e correlação de log reordenando em silêncio.\n\nOrdene por ciclo de substituição, não por severidade. O que tiver vida útil cruzando 2038 precisa ser tratado na compra, porque a correção mais barata para um equipamento é não comprar o de 32 bits - e essa janela está aberta agora e se fecha progressivamente.\n\nTorne isso requisito de aquisição. Pedir ao fabricante que declare a largura do time_t num edital não custa nada e transfere o problema a quem pode resolvê-lo.\n\nE date o prazo com honestidade. Qualquer sistema que faça aritmética de data para a frente atinge a própria fronteira quando agora mais o intervalo cruza 2038. O prazo de engenharia não é janeiro de 2038; é 2038 menos o seu maior intervalo futuro."
       },
       "the-homebrew-computer-club": {
         "def": "O clube de hobbistas de Menlo Park, de 1975, onde começaram a indústria do computador pessoal e sua primeira briga por software.",
@@ -12405,10 +12415,6 @@
         "def": "O campo inicial de uma mensagem syslog que codifica facilidade e severidade.",
         "context": "O valor de prioridade (do inglês priority value) é o número entre colchetes angulares no início de uma linha syslog. Ele empacota a facilidade e a severidade em um único inteiro, do qual ambos podem ser recuperados.",
         "depth": "No syslog a prioridade é o primeiro campo, um único número codificando tanto a facilidade que gerou a mensagem quanto sua severidade. Separá-los de volta é aritmética: divida por oito para a facilidade, tome o resto para a severidade.\n\nEssa codificação é a razão de a filtragem de syslog ser frequentemente montada errado. Uma regra escrita contra um valor bruto de prioridade pega uma combinação específica de facilidade e severidade, e não a severidade em todas as fontes, e um coletor configurado para guardar tudo acima de um limiar pode descartar em silêncio uma facilidade em que ninguém pensou. Saber que os dois estão empacotados juntos é o que transforma um filtro confuso em óbvio."
-      },
-      "y2038": {
-        "def": "O momento em que o tempo Unix de 32 bits transborda, em janeiro de 2038.",
-        "context": "O problema do ano 2038 (do inglês Year 2038 problem) é quando um contador time_t de 32 bits com sinal, que mede segundos desde 1970, transborda e vira um número negativo. Diferente do problema de formatação do Y2K, este é um limite representacional rígido, corrigido ao migrar para tempo de 64 bits."
       },
       "snat": {
         "def": "Reescrever o endereço de origem do cliente quando o tráfego passa por um dispositivo.",
@@ -15064,5 +15070,10 @@
     "backToIndex": "Todo o A Prática",
     "progressTitle": "Onde isto chegou",
     "progressBody": "{published} de {planned} artigos planejados estão publicados. O conjunto é escrito uma parte por vez e terminado em vez de esboçado, então uma parte vazia abaixo significa que ela não começou, e não que foi esquecida."
+  },
+  "contributeTools": {
+    "translationsTitle": "Melhorar as traduções",
+    "translationsBody": "Este site é escrito em inglês e português do Brasil, e traduzido por máquina para outros catorze idiomas. As versões automáticas são utilizáveis e não são nativas. Se você lê um desses catorze e algo está errado — um termo técnico traduzido ao pé da letra, uma frase que analisa gramaticalmente e não quer dizer nada — me contar é uma contribuição real, e um bilhete curto com a página e o trecho basta.",
+    "translationsCta": "Enviar uma correção"
   }
 }

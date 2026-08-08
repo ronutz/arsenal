@@ -44,6 +44,7 @@ export default async function ToolsPage({
   const t = await getTranslations("tools");
   const tHub = await getTranslations("vendorHub"); // hub-strip chrome
   const tNav = await getTranslations("nav");
+  const tp = await getTranslations("tools.portal");
 
   // The generic index lists VENDOR-AGNOSTIC tools only (PRIME directive
   // 2026-07-03); vendor tools live on their hubs, linked in the strip above.
@@ -82,26 +83,52 @@ export default async function ToolsPage({
             </div>
           </section>
 
-          {/* Vendor hub strip - hub discoverability lives HERE, on top of the
-              listing, not in the header (nav stays small; PRIME 2026-07-03).
-              One pill per POPULATED vendor, same source as the hub route, so
-              new vendors appear automatically. Label reuses the localized
-              vendor name + the vendorHub.eyebrow chrome key. */}
-          {populatedVendors().length > 0 && (
-            <div className="container certs-container vendor-hub-strip">
-              {populatedVendors().map((v) => (
-                <Link key={v} href={`/${v}`} className="vendor-hub-strip-link">
-                  <span
-                    className="category-dot"
-                    style={{ "--chip-color": vendorColor(v) } as React.CSSProperties}
-                    aria-hidden="true"
-                  />
-                  {t(`vendors.${v}`)} {tHub("eyebrow")}{" "}
-                  <span className="vendor-hub-strip-count">({vendorToolCount(v)})</span> →
-                </Link>
-              ))}
+          {/* PORTAL CARDS replacing the per-vendor pill strip (PRIME
+              2026-08-06). The strip grew by one pill for every populated
+              vendor and had become a wall of near-identical links; these four
+              are a fixed set that does not grow with the catalogue.
+
+              WIDE rather than tall (PRIME's preference): each carries a
+              sentence of explanation, and a tall card wastes the width the
+              sentence needs while pushing the tools index further down the
+              page - which is the thing the first card exists to counteract.
+
+              The first is an in-page jump, mirroring what /learn already does:
+              this page IS the tool index, and it sat below a screen of
+              signposting with nothing pointing back at it. */}
+          <div className="container certs-container">
+            <div className="learn-portal-grid learn-portal-grid-wide">
+              <a href="#tools-index" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--accent-primary)" } as React.CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9660;</span>
+                <p className="learn-portal-title">
+                  {tp("jumpTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{tp("jumpLede")}</p>
+              </a>
+              <Link href="/vendor-hubs" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--color-success)" } as React.CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
+                <p className="learn-portal-title">
+                  {tp("hubsTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{tp("hubsLede")}</p>
+              </Link>
+              <Link href="/study-guides" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--color-warning)" } as React.CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
+                <p className="learn-portal-title">
+                  {tp("guidesTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{tp("guidesLede")}</p>
+              </Link>
+              <Link href="/certifications" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--color-danger)" } as React.CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#10003;</span>
+                <p className="learn-portal-title">
+                  {tp("examsTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{tp("examsLede")}</p>
+              </Link>
             </div>
-          )}
+          </div>
+
 
           {/* Sticky nav-utility bar (PRIME 2026-07-09): jump-to + show-only +
               view density in one strip that sticks just below the site header on
@@ -109,7 +136,10 @@ export default async function ToolsPage({
               jump-nav <details> and the per-category chips both start closed). */}
           {categories.length > 1 && (
             <div className="nav-utility-bar">
-              <div className="container certs-container nav-utility-inner">
+              {/* Jump target for the first portal card. Placed on the
+                  utility bar because that is the top of the actual index -
+                  landing on the first category would skip the filters. */}
+              <div id="tools-index" className="container certs-container nav-utility-inner">
                 {/* Jump-to: native <details>, no JS; summary is a prominent pill. */}
                 <details className="jumpnav">
                   <summary className="jumpnav-summary" aria-label={t("jumpTo")}>

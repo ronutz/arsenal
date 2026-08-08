@@ -1,0 +1,72 @@
+---
+slug: when-the-evidence-disagrees
+title: "When the evidence disagrees with itself"
+thesis: "Two measurements that cannot both be true are not a data problem to be resolved by picking one. They are a location: the fault is between them, and the contradiction is the most precise thing you have."
+stance: practised
+part: yield
+order: 12
+roles: ["second-line", "field", "design"]
+relatedTools: ["packet-capture-plan-builder", "incident-timeline-rca-builder"]
+relatedIndustry: []
+relatedPractice: ["the-assumption-you-cannot-see", "verifying-without-trusting"]
+artefact: "What would have to be true for both"
+updated: "2026-08-06"
+---
+
+## The moment you have been trained to mishandle
+
+The application team says the requests are being sent. The network team says nothing arrived. Both are looking at instruments. Both are competent. Both are certain.
+
+The instinctive response is to work out **who is wrong**, and the instinct is almost always to suspect the measurement that disagrees with your own model. That is not analysis, it is preference, and the meeting that follows is two groups defending instruments rather than examining them.
+
+The productive move is the opposite one. Start from the position that **both readings are accurate**, and ask what the world would have to look like for that to be so. It usually turns out to be a world that exists.
+
+## Both can be right, and usually are
+
+Instruments do not lie often. What they do constantly is answer a slightly different question from the one you think you asked.
+
+**They measure at different points.** Requests genuinely left the application and genuinely did not arrive, because something between the two — a proxy, a policy, a translation, a silently dropping middlebox — is a place where a packet can stop existing.
+
+**They count different events.** One counter increments on attempt, the other on completion. In a healthy system the two track each other closely enough that nobody notices they are different quantities. Under fault they diverge, and the divergence is the whole story.
+
+**They measure over different windows.** A one-minute average and a five-second sample of the same thing disagree wildly during a spike, and both are correct about what they measured.
+
+**They disagree about time.** Two devices whose clocks differ by ninety seconds produce logs where the effect precedes the cause. Every correlation you draw from those two sources is wrong, and none of it looks wrong.
+
+## The contradiction is a coordinate
+
+Here is the reframe that turns this from a frustration into a technique.
+
+When two observation points disagree, the fault is bounded by them. Everything before the first point is behaving as the first point says. Everything after the second is behaving as the second says. **What you have is not a broken dataset — it is a search space with an upper and lower bound**, which is a far better position than one consistent story that quietly excludes the truth.
+
+This makes contradictions worth *seeking* rather than resolving. If two measurements agree, they tell you about one region. If they disagree, they have partitioned the system for you, and the next measurement goes between them. That is bisection, arriving through the front door.
+
+## The questions that resolve it
+
+**Where exactly is each measuring?** Not which device — which side of which process. A firewall counter before policy evaluation and one after are different measurements of the same traffic, and the gap between them has a name.
+
+**What exactly does each count?** Read the definition rather than the label. "Errors" on one platform and "errors" on another are frequently disjoint sets, and a counter that resets on read behaves differently from one that accumulates.
+
+**Over what interval, and aligned to what?** Averages hide spikes by construction. Two systems bucketing at different boundaries will disagree about which minute an event fell in.
+
+**Are the clocks the same?** Check before drawing any conclusion that depends on ordering. A ninety-second skew is invisible in each log separately and fatal the moment you put them side by side.
+
+**Is either measurement sampled?** One-in-a-thousand flow sampling and full capture will disagree about rare events, and the rare event is usually the one you are chasing.
+
+## The organisational version, which is harder
+
+The two instruments frequently belong to two teams, and by the time the contradiction surfaces, each has stated a position publicly.
+
+At that point the disagreement stops being technical. Nobody wants to be the team that was wrong, so both defend, and the discussion moves from *what does this counter count* to *whose fault is this*. The problem then survives, not because it is difficult, but because resolving it now costs somebody an admission.
+
+The way out is to make the question one that nobody loses. **"What would have to be true for both of these to be correct?"** is not a rhetorical device — it is genuinely the right question, and it has the useful property that answering it requires no one to retract anything. It is also, almost always, answerable.
+
+If you have any seniority in the room, asking it early is worth more than any measurement you could take.
+
+## When one of them really is wrong
+
+It happens. A counter that has not been correct since a firmware upgrade, a graph aggregating the wrong node, a log with a timezone bug.
+
+The point is not that instruments are infallible. It is that **"my instrument is right and yours is wrong" is a conclusion, not a starting position** — and starting there means you will find the evidence for it, because you will stop looking once you do.
+
+Establish the boundary first. Determine what each measurement actually measures. If, after that, one of them is genuinely faulty, you will have found that out with evidence rather than asserted it with confidence — and you will know which of your other conclusions rested on it.

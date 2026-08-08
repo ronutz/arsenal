@@ -48,6 +48,7 @@ export default async function ContributeToolsPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("contributeIdeas");
+  const tCT = await getTranslations("contributeTools");
   const tNav = await getTranslations("nav");
 
   // Split the address so ObfuscatedEmail assembles it at runtime (anti-harvest).
@@ -177,6 +178,23 @@ export default async function ContributeToolsPage({
             </a>
           </div>
         </section>
+        {/* TRANSLATIONS (PRIME 2026-08-06), moved here from the footer. It
+            belongs beside the other ways to contribute rather than in a strip
+            everybody sees and nobody acts on. The ask is deliberately small -
+            a page and a phrase - because that is the size of contribution
+            somebody actually sends. */}
+        <section className="section">
+          <div className="container section-narrow">
+            <h2 className="section-title">{tCT("translationsTitle")}</h2>
+            <p className="section-body">{tCT("translationsBody")}</p>
+            <p className="section-cta">
+              <Link href="/contact" className="section-cta-link">
+                {tCT("translationsCta")} &rarr;
+              </Link>
+            </p>
+          </div>
+        </section>
+
       </main>
 
       <SiteFooter />

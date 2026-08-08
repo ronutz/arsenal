@@ -6339,6 +6339,16 @@
       "blurb": "Reads an expression from an attribute mapping or an issuance criterion and explains it construct by construct, then flags what breaks in production rather than in testing: attributes read without a null check, static Java calls, and criteria that never actually compare anything. Parses only - it never evaluates the expression.",
       "runsLocally": "Runs entirely in your browser. The expression is parsed and described, never evaluated.",
       "empty": "Paste an expression from an attribute mapping or an issuance criterion."
+    },
+    "portal": {
+      "jumpTitle": "Straight to the tools",
+      "jumpLede": "Skip the signposting and go to the index below: every tool, filterable by vendor and category.",
+      "hubsTitle": "Vendor hubs",
+      "hubsLede": "One page per platform, gathering its tools, articles and certification material in a single place. The way in if you already know which vendor you are working on.",
+      "guidesTitle": "Technology study guides",
+      "guidesLede": "Walkthroughs of the protocols and mechanisms themselves, with no exam attached. Read these to understand the thing rather than to pass something.",
+      "examsTitle": "Certification exam guides",
+      "examsLede": "Objective by objective for each exam, showing what is covered here and, honestly, what is not."
     }
   },
   "privacy_page": {
@@ -6384,7 +6394,6 @@
     "redEducation": "Book official vendor training with <b>Red Education</b>, the multi-award-winning global training powerhouse",
     "builtWith": "Built by Rodolfo Nützmann with CONCORD",
     "colophon": "How this was built",
-    "contribute": "Improve the translations",
     "api": "API reference",
     "contributeTools": "Share an idea",
     "feedback": "Contact",
@@ -6441,7 +6450,7 @@
       "title": "The platforms, taught in depth",
       "body": "Being an authorized instructor for these vendors means I can teach each one properly and compare them honestly.",
       "f5": "BIG-IP across the full instructor-led curriculum: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automation, and troubleshooting.",
-      "fortinet": "Fortinet certified training, including the FCP track.",
+      "fortinet": "Fortinet certified training across the NSE 4, 5 and 6 levels.",
       "extreme": "Extreme Networks switching, SD-WAN, and API and automation tracks, across installation, configuration, management, and troubleshooting.",
       "netskope": "Netskope security cloud instructor-led training.",
       "ping": "Ping Identity access management and federation.",
@@ -6494,7 +6503,7 @@
       "coursesDesc": "The full catalogue by platform, with the objectives each course covers.",
       "coursesCta": "See the catalogue",
       "blogTitle": "Blog",
-      "blogDesc": "Occasional writing on the industry, the craft, and whatever I have just finished arguing with."
+      "blogDesc": "Occasional writing on the industry, the craft, and whatever I have been working through lately."
     },
     "historySectionTitle": "The History"
   },
@@ -7031,7 +7040,7 @@
     },
     "envTitle": "Remote training environments",
     "envBody1": "Live online classes (vILT) run on Zoom by preference, with Google Meet and Microsoft Teams equally supported when a customer's platform policy calls for it.",
-    "envBody2": "Hands-on labs are delivered through Red Education's lab infrastructure, and through platforms such as CloudShare, Skytap, ReadyTech Axis, and Amazon WorkSpaces - the official lab environment for each course is.",
+    "envBody2": "Hands-on labs are delivered through Red Education's lab infrastructure, and through platforms such as CloudShare, Skytap, ReadyTech Axis, and Amazon WorkSpaces - whichever the official lab environment for each course is.",
     "navTitle": "Where to go next",
     "navLede": "The course catalogue, the certifications these courses prepare for, and the free material you can read before deciding anything.",
     "navCerts": "Certification guides",
@@ -7085,7 +7094,8 @@
     "feedbackLink": "Share it on the ideas page",
     "takedownHeading": "Content removal and corrections",
     "takedownBody": "If you hold rights in material published on this site and believe it should be removed, corrected, or attributed differently, write to the address above with the exact URL or URLs and, where you can, a short note on what the issue is. That context is genuinely useful rather than a formality: it lets a mistake be fixed properly across the whole site instead of one page at a time. Requests are reviewed promptly and in good faith.",
-    "takedownLink": "Read the full disclaimer"
+    "takedownLink": "Read the full disclaimer",
+    "translations": "Reading this site in one of the machine-translated languages and something is wrong? Corrections are welcome and small ones are the most useful."
   },
   "certs": {
     "title": "Certifications & credentials",
@@ -10350,9 +10360,9 @@
         "context": "Eric Brewer conjectured it in a 2000 keynote and Gilbert and Lynch proved it in 2002: when nodes cannot talk, a system either refuses answers (consistent, unavailable) or answers with possibly stale data (available, inconsistent). Partitions are not optional on real networks, so the theorem is really about which failure mode you pre-select. Every database's marketing page is a position paper on CAP, whether it says so or not."
       },
       "year-2038-problem": {
-        "def": "Signed 32-bit Unix time overflows at 03:14:07 UTC on January 19, 2038, wrapping the clock to 1901.",
-        "context": "Unix counts seconds since 1970 in what was historically a signed 32-bit integer, which runs out in January 2038; affected systems will suddenly believe it is December 1901. Modern platforms have moved time_t to 64 bits, but the problem lives on in embedded devices, file formats, protocols, and databases with decades of service life. It is Y2K's quieter sibling: better understood, further away, and buried deeper.",
-        "depth": "Systems storing time as a signed 32-bit count of seconds since 1970 will overflow on 19 January 2038, and the counter will become large and negative. It is the same shape of problem as Y2K, arriving with more warning and less attention.\n\nThe reason it is harder in some respects is where the code lives. Y2K was largely in business applications that someone owned and could recompile; 32-bit time values sit in embedded systems, industrial controllers, filesystem formats and network protocols, many of which will still be running in 2038 with no mechanism to update them and no one left who knows how. A building management system installed today may well be operating then.\n\nThe fix on general-purpose systems is essentially done, since 64-bit time counters push the overflow past any horizon that matters. The work that remains is the unglamorous part: finding the on-disk formats, the protocol fields and the devices in walls, and dealing with them before the date rather than during it. It is a good test of whether an industry learned anything from the last time, and the honest answer is available in 2038."
+        "def": "Signed 32-bit Unix time overflows at 03:14:07 UTC on 19 January 2038, wrapping the clock to December 1901. Unlike Y2K it is a hard representational limit, not a formatting convention, and it cannot be patched around without widening the field.",
+        "context": "Unix counts seconds since 1970 in what was historically a signed 32-bit integer. Modern platforms moved time_t to 64 bits years ago, which is why the problem is widely assumed to be solved and is not: it survives wherever the width is fixed by something other than the compiler - protocol headers, on-disk records, and appliance firmware that will never see another release.",
+        "depth": "FOUR PLACES TO LOOK, in the order they bite.\n\nFile and wire formats pin the width regardless of the host. A 32-bit timestamp in a protocol header or an on-disk record stays 32 bits on a 64-bit machine, so recompiling changes nothing.\n\nEmbedded and appliance firmware is the largest exposure in a network estate. Devices with a ten to fifteen year service life bought today will still be racked in 2038, and many will never receive another firmware release.\n\nCertificates and licences fail early rather than on the day, because a not-after date is computed forward. A fifteen-year certificate issued in 2024 already overflows on a 32-bit stack, which is why the first real failures arrive well before 2038.\n\nDatabases and application code carry it in stored epoch integers, in schema column types, and in any arithmetic that adds an interval to now.\n\nPREPARATION PLANNING, which is the part nobody does.\n\nInventory the width, not the vendor's assurance. What stores or transmits a timestamp, in how many bits, and who owns it. An estate that cannot answer that has not started.\n\nTest by moving the clock, not by reading datasheets. Set a lab system past the boundary and watch. The failures are rarely a wrong date on screen - they are certificate validation refusing, schedulers firing continuously, and log correlation silently reordering.\n\nSort by replacement cycle, not by severity. Anything with a service life crossing 2038 has to be handled at procurement, because the cheapest fix for a device is not buying the 32-bit one - and that window is open now and closes progressively.\n\nMake it a purchasing requirement. Asking a vendor to state time_t width in a tender costs nothing and moves the problem to the party who can actually fix it.\n\nAnd date the deadline honestly. Any system doing forward date arithmetic hits its own boundary the moment now plus the interval crosses 2038. The engineering deadline is not January 2038; it is 2038 minus your longest forward-looking interval."
       },
       "the-homebrew-computer-club": {
         "def": "The 1975 Menlo Park hobbyist club where the personal computer industry, and its first fight over software, began.",
@@ -12405,10 +12415,6 @@
         "def": "The leading field in a syslog message encoding facility and severity.",
         "context": "The priority value is the number in angle brackets at the start of a syslog line. It packs the facility and severity into one integer, from which both can be recovered.",
         "depth": "In syslog the priority is the first field, a single number encoding both the facility that generated the message and its severity. Splitting it back out is arithmetic: divide by eight for the facility, take the remainder for the severity.\n\nThat encoding is the reason syslog filtering is often set up wrongly. A rule written against a raw priority value catches a specific facility and severity combination rather than the severity across all sources, and a collector configured to keep everything above a threshold may silently drop a facility nobody thought about. Knowing the two are packed together is what turns a confusing filter into an obvious one."
-      },
-      "y2038": {
-        "def": "The moment 32-bit Unix time overflows, in January 2038.",
-        "context": "The Year 2038 problem is when a signed 32-bit time_t counter, measuring seconds since 1970, overflows and wraps to a negative number. Unlike Y2K's formatting issue, this is a hard representational limit fixed by moving to 64-bit time."
       },
       "snat": {
         "def": "Rewriting the client source address as traffic passes through a device.",
@@ -15115,5 +15121,10 @@
     "backToIndex": "All of The Practice",
     "progressTitle": "Where this has got to",
     "progressBody": "{published} of a planned {planned} articles are published. The corpus is written a part at a time and finished rather than sketched, so an empty part below means it has not been started, not that it was forgotten."
+  },
+  "contributeTools": {
+    "translationsTitle": "Improve the translations",
+    "translationsBody": "This site is authored in English and Brazilian Portuguese, and machine-translated into fourteen more languages. The machine versions are serviceable and they are not native. If you read one of those fourteen and something is wrong - a term of art rendered literally, a sentence that technically parses and does not mean anything - telling me is a real contribution, and a short note naming the page and the phrase is enough.",
+    "translationsCta": "Send a correction"
   }
 }

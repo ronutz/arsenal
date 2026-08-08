@@ -1,0 +1,72 @@
+---
+slug: when-the-evidence-disagrees
+title: "Quando a evidência discorda de si mesma"
+thesis: "Duas medições que não podem estar ambas certas não são um problema de dados a ser resolvido escolhendo uma. São uma localização: a falha está entre elas, e a contradição é a coisa mais precisa que você tem."
+stance: practised
+part: yield
+order: 12
+roles: ["second-line", "field", "design"]
+relatedTools: ["packet-capture-plan-builder", "incident-timeline-rca-builder"]
+relatedIndustry: []
+relatedPractice: ["the-assumption-you-cannot-see", "verifying-without-trusting"]
+artefact: "O que precisaria ser verdade para as duas"
+updated: "2026-08-06"
+---
+
+## O momento que você foi treinado a conduzir mal
+
+O time de aplicação diz que as requisições estão sendo enviadas. O time de rede diz que nada chegou. Os dois estão olhando para instrumentos. Os dois são competentes. Os dois têm certeza.
+
+A resposta instintiva é descobrir **quem está errado**, e o instinto quase sempre é suspeitar da medição que discorda do seu próprio modelo. Isso não é análise, é preferência — e a reunião que se segue é dois grupos defendendo instrumentos em vez de examiná-los.
+
+O movimento produtivo é o oposto. Parta da posição de que **as duas leituras estão corretas** e pergunte como o mundo teria de ser para que isso fosse verdade. Costuma ser um mundo que existe.
+
+## As duas podem estar certas, e em geral estão
+
+Instrumentos raramente mentem. O que fazem o tempo todo é responder a uma pergunta um pouco diferente daquela que você acha que fez.
+
+**Medem em pontos diferentes.** As requisições de fato saíram da aplicação e de fato não chegaram, porque algo entre as duas — um proxy, uma política, uma tradução, um middlebox que descarta em silêncio — é um lugar onde um pacote pode deixar de existir.
+
+**Contam eventos diferentes.** Um contador incrementa na tentativa, o outro na conclusão. Num sistema saudável os dois se acompanham de perto o bastante para ninguém notar que são grandezas distintas. Sob falha eles divergem, e a divergência é a história inteira.
+
+**Medem em janelas diferentes.** Uma média de um minuto e uma amostra de cinco segundos da mesma coisa discordam violentamente durante um pico, e as duas estão corretas sobre o que mediram.
+
+**Discordam sobre o tempo.** Dois equipamentos com relógios defasados em noventa segundos produzem logs em que o efeito precede a causa. Toda correlação tirada dessas duas fontes está errada, e nenhuma parece errada.
+
+## A contradição é uma coordenada
+
+Eis o reenquadramento que transforma isto de frustração em técnica.
+
+Quando dois pontos de observação discordam, a falha está delimitada por eles. Tudo antes do primeiro ponto se comporta como o primeiro ponto diz. Tudo depois do segundo se comporta como o segundo diz. **O que você tem não é um conjunto de dados quebrado — é um espaço de busca com limite superior e inferior**, o que é posição bem melhor do que uma história coerente que exclui a verdade em silêncio.
+
+Isso faz das contradições algo a *procurar*, e não a resolver. Se duas medições concordam, falam de uma região. Se discordam, particionaram o sistema para você, e a próxima medição vai entre elas. É bisseção chegando pela porta da frente.
+
+## As perguntas que resolvem
+
+**Onde exatamente cada uma mede?** Não qual equipamento — de que lado de qual processo. Um contador de firewall antes da avaliação de política e outro depois são medições diferentes do mesmo tráfego, e a lacuna entre eles tem nome.
+
+**O que exatamente cada uma conta?** Leia a definição, não o rótulo. "Erros" numa plataforma e "erros" em outra costumam ser conjuntos disjuntos, e um contador que zera na leitura se comporta diferente de um que acumula.
+
+**Em que intervalo, e alinhado a quê?** Médias escondem picos por construção. Dois sistemas com janelas em fronteiras diferentes vão discordar sobre em qual minuto o evento caiu.
+
+**Os relógios são os mesmos?** Confira antes de tirar qualquer conclusão que dependa de ordem. Uma defasagem de noventa segundos é invisível em cada log isolado e fatal no instante em que você os põe lado a lado.
+
+**Alguma das medições é amostrada?** Amostragem de fluxo de um em mil e captura completa vão discordar sobre eventos raros — e o evento raro costuma ser justamente o que você persegue.
+
+## A versão organizacional, que é mais difícil
+
+Os dois instrumentos com frequência pertencem a dois times, e quando a contradição aparece cada um já declarou uma posição publicamente.
+
+A partir daí a discordância deixa de ser técnica. Ninguém quer ser o time que estava errado, então os dois defendem, e a conversa migra de *o que este contador conta* para *de quem é a culpa*. O problema então sobrevive não por ser difícil, mas porque resolvê-lo agora custa a alguém uma admissão.
+
+A saída é tornar a pergunta uma em que ninguém perde. **"O que precisaria ser verdade para as duas estarem corretas?"** não é um recurso retórico — é genuinamente a pergunta certa, e tem a propriedade útil de que respondê-la não exige que ninguém se retrate. E quase sempre tem resposta.
+
+Se você tem alguma senioridade na sala, fazê-la cedo vale mais do que qualquer medição que você pudesse tomar.
+
+## Quando uma delas está mesmo errada
+
+Acontece. Um contador que não está correto desde uma atualização de firmware, um gráfico agregando o nó errado, um log com bug de fuso.
+
+A questão não é que instrumentos sejam infalíveis. É que **"meu instrumento está certo e o seu está errado" é uma conclusão, não um ponto de partida** — e partir daí significa que você vai encontrar a evidência disso, porque vai parar de procurar assim que encontrar.
+
+Estabeleça a fronteira primeiro. Determine o que cada medição de fato mede. Se, depois disso, uma delas estiver realmente defeituosa, você terá descoberto isso com evidência em vez de ter afirmado com confiança — e vai saber quais das suas outras conclusões se apoiavam nela.

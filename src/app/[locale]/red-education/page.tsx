@@ -247,7 +247,7 @@ export default async function RedEducationPage({
               <p className="redu-body">{t("case2Body")}</p>
 
               <p className="vendor-note-body">{t("casesRights")}</p>
-              <ul className="course-list">
+              <ul className="redu-links">
                 <li>
                   <a href="https://www.rededucation.com/case-studies/high-impact-fortinet-training-at-scale-for-global-it-leader/" target="_blank" rel="noopener noreferrer">
                     {t("case1Link")} &#8599;
@@ -267,7 +267,7 @@ export default async function RedEducationPage({
                   a matter of public record on Red Education's own site. */}
               <h2 className="redu-section-title">{t("benchTitle")}</h2>
               <p className="redu-body">{t("benchIntro")}</p>
-              <ul className="course-list">
+              <ul className="redu-facts">
                 <li>{t("benchStat1")}</li>
                 <li>{t("benchStat2")}</li>
                 <li>{t("benchStat3")}</li>
@@ -275,7 +275,7 @@ export default async function RedEducationPage({
                 <li>{t("benchStat5")}</li>
               </ul>
               <h3 className="redu-awards-title">{t("benchAwardsTitle")}</h3>
-              <ul className="course-list">
+              <ul className="redu-facts">
                 <li>{t("benchAward1")}</li>
                 <li>{t("benchAward2")}</li>
                 <li>{t("benchAward3")}</li>

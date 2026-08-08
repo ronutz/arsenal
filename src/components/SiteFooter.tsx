@@ -63,21 +63,19 @@ export default async function SiteFooter() {
           <Link href="/guide" className="footer-contribute-link">
             {t("guide")}
           </Link>
-          <span className="footer-sep" aria-hidden="true">&#183;</span>
-          {/* The Blog: dated commentary, placed immediately after the guide per
-              PRIME's ruling 2026-07-23, ahead of the glossary. */}
-          <span className="footer-sep" aria-hidden="true">&#183;</span>
-          {/* The Glossary: a content destination alongside the guide, ahead of
-              the participation + legal clusters. */}
+          {/* ONE separator, not three. Removing the Blog and Glossary links
+              earlier left their separators behind - a link and its separator
+              are one unit and have to be removed together. */}
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/contribute/tools" className="footer-contribute-link">
             {t("contributeTools")}
           </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
-          <Link href="/contribute" className="footer-contribute-link">
-            {t("contribute")}
-          </Link>
-          <span className="footer-sep" aria-hidden="true">&#183;</span>
+          {/* "Improve the translations" MOVED OUT of the footer (PRIME
+              2026-08-06) to /contribute/tools, where it sits beside the other
+              ways to contribute, with a pointer from /contact. A footer link is
+              seen by everybody and acted on by almost nobody; the contribute
+              page is read by the few people actually considering it. */}
           <Link href="/license" className="footer-contribute-link">
             {t("license")}
           </Link>

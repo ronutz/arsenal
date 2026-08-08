@@ -148,6 +148,20 @@ export default async function ContactPage({
             </div>
           </section>
         </article>
+        {/* Translations pointer (PRIME 2026-08-06). A mention rather than a
+            section: the substance lives on /contribute/tools, and somebody on
+            the contact page is already looking for a way to reach me. */}
+        <section className="section">
+          <div className="container section-narrow">
+            <p className="section-body">{t("translations")}</p>
+            <p className="section-cta">
+              <Link href="/contribute/tools" className="section-cta-link">
+                /contribute/tools &rarr;
+              </Link>
+            </p>
+          </div>
+        </section>
+
       </main>
 
       <SiteFooter />

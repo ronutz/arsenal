@@ -4058,7 +4058,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     headword: "the Year 2038 problem",
     kind: "term",
     domains: ["programming", "ops-culture"],
-    aliases: ["Y2K38", "Unix epochalypse"],
+    aliases: ["y2038", "y2k38", "Y2K38", "Unix epochalypse"],
     relatedArticles: ["the-year-2038-problem"],
     relatedTerms: ["y2k"],
     sources: [{ label: "Year 2038 problem - Wikipedia", href: "https://en.wikipedia.org/wiki/Year_2038_problem" }],
@@ -8722,16 +8722,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     relatedTools: ["syslog-pri-decoder"],
     relatedTerms: [],
     sources: [{ label: "RFC 5424 (syslog PRI)", href: "https://www.rfc-editor.org/rfc/rfc5424" }],
-  },
-  {
-    slug: "y2038",
-    headword: "Y2038",
-    kind: "acronym",
-    domains: ["programming"],
-    expansion: "the Year 2038 problem",
-    aliases: ["y2038", "year 2038"],
-    relatedTerms: ["y2k"],
-    sources: [{ label: "Year 2038 problem (32-bit time_t)", href: "https://en.wikipedia.org/wiki/Year_2038_problem" }],
   },
   // Wave C companion batch 2: SNAT, MSRDP, WCCP, HSTS, LB, L3
   {
