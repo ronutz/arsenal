@@ -168,6 +168,33 @@ export interface PartnerVendor {
    * claim about authorisation, not a description of experience.
    */
   relationships?: VendorRelationship[];
+  /**
+   * THE COMPANY'S OWN PLACE ON THE WEB (golden content standard, PRIME
+   * 2026-08-06: "vendor profiles should have a link section to the vendor's
+   * main page and resources").
+   *
+   * Deliberately separate from `sources`. A source is something this site cites
+   * as evidence for a claim; a homepage is where a reader goes next to read the
+   * company's own account of itself. Conflating them would let marketing copy
+   * masquerade as corroboration.
+   *
+   * `defunct` is not an oversight - it is the honest answer for a company that
+   * no longer exists. Silicon Graphics has no homepage; a link labelled
+   * "Silicon Graphics" that lands on an acquirer's product page tells the
+   * reader something false about who is still trading. Where a successor is
+   * worth pointing at, `successor` names it explicitly so the reader knows
+   * whose site they are being sent to.
+   */
+  official?: {
+    /** The company's own site. Omit entirely if the company is gone. */
+    url?: string;
+    /** Documentation, developer portal, knowledge base - the useful part. */
+    resources?: { label: string; url: string }[];
+    /** True where the company no longer trades under this name. */
+    defunct?: boolean;
+    /** Who to read instead, named so the reader is not misled about whose site it is. */
+    successor?: { label: string; url: string };
+  };
   sources?: {
     label: string;
     url: string;
@@ -249,6 +276,12 @@ export const partnerVendors: PartnerVendor[] = [
   // exactly what happened to the sentence that used to sit on this line.
   {
     slug: "nutanix",
+    official: {
+      url: "https://www.nutanix.com",
+      resources: [
+        { label: "Nutanix Support Portal", url: "https://portal.nutanix.com/page/documents/list" },
+      ],
+    },
     // Red Education partner (Courses by Vendor nav + every regional menu). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -281,6 +314,12 @@ export const partnerVendors: PartnerVendor[] = [
     // Verified 2026-07-28. Note the founding-date sources differ by three days
     // (8 vs 11 December 2015); the 11th is the public announcement and is used.
     slug: "openai",
+    official: {
+      url: "https://openai.com",
+      resources: [
+        { label: "OpenAI Platform docs", url: "https://platform.openai.com/docs" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "OpenAI",
@@ -311,6 +350,12 @@ export const partnerVendors: PartnerVendor[] = [
     // the sources) and the copy states what the company IS rather than
     // advertising it. If this entry ever reads like promotion, it is wrong.
     slug: "anthropic",
+    official: {
+      url: "https://www.anthropic.com",
+      resources: [
+        { label: "Claude Docs", url: "https://docs.claude.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Anthropic",
@@ -369,6 +414,9 @@ export const partnerVendors: PartnerVendor[] = [
     // timeline orders by founding, and an era has no founding year.
     // It also ENDED, so it uses the `ended` field.
     slug: "sixdegrees",
+    official: {
+      defunct: true,
+    },
     tags: ["vendor"],
     group: "other",
     name: "SixDegrees.com",
@@ -446,6 +494,10 @@ export const partnerVendors: PartnerVendor[] = [
     // was a LATER chief executive rather than a founder. Only the consistent
     // names are stated and the disagreement is recorded.
     slug: "arcsight",
+    official: {
+      defunct: true,
+      successor: { label: "OpenText, which holds the ArcSight portfolio", url: "https://www.opentext.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "ArcSight",
@@ -488,6 +540,9 @@ export const partnerVendors: PartnerVendor[] = [
     // ~$1.2B; and the employee who proposed the name is described as based in
     // Oslo by most sources and as Danish by one.
     slug: "accenture",
+    official: {
+      url: "https://www.accenture.com",
+    },
     tags: ["services"],
     group: "other",
     name: "Accenture",
@@ -525,6 +580,9 @@ export const partnerVendors: PartnerVendor[] = [
     // Multics is what Unix was named against. Everything else here is context
     // for that.
     slug: "honeywell",
+    official: {
+      url: "https://www.honeywell.com",
+    },
     tags: ["vendor"],
     group: "other",
     name: "Honeywell",
@@ -576,6 +634,9 @@ export const partnerVendors: PartnerVendor[] = [
     // tangential to the company's history, oddly phrased, and concerns the
     // maker of the model writing this entry. DELIBERATELY OMITTED.
     slug: "nozomi-networks",
+    official: {
+      url: "https://www.nozominetworks.com",
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Nozomi Networks",
@@ -693,6 +754,9 @@ export const partnerVendors: PartnerVendor[] = [
     // this timeline as a research organisation rather than a company - which is
     // why it carries `standards` alongside `services`.
     slug: "cpqd",
+    official: {
+      url: "https://www.cpqd.com.br",
+    },
     group: "other",
     name: "CPqD",
     founded: 1976,
@@ -800,6 +864,9 @@ export const partnerVendors: PartnerVendor[] = [
     // barred by Petrobras from new contracts. Omitting it would be dishonest;
     // it is stated factually, with its status, and without editorialising.
     slug: "promon-logicalis",
+    official: {
+      url: "https://www.la.logicalis.com",
+    },
     group: "other",
     name: "Promon and Logicalis",
     founded: 1960,
@@ -836,6 +903,12 @@ export const partnerVendors: PartnerVendor[] = [
     // follows from the usage-based model itself, which is sourced. No specific
     // billing controversy is asserted, because none was verified here.
     slug: "datadog",
+    official: {
+      url: "https://www.datadoghq.com",
+      resources: [
+        { label: "Datadog Docs", url: "https://docs.datadoghq.com" },
+      ],
+    },
     group: "contemporary",
     name: "Datadog",
     founded: 2010,
@@ -1018,6 +1091,9 @@ export const partnerVendors: PartnerVendor[] = [
     // AudioCodes' work on G.723.1 became an ITU codec. Two different decades,
     // two different industries, same mechanism - and the thread is named here.
     slug: "audiocodes",
+    official: {
+      url: "https://www.audiocodes.com",
+    },
     group: "other",
     name: "AudioCodes",
     founded: 1993,
@@ -1051,6 +1127,12 @@ export const partnerVendors: PartnerVendor[] = [
     // the sideline out-earned the store, so they built a company around it.
     // That is a shape this timeline has not yet named and should.
     slug: "veeam",
+    official: {
+      url: "https://www.veeam.com",
+      resources: [
+        { label: "Veeam Documentation", url: "https://helpcenter.veeam.com" },
+      ],
+    },
     group: "contemporary",
     name: "Veeam",
     founded: 2006,
@@ -1162,6 +1244,9 @@ export const partnerVendors: PartnerVendor[] = [
     // Also connects to the channel SE article written from PRIME's own account:
     // the demo/PoC distinction.
     slug: "cloudshare",
+    official: {
+      url: "https://www.cloudshare.com",
+    },
     group: "contemporary",
     name: "CloudShare",
     founded: 2007,
@@ -1231,6 +1316,9 @@ export const partnerVendors: PartnerVendor[] = [
     // offer the structural explanation that accounts for BOTH the recognition
     // and the hostility without endorsing either camp.
     slug: "ec-council",
+    official: {
+      url: "https://www.eccouncil.org",
+    },
     group: "other",
     name: "EC-Council",
     founded: 2001,
@@ -1264,6 +1352,9 @@ export const partnerVendors: PartnerVendor[] = [
     // failure mode of this model *** - and putting it beside the MCQ failure
     // mode is the point of having both entries.
     slug: "offsec",
+    official: {
+      url: "https://www.offsec.com",
+    },
     group: "contemporary",
     name: "OffSec (Offensive Security)",
     founded: 2007,
@@ -1338,6 +1429,9 @@ export const partnerVendors: PartnerVendor[] = [
     // property of the standard, and the reporting notes nobody had taken up the
     // offered licence. All of that is stated; none of it is adjudicated.
     slug: "credly",
+    official: {
+      url: "https://info.credly.com",
+    },
     group: "contemporary",
     name: "Credly",
     founded: 2012,
@@ -1380,6 +1474,9 @@ export const partnerVendors: PartnerVendor[] = [
     // and nearly 20,000 in different places - almost certainly counting
     // different things.
     slug: "pearson-vue",
+    official: {
+      url: "https://home.pearsonvue.com",
+    },
     group: "other",
     name: "Pearson VUE",
     founded: 1994,
@@ -1422,6 +1519,12 @@ export const partnerVendors: PartnerVendor[] = [
     //
     // FOUNDING-DATE AND FOUNDER-LIST DISCREPANCIES RECORDED.
     slug: "dynatrace",
+    official: {
+      url: "https://www.dynatrace.com",
+      resources: [
+        { label: "Dynatrace Docs", url: "https://docs.dynatrace.com" },
+      ],
+    },
     group: "contemporary",
     name: "Dynatrace",
     founded: 2005,
@@ -1567,6 +1670,9 @@ export const partnerVendors: PartnerVendor[] = [
     // Pairs with the `first-modem` milestone: that entry explains what a modem
     // is FOR, this one explains what happened when everybody wanted one.
     slug: "usrobotics",
+    official: {
+      defunct: true,
+    },
     group: "other",
     name: "USRobotics",
     founded: 1976,
@@ -1606,6 +1712,9 @@ export const partnerVendors: PartnerVendor[] = [
     // No statement is made here about which vendors any individual is
     // authorised to teach; that lives in `relationships` and nowhere else.
     slug: "red-education",
+    official: {
+      url: "https://www.rededucation.com",
+    },
     group: "other",
     name: "Red Education",
     founded: 2005,
@@ -1693,6 +1802,9 @@ export const partnerVendors: PartnerVendor[] = [
     // than quoted - it runs past this site's quotation limit, and paraphrase
     // also avoids turning a widow's sentence into a pull quote.
     slug: "arrow-electronics",
+    official: {
+      url: "https://www.arrow.com",
+    },
     group: "other",
     name: "Arrow Electronics",
     founded: 1935,
@@ -1777,6 +1889,9 @@ export const partnerVendors: PartnerVendor[] = [
     // the company) and NIIT inside the HCL entry (training built as
     // infrastructure for an industry).
     slug: "ingram-micro",
+    official: {
+      url: "https://www.ingrammicro.com",
+    },
     group: "other",
     name: "Ingram Micro",
     founded: 1979,
@@ -1862,6 +1977,9 @@ export const partnerVendors: PartnerVendor[] = [
     // FOUNDER COUNT DISCREPANCY RECORDED: most sources name Mike Baur and Steve
     // Owings; one says six founders led by Baur. Both stated.
     slug: "scansource",
+    official: {
+      url: "https://www.scansource.com",
+    },
     group: "other",
     name: "ScanSource",
     founded: 1992,
@@ -1902,6 +2020,9 @@ export const partnerVendors: PartnerVendor[] = [
     // and this timeline has been carrying a `distributor` tag with nothing
     // behind it to explain the word.
     slug: "westcon-comstor",
+    official: {
+      url: "https://www.westconcomstor.com",
+    },
     group: "other",
     name: "Westcon-Comstor",
     founded: 1985,
@@ -1941,6 +2062,9 @@ export const partnerVendors: PartnerVendor[] = [
     // Also loops to DEC, already on this timeline: both founders came from
     // there, PAIX was DEC's, and Equinix later bought PAIX back.
     slug: "equinix",
+    official: {
+      url: "https://www.equinix.com",
+    },
     tags: ["datacentre"],
     group: "other",
     name: "Equinix",
@@ -1978,6 +2102,9 @@ export const partnerVendors: PartnerVendor[] = [
     // 2004; Wikipedia, TI INSIDE (reporting the merger contemporaneously on
     // 15 August 2005) and Exame all say 2005. Both given.
     slug: "tivit",
+    official: {
+      url: "https://tivit.com",
+    },
     tags: ["services", "datacentre"],
     group: "other",
     name: "TIVIT",
@@ -2014,6 +2141,9 @@ export const partnerVendors: PartnerVendor[] = [
     // technology company's founder as infrastructure for an industry.
     // Stefanini was a training company that BECAME the technology company.
     slug: "stefanini",
+    official: {
+      url: "https://stefanini.com",
+    },
     tags: ["services", "training"],
     group: "other",
     name: "Stefanini",
@@ -2048,6 +2178,9 @@ export const partnerVendors: PartnerVendor[] = [
     // was the product: a services business owned by a cloud vendor cannot
     // credibly recommend a competitor's cloud.
     slug: "kyndryl",
+    official: {
+      url: "https://www.kyndryl.com",
+    },
     tags: ["services"],
     group: "contemporary",
     name: "Kyndryl",
@@ -2087,6 +2220,9 @@ export const partnerVendors: PartnerVendor[] = [
     //
     // NO PRICE IS GIVEN: this session's sources did not state one.
     slug: "comptia",
+    official: {
+      url: "https://www.comptia.org",
+    },
     tags: ["training", "standards"],
     group: "other",
     name: "CompTIA",
@@ -2123,6 +2259,12 @@ export const partnerVendors: PartnerVendor[] = [
     // DATE NOTE: sources give June 1999 and August 1999. They are describing
     // different events - founding and first public alpha - and both are stated.
     slug: "freeradius",
+    official: {
+      url: "https://www.freeradius.org",
+      resources: [
+        { label: "FreeRADIUS documentation", url: "https://www.freeradius.org/documentation/" },
+      ],
+    },
     tags: ["standards", "vendor"],
     group: "other",
     name: "FreeRADIUS",
@@ -2205,6 +2347,10 @@ export const partnerVendors: PartnerVendor[] = [
     //     Lotus in 1991.
     //   * HCL - on PRIME's queue - has owned Notes and Domino since 2019.
     slug: "lotus",
+    official: {
+      defunct: true,
+      successor: { label: "HCLTech, which acquired the Notes and Domino portfolio", url: "https://www.hcltech.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "Lotus Development",
@@ -2253,6 +2399,12 @@ export const partnerVendors: PartnerVendor[] = [
     // and contradicts itself in the same article. The majority account is given
     // and the disagreement noted rather than silently resolved.
     slug: "qualys",
+    official: {
+      url: "https://www.qualys.com",
+      resources: [
+        { label: "Qualys Documentation", url: "https://docs.qualys.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Qualys",
@@ -2283,6 +2435,12 @@ export const partnerVendors: PartnerVendor[] = [
     // a distinguished engineer in Juniper's security CTO office, and Juniper is
     // a career chapter on this site.
     slug: "illumio",
+    official: {
+      url: "https://www.illumio.com",
+      resources: [
+        { label: "Illumio Docs", url: "https://docs.illumio.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Illumio",
@@ -2323,6 +2481,12 @@ export const partnerVendors: PartnerVendor[] = [
     // The widely repeated "recipe app for his wife" origin story is OMITTED:
     // it was not in this session's verified sources.
     slug: "elastic",
+    official: {
+      url: "https://www.elastic.co",
+      resources: [
+        { label: "Elastic Documentation", url: "https://www.elastic.co/guide" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Elastic",
@@ -2408,6 +2572,12 @@ export const partnerVendors: PartnerVendor[] = [
     // operation from a few hundred dollars a month to over a million a year,
     // and was chief executive for more than a decade.
     slug: "kaspersky",
+    official: {
+      url: "https://www.kaspersky.com",
+      resources: [
+        { label: "Kaspersky Knowledge Base", url: "https://support.kaspersky.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "other",
     name: "Kaspersky",
@@ -2450,6 +2620,12 @@ export const partnerVendors: PartnerVendor[] = [
     // The 18,000 figure is given with the caveat the US government itself
     // attached to it, which is almost always dropped in retellings.
     slug: "solarwinds",
+    official: {
+      url: "https://www.solarwinds.com",
+      resources: [
+        { label: "SolarWinds Documentation", url: "https://documentation.solarwinds.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "SolarWinds",
@@ -2491,6 +2667,12 @@ export const partnerVendors: PartnerVendor[] = [
     // NOTE: founding date is given as 16 September 2002 by most sources and
     // 4 October 2002 by one; both recorded rather than one chosen.
     slug: "tenable",
+    official: {
+      url: "https://www.tenable.com",
+      resources: [
+        { label: "Tenable Docs", url: "https://docs.tenable.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Tenable",
@@ -2518,6 +2700,12 @@ export const partnerVendors: PartnerVendor[] = [
     // RAPID7 - added 2026-07-29 (PRIME). The deliberate mirror of Tenable:
     // Tenable closed an open-source project to fund itself; Rapid7 BOUGHT one.
     slug: "rapid7",
+    official: {
+      url: "https://www.rapid7.com",
+      resources: [
+        { label: "Rapid7 Docs", url: "https://docs.rapid7.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Rapid7",
@@ -2595,6 +2783,12 @@ export const partnerVendors: PartnerVendor[] = [
     // founder, sourced to MIT's own alumni association, and omitting it would
     // be a strange kind of tidiness. It is stated plainly and not dramatised.
     slug: "akamai",
+    official: {
+      url: "https://www.akamai.com",
+      resources: [
+        { label: "Akamai TechDocs", url: "https://techdocs.akamai.com" },
+      ],
+    },
     tags: ["vendor", "services"],
     group: "other",
     name: "Akamai Technologies",
@@ -2626,6 +2820,12 @@ export const partnerVendors: PartnerVendor[] = [
     // shows at IronPort (2002), Zscaler (2007) and CrowdStrike (2013) - and
     // this one started, like IronPort, from a spam question.
     slug: "cloudflare",
+    official: {
+      url: "https://www.cloudflare.com",
+      resources: [
+        { label: "Cloudflare Docs", url: "https://developers.cloudflare.com" },
+      ],
+    },
     tags: ["vendor", "services"],
     group: "contemporary",
     name: "Cloudflare",
@@ -2652,6 +2852,13 @@ export const partnerVendors: PartnerVendor[] = [
     // F5 - company history (PRIME step 4, 2026-07-29). Hub + lineage page
     // already carry the deal detail; this is the company and the idea.
     slug: "f5",
+    official: {
+      url: "https://www.f5.com",
+      resources: [
+        { label: "Product documentation", url: "https://my.f5.com/manage/s/documentation" },
+        { label: "DevCentral community", url: "https://community.f5.com" },
+      ],
+    },
     relationships: ["red-education-partner", "authorized-instructor", "worked-with-directly"],
     tags: ["vendor"],
     group: "other",
@@ -2682,6 +2889,12 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // FORTINET - company history (PRIME step 4, 2026-07-29).
     slug: "fortinet",
+    official: {
+      url: "https://www.fortinet.com",
+      resources: [
+        { label: "Fortinet Document Library", url: "https://docs.fortinet.com" },
+      ],
+    },
     relationships: ["red-education-partner", "authorized-instructor"],
     tags: ["vendor"],
     group: "other",
@@ -2707,6 +2920,12 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // NETSKOPE - company history (PRIME step 4, 2026-07-29).
     slug: "netskope",
+    official: {
+      url: "https://www.netskope.com",
+      resources: [
+        { label: "Netskope Knowledge Portal", url: "https://docs.netskope.com" },
+      ],
+    },
     relationships: ["red-education-partner", "authorized-instructor"],
     tags: ["vendor"],
     group: "other",
@@ -2731,6 +2950,12 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // PING IDENTITY - company history (PRIME step 4, 2026-07-29).
     slug: "ping-identity",
+    official: {
+      url: "https://www.pingidentity.com",
+      resources: [
+        { label: "Ping Identity Documentation", url: "https://docs.pingidentity.com" },
+      ],
+    },
     relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "other",
@@ -2755,6 +2980,12 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // ZSCALER - company history (PRIME step 4, 2026-07-29).
     slug: "zscaler",
+    official: {
+      url: "https://www.zscaler.com",
+      resources: [
+        { label: "Zscaler Help Portal", url: "https://help.zscaler.com" },
+      ],
+    },
     relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "other",
@@ -2782,6 +3013,12 @@ export const partnerVendors: PartnerVendor[] = [
     // this entry tells the COMPANY STORY and leaves the acquisition detail
     // where it already lives rather than duplicating it.
     slug: "extreme",
+    official: {
+      url: "https://www.extremenetworks.com",
+      resources: [
+        { label: "Extreme Documentation", url: "https://supportdocs.extremenetworks.com" },
+      ],
+    },
     relationships: ["red-education-partner", "authorized-instructor", "worked-with-directly"],
     tags: ["vendor"],
     group: "other",
@@ -2808,6 +3045,12 @@ export const partnerVendors: PartnerVendor[] = [
     // CHECK POINT - company history (PRIME step 4, 2026-07-29).
     // The lineage page carries the deals; this is the company and the idea.
     slug: "check-point",
+    official: {
+      url: "https://www.checkpoint.com",
+      resources: [
+        { label: "Check Point Support Center", url: "https://support.checkpoint.com" },
+      ],
+    },
     relationships: ["red-education-partner"],
     tags: ["vendor"],
     group: "other",
@@ -2866,6 +3109,12 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // CISCO - company history (PRIME step 4, 2026-07-29).
     slug: "cisco",
+    official: {
+      url: "https://www.cisco.com",
+      resources: [
+        { label: "Cisco Documentation", url: "https://www.cisco.com/c/en/us/support/index.html" },
+      ],
+    },
     relationships: ["red-education-partner", "worked-inside"],
     tags: ["vendor"],
     group: "other",
@@ -2898,6 +3147,12 @@ export const partnerVendors: PartnerVendor[] = [
   {
     // PALO ALTO NETWORKS - company history (PRIME step 4, 2026-07-29).
     slug: "palo-alto",
+    official: {
+      url: "https://www.paloaltonetworks.com",
+      resources: [
+        { label: "Palo Alto Networks TechDocs", url: "https://docs.paloaltonetworks.com" },
+      ],
+    },
     relationships: ["red-education-partner", "worked-with-directly"],
     tags: ["vendor"],
     group: "other",
@@ -3066,6 +3321,9 @@ export const partnerVendors: PartnerVendor[] = [
     // History-Computer. NOTE: sources give both $399 and $600 for the Model I
     // launch price; both are recorded rather than one being chosen.
     slug: "tandy-radioshack",
+    official: {
+      defunct: true,
+    },
     tags: ["vendor", "reseller"],
     group: "other",
     name: "Tandy and RadioShack",
@@ -3104,6 +3362,9 @@ export const partnerVendors: PartnerVendor[] = [
     // Verified against Wikipedia, Grokipedia, Forbes and contemporaneous
     // reporting.
     slug: "crowdstrike",
+    official: {
+      url: "https://www.crowdstrike.com",
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "CrowdStrike",
@@ -3132,6 +3393,12 @@ export const partnerVendors: PartnerVendor[] = [
     // CISCO, which is a career chapter on this site. Verified against
     // Wikipedia, Grokipedia and contemporaneous coverage of the acquisition.
     slug: "splunk",
+    official: {
+      url: "https://www.splunk.com",
+      resources: [
+        { label: "Splunk Docs", url: "https://docs.splunk.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Splunk",
@@ -3170,6 +3437,12 @@ export const partnerVendors: PartnerVendor[] = [
     // product line to Blue Coat in 2006.
     // Verified against Wikipedia and Grokipedia.
     slug: "netapp",
+    official: {
+      url: "https://www.netapp.com",
+      resources: [
+        { label: "NetApp Documentation", url: "https://docs.netapp.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "NetApp",
@@ -3202,6 +3475,12 @@ export const partnerVendors: PartnerVendor[] = [
     // own name forty years on - which on this timeline is genuinely unusual.
     // Verified against Wikipedia.
     slug: "sophos",
+    official: {
+      url: "https://www.sophos.com",
+      resources: [
+        { label: "Sophos Documentation", url: "https://docs.sophos.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Sophos",
@@ -3230,6 +3509,9 @@ export const partnerVendors: PartnerVendor[] = [
     //     LANDESK before Thoma Bravo did
     // Verified against Ivanti's own history pages, Wikipedia and Grokipedia.
     slug: "ivanti",
+    official: {
+      url: "https://www.ivanti.com",
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Ivanti",
@@ -3265,6 +3547,10 @@ export const partnerVendors: PartnerVendor[] = [
     // itself then ended inside Dell. The timeline can now show both halves.
     // Verified against EMC's own SEC merger filings and Wikipedia.
     slug: "emc",
+    official: {
+      defunct: true,
+      successor: { label: "Dell Technologies", url: "https://www.dell.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "EMC Corporation",
@@ -3303,6 +3589,10 @@ export const partnerVendors: PartnerVendor[] = [
     // as a business, and a reminder that services lineages matter as much as
     // product ones. Verified against contemporaneous coverage of the HP deal.
     slug: "eds",
+    official: {
+      defunct: true,
+      successor: { label: "DXC Technology", url: "https://dxc.com" },
+    },
     tags: ["services"],
     group: "other",
     name: "Electronic Data Systems (EDS)",
@@ -3355,6 +3645,9 @@ export const partnerVendors: PartnerVendor[] = [
     // Verified 2026-07-28 against Wikipedia, Grokipedia, and contemporaneous
     // coverage of the CMGI and Overture transactions.
     slug: "altavista",
+    official: {
+      defunct: true,
+    },
     tags: ["vendor"],
     group: "other",
     name: "AltaVista",
@@ -3391,6 +3684,12 @@ export const partnerVendors: PartnerVendor[] = [
     // Facts verified 2026-07-28 against the ASF's own history pages and the
     // httpd project's ABOUT_APACHE.
     slug: "apache",
+    official: {
+      url: "https://www.apache.org",
+      resources: [
+        { label: "Apache HTTP Server docs", url: "https://httpd.apache.org/docs/" },
+      ],
+    },
     tags: ["standards", "vendor"],
     group: "contemporary",
     name: "The Apache Software Foundation",
@@ -3415,6 +3714,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "arista",
+    official: {
+      url: "https://www.arista.com",
+      resources: [
+        { label: "Arista Documentation", url: "https://www.arista.com/en/support/product-documentation" },
+      ],
+    },
     // Red Education partner (every regional menu; professional-services page states Red Education delivers Arista training). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -3438,6 +3743,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "avaya",
+    official: {
+      url: "https://www.avaya.com",
+      resources: [
+        { label: "Avaya Support", url: "https://support.avaya.com" },
+      ],
+    },
     // Red Education partner (Courses by Vendor nav + every regional menu + course catalogue). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -3462,6 +3773,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "aws",
+    official: {
+      url: "https://aws.amazon.com",
+      resources: [
+        { label: "AWS Documentation", url: "https://docs.aws.amazon.com" },
+      ],
+    },
     // Red Education partner (course-finder vendor selector only; footer link is an unpublished page_id - WEAKEST EVIDENCE, flagged for PRIME). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -3485,6 +3802,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "cyberark",
+    official: {
+      url: "https://www.cyberark.com",
+      resources: [
+        { label: "CyberArk Docs", url: "https://docs.cyberark.com" },
+      ],
+    },
     // Red Education partner (Courses by Vendor nav + Australasia/SAARC/ASEAN menus). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -3510,6 +3833,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "epi",
+    official: {
+      url: "https://www.epi-ap.com",
+    },
     // Red Education partner (Courses by Vendor nav + Americas/Australasia/SAARC/EMEA menus). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -3536,6 +3862,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "microsoft",
+    official: {
+      url: "https://www.microsoft.com",
+      resources: [
+        { label: "Microsoft Learn", url: "https://learn.microsoft.com" },
+      ],
+    },
     // Red Education partner (course-finder vendor selector). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -3559,6 +3891,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "mobileiron",
+    official: {
+      defunct: true,
+      successor: { label: "Ivanti, which acquired MobileIron in 2020", url: "https://www.ivanti.com" },
+    },
     // Red Education partner (Australasia/SAARC/ASEAN regional menus). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -3585,6 +3921,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "paessler",
+    official: {
+      url: "https://www.paessler.com",
+      resources: [
+        { label: "PRTG Manual", url: "https://www.paessler.com/manuals/prtg" },
+      ],
+    },
     // Red Education partner (Courses by Vendor nav + every regional menu). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -3610,6 +3952,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "red-hat",
+    official: {
+      url: "https://www.redhat.com",
+      resources: [
+        { label: "Red Hat Documentation", url: "https://docs.redhat.com" },
+      ],
+    },
     // Red Education partner (Australasia menu + dedicated rededucation.com/red-hat/ page). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -3633,6 +3981,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "riverbed",
+    official: {
+      url: "https://www.riverbed.com",
+    },
     // Red Education partner (Australasia/SAARC/ASEAN menus; professional-services page states Riverbed Authorised Consulting Partner since 2008). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
@@ -3698,6 +4049,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "brocade-broadcom",
+    official: {
+      defunct: true,
+      successor: { label: "Broadcom", url: "https://www.broadcom.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "Brocade & Foundry - the Broadcom diaspora",
@@ -3752,6 +4107,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "mikrotik",
+    official: {
+      url: "https://mikrotik.com",
+      resources: [
+        { label: "MikroTik Documentation", url: "https://help.mikrotik.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "other",
     name: "MikroTik - Latvia's quiet giant",
@@ -3769,6 +4130,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "radware",
+    official: {
+      url: "https://www.radware.com",
+    },
     tags: ["vendor"],
     group: "other",
     name: "Radware - the Zisapel lineage",
@@ -3787,6 +4151,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "imperva-thales",
+    official: {
+      url: "https://www.imperva.com",
+      resources: [
+        { label: "Imperva Documentation", url: "https://docs.imperva.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "other",
     name: "Imperva - from WebCohort to Thales",
@@ -3805,6 +4175,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "versa",
+    official: {
+      url: "https://versa-networks.com",
+    },
     tags: ["vendor"],
     group: "other",
     name: "Versa Networks - the SASE independent",
@@ -3846,6 +4219,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "madge",
+    official: {
+      defunct: true,
+    },
     tags: ["vendor"],
     group: "other",
     name: "Madge Networks - Token Ring's standard-bearer",
@@ -3868,6 +4244,10 @@ export const partnerVendors: PartnerVendor[] = [
   // of the industry itself, each with a full lineage profile. ----
   {
     slug: "sun-microsystems",
+    official: {
+      defunct: true,
+      successor: { label: "Oracle, which acquired Sun in 2010", url: "https://www.oracle.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "Sun Microsystems - the network is the computer",
@@ -3882,6 +4262,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "silicon-graphics",
+    official: {
+      defunct: true,
+      successor: { label: "Hewlett Packard Enterprise, which acquired SGI in 2016", url: "https://www.hpe.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "Silicon Graphics - the geometry of Hollywood",
@@ -3902,6 +4286,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dec",
+    official: {
+      defunct: true,
+      successor: { label: "HP, via Compaq, which acquired Digital in 1998", url: "https://www.hp.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "Digital Equipment Corporation - the minicomputer king",
@@ -3912,6 +4300,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nokia",
+    official: {
+      url: "https://www.nokia.com",
+      resources: [
+        { label: "Nokia Documentation", url: "https://documentation.nokia.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "other",
     name: "Nokia - from paper mill to network giant",
@@ -3922,6 +4316,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "ericsson",
+    official: {
+      url: "https://www.ericsson.com",
+    },
     tags: ["vendor"],
     group: "other",
     name: "Ericsson - 150 years of telephony",
@@ -3932,6 +4329,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "huawei",
+    official: {
+      url: "https://www.huawei.com",
+      resources: [
+        { label: "Huawei Support", url: "https://support.huawei.com/enterprise" },
+      ],
+    },
     tags: ["vendor"],
     group: "other",
     name: "Huawei - the Shenzhen ascent",
@@ -3942,6 +4345,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "siemens",
+    official: {
+      url: "https://www.siemens.com",
+    },
     tags: ["vendor", "services"],
     group: "other",
     name: "Siemens - the 1847 telegraph startup",
@@ -3952,6 +4358,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "novell",
+    official: {
+      defunct: true,
+      successor: { label: "OpenText, which holds the Novell portfolio", url: "https://www.opentext.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "Novell - the network operating system",
@@ -3962,6 +4372,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "oracle",
+    official: {
+      url: "https://www.oracle.com",
+      resources: [
+        { label: "Oracle Help Center", url: "https://docs.oracle.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "other",
     name: "Oracle - the database empire",
@@ -3972,6 +4388,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "ibm",
+    official: {
+      url: "https://www.ibm.com",
+      resources: [
+        { label: "IBM Documentation", url: "https://www.ibm.com/docs" },
+      ],
+    },
     tags: ["vendor", "services"],
     group: "other",
     name: "IBM - the century company",
@@ -3982,6 +4404,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "sap",
+    official: {
+      url: "https://www.sap.com",
+      resources: [
+        { label: "SAP Help Portal", url: "https://help.sap.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "other",
     name: "SAP - five engineers against the mainframe",
@@ -3993,6 +4421,10 @@ export const partnerVendors: PartnerVendor[] = [
   // ---- Pioneer wave 2 (PRIME 2026-07-16): six more founders of the industry. ----
   {
     slug: "3com",
+    official: {
+      defunct: true,
+      successor: { label: "Hewlett Packard Enterprise, which acquired 3Com in 2010", url: "https://www.hpe.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "3Com - Ethernet leaves the lab",
@@ -4003,6 +4435,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "compaq",
+    official: {
+      defunct: true,
+      successor: { label: "HP, which merged with Compaq in 2002", url: "https://www.hp.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "Compaq - the clone that became the king",
@@ -4017,6 +4453,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "netscape",
+    official: {
+      defunct: true,
+      successor: { label: "the Mozilla project, which grew from the Netscape source release", url: "https://www.mozilla.org" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "Netscape - the company that opened the web",
@@ -4047,6 +4487,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "data-general",
+    official: {
+      defunct: true,
+      successor: { label: "Dell, via EMC", url: "https://www.dell.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "Data General - the soul of a new machine",
@@ -4072,6 +4516,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "wang",
+    official: {
+      defunct: true,
+    },
     tags: ["vendor"],
     group: "other",
     name: "Wang Laboratories - the office before the PC",
@@ -4086,6 +4533,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "tandem",
+    official: {
+      defunct: true,
+      successor: { label: "Hewlett Packard Enterprise, via Compaq", url: "https://www.hpe.com" },
+    },
     tags: ["vendor"],
     group: "other",
     name: "Tandem Computers - the machine that never stops",
@@ -4100,6 +4551,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "banyan",
+    official: {
+      defunct: true,
+    },
     tags: ["vendor"],
     group: "other",
     name: "Banyan Systems - the directory pioneer",
@@ -4150,6 +4604,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "rand",
+    official: {
+      defunct: true,
+      successor: { label: "the RAND Corporation, which continues as a research institution", url: "https://www.rand.org" },
+    },
     tags: ["standards"],
     group: "other",
     name: "RAND Corporation - where packet switching was imagined",
@@ -4217,6 +4675,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "ciena",
+    official: {
+      url: "https://www.ciena.com",
+    },
     tags: ["vendor"],
     group: "other",
     name: "Ciena - the company that taught fiber to carry colors",
@@ -4237,6 +4698,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dolch",
+    official: {
+      defunct: true,
+    },
     tags: ["vendor"],
     group: "other",
     name: "Dolch (Kontron / Azonix lineage)",
@@ -4285,6 +4749,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "zte",
+    official: {
+      url: "https://www.zte.com.cn",
+    },
     tags: ["vendor"],
     group: "other",
     name: "ZTE - China's other giant",
@@ -4295,6 +4762,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "fluke",
+    official: {
+      url: "https://www.flukenetworks.com",
+    },
     tags: ["vendor"],
     group: "other",
     name: "Fluke - the meters and certifiers in every field bag",
@@ -4325,6 +4795,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nvidia",
+    official: {
+      url: "https://www.nvidia.com",
+      resources: [
+        { label: "NVIDIA Developer", url: "https://developer.nvidia.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Nvidia - the GPU company that runs the fabric",
@@ -4335,6 +4811,12 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "ubiquiti",
+    official: {
+      url: "https://www.ui.com",
+      resources: [
+        { label: "Ubiquiti Help Center", url: "https://help.ui.com" },
+      ],
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Ubiquiti - enterprise features at prosumer prices",
@@ -4368,6 +4850,12 @@ export const partnerVendors: PartnerVendor[] = [
     // they may reference each other, but each company with its own entry."
     // Previously one combined entry at slug a10-kemp, which is now redirected.
     slug: "a10",
+    official: {
+      url: "https://www.a10networks.com",
+      resources: [
+        { label: "A10 Documentation", url: "https://documentation.a10networks.com" },
+      ],
+    },
     group: "other",
     name: "A10 Networks",
     founded: 2004,
@@ -4429,6 +4917,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "netgear",
+    official: {
+      url: "https://www.netgear.com",
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "NETGEAR",
@@ -4445,6 +4936,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "tp-link",
+    official: {
+      url: "https://www.tp-link.com",
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "TP-Link",
@@ -4461,6 +4955,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "zyxel",
+    official: {
+      url: "https://www.zyxel.com",
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Zyxel",
@@ -4478,6 +4975,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "allied-telesis",
+    official: {
+      url: "https://www.alliedtelesis.com",
+    },
     tags: ["vendor"],
     group: "contemporary",
     name: "Allied Telesis",

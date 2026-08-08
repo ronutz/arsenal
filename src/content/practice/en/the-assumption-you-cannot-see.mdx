@@ -1,0 +1,74 @@
+---
+slug: the-assumption-you-cannot-see
+title: "The assumption you cannot see"
+thesis: "A problem that will not yield is rarely a hard problem. It is usually a problem where something you are certain of is false, and certainty is invisible from the inside — which is why the fix is a procedure for surfacing beliefs rather than more effort applied to the same ones."
+stance: practised
+part: yield
+order: 11
+roles: ["second-line", "field", "design"]
+relatedTools: ["incident-timeline-rca-builder", "packet-capture-plan-builder"]
+relatedIndustry: []
+relatedPractice: ["bisection", "not-your-problem"]
+artefact: "The belief inventory"
+updated: "2026-08-06"
+---
+
+## Hard is not the same as stuck
+
+Some faults are genuinely difficult. They involve timing, or three systems interacting in a way nobody designed, or a defect deep in something you cannot read.
+
+But most problems that refuse to yield after hours of competent work are not in that category. They are ordinary problems standing behind **something you believe that is not true** — and the reason they resist is not that the answer is well hidden. It is that you are not looking in the region where it lives, because you have already ruled that region out.
+
+The uncomfortable part: you ruled it out for a reason that felt sufficient at the time, and you cannot now remember examining it, because you did not. You inherited it, or inferred it, or read it in a document that was accurate two versions ago.
+
+**Certainty is invisible from the inside.** Nothing about holding a false belief feels different from holding a true one. This is why "think harder" is not the remedy — thinking harder applies more effort inside the same boundary.
+
+## The tell
+
+There is one reliable signal, and it is behavioural rather than technical.
+
+**You have stopped generating hypotheses and started re-testing old ones.**
+
+Early on, each test eliminates something and suggests something new. Later, if the model is wrong, you run out of things the model can explain — and rather than concluding the model is wrong, you go back and check things you already checked, more carefully this time.
+
+That second pass feels like diligence. It is the same twenty minutes repeating with better lighting. If you catch yourself verifying something for the third time, the problem is not that the verification was sloppy. It is that your model has nowhere left to point, and re-checking is what it does instead of admitting that.
+
+## Sunk cost applies to theories
+
+Four hours into a diagnosis, the hypothesis you formed at minute twenty has become expensive. You have spent the afternoon on it, told people about it, possibly asked somebody to change something on the strength of it.
+
+Abandoning it now means the afternoon was wasted, and it means saying so.
+
+So it does not get abandoned. It gets **amended** — a special case here, an exception there — until it is a theory with four patches that explains everything and predicts nothing. That is not a working model. It is a story that has been made unfalsifiable.
+
+The test is simple and worth applying out loud: **what would have to be observed for me to abandon this?** If nothing would, you are no longer debugging.
+
+## The belief inventory
+
+The practical remedy, and it takes ten minutes.
+
+Write down everything you are treating as true. Not the hypothesis — **the things underneath it, the ones so obvious you have not said them.** The traffic reaches the interface. The configuration in the file is the configuration running. The change was applied to all four nodes. The clock is right. The device is the model the inventory says. The library version is what the manifest declares.
+
+Then, against each one, write **how you know**. Not whether you believe it — how you *know*.
+
+The list will split three ways: things you verified today, things you verified once at some point, and things you have never checked and simply assumed. **The answer is almost always in the third group**, and its members are usually so mundane that saying them aloud feels faintly ridiculous, which is exactly why nobody said them.
+
+The word to hunt for is *must*. "The route must be correct, we changed it." **Must is not a fact; it is a conclusion from premises you have not listed.**
+
+## Why a fresh person helps, and what they actually bring
+
+The colleague who solves it in five minutes is not smarter. Often they know less about the system.
+
+What they bring is **no commitments**. They have not spent the afternoon on a theory, they did not read the document that was accurate two versions ago, and they will ask the question you stopped asking three hours in, because to them it is not settled.
+
+This is worth understanding precisely, because it changes how you use them. **Do not brief them fully.** A complete briefing transfers your assumptions along with your findings, and produces a second person inside your boundary rather than outside it. Say what the symptom is and what you have *verified* — not what you have concluded — and let them ask.
+
+If they immediately ask something you dismissed early, do not explain why you dismissed it. **Go and check it.**
+
+## When the model was right and it still will not yield
+
+Sometimes the inventory comes back clean, the assumptions hold, and the thing genuinely is hard.
+
+That is a real category and it deserves its own response: stop, write down the state, and come back. Not as a motivational suggestion — as a technical one. A problem you carry away and return to is being worked on by a mind that is no longer defending the last four hours, and the assumption that was invisible at six in the evening is frequently obvious at nine the next morning.
+
+The work you did was not wasted. **It eliminated the regions the fault is not in, which is what made the answer visible once you could see the map instead of the last step.**

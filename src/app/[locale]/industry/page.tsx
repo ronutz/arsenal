@@ -37,6 +37,7 @@ import { CAREER_VENDORS } from "@/content/vendors/career";
 import { VENDOR_ORIGINS, countryLabel } from "@/content/vendors/origins";
 import CountryFlag from "@/components/CountryFlag";
 
+import TimelineFilter from "@/components/TimelineFilter";
 export async function generateMetadata({
   params,
 }: {
@@ -269,6 +270,23 @@ export default async function IndustryHubPage({
               <h2 className="vendor-divider-title">{tp("timelineSectionTitle")}</h2>
               <p className="vendor-divider-note">{tp("timelineSectionNote")}</p>
             </div>
+            {/* FILTERS (PRIME 2026-08-06). Three cuts through one list:
+                who Red Education partners with, which chapters were lived
+                from inside, and which platforms are actually taught. That
+                last is FOUR - F5, Fortinet, Netskope, Extreme - and
+                deliberately not six: Ping Identity and Zscaler are Red
+                Education partners this site works alongside, and carry no
+                authorized-instructor claim. */}
+            <TimelineFilter
+              labels={{
+                show: tp("filterLabel"),
+                all: tp("filterAll"),
+                redu: tp("filterRedu"),
+                career: tp("filterCareer"),
+                teach: tp("filterTeach"),
+                count: tp("filterCount", { shown: "{shown}", total: "{total}" }),
+              }}
+            />
             <ol className="vendor-timeline">
               {/* Filter chips. These lead to tag-filtered views of the same
                   data, which is how the distributor and reseller pages PRIME
@@ -297,7 +315,14 @@ export default async function IndustryHubPage({
               </div>
 
               {lineageTimeline.map((v) => (
-                <li key={v.slug} className="vendor-timeline-item">
+                <li
+                  key={v.slug}
+                  className="vendor-timeline-item"
+                  data-vendor-entry
+                  data-redu={v.isRedu ? "1" : "0"}
+                  data-career={v.isInside || v.isDirect ? "1" : "0"}
+                  data-teach={v.isInstructor ? "1" : "0"}
+                >
                   <span className="vendor-timeline-year mono" aria-hidden="true">
                     {v.founded}
                   </span>

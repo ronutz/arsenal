@@ -14368,6 +14368,70 @@
         "def": "A ponta executiva do calendário brasileiro de segurança - onde se encontram as pessoas que assinam, não as que configuram.",
         "context": "Risco, governança e orçamento em vez de técnica. Conferências técnicas transmitem habilidade; as executivas transmitem prioridades, e uma não substitui a outra.",
         "depth": "A ponta executiva do calendário brasileiro de segurança: risco, governança, orçamento e as conversas que acontecem entre pessoas que assinam coisas, não que as configuram. Tem um evento principal em São Paulo ao lado de edições regionais - sete delas em 2024 - o que o torna um dos poucos circuitos comerciais que de fato alcanca além da capital com consistência. Sua utilidade depende inteiramente do que você vai buscar. Como lugar para aprender uma técnica, é a sala errada; os eventos técnicos do mesmo calendário existem para isso. Como lugar para entender no que o mercado acredita, o que estao dizendo a quem compra e quais preocupações chegaram ao nível em que alguém com orçamento está inquieto, é incomumente informativo - e esses são tipos genuinamente diferentes de conhecimento que engenheiros costumam confundir. Quem nunca sentou numa conferência executiva de segurança tende a se surpreender com quanto da tomada de decisao de que reclama esta visível de antemão, discutida abertamente, meses antes de cair sobre ele como política. A observação geral que o calendário brasileiro sustenta melhor que a maioria é que uma cena de segurança precisa dos dois tipos de evento e que um não substitui o outro. As conferências técnicas transmitem habilidade; as executivas transmitem prioridades. Um engenheiro que só vai às primeiras e repetidamente surpreendido por decisoes, e um executivo que só vai às segundas e repetidamente surpreendido pela realidade."
+      },
+      "tac": {
+        "def": "O centro de assistência técnica do fabricante: os engenheiros que você aciona quando o próprio produto, e não a sua configuração dele, pode ser o culpado.",
+        "context": "Abrir um chamado no TAC é uma passagem de bastão, e funciona ou falha pelas mesmas razões que qualquer passagem: o que foi relatado, o que foi estabelecido como verdadeiro, o que foi descartado e como, e o que já foi alterado. Um chamado que chega como “está quebrado” recebe de volta um pedido pelo que a primeira mensagem deveria ter trazido."
+      },
+      "bisection": {
+        "def": "Dividir o espaço de busca pela metade repetidamente até restar um candidato, de modo que mil possibilidades custem dez testes em vez de mil.",
+        "context": "É aritmética, não opinião: cada teste que elimina metade dos candidatos custa um passo e compra uma duplicação. O pré-requisito é um teste confiável — algo que responde sim ou não sempre do mesmo jeito — e, quando a falha é intermitente, a bisseção trava até esse teste existir."
+      },
+      "workaround": {
+        "def": "Uma mudança que restaura a função sem tratar do porquê de ela ter quebrado, e que por isso continua até alguém ativamente encerrá-la.",
+        "context": "A diferença para uma correção não é qual das duas é melhor, e sim que apenas uma delas termina. Um contorno aplicado sob pressão e nunca documentado vira configuração que ninguém sabe explicar — é assim que uma exceção temporária de roteamento sobrevive quatro anos e a quem a aplicou."
+      },
+      "severity": {
+        "def": "Quão grave é uma falha, julgada pelo efeito no negócio e não pelo volume de quem reporta.",
+        "context": "Severidade não é prioridade: a severidade descreve o incidente, a prioridade descreve o que se trabalha primeiro, e confundir as duas é como quem grita mais alto passa a definir a fila. Na prática a severidade é negociada, e não medida — por isso os critérios valem ser escritos antes da indisponibilidade, e não durante."
+      },
+      "triage": {
+        "def": "Ordenar os problemas que chegam por severidade e encaminhá-los, para que a fila reflita impacto e não ordem de chegada.",
+        "context": "O nome vem da medicina de guerra e carrega a mesma implicação desconfortável: triagem é a decisão sobre o que ainda não será atendido. Bem feita é invisível; mal feita aparece como uma falha crítica atrás de um chamado de impressora."
+      },
+      "postmortem": {
+        "def": "Um relato escrito, após o incidente resolvido, do que aconteceu e do que deve mudar.",
+        "context": "Os úteis são sem culpados por construção: descrevem o que o sistema permitiu, e não quem fez, porque uma análise que para em “erro humano” faz as pessoas pararem de contar seus erros. Um postmortem que não produz mudança em um sistema, um processo ou um documento foi uma reunião."
+      },
+      "post-incident-review": {
+        "def": "A reunião ou o documento que examina um incidente depois de restaurado o serviço, para decidir o que muda em consequência.",
+        "context": "Distinta do trabalho técnico de causa raiz: a análise pergunta o que a organização deveria fazer diferente, o que frequentemente não tem resposta de engenharia. Quando a causa foi uma decisão que ninguém tomou — um certificado sem dono, uma previsão não lida — a constatação pertence aqui, e não a um chamado."
+      },
+      "observer-effect": {
+        "def": "Quando o ato de medir altera o comportamento medido, e a falha desaparece justamente enquanto você a observa.",
+        "context": "Ligar log de depuração deixa um processo lento o suficiente para uma corrida de concorrência deixar de perder; anexar uma captura muda o buffering. O efeito não é um estorvo a contornar — é uma descoberta. Uma falha que some sob observação está dizendo que depende de tempo, o que estreita bastante a busca."
+      },
+      "regression": {
+        "def": "Um defeito introduzido por uma mudança, em que algo que antes funcionava para de funcionar.",
+        "context": "A palavra carrega uma acusação específica: não que o software seja ruim em geral, mas que piorou numa direção conhecida num momento conhecido. Isso faz das regressões a classe mais tratável de bug, porque a mudança que causou uma delas costuma ainda estar visível no log."
+      },
+      "failover": {
+        "def": "Mover o serviço de um componente falho para um reserva, restaurando disponibilidade sem reparar a falha.",
+        "context": "É continência, não cura, e tem custos que valem ser ditos em voz alta: fazer failover para um reserva que compartilha a falha derruba o sobrevivente, e um problema contido costuma parar de alarmar — o que significa que ninguém está olhando para o que continua quebrado."
+      },
+      "incident": {
+        "def": "Uma interrupção não planejada ou redução de qualidade de um serviço, distinta de um pedido de algo novo.",
+        "context": "A distinção importa porque os dois pedem filas e relógios diferentes. Tratar um pedido como incidente infla os números; tratar um incidente como pedido o enterra. Onde os dois são registrados no mesmo sistema, a classificação costuma ser a primeira coisa a sair errada."
+      },
+      "intermittent-fault": {
+        "def": "Uma falha que ocorre de forma imprevisível e não pode ser disparada sob demanda, e portanto não pode ser testada diretamente.",
+        "context": "O instinto é continuar tentando reproduzir. O melhor movimento é parar de tentar disparar e começar a tentar capturar: instrumente o caminho, deixe a captura rodando, e defina de antemão que evidência encerraria a questão. “Não reproduz” descreve o seu laboratório, não a falha."
+      },
+      "handover": {
+        "def": "Transferir um problema a outra pessoa ou time, junto com o estado de entendimento que o acompanha.",
+        "context": "Escalar não é largar o chamado; é isto. Uma boa passagem leva o que foi relatado, o que está estabelecido como verdadeiro e não como suspeita, o que foi descartado e como, o que ia ser tentado, e — não opcional — o que já foi alterado. As caras são aquelas em que quem recebe gasta uma hora descobrindo que o sistema não está no estado que a documentação descreve."
+      },
+      "rate-limiting": {
+        "def": "Limitar com que frequência algo pode acontecer, para proteger um sistema de uma carga que ele não absorve.",
+        "context": "Usado como continência, compra tempo sem corrigir nada, e move o problema em vez de removê-lo: o que foi limitado continua tentando, e a fila que se forma agora é problema de capacidade de alguém. A retentativa que mascara uma dependência lenta vira uma avalanche quando a dependência para de vez."
+      },
+      "ops-escalation": {
+        "def": "Passar um problema a quem tem mais alçada, mais conhecimento, ou a propriedade necessária para agir.",
+        "context": "A pergunta útil não é se você conseguiria resolver, e sim se você é o caminho mais rápido até a solução. Escalar tarde é a falha do competente, e persiste porque escalar é tratado como confissão — um problema cultural que nenhum conselho a indivíduos resolve."
+      },
+      "containment": {
+        "def": "Limitar o quanto uma falha afeta, sem tratar do porquê de ela ter acontecido.",
+        "context": "Fazer failover, desabilitar uma funcionalidade, bloquear uma origem, isolar um segmento: nada disso conserta, coloca uma fronteira em volta do estrago. A maioria dos incidentes termina na continência, o que é o formato normal do trabalho — mas relatórios que chamam o resultado de “resolvido” em vez de “delimitado” descrevem um problema que continua vivo."
       }
     },
     "totalCount": "{count} termos",
@@ -14578,7 +14642,18 @@
       "carrier": "Operadora",
       "datacentre": "Data center"
     },
-    "originLabel": "Origem:"
+    "originLabel": "Origem:",
+    "officialLabel": "Da própria empresa",
+    "officialSite": "Site oficial",
+    "officialResources": "Documentação e recursos",
+    "officialDefunct": "Esta empresa não opera mais sob este nome.",
+    "officialSuccessor": "Hoje faz parte de",
+    "filterLabel": "Mostrar",
+    "filterAll": "Tudo",
+    "filterRedu": "Parceiros Red Education",
+    "filterCareer": "Capítulos que vivi",
+    "filterTeach": "Plataformas que ministro",
+    "filterCount": "{shown} de {total}"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",

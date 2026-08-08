@@ -668,6 +668,57 @@ export default async function PartnerVendorPage({
           )}
 
           {/* Sources */}
+          {/* --- FROM THE COMPANY (golden standard, PRIME 2026-08-06) ---
+               Placed BEFORE sources, and visibly separate from them. A source
+               is evidence this site cites; this is where the company speaks for
+               itself. Keeping them apart stops vendor marketing being read as
+               corroboration of our claims.
+
+               A defunct company gets a statement, not a link. Sending a reader
+               to an acquirer's homepage under the dead company's name would
+               misrepresent who is still trading. */}
+          {vendor.official && (
+            <section className="section">
+              <div className="container vendor-container">
+                <div className="partner-sources">
+                  <span className="partner-sources-label mono">{tp("officialLabel")}</span>
+                  {vendor.official.defunct ? (
+                    <p className="vendor-note-body">
+                      {tp("officialDefunct")}
+                      {vendor.official.successor && (
+                        <>
+                          {" "}
+                          {tp("officialSuccessor")}{" "}
+                          <a href={vendor.official.successor.url} target="_blank" rel="noopener noreferrer">
+                            {vendor.official.successor.label}
+                          </a>
+                          .
+                        </>
+                      )}
+                    </p>
+                  ) : (
+                    <ul className="partner-sources-list">
+                      {vendor.official.url && (
+                        <li>
+                          <a href={vendor.official.url} target="_blank" rel="noopener noreferrer">
+                            {tp("officialSite")} &#8599;
+                          </a>
+                        </li>
+                      )}
+                      {vendor.official.resources?.map((r) => (
+                        <li key={r.url}>
+                          <a href={r.url} target="_blank" rel="noopener noreferrer">
+                            {r.label} &#8599;
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
+
           {vendor.sources && vendor.sources.length > 0 && (
             <section className="section">
               <div className="container vendor-container">

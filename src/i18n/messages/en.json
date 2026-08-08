@@ -14368,6 +14368,70 @@
         "def": "The executive end of the Brazilian security calendar - where the people who sign things meet, rather than the people who configure them.",
         "context": "Risk, governance and budget rather than technique. Technical conferences transmit skill; executive ones transmit priorities, and neither substitutes for the other.",
         "depth": "The executive end of the Brazilian security calendar: risk, governance, budget and the conversations that happen between people who sign things rather than configure them. It runs a Sao Paulo flagship alongside regional editions - seven of them in 2024 - which makes it one of the few commercial circuits that actually reaches beyond the capital consistently. Its usefulness depends entirely on what you go for. As a place to learn a technique it is the wrong room; the technical events on the same calendar exist for that. As a place to understand what the market believes, what buyers are being told, and which concerns have reached the level where somebody with a budget is worried about them, it is unusually informative - and those are genuinely different kinds of knowledge that engineers routinely conflate. A practitioner who has never sat in an executive security conference tends to be surprised by how much of the decision-making they complain about is visible in advance, discussed openly, months before it lands on them as a policy. The general observation the Brazilian calendar supports better than most is that a security scene needs both kinds of event and they do not substitute for one another. The technical conferences transmit skill; the executive ones transmit priorities. An engineer who attends only the first is repeatedly surprised by decisions, and an executive who attends only the second is repeatedly surprised by reality."
+      },
+      "tac": {
+        "def": "The vendor's technical assistance centre: the engineers you reach when a product itself, rather than your configuration of it, may be at fault.",
+        "context": "Opening a TAC case is a handover, and it succeeds or fails on the same things any handover does: what was reported, what has been established as true, what was ruled out and how, and what has already been changed. A case that arrives as “it is broken” gets a reply asking for the things the first message should have carried."
+      },
+      "bisection": {
+        "def": "Halving a search space repeatedly until one candidate remains, so that a thousand possibilities take ten tests rather than a thousand.",
+        "context": "It is arithmetic rather than opinion: each test that eliminates half the remaining candidates costs one step and buys a doubling. The prerequisite is a reliable test - something that answers yes or no the same way every time - and where the fault is intermittent, bisection stalls until that test exists."
+      },
+      "workaround": {
+        "def": "A change that restores function without addressing why it broke, and which therefore continues until somebody actively ends it.",
+        "context": "The distinction from a fix is not which is better but that only one of them concludes. A workaround kept under pressure and never documented becomes configuration nobody can explain, which is how a temporary routing exception survives four years and outlives the person who applied it."
+      },
+      "severity": {
+        "def": "How bad a fault is, judged by its effect on the business rather than by how loudly it is reported.",
+        "context": "Severity is not priority: severity describes the incident, priority describes what gets worked first, and conflating them is how the person who shouts loudest sets the queue. In practice severity is negotiated rather than measured, which is why the criteria are worth writing down before the outage rather than during it."
+      },
+      "triage": {
+        "def": "Sorting incoming problems by severity and routing them, so that the queue reflects impact rather than arrival order.",
+        "context": "The name comes from battlefield medicine and carries the same uncomfortable implication: triage is the decision about what will not be worked on yet. Done well it is invisible; done badly it shows up as a critical fault sitting behind a printer request."
+      },
+      "postmortem": {
+        "def": "A written account, after an incident is resolved, of what happened and what should change.",
+        "context": "The useful ones are blameless by construction: they describe what the system allowed rather than who did it, because a review that stops at human error stops people telling you about mistakes. A postmortem that produces no change to a system, a process or a piece of documentation was a meeting."
+      },
+      "post-incident-review": {
+        "def": "The meeting or document that examines an incident after service is restored, to decide what changes as a result.",
+        "context": "Distinct from the technical root cause work: the review asks what the organisation should do differently, which frequently has no engineering answer at all. Where the cause was a decision nobody made - a certificate nobody owned, a forecast nobody read - the finding belongs here rather than in a ticket."
+      },
+      "observer-effect": {
+        "def": "When the act of measuring changes the behaviour being measured, so the fault disappears while you are watching for it.",
+        "context": "Enabling debug logging slows a process just enough that a race no longer loses; attaching a capture changes buffering. The effect is not a nuisance to be worked around - it is a finding. A fault that vanishes under observation is telling you it depends on timing, which narrows the search considerably."
+      },
+      "regression": {
+        "def": "A defect introduced by a change, where something that previously worked stops working.",
+        "context": "The word carries a specific accusation: not that the software is faulty in general, but that it got worse in a known direction at a known moment. That makes regressions the most tractable class of bug, because the change that caused one is usually still visible in the log."
+      },
+      "failover": {
+        "def": "Moving service from a failed component to a standby, restoring availability without repairing the fault.",
+        "context": "It is containment rather than cure, and it carries costs worth naming out loud: failing over to a standby that shares the fault takes down the survivor, and a contained problem often stops alerting, which means nobody is watching the thing that is still broken."
+      },
+      "incident": {
+        "def": "An unplanned interruption or reduction in quality of a service, as distinct from a request for something new.",
+        "context": "The distinction matters because the two need different queues and different clocks. Treating a request as an incident inflates the numbers; treating an incident as a request buries it. Where the two are logged in the same system, the classification is usually the first thing to get wrong."
+      },
+      "intermittent-fault": {
+        "def": "A failure that occurs unpredictably and cannot be triggered on demand, so it cannot be tested against directly.",
+        "context": "The instinct is to keep trying to reproduce it. The better move is to stop trying to trigger it and start trying to catch it: instrument the path, leave the capture running, and define in advance what evidence would settle the question. “Cannot reproduce” describes your laboratory, not the fault."
+      },
+      "handover": {
+        "def": "Transferring a problem to another person or team, along with the state of understanding that goes with it.",
+        "context": "Escalation is not letting go of a ticket; it is this. A good handover carries what was reported, what is established as true rather than suspected, what was ruled out and how, what was about to be tried, and - not optional - what has already been changed. The expensive ones are those where the receiving engineer spends an hour discovering the system is not in the state the documentation describes."
+      },
+      "rate-limiting": {
+        "def": "Capping how often something may happen, to protect a system from load it cannot absorb.",
+        "context": "Used as containment it buys time without fixing anything, and it moves the problem rather than removing it: whatever was rate limited is still trying, and the queue it forms is now somebody's capacity problem. The retry that masks a slow dependency becomes a thundering herd when the dependency stops entirely."
+      },
+      "ops-escalation": {
+        "def": "Handing a problem to someone with more authority, more knowledge, or the ownership needed to act on it.",
+        "context": "The useful question is not whether you could solve it but whether you are the fastest path to it being solved. Escalating late is the failure of the competent, and it persists because escalation is treated as a confession - which is a cultural problem no advice to individuals will fix."
+      },
+      "containment": {
+        "def": "Limiting how much a fault affects, without addressing why it happened.",
+        "context": "Failing over, disabling a feature, blocking a source, isolating a segment: none of these repair anything, they put a boundary around the damage. Most incidents end at containment, which is the normal shape of the work - but reports that call the result “resolved” rather than “bounded” describe a problem that is still live."
       }
     },
     "totalCount": "{count} terms",
@@ -14578,7 +14642,18 @@
       "carrier": "Carrier",
       "datacentre": "Data centre"
     },
-    "originLabel": "Origin:"
+    "originLabel": "Origin:",
+    "officialLabel": "From the company",
+    "officialSite": "Official site",
+    "officialResources": "Documentation and resources",
+    "officialDefunct": "This company no longer trades under this name.",
+    "officialSuccessor": "Now part of",
+    "filterLabel": "Show",
+    "filterAll": "Everything",
+    "filterRedu": "Red Education partners",
+    "filterCareer": "Chapters I lived",
+    "filterTeach": "Platforms I teach",
+    "filterCount": "{shown} of {total}"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",
