@@ -1,0 +1,76 @@
+---
+slug: stops-before-you-find-it
+title: "When it stops before you find it"
+thesis: "A fault that stops on its own has not been fixed, it has become unobservable. Until you can state a mechanism that explains both why it started and why it stopped, calling it resolved is a scheduling decision wearing a technical word."
+stance: practised
+part: yield
+order: 14
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder", "packet-capture-plan-builder"]
+relatedIndustry: []
+relatedPractice: ["reproducing-the-irreproducible", "verifying-without-trusting", "when-the-evidence-disagrees"]
+artefact: "What to leave behind when you close it anyway"
+updated: "2026-08-08"
+---
+
+## The relief that ends the investigation
+
+At some point the alerts stop. The graph goes back to the shape it had last week. Nobody deployed anything, nobody has admitted to anything, and the problem that has taken three days is simply not happening any more.
+
+The room relaxes — and that relaxation is the most dangerous moment in the whole incident. Everything that made the investigation urgent has gone. Everything that made it necessary is still there. The pressure to close arrives within minutes, and it comes from reasonable people with real work waiting, which is exactly what makes it hard to resist.
+
+**"It stopped" is an observation about your instruments. It is not a statement about the system.**
+
+## Gone is not fixed, and three different worlds look identical from here
+
+When a fault ceases without a known repair, you are in one of three situations, and from the outside they produce the same silence.
+
+**You fixed it and do not know which action did it.** Common when you changed several things quickly, which is what everybody does under pressure. The repair is real, and it is unattributed — which also makes it unrepeatable. You cannot apply it to the sister site, and you cannot tell what you are undoing when somebody reverts one of those changes next quarter.
+
+**The trigger left.** Load fell, a batch job finished, a peer's maintenance window closed, a path that is only used at certain hours stopped being used. The fault is intact and fully functional, waiting for the condition to come back.
+
+**The symptom got absorbed somewhere you cannot see.** A failover happened, a retry now succeeds on the second attempt, a timeout got longer than the delay that was breaching it. The system is compensating, and compensation looks exactly like health right up to the moment the margin runs out.
+
+Only the first is a repair. The other two are the same system with the alarm switched off.
+
+## The question that separates them
+
+Can you state a mechanism that explains **both** the onset and the cessation?
+
+Not the onset alone. That is the easy half, and the half everyone in the room already has a theory for. A theory that explains why it started and says nothing about why it stopped is not a theory of this incident — it is a theory of a different one that happens to share a symptom.
+
+Say it as one sentence, out loud, to somebody who will push back. *"Memory pressure from the overnight report crossed the threshold at 02:00 and fell below it when the job finished at 05:40."* That is a mechanism: it names a cause, a direction and a boundary, and it predicts when the fault should return.
+
+If the sentence needs the words *and then it presumably sorted itself out*, you do not have one. That phrase is where an unexamined assumption goes to hide, which is the failure the [assumption you cannot see](/practice/the-assumption-you-cannot-see) is about.
+
+## "We changed nothing" is almost never true
+
+It is usually accurate about the people in the room and wrong about the system. Something changed — you just do not own it.
+
+Certificates rotate. Leases expire. Scheduled jobs run. A peer opens a change window they told somebody about six weeks ago. An agent updates itself. A table crosses a size where the query planner picks a different plan. A month ends. The set of things that change without anyone present deciding to change them is far larger than the set anybody tracks.
+
+So replace the question. Instead of *what did we change*, ask **what changes on its own, on roughly this period?** The interval between first and last symptom is evidence about which clock you are looking at. Ninety minutes, twenty-four hours, seven days, and "the last business day of the month" are four different suspects, and you can usually eliminate three of them before lunch.
+
+## Instrument for the recurrence, because it is the only experiment you have left
+
+Once it has stopped you have lost the ability to observe it, and no amount of thinking will give that back. What you can still do is decide, now, what you will need when it returns — and put it in place while nobody is standing over you.
+
+That means the capture or the counter you spent three days wishing you had, either running or staged and ready — deciding *what* to capture before the pressure returns is exactly the work the [packet capture plan builder](/tools/packet-capture-plan-builder) exists to structure. It means the trigger condition written down so that it fires whether or not somebody happens to be looking. It means one line recording what you would rule out first, so the next person does not repeat your first two days.
+
+The asymmetry is stark, and it is the whole argument. Setting this up costs an hour on a calm afternoon. Not having it costs the entire next occurrence, at whatever hour it chooses.
+
+## Closing it honestly
+
+You will often close it anyway, and that is frequently correct: an intermittent fault of unknown cause and modest impact does not always deserve more than it has already had. The distinction worth protecting is between closing it because you understand it and closing it because you have run out of time. Both are legitimate. Only one of them is what the ticket usually says.
+
+What to leave behind:
+
+- the mechanism, if you have one — and the explicit sentence that you do not, if you do not
+- the interval, to the minute: first symptom, last symptom
+- everything changed during the window, **including what you changed and reverted**
+- what is now instrumented, and what would have to be seen to call it understood
+- the conditions under which this should be reopened rather than raised as something new
+
+> A ticket closed with *"stopped on its own, cause not established, instrumented for recurrence"* is worth more to the next person than one closed with *"resolved"*. The first is a handover. The second is a guess with the evidence deleted.
+
+The fault that goes away on its own is not asking you a harder technical question than the one that stays. It is asking a harder organisational one: whether you are willing to write down that you do not know, at the exact moment everybody would prefer to stop talking about it.

@@ -1,0 +1,103 @@
+---
+slug: not-a-bug
+title: "When the vendor says it is not a bug"
+thesis: "\"Working as designed\" is usually true and almost never an answer. The design is a set of decisions somebody made, and the useful question is not whether the behaviour was intended but whether the intent survives contact with your configuration — which is a question the vendor cannot close on your behalf."
+stance: practised
+part: yield
+order: 13
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["tac-escalation-packet-builder", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["reproducing-the-irreproducible", "when-the-evidence-disagrees", "workaround-and-fix"]
+artefact: "What to send when the case is closed and the problem is not"
+updated: "2026-08-08"
+---
+
+## The sentence that ends the conversation
+
+You open a case. You attach the capture, the configuration, the exact reproduction. Some days later the reply arrives, and it is a variant of one sentence:
+
+*This is working as designed.*
+
+The case moves to closed. The behaviour does not move at all.
+
+What happens next is the part worth having a method for, because the instinctive responses are both bad. The first is to accept it, which leaves you operating a system whose behaviour you have just agreed to call correct. The second is to escalate on volume — more mail, more people, more heat — which converts a technical disagreement into a relationship problem and rarely changes the verdict.
+
+There is a third response, and it starts by taking the vendor's answer seriously enough to test it.
+
+## "Working as designed" is usually true
+
+This is the part that gets skipped, and skipping it is why most escalations fail.
+
+The support engineer is not fobbing you off. They have compared the observed behaviour against a specification, and the behaviour matched. In the overwhelming majority of cases that comparison was done correctly and the answer is factually right.
+
+**The answer being right is compatible with the answer being useless**, and those are separate claims. "The product did what the design says" and "the design is appropriate for what you are doing" are different assertions, and only the first one is in scope for the person who answered you.
+
+So the disagreement is almost never about whether the behaviour is intended. It is about one of four things, and naming which one changes what you send next.
+
+## The four disagreements hiding under one sentence
+
+**One — the design is documented and you did not know.** The behaviour is specified, the specification is public, and your expectation came from somewhere else: a different platform, an older version, a reasonable inference the documentation never supported. This is the most common case by a wide margin, and it is genuinely closed. What remains is yours to fix — the design assumption in *your* build, not a defect in theirs.
+
+**Two — the design is undocumented.** The behaviour is intentional, and it appears in no manual, release note or knowledge-base article you can find. The vendor is still correct that it is not a bug. **But an undocumented design decision is a documentation defect**, and that is a real, fileable, winnable issue with a different owner. Ask for the behaviour to be documented rather than for it to change. This request almost always succeeds, and it is worth more than it looks: it converts your private discovery into something the next engineer finds in twenty minutes.
+
+**Three — the design is documented, and the interaction is not.** Every feature behaves as specified in isolation, and the combination of two of them produces something nobody wrote down. This is where the genuinely interesting faults live, and it is where "working as designed" is most misleading, because both designs *are* working. **The defect is in a space no single specification owns.** This is a real product issue and it needs to be framed as one — not "feature A is broken" but "A and B, both correct, produce this."
+
+**Four — the design is wrong for a case the vendor accepts as supported.** Rarest, and the only one that is straightforwardly a defect in the ordinary sense. It usually requires demonstrating that the behaviour breaks something the vendor themselves publishes as a supported configuration — their own reference architecture, their own validated design.
+
+Notice that in three of the four, the vendor's original answer stands and you still have somewhere to go.
+
+## Establish what you are actually asking for
+
+Before writing anything, decide which of these you want, because they go to different people and succeed at very different rates:
+
+- **The behaviour changed.** Slowest, least likely, and needs a defect or a feature request with a business case behind it.
+- **The behaviour documented.** Fast, high success rate, and permanently useful to everyone who comes after you.
+- **A supported way to achieve your outcome.** Often the thing you actually needed. The design stands; you needed the goal, not the mechanism.
+- **Confirmation that there is no supported way.** The least satisfying and frequently the most valuable, because it is a decision input. An architecture built on a capability that does not exist should find that out now.
+
+Most escalations that go nowhere are escalations where this was never chosen, so the exchange argues about whether it is a bug — a question whose answer changes nothing — instead of about what should happen.
+
+## What to send when the case is closed and the problem is not
+
+This is the artefact. It is short on purpose, and it is designed to be read by somebody who has not been on the case.
+
+**The behaviour, stated without the word bug.** Observed input, observed output, the exact conditions. No characterisation. If the reader has to accept an adjective before they can accept the facts, they will reject both.
+
+**The specification you are measuring against, quoted with its source.** Their document, their version number, their page. If your expectation comes from your own reading rather than their text, say so plainly — that is disagreement four and it needs a different argument.
+
+**The reproduction, minimised.** Cut every element that is not load-bearing until removing one more makes the fault disappear. A three-line reproduction is not merely more convenient than a thirty-line one; it is a *different claim*, because it demonstrates that the elements you removed were irrelevant. Minimising the reproduction is often the single highest-value hour in the whole escalation.
+
+**The interaction, if this is case three.** Name both features. Show each behaving correctly alone. Show the pair failing. This structure is what distinguishes an interaction defect from a misunderstanding, and support organisations are generally well equipped to recognise it when it is presented this way and poorly equipped to find it themselves.
+
+**The supported configuration it breaks, if you have one.** Their reference architecture, their validated design, their own published guidance. This is the strongest available material and it is frequently sitting on their website unread.
+
+**The ask, in one sentence.** From the list above. One of them.
+
+**The impact, in their customer's terms.** Not "this is unacceptable" — what stops working, for how many people, and what the workaround costs to run.
+
+## What not to send
+
+**Do not send the whole case again.** A closed case reopened with a longer version of the original text reads as persistence and gets handled as persistence.
+
+**Do not argue about the word.** Whether it is properly called a bug is a definitional question you cannot win and do not need to. Every objective above is reachable without ever using it.
+
+**Do not escalate the person.** Going over the head of a support engineer who answered correctly costs you the one person who already understands your problem. Escalate the *question* — to documentation, to product management, to your account team — and where you can, keep them in the thread.
+
+**Do not lead with the account relationship.** It is real leverage and it is finite. Spending it on a case that has not yet been made properly is spending it at the worst possible exchange rate. Make the case first; if the case is good and the answer is still no, the relationship route is available and much stronger for having been held back.
+
+## Meanwhile, operate
+
+The escalation is a parallel track, not the response. Whatever happens to the case, you have a system exhibiting behaviour you did not want, and that has to be managed on its own timeline.
+
+The workaround is subject to the same discipline as any other — it needs an owner, an expiry condition, and a record of what it costs — and it should be documented against the *design*, not against the bug, because there may never be a fix to remove it.
+
+**Write down the constraint where the next person will hit it.** Not in the ticket, which they will not read: in the configuration, in the runbook, in the design document. The most expensive version of this failure is the one where somebody rediscovers the same undocumented behaviour in two years and pays the whole cost again, including the escalation.
+
+## The part that takes longer to learn
+
+The vendor is not an adversary and is also not a party to your outcome. Their obligation is to make the product behave as specified. Yours is to make a system work. Those overlap most of the time, which is what makes it so easy to miss the moments when they do not.
+
+**When the answer is "working as designed", you have generally reached the edge of what the vendor's obligation covers, and the remaining problem is yours.** That is not a defeat and it is not unfair — it is a change of ownership, and the sooner it is recognised the sooner the real work starts.
+
+The engineers who handle this well are the ones who stop treating the closed case as a verdict to be overturned and start treating it as information: the product will keep doing this, and now I know, and now I design for it.

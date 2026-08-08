@@ -1,0 +1,95 @@
+---
+slug: cannot-touch-it
+title: "Quando você não pode mexer"
+thesis: "O ciclo de hipótese e teste pressupõe que você tem permissão para mudar alguma coisa. Quando não tem, o ciclo não quebra — ele se inverte: você deixa de fabricar evidência e passa a colher a evidência nas diferenças que o sistema já contém, e a habilidade está em reconhecer qual dessas diferenças é um experimento que alguém já rodou para você."
+stance: practised
+part: yield
+order: 15
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["packet-capture-plan-builder", "fault-hypothesis-builder", "fortios-config-diff-explainer"]
+relatedIndustry: []
+relatedPractice: ["bisection", "verifying-without-trusting", "the-assumption-you-cannot-see"]
+artefact: "O inventário de evidência em modo leitura, e como gastar a única janela de mudança que você talvez consiga"
+updated: "2026-08-08"
+---
+
+## A janela que você não vai conseguir
+
+O problema está em produção. Produção está em congelamento de mudanças até o fechamento do trimestre. A política de segurança do cliente não permite acesso interativo, então tudo chega como saída que outra pessoa colou num chamado. Não existe laboratório, porque o laboratório foi desmontado quando a plataforma virtualizou e ninguém repôs. O único sistema idêntico que você conhece pertence a outra diretoria, que não responde e-mail desde abril.
+
+Você tem uma falha que não cede, e todo o método em que você foi treinado pressupõe que dá para mudar alguma coisa para descobrir.
+
+**Isso não é uma situação incomum. Em ambientes regulados e na rede dos outros, é a situação normal**, e tratá-la como um obstáculo temporário à investigação de verdade é como se gastam semanas esperando uma autorização que nunca ia chegar.
+
+## Por que isso não é o mesmo trabalho, só mais devagar
+
+Quase toda técnica do repertório é uma intervenção. A [bisseção](/practice/bisection) exige remover metade do sistema. Desabilitar e testar exige desabilitar. Trocar um cabo, forçar um failover, reiniciar um serviço, reverter uma de quatro mudanças — cada uma é uma pergunta que você faz *fazendo* algo e lendo a resposta no que acontece em seguida.
+
+Tire a intervenção e você não perdeu algumas técnicas. Você perdeu o mecanismo que todas elas compartilham: **não é mais possível criar a diferença que você quer observar.**
+
+O que sobra não é uma versão mais fraca do mesmo ciclo. É outro ciclo, com disciplina própria.
+
+## A inversão: pare de produzir evidência, comece a encontrá-la
+
+Um sistema em produção não é um experimento em branco esperando a sua entrada. É um registro em funcionamento de milhares de diferenças que já existem — entre sites, entre horários, entre usuários, entre o fluxo que funciona e o que não funciona.
+
+Alguém já rodou o experimento. Ninguém registrou como tal.
+
+**O movimento central de quem investiga em modo leitura é achar uma diferença que o sistema já contém e tratá-la como se você a tivesse criado de propósito.** O rigor é o mesmo que você aplicaria ao seu próprio teste: o que varia, o que é mantido constante, e o que precisaria ser verdade para essa comparação significar alguma coisa.
+
+## Quatro tipos de diferença que já estão no sistema
+
+**Entre pares.** O outro site, o outro membro do cluster, o outro tenant, o appliance irmão comprado na mesma ordem de compra. O objeto mais valioso numa investigação em modo leitura é um sistema que *deveria* ser idêntico e não está apresentando a falha.
+
+**Ao longo do tempo.** Funcionava em março. O registro de janelas de mudança, o arquivo de configurações, o histórico de monitoração, a fila de chamados. Comparar no tempo é a única forma de bisseção ainda disponível, porque as versões já existem e você só escolhe onde olhar.
+
+**Na população afetada.** Quais usuários, quais fluxos, quais sessões, quais sub-redes de origem, quais versões de cliente. Uma falha que atinge onze por cento das sessões está dizendo algo preciso sobre o que esses onze por cento têm em comum, e esse número costuma já estar num log ao qual você recebeu acesso de leitura.
+
+**Ao longo do caminho.** Contadores em cada salto, estatísticas de erro por interface, taxa de retransmissão por trecho. O caminho é uma sequência de lugares onde o mesmo tráfego é descrito por equipamentos diferentes, e a discordância entre duas dessas descrições é uma localização — que é exatamente o argumento de [quando a evidência discorda de si mesma](/practice/when-the-evidence-disagrees).
+
+## O sistema irmão é o seu melhor instrumento, e a comparação tem uma armadilha
+
+Comparar configurações contra um par que funciona é a técnica de maior rendimento em modo leitura, e ela falha de um jeito específico: **um diff entre duas configurações grandes devolve centenas de diferenças, quase todas irrelevantes**, e a tentação é ir descendo a lista.
+
+Duas restrições tornam isso útil. Primeiro, formule a hipótese antes de rodar a comparação — você procura uma diferença capaz de produzir *este* sintoma, não diferenças em geral. Segundo, estabeleça que os dois sistemas deveriam ser idênticos no aspecto que interessa. Dois firewalls com bases de regras diferentes não são uma comparação controlada; são dois firewalls.
+
+Quando o diff revela algo, ainda resta a pergunta mais difícil: essa diferença é a causa, ou é mais um sintoma da mesma causa acima? Um parâmetro que derivou e um comportamento quebrado podem ambos estar abaixo de uma automação que falhou e que ninguém foi olhar.
+
+## Modo leitura não é o mesmo que risco zero
+
+Esta é a parte que coloca gente em apuros, e vale ser direto.
+
+Um comando de depuração pode travar a CPU do plano de controle. Uma captura de pacotes sem filtro pode encher o disco onde o equipamento grava log. Uma consulta sem limite contra um banco em produção pode manter uma tabela bloqueada tempo suficiente para causar justamente a indisponibilidade que você estava investigando. "Eu só rodei um show" já antecedeu algumas tardes memoravelmente ruins.
+
+**Modo leitura descreve o que você pretende modificar, não o que você pode perturbar.** Antes de rodar qualquer coisa num sistema que você não tem permissão de alterar, conheça o custo — e se não conhece, isso já é um achado, e a pessoa a consultar é quem responde pelo equipamento.
+
+O limite que vale enunciar: gerar uma transação de teste a partir do seu próprio cliente costuma estar dentro do escopo de leitura, porque você está somando uma carga que o sistema existe para atender. Mudar qualquer coisa em como o sistema responde a ela, não. Saiba dizer de que lado dessa linha você está antes que alguém pergunte.
+
+## Como gastar a única janela, quando ela aparecer
+
+Em algum momento surge uma janela. É curta, é observada, e você terá uma ação.
+
+Existe uma tensão real aqui, e a resposta honesta é que depende do que você está otimizando. A correção mais provável, se funcionar, encerra o incidente e ensina muito pouco — você não saberá qual das três causas candidatas ela endereçou, e não conseguirá prevenir o mesmo em outro lugar. A ação mais *discriminante* pode não corrigir nada, mas separa as hipóteses com clareza e diz exatamente o que pedir em seguida.
+
+Escolha deliberadamente, não por reflexo. Se o negócio precisa do sintoma resolvido hoje à noite, aceite a correção e assuma a dívida — mas registre que a assumiu e o que segue desconhecido. Se você vai estar de volta aqui no mês que vem de qualquer forma, gaste a janela na pergunta.
+
+O que não dá para fazer é chegar sem ter decidido. Uma janela gasta improvisando produz uma mudança que ninguém consegue caracterizar depois, que é a [suposição que você não enxerga](/practice/the-assumption-you-cannot-see) sendo fabricada em tempo real.
+
+## O inventário de evidência
+
+Antes de declarar a investigação travada, escreva o que você de fato tem. Quase sempre é mais do que parece, e o próprio ato de listar transforma "não tenho acesso" em um pedido específico em vez de uma reclamação.
+
+- O que posso ler, agora, sem pedir nada a ninguém?
+- O que posso ler se pedir, quem é a pessoa, e qual é o prazo?
+- Que sistema comparável existe, e em que aspecto ele deveria ser idêntico?
+- Que registro histórico existe — arquivo de configurações, retenção de monitoração, log de mudanças, histórico de chamados?
+- O que a população afetada tem em comum, e consigo a lista?
+- O que já me disseram que eu ainda não verifiquei? Tudo que chega como saída colada é o relato de alguém sobre o sistema, não o sistema — a distinção sobre a qual gira [verificar sem confiar](/practice/verifying-without-trusting).
+
+## Quando a resposta honesta é que não dá
+
+Às vezes o inventário volta magro, a comparação não existe e a falha não toca nada que você possa observar. A investigação em modo leitura tem um teto real, e fingir o contrário desperdiça o dinheiro do cliente e a sua credibilidade.
+
+**Dizer isso é um ato profissional, desde que você diga com a evidência junto.** Não *"preciso de mais acesso"*, que soa como desculpa e abre uma negociação sobre a sua competência. Em vez disso: aqui está o que verifiquei, aqui está o que cada resultado elimina, aqui está a hipótese específica que resta, e aqui está a única observação que a confirmaria ou a mataria — uma captura neste ponto, ou leitura naquele log, ou trinta minutos com o sistema irmão.
+
+Isso é um pedido que alguém consegue aprovar. E sobrevive à passagem de bastão, se quem obtiver o acesso no fim não for você.

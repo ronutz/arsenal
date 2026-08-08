@@ -1,0 +1,76 @@
+---
+slug: stops-before-you-find-it
+title: "Quando para antes de você encontrar"
+thesis: "Uma falha que cessa sozinha não foi corrigida, ficou inobservável. Enquanto você não conseguir enunciar um mecanismo que explique tanto por que começou quanto por que parou, chamar de resolvido é uma decisão de agenda vestida de palavra técnica."
+stance: practised
+part: yield
+order: 14
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder", "packet-capture-plan-builder"]
+relatedIndustry: []
+relatedPractice: ["reproducing-the-irreproducible", "verifying-without-trusting", "when-the-evidence-disagrees"]
+artefact: "O que deixar registrado quando você fecha assim mesmo"
+updated: "2026-08-08"
+---
+
+## O alívio que encerra a investigação
+
+Em algum momento os alertas param. O gráfico volta ao formato que tinha na semana passada. Ninguém publicou nada, ninguém assumiu nada, e o problema que consumiu três dias simplesmente não está mais acontecendo.
+
+A sala relaxa — e esse relaxamento é o momento mais perigoso do incidente inteiro. Tudo o que tornava a investigação urgente desapareceu. Tudo o que a tornava necessária continua ali. A pressão para fechar chega em minutos, vinda de gente sensata com trabalho real esperando, que é justamente o que torna difícil resistir.
+
+**"Parou" é uma observação sobre os seus instrumentos. Não é uma afirmação sobre o sistema.**
+
+## Sumiu não é corrigido, e três mundos diferentes são idênticos daqui
+
+Quando uma falha cessa sem reparo conhecido, você está em uma de três situações — e, vistas de fora, todas produzem o mesmo silêncio.
+
+**Você corrigiu e não sabe qual ação resolveu.** Comum quando se mexe em várias coisas depressa, que é o que todo mundo faz sob pressão. O reparo é real e não tem autoria — o que também o torna irrepetível. Você não consegue aplicá-lo na unidade irmã, e não sabe o que está desfazendo quando alguém reverter uma daquelas mudanças no trimestre que vem.
+
+**O gatilho foi embora.** A carga caiu, uma rotina em lote terminou, a janela de manutenção de um parceiro fechou, um caminho usado só em certos horários deixou de ser usado. A falha está intacta e plenamente funcional, esperando a condição voltar.
+
+**O sintoma foi absorvido em algum lugar que você não enxerga.** Houve uma comutação, uma retentativa agora acerta na segunda tentativa, um tempo limite ficou maior do que o atraso que o estourava. O sistema está compensando, e compensação é idêntica a saúde até o instante em que a folga acaba.
+
+Só o primeiro caso é reparo. Os outros dois são o mesmo sistema com o alarme desligado.
+
+## A pergunta que separa os três
+
+Você consegue enunciar um mecanismo que explique **tanto o início quanto o fim**?
+
+Não só o início. Essa é a metade fácil, e a metade para a qual todo mundo na sala já tem uma teoria. Uma teoria que explica por que começou e nada diz sobre por que parou não é uma teoria deste incidente — é a teoria de outro, que por acaso compartilha o sintoma.
+
+Diga em uma frase, em voz alta, para alguém que vá contestar. *"A pressão de memória do relatório noturno passou do limite às 02:00 e caiu abaixo dele quando a rotina terminou, às 05:40."* Isso é um mecanismo: nomeia causa, direção e fronteira, e prevê quando a falha deve voltar.
+
+Se a frase precisar das palavras *e aí presumivelmente se ajeitou sozinho*, você não tem mecanismo nenhum. É nessa expressão que uma suposição não examinada vai se esconder, que é exatamente o problema tratado em [a suposição que você não enxerga](/pt-BR/practice/the-assumption-you-cannot-see).
+
+## "Não mudamos nada" quase nunca é verdade
+
+Costuma ser exato sobre as pessoas da sala e errado sobre o sistema. Alguma coisa mudou — você é que não é o dono dela.
+
+Certificados rotacionam. Concessões expiram. Rotinas agendadas rodam. Um parceiro abre uma janela de mudança que avisou a alguém seis semanas atrás. Um agente se atualiza sozinho. Uma tabela cruza um tamanho em que o planejador de consultas escolhe outro plano. Um mês termina. O conjunto de coisas que mudam sem que ninguém presente tenha decidido mudá-las é muito maior do que o conjunto que alguém acompanha.
+
+Então troque a pergunta. Em vez de *o que nós mudamos*, pergunte **o que muda sozinho, mais ou menos nesse período?** O intervalo entre o primeiro e o último sintoma é evidência sobre qual relógio você está olhando. Noventa minutos, vinte e quatro horas, sete dias e "o último dia útil do mês" são quatro suspeitos diferentes, e normalmente dá para eliminar três antes do almoço.
+
+## Instrumente para a reincidência, porque é o único experimento que sobrou
+
+Depois que parou, você perdeu a capacidade de observar, e nenhuma quantidade de raciocínio devolve isso. O que ainda dá para fazer é decidir, agora, o que você vai precisar quando voltar — e deixar montado enquanto ninguém está em cima de você.
+
+Isso significa a captura ou o contador que você passou três dias desejando ter, rodando ou pronto para rodar — decidir *o que* capturar antes de a pressão voltar é exatamente o trabalho que o [planejador de captura de pacotes](/tools/packet-capture-plan-builder) existe para estruturar. Significa a condição de disparo escrita, para acionar independentemente de alguém estar olhando. Significa uma linha registrando o que você descartaria primeiro, para que a próxima pessoa não repita os seus dois primeiros dias.
+
+A assimetria é brutal, e é o argumento inteiro. Montar isso custa uma hora numa tarde tranquila. Não ter custa a próxima ocorrência inteira, no horário que ela escolher.
+
+## Fechar com honestidade
+
+Você vai fechar assim mesmo com frequência, e muitas vezes isso está certo: uma falha intermitente de causa desconhecida e impacto modesto nem sempre merece mais do que já teve. A distinção que vale proteger é entre fechar porque você entendeu e fechar porque acabou o tempo. As duas são legítimas. Só uma delas é o que o chamado costuma dizer.
+
+O que deixar registrado:
+
+- o mecanismo, se você tiver — e a frase explícita de que não tem, se não tiver
+- o intervalo, com precisão de minuto: primeiro sintoma, último sintoma
+- tudo que mudou durante a janela, **inclusive o que você mudou e reverteu**
+- o que ficou instrumentado, e o que precisaria ser visto para chamar de entendido
+- em que condições isso deve ser reaberto, em vez de aberto como coisa nova
+
+> Um chamado fechado com *"parou sozinho, causa não estabelecida, instrumentado para reincidência"* vale mais para a próxima pessoa do que um fechado com *"resolvido"*. O primeiro é uma passagem de bastão. O segundo é um palpite com a evidência apagada.
+
+A falha que some sozinha não faz uma pergunta técnica mais difícil do que a que fica. Ela faz uma pergunta organizacional mais difícil: se você está disposto a registrar que não sabe, exatamente no momento em que todo mundo preferiria parar de falar no assunto.

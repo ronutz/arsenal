@@ -1,0 +1,103 @@
+---
+slug: not-a-bug
+title: "Quando o fabricante diz que não é bug"
+thesis: "\"Funciona como projetado\" costuma ser verdade e quase nunca é uma resposta. O projeto é um conjunto de decisões que alguém tomou, e a pergunta útil não é se o comportamento foi intencional, mas se a intenção sobrevive ao contato com a sua configuração — uma pergunta que o fabricante não pode encerrar por você."
+stance: practised
+part: yield
+order: 13
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["tac-escalation-packet-builder", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["reproducing-the-irreproducible", "when-the-evidence-disagrees", "workaround-and-fix"]
+artefact: "O que enviar quando o chamado fecha e o problema não"
+updated: "2026-08-08"
+---
+
+## A frase que encerra a conversa
+
+Você abre o chamado. Anexa a captura, a configuração, a reprodução exata. Alguns dias depois chega a resposta, e ela é alguma variação de uma frase só:
+
+*Isso funciona como projetado.*
+
+O chamado passa para fechado. O comportamento não se move nem um pouco.
+
+O que vem depois é a parte que merece um método, porque as duas reações instintivas são ruins. A primeira é aceitar, o que deixa você operando um sistema cujo comportamento você acabou de concordar em chamar de correto. A segunda é escalar no volume — mais e-mail, mais gente, mais calor — o que transforma uma divergência técnica em um problema de relacionamento e raramente muda o veredito.
+
+Existe uma terceira reação, e ela começa levando a resposta do fabricante a sério o bastante para testá-la.
+
+## "Funciona como projetado" geralmente é verdade
+
+Esta é a parte que se pula, e pulá-la é a razão pela qual a maioria das escalações fracassa.
+
+O engenheiro de suporte não está te enrolando. Ele comparou o comportamento observado com uma especificação, e o comportamento bateu. Na esmagadora maioria dos casos essa comparação foi feita corretamente e a resposta está factualmente certa.
+
+**A resposta estar certa é compatível com a resposta ser inútil**, e essas são afirmações distintas. "O produto fez o que o projeto diz" e "o projeto é adequado ao que você está fazendo" são asserções diferentes, e só a primeira está no escopo de quem te respondeu.
+
+Então a divergência quase nunca é sobre o comportamento ser intencional. É sobre uma de quatro coisas, e nomear qual delas muda o que você envia em seguida.
+
+## As quatro divergências escondidas sob uma frase
+
+**Uma — o projeto está documentado e você não sabia.** O comportamento está especificado, a especificação é pública, e sua expectativa veio de outro lugar: de outra plataforma, de uma versão antiga, de uma inferência razoável que a documentação nunca sustentou. Este é de longe o caso mais comum, e ele está genuinamente encerrado. O que sobra é seu para resolver — a premissa de projeto na *sua* construção, não um defeito na deles.
+
+**Duas — o projeto não está documentado.** O comportamento é intencional e não aparece em nenhum manual, release note ou artigo de base de conhecimento que você consiga achar. O fabricante continua correto: não é bug. **Mas uma decisão de projeto não documentada é um defeito de documentação**, e isso é um problema real, registrável e vencível, com outro dono. Peça que o comportamento seja documentado, em vez de pedir que ele mude. Esse pedido quase sempre é atendido, e vale mais do que parece: converte a sua descoberta particular em algo que o próximo engenheiro encontra em vinte minutos.
+
+**Três — o projeto está documentado, e a interação não.** Cada recurso se comporta conforme especificado isoladamente, e a combinação de dois deles produz algo que ninguém escreveu em lugar nenhum. É aqui que moram as falhas realmente interessantes, e é aqui que "funciona como projetado" mais engana, porque os dois projetos *estão* funcionando. **O defeito está num espaço que nenhuma especificação sozinha governa.** Isso é um problema de produto de verdade e precisa ser formulado como tal — não "o recurso A está quebrado", mas "A e B, ambos corretos, produzem isto".
+
+**Quatro — o projeto está errado para um caso que o próprio fabricante aceita como suportado.** O mais raro, e o único que é defeito no sentido comum da palavra. Em geral exige demonstrar que o comportamento quebra algo que o fabricante publica como configuração suportada — a arquitetura de referência dele, o desenho validado dele.
+
+Repare que em três das quatro a resposta original do fabricante se sustenta e você ainda tem para onde ir.
+
+## Defina o que você está de fato pedindo
+
+Antes de escrever qualquer coisa, decida qual destes você quer, porque vão para pessoas diferentes e têm taxas de sucesso muito diferentes:
+
+- **O comportamento alterado.** O mais lento, o menos provável, e precisa de um defeito ou de uma solicitação de recurso com justificativa de negócio por trás.
+- **O comportamento documentado.** Rápido, alta taxa de sucesso, e permanentemente útil para todo mundo que vier depois.
+- **Um caminho suportado para chegar ao seu resultado.** Muitas vezes é o que você realmente precisava. O projeto se mantém; você precisava do objetivo, não do mecanismo.
+- **A confirmação de que não existe caminho suportado.** O menos satisfatório e com frequência o mais valioso, porque é insumo de decisão. Uma arquitetura apoiada numa capacidade que não existe deveria descobrir isso agora.
+
+A maior parte das escalações que não vão a lugar nenhum são escalações em que isso nunca foi escolhido — e então a troca discute se é bug ou não, uma pergunta cuja resposta não muda nada, em vez de discutir o que deveria acontecer.
+
+## O que enviar quando o chamado fecha e o problema não
+
+Este é o artefato. Ele é curto de propósito, e foi desenhado para ser lido por alguém que não acompanhou o chamado.
+
+**O comportamento, descrito sem a palavra bug.** Entrada observada, saída observada, condições exatas. Nenhuma qualificação. Se o leitor precisar aceitar um adjetivo antes de aceitar os fatos, ele vai rejeitar os dois.
+
+**A especificação contra a qual você está medindo, citada com a fonte.** O documento deles, a versão deles, a página deles. Se sua expectativa vem da sua própria leitura e não do texto deles, diga isso com todas as letras — essa é a divergência quatro e exige outro argumento.
+
+**A reprodução, minimizada.** Corte todo elemento que não sustenta a falha, até que remover mais um faça a falha desaparecer. Uma reprodução de três linhas não é apenas mais conveniente que uma de trinta; é uma *afirmação diferente*, porque demonstra que os elementos removidos eram irrelevantes. Minimizar a reprodução costuma ser a hora mais valiosa de toda a escalação.
+
+**A interação, se for o caso três.** Nomeie os dois recursos. Mostre cada um funcionando corretamente sozinho. Mostre o par falhando. Essa estrutura é o que separa um defeito de interação de um mal-entendido, e as organizações de suporte em geral reconhecem bem esse formato quando ele é apresentado assim, e o encontram mal quando têm de procurá-lo sozinhas.
+
+**A configuração suportada que isso quebra, se você tiver uma.** A arquitetura de referência deles, o desenho validado deles, a orientação publicada deles. Este é o material mais forte disponível e com frequência está no site deles, sem ninguém ler.
+
+**O pedido, em uma frase.** Um dos da lista acima. Um.
+
+**O impacto, nos termos do cliente deles.** Não "isso é inaceitável" — o que deixa de funcionar, para quantas pessoas, e quanto custa manter a contorno rodando.
+
+## O que não enviar
+
+**Não reenvie o chamado inteiro.** Um chamado fechado reaberto com uma versão mais longa do texto original é lido como insistência e tratado como insistência.
+
+**Não discuta a palavra.** Se aquilo se chama bug corretamente ou não é uma questão de definição que você não tem como ganhar e não precisa ganhar. Todos os objetivos acima são alcançáveis sem usá-la uma única vez.
+
+**Não escale a pessoa.** Passar por cima do engenheiro de suporte que respondeu corretamente custa a você a única pessoa que já entende o seu problema. Escale a *pergunta* — para a documentação, para o gerenciamento de produto, para o seu time de conta — e, sempre que possível, mantenha ele na conversa.
+
+**Não comece pelo relacionamento comercial.** Ele é alavancagem real e é finita. Gastá-la num caso que ainda não foi construído direito é gastá-la na pior taxa de câmbio possível. Construa o caso primeiro; se o caso for bom e a resposta ainda for não, o caminho do relacionamento continua disponível e muito mais forte por ter sido guardado.
+
+## Enquanto isso, opere
+
+A escalação é uma trilha paralela, não a resposta. Aconteça o que acontecer com o chamado, você tem um sistema exibindo um comportamento que você não queria, e isso precisa ser administrado no seu próprio prazo.
+
+A contorno está sujeita à mesma disciplina de qualquer outra — precisa de dono, de condição de validade e de registro do que custa — e deve ser documentada contra o *projeto*, não contra o bug, porque pode nunca existir uma correção para removê-la.
+
+**Registre a restrição onde a próxima pessoa vai esbarrar nela.** Não no chamado, que ela não vai ler: na configuração, no runbook, no documento de desenho. A versão mais cara desta falha é aquela em que alguém redescobre o mesmo comportamento não documentado dali a dois anos e paga o custo inteiro de novo, escalação incluída.
+
+## A parte que demora mais para aprender
+
+O fabricante não é adversário e também não é parte no seu resultado. A obrigação dele é fazer o produto se comportar conforme especificado. A sua é fazer um sistema funcionar. Essas duas coisas coincidem na maior parte do tempo, e é justamente isso que torna tão fácil não perceber os momentos em que elas não coincidem.
+
+**Quando a resposta é "funciona como projetado", em geral você chegou ao limite do que a obrigação do fabricante cobre, e o problema restante é seu.** Isso não é derrota e não é injustiça — é uma mudança de titularidade, e quanto antes for reconhecida, mais cedo o trabalho de verdade começa.
+
+Os engenheiros que lidam bem com isso são os que param de tratar o chamado fechado como um veredito a ser derrubado e passam a tratá-lo como informação: o produto vai continuar fazendo isso, agora eu sei, e agora eu projeto contando com isso.

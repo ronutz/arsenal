@@ -1,0 +1,95 @@
+---
+slug: cannot-touch-it
+title: "When you cannot touch it"
+thesis: "The hypothesis-and-test loop assumes you are allowed to change something. When you are not, the loop is not broken but inverted — you stop manufacturing evidence and start harvesting it from differences the system already contains, and the skill is recognising which of those differences is an experiment somebody has already run for you."
+stance: practised
+part: yield
+order: 15
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["packet-capture-plan-builder", "fault-hypothesis-builder", "fortios-config-diff-explainer"]
+relatedIndustry: []
+relatedPractice: ["bisection", "verifying-without-trusting", "the-assumption-you-cannot-see"]
+artefact: "The read-only evidence inventory, and how to spend the one change window you may eventually get"
+updated: "2026-08-08"
+---
+
+## The window you are not going to get
+
+The problem is in production. Production is under change freeze until the quarter closes. The customer's security policy does not permit you to log in interactively, so everything arrives as output somebody else pasted into a ticket. There is no lab, because the lab was decommissioned when the platform went virtual and nobody replaced it. The one identical system you know of belongs to a different business unit that has not answered an email since April.
+
+You have a fault that will not yield, and the entire method you were trained in assumes you may change something to find out.
+
+**This is not an unusual situation. In regulated environments and on other people's networks, it is the normal one**, and treating it as a temporary obstruction to the real investigation is how weeks get spent waiting for permission that was never going to arrive.
+
+## Why this is not simply the same work, slower
+
+Almost every technique in the toolkit is an intervention. [Bisection](/practice/bisection) needs you to remove half the system. Disable-and-retest needs you to disable. Swapping a cable, forcing a failover, restarting a daemon, rolling back one of four changes — each is a question you ask by *doing* something and reading the answer in what happens next.
+
+Take away intervention and you have not lost a few techniques. You have lost the mechanism they all share: **you can no longer create the difference you want to observe.**
+
+What remains is not a weaker version of the same loop. It is a different one, and it has its own discipline.
+
+## The inversion: stop producing evidence, start finding it
+
+A system in production is not a blank experiment waiting for your input. It is a running record of thousands of differences that already exist — between sites, between hours, between users, between the flow that works and the one that does not.
+
+Somebody has already run the experiment. Nobody wrote it down as one.
+
+**The read-only investigator's core move is to find a difference the system already contains, and treat it as though you had created it deliberately.** The rigour is the same rigour you would apply to your own test: what varies, what is held constant, and what would have to be true for this comparison to mean anything.
+
+## Four kinds of difference already in the system
+
+**Across peers.** The other site, the other cluster member, the other tenant, the sister appliance bought on the same purchase order. The single most valuable object in a read-only investigation is a system that is *supposed* to be identical and is not exhibiting the fault.
+
+**Across time.** It worked in March. The change window log, the configuration archive, the monitoring history, the ticket queue. Time-based comparison is the one form of bisection still available to you, because the versions already exist and you are only choosing where to look.
+
+**Across the population.** Which users, which flows, which sessions, which source subnets, which client versions. A fault that hits eleven per cent of sessions is telling you something precise about what those eleven per cent have in common, and that number is often already sitting in a log you have been granted read access to.
+
+**Across the path.** Counters at each hop, error statistics per interface, retransmission rates per segment. The path is a sequence of places where the same traffic is described by different devices, and disagreement between two of those descriptions is a location — which is the whole argument of [when the evidence disagrees with itself](/practice/when-the-evidence-disagrees).
+
+## The sister system is your best instrument, and the comparison has a trap
+
+Config comparison against a working peer is the highest-yield read-only technique there is, and it fails in a specific way: **a diff between two large configurations returns hundreds of differences, almost all of them irrelevant**, and the temptation is to work down the list.
+
+Two constraints make it useful instead. First, form the hypothesis before you run the comparison — you are looking for a difference that could plausibly produce *this* symptom, not for differences in general. Second, establish that the two systems are supposed to be identical in the respect you care about. Two firewalls with different rule bases are not a controlled comparison; they are two firewalls.
+
+When the diff surfaces something, you still have the harder question: is this difference the cause, or is it another symptom of the same upstream cause? A drifted setting and a broken behaviour can both be downstream of a failed automation run that nobody has looked at.
+
+## Read-only is not the same as risk-free
+
+This is the part that gets people into trouble, and it is worth being blunt about.
+
+A debug command can pin a control-plane CPU. A packet capture without a filter can fill the disk the device logs to. An unbounded query against a production database can lock a table for long enough to cause the outage you were investigating. "I only ran a show command" has preceded a number of genuinely bad afternoons.
+
+**Read-only describes what you intend to modify, not what you might disturb.** Before you run something on a system you are not permitted to change, know its cost — and if you do not know, that is itself the finding, and the person to ask is the person who owns the box.
+
+The boundary worth naming explicitly: generating a test transaction from your own client is usually within read-only scope, because you are adding load that the system is built to serve. Changing anything about how the system responds to it is not. Be able to state which side of that line you are on before somebody asks.
+
+## Spending the one window, when you get one
+
+Eventually a window appears. It is short, it is watched, and you will get one action.
+
+There is a real tension here and the honest answer is that it depends on what you are optimising for. The most likely fix, if it works, resolves the incident and teaches you very little — you will not know which of your three candidate causes it addressed, and you will not be able to prevent it elsewhere. The most *discriminating* action may not fix anything at all, but it splits your hypotheses cleanly and tells you exactly what to ask for next.
+
+Choose deliberately rather than by reflex. If the business needs the symptom gone tonight, take the fix and accept the debt, but write down that you took it and what remains unknown. If you will be back here next month regardless, spend the window on the question.
+
+What you should not do is arrive without having decided. A window spent improvising produces a change nobody can characterise afterwards, which is the [assumption you cannot see](/practice/the-assumption-you-cannot-see) being manufactured in real time.
+
+## The evidence inventory
+
+Before you declare the investigation blocked, write down what you actually have. It is almost always more than it feels like, and the act of listing it is what turns "no access" into a specific request rather than a complaint.
+
+- What can I read, right now, without asking anyone?
+- What can I read if I ask, and who is the person, and what is the turnaround?
+- What comparable system exists, and in what respect is it supposed to be identical?
+- What historical record exists — configuration archives, monitoring retention, change logs, ticket history?
+- What does the affected population have in common, and can I get the list?
+- What have I already been told that I have not verified? Anything arriving as pasted output is somebody's report of the system, not the system, which is the distinction [verifying without trusting](/practice/verifying-without-trusting) turns on.
+
+## When the honest answer is that you cannot
+
+Sometimes the inventory comes back thin and the comparison is unavailable and the fault does not touch anything you are allowed to observe. Read-only investigation has a genuine ceiling, and pretending otherwise wastes the customer's money and your credibility.
+
+**Saying so is a professional act, provided you say it with the evidence.** Not *"I need more access"*, which sounds like an excuse and invites a negotiation about your competence. Instead: here is what I checked, here is what each result rules out, here is the specific hypothesis that remains, and here is the single observation that would confirm or kill it — a capture at this point, or read access to that log, or thirty minutes with the sister system.
+
+That is a request somebody can approve. It also survives the handover if the person who eventually gets the access is not you.
