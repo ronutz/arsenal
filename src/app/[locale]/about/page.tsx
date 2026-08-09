@@ -259,7 +259,7 @@ export default async function AboutPage({
                   resellers and direct engagements. Supplied first-hand. */}
               <li className="about-era">
                 <span className="about-era-years mono">2011 – 2014</span>
-                <span className="about-era-where">Implementation · via CYLK, TDeC and direct engagements</span>
+                <span className="about-era-where">Implementation · via CYLK, TDec and direct engagements</span>
                 <span className="about-era-what">{t("path.implementation")}</span>
               </li>
               <li className="about-era">

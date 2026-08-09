@@ -1,0 +1,88 @@
+---
+slug: what-acceptance-testing-is-for
+title: "What acceptance testing is actually for"
+thesis: "Acceptance testing is not a demonstration that the system works. Its real function is to write down what \"working\" was agreed to mean, while both parties still want to agree — so that the argument arriving eighteen months later has a document instead of two memories."
+stance: practised
+part: before
+order: 2
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["health-snapshot-comparator", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["reading-a-design-you-did-not-write", "verifying-without-trusting", "triage-and-severity"]
+artefact: "The acceptance record — and the not-tested list, which is the most valuable line in it"
+updated: "2026-08-08"
+---
+
+## The demonstration problem
+
+The acceptance test is scheduled. The integrator has prepared it, the integrator will run it, and the customer will watch. The script covers the features in the order they appear in the proposal, each one exercised along the path it was built for. Everything passes. Everyone signs.
+
+What has been established is that **the happy path existed on that Tuesday, in the hands of the person who built it.** That is worth something and it is not what anybody thinks they just bought.
+
+The failure is structural rather than dishonest. A demonstration is designed to succeed, and the people running it are the people whose work is being judged. Nobody has to be acting in bad faith for the result to carry almost no information.
+
+## What it is actually for
+
+The useful reframing is not about rigour. It is about **timing**.
+
+Acceptance is the last moment when both parties want the same thing. Before sign-off the integrator wants agreement and the customer wants coverage, and both are motivated to sound reasonable. After sign-off, the question *"is this broken, or is this simply how it works?"* becomes a commercial dispute — and the answer depends entirely on what somebody wrote down while everyone was still friendly.
+
+> **Acceptance testing is where the definition of "working" gets written by people who still want to agree with each other.** Everything else it does is secondary.
+
+Read that way, the test that matters is not the one most likely to pass. It is the one whose result you would want to point at in a year.
+
+## The party who is not in the room
+
+The tests are written by the people who built the system and the people who bought it. **Neither of them will be paged at three in the morning.**
+
+The operator who inherits it is usually absent from acceptance entirely, and that absence shapes the document: it will be strong on whether features work and silent on whether the thing can be diagnosed, failed over, restored, or upgraded by somebody who was not there.
+
+The fix is cheap and almost never taken: **one operator in the room, with the standing right to add tests.** They will ask for things nobody else thinks of, because they are the only person imagining the system on its worst day rather than its first.
+
+## Test the failure paths, because the features will be tested by users anyway
+
+Features get exercised in production within a week. **Failure paths may not be exercised for two years, and then only once, badly, at the worst possible moment.**
+
+That asymmetry should drive the whole test plan. The things worth spending acceptance time on are the ones that will otherwise be tested for the first time during an incident:
+
+- **The redundant thing, actually failed over** — not the standby reporting itself healthy. A high-availability pair that has never failed over is a claim, not a capability.
+- **The system under load**, not on an empty box in a quiet window.
+- **The certificate expiry path.** Somebody's certificate will expire; the only question is whether the renewal procedure has ever been performed by a person who has to follow the document.
+- **The backup restored**, not the backup taken. A backup nobody has restored is a file.
+- **The upgrade**, at least once, on something that matters.
+
+Every one of those is unpopular to schedule and each is worth more than the entire feature list, because the feature list will validate itself.
+
+## "Passed" is not a result
+
+A test log full of PASS records an opinion. What survives contact with the future is the **observation** — the value, the timing, the actual output.
+
+*"Failover: PASS"* tells you nothing in eighteen months. *"Failover completed in 4.2 seconds; 11 in-flight sessions dropped; alarm raised at the monitoring console within 30 seconds"* is a fact you can compare against, argue from, and detect drift with.
+
+Record what you saw, not the verdict on it. **The verdict is somebody's judgement on the day; the number is evidence forever.** This is the same discipline as [verifying without trusting](/practice/verifying-without-trusting), applied before there is anything to distrust.
+
+## The acceptance run is a free baseline, and it is usually thrown away
+
+It is the one moment in a system's life when somebody is **paid to characterise it while it is healthy and nobody is shouting.** Latency under known load, failover timing, resource consumption at rest, what the logs look like when nothing is wrong.
+
+That data is nearly impossible to collect later — after go-live there is no quiet window and no budget for one. Keep the outputs, dated, somewhere the operations team can find them. The first time somebody asks *"has this always been like that?"*, the acceptance record is either the answer or the reason nobody knows.
+
+## Sign-off is a transfer of risk
+
+This is the part that explains the pressure in the room.
+
+Signing acceptance moves the risk from the party that built the system to the party that now owns it. Everyone leaning on you to sign is not being dishonest — they are being commercially rational, and the schedule is real.
+
+What changes is what you sign. **Sign what was tested, and attach what was not.** A signature qualified by an explicit list of untested behaviours is still a signature; it closes the project and leaves the record honest. A signature that quietly covers untested failover is a bet placed on somebody else's behalf.
+
+If time runs out — and it does — the correct move is not to skip tests silently. It is to say which tests are being skipped, put it in writing, and let the person accepting the risk be the person who owns it.
+
+## The acceptance record
+
+For each test: the **condition** created, the **expected observable**, the **actual observable** with values, **who** observed it, and the **date**. Not a verdict column.
+
+Then the line that earns the document its keep:
+
+**NOT TESTED** — everything that was in scope and did not get exercised, with the reason. Time ran out, the load generator was unavailable, the secondary site was not ready, the customer declined the outage window.
+
+> **That list is the most valuable line in an acceptance document, and it is the one most often left out** — because it is the only part that says something the reader does not already assume. It also converts a future argument from *"you never tested it"* into a settled question with a date on it.

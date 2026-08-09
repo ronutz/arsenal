@@ -1,0 +1,74 @@
+---
+slug: the-runbook-nobody-can-follow
+title: "O runbook que ninguém consegue seguir, e por quê"
+thesis: "Runbooks falham porque são escritos pela pessoa que menos precisa deles, no momento em que ela mais entende o sistema, para um leitor que ela imagina ser ela mesma. A correção não é mais detalhe — é escrever para um leitor específico em um estado específico, e então deixar esse leitor quebrar o documento antes de você precisar dele."
+stance: practised
+part: before
+order: 3
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["health-snapshot-comparator", "flow-path-reasoner", "packet-capture-plan-builder"]
+relatedIndustry: []
+relatedPractice: ["what-acceptance-testing-is-for", "reading-a-design-you-did-not-write", "containment-before-cure"]
+artefact: "O teste de leitura fria — e as quatro coisas que um passo precisa dizer para sobreviver a ele"
+updated: "2026-08-08"
+---
+
+## O documento que existe e não funciona
+
+Todo parque tem. Uma pasta de procedimentos, escritos durante o projeto, aprovados por alguém, nunca abertos. Quando enfim chega o incidente que um deles cobre, quem está de plantão abre, lê dois passos e vai procurar alguém que saiba.
+
+O diagnóstico habitual é que está desatualizado, e o remédio habitual é um ciclo de revisão que ninguém sustenta. Os dois erram o alvo. **A maioria dos runbooks inúteis já era inútil no dia em que foi escrita**, e a desatualização apenas terminou o serviço.
+
+## Escrito pela pessoa errada, no momento errado, para o leitor errado
+
+Os três defeitos se somam, e nenhum deles é desleixo.
+
+**A pessoa errada.** O runbook é escrito por quem construiu a coisa — a única pessoa da organização que nunca vai precisar dele. Ela não enxerga o que sabe. Todo passo que lhe parece óbvio é invisível justamente por ser óbvio, e a dificuldade do leitor está exatamente nesses passos.
+
+**O momento errado.** É escrito no fim do projeto, quando o entendimento está no pico e o interesse no chão. O que fica registrado é o formato do procedimento, porque o formato é o que está na cabeça. Os específicos — qual dos quatro consoles, qual credencial, qual das duas coisas chamadas *primária* — são sabidos com tanta folga que não se apresentam como fatos dignos de registro.
+
+**O leitor errado.** O leitor imaginado é um colega competente, na mesa dele, sem pressa. O leitor real foi acordado às 3h40, está num sistema que nunca tocou, com um gestor pedindo atualização a cada dez minutos. **Esses dois leitores precisam de documentos diferentes**, e só um deles foi atendido.
+
+## A falha específica que o leitor errado produz
+
+Um especialista sem pressa lê um passo e reconstrói a intenção. Um estranho cansado lê o mesmo passo e precisa que ele seja inequívoco, porque não tem base para reconstruir nem disposição para adivinhar às 3h40.
+
+Então os passos que falham nunca são os complicados. São os que presumem:
+
+- **Qual sistema.** *"Acesse o console de gerência"* — são três, e dois vão aceitar o login.
+- **Qual nome.** *"Comute para o equipamento em espera"* — ele é `-02` num lugar e `-b` em outro, e um desses é outro par inteiro.
+- **O que o leitor deve ver.** Um passo que diz o que fazer e não diz o que acontece quando dá certo deixa o leitor incapaz de distinguir sucesso de silêncio.
+- **Se é seguro.** O autor sabe que este comando é somente leitura e aquele não. O leitor não sabe, e vai travar ou descobrir na prática.
+
+## O teste de leitura fria
+
+A correção inteira, e custa uma hora.
+
+**Entregue o runbook a alguém que nunca tocou o sistema e observe a pessoa tentando seguir. Não ajude.** Anote todo lugar em que ela para, pergunta ou chuta. Esses são os defeitos, e não há outro jeito confiável de encontrá-los, porque o autor não consegue gerar essa lista relendo — ele vai reconstruir cada lacuna sem perceber.
+
+Duas regras fazem funcionar. O leitor precisa ser genuinamente leigo naquilo, não um colega educado que já meio sabe. E **o autor precisa ficar calado**, que é a parte difícil: cada pergunta respondida é um defeito consertado na sala e deixado no documento.
+
+Rode antes de precisar e custa uma hora de duas pessoas. Rode durante o incidente e o custo é o incidente.
+
+## O que um passo precisa dizer
+
+Quatro coisas, e um passo sem qualquer uma delas é onde a leitura fria para:
+
+1. **Onde** — o sistema exato, pelo nome que ele exibe de si mesmo, não pelo papel
+2. **O que fazer** — uma ação, nas palavras que a interface usa
+3. **O que você deve ver** — a observação que significa que funcionou
+4. **O que significa se você não vir** — vá para o passo 9, ou pare e escale
+
+O quarto item é o que transforma um procedimento em algo utilizável sob pressão. **Um runbook que só descreve o caminho de sucesso presume que o leitor vai improvisar exatamente no momento em que improvisar é mais caro** — e um passo sem ramo de falha é a razão de o leitor parar e ir procurar alguém.
+
+## Duas coisas menores que decidem se ele será aberto
+
+**Diga para que serve o procedimento, no topo, nos termos do leitor.** Não *"procedimento de manutenção de alta disponibilidade do BIG-IP"*, e sim *"use isto quando o primário está no ar mas não passa tráfego, e você precisa do serviço de volta antes de entender por quê."* As pessoas buscam por sintoma, não por subsistema, e um título em vocabulário de sistema é invisível para quem só tem um sintoma.
+
+**Diga o que ele não cobre.** Uma linha nomeando a situação vizinha para a qual ele *não* serve evita o pior resultado possível — um leitor seguindo um procedimento correto para o problema errado, com confiança, enquanto a falha real continua.
+
+## Por que o ciclo de revisão não resolve
+
+Revisões agendadas falham porque são lidas pelo autor, que não enxerga as lacunas, e porque nada confronta o documento com a realidade.
+
+**Duas coisas de fato mantêm um runbook vivo**, e as duas são de graça. Toda vez que alguém usa um durante um incidente, edita com ele aberto — o ponto de conhecimento máximo sobre onde ele está errado. E toda vez que um procedimento é executado de verdade, se funcionou vale uma linha no registro do incidente, que é o mesmo instinto do [registro de aceitação](/practice/what-acceptance-testing-is-for): capturar a observação enquanto ainda há alguém sendo pago para tê-la.

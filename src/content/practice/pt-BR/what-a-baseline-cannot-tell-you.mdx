@@ -1,0 +1,67 @@
+---
+slug: what-a-baseline-cannot-tell-you
+title: "O que uma linha de base não consegue dizer"
+thesis: "Uma linha de base registra o que aconteceu durante o período em que foi tirada e promove, em silêncio, as condições daquele período ao status de normal. Ela responde se algo mudou, o que já vale muito — mas não consegue dizer se aquilo que registrou algum dia esteve certo, e a diferença entre essas duas perguntas é de onde saem as respostas erradas ditas com confiança."
+stance: practised
+part: before
+order: 6
+roles: ["second-line", "field", "design"]
+relatedTools: ["health-snapshot-comparator", "flow-path-reasoner", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["baselines-knowing-what-normal-looks-like", "when-the-instruments-agree", "the-assumption-you-cannot-see"]
+artefact: "As quatro perguntas a fazer a uma linha de base antes de deixá-la descartar qualquer coisa"
+updated: "2026-08-09"
+---
+
+## A comparação que encerra a investigação cedo
+
+A linha de base diz que a memória estava em 41% e a taxa de retransmissão em 0,3%. Hoje está em 43% e 0,3%. Nada se mexeu. A sala relaxa e a investigação vai para outro lugar.
+
+Muitas vezes isso está certo, e é a razão de [linhas de base](/practice/baselines-knowing-what-normal-looks-like) valerem o trabalho. É também a forma mais eficiente de descartar a causa real, porque uma linha de base que bate parece evidência de saúde quando é apenas evidência de **igualdade**.
+
+> **Uma linha de base responde "isto mudou?". Ela não responde "isto está certo?".** Durante um incidente as duas parecem a mesma pergunta, e não são — e a segunda costuma ser a que está em jogo.
+
+## Tudo que ela registrou, ela também endossou
+
+A captura é silenciosa sobre as próprias condições. O que era verdade naquele dia vira a referência, inclusive as partes que já estavam erradas.
+
+Um equipamento já mal configurado é registrado como normal. Um enlace já rodando mais quente do que deveria é registrado como normal. Um vazamento de memória já três semanas em curso é registrado no valor a que tinha chegado, e toda comparação futura mede contra um número que era, ele próprio, um sintoma.
+
+**Isso não é defeito da prática; é o que um retrato é.** Mas significa que uma linha de base só consegue dizer o quanto você se afastou de um ponto — nunca se aquele ponto era um bom lugar para estar.
+
+## Quatro coisas que ela não enxerga, por mais cuidadosa que seja
+
+**O que já estava errado.** Como acima, e vale destacar em separado porque é a falha mais cara: a linha de base vira o argumento para *não* olhar em algum lugar.
+
+**Quais eram as condições.** Uma captura da semana calma de janeiro e uma do fechamento do mês descrevem sistemas diferentes. Nenhuma está errada; compará-las é que está. Sem as condições registradas, a comparação atravessa em silêncio duas perguntas distintas.
+
+**Qualquer coisa abaixo da resolução dela.** Um retrato trimestral não fala sobre uma terça-feira. Se o sintoma é uma parada de dois segundos, contadores lidos uma vez por trimestre não têm nada a dizer — e o silêncio será lido como ausência, que é o erro de [quando os instrumentos concordam](/practice/when-the-instruments-agree) chegando do passado em vez de vir de um painel.
+
+**Se o que ela mediu ainda é o que importa.** O parque mudou. Um número de capacidade de um componente que hoje carrega um décimo do que carregava continua exato e deixou de ser relevante, e vai seguir parecendo tranquilizador indefinidamente.
+
+## A armadilha específica: linha de base que bate como prova de inocência
+
+A frase perigosa é *"conferimos com a linha de base e está igual, então não é isso."*
+
+Igualdade descarta **mudança**. Não descarta o componente. Se a falha é um limite de projeto e não um desvio — uma tabela que sempre ia encher nesta taxa de transações, um timeout que sempre foi um pouco curto para este caminho, um teto de licença alcançado por um crescimento inteiramente normal — então **a linha de base vai bater perfeitamente até o instante em que o sistema parar**, e o fato de bater terá sido usado como motivo para olhar em outro lugar.
+
+Cada uma dessas falhas é invisível para uma comparação e óbvia numa leitura do projeto a partir dos princípios. É por isso que este artigo fica ao lado de [ler um projeto que não foi você quem fez](/practice/reading-a-design-you-did-not-write), e não no lugar dele.
+
+## O que fazer com uma linha de base que bate
+
+Não descartar. Rebaixar o que se está pedindo que ela prove.
+
+**Diga o que ela de fato estabeleceu**, em voz alta, nas palavras que sobrevivem: *"nada derivou desde março"* em vez de *"a plataforma está saudável"*. A primeira é o que você tem. A segunda é o que a sala vai ouvir se ninguém disser a primeira.
+
+**Depois faça a pergunta que a comparação não podia fazer**: este valor está correto para a carga que este sistema carrega hoje? É uma pergunta de projeto, respondida pela especificação e pela aritmética, não pelo histórico — e é justamente a que uma linha de base que bate desencoraja qualquer um de fazer.
+
+## As quatro perguntas
+
+Antes de deixar uma linha de base descartar qualquer coisa:
+
+1. **Quando foi tirada, e o que estava acontecendo naquela semana?** Se as condições não estão registradas, a comparação é mais fraca do que parece.
+2. **O sistema estava sabidamente bom, ou apenas ainda-não-reclamando?** Ninguém captura linha de base na semana seguinte a um incidente; captura quando está calmo, que não é o mesmo que verificado.
+3. **A resolução dela é mais fina que o sintoma?** Uma captura trimestral não testemunha sobre um evento de dez segundos.
+4. **Se este valor sempre tivesse estado errado, esta linha de base pareceria diferente?** Se a resposta for não — e costuma ser — então o fato de bater não é evidência sobre correção, e dizer isso é a diferença entre um achado e um falso negativo.
+
+Essa última pergunta é o artigo inteiro em uma linha, e vale fazê-la em voz alta, porque é a que transforma uma comparação confortável de volta numa investigação aberta.

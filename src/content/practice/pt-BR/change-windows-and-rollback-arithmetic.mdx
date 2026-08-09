@@ -1,0 +1,77 @@
+---
+slug: change-windows-and-rollback-arithmetic
+title: "Janelas de mudança, e a aritmética do rollback"
+thesis: "Uma janela de mudança não é o tempo que a mudança leva. É o tempo da mudança mais o tempo para descobrir que deu errado mais o tempo para desfazer — e o terceiro número é o que ninguém mede, razão pela qual janelas estouram e rollbacks são abandonados pela metade."
+stance: practised
+part: before
+order: 7
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["health-snapshot-comparator", "incident-timeline-rca-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["what-acceptance-testing-is-for", "baselines-knowing-what-normal-looks-like", "containment-before-cure"]
+artefact: "A janela de quatro números, e a linha de segue/não-segue acordada antes de alguém estar cansado"
+updated: "2026-08-09"
+---
+
+## O número no registro de mudança é o número errado
+
+*"A mudança leva vinte minutos."* Normalmente é verdade, e não é a janela.
+
+A janela são quatro números, e só o primeiro é estimado com honestidade:
+
+1. **Executar** — vinte minutos, e o único em que todo mundo concorda.
+2. **Saber se funcionou** — a verificação, que raramente é planejada e não é a mesma coisa que a mudança ter terminado sem erro.
+3. **Decidir voltar atrás** — a parte que consome tempo de verdade, porque é um julgamento feito sob pressão por pessoas que não querem fazê-lo.
+4. **Desfazer** — que quase nunca são vinte minutos, e com frequência nunca foi testado.
+
+**Janelas estouram no terceiro e no quarto número**, e estouram de um jeito específico: não com elegância, mas chegando à borda da janela com a mudança pela metade e sem tempo para reverter.
+
+## Rollback não é o inverso da mudança
+
+A suposição de que desfazer é simétrico a fazer é a crença mais cara da gestão de mudanças, e ela é falsa de algumas formas previsíveis:
+
+- **Estado foi criado.** Sessões restabelecidas, caches aquecidos, clientes registrados de novo, um esquema migrado. Reverter a configuração não reverte o estado, e o estado costuma ser justamente aquilo a que os usuários estão agarrados.
+- **A versão antiga sumiu.** A imagem foi sobrescrita, a licença foi vinculada à nova compilação, a página de download do fabricante não lista mais aquilo.
+- **Outros se moveram junto.** Um parceiro abriu o lado dele da mudança, um certificado foi reemitido, uma rota foi aceita acima. O seu rollback agora é uma segunda mudança coordenada, não uma mudança local.
+- **O próprio tempo.** Um backup restaurado oito horas depois perde oito horas.
+
+**Pergunte o que o rollback de fato restaura, não se ele existe.** Um rollback documentado que devolve a configuração e não os dados é algo que se quer saber antes da janela, não durante.
+
+## A decisão que ninguém quer tomar às 3h
+
+O trabalho técnico raramente é o que mata uma janela. O julgamento é.
+
+Vinte minutos depois do ponto de controle, a mudança está se comportando de forma estranha. Alguém diz *"mais cinco minutos"*, que é a frase mais razoável disponível e também o mecanismo pelo qual todo estouro acontece. Os cinco minutos são concedidos repetidamente porque cada concessão é individualmente defensável, e a soma nunca é examinada.
+
+A correção é tomar a decisão antes, e por alguém que não esteja cansado:
+
+> **Acorde o horário de segue/não-segue antes de a janela abrir, escreva no registro da mudança, e dê a uma pessoa nomeada a autoridade de chamar.** Não quem está executando — essa pessoa sempre vai achar que está perto, e normalmente está, que é exatamente o problema.
+
+A linha é um **horário de relógio**, não uma condição. *"Se não estiver verificado e verde às 02h40, revertemos"* sobrevive ao cansaço de um jeito que *"se não estiver com boa cara, revertemos"* não sobrevive.
+
+## Verificação faz parte da janela, não é formalidade posterior
+
+Uma mudança que terminou sem mensagem de erro não foi verificada. Foi *executada*.
+
+O passo de verificação precisa existir no plano, com observação declarada e tempo orçado, exatamente como no [teste de aceitação](/practice/what-acceptance-testing-is-for). Duas propriedades o tornam útil sob pressão:
+
+**Precisa ser rápido.** Se a verificação leva quarenta minutos, ela será pulada às 3h por gente cansada que já passou do horário previsto.
+
+**Precisa ser capaz de falhar.** Uma checagem que passa independentemente de a mudança ter funcionado é pior que nenhuma, porque consome a janela e produz confiança. *"A interface está no ar"* é desse tipo. *"Uma transação da sub-rede da filial conclui em menos de 400 milissegundos, como na linha de base"* não é — e ter uma [linha de base](/practice/baselines-knowing-what-normal-looks-like) é o que torna a segunda frase possível de escrever.
+
+## Janelas também são um risco
+
+A janela de mudança é quando o parque está menos defendido: monitoração silenciada para reduzir ruído, redundância deliberadamente meio desmontada, as pessoas que conhecem o sistema acordadas na décima primeira hora, e todo alerta atribuído ao trabalho em curso.
+
+Esse último é a armadilha. **Durante uma janela, uma falha não relacionada fica invisível** — vai ser presumida como sintoma da mudança, perseguida como tal, e possivelmente "corrigida" por um rollback que não tem nada a ver com ela. Quando um alarme dispara durante a janela, a pergunta que vem antes de qualquer outra é *isto poderia ser outra coisa completamente?*
+
+## O que escrever antes de a janela abrir
+
+- **Os quatro números**, separados, com o rollback testado e não presumido
+- **O horário de segue/não-segue**, e o único nome que chama
+- **Qual é a verificação**, a observação esperada, e quanto tempo leva
+- **O que o rollback restaura** — e, explicitamente, o que ele não restaura
+- **O que foi silenciado**, para ser religado; uma supressão de monitoração que sobrevive à janela é uma falha esperando plateia distraída
+- **O ponto sem retorno**, se houver: o momento a partir do qual voltar deixa de ser opção, dito com todas as letras, porque alguém vai presumir que a opção continua disponível a noite toda
+
+Seis linhas. A janela que estoura é quase sempre uma em que a quarta e a sexta nunca foram escritas, e a sala as descobriu na ordem que custa mais caro.

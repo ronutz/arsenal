@@ -144,6 +144,9 @@
    (PRIME 2026-08-08) */
 .about-facts-section {
   border-bottom: none;
+  /* Half of .section's clamp(2.5rem, 7vw, 5rem); the other half of the gap comes
+     off .about-hero's bottom padding. (PRIME 2026-08-08) */
+  padding-block-start: clamp(1.25rem, 3.5vw, 2.5rem);
 }
 .section-accent {
   background: var(--surface-base);
@@ -15310,7 +15313,11 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    first section's top padding compounded into a large void either side of the
    rule. */
 .about-hero {
-  padding-block: clamp(2.25rem, 5vw, 3.5rem) clamp(1.25rem, 2.5vw, 1.75rem);
+  /* Bottom padding HALVED 2026-08-08 (PRIME): the lede and the fact cards read as
+     one block, so the gap between them was doing separation work that the removed
+     border already stopped doing. Halved here and in .about-facts-section's top
+     padding, because the visible gap is the sum of the two. */
+  padding-block: clamp(2.25rem, 5vw, 3.5rem) clamp(0.625rem, 1.25vw, 0.875rem);
 }
 
 .about-hero .hero-eyebrow {

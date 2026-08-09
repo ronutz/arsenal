@@ -1,0 +1,73 @@
+---
+slug: handover-project-to-operation
+title: "Handover: the moment a project becomes an operation"
+thesis: "Handover is treated as a document transfer and is actually a transfer of judgement — and judgement is the one thing that cannot be handed over in a meeting. What can be transferred is the reasoning behind the decisions, the list of things that were left unfinished, and the name of somebody who will answer the phone."
+stance: practised
+part: before
+order: 4
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["health-snapshot-comparator", "flow-path-reasoner", "tac-escalation-packet-builder"]
+relatedIndustry: []
+relatedPractice: ["reading-a-design-you-did-not-write", "what-acceptance-testing-is-for", "the-runbook-nobody-can-follow"]
+artefact: "The handover record — decisions with reasons, the deferred list, and who answers the phone"
+updated: "2026-08-08"
+---
+
+## Two different jobs wearing the same clothes
+
+A project ends. An operation begins. They look continuous — the same equipment, often the same building — and they are not the same job at all.
+
+A project is a bounded thing with a finish line, staffed by people who are measured on reaching it. An operation is unbounded, staffed by people who are measured on nothing going wrong, indefinitely. **The incentives point in different directions**, and handover is the seam where that difference becomes somebody's problem.
+
+The project team is rewarded for closing. The operations team inherits everything that was not closed. Neither is behaving badly; the structure produces the friction on its own.
+
+## What actually gets handed over, and what does not
+
+The handover meeting transfers documents: diagrams, credentials, runbooks, a support contract. All necessary, all transferable, none of them the hard part.
+
+**What does not transfer is judgement** — knowing which alarm matters, which behaviour is normal for this system even though it looks wrong, which component was always slightly odd, which vendor case is still quietly open. That knowledge exists as pattern in the heads of people about to be assigned elsewhere, and no meeting extracts it, because nobody can enumerate what they know.
+
+So the goal is not to transfer judgement. It is to transfer **the raw material somebody else can build judgement from**, and to be honest that this takes months rather than an afternoon.
+
+## The three things worth writing down
+
+**Decisions with their reasons.** Not what was configured — the configuration says that — but why, where the choice was not obvious. Six months from now somebody will want to change it, and the difference between a safe change and an outage is knowing whether the current value is a decision or an accident. This is the [reading a design you did not write](/practice/reading-a-design-you-did-not-write) problem, solved cheaply at the only moment it is still cheap.
+
+**The deferred list.** Everything that was in scope and did not happen, everything temporary that is still in place, every workaround introduced during commissioning. **This list is the single most valuable artefact of a handover and the one most likely to be omitted**, because writing it feels like confessing. It is not a confession — it is the difference between an operation that knows where its debt is and one that discovers it during an incident.
+
+**Who answers the phone, and until when.** A name, a channel, and an end date. Vague warranty language is not this. *"Márcia, this channel, until 30 November"* is.
+
+## The temporary things are the dangerous ones
+
+Every commissioning produces them: a rule opened wider than intended to get testing done, a check disabled to stop noise during migration, a hard-coded address instead of the name that was not ready, a certificate with a short life issued to unblock a deadline.
+
+Each was correct at the time. Each was meant to last a fortnight. **Nobody who knows why they exist will still be on the project when they matter**, and each one will eventually be found by somebody who cannot tell it from a deliberate design decision.
+
+Write them down as a list with dates and owners, even if the list is embarrassing — especially then. An undocumented temporary measure is a fault with a delay fuse, and the length of the fuse is however long it takes for the condition it works around to change.
+
+## Handover is a date, and the transfer is a period
+
+The most common structural mistake is treating the date as the transfer.
+
+What works is overlap: the operations team runs the system with the project team available, rather than the project team running it until the moment they leave. The first real incident is the actual handover, and it is worth arranging for it to happen while somebody who understands the build can still be reached.
+
+Where that is impossible — and often it is, because the project team is contracted and their contract ends — say so plainly and price the risk rather than pretending the overlap exists. **A handover with no overlap is not a handover; it is an abandonment with paperwork**, and the operations team should at least know which one they are receiving.
+
+## What the receiving side should insist on
+
+Two things, and both are refusable before signature rather than after:
+
+**Perform the procedures, do not present them.** A handover session where the project team demonstrates a failover is worth less than one where the operations engineer performs it, from the runbook, while the project team watches in silence. That is the [cold-read test](/practice/the-runbook-nobody-can-follow) applied to the whole handover, and it converts an hour of slides into a list of real defects.
+
+**Get the state of the vendor relationship**, not just the contract number. Which cases are open, which have been escalated, which engineer knows this account, what was promised verbally. A support contract is a right to open a case; the relationship is what determines how the case goes.
+
+## The handover record
+
+- **Decisions with reasons** — every non-obvious choice, and what constrained it
+- **Deferred** — in scope and not done, with why
+- **Temporary** — every workaround still in place, with the date it was introduced and the condition that should retire it
+- **Known-odd** — behaviour that looks wrong and is expected, so nobody chases it at 03:00
+- **Open with the vendor** — cases, escalations, and what was promised
+- **Contacts** — names, channels, and the date each stops answering
+
+Six headings. It is a morning's work, and it is the only part of the project that the people who inherit it will still be using in three years.

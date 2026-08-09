@@ -1,0 +1,74 @@
+---
+slug: the-runbook-nobody-can-follow
+title: "The runbook nobody can follow, and why"
+thesis: "Runbooks fail because they are written by the person who least needs them, at the moment they understand the system best, for a reader they imagine to be themselves. The fix is not more detail — it is writing for a specific reader in a specific state, and then letting that reader break it before you need it."
+stance: practised
+part: before
+order: 3
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["health-snapshot-comparator", "flow-path-reasoner", "packet-capture-plan-builder"]
+relatedIndustry: []
+relatedPractice: ["what-acceptance-testing-is-for", "reading-a-design-you-did-not-write", "containment-before-cure"]
+artefact: "The cold-read test — and the four things a step must state to survive one"
+updated: "2026-08-08"
+---
+
+## The document that exists and does not work
+
+Every estate has them. A folder of procedures, written during the project, approved by somebody, never opened. When the incident finally arrives that one of them covers, the person on shift opens it, reads two steps, and goes to find somebody who knows.
+
+The usual diagnosis is that it is out of date, and the usual remedy is a review cycle nobody sustains. Both miss the point. **Most unusable runbooks were unusable on the day they were written**, and staleness merely finished them off.
+
+## Written by the wrong person, at the wrong moment, for the wrong reader
+
+The three defects compound, and none of them is carelessness.
+
+**The wrong person.** The runbook is written by whoever built the thing — the one person in the organisation who will never need it. They cannot see what they know. Every step they consider obvious is invisible to them precisely because it is obvious, and the reader's difficulty is with exactly those steps.
+
+**The wrong moment.** It is written at the end of a project, when understanding is at its peak and interest is at its floor. What gets recorded is the shape of the procedure, because the shape is what is in mind. The specifics — which of the four consoles, which credential, which of the two things called *primary* — are known so thoroughly that they do not present themselves as facts worth writing.
+
+**The wrong reader.** The imagined reader is a competent colleague at their desk, unhurried. The actual reader is somebody woken at 03:40, working on a system they have never touched, with a manager asking for updates every ten minutes. **Those two readers need different documents**, and only one of them was written for.
+
+## The specific failure the wrong reader produces
+
+An unhurried expert reads a step and reconstructs its intent. A tired stranger reads the same step and needs it to be unambiguous, because they have no basis for reconstruction and no appetite for guessing at 03:40.
+
+So the steps that fail are never the complicated ones. They are the ones that assume:
+
+- **Which system.** *"Log in to the management console"* — there are three, and two of them will accept the login.
+- **Which name.** *"Fail over to the standby"* — the standby is labelled `-02` in one place and `-b` in another, and one of those is a different pair entirely.
+- **What the reader should see.** A step that says what to do and not what happens when it works leaves the reader unable to tell success from silence.
+- **Whether it is safe.** The author knows this command is read-only and that one is not. The reader does not, and will either stall or find out.
+
+## The cold-read test
+
+The whole of the fix, and it costs an hour.
+
+**Give the runbook to somebody who has never touched the system, and watch them try to follow it. Do not help.** Write down every place they stop, ask a question, or guess. Those are the defects, and there is no other reliable way to find them, because the author cannot generate that list by re-reading — they will reconstruct every gap without noticing.
+
+Two rules make it work. The reader must be genuinely unfamiliar, not a polite colleague who half-knows it. And **the author must stay silent**, which is the hard part: every answered question is a defect that has been repaired in the room and left in the document.
+
+Run it before the runbook is needed and it costs an hour of two people's time. Run it during an incident and the cost is the incident.
+
+## What a step has to state
+
+Four things, and a step missing any of them is where a cold read stops:
+
+1. **Where** — the exact system, by the name it displays about itself, not by role
+2. **What to do** — one action, in the words the interface uses
+3. **What you should see** — the observable that means it worked
+4. **What it means if you do not** — go to step 9, or stop and escalate
+
+That fourth item is the one that turns a procedure into something usable under pressure. **A runbook that only describes the successful path assumes the reader will improvise at exactly the moment improvisation is most expensive** — and a step with no failure branch is why the reader stops and goes to find somebody.
+
+## Two smaller things that decide whether it gets opened
+
+**Say what the procedure is for, at the top, in the reader's terms.** Not *"BIG-IP HA maintenance procedure"* but *"use this when the primary is up but not passing traffic, and you need service back before you understand why."* People search by symptom, not by subsystem, and a title in system vocabulary is invisible to somebody who only has a symptom.
+
+**Say what it does not cover.** One line naming the adjacent situation it is *not* for prevents the worst possible outcome — a reader following a correct procedure for the wrong problem, confidently, while the actual fault continues.
+
+## Why the review cycle is not the answer
+
+Scheduled reviews fail because they are read by the author, who cannot see the gaps, and because nothing forces the document against reality.
+
+**Two things actually keep a runbook alive**, and both are free. Every time somebody uses one during an incident, they edit it while it is open — the point of maximum knowledge about where it is wrong. And every time a procedure is performed for real, whether it worked is worth one line in the incident record, which is the same instinct as the [acceptance record](/practice/what-acceptance-testing-is-for): capture the observation while somebody is still being paid to have it.

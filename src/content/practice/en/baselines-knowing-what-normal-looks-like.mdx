@@ -1,0 +1,75 @@
+---
+slug: baselines-knowing-what-normal-looks-like
+title: "Baselines — knowing what normal looks like before you need to"
+thesis: "A baseline is not monitoring and not documentation. It is the answer to the only question that matters in the first ten minutes of an incident — has this always been like that — and it is the one artefact that can only be made when nothing is wrong."
+stance: practised
+part: before
+order: 5
+roles: ["first-line", "second-line", "field", "design"]
+relatedTools: ["health-snapshot-comparator", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["what-acceptance-testing-is-for", "symptom-and-cause", "handover-project-to-operation"]
+artefact: "The baseline capture — six things, taken quarterly, stored where the incident will look"
+updated: "2026-08-08"
+---
+
+## The question you cannot answer
+
+Ten minutes into an incident, somebody finds a number. Memory on the firewall is at 78%. There are 40,000 sessions on the load balancer. The link is running at 300 megabits per second. The retransmission rate is 0.4%.
+
+Then the room asks the only question that matters, and nobody can answer it:
+
+> **Has it always been like that?**
+
+Without an answer, the number is not evidence. It is a thing somebody noticed, and it will absorb the next forty minutes — because a suspicious-looking number that nobody can date is irresistible, and chasing it feels like progress.
+
+**A baseline exists to make that question cheap.** Everything else it gets used for is a bonus.
+
+## Why monitoring does not already do this
+
+Monitoring watches what somebody thought to watch, at the resolution somebody chose, retained for as long as somebody paid for.
+
+That leaves three gaps, and all three appear at the worst moment. **What is not graphed does not exist** — and the thing you need at 03:00 is reliably the thing nobody made a dashboard for. **Retention expires**, usually just past the horizon you need for *"was it like this before the upgrade in March?"* And **aggregation flattens shape**, which is the argument in [when the instruments agree](/practice/when-the-instruments-agree): a five-minute mean cannot answer a question about a ten-second stall.
+
+A baseline is different in kind. It is a **complete, dated snapshot of a known-good state**, taken deliberately, stored as an artefact rather than a time series. Monitoring tells you what is happening. A baseline tells you what *was* true, in full, on a day when nothing was wrong.
+
+## The only moment it can be made
+
+This is the whole difficulty and the reason baselines are rare.
+
+**A baseline can only be captured when the system is healthy** — which is exactly when nobody is willing to fund it, schedule it, or think about it. Once there is a reason to want one, the opportunity has already gone: whatever you capture now includes the fault.
+
+There is one moment when somebody is *paid* to characterise a healthy system and it is nearly always wasted: [acceptance](/practice/what-acceptance-testing-is-for). The test run produces exactly this data and it is thrown away with the project documentation.
+
+## Six things worth capturing
+
+Small enough to actually do, and it is better done quarterly and roughly than annually and perfectly.
+
+1. **Configuration** — the running config, exported, dated. Not the intended config.
+2. **Counters at rest** — interface errors, discards, retransmissions, session counts, connection rates. The absolute values matter less than having them at all.
+3. **Resource consumption at rest** — processor, memory, disk, table occupancy, licence and connection ceilings. *How full* is the number that predicts the next outage.
+4. **Timing** — what a normal transaction costs end to end, and what a failover costs. Measured, not quoted from the datasheet.
+5. **What the logs look like when nothing is wrong.** The most under-collected item on the list: every estate has recurring benign errors, and without a healthy sample **every one of them looks like a lead during an incident.**
+6. **The topology as it actually resolves** — which path traffic takes today, which resolver answers, which member is active.
+
+## The trap: a baseline is not a target
+
+A baseline records what *was*, not what *should be*. Two failure modes follow, and both are common.
+
+**Baselining a fault.** If the estate was already unwell when you captured it, you have now written the illness down as normal, and the next investigation will use it to rule out the actual cause. Capture close to acceptance, before drift accumulates, and note anything you already know is not right.
+
+**Treating it as a threshold.** *"Memory was 40% at baseline and it is 78% now, therefore this is the problem"* is exactly the [symptom-and-cause](/practice/symptom-and-cause) error, dressed in evidence. Growth is normal. A baseline gives you the **rate**, not the verdict — and the rate is the useful part, because it tells you when the ceiling arrives.
+
+## Store it where the incident will look
+
+A baseline nobody can find during an incident is not a baseline.
+
+That rules out the project team's shared drive, the departed consultant's laptop, and the wiki nobody has permissions for. It belongs wherever the on-call engineer already goes at 03:00 — beside the runbooks — and it needs to be legible to somebody who did not take it: dated, labelled with what system it describes, and stating the conditions it was taken under.
+
+**Add one line naming the conditions**, because a capture taken during the quiet week in January answers a different question from one taken at month-end close. A baseline without its context invites exactly the false comparison it exists to prevent.
+
+## The honest minimum
+
+If none of the above is going to happen — and often it is not — do this instead, because it takes an afternoon and returns most of the value:
+
+**Once a quarter, capture the six items above, put the files in a dated folder next to the runbooks, and do nothing else with them.** No dashboard, no analysis, no review meeting. The entire value is realised on the day somebody asks *"has it always been like that?"* and the answer takes ninety seconds instead of forty minutes.

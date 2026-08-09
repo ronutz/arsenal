@@ -6435,7 +6435,7 @@
   "about": {
     "eyebrow": "About me",
     "role": "Senior Technical Instructor",
-    "lede": "Network and security training, delivered by someone who spent his career on the implementation side.",
+    "lede": "Network and security training, delivered by a professional who has spent half of a thirty-year career on the hands-on side — implementation and troubleshooting — and the other half studying, designing, and teaching resilient, secure network communications.",
     "now": {
       "title": "What I do",
       "body": "I deliver official, certified instructor-led training across security and networking platforms. There are hands-on labs on real systems, and for people who already know the fundamentals and came to practice, that is exactly the point: real environments to work in. For groups newer to a technology, the time goes first into building the foundations the topic rests on, so the hands-on work makes sense and people leave understanding why things behave the way they do, not just which buttons to press. Both are equally valuable, and the balance shifts with who is in the room. Teaching and technical enablement have been part of my work since the late 1990s, on a career that began on the implementation side in 1996.",
@@ -6458,7 +6458,7 @@
     },
     "path": {
       "title": "The path here",
-      "intro": "My career began on the vendor and implementation side in 1996, and stayed there for two decades before I focused fully on training. That implementation background is the reason the training lands: I have built, broken, and fixed these systems in production.",
+      "intro": "My career began on the vendor and implementation side in 1996 and widened from there into systems audits and design, technical and sales enablement — three decades in enterprise networking, two of them hands-on before I focused fully on training. That depth and range is the reason the training lands: I have built, broken, and fixed these systems in production.",
       "present": "present",
       "cabletron": "Network engineer and certified instructor. Non-Ethernet and Ethernet networks, campus networks, IP routing.",
       "riverstone": "Product support engineer and knowledge-base coordinator in California. Gigabit Ethernet, metropolitan area networks, IP routing, BGP. Third-level escalation, customer scenario recreation, and regression testing.",
@@ -15030,13 +15030,13 @@
     "exclusion1Term": "Implementation and configuration",
     "exclusion1Body": "I will review what is planned and audit what was built, but I am not the pair of hands that builds it.",
     "exclusion2Term": "On-call, standby, and operational duty",
-    "exclusion2Body": "Nothing here places me on a rota or an escalation path.",
+    "exclusion2Body": "I do not sell hours, and I am not a name on a rota or an escalation path. Where real-time involvement is genuinely warranted, it happens by specific arrangement as a senior advisory engagement — judgement at the point of decision, not standby capacity.",
     "exclusion3Term": "Staff augmentation",
-    "exclusion3Body": "This is not a body for a headcount gap.",
+    "exclusion3Body": "If what is needed is another person on the team, that is a hiring decision rather than an advisory one.",
     "exclusion4Term": "Training and enablement, in any form",
     "exclusion4Body": "Every course, workshop and certification path I deliver is delivered through Red Education.",
     "offerSpeakingTitle": "Speaking engagements",
-    "offerSpeakingBody": "Conference talks and internal sessions on where this industry came from and what it was like to be in it. Two prepared talks, and other subjects by arrangement."
+    "offerSpeakingBody": "Conference talks, keynotes, and internal sessions on where this industry came from, what it was like to be in it, and how that compares with now — plus a little futurology about where the professional roles and the work itself are heading. A range of prepared talks, and custom subjects by arrangement."
   },
   "speaking": {
     "eyebrow": "Speaking",

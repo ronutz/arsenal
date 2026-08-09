@@ -1,0 +1,77 @@
+---
+slug: change-windows-and-rollback-arithmetic
+title: "Change windows, and the arithmetic of a rollback"
+thesis: "A change window is not the time the change takes. It is the time the change takes plus the time to discover it went wrong plus the time to put it back — and the third number is the one nobody measures, which is why windows overrun and rollbacks get abandoned halfway."
+stance: practised
+part: before
+order: 7
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["health-snapshot-comparator", "incident-timeline-rca-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["what-acceptance-testing-is-for", "baselines-knowing-what-normal-looks-like", "containment-before-cure"]
+artefact: "The four-number window, and the go/no-go line agreed before anyone is tired"
+updated: "2026-08-09"
+---
+
+## The number on the change record is the wrong number
+
+*"The change takes twenty minutes."* That is usually true and it is not the window.
+
+The window is four numbers, and only the first is ever estimated honestly:
+
+1. **Doing it** — twenty minutes, and the one everybody agrees on.
+2. **Knowing whether it worked** — the verification, which is rarely planned and is not the same as the change completing without an error.
+3. **Deciding to go back** — the part that consumes real time, because it is a judgement made under pressure by people who do not want to make it.
+4. **Putting it back** — which is almost never twenty minutes, and is frequently not tested at all.
+
+**Windows overrun on the third and fourth numbers**, and they overrun in a specific way: not gracefully, but by arriving at the far edge of the window with the change half-applied and no time left to reverse it.
+
+## Rollback is not the inverse of the change
+
+The assumption that undoing is symmetrical with doing is the single most expensive belief in change management, and it is wrong in a small number of predictable ways:
+
+- **State was created.** Sessions re-established, caches warmed, clients re-registered, a schema migrated. Reversing the configuration does not reverse the state, and the state is often what the users are actually holding on to.
+- **The old version is gone.** The image was overwritten, the licence rebound to the new build, the vendor's download page no longer lists it.
+- **Others moved with you.** A peer opened their side of the change, a certificate was reissued, a route was accepted upstream. Your rollback is now a second coordinated change, not a local one.
+- **Time itself.** A backup restored eight hours later loses eight hours.
+
+**Ask what the rollback actually restores, not whether one exists.** A documented rollback that returns the configuration and not the data is worth knowing about before the window, not during it.
+
+## The decision nobody wants to make at 03:00
+
+The technical work is rarely what kills a window. The judgement is.
+
+Twenty minutes past the checkpoint, the change is behaving oddly. Somebody says *"give it five more minutes"*, which is the most reasonable sentence available and also the mechanism by which every overrun happens. Five minutes is granted repeatedly because each grant is individually defensible, and the sum is never examined.
+
+The fix is to make the decision earlier and by somebody who is not tired:
+
+> **Agree the go/no-go time before the window opens, write it in the change record, and give one named person the authority to call it.** Not the person doing the work — they will always believe they are close, and they are usually right, which is exactly the problem.
+
+The line is a **clock time**, not a condition. *"If we are not verified green by 02:40, we roll back"* survives fatigue in a way that *"if it is not looking good, we roll back"* does not.
+
+## Verification is part of the window, not a formality afterwards
+
+A change that completes without an error message has not been verified. It has been *performed*.
+
+The verification step needs to exist in the plan, with a stated observable and a time budget, exactly as in [acceptance testing](/practice/what-acceptance-testing-is-for). Two properties make it useful under pressure:
+
+**It has to be fast.** If verification takes forty minutes, it will be skipped at 03:00 by tired people who are already past their planned finish.
+
+**It has to be able to fail.** A check that passes whether or not the change worked is worse than no check, because it consumes the window and produces confidence. *"The interface is up"* is that kind of check. *"A transaction from the branch subnet completes in under 400 milliseconds, as it did at baseline"* is not — and having a [baseline](/practice/baselines-knowing-what-normal-looks-like) is what makes the second sentence possible to write.
+
+## Windows are also a hazard
+
+The change window is when the estate is least defended: monitoring silenced to reduce noise, redundancy deliberately half-collapsed, the people who know the system awake for the eleventh hour, and every alert attributed to the work in progress.
+
+That last one is the trap. **During a window, an unrelated fault is invisible** — it will be assumed to be a symptom of the change, chased as such, and possibly "fixed" by a rollback that has nothing to do with it. When an alarm fires during a window, the question worth asking before any other is *could this be something else entirely?*
+
+## What to write down before the window opens
+
+- **The four numbers**, separately, including the rollback tested rather than assumed
+- **The go/no-go clock time**, and the single name that calls it
+- **What the verification is**, its expected observable, and how long it takes
+- **What the rollback restores** — and explicitly what it does not
+- **What was silenced**, so it gets turned back on; a monitoring suppression that outlives its window is a fault waiting for a quiet audience
+- **The point of no return**, if there is one: the moment after which going back is no longer an option, stated plainly, because somebody will otherwise assume it is available all night
+
+Six lines. The window that overruns is almost always one where the fourth and sixth were never written down, and the room discovered them in the order that costs most.

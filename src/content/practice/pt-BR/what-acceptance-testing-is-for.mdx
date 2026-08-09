@@ -1,0 +1,88 @@
+---
+slug: what-acceptance-testing-is-for
+title: "Para que serve, de fato, o teste de aceitação"
+thesis: "Teste de aceitação não é uma demonstração de que o sistema funciona. A função real dele é registrar o que ficou acordado como \"funcionando\", enquanto as duas partes ainda querem concordar — para que a discussão que chega dezoito meses depois tenha um documento em vez de duas memórias."
+stance: practised
+part: before
+order: 2
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["health-snapshot-comparator", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["reading-a-design-you-did-not-write", "verifying-without-trusting", "triage-and-severity"]
+artefact: "O registro de aceitação — e a lista do que não foi testado, a linha mais valiosa dele"
+updated: "2026-08-08"
+---
+
+## O problema da demonstração
+
+O teste de aceitação está agendado. O integrador preparou, o integrador vai conduzir, e o cliente vai assistir. O roteiro cobre as funcionalidades na ordem em que aparecem na proposta, cada uma exercitada pelo caminho para o qual foi construída. Tudo passa. Todo mundo assina.
+
+O que ficou estabelecido é que **o caminho feliz existia naquela terça-feira, nas mãos de quem construiu.** Isso vale alguma coisa, e não é o que ninguém acha que acabou de comprar.
+
+A falha é estrutural, não desonesta. Uma demonstração é desenhada para dar certo, e quem a conduz é justamente quem está tendo o trabalho avaliado. Ninguém precisa agir de má-fé para o resultado carregar quase nenhuma informação.
+
+## Para que serve de fato
+
+O enquadramento útil não é sobre rigor. É sobre **momento**.
+
+A aceitação é o último instante em que as duas partes querem a mesma coisa. Antes da assinatura, o integrador quer concordância e o cliente quer cobertura, e ambos estão motivados a soar razoáveis. Depois da assinatura, a pergunta *"isso está quebrado, ou é simplesmente assim que funciona?"* vira disputa comercial — e a resposta depende inteiramente do que alguém escreveu enquanto todos ainda eram amigos.
+
+> **O teste de aceitação é onde a definição de "funcionando" é escrita por pessoas que ainda querem concordar entre si.** Todo o resto que ele faz é secundário.
+
+Lido assim, o teste que importa não é o com maior chance de passar. É aquele cujo resultado você gostaria de poder apontar daqui a um ano.
+
+## A parte que não está na sala
+
+Os testes são escritos por quem construiu o sistema e por quem o comprou. **Nenhum dos dois vai ser acionado às três da manhã.**
+
+Quem vai operar normalmente está ausente da aceitação, e essa ausência molda o documento: ele será forte sobre se as funcionalidades funcionam e silencioso sobre se aquilo pode ser diagnosticado, comutado, restaurado ou atualizado por alguém que não estava lá.
+
+A correção é barata e quase nunca é feita: **uma pessoa da operação na sala, com o direito permanente de acrescentar testes.** Ela vai pedir coisas que ninguém mais lembra, porque é a única imaginando o sistema no pior dia dele, e não no primeiro.
+
+## Teste os caminhos de falha, porque as funcionalidades os usuários testam sozinhos
+
+Funcionalidades são exercitadas em produção em uma semana. **Caminhos de falha podem não ser exercitados por dois anos, e então uma única vez, mal, no pior momento possível.**
+
+Essa assimetria deveria conduzir todo o plano de teste. O que vale gastar tempo de aceitação é justamente o que, de outro modo, será testado pela primeira vez durante um incidente:
+
+- **A redundância, comutada de verdade** — não o equipamento em espera se declarando saudável. Um par de alta disponibilidade que nunca comutou é uma afirmação, não uma capacidade.
+- **O sistema sob carga**, não numa caixa vazia em janela silenciosa.
+- **O caminho de expiração de certificado.** Algum certificado vai expirar; a única dúvida é se o procedimento de renovação já foi executado por alguém que precisa seguir o documento.
+- **O backup restaurado**, não o backup feito. Backup que ninguém restaurou é um arquivo.
+- **A atualização**, ao menos uma vez, em algo que importa.
+
+Cada um desses é impopular de agendar e vale mais que a lista inteira de funcionalidades, porque a lista de funcionalidades vai se validar sozinha.
+
+## "Passou" não é resultado
+
+Um relatório cheio de PASSOU registra uma opinião. O que sobrevive ao contato com o futuro é a **observação** — o valor, o tempo, a saída real.
+
+*"Failover: PASSOU"* não diz nada dezoito meses depois. *"Comutação concluída em 4,2 segundos; 11 sessões em curso derrubadas; alarme no console de monitoração em até 30 segundos"* é um fato com que dá para comparar, argumentar e detectar desvio.
+
+Registre o que você viu, não o veredito sobre aquilo. **O veredito é o julgamento de alguém naquele dia; o número é evidência para sempre.** É a mesma disciplina de [verificar sem confiar](/practice/verifying-without-trusting), aplicada antes de haver o que desconfiar.
+
+## A aceitação é uma linha de base gratuita, e costuma ser jogada fora
+
+É o único momento na vida do sistema em que alguém é **pago para caracterizá-lo enquanto está saudável e ninguém está gritando.** Latência sob carga conhecida, tempo de comutação, consumo de recursos em repouso, como são os logs quando nada está errado.
+
+Esse dado é quase impossível de coletar depois — passado o go-live não há janela tranquila nem verba para uma. Guarde as saídas, datadas, onde a operação consiga achar. Na primeira vez que alguém perguntar *"isso sempre foi assim?"*, o registro de aceitação é a resposta, ou é a razão de ninguém saber.
+
+## Assinar é transferir risco
+
+Esta é a parte que explica a pressão na sala.
+
+Assinar a aceitação transfere o risco de quem construiu para quem passa a ser dono. Quem insiste para você assinar não está sendo desonesto — está sendo comercialmente racional, e o cronograma é real.
+
+O que muda é o que você assina. **Assine o que foi testado e anexe o que não foi.** Uma assinatura qualificada por uma lista explícita de comportamentos não testados continua sendo uma assinatura; encerra o projeto e deixa o registro honesto. Uma assinatura que cobre em silêncio uma comutação não testada é uma aposta feita em nome de outra pessoa.
+
+Se o tempo acabar — e acaba — o movimento correto não é pular testes calado. É dizer quais estão sendo pulados, colocar por escrito, e deixar que quem aceita o risco seja quem responde por ele.
+
+## O registro de aceitação
+
+Para cada teste: a **condição** criada, a **observação esperada**, a **observação real** com valores, **quem** observou e a **data**. Sem coluna de veredito.
+
+Depois, a linha que faz o documento valer o que custou:
+
+**NÃO TESTADO** — tudo que estava no escopo e não foi exercitado, com o motivo. O tempo acabou, o gerador de carga não estava disponível, o site secundário não estava pronto, o cliente não liberou a janela de indisponibilidade.
+
+> **Essa lista é a linha mais valiosa de um documento de aceitação, e é a mais frequentemente omitida** — porque é a única parte que diz algo que o leitor já não presume. Ela também converte uma discussão futura de *"vocês nunca testaram isso"* numa questão resolvida, com data.

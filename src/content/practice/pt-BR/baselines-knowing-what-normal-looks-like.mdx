@@ -1,0 +1,75 @@
+---
+slug: baselines-knowing-what-normal-looks-like
+title: "Linha de base — saber como é o normal antes de precisar"
+thesis: "Uma linha de base não é monitoração nem documentação. É a resposta à única pergunta que importa nos primeiros dez minutos de um incidente — isso sempre foi assim? — e é o único artefato que só pode ser feito quando nada está errado."
+stance: practised
+part: before
+order: 5
+roles: ["first-line", "second-line", "field", "design"]
+relatedTools: ["health-snapshot-comparator", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["what-acceptance-testing-is-for", "symptom-and-cause", "handover-project-to-operation"]
+artefact: "A captura de linha de base — seis itens, por trimestre, guardados onde o incidente vai procurar"
+updated: "2026-08-08"
+---
+
+## A pergunta que você não consegue responder
+
+Dez minutos depois do início do incidente, alguém acha um número. A memória do firewall está em 78%. Há 40.000 sessões no balanceador. O enlace está em 300 megabits por segundo. A taxa de retransmissão é 0,4%.
+
+Aí a sala faz a única pergunta que importa, e ninguém sabe responder:
+
+> **Isso sempre foi assim?**
+
+Sem resposta, o número não é evidência. É uma coisa que alguém notou, e vai consumir os próximos quarenta minutos — porque um número de aparência suspeita que ninguém consegue datar é irresistível, e persegui-lo dá sensação de progresso.
+
+**Uma linha de base existe para tornar essa pergunta barata.** Todo o resto para que ela sirva é bônus.
+
+## Por que a monitoração já não faz isso
+
+Monitoração observa o que alguém pensou em observar, na resolução que alguém escolheu, retido pelo tempo que alguém pagou.
+
+Restam três lacunas, e as três aparecem no pior momento. **O que não está no gráfico não existe** — e o que você precisa às 3h é, com regularidade, aquilo para o que ninguém fez painel. **A retenção expira**, normalmente um pouco antes do horizonte de que você precisa para *"estava assim antes da atualização de março?"*. E **a agregação achata a forma**, que é o argumento de [quando os instrumentos concordam](/practice/when-the-instruments-agree): uma média de cinco minutos não responde a uma pergunta sobre uma parada de dez segundos.
+
+Linha de base é outra categoria. É um **retrato completo e datado de um estado sabidamente bom**, tirado de propósito, guardado como artefato e não como série temporal. A monitoração diz o que está acontecendo. A linha de base diz o que *era* verdade, por inteiro, num dia em que nada estava errado.
+
+## O único momento em que ela pode ser feita
+
+É a dificuldade inteira, e a razão de linhas de base serem raras.
+
+**Só dá para capturar uma quando o sistema está saudável** — que é exatamente quando ninguém quer financiar, agendar ou pensar nisso. Quando surge motivo para querer uma, a oportunidade já passou: o que você capturar agora inclui a falha.
+
+Existe um momento em que alguém é *pago* para caracterizar um sistema saudável, e ele quase sempre é desperdiçado: a [aceitação](/practice/what-acceptance-testing-is-for). A bateria de testes produz exatamente esse dado, e ele é jogado fora junto com a documentação do projeto.
+
+## Seis coisas que vale capturar
+
+Pequeno o bastante para de fato ser feito, e é melhor trimestral e tosco que anual e perfeito.
+
+1. **Configuração** — a config em execução, exportada, datada. Não a config pretendida.
+2. **Contadores em repouso** — erros e descartes de interface, retransmissões, contagem de sessões, taxa de conexões. Os valores absolutos importam menos que existirem.
+3. **Consumo de recursos em repouso** — processador, memória, disco, ocupação de tabelas, tetos de licença e de conexões. *O quão cheio* é o número que prevê a próxima indisponibilidade.
+4. **Tempos** — quanto custa uma transação normal ponta a ponta, e quanto custa uma comutação. Medidos, não citados do datasheet.
+5. **Como são os logs quando nada está errado.** O item menos coletado da lista: todo parque tem erros benignos recorrentes e, sem uma amostra saudável, **cada um deles parece uma pista durante o incidente.**
+6. **A topologia como ela de fato resolve** — que caminho o tráfego toma hoje, qual resolvedor responde, qual membro está ativo.
+
+## A armadilha: linha de base não é meta
+
+Ela registra o que *era*, não o que *deveria ser*. Daí saem dois modos de falha, ambos comuns.
+
+**Registrar uma falha como base.** Se o parque já estava adoecido quando você capturou, você acaba de escrever a doença como normal, e a próxima investigação vai usar isso para descartar a causa real. Capture perto da aceitação, antes de acumular desvio, e anote o que você já sabe que não está certo.
+
+**Tratar como limiar.** *"A memória estava em 40% na linha de base e está em 78% agora, logo é este o problema"* é exatamente o erro de [sintoma e causa](/practice/symptom-and-cause), vestido de evidência. Crescimento é normal. A linha de base dá a **taxa**, não o veredito — e a taxa é a parte útil, porque diz quando o teto chega.
+
+## Guarde onde o incidente vai procurar
+
+Uma linha de base que ninguém acha durante o incidente não é linha de base.
+
+Isso exclui o drive compartilhado do time de projeto, o notebook do consultor que saiu e a wiki para a qual ninguém tem permissão. O lugar é onde quem está de plantão já vai às 3h — ao lado dos runbooks — e precisa ser legível para quem não a capturou: datada, identificando que sistema descreve, e dizendo em que condições foi tirada.
+
+**Acrescente uma linha com as condições**, porque uma captura feita na semana calma de janeiro responde a outra pergunta que uma feita no fechamento do mês. Uma linha de base sem contexto convida exatamente à comparação falsa que ela existe para evitar.
+
+## O mínimo honesto
+
+Se nada disso vai acontecer — e muitas vezes não vai — faça isto, porque leva uma tarde e devolve quase todo o valor:
+
+**Uma vez por trimestre, capture os seis itens acima, ponha os arquivos numa pasta datada ao lado dos runbooks, e não faça mais nada com eles.** Sem painel, sem análise, sem reunião de revisão. Todo o valor se realiza no dia em que alguém pergunta *"isso sempre foi assim?"* e a resposta leva noventa segundos em vez de quarenta minutos.

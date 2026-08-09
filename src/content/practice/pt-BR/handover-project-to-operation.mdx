@@ -1,0 +1,73 @@
+---
+slug: handover-project-to-operation
+title: "Passagem: o momento em que um projeto vira operação"
+thesis: "A passagem é tratada como transferência de documentos e é, na verdade, transferência de julgamento — e julgamento é a única coisa que não se transfere numa reunião. O que dá para transferir é o raciocínio por trás das decisões, a lista do que ficou por fazer, e o nome de alguém que vai atender o telefone."
+stance: practised
+part: before
+order: 4
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["health-snapshot-comparator", "flow-path-reasoner", "tac-escalation-packet-builder"]
+relatedIndustry: []
+relatedPractice: ["reading-a-design-you-did-not-write", "what-acceptance-testing-is-for", "the-runbook-nobody-can-follow"]
+artefact: "O registro de passagem — decisões com motivo, a lista do que ficou, e quem atende o telefone"
+updated: "2026-08-08"
+---
+
+## Dois trabalhos diferentes com a mesma roupa
+
+Um projeto termina. Uma operação começa. Parecem contínuos — os mesmos equipamentos, muitas vezes o mesmo prédio — e não são o mesmo trabalho.
+
+Projeto é uma coisa delimitada, com linha de chegada, tocada por gente medida por alcançá-la. Operação é ilimitada, tocada por gente medida por nada dar errado, indefinidamente. **Os incentivos apontam para direções diferentes**, e a passagem é a costura onde essa diferença vira problema de alguém.
+
+O time de projeto é premiado por encerrar. O time de operação herda tudo que não foi encerrado. Nenhum dos dois está agindo mal; a estrutura produz o atrito sozinha.
+
+## O que de fato é passado, e o que não é
+
+A reunião de passagem transfere documentos: diagramas, credenciais, runbooks, um contrato de suporte. Tudo necessário, tudo transferível, nada disso é a parte difícil.
+
+**O que não se transfere é julgamento** — saber qual alarme importa, qual comportamento é normal neste sistema mesmo parecendo errado, qual componente sempre foi meio estranho, qual chamado com o fabricante segue aberto em silêncio. Esse conhecimento existe como padrão na cabeça de pessoas prestes a serem alocadas em outro lugar, e nenhuma reunião o extrai, porque ninguém consegue enumerar o que sabe.
+
+Então o objetivo não é transferir julgamento. É transferir **a matéria-prima com a qual outra pessoa consegue construir julgamento**, e ser honesto que isso leva meses, não uma tarde.
+
+## As três coisas que valem ser escritas
+
+**Decisões com os motivos.** Não o que foi configurado — a configuração já diz isso — mas por quê, onde a escolha não era óbvia. Daqui a seis meses alguém vai querer mudar aquilo, e a diferença entre uma mudança segura e uma indisponibilidade é saber se o valor atual é uma decisão ou um acidente. É o problema de [ler um projeto que não foi você quem fez](/practice/reading-a-design-you-did-not-write), resolvido barato no único momento em que ainda é barato.
+
+**A lista do que ficou.** Tudo que estava no escopo e não aconteceu, tudo que é temporário e continua no ar, todo contorno introduzido durante o comissionamento. **Essa lista é o artefato mais valioso de uma passagem e o mais provável de ser omitido**, porque escrevê-la parece confissão. Não é confissão — é a diferença entre uma operação que sabe onde está a própria dívida e uma que a descobre durante um incidente.
+
+**Quem atende o telefone, e até quando.** Um nome, um canal e uma data final. Linguagem vaga de garantia não é isso. *"Márcia, este canal, até 30 de novembro"* é.
+
+## As coisas temporárias são as perigosas
+
+Todo comissionamento produz algumas: uma regra aberta mais do que o previsto para conseguir testar, uma verificação desligada para parar o ruído durante a migração, um endereço fixo no lugar do nome que não estava pronto, um certificado de validade curta emitido para destravar um prazo.
+
+Cada uma estava certa na hora. Cada uma era para durar quinze dias. **Ninguém que sabe por que elas existem ainda estará no projeto quando elas importarem**, e cada uma será encontrada por alguém incapaz de distingui-la de uma decisão deliberada de projeto.
+
+Escreva como lista, com datas e responsáveis, mesmo que a lista seja constrangedora — principalmente então. Uma medida temporária não documentada é uma falha com espoleta de retardo, e o retardo dura o tempo que a condição contornada levar para mudar.
+
+## A passagem é uma data, e a transferência é um período
+
+O erro estrutural mais comum é tratar a data como a transferência.
+
+O que funciona é sobreposição: a operação toca o sistema com o projeto disponível, em vez de o projeto tocar até o minuto em que vai embora. O primeiro incidente de verdade é a passagem de fato, e vale organizar para que ele aconteça enquanto ainda dá para alcançar alguém que entende a construção.
+
+Onde isso é impossível — e muitas vezes é, porque o time de projeto é contratado e o contrato acaba — diga com todas as letras e precifique o risco, em vez de fingir que a sobreposição existe. **Uma passagem sem sobreposição não é passagem; é abandono com papelada**, e a operação deveria ao menos saber qual das duas está recebendo.
+
+## O que o lado que recebe deve exigir
+
+Duas coisas, e as duas são recusáveis antes da assinatura, não depois:
+
+**Executem os procedimentos, não os apresentem.** Uma sessão em que o projeto demonstra uma comutação vale menos que uma em que a pessoa da operação executa, pelo runbook, com o projeto assistindo calado. É o [teste de leitura fria](/practice/the-runbook-nobody-can-follow) aplicado à passagem inteira, e converte uma hora de slides numa lista de defeitos reais.
+
+**Peçam o estado da relação com o fabricante**, não só o número do contrato. Quais chamados estão abertos, quais foram escalados, qual engenheiro conhece esta conta, o que foi prometido verbalmente. Contrato de suporte é o direito de abrir chamado; a relação é o que determina como o chamado anda.
+
+## O registro de passagem
+
+- **Decisões com motivo** — cada escolha não óbvia, e o que a restringiu
+- **Pendente** — no escopo e não feito, com o porquê
+- **Temporário** — cada contorno ainda no ar, com a data em que entrou e a condição que deveria aposentá-lo
+- **Estranho conhecido** — comportamento que parece errado e é esperado, para ninguém caçar às 3h
+- **Aberto com o fabricante** — chamados, escalações e o que foi prometido
+- **Contatos** — nomes, canais, e a data em que cada um para de responder
+
+Seis títulos. É trabalho de uma manhã, e é a única parte do projeto que quem herda ainda estará usando daqui a três anos.
