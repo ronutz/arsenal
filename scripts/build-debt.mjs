@@ -26,6 +26,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -96,13 +97,56 @@ const articleSlugs = new Set(
   content.filter((f) => /\.mdx$/.test(f)).map((f) => f.replace(/^.*\/([^/]+)\.mdx$/, "$1")),
 );
 
+/**
+ * MESSAGE NAMESPACES AS ITEMS (PRIME ratified 2026-08-09).
+ *
+ * A locale pack holds every page's copy in one file, so file-level counting is
+ * blind twice over: page-copy edits produce no article slug, and a second edit
+ * to the same pack does not raise the file count either. On 2026-08-09 three
+ * copy changes across two pages read as "1 item" and the verdict was "OK to
+ * continue" while three surfaces were unverified.
+ *
+ * A namespace is a page or a page area — the unit a reader notices and the unit
+ * a failed build would point at. Deduplicated ACROSS LOCALES on purpose:
+ * `advisory` changing in en and pt-BR is ONE surface, not two.
+ */
+function changedNamespaces() {
+  const before = marker.messageNamespaces;
+  if (!before) return null; // marker predates this field; report honestly rather than guess
+  const changed = new Set();
+  const dir = path.join(ROOT, "src", "i18n", "messages");
+  if (!fs.existsSync(dir)) return changed;
+  for (const f of fs.readdirSync(dir)) {
+    if (!f.endsWith(".json")) continue;
+    let parsed;
+    try {
+      parsed = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
+    } catch {
+      continue;
+    }
+    const prior = before[f] ?? {};
+    for (const [ns, value] of Object.entries(parsed)) {
+      const h = createHash("sha1").update(JSON.stringify(value)).digest("hex");
+      if (prior[ns] !== h) changed.add(ns);
+    }
+    for (const ns of Object.keys(prior)) if (!(ns in parsed)) changed.add(ns);
+  }
+  return changed;
+}
+
+const nsChanged = changedNamespaces();
+const nsCount = nsChanged ? nsChanged.size : 0;
+const itemCount = articleSlugs.size + nsCount;
+
 if (changed.length === 0) {
   console.log(`[build-debt] 0 — tree matches the build verified ${marker.verifiedAt}.`);
   process.exit(0);
 }
 
 console.log(`[build-debt] ${changed.length} file(s) changed since the build verified ${marker.verifiedAt}.`);
-console.log(`             content: ${content.length} file(s), ${articleSlugs.size} article/page item(s)`);
+console.log(`             content: ${content.length} file(s), ${itemCount} item(s)` +
+  ` — ${articleSlugs.size} article(s), ${nsChanged === null ? "namespaces unknown (old marker)" : `${nsCount} copy namespace(s)`}`);
+if (nsCount) console.log(`             namespaces: ${[...nsChanged].sort().join(", ")}`);
 console.log(`             code:    ${code.length} file(s)`);
 
 // THRESHOLDS. The governing idea is ATTRIBUTION, not risk tolerance: one
@@ -114,17 +158,17 @@ if (code.length > 0) {
   console.log("     guards do not execute the render path. This is not a judgement call.");
   for (const f of code.slice(0, 8)) console.log(`       - ${f}`);
   if (code.length > 8) console.log(`       … and ${code.length - 8} more`);
-} else if (articleSlugs.size >= 7) {
+} else if (itemCount >= 7) {
   console.log("");
-  console.log(`  >> BUILD RECOMMENDED. ${articleSlugs.size} unverified items: a failed build would`);
+  console.log(`  >> BUILD RECOMMENDED. ${itemCount} unverified items: a failed build would`);
   console.log("     no longer point at a cause, and you would be bisecting your own work.");
-} else if (articleSlugs.size >= 4) {
+} else if (itemCount >= 4) {
   console.log("");
-  console.log(`  >> BUILD SOON. ${articleSlugs.size} unverified items; attribution is still good but`);
+  console.log(`  >> BUILD SOON. ${itemCount} unverified items; attribution is still good but`);
   console.log("     thinning. A good moment is after the next one or two.");
 } else {
   console.log("");
-  console.log(`  >> OK to continue. ${articleSlugs.size} unverified item(s); a failed build would`);
+  console.log(`  >> OK to continue. ${itemCount} unverified item(s); a failed build would`);
   console.log("     still name its cause.");
 }
 console.log("     ALWAYS build before a push, whatever this says.");

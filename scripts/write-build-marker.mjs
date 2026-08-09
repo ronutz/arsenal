@@ -25,6 +25,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -46,9 +47,44 @@ for (const line of out.split("\n")) {
 // can never report itself as debt.
 delete files[".build-verified.json"];
 
+/**
+ * NAMESPACE-LEVEL HASHES for the locale packs (PRIME 2026-08-09).
+ *
+ * A message catalogue holds every page's copy for one locale in one file, so
+ * file-level hashing cannot see how much of it changed or which pages. Three
+ * separate copy edits across two pages registered as "1 item" on 2026-08-09
+ * and the counter said "OK to continue" when three surfaces were unverified.
+ *
+ * Hashing per top-level namespace fixes the unit: a namespace IS a page or a
+ * page area, which is what a reader would notice and what a failed build would
+ * point at. Recorded here rather than recomputed from git objects, because a
+ * fresh unpack has no history to read the previous blobs from.
+ */
+function namespaceHashes() {
+  const out = {};
+  const dir = path.join(ROOT, "src", "i18n", "messages");
+  if (!fs.existsSync(dir)) return out;
+  for (const f of fs.readdirSync(dir)) {
+    if (!f.endsWith(".json")) continue;
+    let parsed;
+    try {
+      parsed = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
+    } catch {
+      continue; // a malformed pack is check-icu-messages' problem, not this one
+    }
+    const per = {};
+    for (const [ns, value] of Object.entries(parsed)) {
+      per[ns] = createHash("sha1").update(JSON.stringify(value)).digest("hex");
+    }
+    out[f] = per;
+  }
+  return out;
+}
+
 const marker = {
   verifiedAt: new Date().toISOString(),
   fileCount: Object.keys(files).length,
+  messageNamespaces: namespaceHashes(),
   note: "Written by npm postbuild after a successful build. Compare with scripts/build-debt.mjs.",
   files,
 };
