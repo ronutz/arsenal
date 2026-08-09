@@ -1,0 +1,74 @@
+---
+slug: prevention-that-survives-the-budget
+title: "Prevention that survives contact with the budget"
+thesis: "Most prevention does not fail on merit; it fails because it was proposed as a project. The remedies that actually happen are the ones small enough to be done inside the window when everybody still cares, or attached to work that is already funded — and the structural one survives only if somebody writes it down as declined rather than letting it evaporate."
+stance: practised
+part: after
+order: 6
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["health-snapshot-comparator", "incident-timeline-rca-builder", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["root-cause-is-a-choice", "the-write-up", "change-windows-and-rollback-arithmetic"]
+artefact: "Three tiers, each with an owner and a date — and the declined one, named"
+updated: "2026-08-09"
+---
+
+## The window closes faster than the work takes
+
+For a few days after a bad incident, prevention has political energy. People who normally guard their roadmap will agree to things. *Never again* is a sentence with budget behind it.
+
+That window is measured in days. The proposal that requires a quarter of planning arrives after it has shut, into a room that has returned to its ordinary priorities, and competes on equal terms with everything else — where it loses, because it is insurance against something that has just been fixed.
+
+**This is not cynicism about organisations.** It is a scheduling fact, and prevention that ignores it is prevention that does not happen.
+
+## Why the correct answer is often the one that fails
+
+The honest analysis frequently ends at something large: the platform needs redundancy it does not have, the estate needs a segmentation model it never had, the process needs a stage nobody staffs.
+
+Proposing only that is how a review produces nothing. The large remedy needs a funding cycle; the funding cycle needs a business case; the business case competes with revenue work; and six weeks later the incident is a memory and the case is a document nobody is championing.
+
+> **Naming only the correct remedy and naming no remedy have the same outcome.** The difference is that the first feels rigorous.
+
+## Ladder it
+
+Three tiers, proposed together, in the same document:
+
+**Immediate — done inside the window.** Hours to a day, by the people already involved, with no approval beyond the room. Re-enable the alarm that was muted. Fix the ambiguous line in the procedure. Add the missing verification step. These are unglamorous and they are the ones that get done, because nothing outside the room has to happen.
+
+**Attachable — added to work already funded.** The migration in two months, the hardware refresh, the platform upgrade. **The cheapest prevention in any organisation is a requirement added to a project that already exists**, because it consumes no new decision. This tier is where most real improvement lives and it requires knowing what is already scheduled — which is a piece of organisational knowledge, not a technical one.
+
+**Structural — named, costed, and probably declined.** Say it anyway, in writing, with what it would cost and what it would prevent.
+
+## The declined tier is the one that matters most
+
+A structural remedy that is proposed and declined is **not** the same as one that was never written down, and the difference shows up at the next incident.
+
+Written down, it becomes evidence. When the same class of fault returns in eight months, somebody can point at a dated document that named this and was not funded — and that is a far stronger position than proposing it fresh, because now it has a track record instead of a projection. This is the same instinct as [root cause is a choice](/practice/root-cause-is-a-choice): **state where you stopped and why, so the boundary is visible rather than invisible.**
+
+Unwritten, it evaporates, and the next review re-derives it from scratch and declines it again for the same reasons.
+
+## Detection is usually cheaper than prevention, and often the better buy
+
+Prevention reduces the probability. **Detection reduces the duration**, and duration is frequently where the cost actually was.
+
+An incident that ran four hours because nobody knew for three of them has a remedy costing almost nothing — an alarm, a threshold, a synthetic check — against a prevention remedy costing a redesign. The four-hour outage does not become a no-hour outage, but it becomes a one-hour outage, which is usually the larger share of the loss.
+
+Reviews reach for prevention by reflex because it sounds more complete. **Ask what the incident actually cost, and how much of that cost was the time before anybody knew.**
+
+## Write the cost in the currency the reader uses
+
+*"We should add redundancy"* competes badly. *"This outage cost eleven hours of a four-person team plus the customer credit; the standby licence is a fifth of that annually"* competes well, and is the same proposal.
+
+The number does not need to be precise. It needs to exist, because a proposal without one is asking somebody else to do the arithmetic before they can say yes — and they will not.
+
+## The artefact
+
+| tier | test |
+|---|---|
+| **Immediate** | can be finished before anybody's attention moves on |
+| **Attachable** | names the funded work it rides on, and who owns that work |
+| **Structural** | costed, and marked **proposed** or **declined**, with a date |
+
+And the rule that keeps the list honest:
+
+> **Anything without a named owner and a date is a wish, not a remedy.** A write-up that ends in six ownerless improvements has recorded a mood. One that ends in two owned actions and one dated declination has changed something.

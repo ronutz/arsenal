@@ -1,0 +1,74 @@
+---
+slug: root-cause-is-a-choice
+title: "Causa raiz é uma escolha, não uma descoberta"
+thesis: "Causas não terminam. Cada uma tem outra atrás, então o ponto em que a investigação para é decidido — por orçamento, por cansaço, pelo que a organização está disposta a ouvir — e a expressão \"causa raiz\" esconde que houve decisão."
+stance: practised
+part: after
+order: 2
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["the-write-up", "two-problems", "the-assumption-you-cannot-see"]
+artefact: "A cadeia, escrita — e a frase que diz onde você parou e por quê"
+updated: "2026-08-09"
+---
+
+## A cadeia não tem fundo
+
+Uma indisponibilidade. Alguém pede a causa raiz e recebe uma: um valor de configuração estava errado.
+
+Mas o valor estava errado **porque** o procedimento era ambíguo sobre qual dos dois campos preencher. O procedimento era ambíguo **porque** foi escrito por quem construiu o sistema e nunca foi lido a frio por mais ninguém. Nunca foi lido a frio **porque** o projeto encerrou antes da passagem. Encerrou cedo **porque** o contrato terminava numa data escolhida dezoito meses antes de alguém saber o que o trabalho envolvia.
+
+Todas são verdade. Todas são causa. **Nada na cadeia se anuncia como fundo**, e a busca não termina sozinha — ela termina quando alguém para de perguntar.
+
+> **"Causa raiz" é o nome que damos ao elo em que paramos.** A expressão faz uma decisão soar como um achado.
+
+## Onde as organizações param, e o que isso revela
+
+O ponto de parada raramente é escolhido por critério técnico. Três padrões respondem pela maioria.
+
+**Onde vira culpa de alguém.** A cadeia corre confortavelmente por equipamentos e para no elo em que entra uma pessoa ou um time com nome. Não é covardia; é o que a sala consegue sustentar. Mas uma cadeia que para ali produz um remédio apontado para uma pessoa, e pessoas são a coisa menos durável do sistema — elas saem, e a causa fica.
+
+**Onde fica caro.** *O contrato terminou cedo* é uma causa real cujo remédio ninguém na sala pode autorizar, então a cadeia para em silêncio um elo antes e aterrissa em algo que cabe numa janela de manutenção.
+
+**"Erro humano."** O término mais comum da indústria e quase nunca um achado. É a **descrição do último evento da cadeia**, oferecida como se fosse explicação. Alguém digitou o valor errado — num campo que permitia aquilo, a partir de um procedimento que não desambiguava, sem etapa de verificação que pegasse. Três elos acionáveis, descartados por uma expressão.
+
+## Parar é legítimo. Esconder que parou, não
+
+Nada disso é argumento para perseguir toda cadeia até o organograma. **Algumas paradas estão certas**: o elo mais fundo é real e está fora do seu controle, ou o remédio custa mais que o risco, ou o intervalo de recorrência é maior que a vida do sistema.
+
+A falha não é parar. **A falha é apresentar a parada como o fim da cadeia**, porque aí ninguém consegue pesar a decisão, e os elos além dela ficam invisíveis em vez de recusados.
+
+Escreva, em vez disso:
+
+> *"Paramos no procedimento ambíguo. A cadeia continua — o procedimento nunca foi lido a frio porque o projeto encerrou antes da passagem — e não estamos propondo mudar o modelo de passagem, porque isso é uma decisão contratual, não de engenharia."*
+
+Essa frase não custa nada, e converte uma fronteira invisível numa escolha visível que alguém sênior pode revisitar. **E sobrevive à próxima ocorrência**, quando a mesma falha chegar pelo mesmo elo intocado e alguém perguntar se alguém sabia.
+
+## Pergunte em qual elo dá para agir, não qual é a raiz
+
+A pergunta *"qual foi a causa raiz?"* não tem resposta correta e produz discussão. Duas melhores:
+
+**Em qual elo conseguimos intervir?** Alguns são inalcançáveis — o processo interno de um fornecedor, um contrato assinado anos atrás. O conjunto útil são os alcançáveis, normalmente menor que a cadeia e nunca vazio.
+
+**Qual intervenção sobrevive?** Uma correção no último elo para esta instância. Uma correção mais atrás para uma classe. **Uma correção apontada para uma pessoa não para nada**, porque o mecanismo que deixou o erro passar segue intocado e a próxima pessoa o encontra novo em folha.
+
+A maioria dos incidentes merece duas: uma imediata e uma estrutural, nomeadas separadamente para que a segunda não seja silenciosamente abandonada quando a primeira fizer o sintoma sumir.
+
+## O sinal de que você parou cedo demais
+
+**O remédio é "ter mais atenção".** Seja como reciclagem, revisão adicional ou uma nota no procedimento, significa que a cadeia parou no momento da ação e não naquilo que tornou a ação possível.
+
+O teste é simples: **este remédio teria evitado o incidente se a mesma pessoa competente tivesse o mesmo dia ruim?** Se a resposta honesta for não, a cadeia tem mais um elo e a investigação terminou um passo antes.
+
+## O artefato
+
+Escreva a cadeia, um elo por linha, dentro do relato — é a seção que faz [o relato](/practice/the-write-up) valer a pena um ano depois:
+
+1. Cada elo, em texto simples, como causa do elo acima
+2. **Onde paramos**, marcado
+3. **Por que paramos ali** — inalcançável, caro demais, risco aceito, ou fora de escopo
+4. **O que resta além da parada**, nomeado em vez de omitido
+5. Qual elo cada remédio proposto ataca
+
+Cinco linhas. O valor está inteiramente nos itens 2 e 3, e são os dois que nenhum modelo de incidente pede.

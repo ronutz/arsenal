@@ -1,0 +1,83 @@
+---
+slug: deciding-with-incomplete-information
+title: "Decidir com informação incompleta"
+thesis: "Você nunca vai ter o suficiente, e esperar por mais é, em si, uma decisão cujo custo corre enquanto ninguém o contabiliza. A habilidade não é intuição — é saber quais decisões são reversíveis, quão assimétrico é o custo de errar em cada direção, e se alguma observação disponível nos próximos vinte minutos mudaria de fato a resposta."
+stance: practised
+part: yield
+order: 23
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["running-a-war-room", "containment-before-cure", "when-the-instruments-agree"]
+artefact: "As quatro perguntas, e a frase que torna uma decisão revisável"
+updated: "2026-08-09"
+---
+
+## Esperar é uma decisão, e tem um taxímetro ligado
+
+Quarenta minutos dentro. Você tem uma causa plausível, nenhuma prova, e uma sala perguntando se deve comutar.
+
+O instinto é dizer *"deixa eu entender primeiro"*, que é uma resposta real e muitas vezes correta — e é também **a decisão de manter o serviço degradado pelo tempo que o entendimento levar.** Esse custo corre quer alguém o atribua à decisão ou não, e a razão de esperar parecer mais seguro é que o custo cai sobre ninguém em particular, enquanto uma ação errada cai sobre você.
+
+> **O padrão não é neutro.** Escolher esperar é escolher um desfecho, e a única diferença é que ninguém registra isso como escolha.
+
+## Reversibilidade é o primeiro eixo, não a confiança
+
+Antes de perguntar *quão certo estou*, pergunte **quão caro é errar, e dá para desfazer?**
+
+Uma decisão **reversível** tomada com evidência magra custa um pouco de tempo se estiver errada. Deve ser tomada rápido e barato, e o padrão de prova deve ser proporcionalmente baixo. Reiniciar um processo, drenar um membro, mover tráfego para o outro caminho — se são genuinamente reversíveis, esperar para ter certeza é gastar minutos certos para evitar um custo incerto e pequeno.
+
+Uma decisão **irreversível** — que destrói estado, perde dados, ou não pode ser desfeita dentro da janela — merece a espera, e merece explicitamente. É a mesma aritmética do [rollback](/practice/change-windows-and-rollback-arithmetic): *o que voltar atrás de fato restaura*, perguntado antes de avançar.
+
+**A maioria das decisões de incidente é bem mais reversível do que parece na hora**, e o medo se prende à visibilidade de agir, não ao custo da ação.
+
+## Assimetria costuma decidir sem mais dados
+
+Escreva os dois custos, curto, na sala:
+
+*Se comutarmos e não era a causa: trinta segundos de sessões perdidas e não avançamos. Se não comutarmos e era: a indisponibilidade continua pelo tempo que a investigação levar.*
+
+Dito assim, a decisão costuma ser óbvia, e **nenhuma informação adicional foi necessária para chegar nela.** Boa parte do que parece necessidade de mais dados é, na verdade, falta de comparar os dois custos em voz alta — porque no silêncio eles parecem simétricos e no papel raramente são.
+
+## A pergunta que encerra a espera
+
+> **"O que poderíamos aprender nos próximos vinte minutos que mudaria esta decisão?"**
+
+Se a resposta é uma observação específica, nomeie, obtenha, e espere exatamente por ela.
+
+**Se a resposta é nada — decida.** Continuar esperando não é coletar informação; é adiar desconforto, e o taxímetro está ligado. É a frase mais útil da sala e leva dez segundos.
+
+## Confiança não é informação
+
+A confiança de uma sala sobe com a conversa. O dado não.
+
+Quarenta minutos de uma teoria plausível repetida por gente capaz produzem uma convicção compartilhada que nenhuma medição nova sustenta — a mesma falha de [quando os instrumentos concordam](/practice/when-the-instruments-agree), numa sala em vez de num painel. **Concordância entre pessoas que estiveram conversando entre si não é corroboração**, e o sinal é quando alguém reenuncia a hipótese com mais certeza do que quando ela foi proposta, sem evidência nova.
+
+Pergunte o que mudou desde que a teoria foi formada. Se a resposta for só *"conversamos mais sobre isso"*, a confiança é fabricada.
+
+## Diga como provisória, e nomeie o que a reverte
+
+A frase que torna sustentável uma decisão sob incerteza:
+
+> **"Vamos comutar agora presumindo que é o caminho de armazenamento. Se os erros continuarem depois da comutação, essa premissa está errada e voltamos direto para o banco."**
+
+Três coisas ao mesmo tempo: age, registra o que a ação presumiu, e pré-compromete a condição de reversão **antes de alguém estar investido em ter tido razão.** Essa última parte é a que mais importa — uma decisão enquadrada como provisória pode ser revertida sem ninguém perder a face, e é perder a face o que de fato atrasa reversões.
+
+Também dá ao [escriba](/practice/running-a-war-room) algo que vale registrar, e é a matéria-prima para ler a decisão com justiça depois, em vez de lê-la contra a linha do tempo pronta.
+
+## Registre o que você sabia, não só o que fez
+
+O relato vai mostrar o que você decidiu. Se foi uma boa decisão depende inteiramente do que estava visível naquele momento — que é irrecuperável um dia depois, e é exatamente o que [a retrospectiva](/practice/hindsight-makes-it-look-inevitable) destrói.
+
+Uma linha no momento da decisão: *"Decidindo com: erros em dois de seis membros, nenhum registro de mudança, lacuna de monitoração entre 02h05 e 02h20."* É essa linha que permite a quem revisa julgar o raciocínio em vez do desfecho.
+
+## As quatro perguntas
+
+No ponto de decisão, em voz alta, em menos de um minuto:
+
+1. **Isto é reversível?** Se sim, a régua é baixa. Se não, diga explicitamente e desacelere de propósito.
+2. **Quanto custa errar em cada direção?** Escrito como duas orações, não sentido.
+3. **O que eu poderia aprender em vinte minutos que mudaria isso?** Se nada, decida agora.
+4. **O que estou presumindo, e o que me diria que a premissa está errada?** Dito em voz alta, para a reversão já estar pré-autorizada.
+
+E quando o tempo acabar sem resposta, **decida assim mesmo e diga em qual das quatro você está se apoiando.** Uma decisão explícita com evidência magra é recuperável. Deslizar para nenhuma decisão é o único desfecho que ninguém consegue defender depois, porque ninguém o escolheu.

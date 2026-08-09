@@ -1,0 +1,72 @@
+---
+slug: the-fix-you-cannot-prove-worked
+title: "The fix you cannot prove worked"
+thesis: "A fix is normally declared verified because the symptom stopped. That is not evidence — it is the absence of evidence, and it is indistinguishable from the trigger having left on its own. Until you can say why the change addresses the mechanism, \"it has not recurred\" is a statement about your observation window."
+stance: practised
+part: after
+order: 8
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["fault-hypothesis-builder", "health-snapshot-comparator", "incident-timeline-rca-builder"]
+relatedIndustry: []
+relatedPractice: ["stops-before-you-find-it", "verifying-without-trusting", "the-write-up"]
+artefact: "The three-line verification statement, and the language that stops a claim from outrunning the evidence"
+updated: "2026-08-09"
+---
+
+## The symptom stopped, which proves nothing
+
+You changed something and the errors went away. The ticket says *resolved*. Everybody goes home, correctly, because service is back and that was the job.
+
+The problem arrives later, when *resolved* is treated as a finding. **The symptom stopping is compatible with at least three different worlds**, and from where you stand they look identical:
+
+- **The fix addressed the mechanism.** What you hoped.
+- **The trigger left.** Load fell, the batch finished, the peer's maintenance window closed. [When it stops before you find it](/practice/stops-before-you-find-it) is the same problem without a change; this is the same problem *with* one, which is worse, because now there is something to credit.
+- **Something else you changed did it.** Under pressure nobody changes one thing. Three changes went in within twenty minutes, one of them worked, and the write-up will name whichever was most recent.
+
+## Why the fix case is harder than the vanishing case
+
+When a fault stops on its own, at least everybody knows they do not have an explanation. **When a fault stops after a change, the change is an explanation-shaped object sitting right there**, and the room will attach to it — not out of laziness, but because a plausible cause is genuinely better than none and the alternative is an open incident nobody has time for.
+
+> **A fix converts "we do not know" into "we fixed it" without any new information having arrived.** That conversion is the failure, and it happens in the write-up rather than in the network.
+
+## What would actually constitute proof
+
+Two things, and either is enough:
+
+**A mechanism that explains both.** Not just why the fault happened, but why this specific change removes it. *"The pool was exhausting at 4,000 sessions, we raised the limit to 8,000, and peak observed is 5,200"* is a mechanism — it names the cause, the change, and the margin. *"We restarted the service"* is not, however well it worked.
+
+**A controlled reproduction that now fails.** If you could make it happen before and cannot now, that is the strongest evidence available and it does not require you to understand the mechanism at all. Rarely possible in production, frequently possible in a lab, and almost never attempted because the incident is over and nobody is funding it.
+
+The cheap and unpopular version of the same test: **revert the change and see if it comes back.** Usually unacceptable in production and worth naming anyway, because saying *"we chose not to confirm"* is a different claim from *"confirmed"*.
+
+## The observation window is the whole of the argument
+
+*"It has not recurred in three weeks"* means something only against the fault's natural period.
+
+If the incident happened twice in the previous six months, three quiet weeks is not evidence of anything — the expected gap between occurrences is longer than the window you have observed. If it was happening hourly, three quiet weeks is strong.
+
+**State the window against the period**, always: *"no recurrence in three weeks; prior interval was roughly ten weeks, so this is not yet informative."* One sentence, and it prevents the entire class of error where a slow fault is declared fixed by a fast reviewer.
+
+## Three claims that are routinely conflated
+
+The ticket usually offers one word where three exist, and they are not interchangeable:
+
+| claim | means |
+|---|---|
+| **Resolved** | mechanism understood, change addresses it, margin verified |
+| **Mitigated** | symptom controlled, mechanism not established — deliberately, and stated |
+| **Not recurred since** | no claim about cause at all; a fact about the window |
+
+Most incidents close as *resolved* and are honestly *mitigated* or *not recurred since*. Nobody is being dishonest; the ticket offers a status field with three values and none of them is *"we are not sure"*.
+
+The cost of the overclaim lands twice. **The next occurrence gets treated as a new incident**, because the record says the old one was fixed — so the connection is not made and the investigation restarts from zero. And **the prevention work gets cancelled**, because it is insurance against something the record says is closed.
+
+## The artefact
+
+Three lines in the write-up, next to the fix:
+
+1. **The mechanism** — why this change addresses this fault. If it cannot be written, write *"mechanism not established"*, which is a finding rather than an omission.
+2. **What was changed at the same time** — everything, including the things you are confident were irrelevant. This is the list that lets a future reader re-attribute the fix when it turns out to have been the other one.
+3. **What would tell us we were wrong** — the observation, and the window it needs. *"A recurrence at any load below 5,000 sessions would falsify this."*
+
+That third line is the one that converts a closing statement into something testable, and it is the reason this belongs in the write-up rather than in somebody's memory: **the person who can falsify it in four months is not the person writing it today.**

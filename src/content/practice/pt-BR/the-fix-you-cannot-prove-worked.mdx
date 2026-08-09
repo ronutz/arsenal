@@ -1,0 +1,72 @@
+---
+slug: the-fix-you-cannot-prove-worked
+title: "A correção que você não consegue provar que funcionou"
+thesis: "Uma correção normalmente é dada como verificada porque o sintoma parou. Isso não é evidência — é ausência de evidência, e é indistinguível do gatilho ter ido embora sozinho. Enquanto você não souber dizer por que a mudança endereça o mecanismo, \"não voltou a acontecer\" é uma afirmação sobre a sua janela de observação."
+stance: practised
+part: after
+order: 8
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["fault-hypothesis-builder", "health-snapshot-comparator", "incident-timeline-rca-builder"]
+relatedIndustry: []
+relatedPractice: ["stops-before-you-find-it", "verifying-without-trusting", "the-write-up"]
+artefact: "A declaração de verificação em três linhas, e a linguagem que impede a afirmação de ultrapassar a evidência"
+updated: "2026-08-09"
+---
+
+## O sintoma parou, o que não prova nada
+
+Você mudou alguma coisa e os erros sumiram. O chamado diz *resolvido*. Todo mundo vai para casa, e com razão, porque o serviço voltou e era esse o trabalho.
+
+O problema chega depois, quando *resolvido* passa a ser tratado como achado. **O sintoma parar é compatível com pelo menos três mundos diferentes**, e daqui eles parecem idênticos:
+
+- **A correção endereçou o mecanismo.** O que você esperava.
+- **O gatilho foi embora.** A carga caiu, o lote terminou, a janela de manutenção do parceiro fechou. [Quando para antes de você achar](/practice/stops-before-you-find-it) é o mesmo problema sem mudança; este é o mesmo problema *com* uma, que é pior, porque agora há algo a quem dar o crédito.
+- **Foi outra coisa que você mudou junto.** Sob pressão ninguém muda uma coisa só. Três mudanças entraram em vinte minutos, uma funcionou, e o relato vai nomear a mais recente.
+
+## Por que o caso da correção é mais difícil que o do sumiço
+
+Quando uma falha para sozinha, pelo menos todo mundo sabe que não tem explicação. **Quando uma falha para depois de uma mudança, a mudança é um objeto com formato de explicação bem ali**, e a sala vai se agarrar a ela — não por preguiça, mas porque uma causa plausível é de fato melhor que nenhuma e a alternativa é um incidente aberto que ninguém tem tempo de sustentar.
+
+> **Uma correção converte "não sabemos" em "corrigimos" sem que nenhuma informação nova tenha chegado.** Essa conversão é a falha, e acontece no relato, não na rede.
+
+## O que de fato constituiria prova
+
+Duas coisas, e qualquer uma basta:
+
+**Um mecanismo que explique as duas pontas.** Não só por que a falha aconteceu, mas por que esta mudança específica a remove. *"O pool esgotava em 4.000 sessões, subimos o limite para 8.000, e o pico observado é 5.200"* é um mecanismo — nomeia causa, mudança e folga. *"Reiniciamos o serviço"* não é, por melhor que tenha funcionado.
+
+**Uma reprodução controlada que agora falha.** Se você conseguia fazer aquilo acontecer antes e não consegue mais, é a evidência mais forte disponível, e ela não exige entender o mecanismo. Raramente possível em produção, com frequência possível em laboratório, e quase nunca tentada porque o incidente acabou e ninguém financia.
+
+A versão barata e impopular do mesmo teste: **reverta a mudança e veja se volta.** Normalmente inaceitável em produção, e vale nomear assim mesmo, porque dizer *"optamos por não confirmar"* é outra afirmação, diferente de *"confirmado"*.
+
+## A janela de observação é o argumento inteiro
+
+*"Não voltou em três semanas"* só significa algo diante do período natural da falha.
+
+Se o incidente aconteceu duas vezes nos seis meses anteriores, três semanas quietas não são evidência de nada — o intervalo esperado entre ocorrências é maior que a janela observada. Se acontecia de hora em hora, três semanas quietas são fortes.
+
+**Declare a janela contra o período**, sempre: *"sem recorrência em três semanas; o intervalo anterior era de cerca de dez semanas, então ainda não é informativo."* Uma frase, e ela evita a classe inteira de erro em que uma falha lenta é declarada corrigida por um revisor rápido.
+
+## Três afirmações que são rotineiramente confundidas
+
+O chamado costuma oferecer uma palavra onde existem três, e elas não são intercambiáveis:
+
+| afirmação | significa |
+|---|---|
+| **Resolvido** | mecanismo compreendido, mudança o endereça, folga verificada |
+| **Mitigado** | sintoma controlado, mecanismo não estabelecido — de propósito, e declarado |
+| **Sem recorrência desde** | nenhuma afirmação sobre causa; um fato sobre a janela |
+
+A maioria dos incidentes fecha como *resolvido* e é honestamente *mitigado* ou *sem recorrência desde*. Ninguém está sendo desonesto; o chamado oferece um campo de status com três valores e nenhum deles é *"não temos certeza"*.
+
+O custo do excesso de afirmação chega duas vezes. **A próxima ocorrência é tratada como incidente novo**, porque o registro diz que o antigo foi corrigido — a conexão não é feita e a investigação recomeça do zero. E **o trabalho de prevenção é cancelado**, porque é seguro contra algo que o registro dá como encerrado.
+
+## O artefato
+
+Três linhas no relato, ao lado da correção:
+
+1. **O mecanismo** — por que esta mudança endereça esta falha. Se não der para escrever, escreva *"mecanismo não estabelecido"*, que é um achado e não uma omissão.
+2. **O que foi mudado ao mesmo tempo** — tudo, inclusive o que você tem certeza que era irrelevante. É a lista que permite a alguém, no futuro, reatribuir a correção quando se descobrir que foi a outra.
+3. **O que nos diria que estávamos errados** — a observação, e a janela de que ela precisa. *"Uma recorrência com carga abaixo de 5.000 sessões falsificaria isto."*
+
+Essa terceira linha é a que converte uma frase de encerramento em algo testável, e é a razão de isto pertencer ao relato e não à memória de alguém: **quem pode falsificar aquilo daqui a quatro meses não é quem está escrevendo hoje.**

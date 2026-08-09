@@ -1,0 +1,74 @@
+---
+slug: timelines-reconstructing-what-happened
+title: "Linhas do tempo — reconstruir o que aconteceu, e quando"
+thesis: "Uma linha do tempo não é uma lista de eventos; é uma afirmação sobre ordem, e é na ordem que a causa é lida. Cada fonte que a alimenta mente sobre o tempo do seu próprio jeito — relógios discordam, logs registram a escrita e não o evento, a memória reordena sob estresse — então uma sequência confiante é o artefato mais perigoso que um incidente produz."
+stance: practised
+part: after
+order: 4
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["incident-timeline-rca-builder", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["the-write-up", "when-the-instruments-agree", "designing-for-three-in-the-morning"]
+artefact: "Três colunas — horário, fonte, confiança — e a regra do que entra na primeira"
+updated: "2026-08-09"
+---
+
+## É na ordem que a causa é lida
+
+Ninguém olha uma linha do tempo para saber o que aconteceu; o chamado já diz. Olha-se para saber **o que aconteceu primeiro**, porque é dali que a causa é inferida.
+
+O que significa que a saída real de uma linha do tempo não é um registro. É uma **afirmação de ordem**, e toda conclusão posterior a herda. Erre a ordem e a investigação produz uma causa confiante, internamente coerente e errada — sem nada no artefato que sinalize isso.
+
+## Cada fonte mente sobre o tempo de um jeito diferente
+
+**Relógios discordam.** Equipamentos cuja sincronização de tempo parou de funcionar meses atrás são a fonte isolada mais comum de ordenação falsa, e o desvio é invisível porque cada equipamento é internamente coerente. É por isso que [projetar para as três da manhã](/practice/designing-for-three-in-the-morning) coloca o relógio comum entre as duas coisas que vale projetar de propósito: sem ele, ordenar entre equipamentos é aritmética com números incomparáveis.
+
+**Logs registram a escrita, não o evento.** Log com buffer, envio em lote e encaminhamento em fila fazem o carimbo ser o momento em que a linha foi descarregada. Sob carga — que é quando incidentes acontecem — esses buffers estão mais cheios e o desvio é maior, então a distorção é pior exatamente quando você menos pode com ela.
+
+**A monitoração registra a amostra, não a mudança.** Uma métrica que fica vermelha às 02h15 num intervalo de um minuto significa que o limiar foi cruzado em algum ponto do minuto anterior. Num intervalo de cinco minutos, em algum ponto dos cinco — e o gráfico ainda vai desenhar um ponto às 02h15 como se fosse observação.
+
+**Pessoas reordenam sob estresse.** A lembrança de uma noite ruim chega ordenada por importância, não por sequência. Alguém vai dizer que os alertas começaram antes da mudança; às vezes é verdade, às vezes é a memória de quem só notou os alertas *por causa* da mudança.
+
+**Fusos e horário de verão.** Banal, e ainda responsável por uma fatia real dos erros de uma hora em reconstruções multi-site.
+
+## Horário da observação e horário do evento são campos diferentes
+
+A correção estrutural mais útil, e custa uma coluna a mais.
+
+*"02h14 — enlace caiu"* funde dois fatos: quando o enlace caiu, e quando alguma coisa te avisou. Separar transforma uma discussão insolúvel numa medição — **a latência de detecção fica visível**, e com frequência é ela o achado, porque uma falha que rodou onze minutos antes de alguém saber é um problema de monitoração morando dentro do que parecia um problema de rede.
+
+Registre o que você tem: horário do evento onde a fonte sustenta, horário da observação sempre, e nunca promova o segundo ao primeiro em silêncio.
+
+## A ferramenta deste site se recusa a ler o relógio, de propósito
+
+O [construtor de linha do tempo de incidente](/tools/incident-timeline-rca-builder) daqui não tem relógio. A ordem é fornecida pela pessoa, e os intervalos são expressos em **eventos entre marcos**, não em minutos de parede.
+
+É uma decisão de projeto tomada exatamente pelo motivo acima: **uma ferramenta que ordenasse por carimbo em silêncio fabricaria uma ordenação confiante a partir de fontes incapazes de sustentá-la** — e faria isso de forma invisível, que é pior do que fazer mal. O julgamento sobre ordem pertence a quem sabe em quais fontes confiar, o mesmo argumento de [quando os instrumentos concordam](/practice/when-the-instruments-agree), aplicado ao tempo em vez de à medição.
+
+## Escreva a incerteza dentro da linha do tempo
+
+Precisão falsa é o defeito característico de linhas do tempo reconstruídas. *"02:14:33"* parece autoritativo e pode ser o horário de escrita de um log num equipamento com três minutos de desvio.
+
+**Faixas são mais úteis que pontos quando faixa é o que você tem.** *"Entre 02h10 e 02h14, pelo log do firewall; o relógio do firewall não foi verificado"* é uma afirmação mais fraca e um artefato mais forte, porque quem ler depois enxerga quanto peso ela aguenta.
+
+E marque as âncoras — os poucos eventos cujo horário você de fato confia, normalmente porque duas fontes independentes concordam ou porque alguém estava olhando. **Uma linha do tempo com três âncoras confiáveis e faixas honestas entre elas vale mais que vinte entradas de falsa confiança uniforme.**
+
+## O que as pessoas sabiam, e quando
+
+Uma segunda trilha, na mesma linha do tempo, e ela muda o que a revisão pode concluir: ao lado do que o sistema fez, registre **o que quem respondia sabia em cada ponto.**
+
+Eles não sabiam às 02h20 o que você sabe agora. Uma decisão que parece errada na linha do tempo pronta era, com frequência, correta diante do que estava visível na hora — e sem a trilha do conhecimento não há como mostrar isso, então a revisão acaba avaliando pessoas contra informação que elas não tinham. É a costura que o artigo sobre retrospectiva abre; a metade prática é simplesmente manter a segunda trilha enquanto se escreve.
+
+## O artefato
+
+Três colunas, e uma quarta trilha embaixo:
+
+| coluna | regra |
+|---|---|
+| **Horário** | do evento onde a fonte sustenta, da observação caso contrário, **identificando qual** |
+| **Fonte** | qual equipamento, log ou pessoa — porque confiança é por fonte, não por entrada |
+| **Confiança** | âncora · corroborado · fonte única · lembrança |
+
+Mais, numa linha paralela: **o que quem respondia sabia naquele momento.**
+
+E uma frase no topo dizendo quais relógios foram verificados e quais não. Se nenhum foi, diga também — é a ressalva mais importante do documento e cabe em onze palavras.

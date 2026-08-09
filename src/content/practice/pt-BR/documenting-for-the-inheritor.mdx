@@ -1,0 +1,76 @@
+---
+slug: documenting-for-the-inheritor
+title: "Documentar uma rede que outra pessoa vai herdar"
+thesis: "Documentação falha porque descreve o sistema, e o sistema já se descreve melhor do que você conseguiria. O que quem herda não consegue recuperar olhando é o raciocínio — as restrições, o que foi deliberadamente não feito, e o comportamento que parece errado e é esperado. Escreva a parte que o parque não consegue dizer sobre si mesmo."
+stance: practised
+part: before
+order: 9
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["exos-config-explainer", "fortios-config-diff-explainer", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["reading-a-design-you-did-not-write", "handover-project-to-operation", "the-runbook-nobody-can-follow"]
+artefact: "Os cinco títulos, ordenados por quão devagar envelhecem"
+updated: "2026-08-09"
+---
+
+## O documento que compete com a máquina e perde
+
+A maior parte da documentação de rede é uma descrição: este equipamento, aquele endereço, estas VLANs, isto conecta naquilo. É escrita com cuidado, está correta no dia, e começa a apodrecer imediatamente — porque o parque que ela descreve continua mudando e o documento não.
+
+Pior, ela **nunca foi a melhor fonte disponível**. A configuração em execução é, por definição, atual; o diagrama é uma afirmação sobre uma terça-feira de março. Quem investiga aprende, em um ano, a desconfiar do documento e ler o equipamento — e nesse ponto a documentação virou uma coisa que se mantém por obrigação e se consulta por desespero.
+
+> **Não escreva o que a máquina já diz, e vai continuar dizendo com mais exatidão que você.** Inventário, topologia e configuração devem ser *gerados*, onde forem necessários. O esforço pertence a outro lugar.
+
+## O que o parque genuinamente não consegue dizer sobre si
+
+Lendo uma configuração você recupera o *quê*. Você não recupera nada do que vem abaixo, e nada disso está em outro lugar:
+
+**Por quê, onde a escolha não era óbvia.** Um timeout que não é o padrão, uma preferência de rota que parece arbitrária, um segmento que existe por exigência de um auditor em 2019. É o assunto inteiro de [ler um projeto que não foi você quem fez](/practice/reading-a-design-you-did-not-write), e este artigo é o outro lado dele: **o único momento barato de registrar um motivo é enquanto alguém ainda lembra dele.**
+
+**O que foi deliberadamente não feito.** A abordagem tentada e abandonada, o recurso avaliado e rejeitado, a melhoria óbvia que conflita com algo não óbvio. Sem isso, cada pessoa que herda repropõe aquilo, e uma delas acaba implementando.
+
+**O que parece errado e é esperado.** O erro benigno recorrente, o contador que vive alto, o alarme que dispara todo domingo por causa de um backup. Sem registro, cada um desses custa uma investigação na primeira vez que alguém competente os encontra às três da manhã.
+
+**O que é temporário.** Todo contorno ainda no ar, com a data em que entrou e a condição que deveria aposentá-lo — a mesma lista que a [passagem](/practice/handover-project-to-operation) exige, e pelo mesmo motivo.
+
+**Do que depende e você não controla.** O comportamento do provedor acima, o certificado que outra pessoa renova, a zona de DNS que outro time edita, a licença que vence. Dependências fora do parque são invisíveis para toda ferramenta que inspeciona o parque.
+
+## Ordene o esforço pela taxa de decaimento
+
+O princípio útil para decidir onde gastar uma tarde:
+
+> **Gaste esforço na proporção inversa da velocidade com que o conteúdo envelhece.**
+
+Inventário muda toda semana e deve ser gerado ou dispensado. Topologia muda todo mês. Procedimentos mudam com a plataforma. **Raciocínio quase não muda** — uma restrição registrada em 2021 normalmente ainda é o motivo em 2026, e é a única categoria em que escrever à mão ganha da ferramenta com folga.
+
+Isso inverte o que a maioria dos projetos de documentação faz de fato, que é gastar o tempo disponível no inventário, por ser a parte mais fácil de escrever e de mostrar progresso.
+
+## Escreva para uma pessoa num momento específico
+
+A mesma disciplina do [runbook](/practice/the-runbook-nobody-can-follow): o leitor imaginado é um colega na mesa dele; o real é um estranho sob pressão.
+
+Duas coisas decorrem disso. **Diga para que serve antes de dizer o que é** — *"este segmento carrega tráfego de cartão e é separado por causa da auditoria, então mudar a filtragem dele tem caminho de aprovação"* é mais útil que a lista completa das regras de acesso. E **arquive onde o incidente vai procurar**, que é ao lado dos runbooks, não numa pasta de projeto herdada de uma consultoria já substituída.
+
+## Diagramas, e o problema da data
+
+Diagramas são acreditados por muito mais tempo do que são verdadeiros, porque não carregam sinal de idade e ler um dá sensação de entendimento.
+
+Duas regras os tornam seguros. **Date todo diagrama, visivelmente, dentro da própria imagem** — data no nome do arquivo se perde na primeira vez que alguém cola aquilo num slide. E **desenhe o que é estável**: fluxos de tráfego, fronteiras de confiança e dependências envelhecem devagar, enquanto topologia porta a porta envelhece no instante em que alguém acrescenta um switch. Um diagrama de *como uma transação atravessa o parque* continua verdadeiro depois de uma troca de hardware. Um diagrama de *o que está plugado em quê* não continua.
+
+## O teste que importa
+
+Não se a documentação está completa. Se **alguém que nunca viu este parque consegue fazer uma mudança segura sem perguntar para você.**
+
+Esse teste passa com surpreendentemente pouco: os motivos, as omissões deliberadas, os estranhos conhecidos, os temporários e as dependências externas. E não passa com um inventário perfeito e nenhum raciocínio, que é o que a maioria dos parques tem.
+
+## Os cinco títulos
+
+Na ordem em que devem ser escritos, que é a ordem de quão devagar envelhecem:
+
+1. **Decisões e suas restrições** — cada escolha não óbvia, e o que a forçou
+2. **Deliberadamente não feito** — com o motivo, para não ser reproposto em silêncio
+3. **Estranho conhecido** — comportamento que parece errado e é esperado
+4. **Temporário** — com datas de entrada e condições de aposentadoria
+5. **Dependências externas** — o que este parque precisa de gente que não responde a ninguém daqui
+
+Depois, e só se sobrar tempo, gere o inventário. **Se a tarde acabar no terceiro título, o documento ainda vale mais que o que a maioria dos parques tem** — que é o argumento para escrever nesta ordem, e não na usual.

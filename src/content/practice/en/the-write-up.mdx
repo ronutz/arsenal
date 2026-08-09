@@ -1,0 +1,83 @@
+---
+slug: the-write-up
+title: "The write-up: what to record while you still remember"
+thesis: "The facts of an incident survive; the reasoning does not. Within a day the dead ends, the things ruled out and the reason you looked where you looked are gone — and those are the only parts the next person actually needs, because the answer is the one thing they can already read in the ticket."
+stance: practised
+part: after
+order: 1
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "tac-escalation-packet-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["verifying-without-trusting", "documenting-for-the-inheritor", "stops-before-you-find-it"]
+artefact: "The skeleton that can be filled in ten minutes at four in the morning"
+updated: "2026-08-09"
+---
+
+## What decays, and how fast
+
+Service is back. It is late, everybody is tired, and the write-up is tomorrow's problem — which is a reasonable decision made by reasonable people, and it costs more than it looks.
+
+**What survives on its own is the answer.** The ticket has it, the change record has it, three people can recite it. That part needs no help from you.
+
+**What evaporates is the path.** By the following afternoon you can still say what the fault was and you can no longer reliably say:
+
+- what you thought it was for the first forty minutes, and why that was reasonable
+- what you ruled out, and on what evidence
+- which observation made you change direction
+- what you tried that did nothing
+- what you nearly did and decided against
+
+Every one of those is more useful to the next person than the answer, because **the next person will arrive at the same symptom and start where you started.** Handing them the conclusion saves them the last ten minutes. Handing them the dead ends saves them the first three hours.
+
+## The clean narrative is the useless version
+
+The instinct when writing up is to produce a tidy account: symptom, investigation, cause, fix. It reads well, it survives being forwarded, and **it has had removed from it precisely the material that would have helped.**
+
+A tidy narrative implies the path was direct. It never was. Somebody spent ninety minutes on a theory that turned out to be wrong, and that ninety minutes is the most transferable thing in the entire incident — because the theory was *plausible*, which means the next person will have it too.
+
+> **Write the dead ends. "We spent ninety minutes on the firewall because the timing matched a policy push; it was not the firewall, and here is what ruled it out"** is the paragraph nobody writes and everybody needs. It looks like an admission. It is a map.
+
+## Observations, not verdicts
+
+The same discipline as [acceptance](/practice/what-acceptance-testing-is-for) and for the same reason: a conclusion is somebody's judgement on the night, and a measurement is evidence indefinitely.
+
+*"CPU was high"* decays into an argument. *"Control-plane CPU sat at 94% from 02:10 to 02:48, back to 30% within a minute of the failover"* is still usable in a year, by somebody who disagrees with your conclusion and needs the data anyway.
+
+Record what you saw, with times. Let the conclusion be a separate sentence that can be revised without touching the evidence.
+
+## Two readers, two documents
+
+They want opposite things, and blending them produces a document that serves neither.
+
+**Management needs**: what broke, who was affected, how long, what stops it recurring, what it will cost. Short, and written so it survives being read by somebody who will only read the first paragraph.
+
+**The next engineer needs**: the symptom as it first appeared, the path, the dead ends, the observations with timestamps, and what is still unexplained.
+
+Keep them as two sections with honest headings rather than one document trying to be both. **The failure mode of blending is that the dead ends get cut** — they read as incompetence to the first audience and are the whole value to the second.
+
+## What is still unknown belongs in writing
+
+The strongest and least common section: **what this write-up cannot explain.**
+
+The fault stopped before the cause was found. The second site was never affected and nobody knows why. The change that triggered it should not have been capable of triggering it. Recording these is what makes the document honest — and more practically, it is what lets the *next* occurrence be recognised as a recurrence rather than treated as new. An incident that [stopped before anybody found it](/practice/stops-before-you-find-it) and was written up as resolved will be met a second time by somebody starting from zero.
+
+## Write the skeleton before you sleep
+
+The realistic version of this advice, because "write it up tonight" loses to exhaustion every time and should.
+
+**Ten minutes, before sleeping, on the parts that decay**: the times, the dead ends, the unexplained. Prose can wait; those three cannot. Everything else can be reconstructed tomorrow from the ticket, the change record and the graphs.
+
+## The skeleton
+
+Fillable at four in the morning, in any order, in fragments:
+
+- **Symptom as first reported** — in the reporter's words, before anybody reframed it
+- **Times** — first symptom, detection, each change of direction, mitigation, verification
+- **What we thought it was, in order** — and what moved us off each one
+- **Ruled out** — and the evidence that ruled it, not the conclusion
+- **Tried and did nothing** — the highest-value list and the first one cut from a tidy write-up
+- **What we changed** — including anything temporary that is still in place
+- **Still unexplained**
+- **Where I would start next time**
+
+That last line takes fifteen seconds and is the single most useful sentence in the document, because it is the only one written by somebody who has just done the work rather than somebody reading about it later.

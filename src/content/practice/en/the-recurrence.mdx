@@ -1,0 +1,74 @@
+---
+slug: the-recurrence
+title: "The recurrence: recognising an old fault in new clothes"
+thesis: "Recurrences are rarely recognised, because the second occurrence presents differently — another site, another symptom, another team — and the only thing shared is the mechanism, which is precisely what the first write-up did not record. So an organisation solves the same fault repeatedly and experiences it as bad luck."
+stance: practised
+part: after
+order: 10
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["the-fix-you-cannot-prove-worked", "knowledge-capture-that-gets-found", "prevention-that-survives-the-budget"]
+artefact: "The recurrence check — five questions, asked at the start of an incident rather than the end"
+updated: "2026-08-09"
+---
+
+## The same fault does not look the same twice
+
+Eleven months ago a batch job overran and exhausted a connection pool, and the symptom was checkout failures. This morning a reporting export overran and exhausted the same pool, and the symptom is slow logins.
+
+Different trigger, different symptom, different team reporting it, different engineer investigating. **The mechanism is identical and nobody will notice**, because the only thing the two incidents share is the part nobody wrote down.
+
+> **Recurrence is invisible at the surface, and the surface is all the record retains.**
+
+## Why the memory does not help
+
+Somebody in the room usually says *"I feel like we've seen something like this before"* — and cannot say where, or when, or what the outcome was. That feeling is a real signal and a useless index.
+
+Three things defeat institutional memory here:
+
+**The interval outlives the team.** A fault with a ten-month period will cross a staff rotation, a reorganisation, or a contract change. The second occurrence is met by people who were not present for the first.
+
+**The record is filed by cause.** Which the current investigation does not yet have — the [knowledge capture](/practice/knowledge-capture-that-gets-found) problem exactly, and the reason symptom-titled pages matter more than tidy ones.
+
+**The first one was closed as resolved.** If it was declared fixed, nobody is looking for a repeat — the record actively argues against the connection, which is the cost [the fix you cannot prove worked](/practice/the-fix-you-cannot-prove-worked) warns about, arriving eleven months late.
+
+## The tells
+
+None is proof; each is worth ten seconds:
+
+- **Somebody half-remembers it.** Treat this as a search instruction, not as an opinion, and search by symptom rather than by their recollection.
+- **The fix that was applied before and did not stick.** Especially one nobody can explain — an unexplained fix is a strong candidate for having never worked.
+- **The same class of component**, in a different place. Two different pools, both exhausting, is a pattern about pools rather than about either one.
+- **A round-ish interval.** Monthly, quarterly, end-of-year. Things that recur on a business calendar are recurring for business-calendar reasons.
+- **A write-up that ends in *still unexplained*.** Those sections exist for exactly this moment, which is why [the write-up](/practice/the-write-up) insists on them.
+
+## Ask at the start, not at the end
+
+The single change that makes recurrence findable: **run the check in the first ten minutes, not in the review.**
+
+At the end it is archaeology and nobody is funded for it. At the start it is a search that costs two minutes and can collapse the entire investigation — because if this is a recurrence, somebody has already done the narrowing, and the previous write-up's dead-end list saves the hours it cost the first time.
+
+It also changes what you look at. An investigation that knows it may be a repeat asks *what is the same*, which is the mechanism, rather than *what changed*, which is the trigger — and the trigger is different every time by definition.
+
+## What identifying a recurrence changes
+
+**The remedy tier moves.** A second occurrence is the evidence that makes the structural remedy fundable. *"This is the fourth occurrence; here are the dates"* is an argument in a way that four unlinked tickets are not — which is why [prevention that survives the budget](/practice/prevention-that-survives-the-budget) treats the declined structural proposal as worth writing down. **The recurrence is when that declination gets cashed.**
+
+**The claim about the previous fix gets revisited.** Either it never addressed the mechanism, or it addressed one path to it and there is a second. Both are findings, and both are invisible without the link.
+
+**The knowledge consolidates.** This is the moment to collapse the incidents into one living page with dated occurrences, rather than filing a second write-up that will be equally unfindable in eleven months.
+
+## The recurrence check
+
+Five questions, at the start of an incident:
+
+1. **Search the symptom** — in the reporter's words, in whatever people actually search. Not the cause; you do not have it.
+2. **Search the error string**, verbatim.
+3. **Has this class of component failed this way anywhere else?** Not this device — this kind of device.
+4. **Does the interval match anything on the business calendar?**
+5. **Is there an open *still unexplained* from a previous incident that this could be?**
+
+And one line for the write-up either way, because a negative result is worth recording too:
+
+> **"Checked against prior incidents on symptom and error string; no match"** — so the next person, eleven months from now, knows the search was run and can weigh it rather than repeat it.

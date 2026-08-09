@@ -1,0 +1,75 @@
+---
+slug: hindsight-makes-it-look-inevitable
+title: "Hindsight makes the timeline look inevitable"
+thesis: "A finished timeline reads as a chain of obvious steps, because you now know which of the hundred signals mattered. The responders were looking at all hundred, and nothing distinguished the important one. Judging their decisions against knowledge that only exists after the incident is the most reliable way for a review to produce a wrong lesson."
+stance: practised
+part: after
+order: 5
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["timelines-reconstructing-what-happened", "rca-without-a-scapegoat", "the-assumption-you-cannot-see"]
+artefact: "The visible-then column, and the question that replaces \"they should have noticed\""
+updated: "2026-08-09"
+---
+
+## The path only looks marked from the end
+
+Read a completed timeline and the route to the cause is obvious. The memory alarm at 01:52, the deploy at 01:48, the retransmissions climbing from 02:00 — of course it was the deploy. Anybody paying attention would have seen it.
+
+They were paying attention. **They were also looking at the certificate warning, the unrelated link flap in another region, the ticket from a user with a broken laptop, the backup job that always runs long on Tuesdays, and forty other things that were equally visible and equally plausible.**
+
+The finished timeline contains the signals that turned out to matter. **The night contained all of them**, undifferentiated, arriving out of order and mixed with noise. Reading the first as though it were the second is not a lapse in generosity; it is a category error about what the responders had.
+
+> **A timeline records what was true. It does not record what was distinguishable.**
+
+## The wrong lesson it generates
+
+Hindsight almost always produces the same remedy: *they should have noticed sooner*. Phrased as retraining, an added checklist item, or a note asking people to be more attentive.
+
+That remedy is aimed at attention, and attention was not the problem. The problem was **signal-to-noise**, which is a property of the estate rather than of the people. Aimed at attention, it does nothing — the next person meets the same forty simultaneously plausible signals and is no better equipped, having been told to try harder.
+
+It also has the cost [RCA without a scapegoat](/practice/rca-without-a-scapegoat) describes: people who expect their judgement to be graded against information they did not have will report later, report less, and defend rather than describe.
+
+## The productive question
+
+Not *"why did they not notice X?"* but:
+
+> **"What would have made X stand out from the other forty?"**
+
+That question has engineering answers. X was on a dashboard nobody watches during an incident. X had the same severity as things that fire weekly. X was three clicks away in a different system. X's alarm had been muted eight months ago during a migration. X was there but expressed in a unit nobody correlates under pressure.
+
+**Each of those is a finding with a fix.** *"Be more attentive"* is not.
+
+## Two decisions worth reconstructing rather than grading
+
+**The direction they went first.** It was almost always the reasonable one given what was visible — and the review should say so explicitly, because the finished timeline makes it look like a detour. If it genuinely was unreasonable, the interesting question is what made it look reasonable, which is a signal problem again.
+
+**The thing they tried that did nothing.** In hindsight it was irrelevant. At the time it was a cheap test of a live hypothesis, and running it was correct. A review that treats it as wasted time teaches people to be slower and more certain before acting, which is precisely the wrong instinct at three in the morning.
+
+## Hindsight distorts the fix, too
+
+Less discussed and equally common: once the cause is known, the fix looks obvious, and the review under-credits how much of the work was **finding out which fix to apply.**
+
+This produces optimistic estimates for next time — *"the fix took four minutes"* — when the four minutes came after three hours of narrowing. Recording the mitigation duration without the identification duration makes every future incident look like it should have been shorter, and makes response-time targets that nobody can meet.
+
+## The mechanism: keep the knowledge track
+
+[Timelines](/practice/timelines-reconstructing-what-happened) argues for a second track recording what the responders knew at each point. **This article is the reason that track exists.** With it, a decision can be read against its own moment. Without it, every decision is read against the finished picture, and the review has no defence against its own hindsight.
+
+The discipline is to write the knowledge track **during** the incident or immediately after — because within a day the reviewer's memory of what they knew at 02:20 has been overwritten by what they know now, and the distinction is not recoverable by trying harder to remember.
+
+## The artefact
+
+Add one column to the timeline, and one question to the review:
+
+| | |
+|---|---|
+| **Visible then** | what was on screen, what had fired, what had been reported — regardless of relevance |
+| **Distinguishable then** | was there anything separating the signal that mattered from the rest? Usually *no*, and *no* is the finding |
+
+And the question that replaces *"they should have noticed"*:
+
+> **What would have made this stand out — and is that change cheaper than the incident was?**
+
+If the honest answer is that nothing would have, the review has found something real: **the estate cannot currently surface this class of fault**, which is a design conclusion rather than a performance one, and it belongs in the write-up in exactly those words.

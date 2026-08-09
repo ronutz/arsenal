@@ -1,0 +1,90 @@
+---
+slug: rma-and-the-dead-box
+title: "RMA, e a logística de um equipamento morto"
+thesis: "Um RMA é um processo logístico vestido de processo técnico. Provar que o hardware falhou é a metade curta; a metade longa é elegibilidade, alfândega, números de série e o fato de que o equipamento de reposição nunca é bem o mesmo — e quase todo o tempo recuperável se perde antes de alguém falar com uma transportadora."
+stance: practised
+part: yield
+order: 21
+roles: ["first-line", "field", "second-line", "management"]
+relatedTools: ["f5-service-check-date", "health-snapshot-comparator", "f5-bigip-license-explainer"]
+relatedIndustry: []
+relatedPractice: ["what-vendor-support-can-and-cannot-do", "naming-and-addressing", "baselines-knowing-what-normal-looks-like"]
+artefact: "Antes de arrancar, e depois que chegar — duas listas, e a primeira vence"
+updated: "2026-08-09"
+---
+
+## O nível de serviço de quatro horas que leva nove dias
+
+O contrato diz troca de hardware em quatro horas. O equipamento falhou às 22h e a reposição entra no país onze dias depois.
+
+Nada deu errado num sentido que alguém consiga apontar. **As quatro horas eram a obrigação de despacho do fabricante**, e tudo que consumiu os onze dias ficou fora dela: verificação de elegibilidade, um número de série que não batia com o contrato, um endereço em que a transportadora não conseguiu entregar, e a alfândega.
+
+> **A metade técnica de um RMA é provar que o equipamento morreu. Quase todo o tempo decorrido está na outra metade** — e a outra metade responde a preparação de um jeito que a técnica não responde.
+
+## Elegibilidade é por número de série, e é ali que os dias somem
+
+*"Temos contrato de suporte"* é uma afirmação no nível da conta. **A elegibilidade é conferida por número de série**, e a distância entre as duas é uma das fontes mais confiáveis de atraso da indústria.
+
+O equipamento foi comprado numa leva posterior e nunca foi incluído. Entrou como reserva numa troca de um incidente anterior e o contrato ainda lista o original. Foi transferido entre sites, ou entre pessoas jurídicas numa aquisição, e o registro não acompanhou. O contrato daquela linha venceu enquanto o resto renovava.
+
+**Confira elegibilidade antes de precisar**, como exercício periódico e não às 22h — o [verificador de datas de serviço](/tools/f5-service-check-date) existe exatamente para esse formato de pergunta. Descobrir uma lacuna de elegibilidade durante uma indisponibilidade converte uma falha de hardware numa negociação de compras.
+
+## Troca antecipada ou devolução primeiro muda tudo
+
+Dois processos fundamentalmente diferentes que ambos se chamam *RMA*:
+
+**Troca antecipada** envia o equipamento bom primeiro, contra a promessa de devolver o defeituoso dentro de um prazo. Você volta a operar rápido e passa a dever uma devolução, com data e normalmente multa por atraso.
+
+**Devolução primeiro** significa que o defeituoso viaja, é inspecionado, e só então a reposição se move. É perfeitamente razoável comercialmente e completamente inutilizável operacionalmente, e **qual dos dois você tem é propriedade do contrato que assinou, não da urgência de hoje.**
+
+Saiba qual é antes da indisponibilidade. É a diferença entre um plano e uma descoberta.
+
+## *** CAPTURE TUDO ANTES DE ARRANCAR ***
+
+O erro mais caro de todo o processo, e é irreversível.
+
+O instinto diante de um equipamento falho é tirar ele e pôr a reserva — serviço primeiro, e com razão. Mas no instante em que ele sai do rack e é desligado, **todo diagnóstico que teria provado a falha, ou explicado, se foi.** E o fabricante vai pedir.
+
+Antes de sair, se o equipamento ainda for alcançável: a saída de console, inclusive o que aparece no boot, o estado de alarmes e ambiente, o buffer de log, o pacote de diagnóstico ou tech-support, a versão exata de firmware, e fotografias da frente e do fundo, incluindo a etiqueta de série e os LEDs.
+
+Se estiver completamente morto, fotografe tudo assim mesmo e registre o que os equipamentos vizinhos viram — estado de enlace, erros de porta, o momento em que a energia caiu. **Um equipamento morto sem evidência ao redor produz um chamado que discute se ele está morto.**
+
+## A alfândega é o termo dominante fora de alguns países
+
+Vale dizer com todas as letras, porque quase todo conselho publicado é escrito de dentro de um mercado em que isso não se aplica.
+
+No Brasil e em boa parte da América Latina, desembaraço, tributos e a papelada para devolver o equipamento defeituoso sob regime de exportação temporária dominam rotineiramente o cronograma. **Um compromisso de despacho em quatro horas é irrelevante quando a carga fica nove dias na fronteira**, e nenhuma escalação move uma fila aduaneira.
+
+É por isso que existem reservas no país, depósitos locais e kits de campo abastecidos, e é por isso que a aritmética muda por geografia: **o número correto de reservas não é função só da taxa de falha, é função da taxa de falha e da latência de fronteira.** Quem dimensiona reservas pela recomendação global do fabricante está dimensionando para o regime aduaneiro de outra pessoa.
+
+## O equipamento de reposição não é o mesmo equipamento
+
+Ele chega e o trabalho não acabou, porque difere de formas que quebram o que estava amarrado ao antigo:
+
+- **Outra revisão de hardware**, às vezes exigindo firmware mínimo diferente
+- **Outro nível de firmware**, normalmente mais antigo, ocasionalmente novo demais para a sua configuração
+- **Novos endereços MAC**, que quebram tudo que estiver amarrado a eles — reservas, filtros, licenças, identidades de monitoração. É aqui que um esquema que [codificou identidade em algo que se move](/practice/naming-and-addressing) apresenta a conta.
+- **Licenças amarradas ao número de série**, que precisam ser reemitidas por um processo separado, com prazo próprio, e que costuma ser descoberto depois de o equipamento já estar no rack às 02h
+
+Depois a restauração da configuração, que só é tão boa quanto o último backup, e uma **comparação com a [linha de base](/practice/baselines-knowing-what-normal-looks-like)** para confirmar que a reposição se comporta como a antecessora, e não apenas que liga.
+
+## As duas listas
+
+**Antes de arrancar — e esta lista vence no instante em que você arranca:**
+
+- saída de console e de boot, alarmes, buffer de log, pacote de diagnóstico
+- firmware e revisão de hardware exatos
+- fotografias: frente, fundo, etiqueta de série, indicadores
+- o que os vizinhos viram — estado de enlace, erros, horário
+- o número de série, conferido contra a elegibilidade
+
+**Depois que chegar:**
+
+- números de série registrados, o que entrou e o que saiu, com datas
+- firmware trazido ao padrão do parque **antes** de carregar tráfego
+- licenças reemitidas, e verificadas em vez de presumidas
+- tudo que estava amarrado ao MAC antigo atualizado
+- configuração restaurada, e então **comparada com a linha de base**
+- equipamento defeituoso devolvido dentro do prazo, com a papelada — porque uma troca antecipada que nunca volta vira uma fatura
+
+A primeira lista é a que as pessoas pulam, e é a única que não dá para fazer depois.

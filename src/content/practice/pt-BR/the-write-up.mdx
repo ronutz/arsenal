@@ -1,0 +1,83 @@
+---
+slug: the-write-up
+title: "O relato: o que registrar enquanto você ainda lembra"
+thesis: "Os fatos de um incidente sobrevivem; o raciocínio não. Em um dia somem os becos sem saída, o que foi descartado e o motivo de você ter olhado onde olhou — e essas são as únicas partes de que a próxima pessoa precisa, porque a resposta é a única coisa que ela já consegue ler no chamado."
+stance: practised
+part: after
+order: 1
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "tac-escalation-packet-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["verifying-without-trusting", "documenting-for-the-inheritor", "stops-before-you-find-it"]
+artefact: "O esqueleto que dá para preencher em dez minutos às quatro da manhã"
+updated: "2026-08-09"
+---
+
+## O que apodrece, e com que velocidade
+
+O serviço voltou. É tarde, todo mundo está cansado, e o relato fica para amanhã — decisão razoável, tomada por pessoas razoáveis, e mais cara do que parece.
+
+**O que sobrevive sozinho é a resposta.** O chamado tem, o registro de mudança tem, três pessoas sabem de cor. Essa parte não precisa de você.
+
+**O que evapora é o caminho.** Na tarde seguinte você ainda diz qual era a falha e já não diz com confiança:
+
+- o que você achou que era nos primeiros quarenta minutos, e por que aquilo era razoável
+- o que você descartou, e com que evidência
+- qual observação fez você mudar de direção
+- o que você tentou e não fez nada
+- o que você quase fez e decidiu não fazer
+
+Cada um desses é mais útil à próxima pessoa que a resposta, porque **a próxima pessoa vai chegar ao mesmo sintoma e começar de onde você começou.** Entregar a conclusão poupa os últimos dez minutos dela. Entregar os becos sem saída poupa as primeiras três horas.
+
+## A narrativa limpa é a versão inútil
+
+O instinto ao escrever é produzir um relato arrumado: sintoma, investigação, causa, correção. Lê-se bem, sobrevive a ser encaminhado, e **dele foi removido exatamente o material que teria ajudado.**
+
+Uma narrativa arrumada sugere que o caminho foi direto. Nunca foi. Alguém gastou noventa minutos numa teoria que se mostrou errada, e esses noventa minutos são a coisa mais transferível do incidente inteiro — porque a teoria era *plausível*, o que significa que a próxima pessoa também vai tê-la.
+
+> **Escreva os becos sem saída. "Gastamos noventa minutos no firewall porque o horário batia com uma publicação de política; não era o firewall, e foi isto que descartou"** é o parágrafo que ninguém escreve e todo mundo precisa. Parece confissão. É mapa.
+
+## Observações, não vereditos
+
+A mesma disciplina da [aceitação](/practice/what-acceptance-testing-is-for), e pelo mesmo motivo: conclusão é o julgamento de alguém naquela noite; medição é evidência por tempo indeterminado.
+
+*"A CPU estava alta"* apodrece e vira discussão. *"A CPU do plano de controle ficou em 94% das 02h10 às 02h48, e voltou a 30% um minuto depois da comutação"* continua utilizável daqui a um ano, por alguém que discorda da sua conclusão e precisa do dado assim mesmo.
+
+Registre o que você viu, com horários. Deixe a conclusão numa frase separada, que possa ser revista sem mexer na evidência.
+
+## Dois leitores, dois documentos
+
+Eles querem coisas opostas, e misturar produz um documento que não serve a nenhum dos dois.
+
+**A gestão precisa de**: o que quebrou, quem foi afetado, por quanto tempo, o que impede a repetição, quanto vai custar. Curto, e escrito para sobreviver a quem só vai ler o primeiro parágrafo.
+
+**A próxima pessoa técnica precisa de**: o sintoma como apareceu, o caminho, os becos sem saída, as observações com horário, e o que segue sem explicação.
+
+Mantenha os dois como duas seções com títulos honestos, em vez de um documento tentando ser os dois. **O modo de falha da mistura é que os becos sem saída são cortados** — parecem incompetência para o primeiro público e são o valor inteiro para o segundo.
+
+## O que segue desconhecido pertence ao papel
+
+A seção mais forte e menos comum: **o que este relato não consegue explicar.**
+
+A falha parou antes de a causa ser encontrada. O segundo site nunca foi afetado e ninguém sabe por quê. A mudança que disparou aquilo não deveria ser capaz de disparar. Registrar isso é o que torna o documento honesto — e, mais praticamente, é o que permite que a *próxima* ocorrência seja reconhecida como repetição em vez de tratada como nova. Um incidente que [parou antes de alguém achar](/practice/stops-before-you-find-it) e foi relatado como resolvido será encontrado uma segunda vez por alguém começando do zero.
+
+## Escreva o esqueleto antes de dormir
+
+A versão realista do conselho, porque "escreva hoje à noite" perde para o cansaço sempre, e deve perder.
+
+**Dez minutos, antes de dormir, nas partes que apodrecem**: os horários, os becos sem saída, o que ficou sem explicação. A prosa pode esperar; esses três não. Todo o resto se reconstrói amanhã pelo chamado, pelo registro de mudança e pelos gráficos.
+
+## O esqueleto
+
+Preenchível às quatro da manhã, em qualquer ordem, em fragmentos:
+
+- **Sintoma como foi reportado** — nas palavras de quem reportou, antes de alguém reenquadrar
+- **Horários** — primeiro sintoma, detecção, cada mudança de direção, mitigação, verificação
+- **O que achamos que era, em ordem** — e o que nos tirou de cada hipótese
+- **Descartado** — e a evidência que descartou, não a conclusão
+- **Tentado e sem efeito** — a lista de maior valor e a primeira cortada de um relato arrumado
+- **O que mudamos** — incluindo qualquer coisa temporária ainda no ar
+- **Ainda sem explicação**
+- **Por onde eu começaria da próxima vez**
+
+Essa última linha leva quinze segundos e é a frase mais útil do documento, porque é a única escrita por quem acabou de fazer o trabalho, e não por quem leu sobre ele depois.

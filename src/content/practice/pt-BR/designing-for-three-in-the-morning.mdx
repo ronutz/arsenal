@@ -1,0 +1,71 @@
+---
+slug: designing-for-three-in-the-morning
+title: "Projetar um sistema que alguém vai interrogar às três da manhã"
+thesis: "Todo projeto decide, sem que ninguém tenha essa intenção, o quanto o sistema será cognoscível quando se comportar mal. Ser cognoscível não é um recurso acrescentado depois — é resíduo de escolhas feitas por outros motivos, por pessoas que não estarão na sala quando a resposta for necessária."
+stance: practised
+part: before
+order: 10
+roles: ["second-line", "field", "design"]
+relatedTools: ["packet-capture-plan-builder", "incident-timeline-rca-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["when-the-instruments-agree", "reading-a-design-you-did-not-write", "baselines-knowing-what-normal-looks-like"]
+artefact: "As quatro perguntas a fazer a um projeto antes de construí-lo"
+updated: "2026-08-09"
+---
+
+## Ninguém projeta um sistema para ser indiagnosticável
+
+Projeta-se para ser rápido, ou barato, ou resiliente, ou entregável na data. Diagnosticabilidade não está na lista, e normalmente também não há oposição a ela — simplesmente não aparece, e assim acaba decidida do mesmo jeito, por acidente, como efeito colateral de decisões tomadas por outros motivos.
+
+Aí, às três da manhã, alguém que não estava presente faz uma pergunta que o sistema não sabe responder, e a propriedade real do projeto fica visível pela primeira vez.
+
+> **Observabilidade não é um produto que se compra depois. É uma propriedade que você preservou ou gastou** — e quase todo o gasto acontece antes de qualquer coisa ser construída.
+
+## As escolhas que destroem, em silêncio, a capacidade de saber
+
+Cada uma delas é defensável em seus próprios termos. É exatamente por isso que são feitas.
+
+**Abstração que esconde qual deles atendeu a requisição.** Um pool, um cluster, uma malha de serviços. A abstração é o objetivo — mas se nada na resposta identifica o membro, então *"falha mais ou menos uma vez a cada nove"* não vira *"falha neste membro"*, e a investigação empaca na camada acima da falha.
+
+**Tradução de endereços e proxy que perdem o cliente.** Cada salto que reescreve identidade é um salto em que a pergunta *"qual usuário?"* deixa de ter resposta. Perfeitamente correto, inteiramente padrão, e a razão de um log cheio de um único endereço de origem ser um log sobre o proxy, não sobre os usuários.
+
+**Retentativa e comutação que dão certo.** Uma retentativa que funciona na segunda tentativa converte falha em latência, e latência num gráfico que ninguém olha. O sistema passou a compensar, e **compensação é indistinguível de saúde até a folga acabar** — a mesma armadilha de [quando os instrumentos concordam](/practice/when-the-instruments-agree), embutida no projeto em vez de descoberta num painel.
+
+**Agregação escolhida por armazenamento.** Uma métrica com média de cinco minutos é uma decisão, tomada cedo, de que nenhum incidente futuro sobre um evento de dez segundos terá resposta.
+
+**Componentes opacos.** Tudo em que você não consegue olhar por dentro — um appliance, um serviço gerenciado, a plataforma de outra pessoa — é um lugar onde a investigação para. Às vezes vale a pena. Raramente é precificado.
+
+## As duas propriedades que valem ser projetadas de propósito
+
+A maior parte da diagnosticabilidade não é uma lista longa. São duas coisas, ambas baratas antes da construção e praticamente impossíveis de acrescentar depois.
+
+**Uma identidade de correlação que sobreviva ao caminho inteiro.** Um valor, atribuído na borda, carregado por todos os saltos, presente em toda linha de log. Com ele, uma transação pode ser seguida ponta a ponta por quem nunca viu o sistema. Sem ele, correlação vira aritmética de carimbos e chute educado, e cada salto que reescreve identidade piora o chute.
+
+**Um relógio comum.** Correlacionar entre equipamentos é aritmética sobre carimbos de tempo, e carimbos de equipamentos que discordam da hora produzem ordenações confiantes e erradas — causa e efeito invertidos numa reconstrução sobre a qual alguém vai construir uma teoria. Não custa nada em projeto e não se recupera depois, porque o registro já foi escrito.
+
+Todo o resto — logs mais ricos, mais contadores, painéis melhores — dá para acrescentar depois, a um preço. Esses dois, não.
+
+## Ser cognoscível tem custo, e recusar-se a pagar é permitido
+
+Isto não é um argumento de que todo sistema deva ser instrumentado ao máximo. Identificadores de correlação custam bytes e encanamento. Logs detalhados custam armazenamento e, às vezes, exposição de dados pessoais. Métricas granulares custam cardinalidade, que custa dinheiro.
+
+**A falha não é escolher o barato. A falha é não saber que escolheu.**
+
+Um projeto que troca diagnosticabilidade por vazão é um projeto legítimo. Um projeto que a troca sem ninguém notar é o mesmo projeto com uma surpresa anexada, e a surpresa é entregue a outra pessoa, num dia pior.
+
+## O sinal
+
+**Um sistema fácil de demonstrar e difícil de interrogar.** O caminho da demonstração é o caminho feliz, e o caminho feliz é exatamente onde ninguém precisa de visibilidade.
+
+Se o teste de aceitação pode ser aprovado sem que ninguém pergunte *"como saberíamos qual deles fez aquilo?"*, a pergunta não foi feita — e a [aceitação](/practice/what-acceptance-testing-is-for) é o último momento barato para respondê-la.
+
+## As quatro perguntas
+
+Faça-as ao projeto antes de construí-lo, e registre as respostas junto:
+
+1. **Quando isto se comportar mal para um usuário em cinquenta, o que alguém vai conseguir ver, e de onde?** Se a resposta exige um acesso que ninguém terá às três da manhã, não é resposta.
+2. **Dá para seguir uma transação ponta a ponta?** Se não, diga isso de propósito, em vez de descobrir depois.
+3. **Todos os componentes concordam sobre que horas são?** E se a resposta for *"deveriam"*, isso é verificado em algum lugar?
+4. **O que isto esconde quando funciona?** Retentativas, comutações e caches merecem o lugar que ocupam, e cada um remove um sinal. Nomeie o que cada um oculta, para ninguém depois ler o silêncio como saúde.
+
+Nenhuma delas leva muito tempo. Todas ficam sem resposta depois que a coisa está em produção, que é a única razão de pertencerem a esta parte do acervo e não a uma posterior.

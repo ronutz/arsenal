@@ -1,0 +1,94 @@
+---
+slug: what-vendor-support-can-and-cannot-do
+title: "O que o suporte do fabricante pode e não pode fazer por você"
+thesis: "Quase toda frustração com suporte de fabricante vem de pedir coisas estruturalmente impossíveis, e quase toda alavanca desperdiçada vem de nunca pedir as fáceis. O conhecimento útil não é como ser firme — é o formato das restrições dentro das quais a pessoa do outro lado trabalha."
+stance: practised
+part: yield
+order: 20
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["tac-escalation-packet-builder", "fault-hypothesis-builder", "f5-service-check-date"]
+relatedIndustry: []
+relatedPractice: ["opening-a-vendor-case", "not-a-bug", "escalation-as-a-skill"]
+artefact: "O que pedir pelo nome, e a pergunta que só eles podem responder"
+updated: "2026-08-09"
+---
+
+## A pessoa do outro lado
+
+Ela tem uma fila. Tem uma métrica de tempo até a primeira resposta e outra de fechamento de chamados, e uma pesquisa de satisfação amarrada ao nome dela. Está tocando talvez uma dúzia de casos ao mesmo tempo, vários dos quais também são urgentes para alguém.
+
+Nada disso é reclamação sobre ela, e tudo isso explica comportamentos que de outro modo soam como obstrução — a insistência em fechar, o pedido para responder a pesquisa, a resistência a deixar um chamado aberto sem ação pendente. **É o formato do trabalho, não o formato do interesse dela no seu problema.**
+
+Conhecer esse formato vale mais do que qualquer dose de firmeza, porque diz quais pedidos são baratos para ela e quais são impossíveis.
+
+## O que ela pode fazer e você não
+
+**Reproduzir num laboratório que você não tem.** Várias plataformas, várias versões, hardware para o qual você precisaria de uma ordem de compra. É o ativo mais valioso que ela tem, e é por isso que *"aqui está exatamente como reproduzir"* é a frase mais poderosa que você pode escrever.
+
+**Ler o que não é publicado.** Registros internos de defeito, notas de engenharia, rascunhos de release notes, o motivo de um parâmetro existir. Boa parte da velocidade do suporte vem de pesquisar um acervo que você não enxerga.
+
+**Dizer se mais alguém já viu isso.** Tratado abaixo, porque é a pergunta que as pessoas mais deixam de fazer.
+
+**Alcançar a engenharia.** Não na hora e não sob demanda, mas existe uma rota do suporte até quem escreveu o código, e ela abre para casos reproduzíveis com impacto de negócio claro.
+
+**Conseguir uma compilação privada.** Hotfixes e builds de engenharia existem e são distribuídos com parcimônia, normalmente onde há defeito confirmado e a versão está longe.
+
+**Autorizar um [RMA](/practice/rma-and-the-dead-box)**, e às vezes despachar antecipado.
+
+## O que ela não pode fazer, por mais que o caso seja escalado
+
+**Mudar o projeto no seu prazo.** Um comportamento que é intencional não vira defeito porque o chamado é severidade 1 — que é o assunto inteiro de [quando o fabricante diz que não é bug](/practice/not-a-bug).
+
+**Falar do chamado de outro cliente.** Não é evasiva; é fronteira contratual. Muitas vezes ela pode dizer que *um* defeito existe sem dizer quem o encontrou, e essa distinção vale entender porque muda como se pergunta.
+
+**Prometer uma data de correção que a engenharia não deu.** Uma data oferecida sob pressão é um chute que vai estar errado e vai envenenar a relação quando passar. **Quem se recusa a dar uma normalmente está sendo honesto, não pouco prestativo.**
+
+**Enxergar a sua rede.** Ela sabe o que você mandou. Cada lacuna no pacote é uma lacuna no quadro dela, e é por isso que [o pacote de abertura](/practice/opening-a-vendor-case) importa tanto.
+
+**Confirmar um defeito não publicado**, em muitas organizações, enquanto ele não é público. Ela pode estar tocando o caso com total correção e ainda assim impedida de dizer a frase que você quer.
+
+## A pergunta que se esquece de fazer
+
+> **"Mais alguém reportou isso?"**
+
+É a única informação que o fabricante tem e mais ninguém no mundo — ele vê o sintoma de todos os clientes e você vê um parque. A resposta remodela a investigação por completo: um problema conhecido com gatilho conhecido encerra o caso hoje, e um primeiro-caso genuíno diz que a causa provavelmente é local e que você deveria parar de esperar.
+
+Faça a pergunta explicitamente, cedo, e nessas palavras. É barata de responder e rotineiramente nunca é feita.
+
+## A escada dentro do fabricante
+
+Suporte não é uma camada só, e pedir para mudar de camada é um pedido específico e legítimo, não uma reclamação:
+
+- **Primeiro nível** — triagem e roteiro. Correto para a maioria dos casos.
+- **Backline ou o engenheiro de TAC do produto** — conhecimento profundo, acesso a laboratório, registros internos.
+- **Engenheiro de escalação** — para casos travados, entre times, ou comercialmente sérios.
+- **Engenharia** — alcançada através dos anteriores, não em vez deles.
+
+*"Isto pode ir para o backline?"* é uma frase melhor que *"quero falar com um gerente"*, porque nomeia um destino em vez de expressar insatisfação — e quem recebe consegue agir imediatamente.
+
+## O canal comercial é legítimo, e não é ameaça
+
+O seu time de conta é medido pela relação, não por fechamento de chamados. Tem outra rota para dentro da mesma organização e outro motivo para usá-la.
+
+Envolvê-lo é prática normal, e funciona melhor enquadrado como informação, não como pressão: *"O chamado 4417 está aberto há onze dias sem reprodução; a indisponibilidade nos custou duas horas de processamento de cartão. Você consegue ajudar a dar atenção?"* — **um pedido sobre o qual um gerente de contas consegue agir**, enquanto *"o suporte de vocês é péssimo"* só permite pedir desculpas.
+
+Escalar comercialmente sobre um caso que está genuinamente sendo trabalhado, por outro lado, gasta credibilidade que você vai querer depois.
+
+## Não queime o engenheiro
+
+Ele tem pouquíssimo tempo discricionário e escolhe onde gastá-lo. Um caso bem preparado, respondido rápido e razoável de trabalhar ganha a meia hora extra depois do turno. Um caso hostil, vago ou contradito pela própria evidência ganha exatamente o processo e nada além.
+
+**Isso não é falta de profissionalismo; é o que você também faz**, e vale estar do lado certo — pelo caso atual e pelo próximo, já que contas são lembradas.
+
+## O que pedir, pelo nome
+
+| pedido | quando |
+|---|---|
+| *"Mais alguém reportou isso?"* | sempre, já na primeira troca |
+| *"Vocês conseguem reproduzir no laboratório?"* | quando você tem uma reprodução para entregar |
+| *"Existe um ID de defeito conhecido?"* | antes de aceitar *funciona como projetado* |
+| *"Isto pode ir para o backline?"* | quando o primeiro nível rodou o roteiro e não coube |
+| *"O que vocês precisariam de mim para reproduzir?"* | quando o caso empaca — converte espera em tarefa |
+| *"Existe contorno enquanto a correção não sai?"* | separadamente da correção, porque são perguntas diferentes com respostas diferentes |
+
+A última é a mais subutilizada. **Um fabricante que não consegue corrigir neste trimestre com frequência sabe dizer como parar de doer nesta semana**, e ninguém pergunta porque o chamado está arquivado sob *correção*.

@@ -1,0 +1,94 @@
+---
+slug: what-vendor-support-can-and-cannot-do
+title: "What a vendor support engineer can and cannot do for you"
+thesis: "Most frustration with vendor support comes from asking for things that are structurally impossible, and most wasted leverage comes from never asking for the things that are easy. The useful knowledge is not how to be firm — it is the shape of the constraints the person on the other end is working inside."
+stance: practised
+part: yield
+order: 20
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["tac-escalation-packet-builder", "fault-hypothesis-builder", "f5-service-check-date"]
+relatedIndustry: []
+relatedPractice: ["opening-a-vendor-case", "not-a-bug", "escalation-as-a-skill"]
+artefact: "What to ask for by name, and the one question only they can answer"
+updated: "2026-08-09"
+---
+
+## The person on the other end
+
+They have a queue. They have a metric for time-to-first-response and another for case closure, and a satisfaction survey attached to their name. They are working perhaps a dozen cases at once, several of which are also urgent to somebody.
+
+None of that is a complaint about them and all of it explains behaviour that otherwise reads as obstruction — the push to close, the request to fill in the survey, the reluctance to leave a case open with no action pending. **Those are the shape of the job, not the shape of their interest in your problem.**
+
+Knowing the shape is worth more than any amount of firmness, because it tells you which requests are cheap for them and which are impossible.
+
+## What they can do that you cannot
+
+**Reproduce it in a lab you do not have.** Multiple platforms, multiple versions, hardware you would need a purchase order for. This is the single most valuable thing they own, and it is why *"here is exactly how to reproduce it"* is the most powerful sentence you can write.
+
+**Read what is not published.** Internal defect records, engineering notes, release-note drafts, the reason a parameter exists. Much of a support engineer's speed comes from searching a corpus you cannot see.
+
+**Tell you whether anyone else has seen it.** Covered below, because it is the question people most often fail to ask.
+
+**Reach engineering.** Not instantly and not on demand, but a route exists from support to the people who wrote the code, and it opens for reproducible cases with clear business impact.
+
+**Get you a private build.** Hotfixes and engineering builds exist and are handed out sparingly, usually where a defect is confirmed and a release is far away.
+
+**Authorise an [RMA](/practice/rma-and-the-dead-box)**, and sometimes advance-ship it.
+
+## What they cannot do, however the case is escalated
+
+**Change the design on your schedule.** A behaviour that is working as intended does not become a defect because the case is severity 1 — which is the whole subject of [when the vendor says it is not a bug](/practice/not-a-bug).
+
+**Tell you about another customer's case.** Not evasion; a contractual boundary. They can often tell you *a* defect exists without telling you who found it, and that distinction is worth understanding because it changes how you ask.
+
+**Commit to a fix date engineering has not given them.** A date offered under pressure is a guess that will be wrong and will poison the relationship when it passes. **An engineer who declines to give you one is usually being honest rather than unhelpful.**
+
+**See your network.** They know what you sent them. Every gap in the packet is a gap in their picture, which is why [the opening packet](/practice/opening-a-vendor-case) matters so much.
+
+**Confirm an unpublished defect exists**, in many organisations, until it is public. They may work the case entirely correctly while unable to say the sentence you want.
+
+## The question people forget to ask
+
+> **"Has anyone else reported this?"**
+
+It is the one piece of information the vendor has and nobody else on earth does — they see every customer's symptoms and you see one estate. The answer reshapes the investigation completely: a known issue with a known trigger ends the case today, and a genuine first-of-kind tells you the cause is probably local and you should stop waiting.
+
+Ask it explicitly, early, and in those words. It is cheap for them to answer and it is routinely never asked.
+
+## The ladder inside the vendor
+
+Support is not one layer, and asking to move between them is a specific, legitimate request rather than a complaint:
+
+- **First line** — triage and the script. Correct for most cases.
+- **Backline or the product TAC engineer** — deep product knowledge, lab access, internal records.
+- **Escalation engineer** — for cases that are stuck, cross-team, or commercially serious.
+- **Engineering** — reached through, not instead of, the above.
+
+*"Can this go to backline?"* is a better sentence than *"I want to speak to a manager"*, because it names a destination rather than expressing dissatisfaction — and the person receiving it can act on it immediately.
+
+## The commercial channel is legitimate, and is not a threat
+
+Your account team is measured on the relationship, not on case closure. They have a different route into the same organisation and a different reason to use it.
+
+Involving them is normal practice, and it works best framed as information rather than as pressure: *"Case 4417 has been open eleven days without reproduction; the outage cost us two hours of card processing. Can you help it get attention?"* — **which is a request an account manager can act on**, where *"your support is terrible"* is one they can only apologise for.
+
+Escalating commercially over a case that is genuinely being worked, on the other hand, spends credibility you will want later.
+
+## Do not burn the engineer
+
+They have very little discretionary time and they choose where to spend it. A case that is well-prepared, answered promptly and reasonable to work gets the extra half hour after their shift. A case that is hostile, vague or contradicted by its own evidence gets exactly the process and nothing more.
+
+**That is not unprofessionalism; it is the same thing you do**, and it is worth being on the right side of it — for the case you have and for the next one, since accounts are remembered.
+
+## What to ask for, by name
+
+| ask | when |
+|---|---|
+| *"Has anyone else reported this?"* | always, in the first exchange |
+| *"Can you reproduce it in your lab?"* | when you have a reproduction to hand over |
+| *"Is there a known defect ID?"* | before accepting *working as designed* |
+| *"Can this go to backline?"* | when first line has run its script and it did not fit |
+| *"What would you need from me to reproduce it?"* | when the case is stalling — it converts a wait into a task |
+| *"Is there a workaround while we wait for the fix?"* | separately from the fix, because these are different questions with different answers |
+
+The last one is the most under-used. **A vendor who cannot fix it this quarter can very often tell you how to stop it hurting this week**, and nobody asks because the case is filed under *fix*.

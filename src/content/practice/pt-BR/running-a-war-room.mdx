@@ -1,0 +1,87 @@
+---
+slug: running-a-war-room
+title: "Conduzir uma sala de crise"
+thesis: "O trabalho de uma sala de crise não é resolver o problema mais rápido — uma sala cheia de gente quase nunca resolve. O trabalho dela é sustentar a autoridade de que a investigação precisa, remover impedimentos e absorver a demanda da organização por atualizações. A maioria das salas de crise falha invertendo isso: interrompe a investigação para manter a sala informada."
+stance: practised
+part: yield
+order: 22
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "tac-escalation-packet-builder", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["escalation-as-a-skill", "triage-and-severity", "timelines-reconstructing-what-happened"]
+artefact: "Quatro papéis, uma cadência fixa, e a lista de quem não deveria estar na sala"
+updated: "2026-08-09"
+---
+
+## Mais gente não significa mais rápido
+
+O instinto, quando um incidente fica sério, é somar gente. É um instinto razoável e não funciona como todo mundo espera: **investigação não é paralelizável além de um número muito pequeno**, e cada pessoa a mais soma custo de coordenação às duas ou três que de fato estão segurando o problema.
+
+Então o valor de uma sala de crise não é vazão. É tudo que fica em volta da investigação e que, de outro modo, consumiria quem investiga:
+
+- **Autoridade na sala.** Alguém que possa aprovar a comutação, autorizar o gasto, furar o congelamento de mudanças ou aceitar o risco — sem um telefonema e uma espera.
+- **Impedimentos removidos.** Um acesso que ninguém tem, um chamado com o fabricante que precisa de peso comercial, um segundo time que precisa ser acordado.
+- **A carga de comunicação absorvida**, para que quem está com as mãos no sistema não responda a mesma pergunta vinda de seis lados.
+
+## O modo de falha: a sala vira plateia
+
+Acontece em silêncio. Alguém sênior pede uma atualização, depois outra, depois uma terceira de outra área — cada pedido razoável isoladamente, e juntos convertem quem investiga em narrador.
+
+> **Toda atualização de status é uma interrupção naquilo que a sala inteira está esperando.** Uma sala de crise que custa vinte minutos por hora à investigação alongou a indisponibilidade, com aparência de gestão.
+
+O sinal é fácil de ver: **se quem sabe mais está falando mais do que trabalhando**, a sala inverteu.
+
+## Quem lidera não deve ser a melhor pessoa técnica da sala
+
+Este é o ponto estrutural, e é contraintuitivo o bastante para normalmente sair errado.
+
+O instinto é pôr a pessoa mais capaz tecnicamente no comando. Mas liderar é decidir, sequenciar, comunicar e proteger — e cada minuto nisso é um minuto fora da investigação. **Colocar o seu melhor investigador na liderança remove o seu melhor investigador.**
+
+Quem lidera precisa de julgamento técnico suficiente para pesar opções e fazer as perguntas certas. Não precisa ser quem consegue achar a falha, e não deveria ser.
+
+## Quatro papéis
+
+Incidentes pequenos colapsam isso em duas pessoas. Nomear ainda ajuda, porque deixa explícito qual chapéu alguém está usando quando fala.
+
+**Líder do incidente** — decide, sequencia, protege quem investiga, chama as escalações e o encerramento. Não investiga.
+
+**Investigador** — um, ou poucos com áreas claramente separadas. **Não um comitê**; duas pessoas na mesma hipótese é uma pessoa mais uma interrupção.
+
+**Comunicação** — responde pelas atualizações para cima e para fora, numa cadência, para que ninguém mais seja procurado. É um trabalho de verdade durante um incidente sério e é o mais frequentemente deixado sem dono.
+
+**Escriba** — registra o que aconteceu, quando, e **o que se sabia naquele momento**. O papel mais subutilizado da indústria e o que torna possível [a linha do tempo](/practice/timelines-reconstructing-what-happened) depois, porque reconstruir a trilha de conhecimento de memória no dia seguinte não dá.
+
+## Cadência vale mais que disponibilidade
+
+A única mudança que protege a investigação: **horários fixos de atualização, anunciados.**
+
+*"Próxima atualização às e meia, e a cada meia hora depois"* atende à necessidade real da sala — que não é a informação, e sim a garantia de que informação vem — enquanto dá a quem investiga um bloco conhecido e sem interrupção. Disponibilidade contínua não dá nenhuma das duas coisas.
+
+Mantenha a cadência mesmo sem novidade. *"Sem mudança; ainda na segunda hipótese; próxima atualização na hora cheia"* é uma atualização completa e útil, e pular por não ter o que dizer é o que reinicia as interrupções.
+
+## Quem não deveria estar na sala
+
+Observadores não são de graça. Toda pessoa presente é alguém por quem quem investiga pode se sentir observado, e senioridade aumenta a pressão de parecer ocupado e certo.
+
+O teste é funcional: **esta pessoa consegue decidir algo, destravar algo ou comunicar algo?** Se não, o lugar dela é na lista de distribuição, não na sala. Isso inclui pessoas cujo interesse é inteiramente legítimo — o gerente de contas, o dono do serviço, o executivo genuinamente preocupado. **A cadência existe justamente para que não precisem estar presentes.**
+
+## Encerre de propósito
+
+Salas de crise sobrevivem à própria utilidade. O serviço voltou, a fase aguda passou, e a sala continua porque ninguém quer ser quem encerra — então oito pessoas ficam numa chamada assistindo duas escreverem um relatório.
+
+Diga explicitamente: *"Serviço estável. Encerrando a sala. A investigação segue com Ana e Paulo; próxima atualização amanhã às dez."* A transição de incidente para acompanhamento é uma decisão, e deixá-la por tomar desperdiça o resto do dia e ensina que salas de crise não têm fim.
+
+## O artefato
+
+| | |
+|---|---|
+| **Líder** | decide e protege; **não é o melhor investigador** |
+| **Investigador** | um, ou poucos com áreas separadas |
+| **Comunicação** | responde pelas atualizações na cadência, para ninguém mais ser procurado |
+| **Escriba** | horários, ações, **e o que se sabia então** |
+
+Mais, dito em voz alta no começo:
+
+- **A cadência** — *"atualizações às :00 e às :30"*
+- **O gatilho de escalação** — um horário de relógio, decidido agora, conforme [escalar é competência](/practice/escalation-as-a-skill)
+- **Quem não é necessário** — com gentileza, e por função, não por nome

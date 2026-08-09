@@ -1,0 +1,79 @@
+---
+slug: knowledge-capture-that-gets-found
+title: "Registro de conhecimento que alguém vai realmente achar"
+thesis: "Registrar conhecimento falha na recuperação, não na captura. As organizações guardam volumes enormes de conhecimento escrito sobre incidentes, indexado pela causa e por quem escreveu — enquanto quem precisa chega segurando apenas um sintoma, que é justamente a única coisa com que ninguém titulou nada."
+stance: practised
+part: after
+order: 9
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "tac-escalation-packet-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["the-write-up", "documenting-for-the-inheritor", "the-runbook-nobody-can-follow"]
+artefact: "O teste de encontrabilidade — e a regra de uma página por falha"
+updated: "2026-08-09"
+---
+
+## A wiki está cheia e ninguém acha nada
+
+Toda organização com alguma idade tem isso. Anos de relatos, produzidos com cuidado, arquivados direitinho, e funcionalmente invisíveis. As pessoas resolvem o mesmo problema duas vezes e descobrem o relato anterior depois, por acaso, procurando outra coisa.
+
+A conclusão habitual é que as pessoas deveriam pesquisar melhor, ou que a wiki precisa ser reorganizada. Nenhuma das duas é o problema.
+
+> **O conhecimento foi escrito por alguém que sabia a causa. Está sendo procurado por alguém que só tem o sintoma** — e o sintoma é a única coisa com que o documento não foi titulado, indexado, nem escrito na linguagem dela.
+
+## O que quem procura de fato tem
+
+No momento da necessidade, às três da manhã, quem procura tem em mãos:
+
+- uma **mensagem de erro**, exatamente como apareceu, que a pessoa vai colar
+- um **sintoma nas palavras dela** — *"pagamentos falhando de vez em quando"*
+- possivelmente um **nome de fabricante ou produto**
+- um **padrão de horário** — *"só de manhã"*, *"desde o fim de semana"*
+
+E **não** tem: a causa, porque é o que está procurando; o codinome interno do seu projeto; o número do chamado; o nome de quem escreveu; nem o vocabulário que o relato usou depois que a causa já era conhecida.
+
+Quase toda convenção de arquivamento em uso indexa pela segunda lista.
+
+## Três mudanças que fazem a maior parte do trabalho
+
+**Titule pelo sintoma, não pela causa.** *"Flap de membro de pool no BIG-IP — RCA 4417"* é encontrável por quem já sabe a resposta. *"5xx intermitente no caminho de pagamento, some sozinho em poucos minutos"* é encontrável por quem não sabe. A causa entra na primeira linha do corpo, que é o lugar dela.
+
+**Inclua a mensagem de erro literal.** Exatamente como o sistema emite, pontuação e tudo, mesmo que seja feia e mesmo que você a tenha parafraseado no resto do documento. **As pessoas colam mensagens de erro na busca**, e paráfrase não casa.
+
+**Escreva o sintoma na linguagem de quem reportou, além da sua.** O usuário disse *"o site está lento"*; você determinou que era latência de handshake TLS num membro do pool. **Os dois pertencem ao documento**, porque a próxima ocorrência também vai chegar como *"o site está lento"*.
+
+## Uma página por falha, não uma página por ocorrência
+
+A falha estrutural mais comum depois do título: cinco relatos separados do mesmo problema recorrente, escritos com meses de distância por pessoas diferentes, nenhum ligado ao outro, cada um redescobrindo o mesmo mecanismo.
+
+A correção é uma regra, não uma ferramenta: **uma falha recorrente ganha uma página viva, atualizada a cada ocorrência**, com as datas listadas. Os registros individuais continuam existindo para a trilha de auditoria; o conhecimento mora num lugar só.
+
+Essa página também vira a base de evidência de [prevenção que sobrevive ao orçamento](/practice/prevention-that-survives-the-budget) — *"é a quarta ocorrência, aqui estão as datas"* é um argumento, enquanto quatro chamados soltos são uma coincidência.
+
+## Onde mora vale mais que quão bom é
+
+Um relato excelente num sistema que ninguém pesquisa durante incidentes vale menos que um relato mediano ao lado dos runbooks.
+
+O teste é comportamental, não arquitetural: **onde alguém de fato olha às três da manhã?** Seja o que for — a pasta de runbooks, a busca do chat, o sistema de chamados — é ali que o conhecimento pertence, mesmo que exista uma plataforma melhor e sem uso. Migrar o hábito das pessoas é um projeto; colocar o documento onde o hábito já vai é uma tarde.
+
+## Conhecimento apodrece em ritmos diferentes
+
+Vale separar na hora de escrever, porque decide o que compensa manter:
+
+- **Detalhe específico de produto** — comandos, nomes de tela, comportamento preso à versão. Apodrece rápido, e um comando desatualizado é pior que nenhum, porque falha de um jeito que custa tempo.
+- **O mecanismo** — por que essa classe de falha acontece. Apodrece devagar e sobrevive a trocas de plataforma.
+- **O caminho diagnóstico** — como você estreitou. Mais devagar ainda, e é o que torna competente um leitor que não conhece o ambiente.
+
+**Date explicitamente as partes que apodrecem rápido** e deixe o resto sustentar o documento. Uma página cujos comandos estão marcados como *válidos na versão 15.1* envelhece com honestidade; uma que os apresenta como atemporais envelhece virando armadilha.
+
+## O teste de encontrabilidade
+
+Antes de arquivar, peça a alguém que não participou para achar aquilo — com apenas o sintoma, nas palavras que um usuário usaria, na ferramenta que essa pessoa normalmente pesquisa:
+
+1. **Ela acharia?** Se não, o título foi escrito a partir da resposta.
+2. **Ela reconheceria como sendo o caso dela** nas duas primeiras linhas? Se a abertura descreve a causa, não dá para saber se bate com a situação dela.
+3. **O documento contém a mensagem de erro literal?**
+4. **Existe uma página para esta falha, ou várias?**
+5. **O material preso à versão está datado?**
+
+Cinco perguntas, dois minutos, e são a diferença entre conhecimento capturado e conhecimento armazenado.

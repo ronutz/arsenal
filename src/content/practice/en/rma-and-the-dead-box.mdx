@@ -1,0 +1,90 @@
+---
+slug: rma-and-the-dead-box
+title: "Return merchandise authorisation, and the logistics of a dead box"
+thesis: "A return merchandise authorisation is a logistics process wearing a technical costume. Proving the hardware failed is the short half; the long half is entitlement, customs, serial numbers and the fact that the replacement is never quite the same unit — and almost all of the recoverable time is lost before anybody touches a courier."
+stance: practised
+part: yield
+order: 21
+roles: ["first-line", "field", "second-line", "management"]
+relatedTools: ["f5-service-check-date", "health-snapshot-comparator", "f5-bigip-license-explainer"]
+relatedIndustry: []
+relatedPractice: ["what-vendor-support-can-and-cannot-do", "naming-and-addressing", "baselines-knowing-what-normal-looks-like"]
+artefact: "Before you pull it, and after it arrives — two lists, and the first one expires"
+updated: "2026-08-09"
+---
+
+## The four-hour service level that takes nine days
+
+The contract says four-hour hardware replacement. The unit failed at 22:00 and the replacement is in the country eleven days later.
+
+Nothing went wrong in the sense anybody could point at. **The four hours were the vendor's dispatch obligation**, and everything that consumed the eleven days sat outside it: entitlement verification, a serial number that did not match the contract, an address the courier could not deliver to, and customs.
+
+> **The technical half of an RMA is proving the box is dead. Almost all of the elapsed time is in the other half**, and the other half responds to preparation in a way the technical half does not.
+
+## Entitlement is per-serial, and that is where days go
+
+*"We have a support contract"* is an account-level statement. **Entitlement is checked per serial number**, and the gap between the two is one of the most reliable sources of delay in the industry.
+
+The unit was bought in a later tranche and never added. It was swapped in from a spare during a previous incident and the contract still lists the original. It was transferred between sites, or between legal entities during an acquisition, and the registration did not follow. The support contract lapsed on that one line while the rest renewed.
+
+**Check entitlement before you need it**, as a periodic exercise rather than at 22:00 — the [service-date checker](/tools/f5-service-check-date) exists for exactly that shape of question. Discovering an entitlement gap during an outage converts a hardware failure into a procurement negotiation.
+
+## Advance replacement or return-first changes everything
+
+Two fundamentally different processes that both get called *RMA*:
+
+**Advance replacement** ships the good unit first, against a promise to return the failed one within a window. You are running again quickly and you now owe a return, with a deadline and usually a financial penalty for missing it.
+
+**Return-first** means the failed unit travels, is inspected, and only then does a replacement move. This is entirely reasonable commercially and completely unusable operationally, and **which one you have is a property of the contract you signed, not of how urgent today is.**
+
+Know which you have before the outage. It is the difference between a plan and a discovery.
+
+## *** CAPTURE EVERYTHING BEFORE YOU PULL IT ***
+
+The single most expensive mistake in this whole process, and it is irreversible.
+
+The instinct with a failed unit is to get it out and the spare in — service first, correctly. But the moment it is unracked and powered down, **every diagnostic that would have proved the failure, or explained it, is gone.** And the vendor will ask.
+
+Before it comes out, if the unit is reachable at all: the console output including anything at boot, the alarm and environmental state, the log buffer, the diagnostic or tech-support bundle, the exact firmware version, and photographs of the front and rear including the serial label and any indicator LEDs.
+
+If it is entirely dead, photograph everything anyway and record what the neighbouring equipment saw — link states, port errors, the moment power was lost. **A dead box with no evidence around it produces a case that argues about whether it is dead.**
+
+## Customs is the dominant term outside a few countries
+
+Worth stating plainly because most published advice is written from inside a market where it does not apply.
+
+In Brazil and much of Latin America, import clearance, duties and the paperwork for returning the failed unit under a temporary-export regime routinely dominate the timeline. **A four-hour dispatch commitment is irrelevant when the shipment sits nine days at the border**, and no amount of escalation moves a customs queue.
+
+This is why in-country spares, local depots and stocked field kits exist and why the arithmetic differs by geography: **the correct number of spares is not a function of failure rate alone, it is a function of failure rate and border latency.** Anybody sizing spares from a vendor's global recommendation is sizing for somebody else's customs regime.
+
+## The replacement is not the same unit
+
+It arrives and the work is not finished, because it differs in ways that break things keyed to the old one:
+
+- **A different hardware revision**, sometimes requiring a different minimum firmware
+- **A different firmware level**, usually older, occasionally too new for your configuration
+- **New MAC addresses**, which break anything bound to them — reservations, filters, licences, monitoring identities. This is where a scheme that [encoded identity in something that moves](/practice/naming-and-addressing) presents its bill.
+- **Licences bound to the serial**, which need rehosting through a separate process with its own turnaround, and which is frequently discovered after the unit is racked at 02:00
+
+Then the configuration restore, which is only as good as the last backup, and a **comparison against the [baseline](/practice/baselines-knowing-what-normal-looks-like)** to confirm the replacement is behaving like its predecessor rather than merely powering on.
+
+## The two lists
+
+**Before you pull it — and this list expires the moment you do:**
+
+- console and boot output, alarms, log buffer, diagnostic bundle
+- exact firmware and hardware revision
+- photographs: front, rear, serial label, indicators
+- what the neighbours saw — link state, errors, timing
+- the serial, checked against entitlement
+
+**After it arrives:**
+
+- serials recorded, in and out, with dates
+- firmware brought to the estate's standard **before** it carries traffic
+- licences rehosted, and verified rather than assumed
+- anything keyed to the old MAC address updated
+- configuration restored, then **compared to the baseline**
+- the failed unit returned inside the window, with the paperwork — because an advance replacement that is never returned becomes an invoice
+
+The first list is the one people skip, and it is the only one that cannot be done later.

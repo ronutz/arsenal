@@ -1,0 +1,92 @@
+---
+slug: opening-a-vendor-case
+title: "Opening a vendor case that gets worked properly"
+thesis: "A case's outcome is largely decided by its first message, because that message determines which queue it lands in, what priority it carries, and whether the first engineer can act or must ask. Most of the elapsed time in vendor support is not analysis — it is round-trips for information you could have supplied at the start."
+stance: practised
+part: yield
+order: 19
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["tac-escalation-packet-builder", "packet-capture-plan-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["escalation-as-a-skill", "not-a-bug", "the-write-up"]
+artefact: "The opening packet — and the one line that stops the first-line script"
+updated: "2026-08-09"
+---
+
+## The clock you are actually racing
+
+A vendor case does not usually stall on difficulty. It stalls on **round-trips**, and a round-trip is expensive in a way that has nothing to do with anybody's effort.
+
+The engineer reads your case, needs the version, and asks. You answer six hours later because you were asleep. They read it the following morning, need the configuration, and ask. **Two questions, both reasonable, both instant to answer — and two days gone**, because the vendor is in a different timezone and each exchange costs a working day.
+
+> **Front-loading is not politeness. It is the single largest lever on elapsed time**, and it is entirely under your control before you press submit.
+
+## The first message decides three things
+
+**Which queue.** Routing is done on the product, the symptom keywords and the severity. A case described in your internal vocabulary lands somewhere generic and gets re-routed, which costs a day and resets the reading.
+
+**What priority.** Severity is usually self-declared and then adjusted. Both directions are costly: understate it and you are in a queue measured in days; overstate it and you get attention once.
+
+**Whether the first engineer can act.** This is the one that matters most and is most often lost. An engineer who can reproduce, or at least analyse, does work on day one. An engineer who must ask does nothing on day one except write to you.
+
+## Severity, honestly
+
+Inflated severity is the most common own goal in vendor support.
+
+It works exactly once. The case is picked up quickly, the engineer discovers the business is not actually stopped, and **the correction is not applied to the case — it is applied to you.** Subsequent cases from the same account carry an invisible discount, and the one that genuinely is severity 1 arrives already discounted.
+
+State the impact in facts rather than adjectives: **what is not working, for how many, since when, and what it prevents the business from doing.** *"Card payments failing for approximately 8% of transactions since 02:10, all sites"* routes and prioritises itself. *"URGENT — production down"* on a partial degradation does not, and it is remembered.
+
+## What to include, in the order it gets read
+
+**Exact versions and platform.** Software version including the build, hardware model, and the module or licence set. *"Latest"* is not a version, and a screenshot of a version screen is worth more than a typed recollection.
+
+**The symptom, with timestamps and a timezone.** State the timezone explicitly. Cases routinely lose a day to an ambiguous 03:00.
+
+**What changed.** Including *"nothing that we know of"*, which is a useful answer when it is honest, and honest more often than engineers admit.
+
+**What you have already ruled out, and how.** The single highest-value paragraph in the message.
+
+**Whether it reproduces**, and if so, exactly how. If it does not, say so in the first message rather than letting them assume it does — a support process built around reproduction behaves very differently once it knows reproduction is unavailable.
+
+**The evidence itself.** Configuration extract, relevant logs with the surrounding window, a capture if you have one. Not the whole configuration dump — the section that matters, plus an offer of the rest.
+
+## The line that stops the script
+
+First-line support runs a script, correctly: most cases are resolved by it and the vendor cannot know yours is not one of them.
+
+The way past it is not to complain about it. It is to **pre-empt it, explicitly, in the opening message**:
+
+> *"Already checked: firmware is 15.1.4.1, matching the compatibility matrix; the interface counters show no errors; a reboot of the standby was performed at 03:40 with no change; the same configuration is running at three other sites without the symptom."*
+
+Every line there is a script step, answered before it was asked. **The case now arrives as a technical problem rather than as an unverified report**, and it is read by somebody deciding what to test rather than what to ask.
+
+## Attach with care
+
+Two failure modes on the evidence, in opposite directions.
+
+**Too little** — a screenshot of an error and nothing else — guarantees a round-trip.
+
+**Too much** — a full configuration dump and a gigabyte of logs — is worse than it looks. It buries the relevant window, it takes real time to sanitise or does not get sanitised at all, and **a configuration exported wholesale usually carries secrets**: keys, community strings, credentials, internal addressing. Extract the section, sanitise deliberately, and say what you have removed so nobody reads the redaction as the fault.
+
+## After it is open
+
+**Answer fast, even partially.** A same-day partial answer keeps the case in that engineer's working set; a complete answer two days later starts the reading from scratch with somebody who has since picked up other work.
+
+**Keep your own timeline.** The case notes are the vendor's record of the conversation, not yours of the incident, and the two diverge quickly — which is what [the write-up](/practice/the-write-up) is for.
+
+**Do not silently accept "working as designed".** That answer is frequently correct and rarely complete; [when the vendor says it is not a bug](/practice/not-a-bug) is the whole subject.
+
+## The opening packet
+
+| | |
+|---|---|
+| **Versions** | software with build, hardware, modules, licences |
+| **Impact** | what, how many, since when, in facts — this sets severity |
+| **Symptom** | with timestamps **and timezone** |
+| **Changed** | recently, including *nothing known* |
+| **Ruled out** | with the evidence that ruled it |
+| **Reproduces?** | yes and how, or no and say so |
+| **Evidence** | the relevant extract, sanitised, with the redactions named |
+
+Fifteen minutes to assemble, and it routinely removes two days of elapsed time — which is why the [escalation packet builder](/tools/tac-escalation-packet-builder) on this site exists to structure exactly this.

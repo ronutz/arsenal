@@ -1,0 +1,75 @@
+---
+slug: rca-without-a-scapegoat
+title: "Root cause analysis without a scapegoat"
+thesis: "Blame is not a moral failing in incident review; it is the fastest available explanation. When the mechanism is not yet understood, a person is the only concrete thing in the room — so blame appears by default, and is displaced by making the mechanism concrete rather than by asking people to be kinder."
+stance: practised
+part: after
+order: 3
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder", "tac-escalation-packet-builder"]
+relatedIndustry: []
+relatedPractice: ["root-cause-is-a-choice", "the-write-up", "triage-and-severity"]
+artefact: "The three questions that replace \"who did it\", and the two things blamelessness does not cover"
+updated: "2026-08-09"
+---
+
+## Blame is not a character flaw in the room
+
+Most writing on this subject is exhortation: be blameless, assume good intent, focus on systems not people. All true, all correct, and it rarely survives the second hour of a bad review — because it treats blame as a lapse in manners rather than as a **response to a specific condition.**
+
+The condition is uncertainty. Early in a review the mechanism is abstract, partially understood, and hard to hold in a sentence. **A person is concrete.** They have a name, an action, a timestamp. When the room needs an explanation and the mechanism is not yet available, the person is the only object in the room shaped like an answer.
+
+> **Blame is what fills the gap while the mechanism is still being assembled.** Telling people not to blame does not fill that gap. Filling the gap does.
+
+## The cost is informational, not ethical
+
+The usual argument against blame is that it is unfair. That argument is correct and it loses to schedule pressure. The argument that survives is that **blame destroys the data you need.**
+
+**It terminates the search.** Once a person is the answer, the mechanism stops being investigated — the chain has found a stopping point that feels satisfying, which is exactly the failure [root cause is a choice](/practice/root-cause-is-a-choice) describes. The configuration field that allowed the value, the procedure that did not disambiguate it, the verification step that did not exist: all still there, all now uninvestigated.
+
+**It removes your only witness.** The person who made the change knows things nobody else does: what they saw, what the interface showed, what they expected. In an organisation where that account is used against people, the account arrives late, arrives thin, and arrives edited. **You do not lose their honesty; you lose their detail** — and detail is what a mechanism is built from.
+
+**It teaches everybody watching.** The next person to notice something odd calculates, quite reasonably, what raising it will cost them.
+
+## The question that actually displaces it
+
+Not *"who did it"*, and not the sanitised version *"what went wrong"* — which is just the same question waiting for a name.
+
+> **"What made this action reasonable at the time?"**
+
+Because it always was. Nobody sets out to break production. From inside the moment, with the information then available, the action made sense — and the entire value of the review is in reconstructing the *inside* of that moment, because that is where the mechanism lives.
+
+The answers are always structural. The field accepted it. The procedure said "set the value" and there were two. The staging system had different defaults. The alert that would have caught it had been muted during a migration eight months earlier. **Every one of those is a finding. "He typed the wrong value" is not.**
+
+The test to apply: **would a competent person with the same information, under the same pressure, have done the same thing?** If yes — and it usually is — then the person is not the mechanism, and continuing to look at them is choosing not to find it.
+
+## What blamelessness does not cover
+
+This is the part usually left out, and leaving it out is why the practice gets dismissed as soft.
+
+**It is not consequence-free.** Blamelessness is about the *fault*, not about everything a person might do. Concealing an action, falsifying a record, or bypassing a control deliberately are not incident causes to be understood — they are conduct, and they belong to a different conversation with different rules. Conflating the two discredits the practice and gives the sceptics their strongest example.
+
+**It does not remove accountability, it relocates it.** Somebody remains accountable — for the remedy, for the decision about which link to fix, for whether the mitigation was verified. What is removed is accountability for *having been the last hand on the system*. Management needs somebody responsible for the fix; that is a legitimate need and it is satisfied without a scapegoat.
+
+## Running the room
+
+Three things that do more than any statement of values:
+
+**Establish the mechanism before naming anybody.** Order matters. If the sequence of events is on the wall before the names are, the discussion attaches to the sequence. If the name comes first, everything afterwards is a defence.
+
+**Have the person describe what they saw, not what they did.** *"The screen showed X, so I expected Y"* produces the interface defect. *"I ran the command"* produces nothing anybody did not already know.
+
+**Say out loud what the review is for.** *"We are trying to find what let this happen, not who was closest to it."* It sounds obvious and it is not: the person whose action it was is sitting there assuming the opposite, and everything they say is shaped by that assumption until somebody removes it.
+
+## The artefact
+
+Replace *who did it* with three questions, recorded in the write-up:
+
+1. **What did the person see, and what did they expect?** — the interface and documentation defects live here
+2. **What made the action reasonable at the time?** — the mechanism lives here
+3. **What would have had to be different for this to be impossible, or caught?** — the remedy lives here, and it is a property of the system rather than of anybody's attention
+
+And two lines that keep the practice honest rather than soft:
+
+- **This covers the fault, not conduct.** Concealment and deliberate bypass are a different conversation.
+- **Accountability for the remedy is named.** Blamelessness about the cause is not vagueness about who fixes it.

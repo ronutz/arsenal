@@ -1,0 +1,81 @@
+---
+slug: naming-and-addressing
+title: "Naming, addressing, and the cost of getting them wrong early"
+thesis: "Naming and addressing are decided in an afternoon by whoever is free, and they outlast every other decision in the estate — not because they are technically hard to change, but because everything else quietly comes to depend on them. The cost is paid years later, by somebody else, in a currency nobody budgeted."
+stance: practised
+part: before
+order: 8
+roles: ["second-line", "field", "design"]
+relatedTools: ["cidr", "ipv6", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["reading-a-design-you-did-not-write", "handover-project-to-operation", "change-windows-and-rollback-arithmetic"]
+artefact: "The two questions a scheme must survive, and what a name should never encode"
+updated: "2026-08-09"
+---
+
+## The cheapest decision with the longest half-life
+
+Somebody has to name the devices and pick the ranges. It happens early, under time pressure, usually by whoever is standing up the first site, and it takes an afternoon. Nobody reviews it, because at that moment it is obviously reversible — there are four devices and one subnet, and changing either is trivial.
+
+Six years later there are four hundred devices, the scheme is wrong in a way everybody can describe, and **nobody will touch it.**
+
+That asymmetry is the entire subject. **The decision is cheap to make, expensive to change, and the expense lands on somebody who was not in the room.**
+
+## Why renaming is not a rename
+
+The reason nobody touches it is not sentiment. A name in a modern estate is not a label; it is a **key**, and it has been copied into places nobody has an inventory of:
+
+- monitoring systems, and every threshold and dashboard keyed to it
+- firewall rules and address objects, often in several vendors' syntaxes
+- scripts, some of which are on somebody's laptop
+- certificates issued to the hostname, with their own expiry and reissue cost
+- licences bound to a hostname or a serial-and-name pair
+- documentation, tickets, and six years of incident history that becomes unsearchable
+- **the heads of the people who operate it**, which is the copy you cannot migrate
+
+A rename is a coordinated change across all of those, executed for no functional benefit, with a real chance of an outage. That is why the correct-but-wrong scheme survives every reorganisation that was supposed to fix it.
+
+## Encode what does not change
+
+The single most useful rule, and the one most often broken:
+
+> **A name should encode the things that outlive the name.** Role, site, and position are durable. **Owner, project, vendor and department are not** — and they are precisely what gets encoded, because they are what is salient on the day.
+
+The department gets reorganised. The project gets renamed before it ships. The vendor gets acquired, so every device carrying that vendor's name is now lying, and the replacement hardware inherits a name that describes the previous supplier.
+
+The test to apply before committing: **name three things in this scheme that will still be true in five years.** If the honest answer is "the site and the role", then the site and the role are what belongs in the name, and everything else belongs in a database that is allowed to change.
+
+## Addressing has the same shape and worse arithmetic
+
+Names fail socially; addresses fail arithmetically, and the arithmetic is unforgiving in two specific ways.
+
+**The range that was plenty.** A /24 per site is generous until the site adds a guest network, a voice network, a management network, cameras and a building system. What runs out is rarely host addresses — it is **subnets**, and the scheme that allocated by "how many devices" rather than "how many networks" hits the wall first.
+
+**Summarisation that was never going to work.** Address blocks allocated as sites were commissioned, in the order they were commissioned, cannot be summarised at any aggregation point, because contiguity was never a design input. The cost appears years later as routing tables that cannot be reduced and access lists that cannot be shortened — and the fix is a readdressing project nobody will fund.
+
+The [CIDR](/tools/cidr) and [IPv6](/tools/ipv6) tools on this site do the arithmetic; **the arithmetic is not the hard part.** The hard part is deciding what the blocks are *for* before the first one is handed out.
+
+## Leave room, and not too much
+
+The reflex correction is to reserve enormously. That produces its own failure: a scheme so sparse that nobody can hold it in their head, where every allocation requires consulting a document, and which therefore gets bypassed the first time somebody is in a hurry at three in the morning.
+
+**A scheme that is inconvenient will be violated, and a violated scheme is worse than a modest one**, because now the estate has two schemes and no way to tell which applies.
+
+The workable middle: leave room at the level where growth actually happens — sites and network types — and be tight where it does not. And **write down the growth assumption**, because the next person needs to know whether they are exhausting a deliberate allowance or breaking a design.
+
+## When you inherit one that is wrong
+
+Usually you do, and the right move is almost never to fix it.
+
+**Fix it at boundaries, not in place.** A new site, a new data centre, a new address family: those are the moments a better scheme costs nothing to introduce. Renaming what exists costs an outage and buys tidiness.
+
+**Write down the rule that is actually in force**, including the exceptions, and give the exceptions a reason where one is known. An inherited scheme with a documented ruleset is workable. An inherited scheme where nobody can say what the rule is produces a third scheme within a year, because each new engineer infers a different pattern from the same evidence — the [reading a design you did not write](/practice/reading-a-design-you-did-not-write) problem, applied to a namespace.
+
+## The two questions a scheme must survive
+
+Ask both before committing, and write the answers next to the scheme:
+
+1. **What happens when this doubles?** Not whether it fits — what the *next* allocation looks like when the obvious space is gone. If the answer is "we would start a second scheme", the design is already finished, it just has not been noticed yet.
+2. **What in this name or number will not be true in five years?** Everything that fails is a future lie stored at scale.
+
+And the one thing to never encode: **anything a reorganisation can change.** Departments, cost centres, project codenames and supplier names are the four most common, and all four are guaranteed to move.

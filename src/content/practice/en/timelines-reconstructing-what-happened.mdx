@@ -1,0 +1,74 @@
+---
+slug: timelines-reconstructing-what-happened
+title: "Timelines — reconstructing what happened, and when"
+thesis: "A timeline is not a list of events; it is a claim about order, and order is where causality gets read. Every source that feeds one lies about time in its own way — clocks disagree, logs record the write rather than the event, memory reorders under stress — so a confident sequence is the most dangerous artefact an incident produces."
+stance: practised
+part: after
+order: 4
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["incident-timeline-rca-builder", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["the-write-up", "when-the-instruments-agree", "designing-for-three-in-the-morning"]
+artefact: "Three columns — time, source, confidence — and the rule for what goes in the first one"
+updated: "2026-08-09"
+---
+
+## Order is where the cause is read
+
+Nobody looks at a timeline to learn what happened; the ticket says what happened. They look at it to learn **what happened first**, because that is where cause is inferred.
+
+Which means the timeline's real output is not a record. It is an **ordering claim**, and every conclusion drawn afterwards inherits it. Get the order wrong and the investigation produces a cause that is confidently, internally consistently, wrong — and there is nothing in the artefact to signal it.
+
+## Every source lies about time differently
+
+**Clocks disagree.** Devices whose time synchronisation quietly stopped working months ago are the single most common source of false ordering, and the drift is invisible because each device is internally consistent. This is why [designing for three in the morning](/practice/designing-for-three-in-the-morning) puts a shared clock among the two things worth designing in deliberately: without it, cross-device ordering is arithmetic on incomparable numbers.
+
+**Logs record the write, not the event.** Buffered logging, batched shipping and queued forwarding all mean the timestamp may be when the line was flushed. Under load — which is when incidents happen — those buffers are fullest and the skew is largest, so the distortion is worst exactly when you need it least.
+
+**Monitoring records the sample, not the change.** A metric that goes red at 02:15 on a one-minute interval means the threshold was crossed sometime in the preceding minute. A five-minute interval means somewhere in the preceding five, and the graph will still draw a point at 02:15 as though it were an observation.
+
+**People reorder under stress.** Recollection of a bad night arrives sorted by significance rather than by sequence. Somebody will tell you the alerts started before the change; sometimes that is true, and sometimes it is the memory of a person who first noticed the alerts *because* of the change.
+
+**Timezones and daylight saving.** Mundane, still responsible for a real share of one-hour errors in multi-site reconstructions.
+
+## Observation time and event time are different fields
+
+The single most useful structural fix, and it costs one extra column.
+
+*"02:14 — link down"* conflates two facts: when the link went down, and when something told you. Splitting them turns an unanswerable argument into a measurement — **detection latency becomes visible**, and it is frequently the finding, because a fault that ran for eleven minutes before anybody knew is a monitoring problem sitting inside what looked like a network problem.
+
+Record what you have: the event time where the source can support it, the observation time always, and never silently promote the second into the first.
+
+## The tool on this site refuses to read a clock, on purpose
+
+The [incident timeline builder](/tools/incident-timeline-rca-builder) here has no clock. Ordering is supplied by the person, and spans are expressed in **events between milestones** rather than in wall-clock minutes.
+
+That is a deliberate design decision made for exactly the reason above: **a tool that silently sorted by timestamp would manufacture a confident ordering out of sources that cannot support one**, and would do it invisibly, which is worse than doing it badly. The judgement about order belongs to the person who knows which sources to trust — the same argument as [when the instruments agree](/practice/when-the-instruments-agree), applied to time instead of to measurement.
+
+## Write the uncertainty into the timeline
+
+False precision is the characteristic defect of reconstructed timelines. *"02:14:33"* looks authoritative and may be a log write time from a device with three minutes of drift.
+
+**Ranges are more useful than points when a range is what you have.** *"Between 02:10 and 02:14, from the firewall log; the firewall's clock has not been verified"* is a weaker claim and a stronger artefact, because the next reader can see how much weight it bears.
+
+And mark the anchors — the few events whose time you actually trust, usually because two independent sources agree or because somebody was watching. **A timeline with three trusted anchors and honest ranges between them is worth more than twenty entries of uniform false confidence.**
+
+## What people knew, and when
+
+A second track, on the same timeline, and it changes what the review can conclude: alongside what the system did, record **what the responders knew at each point.**
+
+They did not know at 02:20 what you know now. A decision that looks wrong from the finished timeline was frequently correct given what was visible at the time — and without the knowledge track there is no way to show that, so the review quietly grades people against information they did not have. This is the seam that the epistemic article on hindsight opens; the practical half is simply to keep the second track while writing.
+
+## The artefact
+
+Three columns, and a fourth track underneath:
+
+| column | rule |
+|---|---|
+| **Time** | event time where the source supports it, observation time otherwise, **labelled which** |
+| **Source** | which device, log or person — because trust is per-source, not per-entry |
+| **Confidence** | anchor · corroborated · single-source · recollection |
+
+Plus, in a parallel line: **what the responders knew at that moment.**
+
+Then one sentence at the top naming which clocks were verified and which were not. If none were, say that too — it is the most important caveat in the document and it takes eleven words.

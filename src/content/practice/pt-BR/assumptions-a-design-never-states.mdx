@@ -1,0 +1,77 @@
+---
+slug: assumptions-a-design-never-states
+title: "As premissas que um projeto carrega e nunca declara"
+thesis: "Todo projeto é um conjunto de apostas sobre o ambiente em que vai viver, e o artefato registra apenas as decisões. A aposta fica invisível, o que significa que nada avisa quando ela deixa de pagar — e um projeto sobrevive às próprias premissas por anos, continuando a parecer correto."
+stance: practised
+part: before
+order: 11
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["fault-hypothesis-builder", "health-snapshot-comparator", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["the-assumption-you-cannot-see", "reading-a-design-you-did-not-write", "baselines-knowing-what-normal-looks-like"]
+artefact: "O registro de premissas — o valor, a aposta, e a observação que diz que a aposta parou de pagar"
+updated: "2026-08-09"
+---
+
+## Um projeto é um conjunto de apostas, escritas como decisões
+
+Alguém dimensionou um pool para um pico. Alguém escolheu um timeout que serve a um caminho com certa latência. Alguém colocou duas coisas no mesmo domínio de falha porque essas duas coisas falham por motivos não relacionados. Alguém presumiu que o time que operaria aquilo teria acesso de shell, ou não teria.
+
+Cada uma dessas é uma **aposta sobre o ambiente**. O que fica escrito no artefato é só a **decisão** — o número, a topologia, o parâmetro. A aposta em si não está em lugar nenhum, e a condição sob a qual ela deixa de ser boa, tampouco.
+
+> **O projeto registra o que foi escolhido. Nunca registra o que precisaria mudar para a escolha ficar errada.**
+
+## Por que isso é mais perigoso que um erro
+
+Um erro está errado imediatamente e é encontrado. Uma premissa é **correta quando feita**, e é exatamente isso que a torna durável: funciona, continua funcionando, acumula evidência a favor de si mesma, e vira parte do que todo mundo sabe sobre o sistema.
+
+Aí o ambiente se move — devagar, e por razões desconectadas deste sistema — e nada anuncia a travessia. Não existe alarme para *uma premissa venceu em algum momento dos últimos dezoito meses*.
+
+A essa altura a premissa foi herdada por pessoas que nunca a viram como escolha. Para elas, é simplesmente como o sistema é — o estado descrito em [ler um projeto que não foi você quem fez](/practice/reading-a-design-you-did-not-write) e a matéria-prima de [a suposição que você não enxerga](/practice/the-assumption-you-cannot-see). **Este artigo é aquele, deslocado para o momento em que a crença ainda estava visível e era de graça registrar.**
+
+## As cinco que mais vencem
+
+**A carga e o formato dela.** Não o pico — o *formato*. Um projeto dimensionado para um pico diário largo se comporta de outro jeito quando o mesmo volume diário chega em quatro minutos porque alguém automatizou um cliente.
+
+**Independência.** Dois componentes postos no mesmo domínio de falha porque seus modos de falha não tinham relação. Depois os dois são virtualizados no mesmo hospedeiro, ou os dois passam a depender do mesmo servidor de nomes, e a independência que justificava o projeto acabou em silêncio.
+
+**O que a camada de baixo faz.** Que a rede preserva ordem, que o provedor não redireciona, que o armazenamento é local. Cada uma é verdade até um fornecedor otimizar algo que nunca foi comunicado.
+
+**Quem opera isto.** Um projeto que presume um time com conhecimento profundo da plataforma é outro projeto que um que presume um primeiro nível rotativo. O modelo de pessoal muda muito mais que a arquitetura, e muda sem ninguém consultar o projeto.
+
+**Que a coisa do outro time continua se comportando.** A mais comum de todas, e a menos registrada, porque em tempo de projeto não é uma afirmação técnica — é uma relação.
+
+## Escrever é barato; o truque é o que escrever
+
+*"Presumimos pico de 4.000 sessões"* é quase inútil. Registra o número sem registrar o que fazer com ele, e será lido como especificação, não como aposta.
+
+**Três campos tornam isso útil:**
+
+1. **A premissa**, em palavras simples.
+2. **O que ela justificou** — qual decisão fica errada se isso mudar. É o campo que faz o registro valer a pena, porque converte uma crença abstrata numa consequência específica.
+3. **A observação que diz que deixou de ser verdade** — um número que alguém possa de fato olhar, e onde olhar.
+
+Sem o terceiro campo, um registro de premissas é uma lista que ninguém vai reexaminar. **Com ele, o registro vira um conjunto de fios de disparo**, e a [linha de base](/practice/baselines-knowing-what-normal-looks-like) costuma ser onde a observação é lida.
+
+Dez linhas assim, escritas enquanto o projeto ainda está na cabeça de alguém, são a prática inteira. Não é um projeto de documentação. São os vinte minutos ao fim da revisão de projeto que ninguém agenda.
+
+## A que nunca é escrita
+
+**"Presumimos que isto será operado por gente que entende disso."**
+
+Quase todo projeto presume, nenhum declara, e ela falha em silêncio e por inteiro — por rotatividade, terceirização, reorganização ou simples passagem do tempo. O sistema não quebra; fica impossível de manter enquanto continua rodando, que é um desfecho mais lento e mais caro.
+
+Dizer isso em voz alta em tempo de projeto é desconfortável, e é a frase que mais frequentemente muda uma decisão: um projeto que só funciona em mãos especialistas é uma escolha legítima **depois que alguém disse isso** e a organização concordou em manter aquelas mãos.
+
+## O registro de premissas
+
+| campo | por que existe |
+|---|---|
+| **A premissa** | em uma frase que quem não a escreveu consiga ler |
+| **O que ela justificou** | a decisão que fica errada se aquilo mudar |
+| **A observação** | qual número, visto onde, diz que deixou de ser verdade |
+| **Registrado em** | uma data, para o leitor pesar a idade da aposta |
+
+Revisto nos mesmos momentos em que o parque muda de qualquer forma — uma migração, um projeto de capacidade, uma troca de fornecedor — e não num calendário que ninguém honra.
+
+**Uma premissa sem observação anexada não está registrada, está apenas mencionada.** Essa distinção é o valor inteiro do artefato, e é a razão de isto pertencer à Parte I e não ao relatório depois do incidente, onde os mesmos fatos chegam tarde demais para serem baratos.

@@ -1,0 +1,74 @@
+---
+slug: the-recurrence
+title: "A repetição: reconhecer uma falha antiga com roupa nova"
+thesis: "Repetições quase nunca são reconhecidas, porque a segunda ocorrência se apresenta diferente — outro site, outro sintoma, outro time — e a única coisa em comum é o mecanismo, que é justamente o que o primeiro relato não registrou. Assim a organização resolve a mesma falha várias vezes e vive aquilo como azar."
+stance: practised
+part: after
+order: 10
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["the-fix-you-cannot-prove-worked", "knowledge-capture-that-gets-found", "prevention-that-survives-the-budget"]
+artefact: "A checagem de repetição — cinco perguntas, feitas no começo do incidente e não no fim"
+updated: "2026-08-09"
+---
+
+## A mesma falha não se parece consigo mesma duas vezes
+
+Onze meses atrás um job em lote passou do tempo e esgotou um pool de conexões, e o sintoma foi falha no checkout. Hoje de manhã uma exportação de relatório passou do tempo e esgotou o mesmo pool, e o sintoma é login lento.
+
+Gatilho diferente, sintoma diferente, time diferente reportando, engenheiro diferente investigando. **O mecanismo é idêntico e ninguém vai notar**, porque a única coisa que os dois incidentes têm em comum é a parte que ninguém escreveu.
+
+> **Repetição é invisível na superfície, e a superfície é tudo que o registro guarda.**
+
+## Por que a memória não ajuda
+
+Alguém na sala normalmente diz *"acho que a gente já viu algo parecido"* — e não sabe dizer onde, nem quando, nem qual foi o desfecho. Essa sensação é um sinal real e um índice inútil.
+
+Três coisas derrotam a memória institucional aqui:
+
+**O intervalo sobrevive ao time.** Uma falha com período de dez meses atravessa um rodízio de pessoal, uma reorganização ou uma troca de contrato. A segunda ocorrência é recebida por gente que não estava na primeira.
+
+**O registro está arquivado pela causa.** Que a investigação atual ainda não tem — exatamente o problema de [registro de conhecimento](/practice/knowledge-capture-that-gets-found), e a razão de páginas tituladas pelo sintoma valerem mais que páginas arrumadas.
+
+**O primeiro foi fechado como resolvido.** Se foi dado por corrigido, ninguém está procurando repetição — o registro argumenta ativamente contra a conexão, que é o custo de que [a correção que você não consegue provar](/practice/the-fix-you-cannot-prove-worked) avisa, chegando onze meses depois.
+
+## Os sinais
+
+Nenhum é prova; cada um vale dez segundos:
+
+- **Alguém lembra pela metade.** Trate como instrução de busca, não como opinião, e pesquise pelo sintoma, não pela lembrança da pessoa.
+- **A correção que já foi aplicada antes e não pegou.** Principalmente uma que ninguém sabe explicar — correção inexplicada é forte candidata a nunca ter funcionado.
+- **A mesma classe de componente**, em outro lugar. Dois pools diferentes, ambos esgotando, é um padrão sobre pools, não sobre qualquer um dos dois.
+- **Um intervalo redondinho.** Mensal, trimestral, fim de ano. O que se repete no calendário do negócio se repete por razões do calendário do negócio.
+- **Um relato que termina em *ainda sem explicação*.** Essas seções existem exatamente para este momento, e é por isso que [o relato](/practice/the-write-up) insiste nelas.
+
+## Pergunte no começo, não no fim
+
+A única mudança que torna a repetição localizável: **rode a checagem nos primeiros dez minutos, não na revisão.**
+
+No fim é arqueologia e ninguém tem verba para isso. No começo é uma busca que custa dois minutos e pode colapsar a investigação inteira — porque, se é repetição, alguém já fez o estreitamento, e a lista de becos sem saída do relato anterior poupa as horas que custaram da primeira vez.
+
+E muda o que você olha. Uma investigação que sabe que pode ser repetição pergunta *o que está igual*, que é o mecanismo, em vez de *o que mudou*, que é o gatilho — e o gatilho é diferente toda vez, por definição.
+
+## O que identificar uma repetição muda
+
+**A camada do remédio sobe.** Uma segunda ocorrência é a evidência que torna financiável o remédio estrutural. *"É a quarta ocorrência; aqui estão as datas"* é um argumento de um jeito que quatro chamados soltos não são — e é por isso que [prevenção que sobrevive ao orçamento](/practice/prevention-that-survives-the-budget) trata a proposta estrutural recusada como algo que vale escrever. **A repetição é quando aquela recusa é descontada.**
+
+**A afirmação sobre a correção anterior é revisitada.** Ou ela nunca endereçou o mecanismo, ou endereçou um caminho até ele e existe um segundo. As duas são achados, e as duas são invisíveis sem o vínculo.
+
+**O conhecimento se consolida.** É o momento de colapsar os incidentes numa página viva com as ocorrências datadas, em vez de arquivar um segundo relato que estará igualmente inencontrável daqui a onze meses.
+
+## A checagem de repetição
+
+Cinco perguntas, no começo do incidente:
+
+1. **Pesquise o sintoma** — nas palavras de quem reportou, na ferramenta que as pessoas de fato usam. Não a causa; você não a tem.
+2. **Pesquise a mensagem de erro**, literal.
+3. **Esta classe de componente já falhou assim em outro lugar?** Não este equipamento — este tipo de equipamento.
+4. **O intervalo bate com alguma coisa do calendário do negócio?**
+5. **Existe algum *ainda sem explicação* aberto de um incidente anterior que possa ser isto?**
+
+E uma linha para o relato de qualquer forma, porque resultado negativo também vale registro:
+
+> **"Verificado contra incidentes anteriores por sintoma e mensagem de erro; sem correspondência"** — para que a próxima pessoa, daqui a onze meses, saiba que a busca foi feita e possa pesá-la em vez de repeti-la.

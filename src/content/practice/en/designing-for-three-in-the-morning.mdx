@@ -1,0 +1,71 @@
+---
+slug: designing-for-three-in-the-morning
+title: "Designing a system somebody will interrogate at three in the morning"
+thesis: "Every design decides, without anyone intending to, how knowable the system will be when it misbehaves. Knowability is not a feature added later — it is a residue of choices made for other reasons, by people who will not be in the room when the answer is needed."
+stance: practised
+part: before
+order: 10
+roles: ["second-line", "field", "design"]
+relatedTools: ["packet-capture-plan-builder", "incident-timeline-rca-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["when-the-instruments-agree", "reading-a-design-you-did-not-write", "baselines-knowing-what-normal-looks-like"]
+artefact: "The four questions to ask a design before it is built"
+updated: "2026-08-09"
+---
+
+## Nobody designs a system to be undiagnosable
+
+They design it to be fast, or cheap, or resilient, or shippable by the date. Diagnosability is not on the list, and it is not usually opposed either — it simply never comes up, and so it is decided anyway, by accident, as a side effect of decisions taken for other reasons.
+
+Then at three in the morning somebody who was not present asks a question the system cannot answer, and the design's real property becomes visible for the first time.
+
+> **Observability is not a product you buy afterwards. It is a property you either preserved or spent**, and most of the spending happens before anything is built.
+
+## The choices that quietly destroy knowability
+
+Every one of these is defensible on its own terms. That is exactly why they get made.
+
+**Abstraction that hides which one served the request.** A pool, a cluster, a service mesh. The abstraction is the point — but if nothing in the response identifies the member, then *"it fails about one time in nine"* cannot be turned into *"it fails on this member"*, and the investigation is stuck at the layer above the fault.
+
+**Address translation and proxying that lose the client.** Each hop that rewrites identity is a hop where the question *"which user?"* stops being answerable. Perfectly correct, entirely standard, and the reason a log full of one source address is a log about the proxy rather than about the users.
+
+**Retry and failover that succeed.** A retry that works on the second attempt converts a fault into latency, and latency into a graph nobody looks at. The system is now compensating, and **compensation is indistinguishable from health until the margin runs out** — the same trap as [when the instruments agree](/practice/when-the-instruments-agree), built in at design time rather than discovered in a dashboard.
+
+**Aggregation chosen for storage.** A metric averaged at five minutes is a decision, made early, that no future incident about a ten-second event will be answerable.
+
+**Opaque components.** Anything you cannot see inside — an appliance, a managed service, somebody else's platform — is a place where investigation stops. Sometimes worth it. Rarely priced.
+
+## The two properties worth designing in deliberately
+
+Most of diagnosability is not a long list. It is two things, both cheap before the build and effectively impossible to retrofit.
+
+**A correlation identity that survives the whole path.** One value, attached at the edge, carried through every hop, present in every log line. With it, a transaction can be followed end to end by somebody who has never seen the system. Without it, correlation is done by timestamp and educated guessing, and every hop that rewrites identity makes the guess worse.
+
+**A shared clock.** Cross-device correlation is arithmetic on timestamps, and timestamps from devices that disagree about the time produce confident, wrong orderings — cause and effect swapped in a reconstruction somebody will then build a theory on. It costs nothing at design time and cannot be recovered afterwards, because the record is already written.
+
+Everything else — richer logs, more counters, better dashboards — can be added later, at a price. These two cannot.
+
+## Knowability has a cost, and refusing to pay is allowed
+
+This is not an argument that every system should be maximally instrumented. Correlation identifiers cost bytes and plumbing. Detailed logs cost storage and sometimes privacy exposure. Fine-grained metrics cost cardinality, which costs money.
+
+**The failure is not choosing cheap. The failure is not knowing you chose.**
+
+A design that trades diagnosability for throughput is a legitimate design. A design that trades it away without anybody noticing is the same design with a surprise attached, and the surprise is delivered to a different person on a worse day.
+
+## The tell
+
+**A system that is easy to demonstrate and hard to interrogate.** The demo path is the happy path, and the happy path is exactly where nobody needs visibility.
+
+If the acceptance test can be passed without anybody ever asking *"how would we know which one did that?"*, the question has not been asked at all — and [acceptance](/practice/what-acceptance-testing-is-for) is the last moment it is cheap to answer.
+
+## The four questions
+
+Ask them of a design before it is built, and record the answers with it:
+
+1. **When this misbehaves for one user in fifty, what will somebody be able to see, and from where?** If the answer requires access nobody will have at three in the morning, it is not an answer.
+2. **Can one transaction be followed end to end?** If not, say so deliberately rather than discovering it later.
+3. **Do all the components agree what time it is?** And if the answer is *"they should"*, is that checked anywhere?
+4. **What does this hide when it works?** Retries, failovers and caches earn their place and each one removes a signal. Name what each of them conceals, so nobody later reads the silence as health.
+
+None of these takes long. All of them are unanswerable once the thing is in production, which is the only reason they belong in this part of the corpus rather than a later one.

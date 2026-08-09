@@ -1,0 +1,87 @@
+---
+slug: running-a-war-room
+title: "Running a war room"
+thesis: "A war room's job is not to solve the problem faster — a room full of people almost never does. Its job is to hold the authority the investigation needs, remove blockers, and absorb the organisation's demand for updates. Most war rooms fail by inverting this: they interrupt the investigation in order to keep the room informed."
+stance: practised
+part: yield
+order: 22
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "tac-escalation-packet-builder", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["escalation-as-a-skill", "triage-and-severity", "timelines-reconstructing-what-happened"]
+artefact: "Four roles, a fixed cadence, and the list of who should not be in the room"
+updated: "2026-08-09"
+---
+
+## More people does not mean faster
+
+The instinct when an incident gets serious is to add people. It is a reasonable instinct and it does not work the way anybody expects: **an investigation is not parallelisable past a very small number**, and every additional person adds coordination cost to the two or three who are actually holding the problem.
+
+So the value of a war room is not throughput. It is everything around the investigation that would otherwise consume the investigators:
+
+- **Authority in the room.** Somebody who can approve the failover, authorise the spend, override the change freeze, or accept the risk — without a phone call and a wait.
+- **Blockers removed.** Access nobody has, a vendor case that needs commercial weight behind it, a second team woken up.
+- **The communications load absorbed**, so the person with their hands on the system is not answering the same question from six directions.
+
+## The failure mode: the room becomes an audience
+
+It happens quietly. Somebody senior asks for an update, then another, then a third from a different function — each request individually reasonable, and together they convert the investigator into a narrator.
+
+> **Every status update is an interruption to the thing everybody in the room is waiting for.** A war room that costs the investigation twenty minutes an hour has made the outage longer, while feeling like management.
+
+The tell is easy to spot: **if the person who knows the most is talking more than they are working**, the room has inverted.
+
+## The incident lead should not be the best engineer in the room
+
+This is the structural point, and it is counterintuitive enough that it is usually got wrong.
+
+The instinct is to put the most capable technical person in charge. But leading means deciding, sequencing, communicating and protecting — and every minute spent on those is a minute not spent investigating. **Putting your strongest investigator in the lead role removes your strongest investigator.**
+
+The lead needs enough technical judgement to weigh options and ask the right questions. They do not need to be the person who can find the fault, and they should not be.
+
+## Four roles
+
+Small incidents collapse these into two people. Naming them still helps, because it makes explicit which hat somebody is wearing when they speak.
+
+**Incident lead** — decides, sequences, protects the investigators, calls the escalations and the stand-down. Does not investigate.
+
+**Investigator** — one, or a small number with clearly separated areas. **Not a committee**; two people on the same hypothesis is one person plus an interruption.
+
+**Communications** — owns upward and outward updates, on a cadence, so nobody else is asked. This is a real job during a serious incident and it is the one most often left unassigned.
+
+**Scribe** — records what happened, when, and **what was known at the time**. The most under-used role in the industry and the one that makes [the timeline](/practice/timelines-reconstructing-what-happened) possible afterwards, because reconstructing the knowledge track from memory the next day cannot be done.
+
+## Cadence beats availability
+
+The single change that protects the investigation: **fixed update times, announced.**
+
+*"Next update at half past, and at every half hour after that"* answers the room's real need — which is not the information, but the assurance that information is coming — while giving the investigators a known, uninterrupted block. Continuous availability gives them neither.
+
+Hold the cadence even when there is nothing new. *"No change; still working the second hypothesis; next update at the hour"* is a complete and useful update, and skipping it because there is nothing to say is what restarts the interruptions.
+
+## Who should not be in the room
+
+Observers are not free. Everybody present is somebody the investigators may feel watched by, and seniority raises the pressure to appear busy and certain.
+
+The test is functional: **can this person decide something, unblock something, or communicate something?** If not, they belong on the distribution list rather than in the room. That includes people whose interest is entirely legitimate — the account manager, the service owner, the executive who is genuinely worried. **The cadence exists so they do not have to be present.**
+
+## Stand it down deliberately
+
+War rooms outlive their usefulness. Service is restored, the acute phase is over, and the room continues because nobody wants to be the one to end it — so eight people stay on a call watching two people write a report.
+
+Say it explicitly: *"Service is stable. Standing down the room. The investigation continues with Ana and Paulo; next update tomorrow at ten."* The transition from incident to follow-up is a decision, and leaving it unmade wastes the rest of the day and teaches people that war rooms are open-ended.
+
+## The artefact
+
+| | |
+|---|---|
+| **Lead** | decides and protects; **not the strongest investigator** |
+| **Investigator** | one, or a few with separated areas |
+| **Comms** | owns updates on the cadence, so nobody else is asked |
+| **Scribe** | times, actions, **and what was known then** |
+
+Plus, said aloud at the start:
+
+- **The cadence** — *"updates at :00 and :30"*
+- **The escalation trigger** — a clock time, decided now, per [escalation as a skill](/practice/escalation-as-a-skill)
+- **Who is not needed** — kindly, and by function rather than by name

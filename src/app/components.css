@@ -15436,7 +15436,6 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 
 .site-nav-link.nav-primary {
   color: var(--accent-primary);
-  font-weight: 600;
 }
 
 .site-nav-link.nav-primary:hover {
@@ -15451,7 +15450,6 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    for the same reason the footer hardcodes it. */
 .site-nav-link.nav-training {
   color: var(--redu-brand);
-  font-weight: 600;
 }
 
 .site-nav-link.nav-training:hover {
@@ -15465,18 +15463,24 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    explicitly anyway, so that "unchanged" is a decision in the file rather than
    an absence somebody later reads as an oversight. */
 .site-nav-link.nav-quiet {
-  /* WEIGHT EQUALISED ACROSS ALL SIX ITEMS (PRIME 2026-08-06). The earlier
-     version used weight as a second channel because --accent-primary is red on
-     several of the twenty-three themes, and colour alone cannot separate the
-     groups there. PRIME's ruling is that boldness should be uniform and colour
-     should be the only difference - so all six now sit at 600 and the tiering
-     is carried by hue.
+  /* WEIGHT EQUALISED ACROSS ALL SIX ITEMS (PRIME 2026-08-06), THEN DROPPED TO
+     NORMAL (PRIME 2026-08-09: "how about we make the nav item NOT bold?").
 
-     THE CONSEQUENCE, STATED: on matrix-red, swagger and web-reddit the primary
-     group and Training will read as one group rather than two. That is the
-     accepted trade for a bar that looks deliberate on the other twenty. */
+     The 2026-08-06 ruling stands and is the reason this change touches all six
+     rather than one: weight is not a tiering channel, colour is. What changed
+     is the LEVEL, not the principle - the six moved together from 600 to the
+     inherited normal weight, so the bar is still uniform and the tiering is
+     still carried entirely by hue.
+
+     No font-weight is declared anywhere in the nav now. That is deliberate:
+     re-declaring 400 would invite a later reader to "fix" it back to 600 as if
+     the absence were an oversight, which is what the earlier version of this
+     comment was written to prevent.
+
+     THE CONSEQUENCE, UNCHANGED: on matrix-red, swagger and web-reddit the
+     primary group and Training still read as one group rather than two. That
+     was the accepted trade in August and it is unaffected by the weight. */
   color: var(--text-secondary);
-  font-weight: 600;
 }
 
 /* ---------------------------------------------------------------------------

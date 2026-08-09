@@ -1,0 +1,79 @@
+---
+slug: knowledge-capture-that-gets-found
+title: "Knowledge capture that somebody will actually find"
+thesis: "Knowledge capture fails at retrieval, not at capture. Organisations hold enormous amounts of written incident knowledge, indexed by cause and by who wrote it — while the person who needs it arrives holding only a symptom, which is the one thing nobody titled anything with."
+stance: practised
+part: after
+order: 9
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "tac-escalation-packet-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["the-write-up", "documenting-for-the-inheritor", "the-runbook-nobody-can-follow"]
+artefact: "The findability test — and the one-page-per-fault rule"
+updated: "2026-08-09"
+---
+
+## The wiki is full and nobody finds anything
+
+Every organisation of any age has this. Years of write-ups, carefully produced, properly filed, and functionally invisible. People solve the same problem twice and discover the earlier write-up afterwards, by accident, while looking for something else.
+
+The usual conclusion is that people should search better, or that the wiki needs reorganising. Neither is the problem.
+
+> **The knowledge was written by somebody who knew the cause. It is being searched for by somebody who has only the symptom** — and the symptom is the one thing the document is not titled with, indexed by, or written in the language of.
+
+## What the searcher actually has
+
+At the moment of need, at three in the morning, the person searching holds:
+
+- an **error string**, exactly as it appeared, which they will paste
+- a **symptom in their own words** — *"payments intermittently failing"*
+- possibly a **vendor or product name**
+- a **time pattern** — *"only in the mornings"*, *"since the weekend"*
+
+And they do **not** have: the cause, because that is what they are looking for; your internal project codename; the ticket number; the name of the engineer who wrote it up; or the vocabulary the write-up used once the cause was known.
+
+Almost every filing convention in use indexes on the second list.
+
+## Three changes that do most of the work
+
+**Title with the symptom, not the cause.** *"BIG-IP pool member flap — RCA 4417"* is findable by somebody who already knows the answer. *"Intermittent 5xx on the payment path, clears by itself within minutes"* is findable by somebody who does not. Put the cause in the first line of the body, where it belongs.
+
+**Include the error string verbatim.** Exactly as the system emits it, punctuation and all, even if it is ugly and even if you have paraphrased it elsewhere in the document. **People paste error strings into search boxes**, and a paraphrase does not match.
+
+**Write the symptom in the reporter's language as well as yours.** The user said *"the site is slow"*; you determined it was TLS handshake latency on one pool member. **Both belong in the document**, because the next occurrence will also arrive as *"the site is slow"*.
+
+## One page per fault, not one page per occurrence
+
+The most common structural failure after titling: five separate write-ups of the same recurring problem, written months apart by different people, none of them linked, each rediscovering the same mechanism.
+
+The fix is a rule rather than a tool: **a recurring fault gets one living page, updated on each occurrence**, with the dates listed. The individual incident records still exist for the audit trail; the knowledge lives in one place.
+
+That page also becomes the evidence base for [prevention that survives the budget](/practice/prevention-that-survives-the-budget) — *"this is the fourth occurrence, here are the dates"* is an argument, where four unlinked tickets are a coincidence.
+
+## Where it lives beats how good it is
+
+A superb write-up in a system people do not search during incidents is worth less than a mediocre one beside the runbooks.
+
+The test is behavioural, not architectural: **where does somebody actually look at three in the morning?** Whatever that is — the runbook folder, the chat search, the ticket system — is where knowledge belongs, even if a better platform exists and is unused. Migrating people's habits is a project; putting the document where the habit already goes is an afternoon.
+
+## Knowledge decays at different rates
+
+Worth separating when writing, because it decides what is worth maintaining:
+
+- **Product-specific detail** — commands, screen names, version-bound behaviour. Decays fast, and a stale command is worse than none because it fails in a way that costs time.
+- **The mechanism** — why this class of fault happens. Decays slowly and survives platform changes.
+- **The diagnostic path** — how you narrowed it. Slower still, and it is what makes an unfamiliar reader competent.
+
+**Date the fast-decaying parts explicitly** and let the rest carry the document. A page whose commands are marked *as of version 15.1* ages honestly; one that presents them as timeless ages into a trap.
+
+## The findability test
+
+Before filing, ask somebody who was not involved to find it — given only the symptom, in the words a user would use, using whatever they normally search:
+
+1. **Would they find it?** If not, the title is written from the answer.
+2. **Would they recognise it as theirs** in the first two lines? If the opening describes the cause, they cannot tell whether it matches their situation.
+3. **Does it contain the exact error string?**
+4. **Is there one page for this fault, or several?**
+5. **Is the version-bound material dated?**
+
+Five questions, two minutes, and they are the difference between knowledge captured and knowledge stored.

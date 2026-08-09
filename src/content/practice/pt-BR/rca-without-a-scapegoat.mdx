@@ -1,0 +1,75 @@
+---
+slug: rca-without-a-scapegoat
+title: "Análise de causa sem bode expiatório"
+thesis: "Culpa não é um defeito moral na sala de revisão; é a explicação mais rápida disponível. Enquanto o mecanismo não é compreendido, uma pessoa é a única coisa concreta na sala — então a culpa aparece por padrão, e é deslocada tornando o mecanismo concreto, não pedindo que as pessoas sejam mais gentis."
+stance: practised
+part: after
+order: 3
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder", "tac-escalation-packet-builder"]
+relatedIndustry: []
+relatedPractice: ["root-cause-is-a-choice", "the-write-up", "triage-and-severity"]
+artefact: "As três perguntas que substituem \"quem fez\", e as duas coisas que a ausência de culpa não cobre"
+updated: "2026-08-09"
+---
+
+## Culpa não é falha de caráter da sala
+
+Quase tudo que se escreve sobre isso é exortação: não culpe, presuma boa intenção, foque em sistemas e não em pessoas. Tudo verdade, tudo correto, e raramente sobrevive à segunda hora de uma revisão ruim — porque trata a culpa como lapso de boas maneiras, e não como **resposta a uma condição específica.**
+
+A condição é a incerteza. No começo de uma revisão o mecanismo é abstrato, parcialmente compreendido, difícil de caber numa frase. **Uma pessoa é concreta.** Tem nome, ação e horário. Quando a sala precisa de explicação e o mecanismo ainda não está disponível, a pessoa é o único objeto ali com formato de resposta.
+
+> **Culpa é o que preenche a lacuna enquanto o mecanismo ainda está sendo montado.** Pedir que não se culpe não preenche a lacuna. Preencher a lacuna, sim.
+
+## O custo é informacional, não ético
+
+O argumento habitual contra a culpa é que ela é injusta. Esse argumento é correto e perde para a pressão de cronograma. O argumento que sobrevive é que **culpa destrói o dado de que você precisa.**
+
+**Ela encerra a busca.** Assim que uma pessoa vira a resposta, o mecanismo deixa de ser investigado — a cadeia encontrou um ponto de parada que soa satisfatório, exatamente a falha descrita em [causa raiz é uma escolha](/practice/root-cause-is-a-choice). O campo de configuração que aceitou o valor, o procedimento que não desambiguava, a verificação que não existia: tudo continua lá, tudo agora sem investigação.
+
+**Ela elimina a sua única testemunha.** Quem fez a mudança sabe coisas que ninguém mais sabe: o que viu, o que a interface mostrou, o que esperava. Numa organização em que esse relato é usado contra as pessoas, o relato chega tarde, chega magro e chega editado. **Você não perde a honestidade dela; perde o detalhe** — e é de detalhe que um mecanismo é feito.
+
+**Ela ensina todo mundo que está assistindo.** A próxima pessoa a notar algo estranho calcula, com toda razão, quanto vai lhe custar levantar aquilo.
+
+## A pergunta que de fato desloca a culpa
+
+Não *"quem fez"*, e nem a versão higienizada *"o que deu errado"* — que é a mesma pergunta esperando um nome.
+
+> **"O que tornava essa ação razoável naquele momento?"**
+
+Porque ela era. Ninguém sai de casa para derrubar produção. De dentro do momento, com a informação então disponível, a ação fazia sentido — e o valor inteiro da revisão está em reconstruir o *dentro* daquele momento, porque é ali que mora o mecanismo.
+
+As respostas são sempre estruturais. O campo aceitou. O procedimento dizia "preencha o valor" e havia dois. O ambiente de homologação tinha padrões diferentes. O alerta que teria pego estava silenciado desde uma migração oito meses antes. **Cada uma dessas é um achado. "Ele digitou o valor errado" não é.**
+
+O teste a aplicar: **uma pessoa competente, com a mesma informação e sob a mesma pressão, teria feito a mesma coisa?** Se sim — e normalmente é sim — a pessoa não é o mecanismo, e continuar olhando para ela é escolher não encontrá-lo.
+
+## O que a ausência de culpa não cobre
+
+Esta é a parte normalmente omitida, e é por omiti-la que a prática acaba descartada como frouxa.
+
+**Não é ausência de consequência.** A ausência de culpa vale para a *falha*, não para tudo que uma pessoa possa fazer. Ocultar uma ação, falsificar um registro ou burlar um controle deliberadamente não são causas de incidente a compreender — são conduta, e pertencem a outra conversa, com outras regras. Misturar as duas desacredita a prática e dá aos céticos o melhor exemplo deles.
+
+**Não remove responsabilidade, realoca.** Alguém continua responsável — pelo remédio, pela decisão de qual elo corrigir, por verificar se a mitigação funcionou. O que se remove é a responsabilidade por *ter sido a última mão no sistema*. A gestão precisa de alguém responsável pela correção; é uma necessidade legítima e se atende sem bode expiatório.
+
+## Conduzindo a sala
+
+Três coisas que valem mais que qualquer declaração de valores:
+
+**Estabeleça o mecanismo antes de nomear alguém.** A ordem importa. Se a sequência de eventos está na parede antes dos nomes, a discussão gruda na sequência. Se o nome vem primeiro, tudo depois é defesa.
+
+**Peça à pessoa que descreva o que viu, não o que fez.** *"A tela mostrava X, então eu esperava Y"* produz o defeito de interface. *"Eu rodei o comando"* não produz nada que já não se soubesse.
+
+**Diga em voz alta para que serve a revisão.** *"Estamos atrás do que permitiu isso acontecer, não de quem estava mais perto."* Parece óbvio e não é: a pessoa cuja ação foi aquela está sentada ali presumindo o contrário, e tudo que ela disser será moldado por essa presunção até alguém removê-la.
+
+## O artefato
+
+Substitua *quem fez* por três perguntas, registradas no relato:
+
+1. **O que a pessoa viu, e o que ela esperava?** — os defeitos de interface e de documentação moram aqui
+2. **O que tornava a ação razoável naquele momento?** — o mecanismo mora aqui
+3. **O que precisaria ser diferente para isso ser impossível, ou ser pego?** — o remédio mora aqui, e é propriedade do sistema, não da atenção de ninguém
+
+E duas linhas que mantêm a prática honesta em vez de frouxa:
+
+- **Isto cobre a falha, não a conduta.** Ocultação e burla deliberada são outra conversa.
+- **A responsabilidade pelo remédio tem nome.** Não culpar pela causa não é ser vago sobre quem corrige.

@@ -1,0 +1,77 @@
+---
+slug: assumptions-a-design-never-states
+title: "The assumptions a design encodes and never states"
+thesis: "Every design is a set of bets about the environment it will live in, and the artefact records only the decisions. The bet is invisible, which means nothing signals when it stops paying — and a design outlives its assumptions by years while continuing to look correct."
+stance: practised
+part: before
+order: 11
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["fault-hypothesis-builder", "health-snapshot-comparator", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["the-assumption-you-cannot-see", "reading-a-design-you-did-not-write", "baselines-knowing-what-normal-looks-like"]
+artefact: "The assumption register — the value, the bet, and the observable that says the bet has stopped paying"
+updated: "2026-08-09"
+---
+
+## A design is a set of bets, written down as decisions
+
+Somebody sized a pool for a peak. Somebody chose a timeout that suits a path with a certain latency. Somebody put two things in one failure domain because those two things fail for unrelated reasons. Somebody assumed the team operating this would have shell access, or would not.
+
+Each of those is a **bet about the environment**. What gets written into the artefact is only the **decision** — the number, the topology, the setting. The bet itself is nowhere, and neither is the condition under which it stops being a good one.
+
+> **The design records what was chosen. It never records what would have to change for the choice to become wrong.**
+
+## Why this is more dangerous than a mistake
+
+A mistake is wrong immediately and gets found. An assumption is **correct when made**, and that is precisely what makes it durable: it works, it keeps working, it accumulates evidence in its own favour, and it becomes part of what everybody knows about the system.
+
+Then the environment moves — gradually, and for reasons unconnected to this system — and nothing announces the crossing. There is no alarm for *an assumption expired at some point in the last eighteen months*.
+
+By then the assumption has been inherited by people who never saw it as a choice. To them it is simply how the system is, which is the state described in [reading a design you did not write](/practice/reading-a-design-you-did-not-write) and the raw material for [the assumption you cannot see](/practice/the-assumption-you-cannot-see) — **this article is that one, moved back to the moment when the belief was still visible and free to record.**
+
+## The five that expire most often
+
+**Load and its shape.** Not the peak — the *shape*. A design sized for a broad daily peak behaves differently when the same daily volume arrives in a four-minute burst because somebody automated a client.
+
+**Independence.** Two components placed in one failure domain because their failure modes were unrelated. Then both are virtualised onto the same host, or both start depending on the same name server, and the independence that justified the design has quietly ended.
+
+**What the layer below does.** That the network preserves order, that the provider does not reroute, that the storage is local. Each is true until a supplier optimises something they never told you about.
+
+**Who operates this.** A design that assumes a team with deep platform knowledge is a different design from one that assumes a rotating first line. The staffing model changes far more often than the architecture, and it changes without anybody consulting the design.
+
+**That the other team's thing keeps behaving.** The most common of all, and the least recorded, because at design time it is not a technical statement — it is a relationship.
+
+## Writing them down is cheap; the trick is what to write
+
+*"We assume peak load of 4,000 sessions"* is nearly useless. It records the number without recording what to do with it, and it will be read as a specification rather than a bet.
+
+**Three fields make it useful:**
+
+1. **The assumption**, in plain words.
+2. **What it justified** — which decision would be wrong if this changed. This is the field that makes the register worth keeping, because it converts an abstract belief into a specific consequence.
+3. **The observable that says it has stopped being true** — a number somebody could actually look at, and where to look.
+
+Without the third field, an assumption register is a list of things nobody will ever re-examine. **With it, the register becomes a set of tripwires**, and the [baseline](/practice/baselines-knowing-what-normal-looks-like) is usually where the observable is read.
+
+Ten lines like that, written while the design is still in somebody's head, is the whole practice. It is not a document project. It is the twenty minutes at the end of the design review that nobody schedules.
+
+## The one that is never written down
+
+**"We assume this will be operated by people who understand it."**
+
+Almost every design assumes it, none states it, and it fails silently and completely — through turnover, outsourcing, reorganisation or simple time. The system does not break; it becomes unmaintainable while continuing to run, which is a slower and more expensive outcome.
+
+Saying it out loud at design time is uncomfortable, and it is the sentence that most often changes a decision: a design that only works in expert hands is a legitimate choice **once somebody has said so** and the organisation has agreed to keep those hands.
+
+## The assumption register
+
+| field | why it is there |
+|---|---|
+| **The assumption** | plainly, in a sentence a non-author can read |
+| **What it justified** | the decision that becomes wrong if this changes |
+| **The observable** | what number, seen where, says it has stopped being true |
+| **Recorded** | a date, so a reader can weigh how old the bet is |
+
+Reviewed at the same moments the estate changes anyway — a migration, a capacity project, a supplier change — rather than on a calendar nobody honours.
+
+**An assumption with no observable attached is not recorded, it is merely mentioned.** That distinction is the whole value of the artefact, and it is the reason this belongs in Part I rather than in the write-up after an incident, where the same facts arrive too late to be cheap.

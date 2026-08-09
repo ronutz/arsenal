@@ -1,0 +1,79 @@
+---
+slug: escalation-as-a-skill
+title: "Escalation as a skill, not an admission"
+thesis: "Engineers escalate too late because escalation is experienced as a confession of inadequacy rather than as a routing decision. The cost of escalating late is paid by the customer; the cost of escalating early is paid by the engineer's self-image — which is why the incentive points the wrong way, and why the trigger has to be decided before the incident rather than during it."
+stance: practised
+part: yield
+order: 18
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["tac-escalation-packet-builder", "fault-hypothesis-builder", "incident-timeline-rca-builder"]
+relatedIndustry: []
+relatedPractice: ["not-your-problem", "change-windows-and-rollback-arithmetic", "two-problems"]
+artefact: "The escalation trigger, written before the work starts"
+updated: "2026-08-09"
+---
+
+## The word does the damage
+
+*Escalate* carries an apology in it. It sounds like handing the problem to somebody better, which makes it a statement about the engineer rather than about the problem — and so it gets delayed, quietly, by competent people who are close and who would rather be close for another twenty minutes.
+
+Rename it and the decision gets easier. **Escalation is routing.** It moves a problem to where the required information or the required authority already is. Neither of those is a property of your ability.
+
+> **"I am stuck" is not an escalation criterion, because it describes you. The criteria describe the problem.**
+
+## The two conditions that actually justify it
+
+Almost every legitimate escalation is one of these, and neither is about competence:
+
+**The answer requires information you cannot obtain.** Source code, an internal defect database, the behaviour of a component nobody outside the vendor can see, the configuration of a system another team owns. No amount of further effort produces it. **Continuing is not persistence; it is guessing with better tooling.**
+
+**The decision requires authority you do not have.** Taking the service down, spending money, accepting a risk on behalf of the business, overriding a change freeze. You may know exactly what should happen and still not be the person who can authorise it.
+
+If neither applies, more time is usually the right answer. If either applies, **more time is the wrong answer and has been for a while.**
+
+## Why the delay happens anyway
+
+Worth naming, because these are structural rather than personal and the fixes are structural too.
+
+**Escalation has been punished before.** In many organisations the person who escalates is asked why they could not handle it. One such experience changes behaviour for years, and it is a management defect that presents as an individual one.
+
+**Nobody knows who.** The escalation path is undocumented, or documented for a reorganisation that has since happened. The engineer spends forty minutes finding the right person — which is itself a reason to delay.
+
+**The sunk cost is loud.** Three hours in, escalating feels like discarding three hours. It is not: the three hours produced the dead-end list, which is the most valuable thing to hand over.
+
+**Nobody set a time.** Without a trigger decided in advance, the decision is made continuously by a tired person who is always about to have the answer — the same mechanism that makes [change windows](/practice/change-windows-and-rollback-arithmetic) overrun, and it fails the same way.
+
+## Decide the trigger before you start
+
+The one practice that reliably changes the outcome, and it costs a sentence:
+
+> **"If I do not have a working hypothesis by 03:00, I open a vendor case."**
+
+A clock time, decided while calm, ideally written where somebody else can see it. It survives fatigue, and it converts the decision from a judgement about your own adequacy into a scheduled checkpoint.
+
+**Escalating on a trigger you set is not defeat; it is the plan working.** That framing matters more than it sounds, because it is the framing that makes people willing to set the trigger at all.
+
+## Escalation is not handover
+
+The common failure on the other side: escalating and stepping away.
+
+The person receiving it needs the path, the dead ends, and the observations — and they need them from somebody who is still engaged, not from a ticket. **You stay on it.** What changes is that you are no longer alone, and that somebody with different access or different authority is now working alongside you.
+
+This is also the difference between escalation and [knowing when it is not your problem](/practice/not-your-problem). One is bringing in reach you lack. The other is establishing that the fault belongs to a different system entirely. **They feel similar under pressure and lead to different actions**, and confusing them wastes the escalation.
+
+## What management owns here
+
+An organisation where escalation is safe escalates earlier and resolves faster, and that is not an individual property.
+
+Two things make it safe. **Escalation targets are published and current** — a name, a channel, and the hours, kept up to date. And **the first question asked afterwards is what made it hard, not why it was escalated.** The second question, asked once, produces years of delay across everybody who heard it.
+
+## The artefact
+
+Written at the start, in the ticket, before the work:
+
+- **Trigger** — a clock time, or a condition as concrete as one
+- **Escalating to whom** — named, with the channel
+- **What I will hand over** — the path so far, the dead ends, the observations, the config and logs already gathered
+- **What I am asking for** — information, authority, or a second pair of eyes; **naming which one changes who should receive it**
+
+Four lines, written while you still think you will not need them. That is precisely when they are cheap to write and when the judgement in them is worth trusting.

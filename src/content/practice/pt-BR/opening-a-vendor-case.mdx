@@ -1,0 +1,92 @@
+---
+slug: opening-a-vendor-case
+title: "Abrir um chamado com o fabricante que seja de fato trabalhado"
+thesis: "O desfecho de um chamado é decidido em grande parte pela primeira mensagem, porque é ela que define em qual fila aquilo cai, com que prioridade, e se o primeiro engenheiro consegue agir ou precisa perguntar. A maior parte do tempo decorrido no suporte do fabricante não é análise — são idas e vindas por informação que você poderia ter fornecido no começo."
+stance: practised
+part: yield
+order: 19
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["tac-escalation-packet-builder", "packet-capture-plan-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["escalation-as-a-skill", "not-a-bug", "the-write-up"]
+artefact: "O pacote de abertura — e a linha que interrompe o roteiro do primeiro nível"
+updated: "2026-08-09"
+---
+
+## O relógio contra o qual você está de fato correndo
+
+Um chamado com o fabricante raramente empaca por dificuldade. Empaca por **idas e vindas**, e uma ida e volta é cara de um jeito que não tem nada a ver com o esforço de ninguém.
+
+O engenheiro lê o seu chamado, precisa da versão, e pergunta. Você responde seis horas depois porque estava dormindo. Ele lê na manhã seguinte, precisa da configuração, e pergunta. **Duas perguntas, ambas razoáveis, ambas instantâneas de responder — e dois dias se foram**, porque o fabricante está em outro fuso e cada troca custa um dia útil.
+
+> **Adiantar informação não é gentileza. É a maior alavanca isolada sobre o tempo decorrido**, e está inteiramente sob o seu controle antes de apertar enviar.
+
+## A primeira mensagem decide três coisas
+
+**Qual fila.** O roteamento é feito por produto, por palavras-chave do sintoma e por severidade. Um chamado descrito no seu vocabulário interno cai em algum lugar genérico e é reroteado, o que custa um dia e reinicia a leitura.
+
+**Qual prioridade.** A severidade normalmente é autodeclarada e depois ajustada. As duas direções custam: subdeclare e você fica numa fila medida em dias; superdeclare e você ganha atenção uma vez.
+
+**Se o primeiro engenheiro consegue agir.** É a que mais importa e a que mais se perde. Um engenheiro que consegue reproduzir, ou ao menos analisar, trabalha no primeiro dia. Um engenheiro que precisa perguntar não faz nada no primeiro dia além de escrever para você.
+
+## Severidade, com honestidade
+
+Severidade inflada é o gol contra mais comum no suporte de fabricante.
+
+Funciona exatamente uma vez. O chamado é pego rápido, o engenheiro descobre que o negócio não está parado, e **a correção não é aplicada ao chamado — é aplicada a você.** Os chamados seguintes daquela conta carregam um desconto invisível, e o que de fato for severidade 1 chega já descontado.
+
+Declare o impacto em fatos, não em adjetivos: **o que não funciona, para quantos, desde quando, e o que isso impede o negócio de fazer.** *"Pagamentos com cartão falhando em cerca de 8% das transações desde 02h10, em todos os sites"* se roteia e se prioriza sozinho. *"URGENTE — produção parada"* numa degradação parcial não, e fica na memória.
+
+## O que incluir, na ordem em que é lido
+
+**Versões e plataforma exatas.** Versão de software com o build, modelo de hardware, e o conjunto de módulos ou licenças. *"A mais recente"* não é versão, e uma captura de tela da tela de versão vale mais que uma lembrança digitada.
+
+**O sintoma, com horários e fuso.** Diga o fuso explicitamente. Chamados perdem um dia rotineiramente por um 03h00 ambíguo.
+
+**O que mudou.** Inclusive *"nada que a gente saiba"*, que é uma resposta útil quando é honesta, e é honesta com mais frequência do que os engenheiros admitem.
+
+**O que você já descartou, e como.** O parágrafo de maior valor da mensagem.
+
+**Se reproduz**, e em caso positivo exatamente como. Se não reproduz, diga na primeira mensagem em vez de deixar que presumam que sim — um processo de suporte construído em torno de reprodução se comporta de forma bem diferente quando sabe que reprodução não está disponível.
+
+**A evidência em si.** Trecho de configuração, logs relevantes com a janela ao redor, uma captura se você tiver. Não o dump inteiro da configuração — a seção que importa, mais a oferta do resto.
+
+## A linha que interrompe o roteiro
+
+O primeiro nível segue um roteiro, e com razão: a maioria dos chamados é resolvida por ele, e o fabricante não tem como saber que o seu não é um deles.
+
+O jeito de passar não é reclamar do roteiro. É **antecipá-lo, explicitamente, na mensagem de abertura**:
+
+> *"Já verificado: firmware 15.1.4.1, compatível com a matriz; contadores de interface sem erros; reinício do equipamento em espera às 03h40 sem mudança; a mesma configuração roda em outros três sites sem o sintoma."*
+
+Cada linha ali é um passo do roteiro, respondido antes de ser perguntado. **O chamado agora chega como problema técnico e não como relato não verificado**, e é lido por alguém decidindo o que testar, não o que perguntar.
+
+## Anexe com cuidado
+
+Dois modos de falha na evidência, em direções opostas.
+
+**Pouco demais** — uma captura de tela do erro e nada mais — garante uma ida e volta.
+
+**Demais** — o dump completo da configuração e um gigabyte de logs — é pior do que parece. Enterra a janela relevante, dá trabalho real para higienizar ou simplesmente não é higienizado, e **uma configuração exportada por inteiro normalmente carrega segredos**: chaves, comunidades SNMP, credenciais, endereçamento interno. Extraia a seção, higienize de propósito, e diga o que removeu, para ninguém ler a tarja como sendo a falha.
+
+## Depois de aberto
+
+**Responda rápido, mesmo que parcialmente.** Uma resposta parcial no mesmo dia mantém o chamado no conjunto de trabalho daquele engenheiro; uma resposta completa dois dias depois recomeça a leitura, com outra pessoa que já pegou outros casos.
+
+**Mantenha a sua própria linha do tempo.** As notas do chamado são o registro da conversa pelo fabricante, não o seu registro do incidente, e os dois divergem rápido — que é para isso que serve [o relato](/practice/the-write-up).
+
+**Não aceite em silêncio um "funciona como projetado".** Essa resposta é com frequência correta e raramente completa; [quando o fabricante diz que não é bug](/practice/not-a-bug) é o assunto inteiro.
+
+## O pacote de abertura
+
+| | |
+|---|---|
+| **Versões** | software com build, hardware, módulos, licenças |
+| **Impacto** | o quê, quantos, desde quando, em fatos — é isto que define a severidade |
+| **Sintoma** | com horários **e fuso** |
+| **Mudou** | recentemente, inclusive *nada conhecido* |
+| **Descartado** | com a evidência que descartou |
+| **Reproduz?** | sim e como, ou não e diga |
+| **Evidência** | o trecho relevante, higienizado, com as tarjas nomeadas |
+
+Quinze minutos para montar, e tira rotineiramente dois dias de tempo decorrido — que é a razão de o [construtor de pacote de escalação](/tools/tac-escalation-packet-builder) deste site existir para estruturar exatamente isso.

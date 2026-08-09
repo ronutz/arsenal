@@ -1,0 +1,74 @@
+---
+slug: root-cause-is-a-choice
+title: "Root cause is a choice, not a discovery"
+thesis: "Causes do not terminate. Every one has a cause behind it, so the point where an investigation stops is decided — by budget, by fatigue, by what the organisation is willing to hear — and the phrase \"root cause\" conceals that a decision was made at all."
+stance: practised
+part: after
+order: 2
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["the-write-up", "two-problems", "the-assumption-you-cannot-see"]
+artefact: "The chain, written out — and the sentence that says where you stopped and why"
+updated: "2026-08-09"
+---
+
+## The chain does not have a bottom
+
+An outage. Somebody asks for the root cause, and gets one: a configuration value was wrong.
+
+But the value was wrong **because** the procedure was ambiguous about which of two fields to set. The procedure was ambiguous **because** it was written by the person who built the system and never read cold by anybody else. It was never read cold **because** the project closed before handover. It closed early **because** the contract ended on a date chosen eighteen months before anybody knew what the work involved.
+
+Every one of those is true. Every one is a cause. **Nothing in the chain announces itself as the bottom**, and the search does not terminate on its own — it terminates when somebody stops asking.
+
+> **"Root cause" is the name we give to the link where we stopped.** The phrase makes a decision sound like a finding.
+
+## Where organisations stop, and what that reveals
+
+The stopping point is rarely chosen on technical grounds. Three patterns account for most of it.
+
+**Where it becomes somebody's fault.** The chain runs comfortably through equipment and stops at the link where a named person or team enters. That is not cowardice; it is what the room can hold. But a chain that stops there produces a remedy aimed at a person, and people are the least durable thing in the system — they leave, and the cause stays.
+
+**Where it becomes expensive.** *The contract ended early* is a real cause with a remedy nobody in the room can authorise, so the chain quietly stops one link short of it and lands on something that fits a maintenance window.
+
+**"Human error."** The most common terminus in the industry and almost never a finding. It is a **description of the last event in the chain**, offered as though it were an explanation. Somebody typed the wrong value — into a field that permitted it, from a procedure that did not disambiguate it, with no verification step that would have caught it. Three actionable links, discarded by one phrase.
+
+## Stopping is legitimate. Concealing it is not
+
+None of this is an argument for chasing every chain to the organisational structure. **Some stops are correct**: the deeper link is real and outside your control, or the remedy costs more than the risk, or the recurrence interval is longer than the life of the system.
+
+The failure is not stopping. **The failure is presenting the stop as the end of the chain**, because then nobody can weigh the decision, and the links beyond it become invisible rather than declined.
+
+Write it down instead:
+
+> *"We stopped at the ambiguous procedure. The chain continues — the procedure was never cold-read because the project closed before handover — and we are not proposing to change the handover model, because that is a contracting decision rather than an engineering one."*
+
+That sentence costs nothing, and it converts an invisible boundary into a visible choice somebody senior can revisit. **It also survives the next occurrence**, when the same fault arrives from the same untouched link and somebody asks whether anybody knew.
+
+## Ask which link you can afford, not which one is root
+
+The question *"what was the root cause?"* has no correct answer and produces argument. Two better ones:
+
+**At which link can we intervene?** Some links are unreachable — a supplier's internal process, a contract signed years ago. The useful set is the reachable ones, which is usually shorter than the chain and never empty.
+
+**Which intervention survives?** A fix at the last link stops this instance. A fix further back stops a class. **A fix aimed at a person stops nothing**, because the mechanism that let the error through is untouched and the next person meets it fresh.
+
+Most incidents deserve two: one immediate, one structural, named separately so the second is not quietly dropped when the first makes the symptom go away.
+
+## The tell that you stopped too early
+
+**The remedy is "be more careful."** Whether it is phrased as retraining, an added review, or a note in the procedure, it means the chain stopped at the moment of action rather than at whatever made that action possible.
+
+The test is simple: **would this remedy have prevented the incident if the same competent person had the same bad day?** If the honest answer is no, the chain has one more link in it and the investigation ended a step early.
+
+## The artefact
+
+Write the chain out, one link per line, in the write-up — this is the section that makes [the write-up](/practice/the-write-up) worth keeping a year later:
+
+1. Each link, plainly, as a cause of the one above it
+2. **Where we stopped**, marked
+3. **Why we stopped there** — unreachable, too expensive, accepted risk, or out of scope
+4. **What remains beyond the stop**, named rather than omitted
+5. Which link each proposed remedy attacks
+
+Five lines. The value is entirely in items 2 and 3, and they are the two that no incident template asks for.

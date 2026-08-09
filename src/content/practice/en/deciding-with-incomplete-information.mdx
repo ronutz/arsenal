@@ -1,0 +1,83 @@
+---
+slug: deciding-with-incomplete-information
+title: "Deciding with incomplete information"
+thesis: "You will never have enough, and waiting for more is itself a decision whose cost accrues while nobody counts it. The skill is not intuition — it is knowing which decisions are reversible, how asymmetric the cost of being wrong is in each direction, and whether any observation available in the next twenty minutes would actually change the answer."
+stance: practised
+part: yield
+order: 23
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["running-a-war-room", "containment-before-cure", "when-the-instruments-agree"]
+artefact: "The four questions, and the sentence that makes a decision revisable"
+updated: "2026-08-09"
+---
+
+## Waiting is a decision, and it has a meter running
+
+Forty minutes in. You have a plausible cause, no proof, and a room asking whether to fail over.
+
+The instinct is to say *"let me understand it first"*, which is a real and often correct answer — and it is also **a decision to keep the service degraded for as long as understanding takes.** That cost is accruing whether or not anybody assigns it to the decision, and the reason waiting feels safer is that its cost lands on nobody in particular while a wrong action lands on you.
+
+> **The default is not neutral.** Choosing to wait is choosing an outcome, and the only difference is that nobody writes it down as a choice.
+
+## Reversibility is the first axis, not confidence
+
+Before asking *how sure am I*, ask **how expensive is being wrong, and can I undo it?**
+
+A **reversible** decision made on thin evidence costs a little time if wrong. It should be made quickly and cheaply, and the standard of proof should be correspondingly low. Restarting a process, draining a member, moving traffic to the other path — if these are genuinely reversible, waiting to be sure is spending certain minutes to avoid an uncertain small cost.
+
+An **irreversible** decision — one that destroys state, loses data, or cannot be undone within the window — deserves the wait, and deserves it explicitly. This is the same arithmetic as [the rollback](/practice/change-windows-and-rollback-arithmetic): *what does going back actually restore*, asked before you go forward.
+
+**Most incident decisions are far more reversible than they feel at the time**, and the fear attaches to the visibility of acting rather than to the cost of the action.
+
+## Asymmetry usually decides without more data
+
+Write both costs down, briefly, in the room:
+
+*If we fail over and it was not the cause: thirty seconds of session loss and we are no better off. If we do not fail over and it was: the outage continues for however long the investigation takes.*
+
+Stated that way, the decision is usually obvious, and **no additional information was required to reach it.** Much of what looks like a need for more data is really a failure to compare the two costs out loud — because in silence they feel symmetric and on paper they rarely are.
+
+## The question that ends the wait
+
+> **"What could we learn in the next twenty minutes that would change this decision?"**
+
+If the answer is a specific observation, name it, get it, and wait for exactly that.
+
+**If the answer is nothing — decide.** Further waiting is not gathering information; it is deferring discomfort, and the meter is running. This is the most useful sentence in the room and it takes ten seconds to ask.
+
+## Confidence is not information
+
+A room's confidence rises with discussion. The data does not.
+
+Forty minutes of a plausible theory being repeated by capable people produces a shared conviction that no new measurement supports — the same failure as [when the instruments agree](/practice/when-the-instruments-agree), in a room instead of a dashboard. **Agreement among people who have been talking to each other is not corroboration**, and the tell is when somebody restates the hypothesis with more certainty than when it was proposed, on no new evidence.
+
+Ask what changed since the theory was formed. If the answer is only *"we have talked about it more"*, the confidence is manufactured.
+
+## Say it as provisional, and name what reverses it
+
+The sentence that makes a decision under uncertainty survivable:
+
+> **"We are failing over now on the assumption it is the storage path. If errors continue after the failover, that assumption is wrong and we come straight back to the database."**
+
+Three things at once: it acts, it records what the action assumed, and it pre-commits the reversal condition **before anybody is invested in having been right.** That last part matters most — a decision framed as provisional can be reversed without anybody losing face, and losing face is what actually delays reversals.
+
+It also gives the [scribe](/practice/running-a-war-room) something worth recording, and it is the raw material for reading the decision fairly afterwards rather than against the finished timeline.
+
+## Record what you knew, not just what you did
+
+The write-up will show what you decided. Whether it was a good decision depends entirely on what was visible at the moment — which is unrecoverable a day later, and is exactly what [hindsight](/practice/hindsight-makes-it-look-inevitable) destroys.
+
+One line at the time of the decision: *"Deciding on: errors on two of six members, no change record, monitoring gap between 02:05 and 02:20."* That line is what lets a reviewer judge the reasoning instead of the outcome.
+
+## The four questions
+
+At the decision point, aloud, in under a minute:
+
+1. **Is this reversible?** If yes, the bar is low. If no, say so explicitly and slow down on purpose.
+2. **What does being wrong cost in each direction?** Written as two clauses, not felt.
+3. **What could I learn in twenty minutes that would change it?** If nothing, decide now.
+4. **What am I assuming, and what would tell me the assumption is wrong?** Said aloud, so the reversal is pre-authorised.
+
+And when the time-box expires with no answer, **decide anyway and say which of the four you are relying on.** An explicit decision on thin evidence is recoverable. A drift into no decision is the one outcome nobody can defend afterwards, because nobody chose it.

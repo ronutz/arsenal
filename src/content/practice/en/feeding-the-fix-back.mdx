@@ -1,0 +1,83 @@
+---
+slug: feeding-the-fix-back
+title: "Feeding the fix back into the design"
+thesis: "A fix applied to the instance leaves untouched the thing that produced the instance. Until it reaches the generator — the template, the standard build, the default, the procedure — the next one is manufactured by the same process, and the fix has bought exactly one device's worth of safety."
+stance: practised
+part: after
+order: 7
+roles: ["second-line", "field", "design"]
+relatedTools: ["fortios-config-diff-explainer", "exos-config-explainer", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["prevention-that-survives-the-budget", "documenting-for-the-inheritor", "naming-and-addressing"]
+artefact: "The propagation checklist — four places a fix has to land"
+updated: "2026-08-09"
+---
+
+## The device is not where the fault came from
+
+The timeout was wrong. You corrected it, service recovered, the ticket closed.
+
+But the device did not invent that value. It came from a template, a standard build, an infrastructure-as-code module, a documented procedure, or a vendor default nobody overrode. **That generator is still producing the same value**, and it will keep producing it every time somebody commissions a site, replaces a failed unit, or scales out.
+
+> **Fixing the instance treats the symptom of a process.** The fault is not in the device; the device is where the fault was delivered.
+
+## Two actions that feel like one
+
+This is the specific error, and it is easy to make because either half feels complete.
+
+**Fix the generator, leave the population.** The template is corrected. Every device built from now on is right. **The four hundred already built are untouched**, and nobody notices, because attention is on new builds and the existing estate quietly carries the defect until it fires again somewhere else.
+
+**Fix the population, leave the generator.** Every existing device is corrected by a script, and the estate is briefly perfect. Then the next rebuild, replacement or scale-out reintroduces it, **because the source of truth was never wrong from the generator's point of view** — the estate was drifted, and the rebuild "corrected" it back.
+
+That second case is the crueller of the two, because the fix has a half-life measured in rebuild cycles and its disappearance looks like a new fault.
+
+**They are two actions. Doing one and feeling finished is the default outcome**, and the only reliable defence is writing both down as separate items with separate owners.
+
+## Where generators actually live
+
+Worth enumerating, because "the template" is usually more than one thing:
+
+- **Configuration templates and golden configs** — the obvious one
+- **Infrastructure-as-code modules**, which have their own versioning and their own consumers who pin old versions
+- **Standard build documents** — the procedure a field engineer follows, which is a generator made of prose
+- **Vendor defaults**, where the generator belongs to somebody else and the fix has to become a standard of yours instead
+- **The image** — anything baked in is regenerated on every deploy
+
+A fix that lands in one and not the others produces an estate with two populations and no way to tell them apart from the outside.
+
+## The organisational seam is where fixes die
+
+The template is frequently owned by a different team: platform, automation, the group that runs the pipeline. The person who found the fault is not the person who can change the generator, and the change request competes with that team's own backlog.
+
+**This is not a technical problem and it will not be solved by a better commit.** It is the reason to name the generator fix as a distinct item with a named owner in the write-up — the same rule as [prevention that survives the budget](/practice/prevention-that-survives-the-budget): *anything without an owner and a date is a wish.* An unowned change to somebody else's template is the most common wish in this category.
+
+## Record why, or it will be removed
+
+A corrected value in a template, with no comment, is an invitation. Six months later somebody tidying the module sees an odd number, finds no reason for it, and restores the default — reasonably, because from where they sit it looks like drift.
+
+Write the reason **in the generator**, not only in the incident record:
+
+```
+# 45s, not the 30s default: the branch path via the satellite link
+# exceeds 30s under load. Incident 2026-08-09. Reverting this
+# reintroduces the timeout failures at the two remote sites.
+```
+
+Three lines. This is [documenting for the inheritor](/practice/documenting-for-the-inheritor) applied at the smallest possible scale, and it is the difference between a fix that survives and one that quietly expires.
+
+## When the generator is the vendor
+
+Sometimes the value is a vendor default and there is no template to change. Then the fix becomes **a standard**, which needs somewhere to live and somebody to apply it — a build checklist, a compliance rule, a post-deployment script.
+
+An undocumented standard that exists only in the head of the engineer who found it is not a standard. It is a person, and people move.
+
+## The propagation checklist
+
+Four places, and a fix is not finished until each has an answer:
+
+1. **The instance** — done, and dated
+2. **The generator** — template, module, procedure, image; **named specifically**, because "the template" is usually several things
+3. **The already-built population** — how many, corrected how, by when; or an explicit decision to leave them and why
+4. **The reason, recorded in the generator itself** — so the next tidy-up does not undo it
+
+Plus one line naming who owns each, because items 2 and 3 usually belong to different people, and both are usually somebody other than the person who found it.

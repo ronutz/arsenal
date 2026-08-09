@@ -1,0 +1,74 @@
+---
+slug: prevention-that-survives-the-budget
+title: "Prevenção que sobrevive ao encontro com o orçamento"
+thesis: "A maior parte da prevenção não falha por mérito; falha porque foi proposta como projeto. Os remédios que de fato acontecem são os pequenos o bastante para caber na janela em que todo mundo ainda se importa, ou os que pegam carona em trabalho já financiado — e o estrutural só sobrevive se alguém o registrar como recusado, em vez de deixá-lo evaporar."
+stance: practised
+part: after
+order: 6
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["health-snapshot-comparator", "incident-timeline-rca-builder", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["root-cause-is-a-choice", "the-write-up", "change-windows-and-rollback-arithmetic"]
+artefact: "Três camadas, cada uma com dono e data — e a recusada, nomeada"
+updated: "2026-08-09"
+---
+
+## A janela fecha mais rápido do que o trabalho leva
+
+Por alguns dias depois de um incidente ruim, prevenção tem energia política. Gente que normalmente protege o próprio roadmap concorda com coisas. *Nunca mais* é uma frase com orçamento atrás.
+
+Essa janela se mede em dias. A proposta que exige um trimestre de planejamento chega depois de ela ter fechado, numa sala que já voltou às prioridades de sempre, e disputa em pé de igualdade com todo o resto — onde perde, porque é seguro contra algo que acabou de ser corrigido.
+
+**Isto não é cinismo sobre organizações.** É um fato de calendário, e prevenção que o ignora é prevenção que não acontece.
+
+## Por que a resposta correta costuma ser a que fracassa
+
+A análise honesta com frequência termina em algo grande: a plataforma precisa de uma redundância que não tem, o parque precisa de um modelo de segmentação que nunca teve, o processo precisa de uma etapa que ninguém tem gente para tocar.
+
+Propor só isso é como uma revisão produz nada. O remédio grande precisa de um ciclo orçamentário; o ciclo precisa de um caso de negócio; o caso disputa com trabalho que gera receita; e seis semanas depois o incidente é lembrança e o caso é um documento sem padrinho.
+
+> **Nomear apenas o remédio correto e não nomear remédio nenhum têm o mesmo resultado.** A diferença é que o primeiro parece rigoroso.
+
+## Faça em degraus
+
+Três camadas, propostas juntas, no mesmo documento:
+
+**Imediato — feito dentro da janela.** Horas a um dia, pelas pessoas já envolvidas, sem aprovação além da própria sala. Religar o alarme silenciado. Corrigir a linha ambígua do procedimento. Acrescentar a verificação que faltava. São pouco glamorosos e são os que acontecem, porque nada fora da sala precisa acontecer.
+
+**Acoplável — somado a trabalho já financiado.** A migração daqui a dois meses, a troca de hardware, a atualização da plataforma. **A prevenção mais barata de qualquer organização é um requisito acrescentado a um projeto que já existe**, porque não consome decisão nova. É nesta camada que mora a maior parte da melhoria real, e ela exige saber o que já está agendado — conhecimento organizacional, não técnico.
+
+**Estrutural — nomeado, precificado e provavelmente recusado.** Diga assim mesmo, por escrito, com quanto custaria e o que evitaria.
+
+## A camada recusada é a que mais importa
+
+Um remédio estrutural proposto e recusado **não** é a mesma coisa que um que nunca foi escrito, e a diferença aparece no próximo incidente.
+
+Escrito, vira evidência. Quando a mesma classe de falha voltar em oito meses, alguém pode apontar para um documento datado que nomeou aquilo e não foi financiado — e essa é uma posição bem mais forte que propor do zero, porque agora existe histórico em vez de projeção. É o mesmo instinto de [causa raiz é uma escolha](/practice/root-cause-is-a-choice): **diga onde parou e por quê, para que a fronteira fique visível em vez de invisível.**
+
+Não escrito, evapora, e a próxima revisão o rededuz do zero e o recusa de novo pelos mesmos motivos.
+
+## Detecção costuma ser mais barata que prevenção, e muitas vezes o melhor negócio
+
+Prevenção reduz a probabilidade. **Detecção reduz a duração**, e a duração é com frequência onde o custo de fato estava.
+
+Um incidente que durou quatro horas porque ninguém soube durante três tem um remédio que custa quase nada — um alarme, um limiar, uma verificação sintética — diante de um remédio de prevenção que custa um redesenho. A indisponibilidade de quatro horas não vira zero, vira uma hora, que normalmente é a maior fatia da perda.
+
+Revisões buscam prevenção por reflexo, porque soa mais completo. **Pergunte quanto o incidente custou de fato, e que parte desse custo foi o tempo antes de alguém saber.**
+
+## Escreva o custo na moeda de quem vai ler
+
+*"Precisamos de redundância"* disputa mal. *"Esta indisponibilidade custou onze horas de um time de quatro pessoas mais o crédito ao cliente; a licença do equipamento em espera é um quinto disso por ano"* disputa bem, e é a mesma proposta.
+
+O número não precisa ser preciso. Precisa existir, porque uma proposta sem número está pedindo que outra pessoa faça a conta antes de poder dizer sim — e ela não vai fazer.
+
+## O artefato
+
+| camada | teste |
+|---|---|
+| **Imediato** | dá para terminar antes de a atenção de alguém migrar |
+| **Acoplável** | nomeia o trabalho financiado em que pega carona, e quem responde por ele |
+| **Estrutural** | precificado, e marcado **proposto** ou **recusado**, com data |
+
+E a regra que mantém a lista honesta:
+
+> **Qualquer coisa sem dono e sem data é um desejo, não um remédio.** Um relato que termina em seis melhorias sem dono registrou um humor. Um que termina em duas ações com dono e uma recusa datada mudou alguma coisa.

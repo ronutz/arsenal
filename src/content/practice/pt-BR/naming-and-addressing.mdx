@@ -1,0 +1,81 @@
+---
+slug: naming-and-addressing
+title: "Nomenclatura, endereçamento e o custo de errar cedo"
+thesis: "Nomenclatura e endereçamento são decididos numa tarde por quem estiver livre, e sobrevivem a todas as outras decisões do parque — não porque sejam tecnicamente difíceis de mudar, mas porque todo o resto passa, em silêncio, a depender deles. A conta é paga anos depois, por outra pessoa, numa moeda que ninguém orçou."
+stance: practised
+part: before
+order: 8
+roles: ["second-line", "field", "design"]
+relatedTools: ["cidr", "ipv6", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["reading-a-design-you-did-not-write", "handover-project-to-operation", "change-windows-and-rollback-arithmetic"]
+artefact: "As duas perguntas que um esquema precisa sobreviver, e o que um nome nunca deve carregar"
+updated: "2026-08-09"
+---
+
+## A decisão mais barata com a meia-vida mais longa
+
+Alguém precisa nomear os equipamentos e escolher as faixas. Acontece cedo, sob pressão de prazo, normalmente por quem está subindo o primeiro site, e leva uma tarde. Ninguém revisa, porque naquele momento é obviamente reversível — são quatro equipamentos e uma sub-rede, e mudar qualquer um dos dois é trivial.
+
+Seis anos depois são quatrocentos equipamentos, o esquema está errado de um jeito que todo mundo sabe descrever, e **ninguém vai encostar nele.**
+
+Essa assimetria é o assunto inteiro. **A decisão é barata de tomar, cara de mudar, e a despesa cai sobre alguém que não estava na sala.**
+
+## Por que renomear não é renomear
+
+O motivo de ninguém encostar não é sentimentalismo. Um nome, num parque moderno, não é etiqueta; é **chave**, e foi copiado para lugares dos quais ninguém tem inventário:
+
+- sistemas de monitoração, e cada limiar e painel indexado por ele
+- regras de firewall e objetos de endereço, com frequência na sintaxe de vários fabricantes
+- scripts, alguns no notebook de alguém
+- certificados emitidos para aquele nome, com validade e custo de reemissão próprios
+- licenças vinculadas a um nome de host ou a um par número de série e nome
+- documentação, chamados, e seis anos de histórico de incidentes que deixa de ser pesquisável
+- **a cabeça das pessoas que operam aquilo**, que é a cópia impossível de migrar
+
+Renomear é uma mudança coordenada em todos esses lugares, executada sem benefício funcional e com chance real de indisponibilidade. É por isso que o esquema correto-porém-errado sobrevive a toda reorganização que prometia consertá-lo.
+
+## Codifique o que não muda
+
+A regra mais útil, e a mais violada:
+
+> **Um nome deve codificar aquilo que sobrevive ao nome.** Papel, site e posição são duráveis. **Dono, projeto, fabricante e departamento não são** — e são exatamente o que acaba codificado, porque são o que está saliente naquele dia.
+
+O departamento é reorganizado. O projeto é renomeado antes de entrar. O fabricante é adquirido, e então todo equipamento que carrega o nome dele está mentindo, e o hardware que o substitui herda um nome que descreve o fornecedor anterior.
+
+O teste antes de fechar: **nomeie três coisas deste esquema que ainda serão verdade em cinco anos.** Se a resposta honesta for "o site e o papel", então site e papel são o que cabe no nome, e todo o resto cabe num banco de dados que tem permissão de mudar.
+
+## Endereçamento tem o mesmo formato e uma aritmética pior
+
+Nomes falham socialmente; endereços falham aritmeticamente, e a aritmética não perdoa de dois jeitos específicos.
+
+**A faixa que era de sobra.** Um /24 por site é generoso até o site ganhar rede de visitantes, rede de voz, rede de gerência, câmeras e automação predial. O que acaba raramente são endereços de host — são **sub-redes**, e o esquema que alocou por "quantos equipamentos" em vez de "quantas redes" bate na parede primeiro.
+
+**Sumarização que nunca ia funcionar.** Blocos alocados conforme os sites foram comissionados, na ordem em que foram comissionados, não somam em nenhum ponto de agregação, porque contiguidade nunca foi entrada de projeto. O custo aparece anos depois como tabelas de rota que não reduzem e listas de acesso que não encurtam — e a correção é um projeto de readdressing que ninguém vai financiar.
+
+As ferramentas de [CIDR](/tools/cidr) e [IPv6](/tools/ipv6) deste site fazem a aritmética; **a aritmética não é a parte difícil.** A parte difícil é decidir para que servem os blocos antes de o primeiro ser entregue.
+
+## Deixe folga, e não demais
+
+O reflexo corretivo é reservar enormemente. Isso produz a falha oposta: um esquema tão esparso que ninguém guarda na cabeça, em que cada alocação exige consultar um documento, e que por isso é ignorado na primeira vez que alguém está com pressa às três da manhã.
+
+**Um esquema inconveniente será violado, e um esquema violado é pior que um esquema modesto**, porque agora o parque tem dois esquemas e nenhuma forma de dizer qual se aplica.
+
+O meio que funciona: deixe folga no nível em que o crescimento de fato acontece — sites e tipos de rede — e seja apertado onde não acontece. E **escreva a premissa de crescimento**, porque a próxima pessoa precisa saber se está esgotando uma folga deliberada ou quebrando um projeto.
+
+## Quando você herda um esquema errado
+
+Normalmente você herda, e o movimento certo quase nunca é consertar.
+
+**Corrija nas fronteiras, não no lugar.** Um site novo, um data center novo, uma nova família de endereços: são os momentos em que um esquema melhor entra de graça. Renomear o que existe custa uma indisponibilidade e compra arrumação.
+
+**Escreva a regra que de fato vigora**, incluindo as exceções, e dê motivo às exceções onde ele for conhecido. Um esquema herdado com regra documentada é operável. Um esquema herdado em que ninguém sabe dizer qual é a regra produz um terceiro esquema em um ano, porque cada engenheiro novo infere um padrão diferente da mesma evidência — o problema de [ler um projeto que não foi você quem fez](/practice/reading-a-design-you-did-not-write), aplicado a um espaço de nomes.
+
+## As duas perguntas que um esquema precisa sobreviver
+
+Faça as duas antes de fechar, e escreva as respostas ao lado do esquema:
+
+1. **O que acontece quando isto dobrar?** Não se cabe — como é a *próxima* alocação quando o espaço óbvio acabar. Se a resposta for "a gente começaria um segundo esquema", o projeto já terminou, só não foi percebido ainda.
+2. **O que neste nome ou número não será verdade em cinco anos?** Tudo que falhar é uma mentira futura armazenada em escala.
+
+E a coisa a nunca codificar: **qualquer coisa que uma reorganização possa mudar.** Departamentos, centros de custo, codinomes de projeto e nomes de fornecedor são os quatro mais comuns, e os quatro são garantidamente móveis.

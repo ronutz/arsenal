@@ -1,0 +1,83 @@
+---
+slug: feeding-the-fix-back
+title: "Devolver a correção ao projeto"
+thesis: "Uma correção aplicada à instância deixa intocado aquilo que produziu a instância. Enquanto ela não chegar ao gerador — o template, o build padrão, o valor de fábrica, o procedimento — a próxima é fabricada pelo mesmo processo, e a correção comprou exatamente um equipamento de segurança."
+stance: practised
+part: after
+order: 7
+roles: ["second-line", "field", "design"]
+relatedTools: ["fortios-config-diff-explainer", "exos-config-explainer", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["prevention-that-survives-the-budget", "documenting-for-the-inheritor", "naming-and-addressing"]
+artefact: "A lista de propagação — quatro lugares em que uma correção precisa aterrissar"
+updated: "2026-08-09"
+---
+
+## O equipamento não é de onde a falha veio
+
+O timeout estava errado. Você corrigiu, o serviço voltou, o chamado fechou.
+
+Mas o equipamento não inventou aquele valor. Ele veio de um template, de um build padrão, de um módulo de infraestrutura como código, de um procedimento documentado, ou de um padrão de fábrica que ninguém sobrescreveu. **Esse gerador continua produzindo o mesmo valor**, e vai continuar toda vez que alguém comissionar um site, trocar uma unidade que falhou, ou escalar horizontalmente.
+
+> **Corrigir a instância trata o sintoma de um processo.** A falha não está no equipamento; o equipamento é onde a falha foi entregue.
+
+## Duas ações que parecem uma
+
+Este é o erro específico, e é fácil de cometer porque qualquer uma das metades parece completa.
+
+**Corrigir o gerador e deixar a população.** O template foi corrigido. Todo equipamento construído daqui para frente está certo. **Os quatrocentos já construídos ficam intocados**, e ninguém percebe, porque a atenção está nos novos e o parque existente carrega o defeito em silêncio até ele disparar em outro lugar.
+
+**Corrigir a população e deixar o gerador.** Todo equipamento existente é corrigido por um script, e o parque fica brevemente perfeito. Aí a próxima reconstrução, troca ou expansão reintroduz o problema, **porque do ponto de vista do gerador a fonte da verdade nunca esteve errada** — o parque é que estava desviado, e a reconstrução o "corrigiu" de volta.
+
+O segundo caso é o mais cruel dos dois, porque a correção tem meia-vida medida em ciclos de reconstrução e o desaparecimento dela parece uma falha nova.
+
+**São duas ações. Fazer uma e se sentir pronto é o desfecho padrão**, e a única defesa confiável é escrever as duas como itens separados, com donos separados.
+
+## Onde os geradores de fato moram
+
+Vale enumerar, porque "o template" normalmente é mais de uma coisa:
+
+- **Templates de configuração e golden configs** — o óbvio
+- **Módulos de infraestrutura como código**, que têm versionamento próprio e consumidores que fixam versões antigas
+- **Documentos de build padrão** — o procedimento que o engenheiro de campo segue, que é um gerador feito de prosa
+- **Padrões de fábrica**, em que o gerador é de outra pessoa e a correção precisa virar um padrão seu
+- **A imagem** — tudo que está embutido é regenerado a cada implantação
+
+Uma correção que aterrissa em um e não nos outros produz um parque com duas populações e nenhuma forma de distingui-las por fora.
+
+## A costura organizacional é onde as correções morrem
+
+O template costuma pertencer a outro time: plataforma, automação, o grupo que toca a esteira. Quem encontrou a falha não é quem pode mudar o gerador, e o pedido de mudança disputa com o backlog daquele time.
+
+**Isto não é um problema técnico e não será resolvido por um commit melhor.** É a razão de nomear a correção do gerador como item distinto, com dono, no relato — a mesma regra de [prevenção que sobrevive ao orçamento](/practice/prevention-that-survives-the-budget): *qualquer coisa sem dono e sem data é um desejo.* Uma mudança sem dono no template de outra pessoa é o desejo mais comum desta categoria.
+
+## Registre o porquê, ou aquilo será removido
+
+Um valor corrigido num template, sem comentário, é um convite. Seis meses depois alguém arrumando o módulo vê um número estranho, não acha motivo, e restaura o padrão — com razão, porque de onde essa pessoa está aquilo parece desvio.
+
+Escreva o motivo **no gerador**, não só no registro do incidente:
+
+```
+# 45s, não os 30s padrão: o caminho da filial via enlace satelital
+# passa de 30s sob carga. Incidente 2026-08-09. Reverter isto
+# reintroduz as falhas de timeout nos dois sites remotos.
+```
+
+Três linhas. É [documentar para quem herda](/practice/documenting-for-the-inheritor) aplicado na menor escala possível, e é a diferença entre uma correção que sobrevive e uma que expira em silêncio.
+
+## Quando o gerador é o fabricante
+
+Às vezes o valor é padrão de fábrica e não existe template a mudar. Então a correção vira **um padrão**, que precisa de um lugar para morar e de alguém para aplicá-lo — uma lista de build, uma regra de conformidade, um script pós-implantação.
+
+Um padrão não documentado, que existe só na cabeça de quem o descobriu, não é padrão. É uma pessoa, e pessoas mudam de lugar.
+
+## A lista de propagação
+
+Quatro lugares, e a correção não está pronta enquanto cada um não tiver resposta:
+
+1. **A instância** — feita, e datada
+2. **O gerador** — template, módulo, procedimento, imagem; **nomeado especificamente**, porque "o template" normalmente são vários
+3. **A população já construída** — quantos, corrigidos como, até quando; ou uma decisão explícita de deixá-los, e por quê
+4. **O motivo, registrado dentro do próprio gerador** — para a próxima arrumação não desfazer
+
+Mais uma linha nomeando quem responde por cada um, porque os itens 2 e 3 costumam pertencer a pessoas diferentes, e ambos costumam pertencer a alguém que não é quem encontrou.

@@ -1,0 +1,76 @@
+---
+slug: documenting-for-the-inheritor
+title: "Documenting a network somebody else will inherit"
+thesis: "Documentation fails because it describes the system, and the system already describes itself better than you can. What an inheritor cannot recover by looking is the reasoning — the constraints, the things deliberately not done, and the behaviour that looks wrong and is expected. Write the part the estate cannot say about itself."
+stance: practised
+part: before
+order: 9
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["exos-config-explainer", "fortios-config-diff-explainer", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["reading-a-design-you-did-not-write", "handover-project-to-operation", "the-runbook-nobody-can-follow"]
+artefact: "The five headings, ordered by how slowly they go stale"
+updated: "2026-08-09"
+---
+
+## The document that competes with the machine and loses
+
+Most network documentation is a description: this device, that address, these VLANs, this is connected to that. It is written carefully, it is correct on the day, and it begins decaying immediately — because the estate it describes keeps changing and the document does not.
+
+Worse, it was **never the best available source**. The running configuration is definitionally current; the diagram is a claim about a Tuesday in March. Anybody troubleshooting learns within a year to distrust the document and read the device, at which point the documentation has become a thing people maintain out of obligation and consult out of desperation.
+
+> **Do not write what the machine already says, and will keep saying more accurately than you.** Inventory, topology and configuration should be *generated* where they are needed at all. The effort belongs somewhere else.
+
+## What the estate genuinely cannot say about itself
+
+Read a configuration and you can recover *what*. You cannot recover any of this, and none of it is anywhere else:
+
+**Why, where the choice was not obvious.** A timeout that is not the default, a route preference that looks arbitrary, a segment that exists for one auditor's requirement in 2019. This is the entire subject of [reading a design you did not write](/practice/reading-a-design-you-did-not-write), and this article is the other side of it: **the only cheap moment to record a reason is while somebody still remembers it.**
+
+**What was deliberately not done.** The approach that was tried and abandoned, the feature evaluated and rejected, the obvious improvement that conflicts with something non-obvious. Without this, every inheritor re-proposes it, and one of them eventually implements it.
+
+**What looks wrong and is expected.** The benign recurring error, the counter that always sits high, the alarm that fires every Sunday because of a backup. Undocumented, each of these costs an investigation the first time somebody competent meets it at three in the morning.
+
+**What is temporary.** Every workaround still in place, with the date it was introduced and the condition that should retire it — the same list the [handover](/practice/handover-project-to-operation) demands, and for the same reason.
+
+**What it depends on that you do not own.** The upstream provider's behaviour, the certificate somebody else renews, the DNS zone another team edits, the licence that expires. Dependencies outside the estate are invisible to every tool that inspects the estate.
+
+## Order the effort by decay rate
+
+The useful principle for deciding what to spend an afternoon on:
+
+> **Spend effort in inverse proportion to how fast the content goes stale.**
+
+Inventory changes weekly and should be generated or skipped. Topology changes monthly. Procedures change with the platform. **Reasoning changes almost never** — a constraint recorded in 2021 is usually still the reason in 2026, and it is the only category where handwriting beats tooling outright.
+
+This inverts what most documentation projects actually do, which is to spend the available time on the inventory because it is the easiest part to write and the easiest to show progress on.
+
+## Write for a person in a specific moment
+
+The same discipline as the [runbook](/practice/the-runbook-nobody-can-follow): the imagined reader is a colleague at their desk; the real one is a stranger under pressure.
+
+Two things follow. **Say what a thing is for before saying what it is** — *"this segment carries card-payment traffic and is separated for the audit, so changing its filtering has an approval path"* is more useful than a complete list of its access rules. And **file it where the incident will look**, which is beside the runbooks, not in a project folder inherited from a consultancy that has since been replaced.
+
+## Diagrams, and the date problem
+
+Diagrams are believed far longer than they are true, because they carry no signal of age and reading one feels like understanding.
+
+Two rules make them safe. **Date every diagram, visibly, in the image itself** — a date in the file name is lost the first time somebody pastes it into a slide. And **draw the thing that is stable**: traffic flows, trust boundaries and dependencies age slowly, while port-level topology ages the moment somebody adds a switch. A diagram of *how a transaction crosses the estate* is still true after a hardware refresh. A diagram of *what is plugged into what* is not.
+
+## The test that matters
+
+Not whether the documentation is complete. Whether **somebody who has never seen this estate can make a safe change without asking you.**
+
+That test is passable with surprisingly little: the reasons, the deliberate omissions, the known-odd, the temporaries and the external dependencies. It is not passable with a perfect inventory and no reasoning, which is what most estates have.
+
+## The five headings
+
+In the order they should be written, which is the order of how slowly they go stale:
+
+1. **Decisions and their constraints** — every non-obvious choice, and what forced it
+2. **Deliberately not done** — with the reason, so it is not silently re-proposed
+3. **Known-odd** — behaviour that looks wrong and is expected
+4. **Temporary** — with introduction dates and retirement conditions
+5. **External dependencies** — what this estate needs from people who do not report to anyone here
+
+Then, and only if there is time left, generate the inventory. **If the afternoon runs out after heading three, the document is still worth more than most estates have** — which is the argument for writing it in this order rather than the usual one.
