@@ -1,0 +1,90 @@
+---
+slug: packet-capture-discipline
+title: "Disciplina de captura de pacotes: quando, onde e quanto"
+thesis: "Uma captura é a evidência de maior resolução disponível e a mais fácil de tornar inútil. A maioria das capturas falha antes de começar — feita em um ponto em vez de dois, filtrada até excluir a resposta, ou tão grande que ninguém jamais a abre."
+stance: practised
+part: craft
+order: 3
+roles: ["second-line", "field", "first-line", "design"]
+relatedTools: ["packet-capture-plan-builder", "f5-bigip-tcpdump-builder", "tac-escalation-packet-builder"]
+relatedIndustry: []
+relatedPractice: ["capture-before-you-change", "proving-the-vendor-wrong", "timelines-reconstructing-what-happened"]
+artefact: "Seis decisões antes de apertar iniciar"
+updated: "2026-08-09"
+---
+
+## Por que vale o trabalho
+
+Toda outra fonte diz o que um equipamento **acredita**. Um contador é o relato que o equipamento faz de si mesmo; um log é o relato daquilo que ele decidiu registrar. Uma captura é o que de fato atravessou o fio.
+
+É por isso que ela resolve discussões que mais nada resolve — inclusive a de [quando o fabricante está errado](/practice/proving-the-vendor-wrong), em que a diferença entre reclamação e demonstração costuma ser um par de capturas.
+
+E é por isso que as falhas abaixo importam: uma captura ruim não apenas deixa de ajudar, ela **consome o evento**. A falha aconteceu, você capturou, e não há nada ali dentro.
+
+## Um ponto de captura é sintoma; dois é achado
+
+A decisão mais consequente, e a mais frequentemente errada.
+
+Uma captura de um lado do componente suspeito mostra que algo está errado. **Capturas dos dois lados mostram o componente fazendo aquilo** — o que entrou, o que saiu, e a diferença. Essa diferença é o achado, e não se infere de nenhum dos lados isolado.
+
+Então: coloque os pontos de captura **em volta** do que você suspeita, não perto de quem está reclamando. Se o cliente reporta erros e você captura no cliente, você aprendeu que o cliente vê erros, o que já se sabia.
+
+Onde o caminho cruza tradução, proxy ou balanceador, capture dos dois lados *daquilo*, porque são exatamente os lugares em que os pacotes de um lado não são os pacotes do outro.
+
+## O filtro remove a resposta
+
+Filtrar demais é a forma mais comum de destruir uma captura, e acontece por um bom motivo: os arquivos são grandes e você quer o tráfego relevante.
+
+O problema é que o tráfego relevante não é o tráfego que você suspeita. O filtro `tcp port 443 and host 10.1.1.5` exclui, com confiabilidade:
+
+- o **ICMP unreachable** que explica tudo
+- o **TCP reset** vindo de um terceiro endereço em que ninguém pensou
+- as **retransmissões** para outra porta, que revelam que o caminho tem perda
+- a falha de **ARP ou descoberta de vizinhos** por baixo do sintoma de transporte
+
+**Filtre por host ou por sub-rede, e só depois por porta, se o volume obrigar.** Perder o contexto de protocolo é como uma captura acaba não provando nada e parecendo completa.
+
+Filtrar de menos tem a falha oposta e é mais recuperável: um arquivo de quarenta gigabytes é chato, mas a resposta continua lá dentro.
+
+## Quanto, e por quanto tempo
+
+**Snaplen.** Pacotes inteiros quando você precisa de conteúdo, só cabeçalhos quando não. Capturas só de cabeçalho são drasticamente menores e bastam para qualquer coisa sobre tempo, sequência, perda ou estabelecimento de conexão — que é a maioria das falhas de rede. E são a escolha que preserva privacidade, o que importa abaixo.
+
+**Buffers em anel, não arquivo único.** Para qualquer coisa intermitente, uma captura rotativa que guarda os últimos *n* arquivos é a única abordagem prática. Uma captura única iniciada quando alguém notou vai começar depois da parte interessante.
+
+**Comece antes, pare depois.** A janela útil normalmente é anterior ao sintoma, porque é ali que está a causa. Parar no instante em que o serviço volta corta a recuperação, que muitas vezes informa tanto quanto a falha.
+
+## As coisas que arruínam uma captura em silêncio
+
+**Relógio.** Os carimbos vêm do host que captura, não da rede. Duas capturas de dois hosts com relógios dessincronizados não podem ser intercaladas, e a "sequência" resultante é ficção — o mesmo defeito de qualquer [linha do tempo](/practice/timelines-reconstructing-what-happened) entre equipamentos.
+
+**Descartes na própria captura.** Um espelhamento saturado ou um host sobrecarregado descarta pacotes em silêncio, e os pacotes ausentes se parecem exatamente com perda de rede. **Confira os contadores de descarte da interface no host que capturou** antes de concluir qualquer coisa sobre perda, ou a captura vira evidência das próprias limitações.
+
+**Criptografia.** Num caminho TLS você verá o handshake e depois nada. Planeje: capture onde há decifragem, ou aceite que está fazendo apenas análise de tempo e sequência — e diga isso no relato, em vez de descobrir depois do evento.
+
+**Offload.** Segmentação e checksum em offload fazem a captura no próprio host mostrar quadros que nunca existiram assim no fio. Inofensivo depois que se sabe; profundamente confuso ao comparar captura de host com captura de rede.
+
+## Capturas contêm dados de outras pessoas
+
+Não é rodapé. Uma captura com conteúdo completo num segmento de produção contém credenciais, dados pessoais, tokens de sessão e conteúdo de clientes — e agora é um arquivo no notebook de alguém.
+
+Trate de acordo: **só cabeçalhos onde bastar**, uma decisão deliberada quando não bastar, armazenamento restrito, data de exclusão, e cuidado com o que sai da organização. Uma captura anexada a um chamado saiu do seu controle — vale o argumento de higienização de [montar um pacote de evidências](/practice/building-an-evidence-pack), com mais força aqui do que em qualquer outro lugar.
+
+## Registre os metadados, ou a captura é meio inútil
+
+Um arquivo chamado `captura.pcap` seis meses depois é quase sem valor. Escrito ao lado, uma linha para cada:
+
+**Onde** foi feita, em qual interface, e de qual lado de quê. **Quando**, com fuso. **Qual filtro** foi aplicado — inclusive *"nenhum"*. **Qual snaplen**. **Se o relógio estava sincronizado**, e com o quê. **O que diziam os contadores de descarte** depois.
+
+É essa a diferença entre evidência e um arquivo binário grande.
+
+## Seis decisões antes de apertar iniciar
+
+1. **Onde** — dos dois lados do componente suspeito, não ao lado de quem reclama
+2. **Filtro** — por host ou sub-rede primeiro; porta só se o volume obrigar
+3. **Snaplen** — cabeçalhos, a menos que precise de conteúdo; é decisão de privacidade tanto quanto de tamanho
+4. **Duração e formato** — anel para qualquer coisa intermitente; começar antes, parar depois
+5. **Relógio** — sincronizado em todos os pontos, e verificado em vez de presumido
+6. **Manuseio** — onde fica guardada, quem pode ler, quando é apagada
+
+O [construtor de plano de captura](/tools/packet-capture-plan-builder) deste site existe para percorrer essas seis, porque elas são decididas em cerca de noventa segundos e são praticamente irreparáveis depois: **não dá para refazer a captura de um evento que já terminou.**

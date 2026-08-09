@@ -1,0 +1,87 @@
+---
+slug: what-to-capture-before-you-know
+title: "O que capturar antes de saber o que aconteceu"
+thesis: "Decisões de captura são tomadas no momento de máxima incerteza e mínima informação: é preciso decidir o que vai importar antes de saber o que aconteceu. Isso não é um problema de conhecimento que se resolve sabendo mais — é estrutural, e a resposta é capturar por taxa de decaimento, não por hipótese."
+stance: practised
+part: craft
+order: 4
+roles: ["first-line", "second-line", "field", "design"]
+relatedTools: ["packet-capture-plan-builder", "health-snapshot-comparator", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["packet-capture-discipline", "capture-before-you-change", "the-assumption-you-cannot-see"]
+artefact: "Ordene por volatilidade, não por teoria"
+updated: "2026-08-09"
+---
+
+## A circularidade
+
+O melhor momento para capturar é antes de você entender a falha. Entender a falha é o que diria o que capturar.
+
+Não é falha de preparo, e nenhuma quantidade de experiência dissolve isso. **Capturar "o que é relevante" exige já saber o que é relevante**, que é justamente o que a captura deveria estabelecer. Toda decisão de captura é, portanto, tomada com informação pior do que a decisão merece, e sempre será.
+
+Então a pergunta útil não é *como decido melhor*. É **qual procedimento de decisão sobrevive a ser executado na ignorância.**
+
+## Capturar guiado por hipótese é a armadilha
+
+A abordagem natural é capturar o que a sua teoria atual precisa. É eficiente, é dirigida, e falha de um jeito específico que vale enxergar com clareza.
+
+Você acredita que é o balanceador, então captura em volta do balanceador. A teoria está errada. **Agora você tem evidência excelente sobre um componente que não estava envolvido, nenhuma evidência sobre o que estava, e o evento acabou.**
+
+Pior: a captura vai parecer progresso. Uma coleta dirigida produz algo para examinar, e examinar consome o tempo em que você poderia ter notado que estava apontado para o lugar errado — que é [a suposição que você não enxerga](/practice/the-assumption-you-cannot-see) com um arquivo anexado.
+
+**Captura inicial deve ser ampla e barata. Profundidade vem depois de uma hipótese, não antes dela.**
+
+## Capture por categoria, não por teoria
+
+Categorias sobrevivem a você estar errado sobre a causa. Uma lista curta vale como padrão, seja qual for a sua suspeita atual:
+
+- **O sintoma, literal** — o erro exato, o tempo exato, o comportamento parcial exato
+- **Horário**, com fuso, em tudo
+- **O que mudou** — o registro de mudança, o log de implantação, e *"nada conhecido"* se for a resposta honesta
+- **A fronteira** — observações dos dois lados da costura mais próxima do sintoma, antes de você saber se aquela costura importa
+- **Tetos** — ocupação de recursos e de tabelas, porque "o quão cheio" é a pergunta que mais vezes acaba sendo a pergunta
+
+Nenhuma dessas depende de você estar certo. Todas são úteis sob várias causas possíveis, que é a propriedade a selecionar quando não dá para selecionar por relevância.
+
+## O teste que amplia a rede por pouco
+
+Um exercício, trinta segundos, e é a coisa mais útil deste artigo:
+
+> **Nomeie três coisas que isto pode acabar sendo. Para cada uma, o que eu gostaria de ter capturado? Capture a união.**
+
+A união quase sempre é pequena — três hipóteses costumam compartilhar a maior parte das necessidades de evidência — e o exercício revela, com regularidade, um item que a teoria principal não exigia. **É esse item que importa quando a teoria principal está errada**, o que acontece com frequência suficiente para o exercício se pagar várias vezes por ano.
+
+E tem um segundo efeito que vale ter: escrever três causas candidatas no minuto cinco é um registro do que você acreditava antes de o desfecho ser conhecido — que é o que a [retrospectiva](/practice/hindsight-makes-it-look-inevitable) destrói.
+
+## Ordene por volatilidade, não por suspeita
+
+Esta é a regra operacional, e substitui a intuitiva.
+
+O instinto é coletar na ordem de *o quanto parece relevante*. A ordem correta é **o quão rápido aquilo desaparece** — porque relevância pode ser reavaliada amanhã e dado volátil não pode ser recuperado amanhã.
+
+| decai em | |
+|---|---|
+| **segundos** | o sintoma vivo, estado de sessão e vizinhança, tráfego em trânsito |
+| **minutos** | contadores, buffers, anéis de log, estado de processos |
+| **horas** | monitoração em resolução fina, antes de ser agregada |
+| **dias a nunca** | configuração, registros de mudança, o arquivo de logs |
+
+Colete de cima para baixo. **Tudo na última linha pode esperar, e tudo na primeira some se esperar** — então uma sessão de captura que começa exportando a configuração gastou os segundos mais valiosos na coisa menos perecível.
+
+É o princípio de decaimento de [documentar para quem herda](/practice/documenting-for-the-inheritor) apontado para evidência em vez de prosa, e produz a mesma inversão da ordem óbvia.
+
+## A assimetria, e o limite dela
+
+O custo de capturar algo de que você não precisava é armazenamento. O custo de não capturar algo de que precisava é a investigação.
+
+Essa assimetria justifica errar para o lado amplo — mas não sem limite, porque [capturar nem sempre é barato](/practice/capture-before-you-change): verbosidade de depuração altera tempos, dumps custam disponibilidade, conteúdo completo cria responsabilidade sobre dados pessoais. **Então este é um argumento sobre ordem, não sobre volume.**
+
+Pegue primeiro, e imediatamente, o que é amplo, barato e volátil. Pegue o caro só quando uma hipótese o justificar — e a essa altura você terá uma, porque as coisas baratas terão dado a você.
+
+## E registre o que você não capturou
+
+A linha que custa cinco segundos e salva o relato: **nomeie o que você escolheu não coletar, e por quê.**
+
+*"Sem captura de conteúdo completo — só cabeçalhos, no segmento que carrega dados de cartão."* *"Sem dump de memória; a plataforma já estava degradada e aquilo estenderia a indisponibilidade."*
+
+Sem isso, a lacuna na evidência parece descuido para todo mundo que ler depois, inclusive você. Com isso, a lacuna é uma decisão que alguém pode avaliar — e, se a falha voltar, é a primeira coisa a revisitar.

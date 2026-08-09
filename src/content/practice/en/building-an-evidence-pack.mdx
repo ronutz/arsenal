@@ -1,0 +1,83 @@
+---
+slug: building-an-evidence-pack
+title: "Building an evidence pack"
+thesis: "An evidence pack is not everything you have; it is a selection made for one reader with one decision to make. Sending everything fails the same way as sending nothing — it hands the work of finding the signal to the person you are asking for help, and they will do it worse than you because they cannot see your estate."
+stance: practised
+part: craft
+order: 2
+roles: ["second-line", "field", "first-line", "management"]
+relatedTools: ["tac-escalation-packet-builder", "packet-capture-plan-builder", "incident-timeline-rca-builder"]
+relatedIndustry: []
+relatedPractice: ["capture-before-you-change", "opening-a-vendor-case", "proving-the-vendor-wrong", "evidence-that-convinces-next-quarter"]
+artefact: "The pack structure, and the section most people leave out"
+updated: "2026-08-09"
+---
+
+## Selection is the work
+
+[Capture](/practice/capture-before-you-change) is about acquisition — grabbing everything before it evaporates, without knowing yet what matters. A pack is the opposite discipline: **deciding what to leave out.**
+
+The instinct, having captured well, is to send all of it. Six hundred megabytes of logs, the full configuration, four captures, and a note saying *"let me know if you need anything else."* It feels thorough and it is the opposite:
+
+> **Sending everything transfers the work of finding the signal to somebody with less context than you.** They do not know which interface matters, which of the four sites is the one, or which errors are normal here. You do. **That knowledge is the thing you are supposed to be packaging**, and unfiltered volume is what it looks like when you do not.
+
+## Who is reading, and what are they deciding
+
+A pack is built for a reader and a decision, and the two vary more than people expect:
+
+- **A vendor engineer** deciding whether this reproduces and whether it is a defect. Wants versions, a minimal case, and what you have already ruled out.
+- **Another team** deciding whether it is theirs. Wants the boundary evidence — what went in, what came out, measured at the seam.
+- **A review, months later**, deciding what to change. Wants the reasoning and the timeline more than the raw data.
+- **An auditor or a customer**, deciding whether to accept an account. Wants provenance: where each thing came from and when.
+
+**Build for one of them.** A pack that tries to serve all four serves none, and the commonest version of that failure is a vendor case padded with material meant to reassure internal management.
+
+## The structure that works
+
+Four sections, and the third is the one almost nobody includes.
+
+**The claim.** One or two sentences. *"Under load above roughly 4,000 concurrent sessions, the pool stops accepting new connections while reporting all members healthy."* Specific, falsifiable, and stated before any evidence — so the reader knows what they are being asked to evaluate.
+
+**The evidence for it.** Each item labelled with **what it is, when it was taken, from where, and what it shows.** An unlabelled log extract is a puzzle; the same extract with one line of framing is an argument.
+
+**The evidence against it, and the gaps.** *"The same load on the second site does not reproduce it, and we do not know why."* *"We have no captures from before 02:10 because the ring had rolled."*
+
+> **This section is what makes a pack credible.** A reader who finds a contradiction you did not mention starts wondering what else you did not mention. A reader who finds it flagged by you starts trusting the rest — and it costs three lines.
+
+**What you want.** The specific ask. *"Can you reproduce this in the lab?"* rather than *"please advise"*, which is how a case gets read once and put down.
+
+## Raw and interpretation, both
+
+The two failure modes are opposite and equally common.
+
+**Raw only** — attaching the captures and letting them speak. They do not speak; they require exactly the context the reader lacks, and the effect is to make them do your analysis without your knowledge of the estate.
+
+**Interpretation only** — a narrative summary with no underlying data. Nothing can be checked, so nothing can be trusted, and the first objection collapses the whole thing.
+
+Both, paired: the claim, then the extract that supports it, then the pointer to the full file for anybody who wants to verify. **Verifiability is what distinguishes evidence from assertion**, and it is the reason to attach the raw material even when nobody reads it.
+
+## Formats that survive
+
+**Text beats screenshots** wherever the content is text. Text is searchable, quotable, diffable, and readable on a phone at three in the morning. A screenshot of a terminal is a picture of information.
+
+**Screenshots are right** for what only exists visually — a UI state, a graph shape, a dashboard at a moment in time. Then annotate them, because a graph without a marked region is an invitation to look at the wrong peak.
+
+**Name files so they sort into sense**: what, where, when. `bigip-01_pool-stats_2026-08-09T0214-0300.txt` tells a stranger everything before they open it. `output2.txt` tells them nothing and will be opened last.
+
+## Sanitise deliberately, and say that you did
+
+Configurations carry keys, community strings, credentials, internal addressing and sometimes customer data. Exporting wholesale and hoping is not a strategy — see [opening a vendor case](/practice/opening-a-vendor-case).
+
+Redact, and then **say what you redacted and how**, in one line. Unannounced redaction is worse than either extreme: the reader hits a blank where a value should be and cannot tell whether they are looking at your caution or at the fault.
+
+## The pack, and the test it has to pass
+
+| section | contains |
+|---|---|
+| **Claim** | one or two sentences, falsifiable |
+| **For** | each item: what, when, from where, what it shows |
+| **Against, and gaps** | contradictions and missing data, named by you |
+| **Ask** | the specific thing you want done |
+| **Attachments** | raw material, named so it sorts, sanitised and said so |
+
+And the test, which is worth applying before sending and which this part returns to later in its own right: **could somebody with none of your context, who cannot ask you a question, act on this?** If the answer depends on a conversation you are expecting to have, the pack is not finished — it is a prompt for a meeting.

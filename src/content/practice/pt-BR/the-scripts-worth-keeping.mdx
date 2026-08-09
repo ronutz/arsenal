@@ -1,0 +1,89 @@
+---
+slug: the-scripts-worth-keeping
+title: "Os scripts que vale guardar"
+thesis: "A maior parte dos scripts de operação é escrita uma vez, usada uma vez, e guardada para sempre. Os que valem ser guardados não se distinguem por qualidade, e sim por outra pessoa conseguir rodá-los com segurança — e um script que mais ninguém se atreve a rodar é um passivo fantasiado de ativo."
+stance: practised
+part: craft
+order: 8
+roles: ["second-line", "field", "first-line", "design"]
+relatedTools: ["health-snapshot-comparator", "exos-config-explainer", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["feeding-the-fix-back", "the-runbook-nobody-can-follow", "capture-before-you-change", "what-to-automate-and-what-never-to"]
+artefact: "Quatro perguntas antes de um script deixar de ser só seu"
+updated: "2026-08-09"
+---
+
+## A pasta que todo mundo tem
+
+Quarenta arquivos. Alguns são genuinamente úteis e rodam todo mês. A maioria foi escrita para uma tarde de 2023 e resolvia algo que não existe mais. Vários fazem quase a mesma coisa, e ninguém lembra qual deles é o que funciona.
+
+**Escrever scripts descartáveis não é a falha.** São a resposta certa a um problema pontual, e tratar todo laço de dez linhas como software seria outro desperdício.
+
+A falha é **não perceber quando um deles deixou de ser descartável.**
+
+## A transição que ninguém marca
+
+Acontece em silêncio, de uma de três formas:
+
+- **Outra pessoa roda.** Você manda para um colega durante um incidente.
+- **Vira referência num runbook.** Agora faz parte de um procedimento, e o procedimento é seguido por gente que nunca leu o script.
+- **Entra num agendamento.** Agora roda sem supervisão, e as falhas dele são silenciosas.
+
+Nesse instante aquilo virou infraestrutura, e **nada nele foi reexaminado**, porque a transição não tem cerimônia. O script que estava bem enquanto só o autor rodava agora é confiado por pessoas que não conseguem lê-lo e não o escolheram.
+
+## O que torna um script seguro para outra pessoa
+
+Não elegância, e não testes. Cinco propriedades, cada uma correspondendo a um jeito de scripts machucarem gente:
+
+**Diz o que vai fazer antes de fazer.** Rodado sem argumentos, imprime para que serve e no que vai mexer — em vez de começar. O script mais perigoso é o que começa a trabalhar no instante em que você digita o nome dele.
+
+**É somente leitura, ou avisa alto que não é.** A maioria dos scripts de operação deveria apenas coletar. Para os que mudam algo, **simulação deveria ser o padrão e agir deveria exigir um sinalizador** — porque quem roda às três da manhã herdou o comando de um runbook e não leu o código.
+
+**Falha por inteiro, não pela metade.** Um script que processa quarenta equipamentos e morre no décimo segundo, tendo configurado metade dele, é pior que um que se recusa a começar. Sucesso parcial é o modo de falha mais caro, porque o parque fica num estado que ninguém projetou.
+
+**Não depende do ambiente do autor.** O alias, o caminho, a credencial já carregada no shell, a suposição de que `python` é a versão três. Outra pessoa roda e recebe um erro — ou pior, um resultado que parece completo e não é, porque a credencial dela dava leitura em só metade do parque.
+
+**A saída dele é confiável ou obviamente não confiável.** Silêncio nunca pode significar sucesso. Um resultado vazio e uma consulta que falhou não podem se parecer, porque uma checagem cuja entrada voltou vazia em silêncio reporta sucesso por um trabalho que nunca fez.
+
+## Diga por que ele existe, dentro do arquivo
+
+O código diz o que faz. **Só um comentário pode dizer por que aquilo existe e quando deixa de ser necessário.**
+
+```
+# Compara o estado dos membros de pool entre os quatro sites. Existe porque
+# a visão da própria plataforma é por site e o incidente de 2026-03 girou
+# em torno de um membro fora do ar em um único site. Se o fabricante lançar
+# uma visão entre sites, apague isto.
+```
+
+Quatro linhas, e contêm as duas coisas que determinam o futuro do script: **o motivo de ter sido escrito e a condição sob a qual ele deve morrer.** Sem isso, será herdado, entendido pela metade, e guardado para sempre por gente que presume que alguém teve um motivo.
+
+É o mesmo instinto de registrar, no template, o motivo de um valor alterado — uma correção ou uma ferramenta sem justificativa anexada convida a próxima pessoa a removê-la ou, pior, a preservá-la muito além da utilidade.
+
+## O que apagar
+
+Apagar é a metade subestimada, porque **todo script guardado é uma coisa que alguém vai encontrar numa emergência e confiar.**
+
+- **Scripts que codificavam um contorno para algo já corrigido.** Continuam rodando, e produzem uma resposta errada com confiança.
+- **Scripts que ninguém rodou em um ano.** Se importasse, teria rodado.
+- **Os três que quase fazem a mesma coisa.** Guarde o que funciona; a ambiguidade em si é o risco, porque numa noite ruim alguém vai escolher errado.
+- **Qualquer um cuja saída ninguém mais sabe interpretar.**
+
+O teste não é *"isto pode ser útil?"* — tudo pode. É **"se alguém encontrar isto numa emergência e rodar, essa pessoa fica em melhor situação?"**
+
+## A linha entre um script e uma ferramenta
+
+Alguns scripts merecem a promoção: rodados por várias pessoas, usados em procedimentos, ou produzindo algo sobre o que se age. Esses querem o que um script não tem — uma interface descobrível, validação de entrada, saída que se explica, e uma casa que não seja o notebook de uma pessoa.
+
+A maioria não merece, e forçá-los por esse portão é como um laço útil de dez linhas vira um projeto que ninguém termina. **A promoção deve seguir o uso, não antecedê-lo.**
+
+## Quatro perguntas antes de um script deixar de ser só seu
+
+Feitas no momento em que outra pessoa está prestes a rodar — que é o momento em que ele muda de categoria:
+
+1. **Ele diz o que vai fazer antes de fazer?**
+2. **Se muda alguma coisa, simulação é o padrão?**
+3. **Ele falha alto e por inteiro, e silêncio pode ser confundido com sucesso?**
+4. **Ele funciona no ambiente de outra pessoa, com o acesso de outra pessoa?**
+
+E a quinta, que é o mesmo teste ao qual esta parte inteira não para de chegar: **alguém conseguiria rodar isto às três da manhã, a partir de um runbook, sem você?** Se não, as opções honestas são corrigir ou guardar para si — mas não mandar e torcer, porque de um jeito ou de outro aquilo vai acabar dentro de um procedimento.

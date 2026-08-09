@@ -1,0 +1,90 @@
+---
+slug: evidence-that-convinces-next-quarter
+title: "Evidence that will still convince somebody next quarter"
+thesis: "Evidence is assembled by somebody holding all the context, for a reader who has none and cannot ask a question. The gap is not detail — it is that the author cannot see which of the context was supplied from their own head, so everything obvious at the time is invisible in the document."
+stance: practised
+part: craft
+order: 6
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["tac-escalation-packet-builder", "incident-timeline-rca-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["building-an-evidence-pack", "log-discipline", "the-write-up"]
+artefact: "Five durability checks, and the rule about relative references"
+updated: "2026-08-09"
+---
+
+## The reader you are actually writing for
+
+Not the vendor engineer today. **Somebody in four months** — a different person, or you with the context gone — who needs to act on this and **cannot ask you a question.**
+
+That reader is the real audience for almost everything in [an evidence pack](/practice/building-an-evidence-pack), because the material outlives its occasion: the case gets reopened, the fault recurs, an auditor asks, a new supplier inherits it, or the same argument comes round with different people in the room.
+
+And the difficulty is not effort. It is that **you cannot see the context you are supplying from your own head.** The parts you did not write down are exactly the parts that felt too obvious to write down, and their obviousness was a property of your position, not of the facts.
+
+## What goes missing, specifically
+
+Predictable enough to check for:
+
+**Which one.** *"The load balancer"* — there are nine. *"The primary"* — of which pair, and it failed over twice since. An identifier that was unambiguous in the room is ambiguous everywhere else.
+
+**Why this was collected.** A capture with no statement of what it was meant to show is a puzzle rather than an exhibit. One line — *"taken to establish whether the SYN-ACK left the appliance"* — converts it.
+
+**What normal was.** You knew 41% was high for that platform. The reader does not, and a number without its expected range carries no information at all. This is [the baseline](/practice/baselines-knowing-what-normal-looks-like) doing work months after it was captured.
+
+**What was already excluded, and on what evidence.** Omit it and the next reader repeats the work — often the expensive part of it.
+
+**What was deliberately not collected.** The gap in the record otherwise reads as an oversight, which is why [what to capture before you know](/practice/what-to-capture-before-you-know) ends by insisting the omissions be named.
+
+## Relative references decay; absolute ones do not
+
+The single most mechanical improvement, and it costs nothing at the time:
+
+| decays | survives |
+|---|---|
+| *yesterday*, *last week*, *this morning* | **2026-08-09, 02:14 −03:00** |
+| *the current firmware* | **15.1.4.1** |
+| *the latest version* | the version string |
+| *the new site* | the site's name |
+| *after the upgrade* | after the upgrade **to X, on date Y** |
+
+Every phrase in the left column was perfectly clear when written and means nothing to a reader who does not know when *now* was. **Documents outlive their present tense**, and a timestamped file full of *"yesterday"* is a document that has quietly stopped being evidence.
+
+## Provenance is what makes it durable
+
+Four facts per item, and their absence is what turns evidence back into an assertion:
+
+**Where** it came from — the device, by a name that resolves to a thing. **When**, absolutely, with a timezone. **How** — the command, the filter, the tool and its version, because output formats change and a reader who cannot reproduce your extraction cannot check it. **Under what conditions** — during the fault, after recovery, under load, in a lab.
+
+That fourth one is the most often skipped and the most often decisive: the same capture means opposite things depending on whether the system was healthy when it was taken.
+
+## Write the observation, not only the argument
+
+Evidence is usually assembled to support a conclusion, and the conclusion is the part most likely to be wrong — or right but irrelevant to whoever picks it up later for a different purpose.
+
+**Observations survive a change of purpose. Conclusions do not.** A pack built to prove a vendor defect will later be read by somebody asking whether the estate was configured correctly, and if it contains only the argument, it answers a question nobody is still asking.
+
+So keep them separable: the measurement, then the reading of it, in different sentences. This is the same discipline [the write-up](/practice/the-write-up) applies to incident notes, for the same reason — *"CPU was high"* decays into an argument; the number with its window does not.
+
+## Your context expires before the evidence does
+
+The practical consequence, and the reason none of this can be deferred:
+
+**The version of you that can write this correctly has a shelf life measured in hours.** By tomorrow you will still know the conclusion and will have lost which things you had to look up, which you assumed, and which name referred to which box. Those are precisely the parts a future reader needs.
+
+Which makes the ordering rule the same as everywhere else in this part: **do the context-dependent writing first**, while the context is still in your head, and the mechanical assembly afterwards, when it is not.
+
+## Five durability checks
+
+Applied before filing, in about a minute:
+
+1. **Does every name resolve?** Not *"the primary"* — the hostname, and which pair.
+2. **Is every time absolute, with a zone?** No *yesterday*, no *this morning*.
+3. **Is every version a version string?** No *current*, no *latest*.
+4. **Does each item say what it was meant to show, and under what conditions it was taken?**
+5. **Is what was excluded — from the investigation and from the collection — stated?**
+
+And the test the whole thing exists for, which is worth reading aloud before sending:
+
+> **Could somebody with none of my context, who cannot ask me a question, act on this?**
+
+If the answer depends on a conversation you expect to have, the document is not evidence yet — it is a prompt for a meeting, and the meeting will not be available in four months.

@@ -1,0 +1,76 @@
+---
+slug: on-call-honestly
+title: "Sobreaviso, com honestidade"
+thesis: "O custo do sobreaviso não são as noites em que você é chamado. São as noites em que você pode ser — que são todas — e quase nenhum modelo de remuneração precifica isso, porque todos contam acionamentos. A restrição é o produto; as chamadas são um detalhe ocasional dela."
+stance: practised
+part: life
+order: 3
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["handing-over-mid-problem", "the-queue-as-a-psychological-object", "triage-and-severity"]
+artefact: "O que perguntar antes de entrar numa escala"
+updated: "2026-08-09"
+---
+
+## O custo é a semana, não a chamada
+
+*"Você só foi chamado duas vezes."* Verdade, e mede a coisa errada.
+
+Nos sete dias em que você segurou o telefone, não pôde tomar duas taças de vinho, não pôde ficar a noventa minutos de um notebook, não pôde ir para o litoral, não pôde estar inteiramente presente num jantar. **A disponibilidade foi contínua. As interrupções foram ocasionais.** O que você vendeu foi a semana.
+
+Todo modelo de remuneração construído em torno de pagamento por acionamento precifica a interrupção e entrega a restrição de graça — e é por isso que sobreaviso parece mal pago mesmo onde o valor por incidente é generoso. **A estrutura honesta tem dois componentes**: um valor por segurar o telefone, e um pagamento por ter sido efetivamente usado. Organizações que pagam só o segundo estão comprando o primeiro sem nomeá-lo.
+
+## O sono não funciona como a escala presume
+
+A escala presume oito horas de noite menos os vinte minutos em que você ficou acordado. Não é assim que funciona.
+
+**A fragmentação custa mais que a duração.** Uma noite quebrada no meio vale bem menos que uma noite mais curta e inteira, e a recuperação não é uma subtração simples.
+
+**O despertar antecipatório é real e não é contabilizado.** Quem está de sobreaviso acorda às três da manhã para conferir um telefone que não tocou. Não é ansiedade em sentido clínico; é resposta completamente racional a segurar um aparelho que pode exigir uma decisão. **Acontece nas noites em que ninguém chamou**, que são justamente as noites que a organização conta como livres.
+
+Então uma semana de sobreaviso com dois acionamentos não é cinco noites intactas mais duas interrompidas. São sete noites de sono mais leve, duas das quais também interrompidas.
+
+## Qualidade de alerta é questão de bem-estar
+
+O enquadramento habitual é operacional: alertas ruidosos treinam as pessoas a ignorar o console. Verdade, e é pouco.
+
+> **Todo alerta que dispara às três da manhã por algo que ninguém trataria antes das nove é um imposto cobrado sobre o sono de uma pessoa, sem retorno.** Não é um defeito de monitoração com efeito colateral humano. É um custo humano com causa em monitoração.
+
+O teste cabe numa frase, e vale aplicá-lo a toda regra capaz de acordar alguém:
+
+> **"A gente levantaria da cama por isso?"**
+
+Se a resposta for não — e para boa parte dos alertas noturnos é — então aquilo é uma notificação matinal, e movê-la para lá não custa nada além do desconforto de admitir que alguém configurou aquilo sem fazer a pergunta.
+
+Uma escala em que metade dos alertas não é acionável não é um problema de pessoal. É um problema de alertas sendo pago com as noites de outras pessoas.
+
+## Responsabilidade sem autoridade é a pior combinação
+
+Ser acordado para consertar algo que você não tem permissão de consertar é a versão mais corrosiva deste trabalho.
+
+Se quem está de sobreaviso não pode reiniciar o serviço, comutar, ou tirar o site de rotação sem acordar alguém sênior para autorizar, então **a escala distribuiu a responsabilidade e reteve a autoridade**, e quem segura o telefone absorve o estresse da falha e o da espera.
+
+A autoridade naquele horário deveria ser explícita, escrita, e maior do que é confortável conceder — porque a alternativa é uma corrente de gente sendo acordada, cada uma somando atraso enquanto o incidente corre. Onde uma decisão genuinamente não pode ser delegada, diga quais são, para que todo o resto fique inequivocamente delegado.
+
+## Recuperação não é regalia
+
+Quem trabalhou das 02h às 06h não deveria ser esperado às 09h, e o motivo não é gentileza.
+
+**Uma pessoa prejudicada conduzindo o próximo incidente é risco operacional**, e a aritmética não perdoa: as horas que você recupera tendo essa pessoa na mesa valem menos que a decisão ruim que ela vai tomar às onze da manhã seguinte. É o assunto de [julgamento na hora onze](/practice/judgment-at-hour-eleven), e vale para o dia seguinte tanto quanto para a noite.
+
+Onde a recuperação é discricionária, ninguém tira — então precisa ser o padrão, declarado, e tirado visivelmente por gente sênior, ou não existe.
+
+## O que perguntar antes de entrar numa escala
+
+Perguntas razoáveis, e as respostas dizem mais sobre uma organização que qualquer coisa na entrevista:
+
+- **Com que frequência o telefone toca de madrugada, de fato?** Por semana, em números, no último trimestre.
+- **Que fração daquilo era acionável naquela hora, e não às nove?**
+- **O que eu posso fazer sem acordar ninguém?** A lista deve ser longa e escrita.
+- **Qual é o valor por estar de sobreaviso, separado do valor por acionamento?** Se não há o primeiro, a restrição não está sendo paga.
+- **O que acontece na manhã seguinte a uma noite ruim?** *"Tire o dia"* como padrão declarado, ou uma discricionariedade que ninguém usa.
+- **Quem é a minha escalação, e essa pessoa já foi acionada?** Um caminho que ninguém usou é um nome, não um caminho.
+- **Quantas pessoas há na escala?** Um a cada quatro é uma vida. Um a cada dois é um arranjo temporário sendo descrito como permanente.
+
+A última merece ser dita com todas as letras: **uma escala que só funciona enquanto ninguém sai já está quebrada**, e todo mundo nela sabe a data em que vai falhar.

@@ -1800,6 +1800,14 @@
   margin-bottom: 0.6rem;
   color: var(--text-primary);
 }
+
+/* /advisory only. The "Not offered here" heading turns the section from what IS
+   offered to what is not, and at the shared .vendor-note-title spacing it read as
+   a continuation of the paragraph above it. Widened here rather than on the
+   shared rule, which four other surfaces depend on. (PRIME 2026-08-09) */
+.advisory-scope-out-title {
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
 .vendor-note-body {
   font-size: 1rem;
   line-height: 1.65;
@@ -15658,4 +15666,151 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 #articles,
 #tools-index {
   scroll-margin-top: 9.5rem;
+}
+
+/* ============================================================================
+   PRACTICE PART INDEX (PRIME 2026-08-09)
+   ----------------------------------------------------------------------------
+   A jump index to the six parts of the Practice spine. Deliberately built on the
+   same grid idiom as .stance-legend just above it, so the two blocks read as one
+   piece of furniture rather than two competing card systems on one page.
+   ========================================================================== */
+.practice-part-nav {
+  display: grid;
+  /* One column: each part is a disclosure holding a list, so side-by-side
+     columns would put two open lists in a race for vertical space. */
+  gap: 0.75rem;
+}
+.practice-part-details {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  border-block-start: 3px solid var(--accent-primary);
+  padding: 0.9rem 1.15rem 1rem;
+}
+.practice-part-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.9rem;
+  cursor: pointer;
+  /* The default triangle is replaced below with one that inherits colour and
+     rotates, so the control reads as part of the card rather than as a browser
+     artefact sitting next to it. */
+  list-style: none;
+}
+.practice-part-summary::-webkit-details-marker {
+  display: none;
+}
+.practice-part-summary::before {
+  content: "";
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-inline-end: 2px solid var(--accent-primary);
+  border-block-end: 2px solid var(--accent-primary);
+  transform: rotate(45deg);
+  transition: transform 0.15s ease;
+}
+.practice-part-details[open] > .practice-part-summary::before {
+  transform: rotate(-135deg);
+}
+.practice-part-summary:hover .practice-part-card-title {
+  color: var(--accent-primary);
+}
+/* Keyboard users must be able to see which disclosure they are on. */
+.practice-part-summary:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+@media (prefers-reduced-motion: reduce) {
+  .practice-part-summary::before {
+    transition: none;
+  }
+}
+.practice-part-card-title {
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  transition: color 0.15s ease;
+}
+.practice-part-card-count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.practice-part-card-note {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0.55rem 0 0;
+  /* Aligns with the list below, which is indented past the marker. */
+  padding-inline-start: 1rem;
+}
+/* Jumps to the same part in the spine below, where the theses are. */
+.practice-part-jump {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.practice-part-jump:hover {
+  color: var(--accent-primary);
+}
+.practice-part-list {
+  margin: 0.5rem 0 0;
+  padding-inline-start: 2.1rem;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.95rem;
+}
+.practice-part-list li::marker {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.practice-part-list a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.practice-part-list a:hover {
+  color: var(--accent-primary);
+  text-decoration: underline;
+}
+.practice-part-section {
+  scroll-margin-top: var(--sticky-anchor-offset);
+}
+
+/* ============================================================================
+   PRACTICE STANCE PILL (PRIME 2026-08-09)
+   ----------------------------------------------------------------------------
+   The stance was a word under the title; it is now an initial in the upper-right
+   corner, in the same three colours the legend above the spine uses. The legend
+   teaches the colour once, and every card afterwards is readable without a key.
+   The full word is available on hover and to assistive technology.
+   ========================================================================== */
+.practice-card {
+  /* The pill is positioned against this card. */
+  position: relative;
+}
+.practice-card .learn-card-title {
+  /* Keeps a long title from running under the pill. */
+  padding-inline-end: 2.25rem;
+}
+.practice-stance-pill {
+  position: absolute;
+  inset-block-start: 0.75rem;
+  inset-inline-end: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--stance-accent, var(--border-strong));
+  color: var(--stance-accent, var(--text-secondary));
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1;
+  /* Not fully opaque: the pill is metadata and should not outrank the title. */
+  opacity: 0.85;
+}
+.learn-card:hover .practice-stance-pill {
+  opacity: 1;
 }

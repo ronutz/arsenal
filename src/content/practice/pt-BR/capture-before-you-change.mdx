@@ -1,0 +1,89 @@
+---
+slug: capture-before-you-change
+title: "Capturar antes de mudar — a primeira disciplina"
+thesis: "Toda mudança destrói a evidência do que havia antes, e destrói em silêncio. O estado anterior à mudança é uma observação única e não renovável: dez segundos de captura compram a capacidade de responder perguntas que você ainda nem sabe que vão te fazer, e pular isso as inviabiliza para sempre."
+stance: practised
+part: craft
+order: 1
+roles: ["first-line", "second-line", "field", "design"]
+relatedTools: ["health-snapshot-comparator", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["the-fix-you-cannot-prove-worked", "baselines-knowing-what-normal-looks-like", "rma-and-the-dead-box"]
+artefact: "A captura de dez segundos, antes de tocar em qualquer coisa"
+updated: "2026-08-09"
+---
+
+## A assimetria
+
+Capturar custa segundos. Não capturar é irreversível.
+
+É o argumento inteiro, e vale enunciar assim, sem adorno, porque no momento aquilo nunca parece a troca que é. **A pressão é sempre por agir** — o serviço está degradado, alguém está esperando, e a correção está bem ali. Dez segundos coletando evidência parecem dez segundos sem ajudar.
+
+Mas o estado que você está prestes a mudar é a única cópia. Depois que a interface for reiniciada, o processo derrubado, a configuração corrigida, **aquilo que estava errado deixa de existir em qualquer lugar**, e toda pergunta que teria sido respondida olhando para aquilo passa a não ter resposta.
+
+## O que some, especificamente
+
+Não a configuração — essa normalmente se recupera de um backup. As partes voláteis:
+
+- **Contadores zeram**, levando junto as taxas de erro e as contagens de descarte
+- **Buffers e anéis de log giram**, e a janela interessante é a mais próxima do evento
+- **Tabelas de sessão e de vizinhança se reconstroem**, então a entrada estranha que estava lá sumiu
+- **O sintoma em si** — o tempo, a resposta parcial, a mensagem de erro específica
+
+E aquela sobre a qual as pessoas têm mais confiança e mais se enganam: **você não vai lembrar do número.** Você vai lembrar que a memória estava "alta". Se era 71% ou 94% terá sumido até a tarde, e essa diferença costuma ser o achado inteiro.
+
+## O custo chega depois, na pergunta de outra pessoa
+
+A correção funciona e o chamado fecha. Aí:
+
+- O relato não consegue dizer o que estava errado, só o que foi feito.
+- Ninguém consegue dizer se a mudança endereçou o mecanismo, que é o assunto de [a correção que você não consegue provar](/practice/the-fix-you-cannot-prove-worked).
+- Quando aquilo voltar em onze meses, não há com o que comparar, então se apresenta como falha nova.
+- O fabricante pede o estado no momento da falha, e a resposta honesta é que ele foi destruído ao restaurar o serviço.
+
+Nenhuma dessas é visível na noite. Todas são consequência dos mesmos dez segundos.
+
+## Precisa ser reflexo, não decisão
+
+É o núcleo prático. **Uma decisão tomada sob pressão perde para a urgência sempre**, e deve perder — a pessoa tem razão de que o serviço importa mais que a evidência.
+
+Então a captura não pode ser um julgamento. Precisa ser o que as suas mãos fazem antes de qualquer outra coisa, como quem confere um torque antes de sair. A regra que funciona é enunciada como sequência, não como prioridade: *primeiro o retrato, depois a correção.* Não *"capture se der tempo"*, que resolve para não com confiabilidade.
+
+Onde de fato há conflito — serviço fora, cada segundo conta — **capture o que é instantâneo e pule o resto.** Uma captura de tela do erro e a saída de dois comandos são quinze segundos. Isso quase sempre está disponível, e quase sempre basta.
+
+## Quando capturar não é barato
+
+A regra acima presume que capturar é de graça. Às vezes não é, e fingir o contrário torna a disciplina desonesta:
+
+**Um dump de memória pode derrubar mais o equipamento**, ou demorar o bastante para atrasar a restauração de forma material.
+
+**Log em depuração pode mudar o comportamento.** Elevar a verbosidade adiciona carga e altera tempos, o que ocasionalmente faz uma falha intermitente parar de reproduzir — você trocou a evidência pelo sintoma, e agora não tem nenhum dos dois. Vale saber antes de ligar, e não depois.
+
+**Algumas capturas custam serviço diretamente**: um espelhamento que satura, um filtro que perde o que importa, um pacote de diagnóstico que pausa o processamento.
+
+Onde capturar tem custo real, vira decisão de verdade — que é [decidir com informação incompleta](/practice/deciding-with-incomplete-information) aplicado à evidência. **Tome a decisão de propósito e diga o que escolheu**, para o relato registrar que a evidência foi trocada, e não esquecida.
+
+## Registre o horário, com o fuso
+
+Uma linha que não custa nada e salva a reconstrução depois: anote **quando** a captura foi feita e em qual fuso, no momento em que a faz.
+
+Arquivos carregam datas de modificação que estarão erradas depois de copiados, e uma captura sem horário é uma observação que não pode ser posicionada numa [linha do tempo](/practice/timelines-reconstructing-what-happened). O arrependimento mais comum não é uma captura que faltou — é uma captura cuja posição na sequência ninguém consegue estabelecer.
+
+## A versão física
+
+A mesma disciplina com pavio mais curto: depois que o hardware sai do rack e é desligado, **tudo que ele poderia ter contado se foi**, e nenhum esforço posterior recupera. É por isso que o artigo de RMA põe a lista de captura antes da lista de remoção e marca a primeira como algo que vence — [o equipamento morto](/practice/rma-and-the-dead-box) é o caso extremo da regra geral.
+
+## A captura de dez segundos
+
+Antes de tocar em qualquer coisa, nesta ordem, porque a ordem também é a do decaimento:
+
+1. **O sintoma em si** — o erro, literal; captura de tela se ele só existe numa interface
+2. **Os contadores** — de interface, de erro, de descarte, de sessão, o que for o status de uma linha da plataforma
+3. **Estado de recursos** — processador, memória, ocupação de tabelas, contagem de conexões
+4. **O fim do log relevante**, com mais janela ao redor do que você acha que precisa
+5. **A configuração em execução**, se for um comando
+6. **A hora e o fuso**, escritos
+
+Aí conserte.
+
+**Se você só conseguir um destes, pegue o primeiro.** O sintoma, capturado literalmente, é aquilo com que todo o resto será comparado depois — e é o que desaparece no instante em que o serviço se recupera.

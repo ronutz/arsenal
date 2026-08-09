@@ -15018,21 +15018,20 @@
     "howBody": "As partes abaixo estão em ordem, e a ordem é a vida de um sistema: antes de quebrar, quando quebra, quando não cede, depois que passa, a vida em volta, e o ofício por baixo de tudo. Leia de cima a baixo e você terá percorrido o arco inteiro.",
     "howSearch": "Ou chegue com uma pergunta única, leia um artigo, e vá embora. Cada entrada mostra o que ela defende, e não o que ela cobre, porque quem procura aquele sobre escalonamento está casando uma pergunta com um argumento.",
     "stanceTitle": "De onde vem a autoridade de cada artigo",
-    "stanceIntro": "Trinta anos são tempo suficiente para ter feito muita coisa e nem de longe suficiente para ter feito tudo. Então cada artigo declara o que ele é, e a marca fica acima do texto, não abaixo dele.",
-    "stanceWhy": "A razão é simples: um conjunto deste tamanho, publicado sob um único nome, implicaria experiência direta em todos os assuntos que contém. Isso não seria verdade, e um site cujas ferramentas calculam em vez de estimar não deveria fazer afirmações que não consegue sustentar.",
+    "stanceIntro": "Trinta anos são tempo suficiente para ter feito muita coisa e nem de longe suficientes para ter feito tudo.",
     "stance": {
       "count": "{n, plural, =0 {nenhum artigo ainda} one {# artigo} other {# artigos}}",
       "practised": {
         "label": "Praticado",
-        "note": "Trabalho feito repetidamente, em produção, pelo autor."
+        "note": "Trabalho que eu fiz repetidamente, em produção."
       },
       "witnessed": {
         "label": "Presenciado",
-        "note": "Trabalho que o autor acompanhou de perto, mas que não era dele."
+        "note": "Trabalho que acompanhei de perto, sem ter sido o dono."
       },
       "documented": {
         "label": "Documentado",
-        "note": "A disciplina estabelecida, descrita e referenciada. Nenhuma experiência direta é alegada."
+        "note": "A disciplina estabelecida, descrita e com fontes."
       }
     },
     "parts": {

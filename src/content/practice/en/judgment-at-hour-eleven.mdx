@@ -1,0 +1,68 @@
+---
+slug: judgment-at-hour-eleven
+title: "Judgment at hour eleven"
+thesis: "Fatigue does not mainly make you slower. It changes what you believe — narrowing the set of explanations you can hold, hardening the one you are already on, and degrading the faculty that would have told you any of this was happening. The countermeasures cannot rely on self-assessment, because self-assessment is the thing that broke first."
+stance: practised
+part: life
+order: 4
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["fault-hypothesis-builder", "incident-timeline-rca-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["on-call-honestly", "handing-over-mid-problem", "the-assumption-you-cannot-see"]
+artefact: "Rules set while rested, because they cannot be set at hour eleven"
+updated: "2026-08-09"
+---
+
+## What actually degrades
+
+The folk model of tiredness is a speed penalty: same thinking, slower. If that were true it would be manageable — you would take longer and arrive at the same place.
+
+What happens instead is that the **content** of your reasoning changes.
+
+**The set of live explanations shrinks.** Early on you can hold four possibilities loosely and move between them. By hour eleven you can hold one, and the others are not rejected — they have quietly stopped being available. Nothing announces their departure.
+
+**The one you are on hardens.** Every additional hour invested makes abandoning it more expensive, and fatigue removes the surplus capacity that abandoning requires. This is [the assumption you cannot see](/practice/the-assumption-you-cannot-see) arriving by a different route: not a belief you never examined, but one you examined at hour three and can no longer re-open.
+
+**Contrary evidence gets absorbed rather than weighed.** A measurement that does not fit gets explained in passing — *"that is probably the monitoring"* — with a fluency that at hour three would have prompted a check.
+
+**Risk tolerance moves, and not consistently.** Some people become reckless, wanting it finished. Others become paralysed, unwilling to touch anything. Both feel like caution from the inside.
+
+## The part that makes it dangerous
+
+> **The faculty that would notice all of the above is itself degraded, and it degrades before anything visible does.**
+
+You can still type accurately, still read a capture, still explain your reasoning coherently to somebody on a call — which is precisely why the room believes you, and why you believe yourself. **Nothing in your own experience feels wrong.** The sensation of being tired is not the same as the sensation of reasoning badly, and only the first one is available to you.
+
+This is why *"I will stop when I notice I am not thinking straight"* fails. The noticing is downstream of the thing that broke.
+
+## So the countermeasures have to be external
+
+Every rule here is set **while rested**, by the same person, in advance — because a rule that requires an assessment at hour eleven requires exactly the capacity that is missing.
+
+**A clock, not a feeling.** *"At 03:00 I hand over or escalate"* works. *"I will stop when I am too tired"* does not, and it is the same argument as [the go/no-go time](/practice/change-windows-and-rollback-arithmetic) in a change window, applied to a person instead of a change.
+
+**No irreversible actions after a stated hour.** Decide in advance which class of action you will not take late — the destructive restore, the reformat, the config wipe. **Not because you would be careless, but because the one thing you cannot do at hour eleven is accurately estimate whether you are being careless.** Reversible work can continue; that distinction is from [deciding with incomplete information](/practice/deciding-with-incomplete-information) and it carries the weight here.
+
+**Somebody else's read.** Not a review — a single question, asked of a rested person: *"here is what I think and why."* Their first reaction is worth more than another hour of yours, and its main value is that they can still hold the alternatives you have lost.
+
+**Write the hypothesis down when you form it.** At hour eleven you can compare what you believe against what you believed, which is the only self-check that survives, because it does not require you to assess your current state — only to read.
+
+## For whoever is running the room
+
+The person eleven hours in will not put their hand up, and asking them to is asking for a judgement they cannot make.
+
+**Make it the room's decision, not theirs.** *"You have been on this since four. Talk Ana through it and go home"* removes the need for them to admit anything, and it should be routine rather than remarkable. Where it happens only in extremis it reads as a rebuke, and people avoid triggering it.
+
+And watch for the tell that is visible from outside even when it is invisible inside: **the same explanation, restated with rising confidence and no new evidence.** From within, that feels like conviction consolidating. From outside it is the clearest signal available that the set of live explanations has collapsed to one.
+
+## The rules, set while rested
+
+Written once, kept where you will see them at three in the morning:
+
+- **My stop time is _____.** A clock time. At it, I hand over or escalate.
+- **After _____ I do not do:** the irreversible list, named in advance.
+- **I write my hypothesis down when I form it**, with the time.
+- **When I have restated the same theory twice with no new evidence, I say so out loud** — to somebody, not to myself.
+- **If I have been on this more than _____ hours, a rested person hears it before I act on it.**
+
+Five lines, decided on a good afternoon. **At hour eleven you will not write these, and you will not need to — you will only need to read them**, which is the one cognitive act still reliably available.

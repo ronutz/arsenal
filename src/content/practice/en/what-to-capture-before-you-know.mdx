@@ -1,0 +1,87 @@
+---
+slug: what-to-capture-before-you-know
+title: "What to capture before you know what happened"
+thesis: "Capture decisions are made at the moment of maximum uncertainty and minimum information: you have to decide what will matter before you know what happened. That is not a knowledge problem you can solve by knowing more — it is structural, and the answer is to capture by rate of decay rather than by hypothesis."
+stance: practised
+part: craft
+order: 4
+roles: ["first-line", "second-line", "field", "design"]
+relatedTools: ["packet-capture-plan-builder", "health-snapshot-comparator", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["packet-capture-discipline", "capture-before-you-change", "the-assumption-you-cannot-see"]
+artefact: "Order by volatility, not by theory"
+updated: "2026-08-09"
+---
+
+## The circularity
+
+The best moment to capture is before you understand the fault. Understanding the fault is what would tell you what to capture.
+
+That is not a failure of preparation and no amount of experience dissolves it. **Capturing "what is relevant" requires already knowing what is relevant**, which is the thing the capture was supposed to establish. Every capture decision is therefore made on worse information than the decision deserves, and always will be.
+
+So the useful question is not *how do I decide better*. It is **what decision procedure survives being made in ignorance.**
+
+## Hypothesis-driven capture is the trap
+
+The natural approach is to capture what your current theory needs. It is efficient, it is targeted, and it fails in a specific way that is worth seeing clearly.
+
+You believe it is the load balancer, so you capture around the load balancer. The theory is wrong. **You now have excellent evidence about a component that was not involved, no evidence about the one that was, and the event is over.**
+
+Worse, the capture will look like progress. A targeted collection produces something to examine, and examining it consumes the time in which you might have noticed you were pointed at the wrong thing — which is [the assumption you cannot see](/practice/the-assumption-you-cannot-see) with a file attached to it.
+
+**Early capture should be broad and cheap. Depth comes after a hypothesis, not before one.**
+
+## Capture by category, not by theory
+
+Categories survive being wrong about the cause. A short list is worth having by default, whatever you currently think:
+
+- **The symptom, verbatim** — the exact error, the exact timing, the exact partial behaviour
+- **Time**, with a zone, on everything
+- **What changed** — the change record, the deployment log, and *"nothing known"* if that is the honest answer
+- **The boundary** — observations from both sides of whatever seam is nearest to the symptom, before you know whether that seam matters
+- **Ceilings** — resource and table occupancy, because "how full" is the question that most often turns out to be the one
+
+None of those depends on being right. All of them are useful under several different eventual causes, which is the property to select for when you cannot select for relevance.
+
+## The test that widens the net cheaply
+
+One exercise, thirty seconds, and it is the most useful thing in this article:
+
+> **Name three things this could turn out to be. For each, what would I wish I had captured? Capture the union.**
+
+The union is almost always small — three hypotheses usually share most of their evidence needs — and the exercise reliably surfaces one item that the leading theory did not require. **That item is the one that matters when the leading theory is wrong**, which it is often enough that this exercise pays for itself several times a year.
+
+It also has a second effect worth having: writing down three candidate causes at minute five is a record of what you believed before the outcome was known, which is what [hindsight](/practice/hindsight-makes-it-look-inevitable) otherwise destroys.
+
+## Order by volatility, not by suspicion
+
+This is the operational rule, and it replaces the intuitive one.
+
+The instinct is to collect in order of *how relevant it seems*. The correct order is **how fast it disappears** — because relevance can be reassessed tomorrow and volatile data cannot be recovered tomorrow.
+
+| decays in | |
+|---|---|
+| **seconds** | the live symptom, session and neighbour state, in-flight traffic |
+| **minutes** | counters, buffers, log rings, process state |
+| **hours** | monitoring at fine resolution, before it is rolled up |
+| **days to never** | configuration, change records, the log archive |
+
+Collect downward. **Anything in the bottom row can wait, and everything in the top row is gone if it waits** — so a capture session that starts with exporting the configuration has spent its most valuable seconds on the least perishable thing.
+
+This is [documenting for the inheritor](/practice/documenting-for-the-inheritor)'s decay principle pointed at evidence instead of at prose, and it produces the same inversion of the obvious order.
+
+## The asymmetry, and its limit
+
+The cost of capturing something you did not need is storage. The cost of not capturing something you needed is the investigation.
+
+That asymmetry justifies erring wide — but not without limit, because [capture is not always cheap](/practice/capture-before-you-change): debug verbosity alters timing, dumps cost availability, full payload creates a privacy liability. **So this is an argument about ordering, not about volume.**
+
+Take the broad, cheap, volatile things first and immediately. Take the expensive things only once a hypothesis justifies them — and by then you will have one, because the cheap things will have given you it.
+
+## And record what you did not capture
+
+The line that costs five seconds and rescues the write-up: **name what you chose not to collect, and why.**
+
+*"No full-payload capture — headers only, on the segment carrying card data."* *"No core dump; the platform was already degraded and it would have extended the outage."*
+
+Without it, the gap in the evidence looks like an oversight to everybody reading later, including you. With it, the gap is a decision somebody can evaluate — and if the fault returns, it is the first thing to revisit.

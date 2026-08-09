@@ -1,0 +1,76 @@
+---
+slug: on-call-honestly
+title: "On-call, honestly"
+thesis: "The cost of on-call is not the nights you are called. It is the nights you might be — which is all of them — and almost no compensation model prices that, because every one of them counts call-outs. The constraint is the product, and the calls are an occasional feature of it."
+stance: practised
+part: life
+order: 3
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["handing-over-mid-problem", "the-queue-as-a-psychological-object", "triage-and-severity"]
+artefact: "What to ask before you join a rota"
+updated: "2026-08-09"
+---
+
+## The week is the cost, not the call
+
+*"You were only called twice."* True, and it measures the wrong thing.
+
+For the seven days you held the phone you could not have two glasses of wine, could not be ninety minutes from a laptop, could not go to the coast, could not be entirely present at dinner. **The availability was continuous. The interruptions were occasional.** What you sold was the week.
+
+Every compensation model built around per-call-out payment prices the interruption and gives the constraint away free, which is why on-call feels underpaid even where the per-incident rate is generous. **The honest structure has two components**: a retainer for holding the phone at all, and a payment for actually being used. Organisations that pay only the second are buying the first without naming it.
+
+## Sleep does not work the way the rota assumes
+
+The rota assumes an eight-hour night minus the twenty minutes you were awake. That is not how it works.
+
+**Fragmentation costs more than duration.** A night broken once in the middle is worth far less than an unbroken shorter night, and the recovery is not a simple subtraction.
+
+**Anticipatory waking is real and uncounted.** People on call wake at three in the morning to check a phone that did not ring. That is not anxiety in a clinical sense; it is a completely rational response to holding a device that might demand a decision. **It happens on the nights nobody was called**, which are the nights the organisation counts as free.
+
+So a week of on-call with two call-outs is not five undisturbed nights plus two disturbed ones. It is seven nights of lighter sleep, two of which were also interrupted.
+
+## Alert quality is a welfare question
+
+The usual framing is operational: noisy alerts train people to ignore the console. True, and it understates it.
+
+> **Every page that fires at three in the morning for something nobody would act on until nine is a tax levied on a person's sleep for no return.** It is not a monitoring defect with a human side effect. It is a human cost with a monitoring cause.
+
+The test is one sentence, and it is worth applying to every rule that can wake somebody:
+
+> **"Would we get out of bed for this?"**
+
+If the answer is no — and for a large fraction of overnight alerts it is — then it is a morning notification, and moving it there costs nothing but the discomfort of admitting that somebody configured it without asking the question.
+
+A rota where half the pages are not actionable is not a staffing problem. It is an alerting problem being paid for in other people's nights.
+
+## Responsibility without authority is the worst combination
+
+Being woken to fix something you are not permitted to fix is the most corrosive version of this job.
+
+If the on-call engineer cannot restart the service, fail over, or take the site out of rotation without waking somebody senior for permission, then **the rota has distributed the accountability and kept the authority**, and the person holding the phone absorbs the stress of both the fault and the wait.
+
+Authority at that hour should be explicit, written, and larger than it is comfortable to grant — because the alternative is a chain of woken people, each adding delay while the incident runs. Where a decision genuinely cannot be delegated, say which ones, so everything else is unambiguously delegated.
+
+## Recovery is not a perk
+
+Somebody who worked from 02:00 to 06:00 should not be expected at 09:00, and the reason is not kindness.
+
+**An impaired engineer handling the next incident is an operational risk**, and the arithmetic is unforgiving: the hours you recover by having them at their desk are worth less than the one bad decision they make at eleven the following morning. That is the subject of [judgment at hour eleven](/practice/judgment-at-hour-eleven), and it applies to the day after quite as much as to the night itself.
+
+Where recovery time is discretionary, nobody takes it — so it has to be the default, stated, and taken by senior people visibly, or it does not exist.
+
+## What to ask before you join a rota
+
+Reasonable questions, and the answers tell you more about an organisation than anything in the interview:
+
+- **How often does the phone actually ring at night?** Per week, in numbers, over the last quarter.
+- **What fraction of those were actionable then, rather than at nine?**
+- **What can I do without waking anybody?** The list should be long and written.
+- **What is the retainer, separately from the call-out rate?** If there is no retainer, the constraint is not being paid for.
+- **What happens the morning after a bad night?** *"Take the day"* as a stated default, or discretion nobody uses.
+- **Who is my escalation, and have they ever been called?** A path nobody has used is a name, not a path.
+- **How many people are in the rota?** One in four is a life. One in two is a temporary arrangement being described as permanent.
+
+The last one deserves saying plainly: **a rota that only works while nobody leaves is already broken**, and everyone in it knows the date it will fail.

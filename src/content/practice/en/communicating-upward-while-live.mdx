@@ -1,0 +1,73 @@
+---
+slug: communicating-upward-while-live
+title: "Communicating upward while the incident is live"
+thesis: "The people above you are not asking for technical detail; they are asking whether they need to act. An update that answers the technical question and not that one gets asked again in ten minutes — and the interruption you resent is the predictable consequence of the update you sent."
+stance: practised
+part: yield
+order: 24
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "tac-escalation-packet-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["running-a-war-room", "deciding-with-incomplete-information", "triage-and-severity"]
+artefact: "The four-line update, and the three things never to say"
+updated: "2026-08-09"
+---
+
+## They are not asking what you think they are asking
+
+*"Any update?"* reads as a request for information about the fault. It almost never is.
+
+The person asking has their own decisions waiting: whether to tell a customer, whether to move a deadline, whether to wake somebody, whether to stand down a team that is on standby, whether this is the thing they need to be in the room for. **They are asking whether they need to act, and roughly when they will know more.**
+
+An update that describes the fault beautifully and answers neither of those has not answered the question — so it gets asked again shortly, and the interruption is the predictable consequence of the reply, not of the asker.
+
+## Four lines
+
+Enough for almost every upward update, and short enough to send from a phone while something else is running:
+
+1. **What is affected, in service terms.** *"Card payments are failing for about one transaction in twelve, all sites."* Not the pool, not the appliance — the thing the business recognises.
+2. **What we are doing.** One clause. *"Failing over to the standby now."*
+3. **What we need from you, or nothing.** *"Nothing at present"* is a complete and valuable answer, and it is the line most often omitted — its absence is what makes people ask again.
+4. **When the next update comes.** A clock time, not *"as soon as we know more"*.
+
+That fourth line does most of the work. **A stated next update converts an open-ended anxiety into a wait**, and a wait is something a senior person can manage around.
+
+## Three things not to say
+
+**A cause you are not sure of.** *"Looks like the firewall"* travels. It reaches a customer, a supplier, an executive summary — and it arrives back four hours later as a fact you have to argue against, after it turned out to be the database. **Name symptoms upward; name hypotheses only downward, inside the investigation.**
+
+**A restoration time you cannot support.** *"Should be back in twenty minutes"* is repeated verbatim to a customer within ninety seconds. When it passes, you have created a second incident made entirely of trust. Give a next-update time instead — that you control.
+
+**Nothing at all.** Silence is read as either *it is worse than they are saying* or *nobody is working on it*, and both produce more interruption than an update would have. **Send the update that says there is no change.**
+
+## Escalating severity upward is a service, not a confession
+
+If the impact turns out larger than first triaged, saying so early is one of the more valuable things you can do, and it feels like the opposite.
+
+The organisation may need to notify customers, invoke a contractual clause, or stand up capacity — and every one of those has a lead time. **Learning at hour four that this is bigger than hour one suggested costs the organisation options it had at hour one.** That is a much worse outcome than having revised a number, which is [triage](/practice/triage-and-severity) doing exactly what it is supposed to do.
+
+## Answer the unasked question
+
+Almost every senior person is holding one they have not said aloud: **is this getting worse?**
+
+Answer it explicitly in every update, in three words — *stable*, *still degrading*, *recovering*. It is the single most useful piece of information you have and it is routinely left out of updates that carefully describe everything else, because from inside the investigation the trajectory feels obvious.
+
+## Assign it, so it is not you
+
+During anything serious, this is a role — the [comms role in the war room](/practice/running-a-war-room) — precisely so that the person investigating is not the person writing.
+
+Where there is no room and no spare person, **the cadence is the whole defence**: state up front when updates will come, hold to it, and do not answer between them. That is a legitimate thing to say out loud: *"I will post at every half hour; between those I am working the problem."* Almost nobody objects, and almost nobody offers it.
+
+## The artefact
+
+Every update, in this order:
+
+| line | example |
+|---|---|
+| **Impact, in service terms** | *"Card payments failing, roughly 1 in 12, all sites"* |
+| **Trajectory** | *"Stable — not getting worse"* |
+| **Action now** | *"Failing over to the standby"* |
+| **Need from you** | *"Nothing at present"* |
+| **Next update** | *"03:30"* |
+
+Five lines, ninety seconds, from a phone. And the discipline that makes it work: **say what you know and when you will know more, and never a cause or a time you would not want quoted back to you by somebody who was not in the room.**

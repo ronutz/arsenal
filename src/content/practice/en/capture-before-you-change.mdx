@@ -1,0 +1,89 @@
+---
+slug: capture-before-you-change
+title: "Capture before you change — the first discipline"
+thesis: "Every change destroys the evidence of what preceded it, and destroys it silently. The pre-change state is a one-time, non-renewable observation: ten seconds of capture buys the ability to answer questions you do not yet know you will be asked, and skipping it forecloses them permanently."
+stance: practised
+part: craft
+order: 1
+roles: ["first-line", "second-line", "field", "design"]
+relatedTools: ["health-snapshot-comparator", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["the-fix-you-cannot-prove-worked", "baselines-knowing-what-normal-looks-like", "rma-and-the-dead-box"]
+artefact: "The ten-second capture, before you touch anything"
+updated: "2026-08-09"
+---
+
+## The asymmetry
+
+Capturing costs seconds. Not capturing is irreversible.
+
+That is the entire argument, and it is worth stating as baldly as that because in the moment it never feels like the trade it is. **The pressure is always to act** — service is degraded, somebody is waiting, and the fix is right there. Ten seconds of collecting evidence feels like ten seconds of not helping.
+
+But the state you are about to change is the only copy. Once the interface is bounced, the process restarted, the config corrected, **the thing that was wrong no longer exists anywhere**, and every question that would have been answered by looking at it is now unanswerable.
+
+## What disappears, specifically
+
+Not the config — that is usually recoverable from a backup. The volatile parts:
+
+- **Counters reset**, taking the error rates and drop counts with them
+- **Buffers and log rings roll**, and the interesting window is the one nearest the event
+- **Session and neighbour tables rebuild**, so whatever odd entry was there is gone
+- **The symptom itself** — the timing, the partial response, the specific error string
+
+And the one people are most confident about and most wrong about: **you will not remember the number.** You will remember that memory was "high". Whether it was 71% or 94% will be gone by the afternoon, and that difference is often the whole finding.
+
+## The cost lands later, on somebody else's question
+
+The fix works and the incident closes. Then:
+
+- The write-up cannot say what was actually wrong, only what was done.
+- Nobody can tell whether the change addressed the mechanism, which is the whole subject of [the fix you cannot prove worked](/practice/the-fix-you-cannot-prove-worked).
+- When it recurs in eleven months, there is nothing to compare against, so it presents as a new fault.
+- The vendor asks for the state at the time of the failure, and the honest answer is that it was destroyed while restoring service.
+
+None of these is visible on the night. All of them are consequences of the same ten seconds.
+
+## It has to be a reflex, not a decision
+
+This is the practical core. **A decision made under pressure loses to urgency every time**, and it should — the person is right that service matters more than evidence.
+
+So the capture cannot be a judgement call. It has to be the thing you do with your hands before you do anything else, the way you check a torque before you drive off. The rule that works is stated as a sequence rather than a priority: *first the snapshot, then the fix.* Not *"capture if there is time"*, which reliably resolves to no.
+
+Where it genuinely conflicts — a service is down and every second counts — **capture what is instant and skip what is not.** A screenshot of the error and the output of two commands is fifteen seconds. That is nearly always available, and it is nearly always enough.
+
+## When capture is not cheap
+
+The rule above assumes capture is free. Sometimes it is not, and pretending otherwise makes the discipline dishonest:
+
+**A core dump or a full memory capture may take the device down further**, or take long enough that it delays restoration materially.
+
+**Debug logging can change the behaviour.** Raising log verbosity adds load and alters timing, which occasionally makes an intermittent fault stop reproducing — you have traded the evidence for the symptom, and now have neither. Worth knowing before you turn it on rather than after.
+
+**Some captures cost service directly**: a span port that saturates, a capture filter that misses, a diagnostic bundle that pauses processing.
+
+Where capture has a real cost, it becomes a genuine decision — which is [deciding with incomplete information](/practice/deciding-with-incomplete-information), applied to evidence. **Make it deliberately and say what you chose**, so the write-up records that the evidence was traded rather than forgotten.
+
+## Timestamp everything, with a timezone
+
+One line that costs nothing and rescues the reconstruction later: note **when** the capture was taken and in which zone, at the moment you take it.
+
+Files carry modification times that will be wrong after copying, and a capture with no time attached is an observation that cannot be placed in [a timeline](/practice/timelines-reconstructing-what-happened). The most common regret is not a missing capture — it is a capture whose position in the sequence nobody can establish.
+
+## The physical version
+
+The same discipline with a shorter fuse: once hardware is unracked and powered down, **everything it could have told you is gone**, and no amount of later effort recovers it. That is why the RMA article puts its capture list before the removal list and marks the first one as expiring — [the dead box](/practice/rma-and-the-dead-box) is the extreme case of the general rule.
+
+## The ten-second capture
+
+Before touching anything, in this order, because the order is also the order of decay:
+
+1. **The symptom itself** — the error, verbatim; a screenshot if it exists only in a UI
+2. **The counters** — interface, error, drop, session, whatever the platform's one-line status is
+3. **Resource state** — processor, memory, table occupancy, connection counts
+4. **The relevant log tail**, with more of the surrounding window than you think you need
+5. **The running configuration**, if it is one command
+6. **The time and the timezone**, written down
+
+Then fix it.
+
+**If you only get one of these, take the first.** The symptom, captured verbatim, is what everything else is later compared against — and it is the one that vanishes the instant the service recovers.

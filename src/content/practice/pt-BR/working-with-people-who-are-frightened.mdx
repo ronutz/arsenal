@@ -1,0 +1,88 @@
+---
+slug: working-with-people-who-are-frightened
+title: "Trabalhar com gente com medo"
+thesis: "Medo num incidente quase nunca é do sistema; é do que admitir alguma coisa vai custar à pessoa. E ele se prende com regularidade a quem está segurando justamente o fato de que você mais precisa — o que faz da segurança psicológica um insumo operacional, não uma gentileza de cultura."
+stance: practised
+part: life
+order: 6
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["rca-without-a-scapegoat", "running-a-war-room", "the-customer-who-is-furious-and-correct"]
+artefact: "Perguntas que trazem resposta, e as mesmas perguntas reformuladas em defesa"
+updated: "2026-08-09"
+---
+
+## Quem está com medo, e do quê
+
+Não da indisponibilidade. Da consequência para si.
+
+- **Quem fez a mudança**, e que percebeu antes de todo mundo que o horário a implica.
+- **A pessoa júnior que notou algo estranho uma hora antes** e não levantou, e agora tem dois problemas.
+- **O engenheiro do fabricante**, cujo produto pode estar em falta e que tem uma relação comercial a proteger.
+- **A pessoa gestora**, que precisa reportar para cima e ainda não tem o que reportar.
+
+Nenhuma delas tem medo da falha. Todas têm medo de uma conversa.
+
+## O que o medo faz com a informação
+
+Normalmente não produz mentira. Produz quatro coisas mais silenciosas, todas caras em tempo:
+
+**Atraso.** O fato relevante chega no minuto cinquenta em vez do minuto cinco, depois de a pessoa ter avaliado a sala.
+
+**Omissão nas bordas.** Não a mudança em si, mas *"eu também reiniciei o agente enquanto estava lá"* — a ação pequena, de aparência inofensiva, deixada de fora porque mencioná-la convida escrutínio.
+
+**Hesitação que apaga a precisão.** *"Acho que foi por volta das duas"*, vindo de quem sabe exatamente, porque exatidão parece exposição.
+
+**A negativa seca que é quase verdade.** *"Eu não fiz nada"* — significando *não fiz nada que devesse ter causado isso*, que é um julgamento e não um relato, e que costuma estar certo e ocasionalmente é a resposta inteira.
+
+> **A coisa inofensiva é, com muita frequência, a chave** — e é exatamente o que o medo remove primeiro.
+
+## Pergunte sobre o sistema, não sobre a pessoa
+
+A mudança mais eficaz, e não custa nada:
+
+| traz resposta | traz defesa |
+|---|---|
+| *"Qual era o estado às 02h00?"* | *"O que você fez às 02h00?"* |
+| *"O que a tela mostrava?"* | *"Por que você configurou assim?"* |
+| *"Me conta o que você viu."* | *"Me conta o que você fez."* |
+| *"O que mais foi tocado naquela janela, por qualquer pessoa?"* | *"Você mudou mais alguma coisa?"* |
+
+Mesma informação, gramática diferente. **Perguntas com uma pessoa como sujeito convidam a um relato de intenções; perguntas com o sistema como sujeito convidam a um relato de observações** — e é de observação que uma investigação vive.
+
+É [análise de causa sem bode expiatório](/practice/rca-without-a-scapegoat) aplicada ao vivo, e não na revisão — e importa mais durante do que depois, porque é durante que a informação ainda é recuperável.
+
+## Diga a frase, e fale sério
+
+*"Ninguém está encrencado. Eu preciso da linha do tempo."*
+
+Dita cedo, na frente de todos, por quem é mais sênior na sala. Funciona, e funciona **só se for verdade** — as pessoas são extremamente boas em detectar a versão que é técnica. Se alguém de fato vai se encrencar, não diga; diga algo mais estreito que você consiga sustentar, como *"agora eu só me importo com a sequência."*
+
+O crédito dessa frase se gasta uma vez. Usada com honestidade, compra a informação por anos; usada como recurso, passa a ser descrida em definitivo — e depois disso os silêncios da sala ficam mais longos.
+
+## Gente com medo age demais
+
+Os dois modos de falha são opostos e ambos são piores que perguntar.
+
+**Fazer coisas para parecer útil.** Reiniciar algo, limpar algo, ajustar um parâmetro — cada ação tomada em parte para demonstrar contribuição, cada uma somando uma variável a um sistema sobre o qual alguém tenta raciocinar, e cada uma agora também difícil de admitir.
+
+**Congelar.** Não tocar em nada, inclusive na coisa que essa pessoa está mais bem posicionada para verificar, porque o risco de ser quem piorou supera o crédito por ajudar.
+
+Os dois se resolvem do mesmo jeito: **diga em voz alta o que você quer feito e o que quer intocado.** A ambiguidade é o que produz os dois comportamentos, e uma instrução explícita elimina a necessidade de alguém adivinhar onde fica o terreno seguro.
+
+## O seu estado visível é insumo operacional
+
+A sala lê o rosto de quem é mais técnico. Não é vaidade; é como as pessoas calibram o quão ruim é isto quando não conseguem avaliar sozinhas.
+
+O que não significa encenar confiança. **Certeza fabricada é pior que incerteza visível**, porque desmorona mal e leva a sua credibilidade junto. O que funciona é incerteza dita com calma: *"Ainda não sei o que é isto. Sei o que vou verificar em seguida, e daqui a vinte minutos sei mais."*
+
+Essa frase é honesta e estabilizadora ao mesmo tempo, e está disponível até no pior momento de um incidente.
+
+## Depois, feche o ciclo pessoalmente
+
+Quem teve a mudança implicada vai descobrir como aquilo terminou. **Deve ouvir de você, pessoalmente, antes de ler num documento** — inclusive, e principalmente, quando a mudança acabou não sendo a causa.
+
+Onde foi a causa, vale o mesmo, com o enquadramento que a revisão vai usar: o mecanismo que deixou aquilo passar, não a mão que estava no teclado. Quem descobre por um relatório distribuído que foi a causa próxima de uma indisponibilidade grande aprende, com exatidão, o que esperar da próxima vez — e passa a agir de acordo, por anos.
+
+**Esse custo é invisível e cumulativo**, e é pago na duração de todo incidente seguinte em que alguém espera cinquenta minutos antes de mencionar a coisa inofensiva.

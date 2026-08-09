@@ -1,0 +1,88 @@
+---
+slug: configuration-diffing-and-version-control
+title: "Comparação de configuração e controle de versão em parques de rede"
+thesis: "\"O que mudou?\" é a pergunta de maior rendimento em diagnóstico, e a maioria dos parques não consegue responder, porque guarda backups e não histórico. Um backup permite restaurar; só uma série permite comparar — e o trabalho que torna a comparação utilizável não é o armazenamento, é a normalização."
+stance: practised
+part: craft
+order: 7
+roles: ["second-line", "field", "design", "first-line"]
+relatedTools: ["fortios-config-diff-explainer", "exos-config-explainer", "f5-awaf-policy-diff"]
+relatedIndustry: []
+relatedPractice: ["capture-before-you-change", "the-assumption-you-cannot-see", "feeding-the-fix-back"]
+artefact: "O histórico mínimo viável, e o que remover antes de comparar"
+updated: "2026-08-09"
+---
+
+## Backup não é histórico
+
+A maioria dos parques tem backup de configuração: a cópia de ontem à noite, guardada por trinta dias, restaurável para um equipamento. Isso resolve recuperação, e recuperação não é o problema descrito aqui.
+
+**Comparar exige uma série**, não uma cópia. A pergunta que de fato encurta investigações é *o que está diferente entre agora e terça*, e respondê-la exige que o arquivo de terça ainda exista ao lado do de hoje, num formato que alguém consiga comparar em dez segundos.
+
+> **"O que mudou?" é o diagnóstico mais barato que existe e o mais frequentemente indisponível.** Todo parque incapaz de responder aquilo rededuz a resposta por raciocínio, ao custo de horas, a partir de princípios que nunca estiveram em dúvida.
+
+## Por que as pessoas abandonam a comparação: ruído
+
+Este é o ponto prático, e é por isso que parques que *têm* histórico ainda não o usam.
+
+Compare duas configurações com vinte e quatro horas de diferença e a saída tem quatrocentas linhas, das quais talvez duas importem. O resto é:
+
+- **Carimbos de tempo e tempo de atividade** embutidos na exportação
+- **Contadores e estatísticas**, onde a plataforma os inclui
+- **Estado de sessão, vizinhança e concessões**, que é execução e não configuração
+- **Números de série de certificados e blocos de chave**, que se reescrevem a cada gravação
+- **Segredos cifrados que cifram diferente toda vez**, então senhas idênticas produzem textos cifrados diferentes
+- **Blocos sem ordem** — conjuntos de regras, listas de membros, grupos de objetos — emitidos em ordem diferente pelo mesmo equipamento em dois dias
+
+Ninguém lê duas vezes um diff de quatrocentas linhas. **Então a ferramenta não é a entrega; a normalização é.** Remova as linhas voláteis, ordene os blocos sem ordem, mascare os segredos que se recifram, e a mesma comparação produz quatro linhas — e aí as pessoas passam a usar todo dia.
+
+É exatamente o que os explicadores por plataforma deste site fazem: um [diff de configuração FortiOS](/tools/fortios-config-diff-explainer) vale existir como ferramenta justamente porque saber quais linhas são ruído é conhecimento por plataforma que leva anos para acumular.
+
+## Duas direções, e a segunda é subutilizada
+
+**No tempo** — este equipamento, agora contra antes. A que todo mundo pensa.
+
+**Entre equipamentos** — este contra o par dele, ou contra os outros onze construídos pelo mesmo template. **Isso encontra o desviante na hora**, e é o jeito mais rápido de responder *"por que este site se comporta diferente?"*. Também revela o desvio de que trata [devolver a correção ao projeto](/practice/feeding-the-fix-back): um template corrigido enquanto quatrocentos equipamentos existentes não foram, ou o contrário.
+
+As duas precisam da mesma normalização, que é o argumento para fazer aquele trabalho uma vez.
+
+## Pretendido contra real
+
+A terceira comparação, e a que transforma um histórico em um controle.
+
+Se a configuração pretendida mora em algum lugar — um template, um repositório, uma fonte de automação — então **o diff interessante é entre o que a fonte diz e o que o equipamento está de fato rodando.** Essa distância é desvio, e desvio é onde o parque silenciosamente deixa de ser aquilo que todo mundo acredita que ele é.
+
+Um parque sem essa comparação roda sobre uma premissa que ninguém testou — que é [a suposição que você não enxerga](/practice/the-assumption-you-cannot-see) com um arquivo de configuração anexado.
+
+## O que um diff não diz
+
+Ele mostra **o que** mudou. Não mostra **quem**, **por quê**, nem **se estava autorizado** — e ler intenção num diff é o jeito mais comum de essa evidência ser mal usada.
+
+Emparelhe com o registro de mudança, e trate a divergência como achado por direito próprio:
+
+> **Uma mudança de configuração sem registro correspondente não é uma falha burocrática. É uma correção emergencial não documentada, uma mudança não autorizada, ou uma automação que ninguém lembra de ter implantado** — e vale saber sobre as três.
+
+## O repositório agora é sensível
+
+Configurações contêm comunidades SNMP, chaves, credenciais, endereçamento interno e, às vezes, identificadores de clientes. Um diretório com configurações noturnas de dois anos é uma das coleções de segredos mais concentradas que uma organização guarda, e normalmente tem controle de acesso mais fraco que os próprios equipamentos.
+
+Mascare o que der para mascarar, restrinja o acesso de propósito, e seja honesto que isso é um custo real da prática, não um rodapé.
+
+## Não deixe a versão boa bloquear a versão útil
+
+A falha comum é aspiracional: o parque vai ganhar infraestrutura como código, então não vale construir uma medida intermediária — e três anos depois continua sem histórico.
+
+**Uma cópia noturna num diretório datado, com um script de normalização, responde "o que mudou?" amanhã.** Não é elegante e não é o destino, e entrega a maior parte do valor no dia em que começa a funcionar.
+
+## O histórico mínimo viável
+
+| | |
+|---|---|
+| **Capturar** | toda noite, todo equipamento, seja qual for a exportação da plataforma |
+| **Guardar** | datado, por tempo suficiente para atravessar um problema trimestral |
+| **Normalizar** | remover carimbos, contadores e estado de execução; ordenar blocos; mascarar segredos que se recifram |
+| **Comparar** | no tempo, e **entre pares** |
+| **Reconciliar** | contra o registro de mudança, tratando mudanças inexplicadas como achados |
+| **Proteger** | o arquivo guarda segredos; restrinja como tal |
+
+Seis linhas, e a segunda mais barata delas — **normalizar** — é a que decide se alguém algum dia vai olhar para as outras cinco.

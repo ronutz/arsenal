@@ -1,0 +1,88 @@
+---
+slug: working-with-people-who-are-frightened
+title: "Working with people who are frightened"
+thesis: "Fear in an incident is almost never about the system; it is about what admitting something will cost the person. And it reliably attaches to whoever is holding the fact you most need — which makes safety an operational input rather than a cultural nicety."
+stance: practised
+part: life
+order: 6
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["rca-without-a-scapegoat", "running-a-war-room", "the-customer-who-is-furious-and-correct"]
+artefact: "Questions that get answers, and the same questions rephrased into defences"
+updated: "2026-08-09"
+---
+
+## Who is frightened, and of what
+
+Not of the outage. Of the consequence to themselves.
+
+- **The person who made the change**, who has worked out before anybody else that the timing implicates them.
+- **The junior who noticed something odd an hour earlier** and did not raise it, and now has two problems.
+- **The vendor's engineer**, whose product may be at fault and who has a commercial relationship to protect.
+- **The manager**, who has to report upward and does not yet have anything to report.
+
+None of them is frightened of the fault. Every one of them is frightened of a conversation.
+
+## What fear does to the information
+
+It does not usually produce lies. It produces four quieter things, all of which cost you time:
+
+**Delay.** The relevant fact arrives at minute fifty rather than minute five, once the person has judged the room.
+
+**Omission around the edges.** Not the change itself, but *"I also restarted the agent while I was in there"* — the small, innocuous-seeming action, left out because mentioning it invites scrutiny.
+
+**Hedging that erases precision.** *"I think it was around two"* from somebody who knows exactly, because exactness feels like exposure.
+
+**The flat denial that is nearly true.** *"I didn't do anything"* — meaning *I did nothing that should have caused this*, which is a judgement rather than a report, and is usually correct and occasionally the whole answer.
+
+> **The innocuous thing is very often the key**, and it is precisely the thing fear removes first.
+
+## Ask about the system, not the person
+
+The single most effective change, and it costs nothing:
+
+| gets an answer | gets a defence |
+|---|---|
+| *"What was the state at 02:00?"* | *"What did you do at 02:00?"* |
+| *"What did the screen show?"* | *"Why did you set it to that?"* |
+| *"Walk me through what you saw."* | *"Walk me through what you did."* |
+| *"What else was touched in that window, by anyone?"* | *"Did you change anything else?"* |
+
+Same information, different grammar. **Questions with a person as the subject invite an account of intentions; questions with the system as the subject invite an account of observations** — and observations are what an investigation runs on.
+
+This is [RCA without a scapegoat](/practice/rca-without-a-scapegoat) applied live rather than in the review, and it matters more during than after, because during is when the information is still recoverable.
+
+## Say the sentence, and mean it
+
+*"Nobody is in trouble. I need the timeline."*
+
+Said early, in front of everybody, by whoever is most senior in the room. It works, and it works **only if it is true** — people are extremely good at detecting the version that is a technique. If somebody will in fact be in trouble, do not say it; say something narrower that you can keep, such as *"right now I only care about the sequence."*
+
+The credit for that sentence is spent once. Used honestly it buys the information for years; used as a device it is disbelieved permanently, and after that the room's silences get longer.
+
+## Frightened people over-act
+
+The two failure modes are opposite and both are worse than asking.
+
+**Doing things to look useful.** Restarting something, clearing something, adjusting a setting — each action taken partly to demonstrate contribution, each one adding a variable to a system somebody is trying to reason about, and each one now also hard to admit to.
+
+**Freezing.** Not touching anything, including the thing they are best placed to check, because the risk of being the one who made it worse outweighs the credit for helping.
+
+Both are addressed the same way: **say out loud what you want done and what you want left alone.** Ambiguity is what drives both behaviours, and an explicit instruction removes the need for anybody to guess where the safe ground is.
+
+## Your visible state is an operational input
+
+The room reads the face of whoever is most technical. That is not vanity; it is how people calibrate how bad this is when they cannot assess it themselves.
+
+Which does not mean performing confidence. **Manufactured certainty is worse than visible uncertainty**, because it collapses badly and takes your credibility with it. What works is uncertainty stated calmly: *"I do not know yet what this is. I know what I am checking next, and I will know more in twenty minutes."*
+
+That sentence is honest and steadying at the same time, and it is available even at the worst moment of an incident.
+
+## Afterwards, close the loop yourself
+
+The person whose change was implicated will find out how it ended. **They should hear it from you, in person, before they read it in a document** — including, and especially, when their change turned out not to be the cause.
+
+Where it was the cause, the same applies with the framing the review will use: the mechanism that let it through, not the hand that was on the keyboard. Somebody who learns from a circulated report that they were the proximate cause of a major outage learns, accurately, what to expect next time — and behaves accordingly, for years.
+
+**That cost is invisible and cumulative**, and it is paid in the length of every subsequent incident where somebody waits fifty minutes before mentioning the innocuous thing.

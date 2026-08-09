@@ -138,6 +138,81 @@ for (const slug of ptBySlug.keys()) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// INLINE LINK RESOLUTION (PRIME ratified 2026-08-09)
+//
+// WHY: inline body links were unvalidated - so a `(/practice/typo)` or a
+// forward reference to an article that never gets written renders happily and
+// 404s in production. Found on 2026-08-09 while writing a deliberate forward
+// link from `what-vendor-support-can-and-cannot-do` to an article that did not
+// exist yet; it was hand-scanned for three sessions running, which is the point
+// at which a repeated manual check either becomes a guard or becomes a habit
+// that lapses.
+//
+// Same shape as check-reading-paths and check-user-guide, which already resolve
+// references against a live registry rather than trusting the prose.
+//
+// Slugs come from the en/ directory, which check-practice has already proven is
+// in one-to-one correspondence with pt-BR/ above. Tools come from the registry
+// source, read as text rather than imported, because this script is plain node
+// and the registry is TypeScript.
+const practiceSlugs = new Set(byLocale.en.map((a) => a.file.replace(/^en\/(.+)\.mdx$/, "$1")));
+//
+// *** THE REGISTRY KEY IS `id`, NOT `slug`. ***
+// The first version of this block matched /slug:\s*"..."/ and found ZERO tools,
+// and because it then guarded with `if (toolSlugs.size && ...)` the tool half of
+// this check silently did nothing while the guard reported OK. Caught by
+// deliberately breaking BOTH link kinds and noticing only one was reported.
+//
+// So the parse now asserts its own result. A guard whose input silently comes
+// back empty is worse than no guard: it reports success for a check it never ran.
+const toolsSrc = fs.readFileSync(path.join(process.cwd(), "src", "config", "tools.ts"), "utf8");
+const toolSlugs = new Set([...toolsSrc.matchAll(/\bid:\s*"([a-z0-9-]+)"/g)].map((m) => m[1]));
+if (toolSlugs.size < 50) {
+  console.error(
+    `\n[check-practice] FAIL: parsed only ${toolSlugs.size} tool id(s) from src/config/tools.ts.` +
+      `\n  The registry format changed and this guard is no longer reading it. Fix the parse` +
+      `\n  rather than lowering this floor - a silent empty set reports OK for a check it never ran.\n`,
+  );
+  process.exit(1);
+}
+
+// *** FRONT-MATTER ARRAYS (added 2026-08-09, one turn after the inline check). ***
+// The comment above previously claimed relatedPractice and relatedTools "were
+// already validated". That was false, written from assumption rather than from
+// reading, and the sweep that followed found FOUR bad tool ids - three of them
+// months old, one added in the same turn as the claim. Front matter now gets the
+// same treatment as body links.
+for (const locale of DAY_ONE) {
+  for (const { file, fm } of byLocale[locale]) {
+    for (const slug of fm.relatedTools ?? []) {
+      if (!toolSlugs.has(slug)) {
+        problems.push(`${file}: relatedTools "${slug}" is not in the tool registry.`);
+      }
+    }
+    for (const slug of fm.relatedPractice ?? []) {
+      if (!practiceSlugs.has(slug)) {
+        problems.push(`${file}: relatedPractice "${slug}" is not an article.`);
+      }
+    }
+  }
+}
+
+for (const locale of DAY_ONE) {
+  for (const { file, body } of byLocale[locale]) {
+    for (const [, slug] of body.matchAll(/\]\(\/practice\/([a-z0-9-]+)\/?\)/g)) {
+      if (!practiceSlugs.has(slug)) {
+        problems.push(`${file}: inline link to /practice/${slug} - no such article; the page renders and the link 404s.`);
+      }
+    }
+    for (const [, slug] of body.matchAll(/\]\(\/tools\/([a-z0-9-]+)\/?\)/g)) {
+      if (!toolSlugs.has(slug)) {
+        problems.push(`${file}: inline link to /tools/${slug} - not in the tool registry.`);
+      }
+    }
+  }
+}
+
 if (problems.length) {
   console.error("\n[check-practice] FAIL:\n");
   for (const p of problems) console.error(`  - ${p}`);
@@ -149,6 +224,17 @@ const n = byLocale.en.length;
 const counts = STANCES.map(
   (s) => `${s}:${byLocale.en.filter((a) => a.fm.stance === s).length}`,
 ).join(" ");
+const inlineLinks = DAY_ONE.reduce(
+  (acc, l) =>
+    acc +
+    byLocale[l].reduce(
+      (a2, art) =>
+        a2 +
+        [...art.body.matchAll(/\]\(\/(?:practice|tools)\/[a-z0-9-]+\/?\)/g)].length,
+      0,
+    ),
+  0,
+);
 console.log(
-  `[check-practice] OK: ${n} article(s) × ${DAY_ONE.length} day-one locales; every stance declared (${counts}).`,
+  `[check-practice] OK: ${n} article(s) × ${DAY_ONE.length} day-one locales; every stance declared (${counts}); ${inlineLinks} inline /practice/ and /tools/ link(s) resolve.`,
 );

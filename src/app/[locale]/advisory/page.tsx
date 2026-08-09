@@ -137,7 +137,14 @@ export default async function AdvisoryPage({
               <h2 className="section-title">{t("scopeTitle")}</h2>
               <p className="section-body">{t("scopeIn")}</p>
 
-              <h3 className="vendor-note-title">{t("scopeOutTitle")}</h3>
+              {/* Scoped class, not a change to .vendor-note-title: that rule is shared by
+                  the about page, vendor pages and Practice articles, and carries no
+                  margin-top at all - so the gap here was only the preceding
+                  paragraph's bottom margin. PRIME 2026-08-09: widen it, on this page
+                  only, so "Not offered here" reads as a turn rather than a continuation. */}
+              <h3 className="vendor-note-title advisory-scope-out-title">
+                {t("scopeOutTitle")}
+              </h3>
               <ul className="advisory-exclusions">
                 {/* Each exclusion is a TERM and an EXPLANATION, which is how the
                     copy was always written - it was previously rendered as one

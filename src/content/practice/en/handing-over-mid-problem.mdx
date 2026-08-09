@@ -1,0 +1,76 @@
+---
+slug: handing-over-mid-problem
+title: "The shift, the rota, and handing over mid-problem"
+thesis: "Handing over an unfinished investigation is the hardest routine act in operations, because what has to transfer is not the facts but the model in your head — and unless you hand over your uncertainty as carefully as your findings, the receiver rebuilds it wrong or starts again from nothing."
+stance: practised
+part: life
+order: 2
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder", "tac-escalation-packet-builder"]
+relatedIndustry: []
+relatedPractice: ["the-queue-as-a-psychological-object", "handover-project-to-operation", "escalation-as-a-skill"]
+artefact: "Five things to say out loud, in the order they are useful"
+updated: "2026-08-09"
+---
+
+## The ticket is not the investigation
+
+Shift handovers reliably transfer the state of the ticket: what was reported, what has been done, what the customer was told. All of it accurate, all of it in writing, and almost none of it the thing that took you six hours to build.
+
+**What took six hours is a model** — a sense of which parts of the system are implicated, which explanation is currently ahead, how firmly, and which observation would knock it down. That lives in your head, it is not in the ticket, and by the time you have slept it will not be fully in your head either.
+
+> **The handover fails not when facts are missing, but when the receiver cannot tell what you were unsure about.**
+
+## Hand over the uncertainty, not only the findings
+
+Most people hand over conclusions, because conclusions are what feel worth saying. The receiver then treats them as established, and inherits your errors with more confidence than you had.
+
+Say the weight out loud:
+
+- *"I am fairly sure it is not the firewall — I have captures on both sides."* **Established.**
+- *"I think it is the storage path, but the only evidence is timing."* **A hypothesis, weakly held.**
+- *"Nobody has looked at the second site at all."* **Unexplored, and that is the useful thing to say.**
+
+Those three categories are the whole content of a good handover. A receiver who knows which is which can act; one who receives an undifferentiated summary either re-verifies everything, which wastes your six hours, or trusts everything, which propagates your mistakes.
+
+## The most valuable line
+
+> **"What I was about to do next."**
+
+It transfers momentum, which is the thing that otherwise dies at the shift boundary. The receiver does not have to reconstruct a plan; they have one, and they can disagree with it deliberately rather than by default.
+
+It costs one sentence, it is skipped almost every time, and it is the difference between a handover that continues an investigation and one that restarts it.
+
+## Staying past your shift is usually a false economy
+
+The instinct is to see it through. Sometimes that is right — a genuine ten minutes from the end, or a moment where transferring costs more than finishing.
+
+Usually it is not, and the reason is uncomfortable: **an engineer eleven hours in is a worse investigator than a rested one at hour zero, and cannot assess which they are.** Fatigue degrades the judgement that would tell you to stop, before it degrades anything visible. What you gain in context you lose in the ability to use it.
+
+The organisation also gets a second cost it never counts: the person who stayed late is impaired for their *next* shift, and the impairment lands on a different problem that nobody connects to this one.
+
+## Do not hand over a decision you should make
+
+If the honest state is *"this needs to be escalated"* or *"this needs a vendor case opened"*, do it before you leave. **Handing over an unmade decision passes on both the work and the discomfort of making it**, and the receiver has less standing to make it than you do — they have been on it for four minutes.
+
+[Escalating on a trigger you set](/practice/escalation-as-a-skill) applies here with particular force: the end of a shift is a perfectly good trigger, decided in advance, and a case opened at handover has a whole night to be worked while everybody sleeps.
+
+## What the rota costs, structurally
+
+Worth naming because it is nobody's fault and it is real.
+
+A rota fragments long problems. **Nobody sees the whole arc**, so a fault that recurs across four shifts is met four times by people each seeing it once — which is [the recurrence](/practice/the-recurrence) generated internally rather than across months. The written record is the only continuous observer, and it is only as good as what people bother to put in it during the worst hours of their week.
+
+That is the argument for the handover discipline being organisational rather than personal. It is also why the one living page per recurring fault matters more in a rota'd team than anywhere else.
+
+## Five things to say out loud
+
+Written down as well, but **said** — the conversation carries the weight the document cannot:
+
+1. **What is happening**, in service terms
+2. **What I am confident of, and why** — with the evidence, not the conclusion
+3. **What I suspect, and how weakly** — named as a suspicion
+4. **What nobody has looked at yet**
+5. **What I was about to do next**
+
+Three minutes. And one more, if it applies, which is the hardest and most useful thing anybody says at a handover: **"I have been at this eleven hours and I do not trust my own judgement on it any more."**

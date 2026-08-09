@@ -1,0 +1,88 @@
+---
+slug: configuration-diffing-and-version-control
+title: "Configuration diffing and version control for network estates"
+thesis: "\"What changed?\" is the highest-yield question in troubleshooting and most estates cannot answer it, because they hold backups rather than history. A backup lets you restore; only a series lets you compare — and the work that makes comparison usable is not the storage, it is the normalisation."
+stance: practised
+part: craft
+order: 7
+roles: ["second-line", "field", "design", "first-line"]
+relatedTools: ["fortios-config-diff-explainer", "exos-config-explainer", "f5-awaf-policy-diff"]
+relatedIndustry: []
+relatedPractice: ["capture-before-you-change", "the-assumption-you-cannot-see", "feeding-the-fix-back"]
+artefact: "The minimum viable history, and what to strip before diffing"
+updated: "2026-08-09"
+---
+
+## A backup is not a history
+
+Most estates have configuration backups: last night's copy, kept for thirty days, restorable to a device. That solves recovery, and recovery is not the problem being described here.
+
+**Comparison needs a series**, not a copy. The question that actually shortens investigations is *what is different between now and Tuesday*, and answering it requires Tuesday's file to still exist beside tonight's, in a form somebody can diff in ten seconds.
+
+> **"What changed?" is the cheapest diagnostic in existence and the one most often unavailable.** Every estate that cannot answer it re-derives the answer by reasoning, at a cost of hours, from first principles that were never in doubt.
+
+## Why people abandon diffing: noise
+
+This is the practical crux, and it is why estates that *do* keep history still do not use it.
+
+Diff two configurations twenty-four hours apart and the output is four hundred lines, of which perhaps two matter. The rest is:
+
+- **Timestamps and uptimes** embedded in the export
+- **Counters and statistics** where the platform includes them
+- **Session, neighbour and lease state** that is runtime rather than configuration
+- **Certificate serials and key blobs** that re-encode on each save
+- **Encrypted secrets that re-encrypt differently every time**, so identical passwords produce different ciphertext
+- **Unordered blocks** — rule sets, member lists, object groups — emitted in a different order by the same device on two days
+
+Nobody reads a four-hundred-line diff twice. **So the tool is not the deliverable; the normalisation is.** Strip the volatile lines, sort the unordered blocks, mask the re-encoding secrets, and the same comparison produces four lines — at which point people use it every day.
+
+That is also exactly what the platform-specific explainers on this site do: a [FortiOS config diff](/tools/fortios-config-diff-explainer) is worth having as a tool precisely because knowing which lines are noise is per-platform knowledge that takes years to accumulate.
+
+## Two directions, and the second is under-used
+
+**Over time** — this device, now against then. The one everybody thinks of.
+
+**Across devices** — this device against its pair, or against the other eleven built from the same template. **This finds the outlier instantly**, and it is the fastest way to answer *"why does this site behave differently?"* It also surfaces the drift that [feeding the fix back](/practice/feeding-the-fix-back) is about: a template corrected while four hundred existing devices were not, or the reverse.
+
+Both need the same normalisation, which is the argument for doing that work once.
+
+## Intended against actual
+
+The third comparison, and the one that turns a history into a control.
+
+If the intended configuration lives somewhere — a template, a repository, an automation source — then **the interesting diff is between what the source says and what the device is actually running.** That gap is drift, and drift is where the estate quietly stops being the thing everybody believes it is.
+
+An estate with no such comparison is running on an assumption nobody has tested — which is [the assumption you cannot see](/practice/the-assumption-you-cannot-see) with a config file attached.
+
+## What a diff does not tell you
+
+It shows **what** changed. It does not show **who**, **why**, or **whether it was authorised** — and reading intent out of a diff is the most common way this evidence gets misused.
+
+Pair it with the change record, and treat the mismatch as a finding in its own right:
+
+> **A configuration change with no corresponding change record is not a clerical gap. It is either an undocumented emergency fix, an unauthorised change, or automation nobody remembers deploying** — and all three are worth knowing about.
+
+## The repository is now sensitive
+
+Configurations contain community strings, keys, credentials, internal addressing and sometimes customer identifiers. A directory of nightly configurations going back two years is one of the most concentrated collections of secrets an organisation holds, and it usually has weaker access control than the devices themselves.
+
+Mask what can be masked, restrict access deliberately, and be honest that this is a real cost of the practice rather than a footnote to it.
+
+## Do not let the good version block the useful one
+
+The common failure is aspirational: the estate will get full infrastructure-as-code, so an interim measure is not worth building — and three years later there is still no history.
+
+**A nightly copy into a dated directory, with a normalisation script, answers "what changed?" tomorrow.** It is not elegant and it is not the destination, and it delivers most of the value on the day it starts working.
+
+## The minimum viable history
+
+| | |
+|---|---|
+| **Capture** | nightly, every device, whatever the platform's export is |
+| **Store** | dated, kept long enough to cross a quarterly problem |
+| **Normalise** | strip timestamps, counters and runtime state; sort unordered blocks; mask re-encoding secrets |
+| **Compare** | over time, and **across peers** |
+| **Reconcile** | against the change record, and treat unexplained changes as findings |
+| **Protect** | the archive holds secrets; restrict it like it does |
+
+Six lines, and the second-cheapest of them — **normalisation** — is the one that decides whether anybody ever looks at the other five.

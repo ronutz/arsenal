@@ -1,0 +1,89 @@
+---
+slug: log-discipline
+title: "Disciplina de log, e os logs que não existem"
+thesis: "A maior parte dos problemas com log não é volume nem retenção; é ausência. A linha de que você precisa nunca foi escrita, ou foi escrita num nível que ninguém liga, ou girou embora antes de alguém olhar — e cada uma dessas é uma decisão que alguém tomou anos atrás sem saber que estava tomando."
+stance: practised
+part: craft
+order: 5
+roles: ["second-line", "first-line", "field", "design"]
+relatedTools: ["health-snapshot-comparator", "incident-timeline-rca-builder", "syslog-pri-decoder"]
+relatedIndustry: []
+relatedPractice: ["capture-before-you-change", "designing-for-three-in-the-morning", "timelines-reconstructing-what-happened"]
+artefact: "As quatro ausências, e o que conferir antes de precisar delas"
+updated: "2026-08-09"
+---
+
+## A linha interessante normalmente não existe
+
+Uma investigação chega aos logs e não encontra nada sobre o evento. O reflexo é presumir que passou batido, que girou, ou que a busca estava errada.
+
+Com frequência, nenhuma das três. **A linha nunca foi escrita**, porque em algum ponto do projeto daquele componente alguém decidiu quais eventos valia registrar, e o que você procura não estava entre eles. Essa decisão é invisível de fora e permanente por dentro.
+
+> **Um log não é o registro do que aconteceu. É o registro daquilo que alguém, um dia, achou que valeria saber.**
+
+Tudo abaixo decorre de levar isso a sério.
+
+## As quatro ausências
+
+**Nunca escrita.** O componente não registra essa classe de evento em nenhum nível. Comum em appliances e serviços gerenciados, e o único remédio é descobrir *antes* de depender daquilo.
+
+**Escrita num nível que ninguém roda.** Existe em depuração, e depuração está desligada, porque depuração é cara. Então a linha está teoricamente disponível e praticamente ausente — e ligar agora não recupera o passado, só o futuro, o que não serve para um evento que já terminou.
+
+**Girou embora.** Escrita, num nível ligado, e sumiu — porque o anel foi dimensionado para uma semana calma e o incidente produziu dez vezes o volume normal. **A hora mais movimentada é a que gira mais rápido**, então anéis de log encolhem exatamente quando o evento que importa acontece.
+
+**Escrita onde ninguém olha.** No equipamento e não no coletor, num arquivo local que não é enviado, ou numa facility que o coletor filtra. Presente, e inencontrável no tempo disponível.
+
+Só as duas últimas costumam ser corrigíveis durante um incidente, e é por isso que as duas primeiras merecem ser conferidas antes de um.
+
+## O que registrar sobre o seu próprio log, antes de precisar
+
+Dez minutos por plataforma, uma vez, e vale mais que qualquer quantidade de busca depois:
+
+- **O que este componente registra no nível padrão, e o que ele não registra?**
+- **Para onde vai** — local, coletor, ambos — e por quanto tempo cada um guarda?
+- **Quanto tempo o anel local segura sob carga**, e não em repouso? Um anel que segura quatro dias num sistema calmo pode segurar quarenta minutos durante um incidente.
+- **Qual é a fonte de relógio**, e está sincronizada? Carimbos de log são a opinião de um equipamento sobre a hora, e correlacionar entre equipamentos vale o que valer essa opinião — a mesma restrição de qualquer [linha do tempo](/practice/timelines-reconstructing-what-happened).
+- **Como é o normal?** Quais erros recorrentes são benignos aqui — porque, sem uma amostra saudável, cada um deles é uma pista às três da manhã.
+
+Esse último item é o mais pulado e o que custa mais horas, e é por isso que [linha de base](/practice/baselines-knowing-what-normal-looks-like) lista uma amostra de log saudável entre as seis coisas a capturar.
+
+## Aumentar o nível é uma mudança, não uma observação
+
+Subir a verbosidade parece olhar com mais atenção. Não é: **modifica o sistema.**
+
+Adiciona processamento e carga de disco, às vezes de forma material. Pode alterar tempos o bastante para uma falha intermitente parar de reproduzir, e nesse ponto você trocou a evidência pelo sintoma e não tem nenhum dos dois — a armadilha nomeada em [capturar antes de mudar](/practice/capture-before-you-change).
+
+E enche o anel mais rápido, o que pode girar embora justamente o histórico que você ia ler. **Num equipamento que já loga bastante, ligar depuração pode destruir o registro da última hora em minutos.** Confira a folga do anel antes de subir o nível, não depois.
+
+## O que registrar, se a decisão for sua
+
+Para quem está em posição de influenciar isso — um projeto, um script, uma plataforma sendo escolhida:
+
+**Registre decisões, não apenas eventos.** *"Membro 3 selecionado"* vale dez vezes *"requisição atendida"*, porque o primeiro explica uma escolha e o segundo confirma que algo ocorreu.
+
+**Registre a identidade que permite seguir uma transação**, que é o identificador de correlação de [projetar para as três da manhã](/practice/designing-for-three-in-the-morning) — e a coisa de maior valor que uma linha de log pode carregar.
+
+**Registre o motivo de uma recusa**, não o fato dela. *"Negado"* gera um chamado; *"negado: nenhuma política corresponde à origem 10.2.4.9 na VLAN 30"* responde ao chamado.
+
+**Não registre segredos**, e confira em vez de presumir — tokens e credenciais vazam para logs por caminhos de erro que ninguém revisa, e um arquivo de logs é uma cópia longeva e amplamente legível.
+
+## Ausência é evidência, e pertence ao relato
+
+Quando os logs estão silenciosos, isso é um achado e não um beco sem saída — e precisa ser dito explicitamente, numa de duas formas:
+
+> *"O firewall não registrou nada naquela janela — e ele registra negações no nível padrão, então uma negação é improvável."*
+
+> *"O firewall não registrou nada naquela janela — mas ele não registra essa classe de evento de forma alguma, então não dá para concluir nada."*
+
+**Essas duas frases são conclusões opostas a partir de um silêncio idêntico**, e a diferença é inteiramente se alguém sabia o que o componente registra. Sem ser dito, o silêncio é lido como a primeira por quem quiser que a investigação siga em frente.
+
+## As quatro ausências, como conferência
+
+| ausência | confira antes, perguntando |
+|---|---|
+| **Nunca escrita** | o que isto registra no padrão, e o que nunca registra? |
+| **Nível baixo demais** | o que só existe em depuração, e quanto a depuração custa aqui? |
+| **Girou embora** | quanto tempo o anel segura **sob carga**? |
+| **Lugar errado** | é enviado, ou só local — e a facility está sendo filtrada? |
+
+Dez minutos por plataforma, feito uma vez enquanto nada está errado. **Todas essas são descobríveis com antecedência e nenhuma é descobrível a tempo.**

@@ -15069,21 +15069,20 @@
     "howBody": "The parts below are in order, and the order is the life of a system: before it breaks, when it breaks, when it will not yield, after it is over, the life around it, and the craft underneath all of it. Read top to bottom and you have been walked through the whole arc.",
     "howSearch": "Or arrive holding one question, read one article, and leave. Each entry shows what it argues rather than what it covers, because somebody scanning for the one about escalation is matching a question to an argument.",
     "stanceTitle": "Where each article's authority comes from",
-    "stanceIntro": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything. So every article declares which it is, and the marker sits above the text rather than below it.",
-    "stanceWhy": "The reason is simple: a corpus this size, published under one name, would otherwise imply first-hand experience of every subject in it. That would not be true, and a site whose tools compute rather than guess should not make claims it cannot support.",
+    "stanceIntro": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything.",
     "stance": {
       "count": "{n, plural, =0 {no articles yet} one {# article} other {# articles}}",
       "practised": {
         "label": "Practised",
-        "note": "Work done repeatedly, in production, by the author."
+        "note": "Work I have done repeatedly, in production."
       },
       "witnessed": {
         "label": "Witnessed",
-        "note": "Work the author was present for or adjacent to, but did not own."
+        "note": "Work I was present for or adjacent to, but did not own."
       },
       "documented": {
         "label": "Documented",
-        "note": "The established discipline, described and sourced. No first-hand claim is made."
+        "note": "The established discipline, described and sourced."
       }
     },
     "parts": {

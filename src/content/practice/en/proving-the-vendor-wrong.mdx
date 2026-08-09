@@ -1,0 +1,90 @@
+---
+slug: proving-the-vendor-wrong
+title: "When the vendor is wrong, and how to prove it"
+thesis: "Being right is not the hard part; making the case unarguable is. A vendor closes what it cannot reproduce and defends what it cannot see, so the work is building evidence that survives being read by a sceptical engineer who was not there — which means removing your own network from the argument."
+stance: practised
+part: yield
+order: 25
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["packet-capture-plan-builder", "tac-escalation-packet-builder", "fault-hypothesis-builder"]
+relatedIndustry: []
+relatedPractice: ["not-a-bug", "opening-a-vendor-case", "what-vendor-support-can-and-cannot-do"]
+artefact: "The minimal reproduction, and the four properties that make evidence unarguable"
+updated: "2026-08-09"
+---
+
+## Two different disputes
+
+[When the vendor says it is not a bug](/practice/not-a-bug) is about **classification** — the behaviour is agreed and the argument is whether it counts as a defect.
+
+This is the other one: **the vendor does not accept that the behaviour happens at all.** The case is closed as not reproducible, or attributed to your configuration, your load, your other equipment. You are certain. Certainty is not evidence, and the engineer on the other end is not being obstructive — **they cannot see your network, and a report they cannot reproduce is indistinguishable from a report that is wrong.**
+
+So the work is not persuasion. It is construction.
+
+## Remove your network from the argument
+
+The single most effective move, and the one most often skipped because it is slow.
+
+Every element of your environment that stays in the reproduction is an alternative explanation the vendor is entitled to reach for — and often correct to. **Each thing you remove closes a door.**
+
+Strip until nothing is left but the vendor's product and the minimum needed to make the behaviour appear. Two devices instead of the estate. A generated stream instead of production traffic. Default configuration plus **only** the settings that matter, added back one at a time until it reappears — which also tells you exactly which setting is implicated, and that sentence is worth more than the rest of the case.
+
+A defect that reproduces on two boxes and a laptop is a defect. **The same defect described across your production topology is a report about your production topology.**
+
+## Four properties that make evidence unarguable
+
+**Minimal.** As above. Fewest components, fewest settings, shortest path.
+
+**Deterministic, or honestly probabilistic.** *"Reproduces every time"* is best. *"Reproduces roughly one run in five, over forty runs"* is genuinely good — a stated rate is a measurement. *"It happens sometimes"* is not evidence and invites the case to be closed.
+
+**Measured at both ends.** Show what went in and what came out. A capture at one point shows a symptom; captures at both ends of the component show **the component doing it**, and that is the difference between a complaint and a demonstration.
+
+**Reproducible by them.** The goal is a procedure the vendor can run in their own lab without you. Written as steps, with versions and configuration attached. At that moment the argument ends, because it stops being your claim and becomes their observation.
+
+## The comparison that settles it
+
+Where a minimal reproduction is impossible — and sometimes it genuinely is — the next strongest thing is **a controlled difference.**
+
+The same traffic through two units where only the firmware version differs. The same configuration on two sites where only the hardware revision differs. One variable, everything else held.
+
+That structure is hard to argue with because it does not require the vendor to trust your description of the environment: **whatever else is true of your network, it was true on both sides.** It is the same reasoning as the ablation in the [fault hypothesis builder](/tools/fault-hypothesis-builder) — change one thing, see what moves.
+
+## Write it as an observation, not an accusation
+
+Tone is not politeness here; it is technique.
+
+*"Your product is broken"* invites defence and a search for what you did wrong. **A neutral, precise description invites verification** — and verification is what you want, because you are right.
+
+> *"With 15.1.4.1 on both units, the SYN-ACK is not returned for connections arriving on VLAN 30 when the persistence profile is applied. The same configuration on 15.1.3.2 returns it. Captures from both interfaces attached, forty runs, fails on all forty."*
+
+Nothing in that is arguable and nothing in it is hostile. It contains a version boundary, a trigger condition, a control, a measurement at both ends, and a rate.
+
+## When you are right and it still will not move
+
+It happens, and there are two legitimate paths that are not shouting.
+
+**The commercial channel**, framed as information rather than pressure, per [what vendor support can and cannot do](/practice/what-vendor-support-can-and-cannot-do). *"We have a reproduction on two lab units; the case has been closed twice as not reproducible"* is a sentence an account team can act on.
+
+**Ask for the disagreement in writing.** *"Can you confirm in the case that this behaviour is expected on 15.1.4.1 with this configuration?"* Not a trap — a legitimate request, and a useful one either way. If it is expected, you now have a documented constraint you can design around. If nobody will write it down, that reluctance is itself information, and it frequently reopens the case without anybody raising their voice.
+
+## And be prepared to be wrong
+
+The strongest position in this whole exercise is that **the minimal reproduction is also the fastest way to discover the fault is yours.**
+
+Strip the environment down and one of two things happens. Either the behaviour survives — and you have an unarguable case — or it disappears, and the thing you removed was the cause. Both are good outcomes and one of them arrives before you have spent three weeks being certain in public.
+
+**Build the reproduction to find out, not to win.** The case that survives that intention is the one no vendor closes.
+
+## The artefact
+
+| property | test |
+|---|---|
+| **Minimal** | could you remove one more component or setting and still see it? |
+| **Rated** | every time, or a stated rate over a stated number of runs |
+| **Bounded** | measured at both sides of the component, not just at the symptom |
+| **Portable** | written as steps the vendor can run without you |
+| **Controlled** | one variable different, everything else held |
+
+And the sentence to open with, which is the whole case in one line:
+
+> **"Here is the smallest thing that does it, and here is the one difference that makes it stop."**

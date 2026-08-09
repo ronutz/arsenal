@@ -1,0 +1,90 @@
+---
+slug: evidence-that-convinces-next-quarter
+title: "Evidência que ainda convence no trimestre que vem"
+thesis: "Evidência é montada por quem tem todo o contexto, para um leitor que não tem nenhum e não pode fazer uma pergunta. A distância não é de detalhe — é que quem escreve não enxerga qual parte do contexto saiu da própria cabeça, então tudo que era óbvio na hora fica invisível no documento."
+stance: practised
+part: craft
+order: 6
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["tac-escalation-packet-builder", "incident-timeline-rca-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["building-an-evidence-pack", "log-discipline", "the-write-up"]
+artefact: "Cinco verificações de durabilidade, e a regra sobre referências relativas"
+updated: "2026-08-09"
+---
+
+## O leitor para quem você está de fato escrevendo
+
+Não o engenheiro do fabricante hoje. **Alguém daqui a quatro meses** — outra pessoa, ou você já sem o contexto — que precisa agir com aquilo e **não pode te fazer uma pergunta.**
+
+Esse leitor é o público real de quase tudo num [pacote de evidências](/practice/building-an-evidence-pack), porque o material sobrevive à ocasião: o chamado é reaberto, a falha volta, uma auditoria pergunta, um fornecedor novo herda aquilo, ou a mesma discussão retorna com outras pessoas na sala.
+
+E a dificuldade não é esforço. É que **você não enxerga o contexto que está fornecendo da própria cabeça.** As partes que você não escreveu são exatamente as que pareciam óbvias demais para escrever — e a obviedade delas era propriedade da sua posição, não dos fatos.
+
+## O que some, especificamente
+
+Previsível o bastante para virar conferência:
+
+**Qual deles.** *"O balanceador"* — são nove. *"O primário"* — de qual par, e ele comutou duas vezes desde então. Um identificador que era inequívoco na sala é ambíguo em qualquer outro lugar.
+
+**Por que aquilo foi coletado.** Uma captura sem dizer o que deveria mostrar é um enigma, não uma peça. Uma linha — *"feita para estabelecer se o SYN-ACK saiu do appliance"* — converte.
+
+**Como era o normal.** Você sabia que 41% era alto para aquela plataforma. O leitor não sabe, e um número sem a faixa esperada não carrega informação nenhuma. É a [linha de base](/practice/baselines-knowing-what-normal-looks-like) trabalhando meses depois de ter sido capturada.
+
+**O que já foi excluído, e com que evidência.** Omita e o próximo leitor refaz o trabalho — muitas vezes a parte cara dele.
+
+**O que deliberadamente não foi coletado.** Sem isso, a lacuna no registro parece descuido, e é por isso que [o que capturar antes de saber](/practice/what-to-capture-before-you-know) termina insistindo que as omissões sejam nomeadas.
+
+## Referências relativas apodrecem; absolutas não
+
+A melhoria mais mecânica de todas, e não custa nada na hora:
+
+| apodrece | sobrevive |
+|---|---|
+| *ontem*, *semana passada*, *hoje de manhã* | **2026-08-09, 02h14 −03:00** |
+| *o firmware atual* | **15.1.4.1** |
+| *a versão mais recente* | a string de versão |
+| *o site novo* | o nome do site |
+| *depois da atualização* | depois da atualização **para X, na data Y** |
+
+Toda expressão da coluna esquerda estava perfeitamente clara quando foi escrita e não significa nada para quem não sabe quando era *agora*. **Documentos sobrevivem ao próprio presente**, e um arquivo datado cheio de *"ontem"* é um documento que silenciosamente deixou de ser evidência.
+
+## Procedência é o que dá durabilidade
+
+Quatro fatos por item, e a ausência deles é o que transforma evidência de volta em alegação:
+
+**De onde** veio — o equipamento, por um nome que corresponda a uma coisa. **Quando**, em absoluto, com fuso. **Como** — o comando, o filtro, a ferramenta e a versão dela, porque formatos de saída mudam e quem não consegue reproduzir a sua extração não consegue conferir. **Sob quais condições** — durante a falha, depois da recuperação, sob carga, em laboratório.
+
+O quarto é o mais pulado e o mais decisivo: a mesma captura significa coisas opostas dependendo de o sistema estar saudável ou não quando ela foi feita.
+
+## Escreva a observação, não só o argumento
+
+Evidência costuma ser montada para sustentar uma conclusão, e a conclusão é a parte mais provável de estar errada — ou certa e irrelevante para quem pegar aquilo depois com outro propósito.
+
+**Observações sobrevivem a uma troca de propósito. Conclusões não.** Um pacote montado para provar um defeito do fabricante será lido depois por alguém perguntando se o parque estava configurado corretamente e, se contiver apenas o argumento, responde a uma pergunta que ninguém está mais fazendo.
+
+Então mantenha as duas coisas separáveis: a medição, depois a leitura dela, em frases diferentes. É a mesma disciplina que [o relato](/practice/the-write-up) aplica às notas de incidente, pelo mesmo motivo — *"a CPU estava alta"* apodrece e vira discussão; o número com a janela não.
+
+## O seu contexto vence antes da evidência
+
+A consequência prática, e a razão de nada disso poder ser adiado:
+
+**A versão de você capaz de escrever isso corretamente tem validade medida em horas.** Amanhã você ainda saberá a conclusão e terá perdido quais coisas precisou consultar, quais presumiu, e qual nome se referia a qual equipamento. São exatamente as partes de que um leitor futuro precisa.
+
+O que faz a regra de ordem ser a mesma do resto desta parte: **faça primeiro a escrita que depende de contexto**, enquanto o contexto ainda está na sua cabeça, e a montagem mecânica depois, quando já não estiver.
+
+## Cinco verificações de durabilidade
+
+Aplicadas antes de arquivar, em cerca de um minuto:
+
+1. **Todo nome corresponde a alguma coisa?** Não *"o primário"* — o hostname, e qual par.
+2. **Todo horário é absoluto, com fuso?** Nada de *ontem*, nada de *hoje de manhã*.
+3. **Toda versão é uma string de versão?** Nada de *atual*, nada de *mais recente*.
+4. **Cada item diz o que deveria mostrar, e sob quais condições foi coletado?**
+5. **O que foi excluído — da investigação e da coleta — está declarado?**
+
+E o teste para o qual tudo isso existe, que vale ler em voz alta antes de enviar:
+
+> **Alguém sem nada do meu contexto, que não pode me fazer uma pergunta, conseguiria agir com isto?**
+
+Se a resposta depende de uma conversa que você espera ter, o documento ainda não é evidência — é a convocação de uma reunião, e a reunião não estará disponível daqui a quatro meses.

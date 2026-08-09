@@ -1,0 +1,88 @@
+---
+slug: what-to-automate-and-what-never-to
+title: "What to automate, and what never to"
+thesis: "The question is never whether something can be automated — almost anything can. It is what the failure looks like afterwards. Automation does not reduce error so much as change its shape: fewer mistakes, each one applied everywhere at once, by something that will not notice."
+stance: practised
+part: craft
+order: 9
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["health-snapshot-comparator", "exos-config-explainer", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["the-scripts-worth-keeping", "configuration-diffing-and-version-control", "deciding-with-incomplete-information"]
+artefact: "Three questions, and the one test that decides"
+updated: "2026-08-09"
+---
+
+## Repetitiveness is the wrong criterion
+
+The usual rule is that repetitive work should be automated. It sounds obvious and it selects for the wrong property, because repetition measures how tedious something is, not what happens when it goes wrong.
+
+Consider the same task done four hundred times. **By hand, three of them are wrong** — a typo here, a missed device there — and the three are independent, discovered separately, and fixed one at a time. **Automated, either none is wrong or all four hundred are**, applied faster than anybody can intervene and identically enough that every check agrees they are consistent.
+
+> **Automation does not remove error. It correlates it.** That is a good trade when the work is verifiable and a bad one when it is not, and repetitiveness tells you nothing about which case you are in.
+
+So the real criteria are **blast radius**, **detectability**, and **what remains possible afterwards**.
+
+## Reading, almost always
+
+The safest and most under-exploited category, and it is nearly free of downside.
+
+Collect the state of four hundred devices. Compare today against last week. Report which members disagree with their peers. Nothing is changed, nothing can be broken, and a wrong answer is visible as an answer rather than as a silent estate-wide edit.
+
+**Most of the value people expect from automating changes is actually available by automating observation**, and it arrives without the risk. [Configuration diffing](/practice/configuration-diffing-and-version-control) is the clearest case: a nightly collection and a normalisation script answer *"what changed?"* forever, and cannot themselves change anything.
+
+If a team automates one thing, it should be this.
+
+## Changing things, with two conditions
+
+Automated change is worth having where **both** hold:
+
+**The automation can check its own work.** It applies, then verifies the intended state, then reports. Without the verification step it is not automation — it is a faster way of hoping, and the speed is the problem.
+
+**Failure stops the run.** Partial application across an estate is the expensive outcome: device 137 hits a variant nobody anticipated, and the estate is now in two states with no record of the boundary. **Fail completely and loudly**, and keep a progress log, which is the same argument [the scripts worth keeping](/practice/the-scripts-worth-keeping) makes about half-working being worse than not starting.
+
+Where either condition is missing, the honest answer is to automate the preparation and leave a person to press the button.
+
+## What never to automate
+
+**Judgement under uncertainty.** Automate the failover; never automate the decision to fail over. That decision weighs reversibility against asymmetric costs on incomplete information — [exactly the reasoning](/practice/deciding-with-incomplete-information) that cannot be encoded, because the inputs are not the ones a system has.
+
+**Anything whose failure is silent and slow.** A nightly job that quietly stops matching, and reports success on an empty set, will be trusted for months. If it cannot fail loudly, its output cannot be relied on — and the fix is to make it assert its own inputs before deciding whether to automate at all.
+
+**Anything you cannot verify afterwards.** If there is no way to confirm the intended outcome, automation converts an uncertain manual change into an uncertain change at scale.
+
+**Anything done rarely.** This one is under-said and it catches good engineers. **A script run twice a year is a script that will be broken the next time it is needed** — firmware moved, a field renamed, an endpoint changed — and it will be discovered broken at the moment of use, which is the moment it was written to protect. Rare tasks are better served by a good runbook than by automation that rots between uses.
+
+## The test that decides
+
+Everything above collapses into one question, and it is the one worth asking aloud before building anything:
+
+> **When this fails at three in the morning, can the person on call still do it by hand?**
+
+If yes, the automation is a convenience and can be as ambitious as you like. **If no, the automation has not added a capability — it has replaced one**, and the organisation is now dependent on a thing that will eventually fail at the worst moment in front of somebody who has never done the task.
+
+That is the real cost of automating a task completely: **it retires the last people who understood it.** The pipeline runs, nobody learns the underlying work, the person who wrote it leaves, and eighteen months later there is a system nobody can explain and nobody can replace — which is [reading a design you did not write](/practice/reading-a-design-you-did-not-write) arriving with no design to read.
+
+The mitigation is not to avoid automating. It is to keep the manual path documented and occasionally exercised, and to accept that this is a cost of the automation rather than an optional extra.
+
+## The arithmetic people skip
+
+Automation has a maintenance cost and it is paid forever. Firmware changes break parsing; endpoints move; the estate grows a variant.
+
+**Time saved must exceed time spent maintaining**, and most business cases count only the first. A twenty-minute task done monthly saves four hours a year. If keeping the automation working costs a day a year, it is a loss — and the honest version of that calculation is usually available before anybody starts.
+
+Which is why **partial automation is so often the right answer**, and so rarely the one proposed: automate the gathering, the comparison and the report, and leave the decision and the action with a person. Most of the time, most of the value was in the gathering.
+
+## Three questions, and the test
+
+Before automating anything:
+
+1. **What is the blast radius if it is wrong?** One device, or the estate at once?
+2. **Would we notice?** Not eventually — that day, from the output itself.
+3. **Does the value exceed the maintenance, honestly counted?**
+
+And then the one that governs:
+
+> **When it fails at three in the morning, can somebody still do it by hand?**
+
+The tools in this part exist to leave a person better able to answer a question, not to answer it for them. **A tool that makes somebody capable is worth keeping. A tool that makes them dependent is a liability that has not presented its bill yet** — and the bill always arrives on the night the tool does not work.

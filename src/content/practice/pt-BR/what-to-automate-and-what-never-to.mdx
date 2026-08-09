@@ -1,0 +1,88 @@
+---
+slug: what-to-automate-and-what-never-to
+title: "O que automatizar, e o que nunca"
+thesis: "A pergunta nunca é se algo pode ser automatizado — quase tudo pode. É como a falha vai se parecer depois. Automação não reduz erro, ela muda o formato dele: menos enganos, cada um aplicado em todo lugar ao mesmo tempo, por algo que não vai perceber."
+stance: practised
+part: craft
+order: 9
+roles: ["second-line", "field", "design", "management"]
+relatedTools: ["health-snapshot-comparator", "exos-config-explainer", "flow-path-reasoner"]
+relatedIndustry: []
+relatedPractice: ["the-scripts-worth-keeping", "configuration-diffing-and-version-control", "deciding-with-incomplete-information"]
+artefact: "Três perguntas, e o teste que decide"
+updated: "2026-08-09"
+---
+
+## Repetitividade é o critério errado
+
+A regra habitual é que trabalho repetitivo deve ser automatizado. Soa óbvio e seleciona pela propriedade errada, porque repetição mede o quanto algo é tedioso, não o que acontece quando dá errado.
+
+Considere a mesma tarefa feita quatrocentas vezes. **Na mão, três saem erradas** — um erro de digitação aqui, um equipamento pulado ali — e as três são independentes, descobertas separadamente e corrigidas uma a uma. **Automatizada, ou nenhuma sai errada ou as quatrocentas saem**, aplicadas mais rápido do que qualquer um consegue intervir e de forma idêntica o bastante para toda verificação concordar que está tudo consistente.
+
+> **Automação não remove erro. Ela correlaciona o erro.** É uma boa troca quando o trabalho é verificável e uma troca ruim quando não é — e repetitividade não diz nada sobre em qual dos dois casos você está.
+
+Então os critérios reais são **raio de alcance**, **detectabilidade**, e **o que continua possível depois**.
+
+## Leitura, quase sempre
+
+A categoria mais segura e mais subaproveitada, e é praticamente sem desvantagem.
+
+Coletar o estado de quatrocentos equipamentos. Comparar hoje com a semana passada. Reportar quais membros divergem dos pares. Nada é alterado, nada pode quebrar, e uma resposta errada aparece como resposta — não como uma edição silenciosa em todo o parque.
+
+**A maior parte do valor que se espera de automatizar mudanças está, na verdade, disponível automatizando observação**, e chega sem o risco. [Comparação de configuração](/practice/configuration-diffing-and-version-control) é o caso mais claro: uma coleta noturna e um script de normalização respondem *"o que mudou?"* para sempre, e não têm como alterar nada.
+
+Se um time for automatizar uma coisa só, que seja essa.
+
+## Mudar coisas, sob duas condições
+
+Mudança automatizada vale a pena onde **as duas** valem:
+
+**A automação consegue conferir o próprio trabalho.** Aplica, depois verifica o estado pretendido, depois reporta. Sem a etapa de verificação aquilo não é automação — é um jeito mais rápido de torcer, e a velocidade é o problema.
+
+**A falha interrompe a execução.** Aplicação parcial num parque é o desfecho caro: o equipamento 137 encontra uma variante que ninguém previu, e o parque fica em dois estados sem registro da fronteira. **Falhe por inteiro e em voz alta**, e mantenha um log de progresso — o mesmo argumento que [os scripts que valem guardar](/practice/the-scripts-worth-keeping) faz sobre meio-funcionar ser pior que não começar.
+
+Onde faltar qualquer uma das condições, a resposta honesta é automatizar a preparação e deixar uma pessoa apertar o botão.
+
+## O que nunca automatizar
+
+**Julgamento sob incerteza.** Automatize a comutação; nunca automatize a decisão de comutar. Essa decisão pesa reversibilidade contra custos assimétricos com informação incompleta — [exatamente o raciocínio](/practice/deciding-with-incomplete-information) que não se codifica, porque as entradas não são as que um sistema tem.
+
+**Qualquer coisa cuja falha seja silenciosa e lenta.** Um job noturno que em silêncio para de casar e reporta sucesso sobre um conjunto vazio será confiado por meses. Se não consegue falhar em voz alta, a saída dele não é confiável — e a correção é fazê-lo conferir as próprias entradas antes mesmo de decidir se aquilo deve ser automatizado.
+
+**Qualquer coisa que você não consiga verificar depois.** Sem meio de confirmar o resultado pretendido, automação converte uma mudança manual incerta numa mudança incerta em escala.
+
+**Qualquer coisa feita raramente.** Este é pouco dito e pega gente boa. **Um script rodado duas vezes por ano é um script que estará quebrado na próxima vez que for necessário** — firmware mudou, um campo foi renomeado, um endpoint trocou — e será descoberto quebrado no momento do uso, que é o momento para o qual ele foi escrito. Tarefas raras são mais bem servidas por um bom runbook que por automação que apodrece entre usos.
+
+## O teste que decide
+
+Tudo acima colapsa numa pergunta, e é a que vale fazer em voz alta antes de construir qualquer coisa:
+
+> **Quando isto falhar às três da manhã, quem está de plantão ainda consegue fazer na mão?**
+
+Se sim, a automação é conveniência e pode ser tão ambiciosa quanto você quiser. **Se não, a automação não acrescentou uma capacidade — substituiu uma**, e a organização passou a depender de algo que um dia vai falhar no pior momento, diante de alguém que nunca fez aquela tarefa.
+
+É esse o custo real de automatizar uma tarefa por completo: **aposenta as últimas pessoas que a entendiam.** A esteira roda, ninguém aprende o trabalho por baixo, quem escreveu vai embora, e dezoito meses depois existe um sistema que ninguém sabe explicar e ninguém sabe substituir — que é [ler um projeto que não foi você quem fez](/practice/reading-a-design-you-did-not-write) chegando sem projeto para ler.
+
+A mitigação não é evitar automatizar. É manter o caminho manual documentado e exercitado de vez em quando, e aceitar que isso é um custo da automação, não um extra opcional.
+
+## A aritmética que se pula
+
+Automação tem custo de manutenção, e ele é pago para sempre. Mudanças de firmware quebram o parsing; endpoints mudam; o parque ganha uma variante.
+
+**O tempo economizado precisa superar o tempo de manutenção**, e a maioria dos casos de negócio conta só o primeiro. Uma tarefa de vinte minutos feita mensalmente economiza quatro horas por ano. Se manter a automação funcionando custa um dia por ano, é prejuízo — e a versão honesta dessa conta normalmente está disponível antes de alguém começar.
+
+É por isso que **automação parcial é tão frequentemente a resposta certa**, e tão raramente a proposta: automatize a coleta, a comparação e o relatório, e deixe a decisão e a ação com uma pessoa. Na maior parte das vezes, quase todo o valor estava na coleta.
+
+## Três perguntas, e o teste
+
+Antes de automatizar qualquer coisa:
+
+1. **Qual é o raio de alcance se estiver errado?** Um equipamento, ou o parque de uma vez?
+2. **A gente perceberia?** Não com o tempo — naquele dia, pela própria saída.
+3. **O valor supera a manutenção, contada com honestidade?**
+
+E então a que governa:
+
+> **Quando falhar às três da manhã, alguém ainda consegue fazer na mão?**
+
+As ferramentas desta parte existem para deixar uma pessoa mais capaz de responder a uma pergunta, não para responder no lugar dela. **Uma ferramenta que torna alguém capaz vale guardar. Uma ferramenta que torna alguém dependente é um passivo que ainda não apresentou a conta** — e a conta sempre chega na noite em que a ferramenta não funciona.

@@ -1,0 +1,89 @@
+---
+slug: log-discipline
+title: "Log discipline, and the logs that are not there"
+thesis: "Most log problems are not about volume or retention; they are about absence. The line you need was never written, or was written at a level nobody enables, or was rolled away before anybody looked — and every one of those is a decision somebody made years ago without knowing they were making it."
+stance: practised
+part: craft
+order: 5
+roles: ["second-line", "first-line", "field", "design"]
+relatedTools: ["health-snapshot-comparator", "incident-timeline-rca-builder", "syslog-pri-decoder"]
+relatedIndustry: []
+relatedPractice: ["capture-before-you-change", "designing-for-three-in-the-morning", "timelines-reconstructing-what-happened"]
+artefact: "The four absences, and what to check before you need them"
+updated: "2026-08-09"
+---
+
+## The interesting line usually does not exist
+
+An investigation reaches the logs and finds nothing about the event. The reflex is to assume it was missed, or rolled, or that the search was wrong.
+
+Frequently none of those. **The line was never written**, because somewhere in the design of that component somebody decided which events were worth recording, and the one you are looking for was not among them. That decision is invisible from the outside and permanent from the inside.
+
+> **A log is not a record of what happened. It is a record of what somebody once thought would be worth knowing.**
+
+Everything below follows from taking that seriously.
+
+## The four absences
+
+**Never written.** The component does not log this class of event at any level. Common in appliances and managed services, and the only remedy is to discover it *before* you depend on it.
+
+**Written at a level nobody runs.** It exists at debug, and debug is off, because debug is expensive. So the line is theoretically available and practically absent — and turning it on now does not retrieve the past, only the future, which is no use for an event that has finished.
+
+**Rolled away.** Written, at a level that was enabled, and gone — because the ring was sized for a quiet week and the incident produced ten times the normal volume. **The busiest hour is the one that rolls fastest**, so log rings shrink exactly when the event you care about occurs.
+
+**Written somewhere nobody looks.** On the device rather than the collector, in a local file that is not shipped, or in a facility the collector filters out. Present, and unfindable in the time available.
+
+Only the last two are usually fixable during an incident, which is why the first two are worth checking before one.
+
+## What to record about your logging, before you need it
+
+Ten minutes per platform, once, and it is worth more than any amount of searching later:
+
+- **What does this component log at default level, and what does it not?**
+- **Where does it go** — local, collector, both — and how long does each keep it?
+- **How long is the local ring under load**, not at rest? A ring holding four days on a quiet system may hold forty minutes during an incident.
+- **What is the clock source**, and is it synchronised? Log timestamps are a device's opinion of the time, and cross-device correlation is only as good as that opinion — the same constraint as any [timeline](/practice/timelines-reconstructing-what-happened).
+- **What does normal look like?** Which recurring errors are benign here — because without a healthy sample, every one of them is a lead at three in the morning.
+
+That last item is the one most often skipped and the one that costs the most hours, and it is why [baselines](/practice/baselines-knowing-what-normal-looks-like) lists a healthy log sample among the six things to capture.
+
+## Raising the level is a change, not an observation
+
+Turning up verbosity feels like looking harder. It is not: **it modifies the system.**
+
+It adds processing and disk load, sometimes materially. It can alter timing enough that an intermittent fault stops reproducing, at which point you have traded the evidence for the symptom and hold neither — the same trap named in [capture before you change](/practice/capture-before-you-change).
+
+And it fills the ring faster, which can roll away the history you were about to read. **On a device already logging heavily, enabling debug can destroy the record of the last hour within minutes.** Check the ring's headroom before raising the level, not after.
+
+## What to log, if you get to decide
+
+For anybody in a position to influence this — a design, a script, a platform being chosen:
+
+**Log decisions, not just events.** *"Selected member 3"* is worth ten times *"request handled"*, because the first explains a choice and the second confirms that something occurred.
+
+**Log the identity that lets you follow one transaction**, which is the correlation identifier from [designing for three in the morning](/practice/designing-for-three-in-the-morning) — and the single highest-value thing any log line can carry.
+
+**Log the reason for a rejection**, not the fact of it. *"Denied"* generates a support case; *"denied: no matching policy for source 10.2.4.9 on VLAN 30"* answers it.
+
+**Do not log secrets**, and check rather than assume — tokens and credentials leak into logs through error paths that nobody reviews, and a log archive is a long-lived, widely-readable copy.
+
+## Absence is evidence, and belongs in the write-up
+
+When the logs are silent, that is a finding rather than a dead end, and it needs saying explicitly in one of two forms:
+
+> *"The firewall logged nothing in that window — and it logs denials at default level, so a denial is unlikely."*
+
+> *"The firewall logged nothing in that window — but it does not log this class of event at all, so we cannot conclude anything."*
+
+**Those two sentences are opposite conclusions from identical silence**, and the difference is entirely whether somebody knew what the component records. Left unstated, silence gets read as the first by whoever wants the investigation to move on.
+
+## The four absences, as a check
+
+| absence | check it before, by asking |
+|---|---|
+| **Never written** | what does this log at default, and what does it never log? |
+| **Level too low** | what only exists at debug, and what does debug cost here? |
+| **Rolled away** | how long does the ring hold **under load**? |
+| **Wrong place** | is it shipped, or only local — and is the facility filtered out? |
+
+Ten minutes per platform, done once while nothing is wrong. **Every one of these is discoverable in advance and none of them is discoverable in time.**

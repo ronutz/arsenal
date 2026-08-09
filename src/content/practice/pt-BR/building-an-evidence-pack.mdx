@@ -1,0 +1,83 @@
+---
+slug: building-an-evidence-pack
+title: "Montar um pacote de evidências"
+thesis: "Um pacote de evidências não é tudo que você tem; é uma seleção feita para um leitor com uma decisão a tomar. Mandar tudo falha do mesmo jeito que mandar nada — transfere o trabalho de achar o sinal para quem você está pedindo ajuda, e essa pessoa vai fazer pior que você, porque não enxerga o seu parque."
+stance: practised
+part: craft
+order: 2
+roles: ["second-line", "field", "first-line", "management"]
+relatedTools: ["tac-escalation-packet-builder", "packet-capture-plan-builder", "incident-timeline-rca-builder"]
+relatedIndustry: []
+relatedPractice: ["capture-before-you-change", "opening-a-vendor-case", "proving-the-vendor-wrong", "evidence-that-convinces-next-quarter"]
+artefact: "A estrutura do pacote, e a seção que quase todo mundo deixa de fora"
+updated: "2026-08-09"
+---
+
+## Selecionar é o trabalho
+
+[Capturar](/practice/capture-before-you-change) é aquisição — agarrar tudo antes que evapore, sem saber ainda o que importa. Um pacote é a disciplina oposta: **decidir o que deixar de fora.**
+
+O instinto de quem capturou bem é mandar tudo. Seiscentos megabytes de log, a configuração inteira, quatro capturas, e um bilhete dizendo *"me avise se precisar de mais alguma coisa."* Parece esmero e é o contrário:
+
+> **Mandar tudo transfere o trabalho de achar o sinal para alguém com menos contexto que você.** Essa pessoa não sabe qual interface importa, qual dos quatro sites é o certo, nem quais erros são normais aqui. Você sabe. **Esse conhecimento é justamente o que você deveria estar empacotando**, e volume sem filtro é a aparência que isso tem quando não se faz.
+
+## Quem vai ler, e o que está decidindo
+
+Um pacote é construído para um leitor e uma decisão, e os dois variam mais do que se imagina:
+
+- **Um engenheiro do fabricante**, decidindo se aquilo reproduz e se é defeito. Quer versões, um caso mínimo, e o que você já descartou.
+- **Outro time**, decidindo se aquilo é dele. Quer a evidência de fronteira — o que entrou, o que saiu, medido na costura.
+- **Uma revisão, meses depois**, decidindo o que mudar. Quer o raciocínio e a linha do tempo mais que o dado bruto.
+- **Uma auditoria ou um cliente**, decidindo se aceita um relato. Quer procedência: de onde veio cada coisa e quando.
+
+**Construa para um deles.** Um pacote que tenta servir aos quatro não serve a nenhum, e a versão mais comum dessa falha é um chamado com o fabricante inchado de material feito para tranquilizar a gestão interna.
+
+## A estrutura que funciona
+
+Quatro seções, e a terceira é a que quase ninguém inclui.
+
+**A afirmação.** Uma ou duas frases. *"Sob carga acima de cerca de 4.000 sessões simultâneas, o pool para de aceitar novas conexões enquanto reporta todos os membros saudáveis."* Específica, falsificável, e dita antes de qualquer evidência — para o leitor saber o que está sendo pedido que ele avalie.
+
+**A evidência a favor.** Cada item identificado com **o que é, quando foi coletado, de onde, e o que mostra.** Um trecho de log sem rótulo é um enigma; o mesmo trecho com uma linha de enquadramento é um argumento.
+
+**A evidência contra, e as lacunas.** *"A mesma carga no segundo site não reproduz, e não sabemos por quê."* *"Não temos capturas anteriores às 02h10 porque o anel de log já tinha girado."*
+
+> **É esta seção que dá credibilidade ao pacote.** Um leitor que encontra sozinho uma contradição que você não mencionou começa a se perguntar o que mais você não mencionou. Um leitor que a encontra sinalizada por você começa a confiar no resto — e custa três linhas.
+
+**O que você quer.** O pedido específico. *"Vocês conseguem reproduzir no laboratório?"* em vez de *"favor orientar"*, que é como um chamado é lido uma vez e deixado de lado.
+
+## Bruto e interpretação, os dois
+
+Os dois modos de falha são opostos e igualmente comuns.
+
+**Só bruto** — anexar as capturas e deixar que falem. Elas não falam; exigem exatamente o contexto que falta ao leitor, e o efeito é fazer essa pessoa fazer a sua análise sem o seu conhecimento do parque.
+
+**Só interpretação** — um resumo narrativo sem dado por baixo. Nada pode ser conferido, então nada pode ser confiado, e a primeira objeção derruba tudo.
+
+Os dois, emparelhados: a afirmação, depois o trecho que a sustenta, depois o ponteiro para o arquivo completo para quem quiser verificar. **Verificabilidade é o que distingue evidência de alegação**, e é a razão de anexar o material bruto mesmo quando ninguém o lê.
+
+## Formatos que sobrevivem
+
+**Texto ganha de captura de tela** sempre que o conteúdo for texto. Texto é pesquisável, citável, comparável, e legível no celular às três da manhã. Uma captura de tela de um terminal é uma fotografia de informação.
+
+**Captura de tela é o formato certo** para o que só existe visualmente — um estado de interface, o formato de um gráfico, um painel num instante. Aí anote em cima, porque um gráfico sem região marcada é um convite a olhar o pico errado.
+
+**Nomeie arquivos para que ordenem com sentido**: o quê, onde, quando. `bigip-01_pool-stats_2026-08-09T0214-0300.txt` diz tudo a um estranho antes de ser aberto. `saida2.txt` não diz nada e será aberto por último.
+
+## Higienize de propósito, e diga que higienizou
+
+Configurações carregam chaves, comunidades SNMP, credenciais, endereçamento interno e, às vezes, dados de clientes. Exportar por inteiro e torcer não é estratégia — ver [abrir um chamado com o fabricante](/practice/opening-a-vendor-case).
+
+Tarje, e então **diga o que tarjou e como**, em uma linha. Tarja não anunciada é pior que qualquer dos extremos: o leitor bate num vazio onde deveria haver um valor e não consegue distinguir a sua cautela da falha.
+
+## O pacote, e o teste que ele precisa passar
+
+| seção | contém |
+|---|---|
+| **Afirmação** | uma ou duas frases, falsificável |
+| **A favor** | cada item: o quê, quando, de onde, o que mostra |
+| **Contra, e lacunas** | contradições e dados que faltam, sinalizados por você |
+| **Pedido** | a coisa específica que você quer que seja feita |
+| **Anexos** | material bruto, nomeado para ordenar, higienizado e dito |
+
+E o teste, que vale aplicar antes de enviar e ao qual esta parte volta mais adiante por direito próprio: **alguém sem nada do seu contexto, que não pode te fazer uma pergunta, conseguiria agir com isto?** Se a resposta depende de uma conversa que você espera ter, o pacote não está pronto — é a convocação de uma reunião.

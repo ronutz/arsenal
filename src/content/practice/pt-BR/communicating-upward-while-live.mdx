@@ -1,0 +1,73 @@
+---
+slug: communicating-upward-while-live
+title: "Comunicar para cima com o incidente em curso"
+thesis: "Quem está acima de você não está pedindo detalhe técnico; está perguntando se precisa agir. Uma atualização que responde à pergunta técnica e não a essa será refeita em dez minutos — e a interrupção que você acha ruim é consequência previsível da atualização que você mandou."
+stance: practised
+part: yield
+order: 24
+roles: ["first-line", "second-line", "field", "management"]
+relatedTools: ["incident-timeline-rca-builder", "tac-escalation-packet-builder", "health-snapshot-comparator"]
+relatedIndustry: []
+relatedPractice: ["running-a-war-room", "deciding-with-incomplete-information", "triage-and-severity"]
+artefact: "A atualização de quatro linhas, e as três coisas que nunca se diz"
+updated: "2026-08-09"
+---
+
+## Não estão perguntando o que você acha que estão
+
+*"Alguma novidade?"* soa como pedido de informação sobre a falha. Quase nunca é.
+
+Quem pergunta tem as próprias decisões esperando: avisar ou não um cliente, mexer ou não num prazo, acordar ou não alguém, dispensar ou não um time de sobreaviso, se isto é ou não a coisa para a qual precisa entrar na sala. **A pessoa está perguntando se precisa agir, e mais ou menos quando saberá mais.**
+
+Uma atualização que descreve a falha lindamente e não responde a nenhuma das duas não respondeu à pergunta — então ela será refeita em pouco tempo, e a interrupção é consequência previsível da resposta, não de quem perguntou.
+
+## Quatro linhas
+
+Suficiente para quase toda atualização para cima, e curta o bastante para mandar do celular enquanto outra coisa roda:
+
+1. **O que está afetado, em termos de serviço.** *"Pagamentos com cartão falhando em cerca de uma transação a cada doze, em todos os sites."* Não o pool, não o appliance — a coisa que o negócio reconhece.
+2. **O que estamos fazendo.** Uma oração. *"Comutando para o equipamento em espera agora."*
+3. **O que precisamos de você, ou nada.** *"Nada no momento"* é resposta completa e valiosa, e é a linha mais omitida — a ausência dela é o que faz perguntarem de novo.
+4. **Quando vem a próxima atualização.** Um horário de relógio, não *"assim que soubermos mais"*.
+
+A quarta linha faz a maior parte do trabalho. **Uma próxima atualização declarada converte uma ansiedade sem fim numa espera**, e espera é algo que uma pessoa sênior consegue administrar.
+
+## Três coisas que não se diz
+
+**Uma causa da qual você não tem certeza.** *"Parece ser o firewall"* viaja. Chega a um cliente, a um fornecedor, a um resumo executivo — e volta quatro horas depois como um fato contra o qual você vai ter de argumentar, depois de descobrir que era o banco. **Nomeie sintomas para cima; nomeie hipóteses só para baixo, dentro da investigação.**
+
+**Um prazo de restauração que você não sustenta.** *"Deve voltar em vinte minutos"* é repetido literalmente a um cliente em noventa segundos. Quando o prazo passa, você criou um segundo incidente feito inteiramente de confiança. Dê um horário de próxima atualização — esse você controla.
+
+**Nada.** Silêncio é lido como *está pior do que estão dizendo* ou *ninguém está trabalhando nisso*, e os dois produzem mais interrupção do que uma atualização produziria. **Mande a atualização que diz que não há mudança.**
+
+## Elevar a severidade para cima é um serviço, não uma confissão
+
+Se o impacto se revelar maior do que a triagem inicial indicou, dizer isso cedo é uma das coisas mais valiosas que você faz — e parece o contrário.
+
+A organização pode precisar notificar clientes, acionar uma cláusula contratual ou levantar capacidade — e cada uma dessas coisas tem tempo de preparação. **Saber na quarta hora que isto é maior do que a primeira hora sugeriu custa à organização as opções que ela tinha na primeira hora.** É um desfecho bem pior do que ter revisado um número, que é a [triagem](/practice/triage-and-severity) fazendo exatamente o que deve fazer.
+
+## Responda à pergunta não feita
+
+Quase toda pessoa sênior está segurando uma que não disse em voz alta: **isto está piorando?**
+
+Responda explicitamente em toda atualização, em duas palavras — *estável*, *ainda degradando*, *em recuperação*. É a informação mais útil que você tem e é rotineiramente deixada de fora de atualizações que descrevem com cuidado todo o resto, porque de dentro da investigação a trajetória parece óbvia.
+
+## Delegue, para não ser você
+
+Durante qualquer coisa séria, isto é um papel — o [papel de comunicação na sala de crise](/practice/running-a-war-room) — justamente para que quem investiga não seja quem escreve.
+
+Onde não há sala nem pessoa sobrando, **a cadência é a defesa inteira**: diga de antemão quando as atualizações virão, cumpra, e não responda entre elas. É legítimo dizer isso em voz alta: *"Vou publicar a cada meia hora; entre elas estou no problema."* Quase ninguém objeta, e quase ninguém oferece.
+
+## O artefato
+
+Toda atualização, nesta ordem:
+
+| linha | exemplo |
+|---|---|
+| **Impacto, em termos de serviço** | *"Pagamentos com cartão falhando, cerca de 1 em 12, todos os sites"* |
+| **Trajetória** | *"Estável — não está piorando"* |
+| **Ação agora** | *"Comutando para o equipamento em espera"* |
+| **Precisamos de você** | *"Nada no momento"* |
+| **Próxima atualização** | *"03h30"* |
+
+Cinco linhas, noventa segundos, do celular. E a disciplina que faz funcionar: **diga o que você sabe e quando saberá mais, e nunca uma causa ou um prazo que você não gostaria de ver citado de volta por alguém que não estava na sala.**

@@ -1,0 +1,90 @@
+---
+slug: packet-capture-discipline
+title: "Packet capture discipline: when, where, and how much"
+thesis: "A capture is the highest-resolution evidence available and the easiest to render worthless. Most captures fail before they start — taken at one point instead of two, filtered until the answer was excluded, or so large that nobody ever opens them."
+stance: practised
+part: craft
+order: 3
+roles: ["second-line", "field", "first-line", "design"]
+relatedTools: ["packet-capture-plan-builder", "f5-bigip-tcpdump-builder", "tac-escalation-packet-builder"]
+relatedIndustry: []
+relatedPractice: ["capture-before-you-change", "proving-the-vendor-wrong", "timelines-reconstructing-what-happened"]
+artefact: "Six decisions before you press start"
+updated: "2026-08-09"
+---
+
+## Why it is worth the trouble
+
+Every other source tells you what a device **believes**. A counter is a device's account of itself; a log is a device's account of what it decided to record. A capture is what actually crossed the wire.
+
+That is why it settles arguments that nothing else settles — including the argument in [proving the vendor wrong](/practice/proving-the-vendor-wrong), where the difference between a complaint and a demonstration is usually a pair of captures.
+
+And it is why the failures below matter: a bad capture does not merely fail to help, it **consumes the event**. The fault happened, you captured, and there is nothing in it.
+
+## One capture point is a symptom; two is a finding
+
+The single most consequential decision, and the one most often got wrong.
+
+A capture on one side of a suspect component shows you that something is wrong. **Captures on both sides of it show you the component doing it** — what went in, what came out, and the difference. That difference is the finding, and it cannot be inferred from either side alone.
+
+So: put the capture points **around** the thing you suspect, not near the thing that is complaining. If the client reports errors and you capture on the client, you have learned that the client sees errors, which you already knew.
+
+Where the path crosses translation, proxying or a load balancer, capture on both sides of *that*, because those are exactly the places where the packets on one side are not the packets on the other.
+
+## Filtering removes the answer
+
+Over-filtering is the most common way to destroy a capture, and it happens for a good reason: files are big and you want the relevant traffic.
+
+The problem is that the relevant traffic is not the same as the traffic you suspect. The filter `tcp port 443 and host 10.1.1.5` reliably excludes:
+
+- the **ICMP unreachable** that explains the whole thing
+- the **TCP reset** arriving from a third address nobody thought about
+- the **retransmissions** to a different port that reveal the path is lossy
+- the **ARP or neighbour discovery** failure underneath the transport symptom
+
+**Filter by host or by subnet, and only then by port if the volume forces it.** Losing the protocol context is how a capture ends up proving nothing while looking complete.
+
+Under-filtering has the opposite failure and is more recoverable: a forty-gigabyte file is annoying, but the answer is still inside it.
+
+## How much, and for how long
+
+**Snaplen.** Full packets when you need payload, headers only when you do not. Headers-only captures are dramatically smaller and are sufficient for anything about timing, sequencing, loss or connection setup — which is most network faults. They are also the privacy-preserving choice, which matters below.
+
+**Ring buffers, not single files.** For anything intermittent, a rolling capture that keeps the last *n* files is the only practical approach. A single capture started when somebody noticed will begin after the interesting part.
+
+**Start before, stop after.** The useful window is usually before the symptom appears, because that is where the cause is. Stopping the moment service recovers cuts off the recovery, which is frequently as informative as the failure.
+
+## The things that quietly ruin a capture
+
+**Clock.** Timestamps come from the capturing host, not from the network. Two captures from two hosts with unsynchronised clocks cannot be interleaved, and the resulting "sequence" is fiction — the same defect as any cross-device [timeline](/practice/timelines-reconstructing-what-happened).
+
+**Drops on the capture itself.** A saturated span port or an overloaded capture host silently discards packets, and the missing packets look exactly like network loss. **Check the interface's drop counters on the capturing host** before concluding anything about loss, or the capture becomes evidence of its own limitations.
+
+**Encryption.** On a TLS path you will see the handshake and then nothing. Plan for it: capture where decryption happens, or accept that you are doing timing and sequencing analysis only and say so in the write-up rather than discovering it after the event.
+
+**Offload.** Segmentation and checksum offload mean the host's own capture shows frames that never existed on the wire in that form. Harmless once you know; deeply confusing when comparing a host capture against a network capture.
+
+## Captures contain other people's data
+
+Not a footnote. A full-payload capture on a production segment contains credentials, personal data, session tokens and customer content, and it is now a file on somebody's laptop.
+
+Treat it accordingly: **headers-only where it suffices**, a deliberate decision when it does not, restricted storage, a deletion date, and care about what leaves the organisation. A capture attached to a vendor case has left your control — see the sanitisation argument in [building an evidence pack](/practice/building-an-evidence-pack), which applies with more force here than anywhere else.
+
+## Record the metadata or the capture is half useless
+
+A file called `capture.pcap` six months later is nearly worthless. Written alongside it, in one line each:
+
+**Where** it was taken, on which interface, and on which side of what. **When**, with a timezone. **What filter** was applied — including *"none"*. **What snaplen**. **Whether the clock was synchronised**, and to what. **What the drop counters said** afterwards.
+
+That is the difference between evidence and a large binary file.
+
+## Six decisions before you press start
+
+1. **Where** — both sides of the suspect component, not next to the complainant
+2. **Filter** — by host or subnet first; port only if volume forces it
+3. **Snaplen** — headers unless you need payload; a privacy decision as much as a size one
+4. **Duration and shape** — ring buffer for anything intermittent; start before, stop after
+5. **Clock** — synchronised across every capture point, and verified rather than assumed
+6. **Handling** — where it is stored, who can read it, when it is deleted
+
+The [capture plan builder](/tools/packet-capture-plan-builder) on this site exists to walk these six, because they are decided in about ninety seconds and are effectively unfixable afterwards: **you cannot re-run a capture of an event that has finished.**
