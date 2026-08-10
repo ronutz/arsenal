@@ -136,6 +136,69 @@
 }
 
 /* Emerald — light, green accent. (nods to Jade) */
+/* ---- READER (PRIME 2026-08-10) --------------------------------------------
+   The site had twenty-six themes and none optimised for reading. There are 64
+   Practice articles and 531 Learn articles; every existing theme optimises for
+   atmosphere. This one optimises for a long sitting.
+
+   Warm off-white rather than #ffffff on purpose: pure white at a bright screen
+   setting is the main source of glare in long-form reading, and a few points of
+   warmth costs nothing in contrast. Text is near-black rather than black for the
+   same reason - #111 on #faf8f4 is easier on the eye than #000 on #fff and still
+   clears AA by a wide margin.
+
+   The accent is a deep ink blue, not a brand colour: in a reading theme the only
+   thing that should attract the eye is a link. */
+:root[data-theme="reader"] {
+  --color-neutral: #57534e;
+  --color-success: #15803d;
+  --color-warning: #92400e;
+  --color-orange: #c2410c;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
+  --canvas-primary: #faf8f4;
+  --surface-base: #fffdf9;
+  --surface-elevated: #f3efe7;
+  --border-subtle: #e2dcd0;
+  --border-strong: #c3bbaa;
+  --text-primary: #14110c;
+  --text-secondary: #4a453c;
+  --text-tertiary: #6b6558;
+  --accent-primary: #1d4ed8;
+  --accent-hover: #1e40af;
+  /* #a16207 measured 4.29:1 on --surface-elevated and was rejected; this is
+     the same hue two steps darker and clears AA on all three backgrounds. */
+  --accent-amber: #92400e;
+}
+
+/* ---- BROADSHEET (PRIME 2026-08-10) ----------------------------------------
+   The editorial sibling to Reader, and deliberately a different temperature
+   rather than a second version of the same idea: cool newsprint grey-white,
+   higher contrast, and a red accent that behaves like a masthead rule.
+
+   Chosen over "Museum" because Museum is the same restrained-serif space as
+   Reader at a slightly cooler tone, and two themes that differ only in warmth
+   are one theme with a second name. */
+:root[data-theme="broadsheet"] {
+  --color-neutral: #44403c;
+  --color-success: #14532d;
+  --color-warning: #854d0e;
+  --color-orange: #9a3412;
+  --color-danger: #991b1b;
+  --color-info: #1e3a8a;
+  --canvas-primary: #f4f4f2;
+  --surface-base: #ffffff;
+  --surface-elevated: #eaeae6;
+  --border-subtle: #d6d6d0;
+  --border-strong: #a8a8a0;
+  --text-primary: #0c0c0b;
+  --text-secondary: #3f3f3a;
+  --text-tertiary: #5e5e57;
+  --accent-primary: #9f1239;
+  --accent-hover: #881337;
+  --accent-amber: #854d0e;
+}
+
 :root[data-theme="emerald"] {
   /* Semantic status tokens (D-71): light overrides, WCAG-AA on white. Severity
      aliases inherited from :root resolve through these. */

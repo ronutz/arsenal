@@ -1502,12 +1502,12 @@
         "specify-attribute": "Tornar um atributo mais específico"
       },
       "rating": {
-        "na": "n/a (não vem de violação)",
         "1": "1 — quase certamente legítimo",
         "2": "2 — provavelmente legítimo",
         "3": "3 — incerto",
         "4": "4 — provavelmente um ataque",
-        "5": "5 — ataque certo"
+        "5": "5 — ataque certo",
+        "na": "n/a (não vem de violação)"
       },
       "mode": {
         "automatic": "Automático",
@@ -6462,12 +6462,12 @@
       "present": "atual",
       "cabletron": "Engenheiro de redes e instrutor certificado. Redes não Ethernet e Ethernet, redes de campus, roteamento IP.",
       "riverstone": "Engenheiro de suporte a produto e coordenador de base de conhecimento na Califórnia. Gigabit Ethernet, redes metropolitanas, roteamento IP, BGP. Escalonamento de terceiro nível, reprodução de cenários de cliente e testes de regressão.",
-      "cisco": "Engenheiro consultivo de redes, como ponto de contato único para clientes-chave como SERPRO e Correios. Gestão de escalonamento e de satisfação do cliente.",
+      "cisco": "Engenheiro consultivo de redes em Brasília, como ponto de contato único para dois clientes federais do Brasil: o SERPRO, a empresa de processamento de dados do governo, e a ECT-Correios, a empresa nacional de correios. Gestão de escalonamento e de satisfação do cliente.",
       "enterasys": "Engenheiro de redes e instrutor. Redes corporativas, roteamento IP, controle de acesso de usuários e NAC, IDS e IPS.",
       "juniper": "Engenheiro de suporte de canal e instrutor para switches e firewalls corporativos. Capacitação técnica de vendas e treinamento operacional de Junos-SRX.",
       "implementation": "Implantação e integração de plataformas de segurança e rede para clientes finais, em geral sob contratos de revendas e ocasionalmente direto. Juniper SSG, SRX, EX e Secure Access - a linha que virou MAG e depois Pulse Secure - além de Cisco ASA, firewalls de nova geração da Palo Alto Networks e switches Summit e BlackDiamond da Extreme Networks.",
       "f5channel": "Vendas e pré-vendas voltadas ao canal para F5, com capacitação técnica, execução de provas de conceito e treinamento de parceiros na distribuição. Nos mesmos anos, trabalho secundário com FireEye, McAfee, VMware, Ixia e Keysight, e Pulse Secure.",
-      "rededucation": "Instrutor de treinamento autorizado que ministra cursos oficiais e certificados sobre F5, Fortinet, Extreme Networks e Netskope para organizações no mundo todo.",
+      "rededucation": "Instrutor autorizado, ministrando cursos oficiais certificados de F5, Fortinet, Extreme Networks e Netskope para organizações no mundo todo. Os anos de ensino começaram em 2020 com cursos F5 como contratado fixo de um centro de treinamento autorizado no Brasil, se ampliaram em 2021 para entregas de Extreme Networks sob demanda para parceiros autorizados no Brasil e na Polônia, e se firmaram na Red Education - contratado desde 2021, em tempo integral desde setembro de 2023.",
       "fullHistory": "Ler a história completa",
       "vendorsLink": "O registro de carreira",
       "lineagesLink": "Linhagens e aquisições de fornecedores"
@@ -14440,6 +14440,118 @@
       "containment": {
         "def": "Limitar o quanto uma falha afeta, sem tratar do porquê de ela ter acontecido.",
         "context": "Fazer failover, desabilitar uma funcionalidade, bloquear uma origem, isolar um segmento: nada disso conserta, coloca uma fronteira em volta do estrago. A maioria dos incidentes termina na continência, o que é o formato normal do trabalho — mas relatórios que chamam o resultado de “resolvido” em vez de “delimitado” descrevem um problema que continua vivo."
+      },
+      "carterfone": {
+        "def": "A decisão da FCC de 1968 que permitiu conectar à rede telefônica equipamentos que a operadora não fabricara.",
+        "context": "Antes dela, a operadora decidia o que podia tocar suas linhas, e a resposta era quase sempre o próprio equipamento dela. O Carterfone era um acoplador acústico para ligar um rádio de duas vias a uma chamada telefônica, e a decisão que o autorizou estabeleceu um princípio muito maior que o aparelho: a rede tinha de aceitar acessórios que não a prejudicassem. Todo modem, multiplexador e dispositivo de dados vendido por alguém que não a operadora descende daquela abertura — e é por isso que uma decisão sobre um acessório de rádio aparece no começo de tantas histórias de empresas."
+      },
+      "computer-inquiry": {
+        "def": "Os processos da FCC que traçaram a linha entre comunicação regulada e processamento de dados não regulado.",
+        "context": "A pergunta soa administrativa e decidiu o formato de uma indústria: se um serviço move dados e também computa sobre eles, é serviço telefônico sujeito a tarifas, ou serviço de computação que qualquer um pode vender? O Computer Inquiry I fez a pergunta; o II respondeu separando a transmissão básica dos serviços aprimorados construídos sobre ela. Essa separação é a razão de as redes de valor agregado poderem existir como negócio, e de as operadoras terem de oferecer a capacidade subjacente a concorrentes que então vendiam contra elas."
+      },
+      "imp": {
+        "def": "Interface Message Processor: o comutador de pacotes da ARPANET, um minicomputador separado entre o host e a rede.",
+        "context": "Colocar a lógica da rede na própria máquina foi uma decisão de projeto com consequências. Os hosts eram muito diferentes entre si, e pedir que cada um implementasse a rede diretamente deixaria a rede refém do fabricante mais lento; o IMP apresentava uma interface única e absorvia a diferença. É o ancestral do roteador como caixa distinta, e não como função de um computador — e a razão de os primeiros engenheiros de rede trabalharem com equipamento que mais ninguém no prédio entendia."
+      },
+      "ncp": {
+        "def": "Network Control Program: o protocolo de host da ARPANET que o TCP/IP substituiu.",
+        "context": "O NCP presumia que a rede abaixo dele era confiável, o que a ARPANET única era — e é exatamente essa premissa que o impediu de escalar para uma rede de redes. A separação, feita pelo TCP, entre uma conversa confiável e um serviço de entrega não confiável foi a resposta, e a virada em 1º de janeiro de 1983 é um dos poucos dias de corte desta história que de fato aconteceram. Quem já discutiu onde a confiabilidade deve morar numa pilha está repetindo uma discussão que o NCP perdeu."
+      },
+      "statistical-multiplexer": {
+        "def": "Um multiplexador que aloca capacidade da linha sob demanda, em vez de por fatia de tempo fixa.",
+        "context": "Terminais ficam ociosos a maior parte do tempo, então uma fatia fixa por terminal desperdiça quase toda a linha. O multiplexador estatístico bufferiza e intercala, dando capacidade a quem está transmitindo, e se vendia pela aritmética: menos linhas alugadas para a mesma quantidade de terminais. Também introduziu filas e, portanto, atraso variável — a troca que toda tecnologia de capacidade compartilhada faz desde então. As empresas construídas sobre ele eram grandes e, em boa parte, não sobreviveram à chegada de redes que faziam o mesmo de ponta a ponta."
+      },
+      "data-pbx": {
+        "def": "Um comutador que conectava terminais a computadores como um PBX conectava telefones a linhas.",
+        "context": "Num prédio com mais terminais do que portas de computador, alguma coisa precisava decidir quem se conectava a quê, e o data PBX (ou CBX, quando o fabricante queria soar computadorizado) fazia isso como comutação de circuitos. Era uma boa resposta para uma pergunta que deixou de ser feita: as redes locais permitiram que um terminal alcançasse qualquer host sem um comutador no meio decidindo, e o mercado fechou mais rápido do que seus fabricantes esperavam. É um dos casos mais claros de um produto que estava certo e foi ultrapassado."
+      },
+      "gosip": {
+        "def": "Government OSI Profile: exigência de compra que obrigava protocolos OSI nas aquisições governamentais.",
+        "context": "Estados Unidos e Reino Unido usaram poder de compra para tentar tornar o OSI o padrão, sob o raciocínio de que um cliente grande o bastante cria um mercado. Não funcionou, e a razão é instrutiva: o TCP/IP já rodava, já interoperava e já era mais barato de implantar, enquanto o OSI chegava como especificação que os fabricantes ainda estavam implementando. Um mandato pode obrigar a compra; não pode obrigar uma tecnologia a estar pronta."
+      },
+      "osinet": {
+        "def": "Uma rede de testes para verificar se implementações OSI de fabricantes diferentes de fato interoperavam.",
+        "context": "Conformidade com uma especificação e interoperação com o produto de outro fabricante são propriedades diferentes, e o OSI tornou essa distância visível. A OSINET existia para fechá-la, testando implementações umas contra as outras em vez de contra um documento. O esforço foi sério e a lição sobreviveu aos protocolos: interoperabilidade se demonstra, não se declara — o mesmo argumento que depois fez da Interop uma feira que valia a pena."
+      },
+      "cos-corporation": {
+        "def": "Corporation for Open Systems: consórcio de fabricantes criado para certificar conformidade OSI.",
+        "context": "Quando um padrão é grande a ponto de duas implementações nunca coincidirem, alguém precisa dizer quais valem. A COS foi a tentativa da indústria de ser esse alguém, financiada pelos fabricantes cujos produtos ela julgaria. Produziu trabalho real de testes e não resolveu o problema de fundo: a especificação seguia se movendo, e o mercado que ela certificava estava sendo tomado por protocolos que já haviam sido entregues."
+      },
+      "interop": {
+        "def": "A feira que começou como demonstração de interoperabilidade TCP/IP e virou o campo de provas da indústria.",
+        "context": "A ideia fundadora era que os fabricantes conectassem seus equipamentos a uma única rede viva no salão, em público, onde a falha ficaria visível. É uma proposta genuinamente desconfortável para um fabricante, e é por isso que o evento importou: o comprador via a interoperação em vez de ler sobre ela. A rede do salão virou uma demonstração permanente de que o TCP/IP funcionava entre concorrentes, algo que nenhuma especificação e nenhum consórcio conseguiram estabelecer."
+      },
+      "ene": {
+        "def": "Enterprise Network Event: a feira de 1988 posicionada como a contraparte OSI das demonstrações de TCP/IP.",
+        "context": "Realizada quando os mandatos de compra do OSI estavam no auge da confiança, pretendia mostrar ao comprador corporativo um ecossistema OSI coerente. O que mostrou, lido em retrospecto, é o quanto daquele ecossistema ainda era descrito e não entregue. Vale ler as duas feiras de 1988 juntas: uma demonstrou uma rede funcionando entre rivais, a outra demonstrou uma intenção."
+      },
+      "iccc-demonstration": {
+        "def": "A demonstração pública da ARPANET em 1972, na International Conference on Computer Communication.",
+        "context": "Antes dela, comutação de pacotes era um resultado de pesquisa financiada que a maioria dos profissionais de computação não tinha visto funcionar. A demonstração pôs terminais num hotel em Washington conectados a hosts pelo país inteiro, rodando aplicações reais para quem chegasse. Converteu uma tecnologia de papel numa tecnologia observada, e boa parte do interesse comercial que veio depois remonta a quem estava naquela sala."
+      },
+      "project-mac": {
+        "def": "O projeto de pesquisa em tempo compartilhado do MIT cujas pessoas e ideias semearam boa parte das comunicações de dados.",
+        "context": "Seu tema era fazer um computador servir muitos usuários ao mesmo tempo, o que não é rede, e produziu uma geração que depois construiu redes. É o padrão que vale notar: a tradição da computação interativa treinou pessoas a pensar em compartilhamento de recursos, contenção e justiça — e esses são os problemas de uma rede. Ler o pessoal do início da ARPANET é, em boa medida, ler uma lista de quem passou antes pela pesquisa em tempo compartilhado."
+      },
+      "idcma": {
+        "def": "Independent Data Communications Manufacturers Association: a entidade dos fabricantes que competiam com as operadoras.",
+        "context": "Depois das decisões de interconexão existia uma indústria de empresas vendendo equipamento que a companhia telefônica não fabricara, e ela precisava de voz nos processos que decidiriam se poderia continuar. A IDCMA foi essa voz. É um lembrete de que um mercado aberto por um regulador só continua aberto enquanto alguém o defende — e de que boa parte da história técnica desse período foi decidida em audiências, não em laboratórios."
+      },
+      "channel-vendor": {
+        "def": "A empresa que fabrica o produto, distinta de quem vende, implanta ou opera.",
+        "context": "A maior parte das histórias desta indústria é de fabricantes, porque é no fabricante que a coisa é construída antes de alguém saber para que serve. A palavra faz trabalho real numa conversa de canal: identifica quem é dono do roadmap, quem corrige o defeito e quem não pode ser contornado quando algo está quebrado no nível do produto, e não da configuração. Quem diz \"escalar para o fabricante\" está nomeando um destino específico de escalonamento, não um fornecedor genérico."
+      },
+      "channel-distributor": {
+        "def": "Empresa que vende para revendas, e não para as organizações que usam o equipamento — a camada do meio da distribuição em dois níveis.",
+        "context": "Invisível para a maioria dos engenheiros e decisiva para o que eles conseguem de fato comprar. Um distribuidor decide quais produtos vai estocar, financiar e apoiar num determinado país, e a linha de um fabricante é teórica até alguém local carregá-la. Em mercados com controle cambial, imposto de importação e prazos longos, essa decisão é a diferença entre um produto existir e um produto estar disponível. Distribuidores também operam o crédito: a revenda que instalou seu firewall foi, muito provavelmente, financiada por um."
+      },
+      "channel-reseller": {
+        "def": "Empresa que vende e instala produtos de terceiros para a organização que vai operá-los; também chamada de revenda de valor agregado ou integradora.",
+        "context": "A competência dela não são os produtos — é fazer um portfólio montado por razões comerciais se comportar como um sistema. Uma integradora chega a um parque projetado por outra pessoa, com fabricantes que cada um presume ser o único presente, e precisa produzir algo coerente com peças que nunca foram testadas juntas. É uma disciplina real e amplamente não documentada, porque o material de cada fabricante descreve um mundo que contém apenas aquele fabricante."
+      },
+      "channel-services": {
+        "def": "Empresa que vende pessoas e processo em vez de produto: consultoria, terceirização, operação gerenciada.",
+        "context": "Mais difícil de explicar a um mercado e mais difícil de escalar que um negócio de produto, porque o que se vende é julgamento — e julgamento não tem lista de materiais. O formato comercial importa operacionalmente: um contrato de serviços gerenciados move o pager, e quem segura o pager acaba dono de decisões que o contrato nunca mencionou. Ler um contrato de serviços como documento técnico — o que é monitorado, o que pode ser mudado sem pedir, quem declara um incidente — explica mais sobre como um parque se comporta do que a maioria dos diagramas de arquitetura."
+      },
+      "channel-carrier": {
+        "def": "Operadora que transporta o tráfego de terceiros: o substrato físico que tudo acima dela presume.",
+        "context": "Redes corporativas tratam a operadora como uma linha no diagrama, e é por isso que problemas de operadora são tão desorientadores quando chegam — a abstração estava fazendo muito trabalho. Embaixo dela há direitos de passagem, dutos, cabos submarinos, interconexão regulada e um relógio comercial completamente diferente: circuitos são provisionados em semanas, não em minutos. Várias das entradas mais antigas da história deste campo tratam, na verdade, de quem tinha permissão de lançar cabo onde — uma questão jurídica que determinou uma topologia técnica."
+      },
+      "channel-datacentre": {
+        "def": "Colocation, hospedagem e interconexão: os negócios donos dos lugares onde as redes se encontram fisicamente.",
+        "context": "Um negócio imobiliário com efeitos de rede, combinação mais estranha do que parece. O valor de uma instalação não é a metragem, e sim quem já está lá dentro — porque uma conexão cruzada até uma rede no mesmo prédio é mais barata, mais rápida e mais confiável que alcançá-la de qualquer outro jeito. É por isso que um punhado de prédios carrega uma fatia desproporcional do tráfego de uma região, e por que uma queda em um deles é notícia, e não um incidente de cliente."
+      },
+      "channel-training": {
+        "def": "As empresas e entidades que decidem como se parece a competência numa tecnologia e quem pode reivindicá-la.",
+        "context": "Um centro autorizado é a camada que a documentação dos fabricantes nunca menciona, e é o que fecha a distância entre uma certificação existir e um engenheiro conseguir obtê-la. Um curso que só acontece em inglês, só do outro lado de uma barreira cambial e só em outro fuso é um curso que a maioria dos engenheiros locais não fará. A certificação também faz um trabalho comercial que ninguém discute abertamente: níveis de parceria são condicionados ao número de profissionais certificados, então treinamento é um requisito de compra vestido de requisito educacional."
+      },
+      "channel-standards": {
+        "def": "Os laboratórios, fundações e entidades de especificação sobre os quais as entradas comerciais são construídas — não empresas vendendo algo, ou não só isso.",
+        "context": "Um padrão é um acordo sobre o que duas implementações devem uma à outra, e a pergunta interessante é sempre quem está na sala. Entidades financiadas pelos fabricantes que regulam produzem especificações diferentes de entidades financiadas por governos ou por ninguém, e o período do OSI é a demonstração mais clara: enorme peso institucional, testes de conformidade, exigências de compra — e uma pilha concorrente que foi entregue. Conformidade com uma especificação e interoperação com o produto de outro fabricante são propriedades diferentes, e a distância entre elas é onde entidades de padrões ganham ou perdem autoridade."
+      },
+      "firmware": {
+        "def": "Software que acompanha um equipamento e que se espera estar presente antes de qualquer outra coisa rodar.",
+        "context": "A distinção em relação a software comum não é do que ele é feito — é código compilado de qualquer forma — mas do que ele é responsável e de como falha. Firmware roda antes de existir um sistema operacional para reclamar, normalmente não pode ser reiniciado sem reiniciar o equipamento, e uma atualização ruim pode deixar um hardware que não inicializa o suficiente para aceitar uma boa. É por isso que atualização de firmware ganha janela de mudança e atualização de aplicação muitas vezes não, e por que “já tentou o firmware mais novo?” é um pedido mais pesado do que parece."
+      },
+      "fw-vs-sw": {
+        "def": "A distinção que um fabricante faz entre código que é parte do equipamento e código que roda sobre ele — e a razão de ela decidir quem resolve o seu problema.",
+        "context": "A linha muda conforme o fabricante e raramente é técnica. Num appliance de rede o sistema operacional inteiro costuma ser chamado de firmware; num servidor a mesma camada seria o SO, e o firmware seria a BIOS e as controladoras abaixo. O que torna a distinção digna de nota é comercial e processual: firmware e software costumam ter ciclos de suporte diferentes, cadências de release diferentes, licenças diferentes e caminhos de escalonamento diferentes dentro do fabricante. Quem diz “isso é problema de firmware” muitas vezes está tomando uma decisão de roteamento sobre qual time é dono daquilo, e não afirmando onde o defeito mora."
+      },
+      "microcode": {
+        "def": "Uma camada dentro de um processador que implementa o conjunto de instruções publicado em termos de operações internas mais simples.",
+        "context": "É a razão de o comportamento de um processador poder mudar sem o silício mudar. Uma instrução emitida por um programa não é necessariamente executada diretamente pelo hardware; em muitos processadores ela é decodificada numa sequência de passos internos que os projetistas do chip podem revisar depois da fabricação. Isso ficou amplamente visível quando vulnerabilidades de execução especulativa foram mitigadas em parte por atualizações de microcódigo — correções que alteram o que um processador faz, entregues via firmware, para um defeito em algo que a maioria imagina fixado na fábrica."
+      },
+      "asic": {
+        "def": "Application-Specific Integrated Circuit — circuito integrado de aplicação específica: um chip construído para uma tarefa, rápido, e incapaz de ser reaproveitado.",
+        "context": "Em redes, é a razão de um switch encaminhar em taxa de linha enquanto um processador de propósito geral não consegue. A troca é dura e vale enunciar: um ASIC é drasticamente mais rápido e mais barato por porta que encaminhamento em software, e é fixado na fabricação — um recurso que o silício não implementa é um recurso que a caixa nunca terá, digam o que disserem as notas de versão. É por isso que “suportado em software, mas não em hardware” tem consequências operacionais reais: o mesmo recurso pode significar taxa de linha numa plataforma e desvio para o processador de controle em outra."
+      },
+      "fpga": {
+        "def": "Field-Programmable Gate Array — matriz de portas programável em campo: um chip cuja lógica pode ser reconfigurada depois de fabricado.",
+        "context": "Ocupa o espaço entre um processador de propósito geral e um ASIC: mais lento e mais caro por unidade que silício fixo, muito mais rápido que software para o problema certo e — decisivo — mutável. Fabricantes os usam para entregar hardware antes de um protocolo estar pronto, para atender mercados pequenos demais para justificar um chip dedicado, e para corrigir em campo o que de outro modo exigiria refazer o silício. Quando uma nota de versão diz que um recurso agora roda em hardware numa plataforma que antes o desviava para o processador, muitas vezes foi um FPGA que mudou."
+      },
+      "embedded-system": {
+        "def": "Um computador embutido em algo que não é pensado como computador, com uma tarefa fixa e, normalmente, ninguém olhando.",
+        "context": "Quase todo dispositivo numa rede é um: o switch, o ponto de acesso, a régua de energia, a câmera, a climatização do prédio. O que os torna uma categoria operacional, e não de hardware, são as premissas que carregam — vida útil longa, correção que exige indisponibilidade, credenciais definidas uma única vez, e fabricantes que podem não existir mais quando uma vulnerabilidade for publicada. A superfície de ataque real de um parque normalmente não são os servidores que alguém mantém; são as várias centenas de computadorezinhos em que ninguém entra desde a instalação."
       }
     },
     "totalCount": "{count} termos",
@@ -14624,7 +14736,7 @@
     "contemporaryEyebrow": "Contemporâneo do setor",
     "contemporaryCardTag": "contemporâneo",
     "timelineSectionTitle": "A linhagem, em ordem",
-    "timelineSectionNote": "Cada empresa cuja tecnologia ou cujas pessoas foram parar dentro das plataformas deste site, ordenada pelo ano em que sua história começa. Algumas seguem ativas e outras foram absorvidas há décadas; as que terminaram trazem o ano e o que aconteceu. As marcadas como parceiras da Red Education são aquelas cujo treinamento autorizado a Red Education entrega. Ordenar por fundação, e não por situação, evita um julgamento que vinha errando com frequência - boa parte dos nomes antigos daqui segue muito bem em atividade.",
+    "timelineSectionNote": "Toda empresa cuja tecnologia ou cujas pessoas acabaram dentro das plataformas cobertas por este site, ordenada pelo ano em que sua história começa. Algumas das mais antigas foram absorvidas há décadas, outras seguem muito bem em atividade. Fabricantes marcados como parceiros Red Education são aqueles cujo treinamento oficial a Red Education ministra.",
     "timelineSince": "{from} - hoje",
     "timelineSpan": "{from} - {to}",
     "reduPill": "Parceira Red Education",
@@ -14670,9 +14782,9 @@
     "title": "A indústria, vista de dentro",
     "lede": "As genealogias corporativas de redes e segurança: quem fundou cada empresa, o que construíram, quem comprou quem e onde cada linhagem foi parar. Escrito a partir de fontes primárias - registros na SEC, relatórios de inquérito e a imprensa especializada de cada época.",
     "careerTitle": "Os fabricantes da carreira",
-    "careerNote": "Relação direta de trabalho entre 1996 e 2020, em ordem cronológica do primeiro contato.",
+    "careerNote": "Dois tipos de empresa aparecem aqui, e os marcadores os distinguem: aquelas em que fui empregado e aquelas cuja tecnologia trabalhei diretamente, do outro lado da mesa. Em ordem cronológica de primeiro contato, desde 1996.",
     "careerStripTitle": "Os capítulos vividos por dentro",
-    "careerStripNote": "Estes catorze também são capítulos do meu próprio registro - cada linha do tempo leva um marcador Meu capítulo. A narrativa completa vive no registro de carreira.",
+    "careerStripNote": "Em todas elas, empregadora ou fabricante, o trabalho teve o mesmo formato: de frente para o cliente final, em pré-vendas e em suporte técnico pós-vendas, e muitas vezes atuando como proxy técnico e facilitador de capacitação para os parceiros que precisavam sustentar o produto por conta própria. A tarefa era deixar o cliente com algo que funcionasse melhor do que antes — uma inovação, uma solução, uma melhoria que continuasse funcionando depois que eu saísse. O relato completo está no registro de carreira.",
     "careerStripLink": "Ler o registro de carreira"
   },
   "sitemap": {
@@ -14907,7 +15019,10 @@
       "short": "padrões",
       "intro": "Não são empresas vendendo algo, ou não apenas isso: os laboratórios, fundações e especificações sobre os quais as fichas comerciais foram construídas."
     },
-    "milestonesLink": "Antes de todas estas empresas: os marcos sobre os quais foram construídas"
+    "milestonesLink": "Antes de todas estas empresas: os marcos sobre os quais foram construídas",
+    "filterCategoryLabel": "Categoria",
+    "filterCategoryAll": "Selecionar todas",
+    "filterCategoryNone": "Limpar"
   },
   "milestones": {
     "eyebrow": "Antes das empresas",
@@ -15061,14 +15176,5 @@
     "translationsTitle": "Melhorar as traduções",
     "translationsBody": "Este site é escrito em inglês e português do Brasil, e traduzido por máquina para outros catorze idiomas. As versões automáticas são utilizáveis e não são nativas. Se você lê um desses catorze e algo está errado — um termo técnico traduzido ao pé da letra, uma frase que analisa gramaticalmente e não quer dizer nada — me contar é uma contribuição real, e um bilhete curto com a página e o trecho basta.",
     "translationsCta": "Enviar uma correção"
-  },
-  "sources": {
-    "navLabel": "Fontes",
-    "eyebrow": "Obras de referência",
-    "title": "As obras sobre as quais esta história se apoia",
-    "lede": "As páginas de indústria daqui se apoiam em um pequeno conjunto de obras acadêmicas. É aqui que essas obras são apresentadas, com seus autores nomeados e suas evidências à mostra, antes que qualquer outra parte do site as cite.",
-    "authorsTitle": "Quem fez",
-    "citationsTitle": "De onde vêm estes fatos",
-    "indexLink": "As obras sobre as quais esta história se apoia"
   }
 }

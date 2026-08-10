@@ -15724,3 +15724,111 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .practice-part-section {
   scroll-margin-top: var(--sticky-anchor-offset);
 }
+
+/* ============================================================================
+   CAREER RELATIONSHIP: INSIDE vs ALONGSIDE (PRIME 2026-08-10)
+   ----------------------------------------------------------------------------
+   Both pills used to carry only .vendor-career-pill, so a company PRIME was
+   employed by looked identical to one he worked alongside. The data has always
+   held the distinction (`worked-inside` / `worked-with-directly`); the page
+   simply never showed it.
+
+   The difference is FILL vs OUTLINE first, hue second. A reader who cannot
+   separate two blues still sees a solid badge against a hollow one, which is
+   why this is not done with colour alone. The cooler tone is derived with
+   color-mix from the theme's own accent rather than hardcoded, so it follows
+   all six themes without a new token per theme.
+   ========================================================================== */
+.vendor-career-pill--inside {
+  /* Employed here: solid, the heaviest badge on the card. */
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--surface-base);
+}
+.vendor-career-pill--alongside {
+  /* Worked alongside: hollow, and a quieter blue than the accent. */
+  background: transparent;
+  border-color: color-mix(in srgb, var(--accent-primary) 55%, var(--text-secondary));
+  color: color-mix(in srgb, var(--accent-primary) 55%, var(--text-secondary));
+}
+
+/* The card border follows the pill, so the distinction survives a glance at the
+   grid without reading any label. Inline-start only: a full accent border would
+   compete with the card's own hover state. */
+.vendor-timeline-item[data-relationship="inside"] .vendor-card {
+  border-inline-start: 3px solid var(--accent-primary);
+}
+.vendor-timeline-item[data-relationship="alongside"] .vendor-card {
+  border-inline-start: 3px solid
+    color-mix(in srgb, var(--accent-primary) 55%, var(--text-secondary));
+}
+
+/* ============================================================================
+   IN-PAGE CATEGORY FILTER + PAGE-JUMP LINK (PRIME 2026-08-10)
+   ----------------------------------------------------------------------------
+   The category filter used to require leaving the timeline for /industry/<tag>.
+   Those routes still exist and are still linkable; this is the same filter
+   applied in place, as a group of real checkboxes.
+   ========================================================================== */
+.timeline-filter-cats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+  margin: 0.6rem 0 0;
+  padding: 0.6rem 0 0;
+  border: 0;
+  /* A rule rather than a box: the fieldset is a grouping for assistive tech,
+     not a visual container competing with the cards below it. */
+  border-block-start: 1px solid var(--border-subtle);
+}
+.timeline-filter-cats legend {
+  padding: 0;
+  margin-inline-end: 0.5rem;
+}
+.timeline-filter-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.timeline-filter-cat:hover {
+  color: var(--text-primary);
+}
+.timeline-filter-cat input {
+  accent-color: var(--accent-primary);
+  cursor: pointer;
+}
+.timeline-filter-cat-n {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.timeline-filter-cat-actions {
+  display: inline-flex;
+  gap: 0.4rem;
+  margin-inline-start: auto;
+}
+
+/* A link that leads to another page, styled so it reads as one rather than as
+   a sentence that happens to be blue. */
+.page-jump-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+.page-jump-link:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}

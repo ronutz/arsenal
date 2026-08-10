@@ -23,6 +23,11 @@ type Theme = { id: string; name: string; swatch: string; dark: boolean };
 // Swatch = each theme's primary accent, for the preview dot.
 const THEMES: Theme[] = [
   { id: "obsidian", name: "Obsidian", swatch: "#22d3ee", dark: true },
+  // READING THEMES (PRIME 2026-08-10). Placed directly after Obsidian rather
+  // than at the end: they are the themes for the corpus this site is mostly
+  // made of, and a switcher is a list somebody reads top-down.
+  { id: "reader", name: "Reader", swatch: "#1d4ed8", dark: false },
+  { id: "broadsheet", name: "Broadsheet", swatch: "#9f1239", dark: false },
   // --- FortiGate-inspired set (ids unchanged so saved themes/CSS keep working). ---
   { id: "dark-energy", name: "FGT · Dark Energy", swatch: "#818cf8", dark: true },
   { id: "olivine", name: "FGT · Olivine", swatch: "#34d399", dark: true },

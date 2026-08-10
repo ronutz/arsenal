@@ -1718,6 +1718,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Red Education",
     founded: 2005,
+    relationships: ["worked-inside"],
     tags: ["training", "services"],
     tagline: "Training is distributed the same way products are, and this is what that looks like.",
     intro:
@@ -1941,6 +1942,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Network1",
     founded: 2004,
+    relationships: ["worked-inside"],
     tags: ["distributor"],
     ended: {
       year: 2015,
@@ -1983,11 +1985,13 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "ScanSource",
     founded: 1992,
+    relationships: ["worked-inside"],
     tags: ["distributor"],
     tagline: "Distributed products that were on their way to becoming commodities, and tried to arrive first.",
     intro:
       "Mike Baur and Steve Owings founded ScanSource in Greenville, South Carolina in December 1992, to distribute barcode and point-of-sale equipment. Most accounts name the two of them; one describes six founders with Baur as the architect, and both are recorded here. It listed in 1994, raising $5.5M.",
     body: [
+      "Its Latin American communications business came from Network1, the S\u00e3o Paulo value-added distributor it agreed to buy in August 2014 and completed in January 2015. The combined operation traded as Network1-ScanSource for years, which means people who joined one company found themselves working for the other without changing desks - a rename rather than a move, and the reason both names appear in the same stretch of a single career.",
       "The founding thesis is the part worth keeping, because it is a real strategy rather than a description. Baur's stated aim was to be a distributor of *transitional* products, and he named the two transitions he was hunting: proprietary moving to open, and high-cost moving to low-cost. The idea was to find products heading for commodity status and get there early - while a specialist channel still needed explaining to, and before the broadline distributors arrived to sell them on price.",
       "And the arbitrage underneath it is the clearest illustration of what a distributor sells. The number of barcode-focused resellers was in the hundreds. The number of computer-focused resellers was in the hundreds of thousands. What ScanSource offered the barcode manufacturers was not warehousing; it was access to a channel three orders of magnitude larger than the one they already knew about. That is the distributor's product, stated as plainly as it ever gets.",
       "The channel-only policy followed from the same logic: no direct sales to end customers, ever. A distributor that sells directly is competing with the resellers it depends on, and resellers can count. Holding that line is what makes the rest of the arrangement work.",
@@ -2002,6 +2006,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://www.scansource.com/",
     externalLabel: "ScanSource",
     sources: [
+      { label: "Network1 acquisition - announced 15 August 2014, completed January 2015; traded as Network1-ScanSource", url: "https://www.scansource.com/" },
       { label: "Channel Futures interview with Mike Baur: the transitional-products thesis - proprietary to open, high-cost to low-cost, 'catch them early' - the 1994 IPO raising $5.5M, and the arbitrage between hundreds of barcode VARs and hundreds of thousands of computer-focused VARs", url: "https://www.channelfutures.com/distribution/scansource-ceo-mike-baur-science-seeing-future" },
       { label: "Company Histories: formed at the end of 1992 to serve POS and AutoID resellers; the May 1993 purchase of Alpha Data Systems of Marietta, Georgia; Catalyst Telecom and the move into telephony", url: "https://www.company-histories.com/ScanSource-Inc-Company-History.html" },
       { label: "Encyclopedia.com: the AutoID and POS product range, and Ingram Micro and Tech Data moving into the POS arena as broadline competitors", url: "https://www.encyclopedia.com/social-sciences-and-law/economics-business-and-labor/businesses-and-occupations/scansource-inc" },
@@ -2026,11 +2031,13 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Westcon-Comstor",
     founded: 1985,
+    relationships: ["worked-inside"],
     tags: ["distributor"],
     tagline: "The layer between the vendor and the reseller, which decides what is practical to buy in your country.",
     intro:
       "Westcon was founded in 1985 and Comstor in 1986 in Chantilly, Virginia. They became one company in August 1999, when Westcon bought Comstor for $95M, and the combined business has spent the decades since doing something most engineers have never had to think about: standing between the companies that make networking and security equipment and the companies that install it.",
     body: [
+      "In June 2017 Synnex acquired the North and Latin American operations of Westcon-Comstor from Datatec, together with a tenth of the remaining international business, for a reported $800 million - so the Brazilian operation changed owner without changing what it did. Synnex itself merged with Tech Data on 1 September 2021 to form TD Synnex, by which time the employment recorded on this site had ended. The name reappears later for a different reason: TD SYNNEX Brasil runs an authorised training academy, and the instructor years include Extreme Networks courses delivered for it on demand between 2021 and 2023. Same company, two unrelated relationships, a decade apart.",
       "What a distributor actually does, since this is the first one on this timeline. A vendor like Cisco or F5 does not want a commercial relationship with every reseller in every country - the credit checks alone would be a business. A reseller does not want a separate contract, currency, logistics arrangement and support escalation with each of the forty vendors in its portfolio. The distributor sits between them and absorbs that: it holds stock, extends credit, handles import and customs, aggregates the paperwork, and trains the resellers on products they have just started carrying.",
       "That last part is the reason distribution appears on a site about teaching at all. A vendor's certified training is expensive and aimed at the vendor's own priorities; a distributor's enablement is aimed at whatever its resellers are failing to sell. The two are not the same curriculum, and the second one tells you more about what the market is actually struggling with.",
       "The strategic consequence is the interesting bit: a distributor decides what is practical to buy in a country. A product with no distribution in Brazil is not unavailable exactly, but every reseller quoting it must import it themselves, carry the currency risk, and explain a longer lead time to the customer - which in practice means they quote something else. Market share in a region often reflects distribution agreements more than it reflects the product.",
@@ -2045,6 +2052,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://www.westconcomstor.com/",
     externalLabel: "Westcon-Comstor",
     sources: [
+      { label: "Synnex - June 2017 acquisition of Westcon-Comstor\u2019s North and Latin American operations from Datatec, and the 1 September 2021 Tech Data merger forming TD Synnex", url: "https://en.wikipedia.org/wiki/Synnex" },
       { label: "Company Histories: founded 1985, Datatec's 1998 acquisition, RBR Group in September 1998, Comstor for $95M in August 1999, Cisco distribution from 1999 and Avaya from 2000, and $1.85B of sales in 2004", url: "https://www.company-histories.com/Westcon-Group-Inc-Company-History.html" },
       { label: "Encyclopedia.com: Comstor founded in Chantilly, Virginia in 1986, acquired by GE Capital IT Solutions about ten years later, doing $500M annually; the combined company at $1.5B across two divisions", url: "https://www.encyclopedia.com/books/politics-and-business-magazines/westcon-group-inc" },
       { label: "SYNNEX SEC filing (5 June 2017): the Americas business at approximately $2.2B revenue and $89M EBITDA for the year to February 2017; Datatec's three divisions named as Westcon-Comstor, Logicalis and Analysys Mason", url: "https://www.sec.gov/Archives/edgar/data/1177394/000117739417000026/exh9916-5x2017.htm" },
@@ -4203,7 +4211,9 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "From 1895 Montreal to a third of Canada's stock index to the largest bankruptcy in Canadian history - and the $4.5B patent auction that ended it.",
     intro:
       "Northern Electric (1895) became Northern Telecom, bet everything on digital switching in 1976, and grew into Nortel - worth C$398 billion at the 2000 peak, more than a third of the entire Toronto Stock Exchange. Along the way it swallowed Bay Networks (the 1994 SynOptics-Wellfleet merger) for $9.1 billion and Alteon WebSystems for $7.8 billion. The collapse erased it all: the January 14, 2009 filing was the largest corporate failure in Canadian history, the pieces scattered to Ericsson, Avaya, Ciena, Radware, and eventually Extreme Networks, and the 2011 Rockstar patent auction - $4.5 billion, against Google's pi-themed bids - was the tombstone.",
-    body: [],
+    body: [
+      "Both halves of the 1994 merger now have their own entries here: Wellfleet built the multiprotocol routers and SynOptics built the twisted-pair wiring hubs. Reading them together is the point - a router company and a hub company each held one half of what an enterprise network needed and neither had the other\u2019s channel, which is why the merger made sense on paper and why the combined firm struggled to become one company rather than two under a new name.",
+    ],
     note:
       "Nortel, Bay Networks, SynOptics, and Wellfleet no longer exist as companies, and no training association is implied with them or their successors. This page is corporate history, verified against SEC filings and primary sources. My connection is from the other side of the battlefield: he spent 1996-2000 at Cabletron Systems, Bay Networks' direct rival in the hub-and-switch wars - and the Bay-descended enterprise portfolio now lives at Extreme Networks, one of the vendors I teach.",
     sources: [
@@ -5141,6 +5151,335 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Allied Telesis - founder memorial", url: "https://www.alliedtelesis.com/us/en/press/mr-takayoshi-oshima-founder-and-ceo-allied-telesis" },
       { label: "Wikipedia - Allied Telesis", url: "https://en.wikipedia.org/wiki/Allied_Telesis" },
     ],
+  },
+
+  // ---- Brazilian integrators of the 2011-2014 years (wrap 109 flagged these
+  // as missing; PRIME 2026-08-10). Founding years are NOT stated on either
+  // company site and are omitted rather than inferred. ----
+  {
+    slug: "cylk",
+    sources: [
+      { label: "Baguete - \u201cFundada em junho de 2010, a CYLK, membro do Grupo IHC\u201d (March 2015)", url: "https://www.baguete.com.br/noticias/cylk-recebe-certificacao-da-juniper" },
+      { label: "Resinfo - same founding statement, ISO/IEC 20000 certification, March 2015", url: "https://www.resinfo.com.br/noticias/518-2015-03-11-11-37-18.html" },
+      { label: "Baguete - CYLK, HighCast and InLearn form Grupo IHC, founded 2003", url: "https://www.baguete.com.br/noticias/cylk-tem-novo-diretor-de-operacoes" },
+      { label: "CYLK - company site (information security and cybersecurity; GRC, privacy, awareness, pentest, assessments)", url: "https://www.cylk.com.br/" },
+    ],
+    tags: ["reseller", "services"],
+    group: "contemporary",
+    name: "CYLK - security integration, Sao Paulo",
+    founded: 2010,
+    tagline: "A Brazilian security integrator: the practice of making other people's products work together in somebody else's estate.",
+    intro: "CYLK was founded in June 2010 as a systems-integration and managed-services company for networks, data centre and security, and belongs to Grupo IHC. It does not make products; it makes them work - today specialising in cybersecurity, governance, risk and compliance, privacy, awareness, penetration testing and assessments for Brazilian enterprises.",
+    body: ["The integrator's job is the one this site's Practice corpus is largely about: arriving at an estate somebody else designed, with vendors who each assume they are the only one present. CYLK also sits in the same group as InLearn - Grupo IHC, founded 2003, whose third company is HighCast - so the integration business and the training business grew up under one roof."],
+    externalUrl: "https://www.cylk.com.br/",
+    externalLabel: "CYLK",
+  },
+  {
+    slug: "tdec",
+    sources: [
+      { label: "TDec Network Group - company site (\u201cmore than 30 years\u201d in cybersecurity, corporate networks and global IT; Brazil, United States and Portugal)", url: "https://www.tdec.com.br/" },
+    ],
+    tags: ["reseller", "services"],
+    group: "contemporary",
+    name: "TDec Network Group - networks and security, three countries",
+    founded: 1992,
+    tagline: "A Brazilian network and security house that grew outward: Brazil, the United States, Portugal.",
+    intro: "TDec Network Group works out of S\u00e3o Paulo and traces to TDEC Inform\u00e1tica Ltda., a company registered in Cotia on 6 March 1992 and later trading as The Network Group. Its own site brands itself \u201cest. 1993\u201d while describing more than thirty years in the business - a one-year discrepancy the company has never reconciled, and one worth leaving visible rather than picking a side on. It operates across Brazil, the United States and Portugal in cybersecurity, corporate networking and global IT.",
+    body: ["The founding entity is TDEC Inform\u00e1tica Ltda. (CNPJ 67.521.195/0001-96), registered in Cotia in March 1992 - a registration address rather than a place of work, which is a distinction worth keeping in a Brazilian corporate record; a later company, TDec Redes de Computadores Ltda. (CNPJ 06.093.568/0001-80), was opened in January 2004 and is the active legal person associated with the group today. A 2004 registration is not a 2004 founding, and the two are kept apart here. The founder is Jos\u00e9 Valter \u201cJunior\u201d T\u00e1vora de Castro."],
+    externalUrl: "https://www.tdec.com.br/",
+    externalLabel: "TDec Network Group",
+  },
+
+  // ---- Training organisations of the instructor years (PRIME 2026-08-10).
+  // Founding years are not published by either company and are omitted. ----
+  {
+    slug: "inlearn",
+    sources: [
+      { label: "Monitor CNPJ - INLEARN EDUCACAO LTDA, CNPJ 05.042.433/0001-23, Barueri/SP, constituted 14 April 2002", url: "https://monitorcnpj.com.br/cnpj/05042433000123/" },
+      { label: "InLearn - company site (official Fortinet and F5 Networks training partner; courses and certifications in cybersecurity, networking and infrastructure)", url: "https://www.inlearn.com.br/" },
+    ],
+    tags: ["training"],
+    group: "other",
+    relationships: ["worked-with-directly"],
+    name: "InLearn - official training, Brazil",
+    founded: 2002,
+    tagline: "The authorised training centre is where a vendor's certification actually reaches a Brazilian engineer.",
+    intro: "InLearn Educa\u00e7\u00e3o Ltda was constituted on 14 April 2002, registered in Barueri in Greater S\u00e3o Paulo, and is an official training partner of Fortinet and F5, delivering the vendors' own courses and certification paths. Like TDec, it dates itself two different ways: the register says 2002, while the company presents itself as training professionals \u201csince 2008\u201d - the year its current leadership arrived. Both are recorded here.",
+    body: ["An authorised training centre is the layer most vendor documentation never mentions: the vendor writes the courseware, and somebody local has to schedule it, staff it with certified instructors and put working labs in front of people. That matters more in a market like Brazil than the org chart suggests - a certification that exists only in English, only across a currency barrier and only in another time zone is one most local engineers will not get.", "InLearn belongs to Grupo IHC, founded in 2003, alongside HighCast and CYLK - which means two companies in this encyclopedia are sister businesses in the same group."],
+    externalUrl: "https://www.inlearn.com.br/",
+    externalLabel: "InLearn",
+  },
+  {
+    slug: "versim",
+    sources: [
+      { label: "Versim - About us (on the Polish market since 2005; one of the largest network-solution distributors by turnover)", url: "https://www.versim.pl/en/en-o-nas/" },
+      { label: "Versim ATP - About us (Authorized Training Center since 2016 for Extreme Networks, Techstep and Gigaset Pro)", url: "https://versimatp.com/about-us/" },
+      { label: "Versim - company site (Pozna\u0144; distributor of advanced networking and IT security solutions, wired and wireless)", url: "https://versim.pl/" },
+    ],
+    tags: ["distributor", "training"],
+    group: "other",
+    relationships: ["worked-with-directly"],
+    name: "Versim - distribution and training, Poland",
+    founded: 2005,
+    tagline: "A distributor that also teaches, which is the combination that makes a vendor's certification travel.",
+    intro: "Versim has been on the Polish market since 2005 and is, by turnover, one of the largest distributors of network solutions there. It distributes advanced networking and IT security technologies, wired and wireless, from Pozna\u0144 - and since 2016 has also run an Authorized Training Center, certified for Extreme Networks, Techstep and Gigaset Pro.",
+    body: ["A distributor with a training arm has an incentive most training organisations lack: it has to live with whether the engineers it certified can actually deploy what it sold them. The feedback loop between the classroom and the support queue is short, which tends to show in the courseware."],
+    externalUrl: "https://versim.pl/",
+    externalLabel: "Versim",
+  },
+
+  // ---- Pelkey Wave 3, institutions first (plan: everything else references
+  // them). BBN, NBS/NIST and MITRE are not vendors and are here because the
+  // field's shape was set partly in rooms where nobody was selling. ----
+  {
+    slug: "bbn",
+    sources: [
+      { label: "RTX BBN Technologies - American research and development company", url: "https://en.wikipedia.org/wiki/BBN_Technologies" },
+    ],
+    tags: ["services", "standards"],
+    group: "other",
+    name: "BBN - the contractor that built the first network",
+    founded: 1948,
+    tagline: "A research firm won the ARPANET contract, and the packet switch became a product because somebody had to manufacture it.",
+    intro: "Bolt Beranek and Newman began in acoustics - the firm was hired to make auditoriums sound right - and ended up building the machine that made packet switching real. Winning the ARPANET Interface Message Processor contract in 1968 turned a funded idea into hardware somebody had to deliver, support and repair, which is a different problem from proving the idea works.",
+    body: [
+      "The IMP is the reason a network device is a separate box rather than a function of a host computer. Hosts differed too much to each implement the network directly; putting the logic in its own machine let one interface absorb the difference. Every router since inherits that decision.",
+      "BBN also demonstrates something the timeline otherwise lacks: a contractor whose product existed because a customer specified it. Most companies here started with a technology looking for a market. This one started with a market of exactly one, and the technology came out of the requirement.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/BBN_Technologies",
+    externalLabel: "BBN",
+  },
+  {
+    slug: "nbs-nist",
+    sources: [
+      { label: "National Institute of Standards and Technology - measurement standards laboratory of the United States", url: "https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology" },
+    ],
+    tags: ["standards"],
+    group: "other",
+    name: "NBS / NIST - the measurement laboratory that tested the standards",
+    founded: 1901,
+    tagline: "Somebody has to decide whether two implementations of a specification actually interoperate, and it is not usually the people who wrote it.",
+    intro: "The National Bureau of Standards, renamed the National Institute of Standards and Technology in 1988, is a measurement laboratory rather than a networking company - and it appears in this history because the OSI period made testing a central question. Conformance to a document and interoperation with another vendor's product are different properties, and the gap between them needed a referee nobody had a commercial interest in.",
+    body: [
+      "That role is easy to underrate. A specification large enough that no two implementations agree needs somebody to say which ones count, and a laboratory funded by neither the vendors nor their customers is an unusual and valuable thing to have. The OSI interoperability testbeds were built on that premise.",
+      "It is also the counterexample to the idea that standards are settled by committees alone. The committee produces the document; the laboratory finds out whether the document was enough. In this period it repeatedly was not.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology",
+    externalLabel: "NIST",
+  },
+  {
+    slug: "mitre",
+    sources: [
+      { label: "Mitre Corporation - American not-for-profit corporation operating federally funded research and development centers", url: "https://en.wikipedia.org/wiki/Mitre_Corporation" },
+    ],
+    tags: ["services", "standards"],
+    group: "other",
+    name: "MITRE - the not-for-profit that sits between buyer and vendor",
+    founded: 1958,
+    tagline: "An organisation with no product to sell, advising the customer who is buying everybody else's.",
+    intro: "MITRE operates federally funded research and development centres, which is an unusual commercial shape: it advises government on technical procurement without competing for the work it evaluates. In a period when the largest single buyer of computer communications was the United States government, that position made it structurally important to how the field developed.",
+    body: [
+      "The value of a body with no product is that its advice can be wrong without being self-serving. A vendor's architecture recommendation is inseparable from its catalogue; an integrator's is inseparable from what it can staff. Somebody has to be able to say a requirement is badly specified.",
+      "It belongs in this timeline for the same reason the standards laboratories do: several of the decisions that shaped what could be bought were made in rooms where no vendor was selling anything.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Mitre_Corporation",
+    externalLabel: "MITRE",
+  },
+
+  // ---- Wave 3, networking and internetworking. Wellfleet and SynOptics are
+  // here specifically to repair `nortel-bay`, which named a merger whose two
+  // halves were both absent. Vitalink and Retix are NOT added: the first
+  // redirects to another company's article and the second has none, so neither
+  // could be verified to this corpus's standard. ----
+  {
+    slug: "ungermann-bass",
+    sources: [
+      { label: "Ungermann-Bass - computer networking company", url: "https://en.wikipedia.org/wiki/Ungermann-Bass" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "Ungermann-Bass - the first company that only did networks",
+    founded: 1979,
+    tagline: "Ralph Ungermann left Zilog to build networks and nothing else, which nobody had done as a business before.",
+    intro: "Founded in 1979, Ungermann-Bass is usually described as the first company whose entire business was computer networking rather than computers that happened to network. That is a real distinction: until then, networking was a feature sold by whoever made the machines, and a customer's options were bounded by their computer vendor.",
+    body: [
+      "It also opens the pattern this period is full of - founders who leave one company to start another and appear repeatedly across a decade. Ungermann came from Zilog, which he had co-founded after Intel. Reading the era as a sequence of firms misses that it is substantially the same population of people, recombining.",
+      "The company was eventually acquired by Tandem, which is the usual ending here and worth stating plainly rather than treating as failure: being bought is what success looked like for most of these firms.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Ungermann-Bass",
+    externalLabel: "Ungermann-Bass",
+  },
+  {
+    slug: "proteon",
+    sources: [
+      { label: "Proteon - Westborough, Massachusetts computer network equipment vendor", url: "https://en.wikipedia.org/wiki/Proteon" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "Proteon - token ring, and the road not taken",
+    founded: 1972,
+    tagline: "A serious alternative to Ethernet, built by people who thought deterministic access mattered more than simplicity.",
+    intro: "Proteon, of Westborough, Massachusetts, built token-ring networking equipment and routers through the period when the local-area contest was still genuinely open. Token passing gives a network a property Ethernet does not: a bounded worst-case wait, because a station transmits only when it holds the token.",
+    body: [
+      "That property was not a marketing invention. On a heavily loaded shared Ethernet of the era, collisions and back-off made latency unpredictable in exactly the way a factory floor or a trading desk cannot tolerate. The token approach traded throughput and simplicity for determinism, and reasonable engineers chose it.",
+      "It lost anyway, and the reason is instructive: Ethernet got cheaper faster than token ring got better, and the cost curve beat the technical argument. That is the same shape as several other entries here, and it is why this timeline is not a ranking of merit.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Proteon",
+    externalLabel: "Proteon",
+  },
+  {
+    slug: "excelan",
+    sources: [
+      { label: "Excelan - American computer networking company, 1982-1989", url: "https://en.wikipedia.org/wiki/Excelan" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "Excelan - TCP/IP on a card, before it was obvious",
+    founded: 1982,
+    tagline: "Selling TCP/IP to corporations in 1982, which required believing a research network's protocol had a commercial future.",
+    intro: "Excelan built network interface cards that ran the TCP/IP stack on the card itself, offloading it from a host processor that in the early 1980s could ill afford the work. Founded in 1982 and merged into Novell in 1989, its whole existence sits inside the window when it was not yet obvious which protocol suite enterprises would standardise on.",
+    body: [
+      "The bet is the interesting part. In 1982, TCP/IP was what the ARPANET ran; OSI was what the standards bodies and several governments said the future would be. A company selling TCP/IP hardware to corporate buyers was taking a commercial position on an argument that would not be settled for six more years.",
+      "Offloading the stack onto the adapter is also a recurring idea rather than a period curiosity - it returns every time host processors fall behind link speeds, which they periodically do.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Excelan",
+    externalLabel: "Excelan",
+  },
+  {
+    slug: "wellfleet",
+    sources: [
+      { label: "Wellfleet Communications - American networking equipment manufacturer", url: "https://en.wikipedia.org/wiki/Wellfleet_Communications" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "Wellfleet - one half of Bay Networks",
+    founded: 1986,
+    tagline: "The router company that merged with a hub company, producing a business that was briefly the credible alternative to Cisco.",
+    intro: "Wellfleet Communications built multiprotocol routers during the internetworking window, competing directly with Cisco at a time when it was not settled who would win. Its 1994 merger with SynOptics produced Bay Networks, which for a few years was the most credible alternative to Cisco that the enterprise market had.",
+    body: [
+      "A merger of equals between a router company and a hub company was strategically sound on paper: routers and wiring concentrators were the two halves of an enterprise network, and neither firm alone had the other's channel. What followed is the standard warning about mergers of equals, which is that two head offices, two cultures and two product roadmaps do not become one by agreement.",
+      "Reading Wellfleet and SynOptics together explains a name that otherwise appears from nowhere in the mid-1990s and disappears into Nortel in 1998.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Wellfleet_Communications",
+    externalLabel: "Wellfleet",
+  },
+  {
+    slug: "synoptics",
+    sources: [
+      { label: "SynOptics - American networking equipment manufacturer", url: "https://en.wikipedia.org/wiki/SynOptics" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "SynOptics - the other half of Bay Networks",
+    founded: 1985,
+    tagline: "Ethernet over telephone wiring, which turned a coaxial bus into something a building could actually be wired for.",
+    intro: "SynOptics built structured wiring hubs that ran Ethernet over twisted pair, a Xerox PARC-derived idea that changed how buildings were cabled. Its 1994 merger with Wellfleet produced Bay Networks, joining the wiring business to the routing one.",
+    body: [
+      "The contribution is easy to undervalue now that twisted pair is simply what Ethernet runs on. Original Ethernet was a shared coaxial bus - one cable through a building, with every station tapped into it, and a single fault affecting everyone on the segment. Star wiring to a hub made the network diagnosable and the building wirable by electricians rather than specialists.",
+      "That is a recurring shape in this history: the technically interesting invention is the protocol, and the thing that makes it deployable is the wiring.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/SynOptics",
+    externalLabel: "SynOptics",
+  },
+
+  // ---- Wave 3, data communications and networking (2026-08-10).
+  // NOT ADDED, each for a stated reason: Milgo (en.wikipedia redirects to Racal,
+  // a British conglomerate that mentions Milgo three times - the parent, not the
+  // subject); Timeplex and General DataComm (404, no article); Interlan (the
+  // article of that name is an INTERNET EXCHANGE POINT IN ROMANIA, a completely
+  // different organisation - the Cyclades trap, caught by reading the short
+  // description rather than trusting the title). ----
+  {
+    slug: "codex",
+    sources: [
+      { label: "Vanguard Managed Solutions (redirected from Codex Corporation) - former American data network company", url: "https://en.wikipedia.org/wiki/Codex_Corporation" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "Codex - modems, and the mathematics underneath them",
+    founded: 1962,
+    tagline: "A company whose product was signal processing sold as a box, in the window a regulator had just opened.",
+    intro: "Codex built high-speed modems in the years after the interconnect decisions made it lawful for somebody other than the telephone company to attach equipment to a line. Its work sat on the mathematical side of data communications - getting more bits through a voice-grade circuit than the circuit looked capable of carrying - which is a different discipline from the switching and multiplexing most of this timeline is about.",
+    body: [
+      "The modem is the product this period is most associated with and the one most often taken for granted. A voice line was engineered to carry speech, and everything above about 2,400 bits per second on one was won by signal processing rather than by better wire.",
+      "The company was later absorbed and the name eventually became Vanguard, which is why searching for it lands on a successor. That is the usual ending in this part of the timeline and it is recorded rather than smoothed over.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Codex_Corporation",
+    externalLabel: "Codex",
+  },
+  {
+    slug: "micom",
+    sources: [
+      { label: "James L. Pelkey, A History of Computer Communications 1968-1988 - the American Data Systems collapse of 1970-72 and its re-emergence as Micom, from the oral-history interviews", url: "https://historyofcomputercommunications.info/" },
+      { label: "Micom - telecommunications equipment manufacturer known for concentrators; founded by Stephen Bernard Dorsey in 1975, sold to Philips NV in 1984, acquired Spectrum Digital in 1987", url: "https://en.wikipedia.org/wiki/Micom" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "Micom - concentrators, and what they were really selling",
+    founded: 1975,
+    tagline: "Fewer leased lines for the same number of terminals, which is an argument a finance director understands.",
+    intro: "Micom was founded in 1975 by Stephen Bernard Dorsey and built its business on data concentrators - equipment that let many terminals share one circuit instead of each needing its own. It was sold to Philips in 1984 and acquired Spectrum Digital in 1987.",
+    body: [
+      "James L. Pelkey's history of computer communications records an earlier chapter than the corporate register does: American Data Systems came apart between 1970 and 1972 and the enterprise re-emerged as Micom, which went on to be one of the era's larger successes. That is the rarer shape in this timeline - most entries here were acquired and absorbed, and a company that failed and came back under another name is a different story. The account is Pelkey's, from the oral-history interviews, and is attributed to him because no corporate record reachable here carries it.",
+      "The concentrator is the clearest case in this period of a product sold on arithmetic rather than on capability. A leased line was a recurring cost and terminals were idle most of the time; a box that let eight terminals share one line paid for itself against the line rental, and the technical argument barely had to be made.",
+      "That shape recurs constantly in networking and is worth recognising: the products that spread fastest are usually the ones whose benefit can be written as a subtraction on somebody's monthly bill.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Micom",
+    externalLabel: "Micom",
+  },
+  {
+    slug: "paradyne",
+    sources: [
+      { label: "Paradyne - US telecommunications company", url: "https://en.wikipedia.org/wiki/Paradyne_Corporation" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "Paradyne - the last miles of the analogue era",
+    founded: 1969,
+    tagline: "Squeezing usable data rates out of the copper that was already in the ground.",
+    intro: "Paradyne built modems and data transmission equipment through the period when the access line was the constraint on everything. Its problem was the one the whole industry shared and few companies specialised in: the wire between a building and the network was already installed, could not be replaced economically, and was never designed for data.",
+    body: [
+      "That constraint outlived the analogue era entirely. Every subsequent generation of access technology - the DSL family most obviously - is the same engineering problem restated: extract more from existing copper because replacing it costs more than the service is worth.",
+      "It is a useful corrective to a timeline otherwise full of companies inventing new media. Most of the world's bandwidth problems have been solved on cable that was already there.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Paradyne_Corporation",
+    externalLabel: "Paradyne",
+  },
+  {
+    slug: "sytek",
+    sources: [
+      { label: "Sytek - American local area networking company", url: "https://en.wikipedia.org/wiki/Sytek" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "Sytek - broadband LANs, and NetBIOS",
+    founded: 1979,
+    tagline: "Ran local networks over cable television plant, and left behind an interface that outlived the company by decades.",
+    intro: "Sytek built local area networks on broadband coaxial cable - the same medium cable television used - which let a network cover a campus rather than a floor and carry several channels at once. It is better remembered for something smaller: the NetBIOS interface it developed with IBM, which became the foundation of PC networking for a generation.",
+    body: [
+      "Broadband LANs lost to baseband Ethernet for the reasons most things in this period lost: cost, simplicity and the pace at which the winning option got cheaper. Running a network over CATV plant required radio-frequency engineering that an ordinary site could not staff.",
+      "NetBIOS is the more interesting legacy and a recurring lesson: the durable artefact of a company is often not its product but an interface it defined, which then long outlives the hardware, the company and eventually the sense of what the acronym meant.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Sytek",
+    externalLabel: "Sytek",
+  },
+  {
+    slug: "bridge-communications",
+    sources: [
+      { label: "Bridge Communications - American computer networking company, merged with 3Com in 1987", url: "https://en.wikipedia.org/wiki/Bridge_Communications" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "Bridge Communications - the box between the networks",
+    founded: 1981,
+    tagline: "Built the equipment that joined incompatible networks, then merged with 3Com in 1987.",
+    intro: "Bridge Communications made internetworking equipment - the devices that connected local networks to each other and to hosts - in the years when a building could easily contain several networks that had no way to reach one another. It merged with 3Com in 1987, which is what a successful company in this window usually became.",
+    body: [
+      "The company's existence is itself evidence for how the internetworking window opened. Nobody needed a product like this until local area networks had succeeded well enough to proliferate, and the proliferation happened department by department rather than by plan.",
+      "The 3Com merger also shows the consolidation pattern that followed: the firms that defined the window mostly did not survive it as independent companies, and the ones that bought them are the names still on price lists.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Bridge_Communications",
+    externalLabel: "Bridge Communications",
   },
 ];
 

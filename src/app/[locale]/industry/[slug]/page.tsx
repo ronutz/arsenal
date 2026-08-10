@@ -36,6 +36,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import VendorTags from "@/components/VendorTags";
 import SiteFooter from "@/components/SiteFooter";
 import { TAG_ROUTES, vendorsByTag, TAG_ROUTE_FOR, getPartnerVendor, partnerVendorSlugs } from "@/content/vendors/partners";
@@ -376,12 +377,29 @@ export default async function PartnerVendorPage({
   if (tag) {
     const listed = vendorsByTag(tag);
     const tTag = await getTranslations({ locale, namespace: "industryTags" });
+    const tNavTag = await getTranslations({ locale, namespace: "nav" });
+    const tIndTag = await getTranslations({ locale, namespace: "industry" });
     return (
       <>
+        <a href="#main" className="skip-link">
+          {tNavTag("skipToContent")}
+        </a>
         <Header />
         <main id="main">
           <section className="section">
             <div className="container vendor-container">
+              {/* ADDED 2026-08-10 (PRIME): the category pages had no
+                  breadcrumbs, so a reader who landed on /industry/vendors from
+                  search had no way back up to the timeline they are a filtered
+                  view OF. */}
+              <Breadcrumbs
+                ariaLabel={tNavTag("breadcrumb")}
+                items={[
+                  { label: tNavTag("home"), href: "/" },
+                  { label: tIndTag("navLabel"), href: "/industry" },
+                  { label: tTag(`${tag}.title`) },
+                ]}
+              />
               <p className="vendor-eyebrow mono">{tTag("eyebrow")}</p>
               <h1 className="article-title">{tTag(`${tag}.title`)}</h1>
               <p className="era-intro">{tTag(`${tag}.intro`)}</p>

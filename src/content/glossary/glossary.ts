@@ -11093,6 +11093,282 @@ export const GLOSSARY: GlossaryEntry[] = [
     relatedTerms: ["radio-spectrum", "wifi", "lora"],
     relatedArticles: ["radio-spectrum"],
   },
+
+  // ---- Wave 1: Pelkey enrichment plan (PRIME 2026-08-08). Fourteen terms the
+  // industry corpus leans on and the glossary did not carry. ----
+  {
+    slug: "carterfone",
+    headword: "Carterfone",
+    kind: "term",
+    domains: ["enterprise-networking", "isp-telecom"],
+    aliases: ["carterfone decision", "carterfone ruling"],
+    relatedTerms: ["computer-inquiry", "data-pbx"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on the 1968 FCC decision and the interconnect market it opened", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "computer-inquiry",
+    headword: "Computer Inquiry",
+    kind: "term",
+    domains: ["enterprise-networking", "isp-telecom"],
+    aliases: ["computer inquiry i", "computer inquiry ii", "computer i", "computer ii"],
+    relatedTerms: ["carterfone", "x25"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on the FCC proceedings separating communications from data processing", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "imp",
+    headword: "IMP",
+    kind: "acronym",
+    domains: ["enterprise-networking"],
+    aliases: ["interface message processor", "interface message processors"],
+    relatedTerms: ["ncp", "arpanet"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on the ARPANET's packet switches and their procurement", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "ncp",
+    headword: "NCP",
+    kind: "acronym",
+    domains: ["enterprise-networking"],
+    aliases: ["network control program", "network control protocol"],
+    relatedTerms: ["imp", "arpanet"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on the ARPANET host protocol before TCP/IP", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "statistical-multiplexer",
+    headword: "Statistical multiplexer",
+    kind: "term",
+    domains: ["enterprise-networking", "isp-telecom"],
+    aliases: ["stat mux", "statmux", "statistical multiplexing"],
+    relatedTerms: ["x25", "data-pbx"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on the statistical multiplexer market of the 1970s", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "data-pbx",
+    headword: "Data PBX",
+    kind: "term",
+    domains: ["enterprise-networking", "isp-telecom"],
+    aliases: ["cbx", "computerized branch exchange", "data switch"],
+    relatedTerms: ["carterfone", "statistical-multiplexer"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on data PBX and CBX products and the market that closed around them", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "gosip",
+    headword: "GOSIP",
+    kind: "acronym",
+    domains: ["enterprise-networking", "vendors"],
+    aliases: ["government osi profile", "us gosip", "uk gosip"],
+    relatedTerms: ["osinet", "cos-corporation"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on government procurement mandates for OSI", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "osinet",
+    headword: "OSINET",
+    kind: "acronym",
+    domains: ["enterprise-networking", "vendors"],
+    aliases: ["osi net", "nbs osinet"],
+    relatedTerms: ["gosip", "cos-corporation"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on OSI interoperability testing", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "cos-corporation",
+    headword: "COS",
+    kind: "acronym",
+    domains: ["enterprise-networking", "vendors"],
+    aliases: ["corporation for open systems"],
+    relatedTerms: ["gosip", "osinet"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on the vendor consortium formed to certify OSI conformance", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "interop",
+    headword: "Interop",
+    kind: "lore",
+    domains: ["enterprise-networking", "events"],
+    aliases: ["tcp/ip interoperability conference", "networld interop"],
+    relatedTerms: ["ene", "iccc-demonstration"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on the trade show that made TCP/IP interoperability visible to buyers", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "ene",
+    headword: "ENE",
+    kind: "acronym",
+    domains: ["enterprise-networking", "events"],
+    aliases: ["enterprise network event"],
+    relatedTerms: ["interop", "gosip"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on the 1988 Enterprise Network Event", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "iccc-demonstration",
+    headword: "ICCC demonstration",
+    kind: "lore",
+    domains: ["enterprise-networking", "events"],
+    aliases: ["iccc 1972", "international conference on computer communication"],
+    relatedTerms: ["imp", "interop"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on the 1972 public demonstration of the ARPANET", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "project-mac",
+    headword: "Project MAC",
+    kind: "lore",
+    domains: ["enterprise-networking"],
+    aliases: ["mac project", "multiple access computer"],
+    relatedTerms: ["imp", "ncp"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on time-sharing research and the people it produced", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+  {
+    slug: "idcma",
+    headword: "IDCMA",
+    kind: "acronym",
+    domains: ["enterprise-networking", "vendors"],
+    aliases: ["independent data communications manufacturers association"],
+    relatedTerms: ["carterfone", "computer-inquiry"],
+    sources: [
+      { label: "Pelkey, A History of Computer Communications 1968-1988, on the trade association that pressed the independents' case", href: "https://historyofcomputercommunications.info/" },
+    ],
+  },
+
+  // ---- Industry channel roles (PRIME 2026-08-10). The eight categories the
+  // /industry timeline filters by, as glossary entries in their own right. ----
+  {
+    slug: "channel-vendor",
+    headword: "Vendor",
+    kind: "term",
+    domains: ["enterprise-networking", "vendors"],
+    aliases: ["manufacturer", "oem", "product vendor"],
+    relatedTerms: ["channel-distributor", "channel-reseller", "tac"],
+  },
+  {
+    slug: "channel-distributor",
+    headword: "Distributor",
+    kind: "term",
+    domains: ["enterprise-networking", "vendors"],
+    aliases: ["two-tier distribution", "value-added distributor", "vad"],
+    relatedTerms: ["channel-vendor", "channel-reseller", "channel-services"],
+  },
+  {
+    slug: "channel-reseller",
+    headword: "Reseller",
+    kind: "term",
+    domains: ["enterprise-networking", "vendors"],
+    aliases: ["var", "value-added reseller", "integrator", "systems integrator"],
+    relatedTerms: ["channel-distributor", "channel-vendor"],
+  },
+  {
+    slug: "channel-services",
+    headword: "Services company",
+    kind: "term",
+    domains: ["enterprise-networking", "ops-culture"],
+    aliases: ["managed services", "outsourcing", "msp", "consulting"],
+    relatedTerms: ["channel-reseller", "tac"],
+  },
+  {
+    slug: "channel-carrier",
+    headword: "Carrier",
+    kind: "term",
+    domains: ["isp-telecom", "enterprise-networking"],
+    aliases: ["telco", "operator", "service provider", "telecommunications operator"],
+    relatedTerms: ["channel-datacentre", "x25", "carterfone"],
+  },
+  {
+    slug: "channel-datacentre",
+    headword: "Data centre operator",
+    kind: "term",
+    domains: ["cloud", "enterprise-networking"],
+    aliases: ["colocation", "colo", "hosting", "interconnection", "carrier hotel"],
+    relatedTerms: ["channel-carrier", "ixp"],
+  },
+  {
+    slug: "channel-training",
+    headword: "Training organisation",
+    kind: "term",
+    domains: ["enterprise-networking", "ops-culture"],
+    aliases: ["authorized training centre", "atc", "authorized training partner", "atp"],
+    relatedTerms: ["channel-vendor", "channel-distributor", "tac"],
+  },
+  {
+    slug: "channel-standards",
+    headword: "Standards body",
+    kind: "term",
+    domains: ["enterprise-networking", "grc"],
+    aliases: ["standards organisation", "specification body", "consortium"],
+    relatedTerms: ["gosip", "cos-corporation", "osinet"],
+  },
+
+  // ---- Hardware and firmware layer (PRIME 2026-08-10). The vocabulary an
+  // operations engineer needs to read a release note and know what can and
+  // cannot change on a box already in a rack. ----
+  {
+    slug: "firmware",
+    headword: "Firmware",
+    kind: "term",
+    domains: ["enterprise-networking", "it-support"],
+    aliases: ["fw", "device firmware", "image"],
+    relatedTerms: ["microcode", "embedded-system"],
+  },
+  {
+    slug: "fw-vs-sw",
+    headword: "Firmware vs software",
+    kind: "expression",
+    domains: ["enterprise-networking", "it-support"],
+    aliases: ["fw vs sw", "firmware or software"],
+    relatedTerms: ["firmware", "microcode"],
+  },
+  {
+    slug: "microcode",
+    headword: "Microcode",
+    kind: "term",
+    domains: ["enterprise-networking", "programming"],
+    aliases: ["ucode", "micro-code"],
+    relatedTerms: ["firmware", "asic", "fpga"],
+  },
+  {
+    slug: "asic",
+    headword: "ASIC",
+    kind: "acronym",
+    domains: ["enterprise-networking", "programming"],
+    aliases: ["application-specific integrated circuit", "forwarding asic", "switching asic"],
+    relatedTerms: ["fpga", "microcode", "firmware"],
+  },
+  {
+    slug: "fpga",
+    headword: "FPGA",
+    kind: "acronym",
+    domains: ["enterprise-networking", "programming"],
+    aliases: ["field-programmable gate array", "gate array"],
+    relatedTerms: ["asic", "microcode", "firmware"],
+  },
+  {
+    slug: "embedded-system",
+    headword: "Embedded system",
+    kind: "term",
+    domains: ["enterprise-networking", "it-support"],
+    aliases: ["embedded systems", "embedded device"],
+    relatedTerms: ["firmware", "asic"],
+  },
 ];
 
 // ---- Registry API (mirrors the catalogue/learn helper style) ---------------

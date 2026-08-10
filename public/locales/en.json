@@ -1502,12 +1502,12 @@
         "specify-attribute": "Make an attribute more specific"
       },
       "rating": {
-        "na": "n/a (not violation-driven)",
         "1": "1 — almost certainly legitimate",
         "2": "2 — likely legitimate",
         "3": "3 — uncertain",
         "4": "4 — likely an attack",
-        "5": "5 — certain attack"
+        "5": "5 — certain attack",
+        "na": "n/a (not violation-driven)"
       },
       "mode": {
         "automatic": "Automatic",
@@ -6462,12 +6462,12 @@
       "present": "present",
       "cabletron": "Network engineer and certified instructor. Non-Ethernet and Ethernet networks, campus networks, IP routing.",
       "riverstone": "Product support engineer and knowledge-base coordinator in California. Gigabit Ethernet, metropolitan area networks, IP routing, BGP. Third-level escalation, customer scenario recreation, and regression testing.",
-      "cisco": "Network consulting engineer, acting as the single point of contact for key customers including SERPRO and Correios. Escalation and customer-satisfaction management.",
+      "cisco": "Network consulting engineer in Brasília, acting as the single point of contact for two of Brazil's federal customers: SERPRO, the government's data-processing agency, and ECT-Correios, the national postal service. Escalation and customer-satisfaction management.",
       "enterasys": "Network engineer and instructor. Enterprise networks, IP routing, user access control and NAC, IDS and IPS.",
       "juniper": "Channel support engineer and instructor for enterprise switches and firewalls. Technical sales enablement and Junos-SRX operations training.",
       "implementation": "Deploying and integrating security and network platforms for end customers, mostly under contracts held by resellers and occasionally direct. Juniper SSG, SRX, EX and Secure Access - the line that became MAG and then Pulse Secure - alongside Cisco ASA, Palo Alto Networks next-generation firewalls, and Extreme Networks Summit and BlackDiamond switches.",
       "f5channel": "Channel-facing sales and pre-sales engineering for F5, providing technical enablement, proof-of-concept execution, and partner training across distribution. Secondary work in the same years covered FireEye, McAfee, VMware, Ixia and Keysight, and Pulse Secure.",
-      "rededucation": "Authorized training instructor delivering official certified courses across F5, Fortinet, Extreme Networks, and Netskope to organizations worldwide.",
+      "rededucation": "Authorized training instructor delivering official certified courses across F5, Fortinet, Extreme Networks, and Netskope to organizations worldwide. The teaching years began in 2020 with F5 courses as a fixed contractor to an authorized training centre in Brazil, widened in 2021 to Extreme Networks delivery on demand for authorized partners in Brazil and Poland, and settled at Red Education - contracted from 2021, full-time from September 2023.",
       "fullHistory": "Read the full history",
       "vendorsLink": "The career record",
       "lineagesLink": "Vendor lineages & acquisitions"
@@ -14440,6 +14440,118 @@
       "containment": {
         "def": "Limiting how much a fault affects, without addressing why it happened.",
         "context": "Failing over, disabling a feature, blocking a source, isolating a segment: none of these repair anything, they put a boundary around the damage. Most incidents end at containment, which is the normal shape of the work - but reports that call the result “resolved” rather than “bounded” describe a problem that is still live."
+      },
+      "carterfone": {
+        "def": "The 1968 FCC decision that let equipment the telephone company had not made be attached to the telephone network.",
+        "context": "Before it, the carrier decided what could touch its lines, and the answer was almost always its own equipment. The Carterfone was an acoustic coupler for linking a two-way radio to a phone call, and the ruling that allowed it established a principle far larger than the device: the network had to accept attachments that did it no harm. Every modem, multiplexer and data device sold by somebody other than the carrier descends from that opening, which is why an FCC decision about a radio accessory turns up at the start of so many company histories."
+      },
+      "computer-inquiry": {
+        "def": "The FCC proceedings that drew a line between regulated communications and unregulated data processing.",
+        "context": "The question sounds administrative and decided the shape of an industry: if a service both moves data and computes on it, is it a telephone service subject to tariffs, or a computer service that anybody may sell? Computer Inquiry I asked it; Computer Inquiry II answered it by separating basic transmission from enhanced services built on top. That separation is why value-added networks could exist as businesses, and why the carriers had to offer the underlying capacity to competitors who then sold against them."
+      },
+      "imp": {
+        "def": "Interface Message Processor: the ARPANET's packet switch, a separate minicomputer sitting between a host and the network.",
+        "context": "Putting the network's logic in its own machine was a design decision with consequences. Hosts differed wildly, and asking each to implement the network directly would have made the network hostage to the slowest vendor; the IMP presented one interface and absorbed the difference. It is the ancestor of the router as a distinct box rather than a function of a computer, and the reason the first network engineers worked on equipment nobody else in the building understood."
+      },
+      "ncp": {
+        "def": "Network Control Program: the ARPANET host protocol that TCP/IP replaced.",
+        "context": "NCP assumed the network beneath it was reliable, which the single ARPANET was, and that assumption is exactly what stopped it scaling to a network of networks. TCP's separation of a reliable conversation from an unreliable delivery service was the answer, and the cutover on 1 January 1983 is one of the few flag days in this history that actually happened. Anybody who has argued about where reliability belongs in a stack is repeating an argument NCP lost."
+      },
+      "statistical-multiplexer": {
+        "def": "A multiplexer that allocates line capacity on demand rather than by fixed time slot.",
+        "context": "Terminals are idle most of the time, so a fixed slot per terminal wastes most of a line. The statistical multiplexer buffers and interleaves instead, giving capacity to whoever is transmitting, and sold on the arithmetic: fewer leased lines for the same terminal count. It also introduced queueing and therefore variable delay, which is the trade every shared-capacity technology since has made. The companies built on it were substantial and mostly did not survive the arrival of networks that did the same thing end to end."
+      },
+      "data-pbx": {
+        "def": "A switch that connected terminals to computers the way a PBX connected telephones to lines.",
+        "context": "In a building with more terminals than computer ports, something had to decide who got connected to what, and the data PBX (or CBX, when the vendor wanted to sound computerised) did it as a circuit switch. It was a good answer to a question that stopped being asked: local area networks let a terminal reach any host without a switch in the middle deciding, and the market closed faster than its vendors expected. It is one of the clearest cases of a product that was correct and was overtaken."
+      },
+      "gosip": {
+        "def": "Government OSI Profile: a procurement mandate requiring OSI protocols in government purchases.",
+        "context": "Both the United States and the United Kingdom used buying power to try to make OSI the standard, on the reasoning that a large enough customer can create a market. It did not work, and the reason is instructive: TCP/IP was already running, already interoperating, and already cheaper to deploy, while OSI arrived as a specification that vendors were still implementing. A mandate can compel purchase; it cannot compel a technology to be ready."
+      },
+      "osinet": {
+        "def": "A testbed network for checking that OSI implementations from different vendors actually interoperated.",
+        "context": "Conformance to a specification and interoperation with another vendor's product are different properties, and OSI made the gap between them visible. OSINET existed to close it by testing implementations against each other rather than against a document. The effort was serious and the lesson outlived the protocols: interoperability is demonstrated, not declared, which is the same argument that later made Interop a trade show worth attending."
+      },
+      "cos-corporation": {
+        "def": "Corporation for Open Systems: a vendor consortium formed to certify OSI conformance.",
+        "context": "When a standard is large enough that no two implementations agree, somebody has to say which ones count. COS was the industry's attempt to be that somebody, funded by the vendors whose products it would judge. It produced real testing work and could not solve the underlying problem: the specification kept moving, and the market it was certifying for was being taken by protocols that had shipped."
+      },
+      "interop": {
+        "def": "The trade show that began as a TCP/IP interoperability demonstration and became the industry's proving ground.",
+        "context": "Its founding idea was that vendors would connect their equipment to one live network on the show floor, in public, where failure was visible. That is a genuinely uncomfortable proposition for a vendor and it is why the event mattered: buyers could see interoperation rather than read about it. The show hall network became a standing demonstration that TCP/IP worked between competitors, which no specification and no consortium had managed to establish."
+      },
+      "ene": {
+        "def": "Enterprise Network Event: the 1988 trade show positioned as the OSI counterpart to the TCP/IP demonstrations.",
+        "context": "Held as OSI's procurement mandates were at their most confident, it was intended to show enterprise buyers a coherent OSI ecosystem. What it showed instead, read with hindsight, is how much of that ecosystem was still described rather than shipped. The two 1988 shows are worth reading together: one demonstrated a working network between rivals, the other demonstrated an intention."
+      },
+      "iccc-demonstration": {
+        "def": "The 1972 public demonstration of the ARPANET at the International Conference on Computer Communication.",
+        "context": "Before it, packet switching was a funded research result that most computing professionals had not seen work. The demonstration put terminals in a Washington hotel connected to hosts across the country, running real applications for anybody who walked up. It converted a paper technology into an observed one, and much of the commercial interest that followed traces to people who were in that room."
+      },
+      "project-mac": {
+        "def": "The MIT time-sharing research project whose people and ideas seeded much of computer communications.",
+        "context": "Its subject was making one computer serve many users at once, which is not networking, and it produced a generation who then built networks. That is the pattern worth noticing: the interactive computing tradition trained people to think about resource sharing, contention and fairness, and those are the problems a network has. Reading the ARPANET's early personnel is largely reading a list of people who passed through time-sharing research first."
+      },
+      "idcma": {
+        "def": "Independent Data Communications Manufacturers Association: the trade body for vendors competing with the carriers.",
+        "context": "After the interconnect decisions there was an industry of companies selling equipment the telephone company had not built, and it needed a voice in proceedings that would decide whether it could keep doing so. IDCMA was that voice. It is a reminder that a market opened by a regulator stays open only while somebody argues for it, and that a great deal of the technical history in this period was settled in hearings rather than in laboratories."
+      },
+      "channel-vendor": {
+        "def": "The company that makes the product, as distinct from anybody who sells, installs or operates it.",
+        "context": "Most of the industry's stories are vendor stories, because a vendor is where a thing gets built before anybody knows what it is for. The word does real work in a channel conversation: it identifies who owns the roadmap, who fixes the defect, and who cannot be routed around when something is broken at the product level rather than the configuration level. An engineer who says \"escalate to the vendor\" is naming a specific escalation destination, not a generic supplier."
+      },
+      "channel-distributor": {
+        "def": "A company that sells to resellers rather than to the organisations that use the equipment - the middle tier of two-tier distribution.",
+        "context": "Invisible to most engineers and decisive for what they can actually buy. A distributor decides which products it will stock, finance and support in a given country, and a vendor's line card is theoretical until somebody local carries it. In markets with currency controls, import duty and long lead times, that decision is the difference between a product existing and a product being available. Distributors also run the credit: the reseller who installed your firewall was very likely financed by one."
+      },
+      "channel-reseller": {
+        "def": "The company that sells and installs somebody else's products for the organisation that will run them; also called a value-added reseller or integrator.",
+        "context": "Their skill is not the products - it is making a portfolio assembled for commercial reasons behave like a system. A reseller arrives at an estate somebody else designed, with vendors who each assume they are the only one present, and has to produce something coherent from parts that were never tested together. That is a real discipline and it is largely undocumented, because every vendor's material describes a world containing only that vendor."
+      },
+      "channel-services": {
+        "def": "A company that sells people and process rather than product: consulting, outsourcing, managed operations.",
+        "context": "Harder to explain to a market and harder to scale than a product business, because the thing being sold is judgement and judgement does not have a bill of materials. The commercial shape matters operationally: a managed-services contract moves the pager, and whoever holds the pager ends up owning decisions the contract never mentioned. Reading a services agreement as a technical document - what is monitored, what may be changed without asking, who declares an incident - explains more about how an estate behaves than most architecture diagrams."
+      },
+      "channel-carrier": {
+        "def": "An operator that moves somebody else's traffic: the physical substrate everything above it assumes.",
+        "context": "Enterprise networking treats the carrier as a line on a diagram, which is why carrier problems are so disorienting when they arrive - the abstraction was doing a great deal of work. Underneath it are rights of way, conduit, undersea cable, regulated interconnection and a completely different commercial clock: circuits are provisioned in weeks, not minutes. Several of the oldest entries in this field's history are really about who was permitted to lay cable where, which is a legal question that determined a technical topology."
+      },
+      "channel-datacentre": {
+        "def": "Colocation, hosting and interconnection: the businesses that own the places where networks physically meet.",
+        "context": "A property business with network effects, which is a stranger combination than it sounds. The value of a facility is not its floor space but who else is already inside it, because a cross-connect to a network in the same building is cheaper, faster and more reliable than reaching it any other way. That is why a small number of buildings carry a wildly disproportionate share of a region's traffic, and why an outage in one of them is a news event rather than a customer incident."
+      },
+      "channel-training": {
+        "def": "The companies and bodies that decide what competence looks like in a technology and who may claim it.",
+        "context": "An authorised centre is the layer most vendor documentation never mentions, and it is what closes the distance between a certification existing and an engineer being able to get it. A course that runs only in English, only across a currency barrier and only in another time zone is a course most local engineers will not take. The certification also does commercial work nobody discusses openly: partner tiers are gated on how many certified staff a company employs, so training is a purchasing requirement dressed as an educational one."
+      },
+      "channel-standards": {
+        "def": "The laboratories, foundations and specification bodies the commercial entries are built on top of - not companies selling anything, or not only that.",
+        "context": "A standard is an agreement about what two implementations owe each other, and the interesting question is always who is in the room. Bodies funded by the vendors they regulate produce different specifications from bodies funded by governments or by nobody, and the OSI period is the clearest demonstration: enormous institutional weight, conformance testing, procurement mandates - and a competing stack that shipped. Conformance to a specification and interoperation with another vendor's product are different properties, and the gap between them is where standards bodies earn or lose their authority."
+      },
+      "firmware": {
+        "def": "Software that ships as part of a device and is expected to be there before anything else runs.",
+        "context": "The distinction from ordinary software is not what it is made of - it is compiled code either way - but what it is responsible for and how it fails. Firmware runs before there is an operating system to complain to, it usually cannot be restarted without restarting the device, and a bad update can leave hardware that will not boot far enough to accept a good one. That is why firmware upgrades get change windows and application upgrades often do not, and why “have you tried the latest firmware” is a heavier request than it sounds."
+      },
+      "fw-vs-sw": {
+        "def": "The distinction a vendor draws between code that is part of the device and code that runs on top of it - and the reason it decides who fixes your problem.",
+        "context": "The line moves by vendor and it is rarely technical. On a network appliance the whole operating system is often called firmware; on a server the same layer would be an OS, and the firmware would be the BIOS and the controllers beneath it. What makes the distinction worth knowing is commercial and procedural: firmware and software frequently have different support lifecycles, different release cadences, different licences and different escalation paths inside the vendor. An engineer who says “that is a firmware issue” is often making a routing decision about which team owns it, not a claim about where the bug lives."
+      },
+      "microcode": {
+        "def": "A layer inside a processor that implements its published instruction set in terms of simpler internal operations.",
+        "context": "It is the reason a processor's behaviour can change without the silicon changing. An instruction a program issues is not necessarily executed directly by hardware; on many processors it is decoded into a sequence of internal steps the chip's designers can revise after manufacture. That became widely visible when speculative-execution vulnerabilities were mitigated partly by microcode updates - patches that alter what a processor does, shipped through firmware, for a defect in something most people think of as fixed at the foundry."
+      },
+      "asic": {
+        "def": "Application-Specific Integrated Circuit: a chip built to do one job, fast, and incapable of being repurposed.",
+        "context": "In networking it is the reason a switch forwards at line rate while a general-purpose processor cannot. The trade is stark and worth stating: an ASIC is dramatically faster and cheaper per port than software forwarding, and it is fixed at manufacture - a feature the silicon does not implement is a feature the box will never have, whatever the release notes say. That is why “supported in software but not in hardware” has real operational consequences: the same feature can mean line rate on one platform and a punt to the control-plane processor on another."
+      },
+      "fpga": {
+        "def": "Field-Programmable Gate Array: a chip whose logic can be rewired after it is manufactured.",
+        "context": "It occupies the space between a general-purpose processor and an ASIC: slower and more expensive per unit than fixed silicon, far faster than software for the right problem, and - crucially - changeable. Vendors use them to ship hardware before a protocol is finished, to serve markets too small to justify a custom chip, and to fix in the field what would otherwise need a silicon respin. When a release note says a feature now runs in hardware on a platform that previously punted it to the processor, an FPGA is often what changed."
+      },
+      "embedded-system": {
+        "def": "A computer built into something that is not thought of as a computer, with a fixed job and usually nobody watching it.",
+        "context": "Almost every device on a network is one: the switch, the access point, the power distribution unit, the camera, the building's air handling. What makes them an operational category rather than a hardware one is the assumptions they carry - long service lives, patching that requires an outage, credentials that were set once, and vendors who may not exist by the time a vulnerability is published. An estate's real attack surface is usually not the servers somebody maintains; it is the several hundred small computers nobody has logged into since installation."
       }
     },
     "totalCount": "{count} terms",
@@ -14624,7 +14736,7 @@
     "contemporaryEyebrow": "Industry contemporary",
     "contemporaryCardTag": "contemporary",
     "timelineSectionTitle": "The lineage, in order",
-    "timelineSectionNote": "Every company whose technology or people ended up inside the platforms on this site, ordered by the year its story starts. Some are still trading and some were absorbed decades ago; the ones that ended carry the year and what happened. Vendors marked as Red Education partners are ones whose authorized training Red Education delivers. Ordering by founding rather than by status avoids a judgement call that kept getting it wrong - plenty of the older names here are still very much in business.",
+    "timelineSectionNote": "Every company whose technology or people ended up inside the platforms covered by this site, ordered by the year its story starts. Some of the older ones were absorbed decades ago, some are still very much in business. Vendors marked as Red Education partners are ones whose authorized training Red Education delivers.",
     "timelineSince": "{from} - present",
     "timelineSpan": "{from} - {to}",
     "reduPill": "Red Education partner",
@@ -14670,9 +14782,9 @@
     "title": "The industry, from the inside",
     "lede": "The corporate genealogies of networking and security: who founded each company, what they built, who bought whom, and where every bloodline ended up. Written from primary sources - SEC filings, inquiry reports, and the trade press of each era.",
     "careerTitle": "The career vendors",
-    "careerNote": "Worked with directly between 1996 and 2020, in chronological order of first engagement.",
+    "careerNote": "Two kinds of company appear here, and the markers tell them apart: the ones I was employed by, and the ones whose technology I worked with directly from the other side of the table. Chronological by first engagement, from 1996.",
     "careerStripTitle": "The chapters lived from inside",
-    "careerStripNote": "These fourteen are also chapters of my own record - each timeline carries a My chapter marker. The full telling lives at the career record.",
+    "careerStripNote": "In every one of these, employer or vendor, the work was the same shape: facing the end customer, in pre-sales and in post-sales technical support, and very often acting as the technical proxy and enablement facilitator for the partners who had to carry the product themselves. The job was to leave the customer with something that worked better than it did before — an innovation, a solution, an improvement they could keep running after I left. The full telling lives at the career record.",
     "careerStripLink": "Read the career record"
   },
   "sitemap": {
@@ -14958,7 +15070,10 @@
       "short": "standards",
       "intro": "Not companies selling anything, or not only that: the laboratories, foundations and specifications the commercial entries are built on top of."
     },
-    "milestonesLink": "Before any of these companies: the milestones they were built on"
+    "milestonesLink": "Before any of these companies: the milestones they were built on",
+    "filterCategoryLabel": "Category",
+    "filterCategoryAll": "Select all",
+    "filterCategoryNone": "Clear"
   },
   "milestones": {
     "eyebrow": "Before the companies",
@@ -15112,14 +15227,5 @@
     "translationsTitle": "Improve the translations",
     "translationsBody": "This site is authored in English and Brazilian Portuguese, and machine-translated into fourteen more languages. The machine versions are serviceable and they are not native. If you read one of those fourteen and something is wrong - a term of art rendered literally, a sentence that technically parses and does not mean anything - telling me is a real contribution, and a short note naming the page and the phrase is enough.",
     "translationsCta": "Send a correction"
-  },
-  "sources": {
-    "navLabel": "Sources",
-    "eyebrow": "Reference works",
-    "title": "The works this history rests on",
-    "lede": "The industry pages here draw on a small number of scholarly works. This is where those works are introduced, with their authors named and their evidence shown, before anything else on the site cites them.",
-    "authorsTitle": "Who made it",
-    "citationsTitle": "Where these facts come from",
-    "indexLink": "The works this history rests on"
   }
 }

@@ -28,6 +28,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import ReduBrand from "@/components/ReduBrand";
 import { partnerVendors } from "@/content/vendors/partners";
 import { TAG_ROUTES, vendorsByTag } from "@/content/vendors/partners";
 import { CAREER_VENDORS } from "@/content/vendors/career";
@@ -269,7 +270,9 @@ export default async function IndustryHubPage({
                  independently; its absence correctly reads as "still here". */}
             <div className="vendor-divider">
               <h2 className="vendor-divider-title">{tp("timelineSectionTitle")}</h2>
-              <p className="vendor-divider-note">{tp("timelineSectionNote")}</p>
+              <p className="vendor-divider-note">
+                <ReduBrand>{tp("timelineSectionNote")}</ReduBrand>
+              </p>
             </div>
             {/* FILTERS (PRIME 2026-08-06). Three cuts through one list:
                 who Red Education partners with, which chapters were lived
@@ -286,8 +289,29 @@ export default async function IndustryHubPage({
                 career: tp("filterCareer"),
                 teach: tp("filterTeach"),
                 count: tp("filterCount", { shown: "{shown}", total: "{total}" }),
+                categoryLabel: tTags("filterCategoryLabel"),
+                categoryAll: tTags("filterCategoryAll"),
+                categoryNone: tTags("filterCategoryNone"),
               }}
+              /* Categories come from the SAME source the tag routes use, so the
+                 in-page filter and /industry/<tag> can never disagree about
+                 which categories exist or how many entries each holds. */
+              categories={Object.values(TAG_ROUTES)
+                .map((tag) => ({
+                  tag,
+                  label: tTags(`${tag}.short`),
+                  n: vendorsByTag(tag).length,
+                }))
+                .filter((c) => c.n > 0)}
             />
+            {/* KEY FOR THE TWO CAREER MARKERS (PRIME 2026-08-10). The pills
+                and card borders now distinguish a company he was employed by
+                from one he worked alongside, and a colour with no key is a
+                colour a reader has to guess at. Placed above the list rather
+                than below it, because the distinction is needed while reading
+                the cards and not after. */}
+            <p className="section-body">{ti("careerNote")}</p>
+
             <ol className="vendor-timeline">
               {/* Filter chips. These lead to tag-filtered views of the same
                   data, which is how the distributor and reseller pages PRIME
@@ -299,18 +323,11 @@ export default async function IndustryHubPage({
                   tag filters, because it is a different KIND of thing rather
                   than another filter. */}
               <p className="ztc-notes">
-                <Link href="/industry/milestones">{tTags("milestonesLink")}</Link>
+                <Link className="page-jump-link" href="/industry/milestones">
+                  {tTags("milestonesLink")} <span aria-hidden="true">&#8594;</span>
+                </Link>
               </p>
 
-              {/* The reference works this corpus leans on (PRIME 2026-08-10).
-                  Linked from here, beside milestones, because it is the same
-                  KIND of thing: not another filter over the vendor list, but a
-                  different way into the same history. Without this link the
-                  entry would be reachable only by URL, and an attribution page
-                  nobody can find does not attribute anything. */}
-              <p className="ztc-notes">
-                <Link href="/industry/sources">{tSources("indexLink")}</Link>
-              </p>
 
               <div className="industry-tag-chips">
                 {Object.entries(TAG_ROUTES).map(([route, tag]) => {
@@ -332,6 +349,12 @@ export default async function IndustryHubPage({
                   data-vendor-entry
                   data-redu={v.isRedu ? "1" : "0"}
                   data-career={v.isInside || v.isDirect ? "1" : "0"}
+                  data-relationship={
+                    v.isInside ? "inside" : v.isDirect ? "alongside" : undefined
+                  }
+                  /* Space-separated so the client filter can match without
+                     parsing JSON in the DOM. */
+                  data-tags={(v.tags ?? []).join(" ")}
                   data-teach={v.isInstructor ? "1" : "0"}
                 >
                   <span className="vendor-timeline-year mono" aria-hidden="true">
@@ -370,16 +393,29 @@ export default async function IndustryHubPage({
                     <span className="vendor-card-name">
                       {v.name}
                       {v.isRedu && (
-                        <span className="vendor-partner-pill">{tp("reduPill")}</span>
+                        <span className="vendor-partner-pill"><ReduBrand>{tp("reduPill")}</ReduBrand></span>
                       )}
                       {v.isInstructor && (
                         <span className="vendor-instructor-pill">{tp("instructorPill")}</span>
                       )}
+                      {/* TWO RELATIONSHIPS, TWO COLOURS (PRIME 2026-08-10).
+                          These carried the same class and therefore the same
+                          colour, so a reader could not tell a company he was
+                          EMPLOYED BY from one he worked alongside - a
+                          distinction the data has always held and the page
+                          never showed. Inside keeps the cyan accent; alongside
+                          takes a cooler, quieter blue, and the card border
+                          follows the pill so the difference survives a glance
+                          at the grid. */}
                       {v.isInside && (
-                        <span className="vendor-career-pill">{tp("careerPill")}</span>
+                        <span className="vendor-career-pill vendor-career-pill--inside">
+                          {tp("careerPill")}
+                        </span>
                       )}
                       {v.isDirect && (
-                        <span className="vendor-career-pill">{tp("workedWithPill")}</span>
+                        <span className="vendor-career-pill vendor-career-pill--alongside">
+                          {tp("workedWithPill")}
+                        </span>
                       )}
                     </span>
                     {/* CATEGORY PILLS. These come from the entry's own `tags`,
