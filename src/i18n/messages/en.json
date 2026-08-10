@@ -15068,23 +15068,6 @@
     "howTitle": "Two ways to read this",
     "howBody": "The parts below are in order, and the order is the life of a system: before it breaks, when it breaks, when it will not yield, after it is over, the life around it, and the craft underneath all of it. Read top to bottom and you have been walked through the whole arc.",
     "howSearch": "Or arrive holding one question, read one article, and leave. Each entry shows what it argues rather than what it covers, because somebody scanning for the one about escalation is matching a question to an argument.",
-    "stanceTitle": "Where each article's authority comes from",
-    "stanceIntro": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything.",
-    "stance": {
-      "count": "{n, plural, =0 {no articles yet} one {# article} other {# articles}}",
-      "practised": {
-        "label": "Practised",
-        "note": "Work I have done repeatedly, in production."
-      },
-      "witnessed": {
-        "label": "Witnessed",
-        "note": "Work I was present for or adjacent to, but did not own."
-      },
-      "documented": {
-        "label": "Documented",
-        "note": "The established discipline, described and sourced."
-      }
-    },
     "parts": {
       "before": {
         "title": "I. Before it breaks",
@@ -15120,7 +15103,10 @@
     "artefactLabel": "Take away",
     "readNext": "Read next",
     "relatedAria": "Related articles in The Practice",
-    "backToIndex": "All of The Practice"
+    "backToIndex": "All of The Practice",
+    "provenanceTitle": "Where this comes from",
+    "provenanceBody": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything. What is here is the part I have lived.\n\nI executed and I planned. I audited other people's estates and oversaw work I did not carry out myself. I was the hands on the keyboard, and I was the name on the rota when it failed at night. I trained operations staff — one at a time at a console, and rooms full of them at once. Some of this I did for vendors, some for integrators, some for the customer who had to live with the result on Monday.\n\nNone of it is theory I have read about. It is one career, and this is what it taught me.",
+    "articleCount": "{n, plural, =0 {no articles yet} one {# article} other {# articles}}"
   },
   "contributeTools": {
     "translationsTitle": "Improve the translations",

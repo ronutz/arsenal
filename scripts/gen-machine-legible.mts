@@ -132,7 +132,6 @@ interface Prac {
   slug: string;
   title: string;
   thesis?: string;
-  stance?: string;
   updated?: string;
   body: string;
 }
@@ -149,7 +148,6 @@ function loadPractice(locale: string): Prac[] {
         slug: String(d.slug ?? ""),
         title: String(d.title ?? ""),
         thesis: d.thesis ? String(d.thesis) : undefined,
-        stance: d.stance ? String(d.stance) : undefined,
         updated: d.updated ? String(d.updated) : undefined,
         body: parsed.content,
       };
@@ -161,10 +159,6 @@ function practiceMarkdown(a: Prac, locale: string): string {
   const out: string[] = [`# ${a.title}`, ""];
   if (a.thesis) out.push(`> ${a.thesis}`, "");
   const meta = [`Source: ${canonical}`];
-  // The stance travels into the Markdown twin as well. An article's provenance
-  // is not a presentation detail - a machine reading this corpus should be able
-  // to tell testimony from scholarship exactly as a human reader can.
-  if (a.stance) meta.push(`Stance: ${a.stance}`);
   if (a.updated) meta.push(`Updated: ${a.updated}`);
   out.push(meta.join("  \n"), "", "---", "", absolutize(a.body, locale).trim(), "");
   return out.join("\n");

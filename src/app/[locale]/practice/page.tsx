@@ -36,8 +36,6 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import SiteFooter from "@/components/SiteFooter";
 import {
   practiceByPart,
-  practiceStanceCounts,
-  PRACTICE_STANCES,
 } from "@/lib/practice";
 
 export async function generateMetadata({
@@ -62,7 +60,6 @@ export default async function PracticeIndexPage({
   const tNav = await getTranslations("nav");
 
   const groups = practiceByPart(locale);
-  const counts = practiceStanceCounts(locale);
 
   return (
     <>
@@ -99,49 +96,32 @@ export default async function PracticeIndexPage({
             </div>
           </section>
 
-          {/* THE STANCE LEGEND. This belongs on the index rather than only on
-              the articles, because it is the corpus's central honesty claim and
-              a reader should meet it before the first article rather than
-              inside one. Counts are computed. */}
+          {/* PROVENANCE (PRIME 2026-08-09). This replaced a three-value
+              "practised / witnessed / documented" marker.
+
+              The schema was removed because it distinguished nothing: all 64
+              articles were `practised`, so a reader met three categories of
+              which two were permanently empty. PRIME's ruling is that the
+              honest thing is a plain statement of how he came to know this,
+              in first person, once, before the first article. */}
           <section className="section section-accent">
             <div className="container section-narrow">
-              <h2 className="section-title">{t("stanceTitle")}</h2>
-              <p className="section-body">{t("stanceIntro")}</p>
-              {/* Cards rather than list items: this is the corpus's central
-                  honesty claim, and it was rendering as a bare bullet. The
-                  accent descends with the strength of the claim being made
-                  (practised → witnessed → documented), which is the one true
-                  structural fact about the trio. Counts are computed. */}
-              <ul className="stance-legend">
-                {PRACTICE_STANCES.map((s) => (
-                  <li
-                    key={s}
-                    className="stance-card"
-                    style={
-                      {
-                        "--stance-accent":
-                          s === "practised"
-                            ? "var(--accent-primary)"
-                            : s === "witnessed"
-                              ? "var(--accent-amber)"
-                              : "var(--text-tertiary)",
-                      } as React.CSSProperties
-                    }
-                  >
-                    <span className="stance-count">{t("stance.count", { n: counts[s] })}</span>
-                    <span className="stance-label">{t(`stance.${s}.label`)}</span>
-                    <p className="stance-note">{t(`stance.${s}.note`)}</p>
-                  </li>
+              <h2 className="section-title">{t("provenanceTitle")}</h2>
+              {t("provenanceBody")
+                .split("\n\n")
+                .map((para, n) => (
+                  <p className="section-body" key={n}>
+                    {para}
+                  </p>
                 ))}
-              </ul>
             </div>
           </section>
 
           {/* PART INDEX (PRIME 2026-08-09). A jump index to the six parts, placed
-              between the stance legend and the spine.
+              between the provenance note and the spine.
 
               NO NEW MESSAGE KEYS. `parts.<part>.title`, `.note` and the plural
-              `stance.count` already exist and already carry the right meaning in
+              `articleCount` already exist and already carry the right meaning in
               all sixteen locales, so this adds navigation without adding
               translation debt. The numbered `.title` form ("VI. The craft") is
               used deliberately over `.short` - in an index the numeral IS the
@@ -153,12 +133,18 @@ export default async function PracticeIndexPage({
               second rule needing to say so. */}
           <section className="section">
             <div className="container">
-              {/* <details open> rather than a JavaScript disclosure, on purpose:
-                  it collapses and expands with no hydration, it is keyboard- and
-                  screen-reader-accessible for free, it prints expanded, and it
-                  still works if the bundle never loads. `open` gives PRIME's
-                  "all expanded by default" as a property of the markup rather
-                  than of a script that has to run first.
+              {/* <details> rather than a JavaScript disclosure, on purpose: it
+                  collapses and expands with no hydration, it is keyboard- and
+                  screen-reader-accessible for free, and it still works if the
+                  bundle never loads.
+
+                  DEFAULT STATE, and it has changed once: shipped `open` on
+                  2026-08-09 at PRIME's instruction ("all expanded by default"),
+                  reversed the same day to collapsed. Sixty-four titles expanded
+                  put the spine — where the theses are — a long way down the page,
+                  and the index is for finding rather than for reading. Collapsed
+                  is now the default state, which is simply the absence of `open`
+                  rather than anything a script does.
 
                   The part title carries an anchor link beside it rather than
                   being one: a <summary> already owns the click, so a nested link
@@ -166,13 +152,13 @@ export default async function PracticeIndexPage({
                   spine below, where the theses are. */}
               <nav className="practice-part-nav" aria-label={t("title")}>
                 {groups.map(({ part, articles }) => (
-                  <details className="practice-part-details" key={part} open>
+                  <details className="practice-part-details" key={part}>
                     <summary className="practice-part-summary">
                       <span className="practice-part-card-title">
                         {t(`parts.${part}.title`)}
                       </span>
                       <span className="practice-part-card-count mono">
-                        {t("stance.count", { n: articles.length })}
+                        {t("articleCount", { n: articles.length })}
                       </span>
                     </summary>
                     <p className="practice-part-card-note">
@@ -222,36 +208,8 @@ export default async function PracticeIndexPage({
                     <li key={a.slug} className="learn-grid-item">
                       <Link
                         href={`/practice/${a.slug}`}
-                        className="learn-card practice-card"
+                        className="learn-card"
                       >
-                        {/* Initial-only pill, upper right, coloured with the same
-                            three values the stance legend uses above - so the
-                            legend teaches the colour once and every card after
-                            it is readable without a key.
-
-                            title= gives the full word on hover; aria-label gives
-                            it to a screen reader, because a bare "P" is not a
-                            word. The letter is decorative to assistive tech and
-                            the label carries the meaning. */}
-                        <span
-                          className="practice-stance-pill"
-                          title={t(`stance.${a.stance}.label`)}
-                          aria-label={t(`stance.${a.stance}.label`)}
-                          style={
-                            {
-                              "--stance-accent":
-                                a.stance === "practised"
-                                  ? "var(--accent-primary)"
-                                  : a.stance === "witnessed"
-                                    ? "var(--accent-amber)"
-                                    : "var(--text-tertiary)",
-                            } as React.CSSProperties
-                          }
-                        >
-                          <span aria-hidden="true">
-                            {t(`stance.${a.stance}.label`).charAt(0)}
-                          </span>
-                        </span>
                         <h3 className="learn-card-title">{a.title}</h3>
                         <p className="learn-card-summary">{a.thesis}</p>
                       </Link>

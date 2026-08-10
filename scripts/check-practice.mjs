@@ -46,7 +46,6 @@ import matter from "gray-matter";
 
 const ROOT = path.join(process.cwd(), "src", "content", "practice");
 const DAY_ONE = ["en", "pt-BR"];
-const STANCES = ["practised", "witnessed", "documented"];
 const PARTS = ["before", "breaks", "yield", "after", "life", "craft"];
 const ROLES = ["first-line", "second-line", "field", "design", "management"];
 
@@ -76,24 +75,14 @@ for (const locale of DAY_ONE) {
   const seenSlots = new Map();
 
   for (const { file, fm, body } of byLocale[locale]) {
-    // 1. stance present and valid
-    if (!fm.stance) {
-      problems.push(`${file}: no stance declared. Every article must say whether it is practised, witnessed or documented.`);
-    } else if (!STANCES.includes(fm.stance)) {
-      problems.push(`${file}: stance "${fm.stance}" is not one of ${STANCES.join(", ")}.`);
-    }
-
-    // 2. documented implies sources
-    if (fm.stance === "documented") {
-      const n = Array.isArray(fm.sources) ? fm.sources.length : 0;
-      if (n === 0) {
-        problems.push(`${file}: stance is "documented" but no sources are given. An article describing work the author has not done must say where the description comes from.`);
-      }
-    }
-
-    // 3. a first-hand claim must have something in it
-    if (fm.stance === "practised" && body.length < 400) {
-      problems.push(`${file}: stance is "practised" but the body is ${body.length} characters. A first-hand claim with nothing behind it is worse than no claim.`);
+    // 1. an article must have something in it
+    //
+    // This used to be conditional on stance === "practised". PRIME removed the
+    // stance schema on 2026-08-09 (every article was first-hand, so the marker
+    // distinguished nothing), and the floor is worth keeping unconditionally:
+    // a Practice article with nothing behind it is worse than no article.
+    if (body.length < 400) {
+      problems.push(`${file}: the body is ${body.length} characters. A Practice article with nothing behind it is worse than no article.`);
     }
 
     // 6. part, order, roles
@@ -221,9 +210,6 @@ if (problems.length) {
 }
 
 const n = byLocale.en.length;
-const counts = STANCES.map(
-  (s) => `${s}:${byLocale.en.filter((a) => a.fm.stance === s).length}`,
-).join(" ");
 const inlineLinks = DAY_ONE.reduce(
   (acc, l) =>
     acc +
@@ -236,5 +222,5 @@ const inlineLinks = DAY_ONE.reduce(
   0,
 );
 console.log(
-  `[check-practice] OK: ${n} article(s) × ${DAY_ONE.length} day-one locales; every stance declared (${counts}); ${inlineLinks} inline /practice/ and /tools/ link(s) resolve.`,
+  `[check-practice] OK: ${n} article(s) × ${DAY_ONE.length} day-one locales; ${inlineLinks} inline /practice/ and /tools/ link(s) resolve.`,
 );

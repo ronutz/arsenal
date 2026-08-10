@@ -111,18 +111,6 @@ export default async function PracticeArticlePage({
 
             <h1 className="article-title">{article.title}</h1>
 
-            {/* THE STANCE MARKER. Placed before the body on purpose: it tells
-                the reader what kind of authority the next thousand words carry,
-                and that changes how they should be read. The label and its
-                one-line explanation both come from i18n so the distinction
-                survives translation. */}
-            <p className="vendor-note-title">
-              {t(`stance.${article.stance}.label`)}
-            </p>
-            <p className="vendor-note-body">
-              {t(`stance.${article.stance}.note`)}
-            </p>
-
             {/* The thesis, not a summary. What this article argues. */}
             <p className="article-summary">{article.thesis}</p>
 

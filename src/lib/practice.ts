@@ -4,7 +4,10 @@
 // THE PRACTICE — the corpus about how the work is done.
 //
 // Ratified by PRIME 2026-08-06, all six questions answered: top-level
-// /practice/, named "The Practice", stance field ADOPTED AS A REQUIREMENT,
+// /practice/, named "The Practice", stance field adopted as a requirement
+// (** REVERSED BY PRIME 2026-08-09: the schema was removed. Every article
+// turned out to be first-hand, so a three-value marker distinguished
+// nothing and the page now states the provenance in prose instead **),
 // 48-article roster approved, Part II written first, and §9.4 left standing
 // (no legal entity named anywhere in public copy).
 //
@@ -42,19 +45,7 @@ import matter from "gray-matter";
  * deliberately no default, because a default is how an unexamined claim gets
  * made silently.
  */
-export type PracticeStance =
-  /** Done, repeatedly, in production. First-hand, specific, examples with teeth. */
-  | "practised"
-  /** Present or adjacent, but did not own it. Reported and attributed. */
-  | "witnessed"
-  /** The established discipline. Described and sourced, with NO implied experience. */
-  | "documented";
 
-export const PRACTICE_STANCES: readonly PracticeStance[] = [
-  "practised",
-  "witnessed",
-  "documented",
-] as const;
 
 /**
  * The six parts of the spine, in reading order.
@@ -94,8 +85,6 @@ export interface PracticeFrontmatter {
   title: string;
   /** A thesis, not a summary: what this article argues, in one line. */
   thesis: string;
-  /** REQUIRED. See PracticeStance - there is no default on purpose. */
-  stance: PracticeStance;
   part: PracticePart;
   /** Position within the part. */
   order: number;
@@ -112,7 +101,7 @@ export interface PracticeFrontmatter {
    */
   artefact?: string;
   /**
-   * REQUIRED WHEN stance IS "documented". Where the description comes from, so
+   * Where sources are cited. Where the description comes from, so
    * that an article carrying no personal experience still carries provenance.
    * The guard enforces this pairing.
    */
@@ -189,13 +178,6 @@ export function practiceByPart(
  * chips: a view cannot claim a count the page then contradicts, because the
  * count and the contents come from one pass over the same records.
  */
-export function practiceByStance(
-  locale: string,
-  stance: PracticeStance,
-): PracticeArticle[] {
-  return getPracticeArticles(locale).filter((a) => a.stance === stance);
-}
-
 export function practiceByRole(
   locale: string,
   role: PracticeRole,
@@ -205,16 +187,4 @@ export function practiceByRole(
 
 export function practiceWithArtefact(locale: string): PracticeArticle[] {
   return getPracticeArticles(locale).filter((a) => Boolean(a.artefact));
-}
-
-/** Stance counts for the index page, computed rather than written down. */
-export function practiceStanceCounts(
-  locale: string,
-): Record<PracticeStance, number> {
-  const all = getPracticeArticles(locale);
-  return {
-    practised: all.filter((a) => a.stance === "practised").length,
-    witnessed: all.filter((a) => a.stance === "witnessed").length,
-    documented: all.filter((a) => a.stance === "documented").length,
-  };
 }

@@ -2021,58 +2021,6 @@
 }
 
 /* Course list (on platform page) */
-/* ---- THE STANCE LEGEND (/practice) ---------------------------------------
-   Was rendering through .course-list: a bare grid of list items reading
-   "**Practised** - note (18)". That is the corpus's CENTRAL HONESTY CLAIM
-   arriving as an unstyled bullet, which is what PRIME flagged (2026-08-08).
-
-   The structure encodes one true thing rather than decorating three items:
-   practised -> witnessed -> documented is a DESCENDING LADDER OF FIRST-HAND
-   CLAIM, so the accent rule descends with it - full accent on the strongest
-   claim, amber in the middle, neutral on the stance that makes no personal
-   claim at all. No numbered markers: the trio is a ladder, not a sequence of
-   steps a reader performs.
-
-   The count is promoted out of a trailing parenthesis and given its own line,
-   because "how many articles currently stand on this claim" is the fact a
-   reader wants from a legend - and while the corpus is entirely first-hand,
-   the row of counts says so at a glance. */
-.stance-legend {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
-  gap: 0.9rem;
-  margin: 1.25rem 0 0;
-  padding: 0;
-}
-.stance-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  padding: 1.05rem 1.15rem;
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  border-block-start: 3px solid var(--stance-accent, var(--border-strong));
-}
-.stance-count {
-  font-family: var(--font-mono);
-  font-size: 1.05rem;
-  line-height: 1.2;
-  color: var(--stance-accent, var(--text-secondary));
-}
-.stance-label {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  letter-spacing: 0.01em;
-}
-.stance-note {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.55;
-}
 .course-list {
   list-style: none;
   display: grid;
@@ -15672,8 +15620,8 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    PRACTICE PART INDEX (PRIME 2026-08-09)
    ----------------------------------------------------------------------------
    A jump index to the six parts of the Practice spine. Deliberately built on the
-   same grid idiom as .stance-legend just above it, so the two blocks read as one
-   piece of furniture rather than two competing card systems on one page.
+   same card idiom as the rest of the page, so the index does not read as a
+   competing card system.
    ========================================================================== */
 .practice-part-nav {
   display: grid;
@@ -15775,42 +15723,4 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .practice-part-section {
   scroll-margin-top: var(--sticky-anchor-offset);
-}
-
-/* ============================================================================
-   PRACTICE STANCE PILL (PRIME 2026-08-09)
-   ----------------------------------------------------------------------------
-   The stance was a word under the title; it is now an initial in the upper-right
-   corner, in the same three colours the legend above the spine uses. The legend
-   teaches the colour once, and every card afterwards is readable without a key.
-   The full word is available on hover and to assistive technology.
-   ========================================================================== */
-.practice-card {
-  /* The pill is positioned against this card. */
-  position: relative;
-}
-.practice-card .learn-card-title {
-  /* Keeps a long title from running under the pill. */
-  padding-inline-end: 2.25rem;
-}
-.practice-stance-pill {
-  position: absolute;
-  inset-block-start: 0.75rem;
-  inset-inline-end: 0.85rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 999px;
-  border: 1px solid var(--stance-accent, var(--border-strong));
-  color: var(--stance-accent, var(--text-secondary));
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  line-height: 1;
-  /* Not fully opaque: the pill is metadata and should not outrank the title. */
-  opacity: 0.85;
-}
-.learn-card:hover .practice-stance-pill {
-  opacity: 1;
 }
