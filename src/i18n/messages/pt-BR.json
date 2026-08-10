@@ -15061,5 +15061,14 @@
     "translationsTitle": "Melhorar as traduções",
     "translationsBody": "Este site é escrito em inglês e português do Brasil, e traduzido por máquina para outros catorze idiomas. As versões automáticas são utilizáveis e não são nativas. Se você lê um desses catorze e algo está errado — um termo técnico traduzido ao pé da letra, uma frase que analisa gramaticalmente e não quer dizer nada — me contar é uma contribuição real, e um bilhete curto com a página e o trecho basta.",
     "translationsCta": "Enviar uma correção"
+  },
+  "sources": {
+    "navLabel": "Fontes",
+    "eyebrow": "Obras de referência",
+    "title": "As obras sobre as quais esta história se apoia",
+    "lede": "As páginas de indústria daqui se apoiam em um pequeno conjunto de obras acadêmicas. É aqui que essas obras são apresentadas, com seus autores nomeados e suas evidências à mostra, antes que qualquer outra parte do site as cite.",
+    "authorsTitle": "Quem fez",
+    "citationsTitle": "De onde vêm estes fatos",
+    "indexLink": "As obras sobre as quais esta história se apoia"
   }
 }

@@ -4248,6 +4248,9 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
       successor: { label: "Oracle, which acquired Sun in 2010", url: "https://www.oracle.com" },
     },
+    sources: [
+      { label: "Sun Microsystems", url: "https://en.wikipedia.org/wiki/Sun_Microsystems" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Sun Microsystems - the network is the computer",
@@ -4266,6 +4269,9 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
       successor: { label: "Hewlett Packard Enterprise, which acquired SGI in 2016", url: "https://www.hpe.com" },
     },
+    sources: [
+      { label: "Silicon Graphics", url: "https://en.wikipedia.org/wiki/Silicon_Graphics" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Silicon Graphics - the geometry of Hollywood",
@@ -4276,6 +4282,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "xerox",
+    sources: [
+      { label: "Xerox", url: "https://en.wikipedia.org/wiki/Xerox" },
+    ],
     tags: ["vendor", "standards"],
     group: "other",
     name: "Xerox - the company that fumbled the future",
@@ -4290,6 +4299,9 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
       successor: { label: "HP, via Compaq, which acquired Digital in 1998", url: "https://www.hp.com" },
     },
+    sources: [
+      { label: "Digital Equipment Corporation", url: "https://en.wikipedia.org/wiki/Digital_Equipment_Corporation" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Digital Equipment Corporation - the minicomputer king",
@@ -4306,6 +4318,9 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "Nokia Documentation", url: "https://documentation.nokia.com" },
       ],
     },
+    sources: [
+      { label: "Nokia", url: "https://en.wikipedia.org/wiki/Nokia" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Nokia - from paper mill to network giant",
@@ -4319,6 +4334,9 @@ export const partnerVendors: PartnerVendor[] = [
     official: {
       url: "https://www.ericsson.com",
     },
+    sources: [
+      { label: "Ericsson", url: "https://en.wikipedia.org/wiki/Ericsson" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Ericsson - 150 years of telephony",
@@ -4335,6 +4353,9 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "Huawei Support", url: "https://support.huawei.com/enterprise" },
       ],
     },
+    sources: [
+      { label: "Huawei", url: "https://en.wikipedia.org/wiki/Huawei" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Huawei - the Shenzhen ascent",
@@ -4348,6 +4369,9 @@ export const partnerVendors: PartnerVendor[] = [
     official: {
       url: "https://www.siemens.com",
     },
+    sources: [
+      { label: "Siemens", url: "https://en.wikipedia.org/wiki/Siemens" },
+    ],
     tags: ["vendor", "services"],
     group: "other",
     name: "Siemens - the 1847 telegraph startup",
@@ -4362,6 +4386,9 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
       successor: { label: "OpenText, which holds the Novell portfolio", url: "https://www.opentext.com" },
     },
+    sources: [
+      { label: "Novell", url: "https://en.wikipedia.org/wiki/Novell" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Novell - the network operating system",
@@ -4378,6 +4405,9 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "Oracle Help Center", url: "https://docs.oracle.com" },
       ],
     },
+    sources: [
+      { label: "Oracle Corporation", url: "https://en.wikipedia.org/wiki/Oracle_Corporation" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Oracle - the database empire",
@@ -4394,6 +4424,9 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "IBM Documentation", url: "https://www.ibm.com/docs" },
       ],
     },
+    sources: [
+      { label: "IBM", url: "https://en.wikipedia.org/wiki/IBM" },
+    ],
     tags: ["vendor", "services"],
     group: "other",
     name: "IBM - the century company",
@@ -4410,6 +4443,9 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "SAP Help Portal", url: "https://help.sap.com" },
       ],
     },
+    sources: [
+      { label: "SAP", url: "https://en.wikipedia.org/wiki/SAP" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "SAP - five engineers against the mainframe",
@@ -4425,6 +4461,9 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
       successor: { label: "Hewlett Packard Enterprise, which acquired 3Com in 2010", url: "https://www.hpe.com" },
     },
+    sources: [
+      { label: "3Com", url: "https://en.wikipedia.org/wiki/3Com" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "3Com - Ethernet leaves the lab",
@@ -4439,6 +4478,9 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
       successor: { label: "HP, which merged with Compaq in 2002", url: "https://www.hp.com" },
     },
+    sources: [
+      { label: "Compaq", url: "https://en.wikipedia.org/wiki/Compaq" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Compaq - the clone that became the king",
@@ -4457,6 +4499,9 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
       successor: { label: "the Mozilla project, which grew from the Netscape source release", url: "https://www.mozilla.org" },
     },
+    sources: [
+      { label: "Netscape", url: "https://en.wikipedia.org/wiki/Netscape" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Netscape - the company that opened the web",
@@ -4467,6 +4512,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "motorola",
+    sources: [
+      { label: "Motorola", url: "https://en.wikipedia.org/wiki/Motorola" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Motorola - the radio century",
@@ -4477,6 +4525,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "unisys",
+    sources: [
+      { label: "Unisys", url: "https://en.wikipedia.org/wiki/Unisys" },
+    ],
     tags: ["vendor", "services"],
     group: "other",
     name: "Unisys - computing's oldest bloodlines",
@@ -4491,6 +4542,9 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
       successor: { label: "Dell, via EMC", url: "https://www.dell.com" },
     },
+    sources: [
+      { label: "Data General", url: "https://en.wikipedia.org/wiki/Data_General" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Data General - the soul of a new machine",
@@ -4506,6 +4560,10 @@ export const partnerVendors: PartnerVendor[] = [
   // ---- Pioneer wave 3 (PRIME 2026-07-16): the deep bench. ----
   {
     slug: "marconi",
+    sources: [
+      { label: "Marconi Company", url: "https://en.wikipedia.org/wiki/Marconi_Company" },
+      { label: "Marconi Communications", url: "https://en.wikipedia.org/wiki/Marconi_plc" },
+    ],
     tags: ["vendor", "carrier"],
     group: "other",
     name: "Marconi - wireless itself, then the bubble",
@@ -4519,6 +4577,9 @@ export const partnerVendors: PartnerVendor[] = [
     official: {
       defunct: true,
     },
+    sources: [
+      { label: "Wang Laboratories", url: "https://en.wikipedia.org/wiki/Wang_Laboratories" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Wang Laboratories - the office before the PC",
@@ -4537,6 +4598,9 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
       successor: { label: "Hewlett Packard Enterprise, via Compaq", url: "https://www.hpe.com" },
     },
+    sources: [
+      { label: "Tandem Computers", url: "https://en.wikipedia.org/wiki/Tandem_Computers" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Tandem Computers - the machine that never stops",
@@ -4554,6 +4618,9 @@ export const partnerVendors: PartnerVendor[] = [
     official: {
       defunct: true,
     },
+    sources: [
+      { label: "Banyan Systems", url: "https://en.wikipedia.org/wiki/Banyan_Systems" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Banyan Systems - the directory pioneer",
@@ -4564,6 +4631,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "fujitsu",
+    sources: [
+      { label: "Fujitsu", url: "https://en.wikipedia.org/wiki/Fujitsu" },
+    ],
     tags: ["vendor", "services"],
     group: "other",
     name: "Fujitsu - Japan's computing standard-bearer",
@@ -4574,6 +4644,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "nec",
+    sources: [
+      { label: "NEC", url: "https://en.wikipedia.org/wiki/NEC" },
+    ],
     tags: ["vendor", "services"],
     group: "other",
     name: "NEC - Japan's first joint venture",
@@ -4584,6 +4657,11 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "bell-labs-lucent-alcatel",
+    sources: [
+      { label: "Bell Labs", url: "https://en.wikipedia.org/wiki/Bell_Labs" },
+      { label: "Lucent Technologies", url: "https://en.wikipedia.org/wiki/Lucent_Technologies" },
+      { label: "Alcatel-Lucent", url: "https://en.wikipedia.org/wiki/Alcatel-Lucent" },
+    ],
     tags: ["vendor", "standards"],
     group: "other",
     name: "Bell Labs, Lucent & Alcatel - the transistor's bloodline",
@@ -4594,6 +4672,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "intel-amd",
+    sources: [
+      { label: "Intel", url: "https://en.wikipedia.org/wiki/Intel" },
+      { label: "AMD", url: "https://en.wikipedia.org/wiki/Advanced_Micro_Devices" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Intel & AMD - Fairchild's children: the x86 rivalry",
@@ -4608,6 +4690,9 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
       successor: { label: "the RAND Corporation, which continues as a research institution", url: "https://www.rand.org" },
     },
+    sources: [
+      { label: "RAND Corporation", url: "https://en.wikipedia.org/wiki/RAND_Corporation" },
+    ],
     tags: ["standards"],
     group: "other",
     name: "RAND Corporation - where packet switching was imagined",
@@ -4635,6 +4720,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "toshiba",
+    sources: [
+      { label: "Toshiba", url: "https://en.wikipedia.org/wiki/Toshiba" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Toshiba - the company that gave the world flash",
@@ -4645,6 +4733,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "hitachi",
+    sources: [
+      { label: "Hitachi", url: "https://en.wikipedia.org/wiki/Hitachi" },
+    ],
     tags: ["vendor", "services"],
     group: "other",
     name: "Hitachi - the industrial giant that stores the world",
@@ -4655,6 +4746,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "bull",
+    sources: [
+      { label: "Groupe Bull", url: "https://en.wikipedia.org/wiki/Groupe_Bull" },
+    ],
     tags: ["vendor", "services"],
     group: "other",
     name: "Bull - Europe's computing champion",
@@ -4665,6 +4759,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "ncsa",
+    sources: [
+      { label: "National Center for Supercomputing Applications", url: "https://en.wikipedia.org/wiki/National_Center_for_Supercomputing_Applications" },
+    ],
     tags: ["standards"],
     group: "other",
     name: "NCSA - the campus lab that made the web visible",
@@ -4678,6 +4775,9 @@ export const partnerVendors: PartnerVendor[] = [
     official: {
       url: "https://www.ciena.com",
     },
+    sources: [
+      { label: "Ciena", url: "https://en.wikipedia.org/wiki/Ciena" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Ciena - the company that taught fiber to carry colors",
@@ -4688,6 +4788,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "sniffer-lineage",
+    sources: [
+      { label: "Network General", url: "https://en.wikipedia.org/wiki/Network_General" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "The Sniffer lineage - Network General to NetScout",
@@ -4719,6 +4822,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "blue-coat-packeteer",
+    sources: [
+      { label: "Blue Coat Systems", url: "https://en.wikipedia.org/wiki/Blue_Coat_Systems" },
+      { label: "Packeteer", url: "https://en.wikipedia.org/wiki/Packeteer" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Blue Coat & Packeteer - the chokepoint companies",
@@ -4729,6 +4836,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "cyclades-avocent-vertiv",
+    sources: [
+      { label: "Avocent (Cyclades Corporation)", url: "https://en.wikipedia.org/wiki/Avocent" },
+      { label: "Vertiv", url: "https://en.wikipedia.org/wiki/Vertiv" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Cyclades, Avocent & Vertiv - the physical layer of uptime",
@@ -4739,6 +4850,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dell-force10",
+    sources: [
+      { label: "Force10", url: "https://en.wikipedia.org/wiki/Force10_Networks" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Dell & Force10 - the direct model and its fabric",
@@ -4752,6 +4866,9 @@ export const partnerVendors: PartnerVendor[] = [
     official: {
       url: "https://www.zte.com.cn",
     },
+    sources: [
+      { label: "ZTE", url: "https://en.wikipedia.org/wiki/ZTE" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "ZTE - China's other giant",
@@ -4765,6 +4882,9 @@ export const partnerVendors: PartnerVendor[] = [
     official: {
       url: "https://www.flukenetworks.com",
     },
+    sources: [
+      { label: "Fluke Corporation", url: "https://en.wikipedia.org/wiki/Fluke_Corporation" },
+    ],
     tags: ["vendor"],
     group: "other",
     name: "Fluke - the meters and certifiers in every field bag",
@@ -4775,6 +4895,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "dns-bind",
+    sources: [
+      { label: "Domain Name System", url: "https://en.wikipedia.org/wiki/Domain_Name_System" },
+      { label: "BIND", url: "https://en.wikipedia.org/wiki/BIND" },
+    ],
     tags: ["standards"],
     group: "other",
     name: "DNS & BIND - the internet's phone book and its reference implementation",
@@ -4785,6 +4909,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "http-gopher",
+    sources: [
+      { label: "Gopher (protocol)", url: "https://en.wikipedia.org/wiki/Gopher_(protocol)" },
+    ],
     tags: ["standards"],
     group: "other",
     name: "HTTP & Gopher - the web's protocol and the rival it eclipsed",
@@ -4801,6 +4928,9 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "NVIDIA Developer", url: "https://developer.nvidia.com" },
       ],
     },
+    sources: [
+      { label: "Nvidia", url: "https://en.wikipedia.org/wiki/Nvidia" },
+    ],
     tags: ["vendor"],
     group: "contemporary",
     name: "Nvidia - the GPU company that runs the fabric",
@@ -4817,6 +4947,9 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "Ubiquiti Help Center", url: "https://help.ui.com" },
       ],
     },
+    sources: [
+      { label: "Ubiquiti", url: "https://en.wikipedia.org/wiki/Ubiquiti" },
+    ],
     tags: ["vendor"],
     group: "contemporary",
     name: "Ubiquiti - enterprise features at prosumer prices",
@@ -4827,6 +4960,10 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "access-home-fleet",
+    sources: [
+      { label: "Netgear", url: "https://en.wikipedia.org/wiki/Netgear" },
+      { label: "TP-Link", url: "https://en.wikipedia.org/wiki/TP-Link" },
+    ],
     tags: ["vendor"],
     group: "contemporary",
     name: "The access & home fleet - Netgear, TP-Link, Zyxel, Asus & Askey, Allied Telesis",
@@ -4837,6 +4974,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "watchguard",
+    sources: [
+      { label: "WatchGuard", url: "https://en.wikipedia.org/wiki/WatchGuard" },
+    ],
     tags: ["vendor"],
     group: "contemporary",
     name: "WatchGuard - the red box that made the firewall an appliance",
@@ -4859,6 +4999,9 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "A10 Networks",
     founded: 2004,
+    sources: [
+      { label: "A10 Networks", url: "https://en.wikipedia.org/wiki/A10_Networks" },
+    ],
     tags: ["vendor"],
     tagline: "Attacked application delivery from the throughput flank, where the traffic is heaviest.",
     intro:
@@ -4876,6 +5019,9 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Kemp Technologies",
     founded: 2000,
+    sources: [
+      { label: "Kemp Technologies", url: "https://en.wikipedia.org/wiki/KEMP_Technologies" },
+    ],
     tags: ["vendor"],
     tagline: "Priced the load balancer for the administrator rather than the committee, and went virtual before the market did.",
     intro:
@@ -4889,6 +5035,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "datacom",
+    sources: [
+      { label: "Datacom - About (Teracom Telematica S.A., Eldorado do Sul, RS)", url: "https://datacom.com.br/en/institucional" },
+    ],
     tags: ["vendor"],
     group: "contemporary",
     name: "Datacom - Brazil's networking manufacturer",

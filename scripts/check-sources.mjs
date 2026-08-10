@@ -55,17 +55,15 @@ const GRANDFATHERED_AT = "2026-08-06";
 // that do, and grandfathered apple and microsoft, which were already cited. The
 // guard caught all of that on its first run - which is the argument for the
 // guard, and the argument against ever hand-writing a list the data can answer.
-const GRANDFATHERED = new Set([
-  "3com", "a10", "access-home-fleet", "banyan", "bell-labs-lucent-alcatel",
-  "blue-coat-packeteer", "bull", "ciena", "compaq",
-  "cyclades-avocent-vertiv", "data-general", "datacom", "dec",
-  "dell-force10", "dns-bind", "ericsson", "fluke", "fujitsu", "hitachi",
-  "http-gopher", "huawei", "ibm", "intel-amd", "kemp", "marconi",
-  "motorola", "ncsa", "nec", "netscape", "nokia", "novell", "nvidia",
-  "oracle", "rand", "sap", "siemens", "silicon-graphics",
-  "sniffer-lineage", "sun-microsystems", "tandem", "toshiba", "ubiquiti",
-  "unisys", "wang", "watchguard", "xerox", "zte",
-]);
+
+// RESOLVED 2026-08-10. datacom was the last grandfathered entry: pt.wikipedia
+// had an article at that title but Wikimedia errored on both the summary API and
+// the raw wikitext, so its subject could not be confirmed and a New Zealand
+// company shares the name. PRIME supplied the primary source. Verified: the page
+// names Teracom Telematica S.A. at Eldorado do Sul, RS, Brazil, manufacturing
+// switches, DWDM, GPON and SDH - unambiguously the right company, and a better
+// citation than the encyclopedia would have been. THE LIST IS NOW EMPTY.
+const GRANDFATHERED = new Set([]);
 
 const src = readFileSync(join(root, "src/content/vendors/partners.ts"), "utf8");
 

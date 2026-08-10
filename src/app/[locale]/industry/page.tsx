@@ -61,6 +61,7 @@ export default async function IndustryHubPage({
 
   const t = await getTranslations("vendors");
   const tTags = await getTranslations({ locale, namespace: "industryTags" }); // career card copy (name/years/tagline)
+  const tSources = await getTranslations({ locale, namespace: "sources" }); // reference works link
   const tp = await getTranslations("partnerVendors"); // partner cards + section headings
   const ti = await getTranslations("industry"); // hub hero (new)
   const tNav = await getTranslations("nav");
@@ -299,6 +300,16 @@ export default async function IndustryHubPage({
                   than another filter. */}
               <p className="ztc-notes">
                 <Link href="/industry/milestones">{tTags("milestonesLink")}</Link>
+              </p>
+
+              {/* The reference works this corpus leans on (PRIME 2026-08-10).
+                  Linked from here, beside milestones, because it is the same
+                  KIND of thing: not another filter over the vendor list, but a
+                  different way into the same history. Without this link the
+                  entry would be reachable only by URL, and an attribution page
+                  nobody can find does not attribute anything. */}
+              <p className="ztc-notes">
+                <Link href="/industry/sources">{tSources("indexLink")}</Link>
               </p>
 
               <div className="industry-tag-chips">

@@ -15112,5 +15112,14 @@
     "translationsTitle": "Improve the translations",
     "translationsBody": "This site is authored in English and Brazilian Portuguese, and machine-translated into fourteen more languages. The machine versions are serviceable and they are not native. If you read one of those fourteen and something is wrong - a term of art rendered literally, a sentence that technically parses and does not mean anything - telling me is a real contribution, and a short note naming the page and the phrase is enough.",
     "translationsCta": "Send a correction"
+  },
+  "sources": {
+    "navLabel": "Sources",
+    "eyebrow": "Reference works",
+    "title": "The works this history rests on",
+    "lede": "The industry pages here draw on a small number of scholarly works. This is where those works are introduced, with their authors named and their evidence shown, before anything else on the site cites them.",
+    "authorsTitle": "Who made it",
+    "citationsTitle": "Where these facts come from",
+    "indexLink": "The works this history rests on"
   }
 }
