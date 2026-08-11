@@ -6172,6 +6172,123 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://nextdns.io/",
     externalLabel: "NextDNS",
   },
+
+  // ---- Education and one acquisition (2026-08-11). The universities are here
+  // because the companies on this timeline were founded by people who met
+  // somewhere. TI BRAXIS HAS NO ENCYCLOPAEDIA ENTRY in either language, so it is
+  // recorded INSIDE the Capgemini entry with that absence stated, rather than
+  // written as a stub from the acquirer's description of it. ----
+  {
+    slug: "usp",
+    sources: [
+      { label: "University of Sao Paulo - public state university in Brazil (Wikipedia)", url: "https://en.wikipedia.org/wiki/University_of_S%C3%A3o_Paulo" },
+    ],
+    tags: ["standards", "services"],
+    group: "other",
+    name: "USP - where a lot of this started",
+    tagline: "Brazilian public university whose computing departments seeded the industry around it.",
+    intro: "The University of Sao Paulo appears on an industry timeline for the same reason MIT and Stanford appear on the American one: the companies in this record were founded by people who met somewhere, and for a large share of the Brazilian ones that somewhere was a public university.",
+    body: [
+      "The pattern is visible across this timeline without being stated anywhere on it. A national computing industry needs three things at once - engineers, a reason to employ them, and somewhere they overlap before they have jobs - and a large public university supplies the first and third at no cost to the companies that benefit.",
+      "It is also why the market-reserve argument had a technical constituency and not only a political one. The people making the case that Brazil could build its own machines were, in many cases, the people teaching the subject.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/University_of_S%C3%A3o_Paulo",
+    externalLabel: "University of Sao Paulo",
+  },
+  {
+    slug: "unicamp",
+    sources: [
+      { label: "State University of Campinas - public university in Sao Paulo, Brazil (Wikipedia)", url: "https://en.wikipedia.org/wiki/State_University_of_Campinas" },
+    ],
+    tags: ["standards", "services"],
+    group: "other",
+    name: "Unicamp - the other half of the São Paulo pipeline",
+    tagline: "Public university at the centre of a regional technology cluster.",
+    intro: "Unicamp sits at the middle of the Campinas technology region, and its presence explains why a large share of Brazilian hardware and telecommunications work happened in a specific hundred kilometres rather than being spread across the country.",
+    body: [
+      "Technology clusters are not accidents of geography and they are not policy successes either; they are what happens when a university, a set of employers and a labour market that can move between them end up close enough that changing jobs does not mean changing cities.",
+      "That proximity is the thing that is hard to reproduce, and it is why regional development schemes that fund buildings without a university rarely produce a cluster.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/State_University_of_Campinas",
+    externalLabel: "Unicamp",
+  },
+  {
+    slug: "fatec",
+    sources: [
+      { label: "Faculdade de Tecnologia do Estado de Sao Paulo (Fatec) - Portuguese Wikipedia", url: "https://pt.wikipedia.org/wiki/Faculdade_de_Tecnologia_do_Estado_de_S%C3%A3o_Paulo" },
+    ],
+    tags: ["training"],
+    group: "other",
+    name: "Fatec - the technologist degree, and who it is for",
+    tagline: "State technology faculties offering short applied degrees rather than full engineering courses.",
+    intro: "The Fatecs are Sao Paulo state technology faculties, offering applied technologist degrees that are shorter than an engineering course and aimed directly at a job. They are a different answer to the same question the universities answer, and they reach a different person.",
+    body: [
+      "The distinction matters to anybody reading this site's own career record, which includes years of engineering and business study without a completed degree. A system that only recognises the five-year path treats an incomplete one as a failure; a system with a three-year applied route treats it as a different route.",
+      "That is a policy choice about who gets to work in this industry, and it is made by whoever decides which qualifications an employer may ask for.",
+    ],
+    externalUrl: "https://pt.wikipedia.org/wiki/Faculdade_de_Tecnologia_do_Estado_de_S%C3%A3o_Paulo",
+    externalLabel: "Fatec",
+  },
+  {
+    slug: "capgemini",
+    sources: [
+      { label: "Capgemini - French multinational corporation (Wikipedia)", url: "https://en.wikipedia.org/wiki/Capgemini" },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    name: "Capgemini - and the Brazilian services business it absorbed",
+    tagline: "French IT services multinational; acquirer of the Brazilian firm TI Braxis.",
+    intro: "Capgemini is a French IT services multinational, and it appears on this timeline through an acquisition: the Brazilian services company TI Braxis was absorbed into it, which is how a substantial part of Brazil's applications and outsourcing capacity came to be owned from Paris.",
+    body: [
+      "The transaction is one instance of a pattern this timeline records repeatedly from different starting points. A services business is bought for its people and its contracts, both of which are local; the buyer is not, and the accounting, methodology and career ladder that follow are the buyer's.",
+      "TI Braxis itself has no reachable encyclopaedia entry - both English and Portuguese Wikipedia return nothing - which is worth stating rather than smoothing over. A company large enough to be acquired by a multinational can still leave a public record thin enough that its own history is only visible through the buyer.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Capgemini",
+    externalLabel: "Capgemini",
+  },
+
+  // ---- PRODESP and PRODAM (2026-08-11). BOTH WERE REPORTED BLOCKED on
+  // 2026-08-11 after curl returned 503 and a JS-rendered portal. THE web_fetch
+  // TOOL RETURNED BOTH PAGES IN FULL ON THE FIRST ATTEMPT. I had a tool built
+  // for exactly this and never reached for it. ----
+  {
+    slug: "prodesp",
+    sources: [
+      { label: "Prodesp - Historia (official site): created 24 July 1969 by State Decree 137; began operating that October in a borrowed room at the Secretaria da Fazenda with two employees and no equipment; first premises 1970 in Ponte Pequena; first computer an IBM 360/65 at about US$9 million; first job July 1970 was the state payroll, then 290,000 employees; ~14 large computers and about 900 terminals by the early 1980s; Poupatempo from 1997; incorporated Imprensa Oficial in 2021 under State Law 17.056/2019", url: "https://www.prodesp.sp.gov.br/institucional/historia" },
+    ],
+    tags: ["services", "datacentre"],
+    group: "other",
+    name: "Prodesp - the state of Sao Paulo, computed",
+    founded: 1969,
+    tagline: "Created in 1969 with two staff and no equipment; now runs the state's network and data centre.",
+    intro: "Prodesp was created on 24 July 1969 by state decree and began work that October in a borrowed room at the finance department, with two employees and no equipment. Its first machine, an IBM 360/65 bought for around nine million dollars, ran its first job in July 1970: the payroll of a state government then employing 290,000 people.",
+    body: [
+      "The trajectory from there is the whole history of public-sector computing in one company. Fourteen large computers and roughly nine hundred terminals by the early 1980s; regional data-processing centres through the interior as the equipment park more than doubled between 1987 and 1989; identity cards, driving licences and road maintenance all passing through the same organisation.",
+      "The 1990s turned it from a data-processing bureau into an IT company, and 1997 produced the thing it is best known for outside the industry: Poupatempo, the one-stop public service centre, whose implementation and administration it took on. Prodesp also ran Acessa Sao Paulo, a digital-inclusion programme recognised in 2013 by the Gates Foundation.",
+      "Today it administers Intragov, the state's multiservice IP network, and a data centre among the largest in Latin American public administration. In 2021 it absorbed the Imprensa Oficial do Estado, a 130-year-old institution, which added the official gazette and digital certificate issuance to a company that started with two people and a borrowed desk.",
+    ],
+    externalUrl: "https://www.prodesp.sp.gov.br/institucional/historia",
+    externalLabel: "Prodesp",
+  },
+  {
+    slug: "prodam",
+    sources: [
+      { label: "Prodam-SP - A Prodam (official site): information and communication technology company of the municipality of Sao Paulo, created by Law 7.619 of 23 June 1971; strategic ICT integrator for the city government", url: "https://portal.prodam.sp.gov.br/a-prodam" },
+      { label: "Prodam-SP - Historia (official site): timeline in five periods from 1971, including the Rede Municipal de Informatica from 1992", url: "https://portal.prodam.sp.gov.br/hist%C3%B3ria" },
+    ],
+    tags: ["services", "datacentre"],
+    group: "other",
+    name: "Prodam - the city of Sao Paulo, computed",
+    founded: 1971,
+    tagline: "Municipal ICT company created in 1971, serving a city of more than twelve million people.",
+    intro: "Prodam-SP was created by municipal law on 23 June 1971 and is the technology company of the city of Sao Paulo - a municipality of more than twelve million inhabitants, which is larger than most of the countries whose national IT organisations appear on this timeline.",
+    body: [
+      "Its own history divides into five periods, and the second is the one worth noticing: the Rede Municipal de Informatica from 1992, which is a city building its own network at the moment the commercial internet was arriving. Municipal computing is under-recorded compared with federal and state work, and it is where a citizen actually meets the state most often - a permit, a tax bill, a school place, a health appointment.",
+      "Reading it beside Prodesp and Serpro completes a picture that is rarely drawn: Brazilian public computing is not one organisation but three layers - municipal, state and federal - each with its own company, its own systems and its own decades of accumulated records, and a citizen's data spread across all three.",
+    ],
+    externalUrl: "https://portal.prodam.sp.gov.br/a-prodam",
+    externalLabel: "Prodam-SP",
+  },
 ];
 
 /** Look up a partner vendor by slug. */
