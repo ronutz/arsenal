@@ -1,0 +1,40 @@
+---
+slug: choosing-a-public-dns-resolver
+title: "Resolvedores DNS públicos: o que você está de fato escolhendo"
+summary: "Cloudflare, Google, Quad9, OpenDNS e os demais diferem muito menos em velocidade do que em política. O que cada um faz com suas consultas, quais bloqueiam por padrão, por que o anycast complica o 'mais próximo', e a troca que ninguém enuncia: o resolvedor que protege você também vê tudo que você pergunta."
+concepts: ["dns", "anycast", "rpz", "dnssec"]
+relatedTools: []
+relatedArticles: ["edns-and-the-opt-pseudosection", "dnssec-records-in-dig", "dns-message-header-and-flags", "dns-blocklists-and-response-policy"]
+category: networking
+order: 255
+status: reviewed
+updated: "2026-08-11"
+---
+
+## A escolha é de política, vestida de argumento de desempenho
+
+Resolvedores públicos são comparados por latência, e latência é a diferença menos interessante entre eles. Todos usam **anycast**: um endereço anunciado de vários lugares, então os pacotes chegam à instância que o roteamento colocar mais perto. Dentro de uma rede bem conectada as diferenças são pequenas e variam por hora e por caminho.
+
+**O que de fato difere é política**, e vale nomear com precisão justamente porque o marketing não nomeia.
+
+## As quatro perguntas que os separam
+
+**Ele bloqueia?** Um resolvedor pode se recusar a responder por domínios de uma lista de ameaças. **O Quad9 bloqueia por padrão.** O serviço comum da Cloudflare não, e mantém endereços separados para variantes filtradas. O resolvedor público do Google não filtra. **Um resolvedor que não bloqueia não é pior — é outro produto**, e um que bloqueia em silêncio é um em que você precisa confiar que esteja certo.
+
+**O que é registrado, e por quanto tempo?** Toda consulta sua é visível para quem a responde. **A postura de privacidade é uma posição jurídica tanto quanto técnica**: qual jurisdição, qual prazo de retenção, o que é entregue mediante requisição. A base suíça do Quad9 é parte deliberada do desenho, não acaso de constituição.
+
+**Ele valida DNSSEC?** Se validar e você confiar no caminho até ele, você herda a validação. Se não validar, a flag `ad` nunca aparece e você está por conta própria — e se o caminho até o resolvedor não for confiável, a flag não significa nada de todo jeito.
+
+**O que ele conta de você ao servidor autoritativo?** O EDNS Client Subnet encaminha parte do seu endereço para que uma rede de conteúdo responda com um servidor próximo. **Melhora o roteamento e vaza sua localização aproximada para todo autoritativo que você consultar.** Alguns resolvedores enviam, outros recusam por princípio, e a escolha troca desempenho por privacidade de um jeito que ninguém vê.
+
+## Por que a resposta muda entre uma casa e uma rede
+
+Para uma máquina a questão é sobretudo privacidade e preferência de bloqueio. **Para uma rede é uma decisão de controle**, e a filtragem no resolvedor tem uma propriedade que nenhum agente de endpoint alcança: aplica-se a todo dispositivo, inclusive à impressora, à câmera, à leitora de crachá e ao notebook da visita.
+
+E esse é também o teto dela. **Um resolvedor só vê os nomes que lhe perguntam.** Um dispositivo configurado com resolvedor próprio, ou falando DNS sobre HTTPS com um serviço da escolha dele, é invisível para a política da rede — e navegadores e sistemas modernos fazem exatamente isso por padrão em algumas configurações. Impor um resolvedor hoje significa bloquear as alternativas, o que é mudança de firewall e não opção de DHCP.
+
+## A troca, dita sem rodeios
+
+**O resolvedor que protege você também vê tudo que você pergunta.** Filtragem e vigilância são a mesma capacidade apontada em direções diferentes, e toda opção aqui — um resolvedor público, o do provedor, um appliance de filtragem, um que você mesmo opere — é uma decisão sobre **quem é essa parte**, não sobre existir ou não uma.
+
+Operar o seu próprio remove o terceiro e lhe entrega os logs, a manutenção e as decisões de bloqueio no lugar. É uma resposta real, e é a que a maioria das pessoas não deveria escolher.

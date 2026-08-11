@@ -6062,6 +6062,116 @@ export const partnerVendors: PartnerVendor[] = [
       "One detail from its 2016 announcement is worth keeping because it describes a real friction in certification: students previously finished a course and then travelled elsewhere to sit the exam, adding cost and delay. Offering the exam at the same place and on the same date removed a gap that had nothing to do with learning and everything to do with logistics - which is the kind of problem that decides how many engineers a country actually certifies.",
     ],
   },
+
+  // ---- DNS CLUSTER (PRIME 2026-08-11). Infoblox already had an entry; these
+  // are its competitors and the public-resolver side of the same subject.
+  // BlueCat, EfficientIP and NextDNS have NO Wikipedia article (404) and are
+  // cited to their own sites with a sourceNote saying so. Quad9 and NextDNS are
+  // written as a PAIR - default-blocking against configurable - because the
+  // comparison is what makes either informative. ----
+  {
+    slug: "opendns",
+    sources: [
+      { label: "OpenDNS - domain name system provided by Cisco (Wikipedia)", url: "https://en.wikipedia.org/wiki/OpenDNS" },
+      { label: "Cisco Umbrella - the same lineage under its current name", url: "https://en.wikipedia.org/wiki/Cisco_Umbrella" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "OpenDNS - the resolver that became a security product",
+    tagline: "A public DNS resolver acquired by Cisco and rebuilt as Umbrella.",
+    intro: "OpenDNS ran a public recursive resolver and was acquired by Cisco, becoming the basis of Cisco Umbrella. Its significance is the move it demonstrated: a resolver that answers queries is also a device that sees every name a network asks for, before any connection is made.",
+    body: [
+      "That position is why DNS became a security control rather than only a lookup service. A resolver can refuse to answer for a domain, and refusing is cheap, early and protocol-agnostic - it stops a connection that has not been attempted yet, regardless of which port or protocol the client intended to use.",
+      "It is also why a resolver is a surveillance point, and the trade is stated plainly rather than hidden: whoever answers your DNS queries knows every service your network uses, including the ones nobody documented.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/OpenDNS",
+    externalLabel: "OpenDNS",
+  },
+  {
+    slug: "dyn",
+    sources: [
+      { label: "Dyn - former Internet infrastructure company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Dyn_(company)" },
+    ],
+    tags: ["vendor", "services"],
+    group: "contemporary",
+    name: "Dyn - managed DNS, and the day it went down",
+    tagline: "Managed DNS and dynamic DNS provider, later acquired by Oracle.",
+    intro: "Dyn provided dynamic DNS and managed authoritative DNS, and was acquired by Oracle. It is on this timeline for the architectural lesson its 2016 outage taught the rest of the industry.",
+    body: [
+      "A distributed denial-of-service attack against Dyn's infrastructure made a long list of major services unreachable at once - not because those services were down, but because the names that pointed at them could not be resolved. The applications were healthy and the internet could not find them.",
+      "The lesson generalised beyond one company: authoritative DNS is a single point of failure that does not look like one on an architecture diagram, because it is drawn as a lookup rather than as a dependency. The response across the industry was secondary providers and multiple authoritative services, which is a design decision made in the shape of a bill.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Dyn_(company)",
+    externalLabel: "Dyn",
+  },
+  {
+    slug: "quad9",
+    sources: [
+      { label: "Quad9 - public recursive DNS resolver based in Switzerland (Wikipedia)", url: "https://en.wikipedia.org/wiki/Quad9" },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    name: "Quad9 - a public resolver that blocks by default",
+    tagline: "Swiss-based public recursive resolver that refuses to answer for known-malicious domains.",
+    intro: "Quad9 operates a public recursive DNS resolver from Switzerland, and its distinguishing choice is that blocking is the default rather than an option: queries for domains on its threat feeds return no answer.",
+    body: [
+      "That makes it the clearest working example of DNS as a security control available to anybody, without an appliance or a subscription. Pointing a resolver at it applies a threat feed to every device on the network, including the ones that cannot run an agent.",
+      "The Swiss jurisdiction is part of the design rather than a detail of incorporation, because the question a public resolver has to answer is what happens to the query log. A resolver's privacy posture is a legal position as much as a technical one, and it is the property worth comparing between providers.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Quad9",
+    externalLabel: "Quad9",
+  },
+  {
+    slug: "bluecat",
+    sources: [
+      { label: "BlueCat Networks - company site (network operations, DDI)", url: "https://bluecatnetworks.com/", sourceNote: "Cited to the company's own site: en.wikipedia.org/wiki/BlueCat_Networks returns 404, so no third-party article was available." },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "BlueCat Networks - DDI, from the operations side",
+    tagline: "DNS, DHCP and address management sold as network operations rather than as infrastructure.",
+    intro: "BlueCat works the same DDI ground as Infoblox - DNS, DHCP and IP address management unified - and frames it as network operations: the argument that whoever holds the address records holds the map of the network.",
+    body: [
+      "The competitive position between DDI vendors is less about protocol features, which are standardised, than about what the system does with the record once it holds it: integration with cloud providers, automation interfaces, and the reporting that turns an address database into an inventory.",
+      "That is a useful thing to know before evaluating one, because a feature comparison of DNS and DHCP implementations will find little to separate them.",
+    ],
+    externalUrl: "https://bluecatnetworks.com/",
+    externalLabel: "BlueCat Networks",
+  },
+  {
+    slug: "efficientip",
+    sources: [
+      { label: "EfficientIP - company site (network automation and DNS security)", url: "https://www.efficientip.com/", sourceNote: "Cited to the company's own site: en.wikipedia.org/wiki/EfficientIP returns 404." },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "EfficientIP - DDI with the security case attached",
+    tagline: "DDI vendor whose positioning leads with DNS security rather than address management.",
+    intro: "EfficientIP sells DDI and leads with DNS security, which is a different emphasis from the same underlying product category: the same records, presented as an attack surface to be defended rather than an inventory to be managed.",
+    body: [
+      "Both framings are accurate and they attract different buyers. Address management is bought by network operations to stop addresses colliding; DNS security is bought by a security team to stop exfiltration through a protocol nobody blocks.",
+      "The second framing is the one that grew, because DNS is permitted outbound almost everywhere by necessity, and a channel that is always open is a channel worth watching.",
+    ],
+    externalUrl: "https://www.efficientip.com/",
+    externalLabel: "EfficientIP",
+  },
+  {
+    slug: "nextdns",
+    sources: [
+      { label: "NextDNS - company site (configurable public resolver, described as a firewall for the modern internet)", url: "https://nextdns.io/", sourceNote: "Cited to the company's own site; no third-party encyclopaedia article was found." },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    name: "NextDNS - the resolver as a configurable filter",
+    tagline: "Public resolver where the blocklists, logging and retention are the user's settings.",
+    intro: "NextDNS operates a public resolver whose filtering is configurable per profile: which blocklists apply, what is logged, and for how long. It sits at the opposite end of the same axis as Quad9 - one resolver decides policy for you, the other hands you the controls.",
+    body: [
+      "The comparison is the useful part of having both on this timeline. A default-blocking resolver protects a network whose operator will never configure anything, which is most networks; a configurable one serves an operator who has an opinion and wants it applied consistently across every device.",
+      "Both share the property that makes resolver-level filtering attractive and uncomfortable at once: it applies to everything on the network without installing anything, and it works by having somebody else see every name you look up.",
+    ],
+    externalUrl: "https://nextdns.io/",
+    externalLabel: "NextDNS",
+  },
 ];
 
 /** Look up a partner vendor by slug. */

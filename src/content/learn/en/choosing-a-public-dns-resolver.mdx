@@ -1,0 +1,40 @@
+---
+slug: choosing-a-public-dns-resolver
+title: "Public DNS resolvers: what you are actually choosing"
+summary: "Cloudflare, Google, Quad9, OpenDNS and the rest differ far less in speed than in policy. What each one does with your queries, which ones block by default, why anycast makes 'nearest' complicated, and the trade nobody states: the resolver that protects you also sees everything you ask for."
+concepts: ["dns", "anycast", "rpz", "dnssec"]
+relatedTools: []
+relatedArticles: ["edns-and-the-opt-pseudosection", "dnssec-records-in-dig", "dns-message-header-and-flags", "dns-blocklists-and-response-policy"]
+category: networking
+order: 255
+status: reviewed
+updated: "2026-08-11"
+---
+
+## The choice is a policy choice wearing a performance argument
+
+Public resolvers are compared on latency, and latency is the least interesting difference between them. They all run **anycast**: one address announced from many locations, so packets reach whichever instance the routing puts nearest. Within a well-connected network the differences are small and vary by hour and by path.
+
+**What actually differs is policy**, and it is worth naming precisely because the marketing does not.
+
+## The four questions that separate them
+
+**Does it block?** A resolver can refuse to answer for domains on a threat feed. **Quad9 blocks by default.** Cloudflare's ordinary service does not, and runs separate addresses for filtered variants. Google's public resolver does not filter. **A resolver that does not block is not worse — it is a different product**, and one that blocks silently is one you must trust to be right.
+
+**What is logged, and for how long?** Every query you make is visible to whoever answers it. **The privacy posture is a legal position as much as a technical one**: which jurisdiction, which retention period, what is handed over on request. Quad9's Swiss base is a deliberate part of its design rather than an accident of incorporation.
+
+**Does it validate DNSSEC?** If the resolver validates and you trust the path to it, you inherit the validation. If it does not, the `ad` flag never appears and you are on your own — and if the path to the resolver is untrusted, the flag means nothing anyway.
+
+**What does it tell the authoritative server about you?** EDNS Client Subnet forwards part of your address so a content network can answer with a nearby server. **It improves routing and it leaks your approximate location to every authoritative server you query.** Some resolvers send it, some refuse on principle, and the choice trades performance for privacy in a way nobody sees.
+
+## Why the answer differs for a household and a network
+
+For one machine the question is mostly privacy and blocking preference. **For a network it is a control decision**, and resolver-level filtering has one property no endpoint agent can match: it applies to every device, including the printer, the camera, the badge reader and the visitor's laptop.
+
+That is also its ceiling. **A resolver only sees the names asked of it.** A device configured with its own hardcoded resolver, or speaking DNS over HTTPS to a service of its own choosing, is invisible to the network's policy - and modern browsers and operating systems do exactly that by default in some configurations. Enforcing a resolver now means blocking the alternatives, which is a firewall change rather than a DHCP option.
+
+## The trade, stated plainly
+
+**The resolver that protects you also sees everything you ask for.** Filtering and surveillance are the same capability pointed in different directions, and every option here — a public resolver, an ISP's, a filtering appliance, one you run yourself — is a decision about **who that party is**, not about whether one exists.
+
+Running your own removes the third party and gives you the logs, the maintenance and the blocklist decisions instead. That is a real answer, and it is the one most people should not choose.

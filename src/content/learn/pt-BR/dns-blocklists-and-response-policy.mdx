@@ -1,0 +1,48 @@
+---
+slug: dns-blocklists-and-response-policy
+title: "Listas de bloqueio DNS: RPZ, classificação e o custo de uma resposta recusada"
+summary: "Bloquear um domínio no resolvedor é o controle de segurança mais barato que existe, e por isso todo fabricante vende um. Como funcionam os feeds RPZ, o que uma classificação de DNS de fabricante realmente classifica, os dois modos de falha que ninguém prevê, e por que o bloqueio que não se vê é pior que o visível."
+concepts: ["rpz", "dns", "egress-filtering"]
+relatedTools: []
+relatedArticles: ["choosing-a-public-dns-resolver", "bigip-dns-multi-rpz", "dns-record-types-in-answers"]
+category: security
+order: 256
+status: reviewed
+updated: "2026-08-11"
+---
+
+## Por que o resolvedor é onde bloquear sai mais barato
+
+Toda conexão a um host nomeado começa por uma consulta, então o resolvedor fica **antes** de o tráfego existir. Recusar ali custa uma consulta e impede que a conexão seja sequer tentada — sem sessão para inspecionar, sem certificado para interceptar, sem porta para casar, e funciona igual para um protocolo do qual ninguém escreveu um analisador.
+
+É por isso que o controle é reinventado sob nomes diferentes: response policy zones, filtragem de DNS, camada DNS do secure web gateway, DNS protetivo. **São um mecanismo com vários nomes de produto.**
+
+## RPZ: uma lista de bloqueio entregue como zona
+
+A especificação de **Response Policy Zone**, escrita por Vixie e Schryver, tem uma premissa realmente engenhosa: distribuir a lista **como uma zona DNS**, para que o maquinário de transferência de zona já existente a movimente. O assinante configura um feed como configuraria qualquer zona secundária, e as atualizações chegam por IXFR segundos depois da publicação.
+
+Uma regra emparelha um **gatilho** com uma **ação**. O gatilho pode ser o nome consultado, o endereço na resposta, o endereço do próprio cliente ou o servidor de nomes envolvido. As ações incluem NXDOMAIN, redirecionamento para um jardim murado e deixar passar sem alteração — esta última sendo a lista de permissão, que importa mais do que parece.
+
+**As implementações diferem em quanto da especificação honram.** Uma plataforma que reduz toda ação a "NXDOMAIN ou jardim murado" está aplicando a política dela ao feed de outra pessoa, e os autores do feed fizeram distinções que estão sendo descartadas. Vale saber antes de supor que uma regra fez o que dizia.
+
+## O que uma classificação de DNS de fabricante classifica de fato
+
+Vários fabricantes — o filtro de DNS da Fortinet entre eles — resolvem um nome e o conferem contra uma **classificação por categoria** em vez de uma lista simples de permitir ou negar: malware, phishing, recém-registrado, estacionado, e as categorias comuns de conteúdo.
+
+Duas coisas sobre classificações merecem ser guardadas.
+
+**Uma classificação é um julgamento sobre um domínio num momento.** Domínios recém-registrados são uma categoria justamente porque a idade é um sinal utilizável quando não se sabe mais nada — e uma empresa legítima registrando um domínio novo é idêntica a um atacante fazendo o mesmo, nos primeiros dias de vida daquele nome.
+
+**E a classificação é, ela própria, uma consulta.** O filtro pergunta a um serviço de classificação sobre o nome, o que significa que esse serviço vê suas consultas e que o filtro depende de alcançá-lo. O que um equipamento faz quando o serviço está inalcançável — falhar aberto, falhar fechado, ou servir do cache — é a configuração mais importante do recurso, e costuma ficar num padrão que ninguém escolheu deliberadamente.
+
+## Os dois modos de falha
+
+**Um bloqueio que parece falha de rede.** NXDOMAIN para um domínio bloqueado é indistinguível, do lado da aplicação, de um domínio que não existe. O usuário relata "o site está fora", o suporte testa de uma rede com outro resolvedor e vê funcionando, e a investigação vai para o lugar errado. **Um redirecionamento para jardim murado custa um aviso de certificado HTTPS e diz a verdade**; NXDOMAIN é silencioso e mente por omissão.
+
+**Um bloqueio que nunca dispara.** Um dispositivo que usa o próprio resolvedor, ou DNS sobre HTTPS com um serviço da escolha dele, nunca pergunta ao resolvedor que guarda a política. O painel mostra um filtro funcionando perfeitamente sobre as consultas que recebeu, e as que nunca chegaram não estão em gráfico nenhum.
+
+**As duas falhas são silenciosas e falham em direções opostas** — uma bloqueia algo e parece indisponibilidade, a outra não bloqueia nada e parece sucesso.
+
+## O que levar daqui
+
+**Bloquear no resolvedor tem alta alavancagem e baixa visibilidade.** Aplica-se a todo dispositivo da rede sem agente algum, e não produz quase nenhuma evidência de estar funcionando corretamente. Seja o que for que você implante, as duas perguntas a responder antes de importar são **o que acontece quando o feed ou o serviço de classificação fica inalcançável** e **como um usuário bloqueado descobre que foi bloqueado.**

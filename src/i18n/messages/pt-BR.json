@@ -14552,6 +14552,26 @@
       "embedded-system": {
         "def": "Um computador embutido em algo que não é pensado como computador, com uma tarefa fixa e, normalmente, ninguém olhando.",
         "context": "Quase todo dispositivo numa rede é um: o switch, o ponto de acesso, a régua de energia, a câmera, a climatização do prédio. O que os torna uma categoria operacional, e não de hardware, são as premissas que carregam — vida útil longa, correção que exige indisponibilidade, credenciais definidas uma única vez, e fabricantes que podem não existir mais quando uma vulnerabilidade for publicada. A superfície de ataque real de um parque normalmente não são os servidores que alguém mantém; são as várias centenas de computadorezinhos em que ninguém entra desde a instalação."
+      },
+      "doh": {
+        "def": "Consultas DNS enviadas dentro de HTTPS, indistinguíveis de tráfego web comum.",
+        "context": "O DNS over HTTPS envolve as consultas numa sessão HTTPS até um resolvedor, então elas ficam cifradas e trafegam na porta 443 junto de todo o resto. Isso derrota a observação passiva do que um cliente resolve, e derrota também a política de DNS da própria rede - um navegador usando o próprio resolvedor DoH nunca pergunta ao resolvedor que a rede configurou, e a filtragem ali não vê nada e reporta sucesso sobre as consultas que recebeu.",
+        "depth": "O DoH é o caso mais claro, na rede moderna, de uma melhoria de privacidade e uma perda de controle serem a mesma mudança. Para quem está numa rede hostil, remove um observador; para quem responde por uma rede, remove o ponto de aplicação, porque as consultas deixam de chegar. As duas descrições são corretas, e qual delas importa depende inteiramente de quem é a rede. Impor um resolvedor na presença de DoH é questão de firewall e política, não de DHCP: as alternativas precisam ser bloqueadas ou os clientes configurados, e nenhuma das duas sai de graça."
+      },
+      "dot": {
+        "def": "Consultas DNS transportadas dentro de TLS, na porta 853.",
+        "context": "O DNS over TLS cifra as mesmas consultas que o DoH, mas as mantém numa porta dedicada - o que as torna visíveis como DNS para uma rede que olhe, e portanto bloqueáveis, ou permitidas de propósito, como decisão de política e não de interpretação de tráfego.",
+        "depth": "A diferença prática entre DoT e DoH não é criptográfica; os dois protegem a consulta em trânsito. É se o tráfego anuncia o que é. DoT na 853 pode ser permitido, negado ou redirecionado por quem tenha uma opinião; DoH na 443 só pode ser gerido bloqueando endpoints conhecidos ou controlando o cliente. É por isso que empresas que permitem DNS cifrado tendem a preferir DoT, e por isso que o DoH virou padrão no software de consumo."
+      },
+      "ecs": {
+        "def": "Opção do EDNS que encaminha parte do endereço do cliente ao servidor autoritativo.",
+        "context": "O EDNS Client Subnet permite que um resolvedor recursivo informe ao autoritativo aproximadamente onde está o cliente, para que uma rede de conteúdo responda com um servidor próximo em vez de um próximo do resolvedor. Melhora o roteamento de quem usa grandes resolvedores públicos e vaza a localização aproximada do cliente para todo autoritativo consultado.",
+        "depth": "O ECS existe porque o anycast resolveu a metade errada do problema: coloca o resolvedor perto do usuário, mas o autoritativo responde com base em onde está o RESOLVEDOR, não o usuário. Encaminhar uma sub-rede truncada do cliente corrige a resposta e cria uma questão de privacidade - razão pela qual os resolvedores públicos divergem: alguns enviam por desempenho, outros recusam por princípio, e a escolha é invisível para a pessoa cuja localização está ou não sendo compartilhada."
+      },
+      "dns-filtering": {
+        "def": "Bloquear ou reescrever respostas DNS para impedir que clientes alcancem certos domínios.",
+        "context": "Como toda conexão a um host nomeado começa por uma consulta, recusar a resposta impede a conexão antes de ser tentada - sem sessão para inspecionar, sem porta para casar, e funciona para protocolos dos quais ninguém escreveu um analisador. O mesmo mecanismo é vendido como response policy zones, DNS protetivo, camada DNS de um secure web gateway, e filtro de DNS de fabricante com classificação por categoria.",
+        "depth": "O controle tem alta alavancagem e baixa visibilidade: aplica-se a todo dispositivo da rede sem agente algum, inclusive impressoras, câmeras e notebooks de visitantes, e quase não produz evidência de estar funcionando. Seus dois modos de falha são silenciosos e opostos - um bloqueio devolvido como NXDOMAIN é indistinguível de um domínio inexistente, e portanto se lê como indisponibilidade; e um cliente que usa o próprio resolvedor nunca é filtrado, e as consultas que nunca foram vistas não aparecem em relatório nenhum."
       }
     },
     "totalCount": "{count} termos",

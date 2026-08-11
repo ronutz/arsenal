@@ -1,0 +1,48 @@
+---
+slug: dns-blocklists-and-response-policy
+title: "DNS blocklists: RPZ, ratings, and what a refused answer costs"
+summary: "Blocking a domain at the resolver is the cheapest security control there is, which is why every vendor sells one. How RPZ feeds work, what a vendor DNS rating actually rates, the two failure modes nobody plans for, and why the block you cannot see is worse than the one you can."
+concepts: ["rpz", "dns", "egress-filtering"]
+relatedTools: []
+relatedArticles: ["choosing-a-public-dns-resolver", "bigip-dns-multi-rpz", "dns-record-types-in-answers"]
+category: security
+order: 256
+status: reviewed
+updated: "2026-08-11"
+---
+
+## Why the resolver is where blocking is cheapest
+
+Every connection to a named host begins with a lookup, so a resolver sits **before** the traffic exists. Refusing there costs one query and stops the connection from being attempted at all — no session to inspect, no certificate to intercept, no port to match, and it works identically for a protocol nobody has written a parser for.
+
+That is why the control keeps being reinvented under different names: response policy zones, DNS filtering, secure web gateway DNS layer, protective DNS. **They are one mechanism with several product names.**
+
+## RPZ: a blocklist shipped as a zone
+
+The **Response Policy Zone** specification, written by Vixie and Schryver, has a genuinely clever premise: distribute the blocklist **as a DNS zone**, so the existing zone transfer machinery moves it. A subscriber configures a feed the way it would configure any secondary zone, and updates arrive by IXFR within seconds of publication.
+
+A rule pairs a **trigger** with an **action**. The trigger can be the queried name, the address in the answer, the client's own address, or the nameserver involved. The actions include NXDOMAIN, a redirect to a walled garden, and passing the query through untouched — that last one being the whitelist, which matters more than it sounds.
+
+**Implementations differ in how much of the specification they honour.** A platform that reduces every action to "NXDOMAIN or walled garden" is applying its own policy to somebody else's feed, and the feed's authors made distinctions that are being discarded. Worth knowing before assuming a rule did what it said.
+
+## What a vendor DNS rating actually rates
+
+Several vendors — Fortinet's DNS filter among them — resolve a name and check it against a **category rating** rather than a simple allow-or-deny list: malware, phishing, newly registered, parked, and the ordinary content categories.
+
+Two things about ratings are worth holding onto.
+
+**A rating is a judgement about a domain at a moment.** Newly registered domains are a category precisely because age is a usable signal when nothing else is known, and a legitimate business registering a new domain looks exactly like an attacker doing the same for the first days of its life.
+
+**And the rating is a lookup of its own.** The filter asks a rating service about the name, which means the rating service sees your queries and the filter depends on reaching it. What a device does when the rating service is unreachable — fail open, fail closed, or serve from cache — is the single most important setting in the feature, and it is usually left at a default nobody chose deliberately.
+
+## The two failure modes
+
+**A block that looks like a network fault.** NXDOMAIN for a blocked domain is indistinguishable, from the application's side, from a domain that does not exist. The user reports "the site is down", the helpdesk tests from a network with a different resolver and sees it working, and the investigation goes to the wrong place. **A walled-garden redirect costs an HTTPS certificate warning and tells the truth**; NXDOMAIN is quiet and lies by omission.
+
+**A block that never fires.** A device using its own resolver, or DNS over HTTPS to a service of its choosing, never asks the resolver that holds the policy. The dashboard shows a filter working perfectly on the queries it received, and the queries it never received are not on any chart.
+
+**Both failures are silent, and they fail in opposite directions** — one blocks something and looks like an outage, the other blocks nothing and looks like success.
+
+## What to take away
+
+**Resolver blocking is high-leverage and low-visibility.** It applies to every device on the network with no agent, and it produces almost no evidence of working correctly. Whatever you deploy, the two questions to answer before it matters are **what happens when the feed or rating service is unreachable**, and **how a blocked user finds out they were blocked.**

@@ -14552,6 +14552,26 @@
       "embedded-system": {
         "def": "A computer built into something that is not thought of as a computer, with a fixed job and usually nobody watching it.",
         "context": "Almost every device on a network is one: the switch, the access point, the power distribution unit, the camera, the building's air handling. What makes them an operational category rather than a hardware one is the assumptions they carry - long service lives, patching that requires an outage, credentials that were set once, and vendors who may not exist by the time a vulnerability is published. An estate's real attack surface is usually not the servers somebody maintains; it is the several hundred small computers nobody has logged into since installation."
+      },
+      "doh": {
+        "def": "DNS queries sent inside HTTPS, indistinguishable from ordinary web traffic.",
+        "context": "DNS over HTTPS wraps lookups in an HTTPS session to a resolver, so they are encrypted and travel on port 443 among everything else. That defeats passive observation of what a client is resolving, and it also defeats a network's own DNS policy - a browser using its own DoH resolver never asks the resolver the network configured, so filtering there sees nothing and reports success on the queries it did receive.",
+        "depth": "DoH is the clearest case in modern networking of a privacy improvement and a control loss being the same change. For a person on a hostile network it removes an observer; for an operator responsible for a network it removes the enforcement point, because the queries no longer arrive. Both descriptions are accurate, and which one matters depends entirely on whose network it is. Enforcing a resolver in the presence of DoH is a firewall and policy question rather than a DHCP setting: the alternatives have to be blocked or the clients configured, and neither is free."
+      },
+      "dot": {
+        "def": "DNS queries carried inside TLS on their own port, 853.",
+        "context": "DNS over TLS encrypts the same queries as DoH but keeps them on a dedicated port, which makes them visible as DNS to a network that looks - and therefore blockable, or permitted deliberately, as a matter of policy rather than of parsing.",
+        "depth": "The practical difference between DoT and DoH is not cryptographic; both protect the query in transit. It is whether the traffic announces what it is. DoT on port 853 can be allowed, denied or redirected by an operator who has an opinion; DoH on 443 can only be managed by blocking known resolver endpoints or by controlling the client. That is why enterprises that permit encrypted DNS at all tend to prefer DoT, and why DoH became the default in consumer software."
+      },
+      "ecs": {
+        "def": "An EDNS option that forwards part of the client's address to the authoritative server.",
+        "context": "EDNS Client Subnet lets a recursive resolver tell an authoritative server roughly where the client is, so a content network can answer with a nearby server rather than one near the resolver. It improves routing for users of large public resolvers and leaks the client's approximate location to every authoritative server queried.",
+        "depth": "ECS exists because anycast solved the wrong half of the problem: it puts the resolver near the user, but the authoritative server answers based on where the resolver is, not where the user is. Forwarding a truncated client subnet fixes the answer and creates a privacy question, which is why public resolvers differ on it - some send it for performance, some refuse on principle, and the choice is invisible to the person whose location is or is not being shared."
+      },
+      "dns-filtering": {
+        "def": "Blocking or rewriting DNS answers to stop clients reaching chosen domains.",
+        "context": "Because every connection to a named host starts with a lookup, refusing to answer stops the connection before it is attempted - no session to inspect, no port to match, and it works for protocols nobody has written a parser for. The same mechanism is sold as response policy zones, protective DNS, a secure web gateway's DNS layer, and a vendor DNS filter with category ratings.",
+        "depth": "The control is high-leverage and low-visibility: it applies to every device on a network without an agent, including printers, cameras and visitors' laptops, and it produces almost no evidence of working correctly. Its two failure modes are silent and opposite - a block returned as NXDOMAIN is indistinguishable from a domain that does not exist, so it reads as an outage; and a client using its own resolver is never filtered at all, so the queries that were never seen appear on no report."
       }
     },
     "totalCount": "{count} terms",
