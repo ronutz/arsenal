@@ -7,8 +7,8 @@ relatedTools: ["f5-gslb-decision-flow"]
 relatedArticles: ["bigip-21x-whats-new", "bigip-dns-request-processing-order"]
 category: networking
 order: 6
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma Response Policy Zone é o formato nativo de regra de firewall do DNS: um arquivo de zona cujos registros não descrevem onde os nomes vivem, mas o que o resolvedor deve fazer quando perguntado sobre eles. Alimente um resolvedor com uma RPZ (Zona de Política de Resposta, do inglês Response Policy Zone) de domínios sabidamente maliciosos e todo cliente atrás dele herda a proteção na camada mais barata possível, a própria consulta de nome. O BIG-IP DNS suporta RPZ no seu cache há anos; o teto era um único feed e um único comportamento global de resposta. O BIG-IP 21.1 remove os dois.
@@ -34,3 +34,10 @@ RPZ é propriedade do cache DNS, e o cache tem lugar fixo na ordem documentada d
 ## Desenhando uma implantação multi-RPZ
 
 Três hábitos traduzem o recurso em operação limpa. Nomeie as zonas por dono e intenção (rpz-regulatoria-anatel, rpz-fornecedor-x, rpz-interna-allow), porque a lista de precedência só é auditável se os nomes carregarem significado. Dê a cada feed externo uma chave TSIG própria, para que revogar um provedor nunca toque em outro. E decida a postura de falha por zona antes do primeiro incidente: uma zona regulatória defasada e um feed de fornecedor defasado não merecem o mesmo nível de alarme, e o atraso de número de série em cada transferência é a métrica que diz qual dos dois você tem.
+
+## Fontes
+
+Toda afirmação específica de versão acima é da própria F5, e é aqui que se deve reconferir quando a próxima versão sair.
+
+- [Configuring DNS Response Policy Zones - BIG-IP DNS Services Implementations](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-dns-services-implementations/configuring-dns-response-policy-zones.html)
+- [DNS Response Policy Zones - the RPZ specification (Vixie and Schryver)](https://www.ietf.org/archive/id/draft-vixie-dnsop-dns-rpz-00.txt)

@@ -7,8 +7,8 @@ relatedTools: ["totp-hotp"]
 relatedArticles: ["validating-totp-codes", "base32", "hmac", "why-hmac"]
 category: identity
 order: 30
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 ## One secret, many short codes
@@ -56,3 +56,12 @@ TOTP also allows SHA-256 and SHA-512 in place of SHA-1, and 7 or 8 digit codes. 
 The secret is generated once at enrolment and handed to the authenticator, almost always as a **Base32** string carried in an `otpauth://` URI and shown as a QR code. Base32's case-insensitive, unambiguous alphabet is what makes that secret safe to display and retype. From then on the secret never moves; only the derived codes do.
 
 The TOTP / HOTP tool computes exactly this: pick the mode, paste the secret, and it shows the code along with the intermediate HMAC, offset, and truncation so the derivation is visible rather than magic.
+
+
+## The acceptance window is a brute-force multiplier
+
+Clocks drift, so validators accept codes from adjacent time steps. **Every step you accept multiplies the number of codes valid at any instant**, and a window of ±1 step means three valid six-digit codes rather than one.
+
+That is a threefold improvement in an attacker's odds per attempt, permanently, in exchange for tolerating drift that a well-run client rarely has. A generous window feels like kindness to users and reads, from the other side, as a discount.
+
+**Keep the window at ±1 step and put the real defence on attempt rate.** Guessing six digits is only hard while guessing is slow — **the code length is doing much less work than the lockout is.**

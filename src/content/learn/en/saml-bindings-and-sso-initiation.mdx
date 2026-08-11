@@ -7,8 +7,8 @@ relatedTools: ["saml-decoder"]
 relatedArticles: ["saml-overview", "saml-assertions-and-conditions", "saml-signatures"]
 category: security
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Two practical questions shape any SAML (Security Assertion Markup Language) single sign-on: where the flow starts, and how each message physically moves between the parties.
@@ -29,3 +29,12 @@ A **binding** is the transport rule for a SAML message. Two dominate browser SSO
 ## Reading a flow
 
 Put together, a typical SP-initiated login is: the SP builds an `AuthnRequest` and sends it via HTTP-Redirect; the user authenticates; the IdP returns a signed `Response` via HTTP-POST to the SP's assertion consumer service. When you decode a SAML message and want to know what you are looking at, the binding tells you where it came from, redirect-style parameters point to a request, a POSTed form body points to a response, and whether it was SP- or IdP-initiated tells you whether a correlating request should exist at all.
+
+
+## IdP-initiated SSO removes the request the SP was supposed to check
+
+In SP-initiated flow the service provider creates the request, remembers it, and matches the assertion against something it is expecting. **IdP-initiated flow has no such request** — an unsolicited assertion arrives and the SP must decide whether to trust it on its contents alone.
+
+That is why the two modes are not a preference. **IdP-initiated SSO is structurally closer to accepting a bearer token from an unauthenticated source**, and defending it takes replay protection, tight clock skew and strict audience checking that SP-initiated flow gets partly for free.
+
+**Prefer SP-initiated where it is possible**, and where a partner requires IdP-initiated, treat the assertion-ID replay cache as mandatory rather than as hardening. **Nothing about the missing check produces an error** — a replayed assertion within its validity window logs a user in exactly as a legitimate one does.

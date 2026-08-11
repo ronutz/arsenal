@@ -7,8 +7,8 @@ relatedTools: ["url-inspector"]
 relatedArticles: ["url-anatomy", "query-strings", "deceptive-urls"]
 category: encoding
 order: 6
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 An absolute URL carries everything: scheme, host, path, and the rest. A **relative** URL leaves parts out and expects them to be filled in from a **base URL**, usually the address of the page it appears on. This is what lets a site link to `about.html` without repeating its own domain everywhere.
@@ -27,3 +27,12 @@ How much gets filled in depends on the shape of the reference:
 The resolution rules (defined in RFC 3986) are exact, which is good, because small mistakes produce broken links: a missing leading slash makes a link relative to the wrong directory, and an extra `../` climbs above where you meant. A page can also set an explicit base with a `<base>` tag, which quietly changes how *every* relative link on the page resolves, a classic source of "why is this link pointing there."
 
 There is a security angle too. Because `../` walks up the path, and because scheme-relative and path-relative references behave differently, a URL that is built by pasting user input into a path can sometimes be steered somewhere unintended. When a URL is assembled from parts rather than written whole, it is worth resolving it fully to see where it actually lands.
+
+
+## The base is the part nobody checks
+
+Resolving a relative URL needs a base, and **the base is often not what the code believes it is.** A `<base>` element in the document, a redirect that changed the effective location, or a proxy that rewrote the path can all move it — and the same relative reference then resolves somewhere else entirely.
+
+This is why relative URLs are a recurring source of security surprise rather than merely a convenience. **A reference that points inside your application when resolved against the intended base can point outside it when resolved against a base an attacker influenced.**
+
+**Resolve explicitly against a base you control**, and treat any resolution that crosses an origin as a decision rather than a detail — because the parser will perform it silently and correctly, and correctness is not the property at issue.

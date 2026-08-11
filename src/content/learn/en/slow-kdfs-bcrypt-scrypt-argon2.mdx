@@ -7,8 +7,8 @@ relatedTools: ["hash-preimage-finder"]
 relatedArticles: ["why-salting-defeats-precomputed-tables", "choosing-a-password-hash", "keyspace-entropy-and-crack-time"]
 category: hashing
 order: 85
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Salting kills precomputed tables, but it does nothing about raw speed. A fast hash like SHA-256 can be computed billions of times per second on a GPU, so a weak password still falls to a targeted brute-force attack even when salted.
@@ -32,3 +32,12 @@ Replace the fast hash with a **key derivation function** that has a tunable work
 Choose a target wall-clock cost per hash on your own hardware and set the parameters to hit it, then raise the work factor over time as hardware gets faster. OWASP (the Open Worldwide Application Security Project) publishes current starting parameters for each algorithm.
 
 The combination is what matters: a unique salt to defeat precomputation, plus a slow, tuned KDF (key derivation function) to make every remaining guess expensive.
+
+
+## Cost parameters are a promise about hardware that changes
+
+A work factor chosen in 2015 is not the same defence in 2026 against the same money. **Cost parameters age**, and unlike a certificate they do not expire and nothing alerts you.
+
+The failure is silent by construction: hashes created with an old factor keep verifying correctly forever, so an application can be running a decade-old cost setting with no error, no warning and no visible symptom.
+
+Two practical consequences. **Store the parameters with the hash** — the standard formats do — so old and new can coexist while you migrate. And **re-hash on successful login**, when you briefly hold the plaintext, which is the only moment an upgrade is possible without asking users to do anything.

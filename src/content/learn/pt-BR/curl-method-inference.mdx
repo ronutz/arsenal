@@ -7,8 +7,8 @@ relatedTools: ["http-request-translator"]
 relatedArticles: ["curl-data-flags-and-content-type", "reading-a-curl-command", "curl-to-fetch"]
 category: networking
 order: 80
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O curl muitas vezes sabe o método HTTP sem `-X`, e adivinhar errado sobre isso é um erro frequente.
@@ -18,3 +18,12 @@ As regras são simples. Se `-X` / `--request` for fornecido, esse método vence,
 O caso sutil é combinar um método explícito com um corpo: `-X PUT -d ...` envia PUT com esse corpo, porque o método declarado sobrepõe o POST que o `-d` sozinho teria implicado.
 
 Quando uma ferramenta marca o método como inferido em vez de declarado, ela está aplicando exatamente essas regras. Ver esse rótulo permite confirmar que a requisição faz o que você quis, em vez de descobrir depois que um `-X` ausente transformou um PUT pretendido num POST.
+
+
+## A armadilha do redirecionamento
+
+A regra que pega as pessoas não está na tabela de flags: **um `-X` explícito sobrevive a um redirecionamento, e um método inferido não.**
+
+Sem `-X`, o curl seguindo um 301 ou 302 com `--location` faz o que um navegador faz e troca para GET. Com `-X POST`, o curl continua fazendo POST — no destino do redirecionamento, com o mesmo corpo, porque você disse qual era o método e ele acredita.
+
+É assim que uma requisição que parecia correta em teste vira uma escrita duplicada num endpoint que ninguém esperava. Se você está seguindo redirecionamentos, **declare o método apenas se quiser que ele persista através deles.**

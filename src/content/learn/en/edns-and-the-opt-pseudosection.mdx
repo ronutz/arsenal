@@ -7,8 +7,8 @@ relatedTools: ["dig-output-explainer"]
 relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig"]
 category: networking
 order: 43
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Classic DNS had a 512-byte limit on UDP answers and no room in the header for new options. EDNS(0), defined in RFC 6891, fixes both by adding a pseudo-record of type OPT. dig prints it as its own block:
@@ -31,3 +31,12 @@ Below the EDNS line, dig may print further options such as `COOKIE` (a lightweig
 EDNS is where several confusing failures live. If a large answer plus a large advertised UDP size produces a fragmented UDP packet that a firewall or a broken path drops, the query appears to hang or fail even though the server answered. That is exactly why the advertised size trended down to values like 1232: smaller answers fit in one packet and survive more paths. When you see intermittent `SERVFAIL` on names with big answers (many addresses, or DNSSEC signatures), the OPT line and the UDP size are the first place to look, and forcing TCP with `+tcp` is a fast way to confirm it.
 
 The `do` flag ties directly into DNSSEC: without it, a resolver will not return the signature records, so if you are trying to inspect DNSSEC and see none, check that the OPT line shows `do` set.
+
+
+## The buffer size is a promise the network may not keep
+
+The OPT record advertises how large a UDP response the client will accept — commonly 1232 or 4096 bytes. **Advertising is not the same as receiving.**
+
+A response larger than the path MTU gets fragmented, and plenty of middleboxes and firewalls drop IP fragments without comment. The query goes out, the server answers, the answer never arrives, and the resolver waits for a timeout it will blame on the server.
+
+**This is why DNS "being slow" is so often not slow at all.** It is a large answer failing silently and a client waiting out a retry. The tell is that small queries work perfectly and DNSSEC or TXT lookups do not, because those are the ones that grow.

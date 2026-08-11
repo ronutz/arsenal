@@ -7,8 +7,8 @@ relatedTools: ["f5xc-service-policy-explainer"]
 relatedArticles: ["how-xc-service-policies-match", "xc-matcher-case-sensitivity-and-transformers", "xc-rule-combining-algorithms"]
 category: security
 order: 66
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma regra de service policy pode carregar muitos predicados de uma vez: um caminho, um método, alguns cabeçalhos, um seletor de cliente, uma lista de IP. A lógica que os une é simples de enunciar e fácil de errar, porque funciona em dois níveis.
@@ -46,3 +46,12 @@ Uma armadilha relacionada é que uma única string de valor de cabeçalho é com
 Comparadores de cabeçalho, cookie, argumento e claim de JWT (Token Web JSON, do inglês JSON Web Token) também suportam `check_present` e `check_not_present`, que testam apenas se o campo está lá ou não, sem comparação de valor. E a maioria dos comparadores suporta `invert_matcher`, que inverte o resultado: o predicado casa quando a condição **não** é atendida. Um comparador de método invertido em `["GET"]` casa com todo método exceto GET. A inversão é poderosa e fácil de ler errado, então vale destacá-la explicitamente sempre que aparece.
 
 O explicador neste site renderiza cada predicado com seus valores, marca as listas OU e sinaliza comparadores invertidos, de modo que os dois níveis de lógica ficam visíveis num relance em vez de inferidos do aninhamento.
+
+
+## Um predicado que nunca casa é idêntico a um que sempre permite
+
+Os dois níveis de lógica — E entre predicados, OU dentro de um matcher — significam que uma regra pode ficar **mais estreita do que se pretendia sem falhar.** Um nome de cabeçalho escrito errado, um prefixo de caminho sem a barra inicial, um seletor cujo rótulo não existe mais: cada um torna o predicado insatisfazível, e um predicado insatisfazível numa regra ALLOW só significa que a regra nunca dispara.
+
+O tráfego então cai para o que vier depois. **A política está aplicando alguma coisa, então nada parece quebrado** — e se o que vem depois for permissivo, a regra que você escreveu para restringir a requisição não contribui em nada, embora apareça na configuração.
+
+**Teste que uma regra casa o que deve, e também que ela casa alguma coisa.** Uma regra com zero acertos depois de um dia de tráfego ou é desnecessária ou está errada, e a configuração não diz qual.

@@ -7,8 +7,8 @@ relatedTools: ["http-request-translator"]
 relatedArticles: ["curl-to-fetch", "reading-a-curl-command", "curl-security-flags"]
 category: networking
 order: 79
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Cabeçalhos, autenticação e cookies são como uma requisição se apresenta a um servidor.
@@ -17,4 +17,15 @@ Cabeçalhos, autenticação e cookies são como uma requisição se apresenta a 
 
 Cookies chegam com `-b` / `--cookie` (enviar um cookie, ou lê-los de um arquivo) e são salvos com `-c` / `--cookie-jar`.
 
-Ao traduzir a requisição, o HTTP Basic vira o mecanismo de autenticação da linguagem de destino, por exemplo a tupla `auth=(usuário, senha)` no Python requests, enquanto um token bearer permanece um cabeçalho simples em qualquer linguagem. Como esta ferramenta nunca envia a requisição, qualquer token, senha ou cookie que você cola é decodificado apenas no seu navegador e não vai a lugar algum.
+Ao traduzir a requisição, o HTTP Basic vira o mecanismo de autenticação da linguagem de destino, por exemplo a tupla `auth=(usuário, senha)` no Python requests, enquanto um token bearer permanece um cabeçalho simples em qualquer linguagem.
+
+
+## Onde a credencial realmente termina
+
+Uma senha na linha de comando do curl não fica na linha de comando. Vai para o **histórico do shell** e, na maioria dos sistemas, fica visível na **lista de processos** para qualquer um que consiga rodar `ps` enquanto o comando executa — inclusive outros usuários num host de salto compartilhado.
+
+`-u usuario` sem os dois-pontos faz o curl perguntar a senha. `--netrc` lê credenciais de um arquivo. Um arquivo de configuração passado com `-K` as mantém fora do argv por completo.
+
+É por isso que um comando funcional copiado de um chamado para um bastion compartilhado é uma pequena divulgação de credencial, e por que **vale ler o `history` de uma conta compartilhada antes de supor que um segredo ainda é segredo.**
+
+O [tradutor de requisições HTTP](/tools/http-request-translator) nunca envia a requisição, então qualquer token, senha ou cookie colado nele é decodificado no navegador e não vai a lugar nenhum.

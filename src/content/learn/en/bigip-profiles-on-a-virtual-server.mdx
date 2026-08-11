@@ -7,8 +7,8 @@ relatedTools: ["f5-tmsh-config-explainer"]
 relatedArticles: ["how-a-virtual-server-works", "anatomy-of-bigip-conf", "bigip-pools-and-load-balancing"]
 category: networking
 order: 6
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Two virtual servers can point at the same pool and behave completely differently, because a virtual server's behavior is not built in; it is composed from **profiles**. Each profile configures one aspect of how a connection is handled, and a virtual server attaches as many as it needs.
@@ -27,3 +27,12 @@ A typical HTTPS virtual server stacks a tcp profile, an http profile, and a clie
 ## Inheritance and how it reads
 
 Profiles use **parent-child inheritance**: a custom profile is created from a parent (often a system default) and overrides only the settings it needs, inheriting the rest. Change the parent and every child that did not override a value follows along, which is what keeps large configurations from becoming thousands of unrelated settings. In `bigip.conf`, a virtual server carries a `profiles { }` block listing the profiles attached to it, and each profile is defined in its own stanza with a `defaults-from` pointing at its parent. Reading the virtual server's profile list tells you, at a glance, what layers are in play: whether TLS is terminated, whether HTTP is understood, and how the connection is tuned, all without changing the pool it serves.
+
+
+## Where the surprises live: inheritance and order
+
+Two things about profiles cause more confusion than the profiles themselves.
+
+**Profiles inherit from a parent.** A custom profile carries values from the one it was derived from, so a setting nobody on the team ever chose can be in force because it was the parent's default at the time the child was created. **Reading a profile's own page shows you what was overridden, not what is in effect.**
+
+**And the attachment order is not arbitrary.** Profiles line up with the layers of the connection, and a profile that expects to see decrypted content cannot do its job if nothing is decrypting. This is why adding an HTTP profile to a virtual server carrying TLS traffic with no client SSL profile produces no useful result and no obvious error: the layer it wanted to operate on never appeared.

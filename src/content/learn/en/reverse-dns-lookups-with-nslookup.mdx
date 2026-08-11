@@ -7,8 +7,8 @@ relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["reading-nslookup-output", "nslookup-record-types", "nslookup-vs-dig"]
 category: networking
 order: 50
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Forward DNS turns a name into an address. Reverse DNS goes the other way, and nslookup is the tool most people use for it.
@@ -39,3 +39,12 @@ The biggest consumer of reverse DNS is email. Receiving mail servers routinely c
 ## Forward and reverse can disagree
 
 Forward and reverse are **separate zones controlled by different parties**. The domain owner controls the forward record (name to IP); whoever owns the IP block controls the PTR (IP to name). There is nothing forcing them to match, and often they do not, which is normal for shared hosting or cloud IPs. When both directions agree (the PTR name forward-resolves back to the original IP), that is called forward-confirmed reverse DNS, and it is what mail systems are really testing for.
+
+
+## Reverse DNS is a different zone with a different owner
+
+A PTR record lives in `in-addr.arpa`, and **that zone is delegated with the address block rather than with the domain.** Whoever holds the addresses controls the reverse record, which is frequently the hosting provider or the ISP rather than the organisation whose name appears in it.
+
+Two consequences follow. **Forward and reverse are not required to agree**, and disagreement is normal rather than suspicious — a host can legitimately have many names and one PTR. And **a reverse lookup proves nothing about ownership**: the party who set it chose the text, and nothing validates it against the forward zone.
+
+**Treat a PTR as a hint about an address's operator, never as authentication.** Systems that grant trust on reverse-DNS matching are trusting whoever was allocated the block.

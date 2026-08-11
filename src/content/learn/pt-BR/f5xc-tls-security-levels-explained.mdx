@@ -25,11 +25,11 @@ Descer a partir de High não troca a lista de ciphers, ela a estende. O **Medium
 
 ## Por que um scanner sinaliza TLS 1.0 ou 1.1
 
-Esta é a primeira de duas perguntas que a F5 responde em um artigo dedicado. Se um scanner reporta TLS 1.0 ou 1.1 habilitado no seu load balancer, o load balancer está em **Medium ou Low** - esses são os níveis cuja versão mínima é TLS 1.0. O nível Default/High é mínimo TLS 1.2 e não apresenta os protocolos antigos. Então a correção para um achado de TLS 1.0 normalmente não é uma configuração oculta misteriosa; é que o load balancer está em um nível predefinido mais baixo do que você pensava (K000148226).
+Esta é a primeira de duas perguntas que a F5 responde em um artigo dedicado. Se um scanner reporta TLS 1.0 ou 1.1 habilitado no seu load balancer, o load balancer está em **Medium ou Low** - esses são os níveis cuja versão mínima é TLS 1.0. O nível Default/High é mínimo TLS 1.2 e não apresenta os protocolos antigos. Então a correção para um achado de TLS 1.0 normalmente não é uma configuração oculta misteriosa; é que o load balancer está em um nível predefinido mais baixo do que você pensava ([K000148226](https://my.f5.com/manage/s/article/K000148226)).
 
 ## Por que um scanner sinaliza ciphers fracos
 
-A segunda pergunta. Se um scanner reporta ciphers fracos, quase sempre são as **suites RSA estáticas que o nível Low adiciona**. O key exchange RSA estático não fornece forward secrecy, o que todo scanner moderno rebaixa independentemente do cipher simétrico. Se você está em Low por causa de um cliente legado e um scanner está insatisfeito, essas suites RSA são o motivo (K000148079).
+A segunda pergunta. Se um scanner reporta ciphers fracos, quase sempre são as **suites RSA estáticas que o nível Low adiciona**. O key exchange RSA estático não fornece forward secrecy, o que todo scanner moderno rebaixa independentemente do cipher simétrico. Se você está em Low por causa de um cliente legado e um scanner está insatisfeito, essas suites RSA são o motivo ([K000148079](https://my.f5.com/manage/s/article/K000148079)).
 
 ## Escolhendo um nível
 

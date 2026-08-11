@@ -7,8 +7,8 @@ relatedTools: ["xml-decoder"]
 relatedArticles: ["reading-xml-structure", "xml-well-formedness", "saml-signatures"]
 category: encoding
 order: 61
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Namespaces existem para resolver um problema: colisões de nome. Um `<title>` em um vocabulário de livros e um `<title>` em uma página HTML significam coisas diferentes, e um documento que mistura vocabulários precisa de uma forma de dizer qual é qual. Namespaces a fornecem.
@@ -34,3 +34,12 @@ Você também pode declarar um **namespace padrão** sem prefixo: `xmlns="http:/
 Uma declaração de namespace se aplica ao elemento em que aparece e a tudo aninhado dentro dele, até que um elemento aninhado a sobrescreva. Para resolver qualquer elemento ou atributo, você olha o seu prefixo, então caminha para fora pelos elementos envolventes para achar onde aquele prefixo foi declarado, e lê a URI. É exatamente isso que um parser faz, e é por que o mesmo prefixo pode mapear para URIs diferentes em partes diferentes de um documento se for redeclarado.
 
 O hábito prático ao ler XML com namespaces é substituir mentalmente cada prefixo pela sua URI. Dois elementos são o "mesmo" elemento apenas se seus nomes locais e suas URIs de namespace ambos coincidem, independentemente de os prefixos parecerem iguais. Essa única regra, identidade é nome mais URI, é a totalidade dos namespaces.
+
+
+## O prefixo é local e a URI é a identidade
+
+Um prefixo de namespace não significa nada sozinho. `soap:Envelope` e `s:Envelope` são o mesmo elemento se os dois prefixos estiverem ligados à mesma URI, e elementos diferentes se não estiverem — **o prefixo é uma abreviação local, e a URI é o que de fato identifica o nome.**
+
+Isso produz uma classe específica de falha silenciosa. **Uma expressão XPath que casa por prefixo casa texto, não identidade**, então um documento que religa prefixos — de forma perfeitamente legal — escapa de um seletor que parecia funcionar em todos os testes. Verificação de assinatura e casamento de política são onde isso mais dói, porque as duas decidem algo importante com base em "isto selecionou o elemento que eu queria".
+
+**Ligue prefixos explicitamente na consulta e compare URIs, não prefixos.**

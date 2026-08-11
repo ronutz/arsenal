@@ -1,0 +1,56 @@
+---
+slug: bfd-when-a-link-is-up-and-dead
+title: "BFD: quando um enlace está no ar e morto ao mesmo tempo"
+summary: "Protocolos de roteamento detectam falha com os próprios temporizadores, medidos em dezenas de segundos. O BFD detecta em milissegundos, e existe porque a falha de enlace mais perigosa é aquela em que a interface continua no ar. O que ele faz, o que não faz, e onde dá errado."
+concepts: ["bfd", "ospf", "bgp", "ecmp"]
+relatedTools: []
+relatedArticles: ["ospf-primer", "bgp-primer", "routing-tables-and-default-gateway", "first-hop-redundancy-vrrp-and-hsrp"]
+category: networking
+order: 252
+status: reviewed
+updated: "2026-08-10"
+---
+
+## A falha que engana tudo que está acima dela
+
+Uma interface reporta o próprio estado, e esse relato é sobre a porta local. Diz que o transceptor tem luz, que o enlace elétrico negociou, que a porta está habilitada. **Não diz que a ponta remota ainda consegue alcançar você.**
+
+Entre as duas pode haver um conversor de mídia, o transporte de uma operadora, um fabric de switching, uma sobreposição virtual, ou um firewall que parou de encaminhar continuando perfeitamente vivo. Em todos esses casos a interface permanece **no ar** e o tráfego para.
+
+É exatamente essa a condição que derrota a recuperação rápida. Um protocolo cuja detecção de falha depende da interface cair nunca dispara. O roteamento continua anunciando um caminho que descarta tudo que segue por ele — o termo da própria rede para isso é **buraco negro**, e sua propriedade definidora é que nada reporta erro.
+
+## Por que os temporizadores do próprio protocolo não são a resposta
+
+Todo protocolo de roteamento tem um mecanismo de hello e intervalo morto, e funciona. O problema é a escala de tempo.
+
+Os padrões do OSPF colocam a detecção em torno de **40 segundos**. O hold timer do BGP costuma ficar em **90 segundos** ou mais. Esses números foram escolhidos por um motivo — um protocolo que declara um vizinho morto cedo demais derruba uma rede estável sob carga momentânea, e reconvergir é caro.
+
+Há então um conflito real. **A detecção precisa ser rápida para limitar a indisponibilidade e lenta para evitar falsos positivos**, e as duas exigências puxam o mesmo botão em direções opostas. Baixar os hellos para menos de um segundo em todos os protocolos de um roteador movimentado é como se descobre que processamento de protocolo não é de graça.
+
+## O que o BFD faz em vez disso
+
+O BFD separa **detecção de vivacidade** de **roteamento**. É um protocolo deliberadamente mínimo — um fluxo de pacotes pequenos entre dois sistemas, com um intervalo negociado e um multiplicador que diz quantos podem ser perdidos antes de a sessão ser declarada fora — e não faz mais nada. Sem topologia, sem rotas, sem semântica de adjacência.
+
+Esse minimalismo é o projeto inteiro. **Porque faz uma coisa só, pode ser implementado perto do hardware e rodar em intervalos que um processo de roteamento não sustentaria**, comumente dezenas de milissegundos. Um protocolo de roteamento então se registra como *cliente* da sessão BFD: quando o BFD declara o caminho fora, ele avisa o OSPF, o BGP ou uma rota estática para agir imediatamente em vez de esperar o próprio temporizador.
+
+A divisão de trabalho vale ser dita sem rodeios, porque é o que as pessoas erram ao configurar: **o BFD decide se o caminho está vivo. O protocolo de roteamento decide o que fazer a respeito.** O BFD nunca escolhe uma rota.
+
+## Onde ele se justifica
+
+**Através de qualquer coisa que esconda uma falha.** Um transporte de camada 2 entre roteadores, um enlace virtual, um serviço Ethernet de operadora — onde quer que a porta física do seu equipamento não seja testemunha da saúde da ponta remota.
+
+**Em feixes ECMP**, onde perder um caminho em silêncio significa que uma fração determinística dos fluxos desaparece enquanto o agregado parece saudável. É a falha mais difícil de diagnosticar por métricas, porque a média quase não se move.
+
+**Sob redundância de primeiro salto**, onde um gateway presente mas sem encaminhar deixa hosts apontando para um roteador que nunca vai responder.
+
+## Onde dá errado
+
+**Configuração assimétrica.** O BFD é uma sessão entre dois sistemas e as duas pontas precisam concordar. Uma sessão configurada só de um lado não falha — **ela simplesmente nunca sobe**, e um roteador com BFD configurado e nenhuma sessão estabelecida tem exatamente a detecção que tinha antes, enquanto sua configuração diz o contrário.
+
+**Intervalos que a plataforma não honra.** Muitos equipamentos implementam BFD em software no plano de controle, onde um intervalo agressivo compete com tudo o mais que a CPU faz. Sob a carga de um incidente real — o momento em que a detecção mais importa — uma sessão BFD de plano de controle pode oscilar porque o roteador está ocupado, e derrubar junto uma adjacência de roteamento estável. **BFD com descarregamento em hardware não tem esse modo de falha; saber qual dos dois você tem é a diferença entre um recurso e um risco.**
+
+**Detecção sem um segundo caminho.** O BFD torna a falha visível em milissegundos. Se não há para onde mandar o tráfego, tudo que ele comprou foi uma descrição mais rápida e mais precisa de uma indisponibilidade.
+
+## O que levar daqui
+
+**Estado de interface é uma observação local, e a rede não é local.** Todo mecanismo que trata "a porta está no ar" como "o caminho funciona" herda o mesmo ponto cego, e o BFD existe para dar ao plano de controle uma segunda opinião barata o bastante para ser pedida o tempo todo.

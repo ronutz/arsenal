@@ -7,8 +7,8 @@ relatedTools: ["diff"]
 relatedArticles: ["how-diff-works", "reading-a-diff", "diff-word-and-character-level"]
 category: encoding
 order: 12
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A two-way diff compares version A with version B. It can show you that a line differs, but it cannot tell you *who* changed it, because it has no reference point. That limitation is exactly what breaks down when two people edit the same file.
@@ -36,3 +36,12 @@ the version from the other side
 ```
 
 The text above `=======` is one side, the text below is the other, and the labels tell you which is which. Resolving the conflict means editing that region into the correct final version, then deleting all three marker lines. The important discipline is to look at the ancestor, or at least think about what each side intended, rather than blindly keeping one side: a conflict means both sides had a reason to touch that spot, and the right answer often combines them.
+
+
+## A clean merge is not a correct one
+
+Three-way merge resolves changes that do not touch the same lines, and **"different lines" is not the same as "compatible changes".** One branch renames a function; another adds a call to it somewhere else. No conflict markers appear, the merge succeeds, and the result does not build — or worse, builds and behaves differently.
+
+This is the semantic gap the algorithm cannot see. **The merge tool guarantees textual consistency and says nothing about meaning**, which is the whole reason a clean merge still requires review and a test run.
+
+**Conflicts are the visible half of merging and the safe half.** They stop you. The changes that merge silently are the ones worth reading.

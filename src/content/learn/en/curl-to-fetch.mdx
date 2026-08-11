@@ -7,8 +7,8 @@ relatedTools: ["http-request-translator"]
 relatedArticles: ["curl-data-flags-and-content-type", "curl-headers-auth-and-cookies", "reading-a-curl-command"]
 category: networking
 order: 78
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 `fetch()` and curl express the same request in different shapes, and the mapping is mostly mechanical.
@@ -18,3 +18,10 @@ The method becomes the `method` option; GET is the default and can be omitted. E
 Two differences catch people out. First, fetch does not carry cookies by default the way a shell session might; sending them needs `credentials: "include"`. Second, fetch cannot disable TLS certificate verification, so a `-k` command has no faithful browser equivalent.
 
 Everything else is a direct translation from the parsed request, which is why a tool that has already parsed the curl command can generate the fetch call for you.
+
+
+## Where the translation stops being mechanical
+
+Flag-for-option mapping covers most of a command. What does not carry across is **everything the browser adds on its own**: cookies from the jar, an Origin header, and a preflight request the original curl call never had to make.
+
+A translated request that fails in the browser but worked in the terminal has usually not been mistranslated. It has been moved into an environment with rules the terminal does not enforce.

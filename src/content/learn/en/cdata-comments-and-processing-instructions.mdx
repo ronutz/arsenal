@@ -7,8 +7,8 @@ relatedTools: ["xml-decoder"]
 relatedArticles: ["reading-xml-structure", "xml-well-formedness", "xml-namespaces-explained"]
 category: encoding
 order: 63
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Most of an XML document is elements and text, but three other constructs show up regularly, and each has a specific job. Knowing them on sight stops them from reading as noise.
@@ -34,3 +34,12 @@ A **processing instruction** (PI) carries a directive for an application that co
 ## Why they are grouped
 
 These three share a common trait: none of them is an element, so none of them appears in the element tree as a node with children. They sit alongside elements as siblings of a sort, annotations and instructions and literal-text escapes woven through the document. When you are mapping out a document's structure, it helps to set them aside from the element hierarchy: the elements carry the data model, while comments, PIs, and CDATA are, respectively, notes, directions, and a writing convenience.
+
+
+## CDATA changes parsing, not meaning
+
+A CDATA section tells the parser to stop interpreting markup. It does **not** mark the content as safe, and it does not survive into whatever consumes the value — once parsed, `<![CDATA[<script>]]>` is the string `<script>`, indistinguishable from the same characters written as escaped entities.
+
+That distinction is where sanitisation goes wrong. **Code that strips dangerous markup by pattern-matching the raw XML misses anything wrapped in CDATA**, and code that trusts CDATA content because "it was escaped" is trusting a parsing instruction as if it were a security control.
+
+**Sanitise the parsed value, never the document text.** By the time you hold a string, how it was encoded in the source has stopped mattering to everything except the sanitiser that looked at the wrong layer.

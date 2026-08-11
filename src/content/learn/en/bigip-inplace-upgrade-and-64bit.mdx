@@ -7,8 +7,8 @@ relatedTools: ["f5-bigd-thread-calculator", "f5-service-check-date"]
 relatedArticles: ["bigip-21x-whats-new", "bigip-dns-request-processing-order"]
 category: networking
 order: 4
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 The flashy parts of BIG-IP 21.x are MCP (the Model Context Protocol) and post-quantum TLS; the parts an operations team will feel every week are quieter. This article collects the platform and lifecycle changes from F5's 21.0 and 21.1 release notes into one operational read: how upgrades work now, what changed under the control plane's hood, and the new sizing rules for the daemons you actually watch.
@@ -43,4 +43,11 @@ UCS-based migration gains a `validate` option on `tmsh load sys ucs ... platform
 
 ## The platform gate, one more time
 
-None of this applies to iSeries or VIPRION: 21.x does not support them, installation attempts can fail to boot, and those platforms ride 17.x to their end-of-software-support dates. 21.x runs on rSeries, VELOS, and Virtual Edition; a vCMP tenant can technically be deployed with 21.x but is unsupported per K4309. The [flagship overview](/learn/bigip-21x-whats-new) carries the full lifecycle picture around this article's operational core.
+None of this applies to iSeries or VIPRION: 21.x does not support them, installation attempts can fail to boot, and those platforms ride 17.x to their end-of-software-support dates. 21.x runs on rSeries, VELOS, and Virtual Edition; a vCMP tenant can technically be deployed with 21.x but is unsupported per [K4309](https://my.f5.com/manage/s/article/K4309). The [flagship overview](/learn/bigip-21x-whats-new) carries the full lifecycle picture around this article's operational core.
+
+## Sources
+
+Every release-specific claim above is F5's own, and these are where to re-check it when the next version ships.
+
+- [New Features in BIG-IP 21.0.0 - control-plane scale and MCPD efficiency](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-release-notes/big-ip-new-features/)
+- [What's new in BIG-IP v21.0 - DevCentral](https://community.f5.com/kb/technicalarticles/whats-new-in-big-ip-v21-0/344667)

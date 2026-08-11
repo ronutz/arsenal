@@ -7,8 +7,8 @@ relatedTools: ["ssrf-url-classifier"]
 relatedArticles: ["private-vs-public-ip-ranges", "cloud-metadata-endpoints-and-ssrf", "ssrf-defenses-allowlists"]
 category: security
 order: 88
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Server-Side Request Forgery is a vulnerability in which an application takes a URL (or a hostname, or an address) from user input and fetches it on the server. If the application does not check where that URL points, an attacker can supply an internal destination and make the server request it on their behalf.
@@ -28,3 +28,12 @@ Reaching internal-only services can expose admin interfaces, unauthenticated int
 ## The shape of the fix
 
 Because the same address can be written many ways, filtering the URL text is not enough. The reliable approach is to resolve the destination and classify the resulting IP against known-internal ranges, allow only the addresses you intend to reach, and restrict the scheme to http and https. That classification of a destination is exactly what this tool performs, locally and without ever issuing the request.
+
+
+## The trust boundary the request crosses
+
+SSRF matters because of *where the request comes from*, not what it fetches. **The server is inside**, and the internal network usually treats it as such: no authentication on the admin endpoint, a database that trusts its subnet, a metadata service that answers anything on the local link.
+
+That is why the impact is so variable and so often underestimated in triage. The same flaw is a curiosity on a flat network with authenticated services, and a full compromise on a network that outsourced its access control to topology.
+
+**Rate the flaw by what your internal network assumes about internal callers**, not by what the vulnerable endpoint appears to do. The endpoint is the door; the assumptions behind it are the reason the door matters.

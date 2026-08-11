@@ -7,8 +7,8 @@ relatedTools: ["ssrf-url-classifier"]
 relatedArticles: ["what-is-ssrf", "private-vs-public-ip-ranges", "ssrf-defenses-allowlists"]
 category: security
 order: 91
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 When an SSRF (server-side request forgery) can reach the cloud instance metadata service, the impact jumps from "internal access" to "credential theft." This is the endpoint attackers reach for first.
@@ -28,3 +28,12 @@ Stolen role credentials let an attacker act as the instance against the cloud pr
 ## The defense: IMDSv2 and network rules
 
 AWS IMDSv2 requires a session token obtained with a PUT request and sets a low IP hop limit, which blocks the naive one-shot GET that most SSRF exploits use and stops the response from being routed off the instance. Enforcing IMDSv2, scoping instance roles to the minimum needed, and blocking outbound requests to the metadata address from application code are the layered defenses. Classifying a destination as a metadata endpoint, before any request is made, is the first checkpoint.
+
+
+## Why the fix is a token, not a firewall rule
+
+The instinct is to block `169.254.169.254` at the network layer. It is link-local, which means **the rule has to exist on every instance**, forever, and one image built without it is one credential theft away from the rest.
+
+The durable fix moved the defence into the protocol. **IMDSv2 requires a PUT to obtain a short-lived token before any metadata read**, and a plain SSRF — which typically forces a GET the attacker cannot shape — cannot perform that handshake. The endpoint stops being reachable by accident rather than being hidden.
+
+The general shape is worth taking away: **a control that depends on every deployment remembering it will eventually meet a deployment that did not.** Making the wrong thing structurally impossible outlives making it administratively forbidden.

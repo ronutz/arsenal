@@ -7,8 +7,8 @@ relatedTools: ["dig-output-explainer"]
 relatedArticles: ["dns-message-header-and-flags", "dns-record-types-in-answers", "edns-and-the-opt-pseudosection", "dnssec-records-in-dig"]
 category: networking
 order: 40
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O `dig` imprime uma mensagem DNS em um layout estável, de cima para baixo. Aprender esse layout é a maior parte da habilidade: toda resposta, seja uma consulta limpa ou uma falha intrigante, usa os mesmos blocos na mesma ordem.
@@ -44,3 +44,17 @@ Para uma falha, comece pelo status. `NOERROR` com um registro de resposta é o c
 O outro sinal precoce é a linha de flags. `aa` significa que o servidor que respondeu é autoritativo. `ra` diz que o servidor oferece recursão. `tc` significa que a resposta em UDP foi truncada e o dig normalmente tentará de novo por TCP; se você o vê, o resultado UDP que está lendo está incompleto.
 
 O restante desta série pega cada bloco por vez: o cabeçalho e as flags, os tipos de registro que você vê nas respostas, a pseudo-seção OPT do EDNS e os registros DNSSEC.
+
+
+## NOERROR com zero respostas é o que mais se lê errado
+
+O cabeçalho pode dizer `status: NOERROR` com a seção de resposta vazia:
+
+```
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1
+```
+
+**Isso não é sucesso e não é NXDOMAIN.** É **NODATA**: o nome existe e não tem registro do tipo que você pediu. Um host com registro A mas sem AAAA responde exatamente assim a uma consulta AAAA.
+
+A consequência prática é que *"o DNS retornou NOERROR"* não é evidência de que a busca funcionou. **Leia a contagem `ANSWER:`, não o status**, e verifique a seção AUTHORITY — um SOA ali é o servidor dizendo qual zona negou o registro.

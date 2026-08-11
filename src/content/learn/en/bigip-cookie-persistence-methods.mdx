@@ -7,8 +7,8 @@ relatedTools: ["f5-bigip-persistence-cookie"]
 relatedArticles: ["f5-bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-encryption"]
 category: security
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 The value inside a BIG-IP persistence cookie is one topic; how BIG-IP places and manages that cookie is another, and it is governed by the cookie method and the profile settings.
@@ -31,3 +31,12 @@ A cookie persistence profile also controls the cookie's operational properties. 
 ## Why it is worth setting deliberately
 
 The default insert method with an unencrypted, unflagged cookie is exactly the configuration that exposes pool-member information, as the disclosure and encoding articles describe. The operational settings are the other half of closing that gap: enabling encryption protects the value, and setting httponly and secure protects the cookie in transit and in the browser. Choosing the method and the flags on purpose, rather than accepting the defaults, is what makes cookie persistence both work correctly and stay safe.
+
+
+## Persistence outlives the pool member
+
+A persistence record is a promise to keep sending a client to the same member, and it is stronger than most people expect: **a member marked down does not automatically release the clients pinned to it.**
+
+What happens next depends on configuration rather than intuition. The connection may be re-balanced, or it may be refused, and the difference between those two outcomes during an incident is the difference between a degraded service and an outage for a subset of users who cannot understand why everyone else is fine.
+
+**Test the failure, not the feature.** Persistence working is easy to observe; persistence releasing correctly when a member fails is the behaviour that matters, and it is the one nobody checks until it is load-bearing.

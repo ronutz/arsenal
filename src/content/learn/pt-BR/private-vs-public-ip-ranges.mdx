@@ -7,8 +7,8 @@ relatedTools: ["ssrf-url-classifier"]
 relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "ssrf-defenses-allowlists"]
 category: security
 order: 89
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Nem todo endereço IP é alcançável a partir da internet pública, e uma verificação de SSRF existe para distinguir os dois. Estas são as faixas que importam.
@@ -28,3 +28,12 @@ Três blocos são reservados para redes privadas e nunca são roteados na intern
 ## Todo o resto é público
 
 Um endereço que não cai em nenhum bloco reservado é público e roteável. Destinos públicos ainda carregam algum risco de SSRF, pois um atacante pode apontar o servidor para um host que ele controla, mas não alcançam sua rede interna. É por isso que um classificador reporta um nível de risco em vez de um simples sim ou não: a categoria do destino decide o quanto se preocupar.
+
+
+## As faixas que são esquecidas
+
+A RFC 1918 é a parte que todo mundo lembra, e uma checagem que para aí tem buracos em lugares específicos e previsíveis.
+
+**Loopback** (`127.0.0.0/8` — o /8 inteiro, não um endereço) e **link-local** (`169.254.0.0/16`, onde vivem os metadados de nuvem). **CGNAT** (`100.64.0.0/10`), que não é privado nem seguramente público. **`0.0.0.0/8`**, que várias pilhas tratam como "este host". E os equivalentes IPv6: `::1`, unique-local `fc00::/7`, link-local `fe80::/10`, além dos **endereços IPv4 mapeados** como `::ffff:127.0.0.1`, que carregam um endereço IPv4 proibido dentro de um IPv6 de aparência permitida.
+
+**É esse o argumento para usar a classificação da própria plataforma** — `is_private`, `is_loopback`, `is_link_local` — em vez de uma lista de blocos CIDR escrita à mão. Quem mantém a biblioteca já encontrou os casos que você não encontrou, e a lista deles é atualizada por gente cuja função é essa.

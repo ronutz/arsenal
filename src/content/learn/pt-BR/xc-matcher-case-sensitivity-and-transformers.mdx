@@ -7,8 +7,8 @@ relatedTools: ["f5xc-service-policy-explainer"]
 relatedArticles: ["xc-service-policy-predicates-and-logic", "how-xc-service-policies-match", "xc-service-policy-vs-irules"]
 category: security
 order: 67
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma regra pode estar correta e ainda assim nunca disparar, e o culpado de sempre é a diferenciação de maiúsculas. Os comparadores do XC são precisos sobre quais partes de uma requisição são comparadas sem diferenciar maiúsculas e quais não são, e a comparação de valor exato é literal por padrão.
@@ -48,3 +48,12 @@ Com `LOWER_CASE` aplicado, esse comparador casa com `/admin`, `/Admin` e `/ADMIN
 ## Por que isso importa para regras de segurança
 
 Lacunas de caixa e codificação não são cosméticas. Uma regra de negação destinada a bloquear `/admin` que omite `LOWER_CASE` pode ser trivialmente contornada com `/Admin`. Uma regra consciente de evasão normaliza primeiro (decodifica, normaliza o caminho, dobra a caixa) e então compara. Quando você audita uma política, a presença ou ausência de transformadores em um comparador diz se ela se sustenta contra um cliente que varia caixa ou codificação de propósito. O explicador mostra a lista de transformadores em cada comparador e sinaliza comparadores exatos que não têm dobra de caixa.
+
+
+## O transformador decide o que significa "igual"
+
+Um matcher compara a requisição com um valor, e **os transformadores decidem em que forma os dois lados estão antes dessa comparação.** Erre o transformador e a comparação fica tecnicamente correta sobre dados que já não se parecem com o que chegou.
+
+É aí que mora a evasão. Um caminho comparado sem normalização trata `/Admin`, `/admin` e uma grafia percent-encoded como três strings diferentes — então um DENY sobre uma deixa as outras alcançáveis, e a regra parece certa na revisão. Aplicar os mesmos transformadores que o servidor de origem aplica é o que faz a decisão da política corresponder à requisição que a origem de fato verá.
+
+**A normalização divergente entre política e origem é a brecha**, e ela é invisível de cada lado isoladamente: a política aplica sua regra corretamente, a origem serve a requisição corretamente, e as duas discordam sobre o que a requisição dizia.

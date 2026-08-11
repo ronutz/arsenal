@@ -4,7 +4,7 @@ title: "Recovering a BIG-IP That Won't Load Its Config After an Upgrade"
 summary: "When an upgraded BIG-IP boots but its configuration never loads, the usual cause is a service check date older than the new version requires. The fix is to reactivate the license, which resets the date. Here is how to recognize it, how to reactivate safely, and how to avoid it next time."
 concepts: ["f5", "bigip", "license reactivation", "service check date", "upgrade recovery", "troubleshooting"]
 relatedTools: ["f5-service-check-date"]
-relatedArticles: ["bigip-service-check-date", "bigip-upgrade-vs-update"]
+relatedArticles: ["bigip-service-check-date", "bigip-upgrade-vs-update", "bigip-license-file-anatomy"]
 category: networking
 order: 3
 status: reviewed
@@ -22,7 +22,7 @@ cd /config
 grep "Service check date" bigip.license
 ```
 
-The output looks like `Service check date : 20230125`, in year-month-day order. Compare that against the License Check Date for the version you are now running, which you can find in `/etc/version_date` or in F5's K7727 table. If the Service Check Date is the earlier of the two, that is the problem. The [F5 service check date tool](/tools/f5-service-check-date) makes this comparison directly, and the full mechanism is described in [the service check date](/learn/bigip-service-check-date).
+The output looks like `Service check date : 20230125`, in year-month-day order. Compare that against the License Check Date for the version you are now running, which you can find in `/etc/version_date` or in F5's [K7727](https://my.f5.com/manage/s/article/K7727) table. If the Service Check Date is the earlier of the two, that is the problem. The [F5 service check date tool](/tools/f5-service-check-date) makes this comparison directly, and the full mechanism is described in [the service check date](/learn/bigip-service-check-date).
 
 ## Reactivating the license
 

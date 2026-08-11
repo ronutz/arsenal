@@ -7,8 +7,8 @@ relatedTools: ["ssrf-url-classifier"]
 relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "dangerous-url-schemes"]
 category: security
 order: 92
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Não existe um único botão que pare o SSRF (falsificação de requisição do lado do servidor, do inglês server-side request forgery). As defesas que funcionam são em camadas, e compartilham um tema: decida com base no destino real, não no texto da URL.
@@ -28,3 +28,14 @@ Uma primeira URL segura pode redirecionar para `http://169.254.169.254/`. Ou des
 ## Adicione controles na camada de rede
 
 Defesa em profundidade significa não depender apenas da aplicação. Bloqueie o tráfego de saída do serviço que faz a busca para faixas internas e para o endereço de metadados na camada de rede ou de firewall, para que um erro de lógica não vire uma invasão. Na AWS, aplique o IMDSv2. O classificador na camada da aplicação, a etapa de resolver-depois-verificar e as regras de saída cada um pega o que os outros deixam passar.
+
+
+## A allow-list que valida um nome e conecta a um endereço
+
+A defesa mais frequentemente derrotada é a que parece correta: **resolve o host, confere o endereço contra a política, faz a requisição.** Acontecem duas resoluções, e nada garante que devolvam a mesma resposta.
+
+Essa brecha é o **DNS rebinding**. O atacante controla um nome com TTL curtíssimo; a resolução de validação devolve um endereço público permitido, e a de conexão, instantes depois, devolve `169.254.169.254`. Cada linha da checagem rodou corretamente e a requisição foi para onde a política proíbe.
+
+Fechar isso significa **checar e conectar contra o mesmo endereço resolvido** — resolva uma vez, valide aquele endereço, conecte a ele e não ao nome.
+
+**E redirecionamentos reabrem a brecha.** Um host permitido respondendo `302` para uma URL interna contorna uma checagem feita só na entrada original. Ou não siga redirecionamentos, ou revalide cada salto — uma política aplicada uma vez a uma cadeia de requisições é uma política aplicada à primeira.

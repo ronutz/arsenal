@@ -7,8 +7,8 @@ relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["how-cvss-scoring-works", "cvss-temporal-and-environmental", "cvss-v3-vs-v4"]
 category: security
 order: 74
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O CVSS define uma escala qualitativa para que uma pontuação numérica possa ser falada em palavras. As faixas são fixas:
@@ -32,3 +32,19 @@ A coisa mais importante a entender sobre uma pontuação Base do CVSS (Sistema C
 ## Usando bem as faixas
 
 As faixas são boas para triagem grosseira e para comunicação, e Crítica realmente merece atenção. Mas ordenar um backlog puramente por pontuação Base decrescente vai levar você a falhas acessíveis porém inofensivas antes de falhas silenciosas e de alto valor. Uma ordem mais defensável combina a severidade Base com a probabilidade de exploração (por exemplo o EPSS ou catálogos de vulnerabilidades exploradas conhecidas) e com o seu próprio valor de ativos e controles, que é exatamente o que a pontuação Temporal e Ambiental existem para capturar. O número Base é onde a priorização começa, não onde termina.
+
+
+## O que as faixas fazem com uma política de correção
+
+Uma regra como *"todos os Críticos em sete dias"* transforma uma escala de severidade em um prazo, e a escala nunca foi feita para carregar isso. Duas consequências seguem, e ambas aparecem em qualquer parque grande.
+
+**Um 9.0 num sistema que ninguém alcança de lugar nenhum não é mais urgente que um 7.5 na sua porta de entrada pública** — mas a política diz que é, então o trabalho vai primeiro para o lugar errado.
+
+**E a borda afiada vira alavanca.** Quando 6.9 significa "próximo trimestre" e 7.0 significa "esta semana", a discussão deixa de ser sobre a falha e passa a ser sobre as métricas que produzem o número.
+
+A correção prática não é uma escala melhor. É uma segunda entrada: **se a coisa está de fato sendo explorada.** O [catálogo de vulnerabilidades exploradas conhecidas da CISA](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) existe exatamente porque *alguém está usando isto hoje* responde a uma pergunta diferente de *quão ruim seria*.
+
+## Fontes
+
+- [CVSS v3.1 Specification Document - qualitative severity rating scale](https://www.first.org/cvss/v3.1/specification-document)
+- [CISA Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)

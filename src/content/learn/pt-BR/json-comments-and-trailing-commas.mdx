@@ -7,8 +7,8 @@ relatedTools: ["json-formatter"]
 relatedArticles: ["json-grammar", "json-string-escapes", "json-formatting-and-canonical"]
 category: encoding
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Duas coisas que parecem que deveriam ser permitidas em JSON não são: comentários, e uma vírgula depois do último item de um array ou objeto. `{"a": 1,}` e `// nota` são ambos JSON inválido.
@@ -25,3 +25,12 @@ O atrito é que muitos lugares onde as pessoas escrevem JSON aceitam mais:
 - **JSON5** vai além: comentários, vírgulas finais, chaves de objeto sem aspas, strings com aspas simples, números hexadecimais e mais. É um superconjunto voltado para config escrita à mão.
 
 Esses são formatos genuinamente diferentes que por acaso se parecem com JSON. A armadilha é a portabilidade: um arquivo de config com comentários está bom na ferramenta que espera JSONC, e é um erro imediato no momento em que outro programa o parseia como JSON estrito. A regra segura é manter comentários e vírgulas finais fora de qualquer JSON destinado a ser consumido por algo que você não controla, e removê-los (o que um formatador pode fazer) antes de enviar JSON através de uma fronteira.
+
+
+## O dialeto que o seu parser aceita não é o que você documentou
+
+JSON não tem comentários nem vírgulas finais, e **a maioria dos parsers reais aceita pelo menos um deles mesmo assim** — sob uma flag, por padrão, ou porque a implementação do runtime sempre foi permissiva.
+
+Isso cria um arquivo que funciona na máquina onde foi escrito e falha naquela onde é implantado, com um erro apontando para uma linha que estava bem havia meses. Nada mudou além de qual parser o leu.
+
+**O parser tolerante é o perigoso**, porque deixa um arquivo não conforme acumular mais não conformidade até que algo estrito finalmente o leia. Se um formato de configuração precisa de comentários, use um que os tenha — **YAML, JSON5 ou TOML** — em vez de depender da generosidade de um parser, que é uma dependência não declarada.

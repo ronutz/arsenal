@@ -7,8 +7,8 @@ relatedTools: ["ssrf-url-classifier"]
 relatedArticles: ["what-is-ssrf", "private-vs-public-ip-ranges", "ssrf-defenses-allowlists"]
 category: security
 order: 91
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Quando um SSRF alcança o serviço de metadados da instância na nuvem, o impacto salta de "acesso interno" para "roubo de credenciais". Este é o endpoint que os atacantes buscam primeiro.
@@ -28,3 +28,12 @@ Credenciais de papel roubadas permitem ao atacante agir como a instância contra
 ## A defesa: IMDSv2 e regras de rede
 
 O IMDSv2 da AWS exige um token de sessão obtido com uma requisição PUT e define um limite baixo de saltos IP, o que bloqueia o GET ingênuo de um único disparo que a maioria dos exploits de SSRF usa e impede que a resposta seja roteada para fora da instância. Aplicar o IMDSv2, restringir os papéis das instâncias ao mínimo necessário e bloquear requisições de saída ao endereço de metadados a partir do código da aplicação são as defesas em camadas. Classificar um destino como endpoint de metadados, antes de qualquer requisição, é o primeiro ponto de controle.
+
+
+## Por que a correção é um token, não uma regra de firewall
+
+O instinto é bloquear `169.254.169.254` na camada de rede. É link-local, o que significa que **a regra precisa existir em toda instância**, para sempre, e uma imagem construída sem ela está a um roubo de credencial de distância do resto.
+
+A correção durável moveu a defesa para dentro do protocolo. **O IMDSv2 exige um PUT para obter um token de vida curta antes de qualquer leitura de metadados**, e um SSRF comum — que costuma forçar um GET que o atacante não molda — não consegue fazer esse handshake. O endpoint deixa de ser alcançável por acidente em vez de ficar escondido.
+
+O formato geral vale levar: **um controle que depende de toda implantação lembrar dele vai, em algum momento, encontrar uma implantação que não lembrou.** Tornar a coisa errada estruturalmente impossível dura mais que torná-la administrativamente proibida.

@@ -7,8 +7,8 @@ relatedTools: ["ssrf-url-classifier"]
 relatedArticles: ["what-is-ssrf", "ssrf-defenses-allowlists", "cloud-metadata-endpoints-and-ssrf"]
 category: security
 order: 93
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Um SSRF que só faz requisições http já é perigoso o bastante. Um que também honra outros esquemas de URL é pior, porque esses esquemas alcançam além da web e podem transformar uma busca em divulgação de arquivos ou tráfego arbitrário para serviços internos.
@@ -28,3 +28,12 @@ O esquema `gopher://` é o mais abusado, porque permite ao atacante colocar byte
 ## A defesa é uma allow-list de esquemas
 
 Como esses esquemas fornecem capacidades muito além de buscar uma página web, a correção é simples e rígida: permita apenas `http` e `https`, e rejeite todo outro esquema antes de a requisição ser construída. Esta ferramenta sinaliza um esquema perigoso assim que o vê, elevando o risco para alto independentemente do host, porque o esquema sozinho já basta para importar.
+
+
+## A lista de esquemas é uma allow-list, ou não é nada
+
+Enumerar os esquemas perigosos é o formato errado de defesa, porque o conjunto é aberto: `file`, `gopher`, `dict`, `ftp`, `ldap`, `jar`, e o que a biblioteca HTTP que você atualizou no mês passado resolveu suportar.
+
+**O suporte a esquemas de uma biblioteca é uma dependência, não uma constante.** Um fetch que só falava HTTP numa versão pode falar mais na seguinte, e nada nas notas de versão será endereçado à sua blocklist.
+
+Então a regra é a mesma que governa a checagem de endereços: **decida o que é permitido em vez do que é proibido.** `http` e `https` e nada mais é uma política que sobrevive a uma atualização; uma lista dos esquemas que você por acaso conhecia no ano em que escreveu, não.

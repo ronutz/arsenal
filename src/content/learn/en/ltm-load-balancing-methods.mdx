@@ -17,7 +17,7 @@ Every pool has a load-balancing-mode, even when the config does not show one: th
 
 **Round Robin** passes each new connection to the next server in line, distributing connections evenly across the pool. F5's own guidance is refreshingly plain: it works well in most configurations, especially when the machines are roughly equal in processing speed and memory, and it is the default. Its blind spot is just as plain: an even distribution of connections is not an even distribution of load when requests differ wildly in cost.
 
-**Ratio** distributes connections in proportion to a weight you declare per member, or per node. It fits known, stable capacity differences, a four-CPU box next to two-CPU boxes, where you can state the proportion once. Being static, it never notices a member struggling, and K11870 adds a footnote worth knowing: the ratio method costs more CPU than Round Robin.
+**Ratio** distributes connections in proportion to a weight you declare per member, or per node. It fits known, stable capacity differences, a four-CPU box next to two-CPU boxes, where you can state the proportion once. Being static, it never notices a member struggling, and [K11870](https://my.f5.com/manage/s/article/K11870) adds a footnote worth knowing: the ratio method costs more CPU than Round Robin.
 
 ## Member or node
 
@@ -25,9 +25,9 @@ Most dynamic modes come in two scopes, and the suffix matters. A **member** mode
 
 ## The connection counters
 
-**Least Connections** passes the new connection to whoever has the fewest open right now, measured at the moment the request arrives, per K6406. That makes it the vendor's stated fit for servers of similar capability, and it naturally absorbs uneven connection durations that skew Round Robin. Two footnotes from K6406 and the reference: with OneConnect enabled, idle connections are excluded from the count, and a member that just came up has zero connections, so the reference singles out slow-ramp-time as particularly useful with exactly this mode. The default ramp is 10 seconds.
+**Least Connections** passes the new connection to whoever has the fewest open right now, measured at the moment the request arrives, per [K6406](https://my.f5.com/manage/s/article/K6406). That makes it the vendor's stated fit for servers of similar capability, and it naturally absorbs uneven connection durations that skew Round Robin. Two footnotes from [K6406](https://my.f5.com/manage/s/article/K6406) and the reference: with OneConnect enabled, idle connections are excluded from the count, and a member that just came up has zero connections, so the reference singles out slow-ramp-time as particularly useful with exactly this mode. The default ramp is 10 seconds.
 
-**Observed** smooths the instant count into something steadier: every second, the system turns recent Layer 4 connection counts into a ratio and balances by it, preferring the member with the best balance of fewest connections. K6406 states the contrast directly: Least Connections measures only at the moment of load balancing, Observed tracks over time.
+**Observed** smooths the instant count into something steadier: every second, the system turns recent Layer 4 connection counts into a ratio and balances by it, preferring the member with the best balance of fewest connections. [K6406](https://my.f5.com/manage/s/article/K6406) states the contrast directly: Least Connections measures only at the moment of load balancing, Observed tracks over time.
 
 **Predictive** takes the Observed ranking and adds its trend, preferring members whose ranking is improving over those declining. The reference's own words: this mode works well in any environment.
 
@@ -35,19 +35,19 @@ Most dynamic modes come in two scopes, and the suffix matters. A **member** mode
 
 **Weighted Least Connections** reads each member's connection-limit as its capacity statement and sends the new connection to whoever is at the lowest percentage of theirs. The reference is explicit about the prerequisite: every member (or, for the node form, every node) needs a connection-limit, and the default of 0 breaks the arithmetic.
 
-**Ratio Least Connections**, available since BIG-IP LTM - Local Traffic Manager 11.0.0 per K6406, combines the ratio you declared with the live connection count, and an unset ratio counts as 1.
+**Ratio Least Connections**, available since BIG-IP LTM - Local Traffic Manager 11.0.0 per [K6406](https://my.f5.com/manage/s/article/K6406), combines the ratio you declared with the live connection count, and an unset ratio counts as 1.
 
-**Dynamic Ratio** takes the proportion out of your hands entirely: the weights come from continuous monitoring of the servers and are therefore continually changing, in the reference's words. K14129 shows where to see the weight the system computed.
+**Dynamic Ratio** takes the proportion out of your hands entirely: the weights come from continuous monitoring of the servers and are therefore continually changing, in the reference's words. [K14129](https://my.f5.com/manage/s/article/K14129) shows where to see the weight the system computed.
 
 ## Sessions and speed
 
-**Least Sessions** balances by persistence-table entries instead of connections, and it carries a prerequisite from K42275060 that catches people: the virtual server must reference a persistence profile of a type that tracks persistence connections, or there is nothing to count. **Ratio (session)** proportions sessions by declared weights, with one sharp detail from the same article: pending sessions count as active.
+**Least Sessions** balances by persistence-table entries instead of connections, and it carries a prerequisite from [K42275060](https://my.f5.com/manage/s/article/K42275060) that catches people: the virtual server must reference a persistence profile of a type that tracks persistence connections, or there is nothing to count. **Ratio (session)** proportions sessions by declared weights, with one sharp detail from the same article: pending sessions count as active.
 
-**Fastest** follows response speed, and K6406 names the actual signal: the number of outstanding Layer 7 requests to a member. That means the virtual has to be processing traffic at Layer 7 for the count to mean anything. F5 suggests it especially where nodes sit on different logical networks, so path speed differs as much as server speed.
+**Fastest** follows response speed, and [K6406](https://my.f5.com/manage/s/article/K6406) names the actual signal: the number of outstanding Layer 7 requests to a member. That means the virtual has to be processing traffic at Layer 7 for the count to mean anything. F5 suggests it especially where nodes sit on different logical networks, so path speed differs as much as server speed.
 
 ## The rule that catches people
 
-K6406 states it as a note, but it explains half the surprises in the field: members configured with a ratio must reference a ratio load-balancing method for the ratios to apply. Ratio weights under Least Connections do nothing. The one exception is Ratio Least Connections, which consumes ratios by definition.
+[K6406](https://my.f5.com/manage/s/article/K6406) states it as a note, but it explains half the surprises in the field: members configured with a ratio must reference a ratio load-balancing method for the ratios to apply. Ratio weights under Least Connections do nothing. The one exception is Ratio Least Connections, which consumes ratios by definition.
 
 ## Reading a real pool
 

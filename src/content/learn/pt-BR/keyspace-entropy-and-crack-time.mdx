@@ -7,8 +7,8 @@ relatedTools: ["hash-preimage-finder"]
 relatedArticles: ["why-hashes-are-one-way", "brute-force-vs-lookup-tables", "choosing-a-password-hash"]
 category: hashing
 order: 86
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A força bruta tem sucesso ou fracasso em uma comparação: o tamanho do espaço de chaves contra quão rápido o atacante consegue aplicar hash. Todo o resto é detalhe.
@@ -30,3 +30,12 @@ Adicionar um caractere aleatório sobre um alfabeto de 95 símbolos multiplica o
 ## A conclusão
 
 Use segredos longos e aleatórios, uma senha gerada ou uma frase-senha de várias palavras, e deixe uma KDF lenta multiplicar o custo de cada tentativa. É exatamente o que o demonstrador mostra: espaços pequenos caem em milissegundos, enquanto os realistas simplesmente esgotam o orçamento.
+
+
+## A entropia pertence ao processo, não à string
+
+`Tr0ub4dor&3` parece uma senha de alta entropia e não é. Entropia é propriedade de **como o valor foi escolhido**, não da aparência: uma palavra com substituições previsíveis vem de um conjunto pequeno de transformações aplicadas a um dicionário, e as regras de um atacante codificam exatamente esse conjunto.
+
+É por isso que um medidor de força é uma estimativa e nunca uma medição. Ele pontua a string à frente dele contra heurísticas; **não consegue ver o gerador.** Uma senha de oito caracteres realmente aleatória e uma memorável com a mesma pontuação não são igualmente difíceis de adivinhar.
+
+Consequência prática: **números de tempo de quebra são pisos, não previsões.** Eles supõem que o atacante percorre o espaço que você descreveu, e um atacante real percorre o espaço muito menor do que humanos de fato escolhem — começando pelas senhas vazadas que todo mundo já usou.

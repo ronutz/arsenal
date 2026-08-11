@@ -7,8 +7,8 @@ relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["cvss-base-metrics-explained", "cvss-vector-string-format", "cvss-severity-bands-and-limits"]
 category: security
 order: 70
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O Common Vulnerability Scoring System (CVSS) é um framework aberto, mantido pela FIRST.org, para descrever a severidade de uma vulnerabilidade de software. Sua saída mais visível é um número de 0.0 a 10.0, mas esse número é derivado de uma string de vetor por uma fórmula fixa. Nada na pontuação é subjetivo depois que as métricas são escolhidas, então qualquer implementação correta produz o mesmo resultado para o mesmo vetor.
@@ -44,3 +44,12 @@ quando o Escopo é inalterado, ou com um multiplicador extra de `1,08` quando o 
 O número resultante é mapeado para uma faixa qualitativa (Nenhuma, Baixa, Média, Alta, Crítica). Essas faixas, e as ressalvas importantes sobre o que a pontuação significa, estão no artigo sobre severidade.
 
 Como cada passo é determinístico, colar um vetor em uma calculadora deve reproduzir exatamente a pontuação publicada pelo fornecedor ou pelo NVD (Banco de Dados Nacional de Vulnerabilidades, do inglês National Vulnerability Database). Se não reproduzir, o vetor foi transcrito errado, ou as duas ferramentas discordam sobre a versão do CVSS.
+
+
+## A equação não é o argumento
+
+As fórmulas são públicas e reproduzíveis, o que faz o CVSS parecer objetivo de um jeito que não é. **Todo número vem de valores de métrica que alguém selecionou**, e a seleção é julgamento: exige interação do usuário, o escopo muda, a complexidade de ataque é baixa.
+
+Dois analistas pontuando a mesma falha honestamente podem divergir mais que uma faixa de severidade, e **o vetor é a única parte de uma pontuação publicada com a qual dá para discutir.** Um número solto não pode ser conferido; um vetor pode ser lido, contestado e repontuado.
+
+**Publique o vetor, sempre, e trate uma pontuação sem ele como opinião vestida de número.** A precisão da equação é real e é uma precisão sobre as entradas, não sobre a vulnerabilidade.

@@ -7,8 +7,8 @@ relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["reading-nslookup-output", "nslookup-record-types", "nslookup-vs-dig"]
 category: networking
 order: 50
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O DNS direto transforma um nome em um endereço. O DNS reverso faz o caminho inverso, e o nslookup é a ferramenta que a maioria das pessoas usa para isso.
@@ -39,3 +39,12 @@ O maior consumidor de DNS reverso é o e-mail. Servidores de e-mail receptores r
 ## Direto e reverso podem discordar
 
 O direto e o reverso são **zonas separadas controladas por partes diferentes**. O dono do domínio controla o registro direto (nome para IP); quem é dono do bloco de IP controla o PTR (IP para nome). Não há nada que os obrigue a coincidir, e frequentemente eles não coincidem, o que é normal para hospedagem compartilhada ou IPs de nuvem. Quando ambos os sentidos concordam (o nome PTR resolve de volta para o IP original), isso é chamado de DNS reverso confirmado pelo direto (forward-confirmed reverse DNS), e é o que os sistemas de e-mail estão de fato testando.
+
+
+## O DNS reverso é outra zona com outro dono
+
+Um registro PTR vive em `in-addr.arpa`, e **essa zona é delegada junto com o bloco de endereços, não com o domínio.** Quem detém os endereços controla o registro reverso — frequentemente o provedor de hospedagem ou o ISP, e não a organização cujo nome aparece nele.
+
+Duas consequências. **Direto e reverso não são obrigados a concordar**, e a discordância é normal, não suspeita — um host pode legitimamente ter muitos nomes e um PTR. E **uma consulta reversa não prova nada sobre propriedade**: quem a configurou escolheu o texto, e nada valida isso contra a zona direta.
+
+**Trate um PTR como pista sobre o operador de um endereço, nunca como autenticação.** Sistemas que concedem confiança por correspondência de DNS reverso estão confiando em quem recebeu o bloco.

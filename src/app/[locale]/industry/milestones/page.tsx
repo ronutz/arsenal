@@ -103,25 +103,44 @@ export default async function MilestonesPage({
 
                 <div className="lineage-timeline">
                   {items.map((m) => (
+                    /* CORRECTED 2026-08-11 (PRIME: "STILL unformatted and
+                       looking very badly" - and he was right).
+
+                       My 2026-08-10 fix repaired the PAGE structure and never
+                       looked at the COMPONENT. `.lineage-deal` is a two-column
+                       grid, `grid-template-columns: 4.5rem 1fr`, with a spine
+                       drawn at `left: 4.5rem`. It expects EXACTLY TWO children:
+                       a rail and a card.
+
+                       This page was passing SIX flat siblings, so the browser
+                       laid them into the grid alternately - title into a 4.5rem
+                       column, prose into the next, and so on down the page. The
+                       classes all existed, which is what I checked last time;
+                       I never checked what they DO. */
                     <div className="lineage-deal" key={m.slug} id={m.slug}>
-                      <p className="lineage-deal-top mono">
-                        {m.year}
-                        {m.who ? ` \u00b7 ${m.who}` : ""}
-                      </p>
-                      <h3 className="lineage-deal-name">{m.title}</h3>
-                      <p className="lineage-deal-what">{m.what}</p>
-                      {/* The `why` is the reason the entry exists. An entry
-                          that only says what happened belongs in an
-                          encyclopaedia, and there is a good one already. */}
-                      <p className="lineage-deal-what">{m.why}</p>
-                      {m.dateNote && (
-                        <p className="lineage-deal-note">{m.dateNote}</p>
-                      )}
-                      {m.sources.length > 0 && (
-                        <p className="lineage-deal-note mono">
-                          {m.sources.map((s) => s.label).join(" \u00b7 ")}
-                        </p>
-                      )}
+                      <div className="lineage-deal-rail">
+                        <span className="lineage-deal-dot" />
+                        <span className="lineage-deal-year mono">{m.year}</span>
+                      </div>
+                      <div className="lineage-deal-card">
+                        <div className="lineage-deal-top">
+                          <span className="lineage-deal-name">{m.title}</span>
+                          {m.who ? <span className="type-badge">{m.who}</span> : null}
+                        </div>
+                        <p className="lineage-deal-what">{m.what}</p>
+                        {/* The `why` is the reason the entry exists. An entry
+                            that only says what happened belongs in an
+                            encyclopaedia, and there is a good one already. */}
+                        <p className="lineage-deal-what">{m.why}</p>
+                        {m.dateNote && (
+                          <p className="lineage-deal-note">{m.dateNote}</p>
+                        )}
+                        {m.sources.length > 0 && (
+                          <p className="lineage-deal-note mono">
+                            {m.sources.map((s) => s.label).join(" \u00b7 ")}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>

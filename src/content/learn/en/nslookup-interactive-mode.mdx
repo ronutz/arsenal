@@ -7,8 +7,8 @@ relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "nslookup-record-types"]
 category: networking
 order: 51
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Most people use nslookup as a one-shot command: `nslookup example.com` and done. But run it with no arguments and it becomes an interactive session, which is handy when one lookup is not enough.
@@ -28,3 +28,12 @@ Type `nslookup` alone and you get a `>` prompt. From here you type names to look
 Interactive mode pays off when you are exploring: checking many names in a row, comparing the same name across resolvers, or iterating on the record type without retyping the whole command. For a single check, or anything you want to put in a script, the one-shot form (`nslookup -type=MX example.com 8.8.8.8`) is simpler.
 
 One caveat for automation: nslookup's exit status does not reliably reflect whether the lookup succeeded, so for scripting, dig or host are the better tools. Interactive nslookup is for a human at a keyboard, working a problem.
+
+
+## The trap: nslookup does not use the system resolver
+
+`nslookup` talks to a DNS server directly. It does **not** consult `/etc/hosts`, and on most systems it bypasses the resolver library that ordinary applications use.
+
+So a name can resolve perfectly for `ping` and fail in `nslookup`, or the reverse — and neither result is wrong. They are answering different questions: nslookup answers *"what does DNS say"*, while the application answers *"what does this host resolve to, by every mechanism available to it"*.
+
+**When a service works and nslookup disagrees, check the hosts file before you check the zone.** It is the most common reason for two tools telling you opposite things about the same name.

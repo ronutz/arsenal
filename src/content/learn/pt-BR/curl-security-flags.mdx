@@ -7,8 +7,8 @@ relatedTools: ["http-request-translator"]
 relatedArticles: ["curl-headers-auth-and-cookies", "reading-a-curl-command", "curl-data-flags-and-content-type"]
 category: networking
 order: 81
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Um punhado de sinalizadores do curl muda a postura de segurança de uma requisição, e vale reconhecê-los de imediato.
@@ -20,3 +20,10 @@ Usar `http://` em vez de `https://` envia tudo, incluindo cabeçalhos e quaisque
 Credenciais embutidas na URL como `usuário:senha@host` podem vazar no histórico do shell, em logs do servidor e em cabeçalhos referer, então um cabeçalho ou `-u` é mais seguro.
 
 Nenhum desses torna uma requisição maliciosa por si só, mas cada um é um sinal. Um bom tradutor os expõe como avisos em vez de carregá-los silenciosamente, para que você decida com o risco à frente.
+
+
+## O que conferir antes de colar o comando de outra pessoa
+
+Um comando curl vindo de um chamado ou de um artigo de fabricante é código executável que outra pessoa escreveu. Antes de rodá-lo contra o seu próprio sistema, leia três coisas: **para onde ele manda credenciais**, **se ele desliga a verificação** e **o que ele grava em disco**.
+
+As flags perigosas não são obscuras. Qualquer coisa que desligue a checagem de certificado torna o transporte não confiável, e um comando escrito para contornar o certificado autoassinado de um laboratório carrega esse enfraquecimento para produção sem alteração.

@@ -1,0 +1,50 @@
+---
+slug: first-hop-redundancy-vrrp-and-hsrp
+title: "First-hop redundancy: VRRP, HSRP, and the gateway that is a fiction"
+summary: "A host knows one default gateway and cannot fail over. VRRP and HSRP solve that by making the gateway address belong to a role rather than to a router. How they work, why the protocol choice matters less than people think, and the failure modes that make a redundant pair worse than a single router."
+concepts: ["vrrp", "arp", "bfd", "stp"]
+relatedTools: []
+relatedArticles: ["arp-and-mac-addresses", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead"]
+category: networking
+order: 253
+status: reviewed
+updated: "2026-08-10"
+---
+
+## The host is the part that cannot be fixed
+
+Every device on a subnet is configured with one default gateway address, and **it has no mechanism for changing its mind.** If that address stops answering, the host does not look for another. It keeps sending to an address that is no longer there until somebody reconfigures it or reboots it.
+
+That is not a defect anybody is going to correct, because it is in a billion devices, most of which will never be updated. **So the redundancy has to happen on the network side, invisibly, without the host being told anything.**
+
+First-hop redundancy protocols do exactly that: they make the gateway address a **role** that one router holds at a time, and they move the role rather than the address.
+
+## Both addresses move, and the second one is the point
+
+The virtual IP is the obvious half. The half that makes it work is the **virtual MAC address**.
+
+A host that has been talking to its gateway has an ARP cache entry mapping the gateway IP to a MAC. If failover changed only the IP ownership, every host on the segment would keep sending frames to the old router's MAC until its ARP entry aged out — **minutes, typically, which is an eternity in an outage and is exactly the window nobody accounts for.**
+
+So the standby router takes over the same virtual MAC, and announces it so the switches relearn which port it lives behind. **The host's ARP cache remains correct because nothing it knows has changed.** That is why failover can be sub-second to a host that was never informed anything happened.
+
+## VRRP versus HSRP matters less than the third question
+
+HSRP is Cisco's, VRRP is the IETF standard, and there is a real reason to prefer VRRP in a mixed-vendor environment. Beyond that, **the operational differences are smaller than the amount of argument they attract** — both elect an active router by priority, both use a virtual address pair, both preempt if configured to.
+
+**The question that actually decides whether the pair works is neither of them: what does the router consider a failure?**
+
+A router that has lost its uplink, or its routing adjacency, or the ability to reach anything beyond the segment, is still perfectly capable of winning an election and answering ARP. **It is present, it is healthy by its own measure, and it is a black hole for every host that trusts it.**
+
+That is what interface and object tracking exist for — decrementing the priority when the thing the gateway is a gateway *to* becomes unreachable. **A first-hop redundancy pair without tracking is two routers agreeing about which of them will absorb your traffic**, and it fails in exactly the situation it was installed for.
+
+## The failure modes worth knowing
+
+**Both routers active.** If the routers cannot hear each other but both can reach the hosts, each concludes it should be active. Two devices now answer for the same IP and MAC on the same segment, and the switches see the virtual MAC moving between ports continuously. **The symptom is not an outage — it is intermittent, direction-dependent, and looks like a switching problem**, which is where the investigation goes first.
+
+**Preemption during a flapping link.** A recovering router that immediately reclaims the active role will hand traffic back and forth as the underlying link stabilises. Every transition is brief and the aggregate is a service nobody can use. **Delay on preemption is not a tuning nicety.**
+
+**Asymmetric paths through a firewall.** With the active gateway on one router and return traffic routed through the other, a stateful device in the path sees half a conversation and drops it. This is the most common way a first-hop change turns into an application incident with no obvious relationship to routing.
+
+## What to take away
+
+**Redundancy that has not been tested by failing on purpose is a configuration, not a capability.** The specific test worth doing is not powering off a router — that is the easy case and it usually works. **It is failing the uplink while leaving the router running**, because that is the scenario tracking exists for and the one where an untested pair discovers it has none.

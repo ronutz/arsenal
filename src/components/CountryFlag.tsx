@@ -135,6 +135,39 @@ const FLAGS: Record<CountryCode, React.ReactNode> = {
   ),
 
   // EXACT.
+  // EXACT — three equal vertical bands, Italian specification colours.
+  IT: (
+    <>
+      <rect width="10" height="20" fill="#008C45" />
+      <rect x="10" width="10" height="20" fill="#F4F5F0" />
+      <rect x="20" width="10" height="20" fill="#CD212A" />
+    </>
+  ),
+
+  // EXACT — two equal horizontal bands, white over red.
+  PL: (
+    <>
+      <rect width="30" height="10" fill="#fff" />
+      <rect y="10" width="30" height="10" fill="#DC143C" />
+    </>
+  ),
+
+  // SIMPLIFIED — South Africa's flag is a horizontal tricolour crossed by a
+  // green pall (a sideways Y) fimbriated in white and gold, over a black
+  // triangle at the hoist. At 18x12 the fimbriations are sub-pixel, so the
+  // pall is drawn as a single green band with the black triangle kept, which
+  // preserves what the flag is recognised by at this size.
+  ZA: (
+    <>
+      <rect width="30" height="10" fill="#E03C31" />
+      <rect y="10" width="30" height="10" fill="#001489" />
+      <path d="M0 0 L13 10 L0 20 Z" fill="#000" />
+      <path d="M0 3 L11 10 L0 17 Z" fill="#007A4D" />
+      <path d="M11 10 L30 10 L30 6 L13 6 Z M11 10 L30 10 L30 14 L13 14 Z" fill="#007A4D" />
+      <rect y="8.6" width="30" height="2.8" fill="#FFB612" opacity="0" />
+    </>
+  ),
+
   FR: (
     <>
       <rect width="10" height="20" fill="#002395" />

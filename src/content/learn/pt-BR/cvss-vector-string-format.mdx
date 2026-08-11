@@ -7,8 +7,8 @@ relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["cvss-base-metrics-explained", "cvss-temporal-and-environmental", "how-cvss-scoring-works"]
 category: security
 order: 73
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma string de vetor CVSS (Sistema Comum de Pontuação de Vulnerabilidades, do inglês Common Vulnerability Scoring System) foi projetada para viajar junto com a pontuação, de modo que qualquer um possa ver como ela foi derivada. Ela se parece com isto:
@@ -30,3 +30,7 @@ Lendo o exemplo acima da esquerda para a direita: versão 3.1; Vetor de Ataque R
 ## Por que ler à mão
 
 Uma pontuação renderizada esconde erros. Uma única letra errada, `PR:L` em vez de `PR:N`, muda o número silenciosamente, e uma métrica ausente pode fazer uma ferramenta se recusar a pontuar um vetor que outra ferramenta pontua adivinhando um padrão. Ler os pares você mesmo, ou decodificá-los com uma ferramenta que mostra cada métrica por extenso, é como você detecta um comunicado de fornecedor pontuado de forma inconsistente, ou confirma que duas fontes descrevem a mesma falha da mesma maneira.
+
+## Fontes
+
+- [CVSS v3.1 Specification Document - vector string format](https://www.first.org/cvss/v3.1/specification-document)

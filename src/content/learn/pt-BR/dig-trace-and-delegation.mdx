@@ -7,8 +7,8 @@ relatedTools: ["dig-output-explainer"]
 relatedArticles: ["dig-query-options", "reading-dig-output", "dns-record-types-in-answers"]
 category: networking
 order: 53
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Um `dig` normal pergunta a um resolvedor e confia na resposta dele. O `dig +trace` faz algo diferente e bem mais revelador: ele realiza a resolução por conta própria, salto a salto, como um resolvedor recursivo faria.
@@ -32,3 +32,12 @@ Como o +trace segue a cadeia real em vez de uma cópia em cache, ele mostra exat
 ## Lendo bem
 
 Algumas coisas a ter em mente: o +trace faz sua própria resolução iterativa, então contorna o seu resolvedor configurado por completo, e é por isso que seu resultado pode diferir de uma consulta normal quando o cache do seu resolvedor está desatualizado. E cada referral é um conjunto de registros NS, não a resposta final, então leia até o último bloco para obter o dado de fato. Se um nível retornar registros que você não esperava, é nesse nível que se deve olhar primeiro.
+
+
+## O +trace não testa o seu caminho de resolução
+
+`+trace` é a ferramenta certa para ler uma cadeia de delegação e a errada para provar que a resolução de nomes funciona, porque **ele ignora seu resolvedor de propósito.** Ele itera desde a raiz, perguntando a cada servidor por vez.
+
+Então o `+trace` pode ter sucesso lindamente enquanto toda aplicação do host continua falhando, porque o que está quebrado é o resolvedor que o `+trace` nunca usou — seus forwarders, seu cache, suas regras de acesso, ou o caminho até ele.
+
+**Use `+trace` para descobrir onde uma delegação está errada. Use uma consulta comum para descobrir se a resolução funciona.** São perguntas diferentes, e a segunda costuma ser a que está sendo feita.

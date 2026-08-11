@@ -7,8 +7,8 @@ relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "nslookup-record-types"]
 category: networking
 order: 51
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A maioria das pessoas usa o nslookup como um comando único: `nslookup example.com` e pronto. Mas execute-o sem argumentos e ele vira uma sessão interativa, o que é útil quando uma consulta não basta.
@@ -28,3 +28,12 @@ Digite `nslookup` sozinho e você obtém um prompt `>`. A partir daqui você dig
 O modo interativo compensa quando você está explorando: verificando vários nomes em sequência, comparando o mesmo nome entre resolvedores, ou iterando sobre o tipo de registro sem redigitar o comando inteiro. Para uma verificação única, ou qualquer coisa que você queira colocar em um script, a forma de comando único (`nslookup -type=MX example.com 8.8.8.8`) é mais simples.
 
 Uma ressalva para automação: o código de saída do nslookup não reflete de forma confiável se a consulta teve sucesso, então para scripting o dig ou o host são as ferramentas melhores. O nslookup interativo é para um humano no teclado, trabalhando um problema.
+
+
+## A armadilha: o nslookup não usa o resolvedor do sistema
+
+O `nslookup` fala diretamente com um servidor DNS. Ele **não** consulta o `/etc/hosts` e, na maioria dos sistemas, ignora a biblioteca de resolução que as aplicações comuns usam.
+
+Então um nome pode resolver perfeitamente no `ping` e falhar no `nslookup`, ou o contrário — e nenhum dos dois resultados está errado. Eles respondem perguntas diferentes: o nslookup responde *"o que o DNS diz"*, e a aplicação responde *"para o que este host resolve, por todos os mecanismos disponíveis a ele"*.
+
+**Quando um serviço funciona e o nslookup discorda, verifique o arquivo de hosts antes de verificar a zona.** É a razão mais comum de duas ferramentas dizerem coisas opostas sobre o mesmo nome.

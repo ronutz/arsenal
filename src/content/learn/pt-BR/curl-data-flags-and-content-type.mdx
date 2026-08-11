@@ -7,8 +7,8 @@ relatedTools: ["http-request-translator"]
 relatedArticles: ["reading-a-curl-command", "curl-to-fetch", "curl-method-inference"]
 category: networking
 order: 77
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O curl pode anexar um corpo de requisição de várias formas, e elas não são intercambiáveis.
@@ -20,3 +20,12 @@ O curl pode anexar um corpo de requisição de várias formas, e elas não são 
 `-F` / `--form` monta um corpo `multipart/form-data`. Cada `-F nome=valor` é um campo, e `-F nome=@arquivo` anexa um arquivo. O curl escolhe o limite (boundary) do multipart por você, então você nunca o define à mão.
 
 Ao traduzir um comando curl para outra linguagem, leve o Content-Type que o curl realmente envia, não o que você adivinharia pela forma do corpo. Esse único detalhe é onde a maioria das conversões manuais erra.
+
+
+## O que corrompe arquivos em silêncio
+
+`-d @payload.json` lê o corpo de um arquivo e **remove as quebras de linha ao fazer isso**. Para um campo de formulário, inofensivo. Para um arquivo JSON, normalmente sobrevive. Para qualquer coisa em que os bytes importam — um payload assinado, um certificado, uma imagem — produz um corpo sutil e invisivelmente errado.
+
+`--data-binary @payload.json` envia o arquivo sem alteração.
+
+O modo de falha é o pior tipo: a requisição tem sucesso, o servidor aceita, e alguma coisa lá adiante rejeita uma assinatura ou renderiza um arquivo quebrado. **Se o corpo veio de um arquivo e os bytes exatos importam, use `--data-binary`.**

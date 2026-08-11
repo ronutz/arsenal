@@ -7,8 +7,8 @@ relatedTools: ["totp-hotp"]
 relatedArticles: ["totp-and-hotp", "base32", "verifying-hmac"]
 category: identity
 order: 31
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 ## Aceitar um código é a metade difícil
@@ -40,3 +40,14 @@ Um código de seis dígitos é um entre 1.000.000 de valores, e uma janela de ac
 Tudo isso pressupõe que o próprio segredo compartilhado esteja protegido. Um servidor que armazena segredos OTP (senha de uso único, do inglês one-time password) em texto claro entrega a quem lê esse armazenamento a capacidade de gerar códigos válidos para todos os usuários indefinidamente. Trate o segredo como material de nível credencial: armazene-o cifrado, restrinja quem pode lê-lo e provisione-o por um canal que não o vaze. Validar o código derivado com cuidado é esforço desperdiçado se o segredo por trás dele estiver exposto.
 
 Você pode ver a lógica da janela diretamente na ferramenta TOTP / HOTP: o validador dela aceita os intervalos adjacentes, que é exatamente a tolerância de mais ou menos um intervalo que um servidor real aplica.
+
+
+## Um código correto continua correto pelo resto do passo
+
+A verificação responde *"este é o código certo para este momento"*, e pelo restante daquele passo de tempo a resposta continua sendo sim. **A menos que o validador registre que um código foi usado, o mesmo código funciona de novo.**
+
+É isso o replay de TOTP inteiro, e não exige criptografia para explorar — um código visto por cima do ombro, lido de uma captura de tela ou registrado num log de proxy é utilizável até o passo virar.
+
+**Guarde o último passo aceito por usuário e recuse qualquer coisa igual ou anterior.** É um inteiro, e converte um código válido por trinta segundos em um código válido uma vez.
+
+**Nada da omissão aparece em teste**, porque uma implementação correta e uma reproduzível se comportam igual para um usuário que nunca reusa um código.

@@ -4,7 +4,7 @@ title: "BIG-IP 21.x: o que mudou, e por que não existem as versões 18, 19 e 20
 summary: "O TMOS saltou do 17.x direto para o 21.0.0 (novembro de 2025) e o 21.1.0 (maio de 2026), absorvendo a modernização originalmente planejada para o descontinuado BIG-IP Next. Aqui está o quadro completo, verificado nas próprias notas de versão e anúncios da F5: a história da numeração de versões, as regras de plataforma e de ciclo de vida que você precisa checar primeiro, e um tour temático pelo que o 21.0 e o 21.1 realmente entregam, do tratamento de tráfego de IA com MCP e do TLS pós-quântico ao upgrade in-place, ao plano de controle em 64 bits, ao WAF para HTTP/3 e ao multi-RPZ no DNS."
 concepts: ["f5", "bigip", "tmos", "upgrade", "post-quantum", "mcp", "http3", "dns", "security"]
 relatedTools: []
-relatedArticles: ["bigip-acme-certificate-automation", "nist-pqc-standards", "quantum-threat-to-cryptography"]
+relatedArticles: ["bigip-acme-certificate-automation", "nist-pqc-standards", "quantum-threat-to-cryptography", "bigip-21x-access-identity", "bigip-tmos-version-timeline"]
 category: networking
 order: 1
 status: reviewed
@@ -17,7 +17,7 @@ O BIG-IP TMOS foi do 17.x diretamente para o **21.0.0 (lançado em 6 de novembro
 
 ## Por que não existe BIG-IP 18, 19 ou 20
 
-O BIG-IP Next era a reescrita completa da F5, versionada na faixa 20.x. A F5 tomou a decisão estratégica de encerrar o desenvolvimento do BIG-IP Next: o **BIG-IP Next 20.3 foi a versão final e chegou ao End of Life em 30 de abril de 2025** (a decisão e o cronograma estão documentados no artigo de conhecimento K000152956 da F5; o BIG-IP Next for Kubernetes e os produtos Cloud-Native Network Functions são separados e não foram afetados). Nas palavras da própria F5 ao anunciar o 21.1, tendo descontinuado o BIG-IP Next, a empresa se comprometeu a modernizar o TMOS integrando muitas das melhorias originalmente concebidas para o Next, e o 21.0 foi o primeiro passo desse plano.
+O BIG-IP Next era a reescrita completa da F5, versionada na faixa 20.x. A F5 tomou a decisão estratégica de encerrar o desenvolvimento do BIG-IP Next: o **BIG-IP Next 20.3 foi a versão final e chegou ao End of Life em 30 de abril de 2025** (a decisão e o cronograma estão documentados no artigo de conhecimento [K000152956](https://my.f5.com/manage/s/article/K000152956) da F5; o BIG-IP Next for Kubernetes e os produtos Cloud-Native Network Functions são separados e não foram afetados). Nas palavras da própria F5 ao anunciar o 21.1, tendo descontinuado o BIG-IP Next, a empresa se comprometeu a modernizar o TMOS integrando muitas das melhorias originalmente concebidas para o Next, e o 21.0 foi o primeiro passo desse plano.
 
 Ou seja, o salto de versão não é aritmética de marketing. Pular para o 21 coloca o TMOS clássico inequivocamente acima da linha 20.x aposentada e sinaliza que o roteiro de modernização agora passa pelo software que você já opera. Para quem parou no 17.1 esperando ver como a história do Next terminava: ela terminou, e o 21.x é a resposta.
 
@@ -32,7 +32,7 @@ As janelas de suporte mais curtas são notícia por si só: planeje sua cadênci
 
 ## Suporte de plataforma: verifique isto antes de qualquer coisa
 
-**O BIG-IP 21.x não roda em iSeries nem em VIPRION.** A F5 afirma que tentar instalar ou inicializar o 21.x nesses sistemas pode resultar em comportamento não suportado ou em falhas de boot. Clientes nessas plataformas devem continuar nas versões 17.x, que permanecem suportadas até o hardware atingir o fim do suporte de software; as datas de EoSS caem em 1º de abril de 2026, 1º de janeiro de 2027 e 1º de outubro de 2027, conforme a geração do modelo. Rodar o 21.x exige **rSeries, VELOS ou Virtual Edition**. Um tenant vCMP pode tecnicamente ser implantado com 21.x, mas **não é suportado** (a F5 aponta o K4309 para os detalhes).
+**O BIG-IP 21.x não roda em iSeries nem em VIPRION.** A F5 afirma que tentar instalar ou inicializar o 21.x nesses sistemas pode resultar em comportamento não suportado ou em falhas de boot. Clientes nessas plataformas devem continuar nas versões 17.x, que permanecem suportadas até o hardware atingir o fim do suporte de software; as datas de EoSS caem em 1º de abril de 2026, 1º de janeiro de 2027 e 1º de outubro de 2027, conforme a geração do modelo. Rodar o 21.x exige **rSeries, VELOS ou Virtual Edition**. Um tenant vCMP pode tecnicamente ser implantado com 21.x, mas **não é suportado** (a F5 aponta o [K4309](https://my.f5.com/manage/s/article/K4309) para os detalhes).
 
 A consequência prática: para parques com iSeries e VIPRION, a conversa sobre o 21.x é inseparável da conversa sobre renovação de hardware, e o relógio do EoSS já está correndo.
 
@@ -80,4 +80,4 @@ O SSL Orchestrator recebeu suas melhorias no **21.0**: iRules no lado de retorno
 
 A leitura sóbria do 21.x para um parque 17.1 em produção: primeiro, resolva a questão do hardware, porque iSeries e VIPRION estão excluídos e suas datas de EoSS estão próximas; segundo, escolha seu trem, já que a janela de 9 meses do 21.0.0 o torna um degrau de passagem enquanto o 21.1.0 é a versão long-term-stability com horizonte de 3 anos de Standard Support; terceiro, planeje para a nova mecânica de atualização, porque o upgrade in-place com Dry Run vai mudar a matemática das janelas de manutenção assim que o seu caminho de EHF (hotfix de engenharia, do inglês engineering hotfix) o suportar; e quarto, trate os itens de IA, PQC, HTTP/3 e multi-RPZ como capacidade para a qual você agora tem um alvo de versão concreto, e não como promessas de roadmap.
 
-Tudo acima foi extraído das fontes primárias da F5, recuperadas e cruzadas em 7 de julho de 2026: as notas de versão New Features do BIG-IP 21.0.0 e 21.1.0 no techdocs.f5.com, o anúncio de disponibilidade geral do 21.1 pela F5, o artigo do DevCentral "What's new in BIG-IP v21.0" e os artigos de conhecimento de ciclo de vida e descontinuação K5903, K9412 e K000152956, com o K4309 cobrindo a posição sobre vCMP.
+Tudo acima foi extraído das fontes primárias da F5, recuperadas e cruzadas em 7 de julho de 2026: as notas de versão New Features do BIG-IP 21.0.0 e 21.1.0 no techdocs.f5.com, o anúncio de disponibilidade geral do 21.1 pela F5, o artigo do DevCentral "What's new in BIG-IP v21.0" e os artigos de conhecimento de ciclo de vida e descontinuação [K5903](https://my.f5.com/manage/s/article/K5903), [K9412](https://my.f5.com/manage/s/article/K9412) e [K000152956](https://my.f5.com/manage/s/article/K000152956), com o [K4309](https://my.f5.com/manage/s/article/K4309) cobrindo a posição sobre vCMP.

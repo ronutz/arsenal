@@ -7,8 +7,8 @@ relatedTools: ["http-request-translator"]
 relatedArticles: ["curl-data-flags-and-content-type", "reading-a-curl-command", "curl-to-fetch"]
 category: networking
 order: 80
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 curl often knows the HTTP method without `-X`, and guessing wrong about it is a frequent bug.
@@ -18,3 +18,11 @@ The rules are simple. If `-X` / `--request` is given, that method wins, always. 
 The subtle case is combining an explicit method with a body: `-X PUT -d ...` sends PUT with that body, because the stated method overrides the POST that `-d` alone would have implied.
 
 When a tool marks the method as inferred rather than stated, it is applying exactly these rules. Seeing that label lets you confirm the request does what you meant, instead of discovering later that a missing `-X` turned an intended PUT into a POST.
+
+## The redirect trap
+
+The rule that catches people is not in the flag table at all: **an explicit `-X` survives a redirect, and an inferred method does not.**
+
+Without `-X`, curl following a 301 or 302 with `--location` does what a browser does and switches to GET. With `-X POST`, curl keeps POSTing — to the redirect target, with the same body, because you told it the method and it believes you.
+
+That is how a request that looked correct in testing becomes a duplicate write against an endpoint nobody expected. If you are following redirects, **state the method only if you mean it to persist across them.**

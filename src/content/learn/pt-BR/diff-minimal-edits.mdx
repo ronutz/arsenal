@@ -7,8 +7,8 @@ relatedTools: ["diff"]
 relatedArticles: ["how-diff-works", "reading-a-diff", "diff-three-way-and-merge-conflicts"]
 category: encoding
 order: 13
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O diff não sabe o que você *fez* com um arquivo. Ele só vê o antes e o depois, e descobre um conjunto de inserções e remoções que transformaria um no outro. Especificamente, ele procura a **maior subsequência comum**, o maior conjunto de linhas que aparecem em ambos na mesma ordem, e trata todo o resto como inserido ou removido.
@@ -24,3 +24,12 @@ O detalhe é que o menor conjunto de edições frequentemente não é único. Qu
 ## Lendo mesmo assim
 
 Nada disso significa que o diff está errado; é uma explicação mínima correta, apenas não a que corresponde ao seu modelo mental da edição. A solução não é brigar com ele, mas lê-lo como "uma forma válida de ir de A a B". Quando um diff parece estranho, uma visão de palavra ou caractere frequentemente torna a mudança real óbvia, e para código movido, comparar os dois blocos diretamente é mais claro do que confiar no alinhamento. A lição é que um diff descreve uma transformação entre dois estados, não a história de como você chegou lá.
+
+
+## Mínimo não é o mesmo que compreensível
+
+Um algoritmo de diff otimiza pelo **menor número de edições**, e esse objetivo não tem noção de significado. O menor script de edição e a explicação mais clara de uma mudança são coisas diferentes, e onde divergem a ferramenta sempre escolhe a primeira.
+
+É por isso que uma alteração numa linha parecida com as vizinhas produz saída desconcertante: o algoritmo achou um alinhamento mais curto atravessando as linhas ao redor, o que é correto pela medida dele e inútil pela sua. Acrescentar uma chave de fechamento pode ser reportado como alteração de outra chave três linhas adiante.
+
+**Quando um diff está ilegível, mude a pergunta, não a mudança.** Comparação em nível de palavra, insensibilidade a espaços ou outra base costumam produzir saída legível — as edições não mudaram, só aquilo que o algoritmo foi mandado minimizar.

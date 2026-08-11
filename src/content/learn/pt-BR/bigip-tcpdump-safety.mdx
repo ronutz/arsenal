@@ -7,8 +7,8 @@ relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["bigip-tcpdump-syntax", "capturing-on-vlans-and-trunks"]
 category: networking
 order: 35
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma captura de pacotes é uma operação somente leitura, mas em um BIG-IP de produção ela não é gratuita. Consome CPU, grava em um sistema de arquivos de que outros processos precisam, e uma captura sem limites em um dispositivo ocupado pode crescer de forma alarmante. Nada disso é motivo para evitar capturar; é motivo para capturar de forma deliberada. O [construtor de tcpdump para BIG-IP](/tools/f5-bigip-tcpdump-builder) o conduz aos padrões seguros.
@@ -36,3 +36,14 @@ A opção `-X` imprime o conteúdo em hex e ASCII na tela, o que é prático par
 ## Faça a limpeza
 
 Quando a captura terminar, pare-a, transfira o arquivo para fora do dispositivo para análise e apague-o do BIG-IP. Tratar a limpeza como parte do procedimento, e não como algo a se pensar depois, é o que evita que capturas pontuais se acumulem silenciosamente em hardware de produção.
+
+
+## A captura em si é uma mudança
+
+`tcpdump` num BIG-IP de produção não é uma operação somente-leitura em nenhum sentido que importe operacionalmente.
+
+**Ela escreve.** Uma captura em tamanho cheio num virtual server movimentado enche um sistema de arquivos rápido, e um `/var` cheio num BIG-IP não é um transtorno de espaço — é um equipamento que começa a falhar de formas sem relação com o problema que você estava capturando.
+
+**Ela custa.** O processamento da captura compete com o processamento de tráfego, e quanto mais permissivo o filtro, mais compete.
+
+Então a disciplina é o oposto do instinto: **filtre com precisão, limite a captura e saiba como ela para antes de iniciá-la.** Um limite de tamanho ou de pacotes e um filtro específico de host e porta transformam um risco aberto num risco delimitado. Uma captura que precisa ser morta por um engenheiro que também está tratando um incidente é uma captura mal planejada.

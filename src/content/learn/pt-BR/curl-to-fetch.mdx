@@ -7,8 +7,8 @@ relatedTools: ["http-request-translator"]
 relatedArticles: ["curl-data-flags-and-content-type", "curl-headers-auth-and-cookies", "reading-a-curl-command"]
 category: networking
 order: 78
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 `fetch()` e curl expressam a mesma requisição em formatos diferentes, e o mapeamento é quase todo mecânico.
@@ -18,3 +18,10 @@ O método vira a opção `method`; GET é o padrão e pode ser omitido. Cada cab
 Duas diferenças pegam as pessoas. Primeiro, o fetch não leva cookies por padrão como uma sessão de shell poderia; enviá-los exige `credentials: "include"`. Segundo, o fetch não pode desativar a verificação do certificado TLS, então um comando `-k` não tem equivalente fiel no navegador.
 
 Todo o resto é uma tradução direta da requisição analisada, e é por isso que uma ferramenta que já analisou o comando curl consegue gerar a chamada fetch para você.
+
+
+## Onde a tradução deixa de ser mecânica
+
+O mapeamento flag a opção cobre a maior parte de um comando. O que não atravessa é **tudo que o navegador acrescenta por conta própria**: cookies do jar, um cabeçalho Origin e uma requisição de preflight que a chamada curl original nunca precisou fazer.
+
+Uma requisição traduzida que falha no navegador mas funcionava no terminal normalmente não foi mal traduzida. Ela foi movida para um ambiente com regras que o terminal não impõe.

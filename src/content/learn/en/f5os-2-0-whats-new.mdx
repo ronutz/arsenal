@@ -7,8 +7,8 @@ relatedTools: []
 relatedArticles: ["bigip-21x-whats-new", "bigip-inplace-upgrade-and-64bit"]
 category: networking
 order: 7
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Since 21.x runs only on rSeries, VELOS, and Virtual Edition, the platform layer under the tenant stopped being background noise: F5OS is now half of every hardware deployment's story. F5OS 2.0 is the platform release that BIG-IP 21.1's hardware-facing features assume, and this article takes the view that matters to most readers here, the BIG-IP tenant operator's, covering the three F5OS-2.0-coupled capabilities documented in F5's 21.1 release notes. A deeper F5OS-native tour (the platform's own administration and lifecycle changes) deserves its own grounding pass against the F5OS 2.0 release notes and will follow separately; nothing below depends on it.
@@ -29,4 +29,11 @@ Q-in-Q, stacked 802.1Q tagging for carrying customer VLANs inside provider VLANs
 
 ## The dependency reading
 
-All three features share one shape: the capability is delivered by the platform, consumed by the tenant, and gated on F5OS 2.0 on the host. That makes the platform version a first-class item in any 21.x deployment plan, checked with the same seriousness as the BIG-IP version itself, and F5's hardware/software support matrix (K86001294) is the authoritative pairing table. The [ops deep-dive](/learn/bigip-inplace-upgrade-and-64bit) covers the tenant-side upgrade machinery this pairs with, and the [flagship overview](/learn/bigip-21x-whats-new) holds the whole 21.x picture.
+All three features share one shape: the capability is delivered by the platform, consumed by the tenant, and gated on F5OS 2.0 on the host. That makes the platform version a first-class item in any 21.x deployment plan, checked with the same seriousness as the BIG-IP version itself, and F5's hardware/software support matrix ([K86001294](https://my.f5.com/manage/s/article/K86001294)) is the authoritative pairing table. The [ops deep-dive](/learn/bigip-inplace-upgrade-and-64bit) covers the tenant-side upgrade machinery this pairs with, and the [flagship overview](/learn/bigip-21x-whats-new) holds the whole 21.x picture.
+
+## Sources
+
+Every release-specific claim above is F5's own, and these are where to re-check it when the next version ships.
+
+- [New Features in F5OS 2.0 - cloud-init, Q-in-Q (IEEE 802.1ad) on rSeries and VELOS, foreground diagnostics](https://techdocs.f5.com/en-us/f5os-2-0-0/relnote-velos-f5os-2-0/title-new-in.html)
+- [F5OS 2.0.0-HR-1 Fixes and Known Issues](https://techdocs.f5.com/kb/en-us/products/f5os/releasenotes/related/relnote-supplement-f5os-2-0-0-hr-1.html)

@@ -7,8 +7,8 @@ relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["how-cvss-scoring-works", "cvss-base-metrics-explained", "cvss-severity-bands-and-limits"]
 category: security
 order: 72
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A maioria das pontuações CVSS (Sistema Comum de Pontuação de Vulnerabilidades, do inglês Common Vulnerability Scoring System) publicadas é apenas Base, porque a base é constante. Mas o framework foi projetado para ser refinado, e os dois grupos opcionais são onde uma pontuação se torna específica a um momento no tempo e a um ambiente particular.
@@ -36,3 +36,7 @@ A matemática ambiental espelha a matemática base, mas usa as métricas modific
 ## Quando usar
 
 A pontuação Temporal e Ambiental é opcional, mas recomendada quando você está priorizando trabalho real. Um fornecedor não pode conhecer o seu ambiente, então uma pontuação Base é deliberadamente o pior caso. Recalcular com as métricas que você de fato conhece, um serviço apenas interno, um controle compensatório, um patch disponível, frequentemente move uma falha para uma faixa mais baixa e muda o que você corrige primeiro.
+
+## Fontes
+
+- [CVSS v3.1 Specification Document - Temporal and Environmental metric groups](https://www.first.org/cvss/v3.1/specification-document)

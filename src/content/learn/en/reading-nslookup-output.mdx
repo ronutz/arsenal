@@ -7,8 +7,8 @@ relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["nslookup-vs-dig", "nslookup-record-types", "authoritative-vs-non-authoritative-answers", "nslookup-errors-explained"]
 category: networking
 order: 45
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 nslookup is the DNS query tool most people meet first, and its output has a simple, stable shape once you know what the pieces are.
@@ -35,3 +35,12 @@ After a blank line comes the answer. The `Non-authoritative answer:` marker, whe
 If the lookup failed, nslookup does not print an answer; it prints a line like `** server can't find example.com: NXDOMAIN`. The code at the end is the whole story: `NXDOMAIN` means the name does not exist, `SERVFAIL` means the server could not complete the query, and `REFUSED` means it declined.
 
 If it succeeded, the two questions worth asking are which resolver answered (the Server line, in case you are testing a specific one) and whether the answer is authoritative (the marker). The rest of this series covers how nslookup formats each record type, how it compares to dig, what authoritative really means, and how to read its errors.
+
+
+## The server line is the one to read first
+
+Before the answer, `nslookup` prints which server it asked. **That line is the most useful in the output and the most skipped**, because it is the same on every successful lookup — until the day it is not.
+
+A resolver changed by DHCP, a VPN that installed its own, a container inheriting a different `resolv.conf`: each produces answers that are correct for a resolver nobody meant to consult. **The answer is not wrong; the question went somewhere unexpected**, and the output looks entirely normal.
+
+**Read the server line before the answer.** When two machines disagree about a name, it is more often the resolver than the record.

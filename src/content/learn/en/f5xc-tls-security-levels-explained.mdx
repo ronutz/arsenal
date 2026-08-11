@@ -25,11 +25,11 @@ Going down from High does not swap the cipher list, it extends it. **Medium** ke
 
 ## Why a scanner flags TLS 1.0 or 1.1
 
-This is the first of two questions F5 answers in a dedicated article. If a scanner reports TLS 1.0 or 1.1 enabled on your load balancer, the load balancer is on **Medium or Low** - those are the levels whose minimum version is TLS 1.0. The Default/High level is minimum TLS 1.2 and will not present the old protocols. So the fix for a TLS 1.0 finding is usually not a mysterious hidden setting; it is that the load balancer is on a lower predefined level than you thought (K000148226).
+This is the first of two questions F5 answers in a dedicated article. If a scanner reports TLS 1.0 or 1.1 enabled on your load balancer, the load balancer is on **Medium or Low** - those are the levels whose minimum version is TLS 1.0. The Default/High level is minimum TLS 1.2 and will not present the old protocols. So the fix for a TLS 1.0 finding is usually not a mysterious hidden setting; it is that the load balancer is on a lower predefined level than you thought ([K000148226](https://my.f5.com/manage/s/article/K000148226)).
 
 ## Why a scanner flags weak ciphers
 
-The second question. If a scanner reports weak ciphers, it is almost always the **static-RSA suites the Low level adds**. Static RSA key exchange provides no forward secrecy, which every modern scanner grades down regardless of the symmetric cipher. If you are on Low for a legacy-client reason and a scanner is unhappy, those RSA suites are why (K000148079).
+The second question. If a scanner reports weak ciphers, it is almost always the **static-RSA suites the Low level adds**. Static RSA key exchange provides no forward secrecy, which every modern scanner grades down regardless of the symmetric cipher. If you are on Low for a legacy-client reason and a scanner is unhappy, those RSA suites are why ([K000148079](https://my.f5.com/manage/s/article/K000148079)).
 
 ## Choosing a level
 

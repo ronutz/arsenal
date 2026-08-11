@@ -21,7 +21,7 @@ The cookie is named after the pool it belongs to: `BIGipServer` followed by the 
 
 A default cookie value looks like `1677787402.20480.0000`. That is not random: it is the pool member's IPv4 address and port, encoded as decimal numbers. The first number is the address with its bytes reversed; the second is the port with its two bytes swapped; the trailing `0000` is a fixed field. Decoded, `1677787402.20480.0000` is `10.1.1.100:80`. There are also encodings for IPv4 in a route domain, for IPv6 members, and for IPv6 in a route domain, each laid out differently. The companion article on [cookie formats](/learn/bigip-cookie-formats) walks through all four with worked examples.
 
-The key point is that the encoding is not encryption. It is a reversible transformation documented publicly by F5 in article K6917. Anyone who can read the cookie, which is anyone who receives the HTTP response, can reverse it.
+The key point is that the encoding is not encryption. It is a reversible transformation documented publicly by F5 in article [K6917](https://my.f5.com/manage/s/article/K6917). Anyone who can read the cookie, which is anyone who receives the HTTP response, can reverse it.
 
 ## Why that matters
 

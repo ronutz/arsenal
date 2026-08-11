@@ -7,8 +7,8 @@ relatedTools: ["diff"]
 relatedArticles: ["reading-a-diff"]
 category: encoding
 order: 9
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 ## O que um diff realmente calcula
@@ -42,3 +42,12 @@ A mesma maquinaria roda em dois níveis de zoom. A visão por linhas tokeniza ca
 ## Uma nota sobre custo
 
 A tabela de programação dinâmica é proporcional ao produto das duas contagens de tokens: comparar um texto de n linhas com um de m linhas preenche cerca de n por m células. Para as entradas interativas que um diff vê (um arquivo de configuração, uma política, um trecho de código) isso é confortavelmente rápido. Acima de um teto generoso, o cálculo cresceria o suficiente para travar o navegador, então o motor para e pede entradas menores em vez de congelar. Ferramentas de diff de produção vão além com refinamentos do mesmo artigo de Myers (em especial uma variante de espaço linear), mas a ideia da LCS no centro permanece a mesma.
+
+
+## Por que a mesma mudança produz dois diffs diferentes
+
+Um diff encontra *um* alinhamento, não *o* alinhamento. Quando vários alinhamentos são igualmente curtos, o algoritmo escolhe um, e ferramentas diferentes — ou a mesma com opções diferentes — podem escolher outro.
+
+É por isso que um diff fica desconcertante depois de uma refatoração que moveu um bloco: **a ferramenta não tem o conceito de "movido"**. Uma função realocada é uma remoção num lugar e uma inserção em outro, e se o bloco parece com os vizinhos o alinhamento pode cortá-lo onde nenhum humano cortaria.
+
+**Um diff confuso normalmente indica que a comparação está sendo feita com a pergunta errada**, não que a mudança está ruim. Comparar em nível de palavra, ignorar espaços em branco ou usar outra base transforma uma saída ilegível em uma óbvia — a mudança não mudou, só o alinhamento.

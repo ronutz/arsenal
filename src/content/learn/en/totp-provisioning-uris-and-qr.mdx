@@ -7,8 +7,8 @@ relatedTools: ["totp-hotp"]
 relatedArticles: ["totp-and-hotp", "validating-totp-codes", "base32"]
 category: identity
 order: 32
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A TOTP (Time-based One-Time Password) app and a server only agree on codes if they start from the same secret and the same settings. Getting that secret and those settings into the app is **provisioning**, and it runs on a small de-facto standard: the otpauth URI.
@@ -36,3 +36,12 @@ The secret is base32 rather than raw bytes or base64 because base32 uses only up
 ## The provisioning gotcha
 
 Because `algorithm`, `digits`, and `period` are all part of the URI, a mismatch is a classic setup failure: a server using SHA-256 or an 8-digit code or a non-default period will only interoperate with an app that received those exact parameters. Most apps assume the common defaults (SHA-1, 6 digits, 30 seconds) when a field is omitted, so if a server quietly uses something else without putting it in the URI, the app generates codes that never validate. When enrollment "succeeds" but every code is rejected, a parameter that did not make it into the provisioning URI is the usual cause.
+
+
+## The QR code is the secret, in a form people forget is a secret
+
+An `otpauth://` URI contains the shared secret in plain text. The QR image is an encoding of that URI, which makes **the picture a credential** — as sensitive as a password and far more likely to be treated casually.
+
+The consequences are entirely predictable and happen constantly: enrolment screenshots pasted into support tickets, saved in shared drives, or sent over chat to help somebody who could not scan it. **Each one hands over a second factor permanently**, because unlike a password nobody rotates a TOTP secret after an incident they never noticed.
+
+**Show the secret once, never log the URI, and treat any screenshot of an enrolment screen as a compromised factor.** The user experience of "here, I'll send you the code" is the attack.

@@ -7,8 +7,8 @@ relatedTools: ["f5-gslb-decision-flow"]
 relatedArticles: ["bigip-21x-whats-new", "bigip-dns-request-processing-order"]
 category: networking
 order: 6
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A Response Policy Zone is DNS's native firewall rule format: a zone file whose records do not describe where names live but what the resolver should do when asked about them. Feed a resolver an RPZ (Response Policy Zone) of known-bad domains and every client behind it inherits the protection at the cheapest possible layer, the name lookup itself. BIG-IP DNS has supported RPZ on its cache for years; the ceiling was one feed and one global response behavior. BIG-IP 21.1 removes both.
@@ -34,3 +34,10 @@ RPZ is a property of the DNS cache, and the cache has a fixed place in BIG-IP DN
 ## Designing a multi-RPZ deployment
 
 Three habits translate the feature into a clean operation. Name zones by owner and intent (rpz-regulatory-anatel, rpz-vendor-x, rpz-internal-allow), because the precedence list is only auditable if the names carry meaning. Give every external feed a TSIG key of its own, so revoking one provider never touches another. And decide the failure posture per zone before the first incident: a stale regulatory zone and a stale vendor feed do not deserve the same alarm level, and the serial-number lag on each transfer is the metric that tells you which one you have.
+
+## Sources
+
+Every release-specific claim above is F5's own, and these are where to re-check it when the next version ships.
+
+- [Configuring DNS Response Policy Zones - BIG-IP DNS Services Implementations](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-dns-services-implementations/configuring-dns-response-policy-zones.html)
+- [DNS Response Policy Zones - the RPZ specification (Vixie and Schryver)](https://www.ietf.org/archive/id/draft-vixie-dnsop-dns-rpz-00.txt)

@@ -7,8 +7,8 @@ relatedTools: ["diff"]
 relatedArticles: ["how-diff-works", "reading-a-diff", "diff-three-way-and-merge-conflicts"]
 category: encoding
 order: 13
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Diff does not know what you *did* to a file. It only sees the before and the after, and works out a set of insertions and deletions that would turn one into the other. Specifically, it looks for the **longest common subsequence**, the largest set of lines that appear in both in the same order, and treats everything else as inserted or deleted.
@@ -24,3 +24,12 @@ The catch is that the smallest set of edits is often not unique. When two region
 ## Reading them anyway
 
 None of this means the diff is wrong; it is a correct minimal explanation, just not the one that matches your mental model of the edit. The fix is not to fight it but to read it as "one valid way to get from A to B." When a diff looks off, a word or character level view often makes the real change obvious, and for moved code, comparing the two blocks directly is clearer than trusting the alignment. The takeaway is that a diff describes a transformation between two states, not the story of how you got there.
+
+
+## Minimal is not the same as understandable
+
+A diff algorithm optimises for the **fewest edits**, and that objective has no notion of meaning. The smallest edit script and the clearest explanation of a change are different things, and where they diverge the tool always chooses the first.
+
+This is why a change to a line that resembles its neighbours produces baffling output: the algorithm found a shorter alignment through the surrounding lines, which is correct by its own measure and useless by yours. Adding a closing brace can be reported as changing a different closing brace three lines away.
+
+**When a diff is unreadable, change the question rather than the change.** Word-level comparison, whitespace insensitivity, or a different base often produce output a human can read — the edits did not change, only what the algorithm was asked to minimise across.

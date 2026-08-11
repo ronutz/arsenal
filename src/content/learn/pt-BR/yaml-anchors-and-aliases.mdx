@@ -7,8 +7,8 @@ relatedTools: ["json-yaml-convert"]
 relatedArticles: ["json-vs-yaml", "yaml-type-coercion", "yaml-block-scalars"]
 category: encoding
 order: 4
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O YAML (YAML Ain't Markup Language) tem um recurso que o JSON simplesmente não tem: você pode nomear um valor e reutilizá-lo, em vez de repeti-lo. É uma das maiores razões de um arquivo YAML e seu equivalente em JSON não se parecerem.
@@ -28,3 +28,12 @@ O JSON não tem âncoras, aliases nem merge keys, então um conversor os **desre
 ## A armadilha de segurança
 
 Como um alias pode apontar para algo que ele próprio contém aliases, o YAML permite expansão exponencial. O clássico ataque "billion laughs" aninha âncoras de modo que um arquivo minúsculo expande para gigabytes ao ser resolvido, esgotando a memória. É por isso que um parser YAML cuidadoso limita a expansão de aliases, e por que converter YAML não confiável não é grátis: a expansão acontece durante a conversão. É a mesma classe de risco de uma expansão de entidade XML, e uma razão para tratar YAML de fontes desconhecidas com a mesma cautela que qualquer outra entrada não confiável.
+
+
+## Um alias é uma referência, e a expansão é onde o custo se esconde
+
+Âncoras e aliases parecem uma conveniência para evitar repetição e, num arquivo de configuração, é exatamente isso que são. **O custo só aparece quando aninham.**
+
+Um alias que expande para uma estrutura contendo outros aliases multiplica em vez de somar — a mesma aritmética da expansão de entidades em XML, com a mesma consequência: **um arquivo pequeno que expande num enorme.** É uma classe documentada de negação de serviço em parsers YAML, e não precisa de autor malicioso: uma configuração muito fatorada chega lá por acidente.
+
+A outra surpresa é mais sutil: **chaves de merge copiam no ponto de uso**, então um valor alterado na âncora depois de o alias ter sido escrito se comporta como o leitor espera, enquanto um valor sobrescrito localmente não compõe como a herança de uma linguagem de programação faria.

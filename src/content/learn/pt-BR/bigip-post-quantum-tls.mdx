@@ -7,8 +7,8 @@ relatedTools: ["cipher", "f5-cipher-string-expander", "f5-ssl-profile-explainer"
 relatedArticles: ["bigip-21x-whats-new", "nist-pqc-standards", "quantum-threat-to-cryptography"]
 category: networking
 order: 3
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A ameaça quântica ao TLS é um problema de colheita antes de ser um problema de decifração: tráfego gravado hoje pode ser decifrado no dia em que um computador quântico grande o bastante quebrar a troca de chaves de curva elíptica que o protegia. A defesa que o NIST padronizou no FIPS (Padrões Federais de Processamento de Informação, do inglês Federal Information Processing Standards) 203 é o ML-KEM (mecanismo de encapsulamento de chave baseado em reticulado de módulo, do inglês module-lattice key encapsulation mechanism), um mecanismo de encapsulamento de chaves baseado em reticulados, e o padrão de implantação em que a indústria convergiu é o híbrido: executar uma troca clássica de curva elíptica e um encapsulamento ML-KEM no mesmo handshake e misturar os dois segredos, de modo que a sessão fica segura a menos que ambos sejam quebrados. O BIG-IP percorre essa estrada há algum tempo; o 21.1.0 é onde a estrada se alarga.
@@ -30,3 +30,10 @@ O 21.1 também move a linha de base. Novos perfis pai de Client SSL e Server SSL
 ## Implantando sem quebrar ninguém
 
 A surpresa agradável da troca de chaves híbrida é que ela é negociada, não imposta. Um cliente que nunca ouviu falar de ML-KEM ignora os grupos híbridos da sua lista e cai no ECDHE (Diffie-Hellman efêmero de curva elíptica, do inglês ephemeral elliptic-curve Diffie-Hellman) clássico exatamente como antes; um navegador que prefere X25519MLKEM768 o recebe. A disciplina de implantação, portanto, é sobre ordem e observação, não sobre risco: habilite os híbridos primeiro no ClientSSL, onde a população de navegadores se atualiza sozinha, observe a distribuição de grupos negociados, e então estenda ao ServerSSL conforme sua frota de backend ganha suporte. Duas coisas a verificar antes de declarar vitória. Tamanho do handshake: key shares de ML-KEM são kilobytes onde pontos de curva eram bytes, então um ClientHello que sempre oferece um share PQC gordo pode tropeçar em middleboxes antigas e caminhos de MTU (unidade máxima de transmissão, do inglês maximum transmission unit) apertados; teste os cantos estranhos do seu parque. E realidade do hardware: a aceleração QAT cobre a metade X25519, então meça a CPU de handshake na sua plataforma real antes e depois de habilitar híbridos em escala, em vez de assumir que o offload absorve tudo. A [visão geral do 21.x](/learn/bigip-21x-whats-new) guarda o contexto da versão inteira, e o [artigo sobre os padrões PQC do NIST](/learn/nist-pqc-standards) cobre o que o ML-KEM de fato é por dentro.
+
+## Fontes
+
+Toda afirmação específica de versão acima é da própria F5, e é aqui que se deve reconferir quando a próxima versão sair.
+
+- [New Features in BIG-IP 21.1.0 - X25519 hardware acceleration with Intel QAT](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)
+- [F5 BIG-IP v21.1 is now generally available, bringing PQC and AI security enhancements](https://www.f5.com/company/blog/f5-big-ip-v21-1-is-now-generally-available-bringing-pqc-and-ai-security-enhancements)

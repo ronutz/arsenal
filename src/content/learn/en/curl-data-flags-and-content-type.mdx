@@ -7,8 +7,8 @@ relatedTools: ["http-request-translator"]
 relatedArticles: ["reading-a-curl-command", "curl-to-fetch", "curl-method-inference"]
 category: networking
 order: 77
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 curl can attach a request body in several ways, and they are not interchangeable.
@@ -20,3 +20,11 @@ curl can attach a request body in several ways, and they are not interchangeable
 `-F` / `--form` builds a `multipart/form-data` body. Each `-F name=value` is a field, and `-F name=@file` attaches a file. curl chooses the multipart boundary for you, so you never set it by hand.
 
 When you translate a curl command to another language, carry the Content-Type curl actually sends, not the one you would guess from the body's shape. That single detail is where most hand conversions go wrong.
+
+## The one that corrupts files silently
+
+`-d @payload.json` reads the body from a file, and **strips the newlines while doing it**. For a form field that is harmless. For a JSON file it is usually survivable. For anything where bytes matter — a signed payload, a certificate, an image — it produces a body that is subtly and invisibly wrong.
+
+`--data-binary @payload.json` sends the file unchanged.
+
+The failure mode is the worst kind: the request succeeds, the server accepts it, and something downstream rejects a signature or renders a broken file. **If the body came from a file and its exact bytes matter, use `--data-binary`.**

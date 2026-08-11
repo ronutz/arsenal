@@ -7,8 +7,8 @@ relatedTools: ["f5-awaf-declarative-policy-explainer"]
 relatedArticles: ["bigip-21x-whats-new", "bigip-ai-mcp"]
 category: networking
 order: 5
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 HTTP/3 changed the transport under the web: QUIC over UDP instead of TCP, with encryption reaching deeper into the protocol. For a WAF (web application firewall) that grew up parsing TCP streams, that is not a version bump, it is a new listening post. BIG-IP 21.1 is the release where F5's web protection stack takes up position on it.
@@ -21,7 +21,7 @@ Per the 21.1 release notes, WAF inspection of HTTP/3 client-side traffic is now 
 
 Three current limitations frame the deployment. Client-side only: the HTTP/3 protection applies where the client connects; the server side of the proxy is not part of this feature. No BADOS (behavioral DoS): behavioral DoS is not supported on HTTP/3, so L7 DoS protection here means the signature and threshold machinery, not the behavioral learning layer. And no HTTP/3 virtual server creation from the WAF UI: the virtual server is built on the LTM side first, then protected.
 
-The fourth caveat is the biggest one and it is architectural: the underlying HTTP/3 implementation on BIG-IP LTM remains experimental, with F5 pointing to K60235402 for the protocol overview. Read that dependency correctly: the WAF layer on top is a supported 21.1 feature, but it stands on a transport implementation F5 itself still labels experimental. For production, that argues for HTTP/3 as an addition alongside HTTP/1.1 and HTTP/2 listeners rather than a replacement, letting clients that negotiate HTTP/3 get it while everything else lands on the mature paths.
+The fourth caveat is the biggest one and it is architectural: the underlying HTTP/3 implementation on BIG-IP LTM remains experimental, with F5 pointing to [K60235402](https://my.f5.com/manage/s/article/K60235402) for the protocol overview. Read that dependency correctly: the WAF layer on top is a supported 21.1 feature, but it stands on a transport implementation F5 itself still labels experimental. For production, that argues for HTTP/3 as an addition alongside HTTP/1.1 and HTTP/2 listeners rather than a replacement, letting clients that negotiate HTTP/3 get it while everything else lands on the mature paths.
 
 ## OpenAPI 3.1 for API Security
 
@@ -34,3 +34,10 @@ Remote application-security logging gains a format: Splunk Key-Value Pairs Exten
 ## Reading the release as one motion
 
 Put the three items together and 21.1's WAF story is about meeting traffic where it is going: the transport clients are adopting (HTTP/3), the contract format API teams are writing (OpenAPI 3.1), and the SIEM detail level analysts keep asking for (Extended key-value). The [flagship overview](/learn/bigip-21x-whats-new) situates this next to the release's other marquee WAF item, MCP protocol protection, which the [AI and MCP deep-dive](/learn/bigip-ai-mcp) covers in full.
+
+## Sources
+
+Every release-specific claim above is F5's own, and these are where to re-check it when the next version ships.
+
+- [New Features in BIG-IP 21.1.0 - Splunk Key-Value Pairs Extended logging](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)
+- [New Features in BIG-IP 21.0.0](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-release-notes/big-ip-new-features/)

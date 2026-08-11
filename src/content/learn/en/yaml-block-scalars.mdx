@@ -7,8 +7,8 @@ relatedTools: ["json-yaml-convert"]
 relatedArticles: ["json-vs-yaml", "yaml-anchors-and-aliases", "yaml-type-coercion"]
 category: encoding
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Writing a multiline string in JSON means one line with `\\n` escapes. YAML (YAML Ain't Markup Language) instead has **block scalars**, which let the text sit naturally across several lines, and it offers two styles that handle line breaks in opposite ways.
@@ -27,3 +27,12 @@ After the `|` or `>` you can add a **chomping indicator** for the trailing newli
 ## On conversion to JSON
 
 Whichever style you use, JSON has only ordinary strings, so a block scalar converts to a single string with embedded `\\n` (for literal) or folded spaces (for folded), and the chomping choice determines whether a trailing `\\n` is present. The visual block layout disappears entirely. This is worth remembering when a converted certificate or script stops working: the content is usually intact, but a stray or missing trailing newline from the chomping rule is a common culprit.
+
+
+## Indentation is the syntax, which makes copy-paste the hazard
+
+Block scalars carry their content by indentation, and that makes YAML uniquely vulnerable to the most common editing operation there is. **Pasting a block into a document with different indentation changes what the block contains** — or ends it early, silently, with the remainder becoming sibling keys.
+
+The chomping indicators compound it, because `|`, `|-` and `|+` differ only in trailing newlines, and a trailing newline is invisible in every editor. **A certificate or key that fails to load with no useful error is very often a chomping indicator**, not a corrupt file.
+
+**Round-trip the file through a parser and compare the value you got with the value you meant.** It is the only way to see what YAML actually read, because reading it by eye is reading the thing that fooled you the first time.

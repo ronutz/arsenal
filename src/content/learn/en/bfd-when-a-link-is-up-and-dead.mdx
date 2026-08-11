@@ -1,0 +1,56 @@
+---
+slug: bfd-when-a-link-is-up-and-dead
+title: "BFD: when a link is up and dead at the same time"
+summary: "Routing protocols detect failure with their own timers, measured in tens of seconds. BFD detects it in milliseconds, and exists because the most dangerous link failure is the one where the interface stays up. What it does, what it does not do, and where it goes wrong."
+concepts: ["bfd", "ospf", "bgp", "ecmp"]
+relatedTools: []
+relatedArticles: ["ospf-primer", "bgp-primer", "routing-tables-and-default-gateway", "first-hop-redundancy-vrrp-and-hsrp"]
+category: networking
+order: 252
+status: reviewed
+updated: "2026-08-10"
+---
+
+## The failure that fools everything above it
+
+An interface reports its own state, and that report is about the local port. It says the transceiver has light, the electrical link is negotiated, the port is enabled. **It does not say the far end can still reach you.**
+
+Between them can sit a media converter, a carrier's transport, a switch fabric, a virtual overlay, or a firewall that has stopped forwarding while remaining perfectly alive. In every one of those cases the interface stays **up** and traffic stops.
+
+This is the exact condition that defeats fast recovery. A protocol whose failure detection depends on the interface going down never triggers. Routing continues to advertise a path that discards everything sent along it — the network's own term for this is a **black hole**, and its defining property is that nothing reports an error.
+
+## Why a routing protocol's own timers are not the answer
+
+Every routing protocol has a hello-and-dead-interval mechanism, and it works. The problem is its timescale.
+
+OSPF's defaults put dead detection around **40 seconds**. BGP's hold timer commonly sits at **90 seconds** or more. Those numbers were chosen for a reason — a protocol that declares a neighbour dead too eagerly will tear down a stable network under momentary load, and re-converging is expensive.
+
+So there is a genuine conflict. **Detection must be fast to limit the outage, and slow to avoid false positives**, and the two requirements pull the same knob in opposite directions. Tuning hellos down to sub-second across every protocol on a busy router is how people discover that protocol processing is not free.
+
+## What BFD does instead
+
+BFD separates **liveness detection** from **routing**. It is a deliberately minimal protocol — a stream of small packets between two systems, with a negotiated interval and a multiplier that says how many may be missed before the session is declared down — and it does nothing else. No topology, no routes, no adjacency semantics.
+
+That minimalism is the whole design. **Because it does one thing, it can be implemented close to the hardware and run at intervals a routing process could not sustain**, commonly tens of milliseconds. A routing protocol then registers as a *client* of the BFD session: when BFD declares the path down, it tells OSPF, BGP, or a static route to act immediately rather than waiting for its own timer.
+
+The division of labour is worth stating plainly, because it is the thing people get wrong when they configure it: **BFD decides whether the path is alive. The routing protocol decides what to do about it.** BFD never chooses a route.
+
+## Where it earns its place
+
+**Across anything that hides a failure.** A Layer 2 transport between routers, a virtual link, a carrier Ethernet service — anywhere the physical port on your device is not a witness to the far end's health.
+
+**On ECMP bundles**, where losing one path silently means a deterministic fraction of flows disappear while the aggregate looks healthy. That is the hardest failure to diagnose from metrics, because the average barely moves.
+
+**Under first-hop redundancy**, where a gateway that is present but not forwarding leaves hosts pointing at a router that will never answer.
+
+## Where it goes wrong
+
+**Asymmetric configuration.** BFD is a session between two systems and both ends must agree to it. A session configured on one side only does not fail — **it simply never comes up**, and a router with BFD configured and no session established has exactly the detection it had before, while its configuration says otherwise.
+
+**Intervals a platform cannot honour.** Many devices implement BFD in software on the control plane, where an aggressive interval competes with everything else the CPU is doing. Under the load of a real incident — the moment detection matters most — a control-plane BFD session can flap because the router is busy, and take a stable routing adjacency down with it. **Hardware-offloaded BFD does not have this failure mode; knowing which one you have is the difference between a feature and a hazard.**
+
+**Detection without a second path.** BFD makes failure visible in milliseconds. If there is nowhere else to send the traffic, all it has bought is a faster and more accurate description of an outage.
+
+## What to take away
+
+**Interface state is a local observation, and the network is not local.** Every mechanism that treats "the port is up" as "the path works" inherits the same blind spot, and BFD exists to give the control plane a second opinion that is cheap enough to ask constantly.

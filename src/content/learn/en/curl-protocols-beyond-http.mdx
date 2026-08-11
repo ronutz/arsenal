@@ -7,8 +7,8 @@ relatedTools: ["curl-command-builder", "http-request-translator"]
 relatedArticles: ["reading-a-curl-command", "curl-security-flags", "curl-headers-auth-and-cookies", "curl-data-flags-and-content-type"]
 category: networking
 order: 95
-status: machine-draft
-updated: "2026-07-07"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Ask most engineers what curl does and the answer is "HTTP requests". True, and radically incomplete. The current curl tool speaks 27 URL schemes, and the official list on curl.se reads like a tour of networking history: DICT, FILE, FTP, FTPS, GOPHER, GOPHERS, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, MQTT, MQTTS, POP3, POP3S, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET, TFTP, WS and WSS. This article walks the map: what each family is for, which schemes start inside TLS, and the curl semantics that surprise people the first time.

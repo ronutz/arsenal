@@ -7,8 +7,8 @@ relatedTools: ["f5-persistence-method-explainer"]
 relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method", "source-address-persistence-and-mega-proxy"]
 category: networking
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A persistência funciona lembrando para qual pool member um cliente foi enviado. Essa memória é uma tabela de registros mantida na memória da unidade ativa, e isso levanta uma questão no momento em que você opera um par redundante: o que acontece com esses registros quando a unidade ativa falha?
@@ -24,3 +24,12 @@ O **espelhamento de persistência** fecha essa lacuna sincronizando os registros
 ## O trade-off e quando usar
 
 O espelhamento não é grátis: cada registro de persistência agora precisa ser replicado para o par, o que adiciona trabalho e um pouco de latência, e em virtual servers de altíssimo volume esse custo vale ser ponderado. Ele é habilitado por profile de persistência, então você pode ligá-lo só onde importa. O julgamento é sobre consequência: se um failover que rebalanceia clientes fosse apenas um pequeno soluço, o espelhamento pode não valer o overhead. Se ele derrubasse carrinhos de compras, deslogasse usuários ou corrompesse fluxos de trabalho em andamento, o espelhamento é o que impede um failover de hardware ou software de virar uma interrupção visível ao usuário. Ele combina naturalmente com o espelhamento de conexões para aplicações que não toleram nenhum tipo de reset.
+
+
+## Espelhamento é a diferença entre um failover e uma indisponibilidade para alguns
+
+Sem registros de persistência espelhados, um failover é limpo para o equipamento e confuso para o subconjunto de clientes que estava fixado em algum lugar. Novas conexões são balanceadas normalmente, então **o sistema parece saudável por todo ângulo que um painel mede**, enquanto uma fração de usuários perde uma sessão que o resto do parque não tem motivo para notar.
+
+É por isso que o sintoma chega como chamado e não como alerta: *"me deslogou"*, vindo de uma minoria, depois de um evento declarado bem-sucedido.
+
+**Espelhar custa sincronização entre unidades e compra continuidade no único evento para o qual existe.** Teste falhando de propósito com sessões estabelecidas — não confirmando que o espelhamento está habilitado, que é um fato de configuração, não de funcionamento.

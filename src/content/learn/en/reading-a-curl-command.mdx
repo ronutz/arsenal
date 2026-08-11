@@ -7,8 +7,8 @@ relatedTools: ["http-request-translator"]
 relatedArticles: ["curl-data-flags-and-content-type", "curl-method-inference", "curl-headers-auth-and-cookies"]
 category: networking
 order: 76
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A curl command has three parts: the program name (`curl`), zero or more options, and a target URL. Before curl ever sees them, the shell splits the line into words and removes one layer of quoting.
@@ -18,3 +18,12 @@ Quoting matters because bodies and headers contain spaces and special characters
 Options come in short and long forms. Short flags are one dash and a letter (`-X`, `-H`, `-d`); long flags are two dashes and a word (`--request`, `--header`, `--data`). Short flags can be clustered: `-sSL` is `-s -S -L`. A flag that takes a value can have the value attached with no space, so `-XPOST` means `-X POST`, which trips up quick readers.
 
 Anything that is not an option and not an option's value is the URL. curl adds `https://` when the scheme is missing.
+
+
+## Read it in the order the request is built, not the order it was typed
+
+A curl command's flags can appear in any order, which means **the sequence on the page has nothing to do with the sequence of what happens.** Reading left to right is reading the author's typing habits.
+
+The order that matters is the request's own: **method, then URL, then headers, then body, then what happens to the response.** Reconstructing the command that way turns a long line into four short questions, and makes the missing piece obvious — a `-d` with no content type, an `-H` that duplicates something curl sets anyway, a redirect flag that changes what the whole thing does.
+
+**A command you cannot restate in that order is one you have not finished reading**, which matters most when the command came from somebody else and you are about to run it.

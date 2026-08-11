@@ -4,7 +4,7 @@ title: "What a BIG-IP Cookie Tells an Attacker"
 summary: "The persistence cookie is a textbook information disclosure: it reveals internal IP addresses, ports, pool size, and route domains to any client. Why that matters for reconnaissance, how scanners harvest it, and how to think about the risk."
 concepts: ["information disclosure", "reconnaissance", "internal topology", "bigip", "persistence cookie", "security testing", "f5"]
 relatedTools: ["f5-bigip-persistence-cookie"]
-relatedArticles: ["f5-bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-encryption"]
+relatedArticles: ["f5-bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-encryption", "bigip-cookie-persistence-methods"]
 category: security
 order: 3
 status: reviewed
@@ -23,7 +23,7 @@ Collecting several cookies reveals more. Because the cookie names the pool and e
 
 ## How it gets harvested
 
-This is well-trodden ground in security tooling. Nmap ships an `http-bigip-cookie` script that decodes these cookies automatically, the Metasploit framework has a module for it, and the encoding is documented in F5 K6917 so anyone can write a decoder in a few lines. The decoder on this page is one such implementation. The practical consequence is that you should assume any unencrypted persistence cookie your BIG-IP emits is already being read and decoded by automated scanners.
+This is well-trodden ground in security tooling. Nmap ships an `http-bigip-cookie` script that decodes these cookies automatically, the Metasploit framework has a module for it, and the encoding is documented in F5 [K6917](https://my.f5.com/manage/s/article/K6917) so anyone can write a decoder in a few lines. The decoder on this page is one such implementation. The practical consequence is that you should assume any unencrypted persistence cookie your BIG-IP emits is already being read and decoded by automated scanners.
 
 ## How to think about the risk
 

@@ -7,8 +7,8 @@ relatedTools: ["url-inspector"]
 relatedArticles: ["url-anatomy", "url-encoding-and-idn", "relative-urls-and-resolution"]
 category: encoding
 order: 7
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A URL looks authoritative, which is exactly why attackers dress hostile links up as trustworthy ones. The tricks are not sophisticated; they rely on people reading a URL left to right and stopping too early.
@@ -23,3 +23,12 @@ A URL looks authoritative, which is exactly why attackers dress hostile links up
 ## The one reliable habit
 
 All of these fail against a single rule: find the **host** and read it right to left. The host is the part right after the `://` (and after any `@`), up to the next `/`, `?`, or `#`. Within it, the meaningful part is the registered domain at the *end*: the last two labels for most domains. Ignore the userinfo, ignore the path, ignore the query, and look at what sits immediately to the left of the first single slash. If that is not who you expected, nothing earlier in the URL changes it. Decoding a suspicious URL into its parts, rather than skimming it, is what turns these tricks back into plain text.
+
+
+## The parser and the reader disagree, and only one of them is authoritative
+
+Every deceptive-URL technique exploits the same gap: **a human reads left to right and attaches meaning to what looks familiar, while a parser applies a grammar.** `https://example.com@attacker.test/` has an authority of `attacker.test` and userinfo of `example.com`, and both readings are internally consistent.
+
+That is why "look at the URL carefully" is weak advice. It asks a person to execute a specification, at speed, under the assumption that anything unusual will feel unusual — and homograph characters are specifically chosen so it does not.
+
+**The defence has to be mechanical.** Parse the URL, extract the host, compare it to what you expect, and show the user the result of that parse rather than the raw string. **A machine reading a URL is not being careful; it is being a machine, which is the property that scales.**

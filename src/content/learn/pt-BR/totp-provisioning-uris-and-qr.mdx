@@ -7,8 +7,8 @@ relatedTools: ["totp-hotp"]
 relatedArticles: ["totp-and-hotp", "validating-totp-codes", "base32"]
 category: identity
 order: 32
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Um app TOTP (Senha de Uso Único Baseada em Tempo, do inglês Time-based One-Time Password) e um servidor só concordam sobre códigos se partirem do mesmo segredo e das mesmas configurações. Colocar esse segredo e essas configurações no app é o **provisionamento**, e ele roda sobre um pequeno padrão de fato: a URI otpauth.
@@ -36,3 +36,12 @@ O segredo é base32 em vez de bytes crus ou base64 porque o base32 usa apenas le
 ## A pegadinha do provisionamento
 
 Como `algorithm`, `digits` e `period` são todos parte da URI, uma incompatibilidade é uma falha clássica de configuração: um servidor usando SHA-256 ou um código de 8 dígitos ou um period fora do padrão só interoperará com um app que recebeu esses parâmetros exatos. A maioria dos apps assume os padrões comuns (SHA-1, 6 dígitos, 30 segundos) quando um campo é omitido, então se um servidor silenciosamente usa algo diferente sem colocá-lo na URI, o app gera códigos que nunca validam. Quando o enrollment "tem sucesso" mas todo código é rejeitado, um parâmetro que não chegou à URI de provisionamento é a causa usual.
+
+
+## O QR code é o segredo, numa forma que as pessoas esquecem ser segredo
+
+Uma URI `otpauth://` contém o segredo compartilhado em texto claro. A imagem do QR é uma codificação dessa URI, o que torna **a figura uma credencial** — tão sensível quanto uma senha e muito mais provável de ser tratada com descuido.
+
+As consequências são inteiramente previsíveis e acontecem o tempo todo: capturas de tela de cadastro coladas em chamados, salvas em drives compartilhados ou enviadas por chat para ajudar alguém que não conseguiu escanear. **Cada uma entrega um segundo fator permanentemente**, porque, diferente de uma senha, ninguém rotaciona um segredo TOTP depois de um incidente que nunca percebeu.
+
+**Mostre o segredo uma vez, nunca registre a URI em log, e trate qualquer captura de tela da tela de cadastro como um fator comprometido.** A experiência de "deixa que eu te mando o código" é o ataque.

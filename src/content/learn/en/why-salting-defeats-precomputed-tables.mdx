@@ -7,8 +7,8 @@ relatedTools: ["hash-preimage-finder"]
 relatedArticles: ["brute-force-vs-lookup-tables", "slow-kdfs-bcrypt-scrypt-argon2", "choosing-a-password-hash"]
 category: hashing
 order: 84
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Precomputed tables and rainbow tables work because an unsalted hash of a given input is always the same value. Salting removes exactly that assumption.
@@ -30,3 +30,12 @@ To use a precomputed table against a salted hash, the attacker would have to hav
 Salting does not slow down an attack against a single known salt. Once the attacker has the salt (it is not secret), they can still guess-and-check against that one target as fast as the hash allows. Defeating that is the job of a slow KDF (key derivation function), not the salt.
 
 A salt is not a secret and is not a substitute for a slow password hash. Correct password storage needs both: a unique salt to kill precomputation, and a deliberately slow function to make each guess expensive.
+
+
+## The salt is not a secret, and treating it as one causes real bugs
+
+A salt is stored in plain sight, usually inside the hash string itself, and that is correct. Its job is **uniqueness, not concealment** — it makes one precomputed table useless against many accounts, and it does that whether or not the attacker can read it.
+
+The failure this misunderstanding produces is specific: teams that treat the salt as secret sometimes make it **shared** — one application-wide value, kept in config — reasoning that a hidden salt is stronger than a visible one. **A shared salt is barely a salt at all.** Every user with the same password gets the same hash again, and a table built once against that one salt cracks the whole database.
+
+**Per-user, random, stored openly.** The thing that must be secret is the pepper, if you use one, and that is a different mechanism with different handling.

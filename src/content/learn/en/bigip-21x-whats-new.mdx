@@ -4,7 +4,7 @@ title: "BIG-IP 21.x: what changed, and why there is no version 18, 19, or 20"
 summary: "TMOS jumped from 17.x straight to 21.0.0 (November 2025) and 21.1.0 (May 2026), absorbing the modernization originally planned for the discontinued BIG-IP Next. Here is the full picture, verified against F5's own release notes and announcements: the version-numbering story, the platform and lifecycle rules you must check first, and a themed tour of what 21.0 and 21.1 actually deliver, from MCP-aware AI traffic handling and post-quantum TLS to in-place upgrades, a 64-bit control plane, HTTP/3 WAF, and multi-RPZ DNS."
 concepts: ["f5", "bigip", "tmos", "upgrade", "post-quantum", "mcp", "http3", "dns", "security"]
 relatedTools: []
-relatedArticles: ["bigip-acme-certificate-automation", "nist-pqc-standards", "quantum-threat-to-cryptography"]
+relatedArticles: ["bigip-acme-certificate-automation", "nist-pqc-standards", "quantum-threat-to-cryptography", "bigip-21x-access-identity", "bigip-tmos-version-timeline"]
 category: networking
 order: 1
 status: reviewed
@@ -17,7 +17,7 @@ BIG-IP TMOS went from 17.x directly to **21.0.0 (released 6 November 2025)** and
 
 ## Why there is no BIG-IP 18, 19, or 20
 
-BIG-IP Next was F5's ground-up rewrite, versioned in the 20.x range. F5 made the strategic decision to stop BIG-IP Next development: **BIG-IP Next 20.3 was the final release, and it reached End of Life on 30 April 2025** (the decision and timeline are documented in F5 knowledge article K000152956; BIG-IP Next for Kubernetes and the Cloud-Native Network Functions products are separate and unaffected). In F5's own words when announcing 21.1, having discontinued BIG-IP Next, the company pledged to modernize TMOS by integrating many of the enhancements originally envisioned for Next, and 21.0 was the first step of that plan.
+BIG-IP Next was F5's ground-up rewrite, versioned in the 20.x range. F5 made the strategic decision to stop BIG-IP Next development: **BIG-IP Next 20.3 was the final release, and it reached End of Life on 30 April 2025** (the decision and timeline are documented in F5 knowledge article [K000152956](https://my.f5.com/manage/s/article/K000152956); BIG-IP Next for Kubernetes and the Cloud-Native Network Functions products are separate and unaffected). In F5's own words when announcing 21.1, having discontinued BIG-IP Next, the company pledged to modernize TMOS by integrating many of the enhancements originally envisioned for Next, and 21.0 was the first step of that plan.
 
 So the version jump is not marketing arithmetic. Skipping to 21 puts classic TMOS unambiguously above the retired 20.x line and signals that the modernization roadmap now runs through the software you already operate. For anyone who paused on 17.1 waiting to see how the Next story ended: it ended, and 21.x is the answer.
 
@@ -32,7 +32,7 @@ The shorter support windows are themselves news: plan your adoption cadence arou
 
 ## Platform support: check this before anything else
 
-**BIG-IP 21.x does not run on iSeries or VIPRION.** F5 states that attempting to install or boot 21.x on these systems may result in unsupported behavior or boot failures. Customers on those platforms should continue with 17.x releases, which remain supported until the hardware reaches end of software support; the EoSS dates fall on 1 April 2026, 1 January 2027, and 1 October 2027 depending on the model generation. Running 21.x requires **rSeries, VELOS, or Virtual Edition**. A vCMP tenant can technically be deployed with 21.x, but it is **not supported** (F5 points to K4309 for the details).
+**BIG-IP 21.x does not run on iSeries or VIPRION.** F5 states that attempting to install or boot 21.x on these systems may result in unsupported behavior or boot failures. Customers on those platforms should continue with 17.x releases, which remain supported until the hardware reaches end of software support; the EoSS dates fall on 1 April 2026, 1 January 2027, and 1 October 2027 depending on the model generation. Running 21.x requires **rSeries, VELOS, or Virtual Edition**. A vCMP tenant can technically be deployed with 21.x, but it is **not supported** (F5 points to [K4309](https://my.f5.com/manage/s/article/K4309) for the details).
 
 The practical consequence: for iSeries and VIPRION estates, the 21.x conversation is inseparable from a hardware refresh conversation, and the EoSS clock is already running.
 
@@ -80,4 +80,4 @@ SSL Orchestrator picked up its improvements in **21.0**: return-side (egress) iR
 
 The sober reading of 21.x for a production 17.1 estate: first, settle the hardware question, because iSeries and VIPRION are excluded and their EoSS dates are near; second, pick your train, since 21.0.0's 9-month window makes it a stepping stone while 21.1.0 is the long-term-stability release with a 3-year Standard Support horizon; third, plan for the new upgrade mechanics, because in-place upgrade plus Dry Run will change maintenance-window math once your EHF (engineering hotfix) path supports it; and fourth, treat the AI, PQC, HTTP/3, and multi-RPZ items as capability you now have a concrete version target for, rather than roadmap promises.
 
-Everything above is drawn from F5's primary sources, retrieved and cross-checked on 7 July 2026: the New Features release notes for BIG-IP 21.0.0 and 21.1.0 on techdocs.f5.com, F5's 21.1 general-availability announcement, the DevCentral "What's new in BIG-IP v21.0" article, and the lifecycle and discontinuation knowledge articles K5903, K9412, and K000152956, with K4309 covering the vCMP position.
+Everything above is drawn from F5's primary sources, retrieved and cross-checked on 7 July 2026: the New Features release notes for BIG-IP 21.0.0 and 21.1.0 on techdocs.f5.com, F5's 21.1 general-availability announcement, the DevCentral "What's new in BIG-IP v21.0" article, and the lifecycle and discontinuation knowledge articles [K5903](https://my.f5.com/manage/s/article/K5903), [K9412](https://my.f5.com/manage/s/article/K9412), and [K000152956](https://my.f5.com/manage/s/article/K000152956), with [K4309](https://my.f5.com/manage/s/article/K4309) covering the vCMP position.

@@ -7,8 +7,8 @@ relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["how-cvss-scoring-works", "cvss-temporal-and-environmental", "cvss-vector-string-format"]
 category: security
 order: 71
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A complete Base vector always carries eight metrics. Four feed the Exploitability sub-score and four feed Impact (Scope sits with the impact side because it changes how impact is calculated).
@@ -34,3 +34,7 @@ A complete Base vector always carries eight metrics. Four feed the Exploitabilit
 ## Reading the balance
 
 The Base score is a tension between the two families. A flaw can be trivially reachable but score low because it barely touches confidentiality, integrity, or availability, and a flaw with total impact can score moderately if it needs high privileges, physical access, or a difficult race. Decoding a vector metric by metric, rather than reading only the final number, is what makes a score defensible when someone challenges it.
+
+## Sources
+
+- [CVSS v3.1 Specification Document - FIRST](https://www.first.org/cvss/v3.1/specification-document)

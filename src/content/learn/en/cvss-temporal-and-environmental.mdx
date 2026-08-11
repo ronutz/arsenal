@@ -7,8 +7,8 @@ relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["how-cvss-scoring-works", "cvss-base-metrics-explained", "cvss-severity-bands-and-limits"]
 category: security
 order: 72
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Most published CVSS (Common Vulnerability Scoring System) scores are Base only, because the base is constant. But the framework was designed to be refined, and the two optional groups are where a score becomes specific to a moment in time and to a particular environment.
@@ -36,3 +36,7 @@ The environmental math mirrors the base math but uses the modified metrics and t
 ## When to use them
 
 Temporal and Environmental scoring is optional but recommended when you are prioritising real work. A vendor cannot know your environment, so a Base score is deliberately worst-case. Re-scoring with the metrics you do know, an internal-only service, a compensating control, an available patch, frequently moves a flaw down a band and changes what you fix first.
+
+## Sources
+
+- [CVSS v3.1 Specification Document - Temporal and Environmental metric groups](https://www.first.org/cvss/v3.1/specification-document)

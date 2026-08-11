@@ -7,8 +7,8 @@ relatedTools: ["f5xc-service-policy-explainer"]
 relatedArticles: ["how-xc-service-policies-match", "xc-rule-combining-algorithms", "xc-service-policy-vs-irules"]
 category: security
 order: 69
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma vez que você sabe como uma service policy casa com uma requisição, a pergunta restante é o que acontece ao casar. Essa é a ação, e ela tem um pouco mais de nuance do que permitir-ou-bloquear.
@@ -36,3 +36,12 @@ As formas `allow_list` e `deny_list` são atalhos baseados em origem. Elas casam
 Uma regra faz mais do que permitir ou negar. Ao casar, ela pode anexar **modificadores** que moldam como a requisição é tratada: um `waf_action` (pular ou customizar o processamento do App Firewall), um `bot_action`, rate limiters, uma ação de validação OpenAPI, mascaramento de resposta e outros. Esses não são o veredito; eles vêm junto com ele. Uma regra também pode carregar um `expiration_timestamp`, após o qual ela ainda existe na configuração mas não é mais aplicada, e um flag `log_rule_evaluation` que registra casamentos sem mudar a decisão.
 
 O explicador separa isso claramente: mostra o veredito de cada regra como um selo de permitir, negar ou próxima-política, lista os predicados que precisam casar e observa os modificadores que disparam ao casar, de modo que a diferença entre "esta regra decide a requisição" e "esta regra também faz algo no caminho" nunca fica borrada.
+
+
+## Negar por padrão é uma afirmação sobre as regras que você não escreveu
+
+O valor de uma política com negação padrão está inteiramente na lacuna que ela cobre: requisições que ninguém previu. Isso a torna a única configuração cujo benefício **nunca aparece em teste**, porque teste exercita os caminhos em que alguém pensou.
+
+A consequência prática é que a negação padrão costuma ser removida por um bom motivo e nunca reposta. Algo legítimo quebrou, o padrão foi trocado para permitir enquanto se diagnosticava, e o diagnóstico deu certo. **A mudança temporária sobrevive porque nada falha depois** — e a política passa a aplicar apenas o que suas regras negam explicitamente, que é outra postura de segurança com o mesmo nome.
+
+**Vale conferir periodicamente se o padrão ainda é negar**, não porque muda com frequência, mas porque, quando muda, muda em silêncio e por um motivo que pareceu sensato na hora.

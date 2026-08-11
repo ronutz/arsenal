@@ -15752,6 +15752,58 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   color: color-mix(in srgb, var(--accent-primary) 55%, var(--text-secondary));
 }
 
+/* ----------------------------------------------------------------------------
+   THE CURRENT EMPLOYER (PRIME 2026-08-11)
+   ----------------------------------------------------------------------------
+   "change the highlight from cyan to red, as well as the card accent from deep
+   blue to medium-dark not-so-deep red. The pill should read WORKS INSIDE."
+
+   Red Education is where PRIME works NOW, and it was rendering in the same cyan
+   as companies he left a decade ago. The pill is solid red - the heaviest badge
+   on the timeline, as the strongest claim on it should be - and the card border
+   takes a MEDIUM-DARK red rather than a deep one, so it reads as an accent
+   beside the card rather than as a warning.
+
+   Fixed hues rather than color-mix from the theme accent: this is the Red
+   Education brand colour, and it should not shift to a different hue when the
+   reader picks the amber or phosphor theme. It is the one place on this site
+   where a colour means a specific organisation.
+   -------------------------------------------------------------------------- */
+.vendor-career-pill--current {
+  background: #c0392b;
+  border-color: #c0392b;
+  color: #fff;
+}
+
+.vendor-timeline-item[data-relationship="current"] .vendor-card {
+  border-inline-start: 3px solid #a8342a;
+}
+
+/* ----------------------------------------------------------------------------
+   ACTIVE WORKING RELATIONSHIP (PRIME 2026-08-11)
+   ----------------------------------------------------------------------------
+   Seven vendors carry WORKS WITH. Four of those also carry the instructor pill,
+   and three do NOT - Ping Identity, Zscaler and Check Point - which is the whole
+   reason this is its own badge rather than a restyled instructor one:
+
+     WORKS WITH  an active relationship exists today       (seven)
+     TEACHES     an authorised-instructor claim            (four)
+
+   Green, solid, and the same weight as the red current-employer pill, because
+   both are present-tense claims. Red stays unique to the employer; green means
+   a working relationship with a vendor. Fixed hues for the same reason as the
+   red: these two badges mean specific things and should not re-hue per theme.
+   -------------------------------------------------------------------------- */
+.vendor-career-pill--workswith {
+  background: #1e7a4d;
+  border-color: #1e7a4d;
+  color: #fff;
+}
+
+.vendor-timeline-item[data-relationship="workswith"] .vendor-card {
+  border-inline-start: 3px solid #196841;
+}
+
 /* The card border follows the pill, so the distinction survives a glance at the
    grid without reading any label. Inline-start only: a full accent border would
    compete with the card's own hover state. */
@@ -15831,4 +15883,108 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .page-jump-link:hover {
   border-color: var(--accent-primary);
   color: var(--accent-primary);
+}
+
+
+/* ---------------------------------------------------------------------------
+   INDUSTRY ANTECEDENT LINK (PRIME 2026-08-11)
+   ---------------------------------------------------------------------------
+   The milestones link sits above the company timeline and points at what came
+   BEFORE all of it. PRIME asked for a different accent "to elude that what's in
+   there is more ancient and precluding everything else on the site", and for
+   breathing room - it was pressed against the filters underneath it.
+
+   It borrows the AMBER semantic token rather than the primary accent, which is
+   the same token the site already uses for historical and cautionary material,
+   so this is a reuse of an existing meaning rather than a new colour.
+   ------------------------------------------------------------------------- */
+.industry-antecedent {
+  margin: 0 0 2.75rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--accent-amber) 42%, transparent);
+  border-left: 3px solid var(--accent-amber);
+  border-radius: var(--radius-md, 8px);
+  background: color-mix(in srgb, var(--accent-amber) 7%, var(--surface-elevated));
+}
+
+.industry-antecedent .page-jump-link {
+  color: var(--accent-amber);
+}
+
+.industry-antecedent .page-jump-link:hover,
+.industry-antecedent .page-jump-link:focus-visible {
+  color: color-mix(in srgb, var(--accent-amber) 78%, var(--text-primary));
+}
+
+
+/* ---------------------------------------------------------------------------
+   COUNTRY TOGGLES ON THE INDUSTRY TIMELINE (PRIME 2026-08-11)
+   ---------------------------------------------------------------------------
+   "Toggable country flag + country code. Do not use checkboxes, the item
+   itself should change state and show current state."
+
+   So the button IS the control and its state is drawn on itself. The selected
+   look is deliberately unmistakable rather than a subtle tint: a filter whose
+   on-state has to be hunted for is a filter people switch on by accident and
+   cannot switch off on purpose.
+
+   State lives on [aria-pressed="true"] rather than on a class, so the styling
+   and the announcement to assistive technology cannot drift apart - there is
+   only one source of truth for "is this on".
+   ------------------------------------------------------------------------- */
+.timeline-filter-countries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+}
+
+.timeline-filter-country {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.timeline-filter-country:hover {
+  border-color: color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  color: var(--text-primary);
+}
+
+.timeline-filter-country:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.timeline-filter-country[aria-pressed="true"] {
+  border-color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 16%, var(--surface-elevated));
+  color: var(--text-primary);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-primary) 45%, transparent);
+}
+
+.timeline-filter-country-code {
+  letter-spacing: 0.04em;
+}
+
+/* The count is secondary to the code and reads as such, but stays legible when
+   the chip is selected. */
+.timeline-filter-country-n {
+  color: var(--text-tertiary, var(--text-secondary));
+  font-size: 0.74rem;
+}
+
+.timeline-filter-country[aria-pressed="true"] .timeline-filter-country-n {
+  color: var(--text-secondary);
 }

@@ -7,8 +7,8 @@ relatedTools: ["f5xc-service-policy-explainer"]
 relatedArticles: ["how-xc-service-policies-match", "xc-service-policy-actions-and-default-deny", "xc-service-policy-predicates-and-logic"]
 category: security
 order: 65
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma service policy com um `rule_list` guarda uma lista ordenada de regras. O **algoritmo de combinação de regras** decide como essa lista é percorrida e, portanto, qual ação de regra vence quando mais de uma regra pode casar com uma requisição.
@@ -36,3 +36,14 @@ Há uma regra rígida a conhecer. Se qualquer regra na política é configurada 
 Um ponto sutil: no schema do objeto service_policy, o algoritmo de combinação de regras não é um campo no spec da própria política. Ele é definido no nível do **service policy set**, o contêiner ordenado ao qual a política pertence. O `rule_list` dentro de uma política documenta que suas regras são avaliadas de cima para baixo, que é o comportamento FIRST_MATCH, e esse é o padrão seguro a assumir quando você está lendo uma única política isoladamente.
 
 Por essa razão o explicador neste site assume, por padrão, a avaliação FIRST_MATCH de cima para baixo, e mostra um algoritmo explícito apenas se o JSON colado carregar um. Quando você está auditando um deployment real, verifique o policy set que a contém para confirmar o algoritmo em vigor.
+
+
+## O algoritmo decide quais erros são sobrevivíveis
+
+Ordenação não é só precedência; ela decide **quanto custa uma regra fora de lugar.**
+
+Sob primeira-correspondência, um ALLOW amplo acima de um DENY específico desliga o DENY em silêncio — e a configuração continua contendo os dois, então quem revisa a lista vê a proteção que espera. A regra está presente, correta e inalcançável.
+
+É por isso que **específico antes de geral** não é conselho de estilo. É a ordenação sob a qual um erro fica visível: uma regra específica errada para de casar e é notada, enquanto uma regra geral cedo demais continua funcionando perfeitamente enquanto sombreia tudo abaixo.
+
+**Leia uma política de baixo para cima quando estiver procurando o que NÃO está sendo aplicado.** De cima para baixo você vê o que acontece; de baixo para cima, o que nunca pode acontecer.

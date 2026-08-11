@@ -7,8 +7,8 @@ relatedTools: ["jwks-explainer"]
 relatedArticles: ["verifying-a-jwt-with-jwks", "jwk-key-types", "jwk-parameters-and-thumbprints"]
 category: identity
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Um JWT carrega seu próprio algoritmo no header (`alg`). O perigo é que um verificador que *confia* nesse campo deixa o atacante escolher como seu token é checado, e há duas formas bem conhecidas de abusar disso.
@@ -24,3 +24,12 @@ Esta é mais sutil e é por que a JWKS é relevante. Com **RS256** (assinatura R
 ## A única defesa
 
 Ambos os ataques compartilham uma causa raiz: o verificador deixou o token ditar o algoritmo. A defesa é **fixar o algoritmo esperado no servidor** e ignorar o `alg` do token, ou ao menos rejeitar qualquer valor que não corresponda ao que a chave serve. Um verificador que espera RS256 deve verificar apenas RS256 com a chave pública RSA, e nunca recorrer a um algoritmo simétrico. Isso se conecta diretamente à prática de JWKS: como a chave de verificação é *publicada* na JWKS, ela está disponível para atacantes, então o servidor precisa tratar o algoritmo como uma propriedade fixa da sua própria configuração, não como algo lido de um token não confiável.
+
+
+## O verificador decide o algoritmo, não o token
+
+Os dois ataques clássicos são o mesmo erro: **deixar o cabeçalho do próprio token escolher como ele é conferido.** `alg: none` pede que não haja verificação, e trocar `RS256` por `HS256` pede que o verificador use uma chave pública como segredo HMAC — uma chave que o atacante também tem, porque é pública.
+
+Isso continua acontecendo porque a API conveniente é a insegura. Um `verify(token, chave)` que lê o algoritmo do cabeçalho está fazendo o que o token pediu. **Uma chamada segura declara o algoritmo esperado e rejeita qualquer outro antes de olhar a assinatura.**
+
+O princípio geral transcende o JWT: **uma mensagem nunca pode escolher os termos sob os quais é julgada.**

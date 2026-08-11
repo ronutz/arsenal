@@ -7,8 +7,8 @@ relatedTools: ["f5xc-service-policy-explainer"]
 relatedArticles: ["xc-rule-combining-algorithms", "xc-service-policy-predicates-and-logic", "xc-service-policy-actions-and-default-deny"]
 category: security
 order: 64
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma **service_policy** do F5XC - F5 Distributed Cloud decide quais requisições de cliente para uma aplicação são permitidas e quais são negadas. Se você vem do BIG-IP, ela ocupa aproximadamente o lugar de uma access policy ou de um conjunto de iRules, mas seu formato é declarativo em vez de procedural.
@@ -50,3 +50,12 @@ Uma service_policy nunca é avaliada isoladamente. Ela é uma entrada em uma lis
 Esse último ponto é a rede de segurança que vale lembrar: o sistema é negar-por-padrão. Uma service_policy é um conjunto de razões para permitir (ou explicitamente negar) uma requisição, avaliadas em ordem, e o silêncio significa não.
 
 O explicador neste site pega uma política colada e expõe exatamente essa estrutura: o escopo de servidor, a disposição e, para um `rule_list`, cada regra com sua ação e seus predicados decodificados.
+
+
+## A ordem de casamento é onde uma política se torna auditável ou não
+
+Uma requisição é avaliada contra regras numa ordem, e **a ordem é a parte que o leitor precisa reconstruir de cabeça** — exatamente onde a revisão falha. Uma política correta que exige simulação para ser entendida será mantida por adivinhação.
+
+Isso dá um teste prático para qualquer regra que você acrescente: **alguém lendo a lista, de cima para baixo, consegue prever o que isto faz com uma requisição?** Se a resposta exige um traço de execução, a política está fazendo algo para o qual uma política é a ferramenta errada.
+
+**Mantenha pequeno o número de regras que podem casar com uma mesma requisição.** Não por desempenho — pela propriedade muito mais cara de alguém precisar alterar isso sob pressão e acertar de primeira.

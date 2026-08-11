@@ -7,8 +7,8 @@ relatedTools: ["f5-persistence-method-explainer", "f5-awaf-declarative-policy-ex
 relatedArticles: ["bigip-21x-whats-new"]
 category: networking
 order: 2
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 The marquee theme of the BIG-IP 21.x line is that TMOS now treats AI traffic as a first-class protocol rather than as opaque HTTP. The protocol in question is MCP, the Model Context Protocol: the JSON-RPC 2.0 convention that lets an LLM client discover and call tools on MCP servers, carried over Streamable HTTP or, for compatibility, HTTP with Server-Sent Events. That combination, long-lived sessions, streaming responses, and tool calls with real side effects, is exactly the kind of traffic a naive load balancer mishandles and a naive WAF (web application firewall) cannot read. The 21.x releases attack the problem in two steps.
@@ -36,3 +36,12 @@ One caveat belongs in bold in your design notes, straight from the release docum
 ## Before you turn it on
 
 Three checks, in order. First, platform: 21.x runs on rSeries, VELOS, and Virtual Edition only, so an iSeries estate stays on 17.x and out of this feature set entirely. Second, profiles: the MCP persistence profile and the WAF template both presuppose the virtual server already speaks MCP, HTTP plus JSON plus SSE profiles, so retrofit those first and confirm the size limits fit your payloads. Third, sessions: if you carried the 21.0-era persistence iRule forward, retire it when you attach aimcp rather than running both, one owner per session token. The [flagship 21.x overview](/learn/bigip-21x-whats-new) places all of this in the wider release story.
+
+## Sources
+
+Every release-specific claim above is F5's own, and these are where to re-check it when the next version ships.
+
+- [New Features in BIG-IP 21.0.0 - F5 Technical Documentation](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-release-notes/big-ip-new-features/)
+- [New Features in BIG-IP 21.1.0 - MCP Protocol Protection and MCP session persistence](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)
+- [Model Context Protocol on BIG-IP - profiles reference](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-local-traffic-management-profiles-reference/model-context-protocol.html)
+- [What's new in BIG-IP v21.1 - DevCentral (the aimcp persistence profile)](https://community.f5.com/kb/technicalarticles/whats-new-in-big-ip-v21-1/346637)

@@ -7,8 +7,8 @@ relatedTools: ["syslog-pri-decoder"]
 relatedArticles: ["syslog-pri-facility-severity", "syslog-message-formats", "syslog-on-network-devices"]
 category: networking
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A syslog message is just text, but how it gets from the device to the collector varies a lot, and the transport determines whether you can trust that everything arrived.
@@ -22,3 +22,12 @@ A syslog message is just text, but how it gets from the device to the collector 
 ## Why the choice matters
 
 The tradeoff is reliability and confidentiality against simplicity. UDP loses messages exactly when you most want them, during an incident or an attack, because that is when volume spikes. It also sends everything in clear text, so logs, which often contain sensitive detail, are exposed on the wire. For casual operational logging on a trusted network, UDP is fine and still ubiquitous. For anything used as an **audit trail**, for compliance, or across an untrusted network, TCP gives you delivery you can count on and TLS adds confidentiality and sender authentication. A practical rule: if losing a message would matter, do not send it over UDP.
+
+
+## UDP syslog fails in the direction nobody watches
+
+Classic syslog over UDP has no acknowledgement, so **a log message that does not arrive produces no error at either end.** The sender believes it logged; the collector never knew there was anything to receive.
+
+That failure mode is exactly inverted from what monitoring expects. An alert fires when logs say something is wrong; **nothing fires when logs stop saying anything**, and a device whose syslog destination was mistyped six months ago looks quieter and healthier than its neighbours.
+
+**Alert on the absence of logs, not only on their contents.** And where the record matters — audit trails, security events — the transport has to be one that can tell you it failed: TCP, or TLS, at the cost of the back-pressure UDP was chosen to avoid.

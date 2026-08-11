@@ -7,8 +7,8 @@ relatedTools: ["ssrf-url-classifier"]
 relatedArticles: ["private-vs-public-ip-ranges", "what-is-ssrf", "ssrf-defenses-allowlists"]
 category: security
 order: 90
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 `127.0.0.1` é apenas a forma mais familiar de escrever loopback. A clássica função C `inet_aton`, e os parsers de endereço que seguem suas regras, aceitam várias outras grafias, e navegadores e muitas bibliotecas HTTP as normalizam silenciosamente. Uma blocklist que contém a string `127.0.0.1` perde todas elas.
@@ -28,3 +28,12 @@ Toda forma acima resolve para o mesmo endereço interno, mas cada uma é uma str
 ## Decodifique primeiro, depois classifique
 
 O movimento confiável é analisar o host até seu valor numérico e classificar esse valor contra as faixas reservadas, exatamente como esta ferramenta faz. Uma vez que `2130706433`, `0x7f000001` e `127.1` são todos reduzidos ao mesmo número de 32 bits, todos caem em `127.0.0.0/8` e são sinalizados juntos. A normalização remove a liberdade do atacante de reescrever o alvo.
+
+
+## Interprete, depois julgue — nunca compare texto
+
+A lição sob todas as grafias é uma regra: **uma blocklist que compara strings está comparando a coisa errada.** `127.0.0.1`, `2130706433`, `0177.0.0.1` e `127.1` são quatro textos e um endereço, e o parser lá adiante vai concordar sobre o endereço muito depois de a sua checagem ter discordado sobre o texto.
+
+Então a ordem importa, e não é a intuitiva. **Normalize a entrada para um objeto de endereço real primeiro, depois aplique a política a esse objeto** — é loopback, é link-local, é privado, está no conjunto permitido. Uma checagem escrita ao contrário testa a sua imaginação contra a do atacante.
+
+O mesmo raciocínio cobre o que você não pensou. **O IPv6 traz as próprias grafias** — `::1`, `::ffff:127.0.0.1`, compressão de zeros — e um parser trata todas de graça, enquanto uma lista de padrões precisa ser estendida por alguém que lembrou.

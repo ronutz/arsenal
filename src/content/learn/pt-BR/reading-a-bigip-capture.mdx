@@ -7,8 +7,8 @@ relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["tmm-detail-and-peer-flows", "bigip-tcpdump-syntax"]
 category: networking
 order: 34
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Capturar os pacotes é metade do trabalho; lê-los é a outra metade. Uma captura do BIG-IP feita com um sufixo de detalhe (`:n`, `:nn` ou `:nnn`) contém os quadros padrão mais um trailer Ethernet da F5 em cada um. Este artigo é sobre transformar esse trailer em respostas. Você monta a própria captura com o [construtor de tcpdump para BIG-IP](/tools/f5-bigip-tcpdump-builder).
@@ -38,3 +38,12 @@ Uma vez aberto, os filtros de exibição comuns do Wireshark se aplicam: filtre 
 ## Uma nota sobre o keylog
 
 O mecanismo do trailer da F5 é apenas metadado de diagnóstico. Lê-lo não expõe os segredos de sessão do TLS; decifrar o conteúdo da aplicação é um passo separado e deliberado, que exige seu próprio material de chave. O trailer sozinho diz como o BIG-IP roteou e tratou um fluxo, não o que havia dentro de um conteúdo cifrado.
+
+
+## A mesma conversa aparece duas vezes, e isso está certo
+
+Um BIG-IP é um proxy completo. Uma captura na caixa mostra, portanto, **duas conexões TCP separadas** para uma transação de cliente: cliente até o virtual server, e BIG-IP até o membro do pool. Portas diferentes, números de sequência diferentes, muitas vezes endereços IP diferentes.
+
+Lido sem isso em mente, parece duplicação, laço de roteamento ou tempestade de retransmissão. Não é nada disso. **É o proxy fazendo o trabalho dele**, e as duas metades só se relacionam através do equipamento no meio.
+
+O trailer da F5 é o que as junta de novo: o identificador de fluxo par permite pivotar de um lado para o outro. **Sem ele, você está lendo duas conversas e supondo que são a mesma.**

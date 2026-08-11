@@ -110,13 +110,49 @@ export type VendorRelationship =
    * distributor position - not as an employee. Rendered as "Worked with
    * directly", which is the phrase the career pages already use.
    */
-  | "worked-with-directly";
+  | "worked-with-directly"
+  /**
+   * PRIME works here NOW. Present tense, and it is the only one of these
+   * relationships that is.
+   *
+   * ADDED 2026-08-11 (PRIME: the pill "should read WORKS INSIDE"). Every other
+   * relationship on this list is a completed fact; this one is a continuing
+   * one, and rendering it in the past tense alongside companies he left a
+   * decade ago said something untrue about a job he currently holds.
+   *
+   * Modelled as data rather than as a hardcoded slug in the component, because
+   * "which company does he work at" is a fact about the record, not about the
+   * page - and it will change again one day.
+   */
+  | "works-inside"
+  /**
+   * PRIME has an ACTIVE working relationship with this vendor now. Present
+   * tense, like `works-inside`, and distinct from it: he works WITH these
+   * companies rather than inside them.
+   *
+   * ADDED 2026-08-11 (PRIME). Seven vendors carry it, and the important part
+   * is what it is NOT:
+   *
+   *   WORKS WITH  - an active relationship exists today. Seven vendors.
+   *   TEACHES     - `authorized-instructor`, and there are FOUR of those.
+   *
+   * The two overlap without being the same claim. Ping Identity, Zscaler and
+   * Check Point are worked with and NOT taught; conflating the two would put
+   * an instructor claim on three vendors where none exists, which is the exact
+   * failure the `worked-inside` split of 2026-08-05 was created to prevent.
+   *
+   * Also distinct from `worked-with-directly`, which is the PAST tense of this
+   * and stays on the companies whose relationship has ended.
+   */
+  | "works-with";
 
 export const VENDOR_RELATIONSHIPS: readonly VendorRelationship[] = [
   "red-education-partner",
   "authorized-instructor",
   "worked-inside",
   "worked-with-directly",
+  "works-inside",
+  "works-with",
 ] as const;
 
 export interface PartnerVendor {
@@ -411,8 +447,10 @@ export const partnerVendors: PartnerVendor[] = [
     // SIXDEGREES - added 2026-07-28 (PRIME: "mark the beginning of social
     // media"). A company with a real founding year, so it earns a timeline
     // entry where a general "social media begins" marker would not: the
-    // timeline orders by founding, and an era has no founding year.
-    // It also ENDED, so it uses the `ended` field.
+    // (A comment here previously said the founding year was not in the public
+    // record. A `founded` value now sits below it, so the comment contradicted
+    // the code and was removed 2026-08-10 - a comment asserting the opposite of
+    // the code is read as evidence.)
     slug: "sixdegrees",
     official: {
       defunct: true,
@@ -972,7 +1010,10 @@ export const partnerVendors: PartnerVendor[] = [
     // entry at his instruction.
     slug: "nv7",
     // Founded 2018, per the company's own LinkedIn profile (PRIME 2026-08-06). The entry
-    // previously carried no founding year at all.
+    // (A comment here previously said the founding year was not in the public
+    // record. A `founded` value now sits below it, so the comment contradicted
+    // the code and was removed 2026-08-10 - a comment asserting the opposite of
+    // the code is read as evidence.)
     founded: 2018,
     group: "other",
     name: "NV7 Soluções Tecnológicas",
@@ -1010,10 +1051,12 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2007,
     group: "other",
     name: "Niva",
-    // NO `founded` FIELD. The year is not in the public record, and the field
-    // is optional precisely so that it can be left out. A sentinel value here
-    // would be the Network1 mistake exactly: a field wanting a value is not a
-    // reason to supply one.
+    // (The comment that used to sit here said there was NO `founded` field,
+    // because the year was not in the public record. That stopped being true on
+    // 2026-08-06 when PRIME supplied the register entry above, and the stale
+    // comment survived beside the value that contradicted it. Removed 2026-08-10.
+    // A comment asserting the opposite of the code is worse than no comment: it
+    // is read as evidence.)
     tags: ["reseller", "services"],
     tagline: "An integrator whose partner list is a map of this timeline.",
     intro:
@@ -1718,7 +1761,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Red Education",
     founded: 2005,
-    relationships: ["worked-inside"],
+    relationships: ["works-inside"],
     tags: ["training", "services"],
     tagline: "Training is distributed the same way products are, and this is what that looks like.",
     intro:
@@ -1853,6 +1896,11 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Tech Data and SYNNEX (now TD SYNNEX)",
     founded: 1974,
+    // Independent training contractor delivering Extreme courses through TD SYNNEX
+    // Brasil, 2021-2023. `worked-with-directly` rather than `worked-inside`: a
+    // contractor is not an employee, and the career filter reads BOTH, so the entry
+    // appears under "My chapters" without the entry claiming employment.
+    relationships: ["worked-with-directly"],
     tags: ["distributor"],
     tagline: "A father sold it to his son for ten thousand dollars; it is now the largest technology distributor in the world.",
     intro:
@@ -2867,7 +2915,7 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "DevCentral community", url: "https://community.f5.com" },
       ],
     },
-    relationships: ["red-education-partner", "authorized-instructor", "worked-with-directly"],
+    relationships: ["red-education-partner", "authorized-instructor", "worked-with-directly", "works-with"],
     tags: ["vendor"],
     group: "other",
     name: "F5",
@@ -2903,7 +2951,7 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "Fortinet Document Library", url: "https://docs.fortinet.com" },
       ],
     },
-    relationships: ["red-education-partner", "authorized-instructor"],
+    relationships: ["red-education-partner", "authorized-instructor", "works-with"],
     tags: ["vendor"],
     group: "other",
     name: "Fortinet",
@@ -2934,7 +2982,7 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "Netskope Knowledge Portal", url: "https://docs.netskope.com" },
       ],
     },
-    relationships: ["red-education-partner", "authorized-instructor"],
+    relationships: ["red-education-partner", "authorized-instructor", "works-with"],
     tags: ["vendor"],
     group: "other",
     name: "Netskope",
@@ -2964,7 +3012,7 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "Ping Identity Documentation", url: "https://docs.pingidentity.com" },
       ],
     },
-    relationships: ["red-education-partner"],
+    relationships: ["red-education-partner", "works-with"],
     tags: ["vendor"],
     group: "other",
     name: "Ping Identity",
@@ -2994,7 +3042,7 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "Zscaler Help Portal", url: "https://help.zscaler.com" },
       ],
     },
-    relationships: ["red-education-partner"],
+    relationships: ["red-education-partner", "works-with"],
     tags: ["vendor"],
     group: "other",
     name: "Zscaler",
@@ -3027,13 +3075,13 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "Extreme Documentation", url: "https://supportdocs.extremenetworks.com" },
       ],
     },
-    relationships: ["red-education-partner", "authorized-instructor", "worked-with-directly"],
+    relationships: ["red-education-partner", "authorized-instructor", "worked-with-directly", "works-with"],
     tags: ["vendor"],
     group: "other",
     name: "Extreme Networks",
     founded: 1996,
     careerChapter: { slug: "extreme", years: "2013 - 2014" },
-    tagline: "Grew mostly by buying the enterprise businesses that larger companies had stopped wanting.",
+    tagline: "Networking manufacturer of enterprise switching, wireless and cloud-managed network software.",
     intro:
       "Extreme Networks was founded in 1996 in Santa Clara by Gordon Stitt, Herb Schneider and Stephen Haddock, all from SynOptics, to build Gigabit Ethernet switches for the enterprise. Its early identity was hardware-led: purpose-built silicon, a single operating system, and a deliberately narrow product line at a time when competitors sold catalogues.",
       body: [
@@ -3059,7 +3107,7 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "Check Point Support Center", url: "https://support.checkpoint.com" },
       ],
     },
-    relationships: ["red-education-partner"],
+    relationships: ["red-education-partner", "works-with"],
     tags: ["vendor"],
     group: "other",
     name: "Check Point Software Technologies",
@@ -5164,6 +5212,9 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Baguete - CYLK, HighCast and InLearn form Grupo IHC, founded 2003", url: "https://www.baguete.com.br/noticias/cylk-tem-novo-diretor-de-operacoes" },
       { label: "CYLK - company site (information security and cybersecurity; GRC, privacy, awareness, pentest, assessments)", url: "https://www.cylk.com.br/" },
     ],
+    // Employed here 2010-2011 and again in 2020. The entry carried NO relationship
+    // at all, so it never appeared under "My chapters" (PRIME 2026-08-11).
+    relationships: ["worked-inside"],
     tags: ["reseller", "services"],
     group: "contemporary",
     name: "CYLK - security integration, Sao Paulo",
@@ -5179,6 +5230,9 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "TDec Network Group - company site (\u201cmore than 30 years\u201d in cybersecurity, corporate networks and global IT; Brazil, United States and Portugal)", url: "https://www.tdec.com.br/" },
     ],
+    // Employed here 2013-2014. Same omission as CYLK - these entries were written as
+    // COMPANY HISTORY and nobody attached the career fact (PRIME 2026-08-11).
+    relationships: ["worked-inside"],
     tags: ["reseller", "services"],
     group: "contemporary",
     name: "TDec Network Group - networks and security, three countries",
@@ -5203,7 +5257,7 @@ export const partnerVendors: PartnerVendor[] = [
     relationships: ["worked-with-directly"],
     name: "InLearn - official training, Brazil",
     founded: 2002,
-    tagline: "The authorised training centre is where a vendor's certification actually reaches a Brazilian engineer.",
+    tagline: "Brazilian authorised training centre for F5 and Fortinet courses.",
     intro: "InLearn Educa\u00e7\u00e3o Ltda was constituted on 14 April 2002, registered in Barueri in Greater S\u00e3o Paulo, and is an official training partner of Fortinet and F5, delivering the vendors' own courses and certification paths. Like TDec, it dates itself two different ways: the register says 2002, while the company presents itself as training professionals \u201csince 2008\u201d - the year its current leadership arrived. Both are recorded here.",
     body: ["An authorised training centre is the layer most vendor documentation never mentions: the vendor writes the courseware, and somebody local has to schedule it, staff it with certified instructors and put working labs in front of people. That matters more in a market like Brazil than the org chart suggests - a certification that exists only in English, only across a currency barrier and only in another time zone is one most local engineers will not get.", "InLearn belongs to Grupo IHC, founded in 2003, alongside HighCast and CYLK - which means two companies in this encyclopedia are sister businesses in the same group."],
     externalUrl: "https://www.inlearn.com.br/",
@@ -5221,7 +5275,7 @@ export const partnerVendors: PartnerVendor[] = [
     relationships: ["worked-with-directly"],
     name: "Versim - distribution and training, Poland",
     founded: 2005,
-    tagline: "A distributor that also teaches, which is the combination that makes a vendor's certification travel.",
+    tagline: "Polish distributor and authorised training centre for Extreme Networks.",
     intro: "Versim has been on the Polish market since 2005 and is, by turnover, one of the largest distributors of network solutions there. It distributes advanced networking and IT security technologies, wired and wireless, from Pozna\u0144 - and since 2016 has also run an Authorized Training Center, certified for Extreme Networks, Techstep and Gigaset Pro.",
     body: ["A distributor with a training arm has an incentive most training organisations lack: it has to live with whether the engineers it certified can actually deploy what it sold them. The feedback loop between the classroom and the support queue is short, which tends to show in the courseware."],
     externalUrl: "https://versim.pl/",
@@ -5410,7 +5464,8 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "micom",
     sources: [
-      { label: "James L. Pelkey, A History of Computer Communications 1968-1988 - the American Data Systems collapse of 1970-72 and its re-emergence as Micom, from the oral-history interviews", url: "https://historyofcomputercommunications.info/" },
+      { label: "Pelkey, \u00a75.11 \u2014 ADS Falls on Hard Times 1971-1972", url: "https://historyofcomputercommunications.info/section/5.11/ADS-Falls-on-Hard-Times-1971-1972/" },
+      { label: "Pelkey, \u00a77.6 \u2014 ADS Rebirth as Micom 1973-1976", url: "https://historyofcomputercommunications.info/section/7.6/ADS-Rebirth-as-Micom-1973-1976/" },
       { label: "Micom - telecommunications equipment manufacturer known for concentrators; founded by Stephen Bernard Dorsey in 1975, sold to Philips NV in 1984, acquired Spectrum Digital in 1987", url: "https://en.wikipedia.org/wiki/Micom" },
     ],
     tags: ["vendor"],
@@ -5420,7 +5475,7 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Fewer leased lines for the same number of terminals, which is an argument a finance director understands.",
     intro: "Micom was founded in 1975 by Stephen Bernard Dorsey and built its business on data concentrators - equipment that let many terminals share one circuit instead of each needing its own. It was sold to Philips in 1984 and acquired Spectrum Digital in 1987.",
     body: [
-      "James L. Pelkey's history of computer communications records an earlier chapter than the corporate register does: American Data Systems came apart between 1970 and 1972 and the enterprise re-emerged as Micom, which went on to be one of the era's larger successes. That is the rarer shape in this timeline - most entries here were acquired and absorbed, and a company that failed and came back under another name is a different story. The account is Pelkey's, from the oral-history interviews, and is attributed to him because no corporate record reachable here carries it.",
+      "James L. Pelkey's history of computer communications records an earlier chapter than the corporate register does: American Data Systems came apart between 1970 and 1972 and the enterprise re-emerged as Micom, which went on to be one of the era's larger successes. That is the rarer shape in this timeline - most entries here were acquired and absorbed, and a company that failed and came back under another name is a different story. The account is Pelkey's, and his history gives it two numbered sections - the collapse at \u00a75.11 and the rebirth at \u00a77.6 - which is a more precise citation than the corporate register offers, since no register reachable here carries the connection at all.",
       "The concentrator is the clearest case in this period of a product sold on arithmetic rather than on capability. A leased line was a recurring cost and terminals were idle most of the time; a box that let eight terminals share one line paid for itself against the line rental, and the technical argument barely had to be made.",
       "That shape recurs constantly in networking and is worth recognising: the products that spread fastest are usually the ones whose benefit can be written as a subtraction on somebody's monthly bill.",
     ],
@@ -5480,6 +5535,532 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Bridge_Communications",
     externalLabel: "Bridge Communications",
+  },
+
+  // ---- Backlog batch 1 (PRIME 2026-08-11): the firewall-policy cluster plus
+  // DDI and mail. Every source fetched this turn; AlgoSec, FireMon and Skybox
+  // have no Wikipedia article and are cited to their own sites. Skybox's own
+  // domain now serves a Tufin page, which is how the absorption is visible. ----
+  {
+    slug: "tufin",
+    sources: [
+      { label: "Tufin - software company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Tufin" },
+      { label: "skyboxsecurity.com now serves a Tufin page welcoming Skybox customers", url: "https://www.skyboxsecurity.com/", sourceNote: "Fetched 2026-08-11: the domain resolves to a Tufin transition page, which is how the absorption is visible from outside." },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Tufin - firewall policy, read back to you",
+    tagline: "A company whose product is understanding the rules you already wrote.",
+    intro: "Tufin builds software that analyses, visualises and changes firewall policy across a mixed estate. The market it sits in exists for one reason: past a few hundred rules, written by several people over several years, nobody can say with confidence what a firewall permits - and the device itself will not tell you, because it answers the question it was asked rather than the question you meant.",
+    body: [
+      "The category's honest description is unflattering to everyone in it. These are products sold because a control an organisation already owns has become unreadable, and the alternative to buying one is an engineer with a spreadsheet and a change window. That is not a failure of firewalls; it is what happens to any ruleset that outlives the people who wrote it.",
+      "In 2026 the Skybox domain resolves to a Tufin page welcoming Skybox customers, which is the usual ending in this segment: four companies competing to explain the same estates, consolidating into fewer.",
+    ],
+    externalUrl: "https://www.tufin.com/",
+    externalLabel: "Tufin",
+  },
+  {
+    slug: "algosec",
+    sources: [
+      { label: "AlgoSec - company site (AlgoSec Horizon Platform; automating application connectivity and security policy)", url: "https://www.algosec.com/" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "AlgoSec - policy from the application's point of view",
+    tagline: "Asks which application a rule serves, which is the question the rule does not record.",
+    intro: "AlgoSec works the same estates as the rest of this cluster and frames the problem differently: rather than starting from the rule, it starts from the application and asks what connectivity that application needs. Its own material describes automating application connectivity alongside security policy.",
+    body: [
+      "The framing matters more than it sounds. A firewall rule records addresses, ports and an action; it does not record why it exists or which service breaks if it is removed. That missing field is the reason nobody deletes rules - the risk of removing a rule that turns out to matter is concrete, and the benefit of a shorter list is abstract.",
+      "Anything that reattaches rules to the applications behind them is attacking that asymmetry, which is the only thing that makes cleanup possible at all.",
+    ],
+    externalUrl: "https://www.algosec.com/",
+    externalLabel: "AlgoSec",
+  },
+  {
+    slug: "firemon",
+    sources: [
+      { label: "FireMon - company site (firewall policy management platform, real-time visibility)", url: "https://www.firemon.com/" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "FireMon - watching the policy change",
+    tagline: "The value is not the audit; it is noticing the day after the audit.",
+    intro: "FireMon's platform manages firewall policy with an emphasis on real-time visibility, which is the axis that separates the products in this cluster: not what the ruleset looks like today, but what changed and who changed it.",
+    body: [
+      "A point-in-time audit describes an estate that stops being accurate the moment somebody makes an emergency change at two in the morning. The rules that cause incidents are rarely the ones reviewed; they are the ones added under pressure and never revisited, and they are invisible to any process that samples quarterly.",
+      "That is the operational argument for continuous policy monitoring, and it is the same argument as change tracking anywhere else: the dangerous state is not the one you inspected, it is the one that arrived afterwards.",
+    ],
+    externalUrl: "https://www.firemon.com/",
+    externalLabel: "FireMon",
+  },
+  {
+    slug: "skybox",
+    sources: [
+      { label: "skyboxsecurity.com - now a Tufin page welcoming Skybox customers", url: "https://www.skyboxsecurity.com/", sourceNote: "Fetched 2026-08-11. The company's own domain is the evidence of its absorption, which is a common and underused primary source for this kind of ending." },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Skybox Security - attack paths, and an ending",
+    tagline: "Modelled how an attacker would traverse the network you documented, and was absorbed by a competitor.",
+    intro: "Skybox Security built network modelling and vulnerability-management software whose distinguishing idea was the attack path: rather than listing vulnerabilities by severity, it asked which of them an attacker could actually reach given the network's own topology and rules.",
+    body: [
+      "That question is the right one and it is why severity alone is a poor prioritiser - a critical vulnerability on a host nothing can route to is a different problem from a moderate one on a host exposed to the internet. Modelling the path between them requires knowing the topology, the rules and the addresses at the same time, which is why this company sat in the same market as the policy-management vendors.",
+      "As of 2026 its domain serves a Tufin page directed at Skybox customers. The entry is kept because the idea outlived the company, and because a vendor's own website is often the first place an acquisition becomes visible to the people who depended on it.",
+    ],
+    externalUrl: "https://www.skyboxsecurity.com/",
+    externalLabel: "Skybox Security",
+  },
+  {
+    slug: "infoblox",
+    sources: [
+      { label: "Infoblox - American technology company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Infoblox" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Infoblox - DDI, and why it is one product",
+    tagline: "DNS, DHCP and address management are three protocols and one source of truth.",
+    intro: "Infoblox builds DDI - the industry's contraction for DNS, DHCP and IP address management sold as one system. The contraction exists because the three cannot honestly be operated apart: an address is allocated by DHCP, recorded in address management, and made findable by DNS, and any of them disagreeing with the others produces a fault that appears somewhere else entirely.",
+    body: [
+      "The failure this addresses is mundane and constant. A spreadsheet of subnets, a DHCP scope edited by hand and a DNS zone maintained separately will diverge, and the divergence surfaces as a duplicate address, an unresolvable host, or a lease handed out for a network that was decommissioned last year.",
+      "It is also the reason DDI appliances end up holding an unglamorous kind of authority: once the three are unified, the system that allocates addresses becomes the record of what exists on the network, which is a heavier responsibility than the product category suggests.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Infoblox",
+    externalLabel: "Infoblox",
+  },
+  {
+    slug: "proofpoint",
+    sources: [
+      { label: "Proofpoint - American cybersecurity company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Proofpoint" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Proofpoint - the mail gateway, still",
+    tagline: "Email remained the way in long after the industry stopped finding it interesting.",
+    intro: "Proofpoint built its business on email security at a time when the attention of the field was moving elsewhere. That timing turned out to be the point: email stayed the most common initial access vector through two decades of newer and more interesting attack surfaces.",
+    body: [
+      "The category is unfashionable in a specific way worth noting. A mail gateway is judged on what it silently prevented, and prevention produces no event anybody celebrates - while a false positive produces an angry executive whose invoice was quarantined. The incentive gradient runs against the control, and estates loosen mail filtering in response to complaints far more often than they tighten it after an incident.",
+      "That asymmetry, rather than any technical development, is why the same attack shape keeps working.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Proofpoint",
+    externalLabel: "Proofpoint",
+  },
+
+  // ---- Backlog batch 2 (2026-08-11). SailPoint has no Wikipedia article (404)
+  // and is cited to its own site with a sourceNote saying so. Flipside is cited
+  // through ROADSEC's site, which names its CEO, because flipside.org returned
+  // 503 - the connection is sourced, the company's own domain is not. ----
+  {
+    slug: "italtel",
+    sources: [
+      { label: "Italtel - Italian telecommunications equipment and ICT company founded in 1921, originally a branch of Siemens AG; Milan", url: "https://en.wikipedia.org/wiki/Italtel" },
+      { label: "Italtel - company site", url: "https://www.italtel.com/" },
+    ],
+    tags: ["vendor", "services"],
+    group: "other",
+    name: "Italtel - a century of somebody else's telephone network",
+    founded: 1921,
+    tagline: "Founded as a Siemens branch in 1921, and still building networks a hundred years later under different owners.",
+    intro: "Italtel began in 1921 as an Italian branch of Siemens and became one of the national champions that built Italy's telephone infrastructure - the pattern almost every European country repeated with a domestic manufacturer tied to its state operator. It is still trading, now an ICT and network integration business, and its shareholder list has been rewritten repeatedly.",
+    body: [
+      "The European national-champion model is worth understanding because it produced a different industry from the American one this timeline mostly documents. A manufacturer whose principal customer is the state telephone monopoly optimises for that relationship: long product cycles, deep integration with one operator's practices, and engineering aimed at a specification rather than at a market.",
+      "What happens to such firms when the monopoly ends is the interesting part, and Italtel is a hundred-year worked example of it - surviving by becoming an integrator of other people's equipment rather than remaining a manufacturer of its own.",
+    ],
+    externalUrl: "https://www.italtel.com/",
+    externalLabel: "Italtel",
+  },
+  {
+    slug: "barracuda",
+    sources: [
+      { label: "Barracuda Networks - American software company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Barracuda_Networks" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Barracuda Networks - security for the estates nobody writes about",
+    tagline: "Built a business where the budget is small, the staff is one person, and the threat is identical.",
+    intro: "Barracuda sells email, network and application security into the mid-market: organisations with the same attackers as a bank and a fraction of the staff. That positioning is a genuine engineering constraint rather than a marketing segment, because a product for an estate with no dedicated security team has to work correctly on its defaults.",
+    body: [
+      "Most security tooling assumes somebody will tune it. The mid-market's defining condition is that nobody will - the person responsible also runs the servers, the backups and the helpdesk - so a control that requires attention to be effective will drift into being decorative.",
+      "That is the part of the market where the gap between a product working and a product being operated is widest, and it is under-documented precisely because the people living it do not write conference talks.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Barracuda_Networks",
+    externalLabel: "Barracuda Networks",
+  },
+  {
+    slug: "logrhythm",
+    sources: [
+      { label: "LogRhythm - American security intelligence company (Wikipedia)", url: "https://en.wikipedia.org/wiki/LogRhythm" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "LogRhythm - the SIEM problem, stated honestly",
+    tagline: "Collecting everything is easy; the cost is that somebody has to read it.",
+    intro: "LogRhythm builds security information and event management - the category that centralises logs from an estate and tries to turn them into detections. The technology is well understood and the failure mode is organisational: a SIEM is only as good as the attention it receives, and attention is the scarcest resource in any security team.",
+    body: [
+      "The economics are the part worth knowing. Ingesting more data improves detection and increases both cost and noise, so every SIEM deployment converges on the same argument about what not to collect - an argument that is usually settled by licensing rather than by threat modelling.",
+      "And the failure is quiet: an alert nobody triages is indistinguishable from an alert that never fired, which is why SIEM maturity is measured in closed cases rather than in sources connected.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/LogRhythm",
+    externalLabel: "LogRhythm",
+  },
+  {
+    slug: "sailpoint",
+    sources: [
+      { label: "SailPoint - company site (identity security for humans, machines and agents)", url: "https://www.sailpoint.com/", sourceNote: "Cited to the company's own site: en.wikipedia.org/wiki/SailPoint returns 404, so no third-party article was available to check this against." },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "SailPoint - governance, which is the unglamorous half of identity",
+    tagline: "Authentication asks who you are. Governance asks why you still have that access.",
+    intro: "SailPoint works on identity governance - not the login, but the far larger question of who holds which entitlements, who approved them, and whether any of it is still justified. Its current material extends that to machine and agent identities, which is where the count grows fastest.",
+    body: [
+      "The problem governance addresses is cumulative rather than dramatic. Access is granted for a project, a cover, a migration, and almost never withdrawn, so an employee of ten years accumulates the union of every role they have held. Nothing fails as a result, which is exactly why it persists.",
+      "The security consequence only appears when an account is compromised, and at that moment the question is not how the attacker got in but how far the account could reach - a question decided years earlier by a series of individually reasonable approvals.",
+    ],
+    externalUrl: "https://www.sailpoint.com/",
+    externalLabel: "SailPoint",
+  },
+  {
+    slug: "supermicro",
+    sources: [
+      { label: "Supermicro - American supplier of servers and information technology equipment (Wikipedia)", url: "https://en.wikipedia.org/wiki/Supermicro" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Supermicro - the hardware underneath somebody else's brand",
+    tagline: "A great deal of infrastructure is built on boards whose maker is not on the bezel.",
+    intro: "Supermicro supplies servers, motherboards and systems, frequently as the physical substrate for products sold under other names. That position - the manufacturer behind the appliance - is common in networking and security and almost never visible to the people operating the result.",
+    body: [
+      "It matters operationally more often than it should. Firmware, baseboard management controllers and hardware errata belong to the underlying platform rather than to the badge on the front, so an advisory that concerns your appliance may be published by a company you have no relationship with.",
+      "Knowing what a device actually is - rather than what it is sold as - is the difference between reading the right security bulletin and reading none.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Supermicro",
+    externalLabel: "Supermicro",
+  },
+  {
+    slug: "conviso",
+    sources: [
+      { label: "Conviso AppSec - Brazilian application-security specialist (company site)", url: "https://www.conviso.com.br/" },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    name: "Conviso - application security, from Brazil",
+    tagline: "The part of security that has to be argued with developers rather than configured on a device.",
+    intro: "Conviso is a Brazilian application-security company, working the discipline that sits furthest from the network devices most of this timeline is about: reviewing code, testing applications, and building secure development practice inside teams that ship software.",
+    body: [
+      "Application security is structurally harder to sell than perimeter security because it cannot be installed. A firewall is bought, racked and pointed at a problem; secure development is a change in how people work, negotiated with engineers who already have deadlines, and its success is measured in defects that never reached production.",
+      "That measurement problem - proving the value of something that did not happen - is the same one the mail-gateway and policy-management entries in this timeline describe, and it is the reason the whole preventive half of security argues for its budget from a weaker position than the responsive half.",
+    ],
+    externalUrl: "https://www.conviso.com.br/",
+    externalLabel: "Conviso",
+  },
+  {
+    slug: "flipside",
+    sources: [
+      { label: "Roadsec - the festival's own site, listing Anderson Ramos as CEO of Flipside", url: "https://www.roadsec.com.br/", sourceNote: "Fetched 2026-08-11. The Flipside connection is stated on Roadsec's own speaker listing; the flipside.org domain returned 503 and was not used." },
+    ],
+    tags: ["services", "training"],
+    group: "contemporary",
+    name: "Flipside - the organisation behind Roadsec",
+    tagline: "Ran the security event that reached the people conferences usually price out.",
+    intro: "Flipside is the Brazilian organisation behind Roadsec, described on its own site as the largest hacker festival in Latin America. The site's glossary already carries Roadsec as lore; this entry names the organisation that produced it, which is how a community event acquires the continuity to happen every year.",
+    body: [
+      "Roadsec's distinguishing choice was reach rather than prestige: it toured Brazilian cities rather than concentrating in Sao Paulo, and priced itself for students. That combination decides who is in the room, and therefore who ends up in the field a decade later - which is the same argument this site's entries on training centres and the market-reserve period make from other directions.",
+      "The event's public record is uneven - its own site was last dated to a past edition when this entry was written - and that is recorded here rather than smoothed, because a community organisation's archive is usually thinner than its influence.",
+    ],
+    externalUrl: "https://www.roadsec.com.br/",
+    externalLabel: "Roadsec",
+  },
+
+  // ---- Backlog batch 3 (2026-08-11): global services, carriers and the two
+  // satellite entries, which are written as a PAIR - Hughes states the
+  // geostationary latency floor and SpaceX is what happened when the orbit
+  // changed rather than the equipment. ----
+  {
+    slug: "atos",
+    sources: [
+      { label: "Atos - French IT corporation (Wikipedia)", url: "https://en.wikipedia.org/wiki/Atos" },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    name: "Atos - the estate somebody else runs",
+    tagline: "Large-scale IT outsourcing, where the contract decides the architecture.",
+    intro: "Atos is a French IT services corporation operating at the scale where an organisation hands over the running of its infrastructure entirely. That arrangement changes engineering in a way rarely discussed: the shape of a system stops being decided by architects and starts being decided by what the service agreement priced.",
+    body: [
+      "An outsourced estate accumulates a specific kind of technical debt. Changes cost money per change, so small improvements that would be free in-house are deferred until they can be bundled, and the bundle becomes a project, and the project becomes a negotiation. The result is estates that move in large infrequent steps rather than continuously.",
+      "None of that is a criticism of the model, which exists because running infrastructure well is genuinely hard and genuinely unglamorous. It is a statement about where the decisions actually live, which is the thing an engineer joining such an estate needs to understand first.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Atos",
+    externalLabel: "Atos",
+  },
+  {
+    slug: "dxc",
+    sources: [
+      { label: "DXC Technology - American multinational IT services company (Wikipedia)", url: "https://en.wikipedia.org/wiki/DXC_Technology" },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    name: "DXC Technology - what a merger of service businesses inherits",
+    tagline: "Formed from two large IT services organisations, and therefore from their contracts.",
+    intro: "DXC Technology is a multinational IT services company formed from the combination of large existing services businesses. Merging service organisations is unlike merging product companies: what is acquired is not a catalogue but a book of long-running contracts, each with its own inherited estate, staffing model and set of promises made years earlier.",
+    body: [
+      "That is why integration in this sector is measured in years rather than quarters. Two service businesses can be legally one company and operationally two for a long time, because the contracts underneath them cannot be renegotiated on the merger's schedule - they expire on their own.",
+      "For an engineer, the practical consequence is that the badge on the pass says less than usual about which practices, tooling and escalation paths apply. The contract does.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/DXC_Technology",
+    externalLabel: "DXC Technology",
+  },
+  {
+    slug: "orange",
+    sources: [
+      { label: "Orange Group - French multinational telecommunications corporation (Wikipedia)", url: "https://en.wikipedia.org/wiki/Orange_S.A." },
+    ],
+    tags: ["carrier"],
+    group: "contemporary",
+    name: "Orange - a former state monopoly with a global enterprise arm",
+    tagline: "The other side of the European story: the operator the national champions were built to supply.",
+    intro: "Orange is a French multinational telecommunications operator, descended from the state monopoly, and it sits on this timeline as the counterpart to entries like Italtel: where the national champion manufactured, the national operator bought, and the relationship between them shaped both.",
+    body: [
+      "Its enterprise arm matters to anybody running an international network, because a multinational estate is not assembled from one carrier. It is stitched together from whichever operator holds the local licence in each country, and the party that does the stitching absorbs the incompatibilities - different SLAs, different provisioning times, different definitions of what an outage is.",
+      "That integration role is invisible on a network diagram and is often the reason a change takes six weeks in one country and six months in another.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Orange_S.A.",
+    externalLabel: "Orange",
+  },
+  {
+    slug: "dimension-data",
+    sources: [
+      { label: "Dimension Data - technology company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Dimension_Data" },
+    ],
+    tags: ["reseller", "services"],
+    group: "contemporary",
+    name: "Dimension Data - integration at continental scale",
+    tagline: "A systems integrator that grew out of one region and was absorbed into a Japanese carrier.",
+    intro: "Dimension Data built a large network integration and managed services business, and its arc is the one this timeline keeps recording from different starting points: an integrator grows past the region that produced it, becomes attractive to a carrier that wants delivery capability, and is acquired.",
+    body: [
+      "The pattern is worth naming because it explains why so few large independent integrators exist. Integration is a people business with thin margins and deep customer relationships, which is exactly what a carrier or a manufacturer wants to own - and the integrator's value to an acquirer is highest at the moment its independence is most useful to its customers.",
+      "This is the same shape as Network1 into ScanSource and Westcon into Synnex elsewhere on this timeline, at a different scale and on a different continent.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Dimension_Data",
+    externalLabel: "Dimension Data",
+  },
+  {
+    slug: "hughes",
+    sources: [
+      { label: "Hughes Network Systems - satellite internet service provider (Wikipedia)", url: "https://en.wikipedia.org/wiki/Hughes_Network_Systems" },
+    ],
+    tags: ["carrier", "vendor"],
+    group: "contemporary",
+    name: "Hughes - the network where latency is a law of physics",
+    tagline: "Geostationary satellite: about a quarter of a second each way, and nothing will fix it.",
+    intro: "Hughes Network Systems builds satellite networking, historically over geostationary satellites - and geostationary orbit imposes a constraint no engineering can remove. The orbit sits roughly 36,000 kilometres up, so a signal travels 72,000 kilometres for a round trip before anything is processed.",
+    body: [
+      "That produces a latency floor of around half a second, and it changes which protocols work. TCP's throughput depends on the round-trip time, so a connection with satellite latency and an ordinary window size cannot fill the link no matter how much bandwidth is provisioned - which is why satellite deployments have always needed acceleration, protocol spoofing, and application designs that tolerate delay.",
+      "It is the clearest case in networking of a limit that is not an engineering trade-off. Bandwidth can be bought and hardware can be upgraded; the speed of light and the height of the orbit are fixed, and every design decision above them is a response to that fact.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Hughes_Network_Systems",
+    externalLabel: "Hughes Network Systems",
+  },
+  {
+    slug: "spacex",
+    sources: [
+      { label: "SpaceX - American spaceflight company (Wikipedia)", url: "https://en.wikipedia.org/wiki/SpaceX" },
+    ],
+    tags: ["carrier"],
+    group: "contemporary",
+    name: "SpaceX - low orbit, and what it does to the latency floor",
+    tagline: "The constraint that could not be engineered away was engineered around, by moving the satellites.",
+    intro: "SpaceX operates a low-Earth-orbit satellite constellation, and its relevance to this timeline is a single number. Where geostationary orbit sits around 36,000 kilometres up, low orbit is a few hundred - which collapses the round-trip latency from roughly half a second to a range that ordinary protocols and interactive applications can work with.",
+    body: [
+      "The trade is not free and it is the reason nobody did this earlier. A satellite at that altitude is only overhead for minutes, so continuous coverage needs thousands of them, constant handover between them, and a launch economics that makes replacing the constellation routine rather than catastrophic.",
+      "Read beside the Hughes entry it makes a general point about limits: the geostationary latency floor was never a technology problem to be solved by better modems. It was a consequence of a choice of orbit, and it moved only when the choice did.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/SpaceX",
+    externalLabel: "SpaceX",
+  },
+
+  // ---- Backlog batch 4 (2026-08-11), researched under PRIME's protocol:
+  // cache-bypassed fetch of each company site, plus Brazilian specialist media.
+  // Baguete carried the Tempest ownership history AND, inside the same article,
+  // the Prosegur/Cipher transaction - which is why Cipher is written here too.
+  // Cipher has NO externalUrl: no company site was verified this turn. ----
+  {
+    slug: "tempest",
+    sources: [
+      { label: "Baguete, 1 July 2020 - Embraer takes control of Tempest; Embraer held 37% indirectly after a R$28.2m investment in 2016 via FIP Aeroespacial (Embraer and BNDES principal holders); revenue R$20m to R$120m; 300 staff in Recife, Sao Paulo and London; CEO and co-founder Cristiano Lincoln Mattos", url: "https://www.baguete.com.br/noticias/01/07/2020/embraer-compra-controle-da-tempest" },
+      { label: "Tempest - company site", url: "https://www.tempest.com.br/" },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    name: "Tempest - cybersecurity out of Recife",
+    tagline: "Brazil's largest specialist security firm, built outside the Sao Paulo axis and bought by an aircraft manufacturer.",
+    intro: "Tempest is a Brazilian cybersecurity company founded and headquartered in Recife, with offices in Sao Paulo and London. Its portfolio spans consulting, managed security services, security software integration and identity protection, and roughly half its client base sits in the financial sector - the industry that funds security work first and most consistently.",
+    body: [
+      "Two things make the trajectory worth recording. It grew from about R$20m to R$120m in revenue across four years, and it did so from Recife rather than Sao Paulo - a genuine counterexample to the assumption that Brazilian technology is a Sao Paulo story, and one that matters to anybody deciding where a career can be built.",
+      "The ownership is the other half. Embraer took a 37% indirect stake in 2016 through FIP Aeroespacial, a venture fund whose principal holders are Embraer and the BNDES, and later acquired control. That an aircraft manufacturer and a state development bank ended up owning the country's largest security specialist says more about how Brazilian technology is capitalised than any number of funding rounds would.",
+      "Tempest acquired EZ-Security in 2018, which is the transaction that made it the largest specialist in the country by consolidation rather than by growth alone.",
+    ],
+    externalUrl: "https://www.tempest.com.br/",
+    externalLabel: "Tempest",
+  },
+  {
+    slug: "cipher",
+    sources: [
+      { label: "Baguete, 1 July 2020 - notes that in 2018 Prosegur, a private-security company with more than 175,000 staff in 25 countries, signed an agreement to acquire a majority stake in Cipher", url: "https://www.baguete.com.br/noticias/01/07/2020/embraer-compra-controle-da-tempest", sourceNote: "Cipher appears here as reported context inside an article about Tempest, which is how the two Brazilian security acquisitions of that period are usually recorded together." },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    name: "Cipher - the other one that was bought",
+    tagline: "A large Brazilian security firm acquired by a physical-security multinational, two years before the same thing happened to its rival.",
+    intro: "Cipher was one of Brazil's larger cybersecurity companies until 2018, when Prosegur - a private-security multinational with more than 175,000 employees across 25 countries - signed an agreement for a majority stake.",
+    body: [
+      "Read beside the Tempest entry it makes a point neither makes alone. Within roughly two years, the two largest Brazilian specialist security firms were both bought by companies from outside the technology industry: one by an aircraft manufacturer, the other by a physical-security operator.",
+      "Both acquirers were buying the same thing - a digital capability they could not build at the speed their existing customers were asking for it. That is a specific market condition rather than a coincidence, and it is why the period saw so little Brazilian security consolidation between Brazilian technology companies.",
+    ],
+  },
+  {
+    slug: "clm",
+    sources: [
+      { label: "CLM - institutional page: a Value Added Distributor operating across Latin America with branches in Brazil, Colombia, Peru, Ecuador and the United States; Sao Paulo, Bogota, Lima, Santiago, Miami", url: "https://clm.tech/en-institutional/" },
+      { label: "Baguete - CLM as exclusive Drobo distributor in Brazil (2011), and as distributor for A10 Networks and Allot; described as a Sao Paulo distributor specialising in information security", url: "https://www.baguete.com.br/noticias/software/12/04/2011/clm-distribuidor-exclusivo-da-drobo-no-br" },
+    ],
+    tags: ["distributor"],
+    group: "contemporary",
+    name: "CLM - value-added distribution across Latin America",
+    tagline: "The layer that decides which security products a Latin American reseller can actually sell.",
+    intro: "CLM is a value-added distributor operating across Latin America - Brazil, Colombia, Peru, Ecuador and the United States - specialising in information security, infrastructure and data protection. Its line card over the years has carried Cisco Security, Sophos, Barracuda, A10 Networks, Arista, Huawei and others.",
+    body: [
+      "A distributor's catalogue is a useful historical document, and CLM's is a compact map of this timeline: several of the vendors it has represented have their own entries here, and the ones that no longer appear on its list mostly stopped existing under those names.",
+      "The regional scope is the part worth noting. Distribution is normally organised country by country because import rules, currency and channel relationships are national - so a distributor operating across five countries is absorbing five sets of those problems on behalf of resellers who could not each solve them alone.",
+    ],
+    externalUrl: "https://clm.tech/",
+    externalLabel: "CLM",
+  },
+  {
+    slug: "yssy",
+    sources: [
+      { label: "YSSY - company site: infrastructure, cloud, data, AI, observability and cybersecurity; certifications listed as ISO 9001, 14001, 20000-1, 27001, 27701 and 37001; sectors named as energy, industry, health, financial, government and technology", url: "https://yssy.com.br/" },
+    ],
+    tags: ["services", "reseller"],
+    group: "contemporary",
+    name: "YSSY - integration with the certificates to prove it",
+    tagline: "A Brazilian integrator whose public face is a list of standards it holds.",
+    intro: "YSSY is a Brazilian technology company covering infrastructure, cloud, data, observability and cybersecurity, working sectors where continuity is regulated rather than merely desirable - energy, health, financial services and government.",
+    body: [
+      "What distinguishes its public presentation is the certification list: ISO 9001, 14001, 20000-1, 27001, 27701 and 37001 - quality, environment, IT service management, information security, privacy and anti-bribery. That combination is not a marketing choice so much as an entry requirement, because the buyers in those sectors cannot contract with a supplier who lacks them.",
+      "It is a useful illustration of how the Brazilian enterprise market actually gates suppliers. In segments where an auditor reviews the supply chain, a certificate is not evidence of quality to an engineer - it is permission to bid, and firms organise around obtaining it.",
+    ],
+    externalUrl: "https://yssy.com.br/",
+    externalLabel: "YSSY",
+  },
+
+  // ---- Backlog batch 5 (2026-08-11). SERPRO had NO ENTRY despite being named
+  // in PRIME's own Cisco chapter as a customer he served - found by checking,
+  // not by the backlog. Dataprev surfaced inside a search for something else.
+  // Binario is deliberately SHORT: no third-party source exists, and the entry
+  // says so rather than padding. ----
+  {
+    slug: "serpro",
+    sources: [
+      { label: "Servico Federal de Processamento de Dados (Serpro) - Brazilian IT services public company", url: "https://en.wikipedia.org/wiki/Serpro" },
+      { label: "Serpro - official site", url: "https://www.serpro.gov.br/" },
+    ],
+    tags: ["services", "datacentre"],
+    group: "other",
+    relationships: ["worked-with-directly"],
+    name: "Serpro - the federal government's data processing",
+    founded: 1964,
+    tagline: "Runs the systems a Brazilian citizen cannot opt out of.",
+    intro: "Serpro is the Brazilian federal government's data processing service, and it operates the category of system that has no competitor and no acceptable downtime: tax collection, foreign trade, federal registries. When a system like that is unavailable, the alternative is not a different supplier - it is that the function of government stops for the day.",
+    body: [
+      "That constraint produces a different engineering culture from the commercial estates most of this timeline documents. Change is slow because a failed change has no commercial consequence and a constitutional one; systems live for decades because replacing them requires the country to keep operating during the replacement; and the platform choices of the 1970s and 1980s are still present because nothing forced them out.",
+      "It also sits at the centre of Brazil's national computing story. The market-reserve period was justified partly by the argument that a country should not depend on foreign suppliers for exactly these systems, and Serpro is what that argument was built around.",
+    ],
+    externalUrl: "https://www.serpro.gov.br/",
+    externalLabel: "Serpro",
+  },
+  {
+    slug: "dataprev",
+    sources: [
+      { label: "Dataprev - Brazilian public company; founded 4 November 1974; Brasilia; operates CNIS, Caged, SINE, CTPS and other social-security systems", url: "https://en.wikipedia.org/wiki/Dataprev" },
+    ],
+    tags: ["services", "datacentre"],
+    group: "other",
+    name: "Dataprev - social security as a computing problem",
+    founded: 1974,
+    tagline: "Formed from the merged data centres of the social security institutes, and still holding the record of who is owed what.",
+    intro: "Dataprev was created in 1974 from the merger of the data processing centres of Brazil's social security institutes, and it runs the systems that decide whether a pension is paid. Its records are the national employment and contribution history, which makes it one of the few systems whose correctness is directly a person's income.",
+    body: [
+      "The scale is easy to state and hard to appreciate: a benefit calculation depends on a contribution history that may span fifty years, recorded by institutions that no longer exist, on formats that changed repeatedly. Every migration in that estate carries the risk of losing somebody's working life.",
+      "It belongs on this timeline beside Serpro because the two together are what Brazilian state computing actually is - not a policy, but two organisations holding records that predate most of the technology used to hold them.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Dataprev",
+    externalLabel: "Dataprev",
+  },
+  {
+    slug: "nava",
+    sources: [
+      { label: "Nava - company site: formed from the merger of business units, founded originally as Unicom (infrastructure, data centres, connectivity), with FlexVision created for IT platform development and infrastructure operations", url: "https://nava.com.br/en/who-we-are/" },
+      { label: "Company listing describing Nava as the result of the merger of FlexVision and Unicom, with sector expertise in payments, telecommunications, financial services and industry", url: "https://programathor.com.br/companies/5632" },
+    ],
+    tags: ["services", "reseller"],
+    group: "contemporary",
+    name: "Nava - three companies that became one name",
+    tagline: "Unicom built the infrastructure, FlexVision built the software, and the merged company had to be both.",
+    intro: "Nava is the result of merging business units that started as separate companies: Unicom, working in infrastructure, data centres and connectivity, and FlexVision, created for the development and support of IT platforms and infrastructure operations. Its sector expertise sits in payments, telecommunications, financial services and industry.",
+    body: [
+      "The combination describes a real change in what Brazilian enterprise buyers wanted. An organisation that once bought infrastructure from one supplier and software from another increasingly wanted one accountable party for a system that spans both - and the merger of an infrastructure company with a software one is the supply side answering that.",
+      "It also explains why the corporate record for firms like this is confusing: the legal entities persist under their original names in registries and court filings long after the brand has been unified, which is exactly what makes them hard to research and easy to leave out of a timeline.",
+    ],
+    externalUrl: "https://nava.com.br/",
+    externalLabel: "Nava",
+  },
+  {
+    slug: "binario",
+    // CORRECTED 2026-08-11. The first version of this entry was written from
+    // binario.com.br - a custom software house - and described the wrong
+    // company. PRIME supplied binario.net. THE LESSON: a .com.br and a .net can
+    // be different companies sharing a common Portuguese word, and the site
+    // fetch that "confirms" a name confirms only that A company holds it.
+    sources: [
+      { label: "Binario.net - company site (network integration: routing and switching, application and content delivery, data centre, security, wireless)", url: "https://www.binario.net/quem-somos/" },
+      { label: "Binario.net - Juniper Networks partnership: Juniper chosen at the start of Binario's activities, when it began as a network integrator for the IP world; described in 2015 as the largest Juniper integrator in the country with the most certifications; QoS also operates as a Juniper training centre for Latin America; 160 staff and five branches", url: "https://www.binario.net/blog/servicos-profissionais/juniper-uma-parceria-de-resultados/" },
+      { label: "Inforchannel, April 2018 - Grupo Binario named Juniper Networks Services Partner of the Year 2017 for the Americas; operating with Juniper since the start of its activities in Brazil in 2005, implementing networks for the main telecommunications operators; Elite partner level", url: "https://inforchannel.com.br/2018/04/26/grupo-binario-e-premiado-parceiro-de-servicos-2017-na-regiao-cala-pela-juniper-networks/" },
+    ],
+    tags: ["reseller", "services", "training"],
+    group: "contemporary",
+    relationships: ["worked-with-directly"],
+    founded: 2005,
+    name: "Grupo Binario - the Juniper integrator, and its training arm",
+    tagline: "Chose one vendor at founding and built a certification pipeline around it.",
+    intro: "Grupo Binario was created in Sao Paulo in 2005 as a network integrator for the IP world, and it chose Juniper Networks at the start rather than assembling a multi-vendor catalogue. That decision defined everything after it: implementing networks for the major Brazilian telecommunications operators, and by 2015 being described as the largest Juniper integrator in the country with the highest number of certified engineers.",
+    body: [
+      "The group organised into divisions - Binario for integration and QoS for professional services, with a mobility division alongside them for a period - and reached around 160 staff across five branches, serving service providers, enterprises, government and education.",
+      "The single-vendor commitment is the part worth understanding. An integrator that spreads across vendors hedges its risk and dilutes its depth; one that commits gets the certifications, the escalation path and the awards, and accepts that its fortunes are tied to a manufacturer's. The awards followed - Services Partner of the Year 2017 for the Americas, and the partner tiers that only open above a certification threshold - and so did the exposure, when Juniper was later acquired.",
+    ],
+    externalUrl: "https://www.binario.net/",
+    externalLabel: "Binario.net",
+  },
+
+  // ---- QoS, added 2026-08-11 from the sources PRIME supplied. It belongs with
+  // the training cluster: a vendor-authorised training centre run from inside an
+  // integrator, teaching since 2006. No externalUrl - QoS has no separate site
+  // that was verified this turn; it is reached through Grupo Binario. ----
+  {
+    slug: "qos-training",
+    sources: [
+      { label: "Portal Information Management, November 2016 - QoS, a Grupo Binario company, offering Juniper certification on the same date and site as the training; teaching the manufacturer's certification courses since 2006, with 3,208 students by then; quotes Bruno Carvalho, senior systems engineer", url: "https://docmanagement.com.br/05/11/2016/qos-empresa-do-grupo-binario-oferece-certificacao-juniper/" },
+      { label: "OverBR, November 2013 - QoS as the Grupo Binario services division and the first partner in Latin America to migrate to Juniper Partner Support Services; around 200 Juniper certifications across the group; services span IP routing architecture, multicast, MPLS and VPN, end-to-end network security and assisted operation", url: "https://overbr.com.br/midia-corporativa/qos-e-primeiro-parceiro-da-america-latina-a-migrar-para-o-juniper-partner-support-services" },
+    ],
+    tags: ["training", "services"],
+    group: "contemporary",
+    relationships: ["worked-with-directly"],
+    name: "QoS - a Juniper training centre for Latin America",
+    tagline: "Teaching the manufacturer's certification courses since 2006, from inside an integrator.",
+    intro: "QoS is the professional-services division of Grupo Binario, and it has operated as a Juniper training centre for Latin America - delivering the manufacturer's certification courses since 2006, with more than three thousand students by 2016.",
+    body: [
+      "A training centre run from inside an integrator is a specific arrangement with a specific advantage: the instructors are the engineers who implement the networks, so the course material is tested against deployments rather than only against a curriculum. It has a matching risk, which is that teaching capacity competes with billable project work for the same people.",
+      "One detail from its 2016 announcement is worth keeping because it describes a real friction in certification: students previously finished a course and then travelled elsewhere to sit the exam, adding cost and delay. Offering the exam at the same place and on the same date removed a gap that had nothing to do with learning and everything to do with logistics - which is the kind of problem that decides how many engineers a country actually certifies.",
+    ],
   },
 ];
 

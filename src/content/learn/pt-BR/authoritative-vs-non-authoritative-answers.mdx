@@ -7,8 +7,8 @@ relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags"]
 category: networking
 order: 48
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Quando o nslookup imprime `Non-authoritative answer:` antes de um resultado, ele está lhe dizendo algo específico sobre de onde essa resposta veio.
@@ -26,3 +26,12 @@ Para consultas do dia a dia, uma resposta não autoritativa é exatamente o que 
 ## Obtendo uma resposta autoritativa
 
 Se você precisa da verdade atual, contorne o cache e pergunte a um servidor autoritativo diretamente. Encontre os servidores de nomes da zona (uma consulta NS), depois consulte um deles: no nslookup, execute `server ns1.example.com.` e então o nome; no dig, use `dig @ns1.example.com example.com`. A resposta virá sem o marcador não autoritativo (e no dig, com a flag `aa` definida), dizendo que você está olhando para a própria zona, e não para a cópia em cache de alguém.
+
+
+## Autoritativo é sobre procedência, não sobre acerto
+
+Uma resposta autoritativa vem de um servidor que guarda a zona; uma não autoritativa vem de um cache. **Nenhum dos rótulos diz que a resposta está certa.**
+
+Um servidor autoritativo pode servir uma zona editada errado há uma hora e responder com total confiança. Uma resposta em cache pode estar perfeitamente correta e apenas velha. As palavras descrevem **de onde o dado veio**, e correção é outra pergunta, que o protocolo não responde.
+
+Onde isso importa é no tempo. **Depois de uma mudança, só o servidor autoritativo diz se a mudança está no ar**; todo resolvedor do caminho continuará servindo o que guarda até o TTL expirar — e isso não é falha para escalar, é o desenho funcionando.

@@ -7,8 +7,8 @@ relatedTools: ["xml-decoder"]
 relatedArticles: ["reading-xml-structure", "xml-namespaces-explained", "cdata-comments-and-processing-instructions"]
 category: encoding
 order: 62
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Two different words get used for "correct" XML, and they mean different things. Confusing them leads to a lot of wasted debugging.
@@ -32,3 +32,12 @@ A document that breaks any of these is **not well-formed**, and a conforming XML
 ## Why the distinction matters
 
 The key relationship is that validity presupposes well-formedness but not the reverse. A document can be perfectly well-formed and still invalid against a schema, and most tools that "parse" XML only check well-formedness unless you explicitly ask them to validate. So when something rejects your XML, the first question is which bar it failed: a well-formedness error is a syntax mistake in the document itself, while a validity error means the syntax is fine but the content does not match the schema it was checked against. They are fixed in different places.
+
+
+## Well-formed is a low bar, and passing it proves less than it seems
+
+Well-formedness says the document is parseable: tags balance, one root, characters escaped. **It says nothing about whether the content means anything**, and a system that accepts any well-formed document is accepting a very large set.
+
+The gap that matters operationally is between **well-formed** and **valid**. Validation against a schema is what rejects a document with the right shape and the wrong contents — an unexpected element, a value outside its range, a required field absent.
+
+**Most XML handling errors in production are documents that parsed perfectly.** They arrived well-formed, were accepted, and failed somewhere downstream where the assumption they violated was never written as a rule.

@@ -7,8 +7,8 @@ relatedTools: ["ssrf-url-classifier"]
 relatedArticles: ["private-vs-public-ip-ranges", "what-is-ssrf", "ssrf-defenses-allowlists"]
 category: security
 order: 90
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 `127.0.0.1` is only the most familiar way to write loopback. The classic C function `inet_aton`, and the address parsers that follow its rules, accept several other spellings, and browsers and many HTTP libraries quietly normalize them. A blocklist that contains the string `127.0.0.1` misses every one of them.
@@ -28,3 +28,12 @@ Every form above resolves to the same internal address, but each is a different 
 ## Decode first, then classify
 
 The reliable move is to parse the host into its numeric value and classify that value against the reserved ranges, exactly as this tool does. Once `2130706433`, `0x7f000001`, and `127.1` are all reduced to the same 32-bit number, they all land in `127.0.0.0/8` and are flagged together. Normalization removes the attacker's freedom to respell the target.
+
+
+## Parse, then judge — never match text
+
+The lesson under all the spellings is one rule: **a blocklist that compares strings is comparing the wrong thing.** `127.0.0.1`, `2130706433`, `0177.0.0.1` and `127.1` are four texts and one address, and the parser downstream will agree on the address long after your check disagreed on the text.
+
+So the order matters and it is not the intuitive one. **Normalise the input into a real address object first, then apply policy to that object** — is it loopback, is it link-local, is it private, is it in the allowed set. A check written the other way round is testing your imagination against the attacker's.
+
+The same reasoning covers what you have not thought of. **IPv6 brings its own spellings** — `::1`, `::ffff:127.0.0.1`, zero-compression — and a parser handles all of them for free, while a pattern list has to be extended by somebody who remembered.

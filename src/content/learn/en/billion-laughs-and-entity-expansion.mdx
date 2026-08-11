@@ -7,8 +7,8 @@ relatedTools: ["xml-decoder"]
 relatedArticles: ["xxe-and-external-entities", "xml-well-formedness", "reading-xml-structure"]
 category: security
 order: 61
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Not every XML attack tries to read your files. Some just try to knock the parser over, and the classic way to do it is entity expansion, best known as the **billion laughs** attack.
@@ -35,3 +35,12 @@ The attack exploits the same entity mechanism behind XXE (XML External Entity), 
 ## The defense
 
 Two defenses apply, and the stronger one is familiar. Parsers can impose **expansion limits**, capping the total number of entity expansions or the resulting size and aborting when the cap is hit, which many modern parsers now do by default. But the cleaner answer is the same as for XXE: **refuse to process the DOCTYPE at all**. Entities can only be declared in a DOCTYPE, so a parser that rejects DOCTYPE declarations for untrusted input cannot be handed an expansion bomb in the first place. This is why a safe XML inspector flags any document that declares entities referencing other entities as an expansion risk, and reports it without ever performing the expansion. The signal to watch for is entities defined in terms of other entities, chained more than a level deep.
+
+
+## A denial of service that arrives as a valid document
+
+Nothing about the attack is malformed. The document is well-formed XML, the entities are legal, and the parser is doing precisely what the specification describes. **The failure is in arithmetic, not in validation** — ten nested entities each referencing the previous ten times is a billion expansions from a few hundred bytes.
+
+This is why input-size limits feel like protection and are not. **The dangerous property is the ratio, not the size**, and a payload small enough to pass any reasonable byte limit can exhaust memory on expansion.
+
+The defences that work are structural: **disable entity expansion**, or cap the expansion count and total expanded size at the parser. Both are settings on the object that does the work, which is the same place XXE is fixed — and for the same reason.

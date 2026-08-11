@@ -7,8 +7,8 @@ relatedTools: ["dig-output-explainer"]
 relatedArticles: ["dns-message-header-and-flags", "dns-record-types-in-answers", "edns-and-the-opt-pseudosection", "dnssec-records-in-dig"]
 category: networking
 order: 40
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 `dig` prints a DNS message in a stable, top-to-bottom layout. Learning that layout is most of the skill: every answer, whether a clean lookup or a puzzling failure, uses the same blocks in the same order.
@@ -44,3 +44,17 @@ For a failure, start at the status. `NOERROR` with an answer record is the happy
 The other early tell is the flags line. `aa` means the answering server is authoritative. `ra` tells you the server offers recursion. `tc` means the UDP answer was truncated and dig will normally retry over TCP; if you see it, the UDP result you are reading is incomplete.
 
 The rest of this series takes each block in turn: the header and flags, the record types you see in answers, the EDNS OPT pseudo-section, and the DNSSEC records.
+
+
+## NOERROR with zero answers is the one people misread
+
+The header can say `status: NOERROR` while the answer section is empty:
+
+```
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1
+```
+
+**That is not success and it is not NXDOMAIN.** It is **NODATA**: the name exists, and it has no record of the type you asked for. A host with an A record but no AAAA answers exactly like this to an AAAA query.
+
+The practical consequence is that *"DNS returned NOERROR"* is not evidence a lookup worked. **Read the `ANSWER:` count, not the status**, and check the AUTHORITY section — an SOA there is the server telling you which zone denied you the record.

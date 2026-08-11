@@ -7,8 +7,8 @@ relatedTools: ["regex"]
 relatedArticles: ["regex-quantifiers-and-classes", "regex-anchors-and-boundaries", "regex-catastrophic-backtracking"]
 category: security
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Duas pessoas podem escrever o mesmo padrão e obter resultados diferentes, porque um regex é só metade da história: suas **flags** decidem como ele se comporta. Um punhado delas cobre quase tudo.
@@ -24,3 +24,12 @@ Duas pessoas podem escrever o mesmo padrão e obter resultados diferentes, porqu
 ## O par que confunde
 
 `m` e `s` soam parecidos e fazem coisas diferentes. `m` é sobre **âncoras**: onde `^` e `$` caem. `s` é sobre **o ponto**: se `.` cruza quebras de linha. Você pode querer uma, ambas ou nenhuma. Um bug frequente é recorrer a multilinha quando na verdade você precisava de dotall: você queria que `.` abrangesse linhas, mas ligou a flag que só moveu as âncoras, e o casamento ainda para na primeira quebra de linha. Quando um casamento de várias linhas não está funcionando, pergunte qual dos dois comportamentos você realmente precisa antes de adicionar uma flag.
+
+
+## Insensível a maiúsculas não é o mesmo que ciente de Unicode
+
+Uma flag de insensibilidade faz comparações ASCII se comportarem como esperado e faz muito menos do que se supõe para o resto. **O `ı` turco sem ponto, o `ß` alemão e o sigma final grego quebram a suposição de que converter para minúsculas é reversível e independente de locale.**
+
+Onde isso importa é num filtro de segurança escrito num locale e executado em outro. Um padrão que casava com uma palavra proibida em teste pode falhar contra uma grafia equivalente para um humano e diferente para o matcher — e a requisição é permitida, corretamente, por uma regra que está errada.
+
+**Se uma comparação é uma decisão de segurança, normalize deliberadamente antes de casar** em vez de delegar a uma flag cujo comportamento depende do runtime, do locale e da versão das tabelas Unicode contra as quais foi compilada.

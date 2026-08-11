@@ -7,8 +7,8 @@ relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["tmm-detail-and-peer-flows", "capturing-on-vlans-and-trunks", "bigip-tcpdump-safety"]
 category: networking
 order: 31
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O `tcpdump` em um BIG-IP é a ferramenta comum baseada em libpcap. O que muda é onde ele captura. Em um host Linux comum você indica uma NIC física ou virtual, como `eth0`. Em um BIG-IP, o tráfego é processado pelo Traffic Management Microkernel (TMM), e a interface que você normalmente quer não é uma NIC. O [construtor de tcpdump para BIG-IP](/tools/f5-bigip-tcpdump-builder) monta um comando correto a partir dessas escolhas, para você não precisar memorizar a sintaxe sob pressão.
@@ -38,3 +38,12 @@ Uma captura em `0.0` não tem limite de taxa, então em um dispositivo ocupado u
 ## Onde gravar
 
 Use `-w <arquivo>` para gravar um pcap binário que você pode abrir no Wireshark, o que é obrigatório ao enviar uma captura para o F5 Support. Salve em `/var/tmp` ou `/shared/tmp`, onde há espaço, e remova-o quando terminar.
+
+
+## A interface que você nomeia muda o que dá para ver
+
+Nomear `0.0` captura através do TMM, o que normalmente é o certo. Mas a escolha não é só sobre escopo, é sobre **que estágio do processamento você observa.**
+
+O tráfego num proxy completo existe em duas formas — lado cliente e lado servidor — e são conexões diferentes, com endereços e portas diferentes. Um filtro escrito para o endereço do cliente não casa com o fluxo do lado servidor, e quem conclui "a requisição nunca chegou ao membro do pool" a partir desse filtro não provou nada disso.
+
+**Capture os dois lados, ou capture com um filtro largo o bastante para conter ambos, e estreite depois na leitura.** Sai mais barato descartar pacotes no Wireshark do que repetir uma captura durante um incidente porque o filtro foi esperto demais.

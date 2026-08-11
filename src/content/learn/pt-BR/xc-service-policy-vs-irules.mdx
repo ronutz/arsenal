@@ -7,8 +7,8 @@ relatedTools: ["f5xc-service-policy-explainer"]
 relatedArticles: ["how-xc-service-policies-match", "xc-service-policy-predicates-and-logic", "xc-service-policy-actions-and-default-deny"]
 category: security
 order: 68
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Engenheiros que conhecem o BIG-IP muitas vezes recorrem a iRules para expressar lógica em tempo de requisição, e então procuram a mesma coisa no F5XC - F5 Distributed Cloud e não encontram. As service policies do XC resolvem grande parte do que as iRules são usadas para fazer, mas o modelo é diferente o suficiente para que uma tradução direta ajude.
@@ -34,3 +34,12 @@ Alguns padrões de iRule não têm equivalente direto, e esse é o ponto do rede
 Um hábito que vale manter das iRules: a ordem importa. Em uma política `FIRST_MATCH`, as regras são avaliadas de cima para baixo e o primeiro casamento vence, exatamente como o primeiro `return` em um bloco procedural encurta o resto. Um allow amplo perto do topo ofusca as regras específicas abaixo. Quando você lê uma política do XC, leia-a do jeito que leria uma iRule, de cima para baixo, e a avaliação vai parecer familiar mesmo que a sintaxe não seja.
 
 O explicador neste site foi feito exatamente para essa leitura: cole a política e ele expõe as regras em ordem com suas condições e ações, de modo que o formato da decisão fica visível sem decodificar JSON aninhado à mão.
+
+
+## Escolha por onde a decisão pertence, não pelo que é possível
+
+Quase tudo que uma service policy faz também dá para fazer numa iRule, o que torna capacidade um critério inútil. O critério útil é **quem vai precisar ler a regra daqui a seis meses.**
+
+Uma service policy é declarativa e inspecionável: pode ser listada, comparada, revisada por alguém que não escreve TCL, e raciocinada sem ser executada. Uma iRule é um programa — mais expressiva, e **seu comportamento só é plenamente conhecível executando.**
+
+Então a fronteira não é técnica. **Ponha na política tudo que expresse uma regra que alguém de fora do time possa ter de auditar, e reserve iRules para os casos em que a lógica realmente precisa de um programa.** Um controle de segurança que só uma pessoa consegue ler é um controle com um ponto único de falha que não é a plataforma.

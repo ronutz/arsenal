@@ -7,8 +7,8 @@ relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["bigip-tcpdump-syntax", "reading-a-bigip-capture"]
 category: networking
 order: 32
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Quando você escreve `-i 0.0:nnnp`, a parte `:nnnp` é puramente do BIG-IP. Ela faz duas coisas distintas: define um nível de detalhe e pede os dois fluxos de uma conexão. Entendê-la é o que torna uma captura no BIG-IP muito mais poderosa do que uma comum. O [construtor de tcpdump para BIG-IP](/tools/f5-bigip-tcpdump-builder) expõe isso como interruptores simples.
@@ -36,3 +36,12 @@ Isso é extremamente útil. Você pode filtrar pelo endereço do cliente que con
 ## Um padrão prático
 
 Uma captura como `-i 0.0:nnnp` com um filtro de host é um excelente ponto de partida para a maioria dos casos de LTM: detalhe alto, os dois lados, restrito a um cliente. A partir daí você pode reduzir o detalhe se o trailer ficar grande demais, ou remover o `p` se só importar um lado.
+
+
+## Sem o fluxo par, você tem duas capturas de um problema
+
+Os sufixos de detalhe acrescentam o trailer da F5, e o campo que muda o que uma captura consegue provar é o **identificador de fluxo par**. É ele que afirma que esta conexão do lado cliente e aquela do lado servidor são duas metades de uma transação.
+
+Sem ele, correlacionar é adivinhação vestida de análise: casar por tempo, por fragmentos de payload, pela suposição de que nada mais estava acontecendo. **Num virtual server movimentado essa suposição é simplesmente falsa**, e um par errado produz uma conclusão confiante sobre uma transação que nunca existiu.
+
+**Capture com detalhe suficiente para correlacionar, ou aceite que está analisando duas conversas sem relação.** A posição intermediária — uma captura com os dois lados e sem como pareá-los — é a que mais custa tempo, porque parece completa.

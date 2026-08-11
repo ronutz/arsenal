@@ -7,8 +7,8 @@ relatedTools: ["xml-decoder"]
 relatedArticles: ["billion-laughs-and-entity-expansion", "xml-well-formedness", "reading-xml-structure"]
 category: security
 order: 60
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 XML External Entity injection, XXE, is one of the most damaging XML vulnerabilities, and it grows out of a legitimate feature: entities.
@@ -38,3 +38,12 @@ The consequences follow directly. Pointing an external entity at a file path let
 ## The defense
 
 The fix is refreshingly simple: **do not process the DOCTYPE**. Nearly every XML parser has a setting to disable DOCTYPE declarations and external entity resolution entirely, and for input you did not author, that setting should be on. If a DOCTYPE is disallowed, external entities cannot be declared, and the whole class of attack disappears. This is why a security-minded XML tool inspects a document without ever resolving its entities: it reports that a DOCTYPE or an external entity is present, and treats that as a finding to flag, not an instruction to follow. Seeing a `SYSTEM` or `PUBLIC` entity in untrusted XML is a red flag on its own.
+
+
+## The parser was configured years before your code ran
+
+XXE is rarely a bug somebody wrote. It is a **default** somebody inherited: a parser whose entity resolution was enabled because that was the sensible choice when the library was designed, in an era when XML documents came from colleagues rather than from the internet.
+
+That is why the fix is almost never in the handling code and almost always in the parser construction — and why an application can be vulnerable in one deployment and safe in another **with identical source**, because the platform shipped a different default.
+
+**Find where the parser is built, not where the document is read.** And check it after every dependency upgrade, because a default that changed in your favour can change back, and nothing in a changelog is addressed to a security assumption you never wrote down.

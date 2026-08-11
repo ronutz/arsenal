@@ -7,8 +7,8 @@ relatedTools: ["xml-decoder"]
 relatedArticles: ["billion-laughs-and-entity-expansion", "xml-well-formedness", "reading-xml-structure"]
 category: security
 order: 60
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 XML External Entity injection, XXE, é uma das vulnerabilidades XML mais danosas, e ela cresce a partir de um recurso legítimo: entidades.
@@ -38,3 +38,12 @@ As consequências seguem diretamente. Apontar uma entidade externa para um camin
 ## A defesa
 
 A correção é refrescantemente simples: **não processe o DOCTYPE**. Quase todo parser XML tem uma configuração para desabilitar declarações DOCTYPE e resolução de entidades externas por completo, e para entrada que você não escreveu, essa configuração deve estar ligada. Se um DOCTYPE é proibido, entidades externas não podem ser declaradas, e toda a classe de ataque desaparece. É por isso que uma ferramenta XML consciente de segurança inspeciona um documento sem nunca resolver suas entidades: ela relata que um DOCTYPE ou uma entidade externa está presente, e trata isso como um achado a sinalizar, não uma instrução a seguir. Ver uma entidade `SYSTEM` ou `PUBLIC` em XML não confiável é um sinal de alerta por si só.
+
+
+## O parser foi configurado anos antes do seu código rodar
+
+XXE raramente é um bug que alguém escreveu. É um **padrão** que alguém herdou: um parser com resolução de entidades ligada porque essa era a escolha sensata quando a biblioteca foi projetada, numa época em que documentos XML vinham de colegas, não da internet.
+
+É por isso que a correção quase nunca está no código que trata o documento e quase sempre na construção do parser — e por que uma aplicação pode ser vulnerável numa implantação e segura em outra **com código-fonte idêntico**, porque a plataforma trouxe outro padrão.
+
+**Ache onde o parser é construído, não onde o documento é lido.** E confira depois de cada atualização de dependência: um padrão que mudou a seu favor pode mudar de volta, e nada num changelog é endereçado a uma premissa de segurança que você nunca escreveu.

@@ -7,8 +7,8 @@ relatedTools: ["f5-bigd-thread-calculator", "f5-service-check-date"]
 relatedArticles: ["bigip-21x-whats-new", "bigip-dns-request-processing-order"]
 category: networking
 order: 4
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 As partes vistosas do BIG-IP 21.x são o MCP (o Protocolo de Contexto de Modelo, do inglês Model Context Protocol) e o TLS pós-quântico; as partes que uma equipe de operações vai sentir toda semana são mais silenciosas. Este artigo reúne as mudanças de plataforma e ciclo de vida das release notes do 21.0 e do 21.1 em uma leitura operacional: como upgrades funcionam agora, o que mudou sob o capô do plano de controle e as novas regras de dimensionamento dos daemons que você de fato observa.
@@ -43,4 +43,11 @@ A migração via UCS ganha a opção `validate` no `tmsh load sys ucs ... platfo
 
 ## O portão de plataforma, mais uma vez
 
-Nada disso se aplica a iSeries ou VIPRION: o 21.x não os suporta, tentativas de instalação podem falhar no boot, e essas plataformas seguem no 17.x até suas datas de fim de suporte de software. O 21.x roda em rSeries, VELOS e Virtual Edition; um tenant vCMP pode tecnicamente ser implantado com 21.x, mas não é suportado, conforme o K4309. A [visão geral do 21.x](/learn/bigip-21x-whats-new) carrega o quadro completo de ciclo de vida em torno do núcleo operacional deste artigo.
+Nada disso se aplica a iSeries ou VIPRION: o 21.x não os suporta, tentativas de instalação podem falhar no boot, e essas plataformas seguem no 17.x até suas datas de fim de suporte de software. O 21.x roda em rSeries, VELOS e Virtual Edition; um tenant vCMP pode tecnicamente ser implantado com 21.x, mas não é suportado, conforme o [K4309](https://my.f5.com/manage/s/article/K4309). A [visão geral do 21.x](/learn/bigip-21x-whats-new) carrega o quadro completo de ciclo de vida em torno do núcleo operacional deste artigo.
+
+## Fontes
+
+Toda afirmação específica de versão acima é da própria F5, e é aqui que se deve reconferir quando a próxima versão sair.
+
+- [New Features in BIG-IP 21.0.0 - control-plane scale and MCPD efficiency](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-release-notes/big-ip-new-features/)
+- [What's new in BIG-IP v21.0 - DevCentral](https://community.f5.com/kb/technicalarticles/whats-new-in-big-ip-v21-0/344667)

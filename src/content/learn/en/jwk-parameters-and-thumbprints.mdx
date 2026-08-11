@@ -7,8 +7,8 @@ relatedTools: ["jwks-explainer"]
 relatedArticles: ["jwk-key-types", "jwks-and-key-rotation", "verifying-a-jwt-with-jwks"]
 category: identity
 order: 4
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A JWK (JSON Web Key) describes a single key as a JSON object. Alongside the raw key material are metadata parameters that tell a consumer what the key is and how to refer to it.
@@ -26,3 +26,12 @@ A JWK (JSON Web Key) describes a single key as a JSON object. Alongside the raw 
 A `kid` is just a chosen string, so two systems might label the same key differently. A **JWK thumbprint** (RFC 7638) solves this by *computing* an identifier from the key itself: it takes the required members for the key type, in a fixed order with no whitespace (a canonical JSON form), and hashes them, usually with SHA-256. Because the input is canonical, the same key always yields the same thumbprint, regardless of member order or extra metadata.
 
 That makes thumbprints useful as stable, collision-resistant key identifiers: many systems set `kid` to the thumbprint so the label is derived from the key rather than assigned by hand. It also lets you confirm that a key in one place is the same key as in another by comparing thumbprints rather than comparing every field. The key point is that a thumbprint is content-derived and deterministic, which is exactly what a canonical serialization buys you.
+
+
+## `kid` is a hint, and treating it as an instruction is the vulnerability
+
+A JWT header carries `kid` so a verifier can find the right key in a set. It is chosen by whoever produced the token, which means **it is attacker-controlled input on an unverified message.**
+
+The failures follow directly. A `kid` used as a **file path** or a **database lookup key** turns key selection into path traversal or injection, against a value read before any signature was checked. And a verifier that fetches a key from a URL named in the token is not verifying anything — **it is asking the sender which key to believe.**
+
+The safe shape is narrow: **resolve `kid` only within a key set you already trust**, obtained out of band, and fail closed when it does not match. A thumbprint is useful precisely because it is computed from the key material rather than asserted alongside it.

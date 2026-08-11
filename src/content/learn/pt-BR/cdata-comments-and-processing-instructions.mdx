@@ -7,8 +7,8 @@ relatedTools: ["xml-decoder"]
 relatedArticles: ["reading-xml-structure", "xml-well-formedness", "xml-namespaces-explained"]
 category: encoding
 order: 63
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A maior parte de um documento XML são elementos e texto, mas três outras construções aparecem regularmente, e cada uma tem um trabalho específico. Conhecê-las de imediato impede que sejam lidas como ruído.
@@ -34,3 +34,12 @@ Uma **instrução de processamento** (PI) carrega uma diretiva para uma aplicaç
 ## Por que elas são agrupadas
 
 Estas três compartilham um traço comum: nenhuma delas é um elemento, então nenhuma aparece na árvore de elementos como um nó com filhos. Elas ficam ao lado dos elementos como uma espécie de irmãos, anotações e instruções e escapes de texto literal tecidos pelo documento. Quando você está mapeando a estrutura de um documento, ajuda separá-las da hierarquia de elementos: os elementos carregam o modelo de dados, enquanto comentários, PIs e CDATA são, respectivamente, notas, direções e uma conveniência de escrita.
+
+
+## CDATA muda a análise, não o significado
+
+Uma seção CDATA diz ao parser para parar de interpretar marcação. Ela **não** marca o conteúdo como seguro, e não sobrevive até quem consome o valor — uma vez analisado, `<![CDATA[<script>]]>` é a string `<script>`, indistinguível dos mesmos caracteres escritos como entidades escapadas.
+
+É nessa distinção que a sanitização erra. **Código que remove marcação perigosa casando padrões no XML cru perde tudo que estiver dentro de CDATA**, e código que confia no conteúdo de CDATA porque "estava escapado" está confiando numa instrução de análise como se fosse controle de segurança.
+
+**Sanitize o valor analisado, nunca o texto do documento.** Quando você tem a string em mãos, como ela foi codificada na origem deixou de importar para tudo, exceto para o sanitizador que olhou a camada errada.

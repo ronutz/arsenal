@@ -7,8 +7,8 @@ relatedTools: ["diff"]
 relatedArticles: ["how-diff-works", "reading-a-diff", "diff-word-and-character-level"]
 category: encoding
 order: 12
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Um diff de duas vias compara a versão A com a versão B. Ele consegue mostrar que uma linha difere, mas não consegue dizer *quem* a mudou, porque não tem ponto de referência. Essa limitação é exatamente o que desmorona quando duas pessoas editam o mesmo arquivo.
@@ -36,3 +36,12 @@ a versão do outro lado
 ```
 
 O texto acima de `=======` é um lado, o texto abaixo é o outro, e os rótulos dizem qual é qual. Resolver o conflito significa editar essa região até a versão final correta, depois apagar as três linhas de marcador. A disciplina importante é olhar para o ancestral, ou ao menos pensar sobre o que cada lado pretendia, em vez de cegamente manter um lado: um conflito significa que ambos os lados tiveram um motivo para mexer naquele ponto, e a resposta certa frequentemente combina os dois.
+
+
+## Um merge limpo não é um merge correto
+
+O merge de três vias resolve mudanças que não tocam as mesmas linhas, e **"linhas diferentes" não é o mesmo que "mudanças compatíveis".** Um branch renomeia uma função; outro acrescenta uma chamada a ela em outro lugar. Nenhum marcador de conflito aparece, o merge tem sucesso, e o resultado não compila — ou pior, compila e se comporta diferente.
+
+É a lacuna semântica que o algoritmo não enxerga. **A ferramenta garante consistência textual e não diz nada sobre significado**, e é por isso que um merge limpo ainda exige revisão e uma bateria de testes.
+
+**Conflitos são a metade visível do merge e a metade segura.** Eles param você. As mudanças que fundem em silêncio é que merecem leitura.

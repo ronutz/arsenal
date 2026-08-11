@@ -1,0 +1,54 @@
+---
+slug: multicast-what-it-costs-to-not-flood
+title: "Multicast: o preço de não inundar"
+summary: "Multicast envia uma cópia onde unicast enviaria milhares, e a economia é real. O que ele ganha em banda, paga em estado — e os modos de falha não são os esperados: uma rede que inunda multicast por toda parte normalmente está funcionando exatamente como foi configurada."
+concepts: ["multicast", "igmp", "pim", "spbm"]
+relatedTools: []
+relatedArticles: ["spbm-multicast-addresses-are-computed-not-learned", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead"]
+category: networking
+order: 254
+status: reviewed
+updated: "2026-08-10"
+---
+
+## A aritmética que justifica o trabalho
+
+Um fluxo de vídeo para mil receptores são mil cópias no uplink do emissor, se for unicast. Como multicast é **uma cópia**, replicada pela rede no último ponto em que os caminhos divergem.
+
+É esse o argumento inteiro, e é forte para o tráfego que se encaixa: dados de mercado, IPTV, sistemas de imagem e de boot, protocolos de descoberta, e tudo em que muitos receptores querem os mesmos bytes no mesmo instante. **Unicast escala com receptores; multicast escala com topologia**, e topologia cresce muito mais devagar.
+
+## Com o que você paga
+
+**Estado, em cada equipamento do caminho.** Uma rede unicast encaminha um pacote sabendo apenas o destino. Uma rede multicast precisa saber, para cada grupo, **quais das suas portas têm ouvintes abaixo** — e esse conhecimento precisa ser construído, renovado e desmontado conforme receptores entram e saem.
+
+É essa a troca que raramente se enuncia com clareza. **Multicast move custo de banda para plano de controle**, e estado de plano de controle é o recurso que acaba de formas mais difíceis de enxergar: tamanhos de tabela, temporizadores de renovação, e a CPU gasta mantendo entradas de grupos que ninguém mais assiste.
+
+## Dois mecanismos, e não são o mesmo
+
+São confundidos o tempo todo e fazem trabalhos diferentes em camadas diferentes.
+
+**O IGMP é como um host diz que quer um grupo.** É a conversa entre um receptor e seu roteador local — entrar, sair, e consultas periódicas que verificam se alguém ainda escuta.
+
+**O PIM é como os roteadores constroem a árvore de distribuição entre si.** Ele decide qual roteador encaminha qual grupo para qual vizinho, e é onde moram as decisões de projeto: árvore compartilhada ou caminho mais curto, onde fica o ponto de encontro, como se faz a transição entre as duas.
+
+**Uma rede pode ter IGMP funcionando perfeitamente e nenhum roteamento multicast** — receptores pedem, o switch local honra, e nada cruza uma fronteira de roteador. É um dos relatos mais comuns de "o multicast está quebrado", e nada está quebrado.
+
+## A falha que parece uma rede funcionando
+
+**Um switch sem IGMP snooping inunda multicast para todas as portas da VLAN**, porque um endereço MAC multicast não é unicast e o switch não tem o que aprender. Todo dispositivo do segmento recebe todo pacote de todo grupo e descarta o que não pediu.
+
+Esse é o modo de falha que vale interiorizar, porque **ele é invisível exatamente onde as pessoas olham.** A aplicação funciona — os receptores recebem o tráfego. O switch não reporta erro, porque está fazendo precisamente o que foi projetado para fazer sem snooping. Quem sofre é todo o resto daquela VLAN, e o sintoma chega como lentidão sem relação em hosts que nada têm a ver com a aplicação multicast.
+
+**O snooping é o que torna o multicast uma economia em vez de um broadcast com passos extras.** Sem ele, a aritmética do começo deste artigo se inverte: o emissor transmite uma cópia e a rede entrega a todo mundo.
+
+## A outra silenciosa: o querier
+
+O IGMP snooping precisa de alguém enviando consultas periódicas, para que os switches saibam quais portas ainda têm ouvintes. Numa rede roteada, o roteador faz isso. **Num segmento sem roteador multicast — uma VLAN de servidores, um laboratório, uma rede de armazenamento — pode não haver querier nenhum**, e as entradas de snooping envelhecem.
+
+O que acontece em seguida depende do switch, e nenhum dos desfechos é bom: ou ele **inunda** (de volta à falha anterior) ou **para de encaminhar o grupo**, e um fluxo que funcionou por cinco minutos depois de cada mudança para sem ninguém encostar nele.
+
+**Se uma aplicação multicast funciona logo após um restart e morre minutos depois, procure o querier antes de olhar a aplicação.**
+
+## O que levar daqui
+
+**Multicast não falha alto.** Ele inunda, o que parece um problema de desempenho em outro lugar, ou para depois de um temporizador, o que parece problema de aplicação. Os dois diagnósticos mandam a investigação para o time errado, e em cada caso a rede está fazendo exatamente o que foi configurada para fazer.

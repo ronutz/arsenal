@@ -7,8 +7,8 @@ relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["how-cvss-scoring-works", "cvss-temporal-and-environmental", "cvss-vector-string-format"]
 category: security
 order: 71
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Um vetor Base completo sempre carrega oito métricas. Quatro alimentam a subpontuação de Explorabilidade e quatro alimentam o Impacto (o Escopo fica do lado do impacto porque muda a forma como o impacto é calculado).
@@ -34,3 +34,7 @@ Um vetor Base completo sempre carrega oito métricas. Quatro alimentam a subpont
 ## Lendo o equilíbrio
 
 A pontuação Base é uma tensão entre as duas famílias. Uma falha pode ser trivialmente acessível mas pontuar baixo porque mal toca a confidencialidade, a integridade ou a disponibilidade, e uma falha com impacto total pode pontuar de forma moderada se exigir privilégios altos, acesso físico ou uma condição de corrida difícil. Decodificar um vetor métrica por métrica, em vez de ler apenas o número final, é o que torna uma pontuação defensável quando alguém a questiona.
+
+## Fontes
+
+- [CVSS v3.1 Specification Document - FIRST](https://www.first.org/cvss/v3.1/specification-document)

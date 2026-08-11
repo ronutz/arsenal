@@ -4,7 +4,7 @@ title: "Como o XC Decide Qual Load Balancer Vence um Hostname: Listener Logic, W
 summary: "A advertise policy estreita uma requisição a um IP e porta; dentro dela, o XC escolhe o match de domínio mais específico (exato vence wildcard). O hostname vem do SNI (HTTPS) ou do header Host (HTTP). Um Default load balancer por advertise policy pega o que não deu match. Wildcards são matches de sufixo que não cobrem o apex, certificados wildcard cobrem um único label, e misturar um wildcard com seu apex entre LBs de certificado automático é um perigo."
 concepts: ["domain matching", "listener logic", "sni", "wildcard", "apex", "default load balancer", "advertise policy", "f5 distributed cloud"]
 relatedTools: ["f5xc-domain-sni-match-resolver"]
-relatedArticles: ["f5xc-http-lb-route-evaluation", "f5xc-origin-pool-anatomy"]
+relatedArticles: ["f5xc-http-lb-route-evaluation", "f5xc-origin-pool-anatomy", "f5xc-ce-registration-and-egress"]
 category: networking
 order: 76
 status: reviewed

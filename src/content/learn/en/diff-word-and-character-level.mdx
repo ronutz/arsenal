@@ -7,8 +7,8 @@ relatedTools: ["diff"]
 relatedArticles: ["how-diff-works", "reading-a-diff", "diff-minimal-edits"]
 category: encoding
 order: 11
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 The classic diff works on whole lines. If you change one word in a paragraph, a line diff shows the entire old line as removed and the entire new line as added, and leaves you to spot the actual difference by eye. For code that is usually fine. For prose, long configuration lines, or a one-character fix, it is frustrating.
@@ -24,3 +24,12 @@ This is a second pass layered on top of the line diff, not a different algorithm
 Line diffs are best for source code, where a line is a meaningful unit and you care about which lines changed. Word-level diffs shine for natural language: documentation, articles, translations, where sentences are long and edits are small. Character-level diffs are the tool for tightly packed strings, hashes, URLs, and single-line configuration values, where the difference might be one digit.
 
 A practical habit is to read the line diff first to see *which* lines changed, then switch to a word or character view on a line that changed in a way you cannot immediately see. The finer view answers "what exactly is different here" without making you compare two long strings by hand.
+
+
+## Finer granularity is a different reading, not a better one
+
+Word- and character-level diffs are the right tool for prose and for a single edited line, and they actively mislead on code. **A character diff of two similar identifiers highlights the letters they share**, producing output that draws the eye to coincidence rather than to substance.
+
+The rule follows from what you are comparing. **Line level for structure, word level for prose, character level for a value you are inspecting closely** — a key, a hash, a version string, where a single transposed digit is the entire question.
+
+Choosing the granularity is part of asking the question, and a confusing diff is often a granularity mistake rather than a complicated change.

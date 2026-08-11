@@ -4,11 +4,11 @@ title: "Change Windows That Do Not Become Incidents"
 summary: "Most self-inflicted outages are changes that went wrong with no clean way back. The difference between a change and an incident is rarely the change itself; it is the runbook around it - what you verified before, how you sequenced it, what would make you stop, and whether the way back was written down and tested before you needed it."
 concepts: ["change management", "operations", "runbook", "rollback", "maintenance window", "incident response"]
 relatedTools: ["change-window-runbook-builder"]
-relatedArticles: ["fault-isolation-first-hour"]
+relatedArticles: ["fault-isolation-first-hour", "blast-radius-thinking-before-you-change-anything", "baselines-before-you-need-them"]
 category: networking
 order: 7
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 A large share of serious outages are not attacks or hardware failures. They are changes: a configuration edited under time pressure, an upgrade that went sideways, a certificate swapped with the wrong chain, a firewall rule that blocked more than intended. The uncomfortable part is that these are the outages you cause yourself, which means they are also the ones a little structure prevents. The structure is a runbook, and a good one is less about the change and more about everything wrapped around it: what you confirmed before you touched anything, how you moved, what signal would make you stop, and whether the way back was a written procedure rather than a decision made under pressure.
 

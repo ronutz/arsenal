@@ -4,11 +4,11 @@ title: "Lendo os registros em uma resposta do dig"
 summary: "Todo registro em uma seção do dig são cinco colunas: nome, TTL, classe, tipo e rdata. Este artigo percorre as colunas e depois o rdata dos tipos de registro que você realmente encontra, de A e CNAME a MX, SOA, SRV e CAA, para que uma parede de registros se leia como fatos simples."
 concepts: ["a record", "aaaa", "cname", "mx", "soa", "txt", "srv", "caa", "ttl", "rdata"]
 relatedTools: ["dig-output-explainer"]
-relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig"]
+relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig", "gslb-two-tier-pool-then-member"]
 category: networking
 order: 42
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Dentro das seções ANSWER, AUTHORITY e ADDITIONAL, cada linha é um resource record com as mesmas cinco colunas:
@@ -35,3 +35,12 @@ Isto é **nome** (`example.com.`), **TTL** em segundos (`3600`, por quanto tempo
 ## O TTL é um relógio, não uma constante
 
 O TTL que você vê de um resolvedor recursivo decrementa conforme o registro envelhece no cache dele, então a mesma consulta um minuto depois pode mostrar um número menor. Consulte o servidor autoritativo diretamente (aquele em um registro NS, com `@`) e você verá o TTL configurado na zona. Essa diferença costuma ser a forma mais rápida de distinguir um problema de cache de um problema de zona.
+
+
+## Uma resposta CNAME são duas respostas, e a segunda pode ser o problema
+
+Peça um registro A num nome que é CNAME e um servidor bem comportado retorna **os dois**: o CNAME e o registro A para o qual ele resolve. A seção de resposta carrega a cadeia.
+
+É nessa cadeia que moram duas falhas silenciosas. **Um CNAME apontando para um nome sem registro do tipo pedido** retorna NOERROR com a cadeia incompleta — o alias resolveu e o alvo não tinha nada. E **um CNAME que cruza para uma zona da qual o servidor não é autoritativo** pode retornar só o alias, deixando o cliente iniciar uma segunda consulta que ele talvez não esteja configurado para fazer.
+
+**Leia a seção de resposta inteira, não a última linha.** O registro que você pediu pode não estar lá mesmo quando o status diz que nada deu errado.

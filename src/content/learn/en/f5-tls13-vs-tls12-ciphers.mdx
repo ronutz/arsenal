@@ -7,8 +7,8 @@ relatedTools: ["f5-cipher-string-expander"]
 relatedArticles: ["f5-cipher-string-syntax", "f5-cipher-rules-and-groups", "f5-cipher-ordering-and-negotiation"]
 category: transport
 order: 4
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A cipher string that worked for years suddenly seems to have no effect on TLS 1.3, and the reason is that 1.3 redefined the cipher suite.
@@ -26,3 +26,10 @@ Because the two versions carry different information, BIG-IP handles them on sep
 The practical takeaway is to stop thinking of one cipher list as governing everything. For 1.2 and earlier, the keyword string does the heavy lifting across key exchange, authentication, and bulk cipher. For 1.3, the bulk-cipher choice is a short fixed menu, and the security properties you used to select with keywords (forward secrecy, strong authentication) are built into the protocol or negotiated through separate group and signature settings. When a keyword seems ignored, check whether the connection is actually 1.3, where that keyword may have nothing to bind to.
 
 To watch all of this happen on a real connection, [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) annotates every byte of a live TLS 1.3 handshake, record by record and field by field.
+
+
+## The practical consequence for a cipher rule
+
+Because the two notions of a suite are different, **the same configuration line cannot govern both**. That produces a specific and quiet failure: a restrictive rule written against 1.2 suites leaves 1.3 negotiation untouched, and nothing reports an error because nothing went wrong — a suite was offered, a suite was chosen, and it simply was not one the rule had an opinion about.
+
+**The check is always the same: look at what a real connection negotiated**, protocol version and suite together, rather than at what the configuration says should happen. A control you have not observed working is a control you are assuming.

@@ -7,8 +7,8 @@ relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["nslookup-vs-dig", "nslookup-record-types", "authoritative-vs-non-authoritative-answers", "nslookup-errors-explained"]
 category: networking
 order: 45
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O nslookup é a ferramenta de consulta DNS que a maioria das pessoas encontra primeiro, e sua saída tem uma forma simples e estável quando você sabe quais são as partes.
@@ -35,3 +35,12 @@ Depois de uma linha em branco vem a resposta. O marcador `Non-authoritative answ
 Se a consulta falhou, o nslookup não imprime uma resposta; ele imprime uma linha como `** server can't find example.com: NXDOMAIN`. O código no final é a história toda: `NXDOMAIN` significa que o nome não existe, `SERVFAIL` significa que o servidor não conseguiu concluir a consulta, e `REFUSED` significa que ele recusou.
 
 Se teve sucesso, as duas perguntas que valem a pena são qual resolvedor respondeu (a linha Server, caso você esteja testando um específico) e se a resposta é autoritativa (o marcador). O restante desta série cobre como o nslookup formata cada tipo de registro, como ele se compara ao dig, o que autoritativo realmente significa e como ler seus erros.
+
+
+## A linha do servidor é a primeira a ler
+
+Antes da resposta, o `nslookup` imprime qual servidor consultou. **Essa linha é a mais útil da saída e a mais pulada**, porque é igual em toda consulta bem-sucedida — até o dia em que não é.
+
+Um resolvedor trocado por DHCP, uma VPN que instalou o próprio, um contêiner herdando outro `resolv.conf`: cada um produz respostas corretas para um resolvedor que ninguém pretendia consultar. **A resposta não está errada; a pergunta foi para um lugar inesperado**, e a saída parece inteiramente normal.
+
+**Leia a linha do servidor antes da resposta.** Quando duas máquinas discordam sobre um nome, é mais frequentemente o resolvedor que o registro.

@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## The fix is a setting, not a redesign
 
-The information disclosure in a default persistence cookie is closed by encrypting the cookie, which is a property of the cookie persistence profile on the BIG-IP. F5 documents this in article K7784. When encryption is enabled, the BIG-IP encrypts the encoded address and port with AES before writing the cookie, and decrypts it on the way back in. The client still gets a working persistence cookie; it just can no longer read what is inside.
+The information disclosure in a default persistence cookie is closed by encrypting the cookie, which is a property of the cookie persistence profile on the BIG-IP. F5 documents this in article [K7784](https://my.f5.com/manage/s/article/K7784). When encryption is enabled, the BIG-IP encrypts the encoded address and port with AES before writing the cookie, and decrypts it on the way back in. The client still gets a working persistence cookie; it just can no longer read what is inside.
 
 You do not change how persistence works or how clients behave. The same client still returns the same cookie and still lands on the same pool member. The only difference is that the value is now ciphertext.
 

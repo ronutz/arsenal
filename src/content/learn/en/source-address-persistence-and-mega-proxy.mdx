@@ -7,8 +7,8 @@ relatedTools: ["f5-persistence-method-explainer"]
 relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method", "persistence-mirroring-and-ha"]
 category: networking
 order: 4
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Source-address persistence (also called simple persistence) keys entirely on the client's IP address: the first connection from an address picks a pool member, and every later connection from that same address goes to the same member. It needs nothing from the application, which is its appeal, and it rests on one assumption, which is its weakness: that one IP means one client.
@@ -24,3 +24,12 @@ The mirror-image failure is a client whose address changes during a session. A m
 ## What to do about it
 
 Source-address persistence is still fine where the assumption holds: internal traffic with known, stable, one-per-client addresses, or protocols where there is nothing better to key on. Where clients are behind shared NATs or change address, a method that keys on something tied to the actual session is more reliable, cookie persistence for HTTP being the usual choice, since it identifies the client rather than the address it happens to arrive from. The decision comes down to whether IP address is a trustworthy stand-in for identity in your traffic, and increasingly, on the public internet, it is not.
+
+
+## Source-address persistence assumes an address means a user
+
+It did, once. **Carrier-grade NAT, corporate egress and mobile networks have made a single address mean thousands of unrelated clients**, and a persistence method keyed on it sends them all to the same member.
+
+The result is not a failure; it is an imbalance nobody attributes correctly. One pool member carries a disproportionate share, its metrics look like a capacity problem, and adding members does not help because the distribution key has fewer distinct values than there are members to spread across.
+
+**And the opposite failure runs alongside it**: a client whose egress address changes mid-session — a phone moving between networks — loses its persistence and lands somewhere new. **One address, many users; one user, many addresses.** Both break the assumption in the same method, and the cure is a persistence key that identifies the session rather than the path it arrived by.

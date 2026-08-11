@@ -7,8 +7,8 @@ relatedTools: ["f5-persistence-method-explainer"]
 relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method", "source-address-persistence-and-mega-proxy"]
 category: networking
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Persistence works by remembering which pool member a client was sent to. That memory is a table of records held in the active unit's memory, and that raises a question the moment you run a redundant pair: what happens to those records when the active unit fails?
@@ -24,3 +24,12 @@ In an active/standby pair, the standby is ready to take over IP addresses and co
 ## The tradeoff and when to use it
 
 Mirroring is not free: every persistence record now has to be replicated to the peer, which adds work and a little latency, and on very high-volume virtual servers that cost is worth weighing. It is enabled per persistence profile, so you can turn it on only where it matters. The judgment is about consequence: if a failover that rebalances clients would merely be a minor blip, mirroring may not be worth the overhead. If it would drop shopping carts, log users out, or corrupt in-flight workflows, mirroring is what keeps a hardware or software failover from becoming a user-visible outage. It pairs naturally with connection mirroring for applications that cannot tolerate either kind of reset.
+
+
+## Mirroring is the difference between a failover and an outage for some users
+
+Without mirrored persistence records, a failover is clean for the device and messy for the subset of clients that were pinned somewhere. New connections are balanced normally, so **the system looks healthy from every angle a dashboard measures**, while a fraction of users lose a session that the rest of the estate has no reason to notice.
+
+This is why the symptom arrives as a support ticket rather than an alert: *"it logged me out"*, from a minority, after an event that was declared successful.
+
+**Mirroring costs synchronisation between units and buys continuity across the one event it exists for.** Test it by failing over deliberately with sessions established — not by confirming that mirroring is enabled, which is a configuration fact rather than a working one.

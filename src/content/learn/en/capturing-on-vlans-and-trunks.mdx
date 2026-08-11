@@ -7,8 +7,8 @@ relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["bigip-tcpdump-syntax", "bigip-tcpdump-safety"]
 category: networking
 order: 33
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 The `0.0` interface is the right default because it shows traffic on every TMM interface at once. But when a device is busy, or you already know which segment a problem lives on, naming a specific interface narrows the capture and reduces the noise. The [BIG-IP tcpdump builder](/tools/f5-bigip-tcpdump-builder) accepts any of these in the interface field.
@@ -32,3 +32,12 @@ Because the colon introduces the TMM detail suffix, an interface name itself mus
 ## Choosing the scope
 
 Reach for `0.0` first, because it is the most complete view and the least likely to miss a flow. Narrow to a VLAN or self-IP when `0.0` is too much volume on a busy box, or when the question is specifically about one segment. In every case, keep a filter on the command so the file stays bounded, as covered in [capturing safely on a production BIG-IP](/learn/bigip-tcpdump-safety).
+
+
+## Naming the wrong interface answers a question you did not ask
+
+Capturing on a VLAN sees traffic already classified into that VLAN; capturing on the trunk sees it tagged and interleaved with everything else. **Neither is more correct, and they answer different questions** — which is why a capture that shows nothing so often means the capture point was wrong rather than the traffic absent.
+
+The trap is that both produce a valid file. There is no error, no warning, and an empty result reads as evidence: *"the traffic never arrived"*. It arrived somewhere the capture was not.
+
+**Decide what the absence of a packet would prove before you start**, because a capture that cannot distinguish *"not sent"* from *"not observed here"* cannot support the conclusion it will be used to justify.

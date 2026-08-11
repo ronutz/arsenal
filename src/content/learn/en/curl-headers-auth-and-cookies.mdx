@@ -7,8 +7,8 @@ relatedTools: ["http-request-translator"]
 relatedArticles: ["curl-to-fetch", "reading-a-curl-command", "curl-security-flags"]
 category: networking
 order: 79
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Headers, authentication, and cookies are how a request presents itself to a server.
@@ -17,4 +17,12 @@ Headers, authentication, and cookies are how a request presents itself to a serv
 
 Cookies arrive with `-b` / `--cookie` (send a cookie, or read them from a file) and are saved with `-c` / `--cookie-jar`.
 
-When you translate the request, HTTP Basic becomes the target language's auth mechanism, for example the `auth=(user, password)` tuple in Python requests, while a bearer token stays a plain header in every language. Because this tool never sends the request, any token, password, or cookie you paste is decoded only in your browser and goes nowhere.
+When you translate the request, HTTP Basic becomes the target language's auth mechanism, for example the `auth=(user, password)` tuple in Python requests, while a bearer token stays a plain header in every language. The [HTTP request translator](/tools/http-request-translator) never sends the request, so any token, password or cookie pasted into it is decoded in the browser and goes nowhere.
+
+## Where the credential actually ends up
+
+A password on a curl command line does not stay on the command line. It goes into **shell history**, and on most systems it is visible in the **process list** to anyone who can run `ps` while the command executes — including other users on a shared jump host.
+
+`-u user` without the colon makes curl prompt instead. `--netrc` reads credentials from a file. A config file passed with `-K` keeps them out of argv entirely.
+
+This is why a working command copied from a ticket into a shared bastion is a small credential disclosure, and why **`history` on a shared account is worth reading before you assume a secret is still secret.**

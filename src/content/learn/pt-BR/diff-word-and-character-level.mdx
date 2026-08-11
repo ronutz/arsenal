@@ -7,8 +7,8 @@ relatedTools: ["diff"]
 relatedArticles: ["how-diff-works", "reading-a-diff", "diff-minimal-edits"]
 category: encoding
 order: 11
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O diff clássico trabalha com linhas inteiras. Se você muda uma palavra em um parágrafo, um diff de linha mostra a linha antiga inteira como removida e a linha nova inteira como adicionada, e deixa você localizar a diferença de fato a olho. Para código isso normalmente está bom. Para prosa, linhas longas de configuração, ou uma correção de um caractere, é frustrante.
@@ -24,3 +24,12 @@ Este é um segundo passo em cima do diff de linha, não um algoritmo diferente: 
 Diffs de linha são melhores para código-fonte, onde uma linha é uma unidade significativa e você se importa com quais linhas mudaram. Diffs em nível de palavra brilham para linguagem natural: documentação, artigos, traduções, onde as frases são longas e as edições, pequenas. Diffs em nível de caractere são a ferramenta para strings compactadas, hashes, URLs e valores de configuração de uma linha, onde a diferença pode ser um dígito.
 
 Um hábito prático é ler o diff de linha primeiro para ver *quais* linhas mudaram, depois trocar para uma visão de palavra ou caractere em uma linha que mudou de um jeito que você não consegue ver de imediato. A visão mais fina responde "o que exatamente está diferente aqui" sem fazer você comparar duas strings longas à mão.
+
+
+## Granularidade mais fina é outra leitura, não uma leitura melhor
+
+Diffs por palavra e por caractere são a ferramenta certa para prosa e para uma única linha editada, e enganam ativamente em código. **Um diff por caractere de dois identificadores parecidos destaca as letras que eles compartilham**, produzindo uma saída que puxa o olho para a coincidência em vez da substância.
+
+A regra decorre do que está sendo comparado. **Nível de linha para estrutura, de palavra para prosa, de caractere para um valor sob inspeção próxima** — uma chave, um hash, uma string de versão, onde um único dígito trocado é a pergunta inteira.
+
+Escolher a granularidade faz parte de formular a pergunta, e um diff confuso costuma ser um erro de granularidade, não uma mudança complicada.

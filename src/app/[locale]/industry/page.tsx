@@ -105,6 +105,8 @@ export default async function IndustryHubPage({
     /** Category keys from the entry's own tags, for the category pills. */
     tags: readonly string[];
     isRedu: boolean;
+    isCurrent: boolean;
+    isWorksWith: boolean;
     /** PRIME is an authorised instructor for this vendor.
      *  A PUBLIC CLAIM ABOUT AUTHORISATION. Four vendors only, and it must never
      *  be inferred from partnership, certification or a delivered course. */
@@ -154,6 +156,12 @@ export default async function IndustryHubPage({
       // those should carry no working claim at all. The pill now reads the
       // declared relationship.
       isInside: v.relationships?.includes("worked-inside") ?? false,
+      /* Present tense, and rendered differently: see VendorRelationship. */
+      isCurrent: v.relationships?.includes("works-inside") ?? false,
+      /* Active relationship NOW, and deliberately not the same claim as
+         `authorized-instructor`: seven vendors are worked with, four are
+         taught. See VendorRelationship. */
+      isWorksWith: v.relationships?.includes("works-with") ?? false,
       isDirect: v.relationships?.includes("worked-with-directly") ?? false,
     }));
 
@@ -192,6 +200,12 @@ export default async function IndustryHubPage({
       ) ?? false,
     isInside:
       partnerVendors.find((p) => p.slug === v.slug)?.relationships?.includes("worked-inside") ??
+      false,
+    isCurrent:
+      partnerVendors.find((p) => p.slug === v.slug)?.relationships?.includes("works-inside") ??
+      false,
+    isWorksWith:
+      partnerVendors.find((p) => p.slug === v.slug)?.relationships?.includes("works-with") ??
       false,
     isDirect:
       partnerVendors
@@ -268,6 +282,18 @@ export default async function IndustryHubPage({
                  happened - which is what a lineage page is for. Cards carry an
                  end marker only where the company stopped existing
                  independently; its absence correctly reads as "still here". */}
+            {/* MOVED AND RESTYLED 2026-08-11 (PRIME). It sat inside the <ol>,
+                pressed against the filters. It is now above the section
+                divider, with its own spacing, and carries `industry-antecedent`
+                - a DIFFERENT accent from everything below it, because what it
+                links to precedes every company on this page rather than sitting
+                beside them. */}
+            <p className="industry-antecedent">
+              <Link className="page-jump-link" href="/industry/milestones">
+                {tTags("milestonesLink")} <span aria-hidden="true">&#8594;</span>
+              </Link>
+            </p>
+
             <div className="vendor-divider">
               <h2 className="vendor-divider-title">{tp("timelineSectionTitle")}</h2>
               <p className="vendor-divider-note">
@@ -288,29 +314,20 @@ export default async function IndustryHubPage({
                 redu: tp("filterRedu"),
                 career: tp("filterCareer"),
                 teach: tp("filterTeach"),
-                count: tp("filterCount", { shown: "{shown}", total: "{total}" }),
-                categoryLabel: tTags("filterCategoryLabel"),
-                categoryAll: tTags("filterCategoryAll"),
-                categoryNone: tTags("filterCategoryNone"),
+                countryLabel: tp("filterCountryLabel"),
               }}
-              /* Categories come from the SAME source the tag routes use, so the
-                 in-page filter and /industry/<tag> can never disagree about
-                 which categories exist or how many entries each holds. */
-              categories={Object.values(TAG_ROUTES)
-                .map((tag) => ({
-                  tag,
-                  label: tTags(`${tag}.short`),
-                  n: vendorsByTag(tag).length,
-                }))
-                .filter((c) => c.n > 0)}
+              /* Counts computed from the same map the cards render, so a chip
+                 cannot claim a number the timeline then contradicts. */
+              countries={Object.entries(
+                lineageTimeline.reduce<Record<string, number>>((acc, v) => {
+                  const c = VENDOR_ORIGINS[v.slug];
+                  if (c) acc[c] = (acc[c] ?? 0) + 1;
+                  return acc;
+                }, {}),
+              )
+                .map(([code, n]) => ({ code, n, label: countryLabel(code as never) }))
+                .sort((x, y) => y.n - x.n || x.code.localeCompare(y.code))}
             />
-            {/* KEY FOR THE TWO CAREER MARKERS (PRIME 2026-08-10). The pills
-                and card borders now distinguish a company he was employed by
-                from one he worked alongside, and a colour with no key is a
-                colour a reader has to guess at. Placed above the list rather
-                than below it, because the distinction is needed while reading
-                the cards and not after. */}
-            <p className="section-body">{ti("careerNote")}</p>
 
             <ol className="vendor-timeline">
               {/* Filter chips. These lead to tag-filtered views of the same
@@ -318,17 +335,6 @@ export default async function IndustryHubPage({
                   asked for are built - as views rather than as lists somebody
                   maintains. Counts are computed, so a chip cannot claim a
                   number the page then contradicts. */}
-              {/* The milestones page is the other half of this story - the
-                  physics the companies were built on. Linked first, before the
-                  tag filters, because it is a different KIND of thing rather
-                  than another filter. */}
-              <p className="ztc-notes">
-                <Link className="page-jump-link" href="/industry/milestones">
-                  {tTags("milestonesLink")} <span aria-hidden="true">&#8594;</span>
-                </Link>
-              </p>
-
-
               <div className="industry-tag-chips">
                 {Object.entries(TAG_ROUTES).map(([route, tag]) => {
                   const n = vendorsByTag(tag).length;
@@ -348,14 +354,15 @@ export default async function IndustryHubPage({
                   className="vendor-timeline-item"
                   data-vendor-entry
                   data-redu={v.isRedu ? "1" : "0"}
-                  data-career={v.isInside || v.isDirect ? "1" : "0"}
-                  data-relationship={
-                    v.isInside ? "inside" : v.isDirect ? "alongside" : undefined
-                  }
+                  data-career={v.isInside || v.isDirect || v.isCurrent || v.isWorksWith ? "1" : "0"}
+                  data-relationship={v.isCurrent ? "current" : v.isWorksWith ? "workswith" : v.isInside ? "inside" : v.isDirect ? "alongside" : undefined}
                   /* Space-separated so the client filter can match without
                      parsing JSON in the DOM. */
                   data-tags={(v.tags ?? []).join(" ")}
                   data-teach={v.isInstructor ? "1" : "0"}
+                  /* The country filter reads this rather than re-deriving
+                     it, so the chip and the card can never disagree. */
+                  data-country={VENDOR_ORIGINS[v.slug] ?? ""}
                 >
                   <span className="vendor-timeline-year mono" aria-hidden="true">
                     {v.founded}
@@ -407,6 +414,27 @@ export default async function IndustryHubPage({
                           takes a cooler, quieter blue, and the card border
                           follows the pill so the difference survives a glance
                           at the grid. */}
+                      {/* CURRENT EMPLOYER (PRIME 2026-08-11): red rather than
+                          cyan, present tense, and the card border follows it.
+                          Red is this site's own brand colour for Red Education
+                          and is used nowhere else on the timeline, so the one
+                          company he works at now is the one card that carries
+                          it. */}
+                      {v.isCurrent && (
+                        <span className="vendor-career-pill vendor-career-pill--current">
+                          {tp("worksPill")}
+                        </span>
+                      )}
+                      {/* ACTIVE RELATIONSHIP (PRIME 2026-08-11): green, present
+                          tense, and separate from the instructor pill beside
+                          it. A reader seeing WORKS WITH on Ping Identity and
+                          nothing else learns exactly the right thing - there is
+                          a relationship and there is no teaching claim. */}
+                      {v.isWorksWith && (
+                        <span className="vendor-career-pill vendor-career-pill--workswith">
+                          {tp("worksWithPill")}
+                        </span>
+                      )}
                       {v.isInside && (
                         <span className="vendor-career-pill vendor-career-pill--inside">
                           {tp("careerPill")}

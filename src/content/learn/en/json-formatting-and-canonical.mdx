@@ -7,8 +7,8 @@ relatedTools: ["json-formatter"]
 relatedArticles: ["json-grammar", "json-duplicate-keys", "json-string-escapes"]
 category: encoding
 order: 6
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Between any two tokens, JSON allows any amount of whitespace, and it carries no meaning. That single fact is what makes formatting safe: pretty-printing and minifying rearrange spaces and newlines without changing the data at all.
@@ -22,3 +22,12 @@ Key **order** is a related non-difference. JSON objects are defined as unordered
 ## When the bytes suddenly matter
 
 All of that changes the moment JSON is **signed or hashed**. A signature is computed over exact bytes, so if the sender pretty-prints and the receiver minifies, the bytes differ and the signature fails, even though the data is identical. To make signing work, both sides must agree on one exact serialization. That is **canonical JSON**: a deterministic form with fixed rules for key order (sorted), whitespace (none), number formatting, and string escaping, so the same data always produces the same string. RFC 8785 (JSON Canonicalization Scheme) defines one such form. This is why systems that sign JSON, or use it as a hash input, canonicalize first: it turns "the same data" into "the same bytes," which is what a signature actually needs. For ordinary interchange none of this matters, but the moment cryptography is involved, formatting stops being cosmetic.
+
+
+## Canonical form exists because equality is harder than it looks
+
+Two JSON documents can be identical in meaning and different in bytes: key order, whitespace, number formatting, string escapes. **Every one of those differences is invisible to a program reading the parsed value and fatal to anything that hashes or signs the text.**
+
+That is the whole reason canonicalisation exists, and the reason signing JSON is subtler than it appears. **A signature covers bytes; an application compares values.** Re-serialising a document — even by a library that produces perfectly correct JSON — can break a signature that was valid a moment earlier, with no error anywhere until verification fails somewhere else entirely.
+
+**Sign the bytes you received, or canonicalise deliberately before signing.** Anything in between is a signature that works until a dependency updates its serialiser.

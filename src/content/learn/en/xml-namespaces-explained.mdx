@@ -7,8 +7,8 @@ relatedTools: ["xml-decoder"]
 relatedArticles: ["reading-xml-structure", "xml-well-formedness", "saml-signatures"]
 category: encoding
 order: 61
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Namespaces exist to solve one problem: name collisions. A `<title>` in a book vocabulary and a `<title>` in an HTML page mean different things, and a document that mixes vocabularies needs a way to say which is which. Namespaces provide it.
@@ -34,3 +34,12 @@ You can also declare a **default namespace** with no prefix: `xmlns="http://exam
 A namespace declaration applies to the element it appears on and everything nested inside it, until a nested element overrides it. To resolve any element or attribute, you look at its prefix, then walk outward through the enclosing elements to find where that prefix was declared, and read off the URI. That is exactly what a parser does, and it is why the same prefix can map to different URIs in different parts of a document if it is redeclared.
 
 The practical habit when reading namespaced XML is to mentally replace each prefix with its URI. Two elements are the "same" element only if their local names and their namespace URIs both match, regardless of whether the prefixes look alike. That single rule, identity is name plus URI, is the whole of namespaces.
+
+
+## The prefix is local and the URI is the identity
+
+A namespace prefix means nothing on its own. `soap:Envelope` and `s:Envelope` are the same element if both prefixes are bound to the same URI, and different elements if they are not — **the prefix is a local abbreviation, and the URI is what actually identifies the name.**
+
+This produces a specific class of quiet failure. **An XPath expression matching on a prefix matches text, not identity**, so a document that rebinds prefixes — perfectly legally — slips past a selector that appeared to work in every test. Signature verification and policy matching are where this hurts most, because both decide something important on the basis of "did this select the element I meant".
+
+**Bind prefixes explicitly in the query, and compare URIs rather than prefixes.**

@@ -15,7 +15,7 @@ One of the more surprising ways a BIG-IP upgrade can go wrong has nothing to do 
 
 ## The two dates
 
-Every BIG-IP software version has a **License Check Date**: a fixed date, built into the software, that represents the minimum Service Check Date a license must carry to be allowed to run that version. It lives in the `/etc/version_date` file on a running system, and F5 also publishes the full table of current and past versions in K7727. For example, BIG-IP 16.1.x has a License Check Date of 11 June 2021, and 17.1.x has 8 February 2023.
+Every BIG-IP software version has a **License Check Date**: a fixed date, built into the software, that represents the minimum Service Check Date a license must carry to be allowed to run that version. It lives in the `/etc/version_date` file on a running system, and F5 also publishes the full table of current and past versions in [K7727](https://my.f5.com/manage/s/article/K7727). For example, BIG-IP 16.1.x has a License Check Date of 11 June 2021, and 17.1.x has 8 February 2023.
 
 Every BIG-IP license, in turn, carries a **Service Check Date**. This is not the date you installed the box. It is the earlier of two things: the date the license was last activated, and the date the device's service contract expires. F5's own example makes the rule concrete: if your service contract runs until 31 December 2020 and you license the device on 30 June 2020, the Service Check Date is set to 30 June 2020. And if the contract has already lapsed, reactivating does not move the date forward past the contract's expiry. That is the point of the mechanism: it ties the ability to run newer software to holding a current support contract.
 
@@ -42,8 +42,8 @@ which prints something like `Service check date : 20230125`. The format is year-
 tmsh show sys license | grep "Service Check Date"
 ```
 
-To read the License Check Date for the version you are on, check `/etc/version_date`, or look up any version in F5's K7727 table. Note that the "Licensed Date" you may also see in the license file is a different, F5-internal field and is not used for this check.
+To read the License Check Date for the version you are on, check `/etc/version_date`, or look up any version in F5's [K7727](https://my.f5.com/manage/s/article/K7727) table. Note that the "Licensed Date" you may also see in the license file is a different, F5-internal field and is not used for this check.
 
 ## Planning around it
 
-The practical rule is simple: before upgrading, confirm that the license's Service Check Date is on or after the target version's License Check Date. If it is earlier, reactivate the license first, as described in [recovering from a service check date problem](/learn/bigip-license-reactivation). The [F5 service check date tool](/tools/f5-service-check-date) does this comparison for you: enter a version to see the date it requires, or enter a service check date to see the newest version it allows. As always, confirm against K7727 or the target system's `/etc/version_date` before a production change.
+The practical rule is simple: before upgrading, confirm that the license's Service Check Date is on or after the target version's License Check Date. If it is earlier, reactivate the license first, as described in [recovering from a service check date problem](/learn/bigip-license-reactivation). The [F5 service check date tool](/tools/f5-service-check-date) does this comparison for you: enter a version to see the date it requires, or enter a service check date to see the newest version it allows. As always, confirm against [K7727](https://my.f5.com/manage/s/article/K7727) or the target system's `/etc/version_date` before a production change.

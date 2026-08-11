@@ -7,8 +7,8 @@ relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["bigip-tcpdump-syntax", "capturing-on-vlans-and-trunks"]
 category: networking
 order: 35
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A packet capture is a read-only operation, but on a production BIG-IP it is not free. It consumes CPU, it writes to a file system that other processes need, and an unbounded capture on a busy device can grow alarmingly fast. None of this is a reason to avoid capturing; it is a reason to capture deliberately. The [BIG-IP tcpdump builder](/tools/f5-bigip-tcpdump-builder) nudges you toward the safe defaults.
@@ -36,3 +36,14 @@ The `-X` option prints payload as hex and ASCII on screen, which is handy for a 
 ## Clean up
 
 When the capture is finished, stop it, transfer the file off the device for analysis, and delete it from the BIG-IP. Treating cleanup as part of the procedure, rather than an afterthought, is what keeps ad hoc captures from quietly accumulating on production hardware.
+
+
+## The capture itself is a change
+
+`tcpdump` on a production BIG-IP is not a read-only operation in any sense that matters operationally.
+
+**It writes.** A full-size capture on a busy virtual server fills a filesystem quickly, and a full `/var` on a BIG-IP is not a disk-space inconvenience — it is a device that starts failing in ways unrelated to the problem you were capturing.
+
+**It costs.** Capture processing competes with traffic processing, and the more permissive the filter, the more it competes.
+
+So the discipline is the opposite of instinct: **filter tightly, bound the capture, and know how it stops before you start it.** A size or packet-count limit and a specific host-and-port filter turn an open-ended risk into a bounded one. A capture that has to be killed by an engineer who is also handling an incident is a capture that was planned badly.

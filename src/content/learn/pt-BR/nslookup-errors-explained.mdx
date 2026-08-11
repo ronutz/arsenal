@@ -7,8 +7,8 @@ relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags"]
 category: networking
 order: 49
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Um nslookup que falha não imprime uma resposta. Ele imprime uma única linha, e o código no final diz o que deu errado:
@@ -27,3 +27,16 @@ Um nslookup que falha não imprime uma resposta. Ele imprime uma única linha, e
 ## Lendo a distinção
 
 A separação útil é entre uma **resposta que diz não** e **nenhuma resposta**. NXDOMAIN e NODATA são o servidor lhe dizendo algo definitivo, então a correção está na zona ou na consulta. SERVFAIL, REFUSED e timeouts são o servidor falhando em lhe dar uma resposta utilizável, então a correção está no resolvedor, no caminho ou na delegação. Saber qual dos dois você está vendo aponta imediatamente para a metade certa do problema.
+
+
+## SERVFAIL e REFUSED são acusações diferentes
+
+Parecem iguais e culpam partes diferentes.
+
+**REFUSED** significa que o servidor entendeu e recusou — você não tem permissão de perguntar. Isso é política: um resolvedor recursivo que só atende a própria rede, ou um servidor autoritativo que não faz recursão para você. **Nada está quebrado.**
+
+**SERVFAIL** significa que o servidor tentou e não conseguiu terminar. Timeouts upstream, uma delegação quebrada ou validação DNSSEC falhando caem todos aqui. **Algo está quebrado, e normalmente não na caixa que você perguntou.**
+
+## E não faça script em cima do código de saída
+
+Muitas builds do `nslookup` saem com **0 mesmo para NXDOMAIN**. Um script que testa `if nslookup ...` pode concluir que um nome resolve quando a ferramenta acabou de dizer a um humano que não. **Interprete a saída, ou use uma ferramenta com códigos de saída confiáveis.**

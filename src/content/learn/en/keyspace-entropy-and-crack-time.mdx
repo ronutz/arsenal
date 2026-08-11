@@ -7,8 +7,8 @@ relatedTools: ["hash-preimage-finder"]
 relatedArticles: ["why-hashes-are-one-way", "brute-force-vs-lookup-tables", "choosing-a-password-hash"]
 category: hashing
 order: 86
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Brute force succeeds or fails on one comparison: the size of the keyspace against how fast the attacker can hash. Everything else is detail.
@@ -30,3 +30,12 @@ Adding one random character over a 95-symbol alphabet multiplies the keyspace by
 ## The takeaway
 
 Use long, random secrets, a generated password or a multi-word passphrase, and let a slow KDF multiply the cost of every guess. This is exactly what the demonstrator shows: small keyspaces fall in milliseconds, while realistic ones simply exhaust the budget.
+
+
+## Entropy belongs to the process, not to the string
+
+`Tr0ub4dor&3` looks like a high-entropy password and is not. Entropy is a property of **how the value was chosen**, not of how it looks: a word with predictable substitutions comes from a small set of transformations applied to a dictionary, and an attacker's rules encode exactly that set.
+
+This is why a strength meter is an estimate and never a measurement. It is scoring the string in front of it against heuristics; **it cannot see the generator.** A truly random eight-character password and a memorable one that scores identically are not equally hard to guess.
+
+The practical consequence: **crack-time figures are floors, not forecasts.** They assume the attacker searches the keyspace you described, and a real attacker searches the far smaller space of what humans actually pick — starting with the leaked passwords everyone has already used.

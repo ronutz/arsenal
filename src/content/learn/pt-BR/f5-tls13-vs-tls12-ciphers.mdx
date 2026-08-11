@@ -7,8 +7,8 @@ relatedTools: ["f5-cipher-string-expander"]
 relatedArticles: ["f5-cipher-string-syntax", "f5-cipher-rules-and-groups", "f5-cipher-ordering-and-negotiation"]
 category: transport
 order: 4
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma cipher string que funcionou por anos de repente parece não ter efeito no TLS 1.3, e a razão é que o 1.3 redefiniu a cipher suite.
@@ -26,3 +26,10 @@ Como as duas versões carregam informações diferentes, o BIG-IP as trata em tr
 A lição prática é parar de pensar em uma lista de ciphers como governando tudo. Para 1.2 e anteriores, a string de keywords faz o trabalho pesado por troca de chaves, autenticação e cifra em massa. Para 1.3, a escolha da cifra em massa é um menu fixo e curto, e as propriedades de segurança que você costumava selecionar com keywords (forward secrecy, autenticação forte) estão embutidas no protocolo ou negociadas por configurações separadas de grupo e assinatura. Quando uma keyword parece ignorada, verifique se a conexão é de fato 1.3, onde essa keyword pode não ter a que se ligar.
 
 Para ver tudo isso acontecendo em uma conexão real, [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) anota cada byte de um handshake TLS 1.3 de verdade, registro por registro e campo por campo.
+
+
+## A consequência prática para uma regra de cifra
+
+Como as duas noções de suíte são diferentes, **a mesma linha de configuração não pode governar as duas**. Isso produz uma falha específica e silenciosa: uma regra restritiva escrita contra suítes 1.2 deixa a negociação 1.3 intocada, e nada reporta erro porque nada deu errado — uma suíte foi oferecida, uma suíte foi escolhida, e simplesmente não era uma sobre a qual a regra tivesse opinião.
+
+**A verificação é sempre a mesma: olhe o que uma conexão real negociou**, versão de protocolo e suíte juntas, em vez do que a configuração diz que deveria acontecer. Um controle que você não observou funcionando é um controle que você está supondo.

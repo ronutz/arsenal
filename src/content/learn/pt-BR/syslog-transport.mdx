@@ -7,8 +7,8 @@ relatedTools: ["syslog-pri-decoder"]
 relatedArticles: ["syslog-pri-facility-severity", "syslog-message-formats", "syslog-on-network-devices"]
 category: networking
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma mensagem syslog é apenas texto, mas como ela vai do dispositivo ao coletor varia bastante, e o transporte determina se você pode confiar que tudo chegou.
@@ -22,3 +22,12 @@ Uma mensagem syslog é apenas texto, mas como ela vai do dispositivo ao coletor 
 ## Por que a escolha importa
 
 O trade-off é confiabilidade e confidencialidade contra simplicidade. O UDP perde mensagens exatamente quando você mais as quer, durante um incidente ou um ataque, porque é quando o volume dispara. Ele também envia tudo em texto claro, então logs, que frequentemente contêm detalhes sensíveis, ficam expostos no fio. Para logging operacional casual em uma rede confiável, o UDP está bom e ainda é onipresente. Para qualquer coisa usada como **trilha de auditoria**, para conformidade, ou através de uma rede não confiável, o TCP te dá uma entrega com a qual você pode contar e o TLS adiciona confidencialidade e autenticação do remetente. Uma regra prática: se perder uma mensagem importasse, não a envie sobre UDP.
+
+
+## O syslog UDP falha na direção que ninguém observa
+
+O syslog clássico sobre UDP não tem confirmação, então **uma mensagem que não chega não produz erro em nenhuma das pontas.** O emissor acredita que registrou; o coletor nunca soube que havia algo a receber.
+
+Esse modo de falha é exatamente o inverso do que o monitoramento espera. Um alerta dispara quando os logs dizem que algo está errado; **nada dispara quando os logs param de dizer qualquer coisa**, e um equipamento cujo destino de syslog foi digitado errado há seis meses parece mais quieto e mais saudável que os vizinhos.
+
+**Alerte sobre a ausência de logs, não só sobre o conteúdo deles.** E onde o registro importa — trilhas de auditoria, eventos de segurança — o transporte precisa ser um que consiga avisar que falhou: TCP, ou TLS, ao custo da contrapressão que o UDP foi escolhido para evitar.

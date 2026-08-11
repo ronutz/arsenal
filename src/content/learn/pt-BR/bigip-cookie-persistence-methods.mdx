@@ -7,8 +7,8 @@ relatedTools: ["f5-bigip-persistence-cookie"]
 relatedArticles: ["f5-bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-encryption"]
 category: security
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O valor dentro de um cookie de persistência do BIG-IP é um tópico; como o BIG-IP coloca e gerencia esse cookie é outro, e é governado pelo método de cookie e pelas configurações do profile.
@@ -31,3 +31,12 @@ Um profile de persistência por cookie também controla as propriedades operacio
 ## Por que vale configurar deliberadamente
 
 O método insert padrão com um cookie não criptografado e sem flags é exatamente a configuração que expõe informação de pool member, como os artigos de divulgação e codificação descrevem. As configurações operacionais são a outra metade de fechar essa lacuna: habilitar a criptografia protege o valor, e definir httponly e secure protege o cookie em trânsito e no navegador. Escolher o método e as flags de propósito, em vez de aceitar os padrões, é o que faz a persistência por cookie funcionar corretamente e permanecer segura.
+
+
+## A persistência sobrevive ao membro do pool
+
+Um registro de persistência é uma promessa de continuar mandando o cliente para o mesmo membro, e é mais forte do que se espera: **um membro marcado como fora do ar não libera automaticamente os clientes fixados nele.**
+
+O que acontece em seguida depende de configuração, não de intuição. A conexão pode ser rebalanceada ou pode ser recusada, e a diferença entre esses dois desfechos durante um incidente é a diferença entre serviço degradado e indisponibilidade para um subconjunto de usuários que não entende por que todos os outros estão bem.
+
+**Teste a falha, não o recurso.** Persistência funcionando é fácil de observar; persistência liberando corretamente quando um membro cai é o comportamento que importa, e é o que ninguém verifica até virar carga.

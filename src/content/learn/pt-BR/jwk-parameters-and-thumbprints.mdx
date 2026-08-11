@@ -7,8 +7,8 @@ relatedTools: ["jwks-explainer"]
 relatedArticles: ["jwk-key-types", "jwks-and-key-rotation", "verifying-a-jwt-with-jwks"]
 category: identity
 order: 4
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma JWK (JSON Web Key) descreve uma única chave como um objeto JSON. Ao lado do material bruto da chave estão parâmetros de metadados que dizem a um consumidor o que a chave é e como se referir a ela.
@@ -26,3 +26,12 @@ Uma JWK (JSON Web Key) descreve uma única chave como um objeto JSON. Ao lado do
 Um `kid` é apenas uma string escolhida, então dois sistemas podem rotular a mesma chave de formas diferentes. Um **thumbprint de JWK** (RFC 7638) resolve isso *computando* um identificador a partir da própria chave: ele pega os membros obrigatórios para o tipo da chave, em uma ordem fixa e sem espaço em branco (uma forma canônica de JSON), e os hasheia, normalmente com SHA-256. Como a entrada é canônica, a mesma chave sempre produz o mesmo thumbprint, independentemente da ordem dos membros ou de metadados extras.
 
 Isso torna os thumbprints úteis como identificadores de chave estáveis e resistentes a colisão: muitos sistemas definem `kid` como o thumbprint para que o rótulo seja derivado da chave em vez de atribuído à mão. Também permite confirmar que uma chave em um lugar é a mesma de outro comparando thumbprints em vez de comparar cada campo. O ponto-chave é que um thumbprint é derivado do conteúdo e determinístico, que é exatamente o que uma serialização canônica compra.
+
+
+## `kid` é uma dica, e tratá-lo como instrução é a vulnerabilidade
+
+Um cabeçalho JWT carrega `kid` para o verificador achar a chave certa num conjunto. Ele é escolhido por quem produziu o token, ou seja, **é entrada controlada pelo atacante numa mensagem ainda não verificada.**
+
+As falhas seguem direto. Um `kid` usado como **caminho de arquivo** ou **chave de consulta** transforma a seleção de chave em travessia de diretório ou injeção, contra um valor lido antes de qualquer assinatura ser conferida. E um verificador que busca a chave numa URL indicada pelo token não está verificando nada — **está perguntando ao remetente em qual chave acreditar.**
+
+O formato seguro é estreito: **resolva `kid` apenas dentro de um conjunto de chaves em que você já confia**, obtido por fora, e falhe fechado quando não casar. Um thumbprint é útil justamente por ser computado a partir do material da chave, e não afirmado ao lado dele.

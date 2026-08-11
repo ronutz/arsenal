@@ -7,8 +7,8 @@ relatedTools: ["xml-decoder"]
 relatedArticles: ["reading-xml-structure", "xml-namespaces-explained", "cdata-comments-and-processing-instructions"]
 category: encoding
 order: 62
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Duas palavras diferentes são usadas para XML "correto", e elas significam coisas diferentes. Confundi-las leva a muito debugging desperdiçado.
@@ -32,3 +32,12 @@ Um documento que quebra qualquer uma destas **não é bem formado**, e um parser
 ## Por que a distinção importa
 
 A relação chave é que validade pressupõe boa formação mas não o contrário. Um documento pode ser perfeitamente bem formado e ainda inválido contra um schema, e a maioria das ferramentas que "parseiam" XML só verifica boa formação a menos que você peça explicitamente para validar. Então quando algo rejeita seu XML, a primeira pergunta é qual barra ele falhou: um erro de boa formação é um erro de sintaxe no próprio documento, enquanto um erro de validade significa que a sintaxe está correta mas o conteúdo não corresponde ao schema contra o qual foi verificado. Eles são corrigidos em lugares diferentes.
+
+
+## Bem formado é uma régua baixa, e passar por ela prova menos do que parece
+
+Boa formação diz que o documento é analisável: tags equilibradas, uma raiz, caracteres escapados. **Não diz nada sobre o conteúdo significar alguma coisa**, e um sistema que aceita qualquer documento bem formado está aceitando um conjunto enorme.
+
+A distância que importa operacionalmente é entre **bem formado** e **válido**. A validação contra um schema é o que rejeita um documento com o formato certo e o conteúdo errado — um elemento inesperado, um valor fora de faixa, um campo obrigatório ausente.
+
+**A maioria dos erros de XML em produção são documentos que analisaram perfeitamente.** Chegaram bem formados, foram aceitos, e falharam adiante, onde a premissa que violaram nunca foi escrita como regra.

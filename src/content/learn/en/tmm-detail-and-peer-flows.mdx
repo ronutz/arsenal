@@ -7,8 +7,8 @@ relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["bigip-tcpdump-syntax", "reading-a-bigip-capture"]
 category: networking
 order: 32
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 When you write `-i 0.0:nnnp`, the `:nnnp` part is pure BIG-IP. It does two separate things: it sets a detail level, and it asks for both flows of a connection. Understanding it is what makes a BIG-IP capture far more powerful than a plain one. The [BIG-IP tcpdump builder](/tools/f5-bigip-tcpdump-builder) exposes these as simple toggles.
@@ -36,3 +36,12 @@ This is enormously useful. You can filter on the client address you know, and st
 ## A practical default
 
 A capture like `-i 0.0:nnnp` with a host filter is a strong starting point for most LTM cases: high detail, both sides, scoped to one client. From there you can lower the detail if the trailer is too large, or drop `p` if you only care about one side.
+
+
+## Without the peer flow you have two captures of one problem
+
+The detail suffixes add the F5 trailer, and the field that changes what a capture can prove is the **peer flow identifier**. It is what states that this client-side connection and that server-side connection are two halves of one transaction.
+
+Without it, correlation is guesswork dressed as analysis: matching on timing, on payload fragments, on the assumption that nothing else was happening. **On a busy virtual server that assumption is simply false**, and a mis-paired flow produces a confident conclusion about a transaction that never existed.
+
+**Capture with enough detail to correlate, or accept that you are analysing two unrelated conversations.** The middle position — a capture with both sides and no way to pair them — is the one that wastes the most time, because it looks complete.

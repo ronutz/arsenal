@@ -7,8 +7,8 @@ relatedTools: ["url-inspector"]
 relatedArticles: ["url-anatomy", "url-encoding-and-idn", "relative-urls-and-resolution"]
 category: encoding
 order: 7
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma URL parece autoritativa, que é exatamente por que atacantes vestem links hostis como confiáveis. Os truques não são sofisticados; eles se apoiam nas pessoas lerem uma URL da esquerda para a direita e pararem cedo demais.
@@ -23,3 +23,12 @@ Uma URL parece autoritativa, que é exatamente por que atacantes vestem links ho
 ## O único hábito confiável
 
 Todos esses falham contra uma única regra: encontre o **host** e leia-o da direita para a esquerda. O host é a parte logo após o `://` (e depois de qualquer `@`), até a próxima `/`, `?` ou `#`. Dentro dele, a parte significativa é o domínio registrado no *fim*: os dois últimos rótulos para a maioria dos domínios. Ignore o userinfo, ignore o caminho, ignore a query, e olhe para o que está imediatamente à esquerda da primeira barra simples. Se aquilo não é quem você esperava, nada antes na URL muda isso. Decodificar uma URL suspeita em suas partes, em vez de dar uma olhada rápida, é o que transforma esses truques de volta em texto claro.
+
+
+## O parser e o leitor discordam, e só um deles é autoritativo
+
+Toda técnica de URL enganosa explora a mesma brecha: **um humano lê da esquerda para a direita e atribui sentido ao que parece familiar, enquanto um parser aplica uma gramática.** `https://example.com@attacker.test/` tem autoridade `attacker.test` e userinfo `example.com`, e as duas leituras são internamente consistentes.
+
+É por isso que "olhe a URL com atenção" é um conselho fraco. Ele pede que uma pessoa execute uma especificação, em velocidade, sob a suposição de que algo incomum vá parecer incomum — e caracteres homógrafos são escolhidos exatamente para que não pareça.
+
+**A defesa precisa ser mecânica.** Analise a URL, extraia o host, compare com o esperado, e mostre ao usuário o resultado dessa análise em vez da string crua. **Uma máquina lendo uma URL não está sendo cuidadosa; está sendo máquina — que é a propriedade que escala.**

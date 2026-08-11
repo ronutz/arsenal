@@ -7,8 +7,8 @@ relatedTools: ["xml-decoder"]
 relatedArticles: ["xml-namespaces-explained", "xml-well-formedness", "cdata-comments-and-processing-instructions"]
 category: encoding
 order: 60
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 XML looks intimidating in bulk, but every document is built from the same small set of pieces. Learn the pieces and any document becomes readable.
@@ -28,3 +28,10 @@ To read a document, start at the root and walk inward. Each start tag opens a br
 A few characters are special and appear as escapes rather than literally: `&lt;` for a less-than sign, `&amp;` for an ampersand, `&gt;`, `&quot;`, and `&apos;`. These are the built-in entities, and they exist because a bare `<` or `&` would otherwise be read as the start of a tag or an entity.
 
 Beyond elements and attributes there are three special constructs, comments, CDATA (character data) sections, and processing instructions, each covered in its own article. And when the same element names could clash between vocabularies, namespaces disambiguate them. But the backbone is always the same: a single root, elements nesting inside elements, attributes on the tags, and text at the leaves.
+
+
+## Order matters in ways that surprise people from JSON
+
+XML has document order, and it is significant: sibling elements are a sequence, not a set. **Two documents with the same elements in a different order are different documents**, which is exactly the opposite of the intuition JSON object keys build.
+
+That has a practical edge in signing and comparison. **Canonicalisation exists because two logically identical XML documents can differ byte for byte** — attribute order, whitespace, namespace declarations — and a signature covers bytes. This is why XML signature verification is subtle in a way that JSON signing is not, and why a document that "looks the same" can fail verification for reasons invisible in a diff.

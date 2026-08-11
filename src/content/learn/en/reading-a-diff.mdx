@@ -7,8 +7,8 @@ relatedTools: ["diff"]
 relatedArticles: ["how-diff-works"]
 category: encoding
 order: 10
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 ## Three kinds of line
@@ -34,7 +34,7 @@ Both affect the *comparison* only. The lines you see are always the originals, s
 
 ## Unified and side-by-side
 
-This tool shows a **unified** view: one column with removed and added lines interleaved in place, which reads well in a narrow space and keeps changes next to their context. The other common layout is **side-by-side**, with the original on the left and the changed version on the right. Classic command-line diff also groups changes into **hunks**, each introduced by an `@@` header and surrounded by a few unchanged "context" lines, so a patch can be applied to a file even after it has shifted. The aligned view here shows the full text rather than separate hunks.
+The [diff viewer](/tools/diff) shows a **unified** view: one column with removed and added lines interleaved in place, which reads well in a narrow space and keeps changes next to their context. The other common layout is **side-by-side**, with the original on the left and the changed version on the right. Classic command-line diff also groups changes into **hunks**, each introduced by an `@@` header and surrounded by a few unchanged "context" lines, so a patch can be applied to a file even after it has shifted. The aligned view here shows the full text rather than separate hunks.
 
 ## What a diff does not tell you
 

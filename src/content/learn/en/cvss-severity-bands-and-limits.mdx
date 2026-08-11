@@ -7,8 +7,8 @@ relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["how-cvss-scoring-works", "cvss-temporal-and-environmental", "cvss-v3-vs-v4"]
 category: security
 order: 74
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 CVSS (Common Vulnerability Scoring System) defines a qualitative scale so a numeric score can be spoken about in words. The bands are fixed:
@@ -32,3 +32,19 @@ The most important thing to understand about a CVSS Base score is what it delibe
 ## Using the bands well
 
 The bands are good for coarse triage and for communication, and Critical genuinely deserves attention. But ranking a backlog purely by descending Base score will send you to reachable-but-harmless flaws before quiet, high-value ones. A more defensible order combines the Base severity with exploitation likelihood (for example EPSS or known-exploited catalogues) and with your own asset value and controls, which is exactly what Temporal and Environmental scoring exist to capture. The Base number is where prioritisation starts, not where it ends.
+
+
+## What the bands do to a patching policy
+
+A rule like *"all Criticals within seven days"* turns a severity scale into a deadline, and the scale was never built to carry one. Two consequences follow, and both are visible in any large estate.
+
+**A 9.0 on a system nobody can reach from anywhere is not more urgent than a 7.5 on your public front door** — but the policy says it is, so the work goes to the wrong place first.
+
+**And the sharp edge becomes a lever.** When 6.9 means "next quarter" and 7.0 means "this week", the argument stops being about the flaw and starts being about the metrics that produce the number.
+
+The practical correction is not a better scale. It is a second input: **whether the thing is actually being exploited.** [CISA's Known Exploited Vulnerabilities catalogue](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) exists precisely because *is somebody using this today* answers a different question from *how bad would it be*.
+
+## Sources
+
+- [CVSS v3.1 Specification Document - qualitative severity rating scale](https://www.first.org/cvss/v3.1/specification-document)
+- [CISA Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)

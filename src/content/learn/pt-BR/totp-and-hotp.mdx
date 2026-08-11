@@ -7,8 +7,8 @@ relatedTools: ["totp-hotp"]
 relatedArticles: ["validating-totp-codes", "base32", "hmac", "why-hmac"]
 category: identity
 order: 30
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 ## Um segredo, muitos códigos curtos
@@ -56,3 +56,12 @@ O TOTP também admite SHA-256 e SHA-512 no lugar do SHA-1, e códigos de 7 ou 8 
 O segredo é gerado uma única vez no cadastro e entregue ao autenticador, quase sempre como uma string **Base32** transportada em uma URI `otpauth://` e exibida como um QR code. O alfabeto sem ambiguidade e indiferente a maiúsculas do Base32 é o que torna esse segredo seguro de exibir e digitar. Daí em diante, o segredo não se move; só os códigos derivados se movem.
 
 A ferramenta TOTP / HOTP calcula exatamente isso: escolha o modo, cole o segredo, e ela mostra o código junto com o HMAC intermediário, o deslocamento e o truncamento, para que a derivação fique visível em vez de parecer mágica.
+
+
+## A janela de aceitação é um multiplicador de força bruta
+
+Relógios derivam, então validadores aceitam códigos de passos de tempo vizinhos. **Cada passo aceito multiplica a quantidade de códigos válidos num instante**, e uma janela de ±1 passo significa três códigos de seis dígitos válidos em vez de um.
+
+É uma melhora de três vezes nas chances do atacante por tentativa, permanentemente, em troca de tolerar uma deriva que um cliente bem cuidado raramente tem. Uma janela generosa parece gentileza com o usuário e, do outro lado, lê-se como desconto.
+
+**Mantenha a janela em ±1 passo e ponha a defesa real na taxa de tentativas.** Adivinhar seis dígitos só é difícil enquanto adivinhar for lento — **o comprimento do código trabalha muito menos que o bloqueio.**

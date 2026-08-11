@@ -7,8 +7,8 @@ relatedTools: ["f5-cipher-string-expander"]
 relatedArticles: ["f5-cipher-string-syntax", "tls-cipher-security-keywords", "f5-tls13-vs-tls12-ciphers"]
 category: transport
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 When a cipher string expands into a concrete list, the order of that list matters as much as its contents, because order is what decides which cipher a connection actually uses.
@@ -24,3 +24,12 @@ Under server preference, the position of a cipher in the expanded list is a cont
 A cipher string uses keywords and modifiers that reorder as well as include, so the final priority is not obvious from the string alone. Expanding it resolves every keyword into the actual, ordered suite list the way BIG-IP will present it, which is exactly the order that server preference will walk. Reading that list top to bottom tells you what a modern client will negotiate, what an older client will fall back to, and whether anything undesirable is sitting high enough to be chosen.
 
 The practical habit is to read the expanded list as a priority ranking, not a set. Confirm that the top entries are the ciphers you want the majority of clients to use, that forward-secret and AEAD suites sit above anything legacy, and that nothing you would be unhappy to see negotiated is positioned where a client could reach it before a better option.
+
+
+## TLS 1.3 does not read your 1.2 cipher string
+
+The most common surprise here is not about ordering at all. **TLS 1.3 defines its own suites**, and they are negotiated separately from the TLS 1.2 and earlier list.
+
+A carefully restrictive cipher string, written to exclude weak 1.2 suites, can leave TLS 1.3 entirely unaffected — the connection negotiates a 1.3 suite that the string never mentioned, and a compliance scan reports something the configuration appears to forbid.
+
+**Check which protocol version a test connection actually negotiated before concluding a cipher rule worked.** A rule that governs 1.2 and a client that speaks 1.3 will agree on nothing and produce no error, which is the quietest way for a security control to be absent.

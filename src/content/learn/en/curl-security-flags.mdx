@@ -7,8 +7,8 @@ relatedTools: ["http-request-translator"]
 relatedArticles: ["curl-headers-auth-and-cookies", "reading-a-curl-command", "curl-data-flags-and-content-type"]
 category: networking
 order: 81
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A handful of curl flags change the security posture of a request, and they are worth recognizing on sight.
@@ -20,3 +20,10 @@ Using `http://` instead of `https://` sends everything, including headers and an
 Credentials embedded in the URL as `user:pass@host` can leak into shell history, server logs, and referrer headers, so a header or `-u` is safer.
 
 None of these make a request malicious on its own, but each is a signal. A good translator surfaces them as warnings rather than silently carrying them across, so you decide with the risk in front of you.
+
+
+## What to check before pasting somebody else's command
+
+A curl command from a ticket or a vendor article is executable code that somebody else wrote. Before running it against your own system, read it for three things: **where it sends credentials**, **whether it disables verification**, and **what it writes to disk**.
+
+The dangerous flags are not obscure. Anything that turns off certificate checking makes the transport untrusted, and a command that was written to work around a lab's self-signed certificate carries that weakening into production unchanged.

@@ -21,7 +21,7 @@ O cookie recebe o nome do pool ao qual pertence: `BIGipServer` seguido do nome d
 
 Um valor de cookie padrão se parece com `1677787402.20480.0000`. Isso não é aleatório: é o endereço IPv4 e a porta do membro do pool, codificados como números decimais. O primeiro número é o endereço com os bytes invertidos; o segundo é a porta com seus dois bytes trocados; o `0000` final é um campo fixo. Decodificado, `1677787402.20480.0000` é `10.1.1.100:80`. Há também codificações para IPv4 em um route domain, para membros IPv6 e para IPv6 em um route domain, cada uma com um layout diferente. O artigo complementar sobre os [formatos de cookie](/learn/bigip-cookie-formats) percorre os quatro com exemplos resolvidos.
 
-O ponto central é que a codificação não é criptografia. É uma transformação reversível documentada publicamente pela F5 no artigo K6917. Qualquer um que consiga ler o cookie, ou seja, qualquer um que receba a resposta HTTP, consegue revertê-la.
+O ponto central é que a codificação não é criptografia. É uma transformação reversível documentada publicamente pela F5 no artigo [K6917](https://my.f5.com/manage/s/article/K6917). Qualquer um que consiga ler o cookie, ou seja, qualquer um que receba a resposta HTTP, consegue revertê-la.
 
 ## Por que isso importa
 

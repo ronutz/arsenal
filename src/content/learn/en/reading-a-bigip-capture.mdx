@@ -7,8 +7,8 @@ relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["tmm-detail-and-peer-flows", "bigip-tcpdump-syntax"]
 category: networking
 order: 34
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Capturing the packets is half the job; reading them is the other half. A BIG-IP capture taken with a detail suffix (`:n`, `:nn`, or `:nnn`) contains the standard frames plus an F5 Ethernet trailer on each one. This article is about turning that trailer into answers. You build the capture itself with the [BIG-IP tcpdump builder](/tools/f5-bigip-tcpdump-builder).
@@ -38,3 +38,12 @@ Once open, ordinary Wireshark display filters apply: filter by `ip.addr`, `tcp.p
 ## A note on the keylog
 
 The F5 trailer mechanism is diagnostic metadata only. Reading it does not expose TLS session secrets; decrypting application payload is a separate, deliberate step that requires its own key material. The trailer alone tells you how BIG-IP routed and handled a flow, not what was inside an encrypted payload.
+
+
+## The same conversation appears twice, and that is correct
+
+A BIG-IP is a full proxy. A capture on the box therefore shows **two separate TCP connections** for one client transaction: client to virtual server, and BIG-IP to pool member. Different ports, different sequence numbers, often different IP addresses.
+
+Read without that in mind it looks like duplication, a routing loop, or a retransmission storm. It is none of those. **It is the proxy doing its job**, and the two halves are only related through the device in the middle.
+
+The F5 trailer is what puts them back together: the peer flow identifier lets you pivot from one side to the other. **Without it you are reading two conversations and guessing they are the same one.**

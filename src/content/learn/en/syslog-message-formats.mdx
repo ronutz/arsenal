@@ -7,8 +7,8 @@ relatedTools: ["syslog-pri-decoder"]
 relatedArticles: ["syslog-pri-facility-severity", "syslog-facilities-and-severities", "syslog-transport"]
 category: networking
 order: 4
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Every syslog message starts with the same `<PRI>`, but the text after it comes in two very different formats, and a lot of parsing pain comes from not knowing which you have.
@@ -30,3 +30,12 @@ RFC 5424 replaced it with a precise, parseable structure: `<PRI>` then a **versi
 ## Telling them apart and why it matters
 
 The quickest tell is right after the PRI: a digit and a space (the version, almost always `1`) means RFC 5424; a three-letter month means RFC 3164. This matters because the two carry different information. A 3164 message cannot tell you the year or timezone, so a collector has to add them and may get them wrong across a reboot or a zone change. A 5424 message carries that itself. When timestamps look wrong or fields land in the wrong place, the format mismatch is usually why, and modern deployments prefer 5424 precisely to avoid that ambiguity.
+
+
+## Two formats, and parsers that guess between them
+
+RFC 3164 and RFC 5424 are different enough to break a parser and similar enough that one will often accept the other and produce nonsense — a timestamp read as a hostname, a structured-data block treated as free text.
+
+The practical hazard is that **the wrong-format parse usually succeeds.** Fields land in the wrong columns, the message is indexed, and the search that would have found it looks in a field that never received the value. The event is present and unfindable, which during an investigation is worse than absent.
+
+**Pin the format explicitly at both ends** rather than relying on detection, and **verify by searching for a known test event** rather than by confirming that lines are arriving.

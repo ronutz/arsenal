@@ -7,8 +7,8 @@ relatedTools: []
 relatedArticles: ["bigip-21x-whats-new", "bigip-inplace-upgrade-and-64bit"]
 category: networking
 order: 7
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Como o 21.x roda apenas em rSeries, VELOS e Virtual Edition, a camada de plataforma sob o tenant deixou de ser ruído de fundo: o F5OS agora é metade da história de qualquer implantação em hardware. O F5OS 2.0 é a versão de plataforma que os recursos voltados a hardware do BIG-IP 21.1 pressupõem, e este artigo adota o ponto de vista que importa à maioria dos leitores daqui, o do operador de tenant BIG-IP, cobrindo as três capacidades acopladas ao F5OS 2.0 documentadas nas release notes do 21.1. Um passeio mais profundo nativo do F5OS (as mudanças próprias de administração e ciclo de vida da plataforma) merece sua própria rodada de verificação contra as release notes do F5OS 2.0 e virá em separado; nada abaixo depende disso.
@@ -29,4 +29,11 @@ Q-in-Q, o empilhamento de tags 802.1Q para carregar VLANs de cliente dentro de V
 
 ## A leitura de dependência
 
-Os três recursos compartilham uma forma: a capacidade é entregue pela plataforma, consumida pelo tenant e condicionada ao F5OS 2.0 no host. Isso torna a versão de plataforma um item de primeira classe em qualquer plano de implantação 21.x, verificado com a mesma seriedade da versão do próprio BIG-IP, e a matriz de compatibilidade de hardware/software da F5 (K86001294) é a tabela de pareamento autoritativa. O [aprofundamento operacional](/learn/bigip-inplace-upgrade-and-64bit) cobre a maquinaria de upgrade do lado do tenant com que isto se combina, e a [visão geral do 21.x](/learn/bigip-21x-whats-new) guarda o quadro completo.
+Os três recursos compartilham uma forma: a capacidade é entregue pela plataforma, consumida pelo tenant e condicionada ao F5OS 2.0 no host. Isso torna a versão de plataforma um item de primeira classe em qualquer plano de implantação 21.x, verificado com a mesma seriedade da versão do próprio BIG-IP, e a matriz de compatibilidade de hardware/software da F5 ([K86001294](https://my.f5.com/manage/s/article/K86001294)) é a tabela de pareamento autoritativa. O [aprofundamento operacional](/learn/bigip-inplace-upgrade-and-64bit) cobre a maquinaria de upgrade do lado do tenant com que isto se combina, e a [visão geral do 21.x](/learn/bigip-21x-whats-new) guarda o quadro completo.
+
+## Fontes
+
+Toda afirmação específica de versão acima é da própria F5, e é aqui que se deve reconferir quando a próxima versão sair.
+
+- [New Features in F5OS 2.0 - cloud-init, Q-in-Q (IEEE 802.1ad) on rSeries and VELOS, foreground diagnostics](https://techdocs.f5.com/en-us/f5os-2-0-0/relnote-velos-f5os-2-0/title-new-in.html)
+- [F5OS 2.0.0-HR-1 Fixes and Known Issues](https://techdocs.f5.com/kb/en-us/products/f5os/releasenotes/related/relnote-supplement-f5os-2-0-0-hr-1.html)

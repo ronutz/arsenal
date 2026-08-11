@@ -4,11 +4,11 @@ title: "How nslookup Prints Each Record Type"
 summary: "Instead of dig's fixed columns, nslookup labels each record in prose: mail exchanger =, canonical name =, nameserver =, and a multi-line block for SOA. A short guide to reading each type's line."
 concepts: ["nslookup", "mx", "cname", "ns", "soa", "srv", "txt", "ptr"]
 relatedTools: ["nslookup-output-explainer"]
-relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-record-types-in-answers"]
+relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-record-types-in-answers", "reverse-dns-lookups-with-nslookup"]
 category: networking
 order: 47
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 dig prints every record in the same five columns. nslookup does something different: it labels each record type in words, which is friendlier to read but means the format changes from type to type.
@@ -27,3 +27,12 @@ dig prints every record in the same five columns. nslookup does something differ
 ## The one to watch
 
 SOA is the odd one out, because it is the only type nslookup breaks across multiple lines. The `mail addr` field is a mailbox with the first dot standing in for the `@`, and `minimum` doubles as the negative-cache TTL (time to live), so it governs how long a "does not exist" answer for the zone is remembered. If you want the same fields laid out the classic way, dig prints them on a single SOA record line instead.
+
+
+## "Non-authoritative answer" is about cache, not correctness
+
+The line that confuses people most is the one printed before most answers.
+
+It does **not** mean the answer is doubtful. It means the response came from a resolver's **cache** rather than from a server authoritative for that zone. A cached answer is usually correct and always faster.
+
+The reason it matters operationally is timing: **immediately after a DNS change, a non-authoritative answer is exactly the stale one you do not want to test against.** Query the authoritative server directly — `server` in interactive mode — and the label disappears along with the doubt.

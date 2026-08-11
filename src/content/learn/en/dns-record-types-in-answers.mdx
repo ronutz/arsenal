@@ -4,11 +4,11 @@ title: "Reading the Records in a dig Answer"
 summary: "Every record in a dig section is five columns: name, TTL, class, type, and rdata. This walks the columns and then the rdata of the record types you actually meet, from A and CNAME to MX, SOA, SRV, and CAA, so a wall of records reads as plain facts."
 concepts: ["a record", "aaaa", "cname", "mx", "soa", "txt", "srv", "caa", "ttl", "rdata"]
 relatedTools: ["dig-output-explainer"]
-relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig"]
+relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig", "gslb-two-tier-pool-then-member"]
 category: networking
 order: 42
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Inside the ANSWER, AUTHORITY, and ADDITIONAL sections, every line is one resource record with the same five columns:
@@ -35,3 +35,12 @@ That is **name** (`example.com.`), **TTL** in seconds (`3600`, how long it may b
 ## TTL is a clock, not a constant
 
 The TTL you see from a recursive resolver counts down as the record ages in its cache, so the same query a minute later can show a smaller number. Query the authoritative server directly (the one in an NS record, with `@`) and you see the zone's configured TTL instead. That difference is often the fastest way to tell a caching problem from a zone problem.
+
+
+## A CNAME answer is two answers, and the second one can be the problem
+
+Ask for an A record on a name that is a CNAME, and a well-behaved server returns **both** the CNAME and the A record it resolves to. The answer section carries the chain.
+
+That chain is where two quiet failures live. **A CNAME pointing at a name with no record of the requested type** returns NOERROR with an incomplete chain — the alias resolved and the target had nothing. And **a CNAME crossing into a zone the server is not authoritative for** may return only the alias, leaving the client to start a second lookup it may not be configured to make.
+
+**Read the whole answer section, not the last line.** The record you asked for may not be there even when the status says nothing went wrong.

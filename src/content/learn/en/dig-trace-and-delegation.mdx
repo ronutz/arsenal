@@ -7,8 +7,8 @@ relatedTools: ["dig-output-explainer"]
 relatedArticles: ["dig-query-options", "reading-dig-output", "dns-record-types-in-answers"]
 category: networking
 order: 53
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A normal `dig` asks one resolver and trusts its answer. `dig +trace` does something different and far more revealing: it performs the resolution itself, hop by hop, the way a recursive resolver would.
@@ -32,3 +32,12 @@ It is also the clearest way to *understand* DNS. Watching a name resolve from th
 ## Reading it well
 
 A couple of things to keep in mind: +trace does its own iterative resolution, so it bypasses your configured resolver entirely, which is why its result can differ from a normal lookup when your resolver's cache is stale. And each referral is a set of NS records, not the final answer, so read down to the last block for the actual data. If a level returns records you did not expect, that level is where to look first.
+
+
+## +trace does not test your resolution path
+
+`+trace` is the right tool for reading a delegation chain, and the wrong tool for proving that name resolution works, because **it deliberately bypasses your resolver.** It iterates from the root itself, asking each server in turn.
+
+So `+trace` can succeed beautifully while every application on the host still fails, because what is broken is the resolver `+trace` never used — its forwarders, its cache, its access rules, or the path to it.
+
+**Use `+trace` to find out where a delegation is wrong. Use an ordinary query to find out whether resolution works.** They answer different questions and the second one is usually the one being asked.

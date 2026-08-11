@@ -7,8 +7,8 @@ relatedTools: ["oidc"]
 relatedArticles: ["oidc-overview", "id-token-claims", "oidc-vs-oauth"]
 category: identity
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O OpenID Connect define como uma aplicação de fato obtém um ID token, e o fluxo para o qual ele o direciona é o **fluxo authorization code**. É uma dança de redirects com uma divisão deliberada entre o que viaja pelo navegador e o que não viaja.
@@ -28,3 +28,14 @@ A razão para a troca em duas etapas é que o código de autorização é quase 
 ## state, nonce e PKCE
 
 Três parâmetros fazem o trabalho pesado de segurança. O **`state`** amarra a resposta de volta à requisição que a aplicação iniciou, derrotando cross-site request forgery no callback. O **`nonce`** é ecoado dentro do ID token para que a aplicação possa confirmar que o token responde à *sua* requisição e não é um replay. O **PKCE** adiciona uma prova de uso único para que até um cliente público sem segredo (um app single-page ou mobile) possa provar que é a mesma parte que iniciou o fluxo. Juntos eles tornam a dança de redirects segura para rodar em um navegador, que é por que o fluxo authorization code com PKCE é o padrão moderno.
+
+
+## `state` e `nonce` defendem ataques diferentes, e um não é dois
+
+São frequentemente implementados como se qualquer um satisfizesse o requisito. Eles não se sobrepõem.
+
+**`state`** amarra o redirecionamento à sessão de navegador que o iniciou. Sem ele, um atacante completa a própria autorização e faz o navegador da vítima entregar o código resultante — a vítima acaba logada na conta do atacante, o que é silencioso, confuso, e pior do que parece quando aquela conta passa a coletar o que a vítima envia.
+
+**`nonce`** amarra o ID token àquela mesma requisição, para que um token emitido num login não seja reproduzido em outro.
+
+**Implementar um e supor o outro coberto deixa um ataque inteiro aberto**, e nenhuma das falhas produz erro — o fluxo completa, o usuário entra, e o único sinal é que entrou como outra pessoa.

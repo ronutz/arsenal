@@ -7,8 +7,8 @@ relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags"]
 category: networking
 order: 48
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 When nslookup prints `Non-authoritative answer:` before a result, it is telling you something specific about where that answer came from.
@@ -26,3 +26,12 @@ For everyday lookups, a non-authoritative answer is exactly what you want: it is
 ## Getting an authoritative answer
 
 If you need the current truth, bypass the cache and ask an authoritative server directly. Find the zone's name servers (an NS lookup), then query one of them: in nslookup, run `server ns1.example.com.` and then the name; in dig, use `dig @ns1.example.com example.com`. The answer will come back without the non-authoritative marker (and in dig, with the `aa` flag set), telling you that you are looking at the zone itself rather than someone's cached copy of it.
+
+
+## Authoritative is about provenance, not accuracy
+
+An authoritative answer comes from a server holding the zone; a non-authoritative one comes from a cache. **Neither label says the answer is right.**
+
+An authoritative server can serve a zone that was edited wrongly an hour ago and answer with complete confidence. A cached answer can be perfectly correct and merely old. The words describe **where the data came from**, and correctness is a separate question the protocol does not answer.
+
+The place it matters is timing. **After a change, only the authoritative server can tell you whether the change is live**; every resolver in the path will keep serving what it holds until the TTL expires, and that is not a fault to escalate — it is the design working.

@@ -7,8 +7,8 @@ relatedTools: ["f5-tmsh-config-explainer"]
 relatedArticles: ["anatomy-of-bigip-conf", "how-a-virtual-server-works", "bigip-pools-and-load-balancing"]
 category: networking
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Quando o BIG-IP balanceia uma conexão, por padrão ele preserva o IP de origem do cliente em direção ao pool member. O member vê o endereço real do cliente, o que frequentemente é o que você quer, mas isso cria um requisito de roteamento fácil de deixar passar.
@@ -24,3 +24,12 @@ O **SNAT** (source network address translation) resolve isso mudando o endereço
 ## O custo e sua mitigação
 
 O SNAT abre mão do IP real do cliente: como o member agora vê um endereço do BIG-IP como origem, ele não pode mais logar ou tomar decisões com base no endereço verdadeiro do cliente. Para HTTP isso normalmente é tratado inserindo um header `X-Forwarded-For` carregando o IP original do cliente, para que a aplicação ainda possa vê-lo. No `bigip.conf` isso aparece como um `snat-type automap` no virtual server ou um `snatpool` anexado. A regra prática é que o SNAT é o que você usa quando não pode garantir que os members roteiam o tráfego de retorno de volta pelo BIG-IP, o que na maioria das redes reais é exatamente a situação.
+
+
+## O SNAT resolve o roteamento e compra um teto de portas
+
+Ligar o SNAT corrige a assimetria, porque o membro passa a responder para o endereço do BIG-IP com quem falou. Também introduz um limite que só aparece sob carga.
+
+Cada conexão de um endereço SNAT para um destino precisa da própria porta de origem, e há cerca de **64.000** delas por par endereço-destino. Um virtual server movimentado à frente de poucos membros pode esgotar essa faixa e, quando esgota, novas conexões falham enquanto todos os monitores continuam verdes. **Parece problema de backend e é problema de aritmética** — a correção é mais endereços SNAT, não mais servidores.
+
+O outro custo é atribuição. **O membro deixa de ver o endereço do cliente**, então, a menos que o profile insira um cabeçalho `X-Forwarded-For` e a aplicação o registre, os logs de acesso guardam apenas o endereço SNAT. Descobrir isso durante um incidente é descobrir tarde demais.

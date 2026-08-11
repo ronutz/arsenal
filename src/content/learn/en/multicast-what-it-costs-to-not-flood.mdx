@@ -1,0 +1,54 @@
+---
+slug: multicast-what-it-costs-to-not-flood
+title: "Multicast: what it costs to not flood"
+summary: "Multicast sends one copy where unicast would send thousands, and the saving is real. What it buys in bandwidth it pays for in state, and the failure modes are not the ones people expect: a network that floods multicast everywhere is usually working exactly as configured."
+concepts: ["multicast", "igmp", "pim", "spbm"]
+relatedTools: []
+relatedArticles: ["spbm-multicast-addresses-are-computed-not-learned", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead"]
+category: networking
+order: 254
+status: reviewed
+updated: "2026-08-10"
+---
+
+## The arithmetic that makes it worth the trouble
+
+One video stream to a thousand receivers is a thousand copies over the sender's uplink if it is unicast. As multicast it is **one copy**, replicated by the network at the last point where the paths diverge.
+
+That is the entire argument, and it is a strong one for the traffic that fits: market data, IPTV, imaging and boot systems, discovery protocols, and anything where many receivers want the same bytes at the same instant. **Unicast scales with receivers; multicast scales with topology**, and topology grows far more slowly.
+
+## What you buy it with
+
+**State, in every device along the path.** A unicast network can forward a packet knowing only the destination. A multicast network has to know, for each group, **which of its ports have listeners downstream** — and that knowledge has to be built, refreshed, and torn down as receivers come and go.
+
+That is the trade nobody states clearly enough. **Multicast moves cost from bandwidth to control plane**, and control-plane state is the resource that runs out in ways that are harder to see: table sizes, refresh timers, and the CPU spent maintaining entries for groups that nobody is watching any more.
+
+## Two mechanisms, and they are not the same one
+
+They are constantly conflated and they do different jobs at different layers.
+
+**IGMP is how a host says it wants a group.** It is the conversation between a receiver and its local router — join, leave, and periodic queries that check whether anybody is still listening.
+
+**PIM is how routers build the distribution tree between themselves.** It decides which router forwards which group toward which neighbour, and it is where the design decisions live: shared tree or shortest-path, where the rendezvous point sits, how the two are transitioned between.
+
+**A network can have IGMP working perfectly and no multicast routing at all** — receivers ask, the local switch honours it, and nothing crosses a router boundary. That is one of the most common "multicast is broken" reports, and nothing is broken.
+
+## The failure that looks like a working network
+
+**A switch with no IGMP snooping floods multicast to every port in the VLAN**, because a multicast MAC address is not a unicast one and the switch has nothing to learn from. Every device on the segment receives every packet of every group and discards what it did not ask for.
+
+This is the failure mode worth internalising, because **it is invisible in exactly the places people look.** The application works — receivers get their traffic. The switch reports no errors, because it is doing precisely what it was designed to do without snooping. What suffers is everything else on that VLAN, and the symptom arrives as unrelated slowness on hosts that have nothing to do with the multicast application.
+
+**Snooping is what makes multicast a saving rather than a broadcast with extra steps.** Without it, the arithmetic at the top of this article inverts: the sender transmits one copy and the network delivers it to everybody.
+
+## The other quiet one: the querier
+
+IGMP snooping needs somebody to send periodic queries, so switches know which ports still have listeners. In a routed network the router does it. **In a segment with no multicast router — a VLAN of servers, a lab, a storage network — there may be no querier at all**, and snooping entries age out.
+
+What happens next depends on the switch, and neither outcome is good: it either **floods** (back to the previous failure) or it **stops forwarding the group**, and a stream that worked for five minutes after every change stops without anybody touching it.
+
+**If a multicast application works immediately after a restart and dies minutes later, look for the querier before you look at the application.**
+
+## What to take away
+
+**Multicast does not fail loudly.** It floods, which looks like a performance problem somewhere else, or it stops after a timer, which looks like an application problem. Both diagnoses send the investigation to the wrong team, and the network is doing exactly what it was configured to do in each case.

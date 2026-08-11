@@ -7,8 +7,8 @@ relatedTools: ["json-yaml-convert"]
 relatedArticles: ["json-vs-yaml", "yaml-anchors-and-aliases", "yaml-type-coercion"]
 category: encoding
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Escrever uma string multilinha em JSON significa uma linha com escapes `\\n`. O YAML (YAML Ain't Markup Language), em vez disso, tem **block scalars**, que deixam o texto ficar naturalmente em várias linhas, e oferece dois estilos que lidam com quebras de linha de formas opostas.
@@ -27,3 +27,12 @@ Depois do `|` ou `>` você pode adicionar um **indicador de chomping** para a qu
 ## Na conversão para JSON
 
 Qualquer que seja o estilo usado, o JSON só tem strings comuns, então um block scalar converte para uma única string com `\\n` embutido (para literal) ou espaços dobrados (para folded), e a escolha de chomping determina se uma quebra de linha `\\n` final está presente. O layout visual em bloco desaparece por completo. Vale lembrar disso quando um certificado ou script convertido para de funcionar: o conteúdo normalmente está intacto, mas uma quebra de linha final perdida ou faltante pela regra de chomping é uma causa comum.
+
+
+## A indentação é a sintaxe, o que torna copiar e colar o risco
+
+Escalares em bloco carregam o conteúdo por indentação, e isso torna o YAML unicamente vulnerável à operação de edição mais comum que existe. **Colar um bloco num documento com indentação diferente muda o que o bloco contém** — ou o encerra cedo, em silêncio, com o restante virando chaves irmãs.
+
+Os indicadores de chomping agravam, porque `|`, `|-` e `|+` diferem apenas em quebras de linha finais, e uma quebra final é invisível em todo editor. **Um certificado ou chave que não carrega sem erro útil é, muitas vezes, um indicador de chomping**, não um arquivo corrompido.
+
+**Passe o arquivo por um parser e compare o valor obtido com o pretendido.** É o único jeito de ver o que o YAML realmente leu, porque ler a olho é reler exatamente aquilo que enganou você da primeira vez.

@@ -7,8 +7,8 @@ relatedTools: ["hash-preimage-finder"]
 relatedArticles: ["why-hashes-are-one-way", "why-salting-defeats-precomputed-tables", "keyspace-entropy-and-crack-time"]
 category: hashing
 order: 83
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Um hash não pode ser executado ao contrário, então toda técnica de reversão é, na verdade, uma busca por uma entrada cujo hash resulte no alvo. As técnicas se dividem em duas famílias com custos opostos.
@@ -28,3 +28,12 @@ Não armazena nada. Enumere candidatos sobre um alfabeto, aplique hash em cada u
 Tabelas de consulta são pesadas em espaço, quase instantâneas e só para hashes sem sal. Força bruta é pesada em processamento, não precisa de armazenamento e só alcança espaços pequenos.
 
 O demonstrador desta caixa de ferramentas é deliberadamente força bruta pura, sem wordlist e com espaço de chaves limitado. Essa escolha o mantém honesto: não armazena nada, recupera apenas entradas trivialmente fracas e mostra com clareza onde uma busca se torna inviável.
+
+
+## A economia decide qual dos dois você enfrenta
+
+Força bruta gasta **computação por alvo**. Uma tabela de consulta gasta computação **uma vez** e depois gasta armazenamento, respondendo a todo alvo seguinte quase instantaneamente.
+
+Essa diferença decide o que um atacante faz com um banco roubado, e explica por que as defesas são diferentes em natureza, não em grau. **O salt derrota a tabela**, tornando a precomputação inútil. **Um KDF lento derrota a força bruta**, encarecendo cada tentativa. Nenhum substitui o outro, e um sistema com um e não com o outro tem um buraco no formato exato da metade que falta.
+
+A realidade moderna é que hashes rápidos sem salt de senhas comuns nem chegam a ser atacados — **eles são consultados**, em tabelas que já existem, de graça.

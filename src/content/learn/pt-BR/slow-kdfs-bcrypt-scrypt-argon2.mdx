@@ -7,8 +7,8 @@ relatedTools: ["hash-preimage-finder"]
 relatedArticles: ["why-salting-defeats-precomputed-tables", "choosing-a-password-hash", "keyspace-entropy-and-crack-time"]
 category: hashing
 order: 85
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O salt mata tabelas pré-computadas, mas nada faz quanto à velocidade bruta. Um hash rápido como o SHA-256 pode ser calculado bilhões de vezes por segundo numa GPU, então uma senha fraca ainda cai por força bruta direcionada mesmo com sal.
@@ -32,3 +32,12 @@ Substitua o hash rápido por uma **função de derivação de chave** com um fat
 Escolha um custo-alvo de tempo real por hash no seu próprio hardware e defina os parâmetros para atingi-lo, elevando o fator de trabalho ao longo do tempo conforme o hardware acelera. A OWASP (o Projeto Aberto Mundial de Segurança de Aplicações, do inglês Open Worldwide Application Security Project) publica parâmetros iniciais atuais para cada algoritmo.
 
 A combinação é o que importa: um salt único para derrotar a pré-computação, mais uma KDF (função de derivação de chave, do inglês key derivation function) lenta e ajustada para tornar cada tentativa restante cara.
+
+
+## Parâmetros de custo são uma promessa sobre um hardware que muda
+
+Um fator de trabalho escolhido em 2015 não é a mesma defesa em 2026 contra o mesmo dinheiro. **Parâmetros de custo envelhecem** e, diferente de um certificado, não expiram e nada avisa.
+
+A falha é silenciosa por construção: hashes criados com um fator antigo continuam conferindo para sempre, então uma aplicação pode estar rodando um custo de dez anos atrás sem erro, sem aviso e sem sintoma visível.
+
+Duas consequências práticas. **Guarde os parâmetros junto do hash** — os formatos padrão fazem isso — para que antigo e novo coexistam durante a migração. E **refaça o hash no login bem-sucedido**, quando você tem o texto claro por um instante, que é o único momento em que a atualização é possível sem pedir nada ao usuário.

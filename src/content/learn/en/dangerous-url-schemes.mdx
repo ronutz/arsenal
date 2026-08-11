@@ -7,8 +7,8 @@ relatedTools: ["ssrf-url-classifier"]
 relatedArticles: ["what-is-ssrf", "ssrf-defenses-allowlists", "cloud-metadata-endpoints-and-ssrf"]
 category: security
 order: 93
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 An SSRF that can only make http requests is dangerous enough. One that also honors other URL schemes is worse, because those schemes reach beyond the web and can turn a fetch into file disclosure or arbitrary traffic to internal services.
@@ -28,3 +28,12 @@ The `gopher://` scheme is the most abused, because it lets an attacker place nea
 ## The defense is a scheme allow-list
 
 Because these schemes provide capabilities far beyond fetching a web page, the fix is simple and strict: allow only `http` and `https`, and reject every other scheme before the request is built. This tool flags a dangerous scheme as soon as it sees one, raising the risk to high regardless of the host, because the scheme alone is enough to matter.
+
+
+## The scheme list is an allow-list, or it is nothing
+
+Enumerating the dangerous schemes is the wrong shape of defence, because the set is open-ended: `file`, `gopher`, `dict`, `ftp`, `ldap`, `jar`, and whatever the HTTP library you upgraded to last month decided to support.
+
+**A library's scheme support is a dependency, not a constant.** A fetch that could only speak HTTP in one version can speak more in the next, and nothing in the release notes will be addressed to your blocklist.
+
+So the rule is the same one that governs address checking: **decide what is permitted rather than what is forbidden.** `http` and `https` and nothing else is a policy that survives an upgrade; a list of the schemes you happened to know about in the year you wrote it does not.

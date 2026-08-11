@@ -7,8 +7,8 @@ relatedTools: ["dig-output-explainer"]
 relatedArticles: ["reading-dig-output", "dns-record-types-in-answers", "dnssec-records-in-dig"]
 category: networking
 order: 41
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Two lines carry the whole state of a DNS message: the `->>HEADER<<-` line and the `flags:` line beneath it.
@@ -46,3 +46,12 @@ The four numbers after the flags are the record counts for the QUESTION, ANSWER,
 ## Reading them together
 
 The combination tells a story. `qr aa` with an answer is an authoritative server giving you zone data directly. `qr rd ra` with an answer is a recursive resolver returning a (possibly cached) result. `qr rd ra` with status `NXDOMAIN` and an SOA in AUTHORITY is a resolver telling you the name genuinely does not exist and how long it will remember that. `qr rd` without `ra` means you asked a server to recurse that will not, which usually surfaces as `REFUSED`.
+
+
+## TC is the flag that turns a UDP problem into a TCP problem
+
+When a response will not fit, the server sets **TC** — truncated — and sends what it can. A correct client is expected to notice and retry the whole query over **TCP on port 53**.
+
+That retry is where estates break. **TCP/53 is blocked far more often than anybody intends**, usually by a firewall rule written when "DNS is UDP" was a reasonable simplification. The result is a resolver that works for ordinary lookups and fails only for large answers, which is the hardest kind of fault to get reported accurately.
+
+**If DNS works until it doesn't, test TCP/53 explicitly.** It is one command and it eliminates the possibility fastest.

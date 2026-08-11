@@ -7,8 +7,8 @@ relatedTools: ["f5-apm-session-variable-reference", "f5-apm-sso-explainer"]
 relatedArticles: ["bigip-21x-whats-new", "bigip-post-quantum-tls"]
 category: networking
 order: 8
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O Access Policy Manager, hoje comercializado como BIG-IP Zero Trust Access, é onde o BIG-IP toca a identidade, e identidade é onde a indústria se move mais rápido: fluxos sem senha, clientes agênticos que precisam de credenciais programaticamente, e VPNs cujas premissas de transporte estão sendo reescritas. Os recursos de acesso do BIG-IP 21.1 se leem como uma resposta coordenada, e cada afirmação abaixo vem das release notes da F5.
@@ -32,3 +32,10 @@ Três itens menores completam a camada. Políticas de acesso per-session ganham 
 ## Lendo a direção
 
 Cada item aponta para o mesmo lado: autenticação delegada a onde ela é mais forte (o navegador do sistema, o autenticador de plataforma), matrícula automatizada onde humanos eram o gargalo (DCR), escolha de transporte restaurada (IPsec ao lado do SSL-VPN) e o motor de políticas alcançando para fora (HTTP Connector). Para as variáveis de sessão e a mecânica de SSO que tudo isso aciona no fim, a [referência de variáveis de sessão](/tools/f5-apm-session-variable-reference) e o [explicador de SSO](/tools/f5-apm-sso-explainer) continuam de onde as release notes param, e a [visão geral do 21.x](/learn/bigip-21x-whats-new) guarda o contexto completo.
+
+## Fontes
+
+Toda afirmação específica de versão acima é da própria F5, e é aqui que se deve reconferir quando a próxima versão sair.
+
+- [What's new in BIG-IP v21.1 - DevCentral (Dynamic Client Registration for Zero Trust Access)](https://community.f5.com/kb/technicalarticles/whats-new-in-big-ip-v21-1/346637)
+- [New Features in BIG-IP 21.1.0](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)

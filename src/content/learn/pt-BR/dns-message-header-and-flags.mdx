@@ -7,8 +7,8 @@ relatedTools: ["dig-output-explainer"]
 relatedArticles: ["reading-dig-output", "dns-record-types-in-answers", "dnssec-records-in-dig"]
 category: networking
 order: 41
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Duas linhas carregam todo o estado de uma mensagem DNS: a linha `->>HEADER<<-` e a linha `flags:` logo abaixo.
@@ -46,3 +46,12 @@ Os quatro números após as flags são as contagens de registros das seções QU
 ## Lendo tudo junto
 
 A combinação conta uma história. `qr aa` com uma resposta é um servidor autoritativo entregando dados de zona diretamente. `qr rd ra` com uma resposta é um resolvedor recursivo retornando um resultado (possivelmente em cache). `qr rd ra` com status `NXDOMAIN` e um SOA em AUTHORITY é um resolvedor dizendo que o nome realmente não existe e por quanto tempo ele vai lembrar disso. `qr rd` sem `ra` significa que você pediu a um servidor para recursar que não vai, o que costuma aparecer como `REFUSED`.
+
+
+## TC é a flag que transforma um problema de UDP em um problema de TCP
+
+Quando uma resposta não cabe, o servidor liga **TC** — truncada — e envia o que dá. Espera-se que um cliente correto perceba e repita a consulta inteira sobre **TCP na porta 53**.
+
+Essa retentativa é onde os parques quebram. **TCP/53 é bloqueado com muito mais frequência do que alguém pretende**, normalmente por uma regra de firewall escrita quando "DNS é UDP" era uma simplificação razoável. O resultado é um resolvedor que funciona para consultas comuns e falha só para respostas grandes — o tipo de falha mais difícil de ser relatado com precisão.
+
+**Se o DNS funciona até não funcionar, teste TCP/53 explicitamente.** É um comando e elimina a hipótese mais rápido.

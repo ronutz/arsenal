@@ -24,11 +24,13 @@
 
 import { useEffect, useState } from "react";
 
+import CountryFlag from "@/components/CountryFlag";
+
 type Mode = "all" | "redu" | "career" | "teach";
 
 export default function TimelineFilter({
   labels,
-  categories,
+  countries,
 }: {
   labels: {
     show: string;
@@ -36,65 +38,48 @@ export default function TimelineFilter({
     redu: string;
     career: string;
     teach: string;
-    count: string;
-    categoryLabel: string;
-    categoryAll: string;
-    categoryNone: string;
+    countryLabel: string;
   };
-  /** Category tags with their display names and counts, from the server. */
-  categories: { tag: string; label: string; n: number }[];
+  /** ISO code, display name and count, computed by the server from the same
+   *  map the cards render their flags from. */
+  countries: { code: string; label: string; n: number }[];
 }) {
-  const [mode, setMode] = useState<Mode>("all");
-  // MULTI-SELECT (PRIME 2026-08-10). Previously each category was its own
-  // route: /industry/vendors, /industry/distributors and so on. Those pages
-  // still exist and still work - they are linkable and crawlable, which a
-  // client-side control is not - but selecting a category no longer requires
-  // LEAVING the timeline.
-  //
-  // An EMPTY set means "no category filter", i.e. show everything, rather than
-  // "show nothing". That is the behaviour a reader expects from an unticked
-  // group of checkboxes, and it makes "none" and "all" the same visible result
-  // by different routes, which is honest: with no category chosen there is no
-  // category constraint to apply.
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [counts, setCounts] = useState({ shown: 0, total: 0 });
+  // MULTI-SELECT ON BOTH AXES (PRIME 2026-08-11): "all need to be flexible and
+  // be part of uni- or multi-selections". An EMPTY set means NO CONSTRAINT on
+  // that axis rather than "show nothing", which is what a reader expects from a
+  // group of untoggled chips - and it makes the two axes compose without any
+  // special case: modes UNION within themselves, countries UNION within
+  // themselves, and the two INTERSECT with each other. A reader picking
+  // "My chapters" and two flags wants his chapters in those two countries.
+  const [modes, setModes] = useState<Set<Mode>>(new Set());
+  const [picked, setPicked] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const items = Array.from(
       document.querySelectorAll<HTMLElement>("[data-vendor-entry]"),
     );
-    let shown = 0;
     for (const el of items) {
       const modeKeep =
-        mode === "all" ||
-        (mode === "redu" && el.dataset.redu === "1") ||
-        (mode === "career" && el.dataset.career === "1") ||
-        (mode === "teach" && el.dataset.teach === "1");
-      // Tags are a space-separated list on the element; an entry matches if it
-      // carries ANY selected category (union, not intersection - a reader
-      // ticking "vendor" and "distributor" wants both, not companies that are
-      // somehow both).
-      const tags = (el.dataset.tags ?? "").split(" ").filter(Boolean);
-      const catKeep =
-        selected.size === 0 || tags.some((t) => selected.has(t));
-      const keep = modeKeep && catKeep;
-      el.hidden = !keep;
-      if (keep) shown += 1;
+        modes.size === 0 ||
+        (modes.has("redu") && el.dataset.redu === "1") ||
+        (modes.has("career") && el.dataset.career === "1") ||
+        (modes.has("teach") && el.dataset.teach === "1");
+      const countryKeep =
+        picked.size === 0 || picked.has(el.dataset.country ?? "");
+      el.hidden = !(modeKeep && countryKeep);
     }
-    setCounts({ shown, total: items.length });
-  }, [mode, selected]);
+  }, [modes, picked]);
 
-  function toggle(tag: string) {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(tag)) next.delete(tag);
-      else next.add(tag);
-      return next;
-    });
+  function toggleIn<T>(set: Set<T>, v: T): Set<T> {
+    const next = new Set(set);
+    if (next.has(v)) next.delete(v);
+    else next.add(v);
+    return next;
   }
 
-  const OPTIONS: { key: Mode; label: string }[] = [
-    { key: "all", label: labels.all },
+  // "Everything" is not a fourth state - it is the empty selection, so it is
+  // rendered as its own chip that clears rather than as a mode that competes.
+  const OPTIONS: { key: Exclude<Mode, "all">; label: string }[] = [
     { key: "redu", label: labels.redu },
     { key: "career", label: labels.career },
     { key: "teach", label: labels.teach },
@@ -104,64 +89,70 @@ export default function TimelineFilter({
     <div className="timeline-filter">
       <span className="timeline-filter-label mono">{labels.show}</span>
       <div className="timeline-filter-chips" role="group" aria-label={labels.show}>
+        {/* "Everything" clears both axes. It is aria-pressed when nothing is
+            selected, which is true rather than decorative: no constraint IS
+            everything. */}
+        <button
+          type="button"
+          className="timeline-filter-chip"
+          aria-pressed={modes.size === 0 && picked.size === 0}
+          onClick={() => {
+            setModes(new Set());
+            setPicked(new Set());
+          }}
+        >
+          {labels.all}
+        </button>
         {OPTIONS.map((o) => (
           <button
             key={o.key}
             type="button"
             className="timeline-filter-chip"
-            aria-pressed={mode === o.key}
-            onClick={() => setMode(o.key)}
+            aria-pressed={modes.has(o.key)}
+            onClick={() => setModes((prev) => toggleIn(prev, o.key))}
           >
             {o.label}
           </button>
         ))}
       </div>
-      {/* CATEGORY MULTI-SELECT. Real checkboxes rather than styled buttons:
-          a group of independent on/off choices is exactly what a checkbox is,
-          it announces its own state to assistive technology without any aria
-          bookkeeping, and it is keyboard-operable for free. */}
-      {categories.length > 0 ? (
-        <fieldset className="timeline-filter-cats">
-          <legend className="timeline-filter-label mono">
-            {labels.categoryLabel}
-          </legend>
-          {categories.map((c) => (
-            <label className="timeline-filter-cat" key={c.tag}>
-              <input
-                type="checkbox"
-                checked={selected.has(c.tag)}
-                onChange={() => toggle(c.tag)}
-              />
-              <span>{c.label}</span>
-              <span className="timeline-filter-cat-n mono">{c.n}</span>
-            </label>
+
+      {/* COUNTRY TOGGLES (PRIME 2026-08-11): "toggable country flag + country
+          code. Do not use checkboxes, the item itself should change state and
+          show current state."
+
+          So each country is one button carrying the flag, the ISO code and the
+          count, and it IS the control - `aria-pressed` announces the state to
+          assistive technology and `[aria-pressed="true"]` styles it, so the
+          visible state and the announced state are the same fact rather than
+          two things kept in step. The full country name is the accessible name,
+          because a two-letter code is not one. */}
+      {countries.length > 0 ? (
+        <div
+          className="timeline-filter-countries"
+          role="group"
+          aria-label={labels.countryLabel}
+        >
+          {countries.map((c) => (
+            <button
+              key={c.code}
+              type="button"
+              className="timeline-filter-country"
+              aria-pressed={picked.has(c.code)}
+              aria-label={`${c.label} (${c.n})`}
+              onClick={() => setPicked((prev) => toggleIn(prev, c.code))}
+            >
+              <CountryFlag code={c.code as never} />
+              <span className="timeline-filter-country-code mono" aria-hidden="true">
+                {c.code}
+              </span>
+              <span className="timeline-filter-country-n mono" aria-hidden="true">
+                {c.n}
+              </span>
+            </button>
           ))}
-          <span className="timeline-filter-cat-actions">
-            <button
-              type="button"
-              className="timeline-filter-chip"
-              onClick={() => setSelected(new Set(categories.map((c) => c.tag)))}
-            >
-              {labels.categoryAll}
-            </button>
-            <button
-              type="button"
-              className="timeline-filter-chip"
-              onClick={() => setSelected(new Set())}
-            >
-              {labels.categoryNone}
-            </button>
-          </span>
-        </fieldset>
+        </div>
       ) : null}
 
-      {/* aria-live so a screen reader is told the list changed size, which is
-          otherwise a silent event for anybody not watching the cards. */}
-      <span className="timeline-filter-count mono" aria-live="polite">
-        {labels.count
-          .replace("{shown}", String(counts.shown))
-          .replace("{total}", String(counts.total))}
-      </span>
     </div>
   );
 }

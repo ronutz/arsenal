@@ -7,8 +7,8 @@ relatedTools: ["regex"]
 relatedArticles: ["regex-quantifiers-and-classes", "regex-anchors-and-boundaries", "regex-catastrophic-backtracking"]
 category: security
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Two people can write the same pattern and get different results, because a regex is only half the story: its **flags** decide how it behaves. A handful of them cover almost everything.
@@ -24,3 +24,12 @@ Two people can write the same pattern and get different results, because a regex
 ## The pair that gets confused
 
 `m` and `s` sound alike and do different things. `m` is about **anchors**: where `^` and `$` land. `s` is about **the dot**: whether `.` crosses newlines. You can want either, both, or neither. A frequent bug is reaching for multiline when you actually needed dotall: you wanted `.` to span lines, but you enabled the flag that only moved the anchors, and the match still stops at the first newline. When a multi-line match is not working, ask which of the two behaviors you actually need before adding a flag.
+
+
+## Case-insensitive is not the same as Unicode-aware
+
+A case-insensitive flag makes ASCII comparisons behave as expected and does far less than most people assume for anything else. **Turkish dotless `ı`, the German `ß`, and Greek final sigma all break the assumption that lowercasing is reversible and locale-independent.**
+
+Where this matters is a security filter written in one locale and run in another. A pattern that reliably matched a forbidden word in testing can fail against a spelling that is equivalent to a human and different to the matcher — and the request is allowed, correctly, by a rule that is wrong.
+
+**If a comparison is a security decision, normalise deliberately before matching** rather than delegating it to a flag whose behaviour depends on the runtime, the locale, and the version of the Unicode tables it was compiled against.

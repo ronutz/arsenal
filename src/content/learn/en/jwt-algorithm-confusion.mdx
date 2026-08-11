@@ -7,8 +7,8 @@ relatedTools: ["jwks-explainer"]
 relatedArticles: ["verifying-a-jwt-with-jwks", "jwk-key-types", "jwk-parameters-and-thumbprints"]
 category: identity
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A JWT carries its own algorithm in the header (`alg`). The danger is that a verifier which *trusts* that field lets the attacker choose how their token is checked, and there are two well-known ways to abuse it.
@@ -24,3 +24,12 @@ This one is subtler and is why JWKS is relevant. With **RS256** (RSA signature w
 ## The single defense
 
 Both attacks share a root cause: the verifier let the token dictate the algorithm. The defense is to **pin the expected algorithm on the server** and ignore the token's `alg`, or at least reject any value that does not match what the key is for. A verifier that expects RS256 should verify only RS256 with the RSA public key, and never fall back to a symmetric algorithm. This connects directly to JWKS practice: because the verification key is *published* in the JWKS, it is available to attackers, so the server must treat the algorithm as a fixed property of its own configuration, not as something read from an untrusted token.
+
+
+## The verifier must decide the algorithm, not the token
+
+Both classic attacks are the same mistake: **letting the token's own header choose how it is checked.** `alg: none` asks for no verification, and swapping `RS256` for `HS256` asks the verifier to use a public key as an HMAC secret — a key the attacker also has, because it is public.
+
+The reason this keeps happening is that the convenient API is the unsafe one. A `verify(token, key)` that reads the algorithm from the header is doing what the token asked. **A safe call states the expected algorithm and rejects anything else before looking at the signature.**
+
+The general principle transfers past JWT: **a message must never be allowed to specify the terms on which it is judged.**

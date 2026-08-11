@@ -7,8 +7,8 @@ relatedTools: ["regex"]
 relatedArticles: ["regex-quantifiers-and-classes", "regex-groups-and-backreferences", "regex-flags-and-modes"]
 category: security
 order: 4
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A maior parte de um regex casa caracteres. Âncoras são diferentes: elas casam uma **posição entre caracteres**, e não consomem nada. É isso que permite dizer "no início da linha" ou "na borda de uma palavra" em vez de apenas "em algum lugar".
@@ -26,3 +26,12 @@ Por padrão `^` e `$` ancoram na string inteira. Ligue o **modo multilinha** (a 
 ## Onde elas mordem
 
 Dois erros se repetem. Primeiro, colocar `^` ou `$` no meio de um padrão por acidente, o que só pode casar em uma borda de linha e por isso normalmente não casa nada. Segundo, presumir que `\b` entende o seu alfabeto: em muitos motores, um caractere de palavra é só ASCII, então `\b` cai no lugar errado em torno de letras acentuadas ou outros scripts, a menos que você habilite o modo Unicode. Quando um casamento de "palavra inteira" se comporta de forma estranha com texto que não é inglês, a definição de limite de palavra é a primeira coisa a verificar.
+
+
+## Um padrão sem âncora é uma busca de substring vestida de validador
+
+`^` e `$` são a diferença entre *"esta entrada é um identificador válido"* e *"esta entrada contém um em algum lugar"*. **Uma regex de validação escrita sem âncoras aceita tudo que deveria rejeitar**, desde que a parte aceitável apareça em qualquer ponto da string.
+
+A falha é silenciosa porque os testes passam: uma entrada válida casa, e o desenvolvedor segue em frente. Ninguém testa `../../etc/passwd?id=12345` contra um padrão feito para aceitar um id numérico — e essa string contém um id numérico.
+
+Duas armadilhas ficam ao lado. **Em modo multilinha o `$` casa antes de uma quebra de linha**, então um `\n` final escapa de um padrão que parece ancorado — `\A` e `\z` são as formas inequívocas. **E um validador deve testar a entrada inteira, não buscá-la**: muitas linguagens oferecem as duas, e a chamada segura é aquela cujo nome significa *casar por completo*.

@@ -7,8 +7,8 @@ relatedTools: ["f5-apm-session-variable-reference", "f5-apm-sso-explainer"]
 relatedArticles: ["bigip-21x-whats-new", "bigip-post-quantum-tls"]
 category: networking
 order: 8
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Access Policy Manager, now marketed as BIG-IP Zero Trust Access, is where BIG-IP touches identity, and identity is where the industry is moving fastest: passwordless flows, agentic clients that need credentials programmatically, and VPNs whose transport assumptions are being rewritten. BIG-IP 21.1's access features read as one coordinated response, and every claim below is from F5's release notes.
@@ -32,3 +32,10 @@ Three smaller items round out the layer. Per-session access policies gain the HT
 ## Reading the direction
 
 Every item points the same way: authentication delegated to where it is strongest (the system browser, the platform authenticator), enrollment automated where humans were the bottleneck (DCR), transport choice restored (IPsec beside SSL-VPN), and the policy engine reaching outward (HTTP Connector). For the session variables and SSO mechanics all of this ultimately drives, the [session-variable reference](/tools/f5-apm-session-variable-reference) and the [SSO explainer](/tools/f5-apm-sso-explainer) pick up where the release notes stop, and the [flagship overview](/learn/bigip-21x-whats-new) holds the full 21.x context.
+
+## Sources
+
+Every release-specific claim above is F5's own, and these are where to re-check it when the next version ships.
+
+- [What's new in BIG-IP v21.1 - DevCentral (Dynamic Client Registration for Zero Trust Access)](https://community.f5.com/kb/technicalarticles/whats-new-in-big-ip-v21-1/346637)
+- [New Features in BIG-IP 21.1.0](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)

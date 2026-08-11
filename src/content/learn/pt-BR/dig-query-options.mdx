@@ -7,8 +7,8 @@ relatedTools: ["dig-output-explainer"]
 relatedArticles: ["reading-dig-output", "dig-trace-and-delegation", "nslookup-vs-dig"]
 category: networking
 order: 52
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Por padrão o dig imprime a mensagem DNS inteira, que é exatamente o que você quer ao fazer troubleshooting e muito mais do que você quer ao escrever scripts. Algumas opções cobrem quase todos os casos.
@@ -31,3 +31,12 @@ Por padrão o dig imprime a mensagem DNS inteira, que é exatamente o que você 
 ## Combinando-as
 
 As opções se compõem. `dig @1.1.1.1 example.com MX +short` pergunta ao resolvedor da Cloudflare pelos registros MX e imprime apenas os valores. `dig example.com +noall +answer +dnssec` mostra os registros da answer mais suas assinaturas e nada mais. Comece pela saída completa padrão quando estiver diagnosticando, e recorra a `+short` ou `+noall +answer` quando souber exatamente o que quer ver. Para seguir o caminho de resolução a partir da raiz em vez de confiar em um resolvedor, veja o artigo companheiro sobre `+trace`.
+
+
+## A opção que muda o que você está testando
+
+`@servidor` parece uma conveniência e é a flag mais consequente da lista. **Ela ignora o resolvedor do sistema por completo** e pergunta direto ao servidor nomeado.
+
+Isso a torna a ferramenta certa para *"esta zona está correta"* e a errada para *"a resolução funciona aqui"*, porque uma consulta a `@8.8.8.8` não prova nada sobre o resolvedor que suas aplicações realmente usam — seu cache, seus forwarders, suas regras de acesso, ou se o host sequer o alcança.
+
+**Pergunte sem `@` primeiro.** Se funcionar, a resolução está bem. Se falhar e o `@` funcionar, você já localizou a falha no seu próprio caminho de resolução — mais do que a maioria das investigações consegue no primeiro minuto.

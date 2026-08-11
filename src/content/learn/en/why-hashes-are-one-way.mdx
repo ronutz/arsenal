@@ -7,8 +7,8 @@ relatedTools: ["hash-preimage-finder"]
 relatedArticles: ["brute-force-vs-lookup-tables", "keyspace-entropy-and-crack-time", "choosing-a-password-hash"]
 category: hashing
 order: 82
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A cryptographic hash is a deterministic function that turns an input of any length into a fixed-size output: MD5 produces 128 bits, SHA-1 produces 160, SHA-256 produces 256. The same input always yields the same digest, and even a one-bit change to the input produces a completely different one.
@@ -28,3 +28,12 @@ Being one-way is the first of these. The function deliberately mixes and discard
 They do not invert the function. They **search**. There are two ways: keep a precomputed table of input-to-hash pairs and look the digest up, or generate candidate inputs, hash each, and compare. Both find a match by trying inputs, not by reversing math.
 
 That is the key insight this demonstrator makes concrete. A hash protects a secret only as far as that secret is hard to guess. A weak input, like a short PIN (personal identification number), is recoverable by search in moments even though the hash itself remains mathematically one-way. The strength was never in the hash; it was in the entropy of what you fed it.
+
+
+## One-way is not the property that protects a password
+
+A cryptographic hash resists **preimage** attack: given the output, you cannot compute the input. That is real and it is not what breaks in a password breach.
+
+An attacker with a stolen hash does not invert it. **They guess forward** — hashing candidates until one matches — which needs no inversion at all and defeats one-wayness completely. The hash function is doing its job perfectly while the account falls.
+
+That is the whole reason password hashing is a separate discipline from hashing. **SHA-256 is an excellent hash and a terrible password hash**, not because it is weak but because it is fast, and speed is precisely the attacker's budget.

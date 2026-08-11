@@ -7,8 +7,8 @@ relatedTools: ["f5-persistence-method-explainer"]
 relatedArticles: ["ltm-persistence-methods", "choosing-a-persistence-method", "persistence-mirroring-and-ha"]
 category: networking
 order: 4
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A persistência por endereço de origem (também chamada de persistência simples) chaveia inteiramente no endereço IP do cliente: a primeira conexão de um endereço escolhe um pool member, e toda conexão posterior desse mesmo endereço vai para o mesmo member. Ela não precisa de nada da aplicação, que é seu atrativo, e se apoia em uma premissa, que é sua fraqueza: que um IP significa um cliente.
@@ -24,3 +24,12 @@ A falha espelhada é um cliente cujo endereço muda durante uma sessão. Um disp
 ## O que fazer a respeito
 
 A persistência por endereço de origem ainda está boa onde a premissa se sustenta: tráfego interno com endereços conhecidos, estáveis e um por cliente, ou protocolos onde não há nada melhor para chavear. Onde os clientes estão atrás de NATs compartilhados ou mudam de endereço, um método que chaveia em algo ligado à sessão de fato é mais confiável, sendo a persistência por cookie para HTTP a escolha usual, já que ela identifica o cliente em vez do endereço do qual ele por acaso chega. A decisão se resume a se o endereço IP é um substituto confiável para identidade no seu tráfego, e cada vez mais, na internet pública, não é.
+
+
+## Persistência por endereço de origem supõe que um endereço significa um usuário
+
+Já significou. **CGNAT, saída corporativa e redes móveis fizeram um único endereço significar milhares de clientes sem relação**, e um método de persistência chaveado nele manda todos para o mesmo membro.
+
+O resultado não é uma falha; é um desequilíbrio que ninguém atribui corretamente. Um membro do pool carrega uma fatia desproporcional, suas métricas parecem problema de capacidade, e acrescentar membros não ajuda porque a chave de distribuição tem menos valores distintos do que há membros para espalhar.
+
+**E a falha oposta corre ao lado**: um cliente cujo endereço de saída muda no meio da sessão — um celular trocando de rede — perde a persistência e cai em outro lugar. **Um endereço, muitos usuários; um usuário, muitos endereços.** Os dois quebram a suposição do mesmo método, e a cura é uma chave de persistência que identifique a sessão, não o caminho por onde ela chegou.

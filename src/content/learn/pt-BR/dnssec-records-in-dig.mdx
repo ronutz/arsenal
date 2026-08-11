@@ -7,8 +7,8 @@ relatedTools: ["dig-output-explainer"]
 relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "edns-and-the-opt-pseudosection"]
 category: networking
 order: 44
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O DNSSEC (Extensões de Segurança do Sistema de Nomes de Domínio, do inglês Domain Name System Security Extensions) assina os dados DNS para que um resolvedor possa provar que uma resposta não foi adulterada. Quando você consulta com `+dnssec` (o que define a flag `do` do EDNS), os registros extras aparecem ao lado dos normais.
@@ -27,3 +27,12 @@ A validação é uma cadeia da raiz para baixo. Um resolvedor confia na chave da
 ## O que ad realmente significa
 
 A flag `ad` (Authentic Data) no cabeçalho é o veredito do resolvedor: significa que este resolvedor específico validou a cadeia e ela se sustentou. Não é uma prova em que você possa confiar de forma independente, a menos que confie no resolvedor e no caminho até ele, e não significa que o cliente validou algo. Se você consultou com `do` definido e recebeu dados reais de volta mas `ad` não está definido, o resolvedor ou não validou ou o dado não é assinado; essa lacuna costuma ser o que vale a pena investigar.
+
+
+## A flag AD diz o que outra pessoa concluiu
+
+`ad` numa resposta significa que **o resolvedor que você consultou** validou a cadeia. Não significa que a resposta é assinada, e não significa que você validou nada.
+
+Entre aquele resolvedor e sua aplicação existe um caminho que você pode não controlar. **Uma resposta forjada com o bit AD ligado é idêntica a uma validada** para qualquer coisa que confie na flag sem validar — razão pela qual o bit só é significativo sobre um canal confiável até um resolvedor confiável.
+
+Se a validação importa para você, valide — `+dnssec` e conferir a RRSIG você mesmo responde à sua pergunta. **A flag AD responde à de outra pessoa.**

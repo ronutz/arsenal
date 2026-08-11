@@ -7,8 +7,8 @@ relatedTools: ["f5-cipher-string-expander"]
 relatedArticles: ["f5-cipher-string-syntax", "tls-cipher-security-keywords", "f5-tls13-vs-tls12-ciphers"]
 category: transport
 order: 5
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Quando uma cipher string expande em uma lista concreta, a ordem dessa lista importa tanto quanto seu conteúdo, porque a ordem é o que decide qual cipher uma conexão de fato usa.
@@ -24,3 +24,12 @@ Sob preferência de servidor, a posição de um cipher na lista expandida é um 
 Uma cipher string usa keywords e modificadores que reordenam além de incluir, então a prioridade final não é óbvia só pela string. Expandi-la resolve cada keyword na lista de suites de fato, ordenada, do jeito que o BIG-IP a apresentará, que é exatamente a ordem que a preferência de servidor percorrerá. Ler essa lista de cima a baixo diz o que um cliente moderno negociará, para o que um cliente mais antigo recorrerá, e se algo indesejável está posicionado alto o suficiente para ser escolhido.
 
 O hábito prático é ler a lista expandida como um ranking de prioridade, não um conjunto. Confirme que as entradas do topo são os ciphers que você quer que a maioria dos clientes use, que suites com forward secrecy e AEAD ficam acima de qualquer coisa legada, e que nada que você ficaria infeliz de ver negociado está posicionado onde um cliente poderia alcançá-lo antes de uma opção melhor.
+
+
+## O TLS 1.3 não lê a sua string de cifras do 1.2
+
+A surpresa mais comum aqui nem é sobre ordenação. **O TLS 1.3 define as próprias suítes**, e elas são negociadas separadamente da lista do TLS 1.2 e anteriores.
+
+Uma string de cifras cuidadosamente restritiva, escrita para excluir suítes fracas do 1.2, pode deixar o TLS 1.3 inteiramente intocado — a conexão negocia uma suíte 1.3 que a string nunca mencionou, e um scan de conformidade reporta algo que a configuração parece proibir.
+
+**Verifique qual versão do protocolo uma conexão de teste realmente negociou antes de concluir que uma regra de cifra funcionou.** Uma regra que governa o 1.2 e um cliente que fala 1.3 não concordam sobre nada e não produzem erro — que é o jeito mais silencioso de um controle de segurança estar ausente.

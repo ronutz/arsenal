@@ -7,8 +7,8 @@ relatedTools: ["diff"]
 relatedArticles: ["reading-a-diff"]
 category: encoding
 order: 9
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 ## What a diff actually computes
@@ -42,3 +42,12 @@ The same machinery runs at two zoom levels. The line view tokenises each side in
 ## A note on cost
 
 The dynamic-programming table is proportional to the product of the two token counts: comparing an n-line text with an m-line text fills roughly n by m cells. For the interactive inputs a diff tool sees (a config file, a policy, a snippet of code) that is comfortably fast. Past a generous ceiling the computation would grow large enough to stall the browser, so the engine stops and asks for smaller inputs rather than freezing. Production diff tools push further with refinements from the same Myers paper (notably a linear-space variant), but the LCS idea at the centre is unchanged.
+
+
+## Why the same change can produce two different diffs
+
+A diff finds *an* alignment, not *the* alignment. When several alignments are equally short, the algorithm picks one, and different tools — or the same tool with different options — may pick differently.
+
+This is why a diff can look bewildering after a refactor that moved a block: **the tool has no concept of "moved"**. A relocated function is a deletion in one place and an insertion in another, and if the block resembles its neighbours the alignment may cut it in a place no human would.
+
+**A confusing diff is usually a sign the comparison is being asked the wrong question**, not that the change is bad. Diffing at word level, ignoring whitespace, or comparing against a different base often turns unreadable output into an obvious one — the change did not alter, only the alignment did.

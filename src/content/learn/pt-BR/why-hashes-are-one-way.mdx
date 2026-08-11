@@ -7,8 +7,8 @@ relatedTools: ["hash-preimage-finder"]
 relatedArticles: ["brute-force-vs-lookup-tables", "keyspace-entropy-and-crack-time", "choosing-a-password-hash"]
 category: hashing
 order: 82
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Um hash criptográfico é uma função determinística que transforma uma entrada de qualquer tamanho em uma saída de tamanho fixo: o MD5 produz 128 bits, o SHA-1 produz 160, o SHA-256 produz 256. A mesma entrada sempre gera o mesmo resumo, e mudar um único bit da entrada produz um resumo completamente diferente.
@@ -28,3 +28,12 @@ Ser de mão única é a primeira delas. A função mistura e descarta estrutura 
 Elas não invertem a função. Elas **buscam**. Há dois caminhos: manter uma tabela pré-computada de pares entrada-para-hash e consultar o resumo, ou gerar entradas candidatas, aplicar o hash em cada uma e comparar. Ambos encontram uma correspondência testando entradas, não revertendo matemática.
 
 Essa é a ideia central que este demonstrador torna concreta. Um hash protege um segredo apenas na medida em que esse segredo é difícil de adivinhar. Uma entrada fraca, como um PIN (número de identificação pessoal, do inglês personal identification number) curto, é recuperável por busca em instantes, mesmo que o hash em si continue matematicamente de mão única. A força nunca esteve no hash; esteve na entropia daquilo que você forneceu.
+
+
+## Ser de mão única não é a propriedade que protege uma senha
+
+Um hash criptográfico resiste a ataque de **pré-imagem**: dada a saída, não se computa a entrada. Isso é real e não é o que quebra num vazamento de senhas.
+
+Um atacante com um hash roubado não o inverte. **Ele adivinha para frente** — hasheando candidatos até um casar — o que não exige inversão nenhuma e derrota a mão única por completo. A função de hash está fazendo o trabalho dela perfeitamente enquanto a conta cai.
+
+É essa a razão de hashing de senha ser uma disciplina separada de hashing. **SHA-256 é um excelente hash e um péssimo hash de senha**, não por ser fraco, mas por ser rápido — e velocidade é exatamente o orçamento do atacante.

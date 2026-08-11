@@ -7,8 +7,8 @@ relatedTools: ["json-formatter"]
 relatedArticles: ["json-grammar", "json-duplicate-keys", "json-string-escapes"]
 category: encoding
 order: 6
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Entre quaisquer dois tokens, o JSON permite qualquer quantidade de espaço em branco, e ele não carrega significado. Esse único fato é o que torna a formatação segura: identar e minificar rearranjam espaços e quebras de linha sem mudar o dado em nada.
@@ -22,3 +22,12 @@ A **ordem** das chaves é uma não-diferença relacionada. Objetos JSON são def
 ## Quando os bytes de repente importam
 
 Tudo isso muda no momento em que o JSON é **assinado ou hasheado**. Uma assinatura é computada sobre bytes exatos, então se o remetente identa e o destinatário minifica, os bytes diferem e a assinatura falha, mesmo que o dado seja idêntico. Para o signing funcionar, ambos os lados precisam concordar em uma serialização exata. Isso é o **JSON canônico**: uma forma determinística com regras fixas para ordem de chaves (ordenadas), espaço em branco (nenhum), formatação de números e escape de strings, para que o mesmo dado sempre produza a mesma string. A RFC 8785 (JSON Canonicalization Scheme) define uma dessas formas. É por isso que sistemas que assinam JSON, ou o usam como entrada de hash, canonicalizam primeiro: isso transforma "o mesmo dado" em "os mesmos bytes", que é o que uma assinatura de fato precisa. Para interchange comum nada disso importa, mas no momento em que a criptografia se envolve, a formatação deixa de ser cosmética.
+
+
+## A forma canônica existe porque igualdade é mais difícil do que parece
+
+Dois documentos JSON podem ser idênticos em significado e diferentes em bytes: ordem de chaves, espaços, formatação de números, escapes de string. **Cada uma dessas diferenças é invisível para um programa que lê o valor analisado e fatal para qualquer coisa que faça hash ou assine o texto.**
+
+É essa a razão de existir canonicalização, e a razão de assinar JSON ser mais sutil do que parece. **Uma assinatura cobre bytes; uma aplicação compara valores.** Reserializar um documento — mesmo por uma biblioteca que produz JSON perfeitamente correto — pode quebrar uma assinatura válida um instante antes, sem erro em lugar nenhum até a verificação falhar em outro lugar.
+
+**Assine os bytes que você recebeu, ou canonicalize deliberadamente antes de assinar.** Qualquer coisa no meio é uma assinatura que funciona até uma dependência atualizar o serializador.

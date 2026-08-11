@@ -7,8 +7,8 @@ relatedTools: ["url-inspector"]
 relatedArticles: ["url-anatomy", "query-strings", "deceptive-urls"]
 category: encoding
 order: 6
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Uma URL absoluta carrega tudo: esquema, host, caminho e o resto. Uma URL **relativa** deixa partes de fora e espera que sejam preenchidas a partir de uma **URL base**, normalmente o endereço da página em que ela aparece. É isso que permite a um site linkar para `about.html` sem repetir o próprio domínio em todo lugar.
@@ -27,3 +27,12 @@ Quanto é preenchido depende da forma da referência:
 As regras de resolução (definidas na RFC 3986) são exatas, o que é bom, porque pequenos enganos produzem links quebrados: uma barra inicial ausente torna um link relativo ao diretório errado, e um `../` a mais sobe acima de onde você queria. Uma página também pode definir uma base explícita com uma tag `<base>`, que muda silenciosamente como *cada* link relativo da página resolve, uma fonte clássica de "por que este link está apontando para lá".
 
 Há também um ângulo de segurança. Como `../` sobe pelo caminho, e como referências relativas ao esquema e ao caminho se comportam de formas diferentes, uma URL construída colando entrada de usuário em um caminho pode às vezes ser direcionada a algum lugar não intencional. Quando uma URL é montada a partir de partes em vez de escrita inteira, vale resolvê-la por completo para ver onde ela realmente cai.
+
+
+## A base é a parte que ninguém confere
+
+Resolver uma URL relativa exige uma base, e **a base muitas vezes não é o que o código acredita.** Um elemento `<base>` no documento, um redirecionamento que mudou a localização efetiva, ou um proxy que reescreveu o caminho podem movê-la — e a mesma referência relativa passa a resolver para outro lugar.
+
+É por isso que URLs relativas são fonte recorrente de surpresa de segurança, e não mera conveniência. **Uma referência que aponta para dentro da sua aplicação quando resolvida contra a base pretendida pode apontar para fora quando resolvida contra uma base que um atacante influenciou.**
+
+**Resolva explicitamente contra uma base que você controla**, e trate qualquer resolução que cruze origem como uma decisão, não um detalhe — porque o parser vai executá-la em silêncio e corretamente, e correção não é a propriedade em questão.

@@ -7,8 +7,8 @@ relatedTools: ["f5xc-service-policy-explainer"]
 relatedArticles: ["how-xc-service-policies-match", "xc-service-policy-actions-and-default-deny", "xc-service-policy-predicates-and-logic"]
 category: security
 order: 65
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A service policy with a `rule_list` holds an ordered list of rules. The **rule combining algorithm** decides how that list is walked, and therefore which rule's action wins when more than one rule could match a request.
@@ -36,3 +36,14 @@ There is one hard rule to know. If any rule in the policy is configured with an 
 A subtle point: in the service_policy object schema, the rule combining algorithm is not a field on the policy spec itself. It is defined at the service policy **set** level, which is the ordered container the policy belongs to. The `rule_list` inside a policy documents that its rules are evaluated from top to bottom, which is the FIRST_MATCH behavior, and that is the safe default to assume when you are reading a single policy in isolation.
 
 For that reason the explainer on this site defaults to explaining top-to-bottom FIRST_MATCH evaluation, and surfaces an explicit algorithm only if the pasted JSON carries one. When you are auditing a real deployment, check the enclosing policy set to confirm the algorithm in force.
+
+
+## The algorithm decides which mistakes are survivable
+
+Ordering is not only about precedence; it decides **what a misplaced rule costs.**
+
+Under first-match, a broad ALLOW placed above a specific DENY silently disables the DENY — and the configuration still contains both, so a reviewer reading the list sees the protection they expect. The rule is present, correct, and unreachable.
+
+That is why **specific before general** is not style advice. It is the ordering under which an error becomes visible: a specific rule that is wrong stops matching and gets noticed, whereas a general rule placed too early keeps working perfectly while shadowing everything beneath it.
+
+**Read a policy bottom-up when you are looking for what is not being enforced.** Reading top-down tells you what happens; reading upward tells you what can never happen.

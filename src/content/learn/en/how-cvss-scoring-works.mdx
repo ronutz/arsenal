@@ -7,8 +7,8 @@ relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["cvss-base-metrics-explained", "cvss-vector-string-format", "cvss-severity-bands-and-limits"]
 category: security
 order: 70
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 The Common Vulnerability Scoring System (CVSS) is an open framework, owned by FIRST.org, for describing the severity of a software vulnerability. Its most visible output is a number from 0.0 to 10.0, but that number is derived from a vector string by a fixed formula. Nothing about the score is subjective once the metrics are chosen, so any correct implementation produces the same result for the same vector.
@@ -44,3 +44,12 @@ when Scope is unchanged, or with an extra `1.08` multiplier when Scope has chang
 The resulting number maps to a qualitative band (None, Low, Medium, High, Critical). Those bands, and the important caveats about what the score does and does not mean, are covered in the severity article.
 
 Because every step is deterministic, pasting a vector into a calculator should reproduce the vendor's or NVD's (National Vulnerability Database) published score exactly. If it does not, the vector was transcribed wrong, or the two tools disagree on the CVSS version.
+
+
+## The equation is not the argument
+
+The formulas are public and reproducible, which makes CVSS look objective in a way it is not. **Every number comes from metric values somebody selected**, and the selection is a judgement: is user interaction required, is the scope changed, is the attack complexity low.
+
+Two analysts scoring the same flaw honestly can differ by more than a severity band, and **the vector string is the only part of a published score that can be argued with.** A bare number cannot be checked; a vector can be read, disagreed with, and re-scored.
+
+**Publish the vector, always, and treat a score without one as an opinion in numeric clothing.** The equation's precision is real and it is a precision about the inputs, not about the vulnerability.

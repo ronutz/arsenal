@@ -4,11 +4,11 @@ title: "nslookup vs dig: Which to Use"
 summary: "nslookup and dig both query DNS, but nslookup is terser and hides the header flags and TTLs that dig shows in full. This maps one output onto the other and gives a simple rule for which to reach for."
 concepts: ["nslookup", "dig", "dns", "troubleshooting", "ttl", "flags"]
 relatedTools: ["nslookup-output-explainer", "dig-output-explainer"]
-relatedArticles: ["reading-nslookup-output", "reading-dig-output", "dns-message-header-and-flags"]
+relatedArticles: ["reading-nslookup-output", "reading-dig-output", "dns-message-header-and-flags", "nslookup-interactive-mode"]
 category: networking
 order: 46
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Both tools ask a DNS server a question and print the answer. The difference is how much they show you.
@@ -24,3 +24,12 @@ dig shows the whole message. When you need the TTL to diagnose a caching issue, 
 Reach for nslookup for a fast "what is this name" check, especially when you just want the address or the MX. Reach for dig when you are actually troubleshooting: anything involving TTLs, authority, truncation, EDNS, or DNSSEC. Many engineers keep both and switch based on how much detail the question needs.
 
 One practical mapping: nslookup's `Non-authoritative answer:` marker corresponds to dig's **absence** of the `aa` flag, and querying the authoritative server directly (with `@server` in dig, or `server` then the name in nslookup) is how you get an authoritative result from either.
+
+
+## They disagree because they are asking differently, not because one is wrong
+
+`dig` sends what you asked for and prints what came back. `nslookup` is more accommodating — it applies the search list, retries, and formats per record type — and **that helpfulness is what makes the two disagree.**
+
+A name that resolves in `nslookup` and fails in `dig` has usually been completed by the search domain in one and taken literally in the other. Neither tool is broken; they were asked different questions and both answered correctly.
+
+**Use `dig` when you need to know what DNS says, and `nslookup` when you need to know what a user's lookup will do.** Reporting one tool's output as the other's answer is how a resolution problem gets escalated to the wrong team.

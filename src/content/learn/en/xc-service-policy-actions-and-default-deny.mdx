@@ -7,8 +7,8 @@ relatedTools: ["f5xc-service-policy-explainer"]
 relatedArticles: ["how-xc-service-policies-match", "xc-rule-combining-algorithms", "xc-service-policy-vs-irules"]
 category: security
 order: 69
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Once you know how a service policy matches a request, the remaining question is what happens on a match. That is the action, and it has a bit more nuance than allow-or-block.
@@ -36,3 +36,12 @@ The `allow_list` and `deny_list` forms are source-based shortcuts. They match on
 A rule does more than allow or deny. On a match it can attach **modifiers** that shape how the request is handled: a `waf_action` (skip or customize App Firewall processing), a `bot_action`, rate limiters, an OpenAPI validation action, response masking, and others. These are not the verdict; they ride along with it. A rule can also carry an `expiration_timestamp`, after which it still exists in the config but is no longer applied, and a `log_rule_evaluation` flag that logs matches without changing the decision.
 
 The explainer separates these clearly: it shows each rule's verdict as an allow, deny, or next-policy badge, lists the predicates that must match, and notes the modifiers that fire on a match, so the difference between "this rule decides the request" and "this rule also does something on the way" is never blurred.
+
+
+## Default deny is a claim about the rules you have not written
+
+The value of a default-deny policy is entirely in the gap it covers: requests nobody anticipated. That makes it the one setting whose benefit **never appears in testing**, because testing exercises the paths somebody thought of.
+
+The practical consequence is that default deny is usually removed for a good reason and never put back. Something legitimate broke, the default was flipped to allow while it was diagnosed, and the diagnosis succeeded. **The temporary change survives because nothing fails afterwards** — and the policy now enforces only what its rules explicitly deny, which is a different security posture wearing the same name.
+
+**Whether the default is deny is worth checking on a schedule**, not because it changes often, but because when it changes it does so quietly and for a reason that seemed sound at the time.

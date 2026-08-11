@@ -7,8 +7,8 @@ relatedTools: ["f5-bigip-tcpdump-builder"]
 relatedArticles: ["bigip-tcpdump-syntax", "bigip-tcpdump-safety"]
 category: networking
 order: 33
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A interface `0.0` é o padrão certo porque mostra o tráfego em todas as interfaces da TMM ao mesmo tempo. Mas quando um dispositivo está ocupado, ou você já sabe em qual segmento um problema está, indicar uma interface específica restringe a captura e reduz o ruído. O [construtor de tcpdump para BIG-IP](/tools/f5-bigip-tcpdump-builder) aceita qualquer uma dessas no campo de interface.
@@ -32,3 +32,12 @@ Como os dois-pontos introduzem o sufixo de detalhe da TMM, um nome de interface 
 ## Escolhendo o escopo
 
 Recorra a `0.0` primeiro, porque é a visão mais completa e a menos propensa a perder um fluxo. Restrinja a uma VLAN ou self-IP quando `0.0` for volume demais em um dispositivo ocupado, ou quando a pergunta for especificamente sobre um segmento. Em todos os casos, mantenha um filtro no comando para que o arquivo fique limitado, como descrito em [capturando com segurança em um BIG-IP de produção](/learn/bigip-tcpdump-safety).
+
+
+## Nomear a interface errada responde a uma pergunta que você não fez
+
+Capturar numa VLAN vê o tráfego já classificado naquela VLAN; capturar no tronco vê o tráfego etiquetado e intercalado com todo o resto. **Nenhum é mais correto, e eles respondem perguntas diferentes** — por isso uma captura que não mostra nada tantas vezes significa que o ponto de captura estava errado, e não que o tráfego estava ausente.
+
+A armadilha é que os dois produzem um arquivo válido. Não há erro, não há aviso, e um resultado vazio se lê como evidência: *"o tráfego nunca chegou"*. Chegou em algum lugar onde a captura não estava.
+
+**Decida o que a ausência de um pacote provaria antes de começar**, porque uma captura que não distingue *"não enviado"* de *"não observado aqui"* não sustenta a conclusão que será usada para justificá-la.

@@ -4,7 +4,7 @@ title: "Como o HTTP Load Balancer do XC Escolhe uma Rota: First-Match, Tipos de 
 summary: "As rotas do XC são uma lista ordenada avaliada first-match; os quatro tipos de rota (simple, redirect, direct-response, custom); match de path prefix vs exato vs regex; condições de método/header/query; e como qualquer rota pode anexar ou desabilitar seu próprio WAF."
 concepts: ["http load balancer", "routes", "first-match", "path matching", "per-route waf", "f5 distributed cloud"]
 relatedTools: ["f5xc-http-lb-route-explainer"]
-relatedArticles: []
+relatedArticles: ["f5xc-config-hazards", "f5xc-openapi-and-api-inventory"]
 category: networking
 order: 73
 status: reviewed
@@ -33,7 +33,7 @@ Um load balancer aplica uma política de WAF (firewall de aplicação web, do in
 
 ## Rewrites e mutações de header
 
-Além do roteamento, uma rota pode remodelar a requisição. Ela pode reescrever o path (substituir o prefix que deu match, ou aplicar uma substituição regex), adicionar ou remover headers de request e response, e sobrescrever o comportamento default de host-rewrite. Por padrão o load balancer reescreve o header Host para o nome DNS do origin quando o origin é definido por nome (K000146653); uma rota permite que você mude isso quando a aplicação precisa que o Host original seja preservado.
+Além do roteamento, uma rota pode remodelar a requisição. Ela pode reescrever o path (substituir o prefix que deu match, ou aplicar uma substituição regex), adicionar ou remover headers de request e response, e sobrescrever o comportamento default de host-rewrite. Por padrão o load balancer reescreve o header Host para o nome DNS do origin quando o origin é definido por nome ([K000146653](https://my.f5.com/manage/s/article/K000146653)); uma rota permite que você mude isso quando a aplicação precisa que o Host original seja preservado.
 
 ## Lendo uma config do jeito rápido
 

@@ -4,7 +4,7 @@ title: "O Que um Cookie do BIG-IP Conta a um Atacante"
 summary: "O cookie de persistência é um caso clássico de divulgação de informação: revela endereços IP internos, portas, tamanho do pool e route domains a qualquer cliente. Por que isso importa para reconhecimento, como scanners coletam o cookie e como pensar sobre o risco."
 concepts: ["information disclosure", "reconnaissance", "internal topology", "bigip", "persistence cookie", "security testing", "f5"]
 relatedTools: ["f5-bigip-persistence-cookie"]
-relatedArticles: ["f5-bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-encryption"]
+relatedArticles: ["f5-bigip-persistence-cookies", "bigip-cookie-formats", "bigip-cookie-encryption", "bigip-cookie-persistence-methods"]
 category: security
 order: 3
 status: reviewed
@@ -23,7 +23,7 @@ Coletar vários cookies revela mais. Como o cookie nomeia o pool e codifica cada
 
 ## Como ele é coletado
 
-Este é um terreno bem conhecido nas ferramentas de segurança. O Nmap inclui um script `http-bigip-cookie` que decodifica esses cookies automaticamente, o framework Metasploit tem um módulo para isso, e a codificação está documentada no K6917 da F5, de modo que qualquer um pode escrever um decodificador em poucas linhas. O decodificador desta página é uma dessas implementações. A consequência prática é que você deve presumir que qualquer cookie de persistência sem criptografia que seu BIG-IP emite já está sendo lido e decodificado por scanners automatizados.
+Este é um terreno bem conhecido nas ferramentas de segurança. O Nmap inclui um script `http-bigip-cookie` que decodifica esses cookies automaticamente, o framework Metasploit tem um módulo para isso, e a codificação está documentada no [K6917](https://my.f5.com/manage/s/article/K6917) da F5, de modo que qualquer um pode escrever um decodificador em poucas linhas. O decodificador desta página é uma dessas implementações. A consequência prática é que você deve presumir que qualquer cookie de persistência sem criptografia que seu BIG-IP emite já está sendo lido e decodificado por scanners automatizados.
 
 ## Como pensar sobre o risco
 

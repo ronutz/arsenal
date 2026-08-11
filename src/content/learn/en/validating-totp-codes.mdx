@@ -7,8 +7,8 @@ relatedTools: ["totp-hotp"]
 relatedArticles: ["totp-and-hotp", "base32", "verifying-hmac"]
 category: identity
 order: 31
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 ## Accepting a code is the hard half
@@ -40,3 +40,14 @@ A six-digit code is one of 1,000,000 values, and an acceptance window makes seve
 All of this assumes the shared secret is itself protected. A server that stores OTP (one-time password) secrets in the clear hands an attacker who reads that store the ability to generate valid codes for every user indefinitely. Treat the secret as credential-grade material: store it encrypted, limit who can read it, and provision it over a channel that does not leak it. Verifying the derived code carefully is wasted effort if the secret behind it is exposed.
 
 You can see the window logic directly in the TOTP / HOTP tool: its validator accepts the adjacent steps, which is exactly the plus or minus one step tolerance a real server applies.
+
+
+## A correct code stays correct for the rest of its step
+
+Verification answers *"is this the right code for this moment"*, and for the remainder of that time step the answer keeps being yes. **Unless the validator records that a code has been used, the same code works again.**
+
+That is the whole of TOTP replay, and it needs no cryptography to exploit — a code observed over somebody's shoulder, read from a screenshot, or captured in a proxy log is usable until the step rolls over.
+
+**Store the last accepted step per user and refuse anything at or below it.** It is a single integer, and it converts a code that is valid for thirty seconds into a code that is valid once.
+
+**Nothing about the omission is visible in testing**, because a correct implementation and a replayable one behave identically for a user who never reuses a code.

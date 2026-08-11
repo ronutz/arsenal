@@ -7,8 +7,8 @@ relatedTools: ["xml-decoder"]
 relatedArticles: ["xxe-and-external-entities", "xml-well-formedness", "reading-xml-structure"]
 category: security
 order: 61
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 Nem todo ataque XML tenta ler seus arquivos. Alguns apenas tentam derrubar o parser, e a forma clássica de fazer isso é a expansão de entidades, mais conhecida como o ataque **billion laughs**.
@@ -35,3 +35,12 @@ O ataque explora o mesmo mecanismo de entidades por trás do XXE (Entidade Exter
 ## A defesa
 
 Duas defesas se aplicam, e a mais forte é familiar. Parsers podem impor **limites de expansão**, limitando o número total de expansões de entidade ou o tamanho resultante e abortando quando o limite é atingido, o que muitos parsers modernos agora fazem por padrão. Mas a resposta mais limpa é a mesma do XXE: **recusar processar o DOCTYPE de forma alguma**. Entidades só podem ser declaradas em um DOCTYPE, então um parser que rejeita declarações DOCTYPE para entrada não confiável não pode receber uma bomba de expansão em primeiro lugar. É por isso que um inspetor XML seguro sinaliza qualquer documento que declara entidades referenciando outras entidades como um risco de expansão, e o relata sem nunca realizar a expansão. O sinal a observar é entidades definidas em termos de outras entidades, encadeadas mais de um nível de profundidade.
+
+
+## Uma negação de serviço que chega como documento válido
+
+Nada no ataque é malformado. O documento é XML bem formado, as entidades são legais, e o parser faz exatamente o que a especificação descreve. **A falha é de aritmética, não de validação** — dez entidades aninhadas, cada uma referenciando a anterior dez vezes, são um bilhão de expansões a partir de algumas centenas de bytes.
+
+É por isso que limites de tamanho de entrada parecem proteção e não são. **A propriedade perigosa é a razão, não o tamanho**, e uma carga pequena o bastante para passar por qualquer limite razoável de bytes pode esgotar a memória na expansão.
+
+As defesas que funcionam são estruturais: **desligar a expansão de entidades**, ou limitar a contagem de expansões e o tamanho total expandido no parser. As duas são configurações do objeto que faz o trabalho — o mesmo lugar onde o XXE é corrigido, e pelo mesmo motivo.

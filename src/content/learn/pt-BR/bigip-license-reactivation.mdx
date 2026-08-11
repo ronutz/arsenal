@@ -4,7 +4,7 @@ title: "Recuperando um BIG-IP que não carrega a config após uma atualização"
 summary: "Quando um BIG-IP atualizado inicializa mas sua configuração nunca carrega, a causa usual é uma service check date mais antiga do que a nova versão exige. A correção é reativar a licença, o que redefine a data. Aqui está como reconhecer, como reativar com segurança e como evitar da próxima vez."
 concepts: ["f5", "bigip", "license reactivation", "service check date", "upgrade recovery", "troubleshooting"]
 relatedTools: ["f5-service-check-date"]
-relatedArticles: ["bigip-service-check-date", "bigip-upgrade-vs-update"]
+relatedArticles: ["bigip-service-check-date", "bigip-upgrade-vs-update", "bigip-license-file-anatomy"]
 category: networking
 order: 3
 status: reviewed
@@ -22,7 +22,7 @@ cd /config
 grep "Service check date" bigip.license
 ```
 
-A saída se parece com `Service check date : 20230125`, em ordem ano-mês-dia. Compare isso com a License Check Date da versão que você está rodando agora, que você pode encontrar no `/etc/version_date` ou na tabela K7727 da F5. Se a Service Check Date for a mais antiga das duas, esse é o problema. A [ferramenta de service check date do F5](/tools/f5-service-check-date) faz essa comparação diretamente, e o mecanismo completo é descrito em [a service check date](/learn/bigip-service-check-date).
+A saída se parece com `Service check date : 20230125`, em ordem ano-mês-dia. Compare isso com a License Check Date da versão que você está rodando agora, que você pode encontrar no `/etc/version_date` ou na tabela [K7727](https://my.f5.com/manage/s/article/K7727) da F5. Se a Service Check Date for a mais antiga das duas, esse é o problema. A [ferramenta de service check date do F5](/tools/f5-service-check-date) faz essa comparação diretamente, e o mecanismo completo é descrito em [a service check date](/learn/bigip-service-check-date).
 
 ## Reativando a licença
 

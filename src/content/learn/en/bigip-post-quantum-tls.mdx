@@ -7,8 +7,8 @@ relatedTools: ["cipher", "f5-cipher-string-expander", "f5-ssl-profile-explainer"
 relatedArticles: ["bigip-21x-whats-new", "nist-pqc-standards", "quantum-threat-to-cryptography"]
 category: networking
 order: 3
-status: machine-draft
-updated: "2026-07-08"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 The quantum threat to TLS is a harvest problem before it is a decryption problem: traffic recorded today can be decrypted the day a large enough quantum computer breaks the elliptic-curve key exchange that protected it. The defense NIST standardized in FIPS (Federal Information Processing Standards) 203 is ML-KEM (module-lattice key encapsulation mechanism), a lattice-based key encapsulation mechanism, and the deployment pattern the industry converged on is the hybrid: run a classical elliptic-curve exchange and an ML-KEM encapsulation in the same handshake and mix both secrets, so the session is safe unless both are broken. BIG-IP has been walking this road for a while; 21.1.0 is where the road gets wide.
@@ -30,3 +30,10 @@ A hybrid handshake does more math than a classical one, which makes 21.1's other
 ## Rolling it out without breaking anyone
 
 The pleasant surprise of hybrid key exchange is that it is negotiated, not imposed. A client that has never heard of ML-KEM ignores the hybrid groups in your list and lands on classical ECDHE (ephemeral elliptic-curve Diffie-Hellman) exactly as before; a browser that prefers X25519MLKEM768 gets it. The rollout discipline is therefore about order and observation rather than risk: enable the hybrids on ClientSSL first, where the browser population upgrades itself, watch the negotiated-group distribution, then extend to ServerSSL as your backend fleet gains support. Two things to verify before declaring victory. Handshake size: ML-KEM key shares are kilobytes where curve points were bytes, so a ClientHello that always offered a fat PQC share can trip ancient middleboxes and tight MTU (maximum transmission unit) paths; test the odd corners of your estate. And hardware reality: QAT acceleration covers the X25519 half, so measure handshake CPU on your actual platform before and after enabling hybrids at scale rather than assuming the offload absorbs everything. The [flagship 21.x overview](/learn/bigip-21x-whats-new) holds the release-wide context, and the [NIST PQC standards article](/learn/nist-pqc-standards) covers what ML-KEM actually is under the hood.
+
+## Sources
+
+Every release-specific claim above is F5's own, and these are where to re-check it when the next version ships.
+
+- [New Features in BIG-IP 21.1.0 - X25519 hardware acceleration with Intel QAT](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html)
+- [F5 BIG-IP v21.1 is now generally available, bringing PQC and AI security enhancements](https://www.f5.com/company/blog/f5-big-ip-v21-1-is-now-generally-available-bringing-pqc-and-ai-security-enhancements)

@@ -7,8 +7,8 @@ relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["cvss-base-metrics-explained", "cvss-temporal-and-environmental", "how-cvss-scoring-works"]
 category: security
 order: 73
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 A CVSS (Common Vulnerability Scoring System) vector string is designed to travel with the score so anyone can see how it was derived. It looks like this:
@@ -30,3 +30,7 @@ Reading the example above left to right: version 3.1; Attack Vector Network; Att
 ## Why read it by hand
 
 A rendered score hides mistakes. A single wrong letter, `PR:L` instead of `PR:N`, quietly changes the number, and a missing metric can make one tool refuse to score a vector that another tool scores by guessing a default. Reading the pairs yourself, or decoding them with a tool that shows every metric in words, is how you catch a vendor advisory that was scored inconsistently, or confirm that two sources are describing the same flaw the same way.
+
+## Sources
+
+- [CVSS v3.1 Specification Document - vector string format](https://www.first.org/cvss/v3.1/specification-document)

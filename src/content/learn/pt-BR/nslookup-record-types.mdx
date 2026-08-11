@@ -4,11 +4,11 @@ title: "Como o nslookup imprime cada tipo de registro"
 summary: "Em vez das colunas fixas do dig, o nslookup rotula cada registro em prosa: mail exchanger =, canonical name =, nameserver = e um bloco de várias linhas para o SOA. Um guia curto para ler a linha de cada tipo."
 concepts: ["nslookup", "mx", "cname", "ns", "soa", "srv", "txt", "ptr"]
 relatedTools: ["nslookup-output-explainer"]
-relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-record-types-in-answers"]
+relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-record-types-in-answers", "reverse-dns-lookups-with-nslookup"]
 category: networking
 order: 47
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O dig imprime todo registro nas mesmas cinco colunas. O nslookup faz algo diferente: ele rotula cada tipo de registro em palavras, o que é mais amigável de ler, mas significa que o formato muda de tipo para tipo.
@@ -27,3 +27,12 @@ O dig imprime todo registro nas mesmas cinco colunas. O nslookup faz algo difere
 ## O que observar
 
 O SOA é o ponto fora da curva, porque é o único tipo que o nslookup quebra em várias linhas. O campo `mail addr` é uma caixa postal com o primeiro ponto substituindo o `@`, e o `minimum` também serve como TTL (tempo de vida, do inglês time to live) de cache negativo, então ele governa por quanto tempo uma resposta de "não existe" da zona é lembrada. Se você quiser os mesmos campos dispostos da maneira clássica, o dig os imprime em uma única linha de registro SOA.
+
+
+## "Non-authoritative answer" é sobre cache, não sobre correção
+
+A linha que mais confunde é a impressa antes da maioria das respostas.
+
+Ela **não** significa que a resposta é duvidosa. Significa que a resposta veio do **cache** de um resolvedor, e não de um servidor autoritativo para aquela zona. Uma resposta em cache normalmente está correta e é sempre mais rápida.
+
+O motivo de isso importar operacionalmente é o tempo: **logo depois de uma mudança de DNS, uma resposta não autoritativa é exatamente a resposta velha contra a qual você não quer testar.** Consulte o servidor autoritativo diretamente — `server` no modo interativo — e o rótulo desaparece junto com a dúvida.

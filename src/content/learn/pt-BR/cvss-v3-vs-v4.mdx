@@ -7,11 +7,11 @@ relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["how-cvss-scoring-works", "cvss-severity-bands-and-limits", "cvss-vector-string-format"]
 category: security
 order: 75
-status: machine-draft
-updated: "2026-07-01"
+status: reviewed
+updated: "2026-08-10"
 ---
 
-O CVSS (Sistema Comum de Pontuação de Vulnerabilidades, do inglês Common Vulnerability Scoring System) teve várias versões, e um vetor só significa algo no contexto da sua versão. Esta ferramenta calcula **v3.0 e v3.1**, que são as versões que a grande maioria dos comunicados publicados e dos feeds de vulnerabilidade ainda usa.
+O CVSS (Sistema Comum de Pontuação de Vulnerabilidades, do inglês Common Vulnerability Scoring System) teve várias versões, e um vetor só significa algo no contexto da sua versão. O [decodificador de vetores CVSS](/tools/cvss-vector-decoder) calcula **v3.0 e v3.1**, que são as versões que a grande maioria dos comunicados publicados e dos feeds de vulnerabilidade ainda usa.
 
 ## v3.0 versus v3.1
 
@@ -31,3 +31,17 @@ O CVSS **v4.0** (2023) é uma mudança maior e não é compatível em vetores co
 - Uma nova métrica de **Requisitos de Ataque (AT)** junta-se à Complexidade do Ataque, e a nomenclatura para pontuações combinadas (CVSS-B, CVSS-BT, CVSS-BTE) é formalizada.
 
 Um vetor v4.0 começa com `CVSS:4.0` e não pode ser pontuado pela matemática v3. Este decodificador reconhece um prefixo v4.0 e avisa que ele está fora de escopo, em vez de produzir um número errado. O **CVSS v2**, que usava um conjunto de métricas totalmente diferente, está descontinuado e também não é calculado aqui.
+
+
+## Por que o prefixo de versão não é enfeite
+
+Todo vetor começa pela versão — `CVSS:3.1/...` — e esse prefixo sustenta o resto. **As mesmas letras de métrica significam coisas diferentes entre versões**, então um vetor lido sob a versão errada produz um número que parece plausível e está errado.
+
+A v4 é o caso mais claro: renomeia a pontuação base para **CVSS-B** e acrescenta os grupos Threat e Supplemental, justamente porque a indústria passou uma década tratando uma pontuação base como uma declaração completa de risco. Uma ferramenta que ignora o prefixo não está sendo tolerante; está adivinhando.
+
+**Quando copiar um vetor de um aviso, copie o prefixo junto.**
+
+## Fontes
+
+- [CVSS v3.1 Specification Document](https://www.first.org/cvss/v3.1/specification-document)
+- [CVSS v4.0 Specification Document](https://www.first.org/cvss/v4.0/specification-document)

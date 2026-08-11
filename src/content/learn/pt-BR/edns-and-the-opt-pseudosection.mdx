@@ -7,8 +7,8 @@ relatedTools: ["dig-output-explainer"]
 relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig"]
 category: networking
 order: 43
-status: machine-draft
-updated: "2026-06-30"
+status: reviewed
+updated: "2026-08-10"
 ---
 
 O DNS clássico tinha um limite de 512 bytes para respostas em UDP e nenhum espaço no cabeçalho para novas opções. O EDNS(0), definido na RFC 6891, resolve os dois problemas adicionando um pseudo-registro do tipo OPT. O dig o imprime como seu próprio bloco:
@@ -31,3 +31,12 @@ Abaixo da linha do EDNS, o dig pode imprimir outras opções como `COOKIE` (um t
 O EDNS é onde vivem várias falhas confusas. Se uma resposta grande somada a um tamanho UDP grande anunciado produz um pacote UDP fragmentado que um firewall ou um caminho quebrado descarta, a consulta parece travar ou falhar mesmo que o servidor tenha respondido. É exatamente por isso que o tamanho anunciado tendeu a diminuir para valores como 1232: respostas menores cabem em um pacote e sobrevivem a mais caminhos. Quando você vê `SERVFAIL` intermitente em nomes com respostas grandes (muitos endereços, ou assinaturas DNSSEC), a linha OPT e o tamanho UDP são o primeiro lugar para olhar, e forçar TCP com `+tcp` é uma forma rápida de confirmar isso.
 
 A flag `do` se liga diretamente ao DNSSEC: sem ela, um resolvedor não retornará os registros de assinatura, então se você está tentando inspecionar DNSSEC e não vê nenhum, verifique se a linha OPT mostra `do` definido.
+
+
+## O tamanho de buffer é uma promessa que a rede pode não cumprir
+
+O registro OPT anuncia o tamanho de resposta UDP que o cliente aceita — normalmente 1232 ou 4096 bytes. **Anunciar não é o mesmo que receber.**
+
+Uma resposta maior que o MTU do caminho é fragmentada, e muitos middleboxes e firewalls descartam fragmentos IP sem avisar. A consulta sai, o servidor responde, a resposta nunca chega, e o resolvedor espera um timeout que vai atribuir ao servidor.
+
+**É por isso que o DNS "estar lento" tantas vezes não é lentidão.** É uma resposta grande falhando em silêncio e um cliente esperando uma retentativa. O indício é que consultas pequenas funcionam perfeitamente e as de DNSSEC ou TXT não — porque são as que crescem.
