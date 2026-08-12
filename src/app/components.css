@@ -15440,8 +15440,32 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    credit uses. A RAW HEX IS CORRECT HERE and not a lapse: this is a partner's
    brand colour rather than a site colour, so it must NOT shift with the theme -
    for the same reason the footer hardcodes it. */
+/* TRAINING IN BOLD (PRIME 2026-08-11: "it is faded in relation to the text to
+   its right and its left").
+
+   HE WAS RIGHT, AND IT IS MEASURABLE. Contrast against the default canvas
+   (#020617):
+
+     Tools / Learn / Industry   #22d3ee   11.16:1
+     Advisory                   #f59e0b    9.39:1
+     About                      mixed     12.74:1
+     Training                   #a8605f    4.33:1   <- less than half
+
+   `--redu-brand` is Red Education's actual brand colour and is NOT ours to
+   adjust, so the colour stays. What changes is the weight.
+
+   AND THE WEIGHT IS NOT COSMETIC HERE. WCAG AA asks 4.5:1 for normal text and
+   3.0:1 for BOLD text. At 4.33:1 this link was BELOW the normal-text threshold;
+   as bold it is comfortably above the bold-text one. The fix PRIME asked for on
+   appearance is also the correct accessibility remedy.
+
+   NOTE ON THE 2026-08-09 RULING that dropped the bar to normal weight: this
+   does not reinstate weight as a TIERING channel - the four tiers are still
+   distinguished by colour alone. This is a contrast remedy for the single item
+   whose brand colour cannot be brightened. */
 .site-nav-link.nav-training {
   color: var(--redu-brand);
+  font-weight: 600;
 }
 
 .site-nav-link.nav-training:hover {
