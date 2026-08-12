@@ -50,6 +50,10 @@ export const GUIDE_RECIPES: GuideRecipe[] = [
     toolIds: ["oidc", "pkce", "totp-hotp"],
   },
   {
+    id: "read-an-f5os-path",
+    toolIds: ["f5os-restconf-path-explainer", "as3-explainer-validator"],
+  },
+  {
     id: "read-a-dns-answer",
     toolIds: ["dig-output-explainer", "nslookup-output-explainer"],
   },

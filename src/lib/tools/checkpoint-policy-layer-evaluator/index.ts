@@ -41,6 +41,15 @@ export const manifest = Object.freeze({
   // -- Identity & routing --
   toolFamily: "Check Point Quantum",
   toolSlug: "checkpoint-policy-layer-evaluator",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/checkpoint-advanced-policy-and-nat",
+    "learn/checkpoint-policy-layers-ordered-and-inline",
+    "learn/checkpoint-security-policy-and-rule-base",
+  ],
   canonicalAliases: [
     "checkpoint-layers",
     "ordered-layer-evaluator",

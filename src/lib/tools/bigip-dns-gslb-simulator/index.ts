@@ -12,6 +12,13 @@ export type { GslbVector, VerifyReport } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "bigip-dns-gslb-simulator",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/gslb-two-tier-pool-then-member",
+  ],
   sources: [
     { id: "gslb-concepts", label: "F5 — Global Server Load Balancing (BIG-IP DNS)", type: "reference", url: "https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-dns-load-balancing/global-server-load-balancing.html", access_date: "2026-07-19", scope: "tiered GSLB: pool then virtual server; static vs dynamic methods", status: "active" },
     { id: "gslb-lb", label: "F5 — About load balancing and resource availability", type: "reference", url: "https://techdocs.f5.com/kb/en-us/products/big-ip-dns/manuals/product/big-ip-dns-load-balancing-14-0-0/02.html", access_date: "2026-07-19", scope: "wide-IP pool ordering; Round Robin, Ratio, Global Availability, Topology, QoS", status: "active" },

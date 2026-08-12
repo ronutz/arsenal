@@ -166,9 +166,15 @@
    (PRIME 2026-08-08) */
 .about-facts-section {
   border-bottom: none;
-  /* Half of .section's clamp(2.5rem, 7vw, 5rem); the other half of the gap comes
-     off .about-hero's bottom padding. (PRIME 2026-08-08) */
-  padding-block-start: clamp(1.25rem, 3.5vw, 2.5rem);
+  /* HALVED AGAIN (PRIME 2026-08-11: "reduce in half the space between the
+     description ending in '...secure network communications.' and the three top
+     cards").
+
+     The 2026-08-08 value was already half of .section's
+     clamp(2.5rem, 7vw, 5rem). This halves that, so the gap is now a quarter of a
+     standard section break - which is correct here, because the cards are a
+     continuation of the sentence above them rather than a new subject. */
+  padding-block-start: clamp(0.6rem, 1.75vw, 1.25rem);
 }
 .section-accent {
   background: var(--surface-base);
@@ -1820,7 +1826,15 @@
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.6rem;
-  color: var(--text-primary);
+  /* AMBER TITLE (PRIME 2026-08-11: "make the disclaimer title bright amber just
+     like the left-corner of the card").
+
+     The card already carries `border-inline-start: 3px solid var(--accent-amber)`
+     and the heading was plain body colour, so the one deliberate signal on the
+     card was a stripe most readers would not consciously register. Matching the
+     title to it makes the stripe read as intentional rather than decorative, and
+     the same token means the pair cannot drift apart on any of the 28 themes. */
+  color: var(--accent-amber);
 }
 
 /* /advisory only. The "Not offered here" heading turns the section from what IS
@@ -15486,8 +15500,21 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    advisory exclusion list - a raw hex on purpose, because this is a partner's
    brand colour and must not shift with any of the twenty-three themes. */
 .redu-brand {
+  /* SLIGHTLY BRIGHTER (PRIME 2026-08-11: "a bit brighter, a bit more popping
+     out, not too much").
+
+     The colour itself is NOT changed: `--redu-brand` is a partner's brand
+     colour, hardcoded on purpose so it does not shift with the theme, and
+     lightening it would be altering somebody else's mark. What changes is how
+     the glyphs are drawn - antialiased smoothing renders the strokes crisper,
+     which is the same technique used on the navbar and reads as a lift without
+     touching the hue. Weight stays at 600; going heavier would make the name
+     shout in paragraphs where it appears four or five times. */
   color: var(--redu-brand);
   font-weight: 600;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.006em;
   white-space: nowrap;
 }
 
@@ -15512,12 +15539,46 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    Sits above the 164-entry list. Chips are buttons rather than links because
    they change what is shown, not where you are - a link that does not navigate
    is a lie to anybody using a keyboard or a screen reader. */
+/* STICKY FILTERS (PRIME 2026-08-11). The timeline is 270 cards long, so a
+   filter bar that scrolls away is a filter you have to scroll back to find. It
+   now behaves like the glossary A-Z rail, which solved the same problem on a
+   list of the same order of magnitude, and deliberately reuses that rail's
+   values rather than inventing new ones:
+
+     top: 4rem     clears the site header, the same offset the A-Z rail uses
+     z-index: 5    above the cards, below the header and any dialog
+     backdrop-filter + a translucent canvas, so the cards passing underneath are
+                   visible rather than clipped by an opaque strip
+
+   The negative inline margin and matching padding let the background run to the
+   container edge while the controls stay aligned with the cards below - without
+   it the bar reads as a floating box rather than a bar. */
 .timeline-filter {
+  position: sticky;
+  top: 4rem;
+  z-index: 5;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.6rem 0.9rem;
-  margin-bottom: 1.75rem;
+  margin: 0 -0.75rem 1.75rem;
+  padding: 0.7rem 0.75rem;
+  background: color-mix(in srgb, var(--canvas-primary) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+/* SHORT VIEWPORTS. A sticky bar that is tall relative to the window eats the
+   content it is filtering - with 25 country toggles wrapped onto several rows
+   that is a real risk on a phone in landscape. Below this height the bar
+   scrolls with the page, which is the honest trade: the filter is reachable by
+   scrolling, the results are not reachable at all if the bar covers them. */
+@media (max-height: 560px) {
+  .timeline-filter {
+    position: static;
+    backdrop-filter: none;
+  }
 }
 
 .timeline-filter-label {
@@ -15559,10 +15620,21 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   background: color-mix(in srgb, var(--accent-primary) 10%, transparent);
 }
 
+/* THE READOUT. This rule PRE-DATED the element it styles: the class was defined
+   and nothing in the markup ever carried it, so it sat as dead CSS until the
+   shown/total counter was added on 2026-08-11. It is extended here rather than
+   duplicated lower down - two rules for one class is how a stylesheet starts
+   contradicting itself.
+
+   Shows a single number when nothing is filtered and "shown / total" when
+   something is. Tabular figures so the width does not jitter as the count
+   changes under the cursor. */
 .timeline-filter-count {
   font-size: 0.8rem;
   color: var(--text-tertiary);
-  margin-left: auto;
+  margin-inline-start: auto;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 
@@ -15971,6 +16043,22 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    and the announcement to assistive technology cannot drift apart - there is
    only one source of truth for "is this on".
    ------------------------------------------------------------------------- */
+/* COUNTS ON THE PILLS AND THE SHOWN/TOTAL READOUT (PRIME 2026-08-11).
+
+   The number is a subordinate part of the chip, not a second label, so it is
+   dimmer and smaller than the word beside it and picks up the chip's colour when
+   the chip is pressed. A count rendered at the same weight as the label reads as
+   two competing pieces of text. */
+.timeline-filter-chip-n {
+  margin-inline-start: 0.4rem;
+  font-size: 0.75em;
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+.timeline-filter-chip[aria-pressed="true"] .timeline-filter-chip-n {
+  opacity: 0.85;
+}
+
 .timeline-filter-countries {
   display: flex;
   flex-wrap: wrap;

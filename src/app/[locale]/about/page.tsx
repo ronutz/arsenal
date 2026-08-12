@@ -132,6 +132,17 @@ export default async function AboutPage({
                 <span className="about-fact-label">{t("now.teachesLabel")}</span>
                 <span className="about-fact-value">{t("now.teachesValue")}</span>
               </li>
+              {/* TRAVEL PERMITS (PRIME 2026-08-11). A fourth fact rather than a
+                  line appended to "Based in", because it answers a different
+                  question. "Based in" tells a reader where he is; this tells
+                  them he can be somewhere else next month without a visa
+                  process attached - which is the thing an organisation booking
+                  on-site delivery abroad actually needs to know, and the reason
+                  it belongs beside Teaches rather than buried in a location. */}
+              <li className="about-fact">
+                <span className="about-fact-label">{t("now.permitsLabel")}</span>
+                <span className="about-fact-value">{t("now.permitsValue")}</span>
+              </li>
               <li className="about-fact">
                 <span className="about-fact-label">{t("now.languagesLabel")}</span>
                 <span className="about-fact-value">{t("now.languagesValue")}</span>

@@ -29,6 +29,18 @@ export type { SslVector, VerifyReport } from "./golden-vectors";
 /** Tool manifest. `sources` are surfaced on the tool page as reference links. */
 export const manifest = Object.freeze({
   toolSlug: "f5-ssl-profile-explainer",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/bigip-post-quantum-tls",
+    "learn/f5-clientssl-vs-serverssl",
+    "learn/f5-ssl-cert-key-chain",
+    "learn/f5-ssl-client-auth-mtls",
+    "learn/f5-ssl-profile-protocol-options",
+    "learn/f5-ssl-renegotiation-and-ocsp",
+  ],
   sources: [
     { id: "f5-clientssl", label: "F5 tmsh — ltm profile client-ssl reference", type: "vendor", url: "https://clouddocs.f5.com/api/icontrol-rest/APIRef_tm_ltm_profile_client-ssl.html", access_date: "2026-06-29", scope: "client-ssl profile fields", status: "active" },
     { id: "f5-serverssl", label: "F5 tmsh — ltm profile server-ssl reference", type: "vendor", url: "https://clouddocs.f5.com/api/icontrol-rest/APIRef_tm_ltm_profile_server-ssl.html", access_date: "2026-06-29", scope: "server-ssl profile fields", status: "active" },

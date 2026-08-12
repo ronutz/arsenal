@@ -112,6 +112,27 @@ export default async function TrainingLandingPage({
                The biographical facts that used to sit under this heading -
                based in, teaches, languages - did NOT move. They remain on
                /about, where they belong. */}
+          {/* DISCLAIMER (PRIME 2026-08-11), the same card as /advisory and placed
+              the same way: FIRST, before anything it qualifies.
+
+              The two pages carry opposite versions of one fact. /advisory says
+              training is not offered there; this says training is offered ONLY
+              through Red Education. A reader who lands on either now learns the
+              same boundary from whichever door they came through, which is the
+              point of stating it at the top rather than in a footer.
+
+              `ReduBrand` styles the name wherever it appears in the sentence,
+              so the two mentions here are branded without any markup in the
+              translated string. */}
+          <section className="section">
+            <div className="container teach-container">
+              <div className="vendor-note">
+                <p className="vendor-note-title">{t("disclaimerTitle")}</p>
+                <p className="vendor-note-body"><ReduBrand>{t("disclaimerBody")}</ReduBrand></p>
+              </div>
+            </div>
+          </section>
+
           <section className="section">
             <div className="container teach-container">
               <h2 className="teach-block-title">{tAbout("now.title")}</h2>

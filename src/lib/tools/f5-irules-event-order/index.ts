@@ -28,6 +28,19 @@ export type { EventOrderVector, VerifyReport } from "./golden-vectors";
 /** Tool manifest. `sources` surface on the tool page as reference links. */
 export const manifest = Object.freeze({
   toolSlug: "f5-irules-event-order",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/bigip-l4-protocol-profiles",
+    "learn/irule-clientside-vs-serverside",
+    "learn/irule-event-order-explained",
+    "learn/irule-events-modules-and-profiles",
+    "learn/irule-fastl4-vs-standard-events",
+    "learn/irule-priority-and-event-order",
+    "learn/irule-ssl-handshake-events",
+  ],
   canonicalAliases: ["irules-event-order"], // pre-rename slug (2026-07-03), kept for omnibox continuity
   sources: [
     { id: "irules-events", label: "F5 Clouddocs — Master List of iRule Events", type: "doc", url: "https://clouddocs.f5.com/api/irules/Events.html", access_date: "2026-06-29", scope: "event names and triggers", status: "active" },

@@ -22,6 +22,14 @@ export { GOLDEN_VECTOR_SET_ID, PROXY_VECTORS, verifyVectors } from "./golden-vec
 export const manifest = Object.freeze({
   toolFamily: "NGINX",
   toolSlug: "nginx-proxy-pass-rewriter",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/nginx-proxy-cache-what-gets-stored",
+    "learn/nginx-proxy-pass-uri-rewriting",
+  ],
   canonicalAliases: ["proxy-pass-slash", "nginx-proxy-uri", "proxy-pass-trailing-slash"],
   inputDetectors: [
     { kind: "regex", pattern: "^\\s*proxy_pass\\s+[a-z]+://", priority: 6, example: "proxy_pass http://backend/;" },

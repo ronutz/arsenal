@@ -13,6 +13,13 @@ export type { TimeVector, VerifyReport } from "./golden-vectors";
 /** Tool manifest. `sources` are surfaced on the tool page as reference links. */
 export const manifest = Object.freeze({
   toolSlug: "time-calculator",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/time-arithmetic-and-time-zones",
+  ],
   sources: [
     { id: "rfc3339", label: "RFC 3339 — Date and Time on the Internet: Timestamps", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc3339", access_date: "2026-07-18", scope: "timestamp format and offsets", status: "active" },
     { id: "iso8601-durations", label: "ISO 8601 — durations (PnDTnHnMnS)", type: "spec", url: "https://www.iso.org/iso-8601-date-and-time-format.html", access_date: "2026-07-18", scope: "duration syntax; why P1M is calendar arithmetic", status: "active" },

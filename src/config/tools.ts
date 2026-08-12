@@ -71,6 +71,7 @@ export const tools: ToolEntry[] = [
   { id: "oui-lookup", href: "/tools/oui-lookup", category: "networking", available: true },
   { id: "voss-fabric-id", href: "/tools/voss-fabric-id", category: "networking", available: true },
   { id: "voss-exos-translator", href: "/tools/voss-exos-translator", category: "networking", available: true },
+  { id: "f5os-restconf-path-explainer", sub: "f5os", href: "/tools/f5os-restconf-path-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "dig-output-explainer", href: "/tools/dig-output-explainer", category: "networking", available: true },
   { id: "nslookup-output-explainer", href: "/tools/nslookup-output-explainer", category: "networking", available: true },
   { id: "secure-headers", href: "/tools/secure-headers", category: "security", available: true },

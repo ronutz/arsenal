@@ -43,6 +43,32 @@ export type { VerifyReport } from "./golden-vectors";
  */
 export const manifest = Object.freeze({
   toolSlug: "cidr",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/bgp-primer",
+    "learn/bigip-interfaces-trunks-vlans-selfips",
+    "learn/bigip-route-domains",
+    "learn/cidr-notation",
+    "learn/f5-ca-vs-retired-101-201",
+    "learn/fortigate-firewall-policy-and-nat",
+    "learn/fortigate-routing-and-sdwan-selection",
+    "learn/ipv4-addressing",
+    "learn/isis-primer",
+    "learn/mpls-primer",
+    "learn/nat-explained",
+    "learn/ospf-primer",
+    "learn/private-address-space",
+    "learn/route-summarization",
+    "learn/routing-tables-and-default-gateway",
+    "learn/subnet-overlap-and-gaps",
+    "learn/subnetting-basics",
+    "learn/supernetting-and-aggregation",
+    "learn/vlsm",
+    "learn/vlsm-worked-example",
+  ],
   sources: [
     { id: "rfc4632", label: "RFC 4632 — Classless Inter-domain Routing (CIDR)", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc4632", access_date: "2026-06-29", scope: "CIDR prefix arithmetic", status: "active" },
     { id: "rfc1918", label: "RFC 1918 — Address Allocation for Private Internets", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc1918", access_date: "2026-06-29", scope: "private-range classification", status: "active" },

@@ -54,10 +54,24 @@ export default function TimelineFilter({
   const [modes, setModes] = useState<Set<Mode>>(new Set());
   const [picked, setPicked] = useState<Set<string>>(new Set());
 
+  /* SHOWN / TOTAL (PRIME 2026-08-11). Counted here rather than computed on the
+     server, because the server knows the totals and only the browser knows what
+     the current selection leaves visible. Both numbers come from the SAME pass
+     that does the hiding, so the counter cannot disagree with the timeline it
+     describes - a count derived separately would eventually drift from it. */
+  const [shown, setShown] = useState<number | null>(null);
+  const [total, setTotal] = useState<number | null>(null);
+
+  /* Per-mode totals, measured from the rendered cards for the same reason: the
+     pills then state how many entries each cut actually contains rather than a
+     number maintained by hand somewhere else. */
+  const [modeTotals, setModeTotals] = useState<Record<string, number>>({});
+
   useEffect(() => {
     const items = Array.from(
       document.querySelectorAll<HTMLElement>("[data-vendor-entry]"),
     );
+    let visible = 0;
     for (const el of items) {
       const modeKeep =
         modes.size === 0 ||
@@ -66,8 +80,17 @@ export default function TimelineFilter({
         (modes.has("teach") && el.dataset.teach === "1");
       const countryKeep =
         picked.size === 0 || picked.has(el.dataset.country ?? "");
-      el.hidden = !(modeKeep && countryKeep);
+      const keep = modeKeep && countryKeep;
+      el.hidden = !keep;
+      if (keep) visible += 1;
     }
+    setShown(visible);
+    setTotal(items.length);
+    setModeTotals({
+      redu: items.filter((el) => el.dataset.redu === "1").length,
+      career: items.filter((el) => el.dataset.career === "1").length,
+      teach: items.filter((el) => el.dataset.teach === "1").length,
+    });
   }, [modes, picked]);
 
   function toggleIn<T>(set: Set<T>, v: T): Set<T> {
@@ -102,6 +125,7 @@ export default function TimelineFilter({
           }}
         >
           {labels.all}
+          {total !== null && <span className="timeline-filter-chip-n">{total}</span>}
         </button>
         {OPTIONS.map((o) => (
           <button
@@ -112,9 +136,29 @@ export default function TimelineFilter({
             onClick={() => setModes((prev) => toggleIn(prev, o.key))}
           >
             {o.label}
+            {modeTotals[o.key] !== undefined && (
+              <span className="timeline-filter-chip-n">{modeTotals[o.key]}</span>
+            )}
           </button>
         ))}
       </div>
+
+      {/* SHOWN / TOTAL (PRIME 2026-08-11). Rendered only once counted, so the
+          bar never shows a placeholder or a wrong number during hydration -
+          `null` until the first pass, then the real figures.
+
+          `aria-live="polite"` because this is the only feedback a screen-reader
+          user gets that a toggle did anything: the cards themselves just become
+          hidden, silently. It announces after the change rather than
+          interrupting, which is what polite means and is right for a number
+          that updates on every click. */}
+      <output className="timeline-filter-count mono" aria-live="polite">
+        {shown !== null && total !== null && shown !== total
+          ? `${shown} / ${total}`
+          : total !== null
+            ? `${total}`
+            : ""}
+      </output>
 
       {/* COUNTRY TOGGLES (PRIME 2026-08-11): "toggable country flag + country
           code. Do not use checkboxes, the item itself should change state and

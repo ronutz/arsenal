@@ -1,0 +1,83 @@
+---
+slug: f5os-restconf-paths
+title: "Lendo um caminho RESTCONF do F5OS"
+summary: "O F5OS é operado por RESTCONF sobre YANG, e não por iControl REST sobre o modelo de objetos do TMOS. Este artigo explica como ler um caminho: o prefixo de módulo, a hierarquia de contêineres, as chaves de lista, a convenção módulo:nó e a dualidade entre 8888 e 443."
+concepts: ["restconf", "yang", "f5os", "velos", "rseries", "openconfig"]
+relatedTools: ["f5os-restconf-path-explainer"]
+relatedArticles: ["as3-declaration-anatomy", "bigip-declarative-onboarding-do"]
+category: f5
+order: 40
+status: reviewed
+updated: "2026-08-12"
+---
+
+## Por que um caminho do F5OS parece estranho
+
+Quem conhece bem o BIG-IP lê `/mgmt/tm/ltm/virtual/~Common~vs_web` num relance.
+A mesma pessoa esbarra neste e para:
+
+```
+/restconf/data/f5-tenants:tenants/tenant=tenant1/config/running-state
+```
+
+A dificuldade não é a profundidade. É que as duas APIs vêm de tradições
+diferentes. O iControl REST expõe o modelo de objetos do TMOS, que é da própria
+F5. O F5OS — a camada de plataforma sob os tenants no VELOS e no rSeries — é
+operado por **RESTCONF**, um protocolo padronizado na RFC 8040 para endereçar
+dados modelados em **YANG**. O caminho não é uma invenção da F5; o vocabulário é
+o do padrão.
+
+## As partes
+
+**A raiz da API.** `/restconf/data` endereça o datastore: configuração e estado.
+`/restconf/operations` invoca uma RPC — uma ação, e não um nó.
+
+**O prefixo de módulo.** `f5-tenants:tenants` significa o nó `tenants` dentro do
+módulo YANG `f5-tenants`. O F5OS usa tanto módulos **OpenConfig**, neutros em
+relação a fabricante — `openconfig-system`, `openconfig-interfaces`,
+`openconfig-vlan` — quanto os próprios módulos da F5, prefixados com `f5-`. O
+prefixo informa quem definiu o modelo que você está endereçando e, portanto,
+onde está a documentação dele.
+
+**A convenção de prefixação.** Apenas o primeiro nó de um módulo leva o
+prefixo. Tudo abaixo dele é escrito sem prefixo, porque herda o módulo do nó
+pai. No exemplo acima, `tenants` é qualificado e `config` e `running-state` não
+são. **Um prefixo que reaparece no meio do caminho significa que o caminho
+atravessou para outro módulo** — é esse o sinal a observar.
+
+## A porta que confunde
+
+O F5OS originalmente expunha o RESTCONF na **porta 8888**, sob `/restconf`. A
+partir do **F5OS 1.8**, a mesma API também é alcançável na porta HTTPS padrão,
+sob `/api`. Dois caminhos com aparência diferente podem, portanto, endereçar
+exatamente o mesmo recurso:
+
+```
+https://host:8888/restconf/data/openconfig-system:system
+https://host:443/api/data/openconfig-system:system
+```
+
+Nenhum é mais correto que o outro. Documentação, scripts e respostas de fórum
+escritos em épocas diferentes usam formas diferentes, e um script que falha
+contra um host e funciona contra outro muitas vezes esbarrou nisso e em mais
+nada.
+
+A autenticação usa o cabeçalho `X-Auth-Token`. Esse token é, ele próprio, um
+JWT, portanto carrega uma expiração — um script de longa duração que funcionou
+por vinte minutos e passou a responder 401 não perdeu as credenciais; ele
+passou da expiração e precisaria ter renovado o token.
+
+## O que fazer com um caminho que você não reconhece
+
+Leia nesta ordem: a raiz diz se é datastore ou RPC; o primeiro prefixo de módulo
+diz de quem é o modelo; as chaves dizem qual instância; e os nós sem prefixo ao
+final são os contêineres e as folhas dentro daquele modelo.
+
+Se o módulo for um que você nunca viu, isso é uma consulta à documentação, não
+um palpite. A estrutura do caminho continua legível — dá para distinguir uma
+entrada de lista de um contêiner sem saber o que qualquer um deles contém — e
+saber exatamente onde está a sua incerteza já é a maior parte do trabalho.
+
+O **explicador de caminhos RESTCONF do F5OS** neste site faz exatamente essa
+decomposição, offline, e nomeia os módulos que conhece dizendo claramente
+quando um módulo não está na sua tabela.

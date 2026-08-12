@@ -12,6 +12,13 @@ export type { UaVector, VerifyReport } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "user-agent-entropy-analyzer",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/passive-fingerprinting-what-you-emit",
+  ],
   sources: [
     { id: "mdn-ua", label: "MDN — User-Agent header", type: "reference", url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent", access_date: "2026-07-19", scope: "UA token structure and product/version conventions", status: "active" },
     { id: "ua-ch", label: "User-Agent Client Hints (W3C / WICG)", type: "spec", url: "https://wicg.github.io/ua-client-hints/", access_date: "2026-07-19", scope: "Sec-CH-UA hints, Accept-CH, the high-entropy request model", status: "active" },

@@ -335,6 +335,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_f5_topology_longest_match",
     "tag": "F5 GTM, AFM & APM"
   },
+  "f5os-restconf-path-explainer": {
+    "url": "https://ronutz.com/api/v1/f5os-restconf-path-explainer",
+    "method": "GET",
+    "op": "run_f5os_restconf_path_explainer",
+    "tag": "F5OS platform (VELOS / rSeries)"
+  },
   "f5xc-api-path-explainer": {
     "url": "https://ronutz.com/api/v1/f5xc-api-path-explainer",
     "method": "GET",

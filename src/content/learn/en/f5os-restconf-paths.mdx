@@ -1,0 +1,87 @@
+---
+slug: f5os-restconf-paths
+title: "Reading an F5OS RESTCONF path"
+summary: "F5OS is driven by RESTCONF over YANG, not by iControl REST over a TMOS object model. This explains how to read a path: the module prefix, the container hierarchy, list keys, the module:node convention, and the 8888 versus 443 duality."
+concepts: ["restconf", "yang", "f5os", "velos", "rseries", "openconfig"]
+relatedTools: ["f5os-restconf-path-explainer"]
+relatedArticles: ["as3-declaration-anatomy", "bigip-declarative-onboarding-do"]
+category: f5
+order: 40
+status: reviewed
+updated: "2026-08-12"
+---
+
+## Why an F5OS path looks unfamiliar
+
+Somebody who knows BIG-IP well can read `/mgmt/tm/ltm/virtual/~Common~vs_web`
+at a glance. The same person meets this and stops:
+
+```
+/restconf/data/f5-tenants:tenants/tenant=tenant1/config/running-state
+```
+
+The difficulty is not depth. It is that the two APIs come from different
+traditions. iControl REST exposes the TMOS object model, which is F5's own.
+F5OS — the platform layer underneath tenants on VELOS and rSeries — is driven
+by **RESTCONF**, a standard protocol defined in RFC 8040 for addressing data
+modelled in **YANG**. The path is not F5's invention; the vocabulary is the
+standard's.
+
+## The parts
+
+**The API root.** `/restconf/data` addresses the datastore: configuration and
+state. `/restconf/operations` invokes an RPC — an action rather than a node.
+
+**The module prefix.** `f5-tenants:tenants` means the node `tenants` in the YANG
+module `f5-tenants`. F5OS uses both vendor-neutral **OpenConfig** modules —
+`openconfig-system`, `openconfig-interfaces`, `openconfig-vlan` — and F5's own,
+which are prefixed `f5-`. The prefix tells you which body defined the model you
+are addressing, and therefore where its documentation lives.
+
+**The prefixing convention.** Only the first node of a module carries the
+prefix. Everything below it is written bare, because it inherits the module
+from its parent. So in the example above, `tenants` is qualified and `config`
+and `running-state` are not. **A prefix reappearing part-way down a path means
+the path has crossed into a different module** — that is the signal to watch
+for.
+
+**List keys.** `tenant=tenant1` selects one entry from the `tenants` list, the
+one whose key is `tenant1`. RESTCONF puts the key in the path itself rather
+than in a query parameter, which is why these paths contain `=` where a
+BIG-IP path would contain a name with tildes.
+
+## The port that catches people
+
+F5OS originally exposed RESTCONF on **port 8888** under `/restconf`. From
+**F5OS 1.8** the same API is also reachable on the standard HTTPS port under
+`/api`. Two paths that look different can therefore address the identical
+resource:
+
+```
+https://host:8888/restconf/data/openconfig-system:system
+https://host:443/api/data/openconfig-system:system
+```
+
+Neither is more correct. Documentation, scripts and forum answers written at
+different times use different ones, and a script that fails against one host
+and works against another is often meeting this and nothing else.
+
+Authentication uses an `X-Auth-Token` header. That token is itself a JWT, so it
+carries an expiry — a long-running script that worked for twenty minutes and
+then began returning 401 has not lost its credentials; it has passed the
+expiry and needs to have renewed the token.
+
+## What to do with a path you do not recognise
+
+Read it in this order: the root tells you datastore or RPC; the first module
+prefix tells you whose model you are in; the keys tell you which instance; and
+the trailing bare nodes are the containers and leaves within that model.
+
+If the module is one you have not seen, that is a documentation lookup rather
+than a guess. The structure of the path is still readable — you can tell a list
+entry from a container without knowing what either contains — and knowing where
+your uncertainty actually sits is most of the work.
+
+The **F5OS RESTCONF path explainer** on this site does exactly this
+decomposition, offline, and names the modules it knows while saying plainly
+when a module is not in its table.

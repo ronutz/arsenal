@@ -6349,6 +6349,40 @@
       "guidesLede": "Walkthroughs of the protocols and mechanisms themselves, with no exam attached. Read these to understand the thing rather than to pass something.",
       "examsTitle": "Certification exam guides",
       "examsLede": "Objective by objective for each exam, showing what is covered here and, honestly, what is not."
+    },
+    "f5os-restconf-path-explainer": {
+      "inputLabel": "F5OS RESTCONF path",
+      "placeholder": "/restconf/data/f5-tenants:tenants/tenant=tenant1/config",
+      "example": "Example",
+      "clear": "Clear",
+      "overview": {
+        "title": "What this path addresses",
+        "path": "Path",
+        "host": "Host",
+        "root": "API root",
+        "rootUnknown": "not recognised"
+      },
+      "segments": {
+        "title": "Segment by segment",
+        "kind": {
+          "module-qualified": "module-qualified node",
+          "node": "node",
+          "list-key": "list entry, selected by key"
+        }
+      },
+      "modules": {
+        "title": "Modules in this path"
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      },
+      "reference": {
+        "title": "Modules this tool can describe",
+        "intro": "A finite list. If a path uses a module that is not here, the structure is still decoded and the description is withheld rather than guessed."
+      }
     }
   },
   "privacy_page": {
@@ -6442,9 +6476,11 @@
       "basedLabel": "Based in",
       "basedValue": "São Paulo, Brazil",
       "teachesLabel": "Teaches",
-      "teachesValue": "Virtual and on-site instructor-led training, globally",
+      "teachesValue": "Virtual and on-site instructor-led training, globally, in any time zone",
       "languagesLabel": "Languages",
-      "languagesValue": "Portuguese (native), English (fluent)"
+      "languagesValue": "Portuguese (native), English (fluent), Spanish (basic), German (basic)",
+      "permitsLabel": "Travel permits",
+      "permitsValue": "Valid, current European Union and United States travel permits"
     },
     "platforms": {
       "title": "The platforms, taught in depth",
@@ -7052,7 +7088,9 @@
     "navTools": "Tools",
     "navToolsLede": "Free calculators and explainers for the same platforms the courses cover. They compute in your browser and send nothing anywhere.",
     "navGlossary": "Glossary",
-    "navGlossaryLede": "Every term used across the courses and the writing, defined once and cross-referenced. Useful mid-course and useful afterwards."
+    "navGlossaryLede": "Every term used across the courses and the writing, defined once and cross-referenced. Useful mid-course and useful afterwards.",
+    "disclaimerTitle": "Before you read further",
+    "disclaimerBody": "I work full time for Red Education. All the technical education work described on this page - training delivery, workshops, bootcamps, knowledge transfers and enablement sessions - is delivered solely through Red Education. I will be happy to help you work out what your organisation needs and put you in touch with the right person to handle the request."
   },
   "contact": {
     "title": "Get in touch",
@@ -8460,6 +8498,10 @@
       "build-and-test-a-regex": {
         "title": "Build and test a regex",
         "desc": "Write a regular expression and test it against sample text as you go."
+      },
+      "read-an-f5os-path": {
+        "title": "Read an F5OS path, then the declaration behind it",
+        "desc": "Decode an F5OS RESTCONF path segment by segment to see which module, tenant and node it addresses, then read the AS3 declaration that configures the service running inside that tenant."
       }
     },
     "manualHeading": "Manual",
@@ -15168,7 +15210,7 @@
     "offerArrangementTitle": "By special arrangement",
     "offerArrangementBody": "Senior-level real time presence, on site or remotely, during an operation that cannot be repeated: a migration window, a cutover, a planned failover.",
     "disclaimerTitle": "Before you read further",
-    "disclaimerBody": "I work full time for Red Education. The advisory work described on this page is deliberately limited in volume, and it happens outside the hours I work for them. If you need training, that goes through Red Education and not through me.",
+    "disclaimerBody": "I work full time for Red Education. The advisory work described on this page is delivered personally by me and contracted through Red Education. The one thing I cannot tell you about is pricing: that comes only after a detailed scoping and expectations call, and is provided exclusively by Red Education. What I can tell you is that I will be the main advocate for the best possible outcome for you. Since 1996 I have consistently argued for what serves the end customer, not necessarily for what served the company I was working for at the time. Right is right, and fair is fair. If you need training, that goes through Red Education too.",
     "exclusion1Term": "Implementation and configuration",
     "exclusion1Body": "I will review what is planned and audit what was built, but I am not the pair of hands that builds it.",
     "exclusion2Term": "On-call, standby, and operational duty",

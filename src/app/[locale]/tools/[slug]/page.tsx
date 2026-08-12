@@ -97,6 +97,8 @@ import TmshConfigExplainerTool from "@/components/TmshConfigExplainerTool";
 import { manifest as tmshManifest } from "@/lib/tools/f5-tmsh-config-explainer";
 import DigOutputExplainerTool from "@/components/DigOutputExplainerTool";
 import { manifest as digManifest } from "@/lib/tools/dig-output-explainer";
+import F5osRestconfPathExplainerTool from "@/components/F5osRestconfPathExplainerTool";
+import { manifest as f5osRestconfPathManifest } from "@/lib/tools/f5os-restconf-path-explainer";
 import NslookupOutputExplainerTool from "@/components/NslookupOutputExplainerTool";
 import { manifest as nslookupManifest } from "@/lib/tools/nslookup-output-explainer";
 import XmlDecoderTool from "@/components/XmlDecoderTool";
@@ -503,6 +505,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-tmsh-config-explainer": {
     Component: TmshConfigExplainerTool,
     sources: tmshManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5os-restconf-path-explainer": {
+    Component: F5osRestconfPathExplainerTool,
+    sources: f5osRestconfPathManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "dig-output-explainer": {
     Component: DigOutputExplainerTool,

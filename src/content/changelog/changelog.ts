@@ -3701,6 +3701,15 @@ export const CHANGELOG: ChangelogEntry[] = [
       "Paste dig output and get every section explained: the header and flags, the question, and each answer, authority, and additional record, along with the query timing. Local and offline.",
   },
   {
+    date: "2026-08-12",
+    time: "07:30",
+    kind: "tool",
+    title: "New tool: F5OS RESTCONF path explainer",
+    tools: ["f5os-restconf-path-explainer"],
+    body:
+      "Paste an F5OS RESTCONF path and get it decoded segment by segment: the YANG module prefix, the container hierarchy, list keys such as tenant=tenant1, and the module:node prefixing convention. It also explains the port 8888 /restconf versus port 443 /api duality introduced in F5OS 1.8. Local and offline; an unrecognised module is reported as unrecognised rather than described from a guess.",
+  },
+  {
     date: "2026-06-30",
     time: "05:20",
     kind: "tool",

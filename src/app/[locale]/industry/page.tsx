@@ -27,6 +27,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+import ScrollToTop from "@/components/ScrollToTop";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ReduBrand from "@/components/ReduBrand";
 import { partnerVendors } from "@/content/vendors/partners";
@@ -63,7 +64,12 @@ export default async function IndustryHubPage({
   const t = await getTranslations("vendors");
   const tTags = await getTranslations({ locale, namespace: "industryTags" }); // career card copy (name/years/tagline)
   const tSources = await getTranslations({ locale, namespace: "sources" }); // reference works link
-  const tp = await getTranslations("partnerVendors"); // partner cards + section headings
+  const tp = await getTranslations("partnerVendors");
+  /* `backToTop` lives in the tools namespace and is shared by every long page
+     that carries this control - Tools, Learn and the vendor hubs. Reading it
+     from there rather than copying the string into a second namespace keeps one
+     translation for one control, which is what check-message-parity is for. */
+  const tTools = await getTranslations("tools"); // partner cards + section headings
   const ti = await getTranslations("industry"); // hub hero (new)
   const tNav = await getTranslations("nav");
 
@@ -480,6 +486,11 @@ export default async function IndustryHubPage({
       </main>
 
       <SiteFooter />
+
+      {/* BACK TO TOP (PRIME 2026-08-11), the same component Tools, Learn and the
+          vendor hubs use, with the same translated label - so the control a
+          reader learns on one long page is the control they find on this one. */}
+      <ScrollToTop label={tTools("backToTop")} />
     </>
   );
 }

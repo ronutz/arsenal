@@ -17,6 +17,18 @@ export type { EpochVector, VerifyReport } from "./golden-vectors";
 /** Tool manifest. `sources` are surfaced on the tool page as reference links. */
 export const manifest = Object.freeze({
   toolSlug: "epoch",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/epoch-units-seconds-to-nanoseconds",
+    "learn/iso-8601-and-rfc-3339",
+    "learn/the-year-2038-problem",
+    "learn/time-arithmetic-and-time-zones",
+    "learn/unix-time-and-leap-seconds",
+    "learn/unix-time-explained",
+  ],
   sources: [
     { id: "posix-epoch", label: "POSIX.1-2017 — Seconds Since the Epoch (IEEE Std 1003.1)", type: "spec", url: "https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16", access_date: "2026-06-29", scope: "definition of Unix time", status: "active" },
     { id: "rfc3339", label: "RFC 3339 — Date and Time on the Internet: Timestamps", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc3339", access_date: "2026-06-29", scope: "ISO 8601 profile, offsets", status: "active" },

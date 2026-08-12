@@ -46,6 +46,9 @@
       "name": "F5 automation (AS3 / DO)"
     },
     {
+      "name": "F5OS platform (VELOS / rSeries)"
+    },
+    {
       "name": "Fingerprinting"
     },
     {
@@ -4766,6 +4769,90 @@
         }
       }
     },
+    "/f5os-restconf-path-explainer": {
+      "get": {
+        "tags": [
+          "F5OS platform (VELOS / rSeries)"
+        ],
+        "operationId": "run_f5os_restconf_path_explainer",
+        "summary": "f5os-restconf-path-explainer",
+        "description": "Standards: F5OS RESTCONF, OpenConfig YANG. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5OS platform (VELOS / rSeries)"
+        ],
+        "operationId": "run_f5os_restconf_path_explainer_post",
+        "summary": "f5os-restconf-path-explainer (POST)",
+        "description": "Standards: F5OS RESTCONF, OpenConfig YANG. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/f5xc-api-path-explainer": {
       "get": {
         "tags": [
@@ -4773,7 +4860,7 @@
         ],
         "operationId": "run_f5xc_api_path_explainer",
         "summary": "F5XC API path explainer",
-        "description": "Paste the OpenAPI / Swagger spec you import into (or download from) F5XC API Protection and it lists every path and operation with its method, parameters, request body, responses, and authentication. Standards: F5 Distributed Cloud API. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste the OpenAPI / Swagger spec you import into (or download from) F5XC API Protection and it lists every path and operation with its method, parameters, request body, responses, and authentication. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -4814,7 +4901,7 @@
         ],
         "operationId": "run_f5xc_api_path_explainer_post",
         "summary": "F5XC API path explainer (POST)",
-        "description": "Paste the OpenAPI / Swagger spec you import into (or download from) F5XC API Protection and it lists every path and operation with its method, parameters, request body, responses, and authentication. Standards: F5 Distributed Cloud API. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste the OpenAPI / Swagger spec you import into (or download from) F5XC API Protection and it lists every path and operation with its method, parameters, request body, responses, and authentication. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",

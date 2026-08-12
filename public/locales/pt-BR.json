@@ -6349,6 +6349,40 @@
       "guidesLede": "Percursos pelos próprios protocolos e mecanismos, sem exame associado. Leia para entender a coisa, e não para passar em algo.",
       "examsTitle": "Guias de exames de certificação",
       "examsLede": "Objetivo por objetivo de cada exame, mostrando o que está coberto aqui e, honestamente, o que não está."
+    },
+    "f5os-restconf-path-explainer": {
+      "inputLabel": "Caminho RESTCONF do F5OS",
+      "placeholder": "/restconf/data/f5-tenants:tenants/tenant=tenant1/config",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "overview": {
+        "title": "O que este caminho endereça",
+        "path": "Caminho",
+        "host": "Host",
+        "root": "Raiz da API",
+        "rootUnknown": "não reconhecida"
+      },
+      "segments": {
+        "title": "Segmento a segmento",
+        "kind": {
+          "module-qualified": "nó qualificado por módulo",
+          "node": "nó",
+          "list-key": "entrada de lista, selecionada pela chave"
+        }
+      },
+      "modules": {
+        "title": "Módulos neste caminho"
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      },
+      "reference": {
+        "title": "Módulos que esta ferramenta sabe descrever",
+        "intro": "Uma lista finita. Se um caminho usar um módulo que não esteja aqui, a estrutura continua sendo decodificada e a descrição é omitida em vez de adivinhada."
+      }
     }
   },
   "privacy_page": {
@@ -6442,9 +6476,11 @@
       "basedLabel": "Com base em",
       "basedValue": "São Paulo, Brasil",
       "teachesLabel": "Ensina",
-      "teachesValue": "Treinamento conduzido por instrutor, virtual e presencial, para o mundo todo",
+      "teachesValue": "Treinamento conduzido por instrutor, virtual e presencial, para o mundo todo, em qualquer fuso horário",
       "languagesLabel": "Idiomas",
-      "languagesValue": "Português (nativo), inglês (fluente)"
+      "languagesValue": "Português (nativo), inglês (fluente), espanhol (básico), alemão (básico)",
+      "permitsLabel": "Autorizações de viagem",
+      "permitsValue": "Autorizações de viagem válidas e vigentes para a União Europeia e os Estados Unidos"
     },
     "platforms": {
       "title": "As plataformas, ensinadas com profundidade",
@@ -7052,7 +7088,9 @@
     "navTools": "Ferramentas",
     "navToolsLede": "Calculadoras e explicadores gratuitos para as mesmas plataformas que os cursos cobrem. Calculam no seu navegador e não enviam nada a lugar nenhum.",
     "navGlossary": "Glossário",
-    "navGlossaryLede": "Cada termo usado nos cursos e nos textos, definido uma vez e com referências cruzadas. Útil durante o curso e útil depois dele."
+    "navGlossaryLede": "Cada termo usado nos cursos e nos textos, definido uma vez e com referências cruzadas. Útil durante o curso e útil depois dele.",
+    "disclaimerTitle": "Antes de continuar a ler",
+    "disclaimerBody": "Trabalho em tempo integral para a Red Education. Todo o trabalho de educação técnica descrito nesta página - entrega de treinamentos, workshops, bootcamps, transferências de conhecimento e sessões de capacitação - é realizado exclusivamente por meio da Red Education. Terei prazer em ajudar você a identificar o que a sua organização precisa e colocá-lo em contato com a pessoa certa para tratar do pedido."
   },
   "contact": {
     "title": "Entre em contato",
@@ -8460,6 +8498,10 @@
       "build-and-test-a-regex": {
         "title": "Criar e testar uma regex",
         "desc": "Escreva uma expressão regular e teste-a com texto de exemplo conforme avança."
+      },
+      "read-an-f5os-path": {
+        "title": "Ler um caminho do F5OS e, depois, a declaração por trás dele",
+        "desc": "Decodifique um caminho RESTCONF do F5OS segmento a segmento para ver qual módulo, tenant e nó ele endereça, e depois leia a declaração AS3 que configura o serviço em execução dentro daquele tenant."
       }
     },
     "manualHeading": "Manual",
@@ -15117,7 +15159,7 @@
     "offerArrangementTitle": "Sob combinação especial",
     "offerArrangementBody": "Presença sênior em tempo real, presencial ou remota, durante uma operação que não pode ser repetida: uma janela de migração, uma virada, um teste de contingência planejado.",
     "disclaimerTitle": "Antes de continuar a ler",
-    "disclaimerBody": "Trabalho em tempo integral para a Red Education. O trabalho de consultoria descrito nesta página é deliberadamente limitado em volume, e acontece fora das horas em que trabalho para eles. Se você precisa de treinamento, isso passa pela Red Education, e não por mim.",
+    "disclaimerBody": "Trabalho em tempo integral para a Red Education. O trabalho de consultoria descrito nesta página é entregue pessoalmente por mim e contratado através da Red Education. A única coisa sobre a qual não posso informar é preço: isso vem somente depois de uma conversa detalhada de escopo e alinhamento de expectativas, e é fornecido exclusivamente pela Red Education. O que posso dizer é que serei o principal defensor do melhor resultado possível para você. Desde 1996 venho argumentando de forma consistente pelo que serve ao cliente final, e não necessariamente pelo que servia à empresa para a qual eu trabalhava na época. O certo é o certo, e o justo é o justo. Se você precisa de treinamento, isso também passa pela Red Education.",
     "exclusion1Term": "Implantação e configuração",
     "exclusion1Body": "Reviso o que está planejado e audito o que foi construído, mas não sou as mãos que constroem.",
     "exclusion2Term": "Plantão, sobreaviso e responsabilidade operacional",

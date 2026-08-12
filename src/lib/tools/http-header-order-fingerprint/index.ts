@@ -12,6 +12,14 @@ export type { HeaderVector, VerifyReport } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "http-header-order-fingerprint",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/http-headers-anatomy",
+    "learn/passive-fingerprinting-what-you-emit",
+  ],
   sources: [
     { id: "rfc9110", label: "RFC 9110 — HTTP Semantics (field order)", type: "spec", url: "https://www.rfc-editor.org/rfc/rfc9110", access_date: "2026-07-19", scope: "header field semantics; order not significant to meaning but observable", status: "active" },
     { id: "rfc9113", label: "RFC 9113 — HTTP/2 (lowercased field names, :authority)", type: "spec", url: "https://www.rfc-editor.org/rfc/rfc9113", access_date: "2026-07-19", scope: "the wire lowercasing and pseudo-headers this tool notes", status: "active" },

@@ -20,6 +20,13 @@ export { GOLDEN_VECTOR_SET_ID, CACHE_VECTORS, verifyVectors } from "./golden-vec
 export const manifest = Object.freeze({
   toolFamily: "NGINX",
   toolSlug: "nginx-proxy-cache-decision",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/nginx-proxy-cache-what-gets-stored",
+  ],
   canonicalAliases: ["proxy-cache-why", "nginx-cache-key", "cache-hit-explainer"],
   inputDetectors: [
     { kind: "regex", pattern: "^\\s*proxy_cache(_valid|_key|_methods)?\\s", priority: 6, example: "proxy_cache_valid 200 10m;" },

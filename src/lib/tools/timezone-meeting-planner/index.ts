@@ -13,6 +13,13 @@ export type { PlannerVector, VerifyReport } from "./golden-vectors";
 /** Tool manifest. `sources` are surfaced on the tool page as reference links. */
 export const manifest = Object.freeze({
   toolSlug: "timezone-meeting-planner",
+  /** The Learn article written for this tool. Added 2026-08-12: this manifest
+   *  had no learnLinks key at all, so the tool page offered no route back into
+   *  the explanation. The link is the tool's OWN article, which is guaranteed
+   *  to exist (check-tool-articles enforces it) rather than a judgement call. */
+  learnLinks: [
+    "learn/time-arithmetic-and-time-zones",
+  ],
   sources: [
     { id: "iana-tz", label: "IANA — Time Zone Database", type: "reference", url: "https://www.iana.org/time-zones", access_date: "2026-07-18", scope: "the zone and DST rules the runtime carries", status: "active" },
     { id: "ecma-intl", label: "ECMA-402 — Intl.DateTimeFormat and time zone handling", type: "spec", url: "https://tc39.es/ecma402/#datetimeformat-objects", access_date: "2026-07-18", scope: "how the readings are computed", status: "active" },

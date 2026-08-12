@@ -424,4 +424,34 @@ export const VENDOR_ORIGINS: Record<string, CountryCode> = {
   "texas-instruments": "US",
   "raspberry-pi": "GB",
 
+  "oi": "BR",
+  "algar-telecom": "BR",
+
+  "d-link": "TW",
+
+  "sagemcom": "FR",
+
+  "procera-networks": "US",
+
+  "quest-software": "US",
+
+  "skytap": "US",
+  "readytech": "US",
+
+  "agility": "BR",
+
+  "wztech": "BR",
+
+  "cyble": "US",
+
+  "mude": "BR",
+
+  "q13": "BR",
+
+  "qd7": "BR",
+
+  "penso": "BR",
+
+  "netbr": "BR",
+
 };

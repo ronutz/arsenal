@@ -35,6 +35,7 @@ import { run as csrDecoderRun } from "./csr-decoder";
 import { run as cvssVectorDecoderRun } from "./cvss-vector-decoder";
 import { run as diffRun } from "./diff";
 import { run as digOutputExplainerRun } from "./dig-output-explainer";
+import { run as f5osRestconfPathRun } from "./f5os-restconf-path-explainer";
 import { run as epochRun } from "./epoch";
 import { run as romanNumeralsRun } from "./roman-numerals";
 import { run as greekAlphabetRun } from "./greek-alphabet";
@@ -167,6 +168,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "cidr", run: (input) => cidrAnalyze(input) },
   { slug: "cipher", run: cipherRun },
   { slug: "csr-decoder", structured: true, run: (input) => csrDecoderRun(JSON.parse(input)) },
+  { slug: "f5os-restconf-path-explainer", run: f5osRestconfPathRun },
   { slug: "acme-dns01", structured: true, run: (input) => acmeDns01Run(JSON.parse(input)) },
   { slug: "public-suffix", structured: true, run: (input) => publicSuffixRun({ host: input }) },
   { slug: "letsencrypt-rate-limits", structured: true, run: (input) => letsEncryptRateLimitsRun({ names: input }) },
