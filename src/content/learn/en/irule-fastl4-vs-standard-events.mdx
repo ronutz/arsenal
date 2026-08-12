@@ -29,4 +29,4 @@ You still get basic connection events, but the L7 (Layer 7, the application laye
 
 ## Choosing deliberately
 
-The trade-off is throughput against visibility. FastL4 is the right call for high-volume L4 (Layer 4, the transport layer) load balancing where you do not need to touch application content. The moment you need to read a header, steer on SNI, or run any HTTP or SSL logic, you need a Standard virtual server. This tool models the Standard sequence; when the FastL4 toggle is on, treat the HTTP and SSL rows as not applicable, because on a real FastL4 virtual server those events would never fire.
+The trade-off is throughput against visibility. FastL4 is the right call for high-volume L4 (Layer 4, the transport layer) load balancing where you do not need to touch application content. The moment you need to read a header, steer on SNI, or run any HTTP or SSL logic, you need a Standard virtual server. [iRules event-order explainer](/tools/f5-irules-event-order) models the Standard sequence; when the FastL4 toggle is on, treat the HTTP and SSL rows as not applicable, because on a real FastL4 virtual server those events would never fire.

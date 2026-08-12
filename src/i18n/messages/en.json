@@ -15128,6 +15128,10 @@
       "transfer": {
         "name": "Transfer",
         "blurb": "Moving it. From the first separation of a message from its messenger to the fibre under the ocean, by way of the two design decisions - packets rather than circuits, and internetworking rather than one network - that produced everything since."
+      },
+      "making": {
+        "name": "Making",
+        "blurb": "The five strands above record what was invented. This one records how any of it gets built - the planar process, the foundry, the licensed architecture, the contract factory. A networking vendor today designs a product it does not manufacture, on silicon it does not fabricate, using a processor architecture it licenses rather than owns. Every step of that arrangement was invented by somebody, on a date."
       }
     }
   },

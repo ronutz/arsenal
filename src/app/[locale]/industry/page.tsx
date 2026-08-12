@@ -326,7 +326,13 @@ export default async function IndustryHubPage({
                 }, {}),
               )
                 .map(([code, n]) => ({ code, n, label: countryLabel(code as never) }))
-                .sort((x, y) => y.n - x.n || x.code.localeCompare(y.code))}
+                /* ALPHABETICAL BY ISO CODE (PRIME 2026-08-11). Was count
+                   descending, which put the US and Brazil first and made the
+                   row an implicit ranking - a reader looking for one country
+                   had to scan rather than jump. The CODE is what the button
+                   displays, so sorting by anything else (the full name, the
+                   count) would leave the visible labels out of order. */
+                .sort((x, y) => x.code.localeCompare(y.code))}
             />
 
             <ol className="vendor-timeline">

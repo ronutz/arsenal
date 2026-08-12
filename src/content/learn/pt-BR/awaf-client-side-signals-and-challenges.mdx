@@ -31,7 +31,7 @@ As defesas do Advanced WAF no lado do cliente escalam do silencioso e barato ao 
 
 O Proactive Bot Defense amarra tudo isso no DoS profile e, como o Bot Defense, não precisa de política de segurança. Na primeira visita de um cliente, o sistema envia um desafio JavaScript; se o cliente o avalia e reenvia com um cookie válido, assinado e com carimbo de tempo, é permitido, e as requisições futuras carregam esse cookie e pulam o desafio. É por isso que todo o esquema depende de o cliente rodar JavaScript.
 
-O **Grace Period** (padrão 300 segundos) é a válvula de segurança: durante ele o sistema não bloqueia, dando a uma página completa, imagens, scripts e folhas de estilo, tempo para carregar e ao cliente tempo para conquistar o seu cookie. Ajuste-o o mais baixo possível, ainda permitindo que uma página completa carregue.
+O **Grace Period** (padrão 300 segundos) é a válvula de segurança: durante ele o sistema não bloqueia, dando a uma página completa, imagens, scripts e folhas de estilo, tempo para carregar e ao cliente tempo para conquistar o seu cookie. Ajuste-o mais baixo possível, ainda permitindo que uma página completa carregue.
 
 ## Os cuidados que o quebram
 

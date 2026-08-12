@@ -13,7 +13,7 @@ updated: "2026-06-27"
 
 ## Reading is not trusting
 
-The [anatomy article](/learn/x509-anatomy) ends on a point worth repeating: decoding a certificate tells you what it *claims*, not whether the claim is *true*. Validation is the separate process a TLS client runs to decide whether to trust the certificate in front of it. It is governed mainly by RFC 5280, and it is a conjunction of independent checks, every one of which must pass. A decoder, including this tool, shows you the inputs to that process; the client is what enforces it.
+The [anatomy article](/learn/x509-anatomy) ends on a point worth repeating: decoding a certificate tells you what it *claims*, not whether the claim is *true*. Validation is the separate process a TLS client runs to decide whether to trust the certificate in front of it. It is governed mainly by RFC 5280, and it is a conjunction of independent checks, every one of which must pass. A decoder, including the [X.509 Certificate Decoder](/tools/x509), shows you the inputs to that process; the client is what enforces it.
 
 ## Step 1: build the chain
 

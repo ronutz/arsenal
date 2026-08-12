@@ -27,7 +27,7 @@ Every form above resolves to the same internal address, but each is a different 
 
 ## Decode first, then classify
 
-The reliable move is to parse the host into its numeric value and classify that value against the reserved ranges, exactly as this tool does. Once `2130706433`, `0x7f000001`, and `127.1` are all reduced to the same 32-bit number, they all land in `127.0.0.0/8` and are flagged together. Normalization removes the attacker's freedom to respell the target.
+The reliable move is to parse the host into its numeric value and classify that value against the reserved ranges, exactly as [SSRF URL classifier](/tools/ssrf-url-classifier) does. Once `2130706433`, `0x7f000001`, and `127.1` are all reduced to the same 32-bit number, they all land in `127.0.0.0/8` and are flagged together. Normalization removes the attacker's freedom to respell the target.
 
 
 ## Parse, then judge — never match text

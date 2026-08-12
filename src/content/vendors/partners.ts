@@ -770,6 +770,7 @@ export const partnerVendors: PartnerVendor[] = [
       "That is the part that outlasted the policy. The law expired in 1992 as scheduled and most of the manufacturers did not survive contact with open competition. But the people did, and they went into the distributors, integrators, carriers and banks that appear elsewhere on this timeline. A protectionist industrial policy failed at building a computer industry and succeeded at building a workforce, which was not its stated aim.",
       "Where the companies went is the second finding, and it is not a coincidence. Cobra was acquired by Banco do Brasil. Scopus was bought by Bradesco, and later passed to IBM Brasil. Itautec became a division of Itaú. Microsiga renamed itself Totvs and went into enterprise software. Three of the largest surviving names were absorbed by banks and turned to banking automation - which is a substantial part of why Brazilian banking technology became unusually advanced. A protected computer industry, unable to compete on hardware, was reabsorbed by its largest customers and became very good at exactly one thing.",
       "Read against the rest of this timeline, the pattern is familiar and uncomfortable. Every argument about domestic technology capability - who builds it, who is allowed to buy it, what happens to the people trained under it - is a re-run of this one, with different vocabulary. The honest summary is that the policy achieved something real and did not achieve the thing it was for, and that both halves are usually reported separately by people who prefer one of them.",
+      "The milestones on this site now carry the same decade from the other side: Ireland spent it offering itself as the place where anybody\u2019s products would be manufactured, while this policy closed a market so that its own would be. Both were deliberate industrial strategies and they produced opposite industries.",
     ],
     externalUrl: "https://pt.wikipedia.org/wiki/Pol%C3%ADtica_Nacional_de_Inform%C3%A1tica",
     externalLabel: "Política Nacional de Informática",
@@ -2085,6 +2086,7 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Westcon was founded in 1985 and Comstor in 1986 in Chantilly, Virginia. They became one company in August 1999, when Westcon bought Comstor for $95M, and the combined business has spent the decades since doing something most engineers have never had to think about: standing between the companies that make networking and security equipment and the companies that install it.",
     body: [
+      "Its Latin American presence was bought rather than built: in July 2012 it acquired Grupo Afina, a Madrid and Miami distributor that by the previous year was billing more in Latin America than in Europe. Afina has its own entry here.",
       "In June 2017 Synnex acquired the North and Latin American operations of Westcon-Comstor from Datatec, together with a tenth of the remaining international business, for a reported $800 million - so the Brazilian operation changed owner without changing what it did. Synnex itself merged with Tech Data on 1 September 2021 to form TD Synnex, by which time the employment recorded on this site had ended. The name reappears later for a different reason: TD SYNNEX Brasil runs an authorised training academy, and the instructor years include Extreme Networks courses delivered for it on demand between 2021 and 2023. Same company, two unrelated relationships, a decade apart.",
       "What a distributor actually does, since this is the first one on this timeline. A vendor like Cisco or F5 does not want a commercial relationship with every reseller in every country - the credit checks alone would be a business. A reseller does not want a separate contract, currency, logistics arrangement and support escalation with each of the forty vendors in its portfolio. The distributor sits between them and absorbs that: it holds stock, extends credit, handles import and customs, aggregates the paperwork, and trains the resellers on products they have just started carrying.",
       "That last part is the reason distribution appears on a site about teaching at all. A vendor's certified training is expensive and aimed at the vendor's own priorities; a distributor's enablement is aimed at whatever its resellers are failing to sell. The two are not the same curriculum, and the second one tells you more about what the market is actually struggling with.",
@@ -5221,7 +5223,8 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2010,
     tagline: "A Brazilian security integrator: the practice of making other people's products work together in somebody else's estate.",
     intro: "CYLK was founded in June 2010 as a systems-integration and managed-services company for networks, data centre and security, and belongs to Grupo IHC. It does not make products; it makes them work - today specialising in cybersecurity, governance, risk and compliance, privacy, awareness, penetration testing and assessments for Brazilian enterprises.",
-    body: ["The integrator's job is the one this site's Practice corpus is largely about: arriving at an estate somebody else designed, with vendors who each assume they are the only one present. CYLK also sits in the same group as InLearn - Grupo IHC, founded 2003, whose third company is HighCast - so the integration business and the training business grew up under one roof."],
+    body: [
+      "It is the third company of Grupo IHC, after HighCast (2003) and inLearn (2008). The group grew by each company creating the next out of demand the previous one had generated, rather than by acquisition.","The integrator's job is the one this site's Practice corpus is largely about: arriving at an estate somebody else designed, with vendors who each assume they are the only one present. CYLK also sits in the same group as InLearn - Grupo IHC, founded 2003, whose third company is HighCast - so the integration business and the training business grew up under one roof."],
     externalUrl: "https://www.cylk.com.br/",
     externalLabel: "CYLK",
   },
@@ -5258,7 +5261,7 @@ export const partnerVendors: PartnerVendor[] = [
     name: "InLearn - official training, Brazil",
     founded: 2002,
     tagline: "Brazilian authorised training centre for F5 and Fortinet courses.",
-    intro: "InLearn Educa\u00e7\u00e3o Ltda was constituted on 14 April 2002, registered in Barueri in Greater S\u00e3o Paulo, and is an official training partner of Fortinet and F5, delivering the vendors' own courses and certification paths. Like TDec, it dates itself two different ways: the register says 2002, while the company presents itself as training professionals \u201csince 2008\u201d - the year its current leadership arrived. Both are recorded here.",
+    intro: "InLearn Educa\u00e7\u00e3o Ltda was constituted on 14 April 2002, registered in Barueri in Greater S\u00e3o Paulo, and is an official training partner of Fortinet and F5, delivering the vendors' own courses and certification paths. Like TDec, it dates itself two different ways: the register says 2002, while the company presents itself as training professionals \u201csince 2008\u201d. Both are recorded here, and the 2008 date now has a name attached to it: Grupo IHC\u2019s own published history says inLearn was created that year by the partners of HighCast, a network consultancy founded in 2003, after the specialisation of their consultants produced demand for training.",
     body: ["An authorised training centre is the layer most vendor documentation never mentions: the vendor writes the courseware, and somebody local has to schedule it, staff it with certified instructors and put working labs in front of people. That matters more in a market like Brazil than the org chart suggests - a certification that exists only in English, only across a currency barrier and only in another time zone is one most local engineers will not get.", "InLearn belongs to Grupo IHC, founded in 2003, alongside HighCast and CYLK - which means two companies in this encyclopedia are sister businesses in the same group."],
     externalUrl: "https://www.inlearn.com.br/",
     externalLabel: "InLearn",
@@ -6028,7 +6031,6 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     tags: ["reseller", "services", "training"],
     group: "contemporary",
-    relationships: ["worked-with-directly"],
     founded: 2005,
     name: "Grupo Binario - the Juniper integrator, and its training arm",
     tagline: "Chose one vendor at founding and built a certification pipeline around it.",
@@ -6053,7 +6055,6 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     tags: ["training", "services"],
     group: "contemporary",
-    relationships: ["worked-with-directly"],
     name: "QoS - a Juniper training centre for Latin America",
     tagline: "Teaching the manufacturer's certification courses since 2006, from inside an integrator.",
     intro: "QoS is the professional-services division of Grupo Binario, and it has operated as a Juniper training centre for Latin America - delivering the manufacturer's certification courses since 2006, with more than three thousand students by 2016.",
@@ -6238,10 +6239,10 @@ export const partnerVendors: PartnerVendor[] = [
     group: "contemporary",
     name: "Capgemini - and the Brazilian services business it absorbed",
     tagline: "French IT services multinational; acquirer of the Brazilian firm TI Braxis.",
-    intro: "Capgemini is a French IT services multinational, and it appears on this timeline through an acquisition: the Brazilian services company TI Braxis was absorbed into it, which is how a substantial part of Brazil's applications and outsourcing capacity came to be owned from Paris.",
+    intro: "Capgemini is a French IT services multinational, and it appears on this timeline through an acquisition: the Brazilian services company CPM Braxis was absorbed into it, which is how a substantial part of Brazil's applications and outsourcing capacity came to be owned from Paris.",
     body: [
       "The transaction is one instance of a pattern this timeline records repeatedly from different starting points. A services business is bought for its people and its contracts, both of which are local; the buyer is not, and the accounting, methodology and career ladder that follow are the buyer's.",
-      "TI Braxis itself has no reachable encyclopaedia entry - both English and Portuguese Wikipedia return nothing - which is worth stating rather than smoothing over. A company large enough to be acquired by a multinational can still leave a public record thin enough that its own history is only visible through the buyer.",
+      "The company Capgemini bought was CPM Braxis, which has its own entry here. TI Braxis was not a mistaken name for it but one of the companies that formed it: Braxis Tecnologia da Informacao acquired Unitech in November 2006 and took 33% of CPM in March 2007, and the merged firm carried both names.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Capgemini",
     externalLabel: "Capgemini",
@@ -6288,6 +6289,1048 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     externalUrl: "https://portal.prodam.sp.gov.br/a-prodam",
     externalLabel: "Prodam-SP",
+  },
+
+  // ---- The Grupo IHC lineage (2026-08-11). CYLK publishes the group history,
+  // which connects three entries this site already had: HighCast (2003) ->
+  // inLearn (2008, founded BY HighCast's partners) -> CYLK (2010). The name is
+  // AMBIGUOUS - a Mexican construction firm and a Brazilian home-care group share
+  // it - and the group itself warns that ihcinformatica.com.br is not theirs.
+  //
+  // *** NO CAREER RELATIONSHIP ON EITHER ENTRY (PRIME, 2026-08-11). ***
+  // I had put `worked-with-directly` on Binario and QoS because PRIME was at
+  // Juniper Brazil in 2009-2010 and these were the country's largest Juniper
+  // channel. HE SAYS HE DID NOT WORK WITH THEM DIRECTLY, and he is the only
+  // source for his own career.
+  //
+  // THAT WAS AN INFERENCE FROM ADJACENCY, which is exactly what the relationship
+  // vocabulary exists to prevent: same vendor, same country, same years is a
+  // description of a MARKET, not of a working relationship. A career claim needs
+  // PRIME to have said it, not a plausible overlap. ----
+  {
+    slug: "highcast",
+    sources: [
+      { label: "Grupo IHC history, published by CYLK: HighCast Informatica founded 2003 by four experienced telecommunications consultants, offering professional services to the main global communications equipment manufacturers, working across Latin America; named projects include the restructuring of the Telefonica (Vivo) backbone, redesign of the Oi network, the launch of Live TIM broadband and Telmex Mexico, audits and improvements at CTBC (Algar Telecom) and ETB in Colombia, and IPv6 projects at Vivo, Oi and TIM; in 2008 its partners created inLearn Educacao", url: "https://www.cylk.com.br/grupo-ihc/" },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    founded: 2003,
+    name: "HighCast - the consultancy that built a training company",
+    tagline: "Brazilian network consultancy working on carrier backbones across Latin America.",
+    intro: "HighCast Informatica was founded in 2003 by four telecommunications consultants and worked on carrier networks across Latin America - the Telefonica and Oi backbones, the launch of Live TIM and Telmex Mexico, audits at CTBC and ETB in Colombia, and IPv6 projects at three Brazilian operators.",
+    body: [
+      "The interesting part of its history is what the work produced. Its own account says the specialisation of its consultants created market demand for technical training, and in 2008 the partners answered that by founding inLearn Educacao - which is a specific and repeatable pattern: a consultancy accumulates knowledge that customers begin asking to be taught, and teaching becomes a business rather than a favour.",
+      "That sequence explains something about how vendor certification actually reaches engineers in a country. The training centre did not arrive because a manufacturer opened one; it arrived because a consultancy had already done the work and was being asked to explain it.",
+    ],
+    externalUrl: "https://www.cylk.com.br/grupo-ihc/",
+    externalLabel: "Grupo IHC",
+  },
+  {
+    slug: "ihc-group",
+    sources: [
+      { label: "Grupo IHC history, published by CYLK: HighCast (2003), inLearn Educacao created by HighCast's partners in 2008 as an official training centre for Juniper and F5 Networks among others, and a third company in 2010; the legal entity is IHC Solucoes em Informatica Ltda, trading as CYLK, whose official domain is cylk.com.br", url: "https://www.cylk.com.br/grupo-ihc/" },
+    ],
+    tags: ["services", "training"],
+    group: "contemporary",
+    name: "Grupo IHC - a consultancy, a school and an integrator",
+    tagline: "Brazilian group whose three companies were founded in sequence, each out of the one before.",
+    intro: "Grupo IHC is the Brazilian group formed by HighCast, founded in 2003 as a network consultancy; inLearn Educacao, created by HighCast's partners in 2008 as an official training centre for Juniper, F5 Networks and others; and a third company in 2010, the integrator now trading as CYLK.",
+    body: [
+      "The sequence is the point, and it is unusual enough to record. Most groups are assembled by acquisition; this one grew by each company creating the next out of a demand the previous one had generated - consulting produced a demand for training, and consulting plus training produced a demand for someone to implement and run what was designed and taught.",
+      "A note on the name, because it is a trap. Grupo IHC also matches a construction-systems company in Chihuahua and a Brazilian home-care and ambulance group, neither related to this one. The group's own material adds a further warning: the domain ihcinformatica.com.br has no connection to IHC Solucoes em Informatica, whose official domain is cylk.com.br.",
+    ],
+    externalUrl: "https://www.cylk.com.br/grupo-ihc/",
+    externalLabel: "Grupo IHC",
+  },
+
+  // ---- Three Brazilian security and infrastructure integrators (2026-08-11).
+  // All three fetched cache-bypassed; NONE has a third-party encyclopaedia
+  // article, and each sourceNote says so rather than leaving a reader to assume
+  // one was checked. ----
+  {
+    slug: "conversys",
+    sources: [
+      { label: "Conversys - company site (hybrid cloud, edge infrastructure, backup and data protection, connectivity, enterprise networks, SD-WAN, collaboration, observability, cybersecurity; NOC service centre and consultancy)", url: "https://www.conversys.com.br/", sourceNote: "Fetched cache-bypassed 2026-08-11. No third-party encyclopaedia article exists for this company." },
+    ],
+    tags: ["reseller", "services"],
+    group: "contemporary",
+    name: "Conversys - infrastructure and the network operations behind it",
+    tagline: "Brazilian integrator covering hybrid cloud, enterprise networking, SD-WAN and security, with its own network operations centre.",
+    intro: "Conversys is a Brazilian integrator whose catalogue runs from hybrid cloud and edge infrastructure through enterprise networking and SD-WAN to security, and which operates its own network operations centre alongside the consultancy.",
+    body: [
+      "The NOC is the part of that list worth noticing. Selling and installing infrastructure is a project business with an end date; running it is a relationship with a rota, an escalation path and a service level, and the two require different companies inside the same one.",
+      "That is the transition most Brazilian integrators of this size have had to make, because customers stopped wanting a system delivered and started wanting one that keeps working - and the second is bought from whoever will answer the telephone at three in the morning.",
+    ],
+    externalUrl: "https://www.conversys.com.br/",
+    externalLabel: "Conversys",
+  },
+  {
+    slug: "gantech",
+    sources: [
+      { label: "Gantech - company site (information security for companies; cloud security including CNAPP, CSPM, CWP, WAAS and CIEM)", url: "https://www.gantech.com.br/", sourceNote: "Fetched cache-bypassed 2026-08-11. No third-party encyclopaedia article exists for this company." },
+    ],
+    tags: ["services", "reseller"],
+    group: "contemporary",
+    name: "Gantech - cloud security, by its acronyms",
+    tagline: "Brazilian information-security firm specialising in cloud workload and posture protection.",
+    intro: "Gantech is a Brazilian information-security company whose cloud practice is organised by the category acronyms the field has produced: CNAPP, CSPM, CWP, WAAS and CIEM, alongside code security.",
+    body: [
+      "That list is a useful artefact in itself. Cloud security fragmented into named categories faster than most fields, and each acronym marks a place where an existing control turned out not to transfer - posture management exists because a misconfiguration is not a vulnerability, workload protection because an ephemeral container is not a server, and entitlement management because an identity in a cloud account is not a user in a directory.",
+      "A firm that organises its practice this way is describing a real map of the problem, and it is also inheriting a vocabulary that changes every few years, which is its own maintenance cost.",
+    ],
+    externalUrl: "https://www.gantech.com.br/",
+    externalLabel: "Gantech",
+  },
+  {
+    slug: "contacta",
+    sources: [
+      { label: "Contacta - company site (information security: cloud, endpoint, governance and compliance, network, web, threat defence, DevSecOps; deployment, cloud services, specialised support, security assessment and an XDR-based SOC)", url: "https://www.contacta.com.br/", sourceNote: "Fetched cache-bypassed 2026-08-11. No third-party encyclopaedia article exists for this company." },
+    ],
+    tags: ["services", "reseller"],
+    group: "contemporary",
+    name: "Contacta - security across the layers, and a SOC",
+    tagline: "Brazilian security integrator running its own XDR-based security operations centre.",
+    intro: "Contacta is a Brazilian information-security integrator covering cloud, endpoint, network and web security with governance and DevSecOps practices, and it runs its own security operations centre built on XDR.",
+    body: [
+      "An integrator that operates a SOC has crossed the same line as one that operates a NOC, and the crossing is harder in security: a network operations centre knows what normal looks like from the topology it built, while a security operations centre has to decide what is worth waking somebody for, which is a judgement rather than a threshold.",
+      "It is also why the SOC market consolidates around firms that already integrate. The detections are only as good as the knowledge of what was deployed and why, and that knowledge belongs to whoever put it there.",
+    ],
+    externalUrl: "https://www.contacta.com.br/",
+    externalLabel: "Contacta",
+  },
+
+  {
+    slug: "totvs",
+    // PRIME resolved this one on 2026-08-11: the backlog name was "Totus" and
+    // the company is TOTVS. It was blocked here as a disambiguation question
+    // rather than written from a guess, and a single line from PRIME settled it.
+    sources: [
+      { label: "TOTVS - Brazilian software company (Wikipedia): founded 1983 by Laercio Cosentino and Ernesto Haberkorn; formed from Microsiga and Logocenter; headquartered in Sao Paulo; traded on B3 as TOTS3; about 12,000 employees; subsidiaries include Bematech, Virtual Age, PRX and PC Sistemas; leader in the Brazilian ERP market per the Fundacao Getulio Vargas", url: "https://en.wikipedia.org/wiki/TOTVS" },
+      { label: "TOTVS - company site", url: "https://www.totvs.com/" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    founded: 1983,
+    name: "TOTVS - the software most Brazilian companies actually run on",
+    tagline: "Brazilian enterprise resource planning vendor, founded in 1983 and listed on B3.",
+    intro: "TOTVS was founded in 1983 by Laercio Cosentino and Ernesto Haberkorn, took its present shape from the combination of Microsiga and Logocenter, and is the leading enterprise resource planning vendor in the Brazilian market. It employs around twelve thousand people and trades on B3.",
+    body: [
+      "It is not a company that began in 2005. It began in 1983 as Microsiga, was renamed after the Logocenter transaction, and the name TOTVS derives from the Latin for all or everything.",
+      "It belongs on a networking and security timeline for a reason that has nothing to do with networks: ERP is the system whose availability decides whether a company can invoice, pay, dispatch or close a month. Every argument about redundancy, maintenance windows and disaster recovery in a Brazilian enterprise is ultimately an argument about this class of system, and frequently about this company's software specifically.",
+      "The trajectory is also a rare Brazilian counterexample to the pattern most of this timeline records. Where integrators and specialists here were repeatedly bought by foreign groups, TOTVS grew by acquiring - Microsiga and Logocenter first, then Bematech, Virtual Age, PRX and PC Sistemas - and remained the acquirer rather than becoming the acquired.",
+    ],
+    externalUrl: "https://www.totvs.com/",
+    externalLabel: "TOTVS",
+  },
+
+  // ---- Microsiga (PRIME 2026-08-11). Written as its OWN entry rather than a
+  // line inside TOTVS: it was a company for 22 years, and the 1983 bet it was
+  // founded on is a claim about the industry, not a footnote to a rename. ----
+  {
+    slug: "microsiga",
+    sources: [
+      { label: "TOTVS (Wikipedia): in 1983 Laercio Cosentino, aged 23 and director of the data-processing company Siga created by Ernesto Haberkorn, opened Microsiga with him as equal partners, a software company for small and medium-sized businesses; Microsiga merged with Siga in 1989 and the company was renamed TOTVS in 2005", url: "https://en.wikipedia.org/wiki/TOTVS" },
+      { label: "Diario do Comercio, 2016 - interview with Ernesto Haberkorn: Cosentino proposed the new company over lunch, betting on the microcomputer market when \u201calmost nobody believed they would replace mainframes\u201d; the following decade brought growth through a franchise network and expansion into Argentina and Mexico", url: "https://dcomercio.com.br/publicacao/s/do-mainframe-ao-pc-a-trajetoria-de-ernesto-haberkorn-" },
+      { label: "FGV, GVcasos - the Totvs case: Microsiga acquired the Mexican firm Sipros in 2003; in 2005 BNDES participation enabled the acquisition of Logocenter, and the name TOTVS derives from the Latin for \u201call\u201d or \u201ceverything\u201d", url: "https://periodicos.fgv.br/gvcasos/article/download/66023/70442" },
+      { label: "microsiga.com.br - the name is still live, tying Microsiga to Protheus, TOTVS\u2019s ERP", url: "https://microsiga.com.br/" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    founded: 1983,
+    name: "Microsiga - the bet that microcomputers would replace mainframes",
+    tagline: "Brazilian business-software company founded in 1983, renamed TOTVS in 2005.",
+    intro: "Microsiga was founded in 1983 by Laercio Cosentino, then 23 and a director at the data-processing company Siga, and Siga\u2019s founder Ernesto Haberkorn. It wrote management software for small and medium-sized businesses, merged with Siga in 1989, and was renamed TOTVS in 2005.",
+    body: [
+      "The founding proposition is the part worth recording, because it was a minority position at the time. Haberkorn\u2019s account is that Cosentino proposed the company over lunch, betting on microcomputers when - in his own words - almost nobody believed they would replace mainframes. Siga\u2019s business was providing computing services to companies that did not own a computer; Microsiga was a bet that they soon would.",
+      "What it did with that bet is the second half. The decade that followed brought growth through a franchise network and expansion into Argentina and Mexico, which is an unusual distribution model for enterprise software and a very effective one in a country of that size: franchisees carried the local relationships and the implementation work that a central company could not staff.",
+      "The name survives in two places. Protheus, the ERP that leads the Brazilian market, traces to it, and microsiga.com.br is still a live site. A note on dates: sources for Siga\u2019s own founding differ, giving both 1969 and 1974, and neither is settled here.",
+    ],
+    externalUrl: "https://microsiga.com.br/",
+    externalLabel: "Microsiga",
+  },
+
+  // ---- Bematech (PRIME 2026-08-11). NOTE THE OWNERSHIP CONFLICT: TOTVS lists
+  // it as a subsidiary, the pt encyclopaedia records ELGIN as owner. Both are
+  // stated in the entry and NEITHER is resolved - the site has no source that
+  // settles which is current. bematech.com.br did not resolve when checked. ----
+  {
+    slug: "bematech",
+    sources: [
+      { label: "Bematech (Wikipedia, pt): Brazilian commercial-automation company founded 1990 in Curitiba, Parana; began in the industrial-informatics postgraduate programme at CEFET-PR, where Marcel Malczewski and Wolney Edirley Goncalves Betiol developed a telex printing system as a master\u2019s dissertation; accepted in December 1989 as the first venture of the newly founded Curitiba technology incubator INTEC; became Bematech Industria e Comercio de Equipamentos Eletronicos S/A in September 1991 after admitting six new partners; acquisitions from 2006 including Gemco Creative Software, MisterChef Sistemas, GSR7, Rentech, CMNet and Unum; products include fiscal printers; around a thousand staff with subsidiaries in the United States, Germany, Taiwan and Argentina; the article records the current owner as Elgin", url: "https://pt.wikipedia.org/wiki/Bematech" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    founded: 1990,
+    name: "Bematech - a dissertation that became the till",
+    tagline: "Brazilian commercial-automation manufacturer founded in 1990 in Curitiba, known for fiscal printers.",
+    intro: "Bematech was founded in 1990 in Curitiba and became one of Brazil\u2019s commercial-automation manufacturers, best known for fiscal printers - the class of device that exists because the state requires a machine at the point of sale to produce a record it can audit.",
+    body: [
+      "Its origin is unusually specific and worth keeping. Marcel Malczewski and Wolney Betiol met on the industrial-informatics postgraduate programme at CEFET-PR, now the Federal Technological University of Parana, and built a telex printing system as a master\u2019s dissertation. The subject was a requirement of the examining board; they treated it as an opportunity, and in December 1989 the project became the first venture accepted by INTEC, the newly founded Curitiba technology incubator.",
+      "That is a complete route from a university department to a manufacturer, and it is the same argument the USP and Unicamp entries on this timeline make from the other direction - the companies were founded by people who met somewhere, and the somewhere was frequently a public institution.",
+      "The commercial trajectory is the ordinary part: private investment in 1991 with six new partners, incorporation as a company, a decade of diversification, then software and services acquisitions from 2006 to become a one-stop provider. Ownership has changed since - the encyclopaedia records Elgin as the current owner, while TOTVS lists Bematech among its subsidiaries, and both statements are reproduced here without resolving which is current.",
+      "It is also one of the few manufacturers on this timeline that actually manufactures. Most of the equipment described on these pages was designed by one company, fabricated by another and assembled by a third - the arrangement recorded in the making milestones.",
+    ],
+    externalUrl: "https://pt.wikipedia.org/wiki/Bematech",
+    externalLabel: "Bematech",
+  },
+
+  // ---- PRIME batch 2026-08-11: Elgin, IT-ONE, Proof, ISH, Multiplus.
+  // TEMPEST WAS ALREADY WRITTEN. **ICX was NOT written**: icxtech.com.br did not
+  // resolve and no source connects it to IT-ONE, so the "ICX / IT One" pairing in
+  // the instruction is not something I can assert. ----
+  {
+    slug: "elgin",
+    sources: [
+      { label: "Elgin - company site: commercial automation including thermal printers, barcode readers, computers, self-service terminals and cash drawers, for small retailers through to retail chains and restaurants", url: "https://www.elgin.com.br/automacao-comercial" },
+      { label: "Bematech (Wikipedia, pt) - records Elgin as Bematech\u2019s owner", url: "https://pt.wikipedia.org/wiki/Bematech" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "Elgin - the point of sale, and everything attached to it",
+    tagline: "Brazilian manufacturer of commercial-automation equipment; recorded as the owner of Bematech.",
+    intro: "Elgin manufactures the equipment a Brazilian shop counter is made of - thermal printers, barcode readers, point-of-sale computers, self-service terminals and cash drawers - across a range that runs from a single till to a retail chain.",
+    body: [
+      "It is on this timeline because of what it owns rather than only what it makes: the Portuguese encyclopaedia records Elgin as Bematech\u2019s owner, which puts two of Brazil\u2019s commercial-automation names in one place. The Bematech entry here notes that TOTVS also lists Bematech among its subsidiaries, and neither statement is resolved on this site.",
+      "The category itself is worth understanding because it is invisible until it fails. Point-of-sale hardware is bought once, installed by somebody who will not return, expected to run for a decade, and connected to a fiscal regime that changes by legislation rather than by release cycle. Very little enterprise equipment has that combination of constraints.",
+    ],
+    externalUrl: "https://www.elgin.com.br/",
+    externalLabel: "Elgin",
+  },
+  {
+    slug: "it-one",
+    sources: [
+      { label: "IT-ONE - company site: supply and integration of IT solutions in Brazil, covering cloud, cybersecurity, data protection, infrastructure modernisation and observability", url: "https://itone.com.br/" },
+      { label: "IT-ONE - cybersecurity page: integrated security offering including vulnerability management prioritised by business risk, and disaster recovery framed around RPO and RTO", url: "https://itone.com.br/ciberseguranca/" },
+    ],
+    tags: ["reseller", "services"],
+    group: "contemporary",
+    name: "IT-ONE - supply and integration in one place",
+    tagline: "Brazilian IT integrator covering cloud, cybersecurity, infrastructure and observability.",
+    intro: "IT-ONE supplies and integrates IT in Brazil across cloud, cybersecurity, data protection, infrastructure modernisation and observability - the combination that describes an integrator rather than a reseller, because the second half of that list cannot be shipped in a box.",
+    body: [
+      "Its own security material makes an argument worth repeating, because it is the correct one and it is rarely the one sold: vulnerability management should focus on the assets that carry the most business risk, so that a team is not overwhelmed by a list that treats every finding as equal.",
+      "That is the same idea the Skybox entry on this timeline records from the product side - reachability and exposure decide which vulnerability matters - arriving here as a services proposition instead.",
+    ],
+    externalUrl: "https://itone.com.br/",
+    externalLabel: "IT-ONE",
+  },
+  {
+    slug: "proof",
+    sources: [
+      { label: "TI Inside and Inforchannel, April 2024 - SEK acquires Proof, a Rio de Janeiro information-security company with more than 15 years of activity, offering managed detection and response and governance, risk and compliance consultancy; the deal brought over 100 clients and more than 120 professionals, took SEK\u2019s consolidated revenue to about US$140 million, and added Proof\u2019s own PaeSi platform", url: "https://inforchannel.com.br/2024/04/19/sek-anuncia-aquisicao-da-proof-e-expande-atuacao-na-america-latina/" },
+      { label: "Valor, via SEK - SEK was created by Patria Investimentos from the union of Proteus and NeoSecure, backed by a US$250 million fund, and had previously acquired CleanCloud; after the Proof deal its Brazilian team reached around 400 people and more than a thousand across Latin America", url: "https://sek.io/investida-do-patria-provedora-de-ciberseguranca-sek-compra-a-brasileira-proof/" },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    name: "Proof - managed detection, and another one absorbed",
+    tagline: "Rio de Janeiro security firm acquired by SEK in 2024.",
+    intro: "Proof was a Rio de Janeiro information-security company with more than fifteen years of activity, offering managed detection and response alongside governance, risk and compliance consultancy, and it had built its own platform. SEK acquired it in April 2024.",
+    body: [
+      "The acquirer is the part that completes a pattern this timeline has been recording. SEK, which has its own entry here, was itself assembled by an investment manager from the union of two existing security companies - NeoSecure of Chile and Proteus of Brazil - funded to consolidate the Latin American market, and had already bought a cloud-security startup before this deal.",
+      "So the sequence for Brazilian security firms of this size is now well documented here from four separate directions: Tempest to an aircraft manufacturer, Cipher to a physical-security multinational, Skybox to a competitor, and Proof to a private-equity roll-up. The buyers differ; the outcome for an independent specialist does not.",
+    ],
+  },
+  {
+    slug: "ish",
+    sources: [
+      { label: "ISH Tecnologia - company site: Brazilian security and technology company with a portfolio spanning governance, risk and compliance, business continuity planning, privacy and risk management", url: "https://www.ish.com.br/" },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    name: "ISH Tecnologia - security with the governance attached",
+    tagline: "Brazilian security company covering GRC, continuity planning, privacy and risk management.",
+    intro: "ISH Tecnologia is a Brazilian security and technology company whose portfolio leads with governance, risk and compliance, business continuity planning, privacy and risk management rather than with products.",
+    body: [
+      "That ordering is a statement about who buys security in a regulated Brazilian enterprise. The technical control is chosen after somebody has decided which risks are being accepted, which are being transferred and which the regulator requires evidence of - and the firm that runs that conversation is usually the one that then implements the answer.",
+      "It is the counterpart to the appliance-first story most of this timeline tells: the same estates, approached from the audit rather than from the rack.",
+    ],
+    externalUrl: "https://www.ish.com.br/",
+    externalLabel: "ISH Tecnologia",
+  },
+  {
+    slug: "multiplus",
+    // PRIME resolved this on 2026-08-11 by supplying the domain. I had refused to
+    // write it because "Multiplus" returns MULTIPLUS Softwares Tecnicos, a
+    // CAD/CAE/BIM vendor - the wrong company entirely.
+    sources: [
+      { label: "Multiplus Ciberseguranca - company site: compliance and data protection, endpoint protection, modern application delivery, network, cloud and application security, and observability and monitoring", url: "https://www.multiplusciberseguranca.com.br/" },
+    ],
+    tags: ["reseller", "services"],
+    group: "contemporary",
+    name: "Multiplus Ciberseguranca - the delivery layer, secured",
+    tagline: "Brazilian cybersecurity firm covering data protection, endpoints, application delivery and observability.",
+    intro: "Multiplus Ciberseguranca works compliance and data protection, endpoint protection, modern application delivery, network, cloud and application security, and observability - a catalogue that puts application delivery beside security rather than treating them as separate purchases.",
+    body: [
+      "That pairing is the accurate one for anybody who has run a load balancer. The device that distributes traffic is also the device that terminates TLS, sees every request in clear text, and is therefore the natural place to enforce a policy - which is why application delivery and web application security converged into single products across this industry.",
+      "A firm organised the same way is describing that convergence rather than a bundle, and it is the shape most of the F5 material on this site assumes without stating.",
+    ],
+    externalUrl: "https://www.multiplusciberseguranca.com.br/",
+    externalLabel: "Multiplus Ciberseguranca",
+  },
+
+  // ---- The last three backlog names, all resolved by PRIME on 2026-08-11.
+  // NOTE: `e-safer.com.br` CARRIES A HYPHEN. I had checked `esafer.com.br` and
+  // reported the company unreachable on the strength of that 503. Aragao
+  // Engenharia and ICX were dropped by PRIME the same day. ----
+  {
+    slug: "sisco",
+    sources: [
+      { label: "InfoJobs - SISCO Sistemas e Computadores S.A: Brazilian medium-to-large computer manufacturer with units in other Brazilian states, belonging to Grupo Maksoud; former-employee reviews record tenures of 29 to 37 years", url: "https://www.infojobs.com.br/availacoes-sisco-sistemas-computadores-s-a__-87156.aspx" },
+      { label: "Ferje Informatica - company history: Ferje was founded on 15 June 2001 by five former Sisco Sistemas e Computadores employees as Sisco was ending its activities, with the stated aim of not leaving Sisco\u2019s clients unattended, drawing on IT knowledge the team had accumulated since 1979", url: "http://www.ferje.com.br/historia.html" },
+      { label: "Mundo Antigo e Companhia - a 1982 SISCO Sistemas e Computadores advertisement, reproduced", url: "https://mundoantigoecia.blogspot.com/2017/05/propaganda-antiga-sisco-sistemas-e.html" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    name: "Sisco - Sistemas e Computadores",
+    tagline: "Brazilian computer manufacturer of the market-reserve era, closed in 2001.",
+    intro: "Sisco - Sistemas e Computadores S.A. built computers in Brazil during the years when doing so was national policy. It belonged to Grupo Maksoud, had units in several states, and its people stayed: former-employee records show tenures of twenty-nine to thirty-seven years.",
+    body: [
+      "It belongs beside Cobra, Scopus and Itautec on this timeline as one of the manufacturers the market reserve was built to make possible, and its ending is the same one that period produced repeatedly - the company closed around 2001, after the protection was gone and the imported machine was cheaper.",
+      "The detail worth keeping is what happened next. On 15 June 2001, as Sisco was winding down, five of its employees founded Ferje Informatica with the stated aim of not leaving Sisco\u2019s clients unattended, drawing on knowledge the team had held since 1979. That is the honest shape of how these companies actually end: the corporate entity dissolves and the working knowledge walks out of the building and incorporates itself somewhere else.",
+      "Almost nothing of Sisco survives in a reachable public record - an advertisement from 1982, a court-records index, and the reviews of people who spent their careers there. That is not unusual for a manufacturer of this era, and it is worth stating rather than filling.",
+    ],
+  },
+  {
+    slug: "altasnet",
+    sources: [
+      { label: "Altasnet - company site: IT solutions covering cybersecurity, networks, data centre and cloud, and digital workflow; more than 23 years in the market and over 5,000 clients served; Belo Horizonte telephone code", url: "https://altasnet.com.br/" },
+    ],
+    tags: ["reseller", "services"],
+    group: "contemporary",
+    name: "Altasnet - IT from Belo Horizonte",
+    tagline: "Brazilian integrator covering cybersecurity, networks, data centre and cloud, with more than twenty years in the market.",
+    intro: "Altasnet is an IT integrator working cybersecurity, networks, data centre and cloud, and digital workflow, with more than twenty-three years in the market and over five thousand clients served. It operates from Belo Horizonte.",
+    body: [
+      "The location is the part worth noting on a timeline that is otherwise a Sao Paulo story with a Recife exception. Minas Gerais has its own technology economy, its own universities feeding it and its own customer base, and an integrator that has served five thousand clients from Belo Horizonte over two decades is evidence of a market that does not appear in accounts written from the coast.",
+      "The service mix is the ordinary contemporary one, and that is itself informative: the same four lines - security, networks, infrastructure and workflow - recur across every integrator of this size on this timeline, because they are what a mid-sized Brazilian company actually buys.",
+    ],
+    externalUrl: "https://altasnet.com.br/",
+    externalLabel: "Altasnet",
+  },
+  {
+    slug: "e-safer",
+    sources: [
+      { label: "e-Safer - company site: cybersecurity and fraud prevention, with managed security services, penetration testing, application security assessment, cyber threat intelligence, managed defence and response, vulnerability management, SOC, zero trust and GRC", url: "https://e-safer.com.br/" },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    name: "e-Safer - cybersecurity and fraud, together",
+    tagline: "Brazilian security firm whose practice pairs cybersecurity with fraud prevention.",
+    intro: "e-Safer works cybersecurity and fraud prevention as one practice, across managed security services, penetration testing, application security assessment, threat intelligence, managed detection and response, vulnerability management, a SOC, zero trust and governance.",
+    body: [
+      "The pairing in its own description is the interesting choice. Fraud and cybersecurity are usually separate departments with separate budgets and separate reporting lines - one answers to risk and the other to technology - and they investigate the same events from different sides, frequently without sharing what they found.",
+      "In Brazilian financial services in particular, that separation is expensive: a credential compromise is a security incident until money moves, at which point it becomes a fraud case, and the evidence needed to understand it sits on both sides of a line drawn by an organisation chart.",
+    ],
+    externalUrl: "https://e-safer.com.br/",
+    externalLabel: "e-Safer",
+  },
+
+  // ---- Cobra and AX4B (PRIME 2026-08-11). THE COBRA ENTRY REPRODUCES A
+  // FIRST-PERSON TESTIMONY and says so in its own body: it is Jorge Monteiro
+  // Fernandes's account of events he took part in, cited to his SHIALC 2012
+  // paper, and this site does not adjudicate it. ----
+  {
+    slug: "cobra",
+    sources: [
+      { label: "BB Tecnologia e Servicos (Wikipedia): BBTS, formerly Cobra Tecnologia, is a Brazilian IT company belonging to the Banco do Brasil group; founded 18 July 1974 in Rio de Janeiro as Computadores e Sistemas Brasileiros; the article traces the lineage back to the 1961 Zezinho project at ITA and the Patinho Feio at USP", url: "https://pt.wikipedia.org/wiki/BB_Tecnologia_e_Servi%C3%A7os" },
+      { label: "SOX (Wikipedia): a UNIX clone developed from scratch in Brazil in the late 1980s by Computadores e Sistemas Brasileiros, under the leadership of Ivan da Costa Marques, for COBRA minicomputers; development stopped soon after certification when the government decided to allow UNIX System V Release 4.0", url: "https://en.wikipedia.org/wiki/SOX_(operating_system)" },
+      { label: "Jorge Monteiro Fernandes, testimony reproduced by Tecnologia e Inovacao no Brasil (2018), from his SHIALC 2012 paper: he worked at Cobra from 1987 to 1990 under president Ivan da Costa Marques; after SOX obtained X/Open conformance, the Russian Academy of Sciences approached Cobra to port it to a RISC machine, three Russian developers were received, and a joint venture with the Russian Academy and a Chinese company was proposed and approved by the ABC agency and the SNI; the US consul told Marques over lunch that the United States opposed it and that it should be aborted; President Sarney decided not to confront the United States and the initiative was ended", url: "https://inovatecbrasil.blog/2018/09/19/o-triste-fim-da-cobra/" },
+      { label: "SHIALC 2012 - the underlying paper by Jorge Fernandes, hosted by COPPE/UFRJ", url: "http://www.cos.ufrj.br/shialc/2012/content/docs/2.4_15SHIALCJORGE_Paper.pdf" },
+      { label: "BB Tecnologia e Servicos - 50 years", url: "https://www.bbts.com.br/50-anos-bbts/" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    founded: 1974,
+    name: "Cobra - the computer the country built, and the operating system it was told to stop",
+    tagline: "Computadores e Sistemas Brasileiros, founded 1974; now BB Tecnologia e Servicos.",
+    intro: "Cobra - Computadores e Sistemas Brasileiros - was founded in Rio de Janeiro on 18 July 1974 and became the centrepiece of Brazil\u2019s attempt to build its own computing industry. It survives as BB Tecnologia e Servicos, inside the Banco do Brasil group.",
+    body: [
+      "Its most remarkable product was software. SOX was a UNIX-compatible operating system written from scratch in Brazil in the late 1980s, under the leadership of Ivan da Costa Marques, and it obtained formal conformance recognition from X/Open - which made it, briefly, a Brazilian answer to a question the whole industry was asking.",
+      "What happened next is recorded in a first-person testimony by Jorge Monteiro Fernandes, who worked at Cobra from 1987 to 1990, given as a paper at the SHIALC history-of-computing symposium in 2012. The Russian Academy of Sciences approached Cobra to port SOX to a RISC machine they had built, because United States technology-flow controls denied them access to UNIX. An agreement was signed and three Russian developers came to work at Cobra. A joint venture was then proposed - Cobra, the Russian Academy and a Chinese company - to sell SOX internationally, and it was approved by Brazil\u2019s own foreign-ministry agency and its national intelligence service.",
+      "By Fernandes\u2019s account, the United States consul told Cobra\u2019s president over lunch that his government opposed the venture and that it should be abandoned, or it would act by other means. The matter reached the president of the republic, and the decision was not to confront the United States. Fernandes records his own reply to the general who delivered it - that this was a retreat and a surrender of sovereignty - and the general\u2019s answer: that he was aware of it, but Brazil did not have the Sixth Fleet.",
+      "Cobra stopped developing its own technology and became a reseller of foreign products to Banco do Brasil. The same testimony notes that the Cobra 1.000 was itself a United States product sold in Brazil under licence, each sale requiring State Department authorisation - which is the sharpest available description of what technological autonomy meant in practice.",
+    ],
+    externalUrl: "https://www.bbts.com.br/50-anos-bbts/",
+    externalLabel: "BB Tecnologia e Servicos",
+  },
+  {
+    slug: "ax4b",
+    sources: [
+      { label: "Baguete, 9 February 2017 - AX4B buys Basis IT and enters SAP: the Sao Paulo company, a Microsoft platform specialist, acquired the Porto Alegre SAP NetWeaver and Basis consultancy Basis IT; founded in 2006, AX4B began working exclusively with Microsoft Dynamics AX, which by then was a third of revenue; earlier the same year it had bought the systems integrator Gripho for R$4 million; CEO Antonio Felix", url: "https://www.baguete.com.br/noticias/09/02/2017/ax4b-compra-basis-it-e-entra-em-sap" },
+      { label: "AX4B - company site: management software and services, with offices in SP, MG, RJ, RS, GO/DF, ES and PE, and partnerships including Huawei Cloud, Veeam, ESET, Trend Micro, Kaspersky, Adobe, Autodesk, Automation Anywhere and Hyland", url: "https://ax4b.com/empresa/" },
+    ],
+    tags: ["reseller", "services"],
+    group: "contemporary",
+    founded: 2006,
+    name: "AX4B - one product, then a catalogue",
+    tagline: "Sao Paulo integrator founded in 2006 around Microsoft Dynamics AX, later expanding by acquisition.",
+    intro: "AX4B was founded in Sao Paulo in 2006 to work exclusively with Microsoft Dynamics AX, and grew from that single product into a national integrator with offices across seven states and a catalogue spanning management software, cloud, backup, security and process automation.",
+    body: [
+      "The trajectory is a clean example of a pattern this timeline records repeatedly in miniature. A firm starts as the specialist in one product, which is how a small company earns the right to be called; then the specialism becomes a third of revenue rather than all of it, and the way to grow is to buy the next capability rather than to learn it - a systems integrator in 2017, then a SAP Basis consultancy in Porto Alegre the same year.",
+      "The SAP purchase is the interesting one, because it crosses a line most Microsoft partners do not. Its stated logic at the time was that the two vendors were converging - SAP\u2019s S/4 running on Microsoft\u2019s cloud - so a firm fluent in both had somewhere to stand that neither single-vendor partner could reach.",
+    ],
+    externalUrl: "https://ax4b.com/",
+    externalLabel: "AX4B",
+  },
+
+  {
+    slug: "wdc",
+    sources: [
+      { label: "WDC Networks - company site: founded 2003 with wholly national capital, listed on B3 since 2021, a leader in the TaaS (Technology as a Service) model, industrialising in Brazil more than 50% of its highest-volume items", url: "https://wdcnet.com.br/sobre/" },
+      { label: "WDC Networks - portfolio of around 60 brands across fibre broadband, electronic security, internet telephony, Wi-Fi and data networking, cybersecurity, professional audio and video, smart home and solar energy", url: "https://br.linkedin.com/company/wdc-networks" },
+      { label: "Revista Seguranca Eletronica, February 2026 - WDC Networks becomes official Brazilian distributor for the Israeli firm Vicarius", url: "https://revistasegurancaeletronica.com.br/wdc-networks-torna-se-distribuidora-oficial-da-vicarius-no-brasil/" },
+    ],
+    tags: ["distributor"],
+    group: "contemporary",
+    founded: 2003,
+    name: "WDC Networks - distribution that manufactures",
+    tagline: "Brazilian technology distributor founded in 2003, listed on B3, working a technology-as-a-service model.",
+    intro: "WDC Networks distributes technology in Brazil across fibre broadband, electronic security, telephony, networking, cybersecurity, professional audio and video, smart home and solar - around sixty brands - and has been listed on B3 since 2021.",
+    body: [
+      "Two things separate it from the distribution entries already on this timeline. It states that it industrialises in Brazil more than half of its highest-volume items, which makes it a manufacturer inside a distributor rather than purely a logistics and credit business. And it built its offer around technology as a service, selling hardware and software on subscription rather than as a purchase.",
+      "Both are answers to the same pressure. A distributor's classical function - stock, credit, logistics and channel reach - is the part of the chain most easily compressed, and the two ways out are to make something or to change what is being bought. WDC did both.",
+      "That it manufactures at all is unusual enough to place it against the milestones: the foundry and the contract factory exist so that companies do not have to own production, and a distributor that industrialises half its own volume is running against a forty-year current.",
+    ],
+    externalUrl: "https://wdcnet.com.br/",
+    externalLabel: "WDC Networks",
+  },
+
+  {
+    slug: "goldnet",
+    sources: [
+      { label: "Goldnet TI - company site: thirty years integrating IT solutions for companies of all sizes across Brazil, with named practices in Cisco, Microsoft, site survey and TeamViewer", url: "https://www.goldnet.com.br/", sourceNote: "Fetched cache-bypassed 2026-08-11. No third-party encyclopaedia article exists for this company." },
+    ],
+    tags: ["reseller", "services"],
+    group: "contemporary",
+    name: "Goldnet TI - thirty years of the same two vendors",
+    tagline: "Brazilian IT integrator with Cisco and Microsoft practices, working nationally.",
+    intro: "Goldnet TI has integrated IT solutions in Brazil for thirty years, with its practice organised around Cisco and Microsoft and including site survey work - the physical radio-frequency survey that decides where wireless access points actually go.",
+    body: [
+      "Site survey earning a place in a company\u2019s top-level navigation is worth noticing. It is the least abstract service in enterprise networking - somebody walks the building with a meter - and it is the one most often skipped, which is why so many wireless deployments are diagnosed for months as software problems.",
+      "A thirty-year practice built on two manufacturers is also the counter-example to the multi-vendor catalogue: depth in what customers already run, rather than breadth across what they might buy.",
+    ],
+    externalUrl: "https://www.goldnet.com.br/",
+    externalLabel: "Goldnet TI",
+  },
+  {
+    slug: "unentel",
+    sources: [
+      { label: "Unentel - company site: business units in unified communications and collaboration with devices, and in network and cybersecurity; operates an agency programme, an equipment rental offer, a post-sales service branded UnenHELPS and an e-commerce channel, Farol da Tecnologia", url: "https://www.unentel.com.br/", sourceNote: "Fetched cache-bypassed 2026-08-11. No third-party encyclopaedia article exists for this company." },
+    ],
+    tags: ["reseller", "services"],
+    group: "contemporary",
+    name: "Unentel - collaboration, networks, and the parts nobody photographs",
+    tagline: "Brazilian reseller in unified communications and network security, with rental and post-sales as named business lines.",
+    intro: "Unentel works two business units - unified communications and collaboration with the devices that go with it, and network and cybersecurity - alongside an equipment rental offer, a named post-sales service and its own e-commerce channel.",
+    body: [
+      "Rental and post-sales appearing as named business lines rather than as afterthoughts is the detail worth recording. Both are how a reseller survives the compression of hardware margin: the first changes a purchase into a subscription, and the second is the only part of the relationship a competitor cannot underbid on price alone.",
+      "Unified communications is also the segment where the device matters most and is discussed least - a headset, a room system and a handset are what the user actually touches, and the platform decision is frequently made by whoever already supplies them.",
+    ],
+    externalUrl: "https://www.unentel.com.br/",
+    externalLabel: "Unentel",
+  },
+
+  {
+    slug: "ntsec",
+    sources: [
+      { label: "NTSec Group - company site: described as one of the largest technology and information security integrators in Brazil, with national presence, nearly 400 specialists, ISO 27001 certification, a 24/7 Cognitive SOC, and recognition as Check Point Partner of the Year LATAM 2026; head office in Brasilia with branches in Curitiba, Fortaleza, Sao Paulo, Cuiaba, Goiania, Recife, Manaus and Porto Alegre, and sales representation in Belo Horizonte and Salvador; four business units carrying the names of the companies whose union formed the group - NTSec, InfoSec, CloudSec and ZivaSec - alongside NTSec Academy; CEO Bruno Nobrega; strategic partners listed as HPE, F5, Check Point, Cohesity, Varonis, Trend Micro, Nutanix and Pure Storage", url: "https://grupontsec.com.br/en/" },
+      { label: "Grupo NTSec - Sobre: states that the group arose from the union of Ziva, NTSec, InfoSec and CloudSec; more than 15 years in the market; CEO Bruno Nobrega; partner certifications including Aruba Platinum, Veritas Platinum, Varonis Platinum, CyberArk and VMware", url: "https://grupontsec.com.br/br/sobre/" },
+    ],
+    tags: ["reseller", "services", "training"],
+    group: "contemporary",
+    name: "NTSec Group - security bought by the public sector",
+    tagline: "Brazilian security integrator headquartered in Brasilia, with branches in eight states and its own academy.",
+    intro: "NTSec Group is a Brazilian technology and information security integrator with its head office in Brasilia and branches in eight states, close to four hundred specialists, ISO 27001 certification and a twenty-four-hour security operations centre. Its strategic partnerships include F5 and Check Point, and its technology list runs to Fortinet, Netskope, Tenable, CyberArk, Qualys and Wiz among others.",
+    body: [
+      "The head office is the fact that explains the rest. A security integrator based in Brasilia rather than Sao Paulo is one built around the federal government and the courts, and its published client set reads accordingly: regional electoral and labour tribunals, health and research institutions, federal banks, state data-processing companies and public security forces.",
+      "That is a different business from serving private enterprise, and the difference is procurement. Work arrives through public tender, so the relationship begins as a bid rather than a conversation, and continuity depends on winning again - one of its own published testimonials describes a firewall tender in 2017 that grew into service across most of the country\u2019s labour courts, then a second tender years later that added managed services.",
+      "CORRECTED 2026-08-11. The four names are not a brand structure. The group states that it arose from the union of four companies - Ziva, NTSec, InfoSec and CloudSec - so NTSec, InfoSec, CloudSec and ZivaSec are the constituents preserved as the names of what they became. That is the third assembled Brazilian group on this timeline, after Grupo IHC and CPM Braxis, and the pattern is consistent: the brands that look like product lines are frequently the companies that were bought.",
+      "An academy alongside them describes the strategy several other entries here record: an integrator that has stopped selling products and started selling capability, with teaching as part of the offer rather than an afterthought.",
+    ],
+    externalUrl: "https://grupontsec.com.br/",
+    externalLabel: "NTSec Group",
+  },
+
+  {
+    slug: "cpm-braxis",
+    sources: [
+      { label: "Estado de S. Paulo via InvesteSP, September 2010 - Capgemini bought control of CPM Braxis for R$517 million (US$295.4 million) after four months of negotiation, taking 55% of the shares; the purchase combined R$230 million paid proportionally to shareholders with a R$287 million capital injection for investment and debt; Bradesco, CPM Braxis\u2019s largest client and largest shareholder, retained 20% after having bought Deutsche Bank\u2019s stake in CPM Holding in May", url: "https://www.investe.sp.gov.br/noticia/capgemini-adquire-controle-da-cpm-braxis/" },
+      { label: "MundoGEO, September 2010 - CPM Braxis described as the leading Brazilian IT services company, expecting record revenue of around R$1 billion in 2010, with a client base concentrated in financial services and telecommunications", url: "https://mundogeo.com/2010/09/10/capgemini-adquire-55-das-acoes-da-cpm-braxis/" },
+      { label: "PR Newswire, May 2010 - CPM Braxis ranked 48th on the IAOP Global Outsourcing 100, the highest position achieved by a South American company, serving more than 200 major clients; CEO Jose Luiz Rossi", url: "https://prnewswire.com/news-releases/cpm-braxis-is-top-ranked-south-american-it-services-company-on-iaops-2010-global-outsourcing-100-list-92783554.html" },
+      { label: "IT Forum, October 2012 - two years after the acquisition the company dropped the CPM Braxis name for the Capgemini brand alone, in line with its other 39 countries; 30 years of activity in Brazil and more than 6,000 professionals", url: "https://itforum.com.br/noticias/cpm-braxis-capgemini-passa-a-adotar-apenas-a-marca-capgemini-no-brasil/" },
+      { label: "Origem das Marcas, citing the formation: Braxis Tecnologia da Informacao was itself the union of the founders of Banco Patrimonio (Jair Ribeiro, Gianpaulo Baglioni) and of Cotia Trading (Paulo Brito, Alfredo DeGoeye) with the IT experience of Rogerio Igreja Brecha Junior (former president of Ernst & Young Brazil and until January 2007 a vice-president of Unisys) and David Shpilberg (worldwide head of IT at Bain); in November 2006 Braxis acquired Unitech, and in March 2007, four months later, it incorporated 33% of CPM\u2019s voting and total capital", url: "https://origemdasmarcas.blogspot.com/2020/05/cpm-braxis.html" },
+      { label: "Likiso Hattori, a founder of Unitech, presenting the sequence: Unitech founded 1995, reaching R$100 million and about 1,600 staff in ten years with presence in Sao Paulo, Minas Gerais, Rio de Janeiro and the Federal District; CMMI from 2002; merger with Braxis in 2006 and with CPM in 2007, reaching R$1 billion", url: "https://www.slideshare.net/slideshow/caso-cpm-braxis/38834815" },
+    ],
+    tags: ["services"],
+    group: "other",
+    name: "CPM Braxis - the largest Brazilian IT services company, sold",
+    tagline: "Brazilian IT services firm acquired by Capgemini in 2010 and absorbed into its brand by 2012.",
+    intro: "CPM Braxis was the largest Brazilian information technology services company, expecting revenue of around a billion reais in 2010 and ranked 48th that year on the IAOP Global Outsourcing 100 - the highest position a South American company had reached. In September 2010 Capgemini agreed to buy 55% of it for R$517 million, and by 2012 the name was gone.",
+    body: [
+      "It was assembled rather than founded, and the assembly is the interesting part. Braxis Tecnologia da Informacao - the TI Braxis of this timeline\u2019s own working notes - was itself a union of financiers and operators: the founders of Banco Patrimonio and of Cotia Trading, joined by a former president of Ernst & Young Brazil and by Bain\u2019s worldwide head of IT. In November 2006 Braxis acquired Unitech, an IT company founded in 1995 that had reached around a hundred million reais and some sixteen hundred staff. Four months later, in March 2007, Braxis took 33% of CPM. The result was CPM Braxis, and it reached a billion reais in revenue by 2009.",
+      "The shareholder detail explains the company. Bradesco was simultaneously its largest client and its largest shareholder, having bought Deutsche Bank\u2019s stake earlier the same year, and it kept 20% after the sale. A services business whose biggest customer owns it is a specific arrangement with specific consequences: guaranteed volume, and a strategy set partly by a buyer who is also an owner.",
+      "The transaction structure is worth reading too. Roughly R$230 million went to shareholders and R$287 million went into the company as capital for investment and debt, so more than half the price was not a payment to anyone - it was the cost of making the business ready to be owned.",
+      "Two years later the brand was retired in favour of Capgemini alone, aligning Brazil with the other thirty-nine countries. Thirty years of trading history and six thousand people continued; the name did not, which is the ordinary ending for a national champion bought by a global one.",
+    ],
+  },
+
+  {
+    slug: "etek-novared",
+    sources: [
+      { label: "LexLatin - NovaRed Chile ends its joint venture with Etek International in Brazil: the Chilean company bought Etek International Corporation\u2019s 50% stake in Etek NovaRed Brasil, closing 17 August, and became sole shareholder; Etek NovaRed Brasil offered education and awareness, information security consulting and managed services to more than 500 clients in Latin America and the United States; Etek International Corporation was headquartered in Miami with branches in Colombia and Peru; the joint venture had been formed in 2012", url: "https://br.lexlatin.com/noticias/novared-chile-encerra-joint-venture-com-etek-international-no-brasil" },
+      { label: "TI Inside, October 2021 - NovaRed completes the acquisition of Etek; the group then operated three security operations centres, one of them in Brazil, working to ISO 27000-certified methods, and also owned ProWeb Latam, a Chilean-based Latin American security distributor, and Comunix, an ethical hacking school", url: "https://tiinside.com.br/20/10/2021/novared-conclui-aquisicao-da-etek/" },
+      { label: "NovaRed Brasil - describes more than thirty years in cybersecurity as an integrator, SOC, managed security services, compliance and data governance business for Brazil and Iberoamerica", url: "https://www.novared.net/consultoria/?lang=pt-br" },
+    ],
+    tags: ["services", "distributor"],
+    group: "contemporary",
+    name: "Etek NovaRed - a Brazilian firm owned from Miami, then from Santiago",
+    tagline: "Brazilian information-security company, a Chilean-American joint venture from 2012 and wholly Chilean-owned from 2021.",
+    intro: "Etek NovaRed Brasil was one of the larger Brazilian integrated information security providers, with more than thirty years of activity and services running from education and awareness through consulting to managed security. From 2012 it was a joint venture between NovaRed of Chile and Etek International Corporation of Miami; in August 2021 NovaRed bought the other half and the Etek name went.",
+    body: [
+      "The ownership path is the reason it is here, because it is a shape the rest of this timeline does not contain. Brazilian security firms on these pages were bought by an aircraft manufacturer, a physical-security multinational, a private-equity roll-up and a competitor - all of them either Brazilian or from the northern hemisphere. This one was owned half from Miami and then wholly from Santiago.",
+      "That matters for a reason beyond novelty. A regional acquirer buys for regional reasons: the same languages, adjacent regulators, customers that operate across several of the same countries, and a security operations centre in one country that can watch estates in another. The group that resulted runs three such centres, one of them in Brazil.",
+      "It is also a reminder that Latin American technology has an internal market that reporting from outside the region rarely describes. The buyer was not a global consolidator arriving; it was a neighbour.",
+    ],
+    externalUrl: "https://www.novared.net/",
+    externalLabel: "NovaRed",
+  },
+
+  {
+    slug: "sek",
+    sources: [
+      { label: "IT Forum, March 2023 - Patria Investimentos created a cybersecurity holding in October 2021, first called CBS CyberSecurity Holding, and opened by buying NeoSecure of Chile and Proteus of Brazil; Mauricio Prado, formerly of Salesforce and Pegasystems, was brought in as CEO in August 2022; the unified brand SEK, for Security Ecosystem Knowledge, launched on 30 March 2023 with revenue of about US$100 million and a stated target of US$500 million within five years", url: "https://itforum.com.br/noticias/sek-ciberseguranca-patria/amp" },
+      { label: "TI Inside, March 2023 - SEK was created from Patria\u2019s US$250 million commitment to Latin American cybersecurity; its portfolio represents more than 60% of the principal information security technologies on the market, delivered from four managed-services centres in Latin America with research and development centres of its own in the United States and Portugal", url: "https://tiinside.com.br/30/03/2023/com-us-250-milhoes-patria-cria-sek-para-competir-ciberseguranca/" },
+      { label: "TELETIME and Mobile Time, March 2023 - SEK launched with 650 active clients, a team of 750, and more than 40 technology partners including Cisco and Cloudflare, with US$15 million of investment planned for 2023", url: "https://teletime.com.br/30/03/2023/patria-investimentos-lanca-empresa-de-ciberseguranca-a-sek/" },
+      { label: "Forbes Brasil, September 2025 - SEK buys NetBR; by then more than 900 professionals across Argentina, Brazil, Chile, Colombia and Peru, 800 clients, three Cyber Defense Centers and two Cyber Response Centers", url: "https://forbes.com.br/forbes-money/2025/09/empresa-de-ciberseguranca-sek-investida-do-patria-compra-netbr/" },
+    ],
+    tags: ["services"],
+    group: "contemporary",
+    founded: 2023,
+    name: "SEK - a security company assembled by a fund",
+    tagline: "Latin American cybersecurity firm created by Patria Investimentos from NeoSecure and Proteus.",
+    intro: "SEK - Security Ecosystem Knowledge - launched on 30 March 2023 as the unified brand for two companies Patria Investimentos had bought in 2021: NeoSecure of Chile and Proteus of Brazil. It began with 650 clients, 750 people and about a hundred million dollars of revenue, and stated a target of five hundred million within five years.",
+    body: [
+      "It is the clearest case on this timeline of a company that exists because capital decided a market should consolidate. Patria committed US$250 million to Latin American cybersecurity, created a holding for it in October 2021, bought the two firms, hired a chief executive from outside the industry the following year, and launched the combined brand eighteen months after that. Every step is a financial decision that happens to produce a security company.",
+      "The reason it works in this particular market is worth naming. Security services are bought on trust and delivered by people, so the assets are relationships and specialists - both of which are national, and neither of which scales by opening an office. Buying two established firms buys both at once, in five countries.",
+      "Its own stated priority alongside growth is training, in its founding announcements: using its size to help produce information security specialists, because the shortage of them is the constraint on the whole sector. That is a rare thing for a private-equity-backed company to name as a goal in its first press conference, and it is the same argument the training entries on this timeline make from the other side.",
+      "Acquisition continued after launch: Proof in 2024, NetBR in 2025, taking it past nine hundred people and eight hundred clients across five countries.",
+    ],
+    externalUrl: "https://sek.io/",
+    externalLabel: "SEK",
+  },
+  {
+    slug: "neosecure",
+    sources: [
+      { label: "The Rohatyn Group, July 2021 - completion of the sale of NeoSecure S.A. to Patria Investments; TRG partner Roberto Chute states that when TRG invested, NeoSecure led IT security in Chile with a developing business in Argentina and newly started operations in Colombia and Peru, and had since established a presence in Brazil and grown its recurring services business to become the leading local player", url: "https://markets.financialcontent.com/pennwell.renewableenergy/article/bizwire-2021-7-12-the-rohatyn-group-completes-the-sale-of-neosecure-sa-to-patria-investments" },
+      { label: "IT Forum, March 2023 - NeoSecure of Chile and Proteus of Brazil were the two companies Patria combined into SEK", url: "https://itforum.com.br/noticias/sek-ciberseguranca-patria/amp" },
+    ],
+    tags: ["services"],
+    group: "other",
+    name: "NeoSecure - the Chilean half",
+    tagline: "Chilean security company, leader in its home market, absorbed into SEK.",
+    intro: "NeoSecure was the leading information security company in Chile, with operations across Argentina, Colombia, Peru and Brazil. It passed from The Rohatyn Group to Patria Investimentos in July 2021 and was merged with Proteus to form SEK in 2023.",
+    body: [
+      "Its trajectory is a compact description of how a Latin American technology company grows: lead one national market, extend into the neighbouring ones, and shift from projects to recurring services - which is what makes the business valuable to a buyer, because recurring revenue is what can be modelled.",
+      "It is also the second Chilean company on this timeline to end up owning or being merged with Brazilian security operations, after NovaRed. The regional market moves in both directions, and rarely appears in accounts written from outside it.",
+    ],
+  },
+  {
+    slug: "proteus",
+    sources: [
+      { label: "IT Forum and TI Inside, March 2023 - Proteus of Brazil was acquired by Patria Investimentos in 2021 alongside NeoSecure of Chile, and the two were combined to create SEK", url: "https://tiinside.com.br/30/03/2023/com-us-250-milhoes-patria-cria-sek-para-competir-ciberseguranca/" },
+    ],
+    tags: ["services"],
+    group: "other",
+    name: "Proteus - the Brazilian half",
+    tagline: "Brazilian security company bought by Patria in 2021 and merged into SEK.",
+    intro: "Proteus was the Brazilian information security company Patria Investimentos acquired in 2021, and one of the two firms combined in 2023 to create SEK.",
+    body: [
+      "It appears here as half of a merger rather than in its own right, and that is the honest shape of what is reachable: the coverage of the transaction is extensive and the coverage of the company before it is thin. A firm can be substantial enough to anchor a two-hundred-and-fifty-million-dollar consolidation strategy and still leave most of its own history unwritten.",
+      "The pairing is the point in any case. A Chilean company and a Brazilian one were bought to be combined, which means the buyer was reading the region as a single market before either company was.",
+    ],
+  },
+
+  {
+    slug: "fast-lane",
+    sources: [
+      { label: "Fast Lane - awards: ranked among the top 20 IT training companies worldwide every year since 2008, with more than 80 awards; Cisco Learning Partner of the Year in numerous regions and years including LATAM 2016, Chile 2018 and Global 2013 and 2016; named a Leader in the 2021 IDC MarketScape for IT Training in the United States", url: "https://www.fastlaneus.com/awards" },
+      { label: "Fast Lane - partnerships: authorised Cisco Learning Specialized Partner and Cisco Business Learning Partner covering routing and switching, wireless, security, service provider, collaboration and data centre; Microsoft Gold Learning Partner; Red Hat Alliance Training Partner; delivers authorised IBM training in partnership with Tech Data and with Ingram Micro", url: "https://www.fastlaneus.com/partnerships" },
+      { label: "Fast Lane - partners: authorised Aruba Training Center since 2013, and the only global NetApp Learning Partner", url: "https://www.flane.com/partners.html" },
+    ],
+    tags: ["training"],
+    group: "contemporary",
+    name: "Fast Lane - the independent that teaches the manufacturers\u2019 courses",
+    tagline: "Global IT training company delivering authorised curricula for Cisco, Microsoft, Aruba, NetApp and others.",
+    intro: "Fast Lane delivers manufacturers\u2019 own training under authorisation - Cisco, Microsoft, Red Hat, Aruba, NetApp - across most of the world, and has been ranked among the twenty largest IT training companies every year since 2008.",
+    body: [
+      "The business it is in is the one this site is written from, and the shape is worth stating because it is invisible from outside. A manufacturer writes a course and certifies who may teach it; an independent training company holds those authorisations across several manufacturers at once and employs the instructors who hold them. The customer buys a vendor course; the person in the room works for neither the vendor nor the customer.",
+      "The awards list is a useful artefact for that reason: Cisco Learning Partner of the Year in Latin America, Chile, Japan, Benelux, France, Italy, the Middle East and globally, across more than a decade. Vendor training is delivered regionally and judged regionally, because a course is only as good as the person standing in front of it, and that person is local.",
+      "The partnerships with Tech Data and Ingram Micro to deliver IBM curricula are the other half of the picture, and connect to the distribution entries here: the same distributors that move product also carry training, because a channel that cannot deploy what it sells does not sell it twice.",
+    ],
+    externalUrl: "https://www.flane.com/",
+    externalLabel: "Fast Lane",
+  },
+  {
+    slug: "global-knowledge",
+    sources: [
+      { label: "Cisco - Platinum Learning Partners: Skillsoft Global Knowledge described as the world\u2019s largest dedicated enterprise education company, with more than 3,000 unique IT and business training courses delivered by more than 1,100 subject matter experts, offering classroom, virtual classroom and digital training", url: "https://www.cisco.com/c/en/us/training-events/training-certifications/training/learning-partner-program/platinum-learning-partner.html" },
+      { label: "Skillsoft Global Knowledge - Cisco training: a Cisco Platinum Learning Partner, recognised by Cisco as its top-performing global learning partner, delivering Cisco certification paths and accepting Cisco Learning Credits", url: "https://www.globalknowledge.com/us-en/cisco/" },
+    ],
+    tags: ["training"],
+    group: "contemporary",
+    name: "Global Knowledge - the largest of them, now inside Skillsoft",
+    tagline: "Enterprise IT training company, a Cisco Platinum Learning Partner, now part of Skillsoft.",
+    intro: "Global Knowledge is an enterprise education company delivering more than three thousand IT and business courses through over eleven hundred subject matter experts, in classrooms, virtual classrooms and digital formats. It is a Cisco Platinum Learning Partner and now trades as Skillsoft Global Knowledge.",
+    body: [
+      "Read beside Fast Lane it describes the two ends of the same market. Both hold the same top-tier authorisations from the same manufacturers; one is an independent training specialist, the other now sits inside a company whose main business is a subscription content library.",
+      "That difference decides what a course is. A training specialist sells days of an instructor\u2019s time and lives on whether the room was worth attending. A content platform sells access to a catalogue and lives on renewal. Both models deliver the same certification, and they are not the same product, which is the distinction every buyer of technical training eventually discovers and few are told in advance.",
+    ],
+    externalUrl: "https://www.globalknowledge.com/",
+    externalLabel: "Global Knowledge",
+  },
+
+  {
+    slug: "adistec",
+    sources: [
+      { label: "Adistec Brasil - company description: a value-added distributor for Latin America and the Caribbean, founded 2002 and headquartered in Miami, Florida, covering cybersecurity, networking, storage, virtualisation, cloud and data centre, with technical support, professional services and partner enablement programmes", url: "https://br.linkedin.com/company/adistec-brasil" },
+      { label: "Inforchannel, August 2026 - Adistec extends its Citrix Latin America partnership into Brazil, having already partnered in Chile, Colombia and Peru since 2023; the go-to-market includes partner activation, technical and commercial training, webinars and demand generation", url: "https://inforchannel.com.br/2026/08/01/adistec-firma-parceria-com-citrix-latam-no-brasil-e-expande-atuacao-em-infraestrutura-digital-na-america-latina-fazer/" },
+    ],
+    tags: ["distributor"],
+    group: "contemporary",
+    founded: 2002,
+    name: "Adistec - distribution written for a region, not a country",
+    tagline: "Value-added distributor for Latin America and the Caribbean, founded 2002, headquartered in Miami.",
+    intro: "Adistec is a value-added distributor covering Latin America and the Caribbean from a base in Miami, founded in 2002, carrying cybersecurity, networking, storage, virtualisation, cloud and data centre lines.",
+    body: [
+      "Miami as the headquarters for a Latin American distributor is not an accident of preference. It is where a company can hold dollars, buy from United States manufacturers on United States terms, and sell into a dozen jurisdictions with different tax regimes and import rules - which is most of what value-added distribution actually is once the marketing is set aside.",
+      "The other half is enablement, and its announcements say so plainly: partner activation, technical and commercial training, demand generation. A distributor of this kind is not primarily moving boxes; it is manufacturing the capability of the resellers who will move them, because a manufacturer with no certified local partners has no market regardless of how good the product is.",
+    ],
+    externalUrl: "https://www.adistec.com/",
+    externalLabel: "Adistec",
+  },
+  {
+    slug: "teltec",
+    sources: [
+      { label: "ACATE, November 2013 - Teltec Solutions wins a Cisco Latin American award, its first international recognition; Cisco Brazil engineering director Marcos Omura attributes it to continuous investment in training and certification and to an internal culture built around it; Teltec is described as an information and communications technology integrator covering data and voice networks, virtualisation, cloud computing, storage and security, headquartered in Florianopolis with branches in Brasilia, Curitiba and Recife", url: "https://www.acate.com.br/noticias/teltec-solutions-e-destaque-da-america-latina-em-premiacao-da-cisco/" },
+      { label: "ACATE, March 2016 - Teltec Solutions named Cisco\u2019s best Public Sector partner in Latin America, for work in the public sector with emphasis on education and health", url: "https://www.acate.com.br/noticias/teltec-solutions-e-eleita-melhor-parceira-cisco-na-area-governamental-para-a-america-latina/" },
+    ],
+    tags: ["reseller", "services"],
+    group: "contemporary",
+    name: "Teltec Solutions - Florianopolis, and a Cisco award for training",
+    tagline: "Brazilian ICT integrator from Santa Catarina, twice recognised by Cisco across Latin America.",
+    intro: "Teltec Solutions is an information and communications technology integrator headquartered in Florianopolis, in Santa Catarina, with branches in Brasilia, Curitiba and Recife. Cisco named it a Latin American winner in 2013 and its best public sector partner in the region in 2016.",
+    body: [
+      "The stated reason for the first award is the part worth keeping. Cisco\u2019s engineering director in Brazil attributed it to continuous investment in training and certification, and to the company having built an internal culture around it - which is a manufacturer publicly rewarding a partner not for revenue but for how many of its people learned the product properly.",
+      "That is the commercial argument for certification stated by the party with the least incentive to overstate it, and it is the same argument this site makes from the instructor\u2019s side.",
+      "The location matters too. Santa Catarina has a technology economy of its own, and an integrator serving federal government, education and health from Florianopolis rather than Sao Paulo or Brasilia is evidence of it.",
+    ],
+    externalUrl: "https://teltecsolutions.com.br/",
+    externalLabel: "Teltec Solutions",
+  },
+
+  {
+    slug: "xylan",
+    sources: [
+      { label: "Alcatel press release filed with the SEC, 24 March 1999 - the Hart-Scott-Rodino waiting period expired, allowing Alcatel to proceed with its acquisition of Xylan Corporation; the tender offer commenced 8 March 1999 at US$37.00 per share; Alcatel describes Xylan as the fastest growing internetworking company in the history of the industry, with more than 4,000 customers and total revenues of US$348 million in just five years, growing about 65% in each of the last two", url: "https://www.sec.gov/Archives/edgar/data/0000914698/000095012399002466/0000950123-99-002466.txt/seq-2" },
+      { label: "Alcatel press release filed with the SEC, 5 April 1999 - the tender offer completed; approximately 97% of Xylan shares were tendered; Alcatel expected to merge Xylan with a subsidiary by the end of April, and had also just finalised its US$350 million acquisition of Assured Access Technology", url: "https://www.sec.gov/Archives/edgar/data/0000914698/000095012399003047/0000950123-99-003047.txt/seq-2" },
+      { label: "CBS News and Associated Press, 2 March 1999 - Alcatel to buy Xylan for about US$2 billion in cash; Xylan founded 1993 in Calabasas, California; Alcatel already owned 6.5% bought in 1995, and the deal is described as the culmination of a four-year partnership; Alcatel chairman Serge Tchuruk on combining voice and data networking strengths", url: "https://www.cbsnews.com/news/alcatel-to-buy-xylan-for-2b/" },
+      { label: "Washington Technology, March 1999 - Xylan had about 950 employees and a US$1.5 billion market value against Alcatel\u2019s nearly 200,000 staff; co-founded in 1993 by Steve Kim and three partners; its federal division had US$43 million in sales serving the Air Force, NASA and the Department of Energy", url: "https://www.washingtontechnology.com/1999/03/new-parent-prods-xylan-to-reset-government-goals/330447/" },
+      { label: "Xylan Corporation (Wikipedia) - American computer networking equipment company, defunct 1999, acquired by Alcatel", url: "https://en.wikipedia.org/wiki/Xylan_Corporation" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    founded: 1993,
+    ended: {
+      year: 1999,
+      note: "Acquired by Alcatel. A cash tender offer at US$37.00 per share opened 8 March 1999 and closed 2 April with about 97% of shares tendered; Xylan became a wholly-owned indirect subsidiary that month. The switching line continued as Alcatel's enterprise business.",
+    },
+    name: "Xylan - the fastest growing internetworking company there had been",
+    tagline: "LAN switching company founded 1993 in Calabasas, acquired by Alcatel in 1999.",
+    intro: "Xylan was founded in 1993 in Calabasas, California by Steve Kim and three partners, and built high-bandwidth switches for local area networks. In its own acquirer\u2019s words it was the fastest growing internetworking company in the history of the industry: more than four thousand customers and US$348 million of revenue in five years. Alcatel bought it in 1999 for about two billion dollars.",
+    body: [
+      "The numbers are worth stating precisely because they describe a market condition that no longer exists. A company founded in 1993 reached three hundred and forty-eight million dollars of annual revenue by 1998, growing about sixty-five per cent in each of its last two independent years, with roughly nine hundred and fifty employees. That is what the switching market looked like when every enterprise in the world was replacing shared-media hubs at once.",
+      "The acquisition was not a surprise raid. Alcatel had held 6.5% of Xylan since 1995 and the companies had worked together for four years, which is a reminder that the large acquisitions on this timeline are usually the last step of a long relationship rather than the first step of a new one.",
+      "The mechanics are visible because they were filed. A cash tender offer at thirty-seven dollars a share opened on 8 March 1999 and closed on 2 April with about ninety-seven per cent of shares tendered, after the antitrust waiting period expired. Reading the filings rather than the coverage is how a reader can see what was actually agreed, and they are cited here for that reason.",
+      "What Alcatel bought was access as much as technology: an American enterprise switching business, a federal division selling to the Air Force, NASA and the Department of Energy, and a position against Cisco, Lucent and 3Com in a market it could not otherwise enter quickly.",
+      "It grew in the years when designing silicon stopped requiring a factory. The foundry and fabless milestones on this site describe the arrangement that let a company founded in 1993 put custom switching silicon into a product without ever building a plant.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Xylan_Corporation",
+    externalLabel: "Xylan Corporation",
+  },
+
+  {
+    slug: "ruckus",
+    sources: [
+      { label: "Ruckus Networks (Wikipedia): founded 17 June 2004 in Menlo Park by William Kish and Victor Shtrom, formerly Video54 Technologies; first chief executive Selina Lo; traded on the NYSE as RKUS from 2012 to 2016; parents in sequence Brocade (2016-17), Arris International (2017-19), CommScope (2019-2026) and Vistance Networks (2026); Arris bought Ruckus together with the Brocade ICX switching line for US$800 million, finalised 1 December 2017; CommScope completed its acquisition of Arris on 4 April 2019; on 12 January 2026 CommScope sold its Connectivity and Cable Solutions segment to Amphenol, the CommScope name transferring with it, and the remainder was renamed Vistance Networks", url: "https://en.wikipedia.org/wiki/Ruckus_Networks" },
+      { label: "Brocade investor presentation filed with the SEC, April 2016 - Ruckus at a glance: founded 2004, more than 1,000 employees worldwide, operating in 38 countries, leader in enterprise wireless LAN, number one in service provider Wi-Fi, more than US$370 million in annual revenue, headquartered in Sunnyvale", url: "https://www.sec.gov/Archives/edgar/data/0001294016/000119312516529540/d167365d425.htm" },
+      { label: "Brocade press release filed with the SEC, 27 May 2016 - Brocade completes its acquisition of Ruckus Wireless", url: "https://www.sec.gov/Archives/edgar/data/0001294016/000119312516605344/d184307dex99a5v.htm" },
+      { label: "Network World, May 2026 - Ruckus acquired by Belden for US$1.85 billion; the article recounts the chain: IPO 2012, Brocade for about US$1.5 billion in 2016, Arris the following year, CommScope in 2019, and the Vistance Networks rebrand in January 2026", url: "https://www.networkworld.com/article/4166854/ruckus-networks-on-the-move-again-this-time-acquired-by-belden-for-1-85-billion.html" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    founded: 2004,
+    name: "Ruckus - six owners in ten years",
+    tagline: "Wireless networking company founded 2004, passed through Brocade, Arris, CommScope, Vistance and Belden.",
+    intro: "Ruckus was founded on 17 June 2004 in Menlo Park by William Kish and Victor Shtrom, and became a leader in enterprise wireless local area networking and the largest supplier of service provider Wi-Fi. By 2016 it had more than a thousand employees in thirty-eight countries and over US$370 million of annual revenue. It has since had five owners.",
+    body: [
+      "The chain is the entry. Public on the New York Stock Exchange in 2012; bought by Brocade for about US$1.5 billion in 2016; sold on to Arris the following year, together with Brocade\u2019s ICX switching line, for US$800 million; into CommScope with the Arris acquisition in 2019; renamed under Vistance Networks in January 2026 when CommScope sold its cable business and the name went with it; and acquired by Belden in 2026.",
+      "One number in that sequence deserves reading twice. Brocade paid roughly US$1.5 billion; Arris paid US$800 million eighteen months later, for Ruckus plus a switching business that had not been in the first transaction. The asset did not become worth half as much; the buyer had changed its mind about what it was doing, and the price of a technology company is frequently a statement about its owner rather than about the technology.",
+      "For anyone operating this equipment, the practical consequence is support and roadmap continuity across five ownership changes in a decade - which is the risk nobody prices when comparing access points on throughput. The product line survived every one of them, and that is the more surprising half.",
+      "It began somewhere else entirely: distributing television around a house over wireless, when the difficulty was making video survive a domestic radio environment. The antenna technology that solved that problem is what made it competitive in enterprise wireless, which is a common shape - the hard problem is solved for one market and turns out to be worth more in another.",
+    ],
+    externalUrl: "https://www.ruckusnetworks.com/",
+    externalLabel: "Ruckus Networks",
+  },
+
+  {
+    slug: "sonda",
+    sources: [
+      { label: "Sonda (Portuguese Wikipedia): SONDA, Sociedade Nacional de Processamento de Dados, founded 1974 by the industrial engineer Andres Navarro with his brothers and contributions from Copec, beginning with ten programmers and clients including Banco O\u2019Higgins, Abastible and Iansa; involved in public-sector modernisation across Latin America including the Registro Civil and Chilecompra portal in Chile, animal traceability in Uruguay and traffic control systems in Santiago and Sao Paulo; acquired Procwork in Brazil in 2007, unified the Sonda Procwork, Sonda Software, Sonda Telsinc and Sonda Kaizen brands as Sonda IT in January 2012, bought CTIS in March 2014 and 60% of Ativas in August 2016", url: "https://pt.wikipedia.org/wiki/Sonda_(empresa)" },
+      { label: "Sonda S.A. (Wikipedia): Chilean multinational headquartered in Santiago, the largest information technology company in Latin America, founded 1974 in association with Copec; founder Andres Navarro Haeussler", url: "https://en.wikipedia.org/wiki/Sonda_S.A." },
+      { label: "Exame, June 2012 - Sonda arrived in Brazil in the early 2000s, and after struggling with organic growth gained scale through acquisition: more than US$300 million spent on Brazilian companies in ten years, the principal one Procwork in 2007, which brought clients including Petrobras, Votorantim and Bradesco; the company added IT to its name in Brazil to avoid confusion with a supermarket group, and supplied the technology for the Arena Corinthians", url: "https://exame.com/revista-exame/o-itaquerao-e-nuestro/" },
+      { label: "Startupi, May 2014 - Sonda completes the acquisition of CTIS Tecnologia for R$400 million after CADE approval, becoming the largest IT services provider in Brazil; founded 1974, direct presence in ten countries, 2013 revenue US$1.2 billion", url: "https://startupi.com.br/sonda-fecha-compra-de-ctis-por-r-400-milhoes/" },
+      { label: "TTR Data, May 2018 - thirteen acquisitions since 2002, when it bought Imares in Brazil; Procwork June 2007 for US$118 million, Red Colombia 2008 for US$13.6 million, and in 2010 Telsinc US$38 million, Softeam US$8.5 million and Kaizen US$6.7 million in Brazil, NextiraOne US$29 million in Mexico and Ceitech US$6.3 million in Argentina; about 22,000 staff and 5,000 active clients, 2017 Latin American revenue US$1.368 billion", url: "https://blog.ttrdata.com/aquisicoes-sonda-brasil/" },
+    ],
+    tags: ["services", "reseller"],
+    group: "contemporary",
+    founded: 1974,
+    name: "Sonda - the largest technology company in Latin America is Chilean",
+    tagline: "Chilean IT services multinational founded 1974, which became the largest provider in Brazil by buying thirteen companies.",
+    intro: "SONDA - Sociedade Nacional de Processamento de Dados - was founded in Santiago in 1974 by Andres Navarro with his brothers and backing from Copec, starting with ten programmers. It is now the largest information technology services company in Latin America, present in ten countries, with around twenty-two thousand staff.",
+    body: [
+      "Its Brazilian story is the one this timeline needs, because it inverts the usual direction. Sonda arrived in the early 2000s, found organic growth slow, and bought its way in instead: more than three hundred million dollars on Brazilian companies in ten years, beginning with Imares in 2002 and running through Procwork in 2007 for US$118 million, then Telsinc, Softeam and Kaizen in 2010, Pars in 2012, CTIS in 2014 for R$400 million, and 60% of the data centre operator Ativas in 2016.",
+      "The CTIS purchase made it the largest information technology services provider in Brazil. So the biggest supplier in the Brazilian market is a Chilean company, assembled from Brazilian ones - and almost every account of this industry written in English describes Latin American technology as something that happens to the region rather than within it.",
+      "The names it bought stopped existing in January 2012, when Sonda Procwork, Sonda Software, Sonda Telsinc and Sonda Kaizen were unified as Sonda IT. That is the same erasure this timeline records for CPM Braxis and for Etek: the working knowledge continues under a single brand, and the histories become invisible unless somebody writes them down.",
+      "What it actually does is less glamorous than the acquisition arithmetic and more consequential: public-sector modernisation. Civil registry and public procurement systems in Chile, animal traceability in Uruguay, and traffic control in both Santiago and Sao Paulo. Systems that a citizen never chooses and cannot avoid.",
+    ],
+    externalUrl: "https://www.sonda.com/",
+    externalLabel: "Sonda",
+  },
+
+  {
+    slug: "tecban",
+    sources: [
+      { label: "Mundo das Marcas - the history: on 22 September 1982 the banks Unibanco, Nacional and Bamerindus founded Tecnologia Bancaria S.A. as a response to the competition of Banco do Brasil, Bradesco and Itau, which at the time were the only ones with the technical and financial capacity to build large automated service networks; the first Banco24Horas machines were installed in Curitiba", url: "https://mundodasmarcas.blogspot.com/2022/01/banco24horas.html" },
+      { label: "Banco24Horas (Wikipedia): Brazilian interbank network operated by TecBan, working with more than 150 partner institutions and offering more than 24,000 ATMs; serves 152 million Brazilians", url: "https://en.wikipedia.org/wiki/Banco24Horas" },
+      { label: "BM&C News, June 2025 - TecBan manages around 30,000 machines, 24,000 of them Banco24Horas and 6,000 belonging to partner institutions; an executive describes serving the country as a herculean task, including journeys of up to fourteen hours by boat to reach remote areas of the Amazon", url: "https://bmcnews.com.br/ultimas-noticias/tecban-reforca-modelo-de-negocios-com-novas-solucoes-de-autoatendimento/" },
+      { label: "TecBan - company description: four business units, Banco24Horas, TBNet, TBForte and Servicos Integrados TecBan; first to implement an Open Finance as a service platform in Brazil, and a participant in the Central Bank\u2019s Drex pilot project", url: "https://www.linkedin.com/company/tecban" },
+    ],
+    tags: ["services"],
+    group: "other",
+    founded: 1982,
+    name: "TecBan - the machines belong to nobody in particular",
+    tagline: "Brazilian shared self-service network founded in 1982 by three banks, operator of Banco24Horas.",
+    intro: "Tecnologia Bancaria S.A. was founded on 22 September 1982 by Unibanco, Nacional and Bamerindus, and operates Banco24Horas - around thirty thousand machines across more than a thousand Brazilian cities, shared by over a hundred and fifty financial institutions.",
+    body: [
+      "The founding logic is the whole entry, and it is a networking argument in a banking costume. Three banks pooled infrastructure because the three largest - Banco do Brasil, Bradesco and Itau - were the only ones that could each afford a national machine network alone. Sharing was not a philosophy; it was the only way the smaller institutions could offer the same service.",
+      "That is the same calculation behind every internet exchange, every shared trunk and every peering agreement on this timeline: below a certain scale, building your own is more expensive than agreeing with your competitors. What is unusual is how visible the result became - the mosaic of bank logos on the front of a red machine is a peering agreement that ordinary people look at every day without recognising it.",
+      "The physical half is worth stating too, because a network is not an abstraction. TecBan describes journeys of up to fourteen hours by boat to reach machines in remote parts of the Amazon. Every argument about availability targets eventually meets a river.",
+      "It also has a telecommunications arm, TBNet, alongside the cash-in-transit and integrated services units - so the company that shares the machines also runs the network they talk over, which is the ordinary answer to what a financial network actually consists of.",
+    ],
+    externalUrl: "https://www.tecban.com.br/",
+    externalLabel: "TecBan",
+  },
+
+  {
+    slug: "damovo",
+    sources: [
+      { label: "Damovo (Wikipedia): founded 2001, headquartered in Dusseldorf; originated as a spin-off of Ericsson\u2019s direct sales and service operations, acquired and spun off by Apax Partners in a management buyout led by Pearse Flynn, and based in Glasgow at the time; Flynn was chief executive until 2003; in December 2006 Apax handed its entire equity stake to the company\u2019s creditors; partnerships include Avaya, Cisco, Microsoft, Extreme Networks, Genesys and Mitel, with support in more than 150 countries", url: "https://en.wikipedia.org/wiki/Damovo" },
+      { label: "The Register, January 2015 - Damovo was founded in 2001 when Apax Partners acquired the direct sales operation from Ericsson for US$480 million; it went through debt-for-equity restructuring in 2007 after financial difficulty, with bondholders including Goldman Sachs and Och-Ziff exchanging EUR358 million of bonds for equity; customers named include British Airways, DHL, HP, the Irish Prison Service, Credit Suisse and the Bank of England", url: "https://www.theregister.com/2015/01/28/damovo_sale/" },
+      { label: "Damovo - company description: over 50 years of experience in the ICT industry, direct operations in 14 countries and partnerships enabling support in over 150; portfolio spanning unified communications and collaboration, enterprise networks, contact centre, cybersecurity, cloud and global managed services", url: "https://www.damovo.com/damovo-global-services/" },
+    ],
+    tags: ["services", "reseller"],
+    group: "contemporary",
+    founded: 2001,
+    name: "Damovo - a division that outlived three owners",
+    tagline: "European technology services company spun out of Ericsson in 2001, now owned by Global Growth.",
+    intro: "Damovo was created in 2001 when Apax Partners bought Ericsson\u2019s direct sales and service operations for around US$480 million, in a management buyout that started life in Glasgow and is now headquartered in Dusseldorf. It delivers unified communications, enterprise networks, contact centre and managed services in more than a hundred and fifty countries.",
+    body: [
+      "Its own description says over fifty years of experience in a company founded in 2001, and both halves are true at once. The experience belonged to Ericsson\u2019s enterprise division and travelled with the people when the division was sold. That is the honest shape of a carve-out: the legal entity is new and the engineers are not, which is why buyers pay for these businesses at all.",
+      "The financial history is the part worth recording, because it is the outcome private equity does not advertise. Apax bought it in 2001 and by December 2006 had handed its entire equity stake to the company\u2019s creditors; a debt-for-equity restructuring followed in 2007, with bondholders exchanging around EUR358 million of debt for ownership. The company that had been bought with borrowed money ended up belonging to the lenders.",
+      "It was then split and sold in pieces - the United Kingdom business one way, the European business another - and acquired again in 2022. Through four ownership structures the customer list stayed recognisable: airlines, logistics companies, a central bank and a prison service, all of them running voice and network estates that somebody has to keep answering the telephone about.",
+    ],
+    externalUrl: "https://www.damovo.com/",
+    externalLabel: "Damovo",
+  },
+
+  {
+    slug: "exclusive-networks",
+    sources: [
+      { label: "Permira, September 2021 - Exclusive Networks prices its initial public offering at EUR20 per share on Euronext Paris under the ticker EXN, implying a market capitalisation of about EUR1.8 billion; founded 2003 and headquartered in Paris, employing 2,200 people including more than 500 engineers, with offices in 40 countries and logistics in more than 150; gross sales reached EUR2.9 billion in 2020, up from EUR2.0 billion in 2018; acquisitions included Veracomp, JJNet, Nuaware and Ignition Technology; the Permira funds retained about 55% after listing", url: "https://www.permira.com/news-and-insights/announcements/exclusive-networks-announces-ipo-on-euronext-paris" },
+      { label: "Exclusive Networks investor relations, 22 September 2021 - the company announces the success of its IPO on Euronext Paris; chief executive Jesper Trolle on the relevance of cybersecurity", url: "https://ir.exclusive-networks.com/exclusive-networks-announces-successful-initial-public-offering-on-euronext-paris/" },
+      { label: "Business Wire, December 2024 - a consortium of Clayton Dubilier & Rice and the Permira-controlled majority shareholder moves to acquire a majority holding, to be followed by a mandatory tender offer on the remaining shares and, if conditions are met, a squeeze-out; the group serves customers in over 170 countries from offices in over 45", url: "https://www.businesswire.com/news/home/20241209853280/en" },
+    ],
+    tags: ["distributor"],
+    group: "contemporary",
+    founded: 2003,
+    name: "Exclusive Networks - distribution with five hundred engineers",
+    tagline: "French specialist cybersecurity distributor, listed on Euronext Paris in 2021 and taken private again from 2024.",
+    intro: "Exclusive Networks was founded in 2003 near Paris and became the largest specialist distributor of cybersecurity technology, with gross sales of EUR2.9 billion in 2020, offices in more than forty countries and delivery into over a hundred and seventy.",
+    body: [
+      "One figure in its own listing material explains what specialist distribution means: 2,200 employees, of whom more than five hundred are engineers. A general distributor moves product and extends credit; roughly a quarter of this company\u2019s staff exist to make a technology work in a market where the manufacturer has nobody. Its own phrase for the model is global scale, local sale.",
+      "That is the layer most vendor documentation never mentions and every vendor depends on. A security manufacturer entering a new country does not open an office; it signs a distributor who already has the partners, the credit relationships, the local language support and the engineers who can answer a question at the right hour.",
+      "The ownership history is a small lesson in what a stock market listing is for. Permira funds owned it, floated it on Euronext Paris in September 2021 at a valuation near EUR1.8 billion, retained about 55% - and from 2024 moved with Clayton Dubilier & Rice to buy the public shares back and take it private again. The listing was not an exit but a stage, and the company spent three years public between two periods of private ownership.",
+    ],
+    externalUrl: "https://www.exclusive-networks.com/",
+    externalLabel: "Exclusive Networks",
+  },
+
+  {
+    slug: "afina",
+    sources: [
+      { label: "PR Newswire, 2 July 2012 - Westcon Group announces the acquisition of Grupo Afina through the acquisition of GLS Software and its subsidiaries; founded 1990 and headquartered in Madrid and Miami, Afina traded across Latin America, the Caribbean, Iberia, France and Morocco, focused on security and data centre distribution, with a vendor portfolio including VMware, Citrix, Riverbed and Symantec and specialised services for its channel including after-sales support, value-added services and training; Westcon CEO Dean Douglas cites analyst estimates of more than US$310 billion of Latin American IT spending in 2012, led by Brazil and Mexico", url: "https://www.prnewswire.com/news-releases/westcon-group-anuncia-la-adquisicion-del-grupo-afina-161044195.html" },
+      { label: "Channel Partner, July 2012 - the Spanish wholesaler was owned by the family of its chief executive Pedro Galatas, and in 2011 for the first time billed more in Latin America than in Europe, 52% against 48%, driven by storage, virtualisation and data centre lines; Westcon already operated in Spain through Comstor", url: "https://www.channelpartner.es/seguridad/la-estadounidense-westcon-compra-afina/" },
+    ],
+    tags: ["distributor"],
+    group: "other",
+    founded: 1990,
+    name: "Afina - the distributor Westcon bought to reach Latin America",
+    tagline: "Spanish security and data centre distributor, founded 1990, acquired by Westcon Group in 2012.",
+    intro: "Afina was founded in 1990, headquartered in Madrid and Miami, and distributed security and data centre technology across Latin America, the Caribbean, Iberia, France and Morocco. It was family-owned, led by Pedro Galatas, and Westcon Group acquired it in July 2012.",
+    body: [
+      "The number that explains the transaction is in the Spanish trade coverage rather than the press release: in 2011, for the first time, Afina billed more in Latin America than in Europe - fifty-two per cent against forty-eight. A Spanish company had become a Latin American one by revenue, and that is precisely what a North American distributor with no regional presence needed to buy.",
+      "The two headquarters tell the same story. Madrid for Iberia and Morocco, Miami for the Americas - the same choice the Adistec entry on this timeline records, for the same reasons: dollars, United States purchasing terms, and reach into a dozen jurisdictions from one place.",
+      "Its channel services included training, which is the part of distribution that never appears in a product datasheet and decides whether a technology is usable in a country. A vendor portfolio is worth nothing without partners certified to install it, and somebody has to run those classes.",
+    ],
+    externalUrl: "https://www.prnewswire.com/news-releases/westcon-group-anuncia-la-adquisicion-del-grupo-afina-161044195.html",
+    externalLabel: "The acquisition announcement",
+  },
+
+  {
+    slug: "lanpro",
+    sources: [
+      { label: "Plano de recuperacao judicial of Grupo LWS, filed in the 1st Bankruptcy and Judicial Recovery Court of Sao Paulo, case 583.00.2009.119203-6, 141 pages - the group\u2019s own account of its history. It records LWS Comercio e Servicos em Informatica Ltda trading as LAN Professional; revenue above R$10 million by the end of 2000; Cabletron Systems reorganising in early 2001 into Enterasys Networks, Riverstone Networks, Aprisma Management Technologies and GNTS; LWS then structuring Enterasys distribution in Brazil and reaching approximately 90% of it; customers named including Volkswagen, Chevrolet, Unicamp, Mackenzie, Banco do Brasil, Infraero, TAM, Embraer and the Albert Einstein and Samaritano hospitals; and in 2005 becoming CTA, Centro de Treinamento Autorizado, for Brazil and Mercosur for F5 Networks and IronPort", url: "https://www.trustdobrasil.com.br/smart/modulos/arquivos/arquivos/plano-de-recuperacao-judicial-apresentado-pelas-recuperandas_475-22.pdf", sourceNote: "A judicial recovery filing is a company\u2019s own submission to a court, so the history section is self-description and reads as such. The corporate facts, dates and named partnerships are the part relied on here." },
+      { label: "Brazilian company directory listing: LWS Comercio e Servicos de Informatica Ltda, Rua Bacaetava 35, Brooklin, CEP 04705-010, Sao Paulo, 40 employees, site www.lanpro.com.br", url: "https://pdfcoffee.com/3-000empresas-120830113549-phpapp01pdf-pdf-free.html", sourceNote: "lanpro.com.br no longer resolves." },
+      { label: "United States trademark records: LAN PROFESSIONAL and LANPROFESSIONAL were filed on 28 May 1997 by EDIMAX Technology Co., Ltd of Taiwan and abandoned in December 1998; LAN PRO and LANPRO belong to two further unrelated owners", url: "https://trademark.justia.com/owners/edimax-technology-co-ltd-855676" },
+    ],
+    tags: ["distributor", "training"],
+    relationships: ["worked-with-directly"],
+    group: "other",
+    name: "LAN Professional - the Cabletron channel in Brazil",
+    tagline: "Sao Paulo distributor and authorised training centre for Cabletron, Enterasys, F5 Networks and IronPort.",
+    intro: "LAN Professional was the trading name of LWS Comercio e Servicos em Informatica, at Rua Bacaetava 35 in Brooklin, Sao Paulo. It distributed Cabletron Systems and then Enterasys Networks across Brazil and Mercosur, and from 2005 was the authorised training centre for Brazil and Mercosur for F5 Networks and IronPort.",
+    body: [
+      "Its own judicial recovery filing records the scale: revenue above ten million reais by the end of 2000, and at its height approximately ninety per cent of Enterasys distribution in the country. Customers named in that document include Volkswagen and Chevrolet, Unicamp and Mackenzie, Banco do Brasil, Infraero, TAM and Embraer, and the Albert Einstein and Samaritano hospitals.",
+      "The Cabletron reorganisation of early 2001 is the hinge. Cabletron split into Enterasys Networks, Riverstone Networks, Aprisma and GNTS, and the problem became keeping a distribution business alive across a manufacturer that had ceased to exist as one. All four of those names appear elsewhere on this timeline. Here is what the split looked like from the channel, which is the side that has to keep selling while the vendor decides what it is.",
+      "From 2005 it was CTA, Centro de Treinamento Autorizado, for F5 Networks and IronPort across Brazil and Mercosur. The authorised F5 curriculum in this country was taught from a room in Brooklin. Authorised training arrives in a market through a company willing to build the laboratory, and it usually arrives inside a distributor.",
+      "The document recording all of this is a filing in the First Bankruptcy and Judicial Recovery Court of Sao Paulo. A company\u2019s clearest surviving account of what it was is frequently the one it wrote while asking a court for time.",
+  "PRIME worked directly with this company up to 2000, mostly with its training operation and occasionally testing equipment. Its offices were within walking distance of Cabletron Systems on Avenida Jurubatuba, which is the ordinary geography of a distribution relationship: the manufacturer and the channel that carries it end up on the same street.",
+    ],
+  },
+
+  {
+    slug: "broadcom",
+    sources: [
+      { label: "Broadcom Corporation (Wikipedia): American fabless semiconductor company founded August 1991 by Henry Nicholas and Henry Samueli, making products for wireless and broadband communication; traded on Nasdaq as BRCM from 1998 to 2016; products included Gigabit Ethernet, network switches, cable modems and VoIP", url: "https://en.wikipedia.org/wiki/Broadcom_Corporation" },
+      { label: "Avago Technologies (Wikipedia): the company that became Broadcom Inc. was established in 1961 as HP Associates, a Hewlett-Packard semiconductor division; KKR and Silver Lake acquired Agilent\u2019s Semiconductor Products Group in 2005 for US$2.6 billion to form Avago; Avago changed its name to Broadcom in January 2016 to acquire Broadcom Corporation, retaining the AVGO ticker while BRCM was retired; the VMware acquisition, announced May 2022 at US$69 billion, closed 22 November 2023", url: "https://en.wikipedia.org/wiki/Avago_Technologies" },
+      { label: "The Next Platform, December 2019 - the US$178 million deal in December 2009 for Dune Networks, which continues as the Jericho StrataDNX deep-buffer line, was pivotal for Broadcom\u2019s merchant silicon aspirations; the Trident family arrived in 2010 and ramped up merchant capabilities against the captive chips made by networking incumbents including Cisco, Juniper, Hewlett Packard (3Com) and Dell (Force10)", url: "https://www.nextplatform.com/connect/2019/12/12/broadcom-launches-another-tomahawk-into-the-datacenter/1658439" },
+      { label: "A summary of high-speed Ethernet ASICs: Broadcom\u2019s two important families in this space are StrataXGS and StrataDNX, the latter from its acquisition of Dune; these chips are called merchant silicon because they are sold to other parties who build systems around them, and all network vendors use merchant silicon in at least some of their routers and switches; the Arista 7500 is based on the StrataDNX chipset", url: "https://elegantnetwork.github.io/posts/A-Summary-of-Network-ASICs/" },
+      { label: "Broadcom - merchant silicon: the Tomahawk 5 / BCM78900 series of 51.2 Tb/s devices for data centre and cloud environments", url: "https://www.broadcom.com/info/switching/merchant-silicon" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    founded: 1991,
+    name: "Broadcom - the silicon inside almost everybody's switch",
+    tagline: "Merchant switching silicon supplier, and the company most networking equipment on this timeline depends on without saying so.",
+    intro: "Broadcom Corporation was founded in August 1991 by Henry Nicholas and Henry Samueli as a fabless maker of Ethernet and cable modem chips. It is now the dominant supplier of merchant switching silicon - the StrataXGS families, Trident and Tomahawk, and the deep-buffer StrataDNX line that came from its 2009 purchase of Dune Networks.",
+    body: [
+      "Merchant silicon is the reason the switch market stopped being a silicon competition. Before it, a networking manufacturer designed its own forwarding chips, and that capital requirement was the barrier to entry - the reason the vendors on this timeline from the 1990s were few and large. The Trident family arrived in 2010 and made a competitive switch buildable by anyone who could buy the same part, which is why the industry filled with equipment that differs in software and support rather than in the chip doing the forwarding.",
+      "The scale of that dependence is easy to understate. Every established networking vendor uses merchant silicon in at least some of its products, and the reference implementations of leaf and spine switching are overwhelmingly built on one supplier\u2019s families. A great deal of the equipment described elsewhere on this site is, at the forwarding plane, the same chip in different sheet metal.",
+      "The corporate history is the strangest part and worth stating plainly. The company now called Broadcom traces to HP Associates in 1961, was carved out of Agilent by private equity in 2005 as Avago, and in January 2016 Avago bought Broadcom Corporation for US$37 billion and took its name - the smaller, more profitable company buying the larger one and adopting its brand. Then Brocade in 2017, CA in 2018, Symantec\u2019s enterprise business in 2019 and VMware for US$69 billion in 2023.",
+      "That acquisition path crosses this timeline repeatedly. Brocade is where the Ruckus entry\u2019s chain begins; Symantec appears in the security cluster; and VMware sits under a great deal of the infrastructure the networking equipment connects. A company selling switching chips ended up owning the hypervisor as well.",
+    ],
+    externalUrl: "https://www.broadcom.com/",
+    externalLabel: "Broadcom",
+  },
+
+  {
+    slug: "intel",
+    sources: [
+      { label: "Intel (Wikipedia): American semiconductor company founded 18 July 1968 by Gordon Moore and Robert Noyce; developer of the x86 architecture and the 4004, the first commercially available microprocessor", url: "https://en.wikipedia.org/wiki/Intel" },
+      { label: "Intel 4004 (Wikipedia): announced November 1971", url: "https://en.wikipedia.org/wiki/Intel_4004" },
+      { label: "Silicon Republic - Intel chose Leixlip in 1989 for its first wafer fabrication plant outside the United States", url: "https://www.siliconrepublic.com/machines/chips-ireland-semiconductor-industry-europe-ida" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    founded: 1968,
+    name: "Intel - the processor in the control plane",
+    tagline: "Founded 1968 by Moore and Noyce; the x86 architecture, the first microprocessor, and the network interface everyone drives.",
+    intro: "Intel was founded on 18 July 1968 by Gordon Moore and Robert Noyce, produced the first commercially available microprocessor in 1971, and defined the x86 architecture that most general-purpose computing still runs on.",
+    body: [
+      "Its place on a networking timeline is not the processor in a laptop. It is the processor in the control plane: the management CPU inside a switch, the appliance running a firewall or a load balancer, and the server that terminates the traffic at the end of it. A great deal of the equipment described elsewhere on this site is an x86 machine with specialised silicon beside it, and the operating system on the management processor is where the configuration lives.",
+      "The second place is the network interface. Intel Ethernet controllers are the reference implementation in practice: the drivers ship with every operating system, the behaviour is what documentation assumes, and a large amount of packet-processing software was written against them first.",
+      "Two of its decisions appear in the milestones on this site rather than here. The 4004 in 1971 is where the microprocessor begins, and the choice of Leixlip in 1989 for the first wafer fabrication plant outside the United States is one anchor of the Irish manufacturing story.",
+    ],
+    externalUrl: "https://www.intel.com/",
+    externalLabel: "Intel",
+  },
+  {
+    slug: "tsmc",
+    sources: [
+      { label: "TSMC (Wikipedia): Taiwan Semiconductor Manufacturing Company, founded 1987 by Morris Chang, the world\u2019s first dedicated semiconductor foundry and the largest contract chipmaker", url: "https://en.wikipedia.org/wiki/TSMC" },
+      { label: "Fabless manufacturing (Wikipedia): the complementary model of designing and selling semiconductors while outsourcing fabrication", url: "https://en.wikipedia.org/wiki/Fabless_manufacturing" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    founded: 1987,
+    name: "TSMC - the factory behind most of the silicon on this site",
+    tagline: "The first pure-play semiconductor foundry, founded 1987, manufacturing designs it does not own.",
+    intro: "Taiwan Semiconductor Manufacturing Company was founded in 1987 by Morris Chang as a company that fabricates other companies\u2019 semiconductor designs and competes with none of them. It is the largest contract chipmaker in the world.",
+    body: [
+      "It belongs on this timeline for a reason that has nothing to do with networking products and everything to do with why they exist. The merchant switching silicon that most equipment on this site forwards packets with is designed by companies that own no factories. Somebody has to build those chips, and for most of them it is this company.",
+      "The arrangement is recorded in the making milestones here, because it is a structural invention rather than a product: before a foundry existed, designing a chip meant owning a fabrication plant, and only very large companies designed chips. Afterwards, a team with a design and a purchase order could have silicon.",
+      "It is also the point at which a great deal of the world\u2019s computing depends on a small number of buildings in one place, which is a fact about supply chains rather than about technology, and is why the subject now appears in industrial policy in several countries at once.",
+    ],
+    externalUrl: "https://www.tsmc.com/",
+    externalLabel: "TSMC",
+  },
+
+  {
+    slug: "amd",
+    sources: [
+      { label: "AMD Form 10-Q filed with the SEC, 2022: the company completed the acquisition of Xilinx on 14 February 2022 and of Pensando Systems on 26 May 2022", url: "https://www.sec.gov/Archives/edgar/data/2488/000000248822000123/amd-20220625.htm" },
+      { label: "AMD annual report filed with the SEC for 2022: the Pensando acquisition expanded data centre capability with high-performance data processing units and a software stack; 2022 net revenue was US$23.6 billion, up 44% on 2021", url: "https://www.sec.gov/Archives/edgar/data/2488/000119312523088137/d447088dars.pdf" },
+      { label: "The Next Platform, June 2022 - the Xilinx and Pensando acquisitions gave AMD network adapters and the people who design SerDes and packet-processing engines, while leaving it without datacentre switching; AMD\u2019s earlier networking attempt was the US$334 million purchase of SeaMicro in February 2012", url: "https://www.nextplatform.com/2022/06/24/amd-needs-to-complete-the-datacenter-set-with-switching/" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    founded: 1969,
+    name: "AMD - the company that bought its way into the network",
+    tagline: "Founded 1969; acquired Xilinx and Pensando in 2022 to reach the network adapter and the data processing unit.",
+    intro: "Advanced Micro Devices was founded in 1969 by people who had left Fairchild Semiconductor, and spent five decades as the second source and then the competitor in x86 processors. In 2022 it completed two acquisitions in three months that put it into networking silicon: Xilinx in February and Pensando in May.",
+    body: [
+      "What it bought is worth naming precisely, because it describes where packet processing has moved. Xilinx brought field-programmable gate arrays and the engineers who design the high-speed serialisers underneath every fast interface. Pensando brought data processing units - a network interface with a programmable packet pipeline and its own processor complex, running services that used to run on the server it is plugged into.",
+      "That is the shape of the current argument about where the network ends. A data processing unit does firewalling, encryption and virtual switching on the adapter, so the boundary between the server and the network stops being the cable and becomes a line drawn inside the card. Several of the security functions described elsewhere on this site are candidates to move there.",
+      "There is an irony in the company\u2019s own history that the making milestones make legible. AMD\u2019s long-serving chief executive is remembered for insisting that real men have fabs; the company later separated from its manufacturing entirely and designs silicon it does not build. The fabless milestone on this site describes the arrangement it ended up adopting.",
+    ],
+    externalUrl: "https://www.amd.com/",
+    externalLabel: "AMD",
+  },
+  {
+    slug: "xilinx",
+    sources: [
+      { label: "Xilinx (Wikipedia): founded 1984 in Silicon Valley by James V. Barnett II, Ross Freeman and Bernie Vonderschmitt, headquartered in San Jose; maker of FPGAs and CPLDs; public on Nasdaq from 1990 as XLNX; AMD announced its acquisition in October 2020 and completed it on 14 February 2022 in an all-stock transaction; the brand was phased out in June 2023", url: "https://en.wikipedia.org/wiki/Xilinx" },
+      { label: "AMD Form 10-Q filed with the SEC: the Xilinx acquisition completed 14 February 2022", url: "https://www.sec.gov/Archives/edgar/data/2488/000000248822000123/amd-20220625.htm" },
+    ],
+    tags: ["vendor"],
+    group: "other",
+    founded: 1984,
+    ended: {
+      year: 2023,
+      note: "Acquired by AMD on 14 February 2022 and the brand phased out in June 2023; the product lines continue under AMD.",
+    },
+    name: "Xilinx - the chip you finish writing yourself",
+    tagline: "Field-programmable gate array pioneer, founded 1984, acquired by AMD in 2022.",
+    intro: "Xilinx was founded in Silicon Valley in 1984 and built field-programmable gate arrays: chips whose logic is configured after manufacture, by the customer, and can be reconfigured afterwards. AMD acquired it in February 2022 and retired the name in June 2023.",
+    body: [
+      "The FPGA sits between the two options the making milestones describe. A general-purpose processor runs anything and is slow at specialised work; a custom chip is fast and costs millions to design and fabricate before a single one exists. A field-programmable device is bought as a finished part and given its function afterwards, which makes small volumes and changing requirements affordable.",
+      "That is why it appears in networking. Line-rate packet processing that has no volume to justify a custom chip - a specialised inspection function, a protocol nobody else implements, an accelerator whose specification changes each year - is FPGA work. The same property explains why network equipment vendors have shipped them for decades in products nobody describes as programmable hardware.",
+      "It also explains the acquisition. What AMD bought was the ability to put programmable logic next to its processors and the people who design the serialisers underneath fast interfaces, at a moment when the network adapter was becoming a computer of its own.",
+    ],
+  },
+
+  {
+    slug: "marvell",
+    sources: [
+      { label: "IEEE Spectrum - Sehat Sutardja, an engineering Marvell: on 10 February 1995 Sehat Sutardja, his wife Weili Dai and his brother Pantas incorporated Marvell, named for the marvellous things they planned and for the pattern of successful company names ending in el or ell - Intel, Novell, Nortel; the first product was a read channel for disk drives built in CMOS rather than the BiCMOS then standard", url: "https://spectrum.ieee.org/sehat-sutardja-an-engineering-marvell" },
+      { label: "Sehat Sutardja (Wikipedia): born Jakarta 1961, died 2024; BS from Iowa State, MS and PhD from the University of California, Berkeley; more than 440 patents; IEEE fellow; in 2004 he and his fellow founders received the Ernst & Young Entrepreneur of the Year award in the networking and communications category", url: "https://en.wikipedia.org/wiki/Sehat_Sutardja" },
+      { label: "EDN - the life and chip works of Marvell co-founder Sehat Sutardja: a certified radio repair technician at thirteen, building devices from parts in his parents\u2019 shop in Jakarta; at ISSCC in 2015 he presented modular chips, MoChi, an idea that became known as chiplets", url: "https://www.edn.com/the-life-and-chip-works-of-marvell-co-founder-sehat-sutardja/" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    founded: 1995,
+    name: "Marvell - founded on a disk drive, ended up in the network",
+    tagline: "Silicon company incorporated in 1995 by three founders, now a supplier of networking and infrastructure chips.",
+    intro: "Marvell was incorporated on 10 February 1995 by Sehat Sutardja, Weili Dai and Pantas Sutardja. Its first product was a read channel for hard disk drives - the circuit that turns the noisy analogue signal from a magnetic head into digital data - built in CMOS when the industry used a more expensive process.",
+    body: [
+      "It had working chips by Christmas 1995 and Seagate as its first customer. The approach - high-speed sampling and digital filtering in CMOS, where the incumbents used analogue peak detection in a more expensive process - increased the data density a drive could hold, and took Texas Instruments out of the read-channel business.",
+      "The path from that to networking silicon is the ordinary one for this industry and worth stating. A read channel is a mixed-signal problem: recovering a weak analogue signal at high speed and deciding what bits it carries. So is a physical-layer transceiver on an Ethernet port, and so is the serialiser underneath every fast interface. The same CMOS approach carried across, and the disk drive is simply where the money was in 1995.",
+      "Its timing is also a data point for the making milestones on this site. The fabless model was just becoming viable when Marvell was founded, and the company is one of the early successes of it - designing silicon it did not manufacture, at the moment that stopped being a disadvantage.",
+      "The founder\u2019s own beginning belongs here because this site records how people enter this work. Sehat Sutardja built a Van de Graaff generator in Jakarta after finding his brother\u2019s hobbyist magazines, learned that transistors would improve it, and held a radio repair licence by the age of thirteen. The names printed on those transistors - Fairchild, National Semiconductor, Motorola, Texas Instruments - were American, and that is what sent him to the United States in 1980. He took a doctorate at Berkeley and held more than four hundred patents by the end. In 2004 the three founders were recognised jointly, in the networking and communications category.",
+      "One of his later ideas has a place in the making milestones. At a solid-state circuits conference in 2015 he proposed modular chips - building a large device from several small ones connected together rather than as a single die. The industry adopted the approach and a different name for it, chiplets, and it is now how most large processors are actually constructed.",
+    ],
+    externalUrl: "https://www.marvell.com/",
+    externalLabel: "Marvell",
+  },
+  {
+    slug: "arm",
+    sources: [
+      { label: "Arm Holdings (Wikipedia): the company was formed in 1990 as a joint venture, and licenses its processor architecture to other companies to manufacture rather than selling chips itself", url: "https://en.wikipedia.org/wiki/Arm_Holdings" },
+      { label: "Reduced instruction set computer (Wikipedia): the architectural argument the Arm cores implement", url: "https://en.wikipedia.org/wiki/Reduced_instruction_set_computer" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    founded: 1990,
+    name: "Arm - the processor almost nobody buys from Arm",
+    tagline: "Formed 1990; licenses a processor architecture rather than selling processors.",
+    intro: "Arm was formed in 1990 as a joint venture and sells something unusual: not chips, but the right to build them. Companies license its processor designs, add their own logic, and have somebody else fabricate the result.",
+    body: [
+      "The consequence is visible in almost every device this site describes. The management processor inside a switch, the controller on a network adapter, the data processing unit doing encryption on a card, the access point on the ceiling - a large share of them run an Arm core that the equipment vendor licensed rather than bought.",
+      "It is the third separation in the arrangement the making milestones record. Manufacturing had already been separated from design by the foundry; the architecture was then separated from both. A vendor can license a core, add its own packet-processing logic, have a foundry fabricate it and a contract manufacturer assemble the product, and own none of those four things.",
+      "That model also explains why the architecture spread as it did. A company selling chips competes with its customers when they want to build their own; a company selling licences does not, so the people best placed to design specialised silicon had no reason to look elsewhere.",
+    ],
+    externalUrl: "https://www.arm.com/",
+    externalLabel: "Arm",
+  },
+
+  {
+    slug: "qualcomm",
+    sources: [
+      { label: "Qualcomm (Wikipedia): founded 1 July 1985 in San Diego by Irwin Jacobs, Andrew Viterbi, Franklin Antonio and others; subsidiaries include Qualcomm Atheros, CSR, Ikanos, Nuvia and Arduino", url: "https://en.wikipedia.org/wiki/Qualcomm" },
+      { label: "Qualcomm proxy statement filed with the SEC: Irwin Mark Jacobs, one of the founders, served as chairman from the company\u2019s start of operations in July 1985 and as chief executive from July 1985 to June 2005", url: "https://www.sec.gov/Archives/edgar/data/0000804328/000095012311003687/a57961dedef14a.htm" },
+      { label: "HandWiki, drawing on published histories: Qualcomm was established by seven former Linkabit employees and named for quality communications; it began as a contract research and development centre for government and defence work, merged with Omninet in 1988 to produce the Omnitracs satellite communications system for trucking companies, and Omnitracs profits helped fund its research into code-division multiple access for cellular networks; it grew from eight employees in 1986 to 620 in 1991", url: "https://handwiki.org/wiki/Company:Qualcomm" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    founded: 1985,
+    name: "Qualcomm - a trucking service paid for the mobile network",
+    tagline: "Founded 1985; funded its CDMA research with a satellite messaging system sold to hauliers.",
+    intro: "Qualcomm was founded on 1 July 1985 in San Diego by seven people who had left Linkabit, led by Irwin Jacobs, and named for quality communications. It began as contract research for government and defence.",
+    body: [
+      "The sequence that made it is worth stating in order, because it is the opposite of how these companies are usually described. Its commercial product was OmniTRACS: satellite messaging and positioning sold to long-haul trucking companies, launched in 1988. The profits from tracking lorries paid for the research into code-division multiple access that became the basis of a generation of mobile networks.",
+      "The technical bet underneath that is the interesting one. The industry was moving toward time-division multiple access, which divides a channel by time; Qualcomm argued for dividing it by code instead, so that every transmitter uses the whole band at once and separation is done by mathematics rather than by scheduling. That is a harder engineering problem and a better use of spectrum, and being right about it is most of the company\u2019s history.",
+      "Its place on a networking timeline is direct. The wireless silicon in a great many access points and home gateways carries the Atheros name it acquired, and the modem in a handset is where the mobile network actually terminates. One of its founders also gave the industry the Viterbi algorithm, which decodes convolutional codes and sits inside the physical layer of a very large amount of equipment described elsewhere on this site.",
+    ],
+    externalUrl: "https://www.qualcomm.com/",
+    externalLabel: "Qualcomm",
+  },
+  {
+    slug: "texas-instruments",
+    sources: [
+      { label: "Texas Instruments (Wikipedia): American semiconductor company, its origins in Geophysical Service Incorporated, renamed Texas Instruments in 1951; employer of Jack Kilby, who demonstrated the integrated circuit in 1958", url: "https://en.wikipedia.org/wiki/Texas_Instruments" },
+      { label: "Integrated circuit (Wikipedia): Kilby\u2019s 1958 demonstration at Texas Instruments, alongside Noyce\u2019s planar work at Fairchild", url: "https://en.wikipedia.org/wiki/Integrated_circuit" },
+    ],
+    tags: ["vendor"],
+    group: "contemporary",
+    founded: 1930,
+    name: "Texas Instruments - where the integrated circuit was demonstrated",
+    tagline: "Semiconductor company whose employee demonstrated the first integrated circuit in 1958.",
+    intro: "Texas Instruments began as a company doing seismic survey work for the oil industry and took its present name in 1951. In 1958 one of its engineers, Jack Kilby, demonstrated that several components could be built on a single piece of semiconductor - the integrated circuit.",
+    body: [
+      "That demonstration is a milestone on this site rather than a line in this entry, and the milestone records the qualification honestly: Kilby showed it could be done and Noyce\u2019s planar approach at Fairchild is what made it manufacturable. Both are credited, and the distinction between proving a thing possible and making it repeatable is the whole difference between a laboratory and an industry.",
+      "The company since is less visible and more pervasive than its origin suggests. Its business is largely analogue and embedded silicon - power management, signal conditioning, interface, the small parts that are never listed on a datasheet summary and without which nothing else on the board functions.",
+      "It also appears elsewhere on this timeline as somebody who lost a market. The Marvell entry records that a digital read channel built in CMOS took Texas Instruments out of the disk-drive read-channel business, which is a reminder that a company can invent the foundational technology of an industry and still be displaced inside it.",
+    ],
+    externalUrl: "https://www.ti.com/",
+    externalLabel: "Texas Instruments",
+  },
+  {
+    slug: "raspberry-pi",
+    sources: [
+      { label: "Raspberry Pi (Wikipedia): a series of small single-board computers developed in the United Kingdom by the Raspberry Pi Foundation, established to promote the teaching of basic computer science in schools and developing countries", url: "https://en.wikipedia.org/wiki/Raspberry_Pi" },
+    ],
+    tags: ["vendor", "training"],
+    group: "contemporary",
+    name: "Raspberry Pi - the machine you are allowed to break",
+    tagline: "Single-board computer created to get computing back into teaching, now embedded across networking and lab work.",
+    intro: "The Raspberry Pi is a single-board computer developed in the United Kingdom by a foundation set up to promote the teaching of computer science, at a price that made it something a school or a learner could risk.",
+    body: [
+      "It belongs on a site about learning networking because of what it changed about practice rather than what it computes. Before it, a laboratory meant borrowed equipment or a simulator; afterwards, a working machine with a real network interface cost less than a textbook. A learner can configure it, break it, reinstall it and break it again, which is how the subject is actually learned and is precisely what shared laboratory equipment does not permit.",
+      "In working networks it turned up anyway, as small routers, probes, monitoring nodes, console servers and packet captures on a shelf. That is the ordinary fate of a cheap general-purpose computer with an Ethernet port: somebody finds the job it does well and the job stops needing a purpose-built device.",
+      "It also demonstrates the arrangement the making milestones describe, at the smallest possible scale. A foundation with no factory designed a board around a licensed processor architecture, had the silicon fabricated by somebody else and the boards assembled by somebody else again, and sold the result for the price of a meal.",
+    ],
+    externalUrl: "https://www.raspberrypi.com/",
+    externalLabel: "Raspberry Pi",
   },
 ];
 

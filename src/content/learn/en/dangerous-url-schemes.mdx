@@ -27,7 +27,7 @@ The `gopher://` scheme is the most abused, because it lets an attacker place nea
 
 ## The defense is a scheme allow-list
 
-Because these schemes provide capabilities far beyond fetching a web page, the fix is simple and strict: allow only `http` and `https`, and reject every other scheme before the request is built. This tool flags a dangerous scheme as soon as it sees one, raising the risk to high regardless of the host, because the scheme alone is enough to matter.
+Because these schemes provide capabilities far beyond fetching a web page, the fix is simple and strict: allow only `http` and `https`, and reject every other scheme before the request is built. [SSRF URL classifier](/tools/ssrf-url-classifier) flags a dangerous scheme as soon as it sees one, raising the risk to high regardless of the host, because the scheme alone is enough to matter.
 
 
 ## The scheme list is an allow-list, or it is nothing

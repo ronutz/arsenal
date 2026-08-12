@@ -27,7 +27,7 @@ Toda forma acima resolve para o mesmo endereço interno, mas cada uma é uma str
 
 ## Decodifique primeiro, depois classifique
 
-O movimento confiável é analisar o host até seu valor numérico e classificar esse valor contra as faixas reservadas, exatamente como esta ferramenta faz. Uma vez que `2130706433`, `0x7f000001` e `127.1` são todos reduzidos ao mesmo número de 32 bits, todos caem em `127.0.0.0/8` e são sinalizados juntos. A normalização remove a liberdade do atacante de reescrever o alvo.
+O movimento confiável é analisar o host até seu valor numérico e classificar esse valor contra as faixas reservadas, exatamente como o [Classificador de URL para SSRF](/tools/ssrf-url-classifier) faz. Uma vez que `2130706433`, `0x7f000001` e `127.1` são todos reduzidos ao mesmo número de 32 bits, todos caem em `127.0.0.0/8` e são sinalizados juntos. A normalização remove a liberdade do atacante de reescrever o alvo.
 
 
 ## Interprete, depois julgue — nunca compare texto

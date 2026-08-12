@@ -15077,6 +15077,10 @@
       "transfer": {
         "name": "Transmissão",
         "blurb": "Mover. Da primeira separação entre mensagem e mensageiro até a fibra sob o oceano, passando pelas duas decisões de projeto - pacotes em vez de circuitos, e interconexão de redes em vez de uma rede só - que produziram tudo desde então."
+      },
+      "making": {
+        "name": "Fabricação",
+        "blurb": "Os cinco eixos acima registram o que foi inventado. Este registra como qualquer daquilo passa a ser construído - o processo planar, a foundry, a arquitetura licenciada, a fábrica contratada. Um fabricante de rede hoje projeta um produto que não manufatura, sobre silício que não fabrica, usando uma arquitetura de processador que licencia em vez de possuir. Cada passo desse arranjo foi inventado por alguém, numa data."
       }
     }
   },

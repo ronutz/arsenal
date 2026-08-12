@@ -19,7 +19,7 @@ Many events belong to a specific TMOS module, and that module must be **provisio
 
 ## Gate two: profile selection
 
-Within LTM, the L7 and SSL events are produced by **profiles** attached to the virtual server. This is the dependency this tool models, and the rule is consistent:
+Within LTM, the L7 and SSL events are produced by **profiles** attached to the virtual server. This is the dependency [iRules event-order explainer](/tools/f5-irules-event-order) models, and the rule is consistent:
 
 - `HTTP_REQUEST` and `HTTP_RESPONSE` require an **HTTP profile**. No HTTP profile, no HTTP events — the BIG-IP is not parsing HTTP, so there is nothing to fire on.
 - `CLIENTSSL_HANDSHAKE` and the other client-side TLS events require a **client-SSL profile**; the server-side TLS events require a **server-SSL profile**.
@@ -40,7 +40,7 @@ when CLIENT_DATA {
 }
 ```
 
-That is why this tool lists those as conditional events rather than part of the automatic flow.
+That is why [iRules event-order explainer](/tools/f5-irules-event-order) lists those as conditional events rather than part of the automatic flow.
 
 ## The practical checklist
 

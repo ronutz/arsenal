@@ -19,7 +19,7 @@ Muitos eventos pertencem a um módulo específico do TMOS, e esse módulo precis
 
 ## Portão dois: seleção de perfil
 
-Dentro do LTM, os eventos L7 e SSL são produzidos por **perfis** anexados ao virtual server. Essa é a dependência que esta ferramenta modela, e a regra é consistente:
+Dentro do LTM, os eventos L7 e SSL são produzidos por **perfis** anexados ao virtual server. Essa é a dependência que o [Explicador da ordem de eventos de iRules](/tools/f5-irules-event-order) modela, e a regra é consistente:
 
 - `HTTP_REQUEST` e `HTTP_RESPONSE` exigem um **perfil HTTP**. Sem perfil HTTP, sem eventos HTTP — o BIG-IP não está analisando HTTP, então não há nada em que disparar.
 - `CLIENTSSL_HANDSHAKE` e os outros eventos TLS do lado cliente exigem um **perfil Client-SSL**; os eventos TLS do lado servidor exigem um **perfil Server-SSL**.
@@ -40,7 +40,7 @@ when CLIENT_DATA {
 }
 ```
 
-É por isso que esta ferramenta lista esses como eventos condicionais, e não como parte do fluxo automático.
+É por isso que o [Explicador da ordem de eventos de iRules](/tools/f5-irules-event-order) lista esses como eventos condicionais, e não como parte do fluxo automático.
 
 ## A lista prática
 

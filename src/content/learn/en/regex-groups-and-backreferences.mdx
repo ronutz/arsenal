@@ -25,7 +25,7 @@ Counting parentheses gets fragile as patterns grow. A **named group** `(?<year>\
 
 ## Backreferences
 
-A **backreference** matches the same text a group already captured. `\1` refers to the first group; `\k<year>` refers to a named one. This is how you catch repetition: `(\w+)\s+\1` finds a doubled word like "the the", because `\1` must match whatever `(\w+)` just matched. A backreference matches the captured *text*, not the pattern again — a subtle but important distinction.
+A **backreference** matches the same text a group already captured. `\1` refers to the first group; `\k<year>` refers to a named one. This is how you catch repetition: `(\w+)\s+\1` finds a doubled word like "the", because `\1` must match whatever `(\w+)` just matched. A backreference matches the captured *text*, not the pattern again — a subtle but important distinction.
 
 ## Lookarounds: asserting without consuming
 

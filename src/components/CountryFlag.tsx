@@ -136,6 +136,22 @@ const FLAGS: Record<CountryCode, React.ReactNode> = {
 
   // EXACT.
   // EXACT — three equal vertical bands, Italian specification colours.
+  // SIMPLIFIED - Chile: white over red, with a blue canton bearing a white
+  // five-pointed star. At 30x20 a true five-pointed star is sub-pixel, so the
+  // star is drawn as a small white polygon that keeps the silhouette; the
+  // canton is one third of the width and half the height, which is exact.
+  CL: (
+    <>
+      <rect width="30" height="10" fill="#FFFFFF" />
+      <rect y="10" width="30" height="10" fill="#D52B1E" />
+      <rect width="10" height="10" fill="#0039A6" />
+      <polygon
+        points="5,2.6 5.9,5.2 8.6,5.2 6.4,6.9 7.2,9.5 5,7.9 2.8,9.5 3.6,6.9 1.4,5.2 4.1,5.2"
+        fill="#FFFFFF"
+      />
+    </>
+  ),
+
   IT: (
     <>
       <rect width="10" height="20" fill="#008C45" />

@@ -27,7 +27,7 @@ Reaching internal-only services can expose admin interfaces, unauthenticated int
 
 ## The shape of the fix
 
-Because the same address can be written many ways, filtering the URL text is not enough. The reliable approach is to resolve the destination and classify the resulting IP against known-internal ranges, allow only the addresses you intend to reach, and restrict the scheme to http and https. That classification of a destination is exactly what this tool performs, locally and without ever issuing the request.
+Because the same address can be written many ways, filtering the URL text is not enough. The reliable approach is to resolve the destination and classify the resulting IP against known-internal ranges, allow only the addresses you intend to reach, and restrict the scheme to http and https. That classification of a destination is exactly what the [SSRF URL classifier](/tools/ssrf-url-classifier) performs, locally and without ever issuing the request.
 
 
 ## The trust boundary the request crosses

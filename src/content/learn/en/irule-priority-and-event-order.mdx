@@ -39,4 +39,4 @@ A handler at priority 250 runs before one left at the default 500, regardless of
 
 Most of the time you do not touch priority — order among rules does not matter. You reach for it when one rule's effect is an input to another: rule A inserts a header in `HTTP_REQUEST` and rule B reads that header in the same event. Without explicit priorities, whether B sees A's header depends on insertion order, which is fragile. Give A a lower number and the dependency becomes deterministic.
 
-The mental model that keeps it straight: **event order is across the connection; priority is within one event.** This tool shows the first; priority controls the second, and only matters when you have multiple handlers competing for the same moment.
+The mental model that keeps it straight: **event order is across the connection; priority is within one event.** [iRules event-order explainer](/tools/f5-irules-event-order) shows the first; priority controls the second, and only matters when you have multiple handlers competing for the same moment.

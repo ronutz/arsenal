@@ -21,7 +21,7 @@ The first thing JSON cannot carry is comments. YAML lets you annotate a file wit
 
 ## YAML-only types
 
-Beyond structure, YAML's fuller type system can express things JSON cannot. Standard YAML can tag a value as a timestamp, as binary data, or use a whole collection as a key, none of which JSON allows, since JSON keys must be strings and JSON has no date or binary type. A converter aimed at JSON output sidesteps this by reading YAML under a JSON-compatible schema: a date-looking string stays a string rather than becoming a date object, so the result is always something JSON can represent. The cost is honesty about the boundary, which is why this tool reads YAML with exactly that restricted schema.
+Beyond structure, YAML's fuller type system can express things JSON cannot. Standard YAML can tag a value as a timestamp, as binary data, or use a whole collection as a key, none of which JSON allows, since JSON keys must be strings and JSON has no date or binary type. A converter aimed at JSON output sidesteps this by reading YAML under a JSON-compatible schema: a date-looking string stays a string rather than becoming a date object, so the result is always something JSON can represent. The cost is honesty about the boundary, which is why [JSON ↔ YAML Converter](/tools/json-yaml-convert) reads YAML with exactly that restricted schema.
 
 ## What JSON has that trips YAML
 

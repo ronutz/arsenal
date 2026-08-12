@@ -25,7 +25,7 @@ Contar parênteses fica frágil à medida que os padrões crescem. Um **grupo no
 
 ## Retrorreferências
 
-Uma **retrorreferência** corresponde ao mesmo texto que um grupo já capturou. `\1` refere-se ao primeiro grupo; `\k<year>` refere-se a um grupo nomeado. É assim que você captura repetição: `(\w+)\s+\1` encontra uma palavra duplicada como "the the", porque `\1` precisa corresponder ao que `(\w+)` acabou de corresponder. Uma retrorreferência corresponde ao *texto* capturado, não ao padrão de novo — uma distinção sutil, mas importante.
+Uma **retrorreferência** corresponde ao mesmo texto que um grupo já capturou. `\1` refere-se ao primeiro grupo; `\k<year>` refere-se a um grupo nomeado. É assim que você captura repetição: `(\w+)\s+\1` encontra uma palavra duplicada como "the", porque `\1` precisa corresponder ao que `(\w+)` acabou de corresponder. Uma retrorreferência corresponde ao *texto* capturado, não ao padrão de novo — uma distinção sutil, mas importante.
 
 ## Lookarounds: afirmar sem consumir
 

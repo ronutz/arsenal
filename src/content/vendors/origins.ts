@@ -335,4 +335,93 @@ export const VENDOR_ORIGINS: Record<string, CountryCode> = {
   "versim": "PL",
   "dimension-data": "ZA",
 
+
+  // ---- Added 2026-08-11 with the 30 entries written since the map was last
+  // filled. FOUND BY A QUERY, NOT BY A GUARD: PRIME asked for a list of Brazilian
+  // VARs and VADs, the answer looked short, and 30 entries turned out to carry no
+  // origin at all - so the country toggles were silently omitting them. Quad9 is
+  // CH (Swiss-based by design), BlueCat CA, EfficientIP FR, Capgemini FR. ----
+  "usp": "BR",
+  "unicamp": "BR",
+  "fatec": "BR",
+  "prodesp": "BR",
+  "prodam": "BR",
+  "highcast": "BR",
+  "ihc-group": "BR",
+  "conversys": "BR",
+  "gantech": "BR",
+  "contacta": "BR",
+  "totvs": "BR",
+  "microsiga": "BR",
+  "bematech": "BR",
+  "elgin": "BR",
+  "it-one": "BR",
+  "proof": "BR",
+  "ish": "BR",
+  "multiplus": "BR",
+  "sisco": "BR",
+  "altasnet": "BR",
+  "e-safer": "BR",
+  "cobra": "BR",
+  "ax4b": "BR",
+  "opendns": "US",
+  "dyn": "US",
+  "quad9": "CH",
+  "bluecat": "CA",
+  "efficientip": "FR",
+  "nextdns": "US",
+  "capgemini": "FR",
+
+  "wdc": "BR",
+
+  "goldnet": "BR",
+  "unentel": "BR",
+
+  "ntsec": "BR",
+
+  "cpm-braxis": "BR",
+
+  "etek-novared": "BR",
+
+  "sek": "BR",
+  "neosecure": "CL",
+  "proteus": "BR",
+
+  "fast-lane": "DE",
+  "global-knowledge": "US",
+
+  "adistec": "US",
+  "teltec": "BR",
+
+  "xylan": "US",
+
+  "ruckus": "US",
+
+  "sonda": "CL",
+
+  "tecban": "BR",
+
+  "damovo": "DE",
+
+  "exclusive-networks": "FR",
+
+  "afina": "ES",
+
+  "lanpro": "BR",
+
+  "broadcom": "US",
+
+  "intel": "US",
+  "tsmc": "TW",
+
+  "amd": "US",
+  "xilinx": "US",
+
+  "marvell": "US",
+  "arm": "GB",
+
+  "qualcomm": "US",
+  "texas-instruments": "US",
+  "raspberry-pi": "GB",
+
 };

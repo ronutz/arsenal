@@ -48,8 +48,30 @@
   gap: 0.75rem 1.25rem;
 }
 .site-nav-link {
-  color: var(--text-secondary);
+  /* SLIGHTLY BRIGHTER, DELIBERATELY NOT LOUDER (PRIME 2026-08-11: "a bit
+     shinier, brighter, so they pop-out a little bit more. Subtle, not
+     screaming.").
+
+     Three things were available and only two were taken.
+
+     TAKEN: the base colour lifts 30% of the way from --text-secondary towards
+     --text-primary. That is a nudge in the direction the eye already reads as
+     "active", and because it is a mix of two theme tokens it stays correct on
+     all 28 themes, light and dark, rather than being a hex that happens to look
+     right on one.
+
+     TAKEN: antialiased smoothing, which renders the strokes marginally crisper
+     and is the actual source of the "shine" - it changes how the glyph is drawn,
+     not how big or bold it is.
+
+     NOT TAKEN: font-weight. The bar was deliberately dropped to normal weight on
+     2026-08-09 and weight is not a tiering channel here; making it heavier would
+     undo a ruling rather than brighten anything. A text-shadow glow was also
+     rejected: at this size it reads as a blur, not a shine. */
+  color: color-mix(in srgb, var(--text-secondary) 70%, var(--text-primary) 30%);
   font-size: 0.9rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   transition: color 0.15s ease;
 }
 .site-nav-link:hover {
@@ -15413,6 +15435,23 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   text-decoration: underline;
   text-underline-offset: 0.35em;
   text-decoration-color: var(--redu-brand);
+}
+
+/* ADVISORY IN AMBER-GOLD (PRIME 2026-08-11). It leaves the quiet pair and
+   becomes the fourth tier in the bar, using var(--accent-amber) - a token every
+   one of the 28 themes defines, so it shifts with the theme exactly as
+   nav-primary does and never fights the palette. Amber is the site's own
+   emphasis colour, already carrying the milestones card; using it here says
+   "commercial offer" without red, which belongs to Red Education alone. */
+.site-nav-link.nav-advisory {
+  color: var(--accent-amber);
+}
+
+.site-nav-link.nav-advisory:hover {
+  color: var(--accent-amber);
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+  text-decoration-color: var(--accent-amber);
 }
 
 /* The quiet pair keeps the inherited .site-nav-link colour and weight. Declared

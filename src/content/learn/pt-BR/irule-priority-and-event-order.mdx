@@ -39,4 +39,4 @@ Um handler na prioridade 250 roda antes de um deixado no padrão 500, independen
 
 Na maioria das vezes você não mexe na prioridade — a ordem entre regras não importa. Você recorre a ela quando o efeito de uma regra é entrada de outra: a regra A insere um cabeçalho em `HTTP_REQUEST` e a regra B lê esse cabeçalho no mesmo evento. Sem prioridades explícitas, se B vê o cabeçalho de A depende da ordem de inserção, o que é frágil. Dê a A um número menor e a dependência fica determinística.
 
-O modelo mental que mantém tudo claro: **a ordem de eventos é ao longo da conexão; a prioridade é dentro de um evento.** Esta ferramenta mostra a primeira; a prioridade controla a segunda, e só importa quando você tem múltiplos handlers disputando o mesmo momento.
+O modelo mental que mantém tudo claro: **a ordem de eventos é ao longo da conexão; a prioridade é dentro de um evento.** [Explicador da ordem de eventos de iRules](/tools/f5-irules-event-order) mostra a primeira; a prioridade controla a segunda, e só importa quando você tem múltiplos handlers disputando o mesmo momento.

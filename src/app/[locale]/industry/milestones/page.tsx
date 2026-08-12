@@ -20,6 +20,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { externalRel } from "@/config/redEducation";
 import { routing } from "@/i18n/routing";
 import {
   MILESTONE_STRANDS,
@@ -135,9 +136,35 @@ export default async function MilestonesPage({
                         {m.dateNote && (
                           <p className="lineage-deal-note">{m.dateNote}</p>
                         )}
+                        {/* SOURCES AS LINKS (PRIME 2026-08-11). The `url` on a
+                            milestone source is OPTIONAL and most of these
+                            citations are to primary literature from before the
+                            web - Volta's 1800 letter, Maxwell's 1865 paper -
+                            which have no canonical address. So this renders a
+                            link ONLY where a url exists and plain text
+                            otherwise, rather than inventing a destination or
+                            leaving every citation unlinked. Same convention as
+                            the vendor pages: new tab, and `externalRel` for the
+                            rel attribute. */}
                         {m.sources.length > 0 && (
                           <p className="lineage-deal-note mono">
-                            {m.sources.map((s) => s.label).join(" \u00b7 ")}
+                            {m.sources.map((s, i) => (
+                              <span key={s.label}>
+                                {i > 0 && " \u00b7 "}
+                                {s.url ? (
+                                  <a
+                                    href={s.url}
+                                    target="_blank"
+                                    rel={externalRel(s.url)}
+                                    className="partner-source-link"
+                                  >
+                                    {s.label}
+                                  </a>
+                                ) : (
+                                  s.label
+                                )}
+                              </span>
+                            ))}
                           </p>
                         )}
                       </div>

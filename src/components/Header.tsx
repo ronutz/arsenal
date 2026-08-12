@@ -58,7 +58,7 @@ export default async function Header() {
               /speaking is reached FROM advisory rather than from here, because
               event organisers arrive by referral and search, not by browsing a
               navigation bar. */}
-          <Link href="/advisory" className="site-nav-link nav-quiet">
+          <Link href="/advisory" className="site-nav-link nav-advisory">
             {t("advisory")}
           </Link>
           {/* About moves to LAST (PRIME 2026-08-06). It is the least

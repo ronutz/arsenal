@@ -27,7 +27,7 @@ Alcançar serviços internos pode expor interfaces administrativas, APIs interna
 
 ## A forma da correção
 
-Como o mesmo endereço pode ser escrito de muitas maneiras, filtrar o texto da URL não basta. A abordagem confiável é resolver o destino e classificar o IP resultante contra as faixas conhecidas como internas, permitir apenas os endereços que você pretende alcançar e restringir o esquema a http e https. Essa classificação de destino é exatamente o que esta ferramenta faz, localmente e sem nunca emitir a requisição.
+Como o mesmo endereço pode ser escrito de muitas maneiras, filtrar o texto da URL não basta. A abordagem confiável é resolver o destino e classificar o IP resultante contra as faixas conhecidas como internas, permitir apenas os endereços que você pretende alcançar e restringir o esquema a http e https. Essa classificação de destino é exatamente o que o [Classificador de URL para SSRF](/tools/ssrf-url-classifier) faz, localmente e sem nunca emitir a requisição.
 
 
 ## A fronteira de confiança que a requisição atravessa

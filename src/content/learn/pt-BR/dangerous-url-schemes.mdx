@@ -27,7 +27,7 @@ O esquema `gopher://` é o mais abusado, porque permite ao atacante colocar byte
 
 ## A defesa é uma allow-list de esquemas
 
-Como esses esquemas fornecem capacidades muito além de buscar uma página web, a correção é simples e rígida: permita apenas `http` e `https`, e rejeite todo outro esquema antes de a requisição ser construída. Esta ferramenta sinaliza um esquema perigoso assim que o vê, elevando o risco para alto independentemente do host, porque o esquema sozinho já basta para importar.
+Como esses esquemas fornecem capacidades muito além de buscar uma página web, a correção é simples e rígida: permita apenas `http` e `https`, e rejeite todo outro esquema antes de a requisição ser construída. [Classificador de URL para SSRF](/tools/ssrf-url-classifier) sinaliza um esquema perigoso assim que o vê, elevando o risco para alto independentemente do host, porque o esquema sozinho já basta para importar.
 
 
 ## A lista de esquemas é uma allow-list, ou não é nada
