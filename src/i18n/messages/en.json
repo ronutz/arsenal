@@ -6351,6 +6351,8 @@
       "examsLede": "Objective by objective for each exam, showing what is covered here and, honestly, what is not."
     },
     "f5os-restconf-path-explainer": {
+      "name": "F5OS RESTCONF path explainer",
+      "blurb": "Paste an F5OS RESTCONF path and get it decoded segment by segment: the YANG module prefix, the container hierarchy, list keys such as tenant=tenant1, and the module:node prefixing convention. It also explains the port 8888 /restconf versus port 443 /api duality from F5OS 1.8. Local and offline.",
       "inputLabel": "F5OS RESTCONF path",
       "placeholder": "/restconf/data/f5-tenants:tenants/tenant=tenant1/config",
       "example": "Example",

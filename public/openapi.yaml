@@ -3619,10 +3619,14 @@ paths:
       tags:
         - F5OS platform (VELOS / rSeries)
       operationId: run_f5os_restconf_path_explainer
-      summary: f5os-restconf-path-explainer
+      summary: F5OS RESTCONF path explainer
       description: >-
-        Standards: F5OS RESTCONF, OpenConfig YANG. Stateless and side-effect-free: the same input
-        always yields the same result, and nothing is stored or logged.
+        Paste an F5OS RESTCONF path and get it decoded segment by segment: the YANG module prefix,
+        the container hierarchy, list keys such as tenant=tenant1, and the module:node prefixing
+        convention. It also explains the port 8888 /restconf versus port 443 /api duality from F5OS
+        1.8. Local and offline. Standards: F5OS RESTCONF, OpenConfig YANG. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
       parameters:
         - name: input
           in: query
@@ -3647,10 +3651,14 @@ paths:
       tags:
         - F5OS platform (VELOS / rSeries)
       operationId: run_f5os_restconf_path_explainer_post
-      summary: f5os-restconf-path-explainer (POST)
+      summary: F5OS RESTCONF path explainer (POST)
       description: >-
-        Standards: F5OS RESTCONF, OpenConfig YANG. Stateless and side-effect-free: the same input
-        always yields the same result, and nothing is stored or logged.
+        Paste an F5OS RESTCONF path and get it decoded segment by segment: the YANG module prefix,
+        the container hierarchy, list keys such as tenant=tenant1, and the module:node prefixing
+        convention. It also explains the port 8888 /restconf versus port 443 /api duality from F5OS
+        1.8. Local and offline. Standards: F5OS RESTCONF, OpenConfig YANG. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
       requestBody:
         required: true
         description: The tool input as text.
