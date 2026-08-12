@@ -92,31 +92,42 @@ export default async function AdvisoryPage({
 
       <main id="main">
         <article>
-          {/* DISCLAIMER, ABOVE EVERYTHING (PRIME 2026-08-06).
-              It sits before the eyebrow deliberately. A reader who is going to
-              be disappointed by the availability constraint should meet it in
-              the first thing they read, not after five sections have persuaded
-              them - and a page that leads with its own limitation is more
-              credible about everything that follows, not less.
-
-              It also does the redirect work up front: somebody who arrived
-              wanting training now knows where to go before reading a page that
-              does not offer any. */}
-          <section className="section">
-            <div className="container section-narrow">
-              <div className="vendor-note">
-                <p className="vendor-note-title">{t("disclaimerTitle")}</p>
-                <p className="vendor-note-body"><ReduBrand>{t("disclaimerBody")}</ReduBrand></p>
-              </div>
-            </div>
-          </section>
-
           {/* Hero */}
           <section className="section">
             <div className="container section-narrow">
               <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
+            </div>
+          </section>
+
+          {/* DISCLAIMER, NOW BELOW THE HERO (PRIME 2026-08-12).
+
+              SUPERSEDES THE 2026-08-06 PLACEMENT, which put this above the
+              eyebrow on the reasoning that a page leading with its own
+              limitation is more credible. That argument was sound for the text
+              it was written against - a notice whose substance was an
+              AVAILABILITY CONSTRAINT, telling a reader who wanted training that
+              they were in the wrong place.
+
+              The notice was rewritten on 2026-08-11 and no longer says that.
+              It now states who contracts the work, that pricing comes only
+              after a scoping call, and whose outcome PRIME advocates for. That
+              is not a warning to be met before reading; it is CONTEXT FOR AN
+              OFFER THE READER HAS NOT SEEN YET. Above the hero it asked a
+              stranger to absorb contracting detail before knowing what was
+              being contracted.
+
+              So the placement follows the content: the reader learns what
+              advisory IS, then immediately how it works. The redirect for
+              somebody who wanted training still happens on this screen, one
+              paragraph later. */}
+          <section className="section">
+            <div className="container section-narrow">
+              <div className="vendor-note">
+                <p className="vendor-note-title">{t("disclaimerTitle")}</p>
+                <p className="vendor-note-body"><ReduBrand>{t("disclaimerBody")}</ReduBrand></p>
+              </div>
             </div>
           </section>
 
