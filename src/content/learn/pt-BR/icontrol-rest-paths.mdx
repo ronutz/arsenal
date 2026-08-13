@@ -1,0 +1,70 @@
+---
+slug: icontrol-rest-paths
+title: "Lendo um caminho do iControl REST"
+summary: "Por que as URLs do iControl REST têm tis, como o módulo e a coleção são organizados, o que significa um caminho de partição e pastas, e quais opções de consulta mudam o tamanho da resposta."
+concepts: ["icontrol-rest", "tmos", "tmsh", "partitions", "bigip", "rest-api"]
+relatedTools: ["icontrol-rest-path-explainer", "icontrol-rest-stats-decoder", "f5os-restconf-path-explainer"]
+relatedArticles: ["f5os-restconf-paths", "reading-bigip-statistics"]
+category: f5
+order: 41
+status: reviewed
+updated: "2026-08-13"
+---
+
+## O til é a primeira dúvida
+
+```
+/mgmt/tm/ltm/pool/~Common~apps~web_pool
+```
+
+Isso endereça `/Common/apps/web_pool`. O til é um separador de pastas, e existe
+por um motivo simples: **a URL já usa a barra para a sua própria estrutura.** Os
+objetos do BIG-IP vivem em partições e pastas cujo separador também é a barra,
+então o iControl REST substitui pelo til e a ambiguidade desaparece.
+
+Sabendo disso, o resto do caminho se lê em ordem.
+
+## O formato
+
+**`/mgmt`** é a raiz de gerenciamento. **`/mgmt/tm`** é a árvore de configuração
+do TMOS — os objetos que o tmsh administra. **`/mgmt/shared`** é outra coisa: o
+espaço dos workers compartilhados, onde ficam iApps LX, transferência de
+arquivos e licenciamento.
+
+**O módulo** vem em seguida: `ltm`, `gtm`, `net`, `sys`, `security`, `asm`,
+`apm`, `auth`, `cm`. Ele diz qual subsistema é dono do objeto, e é a mesma
+divisão que o tmsh usa.
+
+**A coleção** vem depois — `pool`, `virtual`, `node`, `monitor`. Endereçando só
+ela, você recebe todos os objetos que ela contém.
+
+**O objeto** é a parte codificada com til. **Uma subcoleção** pode vir a seguir,
+e os members de um pool são a que todo mundo encontra.
+
+## O detalhe de partição que gera 404
+
+Um nome escrito sem partição — `/mgmt/tm/ltm/node/web1.example.net` — é
+resolvido **na partição atual de quem chamou**. A mesma requisição pode,
+portanto, funcionar para um administrador e retornar 404 para outro, sem que
+nada esteja errado em nenhum dos dois casos. Se um script funciona para você e
+não funciona em produção, verifique em qual partição está a conta de serviço
+antes de verificar qualquer outra coisa.
+
+## As opções de consulta mudam o tamanho da resposta
+
+- **`$select`** retorna apenas as propriedades que você nomear. A forma mais
+  eficaz de encolher uma resposta grande.
+- **`$filter`** filtra no servidor, com mais frequência `partition eq Common`.
+- **`expandSubcollections=true`** embute as subcoleções em vez de devolver
+  links para elas.
+
+Essa última explica a surpresa mais comum do iControl REST: **um pool volta sem
+members.** Os members são uma subcoleção e não vêm incluídos a menos que você
+peça.
+
+## E a outra API
+
+Um tenant BIG-IP em VELOS ou rSeries roda sobre o F5OS, que é operado por
+RESTCONF sobre YANG em vez desse modelo de objetos. Os caminhos não se parecem
+em nada, e o motivo é que vêm de tradições diferentes, não de versões
+diferentes. O artigo companheiro sobre caminhos do F5OS cobre esse lado.

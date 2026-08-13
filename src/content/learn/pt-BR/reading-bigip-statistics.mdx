@@ -1,0 +1,82 @@
+---
+slug: reading-bigip-statistics
+title: "Lendo estatísticas do BIG-IP"
+summary: "Por que uma resposta de stats do iControl REST vem envolvida em três invólucros, o que significam as metades high e low de um contador, e por que uma única amostra nunca pode dar uma taxa."
+concepts: ["icontrol-rest", "bigip", "statistics", "counters", "monitoring"]
+relatedTools: ["icontrol-rest-stats-decoder", "icontrol-rest-path-explainer"]
+relatedArticles: ["icontrol-rest-paths"]
+category: f5
+order: 42
+status: reviewed
+updated: "2026-08-13"
+---
+
+## Três invólucros em volta de um número
+
+Peça estatísticas de pool a um BIG-IP e a resposta se parece com isto:
+
+```json
+{ "entries": {
+    "https://localhost/mgmt/tm/ltm/pool/~Common~web_pool/stats": {
+      "nestedStats": {
+        "entries": {
+          "activeMemberCnt": { "value": 2 },
+          "status.availabilityState": { "description": "available" }
+} } } } }
+```
+
+Dois membros. Esse fato vem envolvido em `value`, dentro de `entries`, dentro de
+`nestedStats`, dentro de `entries` de novo — e a chave do objeto externo é uma
+URL completa.
+
+O formato não é perverso, ele é **autodescritivo**. `value` e `description`
+distinguem um número de uma string sem precisar de schema. `entries` e
+`nestedStats` permitem que as estatísticas do pool e as dos seus membros cheguem
+numa resposta só, sem ambiguidade sobre quais pertencem a quem. É verboso porque
+responde a uma pergunta sobre estrutura ao mesmo tempo que a uma pergunta sobre
+números.
+
+## O contador que chega em duas metades
+
+Esta é a parte que pega quem escreve o próprio parser:
+
+```json
+"serverside.bitsIn.high": { "value": 3 },
+"serverside.bitsIn.low":  { "value": 1000000 }
+```
+
+Isso **não** são duas estatísticas. É um único contador de 64 bits dividido em
+duas metades de 32, porque números JSON não carregam um inteiro de 64 bits com
+segurança. O valor real é `(high << 32) + low` — aqui **12.885.901.888**, e não
+3 nem um milhão.
+
+Um achatador que reporta as metades separadamente não está errado sobre o dado
+que recebeu, e está errado sobre o tráfego. Qualquer ferramenta que leia essas
+respostas precisa conhecer a divisão, e qualquer uma que não conheça vai
+sub-reportar em silêncio os seus contadores mais movimentados.
+
+## Totais, não taxas
+
+Todo contador nessa resposta é **um total desde o último reset**. Não há
+intervalo no payload, então **uma única amostra não pode produzir uma taxa** —
+por mais que você queira.
+
+Para obter uma taxa você precisa de duas amostras e do tempo entre elas, medido
+por você. Isso parece óbvio escrito assim, e é uma fonte rotineira de dashboards
+que mostram a vazão subindo continuamente para sempre porque alguém plotou o
+contador em vez da sua derivada.
+
+O mesmo vale para `status.availabilityState`: ele diz o estado **agora**, não há
+quanto tempo está assim.
+
+## Lendo uma na prática
+
+Busque o endpoint `/stats` do objeto, ache os invólucros e leia os nomes. A
+nomenclatura é consistente o bastante para ser previsível — `clientside.` e
+`serverside.` separam as duas metades de uma conexão intermediada, `.bitsIn` e
+`.bitsOut` são direcionais do ponto de vista do equipamento, e os prefixos `cur`,
+`max` e `tot` distinguem valores atuais, de pico e cumulativos.
+
+O **decodificador de stats do iControl REST** neste site faz o achatamento,
+combina os contadores divididos e informa quais valores foram combinados, para
+que você possa conferir a aritmética em vez de confiar nela.

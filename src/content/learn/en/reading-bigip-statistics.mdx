@@ -1,0 +1,82 @@
+---
+slug: reading-bigip-statistics
+title: "Reading BIG-IP statistics"
+summary: "Why an iControl REST stats response is wrapped in three envelopes, what the high and low halves of a counter mean, and why a single sample can never give you a rate."
+concepts: ["icontrol-rest", "bigip", "statistics", "counters", "monitoring"]
+relatedTools: ["icontrol-rest-stats-decoder", "icontrol-rest-path-explainer"]
+relatedArticles: ["icontrol-rest-paths"]
+category: f5
+order: 42
+status: reviewed
+updated: "2026-08-13"
+---
+
+## Three envelopes around one number
+
+Ask a BIG-IP for pool statistics and the answer looks like this:
+
+```json
+{ "entries": {
+    "https://localhost/mgmt/tm/ltm/pool/~Common~web_pool/stats": {
+      "nestedStats": {
+        "entries": {
+          "activeMemberCnt": { "value": 2 },
+          "status.availabilityState": { "description": "available" }
+} } } } }
+```
+
+Two members. That fact is wrapped in `value`, inside `entries`, inside
+`nestedStats`, inside `entries` again — and the key of the outer object is a
+full URL.
+
+The shape is not perverse, it is **self-describing**. `value` and `description`
+distinguish a number from a string without a schema. `entries` and `nestedStats`
+let a pool's own statistics and its members' statistics arrive in one response
+with no ambiguity about which belong to which. It is verbose because it is
+answering a question about structure at the same time as a question about
+numbers.
+
+## The counter that arrives in two halves
+
+This is the part that catches people writing their own parser:
+
+```json
+"serverside.bitsIn.high": { "value": 3 },
+"serverside.bitsIn.low":  { "value": 1000000 }
+```
+
+That is **not** two statistics. It is one 64-bit counter split across two
+32-bit halves, because JSON numbers cannot carry a 64-bit integer safely. The
+real value is `(high << 32) + low` — here **12,885,901,888**, not 3 and not a
+million.
+
+A flattener that reports the halves separately is not wrong about the data it
+was given, and is wrong about the traffic. Any tool that reads these responses
+has to know about the split, and any that does not will quietly under-report
+your busiest counters.
+
+## Totals, not rates
+
+Every counter in that response is **a total since the last reset**. There is no
+interval in the payload, so **a single sample cannot produce a rate** — no
+matter how much you would like it to.
+
+To get a rate you need two samples and the time between them, measured by you.
+That sounds obvious written down, and it is a routine source of dashboards that
+show throughput ramping steadily upward forever because somebody plotted the
+counter instead of its derivative.
+
+The same applies to `status.availabilityState`: it tells you the state **now**,
+not how long it has been that way.
+
+## Reading one in practice
+
+Fetch the object's `/stats` endpoint, flatten the envelopes, and read the names.
+The naming is consistent enough to be predictable — `clientside.` and
+`serverside.` split the two halves of a proxied connection, `.bitsIn` and
+`.bitsOut` are directional from the device's point of view, and `cur`, `max` and
+`tot` prefixes distinguish current, high-water and cumulative values.
+
+The **iControl REST stats decoder** on this site does the flattening, combines
+the split counters, and says which values were combined so you can check the
+arithmetic rather than trust it.

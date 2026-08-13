@@ -1,0 +1,87 @@
+---
+slug: spb-fabric-vocabulary
+title: "The SPB vocabulary, sorted"
+summary: "I-SID, B-VLAN, B-MAC, BEB, BCB, L2VSN, L3VSN. Which of those is a service, which is transport, and which is a role a switch plays — and the one fact that makes the rest obvious."
+concepts: ["spb", "802.1aq", "fabric-connect", "is-is", "i-sid", "mac-in-mac"]
+relatedTools: ["fabric-connect-spb-explainer"]
+relatedArticles: ["voss-fabric-connect-spbm", "voss-i-sid-and-vsns", "spbm-multicast-addresses-are-computed-not-learned"]
+category: extreme
+order: 20
+status: reviewed
+updated: "2026-08-13"
+---
+
+## The difficulty is the words
+
+Shortest Path Bridging is simpler than what it replaces. It does not feel that
+way on first contact, because seven unfamiliar terms arrive in one paragraph and
+nothing signals which are the same kind of thing.
+
+Sort them into three piles and the technology stops resisting.
+
+**Transport:** the backbone VLANs and the backbone MACs. **Service:** the I-SID,
+and the L2VSN or L3VSN it represents. **Role:** what a given switch does, edge
+or core.
+
+## The one fact that reorients everything
+
+**A B-VLAN is not a VLAN.**
+
+It does not flood unknown unicast, broadcast or multicast. It forwards only on
+backbone MAC tables that IS-IS has provisioned from shortest-path trees.
+
+There is no spanning tree. Nothing is blocked. Every link carries traffic,
+because the forwarding decision came from a computed topology rather than from
+watching frames arrive and guessing.
+
+Once that lands, the rest follows: if forwarding is computed, the core does not
+need to learn anything, and if the core does not learn, it does not need to know
+your services exist.
+
+## The service identifier
+
+The **I-SID** is a twenty-four-bit number carried in the 802.1ah backbone
+header. Twenty-four bits is about sixteen million, against a VLAN tag's four
+thousand — which is why a fabric can give every service its own identifier
+instead of rationing them.
+
+An I-SID is not a VLAN and not a subnet. It becomes one or the other by what you
+bind it to:
+
+- Bind it to an **edge VLAN** and it is an **L2VSN**. Two sites configure the
+  same I-SID against their local VLAN and share a broadcast domain, with nothing
+  configured in between.
+- Bind it to a **VRF** and it is an **L3VSN**, carrying routed traffic for one
+  routing instance.
+
+Many deployments encode the VLAN into the I-SID — 20010 for VLAN 10 — so the
+mapping reads at a glance. That is convention, not requirement.
+
+## Two backbone VLANs, and why
+
+A fabric normally runs **two** B-VLANs, 4051 and 4052 by default on Extreme
+equipment. Services are distributed between them by the low bit of the I-SID:
+even on one, odd on the other. Two shortest-path trees, each carrying roughly
+half the services.
+
+That distribution is the default rather than a rule of the standard. When one
+service behaves differently from its neighbours, **which tree it is on is the
+first thing to check.**
+
+## Edge and core
+
+A **backbone edge bridge** is where a customer VLAN or VRF meets an I-SID, and
+where MAC-in-MAC encapsulation is added and removed. Services are provisioned
+here.
+
+A **backbone core bridge** forwards on backbone MACs alone and never sees a
+customer MAC address.
+
+That is the operational claim SPB is actually making: **adding a service means
+touching the two or more edge switches where it appears, and nothing in
+between.** The core is untouched, not because of a design convention, but
+because it genuinely does not carry the information.
+
+The same property sizes the core's forwarding table by the number of fabric
+nodes rather than by the number of end stations, which is why the encapsulation
+exists at all.

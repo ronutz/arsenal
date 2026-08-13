@@ -454,4 +454,9 @@ export const VENDOR_ORIGINS: Record<string, CountryCode> = {
 
   "netbr": "BR",
 
+  "seal": "BR",
+  "sage-networks": "BR",
+
+  "tecnocomp": "BR",
+
 };

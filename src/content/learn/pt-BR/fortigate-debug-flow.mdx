@@ -1,0 +1,76 @@
+---
+slug: fortigate-debug-flow
+title: "Lendo um debug flow de FortiGate"
+summary: "A sequência diagnose debug flow é uma receita, não um comando: por que a ordem importa, por que a limpeza importa mais, o que a contagem de pacotes realmente conta, e o motivo de offload em hardware que faz um trace correto não mostrar nada."
+concepts: ["fortios", "fortigate", "debug-flow", "troubleshooting", "npu-offload"]
+relatedTools: ["fortios-flow-debug-builder"]
+relatedArticles: ["fault-isolation-first-hour", "capture-points-before-packets"]
+category: fortinet
+order: 30
+status: reviewed
+updated: "2026-08-13"
+---
+
+## É uma sequência, não um comando
+
+`diagnose debug flow` são quatro ou cinco comandos que só funcionam em conjunto,
+e colocar um deles fora de ordem produz ou nada, ou muito mais do que você
+consegue ler. O formato é sempre o mesmo:
+
+1. **Volte a um estado conhecido.** `diagnose debug disable`, `diagnose debug
+   flow filter clear`, `diagnose debug reset`. Nunca pule isso. Um filtro deixado
+   por outra pessoa restringe silenciosamente o seu trace ao problema dela, e
+   você vai passar vinte minutos se perguntando por que o seu tráfego está
+   invisível.
+2. **Defina o filtro.** `addr`, `saddr`, `daddr`, `port`, `sport`, `dport`,
+   `proto`.
+3. **Confira o filtro.** `diagnose debug flow filter` sem argumentos imprime o
+   que está de fato em vigor. Uma linha, e ela pega o erro de digitação antes que
+   ele custe uma nova reprodução.
+4. **Escolha o que será exibido.** `show function-name enable` coloca a função do
+   kernel em cada linha, que é o que torna a saída legível.
+5. **Arme o trace e só então habilite a saída.**
+
+## O argumento sobre a ordem, dito com honestidade
+
+O guia de administração da Fortinet mostra `diagnose debug enable` **primeiro**,
+antes do filtro. Boa parte da prática de campo o coloca **por último**.
+
+**Os dois funcionam.** A diferença está no intervalo entre eles: num firewall
+movimentado, ligar a saída antes de o filtro estar definido significa que toda
+sessão é rastreada até o filtro entrar, e recuperar um console inundado é
+genuinamente desagradável. Esse é o motivo para preferir o filtro primeiro, e é
+uma preferência, não uma correção.
+
+## A contagem é de pacotes, não de segundos
+
+`trace start 100` significa **cem pacotes**, não cem segundos nem até você
+apertar algo. Numa interface movimentada, um filtro de aparência estreita pode
+esgotar isso antes de você terminar de ler a primeira tela. Comece pequeno — dez
+costuma bastar para responder "qual policy casou" — e repita.
+
+## Por que um trace correto pode não mostrar nada
+
+Essa é a falha que mais desperdiça tempo, e não é um erro nos comandos.
+
+**Tráfego com offload em hardware não passa pelo código que isso rastreia.** Em
+plataformas com processadores NP ou SP, uma vez estabelecida, a sessão pode ser
+tratada em silício, e o debug flow não vê nada enquanto o tráfego claramente
+flui. O trace está funcionando; os pacotes é que não estão passando por ele.
+
+O teste habitual é desabilitar o offload para a policy afetada — mas entenda o
+que você fez: **agora está medindo um caminho diferente do que está em
+produção.** Trate isso como um passo deliberado com uma reversão deliberada, não
+como uma solução.
+
+## E depois
+
+`diagnose debug flow trace stop`, `diagnose debug disable`, `diagnose debug flow
+filter clear`, `diagnose debug reset`. **Faça isso mesmo quando a contagem de
+pacotes já tiver se esgotado.** Saída de debug deixada ligada num firewall de
+produção continua escrevendo no console, e quem herdar aquela sessão não vai
+saber por quê.
+
+Uma última coisa sobre a saída: **os números de linha ao lado de cada nome de
+função não são estáveis entre versões do FortiOS.** Case pelo nome da função.
+Nunca escreva um runbook que dependa de um número de linha.

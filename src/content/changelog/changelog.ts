@@ -3701,6 +3701,51 @@ export const CHANGELOG: ChangelogEntry[] = [
       "Paste dig output and get every section explained: the header and flags, the question, and each answer, authority, and additional record, along with the query timing. Local and offline.",
   },
   {
+    date: "2026-08-13",
+    time: "12:10",
+    kind: "tool",
+    title: "New tool: Fabric Connect / SPB explainer",
+    tools: ["fabric-connect-spb-explainer"],
+    body:
+      "Shortest Path Bridging is Extreme's signature technology and one of the least-tooled subjects in networking. Give an I-SID, a nickname or a role and the tool sorts the vocabulary: which backbone VLAN carries the service and why, what an L2VSN and an L3VSN bind to, and the fact that reorients people - a B-VLAN is not a VLAN, it does not flood, and it forwards only on B-MAC tables that IS-IS provisioned from shortest-path trees. Deterministic and offline.",
+  },
+  {
+    date: "2026-08-13",
+    time: "11:20",
+    kind: "tool",
+    title: "New tool: SSE / SASE single-pass architecture explainer",
+    tools: ["sse-architecture-explainer"],
+    body:
+      "Describe a request and see the single pass: which SSE services engage, in what order, which are pillars and which are cross-cutting, and what a chain of separate appliances would have done instead. It exists to make one point precisely - DLP and threat protection are not pillars, they run inside the same pass on whatever the pillars decrypted, which is why one data profile covers web, SaaS and private applications alike. Deterministic and offline.",
+  },
+  {
+    date: "2026-08-13",
+    time: "03:10",
+    kind: "tool",
+    title: "New tool: iControl REST stats decoder",
+    tools: ["icontrol-rest-stats-decoder"],
+    body:
+      "Paste a BIG-IP stats response and get one line per statistic. It unwraps the entries, nestedStats, value and description envelopes, reduces the URL keys to the objects they name, and combines 64-bit counters that F5 splits into high and low halves - which is the part hand-written flatteners usually get wrong. It also states plainly that the numbers are totals rather than rates. Pure local transform.",
+  },
+  {
+    date: "2026-08-13",
+    time: "02:40",
+    kind: "tool",
+    title: "New tool: FortiOS debug flow builder",
+    tools: ["fortios-flow-debug-builder"],
+    body:
+      "Assembles the ordered diagnose debug flow sequence for tracing a session on a FortiGate: the clean-state reset, the filter, function-name and optional iprope display, the packet-count trace and the enable, followed by the cleanup. It emits the filter-first order and says plainly that Fortinet's own guide shows enable first, because both work and the difference matters on a busy firewall. Local and offline.",
+  },
+  {
+    date: "2026-08-13",
+    time: "01:40",
+    kind: "tool",
+    title: "New tool: iControl REST path explainer",
+    tools: ["icontrol-rest-path-explainer"],
+    body:
+      "Paste an iControl REST URL and get it decoded: the TMOS module, the collection, the tilde-encoded partition and folder path together with its tmsh equivalent, sub-collections such as pool members, and the query options including $select, $filter and expandSubcollections. It pairs with the F5OS RESTCONF path explainer, which decodes the platform layer underneath. Local and offline.",
+  },
+  {
     date: "2026-08-12",
     time: "07:30",
     kind: "tool",

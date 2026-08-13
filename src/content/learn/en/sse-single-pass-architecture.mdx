@@ -1,0 +1,82 @@
+---
+slug: sse-single-pass-architecture
+title: "What single-pass actually means"
+summary: "Every SSE vendor says converged. This is what it means mechanically: one decryption instead of four, pillars versus cross-cutting engines, and why DLP is not a pillar."
+concepts: ["sse", "sase", "single-pass", "swg", "casb", "ztna", "dlp"]
+relatedTools: ["sse-architecture-explainer"]
+relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-inline-tls-decryption", "netskope-realtime-vs-api-protection"]
+category: security
+order: 20
+status: reviewed
+updated: "2026-08-13"
+---
+
+## The claim, and what would make it true
+
+Every secure service edge product is sold as converged. The word does a lot of
+work and rarely gets unpacked, so here is the mechanical version:
+
+**In a chain of separate appliances, the payload is decrypted and re-encrypted
+at every hop.** Proxy decrypts, inspects, re-encrypts. Data loss prevention
+appliance decrypts, inspects, re-encrypts. Sandbox does it again. Each device
+holds its own policy in its own dialect, each adds its latency to the total, and
+each is somewhere the chain can break.
+
+**In a single pass, the payload is decrypted once** and the same stream is
+handed to every engine. That is the whole architectural claim, and it is
+checkable: ask whether the payload is decrypted once, or once per engine.
+
+Several products are sold as converged and are four engines behind one invoice.
+The bundling is real; the convergence is not.
+
+## Pillars and cross-cutting engines
+
+This is the distinction most people get wrong, and it is the useful one.
+
+**The pillars are about where traffic is going.** A secure web gateway governs
+the general web. A cloud access security broker governs software-as-a-service
+applications, where the useful unit of control is the *activity* — upload,
+share, post — rather than the address. Zero trust network access brokers a user
+to one private application. A cloud firewall handles the ports the web-facing
+services do not.
+
+**Data loss prevention and threat protection are not pillars.** They are
+cross-cutting. They run inside the same pass and receive whatever the pillars
+decrypted.
+
+That single fact has a consequence worth stating plainly: **you write the data
+profile once and it is enforced on web traffic, on software-as-a-service and on
+a private application alike.** In a chained architecture the same rule has to be
+expressed four times, in four products, and the four will drift.
+
+## What decryption buys, and what its absence costs
+
+Without decryption, everything below application identification is working from
+metadata: the handshake, the name, the reputation. That is not nothing, and it
+is not content inspection.
+
+A policy written as though content were visible, applied to a flow that is not
+decrypted, **will not do what its author believes.** The rule will sit in the
+console looking correct. This is a routine and avoidable failure.
+
+## Steering decides what the edge can even see
+
+Traffic has to arrive before any of this applies, and the method changes what is
+knowable:
+
+- **The endpoint client** is the only method that carries user identity and
+  device posture with the flow.
+- **IPsec and GRE tunnels** steer a whole site. They know the site, not the
+  person; identity has to come from somewhere else.
+- **Proxy chaining** is useful during a migration, and the old proxy is still in
+  the path and still yours to run.
+- **DNS steering** is the lightest touch and the coarsest. It cannot distinguish
+  two applications behind one address and it carries no identity.
+
+## And the outcome is not binary
+
+The interesting policy results are not allow and block. Coaching, read-only
+access, step-up authentication and browser isolation all let work continue while
+changing what the data can do — and on an unmanaged device those are usually the
+only outcomes worth having, because they permit access without the data landing
+on an endpoint nobody controls.

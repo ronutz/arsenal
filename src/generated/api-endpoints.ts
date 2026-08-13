@@ -407,6 +407,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_f5xc_tls_security_level_mapper",
     "tag": "F5 Distributed Cloud (XC)"
   },
+  "fabric-connect-spb-explainer": {
+    "url": "https://ronutz.com/api/v1/fabric-connect-spb-explainer",
+    "method": "GET",
+    "op": "run_fabric_connect_spb_explainer",
+    "tag": "Extreme switching & fabric (EXOS / VOSS / SPB)"
+  },
   "fault-hypothesis-builder": {
     "url": "https://ronutz.com/api/v1/fault-hypothesis-builder",
     "method": "GET",
@@ -459,6 +465,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "url": "https://ronutz.com/api/v1/fortios-config-diff-explainer",
     "method": "GET",
     "op": "run_fortios_config_diff_explainer",
+    "tag": "Fortinet FortiGate & FortiOS"
+  },
+  "fortios-flow-debug-builder": {
+    "url": "https://ronutz.com/api/v1/fortios-flow-debug-builder",
+    "method": "GET",
+    "op": "run_fortios_flow_debug_builder",
     "tag": "Fortinet FortiGate & FortiOS"
   },
   "fortios-sniffer-builder": {
@@ -514,6 +526,18 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_http_status_code_explainer",
     "tag": "HTTP"
+  },
+  "icontrol-rest-path-explainer": {
+    "url": "https://ronutz.com/api/v1/icontrol-rest-path-explainer",
+    "method": "GET",
+    "op": "run_icontrol_rest_path_explainer",
+    "tag": "F5 LTM, iRules & platform"
+  },
+  "icontrol-rest-stats-decoder": {
+    "url": "https://ronutz.com/api/v1/icontrol-rest-stats-decoder",
+    "method": "GET",
+    "op": "run_icontrol_rest_stats_decoder",
+    "tag": "F5 LTM, iRules & platform"
   },
   "incident-timeline-rca-builder": {
     "url": "https://ronutz.com/api/v1/incident-timeline-rca-builder",
@@ -676,6 +700,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_sorting_algorithm_stepper",
     "tag": "Algorithms"
+  },
+  "sse-architecture-explainer": {
+    "url": "https://ronutz.com/api/v1/sse-architecture-explainer",
+    "method": "GET",
+    "op": "run_sse_architecture_explainer",
+    "tag": "Netskope SSE / SASE"
   },
   "ssrf-url-classifier": {
     "url": "https://ronutz.com/api/v1/ssrf-url-classifier",

@@ -47,13 +47,11 @@
     "hero": {
       "eyebrow": "Practitioner-built, privacy-first",
       "title": "The network and security toolbox that keeps your data on your machine.",
-      "subtitle": "Subnet math, DNS and email diagnostics, certificate inspection, and more, computed locally in your browser. No upload, no logging, no account required for the everyday tools.",
-      "ctaPrimary": "Try a tool",
-      "ctaSecondary": "Who builds this"
+      "subtitle": "Subnet math, DNS and email diagnostics, certificate inspection, and more, computed locally in your browser. No upload, no logging, no account required."
     },
     "credibility": {
       "title": "Built by someone who has done the work since 1996.",
-      "body": "Thirty years in enterprise networking and security, delivered as a working instructor rather than a marketing page. The comparisons here are made honestly, not sold.",
+      "body": "Thirty years in enterprise networking and security.",
       "aboutCta": "More about who builds this"
     },
     "pillars": {
@@ -95,7 +93,6 @@
     },
     "map": {
       "title": "What is here",
-      "lede": "Six sections, built over years rather than assembled for a launch. Every count below is read from the thing itself at build time, so none of them can drift from what you will actually find.",
       "tools": "Tools",
       "toolsLede": "Deterministic calculators and explainers for networks, security and identity. They compute in your browser and send nothing anywhere.",
       "toolsBadge": "{count} live",
@@ -6385,6 +6382,191 @@
         "title": "Modules this tool can describe",
         "intro": "A finite list. If a path uses a module that is not here, the structure is still decoded and the description is withheld rather than guessed."
       }
+    },
+    "icontrol-rest-path-explainer": {
+      "name": "iControl REST path explainer",
+      "blurb": "Paste an iControl REST URL and get it decoded: the TMOS module, the collection, the tilde-encoded partition and folder path with its tmsh equivalent, sub-collections such as pool members, and the query options. Local and offline; it never contacts a device.",
+      "inputLabel": "iControl REST path",
+      "placeholder": "/mgmt/tm/ltm/pool/~Common~web_pool",
+      "example": "Example",
+      "clear": "Clear",
+      "overview": {
+        "title": "What this path addresses",
+        "path": "Path",
+        "host": "Host",
+        "root": "Tree",
+        "module": "Module",
+        "moduleUnknown": "not in this tool's table",
+        "collection": "Collection"
+      },
+      "object": {
+        "title": "The object",
+        "partition": "Partition",
+        "folders": "Folders",
+        "name": "Name",
+        "tmsh": "tmsh path"
+      },
+      "sub": {
+        "title": "Sub-collection",
+        "name": "Name",
+        "member": "Member"
+      },
+      "options": {
+        "title": "Query options"
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      },
+      "reference": {
+        "title": "Modules this tool can describe",
+        "intro": "A finite list. If a path uses a module that is not here, the structure is still decoded and the description is withheld rather than guessed."
+      }
+    },
+    "fortios-flow-debug-builder": {
+      "name": "FortiOS debug flow builder",
+      "blurb": "Assembles the ordered `diagnose debug flow` sequence a FortiGate needs to trace a session: the clean-state reset, the filter, the display options, the packet-count trace and the enable, with the cleanup commands that matter more than the setup. Local and offline; it generates text and contacts nothing.",
+      "formLabel": "What do you want to trace?",
+      "example": "Example",
+      "clear": "Clear",
+      "fields": {
+        "addr": "Address (either direction)",
+        "saddr": "Source address",
+        "daddr": "Destination address",
+        "port": "Port (either direction)",
+        "sport": "Source port",
+        "dport": "Destination port",
+        "proto": "Protocol (tcp, udp, icmp or a number)",
+        "vdom": "Virtual domain (optional)",
+        "count": "Packet count",
+        "iprope": "Show iprope rule checks",
+        "timestamp": "Timestamp each line"
+      },
+      "output": {
+        "title": "The sequence",
+        "copy": "Copy",
+        "copied": "Copied",
+        "lineByLine": "Line by line"
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      }
+    },
+    "icontrol-rest-stats-decoder": {
+      "name": "iControl REST stats decoder",
+      "blurb": "Paste an iControl REST stats response and get it flattened into one line per statistic. It unwraps the entries, nestedStats, value and description envelopes, reduces the URL keys to the objects they name, and combines 64-bit counters that arrive split into high and low halves. A pure local transform; nothing is fetched.",
+      "inputLabel": "iControl REST stats JSON",
+      "placeholder": "Paste the response from a /stats endpoint",
+      "example": "Example",
+      "clear": "Clear",
+      "flat": {
+        "title": "Flattened",
+        "copy": "Copy",
+        "copied": "Copied"
+      },
+      "table": {
+        "title": "By object",
+        "combined": "(combined from high + low)"
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      }
+    },
+    "sse-architecture-explainer": {
+      "name": "SSE / SASE single-pass architecture explainer",
+      "blurb": "Describe a request \\u2014 where it is going, how it is steered, whether the device is managed, whether TLS is decrypted \\u2014 and see the single pass: which SSE services engage, which are pillars and which are cross-cutting, and what a chain of separate appliances would have done instead. Deterministic and offline.",
+      "formLabel": "Describe the request",
+      "example": "Example",
+      "clear": "Reset",
+      "fields": {
+        "destination": "Destination",
+        "steering": "Steering method",
+        "managed": "Managed device",
+        "tls": "TLS",
+        "decrypt": "Decryption permitted",
+        "payload": "Carries a payload"
+      },
+      "destinations": {
+        "web": "General web",
+        "sanctioned-saas": "Sanctioned SaaS application",
+        "unsanctioned-saas": "Unsanctioned SaaS application",
+        "private-app": "Private application",
+        "non-web-port": "Non-web port"
+      },
+      "steerings": {
+        "client": "Endpoint client",
+        "ipsec": "IPsec tunnel",
+        "gre": "GRE tunnel",
+        "proxy-chain": "Proxy chaining",
+        "dns": "DNS steering"
+      },
+      "kinds": {
+        "pillar": "pillar",
+        "cross-cutting": "cross-cutting",
+        "network": "network",
+        "conditional": "conditional"
+      },
+      "summary": {
+        "title": "What engaged",
+        "pillars": "Pillars",
+        "crossCutting": "Cross-cutting",
+        "none": "none"
+      },
+      "pass": {
+        "title": "The pass, in order"
+      },
+      "contrast": {
+        "title": "Against chained appliances"
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      }
+    },
+    "fabric-connect-spb-explainer": {
+      "name": "Fabric Connect / SPB explainer",
+      "blurb": "Give an I-SID, a nickname or a role and get the Shortest Path Bridging vocabulary sorted: which backbone VLAN carries the service and why, what an L2VSN and an L3VSN actually bind to, what a B-VLAN is and is not, and the difference between a backbone edge bridge and a backbone core bridge. Deterministic and offline.",
+      "formLabel": "What are you looking at?",
+      "example": "Example",
+      "clear": "Clear",
+      "fields": {
+        "isid": "I-SID",
+        "service": "Service type",
+        "primary": "Primary B-VLAN",
+        "secondary": "Secondary B-VLAN",
+        "nickname": "SPB nickname",
+        "role": "Switch role"
+      },
+      "services": {
+        "unknown": "Not stated",
+        "l2vsn": "L2VSN (VLAN)",
+        "l3vsn": "L3VSN (VRF)",
+        "multicast": "Multicast"
+      },
+      "roles": {
+        "none": "Not stated",
+        "beb": "Backbone Edge Bridge",
+        "bcb": "Backbone Core Bridge"
+      },
+      "facts": {
+        "title": "What the numbers mean"
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      }
     }
   },
   "privacy_page": {
@@ -8504,6 +8686,22 @@
       "read-an-f5os-path": {
         "title": "Read an F5OS path, then the declaration behind it",
         "desc": "Decode an F5OS RESTCONF path segment by segment to see which module, tenant and node it addresses, then read the AS3 declaration that configures the service running inside that tenant."
+      },
+      "read-a-bigip-object-path": {
+        "title": "Decode a BIG-IP object path, then its statistics",
+        "desc": "Paste an iControl REST URL to see the module, collection and tilde-encoded object with its tmsh equivalent; flatten the object's stats response into readable lines; then use the F5OS explainer for the platform layer underneath."
+      },
+      "trace-a-session-on-a-fortigate": {
+        "title": "Trace a session through a FortiGate",
+        "desc": "Build the ordered diagnose debug flow sequence for the traffic you care about, including the cleanup commands, and get each line explained before you paste it into a production firewall."
+      },
+      "understand-an-sse-pass": {
+        "title": "Understand what one request meets in an SSE platform",
+        "desc": "Describe a request and walk the single pass: which services engage, which are pillars and which are cross-cutting, and what a chain of separate appliances would have done instead."
+      },
+      "make-sense-of-an-spb-fabric": {
+        "title": "Make sense of an SPB fabric configuration",
+        "desc": "Paste an I-SID, a nickname or a role and get the Shortest Path Bridging vocabulary sorted: which backbone VLAN carries the service, what the service actually binds to, and what changes between an edge bridge and a core bridge."
       }
     },
     "manualHeading": "Manual",
@@ -15177,6 +15375,11 @@
         "name": "Making",
         "blurb": "The five strands above record what was invented. This one records how any of it gets built - the planar process, the foundry, the licensed architecture, the contract factory. A networking vendor today designs a product it does not manufacture, on silicon it does not fabricate, using a processor architecture it licenses rather than owns. Every step of that arrangement was invented by somebody, on a date."
       }
+    },
+    "filter": {
+      "show": "Show",
+      "all": "All",
+      "countryLabel": "Filter by country"
     }
   },
   "advisory": {

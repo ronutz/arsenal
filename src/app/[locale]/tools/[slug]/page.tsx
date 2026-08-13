@@ -98,6 +98,16 @@ import { manifest as tmshManifest } from "@/lib/tools/f5-tmsh-config-explainer";
 import DigOutputExplainerTool from "@/components/DigOutputExplainerTool";
 import { manifest as digManifest } from "@/lib/tools/dig-output-explainer";
 import F5osRestconfPathExplainerTool from "@/components/F5osRestconfPathExplainerTool";
+import IcontrolRestPathExplainerTool from "@/components/IcontrolRestPathExplainerTool";
+import IcontrolRestStatsDecoderTool from "@/components/IcontrolRestStatsDecoderTool";
+import SseArchitectureExplainerTool from "@/components/SseArchitectureExplainerTool";
+import FabricConnectSpbExplainerTool from "@/components/FabricConnectSpbExplainerTool";
+import { manifest as spbManifest } from "@/lib/tools/fabric-connect-spb-explainer";
+import { manifest as sseArchManifest } from "@/lib/tools/sse-architecture-explainer";
+import { manifest as icontrolStatsManifest } from "@/lib/tools/icontrol-rest-stats-decoder";
+import FortiosFlowDebugBuilderTool from "@/components/FortiosFlowDebugBuilderTool";
+import { manifest as fortiosFlowManifest } from "@/lib/tools/fortios-flow-debug-builder";
+import { manifest as icontrolPathManifest } from "@/lib/tools/icontrol-rest-path-explainer";
 import { manifest as f5osRestconfPathManifest } from "@/lib/tools/f5os-restconf-path-explainer";
 import NslookupOutputExplainerTool from "@/components/NslookupOutputExplainerTool";
 import { manifest as nslookupManifest } from "@/lib/tools/nslookup-output-explainer";
@@ -505,6 +515,26 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-tmsh-config-explainer": {
     Component: TmshConfigExplainerTool,
     sources: tmshManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fortios-flow-debug-builder": {
+    Component: FortiosFlowDebugBuilderTool,
+    sources: fortiosFlowManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fabric-connect-spb-explainer": {
+    Component: FabricConnectSpbExplainerTool,
+    sources: spbManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "sse-architecture-explainer": {
+    Component: SseArchitectureExplainerTool,
+    sources: sseArchManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "icontrol-rest-stats-decoder": {
+    Component: IcontrolRestStatsDecoderTool,
+    sources: icontrolStatsManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "icontrol-rest-path-explainer": {
+    Component: IcontrolRestPathExplainerTool,
+    sources: icontrolPathManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5os-restconf-path-explainer": {
     Component: F5osRestconfPathExplainerTool,

@@ -1,0 +1,69 @@
+---
+slug: icontrol-rest-paths
+title: "Reading an iControl REST path"
+summary: "Why iControl REST URLs contain tildes, how the module and collection are laid out, what a partition and folder path means, and which query options change the size of the answer."
+concepts: ["icontrol-rest", "tmos", "tmsh", "partitions", "bigip", "rest-api"]
+relatedTools: ["icontrol-rest-path-explainer", "icontrol-rest-stats-decoder", "f5os-restconf-path-explainer"]
+relatedArticles: ["f5os-restconf-paths", "reading-bigip-statistics"]
+category: f5
+order: 41
+status: reviewed
+updated: "2026-08-13"
+---
+
+## The tilde is the first question
+
+```
+/mgmt/tm/ltm/pool/~Common~apps~web_pool
+```
+
+That addresses `/Common/apps/web_pool`. The tilde is a folder separator, and it
+exists for a plain reason: **a URL already uses the slash for its own
+structure.** BIG-IP objects live in partitions and folders whose separator is
+also a slash, so iControl REST substitutes the tilde and the ambiguity
+disappears.
+
+Once you know that, the rest of the path reads in order.
+
+## The shape
+
+**`/mgmt`** is the management root. **`/mgmt/tm`** is the TMOS configuration
+tree — the objects tmsh manages. **`/mgmt/shared`** is a different thing: the
+shared worker space, where iApps LX, file transfer and licensing live.
+
+**The module** comes next: `ltm`, `gtm`, `net`, `sys`, `security`, `asm`, `apm`,
+`auth`, `cm`. It tells you which subsystem owns the object, and it is the same
+division tmsh uses.
+
+**The collection** follows — `pool`, `virtual`, `node`, `monitor`. Address it
+alone and you get every object in it.
+
+**The object** is the tilde-encoded part. **A sub-collection** may follow, and
+pool members are the one everybody meets.
+
+## The partition detail that causes 404s
+
+A name written without a partition — `/mgmt/tm/ltm/node/web1.example.net` — is
+resolved **in the caller's current partition**. The same request can therefore
+succeed for one administrator and return a 404 for another, with nothing wrong
+in either case. If a script works for you and not in production, check which
+partition the service account is in before checking anything else.
+
+## Query options change the size of the answer
+
+- **`$select`** returns only the properties you name. The single most effective
+  way to shrink a large response.
+- **`$filter`** filters server-side, most often `partition eq Common`.
+- **`expandSubcollections=true`** inlines sub-collections instead of returning
+  links to them.
+
+That last one explains the most common surprise in iControl REST: **a pool
+comes back with no members.** The members are a sub-collection, and they are not
+included unless you ask.
+
+## And the other API
+
+A BIG-IP tenant on VELOS or rSeries sits on top of F5OS, which is driven by
+RESTCONF over YANG rather than by this object model. The paths look nothing
+alike, and the reason is that they come from different traditions rather than
+different versions. The companion article on F5OS paths covers that side.

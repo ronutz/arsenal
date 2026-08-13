@@ -16139,3 +16139,28 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .timeline-filter-country[aria-pressed="true"] .timeline-filter-country-n {
   color: var(--text-secondary);
 }
+
+/* MILESTONE FLAGS (PRIME 2026-08-13).
+   A milestone can carry several, so this is a flex row that wraps rather than a
+   single inline element. It sits in `.lineage-deal-top` beside the title and the
+   attribution badge, and must not push either onto a new line at narrow widths -
+   hence the small gap and the shrink-to-content sizing. */
+.milestone-flags {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  margin-left: 0.15rem;
+}
+
+.milestone-flag {
+  display: inline-flex;
+  align-items: center;
+  /* The flag is the glance; the country name lives in the title attribute.
+     A faint border keeps a mostly-white flag legible against a light canvas
+     without drawing a box around the darker ones. */
+  border: 1px solid color-mix(in srgb, var(--text-secondary) 25%, transparent);
+  border-radius: 2px;
+  line-height: 0;
+  overflow: hidden;
+}

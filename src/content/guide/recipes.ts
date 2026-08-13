@@ -50,6 +50,22 @@ export const GUIDE_RECIPES: GuideRecipe[] = [
     toolIds: ["oidc", "pkce", "totp-hotp"],
   },
   {
+    id: "make-sense-of-an-spb-fabric",
+    toolIds: ["fabric-connect-spb-explainer"],
+  },
+  {
+    id: "understand-an-sse-pass",
+    toolIds: ["sse-architecture-explainer"],
+  },
+  {
+    id: "trace-a-session-on-a-fortigate",
+    toolIds: ["fortios-flow-debug-builder"],
+  },
+  {
+    id: "read-a-bigip-object-path",
+    toolIds: ["icontrol-rest-path-explainer", "icontrol-rest-stats-decoder", "f5os-restconf-path-explainer"],
+  },
+  {
     id: "read-an-f5os-path",
     toolIds: ["f5os-restconf-path-explainer", "as3-explainer-validator"],
   },

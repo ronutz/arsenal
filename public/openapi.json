@@ -5783,6 +5783,91 @@
         }
       }
     },
+    "/fabric-connect-spb-explainer": {
+      "get": {
+        "tags": [
+          "Extreme switching & fabric (EXOS / VOSS / SPB)"
+        ],
+        "operationId": "run_fabric_connect_spb_explainer",
+        "summary": "Fabric Connect / SPB explainer",
+        "description": "Give an I-SID, a nickname or a role and get the Shortest Path Bridging vocabulary sorted: which backbone VLAN carries the service and why, what an L2VSN and an L3VSN actually bind to, what a B-VLAN is and is not, and the difference between a backbone edge bridge and a backbone core bridge. Deterministic and offline. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: IEEE 802.1aq (SPB), IS-IS. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Extreme switching & fabric (EXOS / VOSS / SPB)"
+        ],
+        "operationId": "run_fabric_connect_spb_explainer_post",
+        "summary": "Fabric Connect / SPB explainer (POST)",
+        "description": "Give an I-SID, a nickname or a role and get the Shortest Path Bridging vocabulary sorted: which backbone VLAN carries the service and why, what an L2VSN and an L3VSN actually bind to, what a B-VLAN is and is not, and the difference between a backbone edge bridge and a backbone core bridge. Deterministic and offline. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: IEEE 802.1aq (SPB), IS-IS. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fault-hypothesis-builder": {
       "get": {
         "tags": [
@@ -6583,6 +6668,91 @@
         }
       }
     },
+    "/fortios-flow-debug-builder": {
+      "get": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortios_flow_debug_builder",
+        "summary": "FortiOS debug flow builder",
+        "description": "Assembles the ordered `diagnose debug flow` sequence a FortiGate needs to trace a session: the clean-state reset, the filter, the display options, the packet-count trace and the enable, with the cleanup commands that matter more than the setup. Local and offline; it generates text and contacts nothing. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: FortiOS diagnose debug flow. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortios_flow_debug_builder_post",
+        "summary": "FortiOS debug flow builder (POST)",
+        "description": "Assembles the ordered `diagnose debug flow` sequence a FortiGate needs to trace a session: the clean-state reset, the filter, the display options, the packet-count trace and the enable, with the cleanup commands that matter more than the setup. Local and offline; it generates text and contacts nothing. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: FortiOS diagnose debug flow. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fortios-sniffer-builder": {
       "get": {
         "tags": [
@@ -7346,6 +7516,174 @@
                 "examples": [
                   "301 302 307"
                 ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/icontrol-rest-path-explainer": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_icontrol_rest_path_explainer",
+        "summary": "iControl REST path explainer",
+        "description": "Paste an iControl REST URL and get it decoded: the TMOS module, the collection, the tilde-encoded partition and folder path with its tmsh equivalent, sub-collections such as pool members, and the query options. Local and offline; it never contacts a device. Standards: F5 iControl REST. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_icontrol_rest_path_explainer_post",
+        "summary": "iControl REST path explainer (POST)",
+        "description": "Paste an iControl REST URL and get it decoded: the TMOS module, the collection, the tilde-encoded partition and folder path with its tmsh equivalent, sub-collections such as pool members, and the query options. Local and offline; it never contacts a device. Standards: F5 iControl REST. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/icontrol-rest-stats-decoder": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_icontrol_rest_stats_decoder",
+        "summary": "iControl REST stats decoder",
+        "description": "Paste an iControl REST stats response and get it flattened into one line per statistic. It unwraps the entries, nestedStats, value and description envelopes, reduces the URL keys to the objects they name, and combines 64-bit counters that arrive split into high and low halves. A pure local transform; nothing is fetched. Standards: F5 iControl REST. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_icontrol_rest_stats_decoder_post",
+        "summary": "iControl REST stats decoder (POST)",
+        "description": "Paste an iControl REST stats response and get it flattened into one line per statistic. It unwraps the entries, nestedStats, value and description envelopes, reduces the URL keys to the objects they name, and combines 64-bit counters that arrive split into high and low halves. A pure local transform; nothing is fetched. Standards: F5 iControl REST. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
               }
             }
           }
@@ -9730,6 +10068,91 @@
         "operationId": "run_sorting_algorithm_stepper_post",
         "summary": "Sorting Algorithm Stepper (POST)",
         "description": "Paste a small list of numbers, pick a strategy - bubble, selection, insertion, merge, or quick - and watch the algorithm think: every comparison, every swap, one WHY line per move, with live comparison and write counters that make Big-O growth tangible. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Textbook-canonical sorting variants; correctness enforced by golden vectors + per-run sortedness invariant. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sse-architecture-explainer": {
+      "get": {
+        "tags": [
+          "Netskope SSE / SASE"
+        ],
+        "operationId": "run_sse_architecture_explainer",
+        "summary": "SSE / SASE single-pass architecture explainer",
+        "description": "Describe a request \\u2014 where it is going, how it is steered, whether the device is managed, whether TLS is decrypted \\u2014 and see the single pass: which SSE services engage, which are pillars and which are cross-cutting, and what a chain of separate appliances would have done instead. Deterministic and offline. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Netskope One platform. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Netskope SSE / SASE"
+        ],
+        "operationId": "run_sse_architecture_explainer_post",
+        "summary": "SSE / SASE single-pass architecture explainer (POST)",
+        "description": "Describe a request \\u2014 where it is going, how it is steered, whether the device is managed, whether TLS is decrypted \\u2014 and see the single pass: which SSE services engage, which are pillars and which are cross-cutting, and what a chain of separate appliances would have done instead. Deterministic and offline. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Netskope One platform. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",

@@ -1,0 +1,76 @@
+---
+slug: fortigate-debug-flow
+title: "Reading a FortiGate debug flow"
+summary: "The diagnose debug flow sequence is a recipe, not a command: why the order matters, why the cleanup matters more, what the packet count really counts, and the hardware-offload reason a correct trace can show nothing at all."
+concepts: ["fortios", "fortigate", "debug-flow", "troubleshooting", "npu-offload"]
+relatedTools: ["fortios-flow-debug-builder"]
+relatedArticles: ["fault-isolation-first-hour", "capture-points-before-packets"]
+category: fortinet
+order: 30
+status: reviewed
+updated: "2026-08-13"
+---
+
+## It is a sequence, not a command
+
+`diagnose debug flow` is four or five commands that only work in combination,
+and getting one of them out of order produces either nothing or far too much.
+The shape is always the same:
+
+1. **Reset to a known state.** `diagnose debug disable`, `diagnose debug flow
+   filter clear`, `diagnose debug reset`. Never skip this. A filter left behind
+   by somebody else silently narrows your trace to their problem, and you will
+   spend twenty minutes wondering why your traffic is invisible.
+2. **Set the filter.** `addr`, `saddr`, `daddr`, `port`, `sport`, `dport`,
+   `proto`.
+3. **Check the filter.** `diagnose debug flow filter` with no arguments prints
+   what is actually in effect. One line, and it catches the typo before it costs
+   you a reproduction.
+4. **Choose what is displayed.** `show function-name enable` puts the kernel
+   function in each line, which is what makes the output readable at all.
+5. **Arm the trace, then enable output.**
+
+## The order argument, stated honestly
+
+Fortinet's administration guide shows `diagnose debug enable` **first**, before
+the filter. A great deal of field practice puts it **last**.
+
+**Both work.** The difference is what happens in between: on a busy firewall,
+turning output on before the filter is set means every session is traced until
+the filter lands, and recovering a flooded console is genuinely unpleasant. That
+is the reason to prefer filter-first, and it is a preference rather than a
+correction.
+
+## The count is packets, not seconds
+
+`trace start 100` means **one hundred packets**, not a hundred seconds or until
+you press something. On a busy interface a narrow-looking filter can exhaust
+that before you have finished reading the first screen. Start small — ten is
+often enough to answer "which policy matched" — and repeat.
+
+## Why a correct trace can show nothing
+
+This is the failure that wastes the most time, and it is not a mistake in the
+commands.
+
+**Traffic offloaded to hardware does not pass through the code this traces.** On
+platforms with NP or SP processors, once a session is established it can be
+handled in silicon, and the debug flow sees nothing while traffic is plainly
+flowing. The trace is working; the packets simply are not going past it.
+
+The usual test is to disable offload for the affected policy — but understand
+what you have done: **you are now measuring a different path from the one in
+production.** Treat it as a deliberate step with a deliberate revert, not as a
+fix.
+
+## And afterwards
+
+`diagnose debug flow trace stop`, `diagnose debug disable`, `diagnose debug flow
+filter clear`, `diagnose debug reset`. **Do this even when the packet count has
+already been exhausted.** Debug output left enabled on a production firewall
+keeps writing to the console, and the person who inherits that session will not
+know why.
+
+One last thing about the output: **the line numbers beside each function name
+are not stable across FortiOS versions.** Match on the function name. Never
+write a runbook that depends on a line number.

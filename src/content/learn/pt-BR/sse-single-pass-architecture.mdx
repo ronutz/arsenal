@@ -1,0 +1,85 @@
+---
+slug: sse-single-pass-architecture
+title: "O que single-pass realmente significa"
+summary: "Todo fornecedor de SSE diz convergente. Este é o significado mecânico: uma descriptografia em vez de quatro, pilares versus motores transversais, e por que DLP não é um pilar."
+concepts: ["sse", "sase", "single-pass", "swg", "casb", "ztna", "dlp"]
+relatedTools: ["sse-architecture-explainer"]
+relatedArticles: ["netskope-platform-architecture-and-newedge", "netskope-inline-tls-decryption", "netskope-realtime-vs-api-protection"]
+category: security
+order: 20
+status: reviewed
+updated: "2026-08-13"
+---
+
+## A afirmação, e o que a tornaria verdadeira
+
+Todo produto de secure service edge é vendido como convergente. A palavra
+trabalha muito e raramente é destrinchada, então aqui vai a versão mecânica:
+
+**Numa cadeia de appliances separados, o payload é descriptografado e
+recriptografado a cada salto.** O proxy descriptografa, inspeciona,
+recriptografa. O appliance de DLP descriptografa, inspeciona, recriptografa. O
+sandbox faz de novo. Cada equipamento guarda a própria política no próprio
+dialeto, cada um soma a sua latência ao total, e cada um é um ponto onde a
+cadeia pode quebrar.
+
+**Num passe único, o payload é descriptografado uma vez** e o mesmo fluxo é
+entregue a todos os motores. Essa é a afirmação arquitetural inteira, e ela é
+verificável: pergunte se o payload é descriptografado uma vez, ou uma vez por
+motor.
+
+Vários produtos são vendidos como convergentes e são quatro motores atrás de uma
+única fatura. O empacotamento é real; a convergência não.
+
+## Pilares e motores transversais
+
+Esta é a distinção que a maioria erra, e é a útil.
+
+**Os pilares tratam de para onde o tráfego vai.** Um secure web gateway governa
+a web em geral. Um cloud access security broker governa aplicações
+software-as-a-service, onde a unidade útil de controle é a *atividade* —
+upload, compartilhamento, publicação — e não o endereço. O zero trust network
+access intermedeia um usuário até uma aplicação privada. Um cloud firewall trata
+das portas que os serviços voltados à web não cobrem.
+
+**Prevenção de perda de dados e proteção contra ameaças não são pilares.** São
+transversais. Rodam dentro do mesmo passe e recebem aquilo que os pilares
+descriptografaram.
+
+Esse único fato tem uma consequência que vale dizer com clareza: **você escreve o
+perfil de dados uma vez e ele é aplicado a tráfego web, a software-as-a-service e
+a uma aplicação privada igualmente.** Numa arquitetura encadeada, a mesma regra
+precisa ser expressa quatro vezes, em quatro produtos, e as quatro vão divergir.
+
+## O que a descriptografia compra, e o que a ausência dela custa
+
+Sem descriptografia, tudo abaixo da identificação de aplicação trabalha com
+metadados: o handshake, o nome, a reputação. Isso não é nada desprezível, e não
+é inspeção de conteúdo.
+
+Uma política escrita como se o conteúdo estivesse visível, aplicada a um fluxo
+que não é descriptografado, **não vai fazer o que o autor acredita.** A regra vai
+ficar no console com aparência correta. Essa é uma falha rotineira e evitável.
+
+## A direção do tráfego decide o que o edge consegue ver
+
+O tráfego precisa chegar antes que qualquer coisa disso se aplique, e o método
+muda o que é conhecível:
+
+- **O cliente no endpoint** é o único método que carrega identidade do usuário e
+  postura do dispositivo junto com o fluxo.
+- **Túneis IPsec e GRE** direcionam um site inteiro. Conhecem o site, não a
+  pessoa; a identidade precisa vir de outro lugar.
+- **Encadeamento de proxy** é útil durante uma migração, e o proxy antigo
+  continua no caminho e continua sendo seu para operar.
+- **Direção por DNS** é o toque mais leve e o mais grosseiro. Não distingue duas
+  aplicações atrás de um mesmo endereço e não carrega identidade.
+
+## E o resultado não é binário
+
+Os resultados interessantes de política não são permitir e bloquear. Orientação
+ao usuário, acesso somente leitura, autenticação adicional e isolamento de
+navegador permitem que o trabalho continue mudando o que os dados podem fazer —
+e num dispositivo não gerenciado costumam ser os únicos resultados que valem a
+pena, porque permitem acesso sem que o dado aterrisse num endpoint que ninguém
+controla.

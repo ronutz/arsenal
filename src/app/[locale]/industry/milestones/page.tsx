@@ -27,6 +27,9 @@ import {
   milestonesByStrand,
   milestonesChronological,
 } from "@/content/milestones/milestones";
+import { countryLabel } from "@/content/vendors/origins";
+import CountryFlag from "@/components/CountryFlag";
+import MilestoneCountryFilter from "@/components/MilestoneCountryFilter";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -93,6 +96,34 @@ export default async function MilestonesPage({
           </div>
         </section>
 
+        {/* COUNTRY FILTER (PRIME 2026-08-13). Counts computed here, from the
+            same array the cards render, so a chip cannot claim a number the
+            timeline then contradicts - the rule the vendor timeline already
+            follows.
+
+            ALPHABETICAL BY ISO CODE, matching /industry: the code is what the
+            button displays, so ordering by count would leave the visible labels
+            out of order and turn the row into an implicit ranking. */}
+        <section className="section">
+          <div className="container section-narrow">
+            <MilestoneCountryFilter
+              labels={{
+                show: t("filter.show"),
+                all: t("filter.all"),
+                countryLabel: t("filter.countryLabel"),
+              }}
+              countries={Object.entries(
+                milestonesChronological().reduce<Record<string, number>>((acc, m) => {
+                  for (const c of m.countries ?? []) acc[c] = (acc[c] ?? 0) + 1;
+                  return acc;
+                }, {}),
+              )
+                .map(([code, n]) => ({ code, n, label: countryLabel(code as never) }))
+                .sort((a, b) => a.code.localeCompare(b.code))}
+            />
+          </div>
+        </section>
+
         {MILESTONE_STRANDS.map((strand) => {
           const items = milestonesByStrand(strand);
           if (items.length === 0) return null;
@@ -118,7 +149,19 @@ export default async function MilestonesPage({
                        column, prose into the next, and so on down the page. The
                        classes all existed, which is what I checked last time;
                        I never checked what they DO. */
-                    <div className="lineage-deal" key={m.slug} id={m.slug}>
+                    <div
+                      className="lineage-deal"
+                      key={m.slug}
+                      id={m.slug}
+                      /* SPACE-SEPARATED, and PLURAL. A milestone can belong to
+                         more than one country - the transatlantic cable had two
+                         ends, Telstar had ground stations in three - so the
+                         filter matches against a LIST rather than a value. The
+                         vendor timeline's `data-country` is singular because a
+                         company has one origin; an event does not. */
+                      data-milestone-entry=""
+                      data-countries={(m.countries ?? []).join(" ")}
+                    >
                       <div className="lineage-deal-rail">
                         <span className="lineage-deal-dot" />
                         <span className="lineage-deal-year mono">{m.year}</span>
@@ -127,6 +170,30 @@ export default async function MilestonesPage({
                         <div className="lineage-deal-top">
                           <span className="lineage-deal-name">{m.title}</span>
                           {m.who ? <span className="type-badge">{m.who}</span> : null}
+                          {/* WHERE THE WORK WAS DONE (PRIME 2026-08-13).
+                              Multiple flags where the work genuinely spans
+                              countries, in the order the data lists them.
+
+                              SVG rather than emoji, for the reason recorded on
+                              the vendor timeline: Windows ships no country flag
+                              glyphs, so emoji degrade to bare regional
+                              indicator letters for most desktop readers.
+
+                              The country NAME is the title attribute rather
+                              than visible text. On a vendor card the name sits
+                              beside the flag because there is one of them and a
+                              metadata line to carry it; here there can be
+                              three, and three spelled-out names would crowd the
+                              title they belong to. */}
+                          {(m.countries ?? []).length > 0 && (
+                            <span className="milestone-flags">
+                              {(m.countries ?? []).map((c) => (
+                                <span key={c} className="milestone-flag" title={countryLabel(c as never)}>
+                                  <CountryFlag code={c as never} />
+                                </span>
+                              ))}
+                            </span>
+                          )}
                         </div>
                         <p className="lineage-deal-what">{m.what}</p>
                         {/* The `why` is the reason the entry exists. An entry

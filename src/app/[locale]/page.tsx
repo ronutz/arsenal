@@ -111,14 +111,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <p className="hero-eyebrow">{t("hero.eyebrow")}</p>
             <h1 className="page-hero-title">{t("hero.title")}</h1>
             <p className="page-hero-lede">{t("hero.subtitle")}</p>
-            <div className="hero-cta">
-              <a href="#cidr" className="btn btn-primary">
-                {t("hero.ctaPrimary")}
-              </a>
-              <a href="#who" className="btn btn-secondary">
-                {t("hero.ctaSecondary")}
-              </a>
-            </div>
           </div>
         </section>
 
@@ -202,9 +194,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <section className="section">
           <div className="container">
             <h2 className="section-title">{t("map.title")}</h2>
-            <p className="section-body" style={{ marginBottom: "2rem" }}>
-              {t("map.lede")}
-            </p>
             <div className="learn-portal-grid">
               <Link href="/vendor-hubs" className="learn-portal-card" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9670;</span>

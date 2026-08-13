@@ -1,0 +1,88 @@
+---
+slug: spb-fabric-vocabulary
+title: "O vocabulário do SPB, organizado"
+summary: "I-SID, B-VLAN, B-MAC, BEB, BCB, L2VSN, L3VSN. Qual deles é serviço, qual é transporte e qual é papel de um switch — e o fato que torna o resto óbvio."
+concepts: ["spb", "802.1aq", "fabric-connect", "is-is", "i-sid", "mac-in-mac"]
+relatedTools: ["fabric-connect-spb-explainer"]
+relatedArticles: ["voss-fabric-connect-spbm", "voss-i-sid-and-vsns", "spbm-multicast-addresses-are-computed-not-learned"]
+category: extreme
+order: 20
+status: reviewed
+updated: "2026-08-13"
+---
+
+## A dificuldade são as palavras
+
+Shortest Path Bridging é mais simples do que aquilo que substitui. Não parece
+assim no primeiro contato, porque sete termos desconhecidos chegam num parágrafo
+só e nada sinaliza quais são do mesmo tipo.
+
+Separe-os em três pilhas e a tecnologia para de resistir.
+
+**Transporte:** as backbone VLANs e os backbone MACs. **Serviço:** o I-SID, e o
+L2VSN ou L3VSN que ele representa. **Papel:** o que um switch faz, borda ou
+núcleo.
+
+## O fato que reorienta tudo
+
+**Uma B-VLAN não é uma VLAN.**
+
+Ela não inunda unicast desconhecido, broadcast nem multicast. Encaminha apenas
+com base em tabelas de backbone MAC que o IS-IS provisionou a partir de árvores
+de caminho mais curto.
+
+Não há spanning tree. Nada fica bloqueado. Todo enlace carrega tráfego, porque a
+decisão de encaminhamento veio de uma topologia calculada, e não de observar
+quadros chegando e adivinhar.
+
+Assimilado isso, o resto decorre: se o encaminhamento é calculado, o núcleo não
+precisa aprender nada; e se o núcleo não aprende, ele não precisa saber que os
+seus serviços existem.
+
+## O identificador de serviço
+
+O **I-SID** é um número de vinte e quatro bits carregado no cabeçalho de
+backbone 802.1ah. Vinte e quatro bits são cerca de dezesseis milhões, contra os
+quatro mil de uma tag de VLAN — e é por isso que um fabric pode dar a cada
+serviço o seu próprio identificador em vez de racioná-los.
+
+Um I-SID não é uma VLAN nem uma sub-rede. Ele se torna uma coisa ou outra pelo
+que você liga a ele:
+
+- Ligue a uma **VLAN de borda** e ele é um **L2VSN**. Dois sites configuram o
+  mesmo I-SID contra a sua VLAN local e compartilham um domínio de broadcast,
+  sem nada configurado no meio.
+- Ligue a uma **VRF** e ele é um **L3VSN**, carregando tráfego roteado de uma
+  instância de roteamento.
+
+Muitas implantações codificam a VLAN dentro do I-SID — 20010 para a VLAN 10 —
+para que o mapeamento se leia de relance. Isso é convenção, não exigência.
+
+## Duas backbone VLANs, e por quê
+
+Um fabric normalmente roda **duas** B-VLANs, 4051 e 4052 por padrão em
+equipamentos Extreme. Os serviços são distribuídos entre elas pelo bit menos
+significativo do I-SID: pares em uma, ímpares na outra. Duas árvores de caminho
+mais curto, cada uma carregando aproximadamente metade dos serviços.
+
+Essa distribuição é o padrão, não uma regra do standard. Quando um serviço se
+comporta de forma diferente dos vizinhos, **em qual árvore ele está é a primeira
+coisa a verificar.**
+
+## Borda e núcleo
+
+Um **backbone edge bridge** é onde uma VLAN ou VRF de cliente encontra um I-SID,
+e onde o encapsulamento MAC-in-MAC é adicionado e removido. Os serviços são
+provisionados ali.
+
+Um **backbone core bridge** encaminha apenas com backbone MACs e nunca vê um
+endereço MAC de cliente.
+
+Essa é a afirmação operacional que o SPB realmente faz: **adicionar um serviço
+significa mexer nos dois ou mais switches de borda onde ele aparece, e em nada no
+meio.** O núcleo fica intocado — não por convenção de projeto, mas porque ele
+genuinamente não carrega a informação.
+
+A mesma propriedade dimensiona a tabela de encaminhamento do núcleo pelo número
+de nós do fabric, e não pelo número de estações finais, que é a razão de o
+encapsulamento existir.

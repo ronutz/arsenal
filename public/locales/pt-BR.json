@@ -47,13 +47,11 @@
     "hero": {
       "eyebrow": "Feito por quem é da área, com privacidade em primeiro lugar",
       "title": "A caixa de ferramentas de rede e segurança que mantém seus dados na sua máquina.",
-      "subtitle": "Cálculo de sub-redes, diagnóstico de DNS e e-mail, inspeção de certificados e muito mais, processado localmente no seu navegador. Sem envio, sem registro, sem necessidade de conta para as ferramentas do dia a dia.",
-      "ctaPrimary": "Abrir a caixa de ferramentas",
-      "ctaSecondary": "Quem desenvolve isto"
+      "subtitle": "Cálculo de sub-redes, diagnóstico de DNS e e-mail, inspeção de certificados e muito mais, processado localmente no seu navegador. Sem envio, sem registro, sem necessidade de conta."
     },
     "credibility": {
       "title": "Feito por quem coloca a mão na massa desde 1996.",
-      "body": "Trinta anos em redes e segurança corporativa, entregues por um instrutor que está na ativa, e não por uma página de marketing. As comparações aqui são feitas com honestidade, não para vender.",
+      "body": "Trinta anos em redes e segurança corporativa.",
       "aboutCta": "Mais sobre quem está por trás"
     },
     "pillars": {
@@ -95,7 +93,6 @@
     },
     "map": {
       "title": "O que há aqui",
-      "lede": "Seis seções, construídas ao longo de anos em vez de montadas para um lançamento. Cada número abaixo é lido da própria coisa no momento do build, então nenhum deles pode divergir do que você vai de fato encontrar.",
       "tools": "Ferramentas",
       "toolsLede": "Calculadoras e explicadores determinísticos para redes, segurança e identidade. Calculam no seu navegador e não enviam nada a lugar nenhum.",
       "toolsBadge": "{count} no ar",
@@ -6385,6 +6382,191 @@
         "title": "Módulos que esta ferramenta sabe descrever",
         "intro": "Uma lista finita. Se um caminho usar um módulo que não esteja aqui, a estrutura continua sendo decodificada e a descrição é omitida em vez de adivinhada."
       }
+    },
+    "icontrol-rest-path-explainer": {
+      "name": "Explicador de caminhos iControl REST",
+      "blurb": "Cole uma URL do iControl REST e receba a decodificação: o módulo do TMOS, a coleção, o caminho de partição e pastas codificado com til e o seu equivalente em tmsh, subcoleções como members de um pool, e as opções de consulta. Local e offline; nunca contata um equipamento.",
+      "inputLabel": "Caminho iControl REST",
+      "placeholder": "/mgmt/tm/ltm/pool/~Common~web_pool",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "overview": {
+        "title": "O que este caminho endereça",
+        "path": "Caminho",
+        "host": "Host",
+        "root": "Árvore",
+        "module": "Módulo",
+        "moduleUnknown": "não está na tabela desta ferramenta",
+        "collection": "Coleção"
+      },
+      "object": {
+        "title": "O objeto",
+        "partition": "Partição",
+        "folders": "Pastas",
+        "name": "Nome",
+        "tmsh": "Caminho tmsh"
+      },
+      "sub": {
+        "title": "Subcoleção",
+        "name": "Nome",
+        "member": "Membro"
+      },
+      "options": {
+        "title": "Opções de consulta"
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      },
+      "reference": {
+        "title": "Módulos que esta ferramenta sabe descrever",
+        "intro": "Uma lista finita. Se um caminho usar um módulo que não esteja aqui, a estrutura continua sendo decodificada e a descrição é omitida em vez de adivinhada."
+      }
+    },
+    "fortios-flow-debug-builder": {
+      "name": "Construtor de debug flow do FortiOS",
+      "blurb": "Monta a sequência ordenada de `diagnose debug flow` que um FortiGate precisa para rastrear uma sessão: o reset para estado limpo, o filtro, as opções de exibição, o trace por contagem de pacotes e o enable, junto dos comandos de limpeza que importam mais que a preparação. Local e offline; gera texto e não contata nada.",
+      "formLabel": "O que você quer rastrear?",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "fields": {
+        "addr": "Endereço (qualquer direção)",
+        "saddr": "Endereço de origem",
+        "daddr": "Endereço de destino",
+        "port": "Porta (qualquer direção)",
+        "sport": "Porta de origem",
+        "dport": "Porta de destino",
+        "proto": "Protocolo (tcp, udp, icmp ou número)",
+        "vdom": "Virtual domain (opcional)",
+        "count": "Contagem de pacotes",
+        "iprope": "Mostrar verificações iprope",
+        "timestamp": "Timestamp em cada linha"
+      },
+      "output": {
+        "title": "A sequência",
+        "copy": "Copiar",
+        "copied": "Copiado",
+        "lineByLine": "Linha a linha"
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      }
+    },
+    "icontrol-rest-stats-decoder": {
+      "name": "Decodificador de stats do iControl REST",
+      "blurb": "Cole uma resposta de stats do iControl REST e receba-a achatada em uma linha por estatística. Ela desembrulha os invólucros entries, nestedStats, value e description, reduz as chaves de URL aos objetos que elas nomeiam e combina contadores de 64 bits que chegam divididos em metades high e low. Transformação puramente local; nada é buscado.",
+      "inputLabel": "JSON de stats do iControl REST",
+      "placeholder": "Cole a resposta de um endpoint /stats",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "flat": {
+        "title": "Achatado",
+        "copy": "Copiar",
+        "copied": "Copiado"
+      },
+      "table": {
+        "title": "Por objeto",
+        "combined": "(combinado de high + low)"
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      }
+    },
+    "sse-architecture-explainer": {
+      "name": "Explicador de arquitetura single-pass SSE / SASE",
+      "blurb": "Descreva uma requisição — para onde vai, como é direcionada, se o dispositivo é gerenciado, se o TLS é descriptografado — e veja o passe único: quais serviços SSE atuam, quais são pilares e quais são transversais, e o que uma cadeia de appliances separados teria feito no lugar. Determinístico e offline.",
+      "formLabel": "Descreva a requisição",
+      "example": "Exemplo",
+      "clear": "Redefinir",
+      "fields": {
+        "destination": "Destino",
+        "steering": "Método de direção",
+        "managed": "Dispositivo gerenciado",
+        "tls": "TLS",
+        "decrypt": "Descriptografia permitida",
+        "payload": "Carrega payload"
+      },
+      "destinations": {
+        "web": "Web em geral",
+        "sanctioned-saas": "Aplicação SaaS sancionada",
+        "unsanctioned-saas": "Aplicação SaaS não sancionada",
+        "private-app": "Aplicação privada",
+        "non-web-port": "Porta não web"
+      },
+      "steerings": {
+        "client": "Cliente no endpoint",
+        "ipsec": "Túnel IPsec",
+        "gre": "Túnel GRE",
+        "proxy-chain": "Encadeamento de proxy",
+        "dns": "Direção por DNS"
+      },
+      "kinds": {
+        "pillar": "pilar",
+        "cross-cutting": "transversal",
+        "network": "rede",
+        "conditional": "condicional"
+      },
+      "summary": {
+        "title": "O que atuou",
+        "pillars": "Pilares",
+        "crossCutting": "Transversais",
+        "none": "nenhum"
+      },
+      "pass": {
+        "title": "O passe, em ordem"
+      },
+      "contrast": {
+        "title": "Contra appliances encadeados"
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      }
+    },
+    "fabric-connect-spb-explainer": {
+      "name": "Explicador de Fabric Connect / SPB",
+      "blurb": "Informe um I-SID, um nickname ou um papel e receba o vocabulário do Shortest Path Bridging organizado: qual backbone VLAN carrega o serviço e por quê, a que um L2VSN e um L3VSN realmente se ligam, o que uma B-VLAN é e o que não é, e a diferença entre um backbone edge bridge e um backbone core bridge. Determinístico e offline.",
+      "formLabel": "O que você está olhando?",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "fields": {
+        "isid": "I-SID",
+        "service": "Tipo de serviço",
+        "primary": "B-VLAN primária",
+        "secondary": "B-VLAN secundária",
+        "nickname": "Nickname SPB",
+        "role": "Papel do switch"
+      },
+      "services": {
+        "unknown": "Não informado",
+        "l2vsn": "L2VSN (VLAN)",
+        "l3vsn": "L3VSN (VRF)",
+        "multicast": "Multicast"
+      },
+      "roles": {
+        "none": "Não informado",
+        "beb": "Backbone Edge Bridge",
+        "bcb": "Backbone Core Bridge"
+      },
+      "facts": {
+        "title": "O que os números significam"
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      }
     }
   },
   "privacy_page": {
@@ -8504,6 +8686,22 @@
       "read-an-f5os-path": {
         "title": "Ler um caminho do F5OS e, depois, a declaração por trás dele",
         "desc": "Decodifique um caminho RESTCONF do F5OS segmento a segmento para ver qual módulo, tenant e nó ele endereça, e depois leia a declaração AS3 que configura o serviço em execução dentro daquele tenant."
+      },
+      "read-a-bigip-object-path": {
+        "title": "Decodificar um caminho de objeto do BIG-IP e depois as suas estatísticas",
+        "desc": "Cole uma URL do iControl REST para ver o módulo, a coleção e o objeto codificado com til junto do equivalente em tmsh; ache a resposta de stats do objeto em linhas legíveis; depois use o explicador do F5OS para a camada de plataforma abaixo."
+      },
+      "trace-a-session-on-a-fortigate": {
+        "title": "Rastrear uma sessão através de um FortiGate",
+        "desc": "Monte a sequência ordenada de diagnose debug flow para o tráfego que interessa, incluindo os comandos de limpeza, com cada linha explicada antes de você colá-la num firewall de produção."
+      },
+      "understand-an-sse-pass": {
+        "title": "Entender o que uma requisição encontra numa plataforma SSE",
+        "desc": "Descreva uma requisição e percorra o passe único: quais serviços atuam, quais são pilares e quais são transversais, e o que uma cadeia de appliances separados teria feito no lugar."
+      },
+      "make-sense-of-an-spb-fabric": {
+        "title": "Entender uma configuração de fabric SPB",
+        "desc": "Informe um I-SID, um nickname ou um papel e receba o vocabulário do Shortest Path Bridging organizado: qual backbone VLAN carrega o serviço, a que o serviço realmente se liga, e o que muda entre um edge bridge e um core bridge."
       }
     },
     "manualHeading": "Manual",
@@ -15126,6 +15324,11 @@
         "name": "Fabricação",
         "blurb": "Os cinco eixos acima registram o que foi inventado. Este registra como qualquer daquilo passa a ser construído - o processo planar, a foundry, a arquitetura licenciada, a fábrica contratada. Um fabricante de rede hoje projeta um produto que não manufatura, sobre silício que não fabrica, usando uma arquitetura de processador que licencia em vez de possuir. Cada passo desse arranjo foi inventado por alguém, numa data."
       }
+    },
+    "filter": {
+      "show": "Mostrar",
+      "all": "Todos",
+      "countryLabel": "Filtrar por país"
     }
   },
   "advisory": {
