@@ -1,0 +1,74 @@
+---
+slug: fortigate-policy-order
+title: "Why your FortiGate rule did not fire"
+summary: "First match wins and evaluation stops, so a broader rule above makes a narrower one below unreachable. Plus the two things Fortinet documents and people still miss: the policy ID is not the order, and each direction needs its own policy."
+concepts: ["fortios", "fortigate", "firewall-policy", "first-match", "shadowed-rules"]
+relatedTools: ["fortigate-policy-match-order", "fortios-flow-debug-builder"]
+relatedArticles: ["fortigate-debug-flow"]
+category: security
+order: 31
+status: reviewed
+updated: "2026-08-13"
+---
+
+## The rule is simple and the consequence is not
+
+A FortiGate walks its policy list **top to bottom**, and **the first policy
+whose fields all cover the packet decides the outcome**. Evaluation stops there.
+Nothing below is consulted.
+
+If nothing matches, the packet reaches the **implicit deny** — incoming any,
+source any, outgoing any, destination any, action deny. Its one editable setting
+is whether violations are logged, and turning that on is usually the fastest way
+to find out what is actually arriving.
+
+## The policy ID is not the order
+
+This one causes real damage. **The policy ID is an identifier, not a position.**
+It is assigned when the policy is created and stays put. **Policy 3 can sit
+below policy 47**, and renumbering changes nothing.
+
+The GUI's **By Sequence** view exists precisely because the ID does not tell you
+the order. If you find yourself reasoning about which rule wins by comparing ID
+numbers, you are reading the wrong column.
+
+## A broad rule above makes a narrow rule below unreachable
+
+If a policy above covers every field a policy below covers, **the one below can
+never match anything**. It sits in the list looking like configuration, and it
+is decoration.
+
+This is the commonest form of "my rule isn't working": the rule is correct, it
+is simply never reached. A tool can find these mechanically — for each policy,
+ask whether any earlier one supersedes it on every field — and it is worth doing
+periodically rather than only when something breaks.
+
+The practical rule that follows: **the more specific a policy is, the closer to
+the top it belongs.** Broad catch-alls go last.
+
+## Each direction needs its own policy
+
+Fortinet states this plainly and it still surprises people every week: traffic
+being permitted **from A to B says nothing about B to A**. Most communication is
+two-way; the policy list is not.
+
+## Virtual IPs do not obey ordering alone
+
+A policy with a **VIP applied is matched differently** from an ordinary policy,
+and **takes priority over one**. So placing an ordinary deny above a VIP policy
+does not block the source you meant to block.
+
+To do that, the deny policy needs **`match-vip` enabled** and must sit above the
+VIP policy. New deny policies have it on by default — and an **accept** policy
+cannot have it at all.
+
+## And one thing that quietly changed
+
+From **FortiOS 7.6.5**, `allow-traffic-redirect` is **disabled by default**, and
+the setting stays disabled after an upgrade even if it was enabled before — a
+change documented in [Fortinet's firewall policy
+guide](https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/656084/firewall-policy),
+which is also where the virtual-IP matching rules above are set out. If
+traffic needs to leave by the interface it arrived on, it now requires a policy
+that matches it — otherwise it falls to the implicit deny, on a device where it
+used to work.

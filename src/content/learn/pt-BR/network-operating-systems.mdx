@@ -1,0 +1,191 @@
+---
+slug: network-operating-systems
+title: "O que é, de fato, um sistema operacional de rede"
+summary: "IOS, Junos, EOS, TMOS, FortiOS, PAN-OS e os demais, comparados nos eixos que importam: sobre o que rodam, como os componentes compartilham estado, onde os planos se dividem, e o que acontece quando uma parte falha."
+concepts: ["network-operating-system", "ios", "junos", "eos", "tmos", "fortios", "pan-os", "control-plane"]
+relatedTools: ["network-os-comparer"]
+relatedArticles: ["fortios-cli-grammar", "f5os-tenant-lifecycle"]
+category: operations
+order: 16
+status: reviewed
+updated: "2026-08-14"
+---
+
+## Uma pergunta, respondida de oito formas diferentes
+
+Todo sistema operacional de rede responde à mesma pergunta, e a resposta é a sua
+arquitetura:
+
+> **O que acontece quando uma parte do software falha?**
+
+Um monolito derruba o equipamento junto. Um microkernel reinicia o processo. Um
+banco de estado permite que o processo reiniciado retome em vez de reconstruir.
+Um plano de dados em hardware continua encaminhando enquanto o plano de controle
+é remontado. Essa é a história inteira, e tudo abaixo é uma variação dela.
+
+Os fabricantes normalmente não se explicam assim, porque "nossa arquitetura
+limita o raio de dano" é menos atraente que uma lista de recursos. Mas é a
+diferença que se sente às três da manhã.
+
+## Cisco IOS: aquele do qual todos os outros foram projetados para escapar
+
+O **IOS** clássico não tem sistema operacional hospedeiro. O IOS *é* o sistema
+operacional, rodando no hardware como uma única imagem binária, e tudo dentro
+dele roda em **um único espaço de endereçamento sem proteção de memória**.
+Qualquer processo pode corromper os dados de qualquer outro.
+
+O escalonador é **run-to-completion e não preemptivo**: um processo em execução
+mantém a CPU até fazer voluntariamente uma chamada de kernel. Um processo mal
+comportado deixa todo o resto sem CPU, inclusive os protocolos de roteamento.
+
+Nada disso foi um erro. Era o projeto certo para o hardware da época — pequeno,
+rápido, previsível — e deu à indústria a sua CLI de referência. Mas explica por
+que os vinte anos seguintes de sistemas operacionais de rede foram, em boa
+medida, tentativas de escapar dele.
+
+## IOS XE e IOS XR: duas fugas diferentes
+
+O **IOS XE** (2008, ASR 1000) é a resposta de compatibilidade. Um **kernel Linux
+por baixo, com o próprio IOS rodando em cima como um único daemon — o IOSd**. As
+funções de sistema foram retiradas dele para processos Linux separados, então uma
+falha de plataforma não leva mais o kernel junto. O conhecimento e os scripts
+existentes continuam valendo.
+
+A limitação honesta: **o IOSd continua sendo um monolito**. O maior domínio de
+falha ficou menor, não ausente.
+
+O **IOS XR** é a resposta de ruptura — uma base de código diferente, não uma
+reforma. Originalmente o **microkernel de tempo real QNX**, depois uma base Linux
+de 64 bits (o [material de arquitetura da própria
+Cisco](https://www.cisco.com/c/en/us/products/collateral/ios-nx-os-software/ios-xr-software/index.html)
+cobre o modelo de processos protegidos e o commit em dois estágios). Os componentes rodam como **processos protegidos independentes**,
+reiniciáveis individualmente, comunicando-se por troca de mensagens em vez de
+memória compartilhada.
+
+E trouxe o **commit em dois estágios**: as mudanças são feitas contra um
+candidato, verificadas, e então aplicadas. Só isso transforma uma edição pela
+metade de uma indisponibilidade num rascunho abandonado.
+
+A CLI lembra a do IOS. **O modelo operacional não**, e a familiaridade é em parte
+uma armadilha.
+
+## Junos: um sistema operacional, uma árvore de código
+
+O **Junos** foi lançado em 7 de julho de 1998, construído sobre **FreeBSD** — o
+que significa que há um Unix de verdade por baixo, com ferramentas Unix de
+verdade. A sua ideia organizadora é a separação entre a **Routing Engine**, que
+guarda o plano de controle, e a **Packet Forwarding Engine**, que encaminha. Essa
+fronteira é o motivo de o plano de controle poder ser remontado ou falhar para o
+par enquanto o tráfego continua.
+
+A sua assinatura foi o modelo de configuração **candidato e commit**, com
+rollback e um diff legível antes de qualquer coisa ser aplicada. Boa parte da
+indústria seguiu depois; a Juniper chegou primeiro.
+
+O [**Junos OS Evolved**](https://www.juniper.net/documentation/us/en/software/junos/junos-evolved-overview/topics/concept/evo-overview.html)
+(Release 19.2, 2019) reconstrói isso **nativamente sobre Linux**, e muda o modelo de estado de um jeito que vale entender. O Junos clássico
+é centrado na Routing Engine; o Evolved é **baseado em nós**, e os processos
+publicam estado num **banco de dados distribuído**.
+
+> A diferença: no Junos clássico um daemon reiniciado **reconstrói** o seu estado.
+> No Evolved ele o **recupera** — mesmo que volte em outro nó. Não são a mesma
+> garantia.
+
+## Arista EOS: o estado separado dos processos que o produzem
+
+O **EOS** roda um **kernel Linux não modificado** — não é um fork, não é uma
+árvore com patches — então as ferramentas Linux comuns funcionam como
+documentado.
+
+A sua decisão arquitetural é o **SysDB**: um banco de estado central em memória
+com publicação e assinatura. **Os processos não conversam entre si.** Eles
+publicam o que sabem e assinam o que precisam. Um agente reiniciado pede ao SysDB
+o estado atual e segue em frente.
+
+Essa única decisão é o motivo de reiniciar um agente ser rotina no EOS, e não uma
+medida de emergência.
+
+## O NX-OS veio do armazenamento
+
+O **NX-OS** descende do **SAN-OS**, escrito para os switches de storage MDS, e a
+herança aparece: **recursos que não foram habilitados não estão rodando.** Isso
+reduz superfície de ataque e memória, e surpreende de forma confiável quem espera
+que um comando exista antes de ter sido ligado.
+
+## Os dois que não são roteadores
+
+O **TMOS** é da F5, e é um **full proxy** — termina conexões e cria outras, em vez
+de encaminhar pacotes. O Linux cuida da gestão; o **Traffic Management
+Microkernel (TMM)** cuida do tráfego como um processo de tempo real separado, com
+memória, escalonamento e pilha de rede próprios.
+
+> **O TMM ignora completamente a pilha de rede do Linux.** Este é o fato mais útil
+> sobre a plataforma: as ferramentas do Linux mostram o plano de gestão e não o
+> tráfego, então um `netstat` num BIG-IP responde a uma pergunta que você não
+> fez.
+
+O **F5OS** não é um sistema operacional de tráfego. É a **camada de plataforma**
+no VELOS e no rSeries que decide quais tenants BIG-IP existem e o que recebem.
+Confundi-lo com o BIG-IP de dentro é o erro mais comum com esses equipamentos.
+
+## Os sistemas de segurança escolheram objetos primários diferentes
+
+O **FortiOS** é construído em torno de **silício próprio** — processadores de
+rede, de conteúdo, sistemas em chip. O tráfego repassado ao hardware **não
+percorre o caminho de software**, e é por isso que um debug corretamente montado
+pode não mostrar nada enquanto o tráfego evidentemente flui. O offload é a razão
+de a relação preço/vazão funcionar; é também a razão de o diagnóstico ser mais
+difícil.
+
+O **PAN-OS** fez outra aposta: **identidade de aplicação como objeto primário de
+política**, e não números de porta. O seu **single-pass parallel processing**
+classifica o pacote uma vez e roda identificação de aplicação, identificação de
+usuário, inspeção de conteúdo e política contra essa única passagem, em vez de
+encadear motores que refazem o trabalho. Os planos de controle e de dados são
+realmente separados, com frequência em processadores distintos, de modo que carga
+de gestão não compete com tráfego.
+
+O custo aparece do outro lado: **os commits demoram**, e numa configuração grande
+esse tempo é operacionalmente relevante.
+
+O **Check Point Gaia** unificou dois sistemas operacionais que a empresa mantinha
+em paralelo — o **IPSO**, da linha de appliances Nokia, e o **SecurePlatform**. A
+sua escolha distintiva é mais antiga que ambos: **a gestão é um produto separado
+do gateway.** A política é escrita centralmente e instalada. Isso é um arranjo de
+três camadas em vez de um equipamento que se configura, e significa mais
+infraestrutura antes da primeira regra existir — em troca de a gestão central ser
+o projeto, e não um acessório.
+
+## O par da Extreme, e por que são dois
+
+O **EXOS — renomeado Switch Engine no hardware Universal** — é Linux com as
+funções de rede como processos modulares de espaço de usuário e reinício por
+processo.
+
+O **VOSS — renomeado Fabric Engine** — descende do **Nortel Passport** passando
+pelo **Avaya VSP**, e a sua característica distintiva fica acima da divisão de
+planos: o **Shortest Path Bridging** calcula o encaminhamento com IS-IS em vez de
+aprendê-lo, então não há spanning tree nem links bloqueados. Os serviços são
+provisionados **apenas na borda**; o núcleo encaminha por MACs de backbone e não
+sabe que os serviços existem.
+
+O hardware Universal roda **qualquer um dos dois**, escolhido no boot. O que é
+elegante, e significa que um parque com duas personas precisa de dois conjuntos de
+comandos — a gramática ACLI que o VOSS herdou é genuinamente diferente da do EXOS.
+
+## O que levar da comparação
+
+O eixo que mais prevê é **como o estado é compartilhado**. Memória compartilhada
+faz uma falha se espalhar. Troca de mensagens a contém. Um banco de estado permite
+que um processo reiniciado retome em vez de reconstruir. Todo o resto — estilo de
+CLI, conjuntos de recursos, até hardware — importa menos para como o sistema se
+comporta quando algo quebra.
+
+O segundo é **se as mudanças são imediatas ou aplicadas por commit**. Imediato
+significa que um erro está em produção. Candidato e commit significa que um erro é
+uma edição abandonada. Essa é a diferença entre um incidente e uma tarde.
+
+E a última coisa, que não é arquitetural: **todos eles têm fraquezas, e uma
+descrição que não lista nenhuma é um anúncio.** O comparador deste site registra
+ao menos duas para cada sistema que cobre, inclusive os que o autor deste site
+ensina.

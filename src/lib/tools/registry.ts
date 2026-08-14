@@ -36,11 +36,19 @@ import { run as cvssVectorDecoderRun } from "./cvss-vector-decoder";
 import { run as diffRun } from "./diff";
 import { run as digOutputExplainerRun } from "./dig-output-explainer";
 import { run as f5osRestconfPathRun } from "./f5os-restconf-path-explainer";
+import { run as f5osTenantRun } from "./f5os-tenant-config-explainer";
 import { run as icontrolRestPathRun } from "./icontrol-rest-path-explainer";
 import { run as icontrolStatsRun } from "./icontrol-rest-stats-decoder";
+import { run as f5EthTrailerRun } from "./f5-eth-trailer-decoder";
 import { run as sseArchRun } from "./sse-architecture-explainer";
+import { run as nsSteeringRun } from "./netskope-steering-explainer";
 import { run as spbRun } from "./fabric-connect-spb-explainer";
+import { run as extremeOsMapperRun } from "./extreme-switch-os-mapper";
+import { run as terminalStackRun } from "./terminal-stack-explainer";
+import { run as networkOsRun } from "./network-os-comparer";
 import { run as fortiosFlowDebugRun } from "./fortios-flow-debug-builder";
+import { run as fgPolicyRun } from "./fortigate-policy-match-order";
+import { run as fortiosCliRun } from "./fortios-cli-config-explainer";
 import { run as epochRun } from "./epoch";
 import { run as romanNumeralsRun } from "./roman-numerals";
 import { run as greekAlphabetRun } from "./greek-alphabet";
@@ -174,11 +182,19 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "cipher", run: cipherRun },
   { slug: "csr-decoder", structured: true, run: (input) => csrDecoderRun(JSON.parse(input)) },
   { slug: "f5os-restconf-path-explainer", run: f5osRestconfPathRun },
+  { slug: "f5os-tenant-config-explainer", run: f5osTenantRun },
   { slug: "icontrol-rest-path-explainer", run: icontrolRestPathRun },
   { slug: "icontrol-rest-stats-decoder", run: icontrolStatsRun },
+  { slug: "f5-eth-trailer-decoder", run: f5EthTrailerRun },
   { slug: "sse-architecture-explainer", structured: true, run: (input) => sseArchRun(JSON.parse(input)) },
+  { slug: "netskope-steering-explainer", structured: true, run: (input) => nsSteeringRun(JSON.parse(input)) },
   { slug: "fabric-connect-spb-explainer", structured: true, run: (input) => spbRun(JSON.parse(input)) },
+  { slug: "extreme-switch-os-mapper", run: extremeOsMapperRun },
+  { slug: "terminal-stack-explainer", run: terminalStackRun },
+  { slug: "network-os-comparer", structured: true, run: (input) => networkOsRun(JSON.parse(input)) },
   { slug: "fortios-flow-debug-builder", structured: true, run: (input) => fortiosFlowDebugRun(JSON.parse(input)) },
+  { slug: "fortigate-policy-match-order", structured: true, run: (input) => fgPolicyRun(JSON.parse(input)) },
+  { slug: "fortios-cli-config-explainer", run: fortiosCliRun },
   { slug: "acme-dns01", structured: true, run: (input) => acmeDns01Run(JSON.parse(input)) },
   { slug: "public-suffix", structured: true, run: (input) => publicSuffixRun({ host: input }) },
   { slug: "letsencrypt-rate-limits", structured: true, run: (input) => letsEncryptRateLimitsRun({ names: input }) },

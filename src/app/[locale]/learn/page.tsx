@@ -23,6 +23,7 @@ import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
 import { VENDOR_FAMILIES } from "@/config/vendors";
 import { getPracticeArticles } from "@/lib/practice";
+import { ROLES } from "@/lib/roles";
 import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
@@ -156,6 +157,20 @@ export default async function LearnIndexPage({
                     {t("portalPracticeCount", { count: practiceCount })}
                   </span>
                 </p>
+              </Link>
+
+              {/* THE ROLES (PRIME 2026-08-14). Placed immediately after The
+                  Practice because the two are a pair: that corpus is how the
+                  work is done, this one is what the positions are. Sibling
+                  card, same as the Practice card - the section lives at
+                  /roles, a top-level peer rather than a child of learn. */}
+              <Link
+                href="/roles"
+                className="learn-portal-card"
+              >
+                <span className="learn-portal-kicker">{t("portalRoles")}</span>
+                <span className="learn-portal-lede">{t("portalRolesLede")}</span>
+                <span className="learn-portal-badge">{t("portalRolesCount", { count: ROLES.length })}</span>
               </Link>
               <Link
                 href="/certifications"

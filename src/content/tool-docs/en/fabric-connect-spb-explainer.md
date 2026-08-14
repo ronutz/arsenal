@@ -21,3 +21,12 @@ An I-SID must be in the 24-bit range, and the tool refuses values outside it rat
 ## What it will not do
 
 It cannot see your fabric. It does not know your topology, your adjacencies or whether IS-IS is actually up. It explains what your numbers mean inside a fabric, not what your fabric is doing.
+
+## How this differs from the VOSS fabric identifier decoder
+
+Both take an I-SID and a nickname, and they answer different questions:
+
+- **The fabric identifier decoder validates an identifier.** Paste something and it works out whether it is a 24-bit I-SID, a 20-bit nickname or a system-id, and whether it is in range.
+- **This tool explains what the identifier means in a fabric.** Which backbone VLAN carries it and why, what an L2VSN and an L3VSN bind to, what a B-VLAN is and is not, and what changes between an edge bridge and a core bridge.
+
+Decode the value there; understand the arrangement here.

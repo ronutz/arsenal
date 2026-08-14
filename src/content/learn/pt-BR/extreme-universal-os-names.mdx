@@ -1,0 +1,78 @@
+---
+slug: extreme-universal-os-names
+title: "Switch Engine, Fabric Engine e os switches que ficaram com os nomes antigos"
+summary: "A Extreme renomeou dois sistemas operacionais em parte do hardware e não em outra, enquanto os arquivos de imagem e os menus de boot mantiveram os originais. E a parte que importa mais que a nomenclatura: trocar a persona apaga a configuração."
+concepts: ["extreme", "exos", "voss", "switch-engine", "fabric-engine", "universal-hardware"]
+relatedTools: ["extreme-switch-os-mapper", "voss-exos-translator"]
+relatedArticles: ["spb-fabric-vocabulary"]
+category: operations
+order: 13
+status: reviewed
+updated: "2026-08-14"
+---
+
+## Dois nomes para cada uma de duas coisas
+
+**O ExtremeXOS virou Switch Engine. O VOSS virou Fabric Engine.** Os mesmos
+sistemas operacionais, renomeados — Switch Engine a partir da versão 31.6,
+Fabric Engine a partir da 8.6. A Extreme afirma que não há diferenças de
+recursos nem de funcionamento decorrentes da mudança.
+
+A confusão não é a renomeação. É que **ela só se aplica ao hardware Universal** —
+as séries 4120, 4220, 5320, 5420, 5520, 5720, 7520 e 7720. **Todo modelo mais
+antigo mantém EXOS e VOSS**, e sempre vai manter.
+
+Então dois engenheiros podem descrever o mesmo parque corretamente usando
+palavras diferentes, e um terceiro pode procurar pela errada e não achar nada.
+Pior: **os nomes dos arquivos de imagem e os menus de boot continuam dizendo
+EXOS e VOSS.** Um menu de boot oferecendo "change the switch OS to VOSS" num
+switch cuja documentação o chama de Fabric Engine não é bug nem build
+desatualizada.
+
+## Persona dupla, e o que ela realmente custa
+
+O hardware Universal roda **qualquer um** dos dois sistemas. A persona é
+escolhida no start-up ou trocada depois, e pode ser pré-provisionada de forma
+central para que o switch busque o SO pretendido no primeiro boot, em vez de
+esperar alguém num console.
+
+Isso é genuinamente útil. O que não é: de graça.
+
+> **Trocar o sistema operacional de rede apaga todos os arquivos de
+> configuração, informações de debug, logs, eventos e estatísticas pertencentes
+> ao anterior.**
+
+Essa é a redação da própria Extreme. **É uma reconstrução, não uma migração.**
+Qualquer coisa parecida com "a gente vira para Fabric Engine e vê no que dá" é um
+plano para redigitar a configuração, e a diferença entre saber disso de antemão e
+descobrir às 2 da manhã é exatamente o motivo de escrever isso aqui.
+
+A pergunta do boot também é **feita na negativa**, o que vale memorizar porque é
+fácil responder errado lendo com atenção. Quando o switch pergunta se você
+gostaria de mudar o SO para VOSS: **N mantém o Switch Engine, Y vai para o
+Fabric Engine.**
+
+## Três ressalvas que não são sobre nomenclatura
+
+**Stacking no 7520 funciona sob Switch Engine e não sob Fabric Engine.** Se o
+projeto depende de stacking, a escolha da persona já foi feita por você — e
+descobrir isso depois do projeto de fabric aprovado sai caro.
+
+**Atualizar um 5420 ou 5520 de um ExtremeXOS mais antigo para o Switch Engine
+31.6 muda o SysObjectID de SNMP.** Qualquer coisa que identifique o equipamento
+por esse valor deixa de reconhecê-lo. Nada parece errado no console; o switch
+está bem e o seu monitoramento o perdeu em silêncio.
+
+**O suporte a Fabric Engine não começa na mesma versão em toda parte.** 5320 e
+5420 a partir da 8.6, 5520 a partir da 8.6 tendo rodado VOSS 8.2.5 até 8.5, 5720
+a partir da 8.7. Uma versão que é atual numa série pode não existir para outra, e
+os mínimos por série estão publicados na [matriz de suporte de software da
+Extreme](https://supportdocs.extremenetworks.com/s_comp_matrices/summit-extremeswitching-and-e4g-components-extremexos-software-support/),
+que é também de onde vem a observação sobre o SysObjectID acima.
+
+## A leitura prática
+
+Se você está procurando documentação e não acha nada, **tente o outro nome.** Se
+o switch de um colega diz algo que o seu não diz, **verifique se um dos dois é
+hardware Universal.** E se alguém propuser trocar a persona, a primeira pergunta
+não é qual SO — é **de onde a configuração vai vir depois.**

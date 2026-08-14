@@ -40,6 +40,38 @@ export interface Testimonial {
 
 export const TESTIMONIALS: Testimonial[] = [
   {
+    "id": "83",
+    "source": "Google review",
+    "author": "Shival Krishna",
+    "title": "6 reviews",
+    "date": "August 2026",
+    "relationship": null,
+    "rating": "5★",
+    "lang": "EN",
+    "text": "Trainer Rodolfo Nüt from Red Education was excellent.",
+    "textEnglish": null,
+    "translationStatus": "original",
+    "ownerResponse": "I'm especially pleased to hear you're already looking forward to the F5 DNS course. We'll make sure Nitin knows he's set the bar high for the next one!\n\nThanks again for choosing Red Education, and we look forward to seeing you back in class soon.\nKind Regards\nMike Baird\nCEO\nRed Education",
+    "note": "Received immediately after a Configuring BIG-IP DNS delivery to a group in New Zealand, August 2026. The surname is truncated in the review as posted.",
+    "provenance": "Google Reviews, Red Education Inc listing; captured by PRIME 2026-08-14"
+  },
+  {
+    "id": "84",
+    "source": "Google review",
+    "author": "Ben Munro",
+    "title": "2 reviews",
+    "date": "August 2026",
+    "relationship": null,
+    "rating": "5★",
+    "lang": "EN",
+    "text": "Nitin was a fantastic instructor for our F5 LTM training. Rodolfo Nützmann was great for our DNS course.",
+    "textEnglish": null,
+    "translationStatus": "original",
+    "ownerResponse": "Great to hear Ben\nThanks for your support.\nKind Regards\nMike Baird\nCEO\nRed Education",
+    "note": "Quoted whole rather than trimmed to the second sentence. The review covers two instructors across two courses, and cutting the first sentence would present a shared review as a sole one.",
+    "provenance": "Google Reviews, Red Education Inc listing; captured by PRIME 2026-08-14"
+  },
+  {
     "id": "82",
     "source": "Red Education published case study",
     "author": "Client project sponsor (named company withheld in the source)",

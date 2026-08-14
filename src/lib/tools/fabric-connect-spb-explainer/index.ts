@@ -11,8 +11,12 @@ export type { SpbVector } from "./golden-vectors";
 
 export const manifest = Object.freeze({
   toolSlug: "fabric-connect-spb-explainer",
+  /* Both Extreme fabric tools point at the same article, which states the
+     division of labour between them: this one explains the arrangement, the
+     fabric identifier decoder validates a value. */
   learnLinks: [
     "learn/spb-fabric-vocabulary",
+    "learn/voss-fabric-connect-spbm",
   ],
   sources: Object.freeze([
     Object.freeze({ id: "ieee-8021aq", label: "IEEE 802.1aq - Shortest Path Bridging", url: "https://standards.ieee.org/ieee/802.1aq/4507/" }),

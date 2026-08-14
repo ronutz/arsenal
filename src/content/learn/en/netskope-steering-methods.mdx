@@ -1,34 +1,88 @@
 ---
 slug: netskope-steering-methods
-title: "Netskope Steering Methods: Getting Traffic to the Cloud That Inspects It"
-summary: "A cloud security platform inspects nothing until traffic reaches it, which is why 'traffic steering' anchors every Netskope blueprint. The full menu: the Netskope Client's per-device tunnel, explicit proxy and PAC files, GRE and IPsec tunnels from sites, reverse proxy for unmanaged devices, and the honest decision logic - who owns the device, where the user is, and what traffic classes need inspecting - that picks among them."
-concepts: ["netskope", "steering", "client", "pac", "gre", "ipsec", "explicit proxy", "reverse proxy"]
-relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"]
-relatedArticles: ["netskope-client-deployment", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "netskope-platform-architecture-and-newedge"]
-category: networking
-order: 217
+title: "Choosing how traffic reaches the service edge"
+summary: "Client, IPsec, GRE, explicit proxy or proxy chaining. Each one changes what the edge can know, not just how packets arrive — and the client disables itself when it finds a tunnel."
+concepts: ["netskope", "steering", "sse", "newedge", "tls-inspection"]
+relatedTools: ["netskope-steering-explainer", "netskope-steering-decision-explainer", "sse-architecture-explainer"]
+relatedArticles: ["sse-single-pass-architecture"]
+category: security
+order: 21
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-08-14"
 ---
 
-Every Netskope exam track lists steering twice - as a concept and as a practice - because it is the platform's existential dependency: [the inspection engine](/learn/netskope-platform-architecture-and-newedge) sees only what arrives. Steering is the family of answers to one question: *by what mechanism does this user's or this site's traffic reach the Netskope cloud?* The options split cleanly by what you control.
+## Steering decides what the edge can see
 
-## Managed devices: the Netskope Client
+No policy applies to traffic that never arrives. Steering is the on-ramp, and
+the method chosen determines not only whether traffic reaches the service but
+**what the service knows about it when it does**.
 
-The primary method for devices you manage is the **Netskope Client** - an agent that builds an encrypted tunnel from the endpoint to the nearest NewEdge point of presence and steers configured traffic into it. Because it rides the device, it works identically in the office, at home, and in the airport; because it is configuration-driven, *what* it steers is a tenant decision (web only, cloud apps, or [all traffic including non-web ports for the Cloud Firewall](/learn/netskope-cloud-firewall)), with exceptions carved out for things that must not be proxied. The client matters enough to get [its own deployment article](/learn/netskope-client-deployment), and its whole decision walk - scope, exceptions, Fail Close - is what the [the steering decision explainer](/tools/netskope-steering-decision-explainer) renders verdict by verdict; for this map, the key property is per-user identity: traffic arrives already attributed to an enrolled person, which is what makes user-based policy trivial downstream.
+That is the frame worth holding. The five methods are not five ways of doing the
+same thing.
 
-## Browsers and legacy fleets: explicit proxy and PAC
+## The five, and what each one knows
 
-The agentless classic still earns its place: point browsers at the cloud as an **explicit proxy**, usually via a **PAC file** whose logic decides per-URL what goes to Netskope and what goes direct. Everything this site's [PAC anatomy article](/learn/how-a-pac-file-chooses-a-proxy) and [PAC explainer tool](/tools/pac-file-explainer) teach applies verbatim - including the failure modes: PAC files steer only the applications that honor them, which in practice means browsers, and attribution needs an authentication step the client would have given you for free.
+**The endpoint client** is the recommended method for end-user traffic and the
+only one that carries **user identity and device posture with the flow**. It
+follows the user off the corporate network, which a tunnel from a site cannot.
+The cost is that it must be deployed and maintained on every device.
 
-## Sites: GRE and IPsec tunnels
+**An IPsec tunnel** steers everything leaving a site, including the devices that
+will never run an agent — printers, appliances, contractor laptops. It preserves
+**the user's private address**, which is what makes address-based policy and
+detailed logging possible. It knows the site, not the person.
 
-For an office where you would rather steer the *location* than each device, the perimeter router or firewall builds a tunnel to Netskope and forwards traffic into it - **GRE** where you want [a simple unencrypted carrier](/learn/gre-tunnels-fundamentals) (the payload is mostly TLS anyway) and **IPsec** where [the path itself must be encrypted or GRE is unavailable](/learn/ipsec-and-ike-fundamentals). Site tunnels trade the client's user-identity for coverage of everything on the network - guests, printers, the lab - and reintroduce every classic tunnel consideration this site has already cataloged, [overhead and MSS clamping included](/learn/tunnel-overhead-mtu-and-mss).
+**A GRE tunnel** is the same site-level steering without the encryption
+overhead. Choose it over IPsec on throughput grounds where the path is already
+trusted, not on convenience grounds.
 
-## Unmanaged devices: the reverse proxy
+**An explicit proxy** points the browser or the operating system at the service.
+It is the method for legacy and regulated environments and for cases where
+policy-based routing is not available. It steers **what is configured to use
+it** — an application that ignores proxy settings is simply not steered, and
+nothing announces that.
 
-The remaining gap is the device you cannot touch: a contractor's laptop logging into your SaaS tenant. **Reverse proxy** steering closes it from the identity side - the IdP's SAML flow hands the session to Netskope, which rewrites the app's URLs so the browser's traffic to *that application* transits inspection with nothing installed. Scope is the trade: it protects specific managed applications, not the device's traffic in general - precisely the coverage question [the real-time-versus-API article](/learn/netskope-realtime-vs-api-protection) picks up.
+**Proxy chaining** forwards from a proxy you already run. It is a migration
+method: the estate moves without touching every endpoint on the same day. The
+old proxy stays in the path and stays yours to operate.
 
-## The decision, honestly
+## The interaction that surprises people
 
-The selection logic that survives contact with both exams and production: *managed device* → Client, everywhere it goes; *managed network, mixed devices* → GRE/IPsec from the site; *browsers only, no agent possible* → explicit proxy/PAC; *unmanaged device, managed app* → reverse proxy; and real estates run several at once, which is why steering *precedence and exceptions* - not the methods themselves - are where the troubleshooting objectives on every Netskope blueprint actually live.
+**The client detects other steering methods, and by default disables itself when
+it finds IPsec, GRE or an explicit proxy.**
+
+So "we have the client *and* a tunnel" is not automatically belt and braces. It
+is one of them, and which one depends on a setting most people have never
+opened. The client can be configured to keep steering — and there is a third
+arrangement worth knowing: deploy it alongside the tunnel **not to steer**, but
+to provision certificates and supply user identity. The tunnel carries the
+traffic; the client answers who the user is.
+
+## The hard limit
+
+**TLS inspection and SAML authentication require the Netskope root and
+intermediate certificates on the endpoint.**
+
+A tunnel from a site carries traffic from devices nobody manages. If the
+certificate bundle cannot be installed on those devices, the traffic arrives and
+**cannot be decrypted** — policy still runs, on metadata. Any rule written as
+though content were visible will not do what its author believes, and it will
+look correct in the console.
+
+## Two distinctions worth keeping straight
+
+**A steering bypass and a do-not-decrypt rule are not the same.** The first
+means the traffic never reaches the service; the second means it arrives and is
+not opened. Certificate-pinned applications usually need the first, and
+confusing them produces a policy that appears applied and never ran.
+
+**Declaring a non-standard port as web traffic sends it to the proxy and takes
+it out of cloud-firewall inspection.** That is fine for traffic that really is
+web. For anything else it is a quiet exemption.
+
+## And a related question this does not answer
+
+Choosing a method is a design decision. Working out what happens to **one
+specific flow** given a steering configuration already in place — modes,
+exceptions, fail-close behaviour — is a different question, and the steering
+decision explainer on this site is the tool for it.

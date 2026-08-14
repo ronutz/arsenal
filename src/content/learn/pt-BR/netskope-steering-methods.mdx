@@ -1,34 +1,89 @@
 ---
 slug: netskope-steering-methods
-title: "Métodos de Steering da Netskope: Levando o Tráfego até a Nuvem que o Inspeciona"
-summary: "Uma plataforma de segurança em nuvem não inspeciona nada até o tráfego chegar a ela, e é por isso que 'traffic steering' ancora todo blueprint Netskope. O cardápio completo: o túnel por dispositivo do Netskope Client, proxy explícito e arquivos PAC, túneis GRE e IPsec a partir de sites, reverse proxy para dispositivos não gerenciados, e a lógica de decisão honesta - quem é dono do dispositivo, onde o usuário está, e que classes de tráfego precisam de inspeção - que escolhe entre eles."
-concepts: ["netskope", "steering", "client", "pac", "gre", "ipsec", "explicit proxy", "reverse proxy"]
-relatedTools: ["netskope-steering-decision-explainer", "pac-file-explainer"]
-relatedArticles: ["netskope-client-deployment", "how-a-pac-file-chooses-a-proxy", "gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "netskope-platform-architecture-and-newedge"]
-category: networking
-order: 217
+title: "Escolhendo como o tráfego chega ao service edge"
+summary: "Cliente, IPsec, GRE, proxy explícito ou encadeamento de proxy. Cada um muda o que o edge consegue saber, não apenas como os pacotes chegam — e o cliente se desabilita quando encontra um túnel."
+concepts: ["netskope", "steering", "sse", "newedge", "tls-inspection"]
+relatedTools: ["netskope-steering-explainer", "netskope-steering-decision-explainer", "sse-architecture-explainer"]
+relatedArticles: ["sse-single-pass-architecture"]
+category: security
+order: 21
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-08-14"
 ---
 
-Todo trilho de exame Netskope lista steering duas vezes - como conceito e como prática - porque é a dependência existencial da plataforma: [o motor de inspeção](/learn/netskope-platform-architecture-and-newedge) só vê o que chega. Steering é a família de respostas a uma pergunta: *por qual mecanismo o tráfego deste usuário ou deste site alcança a nuvem Netskope?* As opções se dividem limpo pelo que você controla.
+## A direção do tráfego decide o que o edge enxerga
 
-## Dispositivos gerenciados: o Netskope Client
+Nenhuma política se aplica a tráfego que nunca chega. A direção é a rampa de
+acesso, e o método escolhido determina não só se o tráfego alcança o serviço, mas
+**o que o serviço sabe sobre ele quando alcança**.
 
-O método primário para dispositivos que você gerencia é o **Netskope Client** - um agente que constrói um túnel cifrado do endpoint ao ponto de presença NewEdge mais próximo e direciona para dentro dele o tráfego configurado. Por andar no dispositivo, funciona identicamente no escritório, em casa e no aeroporto; por ser dirigido por configuração, *o que* ele direciona é decisão do tenant (só web, apps de nuvem, ou [todo o tráfego incluindo portas não-web para o Cloud Firewall](/learn/netskope-cloud-firewall)), com exceções recortadas para o que não deve ser proxiado. O client importa o bastante para ter [artigo próprio de implantação](/learn/netskope-client-deployment), e sua caminhada de decisão inteira - escopo, exceções, Fail Close - é o que o [o explicador de decisão de steering](/tools/netskope-steering-decision-explainer) apresenta veredicto a veredicto; para este mapa, a propriedade-chave é identidade por usuário: o tráfego chega já atribuído a uma pessoa inscrita, o que torna política por usuário trivial rio abaixo.
+Esse é o enquadramento que vale manter. Os cinco métodos não são cinco formas de
+fazer a mesma coisa.
 
-## Navegadores e frotas legadas: proxy explícito e PAC
+## Os cinco, e o que cada um sabe
 
-O clássico sem agente ainda merece o lugar: apontar navegadores para a nuvem como **proxy explícito**, geralmente via **arquivo PAC** cuja lógica decide por URL o que vai à Netskope e o que vai direto. Tudo que [o artigo de anatomia de PAC](/learn/how-a-pac-file-chooses-a-proxy) e [a ferramenta explicadora de PAC](/tools/pac-file-explainer) deste site ensinam se aplica ao pé da letra - incluindo os modos de falha: arquivos PAC só direcionam as aplicações que os honram, o que na prática significa navegadores, e a atribuição precisa de um passo de autenticação que o client teria dado de graça.
+**O cliente no endpoint** é o método recomendado para tráfego de usuário final e
+o único que carrega **identidade do usuário e postura do dispositivo junto com o
+fluxo**. Ele acompanha o usuário para fora da rede corporativa, o que um túnel de
+site não faz. O custo é ter de implantá-lo e mantê-lo em cada dispositivo.
 
-## Sites: túneis GRE e IPsec
+**Um túnel IPsec** direciona tudo que sai de um site, inclusive os dispositivos
+que nunca vão rodar um agente — impressoras, appliances, notebooks de
+terceiros. Ele preserva **o endereço privado do usuário**, que é o que torna
+possível política por endereço e log detalhado. Ele conhece o site, não a pessoa.
 
-Para um escritório onde é melhor direcionar a *localidade* do que cada dispositivo, o roteador ou firewall de perímetro constrói um túnel até a Netskope e encaminha o tráfego para dentro - **GRE** onde se quer [um portador simples sem cifra](/learn/gre-tunnels-fundamentals) (a carga já é majoritariamente TLS) e **IPsec** onde [o próprio caminho deve ser cifrado ou o GRE não está disponível](/learn/ipsec-and-ike-fundamentals). Túneis de site trocam a identidade-de-usuário do client pela cobertura de tudo que está na rede - visitantes, impressoras, o laboratório - e reintroduzem toda consideração clássica de túnel que este site já catalogou, [overhead e clamp de MSS inclusos](/learn/tunnel-overhead-mtu-and-mss).
+**Um túnel GRE** é a mesma direção em nível de site sem o custo da criptografia.
+Escolha-o em vez do IPsec por questão de vazão, onde o caminho já é confiável, e
+não por conveniência.
 
-## Dispositivos não gerenciados: o reverse proxy
+**Um proxy explícito** aponta o navegador ou o sistema operacional para o
+serviço. É o método para ambientes legados e regulados e para casos em que não há
+roteamento por política. Ele direciona **o que estiver configurado para usá-lo** —
+uma aplicação que ignora as configurações de proxy simplesmente não é
+direcionada, e nada anuncia isso.
 
-A lacuna restante é o dispositivo que você não pode tocar: o notebook de um contratado entrando no seu tenant SaaS. O steering por **reverse proxy** fecha essa lacuna pelo lado da identidade - o fluxo SAML do IdP entrega a sessão à Netskope, que reescreve as URLs da aplicação para que o tráfego do navegador *para aquela aplicação* transite pela inspeção sem nada instalado. O escopo é a troca: protege aplicações gerenciadas específicas, não o tráfego do dispositivo em geral - precisamente a pergunta de cobertura que [o artigo de tempo-real versus API](/learn/netskope-realtime-vs-api-protection) retoma.
+**O encadeamento de proxy** encaminha a partir de um proxy que você já opera. É um
+método de migração: o parque muda sem tocar em todos os endpoints no mesmo dia. O
+proxy antigo continua no caminho e continua sendo seu para operar.
 
-## A decisão, com honestidade
+## A interação que surpreende as pessoas
 
-A lógica de seleção que sobrevive ao contato com exames e com produção: *dispositivo gerenciado* → Client, aonde quer que vá; *rede gerenciada, dispositivos mistos* → GRE/IPsec do site; *só navegadores, agente impossível* → proxy explícito/PAC; *dispositivo não gerenciado, app gerenciada* → reverse proxy; e ambientes reais rodam vários ao mesmo tempo, razão pela qual *precedência e exceções* de steering - não os métodos em si - são onde os objetivos de troubleshooting de todo blueprint Netskope de fato moram.
+**O cliente detecta outros métodos de direção e, por padrão, se desabilita quando
+encontra IPsec, GRE ou um proxy explícito.**
+
+Então "temos o cliente *e* um túnel" não é automaticamente redundância. É um dos
+dois, e qual deles depende de uma configuração que a maioria nunca abriu. O
+cliente pode ser configurado para continuar direcionando — e há um terceiro
+arranjo que vale conhecer: implantá-lo ao lado do túnel **não para direcionar**,
+mas para provisionar certificados e fornecer a identidade do usuário. O túnel
+carrega o tráfego; o cliente responde quem é o usuário.
+
+## O limite rígido
+
+**Inspeção TLS e autenticação SAML exigem os certificados raiz e intermediário da
+Netskope no endpoint.**
+
+Um túnel de site carrega tráfego de dispositivos que ninguém gerencia. Se o
+pacote de certificados não puder ser instalado neles, o tráfego chega e **não
+pode ser descriptografado** — a política continua rodando, sobre metadados.
+Qualquer regra escrita como se o conteúdo estivesse visível não vai fazer o que o
+autor acredita, e vai parecer correta no console.
+
+## Duas distinções que vale manter claras
+
+**Um steering bypass e uma regra de não descriptografar não são a mesma coisa.** A
+primeira significa que o tráfego nunca chega ao serviço; a segunda, que ele chega
+e não é aberto. Aplicações com certificate pinning normalmente precisam da
+primeira, e confundir as duas produz uma política que parece aplicada e nunca
+rodou.
+
+**Declarar uma porta não padrão como tráfego web a envia ao proxy e a retira da
+inspeção do cloud firewall.** Isso é adequado para tráfego que realmente é web.
+Para qualquer outra coisa, é uma isenção silenciosa.
+
+## E uma pergunta relacionada que isto não responde
+
+Escolher um método é uma decisão de projeto. Descobrir o que acontece com **um
+fluxo específico** dada uma configuração de direção já em vigor — modos, exceções,
+comportamento de fail close — é outra pergunta, e o explicador de decisão de
+direção deste site é a ferramenta para ela.

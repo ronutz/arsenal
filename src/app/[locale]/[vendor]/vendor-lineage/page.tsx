@@ -68,9 +68,34 @@ export default async function VendorLineagePage({
   const lineage = lineageFor(vendor);
   if (!lineage) notFound();
 
-  const t = await getTranslations("lineages");
-  const tNav = await getTranslations("nav");
-  const tHub = await getTranslations("vendorHub");
+  /* PASS THE LOCALE EXPLICITLY (2026-08-14).
+
+     WHAT IS OBSERVED: this page logged MISSING_MESSAGE for "sources" during
+     the build, with a BARE key name rather than "lineages.sources" - and
+     lineages.sources exists in both locale packs. So the KEY was never
+     missing; the lookup was not finding the namespace.
+
+     WHAT IS NOT CLAIMED: that the shorthand form is at fault in general. The
+     same shorthand appears at roughly 148 call sites in this app and only this
+     page reported anything, so a blanket explanation would be wrong. The
+     object form is used a few lines above in this very file, and matching it
+     here removes one variable without asserting a cause I cannot demonstrate.
+
+     OUTCOME, RECORDED 2026-08-14: THE MESSAGE SURVIVED THIS CHANGE. One
+     MISSING_MESSAGE for "sources" still appears in a full pt-BR build, so
+     passing the locale explicitly was NOT the fix. The change is kept because
+     the object form is the better one and matches the rest of the file, but it
+     did not do what was hoped and this comment says so rather than leaving a
+     fix that looks successful.
+
+     WHAT IS RULED OUT: the key is absent (it exists in both packs), and the
+     shorthand call form (148 other call sites use it without complaint).
+     STILL OPEN: why this one lookup, on this one page, does not resolve.
+     Whoever picks this up should start by instrumenting the call rather than
+     trusting anything above. */
+  const t = await getTranslations({ locale, namespace: "lineages" });
+  const tNav = await getTranslations({ locale, namespace: "nav" });
+  const tHub = await getTranslations({ locale, namespace: "vendorHub" });
 
   const labels = {
     founded: t("founded"),

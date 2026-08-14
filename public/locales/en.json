@@ -6567,6 +6567,234 @@
       "warnings": {
         "title": "Check this"
       }
+    },
+    "f5-eth-trailer-decoder": {
+      "name": "F5 Ethernet trailer decoder",
+      "blurb": "Paste the F5 Ethernet trailer that a BIG-IP appends to packets captured with the tcpdump noise flags, and get each field explained: direction, slot and TMM, the virtual server, flow and peer identifiers, and the device's own RST cause. It detects a TLS provider section and deliberately decodes none of it, because from v15 that section carries session secrets. Local and offline.",
+      "inputLabel": "F5 Ethernet trailer",
+      "placeholder": "Paste the F5 Ethernet Trailer section from Wireshark, or the raw trailer bytes as hex",
+      "example": "Example",
+      "clear": "Clear",
+      "overview": {
+        "title": "The trailer",
+        "magic": "Magic",
+        "length": "Length",
+        "version": "Version",
+        "noise": "Noise level"
+      },
+      "noise": {
+        "low": "low (:n)",
+        "medium": "medium (:nn)",
+        "high": "high (:nnn)",
+        "unknown": "not determined"
+      },
+      "fields": {
+        "title": "Field by field"
+      },
+      "tls": {
+        "title": "A TLS provider section is present",
+        "body": "From BIG-IP v15 the trailer can carry TLS session secrets, and Wireshark will turn them into keylog entries and decrypt the capture. This tool reports that the section is there and decodes none of it. Treat the file accordingly: F5 documents that the trailer never leaves the device on the wire, which is true and is about the wire. The file is a different question, and sending this capture to a vendor, a ticket or a colleague sends the session keys with it."
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      }
+    },
+    "fortigate-policy-match-order": {
+      "name": "FortiGate policy match-order explainer",
+      "blurb": "Paste an ordered FortiGate policy list and, optionally, a packet, and see which policy wins and why. It walks the list top-down showing the first field that ruled each policy out, names the policies that can never be reached because something broader sits above them, and applies the virtual-IP matching rules that ordering alone does not solve. Local and offline.",
+      "policiesLabel": "Policies, in evaluation order",
+      "policiesHint": "One per line: id | incoming interface | outgoing interface | source | destination | service | action | flags. Flags are optional and may include vip, match-vip and disabled.",
+      "policiesPlaceholder": "10 | port1 | port2 | all | all | ALL | accept",
+      "packetLabel": "A packet to test (optional)",
+      "packetHint": "incoming interface | outgoing interface | source | destination | service",
+      "packetPlaceholder": "port1 | port2 | web-servers | all | HTTPS",
+      "example": "Example",
+      "clear": "Clear",
+      "walk": {
+        "title": "The walk down the list",
+        "policy": "Policy",
+        "match": "match",
+        "noMatch": "no match",
+        "outcome": "Outcome",
+        "implicitDeny": "implicit deny"
+      },
+      "shadow": {
+        "title": "Policies that can never be reached"
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      }
+    },
+    "netskope-steering-explainer": {
+      "name": "Netskope steering-method explainer",
+      "blurb": "Describe the situation — managed device or not, on a site or roaming, whether the certificate bundle can be installed — and see which steering method fits: the endpoint client, an IPsec or GRE tunnel, an explicit proxy, or chaining from a proxy you already run. Every method lists what it costs, chosen or not. Deterministic and offline.",
+      "formLabel": "Describe the situation",
+      "example": "Example",
+      "clear": "Reset",
+      "flags": {
+        "managedDevice": "Managed device",
+        "onPremises": "On a corporate site",
+        "canInstallCert": "Certificate bundle can be installed",
+        "needUserIdentity": "Policy needs the user, not just the site",
+        "needPrivateApps": "Private application access needed",
+        "needNonWebPorts": "Traffic beyond ports 80 and 443",
+        "existingProxy": "An on-premises proxy already in place"
+      },
+      "methods": {
+        "title": "The methods, and what each costs",
+        "client": "Endpoint client",
+        "ipsec": "IPsec tunnel",
+        "gre": "GRE tunnel",
+        "explicit-proxy": "Explicit proxy",
+        "proxy-chain": "Proxy chaining"
+      },
+      "fit": {
+        "primary": "fits",
+        "secondary": "possible",
+        "unsuitable": "does not apply here"
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      }
+    },
+    "terminal-stack-explainer": {
+      "name": "Terminal, shell, TTY and console explainer",
+      "blurb": "Paste what `tty` printed — /dev/pts/3, /dev/tty2, /dev/ttyS0, /dev/tty, /dev/console, or “not a tty” — and see which layer you are actually looking at, what is holding the other end, and what that implies for signals, job control and what happens when the window closes. Local and offline.",
+      "inputLabel": "A terminal device path",
+      "inputHint": "Run `tty` in a shell and paste what it prints, or pick one of the examples.",
+      "placeholder": "/dev/pts/3",
+      "clear": "Clear",
+      "words": {
+        "title": "The four words, in one line each",
+        "terminal": "A program that draws characters and sends keystrokes — or, once, a machine that did. It has no idea what a command is.",
+        "shell": "A process like any other, reading lines and running programs. The kernel gives it no special status whatsoever.",
+        "tty": "The kernel object between the two, doing line editing, echo, and turning Ctrl+C into a signal. This is where the behaviour lives.",
+        "console": "A particular terminal: the one attached to the machine itself, and where the kernel prints when nothing else exists yet."
+      },
+      "what": {
+        "title": "What this is",
+        "kind": "Kind",
+        "otherEnd": "On the other end"
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      }
+    },
+    "extreme-switch-os-mapper": {
+      "name": "Extreme Universal switch OS-name mapper",
+      "blurb": "ExtremeXOS is Switch Engine and VOSS is Fabric Engine — but only on Universal hardware, and the image files and boot menus still use the old names. Give a model series or an OS name and see which applies, the version the rename landed at, and the caveats that come with the series. It states plainly that changing persona deletes the configuration. Local and offline.",
+      "inputLabel": "A model series or an OS name",
+      "placeholder": "5520",
+      "clear": "Clear",
+      "naming": {
+        "title": "The two renamings",
+        "body": "Same operating systems, renamed on Universal hardware: Switch Engine from 31.6, Fabric Engine from 8.6. There are no feature or functional differences arising from the rename, and older non-Universal models keep the original names."
+      },
+      "what": {
+        "title": "What this model is"
+      },
+      "families": {
+        "title": "Universal hardware",
+        "intro": "The series the new names apply to. Anything not on this list keeps EXOS and VOSS."
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Before you change anything"
+      }
+    },
+    "f5os-tenant-config-explainer": {
+      "name": "F5OS tenant config explainer",
+      "blurb": "Paste an f5-tenants:tenants block, from the CLI or from RESTCONF, and get it read back plainly: the configured / provisioned / deployed lifecycle and what each state means, the image and platform it belongs to, blades and VLANs, and the memory allocation checked against F5's published minimum of (3.5 × 1024 × vCPU) + 512. Local and offline.",
+      "inputLabel": "An f5-tenants block",
+      "placeholder": "Paste the tenant configuration as the CLI prints it, or the RESTCONF JSON",
+      "example": "Example",
+      "clear": "Clear",
+      "summary": {
+        "title": "The tenant",
+        "name": "Name",
+        "state": "Running state",
+        "vcpu": "vCPU per node",
+        "memory": "Memory configured",
+        "minMemory": "Published minimum"
+      },
+      "fields": {
+        "title": "Field by field"
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      }
+    },
+    "fortios-cli-config-explainer": {
+      "name": "FortiOS CLI config explainer",
+      "blurb": "Paste a FortiOS config block and get the structure as a tree with every verb explained. It flags the trap that costs the most: `set` on a multi-value field REPLACES the whole list, so setting one source address on a policy that had four silently removes three. It also catches unclosed blocks and reminds you that `end` is what commits. Local and offline.",
+      "inputLabel": "A FortiOS configuration block",
+      "placeholder": "config firewall policy\\n    edit 10\\n        set action accept\\n    next\\nend",
+      "example": "Example",
+      "clear": "Clear",
+      "tree": {
+        "title": "Line by line",
+        "balanced": "all blocks closed",
+        "unbalanced": "blocks left open"
+      },
+      "verbs": {
+        "config": "opens a block",
+        "edit": "enters or creates an entry",
+        "set": "assigns",
+        "unset": "returns to default",
+        "append": "adds to a list",
+        "next": "closes the entry",
+        "end": "closes and commits",
+        "abort": "closes and discards",
+        "delete": "removes",
+        "purge": "removes every entry",
+        "unknown": "not recognised"
+      },
+      "notes": {
+        "title": "Worth knowing"
+      },
+      "warnings": {
+        "title": "Check this"
+      }
+    },
+    "network-os-comparer": {
+      "name": "Network operating system comparer",
+      "blurb": "Fourteen network operating systems — IOS, IOS XE, IOS XR, NX-OS, Junos, Junos Evolved, EOS, TMOS, F5OS, EXOS, VOSS, FortiOS, PAN-OS and Gaia — with lineage, what each runs on, how components share state, where the planes divide, and what an upgrade costs. Pick one for a full profile or two to see them axis by axis. Every entry lists weaknesses as well as strengths.",
+      "pick": "Choose a system, and a second one to compare",
+      "noSecond": "— compare with (optional) —",
+      "example": "Compare IOS and EOS",
+      "clear": "Single profile",
+      "axes": {
+        "vendor": "Vendor",
+        "since": "First shipped",
+        "lineage": "Lineage",
+        "base": "What it runs on",
+        "state": "How state is shared",
+        "planes": "Control and forwarding",
+        "config": "How changes are applied",
+        "upgrade": "What an upgrade costs",
+        "differentiator": "The distinguishing idea"
+      },
+      "strengths": "Strengths",
+      "weaknesses": "Weaknesses",
+      "shared": "What they have in common",
+      "backToProfile": "Back to the single profile"
     }
   },
   "privacy_page": {
@@ -7690,7 +7918,10 @@
     "portalCertsLede": "Exam blueprints mapped objective by objective to the articles that teach them.",
     "portalPractice": "The Practice",
     "portalPracticeLede": "How the work is actually done, rather than how the technology works. Triage, escalation, evidence, handover, and the parts no runbook covers.",
-    "portalPracticeCount": "{count} of 48 published"
+    "portalPracticeCount": "{count} of 48 published",
+    "portalRoles": "The Roles",
+    "portalRolesLede": "The positions this industry is made of, grouped by the path a product takes. Who makes it, moves it, sells it, deploys it, runs it, supports it, defends it and teaches it.",
+    "portalRolesCount": "{count} positions"
   },
   "meetingBingo": {
     "metaTitle": "Meeting Bingo",
@@ -8692,8 +8923,8 @@
         "desc": "Paste an iControl REST URL to see the module, collection and tilde-encoded object with its tmsh equivalent; flatten the object's stats response into readable lines; then use the F5OS explainer for the platform layer underneath."
       },
       "trace-a-session-on-a-fortigate": {
-        "title": "Trace a session through a FortiGate",
-        "desc": "Build the ordered diagnose debug flow sequence for the traffic you care about, including the cleanup commands, and get each line explained before you paste it into a production firewall."
+        "title": "Work out why a FortiGate is not passing that traffic",
+        "desc": "Check which policy actually matches the packet and whether the rule you expected is even reachable, then build the diagnose debug flow sequence to watch it happen on the device."
       },
       "understand-an-sse-pass": {
         "title": "Understand what one request meets in an SSE platform",
@@ -8702,6 +8933,34 @@
       "make-sense-of-an-spb-fabric": {
         "title": "Make sense of an SPB fabric configuration",
         "desc": "Paste an I-SID, a nickname or a role and get the Shortest Path Bridging vocabulary sorted: which backbone VLAN carries the service, what the service actually binds to, and what changes between an edge bridge and a core bridge."
+      },
+      "read-what-the-bigip-wrote-in-the-capture": {
+        "title": "Find out why the BIG-IP reset that connection",
+        "desc": "Paste the F5 Ethernet trailer from a capture taken on the device and read the RST cause, the slot and TMM that handled the packet, and the flow identifiers - plus a warning if the trailer carries TLS session secrets."
+      },
+      "choose-how-traffic-reaches-the-edge": {
+        "title": "Decide how traffic should reach the service edge",
+        "desc": "Choose the steering method for a situation and see what it costs, then trace what a specific flow will actually do once that configuration is in place."
+      },
+      "work-out-which-terminal-layer-you-are-in": {
+        "title": "Work out which terminal layer you are actually in",
+        "desc": "Paste what tty printed and see whether you are on a pseudoterminal, a virtual console or a real serial line - and what that means for signals, job control and what happens when the window closes."
+      },
+      "work-out-which-extreme-os-you-have": {
+        "title": "Work out which Extreme OS name applies to your switch",
+        "desc": "Check whether a model carries the new Switch Engine and Fabric Engine names or the original EXOS and VOSS, see the caveats that come with the series, then translate a task between the two command sets."
+      },
+      "size-and-read-an-f5os-tenant": {
+        "title": "Read an F5OS tenant configuration and check its sizing",
+        "desc": "Paste the tenant block to see its lifecycle state, its platform and whether the memory allocation meets F5's published minimum, then decode the RESTCONF path you would use to change it."
+      },
+      "read-a-fortios-config-block": {
+        "title": "Read a FortiOS config block before you paste it",
+        "desc": "See the structure as a tree, find out whether any set command is about to replace a list rather than add to it, and check whether the policy it configures can even be reached."
+      },
+      "compare-two-network-operating-systems": {
+        "title": "Understand how two network operating systems differ",
+        "desc": "See lineage, what each runs on, how state is shared and where the planes divide - and what each of those predicts about behaviour when something fails."
       }
     },
     "manualHeading": "Manual",
@@ -15044,6 +15303,7 @@
     "metaTitle": "Industry - corporate lineages of networking and security",
     "metaDescription": "Deep-research corporate genealogies of the networking and security industry: foundings, acquisitions, and where every bloodline ended up. Written from primary sources.",
     "eyebrow": "Industry",
+    "navLabel": "Industry",
     "title": "The industry, from the inside",
     "lede": "The corporate genealogies of networking and security: who founded each company, what they built, who bought whom, and where every bloodline ended up. Written from primary sources - SEC filings, inquiry reports, and the trade press of each era.",
     "careerTitle": "The career vendors",
@@ -15501,5 +15761,67 @@
     "translationsTitle": "Improve the translations",
     "translationsBody": "This site is authored in English and Brazilian Portuguese, and machine-translated into fourteen more languages. The machine versions are serviceable and they are not native. If you read one of those fourteen and something is wrong - a term of art rendered literally, a sentence that technically parses and does not mean anything - telling me is a real contribution, and a short note naming the page and the phrase is enough.",
     "translationsCta": "Send a correction"
+  },
+  "roles": {
+    "eyebrow": "The Roles",
+    "title": "The positions this industry is made of.",
+    "lede": "A product passes through many hands between the company that builds it and the person who depends on it. Each pair of hands is a job with its own clients, its own suppliers, its own accountability and its own measurement. This is what each one is.",
+    "metaDescription": "The roles of the network and security industry, grouped by the path a product takes: who makes it, moves it, sells it, deploys it, runs it, supports it, defends it and teaches it.",
+    "provenanceSummary": "{held} held · {alongside} worked alongside · {documented} from the record",
+    "countNote": "{count} positions written so far, grouped by the path a product takes. The roster grows along that path.",
+    "provenance": {
+      "held": "Held this role",
+      "alongside": "Worked alongside it",
+      "documented": "From the record"
+    },
+    "groups": {
+      "makes": {
+        "title": "Who makes it",
+        "lede": "Product management, product marketing, engineering and research: the people who decide what the thing is before anyone can buy it."
+      },
+      "moves": {
+        "title": "Who moves it",
+        "lede": "Distribution and the channel. The layer between the company that builds a product and the company that sells it to whoever will run it."
+      },
+      "sells": {
+        "title": "Who sells it",
+        "lede": "Pre-sales, inside and outside sales, account management, business development. The technical truth and the commercial promise, carried by two people who answer for the same deal."
+      },
+      "deploys": {
+        "title": "Who deploys it",
+        "lede": "Professional services, integration and consulting. Turning a design into a working thing inside somebody else's network, on their schedule."
+      },
+      "runs": {
+        "title": "Who runs it",
+        "lede": "Managed service providers, in-house operations, the service desk and the network operations centre. The people for whom the product is a Tuesday rather than a project."
+      },
+      "supports": {
+        "title": "Who supports it",
+        "lede": "Field engineering, the technical assistance centre, third-line product support, escalation and named support. The tiers run from the queue a customer reaches to the engineer who hands a reproduced defect to a developer, and the last of those is the boundary between the organisation that runs a product and the organisation that makes it."
+      },
+      "defends": {
+        "title": "Who defends it",
+        "lede": "Security operations, offensive and defensive practice, research, incident response and crisis management. The work that assumes an adversary."
+      },
+      "teaches": {
+        "title": "Who teaches it",
+        "lede": "Instruction, enablement and certification. Capability transfer as a product in its own right."
+      }
+    },
+    "sections": {
+      "theDay": "What the day looks like",
+      "accountableFor": "What it answers for",
+      "measuredOn": "What it is measured on",
+      "receivesFrom": "Who it receives from",
+      "serves": "Who it serves",
+      "stakeholders": "Who else has a stake",
+      "requirements": "What it takes",
+      "turnsOn": "What the job turns on",
+      "adjacent": "Where it leads",
+      "practice": "The work itself",
+      "sources": "Where this comes from"
+    },
+    "practiceLede": "The Practice covers how this work is done — triage, escalation, evidence, handover — across the whole corpus.",
+    "practiceLink": "Read The Practice"
   }
 }

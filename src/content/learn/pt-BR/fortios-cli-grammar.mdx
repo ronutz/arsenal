@@ -1,0 +1,88 @@
+---
+slug: fortios-cli-grammar
+title: "O verbo da CLI do FortiOS que apaga coisas em silêncio"
+summary: "config, edit, set, next, end — uma gramática pequena com três armadilhas. `set` substitui uma lista inteira, `edit` cria o que não encontra, e `end` é a única linha que aplica."
+concepts: ["fortios", "fortigate", "cli", "configuration", "operations"]
+relatedTools: ["fortios-cli-config-explainer", "fortigate-policy-match-order"]
+relatedArticles: ["fortigate-policy-order"]
+category: operations
+order: 15
+status: reviewed
+updated: "2026-08-14"
+---
+
+## Uma gramática que se aprende em um minuto
+
+```
+config firewall policy
+    edit 10
+        set name "allow-web"
+        set action accept
+    next
+end
+```
+
+**`config`** abre uma tabela ou um objeto. **`edit`** entra numa entrada dentro
+de uma tabela. **`set`** atribui. **`next`** fecha a entrada e permanece na
+tabela. **`end`** fecha a tabela e aplica.
+
+Esse é o formato inteiro, e é genuinamente fácil. A dificuldade é que três
+dessas palavras fazem algo um pouco diferente do que parecem.
+
+## `set` substitui a lista inteira
+
+Esta é a cara.
+
+```
+set srcaddr "internal-net"
+```
+
+Numa policy cujos endereços de origem eram `internal-net`, `branch-net`,
+`vpn-users` e `dmz`, esse comando deixa **um**. Três objetos de endereço saíram
+da policy. O comando teve sucesso, o commit teve sucesso, e **nada na saída
+menciona isso.**
+
+O comando que acrescenta é o **`append`**:
+
+```
+append srcaddr "branch-net"
+```
+
+A distinção é invisível ao ler um bloco de configuração de forma casual — que é
+exatamente quando blocos de configuração são lidos, normalmente a partir de um
+chamado, normalmente sob pressão de tempo. Se um bloco que você vai colar contém
+`set` num campo de múltiplos valores, a pergunta não é se ele é válido. É **o que
+havia naquele campo antes.**
+
+## `edit` cria o que não encontra
+
+`edit 10` não falha quando a policy 10 não existe. **Ele a cria.**
+
+Isso é conveniente e significa que **um erro de digitação não produz um erro,
+produz um objeto.** Uma policy, endereço ou entrada de interface perdida
+normalmente remonta a uma tecla e não a uma decisão, e a única evidência é que
+ela existe.
+
+## `end` é a única linha que aplica
+
+**`next`** fecha uma entrada e permanece na tabela, pronta para o próximo `edit`.
+**`end`** fecha a tabela e aplica. **`abort`** fecha e descarta.
+
+Não são intercambiáveis, e o modo de falha é específico: um bloco usando `end`
+onde se queria `next` **sai da tabela cedo demais**, e cada edit restante cai em
+outro lugar — normalmente no nível de topo, onde ou falha ou configura algo sem
+relação.
+
+Um bloco sem nenhum `end` não aplicou nada. Se uma mudança parece não ter feito
+efeito, conte os `end` antes de suspeitar do equipamento.
+
+## E uma coisa sobre ler configurações
+
+**`show` exibe apenas o que difere dos padrões.** `show full-configuration` exibe
+tudo.
+
+Então um campo ausente de um bloco de configuração **não está necessariamente
+desconfigurado** — pode simplesmente estar no seu padrão. Raciocinar sobre o que
+um equipamento está fazendo a partir de uma saída de `show` é raciocinar sobre as
+diferenças, não sobre o quadro completo, e essa distinção vale ser explicitada
+antes de tirar uma conclusão de uma ausência.

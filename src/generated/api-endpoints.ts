@@ -137,6 +137,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_exos_config_explainer",
     "tag": "Extreme switching & fabric (EXOS / VOSS / SPB)"
   },
+  "extreme-switch-os-mapper": {
+    "url": "https://ronutz.com/api/v1/extreme-switch-os-mapper",
+    "method": "GET",
+    "op": "run_extreme_switch_os_mapper",
+    "tag": "Extreme switching & fabric (EXOS / VOSS / SPB)"
+  },
   "f5-afm-rule-context": {
     "url": "https://ronutz.com/api/v1/f5-afm-rule-context",
     "method": "GET",
@@ -239,6 +245,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_f5_dos_vector_explainer",
     "tag": "F5 GTM, AFM & APM"
   },
+  "f5-eth-trailer-decoder": {
+    "url": "https://ronutz.com/api/v1/f5-eth-trailer-decoder",
+    "method": "GET",
+    "op": "run_f5_eth_trailer_decoder",
+    "tag": "F5 LTM, iRules & platform"
+  },
   "f5-gslb-decision-flow": {
     "url": "https://ronutz.com/api/v1/f5-gslb-decision-flow",
     "method": "GET",
@@ -339,6 +351,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "url": "https://ronutz.com/api/v1/f5os-restconf-path-explainer",
     "method": "GET",
     "op": "run_f5os_restconf_path_explainer",
+    "tag": "F5OS platform (VELOS / rSeries)"
+  },
+  "f5os-tenant-config-explainer": {
+    "url": "https://ronutz.com/api/v1/f5os-tenant-config-explainer",
+    "method": "GET",
+    "op": "run_f5os_tenant_config_explainer",
     "tag": "F5OS platform (VELOS / rSeries)"
   },
   "f5xc-api-path-explainer": {
@@ -443,6 +461,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_fortigate_policy_lookup_explainer",
     "tag": "Fortinet FortiGate & FortiOS"
   },
+  "fortigate-policy-match-order": {
+    "url": "https://ronutz.com/api/v1/fortigate-policy-match-order",
+    "method": "GET",
+    "op": "run_fortigate_policy_match_order",
+    "tag": "Fortinet FortiGate & FortiOS"
+  },
   "fortigate-route-selection-explainer": {
     "url": "https://ronutz.com/api/v1/fortigate-route-selection-explainer",
     "method": "GET",
@@ -459,6 +483,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "url": "https://ronutz.com/api/v1/fortigate-session-table-explainer",
     "method": "GET",
     "op": "run_fortigate_session_table_explainer",
+    "tag": "Fortinet FortiGate & FortiOS"
+  },
+  "fortios-cli-config-explainer": {
+    "url": "https://ronutz.com/api/v1/fortios-cli-config-explainer",
+    "method": "GET",
+    "op": "run_fortios_cli_config_explainer",
     "tag": "Fortinet FortiGate & FortiOS"
   },
   "fortios-config-diff-explainer": {
@@ -617,6 +647,18 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_netskope_steering_decision_explainer",
     "tag": "Netskope"
   },
+  "netskope-steering-explainer": {
+    "url": "https://ronutz.com/api/v1/netskope-steering-explainer",
+    "method": "GET",
+    "op": "run_netskope_steering_explainer",
+    "tag": "Netskope SSE / SASE"
+  },
+  "network-os-comparer": {
+    "url": "https://ronutz.com/api/v1/network-os-comparer",
+    "method": "GET",
+    "op": "run_network_os_comparer",
+    "tag": "Everyday networking & operations"
+  },
   "nslookup-output-explainer": {
     "url": "https://ronutz.com/api/v1/nslookup-output-explainer",
     "method": "GET",
@@ -730,6 +772,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_telemetry_streaming_explainer",
     "tag": "F5 automation (AS3 / DO)"
+  },
+  "terminal-stack-explainer": {
+    "url": "https://ronutz.com/api/v1/terminal-stack-explainer",
+    "method": "GET",
+    "op": "run_terminal_stack_explainer",
+    "tag": "Everyday networking & operations"
   },
   "time-calculator": {
     "url": "https://ronutz.com/api/v1/time-calculator",

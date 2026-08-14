@@ -1,0 +1,88 @@
+---
+slug: f5os-tenant-lifecycle
+title: "Os três estados em que um tenant do F5OS pode estar"
+summary: "Configured, provisioned, deployed — e a regra de que mudar vCPU ou memória significa voltar por eles. Além da fórmula de memória publicada, e por que um exemplo de VELOS não vai commitar num rSeries."
+concepts: ["f5os", "velos", "rseries", "tenant", "multitenancy", "bigip"]
+relatedTools: ["f5os-tenant-config-explainer", "f5os-restconf-path-explainer"]
+relatedArticles: ["f5os-restconf-paths"]
+category: operations
+order: 14
+status: reviewed
+updated: "2026-08-14"
+---
+
+## Três estados, e não são apenas rótulos
+
+Um tenant do F5OS tem um `running-state`, e ele assume um de três valores.
+
+**Configured.** O tenant está definido. Nenhum recurso foi atribuído, nada está
+rodando, nada está reservado. É uma declaração de intenção.
+
+**Provisioned.** A plataforma atribuiu o tenant aos seus nós, criou os discos
+virtuais e instalou a imagem. Está pronto para rodar e não está rodando.
+
+**Deployed.** Está rodando.
+
+O campo é o que você *quer* que o tenant esteja fazendo. A plataforma reporta o
+que ele está *de fato* fazendo em separado — um tenant pode ficar em
+`provisioned` com status "Allocating resources" pelo tempo que os discos levarem.
+
+## A regra que as pessoas erram
+
+**Para mudar vCPU ou memória num tenant deployed, é preciso voltá-lo para
+`provisioned` primeiro**, fazer a mudança, e então devolvê-lo a `deployed`.
+
+Não é uma operação em produção. Esperar que seja é como uma janela de manutenção
+vira uma indisponibilidade — e a falha é silenciosa, porque o commit é rejeitado
+em vez de o tenant se comportar mal.
+
+Há uma segunda metade fácil de perder: **vCPU e memória andam juntos.** Aumentar
+a contagem de cores sem aumentar a memória deixa o tenant abaixo do próprio
+mínimo, o que nos leva à aritmética.
+
+## A fórmula que a F5 publica
+
+```
+min-memory = (3,5 × 1024 × vcpu-cores-per-node) + 512
+```
+
+Então **dois vCPUs precisam de ao menos 7680 MB** e **quatro precisam de 14848
+MB**. Esses são os números dos próprios exemplos da F5, e vale memorizá-los
+porque são os dois tamanhos mais comuns.
+
+Mais que o mínimo é permitido e às vezes é o certo. O que importa é que tenha
+sido **uma decisão** — um tenant exatamente no mínimo foi dimensionado pela
+fórmula, e um acima dela foi dimensionado por alguém. Saber qual é qual diz se o
+número é seguro de mexer.
+
+## VELOS e rSeries não têm o mesmo formato
+
+É aqui que exemplos copiados dão errado.
+
+**VELOS é um chassi.** Tem chassis partitions, e `nodes` nomeia as blades dentro
+de uma. Um tenant pode se estender por blades. Cada blade oferece até 22 vCPUs,
+cerca de 95 GB de memória e aproximadamente 600 GB de disco para tenants, de modo
+que **a capacidade da partition é o que limita quantos tenants cabem**, e não
+alguma regra por tenant.
+
+**rSeries é um appliance.** Sem chassis partitions, sem blades. E o
+`vcpu-cores-per-node` precisa ser **múltiplo de quatro**, com quatro como padrão
+e 12288 MB de memória padrão.
+
+O que significa que um tenant VELOS perfeitamente válido com dois vCPUs **não vai
+commitar num rSeries**. A configuração não está errada; é para outra máquina.
+
+O nome do arquivo de imagem diz o mesmo de forma mais evidente: um bundle com
+**ALL-VELOS** é para o chassi e um com **ALL-F5OS** é para o appliance. Se um
+deploy falha de imediato, leia o nome do arquivo antes de ler qualquer outra
+coisa.
+
+## Duas flags que valem ser decididas, não herdadas
+
+**`cryptos`** dá ao tenant acesso ao hardware de criptografia e compressão da
+plataforma, e só pode ser mudada enquanto o tenant estiver em `configured` ou
+`provisioned`. Decidir isso depois do deploy significa voltar atrás.
+
+**`appliance-mode`** impede que administradores do tenant cheguem a um shell.
+Endurece o tenant, e também remove um caminho de diagnóstico — vale escolher
+deliberadamente em vez de herdar do template de onde veio o primeiro tenant.

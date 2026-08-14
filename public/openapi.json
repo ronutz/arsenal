@@ -28,6 +28,9 @@
       "name": "Encoding"
     },
     {
+      "name": "Everyday networking & operations"
+    },
+    {
       "name": "Extreme switching & fabric (EXOS / VOSS / SPB)"
     },
     {
@@ -1847,6 +1850,90 @@
         }
       }
     },
+    "/extreme-switch-os-mapper": {
+      "get": {
+        "tags": [
+          "Extreme switching & fabric (EXOS / VOSS / SPB)"
+        ],
+        "operationId": "run_extreme_switch_os_mapper",
+        "summary": "Extreme Universal switch OS-name mapper",
+        "description": "ExtremeXOS is Switch Engine and VOSS is Fabric Engine — but only on Universal hardware, and the image files and boot menus still use the old names. Give a model series or an OS name and see which applies, the version the rename landed at, and the caveats that come with the series. It states plainly that changing persona deletes the configuration. Local and offline. Standards: Extreme Universal switches. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Extreme switching & fabric (EXOS / VOSS / SPB)"
+        ],
+        "operationId": "run_extreme_switch_os_mapper_post",
+        "summary": "Extreme Universal switch OS-name mapper (POST)",
+        "description": "ExtremeXOS is Switch Engine and VOSS is Fabric Engine — but only on Universal hardware, and the image files and boot menus still use the old names. Give a model series or an OS name and see which applies, the version the rename landed at, and the caveats that come with the series. It states plainly that changing persona deletes the configuration. Local and offline. Standards: Extreme Universal switches. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/f5-afm-rule-context": {
       "get": {
         "tags": [
@@ -3322,6 +3409,90 @@
                 "examples": [
                   "security dos device-config dos-device-config { dos-device-vector { tcp-half-open { } } }"
                 ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-eth-trailer-decoder": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_eth_trailer_decoder",
+        "summary": "F5 Ethernet trailer decoder",
+        "description": "Paste the F5 Ethernet trailer that a BIG-IP appends to packets captured with the tcpdump noise flags, and get each field explained: direction, slot and TMM, the virtual server, flow and peer identifiers, and the device's own RST cause. It detects a TLS provider section and deliberately decodes none of it, because from v15 that section carries session secrets. Local and offline. Standards: F5 Ethernet trailer (f5ethtrailer). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_eth_trailer_decoder_post",
+        "summary": "F5 Ethernet trailer decoder (POST)",
+        "description": "Paste the F5 Ethernet trailer that a BIG-IP appends to packets captured with the tcpdump noise flags, and get each field explained: direction, slot and TMM, the virtual server, flow and peer identifiers, and the device's own RST cause. It detects a TLS provider section and deliberately decodes none of it, because from v15 that section carries session secrets. Local and offline. Standards: F5 Ethernet trailer (f5ethtrailer). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
               }
             }
           }
@@ -4853,6 +5024,90 @@
         }
       }
     },
+    "/f5os-tenant-config-explainer": {
+      "get": {
+        "tags": [
+          "F5OS platform (VELOS / rSeries)"
+        ],
+        "operationId": "run_f5os_tenant_config_explainer",
+        "summary": "F5OS tenant config explainer",
+        "description": "Paste an f5-tenants:tenants block, from the CLI or from RESTCONF, and get it read back plainly: the configured / provisioned / deployed lifecycle and what each state means, the image and platform it belongs to, blades and VLANs, and the memory allocation checked against F5's published minimum of (3.5 × 1024 × vCPU) + 512. Local and offline. Standards: F5OS f5-tenants YANG. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5OS platform (VELOS / rSeries)"
+        ],
+        "operationId": "run_f5os_tenant_config_explainer_post",
+        "summary": "F5OS tenant config explainer (POST)",
+        "description": "Paste an f5-tenants:tenants block, from the CLI or from RESTCONF, and get it read back plainly: the configured / provisioned / deployed lifecycle and what each state means, the image and platform it belongs to, blades and VLANs, and the memory allocation checked against F5's published minimum of (3.5 × 1024 × vCPU) + 512. Local and offline. Standards: F5OS f5-tenants YANG. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/f5xc-api-path-explainer": {
       "get": {
         "tags": [
@@ -6308,6 +6563,91 @@
         }
       }
     },
+    "/fortigate-policy-match-order": {
+      "get": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_policy_match_order",
+        "summary": "FortiGate policy match-order explainer",
+        "description": "Paste an ordered FortiGate policy list and, optionally, a packet, and see which policy wins and why. It walks the list top-down showing the first field that ruled each policy out, names the policies that can never be reached because something broader sits above them, and applies the virtual-IP matching rules that ordering alone does not solve. Local and offline. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: FortiOS firewall policy. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortigate_policy_match_order_post",
+        "summary": "FortiGate policy match-order explainer (POST)",
+        "description": "Paste an ordered FortiGate policy list and, optionally, a packet, and see which policy wins and why. It walks the list top-down showing the first field that ruled each policy out, names the policies that can never be reached because something broader sits above them, and applies the virtual-IP matching rules that ordering alone does not solve. Local and offline. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: FortiOS firewall policy. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fortigate-route-selection-explainer": {
       "get": {
         "tags": [
@@ -6550,6 +6890,90 @@
                 "examples": [
                   "session info: proto=6 proto_state=01 duration=125 expire=3590 timeout=3600"
                 ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fortios-cli-config-explainer": {
+      "get": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortios_cli_config_explainer",
+        "summary": "FortiOS CLI config explainer",
+        "description": "Paste a FortiOS config block and get the structure as a tree with every verb explained. It flags the trap that costs the most: `set` on a multi-value field REPLACES the whole list, so setting one source address on a policy that had four silently removes three. It also catches unclosed blocks and reminds you that `end` is what commits. Local and offline. Standards: FortiOS CLI reference. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fortinet FortiGate & FortiOS"
+        ],
+        "operationId": "run_fortios_cli_config_explainer_post",
+        "summary": "FortiOS CLI config explainer (POST)",
+        "description": "Paste a FortiOS config block and get the structure as a tree with every verb explained. It flags the trap that costs the most: `set` on a multi-value field REPLACES the whole list, so setting one source address on a policy that had four silently removes three. It also catches unclosed blocks and reminds you that `end` is what commits. Local and offline. Standards: FortiOS CLI reference. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
               }
             }
           }
@@ -8867,6 +9291,176 @@
         }
       }
     },
+    "/netskope-steering-explainer": {
+      "get": {
+        "tags": [
+          "Netskope SSE / SASE"
+        ],
+        "operationId": "run_netskope_steering_explainer",
+        "summary": "Netskope steering-method explainer",
+        "description": "Describe the situation — managed device or not, on a site or roaming, whether the certificate bundle can be installed — and see which steering method fits: the endpoint client, an IPsec or GRE tunnel, an explicit proxy, or chaining from a proxy you already run. Every method lists what it costs, chosen or not. Deterministic and offline. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Netskope One steering. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Netskope SSE / SASE"
+        ],
+        "operationId": "run_netskope_steering_explainer_post",
+        "summary": "Netskope steering-method explainer (POST)",
+        "description": "Describe the situation — managed device or not, on a site or roaming, whether the certificate bundle can be installed — and see which steering method fits: the endpoint client, an IPsec or GRE tunnel, an explicit proxy, or chaining from a proxy you already run. Every method lists what it costs, chosen or not. Deterministic and offline. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Netskope One steering. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/network-os-comparer": {
+      "get": {
+        "tags": [
+          "Everyday networking & operations"
+        ],
+        "operationId": "run_network_os_comparer",
+        "summary": "Network operating system comparer",
+        "description": "Fourteen network operating systems — IOS, IOS XE, IOS XR, NX-OS, Junos, Junos Evolved, EOS, TMOS, F5OS, EXOS, VOSS, FortiOS, PAN-OS and Gaia — with lineage, what each runs on, how components share state, where the planes divide, and what an upgrade costs. Pick one for a full profile or two to see them axis by axis. Every entry lists weaknesses as well as strengths. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Vendor architecture documentation. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Everyday networking & operations"
+        ],
+        "operationId": "run_network_os_comparer_post",
+        "summary": "Network operating system comparer (POST)",
+        "description": "Fourteen network operating systems — IOS, IOS XE, IOS XR, NX-OS, Junos, Junos Evolved, EOS, TMOS, F5OS, EXOS, VOSS, FortiOS, PAN-OS and Gaia — with lineage, what each runs on, how components share state, where the planes divide, and what an upgrade costs. Pick one for a full profile or two to see them axis by axis. Every entry lists weaknesses as well as strengths. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Vendor architecture documentation. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/nslookup-output-explainer": {
       "get": {
         "tags": [
@@ -10516,6 +11110,90 @@
                 "examples": [
                   "{ \"class\": \"Telemetry\", \"My_System\": { \"class\": \"Telemetry_System\", \"systemPoller\": { \"interval\": 60 } } }"
                 ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/terminal-stack-explainer": {
+      "get": {
+        "tags": [
+          "Everyday networking & operations"
+        ],
+        "operationId": "run_terminal_stack_explainer",
+        "summary": "Terminal, shell, TTY and console explainer",
+        "description": "Paste what `tty` printed — /dev/pts/3, /dev/tty2, /dev/ttyS0, /dev/tty, /dev/console, or “not a tty” — and see which layer you are actually looking at, what is holding the other end, and what that implies for signals, job control and what happens when the window closes. Local and offline. Standards: POSIX termios. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Everyday networking & operations"
+        ],
+        "operationId": "run_terminal_stack_explainer_post",
+        "summary": "Terminal, shell, TTY and console explainer (POST)",
+        "description": "Paste what `tty` printed — /dev/pts/3, /dev/tty2, /dev/ttyS0, /dev/tty, /dev/console, or “not a tty” — and see which layer you are actually looking at, what is holding the other end, and what that implies for signals, job control and what happens when the window closes. Local and offline. Standards: POSIX termios. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
               }
             }
           }

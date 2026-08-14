@@ -1,0 +1,66 @@
+---
+slug: f5-ethernet-trailer
+title: "What the BIG-IP writes into your capture"
+summary: "The F5 Ethernet trailer carries what TMM knew about each packet — slot, TMM, virtual server, flow IDs and the reset cause. From v15 it can also carry TLS session secrets, which changes what a pcap is."
+concepts: ["f5ethtrailer", "tcpdump", "wireshark", "bigip", "packet-capture"]
+relatedTools: ["f5-eth-trailer-decoder"]
+relatedArticles: ["capture-points-before-packets"]
+category: networking
+order: 43
+status: reviewed
+updated: "2026-08-13"
+---
+
+## The device tells you what it was thinking
+
+Run tcpdump **on** a BIG-IP with the noise flags and each frame gets a trailer
+appended: not more packet, but the device's own account of that packet.
+
+```
+tcpdump -s0 -i 0.0:nnn -w /var/tmp/cap.pcap host 10.1.1.5
+```
+
+The suffix sets the level. **`:n`** gives low details — direction, the slot and
+TMM that handled the frame, and the virtual server it matched. **`:nn`** adds
+the flow and peer identifiers and **the reset cause**. **`:nnn`** adds more, most
+of which is meaningful to F5 support rather than to you.
+
+## Why the RST cause is the field that matters
+
+A capture without the trailer shows you a connection died. The trailer tells you
+**the device killed it, and why**.
+
+`No local listener` means the traffic arrived and nothing was listening on that
+address and port — which is a configuration answer, not a network one, and it
+arrives in one field rather than after an hour of elimination.
+
+## Flow IDs are reused, and that catches people
+
+The flow ID and peer ID identify the two halves of a connection. Two things
+about them are worth knowing before you trust one:
+
+- They are **unique only within a slot and TMM combination**.
+- They are **reused over time**, so the same ID can appear on completely
+  unrelated packets earlier or later in the same capture.
+
+And when filtering, `f5ethtrailer.anyflowid` matches the ID as either the flow
+or the peer, which returns **both sides of the connection**. Filtering on
+`flowid` alone returns half of what you wanted.
+
+## The part nobody mentions
+
+From **BIG-IP v15** the trailer can carry a **TLS provider section**, and that
+section contains **session secrets** — the early secret, the client and server
+traffic secrets, the exporter secret. Wireshark's dissector converts them into
+keylog entries and decrypts the capture for you.
+
+That is a genuinely useful debugging feature and it changes what the file is.
+
+F5's documentation notes that the trailer never leaves the device on the wire.
+**That is true, and it is about the wire.** The file is a different question: a
+capture taken at high noise on a v15+ device **can contain the keys to its own
+TLS sessions**, and attaching it to a support ticket, an email, or a shared
+drive moves those keys with it.
+
+Treat such a capture as you would a private key, because for the duration of
+those sessions that is what it contains.

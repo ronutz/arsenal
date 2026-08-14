@@ -50,16 +50,44 @@ export const GUIDE_RECIPES: GuideRecipe[] = [
     toolIds: ["oidc", "pkce", "totp-hotp"],
   },
   {
+    id: "work-out-which-extreme-os-you-have",
+    toolIds: ["extreme-switch-os-mapper", "voss-exos-translator"],
+  },
+  {
     id: "make-sense-of-an-spb-fabric",
     toolIds: ["fabric-connect-spb-explainer"],
+  },
+  {
+    id: "choose-how-traffic-reaches-the-edge",
+    toolIds: ["netskope-steering-explainer", "netskope-steering-decision-explainer"],
   },
   {
     id: "understand-an-sse-pass",
     toolIds: ["sse-architecture-explainer"],
   },
   {
+    id: "read-a-fortios-config-block",
+    toolIds: ["fortios-cli-config-explainer", "fortigate-policy-match-order"],
+  },
+  {
     id: "trace-a-session-on-a-fortigate",
-    toolIds: ["fortios-flow-debug-builder"],
+    toolIds: ["fortigate-policy-match-order", "fortios-flow-debug-builder"],
+  },
+  {
+    id: "compare-two-network-operating-systems",
+    toolIds: ["network-os-comparer"],
+  },
+  {
+    id: "work-out-which-terminal-layer-you-are-in",
+    toolIds: ["terminal-stack-explainer"],
+  },
+  {
+    id: "read-what-the-bigip-wrote-in-the-capture",
+    toolIds: ["f5-eth-trailer-decoder"],
+  },
+  {
+    id: "size-and-read-an-f5os-tenant",
+    toolIds: ["f5os-tenant-config-explainer", "f5os-restconf-path-explainer"],
   },
   {
     id: "read-a-bigip-object-path",

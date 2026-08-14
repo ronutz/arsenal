@@ -1,0 +1,187 @@
+---
+slug: network-operating-systems
+title: "What a network operating system actually is"
+summary: "IOS, Junos, EOS, TMOS, FortiOS, PAN-OS and the rest, compared on the axes that matter: what they run on, how components share state, where the planes divide, and what happens when one part fails."
+concepts: ["network-operating-system", "ios", "junos", "eos", "tmos", "fortios", "pan-os", "control-plane"]
+relatedTools: ["network-os-comparer"]
+relatedArticles: ["fortios-cli-grammar", "f5os-tenant-lifecycle"]
+category: operations
+order: 16
+status: reviewed
+updated: "2026-08-14"
+---
+
+## One question, answered eight different ways
+
+Every network operating system answers the same question, and the answer is its
+architecture:
+
+> **What happens when one part of the software fails?**
+
+A monolith takes the box down with it. A microkernel restarts the process. A
+state database lets the restarted process resume rather than rebuild. A hardware
+data plane keeps forwarding while the control plane is reassembled. That is the
+whole story, and everything below is a variation on it.
+
+The vendors do not usually explain themselves this way, because the answer
+"our architecture limits the blast radius" is less appealing than a feature
+list. But it is the difference you feel at three in the morning.
+
+## Cisco IOS: the one everything else was designed to escape
+
+Classic **IOS** has no host operating system. IOS *is* the operating system,
+running on the hardware as a single binary image, and everything within it runs
+in **one address space with no memory protection**. Any process can corrupt any
+other's data.
+
+The scheduler is **run-to-completion and non-preemptive**: a running process
+keeps the CPU until it voluntarily makes a kernel call. A badly behaved process
+starves everything else, including the routing protocols.
+
+None of this was a mistake. It was the right design for the hardware of the
+time — small, fast, predictable — and it gave the industry its baseline CLI. But
+it explains why the next twenty years of network operating systems were largely
+attempts to get away from it.
+
+## IOS XE and IOS XR: two different escapes
+
+**IOS XE** (2008, ASR 1000) is the compatibility answer. A **Linux kernel
+underneath, with IOS itself running on top as a single daemon — IOSd**. System
+functions were lifted out into separate Linux processes, so a platform fault no
+longer takes the kernel. Existing knowledge and existing scripts continue to
+work.
+
+The honest limitation: **IOSd is still a monolith**. The largest failure domain
+got smaller, not absent.
+
+**IOS XR** is the clean-break answer — a different code base, not a rework.
+Originally the **QNX real-time microkernel**, later a 64-bit Linux foundation
+([Cisco's own architecture
+material](https://www.cisco.com/c/en/us/products/collateral/ios-nx-os-software/ios-xr-software/index.html)
+covers the protected-process model and the two-stage commit).
+Components run as **independent protected processes**, restartable
+individually, communicating by message passing rather than shared memory.
+
+And it brought the **two-stage commit**: changes are made against a candidate,
+checked, then committed. That single change turns a half-finished edit from an
+outage into an abandoned draft.
+
+The CLI resembles IOS. **The operational model does not**, and the familiarity
+is partly a trap.
+
+## Junos: one operating system, one source tree
+
+**Junos** shipped on 7 July 1998, built on **FreeBSD** — which means there is a
+real Unix underneath with real Unix tools. Its organising idea is the split
+between the **Routing Engine**, holding the control plane, and the **Packet
+Forwarding Engine**, doing the forwarding. That boundary is why the control
+plane can be rebuilt or fail over while traffic keeps moving.
+
+Its signature was the **candidate-and-commit configuration model**, with
+rollback and a readable diff before anything is applied. Much of the industry
+has since followed; Juniper got there first.
+
+[**Junos OS Evolved**](https://www.juniper.net/documentation/us/en/software/junos/junos-evolved-overview/topics/concept/evo-overview.html)
+(Release 19.2, 2019) rebuilds this on **Linux natively**,
+and changes the state model in a way worth understanding. Classic Junos is
+Routing-Engine centric; Evolved is **node-based**, and processes publish state
+to a **distributed data store**.
+
+> The difference: in classic Junos a restarted daemon **rebuilds** its state. In
+> Evolved it **retrieves** it — even if it comes back on a different node. Those
+> are not the same guarantee.
+
+## Arista EOS: state separated from the processes that make it
+
+**EOS** runs an **unmodified Linux kernel** — not a fork, not a patched tree —
+so ordinary Linux tooling works as documented.
+
+Its architectural decision is **SysDB**: a central in-memory state database with
+publish and subscribe. **Processes do not talk to each other at all.** They
+publish what they know and subscribe to what they need. A restarted agent asks
+SysDB for the current state and carries on.
+
+That one decision is why agent restart is routine on EOS rather than an
+emergency.
+
+## NX-OS came from storage
+
+**NX-OS** descends from **SAN-OS**, written for MDS storage switches, and the
+heritage shows: **features that are not enabled are not running.** That reduces
+attack surface and memory, and it reliably surprises engineers who expect a
+command to exist before it has been switched on.
+
+## The two that are not routers
+
+**TMOS** is F5's, and it is a **full proxy** — it terminates connections and
+creates new ones rather than forwarding packets. Linux handles management; the
+**Traffic Management Microkernel (TMM)** handles traffic as a separate real-time
+process with its own memory, scheduling and network stack.
+
+> **TMM bypasses the Linux network stack entirely.** This is the single most
+> useful fact about the platform: Linux tools show you the management plane and
+> not the traffic, so `netstat` on a BIG-IP answers a question you were not
+> asking.
+
+**F5OS** is not a traffic operating system at all. It is the **platform layer**
+on VELOS and rSeries that decides which BIG-IP tenants exist and what they get.
+Confusing it with the BIG-IP inside is the commonest mistake people make with
+those boxes.
+
+## The security operating systems chose different primary objects
+
+**FortiOS** is built around **custom silicon** — network processors, content
+processors, systems-on-chip. Traffic offloaded to hardware **does not traverse
+the software path at all**, which is why a correctly constructed debug can show
+nothing while traffic is plainly flowing. The offload is the reason the
+price-to-throughput ratio works; it is also the reason diagnosis is harder.
+
+**PAN-OS** made a different bet: **application identity as the primary policy
+object**, not port numbers. Its **single-pass parallel processing** classifies a
+packet once and runs application identification, user identification, content
+inspection and policy against that one pass, rather than chaining engines that
+each redo the work. Control and data planes are genuinely separate, frequently
+on separate processors, so management load does not compete with traffic.
+
+The cost is at the other end: **commits take time**, and on a large
+configuration that time is operationally significant.
+
+**Check Point Gaia** unified two operating systems the company had been
+maintaining in parallel — **IPSO**, from the Nokia appliance line, and
+**SecurePlatform**. Its distinguishing choice is older than either: **management
+is a separate product from the gateway.** Policy is written centrally and
+installed. That is a three-tier arrangement rather than a device you configure,
+and it means more infrastructure before the first rule exists — in exchange for
+central management being the design rather than an add-on.
+
+## The Extreme pair, and why there are two
+
+**EXOS — renamed Switch Engine on Universal hardware** — is Linux with
+networking as modular userspace processes and process-level restart.
+
+**VOSS — renamed Fabric Engine** — descends from **Nortel Passport** through
+**Avaya VSP**, and its distinguishing feature sits above the plane split:
+**Shortest Path Bridging** computes forwarding with IS-IS rather than learning
+it, so there is no spanning tree and no blocked links. Services are provisioned
+**only at the edge**; the core forwards on backbone MAC addresses and does not
+know the services exist.
+
+Universal hardware runs **either**, chosen at boot. Which is elegant, and means
+a two-persona estate needs two command sets — the ACLI grammar VOSS inherited
+is genuinely different from EXOS.
+
+## What to take from the comparison
+
+The axis that predicts the most is **how state is shared**. Shared memory means
+a fault spreads. Message passing contains it. A state store lets a restarted
+process resume rather than rebuild. Everything else — CLI style, feature sets,
+even hardware — matters less to how the system behaves when something breaks.
+
+The second is **whether changes are immediate or committed**. Immediate means a
+mistake is live. Candidate-and-commit means a mistake is an abandoned edit.
+That is the difference between an incident and an afternoon.
+
+And the last thing, which is not architectural at all: **every one of these has
+weaknesses, and a description that lists none is an advertisement.** The
+comparer on this site records at least two for every system it covers,
+including the ones this site's author teaches.

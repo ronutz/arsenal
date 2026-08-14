@@ -3701,6 +3701,78 @@ export const CHANGELOG: ChangelogEntry[] = [
       "Paste dig output and get every section explained: the header and flags, the question, and each answer, authority, and additional record, along with the query timing. Local and offline.",
   },
   {
+    date: "2026-08-14",
+    time: "09:00",
+    kind: "tool",
+    title: "New tool and article: network operating systems compared",
+    tools: ["network-os-comparer"],
+    body:
+      "Fourteen network operating systems - IOS, IOS XE, IOS XR, NX-OS, Junos, Junos Evolved, EOS, TMOS, F5OS, EXOS, VOSS, FortiOS, PAN-OS and Gaia - with lineage, what each runs on, how components share state, where the planes divide and what an upgrade costs. The article behind it organises all of them around one question: what happens when part of the software fails. Every entry lists weaknesses as well as strengths, and a golden vector enforces that.",
+  },
+  {
+    date: "2026-08-14",
+    time: "08:00",
+    kind: "tool",
+    title: "New tool: FortiOS CLI config explainer",
+    tools: ["fortios-cli-config-explainer"],
+    body:
+      "Paste a FortiOS config block and get the structure as a tree with every verb explained. It flags the trap that costs the most - set on a multi-value field replaces the whole list, so setting one source address on a policy that had four silently removes three, successfully and with nothing in the output mentioning it. It also says that edit creates what it cannot find, that end is the only line that commits, and reports unclosed blocks.",
+  },
+  {
+    date: "2026-08-14",
+    time: "07:10",
+    kind: "tool",
+    title: "New tool: F5OS tenant config explainer",
+    tools: ["f5os-tenant-config-explainer"],
+    body:
+      "Paste an f5-tenants block and get it read back: the configured, provisioned and deployed states and what each means, the image and its platform, blades and VLANs. It checks the memory allocation against F5's published minimum of (3.5 x 1024 x vCPU) + 512, warns when a vCPU count appears without a memory value, and states the rule people get wrong - changing vCPU or memory on a deployed tenant means moving it back to provisioned first.",
+  },
+  {
+    date: "2026-08-14",
+    time: "06:20",
+    kind: "tool",
+    title: "New tool: Extreme Universal switch OS-name mapper",
+    tools: ["extreme-switch-os-mapper"],
+    body:
+      "ExtremeXOS is Switch Engine and VOSS is Fabric Engine, but only on Universal hardware - and the image files and boot menus still use the old names. Give a model series or an OS name and see which applies, the version the rename landed at, and the caveats: 7520 stacking works under Switch Engine and not Fabric Engine, and a 5420 or 5520 upgrade changes the SNMP SysObjectID. It states on every lookup that changing persona deletes the configuration.",
+  },
+  {
+    date: "2026-08-14",
+    time: "05:40",
+    kind: "tool",
+    title: "New tool and article: terminal, shell, TTY and console",
+    tools: ["terminal-stack-explainer"],
+    body:
+      "Four words used interchangeably by almost everyone, including the documentation. Paste what tty printed and see which layer you are looking at, what holds the other end, and what that implies. The article behind it explains why Ctrl+C kills your command and not your shell - the line discipline sends SIGINT to the foreground process group, and the shell was never the target.",
+  },
+  {
+    date: "2026-08-14",
+    time: "03:30",
+    kind: "tool",
+    title: "New tool: Netskope steering-method explainer",
+    tools: ["netskope-steering-explainer"],
+    body:
+      "Describe the situation and see which steering method fits - client, IPsec, GRE, explicit proxy or proxy chaining - with what each one costs, listed whether or not it was chosen. It warns about the interaction that surprises people: the client detects other steering methods and by default disables itself when it finds a tunnel, so running both is not automatically belt and braces. It also states the hard limit - without the certificate bundle on the endpoint there is no TLS inspection and no SAML authentication, and policy runs on metadata.",
+  },
+  {
+    date: "2026-08-13",
+    time: "21:00",
+    kind: "tool",
+    title: "New tool: FortiGate policy match-order explainer",
+    tools: ["fortigate-policy-match-order"],
+    body:
+      "Paste an ordered policy list and see which one wins for a given packet, with the first field that ruled each other policy out. It also names the policies that can never be reached because something broader sits above them, and applies the virtual-IP rules that ordering alone does not solve. It corrects one thing directly: the policy ID is an identifier, not a position - policy 3 can sit below policy 47.",
+  },
+  {
+    date: "2026-08-13",
+    time: "17:10",
+    kind: "tool",
+    title: "New tool: F5 Ethernet trailer decoder",
+    tools: ["f5-eth-trailer-decoder"],
+    body:
+      "Paste the trailer a BIG-IP appends to packets captured with the tcpdump noise flags and get each field explained: direction, slot and TMM, the virtual server, flow and peer identifiers, and the device's own RST cause. It detects a TLS provider section and decodes none of it - from v15 that section carries session secrets, which means a capture taken at high noise can contain the keys to its own TLS sessions. Local and offline.",
+  },
+  {
     date: "2026-08-13",
     time: "12:10",
     kind: "tool",

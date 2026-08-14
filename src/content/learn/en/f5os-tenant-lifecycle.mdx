@@ -1,0 +1,88 @@
+---
+slug: f5os-tenant-lifecycle
+title: "The three states an F5OS tenant can be in"
+summary: "Configured, provisioned, deployed — and the rule that changing vCPU or memory means going backwards through them. Plus the published memory formula, and why a VELOS example will not commit on an rSeries."
+concepts: ["f5os", "velos", "rseries", "tenant", "multitenancy", "bigip"]
+relatedTools: ["f5os-tenant-config-explainer", "f5os-restconf-path-explainer"]
+relatedArticles: ["f5os-restconf-paths"]
+category: operations
+order: 14
+status: reviewed
+updated: "2026-08-14"
+---
+
+## Three states, and they are not just labels
+
+An F5OS tenant has a `running-state`, and it takes one of three values.
+
+**Configured.** The tenant is defined. No resources have been assigned, nothing
+is running, nothing is reserved. It is a declaration of intent.
+
+**Provisioned.** The platform has assigned the tenant to its nodes, created its
+virtual disks and installed the image. It is ready to run and it is not running.
+
+**Deployed.** It is running.
+
+The field is what you *want* the tenant to be doing. The platform reports what
+it is *actually* doing separately — a tenant can sit in `provisioned` with a
+status of "Allocating resources" for as long as the disks take.
+
+## The rule people get wrong
+
+**To change vCPU or memory on a deployed tenant, you must move it back to
+`provisioned` first**, make the change, then return it to `deployed`.
+
+It is not a live operation. Expecting it to be is how a maintenance window
+becomes an outage — and the failure is quiet, because the commit is rejected
+rather than the tenant misbehaving.
+
+There is a second half to it that is easy to miss: **vCPU and memory move
+together.** Raising the core count without raising memory leaves the tenant
+below its own minimum, which brings us to the arithmetic.
+
+## The formula F5 publishes
+
+```
+min-memory = (3.5 × 1024 × vcpu-cores-per-node) + 512
+```
+
+So **two vCPUs need at least 7680 MB** and **four need 14848 MB**. Those are the
+numbers in F5's own examples, and they are worth memorising because they are the
+two most common sizes.
+
+More than the minimum is allowed and is sometimes right. What matters is that
+it was **a decision** — a tenant sitting at exactly the minimum was sized by the
+formula, and one sitting above it was sized by someone. Knowing which is which
+tells you whether the number is safe to change.
+
+## VELOS and rSeries are not the same shape
+
+This is where copied examples go wrong.
+
+**VELOS is a chassis.** It has chassis partitions, and `nodes` names the blades
+within one. A tenant can span blades. Each blade offers up to 22 vCPUs, around
+95 GB of memory and roughly 600 GB of disk to tenants, so **partition capacity
+is what limits how many tenants fit** rather than any per-tenant rule.
+
+**rSeries is an appliance.** No chassis partitions, no blades. And
+`vcpu-cores-per-node` must be **a multiple of four**, with four the default and
+12288 MB the default memory.
+
+Which means a perfectly valid VELOS tenant with two vCPUs **will not commit on
+an rSeries**. The configuration is not wrong; it is for a different machine.
+
+The image filename says the same thing more loudly: a bundle containing
+**ALL-VELOS** is built for the chassis and one containing **ALL-F5OS** is built
+for the appliance. If a deployment fails immediately, read the filename before
+reading anything else.
+
+## Two flags worth deciding rather than inheriting
+
+**`cryptos`** gives the tenant access to the platform's crypto and compression
+hardware, and can only be changed while the tenant is in `configured` or
+`provisioned`. Deciding it after deployment means going backwards.
+
+**`appliance-mode`** restricts tenant administrators from reaching a shell. It
+hardens the tenant, and it also removes a diagnostic route — worth choosing
+deliberately rather than inheriting from whichever template the first tenant
+came from.

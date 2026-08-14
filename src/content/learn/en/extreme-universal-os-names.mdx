@@ -1,0 +1,77 @@
+---
+slug: extreme-universal-os-names
+title: "Switch Engine, Fabric Engine, and the switches that kept the old names"
+summary: "Extreme renamed two operating systems on some hardware and not others, while the image files and boot menus kept the originals. Plus the part that matters more than the naming: changing persona deletes the configuration."
+concepts: ["extreme", "exos", "voss", "switch-engine", "fabric-engine", "universal-hardware"]
+relatedTools: ["extreme-switch-os-mapper", "voss-exos-translator"]
+relatedArticles: ["spb-fabric-vocabulary"]
+category: operations
+order: 13
+status: reviewed
+updated: "2026-08-14"
+---
+
+## Two names for each of two things
+
+**ExtremeXOS became Switch Engine. VOSS became Fabric Engine.** Same operating
+systems, renamed — Switch Engine from version 31.6, Fabric Engine from 8.6.
+Extreme states there are no feature or functional differences arising from the
+change.
+
+The confusion is not the rename. It is that **the rename applies only to
+Universal hardware** — the 4120, 4220, 5320, 5420, 5520, 5720, 7520 and 7720
+series. **Every older model keeps EXOS and VOSS**, and always will.
+
+So two engineers can describe the same estate correctly using different words,
+and a third can search for the wrong one and find nothing. Worse: **the image
+filenames and the boot menus still say EXOS and VOSS.** A boot menu offering to
+"change the switch OS to VOSS" on a switch whose documentation calls it Fabric
+Engine is not a bug and not a stale build.
+
+## Dual persona, and what it actually costs
+
+Universal hardware can run **either** operating system. The persona is chosen at
+start-up or changed later, and it can be pre-provisioned centrally so a switch
+collects its intended OS on first boot rather than waiting for somebody at a
+console.
+
+That is genuinely useful. What it is not is free:
+
+> **Changing the network operating system deletes all configuration files, debug
+> information, logs, events and statistics belonging to the previous one.**
+
+That is Extreme's own wording. **It is a rebuild, not a migration.** Anything
+that reads like "we'll just flip it to Fabric Engine and see" is a plan to
+retype the configuration, and the difference between knowing that beforehand and
+discovering it at 2 a.m. is the whole point of writing it down.
+
+The boot question is also **asked in the negative**, which is worth memorising
+because it is easy to answer wrongly while reading carefully. When the switch
+asks whether you would like to change the OS to VOSS: **N keeps Switch Engine,
+Y moves to Fabric Engine.**
+
+## Three caveats that are not about naming at all
+
+**Stacking on the 7520 works under Switch Engine and not under Fabric Engine.**
+If the design depends on stacking, the persona choice has already been made for
+you — and finding that out after the fabric design is signed off is expensive.
+
+**Upgrading a 5420 or 5520 from an older ExtremeXOS to Switch Engine 31.6
+changes the SNMP SysObjectID.** Anything that identifies the device by that
+value stops recognising it. Nothing looks wrong from the console; the switch is
+fine and your monitoring has quietly lost it.
+
+**Fabric Engine support does not begin at the same version everywhere.** 5320
+and 5420 from 8.6, 5520 from 8.6 having run VOSS 8.2.5 through 8.5, 5720 from
+8.7. A version that is current on one series may not exist for another, and the
+per-series minimums are published in [Extreme's software support
+matrix](https://supportdocs.extremenetworks.com/s_comp_matrices/summit-extremeswitching-and-e4g-components-extremexos-software-support/),
+which is also where the SysObjectID note above comes from.
+
+## The practical reading
+
+If you are searching documentation and finding nothing, **try the other name.**
+If a colleague's switch says something yours does not, **check whether one of
+them is Universal hardware.** And if anyone proposes changing persona, the first
+question is not which OS — it is **where the configuration is going to come from
+afterwards.**

@@ -45,8 +45,21 @@ export default function Testimonials() {
 
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [langFilter, setLangFilter] = useState<string>("all");
-  // Global translate-to-English toggle (the primary translation control).
-  const [translate, setTranslate] = useState<boolean>(false);
+  /* Global translate-to-English toggle (the primary translation control).
+     ON BY DEFAULT (PRIME 2026-08-14).
+
+     The endorsements are multilingual - Portuguese, Spanish and English - and
+     an arriving reader gets whatever language each reviewer happened to write
+     in. Defaulting to off made the page hardest to read for the people least
+     able to fix it: somebody who cannot read Portuguese does not necessarily
+     know that a control exists to render it, or that the untranslated block
+     they just skipped was about them.
+
+     THE ORIGINAL IS NEVER DISCARDED. Each card keeps its own show-original
+     control, and entries whose source is already the language shown are
+     untouched - so the verbatim rule is intact and the default simply decides
+     which side of it a reader meets first. */
+  const [translate, setTranslate] = useState<boolean>(true);
 
   const sources = useMemo(() => {
     const set = new Set(TESTIMONIALS.map((x) => sourceLabel(x.source)));

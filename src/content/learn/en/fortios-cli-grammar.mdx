@@ -1,0 +1,87 @@
+---
+slug: fortios-cli-grammar
+title: "The FortiOS CLI verb that quietly deletes things"
+summary: "config, edit, set, next, end — a small grammar with three traps. `set` replaces a whole list, `edit` creates what it cannot find, and `end` is the only line that commits."
+concepts: ["fortios", "fortigate", "cli", "configuration", "operations"]
+relatedTools: ["fortios-cli-config-explainer", "fortigate-policy-match-order"]
+relatedArticles: ["fortigate-policy-order"]
+category: operations
+order: 15
+status: reviewed
+updated: "2026-08-14"
+---
+
+## A grammar you can learn in a minute
+
+```
+config firewall policy
+    edit 10
+        set name "allow-web"
+        set action accept
+    next
+end
+```
+
+**`config`** opens a table or an object. **`edit`** enters an entry within a
+table. **`set`** assigns. **`next`** closes the entry and stays in the table.
+**`end`** closes the table and commits.
+
+That is the whole shape, and it is genuinely easy. The difficulty is that three
+of those words do something slightly other than what they look like.
+
+## `set` replaces the whole list
+
+This is the expensive one.
+
+```
+set srcaddr "internal-net"
+```
+
+On a policy whose source addresses were `internal-net`, `branch-net`,
+`vpn-users` and `dmz`, that command leaves **one**. Three address objects have
+left the policy. The command succeeded, the commit succeeded, and **nothing in
+the output mentions it.**
+
+The command that adds is **`append`**:
+
+```
+append srcaddr "branch-net"
+```
+
+The distinction is invisible when reading a config block casually — which is
+exactly when config blocks get read, usually from a ticket, usually under time
+pressure. If a block you are about to paste contains `set` on a multi-value
+field, the question is not whether it is valid. It is **what was in that field
+before.**
+
+## `edit` creates what it cannot find
+
+`edit 10` does not fail when policy 10 does not exist. **It creates it.**
+
+That is convenient and it means **a typo does not produce an error, it produces
+an object.** A stray policy, address or interface entry usually traces back to a
+keystroke rather than to a decision, and the only evidence is that it exists.
+
+## `end` is the only line that commits
+
+**`next`** closes an entry and stays in the table, ready for the next `edit`.
+**`end`** closes the table and commits. **`abort`** closes and discards.
+
+They are not interchangeable, and the failure mode is specific: a block using
+`end` where `next` was meant **leaves the table early**, and every remaining
+edit lands somewhere else entirely — usually at the top level, where it either
+fails or configures something unrelated.
+
+A block with no `end` at all has committed nothing. If a change appears not to
+have taken effect, count the `end`s before suspecting the device.
+
+## And one thing about reading configs
+
+**`show` displays only what differs from the defaults.** `show
+full-configuration` displays everything.
+
+So a field missing from a config block **is not necessarily unset** — it may
+simply be sitting at its default. Reasoning about what a device is doing from a
+`show` output means reasoning about the differences, not the whole picture, and
+that is a distinction worth making explicit before drawing a conclusion from an
+absence.

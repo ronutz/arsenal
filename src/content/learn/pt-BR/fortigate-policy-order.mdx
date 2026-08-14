@@ -1,0 +1,73 @@
+---
+slug: fortigate-policy-order
+title: "Por que a sua regra do FortiGate não disparou"
+summary: "O primeiro match vence e a avaliação para, então uma regra mais ampla acima torna uma mais específica abaixo inalcançável. E as duas coisas que a Fortinet documenta e as pessoas continuam ignorando: o ID da policy não é a ordem, e cada direção precisa da sua própria policy."
+concepts: ["fortios", "fortigate", "firewall-policy", "first-match", "shadowed-rules"]
+relatedTools: ["fortigate-policy-match-order", "fortios-flow-debug-builder"]
+relatedArticles: ["fortigate-debug-flow"]
+category: security
+order: 31
+status: reviewed
+updated: "2026-08-13"
+---
+
+## A regra é simples e a consequência não é
+
+Um FortiGate percorre a lista de policies **de cima para baixo**, e **a primeira
+policy cujos campos todos cobrem o pacote decide o resultado**. A avaliação para
+ali. Nada abaixo é consultado.
+
+Se nada casar, o pacote chega ao **implicit deny** — entrada any, origem any,
+saída any, destino any, ação deny. A única configuração editável dele é se as
+violações são registradas, e ligar isso costuma ser a forma mais rápida de
+descobrir o que está de fato chegando.
+
+## O ID da policy não é a ordem
+
+Este causa dano real. **O ID da policy é um identificador, não uma posição.** Ele
+é atribuído quando a policy é criada e fica onde está. **A policy 3 pode estar
+abaixo da policy 47**, e renumerar não muda nada.
+
+A visão **By Sequence** da GUI existe exatamente porque o ID não informa a ordem.
+Se você se pegar raciocinando sobre qual regra vence comparando números de ID,
+está lendo a coluna errada.
+
+## Uma regra ampla acima torna uma específica abaixo inalcançável
+
+Se uma policy acima cobre todos os campos que uma policy abaixo cobre, **a de
+baixo nunca pode casar com nada**. Ela fica na lista parecendo configuração, e é
+decoração.
+
+Essa é a forma mais comum de "minha regra não funciona": a regra está correta,
+ela simplesmente nunca é alcançada. Uma ferramenta consegue encontrá-las
+mecanicamente — para cada policy, perguntar se alguma anterior a supera em todos
+os campos — e vale fazer isso periodicamente, e não só quando algo quebra.
+
+A regra prática que decorre: **quanto mais específica a policy, mais perto do
+topo ela pertence.** Os catch-alls amplos vão por último.
+
+## Cada direção precisa da sua própria policy
+
+A Fortinet diz isso com clareza e ainda assim surpreende gente toda semana:
+tráfego permitido **de A para B não diz nada sobre B para A**. A maior parte da
+comunicação é de mão dupla; a lista de policies não é.
+
+## Virtual IPs não obedecem só à ordenação
+
+Uma policy com um **VIP aplicado é casada de forma diferente** de uma policy
+comum, e **tem prioridade sobre ela**. Então colocar um deny comum acima de uma
+policy com VIP não bloqueia a origem que você pretendia bloquear.
+
+Para isso, a policy de deny precisa de **`match-vip` habilitado** e precisa estar
+acima da policy com VIP. Policies de deny novas já vêm com ele ligado — e uma
+policy de **accept** não pode tê-lo de jeito nenhum.
+
+## E uma coisa que mudou em silêncio
+
+A partir do **FortiOS 7.6.5**, o `allow-traffic-redirect` vem **desabilitado por
+padrão**, e a configuração permanece desabilitada após um upgrade mesmo que
+estivesse habilitada antes — mudança documentada no [guia de firewall policy da
+Fortinet](https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/656084/firewall-policy),
+que é também onde as regras de match de virtual IP acima estão descritas. Se o tráfego precisa sair pela mesma interface por
+onde entrou, agora exige uma policy que o case — caso contrário cai no implicit
+deny, num equipamento onde antes funcionava.

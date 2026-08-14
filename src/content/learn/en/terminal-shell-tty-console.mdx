@@ -1,0 +1,147 @@
+---
+slug: terminal-shell-tty-console
+title: "Terminal, shell, TTY, console"
+summary: "Four words used interchangeably by almost everyone, including the documentation. They name four different things, and the distinction explains why Ctrl+C kills your command but not your shell."
+concepts: ["tty", "shell", "terminal", "console", "pty", "line-discipline", "job-control"]
+relatedTools: ["terminal-stack-explainer"]
+relatedArticles: []
+category: operations
+order: 12
+status: reviewed
+updated: "2026-08-14"
+---
+
+## Start with the sentence that sorts it
+
+**The terminal is a program.** The shell is **a process like any other**. The
+TTY is **a kernel object sitting between them**. The console is **a particular
+terminal** — the one attached to the machine itself.
+
+Everything below is that sentence, unpacked.
+
+## The terminal was a machine, and the name stuck
+
+TTY is short for **teletypewriter**. That is not a metaphor: the first ones were
+electromechanical typewriters on the end of a wire, and the abstraction Unix
+built for them is the one still in use. A terminal was a separate device — a
+keyboard, a printer or later a screen, a serial cable, and no processing power
+worth mentioning. It sent the characters you typed and displayed the characters
+it received. It had **no idea what a command was.**
+
+That is still true of your terminal emulator. GNOME Terminal, iTerm, Windows
+Terminal, PuTTY — each draws a grid of characters and sends your keystrokes
+somewhere. **None of them knows what `ls` means.**
+
+## The shell is not special
+
+`bash`, `zsh`, `fish`, `ash` — these are ordinary programs. From the kernel's
+point of view a shell is **a process with standard input and standard output
+connected to whatever file descriptors it inherited**. It has no privileged
+relationship with the terminal, no special hook into the keyboard, and nothing
+the kernel treats differently from `grep`.
+
+What it does is read lines, expand them, fork, and wait. Everything else people
+attribute to "the shell" — the cursor moving when you press left arrow, the
+character appearing as you type it, Ctrl+C stopping a command — **is not the
+shell.**
+
+## The TTY is where the behaviour actually lives
+
+Between the emulator and the shell sits a kernel object, and inside it a piece
+of the kernel called the **line discipline**. This is the part nobody has heard
+of and it is the part doing almost everything people find surprising.
+
+In its default **canonical** mode, the line discipline:
+
+- **echoes** what you type, so the character appears on screen — the shell has
+  not seen it yet
+- **buffers the line** until you press Enter, and handles backspace within it
+- **turns control characters into signals**: Ctrl+C becomes SIGINT, Ctrl+Z
+  becomes SIGTSTP, Ctrl+\ becomes SIGQUIT
+
+Which resolves the question in this article's subtitle. **Ctrl+C is not sent to
+the shell and forwarded.** The line discipline sends SIGINT to the **foreground
+process group** — the command you are running — and the shell is not in it. The
+shell survives because it was never the target.
+
+The same mechanism explains something people notice without explaining: a
+background job that tries to write to the terminal gets stopped. The kernel
+suspends it, because only the foreground job is allowed to write.
+
+And when a full-screen program starts — `vim`, `top`, `less` — it turns most of
+this **off**. It asks the kernel to stop echoing, stop buffering lines, stop
+interpreting Ctrl+C, and hand over raw bytes. That is **raw mode**, and it is
+why a crashed full-screen program leaves your terminal behaving strangely until
+you run `reset`: nobody turned the line discipline back on.
+
+## Pseudoterminals: the pair that makes windows work
+
+There is no serial cable in a terminal window, so the kernel provides a
+**pseudoterminal** — a pair of endpoints wired back to back.
+
+The **master** is held by userspace: your terminal emulator, or `sshd`, or
+`tmux`. The **slave** appears as `/dev/pts/N` and the shell treats it as its
+terminal. Bytes written at either end come out of the other.
+
+Three things follow, and each answers a question people actually ask:
+
+- **The number is allocated, not meaningful.** A new tab, a new SSH session or
+  a new tmux pane gets the next free one, and closing them frees it for reuse.
+  Two shells with consecutive numbers are not related.
+- **Closing the window kills what was running.** The master goes away, the
+  kernel hangs up the line, and the session leader receives SIGHUP. `nohup`
+  breaks that chain by ignoring the signal; a multiplexer breaks it by keeping
+  the master open on your behalf, which is the entire reason `tmux` exists.
+- **SSH is not doing anything exotic.** `sshd` allocates a pseudoterminal and
+  holds the master. Your shell on the far side cannot tell the difference
+  between that and a local window, which is why everything behaves the same.
+
+## Console is the most overloaded of the four
+
+It means at least three things:
+
+**The system console** is where the kernel talks — boot messages, panics,
+anything printed before userspace exists to receive it. Where it points is set
+at boot, and on a server it is frequently the serial port rather than the
+screen.
+
+**A virtual console** is the kernel driving the machine's own keyboard and
+screen directly, reached with Ctrl+Alt+F-something. **Virtual** is measured
+against the real terminals that used to be separate machines on cables: several
+independent sessions on one physical keyboard and screen is exactly what several
+real terminals used to give you.
+
+**A console window** is a graphical application, and has nothing to do with
+either. So does a vendor's management "console", which is usually a web page.
+
+When someone says "check the console", **ask which one.** In this industry the
+answer is often the serial one, and that matters because it is the one that
+works when the network does not.
+
+## `/dev/tty` is a synonym, and that is the point
+
+Not a device: a name that resolves, per process, to **whatever terminal is
+controlling it**. It means something different to every process that opens it.
+
+That is what makes it useful. Writing there reaches the user **even when
+standard output has been redirected to a file** — which is why a password prompt
+appears on screen when you have redirected everything, and why you cannot
+capture one.
+
+A terminal is the controlling terminal of **at most one session**. The
+association is inherited across `fork`, and a process severs it by calling
+`setsid` — which is exactly what a daemon does so that closing a terminal cannot
+kill it.
+
+## Why any of this matters here
+
+Because this industry lives on serial consoles. A console cable into a switch or
+a firewall lands on a real TTY — the original case, unchanged — and it works
+when the network is the thing that is broken. Serial parameters are **not
+negotiated**: baud rate, data bits, parity and stop bits must match at both
+ends, and a mismatch produces convincing-looking rubbish rather than silence.
+**A console showing garbage is usually a speed setting, not a broken cable.**
+
+And because knowing which layer you are in tells you which thing to blame.
+Colours wrong is the terminal. Tab completion broken is the shell. Ctrl+C not
+working is the line discipline. **No login prompt at all** is the console.

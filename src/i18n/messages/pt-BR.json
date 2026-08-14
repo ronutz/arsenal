@@ -6567,6 +6567,234 @@
       "warnings": {
         "title": "Verifique isto"
       }
+    },
+    "f5-eth-trailer-decoder": {
+      "name": "Decodificador do trailer Ethernet da F5",
+      "blurb": "Cole o trailer Ethernet que um BIG-IP acrescenta aos pacotes capturados com as flags de ruído do tcpdump e receba cada campo explicado: direção, slot e TMM, o virtual server, identificadores de fluxo e de par, e a causa de RST informada pelo próprio equipamento. Ela detecta uma seção de provider TLS e deliberadamente não decodifica nada dela, porque a partir da v15 essa seção carrega segredos de sessão. Local e offline.",
+      "inputLabel": "Trailer Ethernet da F5",
+      "placeholder": "Cole a seção F5 Ethernet Trailer do Wireshark, ou os bytes do trailer em hexadecimal",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "overview": {
+        "title": "O trailer",
+        "magic": "Magic",
+        "length": "Comprimento",
+        "version": "Versão",
+        "noise": "Nível de ruído"
+      },
+      "noise": {
+        "low": "baixo (:n)",
+        "medium": "médio (:nn)",
+        "high": "alto (:nnn)",
+        "unknown": "não determinado"
+      },
+      "fields": {
+        "title": "Campo a campo"
+      },
+      "tls": {
+        "title": "Há uma seção de provider TLS presente",
+        "body": "A partir do BIG-IP v15 o trailer pode carregar segredos de sessão TLS, e o Wireshark os converte em entradas de keylog e descriptografa a captura. Esta ferramenta informa que a seção está ali e não decodifica nada dela. Trate o arquivo de acordo: a F5 documenta que o trailer nunca sai do equipamento pelo fio, o que é verdade e diz respeito ao fio. O arquivo é outra questão, e enviar esta captura a um fornecedor, a um chamado ou a um colega envia junto as chaves de sessão."
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      }
+    },
+    "fortigate-policy-match-order": {
+      "name": "Explicador da ordem de match de policies do FortiGate",
+      "blurb": "Cole uma lista ordenada de policies do FortiGate e, opcionalmente, um pacote, e veja qual policy vence e por quê. A ferramenta percorre a lista de cima para baixo mostrando o primeiro campo que descartou cada policy, aponta as policies que nunca podem ser alcançadas porque algo mais amplo está acima delas, e aplica as regras de match de virtual IP que a ordenação sozinha não resolve. Local e offline.",
+      "policiesLabel": "Policies, na ordem de avaliação",
+      "policiesHint": "Uma por linha: id | interface de entrada | interface de saída | origem | destino | serviço | ação | flags. As flags são opcionais e podem incluir vip, match-vip e disabled.",
+      "policiesPlaceholder": "10 | port1 | port2 | all | all | ALL | accept",
+      "packetLabel": "Um pacote para testar (opcional)",
+      "packetHint": "interface de entrada | interface de saída | origem | destino | serviço",
+      "packetPlaceholder": "port1 | port2 | web-servers | all | HTTPS",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "walk": {
+        "title": "A descida pela lista",
+        "policy": "Policy",
+        "match": "casou",
+        "noMatch": "não casou",
+        "outcome": "Resultado",
+        "implicitDeny": "implicit deny"
+      },
+      "shadow": {
+        "title": "Policies que nunca podem ser alcançadas"
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      }
+    },
+    "netskope-steering-explainer": {
+      "name": "Explicador de métodos de direção de tráfego da Netskope",
+      "blurb": "Descreva a situação — dispositivo gerenciado ou não, num site ou em trânsito, se o pacote de certificados pode ser instalado — e veja qual método de direção se encaixa: o cliente no endpoint, um túnel IPsec ou GRE, um proxy explícito, ou encadeamento a partir de um proxy que você já opera. Cada método lista o que custa, escolhido ou não. Determinístico e offline.",
+      "formLabel": "Descreva a situação",
+      "example": "Exemplo",
+      "clear": "Redefinir",
+      "flags": {
+        "managedDevice": "Dispositivo gerenciado",
+        "onPremises": "Num site corporativo",
+        "canInstallCert": "O pacote de certificados pode ser instalado",
+        "needUserIdentity": "A política precisa do usuário, não só do site",
+        "needPrivateApps": "Acesso a aplicações privadas necessário",
+        "needNonWebPorts": "Tráfego além das portas 80 e 443",
+        "existingProxy": "Um proxy on-premises já em operação"
+      },
+      "methods": {
+        "title": "Os métodos, e o que cada um custa",
+        "client": "Cliente no endpoint",
+        "ipsec": "Túnel IPsec",
+        "gre": "Túnel GRE",
+        "explicit-proxy": "Proxy explícito",
+        "proxy-chain": "Encadeamento de proxy"
+      },
+      "fit": {
+        "primary": "encaixa",
+        "secondary": "possível",
+        "unsuitable": "não se aplica aqui"
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      }
+    },
+    "terminal-stack-explainer": {
+      "name": "Explicador de terminal, shell, TTY e console",
+      "blurb": "Cole o que o `tty` imprimiu — /dev/pts/3, /dev/tty2, /dev/ttyS0, /dev/tty, /dev/console, ou “not a tty” — e veja qual camada você está realmente olhando, o que segura a outra ponta, e o que isso implica para sinais, controle de jobs e o que acontece quando a janela fecha. Local e offline.",
+      "inputLabel": "Um caminho de dispositivo de terminal",
+      "inputHint": "Rode `tty` num shell e cole o que ele imprimir, ou escolha um dos exemplos.",
+      "placeholder": "/dev/pts/3",
+      "clear": "Limpar",
+      "words": {
+        "title": "As quatro palavras, em uma linha cada",
+        "terminal": "Um programa que desenha caracteres e envia teclas — ou, um dia, uma máquina que fazia isso. Ele não faz ideia do que seja um comando.",
+        "shell": "Um processo como qualquer outro, lendo linhas e executando programas. O kernel não lhe dá status especial nenhum.",
+        "tty": "O objeto de kernel entre os dois, fazendo edição de linha, eco e transformando Ctrl+C em sinal. É aqui que mora o comportamento.",
+        "console": "Um terminal específico: o que está ligado à própria máquina, e para onde o kernel escreve quando nada mais existe ainda."
+      },
+      "what": {
+        "title": "O que isto é",
+        "kind": "Tipo",
+        "otherEnd": "Na outra ponta"
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      }
+    },
+    "extreme-switch-os-mapper": {
+      "name": "Mapeador de nomes de SO dos switches Universal da Extreme",
+      "blurb": "ExtremeXOS é Switch Engine e VOSS é Fabric Engine — mas só no hardware Universal, e os arquivos de imagem e os menus de boot continuam usando os nomes antigos. Informe uma série de modelo ou um nome de SO e veja qual se aplica, a versão em que a renomeação entrou, e as ressalvas próprias da série. Ela diz com clareza que trocar a persona apaga a configuração. Local e offline.",
+      "inputLabel": "Uma série de modelo ou um nome de SO",
+      "placeholder": "5520",
+      "clear": "Limpar",
+      "naming": {
+        "title": "As duas renomeações",
+        "body": "Os mesmos sistemas operacionais, renomeados no hardware Universal: Switch Engine a partir da 31.6, Fabric Engine a partir da 8.6. Não há diferenças de recursos ou de funcionamento decorrentes da renomeação, e os modelos não Universal mais antigos mantêm os nomes originais."
+      },
+      "what": {
+        "title": "O que é este modelo"
+      },
+      "families": {
+        "title": "Hardware Universal",
+        "intro": "As séries às quais os nomes novos se aplicam. Qualquer coisa fora desta lista mantém EXOS e VOSS."
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Antes de mudar qualquer coisa"
+      }
+    },
+    "f5os-tenant-config-explainer": {
+      "name": "Explicador de configuração de tenant do F5OS",
+      "blurb": "Cole um bloco f5-tenants:tenants, da CLI ou do RESTCONF, e receba a leitura em texto claro: o ciclo de vida configured / provisioned / deployed e o que cada estado significa, a imagem e a plataforma a que ela pertence, blades e VLANs, e a alocação de memória conferida contra o mínimo publicado pela F5 de (3,5 × 1024 × vCPU) + 512. Local e offline.",
+      "inputLabel": "Um bloco f5-tenants",
+      "placeholder": "Cole a configuração do tenant como a CLI imprime, ou o JSON do RESTCONF",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "summary": {
+        "title": "O tenant",
+        "name": "Nome",
+        "state": "Running state",
+        "vcpu": "vCPU por nó",
+        "memory": "Memória configurada",
+        "minMemory": "Mínimo publicado"
+      },
+      "fields": {
+        "title": "Campo a campo"
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      }
+    },
+    "fortios-cli-config-explainer": {
+      "name": "Explicador de configuração da CLI do FortiOS",
+      "blurb": "Cole um bloco de configuração do FortiOS e receba a estrutura em árvore com cada verbo explicado. Ela sinaliza a armadilha que mais custa caro: `set` num campo de múltiplos valores SUBSTITUI a lista inteira, então definir um endereço de origem numa policy que tinha quatro remove três em silêncio. Também detecta blocos não fechados e lembra que `end` é o que aplica. Local e offline.",
+      "inputLabel": "Um bloco de configuração do FortiOS",
+      "placeholder": "config firewall policy\\n    edit 10\\n        set action accept\\n    next\\nend",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "tree": {
+        "title": "Linha a linha",
+        "balanced": "todos os blocos fechados",
+        "unbalanced": "blocos deixados abertos"
+      },
+      "verbs": {
+        "config": "abre um bloco",
+        "edit": "entra ou cria uma entrada",
+        "set": "atribui",
+        "unset": "volta ao padrão",
+        "append": "acrescenta a uma lista",
+        "next": "fecha a entrada",
+        "end": "fecha e aplica",
+        "abort": "fecha e descarta",
+        "delete": "remove",
+        "purge": "remove todas as entradas",
+        "unknown": "não reconhecido"
+      },
+      "notes": {
+        "title": "Vale saber"
+      },
+      "warnings": {
+        "title": "Verifique isto"
+      }
+    },
+    "network-os-comparer": {
+      "name": "Comparador de sistemas operacionais de rede",
+      "blurb": "Quatorze sistemas operacionais de rede — IOS, IOS XE, IOS XR, NX-OS, Junos, Junos Evolved, EOS, TMOS, F5OS, EXOS, VOSS, FortiOS, PAN-OS e Gaia — com linhagem, sobre o que cada um roda, como os componentes compartilham estado, onde os planos se dividem, e quanto custa uma atualização. Escolha um para o perfil completo ou dois para vê-los eixo a eixo. Toda entrada lista fraquezas além de forças.",
+      "pick": "Escolha um sistema, e um segundo para comparar",
+      "noSecond": "— comparar com (opcional) —",
+      "example": "Comparar IOS e EOS",
+      "clear": "Perfil individual",
+      "axes": {
+        "vendor": "Fabricante",
+        "since": "Primeira versão",
+        "lineage": "Linhagem",
+        "base": "Sobre o que roda",
+        "state": "Como o estado é compartilhado",
+        "planes": "Controle e encaminhamento",
+        "config": "Como as mudanças são aplicadas",
+        "upgrade": "Quanto custa uma atualização",
+        "differentiator": "A ideia que o distingue"
+      },
+      "strengths": "Forças",
+      "weaknesses": "Fraquezas",
+      "shared": "O que têm em comum",
+      "backToProfile": "Voltar ao perfil individual"
     }
   },
   "privacy_page": {
@@ -7690,7 +7918,10 @@
     "portalCertsLede": "Blueprints de prova mapeados objetivo por objetivo aos artigos que os ensinam.",
     "portalPractice": "A Prática",
     "portalPracticeLede": "Como o trabalho é de fato feito, e não como a tecnologia funciona. Triagem, escalonamento, evidências, passagem de bastão, e as partes que nenhum runbook cobre.",
-    "portalPracticeCount": "{count} de 48 publicados"
+    "portalPracticeCount": "{count} de 48 publicados",
+    "portalRoles": "Os Papéis",
+    "portalRolesLede": "As posições de que esta indústria é feita, agrupadas pelo caminho que um produto percorre. Quem o faz, move, vende, implanta, opera, sustenta, defende e ensina.",
+    "portalRolesCount": "{count} posições"
   },
   "meetingBingo": {
     "metaTitle": "Bingo de Reunião",
@@ -8692,8 +8923,8 @@
         "desc": "Cole uma URL do iControl REST para ver o módulo, a coleção e o objeto codificado com til junto do equivalente em tmsh; ache a resposta de stats do objeto em linhas legíveis; depois use o explicador do F5OS para a camada de plataforma abaixo."
       },
       "trace-a-session-on-a-fortigate": {
-        "title": "Rastrear uma sessão através de um FortiGate",
-        "desc": "Monte a sequência ordenada de diagnose debug flow para o tráfego que interessa, incluindo os comandos de limpeza, com cada linha explicada antes de você colá-la num firewall de produção."
+        "title": "Descobrir por que um FortiGate não está passando aquele tráfego",
+        "desc": "Verifique qual policy realmente casa com o pacote e se a regra que você esperava é sequer alcançável, depois monte a sequência de diagnose debug flow para ver aquilo acontecer no equipamento."
       },
       "understand-an-sse-pass": {
         "title": "Entender o que uma requisição encontra numa plataforma SSE",
@@ -8702,6 +8933,34 @@
       "make-sense-of-an-spb-fabric": {
         "title": "Entender uma configuração de fabric SPB",
         "desc": "Informe um I-SID, um nickname ou um papel e receba o vocabulário do Shortest Path Bridging organizado: qual backbone VLAN carrega o serviço, a que o serviço realmente se liga, e o que muda entre um edge bridge e um core bridge."
+      },
+      "read-what-the-bigip-wrote-in-the-capture": {
+        "title": "Descobrir por que o BIG-IP resetou aquela conexão",
+        "desc": "Cole o trailer Ethernet da F5 de uma captura feita no equipamento e leia a causa do RST, o slot e o TMM que trataram o pacote e os identificadores de fluxo - e um aviso caso o trailer carregue segredos de sessão TLS."
+      },
+      "choose-how-traffic-reaches-the-edge": {
+        "title": "Decidir como o tráfego deve chegar ao service edge",
+        "desc": "Escolha o método de direção para uma situação e veja o que ele custa, depois rastreie o que um fluxo específico realmente fará com aquela configuração em vigor."
+      },
+      "work-out-which-terminal-layer-you-are-in": {
+        "title": "Descobrir em qual camada de terminal você realmente está",
+        "desc": "Cole o que o tty imprimiu e veja se você está num pseudoterminal, num console virtual ou numa linha serial real - e o que isso significa para sinais, controle de jobs e o que acontece quando a janela fecha."
+      },
+      "work-out-which-extreme-os-you-have": {
+        "title": "Descobrir qual nome de SO da Extreme se aplica ao seu switch",
+        "desc": "Verifique se um modelo carrega os nomes novos Switch Engine e Fabric Engine ou os originais EXOS e VOSS, veja as ressalvas da série, e depois traduza uma tarefa entre os dois conjuntos de comandos."
+      },
+      "size-and-read-an-f5os-tenant": {
+        "title": "Ler uma configuração de tenant do F5OS e conferir o dimensionamento",
+        "desc": "Cole o bloco do tenant para ver o estado do ciclo de vida, a plataforma e se a memória atende ao mínimo publicado pela F5, e depois decodifique o caminho RESTCONF que você usaria para alterá-lo."
+      },
+      "read-a-fortios-config-block": {
+        "title": "Ler um bloco de configuração do FortiOS antes de colá-lo",
+        "desc": "Veja a estrutura em árvore, descubra se algum comando set vai substituir uma lista em vez de acrescentar a ela, e verifique se a policy que ele configura sequer pode ser alcançada."
+      },
+      "compare-two-network-operating-systems": {
+        "title": "Entender como dois sistemas operacionais de rede diferem",
+        "desc": "Veja linhagem, sobre o que cada um roda, como o estado é compartilhado e onde os planos se dividem - e o que cada um desses eixos prevê sobre o comportamento quando algo falha."
       }
     },
     "manualHeading": "Manual",
@@ -15044,6 +15303,7 @@
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",
     "metaDescription": "Genealogias corporativas pesquisadas a fundo da indústria de redes e segurança: fundações, aquisições e onde cada linhagem foi parar. Escrito a partir de fontes primárias.",
     "eyebrow": "Indústria",
+    "navLabel": "Indústria",
     "title": "A indústria, vista de dentro",
     "lede": "As genealogias corporativas de redes e segurança: quem fundou cada empresa, o que construíram, quem comprou quem e onde cada linhagem foi parar. Escrito a partir de fontes primárias - registros na SEC, relatórios de inquérito e a imprensa especializada de cada época.",
     "careerTitle": "Os fabricantes da carreira",
@@ -15450,5 +15710,67 @@
     "translationsTitle": "Melhorar as traduções",
     "translationsBody": "Este site é escrito em inglês e português do Brasil, e traduzido por máquina para outros catorze idiomas. As versões automáticas são utilizáveis e não são nativas. Se você lê um desses catorze e algo está errado — um termo técnico traduzido ao pé da letra, uma frase que analisa gramaticalmente e não quer dizer nada — me contar é uma contribuição real, e um bilhete curto com a página e o trecho basta.",
     "translationsCta": "Enviar uma correção"
+  },
+  "roles": {
+    "eyebrow": "Os Papéis",
+    "title": "As posições de que esta indústria é feita.",
+    "lede": "Um produto passa por muitas mãos entre a empresa que o constrói e a pessoa que depende dele. Cada par de mãos é um trabalho com clientes próprios, fornecedores próprios, responsabilidade própria e medição própria. Isto é o que cada um deles é.",
+    "metaDescription": "Os papéis da indústria de redes e segurança, agrupados pelo caminho que um produto percorre: quem o faz, move, vende, implanta, opera, sustenta, defende e ensina.",
+    "provenanceSummary": "{held} exercidos · {alongside} acompanhados de perto · {documented} a partir do registro",
+    "countNote": "{count} posições escritas até aqui, agrupadas pelo caminho que um produto percorre. O rol cresce ao longo desse caminho.",
+    "provenance": {
+      "held": "Exerceu este papel",
+      "alongside": "Trabalhou ao lado dele",
+      "documented": "A partir do registro"
+    },
+    "groups": {
+      "makes": {
+        "title": "Quem faz",
+        "lede": "Gestão de produto, marketing de produto, engenharia e pesquisa: quem decide o que a coisa é antes de alguém poder comprá-la."
+      },
+      "moves": {
+        "title": "Quem move",
+        "lede": "Distribuição e canal. A camada entre a empresa que constrói um produto e a empresa que o vende a quem vai operá-lo."
+      },
+      "sells": {
+        "title": "Quem vende",
+        "lede": "Pré-vendas, vendas internas e externas, gestão de contas, desenvolvimento de negócios. A verdade técnica e a promessa comercial, carregadas por duas pessoas que respondem pelo mesmo negócio."
+      },
+      "deploys": {
+        "title": "Quem implanta",
+        "lede": "Serviços profissionais, integração e consultoria. Transformar um projeto em algo funcionando dentro da rede de outra pessoa, no horário dela."
+      },
+      "runs": {
+        "title": "Quem opera",
+        "lede": "Provedores de serviços gerenciados, operações internas, service desk e centro de operações de rede. Aqueles para quem o produto é uma terça-feira, e não um projeto."
+      },
+      "supports": {
+        "title": "Quem sustenta",
+        "lede": "Engenharia de campo, centro de assistência técnica, suporte de produto de terceiro nível, escalação e suporte nomeado. Os níveis vão da fila que o cliente alcança até o engenheiro que entrega um defeito reproduzido a um desenvolvedor, e este último é a fronteira entre a organização que opera um produto e a organização que o constrói."
+      },
+      "defends": {
+        "title": "Quem defende",
+        "lede": "Operações de segurança, prática ofensiva e defensiva, pesquisa, resposta a incidentes e gestão de crise. O trabalho que pressupõe um adversário."
+      },
+      "teaches": {
+        "title": "Quem ensina",
+        "lede": "Instrução, capacitação e certificação. Transferência de capacidade como um produto em si."
+      }
+    },
+    "sections": {
+      "theDay": "Como é o dia",
+      "accountableFor": "Pelo que responde",
+      "measuredOn": "Como é medido",
+      "receivesFrom": "De quem recebe",
+      "serves": "A quem serve",
+      "stakeholders": "Quem mais tem interesse",
+      "requirements": "O que exige",
+      "turnsOn": "Do que o trabalho depende",
+      "adjacent": "Para onde leva",
+      "practice": "O trabalho em si",
+      "sources": "De onde isto vem"
+    },
+    "practiceLede": "A Prática cobre como este trabalho é feito — triagem, escalação, evidência, passagem de bastão — em todo o corpus.",
+    "practiceLink": "Ler A Prática"
   }
 }

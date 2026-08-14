@@ -1,0 +1,67 @@
+---
+slug: f5-ethernet-trailer
+title: "O que o BIG-IP escreve dentro da sua captura"
+summary: "O trailer Ethernet da F5 carrega o que o TMM sabia sobre cada pacote — slot, TMM, virtual server, IDs de fluxo e a causa do reset. A partir da v15 ele também pode carregar segredos de sessão TLS, o que muda o que um pcap é."
+concepts: ["f5ethtrailer", "tcpdump", "wireshark", "bigip", "packet-capture"]
+relatedTools: ["f5-eth-trailer-decoder"]
+relatedArticles: ["capture-points-before-packets"]
+category: networking
+order: 43
+status: reviewed
+updated: "2026-08-13"
+---
+
+## O equipamento conta o que estava pensando
+
+Rode o tcpdump **no próprio** BIG-IP com as flags de ruído e cada quadro ganha um
+trailer: não mais pacote, mas o relato do próprio equipamento sobre aquele
+pacote.
+
+```
+tcpdump -s0 -i 0.0:nnn -w /var/tmp/cap.pcap host 10.1.1.5
+```
+
+O sufixo define o nível. **`:n`** dá os detalhes baixos — direção, o slot e o TMM
+que trataram o quadro, e o virtual server que ele casou. **`:nn`** acrescenta os
+identificadores de fluxo e de par e **a causa do reset**. **`:nnn`** acrescenta
+mais, boa parte significativa para o suporte da F5 e não para você.
+
+## Por que a causa do RST é o campo que importa
+
+Uma captura sem o trailer mostra que uma conexão morreu. O trailer diz que **o
+equipamento a matou, e por quê**.
+
+`No local listener` significa que o tráfego chegou e não havia nada escutando
+naquele endereço e porta — o que é uma resposta de configuração, não de rede, e
+chega em um campo em vez de depois de uma hora de eliminação.
+
+## IDs de fluxo são reutilizados, e isso pega as pessoas
+
+O flow ID e o peer ID identificam as duas metades de uma conexão. Duas coisas
+sobre eles valem saber antes de confiar em um:
+
+- São **únicos apenas dentro de uma combinação de slot e TMM**.
+- São **reutilizados ao longo do tempo**, então o mesmo ID pode aparecer em
+  pacotes completamente sem relação antes ou depois na mesma captura.
+
+E ao filtrar, `f5ethtrailer.anyflowid` casa o ID como fluxo **ou** como par, o
+que retorna **os dois lados da conexão**. Filtrar só por `flowid` retorna metade
+do que você queria.
+
+## A parte que ninguém menciona
+
+A partir do **BIG-IP v15** o trailer pode carregar uma **seção de provider TLS**,
+e essa seção contém **segredos de sessão** — o early secret, os traffic secrets
+de cliente e servidor, o exporter secret. O dissector do Wireshark os converte em
+entradas de keylog e descriptografa a captura para você.
+
+Isso é um recurso de depuração genuinamente útil e muda o que o arquivo é.
+
+A documentação da F5 observa que o trailer nunca sai do equipamento pelo fio.
+**Isso é verdade, e diz respeito ao fio.** O arquivo é outra questão: uma captura
+feita em ruído alto num equipamento v15+ **pode conter as chaves das suas
+próprias sessões TLS**, e anexá-la a um chamado de suporte, a um e-mail ou a um
+drive compartilhado move essas chaves junto.
+
+Trate uma captura dessas como trataria uma chave privada, porque pela duração
+daquelas sessões é o que ela contém.

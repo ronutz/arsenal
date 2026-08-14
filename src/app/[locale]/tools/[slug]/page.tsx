@@ -98,14 +98,30 @@ import { manifest as tmshManifest } from "@/lib/tools/f5-tmsh-config-explainer";
 import DigOutputExplainerTool from "@/components/DigOutputExplainerTool";
 import { manifest as digManifest } from "@/lib/tools/dig-output-explainer";
 import F5osRestconfPathExplainerTool from "@/components/F5osRestconfPathExplainerTool";
+import F5osTenantConfigExplainerTool from "@/components/F5osTenantConfigExplainerTool";
+import { manifest as f5osTenantManifest } from "@/lib/tools/f5os-tenant-config-explainer";
 import IcontrolRestPathExplainerTool from "@/components/IcontrolRestPathExplainerTool";
 import IcontrolRestStatsDecoderTool from "@/components/IcontrolRestStatsDecoderTool";
+import F5EthTrailerDecoderTool from "@/components/F5EthTrailerDecoderTool";
+import { manifest as f5EthTrailerManifest } from "@/lib/tools/f5-eth-trailer-decoder";
 import SseArchitectureExplainerTool from "@/components/SseArchitectureExplainerTool";
+import NetskopeSteeringExplainerTool from "@/components/NetskopeSteeringExplainerTool";
+import { manifest as nsSteeringMethodManifest } from "@/lib/tools/netskope-steering-explainer";
 import FabricConnectSpbExplainerTool from "@/components/FabricConnectSpbExplainerTool";
+import ExtremeSwitchOsMapperTool from "@/components/ExtremeSwitchOsMapperTool";
+import { manifest as extremeOsMapperManifest } from "@/lib/tools/extreme-switch-os-mapper";
+import TerminalStackExplainerTool from "@/components/TerminalStackExplainerTool";
+import NetworkOsComparerTool from "@/components/NetworkOsComparerTool";
+import { manifest as networkOsManifest } from "@/lib/tools/network-os-comparer";
+import { manifest as terminalStackManifest } from "@/lib/tools/terminal-stack-explainer";
 import { manifest as spbManifest } from "@/lib/tools/fabric-connect-spb-explainer";
 import { manifest as sseArchManifest } from "@/lib/tools/sse-architecture-explainer";
 import { manifest as icontrolStatsManifest } from "@/lib/tools/icontrol-rest-stats-decoder";
 import FortiosFlowDebugBuilderTool from "@/components/FortiosFlowDebugBuilderTool";
+import FortigatePolicyMatchOrderTool from "@/components/FortigatePolicyMatchOrderTool";
+import FortiosCliConfigExplainerTool from "@/components/FortiosCliConfigExplainerTool";
+import { manifest as fortiosCliManifest } from "@/lib/tools/fortios-cli-config-explainer";
+import { manifest as fgPolicyManifest } from "@/lib/tools/fortigate-policy-match-order";
 import { manifest as fortiosFlowManifest } from "@/lib/tools/fortios-flow-debug-builder";
 import { manifest as icontrolPathManifest } from "@/lib/tools/icontrol-rest-path-explainer";
 import { manifest as f5osRestconfPathManifest } from "@/lib/tools/f5os-restconf-path-explainer";
@@ -516,17 +532,45 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: TmshConfigExplainerTool,
     sources: tmshManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "fortios-cli-config-explainer": {
+    Component: FortiosCliConfigExplainerTool,
+    sources: fortiosCliManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "fortigate-policy-match-order": {
+    Component: FortigatePolicyMatchOrderTool,
+    sources: fgPolicyManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
   "fortios-flow-debug-builder": {
     Component: FortiosFlowDebugBuilderTool,
     sources: fortiosFlowManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "network-os-comparer": {
+    Component: NetworkOsComparerTool,
+    sources: networkOsManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "terminal-stack-explainer": {
+    Component: TerminalStackExplainerTool,
+    sources: terminalStackManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "extreme-switch-os-mapper": {
+    Component: ExtremeSwitchOsMapperTool,
+    sources: extremeOsMapperManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "fabric-connect-spb-explainer": {
     Component: FabricConnectSpbExplainerTool,
     sources: spbManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "netskope-steering-explainer": {
+    Component: NetskopeSteeringExplainerTool,
+    sources: nsSteeringMethodManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
   "sse-architecture-explainer": {
     Component: SseArchitectureExplainerTool,
     sources: sseArchManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-eth-trailer-decoder": {
+    Component: F5EthTrailerDecoderTool,
+    sources: f5EthTrailerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "icontrol-rest-stats-decoder": {
     Component: IcontrolRestStatsDecoderTool,
@@ -535,6 +579,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "icontrol-rest-path-explainer": {
     Component: IcontrolRestPathExplainerTool,
     sources: icontrolPathManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5os-tenant-config-explainer": {
+    Component: F5osTenantConfigExplainerTool,
+    sources: f5osTenantManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5os-restconf-path-explainer": {
     Component: F5osRestconfPathExplainerTool,
