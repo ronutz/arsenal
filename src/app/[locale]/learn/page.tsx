@@ -167,10 +167,18 @@ export default async function LearnIndexPage({
               <Link
                 href="/roles"
                 className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-accent)" } as React.CSSProperties}
               >
-                <span className="learn-portal-kicker">{t("portalRoles")}</span>
-                <span className="learn-portal-lede">{t("portalRolesLede")}</span>
-                <span className="learn-portal-badge">{t("portalRolesCount", { count: ROLES.length })}</span>
+                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
+                <p className="learn-portal-title">
+                  {t("portalRoles")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("portalRolesLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">
+                    {t("portalRolesCount", { count: ROLES.length })}
+                  </span>
+                </p>
               </Link>
               <Link
                 href="/certifications"

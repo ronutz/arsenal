@@ -15704,7 +15704,9 @@
     "backToIndex": "Todo o A Prática",
     "provenanceTitle": "De onde isto vem",
     "provenanceBody": "Trinta anos são tempo suficiente para ter feito muita coisa e nem de longe suficientes para ter feito tudo. O que está aqui é a parte que eu vivi.\n\nEu executei e eu planejei. Auditei o parque de outras pessoas e supervisionei trabalho que não fui eu quem fez. Fui a mão no teclado, e fui o nome na escala quando aquilo falhou de madrugada. Treinei equipes de operação — uma pessoa por vez diante de um console, e salas cheias delas de uma vez. Parte disso fiz para fabricantes, parte para integradores, parte para o cliente que precisava conviver com o resultado na segunda-feira.\n\nNada disso é teoria que eu li. É uma carreira, e é isto que ela me ensinou.",
-    "articleCount": "{n, plural, =0 {nenhum artigo ainda} one {# artigo} other {# artigos}}"
+    "articleCount": "{n, plural, =0 {nenhum artigo ainda} one {# artigo} other {# artigos}}",
+    "whoDoesThis": "Quem faz este trabalho",
+    "rolesAria": "Papéis que fazem este trabalho"
   },
   "contributeTools": {
     "translationsTitle": "Melhorar as traduções",
@@ -15768,7 +15770,8 @@
       "turnsOn": "Do que o trabalho depende",
       "adjacent": "Para onde leva",
       "practice": "O trabalho em si",
-      "sources": "De onde isto vem"
+      "sources": "De onde isto vem",
+      "leadHere": "Papéis que levam até aqui"
     },
     "practiceLede": "A Prática cobre como este trabalho é feito — triagem, escalação, evidência, passagem de bastão — em todo o corpus.",
     "practiceLink": "Ler A Prática",

@@ -75,11 +75,35 @@ for (const raw of blocks) {
     if (items < 2) problems.push(`${slug}: ${f} has fewer than one entry`);
   }
 
-  // --- R-2 in the field most likely to drift ------------------------------
+  // --- R-2, at two strengths ---------------------------------------------
+  //
+  // `turnsOn` is the single argument each page makes and the field most likely
+  // to drift into correcting somebody else's error, so it is held strictly:
+  // even ordinary negation is rewritten there, and every time it has been, the
+  // positive form said more.
   const turns = /turnsOn:\s*\n?\s*"([\s\S]*?)",\n/.exec(body)?.[1] ?? "";
   for (const phrase of ["is not ", "does not ", "never ", "misconception", "people think", "wrongly"]) {
     if (turns.toLowerCase().includes(phrase)) {
       problems.push(`${slug}: turnsOn contains "${phrase.trim()}" — R-2: state what the job IS rather than correcting an error`);
+    }
+  }
+
+  // EVERY OTHER PROSE FIELD is held to the CORRECTION-SHAPED markers only.
+  //
+  // Measuring first showed why: across 1,218 public strings the corpus carried
+  // 12 negations, and all of them were DESCRIPTIVE — "systems the analyst has
+  // never operated", "ground truth a remote case cannot produce", and an ITIL
+  // sentence quoted inside a source label. Those state what IS. Banning
+  // ordinary negation everywhere would have forced twelve edits that made the
+  // prose worse, which is the manufactured-edit failure this canon has refused
+  // before.
+  //
+  // What R-2 actually forbids is copy that frames itself as fixing somebody's
+  // error, so that is what is checked.
+  const prose = body.replace(/turnsOn:[\s\S]*?",\n/, "");
+  for (const phrase of ["misconception", "people think", "commonly believed", "contrary to popular"]) {
+    if (prose.toLowerCase().includes(phrase)) {
+      problems.push(`${slug}: prose contains "${phrase}" — R-2: state what the role IS rather than correcting a belief about it`);
     }
   }
 }

@@ -44,6 +44,7 @@ import {
   getPracticeArticle,
   getPracticeArticles,
 } from "@/lib/practice";
+import { rolesUsingPracticeArticle } from "@/lib/roles";
 
 export function generateStaticParams() {
   // Slugs come from the English corpus: it is the authored spine, and every
@@ -85,6 +86,11 @@ export default async function PracticeArticlePage({
   // Read-next comes from the article's own frontmatter, resolved against the
   // corpus so a stale slug simply disappears rather than rendering a dead link.
   const all = getPracticeArticles(locale);
+  /* WHO DOES THIS WORK — derived from The Roles rather than stored here, so the
+     relation is written once and read in both directions. See
+     rolesUsingPracticeArticle(). */
+  const doneBy = rolesUsingPracticeArticle(slug);
+
   const related = article.relatedPractice
     .map((s) => all.find((a) => a.slug === s))
     .filter((a): a is NonNullable<typeof a> => Boolean(a));
@@ -158,6 +164,24 @@ export default async function PracticeArticlePage({
                 <ShareControl title={article.title} />
               </div>
             </MessageSlice>
+
+            {doneBy.length > 0 && (
+              <nav className="article-related" aria-label={t("rolesAria")}>
+                <h2 className="article-related-title">{t("whoDoesThis")}</h2>
+                <ul className="article-related-list">
+                  {doneBy.map((r) => (
+                    <li key={r.slug}>
+                      <Link href={`/roles/${r.slug}`} className="article-related-link">
+                        <span className="article-related-link-title">{r.title}</span>
+                        <span className="article-related-link-summary">
+                          {r.whatItIs.split(". ")[0]}.
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )}
 
             {related.length > 0 && (
               <nav className="article-related" aria-label={t("relatedAria")}>

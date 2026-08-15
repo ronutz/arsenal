@@ -78,7 +78,14 @@ export interface RoleProvenance {
   /** Required for held and alongside: the years. */
   when?: string;
   /** Required for documented: where the description comes from. */
-  sources?: { label: string; url: string }[];
+  /**
+   * Where the description comes from. `sourceNote` carries what the citation
+   * alone leaves out — most usefully, that a role HAS no professional body and
+   * the sources are therefore industry rather than institutional. That absence
+   * is informative about the role, so the page renders it rather than keeping
+   * it in the data where only a maintainer would see it.
+   */
+  sources?: { label: string; url: string; sourceNote?: string }[];
 }
 
 export interface Role {
@@ -114,6 +121,19 @@ export interface Role {
   adjacentRoles: string[];
   /** Practice role tags whose articles belong to this job. */
   practiceRoles: string[];
+  /**
+   * CHOSEN practice articles, by slug.
+   *
+   * *** PART I OF THE ENRICHMENT ROUND (2026-08-15) ***
+   *
+   * The tags above are five coarse values, and `second-line` alone matches most
+   * of a 64-article corpus — so deriving the list from tags gave two very
+   * different roles nearly the same reading. Selection replaces filtering:
+   * these are the articles that belong to THIS job. Where the field is absent
+   * the page falls back to the tag filter, so a new role is useful before it is
+   * curated. check-role-links verifies every slug exists.
+   */
+  practiceArticles?: string[];
   /** Tool slugs this role genuinely uses. */
   relatedTools: string[];
   updated: string;
@@ -171,6 +191,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The role answers for accuracy and is measured on revenue, and those two lists point the same way only while the truth is favourable. The systems engineers who last are the ones who say early and plainly when the product fits the problem partially, because a deal won on an overstated fit becomes a support case, then a renewal risk, then a reference the vendor stops offering. The honest answer is the commercially durable one, and it is worth having that clear before the pressure arrives rather than during it.",
     adjacentRoles: ["network-consulting-engineer", "channel-systems-engineer", "technical-instructor"],
     practiceRoles: ["design", "field"],
+    practiceArticles: ["what-vendor-support-can-and-cannot-do", "assumptions-a-design-never-states", "reading-a-design-you-did-not-write"],
     relatedTools: ["network-os-comparer"],
     updated: "2026-08-14",
   },
@@ -234,6 +255,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The output is capability in other companies, and capability is slow, cumulative and hard to attribute. A partner engineer who becomes self-sufficient stops calling, which reads in the numbers as reduced engagement and reads in reality as the job done. The same shape governs the brokering: a question carried accurately between a partner and a vendor leaves both sides believing they simply understood each other. Holding that line — investing in partners who will need less help next year — is the whole discipline of the role, and it asks for a manager who understands the same thing.",
     adjacentRoles: ["systems-engineer", "technical-instructor", "network-consulting-engineer"],
     practiceRoles: ["field", "design"],
+    practiceArticles: ["what-vendor-support-can-and-cannot-do", "opening-a-vendor-case", "handover-project-to-operation"],
     relatedTools: [],
     updated: "2026-08-14",
   },
@@ -295,6 +317,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The statement of work says deployment, and the job is an audit, a migration, an improvement, a document and a training course delivered around it. Utilisation measures hours booked, and the work that decides whether a project succeeds happens in the hours that are hard to book: reading the environment properly, writing the rollback, sitting with the customer's engineer until they can do it themselves. Consulting engineers who protect that time deliver projects that stay delivered, and the conversation with whoever owns the utilisation target is part of the job rather than an interruption to it.",
     adjacentRoles: ["systems-engineer", "field-network-engineer", "technical-instructor"],
     practiceRoles: ["field", "design", "second-line"],
+    practiceArticles: ["change-windows-and-rollback-arithmetic", "handover-project-to-operation", "reading-a-design-you-did-not-write", "the-runbook-nobody-can-follow", "documenting-for-the-inheritor"],
     relatedTools: ["fortios-cli-config-explainer", "f5os-tenant-config-explainer"],
     updated: "2026-08-14",
   },
@@ -357,6 +380,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The dispatch is written as an installation or a fault, and the visit is an audit, a migration, an improvement, a piece of documentation and a training session wrapped around it. The measurement is time to restore, and the lasting value is the record left behind. A visit that fixes the symptom and captures the evidence turns one customer's fault into a defect the vendor can address for everybody; a visit that fixes the symptom alone leaves the same engineer travelling to the same problem at a different address next quarter. The engineers who understand this write their notes as though a stranger will read them, because one will.",
     adjacentRoles: ["product-support-engineer", "network-consulting-engineer", "high-touch-operations-manager"],
     practiceRoles: ["field", "second-line", "first-line", "design"],
+    practiceArticles: ["field-work", "capture-before-you-change", "rma-and-the-dead-box", "documenting-for-the-inheritor", "cannot-touch-it"],
     relatedTools: ["terminal-stack-explainer"],
     updated: "2026-08-14",
   },
@@ -412,6 +436,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "This tier is a gate, and holding it well runs in two directions at once. A case passed upward that a careful hour would have resolved spends developer time the whole customer base is waiting on; a genuine defect held down here becomes a customer living with a workaround for a release cycle. The engineers who thrive here are the ones who make that call quickly and then write the case up so completely that whichever way it went, nobody has to relitigate it.",
     adjacentRoles: ["technical-assistance-centre-engineer", "network-software-engineer", "field-network-engineer", "high-touch-operations-manager"],
     practiceRoles: ["second-line"],
+    practiceArticles: ["reproducing-the-irreproducible", "escalation-as-a-skill", "building-an-evidence-pack", "proving-the-vendor-wrong", "feeding-the-fix-back"],
     relatedTools: ["f5-eth-trailer-decoder", "fortios-flow-debug-builder"],
     updated: "2026-08-14",
   },
@@ -465,6 +490,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The visible work is incident response and the durable work is prevention, which produces quiet. A high-touch engagement that succeeds shows fewer escalations, calmer reviews and a customer who stops needing to phone — and every one of those reads as reduced activity. Making the prevented incident visible, in the reporting and in the review, is what keeps the arrangement funded and is as much part of the role as the diagnosis.",
     adjacentRoles: ["product-support-engineer", "field-network-engineer", "systems-engineer"],
     practiceRoles: ["second-line", "management", "field"],
+    practiceArticles: ["communicating-upward-while-live", "running-a-war-room", "prevention-that-survives-the-budget", "the-customer-who-is-furious-and-correct"],
     relatedTools: [],
     updated: "2026-08-14",
   },
@@ -520,6 +546,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Evaluation scores measure the week and the value shows up months later, in the engineer who diagnoses something alone. The instructor's real leverage is choosing which questions to follow: a class steered toward the mechanisms underneath transfers to problems well beyond the curriculum, and one steered toward the interface teaches this release. Both score well on the day; only one of them is still working a year later.",
     adjacentRoles: ["systems-engineer", "channel-systems-engineer", "product-support-engineer"],
     practiceRoles: ["field", "design", "second-line"],
+    practiceArticles: ["careers-into-support-and-out-of-it", "field-work", "the-runbook-nobody-can-follow"],
     relatedTools: ["network-os-comparer", "terminal-stack-explainer"],
     updated: "2026-08-14",
   },
@@ -581,6 +608,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The forecast is the product. An account manager who calls a deal accurately, including calling it lost early, lets an entire organisation plan around the truth; one whose optimism outruns the evidence spends the quarter's final week explaining. The relationships are how the accuracy is obtained, which is why the role looks social and is arithmetical underneath.",
     adjacentRoles: ["systems-engineer", "channel-systems-engineer"],
     practiceRoles: ["management"],
+    practiceArticles: ["communicating-upward-while-live", "the-customer-who-is-furious-and-correct"],
     relatedTools: [],
     updated: "2026-08-14",
   },
@@ -642,6 +670,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Standardisation is the margin. Every customer arrives with an environment shaped by their own history and asks, reasonably, to keep it — and each accommodation granted is a permanent tax on every future change. Providers that thrive negotiate the estate toward a pattern they can operate at scale, and the engineer who explains that trade to a customer in terms of their own resilience is doing the commercial work as well as the technical.",
     adjacentRoles: ["network-consulting-engineer", "technical-assistance-centre-engineer", "security-operations-analyst"],
     practiceRoles: ["first-line", "second-line", "field"],
+    practiceArticles: ["on-call-honestly", "the-queue-as-a-psychological-object", "baselines-knowing-what-normal-looks-like", "handover-project-to-operation"],
     relatedTools: [],
     updated: "2026-08-14",
   },
@@ -702,6 +731,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The clock measures the case and the handover decides the outcome. A case that moves between three engineers and three time zones resolves at the speed of its notes, which makes writing the most load-bearing skill in the room and the one least represented in how the role is hired for. Engineers who write their case notes for a stranger arriving at three in the morning are the reason a follow-the-sun model works at all.",
     adjacentRoles: ["product-support-engineer", "field-network-engineer", "high-touch-operations-manager"],
     practiceRoles: ["first-line", "second-line"],
+    practiceArticles: ["problem-report-intake", "triage-and-severity", "handing-over-mid-problem", "opening-a-vendor-case", "the-queue-as-a-psychological-object"],
     relatedTools: ["fortios-flow-debug-builder", "f5-eth-trailer-decoder"],
     updated: "2026-08-14",
   },
@@ -764,6 +794,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Attention is the finite resource, and it is spent by every alert whether the alert earned it or otherwise. A queue tuned so that arriving alerts deserve a look keeps analysts sharp for the one that matters; a queue that floods trains people to close things quickly, and that training holds on the night it should break. Tuning is therefore the defensive work rather than a chore beside it.",
     adjacentRoles: ["managed-service-provider-engineer", "technical-assistance-centre-engineer"],
     practiceRoles: ["first-line", "second-line"],
+    practiceArticles: ["triage-and-severity", "baselines-knowing-what-normal-looks-like", "what-a-baseline-cannot-tell-you", "when-the-instruments-agree"],
     relatedTools: ["sse-architecture-explainer"],
     updated: "2026-08-14",
   },
@@ -887,6 +918,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Preparation is the phase that decides the outcome, and it happens on ordinary days. Whether logs exist, whether the asset inventory is current, whether the escalation list has the right mobile numbers on it — all of that is settled months before an incident and determines how well it goes. The responder's most valuable hours are therefore the quiet ones spent making the next response possible, and those hours compete with everything more visible.",
     adjacentRoles: ["security-operations-analyst", "technical-assistance-centre-engineer"],
     practiceRoles: ["second-line", "management"],
+    practiceArticles: ["containment-before-cure", "running-a-war-room", "timelines-reconstructing-what-happened", "deciding-with-incomplete-information", "communicating-upward-while-live"],
     relatedTools: [],
     updated: "2026-08-14",
   },
@@ -945,10 +977,11 @@ export const ROLES: readonly Role[] = Object.freeze([
     ],
     turnsOn:
       "The report is easy to produce and the remediation belongs to somebody else, which makes influence the actual skill. An analyst who arrives with two hundred findings ordered by scanner severity hands over a document; one who arrives with the six that are reachable from the internet, with the fixed version named and the window suggested, hands over a plan. The second gets fixed, and the difference is entirely in the preparation.",
-    adjacentRoles: ["security-operations-analyst", "incident-responder"],
+    adjacentRoles: ["penetration-tester", "security-operations-analyst", "incident-responder"],
     practiceRoles: ["second-line", "design"],
+    practiceArticles: ["evidence-that-convinces-next-quarter", "prevention-that-survives-the-budget", "root-cause-is-a-choice"],
     relatedTools: [],
-    updated: "2026-08-14",
+    updated: "2026-08-15",
   },
 
   // --- MAKES ---------------------------------------------------------------
@@ -1009,6 +1042,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The architecture decides how expensive a mistake is, and the architecture was chosen long before the current engineer arrived. On a platform where every process shares one address space, a defect in one feature reaches everything, so caution is the only available safety mechanism. On a platform where a process can be restarted from a state store, the same defect is contained, and engineering effort moves from avoiding faults to recovering from them. Understanding which platform you are writing for is therefore the first thing to learn about the job.",
     adjacentRoles: ["product-support-engineer", "technical-assistance-centre-engineer"],
     practiceRoles: ["design"],
+    practiceArticles: ["not-a-bug", "reproducing-the-irreproducible", "feeding-the-fix-back", "proving-the-vendor-wrong"],
     relatedTools: ["network-os-comparer"],
     updated: "2026-08-14",
   },
@@ -1070,6 +1104,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The desk exists so that the routing knowledge lives in one place rather than in every head in the organisation. That makes first-contact resolution the honest measure and volume a misleading one: an analyst who resolves fewer tickets while raising what the team can handle alone has improved the service, and the numbers show it slowly. It also explains the ceiling — a desk kept purely at intake stays a switchboard, and one given time to learn becomes the reason specialists are left alone.",
     adjacentRoles: ["managed-service-provider-engineer", "technical-assistance-centre-engineer"],
     practiceRoles: ["first-line"],
+    practiceArticles: ["problem-report-intake", "triage-and-severity", "the-queue-as-a-psychological-object", "not-your-problem"],
     relatedTools: [],
     updated: "2026-08-14",
   },
@@ -1130,6 +1165,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The analyst holds the only complete picture in the room, and holds it without authority to act on it. That combination is the role: the business knows what it wants, engineering knows what is possible, and the person who knows both is the one who has to make each legible to the other. Influence comes from the description being trusted, which is why accuracy about the current state matters more here than elegance about the future one.",
     adjacentRoles: ["service-desk-analyst", "security-operations-analyst", "network-consulting-engineer"],
     practiceRoles: ["design", "second-line"],
+    practiceArticles: ["reading-a-design-you-did-not-write", "assumptions-a-design-never-states", "what-a-baseline-cannot-tell-you"],
     relatedTools: ["network-os-comparer"],
     updated: "2026-08-15",
   },
@@ -1190,6 +1226,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The role is accountable for an outcome it produces through other people's budgets and other people's priorities. Authority over policy is real and authority over the engineering that implements it usually belongs to somebody else, so the work is persuasion carried out with a mandate. Leaders who last make the risk legible to the people who hold the budget, and record what the organisation decided to accept — because the record is what turns a later incident from a failure of the programme into a consequence of a decision somebody made knowingly.",
     adjacentRoles: ["security-manager", "security-operations-analyst", "incident-responder", "vulnerability-analyst"],
     practiceRoles: ["management"],
+    practiceArticles: ["communicating-upward-while-live", "prevention-that-survives-the-budget", "hindsight-makes-it-look-inevitable", "rca-without-a-scapegoat"],
     relatedTools: [],
     updated: "2026-08-15",
   },
@@ -1250,6 +1287,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Status reporting is where this role is decided. A project manager who reports the schedule the customer wants to hear buys three comfortable weeks and pays for them at the end, in a conversation nobody can prepare for; one who reports a slip the day it appears spends an uncomfortable hour and keeps the options open. Everything else in the role is technique, and this is the part that decides whether the technique matters.",
     adjacentRoles: ["network-consulting-engineer", "account-manager", "systems-analyst"],
     practiceRoles: ["management", "field"],
+    practiceArticles: ["communicating-upward-while-live", "handover-project-to-operation", "deciding-with-incomplete-information"],
     relatedTools: [],
     updated: "2026-08-15",
   },
@@ -1310,6 +1348,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "This is the rung the Y moment leads to, and the trade is immediate: the day fills with other people's work and the technical depth that earned the promotion begins to age from the first week. Managers who thrive decide early what they are keeping current and what they are letting go, and say so — because the alternative is a slow drift in which the team stops asking and the manager stops being able to answer.",
     adjacentRoles: ["security-leader", "security-operations-analyst", "incident-responder"],
     practiceRoles: ["management"],
+    practiceArticles: ["burnout-in-operations", "on-call-honestly", "the-queue-as-a-psychological-object", "working-with-people-who-are-frightened"],
     relatedTools: [],
     updated: "2026-08-15",
   },
@@ -1370,6 +1409,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The role accumulates knowledge that lives nowhere else. Fifteen years of small decisions — why that service runs on that host, which job has to finish before that one starts — become the reason the estate works and the reason it cannot be handed over. Administrators who write it down convert personal indispensability into organisational capability, and the trade is real: the documented administrator is easier to replace and far easier to promote.",
     adjacentRoles: ["service-desk-analyst", "managed-service-provider-engineer", "systems-analyst"],
     practiceRoles: ["second-line", "first-line", "field"],
+    practiceArticles: ["documenting-for-the-inheritor", "what-to-automate-and-what-never-to", "configuration-diffing-and-version-control", "log-discipline"],
     relatedTools: ["terminal-stack-explainer"],
     updated: "2026-08-15",
   },
@@ -1430,6 +1470,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Intelligence earns its name by changing a decision. A report that arrives, is read, and leaves the defence exactly as it was has cost the organisation an analyst's week and delivered news. The analysts who matter work backwards from the decision — which detection, which priority, which hunt — and write toward it, which also makes the work measurable in a way that generic reporting leaves out of reach.",
     adjacentRoles: ["security-operations-analyst", "incident-responder", "vulnerability-analyst"],
     practiceRoles: ["second-line", "design"],
+    practiceArticles: ["when-the-evidence-disagrees", "deciding-with-incomplete-information", "the-assumption-you-cannot-see"],
     relatedTools: [],
     updated: "2026-08-15",
   },
@@ -1484,6 +1525,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The knowledge exists at the moment the case closes and decays from that moment. An engineer asked a week later remembers the fix; asked a month later remembers that there was one. Capturing it inside that window is the whole discipline, and it competes directly with the next case in the queue — which is why the role has to belong to somebody rather than to everybody's good intentions.",
     adjacentRoles: ["product-support-engineer", "technical-assistance-centre-engineer", "technical-instructor"],
     practiceRoles: ["second-line", "design"],
+    practiceArticles: ["knowledge-capture-that-gets-found", "the-write-up", "feeding-the-fix-back", "documenting-for-the-inheritor"],
     relatedTools: [],
     updated: "2026-08-15",
   },
@@ -1545,6 +1587,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The seller is measured on revenue captured and the buyer on discount obtained, which makes one number the target of two careers pulling opposite ways. The subtlety is in how a saving is counted: a reduction from a known baseline is auditable, while cost avoided is measured against an increase that was proposed and then prevented — a comparison with something that stayed hypothetical. Buyers who explain that distinction to their own finance function get credit for both kinds; those who leave it implicit find the second kind quietly discounted.",
     adjacentRoles: ["account-manager", "channel-account-manager", "systems-engineer"],
     practiceRoles: ["management"],
+    practiceArticles: ["what-vendor-support-can-and-cannot-do", "evidence-that-convinces-next-quarter"],
     relatedTools: [],
     updated: "2026-08-15",
   },
@@ -1605,7 +1648,865 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The first hour decides the case. Acquisition made in the right order preserves the volatile evidence that answers the interesting questions; the same hour spent restoring service first leaves an investigation working from what survived by luck. Forensics teams earn their standing before an incident, by agreeing with the business in advance which comes first and in which circumstances, because that conversation held during an incident is decided by whoever is most senior in the room.",
     adjacentRoles: ["incident-responder", "security-operations-analyst", "threat-intelligence-analyst"],
     practiceRoles: ["second-line"],
+    practiceArticles: ["capture-before-you-change", "timelines-reconstructing-what-happened", "what-to-capture-before-you-know", "verifying-without-trusting"],
     relatedTools: ["f5-eth-trailer-decoder"],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "product-manager",
+    title: "Product manager",
+    group: "makes",
+    order: 2,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "AIPMM - the Guide to the Product Management and Marketing Body of Knowledge (ProdBOK), which sets out the strategies, methodologies, concepts and activities of the product management and marketing domains across the product lifecycle", url: "https://aipmm.com/prodbok" },
+        { label: "A survey of the established product management frameworks, including ProdBOK, the PDMA body of knowledge and the ISPMA software product management framework, and what each is useful for", url: "https://productstride.substack.com/p/product-management-frameworks" },
+      ],
+    },
+    whatItIs:
+      "The person who decides what the product is. The body of knowledge frames the work across a lifecycle — conceive, plan, develop, qualify, launch, deliver, retire — with a decision point between each phase. A product manager owns those decisions and the reasoning behind them, and owns them without commanding any of the teams whose work depends on them.",
+    theDay: [
+      "Talking to customers, and to the people who talk to customers, which is a different and larger population.",
+      "Deciding what enters the roadmap, and revisiting it when the evidence moves.",
+      "Writing the requirement precisely enough that engineering can build it and loosely enough that they can build it well.",
+      "Holding the gate between lifecycle phases, including the decision to stop.",
+      "Preparing the launch with marketing, support and training, all of whom need the product before it exists.",
+    ],
+    accountableFor: [
+      "The product solving a problem somebody has, evidenced rather than assumed.",
+      "The decisions and their reasoning, in a form that survives the person who made them.",
+      "Everything the organisation promised about the product being true when it ships.",
+    ],
+    measuredOn: [
+      "Adoption and revenue, which arrive long after the decisions that caused them.",
+      "Delivery against the roadmap that was committed.",
+      "Retention and the outcomes customers report.",
+    ],
+    receivesFrom: [
+      { who: "Customers and the field", what: "Problems, described as requests for features." },
+      { who: "Engineering", what: "What is possible, at what cost, and what the architecture will resist." },
+      { who: "Support and the case volume", what: "Evidence of where the product is failing people, which outranks most opinions." },
+    ],
+    serves: [
+      { who: "Engineering", what: "A clear problem and the reasoning behind its priority." },
+      { who: "Sales, marketing and training", what: "Something they can describe accurately." },
+      { who: "Customers", what: "A product that changes in the direction of their actual difficulty." },
+    ],
+    stakeholders: [
+      "Every team whose plan depends on the roadmap being roughly true.",
+      "Executives whose commitments were made from an earlier version of it.",
+      "Customers who bought partly on what was said about the future.",
+    ],
+    requirements: [
+      "Reading evidence about people, which is harder and less exact than reading evidence about systems.",
+      "Enough technical depth to be told the truth by engineers and to know when an estimate is a negotiation.",
+      "Writing that leaves engineering room to solve the problem rather than to implement a solution.",
+      "The nerve to hold a gate closed.",
+    ],
+    turnsOn:
+      "A roadmap is a list of refusals. Every item on it represents many that were declined, and the declining is where the role is actually exercised — most of all at the gate, where stopping something the organisation is already committed to costs more socially than continuing it costs commercially. Product managers who can close a gate produce focused products; those who cannot produce long roadmaps and thin releases, and both look like activity from outside.",
+    adjacentRoles: ["network-software-engineer", "product-support-engineer", "systems-engineer"],
+    practiceRoles: ["design", "management"],
+    practiceArticles: ["root-cause-is-a-choice", "feeding-the-fix-back", "prevention-that-survives-the-budget"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "instructional-designer",
+    title: "Instructional designer",
+    group: "teaches",
+    order: 2,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "Association for Talent Development - the Talent Development Capability Model, built from research with more than three thousand professionals and setting out twenty-three capabilities across personal, professional and organisational domains", url: "https://www.td.org/capability-model" },
+        { label: "TechTrends, Springer - a systematic review applying the ATD Capability Model to one hundred instructional design job postings, finding instructional design, talent delivery and facilitation, technology application, communication, and collaboration and leadership the capabilities named most frequently", url: "https://link.springer.com/article/10.1007/s11528-021-00636-2" },
+      ],
+    },
+    whatItIs:
+      "The person who builds the course rather than the person who delivers it. An instructional designer starts from what a learner has to be able to do afterwards and works backwards to the material, the exercises and the assessment. The published study of the field finds design, delivery, technology, communication and collaboration named most often in the job itself, which describes a role that builds and frequently also teaches.",
+    theDay: [
+      "Writing objectives first: what somebody will be able to do, stated so that it can be assessed.",
+      "Designing backwards from those objectives to the exercises that produce the ability.",
+      "Building the laboratory environments the exercises assume, which is engineering work inside a teaching job.",
+      "Writing assessment that measures the objective rather than the memory of the slide.",
+      "Revising from delivery feedback, since a room finds every ambiguity within an hour.",
+    ],
+    accountableFor: [
+      "Objectives that describe a capability rather than a topic.",
+      "Material an instructor other than the author can deliver.",
+      "Exercises that work in the environment the students actually receive.",
+    ],
+    measuredOn: [
+      "Assessment results against the stated objectives.",
+      "Instructor and student evaluation of the material.",
+      "Courseware delivered on schedule, and revision cycles completed.",
+    ],
+    receivesFrom: [
+      { who: "Subject matter experts", what: "The technical content, in the form an expert holds it rather than the form a beginner needs." },
+      { who: "Instructors", what: "What the room struggled with, which is the highest-value feedback available." },
+      { who: "The certification programme", what: "Objectives the course has to cover, where an examination follows." },
+    ],
+    serves: [
+      { who: "Instructors", what: "Material they can teach from, including the parts they would have written differently." },
+      { who: "Learners", what: "A route from where they are to what they need to do." },
+      { who: "The organisation", what: "Capability that scales past the availability of any one expert." },
+    ],
+    stakeholders: [
+      "The employers paying for the training, who are buying an outcome rather than a week.",
+      "The certification body, where a course leads to an examination.",
+      "Every future instructor who inherits the material.",
+    ],
+    requirements: [
+      "Enough subject depth to interrogate an expert and notice what they left out.",
+      "Writing for a reader who lacks the context the author has.",
+      "Patience with revision, since a course is finished by its third delivery rather than its first.",
+      "Comfort designing for a room you will never meet.",
+    ],
+    turnsOn:
+      "The objective is written before the content, and everything follows from that order. A course built outward from the material teaches what the author knows; one built backward from an objective teaches what the learner has to be able to do, and the two produce identical-looking slide decks with entirely different results in the room. The discipline is holding the order under time pressure, because the fastest way to produce a course is to write down what you know and call the last slide a summary.",
+    adjacentRoles: ["technical-instructor", "knowledge-base-manager", "product-manager"],
+    practiceRoles: ["design"],
+    practiceArticles: ["documenting-for-the-inheritor", "the-runbook-nobody-can-follow", "knowledge-capture-that-gets-found"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "product-marketing-manager",
+    title: "Product marketing manager",
+    group: "makes",
+    order: 3,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "AIPMM - the Guide to the Product Management and Marketing Body of Knowledge (ProdBOK), whose scope covers the marketing domain alongside the management one, across every phase of the product lifecycle", url: "https://aipmm.com/prodbok" },
+        { label: "A survey of the established product frameworks and what each covers, including where product management and product marketing divide", url: "https://productstride.substack.com/p/product-management-frameworks" },
+      ],
+    },
+    whatItIs:
+      "The counterpart to product management, facing the other way. Where a product manager decides what gets built, product marketing decides how it is understood: who it is for, which problem it is against, and which alternatives a buyer will weigh it beside. The body of knowledge treats the two as one domain with two halves, which is the most accurate description of how they actually work.",
+    theDay: [
+      "Positioning: choosing the comparison a buyer will make, which is a decision rather than a description.",
+      "Writing the messages, and then the artefacts everybody else repeats them from.",
+      "Preparing launches, where the product, the sellers, the partners and the support organisation have to arrive on the same day saying the same thing.",
+      "Equipping the field: the material a seller uses in a room where the product manager is absent.",
+      "Studying competitors closely enough to describe them fairly, since a caricature loses the deal it was written for.",
+    ],
+    accountableFor: [
+      "Positioning that survives contact with a buyer who has alternatives.",
+      "Claims that the product can support, since support inherits everything overstated.",
+      "The organisation describing the product consistently across every channel it uses.",
+    ],
+    measuredOn: [
+      "Pipeline influenced, and win rates against named competitors.",
+      "Launch execution and the adoption that follows.",
+      "Sales enablement: material produced, and material actually used.",
+    ],
+    receivesFrom: [
+      { who: "Product management", what: "What is being built and why, early enough to prepare." },
+      { who: "The field and the channel", what: "What buyers actually ask, and where deals are lost." },
+      { who: "Customers", what: "The words they use, which outrank the words the company prefers." },
+    ],
+    serves: [
+      { who: "Sales and the channel", what: "A story that holds up under questioning, and the material to tell it with." },
+      { who: "Buyers", what: "An accurate account of what the product is for." },
+      { who: "Product management", what: "Market evidence, which is the input a roadmap decision is made against." },
+    ],
+    stakeholders: [
+      "Support, who meet every promise afterwards.",
+      "The training organisation, whose material carries the same claims into a classroom.",
+      "Partners, who repeat the positioning in markets the vendor never enters.",
+    ],
+    requirements: [
+      "Writing plainly about a technical thing for a reader who has ten minutes.",
+      "Enough depth to be corrected by an engineer and to argue back where the correction is cosmetic.",
+      "Judgement about claims, since the cost of an overstated one lands on somebody else.",
+      "Comfort with attribution that stays partial, because influence resists measurement.",
+    ],
+    turnsOn:
+      "Positioning is choosing the competitor set, and that choice decides the argument before it starts. A product placed against the wrong alternative competes on features a buyer has already stopped caring about; placed against the right one, the same product reads as obvious. The work is therefore an act of judgement about the market rather than an act of writing about the product, and it is the part where a good writer with market sense outperforms a better writer without it.",
+    adjacentRoles: ["product-manager", "systems-engineer", "account-manager"],
+    practiceRoles: ["design", "management"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "change-manager",
+    title: "Change manager",
+    group: "runs",
+    order: 5,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "PeopleCert - ITIL 4 Practitioner: Change Enablement, whose stated purpose is to maximise the number of successful service and product changes by ensuring risks are properly assessed, authorising changes to proceed, and managing the change schedule", url: "https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1/itil-4-practitioner-change-enablement-3794" },
+        { label: "An account of the ITIL 4 change enablement practice, including its guidance that in product-focused organisations job titles are not typically adopted for it, because the practice is integrated into the daily activity of product teams and automated wherever possible", url: "https://www.beyond20.com/blog/understanding-change-enablement-practice-itil-4/" },
+      ],
+    },
+    whatItIs:
+      "The person who decides what may be done to production, and when. The framework states the purpose exactly: maximise the number of successful changes by assessing risk properly, authorising changes to proceed, and managing the schedule. The word in that sentence carrying the most weight is maximise — the practice exists to let changes happen, with the assessment as the means rather than the object.",
+    theDay: [
+      "Assessing what is proposed: blast radius, dependencies, the plan to return, and whether the plan has been tried.",
+      "Authorising, at whatever level the risk justifies, which for routine work should be automatic.",
+      "Holding the schedule, so that two safe changes stop being one unsafe evening.",
+      "Reviewing what happened afterwards, especially the changes that succeeded in ways nobody expected.",
+      "Adjusting the standard changes list, which is where most of the value is realised.",
+    ],
+    accountableFor: [
+      "Risk assessed at a depth proportionate to the change.",
+      "The schedule reflecting what is genuinely happening.",
+      "Failed changes being reviewed for their cause rather than for their author.",
+    ],
+    measuredOn: [
+      "Change success rate, and the impact of the ones that failed.",
+      "Lead time from request to implementation.",
+      "The proportion of changes flowing as standard rather than requiring a meeting.",
+    ],
+    receivesFrom: [
+      { who: "Engineering and operations", what: "The proposal, and the honesty of its risk assessment." },
+      { who: "The business", what: "When the service can be disturbed, and when it certainly cannot." },
+      { who: "Incident and problem work", what: "The consequences of previous changes, which is the calibration." },
+    ],
+    serves: [
+      { who: "Engineers", what: "A path to production that is predictable and quick for ordinary work." },
+      { who: "The business", what: "Change happening at the pace it needs, with the stability it assumes." },
+      { who: "Operations", what: "A schedule that keeps unrelated changes out of one another's evening." },
+    ],
+    stakeholders: [
+      "Every user of every service inside the change window.",
+      "Auditors, for whom authorisation records are evidence.",
+      "The on-call engineer who will meet whatever goes wrong.",
+    ],
+    requirements: [
+      "Technical breadth sufficient to assess risk in systems somebody else built.",
+      "The judgement to route routine work through automatically, which requires trusting a category rather than a request.",
+      "Nerve to refuse, and the willingness to explain the refusal in terms of the risk rather than of the process.",
+      "A blameless instinct in review, since the alternative is accurate proposals becoming optimistic ones.",
+    ],
+    turnsOn:
+      "Two numbers pull opposite ways: change success rate and lead time. A practice tuned only for success reviews everything, and the queue becomes the reason teams stop proposing improvements; one tuned only for speed accumulates the incidents that produce the next review board. The resolution is categorical rather than case by case — deciding which classes of change are standard and letting those flow — and the framework is unusually candid that in product-focused organisations this may be daily practice and automation rather than a job at all.",
+    adjacentRoles: ["systems-administrator", "service-desk-analyst", "project-manager"],
+    practiceRoles: ["management", "second-line"],
+    practiceArticles: ["change-windows-and-rollback-arithmetic", "capture-before-you-change", "what-acceptance-testing-is-for"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "management-consultant",
+    title: "Management consultant",
+    group: "deploys",
+    order: 3,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "ICMCI - the CMC Competence Framework, the global standard behind the Certified Management Consultant qualification, developed through international professional standards committees since the late 1990s", url: "https://www.imcusa.org/certified-management-consultant/cmc-competence-framework-landing-page/" },
+        { label: "IMC USA - the ICMCI competency framework as adopted for the Certified Management Consultant qualification, setting out the knowledge, skills and behaviours across three levels of progression: Early, Advanced and Professional Leader", url: "https://imcusa.org/wp-content/uploads/2023/04/Final_IMCUSA_-_ICMCI_Core_Co.pdf" },
+      ],
+    },
+    whatItIs:
+      "The adviser who is paid for judgement rather than for hands. Where a consulting engineer implements a design, a management consultant is engaged to work out what should be done and to make the case for it. The profession has a competence framework and a certification behind it, structured across three levels of progression, which is a useful reminder that advisory work has a standard even where a client is buying a person.",
+    theDay: [
+      "Establishing the actual question, which is frequently adjacent to the one in the brief.",
+      "Gathering evidence inside an organisation whose people have their own view of what the answer should be.",
+      "Analysis, and the discipline of following it where it goes.",
+      "Presenting to a room where somebody sponsored the engagement and somebody else is implicated by the finding.",
+      "Handing over in a way that leaves the client able to act without the consultant present.",
+    ],
+    accountableFor: [
+      "Recommendations that follow from the evidence gathered rather than from the engagement that was sold.",
+      "Independence, which is the entire product.",
+      "A client left more capable, rather than more dependent.",
+    ],
+    measuredOn: [
+      "Utilisation and fee income.",
+      "Recommendations adopted, and the outcomes attributed to them.",
+      "Repeat engagements and referrals, which is where the tension sits.",
+    ],
+    receivesFrom: [
+      { who: "The sponsor", what: "The brief, the budget and the political shape of the problem." },
+      { who: "The client's staff", what: "How things actually work, offered at whatever candour the situation permits." },
+      { who: "The firm", what: "Method, precedent and the people to staff the work." },
+    ],
+    serves: [
+      { who: "The sponsoring executive", what: "A defensible basis for a decision they own." },
+      { who: "The client organisation", what: "A view assembled by somebody with no stake in the current arrangement." },
+      { who: "The teams who implement", what: "Reasoning clear enough to act on after the consultant leaves." },
+    ],
+    stakeholders: [
+      "The staff whose work the recommendation changes, who were interviewed and rarely decide.",
+      "The firm's reputation, which is carried by every engagement.",
+      "Whoever inherits the recommendation after the sponsor moves on.",
+    ],
+    requirements: [
+      "Analysis that survives being checked by people who know the domain better.",
+      "Writing that separates the finding, the inference and the recommendation.",
+      "Composure in a room where the finding is unwelcome to somebody senior.",
+      "The independence to say the engagement should end, which is the profession's defining behaviour.",
+    ],
+    turnsOn:
+      "The most valuable advice frequently ends the engagement, and the measurement rewards the engagement continuing. A consultant who finds that the client already has the capability and needs a decision rather than a programme has done the best available work and produced the smallest available invoice. Firms that survive on reputation make room for that outcome and say so at the outset; the profession's own competence framework puts professional behaviour underneath every technical competence for exactly this reason.",
+    adjacentRoles: ["network-consulting-engineer", "systems-analyst", "project-manager"],
+    practiceRoles: ["design", "management"],
+    practiceArticles: ["reading-a-design-you-did-not-write", "assumptions-a-design-never-states", "evidence-that-convinces-next-quarter"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "problem-manager",
+    title: "Problem manager",
+    group: "runs",
+    order: 6,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "PeopleCert - ITIL 4 Practitioner: Problem Management, whose purpose is to reduce the likelihood and impact of incidents by identifying actual and potential causes and managing workarounds and known errors", url: "https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1/itil4-practices-problem-management-3688" },
+        { label: "An account of the ITIL 4 problem management practice and its three phases — problem identification, problem control and error control — and how it differs from incident management, which addresses the symptom to restore service", url: "https://www.beyond20.com/blog/an-overview-of-the-itil-4-problem-management-practice/" },
+      ],
+    },
+    whatItIs:
+      "The person who asks why the same incident keeps happening. Incident management restores the service; problem management identifies the cause and manages what follows from it. The framework gives the vocabulary precisely: a problem is a cause, or potential cause, of one or more incidents; a known error is a problem whose cause is understood while a permanent fix is outstanding; a workaround is what people use meanwhile.",
+    theDay: [
+      "Reading incident records for the pattern, which is the identification phase and the one most easily skipped.",
+      "Investigating causes across systems owned by teams who each see one part.",
+      "Documenting a known error, which delivers value even where the fix is far away or uneconomic.",
+      "Managing workarounds so the same one is applied the same way by everybody.",
+      "Working proactively: looking for the causes of incidents that have yet to occur.",
+    ],
+    accountableFor: [
+      "Recurring incidents having a record that explains them.",
+      "Known errors documented with their workarounds, and reachable by the people who need them.",
+      "Causes pursued to a decision, including the decision to accept one.",
+    ],
+    measuredOn: [
+      "Recurrence: the same incident arriving fewer times.",
+      "Known errors documented, and workarounds in use.",
+      "Problems closed with a permanent fix rather than with a workaround.",
+    ],
+    receivesFrom: [
+      { who: "Incident management and the service desk", what: "The record, and the pattern hiding inside it." },
+      { who: "Engineering and vendors", what: "The explanation of a defect, and the release that resolves it." },
+      { who: "Change enablement", what: "What was altered, which is where a proportion of causes live." },
+    ],
+    serves: [
+      { who: "Everybody handling incidents", what: "Fewer of them, and a documented answer for the ones that remain." },
+      { who: "Users", what: "The interruption that stops arriving every Monday." },
+      { who: "Management", what: "Evidence of which underlying faults are costing the most." },
+    ],
+    stakeholders: [
+      "The teams whose systems a cause turns out to sit in.",
+      "Vendors, whose defect this frequently becomes.",
+      "Finance, since a permanent fix competes for budget with new work.",
+    ],
+    requirements: [
+      "Analysis across boundaries, since a cause rarely respects a team's edges.",
+      "Patience with an investigation whose value arrives after it closes.",
+      "Writing a known error clearly enough to be usable by somebody under time pressure.",
+      "Diplomacy, because the finding usually names a team rather than a machine.",
+    ],
+    turnsOn:
+      "The people best at this work are the people incident management needs most, and only one of those two has a clock on it. That is a structural fact rather than a cultural failing: an incident has a customer waiting and a problem has a spreadsheet, so the resource moves toward the incident every time it is asked to choose. Organisations that get value here protect the time explicitly, and treat a documented known error as a delivered outcome rather than as an investigation that stalled.",
+    adjacentRoles: ["change-manager", "service-desk-analyst", "technical-assistance-centre-engineer"],
+    practiceRoles: ["second-line", "management"],
+    practiceArticles: ["root-cause-is-a-choice", "the-recurrence", "rca-without-a-scapegoat", "symptom-and-cause"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "network-operations-specialist",
+    title: "Network operations specialist",
+    group: "runs",
+    order: 7,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "CISA - the Network Operations Specialist work role: planning, implementing and operating network services and systems including hardware and virtual environments, with the note that personnel performing it may alternatively be called network administrator, network analyst, network designer, network engineer, network systems engineer or telecommunications specialist", url: "https://www.cisa.gov/careers/work-rolesnetwork-operations-specialist" },
+        { label: "Department of Defense - the Network Operations Specialist career pathway, listing the knowledge, skills and abilities in detail, from routing schemas and traffic analysis to contingency and recovery planning", url: "https://dl.dod.cyber.mil/wp-content/uploads/ccp/pdf/441-Network-Operations-Specialist-Career-Pathway.pdf" },
+        { label: "SANS - the same work role summarised: deploying and managing network infrastructure, diagnosing connectivity, optimising performance and implementing defences", url: "https://www.sans.org/job-roles/network-operations" },
+      ],
+    },
+    whatItIs:
+      "The engineer who runs the network an organisation depends on. The federal work role puts it as planning, implementing and operating network services and systems, and then does something unusually useful: it lists the titles the same work is advertised under — network administrator, network analyst, network designer, network engineer, network systems engineer, telecommunications specialist. One body of work, seven names, which is worth holding on to before comparing two job descriptions.",
+    theDay: [
+      "Configuring and optimising the switches, routers and the protocols running across them.",
+      "Diagnosing connectivity, which begins by establishing whether the network is involved at all.",
+      "Monitoring capacity and performance, and planning the growth before it arrives as an incident.",
+      "Building and testing the contingency and recovery procedures, which are worth exactly what the last test proved.",
+      "Implementing the security practices the network is expected to enforce, since the boundary is made of this equipment.",
+    ],
+    accountableFor: [
+      "The network being available, and being demonstrably available.",
+      "Changes to it being deliberate, documented and reversible.",
+      "The design keeping pace with what the organisation is asking of it.",
+    ],
+    measuredOn: [
+      "Availability and incident count, which are the visible numbers.",
+      "Time to restore, and time to establish where a fault actually sits.",
+      "Capacity headroom and change success, which are the numbers that prevent the first two.",
+    ],
+    receivesFrom: [
+      { who: "The service desk and monitoring", what: "Symptoms, described by people whose vocabulary is their own work." },
+      { who: "Application and server teams", what: "Requirements, and the conviction that the network is the cause." },
+      { who: "Vendors and integrators", what: "Designs, firmware and the support path when the equipment misbehaves." },
+    ],
+    serves: [
+      { who: "Every other technical team", what: "A foundation they can assume, and evidence when they cannot." },
+      { who: "The business", what: "Connectivity, which is noticed only in its absence." },
+      { who: "Security", what: "Enforcement points, and the visibility that makes detection possible." },
+    ],
+    stakeholders: [
+      "Everyone in the organisation, without exception.",
+      "The application owners whose service levels rest on this one.",
+      "Auditors, for whom network segmentation is a control rather than a design.",
+    ],
+    requirements: [
+      "Depth in the protocols, since the network is the layer where guesses are expensive.",
+      "Method under pressure, because the pressure is highest when the fault is least understood.",
+      "Evidence-gathering as a habit: captures, counters and timings kept rather than described.",
+      "Patience with being the first suspect, repeatedly.",
+    ],
+    turnsOn:
+      "Every problem in an organisation arrives as a network problem until somebody proves otherwise, which makes proving a negative a large part of the job. That proof is the actual craft: a capture, a counter, a timing that shows the request left and the answer came back, offered quickly enough that the investigation moves on to where the fault really is. Engineers who build the habit of producing that evidence in minutes become the person other teams want in the bridge call; those who assert it instead spend the same hours being doubted.",
+    adjacentRoles: ["systems-administrator", "network-consulting-engineer", "service-desk-analyst", "problem-manager"],
+    practiceRoles: ["second-line", "field", "design"],
+    practiceArticles: ["layer-by-layer", "packet-capture-discipline", "baselines-knowing-what-normal-looks-like", "not-your-problem", "verifying-without-trusting"],
+    relatedTools: ["terminal-stack-explainer", "network-os-comparer"],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "talent-development-manager",
+    title: "Talent development manager",
+    group: "teaches",
+    order: 3,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "Association for Talent Development - the Talent Development Capability Model, whose three domains run from personal capability through professional capability to organisational capability, the last covering the work of building capability across an organisation rather than in a room", url: "https://www.td.org/capability-model" },
+        { label: "TechTrends, Springer - a systematic review applying the ATD Capability Model to job postings in the field, finding collaboration and leadership among the capabilities named most frequently alongside design and delivery", url: "https://link.springer.com/article/10.1007/s11528-021-00636-2" },
+      ],
+    },
+    whatItIs:
+      "The person who decides what an organisation needs to be able to do, and builds the programme that gets it there. The capability model places this in its organisational domain, above the personal and professional ones: designers build courses and instructors deliver them, while this role works out which capability is missing, what it is worth, and how the answer will be recognised when it arrives.",
+    theDay: [
+      "Assessing capability against what the organisation is trying to do next, which requires knowing both.",
+      "Deciding what to build, what to buy, and what to leave alone.",
+      "Running the budget, the calendar and the vendors, since most programmes are assembled rather than authored.",
+      "Measuring, and defending the measurement, because the useful numbers arrive later than the reporting cycle.",
+      "Persuading managers to release people, which is where most programmes actually succeed or stall.",
+    ],
+    accountableFor: [
+      "A programme aimed at capability the organisation genuinely lacks.",
+      "Spend that produces something demonstrable.",
+      "Learning that reaches the people whose work it changes.",
+    ],
+    measuredOn: [
+      "Completion and attendance, which are easy and shallow.",
+      "Assessment and certification outcomes.",
+      "Capability and performance change, which is the point and the hardest number to obtain.",
+    ],
+    receivesFrom: [
+      { who: "Business leaders", what: "Where the organisation is going, and what it will need people to do there." },
+      { who: "Instructional design and delivery", what: "What is possible to build, and what a room can absorb." },
+      { who: "Managers", what: "Where their teams are struggling, described as requests for training." },
+    ],
+    serves: [
+      { who: "Employees", what: "A route to capability they can actually take, inside a working week." },
+      { who: "Managers", what: "Teams that can do more without additional headcount." },
+      { who: "The organisation", what: "Capability that outlasts the individuals who happen to hold it now." },
+    ],
+    stakeholders: [
+      "Finance, for whom training is a discretionary line and therefore an early candidate for reduction.",
+      "The instructors and designers whose work the programme commissions.",
+      "The customers served by whoever was trained.",
+    ],
+    requirements: [
+      "Reading an organisation: what it claims to need against what its incidents suggest.",
+      "Commercial argument, since the budget is defended annually against work with faster returns.",
+      "Judgement about buy against build, which is mostly a judgement about how specific the need is.",
+      "Comfort with evidence that arrives after the decision it justifies.",
+    ],
+    turnsOn:
+      "Training is measured on completion and valued for capability, and those are different numbers arriving at different times. A programme optimised for the first fills rooms and reports well; one optimised for the second sends fewer people to longer things and looks quieter for two quarters. Managers who hold that line get asked to justify it, so the durable move is to agree the capability measure with the business in advance and report against it from the beginning.",
+    adjacentRoles: ["instructional-designer", "technical-instructor", "security-manager"],
+    practiceRoles: ["management", "design"],
+    practiceArticles: ["careers-into-support-and-out-of-it", "burnout-in-operations"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "customer-success-manager",
+    title: "Customer success manager",
+    group: "sells",
+    order: 4,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "A revenue-role lexicon defining the customer success manager as the post-sale relationship owner, measured on net revenue retention, logo retention and expansion, and distinct from the account executive who owns new business", url: "https://www.startups.com/lexicon/customer-success-manager" },
+        { label: "A business-to-business sales glossary on the role's metrics — gross and net revenue retention, logo churn, health score and time to value — and on its frequently non-closing, light-commercial position", url: "https://www.getchief.com/sales-glossary-terms/customer-success-manager-csm" },
+        { label: "An account of how the role has shifted, from a satisfaction function to one carrying retention and expansion targets alongside traditional measures", url: "https://www.csinsider.co/email/customer-success-manager-role", sourceNote: "Unlike most roles in this corpus, customer success has no professional body and no framework definition. That absence is informative rather than a gap: the role is roughly as old as subscription software, and it grew from a commercial change rather than from a discipline. The sources here are industry rather than institutional, and they agree with one another closely enough to be reported." },
+      ],
+    },
+    whatItIs:
+      "The person who owns the relationship after the sale closes. Customer success grew out of subscription business, where the revenue arrives in instalments and every one of them is a decision the customer makes again. The role guides onboarding, adoption and expansion, and it is separated deliberately from support, which is reactive, and from the account executive, who owns new business.",
+    theDay: [
+      "Onboarding: getting a customer to their first real outcome, since the time that takes predicts everything afterwards.",
+      "Watching adoption across a portfolio, which runs from a handful of strategic accounts to several hundred at the lighter end.",
+      "Reading health signals early enough to act, rather than at the renewal conversation.",
+      "Connecting product capability to what the customer is actually trying to achieve this year.",
+      "Preparing the renewal long before it arrives, so it becomes a formality rather than a negotiation.",
+    ],
+    accountableFor: [
+      "Customers reaching the outcome they bought the product for.",
+      "Risk surfaced while there is still time to change it.",
+      "The account's story being accurate internally, including where it is going badly.",
+    ],
+    measuredOn: [
+      "Net revenue retention, which combines renewal, expansion, contraction and churn into one number.",
+      "Gross retention and logo churn.",
+      "Adoption depth, health score and time to value.",
+    ],
+    receivesFrom: [
+      { who: "Sales", what: "The account, and whatever expectations were set to win it." },
+      { who: "The product's telemetry", what: "What the customer actually uses, which is frequently different from what they say." },
+      { who: "Support", what: "The friction, arriving as tickets before it arrives as sentiment." },
+    ],
+    serves: [
+      { who: "The customer's sponsor", what: "Progress toward the outcome they are accountable for internally." },
+      { who: "The vendor", what: "Retention, which in subscription business is most of the revenue." },
+      { who: "Product management", what: "Evidence of where adoption stalls, which is a roadmap input with numbers attached." },
+    ],
+    stakeholders: [
+      "The customer's end users, whose experience decides adoption regardless of the sponsor's enthusiasm.",
+      "Finance on both sides, for whom the renewal is a forecast line.",
+      "Support and professional services, whose work shapes the health this role reports.",
+    ],
+    requirements: [
+      "Reading an account: usage, sentiment and the organisational change nobody mentioned.",
+      "Enough product depth to advise rather than to schedule a call with somebody who can.",
+      "Commercial literacy, since the conversation ends in a renewal whether or not the role closes it.",
+      "The candour to record an account as at risk while the relationship still feels warm.",
+    ],
+    turnsOn:
+      "Satisfaction and retention are different measurements, and the distance between them is the job. A customer can be entirely happy and still leave, because their priorities moved and nobody on the vendor side noticed — which makes the useful question whether the customer is achieving outcomes that justify continued investment, rather than whether they are pleased. Managers who ask the second question find the risk in time; those who ask the first find it at the renewal.",
+    adjacentRoles: ["account-manager", "technical-assistance-centre-engineer", "product-manager"],
+    practiceRoles: ["management"],
+    practiceArticles: ["the-customer-who-is-furious-and-correct", "prevention-that-survives-the-budget"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "sales-development-representative",
+    title: "Sales development representative",
+    group: "sells",
+    order: 5,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "A revenue-role lexicon distinguishing the top-of-funnel development role from the account executive who closes new business and the customer success manager who owns the account afterwards", url: "https://www.startups.com/lexicon/customer-success-manager" },
+        { label: "A business-to-business sales glossary describing how the revenue organisation divides between prospecting, closing and retention roles", url: "https://www.getchief.com/sales-glossary-terms/customer-success-manager-csm", sourceNote: "As with customer success, this role is defined by industry practice rather than by a professional body. The division of the revenue organisation into prospecting, closing and retention is recent and commercial in origin, which is why the sources are trade rather than institutional." },
+      ],
+    },
+    whatItIs:
+      "The first human contact between a company and a prospective customer. Sales development sits at the top of the funnel: researching accounts, reaching out, qualifying interest, and handing over a conversation that somebody else will close. The role exists because prospecting and closing reward different temperaments and different hours, and separating them lets each be done properly.",
+    theDay: [
+      "Researching accounts well enough that the first message is about them rather than about the product.",
+      "Outreach at volume, across whichever channels currently reach people.",
+      "Qualifying: establishing whether there is a problem, a budget and a reason to act now.",
+      "Handing over to the closing seller with enough context that the prospect avoids repeating themselves.",
+      "Recording what happened, since the pattern across hundreds of attempts is the useful output.",
+    ],
+    accountableFor: [
+      "Meetings that are genuinely qualified, rather than meetings that fill a calendar.",
+      "The record being accurate, since the next person works from it.",
+      "Representing the company in the first impression it makes.",
+    ],
+    measuredOn: [
+      "Qualified meetings booked, and the proportion that progress.",
+      "Activity: attempts, connections, conversations.",
+      "Pipeline generated, and eventually the revenue attributed to it.",
+    ],
+    receivesFrom: [
+      { who: "Marketing", what: "Leads, campaigns and the reason somebody might already be interested." },
+      { who: "Sales leadership", what: "The territory, the target accounts and the current priority." },
+      { who: "The closing sellers", what: "What a good meeting looks like, which is learned rather than briefed." },
+    ],
+    serves: [
+      { who: "Account executives", what: "Conversations with people who have a reason to have them." },
+      { who: "The company", what: "Pipeline, which is the input everything downstream depends on." },
+      { who: "Prospects", what: "A route to somebody who can answer, at the moment the question is live." },
+    ],
+    stakeholders: [
+      "Everybody who receives the outreach, most of whom did not ask for it.",
+      "The brand, which is shaped by how the first contact reads.",
+      "The forecast, which begins here.",
+    ],
+    requirements: [
+      "Resilience, since the role is built on a low response rate by design.",
+      "Research, because relevance is the whole difference between contact and noise.",
+      "Brevity in writing, held under pressure to say more.",
+      "Discipline with the record, since the value compounds across attempts rather than within one.",
+    ],
+    turnsOn:
+      "Activity and qualification pull against each other. A representative measured purely on meetings books meetings, and the closing seller spends the following month discovering which ones were real; one measured on meetings that progress works slower and hands over conversations worth having. The organisations that get this right define qualification jointly with the sellers who receive the work, which turns a handover into an agreement rather than a transfer.",
+    adjacentRoles: ["account-manager", "customer-success-manager", "channel-account-manager"],
+    practiceRoles: ["management"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "developer-advocate",
+    title: "Developer advocate",
+    group: "teaches",
+    order: 4,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "A survey of developer relations roles, placing the advocate at the intersection of customer success and product: writing sample code and reference integrations, running office hours, answering in community channels, filing detailed bug reports, and turning recurring developer pain into product proposals", url: "https://www.moesif.com/blog/developer-relations/definition/What-is-Developer-Relations-and-What-are-Common-Roles/" },
+        { label: "An account of developer relations as the umbrella term for the team building a community online and offline, covering advocacy, developer experience, events, community management and content", url: "https://www.marythengvall.com/blog/2019/5/22/what-is-developer-relations-and-why-should-you-care" },
+        { label: "A practitioner guide to developer relations, including internal advocacy — representing the developer's voice inside the company — as a core function alongside content, speaking and community engagement", url: "https://www.jonobacon.com/2023/04/02/what-is-developer-relations-devrel-a-complete-guide/", sourceNote: "Developer relations has no professional body and no framework definition; its literature is written by practitioners. The titles vary across companies — developer advocate, developer evangelist, developer programs manager, developer experience engineer — for work that overlaps heavily, which is the same pattern the federal work-role material records for network operations." },
+      ],
+    },
+    whatItIs:
+      "The engineer employed by a vendor whose work serves the people who use its technology. Advocacy sits inside developer relations, the broader function covering community, events, experience and content, and the advocate is its technical face: writing sample code, building reference integrations, answering in public channels, and carrying what the community says back into product and engineering.",
+    theDay: [
+      "Writing sample code and reference integrations that show the product doing something real.",
+      "Answering in public — forums, chat, issues — where the answer stays available to everybody who arrives later.",
+      "Speaking and running workshops, which is teaching to a room that chose to attend.",
+      "Filing the detailed bug report that a frustrated user would have abandoned.",
+      "Internal advocacy: carrying the community's difficulty into the company, in terms product and engineering can act on.",
+    ],
+    accountableFor: [
+      "Technical accuracy in public, under a company name.",
+      "The community's difficulties reaching the people who can resolve them.",
+      "Material that continues to work after the release it was written against.",
+    ],
+    measuredOn: [
+      "Adoption signals: sign-ups, integrations built, documentation and sample usage.",
+      "Community activity and sentiment.",
+      "Product changes traceable to feedback the role carried, which is the honest measure and the hardest to attribute.",
+    ],
+    receivesFrom: [
+      { who: "The developer community", what: "Questions, complaints and the workarounds they invented without being asked." },
+      { who: "Product and engineering", what: "What is coming, and the reasoning behind what is already there." },
+      { who: "Support", what: "The recurring case, which is community difficulty already quantified." },
+    ],
+    serves: [
+      { who: "External developers", what: "A route to making the product work, and somebody who answers." },
+      { who: "Product management", what: "Field evidence with the vocabulary of the people who hit the problem." },
+      { who: "The company", what: "Adoption built on capability rather than on persuasion." },
+    ],
+    stakeholders: [
+      "The wider community, including the people who never post and read everything.",
+      "Marketing, whose messages the advocate's credibility either supports or contradicts.",
+      "Engineering, whose backlog receives what the advocate carries.",
+    ],
+    requirements: [
+      "Engineering ability, since credibility comes from building the thing rather than describing it.",
+      "Writing and speaking for an audience that will check the claims.",
+      "The willingness to say a product does something partially, in public, on the company's account.",
+      "Comfort with a contribution that is visible everywhere and attributable almost nowhere.",
+    ],
+    turnsOn:
+      "The role is paid by one side and useful to the other, and the value depends entirely on the community believing the second part. That belief is built by the unglamorous half: filing the bug, saying plainly where the product falls short, and returning later with what changed. Advocates who do that are trusted and their companies benefit; the internal half of the job is what makes the external half true, which is why measuring only outbound activity produces a function that gradually stops working.",
+    adjacentRoles: ["technical-instructor", "product-manager", "instructional-designer"],
+    practiceRoles: ["field", "design"],
+    practiceArticles: ["feeding-the-fix-back", "problem-report-intake", "knowledge-capture-that-gets-found"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "community-manager",
+    title: "Community manager",
+    group: "teaches",
+    order: 5,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "A guide to developer relations describing the community manager as responsible for fostering the community around a company's products: organising meetups, managing online forums and running events", url: "https://dev.to/george_udonte/decoding-developer-relations-a-comprehensive-guide-to-devrel-4dfp" },
+        { label: "An account of developer relations as an umbrella covering advocacy, developer experience, events, community management and content, with community building as the team's primary responsibility", url: "https://www.marythengvall.com/blog/2019/5/22/what-is-developer-relations-and-why-should-you-care", sourceNote: "As with developer advocacy, community management in technology has no professional body; the practice is documented by practitioners rather than certified by an institution. The role also exists well outside technology, and the sources here describe its technical form." },
+      ],
+    },
+    whatItIs:
+      "The person who tends the space where users of a technology meet each other. Where an advocate teaches and carries feedback, a community manager builds the conditions in which people help one another: the forum, the meetups, the events, the norms, and the recognition that keeps contributors contributing. The output is a group of people who would continue without the company, which is both the goal and the risk.",
+    theDay: [
+      "Moderating, which is mostly invisible and entirely load-bearing.",
+      "Recognising contributors, since attention is the currency a volunteer community actually runs on.",
+      "Running events and meetups, online and in person.",
+      "Connecting people who have a question to people who solved it, rather than answering everything centrally.",
+      "Reporting sentiment inward, including the parts the company finds unwelcome.",
+    ],
+    accountableFor: [
+      "The space staying usable: on topic, civil and worth returning to.",
+      "Norms that are applied evenly, including to people the company values commercially.",
+      "An accurate account of what the community thinks, rather than a comfortable one.",
+    ],
+    measuredOn: [
+      "Active participation, and the proportion of questions answered by members rather than by staff.",
+      "Retention of contributors, and new ones arriving.",
+      "Event attendance and the activity that follows it.",
+    ],
+    receivesFrom: [
+      { who: "The community", what: "Everything, including the parts posted at two in the morning." },
+      { who: "Advocacy and support", what: "Technical answers, and the recurring questions worth addressing structurally." },
+      { who: "The company", what: "Programmes, budget and whatever it hopes the community will do." },
+    ],
+    serves: [
+      { who: "Community members", what: "A place where their question gets a real answer and their contribution is noticed." },
+      { who: "The company", what: "A relationship with its users that survives individual staff and individual releases." },
+      { who: "New arrivals", what: "A path from lurking to contributing." },
+    ],
+    stakeholders: [
+      "Long-standing contributors, whose goodwill is the community's actual capital.",
+      "Marketing, which frequently wants to use the space for messages.",
+      "Legal and trust functions, where moderation meets conduct.",
+    ],
+    requirements: [
+      "Even handling of people, sustained over years rather than campaigns.",
+      "Judgement about when to intervene and when to let a thread resolve itself.",
+      "Enough technical grounding to tell a substantive disagreement from a personal one.",
+      "The standing to tell the company that a plan would damage the trust it depends on.",
+    ],
+    turnsOn:
+      "A community succeeds when members answer each other, and that success looks like the company doing less. Every intervention that resolves a question centrally is a question the community stopped needing to answer, so the discipline is restraint: connecting people, recognising the ones who help, and leaving room for an answer to arrive from somebody with no badge. Managers who hold that line build something that outlasts them, and have to explain the quieter numbers meanwhile.",
+    adjacentRoles: ["developer-advocate", "technical-instructor", "knowledge-base-manager"],
+    practiceRoles: ["field"],
+    practiceArticles: ["the-queue-as-a-psychological-object", "working-with-people-who-are-frightened"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "penetration-tester",
+    title: "Penetration tester",
+    group: "defends",
+    order: 8,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "ISACA - the penetration tester profile: testing the effectiveness of security defences by mimicking the actions of real attackers, typically within the bounds of agreed rules of engagement", url: "https://www.isaca.org/career-center/career-journey/vulnerability-discovery-and-assessment/penetration-tester" },
+        { label: "Canadian Centre for Cyber Security - the penetration tester profile in the national cyber security skills framework, describing it as a tier two or three position normally preceded by three to five years in security operations, and naming the consequence of poor judgement: vulnerabilities mis-identified or missed", url: "https://www.cyber.gc.ca/en/education-community/academic-outreach-cyber-skills-development/canadian-cyber-security-skills-framework/penetration-tester" },
+        { label: "CISA - the Vulnerability Assessment Analyst work role, whose skills include conducting vulnerability scans, using penetration testing tools and techniques, and conducting application vulnerability assessments", url: "https://www.cisa.gov/careers/work-rolesvulnerability-assessment-analyst" },
+      ],
+    },
+    whatItIs:
+      "The specialist who tests defences by behaving like an attacker, inside an agreement that says exactly what is permitted. The national skills framework places it at the second or third tier, normally reached after several years in security operations, which is worth stating because the role is frequently imagined as an entry point and is in practice an advanced one.",
+    theDay: [
+      "Reading the scope and the rules of engagement until both are unambiguous, since everything afterwards depends on them.",
+      "Reconnaissance, scanning and enumeration, which is most of the time and produces most of the findings.",
+      "Exploiting what was found, to establish impact rather than to demonstrate cleverness.",
+      "Documenting as it happens, because a finding reproduced two weeks later from memory is a finding somebody will dispute.",
+      "Writing the report, which is the deliverable the client actually buys.",
+    ],
+    accountableFor: [
+      "Staying inside the authorised scope, at every moment.",
+      "Findings that are real, reproducible and ranked by what they would cost this organisation.",
+      "A report that the people who have to fix things can act on.",
+    ],
+    measuredOn: [
+      "Findings of genuine severity, rather than volume.",
+      "Engagements delivered to the statement of work.",
+      "Remediation that follows, which belongs to somebody else and reflects the report's quality.",
+    ],
+    receivesFrom: [
+      { who: "The client", what: "Scope, rules of engagement, and the authorisation that makes the work lawful." },
+      { who: "Threat intelligence and research", what: "Techniques currently in use, which is what makes the simulation realistic." },
+      { who: "Previous reports", what: "What was found last time, and what happened to it." },
+    ],
+    serves: [
+      { who: "The defenders", what: "Evidence of what an adversary could reach, obtained safely." },
+      { who: "Leadership", what: "A view of exposure grounded in demonstration rather than in inventory." },
+      { who: "The vulnerability management function", what: "The starting list, which they then carry over time." },
+    ],
+    stakeholders: [
+      "Everybody whose systems are in scope, most of whom learn about it afterwards.",
+      "Legal, since authorisation is what separates this work from the offence it resembles.",
+      "The teams whose weekend a critical finding will occupy.",
+    ],
+    requirements: [
+      "Depth across systems, networks and applications, and the patience for the unglamorous enumeration that precedes anything interesting.",
+      "Precision with scope, held under the temptation of an interesting path leading outside it.",
+      "Writing that an engineer can act on and an executive can weigh, in the same document.",
+      "Judgement about impact, since a technically real finding with no consequence spends attention a serious one needed.",
+    ],
+    turnsOn:
+      "The technical work is shared with the adversary; the authorisation is what makes it a profession. Scope, rules of engagement and the discipline to stay inside them are the whole distinction, and they are also what makes the findings usable — a test conducted where somebody agreed it would be produces a report the organisation can act on, while anything obtained outside that boundary creates a problem rather than a finding. The good ones treat the scope document as the first deliverable rather than as paperwork preceding the real work.",
+    adjacentRoles: ["vulnerability-analyst", "incident-responder", "security-operations-analyst"],
+    practiceRoles: ["second-line", "design"],
+    practiceArticles: ["building-an-evidence-pack", "evidence-that-convinces-next-quarter", "what-to-capture-before-you-know"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "it-auditor",
+    title: "IT auditor",
+    group: "defends",
+    order: 9,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "ISACA - the IT audit management career area, and the Certified Information Systems Auditor credential established in 1978 as the standard for those who audit and assess an organisation's information technology", url: "https://www.isaca.org/career-center/career-journey/it-audit-management" },
+        { label: "ISACA - the IT audit manager profile, covering the pre-planning, planning, fieldwork and reporting phases of an engagement, and the documentation of control strengths, weaknesses and gaps", url: "https://www.isaca.org/career-center/career-journey/it-audit-management/it-audit-manager" },
+        { label: "ISACA - ITAF, the framework establishing standards for audit and assurance practitioners' roles, ethics, expected professional behaviour and required knowledge, alongside COBIT for the governance of enterprise technology", url: "https://www.isaca.org/career-center/career-journey/it-audit-management/it-audit-director" },
+      ],
+    },
+    whatItIs:
+      "The person who establishes whether the controls an organisation believes it has are actually there and actually working. Audit runs as an engagement — planning, fieldwork, reporting — and produces evidence rather than opinion. The profession has its own framework of standards covering not only method but ethics and expected behaviour, which exists because the value of the finding rests entirely on the independence of whoever produced it.",
+    theDay: [
+      "Planning an engagement against objectives that connect to what the organisation is actually exposed to.",
+      "Fieldwork: sampling, testing, and asking for the evidence rather than the assurance.",
+      "Documenting control strengths, weaknesses and gaps, in workpapers another auditor could follow.",
+      "Discussing findings with the people they concern, before the report reaches anybody above them.",
+      "Reporting, and then following up on what was agreed and what actually changed.",
+    ],
+    accountableFor: [
+      "Findings supported by evidence that survives being disputed.",
+      "Workpapers complete enough for a reviewer to reach the same conclusion.",
+      "Independence, maintained visibly as well as actually.",
+    ],
+    measuredOn: [
+      "The audit plan delivered, and coverage across the estate.",
+      "Findings accepted, and remediation completed rather than agreed.",
+      "Regulatory and external audit outcomes, where internal work is examined by someone else.",
+    ],
+    receivesFrom: [
+      { who: "The teams under review", what: "Evidence, at whatever completeness their day allows." },
+      { who: "The audit committee or board", what: "The mandate, and the plan's priorities." },
+      { who: "Risk and compliance functions", what: "The obligations the organisation is being measured against." },
+    ],
+    serves: [
+      { who: "The board", what: "An independent view of whether the controls described in the reporting exist." },
+      { who: "Management", what: "Findings early enough to fix before somebody external arrives." },
+      { who: "The teams audited", what: "A written basis for the investment they have been requesting." },
+    ],
+    stakeholders: [
+      "Regulators and external auditors, who read the same estate afterwards.",
+      "Customers, whose data the controls exist to protect.",
+      "Every engineer whose weekend a finding turns into remediation.",
+    ],
+    requirements: [
+      "Method: sampling, evidence and the discipline to test rather than to accept.",
+      "Technical literacy across the estate, sufficient to know what evidence would look like.",
+      "Writing that states a finding, its basis and its consequence separately.",
+      "The independence to record a finding about a team whose cooperation the next engagement needs.",
+    ],
+    turnsOn:
+      "Independence is the product, and it is spent by helpfulness. An auditor who begins designing the fix becomes an adviser to the thing they will later examine, and the next report carries their own recommendation as its subject — which is why the profession puts ethics and expected behaviour into the same framework as method. The useful position is close enough to understand the estate and separate enough that the finding still means something, and holding it takes deliberate effort in every friendly conversation.",
+    adjacentRoles: ["security-leader", "vulnerability-analyst", "systems-analyst", "management-consultant"],
+    practiceRoles: ["management", "design"],
+    practiceArticles: ["evidence-that-convinces-next-quarter", "verifying-without-trusting", "documenting-for-the-inheritor"],
+    relatedTools: [],
     updated: "2026-08-15",
   },
 ]);
@@ -1618,6 +2519,58 @@ export function rolesInGroup(group: RoleGroup): Role[] {
 /** Look one up. */
 export function findRole(slug: string): Role | undefined {
   return ROLES.find((r) => r.slug === slug);
+}
+
+/**
+ * Roles that name this one as somewhere their holders go, computed rather than
+ * maintained.
+ *
+ * *** PART II OF THE ENRICHMENT ROUND, SOLVED MECHANICALLY (2026-08-15) ***
+ *
+ * The link guard found 115 adjacency claims and only 13 mutual pairs. The
+ * obvious repair — making every claim symmetric — is the wrong one: the
+ * technical assistance centre is named by eight roles and would end up with
+ * eleven links, which helps nobody.
+ *
+ * ADJACENCY IS DIRECTIONAL. "Where it leads" is a claim about movement from
+ * here, and a hub being named by many is correct rather than an omission. So
+ * the reverse view is DERIVED at render time: every page shows where it leads
+ * AND who leads here, without either list being maintained by hand.
+ *
+ * That is the whole of the reverse-link problem for this corpus: forward links
+ * are written by whoever writes the page, and nobody writes the backward ones,
+ * so the backward ones are computed instead.
+ */
+export function rolesLeadingHere(slug: string): Role[] {
+  return ROLES.filter((r) => r.adjacentRoles.includes(slug)).sort((a, b) =>
+    a.title.localeCompare(b.title),
+  );
+}
+
+/**
+ * Roles that name a given practice article, and roles that name a given tool.
+ *
+ * *** THE CROSS-CORPUS REVERSE LINKS, DERIVED (2026-08-15) ***
+ *
+ * The Practice and the tool catalogue hold no role field, and adding one to
+ * each would mean maintaining the same relation in two places and watching them
+ * disagree. They do not need to: a role already states which articles and tools
+ * belong to it, so the reverse view is a filter over that.
+ *
+ * The same move as rolesLeadingHere(), applied across corpora rather than
+ * within one: THE FORWARD CLAIM IS WRITTEN ONCE AND EVERY DIRECTION IS READ
+ * FROM IT.
+ */
+export function rolesUsingPracticeArticle(articleSlug: string): Role[] {
+  return ROLES.filter((r) => (r.practiceArticles ?? []).includes(articleSlug)).sort(
+    (a, b) => a.title.localeCompare(b.title),
+  );
+}
+
+export function rolesUsingTool(toolSlug: string): Role[] {
+  return ROLES.filter((r) => r.relatedTools.includes(toolSlug)).sort((a, b) =>
+    a.title.localeCompare(b.title),
+  );
 }
 
 /** How many of each provenance kind — used by the section page. */

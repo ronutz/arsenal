@@ -23,4 +23,4 @@ export const LOCALE_COVERAGE: Record<string, number> = {
 };
 
 /** English keys counted at generation time (the denominator). */
-export const LOCALE_COVERAGE_DENOMINATOR = 10788;
+export const LOCALE_COVERAGE_DENOMINATOR = 10791;

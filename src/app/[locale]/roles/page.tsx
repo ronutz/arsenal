@@ -29,16 +29,16 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
   const counts = provenanceCounts();
 
   return (
-    <main className="page">
+    <main>
       <section className="section">
         <div className="container section-narrow">
-          <p className="eyebrow">{t("eyebrow")}</p>
-          <h1 className="page-title">{t("title")}</h1>
-          <p className="page-lede">{t("lede")}</p>
+          <p className="hero-eyebrow">{t("eyebrow")}</p>
+          <h1 className="page-hero-title">{t("title")}</h1>
+          <p className="page-hero-lede">{t("lede")}</p>
           {/* The provenance summary sits at the top because it is the claim the
               whole section makes about itself. Counted from the data, so the
               sentence and the corpus cannot disagree. */}
-          <p className="dig-record-explain mono">
+          <p className="practice-part-card-count mono">
             {t("provenanceSummary", { held: counts.held, alongside: counts.alongside, documented: counts.documented })}
           </p>
           {/* Grades run across every entry below, so the door to them sits with
@@ -55,16 +55,18 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
         return (
           <section className="section" key={group} id={group}>
             <div className="container section-narrow">
-              <h2 className="section-title">{t(`groups.${group}.title`)}</h2>
-              <p className="section-lede">{t(`groups.${group}.lede`)}</p>
-              <ul className="dig-records">
+              <h2 className="learn-card-title">{t(`groups.${group}.title`)}</h2>
+              <p className="practice-part-card-note">{t(`groups.${group}.lede`)}</p>
+              <ul className="learn-grid">
                 {roles.map((r) => (
-                  <li key={r.slug} className="dig-record">
-                    <Link href={`/${locale}/roles/${r.slug}`} className="lineage-deal-name">
-                      {r.title}
+                  <li key={r.slug} className="learn-grid-item">
+                    <Link href={`/${locale}/roles/${r.slug}`} className="learn-card">
+                      <h3 className="learn-card-title">{r.title}</h3>
+                      <p className="learn-card-summary">{r.whatItIs.split(". ")[0]}.</p>
+                      <p className="practice-part-card-count mono">
+                        {t(`provenance.${r.provenance.kind}`)}
+                      </p>
                     </Link>
-                    <span className="dig-record-type">{t(`provenance.${r.provenance.kind}`)}</span>
-                    <p className="dig-record-explain">{r.whatItIs.split(". ")[0]}.</p>
                   </li>
                 ))}
               </ul>
@@ -75,7 +77,7 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
 
       <section className="section">
         <div className="container section-narrow">
-          <p className="dig-record-explain">{t("countNote", { count: ROLES.length })}</p>
+          <p className="learn-card-summary">{t("countNote", { count: ROLES.length })}</p>
         </div>
       </section>
     </main>

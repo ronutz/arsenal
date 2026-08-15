@@ -15755,7 +15755,9 @@
     "backToIndex": "All of The Practice",
     "provenanceTitle": "Where this comes from",
     "provenanceBody": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything. What is here is the part I have lived.\n\nI executed and I planned. I audited other people's estates and oversaw work I did not carry out myself. I was the hands on the keyboard, and I was the name on the rota when it failed at night. I trained operations staff — one at a time at a console, and rooms full of them at once. Some of this I did for vendors, some for integrators, some for the customer who had to live with the result on Monday.\n\nNone of it is theory I have read about. It is one career, and this is what it taught me.",
-    "articleCount": "{n, plural, =0 {no articles yet} one {# article} other {# articles}}"
+    "articleCount": "{n, plural, =0 {no articles yet} one {# article} other {# articles}}",
+    "whoDoesThis": "Who does this work",
+    "rolesAria": "Roles that do this work"
   },
   "contributeTools": {
     "translationsTitle": "Improve the translations",
@@ -15819,7 +15821,8 @@
       "turnsOn": "What the job turns on",
       "adjacent": "Where it leads",
       "practice": "The work itself",
-      "sources": "Where this comes from"
+      "sources": "Where this comes from",
+      "leadHere": "Roles that lead here"
     },
     "practiceLede": "The Practice covers how this work is done — triage, escalation, evidence, handover — across the whole corpus.",
     "practiceLink": "Read The Practice",
