@@ -93,7 +93,41 @@ for (const [from, list] of adjacency) {
   }
 }
 
+// --- THE COVERAGE REPORT (Part IV item 2 of the enrichment round) ---------
+//
+// What has NO inbound link at all. Reported rather than enforced: a practice
+// article nobody's job claims may be a gap in the roles corpus OR an article
+// about something no single role owns, and a tool nobody claims may simply be
+// for a role this site has yet to describe. The number is the useful thing;
+// forcing it to zero would mean manufacturing claims.
+const claimedArticles = new Set();
+const claimedTools = new Set();
+for (const raw of blocks) {
+  const list = (field) => {
+    const m = new RegExp(`${field}: \\[([^\\]]*)\\]`).exec(raw);
+    return m ? [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]) : [];
+  };
+  for (const a of list("practiceArticles")) claimedArticles.add(a);
+  for (const t of list("relatedTools")) claimedTools.add(t);
+}
+const orphanArticles = [...practiceSlugs].filter((a) => !claimedArticles.has(a)).sort();
+const orphanTools = [...availableTools].filter((t) => !claimedTools.has(t)).sort();
+const orphanRoles = [...roleSlugs].filter(
+  (r) => ![...adjacency.values()].some((l) => l.includes(r)),
+).sort();
+
 const toolRefs = [...adjacency.keys()].length;
+console.log(
+  `[check-role-links] COVERAGE: ${claimedArticles.size}/${practiceSlugs.size} practice articles claimed, ` +
+  `${claimedTools.size}/${availableTools.size} tools claimed, ` +
+  `${roleSlugs.size - orphanRoles.length}/${roleSlugs.size} roles named by another role.` +
+  (orphanArticles.length > 0
+    ? `\n                   articles no role claims: ${orphanArticles.join(", ")}`
+    : "") +
+  (orphanRoles.length > 0
+    ? `\n                   roles nothing points at: ${orphanRoles.join(", ")}`
+    : ""),
+);
 console.log(
   `[check-role-links] OK: ${toolRefs} role(s); every adjacency, tool, practice tag and chosen article resolves (${practiceSlugs.size} articles available).` +
   (asymmetric.length > 0
