@@ -189,7 +189,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Enabling partner engineers: workshops, demonstrations, and the answering of the same foundational question for a dozen different companies.",
       "Enabling partner SALESPEOPLE, which is separate work with a separate vocabulary: what the product is for, which conversation opens the door, and which technical detail belongs in a first meeting.",
       "Running the proof of concept — PoC, showing the thing works — and the proof of value — PoV, showing the thing is worth what it costs — as the partner's technical arm, in front of the partner's customer.",
-      "Evangelising: making the case for a technology to engineers who have a working alternative and a reason to keep it.",
+      "Making the technical case for a product to engineers who already run something that works and have reasons to keep it, which is persuasion resting on evidence rather than on enthusiasm.",
       "Brokering between the partner and the vendor on technical matters, so that a question asked in one company's vocabulary arrives in the other's and returns in a form the asker can use.",
       "Standing in for the vendor's systems engineer where the deal is too small for the vendor to staff, which is most deals.",
       "Building the demonstration and lab environments a partner borrows rather than buys.",
@@ -410,7 +410,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     ],
     turnsOn:
       "This tier is a gate, and holding it well runs in two directions at once. A case passed upward that a careful hour would have resolved spends developer time the whole customer base is waiting on; a genuine defect held down here becomes a customer living with a workaround for a release cycle. The engineers who thrive here are the ones who make that call quickly and then write the case up so completely that whichever way it went, nobody has to relitigate it.",
-    adjacentRoles: ["technical-assistance-centre-engineer", "field-network-engineer", "high-touch-operations-manager"],
+    adjacentRoles: ["technical-assistance-centre-engineer", "network-software-engineer", "field-network-engineer", "high-touch-operations-manager"],
     practiceRoles: ["second-line"],
     relatedTools: ["f5-eth-trailer-decoder", "fortios-flow-debug-builder"],
     updated: "2026-08-14",
@@ -659,7 +659,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       ],
     },
     whatItIs:
-      "The engineer a customer reaches when they contact the vendor. A technical assistance centre runs a queue against a clock, in tiers, around the world, and the role is the first place a fault becomes somebody's named responsibility. It is the largest single population of engineers most vendors employ, and the one that meets the product most often. This is the second line; what it escalates goes to third-line product support, and from there to the developers.",
+      "The engineer a customer reaches when they contact the vendor. A technical assistance centre runs a queue against a clock, in tiers, around the world, and the role is the first place a fault becomes somebody's named responsibility. It is the largest single population of engineers most vendors employ, and the one that meets the product most often. This is the second line inside the VENDOR; what it escalates goes to third-line product support, and from there to the developers. The customer has tiers of its own, beginning at their service desk, and a case crosses between the two ladders at the point where the organisation running the product asks the organisation that made it.",
     theDay: [
       "Taking ownership of a case, which begins by establishing what actually happened rather than what was reported.",
       "Gathering the evidence that distinguishes between the plausible explanations.",
@@ -950,6 +950,664 @@ export const ROLES: readonly Role[] = Object.freeze([
     relatedTools: [],
     updated: "2026-08-14",
   },
+
+  // --- MAKES ---------------------------------------------------------------
+  {
+    slug: "network-software-engineer",
+    title: "Network software engineer",
+    group: "makes",
+    order: 1,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "Cisco - IOS XR software architecture: independent protected processes, message passing between components, and the two-stage commit that constrains how configuration changes are written", url: "https://www.cisco.com/c/en/us/products/collateral/ios-nx-os-software/ios-xr-software/index.html" },
+        { label: "Juniper - Junos OS Evolved architecture: a distributed state store from which a restarted process retrieves its state, including on a different node", url: "https://www.juniper.net/documentation/us/en/software/junos/junos-evolved-overview/topics/concept/evo-overview.html" },
+        { label: "Arista - EOS architecture: an unmodified Linux kernel with a central state database, where processes publish and subscribe rather than communicating directly", url: "https://www.arista.com/en/products/eos" },
+      ],
+    },
+    whatItIs:
+      "The engineer who writes the operating system a network runs on. It is software engineering shaped by an unusual set of constraints: the code runs unattended for years on equipment nobody can reach, an upgrade is a maintenance window somebody negotiated weeks earlier, and a defect is discovered by a stranger at three in the morning. The architecture of the platform decides how much of that pressure reaches any individual change.",
+    theDay: [
+      "Writing and reviewing code against a protocol specification that other implementations also read, and read differently.",
+      "Working within the platform's architecture, which sets the terms: a shared address space makes one defect everybody's outage, and a state store makes a process restartable.",
+      "Testing against hardware, against scale, and against the interoperability cases that only appear when another vendor is on the far end.",
+      "Taking a reproduced defect from third-line support and finding what in the code produced it.",
+      "Deciding which release carries a fix, which is a conversation about risk rather than about code.",
+    ],
+    accountableFor: [
+      "Code that behaves correctly at scale and under the failure conditions the platform promises to survive.",
+      "Interoperability with implementations written by other people from the same specification.",
+      "The fix arriving in a release, on a schedule support and customers were told about.",
+    ],
+    measuredOn: [
+      "Defect escape rate, which is what customers experience as quality.",
+      "Delivery against the release train, which moves for the whole portfolio rather than for one feature.",
+      "Test coverage and the results of the regression suite.",
+    ],
+    receivesFrom: [
+      { who: "Third-line product support", what: "Reproduced defects with the evidence attached, which is the difference between a fix and an investigation." },
+      { who: "Product management", what: "Requirements, priorities, and the customers behind them." },
+      { who: "Standards bodies and specifications", what: "The behaviour the code has to agree with." },
+    ],
+    serves: [
+      { who: "Every engineer running the release", what: "Software that behaves as documented, including when something fails." },
+      { who: "Support, at every tier", what: "Fixes, workarounds and the source-level explanation behind them." },
+      { who: "The platform's own architecture", what: "Changes that respect the constraints the design was built to give." },
+    ],
+    stakeholders: [
+      "The customers whose networks carry the release, most of whom will never report anything.",
+      "Support organisations worldwide, whose case volume is downstream of this code.",
+      "Other vendors, whose implementations have to interoperate with this one.",
+    ],
+    requirements: [
+      "Systems programming, and the discipline that comes from code running where nobody can attach a debugger.",
+      "Reading specifications closely, since interoperability is agreement about ambiguity.",
+      "Comfort with a release cadence measured in months and a support lifetime measured in years.",
+      "The judgement to weigh a fix against the risk of shipping it, which is a decision about other people's networks.",
+    ],
+    turnsOn:
+      "The architecture decides how expensive a mistake is, and the architecture was chosen long before the current engineer arrived. On a platform where every process shares one address space, a defect in one feature reaches everything, so caution is the only available safety mechanism. On a platform where a process can be restarted from a state store, the same defect is contained, and engineering effort moves from avoiding faults to recovering from them. Understanding which platform you are writing for is therefore the first thing to learn about the job.",
+    adjacentRoles: ["product-support-engineer", "technical-assistance-centre-engineer"],
+    practiceRoles: ["design"],
+    relatedTools: ["network-os-comparer"],
+    updated: "2026-08-14",
+  },
+
+  {
+    slug: "service-desk-analyst",
+    title: "Service desk analyst",
+    group: "runs",
+    order: 2,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "PeopleCert - ITIL 4 Practitioner: Service Desk, covering the practice as the central point of contact between the service provider and its users, its success factors and its key metrics", url: "https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1/itil4-practices-service-desk-3706" },
+        { label: "ITIL 4 service desk practice: capturing demand for incident resolution and service requests, and acting as the entry point and single point of contact for all users", url: "https://itsm.tools/itil-4-service-desk-practice-guide/" },
+        { label: "A survey of the practice, including the distinction between a help desk oriented to break-fix and a service desk that owns intake, routing and accountability through to resolution", url: "https://www.siit.io/blog/service-desks-guide" },
+      ],
+    },
+    whatItIs:
+      "The single point of contact between an organisation and the people who use its technology. The framework defines the service desk as the practice that captures demand for incident resolution and service requests, and the phrase that matters in that definition is single point of contact: a user reports a problem to one place, and the desk works out who owns it.",
+    theDay: [
+      "Logging, categorising and prioritising whatever arrives, across every channel the organisation offers.",
+      "Investigating and diagnosing far enough to resolve at first contact, which is where the value concentrates.",
+      "Routing what remains to whichever specialist team owns it, which requires knowing the whole organisation.",
+      "Keeping ownership of the ticket through the routing, so the user has one thread rather than several.",
+      "Communicating status, which is most of what a waiting user actually wants.",
+    ],
+    accountableFor: [
+      "Every contact being recorded, categorised and visible.",
+      "Ownership through to resolution, including while somebody else does the work.",
+      "The user knowing where their request stands.",
+    ],
+    measuredOn: [
+      "First-contact resolution rate.",
+      "Time to respond and time to resolve against the service level.",
+      "User satisfaction, and the volume handled per analyst.",
+    ],
+    receivesFrom: [
+      { who: "Users", what: "The problem as they experience it, described in their own vocabulary." },
+      { who: "Specialist teams", what: "Resolutions, workarounds and the knowledge that raises first-contact resolution." },
+      { who: "Change and release management", what: "What is about to happen, which explains tomorrow's call volume." },
+    ],
+    serves: [
+      { who: "Everyone in the organisation", what: "One door, so that nobody needs to know which team owns their problem." },
+      { who: "Specialist teams", what: "A filtered queue, with the routine handled before it reaches them." },
+      { who: "IT management", what: "The clearest available picture of what the organisation is struggling with." },
+    ],
+    stakeholders: [
+      "Department heads whose people are waiting.",
+      "The teams downstream, whose day is shaped by what the desk routes to them.",
+      "Vendors and managed providers, where a ticket eventually crosses out of the organisation.",
+    ],
+    requirements: [
+      "Breadth across everything the organisation runs, at the depth first contact requires.",
+      "Questioning that gets from a described symptom to a usable description.",
+      "Written clarity, since the ticket is what every later person reads.",
+      "Steadiness with people who are frustrated and whose day this has interrupted.",
+    ],
+    turnsOn:
+      "The desk exists so that the routing knowledge lives in one place rather than in every head in the organisation. That makes first-contact resolution the honest measure and volume a misleading one: an analyst who resolves fewer tickets while raising what the team can handle alone has improved the service, and the numbers show it slowly. It also explains the ceiling — a desk kept purely at intake stays a switchboard, and one given time to learn becomes the reason specialists are left alone.",
+    adjacentRoles: ["managed-service-provider-engineer", "technical-assistance-centre-engineer"],
+    practiceRoles: ["first-line"],
+    relatedTools: [],
+    updated: "2026-08-14",
+  },
+
+  {
+    slug: "systems-analyst",
+    title: "Systems analyst",
+    group: "runs",
+    order: 3,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "NICE Framework systems analysis: studying an organisation's current systems and procedures and designing solutions, bringing business and information technology together by understanding the needs and limitations of both", url: "https://niccs.cisa.gov/tools/nice-framework" },
+        { label: "NIST - occupations, jobs and work roles: a work role is a grouping of work for which someone is responsible or accountable, and is distinct from a job title", url: "https://www.nist.gov/itl/applied-cybersecurity/nice/nice-framework-resource-center/resources/occupations-jobs-and-work" },
+      ],
+    },
+    whatItIs:
+      "The role that faces two directions at once. The prefix names the subject — network analyst, security analyst, data analyst — and the word analyst names the stance: studying what an organisation currently runs and what it currently needs, and describing each to the other. The framework puts it plainly as bringing business and technology together by understanding the needs and limitations of both.",
+    theDay: [
+      "Studying the systems and procedures as they actually operate, which differs from how they were designed and from how they are described.",
+      "Gathering requirements from people whose expertise is their own work rather than technology.",
+      "Translating those requirements into something an engineer can build, and translating the constraints back into something a business can decide with.",
+      "Measuring: usage, capacity, incidents, cost, and whatever else turns an opinion about the estate into a number.",
+      "Documenting the current state, which is frequently the only accurate record the organisation holds.",
+    ],
+    accountableFor: [
+      "The description of the current state being true.",
+      "Requirements that survive contact with the people who have to build against them.",
+      "Analysis that leads to a decision rather than to a further meeting.",
+    ],
+    measuredOn: [
+      "Recommendations adopted, and the outcomes they produced.",
+      "Reporting delivered on the cadence the organisation runs on.",
+      "Requirements accepted without rework by the teams who implement them.",
+    ],
+    receivesFrom: [
+      { who: "The business", what: "What they need, expressed in the vocabulary of their own work." },
+      { who: "Engineering and operations", what: "What the estate can do, and at what cost." },
+      { who: "Monitoring and inventory", what: "The measurements, at whatever quality the organisation maintains them." },
+    ],
+    serves: [
+      { who: "Decision makers", what: "A picture of the current state accurate enough to act on." },
+      { who: "Engineers", what: "Requirements with the reasoning attached, so a trade-off can be made rather than guessed." },
+      { who: "The organisation's memory", what: "Written knowledge of how the estate reached its present shape." },
+    ],
+    stakeholders: [
+      "Every team whose work the recommendation changes.",
+      "Finance, since analysis frequently arrives attached to a budget request.",
+      "Audit and compliance, for whom the documented current state is evidence.",
+    ],
+    requirements: [
+      "Fluency in two vocabularies, and the patience to move between them all day.",
+      "Enough technical depth to be corrected by an engineer and to notice when the correction is wrong.",
+      "Writing, since the analysis outlives the meeting that produced it.",
+      "Comfort delivering a finding that somebody in the room would prefer stayed unmeasured.",
+    ],
+    turnsOn:
+      "The analyst holds the only complete picture in the room, and holds it without authority to act on it. That combination is the role: the business knows what it wants, engineering knows what is possible, and the person who knows both is the one who has to make each legible to the other. Influence comes from the description being trusted, which is why accuracy about the current state matters more here than elegance about the future one.",
+    adjacentRoles: ["service-desk-analyst", "security-operations-analyst", "network-consulting-engineer"],
+    practiceRoles: ["design", "second-line"],
+    relatedTools: ["network-os-comparer"],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "security-leader",
+    title: "Security leader",
+    group: "defends",
+    order: 4,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "NICCS, CISA - the Executive Cybersecurity Leadership work role: establishing vision and direction for an organisation's cybersecurity operations and resources, with authority to make and execute decisions that impact the organisation broadly, including policy approval and stakeholder engagement", url: "https://niccs.cisa.gov/tools/nice-framework/work-role/executive-cybersecurity-leadership" },
+        { label: "NICCS, CISA - the NICE Framework's Oversight and Governance category, which groups the roles providing leadership, management, direction and advocacy so that an organisation can manage cybersecurity risk", url: "https://niccs.cisa.gov/tools/nice-framework" },
+      ],
+    },
+    whatItIs:
+      "The top of the management arm, in security. The framework describes the work as establishing vision and direction for an organisation's cybersecurity operations and resources, with the authority to make decisions that reach the whole organisation, approve policy and engage stakeholders. The ladder below it runs manager, then director, then this — and each rung trades proximity to the work for reach across it.",
+    theDay: [
+      "Setting direction, and holding it while the quarter argues with it.",
+      "Acquiring resources: budget, headcount, and the authority to require things of teams elsewhere.",
+      "Approving policy, and owning the consequences when it is applied to a business the policy inconveniences.",
+      "Advising senior management and the board, in terms of risk to the organisation rather than in terms of technology.",
+      "Communicating the value of the programme to stakeholders, which is the task the framework names and the one most easily deferred.",
+    ],
+    accountableFor: [
+      "The organisation's security posture, including the parts owned by teams elsewhere.",
+      "The programme having a strategy that connects to the organisation's actual risks.",
+      "What the board is told, and whether it was accurate at the time.",
+    ],
+    measuredOn: [
+      "Risk reduction, which resists measurement and is measured anyway.",
+      "Incidents and their consequences, which are visible and partly outside the role's control.",
+      "Audit and regulatory outcomes, and programme delivery against plan.",
+    ],
+    receivesFrom: [
+      { who: "The operations and response teams", what: "What is happening, at the fidelity the tooling allows." },
+      { who: "The business", what: "Where it is going, which decides what has to be protected next." },
+      { who: "Regulators, auditors and insurers", what: "Obligations that arrive with dates attached." },
+    ],
+    serves: [
+      { who: "The board and executive", what: "Risk expressed in terms they can decide with." },
+      { who: "The security teams", what: "Direction, resources, and cover when a decision proves unpopular." },
+      { who: "The rest of the organisation", what: "Policy that can be followed by people whose job is something else." },
+    ],
+    stakeholders: [
+      "Customers and the public, whose data the organisation holds.",
+      "Every team whose work the policy constrains.",
+      "Insurers, regulators and, after an incident, the courts.",
+    ],
+    requirements: [
+      "Technical credibility sufficient to be told the truth by the people who have it.",
+      "Fluency in risk, budget and the language a board makes decisions in.",
+      "The composure to be accountable for outcomes produced by systems and people beyond direct control.",
+      "The judgement to say what the organisation is choosing to accept, and to have it recorded as a choice.",
+    ],
+    turnsOn:
+      "The role is accountable for an outcome it produces through other people's budgets and other people's priorities. Authority over policy is real and authority over the engineering that implements it usually belongs to somebody else, so the work is persuasion carried out with a mandate. Leaders who last make the risk legible to the people who hold the budget, and record what the organisation decided to accept — because the record is what turns a later incident from a failure of the programme into a consequence of a decision somebody made knowingly.",
+    adjacentRoles: ["security-manager", "security-operations-analyst", "incident-responder", "vulnerability-analyst"],
+    practiceRoles: ["management"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "project-manager",
+    title: "Project manager",
+    group: "deploys",
+    order: 2,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "NICE Framework - the secure project management work role, which oversees technology projects, ensures security is integrated, tracks status and communicates value; and the programme management role that coordinates programme success and alignment with priorities", url: "https://niccs.cisa.gov/tools/nice-framework" },
+        { label: "PartnerPortal - channel partner types, including the delivery and integration partners whose projects a manager coordinates", url: "https://www.partnerportal.io/types-of-channel-partners" },
+      ],
+    },
+    whatItIs:
+      "The person accountable for a piece of work arriving: on the agreed scope, inside the agreed time, at the agreed cost. On a technology delivery the role sits between the customer who bought an outcome and the engineers producing it, and its material is dependencies, sequence and the truth about progress.",
+    theDay: [
+      "Holding the plan, and revising it the moment reality disagrees rather than at the next reporting date.",
+      "Chasing dependencies, most of which belong to people outside the project and inside somebody else's priorities.",
+      "Running the governance: status, risk log, change control, and the decisions that need a name attached.",
+      "Escalating early, which is the difference between a recoverable slip and a lost project.",
+      "Protecting the engineers from the meetings that produce nothing, and attending those meetings instead.",
+    ],
+    accountableFor: [
+      "Scope, schedule and cost, and the trade between them being made deliberately.",
+      "Status reporting that reflects the project rather than the audience.",
+      "Risks named while there is still time to act on them.",
+    ],
+    measuredOn: [
+      "Delivery against the baseline, and margin on the engagement.",
+      "Change requests handled without the project losing its shape.",
+      "Customer satisfaction at handover.",
+    ],
+    receivesFrom: [
+      { who: "Pre-sales and the account team", what: "The statement of work, and whatever was promised in the room." },
+      { who: "The delivery engineers", what: "What is actually happening, at whatever candour the culture allows." },
+      { who: "The customer", what: "Access, windows, decisions, and the changes they have decided they also want." },
+    ],
+    serves: [
+      { who: "The customer", what: "One person accountable for the whole, so that they deal with a project rather than with a set of engineers." },
+      { who: "The engineers", what: "A sequence that makes sense, and cover when the plan needs to change." },
+      { who: "The delivering organisation", what: "A project whose margin survives its own scope." },
+    ],
+    stakeholders: [
+      "The customer's own project office, whose governance the engagement has to satisfy.",
+      "Finance on both sides, since schedule and cost are the same conversation.",
+      "The operations team who will inherit whatever is delivered.",
+    ],
+    requirements: [
+      "Enough technical understanding to know when an estimate is optimistic.",
+      "The nerve to report a slip on the day it becomes visible.",
+      "Organisation held lightly, since a plan defended past its usefulness becomes the problem.",
+      "Diplomacy across two organisations with different incentives and one shared deadline.",
+    ],
+    turnsOn:
+      "Status reporting is where this role is decided. A project manager who reports the schedule the customer wants to hear buys three comfortable weeks and pays for them at the end, in a conversation nobody can prepare for; one who reports a slip the day it appears spends an uncomfortable hour and keeps the options open. Everything else in the role is technique, and this is the part that decides whether the technique matters.",
+    adjacentRoles: ["network-consulting-engineer", "account-manager", "systems-analyst"],
+    practiceRoles: ["management", "field"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "security-manager",
+    title: "Security manager",
+    group: "defends",
+    order: 5,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "NICCS, CISA - the NICE Framework's Oversight and Governance category, which groups the roles providing leadership, management, direction and advocacy so that an organisation may manage cybersecurity risk and conduct cybersecurity work", url: "https://niccs.cisa.gov/tools/nice-framework" },
+        { label: "NICCS, CISA - the Executive Cybersecurity Leadership work role, the rung above this one on the same ladder", url: "https://niccs.cisa.gov/tools/nice-framework/work-role/executive-cybersecurity-leadership" },
+      ],
+    },
+    whatItIs:
+      "The first rung of the management arm, in security. A security manager runs the people who do the analysis, the response and the assessment: hiring them, developing them, staffing the rota, and turning a leader's direction into work that fits in a week. It is the rung where a career stops being about your own output and starts being about somebody else's.",
+    theDay: [
+      "Staffing: the rota, the on-call, and the arithmetic of covering a queue that runs at all hours.",
+      "Developing people, which is the part that compounds and the part most easily postponed.",
+      "Turning strategy into a backlog somebody can actually work through.",
+      "Standing between the team and the interruptions, so that the analysis has room to happen.",
+      "Reporting upward in the terms the tier above uses, and downward in the terms the team uses.",
+    ],
+    accountableFor: [
+      "The team producing the outcome, with the people in it still there next year.",
+      "Coverage: the rota being genuinely staffed rather than nominally filled.",
+      "The accuracy of what is reported upward, including the parts that reflect on the management.",
+    ],
+    measuredOn: [
+      "Team outcomes: detection, response, assessment coverage.",
+      "Retention and time to fill a vacancy.",
+      "Delivery against the programme the tier above set.",
+    ],
+    receivesFrom: [
+      { who: "The security leader", what: "Direction, budget and the risks the organisation has decided to prioritise." },
+      { who: "The team", what: "What is actually happening in the queue, which arrives filtered by how safe it feels to say." },
+      { who: "Human resources and recruitment", what: "The market reality behind every hiring plan." },
+    ],
+    serves: [
+      { who: "The analysts and responders", what: "Room to do the work, and a career with somewhere to go." },
+      { who: "The security leader", what: "Execution, and an accurate picture of capacity." },
+      { who: "The organisation", what: "A function that runs at three in the morning as well as at ten." },
+    ],
+    stakeholders: [
+      "The families of everybody on a rota, which is a real stakeholder in a role built on shift work.",
+      "The teams whose incidents this one handles.",
+      "Finance, for whom headcount is the largest line in the programme.",
+    ],
+    requirements: [
+      "Technical credibility, because a team that has to explain its work upward twice starts editing it.",
+      "Care taken deliberately, since burnout in this function is an operational risk and shows up as attrition.",
+      "The willingness to hold a boundary against work the team has no capacity for.",
+      "Honesty upward about capacity, which is the same skill the project manager needs and costs the same to use.",
+    ],
+    turnsOn:
+      "This is the rung the Y moment leads to, and the trade is immediate: the day fills with other people's work and the technical depth that earned the promotion begins to age from the first week. Managers who thrive decide early what they are keeping current and what they are letting go, and say so — because the alternative is a slow drift in which the team stops asking and the manager stops being able to answer.",
+    adjacentRoles: ["security-leader", "security-operations-analyst", "incident-responder"],
+    practiceRoles: ["management"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "systems-administrator",
+    title: "Systems administrator",
+    group: "runs",
+    order: 4,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "NICE Framework - the systems administrator work role: setting up and maintaining a system or its components, including installing, configuring and updating hardware and software, establishing and managing user accounts, overseeing backup and recovery, and implementing operational and technical security controls", url: "https://niccs.cisa.gov/tools/nice-framework" },
+        { label: "NIST - occupations, jobs and work roles, on the distinction between a work role and the job title an organisation advertises", url: "https://www.nist.gov/itl/applied-cybersecurity/nice/nice-framework-resource-center/resources/occupations-jobs-and-work" },
+      ],
+    },
+    whatItIs:
+      "The person who keeps the systems running. The framework lists the work plainly: installing, configuring and updating hardware and software, managing accounts, overseeing backup and recovery, and implementing the controls that policy requires. It is the most widely held technical role in any organisation of size, and the one whose output is measured almost entirely by the absence of events.",
+    theDay: [
+      "Patching, updating and renewing the things that expire: certificates, licences, agents, firmware.",
+      "Managing accounts and access, which is a security control performed as an administrative task.",
+      "Backup and, far more rarely and far more importantly, restore.",
+      "Responding to whatever the monitoring or the service desk sends, in among the planned work.",
+      "Automating the parts that repeat, in whatever time the unplanned work leaves.",
+    ],
+    accountableFor: [
+      "The systems being available, current and recoverable.",
+      "Access being what the policy says it is.",
+      "Restores actually working, which is knowable only by testing them.",
+    ],
+    measuredOn: [
+      "Availability and incident count.",
+      "Patch currency and audit findings.",
+      "Tickets closed, which measures the interruptions rather than the engineering.",
+    ],
+    receivesFrom: [
+      { who: "The service desk", what: "What users are experiencing, filtered through first-line triage." },
+      { who: "Vendors", what: "Patches, advisories and end-of-support dates." },
+      { who: "Security and audit", what: "Controls to implement and findings to close." },
+    ],
+    serves: [
+      { who: "Everyone in the organisation", what: "Systems that work, which is noticed mainly in its absence." },
+      { who: "The security function", what: "The controls, actually applied to actual machines." },
+      { who: "The business", what: "The ability to recover, which is worth precisely what the last restore test proved." },
+    ],
+    stakeholders: [
+      "Auditors and insurers, whose questions are about this role's routine.",
+      "Every team whose application sits on these systems.",
+      "Whoever inherits the estate, and whatever documentation exists by then.",
+    ],
+    requirements: [
+      "Breadth, because the estate contains whatever the organisation bought over fifteen years.",
+      "Discipline with routine work whose value shows up only when it was skipped.",
+      "Automation as a habit, since the alternative is a career of the same afternoon.",
+      "Writing things down, which is the difference between expertise and a dependency.",
+    ],
+    turnsOn:
+      "The role accumulates knowledge that lives nowhere else. Fifteen years of small decisions — why that service runs on that host, which job has to finish before that one starts — become the reason the estate works and the reason it cannot be handed over. Administrators who write it down convert personal indispensability into organisational capability, and the trade is real: the documented administrator is easier to replace and far easier to promote.",
+    adjacentRoles: ["service-desk-analyst", "managed-service-provider-engineer", "systems-analyst"],
+    practiceRoles: ["second-line", "first-line", "field"],
+    relatedTools: ["terminal-stack-explainer"],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "threat-intelligence-analyst",
+    title: "Threat intelligence analyst",
+    group: "defends",
+    order: 6,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "NIST - NICE Framework work roles, including the threat analysis role responsible for collecting, processing, analysing and disseminating cybersecurity threat assessments", url: "https://www.nist.gov/itl/applied-cybersecurity/nice/nice-framework-work-role-videos" },
+        { label: "NICCS, CISA - the NICE Workforce Framework for Cybersecurity, which establishes the common lexicon these work roles are defined in", url: "https://niccs.cisa.gov/tools/nice-framework" },
+      ],
+    },
+    whatItIs:
+      "The analyst who studies adversaries rather than systems. The framework describes the work as collecting, processing, analysing and disseminating threat assessments, and the last of those verbs carries the role: intelligence that reaches nobody in a form they can act on has been research rather than intelligence.",
+    theDay: [
+      "Collecting from sources of varying reliability, and recording which was which.",
+      "Assessing what an adversary can do and what they appear to intend, which are separate judgements.",
+      "Translating that into something concrete for the people who defend: a detection, a priority, a hunt.",
+      "Writing assessments with confidence stated, so that a reader can weigh them.",
+      "Tracking whether the assessment held, which is how the sources are calibrated over time.",
+    ],
+    accountableFor: [
+      "Sourcing that is recorded and weighted, rather than aggregated into a single confident voice.",
+      "Assessments that state their confidence and what would change it.",
+      "Relevance: intelligence about this organisation's actual exposure.",
+    ],
+    measuredOn: [
+      "Detections and hunts that originated with the intelligence.",
+      "Timeliness against events that later mattered.",
+      "Assessments used in decisions, which is the honest measure and the hardest to count.",
+    ],
+    receivesFrom: [
+      { who: "External feeds, vendors and sharing communities", what: "Indicators, reporting and the occasional thing that arrives before it is public." },
+      { who: "The organisation's own telemetry", what: "What is being attempted here, which outranks anything external for relevance." },
+      { who: "Incident response", what: "What an adversary actually did once inside, which is the highest-quality source available." },
+    ],
+    serves: [
+      { who: "Security operations", what: "Priorities, and the detections worth building." },
+      { who: "Incident response", what: "Context about who this appears to be and what they usually do next." },
+      { who: "Security leadership", what: "The threat picture that shapes where the programme spends." },
+    ],
+    stakeholders: [
+      "The sharing communities the organisation both draws from and owes to.",
+      "Legal, since attribution carries consequences beyond the technical.",
+      "Every defender whose attention this work directs.",
+    ],
+    requirements: [
+      "Source discipline, and the habit of recording provenance and confidence together.",
+      "Analytic writing: a judgement, its basis, and its uncertainty, in that order.",
+      "Enough operational grounding to know which findings a defender can use.",
+      "Resistance to the compelling narrative, since a good story is the commonest way an assessment goes wrong.",
+    ],
+    turnsOn:
+      "Intelligence earns its name by changing a decision. A report that arrives, is read, and leaves the defence exactly as it was has cost the organisation an analyst's week and delivered news. The analysts who matter work backwards from the decision — which detection, which priority, which hunt — and write toward it, which also makes the work measurable in a way that generic reporting leaves out of reach.",
+    adjacentRoles: ["security-operations-analyst", "incident-responder", "vulnerability-analyst"],
+    practiceRoles: ["second-line", "design"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "knowledge-base-manager",
+    title: "Knowledge base manager",
+    group: "supports",
+    order: 5,
+    provenance: { kind: "held", where: "at a vendor, for its support centre and engineering", when: "2000-2002" },
+    whatItIs:
+      "The person who turns what the organisation learned into something the next person can use. Every resolved case contains knowledge that exists in one engineer's head and one ticket nobody will read again; this role converts that into articles, keeps them current, and measures whether they are answering anything. It sits across support and engineering because the raw material comes from both.",
+    theDay: [
+      "Reading closed cases for the ones that will recur, which is a judgement made from pattern rather than from volume.",
+      "Turning a resolution into an article somebody can follow without the engineer who wrote it.",
+      "Retiring and correcting: an article describing a release nobody runs is worse than an absent one.",
+      "Working the taxonomy, since an article that cannot be found has the same value as an article that was never written.",
+      "Measuring deflection — which articles answered a question before it became a case — and feeding that back into what gets written next.",
+    ],
+    accountableFor: [
+      "Articles being accurate at the version they claim to cover.",
+      "The corpus being findable by somebody using the words they actually have.",
+      "Currency: the review cycle happening rather than being intended.",
+    ],
+    measuredOn: [
+      "Case deflection, and self-service resolution rates.",
+      "Articles published, reviewed and retired.",
+      "Search success, and the questions that returned nothing.",
+    ],
+    receivesFrom: [
+      { who: "Support engineers at every tier", what: "Resolutions, and the reasoning behind them while it is still fresh." },
+      { who: "Engineering", what: "Defect explanations, workarounds and the release a fix landed in." },
+      { who: "The search logs", what: "What people asked for, including everything the corpus failed to answer." },
+    ],
+    serves: [
+      { who: "Customers", what: "An answer at the hour they have the question rather than at the hour a queue reaches them." },
+      { who: "Support, at every tier", what: "The same answer given consistently, and time returned by the cases that stopped arriving." },
+      { who: "New engineers", what: "The fastest route into how the product behaves in the field." },
+    ],
+    stakeholders: [
+      "Every customer running the product, most of whom will meet the vendor only through these pages.",
+      "Product management, for whom the questions people search are demand signal.",
+      "The engineers whose expertise the corpus either preserves or loses.",
+    ],
+    requirements: [
+      "Technical depth sufficient to read a case and know what generalises.",
+      "Writing for a stranger under pressure, in their vocabulary rather than the product's.",
+      "The persistence to ask busy engineers for the write-up, repeatedly and pleasantly.",
+      "Comfort with an output whose success is a case that never opened.",
+    ],
+    turnsOn:
+      "The knowledge exists at the moment the case closes and decays from that moment. An engineer asked a week later remembers the fix; asked a month later remembers that there was one. Capturing it inside that window is the whole discipline, and it competes directly with the next case in the queue — which is why the role has to belong to somebody rather than to everybody's good intentions.",
+    adjacentRoles: ["product-support-engineer", "technical-assistance-centre-engineer", "technical-instructor"],
+    practiceRoles: ["second-line", "design"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "procurement-specialist",
+    title: "Procurement specialist",
+    group: "sells",
+    order: 3,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "CIPS - what procurement is: market analysis, sourcing, negotiation, contracting and supplier relationship management, and the distinction from purchasing, which fulfils the transaction only", url: "https://www.cips.org/intelligence-hub/procurement/what-is-procurement" },
+        { label: "CIPS - procurement job profiles, from assistant buyer through senior buyer, manager and director to chief procurement officer", url: "https://www.cips.org/careers/job-profiles" },
+        { label: "CIPS - the procurement manager profile: engaging stakeholders, supporting complex negotiations to optimise the commercial position, and delivering competitive advantage through cost savings and lifecycle value", url: "https://www.cips.org/careers/job-profiles/procurement-manager" },
+      ],
+    },
+    whatItIs:
+      "The person on the other side of every sale described in this corpus. Procurement runs the cycle — market analysis, sourcing, negotiation, contracting and supplier management — with the object of acquiring at the right price, quality, quantity and time. The professional body draws a line worth keeping: procurement covers that whole cycle, while purchasing fulfils the transaction.",
+    theDay: [
+      "Running a tender or a request for proposal, and keeping it defensible while the business argues for the supplier it already chose.",
+      "Negotiating price, terms, service levels and the renewal clauses that decide the next three years.",
+      "Building the category strategy: what this organisation buys, from whom, and what leverage exists.",
+      "Managing suppliers after signature, which is where most of the value either arrives or evaporates.",
+      "Recording the saving, in a form finance will accept.",
+    ],
+    accountableFor: [
+      "A process that stands up to audit, including the parts where a preferred supplier lost.",
+      "Contracts whose obligations are the ones the organisation actually needs.",
+      "The commercial position: price, terms and the exits.",
+    ],
+    measuredOn: [
+      "Savings delivered against a baseline, and cost avoided against an increase that was proposed.",
+      "Contract cycle time, and spend brought under managed agreements.",
+      "Supplier performance against the terms that were signed.",
+    ],
+    receivesFrom: [
+      { who: "The technical teams", what: "A requirement, sometimes written around a product already chosen." },
+      { who: "Finance", what: "Budget, and the definition of a saving they will recognise." },
+      { who: "Suppliers", what: "Proposals, and the pricing behaviour that reveals where the flexibility is." },
+    ],
+    serves: [
+      { who: "The organisation", what: "Value obtained, and risk removed from agreements before it becomes a dispute." },
+      { who: "The technical teams", what: "The thing they asked for, on terms that survive the next renewal." },
+      { who: "Finance and audit", what: "A defensible record of how the decision was reached." },
+    ],
+    stakeholders: [
+      "The suppliers on the other side, whose account managers are measured on the same transaction.",
+      "The legal function, which owns what the contract says.",
+      "Whoever operates the thing afterwards, and lives with the support terms that were negotiated.",
+    ],
+    requirements: [
+      "Negotiation held over long horizons, since the renewal is part of the first conversation.",
+      "Enough technical literacy to tell a requirement from a preference written as one.",
+      "Rigour with process, because the defensibility of a decision is part of its value.",
+      "The independence to say that the chosen supplier lost on the criteria the organisation set.",
+    ],
+    turnsOn:
+      "The seller is measured on revenue captured and the buyer on discount obtained, which makes one number the target of two careers pulling opposite ways. The subtlety is in how a saving is counted: a reduction from a known baseline is auditable, while cost avoided is measured against an increase that was proposed and then prevented — a comparison with something that stayed hypothetical. Buyers who explain that distinction to their own finance function get credit for both kinds; those who leave it implicit find the second kind quietly discounted.",
+    adjacentRoles: ["account-manager", "channel-account-manager", "systems-engineer"],
+    practiceRoles: ["management"],
+    relatedTools: [],
+    updated: "2026-08-15",
+  },
+
+  {
+    slug: "digital-forensics-analyst",
+    title: "Digital forensics analyst",
+    group: "defends",
+    order: 7,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "NIST - NICE Framework work roles, including the digital forensics role responsible for analysing digital evidence from computer security incidents to derive information supporting system and network vulnerability mitigation", url: "https://www.nist.gov/itl/applied-cybersecurity/nice/nice-framework-work-role-videos" },
+        { label: "NICCS, CISA - the NICE Workforce Framework for Cybersecurity, which defines these work roles in a common lexicon", url: "https://niccs.cisa.gov/tools/nice-framework" },
+      ],
+    },
+    whatItIs:
+      "The analyst who reconstructs what happened from what remains. Where the responder is deciding what to do next, forensics is establishing what already occurred: from disk images, memory, logs and network records, in an order and to a standard that keeps the findings usable afterwards. The framework frames the output as information that supports mitigation, and in practice it also supports the lawyers.",
+    theDay: [
+      "Acquiring evidence in a way that preserves it, which decides everything that follows.",
+      "Building a timeline: what ran, what was written, what was sent, and in which order.",
+      "Recovering what somebody attempted to remove, which is frequently where the intent becomes visible.",
+      "Separating what the evidence shows from what it suggests, and writing the two differently.",
+      "Documenting handling continuously, so that a finding stays admissible as well as true.",
+    ],
+    accountableFor: [
+      "Evidence integrity from acquisition onward, and the record proving it.",
+      "Findings that follow from the artefacts, with the inference stated as inference.",
+      "A timeline that another examiner could reproduce from the same material.",
+    ],
+    measuredOn: [
+      "Cases completed, and findings that survive review.",
+      "Time to a defensible answer, since an investigation runs beside a business waiting to restart.",
+      "Reports accepted by the audiences that requested them, including outside the organisation.",
+    ],
+    receivesFrom: [
+      { who: "Incident response", what: "Scope, priority, and the systems believed to be involved." },
+      { who: "Infrastructure teams", what: "Images, logs and access to the machines still holding evidence." },
+      { who: "Legal", what: "The standard the work has to meet, which is set before the acquisition rather than after." },
+    ],
+    serves: [
+      { who: "Incident response", what: "What actually happened, which bounds the containment." },
+      { who: "Legal, regulatory and insurance functions", what: "Findings that hold up under examination by people paid to test them." },
+      { who: "Engineering and operations", what: "The specific weakness that was used, which is the thing worth fixing." },
+    ],
+    stakeholders: [
+      "The individuals whose activity appears in the evidence, whose interests deserve care.",
+      "Courts, regulators and insurers, for whom the handling record is part of the finding.",
+      "The organisation, whose account of the incident rests on this work.",
+    ],
+    requirements: [
+      "Method held under pressure, since the shortcuts available early destroy the options available later.",
+      "Depth across file systems, memory, operating systems and network records.",
+      "Writing that distinguishes observation from inference in every sentence that needs it.",
+      "Discretion, because the material routinely includes things unrelated to the investigation.",
+    ],
+    turnsOn:
+      "The first hour decides the case. Acquisition made in the right order preserves the volatile evidence that answers the interesting questions; the same hour spent restoring service first leaves an investigation working from what survived by luck. Forensics teams earn their standing before an incident, by agreeing with the business in advance which comes first and in which circumstances, because that conversation held during an incident is decided by whoever is most senior in the room.",
+    adjacentRoles: ["incident-responder", "security-operations-analyst", "threat-intelligence-analyst"],
+    practiceRoles: ["second-line"],
+    relatedTools: ["f5-eth-trailer-decoder"],
+    updated: "2026-08-15",
+  },
 ]);
 
 /** Roles in a group, ordered. */
@@ -969,3 +1627,107 @@ export function provenanceCounts(): Record<Provenance, number> {
     { held: 0, alongside: 0, documented: 0 } as Record<Provenance, number>,
   );
 }
+
+// ============================================================================
+// LEVELS — the axis that runs across every role in this corpus.
+//
+// A grade is orthogonal to a role. The same title exists at four grades, and
+// the same grade exists across every group on the path, so levels are modelled
+// separately rather than multiplied into the roster.
+//
+// *** WHAT ACTUALLY CHANGES BETWEEN GRADES ***
+//
+//   The size of the question you are handed.
+//
+// The volume of work is roughly constant across a career. What moves is how
+// much of the problem arrives already decided: a defined task, a known problem,
+// an undefined problem, or a problem the organisation has yet to name.
+//
+// *** AND THE NAMING ASYMMETRY WORTH RECORDING ***
+//
+// Brazilian practice names all three grades: junior, PLENO, senior. Many
+// English-speaking markets name the first and the third, leaving the middle
+// grade to be described by what a person has stopped being. `pleno` is the more
+// useful word because it states the thing directly: full, complete, working
+// unsupervised on known problems.
+// ============================================================================
+
+export interface Grade {
+  id: string;
+  /** What it is commonly called, across markets. */
+  names: string[];
+  /** The size of question handed to somebody at this grade. */
+  question: string;
+  /** What supervision looks like here. */
+  supervision: string;
+  /** What the grade is trusted with beyond its own output. */
+  beyondOwnWork: string;
+}
+
+export const GRADES: readonly Grade[] = Object.freeze([
+  {
+    id: "junior",
+    names: ["junior", "associate", "I", "júnior"],
+    question: "A defined task, with the approach already chosen and the outcome already described.",
+    supervision: "Work is reviewed before it reaches anything that matters, and the review is part of the design rather than a comment on the person.",
+    beyondOwnWork: "Learning the environment, and asking the questions whose answers everyone else has stopped noticing they know.",
+  },
+  {
+    id: "pleno",
+    names: ["pleno", "mid-level", "II", "intermediate"],
+    question: "A known problem, handed over whole. The approach is chosen by whoever solves it.",
+    supervision: "Work lands without review. Help is requested rather than scheduled.",
+    beyondOwnWork: "Carrying a piece of the estate, and being the person a junior asks first.",
+  },
+  {
+    id: "senior",
+    names: ["senior", "III", "sênior"],
+    question: "An undefined problem, frequently one where the first job is establishing what the problem is.",
+    supervision: "Judgement is trusted in situations the organisation has no procedure for.",
+    beyondOwnWork: "Other people's work landing: reviewing designs, unblocking, and the mentoring that is rarely written into the job description and always expected.",
+  },
+  {
+    id: "staff",
+    names: ["staff", "principal", "distinguished", "fellow", "specialist"],
+    question: "A problem the organisation has yet to name, or one that spans more teams than any single manager owns.",
+    supervision: "The work sets direction that others then follow.",
+    beyondOwnWork: "Standards, architecture and the technical decisions whose consequences arrive years later.",
+  },
+]);
+
+/**
+ * THE Y MOMENT — the fork. Below it, everyone advances the same way; at it, the
+ * ladder splits into a management arm and a technical arm.
+ *
+ * Recorded here because it is the single most consequential career decision in
+ * this industry and it is usually made under pressure, at short notice, from a
+ * position of flattery.
+ */
+export const Y_MOMENT = Object.freeze({
+  whatItIs:
+    "The point where one ladder becomes two. Up to senior, advancement looks the same for everybody: larger questions, more trust. At the fork, the organisation offers a choice between growing through other people and growing through the craft, and the two arms lead to different lives.",
+  managementArm: Object.freeze([
+    "The work becomes other people's work: hiring, developing, protecting, deciding, and carrying accountability for outcomes produced by hands other than yours.",
+    "Technical depth becomes a foundation rather than a daily practice, and it ages.",
+    "The satisfaction moves from solving the thing to watching somebody else solve it.",
+  ]),
+  technicalArm: Object.freeze([
+    "The work stays technical and the scope widens: architecture, standards, and the problems that span teams.",
+    "Influence is exercised through designs and decisions rather than through reporting lines.",
+    "The arm's length depends entirely on the organisation, which is the part worth checking before choosing it.",
+  ]),
+  theHonestPart:
+    "The two arms are equal in principle and unequal in many organisations. Where the technical arm stops at senior while the management arm continues to director, the choice has already been made for anyone who wants to be paid more — and capable engineers become reluctant managers, which costs the organisation twice. Asking how long the technical arm is, and who is currently at the top of it, tells you more than any statement of values.",
+});
+
+/**
+ * WHERE THESE ROLES ARE FOUND. The corpus is organised by the path a product
+ * takes, and that path runs through every sector rather than through a
+ * technology industry sitting beside the others.
+ */
+export const PERVASIVENESS = Object.freeze({
+  claim:
+    "Every organisation of any size now runs infrastructure, and therefore contains these roles. A bank employs network engineers, a hospital employs security analysts, a supermarket chain employs a service desk, a farm employs somebody who owns the connectivity between the silos and the office.",
+  consequence:
+    "That has two effects worth naming. The first is that the same job title carries different weight in different sectors: a network engineer in a hospital works under constraints a retailer never meets. The second is that the technology industry is no longer where most technology workers are employed — the vendors, distributors and integrators on this path are a minority of the people doing the work described here.",
+});

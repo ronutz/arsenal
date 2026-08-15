@@ -15785,7 +15785,7 @@
       },
       "sells": {
         "title": "Who sells it",
-        "lede": "Pre-sales, inside and outside sales, account management, business development. The technical truth and the commercial promise, carried by two people who answer for the same deal."
+        "lede": "Pre-sales, inside and outside sales, account management, business development — and the procurement function on the other side of the table. A transaction has two sides, and both are described here: the technical truth and the commercial promise, carried by people who answer for the same deal from opposite directions."
       },
       "deploys": {
         "title": "Who deploys it",
@@ -15822,6 +15822,23 @@
       "sources": "Where this comes from"
     },
     "practiceLede": "The Practice covers how this work is done — triage, escalation, evidence, handover — across the whole corpus.",
-    "practiceLink": "Read The Practice"
+    "practiceLink": "Read The Practice",
+    "levels": {
+      "title": "Grades, the fork, and where these roles are found",
+      "metaDescription": "Junior, pleno, senior and above: what changes between grades is the size of the question you are handed. Plus the Y moment, where the ladder splits into management and craft.",
+      "lede": "A grade runs across every role on this path. The same title exists at four of them, and the same four exist in every group, which is why they are described here once rather than multiplied into the roster.",
+      "whatChanges": "What changes between grades is the size of the question you are handed. The volume of work stays roughly constant across a career; what moves is how much of the problem arrives already decided.",
+      "gradesHeading": "The four grades",
+      "question": "The question handed over",
+      "supervision": "Supervision",
+      "beyond": "Trusted with, beyond their own work",
+      "plenoNote": "Brazilian practice names all three of the common grades: júnior, pleno, sênior. Several English-speaking markets name the first and the third and leave the middle to be described by what a person has stopped being. Pleno is the more useful word, because it states the thing directly: full, complete, working unsupervised on known problems.",
+      "yHeading": "The Y moment",
+      "yManagement": "The management arm",
+      "yTechnical": "The technical arm",
+      "yHonest": "The part worth asking about",
+      "whereHeading": "Where these roles are found",
+      "backToRoles": "All {count} roles"
+    }
   }
 }

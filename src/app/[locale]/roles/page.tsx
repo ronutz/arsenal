@@ -41,6 +41,11 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
           <p className="dig-record-explain mono">
             {t("provenanceSummary", { held: counts.held, alongside: counts.alongside, documented: counts.documented })}
           </p>
+          {/* Grades run across every entry below, so the door to them sits with
+              the section framing rather than inside any one group. */}
+          <p className="mono">
+            <Link href={`/${locale}/roles/levels`}>{t("levels.title")}</Link>
+          </p>
         </div>
       </section>
 

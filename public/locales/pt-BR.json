@@ -15734,7 +15734,7 @@
       },
       "sells": {
         "title": "Quem vende",
-        "lede": "Pré-vendas, vendas internas e externas, gestão de contas, desenvolvimento de negócios. A verdade técnica e a promessa comercial, carregadas por duas pessoas que respondem pelo mesmo negócio."
+        "lede": "Pré-vendas, vendas internas e externas, gestão de contas, desenvolvimento de negócios — e a função de compras do outro lado da mesa. Uma transação tem dois lados, e ambos são descritos aqui: a verdade técnica e a promessa comercial, carregadas por pessoas que respondem pelo mesmo negócio a partir de direções opostas."
       },
       "deploys": {
         "title": "Quem implanta",
@@ -15771,6 +15771,23 @@
       "sources": "De onde isto vem"
     },
     "practiceLede": "A Prática cobre como este trabalho é feito — triagem, escalação, evidência, passagem de bastão — em todo o corpus.",
-    "practiceLink": "Ler A Prática"
+    "practiceLink": "Ler A Prática",
+    "levels": {
+      "title": "Níveis, a bifurcação, e onde estes papéis são encontrados",
+      "metaDescription": "Júnior, pleno, sênior e acima: o que muda entre os níveis é o tamanho da pergunta que lhe entregam. E o momento Y, onde a escada se divide entre gestão e ofício.",
+      "lede": "Um nível atravessa todos os papéis deste caminho. O mesmo título existe em quatro deles, e os mesmos quatro existem em cada grupo, e por isso são descritos aqui uma vez em vez de multiplicados pelo rol.",
+      "whatChanges": "O que muda entre níveis é o tamanho da pergunta que lhe entregam. O volume de trabalho permanece aproximadamente constante ao longo de uma carreira; o que se move é quanto do problema chega já decidido.",
+      "gradesHeading": "Os quatro níveis",
+      "question": "A pergunta entregue",
+      "supervision": "Supervisão",
+      "beyond": "Confiado além do próprio trabalho",
+      "plenoNote": "A prática brasileira nomeia os três níveis comuns: júnior, pleno, sênior. Vários mercados de língua inglesa nomeiam o primeiro e o terceiro e deixam o do meio para ser descrito pelo que a pessoa deixou de ser. Pleno é a palavra mais útil, porque diz a coisa diretamente: completo, trabalhando sem supervisão em problemas conhecidos.",
+      "yHeading": "O momento Y",
+      "yManagement": "O braço de gestão",
+      "yTechnical": "O braço técnico",
+      "yHonest": "A parte que vale perguntar",
+      "whereHeading": "Onde estes papéis são encontrados",
+      "backToRoles": "Todos os {count} papéis"
+    }
   }
 }
