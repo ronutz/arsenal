@@ -6795,7 +6795,8 @@
       "weaknesses": "Fraquezas",
       "shared": "O que têm em comum",
       "backToProfile": "Voltar ao perfil individual"
-    }
+    },
+    "whoUsesThis": "Quem usa isto"
   },
   "privacy_page": {
     "eyebrow": "Privacidade",

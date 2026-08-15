@@ -348,6 +348,7 @@ import { manifest as hpfManifest } from "@/lib/tools/hash-preimage-finder";
 import SsrfUrlClassifierTool from "@/components/SsrfUrlClassifierTool";
 import { manifest as ssrfManifest } from "@/lib/tools/ssrf-url-classifier";
 
+import { rolesUsingTool } from "@/lib/roles";
 /** A reference link shown under a tool (from its manifest sources). */
 interface ToolSource {
   id: string;
@@ -1224,6 +1225,24 @@ export default async function ToolDetailPage({
                   </ul>
                 </section>
               )
+            )}
+
+            {/* WHO USES THIS — derived from The Roles, which already names the
+                tools each job reaches for. Nothing about roles is stored here;
+                see rolesUsingTool() and LESSONS 12. */}
+            {rolesUsingTool(slug).length > 0 && (
+              <section className="tool-sources" aria-label={tTools("whoUsesThis")}>
+                <h2 className="tool-sources-title">{tTools("whoUsesThis")}</h2>
+                <ul className="tool-sources-list">
+                  {rolesUsingTool(slug).map((r) => (
+                    <li key={r.slug}>
+                      <Link href={`/roles/${r.slug}`} className="tool-sources-link">
+                        {r.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             )}
           </div>
         </article>
