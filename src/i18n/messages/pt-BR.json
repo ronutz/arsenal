@@ -105,7 +105,7 @@
       "anniversary": "{count} delas fazem {age} anos neste ano",
       "practice": "A Prática",
       "practiceLede": "Como o trabalho é de fato feito, e não como a tecnologia funciona. Triagem, escalonamento, evidências, passagem de bastão.",
-      "practiceBadge": "{count} de 48 publicados",
+      "practiceBadge": "{count} publicados",
       "certs": "Guias de certificação",
       "certsLede": "O que cada exame cobra e o que estudar para ele. Gratuito, e útil tendo você contratado um curso ou não.",
       "certsBadge": "{count} guias",
@@ -7919,7 +7919,7 @@
     "portalCertsLede": "Blueprints de prova mapeados objetivo por objetivo aos artigos que os ensinam.",
     "portalPractice": "A Prática",
     "portalPracticeLede": "Como o trabalho é de fato feito, e não como a tecnologia funciona. Triagem, escalonamento, evidências, passagem de bastão, e as partes que nenhum runbook cobre.",
-    "portalPracticeCount": "{count} de 48 publicados",
+    "portalPracticeCount": "{count} publicados",
     "portalRoles": "Os Papéis",
     "portalRolesLede": "As posições de que esta indústria é feita, agrupadas pelo caminho que um produto percorre. Quem o faz, move, vende, implanta, opera, sustenta, defende e ensina.",
     "portalRolesCount": "{count} posições"
@@ -15074,6 +15074,11 @@
         "def": "Bloquear ou reescrever respostas DNS para impedir que clientes alcancem certos domínios.",
         "context": "Como toda conexão a um host nomeado começa por uma consulta, recusar a resposta impede a conexão antes de ser tentada - sem sessão para inspecionar, sem porta para casar, e funciona para protocolos dos quais ninguém escreveu um analisador. O mesmo mecanismo é vendido como response policy zones, DNS protetivo, camada DNS de um secure web gateway, e filtro de DNS de fabricante com classificação por categoria.",
         "depth": "O controle tem alta alavancagem e baixa visibilidade: aplica-se a todo dispositivo da rede sem agente algum, inclusive impressoras, câmeras e notebooks de visitantes, e quase não produz evidência de estar funcionando. Seus dois modos de falha são silenciosos e opostos - um bloqueio devolvido como NXDOMAIN é indistinguível de um domínio inexistente, e portanto se lê como indisponibilidade; e um cliente que usa o próprio resolvedor nunca é filtrado, e as consultas que nunca foram vistas não aparecem em relatório nenhum."
+      },
+      "gambiarra": {
+        "def": "Substantivo feminino. Solução improvisada com o que estiver à mão — precária, fora do padrão, e funcionando. A palavra carrega admiração e reprovação ao mesmo tempo, e o brasileiro ouve as duas.",
+        "context": "A palavra começou literal. No teatro do século XIX, gambiarra era a fileira de lâmpadas suspensa acima da ribalta, que ilumina a cena de frente e mata as sombras; o sentido de dicionário é uma extensão elétrica improvisada, um fio longo com uma lâmpada na ponta, levada até onde a luz fosse necessária. Como isso virou o sentido moderno é onde os relatos param de concordar: um diz que os atores tropeçavam na fiação até a palavra azedar, outro que instalações realmente malfeitas foram levando o nome por associação. A etimologia também é disputada — o filólogo Antenor Nascentes propôs gâmbia, tomado do italiano gamba, perna, com o sufixo aumentativo e por vezes depreciativo -arra, e formulou o próprio raciocínio como pergunta: porque a luz dá nas pernas dos atores? A palavra também significa ligação clandestina de energia e, em certos registros, caso extraconjugal.",
+        "depth": "Na tecnologia a palavra chegou inteira. Gambiarra é o túnel SSH que está de pé há três anos, o cabo bacalhau feito à mão, o laço que existe porque o recurso do fabricante não existe, o clipe de papel no furo de reset. Programadores brasileiros cunharam POG, programação orientada a gambiarra, que é uma piada que todo mundo já colocou em produção. As palavras vizinhas dividem o terreno: quebra-galho é o paliativo, remendo é o conserto, jeitinho é a manobra social e não a física, e gato é especificamente a ligação clandestina. O que nenhuma palavra inglesa carrega é a carga dupla. Kludge e bodge são ofensas; hack é elogio; jury-rig é neutro e náutico. Gambiarra é as três coisas ao mesmo tempo, e o orgulho é real: a coisa funciona, não custou nada, e alguém inteligente a fez sob restrição. Os parentes mais próximos estão fora daqui — jugaad na Índia, que os pesquisadores de informalidade da Universidade de Oxford colocam na mesma família do jeitinho brasileiro, système D na França e na África Ocidental, desenrascanço em Portugal, костыль (uma muleta) na revisão de código em russo, houtje-touwtje no neerlandês, atar con alambre na Argentina. Cada um guarda uma parte do sentido e abre mão de outra. É por isso que a palavra fica em português neste site, em todos os idiomas: traduzi-la seria a primeira gambiarra."
       }
     },
     "totalCount": "{count} termos",
@@ -15707,7 +15712,12 @@
     "provenanceBody": "Trinta anos são tempo suficiente para ter feito muita coisa e nem de longe suficientes para ter feito tudo. O que está aqui é a parte que eu vivi.\n\nEu executei e eu planejei. Auditei o parque de outras pessoas e supervisionei trabalho que não fui eu quem fez. Fui a mão no teclado, e fui o nome na escala quando aquilo falhou de madrugada. Treinei equipes de operação — uma pessoa por vez diante de um console, e salas cheias delas de uma vez. Parte disso fiz para fabricantes, parte para integradores, parte para o cliente que precisava conviver com o resultado na segunda-feira.\n\nNada disso é teoria que eu li. É uma carreira, e é isto que ela me ensinou.",
     "articleCount": "{n, plural, =0 {nenhum artigo ainda} one {# artigo} other {# artigos}}",
     "whoDoesThis": "Quem faz este trabalho",
-    "rolesAria": "Papéis que fazem este trabalho"
+    "rolesAria": "Papéis que fazem este trabalho",
+    "rolesTitle": "As posições a que este trabalho pertence",
+    "rolesBody": "Cada artigo aqui descreve um trabalho que alguém é empregado para fazer. Os Papéis cobre {count} dessas posições — pelo que cada uma responde, de quem recebe, a quem serve, e como é medida.",
+    "rolesLink": "Ler Os Papéis",
+    "toolsTitle": "Ferramentas para isto",
+    "toolsAria": "Ferramentas que apoiam este trabalho"
   },
   "contributeTools": {
     "translationsTitle": "Melhorar as traduções",
@@ -15792,6 +15802,7 @@
       "yHonest": "A parte que vale perguntar",
       "whereHeading": "Onde estes papéis são encontrados",
       "backToRoles": "Todos os {count} papéis"
-    }
+    },
+    "overviewLink": "Leia a visão geral: o caminho que um produto percorre"
   }
 }

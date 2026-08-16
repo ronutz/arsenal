@@ -46,6 +46,7 @@ import {
 } from "@/lib/practice";
 import { rolesUsingPracticeArticle } from "@/lib/roles";
 
+import { tools } from "@/config/tools";
 export function generateStaticParams() {
   // Slugs come from the English corpus: it is the authored spine, and every
   // article is required by the guard to exist in both day-one locales.
@@ -82,6 +83,7 @@ export default async function PracticeArticlePage({
 
   const t = await getTranslations("practice");
   const tNav = await getTranslations("nav");
+  const tTools = await getTranslations("tools");
 
   // Read-next comes from the article's own frontmatter, resolved against the
   // corpus so a stale slug simply disappears rather than rendering a dead link.
@@ -90,6 +92,15 @@ export default async function PracticeArticlePage({
      relation is written once and read in both directions. See
      rolesUsingPracticeArticle(). */
   const doneBy = rolesUsingPracticeArticle(slug);
+
+  /* THE TOOLS THE ARTICLE ALREADY NAMED (2026-08-15).
+     63 of the 64 articles carry `relatedTools` in their frontmatter, authored
+     with the corpus and rendered nowhere — the same fault as a citation stored
+     without being shown. The catalogue is the authority on which of them are
+     live, so anything retired since is dropped rather than linked into a 404. */
+  const toolLinks = article.relatedTools
+    .map((id) => tools.find((tool) => tool.id === id && tool.available))
+    .filter((tool): tool is NonNullable<typeof tool> => Boolean(tool));
 
   const related = article.relatedPractice
     .map((s) => all.find((a) => a.slug === s))
@@ -164,6 +175,23 @@ export default async function PracticeArticlePage({
                 <ShareControl title={article.title} />
               </div>
             </MessageSlice>
+
+            {toolLinks.length > 0 && (
+              <nav className="article-related" aria-label={t("toolsAria")}>
+                <h2 className="article-related-title">{t("toolsTitle")}</h2>
+                <ul className="article-related-list">
+                  {toolLinks.map((tool) => (
+                    <li key={tool.id}>
+                      <Link href={tool.href} className="article-related-link">
+                        <span className="article-related-link-title">
+                          {tTools(`${tool.id}.name`)}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )}
 
             {doneBy.length > 0 && (
               <nav className="article-related" aria-label={t("rolesAria")}>

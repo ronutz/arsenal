@@ -105,7 +105,7 @@
       "anniversary": "{count} of them turn {age} this year",
       "practice": "The Practice",
       "practiceLede": "How the work is actually done rather than how the technology works. Triage, escalation, evidence, handover.",
-      "practiceBadge": "{count} of 48 published",
+      "practiceBadge": "{count} published",
       "certs": "Certification guides",
       "certsLede": "What each exam tests and what to study for it. Free, and useful whether or not you ever book a course.",
       "certsBadge": "{count} guides",
@@ -7919,7 +7919,7 @@
     "portalCertsLede": "Exam blueprints mapped objective by objective to the articles that teach them.",
     "portalPractice": "The Practice",
     "portalPracticeLede": "How the work is actually done, rather than how the technology works. Triage, escalation, evidence, handover, and the parts no runbook covers.",
-    "portalPracticeCount": "{count} of 48 published",
+    "portalPracticeCount": "{count} published",
     "portalRoles": "The Roles",
     "portalRolesLede": "The positions this industry is made of, grouped by the path a product takes. Who makes it, moves it, sells it, deploys it, runs it, supports it, defends it and teaches it.",
     "portalRolesCount": "{count} positions"
@@ -15074,6 +15074,11 @@
         "def": "Blocking or rewriting DNS answers to stop clients reaching chosen domains.",
         "context": "Because every connection to a named host starts with a lookup, refusing to answer stops the connection before it is attempted - no session to inspect, no port to match, and it works for protocols nobody has written a parser for. The same mechanism is sold as response policy zones, protective DNS, a secure web gateway's DNS layer, and a vendor DNS filter with category ratings.",
         "depth": "The control is high-leverage and low-visibility: it applies to every device on a network without an agent, including printers, cameras and visitors' laptops, and it produces almost no evidence of working correctly. Its two failure modes are silent and opposite - a block returned as NXDOMAIN is indistinguishable from a domain that does not exist, so it reads as an outage; and a client using its own resolver is never filtered at all, so the queries that were never seen appear on no report."
+      },
+      "gambiarra": {
+        "def": "Brazilian Portuguese, feminine noun. An improvised fix built from whatever is to hand — precarious, unorthodox, and working. The word carries admiration and disapproval at the same time, and Brazilians hear both.",
+        "context": "The word started literal. In nineteenth-century theatre a gambiarra was a row of lamps hung above the footlights to light the stage frontally and kill shadows; the dictionary sense is an improvised electrical extension, a long wire with a lamp at the end, carried to wherever light was needed. How that became the modern sense is where the accounts stop agreeing: one has actors tripping over the cabling until the word soured, another has genuinely bad wiring taking the name by association. The etymology is disputed too — the philologist Antenor Nascentes proposed gâmbia, borrowed from the Italian gamba, leg, with the augmentative and sometimes pejorative suffix -arra, and framed even his own reasoning as a question: because the light falls on the actors' legs? It also means an illegal power tap, and, in some registers, an affair.",
+        "depth": "In technology the word arrived intact. A gambiarra is the SSH tunnel that has been up for three years, the crossover made by hand — a cabo bacalhau, a codfish cable — the loop that exists because the vendor's feature does not, the paperclip in the reset hole. Brazilian developers coined POG, programação orientada a gambiarra, gambiarra-oriented programming, which is a joke that everybody has shipped. Related words divide the ground: quebra-galho is a stopgap, remendo a patch, jeitinho the social manoeuvre rather than the physical one, and gato specifically the illegal tap. What no English word carries is the double charge. Kludge and bodge are insults; hack is a compliment; jury-rig is neutral and nautical. Gambiarra is all three at once, and the pride in it is real: the thing works, it cost nothing, and somebody clever did it under constraint. The nearest relatives are elsewhere — jugaad in India, which the University of Oxford's informality researchers place in the same family as the Brazilian jeitinho, système D in France and West Africa, desenrascanço in Portugal, костыль (a crutch) in Russian code review, houtje-touwtje in Dutch, atar con alambre in Argentina. Every one of them keeps part of the meaning and drops another part. That is why the word stays in Portuguese on this site, in every language: translating it would be the first gambiarra."
       }
     },
     "totalCount": "{count} terms",
@@ -15758,7 +15763,12 @@
     "provenanceBody": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything. What is here is the part I have lived.\n\nI executed and I planned. I audited other people's estates and oversaw work I did not carry out myself. I was the hands on the keyboard, and I was the name on the rota when it failed at night. I trained operations staff — one at a time at a console, and rooms full of them at once. Some of this I did for vendors, some for integrators, some for the customer who had to live with the result on Monday.\n\nNone of it is theory I have read about. It is one career, and this is what it taught me.",
     "articleCount": "{n, plural, =0 {no articles yet} one {# article} other {# articles}}",
     "whoDoesThis": "Who does this work",
-    "rolesAria": "Roles that do this work"
+    "rolesAria": "Roles that do this work",
+    "rolesTitle": "The positions this work belongs to",
+    "rolesBody": "Every article here describes work that somebody is employed to do. The Roles covers {count} of those positions — what each answers for, who it receives from, who it serves, and how it is measured.",
+    "rolesLink": "Read The Roles",
+    "toolsTitle": "Tools for this",
+    "toolsAria": "Tools that support this work"
   },
   "contributeTools": {
     "translationsTitle": "Improve the translations",
@@ -15843,6 +15853,7 @@
       "yHonest": "The part worth asking about",
       "whereHeading": "Where these roles are found",
       "backToRoles": "All {count} roles"
-    }
+    },
+    "overviewLink": "Read the overview: the path a product takes"
   }
 }

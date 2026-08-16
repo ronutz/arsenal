@@ -38,6 +38,7 @@ import {
   practiceByPart,
 } from "@/lib/practice";
 
+import { ROLES } from "@/lib/roles";
 export async function generateMetadata({
   params,
 }: {
@@ -104,6 +105,20 @@ export default async function PracticeIndexPage({
               which two were permanently empty. PRIME's ruling is that the
               honest thing is a plain statement of how he came to know this,
               in first person, once, before the first article. */}
+          {/* THE PAIR, STATED FROM THIS SIDE TOO (2026-08-15). The Roles has
+              linked here since it was built; this corpus had never pointed
+              back, which made a two-way relationship look one-way to anyone
+              arriving at The Practice first. */}
+          <section className="section">
+            <div className="container section-narrow">
+              <h2 className="section-title">{t("rolesTitle")}</h2>
+              <p className="section-body">{t("rolesBody", { count: ROLES.length })}</p>
+              <p className="practice-part-jump">
+                <Link href="/roles">{t("rolesLink")}</Link>
+              </p>
+            </div>
+          </section>
+
           <section className="section section-accent">
             <div className="container section-narrow">
               <h2 className="section-title">{t("provenanceTitle")}</h2>

@@ -78,6 +78,19 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
       <section className="section">
         <div className="container section-narrow">
           <p className="learn-card-summary">{t("countNote", { count: ROLES.length })}</p>
+          {/* And the other half of the pair: this corpus is what the positions
+              ARE, The Practice is how the work is DONE. */}
+          <p className="practice-part-jump">
+            <Link href={`/${locale}/practice`}>{t("practiceLink")}</Link>
+          </p>
+          {/* The overview article was written FROM this corpus and had never
+              been reachable FROM it — the same one-way relation the practice
+              pair carried until it was noticed. */}
+          <p className="practice-part-jump">
+            <Link href={`/${locale}/learn/the-path-a-product-takes`}>
+              {t("overviewLink")}
+            </Link>
+          </p>
         </div>
       </section>
     </main>

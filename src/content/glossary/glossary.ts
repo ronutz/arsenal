@@ -241,6 +241,40 @@ export const GLOSSARY: GlossaryEntry[] = [
     relatedTerms: ["workaround", "failover", "incident"],
   },
   {
+    // GAMBIARRA (PRIME 2026-08-15). Kept in Portuguese in every locale, per the
+    // headword rule and because the research below found no equivalent that
+    // carries the same load - the closest neighbours each keep one half of it
+    // and drop the other.
+    slug: "gambiarra",
+    headword: "Gambiarra",
+    kind: "lore",
+    domains: ["ops-culture", "enterprise-networking"],
+    aliases: [
+      "gambiarras",
+      "bacalhau",
+      "cabo bacalhau",
+      "quebra-galho",
+      "POG",
+      "programacao orientada a gambiarra",
+      "jeitinho",
+      "desenrascanco",
+      "jugaad",
+      "kludge",
+      "bodge",
+      "kostyl",
+      "systeme D",
+    ],
+    relatedTerms: ["workaround", "technical-debt", "yak-shaving"],
+    disputed: true,
+    sources: [
+      { label: "Antenor Nascentes, cited in the Portuguese-language reference literature, deriving gambiarra from gambia, borrowed from the Italian gamba (leg), with the augmentative and sometimes pejorative suffix -arra", href: "https://pt.wikipedia.org/wiki/Gambiarra" },
+      { label: "Michaelis dictionary, on the original sense: an improvised electrical extension, a long wire with a lamp at the end, used to bring light to different points - and in theatre, lamps hung above the footlights", href: "https://olhardigital.com.br/2025/04/08/dicas-e-tutoriais/qual-a-origem-da-palavra-gambiarra/" },
+      { label: "Canaltech on the competing accounts of how the theatre lighting sense became the improvisation sense, none of which linguists agree on", href: "https://canaltech.com.br/comportamento/qual-a-origem-da-palavra-gambiarra/" },
+      { label: "Global Informality Project, University of Oxford, on jugaad and its relatives, naming the Brazilian jeitinho and the West African systeme D as members of the same family", href: "https://www.in-formality.com/wiki/index.php?title=Jugaad_%28India%29" },
+    ],
+  },
+
+  {
     slug: "bhack",
     headword: "BHack",
     kind: "lore",
