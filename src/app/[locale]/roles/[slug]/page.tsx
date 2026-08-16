@@ -10,11 +10,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import Link from "next/link";
 import { LIVE_LOCALE_CODES } from "@/i18n/locales";
 import { ROLES, findRole, rolesLeadingHere } from "@/lib/roles";
 import { practiceByRole, getPracticeArticle } from "@/lib/practice";
 
+import { Link } from "@/i18n/navigation";
+import Header from "@/components/Header";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import SiteFooter from "@/components/SiteFooter";
 export function generateStaticParams() {
   return LIVE_LOCALE_CODES.flatMap((locale) => ROLES.map((r) => ({ locale, slug: r.slug })));
 }
@@ -33,6 +36,7 @@ export default async function RolePage({ params }: { params: Promise<{ locale: s
   const role = findRole(slug);
   if (!role) notFound();
   const t = await getTranslations({ locale, namespace: "roles" });
+  const tNav = await getTranslations({ locale, namespace: "nav" });
 
   /* The citation, assembled from the parts the guard requires. A bare marker
      cannot reach this point - check-roles rejects it at build time. */
@@ -70,14 +74,53 @@ export default async function RolePage({ params }: { params: Promise<{ locale: s
   );
 
   return (
-    <main>
+    <>
+      <a href="#main" className="skip-link">
+        {tNav("skipToContent")}
+      </a>
+      <Header />
+
+      <main id="main">
+        <article>
       <section className="section">
         <div className="container article-container">
+            <Breadcrumbs
+              ariaLabel={tNav("breadcrumb")}
+              items={[
+                { label: tNav("home"), href: "/" },
+                { label: t("eyebrow"), href: "/roles" },
+                { label: t(`groups.${role.group}.title`), href: "/roles" },
+                { label: role.title },
+              ]}
+            />
           <p className="hero-eyebrow">
-            <Link href={`/${locale}/roles`}>{t("eyebrow")}</Link> {"\u00b7"} {t(`groups.${role.group}.title`)}
+            <Link href="/roles">{t("eyebrow")}</Link> {"\u00b7"} {t(`groups.${role.group}.title`)}
           </p>
           <h1 className="article-title">{role.title}</h1>
-          <p className="vendor-note-body mono">{citation}</p>
+          {/* PROVENANCE AS A PILL (PRIME 2026-08-16), built on the family-chip
+              idiom the rest of the site already uses: a rounded chip whose hue
+              comes from --chip-color, with a dot. Amber for a role PRIME held,
+              cyan for one he worked alongside, muted for one written from
+              published sources. Read from the stylesheet rather than invented —
+              LESSONS 11. */}
+          <p className="family-chip-row">
+            <span
+              className="family-chip mono"
+              style={
+                {
+                  "--chip-color":
+                    role.provenance.kind === "held"
+                      ? "var(--accent-amber)"
+                      : role.provenance.kind === "alongside"
+                        ? "var(--accent-cyan)"
+                        : "var(--color-muted)",
+                } as React.CSSProperties
+              }
+            >
+              <span className="family-chip-dot" aria-hidden />
+              {citation}
+            </span>
+          </p>
           <p className="article-summary">{role.whatItIs}</p>
         </div>
       </section>
@@ -149,7 +192,7 @@ export default async function RolePage({ params }: { params: Promise<{ locale: s
                   const other = findRole(s);
                   return other ? (
                     <li key={s}>
-                      <Link href={`/${locale}/roles/${s}`} className="article-related-link">
+                      <Link href={`/roles/${s}`} className="article-related-link">
                         <span className="article-related-link-title">{other.title}</span>
                         <span className="article-related-link-summary">
                           {t(`groups.${other.group}.title`)}
@@ -173,7 +216,7 @@ export default async function RolePage({ params }: { params: Promise<{ locale: s
               <ul className="article-related-list">
                 {leadHere.map((r) => (
                   <li key={r.slug}>
-                    <Link href={`/${locale}/roles/${r.slug}`} className="article-related-link">
+                    <Link href={`/roles/${r.slug}`} className="article-related-link">
                       <span className="article-related-link-title">{r.title}</span>
                       <span className="article-related-link-summary">
                         {t(`groups.${r.group}.title`)}
@@ -192,7 +235,7 @@ export default async function RolePage({ params }: { params: Promise<{ locale: s
               <ul className="article-related-list">
                 {practiceLinks.map((a) => (
                   <li key={a.slug}>
-                    <Link href={`/${locale}/practice/${a.slug}`} className="article-related-link">
+                    <Link href={`/practice/${a.slug}`} className="article-related-link">
                       <span className="article-related-link-title">{a.title}</span>
                       {a.thesis ? (
                         <span className="article-related-link-summary">{a.thesis}</span>
@@ -202,12 +245,16 @@ export default async function RolePage({ params }: { params: Promise<{ locale: s
                 ))}
               </ul>
               <p className="article-back">
-                <Link href={`/${locale}/practice`}>{t("practiceLink")}</Link>
+                <Link href="/practice">{t("practiceLink")}</Link>
               </p>
             </section>
           )}
         </div>
       </section>
-    </main>
+        </article>
+      </main>
+
+      <SiteFooter />
+    </>
   );
 }

@@ -47,12 +47,15 @@
     "hero": {
       "eyebrow": "Practitioner-built, privacy-first",
       "title": "The network and security toolbox that keeps your data on your machine.",
-      "subtitle": "Subnet math, DNS and email diagnostics, certificate inspection, and more, computed locally in your browser. No upload, no logging, no account required."
+      "subtitle": "Subnet math, DNS and email diagnostics, certificate inspection, and more, computed locally in your browser. No upload, no logging, no account required.",
+      "beyond": "Around the tools: sourced articles on how the technology works, a record of the companies that built this industry, the practice of doing the work, and the roles that do it."
     },
     "credibility": {
       "title": "Built by someone who has done the work since 1996.",
       "body": "Thirty years in enterprise networking and security.",
-      "aboutCta": "More about who builds this"
+      "aboutCta": "More about who builds this",
+      "rolesStripTitle": "The roles I have held",
+      "rolesStripNote": "Eight positions across the path a product takes, each linking to what that job answers for, who it serves and how it is measured. The years are the ones on each entry, including the spans that are not continuous."
     },
     "pillars": {
       "title": "Platforms taught and held current.",
@@ -117,7 +120,7 @@
       "glossary": "Glossary",
       "glossaryLede": "Every term and acronym used across this site, defined once and cross-referenced. The thing to open mid-article.",
       "guides": "Study guides",
-      "guidesLede": "Objective-by-objective walkthroughs for the exams, showing what is covered here and, honestly, what is not.",
+      "guidesLede": "Curated reading paths through the Learn library: an ordered route through a subject, built for understanding it rather than for passing an exam.",
       "training": "Training I teach",
       "trainingLede": "Authorized instructor-led courses across four platforms, delivered through Red Education.",
       "about": "About",
@@ -125,7 +128,12 @@
       "career": "The career record",
       "careerLede": "Fifteen chapters from 1996 onward, each told from inside the company it happened in.",
       "redu": "Red Education",
-      "reduLede": "The global authorized training centre my courses are delivered through, and the story of how it got there."
+      "reduLede": "The global authorized training centre my courses are delivered through, and the story of how it got there.",
+      "hubsBadge": "{count} vendor hubs",
+      "glossaryBadge": "{count} entries",
+      "guidesBadge": "{count} guides",
+      "trainingBadge": "{count} courses across {vendors} vendors",
+      "careerBadge": "{count} chapters"
     }
   },
   "tools": {
@@ -7503,7 +7511,7 @@
     "navGlossary": "Glossary",
     "navGlossaryLede": "Every term used across the courses and the writing, defined once and cross-referenced. Useful mid-course and useful afterwards.",
     "disclaimerTitle": "Before you read further",
-    "disclaimerBody": "I work full time for Red Education. All the technical education work described on this page - training delivery, workshops, bootcamps, knowledge transfers and enablement sessions - is delivered solely through Red Education. I will be happy to help you work out what your organisation needs and put you in touch with the right person to handle the request."
+    "disclaimerBody": "I work full time for Red Education. All the technical education work described on this page - training delivery and content development, workshops, bootcamps, knowledge transfers and enablement sessions - is delivered solely through Red Education. I will be happy to help you work out what your organisation needs and put you in touch with the right person to handle the request."
   },
   "contact": {
     "title": "Get in touch",
@@ -15079,6 +15087,11 @@
         "def": "Brazilian Portuguese, feminine noun. An improvised fix built from whatever is to hand — precarious, unorthodox, and working. The word carries admiration and disapproval at the same time, and Brazilians hear both.",
         "context": "The word started literal. In nineteenth-century theatre a gambiarra was a row of lamps hung above the footlights to light the stage frontally and kill shadows; the dictionary sense is an improvised electrical extension, a long wire with a lamp at the end, carried to wherever light was needed. How that became the modern sense is where the accounts stop agreeing: one has actors tripping over the cabling until the word soured, another has genuinely bad wiring taking the name by association. The etymology is disputed too — the philologist Antenor Nascentes proposed gâmbia, borrowed from the Italian gamba, leg, with the augmentative and sometimes pejorative suffix -arra, and framed even his own reasoning as a question: because the light falls on the actors' legs? It also means an illegal power tap, and, in some registers, an affair.",
         "depth": "In technology the word arrived intact. A gambiarra is the SSH tunnel that has been up for three years, the crossover made by hand — a cabo bacalhau, a codfish cable — the loop that exists because the vendor's feature does not, the paperclip in the reset hole. Brazilian developers coined POG, programação orientada a gambiarra, gambiarra-oriented programming, which is a joke that everybody has shipped. Related words divide the ground: quebra-galho is a stopgap, remendo a patch, jeitinho the social manoeuvre rather than the physical one, and gato specifically the illegal tap. What no English word carries is the double charge. Kludge and bodge are insults; hack is a compliment; jury-rig is neutral and nautical. Gambiarra is all three at once, and the pride in it is real: the thing works, it cost nothing, and somebody clever did it under constraint. The nearest relatives are elsewhere — jugaad in India, which the University of Oxford's informality researchers place in the same family as the Brazilian jeitinho, système D in France and West Africa, desenrascanço in Portugal, костыль (a crutch) in Russian code review, houtje-touwtje in Dutch, atar con alambre in Argentina. Every one of them keeps part of the meaning and drops another part. That is why the word stays in Portuguese on this site, in every language: translating it would be the first gambiarra."
+      },
+      "jeitinho": {
+        "def": "Brazilian Portuguese. The knack of getting something done by going around a rule rather than through it — usually with charm, usually without money changing hands, and usually at a small cost to somebody who is following the rule.",
+        "context": "Where a gambiarra bends a material, a jeitinho bends a procedure. It lives in the gap between the impersonal law and the personal relationship: the queue skipped because you know the doorman, the form accepted after hours because somebody made a call, the deadline that moves because you asked well. Brazilians describe it with pride and with unease in the same breath, and the phrase that carries it — dar um jeitinho, to give it a little way — is a diminutive doing a lot of work: the -inho makes the manoeuvre sound small and forgivable.",
+        "depth": "For anyone working across Brazilian organisations the concept is operationally real. A change that goes in without a window, an access granted on a WhatsApp message, an exception that becomes the practice — each is a jeitinho, and each is the reason a control that exists on paper fails in an audit. That is the honest half. The other half is that it also names a genuine social competence in a system where formal channels are slow and unevenly applied, which is why the same person may condemn it in the abstract and rely on it on a Tuesday. Oxford's informality researchers catalogue it beside jugaad in India, blat in Russia and guanxi in China: different cultures, the same human answer to a rule that does not fit the case. Its technical cousin is gambiarra — the improvised fix in the physical or digital world — and the distinction worth keeping is that one bends a rule and the other bends a wire."
       }
     },
     "totalCount": "{count} terms",
@@ -15142,7 +15155,7 @@
     "link": "Explore instructor-led training"
   },
   "redEducation": {
-    "metaTitle": "Red Education - Global Authorized Training Center",
+    "metaTitle": "Red Education - the Authorized Training Center where Rodolfo Nützmann teaches",
     "metaDescription": "Red Education is a global Authorized Training Center for the world's leading network and security vendors, with more than 100,000 students trained across 132 countries. Rodolfo Nützmann teaches there as a Senior Instructor.",
     "eyebrow": "Authorized training",
     "title": "Red Education",
@@ -15183,7 +15196,7 @@
     "ctaButton": "Visit Red Education",
     "aboutLink": "Training delivery is handled by the leading global training center Red Education",
     "casesTitle": "Two engagements Red Education published",
-    "casesIntro": "Red Education writes up selected engagements as case studies. I am named in two of them. The accounts below are mine; the originals are theirs, and both are linked.",
+    "casesIntro": "Red Education publishes case studies of work delivered for named industries, and I am named in two of them. Summarised here in my own words, with each original linked — useful if you want to see what a large training engagement actually looks like before you commission one.",
     "case1Title": "Fortinet at scale, for a global IT services firm",
     "case1Body": "A multinational IT services company with more than 200,000 staff across sixty countries had won a large deal and did not have the certified Fortinet engineers to deliver it. Forty-three people went through FCP Fundamentals FortiGate Administrator, in mixed-experience groups. The training was the thing standing between a signed contract and a delivery team, which is a different kind of pressure from a scheduled public course.",
     "case1Quote": "Your expertise, hard work, and commitment played a pivotal role in making this training a success.",
@@ -15206,7 +15219,73 @@
     "benchAward3": "Gold Stevie Award, Global Partnership of the Year 2025, for the Check Point partnership",
     "benchAward4": "Gold Stevie Award, Achievement in Certification Programs",
     "benchAward5": "Check Point Platinum Elite ATC and Global ATC Provider of the Year",
-    "benchColleague": "Among the instructors publicly recognised is Jerry Solomon, named Palo Alto Networks JAPAC Instructor of the Year in both 2024 and 2025, and previously the holder of multiple Cisco Distinguished Instructor awards."
+    "benchColleague": "Among the instructors publicly recognised is Jerry Solomon, named Palo Alto Networks JAPAC Instructor of the Year in both 2024 and 2025, and previously the holder of multiple Cisco Distinguished Instructor awards.",
+    "jumpLabel": "Jump to a section",
+    "jumpWho": "Who they are",
+    "jumpDna": "How they work",
+    "jumpCases": "Case studies",
+    "jumpBench": "The bench",
+    "jumpAuth": "Authorizations",
+    "jumpAwards": "Awards",
+    "jumpInstructor": "The instructor",
+    "cultureTitle": "How the company says it works",
+    "cultureIntro": "Red Education publishes a culture statement, and these are the eight things it commits to. Summarised here in my own words; the original is linked below, and it is worth reading if you are considering working with them or for them.",
+    "cultureMotto": "No one said it would be easy. But it can be done",
+    "cultureMottoAttr": "Red Education, on putting the diversity statement into practice",
+    "cultureLink": "Read the culture statement on Red Education",
+    "culture": {
+      "c1": {
+        "term": "Diversity vision.",
+        "body": "Equal access to information, development and opportunity, stated as a business position rather than a policy annex: a company selling training across five regions has to understand the markets it teaches in."
+      },
+      "c2": {
+        "term": "Recruitment.",
+        "body": "Equal-opportunity hiring judged on demonstrable experience and fit for the role, with the argument that a workforce drawn from many countries is what makes an international training business legible to its customers."
+      },
+      "c3": {
+        "term": "Career development.",
+        "body": "Promotion on performance, with managers trained in evaluating fairly — the part that decides whether the rest of it is real."
+      },
+      "c4": {
+        "term": "Community programmes.",
+        "body": "Named reporting procedures for discrimination and harassment, follow-up to prevent recurrence, and partnerships with community groups."
+      },
+      "c5": {
+        "term": "Global markets.",
+        "body": "The claim that a workforce reflecting its customers serves them better, which for a company teaching in Asia Pacific, the Americas, Europe, India and the Middle East is an operational point rather than a sentiment."
+      },
+      "c6": {
+        "term": "Diversity bodies.",
+        "body": "A committee of champions drawn from every level of the company, responsible for keeping the policy present in day-to-day decisions."
+      },
+      "c7": {
+        "term": "Diversity practices.",
+        "body": "Training for all employees, flexible hours, education assistance, employee networks, parental and childcare support, and mentorship."
+      },
+      "c8": {
+        "term": "Five ways to act on it.",
+        "body": "The statement ends with commitments rather than aspirations: integrate it into strategy, set measurable targets with dates, educate senior leadership, communicate it plainly, and make the business case understood throughout the organisation."
+      }
+    },
+    "jumpCulture": "Company culture",
+    "explainersTitle": "The course explainers Red Education publishes",
+    "explainersIntro": "Red Education writes an explainer for each platform it trains on: what the courses cover, what they lead to, and how they fit a career. Ten are published, and these are all of them, ordered with the platforms I teach first. Worth reading before you choose a course, because they say more about outcomes than a course outline does.",
+    "explainersMine": "— a platform I teach",
+    "explainersGap": "Read on 16 August 2026. Two of the platforms I am authorized on, F5 and Extreme Networks, have no explainer published at the time of reading; their vendor pages carry the course listings instead.",
+    "jumpExplainers": "Course explainers",
+    "articlesTitle": "What Red Education writes about",
+    "articlesIntro": "Red Education runs a blog on certifications, careers and the state of security training. Their index is drawn after the page loads, so only the featured article can be linked directly from here; the rest are behind the index link below. Read on 16 August 2026.",
+    "article1Title": "F5 Certification: career pathways and salary expectations",
+    "article1Body": "The featured article on the day this section was written, and relevant here: F5 is one of the platforms I teach. It walks through what the F5 certification track leads to in career terms and what the market pays for it — the question most students actually arrive with, and one a course outline never answers.",
+    "article1Link": "Read it on Red Education",
+    "articlesIndexLink": "All Red Education articles",
+    "jumpArticles": "Articles",
+    "figuresLabel": "Red Education in figures",
+    "figuresHeadline": "Red Education, in their own published figures",
+    "figuresLearners": "learners trained",
+    "figuresSince": "training since",
+    "figuresRegions": "global regions",
+    "figuresVendors": "vendors authorized"
   },
   "toolDocs": {
     "titleSuffix": "documentation",
@@ -15651,7 +15730,7 @@
   "advisory": {
     "eyebrow": "Advisory",
     "title": "Independent advice on network and security decisions.",
-    "lede": "Thirty years inside enterprise networking and security, offered as judgement on decisions that have not been made yet. Scoped work with a written answer at the end.",
+    "lede": "Thirty years inside the vendors, distributors and integrators that serve enterprise networks — spent arguing the customer's case from that side of the table. Offered here as judgement on decisions that have not been made yet: you get a decision you can defend, the reasoning behind it, and the evidence to take to whoever has to approve it.",
     "availabilityTitle": "Available, not packaged",
     "availabilityBody": "This is not a product catalogue. The work below describes the kinds of question I am useful on; the shape of any particular engagement is agreed before it starts. If what you need is close to one of these but not the same, that is usually fine and worth a conversation.",
     "scopeTitle": "What this is, and what it is not",
@@ -15689,9 +15768,14 @@
     "exclusion3Term": "Staff augmentation",
     "exclusion3Body": "If what is needed is another person on the team, that is a hiring decision rather than an advisory one.",
     "exclusion4Term": "Training and enablement, in any form",
-    "exclusion4Body": "Every course, workshop and certification path I deliver is delivered through Red Education.",
+    "exclusion4Body": "Every course, workshop and certification path I deliver is delivered through Red Education. Custom and tailored training is welcome — ask Red Education and it reaches me.",
     "offerSpeakingTitle": "Speaking engagements",
-    "offerSpeakingBody": "Conference talks, keynotes, and internal sessions on where this industry came from, what it was like to be in it, and how that compares with now — plus a little futurology about where the professional roles and the work itself are heading. Prepared talks, and custom subjects by arrangement."
+    "offerSpeakingBody": "Conference talks, keynotes, and internal sessions on where this industry came from, what it was like to be in it, and how that compares with now — plus a little futurology about where the professional roles and the work itself are heading. Prepared talks, and custom subjects by arrangement.",
+    "advisorEyebrow": "Your advisor",
+    "advisorBody": "I have spent thirty years employed by vendors, distributors and integrators — implementing, supporting, deploying and teaching what they sell rather than selling it. That is the whole basis of the advice: my job was to make the thing work for the customer afterwards, so I have had to live with the answer. The credentials, the career record and what past clients and students say are a click away.",
+    "advisorLinkCreds": "Credentials",
+    "advisorLinkCareer": "Career record",
+    "advisorLinkEndorsements": "What clients say"
   },
   "speaking": {
     "eyebrow": "Speaking",
@@ -15760,7 +15844,7 @@
     "relatedAria": "Related articles in The Practice",
     "backToIndex": "All of The Practice",
     "provenanceTitle": "Where this comes from",
-    "provenanceBody": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything. What is here is the part I have lived.\n\nI executed and I planned. I audited other people's estates and oversaw work I did not carry out myself. I was the hands on the keyboard, and I was the name on the rota when it failed at night. I trained operations staff — one at a time at a console, and rooms full of them at once. Some of this I did for vendors, some for integrators, some for the customer who had to live with the result on Monday.\n\nNone of it is theory I have read about. It is one career, and this is what it taught me.",
+    "provenanceBody": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything. What is here is the part I have lived.\n\nI executed and I planned. I audited other people's estates and oversaw work I did not carry out myself. I was the hands on the keyboard, and I was the name on the rota when it failed at night. I trained operations staff — one at a time at a console, and rooms full of them at once. Some of this I did for vendors, some for integrators, most of it was for the end-customer who had to live with the result on Monday.\n\nNone of it is theory I have read about, it is what my career taught me.",
     "articleCount": "{n, plural, =0 {no articles yet} one {# article} other {# articles}}",
     "whoDoesThis": "Who does this work",
     "rolesAria": "Roles that do this work",
@@ -15778,14 +15862,12 @@
   "roles": {
     "eyebrow": "The Roles",
     "title": "The positions this industry is made of.",
-    "lede": "A product passes through many hands between the company that builds it and the person who depends on it. Each pair of hands is a job with its own clients, its own suppliers, its own accountability and its own measurement. This is what each one is.",
+    "lede": "A product passes through many hands between the company that builds it and the person who depends on it. Each pair of hands is a job with its own clients, its own suppliers, its own accountability and its own measurement.",
     "metaDescription": "The roles of the network and security industry, grouped by the path a product takes: who makes it, moves it, sells it, deploys it, runs it, supports it, defends it and teaches it.",
-    "provenanceSummary": "{held} held · {alongside} worked alongside · {documented} from the record",
-    "countNote": "{count} positions written so far, grouped by the path a product takes. The roster grows along that path.",
     "provenance": {
       "held": "Held this role",
       "alongside": "Worked alongside it",
-      "documented": "From the record"
+      "documented": "Written from published sources"
     },
     "groups": {
       "makes": {
@@ -15832,7 +15914,7 @@
       "turnsOn": "What the job turns on",
       "adjacent": "Where it leads",
       "practice": "The work itself",
-      "sources": "Where this comes from",
+      "sources": "The published sources",
       "leadHere": "Roles that lead here"
     },
     "practiceLede": "The Practice covers how this work is done — triage, escalation, evidence, handover — across the whole corpus.",
@@ -15854,6 +15936,13 @@
       "whereHeading": "Where these roles are found",
       "backToRoles": "All {count} roles"
     },
-    "overviewLink": "Read the overview: the path a product takes"
+    "overviewLink": "Read the overview: the path a product takes",
+    "provenanceHeld": "{held} held",
+    "provenanceAlongside": "{alongside} worked alongside",
+    "provenanceDocumented": "{documented} from the record",
+    "filterShow": "Show",
+    "filterAll": "All groups",
+    "filterGroupLabel": "Filter by where a role sits on the path",
+    "provenanceSummary": "{held} held · {alongside} worked alongside · {documented} from published sources"
   }
 }

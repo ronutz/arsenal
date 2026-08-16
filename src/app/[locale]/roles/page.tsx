@@ -8,10 +8,14 @@
 
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import Link from "next/link";
 import { LIVE_LOCALE_CODES } from "@/i18n/locales";
 import { ROLE_GROUPS, rolesInGroup, ROLES, provenanceCounts } from "@/lib/roles";
+import RoleGroupFilter from "@/components/RoleGroupFilter";
 
+import { Link } from "@/i18n/navigation";
+import Header from "@/components/Header";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import SiteFooter from "@/components/SiteFooter";
 export function generateStaticParams() {
   return LIVE_LOCALE_CODES.map((locale) => ({ locale }));
 }
@@ -26,26 +30,81 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "roles" });
+  const tNav = await getTranslations({ locale, namespace: "nav" });
   const counts = provenanceCounts();
 
   return (
-    <main>
+    <>
+      <a href="#main" className="skip-link">
+        {tNav("skipToContent")}
+      </a>
+      <Header />
+
+      <main id="main">
+        <article>
       <section className="section">
         <div className="container section-narrow">
+            <Breadcrumbs
+              ariaLabel={tNav("breadcrumb")}
+              items={[{ label: tNav("home"), href: "/" }, { label: t("eyebrow") }]}
+            />
           <p className="hero-eyebrow">{t("eyebrow")}</p>
           <h1 className="page-hero-title">{t("title")}</h1>
           <p className="page-hero-lede">{t("lede")}</p>
-          {/* The provenance summary sits at the top because it is the claim the
-              whole section makes about itself. Counted from the data, so the
-              sentence and the corpus cannot disagree. */}
-          <p className="practice-part-card-count mono">
-            {t("provenanceSummary", { held: counts.held, alongside: counts.alongside, documented: counts.documented })}
+
+          {/* THE PROVENANCE COUNTER (PRIME 2026-08-16).
+              Previously a bare mono paragraph pressed against the lede. It is
+              the claim the section makes about its own authority, so it gets
+              the chip row the rest of the site uses for counts, and the space
+              to be read as a separate statement.
+              `alongside` is HIDDEN AT ZERO: a counter reading "0 worked
+              alongside" advertises an absence nobody asked about. */}
+          <p className="family-chip-row">
+            <span className="family-chip mono">
+              {t("provenanceHeld", { held: counts.held })}
+            </span>
+            {counts.alongside > 0 && (
+              <span className="family-chip mono">
+                {t("provenanceAlongside", { alongside: counts.alongside })}
+              </span>
+            )}
+            <span className="family-chip mono">
+              {t("provenanceDocumented", { documented: counts.documented })}
+            </span>
           </p>
-          {/* Grades run across every entry below, so the door to them sits with
-              the section framing rather than inside any one group. */}
-          <p className="mono">
-            <Link href={`/${locale}/roles/levels`}>{t("levels.title")}</Link>
+
+          {/* The two doors out, in the site's jump-link idiom rather than as
+              loose links — the same control the industry pages use. */}
+          {/* One jump link per paragraph, which is the shape the industry
+              pages use for exactly this control. */}
+          <p>
+            <Link className="page-jump-link" href="/roles/levels">
+              {t("levels.title")} <span aria-hidden="true">&#8594;</span>
+            </Link>
           </p>
+          <p>
+            <Link className="page-jump-link" href="/practice">
+              {t("practiceLink")} <span aria-hidden="true">&#8594;</span>
+            </Link>
+          </p>
+          <p>
+            <Link className="page-jump-link" href="/learn/the-path-a-product-takes">
+              {t("overviewLink")} <span aria-hidden="true">&#8594;</span>
+            </Link>
+          </p>
+
+          <RoleGroupFilter
+            labels={{
+              show: t("filterShow"),
+              all: t("filterAll"),
+              groupLabel: t("filterGroupLabel"),
+            }}
+            groups={ROLE_GROUPS.filter((g) => rolesInGroup(g).length > 0).map((g) => ({
+              id: g,
+              label: t(`groups.${g}.title`),
+              n: rolesInGroup(g).length,
+            }))}
+          />
         </div>
       </section>
 
@@ -53,19 +112,34 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
         const roles = rolesInGroup(group);
         if (roles.length === 0) return null;
         return (
-          <section className="section" key={group} id={group}>
+          <section className="section" key={group} id={group} data-role-group={group}>
             <div className="container section-narrow">
               <h2 className="learn-card-title">{t(`groups.${group}.title`)}</h2>
               <p className="practice-part-card-note">{t(`groups.${group}.lede`)}</p>
               <ul className="learn-grid">
                 {roles.map((r) => (
-                  <li key={r.slug} className="learn-grid-item">
-                    <Link href={`/${locale}/roles/${r.slug}`} className="learn-card">
+                  <li key={r.slug} className="learn-grid-item" data-role-entry>
+                    <Link href={`/roles/${r.slug}`} className="learn-card">
                       <h3 className="learn-card-title">{r.title}</h3>
                       <p className="learn-card-summary">{r.whatItIs.split(". ")[0]}.</p>
-                      <p className="practice-part-card-count mono">
-                        {t(`provenance.${r.provenance.kind}`)}
-                      </p>
+                      <span className="family-chip-row">
+                        <span
+                          className="family-chip mono"
+                          style={
+                            {
+                              "--chip-color":
+                                r.provenance.kind === "held"
+                                  ? "var(--accent-amber)"
+                                  : r.provenance.kind === "alongside"
+                                    ? "var(--accent-cyan)"
+                                    : "var(--color-muted)",
+                            } as React.CSSProperties
+                          }
+                        >
+                          <span className="family-chip-dot" aria-hidden />
+                          {t(`provenance.${r.provenance.kind}`)}
+                        </span>
+                      </span>
                     </Link>
                   </li>
                 ))}
@@ -75,24 +149,10 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
         );
       })}
 
-      <section className="section">
-        <div className="container section-narrow">
-          <p className="learn-card-summary">{t("countNote", { count: ROLES.length })}</p>
-          {/* And the other half of the pair: this corpus is what the positions
-              ARE, The Practice is how the work is DONE. */}
-          <p className="practice-part-jump">
-            <Link href={`/${locale}/practice`}>{t("practiceLink")}</Link>
-          </p>
-          {/* The overview article was written FROM this corpus and had never
-              been reachable FROM it — the same one-way relation the practice
-              pair carried until it was noticed. */}
-          <p className="practice-part-jump">
-            <Link href={`/${locale}/learn/the-path-a-product-takes`}>
-              {t("overviewLink")}
-            </Link>
-          </p>
-        </div>
-      </section>
-    </main>
+        </article>
+      </main>
+
+      <SiteFooter />
+    </>
   );
 }

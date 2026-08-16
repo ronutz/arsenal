@@ -8,10 +8,13 @@
 
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import Link from "next/link";
 import { LIVE_LOCALE_CODES } from "@/i18n/locales";
 import { GRADES, Y_MOMENT, PERVASIVENESS, ROLES } from "@/lib/roles";
 
+import { Link } from "@/i18n/navigation";
+import Header from "@/components/Header";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import SiteFooter from "@/components/SiteFooter";
 export function generateStaticParams() {
   return LIVE_LOCALE_CODES.map((locale) => ({ locale }));
 }
@@ -26,13 +29,29 @@ export default async function LevelsPage({ params }: { params: Promise<{ locale:
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "roles" });
+  const tNav = await getTranslations({ locale, namespace: "nav" });
 
   return (
-    <main>
+    <>
+      <a href="#main" className="skip-link">
+        {tNav("skipToContent")}
+      </a>
+      <Header />
+
+      <main id="main">
+        <article>
       <section className="section">
         <div className="container article-container">
+            <Breadcrumbs
+              ariaLabel={tNav("breadcrumb")}
+              items={[
+                { label: tNav("home"), href: "/" },
+                { label: t("eyebrow"), href: "/roles" },
+                { label: t("levels.title") },
+              ]}
+            />
           <p className="hero-eyebrow">
-            <Link href={`/${locale}/roles`}>{t("eyebrow")}</Link>
+            <Link href="/roles">{t("eyebrow")}</Link>
           </p>
           <h1 className="page-hero-title">{t("levels.title")}</h1>
           <p className="page-hero-lede">{t("levels.lede")}</p>
@@ -40,7 +59,7 @@ export default async function LevelsPage({ params }: { params: Promise<{ locale:
         </div>
       </section>
 
-      <section className="section">
+      <section className="section section-accent">
         <div className="container article-container">
           <h2 className="learn-card-title">{t("levels.gradesHeading")}</h2>
           <ol className="learn-grid">
@@ -89,10 +108,14 @@ export default async function LevelsPage({ params }: { params: Promise<{ locale:
           <p className="article-summary">{PERVASIVENESS.claim}</p>
           <p className="article-related-link-summary">{PERVASIVENESS.consequence}</p>
           <p className="article-back">
-            <Link href={`/${locale}/roles`}>{t("levels.backToRoles", { count: ROLES.length })}</Link>
+            <Link href="/roles">{t("levels.backToRoles", { count: ROLES.length })}</Link>
           </p>
         </div>
       </section>
-    </main>
+        </article>
+      </main>
+
+      <SiteFooter />
+    </>
   );
 }

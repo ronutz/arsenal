@@ -16,7 +16,7 @@
 // POST to it instead, no component changes required.
 // ============================================================================
 
-import { RED_EDUCATION_BASE } from "@/config/redEducation";
+import { RED_EDUCATION_ALL_VENDORS } from "@/config/redEducation";
 
 export interface ContactChannel {
   /**
@@ -82,7 +82,7 @@ const SETTINGS: ContactSettings = {
     { id: "linkedin", url: "https://www.linkedin.com/in/nutzmann", external: true },
     { id: "youtube", url: "https://www.youtube.com/@ronutz", external: true },
     { id: "instagram", url: "https://www.instagram.com/ronutz/", external: true },
-    { id: "training", url: RED_EDUCATION_BASE /* attributed at render (standing rule 2026-07-22) */, external: true },
+    { id: "training", url: RED_EDUCATION_ALL_VENDORS /* attributed at render (standing rule 2026-07-22); the all-vendor course index rather than the homepage, PRIME 2026-08-16 */, external: true },
   ],
 };
 

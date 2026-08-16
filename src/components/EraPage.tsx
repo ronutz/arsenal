@@ -85,7 +85,7 @@ export default async function EraPage({ eraKey, sections, next }: EraPageProps) 
 
           {/* Next era */}
           {next && (
-            <section className="section">
+            <section className="section section-accent">
               <div className="container era-container">
                 <Link href={`/about/${next.slug}`} className="era-next">
                   <span className="era-next-label">{t("readNext")}</span>

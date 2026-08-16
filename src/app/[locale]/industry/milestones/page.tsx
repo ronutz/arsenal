@@ -104,7 +104,7 @@ export default async function MilestonesPage({
             ALPHABETICAL BY ISO CODE, matching /industry: the code is what the
             button displays, so ordering by count would leave the visible labels
             out of order and turn the row into an implicit ranking. */}
-        <section className="section">
+        <section className="section section-accent">
           <div className="container section-narrow">
             <MilestoneCountryFilter
               labels={{

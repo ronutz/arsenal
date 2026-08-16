@@ -39,6 +39,10 @@ import { studyGuides } from "@/content/certifications/study-guides";
 import { CATALOGUE } from "@/content/catalogue/catalogue";
 import { getAllArticles } from "@/lib/learn";
 
+import { ROLES } from "@/lib/roles";
+import { VENDOR_FAMILIES } from "@/config/vendors";
+import { GLOSSARY } from "@/content/glossary/glossary";
+import { PLATFORMS, COURSE_COUNT } from "@/content/training/courses";
 export async function generateMetadata({
   params,
 }: {
@@ -81,6 +85,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const industryCount = partnerVendors.length;
   const practiceCount = getPracticeArticles(locale).length;
   const guideCount = studyGuides.length;
+  /* Counts PRIME asked the cards to carry (2026-08-16). Computed from the
+     registries, never typed: the "64 of 48" bug came from a total written by
+     hand beside a count that moved. */
+  const hubCount = VENDOR_FAMILIES.length;
+  const glossaryCount = GLOSSARY.length;
+  const careerCount = CAREER_VENDORS.length;
+  const platformCount = PLATFORMS.length;
 
   // ANNIVERSARIES, COMPUTED. The timeline knows every founding year, so the
   // page can say something true this year that it did not say last year and
@@ -111,6 +122,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <p className="hero-eyebrow">{t("hero.eyebrow")}</p>
             <h1 className="page-hero-title">{t("hero.title")}</h1>
             <p className="page-hero-lede">{t("hero.subtitle")}</p>
+            {/* THE SECOND SENTENCE (PRIME 2026-08-16). The title states the
+                product and its guarantee, which is the strongest claim on the
+                site and should not be diluted by adding clauses to it. What
+                surrounds the tools — the articles, the industry record, the
+                practice and the roles — is most of the site by page count and
+                went unmentioned. So: a second line, deliberately smaller and
+                quieter than the lede above it, doing one job of its own. */}
+            <p className="vendor-divider-note">{t("hero.beyond")}</p>
           </div>
         </section>
 
@@ -146,17 +165,30 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </li>
               ))}
             </ul>
-            <p className="vendor-index-pointer">
-              <Link href="/industry/chapters" className="btn btn-secondary">
-                {ti("careerStripLink")}
-              </Link>
-            </p>
+            {/* ---- The roles held (PRIME 2026-08-16) ----
+                 The strip above says WHICH COMPANIES; this one says WHAT THE JOB
+                 WAS, and links each title to the entry in The Roles that
+                 describes it.
 
-            <p className="section-cta">
-              <Link href="/about" className="section-cta-link">
-                {t("credibility.aboutCta")} →
-              </Link>
-            </p>
+                 DERIVED, never typed: the years come from each role's own
+                 provenance citation, which already carries the non-contiguous
+                 spans — a consulting engineer at integrators in 2010-2011,
+                 2013-2014 and 2020; a field engineer in 1996-2000 and 2005-2007.
+                 One fact, one place, read here. */}
+            <div className="vendor-divider">
+              <h2 className="vendor-divider-title">{t("credibility.rolesStripTitle")}</h2>
+              <p className="vendor-divider-note">{t("credibility.rolesStripNote")}</p>
+            </div>
+            <ul className="career-strip">
+              {ROLES.filter((r) => r.provenance.kind === "held").map((r) => (
+                <li key={r.slug}>
+                  <Link href={`/roles/${r.slug}`} className="career-chip">
+                    <span className="career-chip-name">{r.title}</span>
+                    <span className="career-chip-years mono">{r.provenance.when}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -201,6 +233,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   {t("map.hubs")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("map.hubsLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.hubsBadge", { count: hubCount })}</span>
+                </p>
               </Link>
               <Link href="/tools" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
@@ -230,6 +265,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   {t("map.glossary")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("map.glossaryLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.glossaryBadge", { count: glossaryCount })}</span>
+                </p>
               </Link>
               <Link href="/industry" className="learn-portal-card" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
@@ -276,6 +314,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   {t("map.guides")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("map.guidesLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.guidesBadge", { count: guideCount })}</span>
+                </p>
               </Link>
               <Link href="/training" className="learn-portal-card" style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
@@ -283,6 +324,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   {t("map.training")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("map.trainingLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.trainingBadge", { count: COURSE_COUNT, vendors: platformCount })}</span>
+                </p>
               </Link>
               <Link href="/advisory" className="learn-portal-card" style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9671;</span>
@@ -307,6 +351,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   {t("map.career")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("map.careerLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.careerBadge", { count: careerCount })}</span>
+                </p>
               </Link>
               <Link href="/red-education" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9632;</span>

@@ -241,6 +241,31 @@ export const GLOSSARY: GlossaryEntry[] = [
     relatedTerms: ["workaround", "failover", "incident"],
   },
   {
+    // JEITINHO (PRIME 2026-08-16). The social sibling of gambiarra: one bends a
+    // rule, the other bends a material. Cross-referenced both ways.
+    slug: "jeitinho",
+    headword: "Jeitinho",
+    kind: "lore",
+    domains: ["ops-culture", "grc"],
+    aliases: [
+      "jeitinho brasileiro",
+      "dar um jeitinho",
+      "dar um jeito",
+      "jeito",
+      "malandragem",
+      "jugaad",
+      "blat",
+      "guanxi",
+    ],
+    relatedTerms: ["gambiarra", "workaround", "shadow-it"],
+    disputed: true,
+    sources: [
+      { label: "Global Informality Project, University of Oxford, which catalogues jeitinho alongside jugaad in India, blat in Russia and guanxi in China as informal practices for getting things done around a formal system", href: "https://www.in-formality.com/wiki/index.php?title=Jugaad_%28India%29" },
+      { label: "Roberto DaMatta's work on the Brazilian social navigation between the impersonal law and the personal relationship, the reading most cited whenever jeitinho is discussed academically", href: "https://pt.wikipedia.org/wiki/Jeitinho" },
+    ],
+  },
+
+  {
     // GAMBIARRA (PRIME 2026-08-15). Kept in Portuguese in every locale, per the
     // headword rule and because the research below found no equivalent that
     // carries the same load - the closest neighbours each keep one half of it
@@ -264,7 +289,7 @@ export const GLOSSARY: GlossaryEntry[] = [
       "kostyl",
       "systeme D",
     ],
-    relatedTerms: ["workaround", "technical-debt", "yak-shaving"],
+    relatedTerms: ["jeitinho", "workaround", "technical-debt", "yak-shaving"],
     disputed: true,
     sources: [
       { label: "Antenor Nascentes, cited in the Portuguese-language reference literature, deriving gambiarra from gambia, borrowed from the Italian gamba (leg), with the augmentative and sometimes pejorative suffix -arra", href: "https://pt.wikipedia.org/wiki/Gambiarra" },

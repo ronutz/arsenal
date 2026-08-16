@@ -133,7 +133,7 @@ export default async function TrainingLandingPage({
             </div>
           </section>
 
-          <section className="section">
+          <section className="section section-accent">
             <div className="container teach-container">
               <h2 className="teach-block-title">{tAbout("now.title")}</h2>
               <p className="teach-block-body">{tAbout("now.body")}</p>
@@ -155,7 +155,7 @@ export default async function TrainingLandingPage({
           </section>
 
           {/* The four platforms, linking to course indexes */}
-          <section className="section" id="catalog">
+          <section className="section section-accent" id="catalog">
             <div className="container teach-container">
               <h2 className="teach-section-heading">{t("platformsTitle")}</h2>
               <p className="teach-section-intro">{t("platformsBody")}</p>
@@ -193,7 +193,7 @@ export default async function TrainingLandingPage({
               now sit AFTER the environments section and BEFORE "Where to go
               next". "Why this matters in a classroom" (s1) deliberately stays
               up top, where it introduces the page. */}
-          <section className="section">
+          <section className="section section-accent">
             <div className="container teach-container">
               <div className="teach-blocks">
                 {["s2", "s3"].map((s) => (
@@ -378,7 +378,7 @@ export default async function TrainingLandingPage({
               selling training interrupted the argument it was making. */}
 
           {/* History link */}
-          <section className="section">
+          <section className="section section-accent">
             <div className="container teach-container">
               <div className="teach-history">
                 <div>

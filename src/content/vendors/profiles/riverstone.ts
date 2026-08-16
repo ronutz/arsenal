@@ -77,7 +77,7 @@ export const riverstoneProfile: VendorProfile = {
     "The shareholder ledger, per the public record: a $12 IPO in February 2001, $7.70 after the SEC disclosure, and an initial $1.06 per share returned from the wind-down.",
   ],
   careerLink: {
-    href: "/industry/chapters/versa",
+    href: "/industry/versa",
     label: "Riverstone alumni Kumar and Apurva Mehta founded Versa Networks - the Versa lineage page",
   },
 };

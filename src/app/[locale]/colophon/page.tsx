@@ -208,7 +208,7 @@ export default async function ColophonPage({
           {/* Standards and frameworks — what the tools are built on: the
               specifications, golden vectors, OWASP, the red/blue posture, and
               the local/deterministic guarantee. */}
-          <section className="section">
+          <section className="section section-accent">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("standardsTitle")}</h2>
               <p className="colophon-body">{t("standardsLede")}</p>
@@ -238,7 +238,7 @@ export default async function ColophonPage({
             </div>
           </section>
 
-          <section className="section">
+          <section className="section section-accent">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("vibeTitle")}</h2>
               <p className="colophon-body">

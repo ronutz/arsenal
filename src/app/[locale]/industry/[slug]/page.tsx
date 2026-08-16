@@ -484,7 +484,7 @@ export default async function PartnerVendorPage({
             </div>
           </section>
 
-          <section className="section">
+          <section className="section section-accent">
             <div className="container vendor-container">
               <p className="era-intro">{vendor.intro}</p>
             </div>
@@ -532,7 +532,7 @@ export default async function PartnerVendorPage({
 
           {/* Rich profile: foundings, timeline, products, innovations, markets, analysts */}
           {PROFILES[slug] && (
-            <section className="section">
+            <section className="section section-accent">
               <div className="container vendor-container">
                 <VendorProfileSections
                   profile={PROFILES[slug]}
@@ -570,7 +570,7 @@ export default async function PartnerVendorPage({
                placed after the history rather than before it: this page is
                about the company, and the fact that somebody worked here is
                a footnote to that, not the headline. */
-            <section className="section">
+            <section className="section section-accent">
               <div className="about-cred-grid">
                 <Link
                   href={`/industry/chapters/${vendor.careerChapter.slug}`}
@@ -648,7 +648,7 @@ export default async function PartnerVendorPage({
 
           {/* External link */}
           {vendor.externalUrl && (
-            <section className="section">
+            <section className="section section-accent">
               <div className="container vendor-container">
                 <a
                   href={attributeRedEducationUrl(vendor.externalUrl, { vendor: vendor.slug, pageType: "vendor-partner", pageSlug: vendor.slug, locale, cta: "site-link" })}
@@ -696,7 +696,7 @@ export default async function PartnerVendorPage({
                to an acquirer's homepage under the dead company's name would
                misrepresent who is still trading. */}
           {vendor.official && (
-            <section className="section">
+            <section className="section section-accent">
               <div className="container vendor-container">
                 <div className="partner-sources">
                   <span className="partner-sources-label mono">{tp("officialLabel")}</span>

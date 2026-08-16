@@ -79,12 +79,89 @@ function applyAttribution(u: URL, a: RedEduAttribution): void {
 }
 
 /**
+ * VENDOR LANDING PAGES ON RED EDUCATION.
+ *
+ * *** WHY THIS EXISTS (PRIME + SCOUT, 2026-08-16) ***
+ *
+ * Every attributed link this site emitted landed on the Red Education HOME
+ * page, however specific the page it left from. A reader on a BIG-IP course
+ * page, having read a thousand words about that exact course, arrived at a
+ * site root and had to find it again. The attribution was precise and the
+ * DESTINATION was not: the analysis called it 5/10 external destination
+ * targeting against 9.5/10 contextual link quality, and that gap is this map.
+ *
+ * EVERY URL HERE WAS VERIFIED AS A LIVE, TITLED PAGE BEFORE BEING WRITTEN
+ * DOWN. Constructing a plausible-looking vendor path would be the fabricated
+ * citation this canon refuses; a guessed deep link is worse than a root link,
+ * because a root link always works.
+ *
+ * Extreme Networks is DELIBERATELY ABSENT: no landing page for it has been
+ * verified, so its links continue to the root until one is. An entry here is a
+ * claim that a page exists.
+ */
+export const RED_EDUCATION_VENDOR_PAGES: Readonly<Record<string, string>> = Object.freeze({
+  // PRIME's authorized platforms, in the order the site lists them.
+  f5: "https://www.rededucation.com/f5-networks/",
+  fortinet: "https://www.rededucation.com/fortinet/",
+  netskope: "https://www.rededucation.com/netskope-training/",
+  extreme: "https://www.rededucation.com/extreme-networks/",
+  ping: "https://www.rededucation.com/ping-identity/",
+  zscaler: "https://www.rededucation.com/zscaler/",
+
+  // The rest of the vendor navigation, so a link from any context lands on a
+  // vendor page rather than on a homepage.
+  "palo-alto": "https://www.rededucation.com/palo-alto-networks/",
+  checkpoint: "https://www.rededucation.com/checkpoint/",
+  cisco: "https://www.rededucation.com/cisco/",
+  avaya: "https://www.rededucation.com/avaya/",
+  cyberark: "https://www.rededucation.com/cyberark/",
+  nutanix: "https://www.rededucation.com/nutanix/",
+  paessler: "https://www.rededucation.com/paessler/",
+  epi: "https://www.rededucation.com/epi/",
+});
+
+/**
+ * Aliases, so a caller passes the vendor slug it already holds - from the tools
+ * config, a vendor hub, a course record - without every call site having to
+ * learn this map's spelling.
+ */
+const VENDOR_ALIASES: Readonly<Record<string, string>> = Object.freeze({
+  "extreme-networks": "extreme",
+  "f5-networks": "f5",
+  "ping-identity": "ping",
+  forgerock: "ping",
+  "palo-alto-networks": "palo-alto",
+  paloalto: "palo-alto",
+  "check-point": "checkpoint",
+});
+
+/**
+ * THE ALL-VENDOR COURSE INDEX - Red Education's own "View All" target, and a
+ * better landing place than the marketing homepage for any placement that names
+ * no single vendor: a reader who arrived from a training page lands among
+ * courses. PRIME's ruling, 2026-08-16.
+ */
+export const RED_EDUCATION_ALL_VENDORS = "https://www.rededucation.com/certifications/";
+
+/**
+ * The best verified destination for a placement: the vendor's own page where
+ * one is known, the all-vendor course index otherwise. Never invents a path.
+ */
+export function redEducationDestination(vendor?: string): string {
+  const raw = (vendor ?? "").toLowerCase().trim();
+  const key = VENDOR_ALIASES[raw] ?? raw;
+  return RED_EDUCATION_VENDOR_PAGES[key] ?? RED_EDUCATION_ALL_VENDORS;
+}
+
+/**
  * Build a Red Education URL (site root) carrying full placement-level
  * attribution. The parameters ride the query string and are safely ignored by
  * any server that does not expect them (never a 4xx).
  */
 export function redEducationUrl(a: RedEduAttribution): string {
-  const u = new URL(RED_EDUCATION_BASE);
+  // Deep-link to the vendor page when the placement names a vendor and that
+  // page has been verified; otherwise the root, which always resolves.
+  const u = new URL(redEducationDestination(a.vendor));
   applyAttribution(u, a);
   return u.toString();
 }

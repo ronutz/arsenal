@@ -48,6 +48,12 @@ export interface CareerChapterPageProps {
   sections?: number;
 }
 
+/** Career chapters whose PROFILE has moved to a different slug. See the history
+ *  card below. Keyed by chapter slug, valued by the profile that replaced it. */
+const PROFILE_MOVED: Readonly<Record<string, string>> = Object.freeze({
+  "fireeye-mcafee-ixia": "mcafee-fireeye-trellix",
+});
+
 export default async function CareerChapterPage({
   vendorKey,
   slug,
@@ -149,7 +155,7 @@ export default async function CareerChapterPage({
           ))}
 
           {certs && !certs.startsWith("vendors.") && (
-            <section className="section">
+            <section className="section section-accent">
               <div className="container vendor-container">
                 <h2 className="section-title">{t("certsTitle")}</h2>
                 {/* Certifications sit in their own block because on a career
@@ -172,7 +178,22 @@ export default async function CareerChapterPage({
                     <span className="about-cred-cta">{t("hubCardCta")} →</span>
                   </Link>
                 )}
-                <Link href={`/industry/${slug}`} className="about-cred-card">
+                {/* THE HISTORY CARD POINTS AT THE PROFILE, AND ONE PROFILE
+                    MOVED (2026-08-16). The chapter slug and the profile slug are
+                    normally the same string, so this was `/industry/${slug}` and
+                    was right for fifteen of the sixteen chapters.
+
+                    The exception: the `fireeye-mcafee-ixia` profile was
+                    DISSOLVED and replaced by `mcafee-fireeye-trellix` - the
+                    partners registry says so in its own comment - and the card
+                    kept pointing at the retired address. The chapter keeps its
+                    slug, because a career chapter is a fact about years worked
+                    and does not move when a company is renamed; only the
+                    DESTINATION moved.
+
+                    One entry, not a rule: a second exception should make
+                    somebody ask whether the two slugs should be one field. */}
+                <Link href={`/industry/${PROFILE_MOVED[slug] ?? slug}`} className="about-cred-card">
                   <span className="about-cred-eyebrow">{t("historyCardEyebrow")}</span>
                   <span className="about-cred-title">
                     {t("historyCardTitle", { name: t(`${vendorKey}.name`) })}

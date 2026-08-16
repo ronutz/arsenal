@@ -162,7 +162,7 @@ export default async function GuidePage({
           </section>
 
           {/* 2. QUICK REFERENCE */}
-          <section id="quickref" className="section">
+          <section id="quickref" className="section section-accent">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("quickrefHeading")}</h2>
               <p className="colophon-body">{t("quickrefIntro")}</p>
@@ -219,7 +219,7 @@ export default async function GuidePage({
           </section>
 
           {/* 4. DETAILED MANUAL */}
-          <section id="manual" className="section">
+          <section id="manual" className="section section-accent">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("manualHeading")}</h2>
               {manual.map((m) => (

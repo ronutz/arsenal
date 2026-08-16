@@ -166,7 +166,7 @@ export default async function StudyGuidePage({
             /* A retiring exam has a deadline and usually a successor, and
                both change what a candidate should book. Names and dates
                stay verbatim; only the surrounding words are localised. */
-            <section className="section">
+            <section className="section section-accent">
               <div className="container certs-container">
                 <p className="cidr-privacy">
                   <strong>
@@ -208,7 +208,7 @@ export default async function StudyGuidePage({
                 /* Fortinet has not published an exam blueprint for this one, so
                    these come from the COURSE page. Same material, different
                    artifact — say which, rather than let a reader assume. */
-                <section className="section">
+                <section className="section section-accent">
                   <div className="container certs-container">
                     <p className="cidr-privacy">{t("sourceCaveatCourse")}</p>
                   </div>
@@ -253,7 +253,7 @@ export default async function StudyGuidePage({
 
           {/* Good-faith / public-sources notice + takedown route (PRIME 2026-07-23).
               Appears on EVERY vendor-linked guide, not only the hub. */}
-          <section className="section">
+          <section className="section section-accent">
             <div className="container certs-container certhub-notes">
               <div className="certhub-note">
                 <h2 className="certhub-note-title">{t("goodFaithTitle")}</h2>

@@ -78,7 +78,7 @@ export default async function Pre1996Page({
           {/* Hero */}
           <section className="era-hero">
             <div className="container era-container">
-              <Link href="/industry/history" className="article-back">
+              <Link href="/about" className="article-back">
                 ← {t("backToHistory")}
               </Link>
               <p className="era-years mono">{t("pre1996.years")}</p>
@@ -95,7 +95,7 @@ export default async function Pre1996Page({
           </section>
 
           {/* Timeline map — the dated skeleton the narrative then expands */}
-          <section className="section">
+          <section className="section section-accent">
             <div className="container era-container">
               <h2 className="era-section-title">{t("pre1996.mapTitle")}</h2>
               <p className="era-section-body">{t("pre1996.mapNote")}</p>
@@ -188,9 +188,9 @@ export default async function Pre1996Page({
           </section>
 
           {/* Next era */}
-          <section className="section">
+          <section className="section section-accent">
             <div className="container era-container">
-              <Link href="/industry/history/1996-2020" className="era-next">
+              <Link href="/about/1996-2020" className="era-next">
                 <span className="era-next-label">{t("readNext")}</span>
                 <span className="era-next-years mono">
                   {t("era19962020.years")}

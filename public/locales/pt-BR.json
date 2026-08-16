@@ -47,12 +47,15 @@
     "hero": {
       "eyebrow": "Feito por quem é da área, com privacidade em primeiro lugar",
       "title": "A caixa de ferramentas de rede e segurança que mantém seus dados na sua máquina.",
-      "subtitle": "Cálculo de sub-redes, diagnóstico de DNS e e-mail, inspeção de certificados e muito mais, processado localmente no seu navegador. Sem envio, sem registro, sem necessidade de conta."
+      "subtitle": "Cálculo de sub-redes, diagnóstico de DNS e e-mail, inspeção de certificados e muito mais, processado localmente no seu navegador. Sem envio, sem registro, sem necessidade de conta.",
+      "beyond": "Ao redor das ferramentas: artigos com fontes sobre como a tecnologia funciona, um registro das empresas que construíram esta indústria, a prática de fazer o trabalho, e os papéis que o fazem."
     },
     "credibility": {
       "title": "Feito por quem coloca a mão na massa desde 1996.",
       "body": "Trinta anos em redes e segurança corporativa.",
-      "aboutCta": "Mais sobre quem está por trás"
+      "aboutCta": "Mais sobre quem está por trás",
+      "rolesStripTitle": "Os papéis que exerci",
+      "rolesStripNote": "Oito posições ao longo do caminho que um produto percorre, cada uma ligada ao que aquele trabalho responde, a quem serve e como é medido. Os anos são os de cada entrada, incluindo os períodos que não são contínuos."
     },
     "pillars": {
       "title": "Plataformas ensinadas e mantidas atualizadas.",
@@ -117,7 +120,7 @@
       "glossary": "Glossário",
       "glossaryLede": "Cada termo e sigla usados neste site, definidos uma vez e com referências cruzadas. O que se abre no meio de um artigo.",
       "guides": "Guias de estudo",
-      "guidesLede": "Passo a passo objetivo por objetivo para os exames, mostrando o que está coberto aqui e, honestamente, o que não está.",
+      "guidesLede": "Trilhas de leitura curadas pela biblioteca Learn: um percurso ordenado por um assunto, feito para entendê-lo, e não para passar em uma prova.",
       "training": "Treinamentos que ministro",
       "trainingLede": "Cursos autorizados com instrutor em quatro plataformas, entregues através da Red Education.",
       "about": "Sobre",
@@ -125,7 +128,12 @@
       "career": "O registro da carreira",
       "careerLede": "Quinze capítulos a partir de 1996, cada um contado de dentro da empresa em que aconteceu.",
       "redu": "Red Education",
-      "reduLede": "O centro de treinamento autorizado global através do qual meus cursos são entregues, e a história de como chegou lá."
+      "reduLede": "O centro de treinamento autorizado global através do qual meus cursos são entregues, e a história de como chegou lá.",
+      "hubsBadge": "{count} hubs de fabricantes",
+      "glossaryBadge": "{count} verbetes",
+      "guidesBadge": "{count} guias",
+      "trainingBadge": "{count} cursos de {vendors} fabricantes",
+      "careerBadge": "{count} capítulos"
     }
   },
   "tools": {
@@ -7503,7 +7511,7 @@
     "navGlossary": "Glossário",
     "navGlossaryLede": "Cada termo usado nos cursos e nos textos, definido uma vez e com referências cruzadas. Útil durante o curso e útil depois dele.",
     "disclaimerTitle": "Antes de continuar a ler",
-    "disclaimerBody": "Trabalho em tempo integral para a Red Education. Todo o trabalho de educação técnica descrito nesta página - entrega de treinamentos, workshops, bootcamps, transferências de conhecimento e sessões de capacitação - é realizado exclusivamente por meio da Red Education. Terei prazer em ajudar você a identificar o que a sua organização precisa e colocá-lo em contato com a pessoa certa para tratar do pedido."
+    "disclaimerBody": "Trabalho em tempo integral para a Red Education. Todo o trabalho de educação técnica descrito nesta página - entrega de treinamentos e desenvolvimento de conteúdo, workshops, bootcamps, transferências de conhecimento e sessões de capacitação - é realizado exclusivamente por meio da Red Education. Terei prazer em ajudar você a identificar o que a sua organização precisa e colocá-lo em contato com a pessoa certa para tratar do pedido."
   },
   "contact": {
     "title": "Entre em contato",
@@ -15079,6 +15087,11 @@
         "def": "Substantivo feminino. Solução improvisada com o que estiver à mão — precária, fora do padrão, e funcionando. A palavra carrega admiração e reprovação ao mesmo tempo, e o brasileiro ouve as duas.",
         "context": "A palavra começou literal. No teatro do século XIX, gambiarra era a fileira de lâmpadas suspensa acima da ribalta, que ilumina a cena de frente e mata as sombras; o sentido de dicionário é uma extensão elétrica improvisada, um fio longo com uma lâmpada na ponta, levada até onde a luz fosse necessária. Como isso virou o sentido moderno é onde os relatos param de concordar: um diz que os atores tropeçavam na fiação até a palavra azedar, outro que instalações realmente malfeitas foram levando o nome por associação. A etimologia também é disputada — o filólogo Antenor Nascentes propôs gâmbia, tomado do italiano gamba, perna, com o sufixo aumentativo e por vezes depreciativo -arra, e formulou o próprio raciocínio como pergunta: porque a luz dá nas pernas dos atores? A palavra também significa ligação clandestina de energia e, em certos registros, caso extraconjugal.",
         "depth": "Na tecnologia a palavra chegou inteira. Gambiarra é o túnel SSH que está de pé há três anos, o cabo bacalhau feito à mão, o laço que existe porque o recurso do fabricante não existe, o clipe de papel no furo de reset. Programadores brasileiros cunharam POG, programação orientada a gambiarra, que é uma piada que todo mundo já colocou em produção. As palavras vizinhas dividem o terreno: quebra-galho é o paliativo, remendo é o conserto, jeitinho é a manobra social e não a física, e gato é especificamente a ligação clandestina. O que nenhuma palavra inglesa carrega é a carga dupla. Kludge e bodge são ofensas; hack é elogio; jury-rig é neutro e náutico. Gambiarra é as três coisas ao mesmo tempo, e o orgulho é real: a coisa funciona, não custou nada, e alguém inteligente a fez sob restrição. Os parentes mais próximos estão fora daqui — jugaad na Índia, que os pesquisadores de informalidade da Universidade de Oxford colocam na mesma família do jeitinho brasileiro, système D na França e na África Ocidental, desenrascanço em Portugal, костыль (uma muleta) na revisão de código em russo, houtje-touwtje no neerlandês, atar con alambre na Argentina. Cada um guarda uma parte do sentido e abre mão de outra. É por isso que a palavra fica em português neste site, em todos os idiomas: traduzi-la seria a primeira gambiarra."
+      },
+      "jeitinho": {
+        "def": "O talento de resolver algo contornando uma regra em vez de passar por ela — em geral com simpatia, em geral sem dinheiro trocando de mãos, e em geral a um pequeno custo para quem está cumprindo a regra.",
+        "context": "Onde a gambiarra dobra um material, o jeitinho dobra um procedimento. Ele vive na fresta entre a lei impessoal e a relação pessoal: a fila pulada porque você conhece o porteiro, o formulário aceito fora do horário porque alguém deu um telefonema, o prazo que anda porque você pediu bem. O brasileiro o descreve com orgulho e com desconforto no mesmo fôlego, e a expressão que o carrega — dar um jeitinho — é um diminutivo trabalhando muito: o -inho faz a manobra parecer pequena e perdoável.",
+        "depth": "Para quem trabalha em organizações brasileiras o conceito é operacionalmente real. Uma mudança que entra sem janela, um acesso concedido por mensagem, uma exceção que vira a prática — cada uma é um jeitinho, e cada uma é a razão de um controle que existe no papel falhar numa auditoria. Essa é a metade honesta. A outra é que a palavra também nomeia uma competência social genuína num sistema em que os canais formais são lentos e aplicados de forma desigual, e é por isso que a mesma pessoa pode condená-lo no abstrato e recorrer a ele numa terça-feira. Os pesquisadores de informalidade de Oxford o catalogam ao lado do jugaad indiano, do blat russo e do guanxi chinês: culturas diferentes, a mesma resposta humana a uma regra que não serve ao caso. Seu primo técnico é a gambiarra — o conserto improvisado no mundo físico ou digital — e a distinção que vale guardar é que um dobra uma regra e o outro dobra um fio."
       }
     },
     "totalCount": "{count} termos",
@@ -15142,7 +15155,7 @@
     "link": "Conhecer os treinamentos com instrutor"
   },
   "redEducation": {
-    "metaTitle": "Red Education - Centro de Treinamento Autorizado global",
+    "metaTitle": "Red Education - o Centro de Treinamento Autorizado onde Rodolfo Nützmann ensina",
     "metaDescription": "A Red Education é um Centro de Treinamento Autorizado global dos principais fabricantes de rede e segurança do mundo, com mais de 100.000 alunos treinados em 132 países. Rodolfo Nützmann leciona lá como Instrutor Sênior.",
     "eyebrow": "Treinamento autorizado",
     "title": "Red Education",
@@ -15183,7 +15196,7 @@
     "ctaButton": "Visitar a Red Education",
     "aboutLink": "A entrega dos treinamentos é conduzida pelo principal centro de treinamento global Red Education",
     "casesTitle": "Dois trabalhos que a Red Education publicou",
-    "casesIntro": "A Red Education publica alguns trabalhos como estudos de caso. Sou citado em dois deles. Os relatos abaixo são meus; os originais são deles, e ambos estão linkados.",
+    "casesIntro": "A Red Education publica estudos de caso de trabalhos entregues para setores nomeados, e sou citado em dois deles. Resumidos aqui em minhas próprias palavras, com cada original linkado — útil para ver como é de fato um grande projeto de treinamento antes de contratar um.",
     "case1Title": "Fortinet em escala, para uma empresa global de serviços de TI",
     "case1Body": "Uma multinacional de serviços de TI com mais de 200 mil funcionários em sessenta países tinha ganhado um contrato grande e não tinha os engenheiros certificados em Fortinet para executá-lo. Quarenta e três pessoas passaram pelo FCP Fundamentals FortiGate Administrator, em turmas de experiência mista. O treinamento era o que separava um contrato assinado de um time de entrega, o que é uma pressão diferente da de um curso público agendado.",
     "case1Quote": "Sua experiência, dedicação e comprometimento foram decisivos para o sucesso deste treinamento.",
@@ -15206,7 +15219,73 @@
     "benchAward3": "Gold Stevie Award, Global Partnership of the Year 2025, pela parceria com a Check Point",
     "benchAward4": "Gold Stevie Award, Achievement in Certification Programs",
     "benchAward5": "Check Point Platinum Elite ATC e Global ATC Provider of the Year",
-    "benchColleague": "Entre os instrutores reconhecidos publicamente está Jerry Solomon, nomeado Palo Alto Networks JAPAC Instructor of the Year em 2024 e 2025, e antes disso detentor de vários prêmios Cisco Distinguished Instructor."
+    "benchColleague": "Entre os instrutores reconhecidos publicamente está Jerry Solomon, nomeado Palo Alto Networks JAPAC Instructor of the Year em 2024 e 2025, e antes disso detentor de vários prêmios Cisco Distinguished Instructor.",
+    "jumpLabel": "Ir para uma seção",
+    "jumpWho": "Quem são",
+    "jumpDna": "Como trabalham",
+    "jumpCases": "Estudos de caso",
+    "jumpBench": "O corpo docente",
+    "jumpAuth": "Autorizações",
+    "jumpAwards": "Prêmios",
+    "jumpInstructor": "O instrutor",
+    "cultureTitle": "Como a empresa diz que trabalha",
+    "cultureIntro": "A Red Education publica uma declaração de cultura, e estes são os oito compromissos que ela assume. Resumidos aqui em minhas próprias palavras; o original está linkado abaixo, e vale a leitura para quem considera trabalhar com eles ou para eles.",
+    "cultureMotto": "No one said it would be easy. But it can be done",
+    "cultureMottoAttr": "Red Education, sobre colocar a declaração em prática",
+    "cultureLink": "Ler a declaração de cultura na Red Education",
+    "culture": {
+      "c1": {
+        "term": "Visão de diversidade.",
+        "body": "Acesso igual a informação, desenvolvimento e oportunidade, declarado como posição de negócio e não como anexo de política: uma empresa que vende treinamento em cinco regiões precisa entender os mercados em que ensina."
+      },
+      "c2": {
+        "term": "Recrutamento.",
+        "body": "Contratação por igualdade de oportunidades, avaliada por experiência demonstrável e adequação ao papel, com o argumento de que um quadro vindo de muitos países é o que torna um negócio internacional de treinamento inteligível para seus clientes."
+      },
+      "c3": {
+        "term": "Desenvolvimento de carreira.",
+        "body": "Promoção por desempenho, com gestores treinados para avaliar de forma justa — a parte que decide se o resto é real."
+      },
+      "c4": {
+        "term": "Programas comunitários.",
+        "body": "Procedimentos nomeados para relatar discriminação e assédio, acompanhamento para evitar recorrência, e parcerias com grupos comunitários."
+      },
+      "c5": {
+        "term": "Mercados globais.",
+        "body": "A tese de que um quadro que reflete seus clientes os atende melhor, o que para quem ensina na Ásia-Pacífico, nas Américas, na Europa, na Índia e no Oriente Médio é um ponto operacional, não um sentimento."
+      },
+      "c6": {
+        "term": "Órgãos de diversidade.",
+        "body": "Um comitê de responsáveis vindos de todos os níveis da empresa, encarregado de manter a política presente nas decisões do dia a dia."
+      },
+      "c7": {
+        "term": "Práticas de diversidade.",
+        "body": "Treinamento para todos, jornada flexível, auxílio educação, grupos de apoio, suporte parental e de creche, e mentoria."
+      },
+      "c8": {
+        "term": "Cinco formas de agir.",
+        "body": "A declaração termina com compromissos e não com aspirações: integrar à estratégia, definir metas mensuráveis com prazos, educar a liderança sênior, comunicar com clareza, e garantir que a justificativa seja compreendida em toda a organização."
+      }
+    },
+    "jumpCulture": "Cultura da empresa",
+    "explainersTitle": "Os guias de curso que a Red Education publica",
+    "explainersIntro": "A Red Education escreve um guia para cada plataforma em que treina: o que os cursos cobrem, aonde levam, e como se encaixam numa carreira. Dez estão publicados, e estes são todos, começando pelas plataformas que eu ensino. Valem a leitura antes de escolher um curso, porque falam mais de resultados do que uma ementa.",
+    "explainersMine": "— plataforma que eu ensino",
+    "explainersGap": "Lido em 16 de agosto de 2026. Duas das plataformas em que sou autorizado, F5 e Extreme Networks, não tinham guia publicado no momento da leitura; suas páginas de fabricante trazem a lista de cursos.",
+    "jumpExplainers": "Guias de curso",
+    "articlesTitle": "Sobre o que a Red Education escreve",
+    "articlesIntro": "A Red Education mantém um blog sobre certificações, carreiras e o estado do treinamento em segurança. O índice deles é montado depois que a página carrega, então só o artigo em destaque pode ser linkado diretamente daqui; o resto está atrás do link do índice abaixo. Lido em 16 de agosto de 2026.",
+    "article1Title": "Certificação F5: caminhos de carreira e expectativas salariais",
+    "article1Body": "O artigo em destaque no dia em que esta seção foi escrita, e relevante aqui: F5 é uma das plataformas que eu ensino. Ele percorre aonde a trilha de certificação F5 leva em termos de carreira e o que o mercado paga por ela — a pergunta com que a maioria dos alunos de fato chega, e que uma ementa nunca responde.",
+    "article1Link": "Ler na Red Education",
+    "articlesIndexLink": "Todos os artigos da Red Education",
+    "jumpArticles": "Artigos",
+    "figuresLabel": "A Red Education em números",
+    "figuresHeadline": "A Red Education, nos números que ela mesma publica",
+    "figuresLearners": "alunos formados",
+    "figuresSince": "treinando desde",
+    "figuresRegions": "regiões globais",
+    "figuresVendors": "fabricantes autorizados"
   },
   "toolDocs": {
     "titleSuffix": "documentação",
@@ -15600,7 +15679,7 @@
   "advisory": {
     "eyebrow": "Consultoria estratégica",
     "title": "Assessoria independente para decisões de rede e segurança.",
-    "lede": "Trinta anos dentro de redes e segurança corporativas, oferecidos como julgamento técnico sobre decisões que ainda não foram tomadas. Trabalho delimitado, com uma resposta por escrito ao final.",
+    "lede": "Trinta anos dentro dos fabricantes, distribuidores e integradores que atendem redes corporativas — defendendo a causa do cliente a partir desse lado da mesa. Oferecidos aqui como julgamento sobre decisões que ainda não foram tomadas: você recebe uma decisão que consegue defender, o raciocínio por trás dela, e a evidência para levar a quem precisa aprovar.",
     "availabilityTitle": "Disponível, não empacotado",
     "availabilityBody": "Isto não é um catálogo de produtos. O que está descrito abaixo são os tipos de pergunta em que sou útil; o formato de cada contratação é acordado antes de começar. Se a sua necessidade for parecida com alguma delas, mas não igual, em geral não há problema e vale uma conversa.",
     "scopeTitle": "O que é, e o que não é",
@@ -15638,9 +15717,14 @@
     "exclusion3Term": "Alocação de mão de obra",
     "exclusion3Body": "Se o que falta é mais uma pessoa no time, isso é uma decisão de contratação — não é o que este trabalho resolve.",
     "exclusion4Term": "Treinamento e capacitação, em qualquer formato",
-    "exclusion4Body": "Todo curso, workshop e trilha de certificação que ministro é entregue através da Red Education.",
+    "exclusion4Body": "Todo curso, workshop e trilha de certificação que eu ministro é entregue pela Red Education. Treinamentos customizados e sob medida são bem-vindos — peça à Red Education e chega até mim.",
     "offerSpeakingTitle": "Palestras",
-    "offerSpeakingBody": "Palestras em eventos, keynotes e sessões internas sobre de onde veio esta indústria, como era estar dentro dela e como isso se compara com o presente — além de um pouco de futurologia sobre para onde caminham os papéis profissionais e o próprio trabalho. Palestras prontas, e temas sob medida mediante combinação."
+    "offerSpeakingBody": "Palestras em eventos, keynotes e sessões internas sobre de onde veio esta indústria, como era estar dentro dela e como isso se compara com o presente — além de um pouco de futurologia sobre para onde caminham os papéis profissionais e o próprio trabalho. Palestras prontas, e temas sob medida mediante combinação.",
+    "advisorEyebrow": "Seu consultor",
+    "advisorBody": "Passei trinta anos empregado por fabricantes, distribuidores e integradores — implantando, sustentando, implementando e ensinando o que eles vendem, em vez de vendê-lo. É essa a base inteira do conselho: meu trabalho era fazer a coisa funcionar para o cliente depois, então eu tive de conviver com a resposta. As credenciais, o histórico de carreira e o que dizem clientes e alunos estão a um clique.",
+    "advisorLinkCreds": "Credenciais",
+    "advisorLinkCareer": "Histórico de carreira",
+    "advisorLinkEndorsements": "O que dizem os clientes"
   },
   "speaking": {
     "eyebrow": "Palestras",
@@ -15709,7 +15793,7 @@
     "relatedAria": "Artigos relacionados em A Prática",
     "backToIndex": "Todo o A Prática",
     "provenanceTitle": "De onde isto vem",
-    "provenanceBody": "Trinta anos são tempo suficiente para ter feito muita coisa e nem de longe suficientes para ter feito tudo. O que está aqui é a parte que eu vivi.\n\nEu executei e eu planejei. Auditei o parque de outras pessoas e supervisionei trabalho que não fui eu quem fez. Fui a mão no teclado, e fui o nome na escala quando aquilo falhou de madrugada. Treinei equipes de operação — uma pessoa por vez diante de um console, e salas cheias delas de uma vez. Parte disso fiz para fabricantes, parte para integradores, parte para o cliente que precisava conviver com o resultado na segunda-feira.\n\nNada disso é teoria que eu li. É uma carreira, e é isto que ela me ensinou.",
+    "provenanceBody": "Trinta anos são tempo suficiente para ter feito muita coisa e nem de longe suficientes para ter feito tudo. O que está aqui é a parte que eu vivi.\n\nEu executei e eu planejei. Auditei o parque de outras pessoas e supervisionei trabalho que não fui eu quem fez. Fui a mão no teclado, e fui o nome na escala quando aquilo falhou de madrugada. Treinei equipes de operação — uma pessoa por vez diante de um console, e salas cheias delas de uma vez. Parte disso fiz para fabricantes, parte para integradores, e a maior parte para o cliente final que precisava conviver com o resultado na segunda-feira.\n\nNada disso é teoria que eu li, é o que a minha carreira me ensinou.",
     "articleCount": "{n, plural, =0 {nenhum artigo ainda} one {# artigo} other {# artigos}}",
     "whoDoesThis": "Quem faz este trabalho",
     "rolesAria": "Papéis que fazem este trabalho",
@@ -15727,14 +15811,12 @@
   "roles": {
     "eyebrow": "Os Papéis",
     "title": "As posições de que esta indústria é feita.",
-    "lede": "Um produto passa por muitas mãos entre a empresa que o constrói e a pessoa que depende dele. Cada par de mãos é um trabalho com clientes próprios, fornecedores próprios, responsabilidade própria e medição própria. Isto é o que cada um deles é.",
+    "lede": "Um produto passa por muitas mãos entre a empresa que o constrói e a pessoa que depende dele. Cada par de mãos é um trabalho com clientes próprios, fornecedores próprios, responsabilidade própria e medição própria.",
     "metaDescription": "Os papéis da indústria de redes e segurança, agrupados pelo caminho que um produto percorre: quem o faz, move, vende, implanta, opera, sustenta, defende e ensina.",
-    "provenanceSummary": "{held} exercidos · {alongside} acompanhados de perto · {documented} a partir do registro",
-    "countNote": "{count} posições escritas até aqui, agrupadas pelo caminho que um produto percorre. O rol cresce ao longo desse caminho.",
     "provenance": {
       "held": "Exerceu este papel",
       "alongside": "Trabalhou ao lado dele",
-      "documented": "A partir do registro"
+      "documented": "Escrito a partir de fontes publicadas"
     },
     "groups": {
       "makes": {
@@ -15781,7 +15863,7 @@
       "turnsOn": "Do que o trabalho depende",
       "adjacent": "Para onde leva",
       "practice": "O trabalho em si",
-      "sources": "De onde isto vem",
+      "sources": "As fontes publicadas",
       "leadHere": "Papéis que levam até aqui"
     },
     "practiceLede": "A Prática cobre como este trabalho é feito — triagem, escalação, evidência, passagem de bastão — em todo o corpus.",
@@ -15803,6 +15885,13 @@
       "whereHeading": "Onde estes papéis são encontrados",
       "backToRoles": "Todos os {count} papéis"
     },
-    "overviewLink": "Leia a visão geral: o caminho que um produto percorre"
+    "overviewLink": "Leia a visão geral: o caminho que um produto percorre",
+    "provenanceHeld": "{held} exercidos",
+    "provenanceAlongside": "{alongside} acompanhados de perto",
+    "provenanceDocumented": "{documented} a partir do registro",
+    "filterShow": "Mostrar",
+    "filterAll": "Todos os grupos",
+    "filterGroupLabel": "Filtrar por onde um papel fica no caminho",
+    "provenanceSummary": "{held} exercidos · {alongside} acompanhados de perto · {documented} a partir de fontes publicadas"
   }
 }

@@ -101,6 +101,53 @@ export default async function AdvisoryPage({
             </div>
           </section>
 
+          {/* --- YOUR ADVISOR (PRIME 2026-08-16) ---
+               Mirrors the "Your instructor" block on /training: same eyebrow,
+               same card, same position immediately after the hero, so a reader
+               who has seen one page recognises the other. The classes are the
+               teach-instructor ones, reused rather than duplicated - the block
+               is the same idea on a second page, and a parallel set of
+               advisory-* rules would be two things to keep in step.
+
+               The bare `teach-instructor` class is deliberately NOT copied:
+               check-css-classes showed it has no rule behind it even on
+               /training, where it has been carrying nothing. The -eyebrow,
+               -card, -text, -name and -body classes below are the ones that
+               actually style this block. */}
+          <section className="section teach-advisor">
+            <div className="container teach-container">
+              <p className="teach-instructor-eyebrow">{t("advisorEyebrow")}</p>
+
+              <div className="teach-instructor-card">
+                <div className="teach-instructor-text">
+                  <h2 className="teach-instructor-name">Rodolfo Nützmann</h2>
+                  <p className="teach-instructor-body">{t("advisorBody")}</p>
+                </div>
+
+                {/* The body says the credentials, the career record and what
+                    past clients say are A CLICK AWAY. Until now the page made
+                    that promise and provided one link, to /about.
+
+                    The classes are teach-instructor-link*, which the stylesheet
+                    has carried unused since /training moved these to cards
+                    further down its own page. Here they are the right answer
+                    rather than residue: this page has no such cards, and the
+                    sentence above needs somewhere to go. */}
+                <div className="teach-instructor-links">
+                  <Link href="/about/credentials" className="teach-instructor-link teach-instructor-link--primary">
+                    {t("advisorLinkCreds")}
+                  </Link>
+                  <Link href="/industry/chapters" className="teach-instructor-link">
+                    {t("advisorLinkCareer")}
+                  </Link>
+                  <Link href="/endorsements" className="teach-instructor-link">
+                    {t("advisorLinkEndorsements")}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* DISCLAIMER, NOW BELOW THE HERO (PRIME 2026-08-12).
 
               SUPERSEDES THE 2026-08-06 PLACEMENT, which put this above the

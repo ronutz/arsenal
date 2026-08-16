@@ -22,7 +22,7 @@
 // components that call it.
 // ============================================================================
 
-import { RED_EDUCATION_BASE } from "@/config/redEducation";
+import { RED_EDUCATION_ALL_VENDORS, redEducationDestination } from "@/config/redEducation";
 
 export interface LeadDestination {
   /** Short label shown to users / used in the button. */
@@ -44,7 +44,7 @@ const RED_EDUCATION: LeadDestination = {
   // attribution is applied at render time - in RequestTraining - where the
   // vendor, page, locale, and CTA context actually lives. No context-free
   // attributed URL may be baked here at module scope.
-  url: RED_EDUCATION_BASE,
+  url: RED_EDUCATION_ALL_VENDORS,
   kind: "atc",
 };
 
@@ -110,11 +110,31 @@ export function routeFor(platform: string, course: string): LeadDestination {
   const courseKey = `${platform}/${course}`;
   if (courseOverrides[courseKey]) return courseOverrides[courseKey];
   if (platformOverrides[platform]) return platformOverrides[platform];
-  return globalDefault;
+  // SCOUT's caution, 2026-08-16, adopted verbatim: PLATFORM PAGE -> VENDOR
+  // LANDING PAGE, ALWAYS; COURSE PAGE -> EXACT RED COURSE PAGE ONLY WHERE THE
+  // RED URL IS VERIFIED AND STABLE, OTHERWISE THE VENDOR LANDING PAGE.
+  //
+  // No Red course URL has been verified yet, and Red's own course URLs appear
+  // in several families. So a course falls back to its vendor's page - which is
+  // still a large improvement on a marketing homepage, and is never a guess.
+  return redEducationLanding(platform);
+}
+
+/**
+ * The Red Education destination for a platform, as a LeadDestination.
+ *
+ * *** THE CLEAN DESTINATION IS DEFINED SEPARATELY FROM THE ATTRIBUTION ***
+ * (SCOUT's architectural recommendation, 2026-08-16, and already the shape of
+ * this code): this returns the bare, verified URL; the calling component adds
+ * the placement metadata. One thing decides WHERE, another decides HOW IT IS
+ * MEASURED, and neither has to know about the other.
+ */
+function redEducationLanding(platform: string): LeadDestination {
+  return { ...globalDefault, url: redEducationDestination(platform) };
 }
 
 /** Resolve the platform-level destination (for a platform page CTA). */
 export function routeForPlatform(platform: string): LeadDestination {
   if (platformOverrides[platform]) return platformOverrides[platform];
-  return globalDefault;
+  return redEducationLanding(platform);
 }
