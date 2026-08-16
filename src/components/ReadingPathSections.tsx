@@ -145,8 +145,14 @@ export default function ReadingPathSections({
                     </span>
                   </button>
 
-                  {isOpen && (
-                    <div id={`${path.id}-contents`}>
+                  {/* RENDER AND HIDE (LESSONS 19, 2026-08-16). This panel used
+                      to be conditionally mounted, so the ordered list of
+                      articles and tools that IS the reading path did not exist
+                      in the document until a reader clicked. Same fault as the
+                      certifications hub, same fix: `hidden` keeps the collapsed
+                      appearance, keeps the steps crawlable and findable, and
+                      makes `aria-controls` point at an element that exists. */}
+                  <div id={`${path.id}-contents`} hidden={!isOpen}>
                       <p className="certhub-note-body">
                         <strong>{stepsLabel}:</strong>
                       </p>
@@ -173,7 +179,6 @@ export default function ReadingPathSections({
                         </p>
                       )}
                     </div>
-                  )}
                 </div>
               );
             })}

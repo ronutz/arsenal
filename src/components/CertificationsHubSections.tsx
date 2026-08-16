@@ -164,9 +164,25 @@ export default function CertificationsHubSections({
               <span className="certs-badge certs-badge--current mono">{g.vendorCount}</span>
             </button>
 
-            {/* ---- Collapsible certification rows, in certification order ---- */}
-            {vOpen && (
-            <div id={`${vKey}-certs`}>
+            {/* ---- Collapsible certification rows, in certification order ----
+
+                 RENDERED ALWAYS, HIDDEN WHEN CLOSED (2026-08-16). This panel and
+                 the one below used to be CONDITIONALLY MOUNTED, which meant the
+                 exam-guide links did not exist in the HTML until a reader had
+                 clicked twice.
+
+                 The audit of 2026-08-16 found 104 /certifications/<slug> pages
+                 with no inbound link from anywhere on the site, and this was the
+                 whole reason: THE INDEX THAT LISTS THEM RENDERED ITS LIST IN THE
+                 BROWSER.
+
+                 On a static-export site whose thesis is that the work is done in
+                 the page rather than behind it, that was the wrong trade. The
+                 `hidden` attribute gives the same collapsed appearance, keeps
+                 the content in the document for crawlers and for find-in-page,
+                 and makes `aria-controls` point at an element that actually
+                 exists - which it did not before. */}
+            <div id={`${vKey}-certs`} hidden={!vOpen}>
             {g.certs.map((cert) => {
               const isOpen = !!open[cert.key];
               return (
@@ -185,8 +201,7 @@ export default function CertificationsHubSections({
                     <span className="certs-badge certs-badge--current mono">{cert.code}</span>
                   </button>
 
-                  {isOpen && (
-                    <div id={`${cert.key}-guides`}>
+                  <div id={`${cert.key}-guides`} hidden={!isOpen}>
                       {cert.requiresText && (
                         <p className="certs-group-intro">{cert.requiresText}</p>
                       )}
@@ -259,12 +274,10 @@ export default function CertificationsHubSections({
                       </ul>
                       {cert.renewalNote && <p className="certhub-renewal">{cert.renewalNote}</p>}
                     </div>
-                  )}
                 </div>
               );
             })}
             </div>
-            )}
           </div>
         </section>
         );

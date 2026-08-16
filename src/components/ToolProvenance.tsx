@@ -53,8 +53,11 @@ export default function ToolProvenance({ enabled, data, copy }: ToolProvenancePr
         <span className="provenance-toggle-action mono">{open ? copy.hide : copy.show}</span>
       </button>
 
-      {open && (
-        <div className="provenance-body">
+      {/* RENDER AND HIDE (LESSONS 19, 2026-08-16). Provenance is the basis a
+          tool's answer rests on and the sources behind it - the most
+          citation-worthy content on a tool page, and it was mounted only after
+          a click, so no crawler and no find-in-page ever saw it. */}
+      <div className="provenance-body" hidden={!open}>
           <div className="provenance-block">
             <span className="provenance-block-label">{copy.basisLabel}</span>
             <p className="provenance-basis">{data.basis}</p>
@@ -84,7 +87,6 @@ export default function ToolProvenance({ enabled, data, copy }: ToolProvenancePr
             <p className="provenance-disclaimer">{copy.disclaimer}</p>
           )}
         </div>
-      )}
     </section>
   );
 }
