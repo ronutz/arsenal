@@ -32,6 +32,7 @@
 // nothing here implies he is authorized for these vendors.
 // ============================================================================
 
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -358,6 +359,38 @@ const LINEAGE_HUB_KEY: Record<string, string> = {
   "ping-identity": "ping",
   "check-point": "checkpoint",
 };
+
+/**
+ * PAGE TITLE (2026-08-16).
+ *
+ * This route had NO metadata export at all, so all 298 pages under /industry
+ * inherited the site-wide default title - the largest block of identical
+ * <title> values on the site, and the vendor hubs are exactly the pages a
+ * reader reaches from a search for a company name.
+ *
+ * It branches the same way the page does, because the route serves two shapes:
+ * a company page and a tag-filtered list. A title that did not branch would be
+ * wrong for one of them.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+
+  const tag = TAG_ROUTES[slug];
+  if (tag) {
+    const tTag = await getTranslations({ locale, namespace: "industryTags" });
+    return { title: tTag(`${tag}.title`) };
+  }
+
+  const vendor = getPartnerVendor(slug);
+  if (!vendor) return {};
+
+  // The company's own name first: it is what somebody typed into a search box.
+  return { title: `${vendor.name} - ${vendor.tagline}` };
+}
 
 export default async function PartnerVendorPage({
   params,

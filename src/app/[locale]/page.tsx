@@ -91,6 +91,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const hubCount = VENDOR_FAMILIES.length;
   const glossaryCount = GLOSSARY.length;
   const careerCount = CAREER_VENDORS.length;
+  const roleCount = ROLES.length;
   const platformCount = PLATFORMS.length;
 
   // ANNIVERSARIES, COMPUTED. The timeline knows every founding year, so the
@@ -180,7 +181,24 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <p className="vendor-divider-note">{t("credibility.rolesStripNote")}</p>
             </div>
             <ul className="career-strip">
-              {ROLES.filter((r) => r.provenance.kind === "held").map((r) => (
+              {ROLES.filter((r) => r.provenance.kind === "held")
+                /* CHRONOLOGICAL BY START (PRIME 2026-08-16). The order was the
+                   corpus order, which is the path a product takes - right for
+                   /roles/, wrong here, where the reader is following one
+                   person's years.
+
+                   The first year is READ OUT OF THE CITATION rather than stored
+                   beside it: `when` already carries "1996-2000, 2005-2007" and
+                   "2010-2011, 2012, 2013-2014, 2020", so the sort key is the
+                   first four-digit number in it. One fact, one place - a second
+                   `startYear` field would be the same year written twice, free
+                   to disagree with itself. */
+                .slice()
+                .sort((a, b) => {
+                  const first = (w: string) => Number(/\d{4}/.exec(w)?.[0] ?? "9999");
+                  return first(a.provenance.when ?? "") - first(b.provenance.when ?? "");
+                })
+                .map((r) => (
                 <li key={r.slug}>
                   <Link href={`/roles/${r.slug}`} className="career-chip">
                     <span className="career-chip-name">{r.title}</span>
@@ -227,6 +245,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <div className="container">
             <h2 className="section-title">{t("map.title")}</h2>
             <div className="learn-portal-grid">
+
               <Link href="/vendor-hubs" className="learn-portal-card" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
                 <p className="learn-portal-title">
@@ -235,6 +254,56 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 <p className="learn-portal-lede">{t("map.hubsLede")}</p>
                 <p className="learn-portal-badges">
                   <span className="learn-portal-badge">{t("map.hubsBadge", { count: hubCount })}</span>
+                </p>
+              </Link>
+              <Link href="/certifications" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#10003;</span>
+                <p className="learn-portal-title">
+                  {t("map.certs")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.certsLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.certsBadge", { count: guideCount })}</span>
+                </p>
+              </Link>
+              <Link href="/study-guides" className="learn-portal-card" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#10003;</span>
+                <p className="learn-portal-title">
+                  {t("map.guides")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.guidesLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.guidesBadge", { count: guideCount })}</span>
+                </p>
+              </Link>
+              <Link href="/glossary" className="learn-portal-card" style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
+                <p className="learn-portal-title">
+                  {t("map.glossary")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.glossaryLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.glossaryBadge", { count: glossaryCount })}</span>
+                </p>
+              </Link>
+              <Link href="/practice" className="learn-portal-card" style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9650;</span>
+                <p className="learn-portal-title">
+                  {t("map.practice")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.practiceLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.practiceBadge", { count: practiceCount })}</span>
+                </p>
+              </Link>
+              <Link href="/roles" className="learn-portal-card" style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
+                <p className="learn-portal-title">
+                  {t("map.roles")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.rolesLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.rolesBadge", { count: roleCount })}</span>
                 </p>
               </Link>
               <Link href="/tools" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
@@ -247,7 +316,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   <span className="learn-portal-badge">{t("map.toolsBadge", { count: toolCount })}</span>
                 </p>
               </Link>
-
               <Link href="/learn" className="learn-portal-card" style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
                 <p className="learn-portal-title">
@@ -256,17 +324,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 <p className="learn-portal-lede">{t("map.learnLede")}</p>
                 <p className="learn-portal-badges">
                   <span className="learn-portal-badge">{t("map.learnBadge", { count: articleCount })}</span>
-                </p>
-              </Link>
-
-              <Link href="/glossary" className="learn-portal-card" style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}>
-                <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
-                <p className="learn-portal-title">
-                  {t("map.glossary")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("map.glossaryLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("map.glossaryBadge", { count: glossaryCount })}</span>
                 </p>
               </Link>
               <Link href="/industry" className="learn-portal-card" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
@@ -285,59 +342,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   )}
                 </p>
               </Link>
-
-              <Link href="/practice" className="learn-portal-card" style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}>
-                <span className="learn-portal-ornament" aria-hidden>&#9650;</span>
-                <p className="learn-portal-title">
-                  {t("map.practice")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("map.practiceLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("map.practiceBadge", { count: practiceCount })}</span>
-                </p>
-              </Link>
-
-              <Link href="/certifications" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
-                <span className="learn-portal-ornament" aria-hidden>&#10003;</span>
-                <p className="learn-portal-title">
-                  {t("map.certs")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("map.certsLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("map.certsBadge", { count: guideCount })}</span>
-                </p>
-              </Link>
-
-              <Link href="/study-guides" className="learn-portal-card" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
-                <span className="learn-portal-ornament" aria-hidden>&#10003;</span>
-                <p className="learn-portal-title">
-                  {t("map.guides")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("map.guidesLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("map.guidesBadge", { count: guideCount })}</span>
-                </p>
-              </Link>
-              <Link href="/training" className="learn-portal-card" style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}>
-                <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
-                <p className="learn-portal-title">
-                  {t("map.training")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("map.trainingLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("map.trainingBadge", { count: COURSE_COUNT, vendors: platformCount })}</span>
-                </p>
-              </Link>
-              <Link href="/advisory" className="learn-portal-card" style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}>
-                <span className="learn-portal-ornament" aria-hidden>&#9671;</span>
-                <p className="learn-portal-title">
-                  {t("map.advisory")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("map.advisoryLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("map.advisoryBadge")}</span>
-                </p>
-              </Link>
               <Link href="/about" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9671;</span>
                 <p className="learn-portal-title">
@@ -353,6 +357,26 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 <p className="learn-portal-lede">{t("map.careerLede")}</p>
                 <p className="learn-portal-badges">
                   <span className="learn-portal-badge">{t("map.careerBadge", { count: careerCount })}</span>
+                </p>
+              </Link>
+              <Link href="/advisory" className="learn-portal-card" style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9671;</span>
+                <p className="learn-portal-title">
+                  {t("map.advisory")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.advisoryLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.advisoryBadge")}</span>
+                </p>
+              </Link>
+              <Link href="/training" className="learn-portal-card" style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
+                <p className="learn-portal-title">
+                  {t("map.training")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.trainingLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("map.trainingBadge", { count: COURSE_COUNT, vendors: platformCount })}</span>
                 </p>
               </Link>
               <Link href="/red-education" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>

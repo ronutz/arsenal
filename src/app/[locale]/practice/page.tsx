@@ -46,7 +46,7 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "practice" });
-  return { ...ogImages("page", "practice", locale, t("title")) };
+  return { title: t("title"), ...ogImages("page", "practice", locale, t("title")) };
 }
 
 export default async function PracticeIndexPage({

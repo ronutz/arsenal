@@ -30,7 +30,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "tools" });
   const alt = t("title");
   // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
-  return { ...ogImages("page", "tools", locale, alt) };
+  return { title: alt, ...ogImages("page", "tools", locale, alt) };
 }
 
 export default async function ToolsPage({

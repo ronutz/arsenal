@@ -58,7 +58,7 @@
       "rolesStripNote": "Oito posições ao longo do caminho que um produto percorre, cada uma ligada ao que aquele trabalho responde, a quem serve e como é medido. Os anos são os de cada entrada, incluindo os períodos que não são contínuos."
     },
     "pillars": {
-      "title": "Plataformas ensinadas e mantidas atualizadas.",
+      "title": "Plataformas que ensino atualmente.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -133,7 +133,10 @@
       "glossaryBadge": "{count} verbetes",
       "guidesBadge": "{count} guias",
       "trainingBadge": "{count} cursos de {vendors} fabricantes",
-      "careerBadge": "{count} capítulos"
+      "careerBadge": "{count} capítulos",
+      "rolesBadge": "{count} posições",
+      "roles": "Os Papéis",
+      "rolesLede": "As posições de que esta indústria é feita, agrupadas pelo caminho que um produto percorre de quem o constrói a quem depende dele."
     }
   },
   "tools": {
@@ -6962,7 +6965,8 @@
       "blogTitle": "Blog",
       "blogDesc": "Textos ocasionais sobre a indústria, o ofício, e o que quer que eu esteja destrinchando no momento."
     },
-    "historySectionTitle": "A História"
+    "historySectionTitle": "A História",
+    "metaTitle": "Rodolfo Nützmann - trinta anos em redes e segurança corporativa"
   },
   "endorsements": {
     "eyebrow": "Depoimentos",

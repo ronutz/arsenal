@@ -58,7 +58,7 @@
       "rolesStripNote": "Eight positions across the path a product takes, each linking to what that job answers for, who it serves and how it is measured. The years are the ones on each entry, including the spans that are not continuous."
     },
     "pillars": {
-      "title": "Platforms taught and held current.",
+      "title": "Platforms I currently teach.",
       "f5": "F5",
       "fortinet": "Fortinet",
       "extreme": "Extreme Networks",
@@ -133,7 +133,10 @@
       "glossaryBadge": "{count} entries",
       "guidesBadge": "{count} guides",
       "trainingBadge": "{count} courses across {vendors} vendors",
-      "careerBadge": "{count} chapters"
+      "careerBadge": "{count} chapters",
+      "rolesBadge": "{count} positions",
+      "roles": "The Roles",
+      "rolesLede": "The positions this industry is made of, grouped by the path a product takes from the company that builds it to the person who depends on it."
     }
   },
   "tools": {
@@ -6962,7 +6965,8 @@
       "blogTitle": "Blog",
       "blogDesc": "Occasional writing on the industry, the craft, and whatever I have been working through lately."
     },
-    "historySectionTitle": "The History"
+    "historySectionTitle": "The History",
+    "metaTitle": "Rodolfo Nützmann - thirty years in enterprise networking and security"
   },
   "endorsements": {
     "eyebrow": "Endorsements",

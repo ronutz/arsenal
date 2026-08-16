@@ -146,7 +146,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     title: "Systems engineer",
     group: "sells",
     order: 1,
-    provenance: { kind: "held", where: "at a vendor, on a carrier account", when: "2009-2010" },
+    provenance: { kind: "held", where: "at two vendors, the second on a carrier account", when: "2004-2005, 2009-2010" },
     whatItIs:
       "The technical half of a vendor sales team. A systems engineer owns whether the proposed thing will work, while the account manager owns whether it will be bought. The pairing is deliberate and the split is clean: one person carries the commercial relationship and the other carries the technical truth, and both answer for the same deal.",
     theDay: [
@@ -266,7 +266,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     title: "Network consulting engineer",
     group: "deploys",
     order: 1,
-    provenance: { kind: "held", where: "at integrators", when: "2010-2011, 2013-2014, 2020" },
+    provenance: { kind: "held", where: "at integrators, and in 2008 and 2012 through my own company", when: "2008, 2010-2011, 2012, 2013-2014, 2020" },
     whatItIs:
       "The engineer who turns a design into a working thing inside somebody else's network. Consulting engineers arrive after the sale and before the operations team, and they carry the technical responsibility for the transition: planning it, doing it, proving it, and handing over an environment the customer's own staff can run.",
     theDay: [

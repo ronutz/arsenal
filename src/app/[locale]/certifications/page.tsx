@@ -41,7 +41,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "certGuides" });
   const alt = t("title");
   // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
-  return { ...ogImages("page", "certifications", locale, alt) };
+  return { title: t("title"), ...ogImages("page", "certifications", locale, alt) };
 }
 
 export default async function CertificationsHubPage({

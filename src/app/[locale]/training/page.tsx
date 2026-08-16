@@ -33,7 +33,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "teach" });
   const alt = t("title");
   // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
-  return { ...ogImages("page", "training", locale, alt) };
+  return { title: t("title"), ...ogImages("page", "training", locale, alt) };
 }
 
 export default async function TrainingLandingPage({

@@ -37,7 +37,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "glossary" });
   const alt = t("title");
   // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
-  return { ...ogImages("page", "glossary", locale, alt) };
+  return { title: t("title"), ...ogImages("page", "glossary", locale, alt) };
 }
 
 export default async function GlossaryIndexPage({

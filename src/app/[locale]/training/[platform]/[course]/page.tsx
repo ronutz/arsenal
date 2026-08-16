@@ -10,6 +10,7 @@
 // original wording; the ToC is the factual module-level course structure.
 // ============================================================================
 
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -30,6 +31,23 @@ export function generateStaticParams() {
       p.courses.map((c) => ({ locale, platform: p.slug, course: c.slug }))
     )
   );
+}
+
+/**
+ * PAGE TITLE (2026-08-16). The course pages are the ones a buyer searches for
+ * BY NAME, and they were the worst-affected block: the title did not mention
+ * the course at all.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; platform: string; course: string }>;
+}): Promise<Metadata> {
+  const { platform, course } = await params;
+  const p = getPlatform(platform);
+  const c = getCourse(platform, course);
+  if (!p || !c) return {};
+  return { title: `${c.name} - ${p.name} training` };
 }
 
 export default async function CoursePage({

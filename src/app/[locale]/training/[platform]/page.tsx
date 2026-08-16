@@ -10,6 +10,7 @@
 // "representative, not exhaustive".
 // ============================================================================
 
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -24,6 +25,21 @@ export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
     PLATFORMS.map((p) => ({ locale, platform: p.slug }))
   );
+}
+
+/**
+ * PAGE TITLE (2026-08-16). This route had no metadata, so every platform page
+ * inherited the site default - see AUDIT-page-titles-20260816.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; platform: string }>;
+}): Promise<Metadata> {
+  const { platform } = await params;
+  const p = getPlatform(platform);
+  if (!p) return {};
+  return { title: `${p.name} training - ${p.tagline}` };
 }
 
 export default async function PlatformPage({

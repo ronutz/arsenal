@@ -125,37 +125,78 @@ export default async function RolePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
+      {/* ---- THE WORK ITSELF --------------------------------------------------
+           PRIME, 2026-08-16: the role pages were "unformatted... bad spacing,
+           separation, bad layout, readability". The measurement agreed: NINE
+           `article-related` blocks stacked inside ONE container, with no section
+           bands at all.
+
+           `article-related` is the READ-NEXT box - one box, at the end of an
+           article. Using it nine times rendered the substance of the job (what
+           the day is, what it answers for, how it is measured) in the visual
+           weight of a footer, with no separation between any two of them.
+
+           Now the SUBSTANCE gets real bands with the site's alternating rhythm,
+           and `article-related` is left to the NAVIGATION at the end, which is
+           what it was built for. */}
       <section className="section">
         <div className="container article-container">
           <List heading={t("sections.theDay")} items={role.theDay} />
-          {/* Side by side, deliberately. */}
+        </div>
+      </section>
+
+      <section className="section section-accent">
+        <div className="container article-container">
+          {/* Side by side, deliberately: what a role answers for and what it is
+              measured on are rarely the same thing, and the distance between
+              them is the argument this whole corpus makes. */}
           <List heading={t("sections.accountableFor")} items={role.accountableFor} />
           <List heading={t("sections.measuredOn")} items={role.measuredOn} />
+        </div>
+      </section>
 
-          <section className="article-related">
-            <h2 className="article-related-title">{t("sections.receivesFrom")}</h2>
-            <dl className="article-related-list">
-              {role.receivesFrom.map((x, i) => (
-                <div key={i}><dt className="article-related-link-title">{x.who}</dt><dd className="article-related-link-summary">{x.what}</dd></div>
-              ))}
-            </dl>
-          </section>
-          <section className="article-related">
-            <h2 className="article-related-title">{t("sections.serves")}</h2>
-            <dl className="article-related-list">
-              {role.serves.map((x, i) => (
-                <div key={i}><dt className="article-related-link-title">{x.who}</dt><dd className="article-related-link-summary">{x.what}</dd></div>
-              ))}
-            </dl>
-          </section>
+      <section className="section">
+        <div className="container article-container">
+          <h2 className="section-title">{t("sections.receivesFrom")}</h2>
+          <dl className="role-exchange">
+            {role.receivesFrom.map((x, i) => (
+              <div className="role-exchange-item" key={i}>
+                <dt className="role-exchange-who">{x.who}</dt>
+                <dd className="role-exchange-what">{x.what}</dd>
+              </div>
+            ))}
+          </dl>
 
+          <h2 className="section-title">{t("sections.serves")}</h2>
+          <dl className="role-exchange">
+            {role.serves.map((x, i) => (
+              <div className="role-exchange-item" key={i}>
+                <dt className="role-exchange-who">{x.who}</dt>
+                <dd className="role-exchange-what">{x.what}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <section className="section section-accent">
+        <div className="container article-container">
           <List heading={t("sections.stakeholders")} items={role.stakeholders} />
           <List heading={t("sections.requirements")} items={role.requirements} />
+        </div>
+      </section>
 
-          <section className="article-related">
-            <h2 className="article-related-title">{t("sections.turnsOn")}</h2>
-            <p className="article-related-link-summary">{role.turnsOn}</p>
-          </section>
+      {/* The single argument each page makes, given its own band and its own
+          weight rather than a line inside a stack of boxes. */}
+      <section className="section">
+        <div className="container article-container">
+          <h2 className="section-title">{t("sections.turnsOn")}</h2>
+          <p className="role-turns-on">{role.turnsOn}</p>
+        </div>
+      </section>
+
+      <section className="section section-accent">
+        <div className="container article-container">
 
           {/* THE RECORD ITSELF. A citation that says "from the record" without
               showing the record is the badge this section was built to avoid,

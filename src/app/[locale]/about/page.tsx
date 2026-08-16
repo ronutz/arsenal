@@ -58,9 +58,15 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "about" });
   const alt = "Rodolfo Nützmann";
   // Static page OG card (see scripts/gen-og.mts + src/lib/og.ts).
-  return { ...ogImages("page", "about", locale, alt) };
+  //
+  // The TITLE is separate from the card's alt text, and until 2026-08-16 this
+  // page set only the card - so it inherited the site-wide default title, along
+  // with nine other index pages. Ten of the most important pages on the site
+  // shared one <title>, which is the single strongest on-page signal there is.
+  return { title: t("metaTitle"), ...ogImages("page", "about", locale, alt) };
 }
 
 /** The three era chapters, now living under /about. */

@@ -13713,6 +13713,49 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    link in a list somewhere below it: the reader should see who it was for, what
    was delivered and where to read it, without holding three things in their
    head at once. */
+/* ---- ROLE PAGES (2026-08-16) -----------------------------------------------
+   Who a role receives from and who it serves are PAIRS - a party and what
+   passes between them - and they were rendered as a bare <dl> inside a
+   read-next box, which gave the term and the description the same weight and
+   no separation between one pair and the next.
+
+   A definition grid instead: the party in accent, what passes from it
+   underneath, and a rule between pairs so the eye can find the boundaries. */
+.role-exchange {
+  display: grid;
+  gap: 0;
+  margin: 0 0 2rem;
+}
+.role-exchange-item {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.role-exchange-item:first-child { padding-top: 0; }
+.role-exchange-item:last-child { border-bottom: 0; }
+.role-exchange-who {
+  color: var(--accent-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin: 0 0 0.2rem;
+}
+.role-exchange-what {
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* The single argument a role page makes. It had been a muted summary line
+   inside a box; it is the sentence the page exists for, so it reads as one. */
+.role-turns-on {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  border-left: 3px solid var(--accent-primary);
+  padding-left: 1rem;
+}
+
 .redu-case {
   border: 1px solid var(--border-subtle);
   border-left: 3px solid var(--accent-amber);
