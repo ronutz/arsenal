@@ -13,6 +13,27 @@ updated: "2026-07-21"
 
 Um túnel é um passageiro dentro de um envelope, e envelopes têm peso. O caminho, por sua vez, tem uma balança em cada salto: a Maximum Transmission Unit (MTU), classicamente 1.500 bytes na Ethernet. No momento em que o encapsulamento empurra um pacote de tamanho cheio para além da balança, uma de três coisas acontece - fragmentação, uma dança de descoberta, ou um buraco negro silencioso - e qual delas você recebe decide se o túnel parece saudável ou mal-assombrado.
 
+## Origens: por que existe um máximo
+
+O limite de 1.500 bytes de carga da Ethernet não é lei da física. Veio de um compromisso de engenharia dos anos 1970: memória de buffer era cara, e uma estação transmitindo um quadro muito longo monopoliza um meio compartilhado, então um teto limitava tanto o custo quanto o atraso que as outras estações esperariam. Esse número sobreviveu às próprias razões e virou a constante à qual o resto da internet foi ajustado.
+
+O IP foi desenhado para atravessar enlaces com limites diferentes, então precisava de uma resposta para o pacote que não cabe. O **IPv4 escolheu a fragmentação**: qualquer roteador podia dividir um pacote, e o destino remonta. Funciona, e três décadas de experiência operacional acharam os custos:
+
+- Perder um fragmento destrói o pacote inteiro, então a perda é amplificada em vez de proporcional.
+- A remontagem exige estado e temporizadores no destino, o que é superfície de negação de serviço.
+- Firewalls e balanceadores enxergam números de porta só no primeiro fragmento, então política e hashing quebram no resto.
+- Muitas redes simplesmente descartam fragmentos, o que transforma uma ineficiência em falha dura.
+
+**O IPv6 removeu por completo a fragmentação por roteador.** Roteadores não podem fragmentar; um pacote que não cabe é descartado com uma mensagem de "pacote grande demais", e o remetente precisa se adaptar. A decisão de projeto foi tornar o problema barulhento em vez de silencioso - o que só funciona se a mensagem voltar.
+
+## Descoberta de MTU de caminho, e por que ela falha em silêncio
+
+O mecanismo é direto: enviar com o bit de não fragmentar, receber uma mensagem ICMP de "fragmentação necessária" ou "pacote grande demais" do roteador que for estreito demais, baixar a estimativa, repetir.
+
+Falha o tempo todo, porque essas mensagens são ICMP, e ICMP é bloqueado por um número enorme de firewalls configurados por gente que o classificou como superfície de ataque. O resultado é o **buraco negro de MTU de caminho**: o aperto de mão completa, pacotes pequenos fluem, e a conexão trava no instante em que um pacote de tamanho cheio é enviado - e é por isso que o sintoma clássico é *"a página de login abre mas nada carrega depois"*, e por que tantas vezes é diagnosticado como defeito de aplicação.
+
+A **descoberta de MTU de caminho na camada de pacotização** existe como a resposta que não depende de ICMP: o transporte sonda para cima com pacotes progressivamente maiores e trata a perda como sinal. Converge mais devagar e funciona onde a rede é hostil.
+
 ## O que cada envelope cobra
 
 A conta depende do embrulho. O Generic Routing Encapsulation é o barato: um cabeçalho IP novo de 20 bytes mais um cabeçalho GRE de 4 bytes - **24 bytes**, [como detalha o artigo próprio](/learn/gre-tunnels-fundamentals). É por isso que a MTU de túnel clássica num caminho de 1.500 bytes é 1.500 − 24 = **1.476**.
@@ -32,6 +53,34 @@ O bilhete é o mecanismo. Um roteador que precisa descartar um pacote marcado co
 ## Saída três: MSS clamping, o conserto que funciona de primeira
 
 O TCP negocia seu Maximum Segment Size (MSS) no handshake - cada ponta anunciando a maior carga que se deve enviar a ela. Os valores de MSS viajam em texto claro por todos os dispositivos do caminho, e esse é o truque: um endpoint de túnel pode **reescrever para baixo o MSS anunciado** enquanto o SYN passa, de modo que as duas pontas simplesmente nunca construam um segmento grande demais para o envelope. Sem fragmentos, sem dependência de ICMP, sem latência de descoberta - o encaixe está certo desde o primeiro byte de dados. A aritmética é mecânica: MSS = MTU do túnel − 40 (20 de IP + 20 de TCP, mais com opções). Num túnel GRE de 1.476 bytes isso dá 1.436; num túnel conservador de 1.400, 1.360. O clamping só ajuda o TCP - protocolos baseados em UDP precisam manter seus datagramas modestos ou se apoiar no PMTUD - mas é no TCP que mora a maior parte da dor.
+
+## Para onde os bytes de fato vão
+
+Cada camada de envelope tira sua parte dos mesmos 1.500. Aproximado, e vale carregar:
+
+- **Cabeçalho IPv4** 20 bytes; **cabeçalho IPv6** 40, que é a razão de um túnel que cabia sobre IPv4 poder não caber sobre IPv6.
+- **Cabeçalho TCP** 20 bytes, mais com opções como carimbos de tempo e confirmação seletiva.
+- **Etiqueta VLAN** 4 bytes por etiqueta; **VXLAN** cerca de 50 bytes no total, incluindo os cabeçalhos externos.
+- **GRE** de 4 a 8 bytes; **PPPoE** 8, que é por que tantos enlaces de banda larga param em 1.492.
+- **IPsec** varia bastante com modo e cifra - comumente de 50 a 80 bytes; o modo túnel acrescenta um segundo cabeçalho IP.
+- **WireGuard** cerca de 60 bytes, que é por que 1.420 é sua recomendação usual.
+
+Duas consequências decorrem. **Encapsulamentos empilham**, então um desenho de VXLAN sobre IPsec paga os dois. E **a perda é assimétrica**: a pilha do remetente não sabe nada do túnel no meio, então a conta de bytes precisa ser aplicada onde o encapsulamento acontece.
+
+**Quadros jumbo** invertem o problema dentro de um datacenter: cargas de 9.000 bytes reduzem de forma relevante o processamento por pacote em tráfego de armazenamento e replicação, e exigem que todo equipamento do caminho concorde. Um switch esquecido em 1.500 num domínio jumbo produz exatamente o sintoma de buraco negro acima, com a dificuldade adicional de só aparecer sob transferências grandes.
+
+## A correção que funciona, e as que não
+
+O **clamping de MSS** é a resposta confiável para TCP. O equipamento na borda do túnel reescreve o tamanho máximo de segmento no aperto de mão, então os pontos negociam um tamanho que cabe antes de qualquer pacote grande ser enviado. Funciona na primeira tentativa, não precisa de ICMP, e é um único ajuste em quase toda plataforma que termina túnel.
+
+Vale conhecer os limites: só ajuda o **TCP**, porque só o TCP tem um MSS a reescrever. Tráfego sobre UDP - QUIC, cargas de VPN (rede privada virtual), DNS sobre UDP, vídeo - não é afetado, e é por isso que o QUIC sonda e dosa deliberadamente o próprio tamanho de datagrama, e por que aplicações UDP não deveriam presumir 1.500.
+
+A lista que resolve a maioria dos casos:
+
+- Faça clamping de MSS em toda borda de túnel, e defina o valor a partir do overhead medido, não de um número lembrado.
+- Permita ICMP tipo 3 código 4 e o "pacote grande demais" do ICMPv6 nos firewalls; bloqueá-los é a causa isolada mais comum desta classe de falha.
+- Teste com carga grande e o bit de não fragmentar ligado, e não com um ping de tamanho padrão, já que um ping padrão não prova nada sobre o teto do caminho.
+- Confirme o MTU em cada equipamento de um caminho jumbo antes de habilitá-lo em qualquer ponto.
 
 ## O hábito na prática
 

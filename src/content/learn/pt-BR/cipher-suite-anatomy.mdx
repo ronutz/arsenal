@@ -11,6 +11,20 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
+## Origens: por que existe uma suíte
+
+Os primeiros desenhos de protocolo fixavam a criptografia no código. Trocar um algoritmo significava trocar o protocolo, o que significava um dia de virada, o que significava que nunca acontecia - e o algoritmo seguia em campo muito depois de estar quebrado.
+
+O SSL introduziu a **negociação**: o cliente oferece as combinações que suporta, o servidor escolhe uma, e os dois seguem. A **suíte de cifra** é essa combinação nomeada como unidade única, com um ponto de código atribuído para poder ser oferecida numa lista.
+
+Essa decisão comprou trinta anos de agilidade de algoritmo e criou o próprio modo de falha, que o registro documenta à exaustão:
+
+- **Ataques de rebaixamento.** Se uma opção fraca continua oferecida, quem consegue influenciar a negociação consegue forçá-la. FREAK e Logjam exploraram suítes de grau de exportação que ficaram habilitadas por uma década depois de a razão legal delas ter acabado.
+- **Explosão combinatória.** O TLS 1.2 define centenas de suítes registradas. Cada opção a mais é outra interação a considerar, e a opção mais fraca aceita define a segurança real.
+- **A configuração como risco de verdade.** A suíte perigosa quase nunca é a que um atacante quebra matematicamente; é a que ficou habilitada num modelo copiado de outro lugar.
+
+A resposta do TLS 1.3 foi subtrair. As suítes deixaram de incluir troca de chaves e autenticação - essas passaram a ser negociadas à parte -, então uma suíte nomeia apenas a cifra simétrica e o hash. São cinco definidas. **O nome de uma suíte TLS 1.3 é mais curto porque o protocolo removeu as escolhas que tornavam os nomes longos necessários.**
+
 ## O que é uma suíte de cifra
 
 Uma suíte de cifra TLS é um pacote nomeado de escolhas criptográficas que um cliente e um servidor acordam durante o handshake. Um único nome como `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` reúne várias decisões independentes em um identificador: como os dois lados combinam um segredo compartilhado, como o servidor prova quem é, qual algoritmo cifra os dados da aplicação e como esses dados são protegidos contra adulteração.
@@ -59,6 +73,29 @@ GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
 ```
 
 O nome IANA é o padrão do registro. O OpenSSL usa hifens, descarta o `WITH` e escreve `AES128` como um único token, e é por isso que uma configuração do OpenSSL e uma captura de pacotes podem parecer discordar quando nomeiam a mesma suíte. O decodificador aceita as três formas, além do ponto de código bruto, e mostra as outras.
+
+## Escolhendo, e o que de fato importa
+
+A ordem de importância na prática é o inverso da atenção que cada parte recebe:
+
+1. **Quais versões de protocolo estão habilitadas.** TLS 1.0 e 1.1 desligados, 1.2 como piso, 1.3 preferido. Esse único ajuste decide mais do que qualquer lista de suítes.
+2. **Somente AEAD.** Cifragem autenticada com dados associados - as construções baseadas em CBC carregam o histórico de oráculo de preenchimento e não ganham nada.
+3. **Sigilo futuro.** Troca de chaves efêmera, para que uma chave de longo prazo comprometida não decifre o tráfego capturado ontem. Obrigatório no TLS 1.3, opcional e com frequência desligado no 1.2.
+4. **Ordem e preferência.** Se o servidor impõe a própria preferência importa quando clientes oferecem opções fracas.
+5. **A suíte específica** - que, se os quatro acima estiverem certos, é quase um detalhe.
+
+**O hardware molda o padrão honesto.** O AES com instruções dedicadas é mais rápido que o ChaCha20 em processadores de servidor modernos; o ChaCha20-Poly1305 é mais rápido onde essas instruções não existem, que é boa parte do mundo móvel e embarcado. Oferecer os dois e deixar a preferência do cliente decidir é a configuração sólida, não um meio-termo.
+
+**O que vem** é a transição pós-quântica, e ela cai sobre a troca de chaves, e não sobre a cifra simétrica: esquemas híbridos que combinam uma curva clássica com uma troca baseada em reticulados já estão implantados por navegadores e grandes redes. Algoritmos simétricos e hashes são bem menos afetados, então uma lista de suítes vai mudar menos que a configuração de troca de chaves em volta dela.
+
+## Onde a escolha de fato é feita
+
+- **Bibliotecas TLS** - OpenSSL, BoringSSL, GnuTLS, NSS, rustls -, cada uma com a própria lista padrão e a própria nomenclatura. A mesma suíte tem um nome IANA, um nome OpenSSL e um nome GnuTLS, e é por isso que uma configuração copiada entre elas tantas vezes deixa de significar o que significava.
+- **Servidores e proxies**, que expressam a escolha na própria sintaxe e com frequência entregam uma lista que sobrevive à própria correção.
+- **Políticas de plataforma** - sistemas operacionais e runtimes gerenciados que sobrepõem a lista da aplicação por completo, que é de onde vem o "o código diz X mas o fio diz Y".
+- **Regimes de conformidade** que exigem suítes específicas, às vezes atrás da recomendação atual, e que são a razão de uma opção indefensável ainda estar habilitada em algum lugar.
+
+A regra prática: **configure o piso de versão e a exigência de AEAD, aceite o padrão moderno da biblioteca para o resto, e teste o que o fio de fato negocia**, em vez do que o arquivo de configuração parece dizer.
 
 ## Decodificar não é endossar
 

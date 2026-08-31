@@ -13,6 +13,27 @@ updated: "2026-07-21"
 
 A tunnel is a passenger inside an envelope, and envelopes have weight. The path, meanwhile, has a scale at every hop: the Maximum Transmission Unit (MTU), classically 1,500 bytes on Ethernet. The moment encapsulation pushes a full-size packet past the scale, one of three things happens - fragmentation, a discovery dance, or a quiet black hole - and which one you get decides whether the tunnel feels fine or haunted.
 
+## Origins: why a maximum exists at all
+
+Ethernet's 1,500-byte payload limit is not a law of physics. It came from a 1970s engineering compromise: buffer memory was expensive, and a station transmitting a very long frame monopolises a shared medium, so a ceiling bounded both cost and the delay other stations would wait. That number outlived its reasons and became the constant the rest of the internet is fitted around.
+
+IP was designed to cross links with different limits, so it needed an answer for a packet that does not fit. **IPv4 chose fragmentation**: any router could split a packet, and the destination reassembles. It works, and three decades of operational experience found the costs:
+
+- Losing one fragment destroys the whole packet, so loss is amplified rather than proportional.
+- Reassembly requires state and timers at the destination, which is a denial-of-service surface.
+- Firewalls and load balancers see port numbers only in the first fragment, so policy and hashing break on the rest.
+- Many networks simply drop fragments, which turns an inefficiency into a hard failure.
+
+**IPv6 removed router fragmentation entirely.** Routers may not fragment; a packet that does not fit is dropped with a "packet too big" message, and the sender must adapt. The design decision was to make the problem loud rather than quiet — which only works if the message gets back.
+
+## Path MTU Discovery, and why it fails silently
+
+The mechanism is straightforward: send with the do-not-fragment bit, receive an ICMP "fragmentation needed" or "packet too big" message from whichever router is too narrow, lower the estimate, repeat.
+
+It fails constantly, because those messages are ICMP, and ICMP is blocked by an enormous number of firewalls configured by people who classified it as an attack surface. The result is the **path MTU black hole**: the handshake completes, small packets flow, and the connection then hangs the moment a full-size packet is sent — which is why the classic symptom is *"the login page works but nothing loads after it"*, and why it is so often misdiagnosed as an application fault.
+
+**Packetization Layer Path MTU Discovery** exists as the answer that does not depend on ICMP: the transport probes upward with progressively larger packets and treats loss as the signal. It is slower to converge and it works where the network is hostile.
+
 ## What each envelope charges
 
 The bill depends on the wrapper. Generic Routing Encapsulation is the cheap one: a fresh 20-byte IP header plus a 4-byte GRE header - **24 bytes**, [as its own article details](/learn/gre-tunnels-fundamentals). That is why the classic tunnel MTU on a 1,500-byte path is 1,500 − 24 = **1,476**.
@@ -32,6 +53,34 @@ The note is the mechanism. A router that must drop a DF-marked packet returns an
 ## Escape three: MSS clamping, the fix that works on the first try
 
 TCP negotiates its Maximum Segment Size (MSS) in the handshake - each end announcing the largest payload it should be sent. The MSS values ride in clear text through every device on the path, and that is the trick: a tunnel endpoint can **rewrite the advertised MSS downward** as the SYN passes, so both ends simply never build a segment too big for the envelope. No fragments, no ICMP dependency, no discovery latency - the fit is right from the first data byte. The arithmetic is mechanical: MSS = tunnel MTU − 40 (20 IP + 20 TCP, more with options). On a 1,476-byte GRE tunnel that is 1,436; on a 1,400-byte conservative tunnel, 1,360. Clamping only helps TCP - UDP-based protocols must keep their datagrams modest or lean on PMTUD - but TCP is where most of the pain lives.
+
+## Where the bytes actually go
+
+Every layer of envelope takes its cut from the same 1,500. Approximate, and worth carrying:
+
+- **IPv4 header** 20 bytes; **IPv6 header** 40, which is the reason a tunnel that fitted over IPv4 may not over IPv6.
+- **TCP header** 20 bytes, more with options such as timestamps and selective acknowledgement.
+- **VLAN tag** 4 bytes per tag; **VXLAN** roughly 50 bytes total including its outer headers.
+- **GRE** 4 to 8 bytes; **PPPoE** 8, which is why so many broadband links land at 1,492.
+- **IPsec** varies widely with mode and cipher — commonly 50 to 80 bytes; tunnel mode adds a second IP header.
+- **WireGuard** roughly 60 bytes, which is why 1,420 is its usual recommendation.
+
+Two consequences follow. **Encapsulations stack**, so a VXLAN-over-IPsec design pays both. And **the loss is asymmetric**: the sender's stack knows nothing of the tunnel in the middle, so the byte math must be applied where the encapsulation happens.
+
+**Jumbo frames** invert the problem inside a datacentre: 9,000-byte payloads reduce per-packet processing meaningfully for storage and replication traffic, and they require every device in the path to agree. One switch left at 1,500 in a jumbo domain produces exactly the black-hole symptom above, with the added difficulty that it only appears under large transfers.
+
+## The fix that works, and the ones that do not
+
+**MSS clamping** is the reliable answer for TCP. The device at the tunnel edge rewrites the maximum segment size in the handshake, so the endpoints negotiate a size that fits before any large packet is sent. It works on the first try, it needs no ICMP, and it is a single setting on nearly every tunnel-terminating platform.
+
+Its limits are worth knowing: it only helps **TCP**, because only TCP has an MSS to rewrite. UDP-based traffic — QUIC, VPN (virtual private network) payloads, DNS over UDP, video — is unaffected, which is why QUIC deliberately probes and paces its own datagram size, and why UDP applications should not assume 1,500.
+
+The checklist that resolves most of these:
+
+- Clamp MSS at every tunnel edge, and set it from measured overhead rather than a remembered number.
+- Permit ICMP types 3 code 4 and ICMPv6 "packet too big" through firewalls; blocking them is the single most common cause of this failure class.
+- Test with a large payload and the do-not-fragment bit set, not with a default-size ping, since a default ping proves nothing about the path's ceiling.
+- Confirm the MTU on every device in a jumbo path before enabling it anywhere.
 
 ## The worked habit
 

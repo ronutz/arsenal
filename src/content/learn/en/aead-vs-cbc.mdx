@@ -11,6 +11,38 @@ status: reviewed
 updated: "2026-06-29"
 ---
 
+## Origins: encryption and authentication were separate problems
+
+For most of cryptographic practice, confidentiality and integrity were designed independently. A cipher hid the message; a **MAC** — message authentication code — proved it had not been altered. Combining them was left to the protocol designer, and there were three obvious ways to do it:
+
+- **Encrypt-then-MAC** — encrypt, then authenticate the ciphertext. Provably sound.
+- **MAC-then-encrypt** — authenticate the plaintext, then encrypt both. What SSL and TLS chose.
+- **Encrypt-and-MAC** — do both over the plaintext independently. What SSH chose.
+
+Only the first is safe in general, and the industry picked the other two. The reason the choice mattered took a decade of attacks to become obvious: in MAC-then-encrypt, **the receiver must decrypt before it can verify**, so it is processing attacker-controlled bytes before it knows whether they are authentic. Every padding-oracle attack lives in that gap.
+
+The record is specific:
+
+- **The 2002 padding-oracle result** showed that leaking whether padding was valid leaks plaintext, one byte at a time.
+- **BEAST (2011)** exploited predictable initialisation vectors in TLS 1.0's CBC chaining.
+- **Lucky 13 (2013)** extracted plaintext from the *timing* difference between valid and invalid padding — so even implementations that returned identical error messages leaked through how long they took to fail.
+- **POODLE (2014)** used SSL 3.0's underspecified padding to force a downgrade and read bytes.
+
+Each fix made the code more delicate: constant-time padding checks are genuinely hard to write, and a single early return reintroduces the leak. The pattern is the real lesson — **a construction that requires every implementer to be careful will eventually meet one who is not.**
+
+## What AEAD changed
+
+**AEAD** — authenticated encryption with associated data — makes the combination part of the primitive rather than the protocol. One key, one call, one output, and decryption **fails as a unit**: either the tag verifies and you get plaintext, or it does not and you get nothing to process.
+
+The "associated data" half matters and is frequently skipped over: it authenticates headers that must be visible but must not be altered — record type, version, sequence number — binding the encrypted payload to its context. Without it, an attacker can leave the ciphertext intact and change the envelope around it.
+
+The two dominant constructions:
+
+- **AES-GCM** — counter mode with a Galois-field authenticator. Very fast where processors carry AES and carry-less multiply instructions, which is nearly all server hardware.
+- **ChaCha20-Poly1305** — a stream cipher with a separate authenticator, designed for constant-time software implementation. Faster where AES instructions are absent, which is much of the mobile and embedded world.
+
+TLS 1.3 removed every non-AEAD suite from the protocol entirely — not deprecated, removed — which is why its cipher list is five entries rather than hundreds.
+
 ## Two ways to encrypt a record
 
 Once a TLS handshake has agreed on keys, every record of application data has to be both encrypted, so an eavesdropper cannot read it, and authenticated, so an attacker cannot tamper with it. There are two broad ways a cipher suite does this, and the mode token in the suite name tells you which.
@@ -30,6 +62,29 @@ This is a padding oracle, and it is not theoretical. A series of attacks over th
 AEAD removes the whole class of problem. There is no separate padding step to probe and no separate MAC stage to time, because verification and decryption are one operation that either succeeds or fails. TLS 1.3 takes this to its conclusion and permits AEAD ciphers only; CBC suites are simply not part of TLS 1.3. In TLS 1.2 both exist, which is why the decoder flags a CBC-with-HMAC-SHA1 suite as weak even when the cipher itself is AES.
 
 When you see `GCM`, `CCM`, or `POLY1305` in a suite name, you are looking at AEAD. When you see `CBC`, you are looking at the older construction, and on a modern service it should be a fallback at best.
+
+## The obligation AEAD carries: never repeat a nonce
+
+AEAD trades the padding-oracle class for one sharp requirement. **A key and nonce pair must never be reused.** In AES-GCM the consequence is severe and worth stating plainly: repeating a nonce under the same key leaks the XOR of the two plaintexts *and* allows recovery of the authentication subkey, which lets an attacker forge messages afterwards. This is not a degradation; it is a break.
+
+Where that goes wrong in practice:
+
+- **Random 96-bit nonces at very high volume**, where birthday collisions stop being theoretical. This is what motivated XChaCha20 and AES-GCM-SIV, which tolerate reuse far better.
+- **Counters that reset**, typically after a VM restore, a snapshot rollback, or a device that resumes with the same key material.
+- **Stateless designs** where two nodes share a key and independently pick nonces.
+
+TLS 1.3 avoids all of it by deriving the nonce from the sequence number rather than transmitting it, so reuse cannot happen without a protocol-level fault. Anyone building their own record layer must solve this deliberately.
+
+**Record size is the other tradeoff.** Each record carries a tag — 16 bytes for both dominant constructions — so many small records cost proportionally more overhead than a few large ones, while large records add latency because nothing can be delivered until the whole record verifies.
+
+## Where the choice appears in practice
+
+- **TLS libraries** pick the default suite list, and modern versions have made AEAD the only option worth having.
+- **Disk and volume encryption** frequently uses length-preserving modes rather than AEAD, because a sector cannot grow to hold a tag — a genuine reason to see non-AEAD constructions in current systems.
+- **Application-level encryption** — libsodium, Tink, cloud key-management SDKs — where the honest guidance is to use a library that manages nonces rather than assembling primitives.
+- **Protocols with their own record layers** — QUIC, WireGuard, SSH — all now AEAD-based, all deriving nonces from counters for exactly the reason above.
+
+The rule that survives every context: **use AEAD, let a library own the nonce, and treat any design where you choose nonces yourself as one that needs review.**
 
 ## The tradeoff AEAD still asks
 

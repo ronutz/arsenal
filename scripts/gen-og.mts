@@ -457,6 +457,57 @@ async function siteWide() {
       if (written % 50 === 0) fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 0));
     } else skipped++;
   }
+  // ---------------------------------------------------------------------
+  // PRUNE ORPHANS.
+  //
+  // Needed from 2026-08-31, when CI began restoring public/og from a cache
+  // between runs. Before that the directory was empty on every run and could
+  // not hold anything stale; now a card for a route that has since been
+  // renamed or deleted would survive indefinitely, get copied into out/ with
+  // the rest of public/, and consume a slot in the Workers asset manifest -
+  // the same budget that stopped a deploy earlier that week.
+  //
+  // The safety cap matters more than the deletion: if enumerateJobs() ever
+  // returns a short list - a content-loading bug, a half-written registry -
+  // then "everything not enumerated" is the whole directory, and a prune would
+  // quietly destroy 4,600 images that take fifteen minutes to rebuild. Above
+  // the cap the run reports and deletes nothing, which turns a potential
+  // disaster into a log line.
+  const expected = new Set<string>(jobs.map((j) => `${j.kind}/${j.locale}/${j.slug}.${j.ext}`));
+  const present: string[] = [];
+  const walk = (dir: string, prefix: string) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) walk(path.join(dir, entry.name), rel);
+      else if (/\.(png|jpeg)$/.test(entry.name) && rel !== "default.png") present.push(rel);
+    }
+  };
+  walk(OG_DIR, "");
+  const orphans = present.filter((f) => !expected.has(f));
+  // Two independent brakes, because the first one alone was not enough: a flat
+  // floor of 50 meant that a collapsed enumeration over a SMALL set still
+  // passed the check and deleted everything. Tested against a fixture where
+  // enumeration returned one job out of four, which the floor happily allowed.
+  //
+  //   cap      - orphans may not exceed a quarter of what was enumerated
+  //   shrank   - enumeration may not come back with less than half of what is
+  //              already on disk, whatever the absolute numbers
+  const cap = Math.floor(expected.size * 0.25);
+  const shrank = expected.size < present.length * 0.5;
+  if (orphans.length > cap || shrank) {
+    console.log(
+      `[gen-og] PRUNE SKIPPED: ${orphans.length} orphan(s), cap ${cap}, ${expected.size} enumerated ` +
+        `vs ${present.length} on disk${shrank ? " (enumeration shrank by more than half)" : ""}. ` +
+        `Deleting nothing - check that content enumeration is complete.`,
+    );
+  } else {
+    for (const f of orphans) {
+      fs.rmSync(path.join(OG_DIR, f), { force: true });
+      delete manifest[f];
+    }
+    if (orphans.length > 0) console.log(`[gen-og] pruned ${orphans.length} orphaned card(s).`);
+  }
+
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 0));
   console.log(`[gen-og] site-wide: ${written} written, ${skipped} unchanged, ${jobs.length} total (+ default). manifest: ${Object.keys(manifest).length} entries.`);
 }

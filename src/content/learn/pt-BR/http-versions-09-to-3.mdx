@@ -35,6 +35,48 @@ O HTTP/2, publicado como o [RFC 7540](https://www.rfc-editor.org/rfc/rfc7540) (m
 
 O HTTP/3, publicado como o [RFC 9114](https://www.rfc-editor.org/rfc/rfc9114) (junho de 2022), conserta esse último problema mudando aquilo sobre o que o HTTP roda. Ele mapeia o HTTP sobre o QUIC ([RFC 9000](https://www.rfc-editor.org/rfc/rfc9000)) — um transporte sobre UDP (User Datagram Protocol, o protocolo de datagramas do usuário) com fluxos, recuperação de perdas e o handshake do TLS 1.3 embutido, descrito ao lado dos seus irmãos em [TLS 1.2 vs TLS 1.3 vs DTLS vs QUIC](/learn/tls12-tls13-dtls-quic). Como o QUIC recupera perdas por fluxo, um pacote perdido trava apenas o próprio fluxo: o head-of-line blocking em nível de transporte, do qual o HTTP/2 não conseguia escapar, sumiu. A compressão de cabeçalhos passa do HPACK para o QPACK ([RFC 9204](https://www.rfc-editor.org/rfc/rfc9204)), redesenhado para que o estado de compressão não reintroduza bloqueio entre fluxos. A cifração não é opcional, porque o QUIC não tem modo sem cifra. E como o primeiro contato ainda costuma começar por TCP, os servidores anunciam o seu endpoint HTTP/3 pelo mecanismo `Alt-Svc` ([RFC 7838](https://www.rfc-editor.org/rfc/rfc7838)) e, cada vez mais, por registros DNS do tipo HTTPS, deixando o navegador trocar para o QUIC na busca seguinte.
 
+## O que cada versão estava de fato resolvendo
+
+As versões se leem como um argumento só sobre uma restrição: **uma requisição custa uma ida e volta, e ida e volta é latência que não se otimiza.**
+
+O **HTTP/1.0 abria uma conexão TCP por requisição** e a fechava depois da resposta. Uma página com quarenta imagens pagava quarenta estabelecimentos de conexão, cada um com seu aperto de mão e sua partida lenta. Os navegadores contornaram abrindo várias conexões ao mesmo tempo, o que transferiu o custo para o servidor e para a rede em vez de removê-lo.
+
+O **HTTP/1.1 acrescentou conexões persistentes e pipelining.** O keep-alive resolveu a maior parte do desperdício. O pipelining - mandar várias requisições sem esperar cada resposta - foi especificado e depois abandonado na prática, porque as respostas tinham de voltar em ordem: uma resposta lenta bloqueava tudo o que estivesse na fila atrás dela. Isso é **bloqueio de cabeça de fila**, e é o fio que atravessa as duas versões seguintes.
+
+Ele também acrescentou as peças que tornaram a web moderna possível: o cabeçalho **Host**, para que muitos sites dividissem um endereço, que é o que permitiu hospedagem virtual e, depois, a economia de hospedagem com [endereços compartilhados](/learn/cgnat-address-sharing-and-attribution); codificação de transferência em pedaços; validadores de cache; e faixas de bytes.
+
+O **HTTP/2 removeu o bloqueio na camada de aplicação.** Uma conexão carrega muitos fluxos intercalados, enquadrados em binário e não em texto. Cabeçalhos deixaram de ser retransmitidos por inteiro a cada requisição - o **HPACK** os comprime contra uma tabela compartilhada, o que importa enormemente quando uma página dispara centenas de requisições com cabeçalhos quase idênticos. O server push entrou e desde então foi efetivamente abandonado: errava o palpite com frequência suficiente para desperdiçar mais banda do que economizava.
+
+Mas o bloqueio mudou de lugar em vez de sumir. O TCP garante entrega ordenada, então **um pacote perdido trava todos os fluxos daquela conexão** enquanto é retransmitido. Numa rede limpa o HTTP/2 é mais rápido; numa rede com perda - móvel, enlaces congestionados - pode ser mais lento que várias conexões HTTP/1.1.
+
+O **HTTP/3 corrige isso trocando de transporte.** O [QUIC](/learn/tls12-tls13-dtls-quic) roda sobre UDP e implementa os fluxos ele mesmo, então um pacote perdido trava apenas o próprio fluxo. O aperto de mão se funde com o criptográfico, e identificadores de conexão substituem a tupla de endereço, de modo que a sessão sobrevive à troca de wi-fi para móvel.
+
+## Semântica, sintaxe, e o que a reorganização de 2022 fez
+
+A revisão de 2022 separou as especificações em **semântica** - métodos, códigos de status, campos de cabeçalho, cache, requisições condicionais - e a **sintaxe de fio** de cada versão. Isso não é arrumação de gaveta: significa que um código de status ou um método é definido uma vez e vale identicamente em 1.1, 2 e 3, e só o enquadramento difere.
+
+A consequência prática é que trocar de versão muda desempenho e multiplexação, não significado. Um `304 Not Modified` se comporta igual em todo lugar; o que muda é quantas idas e voltas foram necessárias para perguntar.
+
+Duas coisas mudaram no fio e pegam as pessoas. **Nomes de campo de cabeçalho são minúsculos no HTTP/2 e no HTTP/3** - um nome com maiúsculas é erro de protocolo, o que aparece em código que comparava nomes de cabeçalho literalmente. E a linha de requisição foi substituída por **pseudocabeçalhos** (`:method`, `:scheme`, `:authority`, `:path`), então ferramentas que analisam uma linha de requisição crua não têm o que analisar.
+
 ## A reorganização de 2022: semântica vs sintaxe de fio
 
 A coisa mais útil a saber sobre as especificações atuais do HTTP é como elas estão arrumadas hoje. Em junho de 2022, o HTTP Working Group do IETF separou o significado do protocolo da sua transmissão. O [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) define a semântica do HTTP — métodos, códigos de status, campos de cabeçalho, negociação de conteúdo — uma vez, para todas as versões; o [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111) define o cache do mesmo jeito. Os formatos de fio ganham então um documento cada: o [RFC 9112](https://www.rfc-editor.org/rfc/rfc9112) para a sintaxe em texto do HTTP/1.1, o [RFC 9113](https://www.rfc-editor.org/rfc/rfc9113) para o enquadramento do HTTP/2, e o RFC 9114 para o HTTP/3 sobre QUIC. Juntos, eles tornam obsoleta toda especificação anterior do HTTP — RFC 1945, 2068, 2616, a série 7230 e o 7540 igualmente — então citar o RFC 2616 hoje é citar história. O working group mantém a lista oficial e atual em [httpwg.org/specs](https://httpwg.org/specs/), e o [RFC Editor](https://www.rfc-editor.org/) é a casa canônica dos próprios documentos. Um GET continua sendo um GET em todas as versões desde a 0.9; o que mudou, cinco vezes, foi como viajam os bytes que dizem isso.
+
+## Operando, e onde cada versão ainda cabe
+
+Vale conhecer a **negociação de versão** com precisão, porque ela explica o que se vê no fio. O HTTP/2 sobre TLS é escolhido por **ALPN** durante o aperto de mão, então não há ida e volta extra. O HTTP/3 não pode ser negociado assim - é outro transporte -, então o servidor o anuncia com o cabeçalho **Alt-Svc** ou com um **registro DNS HTTPS**, e o cliente troca numa conexão posterior. É por isso que a primeira visita de um navegador costuma ser HTTP/2 e a segunda, HTTP/3.
+
+**Onde cada um ainda ganha.** O HTTP/1.1 segue sendo a resposta certa para APIs internas simples, verificações de saúde e tudo em que um humano depura com cliente de texto. O HTTP/2 é o padrão para tráfego de navegador até origens em redes bem comportadas e para muitos protocolos entre serviços. O HTTP/3 compensa mais em redes com perda e móveis, e em conexões que migram.
+
+**O que quebra na prática**, já que são os chamados recorrentes: middleboxes que bloqueiam UDP e forçam um retorno silencioso; balanceadores que terminam HTTP/2 e reoriginam 1.1 até a retaguarda, de modo que o ganho de multiplexação para na borda; cabeçalhos salto a salto do tipo `Connection`, proibidos no HTTP/2 e rejeitados em vez de ignorados; e pilhas de inspeção escritas para analisar linhas de requisição.
+
+**A medição também muda de forma.** Contar conexões deixa de descrever carga quando uma conexão carrega centenas de requisições simultâneas, que é a mesma observação do [balanceamento por menos conexões](/learn/load-balancing-what-actually-decides-where-a-request-goes) perdendo o sentido.
+
+## Implementações, por categoria
+
+- **Servidores e proxies** - NGINX, Apache, Caddy, HAProxy, Envoy, Traefik. O HTTP/2 é universal; o suporte a HTTP/3 chegou depois e de forma desigual, e vale confirmar por versão, e não por produto.
+- **Redes de entrega** - Cloudflare, Fastly, Akamai e pares. Na prática, as maiores implantadoras de HTTP/3, e com frequência é por elas que um site o ganha sem mudar nada na origem.
+- **Bibliotecas cliente** - curl e as pilhas nativas de cada linguagem. O suporte a HTTP/3 varia o bastante para que a lista de versões de um cliente seja questão real de compatibilidade, e não nota de rodapé.
+- **Navegadores** - a razão de o HTTP/2 e o HTTP/3 terem sido implantados, e a razão de o server push ter morrido: são eles que fixam os padrões que decidem qual versão é de fato usada.
+

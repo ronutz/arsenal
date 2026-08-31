@@ -91,14 +91,51 @@ jobs:
       # invalidates it; restore-keys lets a content-only change still hit a
       # warm cache. .next/cache ONLY - never .next or out/, which are large
       # and must be regenerated. Added 2026-07-23 after the 45m job timeout.
+      # RESTORE/SAVE ARE SPLIT DELIBERATELY (2026-08-31).
+      #
+      # actions/cache only writes its cache when the job SUCCEEDS. Three
+      # consecutive failures - the asset-budget gate, then two timeouts - meant
+      # nothing was ever saved, so every subsequent run started cold, which made
+      # it slower, which made it time out, which again saved nothing. The log
+      # shows the loop plainly: "Cache not found for input keys" even on the
+      # bare "nextjs-" fallback, which can only happen if no cache exists at all.
+      #
+      # Splitting restore from save and running the save with `if: always()`
+      # breaks it: a run that fails at minute 55 still banks the compiled output
+      # it produced, so the next run starts warm.
       - name: Restore Next.js build cache
-        uses: actions/cache@v4
+        id: next-cache
+        uses: actions/cache/restore@v4
         with:
           path: .next/cache
           key: nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
           restore-keys: |
             nextjs-${{ hashFiles('package-lock.json') }}-
             nextjs-
+
+      # OG CARDS: the single largest avoidable cost in the run.
+      #
+      # gen-og already skips a card whose content hash is unchanged, and that
+      # logic has never once engaged in CI: public/og is not committed, so a
+      # fresh runner starts with an empty directory and no manifest, and all
+      # 4,630 cards are rendered from scratch. The log line "4630 written,
+      # 0 unchanged" is that, every single run - about fifteen minutes of a
+      # sixty-minute budget spent regenerating identical images.
+      #
+      # Restoring the directory lets the existing skip logic do its job: only
+      # cards whose title, tagline, colour or template actually changed are
+      # re-rendered. The key includes the generator and the content sources, so
+      # a template change invalidates everything on purpose; the prefix
+      # fallbacks let an ordinary content edit reuse the rest.
+      - name: Restore OG card cache
+        id: og-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: public/og
+          key: og-${{ hashFiles('scripts/gen-og.mts') }}-${{ hashFiles('src/content/**', 'src/i18n/messages/en.json', 'src/i18n/messages/pt-BR.json') }}
+          restore-keys: |
+            og-${{ hashFiles('scripts/gen-og.mts') }}-
+            og-
 
       - name: Install dependencies
         run: npm ci
@@ -114,9 +151,16 @@ jobs:
       #    exact shortfall instead of failing silently.
       # ---------------------------------------------------------------------
       - name: Build (guards + export + pagefind + machine-legible)
-        # Step-level bound: the job guardrail is 90 min, but a HUNG build
-        # should not consume all of it. 60 min is ~1.8x the measured 33m56s.
-        timeout-minutes: 60
+        # Step-level bound: the job guardrail is 90 min, but a HUNG build should
+        # not consume all of it.
+        #
+        # Raised 60 -> 80 on 2026-08-31. The 60 was set against a measured
+        # 33m56s, and the build has since grown to ~53 min warm; the run of
+        # 2026-08-31T04:24 hit the wall COLD at 47,173 of 47,670 pages - roughly
+        # two minutes of generation short, with pagefind and postbuild still to
+        # come. 80 leaves the job's own 90-minute guardrail as the real backstop
+        # while the cache fixes above bring the warm time back down.
+        timeout-minutes: 80
         run: |
           npm run build || {
             echo "BUILD FAILED. Disk state at failure:"
@@ -124,6 +168,26 @@ jobs:
             du -sh .next out node_modules 2>/dev/null || true
             exit 1
           }
+
+      # Saved unconditionally: the whole point of the split above is that a
+      # failed run still banks its work. `continue-on-error` because a save can
+      # legitimately lose a race with a concurrent run for the same key, and
+      # that must not fail a deploy.
+      - name: Save Next.js build cache
+        if: always()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: .next/cache
+          key: ${{ steps.next-cache.outputs.cache-primary-key }}
+
+      - name: Save OG card cache
+        if: always()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: public/og
+          key: ${{ steps.og-cache.outputs.cache-primary-key }}
 
       # Visibility on the Workers static-asset budget:
       # 100,000 files per version on Paid plans (needs Wrangler >= 4.34.0),
