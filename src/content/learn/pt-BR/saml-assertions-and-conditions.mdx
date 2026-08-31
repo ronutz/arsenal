@@ -23,7 +23,7 @@ Um formato emailAddress é um endereço legível por humanos. Um formato persist
 
 ## SubjectConfirmation: como o portador é confirmado
 
-A SubjectConfirmation diz como o SP pode confirmar que quem apresenta a asserção é mesmo o sujeito. O Method importa. O método de longe mais comum no SSO de navegador é o bearer, que significa que quem porta a asserção é tratado como o sujeito, exatamente como um bearer token. Essa conveniência também é o risco: uma asserção bearer roubada é uma identidade roubada, então os dados ao redor existem para manter pequena a janela de roubo.
+A SubjectConfirmation diz como o SP pode confirmar que quem apresenta a asserção é mesmo o sujeito. O Method importa. O método de longe mais comum no SSO (single sign-on) de navegador é o bearer, que significa que quem porta a asserção é tratado como o sujeito, exatamente como um bearer token. Essa conveniência também é o risco: uma asserção bearer roubada é uma identidade roubada, então os dados ao redor existem para manter pequena a janela de roubo.
 
 A SubjectConfirmationData carrega esses dados protetores, e um SP correto impõe todos eles. NotOnOrAfter limita por quanto tempo a confirmação vale, de modo que uma asserção capturada expira rápido. Recipient fixa a asserção à URL exata do ACS (Serviço Consumidor de Asserção, do inglês Assertion Consumer Service) para a qual ela foi destinada, de modo que não possa ser repetida em outro endpoint. InResponseTo amarra a asserção ao AuthnRequest específico que o SP enviou, o que derrota asserções injetadas não solicitadas. Uma confirmação bearer sem NotOnOrAfter ou Recipient é uma fraqueza real, porque remove um desses limites, e o decodificador sinaliza esses casos.
 

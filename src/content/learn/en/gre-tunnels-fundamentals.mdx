@@ -29,9 +29,9 @@ The second purchase is topological: a tunnel is an interface. Two routers with a
 
 GRE provides no confidentiality, no integrity, and no authentication. The envelope is postcard-clear: anyone on the path reads the passenger as easily as the wrapper. There is no handshake and no session - the tunnel "exists" the moment both ends are configured, and a GRE endpoint will happily decapsulate whatever arrives claiming protocol 47, which is why filtering at the endpoints matters.
 
-Statelessness also means GRE cannot tell you it is down. The line protocol stays up while the far end is unreachable, silently blackholing traffic. The standard remedy is **keepalives** - one endpoint periodically sends a probe engineered so the far end reflects it; misses mark the tunnel down. Where keepalives are unavailable, designs lean on a routing protocol or an SLA probe across the tunnel to detect failure - health has to be added, because GRE ships without it.
+Statelessness also means GRE cannot tell you it is down. The line protocol stays up while the far end is unreachable, silently blackholing traffic. The standard remedy is **keepalives** - one endpoint periodically sends a probe engineered so the far end reflects it; misses mark the tunnel down. Where keepalives are unavailable, designs lean on a routing protocol or an SLA (service level agreement) probe across the tunnel to detect failure - health has to be added, because GRE ships without it.
 
-None of this is a defect. A [VPN's](/learn/vpn-fundamentals) cryptography costs cycles, state, and complexity; GRE spends none of that, which is why routers forward it at line rate in hardware and why it remains the default answer when the requirement is "carry this across there" rather than "hide this from everyone."
+None of this is a defect. A [VPN (virtual private network)'s](/learn/vpn-fundamentals) cryptography costs cycles, state, and complexity; GRE spends none of that, which is why routers forward it at line rate in hardware and why it remains the default answer when the requirement is "carry this across there" rather than "hide this from everyone."
 
 ## Choosing GRE, in one worked example
 

@@ -40,7 +40,7 @@ Cada um destes está fundamentado na própria documentação da F5, e cada um af
 - **Sem JavaScript, sem passagem.** Um cliente que não roda JavaScript falha no desafio e é bloqueado, então considere clientes legítimos que não são navegadores.
 - **O modo Transparent pula os desafios.** Se a política está em modo Transparent, os desafios de verificação de navegador não são executados, então você não pode confiar neles enquanto ajusta em transparent.
 - **A injeção de JS pode bloquear clientes legítimos não-navegadores mesmo em modo blocking**, que é exatamente por que a F5 oferece a opção de desativar a injeção dos desafios de verificação e de Device-ID em modo transparent.
-- **Aplicações móveis não conseguem rodar o JavaScript.** É para isso que existe o F5 Anti-Bot Mobile SDK: ele valida a própria aplicação móvel, por meio de uma integração de parceiro, em vez de injetar JavaScript, para que clientes móveis não sejam bloqueados indevidamente.
+- **Aplicações móveis não conseguem rodar o JavaScript.** É para isso que existe o F5 Anti-Bot Mobile SDK (software development kit): ele valida a própria aplicação móvel, por meio de uma integração de parceiro, em vez de injetar JavaScript, para que clientes móveis não sejam bloqueados indevidamente.
 - **Iframes cross-domain quebram os desafios.** Se uma página carrega um iframe de um domínio diferente com os desafios habilitados, o desafio pode falhar; a F5 documenta isso (bug ID 519612), e a correção envolve as configurações de cross-domain request mais uma iRule para que o desafio rode na página principal.
 
 ## Lendo de volta

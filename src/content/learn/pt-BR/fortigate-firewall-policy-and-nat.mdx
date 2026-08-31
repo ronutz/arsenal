@@ -30,9 +30,9 @@ A correspondência de política não acontece primeiro. Um pacote que chega a um
 
 | Etapa | O que faz | Como falha |
 |---|---|---|
-| Verificações de entrada | Admissão na interface, marcação de VLAN | VLAN errada ou interface fora |
+| Verificações de entrada | Admissão na interface, marcação de VLAN (rede local virtual) | VLAN errada ou interface fora |
 | Política de DoS | Limiares de anomalia, limite por origem | Tráfego descartado antes de qualquer política |
-| NAT de destino (VIP) | Reescreve o endereço de destino | Aplicado **antes** da consulta de rota |
+| NAT (tradução de endereços de rede) de destino (VIP) | Reescreve o endereço de destino | Aplicado **antes** da consulta de rota |
 | Consulta de rota | Escolhe a interface de saída | Sem rota, política alguma corresponde |
 | Política de firewall | Primeira correspondência vence | Encoberta por política mais ampla acima |
 | NAT de origem | Reescreve o endereço de origem | Aplicado **depois** da correspondência |

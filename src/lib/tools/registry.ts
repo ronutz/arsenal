@@ -77,6 +77,7 @@ import { run as f5ServiceCheckDateRun } from "./f5-service-check-date";
 import { run as f5BigdThreadCalculatorRun } from "./f5-bigd-thread-calculator";
 import { run as mtuMssRun } from "./mtu-mss";
 import { run as httpMethodsComparisonRun } from "./http-methods-comparison";
+import { run as cronExpressionExplainerRun } from "./cron-expression-explainer";
 import { run as httpStatusCodeExplainerRun } from "./http-status-code-explainer";
 import { run as netskopeSteeringDecisionRun } from "./netskope-steering-decision-explainer";
 import { run as sortingStepperRun, type Strategy as SortStrategy } from "./sorting-algorithm-stepper";
@@ -202,6 +203,7 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-bigd-thread-calculator", run: f5BigdThreadCalculatorRun },
   { slug: "mtu-mss", run: mtuMssRun },
   { slug: "http-methods-comparison", run: httpMethodsComparisonRun },
+  { slug: "cron-expression-explainer", run: cronExpressionExplainerRun },
   { slug: "http-status-code-explainer", run: httpStatusCodeExplainerRun },
   { slug: "netskope-steering-decision-explainer", run: netskopeSteeringDecisionRun },
   {

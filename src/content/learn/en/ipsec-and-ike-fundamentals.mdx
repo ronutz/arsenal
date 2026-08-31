@@ -23,7 +23,7 @@ Authentication itself is commonly one of two shapes: a pre-shared key - fine bet
 
 ## The data plane: ESP, and the two modes
 
-ESP (protocol 50) wraps each protected packet with a header carrying the SPI and a sequence number (replay protection), encrypts the payload, and seals it with an integrity check - modern deployments use a combined AEAD cipher such as AES-GCM that does both at once. What sits inside depends on the mode. **Transport mode** protects just the payload between two hosts that are themselves the endpoints. **Tunnel mode** - the site-to-site norm - encapsulates the entire original IP packet and puts a fresh outer header in front, so whole networks hide behind two gateways. Tunnel mode is [the VPN pattern](/learn/vpn-fundamentals) made concrete: private addressing inside, ciphertext and gateway addresses outside.
+ESP (protocol 50) wraps each protected packet with a header carrying the SPI and a sequence number (replay protection), encrypts the payload, and seals it with an integrity check - modern deployments use a combined AEAD cipher such as AES-GCM that does both at once. What sits inside depends on the mode. **Transport mode** protects just the payload between two hosts that are themselves the endpoints. **Tunnel mode** - the site-to-site norm - encapsulates the entire original IP packet and puts a fresh outer header in front, so whole networks hide behind two gateways. Tunnel mode is [the VPN (virtual private network) pattern](/learn/vpn-fundamentals) made concrete: private addressing inside, ciphertext and gateway addresses outside.
 
 ## The NAT problem, and the 4500 fix
 

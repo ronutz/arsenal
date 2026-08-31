@@ -13721,6 +13721,33 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 
    A definition grid instead: the party in accent, what passes from it
    underneath, and a rule between pairs so the eye can find the boundaries. */
+/* The doors out of the roles index, as one row rather than three stacked
+   paragraphs. The pills were correctly styled and simply not grouped, which is
+   what "unformatted" looked like from the outside. */
+/* A learn-card that has been given a --note-accent takes it on its left edge
+   and as a tint, the same way the portal and reading-path cards do. Used on the
+   roles index so a role PRIME has HELD is visible at a glance, in the amber its
+   provenance pill already uses.
+
+   Written as a rule that only fires when the variable is set, so every other
+   learn-card on the site is untouched. */
+.learn-card[style*="--note-accent"] {
+  border-left: 3px solid var(--note-accent);
+  background: color-mix(in srgb, var(--note-accent) 7%, var(--surface-base));
+}
+.learn-card[style*="--note-accent"]:hover,
+.learn-card[style*="--note-accent"]:focus-visible {
+  border-color: color-mix(in srgb, var(--note-accent) 55%, var(--border-subtle));
+  background: color-mix(in srgb, var(--note-accent) 12%, var(--surface-base));
+}
+
+.page-jump-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 0 1.75rem;
+}
+
 .role-exchange {
   display: grid;
   gap: 0;

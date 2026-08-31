@@ -52,6 +52,16 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-08-27",
+    time: "08:00",
+    kind: "tool",
+    title: "New tool: cron expression explainer - the schedule, read back to you",
+    tools: ["cron-expression-explainer"],
+    body:
+      "The standing tools queue reopens at its rank-1 item. Paste any crontab schedule - */15 2 * * 1-5, JAN-MAR, SAT,SUN, or an @macro - and every field is read back in plain language with the exact values it matches, the next five occurrences are computed, and the dialect's classic footguns are flagged as you type: day-of-month plus day-of-week is an OR (not an AND, the most misread rule in crontab(5)); 0 and 7 are both Sunday; a step that does not divide its span wraps ragged; and Quartz's six-field seconds format is named for what it is instead of failing cryptically. The projection engine takes an explicit reference instant, so 23 golden vectors pin the date math against a frozen moment while the page runs on your own clock. Grounded in crontab(5) and the POSIX specification, both fetched today. Local and offline - the schedule never leaves the browser.",
+    links: [{ label: "Open the explainer", href: "/tools/cron-expression-explainer" }],
+  },
+  {
     date: "2026-08-05T02:40:51-03:00",
     kind: "content",
     title: "Working with a vendor and working for one are different claims",

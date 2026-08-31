@@ -18,7 +18,7 @@ Wireless security has two halves that are often conflated: proving identity, and
 
 **Personal (pre-shared key)** uses one passphrase for everyone. Simple, and it has the property that every device shares a secret, so a departing employee's knowledge does not depart with them and changing the key means touching every device. Fine for small deployments and for devices that cannot do better.
 
-**Enterprise (802.1X)** authenticates each user or device individually against RADIUS. Credentials are per identity, revocation is per identity, and the RADIUS server can return attributes describing what this identity should get. This is what makes the segmentation below possible.
+**Enterprise (802.1X)** authenticates each user or device individually against RADIUS (Remote Authentication Dial-In User Service). Credentials are per identity, revocation is per identity, and the RADIUS server can return attributes describing what this identity should get. This is what makes the segmentation below possible.
 
 **WPA3** improves on WPA2 in both modes: personal gains resistance to offline dictionary attacks on the passphrase, and enterprise offers stronger cryptographic options. The operational consideration is client support, which is why transition modes exist and why they carry the caveat that a network accepting both is only as strong as the weaker option for clients that choose it.
 
@@ -28,7 +28,7 @@ Wireless security has two halves that are often conflated: proving identity, and
 
 The instinct is one SSID per group. That is expensive, because every SSID consumes airtime broadcasting its existence on every AP on every band, and the cost is paid by every client whether or not they use it. A handful of SSIDs is a design; a dozen is a performance problem.
 
-The better approach is **dynamic VLAN assignment**. One enterprise SSID, and the RADIUS server returns the VLAN with the authentication result, so staff, contractors and lab devices land in different segments while seeing the same network name.
+The better approach is **dynamic VLAN (virtual local area network) assignment**. One enterprise SSID, and the RADIUS server returns the VLAN with the authentication result, so staff, contractors and lab devices land in different segments while seeing the same network name.
 
 That moves the policy decision to the identity system where it belongs, and it means adding a new population is a RADIUS change rather than a wireless change.
 

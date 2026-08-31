@@ -51,13 +51,13 @@ A single entry answers more than whether traffic passed:
 - **Which rule matched**, by number and layer, which is the fastest route to a policy answer.
 - **Which blade** produced the entry, since a drop by the access control policy and a drop by threat prevention are different problems.
 - **The action taken**, and for threat prevention entries, whether it was prevented or only detected.
-- **NAT information**, when translation occurred, which resolves the recurring confusion of a log showing an address the destination never saw.
+- **NAT (network address translation) information**, when translation occurred, which resolves the recurring confusion of a log showing an address the destination never saw.
 
 That second point deserves emphasis. "The firewall blocked it" is not a diagnosis until you know which part of the firewall, because the fix is in a different policy depending on the answer.
 
 ## The Monitoring Blade
 
-Logs say what happened to traffic. The Monitoring Blade says how the system itself is doing: gateway status, resource use, throughput, connection counts, VPN tunnel state, and cluster health.
+Logs say what happened to traffic. The Monitoring Blade says how the system itself is doing: gateway status, resource use, throughput, connection counts, VPN (virtual private network) tunnel state, and cluster health.
 
 Its value is in what it catches that logs cannot. A gateway at its connection limit drops traffic that no policy rule dropped, and the log looks like a network fault while the cause is capacity.
 

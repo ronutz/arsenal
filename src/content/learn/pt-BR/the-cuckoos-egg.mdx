@@ -1,0 +1,38 @@
+---
+slug: the-cuckoos-egg
+title: "The Cuckoo's Egg: 75 centavos, dez meses e a invenção da resposta a incidentes"
+summary: "Em 1986 um astrônomo recebeu uma diferença contábil trivial e a ordem de encontrá-la. Ele a seguiu por um laboratório de Berkeley até dentro de redes militares americanas e, do outro lado, até um hacker da Alemanha Ocidental que vendia acesso ao KGB - improvisando, no caminho, o caderno de bordo, a linha do tempo, o honeypot e quase todo reflexo que a profissão hoje ensina."
+concepts: ["incident response", "honeypot", "forensics", "attribution", "hacker history"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "the-morris-worm", "phone-phreaking-and-the-blue-box"]
+category: security
+order: 99
+status: reviewed
+updated: "2026-08-28"
+---
+
+## A diferença
+
+Cliff Stoll era um astrônomo cuja bolsa tinha acabado, remanejado para cuidar dos computadores do Lawrence Berkeley National Laboratory. Em agosto de 1986 seu chefe lhe passou uma tarefa: o laboratório cobrava por tempo de computador, dois sistemas contábeis divergiam em **75 centavos**, e alguém devia conciliar aquilo. As explicações óbvias - arredondamento, um registro perdido - não se sustentaram. Os 75 centavos pertenciam a uma conta de usuário que ninguém tinha autorizado e que ninguém sabia explicar.
+
+Tudo o que veio depois nasce de Stoll recusar uma resposta plausível no lugar de uma resposta verificada. Esse é o método inteiro, e segue sendo o hábito mais difícil de ensinar.
+
+## Observar em vez de bater a porta
+
+O invasor usava o laboratório como ponto de passagem, saltando adiante para a MILNET - empreiteiras de defesa, bases do exército, uma instalação da força aérea - caçando documentos sobre mísseis, satélites e a Iniciativa Estratégica de Defesa. O instinto, então como hoje, era fechar a conta e trocar as senhas. Stoll fez o contrário, e o raciocínio é a razão de o livro ainda ser leitura obrigatória: **feche a porta e você não aprende nada; mantenha-a aberta sob observação e você aprende tudo.**
+
+Então ele instrumentou o laboratório à mão. Impressoras foram ligadas a cada linha de entrada, e cada sessão saía impressa enquanto acontecia em papel contínuo - evidência inalterável, com hora marcada, semanas dela empilhadas na sala dele. Ele manteve um caderno de bordo de papel com cada observação, porque não podia confiar em arquivos num sistema que o invasor alcançava. Montou um perfil a partir do comportamento: o invasor usava comandos Unix de um dialeto mais antigo, trabalhava em rajadas que sugeriam fuso europeu, e se movia com a paciência de quem é pago, não com a pressa de um adolescente.
+
+No caminho, armou uma cilada. Para segurar uma conexão tempo bastante para a companhia telefônica rastreá-la através de um oceano, Stoll e sua colega Martha Matthews inventaram um projeto fictício - os arquivos da SDINET, uma burocracia falsa inteira de memorandos e formulários sobre uma rede Guerra nas Estrelas inexistente, semeada com um convite para escrever pedindo mais. O invasor leu por horas. Alguém em Pittsburgh depois mandou uma carta pedindo os documentos, o que fechou o laço da atribuição. Aquela invenção é o **primeiro honeypot documentado**, e a carta é o primeiro caso documentado de uma operação de engano produzindo identificação concreta.
+
+## A parte de que ninguém avisa
+
+O trabalho técnico foram meses de noites num catre na sala de máquinas. O trabalho sem glamour foi ligar para o FBI, a CIA, a NSA e o Escritório de Investigações Especiais da Força Aérea e ouvir, repetidamente, que 75 centavos não eram caso federal e que aquele problema não tinha dono. Não havia CERT a quem avisar - o worm de Morris, e com ele [o aparato inteiro de resposta a incidentes](/learn/the-morris-worm), ainda estava a dois anos de distância. A contribuição mais reproduzida de Stoll talvez seja simplesmente sua teimosia diante de agências que tinham, cada uma, um motivo para o caso não ser delas.
+
+A trilha terminou em Hanôver, na Alemanha Ocidental: **Markus Hess**, parte de um pequeno grupo que vendia invasões a sistemas americanos ao KGB soviético por dinheiro e cocaína - o caso que terminou com a morte de Karl Koch e virou uma das lendas mais sombrias do underground. Foi o primeiro caso publicamente documentado de invasão de computador como **espionagem estrangeira paga**, e arrastou o modelo de ameaça do campo de estudantes travessos para adversários financiados num caso só.
+
+## O que o livro deixou permanente
+
+Stoll escreveu tudo em 1989 como *The Cuckoo's Egg*, um best-seller de verdade escrito para quem nunca tinha tocado num terminal, e suas práticas são hoje a linha de base da profissão: preserve evidência numa forma que o adversário não consiga alterar; mantenha um registro feito na hora; monte a linha do tempo antes de montar a teoria; perfile comportamento em vez de adivinhar identidade; monitore antes de expulsar; e trate atribuição como afirmação que exige prova, não como palpite a ser anunciado.
+
+Dois detalhes mantêm a história honesta. A invasão funcionou sobretudo por **buracos conhecidos e senhas fracas** - uma má configuração do `movemail` do Gnu-Emacs que deixava um usuário escrever em diretórios privilegiados, mais contas padrão que ninguém tinha removido - ou seja, a falha foi operacional, não exótica. E o próprio Stoll voltou à astronomia, vende garrafas de Klein sopradas à mão e passou décadas desinflando com gentileza a mitologia que cresceu em volta dele. O campo, enquanto isso, nunca parou de ensinar a partir de um erro de 75 centavos que alguém foi teimoso o bastante para explicar.

@@ -16,7 +16,7 @@ Controle de acesso à rede responde duas perguntas em ordem: o que é essa coisa
 
 ## Modelar a infraestrutura
 
-O FortiNAC precisa conhecer os **equipamentos de rede** — switches, controladoras sem fio, firewalls — porque são deles que ele lê informação de endpoints e são eles que ele instrui a mover uma porta para outra VLAN.
+O FortiNAC precisa conhecer os **equipamentos de rede** — switches, controladoras sem fio, firewalls — porque são deles que ele lê informação de endpoints e são eles que ele instrui a mover uma porta para outra VLAN (rede local virtual).
 
 Modelar um equipamento significa dizer ao FortiNAC como alcançá-lo e como falar com ele: o endereço de gerência, as credenciais SNMP para ler dados de porta e MAC, e as credenciais CLI para fazer mudanças. As duas importam, e falham de formas diferentes. SNMP errado significa que o FortiNAC não vê nada nas portas daquele equipamento. Credenciais CLI erradas significam que o FortiNAC vê tudo e não muda nada, o que se apresenta como políticas que avaliam corretamente e nunca surtem efeito.
 

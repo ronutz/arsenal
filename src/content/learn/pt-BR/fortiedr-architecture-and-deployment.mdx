@@ -42,7 +42,7 @@ A instalação de coletores é distribuição de software comum, pela ferramenta
 
 Onde uma implantação atende múltiplas organizações — um provedor de serviços gerenciados, ou um grupo com unidades de negócio genuinamente separadas — o multi-inquilino as separa. Cada inquilino tem seus coletores, políticas, eventos e administradores, e não enxerga os demais.
 
-O ponto arquitetural é que a separação é na camada de gerência enquanto a infraestrutura pode ser compartilhada. Isso faz da atribuição de inquilino um controle de segurança, e não uma conveniência organizacional, com o mesmo peso da atribuição de VLAN numa malha de switches compartilhada.
+O ponto arquitetural é que a separação é na camada de gerência enquanto a infraestrutura pode ser compartilhada. Isso faz da atribuição de inquilino um controle de segurança, e não uma conveniência organizacional, com o mesmo peso da atribuição de VLAN (rede local virtual) numa malha de switches compartilhada.
 
 ## Inventário e ferramentas de sistema
 
@@ -56,7 +56,7 @@ Vale ler com regularidade, e não durante um incidente:
 
 ## A API
 
-O FortiEDR expõe uma API de gerência, que importa para três coisas na prática: puxar eventos para um SIEM, automatizar resposta a partir de uma plataforma de orquestração, e reportar sobre uma frota sem clicar pelo console.
+O FortiEDR expõe uma API de gerência, que importa para três coisas na prática: puxar eventos para um SIEM (security information and event management), automatizar resposta a partir de uma plataforma de orquestração, e reportar sobre uma frota sem clicar pelo console.
 
 O valor do trabalho por API é a consistência, e não a velocidade. Uma ação tomada por API é a mesma ação todas as vezes, e é isso que a torna segura de disparar automaticamente.
 

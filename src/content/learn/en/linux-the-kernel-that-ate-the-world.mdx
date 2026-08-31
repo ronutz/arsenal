@@ -1,0 +1,64 @@
+---
+slug: linux-the-kernel-that-ate-the-world
+title: "Linux: the hobby kernel that ate the world"
+summary: "A student in Helsinki announced a project that was 'just a hobby, won't be big and professional like gnu' — and it now runs the servers, the phones, the routers, the cars and every one of the world's fastest supercomputers. How the kernel actually got built, the licence decision that made it possible, the argument about its architecture that it lost on paper and won in practice, and the two fights that still define it."
+concepts: ["linux", "kernel", "open source", "gpl", "maintainership"]
+relatedTools: []
+relatedArticles: ["open-source-and-the-meaning-of-free", "git", "hacking-in-the-20th-century"]
+category: networking
+order: 62
+status: reviewed
+updated: "2026-08-29"
+---
+
+## August 1991
+
+Linus Torvalds posted to the comp.os.minix newsgroup that he was building a free operating system, adding that it was just a hobby and would not be big and professional like GNU. It is the most quoted wrong prediction in computing, and the interesting part is what it reveals: he was not trying to replace anything. He wanted a Unix-like system on his own hardware, because the alternatives cost more than a student had.
+
+What made the result matter was not the code in the first release. It was that a working kernel arrived at exactly the moment the GNU project had produced everything *except* a kernel — compiler, shell, utilities, libraries, all finished and waiting. Linux supplied the missing piece, and a complete free operating system existed for the first time. That is why the naming argument persists: what most people call Linux is a kernel plus a very large amount of software that came from elsewhere, much of it GNU.
+
+## The licence decision, and the one that came later
+
+Torvalds released early versions under a licence of his own that forbade commercial distribution. He changed to the **GPL (GNU General Public License) version 2** in 1992, and later called it the best thing he ever did.
+
+The reason is mechanical rather than sentimental. GPLv2 requires that anyone distributing a modified kernel also distribute their changes as source. That single condition meant companies could build products on Linux but could not fork it privately and keep the improvements — so the rational move for a hardware vendor was to upstream their work and let everyone else maintain it. Competitors were compelled into a commons by their own self-interest. Linux did not win because companies were generous; it won because the licence made contribution cheaper than isolation.
+
+The second decision matters as much: when GPLv3 arrived in 2007 with new provisions on patents and on hardware that refuses to run modified software, Linux **stayed on version 2**. Torvalds objected that the new terms went beyond the copyright bargain he had signed up for. The practical result is that the kernel's licence has been stable for three decades, which is worth a great deal when tens of thousands of contributors hold copyright and relicensing would require asking all of them.
+
+## The argument it lost on paper
+
+In 1992 Andrew Tanenbaum, whose Minix Linux had grown up beside, opened a public debate with the line that Linux was obsolete. His case was academically strong: monolithic kernels, where the whole system runs in one privileged address space, were the old design; microkernels, where drivers and filesystems run as separate isolated processes, were where the field was going.
+
+He was right about the theory and wrong about what would happen. Microkernels paid a performance cost that mattered enormously on 1990s hardware, and coordinating a distributed design is harder than coordinating a shared one. Linux stayed monolithic and shipped, and shipping compounded.
+
+The postscript is more interesting than the argument. Linux absorbed most of the isolation benefits without changing architecture: loadable modules, drivers pushed into userspace where practical, containers, namespaces, and now memory-safe languages inside the kernel itself. The debate was never settled; it was outgrown from one side.
+
+## How it is actually built
+
+The kernel's development model is the least understood and most copied part of it.
+
+**Maintainers, not a committee.** Subsystems have maintainers who take patches from contributors and pass them upward. Torvalds pulls from a layer of trusted lieutenants rather than reviewing everything, which is the only structure that scales to a project this size. Authority is delegated by demonstrated judgement and can be lost the same way.
+
+**Release cadence.** A merge window of about two weeks, when new work lands, followed by roughly seven weeks of [release candidates](https://www.kernel.org/). That rhythm has been essentially unchanged for years and is why the project is predictable despite its size.
+
+**Long-term support.** Selected versions get years of backported fixes, which is what lets a router, a car or a hospital device ship a kernel and receive security patches without tracking mainline.
+
+**Do not break userspace.** The rule Torvalds enforces most aggressively: an internal interface can change freely, but a program that worked yesterday must work tomorrow. Internal churn is permitted, external promises are not — a distinction most projects fail to draw.
+
+## The fight that produced Git
+
+From 2002 the kernel used BitKeeper, a proprietary distributed version-control system offered free to the project. Some contributors objected to a proprietary tool at the centre of a free project; the arrangement ended in 2005 after a dispute over reverse-engineering the protocol.
+
+The kernel was suddenly without version control. Torvalds wrote [Git](/learn/git) in a matter of weeks, aiming at what the kernel needed: speed, distributed operation, and cryptographic integrity of history. It is now the default way software is written everywhere, and it exists because a licensing dispute broke a workflow. The lesson repeats: infrastructure gets built when someone with the ability to build it is blocked.
+
+## The fight that still runs
+
+**systemd** replaced the traditional init script model with a single integrated system for starting services, managing devices, logging and more, and most major distributions adopted it. The technical case is real — parallel startup, proper dependency handling, consistent service definitions. The objection is also real: it absorbed responsibilities that used to belong to separate, replaceable programs, which cuts against the Unix habit of composing small tools.
+
+It is worth understanding as a governance argument rather than a technical one. The question was never whether systemd works; it is who gets to decide the shape of the base system when a few large distributions move together. That question is permanent in any commons, and it produced forks, resignations and a decade of argument that has not fully cooled.
+
+## What it runs
+
+Effectively everything except the desktop. The web's servers, the cloud providers' fleets, Android phones, televisions, routers, industrial controllers, cars, and every machine on the list of the world's fastest supercomputers. The desktop remained the exception, which is the outcome nobody in 1991 would have predicted in either direction.
+
+The pattern worth carrying away: Linux did not win by being the best-designed system, and its own creator argued against the licence that saved it before adopting it. It won by being available, by making cooperation cheaper than defection, and by never breaking the promises it made to the software above it.

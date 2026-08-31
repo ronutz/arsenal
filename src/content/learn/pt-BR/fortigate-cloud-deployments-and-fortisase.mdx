@@ -16,7 +16,7 @@ Três coisas levam o nome FortiGate na nuvem e não são variações umas das ou
 
 ## FortiGate VM: seu appliance, hardware de outra pessoa
 
-Um FortiGate VM é o mesmo FortiOS que você roda num appliance, implantado como máquina virtual em AWS, Azure, GCP ou num hipervisor privado. Você dimensiona, implanta, configura, atualiza e opera. Tudo no resto desta série se aplica sem mudança: políticas, NAT, roteamento, perfis de segurança, alta disponibilidade.
+Um FortiGate VM é o mesmo FortiOS que você roda num appliance, implantado como máquina virtual em AWS, Azure, GCP ou num hipervisor privado. Você dimensiona, implanta, configura, atualiza e opera. Tudo no resto desta série se aplica sem mudança: políticas, NAT (tradução de endereços de rede), roteamento, perfis de segurança, alta disponibilidade.
 
 O que muda é o ambiente ao redor. Rede em nuvem não é um data center: interfaces se ligam a redes virtuais com roteamento próprio, as tabelas de rota do provedor precisam enviar tráfego ao firewall para que ele veja algo, e um grupo de segurança à frente dele pode descartar em silêncio o que você esperava inspecionar. Implantar a VM é a metade fácil; direcionar tráfego por ela é o trabalho de projeto.
 
@@ -61,7 +61,7 @@ Não são tanto concorrentes quanto respostas a perguntas diferentes.
 | FortiGate CNF | Fortinet | Sua rede em nuvem | Proteção em nuvem sem operá-la |
 | FortiSASE | Fortinet | PoPs da Fortinet | Usuários e filiais, onde estiverem |
 
-Uma mesma organização comumente roda os três: VMs protegendo cargas em nuvem, SASE cobrindo a força de trabalho, e appliances físicos nos sites que precisam deles. A linguagem de configuração compartilhada entre eles é a razão de a combinação ser administrável.
+Uma mesma organização comumente roda os três: VMs protegendo cargas em nuvem, SASE (secure access service edge) cobrindo a força de trabalho, e appliances físicos nos sites que precisam deles. A linguagem de configuração compartilhada entre eles é a razão de a combinação ser administrável.
 
 ## O que quem vai prestar o exame precisa saber de cor
 

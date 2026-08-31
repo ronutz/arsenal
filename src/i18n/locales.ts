@@ -46,7 +46,7 @@ export interface LocaleMeta {
 export const LOCALES: readonly LocaleMeta[] = [
   // --- Languages with real, human-reviewed content shipping day-one ---
   { code: "en",         nativeName: "English",            englishName: "English",                 dir: "ltr", status: "reviewed" },
-  { code: "pt-BR",      nativeName: "Português (Brasil)", englishName: "Portuguese (Brazil)",     dir: "ltr", status: "machine-draft" },
+  { code: "pt-BR",      nativeName: "Português (Brasil)", englishName: "Portuguese (Brazil)",     dir: "ltr", status: "machine-draft" }, // RULING (PRIME, 2026-08-27): pt-BR KEEPS the notice. The corpus is generated under the native-authoring directive, but the output still sometimes over-translates technical jargon and uses constructions that do not sound natural in Portuguese — so the status stays machine-draft, and the banner stays, until human review attests otherwise. The status is a CREDENTIAL about the outcome, not a restatement of the directive. (Reverts the same-day change that read the 2026-08-16 authoring rule as the attestation.)
   { code: "es",         nativeName: "Español",            englishName: "Spanish",                 dir: "ltr", status: "machine-draft" },
 
   // --- Registered + selectable day-one; stubs falling back to English until translated ---

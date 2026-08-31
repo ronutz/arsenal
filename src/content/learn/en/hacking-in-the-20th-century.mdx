@@ -1,0 +1,151 @@
+---
+slug: hacking-in-the-20th-century
+title: "Hacking in the 20th century: a field guide to the people who took things apart"
+summary: "From a blind boy whistling into a telephone in the 1960s to seven hackers testifying to the US Senate under their handles in 1998 - the whole arc, in one place. Who the people were, what they actually did, which stories are true, and how a criminalised subculture ended up building the security industry that now employs it."
+concepts: ["hacker history", "phreaking", "full disclosure", "hacker ethic", "computer crime"]
+relatedTools: []
+relatedArticles: ["phone-phreaking-and-the-blue-box", "the-morris-worm", "the-cuckoos-egg", "kevin-mitnick-the-myth-and-the-man", "defcon-culture-and-the-goons", "stuxnet-and-the-first-cyberweapon", "the-crypto-wars-and-the-cypherpunks", "anonymous-lulzsec-and-the-hacktivist-decade"]
+category: security
+order: 96
+status: reviewed
+updated: "2026-08-28"
+---
+
+## What the word meant before it meant this
+
+At MIT in the late 1950s a *hack* was a clever, slightly outrageous solution - a term from the model-railroad club that moved with its people onto the university's computers. Steven Levy's [*Hackers: Heroes of the Computer Revolution*](/glossary/hackers-heroes-book) wrote down the ethic those people lived by: access should be unlimited and hands-on, mistrust authority, judge people by their work rather than their credentials.
+
+That word was captured in 1983 and has never been fully returned. This is the story of what happened in between - four decades, five distinct motives, and a subculture that was prosecuted into existence and then hired.
+
+## 1. The telephone years: curiosity as the motive
+
+The first hackers hacked the phone company, because in the 1960s and 70s the phone company was the largest computer on Earth and its control language was audible. [Phone phreaking](/learn/phone-phreaking-and-the-blue-box) worked because the network signalled in-band: a 2600 Hz tone told a trunk it was idle, and anything that could make the sound could command the switch.
+
+[Joybubbles](/glossary/joybubbles) - Joe Engressia, blind, with perfect pitch - discovered at seven that he could whistle it. [John Draper](/glossary/captain-crunch) found the same frequency in a cereal-box toy and became Captain Crunch. Ron Rosenbaum's 1971 *Esquire* article put it all on newsstands, where two Californians named Steve read it, built blue boxes, sold them in dorms, and later founded Apple.
+
+The technical moral outlived the technology: **separate the control plane from the data plane**. Every injection attack since - SQL, header smuggling, prompt injection - is the same sin in new clothing.
+
+The people mattered too, and the history usually forgets half of them. [Susan Headley](/glossary/susan-headley), known as Susy Thunder, was among the first true masters of social engineering, talking her way into telephone and military systems by voice alone; she left the scene and was largely written out of the accounts that made her contemporaries famous. [Jude Milhon](/glossary/jude-milhon) - St. Jude - helped build the first public computerised bulletin board, later coined *cypherpunk*, and defined hacking better than anyone has since: **the clever circumvention of imposed limits**.
+
+## 2. 1983: the year the word changed
+
+Two things happened in one summer. *[WarGames](/glossary/wargames)* opened in June, and weeks later the [414s](/learn/the-414s-and-the-summer-of-1983) were arrested - six Milwaukee teenagers who had wandered into a cancer hospital, a bank and Los Alamos using **default and blank passwords**.
+
+Life and film merged in the same news cycle. Newsweek put a hacker on its cover, Congress held hearings with a clip from the movie played as evidence, and President Reagan asked his Joint Chiefs whether it could really happen - producing NSDD-145, the first US national policy on computer security, and three years later the **Computer Fraud and Abuse Act of 1986**, still the statute under which American computer crime is charged.
+
+A law written during a media panic against a threat model drawn from a movie has been reaching people ever since: researchers, employees breaking terms of service, journalists. That is the price of legislating in a fright.
+
+## 3. The scenes: crews, clubs, and how they differed
+
+The **American** underground organised into crews. The [Legion of Doom and Masters of Deception](/learn/lod-mod-and-operation-sundevil) fought the Great Hacker War over pride and telephone switches - and then the state arrived: Operation Sundevil in fourteen cities, a magazine prosecuted over a document that cost thirteen dollars in a catalogue, and a role-playing game manuscript seized as a hacking manual. Both cases collapsed, and the [EFF](/glossary/eff) was founded out of the wreckage.
+
+The **German** scene organised as an association instead. The [Chaos Computer Club](/learn/chaos-computer-club-btx-and-the-kgb) moved 134,000 marks out of a Hamburg bank overnight in 1984 - then gave it back at a press conference and explained the flaw. Proof plus restitution plus publication turned out to be a method that survives its founders; the CCC now testifies before Germany's constitutional court.
+
+The **Australian** scene got a book instead of a legend: [*Underground*](/glossary/underground-book), researched by a young hacker called Mendax.
+
+Underneath all of them ran [the Scene](/glossary/the-scene) - the release culture with its own economy, rules and ASCII art - and its dialect, [leet](/glossary/leet), which began as filter evasion and hardened into an in-group marker.
+
+## 4. The four motives, in the order they appeared
+
+The whole century fits into four answers to *why*:
+
+- **Curiosity** — phreaking, the 414s, the early crews. Getting in was the point.
+- **Scale, by accident** — the [Morris worm](/learn/the-morris-worm), 1988. A measurement tool with one wrong constant (reinfect one time in seven) melted the internet, created CERT, and produced the first CFAA conviction. Getting the throttle wrong is the whole story.
+- **Money and espionage** — the [KGB hack](/learn/chaos-computer-club-btx-and-the-kgb) that [Cliff Stoll](/learn/the-cuckoos-egg) followed from a 75-cent accounting error; later [Albert Gonzalez](/glossary/albert-gonzalez) and 170 million payment cards.
+- **The message** — the [WANK worm](/learn/wank-worm-and-the-international-subversives) on NASA's terminals in 1989, the first hacktivist action, ancestor of [Anonymous](/glossary/anonymous) and [LulzSec](/glossary/lulzsec).
+
+## 5. The famous names, and what is actually true
+
+[**Kevin Mitnick**](/learn/kevin-mitnick-the-myth-and-the-man) was the best social engineer who ever worked, and almost everything else said about him was false. He could not launch a missile by whistling into a payphone; that invention denied him bail and helped keep him in custody for years before trial. He served his time and spent two decades teaching the defence.
+
+[**Kevin Poulsen**](/learn/kevin-poulsen-dark-dante) took over a radio station's phone lines to win a Porsche while holding a defence-research day job - then became a journalist who co-built SecureDrop.
+
+[**Cliff Stoll**](/learn/the-cuckoos-egg) invented incident response by not knowing it did not exist: paper logbook, printers on every line, and the first documented **honeypot**.
+
+[**Mudge**](/glossary/mudge) and the [L0pht](/learn/l0pht-cdc-and-the-road-to-the-industry) told the Senate in 1998 they could take the internet down in thirty minutes, and were not exaggerating - BGP (Border Gateway Protocol) had no authentication.
+
+[**Gary McKinnon**](/glossary/gary-mckinnon) entered dozens of US military systems looking for UFOs, mostly via blank passwords. [**Marcus Hutchins**](/glossary/marcus-hutchins) stopped WannaCry with a ten-dollar domain and was arrested three months later for something he wrote as a teenager. [**Barnaby Jack**](/glossary/barnaby-jack) made two ATMs spray cash on a conference stage and moved an industry in one afternoon.
+
+## 6. How the underground built the industry
+
+The publishing came first. [Phrack, 2600 and the Manifesto](/learn/phrack-2600-and-the-hacker-manifesto) were the curriculum, the newspaper and the creed - and [Aleph One's *Smashing the Stack*](/glossary/aleph-one) in Phrack 49 taught memory corruption to everyone at once, which is exactly why full disclosure has been argued about ever since.
+
+Then the tools. [SATAN](/glossary/satan-scanner) in 1995 was the first full public fight about handing defenders an attacker's tool; every argument about Nmap and Metasploit is a rerun.
+
+Then the institutions. 1998: the [L0pht in the Senate](/learn/l0pht-cdc-and-the-road-to-the-industry), Back Orifice at [DEF CON](/learn/defcon-culture-and-the-goons), and the underground becoming consultable. The conference itself is the clearest artifact of the transition - cash at the door, no attendee database, and tens of thousands of people held together by unpaid volunteers in red shirts.
+
+And alongside it the parallel movement that shaped everything: the [free software](/glossary/free-software) and [open source](/learn/open-source-and-the-meaning-of-free) argument, and the [cypherpunks](/glossary/cypherpunks), whose conviction that code protects privacy better than law produced Tor, PGP's ecosystem, and eventually the entire cryptographic infrastructure of the modern web.
+
+## 7. The timeline
+
+Dates are first public occurrence unless noted; where a thing ran for years, the year given is when it started or when it surfaced.
+
+**The telephone era**
+
+- **1959** — MIT's Tech Model Railroad Club is using *hack* to mean a clever, outrageous solution.
+- **1971** — Ron Rosenbaum's *Esquire* piece on the blue box makes phreaking public; Wozniak and Jobs build and sell boxes.
+- **1975** — John Brunner's *The Shockwave Rider* names a self-replicating program a worm.
+- **1979** — Researchers at Xerox PARC build the first real worms, taking the name from Brunner.
+
+**The scene forms, and the word changes**
+
+- **1981** — Chaos Computer Club founded in Berlin.
+- **1983** — *WarGames* opens; the 414s are arrested; Newsweek runs a hacker on the cover; congressional hearings play the film as evidence.
+- **1984** — 2600 begins publishing; Cult of the Dead Cow founded; Levy's *Hackers* codifies the ethic; Gibson's *Neuromancer* coins cyberspace; the CCC's Btx heist takes 134,000 marks and gives them back; Legion of Doom forms.
+- **1985** — Phrack's first issue; the Free Software Foundation is founded.
+- **1986** — The Computer Fraud and Abuse Act passes; The Mentor writes the Hacker Manifesto hours after his arrest; Cliff Stoll is handed a 75-cent accounting error.
+
+**Consequences arrive**
+
+- **1988** — The Morris worm melts the internet on 2 November; CERT is founded within weeks.
+- **1989** — The WANK worm hits NASA in October; Karl Koch is found dead in May; *The Cuckoo's Egg* is published.
+- **1990** — Steve Jackson Games is raided in March; Operation Sundevil runs in May; the Electronic Frontier Foundation is founded in July.
+- **1991** — Phil Zimmermann releases PGP (Pretty Good Privacy); Linus Torvalds announces Linux on Usenet; *Cyberpunk* is published.
+- **1992** — The cypherpunks mailing list begins; Masters of Deception members are indicted; Sterling's *The Hacker Crackdown* appears.
+- **1993** — DEF CON is held for the first time; the Clipper chip is proposed.
+- **1994** — Matt Blaze breaks Clipper's escrow; Mitnick breaks into Shimomura's machines on Christmas Day.
+
+**The underground professionalises**
+
+- **1995** — Mitnick is arrested in February; SATAN is released in April; the film *Hackers* opens.
+- **1996** — Aleph One publishes *Smashing the Stack* in Phrack 49; the Zimmermann investigation is dropped; Assange pleads guilty in Australia.
+- **1997** — Black Hat is founded; Nmap is published in Phrack; *Underground* is published.
+- **1998** — The L0pht testifies to the US Senate on 19 May; the Cult of the Dead Cow releases Back Orifice at DEF CON in August.
+- **1999** — Jon Lech Johansen co-releases DeCSS; Bernstein's case establishes source code as protected speech.
+- **2000** — Mafiaboy's denial-of-service spree takes down the web's largest brands; Mitnick testifies to the Senate.
+
+**The state arrives**
+
+- **2001** — Gary McKinnon begins wandering US military networks.
+- **2003** — Titan Rain begins; HD Moore releases Metasploit.
+- **2007** — Pwn2Own and the Pwnie Awards begin.
+- **2008** — Dan Kaminsky's DNS flaw is patched industry-wide in one coordinated day; Project Chanology puts Anonymous in the street.
+- **2010** — Stuxnet is discovered; Operation Payback defends WikiLeaks; George Hotz publishes the PlayStation 3 keys.
+- **2011** — LulzSec runs for fifty days; the RSA SecurID breach reaches Lockheed Martin.
+- **2013** — The Target breach; the Snowden disclosures; Aaron Swartz dies while facing prosecution.
+- **2014** — The Sony Pictures wiper attack; *Citizenfour* is released.
+- **2015** — Miller and Valasek take over a Jeep on a public highway.
+- **2016** — The Shadow Brokers begin publishing; the DNC intrusion becomes an influence operation.
+- **2017** — EternalBlue powers WannaCry and NotPetya; Marcus Hutchins stops one and is arrested three months later.
+
+## 8. What the century actually teaches
+
+Read across all of it and the same few lessons repeat with different costumes:
+
+**The vulnerability is almost never exotic.** Default passwords let the 414s into Los Alamos and McKinnon into military networks; weak passwords and a debug flag carried the Morris worm; a misconfiguration let the KGB's hacker into Berkeley. Thirty years later, credential failures still lead breach reports.
+
+**The human layer is the real perimeter.** Mitnick took more by asking than by exploiting, and an entire training industry exists because of it.
+
+**Press framing becomes legal reality.** Mitnick, the 414s, the E911 document - narratives set the sentences, and researchers still live with the consequences.
+
+**Disclosure is a permanent argument, not a solved problem.** Full disclosure, coordinated disclosure, bug bounties: every arrangement is a truce between people who need vendors to move and vendors who need time.
+
+**People change, and the field is better when it lets them.** Poulsen, Mitnick, Hutchins, half the L0pht. The pipeline from underground to industry is not a scandal; it is the reason the industry knows anything.
+
+**What the state does not understand, it seizes.** Steve Jackson Games, the BBS raids, extradition fights. The correction has always had to be built by someone - which is why the EFF exists.
+
+## Where the century ends
+
+The 20th century closed with the underground holding a Senate microphone and running its own conference. The 21st opened with states as the primary actors: [Stuxnet](/glossary/stuxnet) crossing an air gap to destroy centrifuges, [the Shadow Brokers](/glossary/shadow-brokers) leaking government tooling that became WannaCry and NotPetya within weeks, and ransomware turning intrusion into an industry with customer support.
+
+The people in this guide were mostly teenagers with modems who wanted to know how things worked. What they learned, and how badly the world reacted to their learning it, produced the entire discipline that now defends everything. That is the argument for teaching this history rather than mythologising it: the techniques are dated, and every single institutional lesson is still live.

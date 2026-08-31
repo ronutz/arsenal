@@ -1,0 +1,119 @@
+---
+slug: backups-and-ransomware-recovery
+title: "Backups: o controle que precisa funcionar quando todos os outros já falharam"
+summary: "O ransomware transformou o backup de preocupação de disponibilidade na última linha de defesa, e então foi atrás dos próprios backups. O que mudou, por que a velha regra 3-2-1 precisa de uma quarta cláusula, por que uma restauração não testada é boato, e o fato incômodo de que o backup resolve a metade da cifragem num ataque moderno de extorsão e nada da metade da divulgação."
+concepts: ["backup", "ransomware", "recovery", "resilience", "incident response"]
+relatedTools: []
+relatedArticles: ["cloud-and-cdn-monoculture", "brazilian-cybercrime-from-boleto-to-pix", "the-chokepoints-of-the-internet"]
+category: security
+order: 129
+status: reviewed
+updated: "2026-08-30"
+---
+
+## Por que isso virou assunto de segurança
+
+Durante quase toda a história da computação, backup era sobre acidente: um disco que falha, um diretório apagado, uma migração ruim. O modelo de ameaça era indiferente. Nada estava tentando derrotar o backup.
+
+O ransomware mudou isso, e a mudança é estrutural, não de grau. **Um invasor competente hoje ataca os backups primeiro**, porque destruir o caminho de recuperação é o que converte uma queda em pagamento. A ordem das operações numa invasão moderna é: entrar, escalar, achar a infraestrutura de backup, apagá-la ou cifrá-la, e *então* cifrar a produção. Quando alguém percebe o problema de produção, a resposta para ele já foi embora.
+
+É por isso que o desenho de backup virou um controle de segurança com adversário, e por que um plano escrito para falha de disco em geral não sobrevive ao contato com um deles.
+
+## Origens: um problema de mídia antes de ser de segurança
+
+O backup nasce como consequência de o armazenamento ser pouco confiável e caro. A prática e o vocabulário vêm da fita, e vários hábitos que hoje parecem estranhos são a lógica da fita sobrevivendo num mundo de discos e de armazenamento de objetos.
+
+**Avô-pai-filho.** Conjuntos diários, semanais e mensais em rodízio, que é de onde vêm as camadas de retenção: guardavam-se poucas cópias recentes e menos ainda antigas porque fita custava dinheiro e armário tem tamanho.
+
+**Completo, incremental, diferencial.** Uma cópia completa é lenta de fazer e rápida de restaurar; a incremental copia só o que mudou desde o último backup, sendo rápida de fazer e lenta de restaurar porque é preciso reproduzir uma cadeia; a diferencial copia tudo desde o último completo, dividindo a diferença. A troca não mudou - só migrou para sistemas de deduplicação e snapshot, onde um "completo" hoje costuma ser sintético, montado de blocos que nunca foram copiados duas vezes.
+
+**Fora do local como proteção contra incêndio.** A razão original de uma cópia remota não era um atacante. Era incêndio, enchente e roubo - e a van do correio levando fitas ao cofre era o air gap original, e é por isso que a discussão moderna sobre imutabilidade fica redescobrindo que separação física é incomumente difícil de derrotar à distância.
+
+**A regra 3-2-1** foi formulada nesse mundo, por um fotógrafo escrevendo sobre proteger imagens, e se espalhou porque é memorável e quase sempre certa. O que ela nunca contemplou foi um adversário que se autentica como administrador e apaga as três cópias de um console só.
+
+## A evolução da mídia, e o que cada virada mudou
+
+**Da fita para o disco (anos 2000).** As restaurações ficaram mais rápidas e o acesso aleatório tornou prática a recuperação granular. Também removeu a propriedade de estar offline que a fita tinha por acidente, o que ninguém percebeu como perda até o ransomware transformá-la numa.
+
+**Deduplicação e completos sintéticos.** Guardar só blocos únicos tornou a retenção longa acessível, e acoplou cada ponto de restauração a um repositório de blocos compartilhado - então a corrupção ou exclusão desse repositório afeta todos os pontos de uma vez, concentração que ninguém enxerga num gráfico de retenção.
+
+**Snapshots.** Instantâneos, baratos e vizinhos da produção, o que os torna excelentes para recuperação operacional e insuficientes como defesa única: um snapshot no mesmo storage ou na mesma conta de nuvem que o dado está dentro do mesmo domínio de falha e, com frequência, da mesma credencial.
+
+**Armazenamento de objetos com trava.** A resposta atual ao problema que a fita resolvia por acidente: um período de retenção que a própria plataforma se recusa a encurtar, aplicado independentemente de quem pede.
+
+**O backup como alvo.** No fim dos anos 2010 os atacantes já apagavam snapshots, cifravam repositórios de backup e revogavam credenciais de nuvem antes de tocar na produção - foi isso que transformou o tema de infraestrutura em tema de segurança.
+
+## A regra, e a cláusula que faltava
+
+A orientação tradicional é **3-2-1**: três cópias dos dados, em dois tipos de mídia, uma delas fora do local. É bom conselho e não é suficiente, porque toda cópia que ela descreve pode ser alcançável pela mesma conta administrativa comprometida.
+
+A cláusula que importa hoje é a quarta: **uma cópia que não possa ser modificada nem apagada, nem por um administrador**. Na prática isso significa uma destas:
+
+- **Imutabilidade na camada de armazenamento** - trava de objeto ou retenção do tipo grava-uma-vez, em que o pedido de exclusão é recusado pela plataforma por um período definido, seja quem for que o faça.
+- **Uma cópia genuinamente offline** - fita, ou mídia removível fisicamente desconectada. Fora de moda e extremamente eficaz, porque credencial não alcança prateleira.
+- **Um domínio de confiança separado** - uma conta ou tenant de backup com identidade própria, administradores próprios, e nenhuma relação de confiança com a produção.
+
+A ideia que unifica as três merece ser dita sozinha: **o backup não pode estar dentro do raio de explosão das credenciais que administram a produção.** Se o seu administrador de domínio consegue apagar os backups, então um comprometimento de administrador de domínio apaga os backups, e o fato de eles estarem em três lugares é irrelevante.
+
+## A retenção precisa durar mais que o tempo de permanência
+
+Um atacante que está dentro há semanas pode ter corrompido ou cifrado dados muito antes do evento visível. Se sua janela de retenção for menor que o tempo de permanência do invasor, toda cópia sobrevivente contém o problema.
+
+Este é o argumento para manter pontos de restauração que alcancem mais para trás que o pior tempo de permanência plausível, e para manter alguns deles imutáveis. É também o argumento para conhecer o seu tempo de permanência, coisa que a maioria das organizações não mede.
+
+## Restauração não testada é boato
+
+A falha mais comum não é backup ausente. É backup que existe e não restaura, ou restaura devagar demais para importar.
+
+Concretamente, o que dá errado na hora da necessidade:
+
+- A restauração leva dias porque ninguém mediu a vazão contra o volume real de dados.
+- O sistema restaura mas não sobe, porque uma dependência - um banco, um certificado, um servidor de licenças, um provedor de identidade - nunca esteve no escopo.
+- Ninguém consegue se autenticar no console de backup, porque o provedor de identidade faz parte do que está fora.
+- O runbook mora no wiki, e o wiki está cifrado.
+- As chaves de cifragem dos backups estão no cofre de senhas, e o cofre de senhas está no ambiente que caiu.
+
+A disciplina que corrige todos esses casos é a mesma: **restaure com regularidade, com data marcada, e cronometre.** Uma restauração que não foi feita neste trimestre é uma hipótese. Objetivos de recuperação - quanto de dado se pode perder, e quanto tempo se pode ficar fora - só são reais se uma restauração medida os sustenta; caso contrário são números num documento.
+
+## Arquitetura, e o vocabulário que a descreve
+
+**Com agente ou sem agente.** Um agente na carga de trabalho entende a aplicação e consegue silenciar um banco antes de copiar; abordagens sem agente fazem snapshot no hipervisor ou no storage e são mais simples de operar, ao custo de consciência da aplicação. A maioria dos parques precisa das duas, e a falha costuma ser um banco copiado no meio de uma transação.
+
+**Consistência é o jogo inteiro.** Uma cópia consistente com falha é o que você teria se a energia caísse; uma cópia consistente com a aplicação é aquela em que a aplicação foi avisada para descarregar e pausar antes. Restaurar um banco consistente só com falha às vezes funciona, e *às vezes* não é estratégia de recuperação.
+
+**Onde mora a aplicação da regra.** A imutabilidade pode ser implementada no software de backup, na plataforma de armazenamento, ou na política de retenção do provedor de nuvem - e só as duas últimas sobrevivem ao comprometimento do próprio software de backup. Vale confirmar essa distinção com o fabricante em vez de presumir.
+
+**A reformulação 3-2-1-1-0.** A formulação atualizada da indústria acrescenta uma cópia imutável ou offline e zero erros na verificação, que é um jeito compacto de enunciar as duas cláusulas que este artigo defende.
+
+**Os objetivos de recuperação** - quanto de dado se aceita perder e quanto tempo se aceita ficar fora - são o contrato entre o desenho e o negócio. Só significam algo quando uma restauração cronometrada os demonstrou.
+
+## O cenário de fabricantes, por categoria
+
+- **Plataformas corporativas de backup** - Veeam, Commvault, Veritas, Rubrik, Cohesity. Cobertura ampla de hipervisores, bancos e nuvem, com recursos de imutabilidade que diferem em *onde* são aplicados. É essa a pergunta a apertar: aplicada pelo software ou pelo armazenamento.
+- **Serviços nativos de nuvem** - backup e snapshot dos provedores, os mais baratos de adotar e em geral dentro da mesma conta e fronteira de identidade que o dado. Configuração entre contas ou entre tenants é o que os transforma em controle de verdade.
+- **Imutabilidade na camada de armazenamento** - trava de objeto em armazenamento de objetos, modos grava-uma-vez em appliances dedicados. É onde mora a garantia mais forte, porque a recusa em apagar vem da plataforma.
+- **Fita, ainda** - para retenção muito grande a custo baixo e separação offline genuína. Fora de moda, e a única mídia em que uma credencial não alcança o meio físico.
+- **Backup de software como serviço** - Microsoft 365, Salesforce e similares. A lacuna que a maioria descobre tarde: o provedor protege a infraestrutura dele, e não você das suas próprias exclusões nem de um atacante com sessão válida, e a linha de responsabilidade compartilhada fica exatamente onde as pessoas presumem que não fica.
+
+A pergunta de compra, como em toda esta série: **em qual domínio de falha a cópia mora**, e quem consegue apagá-la.
+
+## O que o backup não resolve
+
+Esta é a parte que se pula, e ela muda a decisão.
+
+A extorsão moderna costuma ser **dupla**: os dados são cifrados *e* copiados para fora antes. O backup responde à cifragem por completo - você restaura e recusa pagar por uma chave. Não responde nada à cópia. O atacante continua com os dados, e a ameaça de publicá-los não é afetada pela qualidade da sua recuperação.
+
+Então um plano só de restauração trata o problema de disponibilidade e deixa o de divulgação inteiramente aberto. Isso significa que a decisão depois de um incidente não é uma, e sim duas, e a segunda pertence ao jurídico, à comunicação e aos reguladores tanto quanto à engenharia - com obrigações de notificação que correm no próprio relógio, independentemente de como vai a recuperação.
+
+A formulação honesta: **backup significa que você não precisa pagar para ter seus dados de volta. Não significa que você não está tendo uma semana péssima.**
+
+## Uma lista que vale de fato executar
+
+- Uma cópia imutável ou offline, fora do raio de explosão administrativo da produção.
+- Retenção maior que o seu tempo de permanência plausível, e não só maior que a sua janela de conveniência.
+- Infraestrutura de backup com credenciais separadas e, de preferência, provedor de identidade separado.
+- Restauração testada com data marcada, cronometrada, com o resultado escrito e comparado ao objetivo.
+- O runbook, a lista de contatos e as credenciais disponíveis **fora** do ambiente que protegem - impressos, ou em outro tenant.
+- Um caminho de decisão nomeado para a metade da divulgação, acordado antes do dia em que for preciso.
+
+O princípio geral é o mesmo que atravessa [todos os pontos de estrangulamento](/learn/the-chokepoints-of-the-internet) deste site: um controle que divide domínio de falha com aquilo que protege não é um controle. O backup é o caso mais claro, porque o domínio de falha em geral é uma conta de administrador, e quase ninguém o desenha assim no diagrama.

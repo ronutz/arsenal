@@ -53,7 +53,7 @@ When a connection behaves unexpectedly, the question is not "which rule matched"
 The diagnostic order that works:
 
 1. **Was it dropped, and in which layer?** A drop in the first layer means later layers are irrelevant, however carefully they were written.
-2. **If it was accepted everywhere and still failed**, the firewall is not the problem — look at routing, NAT, or the destination.
+2. **If it was accepted everywhere and still failed**, the firewall is not the problem — look at routing, NAT (network address translation), or the destination.
 3. **If an inline layer was involved**, check whether the parent rule matched at all, because a sub-policy that was never entered looks identical to one whose rules did not match.
 
 That third case is the one that wastes the most time, and distinguishing it takes one look at the parent rule.

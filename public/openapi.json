@@ -1060,6 +1060,96 @@
         }
       }
     },
+    "/cron-expression-explainer": {
+      "get": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_cron_expression_explainer",
+        "summary": "Cron expression explainer",
+        "description": "Paste a crontab schedule and get every field read back in plain language, the footguns flagged, and the next runs computed. Standards: crontab(5), POSIX crontab. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "*/15 2 * * 1-5"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_cron_expression_explainer_post",
+        "summary": "Cron expression explainer (POST)",
+        "description": "Paste a crontab schedule and get every field read back in plain language, the footguns flagged, and the next runs computed. Standards: crontab(5), POSIX crontab. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as text.",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string",
+                "examples": [
+                  "*/15 2 * * 1-5"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/csr-decoder": {
       "get": {
         "tags": [

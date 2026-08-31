@@ -1,0 +1,38 @@
+---
+slug: the-414s-and-the-summer-of-1983
+title: "The 414s and the summer of 1983: the year hacking became a crime"
+summary: "Six Milwaukee teenagers with modems wandered into a cancer hospital, a bank and a nuclear weapons laboratory. WarGames opened the same summer. Newsweek put a hacker on the cover, Congress held hearings with the movie playing on a screen, and within three years the United States had the law under which computer crime is still prosecuted."
+concepts: ["hacker history", "cfaa", "default credentials", "media narrative", "policy"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "kevin-mitnick-the-myth-and-the-man", "the-morris-worm", "phone-phreaking-and-the-blue-box"]
+category: security
+order: 102
+status: reviewed
+updated: "2026-08-28"
+---
+
+## Six kids and an area code
+
+They named themselves after their telephone area code. The **414s** were six young men in Milwaukee, aged roughly sixteen to twenty-two, who met through a local computer club and spent 1982 and 1983 dialling ranges of numbers looking for anything that answered with a login prompt. When they found one, they tried the obvious: the default account, the manual's example password, the vendor's demo credentials that nobody had removed.
+
+It worked more than sixty times. Their catch included **Memorial Sloan-Kettering Cancer Center** in New York, a Los Angeles bank, and **Los Alamos National Laboratory** - the laboratory where nuclear weapons are designed. At Sloan-Kettering they altered files in a system that tracked radiation-therapy records, which is the detail that turned a prank into a national story: not because a patient was harmed, but because everyone could now imagine one being harmed.
+
+Their motive, as far as the record supports, was the era's default: curiosity, the sport of getting in, and the social status of telling the club. One of them famously told a reporter that he was just having fun, and by the time the interviews ran, the country had decided what the fun meant.
+
+## The summer everything collided
+
+The timing is the reason this case, rather than an earlier one, became the hinge. *WarGames* had opened in June 1983 - a teenager with a modem reaching a military computer and nearly starting a war - and the 414 arrests came weeks later, in the same news cycle. Life was imitating a screenplay closely enough that the two became one story. **Newsweek** ran one of the 414s on its cover in September 1983, and the word *hacker*, which had until then mostly meant a skilled programmer, completed its inversion in the public mind.
+
+Congress moved immediately. Hearings on computer security were held that autumn, and a clip from *WarGames* was played for the members - a film screening as legislative evidence. Neal Patrick, the most visible of the 414s, testified. President Reagan, who had watched the same film and asked his Joint Chiefs whether it could really happen, had already set the classified track in motion; the answer became **NSDD-145**, the first US national policy on computer security.
+
+The 414s themselves got off lightly: most were never charged, two pleaded to misdemeanour counts, and the sentences were probation and small fines. There was, at the time, barely a law to charge them under - which was precisely the finding that mattered.
+
+## The law that came out of it
+
+Three years later the United States had the **Computer Fraud and Abuse Act of 1986**, the statute that still governs American computer crime, and whose first big test was [the Morris worm](/learn/the-morris-worm). The CFAA's central phrase - accessing a computer *without authorisation, or exceeding authorised access* - was written in a hurry against a threat model drawn from a movie and six teenagers, and the field has been living with the consequences ever since: the phrase's elasticity has been used against researchers, employees violating terms of service, and journalists, and it took until the Supreme Court's *Van Buren* decision in 2021 to begin narrowing it.
+
+## What the technical record actually shows
+
+Strip the panic away and the 414s' method was **default and blank passwords**. Not exploits, not cryptanalysis, not a movie's talking supercomputer - just credentials that shipped with the system and were never changed, on machines that had been connected to the telephone network without anyone treating that as a security decision.
+
+Which makes this case a permanent double lesson. The policy lesson is that legislation written during a media panic outlives the panic by forty years and constrains people who had nothing to do with it. The engineering lesson is the one the industry keeps failing: [Gary McKinnon](/glossary/gary-mckinnon) walked into US military networks the same way in 2001, factory credentials are still the entry point in breach reports today, and every default password left in place is a small bet that no one will dial your number.

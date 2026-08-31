@@ -1,0 +1,56 @@
+---
+slug: stuxnet-and-the-first-cyberweapon
+title: "Stuxnet: the first cyberweapon, and the day code broke machinery"
+summary: "A worm carrying four unknown Windows exploits crossed an air gap into an Iranian enrichment plant, spun centrifuges to destruction, and played recorded normal readings to the operators watching the screens. It was found only because it escaped. Everything about state cyber operations since - including the leaks that armed the world - starts here."
+concepts: ["stuxnet", "cyberweapon", "air gap", "industrial control systems", "zero-day"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "the-morris-worm", "wank-worm-and-the-international-subversives"]
+category: security
+order: 109
+status: reviewed
+updated: "2026-08-28"
+---
+
+## A worm that could count centrifuges
+
+Malware discovered in 2010 and named **Stuxnet** did something no software had done before: it destroyed physical equipment on purpose, at national scale, as an instrument of statecraft.
+
+Its target was the uranium enrichment facility at Natanz, in Iran. Its method was patient and specific. The worm spread widely through Windows machines but was almost entirely inert - it checked for a very particular installation: Siemens Step7 industrial control software, driving a specific model of programmable logic controller, wired to frequency converters running centrifuge motors in a configuration only a handful of sites on Earth would have. Anywhere else, it sat still.
+
+Where it found its target, it altered the controller's logic to periodically drive the centrifuge rotors far above and below their safe operating frequency - fast enough to damage the machines through fatigue, gradually, in a way that reads as bad luck rather than attack. And while it did so, it replayed **recorded normal sensor readings** to the monitoring systems. The engineers watching the screens saw a plant running perfectly while their centrifuges tore themselves apart over months.
+
+Iran replaced a substantial number of centrifuges in that period without publicly explaining why.
+
+## Four zero-days, and an air gap that was never a wall
+
+The technical extravagance of Stuxnet is what convinced researchers a state was behind it. It carried **four previously unknown Windows vulnerabilities** at once - so-called [zero-days](/glossary/zero-day), each individually valuable enough to sell for a large sum, spent together on a single operation. It used **stolen legitimate code-signing certificates** from two Taiwanese hardware companies so its drivers loaded without warning. It included a full rootkit for the industrial controllers themselves, the first ever seen.
+
+Natanz was **[air-gapped](/glossary/air-gap)** - not connected to the internet. The worm was designed to cross that gap on removable drives, carried in by contractors and engineers doing ordinary work. This is the operational lesson that outlived the operation: an air gap is a latency, not a wall. Anything a human carries across it is your new network cable.
+
+## How it was caught: it escaped
+
+Nobody found Stuxnet by defending Natanz. It was found because it **spread beyond its target** - a propagation bug, or an acceptable risk taken too far - and turned up on machines around the world where it did nothing at all, which is what made it strange enough to analyse.
+
+The reverse engineering was done in public, largely by antivirus researchers in Belarus, Belarus-adjacent labs, Russia, Germany and the United States - Sergey Ulasen's team at VirusBlokAda first flagged it, and Ralph Langner's work identified the centrifuge attack. Kim Zetter's [*Countdown to Zero Day*](/glossary/countdown-to-zero-day) is the standard book-length account. It is worth stating plainly what that means: a multi-year, multi-agency state operation was reconstructed by private researchers from a single sample, and published.
+
+Attribution has never been officially confirmed by the governments involved. Sustained reporting has attributed it to a joint US-Israeli programme, and later officials have said as much in unofficial venues. Careful practice is to state the attribution and its status: **widely reported, credible, never formally acknowledged.**
+
+## What it opened, and what it cost
+
+Stuxnet worked. It also established, permanently, that this class of tool exists and can be built - and every state watching drew the same conclusion.
+
+The bill arrived seven years later, from a different direction. The [Shadow Brokers](/glossary/shadow-brokers) published stolen NSA offensive tooling in 2016 and 2017, and within weeks the **EternalBlue** exploit powered [WannaCry](/glossary/wannacry) and then [NotPetya](/glossary/notpetya) - the costliest cyber incidents in history, hitting hospitals, ports, logistics companies and factories with no connection to intelligence work whatsoever. A British teenager, [Marcus Hutchins](/glossary/marcus-hutchins), stopped WannaCry by registering a ten-dollar domain.
+
+That sequence is the whole argument about **vulnerabilities equities** in one line: a government that stockpiles secret flaws is one custody failure away from arming everyone, and this is the case where it happened.
+
+## What practitioners should take from it
+
+**Air gaps are procedural, not physical.** Removable media, contractor laptops and maintenance interfaces are the crossing points, and they are managed with policy and monitoring or not at all.
+
+**Integrity attacks are worse than availability attacks.** Ransomware announces itself. Stuxnet's replayed sensor data means the operators' instruments lied to them for months - and detecting that requires trusting your telemetry less than your physics.
+
+**Industrial and enterprise security are different disciplines.** Controllers run for decades, cannot be patched on a Tuesday, and have safety consequences no web application has. Stuxnet is the reason that field exists as a specialism.
+
+**Offensive capability is not containable.** Tools escape, get stolen, get reverse-engineered and get reused - by researchers, by criminals, by other states. Anything built has to be assumed, eventually, to be available to everyone.
+
+The 20th century's hackers were [teenagers with modems who wanted to know how things worked](/learn/hacking-in-the-20th-century). Stuxnet is where the story stops being about them.

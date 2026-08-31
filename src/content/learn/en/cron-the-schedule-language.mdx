@@ -1,0 +1,36 @@
+---
+slug: cron-the-schedule-language
+title: "cron: five fields that run the world's chores"
+summary: "Every Unix box carries a scheduler whose entire language is five columns of numbers and stars. How to read them, the OR rule that catches almost everyone, why 0 and 7 are the same day, what the @ macros expand to, and the local-time reality behind every projected run."
+concepts: ["cron", "crontab", "scheduling", "unix", "automation"]
+relatedTools: ["cron-expression-explainer"]
+relatedArticles: []
+category: operations
+order: 60
+status: reviewed
+updated: "2026-08-27"
+---
+
+## A language with five words
+
+A crontab line is a time pattern followed by a command, and the pattern has exactly five fields: **minute, hour, day-of-month, month, day-of-week**. Each field accepts a value, a list (`1,15`), a range (`8-18`), a step (`*/15`, or `8-18/2`), or `*` for "any". Months and weekdays also answer to names — `JAN` through `DEC`, `SUN` through `SAT`. That is the whole grammar; everything a machine does on a schedule, from log rotation to certificate renewal, is written in it.
+
+So `0 2 * * 1-5` reads: minute 0, hour 2, any day of the month, any month, Monday through Friday — the classic two-a.m. weekday backup. And `*/15 * * * *` fires at minutes 0, 15, 30 and 45 of every hour, forever.
+
+## The rule that catches everyone
+
+Day-of-month and day-of-week both talk about days, and when **both** are restricted, cron does something almost nobody expects: it runs the command when **either** one matches. `0 0 1 * MON` does not mean "the first of the month when it falls on a Monday" — it means midnight on the first of every month **and** midnight every Monday. crontab(5) states this in one quiet sentence, and generations of engineers have shipped schedules that fire three times more often than intended because of it. If you take one thing from this page, take the OR.
+
+## The small print
+
+`0` and `7` both mean Sunday in the day-of-week field — a mercy for the two traditions of numbering weeks, and a source of double-takes in code review. A step that does not divide its span evenly wraps ragged: `*/7` in the minutes field fires at 0, 7, 14 … 56, then jumps back to 0, so the last gap is four minutes, not seven. Names inside stepped ranges (`MON-FRI/2`) are historically unreliable across implementations — numbers are the portable spelling. And a six-field expression is not broken cron; it is **Quartz**, the Java scheduler's dialect with a seconds column, which is a different language that happens to rhyme.
+
+The `@` macros are aliases, not magic: `@daily` (and `@midnight`) is `0 0 * * *`, `@weekly` is `0 0 * * 0`, `@monthly` is `0 0 1 * *`, `@yearly` (and `@annually`) is `0 0 1 1 *`, `@hourly` is `0 * * * *`. The exception is `@reboot`, which has no time pattern at all — it runs once when the daemon starts, which makes it the one schedule you cannot project.
+
+## The clock it actually uses
+
+cron evaluates every schedule in the daemon's **local time**. That single fact explains most "why did my job run at the wrong hour" tickets: the box's zone is not your zone, or daylight-saving shifted the wall clock under a schedule that names an hour which that day either skips or repeats. When a tool projects the next occurrences of an expression — as [the explainer](/tools/cron-expression-explainer) on this site does — it is doing wall-clock arithmetic from a stated reference instant, and any honest projection says so.
+
+## Where it came from
+
+The scheduler is nearly as old as Unix itself: a cron appears in Version 7 (1979), and the dialect everyone writes today is **Vixie cron** — Paul Vixie's 1987 rewrite, whose extensions (steps, names, the macros) became the de-facto standard that POSIX later codified in its portable core. The design has survived four decades essentially unchanged, which for a piece of infrastructure is the highest compliment there is: five fields turned out to be enough.

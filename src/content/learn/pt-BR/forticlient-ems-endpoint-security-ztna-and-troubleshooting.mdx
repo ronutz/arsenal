@@ -36,7 +36,7 @@ Dois pontos de projeto importam:
 
 ## ZTNA
 
-O ZTNA substitui "você está na rede, portanto pode alcançar a aplicação" por "esta sessão, deste equipamento, para este usuário, pode alcançar esta aplicação".
+O ZTNA (zero trust network access) substitui "você está na rede, portanto pode alcançar a aplicação" por "esta sessão, deste equipamento, para este usuário, pode alcançar esta aplicação".
 
 As peças:
 
@@ -44,7 +44,7 @@ As peças:
 - O **EMS** fornece a postura do equipamento — está registrado, a proteção está ligada, está conforme — como **tags ZTNA**.
 - O **FortiGate** atua como proxy de acesso, terminando a sessão e decidindo por requisição usando a identidade do usuário mais essas tags.
 
-A diferença prática em relação à VPN merece ser dita com clareza. Uma VPN concede acesso de rede e depois depende da política de firewall para estreitá-lo; o ZTNA não concede nada até uma requisição específica ser avaliada, e a postura faz parte dessa avaliação. Um equipamento que sai de conformidade perde acesso sem mudança de rede alguma, porque a tag de que dependia deixou de existir.
+A diferença prática em relação à VPN (rede privada virtual) merece ser dita com clareza. Uma VPN concede acesso de rede e depois depende da política de firewall para estreitá-lo; o ZTNA não concede nada até uma requisição específica ser avaliada, e a postura faz parte dessa avaliação. Um equipamento que sai de conformidade perde acesso sem mudança de rede alguma, porque a tag de que dependia deixou de existir.
 
 A dependência a lembrar é que as tags ZTNA vêm do EMS. Um endpoint que parou de reportar ao EMS tem tags obsoletas ou ausentes, e a falha de acesso resultante parece problema de firewall sendo problema de gerência de endpoints.
 

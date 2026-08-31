@@ -17,7 +17,7 @@ O BIG-IP DNS (antigo GTM) responde consultas DNS com o endereço de uma aplicaç
 
 O iQuery é um protocolo proprietário que os sistemas BIG-IP usam para se comunicar entre si. É XML, enviado comprimido com gzip, e não é um protocolo voltado ao cliente como o DNS: é a conversa de plano de controle entre os seus equipamentos BIG-IP. O BIG-IP DNS o usa para determinar a saúde dos objetos na sua configuração, trocar o estado do grupo de sincronização e transportar a sincronização de configuração pelo grupo, de modo que cada equipamento compartilhe uma visão única do que existe e do que está no ar.
 
-Dois processos fazem o trabalho. No BIG-IP DNS, o `gtmd` conduz o GSLB e abre as conexões iQuery. Em cada BIG-IP que o DNS sonda, incluindo outros equipamentos BIG-IP DNS e os sistemas LTM que hospedam os virtual servers, o `big3d` responde. O agente `gtmd` monitora tanto a disponibilidade desses sistemas quanto a integridade dos caminhos de rede entre os sistemas que hospedam um domínio e os servidores DNS locais que o resolvem.
+Dois processos fazem o trabalho. No BIG-IP DNS, o `gtmd` conduz o GSLB (global server load balancing) e abre as conexões iQuery. Em cada BIG-IP que o DNS sonda, incluindo outros equipamentos BIG-IP DNS e os sistemas LTM que hospedam os virtual servers, o `big3d` responde. O agente `gtmd` monitora tanto a disponibilidade desses sistemas quanto a integridade dos caminhos de rede entre os sistemas que hospedam um domínio e os servidores DNS locais que o resolvem.
 
 ## A malha e a porta 4353
 

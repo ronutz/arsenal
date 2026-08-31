@@ -41,6 +41,6 @@ Se teve sucesso, as duas perguntas que valem a pena são qual resolvedor respond
 
 Antes da resposta, o `nslookup` imprime qual servidor consultou. **Essa linha é a mais útil da saída e a mais pulada**, porque é igual em toda consulta bem-sucedida — até o dia em que não é.
 
-Um resolvedor trocado por DHCP, uma VPN que instalou o próprio, um contêiner herdando outro `resolv.conf`: cada um produz respostas corretas para um resolvedor que ninguém pretendia consultar. **A resposta não está errada; a pergunta foi para um lugar inesperado**, e a saída parece inteiramente normal.
+Um resolvedor trocado por DHCP, uma VPN (rede privada virtual) que instalou o próprio, um contêiner herdando outro `resolv.conf`: cada um produz respostas corretas para um resolvedor que ninguém pretendia consultar. **A resposta não está errada; a pergunta foi para um lugar inesperado**, e a saída parece inteiramente normal.
 
 **Leia a linha do servidor antes da resposta.** Quando duas máquinas discordam sobre um nome, é mais frequentemente o resolvedor que o registro.

@@ -18,7 +18,7 @@ Uma vez que o tráfego termina no controlador, a proteção fica disponível no 
 
 O FortiADC consegue aplicar funções de firewall de aplicação web ao tráfego que intermedia: detecção por assinatura para os ataques reconhecíveis de injeção e scripting, e um perfil orientado ao **OWASP Top 10** cobrindo as categorias que a maioria das aplicações erra.
 
-A troca é conhecida de qualquer WAF. Assinaturas produzem falsos positivos onde a entrada legítima se parece com cargas de ataque, e a disciplina é delimitar exceções com estreiteza — esta assinatura, esta URL, este parâmetro — em vez de desabilitar uma regra globalmente para corrigir uma página.
+A troca é conhecida de qualquer WAF (web application firewall). Assinaturas produzem falsos positivos onde a entrada legítima se parece com cargas de ataque, e a disciplina é delimitar exceções com estreiteza — esta assinatura, esta URL, este parâmetro — em vez de desabilitar uma regra globalmente para corrigir uma página.
 
 O **aprendizado adaptativo** constrói um modelo dos parâmetros normais da aplicação e sinaliza desvios, o que cobre o que assinaturas não descrevem. Duas condições governam se é útil, e são as mesmas de qualquer lugar em que se aplica aprendizado:
 

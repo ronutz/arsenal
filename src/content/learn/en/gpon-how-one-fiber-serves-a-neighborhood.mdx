@@ -13,6 +13,22 @@ updated: "2026-07-19"
 
 Most broadband technologies put electronics between you and the provider: a cabinet with power, cooling, and things that fail. GPON, which stands for Gigabit Passive Optical Network, takes the opposite bet. Between the provider's equipment and your home there is nothing but glass - fibers and small optical splitters that need no electricity at all. That single design decision explains almost everything else about how it works.
 
+## Origins: the copper ran out of headroom, not the fibre
+
+Fibre to the home was technically possible for decades before it was affordable. The obstacle was never the glass; it was that giving every subscriber a dedicated fibre back to the exchange meant a port, a laser and a strand per customer, which is a cost that scales linearly with take-up in exactly the way a telephone company cannot fund.
+
+**Passive optical networking** is the answer to that economics problem, and its defining choice is in the middle word. The splitter between the exchange and the homes has **no power, no electronics and nothing to fail**: it divides incoming light among its outputs and combines what comes back. One expensive port at the exchange is shared by many homes, and the shared plant needs no cabinet, no rectifier and no maintenance visit.
+
+The lineage is standardised and worth knowing, because installed networks span all of it:
+
+- **APON/BPON (ITU-T G.983, late 1990s)** — the first generation, ATM-based, modest speeds, and the proof that passive splitting worked in the field.
+- **GPON (ITU-T G.984, 2003 onward)** — the one most deployed: 2.488 Gbps downstream, 1.244 Gbps upstream, shared across the tree.
+- **EPON and 10G-EPON (IEEE 802.3ah and successors)** — the Ethernet-native branch, dominant in parts of Asia, same physics with a different framing.
+- **XG-PON and XGS-PON (ITU-T G.987, G.9807.1)** — 10 Gbps, with XGS-PON symmetrical. Crucially, these use different wavelengths from GPON, so an operator can run them **over the same fibre and the same splitter** and migrate subscriber by subscriber.
+- **NG-PON2 and 25/50G-PON** — multiple wavelengths per fibre and higher rates, aimed as much at mobile backhaul and business services as at homes.
+
+That wavelength-coexistence property is why the passive plant is such a good investment: the electronics at both ends get replaced across generations, and the glass, the splitters and the trenching — the expensive, disruptive part — stay.
+
 ## The tree of glass
 
 A GPON deployment is a tree. At the root, in the provider's central office or a street cabinet, sits the OLT - the Optical Line Terminal. From one OLT port, a single fiber runs out into the neighborhood. Along the way it passes through one or more optical splitters: passive components that divide the light among branches the way a prism divides a beam. A 1:2 splitter sends half the light each way; cascade the splits and you reach the common ratios of 1:32, 1:64, or 1:128 subscribers sharing one OLT port.
@@ -42,6 +58,35 @@ Every optical link lives on a power budget: the transmitter launches so many dB 
 Splitters are the big spenders. Every 1:2 division costs about 3 dB - half the light, by definition, plus a little loss - so a 1:64 tree spends roughly 18 dB on splitting alone. The fiber itself takes about 0.35 dB per kilometer at GPON's wavelengths, each connector 0.3 dB or so, each fusion splice a few hundredths. Add it up and a 1:64 split at 20 km arrives near the edge of the budget - which is exactly the design point of the standard.
 
 This arithmetic is the ISP technician's daily reality. A dirty connector that eats 2 dB, a drop cable bent past its radius, one bad mechanical splice: any of these can push a marginal leaf over the line, and the failure looks like mystery packet loss rather than darkness. The OTDR - the Optical Time-Domain Reflectometer - exists to turn that mystery into a distance: fire a pulse, read the reflections, and the trace shows how many meters out the budget is leaking.
+
+## Architecture, and the numbers that shape a design
+
+**Split ratio** is the central trade. A 1:32 split shares one port's capacity among 32 homes; 1:64 halves the per-home share and halves the cost per subscriber. Splits are also frequently **cascaded** — a 1:4 in a street cabinet feeding 1:16 units at the poles — which changes where the loss falls but not the total.
+
+**The loss budget is the design.** Each split costs light: roughly 3.5 dB per doubling, so about 17-18 dB for 1:32 and 20-21 dB for 1:64, before adding fibre attenuation, splices and connectors. The standards define optical classes with a total budget, and a design is simply the arithmetic of staying inside it. This is why a distant subscriber on a 1:64 split fails while a nearby one on the same tree is fine, and why the answer is often a different split ratio rather than a different vendor.
+
+**Reach** is commonly up to 20 km, and the practical limit is usually the loss budget rather than the distance.
+
+**The terminology, since every document assumes it.** The **OLT** (optical line terminal) is the exchange-side equipment; the **ONT** or **ONU** (optical network terminal or unit) is the device in the home; the **ODN** (optical distribution network) is the passive plant between them.
+
+**Ranging and equalisation.** Because homes sit at different distances, their upstream bursts would collide even with perfect scheduling. The OLT measures each ONT's round-trip delay and hands it an equalisation offset, so every burst arrives in its slot regardless of distance. This is also why a rogue ONT transmitting outside its slot degrades an entire tree, and why finding it is a physical-layer hunt rather than a configuration review.
+
+**Security follows from the topology.** Downstream frames reach every home on the tree, so encryption is not optional decoration: GPON encrypts downstream traffic per subscriber, with the key established during activation. Anyone reasoning about a shared medium should recognise the argument from [wireless](/learn/wireless-networking-from-802-11-to-wifi-7) — the medium is shared, so confidentiality has to be added rather than assumed.
+
+## Interoperability and dependencies
+
+**Interoperability is the sore point.** The standards specify the optics and the framing, but the management interface for the home device historically was not, so an OLT and an ONT from different manufacturers frequently do not fully interoperate. **OMCI**, the management channel defined in the standards, is what makes multi-vendor deployment possible, and how completely a vendor implements it is a purchasing question with a long tail — an operator locked to one ONT supplier discovers it at the worst moment, during a supply shortage.
+
+Beyond the optics, the dependencies that actually cause outages are the ones around it: power at the home (a fibre network survives a mains cut only for as long as the ONT's battery, which is why voice-over-fibre changed emergency-calling assumptions), the subscriber-management platform that authorises an ONT onto the tree, address assignment and [carrier-grade translation](/learn/cgnat-address-sharing-and-attribution) behind it, and the physical records: a passive network has no way to tell you which port on which splitter serves which house, so the documentation *is* the topology.
+
+## The vendor landscape, by category
+
+- **Large telecom equipment vendors** — Huawei, Nokia, ZTE, Ericsson. Full OLT platforms at carrier scale, deep integration with their own management stacks, and the geopolitical constraints that now shape which of them an operator may deploy.
+- **Access specialists** — Calix, Adtran, DZS and similar, strong with regional and community operators, typically with a management platform aimed at smaller engineering teams.
+- **Merchant-silicon and white-box** — Broadcom silicon underneath much of the market, with open management stacks and disaggregated OLTs appealing to operators who want to escape vendor-tied ONTs.
+- **ONT suppliers**, frequently distinct from the OLT vendor, which is exactly where the OMCI interoperability question bites.
+
+The buying question that matters is not line rate, since the standards fix that. It is **which ONTs the OLT will accept and manage**, because that decides whether the operator has one supplier or a market.
 
 ## What to remember
 

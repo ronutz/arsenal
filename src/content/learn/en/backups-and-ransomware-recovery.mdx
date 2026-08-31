@@ -1,0 +1,119 @@
+---
+slug: backups-and-ransomware-recovery
+title: "Backups: the control that has to work when every other one has failed"
+summary: "Ransomware turned backups from an availability concern into the last line of defence, and then went after the backups themselves. What changed, why the old 3-2-1 rule needs a fourth clause, why an untested restore is a rumour, and the uncomfortable fact that backups solve the encryption half of a modern extortion attack and nothing of the disclosure half."
+concepts: ["backup", "ransomware", "recovery", "resilience", "incident response"]
+relatedTools: []
+relatedArticles: ["cloud-and-cdn-monoculture", "brazilian-cybercrime-from-boleto-to-pix", "the-chokepoints-of-the-internet"]
+category: security
+order: 129
+status: reviewed
+updated: "2026-08-30"
+---
+
+## Why this is a security topic now
+
+For most of computing history backups were about accidents: a failed disk, a deleted directory, a bad migration. The threat model was indifferent. Nothing was trying to defeat the backup.
+
+Ransomware changed that, and the change is structural rather than a matter of degree. **A capable intruder now attacks the backups first**, because destroying the recovery path is what converts an outage into a payment. The order of operations in a modern intrusion is: get in, escalate, find the backup infrastructure, delete or encrypt it, *then* encrypt production. By the time anyone notices the production problem, the answer to it is already gone.
+
+That is why backup design is now a security control with an adversary, and why a plan written for disk failures usually does not survive contact with one.
+
+## Origins: a media problem before it was a security one
+
+Backup begins as a consequence of storage being unreliable and expensive. The practice and its vocabulary come from tape, and several habits that look strange today are tape's logic surviving into a world of disks and object stores.
+
+**Grandfather-father-son.** Daily, weekly and monthly sets in rotation, which is where retention tiers came from: you kept a small number of recent copies and a smaller number of old ones because tapes cost money and a cupboard has a size.
+
+**Full, incremental, differential.** A full copy is slow to make and fast to restore; an incremental copies only what changed since the last backup, which is fast to make and slow to restore because you must replay a chain; a differential copies everything since the last full, splitting the difference. The trade has not changed — it has only moved into deduplication and snapshot systems, where a "full" is now usually a synthetic assembled from blocks that were never copied twice.
+
+**Off-site as fire protection.** The original reason for a remote copy was not an attacker. It was fire, flood and theft — and the courier van driving tapes to a vault was the original air gap, which is why the modern immutability discussion keeps rediscovering that physical separation is unusually hard to defeat remotely.
+
+**The 3-2-1 rule** was formulated in that world, by a photographer writing about protecting images, and it spread because it is memorable and mostly right. What it never contemplated is an adversary who authenticates as an administrator and deletes all three copies from one console.
+
+## The evolution of the medium, and what each shift changed
+
+**Tape to disk (2000s).** Restores got faster and random access made granular recovery practical. It also removed the enforced offline property that tape had by accident, which nobody noticed as a loss until ransomware made it one.
+
+**Deduplication and synthetic fulls.** Storing only unique blocks made long retention affordable, and coupled every restore point to a shared block store — so the corruption or deletion of that store affects every point at once, which is a concentration nobody sees on a retention chart.
+
+**Snapshots.** Instant, cheap and adjacent to production, which makes them excellent for operational recovery and inadequate as the only defence: a snapshot on the same array or the same cloud account as the data is inside the same failure domain and, frequently, the same credential.
+
+**Cloud object storage with object lock.** The current answer to the problem tape solved by accident: a retention period the platform itself refuses to shorten, enforced independently of who is asking.
+
+**Backup as a target.** By the late 2010s attackers were explicitly deleting snapshots, encrypting backup repositories and revoking cloud credentials before touching production — which is what turned this from an infrastructure topic into a security one.
+
+## The rule, and the clause it was missing
+
+The traditional guidance is **3-2-1**: three copies of the data, on two different media, one of them off-site. It is good advice and it is not sufficient, because every copy it describes can be reachable from the same compromised administrative account.
+
+The clause that matters now is the fourth one: **one copy that cannot be modified or deleted, even by an administrator**. In practice that means one of:
+
+- **Immutability at the storage layer** — object lock or write-once retention, where the deletion request is refused by the platform for a defined period regardless of who makes it.
+- **A genuine offline copy** — tape, or removable media that is physically disconnected. Unfashionable and extremely effective, because a credential does not reach a shelf.
+- **A separate trust domain** — a backup account or tenant with its own identity provider, its own administrators, and no trust relationship with production.
+
+The unifying idea is worth stating on its own: **the backup must not be within the blast radius of the credentials that manage production.** If your domain administrator can delete the backups, then a domain administrator compromise deletes the backups, and the fact that they sit in three places is irrelevant.
+
+## Retention has to outlive dwell time
+
+An attacker who has been inside for weeks may have corrupted or encrypted data long before the visible event. If your retention window is shorter than the intruder's dwell time, every surviving copy contains the problem.
+
+This is the argument for keeping restore points that reach back further than your worst plausible dwell time, and for keeping some of them immutable. It is also the argument for knowing your dwell time at all, which most organisations do not measure.
+
+## An untested restore is a rumour
+
+The most common failure is not a missing backup. It is a backup that exists and does not restore, or restores too slowly to matter.
+
+Concretely, the things that go wrong at the moment of need:
+
+- The restore takes days because nobody measured throughput against the real data volume.
+- The system restores but does not start, because a dependency — a database, a certificate, a licence server, an identity provider — was never in scope.
+- Nobody can authenticate to the backup console, because the identity provider is part of what is down.
+- The runbook lives on the wiki, and the wiki is encrypted.
+- The encryption keys for the backups are in the password manager, and the password manager is in the environment that is down.
+
+The discipline that fixes all of these is the same: **restore regularly, on a schedule, and time it.** A restore that has not been performed this quarter is a hypothesis. Recovery objectives — how much data you can afford to lose, and how long you can afford to be down — are only real if a measured restore supports them; otherwise they are numbers in a document.
+
+## Architecture, and the vocabulary that describes it
+
+**Agent versus agentless.** An agent on the workload understands the application and can quiesce a database before copying; agentless approaches snapshot at the hypervisor or storage layer and are simpler to run at the cost of application awareness. Most estates need both, and the failure is usually a database copied while it was mid-transaction.
+
+**Consistency is the whole game.** A crash-consistent copy is what you would have if the power failed; an application-consistent copy is one where the application was told to flush and pause first. Restoring a crash-consistent database sometimes works, and *sometimes* is not a recovery strategy.
+
+**Where enforcement lives.** Immutability can be implemented in the backup software, in the storage platform, or in the cloud provider's retention policy — and only the last two survive the compromise of the backup software itself. That distinction is worth confirming with a vendor rather than assuming.
+
+**The 3-2-1-1-0 restatement.** The industry's updated formulation adds one immutable or offline copy and zero errors on verification, which is a compact way of stating the two clauses this article argues for.
+
+**Recovery objectives** — how much data you accept losing and how long you accept being down — are the contract between the design and the business. They only mean something when a timed restore has demonstrated them.
+
+## The vendor landscape, by category
+
+- **Enterprise backup platforms** — Veeam, Commvault, Veritas, Rubrik, Cohesity. Broad coverage of hypervisors, databases and cloud, with immutability features that differ in *where* they are enforced. That is the question to press on: software-enforced or storage-enforced.
+- **Cloud-native services** — provider backup and snapshot services, cheapest to adopt and usually inside the same account and identity boundary as the data. Cross-account or cross-tenant configuration is what turns them into a real control.
+- **Storage-layer immutability** — object lock on object stores, write-once modes on purpose-built appliances. This is where the strongest guarantee lives, because the refusal to delete comes from the platform.
+- **Tape, still** — for very large retention at low cost and genuine offline separation. Unfashionable, and the only medium where a credential cannot reach the media.
+- **Software-as-a-service backup** — Microsoft 365, Salesforce and similar. The gap most organisations discover late: the provider protects its own infrastructure, not you from your own deletions or from an attacker with a valid session, and the shared-responsibility line sits exactly where people assume it does not.
+
+The buying question, as everywhere in this series: **which failure domain does the copy live in**, and who can delete it.
+
+## What backups do not solve
+
+This is the part that gets skipped, and it changes the decision.
+
+Modern extortion is usually **double**: the data is encrypted *and* copied out first. Backups answer the encryption completely — you can restore and refuse to pay for a key. They answer the copy not at all. The attacker still has the data, and the threat to publish it is unaffected by how good your recovery is.
+
+So a restore-only plan handles the availability problem and leaves the disclosure problem entirely open. That means the decision after an incident is not one decision but two, and the second one belongs to legal, communications and regulators as much as to engineering — with breach notification obligations that run on their own clock regardless of how the recovery is going.
+
+The honest formulation: **backups mean you do not have to pay to get your data back. They do not mean you are not having a very bad week.**
+
+## A checklist worth actually running
+
+- One copy immutable or offline, outside the administrative blast radius of production.
+- Retention longer than your plausible dwell time, not just longer than your convenience window.
+- Backup infrastructure on separate credentials and, ideally, a separate identity provider.
+- Restore tested on a schedule, timed, with the result written down and compared to the objective.
+- The runbook, the contact list and the credentials available **outside** the environment they protect — printed, or in a separate tenant.
+- A named decision path for the disclosure half, agreed before the day you need it.
+
+The general principle is the same one that runs through [every chokepoint](/learn/the-chokepoints-of-the-internet) on this site: a control that shares a failure domain with the thing it protects is not a control. Backups are the clearest case, because the failure domain is usually an administrator account, and almost nobody draws it that way on the diagram.

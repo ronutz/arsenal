@@ -1,0 +1,54 @@
+---
+slug: what-grew-out-of-linux
+title: "O que nasceu do Linux: celulares, roteadores, contêineres e a pergunta de licença que cada um responde"
+summary: "Android, ChromeOS, SteamOS, OpenWrt, as construções Yocto dentro do seu carro e a indústria inteira de contêineres são todos Linux — mas são Linux de maneiras muito diferentes. A parte interessante não é a árvore genealógica. É como cada descendente respondeu à mesma pergunta: quanto precisamos devolver, e como cada um engenheirou a própria resposta?"
+concepts: ["linux", "android", "containers", "embedded", "licensing"]
+relatedTools: []
+relatedArticles: ["linux-the-kernel-that-ate-the-world", "the-linux-distribution-families", "open-source-and-the-meaning-of-free"]
+category: networking
+order: 64
+status: reviewed
+updated: "2026-08-29"
+---
+
+## Um kernel, muitos acordos
+
+O kernel é copyleft: distribua uma versão modificada e você precisa publicar suas mudanças. Tudo o que foi construído sobre o Linux teve de decidir como conviver com isso, e as decisões foram arquiteturais, não jurídicas. Se você quer manter algo proprietário, põe onde a licença não alcança - e o formato de cada grande descendente é o registro de onde seus autores traçaram essa linha.
+
+## Android
+
+O Linux mais implantado do mundo, e uma peça cuidadosa de engenharia de licença. O Android usa o kernel Linux, então mudanças de kernel são publicadas. Acima dele, quase nada é GNU: o Google escreveu a **Bionic** em vez de usar a glibc, e o framework e as bibliotecas têm licença permissiva, o que deixa fabricantes despacharem camadas proprietárias por cima sem obrigação nenhuma de compartilhá-las.
+
+Há uma segunda consequência que moldou uma indústria. Como os fabricantes mantinham grandes modificações de kernel fora da árvore para seu hardware, atualizar o kernel de um celular significava rebasear uma bifurcação privada - causa direta do problema de atualização que deixou aparelhos sem correção por anos. O trabalho posterior do Google para empurrar mais desse suporte para o upstream e estabilizar a interface de módulos é uma tentativa de desfazer um custo criado pelo arranjo original. **A fronteira de licença que você traça vira a sua carga de manutenção depois.**
+
+O **ChromeOS** fez a escolha oposta sobre a mesma base: manter fino, manter atualizado automaticamente, e tratar o navegador como camada de aplicação. O modelo de segurança - boot verificado, sandbox agressivo, atualizações automáticas que o usuário não adia indefinidamente - é o que o Linux de desktop mainstream nunca impôs, e é por isso que aparelhos ChromeOS são a frota que você entrega a uma escola sem precisar de plano.
+
+## Embarcado: roteadores, carros, televisores
+
+O **OpenWrt** é o que acontece quando o copyleft funciona como pretendido. A Linksys despachou um roteador rodando Linux; a licença a obrigou a liberar o fonte; a comunidade usou aquilo para construir um firmware substituto completo, e o OpenWrt hoje roda em centenas de aparelhos e é a razão de o hardware de rede de consumo ser hackeável.
+
+O **Yocto** e o **Buildroot** são a outra realidade do embarcado: não são distribuições, e sim sistemas para *gerar* uma distribuição, de modo que um fabricante construa uma imagem mínima com exatamente os pacotes de que o aparelho precisa. O sistema de infotenimento do seu carro, sua televisão, seu controlador industrial e seu medidor inteligente são muito provavelmente um Linux construído com Yocto, com uma cauda de suporte longa que ninguém de fato vai fornecer - o problema real da indústria embarcada não é licença, e sim que os aparelhos sobrevivem ao interesse de seus fabricantes por uma década.
+
+O **SteamOS** é o caso recente que vale acompanhar: um sistema baseado em Arch com uma camada de compatibilidade que roda jogos de Windows bem o suficiente para desenvolvedores passarem a mirá-lo como plataforma real. Fez o que o ativismo do Linux de desktop nunca conseguiu, justamente por não pedir a ninguém que se importasse que era Linux.
+
+## Contêineres são um recurso do Linux, não um produto
+
+O descendente mais consequente não é sequer um sistema operacional. Contêineres são dois recursos do kernel fazendo o trabalho:
+
+**Namespaces** dão a um processo a própria visão do sistema - tabela de processos, pilha de rede, montagens, nome de máquina e usuários próprios. **Grupos de controle (cgroups)** limitam e contabilizam o que ele consome - processador, memória, entrada e saída. Some um sistema de arquivos em camadas e um formato de imagem, e você tem um contêiner. A contribuição do Docker foi empacotamento e ergonomia, não isolamento; o isolamento estava no kernel, e é por isso que o ecossistema pôde depois trocar os runtimes por baixo sem quebrar nada.
+
+Duas coisas decorrem disso e são repetidamente confundidas. Contêineres **não são máquinas virtuais** - compartilham um kernel, então uma vulnerabilidade de kernel é exposição compartilhada e fuga de contêiner é categoria real, não teórica. E imagens de contêiner são **escolhas de distribuição**: optar por `alpine` ou por uma base Debian enxuta é a mesma decisão de empacotamento [do artigo anterior](/learn/the-linux-distribution-families), só que tomada por um desenvolvedor que talvez não perceba que a está tomando.
+
+O Kubernetes, nesse enquadramento, é um escalonador para um recurso de kernel - e a indústria nativa de nuvem inteira se apoia em primitivas que entraram no Linux para resolver contabilidade de recursos.
+
+## Os estranhos
+
+O **Windows Subsystem for Linux** é a Microsoft despachando um kernel Linux de verdade dentro do Windows, o que resolve a discussão dos anos noventa de um jeito que ninguém previu: a empresa que tratava o Linux como ameaça hoje mantém uma construção de kernel para seus próprios usuários. O **Raspberry Pi OS** pôs um derivado do Debian diante de uma geração de aprendizes a um preço que tornou a experimentação descartável. E a lista de supercomputadores é inteiramente Linux, porque, quando você controla a máquina toda, poder modificar o sistema operacional não é ideologia, é requisito.
+
+## O que a árvore de fato ensina
+
+**O alcance do copyleft é arquitetural.** O Android é legal e a existência do OpenWrt também - a mesma licença produziu um celular trancado e um roteador aberto, porque o resultado depende de onde a fronteira é traçada em relação ao kernel.
+
+**Bifurcar em segredo tem custo composto.** Todo fabricante que manteve grandes mudanças de kernel fora da árvore pagou por isso em cada atualização seguinte, e a indústria móvel pagou por uma década.
+
+**Os descendentes bem-sucedidos pararam de vender Linux.** Android, ChromeOS e SteamOS venceram tornando o kernel irrelevante para o usuário, enquanto a campanha do desktop pedia às pessoas que se importassem. A lição passa longe de sistemas operacionais: infraestrutura dá certo quando desaparece.

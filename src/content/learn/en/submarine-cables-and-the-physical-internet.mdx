@@ -1,0 +1,68 @@
+---
+slug: submarine-cables-and-the-physical-internet
+title: "Submarine cables: the internet is a rope on the seabed"
+summary: "Virtually all intercontinental traffic runs through a few hundred fibre-optic cables lying on the ocean floor, most no thicker than a garden hose, and the great majority of breaks are caused by fishing gear and ship anchors rather than by anybody's intent. What actually happens when they cut, why some countries shrug and others go dark, how repairs really work, and why redundancy on a map is not redundancy in the ground."
+concepts: ["submarine cables", "resilience", "physical infrastructure", "chokepoints", "geography"]
+relatedTools: []
+relatedArticles: ["the-chokepoints-of-the-internet", "bgp-and-the-routing-chokepoint", "what-happens-if-the-dns-root-goes-dark", "akamai"]
+category: networking
+order: 122
+status: reviewed
+updated: "2026-08-29"
+---
+
+## What is actually down there
+
+A few hundred cables carry essentially all intercontinental internet traffic. Satellites, including the modern low-orbit constellations, carry a small fraction and matter most where cable does not reach. The physical object is unglamorous: fibre pairs at the centre, surrounded by steel wire, copper for power, and polyethylene - about the thickness of a garden hose in deep water, armoured and thicker near shore where the hazards are.
+
+Two facts shape everything else.
+
+**The landing stations are the real chokepoints.** A cable is a line on a map, but it terminates in a building, and those buildings cluster. A country's several cables often come ashore within a few kilometres of each other and their traffic converges into the same terrestrial backhaul. Diversity on the map is frequently not diversity in the ground.
+
+**Ownership is consortium or private.** Traditionally groups of carriers built cables together; increasingly the large content and cloud companies build their own. That shift matters for resilience: the parties who decide where new capacity goes are now, in part, the same parties whose services depend on it.
+
+## What breaks them
+
+Overwhelmingly, accidents. **Fishing gear and ship anchors** account for the large majority of faults, concentrated in shallow water near shore where cables and human activity share the same seabed. Then earthquakes and submarine landslides, which can cut several cables at once because they follow the same corridor. Then equipment failure. Deliberate damage exists and gets the headlines, but it is a small share of a well-documented total, and the honest version of this article says so before discussing sabotage.
+
+The dangerous property is **correlation**. Cables share corridors because geography allows only so many routes: narrow seas, straits and the shortest crossings. A single anchor dragged across a busy corridor, or one landslide, can take multiple systems that looked independent on a procurement diagram.
+
+## What actually happens when one cuts
+
+**If you have several diverse paths: nothing visible.** Traffic reroutes in seconds, latency changes, and capacity drops. Users notice slowness at peak, not an outage. This is the normal case, and it is why most cable faults never make the news.
+
+**If you have few paths: immediate and severe.** Latency multiplies as traffic takes a long way round, throughput collapses under contention, and services fail in an order that surprises people - interactive applications and anything chatty degrade first, while bulk transfer merely slows.
+
+**If you have one path: you are offline until a ship arrives.** Island states and some landlocked countries relying on a single terrestrial route live in this category, and outages have run for weeks.
+
+The country-level distinction is not wealth but **path diversity**: how many physically separate routes exist, whether they share landing points, and whether the terrestrial backhaul behind them is also diverse. A nation with four cables entering one metropolitan area has less redundancy than it thinks.
+
+## How repair really works
+
+This is the part that surprises people. There is a small global fleet of **cable repair ships** on standby under maintenance agreements. A ship must be dispatched, sail to the fault - which may be days away - locate the break, grapple the cable up from the seabed, splice in new fibre in a shipboard joint, test, and lay it back down.
+
+Typical repairs run one to several weeks. In deep water, or bad weather, or a queue of simultaneous faults, longer. And repair requires **permits** to work in another state's waters, which is why some outages last far longer than the engineering requires - the delay is diplomatic, not technical.
+
+The strategic weakness is the fleet. It is small, ageing in parts, and concentrated; simultaneous faults in different regions compete for the same ships.
+
+## Who could do what
+
+**Accidents** remain the dominant cause and the one worth designing for.
+
+**States** have the capability to cut cables deliberately, including in deep water, and the ability to tap them is a matter of public record from earlier eras. Two things follow. Cutting is detectable and attributable-ish, since traffic and repair operations make it visible. Tapping is the quieter option, and the practical defence is not physical but cryptographic: encrypted transport with authenticated endpoints makes a passive tap far less valuable, which is the direct connection between this article and [the crypto wars](/learn/the-crypto-wars-and-the-cypherpunks).
+
+**Nobody has to intend anything** for a country to lose connectivity. That is the useful framing for planning: the mitigations for accidental multi-cable faults are the same mitigations for deliberate ones.
+
+## What can be done
+
+- **Buy real diversity, not diverse-looking contracts.** Ask which physical cable, which landing station, and which terrestrial route your capacity uses. Two providers reselling the same system is the classic procurement failure.
+- **Plan for degradation, not just outage.** Systems should behave sanely at four times the usual latency and a fraction of the bandwidth; many do not, and discover it during the event.
+- **Cache and serve locally.** Content caches and exchange points inside a country keep domestic traffic domestic, which is why national exchange points matter for resilience and not only for cost.
+- **Encrypt everything in transit.** It removes most of the value of interception at the physical layer.
+- **Treat satellite as complement, not substitute.** Useful for continuity of critical services and for reaching where cable does not; not a replacement for the capacity that cables carry.
+
+## Where this sits in the series
+
+The [DNS root](/learn/what-happens-if-the-dns-root-goes-dark) can be replicated locally because it is data. [Routing](/learn/bgp-and-the-routing-chokepoint) can be made safer with signatures because it is assertions. Cables can be neither copied nor signed: they are objects, in the water, that take weeks to fix and require another country's permission to touch.
+
+That is why the physical layer is the chokepoint with the fewest clever answers and the most expensive ones. The whole discipline reduces to buying more paths, verifying they are genuinely separate, and being honest with yourself about which of them share a beach.

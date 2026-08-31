@@ -1,0 +1,56 @@
+---
+slug: stuxnet-and-the-first-cyberweapon
+title: "Stuxnet: a primeira ciberarma, e o dia em que código quebrou máquina"
+summary: "Um worm carregando quatro exploits desconhecidos de Windows atravessou um air gap até uma usina de enriquecimento iraniana, girou centrífugas até a destruição e tocou aos operadores leituras normais gravadas enquanto eles olhavam as telas. Só foi achado porque escapou. Tudo o que veio depois em operações cibernéticas estatais - inclusive os vazamentos que armaram o mundo - começa aqui."
+concepts: ["stuxnet", "cyberweapon", "air gap", "industrial control systems", "zero-day"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "the-morris-worm", "wank-worm-and-the-international-subversives"]
+category: security
+order: 109
+status: reviewed
+updated: "2026-08-28"
+---
+
+## Um worm que sabia contar centrífugas
+
+O malware descoberto em 2010 e batizado de **Stuxnet** fez algo que software nenhum tinha feito antes: destruiu equipamento físico de propósito, em escala nacional, como instrumento de política de Estado.
+
+Seu alvo era a instalação de enriquecimento de urânio em Natanz, no Irã. Seu método era paciente e específico. O worm se espalhava largamente por máquinas Windows, mas ficava quase inteiramente inerte - verificava uma instalação muito particular: o software de controle industrial Siemens Step7, comandando um modelo específico de controlador lógico programável, ligado a conversores de frequência que rodavam motores de centrífuga numa configuração que só um punhado de lugares na Terra teria. Em qualquer outro lugar, ficava parado.
+
+Onde encontrava seu alvo, alterava a lógica do controlador para levar periodicamente os rotores das centrífugas muito acima e muito abaixo da frequência segura de operação - rápido o bastante para danificar as máquinas por fadiga, aos poucos, de um jeito que se lê como azar e não como ataque. E, enquanto fazia isso, reproduzia aos sistemas de monitoração **leituras normais de sensor gravadas**. Os engenheiros que olhavam as telas viam uma usina rodando perfeitamente enquanto suas centrífugas se despedaçavam ao longo de meses.
+
+O Irã substituiu um número substancial de centrífugas naquele período sem explicar publicamente por quê.
+
+## Quatro zero-days, e um air gap que nunca foi muro
+
+A extravagância técnica do Stuxnet é o que convenceu os pesquisadores de que havia um Estado por trás. Ele carregava **quatro vulnerabilidades de Windows até então desconhecidas** ao mesmo tempo - [zero-days](/glossary/zero-day), cada um valioso o bastante para ser vendido por uma quantia alta, gastos juntos numa única operação. Usava **certificados legítimos de assinatura de código roubados** de duas empresas de hardware taiwanesas, para que seus drivers carregassem sem aviso. Incluía um rootkit completo para os próprios controladores industriais, o primeiro já visto.
+
+Natanz tinha **[air gap](/glossary/air-gap)** - não estava ligada à internet. O worm foi desenhado para atravessar esse vão em mídias removíveis, levado para dentro por contratados e engenheiros fazendo trabalho comum. Esta é a lição operacional que sobreviveu à operação: um air gap é uma latência, não um muro. Tudo o que um humano carrega através dele é o seu novo cabo de rede.
+
+## Como foi pego: ele escapou
+
+Ninguém achou o Stuxnet defendendo Natanz. Ele foi achado porque **se espalhou além do alvo** - um bug de propagação, ou um risco aceitável levado longe demais - e apareceu em máquinas pelo mundo onde não fazia absolutamente nada, que foi o que o tornou estranho o bastante para ser analisado.
+
+A engenharia reversa foi feita em público, em boa parte por pesquisadores de antivírus na Bielorrússia, em laboratórios vizinhos, na Rússia, na Alemanha e nos Estados Unidos - a equipe de Sergey Ulasen, na VirusBlokAda, o sinalizou primeiro, e o trabalho de Ralph Langner identificou o ataque às centrífugas. O [*Countdown to Zero Day*](/glossary/countdown-to-zero-day), de Kim Zetter, é o relato padrão em formato de livro. Vale enunciar com clareza o que isso significa: uma operação estatal de vários anos e várias agências foi reconstruída por pesquisadores privados a partir de uma única amostra, e publicada.
+
+A atribuição nunca foi oficialmente confirmada pelos governos envolvidos. Reportagem sustentada a atribuiu a um programa conjunto americano-israelense, e autoridades posteriores disseram o mesmo em foros não oficiais. A prática cuidadosa é enunciar a atribuição e seu estatuto: **amplamente noticiada, crível, nunca formalmente reconhecida.**
+
+## O que ele abriu, e quanto custou
+
+O Stuxnet funcionou. E estabeleceu, em definitivo, que essa classe de ferramenta existe e pode ser construída - e todo Estado que assistia tirou a mesma conclusão.
+
+A conta chegou sete anos depois, por outro lado. Os [Shadow Brokers](/glossary/shadow-brokers) publicaram ferramental ofensivo roubado da NSA em 2016 e 2017, e em semanas o exploit **EternalBlue** moveu o [WannaCry](/glossary/wannacry) e depois o [NotPetya](/glossary/notpetya) - os incidentes cibernéticos mais caros da história, atingindo hospitais, portos, empresas de logística e fábricas sem nenhuma ligação com trabalho de inteligência. Um adolescente britânico, [Marcus Hutchins](/glossary/marcus-hutchins), parou o WannaCry registrando um domínio de dez dólares.
+
+Essa sequência é a discussão inteira sobre **estoque de vulnerabilidades** numa linha só: um governo que acumula falhas secretas está a uma falha de custódia de armar todo mundo, e este é o caso em que isso aconteceu.
+
+## O que os profissionais devem levar disso
+
+**Air gaps são procedimentais, não físicos.** Mídia removível, laptops de contratados e interfaces de manutenção são os pontos de travessia, e ou são geridos com política e monitoração, ou não são geridos.
+
+**Ataques de integridade são piores que os de disponibilidade.** Ransomware se anuncia. Os dados de sensor reproduzidos pelo Stuxnet significam que os instrumentos dos operadores mentiram para eles por meses - e detectar isso exige confiar menos na sua telemetria que na sua física.
+
+**Segurança industrial e corporativa são disciplinas diferentes.** Controladores rodam por décadas, não podem ser corrigidos numa terça-feira qualquer, e têm consequências de segurança física que aplicação web nenhuma tem. O Stuxnet é a razão de esse campo existir como especialidade.
+
+**Capacidade ofensiva não é contida.** Ferramentas escapam, são roubadas, sofrem engenharia reversa e são reusadas - por pesquisadores, por criminosos, por outros Estados. Tudo o que se constrói precisa ser presumido, no fim, disponível a todos.
+
+Os hackers do século XX eram [adolescentes com modem que queriam saber como as coisas funcionavam](/learn/hacking-in-the-20th-century). O Stuxnet é onde a história deixa de ser sobre eles.

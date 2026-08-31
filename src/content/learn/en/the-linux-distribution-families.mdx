@@ -1,0 +1,69 @@
+---
+slug: the-linux-distribution-families
+title: "The Linux distribution families: what actually separates them"
+summary: "Every distribution ships roughly the same kernel and roughly the same GNU tools, so the differences are not where beginners look. They are in the package manager, the release model, the packaging philosophy and — most consequentially — who gets to decide. A field guide to the families, described by what you feel when you administer them."
+concepts: ["linux", "distributions", "package management", "release engineering", "governance"]
+relatedTools: []
+relatedArticles: ["linux-the-kernel-that-ate-the-world", "open-source-and-the-meaning-of-free", "git"]
+category: networking
+order: 63
+status: reviewed
+updated: "2026-08-29"
+---
+
+## The differences are not in the software
+
+Almost every distribution ships the same kernel, the same compiler, the same shell, the same core utilities. Comparing them by feature list produces a table where everything looks identical, which is why that comparison is useless.
+
+What actually differs is four things, and all four are felt in operations rather than seen in a screenshot: **how software is packaged and installed**, **how new versions arrive**, **what the project considers its job**, and **who decides**. The last one is the least discussed and the most likely to affect you.
+
+## Debian and its descendants
+
+**Debian** is the reference for community governance: an elected leader, a written constitution, and a **Social Contract** committing the project to remain entirely free software and to prioritise users. Packages use `dpkg` with `apt` on top. Three tracks run permanently — stable, testing and unstable — and stable means what the word says: software is frozen, patched for security, and left alone for years.
+
+Administering it feels conservative in the useful sense. Versions are older than upstream, dependency handling is strict, and the system does not surprise you. The tradeoff is real: if you need current versions of fast-moving software, you will be fighting the design.
+
+**Ubuntu** takes Debian and adds a schedule and a company. Releases every six months, with a long-term support version every two years carrying five years of updates. Canonical's presence gives commercial support and predictability, and also produces the recurring friction: decisions like the Snap packaging format are made by a company rather than a committee, which is faster and less negotiable.
+
+## Red Hat and its ecosystem
+
+**Red Hat Enterprise Linux (RHEL)** is the enterprise anchor: `rpm` packages with `dnf`, very long support horizons, and certification by hardware and software vendors. You do not buy the code, which is free; you buy the support relationship and the guarantee that a specific version will be maintained for a decade.
+
+**Fedora** is the upstream where the future is tested — fast-moving, six-month releases, and the place where changes reach the world before they reach RHEL.
+
+And then the episode everyone in this ecosystem remembers. **CentOS** was the free rebuild of RHEL, and in 2020 it was redirected to **CentOS Stream**, positioned *ahead* of RHEL rather than behind it. Organisations that had built on a free, bug-for-bug-compatible enterprise system suddenly did not have one, and **Rocky Linux** and **AlmaLinux** were founded to replace it.
+
+That is the clearest lesson in this whole article: **governance is a technical property**. Nothing about the code changed. What changed was who decided, and it invalidated thousands of deployment plans. When you choose a distribution you are choosing a decision-making process, and the cost of getting that wrong is not measured in features.
+
+## SUSE
+
+**openSUSE** and **SUSE Linux Enterprise** are the third major lineage, strongest in Europe and in enterprise environments. They use `rpm` with `zypper`, and the **YaST** configuration tool is an unusual commitment to integrated administration in a culture that generally prefers text files. Two release models coexist: **Leap**, aligned with the enterprise version, and **Tumbleweed**, a rolling release that is unusually well tested for its class because it is gated on automated testing before it moves.
+
+## The rolling and the hands-on
+
+**Arch Linux** ships continuously — there are no versions, only the current state. `pacman` is fast and simple, the **AUR (Arch User Repository)** carries user-contributed build recipes for nearly everything, and the project deliberately expects you to assemble your own system.
+
+Its most valuable output is not the distribution. The **Arch Wiki** is the best Linux documentation in existence and is used constantly by people running other distributions entirely, which is a rare kind of contribution: the documentation outgrew its own product.
+
+**Gentoo** compiles from source with `portage`, and **USE flags** let you decide which optional features are built into each package. The payoff is a system with exactly what you asked for and nothing else; the price is your time, and the modern honest assessment is that the performance argument has largely evaporated while the control argument has not.
+
+**Slackware** is the oldest surviving distribution and remains deliberately minimal — historically no automatic dependency resolution, on the argument that the administrator should know what is installed. It survives because some people mean that.
+
+## The specialists
+
+**Alpine Linux** is why your Dockerfile probably says `alpine`. It uses `musl` instead of glibc and BusyBox instead of the full GNU utilities, producing images a fraction of the usual size with a much smaller attack surface. The catch is worth knowing before you adopt it: `musl` is not bug-for-bug identical to glibc, and software that assumes glibc behaviour can misbehave in ways that are tedious to diagnose.
+
+**NixOS** is the genuinely different model. The whole system is described in a declarative configuration, builds are reproducible, packages are isolated by cryptographic hash, upgrades are atomic and rollback is instant. It solves configuration drift by making it structurally impossible. The cost is that you must learn a new language and a new mental model, and that ordinary instructions written for other distributions frequently do not apply.
+
+## Choosing, honestly
+
+Not by taste — by what the machine is for.
+
+- **A fleet you must support for years** → RHEL, its rebuilds, or Ubuntu LTS. You are buying the support horizon.
+- **A server you administer yourself and want left alone** → Debian stable.
+- **A container base image** → Alpine for size, or a slim Debian image when glibc compatibility matters more.
+- **A workstation where you want current software** → Fedora, or a rolling release if you enjoy the maintenance.
+- **Learning how Linux actually fits together** → Arch, or Gentoo if you want it slower and deeper.
+- **Infrastructure that must be reproducible** → NixOS, accepting the learning curve as the price.
+
+The meta-advice is simpler than the list. Distribution arguments are mostly identity, and the real questions are boring: how long will this be supported, how do I get security updates, who decides what changes, and what happens to me if that decision-maker changes their mind. [CentOS answered the last one for a whole industry](https://www.redhat.com/en/blog/centos-stream-building-innovative-future-enterprise-linux) in a single announcement.

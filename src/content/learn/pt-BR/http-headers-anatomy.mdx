@@ -19,7 +19,7 @@ O modelo mental mais limpo ordena cabeçalhos pelo que descrevem. **Contexto de 
 
 ## O cabeçalho que salvou o espaço de endereços da web
 
-O `Host` merece parágrafo próprio. Requisições HTTP/1.0 nomeavam só um caminho, então um endereço IP significava um site. O HTTP/1.1 tornou o `Host` obrigatório, e com essa única linha nasceu a **hospedagem virtual**: milhares de sites por endereço, o servidor escolhendo qual ser com base no cabeçalho. Todo proxy reverso, toda CDN, todo ingress controller ainda roteia por ele (ou pelo gêmeo de TLS, o SNI) - e uma requisição cujo `Host` discorda da URL é ou má configuração ou sonda de ataque, razão pela qual ele figura no capítulo de abertura de todo WAF.
+O `Host` merece parágrafo próprio. Requisições HTTP/1.0 nomeavam só um caminho, então um endereço IP significava um site. O HTTP/1.1 tornou o `Host` obrigatório, e com essa única linha nasceu a **hospedagem virtual**: milhares de sites por endereço, o servidor escolhendo qual ser com base no cabeçalho. Todo proxy reverso, toda CDN (rede de distribuição de conteúdo), todo ingress controller ainda roteia por ele (ou pelo gêmeo de TLS, o SNI) - e uma requisição cujo `Host` discorda da URL é ou má configuração ou sonda de ataque, razão pela qual ele figura no capítulo de abertura de todo WAF (web application firewall).
 
 ## End-to-end versus hop-by-hop
 

@@ -12,7 +12,7 @@ status: reviewed
 updated: "2026-07-26"
 ---
 
-A cloud WAF is the same protective idea as an on-premises one with a different delivery model, and the differences are what determine whether a deployment works.
+A cloud WAF (web application firewall) is the same protective idea as an on-premises one with a different delivery model, and the differences are what determine whether a deployment works.
 
 ## How traffic reaches it
 
@@ -40,7 +40,7 @@ The mitigations, in rough order of how often they are skipped:
 
 **WAF** — the same signature and behavioural protection as the on-premises product, managed as a service.
 
-**DDoS mitigation** at network and application layers, with capacity that is the point of the model.
+**DDoS (distributed denial) mitigation** at network and application layers, with capacity that is the point of the model.
 
 **Bot mitigation**, which matters more in front of a public application than anywhere else, because credential stuffing and scraping target exactly what a cloud WAF sits in front of.
 
@@ -64,7 +64,7 @@ The trade for not operating the platform is that you see what the service report
 
 The two things worth setting up early:
 
-**Log export** into your own SIEM, so cloud WAF events sit alongside everything else rather than in a separate console that gets checked after an incident rather than during one.
+**Log export** into your own SIEM (security information and event management), so cloud WAF events sit alongside everything else rather than in a separate console that gets checked after an incident rather than during one.
 
 **Alerting on attack volume changes** rather than on individual events. Individual blocks are constant background noise on any public application; a change in the pattern is the signal.
 

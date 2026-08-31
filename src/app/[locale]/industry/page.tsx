@@ -63,7 +63,6 @@ export default async function IndustryHubPage({
 
   const t = await getTranslations("vendors");
   const tTags = await getTranslations({ locale, namespace: "industryTags" }); // career card copy (name/years/tagline)
-  const tSources = await getTranslations({ locale, namespace: "sources" }); // reference works link
   const tp = await getTranslations("partnerVendors");
   /* `backToTop` lives in the tools namespace and is shared by every long page
      that carries this control - Tools, Learn and the vendor hubs. Reading it

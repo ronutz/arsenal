@@ -51,13 +51,13 @@ Uma única entrada responde mais que se o tráfego passou:
 - **Qual regra casou**, por número e camada, que é a rota mais rápida para uma resposta de política.
 - **Qual blade** produziu a entrada, já que um descarte pela política de controle de acesso e um descarte pela prevenção de ameaças são problemas diferentes.
 - **A ação tomada**, e em entradas de prevenção de ameaças, se foi prevenida ou apenas detectada.
-- **Informação de NAT**, quando houve tradução, o que resolve a confusão recorrente de um log mostrando um endereço que o destino nunca viu.
+- **Informação de NAT (tradução de endereços de rede)**, quando houve tradução, o que resolve a confusão recorrente de um log mostrando um endereço que o destino nunca viu.
 
 Esse segundo ponto merece ênfase. "O firewall bloqueou" não é diagnóstico até você saber qual parte do firewall, porque a correção está numa política diferente conforme a resposta.
 
 ## O Monitoring Blade
 
-Logs dizem o que aconteceu com o tráfego. O Monitoring Blade diz como o próprio sistema está: estado do gateway, uso de recursos, vazão, contagem de conexões, estado de túneis VPN, e saúde de cluster.
+Logs dizem o que aconteceu com o tráfego. O Monitoring Blade diz como o próprio sistema está: estado do gateway, uso de recursos, vazão, contagem de conexões, estado de túneis VPN (rede privada virtual), e saúde de cluster.
 
 Seu valor está no que ele pega e os logs não. Um gateway no limite de conexões descarta tráfego que regra alguma descartou, e o log parece falha de rede enquanto a causa é capacidade.
 

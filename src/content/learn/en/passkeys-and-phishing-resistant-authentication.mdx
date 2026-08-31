@@ -1,0 +1,82 @@
+---
+slug: passkeys-and-phishing-resistant-authentication
+title: "Passkeys: why this MFA is different from the MFA that keeps failing"
+summary: "Most multi-factor authentication stops password reuse and does nothing about phishing, because anything a user can read out or type in can be relayed by an attacker in real time. Passkeys close that by binding the credential to the site's origin in the browser. What WebAuthn actually does, why origin binding is the whole trick, and the recovery and account-lifecycle problems nobody solved yet."
+concepts: ["authentication", "passkeys", "webauthn", "phishing", "mfa"]
+relatedTools: []
+relatedArticles: ["email-authentication-spf-dkim-dmarc", "the-certificate-authority-chokepoint", "the-crypto-wars-and-the-cypherpunks"]
+category: security
+order: 127
+status: reviewed
+updated: "2026-08-29"
+---
+
+## The failure everyone keeps repeating
+
+MFA (multi-factor authentication) is sold as a single idea, and it is at least two. One kind stops credential stuffing — an attacker with your leaked password cannot log in. The other kind also stops phishing. Most deployed MFA is only the first, and the difference is not a matter of degree.
+
+Here is the mechanism. A user lands on a convincing fake login page. They type their password, and the attacker's server forwards it to the real site immediately. The real site asks for a code. The fake page asks for a code. The user reads it off their phone and types it in. The attacker relays it within its validity window, receives a **session cookie**, and is now logged in as the user — with the password changed or a new device enrolled before anyone notices.
+
+That is an adversary-in-the-middle attack, it is a commodity toolkit rather than an exotic capability, and **it defeats one-time codes, push approvals and authenticator apps alike**. The reason is structural: *if a human can read a secret out and type it somewhere, they can be persuaded to type it into the wrong place.*
+
+Push notifications add their own failure — approval fatigue. Send enough prompts at 3am and someone eventually taps yes.
+
+## What passkeys change
+
+A **passkey** is a public-private key pair created for one specific site. The private key never leaves the authenticator — a phone, laptop or security key — and never travels to the server. At sign-in, the site sends a challenge, the authenticator signs it, and the server verifies the signature against the public key it stored at registration.
+
+Two properties follow, and only the second is the real innovation.
+
+**There is no shared secret.** The server stores a public key, so a breach of its database yields nothing worth stealing and there is nothing to reuse across sites.
+
+**The credential is bound to the origin.** The browser will only offer the passkey to the exact origin it was created for, and the signed data includes that origin. On a lookalike domain, the passkey for the real site simply does not appear — and if the user is somehow persuaded to sign, the signature is over the attacker's origin, which the real site rejects.
+
+**That is the whole trick, and it works because the check moved from the human to the browser.** The user cannot be talked into a mistake the software will not make. Nothing about the user's judgement improved; they were removed from the decision.
+
+## What it is built on
+
+**WebAuthn** is the browser interface that websites call. **CTAP** is the protocol between the browser and an external authenticator such as a security key. **FIDO2** is the umbrella for both. The parts to keep straight in practice:
+
+**Device-bound versus synced.** A passkey on a hardware security key stays there. A passkey in a platform account — the phone or browser vendor's keychain — syncs across the user's devices. Syncing is why passkeys became usable by ordinary people, and it means the security of the credential now inherits the security of that platform account. For consumer services that is a good trade. For high-assurance access it may not be, and device-bound keys still exist for exactly that reason.
+
+**Discoverable credentials** let the site offer an account list without asking for a username, which is what makes a passkey login feel like one tap.
+
+**User verification** — a biometric or device PIN — is what makes a passkey two factors in one gesture: something you have, unlocked by something you are or know. The biometric is checked locally by the device and never sent anywhere, which is the part users most often assume works the other way round.
+
+## Signing in on a device that has no passkey
+
+**Cross-device authentication** covers the case where the credential lives on your phone and you are signing in on a laptop. The site shows a code, the phone scans it, and the two are linked over Bluetooth Low Energy.
+
+The detail worth knowing, because it is routinely misread: **Bluetooth is used to prove physical proximity, not to secure the exchange.** The transport layers standard cryptography on top of Bluetooth's own properties, so the security of the sign-in does not rest on Bluetooth's security record. The proximity requirement is itself the anti-phishing control — a phishing site on another continent cannot satisfy it.
+
+## The problems that are not solved
+
+An honest article has to spend real space here, because deployments fail on these rather than on cryptography.
+
+**Recovery is the hard part.** A password can be reset by email. A passkey cannot be reset, only re-enrolled — and the recovery path you build becomes the weakest link in the whole scheme. If losing a phone drops the user into an emailed reset link, you have engineered phishing-resistant authentication with a phishable back door.
+
+The standards body's own answer is worth stating fairly: a hardware security key can serve as the recovery credential, which keeps recovery inside the phishing-resistant category instead of falling back to email. That works, and it means the recovery design is a purchasing decision as much as an engineering one.
+
+**Account lifecycle.** Enrolment usually still starts from something weaker, and an attacker who reaches the account first can enrol their own passkey and lock the legitimate user out. The strength of a passkey is bounded by the strength of the moment it was created.
+
+**Platform lock-in and portability.** Credentials living in one vendor's keychain raise a real question about moving between ecosystems, and portability work is ongoing rather than finished.
+
+**Shared and delegated access.** Passkeys are personal by design, which is awkward for shared operational accounts — and the honest answer there is that shared accounts were always the problem, not the authentication method.
+
+**Regulatory recognition lags the technology.** Some regimes have not yet listed passkeys among the officially recognised forms of multi-factor authentication, and synced passkeys in particular are argued not to satisfy a strict possession requirement — the credential exists on several devices at once. The FIDO Alliance describes this as an area of active engagement, and device-bound keys are the answer where a compliance regime demands a single copy. Check what your auditor accepts before you plan the rollout, not after.
+
+**Legacy paths.** A passkey rollout that leaves password-plus-code enabled as a fallback has not removed the phishing risk; it has added a stronger option beside the old one. The security benefit arrives only when the weak path is closed, which is the step organisations defer.
+
+## Practical guidance
+
+- **Treat passkeys and security keys as the same category** — phishing-resistant, origin-bound — and everything else as a different, weaker category, whatever the vendor calls it.
+- **Design recovery first.** Enrol a second authenticator at registration; make recovery at least as strong as the primary path, or you have not moved the risk, only relocated it.
+- **Close the fallback** on a defined date, with reporting on who still uses it.
+- **Use device-bound keys for administrative access** where the platform-account inheritance is unacceptable.
+- **Do not promise users that biometrics are being sent anywhere.** They are not, and explaining this correctly resolves most of the resistance you will meet.
+
+## The pattern worth generalising
+
+The industry spent two decades trying to make users better at detecting fraudulent sites, through training, warnings, indicators and green padlocks. It did not work, because the task is hard for humans and trivially spoofable by attackers.
+
+Passkeys work by making the question one that software answers. That is the same structural move as [Certificate Transparency](/glossary/certificate-transparency) replacing unverifiable trust with public exposure, and it is the more useful lesson: **when a control depends on a human noticing something, the control will eventually fail — so move the check to where noticing is deterministic.**

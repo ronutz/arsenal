@@ -18,7 +18,7 @@ A defesa volumétrica tem um problema que assinatura alguma resolve: os pacotes 
 
 Escolher um modelo é decisão de capacidade, e os números que importam são vazão e o tamanho de ataque que o appliance é classificado para absorver.
 
-O fato direto é que um equipamento em linha não consegue mitigar um ataque maior que o enlace que o alimenta. Se 10 Gbps de tráfego de ataque chegam num enlace de 10 Gbps, o enlace está cheio antes de o appliance decidir qualquer coisa. Mitigação de DDoS local trata ataques que cabem no seu cano, e qualquer coisa maior precisa ser tratada acima, por uma operadora ou um serviço de limpeza em nuvem.
+O fato direto é que um equipamento em linha não consegue mitigar um ataque maior que o enlace que o alimenta. Se 10 Gbps de tráfego de ataque chegam num enlace de 10 Gbps, o enlace está cheio antes de o appliance decidir qualquer coisa. Mitigação de DDoS (negação de serviço distribuída) local trata ataques que cabem no seu cano, e qualquer coisa maior precisa ser tratada acima, por uma operadora ou um serviço de limpeza em nuvem.
 
 Isso não é crítica ao produto; é a física da implantação, e um projeto que a ignora produz um appliance funcionando perfeitamente durante uma indisponibilidade.
 
@@ -44,9 +44,9 @@ A consequência a internalizar é que isto é detecção de anomalias, então he
 
 Quando uma origem é identificada como atacante, a resposta não é bloqueio permanente. Origens são bloqueadas por um período, e a reincidência o alonga.
 
-O raciocínio vale entender, porque é o que separa isso de uma ACL:
+O raciocínio vale entender, porque é o que separa isso de uma ACL (lista de controle de acesso):
 
-**Endereços são compartilhados e forjados.** Um bloqueio permanente num endereço que se revela um gateway NAT de operadora derruba um grande número de usuários legítimos, e o bloqueio sobrevive ao ataque por meses.
+**Endereços são compartilhados e forjados.** Um bloqueio permanente num endereço que se revela um gateway NAT (tradução de endereços de rede) de operadora derruba um grande número de usuários legítimos, e o bloqueio sobrevive ao ataque por meses.
 
 **Ataques terminam.** Uma origem que fazia parte de uma botnet há uma hora pode ser uma máquina já limpa agora.
 

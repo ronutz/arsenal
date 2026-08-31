@@ -1,0 +1,51 @@
+---
+slug: cloudflare
+title: "Cloudflare: dando o fosso de graça"
+summary: "A Akamai vendia aceleração e proteção contra DDoS para a Fortune 500; a Cloudflare deu uma versão das duas para qualquer um com um domínio, e fez do próprio plano gratuito o motor — mais tráfego significava peering melhor, peering melhor significava banda mais barata, banda mais barata pagava mais usuários gratuitos. O reverse proxy que cresceu até virar uma rede, um resolver, um computador de borda e uma quantidade desconfortável de poder."
+concepts: ["cloudflare", "cdn", "reverse proxy", "anycast", "ddos", "dns", "edge computing", "workers"]
+relatedTools: []
+relatedArticles: ["akamai", "dns-record-types-in-answers", "tls-reverse-proxy-inbound", "http-versions-09-to-3", "github"]
+category: networking
+order: 8
+status: reviewed
+updated: "2026-08-27"
+---
+
+## A inversão na fundação
+
+Em 2009 a receita para sobreviver na web em escala era conhecida e cara: ponha um CDN (rede de distribuição de conteúdo) e um limpador de DDoS (negação de serviço distribuída) na frente da sua origem, e pague por isso como um banco paga por cofres. Esse era o negócio que a Akamai vinha construindo desde o fim dos anos noventa, vendido de cima para baixo às empresas que podiam pagar. A Cloudflare — fundada por Matthew Prince, Michelle Zatlyn e Lee Holloway, a partir das lições do Project Honey Pot, uma rede voluntária que Prince e Holloway tinham montado para rastrear spammers — rodou a receita de cabeça para baixo: ponha a mesma classe de proteção atrás de um **plano gratuito**, cadastre qualquer um com um domínio em cinco minutos, e venda dali para cima.
+
+A inversão não era caridade; era o motor. Cada site gratuito somava tráfego, e tráfego é poder de negociação: quanto mais da web responde dos seus servidores, mais redes querem fazer **peering** direto com você, e peering barateia a banda exatamente onde o trânsito é caro. Banda mais barata torna o plano gratuito sustentável, o que soma mais sites, o que soma mais tráfego. Os concorrentes precificavam a proteção como custo a recuperar; a Cloudflare a precificava como combustível do volante. O lançamento no TechCrunch Disrupt, em setembro de 2010, descreveu um serviço para todo mundo — e, por uma vez, o slogan envelheceu virando descrição literal: a rede hoje fica na frente de uma fatia relevante de tudo que você navega.
+
+## Uma máquina, todos os serviços
+
+A assinatura arquitetural é a homogeneidade. O CDN clássico colocava camadas especializadas em lugares especializados; a regra de desenho da Cloudflare é que **todo servidor roda todos os serviços** — proxy, cache, DNS, WAF (web application firewall), mitigação de DDoS e, depois, a plataforma de computação — em toda cidade, com [anycast](/learn/dns-record-types-in-answers) levando cada visitante ao ponto de presença mais próximo. A regra soa como detalhe de implementação e é, na verdade, a estratégia: lançar um produto novo é fazer deploy de software em máquinas que já existem em todo lugar, então cada lançamento herda a rede inteira no primeiro dia. É também a explicação honesta de como um DDoS é absorvido — não existe scrubbing center para onde desviar, porque a borda inteira é o scrubbing center.
+
+Duas consequências de sentar no meio viraram produtos por conta própria. O **Universal SSL** (2014) transformou o ritual pago, site a site, dos certificados num padrão — TLS gratuito para todo site proxiado, de uma tacada uma das maiores expansões isoladas da [web criptografada](/learn/tls-reverse-proxy-inbound). E em abril de 2018, com a APNIC, a Cloudflare lançou o **[1.1.1.1](https://blog.cloudflare.com/announcing-1111/)**, um resolver público de DNS vendido em privacidade e velocidade, colocando a empresa também do lado do *cliente* na consulta, não só do servidor.
+
+## A borda vira um computador
+
+O **Workers** (anunciado em 2017) mudou para que a rede servia. Em vez de alugar contêineres numa região, o código roda como isolates do V8 — o mesmo sandbox que separa as abas do navegador — em todas as cidades ao mesmo tempo, com cold start medido em milissegundos porque não há máquina a subir. O cache deixou de ser o produto e virou uma feature do produto: primeiro primitivas de armazenamento (KV, depois Durable Objects, R2, D1), depois aplicações inteiras, com deploy para "a rede" como se ela fosse um único computador. A feature afiada do R2 era econômica, não técnica — armazenamento compatível com S3 e **sem taxa de egress**, mirando na linha mais lucrativa das nuvens, e coerente com uma década tratando banda como algo a baratear, não a taxar.
+
+A mesma posição de meio empurrou a empresa para o mercado de segurança corporativa: se o tráfego dos funcionários já atravessa a borda, a borda pode ser o firewall, o substituto da VPN (rede privada virtual) e o ponto de política — a suíte de Zero Trust reunida sob o Cloudflare One (2020), que é o negócio enterprise que o plano gratuito sempre esteve financiando no caminho. A empresa listou na NYSE em setembro de 2019 sob o ticker **NET**, que àquela altura lia menos como nome e mais como pretensão.
+
+## A cadeira desconfortável
+
+Ficar na frente de uma fração grande da web faz de você um gargalo, e gargalos recebem perguntas de gargalo. A regra da Cloudflare era a neutralidade — proteção para qualquer um, conteúdo julgado por ninguém — e as exceções viraram marcos: derrubar o Daily Stormer em 2017, o 8chan em 2019, o Kiwi Farms em 2022, cada uma acompanhada de ensaios de Prince argumentando, em resumo, *nós fizemos isso, funcionou, e deveria preocupar você que a gente possa*. Pense o que se pensar de cada decisão, os episódios tornaram explícito o que a arquitetura implica: infraestrutura assim concentrada é uma forma de governança, relutante ou não.
+
+A cadeira tem riscos técnicos também. O **Cloudbleed** (fevereiro de 2017) vazou fragmentos de memória — inclusive tráfego de outros clientes — por um bug de parser, achado pelo Project Zero do Google; em julho de 2019, uma regra ruim de WAF levou a CPU a 100% e derrubou a rede globalmente por meia hora. Os dois incidentes foram documentados pela empresa num detalhe forense incomum, que virou meio que um gênero da casa: quando você é o meio da internet, o post-mortem é dever público.
+
+## Uma linha do tempo (timeline) para pendurar tudo
+
+- **2004** — Project Honey Pot: a rede voluntária de rastreio de spam onde o problema fundador é estudado pela primeira vez.
+- **2009–2010** — Empresa fundada; lançamento público no TechCrunch Disrupt, plano gratuito desde o primeiro dia.
+- **2014** — Universal SSL: TLS gratuito para todo site proxiado.
+- **2017** — Cloudbleed divulgado; Workers anunciado; a decisão do Daily Stormer.
+- **2018** — Resolver 1.1.1.1 com a APNIC; Workers em disponibilidade geral.
+- **2019** — IPO (oferta pública inicial) na NYSE como NET; a queda global da regex do WAF; 8chan derrubado.
+- **2020** — Cloudflare One: o portfólio de Zero Trust ganha nome.
+- **2021** — R2 anunciado: armazenamento de objetos sem taxa de egress.
+
+## O que a Cloudflare não é
+
+Ela não é uma empresa de hospedagem, embora cada vez mais se pareça com uma vista de fora: a sua origem continua sua, e a implantação clássica segue sendo um reverse proxy na frente de um servidor que a Cloudflare nunca viu. E ela não é a internet, embora a distinção vá estreitando na prática — que é exatamente a tensão sobre a qual a própria empresa não para de escrever ensaios. O jeito limpo de segurar a ideia: a aposta fundadora da Cloudflare foi que a *própria escala* podia ser o produto, vendida como segurança e velocidade. A aposta pagou, o volante girou, e a pergunta aberta que ela deixa — o que a web deve a, e deveria temer de, qualquer rede sozinha carregando tanto peso — já não é hipotética, e já não é só sobre a Cloudflare.

@@ -1,0 +1,53 @@
+---
+slug: open-source-and-the-meaning-of-free
+title: "Open source, and the two meanings of free"
+summary: "English overloads one small word, and forty years of software history hang on the ambiguity. The four freedoms, the 1998 rebrand that created 'open source', copyleft versus permissive, why gratis is not libre — and why Portuguese speakers never had this problem in the first place."
+concepts: ["open source", "free software", "software livre", "copyleft", "licensing", "gpl", "osi", "fsf"]
+relatedTools: []
+relatedArticles: ["git", "github", "cloudflare"]
+category: operations
+order: 61
+status: reviewed
+updated: "2026-08-27"
+---
+
+## One word, two prices
+
+"Free" is the most overloaded word in software. It can mean **gratis** — costing nothing — or it can mean **libre** — carrying liberty. Free beer is the first kind; free speech is the second. The entire free-software movement is built on the second meaning, and forty years of confusion, rebranding and license wars trace back to the fact that English spells both with the same four letters.
+
+Portuguese speakers get to feel briefly superior here: the language never had the ambiguity. **Livre** is liberty and **gratuito** is price, and they are not the same word, which is why *software livre* needs no footnote in Brazil while "free software" needs one everywhere English is spoken. A program can be gratuito without being livre (most freeware), and livre without being gratuito — selling free software is, and always was, explicitly permitted.
+
+## The four freedoms
+
+The definition with a birth certificate is the Free Software Foundation's, formulated by Richard Stallman in the 1980s and maintained since as [the Free Software Definition](https://www.gnu.org/philosophy/free-sw.en.html). A program is free software when its users have four freedoms — numbered from zero, in proper programmer fashion:
+
+- **Freedom 0** — run the program as you wish, for any purpose.
+- **Freedom 1** — study how it works and change it, which requires access to the source code.
+- **Freedom 2** — redistribute copies.
+- **Freedom 3** — distribute your modified versions, so the whole community benefits.
+
+Nothing in the four freedoms mentions price. Source access appears only as a *precondition* — you cannot study or change what you cannot read. The definition is about what the user is **permitted to do**, and that framing is the whole point: it is an ethical claim about power between the person and the program, not a business model.
+
+## 1998: the rebrand
+
+In early 1998, Netscape announced it would release the source of its browser — the code that became Mozilla — and a group of free-software figures saw a market opening and a marketing problem in the same moment. The word "free" scared businesses (they heard *gratis*, and sometimes *communist*), so at a strategy meeting that February, **Christine Peterson** proposed a new label: **open source**. Bruce Perens and Eric Raymond founded the Open Source Initiative to steward it, and Perens adapted the Debian Free Software Guidelines he had written into [the Open Source Definition](https://opensource.org/osd) — ten criteria a license must meet: free redistribution, source code availability, permission for derived works, no discrimination against persons, groups or fields of endeavor, and so on.
+
+Here is the part that surprises people: **the two definitions describe almost exactly the same set of licenses.** A license that satisfies the four freedoms almost always satisfies the ten criteria, and vice versa. The split was never really about which licenses qualify — it was about *why they matter*. The free-software camp makes a moral argument (users deserve these freedoms); the open-source camp makes a practical one (this development model produces better software). Stallman objected to the new term for precisely that reason: it changed the subject from freedom to methodology. The umbrella acronyms **FOSS** and **FLOSS** (the L for *livre*, borrowed from the languages that never had the ambiguity) exist so people can refer to the shared territory without picking a side.
+
+## Copyleft and permissive: the two families
+
+Inside that shared territory, licenses divide by one question: **what may you do when you redistribute?**
+
+**Copyleft** licenses — the GPL family — use copyright law against its usual grain: you may modify and redistribute, *provided* your version carries the same freedoms forward. The share-alike condition is the mechanism; the pun in the name is the philosophy. Distribute a program built on GPL code, and the recipient must get the source and the same rights you got.
+
+**Permissive** licenses — MIT, BSD, Apache — ask almost nothing: keep the notice, and otherwise do as you like, including folding the code into proprietary products. Apache adds an explicit patent grant, which is why it became the default for corporate-adjacent projects. The trade is clean: copyleft protects the freedom of the *code* downstream; permissive maximizes the freedom of the *next developer*, including the freedom to close it.
+
+Neither family is "more open source" than the other — both sit squarely inside both definitions. Which one a project chooses is a statement about what it wants the world to be able to do with it.
+
+## What the words do not mean
+
+The definitions earn their keep at the boundaries. **Freeware** is gratis, closed-source software — free as in beer only; zero of the four freedoms. **Source-available** means you can *read* the code, but the license withholds modification, redistribution or commercial use — visible is not libre, and several modern "business source" licenses live exactly in this gap, which is why the OSI does not certify them. **Open core** describes a business model, not a license: a genuinely open project surrounded by proprietary extensions. None of these are insults; they are just different deals, and the vocabulary exists so the deal on the table is legible before you build on it.
+
+## Why it won
+
+The infrastructure of the internet quietly settled the practical argument. The kernel under most of the world's servers and every Android phone, the compilers, the interpreters, [the version-control system](/learn/git) this era runs on, the web servers, the databases, the TLS libraries — free and open source, end to end. The model won infrastructure because infrastructure is exactly where the four freedoms compound: anyone can inspect, fix, fork and redistribute, so the software outlives any single vendor's attention span. The word "free" still confuses purchasing departments. The freedoms it names turned out to be load-bearing.

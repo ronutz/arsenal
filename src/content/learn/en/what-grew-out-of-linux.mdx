@@ -1,0 +1,54 @@
+---
+slug: what-grew-out-of-linux
+title: "What grew out of Linux: phones, routers, containers and the licence question each one answers"
+summary: "Android, ChromeOS, SteamOS, OpenWrt, the Yocto builds inside your car, and the entire container industry are all Linux — but they are Linux in very different ways. The interesting part is not the family tree. It is how each descendant answered the same question: how much do we have to give back, and how did they engineer their answer?"
+concepts: ["linux", "android", "containers", "embedded", "licensing"]
+relatedTools: []
+relatedArticles: ["linux-the-kernel-that-ate-the-world", "the-linux-distribution-families", "open-source-and-the-meaning-of-free"]
+category: networking
+order: 64
+status: reviewed
+updated: "2026-08-29"
+---
+
+## One kernel, many bargains
+
+The kernel is copyleft: distribute a modified version and you must publish your changes. Everything built on top of Linux had to decide how to live with that, and the decisions were architectural, not legal. If you want to keep something proprietary, you put it where the licence does not reach - and the shape of every major descendant is a record of where its makers drew that line.
+
+## Android
+
+The most-deployed Linux in the world, and a careful piece of licence engineering. Android uses the Linux kernel, so kernel changes are published. Above it, almost nothing is GNU: Google wrote **Bionic** instead of using glibc, and the framework and libraries are permissively licensed, which lets manufacturers ship proprietary layers on top without any obligation to share them.
+
+There is a second consequence that shaped an industry. Because device makers maintained large out-of-tree kernel modifications for their hardware, updating a phone's kernel meant rebasing a private fork - which is a direct cause of the update problem that left devices unpatched for years. Google's later work to push more of that support upstream and to stabilise the module interface is an attempt to undo a cost created by the original arrangement. **The licence boundary you draw becomes your maintenance burden later.**
+
+**ChromeOS** made the opposite choice on the same base: keep it thin, keep it updated automatically, and treat the browser as the application layer. The security model - verified boot, aggressive sandboxing, automatic updates that users cannot defer indefinitely - is what mainstream desktop Linux never enforced, and it is why ChromeOS devices are the fleet you can hand to a school without a plan.
+
+## Embedded: routers, cars, televisions
+
+**OpenWrt** is what happens when copyleft works as intended. Linksys shipped a router running Linux; the licence obliged them to release the source; the community used it to build a full replacement firmware, and OpenWrt now runs on hundreds of devices and is the reason consumer networking hardware is hackable at all.
+
+**Yocto** and **Buildroot** are the other embedded reality: not distributions but systems for *generating* a distribution, so a manufacturer can build a minimal image containing exactly the packages a device needs. Your car's infotainment, your television, your industrial controller and your smart meter are very likely a Yocto-built Linux with a long support tail nobody will actually provide - the embedded industry's real problem is not licensing but that devices outlive their vendors' interest by a decade.
+
+**SteamOS** is the recent case worth watching: an Arch-based system with a compatibility layer that runs Windows games well enough that developers began targeting it as a real platform. It did what desktop Linux advocacy never managed, by not asking anyone to care that it was Linux.
+
+## Containers are a Linux feature, not a product
+
+The most consequential descendant is not an operating system at all. Containers are two kernel features doing the work:
+
+**Namespaces** give a process its own view of the system - its own process table, network stack, mounts, hostname, users. **Control groups (cgroups)** limit and account for what it consumes - processor, memory, input and output. Add a layered filesystem and an image format, and you have a container. Docker's contribution was packaging and ergonomics, not isolation; the isolation was in the kernel, which is why the ecosystem could later swap runtimes underneath without breaking anything.
+
+Two things follow that people repeatedly get wrong. Containers are **not virtual machines** - they share one kernel, so a kernel vulnerability is a shared exposure and container escape is a real category rather than a theoretical one. And container images are **distribution choices**: choosing `alpine` versus a slim Debian base is the same packaging decision from [the previous article](/learn/the-linux-distribution-families), just made by a developer who may not realise they are making it.
+
+Kubernetes, in this framing, is a scheduler for a kernel feature - and the whole cloud-native industry sits on top of primitives that were merged into Linux to solve resource accounting.
+
+## The strange ones
+
+**Windows Subsystem for Linux** is Microsoft shipping a real Linux kernel inside Windows, which resolves the 1990s argument in a way nobody predicted: the company that treated Linux as a threat now maintains a kernel build for its own users. **Raspberry Pi OS** put a Debian derivative in front of a generation of learners at a price point that made experimentation disposable. And the supercomputer list is entirely Linux, because when you control the whole machine, being able to modify the operating system is not ideology, it is the requirement.
+
+## What the tree actually teaches
+
+**Copyleft's reach is architectural.** Android is legal and so is OpenWrt's existence - the same licence produced a locked-down phone and an open router, because the outcome depends on where the boundary is drawn relative to the kernel.
+
+**Forking privately has a compound cost.** Every vendor that kept large kernel changes out of tree paid for it in every subsequent update, and the mobile industry paid for a decade.
+
+**The successful descendants stopped selling Linux.** Android, ChromeOS and SteamOS won by making the kernel irrelevant to the user, while the desktop campaign asked people to care. The lesson generalises past operating systems: infrastructure succeeds when it disappears.

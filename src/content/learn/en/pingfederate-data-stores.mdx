@@ -13,7 +13,7 @@ updated: "2026-07-20"
 
 ## One definition, many consumers
 
-A data store in PingFederate is a **connection definition**: how to reach an external source of identity data, configured once and referenced everywhere. The consumers are the interesting part - Password Credential Validators verify passwords against a store, attribute mappings look up additional attributes from a store during SSO, and provisioning reads and writes through a store. Change the directory's address or rotate the service credential, and you change it in exactly one place; every consumer follows. That indirection is the design, and recognizing it is what the objective's "configure **or manage**" is really asking.
+A data store in PingFederate is a **connection definition**: how to reach an external source of identity data, configured once and referenced everywhere. The consumers are the interesting part - Password Credential Validators verify passwords against a store, attribute mappings look up additional attributes from a store during SSO (single sign-on), and provisioning reads and writes through a store. Change the directory's address or rotate the service credential, and you change it in exactly one place; every consumer follows. That indirection is the design, and recognizing it is what the objective's "configure **or manage**" is really asking.
 
 ## LDAP stores: the directory connection
 

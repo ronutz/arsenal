@@ -53,7 +53,7 @@ Quando uma conexão se comporta de forma inesperada, a pergunta não é "qual re
 A ordem de diagnóstico que funciona:
 
 1. **Foi descartado, e em qual camada?** Um descarte na primeira camada torna as camadas seguintes irrelevantes, por mais cuidadosamente que tenham sido escritas.
-2. **Se foi aceito em todas e ainda assim falhou**, o firewall não é o problema — olhe roteamento, NAT, ou o destino.
+2. **Se foi aceito em todas e ainda assim falhou**, o firewall não é o problema — olhe roteamento, NAT (tradução de endereços de rede), ou o destino.
 3. **Se uma camada inline estava envolvida**, verifique se a regra pai casou, porque uma subpolítica em que nunca se entrou parece idêntica a uma cujas regras não casaram.
 
 Esse terceiro caso é o que mais desperdiça tempo, e distingui-lo leva um olhar na regra pai.

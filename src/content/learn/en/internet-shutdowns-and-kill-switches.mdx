@@ -1,0 +1,68 @@
+---
+slug: internet-shutdowns-and-kill-switches
+title: "Internet shutdowns: the chokepoint that is a phone call"
+summary: "Every other chokepoint in this series requires an attack, an accident or an act of engineering. This one requires an instruction to a handful of companies that already hold licences. Shutdowns are now routine somewhere in the world most weeks — full blackouts, regional cuts, platform blocking, and the quieter option of throttling — and the technical picture is less interesting than who has to comply and what it costs."
+concepts: ["shutdowns", "censorship", "resilience", "governance", "circumvention"]
+relatedTools: []
+relatedArticles: ["the-chokepoints-of-the-internet", "cloud-and-cdn-monoculture", "bgp-and-the-routing-chokepoint", "the-crypto-wars-and-the-cypherpunks"]
+category: networking
+order: 125
+status: reviewed
+updated: "2026-08-29"
+---
+
+## The mechanism is administrative, not technical
+
+A country's international connectivity typically runs through a small number of licensed operators, a small number of [landing stations](/glossary/landing-station), and often a state-owned or state-influenced incumbent. Licences carry conditions. So the shutdown mechanism is usually an order, delivered to a list of companies that can be counted on one hand, with penalties for non-compliance.
+
+That is why this chokepoint behaves differently from the rest of the series. There is no exploit, no cable ship, no misissued certificate. There is a legal instrument and an operations team that would rather keep its licence.
+
+## The ladder of interference
+
+Shutdowns are not one thing, and the distinctions matter because the countermeasures differ.
+
+**Full national blackout.** Routes withdrawn, international transit disconnected. Highly visible, economically expensive, internationally embarrassing — and therefore usually short and tied to a specific event: an election, a protest, an exam period.
+
+**Regional or targeted cuts.** Mobile data disabled in specific provinces or cities. Cheaper politically because the capital keeps working and the story is harder to tell.
+
+**Platform blocking.** Specific services made unreachable by DNS manipulation, address blocking, or protocol fingerprinting. This is the everyday form, and it is where an enormous share of the world's population lives permanently rather than episodically.
+
+**Throttling.** The quiet one. Bandwidth reduced until video fails, then images, then messaging becomes unreliable — while the connection technically works. It is deniable, it is hard to measure without dedicated tooling, and it achieves most of a blackout's effect without producing an outage anyone can point at.
+
+**Mobile-only shutdowns** deserve their own line, because in much of the world mobile *is* the internet, and cutting it while leaving fixed lines up affects almost everyone while looking partial.
+
+## What actually breaks
+
+Not just speech, which is how these events are usually reported. The damage lands on infrastructure that quietly assumed connectivity:
+
+Payments and banking, which in many countries are mobile-first. Ride-hailing and delivery work, which is income for people with no buffer. Health services, appointment systems and ambulance dispatch. School and university examinations. Freight and customs clearance. Remote work contracts with foreign clients, which do not pause because a ministry issued an order.
+
+Documented economic losses run into billions of dollars a year globally, and the burden is regressive: the people least able to absorb a week without income are the ones whose work is most dependent on a phone.
+
+There is also a second-order effect worth naming. Shutdowns during unrest remove the evidentiary record — no video, no messages, no timestamps — which changes what can be established afterwards. Whatever one's politics, that is a consequence with a long tail.
+
+## Who could do what
+
+**Governments**, through licence conditions and emergency powers. This is the dominant case, and the number of countries doing it has trended up rather than down.
+
+**Operators**, who technically execute it and rarely have a real choice. Their exposure is genuine: employees on the ground, assets that can be seized, licences that can be revoked.
+
+**Global platforms and infrastructure providers**, whose position is more ambiguous than it looks. A provider serving a country from outside can refuse to comply and lose the market; a provider with local infrastructure has staff and equipment inside the jurisdiction. [Concentration](/glossary/concentration-risk) makes this sharper, because an order served on a handful of companies now reaches a very large share of a country's digital life.
+
+## What actually helps
+
+Honest answer first: **against a determined full blackout, very little works at scale**, and articles that suggest otherwise are selling something. Circumvention tools address blocking and throttling well, and blackouts barely at all.
+
+- **Circumvention tools** — encrypted tunnels, Tor and its pluggable transports, protocols designed to resist fingerprinting — work against platform blocking, and are in a permanent arms race with inspection equipment. They depend on *some* connectivity existing.
+- **Measurement matters more than people expect.** Independent measurement projects turn "the internet feels slow" into a documented, dated, technical record, which is what makes throttling arguable at all.
+- **Domestic resilience is the underrated lever.** A country with strong internet exchange points, local caches and domestic hosting keeps local services running when international transit is cut. That is a real, buildable mitigation, and it is one more reason exchange points matter beyond cost.
+- **Satellite links** help individuals and critical services and are legally fraught in exactly the jurisdictions where they would matter most.
+- **Offline-capable design** — local-first applications, mesh messaging, cached data, printed fallbacks — is unglamorous and is what actually functions during an event.
+
+For organisations operating in affected regions, the practical planning question is not how to defeat a shutdown but how to degrade: what continues working with no international connectivity, how staff are paid and contacted, and what commitments to customers are honoured when a country goes dark for a week.
+
+## Where this sits in the series
+
+This is the chokepoint that exposes the assumption underneath the other four. [DNS](/learn/what-happens-if-the-dns-root-goes-dark), [routing](/learn/bgp-and-the-routing-chokepoint), [cables](/learn/submarine-cables-and-the-physical-internet) and [certificates](/learn/the-certificate-authority-chokepoint) are all systems whose failures can be engineered around, given money and time. A shutdown cannot be engineered around, because the mechanism is authority over the people who operate the equipment.
+
+The internet was designed to route around damage. It was never designed to route around the owner of the wire deciding to switch it off — and no protocol change can fix a licence condition. That is the honest boundary of this discipline, and it is why the answers here are civic and legal as much as technical.

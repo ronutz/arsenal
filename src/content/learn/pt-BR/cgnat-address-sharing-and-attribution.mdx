@@ -1,0 +1,118 @@
+---
+slug: cgnat-address-sharing-and-attribution
+title: "CGNAT: o que quebra quando mil assinantes dividem um endereço"
+summary: "O NAT em escala de operadora foi uma ponte para o IPv6 que virou infraestrutura permanente. Ele muda em silêncio três coisas que importam a quem opera: o que o cliente consegue rodar, quem leva a culpa quando um endereço se comporta mal, e se um ano de registros de conexão consegue responder a uma ordem judicial. A engenharia, o problema de atribuição, e por que a alocação de blocos de portas é a correção que vale exigir."
+concepts: ["cgnat", "ipv4", "attribution", "logging", "ipv6"]
+relatedTools: []
+relatedArticles: ["email-authentication-spf-dkim-dmarc", "bgp-and-the-routing-chokepoint", "the-chokepoints-of-the-internet"]
+category: networking
+order: 128
+status: reviewed
+updated: "2026-08-30"
+---
+
+## Por que existe
+
+Os endereços IPv4 acabaram. Em vez de esperar o IPv6 em todo lugar, os provedores puseram uma segunda camada de tradução na rede: o roteador do assinante já faz NAT (tradução de endereços de rede) em casa, e o provedor faz de novo na sua borda, de modo que muitos clientes dividem um endereço público. Duas camadas de tradução é o motivo de isso ser chamado com frequência de NAT444.
+
+Os endereços entregues aos assinantes nessa camada do meio vêm de uma faixa reservada exatamente para isso - o **espaço de endereços compartilhado**, `100.64.0.0/10`, padronizado para que os provedores parassem de tomar emprestadas faixas privadas que os clientes já usavam, criando colisões.
+
+Foi apresentado como medida de transição. Hoje é, para uma fatia enorme da banda larga mundial e praticamente todo o acesso móvel, o arranjo permanente.
+
+## Como o espaço de endereços de fato acabou
+
+A decisão de projeto foi tomada em 1981: um campo de endereço de 32 bits, cerca de 4,3 bilhões de endereços, numa época em que a rede ligava algumas centenas de máquinas e a ideia de que cada casa teria uma dúzia não estava na lista de ninguém.
+
+A exaustão era visível muito antes de acontecer, e as respostas vieram em ordem.
+
+**De endereçamento com classes ao CIDR (1993).** O esquema original entregava blocos fixos de cerca de 16 milhões, 65 mil ou 254 endereços, o que desperdiçava faixas enormes em organizações que precisavam de algo intermediário. O **roteamento interdomínios sem classes** substituiu as classes por um comprimento de prefixo, permitindo dimensionar a alocação à necessidade e agregar rotas. Comprou anos, e é por isso que hoje um endereço se escreve com uma barra.
+
+**Endereçamento privado e NAT (1996).** Reservar faixas para uso interno e traduzi-las na borda significou que uma organização só precisava de endereços públicos para o que publicava. É a maior razão isolada de o IPv4 ter chegado aos anos 2020, e é também onde a internet silenciosamente deixou de ser ponta a ponta: uma máquina atrás de tradução inicia conversas, mas não as recebe.
+
+**IPv6 (de 1998 em diante).** A correção de verdade, com campo de endereço de 128 bits. Está disponível há um quarto de século, e a curva de adoção é uma lição sobre incentivos, e não sobre engenharia - o custo cai sobre a operadora e o benefício é invisível para o assinante.
+
+**Exaustão nos registros (de 2011 em diante).** O reservatório central acabou, e depois os registros regionais, numa sequência espalhada por vários anos. O que veio a seguir foi um mercado de transferências: endereços ganharam preço, e o IPv4 virou ativo em balanço. Esse preço é o que torna o NAT em escala de operadora uma decisão econômica, e não uma preferência técnica - a operadora escolhe entre comprar endereços e comprar capacidade de tradução.
+
+## O que os padrões de fato dizem
+
+A **RFC 6598** reservou o `100.64.0.0/10` como espaço de endereços compartilhado, precisamente porque as operadoras vinham tomando emprestado o `10.0.0.0/8` para a camada do meio e colidindo com clientes que o usavam em casa.
+
+A **RFC 6888** estabelece requisitos comuns para NAT em escala de operadora, e dois deles moldam diretamente a experiência do usuário. O **mapeamento independente do destino** significa que o endereço e a porta internos do assinante mapeiam para o mesmo endereço e porta externos, seja qual for o destino, que é o que permite à travessia ponto a ponto funcionar. A **atribuição pareada de endereço** significa que o assinante mantém o mesmo endereço externo em todas as sessões, o que importa para serviços que comparam endereços entre requisições.
+
+A **RFC 6302** é a recomendação de log: serviços que registram endereços remotos para tratar abuso deveriam registrar também a **porta de origem e um carimbo de tempo exato**. É curta, é antiga, e a maioria dos serviços expostos à internet ainda não a segue - e é por isso que tantos relatos de abuso contra endereços compartilhados são irrespondíveis.
+
+## O que quebra para o cliente
+
+**Conexões de entrada.** Não há endereço público estável para alcançar, então encaminhamento de portas, serviços hospedados em casa, câmeras de segurança e acesso remoto param de funcionar como antes. É a reclamação que chega ao suporte.
+
+**Ponto a ponto e jogos.** Técnicas de travessia ainda funcionam em muitos casos, mas a qualidade da conexão cai, alguns títulos reportam NAT estrito ou moderado, e um subconjunto simplesmente falha.
+
+**Tudo que presume que um endereço identifica uma casa.** A geolocalização fica mais grosseira. Serviços que limitam ou bloqueiam por endereço tratam o pool compartilhado inteiro como um cliente só - então um assinante abusivo consegue render a milhares de vizinhos um CAPTCHA, um bloqueio, ou uma reputação ruim que eles não têm como contestar porque nem enxergam.
+
+Vale demorar nesse último efeito. Ele transfere as consequências do comportamento de uma pessoa para todo mundo que divide a mesma tradução, e nenhuma das partes tem visibilidade do motivo.
+
+## O problema que quem opera sente: atribuição
+
+Aqui é onde uma escolha de engenharia vira uma questão jurídica.
+
+**Um endereço não identifica mais um assinante.** Responder "quem usava este endereço neste horário" passa a exigir **endereço mais porta de origem mais carimbo de tempo**, porque o endereço sozinho é dividido por centenas ou milhares de pessoas ao mesmo tempo. Um pedido que chega só com endereço e data não tem como ser respondido com honestidade - e respondê-lo desonestamente significa apontar o cliente errado.
+
+Isso é recomendação documentada, não opinião: serviços que registram endereços remotos para tratar abuso são orientados a registrar também a **porta de origem**, justamente para que ambientes de endereço compartilhado sigam atribuíveis. A maioria dos serviços ainda não registra.
+
+**O problema do volume de logs.** Registrar cada tradução conforme ela acontece produz volumes enormes - cada fluxo, cada assinante, guardados pelo tempo que a lei exigir. No Brasil, onde o [Marco Civil](/glossary/marco-civil-da-internet) obriga provedores de conexão a guardar registros por um ano, esse custo não é teórico.
+
+## Por que a alocação de blocos de portas é a resposta
+
+Em vez de atribuir portas um fluxo por vez, dê a cada assinante um **bloco determinístico de portas** pela duração da sessão, e registre a atribuição - um registro por assinante por sessão, em vez de um por conexão.
+
+As consequências são todas boas:
+
+- **O volume de logs desaba** de por-fluxo para por-atribuição, o que torna um ano de guarda praticável em vez de punitivo.
+- **A atribuição vira aritmética**: dados endereço, porta e horário, o assinante sai da atribuição do bloco, sem precisar varrer uma base de fluxos.
+- **As respostas ficam defensáveis**, o que importa quando a saída desse sistema é um nome entregue a um juízo.
+
+A troca é que o assinante fica limitado às portas do seu bloco, então o bloco precisa ser dimensionado para uso real - aplicações modernas abrem muito mais conexões simultâneas do que se imagina, e um bloco subdimensionado produz falhas que parecem defeito aleatório de rede.
+
+O trabalho de padronização sobre requisitos de NAT em escala de operadora também pede mapeamento independente do destino e outros comportamentos que mantêm a travessia funcionando, que é o que separa uma implantação que os usuários toleram de outra que gera chamado sem parar.
+
+## O que de fato resolve
+
+IPv6. Não como slogan - como a observação específica de que todo problema acima vem do compartilhamento de endereços, e o IPv6 remove o compartilhamento. Pilha dupla, ou 464XLAT no móvel, tira a maior parte do tráfego do tradutor, o que reduz ao mesmo tempo a pressão sobre portas, o volume de logs e a dificuldade de atribuição.
+
+O enquadramento honesto para planejamento: **o CGNAT não é uma solução que compete com o IPv6; é o custo de não tê-lo implantado.** Cada ano de adiamento é um ano pagando capacidade de tradução, armazenamento de log, chamados de suporte e exposição jurídica que o IPv6 teria removido.
+
+## Arquiteturas de implantação e suas dependências
+
+O **NAT444** é o arranjo comum: a tradução do próprio assinante em casa, espaço de endereços compartilhado no meio, endereços públicos na borda da operadora. Duas traduções, e todo diagnóstico precisa considerar as duas.
+
+A **pilha dupla** roda IPv6 ao lado, então tudo que fala IPv6 contorna o tradutor por inteiro. É o arranjo que de fato reduz o problema, porque a pressão sobre portas, logs e capacidade cai a cada serviço que se torna nativo.
+
+O **464XLAT** é a resposta do móvel: uma rede de acesso só IPv6 com tradução para as aplicações que ainda pressupõem IPv4. É por isso que muitas redes móveis são nativamente IPv6 sem que os assinantes jamais percebam.
+
+O **DS-Lite** e o **MAP-E** são as variantes de linha fixa - tunelar IPv4 sobre uma rede de acesso IPv6, com a tradução centralizada ou distribuída até o equipamento do cliente.
+
+As dependências que decidem se algo disso funciona na prática: **log e armazenamento** dimensionados para a obrigação de guarda, **exatidão de relógio** entre o tradutor e o sistema de log, já que a atribuição é indexada no tempo, um **processo de pedido lícito** que saiba pedir endereço, porta e horário juntos, e **ferramental de suporte** capaz de dizer a um atendente se a reclamação é sintoma de tradução, e não defeito.
+
+## Onde a tradução roda, por categoria
+
+- **Plataformas de roteamento e borda** - Cisco, Juniper, Nokia e similares implementam NAT de operadora em placas de linha ou módulos de serviço, em equipamento que já está no caminho. A maior vazão, e o comportamento de log e de alocação de portas costuma ser recurso licenciado, que vale conferir antes da compra, e não depois.
+- **Appliances dedicados e funções virtualizadas** - incluindo ofertas de A10, F5 e outros, rodando isolados ou como funções de rede. Log e controle de bloco de portas mais flexíveis; mais uma caixa no caminho.
+- **Gateways de banda larga.** A plataforma de gerência de assinantes com frequência faz a tradução, já que ela já guarda estado de sessão e identidade - que é o lugar mais limpo para correlacionar uma tradução com um cliente real.
+- **Pilhas de código aberto.** Tradução baseada em Linux com faixas determinísticas de portas é inteiramente viável em escala de provedor regional e é comum em redes menores, onde a restrição real do operador é volume de log, e não taxa de pacotes.
+
+A pergunta de compra não é vazão, que qualquer coisa moderna atende. É **o que a plataforma faz sobre atribuição**: alocação determinística de blocos de portas, o formato de log que ela emite, e se esse log consegue responder a uma ordem judicial sem uma varredura em registros por fluxo.
+
+## Orientação prática
+
+**Se você opera uma rede:**
+- Implante alocação determinística de blocos de portas, e não log por fluxo, antes que a exigência de guarda force a pergunta.
+- Dimensione os blocos com dados medidos de conexões simultâneas, não com um chute.
+- Publique como fazer um pedido lícito ao seu serviço - endereço, porta e horário - para que os pedidos cheguem respondíveis.
+- Implante IPv6 em paralelo e meça a fatia de tráfego que deixa de passar pelo tradutor. Esse número é o retorno do projeto.
+
+**Se você opera um serviço:**
+- **Registre a porta de origem** junto com o endereço. Sem ela, seus próprios relatos de abuso são inúteis para qualquer provedor que use CGNAT.
+- Não bloqueie, limite nem bana por endereço sozinho. Você está punindo um bairro pela conta de uma casa.
+- Trate geolocalização por endereço como aproximada, e nunca como identidade.
+
+A lição geral passa longe do IPv4: **quando um recurso escasso é compartilhado, identidade vira uma tupla em vez de um valor** - e todo sistema que guardou o valor único antigo passa, em silêncio, a dar respostas erradas.

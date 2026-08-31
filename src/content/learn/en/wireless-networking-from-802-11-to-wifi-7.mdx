@@ -1,0 +1,81 @@
+---
+slug: wireless-networking-from-802-11-to-wifi-7
+title: "Wi-Fi: a shared medium pretending to be a cable, and everything that follows from that"
+summary: "Ethernet solved contention by giving every device its own wire. Wi-Fi cannot, so it borrows the 1970s radio protocol Ethernet abandoned — and every generation since has been an attempt to buy back the efficiency that sharing costs. The standards, the spectrum, the architectures, the vendor landscape, and why the most common deployment mistake is treating coverage and capacity as the same problem."
+concepts: ["wifi", "802.11", "spectrum", "roaming", "architecture"]
+relatedTools: []
+relatedArticles: ["network-segmentation-from-vlans-to-microsegmentation", "load-balancing-what-actually-decides-where-a-request-goes", "zero-trust-ztna-and-sase-without-the-marketing"]
+category: networking
+order: 135
+status: reviewed
+updated: "2026-08-30"
+---
+
+## Origins: the protocol Ethernet outgrew
+
+Wi-Fi's ancestor is **ALOHAnet**, a University of Hawaii project from 1971 that connected islands by radio. Its contribution was a contention rule: transmit whenever you have something to send, detect the collision, wait a random interval, try again. Ethernet inherited that idea, and then escaped it — switched Ethernet gave every device a dedicated pair, and contention became a historical curiosity in wired networks.
+
+Wireless cannot escape it. A radio channel is a genuinely shared medium: **only one station in range can transmit at a time**, and a receiver cannot listen while transmitting, so Wi-Fi cannot even detect collisions the way early Ethernet did. It substitutes **collision avoidance** — listen before transmitting, wait a random back-off, and acknowledge every frame because silence is indistinguishable from failure.
+
+Two consequences run through everything below. **Throughput is shared, not multiplied**: adding an access point on the same channel splits the airtime rather than adding capacity. And **the slowest client sets the pace**, because a device transmitting at a low data rate occupies the channel for far longer to send the same bytes — one distant laptop can consume airtime that a dozen nearby ones would have shared.
+
+## Evolution, generation by generation
+
+The standard is [IEEE 802.11, ratified in 1997 at 2 Mbps](https://en.wikipedia.org/wiki/IEEE_802.11). The marketing names arrived only in 2018, retroactively.
+
+- **802.11b (1999)** — 2.4 GHz, 11 Mbps. Cheap silicon made Wi-Fi ubiquitous, and put it in the same band as microwave ovens and cordless phones.
+- **802.11a (1999)** — 5 GHz, 54 Mbps. Technically better, commercially late.
+- **802.11g (2003)** — 5 GHz's speeds in 2.4 GHz's band.
+- **802.11n / Wi-Fi 4 (2009)** — the first structural change: **MIMO**, multiple antennas transmitting independent streams, plus channel bonding. This is where "more antennas" started meaning something.
+- **802.11ac / Wi-Fi 5 (2013)** — 5 GHz only, wider channels, and **downlink MU-MIMO**: one access point talking to several clients simultaneously.
+- **802.11ax / Wi-Fi 6 and 6E (2019, 2020)** — the generation that changed the goal from *speed* to *efficiency*. **OFDMA** divides a channel into resource units so several small transmissions share one airtime slot instead of queueing; **BSS colouring** lets a radio distinguish its own network's transmissions from a neighbour's and stop deferring unnecessarily; **target wake time** lets battery devices schedule when to listen. Wi-Fi 6E added the 6 GHz band — a large stretch of clean spectrum with no legacy devices in it.
+- **802.11be / Wi-Fi 7** — wider channels still, higher-order modulation, and **multi-link operation**, where a client uses more than one band at once rather than choosing.
+
+Read as a whole, the arc is unmistakable: the early generations sold raw rate; the recent ones sell **airtime efficiency and determinism**, because contention, not modulation, is what limits a busy network.
+
+## The physics you cannot design around
+
+**Bands.** 2.4 GHz travels furthest and penetrates best, and has only **three non-overlapping 20 MHz channels** — which is why dense 2.4 GHz deployments interfere with themselves. 5 GHz has many more channels, some requiring radar detection and channel-vacating behaviour. 6 GHz has the most spectrum and the shortest range, and only recent clients can use it.
+
+**Channel width is a trade, not an upgrade.** Doubling width roughly doubles peak rate and halves the number of non-overlapping channels available — so wide channels help a lightly used area and hurt a dense one. Deploying 80 MHz channels in an office full of access points is a common and expensive mistake.
+
+**Co-channel interference** is what happens when neighbouring access points share a channel: they do not corrupt each other, they *politely wait* for each other, so measured throughput collapses while every signal indicator looks excellent. This is the single most misdiagnosed wireless problem, because the symptoms look like weak coverage and the cause is too much of it.
+
+**Coverage is not capacity.** A site survey that proves signal strength everywhere says nothing about how many devices can transmit concurrently in the same space. Designing for capacity means more access points at *lower* power on carefully planned channels — the opposite of the instinct to turn everything up.
+
+## Architectures
+
+**Autonomous access points.** Each configured independently. Fine for a handful, unmanageable beyond that.
+
+**Controller-based.** A hardware or virtual controller centralises configuration, radio management and often the data path. Tunnelling all traffic back to the controller simplifies policy and creates a bottleneck and a [chokepoint](/learn/the-chokepoints-of-the-internet); local switching avoids that and complicates policy. The protocol underneath is typically CAPWAP, standardised in the RFC series, which is why controller and access point interoperability is at least conceptually possible.
+
+**Cloud-managed.** The control plane is a service; the data plane stays local. Operationally the lightest, and it makes your wireless management a dependency on someone else's availability and jurisdiction.
+
+**Mesh.** Access points relay for each other over the air, at the cost of roughly half the throughput per hop, because a repeating radio must receive and then retransmit the same frame.
+
+## Roaming, security, and the dependencies that break Wi-Fi
+
+**Roaming is a client decision.** The infrastructure can hint, but the client chooses when to move — which is why "sticky client" problems are common and why they are not fixable purely from the access point. The standards that help are **802.11k** (neighbour reports, so the client knows where to look), **802.11v** (network-suggested transitions), and **802.11r** (fast transition, which pre-authenticates so a roam does not require a full handshake). Voice and video expose roaming problems that ordinary browsing hides completely.
+
+**Security, in generations.** WEP was broken beyond repair. WPA2 with AES is the long-standing baseline. **WPA3** adds a password-authenticated key exchange that resists offline dictionary attacks on captured handshakes, and **Enhanced Open** encrypts guest traffic that would otherwise be in the clear. For enterprises, **802.1X with EAP** authenticates each user against a directory through RADIUS (remote authentication dial-in user service), which is what makes per-user policy and [segmentation](/learn/network-segmentation-from-vlans-to-microsegmentation) possible on wireless.
+
+**The dependencies that actually cause outages** are rarely radio: RADIUS and directory availability, DHCP scope exhaustion in a busy space, DNS, certificate expiry on the authentication server, NTP skew breaking certificate validation, power budget on the switch, and uplink capacity from access point to switch. A wireless problem report is, statistically, a wired or identity problem.
+
+## The vendor landscape, by category
+
+- **Enterprise controller and cloud platforms** — Cisco, HPE Aruba, Extreme Networks, Juniper Mist. Deep radio management, roaming optimisation and analytics; you are buying a management model as much as radios, and the difference between vendors is mostly in how they automate channel and power planning.
+- **Cloud-first managed** — Cisco Meraki and similar. Fastest to operate, licence-dependent, and the management plane is a subscription you cannot pause.
+- **Security-platform vendors** — Fortinet, Palo Alto and others integrate access points with firewall policy, which is attractive when you want one policy language across wired, wireless and remote.
+- **Value and prosumer** — Ubiquiti, TP-Link Omada, and similar, competent for small and mid-size sites at a fraction of the cost, with less radio-resource sophistication in dense environments.
+- **Carrier and outdoor specialists** — Cambium, CommScope Ruckus and others, strong in high-density venues and outdoor deployments where antenna design matters more than the console.
+- **Open firmware** — OpenWrt, and open control planes, viable where the operator wants full control and can supply the engineering.
+
+The buying question that separates them in practice is not throughput on a datasheet. It is **how the system behaves when the room fills up**: automatic channel and power planning, airtime fairness, band steering, and what the controller does when it loses its uplink.
+
+## What to check before blaming the radio
+
+- Count clients per access point and per channel, not just signal strength.
+- Confirm channel width matches density, and that 2.4 GHz is limited to the three non-overlapping channels.
+- Look for co-channel interference and airtime utilisation before adding access points, since adding more is often what caused it.
+- Verify 802.11k, 802.11v and 802.11r behaviour with the actual client devices, because support varies by manufacturer and firmware.
+- Test authentication end to end — RADIUS, directory, certificates, clocks — since that path fails more often than the air does.

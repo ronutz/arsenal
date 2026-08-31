@@ -1,0 +1,46 @@
+---
+slug: l0pht-cdc-and-the-road-to-the-industry
+title: "L0pht, cDc, and the year the underground walked into the Senate"
+summary: "In May 1998 seven hackers testified to the United States Senate under their handles and said they could take down the internet in thirty minutes. Two months later the Cult of the Dead Cow released Back Orifice on a DEF CON stage to force Microsoft's hand. Between them, 1998 is the year the scene stopped being a subculture and started becoming an industry."
+concepts: ["l0pht", "cult of the dead cow", "full disclosure", "back orifice", "hacker history"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "phrack-2600-and-the-hacker-manifesto", "lod-mod-and-operation-sundevil", "the-morris-worm"]
+category: security
+order: 106
+status: reviewed
+updated: "2026-08-28"
+---
+
+## A loft full of salvaged hardware
+
+The **L0pht** was a rented space in Boston filled with equipment pulled out of dumpsters and flea markets, where seven people with day jobs did vulnerability research at night: Mudge, Weld Pond, Space Rogue, Kingpin, Brian Oblivion, Tan and Stefan Von Neumann. They were not a crew in the [Legion of Doom](/learn/lod-mod-and-operation-sundevil) sense. They broke things, wrote it up, and published - a research lab operating outside every institution that normally funds one.
+
+Their tools made the arguments concrete. **L0phtCrack** cracked Windows passwords by exploiting the structural weakness of LAN Manager hashing, and it did the one thing an advisory cannot: it let an administrator watch their own network's passwords fall in an afternoon. They ran the **Hacker News Network**, journalism by practitioners at a time when press coverage of hacking was mostly panic. And they issued advisories in a form vendors could not comfortably ignore.
+
+## 19 May 1998
+
+The Senate Committee on Governmental Affairs invited them to testify on government computer security, and they appeared **under their handles** - the record shows a US Senate hearing with witnesses named Mudge and Space Rogue - because their employers did not know what they did at night.
+
+Their headline claim was that the seven of them could render the internet unusable within **thirty minutes**. The substance behind it was the fragility of **BGP** (Border Gateway Protocol), the routing protocol that decides where traffic goes, which then had essentially no authentication: announce a route you do not own and traffic follows. They were not exaggerating for the cameras, which is the uncomfortable part - route leaks have knocked large parts of the internet offline repeatedly in the decades since, usually by accident.
+
+The hearing changed the relationship. It was the first time the American state treated hackers as expert witnesses rather than defendants, and it is the reason the pipeline into government exists: **Mudge** later ran DARPA's Cyber Fast Track, funding hacker-scale research on hacker-scale timelines, and went on to security leadership at Google's Motorola division and Twitter.
+
+## Two months later, a stage at DEF CON
+
+The **Cult of the Dead Cow** - founded 1984 in Lubbock, Texas, equal parts research group, absurdist zine and political theatre - took a different route to the same argument. At DEF CON in August 1998 they released **Back Orifice**, a remote administration tool for Windows whose name mocked Microsoft's BackOffice and whose capabilities made a remote machine effectively the operator's own.
+
+The framing was deliberate provocation: Microsoft insisted Windows was secure, so cDc handed everyone a working demonstration that it was not. Microsoft answered that a tool is not a lecture, and that shipping one to the whole world is not research. Both positions are defensible, and the episode set the template for every full-disclosure fight since - the working tool, the stage, the press, and the vendor with no good answer.
+
+cDc's other lasting contribution is a word. A member writing as Omega coined **hacktivism** in the mid-1990s, and the group's Hacktivismo project built circumvention tools for censored networks - the argument that if you can route around a firewall you have a civic duty to help others do the same.
+
+## What 1998 actually changed
+
+Three things, and they define the industry that followed.
+
+**Hackers became consultable.** The L0pht went legitimate as **@stake**, a security consultancy that trained a large share of the field's first professional generation, and whose alumni are still scattered across every serious security team. The route from underground to payroll stopped being a betrayal and started being a career.
+
+**Disclosure got its permanent shape.** After 1998 the argument was no longer whether to publish, but how - and the negotiated compromise everyone now uses, coordinated disclosure with a deadline, is the settlement of a fight these two groups forced into the open.
+
+**The threat model went structural.** L0phtCrack was about weak hashing; the Senate testimony was about a routing protocol with no authentication. That shift - from individual bugs to the load-bearing weaknesses of shared infrastructure - is the intellectual move that produced everything from [DNSSEC arguments](/glossary/kaminsky-dns-flaw) to today's supply-chain security work.
+
+The counterweight is worth stating. @stake later fired a researcher for publishing findings about a client's product, which told the field exactly what the trade-off costs: the loft was free to say anything precisely because nobody was paying it. That tension - independence versus a salary - has never been resolved, and every researcher who has ever hesitated before hitting publish is living inside it.

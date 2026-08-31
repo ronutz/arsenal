@@ -1,0 +1,52 @@
+---
+slug: akamai
+title: "Akamai: o teorema que carregou a web"
+summary: "Um problema de matemática proposto por Tim Berners-Lee, um algoritmo chamado consistent hashing, e a empresa que transformou os dois na camada invisível sob duas décadas de streaming, lançamentos e notícia quente. O overlay de deploy profundo, o IPO que quase a matou, o cofundador perdido no 11 de Setembro, e a longa reinvenção de cache a segurança a nuvem."
+concepts: ["akamai", "cdn", "consistent hashing", "overlay network", "caching", "ddos", "edge"]
+relatedTools: []
+relatedArticles: ["cloudflare", "hash-functions-overview", "dns-record-types-in-answers", "http-versions-09-to-3"]
+category: networking
+order: 9
+status: reviewed
+updated: "2026-08-27"
+---
+
+## Um problema proposto pelo inventor da web
+
+A empresa começa como dever de casa. Em meados dos anos noventa, com a web jovem já vergando sob a própria popularidade — uma página famosa conseguia derreter um servidor famoso —, Tim Berners-Lee, então no MIT, colocou o problema do congestionamento para os colegas como algo que a matemática devia resolver. No fim do corredor, Tom Leighton comandava o grupo de algoritmos do Laboratory for Computer Science, e seu doutorando Danny Lewin foi trabalhar na peça que importava: se você espalha cópias do conteúdo por muitos caches, como decide qual cache guarda o quê, num mundo em que caches entram e caem o tempo todo?
+
+A resposta, publicada num paper que virou marco, com David Karger e colegas, é o **[consistent hashing](https://en.wikipedia.org/wiki/Consistent_hashing)**: coloque servidores e conteúdo num anel conceitual, atribua cada item ao servidor mais próximo no sentido horário, e a consequência bonita se segue — quando um servidor entra ou sai, só a vizinhança imediata de chaves se move, não o mapa inteiro. Soa como detalhe. É uma das ideias mais consequentes dos sistemas distribuídos, reusada décadas depois nos bancos de dados que rodam a nuvem. A Akamai — "esperto", em havaiano — foi fundada em 1998 por Leighton, Lewin, Jonathan Seelig e Randall Kaplan para vender o teorema como serviço.
+
+## Deploy profundo: a aposta contrária
+
+A resposta de rede da Akamai foi o inverso do que a rival de depois escolheria. Em vez de construir seus próprios grandes sites e convidar a internet para dentro, a Akamai empurrou clusters pequenos de servidores *para fora* — para dentro de milhares de redes alheias, dentro dos provedores, perto o bastante do usuário para que o meio longo e congestionado da internet simplesmente saia do caminho. O produto mapeava cada visitante para um cache saudável ali perto (o DNS fazendo a direção, o consistent hashing fazendo o posicionamento), e o servidor de origem acordava um dia responsável por uma fração do tráfego de antes.
+
+As demonstrações fizeram o argumento melhor que os folhetos. Em 1999, o trailer do novo filme de Star Wars e as transmissões do basquete universitário de março — cada um o tipo de evento que vinha derretendo servidores — rodaram sobre a Akamai e simplesmente aguentaram. A Apple assinou cedo e ficou por décadas. O overlay virou a resposta de plantão para o problema da multidão-relâmpago da web: a plateia chega em todo lugar ao mesmo tempo, então é melhor o conteúdo já estar em todo lugar ao mesmo tempo.
+
+## O crash e a pior manhã
+
+O IPO (oferta pública inicial) da Akamai em outubro de 1999 foi um dos lançamentos verticais da era, e a correção foi igualmente vertical: no fundo do estouro da bolha a ação valia troco, a lista de clientes estava cheia de empresas que tinham parado de existir, e sobreviver era uma pergunta em aberto, respondida cortando fundo e vendendo para negócios que eram de verdade.
+
+Dentro desse mesmo trecho mora o luto que define a empresa. Em 11 de setembro de 2001, Danny Lewin embarcou no primeiro voo saindo de Boston para uma viagem de vendas. O voo 11 da American Airlines foi sequestrado; Lewin — trinta e um anos, ex-oficial de uma unidade de elite das forças especiais israelenses — teria enfrentado os sequestradores e é tido como a primeira pessoa morta naquela manhã. Horas depois, com os sites de notícia desabando sob a maior audiência simultânea que a web já tinha visto, a rede da Akamai foi uma das coisas que mantiveram a notícia alcançável. A empresa marca a data todo ano; o teorema e o homem que ajudou a prová-lo seguem, num sentido real, em produção.
+
+## A longa reinvenção
+
+O que salvou a Akamai depois foi recusar-se a continuar sendo um cache. A sequência de capítulos, comprimida: primeiro a **aceleração dinâmica** — aplicar a inteligência de rota do overlay ao conteúdo que não dá para cachear de jeito nenhum, o que moveu a empresa de "imagens mais rápidas" para "aplicações mais rápidas". Depois a **segurança**, sobre a observação de que as máquinas que absorvem as multidões-relâmpago do mundo são também, por construção, máquinas capazes de absorver os ataques do mundo: um web application firewall cresceu na borda, e a compra da Prolexic trouxe para dentro o scrubbing dedicado de DDoS (negação de serviço distribuída). Leighton — o professor cofundador — assumiu como CEO em 2013, um arco incomum que a empresa veste com orgulho. Os capítulos seguintes empurraram para dentro, à **segurança corporativa** (a microssegmentação da Guardicore: proteger o miolo das redes, não só as portas da frente), e então, com a compra da Linode, para fora de novo, à própria **computação em nuvem** — a empresa de cache agora vendendo a computação e o armazenamento debaixo das aplicações, apostando que a mesma pegada de deploy profundo pode distribuir a nuvem como um dia distribuiu as figuras.
+
+Por tudo isso corre o mesmo perfil quieto. A fatia da Akamai numa noite qualquer — a atualização do console, o patch do sistema operacional, a transmissão do playoff, a capa do portal num dia de notícia ruim — é enorme e quase perfeitamente invisível, que é a marca da infraestrutura que está funcionando.
+
+## Uma linha do tempo (timeline) para pendurar tudo
+
+- **1995–1997** — Berners-Lee propõe o problema do congestionamento no MIT; o paper do consistent hashing é publicado.
+- **1998** — Akamai fundada por Leighton, Lewin, Seelig e Kaplan.
+- **1999** — Lançamento comercial; o trailer de Star Wars e o basquete de março provam o overlay em público; IPO em outubro.
+- **2001** — Danny Lewin é morto a bordo do voo 11 no 11 de Setembro; naquele dia a rede carrega a onda da notícia.
+- **2002** — O fundo do poço da bolha; a empresa sobrevive vendendo para os negócios ainda de pé.
+- **2013** — Tom Leighton vira CEO.
+- **2014** — Prolexic comprada: mitigação dedicada de DDoS se junta à borda.
+- **2021** — Guardicore comprada: a segmentação leva a empresa para dentro do enterprise.
+- **2022** — Linode comprada: o CDN (rede de distribuição de conteúdo) se declara empresa de nuvem.
+
+## O que a Akamai não é
+
+Ela não é, e nunca foi, uma rede em que você se cadastra em cinco minutos — o modelo é enterprise, negociado, de deploy profundo e quase sem propaganda, e é por isso que uma geração de engenheiros a usa todo dia sem saber. Posta ao lado da [história da Cloudflare](/learn/cloudflare), a dupla vira um estudo limpo de estratégia: a mesma física — ponha o conteúdo perto do usuário, absorva o ataque na borda — vendida uma vez como overlay enterprise de cima para baixo e outra como volante gratuito de baixo para cima. As duas apostas pagaram. A web precisava do teorema de qualquer jeito.

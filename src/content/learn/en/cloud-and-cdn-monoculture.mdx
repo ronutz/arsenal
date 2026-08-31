@@ -1,0 +1,64 @@
+---
+slug: cloud-and-cdn-monoculture
+title: "Cloud and CDN monoculture: the chokepoint nobody chose"
+summary: "Nobody decided that a configuration error at one company should take a quarter of the web offline for an hour, and yet that is roughly the arrangement. Concentration in cloud regions, content delivery networks, DNS providers and identity services means unrelated organisations now fail at the same moment for the same reason. Why it happened, what actually fails, and why the obvious answer — multi-cloud — is mostly wrong."
+concepts: ["cloud", "cdn", "concentration risk", "resilience", "correlated failure"]
+relatedTools: []
+relatedArticles: ["the-chokepoints-of-the-internet", "the-certificate-authority-chokepoint", "bgp-and-the-routing-chokepoint", "cloudflare"]
+category: networking
+order: 124
+status: reviewed
+updated: "2026-08-29"
+---
+
+## The chokepoint nobody bought
+
+Every previous chokepoint in this series was built on purpose: someone designed the root zone, the routing protocol, the cable route, the trust store. This one is different. **Concentration is emergent.** Millions of independent organisations each chose the cheapest, fastest, most reliable option available to them, and the aggregate of all those rational decisions is a small number of providers holding an enormous share of the internet's critical path.
+
+That is worth stating carefully, because the moral framing is usually wrong. The providers involved are, individually, far more reliable than the infrastructure they replaced. A well-run cloud region has better uptime than the server room it displaced, and a large content delivery network absorbs attacks that would flatten the origin behind it. The problem is not reliability. **The problem is correlation.**
+
+## What actually fails
+
+The failure modes cluster into a handful of shapes, and knowing them is more useful than knowing which vendor had a bad day.
+
+**Control plane, not data plane.** The most common large outage is not "the servers stopped." It is that the system for *managing* the servers stopped: you cannot launch, scale, reconfigure or fail over, while existing traffic keeps flowing. This is why an outage can be simultaneously severe and invisible to end users for the first twenty minutes, and why your recovery plan may depend on the exact system that is down.
+
+**Configuration propagated globally.** Modern platforms exist to push a change everywhere in seconds. That is the product, and it means a bad change also arrives everywhere in seconds. The largest incidents in this category were not attacks; they were valid deployments of invalid configuration.
+
+**Shared dependencies you did not know you had.** Your application is multi-region, but your DNS provider is one company, your certificate issuance is one authority, your identity provider is one service, your package registry is one host, and your status page is hosted on the platform that is down. The dependency graph is deeper than the architecture diagram.
+
+**Retry storms.** When a dependency degrades, every client retries, and the retries become the outage. Recovery is then slower than the original fault, because the system must be brought back under load it did not have when it was healthy.
+
+## The bit that catches everyone
+
+**Your fallback is probably in the same failure domain.** Two vendors that resell the same underlying platform are one vendor for resilience purposes. A second DNS provider whose anycast fabric peers at the same exchange is partly the same provider. A backup that lives in a different region of the same cloud survives a region failure and not a control-plane failure.
+
+This is the same lesson as [landing stations](/learn/submarine-cables-and-the-physical-internet) sharing a beach, in another layer. Diversity is a property of the dependency graph, not of the invoice.
+
+## Why multi-cloud is mostly the wrong answer
+
+The instinctive fix is to run everywhere. For most organisations this is a bad trade, and it is worth being direct about why.
+
+Running genuinely across providers means using the least-common-denominator feature set, duplicating operational expertise, testing failover paths that are exercised rarely, and adding a coordination layer that becomes its own single point of failure. **Complexity is itself an availability risk**, and teams routinely spend the reliability they gained on the complexity they added. A great deal of "multi-cloud" in practice is one cloud plus an unused, untested, quietly broken copy in another.
+
+The proportionate answers are less impressive and work better:
+
+- **Know your dependency graph**, including the boring ones: DNS, certificates, identity, package registries, observability, and your status page. Write it down; most teams cannot produce it from memory.
+- **Remove single-provider dependencies where the cost is low.** Secondary DNS and a second certificate issuance path are cheap and buy real independence. Rearchitecting your database layer is not.
+- **Design for degradation.** Read-only mode, cached responses, queued writes, and a static fallback page beat a perfect architecture that is entirely down.
+- **Fail over on purpose, on a schedule.** An untested failover is a hypothesis. The organisations that ride out large outages are the ones that practised.
+- **Keep your incident tooling off the platform it monitors.** Status pages, runbooks and communications channels that die with the outage are a recurring, entirely avoidable failure.
+
+## Who could do what
+
+Unlike the other chokepoints in this series, the actor here is usually **an ordinary engineer at a large provider on an ordinary afternoon**, and the impact is measured in hours rather than weeks.
+
+State pressure is the sharper variant: providers concentrate not just capacity but jurisdiction, so an order served on a small number of companies reaches a very large share of the world's services. That is a governance concern rather than an engineering one, and it is the reason data sovereignty rules and regional resilience regulation now target concentration explicitly.
+
+And there is the slower risk that no incident report captures: **commercial dependency**. A provider that changes pricing, terms or product direction can be as disruptive as one that goes down, on a longer timescale, and with no status page. The [CentOS lesson](/glossary/centos-stream) applies here exactly - ask who can change the terms, and what your exit looks like when they do.
+
+## Where this sits in the series
+
+The other chokepoints are structural: there is one root zone, one routing protocol, a finite seabed, one trust store. This one is **statistical**, and therefore the only one you can meaningfully move on your own. You cannot build a second internet, but you can stop having four hidden dependencies on the same provider.
+
+The uncomfortable conclusion is that concentration is not a mistake to be corrected. It is what happens when reliability becomes a purchasable commodity and everyone buys from whoever is best at it. The question is not how to reverse that, but how much of your own failure domain you are willing to hand to people you will never speak to - and whether you have written down which ones they are.

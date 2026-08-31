@@ -1,0 +1,58 @@
+---
+slug: the-crypto-wars-and-the-cypherpunks
+title: "As Crypto Wars: quando criptografia era munição"
+summary: "Durante a maior parte dos anos noventa, exportar criptografia forte dos Estados Unidos equivalia juridicamente a exportar uma arma. Um programador deu de graça uma ferramenta de cifragem e enfrentou três anos de investigação criminal; uma camiseta com quatro linhas de código era item sob controle de exportação; e o governo propôs um chip que cifraria suas ligações guardando uma cópia da chave. A briga daquela década decidiu se a web moderna podia existir."
+concepts: ["cryptography", "crypto wars", "export controls", "key escrow", "privacy"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "open-source-and-the-meaning-of-free", "stuxnet-and-the-first-cyberweapon"]
+category: security
+order: 111
+status: reviewed
+updated: "2026-08-28"
+---
+
+## Criptografia como arma, juridicamente falando
+
+Até 1996, criptografia forte constava da Lista de Munições dos Estados Unidos, sob a regulação de exportação de armamentos. Não metaforicamente - o mesmo aparato regulatório que regia exportar componentes de caça regia exportar um programa que embaralhava texto. Software com chaves acima de um limiar não podia ser enviado ao exterior sem licença, o que na prática significava que empresas americanas despachavam duas versões de tudo: uma forte para casa, e uma deliberadamente enfraquecida para o resto do mundo.
+
+As cifras de exportação enfraquecidas não foram concessão teórica. Elas continuaram presentes em implementações de protocolo décadas depois, e pesquisadores as reencontraram nos anos 2010 como os ataques **FREAK** e **Logjam** - falhas que existiam apenas porque a lei dos anos noventa exigira que houvesse um caminho de rebaixamento. Decisões de política viram decisões de protocolo, e decisões de protocolo sobrevivem à política por uma geração.
+
+## Zimmermann e o PGP
+
+Em 1991 **Phil Zimmermann** escreveu o **Pretty Good Privacy**, lançou-o de graça, e ele se espalhou pelo mundo por BBSs e pela internet incipiente. Ele o construíra para ativistas e pessoas comuns, sobre o argumento de que privacidade na correspondência não é privilégio que exija justificativa.
+
+Como o programa saiu do país, o governo americano abriu investigação criminal contra ele por **exportação de munição sem licença**, e ela durou três anos.
+
+A resposta foi um dos grandes atos de performance jurídica desta história. Se exportar o software era crime mas exportar um **livro** era discurso protegido pela Primeira Emenda, então o código-fonte foi impresso como livro - um volume real, encadernado, publicado pela MIT Press, exportado de forma inteiramente legal, e escaneado de volta para um computador do outro lado. O absurdo era o argumento, e a investigação foi arquivada em 1996 sem acusação.
+
+Os [cypherpunks](/glossary/cypherpunks) vinham fazendo o mesmo argumento desde 1992 em sua lista de e-mails, com o manifesto de Eric Hughes fornecendo a frase operativa: **cypherpunks escrevem código**. Não fazer lobby, não peticionar - despachar ferramentas que funcionam e tornar a questão de política irrelevante. Jude Milhon cunhou o nome, e a lista discutiu remailers anônimos, dinheiro digital e roteamento em cebola anos antes de qualquer um deles existir.
+
+## O chip Clipper
+
+A contraproposta do governo em 1993 foi o **chip Clipper**: criptografia forte para telefones, embutida no hardware, com uma cópia de cada chave guardada em custódia para que autoridades pudessem decifrar com autorização legal. O discurso de venda era que os cidadãos teriam privacidade real e o Estado manteria acesso lícito - exatamente a mesma troca proposta com nomes novos em toda década desde então.
+
+Ela desabou por duas razões que continuam sendo as razões corretas.
+
+A objeção **política** era que uma chave guardada por outra pessoa não é a sua chave, e que um sistema desenhado para ser aberto por uma parte autorizada pode ser aberto por uma não autorizada.
+
+A objeção **técnica** era que isso foi demonstrado. Matt Blaze publicou em 1994 uma falha no mecanismo de custódia mostrando que o sistema podia ser usado de um jeito que derrotava a função de custódia, o que significava que o Clipper falhava nos próprios termos. A adoção nunca aconteceu.
+
+## Bernstein, e código como discurso
+
+A questão jurídica foi resolvida por **Daniel Bernstein**, um estudante de pós que quis publicar um algoritmo de cifragem chamado Snuffle e processou em vez de aceitar que publicá-lo exigisse licença de armamento. Os tribunais entenderam que **código-fonte é discurso expressivo** protegido pela Primeira Emenda, e o regime de exportação foi substancialmente liberalizado em 1996 e 2000.
+
+Essa decisão é estrutural para tudo o que veio depois. Sem ela não há exportação lícita de TLS forte, não há HTTPS mundial, não há comércio eletrônico como ele de fato se desenvolveu, e não há publicação aberta de pesquisa criptográfica. O mesmo princípio ressurgiu imediatamente na briga do [DeCSS](/glossary/dvd-jon), em que um programa de decifragem circulou como haicai, camiseta e número primo para fazer o ponto de que proibir um programa é proibir um número.
+
+## A segunda guerra, e a terceira
+
+O acordo dos anos noventa não encerrou a discussão; mudou-a de lugar.
+
+As **revelações de Snowden**, em 2013, mostraram que o Estado tinha continuado o projeto por outros meios - coleta em massa, padrões enfraquecidos, e o caso do gerador de números aleatórios **Dual EC DRBG**, algoritmo padronizado pelo NIST amplamente tido como portador de uma porta dos fundos deliberada e pago para dentro de um produto comercial. A resposta foi uma corrida da indústria inteira para cifrar tudo por padrão: HTTPS em toda parte, mensageria cifrada como expectativa de consumidor, transparência de certificados, e certificados gratuitos em escala.
+
+A terceira rodada está em curso e usa outras palavras. Acesso lícito, varredura no lado do cliente, acesso excepcional, exigências de rastreabilidade. A resposta técnica não mudou desde que Blaze quebrou o Clipper em 1994: um mecanismo que permite a uma parte autorizada ler conteúdo cifrado é um mecanismo, e mecanismos não conferem credenciais na porta.
+
+## Por que isso pertence a uma história hacker
+
+Porque os cypherpunks eram hackers, e venceram hackeando o problema em vez dos sistemas: imprimindo código como livro, litigando a definição de discurso e, acima de tudo, despachando ferramentas mais rápido do que a política conseguia contê-las. O movimento do [software livre](/glossary/free-software) forneceu as licenças que mantiveram essas ferramentas disponíveis, e as mesmas pessoas aparecem nas duas histórias.
+
+E porque o resultado é invisível do jeito que a infraestrutura bem-sucedida sempre é. Todo cadeado em todo navegador, toda mensagem cifrada, toda transação privada é o resíduo de uma briga de uma década que podia ter ido para o outro lado - e o argumento é reaberto, com nome novo, mais ou menos a cada cinco anos.

@@ -55,13 +55,13 @@ export default async function LevelsPage({ params }: { params: Promise<{ locale:
           </p>
           <h1 className="page-hero-title">{t("levels.title")}</h1>
           <p className="page-hero-lede">{t("levels.lede")}</p>
-          <p className="article-related-link-summary">{t("levels.whatChanges")}</p>
+          <p className="section-body">{t("levels.whatChanges")}</p>
         </div>
       </section>
 
       <section className="section section-accent">
         <div className="container article-container">
-          <h2 className="learn-card-title">{t("levels.gradesHeading")}</h2>
+          <h2 className="section-title">{t("levels.gradesHeading")}</h2>
           <ol className="learn-grid">
             {GRADES.map((g) => (
               <li key={g.id} className="learn-grid-item">
@@ -77,13 +77,13 @@ export default async function LevelsPage({ params }: { params: Promise<{ locale:
           {/* The naming asymmetry is the reason `pleno` appears first in the
               middle grade's list of names: it is the word that states the thing
               directly rather than by subtraction. */}
-          <p className="article-related-link-summary">{t("levels.plenoNote")}</p>
+          <p className="section-body">{t("levels.plenoNote")}</p>
         </div>
       </section>
 
       <section className="section" id="y-moment">
         <div className="container article-container">
-          <h2 className="learn-card-title">{t("levels.yHeading")}</h2>
+          <h2 className="section-title">{t("levels.yHeading")}</h2>
           <p className="article-summary">{Y_MOMENT.whatItIs}</p>
           <div className="article-body">
             <section className="article-related">
@@ -96,19 +96,25 @@ export default async function LevelsPage({ params }: { params: Promise<{ locale:
             </section>
             <section className="article-related">
               <h3 className="article-related-title">{t("levels.yHonest")}</h3>
-              <p className="article-related-link-summary">{Y_MOMENT.theHonestPart}</p>
+              <p className="section-body">{Y_MOMENT.theHonestPart}</p>
             </section>
           </div>
         </div>
       </section>
 
-      <section className="section">
+      <section className="section section-accent">
         <div className="container article-container">
-          <h2 className="learn-card-title">{t("levels.whereHeading")}</h2>
+          <h2 className="section-title">{t("levels.whereHeading")}</h2>
           <p className="article-summary">{PERVASIVENESS.claim}</p>
-          <p className="article-related-link-summary">{PERVASIVENESS.consequence}</p>
-          <p className="article-back">
-            <Link href="/roles">{t("levels.backToRoles", { count: ROLES.length })}</Link>
+          <p className="section-body">{PERVASIVENESS.consequence}</p>
+          {/* The way back was a bare <Link> in `article-back`, which renders
+              as body text — PRIME: "does not look like a link at all". It now
+              uses the jump-link pill, the same control the roles index uses. */}
+          <p className="page-jump-row">
+            <Link href="/roles" className="page-jump-link">
+              {t("levels.backToRoles", { count: ROLES.length })}{" "}
+              <span aria-hidden="true">&#8594;</span>
+            </Link>
           </p>
         </div>
       </section>

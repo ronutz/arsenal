@@ -23,7 +23,7 @@ Uma service policy é **declarativa**. Você não escreve o fluxo de controle. V
 
 O lado das condições mapeia de forma bastante limpa. Verificações de `[HTTP::path]` viram um predicado `path` com valores de prefixo, exatos, regex ou sufixo. Verificações de `[HTTP::header]` viram comparadores `headers`. `[HTTP::method]` vira `http_method`. Lógica de endereço de origem vira `ip_prefix_list` ou `ip_matcher`. Onde uma iRule usaria `string tolower`, um comparador usa um transformador `LOWER_CASE`.
 
-O lado das ações é mais estreito, e isso é deliberado. Uma iRule pode fazer quase qualquer coisa; uma regra de service policy escolhe entre um conjunto fixo de ações e modificadores. ALLOW e DENY são o núcleo. NEXT_POLICY passa para a próxima política do conjunto. Além do veredito, uma regra pode anexar modificadores como uma ação WAF, uma ação de bot ou um rate limiter, que é como você compõe comportamento que uma iRule teria escrito inline.
+O lado das ações é mais estreito, e isso é deliberado. Uma iRule pode fazer quase qualquer coisa; uma regra de service policy escolhe entre um conjunto fixo de ações e modificadores. ALLOW e DENY são o núcleo. NEXT_POLICY passa para a próxima política do conjunto. Além do veredito, uma regra pode anexar modificadores como uma ação WAF (web application firewall), uma ação de bot ou um rate limiter, que é como você compõe comportamento que uma iRule teria escrito inline.
 
 ## O que não se traduz
 

@@ -1,0 +1,34 @@
+---
+slug: the-morris-worm
+title: "The Morris Worm: the night the internet found out it was fragile"
+summary: "On 2 November 1988 a Cornell graduate student released 99 lines of C to measure how big the internet was. A single arithmetic decision about reinfection turned the measurement into the first internet-scale disaster, birthed the CERT system, produced the first conviction under the brand-new Computer Fraud and Abuse Act, and taught the network a lesson about monoculture and trust it is still relearning."
+concepts: ["morris worm", "worm", "buffer overflow", "cfaa", "cert", "hacker history", "internet security"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "phone-phreaking-and-the-blue-box"]
+category: security
+order: 98
+status: reviewed
+updated: "2026-08-28"
+---
+
+## Ninety-nine lines that stopped the internet
+
+On the evening of 2 November 1988, **Robert Tappan Morris**, a first-year graduate student at Cornell, released a small self-replicating program onto the internet - which at that point was a trusting village of perhaps sixty thousand hosts, mostly universities and research labs, mostly Unix, mostly acquainted with one another. His stated intent, credible and now well documented, was benign: a program that would copy itself once to each machine and phone home a count, so he could *measure the size of the internet*. Within hours it had melted a meaningful fraction of it. Machines slowed to uselessness, then fell over; administrators watching load averages climb with no visible cause began, one by one, pulling their sites off the network entirely - which is how the early internet partitioned itself in a panic, each island unable to coordinate with the others precisely because the medium of coordination was the thing under attack.
+
+## The bug in the plan was a single number
+
+The worm spread through three doors, and the catalogue of them is a syllabus of 1988's software sins. It exploited a **buffer overflow in the `fingerd` daemon** - the canonical stack-smash, user input overrunning a fixed buffer to seize control, the vulnerability class that would dominate security for the next twenty years. It abused a **debug feature left enabled in `sendmail`** that let it pipe commands to a remote mail server. And it ran a **dictionary attack on passwords**, using a built-in word list plus the users' own account details, then reached onward with any credentials it cracked - the earliest famous demonstration that weak passwords are a *network* problem, not a personal one.
+
+But the catastrophe was not in the doors; it was in one arithmetic decision. Morris anticipated that administrators might inoculate their machines by faking the worm's presence, so to keep it spreading he made it **reinfect anyway, one time in seven**, regardless of whether a copy was already running. On a densely interconnected network that fraction was fatal: machines were reinfected again and again, running dozens of copies each, and the "harmless" measurement tool became a fork bomb with a national footprint. The disaster was not the exploits - those were known-ish. The disaster was a probability constant. *Getting the throttle wrong is the whole story*, and it is why the incident is taught to this day: the difference between an experiment and a weapon was a `1` and a `7`.
+
+## What grew back overnight
+
+The internet had no incident-response machinery because it had never needed any, and the void was filled in real time. Berkeley and MIT teams captured, disassembled and neutralized the worm within a couple of days - the response documented afterward in Purdue's Gene Spafford analysis and Cornell's own report - and out of the scramble came the permanent institution: DARPA funded the **Computer Emergency Response Team (CERT)** at Carnegie Mellon within weeks, the coordination point the panic had so painfully lacked, and the template every national CERT since has copied.
+
+The legal aftermath was just as foundational. Morris became the **first person tried and convicted under the Computer Fraud and Abuse Act of 1986** - the statute was barely two years old and had never been tested - drawing three years' probation, four hundred hours of community service and a fine. The case drew the first real judicial line under "unauthorized access," and it drew it around a defendant who had meant no harm, which is exactly why it mattered: the law learned, on this case, that intent and effect are different things.
+
+## The lesson it keeps re-teaching
+
+The worm's deepest teaching was not any single bug but **monoculture**. It spread so fast because the internet ran a near-uniform stack - the same Unix, the same daemons, the same defaults - so one set of exploits unlocked nearly every door. That is the argument for software diversity, least privilege, and defense in depth, and every homogeneous fleet since - one browser engine, one cloud image, one library deep in ten thousand supply chains - is the same fuel waiting for the same spark.
+
+There is a coda the field never tires of. Robert Morris paid his debt, became a respected MIT professor and a co-founder of the startup accelerator Y Combinator, and his father, at the time of the worm, was the chief scientist of the NSA's National Computer Security Center - a detail almost too neat to be true. The village internet of implicit trust died that night in 1988. Everything defensive we built afterward is, in a real sense, the network learning to live without it.

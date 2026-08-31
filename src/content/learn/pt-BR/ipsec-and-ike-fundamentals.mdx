@@ -23,7 +23,7 @@ A autenticação em si costuma ter uma de duas formas: uma chave pré-compartilh
 
 ## O plano de dados: ESP, e os dois modos
 
-O ESP (protocolo 50) embrulha cada pacote protegido com um cabeçalho carregando o SPI e um número de sequência (proteção contra replay), cifra a carga, e sela com uma verificação de integridade - implantações modernas usam uma cifra AEAD combinada como AES-GCM que faz as duas coisas de uma vez. O que fica dentro depende do modo. O **modo transporte** protege apenas a carga entre dois hosts que são eles próprios os endpoints. O **modo túnel** - a norma site-to-site - encapsula o pacote IP original inteiro e coloca um cabeçalho externo novo na frente, de modo que redes inteiras se escondem atrás de dois gateways. O modo túnel é [o padrão de VPN](/learn/vpn-fundamentals) tornado concreto: endereçamento privado dentro, texto cifrado e endereços de gateway fora.
+O ESP (protocolo 50) embrulha cada pacote protegido com um cabeçalho carregando o SPI e um número de sequência (proteção contra replay), cifra a carga, e sela com uma verificação de integridade - implantações modernas usam uma cifra AEAD combinada como AES-GCM que faz as duas coisas de uma vez. O que fica dentro depende do modo. O **modo transporte** protege apenas a carga entre dois hosts que são eles próprios os endpoints. O **modo túnel** - a norma site-to-site - encapsula o pacote IP original inteiro e coloca um cabeçalho externo novo na frente, de modo que redes inteiras se escondem atrás de dois gateways. O modo túnel é [o padrão de VPN (rede privada virtual)](/learn/vpn-fundamentals) tornado concreto: endereçamento privado dentro, texto cifrado e endereços de gateway fora.
 
 ## O problema do NAT, e o conserto na 4500
 

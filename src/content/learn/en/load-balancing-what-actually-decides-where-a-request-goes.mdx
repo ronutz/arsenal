@@ -1,0 +1,128 @@
+---
+slug: load-balancing-what-actually-decides-where-a-request-goes
+title: "Load balancing: what actually decides where a request goes"
+summary: "Every load balancer answers the same four questions — which servers are alive, which one gets this request, does this client have to keep going to the same place, and what happens when the answer changes. The algorithms are the least interesting part. The health check, the persistence decision and the drain behaviour are where outages come from."
+concepts: ["load balancing", "health checks", "persistence", "availability", "capacity"]
+relatedTools: []
+relatedArticles: ["ddos-what-actually-absorbs-an-attack", "cloud-and-cdn-monoculture", "akamai"]
+category: networking
+order: 132
+status: reviewed
+updated: "2026-08-30"
+---
+
+## Origins: it started as a DNS trick
+
+The first load balancing was not a device. It was **round-robin DNS**: publish several address records for one name and let resolvers hand out different ones. It cost nothing, and it failed in ways that still matter — the record's lifetime governs how long a client keeps using a dead server, resolvers and applications cache beyond that, and DNS knows nothing about whether anything behind the name is alive.
+
+That limitation defined the category. Everything since has been an attempt to put the decision closer to the traffic and to give it knowledge of server health.
+
+**Early 1990s: reverse proxies and dispatchers.** Software in front of a server farm, terminating connections and forwarding them. Flexible and slow on the hardware of the day.
+
+**Mid 1990s: layer-4 switching.** Purpose-built hardware rewriting addresses at wire speed. This is where the term *virtual server* enters the vocabulary: one address in front, a pool behind, translation in the middle. F5, Cisco LocalDirector, Alteon and Foundry defined this generation.
+
+**Late 1990s onward: layer 7 and the ADC.** Once the device terminated TCP, it could read HTTP, and once it read HTTP it could route on hostname and path, insert cookies, compress, cache and offload TLS. The category renamed itself the **application delivery controller**, and the load balancer quietly became the place where a great deal of application logic lives.
+
+**2010s: software and the cloud.** HAProxy, NGINX and later Envoy made the data plane software again, on hardware fast enough that it no longer mattered. Cloud providers turned it into a managed service. Then the service mesh moved the proxy next to every workload — a sidecar per pod, with the same four questions answered per service rather than per estate.
+
+The arc is a pendulum: hardware to solve a software performance problem, then software once the performance problem dissolved. What did not change is the decision being made.
+
+## The mechanics underneath
+
+The parts worth knowing because they explain the failure modes:
+
+**Layer 4 versus layer 7.** At layer 4 the device rewrites addresses and ports and forwards; it never sees the request. At layer 7 it terminates the client connection, reads the request, and opens its own connection to the server. That difference decides everything else — content-based routing, cookie persistence and TLS inspection all require termination, and termination makes the balancer a party to the conversation rather than a forwarder.
+
+**Source NAT and the client address.** When the balancer opens the backend connection, the server sees the *balancer's* address unless something carries the original. Hence `X-Forwarded-For`, and the `Forwarded` header standardised in RFC 7239 — and hence the recurring incident where every log line and every rate limit sees one client, because the header was never configured or never trusted.
+
+**Direct server return.** The server answers the client directly, bypassing the balancer on the way back. Excellent for asymmetric traffic like video, and it excludes anything requiring layer 7, because the return path is never seen.
+
+**Connection reuse and multiplexing.** With HTTP/2 and HTTP/3, many requests share one connection, which quietly breaks connection-count balancing: one connection can carry a thousand requests, so *least connections* stops describing load. Balancing at the request level rather than the connection level is what modern proxies do, and it is a genuine behavioural change from the layer-4 era.
+
+**TLS termination or passthrough.** Terminating gives visibility and offload and makes the balancer the certificate holder; passing through preserves end-to-end encryption and blinds every layer-7 feature you paid for. Most estates end up doing both in different places, and the confusion about which is which is a common source of surprise.
+
+## Four questions, in order of how much trouble they cause
+
+Vendors differentiate on algorithms because algorithms are easy to put in a table. In operations the order of importance is almost exactly reversed:
+
+1. **Which servers are considered alive?** — the health check
+2. **Does this client have to return to the same server?** — persistence
+3. **What happens when the set changes?** — draining and slow start
+4. **Which live server gets this request?** — the algorithm
+
+Get the first three wrong and the fourth cannot save you. Get the first three right and the difference between algorithms is usually noise.
+
+## The health check is the whole system
+
+A load balancer's model of reality is whatever its health check tells it. Everything else is arithmetic on top of that model, so a check that tests the wrong thing produces confident, well-distributed traffic to broken servers.
+
+**A TCP connect check proves a process is listening.** It does not prove the application works, and a server that accepts connections and returns errors for everything will happily stay in the pool.
+
+**An HTTP check on `/` proves the web server answers.** It usually does not touch the database, the cache, or whatever the application actually needs — so the failure that matters is invisible.
+
+**A deep check that touches every dependency is worse.** When the shared database gets slow, every server fails its check at once, the pool empties, and the load balancer takes the whole service down over a degradation it could have ridden out. This is a genuinely common outage: **the health check turned a partial failure into a total one.**
+
+The workable middle is a purpose-built endpoint that checks what *this instance* needs to serve a request, deliberately excludes shared dependencies that every instance shares, and is fast enough to run often. Then set the thresholds honestly: how many consecutive failures before removal, how many successes before return, and how long the check waits — because those three numbers, not the algorithm, decide how quickly you eject a sick server and how badly you flap during a blip.
+
+## Persistence is a constraint, not a feature
+
+Session persistence — sending a client back to the server that has its state — exists because applications keep state in memory. It is worth naming as what it is: **an admission that the application is not stateless**, and every persistence method is a workaround with a cost.
+
+Source-address persistence breaks in the era of [shared addresses](/learn/cgnat-address-sharing-and-attribution): thousands of subscribers behind one carrier translation all land on one server, which is both a hotspot and a fairness problem. Cookie-based persistence works well over HTTP and requires terminating the connection to insert or read it. TLS session persistence ties to a session that may be resumed or rotated.
+
+The important operational consequence is that **persistence and capacity fight each other.** A perfectly balanced pool with persistence is not balanced: it is balanced over *new* clients, while existing ones stay where they are. Add servers during a traffic peak and the new ones stay nearly idle, because the load you wanted to move is pinned elsewhere.
+
+The real fix is architectural — move state to a shared store so any server can answer — and it is the change that makes scaling work. Persistence is what you do until then.
+
+## Changing the set is where outages hide
+
+**Removing a server** should mean: stop sending new connections, let existing ones finish, then remove. Draining that is too short cuts live requests; draining that never completes blocks maintenance. Both are configuration mistakes people discover during a release.
+
+**Adding a server** is the underrated one. A freshly started instance has cold caches, an empty connection pool and an unwarmed runtime. Send it its full share immediately and it will be slow, fail its own health check, get removed, be re-added, and oscillate. **Slow start** — ramping a new member's share over time — exists precisely for this, and is switched off far more often than it should be.
+
+The failure mode that ties these together: an overloaded pool ejects a struggling server, its load moves to the survivors, they become overloaded, and the pool empties one member at a time. Any capacity plan that assumes N servers should be tested at N-1, because that is the state you will actually be in.
+
+## The algorithms, briefly, and what each assumes
+
+- **Round robin** assumes requests cost the same and servers are identical. Both assumptions are usually false, and it survives because it is predictable.
+- **Least connections** assumes an open connection is a proxy for load. Good for long-lived connections, misleading when connections are cheap and the work is elsewhere.
+- **Least response time** measures what you actually care about, and rewards a server that is fast because it is failing quickly. Pair it with a health check that notices errors.
+- **Weighted** anything is how you handle a heterogeneous fleet honestly, and how you shift traffic during a migration.
+- **Hashing** on a key sends the same client or key to the same server without storing state — the same idea [consistent hashing](/learn/akamai) applies at content-network scale, and worth choosing when your persistence need is deterministic rather than stateful.
+
+Choose by what your traffic actually looks like: connection lifetime, request cost variance, and whether servers are identical. If you cannot describe those three, the algorithm choice is guesswork with a confident name.
+
+## Deployment architectures
+
+**Two-arm (routed).** Clients on one side, servers on another, the balancer between them. Clean, and the servers' default route must point at it.
+
+**One-arm.** The balancer sits beside the servers on one subnet and uses source translation so replies come back to it. Simple to insert into an existing network, at the cost of hiding the client address unless a header carries it.
+
+**Direct server return.** Asymmetric by design, as above.
+
+**Global (multi-site).** DNS-based steering or [anycast](/glossary/anycast) decides which site receives traffic. Both inherit their own limits: DNS steering is bounded by record lifetime and by resolvers that ignore it, while anycast moves the decision into routing, where you have less control over the moment traffic shifts.
+
+**Sidecar and service mesh.** A proxy per workload. Policy and telemetry become uniform across services, and the operational cost is that you now run a proxy fleet the size of your workload fleet.
+
+## The vendor landscape, by category
+
+Categories matter more than names, because each carries a structural bias:
+
+- **Dedicated ADC vendors** — F5, Citrix, A10, Radware. Deep layer-7 capability, scripting and inspection; you are buying a rich policy engine and taking on its operational model.
+- **Firewall and network platforms** — Fortinet, Palo Alto and others bundle balancing beside inspection. Convenient consolidation, generally shallower capability than the specialists.
+- **Open-source software** — HAProxy, NGINX, Envoy, Traefik. The data planes most of the industry actually runs, including inside commercial products; Envoy in particular became the substrate for service meshes.
+- **Cloud managed services** — provider load balancers split roughly into layer-4 network and layer-7 application flavours. Cheapest to adopt, least portable, and their health-check and drain semantics differ enough between providers to matter during a migration.
+- **Service mesh** — Istio, Linkerd and relatives. Per-service policy, mutual TLS and fine-grained telemetry, in exchange for a substantial new control plane.
+
+The honest buying question is not which is fastest. It is **which failure modes you are willing to operate**, since the balancer is in the path of everything and its own outage is total.
+
+## Where the load balancer sits in the failure domain
+
+It is, by construction, in the path of everything. That makes it the highest-value place to add resilience and the most consequential single component you own:
+
+- **In front of servers**, it hides individual failures — and it also hides them from you, which is why pool-member metrics matter more than the aggregate.
+- **Terminating TLS**, it becomes the certificate chokepoint, with the renewal and issuance concerns from [the certificate article](/learn/the-certificate-authority-chokepoint).
+- **As a pair**, its own failover is the part nobody tests until the day it matters.
+- **Globally**, DNS-based or [anycast](/glossary/anycast) distribution moves the decision upstream — and inherits DNS caching, so traffic keeps arriving somewhere for as long as the record's lifetime, no matter what you change.
+
+The single most useful habit: **watch per-member metrics, not the pool average.** The average is designed to look healthy while one member quietly serves errors fast enough to attract more traffic than the ones doing real work.

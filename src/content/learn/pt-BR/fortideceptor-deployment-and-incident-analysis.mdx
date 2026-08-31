@@ -16,7 +16,7 @@ A dissimulação só detecta o que consegue alcançar. O trabalho de implantaç�
 
 ## Redes de implantação
 
-Uma **rede de implantação** é um segmento onde chamarizes são colocados. Na prática isso significa uma VLAN, e os chamarizes tomam endereços nela como hosts comuns fariam.
+Uma **rede de implantação** é um segmento onde chamarizes são colocados. Na prática isso significa uma VLAN (rede local virtual), e os chamarizes tomam endereços nela como hosts comuns fariam.
 
 A regra de projeto decorre diretamente do que faz a dissimulação funcionar: chamarizes precisam estar **nos segmentos que um atacante percorre**, e precisam ser indistinguíveis dos hosts reais neles. Um chamariz numa "VLAN de dissimulação" dedicada que nada mais usa é trivialmente identificável e detecta apenas o invasor menos cuidadoso.
 
@@ -40,11 +40,11 @@ A razão operacional de se importar é que alertas de dissimulação são raros 
 
 A dissimulação é mais útil quando seu sinal de alta confiança move alguma coisa.
 
-Enviar alertas ao **FortiAnalyzer ou a um SIEM** os coloca ao lado de tudo o mais, para que uma interação com chamariz possa ser correlacionada com o que a mesma origem fez em outro lugar. Essa correlação frequentemente converte um alerta numa linha do tempo.
+Enviar alertas ao **FortiAnalyzer ou a um SIEM (security information and event management)** os coloca ao lado de tudo o mais, para que uma interação com chamariz possa ser correlacionada com o que a mesma origem fez em outro lugar. Essa correlação frequentemente converte um alerta numa linha do tempo.
 
 A integração com **FortiGate ou controle de acesso à rede** permite contenção automática: um endereço que tocou um chamariz pode ser posto em quarentena ou ter o acesso restrito. Este é um dos melhores candidatos a automação justamente pela propriedade de poucos falsos positivos — a cautela usual com resposta automática é proporcional aos falsos positivos, e aqui eles são raros.
 
-A cautela que permanece é o caso do endereço compartilhado. Colocar em quarentena uma origem que se revela um gateway de NAT ou um host de salto afeta todos atrás dele, então a automação deveria considerar o que está por trás do endereço que está prestes a cortar.
+A cautela que permanece é o caso do endereço compartilhado. Colocar em quarentena uma origem que se revela um gateway de NAT (tradução de endereços de rede) ou um host de salto afeta todos atrás dele, então a automação deveria considerar o que está por trás do endereço que está prestes a cortar.
 
 ## Analisar um incidente
 

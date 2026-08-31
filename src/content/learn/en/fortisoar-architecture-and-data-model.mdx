@@ -32,13 +32,13 @@ A **record** is one instance — one alert, one incident.
 
 **Fields** hold the values on a record. They have types, and the type matters more than it looks: a picklist field constrains input to known values, which is what makes it usable in playbook conditions and dashboard grouping. A text field holding what should have been a picklist is the most common reason a dashboard cannot summarise something.
 
-**Relationships** connect records across modules. An incident relates to the alerts that raised it, the assets involved, the indicators observed, the tasks assigned. This is the part that distinguishes a SOAR platform from a ticket queue: the relationship is queryable, so "show me every incident touching this asset in the last quarter" is a question the system can answer.
+**Relationships** connect records across modules. An incident relates to the alerts that raised it, the assets involved, the indicators observed, the tasks assigned. This is the part that distinguishes a SOAR (security orchestration) platform from a ticket queue: the relationship is queryable, so "show me every incident touching this asset in the last quarter" is a question the system can answer.
 
 ## Correlation across modules
 
 Correlation is what relationships are for. When an alert arrives carrying an indicator already linked to an open incident, the system can attach it rather than raising a duplicate.
 
-The practical consequence is deduplication. A SOC drowning in alerts is frequently a SOC seeing the same event reported five times by five products, and correlation on a shared indicator collapses that into one incident with five sources.
+The practical consequence is deduplication. A SOC (security operations center) drowning in alerts is frequently a SOC seeing the same event reported five times by five products, and correlation on a shared indicator collapses that into one incident with five sources.
 
 It only works if the data is consistent. An indicator stored as text in one place and as a related record in another cannot be correlated, which is why the data model deserves attention before the automation does.
 

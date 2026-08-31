@@ -16,7 +16,7 @@ Three things carry the FortiGate name in the cloud and they are not variations o
 
 ## FortiGate VM: your appliance, someone else's hardware
 
-A FortiGate VM is the same FortiOS you run on an appliance, deployed as a virtual machine in AWS, Azure, GCP or a private hypervisor. You size it, deploy it, configure it, patch it, and operate it. Everything in the rest of this series applies unchanged: policies, NAT, routing, security profiles, HA.
+A FortiGate VM is the same FortiOS you run on an appliance, deployed as a virtual machine in AWS, Azure, GCP or a private hypervisor. You size it, deploy it, configure it, patch it, and operate it. Everything in the rest of this series applies unchanged: policies, NAT (network address translation), routing, security profiles, HA.
 
 What changes is the surrounding environment. Cloud networking is not a data centre: interfaces attach to virtual networks with their own routing, the provider's route tables must send traffic to the firewall for it to see anything, and a security group in front of it can silently drop what you expected to inspect. Deploying the VM is the easy half; steering traffic through it is the design work.
 
@@ -61,7 +61,7 @@ They are not competitors so much as answers to different questions.
 | FortiGate CNF | Fortinet | Your cloud network | Cloud protection without operating it |
 | FortiSASE | Fortinet | Fortinet PoPs | Users and branches, wherever they are |
 
-A single organisation commonly runs all three: VMs protecting cloud workloads, SASE covering the workforce, and physical appliances at sites that need them. The shared configuration language across them is the reason the combination is manageable at all.
+A single organisation commonly runs all three: VMs protecting cloud workloads, SASE (secure access service edge) covering the workforce, and physical appliances at sites that need them. The shared configuration language across them is the reason the combination is manageable at all.
 
 ## What an exam candidate should be able to state cold
 

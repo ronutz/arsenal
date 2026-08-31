@@ -50,7 +50,7 @@ Changes made in a workspace session are not visible to others, and are not insta
 
 ## FortiGuard services through FortiManager
 
-FortiManager can act as a local FortiGuard distribution point, downloading antivirus and IPS updates once and serving them to managed devices. The reasons are bandwidth and reachability: a fleet of devices each fetching updates independently multiplies traffic, and devices without direct internet access cannot fetch at all.
+FortiManager can act as a local FortiGuard distribution point, downloading antivirus and IPS (intrusion prevention system) updates once and serving them to managed devices. The reasons are bandwidth and reachability: a fleet of devices each fetching updates independently multiplies traffic, and devices without direct internet access cannot fetch at all.
 
 The failure mode to know is that a device configured to use FortiManager for FortiGuard, on a FortiManager that itself cannot reach Fortinet, silently stops receiving updates. Signature age is the symptom to watch, and it does not announce itself.
 

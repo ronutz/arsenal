@@ -1,0 +1,81 @@
+---
+slug: wireless-networking-from-802-11-to-wifi-7
+title: "Wi-Fi: um meio compartilhado fingindo ser cabo, e tudo o que decorre disso"
+summary: "A Ethernet resolveu a disputa dando um fio a cada dispositivo. O Wi-Fi não pode, então toma emprestado o protocolo de rádio dos anos 1970 que a Ethernet abandonou — e cada geração desde então tenta comprar de volta a eficiência que compartilhar custa. Os padrões, o espectro, as arquiteturas, o cenário de fabricantes, e por que o erro mais comum de implantação é tratar cobertura e capacidade como o mesmo problema."
+concepts: ["wifi", "802.11", "spectrum", "roaming", "architecture"]
+relatedTools: []
+relatedArticles: ["network-segmentation-from-vlans-to-microsegmentation", "load-balancing-what-actually-decides-where-a-request-goes", "zero-trust-ztna-and-sase-without-the-marketing"]
+category: networking
+order: 135
+status: reviewed
+updated: "2026-08-30"
+---
+
+## Origens: o protocolo que a Ethernet superou
+
+O ancestral do Wi-Fi é a **ALOHAnet**, projeto da Universidade do Havaí de 1971 que ligava ilhas por rádio. Sua contribuição foi uma regra de disputa: transmita quando tiver algo a enviar, detecte a colisão, espere um intervalo aleatório, tente de novo. A Ethernet herdou a ideia, e depois escapou dela - a Ethernet comutada deu a cada dispositivo um par dedicado, e a disputa virou curiosidade histórica nas redes cabeadas.
+
+O sem fio não consegue escapar. Um canal de rádio é um meio genuinamente compartilhado: **só uma estação ao alcance pode transmitir por vez**, e um receptor não consegue escutar enquanto transmite, então o Wi-Fi nem sequer detecta colisões como a Ethernet antiga fazia. Ele substitui isso por **prevenção de colisão** - escutar antes de transmitir, esperar um recuo aleatório, e confirmar cada quadro, porque silêncio é indistinguível de falha.
+
+Duas consequências atravessam todo o resto. **A vazão é compartilhada, não multiplicada**: acrescentar um ponto de acesso no mesmo canal divide o tempo de ar em vez de somar capacidade. E **o cliente mais lento dita o ritmo**, porque um dispositivo transmitindo a uma taxa baixa ocupa o canal por muito mais tempo para enviar os mesmos bytes - um notebook distante consome o tempo de ar que uma dúzia de próximos teria dividido.
+
+## Evolução, geração a geração
+
+O padrão é o [IEEE 802.11, ratificado em 1997 a 2 Mbps](https://en.wikipedia.org/wiki/IEEE_802.11). Os nomes de marketing só chegaram em 2018, retroativamente.
+
+- **802.11b (1999)** - 2,4 GHz, 11 Mbps. Silício barato tornou o Wi-Fi onipresente, e o pôs na mesma faixa de fornos de micro-ondas e telefones sem fio.
+- **802.11a (1999)** - 5 GHz, 54 Mbps. Tecnicamente melhor, comercialmente atrasado.
+- **802.11g (2003)** - as velocidades do 5 GHz na faixa de 2,4 GHz.
+- **802.11n / Wi-Fi 4 (2009)** - a primeira mudança estrutural: **MIMO**, múltiplas antenas transmitindo fluxos independentes, mais a união de canais. É aqui que "mais antenas" passou a significar algo.
+- **802.11ac / Wi-Fi 5 (2013)** - só 5 GHz, canais mais largos, e **MU-MIMO de descida**: um ponto de acesso falando com vários clientes ao mesmo tempo.
+- **802.11ax / Wi-Fi 6 e 6E (2019, 2020)** - a geração que mudou o objetivo de *velocidade* para *eficiência*. O **OFDMA** divide um canal em unidades de recurso, para que várias transmissões pequenas dividam uma fatia de tempo em vez de enfileirar; a **coloração de BSS** deixa o rádio distinguir as transmissões da própria rede das do vizinho e parar de ceder sem necessidade; o **tempo de despertar alvo** deixa dispositivos a bateria agendarem quando escutar. O Wi-Fi 6E acrescentou a faixa de 6 GHz - um trecho grande de espectro limpo, sem dispositivos legados dentro.
+- **802.11be / Wi-Fi 7** - canais ainda mais largos, modulação de ordem mais alta, e **operação multienlace**, em que um cliente usa mais de uma faixa ao mesmo tempo em vez de escolher.
+
+Lido como um todo, o arco é inconfundível: as primeiras gerações vendiam taxa bruta; as recentes vendem **eficiência de tempo de ar e determinismo**, porque é a disputa, e não a modulação, que limita uma rede movimentada.
+
+## A física que não se contorna com projeto
+
+**Faixas.** A de 2,4 GHz vai mais longe e penetra melhor, e tem apenas **três canais de 20 MHz sem sobreposição** - e é por isso que implantações densas em 2,4 GHz interferem consigo mesmas. A de 5 GHz tem muito mais canais, alguns exigindo detecção de radar e desocupação do canal. A de 6 GHz tem mais espectro e o menor alcance, e só clientes recentes a usam.
+
+**Largura de canal é troca, não melhoria.** Dobrar a largura mais ou menos dobra a taxa de pico e reduz à metade a quantidade de canais sem sobreposição disponíveis - então canais largos ajudam numa área pouco usada e atrapalham numa densa. Implantar canais de 80 MHz num escritório cheio de pontos de acesso é um erro comum e caro.
+
+**A interferência cocanal** é o que acontece quando pontos de acesso vizinhos compartilham um canal: eles não corrompem um ao outro, eles *esperam educadamente* um pelo outro, então a vazão medida desaba enquanto todo indicador de sinal parece excelente. É o problema sem fio mais mal diagnosticado que existe, porque os sintomas parecem cobertura fraca e a causa é cobertura demais.
+
+**Cobertura não é capacidade.** Um levantamento de site que prova sinal em todo lugar não diz nada sobre quantos dispositivos conseguem transmitir ao mesmo tempo no mesmo espaço. Projetar para capacidade significa mais pontos de acesso com potência *menor*, em canais cuidadosamente planejados - o oposto do instinto de aumentar tudo.
+
+## Arquiteturas
+
+**Pontos de acesso autônomos.** Cada um configurado por si. Ótimo para um punhado, ingerenciável além disso.
+
+**Baseada em controladora.** Uma controladora física ou virtual centraliza configuração, gestão de rádio e muitas vezes o plano de dados. Tunelar todo o tráfego de volta à controladora simplifica a política e cria um gargalo e um [ponto de estrangulamento](/learn/the-chokepoints-of-the-internet); a comutação local evita isso e complica a política. O protocolo por baixo costuma ser o CAPWAP, padronizado na série de RFCs, e é por isso que interoperabilidade entre controladora e ponto de acesso é ao menos conceitualmente possível.
+
+**Gerenciada em nuvem.** O plano de controle é um serviço; o de dados fica local. Operacionalmente a mais leve, e faz da sua gestão sem fio uma dependência da disponibilidade e da jurisdição de outra pessoa.
+
+**Malha.** Pontos de acesso retransmitem uns para os outros pelo ar, ao custo de cerca de metade da vazão por salto, porque um rádio repetidor precisa receber e então retransmitir o mesmo quadro.
+
+## Roaming, segurança, e as dependências que quebram o Wi-Fi
+
+**Roaming é decisão do cliente.** A infraestrutura pode sugerir, mas quem escolhe quando mudar é o cliente - e é por isso que problemas de "cliente grudado" são comuns e não se resolvem apenas do lado do ponto de acesso. Os padrões que ajudam são o **802.11k** (relatórios de vizinhança, para o cliente saber onde procurar), o **802.11v** (transições sugeridas pela rede) e o **802.11r** (transição rápida, que pré-autentica para que o salto não exija um aperto de mão completo). Voz e vídeo expõem problemas de roaming que a navegação comum esconde por completo.
+
+**Segurança, por gerações.** O WEP está quebrado sem conserto. O WPA2 com AES é a linha de base de longa data. O **WPA3** acrescenta uma troca de chaves autenticada por senha que resiste a ataques de dicionário offline sobre apertos de mão capturados, e o **Enhanced Open** cifra tráfego de visitante que de outro modo estaria em claro. Para empresas, o **802.1X com EAP** autentica cada usuário contra um diretório via RADIUS (serviço de autenticação remota discada de usuário), e é isso que torna possível política por usuário e [segmentação](/learn/network-segmentation-from-vlans-to-microsegmentation) no sem fio.
+
+**As dependências que de fato causam quedas** raramente são de rádio: disponibilidade de RADIUS e do diretório, esgotamento de escopo DHCP num espaço movimentado, DNS, vencimento de certificado no servidor de autenticação, desvio de NTP quebrando validação de certificado, orçamento de energia no switch, e capacidade do enlace do ponto de acesso até o switch. Um chamado de problema sem fio é, estatisticamente, um problema de cabo ou de identidade.
+
+## O cenário de fabricantes, por categoria
+
+- **Plataformas corporativas de controladora e nuvem** - Cisco, HPE Aruba, Extreme Networks, Juniper Mist. Gestão de rádio profunda, otimização de roaming e analítica; você está comprando um modelo de gestão tanto quanto rádios, e a diferença entre fabricantes está sobretudo em como automatizam o planejamento de canal e potência.
+- **Nativas de nuvem** - Cisco Meraki e similares. As mais rápidas de operar, dependentes de licença, e o plano de gestão é uma assinatura que não dá para pausar.
+- **Fabricantes de plataforma de segurança** - Fortinet, Palo Alto e outros integram pontos de acesso à política de firewall, o que é atraente quando se quer uma linguagem de política única entre cabeado, sem fio e remoto.
+- **Custo-benefício e prosumidor** - Ubiquiti, TP-Link Omada e similares, competentes para sites pequenos e médios por uma fração do custo, com menos sofisticação de recursos de rádio em ambientes densos.
+- **Especialistas de operadora e externo** - Cambium, CommScope Ruckus e outros, fortes em locais de alta densidade e implantações externas, onde o projeto de antena importa mais que o console.
+- **Firmware aberto** - OpenWrt, e planos de controle abertos, viáveis onde o operador quer controle total e consegue fornecer a engenharia.
+
+A pergunta de compra que de fato os separa não é vazão de datasheet. É **como o sistema se comporta quando a sala enche**: planejamento automático de canal e potência, justiça de tempo de ar, direcionamento de faixa, e o que a controladora faz quando perde o enlace.
+
+## O que conferir antes de culpar o rádio
+
+- Conte clientes por ponto de acesso e por canal, e não só a intensidade de sinal.
+- Confirme que a largura de canal casa com a densidade, e que o 2,4 GHz está limitado aos três canais sem sobreposição.
+- Procure interferência cocanal e utilização de tempo de ar antes de acrescentar pontos de acesso, já que acrescentar mais costuma ter sido a causa.
+- Verifique o comportamento de 802.11k, 802.11v e 802.11r com os dispositivos clientes reais, porque o suporte varia por fabricante e por firmware.
+- Teste a autenticação de ponta a ponta - RADIUS, diretório, certificados, relógios -, já que esse caminho falha mais do que o ar.

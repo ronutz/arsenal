@@ -39,7 +39,7 @@ UEBA output feeds two places. It can **contribute to rules**, so a rule fires on
 
 ## ZTNA integration
 
-Zero trust access decisions produce a rich event stream: which user, which device, which application, what posture, allowed or denied. Feeding that into the SIEM adds a dimension the network alone does not carry.
+Zero trust access decisions produce a rich event stream: which user, which device, which application, what posture, allowed or denied. Feeding that into the SIEM (security information and event management) adds a dimension the network alone does not carry.
 
 The correlation this enables is the point. A device failing posture checks, then a user from that device attempting access to several applications in succession, then a burst of denials — each is minor and the sequence is not. Only a system seeing both the access decisions and the surrounding activity can join them.
 
@@ -51,10 +51,10 @@ Connecting a product to the SIEM is straightforward and is not the same as gaini
 
 **Parsing.** Events must land in structured fields, or they are text you cannot aggregate on. An integration that delivers unparsed logs has produced storage, not analytics.
 
-**CMDB alignment.** The device in the new source must be recognisable as the same device the SIEM already knows, or correlation cannot join them.
+**CMDB (configuration management database) alignment.** The device in the new source must be recognisable as the same device the SIEM already knows, or correlation cannot join them.
 
 **A question it answers.** The honest test for a new integration is which query or rule becomes possible that was not before. If nothing does, the integration has added volume and cost without adding capability, and volume in a SIEM is never free.
 
 ## What an exam candidate should be able to state cold
 
-Machine learning and UEBA learn normal and report deviation, so the baseline period is a real operational concern and an anomaly is a prioritisation signal rather than a verdict. UEBA profiles users and entities, catches peer deviation and gradual change that thresholds miss, and feeds both rules and risk dashboards. ZTNA events add user, device, application and posture to the correlation. A new integration is only useful if its events are parsed into fields, its devices align to the CMDB, and it makes some question answerable that was not before.
+Machine learning and UEBA learn normal and report deviation, so the baseline period is a real operational concern and an anomaly is a prioritisation signal rather than a verdict. UEBA profiles users and entities, catches peer deviation and gradual change that thresholds miss, and feeds both rules and risk dashboards. ZTNA (zero trust network access) events add user, device, application and posture to the correlation. A new integration is only useful if its events are parsed into fields, its devices align to the CMDB, and it makes some question answerable that was not before.

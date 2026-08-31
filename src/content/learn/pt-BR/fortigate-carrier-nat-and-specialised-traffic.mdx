@@ -20,7 +20,7 @@ O NAT comum traduz uma rede privada atrás de um punhado de endereços públicos
 
 O mecanismo que torna isso viável é a **alocação de blocos de portas**: em vez de atribuir portas individualmente, um assinante recebe um bloco. Isso reduz enormemente o volume de registro — um registro por bloco em vez de por sessão — e é a diferença entre um volume de logs que pode ser retido e um que não pode.
 
-A consequência que alcança todo o resto é a **reputação compartilhada**. Quando milhares de assinantes compartilham um endereço, o comportamento daquele endereço é o agregado. Um assinante comprometido pode fazer o endereço entrar numa lista de bloqueio, e todos atrás dele são afetados por algo que não fizeram. É também por isso que a reputação por endereço de origem é evidência mais fraca do que parece, e por que o material de DDoS e de NAC nesta coleção volta ao mesmo ponto: um endereço não é um usuário.
+A consequência que alcança todo o resto é a **reputação compartilhada**. Quando milhares de assinantes compartilham um endereço, o comportamento daquele endereço é o agregado. Um assinante comprometido pode fazer o endereço entrar numa lista de bloqueio, e todos atrás dele são afetados por algo que não fizeram. É também por isso que a reputação por endereço de origem é evidência mais fraca do que parece, e por que o material de DDoS (negação de serviço distribuída) e de NAC nesta coleção volta ao mesmo ponto: um endereço não é um usuário.
 
 A obrigação que decorre é o registro. Atribuir uma ação a um assinante depois do fato exige saber qual assinante detinha qual bloco de portas em que momento, e se isso não foi registrado não pode ser reconstruído.
 

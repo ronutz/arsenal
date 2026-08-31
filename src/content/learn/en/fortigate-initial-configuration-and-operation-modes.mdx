@@ -30,7 +30,7 @@ The first configuration step is always the same, and it is the one people postpo
 
 The operation mode determines what the device is on the network.
 
-**NAT mode** is the default and the usual choice. Interfaces have IP addresses, the device routes between them, and it acts as a gateway. Everything about policies, NAT, routing and SD-WAN assumes this mode.
+**NAT mode** is the default and the usual choice. Interfaces have IP addresses, the device routes between them, and it acts as a gateway. Everything about policies, NAT, routing and SD-WAN (software-defined WAN) assumes this mode.
 
 **Transparent mode** turns the device into a bump in the wire. Interfaces have no IP addresses, the FortiGate bridges between them at layer 2, and hosts on either side are unaware it exists. It gets a single management IP for administration and nothing else. This is what you use to insert inspection into an existing segment without re-addressing anything — a common requirement when the network cannot be changed but the traffic must be inspected.
 
@@ -62,7 +62,7 @@ Two controls matter more than the protocol list:
 
 **Trusted hosts** restrict an administrator account to specific source addresses. This is per-account, not per-interface, and it is the stronger control: even if management is reachable, only the listed sources can authenticate. It is also the classic self-inflicted lockout, because a trusted host entry that does not include your current address takes effect immediately.
 
-**Changing the management ports** moves HTTPS and SSH off 443 and 22. This is not security by itself, and it does meaningfully reduce noise from indiscriminate scanning. It also frees 443 for a VPN or virtual server on the same interface, which is often the actual motivation.
+**Changing the management ports** moves HTTPS and SSH off 443 and 22. This is not security by itself, and it does meaningfully reduce noise from indiscriminate scanning. It also frees 443 for a VPN (virtual private network) or virtual server on the same interface, which is often the actual motivation.
 
 The recovery path when access is lost is console access over the serial port, which no software setting can block. Any FortiGate deployment where the console is not reachable has no recovery path short of a site visit, and that is worth knowing before it matters.
 

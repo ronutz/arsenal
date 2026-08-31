@@ -1,0 +1,70 @@
+---
+slug: the-certificate-authority-chokepoint
+title: "Certificate authorities: the padlock is a list of people you have never met"
+summary: "Your browser trusts a few hundred organisations to vouch for who owns which name, and any one of them can issue a valid certificate for any site on the internet. That design has failed in public at least once badly enough to end a company and expose a country's dissidents. What breaks when a CA is compromised, why revocation barely works, and how the industry replaced trust with surveillance of itself."
+concepts: ["tls", "certificate authority", "trust", "certificate transparency", "resilience"]
+relatedTools: []
+relatedArticles: ["the-chokepoints-of-the-internet", "submarine-cables-and-the-physical-internet", "bgp-and-the-routing-chokepoint", "the-crypto-wars-and-the-cypherpunks"]
+category: security
+order: 123
+status: reviewed
+updated: "2026-08-29"
+---
+
+## The design, stated honestly
+
+When your browser shows a padlock, it means a certificate authority signed a statement that this public key belongs to this name, and that your browser's **root store** contains that authority. The store holds on the order of a hundred-plus organisations, in many jurisdictions, some of them commercial, some governmental, some subsidiaries of each other.
+
+Here is the part people find uncomfortable when it is said plainly: **any authority in the store can issue a certificate for any name.** There is no partitioning by default. A CA in one country can sign for a bank in another, and your browser will accept it, because the trust model is a flat list rather than a hierarchy of relevance.
+
+That is the chokepoint. Not one organisation, but the weakest of several hundred.
+
+## What breaks when one fails
+
+**Immediately: nothing looks wrong.** That is the whole problem. A fraudulent certificate produces a valid padlock, so interception is indistinguishable from a normal connection at the user's end. Combine it with a [routing diversion](/learn/bgp-and-the-routing-chokepoint) or a manipulated resolver and you have working interception against traffic everyone believes is protected.
+
+**The canonical case is DigiNotar, in 2011.** A Dutch authority was compromised, and fraudulent certificates were issued for major services and used to intercept traffic in Iran, against ordinary users. When it came out, browsers removed the authority from their root stores — and because that authority also underpinned parts of Dutch government infrastructure, the removal broke public services in the Netherlands. **The company went bankrupt within weeks.** It is the clearest demonstration available that trust in this system is revocable, and that revoking it has collateral damage.
+
+The other recurring failure is quieter: misissuance without malice — an authority issuing certificates it should not have, through a broken validation process. That has ended the trust status of much larger organisations than DigiNotar, through gradual distrust rather than sudden removal.
+
+## Why revocation barely works
+
+If a certificate is found to be fraudulent, in theory it can be revoked. In practice the mechanisms are weak.
+
+**CRL (certificate revocation list)** downloads got large and slow. **OCSP (Online Certificate Status Protocol)** asks the authority whether a certificate is still valid, which leaks browsing to the authority and fails in a way nobody was willing to make fatal: if the check times out, browsers soft-fail and connect anyway, because failing closed would break the web every time a responder had a bad day. An attacker who can intercept your traffic can also drop your revocation check.
+
+The industry's real answer was not better revocation but **shorter lifetimes**. Certificates are now valid for a small number of months rather than years, on the reasoning that a certificate you cannot reliably revoke should at least expire soon. That is a design admission worth noticing: the fix for weak revocation was to make certificates disposable.
+
+## How the industry actually fixed the trust problem
+
+Not by trusting authorities more carefully, but by watching them.
+
+**Certificate Transparency** requires that certificates be published to append-only public logs, and browsers refuse certificates that are not logged. The effect is that an authority can still issue a certificate for your domain — but it cannot do so secretly. Anyone, including you, can monitor the logs for certificates naming your domains and see misissuance within hours.
+
+This is a genuinely different security model, and it is worth naming what changed: **the system moved from prevention to detection, and from trust to public accountability.** It works, it caught real misissuance repeatedly, and it is the reason the DigiNotar scenario is far harder to repeat quietly today.
+
+Two supporting mechanisms matter. **CAA records** let a domain owner declare in DNS which authorities may issue for their names, which constrains the flat list to the ones you chose. And browser vendors, through their root programmes and the CA/Browser Forum, act as the enforcement layer — they set the rules and remove authorities that break them, which is where the real power in this ecosystem now sits.
+
+## Who could do what
+
+**A compromised or coerced authority** can issue a certificate for anything, and pairing it with network position gives interception. Certificate Transparency makes that noisy rather than impossible.
+
+**A state that operates or controls an authority in the store** has the same capability with fewer steps, which is why the composition of root stores is a live political question rather than a technical detail.
+
+**Browser vendors** hold the counterweight, and it is a concentration of its own: a handful of root programmes decide who the world trusts. That power has been used responsibly and it is still power held by a small number of companies.
+
+**Let's Encrypt changed the economics** by making certificates free and automated, which pushed encryption from a purchased feature to a default. It also concentrated a very large share of the web's certificates in one non-profit — a resilience question the industry answers with backup issuance paths, and one worth asking about your own infrastructure.
+
+## What you can do
+
+- **Monitor Certificate Transparency logs for your own domains.** Free, and it tells you when someone certifies a name you own.
+- **Publish CAA records** so only your chosen authorities can issue.
+- **Automate renewal and assume short lifetimes.** Expired certificates now cause more outages than compromised ones.
+- **Have a second issuance path** ready, tested, for the day your primary authority has a bad week.
+- **Pin only where you control both ends.** Public key pinning in browsers was tried and largely abandoned because a mistake locks you out of your own site; in mobile applications and internal systems, where you ship both ends, it remains sound.
+
+## Where this sits in the series
+
+The [DNS root](/learn/what-happens-if-the-dns-root-goes-dark) is data you can replicate, and its weakness is that a signed lie validates. [Routing](/learn/bgp-and-the-routing-chokepoint) is assertions you can partly sign. [Cables](/learn/submarine-cables-and-the-physical-internet) are objects you can only duplicate at expense.
+
+Certificates are the odd one: the chokepoint is a **list of organisations**, and the fix was not to shorten the list or to trust it more, but to make everything it does public. That answer — replace unverifiable trust with verifiable exposure — is the most transferable idea in this whole series, and it is what the rest of the industry keeps rediscovering under other names.

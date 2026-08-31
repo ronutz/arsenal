@@ -61,7 +61,13 @@ import { Fragment } from "react";
 // Juniper are deliberately ABSENT - Red Education does not deliver those.
 const RED_EDUCATION_VENDORS: { name: string; href?: string }[] = [
   // Every pill links to that vendor's page on this site (PRIME 20/07/2026):
-  // the six authorized-through-Red-Education vendors go to their chapter
+  // The vendors PRIME is AUTHORIZED on through Red Education go to their chapter.
+  //
+  // *** FOUR, NOT SIX (PRIME, 2026-08-16). Ping Identity and Zscaler are IN
+  // PROGRESS - he is working towards them and holds neither authorization. An
+  // earlier version of this file said six and the explainer list claimed he
+  // taught them, which was a false credential claim on his own site. See R-12.
+  // Authorized and delivered: F5, Extreme Networks, Fortinet, Netskope. ***
   // pages, the rest to their partner profiles. ForgeRock points to the Ping
   // Identity chapter, which tells the acquisition story.
   { name: "F5", href: "/industry/f5" },
@@ -378,7 +384,14 @@ export default async function RedEducationPage({
                   children with real hrefs, so all ten are here.
 
                   Ordered with the platforms I teach first, because that is the
-                  order a reader of THIS page cares about. The titles are Red
+                  order a reader of THIS page cares about.
+
+                  *** THE MARKER IS A DELIVERY CLAIM, NOT AN AUTHORIZATION ONE
+                  (PRIME, 2026-08-16). It was applied to Ping Identity and
+                  Zscaler, which he is AUTHORIZED on and does NOT yet teach. The
+                  standing rule is exact and I broke it: naming a vendor is one
+                  thing, claiming to train on it is another, and the delivered
+                  count stays at four platforms until PRIME says otherwise. *** The titles are Red
                   Education's; the note under each says what it is, not what it
                   says - nobody has read all ten, and a description of unread
                   content would be a guess. */}
@@ -393,8 +406,8 @@ export default async function RedEducationPage({
                 {[
                   { slug: "netskope-training-resources", label: "Netskope", vendor: "netskope", mine: true },
                   { slug: "fortinet-training-resources", label: "Fortinet", vendor: "fortinet", mine: true },
-                  { slug: "ping-identity-training-resources", label: "Ping Identity", vendor: "ping", mine: true },
-                  { slug: "zscaler-training-resources", label: "Zscaler", vendor: "zscaler", mine: true },
+                  { slug: "ping-identity-training-resources", label: "Ping Identity", vendor: "ping", mine: false },
+                  { slug: "zscaler-training-resources", label: "Zscaler", vendor: "zscaler", mine: false },
                   { slug: "cisco-training-resources", label: "Cisco", vendor: "cisco", mine: false },
                   { slug: "check-point-training-resources", label: "Check Point", vendor: "checkpoint", mine: false },
                   { slug: "training-resources-palo-alto", label: "Palo Alto Networks", vendor: "palo-alto", mine: false },

@@ -17,7 +17,7 @@ BIG-IP DNS (formerly GTM) answers DNS queries with the address of a healthy appl
 
 iQuery is a proprietary protocol that BIG-IP systems use to communicate with each other. It is XML, sent gzip-compressed, and it is not a client-facing protocol like DNS: it is the control-plane conversation among your BIG-IP devices. BIG-IP DNS uses it to determine the health of the objects in its configuration, to exchange synchronization-group state, and to carry configuration synchronization across the group, so that every device shares one view of what exists and what is up.
 
-Two processes do the work. On BIG-IP DNS, `gtmd` drives GSLB and opens the iQuery connections. On every BIG-IP that DNS probes, including other BIG-IP DNS devices and the LTM systems hosting the virtual servers, `big3d` answers. The `gtmd` agent monitors both the availability of those systems and the integrity of the network paths between the systems hosting a domain and the local DNS servers that resolve it.
+Two processes do the work. On BIG-IP DNS, `gtmd` drives GSLB (global server load balancing) and opens the iQuery connections. On every BIG-IP that DNS probes, including other BIG-IP DNS devices and the LTM systems hosting the virtual servers, `big3d` answers. The `gtmd` agent monitors both the availability of those systems and the integrity of the network paths between the systems hosting a domain and the local DNS servers that resolve it.
 
 ## The mesh and port 4353
 

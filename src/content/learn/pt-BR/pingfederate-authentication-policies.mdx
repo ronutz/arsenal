@@ -19,7 +19,7 @@ updated: "2026-07-20"
 
 Uma árvore de política se lê de cima para baixo, e seus nós vêm em dois tipos.
 
-**Fontes de autenticação** fazem o autenticar: instâncias de adapter, ou conexões IdP (Identity Provider, provedor de identidade) quando a "fonte" é outro parceiro de federação. Cada nó de fonte tem duas saídas - **Fail** e **Success** - e os ramos são a lógica. O Fail da tentativa de Kerberos pode fluir para o nó do HTML Form, e essa única linha de árvore é o padrão clássico: tentar o SSO silencioso de desktop, cair para a página de login, invisivelmente para o usuário que só vê a coisa certa acontecer.
+**Fontes de autenticação** fazem o autenticar: instâncias de adapter, ou conexões IdP (Identity Provider, provedor de identidade) quando a "fonte" é outro parceiro de federação. Cada nó de fonte tem duas saídas - **Fail** e **Success** - e os ramos são a lógica. O Fail da tentativa de Kerberos pode fluir para o nó do HTML Form, e essa única linha de árvore é o padrão clássico: tentar o SSO (single sign-on) silencioso de desktop, cair para a página de login, invisivelmente para o usuário que só vê a coisa certa acontecer.
 
 **Seletores** ramificam sem autenticar ninguém. Um seletor inspeciona contexto - qual aplicação foi pedida, de qual faixa de rede a requisição veio, uma propriedade estendida da conexão, e sinais semelhantes - e roteia de acordo. Seletores são como uma árvore serve populações diferentes de formas diferentes: a faixa CIDR (Classless Inter-Domain Routing) corporativa desce pelo ramo do Kerberos, todo o resto vai direto ao formulário; o ramo da aplicação sensível adiciona um segundo fator que o ramo comum pula.
 

@@ -23,7 +23,7 @@ Dois comportamentos documentados fazem do audit log um instrumento de segurança
 
 ## Retenção, e como tirar a trilha de lá
 
-O console guarda audit logs por **até seis meses** - longo o bastante para a maioria das investigações, curto o bastante para que regimes de conformidade com memória mais longa precisem exportar a trilha enquanto está quente. Isso é um problema resolvido na mesma arquitetura de todo o resto: o log de Admin Audit é um dos tipos de feed documentados na [família de streaming de logs do ZIA](/learn/zscaler-nanolog-nss-and-log-streaming), então a trilha de mudanças pode fluir continuamente ao SIEM ao lado dos logs de tráfego, onde a retenção vira a sua política em vez da do console.
+O console guarda audit logs por **até seis meses** - longo o bastante para a maioria das investigações, curto o bastante para que regimes de conformidade com memória mais longa precisem exportar a trilha enquanto está quente. Isso é um problema resolvido na mesma arquitetura de todo o resto: o log de Admin Audit é um dos tipos de feed documentados na [família de streaming de logs do ZIA](/learn/zscaler-nanolog-nss-and-log-streaming), então a trilha de mudanças pode fluir continuamente ao SIEM (security information and event management) ao lado dos logs de tráfego, onde a retenção vira a sua política em vez da do console.
 
 ## Lendo como um operador
 

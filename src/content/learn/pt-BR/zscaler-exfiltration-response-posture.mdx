@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-21"
 ---
 
-Cada artigo desta série até aqui construiu um instrumento; este toca todos juntos, no cenário que mais testa o domínio do operador sobre o todo: *um sinal crível de que dados estão saindo*. Talvez [uma regra de DLP disparou](/learn/zia-dlp-engines-dictionaries-edm-idm); talvez uma anomalia de contagem de bytes aflorou; talvez a dica foi humana. O passo a passo abaixo é a composição - cada etapa se apoiando num instrumento já dissecado - e termina, deliberadamente, em *postura* em vez de num único bloqueio heroico.
+Cada artigo desta série até aqui construiu um instrumento; este toca todos juntos, no cenário que mais testa o domínio do operador sobre o todo: *um sinal crível de que dados estão saindo*. Talvez [uma regra de DLP (data loss prevention) disparou](/learn/zia-dlp-engines-dictionaries-edm-idm); talvez uma anomalia de contagem de bytes aflorou; talvez a dica foi humana. O passo a passo abaixo é a composição - cada etapa se apoiando num instrumento já dissecado - e termina, deliberadamente, em *postura* em vez de num único bloqueio heroico.
 
 ## Passo um: leia o alerta como um registro
 
@@ -19,7 +19,7 @@ Um alerta é [um registro de log vestindo uma sirene](/learn/zia-web-and-firewal
 
 ## Passo dois: estabeleça o que podia ser visto
 
-Antes de concluir qualquer coisa da ausência, mapeie a visibilidade. [O fluxo foi inspecionado](/learn/zia-ssl-inspection-policy-and-bypasses)? Um destino na lista de bypass é um corredor onde o DLP era estruturalmente cego - o que muda a pergunta de "o que o DLP viu" para "o que a contabilidade de bytes do log de firewall diz que se moveu pelo corredor". O dispositivo estava sequer na plataforma? O caminho do dispositivo não gerenciado nunca transita pelos controles inline, que é precisamente [a jurisdição do CASB fora de banda](/learn/zscaler-casb-and-saas-security). Este passo é a epistemologia da investigação: os logs dizem a verdade, mas só sobre o que a arquitetura os deixou testemunhar.
+Antes de concluir qualquer coisa da ausência, mapeie a visibilidade. [O fluxo foi inspecionado](/learn/zia-ssl-inspection-policy-and-bypasses)? Um destino na lista de bypass é um corredor onde o DLP era estruturalmente cego - o que muda a pergunta de "o que o DLP viu" para "o que a contabilidade de bytes do log de firewall diz que se moveu pelo corredor". O dispositivo estava sequer na plataforma? O caminho do dispositivo não gerenciado nunca transita pelos controles inline, que é precisamente [a jurisdição do CASB (cloud access security broker) fora de banda](/learn/zscaler-casb-and-saas-security). Este passo é a epistemologia da investigação: os logs dizem a verdade, mas só sobre o que a arquitetura os deixou testemunhar.
 
 ## Passo três: percorra os dois planos
 

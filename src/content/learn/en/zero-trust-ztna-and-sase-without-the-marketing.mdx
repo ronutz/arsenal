@@ -1,0 +1,118 @@
+---
+slug: zero-trust-ztna-and-sase-without-the-marketing
+title: "Zero trust, ZTNA and SASE: what the terms mean when you remove the marketing"
+summary: "Zero trust is an architectural principle, ZTNA (zero trust network access) is a way of publishing applications, and SASE (secure access service edge) is a purchasing arrangement. Vendors blur all three because the confusion sells. Here is what each actually is, what genuinely changes when you adopt them, and the honest list of things they do not fix."
+concepts: ["zero trust", "ztna", "sase", "segmentation", "identity"]
+relatedTools: []
+relatedArticles: ["passkeys-and-phishing-resistant-authentication", "cloud-and-cdn-monoculture", "the-chokepoints-of-the-internet"]
+category: security
+order: 131
+status: reviewed
+updated: "2026-08-30"
+---
+
+## The idea underneath
+
+The old model was a perimeter: prove yourself once at the boundary, and inside you are trusted. It failed for reasons that are now obvious — the inside is where the attacker ends up anyway, the boundary stopped existing when applications moved to other people's datacentres, and one compromised laptop inherited the trust of the whole building.
+
+**Zero trust** is the response, and stripped of vendor language it is one sentence: **no request is trusted because of where it came from.** Every access decision is made per request, against the identity, the device, and the context, regardless of network position.
+
+Two consequences follow that are easy to miss.
+
+**Being on the corporate network stops being a credential.** That is the whole point, and it is also why adoption is hard: enormous amounts of legacy behaviour assume network location grants access.
+
+**The policy decision point becomes critical infrastructure.** You have not removed trust; you have relocated it, from the network boundary to the identity system and the policy engine. Those now decide everything, which makes them the thing an attacker goes for and the thing whose outage stops all work.
+
+## Origins: the idea is older than the slogan
+
+The vocabulary is recent; the argument is not.
+
+**The Jericho Forum and de-perimeterisation (2004).** A group of large-enterprise security officers argued publicly that the hardened perimeter was already failing — outsourcing, extranets and mobile working had made the boundary meaningless — and that protection had to move to the data and the transaction. They were describing zero trust before the phrase existed, and they were largely ignored because there was nothing to buy.
+
+**The term (2010).** An industry analyst named the model *zero trust* and stated the rule that still defines it: never trust, always verify. The naming mattered more than the novelty, because it gave a purchasing category to an architectural argument.
+
+**BeyondCorp (2014 onward).** After a state-linked intrusion, Google published a multi-year programme to remove privileged status from its corporate network entirely: every request authenticated and authorised on device and user, with no VPN and no trusted subnet. This is the first credible large-scale implementation, and it is the reason the model stopped being theory — one organisation demonstrated that it could be run.
+
+**NIST SP 800-207 (2020).** The architecture was given a vendor-neutral definition: a **policy engine** decides, a **policy administrator** executes, and a **policy enforcement point** sits in the traffic path. That decomposition is the useful thing to hold on to, because every product in this space is some arrangement of those three, and naming them lets you compare offers that use incompatible marketing language.
+
+**The remote-work inflection (2020).** When entire workforces left the building, the perimeter model failed operationally rather than philosophically, and budget followed. Most current deployments date from that moment, which is worth remembering when assessing maturity claims.
+
+## What ZTNA actually is
+
+**ZTNA (zero trust network access)** is the concrete product category: instead of putting a user on the network with a VPN (virtual private network) and letting them reach whatever routes allow, a broker authenticates the user and device and then connects them to **one specific application**.
+
+The genuine improvement is not encryption, which the VPN already had. It is the **absence of lateral movement**. A compromised session reaches the applications that session was authorised for, and cannot scan the subnet, because it was never on the subnet. That is a real architectural gain and it is the reason the category exists.
+
+Two properties worth understanding before you buy:
+
+**Applications become invisible rather than firewalled.** Most implementations have the connector dial outward to the broker, so there is no inbound port to find. This removes an entire class of exposure — you cannot attack what does not answer.
+
+**The broker sees everything.** All access flows through it, which is excellent for logging and a genuine concentration of both risk and dependency. If the broker is down, work stops; if the broker is compromised, everything it fronts is exposed.
+
+## What SASE actually is
+
+**SASE (secure access service edge)** is not a technology. It is the bundling of network and security functions — secure web gateway, cloud access security broker, ZTNA, firewall, sometimes SD-WAN (software-defined wide area network) — delivered from a provider's points of presence instead of from boxes you own.
+
+The honest description is that **SASE is a purchasing and operating model**. The functions are ones you already had; what changes is that they run in someone else's edge, are billed as a subscription, and are managed through one console.
+
+The real benefits are real: consistent policy for users who are no longer in offices, less hardware to refresh, and a single place to express rules that used to live in four products.
+
+The real costs are equally real, and they are the ones the diagrams omit. Your traffic now traverses a provider's infrastructure, so their outage is your outage and their jurisdiction is your jurisdiction. Policy portability between vendors is poor, so the switching cost is high by construction. And this is [concentration risk](/glossary/concentration-risk) in its purest form: you have made one supplier a dependency of every user's every connection.
+
+## The architecture, in the standard's terms
+
+**The policy engine** evaluates a request against identity, device state, resource sensitivity and context, and returns a decision. It is the brain, and it is only as good as the signals it receives.
+
+**The policy administrator** turns that decision into an instruction — establish the session, issue the token, tear it down.
+
+**The policy enforcement point** is the component in the path that actually allows or blocks: a broker, a proxy, an agent on the endpoint, or a sidecar next to the workload.
+
+Three consequences follow that matter operationally.
+
+**Trust is relocated, not removed.** The engine and the identity provider become the most security-critical systems you own, and the single most valuable target in the estate.
+
+**Every decision needs signal.** Device posture, identity assurance, resource classification and behavioural context all have to come from somewhere, and each source is a dependency with its own accuracy and outage profile.
+
+**Enforcement point placement decides what you can protect.** A broker in front of applications cannot police traffic that never passes it, which is why deployments end with an exception list of anything that could not be put behind the enforcement point.
+
+## Session model and the interoperability question
+
+**Sessions, not perimeters.** Decisions are per-request in principle and per-session in practice, so the real security parameters are session lifetime, re-evaluation frequency and what happens when posture changes mid-session. Long-lived tokens quietly reintroduce the model you were replacing.
+
+**The protocols involved are standard, and the policy is not.** Authentication and federation rest on well-established standards — OpenID Connect and SAML for identity, mutual TLS for workload identity, and increasingly [phishing-resistant credentials](/learn/passkeys-and-phishing-resistant-authentication) underneath. Policy expression, device-posture signals and risk scoring are proprietary in every product, so the parts that are hard to write are exactly the parts that do not port between vendors. That asymmetry is the switching cost, and it is rarely on the slide.
+
+## The vendor landscape, by category
+
+- **Identity-first platforms** — Okta, Microsoft Entra, Ping. The policy engine lives with identity, which is architecturally coherent because identity is the signal that matters most; you are consolidating on an identity provider and should price the consequences of that.
+- **Network and security clouds** — Zscaler, Netskope, Cloudflare, Cisco, Palo Alto, Fortinet. Enforcement in the provider's edge, delivering ZTNA alongside web and cloud-application controls — the practical shape most SASE purchases take.
+- **Remote-access replacements** — vendors positioning primarily against the VPN. Fastest to show value, narrowest scope; the risk is a project that stops at remote access and reports itself as zero trust.
+- **Microsegmentation and workload identity** — Illumio, service meshes and similar, enforcing between workloads rather than at the user edge. Complementary to the above rather than competing, and the two halves are frequently bought by different teams who never reconcile the policy.
+- **Open standards and self-built** — SPIFFE and SPIRE for workload identity, an identity provider plus a proxy for user access. Real work, no licence, and full portability of the parts that are standardised.
+
+The structural question to ask any of them is the same: **where is the enforcement point, what happens to traffic that cannot pass through it, and what does your policy look like the day you leave?**
+
+## What none of it fixes
+
+Say this part plainly, because the marketing does not.
+
+**A valid session is still a valid session.** If an attacker phishes credentials and completes authentication, zero trust admits them — correctly, by its own logic. This is why the [phishing-resistant authentication](/learn/passkeys-and-phishing-resistant-authentication) question sits underneath the whole architecture; a policy engine can only be as good as the identity assertion it receives.
+
+**Device posture is a claim, not a fact.** Signals come from an agent running on a machine that may already be compromised, and a compromised endpoint can report healthy.
+
+**Application-layer flaws are untouched.** If the application has an injection bug, the perfectly authorised user reaches it perfectly.
+
+**Legacy stays legacy.** The systems that cannot speak modern identity — the industrial controller, the ancient appliance, the thing nobody will recertify — end up in an exception, and the exceptions are where the risk migrates. Every real deployment has them, and the useful question to ask a vendor is not how their product works but **what happens to your exceptions**.
+
+## Adopting it without theatre
+
+- **Start from an inventory of applications and who should reach them.** That inventory is the actual project; the product is the easy part.
+- **Do identity first.** Zero trust on weak authentication moves the trust to a place that is just as easy to defeat.
+- **Expect the exception list, and manage it as a register** with owners and dates, not as a footnote.
+- **Plan for the broker being down**, since you have converted a network dependency into a service dependency.
+- **Treat SASE as a supplier decision**, with the questions you would ask of any supplier: exit path, jurisdiction, outage history, and what your policy looks like the day you leave.
+
+## The framing worth keeping
+
+Zero trust is a good principle badly served by its vocabulary. The principle — decide per request, not per location — is right, and the industry would be healthier if it were discussed as **an architecture with trade-offs** rather than a product with a badge.
+
+The trade-off is the one that runs through [this whole site](/learn/the-chokepoints-of-the-internet): you have not eliminated trust, you have concentrated it somewhere newer and more visible. That is usually an improvement, because concentrated trust can be monitored, versioned and audited in a way that ambient network trust never could. But it is a relocation, and the first question about any relocated dependency is what happens when it fails.

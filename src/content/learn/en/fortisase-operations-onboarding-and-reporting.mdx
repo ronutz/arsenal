@@ -12,7 +12,7 @@ status: reviewed
 updated: "2026-07-26"
 ---
 
-A SASE service only protects the traffic that reaches it. Everything operational follows from that, starting with how users get on.
+A SASE (secure access service edge) service only protects the traffic that reaches it. Everything operational follows from that, starting with how users get on.
 
 ## Onboarding, and what each method actually covers
 
@@ -48,7 +48,7 @@ The operational point is that a rule nobody can satisfy produces a fleet in perm
 
 ## Performance SLAs
 
-Where SASE carries traffic that has performance requirements, service-level agreements measure the paths — latency, jitter, packet loss — and steer traffic accordingly. This is the same mechanic as SD-WAN performance SLA, applied to the path between the user and the point of presence.
+Where SASE carries traffic that has performance requirements, service-level agreements measure the paths — latency, jitter, packet loss — and steer traffic accordingly. This is the same mechanic as SD-WAN (software-defined WAN) performance SLA (service level agreement), applied to the path between the user and the point of presence.
 
 The detail worth carrying over is that the measurement must resemble the traffic. A health check against a nearby endpoint that reports excellent numbers while the application everyone uses performs badly is measuring the wrong thing, and it will keep steering traffic onto a path that is failing for the use that matters.
 

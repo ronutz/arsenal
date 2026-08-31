@@ -1,0 +1,38 @@
+---
+slug: phone-phreaking-and-the-blue-box
+title: "Phreaking: a rede que assobiava as próprias senhas"
+summary: "Antes de alguém hackear um computador, hackeavam a companhia telefônica - porque a rede de longa distância carregava seus tons de controle no mesmo fio da voz, e um apito de brinquedo de caixa de cereal por acaso cantava a frequência mágica. Joybubbles, o Captain Crunch, o artigo da Esquire que acendeu o pavio, a blue box que dois moleques chamados Steve venderam antes de fundar a Apple, e a lição de arquitetura que a indústria pagou caro para aprender: nunca ponha o plano de controle no plano de dados."
+concepts: ["phreaking", "blue box", "in-band signaling", "2600 hz", "telephone network", "hacker history"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "the-morris-worm"]
+category: security
+order: 97
+status: reviewed
+updated: "2026-08-28"
+---
+
+## O pecado original: sinalização in-band
+
+A rede de longa distância de meados do século tinha uma decisão de arquitetura assada em cada tronco: ela sinalizava para si mesma **na faixa de áudio**. Quando uma linha de longa distância ficava ociosa, a central de cada ponta tocava um tom de supervisão constante pelo fio - 2600 Hz -, e quando os troncos precisavam rotear uma ligação, trocavam suas instruções como pares de tons multifrequência, no mesmíssimo canal em que os interlocutores iam falar. O desenho era econômico e elegante, e continha uma falha tão total que hoje se lê como parábola: **a língua de controle da rede era audível, e qualquer coisa capaz de produzir os sons certos podia falá-la**. Não havia autenticação, porque os engenheiros nunca imaginaram a outra ponta da linha como um adversário. A outra ponta da linha era um cliente.
+
+Então o exploit era, literalmente, assobiar. Mande 2600 Hz por uma conexão de longa distância aberta e a central distante ouvia "este tronco acabou de ficar ocioso" - ela desconectava a supervisão de tarifação e deixava você preso no tronco, pronto para digitar uma nova ligação com a própria [língua de tons](https://en.wikipedia.org/wiki/Phreaking) da rede. Você já não era um cliente numa ligação. Você era, até onde a maquinaria conseguia perceber, outra central.
+
+## O menino cego e o apito de cereal
+
+O ofício achou seus fundadores nos anos sessenta. **Joe Engressia** - depois rebatizado por si mesmo de Joybubbles - era um menino cego com ouvido absoluto que descobriu aos sete anos que assobiar certo tom no fone fazia as ligações fazerem coisas estranhas; ele produzia 2600 Hz com a boca, e passou a vida mapeando a rede de ouvido, virando o gentil santo padroeiro da cena. **John Draper** ganhou o nome **Captain Crunch** do apito de brinquedo que vinha nas caixas do cereal Cap'n Crunch, que - tapando um furo - emitia um 2600 Hz limpo. Um brinde de café da manhã era uma chave-mestra da maior máquina da Terra.
+
+O apito dava a você a tomada do tronco; a **blue box** dava a fluência. Uma pequena caixa osciladora gerava tanto o tom de supervisão de 2600 Hz quanto os pares multifrequência que as centrais usavam para rotear ligações, transformando o exploit inteiro num teclado. Os phreaks a usavam menos para roubar ligações do que para *explorar*: pontes de conferência no fundo do sistema, números de teste, roteamentos que jogavam uma ligação ao redor do planeta de volta ao telefone ao seu lado. A rede foi o primeiro grande labirinto, e os phreaks eram exploradores de caverna com ouvido absoluto.
+
+## Outubro de 1971: o pavio
+
+A cena ficou uma cultura folclórica sussurrada até que **o artigo de Ron Rosenbaum na Esquire, "Secrets of the Little Blue Box"** (outubro de 1971), pôs o Captain Crunch, o Joybubbles e a língua de tons inteira nas bancas em prosa gloriosa. A peça é discutivelmente o documento fundador do jornalismo hacker, e seus leitores mais consequentes foram dois californianos chamados Steve. **Steve Wozniak** leu, recusou-se a acreditar, verificou as frequências numa biblioteca e construiu uma blue box digital - por relato próprio, uma das coisas mais finas que já projetou. **Steve Jobs** transformou aquilo no primeiro negócio dos dois: eles venderam blue boxes de porta em porta nos alojamentos de Berkeley. Jobs disse pelo resto da vida que sem as blue boxes não teria existido Apple - a caixa foi onde a parceria aprendeu que os dois conseguiam construir algo audacioso e pôr na mão das pessoas.
+
+A AT&T, por sua vez, aprendeu o que todo dono de plataforma aprendeu desde então: a publicidade industrializa um exploit. Vieram processos - Draper foi condenado por fraude de tarifa em 1972 - e a empresa começou a longa e cara migração que é a verdadeira moral técnica desta história.
+
+## A correção, e a lição que sobreviveu aos telefones
+
+A cura do sistema telefônico foi a **sinalização out-of-band**: o Common Channel Signaling, culminando no SS7, moveu a conversa de controle da rede para uma rede de dados separada que o caminho de áudio do cliente nunca poderia tocar. Nenhum tom que um interlocutor possa produzir significa mais nada, porque o plano de controle e o plano de dados não dividem mais um fio. Essa frase - **separe o plano de controle do plano de dados** - virou um dos mandamentos das redes, e toda violação dela desde então re-rodou o filme do phreaking com fantasias novas: SQL injection é dado do usuário interpretado como língua de controle; header smuggling, prompt injection in-band, todo exploit de sequência de escape que já existiu - o mesmo pecado, a mesma cura.
+
+## O que desaguou rio abaixo
+
+O phreaking não terminou; despejou-se na computação. A gente, a ética da exploração, os boletins e o folclore migraram para modems e mainframes; a imprensa da cena tomou a própria frequência sagrada como nome - *2600: The Hacker Quarterly* - e a primeira geração de hackers de computador famosos, [Kevin Mitnick](/glossary/kevin-mitnick) incluído com folga, foi de phone phreaks antes de tocar num prompt de login. A blue box está em museus agora, ao lado do apito de cereal. A lição de desenho que ela ensinou é estrutural em toda rede que você um dia vai construir.

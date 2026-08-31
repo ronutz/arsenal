@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-Uma caixa BIG-IP DNS não é um servidor DNS. É uma porta de entrada, o listener, atrás da qual até meia dúzia de atendentes diferentes esperam em uma fila documentada: iRules, processamento DNSSEC, wide IPs de GSLB, DNS Express, um de três tipos de cache DNS, a instância local do BIND e, por fim, um pool de servidores DNS reais. Toda consulta percorre essa fila em ordem, e o primeiro atendente capaz de responder, responde. Quase todo mistério de "por que recebi ESSA resposta" no BIG-IP DNS se dissolve quando você consegue recitar a fila.
+Uma caixa BIG-IP DNS não é um servidor DNS. É uma porta de entrada, o listener, atrás da qual até meia dúzia de atendentes diferentes esperam em uma fila documentada: iRules, processamento DNSSEC, wide IPs de GSLB (global server load balancing), DNS Express, um de três tipos de cache DNS, a instância local do BIND e, por fim, um pool de servidores DNS reais. Toda consulta percorre essa fila em ordem, e o primeiro atendente capaz de responder, responde. Quase todo mistério de "por que recebi ESSA resposta" no BIG-IP DNS se dissolve quando você consegue recitar a fila.
 
 ## Os respondedores e os resolvedores
 

@@ -32,7 +32,10 @@ const TOYS = [
   // Added 2026-07-30 (PRIME): an inconspicuous card, last on the shelf. It was
   // built unlisted and stays modest here on purpose - the copy does not say
   // what it measures, so it still rewards the person who opens it.
-  { key: "importanceMeter", href: "/dev/fun/importance-meter", badged: false },
+  // enOnly (R-18 audit fix, 2026-08-27): the meter generates for en alone by
+  // design, so every locale's card links the EN page explicitly — a link to a
+  // route that exists, instead of a locale-prefixed path that was never built.
+  { key: "importanceMeter", href: "/dev/fun/importance-meter", badged: false, enOnly: true },
 ] as const;
 
 export async function generateMetadata({
@@ -71,7 +74,13 @@ export default async function DevFunIndexPage({
 
             <div className="devfun-list">
               {TOYS.map((toy) => (
-                <Link key={toy.key} href={toy.href} className="devfun-card">
+                <Link
+                  key={toy.key}
+                  href={toy.href}
+                  // enOnly cards cross to the English page from every locale.
+                  locale={"enOnly" in toy && toy.enOnly ? "en" : undefined}
+                  className="devfun-card"
+                >
                   <span className="devfun-card-top">
                     <span className="devfun-card-name">{t(`toys.${toy.key}.name`)}</span>
                     {toy.badged && (

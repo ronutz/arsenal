@@ -323,12 +323,22 @@
 # proven on THIS path.
 #
 # These three cover dev-fun, about/history and dev/other - low-traffic paths
-# where a failure costs little. If they resolve correctly in production, the
+# where a failure costs little.
+#
+# *** CORRECTED 2026-08-30. *** The dev/other rule was written with a :slug
+# placeholder, which was wrong: dev-fun and about/history were whole-directory
+# moves, where generalising the slug is correct, but dev/other was a move of
+# ONE tool (rdap-lookup) out of a room that kept living. The placeholder
+# captured every path in the room, so all five green-room tools answered 301
+# into /dev/out/<slug>/, where nothing of that name exists - a 404 per tool,
+# per locale, for three weeks. Collapse the LOCALE freely; collapse the SLUG
+# only when the entire directory moved. check-redirect-shadowing.mjs now
+# fails the build if any rule stands in front of a page that exists. If they resolve correctly in production, the
 # mechanism is proven and the remaining 890 rules can follow safely.
 
 /:locale/dev-fun/:slug/  /:locale/dev/fun/:slug/  301
 /:locale/about/history/:slug/  /:locale/about/:slug/  301
-/:locale/dev/other/:slug/  /:locale/dev/out/:slug/  301
+/:locale/dev/other/rdap-lookup/  /:locale/dev/out/rdap-lookup/  301
 
 # Same three collapses for the NO-TRAILING-SLASH variants. Every path in this
 # file exists twice - with and without the slash - so a placeholder rule that
@@ -337,7 +347,7 @@
 
 /:locale/dev-fun/:slug  /:locale/dev/fun/:slug/  301
 /:locale/about/history/:slug  /:locale/about/:slug/  301
-/:locale/dev/other/:slug  /:locale/dev/out/:slug/  301
+/:locale/dev/other/rdap-lookup  /:locale/dev/out/rdap-lookup/  301
 
 # --- TIER 2: LOCALE COLLAPSE (PRIME 2026-08-06, after the Tier 1 probe
 #     was confirmed working in production) ---
@@ -374,12 +384,13 @@
 /:locale/tools/f5/  /:locale/f5/#tools  301
 /:locale/learn/f5  /:locale/f5/#learn  301
 /:locale/learn/f5/  /:locale/f5/#learn  301
-/:locale/fortinet  /:locale/tools/  301
-/:locale/fortinet/  /:locale/tools/  301
-/:locale/netskope  /:locale/tools/  301
-/:locale/netskope/  /:locale/tools/  301
-/:locale/extreme  /:locale/tools/  301
-/:locale/extreme/  /:locale/tools/  301
+# REMOVED 2026-08-30: /<locale>/{fortinet,netskope,extreme}/ -> /tools/.
+# These were vanity redirects from when the bare vendor path had no page. The
+# vendor hubs are now built there and linked from the industry chapters, the
+# vendor-hub index and the tool pages, so the redirects were sending readers of
+# three of the six hubs to the tools index instead. F5, Ping and Zscaler never
+# had the rule, which is why only three hubs were affected. Found by
+# check-redirect-shadowing.mjs, not by a reader.
 /:locale/dev-fun/  /:locale/dev/fun/  301
 /:locale/dev-fun  /:locale/dev/fun/  301
 /:locale/vendors/  /:locale/vendor-hubs/  301

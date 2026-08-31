@@ -25,8 +25,8 @@ The challenge arrives as a **captive portal** for browser traffic, or as a proto
 | Source | How it validates | Typical use |
 |---|---|---|
 | Local | Accounts stored on the FortiGate | Small deployments, break-glass accounts |
-| LDAP | Bind against a directory | Existing Active Directory or other LDAP |
-| RADIUS | RADIUS exchange, often with MFA behind it | Where a central AAA already exists |
+| LDAP (Lightweight Directory Access Protocol) | Bind against a directory | Existing Active Directory or other LDAP |
+| RADIUS (Remote Authentication Dial-In User Service) | RADIUS exchange, often with MFA (multi-factor authentication) behind it | Where a central AAA already exists |
 | SAML | Redirect to an identity provider | Modern SSO, federated identity |
 | FortiToken | Second factor on top of any of the above | Anywhere MFA is required |
 

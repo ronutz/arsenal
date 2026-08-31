@@ -21,7 +21,7 @@ The access layer is where untrusted devices attach, so it is where the switch's 
 - **Port-based** authenticates once, and the port then carries traffic for anything behind it. Simple, and a hub or unmanaged switch behind an authenticated port lets everything through.
 - **MAC-based** authenticates each MAC separately, which is what you want where a phone and a PC share a port, or where a small switch is legitimately present.
 
-Authentication runs against a RADIUS server, and the server can return the VLAN the device should be placed in. That is how a single physical port serves different network segments depending on who connects to it, and it is the mechanism network access control builds on.
+Authentication runs against a RADIUS (Remote Authentication Dial-In User Service) server, and the server can return the VLAN (virtual local area network) the device should be placed in. That is how a single physical port serves different network segments depending on who connects to it, and it is the mechanism network access control builds on.
 
 **Sticky MAC** takes a different approach: the port learns the MAC addresses currently connected and then refuses others. It requires no authentication infrastructure, which makes it attractive for devices that cannot authenticate — printers, cameras, industrial equipment.
 

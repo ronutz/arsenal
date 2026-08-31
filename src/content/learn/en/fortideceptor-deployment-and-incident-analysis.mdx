@@ -16,7 +16,7 @@ Deception only detects what it can reach. The deployment work is getting decoys 
 
 ## Deployment networks
 
-A **deployment network** is a segment where decoys are placed. In practice this means a VLAN, and the decoys take addresses on it as ordinary hosts would.
+A **deployment network** is a segment where decoys are placed. In practice this means a VLAN (virtual local area network), and the decoys take addresses on it as ordinary hosts would.
 
 The design rule follows directly from what makes deception work: decoys must be **on the segments an attacker traverses**, and they must be indistinguishable from real hosts on them. A decoy in a dedicated "deception VLAN" that nothing else uses is trivially identifiable and detects only the least careful intruder.
 
@@ -40,11 +40,11 @@ The operational reason to care is that deception alerts are rare and high value.
 
 Deception is most useful when its high-confidence signal drives something.
 
-Sending alerts to **FortiAnalyzer or a SIEM** puts them beside everything else, so a decoy interaction can be correlated with what the same source did elsewhere. That correlation frequently converts one alert into a timeline.
+Sending alerts to **FortiAnalyzer or a SIEM (security information and event management)** puts them beside everything else, so a decoy interaction can be correlated with what the same source did elsewhere. That correlation frequently converts one alert into a timeline.
 
 Integration with **FortiGate or network access control** allows automated containment: an address that touched a decoy can be quarantined or have its access restricted. This is one of the better candidates for automation precisely because of the low false-positive property — the usual caution about automated response is proportional to false positives, and here they are rare.
 
-The caution that remains is the compromised-shared-address case. Quarantining a source that turns out to be a NAT gateway or a jump host affects everyone behind it, so the automation should account for what sits behind the address it is about to cut off.
+The caution that remains is the compromised-shared-address case. Quarantining a source that turns out to be a NAT (network address translation) gateway or a jump host affects everyone behind it, so the automation should account for what sits behind the address it is about to cut off.
 
 ## Analysing an incident
 

@@ -1,0 +1,68 @@
+---
+slug: submarine-cables-and-the-physical-internet
+title: "Cabos submarinos: a internet é uma corda no fundo do mar"
+summary: "Praticamente todo o tráfego intercontinental passa por algumas centenas de cabos de fibra óptica deitados no fundo do oceano, a maioria não mais grossa que uma mangueira de jardim, e a esmagadora maioria dos rompimentos vem de artes de pesca e âncoras de navio, não da intenção de alguém. O que acontece de fato quando cortam, por que uns países dão de ombros e outros apagam, como o reparo funciona na prática, e por que redundância no mapa não é redundância no chão."
+concepts: ["submarine cables", "resilience", "physical infrastructure", "chokepoints", "geography"]
+relatedTools: []
+relatedArticles: ["the-chokepoints-of-the-internet", "bgp-and-the-routing-chokepoint", "what-happens-if-the-dns-root-goes-dark", "akamai"]
+category: networking
+order: 122
+status: reviewed
+updated: "2026-08-29"
+---
+
+## O que está de fato lá embaixo
+
+Algumas centenas de cabos carregam essencialmente todo o tráfego intercontinental de internet. Satélites, inclusive as constelações modernas de órbita baixa, carregam uma fração pequena e importam mais onde o cabo não chega. O objeto físico é sem glamour: pares de fibra no centro, cercados por arame de aço, cobre para energia e polietileno - mais ou menos a grossura de uma mangueira de jardim em águas profundas, e mais grosso e blindado perto da costa, onde estão os perigos.
+
+Dois fatos moldam todo o resto.
+
+**As estações de pouso são o ponto de estrangulamento real.** Um cabo é uma linha no mapa, mas termina num prédio, e esses prédios se agrupam. Os vários cabos de um país muitas vezes chegam à praia a poucos quilômetros uns dos outros e seu tráfego converge para o mesmo backhaul terrestre. Diversidade no mapa com frequência não é diversidade no chão.
+
+**A propriedade é de consórcio ou privada.** Tradicionalmente grupos de operadoras construíam cabos juntas; cada vez mais as grandes empresas de conteúdo e nuvem constroem os próprios. Essa virada importa para resiliência: quem decide onde vai a capacidade nova é hoje, em parte, quem também depende dela.
+
+## O que os rompe
+
+De forma esmagadora, acidentes. **Artes de pesca e âncoras de navio** respondem pela grande maioria das falhas, concentradas em águas rasas perto da costa, onde cabos e atividade humana dividem o mesmo fundo. Depois terremotos e deslizamentos submarinos, que podem cortar vários cabos de uma vez porque eles seguem o mesmo corredor. Depois falha de equipamento. Dano deliberado existe e rende manchete, mas é fatia pequena de um total bem documentado, e a versão honesta deste artigo diz isso antes de falar de sabotagem.
+
+A propriedade perigosa é a **correlação**. Cabos dividem corredores porque a geografia só permite tantas rotas: mares estreitos, estreitos e as travessias mais curtas. Uma única âncora arrastada por um corredor movimentado, ou um deslizamento, derruba múltiplos sistemas que pareciam independentes num diagrama de compras.
+
+## O que acontece de fato quando um corta
+
+**Se você tem vários caminhos diversos: nada visível.** O tráfego se redireciona em segundos, a latência muda, a capacidade cai. Usuários notam lentidão no pico, não queda. Este é o caso normal, e é por isso que a maioria das falhas de cabo nunca vira notícia.
+
+**Se você tem poucos caminhos: imediato e severo.** A latência multiplica porque o tráfego dá a volta, a vazão desaba sob disputa, e os serviços falham numa ordem que surpreende - aplicações interativas e tudo que é tagarela degradam primeiro, enquanto transferência em massa apenas fica lenta.
+
+**Se você tem um caminho: você está fora do ar até um navio chegar.** Estados insulares e alguns países sem litoral que dependem de uma única rota terrestre vivem nessa categoria, e já houve quedas de semanas.
+
+A distinção entre países não é riqueza, e sim **diversidade de caminhos**: quantas rotas fisicamente separadas existem, se compartilham pontos de pouso, e se o backhaul terrestre atrás delas também é diverso. Uma nação com quatro cabos entrando numa mesma região metropolitana tem menos redundância do que imagina.
+
+## Como o reparo funciona de verdade
+
+Esta é a parte que surpreende. Existe uma pequena frota mundial de **navios de reparo de cabos** de prontidão sob contratos de manutenção. Um navio precisa ser despachado, navegar até a falha - que pode estar a dias de distância -, localizar o rompimento, fisgar o cabo do fundo do mar, emendar fibra nova numa junta feita a bordo, testar, e devolvê-lo à água.
+
+Reparos típicos levam de uma a várias semanas. Em água profunda, mau tempo, ou com uma fila de falhas simultâneas, mais. E reparar exige **autorizações** para trabalhar em águas de outro Estado, e é por isso que algumas quedas duram muito mais do que a engenharia exigiria - o atraso é diplomático, não técnico.
+
+A fraqueza estratégica é a frota. É pequena, em parte envelhecida e concentrada; falhas simultâneas em regiões diferentes disputam os mesmos navios.
+
+## Quem conseguiria fazer o quê
+
+**Acidentes** seguem sendo a causa dominante e aquela para a qual vale projetar.
+
+**Estados** têm capacidade de cortar cabos deliberadamente, inclusive em água profunda, e a capacidade de grampeá-los é registro público de épocas anteriores. Duas coisas decorrem. Cortar é detectável e mais ou menos atribuível, já que tráfego e operações de reparo tornam aquilo visível. Grampear é a opção silenciosa, e a defesa prática não é física, e sim criptográfica: transporte cifrado com pontos autenticados torna um grampo passivo bem menos valioso - que é a ligação direta entre este artigo e [as crypto wars](/learn/the-crypto-wars-and-the-cypherpunks).
+
+**Ninguém precisa ter intenção nenhuma** para um país perder conectividade. Esse é o enquadramento útil para planejamento: as mitigações para falhas acidentais de vários cabos são as mesmas das deliberadas.
+
+## O que dá para fazer
+
+- **Compre diversidade real, não contratos com cara de diversos.** Pergunte qual cabo físico, qual estação de pouso e qual rota terrestre sua capacidade usa. Dois provedores revendendo o mesmo sistema é a falha clássica de compras.
+- **Planeje para degradação, não só para queda.** Sistemas deveriam se comportar de forma sensata com quatro vezes a latência usual e uma fração da banda; muitos não se comportam, e descobrem isso durante o evento.
+- **Faça cache e sirva localmente.** Caches de conteúdo e pontos de troca dentro do país mantêm o tráfego doméstico doméstico, e é por isso que pontos de troca nacionais importam para resiliência, e não só para custo.
+- **Cifre tudo em trânsito.** Isso remove a maior parte do valor da interceptação na camada física.
+- **Trate satélite como complemento, não substituto.** Útil para continuidade de serviços críticos e para alcançar onde não há cabo; não substitui a capacidade que os cabos carregam.
+
+## Onde isto entra na série
+
+A [raiz do DNS](/learn/what-happens-if-the-dns-root-goes-dark) pode ser replicada localmente porque é dado. O [roteamento](/learn/bgp-and-the-routing-chokepoint) pode ficar mais seguro com assinaturas porque são afirmações. Cabos não podem ser copiados nem assinados: são objetos, na água, que levam semanas para consertar e exigem a permissão de outro país para serem tocados.
+
+É por isso que a camada física é o ponto de estrangulamento com menos respostas espertas e mais respostas caras. A disciplina inteira se reduz a comprar mais caminhos, verificar que são de fato separados, e ser honesto consigo mesmo sobre quais deles dividem a mesma praia.

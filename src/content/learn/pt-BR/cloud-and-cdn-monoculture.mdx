@@ -1,0 +1,64 @@
+---
+slug: cloud-and-cdn-monoculture
+title: "Monocultura de nuvem e CDN: o ponto de estrangulamento que ninguém escolheu"
+summary: "Ninguém decidiu que um erro de configuração numa empresa deveria tirar um quarto da web do ar por uma hora, e ainda assim é mais ou menos esse o arranjo. A concentração em regiões de nuvem, redes de entrega de conteúdo, provedores de DNS e serviços de identidade faz com que organizações sem relação nenhuma falhem no mesmo instante pelo mesmo motivo. Por que aconteceu, o que de fato falha, e por que a resposta óbvia — multinuvem — está quase sempre errada."
+concepts: ["cloud", "cdn", "concentration risk", "resilience", "correlated failure"]
+relatedTools: []
+relatedArticles: ["the-chokepoints-of-the-internet", "the-certificate-authority-chokepoint", "bgp-and-the-routing-chokepoint", "cloudflare"]
+category: networking
+order: 124
+status: reviewed
+updated: "2026-08-29"
+---
+
+## O ponto de estrangulamento que ninguém comprou
+
+Todo ponto de estrangulamento anterior desta série foi construído de propósito: alguém desenhou a zona raiz, o protocolo de roteamento, a rota do cabo, o repositório de confiança. Este é diferente. **A concentração é emergente.** Milhões de organizações independentes escolheram, cada uma, a opção mais barata, mais rápida e mais confiável disponível, e o agregado de todas essas decisões racionais é um punhado de provedores segurando uma fatia enorme do caminho crítico da internet.
+
+Vale enunciar isso com cuidado, porque o enquadramento moral costuma sair errado. Os provedores envolvidos são, individualmente, muito mais confiáveis que a infraestrutura que substituíram. Uma região de nuvem bem operada tem disponibilidade melhor que a sala de servidores que ela aposentou, e uma grande rede de entrega de conteúdo absorve ataques que achatariam a origem atrás dela. O problema não é confiabilidade. **O problema é correlação.**
+
+## O que de fato falha
+
+Os modos de falha se agrupam em poucos formatos, e conhecê-los é mais útil do que saber qual fabricante teve um dia ruim.
+
+**Plano de controle, não plano de dados.** A grande queda mais comum não é "os servidores pararam". É que o sistema de *gerenciar* os servidores parou: você não consegue subir, escalar, reconfigurar nem fazer failover, enquanto o tráfego existente continua fluindo. É por isso que uma queda pode ser ao mesmo tempo severa e invisível ao usuário final nos primeiros vinte minutos, e por que o seu plano de recuperação pode depender exatamente do sistema que está fora.
+
+**Configuração propagada globalmente.** Plataformas modernas existem para empurrar uma mudança para todo lugar em segundos. Esse é o produto, e significa que uma mudança ruim também chega a todo lugar em segundos. Os maiores incidentes desta categoria não foram ataques; foram implantações válidas de configuração inválida.
+
+**Dependências compartilhadas que você não sabia que tinha.** Sua aplicação é multirregião, mas seu provedor de DNS é uma empresa, sua emissão de certificado é uma autoridade, seu provedor de identidade é um serviço, seu registro de pacotes é um host, e sua página de status está hospedada na plataforma que caiu. O grafo de dependências é mais fundo que o diagrama de arquitetura.
+
+**Tempestades de repetição.** Quando uma dependência degrada, todo cliente tenta de novo, e as tentativas viram a queda. A recuperação fica então mais lenta que a falha original, porque o sistema precisa voltar sob uma carga que não tinha quando estava saudável.
+
+## A parte que pega todo mundo
+
+**Seu plano B provavelmente está no mesmo domínio de falha.** Dois fornecedores que revendem a mesma plataforma são um fornecedor só para efeito de resiliência. Um segundo provedor de DNS cujo tecido anycast troca tráfego no mesmo ponto é em parte o mesmo provedor. Um backup que mora em outra região da mesma nuvem sobrevive a uma falha de região, e não a uma falha de plano de controle.
+
+É a mesma lição das [estações de pouso](/learn/submarine-cables-and-the-physical-internet) que dividem a praia, em outra camada. Diversidade é propriedade do grafo de dependências, não da nota fiscal.
+
+## Por que multinuvem quase sempre é a resposta errada
+
+A correção instintiva é rodar em todo lugar. Para a maioria das organizações isso é uma troca ruim, e vale dizer com todas as letras por quê.
+
+Rodar de verdade entre provedores significa usar o menor denominador comum de recursos, duplicar expertise operacional, testar caminhos de failover que quase nunca são exercitados, e acrescentar uma camada de coordenação que vira o próprio ponto único de falha. **Complexidade é, ela mesma, risco de disponibilidade**, e equipes rotineiramente gastam na complexidade que acrescentaram a confiabilidade que ganharam. Boa parte do que se chama de multinuvem na prática é uma nuvem mais uma cópia sem uso, sem teste e silenciosamente quebrada em outra.
+
+As respostas proporcionais são menos impressionantes e funcionam melhor:
+
+- **Conheça seu grafo de dependências**, inclusive as chatas: DNS, certificados, identidade, registros de pacote, observabilidade e sua página de status. Escreva; a maioria das equipes não consegue produzi-lo de memória.
+- **Remova dependências de fornecedor único onde o custo é baixo.** DNS secundário e um segundo caminho de emissão de certificado são baratos e compram independência real. Rearquitetar sua camada de banco de dados não é.
+- **Projete para degradação.** Modo somente leitura, respostas em cache, escritas enfileiradas e uma página estática de reserva ganham de uma arquitetura perfeita que está inteiramente fora.
+- **Faça failover de propósito, com data marcada.** Um failover não testado é uma hipótese. As organizações que atravessam grandes quedas são as que ensaiaram.
+- **Mantenha seu ferramental de incidente fora da plataforma que ele monitora.** Páginas de status, runbooks e canais de comunicação que morrem junto com a queda são uma falha recorrente e inteiramente evitável.
+
+## Quem conseguiria fazer o quê
+
+Diferente dos outros pontos desta série, o ator aqui costuma ser **um engenheiro comum de um grande provedor numa tarde comum**, e o impacto se mede em horas, não semanas.
+
+A pressão estatal é a variante mais afiada: provedores concentram não só capacidade, mas jurisdição, então uma ordem entregue a um punhado de empresas alcança uma fatia enorme dos serviços do mundo. Isso é preocupação de governança, e não de engenharia, e é a razão de regras de soberania de dados e de regulação de resiliência regional hoje mirarem explicitamente a concentração.
+
+E há o risco lento que relatório de incidente nenhum captura: **dependência comercial**. Um provedor que muda preço, termos ou direção de produto pode ser tão disruptivo quanto um que cai, numa escala de tempo mais longa e sem página de status. A [lição do CentOS](/glossary/centos-stream) se aplica exatamente aqui - pergunte quem pode mudar os termos, e como é a sua saída quando mudarem.
+
+## Onde isto entra na série
+
+Os outros pontos de estrangulamento são estruturais: existe uma zona raiz, um protocolo de roteamento, um fundo de mar finito, um repositório de confiança. Este é **estatístico**, e portanto o único que você consegue mover de forma significativa sozinho. Você não constrói uma segunda internet, mas consegue parar de ter quatro dependências escondidas no mesmo provedor.
+
+A conclusão incômoda é que a concentração não é um erro a ser corrigido. É o que acontece quando confiabilidade vira mercadoria comprável e todo mundo compra de quem é melhor nisso. A pergunta não é como reverter, e sim quanto do seu próprio domínio de falha você está disposto a entregar a gente com quem você nunca vai falar - e se você escreveu em algum lugar quem são.

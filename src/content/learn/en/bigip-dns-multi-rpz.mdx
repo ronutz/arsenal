@@ -29,7 +29,7 @@ Earlier BIG-IP RPZ support enforced a narrow response behavior; 21.1 implements 
 
 ## Where RPZ sits in the answering line
 
-RPZ is a property of the DNS cache, and the cache has a fixed place in BIG-IP DNS's documented processing order: after iRules, DNSSEC processing, the GSLB wide IP match, and DNS Express. The practical consequence is worth spelling out: RPZ governs what the cache resolves for clients; it does not sit in front of your own authoritative answers, a wide IP or a DNS Express zone answers before the cache is ever consulted. That is the correct layering, policy on lookups outward, authority on your own names, and it is also why an RPZ deployment belongs on resolver-role listeners. The [request processing order article](/learn/bigip-dns-request-processing-order) walks the whole line; the [flagship 21.x overview](/learn/bigip-21x-whats-new) holds the release context.
+RPZ is a property of the DNS cache, and the cache has a fixed place in BIG-IP DNS's documented processing order: after iRules, DNSSEC processing, the GSLB (global server load balancing) wide IP match, and DNS Express. The practical consequence is worth spelling out: RPZ governs what the cache resolves for clients; it does not sit in front of your own authoritative answers, a wide IP or a DNS Express zone answers before the cache is ever consulted. That is the correct layering, policy on lookups outward, authority on your own names, and it is also why an RPZ deployment belongs on resolver-role listeners. The [request processing order article](/learn/bigip-dns-request-processing-order) walks the whole line; the [flagship 21.x overview](/learn/bigip-21x-whats-new) holds the release context.
 
 ## Designing a multi-RPZ deployment
 

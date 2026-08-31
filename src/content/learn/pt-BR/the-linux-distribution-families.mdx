@@ -1,0 +1,69 @@
+---
+slug: the-linux-distribution-families
+title: "As famílias de distribuições Linux: o que de fato as separa"
+summary: "Toda distribuição entrega mais ou menos o mesmo kernel e mais ou menos as mesmas ferramentas GNU, então as diferenças não estão onde o iniciante procura. Estão no gerenciador de pacotes, no modelo de lançamento, na filosofia de empacotamento e — o mais consequente — em quem decide. Um guia de campo das famílias, descritas pelo que se sente ao administrá-las."
+concepts: ["linux", "distributions", "package management", "release engineering", "governance"]
+relatedTools: []
+relatedArticles: ["linux-the-kernel-that-ate-the-world", "open-source-and-the-meaning-of-free", "git"]
+category: networking
+order: 63
+status: reviewed
+updated: "2026-08-29"
+---
+
+## As diferenças não estão no software
+
+Quase toda distribuição entrega o mesmo kernel, o mesmo compilador, o mesmo shell, os mesmos utilitários básicos. Compará-las por lista de recursos produz uma tabela em que tudo parece idêntico, e é por isso que essa comparação é inútil.
+
+O que de fato difere são quatro coisas, e as quatro se sentem na operação em vez de aparecer numa captura de tela: **como o software é empacotado e instalado**, **como as versões novas chegam**, **o que o projeto considera ser seu trabalho**, e **quem decide**. A última é a menos discutida e a mais provável de afetar você.
+
+## O Debian e seus descendentes
+
+O **Debian** é a referência de governança comunitária: líder eleito, constituição escrita e um **Contrato Social** que compromete o projeto a permanecer inteiramente software livre e a priorizar os usuários. Os pacotes usam `dpkg`, com o `apt` por cima. Três trilhas rodam permanentemente - stable, testing e unstable - e stable significa o que a palavra diz: software congelado, corrigido para segurança, e deixado em paz por anos.
+
+Administrá-lo parece conservador no sentido útil. As versões são mais antigas que as do upstream, o tratamento de dependências é estrito, e o sistema não surpreende. A troca é real: se você precisa de versões atuais de software que se move rápido, vai brigar com o desenho.
+
+O **Ubuntu** pega o Debian e acrescenta um calendário e uma empresa. Lançamentos a cada seis meses, com uma versão de suporte de longo prazo a cada dois anos, carregando cinco anos de atualizações. A presença da Canonical dá suporte comercial e previsibilidade, e também produz o atrito recorrente: decisões como o formato de empacotamento Snap são tomadas por uma empresa, e não por um comitê - o que é mais rápido e menos negociável.
+
+## A Red Hat e seu ecossistema
+
+O **Red Hat Enterprise Linux (RHEL)** é a âncora corporativa: pacotes `rpm` com `dnf`, horizontes de suporte muito longos, e certificação por fabricantes de hardware e software. Você não compra o código, que é livre; compra a relação de suporte e a garantia de que uma versão específica será mantida por uma década.
+
+O **Fedora** é o upstream onde o futuro é testado - move rápido, lançamentos semestrais, e o lugar onde as mudanças chegam ao mundo antes de chegar ao RHEL.
+
+E então o episódio de que todo mundo neste ecossistema se lembra. O **CentOS** era a recompilação gratuita do RHEL, e em 2020 foi redirecionado para o **CentOS Stream**, posicionado *à frente* do RHEL em vez de atrás. Organizações que haviam construído sobre um sistema corporativo gratuito e compatível bug a bug de repente não tinham mais um, e o **Rocky Linux** e o **AlmaLinux** foram fundados para substituí-lo.
+
+Esta é a lição mais clara de todo o artigo: **governança é propriedade técnica**. Nada mudou no código. O que mudou foi quem decidia, e isso invalidou milhares de planos de implantação. Ao escolher uma distribuição você está escolhendo um processo de decisão, e o custo de errar nisso não se mede em recursos.
+
+## A SUSE
+
+O **openSUSE** e o **SUSE Linux Enterprise** são a terceira grande linhagem, mais forte na Europa e em ambientes corporativos. Usam `rpm` com `zypper`, e a ferramenta de configuração **YaST** é um compromisso incomum com administração integrada numa cultura que em geral prefere arquivos de texto. Dois modelos de lançamento convivem: o **Leap**, alinhado à versão corporativa, e o **Tumbleweed**, um rolling release incomumente bem testado para a categoria, porque só avança se passar por testes automatizados.
+
+## Os rolling e os de pôr a mão
+
+O **Arch Linux** entrega continuamente - não há versões, só o estado atual. O `pacman` é rápido e simples, o **AUR (Arch User Repository)** carrega receitas de compilação contribuídas por usuários para quase tudo, e o projeto espera deliberadamente que você monte o próprio sistema.
+
+Seu produto mais valioso não é a distribuição. O **Arch Wiki** é a melhor documentação Linux que existe e é usado o tempo todo por gente que roda outras distribuições, o que é um tipo raro de contribuição: a documentação superou o próprio produto.
+
+O **Gentoo** compila a partir do fonte com o `portage`, e as **USE flags** deixam você decidir quais recursos opcionais entram em cada pacote. O prêmio é um sistema com exatamente o que você pediu e nada mais; o preço é o seu tempo, e a avaliação honesta hoje é que o argumento de desempenho em boa parte evaporou, enquanto o de controle não.
+
+O **Slackware** é a distribuição mais antiga ainda viva e segue deliberadamente mínima - historicamente sem resolução automática de dependências, sob o argumento de que o administrador deve saber o que está instalado. Sobrevive porque algumas pessoas falam isso a sério.
+
+## As especialistas
+
+O **Alpine Linux** é a razão de seu Dockerfile provavelmente dizer `alpine`. Usa `musl` em vez da glibc e o BusyBox em vez dos utilitários GNU completos, produzindo imagens com uma fração do tamanho usual e superfície de ataque bem menor. A pegadinha merece ser conhecida antes da adoção: o `musl` não é idêntico bug a bug à glibc, e software que pressupõe comportamento de glibc pode se comportar mal de jeitos tediosos de diagnosticar.
+
+O **NixOS** é o modelo genuinamente diferente. O sistema inteiro é descrito numa configuração declarativa, as construções são reprodutíveis, os pacotes são isolados por hash criptográfico, as atualizações são atômicas e a reversão é instantânea. Ele resolve a deriva de configuração tornando-a estruturalmente impossível. O custo é ter de aprender uma linguagem nova e um modelo mental novo, e que instruções comuns escritas para outras distribuições muitas vezes não se aplicam.
+
+## Escolhendo, com honestidade
+
+Não por gosto - pelo que a máquina serve.
+
+- **Uma frota que você precisa suportar por anos** → RHEL, suas recompilações, ou Ubuntu LTS. Você está comprando o horizonte de suporte.
+- **Um servidor que você administra e quer deixar quieto** → Debian stable.
+- **Uma imagem base de contêiner** → Alpine pelo tamanho, ou uma imagem Debian enxuta quando a compatibilidade com glibc importar mais.
+- **Uma estação de trabalho com software atual** → Fedora, ou um rolling release se você curte a manutenção.
+- **Aprender como o Linux se encaixa de verdade** → Arch, ou Gentoo se quiser mais devagar e mais fundo.
+- **Infraestrutura que precisa ser reprodutível** → NixOS, aceitando a curva de aprendizado como preço.
+
+O conselho de fundo é mais simples que a lista. Discussão de distribuição é quase toda identidade, e as perguntas reais são chatas: por quanto tempo isto será suportado, como recebo atualizações de segurança, quem decide o que muda, e o que acontece comigo se quem decide mudar de ideia. O [CentOS respondeu a última para uma indústria inteira](https://www.redhat.com/en/blog/centos-stream-building-innovative-future-enterprise-linux) num único anúncio.

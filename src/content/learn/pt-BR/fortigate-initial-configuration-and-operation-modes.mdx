@@ -30,7 +30,7 @@ O primeiro passo de configuração é sempre o mesmo, e é o que as pessoas adia
 
 O modo de operação determina o que o equipamento é na rede.
 
-**Modo NAT** é o padrão e a escolha usual. As interfaces têm endereços IP, o equipamento roteia entre elas e atua como gateway. Tudo sobre políticas, NAT, roteamento e SD-WAN pressupõe esse modo.
+**Modo NAT** é o padrão e a escolha usual. As interfaces têm endereços IP, o equipamento roteia entre elas e atua como gateway. Tudo sobre políticas, NAT, roteamento e SD-WAN (software-defined WAN) pressupõe esse modo.
 
 **Modo transparente** transforma o equipamento num elemento invisível no fio. As interfaces não têm endereços IP, o FortiGate faz ponte entre elas na camada 2, e os hosts dos dois lados não sabem que ele existe. Ele recebe um único IP de gerência para administração e nada mais. É o que se usa para inserir inspeção num segmento existente sem readereçar nada, requisito comum quando a rede não pode mudar mas o tráfego precisa ser inspecionado.
 
@@ -62,7 +62,7 @@ Dois controles importam mais que a lista de protocolos:
 
 **Trusted hosts** restringem uma conta administrativa a endereços de origem específicos. Isso é por conta, não por interface, e é o controle mais forte: mesmo que a gerência seja alcançável, só as origens listadas conseguem autenticar. É também o bloqueio autoinfligido clássico, porque uma entrada que não inclua seu endereço atual passa a valer imediatamente.
 
-**Mudar as portas de gerência** move HTTPS e SSH de 443 e 22. Isso não é segurança por si só, e reduz de forma significativa o ruído de varredura indiscriminada. Também libera a 443 para uma VPN ou servidor virtual na mesma interface, que muitas vezes é a motivação real.
+**Mudar as portas de gerência** move HTTPS e SSH de 443 e 22. Isso não é segurança por si só, e reduz de forma significativa o ruído de varredura indiscriminada. Também libera a 443 para uma VPN (rede privada virtual) ou servidor virtual na mesma interface, que muitas vezes é a motivação real.
 
 O caminho de recuperação quando o acesso se perde é o console pela porta serial, que configuração de software alguma bloqueia. Qualquer implantação de FortiGate em que o console não seja alcançável não tem caminho de recuperação aquém de uma visita ao local, e isso vale saber antes de importar.
 

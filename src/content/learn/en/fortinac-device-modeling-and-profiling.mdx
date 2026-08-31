@@ -16,7 +16,7 @@ Network access control answers two questions in order: what is this thing, and w
 
 ## Modeling the infrastructure
 
-FortiNAC needs to know about the **network devices** — switches, wireless controllers, firewalls — because those are what it reads endpoint information from and what it instructs to move a port into a different VLAN.
+FortiNAC needs to know about the **network devices** — switches, wireless controllers, firewalls — because those are what it reads endpoint information from and what it instructs to move a port into a different VLAN (virtual local area network).
 
 Modeling a device means telling FortiNAC how to reach it and how to talk to it: the management address, the SNMP credentials for reading port and MAC data, and the CLI credentials for making changes. Both matter, and they fail differently. Wrong SNMP means FortiNAC sees nothing on that device's ports. Wrong CLI credentials mean FortiNAC sees everything and can change nothing, which presents as policies that evaluate correctly and never take effect.
 

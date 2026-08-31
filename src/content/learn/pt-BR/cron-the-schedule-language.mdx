@@ -1,0 +1,36 @@
+---
+slug: cron-the-schedule-language
+title: "cron: cinco campos que rodam as tarefas do mundo"
+summary: "Toda máquina Unix carrega um agendador cuja língua inteira são cinco colunas de números e asteriscos. Como lê-los, a regra do OU que pega quase todo mundo, por que 0 e 7 são o mesmo dia, para que as macros @ expandem, e a realidade de horário local por trás de toda execução projetada."
+concepts: ["cron", "crontab", "scheduling", "unix", "automation"]
+relatedTools: ["cron-expression-explainer"]
+relatedArticles: []
+category: operations
+order: 60
+status: reviewed
+updated: "2026-08-27"
+---
+
+## Uma língua com cinco palavras
+
+Uma linha de crontab é um padrão de tempo seguido de um comando, e o padrão tem exatamente cinco campos: **minuto, hora, dia-do-mês, mês, dia-da-semana**. Cada campo aceita um valor, uma lista (`1,15`), uma faixa (`8-18`), um passo (`*/15`, ou `8-18/2`), ou `*` para "qualquer". Meses e dias também atendem por nome — `JAN` a `DEC`, `SUN` a `SAT`. Essa é a gramática inteira; tudo que uma máquina faz em agenda, da rotação de logs à renovação de certificado, está escrito nela.
+
+Então `0 2 * * 1-5` se lê: minuto 0, hora 2, qualquer dia do mês, qualquer mês, de segunda a sexta — o clássico backup das duas da manhã em dia útil. E `*/15 * * * *` dispara nos minutos 0, 15, 30 e 45 de toda hora, para sempre.
+
+## A regra que pega todo mundo
+
+Dia-do-mês e dia-da-semana falam ambos de dias, e quando **os dois** estão restritos, o cron faz algo que quase ninguém espera: roda o comando quando **qualquer um** casa. `0 0 1 * MON` não quer dizer "o dia primeiro quando cair numa segunda" — quer dizer meia-noite de todo dia primeiro **e** meia-noite de toda segunda. O crontab(5) declara isso numa frase quieta, e gerações de engenheiros já publicaram agendas que disparam três vezes mais que o pretendido por causa dela. Se levar uma coisa desta página, leve o OU.
+
+## A letra miúda
+
+`0` e `7` significam ambos domingo no campo de dia-da-semana — uma gentileza com as duas tradições de numerar semanas, e uma fonte de sustos em revisão de código. Um passo que não divide a faixa por igual vira de forma irregular: `*/7` nos minutos dispara em 0, 7, 14 … 56, e salta de volta ao 0 — o último intervalo tem quatro minutos, não sete. Nomes dentro de faixas com passo (`MON-FRI/2`) são historicamente pouco confiáveis entre implementações — números são a grafia portátil. E uma expressão de seis campos não é cron quebrado; é **Quartz**, o dialeto do agendador Java com uma coluna de segundos — outra língua que por acaso rima.
+
+As macros `@` são apelidos, não mágica: `@daily` (e `@midnight`) é `0 0 * * *`, `@weekly` é `0 0 * * 0`, `@monthly` é `0 0 1 * *`, `@yearly` (e `@annually`) é `0 0 1 1 *`, `@hourly` é `0 * * * *`. A exceção é `@reboot`, que não tem padrão de tempo nenhum — roda uma vez quando o daemon sobe, o que faz dela a única agenda que não dá para projetar.
+
+## O relógio que ele usa de verdade
+
+O cron avalia toda agenda no horário **local** do daemon. Esse único fato explica a maioria dos chamados de "por que meu job rodou na hora errada": o fuso da máquina não é o seu, ou o horário de verão deslocou o relógio de parede debaixo de uma agenda que nomeia uma hora que aquele dia pula ou repete. Quando uma ferramenta projeta as próximas ocorrências de uma expressão — como [o explicador](/tools/cron-expression-explainer) deste site faz —, ela está fazendo aritmética de relógio de parede a partir de um instante de referência declarado, e toda projeção honesta diz isso.
+
+## De onde ele veio
+
+O agendador é quase tão velho quanto o próprio Unix: um cron aparece na Version 7 (1979), e o dialeto que todo mundo escreve hoje é o **Vixie cron** — a reescrita de Paul Vixie em 1987, cujas extensões (passos, nomes, as macros) viraram o padrão de fato que o POSIX depois codificou no seu núcleo portátil. O desenho sobreviveu quatro décadas essencialmente sem mudar, o que para uma peça de infraestrutura é o maior elogio que existe: cinco campos se provaram suficientes.

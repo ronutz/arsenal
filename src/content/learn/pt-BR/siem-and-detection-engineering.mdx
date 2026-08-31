@@ -1,0 +1,122 @@
+---
+slug: siem-and-detection-engineering
+title: "SIEM: por que custa tanto e detecta tão pouco"
+summary: "Um SIEM é um banco de dados com uma caixa de busca e um agendador. Sozinho ele não detecta nada, e a maioria das implantações falha do mesmo jeito — comprada como produto, custeada como projeto, alimentada com tudo, ajustada por ninguém. O que faz diferença é tratar detecções como artefatos de engenharia, com dono, teste e resposta documentada."
+concepts: ["siem", "detection engineering", "logging", "soc", "alerting"]
+relatedTools: []
+relatedArticles: ["backups-and-ransomware-recovery", "cgnat-address-sharing-and-attribution", "zero-trust-ztna-and-sase-without-the-marketing"]
+category: security
+order: 133
+status: reviewed
+updated: "2026-08-30"
+---
+
+## O que o produto de fato é
+
+Tire o nome da categoria e uma plataforma **SIEM (gestão de informações e eventos de segurança)** faz cinco coisas mecânicas: coletar logs de muitas fontes, normalizá-los em campos comuns, correlacioná-los, retê-los pelo tempo que alguém exigir, e deixar um humano buscar no resultado.
+
+Nada disso é detecção. **Detecção é o conteúdo que se escreve por cima**, e é a parte que ninguém orça. Esse descompasso sozinho - uma compra de produto custeando uma capacidade que na verdade é compromisso de pessoal - explica a maior parte do que dá errado depois.
+
+## Origens: dois produtos que uma consultoria fundiu
+
+A categoria é uma fusão, e saber quais metades foram fundidas explica quase todo o comportamento dela.
+
+A **gestão de eventos de segurança** veio do problema da detecção de intrusão no fim dos anos 1990. Sensores de rede geravam muito mais alertas do que qualquer um conseguia ler, então apareceram consoles para coletar, correlacionar e ranquear. A finalidade era triagem em tempo real, e a premissa de desenho era que a coisa interessante é um *alerta*.
+
+A **gestão de informações de segurança** veio da gestão de logs e da conformidade. Regulações que chegaram na mesma época - regras da indústria de cartões, obrigações setoriais de reporte e, depois, leis amplas de proteção de dados - exigiam que logs fossem retidos, pesquisáveis e comprovadamente íntegros. A finalidade era retenção e relatório, e a premissa era que a coisa interessante é um *registro*.
+
+As duas foram empacotadas como **SIEM** em meados dos anos 2000. Essa decisão sozinha é a razão de tantas implantações parecerem dois produtos dentro do mesmo casaco: correlação em tempo real quer um fluxo pequeno, rápido e curado, e retenção para conformidade quer tudo, para sempre, barato. Esses requisitos puxam a arquitetura em direções opostas, e a maioria das implantações infelizes é uma equipe tentando satisfazer os dois com um orçamento.
+
+## Evolução, e o que cada geração corrigiu
+
+**Primeira geração - appliance e regras.** Local, licenciado por eventos por segundo, correlação expressa em regras próprias do fabricante. Poderosa para a época, e criou os dois hábitos que a categoria nunca perdeu: preço que pune coletar, e linguagens de regra que não viajam.
+
+**Segunda geração - big data.** Plataformas orientadas a busca trataram logs como índice de documentos, e não como esquema relacional, o que tornou a investigação livre praticável pela primeira vez. A troca foi custo em escala e a tendência de guardar tudo porque guardar era fácil.
+
+**Terceira geração - nativa de nuvem e em camadas.** Ingestão, busca quente, armazenamento morno e arquivo frio passaram a ter preços separados, então a pergunta de desenho mudou de *o que coletamos* para *o que mantemos quente*. O conteúdo de detecção migrou para código sob controle de versão.
+
+**Ao lado, e não dentro: EDR (detecção e resposta em endpoint) e XDR (detecção e resposta estendida).** A detecção em endpoint tirou a telemetria mais profunda das mãos do SIEM, porque dado de nível de processo é enorme e é melhor analisado perto de onde é produzido. O resultado prático é que a maioria das organizações hoje roda vários sistemas de detecção, e o trabalho que resta como único do SIEM é **correlacionar entre fontes que nenhuma ferramenta sozinha vê juntas** - identidade mais endpoint mais rede mais nuvem.
+
+**Data lake e armazenamento próprio.** A direção atual separa armazenamento de análise para que os mesmos dados sejam consultados por mais de uma ferramenta, o que é resposta direta ao problema de preço que molda a categoria desde a primeira geração.
+
+## As três falhas, na ordem em que acontecem
+
+**Ingerir tudo.** Licenciamento por volume encontra uma ordem de coletar todos os logs, e a conta cresce até alguém começar a cortar fontes por custo, e não por valor. As fontes cortadas primeiro costumam ser as úteis, porque tagarela não é o mesmo que ruidosa - logs de proxy e de DNS são enormes e são também onde movimento lateral e exfiltração ficam visíveis.
+
+**Subir as regras padrão do fabricante.** Elas disparam o tempo todo, porque são escritas para todo cliente e ajustadas para nenhum. Os analistas aprendem em semanas que o console quase sempre erra, e aí começa a falha de detecção de verdade: **os alertas param de ser lidos.** Depois disso a plataforma pode estar funcionando perfeitamente e não detectar nada que chegue a um humano.
+
+**Ninguém é dono do ajuste.** Uma detecção que produz falso positivo não tem autor para corrigi-la, então ou é suprimida para sempre ou é ignorada para sempre. Os dois desfechos são idênticos num painel, e os dois significam que a cobertura que você reporta não existe.
+
+## Escolha telemetria por pergunta, não por volume
+
+A inversão útil é parar de perguntar "o que dá para coletar?" e perguntar **"quais perguntas precisamos conseguir responder?"**. E então coletar o que as responde.
+
+As fontes que pagam o próprio custo em quase todo ambiente:
+
+- **Identidade** - autenticações, falhas, eventos de MFA (autenticação multifator), mudanças de privilégio, cadastro de dispositivo novo. Quase toda invasão moderna aparece aqui primeiro.
+- **Telemetria de processos no endpoint** - o que rodou, de onde, com qual processo pai. É aqui que mora a detecção no nível de técnica.
+- **DNS e saída** - para onde as coisas foram. Caro, e é a diferença entre saber que você foi invadido e saber o que saiu.
+- **Trilhas administrativas e de auditoria** - quem mudou uma regra, uma política, um papel. Baratas, pequenas, e o jeito mais rápido de pegar um invasor consolidando acesso.
+- **Plano de controle da nuvem** - o equivalente moderno do controlador de domínio, e com frequência o menos monitorado.
+
+E um detalhe ao qual este site sempre volta: **registre a porta de origem junto com o endereço**, porque atrás de [NAT (tradução de endereços de rede) em escala de operadora](/learn/cgnat-address-sharing-and-attribution) um endereço sozinho não identifica ninguém, e uma investigação que não consegue atribuir uma conexão é uma investigação que termina cedo.
+
+## Uma detecção é um artefato de engenharia
+
+A disciplina que separa um programa que funciona de um programa caro é tratar cada detecção como código, com o mesmo ciclo de vida:
+
+- **Uma hipótese.** Qual comportamento queremos pegar, e por que um atacante faria isso?
+- **Os dados de que ela precisa**, nomeados explicitamente - para que uma fonte de log ausente quebre a detecção de forma barulhenta, e não silenciosa.
+- **Lógica sob controle de versão**, revisada como qualquer outra mudança.
+- **Um teste** - um evento que deve dispará-la, e um evento que não deve.
+- **Um orçamento de falsos positivos.** Se estourar, ela é corrigida ou aposentada. Não suprimida.
+- **Um dono nomeado** e **uma resposta documentada**. Alerta sem runbook é notificação, e notificação é o que as pessoas silenciam.
+
+O último item é o que sustenta o resto. **Um alerta que ninguém sabe o que fazer com ele é pior que alerta nenhum**, porque consome a atenção de que um alerta real precisa e ensina o time que o console mente.
+
+## Medindo com honestidade
+
+Contagem de alertas não mede nada. Os números que significam algo:
+
+- **Tempo até detectar**, medido contra o [tempo de permanência](/glossary/dwell-time), que é o único número que descreve o resultado.
+- **Taxa de verdadeiro positivo por detecção**, regra a regra, para que regras ruins fiquem visíveis individualmente em vez de diluídas numa média saudável.
+- **Alertas por hora de analista**, que é a restrição de capacidade em que todo o resto esbarra.
+- **Cobertura de técnicas que você de fato testou** - e aqui a ressalva do [ATT&CK](/glossary/mitre-attack) se aplica direto: contar técnicas para as quais você tem regra é teatro de cobertura, a menos que a regra tenha sido disparada de propósito e vista funcionando.
+
+O teste que corta tudo: **quando foi a última vez que uma detecção escrita por você pegou algo real, e quanto tempo você levou para saber?** Programas que não conseguem responder isso estão coletando logs, não detectando.
+
+## Arquitetura, na ordem em que o dado se move
+
+O pipeline é o mesmo em todo produto, e cada estágio tem uma falha característica:
+
+**Coleta.** Agentes, syslog ou APIs de provedor. A falha é silenciosa: uma fonte para de enviar e ninguém percebe, porque ausência de eventos se parece exatamente com um dia calmo. Monitorar o volume *esperado* por fonte é a melhoria de detecção mais barata que a maioria das equipes nunca faz.
+
+**Normalização.** Formatos de fabricante são mapeados em campos comuns - um carimbo de tempo, um ator, uma origem, uma ação, um resultado. Esquemas como os que hoje convergem na indústria existem para tornar detecções portáveis entre produtos. Erros de mapeamento de campo são invisíveis até uma detecção silenciosamente não casar com nada.
+
+**Enriquecimento.** Acrescentar criticidade do ativo, contexto de identidade, geolocalização e inteligência de ameaças. É o que transforma "um endereço conectou" em "o notebook de um administrador de domínio conectou a um host sem dono".
+
+**Correlação e armazenamento.** Regras em fluxo rodam conforme os eventos chegam; buscas agendadas rodam sobre o dado armazenado. As duas se comportam de forma muito diferente sob carga, e saber qual das suas detecções é qual importa quando a fila engasga.
+
+**Resposta.** Gestão de casos e orquestração - SOAR (orquestração, automação e resposta de segurança), no vocabulário - onde ações são automatizadas. A nota honesta é que automação multiplica a qualidade que suas detecções já têm, nos dois sentidos.
+
+**A marcação de tempo merece linha própria.** Correlacionar entre fontes só é tão bom quanto o acordo de relógio entre elas. Carimbos defasados ou com fuso errado tornam sequências não ordenáveis, e essa é causa rotineira de investigações que chegam à conclusão errada.
+
+## O cenário de fabricantes, por categoria
+
+- **Plataformas orientadas a busca** - o Splunk como arquétipo, com o Elastic na mesma família. As mais fortes para investigação e consulta livre; historicamente as mais caras em volume, o que puxou a tendência de camadas e data lake.
+- **Suítes nativas de nuvem** - Microsoft Sentinel, Google Chronicle e pares. O caminho mais barato quando o parque já está naquele provedor, com preço e conteúdo de detecção que pressupõem que você fique.
+- **Fabricantes de segurança de rede** - Fortinet, Check Point, Palo Alto e outros entregam um SIEM ao lado dos próprios firewalls. Excelente ingestão dos produtos deles, e a pergunta honesta é o quão bem tratam todo o resto.
+- **Detecção e resposta gerenciadas.** Comprar os analistas junto com a plataforma. Sensato onde não se consegue montar escala de plantão; o risco é a qualidade da detecção ficar invisível para você, então pergunte quais são de fato as detecções do seu provedor e quem é dono do ajuste.
+- **Pilhas de código aberto** - Wazuh, o ferramental de segurança do Elastic, e regras Sigma para lógica de detecção portável. Sem custo de licença e com custo real de engenharia, e o **Sigma importa além da ferramenta**, porque é o mais perto que o campo tem de lógica de detecção que sobrevive à troca de fabricante.
+
+Dois pontos estruturais que valem para qualquer negociação: preço por volume ingerido cria conflito direto com cobertura de detecção, e conteúdo de detecção escrito em linguagem proprietária é um custo de troca que você está escolhendo aceitar.
+
+## O que ele não vai fazer
+
+**Não enxerga o que não lhe é enviado.** Toda lacuna de telemetria é um ponto cego que correlação nenhuma preenche.
+
+**Não substitui um analista.** Aprendizado de máquina e pontuação comportamental estreitam o campo; o julgamento sobre se uma sequência é ataque ainda precisa de contexto que a plataforma não tem.
+
+**Não é um artefato de conformidade que por acaso detecta coisas.** Guardar logs para satisfazer um auditor e detectar invasões são projetos diferentes, com dados diferentes, e confundi-los produz um sistema caro nas duas pontas.
+
+O resumo honesto: um SIEM vale exatamente o que vale a engenharia de detecção em volta dele. A plataforma é custo; o conteúdo é a capacidade - e o setor desperdiçaria muito menos dinheiro se a ordem de compra dissesse isso.

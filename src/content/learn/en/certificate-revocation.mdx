@@ -13,7 +13,7 @@ updated: "2026-06-27"
 
 ## Why revoke at all
 
-A certificate carries an expiry date, but sometimes it must be cancelled before that date arrives. The private key might have leaked, the certificate might have been issued in error, or the domain might have changed hands. In all of these cases the certificate is still cryptographically valid and still inside its validity window, yet relying parties should stop trusting it. Revocation is the mechanism for saying "ignore this certificate even though it has not expired." The hard part is delivering that message reliably to every client in the world, and this turns out to be the weakest link in the web PKI.
+A certificate carries an expiry date, but sometimes it must be cancelled before that date arrives. The private key might have leaked, the certificate might have been issued in error, or the domain might have changed hands. In all of these cases the certificate is still cryptographically valid and still inside its validity window, yet relying parties should stop trusting it. Revocation is the mechanism for saying "ignore this certificate even though it has not expired." The hard part is delivering that message reliably to every client in the world, and this turns out to be the weakest link in the web PKI (public key infrastructure).
 
 ## CRLs: the published blocklist
 

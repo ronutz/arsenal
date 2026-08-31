@@ -53,7 +53,7 @@ Configuration synchronisation is continuous, so the secondary always holds the c
 | UDP and ICMP | Depends on configuration; not by default |
 | Sessions being inspected by a proxy-mode profile | Generally not |
 | IPsec tunnels | With IPsec synchronisation configured |
-| SSL VPN sessions | Not preserved; users reconnect |
+| SSL VPN (virtual private network) sessions | Not preserved; users reconnect |
 
 **Session pickup is not enabled by default.** Without it, every session drops on failover, and the cluster still "works" in that the secondary takes over — it just breaks every connection in the process. Enabling it costs synchronisation overhead, which is the reason for the default, but for most deployments the overhead is the better trade.
 

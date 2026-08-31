@@ -1,0 +1,58 @@
+---
+slug: the-crypto-wars-and-the-cypherpunks
+title: "The Crypto Wars: when encryption was a munition"
+summary: "For most of the 1990s, exporting strong cryptography from the United States was legally equivalent to exporting a weapon. A programmer gave away an encryption tool and faced three years of criminal investigation; a T-shirt with four lines of code on it was an export-controlled item; and the government proposed a chip that would encrypt your calls while keeping a copy of the key. The fight over that decade decided whether the modern web could exist."
+concepts: ["cryptography", "crypto wars", "export controls", "key escrow", "privacy"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "open-source-and-the-meaning-of-free", "stuxnet-and-the-first-cyberweapon"]
+category: security
+order: 111
+status: reviewed
+updated: "2026-08-28"
+---
+
+## Encryption as a weapon, legally speaking
+
+Until 1996, strong cryptography was listed on the United States Munitions List under arms-export regulation. Not metaphorically - the same regulatory apparatus that governed exporting fighter aircraft components governed exporting a program that scrambled text. Software with keys above a threshold could not be sent abroad without a licence, which in practice meant American companies shipped two versions of everything: a strong one for home, and a deliberately weakened one for the rest of the world.
+
+The weakened export ciphers were not a theoretical compromise. They were still present in protocol implementations decades later, and researchers found them again in the 2010s as the **FREAK** and **Logjam** attacks - flaws that existed only because 1990s law had required a downgrade path to exist. Policy decisions become protocol decisions, and protocol decisions outlive the policy by a generation.
+
+## Zimmermann and PGP
+
+In 1991 **Phil Zimmermann** wrote **Pretty Good Privacy**, released it free, and it spread worldwide through bulletin boards and the early internet. He had built it for activists and ordinary people, on the argument that privacy in correspondence is not a privilege requiring justification.
+
+Because it left the country, the US government opened a criminal investigation into him for **munitions export without a licence**, and it ran for three years.
+
+The response was one of the great acts of legal performance art in this history. If exporting the software was a crime but exporting a **book** was protected speech under the First Amendment, then the source code was printed as a book - a real, bound volume, published by MIT Press, exported entirely legally, and scanned back into a computer on the other side. The absurdity was the argument, and the investigation was dropped in 1996 without charges.
+
+The [cypherpunks](/glossary/cypherpunks) had been making the same case since 1992 on their mailing list, with Eric Hughes's manifesto supplying the operative sentence: **cypherpunks write code**. Not lobby, not petition - ship working tools and make the policy question moot. Jude Milhon coined the name, and the list argued out anonymous remailers, digital cash and onion routing years before any of them shipped.
+
+## The Clipper chip
+
+The government's counter-proposal in 1993 was the **Clipper chip**: strong encryption for telephones, built into the hardware, with a copy of every key held in escrow so authorities could decrypt with legal authorisation. The pitch was that citizens would get real privacy and the state would keep lawful access - the exact trade-off proposed under new names in every decade since.
+
+It collapsed for two reasons that are still the correct reasons.
+
+The **political** objection was that a key held by someone else is not your key, and a system designed to be opened by an authorised party can be opened by an unauthorised one.
+
+The **technical** objection was that this was demonstrated. Matt Blaze published a flaw in the escrow mechanism in 1994 showing the system could be used in a way that defeated the escrow function, which meant Clipper failed on its own terms. Adoption never happened.
+
+## Bernstein, and code as speech
+
+The legal question was settled by **Daniel Bernstein**, a graduate student who wanted to publish an encryption algorithm called Snuffle and sued rather than accept that publishing it required an arms licence. The courts found that **source code is expressive speech** protected by the First Amendment, and the export regime was substantially liberalised in 1996 and 2000.
+
+That ruling is load-bearing for everything that followed. Without it there is no lawful export of strong TLS, no worldwide HTTPS, no e-commerce as it actually developed, and no open publication of cryptographic research. The same principle resurfaced immediately in the [DeCSS](/glossary/dvd-jon) fight, where a decryption program circulated as a haiku, a T-shirt and a prime number to make the point that banning a program means banning a number.
+
+## The second war, and the third
+
+The 1990s settlement did not end the argument; it moved it.
+
+The **Snowden disclosures** in 2013 showed the state had continued the project by other means - bulk collection, weakened standards, and the case of the **Dual EC DRBG** random number generator, a NIST-standardised algorithm widely believed to contain a deliberate backdoor and paid into a commercial product. The response was an industry-wide sprint to encrypt everything by default: HTTPS everywhere, encrypted messaging as a consumer expectation, certificate transparency, and free certificates at scale.
+
+The third round is ongoing and uses different words. Lawful access, client-side scanning, exceptional access, traceability requirements. The technical answer has not changed since Blaze broke Clipper in 1994: a mechanism that lets an authorised party read encrypted content is a mechanism, and mechanisms do not check credentials at the door.
+
+## Why this belongs in a hacker history
+
+Because the cypherpunks were hackers, and they won by hacking the problem rather than the systems: printing code as a book, litigating the definition of speech, and above all shipping tools faster than policy could constrain them. The [free software](/glossary/free-software) movement supplied the licences that kept those tools available, and the same people show up in both stories.
+
+And because the outcome is invisible in the way successful infrastructure always is. Every padlock in every browser, every encrypted message, every private transaction is the residue of a decade-long fight that could have gone the other way - and the argument is reopened, under a new name, roughly every five years.

@@ -40,7 +40,7 @@ Every one of these is grounded in F5's own documentation, and every one bites re
 - **No JavaScript, no pass.** A client that does not run JavaScript fails the challenge and is blocked, so account for legitimate non-browser clients.
 - **Transparent mode skips the challenges.** If the policy is in Transparent mode, browser-verification challenges are not performed, so you cannot rely on them while tuning in transparent.
 - **JS injection can block valid non-browser clients even in blocking mode**, which is exactly why F5 provides an option to disable verification and Device-ID challenge injection in transparent mode.
-- **Mobile apps cannot run the JavaScript.** That is what the F5 Anti-Bot Mobile SDK is for: it validates the mobile application itself, through a partner integration, instead of injecting JavaScript, so mobile clients are not falsely blocked.
+- **Mobile apps cannot run the JavaScript.** That is what the F5 Anti-Bot Mobile SDK (software development kit) is for: it validates the mobile application itself, through a partner integration, instead of injecting JavaScript, so mobile clients are not falsely blocked.
 - **Cross-domain iframes break challenges.** If a page loads an iframe from a different domain while challenges are enabled, the challenge can fail; F5 documents this (bug ID 519612), and the fix involves cross-domain request settings plus an iRule so the challenge runs on the main page.
 
 ## Reading it back

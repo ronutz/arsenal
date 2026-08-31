@@ -12,7 +12,7 @@ status: reviewed
 updated: "2026-07-26"
 ---
 
-O NAT na Check Point tem dois pontos de entrada, e escolher entre eles é a primeira decisão.
+O NAT (tradução de endereços de rede) na Check Point tem dois pontos de entrada, e escolher entre eles é a primeira decisão.
 
 ## Hide e estático
 
@@ -46,7 +46,7 @@ Reconhecer esse formato poupa muito tempo, porque todo instinto aponta para a po
 
 ## Tráfego de VPN e NAT
 
-O tráfego que entra numa VPN site a site normalmente não deve ser traduzido: o par espera os endereços originais, e traduzi-los quebra a correspondência do domínio de criptografia. Excluir o tráfego de VPN do NAT é passo de configuração padrão, e não caso de borda, e esquecê-lo produz um túnel que se estabelece e não carrega nada.
+O tráfego que entra numa VPN (rede privada virtual) site a site normalmente não deve ser traduzido: o par espera os endereços originais, e traduzi-los quebra a correspondência do domínio de criptografia. Excluir o tráfego de VPN do NAT é passo de configuração padrão, e não caso de borda, e esquecê-lo produz um túnel que se estabelece e não carrega nada.
 
 ## Updatable Objects
 

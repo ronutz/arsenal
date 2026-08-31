@@ -55,7 +55,7 @@ Uma tentativa funcional precisava de duas coisas separadas, e distingui-las é q
 
 **Uma leitura limpa de uma carga codificada fala da codificação, não do ataque.** Cargas OGNL são rotineiramente codificadas em URL, duplamente codificadas ou divididas entre parâmetros que a aplicação concatena depois. Se você colar `%25%7B` num decodificador e ele não achar nada, essa é a resposta certa para a pergunta errada. Decodifique primeiro, leia depois.
 
-E uma carga prova o que foi *tentado*, nunca o que estava *presente*. Não diz a versão do framework, a configuração, nem se a requisição chegou à aplicação. Isso está no evento do WAF e no log da aplicação - a carga é apenas a pergunta que alguém fez.
+E uma carga prova o que foi *tentado*, nunca o que estava *presente*. Não diz a versão do framework, a configuração, nem se a requisição chegou à aplicação. Isso está no evento do WAF (web application firewall) e no log da aplicação - a carga é apenas a pergunta que alguém fez.
 
 ## A outra metade desta história
 

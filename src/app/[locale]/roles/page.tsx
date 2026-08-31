@@ -16,6 +16,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SiteFooter from "@/components/SiteFooter";
+import type { CSSProperties } from "react";
 export function generateStaticParams() {
   return LIVE_LOCALE_CODES.map((locale) => ({ locale }));
 }
@@ -73,21 +74,19 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
             </span>
           </p>
 
-          {/* The two doors out, in the site's jump-link idiom rather than as
-              loose links — the same control the industry pages use. */}
-          {/* One jump link per paragraph, which is the shape the industry
-              pages use for exactly this control. */}
-          <p>
+          {/* THE THREE DOORS OUT, AS ONE ROW (PRIME 2026-08-16).
+              They were three bare <p> wrappers, so three bordered pills stacked
+              down the page with paragraph margins between them and one of them
+              running the full width of its line. The class was right and the
+              GROUPING was missing, which reads as unformatted because nothing
+              says these three belong together. */}
+          <p className="page-jump-row">
             <Link className="page-jump-link" href="/roles/levels">
               {t("levels.title")} <span aria-hidden="true">&#8594;</span>
             </Link>
-          </p>
-          <p>
             <Link className="page-jump-link" href="/practice">
               {t("practiceLink")} <span aria-hidden="true">&#8594;</span>
             </Link>
-          </p>
-          <p>
             <Link className="page-jump-link" href="/learn/the-path-a-product-takes">
               {t("overviewLink")} <span aria-hidden="true">&#8594;</span>
             </Link>
@@ -119,7 +118,21 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
               <ul className="learn-grid">
                 {roles.map((r) => (
                   <li key={r.slug} className="learn-grid-item" data-role-entry>
-                    <Link href={`/roles/${r.slug}`} className="learn-card">
+                    {/* HELD ROLES CARRY THE AMBER EDGE (PRIME 2026-08-16), the same colour
+                        as their provenance pill and the same mechanism the vendor
+                        and reading-path cards already use: --note-accent drives
+                        the left border and a tint of the background. Nothing new
+                        is invented; the card simply says at a glance which of
+                        these PRIME has done. */}
+                    <Link
+                      href={`/roles/${r.slug}`}
+                      className="learn-card"
+                      style={
+                        r.provenance.kind === "held"
+                          ? ({ "--note-accent": "var(--accent-amber)" } as CSSProperties)
+                          : undefined
+                      }
+                    >
                       <h3 className="learn-card-title">{r.title}</h3>
                       <p className="learn-card-summary">{r.whatItIs.split(". ")[0]}.</p>
                       <span className="family-chip-row">

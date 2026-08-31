@@ -23,7 +23,7 @@ A service policy is **declarative**. You do not write control flow. You list rul
 
 The condition side maps fairly cleanly. `[HTTP::path]` checks become a `path` predicate with prefix, exact, regex, or suffix values. `[HTTP::header]` checks become `headers` matchers. `[HTTP::method]` becomes `http_method`. Source-address logic becomes `ip_prefix_list` or `ip_matcher`. Where an iRule would use `string tolower`, a matcher uses a `LOWER_CASE` transformer.
 
-The action side is narrower and that is deliberate. An iRule can do almost anything; a service policy rule chooses among a fixed set of actions and modifiers. ALLOW and DENY are the core. NEXT_POLICY hands off to the next policy in the set. Beyond the verdict, a rule can attach modifiers such as a WAF action, a bot action, or a rate limiter, which is how you compose behavior that an iRule would have scripted inline.
+The action side is narrower and that is deliberate. An iRule can do almost anything; a service policy rule chooses among a fixed set of actions and modifiers. ALLOW and DENY are the core. NEXT_POLICY hands off to the next policy in the set. Beyond the verdict, a rule can attach modifiers such as a WAF (web application firewall) action, a bot action, or a rate limiter, which is how you compose behavior that an iRule would have scripted inline.
 
 ## What does not translate
 

@@ -15,9 +15,9 @@ O rate limiting bloqueia tráfego acima de um limiar fixo, o que ou deixa passar
 
 ## O que é o BaDoS e onde ele vive
 
-A F5 descreve diretamente: o BaDoS fornece proteção automática contra DDoS na camada de aplicação analisando o comportamento do tráfego com machine learning. Ele examina o tráfego entre clientes e servidores, estabelece automaticamente uma baseline de fluxo normal, então constrói assinaturas dinamicamente e aplica proteções com base no comportamento tanto da aplicação quanto dos atacantes, reduzindo falsos positivos e acelerando o tempo até a mitigação.
+A F5 descreve diretamente: o BaDoS fornece proteção automática contra DDoS (negação de serviço distribuída) na camada de aplicação analisando o comportamento do tráfego com machine learning. Ele examina o tráfego entre clientes e servidores, estabelece automaticamente uma baseline de fluxo normal, então constrói assinaturas dinamicamente e aplica proteções com base no comportamento tanto da aplicação quanto dos atacantes, reduzindo falsos positivos e acelerando o tempo até a mitigação.
 
-Um detalhe de posicionamento importa: o BaDoS é configurado em um **DoS profile** (Security > DoS Protection > DoS Profiles), não na política de segurança do WAF, e o profile é associado ao virtual server. A seção `behavioral-enforcement` da política declarativa de WAF é uma peça relacionada, mas separada; o mecanismo completo de behavioral DoS vive no DoS profile.
+Um detalhe de posicionamento importa: o BaDoS é configurado em um **DoS profile** (Security > DoS Protection > DoS Profiles), não na política de segurança do WAF (web application firewall), e o profile é associado ao virtual server. A seção `behavioral-enforcement` da política declarativa de WAF é uma peça relacionada, mas separada; o mecanismo completo de behavioral DoS vive no DoS profile.
 
 ## Dois modos de detecção
 

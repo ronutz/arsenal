@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-A BIG-IP DNS box is not one DNS server. It is a front door, the listener, behind which up to half a dozen different answering machines wait in a documented line: iRules, DNSSEC processing, GSLB wide IPs, DNS Express, one of three kinds of DNS cache, the local BIND instance, and finally a pool of real DNS servers. Every query walks that line in order and the first machine that can answer, answers. Nearly every "why did I get THIS response" mystery in BIG-IP DNS dissolves once you can recite the line.
+A BIG-IP DNS box is not one DNS server. It is a front door, the listener, behind which up to half a dozen different answering machines wait in a documented line: iRules, DNSSEC processing, GSLB (global server load balancing) wide IPs, DNS Express, one of three kinds of DNS cache, the local BIND instance, and finally a pool of real DNS servers. Every query walks that line in order and the first machine that can answer, answers. Nearly every "why did I get THIS response" mystery in BIG-IP DNS dissolves once you can recite the line.
 
 ## The responders and the resolvers
 

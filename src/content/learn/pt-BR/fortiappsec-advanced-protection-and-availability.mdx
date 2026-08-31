@@ -12,7 +12,7 @@ status: reviewed
 updated: "2026-07-26"
 ---
 
-Um WAF inspeciona requisições que chegam à sua aplicação. Três categorias de risco ficam fora disso, e um serviço em nuvem está posicionado para endereçá-las de um jeito que um equipamento no seu rack não está.
+Um WAF (web application firewall) inspeciona requisições que chegam à sua aplicação. Três categorias de risco ficam fora disso, e um serviço em nuvem está posicionado para endereçá-las de um jeito que um equipamento no seu rack não está.
 
 ## Proteção do lado do cliente
 
@@ -50,13 +50,13 @@ O obstáculo prático é que especificações derivam. Uma especificação gerad
 
 ## Balanceamento global
 
-O **GSLB** decide qual região responde, e faz isso por DNS: um resolvedor pergunta onde o nome vive, e a resposta depende de onde o cliente está e de quais regiões estão saudáveis.
+O **GSLB (global server load balancing)** decide qual região responde, e faz isso por DNS: um resolvedor pergunta onde o nome vive, e a resposta depende de onde o cliente está e de quais regiões estão saudáveis.
 
 Integrar um domínio significa delegar essa decisão ao serviço. Daí em diante:
 
 **Verificações de saúde** determinam quais pontos estão elegíveis. Vale a mesma disciplina de qualquer balanceador, e a mesma armadilha: uma verificação que só confirma que a porta está aberta seguirá direcionando usuários a uma região cuja aplicação falhou.
 
-**Testes sintéticos** vão além e são a razão de se preocupar com monitoramento de GSLB. Em vez de verificar de dentro da sua infraestrutura, eles exercitam a aplicação de fora, de vários locais, como um usuário faria. Isso pega as falhas que o monitoramento interno reporta como saudáveis: um problema de rede regional entre os usuários e seus servidores funcionando, um CDN mal configurado, um certificado que expirou em uma região só.
+**Testes sintéticos** vão além e são a razão de se preocupar com monitoramento de GSLB. Em vez de verificar de dentro da sua infraestrutura, eles exercitam a aplicação de fora, de vários locais, como um usuário faria. Isso pega as falhas que o monitoramento interno reporta como saudáveis: um problema de rede regional entre os usuários e seus servidores funcionando, um CDN (rede de distribuição de conteúdo) mal configurado, um certificado que expirou em uma região só.
 
 A distância entre "nosso monitoramento está verde" e "os usuários não nos alcançam" é exatamente o que verificações sintéticas externas fecham.
 

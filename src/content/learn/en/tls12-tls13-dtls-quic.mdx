@@ -11,9 +11,25 @@ status: reviewed
 updated: "2026-07-17"
 ---
 
+## Origins: a shopping cart problem
+
+Netscape needed people to type card numbers into a browser in 1994, and the web had no confidentiality at all. **SSL 1.0** was never released; **SSL 2.0** shipped in 1995 with flaws serious enough that **SSL 3.0** replaced it a year later as a redesign rather than a patch.
+
+Standardisation moved the protocol from one company to the IETF, and the version number was reset to avoid the appearance of a vendor product: **TLS 1.0 (RFC 2246, 1999)** is, on the wire, SSL 3.1. The lineage matters because the wire version numbers still carry it — a TLS 1.2 record announces `0x0303`, which is SSL 3.3 counting from the original.
+
+The generations that followed each removed something rather than added:
+
+- **TLS 1.0 (1999)** and **TLS 1.1 (RFC 4346, 2006)** — the latter added explicit initialisation vectors after attacks on the implicit ones. Both are now prohibited in practice.
+- **TLS 1.2 (RFC 5246, 2008)** — brought authenticated encryption and SHA-256, and removed the hard-wired MD5/SHA-1 construction. This is the version that carried the web for a decade.
+- **TLS 1.3 (RFC 8446, 2018)** — took five years and roughly thirty drafts, because the design goal was subtraction: remove renegotiation, compression, static RSA key exchange, and every cipher suite without authenticated encryption. Most historical TLS attacks target options that TLS 1.3 simply does not offer.
+- **DTLS 1.2 (RFC 6347)** and **DTLS 1.3 (RFC 9147)** — the same handshake adapted for datagram transport.
+- **QUIC (RFC 9000, with TLS integration in RFC 9001, 2021)** — the handshake moved inside a new transport.
+
+The attacks that drove those removals are worth naming, because each one killed a feature: BEAST and Lucky 13 against CBC in older versions, CRIME and BREACH against compression, POODLE against SSL 3.0 padding, Heartbleed against an implementation rather than the protocol, and Logjam and FREAK against export-grade cryptography that had been left in place for a decade after it stopped being legally required.
+
 ## One family, four shapes
 
-TLS stands for Transport Layer Security: the protocol that gives two endpoints an encrypted, authenticated channel and, along the way, proves to the client who the server is. Almost everything called "secure" on the internet - HTTPS, secure mail submission, LDAPS (LDAP over TLS), most VPN control channels - is an application riding on some member of this family. The four names in this article's title are not four competing inventions. They are one design adapted to four situations: TLS 1.2 and TLS 1.3 protect a reliable TCP (Transmission Control Protocol) byte stream; DTLS carries the same guarantees over unreliable datagrams; and QUIC is a full transport protocol that swallowed the TLS 1.3 handshake whole and made it the way the transport itself gets its keys.
+TLS stands for Transport Layer Security: the protocol that gives two endpoints an encrypted, authenticated channel and, along the way, proves to the client who the server is. Almost everything called "secure" on the internet - HTTPS, secure mail submission, LDAPS (LDAP (Lightweight Directory Access Protocol) over TLS), most VPN (virtual private network) control channels - is an application riding on some member of this family. The four names in this article's title are not four competing inventions. They are one design adapted to four situations: TLS 1.2 and TLS 1.3 protect a reliable TCP (Transmission Control Protocol) byte stream; DTLS carries the same guarantees over unreliable datagrams; and QUIC is a full transport protocol that swallowed the TLS 1.3 handshake whole and made it the way the transport itself gets its keys.
 
 Each is defined in an RFC - a Request for Comments, the numbered document series in which the IETF (Internet Engineering Task Force) publishes internet standards - and knowing which RFC is current matters, because two of these specifications were replaced or revised as recently as 2022 and 2025.
 
@@ -40,6 +56,38 @@ DTLS is TLS with that assumption surgically removed. Records carry explicit epoc
 QUIC began at Google around 2012, where the name was a backronym for "Quick UDP Internet Connections"; the IETF standard, [RFC 9000](https://www.rfc-editor.org/rfc/rfc9000) (May 2021), states plainly that QUIC is just a name, not an acronym. Either way, QUIC is the biggest structural change in this family, because it is not a security layer placed on top of a transport - it is the transport.
 
 QUIC runs over UDP and provides, by itself, what TCP-plus-TLS provided as a stack: reliability, congestion control, and encryption. It carries many independent streams inside one connection, and because loss recovery is per-stream, one lost packet stalls only the stream it belonged to - removing the transport-level head-of-line blocking (one lost segment holding up every byte behind it) that TCP imposes on everything above it. Its handshake is the TLS 1.3 handshake, embedded via [RFC 9001](https://www.rfc-editor.org/rfc/rfc9001) so that the keys TLS negotiates protect the transport's own packets; transport setup and cryptographic setup complete together in one round trip, with 0-RTT available on resumption. Almost the entire packet is encrypted, headers included, and connections are identified by connection IDs rather than the address four-tuple, so a phone can hop from Wi-Fi to cellular without the connection dying. The most visible tenant is HTTP/3, which is exactly HTTP mapped onto QUIC streams - the last chapter of [HTTP/0.9 to HTTP/3](/learn/http-versions-09-to-3).
+
+## The handshakes, side by side
+
+**TLS 1.2 costs two round trips** before application data. The client offers cipher suites; the server picks one and sends its certificate; keys are exchanged; both sides confirm. The negotiation is broad, which is where its trouble came from: a downgrade attack is possible whenever the weakest offered option is still acceptable.
+
+**TLS 1.3 costs one round trip**, because the client guesses the key-exchange group and sends its share immediately. If it guesses wrong, the server asks once with a HelloRetryRequest. Ciphers are five AEAD suites rather than dozens of combinations, key exchange is ephemeral by construction — forward secrecy is not optional — and most of the handshake after the ServerHello is encrypted, so far less is visible on the wire, including the certificate.
+
+**0-RTT** lets a returning client send data with its first flight, at a stated cost: those early bytes are replayable, so they are only safe for idempotent requests. That trade is written into the standard rather than hidden.
+
+**DTLS** keeps the same design over UDP, and adds what datagrams remove: explicit sequence numbers, retransmission of handshake flights, and a stateless cookie exchange so a server does not allocate state to a forged source address — the same anti-amplification reasoning as any [reflection defence](/learn/ddos-what-actually-absorbs-an-attack). It is what protects WebRTC media and much of the constrained-device world.
+
+**QUIC** merges the transport and cryptographic handshakes into one exchange over UDP, so a connection reaches application data in a single round trip and reconnects to a known server in zero. It also encrypts the transport layer itself — sequence numbers and acknowledgements included — which removes head-of-line blocking between streams and makes middlebox interference structurally harder. Connection identifiers rather than address tuples mean a session survives a change of network.
+
+## What this changes in operations
+
+**Visibility.** TLS 1.3 encrypts the certificate and most handshake extensions, so passive inspection sees far less; the SNI in the initial ClientHello remains the main plaintext signal, and Encrypted Client Hello removes that too where deployed. Inspection architectures built on reading handshakes need revisiting rather than reconfiguring.
+
+**Middleboxes.** So much equipment mishandled unfamiliar handshakes that TLS 1.3 deliberately imitates a TLS 1.2 session-resumption exchange on the wire. That compatibility mode is a permanent monument to deployed software that inspects what it does not understand.
+
+**QUIC on the network.** It is UDP on port 443, opaque to inspection, and blocked or throttled by enough networks that browsers keep a TCP fallback. Capacity planning changes too: per-packet processing costs more than TCP for the same throughput, and the work moves into userspace.
+
+**What to actually check.** Disable TLS 1.0 and 1.1 and every non-AEAD suite; require TLS 1.2 as the floor and prefer 1.3; keep certificate automation independent of the version question; and verify what your own inspection stack does with a TLS 1.3 or QUIC flow before an incident makes the answer urgent.
+
+## Implementations, by category
+
+- **OpenSSL** — the default nearly everywhere, with the widest algorithm coverage and the longest history of both use and scrutiny.
+- **BoringSSL and LibreSSL** — deliberate forks with narrower surfaces; BoringSSL sits under Chrome and much Google infrastructure, LibreSSL came out of OpenBSD after Heartbleed.
+- **Platform stacks** — Schannel on Windows, Secure Transport and its successors on Apple systems, NSS in Firefox. Behaviour follows the operating system's policy, not the application's.
+- **Memory-safe implementations** — rustls and similar, increasingly deployed where the historical bug class matters more than breadth of legacy support.
+- **QUIC libraries** — quiche, msquic, ngtcp2, quic-go and others, plus the stacks inside browsers and delivery networks; the space is younger and less consolidated than TLS.
+
+Interoperability is generally good because the standards are precise and the test surface is enormous. The friction sits in policy rather than protocol: an operating system that will not offer TLS 1.3, a middlebox that mangles it, or a delivery network that terminates it and re-originates something older.
 
 ## Which one am I looking at?
 

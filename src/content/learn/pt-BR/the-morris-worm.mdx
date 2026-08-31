@@ -1,0 +1,34 @@
+---
+slug: the-morris-worm
+title: "O Worm de Morris: a noite em que a internet descobriu que era frágil"
+summary: "Em 2 de novembro de 1988 um mestrando de Cornell soltou 99 linhas de C para medir o tamanho da internet. Uma única decisão aritmética sobre reinfecção transformou a medição no primeiro desastre em escala de internet, deu à luz o sistema CERT, produziu a primeira condenação sob o novíssimo Computer Fraud and Abuse Act, e ensinou à rede uma lição sobre monocultura e confiança que ela ainda está reaprendendo."
+concepts: ["morris worm", "worm", "buffer overflow", "cfaa", "cert", "hacker history", "internet security"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "phone-phreaking-and-the-blue-box"]
+category: security
+order: 98
+status: reviewed
+updated: "2026-08-28"
+---
+
+## Noventa e nove linhas que pararam a internet
+
+Na noite de 2 de novembro de 1988, **Robert Tappan Morris**, mestrando de primeiro ano em Cornell, soltou um pequeno programa autorreplicante na internet - que naquele momento era uma aldeia confiante de talvez sessenta mil hosts, na maioria universidades e laboratórios de pesquisa, na maioria Unix, na maioria conhecidos uns dos outros. Sua intenção declarada, crível e hoje bem documentada, era benigna: um programa que se copiaria uma vez para cada máquina e ligaria para casa com uma contagem, para ele *medir o tamanho da internet*. Em horas tinha derretido uma fração relevante dela. As máquinas ficaram lentas até a inutilidade, depois caíram; administradores vendo a carga subir sem causa visível começaram, um a um, a tirar seus sites da rede por inteiro - que é como a internet primitiva se particionou em pânico, cada ilha incapaz de coordenar com as outras justamente porque o meio de coordenação era a coisa sob ataque.
+
+## O bug do plano era um único número
+
+O worm se espalhou por três portas, e o catálogo delas é uma ementa dos pecados de software de 1988. Ele explorou um **buffer overflow no daemon `fingerd`** - o stack-smash canônico, entrada do usuário transbordando um buffer de tamanho fixo para tomar o controle, a classe de vulnerabilidade que dominaria a segurança pelos vinte anos seguintes. Ele abusou de uma **funcionalidade de debug deixada habilitada no `sendmail`** que o deixava canalizar comandos para um servidor de e-mail remoto. E rodou um **ataque de dicionário em senhas**, usando uma lista de palavras embutida mais os próprios dados de conta dos usuários, e então avançava com quaisquer credenciais que quebrasse - a mais antiga demonstração famosa de que senha fraca é um problema *de rede*, não pessoal.
+
+Mas a catástrofe não estava nas portas; estava numa decisão aritmética. Morris previu que administradores pudessem inocular suas máquinas fingindo a presença do worm, então, para mantê-lo se espalhando, fez com que ele **reinfectasse mesmo assim, uma vez em sete**, independentemente de já haver uma cópia rodando. Numa rede densamente interconectada essa fração foi fatal: máquinas eram reinfectadas de novo e de novo, rodando dezenas de cópias cada, e a ferramenta "inofensiva" de medição virou uma fork bomb com pegada nacional. O desastre não foram os exploits - esses eram mais ou menos conhecidos. O desastre foi uma constante de probabilidade. *Errar o throttle é a história inteira*, e é por isso que o incidente é ensinado até hoje: a diferença entre um experimento e uma arma foi um `1` e um `7`.
+
+## O que renasceu da noite para o dia
+
+A internet não tinha maquinário de resposta a incidentes porque nunca tinha precisado de nenhum, e o vácuo foi preenchido em tempo real. Times de Berkeley e do MIT capturaram, desmontaram e neutralizaram o worm em poucos dias - a resposta documentada depois na análise de Gene Spafford, de Purdue, e no relatório da própria Cornell - e da correria veio a instituição permanente: a DARPA financiou o **Computer Emergency Response Team (CERT)** em Carnegie Mellon em semanas, o ponto de coordenação que o pânico tão dolorosamente faltou, e o modelo que todo CERT nacional desde então copiou.
+
+O desdobramento jurídico foi igualmente fundador. Morris virou a **primeira pessoa julgada e condenada sob o Computer Fraud and Abuse Act de 1986** - o estatuto tinha mal dois anos e nunca fora testado -, levando três anos de liberdade condicional, quatrocentas horas de serviço comunitário e uma multa. O caso traçou a primeira linha judicial de verdade sob "acesso não autorizado", e a traçou em torno de um réu que não pretendia dano nenhum, que é exatamente por que importou: a lei aprendeu, neste caso, que intenção e efeito são coisas diferentes.
+
+## A lição que ele segue reensinando
+
+O ensinamento mais fundo do worm não foi bug nenhum, mas a **monocultura**. Ele se espalhou tão rápido porque a internet rodava uma pilha quase uniforme - o mesmo Unix, os mesmos daemons, os mesmos defaults -, então um conjunto de exploits destrancava quase toda porta. Esse é o argumento por diversidade de software, menor privilégio e defesa em profundidade, e toda frota homogênea desde então - um motor de navegador, uma imagem de nuvem, uma biblioteca no fundo de dez mil cadeias de suprimento - é o mesmo combustível esperando a mesma faísca.
+
+Há um arremate de que o campo não se cansa. Robert Morris pagou sua dívida, virou um respeitado professor do MIT e cofundador da aceleradora Y Combinator, e o pai dele, à época do worm, era o cientista-chefe do National Computer Security Center da NSA - um detalhe quase perfeito demais para ser verdade. A internet-aldeia da confiança implícita morreu naquela noite de 1988. Tudo de defensivo que construímos depois é, num sentido real, a rede aprendendo a viver sem ela.

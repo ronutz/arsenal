@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-21"
 ---
 
-[The DLP fundamentals article](/learn/dlp-fundamentals) laid out the four instruments every product plays - patterns, dictionaries, exact data matching, indexed document matching. Zscaler Internet Access (ZIA) assembles them into a three-story hierarchy that is worth memorizing as a sentence: **dictionaries recognize, engines combine, rules aim.** Everything below is grounded in Zscaler's DLP documentation and its own troubleshooting runbook, verified 2026-07-21.
+[The DLP (data loss prevention) fundamentals article](/learn/dlp-fundamentals) laid out the four instruments every product plays - patterns, dictionaries, exact data matching, indexed document matching. Zscaler Internet Access (ZIA) assembles them into a three-story hierarchy that is worth memorizing as a sentence: **dictionaries recognize, engines combine, rules aim.** Everything below is grounded in Zscaler's DLP documentation and its own troubleshooting runbook, verified 2026-07-21.
 
 ## Story one: dictionaries
 
@@ -31,4 +31,4 @@ The precision instruments require the **Advanced DLP suite**, and both follow th
 
 ## The reach extenders, and the floor under everything
 
-Two extensions round out the inline story. **OCR** brings images into scope - the screenshot of the customer table is text to the engines once recognition runs. And [the CASB article](/learn/zscaler-casb-and-saas-security) carries the same engines out-of-band, scanning data *at rest* in SaaS tenants - one dictionary investment, two enforcement planes. Under all of it sits the floor this series keeps returning to: inline DLP reads what inspection lets it read. [An SSL bypass](/learn/zia-ssl-inspection-policy-and-bypasses) is a DLP-blind corridor, and the honest DLP design review always begins with the bypass list, not the dictionary list.
+Two extensions round out the inline story. **OCR** brings images into scope - the screenshot of the customer table is text to the engines once recognition runs. And [the CASB (cloud access security broker) article](/learn/zscaler-casb-and-saas-security) carries the same engines out-of-band, scanning data *at rest* in SaaS tenants - one dictionary investment, two enforcement planes. Under all of it sits the floor this series keeps returning to: inline DLP reads what inspection lets it read. [An SSL bypass](/learn/zia-ssl-inspection-policy-and-bypasses) is a DLP-blind corridor, and the honest DLP design review always begins with the bypass list, not the dictionary list.

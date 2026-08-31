@@ -12,7 +12,7 @@ status: reviewed
 updated: "2026-07-26"
 ---
 
-NAT on Check Point has two entry points, and choosing between them is the first decision.
+NAT (network address translation) on Check Point has two entry points, and choosing between them is the first decision.
 
 ## Hide and static
 
@@ -46,7 +46,7 @@ Recognising this shape saves a great deal of time, because every instinct points
 
 ## VPN traffic and NAT
 
-Traffic entering a site-to-site VPN normally should not be translated: the peer expects the original addresses, and translating them breaks the encryption domain match. Excluding VPN traffic from NAT is a standard configuration step rather than an edge case, and forgetting it produces a tunnel that establishes and carries nothing.
+Traffic entering a site-to-site VPN (virtual private network) normally should not be translated: the peer expects the original addresses, and translating them breaks the encryption domain match. Excluding VPN traffic from NAT is a standard configuration step rather than an edge case, and forgetting it produces a tunnel that establishes and carries nothing.
 
 ## Updatable Objects
 

@@ -19,7 +19,7 @@ The cleanest mental model sorts headers by what they describe. **Request context
 
 ## The header that saved the web's address space
 
-`Host` deserves its own paragraph. HTTP/1.0 requests named only a path, so one IP address meant one website. HTTP/1.1 made `Host` mandatory, and with that single line, **virtual hosting** was born: thousands of sites per address, the server choosing which one to be based on the header. Every reverse proxy, every CDN, every ingress controller still routes on it (or on its TLS twin, SNI) - and a request whose `Host` disagrees with its URL is either a misconfiguration or an attack probe, which is why it features in every WAF's opening chapter.
+`Host` deserves its own paragraph. HTTP/1.0 requests named only a path, so one IP address meant one website. HTTP/1.1 made `Host` mandatory, and with that single line, **virtual hosting** was born: thousands of sites per address, the server choosing which one to be based on the header. Every reverse proxy, every CDN (content delivery network), every ingress controller still routes on it (or on its TLS twin, SNI) - and a request whose `Host` disagrees with its URL is either a misconfiguration or an attack probe, which is why it features in every WAF (web application firewall)'s opening chapter.
 
 ## End-to-end versus hop-by-hop
 

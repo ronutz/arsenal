@@ -1,0 +1,46 @@
+---
+slug: l0pht-cdc-and-the-road-to-the-industry
+title: "L0pht, cDc e o ano em que o underground entrou no Senado"
+summary: "Em maio de 1998 sete hackers depuseram ao Senado dos Estados Unidos sob seus apelidos e disseram que conseguiriam derrubar a internet em trinta minutos. Dois meses depois o Cult of the Dead Cow lançou o Back Orifice num palco da DEF CON para forçar a mão da Microsoft. Entre os dois, 1998 é o ano em que a cena deixou de ser subcultura e começou a virar indústria."
+concepts: ["l0pht", "cult of the dead cow", "full disclosure", "back orifice", "hacker history"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "phrack-2600-and-the-hacker-manifesto", "lod-mod-and-operation-sundevil", "the-morris-worm"]
+category: security
+order: 106
+status: reviewed
+updated: "2026-08-28"
+---
+
+## Um loft cheio de hardware recuperado
+
+O **L0pht** era um espaço alugado em Boston cheio de equipamento tirado de caçambas e feiras de troca, onde sete pessoas com empregos diurnos faziam pesquisa de vulnerabilidades à noite: Mudge, Weld Pond, Space Rogue, Kingpin, Brian Oblivion, Tan e Stefan Von Neumann. Não eram uma turma no sentido da [Legion of Doom](/learn/lod-mod-and-operation-sundevil). Quebravam coisas, escreviam a respeito e publicavam - um laboratório de pesquisa operando fora de toda instituição que normalmente financia um.
+
+Suas ferramentas tornavam os argumentos concretos. O **L0phtCrack** quebrava senhas do Windows explorando a fraqueza estrutural do hashing LAN Manager, e fazia a única coisa que um advisory não faz: deixava um administrador ver as senhas da própria rede caírem numa tarde. Eles tocavam a **Hacker News Network**, jornalismo feito por praticantes numa época em que a cobertura de imprensa sobre hacking era quase toda pânico. E emitiam advisories numa forma que os fabricantes não conseguiam ignorar com conforto.
+
+## 19 de maio de 1998
+
+O Comitê de Assuntos Governamentais do Senado os convidou a depor sobre segurança de computadores do governo, e eles apareceram **sob seus apelidos** - os autos registram uma audiência do Senado americano com testemunhas chamadas Mudge e Space Rogue - porque seus empregadores não sabiam o que eles faziam à noite.
+
+A afirmação de manchete foi que os sete conseguiriam tornar a internet inutilizável em **trinta minutos**. A substância por trás disso era a fragilidade do **BGP** (Border Gateway Protocol), o protocolo de roteamento que decide para onde o tráfego vai, que à época não tinha praticamente nenhuma autenticação: anuncie uma rota que não é sua e o tráfego segue. Eles não estavam exagerando para as câmeras, que é a parte incômoda - vazamentos de rota derrubaram partes grandes da internet repetidas vezes nas décadas seguintes, em geral por acidente.
+
+A audiência mudou a relação. Foi a primeira vez que o Estado americano tratou hackers como peritos em vez de réus, e é a razão de o duto para dentro do governo existir: **Mudge** depois dirigiu o Cyber Fast Track da DARPA, financiando pesquisa em escala hacker com prazos de hacker, e seguiu para liderança de segurança na divisão Motorola do Google e no Twitter.
+
+## Dois meses depois, um palco na DEF CON
+
+O **Cult of the Dead Cow** - fundado em 1984 em Lubbock, Texas, em partes iguais grupo de pesquisa, zine absurdista e teatro político - pegou uma rota diferente para o mesmo argumento. Na DEF CON de agosto de 1998 eles lançaram o **Back Orifice**, uma ferramenta de administração remota para Windows cujo nome zombava do BackOffice da Microsoft e cujas capacidades tornavam uma máquina remota efetivamente propriedade do operador.
+
+O enquadramento era provocação deliberada: a Microsoft insistia que o Windows era seguro, então o cDc entregou a todo mundo uma demonstração funcionando de que não era. A Microsoft respondeu que uma ferramenta não é uma palestra, e que despachar uma para o mundo inteiro não é pesquisa. As duas posições são defensáveis, e o episódio fixou o modelo de toda briga de divulgação total desde então - a ferramenta que funciona, o palco, a imprensa, e o fabricante sem boa resposta.
+
+A outra contribuição duradoura do cDc é uma palavra. Um membro que assinava Omega cunhou **hacktivismo** em meados dos anos noventa, e o projeto Hacktivismo do grupo construiu ferramentas de contorno para redes censuradas - o argumento de que, se você sabe rotear em volta de um firewall, tem o dever cívico de ajudar os outros a fazer o mesmo.
+
+## O que 1998 de fato mudou
+
+Três coisas, e elas definem a indústria que veio depois.
+
+**Hackers viraram consultáveis.** O L0pht virou legítimo como **@stake**, uma consultoria de segurança que formou boa parte da primeira geração profissional do campo, e cujos egressos ainda estão espalhados por toda equipe séria de segurança. O caminho do underground à folha de pagamento deixou de ser traição e virou carreira.
+
+**A divulgação ganhou seu formato permanente.** Depois de 1998 a discussão já não era se publicar, mas como - e o compromisso negociado que todo mundo hoje usa, divulgação coordenada com prazo, é o acordo de uma briga que estes dois grupos forçaram para o aberto.
+
+**O modelo de ameaça ficou estrutural.** O L0phtCrack era sobre hashing fraco; o depoimento no Senado era sobre um protocolo de roteamento sem autenticação. Essa virada - de bugs individuais para as fraquezas estruturais da infraestrutura compartilhada - é o movimento intelectual que produziu desde os [argumentos do DNSSEC](/glossary/kaminsky-dns-flaw) até o trabalho atual de segurança de cadeia de suprimento.
+
+O contrapeso merece ser dito. A @stake depois demitiu um pesquisador por publicar achados sobre o produto de um cliente, o que mostrou ao campo exatamente o preço da troca: o loft era livre para dizer qualquer coisa precisamente porque ninguém o pagava. Essa tensão - independência contra salário - nunca foi resolvida, e todo pesquisador que já hesitou antes de apertar publicar vive dentro dela.

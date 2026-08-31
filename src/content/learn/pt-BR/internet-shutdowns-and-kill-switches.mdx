@@ -1,0 +1,68 @@
+---
+slug: internet-shutdowns-and-kill-switches
+title: "Desligamentos de internet: o ponto de estrangulamento que é um telefonema"
+summary: "Todo outro ponto de estrangulamento desta série exige um ataque, um acidente ou um ato de engenharia. Este exige uma instrução a um punhado de empresas que já têm licença. Desligamentos hoje são rotina em algum lugar do mundo quase toda semana — apagões completos, cortes regionais, bloqueio de plataformas, e a opção mais silenciosa do estrangulamento de banda — e o quadro técnico é menos interessante que quem precisa obedecer e quanto isso custa."
+concepts: ["shutdowns", "censorship", "resilience", "governance", "circumvention"]
+relatedTools: []
+relatedArticles: ["the-chokepoints-of-the-internet", "cloud-and-cdn-monoculture", "bgp-and-the-routing-chokepoint", "the-crypto-wars-and-the-cypherpunks"]
+category: networking
+order: 125
+status: reviewed
+updated: "2026-08-29"
+---
+
+## O mecanismo é administrativo, não técnico
+
+A conectividade internacional de um país tipicamente passa por um número pequeno de operadoras licenciadas, um número pequeno de [estações de pouso](/glossary/landing-station), e com frequência uma incumbente estatal ou influenciada pelo Estado. Licenças trazem condições. Então o mecanismo do desligamento costuma ser uma ordem, entregue a uma lista de empresas que cabe numa mão, com sanções para quem não cumprir.
+
+É por isso que este ponto se comporta diferente do resto da série. Não há exploit, não há navio de cabos, não há certificado emitido indevidamente. Há um instrumento jurídico e uma equipe de operações que prefere manter a licença.
+
+## A escada da interferência
+
+Desligamento não é uma coisa só, e as distinções importam porque as contramedidas diferem.
+
+**Apagão nacional completo.** Rotas retiradas, trânsito internacional desconectado. Altamente visível, economicamente caro, internacionalmente constrangedor - e por isso em geral curto e amarrado a um evento específico: uma eleição, um protesto, um período de provas.
+
+**Cortes regionais ou direcionados.** Dados móveis desligados em províncias ou cidades específicas. Politicamente mais barato porque a capital segue funcionando e a história fica mais difícil de contar.
+
+**Bloqueio de plataformas.** Serviços específicos tornados inalcançáveis por manipulação de DNS, bloqueio de endereços ou identificação de protocolo. É a forma cotidiana, e é onde uma fatia enorme da população mundial vive de forma permanente, e não episódica.
+
+**Estrangulamento de banda.** O silencioso. A banda é reduzida até o vídeo falhar, depois as imagens, depois a mensageria ficar não confiável - enquanto a conexão tecnicamente funciona. É negável, é difícil de medir sem ferramental dedicado, e alcança quase todo o efeito de um apagão sem produzir uma queda que alguém possa apontar.
+
+**Desligamentos só de móvel** merecem linha própria, porque em boa parte do mundo o móvel *é* a internet, e cortá-lo mantendo as linhas fixas afeta quase todo mundo parecendo parcial.
+
+## O que de fato quebra
+
+Não só a fala, que é como esses eventos costumam ser noticiados. O dano cai sobre infraestrutura que silenciosamente presumiu conectividade:
+
+Pagamentos e bancos, que em muitos países são móveis antes de tudo. Aplicativos de transporte e entrega, que são renda de gente sem colchão. Serviços de saúde, sistemas de agendamento e despacho de ambulância. Provas escolares e universitárias. Carga e desembaraço aduaneiro. Contratos de trabalho remoto com clientes estrangeiros, que não pausam porque um ministério emitiu uma ordem.
+
+Perdas econômicas documentadas somam bilhões de dólares por ano no mundo, e a carga é regressiva: quem menos consegue absorver uma semana sem renda é justamente quem mais depende de um celular para trabalhar.
+
+Há também um efeito de segunda ordem que merece nome. Desligamentos durante convulsões removem o registro probatório - sem vídeo, sem mensagens, sem carimbo de hora -, o que muda o que se consegue estabelecer depois. Seja qual for a política de cada um, essa é uma consequência de cauda longa.
+
+## Quem conseguiria fazer o quê
+
+**Governos**, por condições de licença e poderes de emergência. É o caso dominante, e o número de países que o fazem tem subido, não caído.
+
+**Operadoras**, que tecnicamente executam e raramente têm escolha real. Sua exposição é concreta: funcionários no chão, ativos que podem ser apreendidos, licenças que podem ser cassadas.
+
+**Plataformas globais e provedores de infraestrutura**, cuja posição é mais ambígua do que parece. Um provedor que atende um país de fora pode recusar e perder o mercado; um provedor com infraestrutura local tem gente e equipamento dentro da jurisdição. A [concentração](/glossary/concentration-risk) torna isso mais afiado, porque uma ordem entregue a um punhado de empresas hoje alcança uma fatia enorme da vida digital de um país.
+
+## O que de fato ajuda
+
+A resposta honesta primeiro: **contra um apagão total e determinado, quase nada funciona em escala**, e textos que sugerem o contrário estão vendendo alguma coisa. Ferramentas de contorno resolvem bem bloqueio e estrangulamento, e apagão quase nada.
+
+- **Ferramentas de contorno** - túneis cifrados, Tor e seus transportes plugáveis, protocolos desenhados para resistir à identificação - funcionam contra bloqueio de plataforma, e estão numa corrida armamentista permanente com equipamento de inspeção. Dependem de existir *alguma* conectividade.
+- **Medição importa mais do que se imagina.** Projetos independentes de medição transformam "a internet parece lenta" num registro técnico documentado e datado, que é o que torna o estrangulamento sequer discutível.
+- **Resiliência doméstica é a alavanca subestimada.** Um país com pontos de troca de tráfego fortes, caches locais e hospedagem doméstica mantém os serviços locais de pé quando o trânsito internacional é cortado. Essa é uma mitigação real e construível, e é mais uma razão para pontos de troca importarem além do custo.
+- **Enlaces por satélite** ajudam indivíduos e serviços críticos e são juridicamente delicados exatamente nas jurisdições em que mais fariam falta.
+- **Desenho capaz de operar offline** - aplicações local-first, mensageria em malha, dados em cache, alternativas impressas - é sem glamour e é o que de fato funciona durante um evento.
+
+Para organizações que operam em regiões afetadas, a pergunta prática de planejamento não é como derrotar um desligamento, e sim como degradar: o que continua funcionando sem conectividade internacional, como a equipe é paga e contatada, e quais compromissos com clientes são honrados quando um país fica no escuro por uma semana.
+
+## Onde isto entra na série
+
+Este é o ponto de estrangulamento que expõe a premissa por baixo dos outros quatro. [DNS](/learn/what-happens-if-the-dns-root-goes-dark), [roteamento](/learn/bgp-and-the-routing-chokepoint), [cabos](/learn/submarine-cables-and-the-physical-internet) e [certificados](/learn/the-certificate-authority-chokepoint) são todos sistemas cujas falhas se contornam por engenharia, dados dinheiro e tempo. Um desligamento não se contorna por engenharia, porque o mecanismo é autoridade sobre as pessoas que operam o equipamento.
+
+A internet foi desenhada para rotear em volta do dano. Nunca foi desenhada para rotear em volta do dono do fio decidindo desligá-lo - e mudança de protocolo nenhuma conserta uma condição de licença. Esse é o limite honesto desta disciplina, e é por isso que as respostas aqui são cívicas e jurídicas tanto quanto técnicas.

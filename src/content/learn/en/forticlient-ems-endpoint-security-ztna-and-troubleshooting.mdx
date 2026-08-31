@@ -36,7 +36,7 @@ Two design points matter:
 
 ## ZTNA
 
-ZTNA replaces "you are on the network, therefore you may reach the application" with "this session, from this device, for this user, may reach this application".
+ZTNA (zero trust network access) replaces "you are on the network, therefore you may reach the application" with "this session, from this device, for this user, may reach this application".
 
 The pieces:
 
@@ -44,7 +44,7 @@ The pieces:
 - **EMS** supplies device posture — is it registered, is protection on, is it compliant — as **ZTNA tags**.
 - **The FortiGate** acts as the access proxy, terminating the session and deciding per request using the user's identity plus those tags.
 
-The practical difference from VPN is worth stating plainly. A VPN grants network access and then relies on firewall policy to narrow it; ZTNA grants nothing until a specific request is evaluated, and posture is part of that evaluation. A device that falls out of compliance loses access without any network change, because the tag it was relying on is gone.
+The practical difference from VPN (virtual private network) is worth stating plainly. A VPN grants network access and then relies on firewall policy to narrow it; ZTNA grants nothing until a specific request is evaluated, and posture is part of that evaluation. A device that falls out of compliance loses access without any network change, because the tag it was relying on is gone.
 
 The dependency to remember is that ZTNA tags come from EMS. An endpoint that has stopped reporting to EMS has stale or absent tags, and the resulting access failure looks like a firewall problem while being an endpoint management problem.
 

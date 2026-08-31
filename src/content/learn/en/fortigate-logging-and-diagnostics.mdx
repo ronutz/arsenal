@@ -21,7 +21,7 @@ Most FortiGate investigation begins with a log that does not exist, because logg
 | Memory | Very short; lost on reboot | Yes, on the device | Fine for live work, useless afterwards |
 | Local disk | Longer; not on all models | Yes, on the device | Constrained, and writes wear the disk |
 | FortiAnalyzer | Long | Yes, centrally | The normal answer for anything retained |
-| Syslog | Whatever the collector keeps | In the collector | Where an existing SIEM is the destination |
+| Syslog | Whatever the collector keeps | In the collector | Where an existing SIEM (security information and event management) is the destination |
 | FortiGate Cloud | Managed | Yes | Suits deployments with no FortiAnalyzer |
 
 The decision that matters is that memory logging is for the next few minutes. Investigating an incident from yesterday on a device logging only to memory is not possible, and this is discovered at the worst time.

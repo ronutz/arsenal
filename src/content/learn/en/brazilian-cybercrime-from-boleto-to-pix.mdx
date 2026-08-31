@@ -1,0 +1,65 @@
+---
+slug: brazilian-cybercrime-from-boleto-to-pix
+title: "Brazilian cybercrime: from the boleto to the Pix"
+summary: "Brazil banked online early, invented payment instruments the rest of the world did not have, and grew a criminal industry precisely shaped to them — barcode manipulation, screen overlays, ATM jackpotting, and now social engineering aimed at instant transfers. The techniques, the crews that exported them, the attacks on the state, and the laws written after each shock."
+concepts: ["cybercrime", "brazil", "banking malware", "fraud", "ransomware"]
+relatedTools: []
+relatedArticles: ["the-brazilian-hacker-scene", "hacking-in-the-20th-century", "latin-american-security-conferences"]
+category: security
+order: 114
+status: reviewed
+updated: "2026-08-29"
+---
+
+## Why here
+
+Two conditions produced the Brazilian fraud industry, and neither was criminal in origin.
+
+Brazil **banked online early and enthusiastically**. Internet banking reached ordinary account holders sooner than in most countries, and the population adopted it. That created a large, connected target years before the defensive tooling matured.
+
+And Brazil **built payment instruments nobody else had**. The boleto — a printed slip with a barcode that anyone can pay at any bank, a lottery agent or an application — and later Pix, instant transfers between any two accounts, free and around the clock. Local instruments demand local fraud: none of the malware written for European or American banking applied cleanly here, so criminals wrote their own.
+
+## The technique lineage
+
+**Overlay attacks.** Rather than breaking the bank's application, draw a convincing window on top of it. The victim types their credentials into something that looks exactly right. This is the signature Brazilian technique and it survived the move to mobile.
+
+**Boleto manipulation.** The barcode encodes the destination. Malware that rewrites it as the slip is generated or displayed sends the money somewhere else, and the victim pays what appears on their screen. Elegant, quiet, and specific to an instrument that only existed here.
+
+**[Banking trojan](/glossary/banking-trojan) families that went global.** Kaspersky researchers grouped four of them as [the Tetrade](/glossary/tetrade) — Guildma, Javali, Melcoz and Grandoreiro — malware that matured domestically and then reached Latin America, Spain and Portugal. Grandoreiro became the most widespread, and was rented to other criminals as a service.
+
+**[Prilex](/glossary/prilex)** is the most technically impressive and the most sobering. It began as ATM malware, and in a single 2016 incident infected more than a thousand machines at one bank and [cloned some twenty-eight thousand cards](https://securelist.com/prilex-atm-pos-malware-evolution/107551/). Then it pivoted to point-of-sale, moving down to the PIN pad protocol itself, patching software in real time, and generating cryptograms so that transactions on chip-and-PIN cards could be replayed as fraudulent ones. It also became a service sold to others. That progression — deep payment-industry knowledge, applied by people who clearly understood the systems from the inside — is what distinguishes the Brazilian scene from commodity fraud.
+
+**And the Pix era changed the target rather than removing it.** Instant, irreversible transfers made malware less necessary: the efficient attack became convincing the victim to authorise the transfer themselves, which moved fraud from code to conversation. The countermeasure that works is not detection but friction — out-of-band confirmation of the destination, limits, and delays for unfamiliar recipients.
+
+## The attacks on the state
+
+Two incidents changed how Brazilian institutions think about this.
+
+**The Superior Court of Justice, November 2020.** Ransomware identified as RansomExx encrypted the court's case files. Proceedings were suspended, deadlines paused, and the system was restored over roughly two weeks with support from the Federal Police, army intelligence and Microsoft. It was widely described as the worst attack on a Brazilian state institution to that point, and the judiciary's response included creating a standing body to address protection across the courts. One honest detail: the court never publicly confirmed a ransom demand, and careful accounts note that.
+
+**The Ministry of Health, December 2021.** A group calling itself Lapsus$ compromised ministry systems and took down ConecteSUS, the platform holding vaccination records, during a pandemic. The immediate harm was administrative — millions of people could not retrieve proof of vaccination — and the lasting lesson was about the dependency: a health record is only as available as the platform serving it.
+
+Both were failures of ordinary hygiene at scale rather than of anything exotic, which is the pattern this history keeps repeating.
+
+## The laws, written after each shock
+
+**[Lei Carolina Dieckmann](/glossary/lei-carolina-dieckmann) (12.737/2012)** made unauthorised access to a device a crime in its own right, after a public case made the legislative gap impossible to ignore. The pattern is exactly the one that produced the American [Computer Fraud and Abuse Act](/learn/the-414s-and-the-summer-of-1983): a shock, a fast statute, and decades of living with the text.
+
+**[Marco Civil da Internet](/glossary/marco-civil-da-internet) (12.965/2014)** set rights, retention duties and the conditions for content removal.
+
+**LGPD (13.709/2018)** brought data protection obligations and, with them, the reporting and accountability duties that make incidents visible.
+
+**Law 14.155/2021** raised penalties for electronic fraud and device intrusion — a direct response to fraud volumes that the earlier statutes had not anticipated.
+
+## What the country built in response
+
+The defensive side grew from the same soil. [CERT.br](/glossary/cert-br) under the multi-stakeholder committee has published incident and honeypot data openly for two decades. [chkrootkit](/glossary/chkrootkit) came from here. [Fábio Assolini](/glossary/fabio-assolini) and colleagues documented the banking-malware families in English, which is what turned a local phenomenon into an internationally understood threat class. And the [conference circuit](/learn/latin-american-security-conferences) gave the expertise somewhere to circulate.
+
+That is the honest summary of this history: **the same conditions produced the fraud and the expertise**. For two decades "Brazilian" in a malware report usually meant banking crime; today Brazilian researchers are among the people the rest of the world reads on the subject, for exactly the same reason.
+
+## What transfers to anyone reading from elsewhere
+
+- **Local payment instruments create local fraud.** Any country introducing an instant-payment scheme inherits the Pix lesson: irreversibility moves the attack from the software to the person.
+- **Social engineering scales better than malware** once transfers are instant and final. Plan for the authorised-but-coerced transaction, not only the compromised device.
+- **Friction is a control.** Destination confirmation, limits and cooling-off periods stop what detection does not.
+- **Publish in the language the field reads.** Research that exists only in Portuguese was invisible for years, and the threat class was underestimated internationally because of it.

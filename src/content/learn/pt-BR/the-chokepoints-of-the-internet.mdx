@@ -1,0 +1,99 @@
+---
+slug: the-chokepoints-of-the-internet
+title: "Os pontos de estrangulamento da internet: um guia de campo do que pode de fato quebrar"
+summary: "A internet não tem botão de desligar, mas tem seis lugares onde um número pequeno de pessoas, organizações ou objetos carrega uma fatia enorme das premissas de todo mundo. Nomeação, roteamento, cabo, confiança, concentração e autoridade — o que cada um é, com que velocidade falha, quem conseguiria causar, e o tipo diferente de resposta que cada um admite."
+concepts: ["resilience", "internet infrastructure", "chokepoints", "risk", "governance"]
+relatedTools: []
+relatedArticles: ["what-happens-if-the-dns-root-goes-dark", "bgp-and-the-routing-chokepoint", "submarine-cables-and-the-physical-internet", "the-certificate-authority-chokepoint", "internet-shutdowns-and-kill-switches"]
+category: networking
+order: 119
+status: reviewed
+updated: "2026-08-29"
+---
+
+## Por que "ponto de estrangulamento" e não "ponto único de falha"
+
+A internet foi construída para que nenhum componente isolado fosse essencial, e esse desenho em boa medida funcionou. Nada aqui é um botão que alguém aperta para acabar com ela.
+
+O que existe, em vez disso, são lugares onde um número enorme de partes independentes depende da mesma coisa pequena — um arquivo, uma premissa de protocolo, um corredor de fundo de mar, uma lista de organizações, um provedor, uma licença. Nenhum é ponto único de falha no sentido do manual. Todos são pontos em que um evento local vira evento de todo mundo.
+
+Este guia cobre seis. Para cada um, as mesmas quatro perguntas: o que ele de fato é, o que quebra e em quanto tempo, quem conseguiria causar, e o que dá para fazer.
+
+## 1. Nomeação — [a raiz do DNS](/learn/what-happens-if-the-dns-root-goes-dark)
+
+**O que é.** Treze identidades de servidor operadas por doze organizações, servindo um arquivo pequeno e assinado que diz quais servidores são autoritativos para cada domínio de topo.
+
+**Como falha.** Desligar é lento e sobrevivível — uns dois dias de delegações em cache, e então um desfiar irregular. Fazê-la *mentir* é rápido e muito pior, porque a zona raiz é assinada e resolvedores validantes vão autenticar a negativa. O roteamento segue funcionando o tempo todo; a nomeação é a camada frágil.
+
+**Quem.** Coação de quem assina a zona, não ataque — assaltos diretos à raiz já foram tentados e falharam contra o anycast.
+
+**Resposta.** Replicar. A zona é pública e assinada, então você pode guardar uma cópia local verificada e parar de depender dos servidores quanto a disponibilidade.
+
+## 2. Roteamento — [o BGP (Border Gateway Protocol)](/learn/bgp-and-the-routing-chokepoint)
+
+**O que é.** Setenta e cinco mil redes contando umas às outras o que alcançam, sobre a premissa de que os participantes não mentem.
+
+**Como falha.** Em minutos, globalmente. Um [sequestro](/glossary/bgp-hijack) ou um [vazamento](/glossary/route-leak) se propaga na velocidade do plano de controle, e o raio depende inteiramente de o provedor de cima ter filtrado.
+
+**Quem.** Qualquer um com um sistema autônomo e um vizinho que não filtra. A maioria dos grandes incidentes registrados foram erros.
+
+**Resposta.** Assinar as afirmações. A validação de origem por [RPKI](/glossary/rpki) e a higiene do [MANRS](/glossary/manrs) fecham a versão grosseira; a validação de caminho segue quase sem implantação.
+
+## 3. Físico — [os cabos submarinos](/learn/submarine-cables-and-the-physical-internet)
+
+**O que é.** Algumas centenas de cabos carregando essencialmente todo o tráfego intercontinental, terminando num número bem menor de [estações de pouso](/glossary/landing-station).
+
+**Como falha.** Em geral de forma invisível, porque o tráfego se redireciona. Quando não, a recuperação leva semanas — uma [frota de reparo](/glossary/cable-repair-ship) pequena, tempo de navegação, clima, e autorizações para trabalhar em águas alheias.
+
+**Quem.** De forma esmagadora, artes de pesca e âncoras. Estados podem cortar ou grampear; grampear é a opção silenciosa, e a defesa contra ela é criptográfica, não física.
+
+**Resposta.** Comprar caminhos de fato separados, e conferir se dividem a mesma praia. É o ponto com menos respostas espertas e mais respostas caras.
+
+## 4. Confiança — [as autoridades certificadoras](/learn/the-certificate-authority-chokepoint)
+
+**O que é.** Uma lista plana de mais de cem organizações, qualquer uma das quais pode emitir um certificado válido para qualquer nome.
+
+**Como falha.** Invisivelmente. Um certificado fraudulento produz um cadeado normal, e a [revogação mal funciona](/glossary/certificate-authority), razão pela qual a indústria migrou para vidas curtas.
+
+**Quem.** Uma autoridade comprometida ou coagida, sobretudo combinada com posição de rede. A [DigiNotar](/glossary/diginotar) é o caso que acabou com uma empresa e expôs gente de verdade.
+
+**Resposta.** A melhor ideia desta série: não mais confiança, e sim exposição pública. A [Transparência de Certificados](/glossary/certificate-transparency) torna a emissão observável, e os [registros CAA](/glossary/caa-record) estreitam a lista às autoridades que você escolheu.
+
+## 5. Concentração — [monocultura de nuvem e CDN (rede de distribuição de conteúdo)](/learn/cloud-and-cdn-monoculture)
+
+**O que é.** Nada disso é projeto. É o agregado de milhões de decisões racionais de compra, produzindo um domínio de falha compartilhado que ninguém comprou.
+
+**Como falha.** Em horas, em geral pelo [plano de controle](/glossary/control-plane) e não pelo de dados, ou por uma implantação válida de configuração inválida empurrada globalmente em segundos.
+
+**Quem.** Um engenheiro comum numa tarde comum. E também, cada vez mais, uma ordem judicial entregue a um punhado de empresas.
+
+**Resposta.** É o único ponto que você consegue mover de forma significativa sozinho. Conheça seu grafo de dependências, tire dependência de fornecedor único onde for barato, projete para degradação — e lembre que [diversidade é propriedade do grafo, não da nota fiscal](/glossary/correlated-failure).
+
+## 6. Autoridade — [os desligamentos](/learn/internet-shutdowns-and-kill-switches)
+
+**O que é.** Condições de licença e um telefonema a um punhado de operadoras.
+
+**Como falha.** De imediato e por completo, ou — cada vez mais — de forma negável, por [estrangulamento de banda](/glossary/throttling) que nunca produz uma queda que alguém possa apontar.
+
+**Quem.** Governos, executado por operadoras que em geral não têm escolha real.
+
+**Resposta.** Não é engenharia. Resiliência doméstica ajuda, contorno ajuda contra bloqueio, e contra um apagão determinado quase nada funciona. Os remédios aqui são cívicos e jurídicos.
+
+## O padrão que vale levar
+
+Lidos juntos, os seis se ordenam pelo **tipo de coisa que o ponto de estrangulamento é**, e isso determina a resposta disponível:
+
+- **Dado** pode ser replicado e verificado. A zona raiz é o caso modelo, e a lição generaliza: quando sua dependência é um conjunto de dados público e assinado, guarde uma cópia e confira.
+- **Afirmações** podem ser assinadas. O roteamento está no meio do caminho; a origem está protegida, o caminho não.
+- **Objetos** só se duplicam a peso de dinheiro. Cabos não admitem correção esperta, só mais cabos.
+- **Listas de organizações** podem ser tornadas observáveis. Esta é a ideia transferível — quando a confiança não pode ser verificada de antemão, torne seu exercício público e auditável depois.
+- **Concentração estatística** pode ser reduzida por qualquer um, individualmente, a custo baixo.
+- **Autoridade** não admite resposta técnica nenhuma.
+
+Duas coisas decorrem e merecem ser ditas sem rodeio.
+
+**A internet é mais robusta do que as manchetes sugerem.** Ataques à raiz falharam. A maioria das falhas de cabo é invisível. A maioria dos incidentes de roteamento é contida. O sistema absorveu muita coisa por três décadas, e cada um dos seis tem mitigações reais e implantadas que funcionam.
+
+**E ela depende de confiabilidade ordinária mais do que a maioria percebe.** Doze organizações não conspiram. Setenta e cinco mil redes em geral dizem a verdade. Uma centena de autoridades certificadoras em geral segue regras que navegadores, e não a lei, aplicam. Isso não é exatamente fragilidade — é uma estrutura muito grande apoiada em comportamento institucional, e é por isso que boa parte da resiliência da internet acaba sendo governança vestida de engenharia.
+
+Se você levar um hábito operacional desta série: **escreva do que você de fato depende**, inclusive as partes chatas — DNS, certificados, trânsito, identidade, sua página de status — e pergunte, para cada uma, quem poderia mudá-la, em quanto tempo você perceberia, e o que você faria na hora seguinte.

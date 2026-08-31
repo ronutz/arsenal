@@ -1,0 +1,102 @@
+---
+slug: ddos-what-actually-absorbs-an-attack
+title: "DDoS: por que a defesa é capacidade, e por que a amplificação é culpa dos outros"
+summary: "Negação de serviço não é um ataque, são três problemas com respostas diferentes: um cano que enche, uma tabela de estado que esgota, e uma requisição cara repetida de forma barata. Os maiores ataques só são possíveis porque as redes de terceiros deixam sair tráfego forjado — o que faz da mitigação mais eficaz algo que se implanta para estranhos, e não para si."
+concepts: ["ddos", "amplification", "capacity", "anycast", "spoofing"]
+relatedTools: []
+relatedArticles: ["bgp-and-the-routing-chokepoint", "cloud-and-cdn-monoculture", "the-chokepoints-of-the-internet"]
+category: security
+order: 130
+status: reviewed
+updated: "2026-08-30"
+---
+
+## Origens: uma premissa de projeto, não uma vulnerabilidade
+
+Negação de serviço não é um defeito de nenhum produto específico. É a consequência de uma decisão de projeto tomada quando a internet era pequena: **a rede aceita o tráfego na chegada e só depois descobre o que fazer com ele**. Não há controle de admissão, não há reserva, e não há como um destino avisar a rede, de antemão, que não quer algo. Toda mitigação desde então é uma tentativa de acrescentar essa capacidade que falta, em alguma camada.
+
+O primeiro incidente amplamente estudado foi o [worm de Morris](/learn/the-morris-worm), em 1988, que negou serviço por acidente - era uma ferramenta de medição com uma constante de reinfecção errada. Os ataques deliberados seguiram o mesmo formato.
+
+**Meados dos anos 1990: inundações de uma fonte.** SYN floods e os vários ataques de pacote malformado - ping da morte, Smurf, teardrop - funcionavam porque as implementações confiavam nas próprias entradas. Esses foram corrigidos de verdade: SYN cookies removeram a vantagem da exaustão de estado, as pilhas pararam de quebrar com pacote ruim, e o broadcast direcionado passou a vir desligado, o que matou o Smurf como técnica.
+
+**2000: chega a distribuição.** Um ataque coordenado por um adolescente conhecido como [Mafiaboy](/glossary/mafiaboy) derrubou vários dos maiores sites da época a partir de máquinas universitárias comprometidas. A lição foi estrutural - quando o tráfego vem de milhares de origens com aparência legítima, filtrar por origem deixa de funcionar, e a defesa precisa virar capacidade.
+
+**Anos 2000: botnets e o mercado comercial.** Máquinas domésticas comprometidas transformaram capacidade de ataque em mercadoria alugável. Serviços de booter e stresser fizeram de um ataque de negação de serviço uma compra de consumo, e é por isso que a população de atacantes deixou de ser de operadores habilidosos e passou a ser qualquer um com uma mágoa.
+
+**Anos 2010: amplificação em escala.** Os atacantes pararam de usar a própria banda e passaram a tomar emprestados os servidores dos outros, que é de onde vêm os números recordistas.
+
+**De 2016 em diante: dispositivos.** Ataques de larga escala montados com câmeras e gravadores de consumo demonstraram que a população de botnets tinha migrado de computadores para aparelhos com credenciais padrão - a mesma falha que os [414s](/learn/the-414s-and-the-summer-of-1983) exploraram em 1983, agora em escala de internet. Um desses ataques, contra um grande provedor gerenciado de DNS, tirou boa parte da web do ar sem tocar em nenhum daqueles sites, que é a demonstração mais clara de que concentração de dependência e negação de serviço são o mesmo problema visto de lados diferentes.
+
+## Três ataques com um nome só
+
+Chamar tudo de DDoS (negação de serviço distribuída) esconde o fato de que as defesas não têm relação entre si.
+
+**Volumétrico.** Encher o cano. O sucesso se mede em bits por segundo, e não importa o que os pacotes contêm - uma vez saturado o enlace até o seu provedor, tudo atrás dele fica inalcançável e nada que você rode nos seus servidores ajuda. **Não dá para filtrar a saída de um cano cheio**, porque o tráfego já consumiu o recurso quando você o enxerga.
+
+**Exaustão de protocolo ou de estado.** Encher uma tabela em vez de um cano. Conexões semiabertas, entradas de rastreamento de conexão num firewall, ou espaços de sessão num balanceador. Mede-se em pacotes por segundo, e costuma ser modesto em banda - e é por isso que um enlace pode parecer quase ocioso enquanto o serviço está completamente fora.
+
+**Camada de aplicação.** Pedir algo caro. Uma busca, um relatório, um endpoint que castiga o banco de dados. Mede-se em requisições por segundo, às vezes só alguns milhares, e em geral se parece exatamente com tráfego legítimo porque, estruturalmente, é tráfego legítimo. É o mais difícil de distinguir e o mais barato de disparar.
+
+Diagnostique qual deles você está enfrentando antes de pegar um controle, porque a mitigação de cada um é inútil contra os outros.
+
+## Amplificação: por que existem os ataques recordistas
+
+Os ataques muito grandes não são feitos da banda do próprio atacante. São feitos de **reflexão com amplificação**, e a receita tem dois ingredientes.
+
+Primeiro, um protocolo em que uma requisição pequena produz uma resposta grande sobre UDP. Segundo - e esta é a parte que importa - **a possibilidade de forjar o endereço de origem**, para que a resposta vá à vítima em vez de a quem pediu. O atacante manda uma requisição pequena e forjada a um servidor público; o servidor obedientemente manda uma resposta muito maior à vítima; multiplique por milhares de servidores.
+
+Note a consequência com cuidado: o tráfego que chega à vítima vem de **servidores legítimos, funcionando corretamente**. Não há nada de malicioso a bloquear no destino, só volume, e é por isso que essa classe de ataque escala até o que os refletores conseguirem emitir juntos.
+
+## A correção é implantada por quem não está sendo atacado
+
+Endereços de origem forjados são o que torna a reflexão possível, e são evitáveis na borda por onde o tráfego sai. Uma rede pode verificar se os pacotes que a deixam carregam endereços de origem que lhe pertencem - **validação de endereço de origem**, a prática conhecida como BCP 38 - e descartar o resto.
+
+Aqui está a economia incômoda: **a rede que implanta isso não obtém benefício direto.** Filtrar os pacotes forjados dos seus próprios clientes protege estranhos, contra ataques que você nunca vai ver. O benefício é inteiramente externo, que é exatamente por que a adoção segue parcial há mais de duas décadas, apesar de a orientação ser antiga, simples e incontroversa.
+
+É também por isso que os compromissos de higiene de roteamento do [MANRS](/glossary/manrs) põem o antifalsificação ao lado da filtragem de prefixos. Os dois são coisas que se fazem pelo bem comum, e os dois são a razão de a internet seguir com um problema que tem solução documentada desde os anos noventa.
+
+Se você opera uma rede, este é o item de maior alavancagem da lista, e seu valor é invisível nos seus próprios painéis.
+
+## O que de fato absorve um ataque
+
+**Capacidade, distribuída.** A única resposta real ao tráfego volumétrico é ter mais entrada do que o atacante consegue encher, em mais lugares do que ele consegue mirar. O [anycast](/glossary/anycast) é o que faz isso funcionar: o mesmo endereço é anunciado de muitos lugares, então um ataque é dividido entre sites pelo sistema de roteamento em vez de convergir para um. É este o produto que uma rede de limpeza ou de entrega de fato vende - não filtragem esperta, e sim uma superfície muito maior e a disposição de absorver.
+
+**Filtragem acima do gargalo.** A mitigação precisa acontecer antes do enlace mais estreito do caminho. Filtrar no seu firewall não faz nada se o trecho saturado é o enlace do seu provedor até você, e é por isso que defesa volumétrica é conversa com provedor, não compra de equipamento.
+
+**Estado que falha com elegância.** Para ataques de exaustão: SYN cookies em vez de tabelas grandes de semiabertas, tempos de expiração agressivos, limites de conexão por origem, e balanceadores que descartam carga em vez de enfileirar até morrer.
+
+**Assimetria de custo, invertida.** Para ataques de camada de aplicação o objetivo é tornar o caminho caro barato ou controlado: cache, limites por identidade e não por endereço ([o que o CGNAT torna essencial](/learn/cgnat-address-sharing-and-attribution)), fatores de trabalho em endpoints custosos, e enfileiramento que degrada o serviço em vez de derrubá-lo.
+
+## A mecânica, com os números que importam
+
+O **fator de amplificação** é a razão entre o tamanho da resposta e o da requisição, e é o que torna a reflexão valer a pena. Protocolos que respondem a uma consulta pequena com uma carga grande - vários serviços sobre UDP, e qualquer resolvedor mal configurado disposto a responder a estranhos - historicamente ofereceram fatores de dezenas a vários milhares. A defesa não é filtrar as respostas dos refletores na vítima, porque elas são legítimas; é impedir que a requisição forjada saia da rede do atacante, e parar de rodar serviços que respondem a estranhos.
+
+A **assimetria de custo** é a propriedade geral sob os três tipos de ataque: o ataque precisa ser mais barato de enviar para o atacante do que de absorver para você. Toda mitigação eficaz mexe nessa razão - SYN cookies fazem a exaustão de estado custar nada para sobreviver, cache torna barata a resposta a uma requisição cara, e capacidade torna o volume irrelevante.
+
+**Taxa contra concorrência.** Ataques volumétricos se medem em bits por segundo, de protocolo em pacotes por segundo, de aplicação em requisições por segundo. Equipamento dimensionado para uma dessas unidades falha contra as outras, e é assim que uma organização acaba com mitigação cara que não fez nada durante o incidente.
+
+O **tempo até mitigar** é o número que decide o desfecho. Detecção, decisão, desvio e convergência de filtros levam tempo cada um, e um ataque mais curto que essa janela termina antes de a mitigação entrar. Rajadas curtas e repetidas exploram exatamente isso, e são comuns justamente porque derrotam a resposta manual.
+
+## Como a mitigação é entregue de fato, por categoria
+
+- **Proxy de nuvem sempre ligado.** O tráfego passa permanentemente por uma rede de entrega ou de segurança - Cloudflare, Akamai, Fastly e similares. A reação mais rápida, porque nada precisa mudar durante o ataque; termina conexões, então enxerga seu tráfego e vira uma [dependência de concentração](/glossary/concentration-risk).
+- **Limpeza sob demanda.** O tráfego é desviado para um centro de limpeza só durante o evento, em geral anunciando rotas ou mudando o DNS. Mais barato em repouso, e o próprio desvio custa minutos.
+- **Mitigação no provedor.** Seu provedor de trânsito filtra acima, que é o único lugar onde tráfego volumétrico pode de fato ser parado. É por isso que a conversa com o provedor importa mais que qualquer equipamento.
+- **Appliances locais.** Radware, NetScout, Fortinet, F5 e outros tratam ataques de protocolo e de aplicação perto da aplicação, onde o contexto é mais rico - e ficam atrás do enlace que satura primeiro.
+- **Blackhole.** O provedor descarta todo o tráfego para o endereço atacado. Protege todos os outros, e completa o objetivo do atacante por ele. Às vezes é a decisão certa, e sempre vale decidir de antemão, e não às três da manhã.
+
+O ponto estrutural: **a camada que consegue parar um ataque raramente é a camada que é dona da aplicação.** Volumétrico precisa do provedor de trânsito, protocolo precisa da borda, aplicação precisa de quem escreveu o código - e um plano de mitigação que nomeie só um desses tem uma lacuna.
+
+## Planejando com honestidade
+
+- **Saiba qual é o seu enlace mais estreito**, e de quem ele é. Seu plano de mitigação começa ali, e não no seu firewall.
+- **Tenha a conversa com o provedor antes do incidente.** Saber a quem ligar, e o que essa pessoa consegue fazer, é a maior parte do tempo de resposta.
+- **Decida de antemão o que você sacrifica.** Modo somente leitura, respostas em cache e uma página estática são todos melhores que sumir por completo, e todos precisam ser construídos antes.
+- **Limite por identidade quando possível**, já que limites por endereço punem pools compartilhados e erram atacantes distribuídos.
+- **Teste o modo de falha, não o caminho feliz.** A maioria dos serviços nunca foi observada sob sobrecarga parcial, então ninguém sabe o que eles fazem.
+
+## O padrão
+
+A negação de serviço é o problema dos pontos de estrangulamento em miniatura, e repete a lição [da série inteira](/learn/the-chokepoints-of-the-internet): as mitigações mais eficazes são coletivas, são implantadas por partes que não se beneficiam pessoalmente, e a adoção empaca exatamente onde o incentivo é externo.
+
+O antifalsificação é o exemplo mais claro, em redes, de uma correção que funciona, custa pouco, está documentada há décadas, e ainda assim não é universal - sem nenhuma razão técnica.

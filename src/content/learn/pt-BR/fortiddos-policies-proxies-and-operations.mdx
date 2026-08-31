@@ -16,7 +16,7 @@ Uma vez que o appliance esteja em linha e tenha uma linha de base, o trabalho é
 
 ## Políticas de proteção
 
-Uma **política de proteção** liga um conjunto de limiares e comportamentos a uma fatia definida do tráfego: tipicamente um serviço, uma sub-rede, ou uma VLAN.
+Uma **política de proteção** liga um conjunto de limiares e comportamentos a uma fatia definida do tráfego: tipicamente um serviço, uma sub-rede, ou uma VLAN (rede local virtual).
 
 A delimitação importa porque a média destrói o sinal. Meça um site público e um enlace de replicação de backup contra uma linha de base só e você obtém limiares frouxos demais para o site e apertados demais para o backup. Nenhum dos dois fica protegido direito, e o appliance parece não funcionar.
 
@@ -32,7 +32,7 @@ Esse último grupo é o mais esquecido, e produz o falso positivo mais memoráve
 
 Este é o problema mais difícil do produto, e vale dizer com clareza por quê.
 
-A defesa baseada em origem pressupõe que um endereço identifica uma origem. Atrás de um CDN, de um proxy corporativo, de um NAT de operadora ou de um gateway de saída em nuvem, milhares de usuários compartilham um punhado de endereços. Todo limiar por origem passa a medir uma população, e a premissa básica do appliance é violada.
+A defesa baseada em origem pressupõe que um endereço identifica uma origem. Atrás de um CDN (rede de distribuição de conteúdo), de um proxy corporativo, de um NAT (tradução de endereços de rede) de operadora ou de um gateway de saída em nuvem, milhares de usuários compartilham um punhado de endereços. Todo limiar por origem passa a medir uma população, e a premissa básica do appliance é violada.
 
 Duas consequências:
 
@@ -40,7 +40,7 @@ Duas consequências:
 
 **Atacantes atrás de origens compartilhadas ficam invisíveis.** Seu tráfego desaparece num volume que já é alto e já é tolerado.
 
-O tratamento é uma combinação, e não uma configuração única: identificar as faixas conhecidas de proxy e CDN para que sejam tratadas como populações, e não como indivíduos; elevar ou desabilitar os limiares por origem especificamente para essas faixas; e apoiar-se na camada que enxerga o cliente real — o cabeçalho de encaminhamento na camada de aplicação, que é onde um WAF opera e um appliance de DDoS de rede não.
+O tratamento é uma combinação, e não uma configuração única: identificar as faixas conhecidas de proxy e CDN para que sejam tratadas como populações, e não como indivíduos; elevar ou desabilitar os limiares por origem especificamente para essas faixas; e apoiar-se na camada que enxerga o cliente real — o cabeçalho de encaminhamento na camada de aplicação, que é onde um WAF (web application firewall) opera e um appliance de DDoS (negação de serviço distribuída) de rede não.
 
 A posição honesta é que um equipamento inspecionando pacotes não resolve por completo um problema criado por compartilhamento de endereços, e a resposta é camadas, e não ajuste.
 

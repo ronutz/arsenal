@@ -55,7 +55,7 @@ A working attempt needed two separate things, and telling them apart is most of 
 
 **A clean reading of an encoded payload tells you about the encoding, not the attack.** OGNL payloads are routinely URL-encoded, double-encoded, or split across parameters that the application concatenates later. If you paste `%25%7B` into a decoder and it finds nothing, that is a correct answer to the wrong question. Decode first, then read.
 
-And a payload proves what was *attempted*, never what was *present*. It does not tell you your framework version, your configuration, or whether the request reached the application at all. Those answers are in the WAF event and the application log - the payload is only the question somebody asked.
+And a payload proves what was *attempted*, never what was *present*. It does not tell you your framework version, your configuration, or whether the request reached the application at all. Those answers are in the WAF (web application firewall) event and the application log - the payload is only the question somebody asked.
 
 ## The other half of this story
 

@@ -1,0 +1,38 @@
+---
+slug: the-cuckoos-egg
+title: "The Cuckoo's Egg: 75 cents, ten months, and the invention of incident response"
+summary: "In 1986 an astronomer was handed a trivial accounting discrepancy and told to find it. He followed it through a Berkeley lab into US military networks and out the other side to a West German hacker selling access to the KGB - improvising, along the way, the logbook, the timeline, the honeypot and nearly every reflex the profession now teaches."
+concepts: ["incident response", "honeypot", "forensics", "attribution", "hacker history"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "the-morris-worm", "phone-phreaking-and-the-blue-box"]
+category: security
+order: 99
+status: reviewed
+updated: "2026-08-28"
+---
+
+## The discrepancy
+
+Cliff Stoll was an astronomer whose grant had run out, reassigned to run computers at Lawrence Berkeley National Laboratory. In August 1986 his manager handed him a chore: the lab billed for computer time, two accounting systems disagreed by **75 cents**, and someone should reconcile it. The obvious explanations - rounding, a dropped record - did not hold. The 75 cents belonged to a user account that nobody had authorised and that no one could account for.
+
+Everything that follows comes from Stoll refusing to accept a plausible answer over a verified one. That is the whole method, and it remains the hardest habit to teach.
+
+## Watching instead of slamming the door
+
+The intruder was using the lab as a waypoint, hopping onward into MILNET - defence contractors, army bases, an air force facility - hunting for documents about missiles, satellites and the Strategic Defense Initiative. The instinct then, as now, was to shut the account and change the passwords. Stoll did the opposite, and the reasoning is the reason the book is still assigned: **close the door and you learn nothing, keep it open under observation and you learn everything.**
+
+So he instrumented the lab by hand. Printers were wired to every incoming line, so each session printed as it happened on continuous paper - unalterable, timestamped evidence, weeks of it stacked in his office. He kept a paper logbook of every observation, because he could not trust files on a system the intruder could reach. He built a profile from behaviour: the intruder used Unix commands from an older dialect, worked in bursts that suggested a European timezone, and moved with the patience of someone being paid rather than the impatience of a teenager.
+
+Along the way he laid a trap. To hold a connection long enough for the phone company to trace it across an ocean, Stoll and his colleague Martha Matthews invented a fictitious project - the SDINET files, an entire fake bureaucracy of memos and forms about a non-existent Star Wars network, seeded with a request to write in for more. The intruder read for hours. Someone in Pittsburgh later wrote a letter asking for the documents, which closed the attribution loop. That contrivance is the **first documented honeypot**, and the letter is the first documented case of a deception operation producing hard identification.
+
+## The part nobody warns you about
+
+The technical work was months of nights on a cot in the machine room. The unglamorous work was calling the FBI, the CIA, the NSA and the Air Force Office of Special Investigations and being told, repeatedly, that 75 cents was not a federal case and that no one owned this problem. There was no CERT to notify - the Morris worm, and with it the [entire incident-response apparatus](/learn/the-morris-worm), was still two years away. Stoll's most reproduced contribution may simply be his persistence in the face of agencies that each had a reason it was not theirs.
+
+The trail ended in Hanover, West Germany: **Markus Hess**, part of a small ring selling intrusions into US systems to the Soviet KGB for cash and cocaine - the affair that ended with the death of Karl Koch and became one of the underground's darkest legends. This was the first publicly documented case of computer intrusion as **paid foreign espionage**, and it dragged the field's threat model from mischievous students to funded adversaries in a single case.
+
+## What the book made permanent
+
+Stoll wrote it up in 1989 as *The Cuckoo's Egg*, a genuine bestseller written for people who had never touched a terminal, and its practices are now the profession's baseline: preserve evidence in a form the adversary cannot alter; keep a contemporaneous log; build a timeline before building a theory; profile behaviour rather than guessing identity; monitor before you evict; and treat attribution as a claim requiring proof rather than a hunch to be announced.
+
+Two details keep the story honest. The break-in worked mostly through **known holes and weak passwords** - a Gnu-Emacs `movemail` misconfiguration that let a user write into privileged directories, plus default accounts nobody had removed - which is to say the failure was operational, not exotic. And Stoll himself went back to astronomy, sells hand-blown Klein bottles, and has spent decades gently deflating the mythology that grew around him. The field, meanwhile, has never stopped teaching from a 75-cent error that someone was stubborn enough to explain.

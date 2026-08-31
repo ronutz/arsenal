@@ -53,7 +53,7 @@ A sincronização de configuração é contínua, então a secundária sempre te
 | UDP e ICMP | Depende da configuração; não por padrão |
 | Sessões inspecionadas por perfil em modo proxy | Em geral não |
 | Túneis IPsec | Com sincronização IPsec configurada |
-| Sessões de SSL VPN | Não preservadas; usuários reconectam |
+| Sessões de SSL VPN (rede privada virtual) | Não preservadas; usuários reconectam |
 
 **O session pickup não vem habilitado por padrão.** Sem ele, toda sessão cai no failover, e o cluster ainda "funciona" no sentido de que a secundária assume: apenas quebra todas as conexões no processo. Habilitá-lo custa sobrecarga de sincronização, que é a razão do padrão, mas para a maioria das implantações a sobrecarga é a melhor troca.
 

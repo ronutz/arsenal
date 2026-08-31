@@ -1,0 +1,64 @@
+---
+slug: linux-the-kernel-that-ate-the-world
+title: "Linux: o kernel de hobby que comeu o mundo"
+summary: "Um estudante em Helsinque anunciou um projeto que era 'só um hobby, não vai ser grande e profissional como o gnu' — e hoje ele roda os servidores, os celulares, os roteadores, os carros e cada um dos supercomputadores mais rápidos do mundo. Como o kernel foi de fato construído, a decisão de licença que tornou tudo possível, a discussão de arquitetura que ele perdeu no papel e venceu na prática, e as duas brigas que ainda o definem."
+concepts: ["linux", "kernel", "open source", "gpl", "maintainership"]
+relatedTools: []
+relatedArticles: ["open-source-and-the-meaning-of-free", "git", "hacking-in-the-20th-century"]
+category: networking
+order: 62
+status: reviewed
+updated: "2026-08-29"
+---
+
+## Agosto de 1991
+
+Linus Torvalds postou no grupo comp.os.minix que estava construindo um sistema operacional livre, acrescentando que era só um hobby e que não seria grande e profissional como o GNU. É a previsão errada mais citada da computação, e a parte interessante é o que ela revela: ele não estava tentando substituir nada. Queria um sistema tipo Unix no próprio hardware, porque as alternativas custavam mais do que um estudante tinha.
+
+O que fez o resultado importar não foi o código do primeiro lançamento. Foi que um kernel funcional chegou exatamente no momento em que o projeto GNU tinha produzido tudo *menos* um kernel — compilador, shell, utilitários, bibliotecas, todos prontos e esperando. O Linux forneceu a peça que faltava, e um sistema operacional livre completo existiu pela primeira vez. É por isso que a discussão sobre o nome persiste: o que a maioria chama de Linux é um kernel mais uma quantidade enorme de software que veio de outro lugar, boa parte dele do GNU.
+
+## A decisão de licença, e a que veio depois
+
+Torvalds lançou as primeiras versões sob uma licença própria que proibia distribuição comercial. Mudou para a **GPL (GNU General Public License) versão 2** em 1992, e depois chamou isso da melhor coisa que já fez.
+
+A razão é mecânica, não sentimental. A GPLv2 exige que quem distribui um kernel modificado distribua também suas mudanças como código-fonte. Essa condição sozinha significava que empresas podiam construir produtos sobre o Linux, mas não podiam bifurcá-lo em segredo e guardar as melhorias — então o movimento racional de um fabricante de hardware era mandar seu trabalho para cima e deixar que os outros o mantivessem. Concorrentes foram empurrados a um bem comum pelo próprio interesse. O Linux não venceu porque as empresas foram generosas; venceu porque a licença tornou contribuir mais barato que se isolar.
+
+A segunda decisão importa tanto quanto: quando a GPLv3 chegou em 2007, com dispositivos novos sobre patentes e sobre hardware que se recusa a rodar software modificado, o Linux **ficou na versão 2**. Torvalds objetou que os termos novos iam além do acordo de direito autoral que ele assinara. O resultado prático é que a licença do kernel está estável há três décadas, o que vale muito quando dezenas de milhares de contribuidores detêm direito autoral e relicenciar exigiria perguntar a todos eles.
+
+## A discussão que ele perdeu no papel
+
+Em 1992 Andrew Tanenbaum, cujo Minix o Linux tinha crescido ao lado, abriu um debate público com a frase de que o Linux era obsoleto. Seu argumento era academicamente forte: kernels monolíticos, em que o sistema inteiro roda num único espaço de endereçamento privilegiado, eram o desenho antigo; microkernels, em que drivers e sistemas de arquivos rodam como processos separados e isolados, eram para onde o campo ia.
+
+Ele estava certo sobre a teoria e errado sobre o que aconteceria. Microkernels pagavam um custo de desempenho que pesava enormemente no hardware dos anos noventa, e coordenar um desenho distribuído é mais difícil que coordenar um compartilhado. O Linux ficou monolítico e despachou, e despachar compõe juros.
+
+O epílogo é mais interessante que a discussão. O Linux absorveu a maior parte dos benefícios de isolamento sem mudar de arquitetura: módulos carregáveis, drivers empurrados para o espaço de usuário quando prático, contêineres, namespaces e, agora, linguagens seguras em memória dentro do próprio kernel. O debate nunca foi resolvido; foi ultrapassado por um dos lados.
+
+## Como ele é de fato construído
+
+O modelo de desenvolvimento do kernel é a parte menos compreendida e mais copiada dele.
+
+**Mantenedores, não comitê.** Subsistemas têm mantenedores que recebem patches de contribuidores e os passam para cima. Torvalds puxa de uma camada de tenentes de confiança em vez de revisar tudo, que é a única estrutura que escala num projeto deste tamanho. A autoridade é delegada por julgamento demonstrado e pode ser perdida do mesmo jeito.
+
+**Cadência de lançamento.** Uma janela de merge de cerca de duas semanas, em que o trabalho novo entra, seguida de cerca de sete semanas de [candidatos a lançamento](https://www.kernel.org/). Esse ritmo está essencialmente inalterado há anos e é a razão de o projeto ser previsível apesar do tamanho.
+
+**Suporte de longo prazo.** Versões selecionadas recebem anos de correções retroportadas, que é o que permite a um roteador, a um carro ou a um equipamento hospitalar despachar um kernel e receber correções de segurança sem acompanhar a linha principal.
+
+**Não quebre o espaço de usuário.** A regra que Torvalds impõe com mais agressividade: uma interface interna pode mudar à vontade, mas um programa que funcionava ontem precisa funcionar amanhã. Rotatividade interna é permitida, promessas externas não são — distinção que a maioria dos projetos não consegue traçar.
+
+## A briga que produziu o Git
+
+A partir de 2002 o kernel usou o BitKeeper, um sistema proprietário e distribuído de controle de versão oferecido de graça ao projeto. Parte dos contribuidores objetava a uma ferramenta proprietária no centro de um projeto livre; o arranjo terminou em 2005, após uma disputa sobre engenharia reversa do protocolo.
+
+O kernel ficou de repente sem controle de versão. Torvalds escreveu o [Git](/learn/git) em questão de semanas, mirando no que o kernel precisava: velocidade, operação distribuída e integridade criptográfica do histórico. Hoje é a forma padrão de escrever software em toda parte, e existe porque uma disputa de licença quebrou um fluxo de trabalho. A lição se repete: infraestrutura é construída quando alguém com capacidade de construí-la fica bloqueado.
+
+## A briga que ainda corre
+
+O **systemd** substituiu o modelo tradicional de scripts de inicialização por um sistema integrado único para iniciar serviços, gerenciar dispositivos, registrar logs e mais, e a maioria das grandes distribuições o adotou. O argumento técnico é real — inicialização em paralelo, tratamento adequado de dependências, definições consistentes de serviço. A objeção também é real: ele absorveu responsabilidades que pertenciam a programas separados e substituíveis, o que corta contra o hábito Unix de compor ferramentas pequenas.
+
+Vale entendê-la como discussão de governança, e não técnica. A pergunta nunca foi se o systemd funciona; é quem decide o formato do sistema base quando poucas distribuições grandes se movem juntas. Essa pergunta é permanente em qualquer bem comum, e produziu forks, renúncias e uma década de discussão que ainda não esfriou de todo.
+
+## O que ele roda
+
+Efetivamente tudo, exceto o desktop. Os servidores da web, as frotas dos provedores de nuvem, celulares Android, televisores, roteadores, controladores industriais, carros, e toda máquina da lista dos supercomputadores mais rápidos do mundo. O desktop seguiu sendo a exceção, que é o desfecho que ninguém em 1991 teria previsto em nenhuma das direções.
+
+O padrão que vale levar: o Linux não venceu por ser o sistema mais bem desenhado, e seu próprio criador argumentou contra a licença que o salvou antes de adotá-la. Venceu por estar disponível, por tornar a cooperação mais barata que a deserção, e por nunca quebrar as promessas que fez ao software acima dele.

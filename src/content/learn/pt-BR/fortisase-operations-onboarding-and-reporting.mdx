@@ -12,7 +12,7 @@ status: reviewed
 updated: "2026-07-26"
 ---
 
-Um serviço SASE só protege o tráfego que chega até ele. Tudo na operação decorre disso, começando por como os usuários entram.
+Um serviço SASE (secure access service edge) só protege o tráfego que chega até ele. Tudo na operação decorre disso, começando por como os usuários entram.
 
 ## Integração, e o que cada método de fato cobre
 
@@ -48,7 +48,7 @@ O ponto operacional é que uma regra que ninguém consegue satisfazer produz uma
 
 ## SLAs de desempenho
 
-Onde o SASE carrega tráfego com requisitos de desempenho, acordos de nível de serviço medem os caminhos — latência, jitter, perda de pacotes — e direcionam o tráfego conforme. É a mesma mecânica do SLA de desempenho do SD-WAN, aplicada ao caminho entre o usuário e o ponto de presença.
+Onde o SASE carrega tráfego com requisitos de desempenho, acordos de nível de serviço medem os caminhos — latência, jitter, perda de pacotes — e direcionam o tráfego conforme. É a mesma mecânica do SLA (acordo de nível de serviço) de desempenho do SD-WAN (software-defined WAN), aplicada ao caminho entre o usuário e o ponto de presença.
 
 O detalhe que vale trazer é que a medição precisa se parecer com o tráfego. Uma verificação de saúde contra um endpoint próximo que reporta números excelentes enquanto a aplicação que todo mundo usa vai mal está medindo a coisa errada, e vai continuar direcionando tráfego por um caminho que falha para o uso que importa.
 

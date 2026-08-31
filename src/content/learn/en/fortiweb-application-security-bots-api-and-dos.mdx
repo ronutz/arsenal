@@ -20,7 +20,7 @@ Signature-based detection recognises the recognisable: SQL injection, cross-site
 
 Signatures are fast and precise about what they know, and they generate false positives on applications whose legitimate input resembles attack payloads. A content management system where authors write about SQL will trip SQL injection signatures with entirely legitimate content.
 
-That makes **exceptions** part of running a WAF rather than a sign of failure. The discipline is to scope them narrowly — this signature, on this URL, on this parameter — because a signature disabled globally to fix one page removes protection everywhere.
+That makes **exceptions** part of running a WAF (web application firewall) rather than a sign of failure. The discipline is to scope them narrowly — this signature, on this URL, on this parameter — because a signature disabled globally to fix one page removes protection everywhere.
 
 ## Machine learning
 

@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-21"
 ---
 
-[O artigo de fundamentos de DLP](/learn/dlp-fundamentals) expôs os quatro instrumentos que todo produto toca - padrões, dicionários, correspondência exata de dados, correspondência de documentos indexados. O Zscaler Internet Access (ZIA) os monta numa hierarquia de três andares que vale memorizar como frase: **dicionários reconhecem, engines combinam, regras miram.** Tudo abaixo está fundamentado na documentação de DLP da Zscaler e no seu próprio runbook de troubleshooting, verificados em 2026-07-21.
+[O artigo de fundamentos de DLP (data loss prevention)](/learn/dlp-fundamentals) expôs os quatro instrumentos que todo produto toca - padrões, dicionários, correspondência exata de dados, correspondência de documentos indexados. O Zscaler Internet Access (ZIA) os monta numa hierarquia de três andares que vale memorizar como frase: **dicionários reconhecem, engines combinam, regras miram.** Tudo abaixo está fundamentado na documentação de DLP da Zscaler e no seu próprio runbook de troubleshooting, verificados em 2026-07-21.
 
 ## Andar um: dicionários
 
@@ -31,4 +31,4 @@ Os instrumentos de precisão exigem a **suíte Advanced DLP**, e ambos seguem o 
 
 ## Os extensores de alcance, e o piso sob tudo
 
-Duas extensões completam a história inline. O **OCR** traz imagens para o escopo - a captura de tela da tabela de clientes vira texto para os engines assim que o reconhecimento roda. E [o artigo de CASB](/learn/zscaler-casb-and-saas-security) leva os mesmos engines para fora de banda, escaneando dados *em repouso* nos tenants SaaS - um investimento em dicionários, dois planos de aplicação. Sob tudo isso senta o piso a que esta série sempre retorna: o DLP inline lê o que a inspeção deixa ler. [Um bypass de SSL](/learn/zia-ssl-inspection-policy-and-bypasses) é um corredor cego para o DLP, e a revisão honesta de um projeto de DLP sempre começa pela lista de bypass, não pela lista de dicionários.
+Duas extensões completam a história inline. O **OCR** traz imagens para o escopo - a captura de tela da tabela de clientes vira texto para os engines assim que o reconhecimento roda. E [o artigo de CASB (cloud access security broker)](/learn/zscaler-casb-and-saas-security) leva os mesmos engines para fora de banda, escaneando dados *em repouso* nos tenants SaaS - um investimento em dicionários, dois planos de aplicação. Sob tudo isso senta o piso a que esta série sempre retorna: o DLP inline lê o que a inspeção deixa ler. [Um bypass de SSL](/learn/zia-ssl-inspection-policy-and-bypasses) é um corredor cego para o DLP, e a revisão honesta de um projeto de DLP sempre começa pela lista de bypass, não pela lista de dicionários.

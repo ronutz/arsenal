@@ -1,0 +1,99 @@
+---
+slug: the-chokepoints-of-the-internet
+title: "The chokepoints of the internet: a field guide to what could actually break"
+summary: "The internet has no off switch, but it has six places where a small number of people, organisations or objects carry a very large share of everyone else's assumptions. Naming, routing, cable, trust, concentration and authority — what each one is, how fast it fails, who could cause it, and the different kind of answer each one admits."
+concepts: ["resilience", "internet infrastructure", "chokepoints", "risk", "governance"]
+relatedTools: []
+relatedArticles: ["what-happens-if-the-dns-root-goes-dark", "bgp-and-the-routing-chokepoint", "submarine-cables-and-the-physical-internet", "the-certificate-authority-chokepoint", "internet-shutdowns-and-kill-switches"]
+category: networking
+order: 119
+status: reviewed
+updated: "2026-08-29"
+---
+
+## Why "chokepoint" and not "single point of failure"
+
+The internet was built so that no single component is essential, and that design largely worked. Nothing here is a switch someone can flip to end it.
+
+What exists instead are places where an enormous number of independent parties depend on the same small thing — a file, a protocol assumption, a corridor of seabed, a list of organisations, a provider, a licence. None of them is a single point of failure in the textbook sense. All of them are points where a local event becomes everyone's event.
+
+This guide covers six. For each, the same four questions: what it actually is, what breaks and how fast, who could cause it, and what can be done.
+
+## 1. Naming — [the DNS root](/learn/what-happens-if-the-dns-root-goes-dark)
+
+**What it is.** Thirteen server identities operated by twelve organisations, serving a small signed file that says which servers are authoritative for each top-level domain.
+
+**How it fails.** Turning it off is slow and survivable — about two days of cached delegations, then a ragged unravelling. Making it *lie* is fast and much worse, because the root zone is signed and validating resolvers will authenticate the denial. Routing keeps working throughout; naming is the fragile layer.
+
+**Who.** Coercion of the people who sign the zone, not attack — direct assaults on the root have been tried and failed against anycast.
+
+**Answer.** Replicate it. The zone is public and signed, so you can hold a verified local copy and stop depending on the servers for availability.
+
+## 2. Routing — [BGP (Border Gateway Protocol)](/learn/bgp-and-the-routing-chokepoint)
+
+**What it is.** Seventy-five thousand networks telling each other what they can reach, on the assumption that participants do not lie.
+
+**How it fails.** In minutes, globally. A [hijack](/glossary/bgp-hijack) or a [leak](/glossary/route-leak) propagates at control-plane speed, and the blast radius depends entirely on whether an upstream filtered.
+
+**Who.** Anyone with an autonomous system and an unfiltering neighbour. Most large incidents on record were mistakes.
+
+**Answer.** Sign the assertions. [RPKI](/glossary/rpki) origin validation and [MANRS](/glossary/manrs) hygiene close the crude version; path validation remains largely undeployed.
+
+## 3. Physical — [submarine cables](/learn/submarine-cables-and-the-physical-internet)
+
+**What it is.** A few hundred cables carrying essentially all intercontinental traffic, terminating in a much smaller number of [landing stations](/glossary/landing-station).
+
+**How it fails.** Usually invisibly, because traffic reroutes. When it does not, recovery takes weeks — a small [repair fleet](/glossary/cable-repair-ship), transit time, weather, and permits to work in someone else's waters.
+
+**Who.** Overwhelmingly fishing gear and anchors. States can cut or tap; tapping is the quiet option, and the defence against it is cryptographic rather than physical.
+
+**Answer.** Buy genuinely separate paths, and check whether they share a beach. This is the chokepoint with the fewest clever answers and the most expensive ones.
+
+## 4. Trust — [certificate authorities](/learn/the-certificate-authority-chokepoint)
+
+**What it is.** A flat list of a hundred-plus organisations, any of which can issue a valid certificate for any name.
+
+**How it fails.** Invisibly. A fraudulent certificate produces a normal padlock, and [revocation barely works](/glossary/certificate-authority), which is why the industry moved to short lifetimes instead.
+
+**Who.** A compromised or coerced authority, especially paired with network position. [DigiNotar](/glossary/diginotar) is the case that ended a company and exposed real people.
+
+**Answer.** The best idea in this series: not more trust, but public exposure. [Certificate Transparency](/glossary/certificate-transparency) makes issuance observable, and [CAA records](/glossary/caa-record) narrow the list to the authorities you chose.
+
+## 5. Concentration — [cloud and CDN (content delivery network) monoculture](/learn/cloud-and-cdn-monoculture)
+
+**What it is.** Not a design at all. The aggregate of millions of rational purchasing decisions, producing a shared failure domain nobody bought.
+
+**How it fails.** Hours, usually via a [control plane](/glossary/control-plane) rather than the data plane, or a valid deployment of invalid configuration pushed globally in seconds.
+
+**Who.** An ordinary engineer on an ordinary afternoon. Also, increasingly, a legal order served on a handful of companies.
+
+**Answer.** The only chokepoint you can meaningfully move alone. Know your dependency graph, remove single-provider dependencies where cheap, design for degradation — and remember that [diversity is a property of the graph, not the invoice](/glossary/correlated-failure).
+
+## 6. Authority — [shutdowns](/learn/internet-shutdowns-and-kill-switches)
+
+**What it is.** Licence conditions and a phone call to a handful of operators.
+
+**How it fails.** Immediately and completely, or — increasingly — deniably, through [throttling](/glossary/throttling) that never produces an outage anyone can point at.
+
+**Who.** Governments, executed by operators who mostly have no real choice.
+
+**Answer.** Not engineering. Domestic resilience helps, circumvention helps against blocking, and against a determined blackout very little works. The remedies here are civic and legal.
+
+## The pattern worth carrying away
+
+Read together, the six sort by **what kind of thing the chokepoint is**, and that determines the answer available:
+
+- **Data** can be replicated and verified. The root zone is the model case, and the lesson generalises: when a public signed dataset is your dependency, hold a copy and check it.
+- **Assertions** can be signed. Routing is halfway there; origin is protected, path is not.
+- **Objects** can only be duplicated at expense. Cables admit no clever fix, only more of them.
+- **Lists of organisations** can be made observable. This is the transferable insight — when trust cannot be verified in advance, make its exercise public and auditable afterwards.
+- **Statistical concentration** can be reduced by anyone, individually, at low cost.
+- **Authority** admits no technical answer at all.
+
+Two things follow that are worth stating plainly.
+
+**The internet is more robust than the headlines suggest.** Root attacks failed. Most cable faults are invisible. Most routing incidents are contained. The system has absorbed a great deal for three decades, and each of the six has real, deployed mitigations that work.
+
+**And it is more dependent on ordinary trustworthiness than most people realise.** Twelve organisations do not conspire. Seventy-five thousand networks mostly tell the truth. A hundred certificate authorities mostly follow rules that browsers, not law, enforce. That is not fragility exactly — it is a very large structure resting on institutional behaviour, which is why so much of internet resilience turns out to be governance wearing an engineering costume.
+
+If you take one operational habit from this series: **write down what you actually depend on**, including the boring parts — DNS, certificates, transit, identity, your status page — and for each one ask who could change it, how fast you would notice, and what you would do in the hour after you did.

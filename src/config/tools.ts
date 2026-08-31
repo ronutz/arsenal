@@ -133,6 +133,7 @@ export const tools: ToolEntry[] = [
   { id: "f5-ssl-profile-explainer", sub: "ltm", href: "/tools/f5-ssl-profile-explainer", category: "transport", vendors: ["f5"], available: true },
   { id: "mtu-mss", href: "/tools/mtu-mss", category: "networking", available: true },
   { id: "http-methods-comparison", href: "/tools/http-methods-comparison", category: "networking", available: true },
+
   { id: "http-status-code-explainer", href: "/tools/http-status-code-explainer", category: "networking", available: true },
   { id: "epoch", href: "/tools/epoch", category: "encoding", available: true },
   { id: "roman-numerals", href: "/tools/roman-numerals", category: "encoding", available: true },
@@ -166,6 +167,7 @@ export const tools: ToolEntry[] = [
   { id: "digital-transformation-tracker", href: "/tools/digital-transformation-tracker", category: "operations", available: true },
   { id: "oauth-flow-chooser", href: "/tools/oauth-flow-chooser", category: "identity", available: true },
   { id: "diff", href: "/tools/diff", category: "text", available: true },
+  { id: "cron-expression-explainer", href: "/tools/cron-expression-explainer", category: "text", available: true },
   // The four below were built but never registered here (drift caught and
   // guarded by scripts/check-tools-registry.mjs in the prebuild chain).
   { id: "cvss-vector-decoder", href: "/tools/cvss-vector-decoder", category: "security", available: true },

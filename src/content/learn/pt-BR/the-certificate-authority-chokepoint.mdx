@@ -1,0 +1,70 @@
+---
+slug: the-certificate-authority-chokepoint
+title: "Autoridades certificadoras: o cadeado é uma lista de gente que você nunca conheceu"
+summary: "Seu navegador confia em algumas centenas de organizações para atestar quem é dono de qual nome, e qualquer uma delas pode emitir um certificado válido para qualquer site da internet. Esse desenho já falhou em público pelo menos uma vez de forma grave o bastante para acabar com uma empresa e expor os dissidentes de um país. O que quebra quando uma AC é comprometida, por que a revogação mal funciona, e como a indústria trocou confiança por vigilância de si mesma."
+concepts: ["tls", "certificate authority", "trust", "certificate transparency", "resilience"]
+relatedTools: []
+relatedArticles: ["the-chokepoints-of-the-internet", "submarine-cables-and-the-physical-internet", "bgp-and-the-routing-chokepoint", "the-crypto-wars-and-the-cypherpunks"]
+category: security
+order: 123
+status: reviewed
+updated: "2026-08-29"
+---
+
+## O desenho, dito com honestidade
+
+Quando seu navegador mostra um cadeado, isso significa que uma autoridade certificadora assinou uma afirmação de que esta chave pública pertence a este nome, e que o **repositório de raízes** do seu navegador contém essa autoridade. O repositório guarda algo como uma centena e tanto de organizações, em várias jurisdições, algumas comerciais, algumas governamentais, algumas subsidiárias umas das outras.
+
+Aqui está a parte que incomoda quando dita sem rodeios: **qualquer autoridade do repositório pode emitir um certificado para qualquer nome.** Não há particionamento por padrão. Uma AC de um país pode assinar para um banco de outro, e seu navegador vai aceitar, porque o modelo de confiança é uma lista plana, e não uma hierarquia de pertinência.
+
+Este é o ponto de estrangulamento. Não uma organização, e sim a mais fraca de várias centenas.
+
+## O que quebra quando uma falha
+
+**De imediato: nada parece errado.** Esse é o problema inteiro. Um certificado fraudulento produz um cadeado válido, então a interceptação é indistinguível de uma conexão normal do lado do usuário. Combine com um [desvio de roteamento](/learn/bgp-and-the-routing-chokepoint) ou um resolvedor manipulado e você tem interceptação funcionando contra tráfego que todo mundo acredita estar protegido.
+
+**O caso canônico é a DigiNotar, em 2011.** Uma autoridade holandesa foi comprometida, e certificados fraudulentos foram emitidos para grandes serviços e usados para interceptar tráfego no Irã, contra usuários comuns. Quando veio à tona, os navegadores removeram a autoridade de seus repositórios de raízes - e como aquela autoridade também sustentava partes da infraestrutura do governo holandês, a remoção quebrou serviços públicos nos Países Baixos. **A empresa faliu em semanas.** É a demonstração mais clara disponível de que a confiança neste sistema é revogável, e de que revogá-la tem dano colateral.
+
+A outra falha recorrente é mais silenciosa: emissão indevida sem má-fé - uma autoridade emitindo certificados que não deveria, por um processo de validação quebrado. Isso já encerrou o estatuto de confiança de organizações bem maiores que a DigiNotar, por descrédito gradual em vez de remoção súbita.
+
+## Por que a revogação mal funciona
+
+Se um certificado é descoberto como fraudulento, em tese ele pode ser revogado. Na prática os mecanismos são fracos.
+
+Os downloads de **CRL (lista de certificados revogados)** ficaram grandes e lentos. O **OCSP (Online Certificate Status Protocol)** pergunta à autoridade se o certificado continua válido, o que vaza navegação para a autoridade e falha de um jeito que ninguém quis tornar fatal: se a consulta estoura o tempo, os navegadores falham de forma leniente e conectam assim mesmo, porque falhar fechado quebraria a web toda vez que um respondedor tivesse um dia ruim. Um atacante capaz de interceptar seu tráfego também consegue derrubar sua consulta de revogação.
+
+A resposta real da indústria não foi revogação melhor, e sim **vidas mais curtas**. Certificados hoje valem alguns poucos meses, e não anos, sob o raciocínio de que um certificado que não se consegue revogar de forma confiável ao menos deveria expirar logo. É uma admissão de projeto que vale notar: a correção para a revogação fraca foi tornar certificados descartáveis.
+
+## Como a indústria de fato resolveu o problema de confiança
+
+Não confiando mais cuidadosamente nas autoridades, e sim vigiando-as.
+
+A **Transparência de Certificados** exige que certificados sejam publicados em logs públicos e apenas incrementais, e os navegadores recusam certificados que não estejam logados. O efeito é que uma autoridade ainda pode emitir um certificado para o seu domínio - mas não pode fazê-lo em segredo. Qualquer um, inclusive você, pode monitorar os logs em busca de certificados que nomeiem seus domínios e ver a emissão indevida em horas.
+
+Este é um modelo de segurança genuinamente diferente, e vale nomear o que mudou: **o sistema passou de prevenção para detecção, e de confiança para responsabilização pública.** Funciona, pegou emissões indevidas reais repetidas vezes, e é a razão de o cenário DigiNotar ser hoje muito mais difícil de repetir em silêncio.
+
+Dois mecanismos de apoio importam. Os **registros CAA** deixam o dono de um domínio declarar no DNS quais autoridades podem emitir para seus nomes, o que restringe a lista plana às que você escolheu. E os fabricantes de navegador, por seus programas de raiz e pelo CA/Browser Forum, atuam como camada de aplicação - definem as regras e removem autoridades que as quebram, que é onde o poder real deste ecossistema hoje mora.
+
+## Quem conseguiria fazer o quê
+
+**Uma autoridade comprometida ou coagida** pode emitir certificado para qualquer coisa, e combinar isso com posição de rede dá interceptação. A Transparência de Certificados torna isso barulhento, não impossível.
+
+**Um Estado que opere ou controle uma autoridade do repositório** tem a mesma capacidade com menos passos, e é por isso que a composição dos repositórios de raízes é questão política viva, e não detalhe técnico.
+
+**Os fabricantes de navegador** seguram o contrapeso, e isso é uma concentração em si: um punhado de programas de raiz decide em quem o mundo confia. Esse poder foi usado com responsabilidade e segue sendo poder nas mãos de poucas empresas.
+
+**O Let's Encrypt mudou a economia** ao tornar certificados gratuitos e automatizados, empurrando a criptografia de recurso comprado para padrão. Também concentrou uma fatia enorme dos certificados da web numa única organização sem fins lucrativos - questão de resiliência que a indústria responde com caminhos alternativos de emissão, e que vale perguntar sobre a sua própria infraestrutura.
+
+## O que dá para fazer
+
+- **Monitore os logs de Transparência de Certificados para os seus domínios.** É gratuito, e avisa quando alguém certifica um nome que é seu.
+- **Publique registros CAA** para que só as autoridades escolhidas por você possam emitir.
+- **Automatize a renovação e presuma vidas curtas.** Certificado expirado hoje causa mais queda que certificado comprometido.
+- **Tenha um segundo caminho de emissão** pronto e testado, para o dia em que sua autoridade principal tiver uma semana ruim.
+- **Faça pinning só onde você controla as duas pontas.** Fixação de chave pública em navegador foi tentada e em boa parte abandonada porque um erro tranca você fora do próprio site; em aplicativos móveis e sistemas internos, onde você entrega as duas pontas, segue sendo sensato.
+
+## Onde isto entra na série
+
+A [raiz do DNS](/learn/what-happens-if-the-dns-root-goes-dark) é dado que se replica, e sua fraqueza é que uma mentira assinada valida. O [roteamento](/learn/bgp-and-the-routing-chokepoint) são afirmações que se pode assinar em parte. Os [cabos](/learn/submarine-cables-and-the-physical-internet) são objetos que só se duplicam a peso de dinheiro.
+
+Certificados são o caso estranho: o ponto de estrangulamento é uma **lista de organizações**, e a correção não foi encurtar a lista nem confiar mais nela, e sim tornar público tudo o que ela faz. Essa resposta - trocar confiança não verificável por exposição verificável - é a ideia mais transferível de toda esta série, e é o que o resto da indústria segue redescobrindo com outros nomes.

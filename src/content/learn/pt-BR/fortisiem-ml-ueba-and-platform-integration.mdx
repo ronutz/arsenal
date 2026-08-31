@@ -39,7 +39,7 @@ A saída da UEBA alimenta dois lugares. Ela pode **contribuir para regras**, de 
 
 ## Integração com ZTNA
 
-Decisões de acesso zero trust produzem um fluxo rico de eventos: qual usuário, qual equipamento, qual aplicação, qual postura, permitido ou negado. Alimentar isso no SIEM acrescenta uma dimensão que a rede sozinha não carrega.
+Decisões de acesso zero trust produzem um fluxo rico de eventos: qual usuário, qual equipamento, qual aplicação, qual postura, permitido ou negado. Alimentar isso no SIEM (security information and event management) acrescenta uma dimensão que a rede sozinha não carrega.
 
 A correlação que isso habilita é o ponto. Um equipamento falhando verificações de postura, então um usuário daquele equipamento tentando acesso a várias aplicações em sequência, então uma rajada de negações: cada um é menor e a sequência não é. Só um sistema que enxerga as decisões de acesso e a atividade ao redor consegue uni-los.
 
@@ -51,10 +51,10 @@ Conectar um produto ao SIEM é simples e não é o mesmo que obter valor dele. T
 
 **Análise sintática.** Os eventos precisam cair em campos estruturados, ou são texto sobre o qual não se pode agregar. Uma integração que entrega logs não analisados produziu armazenamento, e não analytics.
 
-**Alinhamento com o CMDB.** O equipamento na fonte nova precisa ser reconhecível como o mesmo que o SIEM já conhece, ou a correlação não consegue uni-los.
+**Alinhamento com o CMDB (configuration management database).** O equipamento na fonte nova precisa ser reconhecível como o mesmo que o SIEM já conhece, ou a correlação não consegue uni-los.
 
 **Uma pergunta que ela responde.** O teste honesto para uma integração nova é qual consulta ou regra se torna possível e não era antes. Se nenhuma, a integração acrescentou volume e custo sem acrescentar capacidade, e volume num SIEM nunca é de graça.
 
 ## O que quem vai prestar o exame precisa saber de cor
 
-Aprendizado de máquina e UEBA aprendem o normal e reportam desvio, então o período da linha de base é preocupação operacional real e uma anomalia é sinal de priorização, e não veredito. A UEBA perfila usuários e entidades, pega desvio de pares e mudança gradual que limiares não pegam, e alimenta tanto regras quanto painéis de risco. Eventos de ZTNA acrescentam usuário, equipamento, aplicação e postura à correlação. Uma integração nova só é útil se seus eventos forem analisados em campos, seus equipamentos se alinharem ao CMDB, e ela tornar respondível alguma pergunta que não era.
+Aprendizado de máquina e UEBA aprendem o normal e reportam desvio, então o período da linha de base é preocupação operacional real e uma anomalia é sinal de priorização, e não veredito. A UEBA perfila usuários e entidades, pega desvio de pares e mudança gradual que limiares não pegam, e alimenta tanto regras quanto painéis de risco. Eventos de ZTNA (zero trust network access) acrescentam usuário, equipamento, aplicação e postura à correlação. Uma integração nova só é útil se seus eventos forem analisados em campos, seus equipamentos se alinharem ao CMDB, e ela tornar respondível alguma pergunta que não era.

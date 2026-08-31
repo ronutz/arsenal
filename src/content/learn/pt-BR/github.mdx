@@ -1,0 +1,54 @@
+---
+slug: github
+title: "GitHub: o pull request era o produto"
+summary: "O Git resolveu copiar; o GitHub resolveu coordenar. Como um app Rails de 2008 transformou o patch por e-mail numa conversa revisável, fez do perfil um currículo, acumulou uma plataforma ao redor do repositório e virou o maior host de código do mundo sem nunca ser dono do protocolo por baixo."
+concepts: ["github", "git", "pull request", "fork", "code review", "ci", "open source"]
+relatedTools: []
+relatedArticles: ["git", "altavista-and-how-search-was-lost"]
+category: operations
+order: 7
+status: reviewed
+updated: "2026-08-27"
+---
+
+## O Git resolveu copiar; o GitHub resolveu coordenar
+
+Em 2008, o [Git](/learn/git) já tinha respondido a pergunta técnica: todo clone carrega a história inteira, então qualquer um trabalha em qualquer lugar e os objetos se reconciliam. O que ele deliberadamente não respondeu foi a pergunta social — como a mudança de um estranho chega a um projeto que nunca a pediu. A resposta do kernel eram patches numa lista de e-mail, que funcionava para quem tinha sido criado nela e espantava quase todo mundo que não. Os fundadores do GitHub — Tom Preston-Werner, Chris Wanstrath e PJ Hyett, com Scott Chacon chegando cedo — construíram uma aplicação Rails ao redor de uma aposta simples: torne agradável a camada de compartilhar, e o protocolo por baixo cuida do resto.
+
+A aposta parece óbvia hoje. Não era: hospedagem de código existia (o SourceForge tinha sido o centro do open source por uma década, o Google Code estava bem estabelecido), e hospedar era entendido como armazenamento com uma página de download. A sacada fundadora do GitHub foi perceber que o objeto interessante não era o arquivo morto, e sim a *relação entre as cópias* — quem fez fork de quê, de quem, e o que fez em seguida.
+
+## O pull request era o produto
+
+O mecanismo que carregou a empresa é o **pull request**: faça um fork do repositório em que você não pode escrever, faça commits na sua cópia, e peça ao original que puxe — com o diff, a discussão e, no fim, a aprovação morando todos na mesma página. Tecnicamente não é nada que o Git já não fizesse; o `git request-pull` sempre existiu como gerador de e-mail. O que o GitHub acrescentou foi o *lugar*. Um patch deixou de ser um anexo discutido numa thread e virou um endereço: comentários ancorados em linhas, revisões acrescentadas à mesma conversa, estado (aberto, merged, fechado) visível para qualquer um que aparecesse anos depois.
+
+Esse reenquadramento religou em silêncio o jeito como times de software trabalham, muito além do open source. Code review — que as gerações anteriores faziam em sala de reunião com papel impresso, quando faziam — virou o padrão ambiente, porque a ferramenta fez da revisão o caminho de menor resistência, e não uma cerimônia. Metodologias inteiras (trunk-based com branches de vida curta, o "GitHub flow") são consequência de uma decisão de interface: a unidade de colaboração é um diff proposto com uma conversa pendurada.
+
+## O perfil virou currículo
+
+A outra metade do produto era social, e a empresa dizia isso desde o começo — o slogan dos primeiros tempos era "social coding". A atividade era pública por padrão: seus commits, seus projetos, os repositórios que você deu star, as pessoas que você seguia. O perfil de uma pessoa desenvolvedora virou portfólio vivo de um jeito que nenhum formato de currículo tinha conseguido, e a contratação na indústria se dobrou a esse fato — com um efeito colateral conhecido, já que o gráfico verde de contribuições mede atividade pública, não capacidade, e engenheiros excelentes aos montes trabalham onde o gráfico não enxerga.
+
+O efeito de rede que isso produziu é o fosso de verdade. A distribuição do Git significa que qualquer clone é completo e ir embora é tecnicamente trivial — a história inteira sai porta afora num comando. O que não sai porta afora é a plateia: as issues, as stars, os contribuidores que sabem onde te encontrar. O GitHub virou para o código mais ou menos o que uma língua franca é para o comércio — não obrigatório, apenas onde todo mundo já está. Concorrentes sobreviveram se diferenciando (o GitLab com mais sucesso, embarcando o pipeline de DevOps inteiro e podendo ser self-hosted), mas o padrão foi compondo.
+
+## De host a plataforma
+
+Ao redor do repositório, a plataforma foi se acumulando em camadas, cada uma absorvendo uma categoria que já tinha sido a empresa inteira de alguém: **Issues** para rastreio, wikis e **Pages** para documentação e hospedagem, **Actions** (2018–2019) para CI/CD (integração e entrega contínuas) — que trouxe o pipeline de build para o mesmo lugar do código e da revisão, e deslocou uma geração de serviços externos de CI —, depois **Packages**, code scanning e alertas de dependência (a aquisição do Dependabot), o **Codespaces** pondo o próprio ambiente de desenvolvimento no navegador, e o **Copilot** (preview em 2021), que transformou o código público acumulado num modelo que sugere a próxima linha e abriu uma discussão sobre dados de treino e autoria que a indústria ainda está tendo.
+
+O padrão em tudo isso: o que quer que as pessoas desenvolvedoras fizessem *ao redor* do código, o GitHub acabava oferecendo onde o código já morava — e a gravidade fazia a venda.
+
+## O capítulo Microsoft
+
+Em junho de 2018 [a Microsoft acertou a compra do GitHub](https://news.microsoft.com/2018/06/04/microsoft-to-acquire-github-for-7-5-billion/) por US$ 7,5 bilhões em ações, e uma fatia relevante do mundo open source se preparou para o pior; o GitLab reportou publicamente um pico de repositórios fugindo naquela semana. O medo tinha história por trás — essa era a empresa dos memorandos de Halloween —, mas o desfecho correu para o outro lado. A Microsoft, no meio da própria transformação em participante do open source (precisava de credibilidade com desenvolvedores e tinha ela mesma virado uma das maiores usuárias do GitHub), manteve a plataforma independente sob CEO próprio, seguiu expandindo o gratuito (repositórios privados para todo mundo em 2019) e usou o ativo como porta de entrada do seu ecossistema de desenvolvimento. Passados mais de sete anos, a aquisição se lê como o exemplo mais claro da era de uma compra de plataforma que não estrangulou a plataforma.
+
+## Uma linha do tempo (timeline) para pendurar tudo
+
+- **2008** — Lança publicamente em abril; um app Rails de bootstrap para "social coding".
+- **2012** — Recebe a primeira grande rodada de investimento; a essa altura já é o endereço padrão do open source novo.
+- **2013–2015** — Passa de dez milhões de repositórios, abre as ofertas enterprise; "olha o GitHub" vira o jeito de engenheiros avaliarem bibliotecas — e uns aos outros.
+- **2018** — Actions é anunciado; a Microsoft compra o GitHub por US$ 7,5 bi em ações.
+- **2019** — Repositórios privados gratuitos para todos; o Dependabot é incorporado.
+- **2020** — Compra o npm, o registro de pacotes do JavaScript.
+- **2021** — Preview do Copilot: o host de código começa a escrever código.
+
+## O que o GitHub não é
+
+Ele não é o Git, e a distinção segue estrutural. O protocolo continua aberto; nada num repositório no GitHub é cativo, exceto o entorno social — que é exatamente a parte que um `git clone` não copia. Manter as duas ideias separadas é o jeito mais limpo de entender ao mesmo tempo o poder da empresa — ela é dona do lugar, não do formato — e os limites dele, porque um lugar segura a multidão só enquanto a multidão concordar que ele é o lugar. A [história do AltaVista](/learn/altavista-and-how-search-was-lost) é o lembrete de plantão de quão rápido esse acordo se move; as duas décadas do GitHub segurando o dele são o contraexemplo — por enquanto.

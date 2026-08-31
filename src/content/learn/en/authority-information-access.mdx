@@ -17,7 +17,7 @@ Authority Information Access is a certificate extension, defined in RFC 5280, th
 
 ## OCSP: where to ask about revocation
 
-The first access method is OCSP, the Online Certificate Status Protocol. Its URL points to the CA's OCSP responder, a service that answers a simple question about one certificate: good, revoked, or unknown. A client that wants to check revocation in real time takes the OCSP URL from this extension, sends the certificate's serial number to that responder, and reads the signed answer. This is the live alternative to downloading a whole CRL, and it is covered in depth in the [revocation article](/learn/certificate-revocation). The weakness of querying the responder directly, and the extension that hardens it, is the subject of [OCSP Must-Staple](/learn/ocsp-must-staple).
+The first access method is OCSP, the Online Certificate Status Protocol. Its URL points to the CA's OCSP responder, a service that answers a simple question about one certificate: good, revoked, or unknown. A client that wants to check revocation in real time takes the OCSP URL from this extension, sends the certificate's serial number to that responder, and reads the signed answer. This is the live alternative to downloading a whole CRL (certificate revocation list), and it is covered in depth in the [revocation article](/learn/certificate-revocation). The weakness of querying the responder directly, and the extension that hardens it, is the subject of [OCSP Must-Staple](/learn/ocsp-must-staple).
 
 ## CA Issuers: where to fetch the issuer certificate
 

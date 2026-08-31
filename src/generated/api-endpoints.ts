@@ -83,6 +83,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_cipher",
     "tag": "TLS & transport"
   },
+  "cron-expression-explainer": {
+    "url": "https://ronutz.com/api/v1/cron-expression-explainer",
+    "method": "GET",
+    "op": "run_cron_expression_explainer",
+    "tag": "Text & utilities"
+  },
   "csr-decoder": {
     "url": "https://ronutz.com/api/v1/csr-decoder",
     "method": "GET",

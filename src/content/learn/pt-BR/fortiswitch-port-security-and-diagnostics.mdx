@@ -21,7 +21,7 @@ O **802.1X** autentica um equipamento ou usuário antes de a porta carregar trá
 - **Por porta** autentica uma vez, e a porta então carrega tráfego para qualquer coisa atrás dela. Simples, e um hub ou switch não gerenciado atrás de uma porta autenticada deixa tudo passar.
 - **Por MAC** autentica cada MAC separadamente, que é o que você quer onde um telefone e um PC dividem uma porta, ou onde um switch pequeno está legitimamente presente.
 
-A autenticação corre contra um servidor RADIUS, e o servidor pode retornar a VLAN em que o equipamento deve ser colocado. É assim que uma única porta física atende segmentos diferentes conforme quem se conecta, e é o mecanismo sobre o qual o controle de acesso à rede se constrói.
+A autenticação corre contra um servidor RADIUS (Remote Authentication Dial-In User Service), e o servidor pode retornar a VLAN (rede local virtual) em que o equipamento deve ser colocado. É assim que uma única porta física atende segmentos diferentes conforme quem se conecta, e é o mecanismo sobre o qual o controle de acesso à rede se constrói.
 
 O **sticky MAC** toma outro caminho: a porta aprende os endereços MAC conectados no momento e depois recusa outros. Não exige infraestrutura de autenticação, o que o torna atraente para equipamentos que não conseguem autenticar: impressoras, câmeras, equipamento industrial.
 

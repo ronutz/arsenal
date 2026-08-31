@@ -36,9 +36,9 @@ As mitigações, na ordem aproximada de com que frequência são puladas:
 
 ## O que o serviço oferece
 
-**WAF** — a mesma proteção por assinatura e comportamento do produto local, administrada como serviço.
+**WAF (web application firewall)** — a mesma proteção por assinatura e comportamento do produto local, administrada como serviço.
 
-**Mitigação de DDoS** nas camadas de rede e de aplicação, com a capacidade que é o ponto do modelo.
+**Mitigação de DDoS (negação de serviço distribuída)** nas camadas de rede e de aplicação, com a capacidade que é o ponto do modelo.
 
 **Mitigação de bots**, que importa mais à frente de uma aplicação pública que em qualquer outro lugar, porque recheio de credenciais e raspagem miram exatamente aquilo à frente do que um WAF em nuvem fica.
 
@@ -62,7 +62,7 @@ A troca por não operar a plataforma é que você enxerga o que o serviço repor
 
 As duas coisas que vale configurar cedo:
 
-**Exportação de logs** para o seu próprio SIEM, para que eventos do WAF em nuvem fiquem ao lado de todo o resto em vez de num console separado que é consultado depois de um incidente, e não durante.
+**Exportação de logs** para o seu próprio SIEM (security information and event management), para que eventos do WAF em nuvem fiquem ao lado de todo o resto em vez de num console separado que é consultado depois de um incidente, e não durante.
 
 **Alertas sobre mudanças no volume de ataques**, e não sobre eventos individuais. Bloqueios individuais são ruído de fundo constante em qualquer aplicação pública; uma mudança no padrão é o sinal.
 

@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-19"
 ---
 
-Quando alguém diz "o BIG-IP DNS balanceia a requisição", costuma imaginar uma única escolha: uma lista de servidores, um deles selecionado. Essa imagem está errada de um jeito que causa confusão real, porque o balanceamento global de carga (GSLB) são duas decisões empilhadas uma sobre a outra, e as duas podem se comportar de formas completamente diferentes.
+Quando alguém diz "o BIG-IP DNS balanceia a requisição", costuma imaginar uma única escolha: uma lista de servidores, um deles selecionado. Essa imagem está errada de um jeito que causa confusão real, porque o balanceamento global de carga (GSLB (global server load balancing)) são duas decisões empilhadas uma sobre a outra, e as duas podem se comportar de formas completamente diferentes.
 
 Eis o formato real. Um wide IP - o nome totalmente qualificado que um cliente resolve, como `www.example.com` - não aponta para endereços diretamente. Ele aponta para **pools**. Cada pool contém **servidores virtuais** (tipicamente os virtual servers do LTM que ficam na frente da aplicação real em cada site). Quando uma requisição DNS chega, o BIG-IP DNS primeiro escolhe um pool, e só então escolhe um servidor virtual dentro desse pool para retornar como resposta. Dois níveis, duas seleções.
 

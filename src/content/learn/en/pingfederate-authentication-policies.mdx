@@ -19,7 +19,7 @@ updated: "2026-07-20"
 
 A policy tree is read top-down, and its nodes come in two kinds.
 
-**Authentication sources** do the authenticating: adapter instances, or IdP (Identity Provider) connections when the "source" is another federation partner. Each source node has two exits - **Fail** and **Success** - and the branches are the logic. Fail from the Kerberos attempt can flow into the HTML Form node, and that one line of tree is the classic pattern: try silent desktop SSO, fall back to the login page, invisibly to the user who just sees the right thing happen.
+**Authentication sources** do the authenticating: adapter instances, or IdP (Identity Provider) connections when the "source" is another federation partner. Each source node has two exits - **Fail** and **Success** - and the branches are the logic. Fail from the Kerberos attempt can flow into the HTML Form node, and that one line of tree is the classic pattern: try silent desktop SSO (single sign-on), fall back to the login page, invisibly to the user who just sees the right thing happen.
 
 **Selectors** branch without authenticating anyone. A selector inspects context - which application was requested, what network range the request came from, an extended property on the connection, and similar signals - and routes accordingly. Selectors are how one tree serves different populations differently: the corporate CIDR (Classless Inter-Domain Routing) range goes down the Kerberos branch, everything else goes straight to the form; the high-sensitivity application's branch adds a second factor that the ordinary branch skips.
 

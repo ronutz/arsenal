@@ -32,13 +32,31 @@ import fs from "node:fs";
 import path from "node:path";
 
 const OUT = "out";
-const LOCALE = "en"; // one locale is enough: the routes are generated per locale.
-const BASE = path.join(OUT, LOCALE);
+// One locale is enough — the routes are generated per locale — but WHICH locale
+// must adapt to what was built. R-18 audit finding (2026-08-26): this guard was
+// pinned to "en", so single-locale pt-BR verification builds hit the SKIP branch
+// and shipped with internal links entirely unchecked. Now it prefers en when
+// present and otherwise takes the first built locale, so every build gets read.
+const LOCALE = fs.existsSync(path.join(OUT, "en", "index.html"))
+  ? "en"
+  : (fs.existsSync(OUT)
+      ? fs.readdirSync(OUT, { withFileTypes: true })
+          .filter(
+            (e) =>
+              e.isDirectory() &&
+              /^[a-z]{2}(-[A-Za-z]{2,4})?$/.test(e.name) && // locale-shaped only: out/404/ is a page, not a locale
+              fs.existsSync(path.join(OUT, e.name, "index.html"))
+          )
+          .map((e) => e.name)
+          .sort()[0]
+      : undefined);
+const BASE = LOCALE ? path.join(OUT, LOCALE) : undefined;
 
-if (!fs.existsSync(BASE)) {
+if (!BASE || !fs.existsSync(BASE)) {
   console.log("[check-internal-links] SKIP: no build output to read.");
   process.exit(0);
 }
+console.log(`[check-internal-links] reading locale: ${LOCALE}`);
 
 function walk(dir, out = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {

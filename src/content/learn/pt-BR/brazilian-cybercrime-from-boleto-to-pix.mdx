@@ -1,0 +1,65 @@
+---
+slug: brazilian-cybercrime-from-boleto-to-pix
+title: "Cibercrime brasileiro: do boleto ao Pix"
+summary: "O Brasil bancarizou online cedo, inventou instrumentos de pagamento que o resto do mundo não tinha, e criou uma indústria criminosa moldada exatamente a eles — manipulação de código de barras, sobreposição de tela, jackpotting de caixa eletrônico, e agora engenharia social mirando transferências instantâneas. As técnicas, as quadrilhas que as exportaram, os ataques ao Estado, e as leis escritas depois de cada choque."
+concepts: ["cybercrime", "brazil", "banking malware", "fraud", "ransomware"]
+relatedTools: []
+relatedArticles: ["the-brazilian-hacker-scene", "hacking-in-the-20th-century", "latin-american-security-conferences"]
+category: security
+order: 114
+status: reviewed
+updated: "2026-08-29"
+---
+
+## Por que aqui
+
+Duas condições produziram a indústria brasileira de fraude, e nenhuma delas era criminosa na origem.
+
+O Brasil **bancarizou online cedo e com entusiasmo**. O internet banking chegou ao correntista comum antes que na maioria dos países, e a população adotou. Isso criou um alvo grande e conectado anos antes de o ferramental defensivo amadurecer.
+
+E o Brasil **construiu instrumentos de pagamento que ninguém mais tinha**. O boleto - um papel com código de barras que qualquer um paga em qualquer banco, lotérica ou aplicativo - e depois o Pix, transferência instantânea entre quaisquer duas contas, gratuita e a qualquer hora. Instrumentos locais exigem fraude local: nada do malware escrito para o banco europeu ou americano se aplicava direito aqui, então os criminosos escreveram o próprio.
+
+## A linhagem das técnicas
+
+**Ataques de sobreposição.** Em vez de quebrar a aplicação do banco, desenhe uma janela convincente por cima dela. A vítima digita as credenciais em algo que parece exatamente certo. É a técnica assinatura brasileira e sobreviveu à migração para o celular.
+
+**Manipulação de boleto.** O código de barras carrega o destino. Malware que o reescreve no momento em que o boleto é gerado ou exibido manda o dinheiro para outro lugar, e a vítima paga o que aparece na tela. Elegante, silencioso, e específico de um instrumento que só existia aqui.
+
+**Famílias de [trojan bancário](/glossary/banking-trojan) que se globalizaram.** Pesquisadores da Kaspersky agruparam quatro delas como [o Tetrade](/glossary/tetrade) - Guildma, Javali, Melcoz e Grandoreiro -, malware que amadureceu internamente e depois alcançou América Latina, Espanha e Portugal. O Grandoreiro virou o mais disseminado, e era alugado a outros criminosos como serviço.
+
+**O [Prilex](/glossary/prilex)** é o mais impressionante tecnicamente e o mais preocupante. Começou como malware de caixa eletrônico e, num único incidente em 2016, infectou mais de mil máquinas de um banco e [clonou cerca de vinte e oito mil cartões](https://securelist.com/prilex-atm-pos-malware-evolution/107551/). Depois girou para ponto de venda, descendo até o protocolo do próprio pinpad, corrigindo software em tempo real, e gerando criptogramas para que transações em cartões com chip e senha pudessem ser reproduzidas como fraudulentas. Também virou serviço vendido a terceiros. Essa progressão - conhecimento profundo da indústria de pagamentos, aplicado por gente que claramente entendia os sistemas por dentro - é o que distingue a cena brasileira da fraude de prateleira.
+
+**E a era do Pix mudou o alvo em vez de removê-lo.** Transferências instantâneas e irreversíveis tornaram o malware menos necessário: o ataque eficiente virou convencer a vítima a autorizar ela mesma a transferência, o que moveu a fraude do código para a conversa. A contramedida que funciona não é detecção, e sim atrito - confirmação do destinatário por outro canal, limites, e atrasos para recebedores desconhecidos.
+
+## Os ataques ao Estado
+
+Dois incidentes mudaram como as instituições brasileiras pensam sobre isso.
+
+**O Superior Tribunal de Justiça, novembro de 2020.** Ransomware identificado como RansomExx cifrou o acervo de processos do tribunal. As atividades foram suspensas, os prazos pausados, e o sistema foi restabelecido ao longo de cerca de duas semanas com apoio da Polícia Federal, da inteligência do Exército e da Microsoft. Foi amplamente descrito como o pior ataque a uma instituição de Estado brasileira até então, e a resposta do Judiciário incluiu criar um comitê permanente para tratar da proteção nos tribunais. Um detalhe honesto: o tribunal nunca confirmou publicamente um pedido de resgate, e relatos cuidadosos registram isso.
+
+**O Ministério da Saúde, dezembro de 2021.** Um grupo autodenominado Lapsus$ comprometeu sistemas do ministério e derrubou o ConecteSUS, a plataforma com os registros de vacinação, em plena pandemia. O dano imediato foi administrativo - milhões de pessoas não conseguiam recuperar o comprovante de vacinação - e a lição duradoura foi sobre a dependência: um registro de saúde só está tão disponível quanto a plataforma que o serve.
+
+Os dois foram falhas de higiene comum em escala, e não de nada exótico, que é o padrão que esta história segue repetindo.
+
+## As leis, escritas depois de cada choque
+
+A **[Lei Carolina Dieckmann](/glossary/lei-carolina-dieckmann) (12.737/2012)** tornou a invasão de dispositivo crime autônomo, depois de um caso público tornar impossível ignorar a lacuna legislativa. O padrão é exatamente o que produziu o [Computer Fraud and Abuse Act](/learn/the-414s-and-the-summer-of-1983) americano: um choque, uma lei rápida, e décadas convivendo com o texto.
+
+O **[Marco Civil da Internet](/glossary/marco-civil-da-internet) (12.965/2014)** fixou direitos, deveres de guarda e as condições para remoção de conteúdo.
+
+A **LGPD (13.709/2018)** trouxe obrigações de proteção de dados e, com elas, os deveres de comunicação e responsabilização que tornam incidentes visíveis.
+
+A **Lei 14.155/2021** agravou penas para fraude eletrônica e invasão de dispositivo - resposta direta a volumes de fraude que as leis anteriores não anteciparam.
+
+## O que o país construiu em resposta
+
+O lado defensivo cresceu do mesmo solo. O [CERT.br](/glossary/cert-br), sob o comitê multissetorial, publica abertamente dados de incidentes e de honeypots há duas décadas. O [chkrootkit](/glossary/chkrootkit) saiu daqui. [Fábio Assolini](/glossary/fabio-assolini) e colegas documentaram em inglês as famílias de malware bancário, que é o que transformou um fenômeno local numa classe de ameaça compreendida internacionalmente. E o [circuito de conferências](/learn/latin-american-security-conferences) deu à expertise um lugar para circular.
+
+Esse é o resumo honesto desta história: **as mesmas condições produziram a fraude e a expertise**. Por duas décadas, "brasileiro" num relatório de malware costumava significar crime bancário; hoje pesquisadores brasileiros estão entre as pessoas que o resto do mundo lê sobre o assunto, exatamente pela mesma razão.
+
+## O que se transfere para quem lê de fora
+
+- **Instrumentos de pagamento locais criam fraude local.** Todo país que lança um esquema de pagamento instantâneo herda a lição do Pix: a irreversibilidade move o ataque do software para a pessoa.
+- **Engenharia social escala melhor que malware** quando as transferências são instantâneas e finais. Planeje para a transação autorizada sob coação, e não só para o dispositivo comprometido.
+- **Atrito é controle.** Confirmação de destinatário, limites e períodos de espera param o que a detecção não para.
+- **Publique na língua que o campo lê.** Pesquisa que existia só em português ficou invisível por anos, e a classe de ameaça foi subestimada internacionalmente por causa disso.

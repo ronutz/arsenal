@@ -13,7 +13,7 @@ updated: "2026-07-20"
 
 ## Uma definição, muitos consumidores
 
-Um data store no PingFederate é uma **definição de conexão**: como alcançar uma fonte externa de dados de identidade, configurada uma vez e referenciada em todo lugar. Os consumidores são a parte interessante - Password Credential Validators verificam senhas contra um store, mapeamentos de atributos buscam atributos adicionais num store durante o SSO, e o provisionamento lê e escreve através de um store. Mude o endereço do diretório ou rotacione a credencial de serviço, e a mudança acontece em exatamente um lugar; todo consumidor acompanha. Essa indireção é o projeto, e reconhecê-la é o que o "configurar **ou gerenciar**" do objetivo realmente pergunta.
+Um data store no PingFederate é uma **definição de conexão**: como alcançar uma fonte externa de dados de identidade, configurada uma vez e referenciada em todo lugar. Os consumidores são a parte interessante - Password Credential Validators verificam senhas contra um store, mapeamentos de atributos buscam atributos adicionais num store durante o SSO (single sign-on), e o provisionamento lê e escreve através de um store. Mude o endereço do diretório ou rotacione a credencial de serviço, e a mudança acontece em exatamente um lugar; todo consumidor acompanha. Essa indireção é o projeto, e reconhecê-la é o que o "configurar **ou gerenciar**" do objetivo realmente pergunta.
 
 ## Stores LDAP: a conexão com o diretório
 

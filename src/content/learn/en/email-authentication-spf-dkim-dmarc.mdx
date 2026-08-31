@@ -1,0 +1,86 @@
+---
+slug: email-authentication-spf-dkim-dmarc
+title: "Email authentication: what SPF, DKIM and DMARC each actually do"
+summary: "Mail was designed with no way to check who sent it, and the three records everyone publishes fix different halves of that problem — badly explained, frequently misconfigured, and routinely credited with protection they do not provide. What each one checks, why alignment is the idea that matters, why forwarding breaks things, and the deployment order that actually reaches enforcement."
+concepts: ["email", "spf", "dkim", "dmarc", "authentication"]
+relatedTools: []
+relatedArticles: ["dns-record-types-in-answers", "the-certificate-authority-chokepoint", "what-happens-if-the-dns-root-goes-dark"]
+category: security
+order: 126
+status: reviewed
+updated: "2026-08-29"
+---
+
+## The original sin
+
+SMTP (Simple Mail Transfer Protocol) has no sender authentication. Any server can claim to be sending on behalf of any domain, and the protocol will happily carry it. Everything below is retrofitting.
+
+The retrofit is confusing for one structural reason: **a message has two "from" addresses.** The **envelope sender** is what the sending server declares during the SMTP conversation and is where bounces go. The **header From** is what the recipient actually sees in their mail client. They can legally differ, they routinely do for legitimate reasons, and the gap between them is exactly where spoofing lives.
+
+Keep that distinction in mind and the three records stop being interchangeable acronyms.
+
+## SPF — which servers may send
+
+**SPF (Sender Policy Framework)** is a DNS record listing the addresses permitted to send mail for a domain. The receiving server compares the connecting address against the list and gets a pass or fail.
+
+What it checks is the **envelope sender**, not the visible From. That is the single most misunderstood fact in this area: a message can pass SPF perfectly while displaying any From address it likes.
+
+Its practical limits are worth knowing before you rely on it. Evaluation is capped at **ten DNS lookups**, and every `include:` of a large provider consumes them, so sprawling records silently fail rather than fail loudly. And **forwarding breaks it**: when a recipient forwards mail, the forwarding server is not on your list, so SPF fails through no fault of anyone involved.
+
+## DKIM — was the message altered, and by whom
+
+**DKIM (DomainKeys Identified Mail)** signs selected headers and the body with a private key; the public key lives in DNS. A receiver verifies the signature and learns that a particular domain took responsibility for the message and that the signed parts were not modified in transit.
+
+Because the signature travels with the message, DKIM **survives simple forwarding**, which is where SPF fails. It also does not, by itself, say anything about the visible From — a valid signature from one domain can accompany a message displaying another.
+
+Two operational notes: keys need rotation like any other key material, and the optional body-length tag lets a signature cover only the first part of a body, which allows content to be appended below a valid signature. Do not use it.
+
+## DMARC — the one that ties it together
+
+**DMARC (Domain-based Message Authentication, Reporting and Conformance)** adds the missing piece: **alignment**. It requires that a passing SPF or DKIM result belong to the *same domain the reader sees in the From field*. That is the actual protection, and neither SPF nor DKIM provides it alone.
+
+It also does two things people underrate:
+
+**It publishes a policy** — `none`, `quarantine` or `reject` — telling receivers what to do with unaligned mail claiming your domain.
+
+**It asks for reports.** Aggregate reports arrive from receivers describing what passed and failed for your domain, from which addresses. This is the part that makes deployment possible, and it is free intelligence about who is sending as you — including your own forgotten systems and anyone forging you.
+
+## Why almost everyone stalls at p=none
+
+The honest deployment path is not the one that gets recommended in a single sentence.
+
+1. **Publish SPF and DKIM properly**, then DMARC at `p=none`. Nothing is blocked yet.
+2. **Read the reports for weeks.** You will find legitimate senders nobody told you about: the invoicing system, the marketing platform, the ticketing tool, a branch office relay.
+3. **Fix or authorise each one.** This is the real work, it is organisational rather than technical, and it is where projects die.
+4. **Move to `quarantine`, then `reject`,** ideally with percentage rollout.
+
+Organisations sit at `p=none` for years because step 3 requires finding every system that sends mail as the company, in a company where nobody has that list. Publishing `p=reject` before finishing it means blocking your own invoices.
+
+## What breaks it in the real world
+
+**Forwarding** breaks SPF, as described. **Mailing lists** often break DKIM too, because they modify subject lines or append footers, invalidating the signature.
+
+**ARC (Authenticated Received Chain)** exists for this: an intermediary records the authentication results it saw and signs that record, so a later receiver can see that mail failed only because a trusted forwarder handled it. Adoption is partial, and it requires trusting the intermediary's assertion.
+
+## What it does not protect against
+
+This is the part that gets oversold, so state it plainly:
+
+- **Lookalike domains.** DMARC on `yourcompany.com` does nothing about `yourc0mpany.com`. Attackers register their own domain and authenticate it perfectly.
+- **Display-name spoofing.** A message from a random address showing the display name of your chief executive passes everything, because nothing here authenticates a human-readable name.
+- **Compromised legitimate accounts.** Mail sent from a real, hijacked mailbox is authentic by every measure these standards apply.
+
+The accurate summary: **these standards stop others from sending as your domain. They do not stop your users from being phished.** That second problem needs different controls, and conflating the two is how organisations end up believing an authentication project made them safe.
+
+## Neighbours often confused with these
+
+**MTA-STS** and **DANE** secure the *transport* — they make sure mail to your domain travels over verified TLS rather than being downgraded. That is confidentiality and integrity in transit, a different problem from authenticating the sender. **BIMI** displays a brand logo in supporting clients and requires DMARC enforcement, which makes it, in practice, a commercial incentive to finish the work above.
+
+## The short checklist
+
+- One SPF record, under the lookup limit, with no `+all`.
+- DKIM signing on every sending system, keys rotated, no body-length tag.
+- DMARC at `p=none` with an aggregate report address, on day one.
+- A named owner for the reports, because unread reports are the same as no reports.
+- A written inventory of everything that sends mail as you — the artefact the whole project is really about.
+- Enforcement when, and only when, that inventory is complete.

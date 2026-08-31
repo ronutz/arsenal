@@ -1,0 +1,151 @@
+---
+slug: hacking-in-the-20th-century
+title: "Hacking no século XX: um guia de campo sobre a gente que desmontava as coisas"
+summary: "De um menino cego assobiando num telefone nos anos sessenta a sete hackers depondo ao Senado americano sob seus apelidos em 1998 - o arco inteiro, num lugar só. Quem eram essas pessoas, o que de fato fizeram, quais histórias são verdadeiras, e como uma subcultura criminalizada acabou construindo a indústria de segurança que hoje a emprega."
+concepts: ["hacker history", "phreaking", "full disclosure", "hacker ethic", "computer crime"]
+relatedTools: []
+relatedArticles: ["phone-phreaking-and-the-blue-box", "the-morris-worm", "the-cuckoos-egg", "kevin-mitnick-the-myth-and-the-man", "defcon-culture-and-the-goons", "stuxnet-and-the-first-cyberweapon", "the-crypto-wars-and-the-cypherpunks", "anonymous-lulzsec-and-the-hacktivist-decade"]
+category: security
+order: 96
+status: reviewed
+updated: "2026-08-28"
+---
+
+## O que a palavra significava antes de significar isto
+
+No MIT do fim dos anos cinquenta, um *hack* era uma solução engenhosa e um tanto escandalosa - termo do clube de modelismo ferroviário que migrou com sua gente para os computadores da universidade. O [*Hackers: Heroes of the Computer Revolution*](/glossary/hackers-heroes-book), de Steven Levy, pôs por escrito a ética que essas pessoas viviam: o acesso deve ser ilimitado e prático, desconfie da autoridade, julgue as pessoas pelo trabalho e não por credenciais.
+
+Essa palavra foi capturada em 1983 e nunca foi devolvida por inteiro. Esta é a história do que aconteceu no meio - quatro décadas, cinco motivos distintos, e uma subcultura que foi processada até existir e depois contratada.
+
+## 1. Os anos do telefone: a curiosidade como motivo
+
+Os primeiros hackers hackearam a companhia telefônica, porque nos anos sessenta e setenta a companhia telefônica era o maior computador da Terra e sua língua de controle era audível. O [phone phreaking](/learn/phone-phreaking-and-the-blue-box) funcionava porque a rede sinalizava in-band: um tom de 2600 Hz dizia a um tronco que ele estava ocioso, e qualquer coisa capaz de produzir o som podia comandar a central.
+
+[Joybubbles](/glossary/joybubbles) - Joe Engressia, cego, de ouvido absoluto - descobriu aos sete anos que conseguia assobiá-lo. [John Draper](/glossary/captain-crunch) achou a mesma frequência num brinquedo de caixa de cereal e virou o Captain Crunch. O artigo de Ron Rosenbaum na *Esquire*, em 1971, pôs tudo nas bancas, onde dois californianos chamados Steve leram, construíram blue boxes, venderam-nas em alojamentos e depois fundaram a Apple.
+
+A moral técnica sobreviveu à tecnologia: **separe o plano de controle do plano de dados**. Todo ataque de injeção desde então - SQL, header smuggling, prompt injection - é o mesmo pecado com roupa nova.
+
+As pessoas também importaram, e a história costuma esquecer metade delas. [Susan Headley](/glossary/susan-headley), conhecida como Susy Thunder, esteve entre as primeiras mestras de verdade da engenharia social, entrando por conversa em sistemas telefônicos e militares só com a voz; deixou a cena e foi em boa parte escrita para fora dos relatos que tornaram seus contemporâneos famosos. [Jude Milhon](/glossary/jude-milhon) - St. Jude - ajudou a construir o primeiro quadro de avisos computadorizado público, depois cunhou *cypherpunk*, e definiu hacking melhor que qualquer um desde então: **a burla inteligente de limites impostos**.
+
+## 2. 1983: o ano em que a palavra mudou
+
+Duas coisas aconteceram num verão só. *[WarGames](/glossary/wargames)* estreou em junho, e semanas depois os [414s](/learn/the-414s-and-the-summer-of-1983) foram presos - seis adolescentes de Milwaukee que tinham entrado num hospital de câncer, num banco e em Los Alamos usando **senhas padrão e em branco**.
+
+Vida e filme se fundiram no mesmo ciclo de notícias. A Newsweek pôs um hacker na capa, o Congresso fez audiências com um trecho do longa exibido como prova, e o presidente Reagan perguntou ao Estado-Maior se aquilo podia acontecer de verdade - produzindo a NSDD-145, a primeira política nacional americana de segurança de computadores, e três anos depois o **Computer Fraud and Abuse Act de 1986**, ainda o estatuto sob o qual se acusa crime de computador nos Estados Unidos.
+
+Uma lei escrita durante um pânico de mídia contra um modelo de ameaça tirado de um filme vem alcançando gente desde então: pesquisadores, funcionários que violam termos de serviço, jornalistas. Esse é o preço de legislar com susto.
+
+## 3. As cenas: turmas, clubes, e como diferiam
+
+O underground **americano** se organizou em turmas. A [Legion of Doom e a Masters of Deception](/learn/lod-mod-and-operation-sundevil) brigaram na Grande Guerra Hacker por orgulho e centrais telefônicas - e então o Estado chegou: a Operação Sundevil em quatorze cidades, uma revista processada por um documento que custava treze dólares no catálogo, e o manuscrito de um jogo de RPG apreendido como manual de hacking. Os dois casos desabaram, e a [EFF](/glossary/eff) nasceu dos escombros.
+
+A cena **alemã** se organizou como associação. O [Chaos Computer Club](/learn/chaos-computer-club-btx-and-the-kgb) tirou 134 mil marcos de um banco de Hamburgo durante a noite, em 1984 - e devolveu numa coletiva de imprensa, explicando a falha. Prova mais restituição mais publicação se revelou um método que sobrevive aos fundadores; o CCC hoje depõe perante o tribunal constitucional alemão.
+
+A cena **australiana** ganhou um livro em vez de uma lenda: o [*Underground*](/glossary/underground-book), pesquisado por um jovem hacker chamado Mendax.
+
+Por baixo de todas elas corria [a Scene](/glossary/the-scene) - a cultura de lançamentos com economia, regras e arte ASCII próprias - e seu dialeto, o [leet](/glossary/leet), que começou como evasão de filtro e endureceu em marcador de grupo.
+
+## 4. Os quatro motivos, na ordem em que apareceram
+
+O século inteiro cabe em quatro respostas ao *por quê*:
+
+- **Curiosidade** — o phreaking, os 414s, as primeiras turmas. Entrar era o ponto.
+- **Escala, por acidente** — o [worm de Morris](/learn/the-morris-worm), 1988. Uma ferramenta de medição com uma constante errada (reinfectar uma vez em sete) derreteu a internet, criou o CERT e produziu a primeira condenação sob o CFAA. Errar o throttle é a história inteira.
+- **Dinheiro e espionagem** — o [hack do KGB](/learn/chaos-computer-club-btx-and-the-kgb) que [Cliff Stoll](/learn/the-cuckoos-egg) seguiu a partir de um erro contábil de 75 centavos; depois [Albert Gonzalez](/glossary/albert-gonzalez) e 170 milhões de cartões.
+- **A mensagem** — o [worm WANK](/learn/wank-worm-and-the-international-subversives) nos terminais da NASA em 1989, a primeira ação hacktivista, antepassada do [Anonymous](/glossary/anonymous) e do [LulzSec](/glossary/lulzsec).
+
+## 5. Os nomes famosos, e o que é de fato verdade
+
+[**Kevin Mitnick**](/learn/kevin-mitnick-the-myth-and-the-man) foi o melhor engenheiro social que já trabalhou, e quase todo o resto que se disse dele era falso. Ele não conseguia lançar um míssil assobiando num telefone público; essa invenção lhe negou fiança e ajudou a mantê-lo preso por anos antes do julgamento. Ele cumpriu a pena e passou duas décadas ensinando a defesa.
+
+[**Kevin Poulsen**](/learn/kevin-poulsen-dark-dante) tomou as linhas de uma rádio para ganhar um Porsche enquanto mantinha um emprego diurno em pesquisa de defesa - e depois virou jornalista e cocriou o SecureDrop.
+
+[**Cliff Stoll**](/learn/the-cuckoos-egg) inventou a resposta a incidentes por não saber que ela não existia: caderno de papel, impressoras em todas as linhas, e o primeiro **honeypot** documentado.
+
+[**Mudge**](/glossary/mudge) e o [L0pht](/learn/l0pht-cdc-and-the-road-to-the-industry) disseram ao Senado em 1998 que derrubariam a internet em trinta minutos, e não estavam exagerando - o BGP (Border Gateway Protocol) não tinha autenticação.
+
+[**Gary McKinnon**](/glossary/gary-mckinnon) entrou em dezenas de sistemas militares americanos procurando OVNIs, quase sempre por senhas em branco. [**Marcus Hutchins**](/glossary/marcus-hutchins) parou o WannaCry com um domínio de dez dólares e foi preso três meses depois por algo que escrevera na adolescência. [**Barnaby Jack**](/glossary/barnaby-jack) fez dois caixas eletrônicos cuspirem dinheiro num palco de conferência e moveu uma indústria numa tarde.
+
+## 6. Como o underground construiu a indústria
+
+Primeiro veio a publicação. A [Phrack, a 2600 e o Manifesto](/learn/phrack-2600-and-the-hacker-manifesto) foram o currículo, o jornal e o credo - e o [*Smashing the Stack*, de Aleph One](/glossary/aleph-one), na Phrack 49, ensinou corrupção de memória a todo mundo de uma vez, que é exatamente por que se discute divulgação total desde então.
+
+Depois vieram as ferramentas. O [SATAN](/glossary/satan-scanner), em 1995, foi a primeira briga pública completa sobre entregar aos defensores a ferramenta de um atacante; toda discussão sobre Nmap e Metasploit é reprise.
+
+Depois vieram as instituições. 1998: o [L0pht no Senado](/learn/l0pht-cdc-and-the-road-to-the-industry), o Back Orifice na [DEF CON](/learn/defcon-culture-and-the-goons), e o underground virando consultável. A própria conferência é o artefato mais claro da transição - dinheiro na porta, sem base de participantes, e dezenas de milhares de pessoas sustentadas por voluntários não remunerados de camisa vermelha.
+
+E ao lado disso o movimento paralelo que moldou tudo: a discussão do [software livre](/glossary/free-software) e do [open source](/learn/open-source-and-the-meaning-of-free), e os [cypherpunks](/glossary/cypherpunks), cuja convicção de que código protege privacidade melhor que lei produziu o Tor, o ecossistema do PGP e, por fim, a infraestrutura criptográfica inteira da web moderna.
+
+## 7. A linha do tempo (timeline)
+
+As datas são a primeira ocorrência pública, salvo indicação; quando algo durou anos, o ano indicado é o de início ou o de quando veio à tona.
+
+**A era do telefone**
+
+- **1959** — O Tech Model Railroad Club do MIT já usa *hack* no sentido de solução engenhosa e escandalosa.
+- **1971** — A matéria de Ron Rosenbaum na *Esquire* sobre a blue box torna o phreaking público; Wozniak e Jobs constroem e vendem caixas.
+- **1975** — *The Shockwave Rider*, de John Brunner, batiza de worm um programa autorreplicante.
+- **1979** — Pesquisadores do Xerox PARC constroem os primeiros worms reais, tomando o nome de Brunner.
+
+**A cena se forma, e a palavra muda**
+
+- **1981** — Chaos Computer Club fundado em Berlim.
+- **1983** — *WarGames* estreia; os 414s são presos; a Newsweek põe um hacker na capa; audiências no Congresso exibem o filme como prova.
+- **1984** — A 2600 começa a circular; o Cult of the Dead Cow é fundado; o *Hackers* de Levy codifica a ética; o *Neuromancer* de Gibson cunha ciberespaço; o golpe do Btx do CCC tira 134 mil marcos e os devolve; a Legion of Doom se forma.
+- **1985** — Primeira edição da Phrack; a Free Software Foundation é fundada.
+- **1986** — O Computer Fraud and Abuse Act é aprovado; The Mentor escreve o Manifesto Hacker horas após sua prisão; Cliff Stoll recebe um erro contábil de 75 centavos.
+
+**As consequências chegam**
+
+- **1988** — O worm de Morris derrete a internet em 2 de novembro; o CERT é fundado em semanas.
+- **1989** — O worm WANK atinge a NASA em outubro; Karl Koch é encontrado morto em maio; sai *The Cuckoo's Egg*.
+- **1990** — A Steve Jackson Games é invadida em março; a Operação Sundevil roda em maio; a Electronic Frontier Foundation é fundada em julho.
+- **1991** — Phil Zimmermann lança o PGP (Pretty Good Privacy); Linus Torvalds anuncia o Linux na Usenet; sai o *Cyberpunk*.
+- **1992** — A lista dos cypherpunks começa; membros da Masters of Deception são denunciados; aparece o *The Hacker Crackdown*, de Sterling.
+- **1993** — A DEF CON acontece pela primeira vez; o chip Clipper é proposto.
+- **1994** — Matt Blaze quebra a custódia do Clipper; Mitnick invade as máquinas de Shimomura no Natal.
+
+**O underground se profissionaliza**
+
+- **1995** — Mitnick é preso em fevereiro; o SATAN é lançado em abril; estreia o filme *Hackers*.
+- **1996** — Aleph One publica *Smashing the Stack* na Phrack 49; a investigação contra Zimmermann é arquivada; Assange se declara culpado na Austrália.
+- **1997** — A Black Hat é fundada; o Nmap é publicado na Phrack; sai o *Underground*.
+- **1998** — O L0pht depõe ao Senado americano em 19 de maio; o Cult of the Dead Cow lança o Back Orifice na DEF CON em agosto.
+- **1999** — Jon Lech Johansen colança o DeCSS; o caso Bernstein estabelece código-fonte como discurso protegido.
+- **2000** — A onda de negação de serviço do Mafiaboy derruba as maiores marcas da web; Mitnick depõe ao Senado.
+
+**O Estado chega**
+
+- **2001** — Gary McKinnon começa a vagar por redes militares americanas.
+- **2003** — O Titan Rain começa; HD Moore lança o Metasploit.
+- **2007** — Pwn2Own e Pwnie Awards começam.
+- **2008** — A falha de DNS de Dan Kaminsky é corrigida na indústria inteira num único dia coordenado; o Project Chanology põe o Anonymous na rua.
+- **2010** — O Stuxnet é descoberto; a Operation Payback defende o WikiLeaks; George Hotz publica as chaves do PlayStation 3.
+- **2011** — O LulzSec roda por cinquenta dias; a invasão ao SecurID da RSA alcança a Lockheed Martin.
+- **2013** — A invasão à Target; as revelações de Snowden; Aaron Swartz morre enquanto responde a processo.
+- **2014** — O ataque wiper à Sony Pictures; *Citizenfour* é lançado.
+- **2015** — Miller e Valasek tomam um Jeep numa rodovia pública.
+- **2016** — Os Shadow Brokers começam a publicar; a invasão ao DNC vira operação de influência.
+- **2017** — O EternalBlue move o WannaCry e o NotPetya; Marcus Hutchins para um deles e é preso três meses depois.
+
+## 8. O que o século de fato ensina
+
+Leia tudo de ponta a ponta e as mesmas poucas lições se repetem com fantasias diferentes:
+
+**A vulnerabilidade quase nunca é exótica.** Senhas padrão levaram os 414s a Los Alamos e McKinnon a redes militares; senhas fracas e um sinalizador de debug carregaram o worm de Morris; uma má configuração deixou o hacker do KGB entrar em Berkeley. Trinta anos depois, falhas de credencial ainda lideram os relatórios de incidente.
+
+**A camada humana é o perímetro real.** Mitnick levou mais pedindo do que explorando, e uma indústria inteira de treinamento existe por causa disso.
+
+**O enquadramento da imprensa vira realidade jurídica.** Mitnick, os 414s, o documento do E911 - narrativas definiram as penas, e pesquisadores ainda vivem com as consequências.
+
+**Divulgação é discussão permanente, não problema resolvido.** Divulgação total, divulgação coordenada, bug bounties: todo arranjo é uma trégua entre quem precisa que os fabricantes se mexam e fabricantes que precisam de tempo.
+
+**Pessoas mudam, e o campo é melhor quando permite isso.** Poulsen, Mitnick, Hutchins, metade do L0pht. O duto do underground para a indústria não é escândalo; é a razão de a indústria saber alguma coisa.
+
+**O que o Estado não entende, ele apreende.** A Steve Jackson Games, as batidas em BBSs, as brigas de extradição. A correção sempre precisou ser construída por alguém - e é por isso que a EFF existe.
+
+## Onde o século termina
+
+O século XX fechou com o underground segurando um microfone do Senado e tocando a própria conferência. O XXI abriu com os Estados como atores principais: o [Stuxnet](/glossary/stuxnet) atravessando um air gap para destruir centrífugas, [os Shadow Brokers](/glossary/shadow-brokers) vazando ferramental de governo que virou WannaCry e NotPetya em semanas, e o ransomware transformando invasão numa indústria com suporte ao cliente.
+
+As pessoas deste guia eram, na maioria, adolescentes com modem que queriam saber como as coisas funcionavam. O que elas aprenderam, e o quão mal o mundo reagiu a esse aprendizado, produziu a disciplina inteira que hoje defende tudo. Esse é o argumento para ensinar esta história em vez de mitificá-la: as técnicas estão datadas, e cada uma das lições institucionais segue viva.

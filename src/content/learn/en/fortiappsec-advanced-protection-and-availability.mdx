@@ -12,7 +12,7 @@ status: reviewed
 updated: "2026-07-26"
 ---
 
-A WAF inspects requests arriving at your application. Three categories of risk sit outside that, and a cloud service is positioned to address them in a way an appliance in your rack is not.
+A WAF (web application firewall) inspects requests arriving at your application. Three categories of risk sit outside that, and a cloud service is positioned to address them in a way an appliance in your rack is not.
 
 ## Client-side protection
 
@@ -50,13 +50,13 @@ The practical obstacle is that specifications drift. A specification generated a
 
 ## Global load balancing
 
-**GSLB** decides which region answers, and it does so through DNS: a resolver asks where the hostname lives, and the answer depends on where the client is and which regions are healthy.
+**GSLB (global server load balancing)** decides which region answers, and it does so through DNS: a resolver asks where the hostname lives, and the answer depends on where the client is and which regions are healthy.
 
 Onboarding a domain means delegating that decision to the service. From then on:
 
 **Health checks** determine which endpoints are eligible. The same discipline applies as with any load balancer, and the same trap: a check that only confirms the port is open will keep directing users to a region whose application has failed.
 
-**Synthetic testing** goes further and is the reason to bother with GSLB monitoring at all. Rather than checking from inside your infrastructure, it exercises the application from the outside, from multiple locations, the way a user would. That catches the failures internal monitoring reports as healthy: a regional network problem between users and your working servers, a CDN misconfiguration, a certificate that expired in one region only.
+**Synthetic testing** goes further and is the reason to bother with GSLB monitoring at all. Rather than checking from inside your infrastructure, it exercises the application from the outside, from multiple locations, the way a user would. That catches the failures internal monitoring reports as healthy: a regional network problem between users and your working servers, a CDN (content delivery network) misconfiguration, a certificate that expired in one region only.
 
 The gap between "our monitoring is green" and "users cannot reach us" is exactly what external synthetic checks close.
 

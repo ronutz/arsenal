@@ -16,7 +16,7 @@ Once the appliance is inline and has a baseline, the work is scoping: making sur
 
 ## Protection policies
 
-A **protection policy** binds a set of thresholds and behaviours to a defined slice of traffic — typically a service, a subnet, or a VLAN.
+A **protection policy** binds a set of thresholds and behaviours to a defined slice of traffic — typically a service, a subnet, or a VLAN (virtual local area network).
 
 Scoping matters because averaging destroys the signal. Measure a public website and a backup replication link against one baseline and you get thresholds that are too loose for the website and too tight for the backup. Neither is protected properly, and the appliance looks like it is not working.
 
@@ -32,7 +32,7 @@ That last group is the one most often forgotten, and it produces the most memora
 
 This is the hardest problem in the product, and it is worth stating plainly why.
 
-Source-based defence assumes an address identifies a source. Behind a CDN, a corporate proxy, a carrier NAT or a cloud egress gateway, thousands of users share a handful of addresses. Every source-rate threshold now measures a population, and the appliance's basic assumption is violated.
+Source-based defence assumes an address identifies a source. Behind a CDN (content delivery network), a corporate proxy, a carrier NAT (network address translation) or a cloud egress gateway, thousands of users share a handful of addresses. Every source-rate threshold now measures a population, and the appliance's basic assumption is violated.
 
 Two consequences:
 
@@ -40,7 +40,7 @@ Two consequences:
 
 **Attackers behind shared sources are invisible.** Their traffic disappears into a volume that is already high and already tolerated.
 
-The handling is a combination rather than a single setting: identify the known proxy and CDN ranges so they are treated as populations rather than individuals, raise or disable per-source thresholds for those ranges specifically, and lean on the layer that can see the real client — the forwarded-for header at the application layer, which is where a WAF operates and a network DDoS appliance does not.
+The handling is a combination rather than a single setting: identify the known proxy and CDN ranges so they are treated as populations rather than individuals, raise or disable per-source thresholds for those ranges specifically, and lean on the layer that can see the real client — the forwarded-for header at the application layer, which is where a WAF (web application firewall) operates and a network DDoS (distributed denial) appliance does not.
 
 The honest position is that a device inspecting packets cannot fully solve a problem created by address sharing, and the answer is layering rather than tuning.
 

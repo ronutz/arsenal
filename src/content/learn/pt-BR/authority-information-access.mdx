@@ -17,7 +17,7 @@ Authority Information Access é uma extensão de certificado, definida na RFC 52
 
 ## OCSP: onde perguntar sobre revogação
 
-O primeiro método de acesso é o OCSP, o Online Certificate Status Protocol. Sua URL aponta para o respondedor OCSP da CA, um serviço que responde a uma pergunta simples sobre um certificado: válido, revogado ou desconhecido. Um cliente que quer checar revogação em tempo real pega a URL de OCSP desta extensão, envia o número de série do certificado a esse respondedor e lê a resposta assinada. Esta é a alternativa ao vivo a baixar uma CRL inteira, e é detalhada no [artigo de revogação](/learn/certificate-revocation). A fraqueza de consultar o respondedor diretamente, e a extensão que a reforça, são o tema do [OCSP Must-Staple](/learn/ocsp-must-staple).
+O primeiro método de acesso é o OCSP, o Online Certificate Status Protocol. Sua URL aponta para o respondedor OCSP da CA, um serviço que responde a uma pergunta simples sobre um certificado: válido, revogado ou desconhecido. Um cliente que quer checar revogação em tempo real pega a URL de OCSP desta extensão, envia o número de série do certificado a esse respondedor e lê a resposta assinada. Esta é a alternativa ao vivo a baixar uma CRL (lista de revogação de certificados) inteira, e é detalhada no [artigo de revogação](/learn/certificate-revocation). A fraqueza de consultar o respondedor diretamente, e a extensão que a reforça, são o tema do [OCSP Must-Staple](/learn/ocsp-must-staple).
 
 ## CA Issuers: onde buscar o certificado do emissor
 

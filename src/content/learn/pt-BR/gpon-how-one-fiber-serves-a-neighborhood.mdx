@@ -13,6 +13,22 @@ updated: "2026-07-19"
 
 A maioria das tecnologias de banda larga coloca eletrônica entre você e o provedor: um armário com energia, refrigeração e coisas que falham. O GPON, sigla de Gigabit Passive Optical Network (rede óptica passiva gigabit), faz a aposta oposta. Entre o equipamento do provedor e a sua casa não existe nada além de vidro - fibras e pequenos divisores ópticos que não precisam de eletricidade alguma. Essa única decisão de projeto explica quase todo o resto do funcionamento.
 
+## Origens: quem ficou sem folga foi o cobre, não a fibra
+
+Fibra até a casa era tecnicamente possível décadas antes de ser acessível. O obstáculo nunca foi o vidro; era que dar a cada assinante uma fibra dedicada até a central significava uma porta, um laser e um filamento por cliente, custo que cresce linearmente com a adesão exatamente do jeito que uma operadora não consegue financiar.
+
+A **rede óptica passiva** é a resposta a esse problema econômico, e sua escolha definidora está na palavra do meio. O divisor entre a central e as casas **não tem energia, não tem eletrônica e não tem o que falhar**: ele reparte a luz que chega entre suas saídas e combina o que volta. Uma porta cara na central é compartilhada por muitas casas, e a planta compartilhada não precisa de armário, retificador nem visita de manutenção.
+
+A linhagem é padronizada e vale conhecer, porque as redes instaladas cobrem toda ela:
+
+- **APON/BPON (ITU-T G.983, fim dos anos 1990)** - a primeira geração, baseada em ATM, velocidades modestas, e a prova de que a divisão passiva funcionava em campo.
+- **GPON (ITU-T G.984, de 2003 em diante)** - a mais implantada: 2,488 Gbps de descida, 1,244 Gbps de subida, compartilhados pela árvore.
+- **EPON e 10G-EPON (IEEE 802.3ah e sucessores)** - o ramo nativo Ethernet, dominante em partes da Ásia, mesma física com outro enquadramento.
+- **XG-PON e XGS-PON (ITU-T G.987, G.9807.1)** - 10 Gbps, com o XGS-PON simétrico. E o ponto crucial: usam comprimentos de onda diferentes do GPON, então a operadora pode rodá-los **sobre a mesma fibra e o mesmo divisor** e migrar assinante a assinante.
+- **NG-PON2 e 25/50G-PON** - múltiplos comprimentos de onda por fibra e taxas maiores, mirando tanto o transporte móvel e serviços empresariais quanto as casas.
+
+Essa propriedade de coexistência de comprimentos de onda é o que torna a planta passiva um investimento tão bom: a eletrônica das duas pontas é trocada a cada geração, e o vidro, os divisores e a obra civil - a parte cara e disruptiva - permanecem.
+
 ## A árvore de vidro
 
 Uma rede GPON é uma árvore. Na raiz, na central do provedor ou num armário de rua, fica a OLT - a Optical Line Terminal (terminal de linha óptica). De uma porta da OLT, uma única fibra parte para o bairro. No caminho, ela atravessa um ou mais splitters ópticos: componentes passivos que dividem a luz entre ramos como um prisma divide um feixe. Um splitter 1:2 manda metade da luz para cada lado; encadeie as divisões e chega-se às razões comuns de 1:32, 1:64 ou 1:128 assinantes compartilhando uma porta da OLT.
@@ -42,6 +58,35 @@ Todo enlace óptico vive de um orçamento de potência: o transmissor lança tan
 Os splitters são os grandes gastadores. Cada divisão 1:2 custa cerca de 3 dB - metade da luz, por definição, mais uma pequena perda - então uma árvore 1:64 gasta uns 18 dB só em divisão. A própria fibra consome cerca de 0,35 dB por quilômetro nos comprimentos de onda do GPON, cada conector uns 0,3 dB, cada emenda por fusão alguns centésimos. Some tudo e uma divisão 1:64 a 20 km chega perto da borda do orçamento - que é exatamente o ponto de projeto da norma.
 
 Essa aritmética é a realidade diária do técnico de provedor. Um conector sujo que come 2 dB, um drop dobrado além do raio mínimo, uma emenda mecânica ruim: qualquer um desses empurra uma folha marginal para além da linha, e a falha aparece como perda de pacotes misteriosa em vez de escuridão. O OTDR - o Optical Time-Domain Reflectometer (reflectômetro óptico no domínio do tempo) - existe para transformar esse mistério numa distância: dispara um pulso, lê os reflexos, e o traçado mostra a quantos metros o orçamento está vazando.
+
+## Arquitetura, e os números que moldam um projeto
+
+A **razão de divisão** é a troca central. Um divisor 1:32 compartilha a capacidade de uma porta entre 32 casas; 1:64 corta pela metade a fatia por casa e pela metade o custo por assinante. As divisões também costumam ser **cascateadas** - um 1:4 num armário de rua alimentando unidades 1:16 nos postes -, o que muda onde a perda cai, mas não o total.
+
+**O orçamento de perda é o projeto.** Cada divisão custa luz: cerca de 3,5 dB por duplicação, então algo como 17-18 dB para 1:32 e 20-21 dB para 1:64, antes de somar atenuação da fibra, emendas e conectores. Os padrões definem classes ópticas com um orçamento total, e um projeto é simplesmente a aritmética de caber dentro dele. É por isso que um assinante distante num 1:64 falha enquanto um próximo na mesma árvore vai bem, e por que a resposta em geral é outra razão de divisão, e não outro fabricante.
+
+O **alcance** costuma ir até 20 km, e o limite prático quase sempre é o orçamento de perda, não a distância.
+
+**A terminologia, já que todo documento a pressupõe.** O **OLT** (terminal de linha óptica) é o equipamento do lado da central; a **ONT** ou **ONU** (terminal ou unidade de rede óptica) é o aparelho na casa; a **ODN** (rede óptica de distribuição) é a planta passiva entre os dois.
+
+**Ranging e equalização.** Como as casas ficam a distâncias diferentes, suas rajadas de subida colidiriam mesmo com escalonamento perfeito. O OLT mede o atraso de ida e volta de cada ONT e lhe entrega um deslocamento de equalização, para que cada rajada chegue na sua fatia independentemente da distância. É também por isso que uma ONT defeituosa transmitindo fora da fatia degrada a árvore inteira, e por que achá-la é caça de camada física, e não revisão de configuração.
+
+**A segurança decorre da topologia.** Os quadros de descida chegam a todas as casas da árvore, então a cifragem não é enfeite opcional: o GPON cifra o tráfego de descida por assinante, com a chave estabelecida na ativação. Quem raciocina sobre meio compartilhado vai reconhecer o argumento do [sem fio](/learn/wireless-networking-from-802-11-to-wifi-7) - o meio é compartilhado, então a confidencialidade precisa ser acrescentada, e não presumida.
+
+## Interoperabilidade e dependências
+
+**A interoperabilidade é o ponto sensível.** Os padrões especificam a óptica e o enquadramento, mas a interface de gerência do aparelho da casa historicamente não foi especificada, então um OLT e uma ONT de fabricantes diferentes com frequência não interoperam por inteiro. O **OMCI**, o canal de gerência definido nos padrões, é o que torna possível a implantação multifabricante, e o quão completamente um fabricante o implementa é uma questão de compra com cauda longa - uma operadora presa a um fornecedor de ONT descobre isso no pior momento, numa escassez de suprimento.
+
+Além da óptica, as dependências que de fato causam quedas são as do entorno: energia na casa (uma rede de fibra sobrevive a um corte de energia apenas enquanto durar a bateria da ONT, e foi isso que mudou as premissas de chamada de emergência na voz sobre fibra), a plataforma de gerência de assinantes que autoriza uma ONT na árvore, a atribuição de endereços e a [tradução em escala de operadora](/learn/cgnat-address-sharing-and-attribution) atrás dela, e os registros físicos: uma rede passiva não tem como lhe dizer qual porta de qual divisor serve qual casa, então a documentação *é* a topologia.
+
+## O cenário de fabricantes, por categoria
+
+- **Grandes fabricantes de telecomunicações** - Huawei, Nokia, ZTE, Ericsson. Plataformas OLT em escala de operadora, integração profunda com as próprias pilhas de gerência, e as restrições geopolíticas que hoje moldam quais deles uma operadora pode implantar.
+- **Especialistas em acesso** - Calix, Adtran, DZS e similares, fortes junto a operadoras regionais e comunitárias, tipicamente com plataforma de gerência voltada a equipes de engenharia menores.
+- **Silício de mercado e caixa branca** - silício Broadcom por baixo de boa parte do mercado, com pilhas de gerência abertas e OLTs desagregados atraentes para quem quer escapar de ONTs presas a fabricante.
+- **Fornecedores de ONT**, com frequência distintos do fabricante do OLT, que é exatamente onde a questão de interoperabilidade do OMCI morde.
+
+A pergunta de compra que importa não é taxa de linha, já que os padrões a fixam. É **quais ONTs o OLT vai aceitar e gerenciar**, porque é isso que decide se a operadora tem um fornecedor ou um mercado.
 
 ## O que levar
 

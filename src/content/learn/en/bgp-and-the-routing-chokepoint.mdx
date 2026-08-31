@@ -1,0 +1,64 @@
+---
+slug: bgp-and-the-routing-chokepoint
+title: "BGP: the trust fall the whole internet is standing on"
+summary: "The protocol that decides where your traffic goes has no built-in way to tell whether an announcement is true. For decades the defence was that operators would notice — and mostly they did, hours later, after a country lost YouTube or a payment network was quietly rerouted through another continent. What breaks, how fast, who could do it, and why the fix that exists is only half deployed."
+concepts: ["bgp", "routing", "hijacking", "rpki", "resilience"]
+relatedTools: []
+relatedArticles: ["the-chokepoints-of-the-internet", "what-happens-if-the-dns-root-goes-dark", "bgp-primer", "cloudflare"]
+category: networking
+order: 121
+status: reviewed
+updated: "2026-08-29"
+---
+
+## What the protocol actually is
+
+The internet is about seventy-five thousand independent networks - autonomous systems - that agree to carry each other's traffic. **BGP (Border Gateway Protocol)** is how they tell each other which addresses they can reach. A network announces "I can reach this block of addresses," its neighbours pass that on, and every router builds a picture of the world from what it has been told.
+
+The design assumption is stated plainly in the protocol's history: participants are known to each other and will not lie. There is no native mechanism to verify that an announcement is legitimate. If you claim a block of addresses that is not yours, your neighbours will believe you, and so will theirs - and traffic follows the most specific announcement, so a more precise claim beats the real owner's.
+
+That is the chokepoint. Not a component that can be turned off, but an agreement that can be abused.
+
+## What breaks, and how fast
+
+**Seconds to minutes, not days.** Unlike a [DNS root failure](/learn/what-happens-if-the-dns-root-goes-dark), where caching buys you two days, a bad route propagates at the speed of the control plane. A hijack is globally visible in minutes.
+
+**The blast radius depends on who accepts it.** If a small network makes a false announcement and its upstream provider filters it, nothing happens. If the upstream accepts and re-announces, the damage scales with that provider's importance. This is why the same mistake can be invisible one day and continental the next: the variable is not the mistake, it is the filtering discipline of whoever heard it.
+
+The historical pattern comes in three flavours:
+
+**Accidental leaks.** A network re-announces routes it learned from one provider to another, and suddenly claims to be the best path to large parts of the internet it cannot possibly carry. Traffic pours in and drops. The most famous cases have been ordinary misconfigurations at small operators that briefly became the centre of the internet.
+
+**Censorship that escapes.** An attempt to block a service domestically, implemented by announcing a false route inside the country, then leaked outward by a provider that did not filter - taking the service offline for a large part of the world instead of one country.
+
+**Deliberate interception.** The dangerous version. Traffic is diverted, passed through, and returned, so the destination still works and nobody notices the extra continent. It has been used to harvest traffic to payment providers and cryptocurrency services, and the theft happens in the minutes before anyone reacts.
+
+## Who could do it
+
+Anyone who operates an autonomous system and has a neighbour that does not filter - which is a much larger group than most people assume. That includes small regional providers, hosting companies, and any entity that has obtained an AS number, legitimately or otherwise.
+
+State-level actors have more options: a national carrier can shape what its own country sees, and a carrier that is a major transit provider can affect what other countries see. But the honest framing is not that this requires a state. **Most large incidents in the record were mistakes**, and the same mechanism that lets a fat-fingered configuration take down a service lets a deliberate one steal traffic.
+
+## The fix that exists
+
+**RPKI (Resource Public Key Infrastructure)** attaches cryptography to address ownership. The holder of an address block publishes a signed **ROA (Route Origin Authorisation)** saying which autonomous system is allowed to originate it, and routers that validate check announcements against those signatures and drop the invalid ones.
+
+This works, it is deployed by the large cloud and content networks and by a growing share of transit providers, and it has visibly reduced the impact of hijacks that would previously have gone global. **MANRS** (Mutually Agreed Norms for Routing Security) is the accompanying agreement on baseline behaviour: filter your customers, do not let spoofed source addresses out, keep your routing data accurate.
+
+Its limits should be stated as plainly as its value. RPKI validates **origin** - who is allowed to announce a prefix - and not the **path**. An attacker who claims a plausible path to a prefix whose real origin they cannot forge still has room to work. Path validation exists as a design and is barely deployed. And validation only protects you if the networks between you and the source are validating: a signed record helps nothing if the network carrying your traffic ignores it.
+
+## What you can actually do
+
+The operator checklist is short and boring, which is characteristic of everything that works.
+
+- **Publish ROAs for your address space.** It costs an afternoon at your regional registry and lets everyone else discard forgeries of your prefixes.
+- **Validate on your own routers**, so bad announcements do not reach your traffic.
+- **Filter your customers by prefix**, not by trust. The largest incidents all involved someone accepting an announcement they had no business accepting.
+- **Monitor your own prefixes.** Public looking-glass and routing-monitor services will alert you when someone else announces your space; finding out from a customer is worse.
+- **Encrypt in transit and authenticate endpoints.** Interception is far less useful against traffic that is encrypted and whose certificates are being checked - which is why certificate transparency and modern transport security are part of the routing story.
+
+## Where this sits in the series
+
+The DNS root chokepoint is about **naming** and is protected by a signature you can verify offline. Routing is different in a way worth stating: there is no root to copy, no zone to hold locally, and no cryptographic assertion that a path is real. The internet moves your packets because seventy-five thousand organisations mostly tell the truth to each other and mostly filter their neighbours.
+
+That arrangement has held for three decades, which is either reassuring or alarming depending on the day. The engineering answer is not to replace it but to keep narrowing what an unfiltered lie can accomplish - and the deployment gap between the networks doing that and the networks not is the actual state of internet routing security.

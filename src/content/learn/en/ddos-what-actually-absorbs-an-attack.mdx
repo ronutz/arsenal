@@ -1,0 +1,102 @@
+---
+slug: ddos-what-actually-absorbs-an-attack
+title: "DDoS: why the defence is capacity, and why amplification is everyone else's fault"
+summary: "Denial of service is not one attack but three problems with different answers: a pipe that fills, a state table that exhausts, and an expensive request repeated cheaply. The largest attacks are only possible because other people's networks let forged traffic out — which makes the most effective mitigation something you deploy for strangers, not for yourself."
+concepts: ["ddos", "amplification", "capacity", "anycast", "spoofing"]
+relatedTools: []
+relatedArticles: ["bgp-and-the-routing-chokepoint", "cloud-and-cdn-monoculture", "the-chokepoints-of-the-internet"]
+category: security
+order: 130
+status: reviewed
+updated: "2026-08-30"
+---
+
+## Origins: a design assumption, not a vulnerability
+
+Denial of service is not a bug in any particular product. It is the consequence of a design decision made when the internet was small: **the network accepts traffic on arrival and works out what to do with it afterwards**. There is no admission control, no reservation, and no way for a destination to tell the network in advance that it does not want something. Every mitigation since is an attempt to add that missing capability at some layer.
+
+The first widely-studied incident was the [Morris worm](/learn/the-morris-worm) in 1988, which denied service by accident — it was a measurement tool with a bad reinfection constant. Deliberate attacks followed the same shape.
+
+**Mid-1990s: single-source floods.** SYN floods and the various malformed-packet attacks — the ping of death, Smurf, teardrop — worked because implementations trusted their inputs. These were fixed properly: SYN cookies removed the state-exhaustion advantage, stacks stopped crashing on bad packets, and directed broadcast was disabled by default, which killed Smurf as a technique.
+
+**2000: distribution arrives.** A coordinated attack by a teenager known as [Mafiaboy](/glossary/mafiaboy) took down several of the largest sites of the era from compromised university machines. The lesson was structural — once traffic comes from thousands of legitimate-looking sources, filtering by source stops working, and the defence has to become capacity.
+
+**2000s: botnets and the commercial market.** Compromised home machines turned attack capacity into a rentable commodity. Booter and stresser services made a denial-of-service attack a consumer purchase, which is why the attacker population stopped being skilled operators and became anyone with a grievance.
+
+**2010s: amplification at scale.** Attackers stopped using their own bandwidth and started borrowing other people's servers, which is where the record-breaking figures come from.
+
+**2016 onward: devices.** Large-scale attacks assembled from consumer cameras and recorders demonstrated that the botnet population had moved from computers to appliances with default credentials — the same failure the [414s](/learn/the-414s-and-the-summer-of-1983) exploited in 1983, at internet scale. One such attack against a large managed DNS provider took a substantial part of the web offline without touching any of those sites, which is the clearest demonstration that dependency concentration and denial of service are the same problem viewed from different sides.
+
+## Three attacks wearing one name
+
+Calling everything DDoS (distributed denial of service) hides the fact that the defences are unrelated.
+
+**Volumetric.** Fill the pipe. Success is measured in bits per second, and it does not matter what the packets contain — once the link to your provider is saturated, everything behind it is unreachable and nothing you run on your own servers can help. **You cannot filter your way out of a full pipe**, because the traffic has already consumed the resource by the time you see it.
+
+**Protocol or state exhaustion.** Fill a table rather than a pipe. Half-open connections, connection tracking entries in a firewall, or session slots in a load balancer. Measured in packets per second, and often modest in bandwidth — which is why a link can look almost idle while the service is completely down.
+
+**Application layer.** Ask for something expensive. A search query, a report, an endpoint that hits the database hard. Measured in requests per second, sometimes only a few thousand, and it usually looks exactly like legitimate traffic because structurally it is legitimate traffic. This is the hardest to distinguish and the cheapest to launch.
+
+Diagnose which one you are facing before reaching for a control, because the mitigation for each is useless against the others.
+
+## Amplification: why the record-breaking attacks exist
+
+The very large attacks are not built from the attacker's own bandwidth. They are built from **reflection with amplification**, and the recipe has two ingredients.
+
+First, a protocol where a small request produces a large answer over UDP. Second — and this is the part that matters — **the ability to forge a source address**, so the answer is sent to the victim instead of the requester. The attacker sends a small forged request to a public server; the server dutifully sends a much larger reply to the victim; multiply by thousands of servers.
+
+Note the consequence carefully: the traffic reaching the victim comes from **legitimate, correctly-functioning servers**. There is nothing malicious to block at the destination, only volume, which is why this class of attack scales to whatever the reflectors can collectively emit.
+
+## The fix is deployed by people who are not being attacked
+
+Forged source addresses are what make reflection possible, and they are preventable at the edge where the traffic originates. A network can verify that packets leaving it carry source addresses that belong to it — **source address validation**, the practice known as BCP 38 — and drop the rest.
+
+Here is the uncomfortable economics: **the network that deploys it gets no direct benefit.** Filtering your own customers' forged packets protects strangers, from attacks you will never see. The benefit is entirely external, which is precisely why adoption has been partial for more than two decades despite the guidance being old, simple and uncontroversial.
+
+That is also why the routing-hygiene commitments in [MANRS](/glossary/manrs) put anti-spoofing alongside prefix filtering. Both are things you do for the commons, and both are why the internet keeps having a problem that has had a documented solution since the 1990s.
+
+If you operate a network, this is the single highest-leverage thing on the list, and its value is invisible on your own dashboards.
+
+## What actually absorbs an attack
+
+**Capacity, distributed.** The only real answer to volumetric traffic is having more ingress than the attacker can fill, in more places than they can target. [Anycast](/glossary/anycast) is what makes this work: the same address is announced from many locations, so an attack is split across sites by the routing system rather than converging on one. This is the actual product a scrubbing or delivery network sells — not clever filtering, but a much larger surface area and the willingness to absorb.
+
+**Filtering upstream of the constraint.** Mitigation has to happen before the narrowest link in the path. Filtering at your firewall does nothing if the saturated segment is your provider's link to you, which is why volumetric defence is a provider conversation, not a device purchase.
+
+**State that fails gracefully.** For exhaustion attacks: SYN cookies rather than large half-open tables, aggressive timeouts, connection limits per source, and load balancers that shed load instead of queueing until they die.
+
+**Cost asymmetry, reversed.** For application-layer attacks the goal is to make the expensive path cheap or gated: caching, rate limits per identity rather than per address ([which CGNAT makes essential](/learn/cgnat-address-sharing-and-attribution)), work factors on costly endpoints, and queueing that degrades service rather than dropping it entirely.
+
+## The mechanics, with the numbers that matter
+
+**Amplification factor** is the ratio of response size to request size, and it is what makes reflection worth doing. Protocols that answer a small query with a large payload — several UDP-based services, and any misconfigured resolver willing to answer strangers — have historically offered factors from tens to several thousand. The defence is not to filter the reflectors' replies at the victim, because they are legitimate; it is to stop the forged request from leaving the attacker's network, and to stop running services that answer strangers.
+
+**Cost asymmetry** is the general property under all three attack types: the attack must be cheaper for the attacker to send than it is for you to absorb. Every effective mitigation moves that ratio — SYN cookies make state exhaustion cost nothing to survive, caching makes an expensive request cheap to answer, and capacity makes volume irrelevant.
+
+**Rate versus concurrency.** Volumetric attacks are measured in bits per second, protocol attacks in packets per second, application attacks in requests per second. Kit sized for one of those units fails against the others, which is how an organisation ends up with expensive mitigation that did nothing during an incident.
+
+**Time to mitigate** is the number that decides the outcome. Detection, decision, diversion and filter convergence each take time, and an attack shorter than that window is over before the mitigation engages. Short, repeated bursts exploit exactly this, and they are common precisely because they defeat manual response.
+
+## How mitigation is actually delivered, by category
+
+- **Always-on cloud proxy.** Traffic passes through a delivery or security network permanently — Cloudflare, Akamai, Fastly and similar. Fastest to react because nothing has to change during an attack; it terminates connections, so it sees your traffic and becomes a [concentration dependency](/glossary/concentration-risk).
+- **On-demand scrubbing.** Traffic is diverted to a cleaning centre only during an event, usually by announcing routes or changing DNS. Cheaper at rest, and the diversion itself costs minutes.
+- **Provider-level mitigation.** Your transit provider filters upstream, which is the only place volumetric traffic can genuinely be stopped. This is why the provider conversation matters more than any device.
+- **On-premises appliances.** Radware, NetScout, Fortinet, F5 and others handle protocol and application attacks close to the application, where context is richest — and they are behind the link that saturates first.
+- **Blackholing.** The provider drops all traffic to the attacked address. It protects everyone else, and it completes the attacker's objective for them. Sometimes correct, always worth deciding in advance rather than at three in the morning.
+
+The structural point: **the layer that can stop an attack is rarely the layer that owns the application.** Volumetric needs the transit provider, protocol needs the edge, application needs the people who wrote the code — and a mitigation plan that names only one of those has a gap.
+
+## Planning honestly
+
+- **Know your narrowest link**, and who owns it. Your mitigation plan begins there, not at your firewall.
+- **Have the provider conversation before the incident.** Knowing who to call, and what they can do, is most of the response time.
+- **Decide in advance what you shed.** Read-only mode, cached responses and a static page are all better than being entirely gone, and all of them have to be built beforehand.
+- **Rate-limit by identity where possible**, since address-based limits punish shared pools and miss distributed attackers.
+- **Test the failure mode, not the happy path.** Most services have never been observed under partial overload, so nobody knows what they do.
+
+## The pattern
+
+Denial of service is the chokepoint problem in miniature, and it repeats the lesson from [the whole series](/learn/the-chokepoints-of-the-internet): the most effective mitigations are collective, they are deployed by parties who do not personally benefit, and adoption stalls exactly where the incentive is external.
+
+Anti-spoofing is the clearest example in networking of a fix that works, costs little, has been documented for decades, and is still not universal — for no technical reason at all.

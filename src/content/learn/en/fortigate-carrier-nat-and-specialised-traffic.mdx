@@ -20,7 +20,7 @@ Ordinary NAT translates a private network behind a handful of public addresses. 
 
 The mechanism that makes it workable is **port block allocation**: rather than assigning ports individually, a subscriber is given a block. That reduces the logging burden enormously — one record per block rather than per session — and it is the difference between a log volume that can be retained and one that cannot.
 
-The consequence that reaches everyone else is **shared reputation**. When thousands of subscribers share an address, that address's behaviour is the aggregate. One compromised subscriber can get the address blocklisted, and everyone behind it is affected by something they did not do. This is also why source-address reputation is weaker evidence than it looks, and why the DDoS and NAC material in this collection keeps returning to the same point: an address is not a user.
+The consequence that reaches everyone else is **shared reputation**. When thousands of subscribers share an address, that address's behaviour is the aggregate. One compromised subscriber can get the address blocklisted, and everyone behind it is affected by something they did not do. This is also why source-address reputation is weaker evidence than it looks, and why the DDoS (distributed denial) and NAC material in this collection keeps returning to the same point: an address is not a user.
 
 The obligation that follows is logging. Attributing an action to a subscriber after the fact requires knowing which subscriber held which port block at which time, and if that was not recorded it cannot be reconstructed.
 

@@ -1,0 +1,80 @@
+---
+slug: passkeys-and-phishing-resistant-authentication
+title: "Passkeys: por que este MFA é diferente do MFA que segue falhando"
+summary: "A maior parte da autenticação multifator impede reúso de senha e não faz nada contra phishing, porque tudo o que o usuário consegue ler e digitar pode ser retransmitido por um atacante em tempo real. As passkeys fecham isso amarrando a credencial à origem do site, dentro do navegador. O que o WebAuthn de fato faz, por que a amarração à origem é o truque inteiro, e os problemas de recuperação e ciclo de vida que ninguém resolveu ainda."
+concepts: ["authentication", "passkeys", "webauthn", "phishing", "mfa"]
+relatedTools: []
+relatedArticles: ["email-authentication-spf-dkim-dmarc", "the-certificate-authority-chokepoint", "the-crypto-wars-and-the-cypherpunks"]
+category: security
+order: 127
+status: reviewed
+updated: "2026-08-29"
+---
+
+## A falha que todo mundo repete
+
+O MFA (autenticação multifator) é vendido como uma ideia só, e são pelo menos duas. Um tipo impede o enchimento de credenciais - um atacante com sua senha vazada não consegue entrar. O outro tipo impede também o phishing. A maior parte do MFA implantado é só o primeiro, e a diferença não é de grau.
+
+O mecanismo é este. O usuário cai numa página de login falsa e convincente. Digita a senha, e o servidor do atacante a repassa ao site verdadeiro imediatamente. O site verdadeiro pede um código. A página falsa pede um código. O usuário lê no celular e digita. O atacante retransmite dentro da janela de validade, recebe um **cookie de sessão**, e está logado como o usuário - com a senha trocada ou um dispositivo novo cadastrado antes de alguém notar.
+
+Isso é um ataque de adversário no meio, é um kit de prateleira e não uma capacidade exótica, e **derrota códigos de uso único, aprovações por push e aplicativos autenticadores igualmente**. A razão é estrutural: *se um humano consegue ler um segredo e digitá-lo em algum lugar, ele pode ser convencido a digitá-lo no lugar errado.*
+
+As notificações por push acrescentam a própria falha - a fadiga de aprovação. Mande prompts suficientes às 3 da manhã e alguém acaba tocando em sim.
+
+## O que as passkeys mudam
+
+Uma **passkey** é um par de chaves pública e privada criado para um site específico. A chave privada nunca sai do autenticador - um celular, notebook ou chave de segurança - e nunca viaja até o servidor. No login, o site manda um desafio, o autenticador o assina, e o servidor confere a assinatura contra a chave pública guardada no cadastro.
+
+Duas propriedades decorrem disso, e só a segunda é a inovação real.
+
+**Não há segredo compartilhado.** O servidor guarda uma chave pública, então um vazamento do banco de dados não rende nada que valha roubar, e não há o que reusar entre sites.
+
+**A credencial é amarrada à origem.** O navegador só oferece a passkey à origem exata para a qual ela foi criada, e os dados assinados incluem essa origem. Num domínio parecido, a passkey do site verdadeiro simplesmente não aparece - e, se o usuário for de algum modo convencido a assinar, a assinatura cobre a origem do atacante, que o site verdadeiro rejeita.
+
+**Esse é o truque inteiro, e funciona porque a conferência saiu do humano e foi para o navegador.** O usuário não pode ser convencido a cometer um erro que o software não comete. Nada melhorou no julgamento do usuário; ele foi retirado da decisão.
+
+## Sobre o que isso é construído
+
+O **WebAuthn** é a interface de navegador que os sites chamam. O **CTAP** é o protocolo entre o navegador e um autenticador externo, como uma chave de segurança. O **FIDO2** é o guarda-chuva dos dois. As partes que importam na prática:
+
+**Presa ao dispositivo x sincronizada.** Uma passkey numa chave de segurança de hardware fica ali. Uma passkey numa conta de plataforma - o chaveiro do fabricante do celular ou do navegador - sincroniza pelos dispositivos do usuário. A sincronização é o que tornou as passkeys usáveis por gente comum, e significa que a segurança da credencial passa a herdar a segurança daquela conta de plataforma. Para serviços de consumo, é uma boa troca. Para acesso de alta garantia, pode não ser, e chaves presas ao dispositivo continuam existindo exatamente por isso.
+
+**Credenciais descobríveis** deixam o site oferecer uma lista de contas sem pedir usuário, que é o que faz o login por passkey parecer um toque só.
+
+**A verificação de usuário** - biometria ou PIN do aparelho - é o que faz de uma passkey dois fatores num gesto: algo que você tem, destravado por algo que você é ou sabe. A biometria é conferida localmente pelo aparelho e nunca é enviada a lugar nenhum, que é a parte que os usuários mais costumam supor ao contrário.
+
+## Entrar num dispositivo que não tem a passkey
+
+A **autenticação entre dispositivos** cobre o caso em que a credencial mora no seu celular e você está entrando num notebook. O site mostra um código, o celular o lê, e os dois se ligam por Bluetooth de baixa energia.
+
+O detalhe que vale saber, porque é lido errado com frequência: **o Bluetooth serve para provar proximidade física, não para proteger a troca.** O transporte coloca criptografia padrão por cima das propriedades do próprio Bluetooth, então a segurança do login não se apoia no histórico de segurança do Bluetooth. A exigência de proximidade é, ela mesma, o controle antiphishing - um site de phishing em outro continente não consegue satisfazê-la.
+
+Um artigo honesto precisa gastar espaço de verdade aqui, porque as implantações fracassam nisto, e não na criptografia.
+
+**Recuperação é a parte difícil.** Uma senha se redefine por e-mail. Uma passkey não se redefine, só se cadastra de novo - e o caminho de recuperação que você construir vira o elo mais fraco do esquema inteiro. Se perder o celular joga o usuário num link de redefinição enviado por e-mail, você engenheirou autenticação resistente a phishing com uma porta dos fundos phishável.
+
+Vale enunciar com justiça a resposta da própria entidade de padrões: uma chave de segurança de hardware pode servir de credencial de recuperação, o que mantém a recuperação dentro da categoria resistente a phishing em vez de cair para o e-mail. Isso funciona, e significa que o desenho da recuperação é decisão de compra tanto quanto de engenharia.
+
+**Ciclo de vida da conta.** O cadastro em geral ainda começa a partir de algo mais fraco, e um atacante que chegue primeiro à conta pode cadastrar a própria passkey e trancar o usuário legítimo do lado de fora. A força de uma passkey é limitada pela força do momento em que ela foi criada.
+
+**Aprisionamento de plataforma e portabilidade.** Credenciais que moram no chaveiro de um fabricante levantam uma questão real sobre mudar de ecossistema, e o trabalho de portabilidade está em andamento, não concluído.
+
+**Acesso compartilhado e delegado.** Passkeys são pessoais por desenho, o que é incômodo para contas operacionais compartilhadas - e a resposta honesta é que contas compartilhadas sempre foram o problema, não o método de autenticação.
+
+**O reconhecimento regulatório atrasa em relação à tecnologia.** Alguns regimes ainda não listam as passkeys entre as formas oficialmente reconhecidas de autenticação multifator, e as passkeys sincronizadas em particular são contestadas por não satisfazerem um requisito estrito de posse - a credencial existe em vários dispositivos ao mesmo tempo. A FIDO Alliance descreve isso como área de atuação ativa, e chaves presas ao dispositivo são a resposta onde um regime de conformidade exige cópia única. Confira o que o seu auditor aceita antes de planejar a implantação, não depois.
+
+**Caminhos legados.** Uma implantação de passkeys que deixa senha mais código ligados como alternativa não removeu o risco de phishing; acrescentou uma opção mais forte ao lado da antiga. O benefício de segurança só chega quando o caminho fraco é fechado, que é o passo que as organizações adiam.
+
+## Orientação prática
+
+- **Trate passkeys e chaves de segurança como a mesma categoria** - resistentes a phishing, amarradas à origem - e todo o resto como categoria diferente e mais fraca, seja qual for o nome que o fabricante use.
+- **Projete a recuperação primeiro.** Cadastre um segundo autenticador no registro; faça a recuperação ser pelo menos tão forte quanto o caminho principal, ou você não moveu o risco, só o mudou de lugar.
+- **Feche a alternativa** numa data definida, com relatório de quem ainda a usa.
+- **Use chaves presas ao dispositivo para acesso administrativo**, onde herdar a segurança da conta de plataforma for inaceitável.
+- **Não prometa aos usuários que a biometria é enviada a algum lugar.** Não é, e explicar isso corretamente resolve a maior parte da resistência que você vai encontrar.
+
+## O padrão que vale generalizar
+
+A indústria passou duas décadas tentando deixar os usuários melhores em detectar sites fraudulentos, com treinamento, avisos, indicadores e cadeados verdes. Não funcionou, porque a tarefa é difícil para humanos e trivialmente falsificável por atacantes.
+
+As passkeys funcionam transformando a pergunta em algo que o software responde. É o mesmo movimento estrutural da [Transparência de Certificados](/glossary/certificate-transparency) trocando confiança não verificável por exposição pública, e é a lição mais útil: **quando um controle depende de um humano perceber alguma coisa, o controle vai acabar falhando - então mova a conferência para onde perceber é determinístico.**

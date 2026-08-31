@@ -18,7 +18,7 @@ Volumetric defence has a problem no signature can solve: the packets in a flood 
 
 Choosing a model is a capacity decision, and the numbers that matter are throughput and the size of attack the appliance is rated to absorb.
 
-The blunt fact is that an inline device cannot mitigate an attack larger than the link feeding it. If 10 Gbps of attack traffic arrives on a 10 Gbps link, the link is full before the appliance decides anything. On-premises DDoS mitigation handles attacks that fit through your pipe, and anything larger has to be dealt with upstream by a carrier or a cloud scrubbing service.
+The blunt fact is that an inline device cannot mitigate an attack larger than the link feeding it. If 10 Gbps of attack traffic arrives on a 10 Gbps link, the link is full before the appliance decides anything. On-premises DDoS (distributed denial) mitigation handles attacks that fit through your pipe, and anything larger has to be dealt with upstream by a carrier or a cloud scrubbing service.
 
 That is not a criticism of the product; it is the physics of the deployment, and a design that ignores it produces an appliance that is working perfectly during an outage.
 
@@ -46,7 +46,7 @@ When a source is identified as attacking, the response is not a permanent block.
 
 The reasoning is worth understanding, because it is what separates this from an ACL:
 
-**Addresses are shared and spoofed.** A permanent block on an address that turns out to be a carrier NAT gateway takes out a large number of legitimate users, and the block outlives the attack by months.
+**Addresses are shared and spoofed.** A permanent block on an address that turns out to be a carrier NAT (network address translation) gateway takes out a large number of legitimate users, and the block outlives the attack by months.
 
 **Attacks end.** A source that was part of a botnet an hour ago may be a cleaned-up machine now.
 

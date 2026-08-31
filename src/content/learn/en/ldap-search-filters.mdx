@@ -13,7 +13,7 @@ updated: "2026-07-22"
 
 ## Prefix notation, or why the operator comes first
 
-An LDAP filter puts the operator *before* its operands, each filter wrapped in parentheses: `(&(objectClass=person)(sn=Nützmann))` means AND-of-two-conditions, not "objectClass and-equals person". Once that clicks, every filter reads the same way from the outside in: the first character after `(` tells you what kind of node you are looking at - `&` for AND, `|` for OR, `!` for NOT (which takes exactly one child), or an attribute name, which means you have reached a leaf condition. The grammar is RFC 4515, and it is small enough to hold in your head - which is exactly what this article is for.
+An LDAP (Lightweight Directory Access Protocol) filter puts the operator *before* its operands, each filter wrapped in parentheses: `(&(objectClass=person)(sn=Nützmann))` means AND-of-two-conditions, not "objectClass and-equals person". Once that clicks, every filter reads the same way from the outside in: the first character after `(` tells you what kind of node you are looking at - `&` for AND, `|` for OR, `!` for NOT (which takes exactly one child), or an attribute name, which means you have reached a leaf condition. The grammar is RFC 4515, and it is small enough to hold in your head - which is exactly what this article is for.
 
 ## The six ways a leaf can match
 

@@ -18,7 +18,7 @@ A segurança wireless tem duas metades que costumam ser confundidas: provar iden
 
 **Pessoal (chave pré-compartilhada)** usa uma senha para todos. Simples, e tem a propriedade de que todo equipamento compartilha um segredo, então o conhecimento de um funcionário que sai não sai com ele, e trocar a chave significa tocar em todos os equipamentos. Adequado para implantações pequenas e para equipamentos que não conseguem fazer melhor.
 
-**Corporativo (802.1X)** autentica cada usuário ou equipamento individualmente contra RADIUS. Credenciais são por identidade, revogação é por identidade, e o servidor RADIUS pode retornar atributos descrevendo o que aquela identidade deve receber. É isso que torna possível a segmentação abaixo.
+**Corporativo (802.1X)** autentica cada usuário ou equipamento individualmente contra RADIUS (Remote Authentication Dial-In User Service). Credenciais são por identidade, revogação é por identidade, e o servidor RADIUS pode retornar atributos descrevendo o que aquela identidade deve receber. É isso que torna possível a segmentação abaixo.
 
 O **WPA3** melhora o WPA2 nos dois modos: o pessoal ganha resistência a ataques de dicionário offline sobre a senha, e o corporativo oferece opções criptográficas mais fortes. A consideração operacional é o suporte dos clientes, e é por isso que existem modos de transição e por que eles trazem a ressalva de que uma rede aceitando os dois é tão forte quanto a opção mais fraca para os clientes que a escolherem.
 
@@ -28,7 +28,7 @@ O **portal cativo** não é autenticação no mesmo sentido. Ele intercepta uma 
 
 O instinto é uma SSID por grupo. Isso é caro, porque cada SSID consome tempo de ar anunciando sua existência em cada AP em cada banda, e o custo é pago por todo cliente, use-a ou não. Um punhado de SSIDs é um projeto; uma dúzia é um problema de desempenho.
 
-A abordagem melhor é a **atribuição dinâmica de VLAN**. Uma SSID corporativa, e o servidor RADIUS retorna a VLAN junto com o resultado da autenticação, então funcionários, terceiros e equipamentos de laboratório caem em segmentos diferentes vendo o mesmo nome de rede.
+A abordagem melhor é a **atribuição dinâmica de VLAN (rede local virtual)**. Uma SSID corporativa, e o servidor RADIUS retorna a VLAN junto com o resultado da autenticação, então funcionários, terceiros e equipamentos de laboratório caem em segmentos diferentes vendo o mesmo nome de rede.
 
 Isso move a decisão de política para o sistema de identidade, onde ela pertence, e significa que acrescentar uma população nova é mudança de RADIUS, e não mudança de wireless.
 

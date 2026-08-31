@@ -16,7 +16,7 @@ The hard part of running two hundred branches is not any single branch. It is th
 
 ## What SD-Branch actually consolidates
 
-**SD-Branch** is the FortiGate at a site managing everything else at that site: the switches over FortiLink, the access points over CAPWAP, and the WAN through SD-WAN.
+**SD-Branch** is the FortiGate at a site managing everything else at that site: the switches over FortiLink, the access points over CAPWAP, and the WAN through SD-WAN (software-defined WAN).
 
 The consolidation matters for a reason beyond tidiness. When one device owns the site, a site becomes a **template** rather than a collection of independently-configured equipment. The unit of change is the site type — small retail, large retail, warehouse — and a change applies to every site of that type at once.
 
@@ -54,7 +54,7 @@ Where it is used, keep the stretched segment as small as the requirement demands
 
 ## Monitoring across sites
 
-Two hundred sites produce more status than anyone reads, so the useful posture is exception-based: what is different from its template, what is failing its performance SLA, what has not checked in.
+Two hundred sites produce more status than anyone reads, so the useful posture is exception-based: what is different from its template, what is failing its performance SLA (service level agreement), what has not checked in.
 
 The specific thing worth watching is **configuration drift**, because it accumulates silently and only surfaces when a template change behaves unexpectedly at one site out of many. A device out of sync with its template is a device whose behaviour nobody can predict from the template, which is the whole value proposition gone.
 

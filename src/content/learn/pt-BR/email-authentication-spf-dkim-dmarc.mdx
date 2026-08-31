@@ -1,0 +1,86 @@
+---
+slug: email-authentication-spf-dkim-dmarc
+title: "Autenticação de e-mail: o que SPF, DKIM e DMARC de fato fazem"
+summary: "O e-mail foi desenhado sem nenhuma forma de conferir quem enviou, e os três registros que todo mundo publica resolvem metades diferentes desse problema — mal explicados, frequentemente mal configurados, e rotineiramente creditados com uma proteção que não oferecem. O que cada um confere, por que alinhamento é a ideia que importa, por que encaminhamento quebra tudo, e a ordem de implantação que de fato chega à aplicação."
+concepts: ["email", "spf", "dkim", "dmarc", "authentication"]
+relatedTools: []
+relatedArticles: ["dns-record-types-in-answers", "the-certificate-authority-chokepoint", "what-happens-if-the-dns-root-goes-dark"]
+category: security
+order: 126
+status: reviewed
+updated: "2026-08-29"
+---
+
+## O pecado original
+
+O SMTP (Simple Mail Transfer Protocol) não tem autenticação de remetente. Qualquer servidor pode afirmar que envia em nome de qualquer domínio, e o protocolo carrega aquilo sem reclamar. Tudo o que vem abaixo é remendo posterior.
+
+O remendo é confuso por uma razão estrutural: **uma mensagem tem dois endereços de origem.** O **remetente de envelope** é o que o servidor emissor declara durante a conversa SMTP, e é para onde vão as devoluções. O **cabeçalho From** é o que o destinatário de fato vê no cliente de e-mail. Eles podem ser diferentes de forma legítima, com frequência são, e a distância entre os dois é exatamente onde mora a falsificação.
+
+Guarde essa distinção e os três registros deixam de ser siglas intercambiáveis.
+
+## SPF — quais servidores podem enviar
+
+O **SPF (Sender Policy Framework)** é um registro DNS que lista os endereços autorizados a enviar e-mail por um domínio. O servidor receptor compara o endereço que conectou com a lista e obtém aprovação ou reprovação.
+
+O que ele confere é o **remetente de envelope**, e não o From visível. Esse é o fato mais incompreendido da área: uma mensagem pode passar no SPF com nota máxima exibindo o From que bem entender.
+
+Seus limites práticos merecem ser conhecidos antes de você depender dele. A avaliação é limitada a **dez consultas DNS**, e cada `include:` de um provedor grande consome várias, então registros inchados falham em silêncio em vez de falhar alto. E **encaminhamento quebra**: quando um destinatário encaminha a mensagem, o servidor que encaminha não está na sua lista, então o SPF reprova sem que ninguém tenha errado.
+
+## DKIM — a mensagem foi alterada, e por quem
+
+O **DKIM (DomainKeys Identified Mail)** assina cabeçalhos selecionados e o corpo com uma chave privada; a chave pública fica no DNS. O receptor verifica a assinatura e aprende que um domínio específico assumiu responsabilidade pela mensagem e que as partes assinadas não foram modificadas em trânsito.
+
+Como a assinatura viaja com a mensagem, o DKIM **sobrevive a encaminhamento simples**, que é onde o SPF falha. Ele também não diz nada, por si só, sobre o From visível — uma assinatura válida de um domínio pode acompanhar uma mensagem que exibe outro.
+
+Duas observações operacionais: chaves precisam de rotação como qualquer material criptográfico, e a etiqueta opcional de comprimento de corpo permite que a assinatura cubra só o começo do corpo, o que deixa acrescentar conteúdo abaixo de uma assinatura válida. Não use.
+
+## DMARC — o que amarra tudo
+
+O **DMARC (Domain-based Message Authentication, Reporting and Conformance)** acrescenta a peça que faltava: **alinhamento**. Ele exige que um resultado aprovado de SPF ou DKIM pertença ao *mesmo domínio que o leitor vê no campo From*. Essa é a proteção de verdade, e nem SPF nem DKIM a fornecem sozinhos.
+
+Ele também faz duas coisas subestimadas:
+
+**Publica uma política** — `none`, `quarantine` ou `reject` — dizendo aos receptores o que fazer com mensagens não alinhadas que reivindicam o seu domínio.
+
+**Pede relatórios.** Relatórios agregados chegam dos receptores descrevendo o que passou e o que falhou pelo seu domínio, e de quais endereços. Essa é a parte que torna a implantação possível, e é inteligência gratuita sobre quem envia como você — inclusive seus próprios sistemas esquecidos e quem estiver forjando o seu nome.
+
+## Por que quase todo mundo empaca no p=none
+
+O caminho honesto de implantação não é o que se recomenda numa frase só.
+
+1. **Publique SPF e DKIM direito**, e então o DMARC em `p=none`. Nada é bloqueado ainda.
+2. **Leia os relatórios por semanas.** Você vai encontrar remetentes legítimos que ninguém te contou: o sistema de faturamento, a plataforma de marketing, a ferramenta de chamados, o relay de uma filial.
+3. **Corrija ou autorize cada um.** Este é o trabalho real, é organizacional e não técnico, e é onde os projetos morrem.
+4. **Vá para `quarantine`, depois `reject`,** de preferência com implantação percentual.
+
+Organizações ficam anos em `p=none` porque o passo 3 exige achar todo sistema que envia e-mail em nome da empresa, numa empresa em que ninguém tem essa lista. Publicar `p=reject` antes de terminar significa bloquear as próprias faturas.
+
+## O que quebra no mundo real
+
+**Encaminhamento** quebra o SPF, como descrito. **Listas de discussão** com frequência quebram o DKIM também, porque alteram assuntos ou acrescentam rodapés, invalidando a assinatura.
+
+O **ARC (Authenticated Received Chain)** existe para isso: um intermediário registra os resultados de autenticação que viu e assina esse registro, para que um receptor posterior consiga ver que a mensagem só falhou porque passou por um encaminhador confiável. A adoção é parcial, e exige confiar na afirmação do intermediário.
+
+## Contra o que isso não protege
+
+Esta é a parte que se vende demais, então vale dizer sem rodeio:
+
+- **Domínios parecidos.** DMARC em `suaempresa.com` não faz nada quanto a `sua3mpresa.com`. Os atacantes registram o próprio domínio e o autenticam com perfeição.
+- **Falsificação de nome de exibição.** Uma mensagem de um endereço qualquer exibindo o nome do seu presidente passa em tudo, porque nada aqui autentica um nome legível por humanos.
+- **Contas legítimas comprometidas.** E-mail enviado de uma caixa real e sequestrada é autêntico por toda medida que esses padrões aplicam.
+
+O resumo exato: **esses padrões impedem que outros enviem como o seu domínio. Eles não impedem que seus usuários caiam em phishing.** Esse segundo problema exige outros controles, e confundir os dois é como organizações acabam acreditando que um projeto de autenticação as deixou seguras.
+
+## Vizinhos que costumam ser confundidos com estes
+
+O **MTA-STS** e o **DANE** protegem o *transporte* — garantem que o e-mail para o seu domínio viaje sobre TLS verificado, em vez de ser rebaixado. Isso é confidencialidade e integridade em trânsito, problema diferente de autenticar o remetente. O **BIMI** exibe o logotipo da marca em clientes compatíveis e exige DMARC em aplicação, o que faz dele, na prática, um incentivo comercial para terminar o trabalho acima.
+
+## A lista curta
+
+- Um registro SPF só, abaixo do limite de consultas, sem `+all`.
+- Assinatura DKIM em todo sistema que envia, chaves com rotação, sem etiqueta de comprimento de corpo.
+- DMARC em `p=none` com endereço de relatório agregado, desde o primeiro dia.
+- Um dono nomeado para os relatórios, porque relatório não lido é igual a relatório nenhum.
+- Um inventário escrito de tudo que envia e-mail como você — o artefato de que o projeto inteiro realmente trata.
+- Aplicação quando, e somente quando, esse inventário estiver completo.

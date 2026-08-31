@@ -1,0 +1,118 @@
+---
+slug: cgnat-address-sharing-and-attribution
+title: "CGNAT: what breaks when a thousand subscribers share one address"
+summary: "Carrier-grade NAT was a bridge to IPv6 that became permanent infrastructure. It quietly changes three things operators care about: what customers can run, who gets blamed when an address misbehaves, and whether a year of connection logs can answer a court order at all. The engineering, the attribution problem, and why port-block allocation is the fix worth insisting on."
+concepts: ["cgnat", "ipv4", "attribution", "logging", "ipv6"]
+relatedTools: []
+relatedArticles: ["email-authentication-spf-dkim-dmarc", "bgp-and-the-routing-chokepoint", "the-chokepoints-of-the-internet"]
+category: networking
+order: 128
+status: reviewed
+updated: "2026-08-30"
+---
+
+## Why it exists
+
+IPv4 addresses ran out. Rather than wait for IPv6 everywhere, providers put a second layer of translation in the network: the subscriber's router already does NAT (Network Address Translation) at home, and the provider does it again at its edge, so many customers share one public address. Two layers of translation is why this is often called NAT444.
+
+The addresses handed to subscribers in that middle layer come from a range reserved for exactly this purpose — **shared address space**, `100.64.0.0/10`, standardised so that providers would stop borrowing private ranges that customers were already using and creating collisions.
+
+It was framed as a transition measure. It is now, for a very large share of the world's broadband and virtually all mobile access, the permanent arrangement.
+
+## How the address space actually ran out
+
+The design decision was made in 1981: a 32-bit address field, about 4.3 billion addresses, at a time when the network connected a few hundred hosts and the idea that every household would hold a dozen was not on anyone's list.
+
+The exhaustion was visible long before it happened, and the responses came in order.
+
+**Classful addressing to CIDR (1993).** The original scheme handed out fixed blocks of roughly 16 million, 65 thousand or 254 addresses, which wasted enormous ranges on organisations that needed something in between. **Classless inter-domain routing** replaced the classes with a prefix length, letting allocations be sized to need and letting routes aggregate. It bought years and it is why an address is written with a slash today.
+
+**Private addressing and NAT (1996).** Reserving ranges for internal use, and translating them at the edge, meant an organisation needed public addresses only for what it published. This is the single largest reason IPv4 lasted into the 2020s, and it is also where the internet quietly stopped being end-to-end: a host behind translation can start conversations but cannot receive them.
+
+**IPv6 (1998 onward).** The actual fix, with a 128-bit address field. It has been available for a quarter of a century, and the deployment curve is a lesson in incentives rather than engineering — the cost falls on the operator and the benefit is invisible to the subscriber.
+
+**Registry exhaustion (2011 onward).** The central pool ran out, then the regional registries did, in a sequence spread across several years. What followed was a transfer market: addresses acquired a price, and IPv4 became an asset on balance sheets. That price is what makes carrier-grade NAT an economic decision rather than a technical preference — a provider chooses between buying addresses and buying translation capacity.
+
+## What the standards actually say
+
+**RFC 6598** reserved `100.64.0.0/10` as shared address space, precisely because providers had been borrowing `10.0.0.0/8` for the middle layer and colliding with customers who used it at home.
+
+**RFC 6888** sets out common requirements for carrier-grade NAT, and two of them shape user experience directly. **Endpoint-independent mapping** means a subscriber's internal address and port map to the same external address and port regardless of destination, which is what allows peer-to-peer traversal to work at all. **Paired address assignment** means a subscriber keeps the same external address for all their sessions, which matters for services that compare addresses across requests.
+
+**RFC 6302** is the logging recommendation: services that record remote addresses for abuse handling should record the **source port and an accurate timestamp** as well. It is short, it is old, and most internet-facing services still do not follow it — which is why so many abuse reports against shared addresses are unanswerable.
+
+## What breaks for the customer
+
+**Inbound connections.** There is no stable public address to reach, so port forwarding, self-hosted services, security cameras and remote desktop stop working as they did. This is the complaint that reaches support.
+
+**Peer-to-peer and gaming.** Traversal techniques still work in many cases, but connection quality degrades, some titles report strict or moderate NAT types, and a subset simply fails.
+
+**Anything that assumes an address identifies a household.** Geolocation gets coarser. Services that rate-limit or block by address treat the whole shared pool as one client — so one abusive subscriber can get thousands of neighbours a CAPTCHA, a block, or a bad reputation score they cannot appeal because they cannot see it.
+
+That last effect is worth dwelling on. It moves the consequences of one person's behaviour onto everyone sharing their translation, and neither party has visibility into why.
+
+## The problem operators feel: attribution
+
+Here is the part that turns an engineering trade-off into a legal one.
+
+**An address no longer identifies a subscriber.** Answering "who was using this address at this time" now requires **address plus source port plus timestamp**, because the address alone is shared by hundreds or thousands of people at once. A request that arrives with only an address and a date cannot be answered honestly — and answering it dishonestly means naming the wrong customer.
+
+This is a documented recommendation, not an opinion: services that log remote addresses for abuse handling are advised to log the **source port** alongside, precisely so that shared-address environments remain attributable. Most services still do not.
+
+**The log volume problem.** Logging every translation as it happens produces enormous volumes — every flow, every subscriber, retained for as long as the law requires. In Brazil, where the [Marco Civil](/glossary/marco-civil-da-internet) obliges connection providers to retain connection records for a year, this is not a theoretical cost.
+
+## Why port-block allocation is the answer
+
+Instead of assigning ports one flow at a time, give each subscriber a **deterministic block of ports** for the duration of their session, and log the assignment — one record per subscriber per session, rather than one per connection.
+
+The consequences are all good ones:
+
+- **Log volume collapses** from per-flow to per-assignment, which makes a year of retention practical rather than punishing.
+- **Attribution becomes arithmetic**: given an address, a port and a time, the subscriber follows from the block assignment, with no need to search a flow database.
+- **Answers become defensible**, which matters when the output of this system is a name handed to a court.
+
+The trade is that a subscriber is limited to the ports in their block, so the block must be sized for real usage — modern applications open far more simultaneous connections than people expect, and an undersized block produces failures that look like random network faults.
+
+The standards work on carrier-grade NAT requirements also asks for endpoint-independent mapping and other behaviours that keep traversal working, which is what separates a deployment users tolerate from one that generates constant tickets.
+
+## What actually fixes it
+
+IPv6. Not as a slogan — as the specific observation that every problem above comes from address sharing, and IPv6 removes the sharing. Dual-stack, or 464XLAT on mobile, moves the majority of traffic off the translator, which reduces the port pressure, the log volume and the attribution difficulty at the same time.
+
+The honest framing for planning: **CGNAT is not a solution that competes with IPv6; it is the cost of not having deployed it.** Every year of deferral is a year of paying for translation capacity, log storage, support tickets and legal exposure that IPv6 would have removed.
+
+## Deployment architectures and their dependencies
+
+**NAT444** is the common arrangement: the subscriber's own translation at home, shared address space in the middle, public addresses at the provider edge. Two translations, and every diagnosis must account for both.
+
+**Dual-stack** runs IPv6 alongside, so anything IPv6-capable bypasses the translator entirely. This is the arrangement that actually reduces the problem, because the pressure on ports, logs and capacity falls with every service that goes native.
+
+**464XLAT** is the mobile answer: an IPv6-only access network with translation for the applications that still assume IPv4. It is why many mobile networks are natively IPv6 without their subscribers ever noticing.
+
+**DS-Lite and MAP-E** are the fixed-line variants — tunnelling IPv4 over an IPv6 access network, with translation either centralised or distributed to the customer device.
+
+The dependencies that decide whether any of this works in practice: **logging and storage** sized for the retention obligation, **clock accuracy** across the translator and the logging system since attribution is time-indexed, a **lawful-request process** that knows to ask for address, port and timestamp together, and **support tooling** that can tell an agent whether a complaint is a translation symptom rather than a fault.
+
+## Where the translation runs, by category
+
+- **Router and edge platforms** — Cisco, Juniper, Nokia and similar implement carrier-grade NAT on line cards or service modules in equipment that is already in the path. Highest throughput, and the logging and port-allocation behaviour is a licensed feature worth checking before purchase rather than after.
+- **Dedicated appliances and virtualised functions** — including offerings from A10, F5 and others, run standalone or as network functions. More flexible logging and port-block control; another box in the path.
+- **Broadband network gateways.** The subscriber-management platform frequently does the translation, since it already holds session state and identity — which is the tidiest place to correlate a translation with an actual customer.
+- **Open-source stacks.** Linux-based translation with deterministic port ranges is entirely viable at regional-provider scale and is common in smaller networks, where the operator's real constraint is logging volume rather than packet rate.
+
+The buying question is not throughput, which everything modern satisfies. It is **what the platform does about attribution**: deterministic port-block allocation, the log format it emits, and whether that log can answer a court order without a search through per-flow records.
+
+## Practical guidance
+
+**If you run a network:**
+- Deploy deterministic port-block allocation, not per-flow logging, before the retention requirement forces the question.
+- Size blocks against measured concurrent-connection data, not a guess.
+- Publish how to make a lawful request against your service — address, port and timestamp — so that requests arrive answerable.
+- Deploy IPv6 in parallel and measure the share of traffic that leaves the translator. That number is the return on the project.
+
+**If you run a service:**
+- **Log the source port** with the address. Without it, your own abuse reports are unactionable for any provider using CGNAT.
+- Do not block, rate-limit or ban by address alone. You are punishing a neighbourhood for one household.
+- Treat address-based geolocation as approximate, and never as identity.
+
+The general lesson generalises past IPv4: **when a scarce resource is shared, identity becomes a tuple rather than a value** — and every system that stored the old single value now quietly gives wrong answers.

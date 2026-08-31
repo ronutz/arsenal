@@ -1,0 +1,52 @@
+---
+slug: git
+title: "Git: the content-addressed database wearing a version-control suit"
+summary: "What Git actually stores (snapshots, not diffs), why a branch is just a 41-byte pointer, how the three areas explain almost every confusing command, and what made a two-week side project the industry's default in fifteen years."
+concepts: ["git", "version control", "commit", "branch", "merge", "rebase", "sha-1", "content addressing"]
+relatedTools: []
+relatedArticles: ["github", "hash-functions-overview", "terminal-shell-tty-console"]
+category: operations
+order: 6
+status: reviewed
+updated: "2026-08-27"
+---
+
+## A database first, a tool second
+
+Git presents itself as a version-control tool, and most people meet it as a set of incantations: `add`, `commit`, `push`, and a prayer. Underneath, it is something simpler and stranger: a content-addressed database. Every piece of content Git stores — a file's bytes, a directory listing, a commit — is hashed, and the hash *is* the object's name. Ask for `ce013625...` and you get the exact bytes that hash to `ce013625...`, from any copy of the repository, forever. Identical content gets one identical name everywhere; corrupted content stops matching its own name and is caught the moment it is read.
+
+Three object types carry nearly everything. A **blob** is file content, nothing more — no filename, no permissions, just bytes. A **tree** is a directory listing: names, modes, and the hashes of the blobs and trees below it. A **commit** points at one tree (the complete snapshot of the project at that moment), at its parent commit or commits, and carries the author, timestamp and message. That is the whole data model. Everything else in Git is a convenience for producing, naming, or comparing these objects.
+
+## Snapshots, not diffs
+
+The most persistent misconception about Git is that a commit stores what changed. It does not. Every commit points to a full tree — the entire project, as of that commit. When you view a diff, Git *computes* it on demand by comparing two snapshots; the difference is a presentation, not the stored thing. (Storage stays small because unchanged files hash to the same blob and are simply referenced again, and pack files later delta-compress objects internally — an implementation detail invisible to the model.)
+
+This one fact explains behaviors that otherwise seem arbitrary. Switching branches is fast because it is just materializing a different tree. Cherry-picking can conflict in surprising ways because it must *reconstruct* a change from two snapshots and replay it onto a third. And history can be rewritten freely before sharing because commits are immutable values — you never edit a commit, you create a new one and move a pointer.
+
+## A branch is 41 bytes
+
+A branch in Git is a file containing one commit hash and a newline. That is the entire implementation. Creating a branch writes 41 bytes; deleting one removes a file; "being on" a branch means the special pointer `HEAD` references it, so that the next commit both gets the current commit as parent and advances the pointer. There is no container, no copy of the files, no registration anywhere. This is why branching in Git is instantaneous where in the systems it replaced it was an event — sometimes literally a ceremony involving a server administrator — and why workflows built on cheap, disposable branches became the norm only after Git made them free.
+
+Merging is where the pointers meet arithmetic. Git finds the common ancestor of two commits and performs a three-way comparison: what each side changed relative to that shared base. Changes that touch different regions combine silently; changes that touch the same lines become a conflict, which Git refuses to resolve by guessing — it writes both versions into the file and stops, on the theory that a human who understands the code should decide. **Rebase** reaches the same end state through different history: instead of a merge commit joining two lines, it replays your commits one at a time onto the new base, producing a straight line at the cost of rewriting them (new parents mean new hashes, which is why the rule of thumb is to rebase only what you have not yet shared).
+
+## The three areas, or why the commands finally make sense
+
+Almost every confusing Git command is manipulating one of three things: the **working tree** (the files you edit), the **index**, also called the staging area (the snapshot being assembled for the next commit), and **HEAD** (the last commit). `git add` copies from working tree to index. `git commit` turns the index into a tree plus a commit object and advances the branch. `git status` is nothing but a two-way comparison across the three. The various alarming forms of `git reset` differ only in which of the three they move. Learners who are shown this model first tend to stop memorizing commands, because the commands become sentences about three well-defined places.
+
+## Distributed means every clone is the real thing
+
+Git was written in 2005, in roughly two weeks, by Linus Torvalds — because the Linux kernel had lost its license to use BitKeeper, the proprietary system that had (against the era's habits) already taught kernel developers what distributed version control felt like. The predecessors that most of the industry actually used, CVS and Subversion, kept the one true history on a server; a developer's copy was a working area and little more, and most operations were network calls.
+
+Git inverted that: `git clone` copies the entire object database, every commit back to the first. History, diffs, branches, `log`, `blame` — all of it is local, which is why it is fast, and why there is no privileged copy in the protocol itself. "The server" in a Git team is a social convention: one clone that everyone agrees to treat as the meeting point. The protocol would be perfectly content with developers exchanging commits among themselves — the objects are content-addressed, so the same commit is the same commit everywhere it lands.
+
+The names most people learn as advanced Git are this model's bookkeeping. A **remote** is a bookmark for another clone's address. `fetch` copies its new objects to you and updates your record of where its branches point; `pull` is fetch followed by a merge (or rebase) into your branch; `push` sends your objects there and asks it to move a pointer. Nothing in that list edits history that others hold — which is the quiet safety property the whole design leans on.
+
+## What Git does not do
+
+Two silences in the design are worth knowing on purpose. Git tracks content, not files: an empty directory is invisible to it (there is no tree entry to make), and a rename is not recorded anywhere — it is *detected* later, when a delete and an add look similar enough. And Git's hashes authenticate content, not authorship: the `author` line on a commit is a free-text claim anyone can write. Verifying who made a commit is a separate mechanism (signed commits and tags), layered on top for the projects that need it.
+
+The hash function itself has one asterisk. Git shipped on SHA-1, which is no longer collision-resistant against a funded attacker; Git hardened its implementation against the known collision constructions and defined a SHA-256 repository format, and the ecosystem's migration is a long, deliberately boring project (see the [hash functions overview](/learn/hash-functions-overview) for what collision resistance means and why it erodes). For integrity against accident — the job the hash does a billion times a day — SHA-1 remains entirely effective.
+
+## Why this design won
+
+In 2005 the field was crowded: CVS was the incumbent everyone had scars from, Subversion the respectable successor, and a first generation of distributed tools (BitKeeper commercially; Mercurial, born the same month as Git) proving the concept. Git won on a compound of speed (local operations, at kernel scale, on 2005 hardware), a data model simple enough to trust, and, decisively, the network effects that arrived when hosting made sharing frictionless — a story that belongs to the platforms built on top of it, and to the strange fact that the plumbing underneath never had to change to support any of it. The tool's terse, sharp-edged interface never softened much; the model underneath turned out to be the thing worth learning.

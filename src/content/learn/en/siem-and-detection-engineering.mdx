@@ -1,0 +1,122 @@
+---
+slug: siem-and-detection-engineering
+title: "SIEM: why it costs so much and detects so little"
+summary: "A SIEM is a database with a search box and a scheduler. It detects nothing by itself, and most deployments fail the same way — bought as a product, funded as a project, fed everything, tuned by nobody. What makes the difference is treating detections as engineered artefacts with owners, tests and a documented response."
+concepts: ["siem", "detection engineering", "logging", "soc", "alerting"]
+relatedTools: []
+relatedArticles: ["backups-and-ransomware-recovery", "cgnat-address-sharing-and-attribution", "zero-trust-ztna-and-sase-without-the-marketing"]
+category: security
+order: 133
+status: reviewed
+updated: "2026-08-30"
+---
+
+## What the product actually is
+
+Strip the category name away and a **SIEM (security information and event management)** platform does five mechanical things: collect logs from many sources, normalise them into common fields, correlate across them, retain them for as long as someone requires, and let a human search the result.
+
+None of that is detection. **Detection is the content you write on top**, and it is the part nobody budgets for. That single mismatch — a product purchase funding a capability that is actually a staffing commitment — explains most of what goes wrong afterwards.
+
+## Origins: two products that were merged by an analyst firm
+
+The category is a merger, and knowing which halves were merged explains most of its behaviour.
+
+**Security event management** came from the late 1990s intrusion-detection problem. Network sensors generated far more alerts than anyone could read, so consoles appeared to collect, correlate and rank them. The purpose was real-time triage, and the design assumption was that the interesting thing is an *alert*.
+
+**Security information management** came from log management and compliance. Regulations arriving around the same period — card-industry rules, sector-specific reporting obligations, and later broad data-protection law — required that logs be retained, searchable and demonstrably intact. The purpose was retention and reporting, and the design assumption was that the interesting thing is a *record*.
+
+The two were bundled into **SIEM** in the mid-2000s. That single decision is why so many deployments feel like two products in a trench coat: real-time correlation wants a small, fast, curated stream, and compliance retention wants everything, forever, cheaply. Those requirements pull the architecture in opposite directions, and most unhappy deployments are one team trying to satisfy both with one budget.
+
+## Evolution, and what each generation fixed
+
+**First generation — appliance and rules.** On-premises, licensed by events per second, correlation expressed as vendor-specific rules. Powerful for its day, and it created the two habits the category never lost: pricing that punishes collection, and rule languages that do not travel.
+
+**Second generation — big data.** Search-first platforms treated logs as a document index rather than a relational schema, which made ad-hoc investigation practical for the first time. The trade was cost at scale and a tendency to store everything because storing was easy.
+
+**Third generation — cloud-native and tiered.** Ingest, hot search, warm storage and cold archive became separately priced, so the design question changed from *what do we collect* to *what do we keep hot*. Detection content moved toward code in version control.
+
+**Alongside, not inside: EDR (endpoint detection and response) and XDR (extended detection and response).** Endpoint detection took the deepest telemetry out of the SIEM's hands, because process-level data is enormous and best analysed close to where it is produced. The practical result is that most organisations now run several detection systems, and the SIEM's remaining unique job is **correlating across sources no single tool sees together** — identity plus endpoint plus network plus cloud.
+
+**Data-lake and bring-your-own-storage.** The current direction separates storage from analytics so the same data can be queried by more than one tool, which is a direct response to the pricing problem that has shaped the category since the first generation.
+
+## The three failures, in the order they happen
+
+**Ingest everything.** Volume-based licensing meets an instruction to collect all logs, and the bill grows until someone starts dropping sources by cost rather than by value. The sources cut first are frequently the useful ones, because chatty is not the same as noisy — proxy and DNS logs are enormous and are also where lateral movement and exfiltration are visible.
+
+**Ship the vendor's default rules.** They fire constantly, because they are written for every customer and tuned for none. Analysts learn within weeks that the console is mostly wrong, and then the real detection failure begins: **alerts stop being read.** After that the platform can be working perfectly and detect nothing that reaches a human.
+
+**Nobody owns tuning.** A detection that produces false positives has no author to fix it, so it is either suppressed permanently or ignored permanently. Both outcomes look identical on a dashboard, and both mean the coverage you report does not exist.
+
+## Choose telemetry by question, not by volume
+
+The useful inversion is to stop asking "what can we collect?" and ask **"what questions must we be able to answer?"** Then collect what answers them.
+
+The sources that repay their cost in almost every environment:
+
+- **Identity** — authentications, failures, MFA (multi-factor authentication) events, privilege changes, new device enrolments. Nearly every modern intrusion is visible here first.
+- **Endpoint process telemetry** — what ran, from where, with what parent. This is where technique-level detection lives.
+- **DNS and egress** — where things went. Expensive, and the difference between knowing you were breached and knowing what left.
+- **Administrative and audit trails** — who changed a rule, a policy, a role. Cheap, small, and the fastest way to catch an intruder consolidating access.
+- **Cloud control plane** — the modern equivalent of the domain controller, and frequently the least monitored.
+
+And a detail this site keeps returning to: **log the source port with the address**, because behind [carrier-grade NAT (network address translation)](/learn/cgnat-address-sharing-and-attribution) an address alone identifies nobody, and an investigation that cannot attribute a connection is an investigation that ends early.
+
+## A detection is an engineered artefact
+
+The discipline that separates a working programme from an expensive one is treating each detection as code, with the same lifecycle:
+
+- **A hypothesis.** What behaviour are we trying to catch, and why would an attacker do it?
+- **The data it requires**, named explicitly — so a missing log source breaks the detection loudly rather than silently.
+- **Logic under version control**, reviewed like any other change.
+- **A test** — an event that should fire it, and an event that should not.
+- **A false-positive budget.** If it exceeds that, it gets fixed or retired. Not suppressed.
+- **A named owner** and **a documented response**. An alert with no runbook is a notification, and notifications are what people mute.
+
+The last one is the load-bearing item. **An alert nobody knows what to do with is worse than no alert**, because it consumes the attention that a real one needs and teaches the team that the console lies.
+
+## Measuring it honestly
+
+Alert counts measure nothing. The numbers that mean something:
+
+- **Time to detect**, measured against [dwell time](/glossary/dwell-time), which is the only number that describes the outcome.
+- **True-positive rate per detection**, per rule, so bad rules are visible individually rather than averaged into a healthy-looking total.
+- **Alerts per analyst-hour**, which is the capacity constraint everything else runs into.
+- **Coverage of techniques you have actually tested** — and here the caution from [ATT&CK](/glossary/mitre-attack) applies directly: counting techniques you have a rule for is coverage theatre unless the rule has been fired deliberately and seen to work.
+
+The test that cuts through everything: **when did a detection you wrote last catch something real, and how long did it take you to know?** Programmes that cannot answer that are collecting logs, not detecting.
+
+## Architecture, in the order data moves
+
+The pipeline is the same in every product, and each stage has a characteristic failure:
+
+**Collection.** Agents, syslog, or provider APIs. The failure is silent: a source stops sending and nobody notices, because the absence of events looks exactly like a quiet day. Monitoring for *expected* volume per source is the cheapest detection improvement most teams never make.
+
+**Normalisation.** Vendor formats are mapped to common fields — a timestamp, an actor, a source, an action, an outcome. Schemas like the ones now converging in the industry exist to make detections portable across products. Field mapping errors are invisible until a detection quietly matches nothing.
+
+**Enrichment.** Adding asset criticality, identity context, geolocation and threat intelligence. This is what turns "an address connected" into "a domain administrator's laptop connected to a host nobody owns".
+
+**Correlation and storage.** Streaming rules run as events arrive; scheduled searches run over stored data. The two behave very differently under load, and knowing which of your detections is which matters when the queue backs up.
+
+**Response.** Case management and orchestration — SOAR (security orchestration, automation and response), in the vocabulary — where actions are automated. The honest note is that automation multiplies whatever quality your detections already have, in both directions.
+
+**Timekeeping deserves its own line.** Correlation across sources is only as good as clock agreement between them. Skewed or wrongly-zoned timestamps make sequences unorderable, and this is a routine cause of investigations that reach the wrong conclusion.
+
+## The vendor landscape, by category
+
+- **Search-first platforms** — Splunk being the archetype, with Elastic in the same family. Strongest for investigation and flexible querying; historically the most expensive at volume, which is what drove the tiering and data-lake trend.
+- **Cloud-native suites** — Microsoft Sentinel, Google Chronicle and their peers. Cheapest path when your estate is already in that provider, with pricing and detection content that assume you stay.
+- **Network-security vendors** — Fortinet, Check Point, Palo Alto and others ship a SIEM beside their firewalls. Excellent ingestion of their own products, and the honest question is how well they treat everything else.
+- **Managed detection and response.** Buying the analysts as well as the platform. Sensible where you cannot staff a rota; the risk is that detection quality becomes invisible to you, so ask what your provider's detections actually are and who owns tuning.
+- **Open-source stacks** — Wazuh, the Elastic security tooling, Sigma rules for portable detection logic. No licence cost and a real engineering cost, and **Sigma matters beyond tooling** because it is the closest the field has to detection logic that survives changing vendors.
+
+Two structural points worth carrying into any negotiation: pricing by ingested volume creates a direct conflict with detection coverage, and detection content written in a proprietary language is a switching cost you are choosing to accept.
+
+## What it will not do
+
+**It cannot see what it is not sent.** Every gap in telemetry is a blind spot no correlation can fill.
+
+**It does not replace an analyst.** Machine learning and behavioural scoring narrow the field; the judgement about whether a sequence is an attack still needs context the platform does not have.
+
+**It is not a compliance artefact that happens to detect things.** Retaining logs to satisfy an auditor and detecting intrusions are different projects with different data, and conflating them produces a system that is expensive at both.
+
+The honest summary: a SIEM is worth exactly what the detection engineering around it is worth. The platform is a cost; the content is the capability — and the field would waste far less money if the purchase order said so.

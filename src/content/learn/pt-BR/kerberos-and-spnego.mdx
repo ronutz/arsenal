@@ -27,7 +27,7 @@ Quando o usuário precisa de um serviço específico, o cliente apresenta o TGT 
 
 Dois artefatos fazem o lado do serviço funcionar, e são exatamente os campos que um adapter pede.
 
-O **SPN** - Service Principal Name - é a identidade do serviço no sistema de tickets, convencionalmente no formato `HTTP/sso.example.com@REALM`. Quando o navegador quer um ticket "para aquele site", o SPN é como o KDC sabe com qual chave de serviço cifrá-lo. Um SPN não registrado ou duplicado é a razão mais comum de o SSO silencioso silenciosamente não acontecer.
+O **SPN** - Service Principal Name - é a identidade do serviço no sistema de tickets, convencionalmente no formato `HTTP/sso.example.com@REALM`. Quando o navegador quer um ticket "para aquele site", o SPN é como o KDC sabe com qual chave de serviço cifrá-lo. Um SPN não registrado ou duplicado é a razão mais comum de o SSO (single sign-on) silencioso silenciosamente não acontecer.
 
 O **keytab** é um arquivo com a chave de longo prazo do serviço - o material que permite a um serviço fora do Windows (um servidor de identidade em Linux, digamos) decifrar os tickets que os clientes trazem, sem o serviço ingressar interativamente no domínio. É gerado contra a conta de serviço dona do SPN, é uma credencial em forma de arquivo, e é protegido e rotacionado como tal. Realm, endereço do KDC, conta de serviço, keytab: toda página de configuração de adapter Kerberos é este parágrafo em forma de formulário.
 

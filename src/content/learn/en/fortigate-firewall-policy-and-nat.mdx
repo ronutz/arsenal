@@ -30,7 +30,7 @@ Policy matching does not happen first. A packet arriving at a FortiGate passes t
 
 | Stage | What it does | How it fails |
 |---|---|---|
-| Ingress interface checks | Interface admission, VLAN tagging | Wrong VLAN or interface down |
+| Ingress interface checks | Interface admission, VLAN (virtual local area network) tagging | Wrong VLAN or interface down |
 | DoS policy | Anomaly thresholds, per-source rate limits | Traffic dropped before any policy is evaluated |
 | Destination NAT (VIP) | Rewrites the destination address | Applied **before** the routing lookup |
 | Routing lookup | Chooses the egress interface | No route means no policy can match |

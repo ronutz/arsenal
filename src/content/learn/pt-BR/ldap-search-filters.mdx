@@ -13,7 +13,7 @@ updated: "2026-07-22"
 
 ## Notação prefixada, ou por que o operador vem primeiro
 
-Um filtro LDAP põe o operador *antes* dos operandos, cada filtro embrulhado em parênteses: `(&(objectClass=person)(sn=Nützmann))` significa E-de-duas-condições, não "objectClass e-igual person". Quando isso encaixa, todo filtro se lê do mesmo jeito, de fora para dentro: o primeiro caractere depois de `(` diz que tipo de nó você está olhando - `&` para E, `|` para OU, `!` para NÃO (que aceita exatamente um filho), ou um nome de atributo, o que significa que você chegou a uma condição folha. A gramática é a RFC 4515, e é pequena o bastante para caber na cabeça - que é exatamente o propósito deste artigo.
+Um filtro LDAP (Lightweight Directory Access Protocol) põe o operador *antes* dos operandos, cada filtro embrulhado em parênteses: `(&(objectClass=person)(sn=Nützmann))` significa E-de-duas-condições, não "objectClass e-igual person". Quando isso encaixa, todo filtro se lê do mesmo jeito, de fora para dentro: o primeiro caractere depois de `(` diz que tipo de nó você está olhando - `&` para E, `|` para OU, `!` para NÃO (que aceita exatamente um filho), ou um nome de atributo, o que significa que você chegou a uma condição folha. A gramática é a RFC 4515, e é pequena o bastante para caber na cabeça - que é exatamente o propósito deste artigo.
 
 ## As seis formas de uma folha corresponder
 

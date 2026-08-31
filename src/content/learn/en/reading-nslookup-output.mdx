@@ -41,6 +41,6 @@ If it succeeded, the two questions worth asking are which resolver answered (the
 
 Before the answer, `nslookup` prints which server it asked. **That line is the most useful in the output and the most skipped**, because it is the same on every successful lookup — until the day it is not.
 
-A resolver changed by DHCP, a VPN that installed its own, a container inheriting a different `resolv.conf`: each produces answers that are correct for a resolver nobody meant to consult. **The answer is not wrong; the question went somewhere unexpected**, and the output looks entirely normal.
+A resolver changed by DHCP, a VPN (virtual private network) that installed its own, a container inheriting a different `resolv.conf`: each produces answers that are correct for a resolver nobody meant to consult. **The answer is not wrong; the question went somewhere unexpected**, and the output looks entirely normal.
 
 **Read the server line before the answer.** When two machines disagree about a name, it is more often the resolver than the record.

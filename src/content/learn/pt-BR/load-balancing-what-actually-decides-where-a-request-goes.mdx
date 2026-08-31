@@ -1,0 +1,128 @@
+---
+slug: load-balancing-what-actually-decides-where-a-request-goes
+title: "Balanceamento de carga: o que de fato decide para onde vai uma requisição"
+summary: "Todo balanceador responde às mesmas quatro perguntas — quais servidores estão vivos, qual deles recebe esta requisição, se este cliente precisa voltar sempre ao mesmo lugar, e o que acontece quando o conjunto muda. Os algoritmos são a parte menos interessante. É do teste de saúde, da decisão de persistência e do comportamento de drenagem que saem as quedas."
+concepts: ["load balancing", "health checks", "persistence", "availability", "capacity"]
+relatedTools: []
+relatedArticles: ["ddos-what-actually-absorbs-an-attack", "cloud-and-cdn-monoculture", "akamai"]
+category: networking
+order: 132
+status: reviewed
+updated: "2026-08-30"
+---
+
+## Origens: começou como um truque de DNS
+
+O primeiro balanceamento de carga não era um equipamento. Era o **DNS round robin**: publicar vários registros de endereço para um nome e deixar os resolvedores entregarem endereços diferentes. Custava nada, e falhava de jeitos que ainda importam - o tempo de vida do registro governa por quanto tempo um cliente segue usando um servidor morto, resolvedores e aplicações fazem cache além disso, e o DNS não sabe nada sobre se há algo vivo atrás do nome.
+
+Essa limitação definiu a categoria. Tudo desde então foi tentativa de pôr a decisão mais perto do tráfego e de lhe dar conhecimento sobre a saúde dos servidores.
+
+**Início dos anos 1990: proxies reversos e despachantes.** Software na frente de uma fazenda de servidores, terminando conexões e encaminhando. Flexível e lento no hardware da época.
+
+**Meados dos anos 1990: comutação na camada 4.** Hardware dedicado reescrevendo endereços na velocidade do fio. É aqui que o termo *servidor virtual* entra no vocabulário: um endereço na frente, um pool atrás, tradução no meio. F5, Cisco LocalDirector, Alteon e Foundry definiram essa geração.
+
+**Do fim dos anos 1990 em diante: camada 7 e o ADC.** Uma vez que o equipamento terminava TCP, ele podia ler HTTP, e uma vez lendo HTTP podia rotear por nome de host e caminho, inserir cookies, comprimir, fazer cache e assumir o TLS. A categoria se rebatizou de **controlador de entrega de aplicação**, e o balanceador silenciosamente virou o lugar onde mora boa parte da lógica da aplicação.
+
+**Anos 2010: software e nuvem.** HAProxy, NGINX e depois Envoy devolveram o plano de dados ao software, sobre hardware rápido o bastante para que isso não importasse mais. Provedores de nuvem transformaram tudo em serviço gerenciado. Depois o service mesh pôs o proxy ao lado de cada carga de trabalho - um sidecar por pod, com as mesmas quatro perguntas respondidas por serviço em vez de por parque.
+
+O arco é um pêndulo: hardware para resolver um problema de desempenho de software, e software de volta quando o problema de desempenho se dissolveu. O que não mudou foi a decisão que está sendo tomada.
+
+## A mecânica por baixo
+
+As partes que vale conhecer porque explicam os modos de falha:
+
+**Camada 4 contra camada 7.** Na camada 4 o equipamento reescreve endereços e portas e encaminha; nunca vê a requisição. Na camada 7 ele termina a conexão do cliente, lê a requisição, e abre a própria conexão até o servidor. Essa diferença decide todo o resto - roteamento por conteúdo, persistência por cookie e inspeção de TLS exigem terminação, e terminar faz do balanceador uma parte da conversa, e não um encaminhador.
+
+**Tradução de origem e o endereço do cliente.** Quando o balanceador abre a conexão de retaguarda, o servidor vê o endereço *do balanceador*, a menos que algo carregue o original. Daí o `X-Forwarded-For`, e o cabeçalho `Forwarded` padronizado na RFC 7239 - e daí o incidente recorrente em que toda linha de log e todo limite de taxa enxergam um cliente só, porque o cabeçalho nunca foi configurado ou nunca foi confiado.
+
+**Retorno direto do servidor.** O servidor responde direto ao cliente, contornando o balanceador na volta. Excelente para tráfego assimétrico como vídeo, e exclui tudo que exija camada 7, porque o caminho de volta nunca é visto.
+
+**Reúso de conexão e multiplexação.** Com HTTP/2 e HTTP/3, muitas requisições dividem uma conexão, o que quebra em silêncio o balanceamento por contagem de conexões: uma conexão pode carregar mil requisições, então *menos conexões* deixa de descrever carga. Balancear no nível da requisição, e não da conexão, é o que os proxies modernos fazem, e é mudança real de comportamento em relação à era da camada 4.
+
+**Terminação de TLS ou passagem.** Terminar dá visibilidade e alívio de processamento e faz do balanceador o detentor do certificado; passar adiante preserva a cifragem ponta a ponta e cega todo recurso de camada 7 que você pagou. A maioria dos parques acaba fazendo os dois em lugares diferentes, e a confusão sobre qual é qual é fonte comum de surpresa.
+
+## Quatro perguntas, na ordem do tamanho do problema que causam
+
+Os fabricantes se diferenciam por algoritmo porque algoritmo é fácil de pôr numa tabela. Na operação a ordem de importância é quase exatamente inversa:
+
+1. **Quais servidores são considerados vivos?** - o teste de saúde
+2. **Este cliente precisa voltar ao mesmo servidor?** - a persistência
+3. **O que acontece quando o conjunto muda?** - drenagem e partida lenta
+4. **Qual servidor vivo recebe esta requisição?** - o algoritmo
+
+Erre as três primeiras e a quarta não salva. Acerte as três primeiras e a diferença entre algoritmos costuma ser ruído.
+
+## O teste de saúde é o sistema inteiro
+
+O modelo de realidade de um balanceador é o que o teste de saúde lhe conta. Todo o resto é aritmética sobre esse modelo, então um teste que verifica a coisa errada produz tráfego confiante e bem distribuído para servidores quebrados.
+
+**Um teste de conexão TCP prova que um processo está escutando.** Não prova que a aplicação funciona, e um servidor que aceita conexões e devolve erro para tudo vai permanecer alegremente no pool.
+
+**Um teste HTTP na raiz prova que o servidor web responde.** Em geral não toca o banco de dados, nem o cache, nem aquilo de que a aplicação realmente precisa - então a falha que importa fica invisível.
+
+**Um teste profundo que toca todas as dependências é pior.** Quando o banco compartilhado fica lento, todos os servidores reprovam o teste ao mesmo tempo, o pool esvazia, e o balanceador derruba o serviço inteiro por causa de uma degradação que ele poderia ter atravessado. Essa queda é genuinamente comum: **o teste de saúde transformou uma falha parcial em total.**
+
+O meio-termo que funciona é um endpoint feito para isso, que verifique o que *esta instância* precisa para servir uma requisição, exclua deliberadamente dependências compartilhadas por todas as instâncias, e seja rápido o bastante para rodar com frequência. E então ajuste os limiares com honestidade: quantas falhas seguidas antes de remover, quantos sucessos antes de devolver, e quanto o teste espera - porque são esses três números, e não o algoritmo, que decidem com que rapidez você ejeta um servidor doente e o quanto você oscila num soluço.
+
+## Persistência é restrição, não recurso
+
+A persistência de sessão - mandar o cliente de volta ao servidor que tem o estado dele - existe porque as aplicações guardam estado em memória. Vale nomear o que ela é: **a admissão de que a aplicação não é sem estado**, e todo método de persistência é um contorno com custo.
+
+Persistência por endereço de origem quebra na era dos [endereços compartilhados](/learn/cgnat-address-sharing-and-attribution): milhares de assinantes atrás de uma tradução de operadora caem todos num servidor, o que é ao mesmo tempo ponto quente e problema de justiça. Persistência por cookie funciona bem sobre HTTP e exige terminar a conexão para inserir ou ler. Persistência por sessão TLS se prende a uma sessão que pode ser retomada ou rotacionada.
+
+A consequência operacional importante é que **persistência e capacidade brigam entre si.** Um pool perfeitamente balanceado com persistência não está balanceado: está balanceado sobre clientes *novos*, enquanto os existentes ficam onde estão. Acrescente servidores num pico de tráfego e os novos ficam quase ociosos, porque a carga que você queria mover está presa em outro lugar.
+
+A correção real é arquitetural - mover o estado para um repositório compartilhado, para que qualquer servidor responda - e é a mudança que faz a escalabilidade funcionar. Persistência é o que se faz até lá.
+
+## Mudar o conjunto é onde as quedas se escondem
+
+**Remover um servidor** deveria significar: parar de mandar conexões novas, deixar as existentes terminarem, e então remover. Drenagem curta demais corta requisições vivas; drenagem que nunca termina bloqueia a manutenção. Os dois são erros de configuração que as pessoas descobrem durante uma publicação.
+
+**Acrescentar um servidor** é o caso subestimado. Uma instância recém-iniciada tem cache frio, pool de conexões vazio e runtime não aquecido. Mande a ela a fatia cheia de imediato e ela ficará lenta, reprovará no próprio teste de saúde, será removida, readicionada, e oscilará. A **partida lenta** - subir a fatia de um membro novo aos poucos - existe exatamente para isso, e é desligada muito mais vezes do que deveria.
+
+O modo de falha que amarra tudo isso: um pool sobrecarregado ejeta um servidor em dificuldade, a carga dele vai para os sobreviventes, eles ficam sobrecarregados, e o pool esvazia um membro por vez. Todo plano de capacidade que pressupõe N servidores deveria ser testado com N-1, porque é nesse estado que você vai de fato estar.
+
+## Os algoritmos, em resumo, e o que cada um pressupõe
+
+- **Round robin** pressupõe que as requisições custam o mesmo e que os servidores são idênticos. As duas premissas em geral são falsas, e ele sobrevive por ser previsível.
+- **Menos conexões** pressupõe que uma conexão aberta é proxy de carga. Bom para conexões longas, enganoso quando conexões são baratas e o trabalho está em outro lugar.
+- **Menor tempo de resposta** mede o que você de fato quer, e premia o servidor que é rápido porque está falhando rápido. Combine com um teste de saúde que enxergue erros.
+- **Qualquer coisa ponderada** é como se lida com uma frota heterogênea com honestidade, e como se desloca tráfego durante uma migração.
+- **Hashing** sobre uma chave manda o mesmo cliente ou a mesma chave para o mesmo servidor sem guardar estado - a mesma ideia que o [hashing consistente](/learn/akamai) aplica em escala de rede de conteúdo, e vale escolher quando sua necessidade de persistência é determinística e não de estado.
+
+Escolha pelo que o seu tráfego de fato é: duração das conexões, variação do custo das requisições, e se os servidores são idênticos. Se você não consegue descrever essas três coisas, a escolha do algoritmo é chute com nome confiante.
+
+## Arquiteturas de implantação
+
+**Dois braços (roteado).** Clientes de um lado, servidores do outro, o balanceador entre eles. Limpo, e a rota padrão dos servidores precisa apontar para ele.
+
+**Um braço.** O balanceador fica ao lado dos servidores na mesma sub-rede e usa tradução de origem para que as respostas voltem a ele. Simples de inserir numa rede existente, ao custo de esconder o endereço do cliente, a menos que um cabeçalho o carregue.
+
+**Retorno direto do servidor.** Assimétrico por desenho, como acima.
+
+**Global (multissite).** Direcionamento por DNS ou [anycast](/glossary/anycast) decide qual site recebe o tráfego. Os dois herdam limites próprios: o direcionamento por DNS é limitado pelo tempo de vida do registro e por resolvedores que o ignoram, enquanto o anycast move a decisão para o roteamento, onde você tem menos controle sobre o instante em que o tráfego muda.
+
+**Sidecar e service mesh.** Um proxy por carga de trabalho. Política e telemetria ficam uniformes entre serviços, e o custo operacional é que você passa a operar uma frota de proxies do tamanho da sua frota de cargas.
+
+## O cenário de fabricantes, por categoria
+
+Categorias importam mais que nomes, porque cada uma carrega um viés estrutural:
+
+- **Fabricantes de ADC dedicados** - F5, Citrix, A10, Radware. Capacidade profunda de camada 7, scripting e inspeção; você está comprando um motor de política rico e assumindo o modelo operacional dele.
+- **Plataformas de firewall e de rede** - Fortinet, Palo Alto e outros trazem balanceamento ao lado da inspeção. Consolidação conveniente, capacidade em geral mais rasa que a dos especialistas.
+- **Software de código aberto** - HAProxy, NGINX, Envoy, Traefik. Os planos de dados que a indústria de fato roda, inclusive dentro de produtos comerciais; o Envoy em particular virou o substrato dos service meshes.
+- **Serviços gerenciados de nuvem** - os balanceadores dos provedores se dividem, grosso modo, em sabores de rede (camada 4) e de aplicação (camada 7). Os mais baratos de adotar, os menos portáveis, e suas semânticas de teste de saúde e de drenagem diferem o bastante entre provedores para importar numa migração.
+- **Service mesh** - Istio, Linkerd e parentes. Política por serviço, TLS mútuo e telemetria fina, em troca de um plano de controle novo e substancial.
+
+A pergunta honesta de compra não é qual é o mais rápido. É **quais modos de falha você está disposto a operar**, já que o balanceador está no caminho de tudo e a queda dele é total.
+
+## Onde o balanceador fica no domínio de falha
+
+Ele está, por construção, no caminho de tudo. Isso o torna o lugar de maior valor para acrescentar resiliência e o componente único mais consequente que você opera:
+
+- **Na frente dos servidores**, ele esconde falhas individuais - e as esconde de você também, e é por isso que métricas por membro importam mais que o agregado.
+- **Terminando TLS**, ele vira o ponto de estrangulamento de certificados, com as preocupações de renovação e emissão [do artigo sobre autoridades certificadoras](/learn/the-certificate-authority-chokepoint).
+- **Em par**, o failover dele próprio é a parte que ninguém testa até o dia em que importa.
+- **Globalmente**, distribuição por DNS ou [anycast](/glossary/anycast) move a decisão para cima - e herda o cache de DNS, então o tráfego segue chegando a algum lugar pelo tempo de vida do registro, não importa o que você mude.
+
+O hábito mais útil de todos: **olhe métricas por membro, não a média do pool.** A média é feita para parecer saudável enquanto um membro serve erros em silêncio, rápido o bastante para atrair mais tráfego que os que estão fazendo trabalho de verdade.

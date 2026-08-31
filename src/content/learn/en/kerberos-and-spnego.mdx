@@ -27,7 +27,7 @@ When the user then needs a specific service, the client presents the TGT to the 
 
 Two artifacts make the service side work, and they are exactly the fields an adapter asks for.
 
-The **SPN** - Service Principal Name - is the service's identity in the ticket system, conventionally shaped like `HTTP/sso.example.com@REALM`. When the browser wants a ticket "for that website," the SPN is how the KDC knows which service key to encrypt it with. A missing or duplicated SPN registration is the single most common reason silent SSO silently is not.
+The **SPN** - Service Principal Name - is the service's identity in the ticket system, conventionally shaped like `HTTP/sso.example.com@REALM`. When the browser wants a ticket "for that website," the SPN is how the KDC knows which service key to encrypt it with. A missing or duplicated SPN registration is the single most common reason silent SSO (single sign-on) silently is not.
 
 The **keytab** is a file holding the service's long-term key - the material that lets a non-Windows service (an identity server on Linux, say) decrypt the tickets clients bring, without the service itself joining the domain interactively. It is generated against the service account that owns the SPN, it is a credential in file form, and it is protected and rotated like one. Realm, KDC address, service account, keytab: every Kerberos adapter's configuration page is this paragraph as a form.
 

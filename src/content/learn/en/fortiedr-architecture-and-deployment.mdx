@@ -42,7 +42,7 @@ Collector installation is ordinary software deployment through whatever tooling 
 
 Where one deployment serves multiple organisations — a managed service provider, or a group with genuinely separate business units — multi-tenancy separates them. Each tenant has its own collectors, policies, events and administrators, and cannot see the others.
 
-The architectural point is that separation is at the management layer while infrastructure may be shared. That makes tenant assignment a security control rather than an organisational convenience, with the same weight as VLAN assignment in a shared switching fabric.
+The architectural point is that separation is at the management layer while infrastructure may be shared. That makes tenant assignment a security control rather than an organisational convenience, with the same weight as VLAN (virtual local area network) assignment in a shared switching fabric.
 
 ## Inventory and system tools
 
@@ -56,7 +56,7 @@ Worth reading regularly rather than during an incident:
 
 ## The API
 
-FortiEDR exposes a management API, which matters for three things in practice: pulling events into a SIEM, automating response from an orchestration platform, and reporting across a fleet without clicking through the console.
+FortiEDR exposes a management API, which matters for three things in practice: pulling events into a SIEM (security information and event management), automating response from an orchestration platform, and reporting across a fleet without clicking through the console.
 
 The value of API-driven work is consistency rather than speed. An action taken through an API is the same action every time, which is what makes it safe to trigger automatically.
 

@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-22"
 ---
 
-Registration, login, MFA step-up, password reset, identity proofing, fraud checks - a real user journey crosses half a dozen systems, and for years the wiring between them was custom code that broke on every vendor change. **Identity orchestration** is the product category that replaced that code with a canvas, and **PingOne DaVinci** is Ping's orchestrator. (Facts follow Ping's official documentation and announcements, verified at the time of writing.)
+Registration, login, MFA (multi-factor authentication) step-up, password reset, identity proofing, fraud checks - a real user journey crosses half a dozen systems, and for years the wiring between them was custom code that broke on every vendor change. **Identity orchestration** is the product category that replaced that code with a canvas, and **PingOne DaVinci** is Ping's orchestrator. (Facts follow Ping's official documentation and announcements, verified at the time of writing.)
 
 ## Flows: the journey as a diagram
 
@@ -23,7 +23,7 @@ The second half of the model is the **connector catalog**: pre-built integration
 
 ## Server-driven: the client stays dumb on purpose
 
-DaVinci executes flows server-side, and the client SDKs (JavaScript single-page apps, Android, iOS) implement **server-driven orchestration**: the flow tells the client what to render next - which fields to collect, which challenge to present - through typed collectors, and the app supplies its own look and feel. Handle the collector types generically and *the flow can change in production without an app update*: add a proofing step, reorder MFA, insert a risk gate, all without touching the binary users already installed. That single property is much of orchestration's operational value, and it is the design center of Ping's current unified SDK family, which speaks to DaVinci flows and to the ForgeRock-heritage journeys through one model.
+DaVinci executes flows server-side, and the client SDKs (JavaScript single-page apps, Android, iOS) implement **server-driven orchestration**: the flow tells the client what to render next - which fields to collect, which challenge to present - through typed collectors, and the app supplies its own look and feel. Handle the collector types generically and *the flow can change in production without an app update*: add a proofing step, reorder MFA, insert a risk gate, all without touching the binary users already installed. That single property is much of orchestration's operational value, and it is the design center of Ping's current unified SDK (software development kit) family, which speaks to DaVinci flows and to the ForgeRock-heritage journeys through one model.
 
 ## Origin, coexistence, and the exam angle
 

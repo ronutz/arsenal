@@ -11,9 +11,25 @@ status: reviewed
 updated: "2026-07-17"
 ---
 
+## Origens: um problema de carrinho de compras
+
+A Netscape precisava que as pessoas digitassem número de cartão num navegador em 1994, e a web não tinha confidencialidade nenhuma. O **SSL 1.0** nunca foi lançado; o **SSL 2.0** saiu em 1995 com falhas graves o bastante para que o **SSL 3.0** o substituísse um ano depois como redesenho, e não como remendo.
+
+A padronização tirou o protocolo de uma empresa e o levou ao IETF, e o número de versão foi reiniciado para evitar a aparência de produto de fabricante: o **TLS 1.0 (RFC 2246, 1999)** é, no fio, o SSL 3.1. A linhagem importa porque os números de versão no fio ainda a carregam - um registro TLS 1.2 anuncia `0x0303`, que é SSL 3.3 contando desde o original.
+
+As gerações seguintes removeram, em vez de acrescentar:
+
+- **TLS 1.0 (1999)** e **TLS 1.1 (RFC 4346, 2006)** - a segunda acrescentou vetores de inicialização explícitos depois de ataques aos implícitos. Ambas hoje são proibidas na prática.
+- **TLS 1.2 (RFC 5246, 2008)** - trouxe cifragem autenticada e SHA-256, e removeu a construção MD5/SHA-1 fixa. É a versão que sustentou a web por uma década.
+- **TLS 1.3 (RFC 8446, 2018)** - levou cinco anos e cerca de trinta rascunhos, porque o objetivo de projeto era subtrair: fora renegociação, compressão, troca de chaves RSA estática, e toda suíte sem cifragem autenticada. A maioria dos ataques históricos ao TLS mira opções que o 1.3 simplesmente não oferece.
+- **DTLS 1.2 (RFC 6347)** e **DTLS 1.3 (RFC 9147)** - o mesmo aperto de mão adaptado a transporte por datagramas.
+- **QUIC (RFC 9000, com a integração TLS na RFC 9001, 2021)** - o aperto de mão mudou-se para dentro de um transporte novo.
+
+Vale nomear os ataques que motivaram as remoções, porque cada um matou um recurso: BEAST e Lucky 13 contra CBC nas versões antigas, CRIME e BREACH contra compressão, POODLE contra o preenchimento do SSL 3.0, Heartbleed contra uma implementação e não contra o protocolo, e Logjam e FREAK contra criptografia de grau de exportação que ficou no lugar por uma década depois de deixar de ser exigida por lei.
+
 ## Uma família, quatro formas
 
-TLS é a sigla de Transport Layer Security, a segurança da camada de transporte: o protocolo que dá a dois pontos um canal cifrado e autenticado e, de quebra, prova ao cliente quem é o servidor. Quase tudo que se chama de "seguro" na internet — HTTPS, envio seguro de e-mail, LDAPS (LDAP sobre TLS), a maioria dos canais de controle de VPN — é uma aplicação montada sobre algum membro dessa família. Os quatro nomes no título deste artigo não são quatro invenções concorrentes. São um mesmo desenho adaptado a quatro situações: TLS 1.2 e TLS 1.3 protegem um fluxo de bytes confiável sobre TCP (Transmission Control Protocol, o protocolo de controle de transmissão); o DTLS leva as mesmas garantias para datagramas sem confiabilidade; e o QUIC é um protocolo de transporte completo que engoliu o handshake do TLS 1.3 inteiro e fez dele a forma como o próprio transporte obtém suas chaves.
+TLS é a sigla de Transport Layer Security, a segurança da camada de transporte: o protocolo que dá a dois pontos um canal cifrado e autenticado e, de quebra, prova ao cliente quem é o servidor. Quase tudo que se chama de "seguro" na internet — HTTPS, envio seguro de e-mail, LDAPS (LDAP (Lightweight Directory Access Protocol) sobre TLS), a maioria dos canais de controle de VPN (rede privada virtual) — é uma aplicação montada sobre algum membro dessa família. Os quatro nomes no título deste artigo não são quatro invenções concorrentes. São um mesmo desenho adaptado a quatro situações: TLS 1.2 e TLS 1.3 protegem um fluxo de bytes confiável sobre TCP (Transmission Control Protocol, o protocolo de controle de transmissão); o DTLS leva as mesmas garantias para datagramas sem confiabilidade; e o QUIC é um protocolo de transporte completo que engoliu o handshake do TLS 1.3 inteiro e fez dele a forma como o próprio transporte obtém suas chaves.
 
 Cada um é definido em um RFC — Request for Comments, a série numerada de documentos em que o IETF (Internet Engineering Task Force, a força-tarefa de engenharia da internet) publica os padrões da internet — e saber qual RFC está em vigor importa, porque duas dessas especificações foram substituídas ou revisadas tão recentemente quanto 2022 e 2025.
 
@@ -40,6 +56,38 @@ O DTLS é o TLS com essa suposição removida cirurgicamente. Os registros carre
 O QUIC nasceu no Google por volta de 2012, onde o nome era um acrônimo reverso de "Quick UDP Internet Connections"; o padrão do IETF, o [RFC 9000](https://www.rfc-editor.org/rfc/rfc9000) (maio de 2021), afirma com todas as letras que QUIC é apenas um nome, não uma sigla. De um jeito ou de outro, o QUIC é a maior mudança estrutural desta família, porque ele não é uma camada de segurança colocada sobre um transporte — ele é o transporte.
 
 O QUIC roda sobre UDP e entrega, sozinho, o que a pilha TCP mais TLS entregava: confiabilidade, controle de congestionamento e cifração. Ele carrega muitos fluxos independentes dentro de uma conexão, e como a recuperação de perdas é por fluxo, um pacote perdido trava apenas o fluxo a que pertencia — removendo o head-of-line blocking em nível de transporte (um segmento perdido segurando todos os bytes atrás dele) que o TCP impõe a tudo que roda em cima. Seu handshake é o handshake do TLS 1.3, embutido via [RFC 9001](https://www.rfc-editor.org/rfc/rfc9001) de modo que as chaves que o TLS negocia protegem os pacotes do próprio transporte; a preparação do transporte e a criptográfica se completam juntas em uma ida e volta, com 0-RTT disponível na retomada. Quase o pacote inteiro é cifrado, cabeçalhos incluídos, e as conexões são identificadas por connection IDs em vez da quádrupla de endereços, então um celular pode pular do Wi-Fi para a rede celular sem a conexão morrer. O inquilino mais visível é o HTTP/3, que é exatamente o HTTP mapeado sobre fluxos QUIC — o último capítulo de [HTTP/0.9 a HTTP/3](/learn/http-versions-09-to-3).
+
+## Os apertos de mão, lado a lado
+
+**O TLS 1.2 custa duas idas e voltas** antes do dado de aplicação. O cliente oferece suítes; o servidor escolhe uma e manda o certificado; as chaves são trocadas; os dois confirmam. A negociação é ampla, e é daí que veio o problema: um ataque de rebaixamento é possível sempre que a opção mais fraca oferecida ainda for aceitável.
+
+**O TLS 1.3 custa uma ida e volta**, porque o cliente adivinha o grupo de troca de chaves e já manda a própria parte. Se errar, o servidor pede uma vez, com um HelloRetryRequest. As cifras são cinco suítes AEAD em vez de dezenas de combinações, a troca de chaves é efêmera por construção - sigilo futuro não é opcional - e a maior parte do aperto de mão depois do ServerHello vai cifrada, então bem menos aparece no fio, inclusive o certificado.
+
+O **0-RTT** deixa um cliente que retorna mandar dados já na primeira leva, com um custo declarado: esses bytes iniciais são reproduzíveis, então só são seguros para requisições idempotentes. Essa troca está escrita no padrão, e não escondida.
+
+O **DTLS** mantém o mesmo desenho sobre UDP e acrescenta o que o datagrama tira: números de sequência explícitos, retransmissão das levas do aperto de mão, e uma troca de cookie sem estado para que o servidor não aloque estado a um endereço de origem forjado - o mesmo raciocínio antiamplificação de qualquer [defesa contra reflexão](/learn/ddos-what-actually-absorbs-an-attack). É o que protege a mídia do WebRTC e boa parte do mundo de dispositivos restritos.
+
+O **QUIC** funde o aperto de mão de transporte e o criptográfico numa troca só sobre UDP, então uma conexão chega ao dado de aplicação numa ida e volta, e a zero ao reconectar a um servidor conhecido. Ele também cifra a própria camada de transporte - números de sequência e confirmações inclusos -, o que remove o bloqueio de cabeça de fila entre fluxos e torna a interferência de middlebox estruturalmente mais difícil. Identificadores de conexão em vez de tuplas de endereço fazem a sessão sobreviver a uma troca de rede.
+
+## O que isso muda na operação
+
+**Visibilidade.** O TLS 1.3 cifra o certificado e a maior parte das extensões do aperto de mão, então a inspeção passiva enxerga bem menos; o SNI no ClientHello inicial segue como o principal sinal em claro, e o Encrypted Client Hello remove até isso onde está implantado. Arquiteturas de inspeção construídas sobre a leitura de apertos de mão precisam ser repensadas, e não reconfiguradas.
+
+**Middleboxes.** Tanto equipamento tratou mal apertos de mão desconhecidos que o TLS 1.3 deliberadamente imita, no fio, uma retomada de sessão TLS 1.2. Esse modo de compatibilidade é um monumento permanente a software implantado que inspeciona o que não entende.
+
+**QUIC na rede.** É UDP na porta 443, opaco à inspeção, e bloqueado ou estrangulado por redes suficientes para que os navegadores mantenham um retorno a TCP. O planejamento de capacidade também muda: o processamento por pacote custa mais que o do TCP para a mesma vazão, e o trabalho migra para o espaço de usuário.
+
+**O que de fato conferir.** Desligue TLS 1.0 e 1.1 e toda suíte sem AEAD; exija TLS 1.2 como piso e prefira 1.3; mantenha a automação de certificados independente da questão de versão; e verifique o que a sua própria pilha de inspeção faz com um fluxo TLS 1.3 ou QUIC antes que um incidente torne a resposta urgente.
+
+## Implementações, por categoria
+
+- **OpenSSL** - o padrão em quase todo lugar, com a maior cobertura de algoritmos e o histórico mais longo de uso e de escrutínio.
+- **BoringSSL e LibreSSL** - bifurcações deliberadas com superfícies mais estreitas; a BoringSSL fica sob o Chrome e boa parte da infraestrutura do Google, e a LibreSSL saiu do OpenBSD depois do Heartbleed.
+- **Pilhas de plataforma** - Schannel no Windows, Secure Transport e sucessores nos sistemas Apple, NSS no Firefox. O comportamento segue a política do sistema operacional, não a da aplicação.
+- **Implementações seguras em memória** - rustls e similares, cada vez mais implantadas onde a classe histórica de bugs importa mais que a amplitude de suporte a legado.
+- **Bibliotecas QUIC** - quiche, msquic, ngtcp2, quic-go e outras, além das pilhas dentro de navegadores e redes de entrega; o espaço é mais novo e menos consolidado que o do TLS.
+
+A interoperabilidade em geral é boa porque os padrões são precisos e a superfície de teste é enorme. O atrito mora na política, e não no protocolo: um sistema operacional que não oferece TLS 1.3, um middlebox que o embaralha, ou uma rede de entrega que o termina e reoriginia algo mais antigo.
 
 ## Qual deles estou vendo?
 

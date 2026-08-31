@@ -1,0 +1,84 @@
+---
+slug: what-happens-if-the-dns-root-goes-dark
+title: "What happens if the DNS root goes dark - or starts lying"
+summary: "Turn off all thirteen root server identities and the internet keeps working for about two days, then unravels alphabetically as cached delegations expire. The far more dangerous scenario is a root that stays up and answers differently, because DNSSEC will faithfully sign the new reality. Here is the actual failure timeline, what survives, what you can do about it today, and why every alternative root has failed."
+concepts: ["dns", "root servers", "resilience", "dnssec", "internet governance"]
+relatedTools: []
+relatedArticles: ["the-chokepoints-of-the-internet", "dns-record-types-in-answers", "cloudflare", "akamai"]
+category: networking
+order: 120
+status: reviewed
+updated: "2026-08-29"
+---
+
+## What the root actually is
+
+There are **thirteen root server identities**, lettered A through M, operated by twelve independent organisations - universities, government agencies, non-profits and companies, spread across jurisdictions. Thirteen is a protocol artefact, not a count of machines: the number of servers whose addresses fit in a single unfragmented response in the original design. Behind those thirteen addresses sit well over a thousand physical instances worldwide, reachable by **anycast**, so the nearest copy answers you.
+
+What they serve is small and boring: the **root zone**, a file of roughly fifteen hundred delegations that says which name servers are authoritative for `.com`, `.br`, `.org`, `.uk` and every other top-level domain. The root does not know where `example.com` lives. It knows who to ask about `.com`.
+
+Two facts about that file decide everything below. It is **published, and anyone can download it**. And it is **signed with DNSSEC**, so a copy can be verified as genuine without asking a root server at all.
+
+## Scenario one: they all go dark
+
+Suppose every root instance stops answering simultaneously - a coordinated shutdown, a coordinated attack, or an order to twelve organisations at once.
+
+**Hours 0 to 24: almost nothing happens.** Recursive resolvers do not consult the root for ordinary queries. They cache the delegation for each top-level domain, and those records carry a **two-day time-to-live**. Your resolver already knows which servers answer for `.com`, and it will keep using them. Traffic flows, mail delivers, nobody notices.
+
+**Day 2 onward: the unravelling begins, one top-level domain at a time.** As each cached delegation expires, the resolver tries to refresh it, needs the root to do so, and fails. Whether `.com` or `.br` dies before `.io` is a matter of when each resolver last refreshed - so the failure is not global and simultaneous but ragged and confusing, different on every network, which is much worse operationally than a clean outage.
+
+**Week one: naming is broken, routing is fine.** This is the crucial distinction. Packets still move. An address typed as raw IP still connects. Existing long-lived connections stay up. What dies is the ability to *turn a name into an address for anything not already cached* - and since essentially all software uses names, the practical effect is an internet that routes perfectly and can find nothing.
+
+What breaks in roughly this order: new mail delivery to unfamiliar domains, certificate issuance and renewal (the validation checks are name-based), software update channels, cloud provider APIs, federated services, and anything doing service discovery over names. What keeps working: internal networks with their own resolvers and internal zones, anything cached, anything addressed by IP, and content already delivered.
+
+**Mitigations that would slow this down:** resolvers implementing **stale-answer serving** keep handing out expired records when they cannot refresh them, which converts a hard failure into a degraded one for as long as anyone will tolerate. That behaviour is standardised precisely for this class of event.
+
+## Scenario two: the root answers, and says no
+
+Now the version that should worry you more. The root servers stay up, are reachable, respond quickly - and refuse to delegate. Answers for entire top-level domains come back as *this name does not exist*.
+
+This is worse for three reasons.
+
+**It is fast.** There is no waiting for a two-day timer. A resolver asks, gets a negative answer, caches it, and stops trying. Negative caching in the root is a day at a time, refreshed with each new denial.
+
+**It is authenticated.** The root zone is DNSSEC-signed, and DNSSEC signs denials too - a proof of non-existence is a signed record like any other. A validating resolver would check the signature on *this top-level domain does not exist*, find it cryptographically perfect, and enforce it. **DNSSEC protects you from someone impersonating the root. It offers nothing against the root itself.** Validation authenticates the source, not the truth.
+
+**It is deniable.** An outage looks like an attack. A delegation quietly removed looks like an administrative action, and the argument about whether it was legitimate happens after the traffic has already stopped.
+
+The same mechanism has a smaller, real-world version: a top-level domain can be removed or reassigned through governance rather than attack, and the operational effect on everyone using it is identical to a targeted outage.
+
+## Who could actually do either
+
+The honest answer is that both scenarios are hard, and their difficulty is institutional rather than technical.
+
+Changing what the root says requires the **IANA functions operator** (Public Technical Identifiers, under ICANN since the 2016 transition of stewardship away from the US government) to approve a change, and the **root zone maintainer** to publish it, and the zone to be signed in a **key ceremony** - a filmed, audited, multi-party ritual with external witnesses, held so that no single person can alter the root's trust anchor. Turning the servers off requires twelve organisations in multiple countries to comply at once.
+
+That is not a guarantee. It is a design where the cost of coercion is high and public, and where the participants are diverse enough that quiet compliance is unlikely. Notably, the roots have been attacked directly - the large denial-of-service attempts in 2002 and 2007 both degraded some letters without breaking resolution, because anycast plus redundancy meant enough capacity survived. **DDoS (distributed denial of service) against the root has been tried and has not worked.** Coercion of the people who sign the zone is the more plausible threat, and it is the one anycast cannot address.
+
+## What you can do about it today
+
+This is the part most people do not know: **you can stop depending on the root servers for availability, right now, without anyone's permission.**
+
+The root zone is public. A resolver can hold a **local copy of the entire root zone**, refresh it periodically, and answer root queries from itself - a practice standardised in RFC 7706 and its successor RFC 8806, and supported by the common resolver implementations. Because the zone is DNSSEC-signed, a locally held copy is verifiable: you are not trusting the copy, you are checking it against the trust anchor.
+
+The effect is that a root outage stops mattering for your users, and it also removes a privacy leak, since your resolver stops telling a third party the top-level domain of every miss. The cost is a periodic transfer and the discipline to keep it fresh.
+
+The wider lesson generalises past DNS: **when a public, signed dataset is the dependency, replicate it and verify it locally.** Availability and authenticity are separable problems, and the root is the cleanest example anywhere of a system where the second is solved well enough that the first can be routed around.
+
+## Why alternative roots keep failing
+
+The obvious response - run a different root - has been tried repeatedly and has never worked, for a reason worth understanding.
+
+**AlterNIC** in the 1990s went as far as hijacking traffic destined for the official registry to make its point, which resulted in a criminal conviction rather than a policy change. The **Open Root Server Network** ran a European alternative for years on the argument that the root should not sit under one government's jurisdiction. **OpenNIC** still offers extra top-level domains today. More recently, blockchain naming systems have proposed replacing the root entirely with a ledger.
+
+They fail on the same rock every time: **a name has to mean the same thing to everyone, or it is not a name.** If your resolver and mine disagree about who `.example` belongs to, then a link, an email address and a certificate stop being portable between us, and the property that makes the internet a single network is gone. The Internet Architecture Board wrote this down in RFC 2826 - the technical case for a unique root - and three decades of attempts have not falsified it.
+
+Which sets up the real tension, and it is not resolvable by engineering. A single root is technically necessary and politically uncomfortable: it means one governance process, however multi-stakeholder, sits at the top of the world's naming. Every serious alternative either recreates that chokepoint under different management, or fragments the namespace and destroys the thing being defended.
+
+## The short version
+
+- Turning the root off is survivable and slow: about two days of grace, then a ragged, resolver-by-resolver unravelling.
+- Turning the root into a liar is fast, authenticated by the same cryptography that protects you, and much harder to argue with.
+- Routing survives either; **naming is the fragile layer**, and almost all software depends on it.
+- The root zone being public and signed is the escape hatch: replicate it locally and the availability question mostly disappears.
+- No alternative root has solved the political problem without breaking the technical one, because a namespace only works if it is singular.

@@ -32,13 +32,13 @@ Um **registro** é uma instância: um alerta, um incidente.
 
 **Campos** guardam os valores de um registro. Eles têm tipos, e o tipo importa mais do que parece: um campo de lista de seleção restringe a entrada a valores conhecidos, e é isso que o torna utilizável em condições de playbook e em agrupamento de painéis. Um campo de texto guardando o que deveria ser uma lista de seleção é a razão mais comum de um painel não conseguir sumarizar algo.
 
-**Relacionamentos** conectam registros entre módulos. Um incidente se relaciona aos alertas que o levantaram, aos ativos envolvidos, aos indicadores observados, às tarefas atribuídas. É essa a parte que distingue uma plataforma SOAR de uma fila de chamados: o relacionamento é consultável, então "mostre todo incidente que tocou este ativo no último trimestre" é pergunta que o sistema responde.
+**Relacionamentos** conectam registros entre módulos. Um incidente se relaciona aos alertas que o levantaram, aos ativos envolvidos, aos indicadores observados, às tarefas atribuídas. É essa a parte que distingue uma plataforma SOAR (security orchestration) de uma fila de chamados: o relacionamento é consultável, então "mostre todo incidente que tocou este ativo no último trimestre" é pergunta que o sistema responde.
 
 ## Correlação entre módulos
 
 Correlação é para o que servem os relacionamentos. Quando um alerta chega carregando um indicador já ligado a um incidente aberto, o sistema pode anexá-lo em vez de levantar uma duplicata.
 
-A consequência prática é a deduplicação. Um SOC afogado em alertas frequentemente é um SOC vendo o mesmo evento reportado cinco vezes por cinco produtos, e a correlação por um indicador compartilhado colapsa isso num incidente com cinco fontes.
+A consequência prática é a deduplicação. Um SOC (centro de operações de segurança) afogado em alertas frequentemente é um SOC vendo o mesmo evento reportado cinco vezes por cinco produtos, e a correlação por um indicador compartilhado colapsa isso num incidente com cinco fontes.
 
 Só funciona se os dados forem consistentes. Um indicador armazenado como texto num lugar e como registro relacionado em outro não pode ser correlacionado, e é por isso que o modelo de dados merece atenção antes da automação.
 

@@ -1,0 +1,46 @@
+---
+slug: wank-worm-and-the-international-subversives
+title: "The WANK worm and the International Subversives: the Australian chapter"
+summary: "Days before NASA launched a plutonium-powered probe, its computers greeted operators with an anti-nuclear protest banner. The first hacktivist worm was never definitively attributed, but the trail points to a Melbourne scene that also produced the book Underground - researched by a young hacker called Mendax, who later founded WikiLeaks."
+concepts: ["wank worm", "hacktivism", "decnet", "hacker history", "attribution"]
+relatedTools: []
+relatedArticles: ["hacking-in-the-20th-century", "the-morris-worm", "chaos-computer-club-btx-and-the-kgb", "phrack-2600-and-the-hacker-manifesto"]
+category: security
+order: 107
+status: reviewed
+updated: "2026-08-28"
+---
+
+## A banner on a NASA terminal
+
+On 16 October 1989, staff at NASA's Goddard Space Flight Center and at US Department of Energy sites logged in to find their terminals taken over by a banner reading **WANK - Worms Against Nuclear Killers**, above a line borrowed from the Australian band Midnight Oil: *You talk of times of peace for all, and then prepare for war.*
+
+The timing was not an accident. NASA was days from launching the **Galileo** probe aboard the shuttle Atlantis, carrying radioisotope thermoelectric generators - plutonium power sources - against noisy public protest. Someone chose the loudest possible week to put an anti-nuclear message on the screens of the people doing the launching.
+
+## What it actually did
+
+WANK spread through **DECnet**, the networking stack that connected VAX/VMS machines across research institutions, using the era's standard failure: default accounts and passwords that matched usernames. Once resident it copied itself outward, mutated its process name to avoid the obvious hunt, and mailed system information to a remote account.
+
+Its psychological payload was more interesting than its technical one. It did not destroy data. It changed system announcement banners, sent alarming messages to logged-in users, and made itself look far more destructive than it was - it would appear to be deleting a user's files while deleting nothing. A worm designed to frighten administrators into believing they had lost everything is a protest instrument, not a weapon, and the distinction is the whole reason the incident is remembered as the **first hacktivist worm**: motive by argument rather than money or curiosity.
+
+NASA spent the launch window fighting it, which is precisely what the author intended. A second, improved variant appeared weeks later.
+
+## Attribution, honestly stated
+
+WANK has never been definitively attributed. What can be said carefully: the code carried Australian cultural markers, and investigators and journalists have long pointed toward the Melbourne underground of that period - a small, tight scene including the crew that called itself the **International Subversives**. It is widely believed to have originated there, and the belief has never hardened into proof.
+
+That gap is worth sitting with, because it is a lesson in itself. The most famous attributions in this history - state actors, ransomware crews, worms - are usually inferences built from language artefacts, timezones, targets and habits. WANK is the clean case that shows what happens when the inference is never confirmed: thirty-five years on, the honest sentence is still *probably them, and we do not know.*
+
+## The scene that got a book instead of a conviction
+
+The Australian underground of 1988 to 1992 was as accomplished as anything in America - deep inside NASA, defence contractors, Nortel and university networks - and it produced something no other national scene did: its own definitive history, written from inside while the participants were still young.
+
+***Underground*** (1997), by journalist **Suelette Dreyfus**, tells that story in narrative detail, and its researcher was a hacker of the era who wrote as **Mendax** - the handle of a young **Julian Assange**, who had pleaded guilty in 1996 to intrusions including Nortel. Before WikiLeaks, he co-wrote **Rubberhose**, a deniable-encryption tool built so that an activist under coercion could surrender a password that revealed innocuous data while the real material stayed hidden and undetectable. The through-line from that design to what he did later is not subtle.
+
+*Underground* was released free online years before that was a normal thing to do, and it remains the best account anyone has of what the underground felt like from the inside: the boredom, the obsession, the paranoia, the police at the door.
+
+## Why this chapter matters to the whole story
+
+The Australian chapter closes a loop the rest of this history opens. [Phreaking](/learn/phone-phreaking-and-the-blue-box) established curiosity as the motive; the [Morris worm](/learn/the-morris-worm) established scale as a consequence; the [KGB hack](/learn/chaos-computer-club-btx-and-the-kgb) established money and espionage as a destination. WANK added the fourth motive - **the message itself** - and every hacktivist action since, from Anonymous to leak platforms, is downstream of a banner on a NASA terminal in October 1989.
+
+It also demonstrates the era's real vulnerability one final time. Not a clever exploit: default credentials on machines nobody thought of as targets.

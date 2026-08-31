@@ -58,7 +58,10 @@ const VALID_DOMAINS = new Set([
 // anchor so every chunk is exactly one entry, then pull the fields we gate on.
 const src = readFileSync(REGISTRY, "utf8");
 // Isolate the array body to avoid matching the interface/type declarations.
-const arrStart = src.indexOf("export const GLOSSARY");
+// The corpus is stored as several annotated chunks concatenated into the
+// exported GLOSSARY (a TS2590 accommodation, see glossary.ts). Anchor on the
+// FIRST typed array literal so every chunk is read, not just the export.
+const arrStart = src.indexOf(": GlossaryEntry[] = [");
 const body = arrStart >= 0 ? src.slice(arrStart) : src;
 
 const chunks = body.split(/\n\s*\{\s*\n/).slice(1); // each chunk = one entry body

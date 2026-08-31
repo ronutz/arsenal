@@ -29,7 +29,7 @@ Same rules, three different outcomes for the overlapping request. This is why re
 
 ## The App Firewall constraint
 
-There is one hard rule to know. If any rule in the policy is configured with an App Firewall (WAF) action, the combining algorithm **must** be FIRST_MATCH. The overrides modes are not permitted alongside WAF actions, because WAF processing is tied to sequential evaluation. If you see WAF actions on rules, you can assume FIRST_MATCH.
+There is one hard rule to know. If any rule in the policy is configured with an App Firewall (WAF (web application firewall)) action, the combining algorithm **must** be FIRST_MATCH. The overrides modes are not permitted alongside WAF actions, because WAF processing is tied to sequential evaluation. If you see WAF actions on rules, you can assume FIRST_MATCH.
 
 ## Where the algorithm lives
 

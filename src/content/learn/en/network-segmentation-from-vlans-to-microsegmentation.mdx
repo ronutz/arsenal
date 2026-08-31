@@ -1,0 +1,91 @@
+---
+slug: network-segmentation-from-vlans-to-microsegmentation
+title: "Network segmentation: from broadcast domains to identity, and why it keeps failing at the same place"
+summary: "Segmentation began as a performance fix for collision domains, became a security control by accident, and is now sold as microsegmentation. The mechanisms — VLANs, VRFs, VXLAN, firewall zones, host agents, cloud security groups — each solved the previous one's limits and inherited a new failure mode. The history, the standards, the architectures, the vendor landscape, and the thing that defeats every generation: nobody knows what talks to what."
+concepts: ["segmentation", "vlan", "microsegmentation", "architecture", "blast radius"]
+relatedTools: []
+relatedArticles: ["zero-trust-ztna-and-sase-without-the-marketing", "load-balancing-what-actually-decides-where-a-request-goes", "siem-and-detection-engineering"]
+category: networking
+order: 134
+status: reviewed
+updated: "2026-08-30"
+---
+
+## Origins: segmentation was never about security
+
+The first segmentation was physical and had nothing to do with attackers. Early Ethernet was a shared medium: every station heard every frame, and collisions rose with population. Bridges, then switches, cut the collision domain so that traffic between two ports no longer disturbed the rest.
+
+Broadcast traffic remained the shared cost, and that is what produced the **VLAN** — a way to carve one physical switch into several broadcast domains. The relevant standard, IEEE 802.1Q, defines a four-byte tag inserted into the Ethernet header carrying a twelve-bit VLAN identifier, which is where the familiar limit of 4,094 usable VLANs comes from.
+
+Note what motivated it: broadcast containment and administrative tidiness. **Security was a side effect** — if two groups cannot exchange frames without passing a router, you have accidentally built a policy enforcement point. The industry then spent thirty years formalising that accident, and the fact that the foundation was a performance optimisation explains several problems that follow.
+
+## Evolution, generation by generation
+
+**Router ACLs and the DMZ (1990s).** Once VLANs needed a router between them, the router became the place to write policy. The demilitarised zone formalised the first real security architecture: untrusted outside, trusted inside, and a third zone for things that must be reachable from both. It maps cleanly onto a building with a lobby, and it fails for the same reason a lobby does — once past it, everything is inside.
+
+**Stateful firewalls and zones (2000s).** Policy moved from per-interface access lists to named zones with connection state, which made rules expressible in human terms. This is the model most enterprises still run, and its defining property is that it is strong north-south (in and out of the estate) and nearly absent east-west (server to server inside it).
+
+**VRFs and overlays.** A VRF (virtual routing and forwarding instance) gives a router multiple independent routing tables, so two segments can be genuinely separate at layer three, even reusing address space. Then virtualisation broke the twelve-bit VLAN ceiling and the assumption that a segment lives in one physical place: **VXLAN**, specified in RFC 7348, encapsulates Ethernet frames in UDP with a 24-bit network identifier — roughly sixteen million segments — letting a segment span datacentres over an IP fabric.
+
+**Host-based and identity-based (2010s onward).** The insight that produced microsegmentation is that the enforcement point does not have to be the network at all. If a policy agent runs on each workload, the boundary follows the workload, survives migration, and no longer depends on where a cable lands. In parallel, tag- or identity-based approaches — security group tags, cloud security groups, labels — let policy be written about *what a thing is* rather than *where it sits*.
+
+Each generation solved the previous ceiling. Each also inherited the same unsolved problem, which is the point of this article.
+
+## The architectures you will actually meet
+
+**Zone-based perimeter.** A handful of zones, policy at a firewall pair. Cheap, comprehensible, weak internally. Still correct for small estates, and dishonest when described as segmentation of the datacentre.
+
+**Layered or tiered.** Web, application and database tiers, each in its own segment, with rules only between adjacent tiers. This is the classic compliance architecture — it is how card-data scoping is usually argued — and it works exactly as far as the tiers are real.
+
+**Overlay-based (SDN).** A controller programs an overlay so segments are logical, and policy lives in the controller rather than in device configuration. Enormous flexibility, one new dependency: the controller is now a [chokepoint](/learn/the-chokepoints-of-the-internet), and its failure modes are your failure modes.
+
+**Host-based microsegmentation.** Agents enforce per-workload rules from a central policy. The boundary is per-process rather than per-subnet, which is the finest granularity available and the largest number of rules to maintain.
+
+**Cloud-native.** Security groups and network policies are microsegmentation with different names, applied by the platform rather than an agent. The trap is that they are per-provider, expressed differently in every one, and rarely portable — which becomes a real cost in a multi-cloud estate.
+
+## Interoperability and dependencies, stated plainly
+
+Segmentation is unusually dependent on things outside the network team's control, and this is where projects stall:
+
+- **An inventory.** You cannot write a policy about systems you cannot enumerate. Most organisations discover mid-project that no accurate inventory exists.
+- **Identity.** Identity-based policy requires an authoritative source of what a workload or user *is*, and it inherits that source's accuracy.
+- **Telemetry.** Writing rules without flow data is guesswork; this is where segmentation meets [detection engineering](/learn/siem-and-detection-engineering), because both need to know what actually talks to what.
+- **Name resolution and certificates.** Segments that break DNS or certificate validation paths produce failures that look nothing like a firewall problem.
+- **Legacy and operational technology.** Industrial protocols, ancient appliances and anything with an unpatchable stack end up in exceptions, and the exceptions are where the risk concentrates.
+
+On interoperability: tags do not cross vendors, overlays do not federate cleanly, and cloud policy models differ enough that a single expressed intent has to be re-authored per platform. Anyone promising one policy language across all of it is describing an ambition.
+
+## The vendor landscape, honestly
+
+The categories matter more than the names, and each carries a structural bias:
+
+- **Network vendors** — Cisco (ACI, TrustSec/SGT), Arista, Juniper, Extreme, Nokia — enforce in the fabric. Strong where the network is uniform, weaker across clouds you do not own.
+- **Firewall vendors** — Palo Alto, Fortinet, Check Point — enforce at zones and increasingly at the workload. Strong policy expression and inspection; you are buying an inspection point on every path you care about.
+- **Hypervisor and overlay** — VMware NSX being the archetype — enforce at the virtual switch, close to the workload without an in-guest agent.
+- **Host-agent specialists** — Illumio, Akamai Guardicore and others — are platform-independent and give the best visibility of east-west flow, at the cost of an agent on everything.
+- **Cloud providers** — security groups, network ACLs, Kubernetes network policies — are already there and already paid for, and are the ones most often left at default.
+
+The buying question is not which is best. It is **where you can enforce consistently across everything you own**, because a segmentation programme with a large enforcement gap is an expensive way to relocate risk.
+
+## What it enables
+
+- **Blast radius.** The measurable benefit: an intrusion reaches what the compromised host was allowed to reach, which is the same argument as [ZTNA (zero trust network access)](/learn/zero-trust-ztna-and-sase-without-the-marketing) at a different layer.
+- **Ransomware containment.** Most encryption campaigns depend on broad east-west reachability, especially file shares and management protocols.
+- **Compliance scoping.** Reducing the systems in scope for an audit is often what actually funds the project.
+- **Meaningful detection.** A denied flow between segments is a high-quality signal, where the same packet on a flat network is invisible.
+
+## Why it keeps failing at the same place
+
+Every generation of this technology has failed for one reason, and it is not technical: **nobody knows what talks to what.**
+
+Policy is written from an architecture diagram that describes intent rather than reality. The first enforcement attempt breaks a dependency nobody documented — a backup agent, a monitoring poller, a licence check, a scheduled job on a server everyone forgot. Something important breaks, the change is rolled back, and the project acquires a reputation.
+
+The pattern that works is unglamorous and is the same in every product:
+
+1. **Observe first.** Collect flow data for weeks in a mode that logs but does not block.
+2. **Start coarse.** Separate environments — production from corporate, cardholder from everything — before attempting per-workload rules.
+3. **Enforce one segment at a time**, with a rollback that has been tested.
+4. **Treat exceptions as a register**, with owners and review dates, because the exception list is the real risk record.
+5. **Alert on denies**, because a deny is a detection, and because a rule nobody monitors is a rule nobody notices breaking.
+
+The counter-lesson is worth stating too: **granularity has a cost curve.** Per-workload policy on an estate that cannot maintain per-workload rules produces stale permits that quietly become permanent — and a microsegmentation deployment full of allow-any exceptions is less honest than a well-run tiered design, because it reports coverage it does not have.

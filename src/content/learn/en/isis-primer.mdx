@@ -31,7 +31,7 @@ On multi-access segments IS-IS elects a DIS - a designated router by another nam
 
 ## TLVs: the reason it aged so well
 
-Everything IS-IS advertises travels as a **TLV** - type, length, value - inside its link-state PDUs. New capability? Define a new TLV type; old routers skip what they do not understand. This one design choice is why IS-IS absorbed thirty years of change without a version break: IPv6 support was new TLVs (no "IS-ISv3" ever needed, unlike OSPF's separate OSPFv3), wide metrics were a TLV, traffic-engineering attributes were TLVs, and **Segment Routing** - the modern architecture of carrier MPLS - rides in, once again, TLVs. Networks that had bet on IS-IS got each revolution as an incremental software update. It is one of protocol design's quietest vindications: extensibility as the feature that outlives every feature.
+Everything IS-IS advertises travels as a **TLV** - type, length, value - inside its link-state PDUs. New capability? Define a new TLV type; old routers skip what they do not understand. This one design choice is why IS-IS absorbed thirty years of change without a version break: IPv6 support was new TLVs (no "IS-ISv3" ever needed, unlike OSPF's separate OSPFv3), wide metrics were a TLV, traffic-engineering attributes were TLVs, and **Segment Routing** - the modern architecture of carrier MPLS (Multiprotocol Label Switching) - rides in, once again, TLVs. Networks that had bet on IS-IS got each revolution as an incremental software update. It is one of protocol design's quietest vindications: extensibility as the feature that outlives every feature.
 
 ## Where you will actually meet it
 

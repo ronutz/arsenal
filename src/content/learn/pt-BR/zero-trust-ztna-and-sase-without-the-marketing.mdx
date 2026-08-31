@@ -1,0 +1,118 @@
+---
+slug: zero-trust-ztna-and-sase-without-the-marketing
+title: "Zero trust, ZTNA e SASE: o que os termos significam quando se tira o marketing"
+summary: "Zero trust é um princípio de arquitetura, ZTNA (acesso à rede zero trust) é um jeito de publicar aplicações, e SASE (borda de serviço de acesso seguro) é um arranjo de compra. Os fabricantes embaralham os três porque a confusão vende. Aqui está o que cada um de fato é, o que muda de verdade ao adotá-los, e a lista honesta do que eles não resolvem."
+concepts: ["zero trust", "ztna", "sase", "segmentation", "identity"]
+relatedTools: []
+relatedArticles: ["passkeys-and-phishing-resistant-authentication", "cloud-and-cdn-monoculture", "the-chokepoints-of-the-internet"]
+category: security
+order: 131
+status: reviewed
+updated: "2026-08-30"
+---
+
+## A ideia por baixo
+
+O modelo antigo era um perímetro: prove quem você é uma vez na fronteira e, lá dentro, você é confiável. Ele falhou por razões hoje óbvias - o lado de dentro é onde o atacante acaba chegando de todo jeito, a fronteira deixou de existir quando as aplicações foram para o datacenter dos outros, e um notebook comprometido herdava a confiança do prédio inteiro.
+
+O **zero trust** é a resposta e, tirada a linguagem de fabricante, é uma frase: **nenhuma requisição é confiável por causa de onde veio.** Toda decisão de acesso é tomada por requisição, contra a identidade, o dispositivo e o contexto, independentemente da posição na rede.
+
+Duas consequências decorrem e são fáceis de perder.
+
+**Estar na rede corporativa deixa de ser credencial.** É esse o ponto inteiro, e é também por que a adoção é difícil: uma quantidade enorme de comportamento legado pressupõe que a localização na rede concede acesso.
+
+**O ponto de decisão de política vira infraestrutura crítica.** Você não removeu a confiança; você a mudou de lugar, da fronteira de rede para o sistema de identidade e o motor de política. Eles agora decidem tudo, o que os torna o alvo do atacante e aquilo cuja queda para todo o trabalho.
+
+## Origens: a ideia é mais velha que o slogan
+
+O vocabulário é recente; o argumento não é.
+
+**O Jericho Forum e a desperimetrização (2004).** Um grupo de diretores de segurança de grandes empresas argumentou publicamente que o perímetro endurecido já estava falhando - terceirização, extranets e trabalho móvel tinham tornado a fronteira sem sentido - e que a proteção precisava migrar para o dado e para a transação. Estavam descrevendo zero trust antes de a expressão existir, e foram em boa parte ignorados porque não havia nada a comprar.
+
+**O termo (2010).** Um analista de mercado batizou o modelo de *zero trust* e enunciou a regra que ainda o define: nunca confie, sempre verifique. O batismo importou mais que a novidade, porque deu categoria de compra a um argumento de arquitetura.
+
+**BeyondCorp (de 2014 em diante).** Depois de uma invasão ligada a um Estado, o Google publicou um programa de vários anos para remover por completo o status privilegiado de sua rede corporativa: cada requisição autenticada e autorizada por dispositivo e usuário, sem VPN e sem sub-rede confiável. É a primeira implementação crível em larga escala, e é a razão de o modelo ter deixado de ser teoria - uma organização demonstrou que dava para operar.
+
+**NIST SP 800-207 (2020).** A arquitetura ganhou definição neutra de fabricante: um **motor de política** decide, um **administrador de política** executa, e um **ponto de aplicação de política** fica no caminho do tráfego. Essa decomposição é o que vale guardar, porque todo produto do setor é algum arranjo desses três, e nomeá-los permite comparar ofertas que usam linguagens de marketing incompatíveis.
+
+**A inflexão do trabalho remoto (2020).** Quando forças de trabalho inteiras saíram do prédio, o modelo de perímetro falhou operacionalmente, e não filosoficamente, e o orçamento veio atrás. A maioria das implantações atuais data desse momento, o que vale lembrar ao avaliar alegações de maturidade.
+
+## O que o ZTNA (acesso à rede zero trust) de fato é
+
+O **ZTNA** é a categoria concreta de produto: em vez de pôr o usuário na rede com uma VPN (rede privada virtual) e deixá-lo alcançar tudo o que as rotas permitirem, um intermediário autentica usuário e dispositivo e então o conecta a **uma aplicação específica**.
+
+A melhoria genuína não é a criptografia, que a VPN já tinha. É a **ausência de movimento lateral**. Uma sessão comprometida alcança as aplicações para as quais aquela sessão foi autorizada, e não consegue varrer a sub-rede, porque nunca esteve na sub-rede. Esse é um ganho arquitetural real e é a razão de a categoria existir.
+
+Duas propriedades que vale entender antes de comprar:
+
+**As aplicações ficam invisíveis, e não apenas protegidas por firewall.** A maioria das implementações faz o conector discar para fora, em direção ao intermediário, então não há porta de entrada a ser encontrada. Isso remove uma classe inteira de exposição - não se ataca o que não responde.
+
+**O intermediário enxerga tudo.** Todo acesso passa por ele, o que é excelente para registro e é uma concentração genuína de risco e de dependência. Se o intermediário cai, o trabalho para; se é comprometido, tudo o que ele fronteia fica exposto.
+
+## O que o SASE (borda de serviço de acesso seguro) de fato é
+
+O **SASE** não é uma tecnologia. É o empacotamento de funções de rede e de segurança - gateway web seguro, corretor de acesso à nuvem, ZTNA, firewall, às vezes SD-WAN (rede de longa distância definida por software) - entregues a partir dos pontos de presença de um provedor, em vez de caixas suas.
+
+A descrição honesta é que **o SASE é um modelo de compra e de operação**. As funções são as que você já tinha; o que muda é que rodam na borda de outra pessoa, são cobradas por assinatura, e são geridas num console só.
+
+Os benefícios reais são reais: política consistente para usuários que já não estão em escritórios, menos hardware a renovar, e um lugar único para expressar regras que antes moravam em quatro produtos.
+
+Os custos reais são igualmente reais, e são os que os diagramas omitem. Seu tráfego agora atravessa a infraestrutura de um provedor, então a queda dele é a sua queda e a jurisdição dele é a sua jurisdição. A portabilidade de política entre fabricantes é ruim, então o custo de troca é alto por construção. E isso é [risco de concentração](/glossary/concentration-risk) em estado puro: você tornou um fornecedor dependência de cada conexão de cada usuário.
+
+## A arquitetura, nos termos do padrão
+
+O **motor de política** avalia uma requisição contra identidade, estado do dispositivo, sensibilidade do recurso e contexto, e devolve uma decisão. É o cérebro, e é tão bom quanto os sinais que recebe.
+
+O **administrador de política** transforma essa decisão em instrução - estabelecer a sessão, emitir o token, derrubá-la.
+
+O **ponto de aplicação de política** é o componente no caminho que de fato permite ou bloqueia: um intermediário, um proxy, um agente no endpoint, ou um sidecar ao lado da carga de trabalho.
+
+Três consequências decorrem, e importam na operação.
+
+**A confiança é mudada de lugar, não removida.** O motor e o provedor de identidade viram os sistemas mais críticos que você opera, e o alvo mais valioso do parque.
+
+**Toda decisão precisa de sinal.** Postura de dispositivo, garantia de identidade, classificação de recurso e contexto comportamental precisam vir de algum lugar, e cada fonte é uma dependência com exatidão e perfil de queda próprios.
+
+**A colocação do ponto de aplicação decide o que você consegue proteger.** Um intermediário na frente das aplicações não policia tráfego que nunca passa por ele, e é por isso que as implantações terminam com uma lista de exceções de tudo que não pôde ser posto atrás do ponto de aplicação.
+
+## Modelo de sessão e a questão da interoperabilidade
+
+**Sessões, não perímetros.** As decisões são por requisição em princípio e por sessão na prática, então os parâmetros de segurança reais são duração da sessão, frequência de reavaliação, e o que acontece quando a postura muda no meio dela. Tokens de vida longa reintroduzem em silêncio o modelo que você estava substituindo.
+
+**Os protocolos envolvidos são padrão, e a política não é.** Autenticação e federação se apoiam em padrões bem estabelecidos - OpenID Connect e SAML para identidade, TLS mútuo para identidade de carga de trabalho, e cada vez mais [credenciais resistentes a phishing](/learn/passkeys-and-phishing-resistant-authentication) por baixo. Expressão de política, sinais de postura de dispositivo e pontuação de risco são proprietários em todo produto, então as partes difíceis de escrever são exatamente as que não portam entre fabricantes. Essa assimetria é o custo de troca, e raramente está no slide.
+
+## O cenário de fabricantes, por categoria
+
+- **Plataformas centradas em identidade** - Okta, Microsoft Entra, Ping. O motor de política mora junto da identidade, o que é arquiteturalmente coerente porque identidade é o sinal que mais importa; você está consolidando num provedor de identidade e deveria precificar as consequências disso.
+- **Nuvens de rede e segurança** - Zscaler, Netskope, Cloudflare, Cisco, Palo Alto, Fortinet. Aplicação na borda do provedor, entregando ZTNA ao lado de controles de web e de aplicações em nuvem - o formato prático que a maioria das compras de SASE assume.
+- **Substitutos de acesso remoto** - fabricantes posicionados principalmente contra a VPN. Os mais rápidos a mostrar valor, os de escopo mais estreito; o risco é um projeto que para no acesso remoto e se reporta como zero trust.
+- **Microssegmentação e identidade de carga de trabalho** - Illumio, service meshes e similares, aplicando entre cargas em vez de na borda do usuário. Complementares aos anteriores, e não concorrentes, e as duas metades com frequência são compradas por equipes diferentes que nunca reconciliam a política.
+- **Padrões abertos e construção própria** - SPIFFE e SPIRE para identidade de carga, um provedor de identidade mais um proxy para acesso de usuário. Trabalho de verdade, sem licença, e portabilidade completa das partes que são padronizadas.
+
+A pergunta estrutural a fazer a qualquer um deles é a mesma: **onde fica o ponto de aplicação, o que acontece com o tráfego que não consegue passar por ele, e como fica a sua política no dia em que você sair?**
+
+## O que nada disso resolve
+
+Diga esta parte sem rodeio, porque o marketing não diz.
+
+**Uma sessão válida continua sendo uma sessão válida.** Se um atacante rouba credenciais por phishing e completa a autenticação, o zero trust o admite - corretamente, pela própria lógica dele. É por isso que a questão da [autenticação resistente a phishing](/learn/passkeys-and-phishing-resistant-authentication) fica embaixo da arquitetura inteira; um motor de política só pode ser tão bom quanto a afirmação de identidade que recebe.
+
+**Postura de dispositivo é alegação, não fato.** Os sinais vêm de um agente rodando numa máquina que pode já estar comprometida, e um endpoint comprometido consegue se reportar saudável.
+
+**Falhas de camada de aplicação seguem intocadas.** Se a aplicação tem um bug de injeção, o usuário perfeitamente autorizado chega até ele perfeitamente.
+
+**O legado continua legado.** Os sistemas que não falam identidade moderna - o controlador industrial, o appliance antigo, a coisa que ninguém vai recertificar - acabam numa exceção, e as exceções são para onde o risco migra. Toda implantação real tem as suas, e a pergunta útil a um fabricante não é como o produto dele funciona, e sim **o que acontece com as suas exceções**.
+
+## Adotando sem teatro
+
+- **Comece por um inventário de aplicações e de quem deve alcançá-las.** Esse inventário é o projeto de verdade; o produto é a parte fácil.
+- **Faça identidade primeiro.** Zero trust sobre autenticação fraca move a confiança para um lugar igualmente fácil de derrotar.
+- **Espere a lista de exceções, e trate-a como um registro** com donos e datas, não como nota de rodapé.
+- **Planeje para o intermediário cair**, já que você converteu uma dependência de rede numa dependência de serviço.
+- **Trate SASE como decisão de fornecedor**, com as perguntas que se faz a qualquer fornecedor: caminho de saída, jurisdição, histórico de quedas, e como fica a sua política no dia em que você sair.
+
+## O enquadramento que vale guardar
+
+Zero trust é um bom princípio mal servido pelo próprio vocabulário. O princípio - decidir por requisição, e não por localização - está certo, e o setor seria mais saudável se ele fosse discutido como **arquitetura com trocas** em vez de produto com selo.
+
+A troca é a mesma que atravessa [este site inteiro](/learn/the-chokepoints-of-the-internet): você não eliminou a confiança, concentrou-a em algum lugar mais novo e mais visível. Em geral isso é melhoria, porque confiança concentrada pode ser monitorada, versionada e auditada de um jeito que a confiança ambiente da rede nunca permitiu. Mas é uma mudança de lugar, e a primeira pergunta sobre qualquer dependência mudada de lugar é o que acontece quando ela falha.

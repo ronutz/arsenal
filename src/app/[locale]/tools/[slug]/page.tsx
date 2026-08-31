@@ -228,6 +228,8 @@ import F5BigdThreadCalculatorTool from "@/components/F5BigdThreadCalculatorTool"
 import MtuMssTool from "@/components/MtuMssTool";
 import { manifest as mtuMssManifest } from "@/lib/tools/mtu-mss";
 import HttpMethodsComparisonTool from "@/components/HttpMethodsComparisonTool";
+import CronExpressionExplainerTool from "@/components/CronExpressionExplainerTool";
+import { manifest as cronExpressionExplainerManifest } from "@/lib/tools/cron-expression-explainer";
 import { manifest as httpMethodsManifest } from "@/lib/tools/http-methods-comparison";
 import { manifest as f5BigdThreadManifest } from "@/lib/tools/f5-bigd-thread-calculator";
 import FaultHypothesisBuilderTool from "@/components/FaultHypothesisBuilderTool";
@@ -421,6 +423,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "http-methods-comparison": {
     Component: HttpMethodsComparisonTool,
     sources: httpMethodsManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "cron-expression-explainer": {
+    Component: CronExpressionExplainerTool,
+    sources: cronExpressionExplainerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-bigip-license-explainer": {
     Component: F5BigipLicenseExplainerTool,

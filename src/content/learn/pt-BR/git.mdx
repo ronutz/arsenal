@@ -1,0 +1,52 @@
+---
+slug: git
+title: "Git: o banco endereçado por conteúdo vestindo terno de controle de versão"
+summary: "O que o Git guarda de verdade (snapshots, não diffs), por que uma branch é só um ponteiro de 41 bytes, como as três áreas explicam quase todo comando confuso, e o que fez de um projeto paralelo de duas semanas o padrão da indústria em quinze anos."
+concepts: ["git", "version control", "commit", "branch", "merge", "rebase", "sha-1", "content addressing"]
+relatedTools: []
+relatedArticles: ["github", "hash-functions-overview", "terminal-shell-tty-console"]
+category: operations
+order: 6
+status: reviewed
+updated: "2026-08-27"
+---
+
+## Primeiro um banco de dados, depois uma ferramenta
+
+O Git se apresenta como ferramenta de controle de versão, e a maioria das pessoas o conhece como um conjunto de encantamentos: `add`, `commit`, `push` e uma reza. Por baixo, ele é algo mais simples e mais estranho: um banco de dados endereçado por conteúdo. Cada pedaço de conteúdo que o Git guarda — os bytes de um arquivo, a listagem de um diretório, um commit — passa por um hash, e o hash *é* o nome do objeto. Peça por `ce013625...` e você recebe exatamente os bytes cujo hash dá `ce013625...`, de qualquer cópia do repositório, para sempre. Conteúdo idêntico ganha o mesmo nome em todo lugar; conteúdo corrompido para de bater com o próprio nome e é pego no momento em que é lido.
+
+Três tipos de objeto carregam quase tudo. Um **blob** é conteúdo de arquivo, e só — sem nome de arquivo, sem permissões, só bytes. Uma **tree** é a listagem de um diretório: nomes, modos e os hashes dos blobs e trees abaixo dela. Um **commit** aponta para uma tree (o snapshot completo do projeto naquele momento), para o commit pai — ou pais —, e carrega autor, data e mensagem. Esse é o modelo de dados inteiro. Todo o resto do Git é conveniência para produzir, nomear ou comparar esses objetos.
+
+## Snapshots, não diffs
+
+O mal-entendido mais teimoso sobre o Git é achar que um commit guarda o que mudou. Não guarda. Todo commit aponta para uma tree completa — o projeto inteiro, como estava naquele commit. Quando você olha um diff, o Git o *calcula* na hora, comparando dois snapshots; a diferença é apresentação, não a coisa guardada. (O armazenamento fica pequeno porque arquivo que não mudou produz o mesmo hash de blob e é só referenciado de novo, e os pack files depois comprimem os objetos por delta internamente — detalhe de implementação invisível ao modelo.)
+
+Esse único fato explica comportamentos que de outro jeito parecem arbitrários. Trocar de branch é rápido porque é só materializar outra tree. Um cherry-pick consegue conflitar de jeitos surpreendentes porque ele precisa *reconstruir* uma mudança a partir de dois snapshots e reaplicá-la sobre um terceiro. E a história pode ser reescrita à vontade antes de ser compartilhada porque commits são valores imutáveis — você nunca edita um commit, você cria outro e move um ponteiro.
+
+## Uma branch tem 41 bytes
+
+Uma branch no Git é um arquivo contendo um hash de commit e uma quebra de linha. Essa é a implementação inteira. Criar uma branch escreve 41 bytes; apagar uma remove um arquivo; "estar" numa branch significa que o ponteiro especial `HEAD` referencia essa branch, de modo que o próximo commit ao mesmo tempo ganha o commit atual como pai e avança o ponteiro. Não existe contêiner, não existe cópia dos arquivos, não existe registro em lugar nenhum. É por isso que criar branch no Git é instantâneo onde, nos sistemas que ele substituiu, era um evento — às vezes literalmente uma cerimônia envolvendo o administrador do servidor — e por isso os fluxos de trabalho construídos sobre branches baratas e descartáveis só viraram norma depois que o Git as tornou de graça.
+
+O merge é onde os ponteiros encontram a aritmética. O Git acha o ancestral comum de dois commits e faz uma comparação de três vias: o que cada lado mudou em relação àquela base compartilhada. Mudanças em regiões diferentes se combinam em silêncio; mudanças nas mesmas linhas viram conflito, que o Git se recusa a resolver no chute — ele escreve as duas versões no arquivo e para, na teoria de que quem entende o código é que deve decidir. O **rebase** chega ao mesmo estado final por uma história diferente: em vez de um commit de merge juntando duas linhas, ele reaplica seus commits um por um sobre a base nova, produzindo uma linha reta ao custo de reescrevê-los (pais novos significam hashes novos — daí a regra de bolso de só fazer rebase do que você ainda não compartilhou).
+
+## As três áreas, ou por que os comandos finalmente fazem sentido
+
+Quase todo comando confuso do Git está mexendo numa de três coisas: a **working tree** (os arquivos que você edita), o **index**, também chamado de staging area (o snapshot sendo montado para o próximo commit), e o **HEAD** (o último commit). `git add` copia da working tree para o index. `git commit` transforma o index numa tree mais um objeto de commit e avança a branch. `git status` não é nada além de uma comparação de duas vias entre as três áreas. As várias formas alarmantes de `git reset` diferem só em qual das três elas movem. Quem aprende esse modelo primeiro tende a parar de decorar comandos, porque os comandos viram frases sobre três lugares bem definidos.
+
+## Distribuído quer dizer que todo clone é a coisa de verdade
+
+O Git foi escrito em 2005, em mais ou menos duas semanas, por Linus Torvalds — porque o kernel do Linux tinha perdido a licença de uso do BitKeeper, o sistema proprietário que (contra os hábitos da época) já tinha ensinado aos desenvolvedores do kernel qual era a sensação de um controle de versão distribuído. Os antecessores que a maior parte da indústria usava de fato, CVS e Subversion, guardavam a única história verdadeira num servidor; a cópia do desenvolvedor era uma área de trabalho e pouco mais, e a maioria das operações era chamada de rede.
+
+O Git inverteu isso: `git clone` copia o banco de objetos inteiro, cada commit até o primeiro. História, diffs, branches, `log`, `blame` — tudo é local, e é por isso que é rápido, e por isso não existe cópia privilegiada no protocolo em si. "O servidor" num time que usa Git é uma convenção social: um clone que todo mundo combina de tratar como ponto de encontro. O protocolo ficaria perfeitamente satisfeito com desenvolvedores trocando commits entre si — os objetos são endereçados por conteúdo, então o mesmo commit é o mesmo commit onde quer que ele pouse.
+
+Os nomes que a maioria aprende como Git avançado são a contabilidade desse modelo. Um **remote** é um marcador com o endereço de outro clone. `fetch` copia para você os objetos novos de lá e atualiza o seu registro de onde as branches de lá apontam; `pull` é um fetch seguido de um merge (ou rebase) na sua branch; `push` manda seus objetos para lá e pede que um ponteiro se mova. Nada nessa lista edita história que os outros têm — que é a propriedade quieta de segurança em que o desenho inteiro se apoia.
+
+## O que o Git não faz
+
+Dois silêncios do desenho valem conhecer de propósito. O Git rastreia conteúdo, não arquivos: um diretório vazio é invisível para ele (não há entrada de tree a fazer), e um rename não é registrado em lugar nenhum — ele é *detectado* depois, quando uma remoção e uma adição parecem suficientemente parecidas. E os hashes do Git autenticam conteúdo, não autoria: a linha `author` de um commit é uma alegação em texto livre que qualquer um escreve. Verificar quem fez um commit é um mecanismo separado (commits e tags assinados), colocado por cima para os projetos que precisam disso.
+
+A função de hash em si carrega um asterisco. O Git nasceu no SHA-1, que já não resiste a colisão contra um atacante com verba; o Git blindou a própria implementação contra as construções de colisão conhecidas e definiu um formato de repositório em SHA-256, e a migração do ecossistema é um projeto longo e deliberadamente sem emoção (veja o [panorama de funções de hash](/learn/hash-functions-overview) para o que é resistência a colisão e por que ela se desgasta). Para integridade contra acidente — o trabalho que o hash faz um bilhão de vezes por dia — o SHA-1 segue inteiramente eficaz.
+
+## Por que esse desenho ganhou
+
+Em 2005 o campo estava cheio: o CVS era o incumbente de quem todo mundo tinha cicatriz, o Subversion o sucessor respeitável, e uma primeira geração de ferramentas distribuídas (BitKeeper no comercial; Mercurial, nascido no mesmo mês que o Git) provava o conceito. O Git ganhou num composto de velocidade (operações locais, na escala do kernel, no hardware de 2005), um modelo de dados simples o bastante para merecer confiança e, decisivamente, o efeito de rede que chegou quando a hospedagem tornou o compartilhar sem atrito — uma história que pertence às plataformas construídas em cima dele, e ao fato estranho de que o encanamento por baixo nunca precisou mudar para sustentar nada disso. A interface seca e de quinas vivas nunca amaciou muito; o modelo por baixo é que se revelou a coisa que vale aprender.
