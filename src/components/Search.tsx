@@ -113,6 +113,22 @@ const FILTER_LABEL_KEY: Record<
   page: "filterPages",
 };
 
+/**
+ * Locales whose pages are in the search index.
+ *
+ * Pagefind writes roughly one fragment file per indexed page. Indexing all
+ * sixteen locales produced about 48,000 files - more than the site's pages -
+ * and pushed the Cloudflare Workers asset manifest past its 100,000-file cap,
+ * which stopped a deploy on 2026-08-31. The build now indexes only the two
+ * day-one locales:
+ *
+ *     pagefind --site out --glob "{en,pt-BR}/**\/*.html"
+ *
+ * Every locale remains fully translated and browsable; search is what narrows.
+ * Keep this list in step with the --glob in package.json.
+ */
+const SEARCH_LOCALES = ["en", "pt-BR"];
+
 export default function Search() {
   const t = useTranslations("search");
 
@@ -173,6 +189,14 @@ export default function Search() {
   // Lazily load the Pagefind runtime the first time search opens.
   const loadPagefind = useCallback(async () => {
     if (pagefindRef.current) return pagefindRef.current;
+    // Short-circuit on a locale the index does not cover: the runtime would
+    // load and then answer nothing, which reads as a broken search box. Saying
+    // so immediately is both faster and honest.
+    const lang = document.documentElement.lang;
+    if (lang && !SEARCH_LOCALES.includes(lang)) {
+      setUnavailable(true);
+      return null;
+    }
     try {
       // The bundler must NOT resolve this at build time — it only exists in the
       // exported output. The /* webpackIgnore */ comment keeps it a runtime import.
@@ -241,13 +265,26 @@ export default function Search() {
         setLoading(false);
         return;
       }
-      // Pagefind already scoped to this page's language via <html lang> when the
+      // Pagefind is scoped to this page's language via <html lang> when the
       // runtime loaded, so a plain query returns correctly-localized results.
-      const search = await pf.search(q);
-      const data = await Promise.all(search.results.slice(0, 8).map((r) => r.data()));
-      if (!cancelled) {
-        setResults(data);
-        setLoading(false);
+      //
+      // The index covers the locales listed in SEARCH_LOCALES (see the note at
+      // the top of this file). On any other locale the runtime loads but has no
+      // fragments for that language, and the call below can reject rather than
+      // return an empty set - which would leave the spinner running for ever.
+      try {
+        const search = await pf.search(q);
+        const data = await Promise.all(search.results.slice(0, 8).map((r) => r.data()));
+        if (!cancelled) {
+          setResults(data);
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setResults([]);
+          setUnavailable(true);
+          setLoading(false);
+        }
       }
     }, 150);
     return () => {

@@ -22,3 +22,27 @@
 # canon/PKG-asset-budget-2026-07-23.md. (D-19)
 # ============================================================================
 **/index.txt
+
+# ---------------------------------------------------------------------------
+# ASSET BUDGET, 2026-08-31.
+# The Workers manifest cap is 100,000 files per version. Excluding index.txt
+# (above) was not enough on its own: the CI gate stopped a deploy at an
+# effective 104,053.
+#
+# The dominant contributor was the search index. Pagefind writes roughly one
+# fragment per indexed page, so indexing all sixteen locales produced ~48,000
+# files on its own - more than the pages themselves. The build now scopes
+# pagefind to the two day-one locales:
+#
+#     pagefind --site out --glob "{en,pt-BR}/**/*.html"
+#
+# Search therefore covers en and pt-BR, which is where the authored content
+# lives; the other locales remain fully browsable and translated.
+#
+# Rough shape of the effective manifest after the change:
+#   index.html per route  ~47,700
+#   pagefind (2 locales)   ~6,200
+#   OG cards               ~4,600
+#   machine-legible .md    ~2,600
+#   _next and static         ~300
+# ---------------------------------------------------------------------------
