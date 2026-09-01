@@ -11,6 +11,16 @@ status: reviewed
 updated: "2026-07-23"
 ---
 
+## Origens: por que o espectro é administrado
+
+O rádio começou sem regulação, e a consequência chegou rápido: transmissores interferiam uns nos outros, e interferência no mar custou vidas. A resposta foi internacional - um arcabouço de tratado acordado em conferências a partir de 1906 -, e é por isso que o espectro é um dos pouquíssimos domínios técnicos coordenados por tratado, e não por consenso da indústria.
+
+A **UIT** aloca internacionalmente e divide o mundo em três regiões com alocações diferentes; os reguladores nacionais - Anatel no Brasil, FCC nos Estados Unidos, Ofcom no Reino Unido e seus equivalentes - atribuem dentro desse arcabouço. É por isso que um equipamento legal num país não é automaticamente legal em outro, e por que os produtos carregam certificação por região.
+
+As **faixas ISM** são a exceção que produziu o mundo sem fio moderno. Reservadas originalmente a equipamentos industriais, científicos e médicos - a alocação de 2,4 GHz existe em parte porque fornos de micro-ondas são ruidosos ali -, viraram o espaço não licenciado onde qualquer um pode transmitir sob regras de potência e comportamento. Wi-Fi, Bluetooth, telefonia sem fio e um número enorme de sensores moram lá **porque ninguém precisa pedir permissão**, e o preço dessa liberdade é que ninguém pode reclamar de interferência.
+
+Essa troca - exclusividade licenciada contra liberdade não licenciada - é o enquadramento mais útil do assunto inteiro. Uma faixa licenciada custa dinheiro e dá proteção legal contra interferência; uma faixa não licenciada é gratuita e não dá nenhuma.
+
 ## Uma troca governa tudo
 
 Frequências baixas viajam longe e carregam pouco. Frequências altas carregam quantidades enormes e param no primeiro obstáculo. Quase toda decisão de projeto em rádio, da comunicação com submarinos ao 5G, é uma posição tomada sobre essa troca.
@@ -52,6 +62,32 @@ A ionosfera não é constante, e é aí que está toda a textura da operação e
 As **faixas ISM** — industrial, científica e médica — são as alocações isentas de licença que tornaram possível o sem-fio de consumo. Wi-Fi e Bluetooth dividem 2,4 GHz com fornos de micro-ondas e muita coisa mais, e é exatamente por isso que a faixa é congestionada; as faixas de Wi-Fi em 5 e 6 GHz oferecem mais espaço e menos alcance, precisamente como a troca prevê. O **LoRa** faz a aposta oposta, usando alocações ISM abaixo de 1 GHz e taxas de dados muito baixas para obter quilômetros de alcance e anos de bateria de um sensor — uma escolha deliberada de alcance sobre capacidade.
 
 O celular abrange faixas baixas para cobertura e altas para capacidade na mesma rede, que é a troca administrada em vez de resolvida: a faixa baixa alcança a borda rural, a alta atende ao quarteirão denso.
+
+## O que os números significam na prática
+
+**A banda é de onde vem a capacidade.** O resultado de Shannon amarra a taxa alcançável à largura de banda e à relação sinal-ruído, e a leitura prática é que frequências mais altas são atraentes porque simplesmente há mais espaço lá em cima - um canal de 100 MHz em 6 GHz é banal, e impossível em 900 MHz, onde a faixa inteira é mais estreita que isso.
+
+**A atenuação sobe com a frequência**, e a interação com obstáculos é o que decide a implantação. A perda no espaço livre cresce com a frequência, mas o efeito mais marcante dentro de prédios é o material: em 2,4 GHz uma parede de gesso é perda modesta, em 60 GHz ela é praticamente opaca, e em comprimentos milimétricos até folhagem e chuva importam. É por isso que planejar cobertura é função do material da construção tanto quanto da distância.
+
+**Piso de ruído e ciclo de trabalho** decidem o que de fato funciona em faixas compartilhadas. A operação não licenciada está sujeita a limites de potência e, em muitas regiões, a escutar antes de transmitir e a limites de ciclo de trabalho - e é por isso que um equipamento legal não é automaticamente um equipamento que consegue tempo de ar.
+
+## Onde cada faixa é de fato usada
+
+- **Abaixo de 1 GHz** - longo alcance, boa penetração, taxas pequenas. LoRaWAN, Sigfox, Z-Wave, medição de utilidades, e a razão de a cobertura rural ser construída em faixas baixas.
+- **2,4 GHz** - o compromisso global: disponível em quase todo lugar, lotada de Wi-Fi, Bluetooth, fornos e todo o resto, com [apenas três canais Wi-Fi sem sobreposição](/learn/wireless-networking-from-802-11-to-wifi-7).
+- **5 GHz** - muito mais espectro, alcance menor, e partes compartilhadas com radar, e é por isso que os equipamentos precisam detectar radar e desocupar o canal.
+- **6 GHz** - aberta recentemente para uso não licenciado em muitas jurisdições e não em todas, sem equipamentos legados dentro, que é o atrativo inteiro.
+- **Faixas celulares** - licenciadas e leiloadas, com faixas baixas para cobertura, médias para o equilíbrio, e ondas milimétricas para capacidade em áreas densas a alcance muito curto.
+- **Ondas milimétricas e acima** - banda enorme, comportamento de linha de visada, e desvanecimento por chuva como entrada de projeto, e não nota de rodapé.
+
+## Quem opera no espectro, por categoria
+
+- **Reguladores** - a UIT internacionalmente, e órgãos nacionais como Anatel, FCC e Ofcom, que decidem o que pode ser transmitido onde e com que potência. Em espectro, o regulador é ator mais consequente que qualquer fabricante.
+- **Operadoras licenciadas** - móveis e de radiodifusão, cujas licenças são ativos adquiridos em leilão e cujas reclamações de interferência têm força legal.
+- **Fabricantes de equipamento não licenciado** - Wi-Fi, Bluetooth e curto alcance, competindo dentro de regras que não podem mudar.
+- **Organismos de norma e certificação** - o IEEE para os padrões de rádio, a Wi-Fi Alliance e o Bluetooth SIG para as marcas de interoperabilidade, e os regimes nacionais de certificação que decidem se um equipamento pode sequer ser vendido.
+
+A consequência prática para quem projeta com rádio: **a restrição costuma ser regulatória, e não física**. A faixa determina a potência, a potência determina o alcance, e o regulador determina a faixa.
 
 ## Por que vale saber disso
 

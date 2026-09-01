@@ -11,6 +11,36 @@ status: reviewed
 updated: "2026-07-22"
 ---
 
+## Origins: the wiring closet before there was a standard
+
+Before structured cabling, a building's network was whatever each system vendor demanded. A terminal system ran its own coax; a telephone system ran twisted pair on its own plan; a token-passing network ran shielded cable of its own kind. Adding a system meant pulling new cable; changing vendor meant pulling it again; and nobody could tell from the closet what any given wire did.
+
+**TIA-568 (1991)** ended that by inverting the question. Rather than cabling for a protocol, it specified a **generic** system: a topology, distances, connector types and performance grades, defined so that any conforming application could run over it. The international counterpart is **ISO/IEC 11801**, and the European **EN 50173**; they differ in naming and detail rather than in intent.
+
+The resulting vocabulary is worth knowing because every drawing and bid uses it:
+
+- **Entrance facility** — where the outside world lands.
+- **Equipment room** — the building's main distribution.
+- **Backbone (riser)** — between floors and buildings.
+- **Telecommunications room** — the floor's distribution point.
+- **Horizontal cabling** — the run from that room to the work area, which is where the 100-metre rule lives.
+- **Work area** — the outlet and the patch cord to the device.
+
+The word that matters is *generic*. Structured cabling is deliberately a **passive plant with a design life measured in decades**, and the electronics on both ends are expected to be replaced several times across it — the same economic argument that makes [passive optical plant](/learn/gpon-how-one-fiber-serves-a-neighborhood) a good investment.
+
+## The categories, and what each was solving
+
+Copper grades are not marketing tiers; each was defined against a specific transmission problem:
+
+- **Cat 3** — 16 MHz, the voice and 10 Mbps era.
+- **Cat 5** — 100 MHz, which carried 100 Mbps and, with all four pairs, gigabit.
+- **Cat 5e** — same bandwidth, tightened crosstalk requirements, because gigabit uses all four pairs in both directions at once and *near-end crosstalk* became the limiting defect rather than attenuation.
+- **Cat 6** — 250 MHz, adding a spline in many designs to hold pair separation; 10 Gbps only over shortened runs, typically 37 to 55 metres.
+- **Cat 6A** — 500 MHz, and the grade defined for 10 Gbps across the full 100 metres. Its new enemy is **alien crosstalk**, coupling between adjacent cables rather than between pairs inside one, which is why 6A cable is physically larger and why bundle size and pathway fill became design constraints.
+- **Cat 7, 7A, 8** — shielded designs, with Cat 8 reaching 2 GHz over about 30 metres, aimed at datacentre top-of-rack rather than at the office floor.
+
+**Shielded or unshielded** is a system decision, not a product upgrade: shielding only works if it is bonded and grounded continuously, and a shielded system terminated by someone treating it as unshielded performs worse than good unshielded cable, because the shield becomes an antenna.
+
 ## From wires to a system
 
 Before structured cabling, building wiring was whatever the last installer left behind: point-to-point runs, proprietary connectors, undocumented splices. The ANSI/TIA-568 family - the standards lineage of the TIA, heir to the old EIA/TIA partnership - replaced that with a system: standardized media, standardized connectors and pinouts, standardized distances, and a standardized topology, so that any compliant outlet can serve any compliant service, and the person troubleshooting in year ten can reason about what the person installing in year one did.
@@ -32,6 +62,42 @@ Beyond 100 meters, or between buildings, or wherever electrical isolation matter
 ## The ratings inspectors check
 
 One dimension of cabling has nothing to do with signal and everything to do with fire code. Cable jacketed for air-handling **plenum** spaces (CMP) must burn slow and smoke little; **riser**-rated CMR covers vertical shafts; general-purpose jackets cover the rest, and the ratings substitute downward only - plenum may go anywhere, riser may not go in plenums. Outside North America the parallel vocabulary is LSZH. It is the part of the cabling bill of materials that a building inspector, not a link tester, enforces - and the part most expensively discovered late.
+
+## Power over the same pair, and the heat nobody planned for
+
+Power over Ethernet changed what a cabling design has to account for, because current heats copper and heat raises attenuation.
+
+The standards escalate: roughly 15 W at the port for the original, about 30 W for the next grade, and up to roughly 90 W for the four-pair versions. At the top of that range, a tightly packed bundle of unshielded cable can rise enough in temperature to push a marginal run out of specification — which appears as errors on the longest links in the bundle only, under load, in the afternoon.
+
+The design responses are boring and effective: limit bundle sizes, prefer larger conductors for long powered runs, keep pathway fill down, and derate length where a bundle carries high-power devices throughout.
+
+## Fibre, and choosing it honestly
+
+- **Multimode (OM3, OM4, OM5)** with a laser-optimised core, for distances inside a building. Cheaper optics, shorter reach.
+- **Singlemode (OS2)** for campus and long haul, with dearer optics and reach measured in kilometres.
+
+The honest trend is that the price gap between multimode and singlemode optics has narrowed enough that many new campus designs simply pull singlemode everywhere, on the grounds that the fibre outlives several optics generations and pulling cable twice is the expensive part.
+
+## Verification is the part that separates a system from a bundle of wires
+
+Three levels, and the distinction is contractual as much as technical:
+
+- **Verification** — continuity and wire map. It proves the pairs are in the right order and nothing is broken.
+- **Qualification** — whether the link supports a given application, on a tester that answers "will this run gigabit".
+- **Certification** — the full standards suite against the grade: insertion loss, near-end and far-end crosstalk, return loss, delay skew, and for 6A the alien crosstalk case. This is what a warranty is issued against.
+
+Two link definitions decide whether a result is even meaningful: the **permanent link** — the fixed run from patch panel to outlet — and the **channel**, which includes the patch cords at both ends. Testing the wrong one is the most common way a passing result and a failing network coexist.
+
+**The 100-metre rule** is 90 metres of solid horizontal cable plus 10 metres of stranded patch cord, and the split is not arbitrary: stranded conductors are more flexible and more lossy, so the allowance for them is bounded deliberately.
+
+## Vendors and the warranty question, by category
+
+- **Cable and connectivity manufacturers** — CommScope, Panduit, Belden, Leviton, Legrand and others. What they actually sell to a building owner is a **system warranty**, typically 20 to 25 years, and it is conditional on components from the same system and installation by a certified contractor.
+- **Test equipment** — Fluke Networks being the reference, with others in the field. Certification results are the deliverable that closes a project, so the tester's reports are contractual documents.
+- **Installers and integrators**, whose certification is what makes the manufacturer's warranty valid at all.
+- **Standards bodies** — TIA, ISO/IEC, CENELEC — which define the grades everyone else references.
+
+The buying question is rarely which cable performs better on a datasheet. It is **what is warranted, by whom, and for how long**, because the plant is meant to outlast the equipment it serves and the paperwork is what survives with it.
 
 ## Why the system holds
 

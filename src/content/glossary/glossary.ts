@@ -3725,8 +3725,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "cyber-security", "events"],
     expansion: "You Shot the Sheriff",
     aliases: ["ysts", "you shot the sheriff"],
-    relatedTerms: ["bsides-sao-paulo", "h2hc", "2600-magazine"],
-    sources: [{ label: "YSTS (official)", href: "https://www.ysts.org" }],
+    relatedTerms: ["bsides-sao-paulo", "h2hc", "2600-magazine", "chkrootkit", "jeff-moss", "space-rogue"],
+    sources: [{ label: "YSTS (official)", href: "https://www.ysts.org" }, { label: "ISTS - i sh0t the sheriff, the podcast the event grew out of, recording since 2006", href: "https://creators.spotify.com/pod/profile/ists" }],
   },
   {
     slug: "sampasec",

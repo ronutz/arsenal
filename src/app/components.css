@@ -192,6 +192,17 @@
   color: var(--text-secondary);
   max-width: 60ch;
 }
+/* .section-body carried no vertical rhythm of its own, which is invisible in
+   the common case and wrong everywhere else. Of its 33 uses, 23 follow a
+   heading and inherit that heading's margin-bottom; the remaining ten follow a
+   list or another paragraph and had NOTHING between them - the reported symptom
+   on /roles/levels, where the pleno note butts straight against the grade grid,
+   and the same defect wherever two section-body paragraphs sit together.
+   The rule is scoped to exclude headings so the 23 correct cases keep their
+   existing spacing exactly. (PRIME, 31/08/2026) */
+:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) + .section-body {
+  margin-top: 1.25rem;
+}
 
 /* ---- Page hero: the shared top-of-page header standard ---------------------
    The /learn header, promoted from a thrice-copied inline override to the
@@ -16280,4 +16291,87 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   border-radius: 2px;
   line-height: 0;
   overflow: hidden;
+}
+
+/* ---- Full-record status filter (PRIME, 31/08/2026) ------------------------
+   CURRENT and HISTORICAL were a legend; they are now toggles. They keep the
+   badge colours exactly - amber for current, muted for past - and sit one step
+   larger than .certs-vendor-jump (0.85rem) because they filter the whole record
+   while the vendor pills only jump within it. Unpressed reads as "excluded":
+   the fill drops away and the label dims, so the state is legible without
+   relying on colour alone. */
+.certs-status-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+.certs-status-toggle {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s, opacity 0.12s;
+}
+.certs-status-toggle--current {
+  color: var(--accent-amber);
+  background: color-mix(in srgb, var(--accent-amber) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-amber) 40%, transparent);
+}
+.certs-status-toggle--past {
+  color: var(--text-tertiary);
+  background: var(--surface-base);
+  border: 1px solid var(--border-strong);
+}
+.certs-status-toggle[aria-pressed="false"] {
+  background: transparent;
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+.certs-status-toggle:hover {
+  border-color: var(--color-accent);
+}
+
+/* ---- /industry: where the work landed (PRIME, 31/08/2026) -----------------
+   Names only, set as chips rather than cards: there is one fact per entry and a
+   card would promise detail the section deliberately does not carry. The note
+   above them reads at body scale because it is the part that qualifies the
+   list, and burying it in small print would be the wrong emphasis. */
+.industry-served {
+  margin: 0 0 2.5rem;
+}
+.industry-served-note {
+  font-size: 1.02rem;
+  color: var(--text-secondary);
+  max-width: 68ch;
+  margin: 0.75rem 0 1.5rem;
+}
+.industry-served-group {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin: 1.25rem 0 0.6rem;
+}
+.industry-served-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+}
+.industry-served-item {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 0.35rem 0.8rem;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
 }

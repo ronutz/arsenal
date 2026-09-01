@@ -150,6 +150,28 @@ const VOICE = [
   /padding it out/i,
   /writing fiction with a real/i,
   /readers should (check|look up)/i,
+  // ---- JUSTIFYING AN OMISSION (PRIME, 31/08/2026) ------------------------
+  // A second editorial reflex, and the one that keeps recurring: copy that
+  // explains why something is ABSENT. "no projects, no dates, no outcomes,
+  // because those are not mine to publish" tells a reader to notice three gaps
+  // they would never have looked for, and turns a plain list into a defence.
+  // The standing rule is silence: state what the thing IS and stop. These
+  // patterns catch the constructions that reach for the defence.
+  /not (mine|ours|his|hers|theirs) to (publish|share|tell|disclose)/i,
+  /leaves no public record/i,
+  /names organi[sz]ations only/i,
+  /no projects, no dates/i,
+  /nothing is said about/i,
+  /rather than (a )?(compliance|assurance) audit/i,
+  /is not a (compliance|assurance) audit/i,
+  /rather than a (compliance|assurance)/i,
+  // Portuguese carries the same reflex in its own words, and the guard reads
+  // both packs.
+  /n[ãa]o [ée] meu para publicar/i,
+  /n[ãa]o deixa registro p[úu]blico/i,
+  /nomeia apenas organiza[çc][õo]es/i,
+  /sem projetos, sem datas/i,
+  /e n[ãa]o uma auditoria de conformidade/i,
 ];
 const voiceLines = voiceSrc
   .split("\n")

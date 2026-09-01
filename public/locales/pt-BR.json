@@ -7633,7 +7633,8 @@
     "fortinetTransitionNote": "Em 15 de julho de 2026, a Fortinet aposentou os nomes de certificação FCF / FCA / FCP / FCSS e restaurou a progressão de oito níveis NSE 1-8. As certificações que estavam ativas nessa data foram convertidas com base nos exames já aprovados: os fundamentos de cibersegurança tornaram-se NSE 1, NSE 2 e NSE 3, e o exame FortiGate / FortiOS por trás do FCP tornou-se NSE 4. Essas certificações NSE aparecem acima como o programa atual; as credenciais FCP e FCSS que elas substituíram permanecem registradas abaixo. Cada certificação NSE herda a data de expiração da certificação que substituiu.",
     "fortinetTransitionLabel": "Uma observação sobre o programa de certificação da Fortinet",
     "trainingLabel": "Treinamentos",
-    "noCertificateNote": "Infelizmente, o fabricante não fornece um certificado para esta autorização."
+    "noCertificateNote": "Infelizmente, o fabricante não fornece um certificado para esta autorização.",
+    "statusFilterLabel": "Filtrar o registro por situação"
   },
   "colophon_page": {
     "eyebrow": "Colofão",
@@ -14088,7 +14089,7 @@
       },
       "ysts": {
         "def": "You Shot the Sheriff: a conferência brasileira curada de um dia só - com sabor de convite, sediada em bar e famosamente bem conectada.",
-        "context": "Rodando em São Paulo desde o fim dos anos 2000, a YSTS reúne palestrantes nacionais e internacionais escolhidos a dedo num único dia descontraído (tradicionalmente num bar, bebida inclusa), no fim de semana seguinte à BSidesSP. Sua primeira edição foi aberta por Emmanuel Goldstein, da 2600, e a tradição permanece: palestrantes selecionados recebem uma medalha que garante entrada livre em todas as edições futuras. Amplamente tida como o ingresso mais disputado da cena brasileira.",
+        "context": "Fundado por Luiz Eduardo dos Santos, Nelson Murilo Rufino - autor do chkrootkit - e Willian Caprino, e começou como podcast: o ISTS, \"i sh0t the sheriff\", gravando desde 2006 e ainda ativo. A conferência veio em 2007 e manteve o registro do podcast. Três recusas a definem: só por convite de patrocinador, local revelado apenas a quem confirmou presença, e um número de participantes que os fundadores limitam por princípio, tendo dito na décima edição que trabalham para manter o mesmo tamanho porque crescer custaria a qualidade. Jeff Moss, criador da DEF CON e da Black Hat, e Cris Thomas, do L0pht, já palestraram ali, ao lado de quem carrega a cena brasileira.",
         "depth": "A YSTS concentra palestrantes nacionais e internacionais escolhidos a dedo num único dia em São Paulo, e sua escolha distintiva é a pequenez deliberada com um formato incomum: historicamente acontece em espaços que não lembram em nada salões de conferência, com plateia influenciada por convite.\n\nO raciocínio por trás disso é o mesmo do limite de público da ShmooCon, alcançado de forma independente. Uma sala em que todos podem plausivelmente conhecer todos produz conversas diferentes de um salão de duas mil pessoas, e o valor de um evento de segurança muitas vezes está menos nas palestras do que em ao lado de quem você acaba ficando. Curar a plateia é fora de moda e de fato produz aquilo a que se propõe.\n\nA contrapartida é a óbvia e merece ser nomeada. Um evento curado é por definição excludente, e quem é convidado reflete quem os organizadores já conhecem, que é como redes profissionais se reproduzem e como quem chega fica de fora. Um ecossistema saudável precisa dos dois modelos: o evento aberto e gratuito que deixa qualquer um entrar, e o pequeno e denso que produz profundidade, e um país com apenas um deles está perdendo alguma coisa."
       },
       "bsides-sao-paulo": {
@@ -16244,7 +16245,11 @@
     "careerNote": "Dois tipos de empresa aparecem aqui, e os marcadores os distinguem: aquelas em que fui empregado e aquelas cuja tecnologia trabalhei diretamente, do outro lado da mesa. Em ordem cronológica de primeiro contato, desde 1996.",
     "careerStripTitle": "Os capítulos vividos por dentro",
     "careerStripNote": "Em todas elas, empregadora ou fabricante, o trabalho teve o mesmo formato: de frente para o cliente final, em pré-vendas e em suporte técnico pós-vendas, e muitas vezes atuando como proxy técnico e facilitador de capacitação para os parceiros que precisavam sustentar o produto por conta própria. A tarefa era deixar o cliente com algo que funcionasse melhor do que antes — uma inovação, uma solução, uma melhoria que continuasse funcionando depois que eu saísse. O relato completo está no registro de carreira.",
-    "careerStripLink": "Ler o registro de carreira"
+    "careerStripLink": "Ler o registro de carreira",
+    "servedTitle": "Onde o trabalho chegou",
+    "servedNote": "Organizações cujas redes o trabalho alcançou, entregue por meio dos fabricantes, distribuidores, revendas e integradores para os quais trabalhei entre 1996 e 2020.",
+    "servedCustomersTitle": "Clientes finais, por meio de fabricantes e distribuidores",
+    "servedPartnersTitle": "Parceiros, por meio de fabricantes e distribuidores"
   },
   "sitemap": {
     "metaTitle": "Mapa do site - todas as seções do ronutz.com",
@@ -16555,14 +16560,12 @@
     "ctaTitle": "Se há uma decisão sobre a sua mesa",
     "ctaBody": "A primeira mensagem útil diz qual é a decisão e quando ela precisa ser tomada.",
     "ctaButton": "Iniciar uma conversa",
-    "offerArrangementTitle": "Sob combinação especial",
-    "offerArrangementBody": "Presença sênior em tempo real, presencial ou remota, durante uma operação que não pode ser repetida: uma janela de migração, uma virada, um teste de contingência planejado.",
     "disclaimerTitle": "Antes de continuar a ler",
     "disclaimerBody": "Trabalho em tempo integral para a Red Education. O trabalho de consultoria descrito nesta página é entregue pessoalmente por mim e contratado através da Red Education. A única coisa sobre a qual não posso informar é preço: isso vem somente depois de uma conversa detalhada de escopo e alinhamento de expectativas, e é fornecido exclusivamente pela Red Education. O que posso dizer é que serei o principal defensor do melhor resultado possível para você. Desde 1996 venho argumentando de forma consistente pelo que serve ao cliente final, e não necessariamente pelo que servia à empresa para a qual eu trabalhava na época. O certo é o certo, e o justo é o justo. Se você precisa de treinamento, isso também passa pela Red Education.",
     "exclusion1Term": "Implantação e configuração",
     "exclusion1Body": "Reviso o que está planejado e audito o que foi construído, mas não sou as mãos que constroem.",
     "exclusion2Term": "Plantão, sobreaviso e responsabilidade operacional",
-    "exclusion2Body": "Não vendo horas, e não sou um nome em escala de plantão ou em cadeia de escalonamento. Quando a participação em tempo real se justifica, ela acontece sob combinação específica, como atuação consultiva sênior — julgamento no momento da decisão, não capacidade de sobreaviso.",
+    "exclusion2Body": "Não vendo horas, e não sou nome em escala nem em cadeia de acionamento. Presença durante janela de manutenção não é oferecida, nem presencial nem remota.",
     "exclusion3Term": "Alocação de mão de obra",
     "exclusion3Body": "Se o que falta é mais uma pessoa no time, isso é uma decisão de contratação — não é o que este trabalho resolve.",
     "exclusion4Term": "Treinamento e capacitação, em qualquer formato",
@@ -16573,7 +16576,9 @@
     "advisorBody": "Passei trinta anos empregado por fabricantes, distribuidores e integradores — implantando, sustentando, implementando e ensinando o que eles vendem, em vez de vendê-lo. É essa a base inteira do conselho: meu trabalho era fazer a coisa funcionar para o cliente depois, então eu tive de conviver com a resposta. As credenciais, o histórico de carreira e o que dizem clientes e alunos estão a um clique.",
     "advisorLinkCreds": "Credenciais",
     "advisorLinkCareer": "Histórico de carreira",
-    "advisorLinkEndorsements": "O que dizem os clientes"
+    "advisorLinkEndorsements": "O que dizem os clientes",
+    "offerEstateTitle": "Revisão do parque de rede e sistemas",
+    "offerEstateBody": "Um inventário que vira um mapa. O que está conectado, o que cada coisa de fato faz, o que depende dela, e quais dessas relações existem apenas na memória de alguém. Entregue como registro escrito com diagnóstico — o que está frágil, o que não tem dono, o que está duplicado, o que não sobrevive à próxima mudança — e, quando desejado, um plano priorizado para corrigir."
   },
   "speaking": {
     "eyebrow": "Palestras",
@@ -19155,6 +19160,138 @@
             "what": "Um caminho de espiar até contribuir."
           }
         }
+      },
+      "security-architect": {
+        "title": "Arquiteto de segurança",
+        "whatItIs": "Quem decide como um sistema será defendido antes de ele existir. O arquiteto trabalha em desenhos e decisões, e não em configuração: quais fronteiras de confiança o desenho tem, o que aplica cada uma, o que acontece quando um componente é comprometido, e quais controles sustentam a estrutura em vez de enfeitá-la. A saída é um desenho que outra pessoa constrói, e um conjunto de argumentos para o formato que ele tem.",
+        "turnsOn": "O arquiteto responde por decisões tomadas antes que alguém consiga prová-las erradas. É essa a dificuldade inteira: o trabalho é julgado anos depois, por um incidente, contra um modelo de ameaça escrito quando o orçamento foi definido.",
+        "theDay": [
+          "Ler um desenho proposto e achar a fronteira que é presumida em vez de aplicada.",
+          "Escolher entre controles que se sobrepõem, e dizer de qual o desenho depende quando os dois existem.",
+          "Escrever o padrão para que dez times resolvam o problema do mesmo jeito, e não de dez jeitos.",
+          "Participar de uma revisão em que a resposta honesta é que o risco é aceitável, e registrar por quê.",
+          "Revisitar uma decisão de dois anos atrás contra uma ameaça que não existia então."
+        ],
+        "accountableFor": [
+          "Um desenho cujos modos de falha foram considerados antes da construção.",
+          "Escolhas de controle justificadas contra uma ameaça declarada, e não contra um recurso de produto.",
+          "Padrões que os times que vão construí-los conseguem de fato implementar."
+        ],
+        "measuredOn": [
+          "Desenhos que sobrevivem ao primeiro incidente real sem redesenho.",
+          "Adoção dos padrões, que é a única prova de que eram usáveis.",
+          "Exceções solicitadas, que medem se a arquitetura cabe na organização que ela serve."
+        ],
+        "stakeholders": [
+          "Os times que vão operar o resultado muito depois de o arquiteto ter ido para o próximo desenho.",
+          "Compras, cuja aquisição fica limitada por uma decisão arquitetural de que não participou.",
+          "Quem herda o registro de exceções, que é o verdadeiro histórico de onde a arquitetura cedeu."
+        ],
+        "requirements": [
+          "Profundidade suficiente em redes, identidade e plataformas para errar diante de especialistas e se recuperar.",
+          "Discernimento para aceitar um risco de propósito, em vez de escalar tudo.",
+          "Escrita. Uma arquitetura que só existe em conversa não é uma arquitetura.",
+          "Tolerância a ser vencido comercialmente, e disciplina para registrar a decisão assim mesmo."
+        ]
+      },
+      "security-engineer": {
+        "title": "Engenheiro de segurança",
+        "whatItIs": "Quem constrói e opera os controles. Onde o arquiteto decide que o tráfego entre duas zonas precisa ser autenticado e inspecionado, o engenheiro é quem torna isso verdade num produto específico, numa noite específica, sem quebrar as aplicações que já funcionavam. É o papel que transforma uma decisão de segurança em sistema em operação, e depois é dono dele.",
+        "turnsOn": "Um controle implantado e não ajustado é pior que controle nenhum: produz ruído que ensina todo mundo a ignorá-lo, e é contado como cobertura por quem reporta para cima.",
+        "theDay": [
+          "Implementar um controle na plataforma que existe de verdade, e não na que o desenho presumiu.",
+          "Ajustá-lo depois, porque a primeira configuração é sempre permissiva demais ou está no caminho.",
+          "Automatizar a implantação para que a vigésima instância seja igual à primeira.",
+          "Ser a pessoa com quem o time de aplicação discute quando o controle bloqueia algo legítimo.",
+          "Correções, atualizações e renovação de certificado - o trabalho sem glamour que decide se o controle ainda é real."
+        ],
+        "accountableFor": [
+          "Controles implantados, funcionando e monitorados, e não apenas comprados.",
+          "Mudanças que não derrubam a produção em nome de protegê-la.",
+          "Saber quais controles estão degradados agora, antes que outra pessoa descubra."
+        ],
+        "measuredOn": [
+          "Cobertura: quanto do parque o controle de fato alcança.",
+          "Falsos positivos, que é o número que decide se o controle sobrevive ao primeiro mês.",
+          "Tempo para implantar uma mudança, já que um controle que ninguém altera com segurança vira um controle que ninguém altera."
+        ],
+        "stakeholders": [
+          "Todo time cujo tráfego passa por algo que este papel configurou.",
+          "A central de serviços, cujo volume de chamados se move a cada decisão de ajuste.",
+          "O financeiro, já que consumo de licença é consequência de escolhas de engenharia."
+        ],
+        "requirements": [
+          "Profundidade real em ao menos uma plataforma, e o bastante nas vizinhas para integrá-las.",
+          "Disciplina de mudança, porque este papel quebra a produção de um jeito singularmente constrangedor.",
+          "Paciência para ajustar em vez de desligar.",
+          "Scripting, já que consistência em escala não se alcança à mão."
+        ]
+      },
+      "network-security-engineer": {
+        "title": "Engenheiro de segurança de redes",
+        "whatItIs": "O papel em que as duas disciplinas deste site se encontram. Um engenheiro de segurança de redes é dono dos controles que ficam no caminho do tráfego - firewalls, segmentação, acesso remoto, inspeção e, cada vez mais, a borda do provedor - e responde a duas plateias cujas definições de sucesso divergem: a rede precisa ficar de pé e a fronteira precisa se sustentar. A maioria das organizações descobre que precisa deste papel quando uma decisão de segurança derruba uma aplicação.",
+        "turnsOn": "Este papel responde a dois times que o medem de formas opostas. A rede mede disponibilidade e a segurança mede contenção, e toda decisão interessante troca uma pela outra.",
+        "theDay": [
+          "Escrever e podar política nos equipamentos que ficam entre uma parte do parque e outra.",
+          "Provar se um problema relatado é a rede, o controle ou a aplicação, o que são três times e uma captura de pacotes.",
+          "Segmentar o que era plano, um segmento por vez, sem queda.",
+          "Manter o acesso remoto de pessoas cujo trabalho para quando ele falha.",
+          "Decidir que inspeção vale o próprio custo, agora que quase todo tráfego é cifrado."
+        ],
+        "accountableFor": [
+          "Política que expressa a fronteira pretendida, e não um acúmulo de exceções.",
+          "Disponibilidade dos controles no caminho, que é responsabilidade de rede seja qual for o organograma.",
+          "Saber o que seria de fato bloqueado, por oposição ao que o documento de política afirma."
+        ],
+        "measuredOn": [
+          "Quedas atribuídas ao caminho de segurança, que é o número pelo qual este papel é julgado de forma injusta e permanente.",
+          "Higiene da base de regras: exceções com dono e data, em vez de permissões acumuladas.",
+          "Tempo para implementar uma mudança com segurança, já que um caminho lento leva os times a contornar o controle."
+        ],
+        "stakeholders": [
+          "Todo dono de aplicação cujo tráfego cruza uma fronteira controlada por este papel.",
+          "O time de redes, cujos números de disponibilidade absorvem os erros deste papel.",
+          "O provedor, desde que parte da fronteira passou para a borda dele."
+        ],
+        "requirements": [
+          "Profundidade genuína de redes: roteamento, tradução, cifragem e capacidade de ler uma captura.",
+          "Disciplina para manter uma base de regras limpa quando ninguém está pedindo isso.",
+          "Diplomacia suficiente para ser a pessoa que diz não, repetidamente, a colegas.",
+          "Conforto com o fato de que aqui o sucesso é invisível e a falha é uma teleconferência."
+        ]
+      },
+      "grc-analyst": {
+        "title": "Analista de governança, risco e conformidade",
+        "whatItIs": "O papel que escreve o que a organização decidiu exigir de si mesma, e depois descobre se aquilo é verdade. Governança é o decidir, risco é a contabilidade do que pode dar errado, e conformidade é a evidência de que as decisões estão sendo seguidas. A literatura de arcabouços separa governança de gestão por um motivo: este papel serve quem define a direção, e não quem implementa.",
+        "turnsOn": "Conformidade mede se um controle está documentado e em operação. Se ele funciona é outra pergunta, com outra resposta, e um programa que trata as duas como uma só produz certificados e incidentes ao mesmo tempo.",
+        "theDay": [
+          "Transformar uma obrigação escrita em linguagem jurídica num controle que alguém consiga operar.",
+          "Manter o registro de riscos, o que significa perseguir donos que não pediram para ser donos de nada.",
+          "Coletar evidência, e descobrir que um controle em que todos acreditavam não tem registro de execução.",
+          "Responder a um questionário de segurança de cliente, com honestidade, sem perder o negócio.",
+          "Preparar uma auditoria, o que é sobretudo descobrir o que não sobrevive a uma."
+        ],
+        "accountableFor": [
+          "Política específica o bastante para ser seguida e geral o bastante para sobreviver a uma troca de produto.",
+          "Um registro de riscos que reflita a organização, e não um modelo pronto.",
+          "Evidência que exista antes de ser pedida."
+        ],
+        "measuredOn": [
+          "Apontamentos de auditoria, e se os do ano passado foram de fato encerrados.",
+          "Certificação mantida sem crise no mês anterior à avaliação.",
+          "Exceções com dono e data de expiração, em vez de uma lista sem limite."
+        ],
+        "stakeholders": [
+          "Clientes, cujos contratos cada vez mais especificam controles que este papel precisa evidenciar.",
+          "Seguradoras, que hoje fazem as mesmas perguntas com dinheiro anexado.",
+          "Todo time que herda um requisito escrito aqui."
+        ],
+        "requirements": [
+          "Alfabetização técnica suficiente para saber quando uma alegação de implementação não é verdadeira.",
+          "Escrita que sobreviva à leitura de um advogado, de um engenheiro e de um auditor.",
+          "Teimosia para seguir pedindo evidência depois de ouvir que ela existe.",
+          "Senso de proporção, já que um programa de controles que ignora custo passa a ser ignorado."
+        ]
       }
     }
   }

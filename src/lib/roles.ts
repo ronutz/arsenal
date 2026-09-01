@@ -495,6 +495,245 @@ export const ROLES: readonly Role[] = Object.freeze([
     updated: "2026-08-14",
   },
 
+
+  {
+    slug: "security-architect",
+    title: "Security architect",
+    group: "defends",
+    order: 10,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "NICCS, CISA - the NICE Workforce Framework for Cybersecurity, which defines the work roles, tasks and skills used across public, private and academic sectors", url: "https://niccs.cisa.gov/workforce-development/nice-framework" },
+        { label: "NIST SP 800-53 Rev. 5 - the control catalogue that security architecture and policy work is written against in practice", url: "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final" },
+      ],
+    },
+    whatItIs:
+      "The person who decides how a system will be defended before it exists. An architect works in drawings and decisions rather than in configuration: which trust boundaries the design has, what each one is enforced by, what happens when a component is compromised, and which controls are load-bearing rather than decorative. The output is a design somebody else builds, and a set of arguments for why it is shaped that way.",
+    theDay: [
+      "Reading a proposed design and finding the boundary that is assumed rather than enforced.",
+      "Choosing between controls that overlap, and saying which one the design depends on when both are present.",
+      "Writing the pattern down so that ten teams solve the problem the same way rather than ten ways.",
+      "Sitting in a review where the honest answer is that the risk is acceptable, and recording why.",
+      "Revisiting a decision made two years ago against a threat that did not exist then.",
+    ],
+    accountableFor: [
+      "A design whose failure modes were considered before it was built.",
+      "Control choices that are justified against a stated threat rather than a product feature.",
+      "Patterns that the teams building them can actually implement.",
+    ],
+    measuredOn: [
+      "Designs that survive their first real incident without a redesign.",
+      "Adoption of the patterns, which is the only proof they were usable.",
+      "Exceptions requested, which measures whether the architecture fits the organisation it serves.",
+    ],
+    receivesFrom: [
+      { who: "The business", what: "What is being built, and the deadline it is being built against." },
+      { who: "Risk and compliance", what: "The obligations the design has to satisfy, and their real deadlines." },
+      { who: "Engineering", what: "What is actually deployable here, as distinct from what is theoretically correct." },
+    ],
+    serves: [
+      { who: "Security engineers", what: "A design specific enough to build without guessing." },
+      { who: "Network and platform teams", what: "Boundaries and requirements they can implement in their own systems." },
+      { who: "Auditors", what: "A written rationale that answers why, not only what." },
+    ],
+    stakeholders: [
+      "The teams who will operate the result long after the architect has moved to the next design.",
+      "Procurement, whose purchase is constrained by an architectural decision they did not attend.",
+      "Whoever inherits the exception register, which is the true record of where the architecture bent.",
+    ],
+    requirements: [
+      "Enough depth in networks, identity and platforms to be wrong in front of specialists and recover.",
+      "The judgement to accept a risk deliberately rather than escalating everything.",
+      "Writing. An architecture that exists only in conversation is not an architecture.",
+      "Tolerance for being overruled commercially, and the discipline to record the decision anyway.",
+    ],
+    turnsOn:
+      "The architect is accountable for decisions made before anyone can prove them wrong. That is the whole difficulty: the work is judged years later, by an incident, against a threat model written when the budget was set.",
+    adjacentRoles: ["security-engineer", "network-security-engineer", "security-leader", "network-consulting-engineer"],
+    practiceRoles: ["second-line"],
+    relatedTools: [],
+    updated: "2026-08-31",
+  },
+  {
+    slug: "security-engineer",
+    title: "Security engineer",
+    group: "defends",
+    order: 11,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "NICCS, CISA - the NICE Workforce Framework for Cybersecurity, which defines the work roles, tasks and skills used across public, private and academic sectors", url: "https://niccs.cisa.gov/workforce-development/nice-framework" },
+        { label: "NIST Cybersecurity Framework - the Govern, Identify, Protect, Detect, Respond and Recover functions that most security programmes are organised against", url: "https://www.nist.gov/cyberframework" },
+      ],
+    },
+    whatItIs:
+      "The person who builds and runs the controls. Where the architect decides that traffic between two zones must be authenticated and inspected, the engineer is the one who makes that true in a specific product, on a specific night, without breaking the applications that were already working. This is the role that turns a security decision into a running system, and then owns it.",
+    theDay: [
+      "Implementing a control in the platform that actually exists, rather than the one the design assumed.",
+      "Tuning it afterwards, because the first configuration is always either too permissive or in the way.",
+      "Automating the deployment so the twentieth instance matches the first.",
+      "Being the person the application team argues with when the control blocks something legitimate.",
+      "Patching, upgrading and certificate renewal - the unglamorous work that decides whether the control is still real.",
+    ],
+    accountableFor: [
+      "Controls that are deployed, functioning and monitored rather than merely purchased.",
+      "Changes that do not take production down in the name of securing it.",
+      "Knowing which controls are currently degraded, before someone else finds out.",
+    ],
+    measuredOn: [
+      "Coverage: how much of the estate the control actually reaches.",
+      "False positives, which is the number that decides whether the control survives its first month.",
+      "Time to deploy a change, since a control nobody can modify safely becomes a control nobody modifies.",
+    ],
+    receivesFrom: [
+      { who: "Security architecture", what: "The design and the requirement it satisfies." },
+      { who: "The security operations centre", what: "What is not being detected, and what is drowning them." },
+      { who: "Vendors", what: "Products, and roadmaps that arrive later than promised." },
+    ],
+    serves: [
+      { who: "The security operations centre", what: "Telemetry that is complete enough to detect with." },
+      { who: "Application and infrastructure teams", what: "Controls that let them ship, rather than a queue." },
+      { who: "Incident responders", what: "The ability to contain, which depends on what was built beforehand." },
+    ],
+    stakeholders: [
+      "Every team whose traffic passes through something this role configured.",
+      "The service desk, whose ticket volume moves with each tuning decision.",
+      "Finance, since licence consumption is a consequence of engineering choices.",
+    ],
+    requirements: [
+      "Real depth in at least one platform, and enough in the neighbouring ones to integrate them.",
+      "Change discipline, because this role breaks production in a uniquely embarrassing way.",
+      "The patience to tune rather than to disable.",
+      "Scripting, since consistency at scale is not achieved by hand.",
+    ],
+    turnsOn:
+      "A control that is deployed but untuned is worse than no control: it produces noise that trains everyone to ignore it, and it is counted as coverage by whoever reports upward.",
+    adjacentRoles: ["security-architect", "network-security-engineer", "security-operations-analyst", "network-operations-specialist"],
+    practiceRoles: ["second-line"],
+    relatedTools: [],
+    updated: "2026-08-31",
+  },
+  {
+    slug: "network-security-engineer",
+    title: "Network security engineer",
+    group: "defends",
+    order: 12,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "NICCS, CISA - the NICE Workforce Framework for Cybersecurity, which defines the work roles, tasks and skills used across public, private and academic sectors", url: "https://niccs.cisa.gov/workforce-development/nice-framework" },
+        { label: "NIST Cybersecurity Framework - the Govern, Identify, Protect, Detect, Respond and Recover functions that most security programmes are organised against", url: "https://www.nist.gov/cyberframework" },
+      ],
+    },
+    whatItIs:
+      "The role where the two disciplines on this site meet. A network security engineer owns the controls that live in the traffic path - firewalls, segmentation, remote access, inspection, and increasingly the provider edge - and is accountable to two constituencies whose definitions of success differ: the network must stay up and the boundary must hold. Most organisations discover they need this role when a security decision takes an application down.",
+    theDay: [
+      "Writing and pruning policy on the devices that stand between one part of the estate and another.",
+      "Proving whether a reported problem is the network, the control, or the application, which is three teams and one packet capture.",
+      "Segmenting something that was flat, one segment at a time, without an outage.",
+      "Maintaining remote access for people whose work stops when it fails.",
+      "Deciding what inspection is worth its cost, now that most traffic is encrypted.",
+    ],
+    accountableFor: [
+      "Policy that expresses the intended boundary rather than an accumulation of exceptions.",
+      "Availability of the controls in the path, which is a network responsibility whatever the org chart says.",
+      "Knowing what would actually be blocked, as distinct from what the policy document claims.",
+    ],
+    measuredOn: [
+      "Outages attributable to the security path, which is the number this role is judged by unfairly and permanently.",
+      "Rule-base hygiene: exceptions with owners and dates rather than accumulated permits.",
+      "Time to implement a change safely, since a slow path drives teams around the control.",
+    ],
+    receivesFrom: [
+      { who: "Security architecture", what: "The boundary to enforce and the reason for it." },
+      { who: "Network engineering", what: "The topology, and the change window." },
+      { who: "Application teams", what: "Requests that describe a symptom rather than a flow." },
+    ],
+    serves: [
+      { who: "The whole estate", what: "A path that is both open enough to work and closed enough to matter." },
+      { who: "Incident responders", what: "The ability to isolate a segment on demand." },
+      { who: "Auditors", what: "Evidence that the boundary is what the design says it is." },
+    ],
+    stakeholders: [
+      "Every application owner whose traffic crosses a boundary this role controls.",
+      "The network team, whose availability numbers absorb this role's mistakes.",
+      "The provider, once part of the boundary moved into their edge.",
+    ],
+    requirements: [
+      "Genuine networking depth: routing, translation, encryption and the ability to read a capture.",
+      "The discipline to keep a rule base clean when nobody is asking for that.",
+      "Enough diplomacy to be the person who says no, repeatedly, to colleagues.",
+      "Comfort with the fact that success here is invisible and failure is a conference call.",
+    ],
+    turnsOn:
+      "This role is accountable to two teams that measure it oppositely. The network measures uptime and the security function measures containment, and every interesting decision trades one against the other.",
+    adjacentRoles: ["security-engineer", "network-operations-specialist", "security-architect", "network-consulting-engineer"],
+    practiceRoles: ["second-line"],
+    relatedTools: [],
+    updated: "2026-08-31",
+  },
+  {
+    slug: "grc-analyst",
+    title: "Governance, risk and compliance analyst",
+    group: "defends",
+    order: 13,
+    provenance: {
+      kind: "documented",
+      sources: [
+        { label: "ISACA - COBIT, the governance framework that separates governance from management and is the common reference for GRC work", url: "https://www.isaca.org/resources/cobit" },
+        { label: "NIST SP 800-53 Rev. 5 - the control catalogue that security architecture and policy work is written against in practice", url: "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final" },
+        { label: "ISO/IEC 27001:2022 - Information security, cybersecurity and privacy protection: information security management systems, requirements. Third edition, published October 2022 by ISO/IEC JTC 1/SC 27, and the certification most GRC programmes are audited against", url: "https://www.iso.org/standard/27001" },
+      ],
+    },
+    whatItIs:
+      "The role that writes down what the organisation has decided to require of itself, and then finds out whether it is true. Governance is the deciding, risk is the accounting for what could go wrong, and compliance is the evidence that the decisions are being followed. The framework literature separates governance from management for a reason: this role serves the people who set direction, not the people who implement it.",
+    theDay: [
+      "Turning an obligation written in legal language into a control somebody can actually operate.",
+      "Maintaining the risk register, which means chasing owners who did not ask to own anything.",
+      "Collecting evidence, and discovering that a control everyone believed in has no record of running.",
+      "Answering a customer security questionnaire, honestly, without losing the deal.",
+      "Preparing for an audit, which is mostly finding out what will not survive one.",
+    ],
+    accountableFor: [
+      "Policy that is specific enough to follow and general enough to survive a product change.",
+      "A risk register that reflects the organisation rather than a template.",
+      "Evidence that exists before it is asked for.",
+    ],
+    measuredOn: [
+      "Audit findings, and whether last year's were genuinely closed.",
+      "Certification maintained without a crisis in the month before assessment.",
+      "Exceptions with owners and expiry dates rather than an unbounded list.",
+    ],
+    receivesFrom: [
+      { who: "Legal and regulators", what: "Obligations, with deadlines that do not negotiate." },
+      { who: "Security architecture and engineering", what: "What is actually implemented, which is the input compliance most often lacks." },
+      { who: "The business", what: "Appetite for risk, usually stated only after an incident." },
+    ],
+    serves: [
+      { who: "Executives and the board", what: "An account of exposure they can act on." },
+      { who: "Sales", what: "The answers that unblock an enterprise customer's review." },
+      { who: "Engineering teams", what: "Requirements stated once, rather than rediscovered per project." },
+    ],
+    stakeholders: [
+      "Customers, whose contracts increasingly specify controls this role has to evidence.",
+      "Insurers, who now ask the same questions with money attached.",
+      "Every team that inherits a requirement written here.",
+    ],
+    requirements: [
+      "Enough technical literacy to know when an implementation claim is not true.",
+      "Writing that survives being read by a lawyer, an engineer and an auditor.",
+      "The stubbornness to keep asking for evidence after being told it exists.",
+      "Judgement about proportion, since a control programme that ignores cost is ignored in turn.",
+    ],
+    turnsOn:
+      "Compliance measures whether a control is documented and operating. Whether it works is a separate question with a separate answer, and a programme that treats the two as one produces certificates and incidents at the same time.",
+    adjacentRoles: ["it-auditor", "security-leader", "security-architect", "security-manager"],
+    practiceRoles: ["second-line"],
+    relatedTools: [],
+    updated: "2026-08-31",
+  },
+
   // --- TEACHES -------------------------------------------------------------
   {
     slug: "technical-instructor",

@@ -11,6 +11,18 @@ status: reviewed
 updated: "2026-06-29"
 ---
 
+## Origens: autorização nunca foi feita para logar ninguém
+
+O OAuth foi escrito para um problema específico, e identidade não era ele. Por volta de 2007 o padrão para conectar um serviço a outro era **compartilhar senha**: o usuário entregava a um site as credenciais do e-mail para que ele lesse os contatos. O OAuth 1.0 existiu para acabar com isso - para deixar uma aplicação obter **acesso delegado a um recurso** sem receber a senha do usuário.
+
+O **OAuth 2.0 (RFC 6749, 2012)** simplificou e generalizou, e diz isso com todas as letras: é um arcabouço de *autorização*. Não tem forma definida de dizer quem é o usuário, nem formato padrão de identificador, nem prova exigida de quando ou como o usuário se autenticou.
+
+Isso não impediu ninguém. Os provedores construíram login em cima assim mesmo, cada um de um jeito, e a era dos fluxos proprietários de "entrar com" produziu a classe previsível de vulnerabilidades - com destaque para o **delegado confuso**: um token de acesso prova que uma aplicação pode chamar uma API, não quem está no teclado, então uma aplicação que aceita token como prova de identidade pode receber um token obtido em outro lugar, de outro usuário, e ser enganada.
+
+O **OpenID Connect (2014)** é a correção. É uma camada fina de identidade *sobre* o OAuth 2.0, e não um substituto: mesmos endpoints, mesmos fluxos, mais as peças de que a autenticação precisa - um **ID token** como JWT assinado com claims definidas, um endpoint **UserInfo**, um documento de **descoberta** numa URL conhecida, e chaves de assinatura publicadas.
+
+A linhagem importa porque explica o formato: o OIDC não redesenhou nada. Acrescentou a afirmação que faltava - *este usuário se autenticou, neste horário, por este método, neste emissor, para esta audiência* - a um protocolo que a deixara de fora de propósito.
+
 ## Duas perguntas, não uma
 
 OAuth 2.0 e OpenID Connect são constantemente confundidos, em parte porque o OIDC (OpenID Connect) é construído sobre o OAuth e eles compartilham endpoints e terminologia. A forma mais limpa de separá-los é notar que eles respondem a perguntas diferentes. O OAuth 2.0 responde a uma pergunta de autorização: esta aplicação tem permissão para acessar aquele recurso em nome do usuário. O OpenID Connect responde a uma pergunta de autenticação: quem é o usuário que acabou de entrar. Um é sobre permissão para agir; o outro é sobre identidade. O OIDC coloca a resposta de identidade sobre a maquinaria de permissão do OAuth.
@@ -28,6 +40,38 @@ Um ID token é uma declaração sobre o usuário, emitida pelo provedor para o c
 Antes de o OIDC existir, muitas aplicações implementaram "entrar com o provedor X" usando OAuth 2.0 puro, e o padrão persiste em alguns lugares. A aplicação obtinha um access token e tratava a capacidade de obtê-lo, ou o resultado de chamar alguma API de informações de usuário com ele, como prova de quem o usuário era. Isto é um antipadrão conhecido, e a razão é sutil mas importante: um access token não diz nada confiável sobre quem o solicitou nem para quem foi emitido. Um token obtido por uma aplicação pode, em algumas configurações, ser apresentado por outra, e uma aplicação que infere identidade pela mera posse de um access token pode ser enganada e fazer login com o usuário errado. Isso às vezes é chamado de problema do delegado confuso.
 
 O OIDC foi projetado para fechar exatamente essa lacuna. O ID token é endereçado explicitamente a um cliente específico por sua claim de audiência, é vinculado a uma tentativa de login específica por seu nonce, e é assinado pelo provedor para que não possa ser forjado. Essas são precisamente as propriedades que faltam a um access token e que a autenticação exige. A regra prática é simples: não construa login sobre OAuth puro. Se você precisa saber quem é o usuário, use o OpenID Connect e valide o ID token.
+
+## As claims que fazem o trabalho
+
+Um ID token só serve se for validado, e a validação é o protocolo:
+
+- **`iss`** - o emissor, conferido contra o que você configurou, e não contra o que o token diz ser.
+- **`aud`** - a audiência, que precisa ser o identificador do seu cliente. É esta a conferência que impede o delegado confuso.
+- **`exp` e `iat`** - expiração e emissão, com tolerância para desvio de relógio.
+- **`nonce`** - amarrada ao valor que a sua aplicação enviou, o que impede um token de ser reproduzido em outra sessão.
+- **`sub`** - o identificador estável do usuário naquele emissor. **Não é o e-mail**, que muda e pode ser reatribuído; o par de fato estável é emissor mais sujeito.
+- **`auth_time`, `acr`, `amr`** - quando o usuário se autenticou e por qual meio, que é como uma aplicação exige login recente ou mais forte para uma ação sensível.
+
+E a assinatura, verificada contra as chaves publicadas do emissor, com a rotação de chaves que isso implica.
+
+## Os fluxos, e quais ainda estão corretos
+
+- **Código de autorização com PKCE** - a resposta atual para todo tipo de cliente, navegador ou nativo. O PKCE nasceu como correção para móvel e hoje é recomendado universalmente, porque amarra o código ao cliente que o pediu.
+- **Fluxo implícito** - devolvia tokens direto pelo navegador. Depreciado: token em URL termina em histórico, log e referrer.
+- **Credenciais do dono do recurso** - o usuário entrega a senha à aplicação. Retirado das recomendações atuais, já que recria exatamente o problema que o OAuth foi inventado para resolver.
+- **Credenciais de cliente** - sem usuário nenhum, de serviço para serviço. Correto, e fora da questão de identidade.
+- **Autorização de dispositivo** - para equipamentos com entrada limitada, em que o usuário se autentica numa segunda tela.
+
+O **logout por canal frontal e por canal traseiro** é a parte que a maioria das implantações pula, e a razão de um usuário que sai de uma aplicação seguir logado em outras cinco.
+
+## O ecossistema, por categoria
+
+- **Provedores de identidade** - Okta, Microsoft Entra, Ping Identity, Auth0, Google, e o Keycloak de código aberto. O que difere entre eles raramente é o protocolo, que é bem especificado; é administração, tempo de vida de token, tratamento de sessão e como federam.
+- **Bibliotecas** - a orientação honesta é usar uma certificada em vez de montar a validação sozinho, porque cada passo da lista acima é um lugar onde uma implementação plausível é silenciosamente insegura.
+- **Gateways de API e proxies**, que validam tokens na borda para que os serviços atrás não reimplementem cada um.
+- **O programa de certificação** da OpenID Foundation, que é o jeito prático de saber que uma implementação de fato está conforme, e não apenas interopera num dia bom.
+
+O **SAML** segue difundido em ambientes corporativos e de educação, e a escolha entre os dois costuma ser institucional, e não técnica: SAML onde a contraparte é uma federação corporativa estabelecida, OIDC onde os clientes são aplicativos móveis e APIs modernas. Os dois autenticam; diferem em codificação, em transporte e em quanto envolvem o navegador.
 
 ## Distinguindo-os na prática
 

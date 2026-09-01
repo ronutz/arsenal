@@ -11,6 +11,18 @@ status: reviewed
 updated: "2026-06-29"
 ---
 
+## Origins: authorisation was never meant to log anyone in
+
+OAuth was written for a specific problem, and identity was not it. Around 2007 the pattern for connecting one service to another was **password sharing**: a user handed a site their email credentials so it could read their contacts. OAuth 1.0 existed to end that — to let an application obtain **delegated access to a resource** without receiving the user's password.
+
+**OAuth 2.0 (RFC 6749, 2012)** simplified and generalised it, and it says so plainly: it is an *authorisation* framework. It has no defined way to say who the user is, no standard shape for a user identifier, and no required proof of when or how the user authenticated.
+
+That did not stop anyone. Providers built login on top of it anyway, each in a different way, and the era of proprietary "sign in with" flows produced the predictable class of vulnerabilities — most memorably the **confused deputy**: an access token proves an application may call an API, not who is sitting at the keyboard, so an application that accepts a token as proof of identity can be handed a token obtained elsewhere, for a different user, and be fooled.
+
+**OpenID Connect (2014)** is the correction. It is a thin identity layer *on* OAuth 2.0, not a replacement: same endpoints, same flows, plus the pieces authentication actually needs — an **ID token** as a signed JWT with defined claims, a **UserInfo** endpoint, a **discovery document** at a well-known URL, and published signing keys.
+
+The lineage matters because it explains the shape: OIDC did not redesign anything. It added the missing statement — *this user authenticated, at this time, with this method, at this issuer, for this audience* — to a protocol that had deliberately left it out.
+
 ## Two questions, not one
 
 OAuth 2.0 and OpenID Connect are constantly confused, partly because OIDC (OpenID Connect) is built on OAuth and they share endpoints and terminology. The cleanest way to keep them apart is to notice that they answer different questions. OAuth 2.0 answers an authorization question: is this application allowed to access that resource on the user's behalf. OpenID Connect answers an authentication question: who is the user that just signed in. One is about permission to act; the other is about identity. OIDC layers the identity answer on top of OAuth's permission machinery.
@@ -28,6 +40,38 @@ An ID token is a statement about the user, issued by the provider to the client.
 Before OIDC existed, many applications implemented "log in with provider X" using raw OAuth 2.0, and the pattern persists in places. The application would obtain an access token and treat the ability to obtain it, or the result of calling some user-info API with it, as proof of who the user is. This is a known antipattern, and the reason is subtle but important: an access token says nothing reliable about who requested it or who it was issued to. A token obtained by one application can, in some configurations, be presented by another, and an application that infers identity from mere possession of an access token can be fooled into logging in the wrong user. This is sometimes called the confused deputy problem.
 
 OIDC was designed to close exactly this gap. The ID token is explicitly addressed to a specific client through its audience claim, is bound to a specific login attempt through its nonce, and is signed by the provider so it cannot be forged. Those are precisely the properties an access token lacks and that authentication requires. The practical rule is simple: do not build login on raw OAuth. If you need to know who the user is, use OpenID Connect and validate the ID token.
+
+## The claims that do the work
+
+An ID token is only useful if it is validated, and the validation is the protocol:
+
+- **`iss`** — the issuer, checked against the one you configured, not the one the token names.
+- **`aud`** — the audience, which must be your client identifier. This is the check that stops the confused deputy.
+- **`exp` and `iat`** — expiry and issued-at, with allowance for clock skew.
+- **`nonce`** — bound to the value your application sent, which stops a token being replayed into a different session.
+- **`sub`** — the stable identifier for the user at that issuer. **Not the email address**, which can change and can be reassigned; the pairing that is actually stable is issuer plus subject.
+- **`auth_time`, `acr`, `amr`** — when the user authenticated and by what means, which is how an application requires a fresh or a stronger login for a sensitive action.
+
+And the signature, verified against the issuer's published keys, with the key rotation that implies.
+
+## The flows, and which ones are still correct
+
+- **Authorization code with PKCE** — the current answer for every client type, browser or native. PKCE began as a mobile fix and is now recommended universally, because it binds the code to the client that requested it.
+- **Implicit flow** — returned tokens straight through the browser. Deprecated: tokens in URLs land in histories, logs and referrers.
+- **Resource owner password credentials** — the user hands their password to the application. Removed from current guidance, since it recreates exactly the problem OAuth was invented to solve.
+- **Client credentials** — no user at all, service to service. Correct, and outside the identity question.
+- **Device authorisation** — for input-constrained devices, where the user authenticates on a second screen.
+
+**Front-channel and back-channel logout** are the parts most deployments skip, and the reason a user who signs out of one application remains signed in to five others.
+
+## The ecosystem, by category
+
+- **Identity providers** — Okta, Microsoft Entra, Ping Identity, Auth0, Google, and the open-source Keycloak. What differs between them is rarely the protocol, which is well specified; it is administration, token lifetimes, session handling and how they federate.
+- **Libraries** — the honest guidance is to use a certified one rather than assemble the validation yourself, because every step in the list above is a place where a plausible-looking implementation is silently insecure.
+- **API gateways and proxies**, which validate tokens at the edge so services behind them do not each reimplement it.
+- **The certification programme** run by the OpenID Foundation, which is the practical way to know an implementation actually conforms rather than merely interoperates on a good day.
+
+**SAML** remains widespread in enterprise and education, and the choice between them is usually institutional rather than technical: SAML where the counterparty is an established enterprise federation, OIDC where the clients are mobile applications and modern APIs. Both authenticate; they differ in encoding, in transport and in how much of the browser they involve.
 
 ## Telling them apart in practice
 

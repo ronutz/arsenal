@@ -72,12 +72,19 @@ export default async function AdvisoryPage({
     { key: "offerAssess" },
     { key: "offerSelect" },
     { key: "offerPostmortem" },
-    // The by-arrangement tier, promoted from its own section into the card set
-    // (PRIME 2026-08-06). It was previously set apart and deliberately
-    // unfeatured; as a card it reads as one of the things on offer, which it
-    // is, without the separate section implying it is a different class of
-    // thing that needs explaining.
-    { key: "offerArrangement" },
+    // Estate review, added 31/08/2026. It is the one offer here that produces a
+    // map rather than an opinion, and it is deliberately named REVIEW rather
+    // than audit: audit carries assurance and regulatory meaning that would
+    // attract expectations about independence certification and scope that this
+    // engagement does not claim.
+    { key: "offerEstate" },
+    // REMOVED 31/08/2026: the by-arrangement tier — real-time presence during a
+    // migration window, a cutover or a planned failover. It was the one offer
+    // that pulled against everything else on this page: fixed-scope written
+    // deliverables, no hours sold, no rota. Attendance during an operation is
+    // hours by another name, at night and at weekends, and it was the item a
+    // client would anchor on. Where presence is genuinely needed, that is a
+    // referral rather than a line item here.
     // Speaking, added 2026-08-06: it is a paid engagement like the others and
     // was reachable only from the nav-less /speaking page.
     { key: "offerSpeaking" },

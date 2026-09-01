@@ -11,6 +11,36 @@ status: reviewed
 updated: "2026-07-22"
 ---
 
+## Origens: o armário de telecom antes de existir norma
+
+Antes do cabeamento estruturado, a rede de um prédio era o que cada fabricante exigisse. Um sistema de terminais puxava o próprio coaxial; a telefonia puxava par trançado com plano próprio; uma rede de passagem de ficha puxava cabo blindado do tipo dela. Acrescentar um sistema significava puxar cabo novo; trocar de fabricante significava puxar de novo; e ninguém conseguia dizer, olhando o armário, o que cada fio fazia.
+
+A **TIA-568 (1991)** encerrou isso invertendo a pergunta. Em vez de cabear para um protocolo, ela especificou um sistema **genérico**: topologia, distâncias, tipos de conector e graus de desempenho, definidos para que qualquer aplicação conforme rodasse por cima. A contraparte internacional é a **ISO/IEC 11801**, e a europeia, a **EN 50173**; diferem em nomenclatura e detalhe, não em intenção.
+
+O vocabulário resultante vale conhecer, porque todo desenho e toda concorrência o usam:
+
+- **Entrada de facilidades** - onde o mundo externo chega.
+- **Sala de equipamentos** - a distribuição principal do prédio.
+- **Backbone (prumada)** - entre andares e entre prédios.
+- **Sala de telecomunicações** - o ponto de distribuição do andar.
+- **Cabeamento horizontal** - o lance dessa sala até a área de trabalho, onde mora a regra dos 100 metros.
+- **Área de trabalho** - a tomada e o cordão até o equipamento.
+
+A palavra que importa é *genérico*. O cabeamento estruturado é deliberadamente uma **planta passiva com vida de projeto medida em décadas**, e espera-se que a eletrônica das duas pontas seja trocada várias vezes ao longo dela - o mesmo argumento econômico que faz da [planta óptica passiva](/learn/gpon-how-one-fiber-serves-a-neighborhood) um bom investimento.
+
+## As categorias, e o que cada uma resolvia
+
+Os graus de cobre não são faixas de marketing; cada um foi definido contra um problema específico de transmissão:
+
+- **Cat 3** - 16 MHz, a era da voz e dos 10 Mbps.
+- **Cat 5** - 100 MHz, que carregou 100 Mbps e, com os quatro pares, o gigabit.
+- **Cat 5e** - mesma banda, requisitos de diafonia apertados, porque o gigabit usa os quatro pares nos dois sentidos ao mesmo tempo e a *diafonia de extremidade próxima* virou o defeito limitante, no lugar da atenuação.
+- **Cat 6** - 250 MHz, com um separador em muitos desenhos para manter os pares afastados; 10 Gbps apenas em lances encurtados, tipicamente de 37 a 55 metros.
+- **Cat 6A** - 500 MHz, e o grau definido para 10 Gbps nos 100 metros completos. Seu inimigo novo é a **diafonia alheia**, o acoplamento entre cabos vizinhos e não entre pares do mesmo cabo, e é por isso que o cabo 6A é fisicamente maior e que tamanho de feixe e ocupação de eletroduto viraram restrições de projeto.
+- **Cat 7, 7A, 8** - desenhos blindados, com o Cat 8 chegando a 2 GHz em cerca de 30 metros, mirando o topo de rack do datacenter, e não o andar do escritório.
+
+**Blindado ou não blindado** é decisão de sistema, não melhoria de produto: a blindagem só funciona se for aterrada e equipotencializada de forma contínua, e um sistema blindado terminado por quem o trata como não blindado tem desempenho pior que um bom cabo sem blindagem, porque a malha vira antena.
+
 ## De fios a um sistema
 
 Antes do cabeamento estruturado, a fiação de um prédio era o que o último instalador tivesse deixado: lances ponto a ponto, conectores proprietários, emendas sem documentação. A família ANSI/TIA-568 - a linhagem de padrões da TIA, herdeira da velha parceria EIA/TIA - substituiu isso por um sistema: mídia padronizada, conectores e pinagens padronizados, distâncias padronizadas e uma topologia padronizada, de modo que qualquer ponto conforme atenda qualquer serviço conforme, e quem estiver diagnosticando no ano dez consiga raciocinar sobre o que quem instalou no ano um fez.
@@ -32,6 +62,42 @@ Além dos 100 metros, ou entre prédios, ou onde a isolação elétrica importa,
 ## As classificações que os fiscais conferem
 
 Uma dimensão do cabeamento não tem nada a ver com sinal e tudo a ver com código de incêndio. Cabo com jaqueta para espaços de **plenum** de ar (CMP) precisa queimar devagar e soltar pouca fumaça; o CMR classificado para **riser** cobre os shafts verticais; jaquetas de uso geral cobrem o resto, e as classificações só substituem para baixo - plenum vai a qualquer lugar, riser não vai em plenum. Fora da América do Norte o vocabulário paralelo é LSZH. É a parte da lista de materiais do cabeamento que um fiscal de obra, não um testador de enlace, faz valer - e a parte mais caramente descoberta tarde.
+
+## Energia pelo mesmo par, e o calor que ninguém planejou
+
+O Power over Ethernet mudou o que um projeto de cabeamento precisa considerar, porque corrente aquece cobre e calor eleva a atenuação.
+
+Os padrões escalam: cerca de 15 W na porta no original, cerca de 30 W no grau seguinte, e até cerca de 90 W nas versões de quatro pares. No topo dessa faixa, um feixe apertado de cabo sem blindagem pode subir de temperatura o bastante para tirar de especificação um lance marginal - o que aparece como erros só nos enlaces mais longos do feixe, sob carga, à tarde.
+
+As respostas de projeto são chatas e eficazes: limitar o tamanho dos feixes, preferir condutores maiores em lances longos alimentados, manter baixa a ocupação dos eletrodutos, e reduzir o comprimento admissível onde um feixe inteiro alimenta equipamentos de alta potência.
+
+## Fibra, e como escolher com honestidade
+
+- **Multimodo (OM3, OM4, OM5)** com núcleo otimizado para laser, para distâncias dentro do prédio. Óptica mais barata, alcance menor.
+- **Monomodo (OS2)** para campus e longa distância, com óptica mais cara e alcance medido em quilômetros.
+
+A tendência honesta é que a diferença de preço entre ópticas multimodo e monomodo diminuiu o bastante para que muitos projetos novos de campus simplesmente puxem monomodo em tudo, sob o argumento de que a fibra sobrevive a várias gerações de óptica e puxar cabo duas vezes é a parte cara.
+
+## A verificação é o que separa um sistema de um monte de fios
+
+Três níveis, e a distinção é tão contratual quanto técnica:
+
+- **Verificação** - continuidade e mapa de fios. Prova que os pares estão na ordem certa e que nada está partido.
+- **Qualificação** - se o enlace suporta uma dada aplicação, num testador que responde "isto roda gigabit?".
+- **Certificação** - a bateria completa da norma para o grau: perda de inserção, diafonia de extremidade próxima e distante, perda de retorno, atraso diferencial e, no 6A, o caso de diafonia alheia. É contra isso que uma garantia é emitida.
+
+Duas definições de enlace decidem se o resultado sequer significa algo: o **enlace permanente** - o lance fixo do patch panel até a tomada - e o **canal**, que inclui os cordões das duas pontas. Testar o errado é a forma mais comum de coexistirem um laudo aprovado e uma rede que não funciona.
+
+**A regra dos 100 metros** são 90 metros de cabo rígido horizontal mais 10 metros de cordão flexível, e a divisão não é arbitrária: condutores flexíveis são mais maleáveis e mais atenuantes, então a franquia para eles é limitada de propósito.
+
+## Fabricantes e a questão da garantia, por categoria
+
+- **Fabricantes de cabo e conectividade** - CommScope, Panduit, Belden, Leviton, Legrand e outros. O que de fato vendem ao dono do prédio é uma **garantia de sistema**, tipicamente de 20 a 25 anos, condicionada a componentes do mesmo sistema e a instalação por empresa certificada.
+- **Equipamento de teste** - a Fluke Networks como referência, com outros no mercado. Os laudos de certificação são a entrega que fecha a obra, então os relatórios do testador são documentos contratuais.
+- **Instaladores e integradores**, cuja certificação é o que torna válida a garantia do fabricante.
+- **Organismos de normalização** - TIA, ISO/IEC, CENELEC - que definem os graus que todo o resto referencia.
+
+A pergunta de compra raramente é qual cabo tem número melhor de catálogo. É **o que está garantido, por quem, e por quanto tempo**, porque a planta deve durar mais que o equipamento que serve, e é o papel que sobrevive junto com ela.
 
 ## Por que o sistema se sustenta
 

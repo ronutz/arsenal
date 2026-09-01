@@ -20,6 +20,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import EvidenceLinks, { EvidenceCodes, type EvidenceCopy } from "@/components/EvidenceLinks";
+import CertsStatusFilter from "@/components/CertsStatusFilter";
 import {
   instructorAuthorizations,
   recognition,
@@ -136,8 +137,6 @@ export default async function CredentialsPage({
             <div className="container certs-container">
               <div className="certs-group-head">
                 <h2 className="certs-group-title">{t("historicalTitle")}</h2>
-                <span className="certs-badge certs-badge--current">{t("current")}</span>
-                <span className="certs-badge certs-badge--past">{t("historical")}</span>
               </div>
               <p className="certs-group-intro">{t("historicalIntro")}</p>
 
@@ -174,6 +173,15 @@ export default async function CredentialsPage({
 
                 return (
                   <>
+                    {/* Status toggles sit ABOVE the vendor pills and are rendered
+                        a step larger, since they filter the whole record while
+                        the vendor pills only jump within it. */}
+                    <CertsStatusFilter
+                      currentLabel={t("current")}
+                      historicalLabel={t("historical")}
+                      regionLabel={t("statusFilterLabel")}
+                    />
+
                     <nav className="certs-vendor-jumps" aria-label={t("historicalTitle")}>
                       {record.map((g) => (
                         <a key={g.vendor} href={`#${anchor(g.vendor)}`} className="certs-vendor-jump">
@@ -182,7 +190,7 @@ export default async function CredentialsPage({
                       ))}
                     </nav>
 
-                    <div className="certs-historical-groups">
+                    <div className="certs-historical-groups" data-certs-record>
                       {record.map((g) => (
                         <div
                           className="certs-vendor-group"

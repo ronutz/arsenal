@@ -7633,7 +7633,8 @@
     "fortinetTransitionNote": "On 15 July 2026, Fortinet retired the FCF / FCA / FCP / FCSS certification names and restored the eight-level NSE 1-8 progression. Certifications that were active on that date converted forward from the exams already passed: the cybersecurity fundamentals became NSE 1, NSE 2, and NSE 3, and the FortiGate / FortiOS exam behind FCP became NSE 4. Those NSE certifications are listed above as the current program; the FCP & FCSS credentials they replaced remain on record below. Each NSE certification inherits the expiry date of the certification it replaced.",
     "fortinetTransitionLabel": "A note on the Fortinet certification program",
     "trainingLabel": "Training",
-    "noCertificateNote": "Unfortunately, the vendor does not provide a certificate for this authorization."
+    "noCertificateNote": "Unfortunately, the vendor does not provide a certificate for this authorization.",
+    "statusFilterLabel": "Filter the record by status"
   },
   "colophon_page": {
     "eyebrow": "Colophon",
@@ -14088,7 +14089,7 @@
       },
       "ysts": {
         "def": "You Shot the Sheriff: Brazil's curated, single-day security conference - invitation-flavored, bar-hosted, and famously well-connected.",
-        "context": "Running in Sao Paulo since the late 2000s, YSTS packs hand-picked national and international speakers into one relaxed day (traditionally in a bar, drinks included), the weekend after BSidesSP. Its first edition was opened by 2600's Emmanuel Goldstein, and its tradition endures: selected speakers receive a medal granting free entry to every future edition. Widely regarded as the most sought-after ticket in the Brazilian scene.",
+        "context": "Founded by Luiz Eduardo dos Santos, Nelson Murilo Rufino - the author of chkrootkit - and Willian Caprino, and it started as a podcast: ISTS, \"i sh0t the sheriff\", recording since 2006 and still going. The conference followed in 2007 and kept the podcast's register. Three refusals define it: invitation only through a sponsor, a venue disclosed only to confirmed attendees, and a headcount the founders cap on principle, having said at the tenth edition that they work to keep it the same size because growth would cost them the quality. Jeff Moss, who created DEF CON and Black Hat, and Cris Thomas of the L0pht have both spoken there, alongside the people who carry the Brazilian scene.",
         "depth": "YSTS packs hand-picked national and international speakers into a single day in São Paulo, and its distinguishing choice is deliberate smallness with an unusual format: it has historically run in venues that feel nothing like conference halls, with an invitation-influenced audience.\n\nThe reasoning behind that is the same one behind ShmooCon's attendance cap, arrived at independently. A room where everyone can plausibly meet everyone produces different conversations than a hall of two thousand, and the value of a security event is often less the talks than who you end up standing next to. Curating the audience is unfashionable and does produce the thing it aims at.\n\nThe trade is the obvious one and worth naming. A curated event is by definition exclusionary, and who gets invited reflects who the organizers already know, which is how professional networks reproduce themselves and how newcomers stay outside. The healthy ecosystem needs both models: the open free event that lets anyone in, and the small dense one that produces depth, and a country with only one of them is missing something."
       },
       "bsides-sao-paulo": {
@@ -16244,7 +16245,11 @@
     "careerNote": "Two kinds of company appear here, and the markers tell them apart: the ones I was employed by, and the ones whose technology I worked with directly from the other side of the table. Chronological by first engagement, from 1996.",
     "careerStripTitle": "The chapters lived from inside",
     "careerStripNote": "In every one of these, employer or vendor, the work was the same shape: facing the end customer, in pre-sales and in post-sales technical support, and very often acting as the technical proxy and enablement facilitator for the partners who had to carry the product themselves. The job was to leave the customer with something that worked better than it did before — an innovation, a solution, an improvement they could keep running after I left. The full telling lives at the career record.",
-    "careerStripLink": "Read the career record"
+    "careerStripLink": "Read the career record",
+    "servedTitle": "Where the work landed",
+    "servedNote": "Organisations whose networks the work reached, delivered through the vendors, distributors, resellers and integrators I worked for between 1996 and 2020.",
+    "servedCustomersTitle": "End customers, through vendors and distributors",
+    "servedPartnersTitle": "Partners, through vendors and distributors"
   },
   "sitemap": {
     "metaTitle": "Sitemap - every section of ronutz.com",
@@ -16606,14 +16611,12 @@
     "ctaTitle": "If there is a decision on your desk",
     "ctaBody": "The useful first message says what the decision is and when it has to be made.",
     "ctaButton": "Start a conversation",
-    "offerArrangementTitle": "By special arrangement",
-    "offerArrangementBody": "Senior-level real time presence, on site or remotely, during an operation that cannot be repeated: a migration window, a cutover, a planned failover.",
     "disclaimerTitle": "Before you read further",
     "disclaimerBody": "I work full time for Red Education. The advisory work described on this page is delivered personally by me and contracted through Red Education. The one thing I cannot tell you about is pricing: that comes only after a detailed scoping and expectations call, and is provided exclusively by Red Education. What I can tell you is that I will be the main advocate for the best possible outcome for you. Since 1996 I have consistently argued for what serves the end customer, not necessarily for what served the company I was working for at the time. Right is right, and fair is fair. If you need training, that goes through Red Education too.",
     "exclusion1Term": "Implementation and configuration",
     "exclusion1Body": "I will review what is planned and audit what was built, but I am not the pair of hands that builds it.",
     "exclusion2Term": "On-call, standby, and operational duty",
-    "exclusion2Body": "I do not sell hours, and I am not a name on a rota or an escalation path. Where real-time involvement is genuinely warranted, it happens by specific arrangement as a senior advisory engagement — judgement at the point of decision, not standby capacity.",
+    "exclusion2Body": "I do not sell hours, and I am not a name on a rota or an escalation path. Attendance during a maintenance window is not offered, on site or remotely.",
     "exclusion3Term": "Staff augmentation",
     "exclusion3Body": "If what is needed is another person on the team, that is a hiring decision rather than an advisory one.",
     "exclusion4Term": "Training and enablement, in any form",
@@ -16624,7 +16627,9 @@
     "advisorBody": "I have spent thirty years employed by vendors, distributors and integrators — implementing, supporting, deploying and teaching what they sell rather than selling it. That is the whole basis of the advice: my job was to make the thing work for the customer afterwards, so I have had to live with the answer. The credentials, the career record and what past clients and students say are a click away.",
     "advisorLinkCreds": "Credentials",
     "advisorLinkCareer": "Career record",
-    "advisorLinkEndorsements": "What clients say"
+    "advisorLinkEndorsements": "What clients say",
+    "offerEstateTitle": "Network and systems estate review",
+    "offerEstateBody": "An inventory that becomes a map. What is connected, what each thing actually does, what depends on it, and which of those relationships exist only in somebody's memory. Delivered as a written record with a diagnosis — what is fragile, what is unowned, what is duplicated, what will not survive its next change — and, where wanted, a prioritised plan for putting it right."
   },
   "speaking": {
     "eyebrow": "Speaking",
@@ -19206,6 +19211,138 @@
             "what": "A path from lurking to contributing."
           }
         }
+      },
+      "security-architect": {
+        "title": "Security architect",
+        "whatItIs": "The person who decides how a system will be defended before it exists. An architect works in drawings and decisions rather than in configuration: which trust boundaries the design has, what each one is enforced by, what happens when a component is compromised, and which controls are load-bearing rather than decorative. The output is a design somebody else builds, and a set of arguments for why it is shaped that way.",
+        "turnsOn": "The architect is accountable for decisions made before anyone can prove them wrong. That is the whole difficulty: the work is judged years later, by an incident, against a threat model written when the budget was set.",
+        "theDay": [
+          "Reading a proposed design and finding the boundary that is assumed rather than enforced.",
+          "Choosing between controls that overlap, and saying which one the design depends on when both are present.",
+          "Writing the pattern down so that ten teams solve the problem the same way rather than ten ways.",
+          "Sitting in a review where the honest answer is that the risk is acceptable, and recording why.",
+          "Revisiting a decision made two years ago against a threat that did not exist then."
+        ],
+        "accountableFor": [
+          "A design whose failure modes were considered before it was built.",
+          "Control choices that are justified against a stated threat rather than a product feature.",
+          "Patterns that the teams building them can actually implement."
+        ],
+        "measuredOn": [
+          "Designs that survive their first real incident without a redesign.",
+          "Adoption of the patterns, which is the only proof they were usable.",
+          "Exceptions requested, which measures whether the architecture fits the organisation it serves."
+        ],
+        "stakeholders": [
+          "The teams who will operate the result long after the architect has moved to the next design.",
+          "Procurement, whose purchase is constrained by an architectural decision they did not attend.",
+          "Whoever inherits the exception register, which is the true record of where the architecture bent."
+        ],
+        "requirements": [
+          "Enough depth in networks, identity and platforms to be wrong in front of specialists and recover.",
+          "The judgement to accept a risk deliberately rather than escalating everything.",
+          "Writing. An architecture that exists only in conversation is not an architecture.",
+          "Tolerance for being overruled commercially, and the discipline to record the decision anyway."
+        ]
+      },
+      "security-engineer": {
+        "title": "Security engineer",
+        "whatItIs": "The person who builds and runs the controls. Where the architect decides that traffic between two zones must be authenticated and inspected, the engineer is the one who makes that true in a specific product, on a specific night, without breaking the applications that were already working. This is the role that turns a security decision into a running system, and then owns it.",
+        "turnsOn": "A control that is deployed but untuned is worse than no control: it produces noise that trains everyone to ignore it, and it is counted as coverage by whoever reports upward.",
+        "theDay": [
+          "Implementing a control in the platform that actually exists, rather than the one the design assumed.",
+          "Tuning it afterwards, because the first configuration is always either too permissive or in the way.",
+          "Automating the deployment so the twentieth instance matches the first.",
+          "Being the person the application team argues with when the control blocks something legitimate.",
+          "Patching, upgrading and certificate renewal - the unglamorous work that decides whether the control is still real."
+        ],
+        "accountableFor": [
+          "Controls that are deployed, functioning and monitored rather than merely purchased.",
+          "Changes that do not take production down in the name of securing it.",
+          "Knowing which controls are currently degraded, before someone else finds out."
+        ],
+        "measuredOn": [
+          "Coverage: how much of the estate the control actually reaches.",
+          "False positives, which is the number that decides whether the control survives its first month.",
+          "Time to deploy a change, since a control nobody can modify safely becomes a control nobody modifies."
+        ],
+        "stakeholders": [
+          "Every team whose traffic passes through something this role configured.",
+          "The service desk, whose ticket volume moves with each tuning decision.",
+          "Finance, since licence consumption is a consequence of engineering choices."
+        ],
+        "requirements": [
+          "Real depth in at least one platform, and enough in the neighbouring ones to integrate them.",
+          "Change discipline, because this role breaks production in a uniquely embarrassing way.",
+          "The patience to tune rather than to disable.",
+          "Scripting, since consistency at scale is not achieved by hand."
+        ]
+      },
+      "network-security-engineer": {
+        "title": "Network security engineer",
+        "whatItIs": "The role where the two disciplines on this site meet. A network security engineer owns the controls that live in the traffic path - firewalls, segmentation, remote access, inspection, and increasingly the provider edge - and is accountable to two constituencies whose definitions of success differ: the network must stay up and the boundary must hold. Most organisations discover they need this role when a security decision takes an application down.",
+        "turnsOn": "This role is accountable to two teams that measure it oppositely. The network measures uptime and the security function measures containment, and every interesting decision trades one against the other.",
+        "theDay": [
+          "Writing and pruning policy on the devices that stand between one part of the estate and another.",
+          "Proving whether a reported problem is the network, the control, or the application, which is three teams and one packet capture.",
+          "Segmenting something that was flat, one segment at a time, without an outage.",
+          "Maintaining remote access for people whose work stops when it fails.",
+          "Deciding what inspection is worth its cost, now that most traffic is encrypted."
+        ],
+        "accountableFor": [
+          "Policy that expresses the intended boundary rather than an accumulation of exceptions.",
+          "Availability of the controls in the path, which is a network responsibility whatever the org chart says.",
+          "Knowing what would actually be blocked, as distinct from what the policy document claims."
+        ],
+        "measuredOn": [
+          "Outages attributable to the security path, which is the number this role is judged by unfairly and permanently.",
+          "Rule-base hygiene: exceptions with owners and dates rather than accumulated permits.",
+          "Time to implement a change safely, since a slow path drives teams around the control."
+        ],
+        "stakeholders": [
+          "Every application owner whose traffic crosses a boundary this role controls.",
+          "The network team, whose availability numbers absorb this role's mistakes.",
+          "The provider, once part of the boundary moved into their edge."
+        ],
+        "requirements": [
+          "Genuine networking depth: routing, translation, encryption and the ability to read a capture.",
+          "The discipline to keep a rule base clean when nobody is asking for that.",
+          "Enough diplomacy to be the person who says no, repeatedly, to colleagues.",
+          "Comfort with the fact that success here is invisible and failure is a conference call."
+        ]
+      },
+      "grc-analyst": {
+        "title": "Governance, risk and compliance analyst",
+        "whatItIs": "The role that writes down what the organisation has decided to require of itself, and then finds out whether it is true. Governance is the deciding, risk is the accounting for what could go wrong, and compliance is the evidence that the decisions are being followed. The framework literature separates governance from management for a reason: this role serves the people who set direction, not the people who implement it.",
+        "turnsOn": "Compliance measures whether a control is documented and operating. Whether it works is a separate question with a separate answer, and a programme that treats the two as one produces certificates and incidents at the same time.",
+        "theDay": [
+          "Turning an obligation written in legal language into a control somebody can actually operate.",
+          "Maintaining the risk register, which means chasing owners who did not ask to own anything.",
+          "Collecting evidence, and discovering that a control everyone believed in has no record of running.",
+          "Answering a customer security questionnaire, honestly, without losing the deal.",
+          "Preparing for an audit, which is mostly finding out what will not survive one."
+        ],
+        "accountableFor": [
+          "Policy that is specific enough to follow and general enough to survive a product change.",
+          "A risk register that reflects the organisation rather than a template.",
+          "Evidence that exists before it is asked for."
+        ],
+        "measuredOn": [
+          "Audit findings, and whether last year's were genuinely closed.",
+          "Certification maintained without a crisis in the month before assessment.",
+          "Exceptions with owners and expiry dates rather than an unbounded list."
+        ],
+        "stakeholders": [
+          "Customers, whose contracts increasingly specify controls this role has to evidence.",
+          "Insurers, who now ask the same questions with money attached.",
+          "Every team that inherits a requirement written here."
+        ],
+        "requirements": [
+          "Enough technical literacy to know when an implementation claim is not true.",
+          "Writing that survives being read by a lawyer, an engineer and an auditor.",
+          "The stubbornness to keep asking for evidence after being told it exists.",
+          "Judgement about proportion, since a control programme that ignores cost is ignored in turn."
+        ]
       }
     }
   }

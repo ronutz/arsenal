@@ -81,7 +81,6 @@ export const instructorAuthorizations: Credential[] = [
   { name: "F5 Authorized Instructor", issuer: "F5", noCertificate: true },
   { name: "Fortinet Certified Trainer (FCT)", issuer: "Fortinet", detail: "Cybersecurity", period: "2025 – 2027", evidence: { pdf: P("fortinet-fct"), credly: C("a3bf6c7b-d24c-476c-8914-d948164dd099"), verifyId: "6629361496RN" } },
   { name: "Extreme Networks Certified Instructor", issuer: "Extreme Networks", period: "2024", evidence: { credly: C("ece5310e-8cb8-4c20-9121-1f4c97db441a") } },
-  { name: "Netskope Certified Cloud Security Instructor", issuer: "Netskope", noCertificate: true },
   { name: "Netskope Trainer Accreditation, Administrator License", issuer: "Netskope", period: "2026 – 2027", evidence: { pdf: P("netskope-trainer-administrator"), verifyUrl: NS("vievw5ko46i2"), verifyId: "vievw5ko46i2" } },
 ];
 
