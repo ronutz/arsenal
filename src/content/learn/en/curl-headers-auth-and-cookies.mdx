@@ -3,7 +3,7 @@ slug: curl-headers-auth-and-cookies
 title: "Headers, Authentication, and Cookies in curl"
 summary: "Headers, auth, and cookies are how a request identifies and authorizes itself. -H adds headers, -u is HTTP Basic, a bearer token is just a header, and -b/-c handle cookies. All of them are sensitive."
 concepts: ["curl", "http headers", "authentication", "bearer token", "cookies"]
-relatedTools: ["http-request-translator"]
+relatedTools: ["curl-command-explainer"]
 relatedArticles: ["curl-to-fetch", "reading-a-curl-command", "curl-security-flags"]
 category: networking
 order: 79
@@ -17,7 +17,7 @@ Headers, authentication, and cookies are how a request presents itself to a serv
 
 Cookies arrive with `-b` / `--cookie` (send a cookie, or read them from a file) and are saved with `-c` / `--cookie-jar`.
 
-When you translate the request, HTTP Basic becomes the target language's auth mechanism, for example the `auth=(user, password)` tuple in Python requests, while a bearer token stays a plain header in every language. The [HTTP request translator](/tools/http-request-translator) never sends the request, so any token, password or cookie pasted into it is decoded in the browser and goes nowhere.
+When you translate the request, HTTP Basic becomes the target language's auth mechanism, for example the `auth=(user, password)` tuple in Python requests, while a bearer token stays a plain header in every language. The [HTTP request translator](/tools/curl-command-explainer) never sends the request, so any token, password or cookie pasted into it is decoded in the browser and goes nowhere.
 
 ## Where the credential actually ends up
 

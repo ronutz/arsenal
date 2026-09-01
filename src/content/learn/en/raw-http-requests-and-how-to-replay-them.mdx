@@ -1,0 +1,62 @@
+---
+slug: raw-http-requests-and-how-to-replay-them
+title: "Reading a raw HTTP request, and turning it back into something you can run"
+summary: "A capture, a proxy log and an RFC example all hand you the same thing: a request line, some headers and maybe a body. Turning that back into a command you can run looks mechanical and has three traps - the URL is not in the message, some headers must not be copied, and the paste is usually a live credential."
+concepts: ["http", "debugging", "tooling"]
+relatedTools: ["http-request-translator", "curl-command-explainer"]
+relatedArticles: ["http-headers-anatomy", "curl-to-fetch", "http-methods-the-verbs"]
+category: web
+order: 139
+status: reviewed
+updated: "2026-09-01"
+---
+
+## What a raw request actually contains
+
+An HTTP/1.1 request is a request line, a block of headers, a blank line, and an optional body. The syntax is specified in RFC 9112 and the meaning of the parts in RFC 9110, and the shape has barely changed since the 1990s:
+
+```
+POST /v1/users HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
+
+{"name":"Alice"}
+```
+
+Three forms of request target exist and they are worth telling apart, because they decide what a translator can do with the message. **Origin-form** is the common one, a path only. **Absolute-form** carries the whole URL and is what a client sends to a proxy. **Asterisk-form** is a bare `*`, used with `OPTIONS` to ask about the server rather than a resource.
+
+## The URL is not in the message
+
+This is the first trap. `GET /users HTTP/1.1` does not say where to send the request; the connection already knew. Reconstructing something runnable means joining the target to the **`Host`** header, which is exactly why that header was made mandatory in HTTP/1.1 — it is what allowed many sites to share one address, and it is what makes a captured request reconstructable at all.
+
+If `Host` is missing on an origin-form request, the URL cannot be recovered from the message alone. A tool should say so rather than invent a host.
+
+## Some headers must not be copied
+
+The second trap is subtler, and it produces bugs that look like server problems.
+
+**`Host`** is set by every client from the URL you give it. Copying it through as an explicit header gives you two, and which one wins depends on the client.
+
+**`Content-Length`** is calculated by the client from the body it is about to send. Copying the captured value pins a number that may no longer be true — and a length that disagrees with the body is not a cosmetic error. It is the ingredient in request smuggling, where a front-end and a back-end disagree about where one message ends and the next begins.
+
+**`Connection`** describes that specific hop's behaviour, not the request's meaning.
+
+So a faithful translation is not a literal one. Reproducing every header verbatim produces something that is less like the original request, not more.
+
+## The paste is usually a credential
+
+The third trap has nothing to do with syntax. Requests captured from a working session carry `Authorization` headers, `Cookie` headers, API keys in query strings — and they are usually captured precisely because something was going wrong, which is the moment people paste them into tickets, chats and issue trackers.
+
+A bearer token in a ticket is a valid credential until it expires, readable by everyone with access to that ticket, and searchable long afterwards. Treat any pasted request as a live secret: redact before sharing, and prefer tooling that parses **locally** rather than posting the message to a service to be formatted.
+
+## Chunked bodies, and knowing when to stop
+
+If the message carries `Transfer-Encoding: chunked`, the body you can see is not the body that was sent: it is a sequence of size-prefixed chunks terminated by a zero-length one. Decoding that is a different job from translating a request, and a tool that half-does it — decoding some encodings and not others — is worse than one that says plainly that it did not.
+
+## The practical routine
+
+1. Identify the target form. If it is origin-form, find the `Host`.
+2. Drop the headers the client will set for itself.
+3. Note whether the body is chunked or length-declared, and whether the declared length is true.
+4. Redact credentials before the request leaves your machine in any form.
+5. Translate, then run the result against a test target rather than production, because a replayed request repeats whatever the original did — including the write.

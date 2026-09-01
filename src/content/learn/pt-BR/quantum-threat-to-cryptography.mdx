@@ -13,6 +13,25 @@ updated: "2026-07-06"
 
 A frase "computadores quânticos vão quebrar a criptografia" é comum e meio errada. Um computador quântico grande e tolerante a falhas quebraria por completo parte da criptografia sobre a qual a internet funciona, e deixaria o resto quase intocado. Saber qual é qual é toda a base da migração em curso, então vale ser preciso.
 
+## Origens: o prazo foi fixado pela matemática, e depois pela compra
+
+Peter Shor publicou seu algoritmo de fatoração em 1994, e a consequência foi imediata no papel e remota na prática: um computador quântico suficientemente grande quebraria o RSA e a criptografia de curvas elípticas, porque as duas se apoiam em problemas que o algoritmo de Shor resolve com eficiência. O algoritmo de busca de Lov Grover, de 1996, deu um resultado mais suave - uma aceleração quadrática contra cifras simétricas e hashes, que se responde dobrando o tamanho da chave, e não trocando o algoritmo.
+
+Essa divisão é o assunto inteiro, e vale mantê-la clara, porque quase toda confusão sobre "o quântico quebrar a criptografia" a colapsa:
+
+- **Criptografia de chave pública** - RSA, Diffie-Hellman, curvas elípticas - é quebrada, não enfraquecida. Troca de chaves e assinaturas.
+- **Criptografia simétrica e hashes** - AES, SHA-2, SHA-3 - são enfraquecidos de forma previsível. O AES-256 segue sólido; o AES-128 perde margem.
+
+O que transformou um resultado teórico em prazo de compra foi a **padronização pós-quântica do NIST**, conduzida como competição aberta desde 2016. Os primeiros padrões saíram em **agosto de 2024**: o FIPS 203 para encapsulamento de chaves, baseado no algoritmo submetido como CRYSTALS-Kyber, e os FIPS 204 e 205 para assinaturas. A padronização é o que torna uma transição criptográfica possível - fabricantes não entregam o que não tem padrão, e auditores não aceitam o que os fabricantes não entregam.
+
+## Colher agora, decifrar depois
+
+A razão de isso ser urgente antes de a máquina existir cabe numa frase: **o tráfego capturado hoje pode ser decifrado quando a capacidade chegar.**
+
+Isso muda a pergunta de "quando os computadores quânticos vão funcionar" para "por quanto tempo este dado precisa continuar secreto". Tudo com vida útil de confidencialidade medida em décadas - prontuários, segredos de Estado, acordos comerciais longos, e as chaves privadas dentro de equipamentos de vida longa - já está exposto a um adversário disposto a guardar o texto cifrado e esperar.
+
+Assinaturas ficam noutro lugar. Uma assinatura só precisa resistir à falsificação enquanto está sendo usada, então a pressão ali é sobre **prazos de certificado e de assinatura de firmware**, e não sobre tráfego passado. Um equipamento entregue hoje com quinze anos de vida útil e raiz de assinatura clássica é o problema mais difícil, porque ninguém rotaciona o que está gravado em hardware.
+
 ## Dois algoritmos, dois efeitos muito diferentes
 
 A ameaça se resume a dois algoritmos quânticos, e eles não fazem a mesma coisa.
@@ -33,6 +52,27 @@ A resposta natural é que nenhum computador quântico desses existe ainda, entã
 
 A autenticação é diferente de um jeito importante. Uma assinatura só precisa resistir à falsificação até o momento em que é verificada; você não pode falsificar a assinatura de um handshake TLS depois do fato para quebrar uma sessão que já aconteceu. Então o colher-agora-decifrar-depois pressiona a confidencialidade (troca de chaves) primeiro e com mais força, enquanto a migração de assinaturas, embora necessária, é menos uma corrida contra o tráfego gravado. Essa diferença é por que a troca de chaves se moveu primeiro na internet, e as assinaturas estão vindo em seguida.
 
-## Uma dose de humildade: o SIKE
+## Como a transição de fato acontece
 
-Mais um motivo para essa migração ser conduzida com cuidado em vez de apressada. Entre os candidatos no processo de padronização estava o SIKE, um esquema de troca de chaves baseado em isogenias, valorizado por suas chaves muito pequenas. Em 2022 ele foi quebrado por Castryck e Decru com um ataque clássico que recuperou a chave em cerca de uma hora num único computador, sem nenhuma máquina quântica envolvida. Um esquema que havia sobrevivido a anos de escrutínio ruiu abruptamente assim que a ideia matemática certa apareceu. A lição não é que os novos algoritmos não sejam confiáveis; é que a confiança em uma suposição matemática jovem pode estar errada, e isso é um forte argumento a favor de escolhas conservadoras, de manter um reserva baseado em matemática totalmente diferente, e das implantações híbridas que combinam um algoritmo novo com um clássico em vez de apostar tudo apenas no novo. Esses são os temas dos artigos companheiros sobre os padrões do NIST e sobre a troca de chaves híbrida no TLS.
+**A troca de chaves híbrida veio primeiro**, e já está implantada: combinar uma curva clássica com uma troca baseada em reticulados, de modo que a sessão só cai se as *duas* forem quebradas. Navegadores e grandes redes ligaram isso ao longo de 2024 e 2025, o que faz dela a transição criptográfica mais rápida que a web já executou - e ela funciona justamente por não exigir confiar apenas no algoritmo novo.
+
+**As assinaturas são mais lentas**, porque tocam hierarquias de certificado, assinatura de código, raízes em hardware e organismos de norma que andam no próprio ritmo.
+
+**As restrições práticas são sem glamour.** Chaves e assinaturas pós-quânticas são maiores, às vezes muito maiores, e isso cai sobre tamanho de aperto de mão, pacotes que deixam de caber, dispositivos embarcados com buffers fixos, e protocolos com larguras de campo escritas quando ninguém esperava chave da ordem de quilobytes. A aritmética de [MTU](/learn/tunnel-overhead-mtu-and-mss) não é coincidência.
+
+**Agilidade criptográfica é a entrega de verdade.** Um parque que não sabe dizer onde seus algoritmos estão configurados não vai concluir esta transição, compre o que comprar. A pergunta de inventário vem primeiro: quais sistemas, quais bibliotecas, quais premissas fixas no código, quais fabricantes e quais contratos.
+
+## Uma dose de humildade, e por que ela cabe aqui
+
+O **SIKE** foi candidato no mesmo processo do NIST, baseado em isogenias supersingulares, e foi quebrado em 2022 - num único computador clássico, em cerca de uma hora, por matemática sem relação com computação quântica. Ele tinha sobrevivido a anos de análise pública antes disso.
+
+É esse o argumento pela implantação híbrida, dito melhor do que qualquer avaliação de risco conseguiria: os algoritmos novos são jovens, a análise segue em curso, e combiná-los com algo bem compreendido não é timidez, é a resposta de engenharia correta a essa incerteza.
+
+## O cenário, por categoria
+
+- **Organismos de norma** - o NIST para os algoritmos, com grupos de trabalho do IETF definindo como eles aparecem em TLS, SSH e certificados.
+- **Reguladores nacionais**, que cada vez mais publicam os próprios prazos de migração, e não concordam todos nem em algoritmo nem em data - problema real para quem opera em várias jurisdições.
+- **Implementadores de biblioteca** - OpenSSL, BoringSSL, liboqs e as pilhas de plataforma, onde o algoritmo vira algo que um produto consegue de fato chamar.
+- **Fabricantes de hardware e de dispositivos**, a camada mais lenta, e aquela em que o problema do colher-agora é o menos remediável.
+
+O resumo honesto: os algoritmos estão escolhidos e padronizados, a troca de chaves híbrida já carrega tráfego real, e a parte difícil não é criptografia, é inventário - saber onde estão os algoritmos antigos, num parque que ninguém documentou para essa pergunta.

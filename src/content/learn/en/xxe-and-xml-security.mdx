@@ -11,6 +11,16 @@ status: reviewed
 updated: "2026-06-29"
 ---
 
+## Origins: a document format that was also a program
+
+XML was standardised in 1998 as a simplified subset of SGML, and it inherited SGML's **document type definition** — a grammar the document can declare about itself. The DTD is the loaded feature, and it exists because XML was designed for publishing, where a document declaring its own vocabulary and pulling in shared fragments was the point rather than a hazard.
+
+The consequences were not obvious at the time. A DTD may define **entities**, which are named substitutions the parser expands. Internal entities are just text. **External entities** tell the parser to go and fetch something — from the local filesystem or over the network — and paste it into the document. A parser doing that is behaving exactly as specified.
+
+That is the whole vulnerability class. XXE is not a bug in a library; it is a standard feature meeting an input the format's designers never imagined: a document supplied by an attacker.
+
+The pattern generalises well beyond XML, and this is why the article matters more than its acronym: **any format that can reference something outside itself becomes a fetch primitive when it is parsed with the parser's privileges.** The same shape recurs in YAML with unsafe deserialisation, in spreadsheet formula injection, in Markdown renderers that follow includes, and in template engines.
+
 ## XML carries a loaded feature
 
 SAML (Security Assertion Markup Language) is XML, and XML has a feature that turns parsing untrusted input into a security problem: the Document Type Definition (DTD), and the entities it can declare. An entity is a named substitution, like a macro. Most are harmless, but a DTD can define entities that pull in external content or expand explosively, and a parser that processes them does the attacker's bidding while merely reading the document. Because a SAML message arrives from outside and is processed by a server, this is exactly the dangerous situation.
@@ -46,6 +56,32 @@ A parser that expands these entities exhausts memory and CPU trying to materiali
 Both attacks share a single prerequisite: a DTD that declares entities. A SAML message has no legitimate need for one. The standard does not require a DOCTYPE, real IdPs do not emit one, and the only reason a SAML message would carry an entity declaration is to attack the parser. That makes the safest defense the simplest one: refuse any document that contains a DOCTYPE or an entity declaration, before parsing its content.
 
 This decoder does exactly that. If the input contains a `<!DOCTYPE` or `<!ENTITY`, it is rejected outright with a clear reason, never parsed. Beyond that kill switch, the parser only ever substitutes the five predefined XML entities and numeric character references; an unknown named entity is left as literal text rather than resolved, so even a reference that slipped through expands to nothing dangerous. Input size, nesting depth, and element count are all capped as further backstops. The result is a parser that cannot be made to read a local file, reach into your network, or blow up on a crafted document.
+
+## What an attacker actually gets
+
+- **File read.** The classic outcome: local files come back inside the parsed response. Where the response is not returned, an out-of-band variant sends the content to a server the attacker controls.
+- **Server-side request forgery.** The parser fetches URLs from inside your network, which makes it a probe against services that trust their position rather than their callers — cloud metadata endpoints being the highest-value target.
+- **Denial of service.** The billion-laughs attack nests entity references so expansion grows exponentially, consuming memory from a document measured in kilobytes. Quadratic blowup achieves similar results without deep nesting.
+- **Port scanning and protocol confusion**, since some parsers support more URI schemes than anybody deploying them intends.
+
+## Why rejecting beats sanitising, and where it bites
+
+Filtering entity declarations means matching against a grammar with encodings, nesting and parameter entities. Rejecting **DOCTYPE** entirely is one flag, and it removes the whole class rather than the examples somebody thought of. This is the reason a hardened [SAML](/learn/saml-proxy-explained) parser refuses a document with a DOCTYPE outright: an assertion never needs one, and the identity path is exactly where a fetch primitive is most valuable to an attacker.
+
+The complication is that the safe default arrived late. Parsers shipped with external entity resolution **on** for years, so hardening is a per-parser, per-language, sometimes per-version exercise rather than a single decision — and a library upgrade can quietly reintroduce it if the configuration lived in defaults rather than in code.
+
+Two operational notes worth carrying:
+
+**The parser's privileges are the blast radius.** An XML parser running as a service account that can read configuration files and reach internal endpoints turns a document into a foothold; the same bug in a sandboxed process is an inconvenience.
+
+**Depth applies here too.** Disable the DTD, run the parser with the least access it can do its job with, and treat any XML from outside as attacker-supplied — including files uploaded by legitimate users, since office documents, feeds and configuration exports are all XML underneath.
+
+## Where this surfaces, by category
+
+- **Language parsers** — libxml2 beneath much of the ecosystem, plus the Java, .NET, Python and PHP stacks, each with its own way of saying no to a DTD.
+- **Identity and signing paths** — SAML, XML Signature and XML Encryption, where the format meets untrusted input by design.
+- **Document and office formats**, whose containers are XML, which is how a spreadsheet becomes an input to this class.
+- **APIs and integrations** — SOAP and legacy enterprise interfaces, where XML is not a choice anyone is making today but is still in the path.
 
 ## Why rejecting beats sanitizing
 

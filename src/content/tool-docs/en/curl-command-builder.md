@@ -16,4 +16,4 @@ Identical inputs always produce a byte-identical command: flags are emitted in o
 
 ## The inverse of the translator
 
-This tool writes `curl` commands; the [HTTP request translator](/tools/http-request-translator) reads them. Build a command here, or paste one there to have it explained flag by flag and translated to fetch, raw HTTP, HTTPie, and Python requests.
+This tool writes `curl` commands; the [HTTP request translator](/tools/curl-command-explainer) reads them. Build a command here, or paste one there to have it explained flag by flag and translated to fetch, raw HTTP, HTTPie, and Python requests.

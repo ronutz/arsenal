@@ -16,6 +16,7 @@ import { ogImages } from "@/lib/og";
 import { getArticlesByCategory, getArticleVendors } from "@/lib/learn";
 import type { CSSProperties } from "react";
 import { GLOSSARY } from "@/content/glossary/glossary";
+import { partnerVendors } from "@/content/vendors/partners";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
 import { studyGuides, objectiveCount } from "@/content/certifications/study-guides";
 import FamilyChip from "@/components/FamilyChip";
@@ -194,18 +195,47 @@ export default async function LearnIndexPage({
                   <span className="learn-portal-badge">{t("portalGuides", { count: studyGuides.length })}</span>
                 </p>
               </Link>
+              {/* THE INDUSTRY (PRIME 2026-09-01). The largest body of written
+                  material on this site that the Learn portal did not point at:
+                  profiles of the companies and the people, the lineage
+                  timeline, and the acquisition trail that explains why the
+                  product on the shelf carries a different name from the one
+                  that built it. Counts come from the registries, so the card
+                  cannot drift from the section. */}
               <Link
-                href="/glossary"
+                href="/industry"
                 className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+                style={{ "--note-accent": "var(--accent-secondary)" } as CSSProperties}
               >
-                <span className="learn-portal-ornament" aria-hidden>A&ndash;Z</span>
+                <span className="learn-portal-ornament" aria-hidden>&#8620;</span>
                 <p className="learn-portal-title">
-                  {tGloss("title")} <span className="learn-portal-arrow">&#8594;</span>
+                  {t("portalIndustry")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
-                <p className="learn-portal-lede">{tGloss("tagline")}</p>
+                <p className="learn-portal-lede">{t("portalIndustryLede")}</p>
                 <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("portalTerms", { count: GLOSSARY.length })}</span>
+                  <span className="learn-portal-badge">
+                    {t("portalCompanies", { count: partnerVendors.length })}
+                  </span>
+                </p>
+              </Link>
+              {/* PEOPLE (PRIME 2026-09-01). The individuals were in the
+                  glossary all along with no address of their own; the flag on
+                  each entry is what made a page possible. Count is derived, so
+                  it cannot drift from the data. */}
+              <Link
+                href="/people"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--accent-amber)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#9787;</span>
+                <p className="learn-portal-title">
+                  {t("portalPeople")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("portalPeopleLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">
+                    {t("portalPeopleCount", { count: GLOSSARY.filter((e) => e.person).length })}
+                  </span>
                 </p>
               </Link>
               <Link
@@ -222,6 +252,20 @@ export default async function LearnIndexPage({
                   <span className="learn-portal-badge">{t("portalPaths", { count: READING_PATHS.length })}</span>
                   <span className="learn-portal-badge">{t("portalGuides", { count: studyGuides.length })}</span>
                   <span className="learn-portal-badge">{t("portalObjectives", { count: totalObjectives })}</span>
+                </p>
+              </Link>
+              <Link
+                href="/glossary"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>A&ndash;Z</span>
+                <p className="learn-portal-title">
+                  {tGloss("title")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{tGloss("tagline")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("portalTerms", { count: GLOSSARY.length })}</span>
                 </p>
               </Link>
             </div>

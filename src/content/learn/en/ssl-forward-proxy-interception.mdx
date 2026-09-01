@@ -13,6 +13,26 @@ updated: "2026-07-06"
 
 Most outbound traffic leaving an organization is now TLS-encrypted, which is good for privacy and bad for a security team that needs to see what its users are sending and receiving. Malware hides its command-and-control in HTTPS; data exfiltration rides the same encrypted channels as legitimate work. A forward proxy that only tunnels HTTPS (via the CONNECT method) can log the destination hostname but cannot see inside. To inspect the content, the proxy has to decrypt it, and decrypting a session designed to be end-to-end confidential means becoming a deliberate, authorized man-in-the-middle. That is what an SSL forward proxy does.
 
+## Origins: the inspection point stopped being able to see
+
+Content inspection began where traffic was readable. A proxy in the 1990s could read a URL, a header and a body because almost nothing was encrypted, and an entire industry of web filtering, antivirus scanning and data-loss prevention was built on that assumption.
+
+Then encryption became the default. The change was not one decision but three, each removing more visibility than the last: certificate authorities began issuing at no cost from 2015, browsers started marking plain HTTP as insecure, and [TLS 1.3](/learn/tls12-tls13-dtls-quic) encrypted most of the handshake including the certificate. Traffic that was once open to any device in the path became opaque, and the inspection industry had two options: lose the visibility, or terminate the session.
+
+**SSL forward proxy** is the second option, and it is worth naming plainly: it is a deliberate, sanctioned machine-in-the-middle. The technique is identical to the attack; only the ownership of the keys and the consent of the organisation make it something else.
+
+## How it works, and the piece people forget
+
+The mechanics are two sessions and a forged certificate. The proxy terminates the client's TLS session, presenting a certificate it mints for the destination hostname, and opens its own TLS session onward to the real server. Between the two it holds plaintext.
+
+For the client not to complain, the proxy's **issuing CA must be installed as trusted** on every device. That is the piece that decides the whole design, and it is a bigger commitment than it looks. The organisation is not adding one certificate; it is adding an authority that can mint a valid certificate for **any name on the internet**, and installing it on every laptop and phone it manages. Whoever controls that private key can impersonate anything to those devices.
+
+Two consequences follow, and both are structural rather than operational.
+
+**The proxy holds plaintext for everything.** Bank sessions, health portals, private mail. The device now sees what nothing else in the network could, which makes it the highest-value target in the estate and the one whose logs carry the most sensitive material.
+
+**The client stops validating the internet and starts validating you.** After interception, the certificate the browser checks is yours. If the proxy validates the upstream certificate weakly — expired, self-signed, bad name, revoked — the client cannot tell, because it never sees it. An interception device that is lax upstream has downgraded every user behind it while showing them a padlock.
+
 ## The mechanics: two sessions and a forged certificate
 
 Break the interception into steps. A user's browser tries to reach `https://example.com`. The forward proxy, sitting inline or configured as the browser's proxy, intercepts the connection. It then does two things at once:
@@ -29,6 +49,39 @@ The whole scheme stands or falls on one thing: the browser must trust the proxy'
 
 That same fact is why interception is powerful and why it is risky. It works only on managed devices where the CA was installed; an unmanaged or personal device that never trusted the CA will show a certificate warning on every intercepted site, which is exactly the intended behavior of a browser detecting a man-in-the-middle. And the proxy's CA is now one of the most sensitive keys in the organization: anyone who steals it can forge a trusted certificate for any site to any of those devices. Interception also concentrates plaintext for the entire user population at one point, so the proxy itself becomes a high-value target and, in many jurisdictions, a legal and privacy obligation (some categories of traffic, such as banking and healthcare, are commonly exempted from decryption for exactly this reason).
 
+## What breaks, and why it is not a misconfiguration
+
+Interception fails against defences that were designed specifically to notice it, which is why the exceptions list is permanent rather than temporary.
+
+**Certificate pinning.** An application that ships the expected certificate or public key refuses anything else, including your legitimate proxy. Mobile banking applications, several messaging clients, software update channels and many device agents pin deliberately. There is no configuration that makes pinning accept an interception CA; the application must be excluded from interception or it must not work.
+
+**Mutual TLS.** When the server demands a client certificate, the proxy is not holding the client's private key and cannot complete the handshake on its behalf.
+
+**Encrypted Client Hello.** The remaining plaintext signal in a modern handshake is the server name, and ECH removes it. Policy that depends on reading the destination name before deciding whether to intercept loses its input.
+
+**Post-quantum and new key exchanges.** Every interception device must support what the endpoints negotiate. Hybrid key exchange arrived in browsers before it arrived in most middleboxes, and the failure mode is a handshake that simply stops working through the proxy while working directly.
+
+**QUIC.** It is UDP, encrypted end to end, and most interception estates handle it by blocking it and forcing a fallback to TCP — which works until the application has no fallback.
+
+**Legal and regulatory categories.** Health, financial and legal traffic is excluded in many jurisdictions, and the exclusion is a compliance requirement rather than a preference.
+
+## Operating it honestly
+
+- **Publish the practice.** Users and regulators should know that traffic is inspected, which category is excluded, and who can read the logs. This is a governance decision that gets treated as a firewall setting.
+- **Bypass by destination, not by hope.** Maintain the exclusion list as a register with owners and review dates, in the same way as any [policy exception](/learn/network-segmentation-from-vlans-to-microsegmentation).
+- **Protect the issuing key like a root.** Hardware-backed, access-controlled, logged, with a rehearsed revocation and re-enrolment path — because replacing it means touching every managed device.
+- **Validate upstream strictly**, and fail the session rather than passing a weak certificate through. The users behind the proxy have no other defence.
+- **Measure the cost.** Termination and re-encryption are computationally expensive, and interception is the feature that most often makes a security appliance the bottleneck in the path — which is the [availability side of the trade](/learn/security-versus-availability) stated in hardware.
+
+## The landscape, by category
+
+- **Secure web gateways in the cloud** — Zscaler, Netskope, Cloudflare, Cisco Umbrella. Interception happens in the provider's edge, which moves the plaintext to somebody else's infrastructure and makes their exclusion list part of your policy.
+- **Next-generation firewalls** — Palo Alto, Fortinet, Check Point and others, terminating at the perimeter where the estate still has one.
+- **Dedicated decryption platforms** — F5, A10, Gigamon and similar, which decrypt once and feed several inspection tools from the same plaintext, so the expensive operation happens a single time.
+- **Endpoint agents**, which see the plaintext inside the device before it is encrypted at all and therefore do not need to intercept — the approach that grows as network interception loses ground.
+
+The direction of travel is worth stating: every year, more traffic resists interception at the network, and more inspection moves to the endpoint. A programme built entirely on network decryption is building on a shrinking surface.
+
 ## What defeats interception, by design
 
 Several web-security mechanisms exist precisely to detect or prevent a man-in-the-middle, and they do not distinguish a hostile attacker from an authorized corporate proxy. They break interception, and understanding why is essential to running one.
@@ -40,3 +93,9 @@ Several web-security mechanisms exist precisely to detect or prevent a man-in-th
 **Mutual TLS** breaks interception from the other direction: if the destination server requires a client certificate, the proxy, standing in the middle, does not hold the user's client key and cannot complete the handshake to the server. As with inbound mutual TLS, the usual resolution is to bypass decryption for those destinations.
 
 The practical upshot is that an SSL forward proxy never inspects everything. A real deployment is an inspect-by-default policy plus a carefully maintained set of exceptions for pinned, mutually-authenticated, and legally-protected traffic. The article on inbound TLS covers the mirror-image case, a reverse proxy terminating traffic for servers the organization *does* own, where no forging is needed because the proxy legitimately holds the certificate.
+
+## Sources
+
+- [RFC 8446 - TLS 1.3, which encrypts most of the handshake including the certificate](https://www.rfc-editor.org/rfc/rfc8446)
+- [RFC 9000 - QUIC, the UDP transport that most interception estates handle by blocking](https://www.rfc-editor.org/rfc/rfc9000)
+- [TLS Encrypted Client Hello, the IETF draft that removes the last plaintext name](https://datatracker.ietf.org/doc/draft-ietf-tls-esni/)

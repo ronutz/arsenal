@@ -343,7 +343,7 @@ export const READING_PATHS: ReadingPath[] = [
       "hsts-and-https",
       "curl-protocols-beyond-http",
     ],
-    tools: ["http-request-translator", "http-methods-comparison", "http-status-code-explainer", "url-inspector", "curl-command-builder"],
+    tools: ["curl-command-explainer", "http-methods-comparison", "http-status-code-explainer", "url-inspector", "curl-command-builder"],
   },
   {
     // The craft skill under log analysis, iRules, and every parser: the five

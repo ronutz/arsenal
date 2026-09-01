@@ -16,4 +16,4 @@ Entradas idênticas sempre produzem um comando idêntico byte a byte: as flags s
 
 ## O inverso do tradutor
 
-Esta ferramenta escreve comandos `curl`; o [tradutor de requisições HTTP](/tools/http-request-translator) os lê. Monte um comando aqui, ou cole um lá para vê-lo explicado flag por flag e traduzido para fetch, HTTP cru, HTTPie e Python requests.
+Esta ferramenta escreve comandos `curl`; o [tradutor de requisições HTTP](/tools/curl-command-explainer) os lê. Monte um comando aqui, ou cole um lá para vê-lo explicado flag por flag e traduzido para fetch, HTTP cru, HTTPie e Python requests.

@@ -33,7 +33,6 @@ import ReduBrand from "@/components/ReduBrand";
 import { partnerVendors } from "@/content/vendors/partners";
 import { TAG_ROUTES, vendorsByTag } from "@/content/vendors/partners";
 import { CAREER_VENDORS } from "@/content/vendors/career";
-import { SERVED_END_CUSTOMERS, SERVED_PARTNERS } from "@/content/vendors/served";
 // Country of origin per entry, and the flag computed from the ISO code rather
 // than stored (PRIME 2026-08-06). See origins.ts for what "origin" means here:
 // where the company was FOUNDED, not where it is domiciled or who owns it now.
@@ -294,39 +293,6 @@ export default async function IndustryHubPage({
                 - a DIFFERENT accent from everything below it, because what it
                 links to precedes every company on this page rather than sitting
                 beside them. */}
-            {/* WHERE THE WORK LANDED (PRIME, 31/08/2026).
-                Attributed, at his instruction, as work delivered THROUGH
-                EARLIER EMPLOYERS rather than as engagements of his own
-                practice. It sits above the lineage timeline because it is the
-                one part of this page that is first-hand: the companies below
-                are researched and cited, these are remembered. The note says
-                which is which, so the reader is not left to assume the two
-                carry the same kind of evidence. */}
-            <section className="industry-served" aria-labelledby="served-heading">
-              <h2 className="vendor-divider-title" id="served-heading">
-                {ti("servedTitle")}
-              </h2>
-              <p className="industry-served-note">{ti("servedNote")}</p>
-
-              <h3 className="industry-served-group">{ti("servedCustomersTitle")}</h3>
-              <ul className="industry-served-list">
-                {SERVED_END_CUSTOMERS.map((o) => (
-                  <li className="industry-served-item" key={o.name}>
-                    {o.name}
-                  </li>
-                ))}
-              </ul>
-
-              <h3 className="industry-served-group">{ti("servedPartnersTitle")}</h3>
-              <ul className="industry-served-list">
-                {SERVED_PARTNERS.map((o) => (
-                  <li className="industry-served-item" key={o.name}>
-                    {o.name}
-                  </li>
-                ))}
-              </ul>
-            </section>
-
             <p className="industry-antecedent">
               <Link className="page-jump-link" href="/industry/milestones">
                 {tTags("milestonesLink")} <span aria-hidden="true">&#8594;</span>

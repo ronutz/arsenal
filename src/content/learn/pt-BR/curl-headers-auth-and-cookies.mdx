@@ -3,7 +3,7 @@ slug: curl-headers-auth-and-cookies
 title: "Cabeçalhos, autenticação e cookies no curl"
 summary: "Cabeçalhos, autenticação e cookies são como uma requisição se identifica e se autoriza. -H adiciona cabeçalhos, -u é HTTP Basic, um token bearer é apenas um cabeçalho, e -b/-c cuidam de cookies. Todos são sensíveis."
 concepts: ["curl", "cabeçalhos http", "autenticação", "token bearer", "cookies"]
-relatedTools: ["http-request-translator"]
+relatedTools: ["curl-command-explainer"]
 relatedArticles: ["curl-to-fetch", "reading-a-curl-command", "curl-security-flags"]
 category: networking
 order: 79
@@ -28,4 +28,4 @@ Uma senha na linha de comando do curl não fica na linha de comando. Vai para o 
 
 É por isso que um comando funcional copiado de um chamado para um bastion compartilhado é uma pequena divulgação de credencial, e por que **vale ler o `history` de uma conta compartilhada antes de supor que um segredo ainda é segredo.**
 
-O [tradutor de requisições HTTP](/tools/http-request-translator) nunca envia a requisição, então qualquer token, senha ou cookie colado nele é decodificado no navegador e não vai a lugar nenhum.
+O [tradutor de requisições HTTP](/tools/curl-command-explainer) nunca envia a requisição, então qualquer token, senha ou cookie colado nele é decodificado no navegador e não vai a lugar nenhum.

@@ -2699,7 +2699,7 @@ export const CHANGELOG: ChangelogEntry[] = [
   {
     // curl command builder: 27-protocol coverage, per-protocol explainer
     // panels driven by the same table as the assembler, canonical flag order,
-    // 11 golden vectors. Inverse of http-request-translator.
+    // 11 golden vectors. Inverse of curl-command-explainer.
     date: "2026-07-07",
     time: "20:30",
     kind: "tool",
@@ -3657,11 +3657,19 @@ export const CHANGELOG: ChangelogEntry[] = [
       "Every deterministic tool is now reachable over a simple HTTP API at /api/v1/&lt;tool&gt;, driven by a single registry so the API and its published OpenAPI specification stay in lockstep with the toolbox as tools are added. Capabilities that would be abused as an unbounded search on shared infrastructure are explicitly excluded and remain browser-only. The API reference page lists what is available.",
   },
   {
+    date: "2026-09-01",
+    kind: "tool",
+    title: "HTTP request translator: paste a raw request, get a runnable command",
+    body:
+      "The inverse of the curl command explainer. Paste a raw HTTP/1.1 request and get curl, fetch, HTTPie, Python requests and PowerShell. It assembles the absolute URL from the request target and the Host header, drops the headers every client sets for itself, and warns on a Content-Length that disagrees with the body, on chunked bodies it declines to decode, on cleartext http, and on an Authorization header or Cookie in the paste. The name was freed the same day: the tool that had been called the translator only ever accepted curl, and is now the curl command explainer.",
+    tools: ["http-request-translator"],
+  },
+  {
     date: "2026-07-01",
     time: "12:00",
     kind: "tool",
     title: "New tool: HTTP request translator",
-    tools: ["http-request-translator"],
+    tools: ["curl-command-explainer"],
     body:
       "Paste a curl command and get it both explained (method, URL, every header, the body with its real Content-Type, auth, cookies, and each flag) and translated to fetch, a raw HTTP/1.1 request, HTTPie, and Python requests. A single local parse drives both views. It gets curl's -d Content-Type default right (form-encoded, not JSON) and warns on --insecure, plaintext http, and credentials in the URL. Local and offline.",
   },

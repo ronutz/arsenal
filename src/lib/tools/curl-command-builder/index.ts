@@ -4,7 +4,7 @@
 // CURL COMMAND BUILDER - a {manifest, run, vectors} triple. Pick any of the 27
 // protocols the current curl tool speaks, fill protocol-aware fields, toggle
 // the options that matter, and get the exact command with every flag explained
-// and safety warnings surfaced. The inverse of http-request-translator (which
+// and safety warnings surfaced. The inverse of curl-command-explainer (which
 // parses a pasted command); the two cross-link.
 //
 // Nothing is executed and nothing leaves the browser (D-49 localOnly). The
@@ -32,7 +32,7 @@ export const manifest = Object.freeze({
     "curl-cheatsheet",
   ],
   // A form-driven builder: nothing pasteable to auto-detect, so no OMNIBOX
-  // detectors (pasted curl commands route to http-request-translator).
+  // detectors (pasted curl commands route to curl-command-explainer).
   inputDetectors: [],
 
   // -- Capability & execution --

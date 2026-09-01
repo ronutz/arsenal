@@ -1,0 +1,71 @@
+---
+slug: security-versus-availability
+title: "Security versus availability: the trade nobody writes down"
+summary: "Every security control is also a new way for the system to stop working. The triad puts confidentiality, integrity and availability on the same footing and then organisations staff them separately, measure them separately, and discover the conflict during an incident. The history of the trade-off, where it is decided in practice, the failure modes on both sides, and how mature teams price it before the outage rather than after."
+concepts: ["availability", "risk", "operations", "resilience", "governance"]
+relatedTools: []
+relatedArticles: ["zero-trust-ztna-and-sase-without-the-marketing", "backups-and-ransomware-recovery", "network-segmentation-from-vlans-to-microsegmentation"]
+category: security
+order: 137
+status: reviewed
+updated: "2026-09-01"
+---
+
+## The triad put them on the same footing, and practice never did
+
+**Confidentiality, integrity and availability** are given as three equal properties, and the arrangement is old enough that most people meet it as furniture rather than as an argument. The framing matters because it says something specific: **a system that cannot be reached is not secure**. Downtime is not a lesser failure than disclosure; it is one of the three ways the system fails its users.
+
+Almost nothing in how organisations are built respects that. Security and operations usually sit in different reporting lines, are measured on different numbers, and are rewarded for opposite behaviours: one for reducing exposure, the other for keeping the service up. **NIST's Cybersecurity Framework** names the functions — govern, identify, protect, detect, respond, recover — with recover at the end, which is where availability lives, and which is the function most programmes fund last.
+
+The result is that the trade is real, constant, and undocumented. It gets made anyway, by whoever is in the room at the time, usually at speed, usually during an incident.
+
+## Where the trade actually gets decided
+
+It is almost never decided in a policy document. It is decided in six ordinary places:
+
+**Fail-open or fail-closed.** When the control cannot reach its brain — the policy server is down, the licence check fails, the feed is stale — does traffic pass or stop? That single default is the whole trade-off compressed into one setting, and it is frequently left at the vendor's value by people who did not know it was a choice.
+
+**Blocking or monitoring.** An inline device that inspects can also drop. A tap that observes cannot. Moving from detection to prevention converts a false positive from a noisy alert into an outage.
+
+**The change window.** Patching is availability risk taken deliberately to reduce security risk later. A freeze is the reverse trade, and both are legitimate. The dishonest version is a freeze that nobody prices, running from November to February, that leaves known-exploited vulnerabilities open because the calendar said so.
+
+**Session lifetime and re-authentication.** Short sessions reduce the value of a stolen token and increase the number of times a person is interrupted. There is a point on that curve where users start defeating the control, and it arrives sooner than the policy assumes.
+
+**Granularity of segmentation and access.** Tighter boundaries reduce blast radius and increase the number of ways a legitimate flow gets refused — the cost curve described in [segmentation](/learn/network-segmentation-from-vlans-to-microsegmentation).
+
+**Immutability of the recovery path.** Backups you cannot delete are backups you also cannot fix quickly, which is the correct trade and still a trade.
+
+## The failure modes, on both sides
+
+They are not symmetrical, and knowing the shape of each is what lets a team argue about them.
+
+**Security taking down production** has a recognisable set of causes: a certificate expiring on a device in the path; a policy pushed to every enforcement point at once; a signature update that matches a legitimate application; identity failing and locking everyone out at the same instant, because identity is now in front of everything; and the special case of a control that fails closed correctly and takes the business with it. The common thread is **centralisation**: modern security is delivered from a small number of control planes, so the same property that makes policy consistent makes an error universal.
+
+**Availability decisions weakening security** are quieter. A blocking control moved to monitor-only "temporarily" and left there. An exception opened for a migration and never closed. Logging reduced because it cost too much, so the detection built on it silently stops. Multi-factor disabled for one team with an old client. None of these produces an outage, and that is exactly why they persist: **the security side of the trade fails silently and the availability side fails loudly**, so unbalanced incentives are the default state.
+
+## How mature teams price it
+
+The move that resolves most of this is borrowed from reliability engineering rather than from security: **decide the acceptable amount of failure in advance, in numbers, and let that budget govern the argument**. Google's formulation of error budgets makes the point plainly — a service with a 99.9% target has a defined quantity of unreliability it is allowed to spend, which converts an endless disagreement into arithmetic.
+
+Applied to this trade, that means:
+
+- **Write the failure mode of every control before deploying it.** What happens when it cannot reach its policy source? Answer it deliberately, per control, rather than inheriting a default.
+- **Stage enforcement.** Monitor, then block for a pilot group, then block generally — and set the date of each step, because "we will turn on blocking later" without a date means never.
+- **Blast-radius limits on policy distribution.** Push to a canary, wait, then to the rest. The control plane that reaches everything is the risk; treat a policy push like a code deploy, because it is one.
+- **Rehearse the recovery of the security control itself.** Most organisations test failover of the application and never test the failure of the thing in front of it.
+- **Report both numbers to the same person.** The structural fix is organisational: if security and availability are answerable to different executives, the trade is settled by whoever escalates hardest, which is not a method.
+
+## Where the argument goes wrong
+
+**"Security is not negotiable."** It always is, and pretending otherwise pushes the negotiation somewhere unrecorded. The negotiable part is not whether to protect the system but how much interruption the protection may cost, and refusing to say a number means somebody else picks one under pressure.
+
+**"Availability first, we will secure it later."** Later has a specific arrival time: the morning after the incident, when the same team does under duress what it declined to do calmly, and pays for it in both currencies at once.
+
+**Treating an outage caused by a control as proof the control was wrong.** Sometimes it is. Often it is proof the rollout was wrong — no canary, no staged enforcement, no tested rollback — and replacing the control leaves the actual defect in place.
+
+The honest position is that this is a real trade with no general answer, and that the deliverable is not a resolution but a **decision that was made on purpose, by named people, before the pressure arrived**.
+
+## Sources
+
+- [NIST Cybersecurity Framework - the govern, identify, protect, detect, respond and recover functions](https://www.nist.gov/cyberframework)
+- [Google SRE - Embracing Risk, and the error-budget formulation](https://sre.google/sre-book/embracing-risk/)

@@ -1,0 +1,72 @@
+---
+slug: security-through-obscurity
+title: "Security through obscurity: what Kerckhoffs actually said"
+summary: "The maxim is quoted as a prohibition on hiding anything, which is not what it says and not what the field practises. Kerckhoffs in 1883 and Saltzer and Schroeder in 1975 were making a narrower and sharper claim about which secret a system may depend on. The history, the difference between a secret and an obscurity, where each is legitimate, and the systems that proved the point by being broken the moment somebody looked."
+concepts: ["cryptography", "design principles", "disclosure", "risk"]
+relatedTools: []
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "the-certificate-authority-chokepoint"]
+category: security
+order: 138
+status: reviewed
+updated: "2026-09-01"
+---
+
+## Origins: a military manual, not a slogan
+
+The principle comes from **Auguste Kerckhoffs**, writing in 1883 about military ciphers. Among six requirements he set out, the one that survived says that a system must not require secrecy, and must be able to fall into enemy hands without inconvenience.
+
+Read carefully, that is not a ban on secrets. It is a claim about **which** secret the security rests on. The design may be public; the **key** is what must be private. Kerckhoffs's reasoning was operational rather than philosophical: a cipher is used by many people, in the field, over years. Personnel change and equipment is captured, so a system whose safety depends on nobody learning how it works has a safety that expires the first time it is lost.
+
+**Claude Shannon** later compressed it to the form most people meet: assume the enemy knows the system. Same claim, no gentler.
+
+In 1975, **Saltzer and Schroeder** wrote it into a list of design principles for protection in computer systems, as **open design**: the mechanism should not depend on the ignorance of attackers, and should be open to review. They put it next to fail-safe defaults, least privilege and economy of mechanism, and their argument added something Kerckhoffs did not have — that a public design gets examined, and examination is how flaws are found before deployment rather than after.
+
+## The distinction the slogan loses
+
+Two things are routinely called obscurity, and they behave differently:
+
+**A dependency.** The system is safe *because* an attacker does not know something structural — the algorithm, the protocol, the layout, the fact that a management interface exists. This is what the principle forbids, and the reason is empirical rather than moral: that knowledge always leaks, through disassembly, insiders, procurement documents, or somebody with a screwdriver and time.
+
+**A layer.** The system is safe for other reasons, and obscurity additionally raises cost for opportunistic attackers. Moving SSH off port 22 removes almost all automated noise from the logs. It defends against nobody who is actually attacking you, and it makes the logs readable, which has genuine operational value.
+
+The confusion between the two produces two opposite errors. One team ships a product whose security is a secret protocol and calls it defence in depth. Another refuses a cheap noise-reduction measure because a principle told them not to. **The test is what remains true if the obscurity is removed**: if the answer is "nothing", it was a dependency; if the answer is "the same security, more noise", it was a layer.
+
+## The record: systems that depended on it
+
+The argument is settled empirically, and the examples are consistent in shape.
+
+- **A5/1**, the GSM voice cipher, was designed in secret in the 1980s, leaked and reverse-engineered in the 1990s, and broken with attacks well within reach of ordinary hardware.
+- **CSS**, the DVD content protection, kept its algorithm and key handling confidential; once extracted, the scheme fell in short order and the effort of the secrecy bought a few years.
+- **MIFARE Classic**, widely deployed in transport and access cards, used a proprietary cipher that was recovered from silicon and shown to be weak, after which the deployed estate could not simply be recalled.
+- **Voting and gambling equipment**, where several jurisdictions treated the source as confidential and found on eventual review that confidentiality had been substituting for correctness.
+
+The pattern is identical every time: the secret held for a while, its disclosure was involuntary, and the cost of replacement fell on the operator rather than the designer. The systems did not fail because they were secret; they were **weak, and secrecy postponed the discovery** to the least convenient moment.
+
+## Where hiding is legitimate
+
+The principle is narrower than its reputation, and the following are not violations:
+
+- **Keys, credentials, tokens and certificates.** The whole design assumes these are private. Confusing a key with an obscurity is the most common misreading of the maxim.
+- **Configuration detail an attacker would find useful** — internal addressing, topology, software inventory. Publishing it helps nobody defend, and treating it as sensitive is not a security dependency.
+- **Version banners and error verbosity.** Suppressing them prevents trivial fingerprinting and rules nothing out; keep the version *patched* rather than merely hidden.
+- **Non-standard ports, port knocking, single-packet authorisation.** Legitimate as cost-raisers and noise-reducers, illegitimate as the reason a service is safe.
+- **Not publishing an unpatched vulnerability while a fix is prepared.** This is coordination, not obscurity — the design is still open, and the delay is bounded and agreed.
+
+## The disclosure argument is the same argument
+
+Every debate about vulnerability disclosure is this principle applied to a specific defect. **Full disclosure** holds that publication forces repair and arms defenders; **non-disclosure** protects users who cannot patch yet and, in practice, protects vendors from embarrassment; **coordinated disclosure** is the compromise the field settled on, with a deadline attached because without one the second position swallows the first.
+
+The deadline is the load-bearing part, and it exists because of exactly what Kerckhoffs described: the assumption that only the reporter knows is unsafe, since the same defect is reachable by anyone else who looks.
+
+## What to take from it
+
+**State the secret.** For any system you run or buy, name the thing whose disclosure would break it. If the answer is a key, the design is sound. If the answer is a document, an algorithm or the absence of curiosity, the design has a dependency it cannot honour.
+
+**Ask a vendor the same question directly.** "What happens to your security if a competitor obtains this firmware?" is a fair question with a short answer, and the quality of the answer is informative regardless of its content.
+
+**Keep the cheap obscurities and stop defending them as security.** Non-standard ports and quiet banners are worth having for the same reason tidy logs are worth having, which is a maintenance argument rather than a security one — and it is much easier to defend on those terms.
+
+## Sources
+
+- [Kerckhoffs's principle, from La cryptographie militaire, 1883](https://en.wikipedia.org/wiki/Kerckhoffs%27s_principle)
+- [Saltzer and Schroeder, The Protection of Information in Computer Systems, 1975 - the open design principle](https://web.mit.edu/Saltzer/www/publications/protection/)

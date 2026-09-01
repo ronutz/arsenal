@@ -13,6 +13,21 @@ updated: "2026-07-06"
 
 Os proxies dos artigos companheiros operam sobre pacotes e conexões: um proxy TCP une fluxos de transporte, um proxy HTTP parseia requisições, um proxy TLS trata da criptografia. Um SAML (Linguagem de Marcação para Asserção de Segurança, do inglês Security Assertion Markup Language) proxy opera sobre algo diferente, a decisão de autenticação, e vale ser preciso sobre o sentido em que ele é um proxy afinal. Ele não move bytes primariamente; ele se insere no handshake de single-sign-on de modo que nenhuma requisição alcance um recurso protegido até que um provedor de identidade tenha atestado o usuário. Entendê-lo requer primeiro os papéis do SAML (o artigo de visão geral os cobre por completo), depois como um proxy se encaixa entre eles.
 
+## Origens: um padrão de antes de a web ter login
+
+O SAML - Security Assertion Markup Language - foi ratificado pela OASIS em 2002, com o **SAML 2.0 chegando em 2005** e convergindo três esforços anteriores: o SAML 1.1, o Identity Federation Framework da Liberty Alliance, e o Shibboleth da Internet2. Essa convergência é a razão de o padrão ser grande: ele precisou satisfazer três públicos ao mesmo tempo.
+
+O problema para o qual foi construído não era login de consumidor. Era **federação entre organizações** - uma universidade dando aos alunos acesso aos periódicos de uma editora, uma empresa dando aos funcionários acesso a um provedor de folha de pagamento -, em que os dois lados não têm base de usuários comum nem intenção de construir uma. A percepção foi mover uma *afirmação assinada sobre um usuário* em vez das credenciais dele.
+
+Daí vem o vocabulário que ainda o governa:
+
+- **O provedor de identidade** autentica o usuário e emite a afirmação.
+- **O provedor de serviço** a consome e decide o que o usuário pode fazer.
+- **A asserção** é a própria afirmação: quem se autenticou, quando, por qual método, para qual audiência, e por quanto tempo vale.
+- **A confiança** é uma troca de certificados, configurada de propósito pelos dois lados e expressa num documento de metadados.
+
+Baseado em XML e anterior à era móvel, o SAML pressupõe um navegador: seus fluxos comuns redirecionam por um, e ele não tem boa resposta para aplicativo nativo nem para chamada entre máquinas. É exatamente essa a lacuna que o [OpenID Connect](/learn/oidc-vs-oauth) veio preencher - e a razão de os dois seguirem implantados lado a lado, em vez de um ter substituído o outro.
+
 ## Uma revisão de um parágrafo dos papéis
 
 O SSO por navegador do SAML tem dois papéis. O **provedor de serviço** (SP) é a aplicação que o usuário quer alcançar; ele precisa saber quem o usuário é mas delega essa pergunta. O **provedor de identidade** (IdP) é a autoridade que autentica o usuário e emite uma **asserção** assinada declarando quem ele é. No fluxo SP-iniciado padrão, o usuário acessa o SP, o SP redireciona o navegador ao IdP com uma requisição de autenticação, o IdP autentica o usuário e redireciona o navegador de volta ao SP carregando uma asserção assinada, e o SP valida a asserção e inicia uma sessão. As mensagens andam pelo navegador via bindings HTTP-Redirect e HTTP-POST; o SP e o IdP nunca falam diretamente. Mantenha esse formato em mente, porque um proxy funciona assumindo um ou ambos esses papéis.
@@ -28,6 +43,38 @@ Esse é o mesmo padrão de terminar-e-admitir que um reverse proxy usa para o tr
 A configuração mais rica é quando o proxy faz **ambos** os papéis ao mesmo tempo. Para o provedor de identidade upstream ele se apresenta como um provedor de serviço (envia requisições de autenticação e consome asserções); para as aplicações downstream ele se apresenta como um provedor de identidade (emite asserções que elas consomem). Sentado no meio, ele é um **IdP proxy** ou **broker de identidade**.
 
 Esse encadeamento é o que faz a federação escalar. Um único proxy pode autenticar o usuário uma vez contra um IdP upstream e então satisfazer muitas aplicações downstream, cada uma das quais confia apenas no proxy, não no IdP original. Isso deixa uma organização colocar uma política de autenticação consistente (requisitos de múltiplos fatores, verificações de dispositivo, acesso condicional) num único ponto de estrangulamento na frente de aplicações que cada uma fala seu próprio dialeto. Também faz a ponte entre sistemas de identidade: o lado upstream pode ser um protocolo ou IdP e o lado downstream outro, com o proxy traduzindo entre eles, que é como uma aplicação SAML pode ser frontada por um login OIDC, ou vice-versa. O proxy se torna um hub de confiança: as aplicações downstream delegam a ele, ele delega ao upstream, e o usuário experimenta um single sign-on por todo o conjunto.
+
+## As ligações e as partes que quebram
+
+As **ligações** são como a asserção viaja. O HTTP Redirect põe uma mensagem comprimida e assinada na string de consulta; o HTTP POST a põe num formulário que se autoenvia, que é o que a maioria das implantações usa porque asserções ultrapassam os limites de URL; e o Artifact passa uma referência que o provedor de serviço resolve por um canal de retorno.
+
+Os modos de falha são notavelmente constantes em toda implantação:
+
+**Desvio de relógio.** Asserções carregam janelas de validade curtas, então um servidor com minutos de diferença rejeita tudo, com um erro que descreve o sintoma, e não a causa.
+
+**Expiração de certificado.** A confiança é um certificado, e os metadados também têm validade. É a queda que chega numa data que alguém poderia ter lido um ano antes, que é a mesma lição do [X.509](/learn/x509-anatomy) em geral.
+
+**Escopo da assinatura.** Assinar a asserção, a resposta, ou as duas, é escolha real com consequência real, e expectativas divergentes entre duas implementações produzem falhas que parecem erro de digitação na configuração.
+
+**O próprio XML.** O formato trouxe classes de vulnerabilidade próprias - o empacotamento de assinatura, em que um atacante realoca um elemento validamente assinado para que o analisador e o validador discordem sobre o que foi assinado, além da superfície geral de [entidade externa de XML](/learn/xxe-and-xml-security). São falhas de implementação, e não de protocolo, e se repetiram em muitos produtos, que é o argumento para usar biblioteca madura em vez de analisar asserções por conta própria.
+
+**Escolha do identificador.** Usar endereço de e-mail como identificador persistente quebra quando alguém muda de nome; o padrão oferece formatos persistente e transitório justamente para não precisar ser e-mail.
+
+## Onde um proxy se justifica, e o que ele custa
+
+- **Consolidar uma malha de muitos para muitos.** Cinquenta aplicações confiando em dez provedores de identidade são quinhentas relações de confiança; um proxy no meio faz disso sessenta.
+- **Ponte entre protocolos.** SAML de um lado, OIDC do outro, que é como um parque adota clientes modernos sem reintegrar tudo o que já tinha.
+- **Acrescentar um controle que as aplicações não conseguem.** Autenticação reforçada, postura do dispositivo, ou uma decisão de política aplicada de forma uniforme, seja qual for o suporte de cada aplicação.
+- **Absorver uma migração.** As aplicações seguem apontando para o proxy enquanto o provedor de identidade atrás dele é trocado.
+
+O custo é dito no mesmo fôlego: o proxy vira o **ponto único por onde passa todo login**, guarda as chaves, e a queda dele é queda total. Ele também alonga a cadeia - cada salto a mais é outro lugar onde um atributo se perde, um relógio discorda, ou uma assinatura é reemitida em vez de repassada, o que importa porque asserção reassinada significa que o serviço a jusante está confiando na palavra do proxy, e não na do emissor original.
+
+## Onde ele aparece, por categoria
+
+- **Plataformas corporativas de identidade** - Microsoft Entra, Okta, Ping Identity, ForgeRock e outras, todas capazes de atuar como provedor de identidade, de serviço, ou ambos.
+- **Implementações de código aberto** - Keycloak, Shibboleth, SimpleSAMLphp, e as bibliotecas de linguagem por baixo delas. O Shibboleth em particular ainda carrega as federações acadêmicas para as quais foi feito.
+- **Gateways e proxies de acesso**, que terminam a sessão na borda e entregam uma identidade validada a aplicações que nunca teriam conseguido implementá-la sozinhas.
+- **Federações acadêmicas e de governo** - o eduGAIN e as redes nacionais de pesquisa, onde o SAML segue sendo o padrão de trabalho, e não um legado, porque o modelo de confiança para o qual foi desenhado é exatamente o delas.
 
 ## Por que o modo importa
 

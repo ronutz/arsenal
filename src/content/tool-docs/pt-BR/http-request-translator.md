@@ -1,23 +1,26 @@
 ## O que faz
 
-Cole um comando `curl` e a ferramenta o explica sinalizador por sinalizador, depois o traduz para quatro outras formas: uma chamada `fetch` de navegador, uma requisição HTTP crua, um comando HTTPie e código Python `requests`. O comando é tokenizado e decodificado no seu navegador; nada é jamais enviado, e nenhuma requisição é executada.
+Cole uma requisição HTTP/1.1 crua - do tipo que uma captura, um log de proxy ou um exemplo de RFC entrega - e a ferramenta a transforma no comando `curl` equivalente, na chamada `fetch` do navegador, na invocação HTTPie, no trecho em Python `requests` e na linha de PowerShell. Tudo é analisado no seu navegador; nada é enviado, e nenhuma requisição é executada.
 
-## Uma análise, cinco visões
+## O inverso do explicador de curl
 
-Por baixo há um único passo: a ferramenta analisa seu comando `curl` em um único modelo de requisição, capturando o método, a URL, os cabeçalhos, o corpo, a autenticação e as demais opções. Tudo o que você vê é derivado desse único modelo. Como traduzir um comando corretamente já exige entender cada sinalizador, a explicação sinalizador por sinalizador é justamente esse mesmo modelo exibido com rótulos, e é por isso que a explicação e as traduções sempre concordam.
+O [explicador de comando curl](/tools/curl-command-explainer) vai numa direção: comando na entrada, requisição crua entre as saídas. Esta ferramenta vai na outra: requisição crua na entrada, comando executável na saída. As duas existem porque as direções são necessárias em momentos diferentes. Uma captura te entrega uma mensagem; um terminal quer um comando; um relato de defeito quer os dois.
 
-## As formas que ela produz
+## Como a URL é montada
 
-- **curl explicado.** Cada opção é nomeada e descrita, para que um sinalizador desconhecido deixe de ser um mistério.
-- **fetch.** A chamada da Fetch API do navegador, seguindo a semântica da MDN, pronta para colar no JavaScript.
-- **HTTP cru.** A linha de requisição, os cabeçalhos e o corpo de fato, como iriam para a rede, que é a forma mais clara de ver exatamente o que uma requisição é.
-- **HTTPie.** O comando `http` equivalente, para quem prefere esse cliente.
-- **Python requests.** O código equivalente usando a biblioteca Requests.
+Uma linha de requisição comum carrega apenas um caminho - `GET /users HTTP/1.1` - porque a conexão já sabe qual é o host. Para produzir algo que se possa executar em qualquer lugar, a ferramenta junta esse alvo ao cabeçalho `Host`. Alvos em forma absoluta, usados por proxies, já vêm completos e são usados como estão. Se o `Host` estiver ausente numa requisição em forma de origem, a ferramenta avisa, porque a URL seria um chute.
 
-## Por que traduzir em vez de executar
+## Cabeçalhos que ela deliberadamente descarta
 
-A ferramenta deliberadamente nunca executa a requisição. Essa é uma escolha de privacidade e segurança: você pode decodificar e converter um comando que carrega credenciais ou aponta para um host interno sem que nada disso saia do seu navegador, e sem disparar o que quer que a requisição faria. Ela é uma tradutora e uma explicadora, não um cliente.
+`Host`, `Content-Length` e `Connection` não são reemitidos. Todo cliente os define por conta própria, e repassá-los provoca cabeçalho duplicado ou, pior, um comprimento declarado que não bate mais com o corpo que o cliente vai de fato enviar.
+
+## Sobre o que ela avisa
+
+- **Um `Content-Length` que discorda do corpo.** Servidores e proxies podem então discordar sobre onde a mensagem termina, que é a matéria-prima do contrabando de requisições.
+- **Um corpo em pedaços (chunked).** Ele é repassado como colado, e não decodificado; decodificar codificações de transferência é trabalho de um decodificador de mensagens, e não de um tradutor.
+- **`http` em claro.** Cabeçalhos e corpo viajam legíveis.
+- **Um cabeçalho `Authorization` ou um `Cookie`.** Uma requisição capturada em geral é uma credencial viva, e esse é o aviso que mais importa na prática: o texto que você vai colar num chamado pode ser uma sessão funcionando.
 
 ## Como usar
 
-Cole um comando `curl` e leia a explicação sinalizador por sinalizador e as quatro traduções. A conversão é determinística e local, então o mesmo comando sempre produz a mesma saída.
+Cole a requisição, leia a linha de requisição e os cabeçalhos já analisados, e copie a forma de que precisar. A conversão é determinística e local, então a mesma requisição sempre produz a mesma saída.

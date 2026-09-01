@@ -1,0 +1,71 @@
+---
+slug: security-versus-availability
+title: "Segurança contra disponibilidade: a troca que ninguém escreve"
+summary: "Todo controle de segurança é também um jeito novo de o sistema parar. A tríade põe confidencialidade, integridade e disponibilidade no mesmo pé, e as organizações então as separam em áreas, medem em separado, e descobrem o conflito durante um incidente. A história da troca, onde ela é decidida na prática, os modos de falha dos dois lados, e como equipes maduras a precificam antes da queda, e não depois."
+concepts: ["availability", "risk", "operations", "resilience", "governance"]
+relatedTools: []
+relatedArticles: ["zero-trust-ztna-and-sase-without-the-marketing", "backups-and-ransomware-recovery", "network-segmentation-from-vlans-to-microsegmentation"]
+category: security
+order: 137
+status: reviewed
+updated: "2026-09-01"
+---
+
+## A tríade as pôs no mesmo pé, e a prática nunca pôs
+
+**Confidencialidade, integridade e disponibilidade** são apresentadas como três propriedades iguais, e o arranjo é antigo o bastante para a maioria das pessoas o encontrar como mobília, e não como argumento. O enquadramento importa porque diz algo específico: **um sistema que não pode ser alcançado não está seguro**. Indisponibilidade não é falha menor que vazamento; é uma das três formas de o sistema falhar com quem o usa.
+
+Quase nada na forma como as organizações são montadas respeita isso. Segurança e operações costumam ficar em linhas de reporte diferentes, são medidas por números diferentes, e são premiadas por comportamentos opostos: uma por reduzir exposição, a outra por manter o serviço de pé. O **Cybersecurity Framework do NIST** nomeia as funções - governar, identificar, proteger, detectar, responder e recuperar - com recuperar no fim, que é onde mora a disponibilidade, e que é a função que a maioria dos programas financia por último.
+
+O resultado é que a troca é real, constante e não registrada. Ela é feita assim mesmo, por quem estiver na sala, em geral com pressa, em geral durante um incidente.
+
+## Onde a troca é de fato decidida
+
+Quase nunca num documento de política. Ela é decidida em seis lugares comuns:
+
+**Falhar aberto ou falhar fechado.** Quando o controle não alcança o próprio cérebro - o servidor de política caiu, a verificação de licença falhou, o feed está velho -, o tráfego passa ou para? Esse único padrão é a troca inteira comprimida num ajuste, e com frequência fica no valor do fabricante, escolhido por quem não sabia que havia escolha.
+
+**Bloquear ou monitorar.** Um equipamento em linha que inspeciona também pode descartar. Um espelhamento que observa não pode. Passar de detecção para prevenção converte um falso positivo de alerta barulhento em queda.
+
+**A janela de mudança.** Aplicar correção é risco de disponibilidade assumido de propósito para reduzir risco de segurança depois. Um congelamento é a troca inversa, e as duas são legítimas. A versão desonesta é o congelamento que ninguém precifica, de novembro a fevereiro, que deixa vulnerabilidades comprovadamente exploradas abertas porque o calendário mandou.
+
+**Duração de sessão e reautenticação.** Sessões curtas reduzem o valor de um token roubado e aumentam quantas vezes uma pessoa é interrompida. Há um ponto nessa curva em que os usuários passam a derrotar o controle, e ele chega antes do que a política supõe.
+
+**Granularidade de segmentação e de acesso.** Fronteiras mais apertadas reduzem o raio de explosão e aumentam as formas de um fluxo legítimo ser recusado - a curva de custo descrita em [segmentação](/learn/network-segmentation-from-vlans-to-microsegmentation).
+
+**Imutabilidade do caminho de recuperação.** Backup que não dá para apagar é backup que também não dá para consertar rápido, o que é a troca correta e ainda assim uma troca.
+
+## Os modos de falha, dos dois lados
+
+Eles não são simétricos, e conhecer o formato de cada um é o que permite discuti-los.
+
+**Segurança derrubando a produção** tem causas reconhecíveis: certificado vencendo num equipamento do caminho; política empurrada para todos os pontos de aplicação de uma vez; atualização de assinatura que casa com uma aplicação legítima; identidade falhando e trancando todo mundo no mesmo instante, porque identidade hoje está na frente de tudo; e o caso especial do controle que falha fechado corretamente e leva o negócio junto. O fio comum é a **centralização**: segurança moderna é entregue a partir de poucos planos de controle, então a mesma propriedade que torna a política consistente torna um erro universal.
+
+**Decisões de disponibilidade enfraquecendo a segurança** são mais silenciosas. Um controle de bloqueio posto em somente monitorar "temporariamente" e deixado ali. Uma exceção aberta para uma migração e nunca fechada. Log reduzido porque custava caro, e a detecção construída sobre ele parando em silêncio. Múltiplo fator desligado para um time com cliente antigo. Nenhuma dessas produz queda, e é exatamente por isso que persistem: **o lado de segurança da troca falha em silêncio e o lado de disponibilidade falha em voz alta**, então incentivo desequilibrado é o estado padrão.
+
+## Como equipes maduras precificam isso
+
+O movimento que resolve a maior parte disso vem da engenharia de confiabilidade, e não da segurança: **decidir de antemão, em números, quanta falha é aceitável, e deixar esse orçamento governar a discussão**. A formulação de orçamento de erro do Google diz isso com clareza - um serviço com meta de 99,9% tem uma quantidade definida de indisponibilidade que pode gastar, o que converte uma discussão infinita em aritmética.
+
+Aplicado a esta troca, significa:
+
+- **Escrever o modo de falha de cada controle antes de implantá-lo.** O que acontece quando ele não alcança a fonte de política? Responda de propósito, controle a controle, em vez de herdar um padrão.
+- **Escalonar a aplicação.** Monitorar, depois bloquear para um grupo piloto, depois bloquear em geral - e marcar a data de cada passo, porque "ligamos o bloqueio depois" sem data significa nunca.
+- **Limitar o raio de explosão da distribuição de política.** Empurre para um canário, espere, depois para o resto. O plano de controle que alcança tudo é o risco; trate um envio de política como um deploy de código, porque é um.
+- **Ensaiar a recuperação do próprio controle de segurança.** A maioria testa a comutação da aplicação e nunca testa a falha da coisa que está na frente dela.
+- **Reportar os dois números à mesma pessoa.** A correção estrutural é organizacional: se segurança e disponibilidade respondem a diretores diferentes, a troca é resolvida por quem escala mais forte, o que não é método.
+
+## Onde a discussão descarrila
+
+**"Segurança não se negocia."** Sempre se negocia, e fingir o contrário empurra a negociação para algum lugar sem registro. O negociável não é se proteger o sistema, e sim quanta interrupção a proteção pode custar - e recusar-se a dizer um número significa que outra pessoa escolherá um sob pressão.
+
+**"Disponibilidade primeiro, depois a gente protege."** O depois tem hora marcada: a manhã seguinte ao incidente, quando a mesma equipe faz sob pressão o que se recusou a fazer com calma, e paga nas duas moedas ao mesmo tempo.
+
+**Tratar uma queda causada por um controle como prova de que o controle estava errado.** Às vezes está. Muitas vezes é prova de que a implantação estava errada - sem canário, sem aplicação escalonada, sem reversão testada -, e trocar o controle deixa o defeito de verdade no lugar.
+
+A posição honesta é que esta é uma troca real, sem resposta geral, e que a entrega não é uma resolução, e sim uma **decisão tomada de propósito, por pessoas nomeadas, antes de a pressão chegar**.
+
+## Fontes
+
+- [NIST Cybersecurity Framework - as funções governar, identificar, proteger, detectar, responder e recuperar](https://www.nist.gov/cyberframework)
+- [Google SRE - Embracing Risk, e a formulação de orçamento de erro](https://sre.google/sre-book/embracing-risk/)

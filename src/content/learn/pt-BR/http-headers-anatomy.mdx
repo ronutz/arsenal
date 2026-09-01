@@ -3,7 +3,7 @@ slug: http-headers-anatomy
 title: "Cabeçalhos HTTP: A Anatomia dos Metadados"
 summary: "Tudo que o HTTP sabe sobre uma mensagem e que não é a mensagem viaja em cabeçalhos: linhas nome-dois-pontos-valor com nomes insensíveis a caixa, dobradas em quatro papéis de trabalho - contexto de requisição, contexto de resposta, metadados de representação e encanamento de carga. A divisão end-to-end vs hop-by-hop pela qual proxies vivem, o cabeçalho Host que tornou a hospedagem virtual possível, negociação de conteúdo, condicionais, e por que a ordem dos cabeçalhos virou impressão digital."
 concepts: ["http", "headers", "host", "content-type", "end-to-end", "hop-by-hop", "content negotiation", "conditional requests"]
-relatedTools: ["http-request-translator", "http-header-order-fingerprint", "secure-headers"]
+relatedTools: ["curl-command-explainer", "http-header-order-fingerprint", "secure-headers"]
 relatedArticles: ["http-status-codes-the-five-families", "secure-headers-overview", "http-cookies-state-over-stateless", "curl-headers-auth-and-cookies"]
 category: networking
 order: 209
@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-21"
 ---
 
-Tire de uma mensagem HTTP o corpo e a primeira linha, e o que sobra é o sistema nervoso inteiro do protocolo: **cabeçalhos** - linhas `Nome: valor`, nomes insensíveis a caixa, valores moldados pela gramática de cada cabeçalho. Cabeçalhos são onde cache, autenticação, negociação, roteamento e segurança de fato acontecem; o corpo é só carga. Este artigo entrega a anatomia; [o tradutor de requisições](/tools/http-request-translator) deixa você dissecar espécimes reais.
+Tire de uma mensagem HTTP o corpo e a primeira linha, e o que sobra é o sistema nervoso inteiro do protocolo: **cabeçalhos** - linhas `Nome: valor`, nomes insensíveis a caixa, valores moldados pela gramática de cada cabeçalho. Cabeçalhos são onde cache, autenticação, negociação, roteamento e segurança de fato acontecem; o corpo é só carga. Este artigo entrega a anatomia; [o tradutor de requisições](/tools/curl-command-explainer) deixa você dissecar espécimes reais.
 
 ## Quatro papéis de trabalho
 

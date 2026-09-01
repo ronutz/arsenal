@@ -13,6 +13,21 @@ updated: "2026-07-06"
 
 The proxies in the companion articles operate on packets and connections: a TCP proxy splices transport flows, an HTTP proxy parses requests, a TLS proxy handles encryption. A SAML (Security Assertion Markup Language) proxy operates on something different, the authentication decision, and it is worth being precise about the sense in which it is a proxy at all. It does not primarily move bytes; it inserts itself into the single-sign-on handshake so that no request reaches a protected resource until an identity provider has vouched for the user. Understanding it requires the SAML roles first (the overview article covers them in full), then how a proxy slots between them.
 
+## Origins: a standard from before the web had logins
+
+SAML — Security Assertion Markup Language — was ratified by OASIS in 2002, with **SAML 2.0 arriving in 2005** and converging three earlier efforts: SAML 1.1, the Liberty Alliance's Identity Federation Framework, and Internet2's Shibboleth. That convergence is why the standard is large: it had to satisfy three constituencies at once.
+
+The problem it was built for was not consumer login. It was **federation between organisations** — a university letting students reach a publisher's journals, a company letting employees reach a payroll provider — where the two sides have no shared user database and no intention of building one. The insight was to move a signed *statement about a user* instead of the user's credentials.
+
+That produces the vocabulary that still governs it:
+
+- **The identity provider** authenticates the user and issues the statement.
+- **The service provider** consumes it and decides what the user may do.
+- **The assertion** is the statement itself: who authenticated, when, by what method, for which audience, and valid for how long.
+- **The trust** is a certificate exchange, configured deliberately by both sides, expressed in a metadata document.
+
+Being XML-based and predating the mobile era, SAML assumes a browser: its common flows redirect through one, and it has no good answer for a native application or a machine-to-machine call. That is precisely the gap [OpenID Connect](/learn/oidc-vs-oauth) was built to fill — and the reason both are still deployed side by side rather than one having replaced the other.
+
 ## A one-paragraph refresher on the roles
 
 SAML browser SSO has two roles. The **service provider** (SP) is the application the user wants to reach; it needs to know who the user is but delegates that question. The **identity provider** (IdP) is the authority that authenticates the user and issues a signed **assertion** stating who they are. In the standard SP-initiated flow, the user hits the SP, the SP redirects the browser to the IdP with an authentication request, the IdP authenticates the user and redirects the browser back to the SP carrying a signed assertion, and the SP validates the assertion and starts a session. The messages ride on the browser via HTTP-Redirect and HTTP-POST bindings; the SP and IdP never talk directly. Keep that shape in mind, because a proxy works by taking on one or both of these roles.
@@ -28,6 +43,38 @@ This is the same terminate-and-admit pattern a reverse proxy uses for traffic, a
 The richer configuration is when the proxy plays **both** roles at once. To the upstream identity provider it presents itself as a service provider (it sends authentication requests and consumes assertions); to the downstream applications it presents itself as an identity provider (it issues assertions they consume). Sitting in the middle, it is an **IdP proxy** or **identity broker**.
 
 This chaining is what makes federation scale. A single proxy can authenticate the user once against one upstream IdP and then satisfy many downstream applications, each of which trusts only the proxy, not the original IdP. It lets an organization put one consistent authentication policy (multi-factor requirements, device checks, conditional access) at a single chokepoint in front of applications that each speak their own dialect. It also bridges identity systems: the upstream side can be one protocol or IdP and the downstream side another, with the proxy translating between them, which is how a SAML app can be fronted by an OIDC login, or vice versa. The proxy becomes a trust hub: downstream apps delegate to it, it delegates upstream, and the user experiences a single sign-on across the whole set.
+
+## The bindings and the parts that break
+
+**Bindings** are how the assertion travels. HTTP Redirect puts a compressed, signed message in the query string; HTTP POST puts it in a self-submitting form, which is what most deployments use because assertions outgrow URL limits; and Artifact passes a reference the service provider dereferences over a back channel.
+
+The failure modes are remarkably consistent across every deployment:
+
+**Clock skew.** Assertions carry tight validity windows, so a server minutes out of step rejects everything with an error that describes the symptom rather than the cause.
+
+**Certificate expiry.** The trust is a certificate, and metadata carries an expiry too. This is the outage that arrives on a date somebody could have read a year in advance, which is the same lesson as [X.509](/learn/x509-anatomy) generally.
+
+**Signature scope.** Signing the assertion, the response, or both is a real choice with real consequences, and mismatched expectations between two implementations produce failures that look like configuration typos.
+
+**XML itself.** The format brought its own vulnerability classes — signature wrapping, where an attacker relocates a validly signed element so the parser and the validator disagree about what was signed, plus the general [XML external entity](/learn/xxe-and-xml-security) surface. These are implementation flaws rather than protocol flaws, and they have recurred across many products, which is the argument for using a mature library rather than parsing assertions yourself.
+
+**Identifier choice.** Using an email address as the persistent identifier breaks when somebody changes name; the standard offers persistent and transient formats precisely so it does not have to be an email.
+
+## Where a proxy earns its place, and what it costs
+
+- **Consolidating a many-to-many mesh.** Fifty applications trusting ten identity providers is five hundred trust relationships; a proxy in the middle makes it sixty.
+- **Bridging protocols.** SAML on one side, OIDC on the other, which is how an estate adopts modern clients without re-integrating everything it already had.
+- **Adding a control the applications cannot.** Step-up authentication, device posture, or a policy decision applied uniformly regardless of what each application supports.
+- **Absorbing a migration.** Applications keep pointing at the proxy while the identity provider behind it is replaced.
+
+The cost is stated in the same breath: the proxy becomes the **single point through which every login passes**, it holds the keys, and its outage is a total outage. It also lengthens the chain — every additional hop is another place where an attribute is dropped, a clock disagrees, or a signature is re-issued rather than passed through, which matters because a re-signed assertion means the downstream service is trusting the proxy's word rather than the original issuer's.
+
+## Where it appears, by category
+
+- **Enterprise identity platforms** — Microsoft Entra, Okta, Ping Identity, ForgeRock and others, all of which can act as identity provider, service provider, or both.
+- **Open-source implementations** — Keycloak, Shibboleth, SimpleSAMLphp, and the language libraries beneath them. Shibboleth in particular still carries the academic federations it was built for.
+- **Access gateways and proxies**, which terminate the session at the edge and hand a validated identity to applications that could never have implemented it themselves.
+- **Academic and government federations** — the eduGAIN and national research networks, where SAML remains the working standard rather than a legacy one, because the trust model it was designed for is exactly theirs.
 
 ## Why the mode matters
 

@@ -1,0 +1,62 @@
+---
+slug: raw-http-requests-and-how-to-replay-them
+title: "Ler uma requisição HTTP crua, e transformá-la de volta em algo executável"
+summary: "Uma captura, um log de proxy e um exemplo de RFC entregam a mesma coisa: linha de requisição, cabeçalhos e talvez um corpo. Transformar isso de volta num comando executável parece mecânico e tem três armadilhas - a URL não está na mensagem, alguns cabeçalhos não podem ser copiados, e o texto colado em geral é uma credencial viva."
+concepts: ["http", "debugging", "tooling"]
+relatedTools: ["http-request-translator", "curl-command-explainer"]
+relatedArticles: ["http-headers-anatomy", "curl-to-fetch", "http-methods-the-verbs"]
+category: web
+order: 139
+status: reviewed
+updated: "2026-09-01"
+---
+
+## O que uma requisição crua de fato contém
+
+Uma requisição HTTP/1.1 é uma linha de requisição, um bloco de cabeçalhos, uma linha em branco e um corpo opcional. A sintaxe está na RFC 9112 e o significado das partes na RFC 9110, e o formato quase não mudou desde os anos 1990:
+
+```
+POST /v1/users HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
+
+{"name":"Alice"}
+```
+
+Existem três formas de alvo de requisição, e vale distingui-las, porque elas decidem o que um tradutor consegue fazer com a mensagem. A **forma de origem** é a comum, só o caminho. A **forma absoluta** carrega a URL inteira e é o que um cliente envia a um proxy. A **forma asterisco** é um `*` sozinho, usada com `OPTIONS` para perguntar sobre o servidor, e não sobre um recurso.
+
+## A URL não está na mensagem
+
+Esta é a primeira armadilha. `GET /users HTTP/1.1` não diz para onde enviar a requisição; a conexão já sabia. Reconstruir algo executável significa juntar o alvo ao cabeçalho **`Host`**, que é exatamente a razão de ele ter se tornado obrigatório no HTTP/1.1 - foi o que permitiu muitos sites dividirem um endereço, e é o que torna uma requisição capturada reconstruível.
+
+Se o `Host` estiver ausente numa requisição em forma de origem, a URL não pode ser recuperada só da mensagem. A ferramenta deve dizer isso, em vez de inventar um host.
+
+## Alguns cabeçalhos não podem ser copiados
+
+A segunda armadilha é mais sutil, e produz defeitos que parecem problema de servidor.
+
+O **`Host`** é definido por todo cliente a partir da URL que você passa. Copiá-lo como cabeçalho explícito te dá dois, e qual vence depende do cliente.
+
+O **`Content-Length`** é calculado pelo cliente a partir do corpo que ele vai enviar. Copiar o valor capturado fixa um número que pode não ser mais verdadeiro - e um comprimento que discorda do corpo não é erro cosmético. É o ingrediente do contrabando de requisições, em que uma ponta e a outra discordam sobre onde uma mensagem termina e a seguinte começa.
+
+O **`Connection`** descreve o comportamento daquele salto específico, e não o significado da requisição.
+
+Ou seja: uma tradução fiel não é uma tradução literal. Reproduzir cada cabeçalho ao pé da letra produz algo menos parecido com a requisição original, e não mais.
+
+## O texto colado em geral é uma credencial
+
+A terceira armadilha não tem nada a ver com sintaxe. Requisições capturadas de uma sessão em funcionamento carregam cabeçalhos `Authorization`, cabeçalhos `Cookie`, chaves de API em strings de consulta - e costumam ser capturadas justamente porque algo estava dando errado, que é o momento em que as pessoas as colam em chamados, conversas e rastreadores de defeito.
+
+Um token no chamado é credencial válida até expirar, legível por todo mundo com acesso àquele chamado, e pesquisável muito depois. Trate qualquer requisição colada como segredo vivo: censure antes de compartilhar, e prefira ferramenta que analise **localmente**, em vez de enviar a mensagem a um serviço para ser formatada.
+
+## Corpos em pedaços, e saber a hora de parar
+
+Se a mensagem carrega `Transfer-Encoding: chunked`, o corpo que você vê não é o corpo enviado: é uma sequência de pedaços prefixados por tamanho, terminada por um de tamanho zero. Decodificar isso é trabalho diferente de traduzir uma requisição, e uma ferramenta que faz isso pela metade - decodificando algumas codificações e outras não - é pior que uma que diz claramente que não fez.
+
+## A rotina prática
+
+1. Identifique a forma do alvo. Se for de origem, ache o `Host`.
+2. Descarte os cabeçalhos que o cliente vai definir sozinho.
+3. Note se o corpo é em pedaços ou tem comprimento declarado, e se o comprimento declarado é verdadeiro.
+4. Censure credenciais antes de a requisição sair da sua máquina de qualquer forma.
+5. Traduza, e então execute o resultado contra um alvo de teste, e não contra produção, porque uma requisição repetida repete o que a original fez - inclusive a escrita.

@@ -973,6 +973,71 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /curl-command-explainer:
+    get:
+      tags:
+        - HTTP & web
+      operationId: run_curl_command_explainer
+      summary: curl command explainer
+      description: >-
+        Paste a curl command and get it explained flag by flag, then translated to fetch, a raw HTTP
+        request, HTTPie and Python. Nothing is sent and no request is run. Standards: curl manual,
+        RFC 9110. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input.
+          schema:
+            type: string
+            examples:
+              - curl -X POST https://api.example.com -d '{"a":1}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - HTTP & web
+      operationId: run_curl_command_explainer_post
+      summary: curl command explainer (POST)
+      description: >-
+        Paste a curl command and get it explained flag by flag, then translated to fetch, a raw HTTP
+        request, HTTPie and Python. Nothing is sent and no request is run. Standards: curl manual,
+        RFC 9110. Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as text.
+        content:
+          text/plain:
+            schema:
+              type: string
+              examples:
+                - curl -X POST https://api.example.com -d '{"a":1}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /cvss-vector-decoder:
     get:
       tags:
@@ -5943,10 +6008,9 @@ paths:
       operationId: run_http_request_translator
       summary: HTTP request translator
       description: >-
-        Paste a curl command and get it explained flag by flag, then translated to fetch, a raw HTTP
-        request, HTTPie, and Python requests. Local and offline; the command is decoded in your
-        browser and nothing is sent or run. Standards: curl manual, RFC 9110. Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
+        Paste a raw HTTP/1.1 request and get the equivalent curl, fetch, HTTPie, Python and
+        PowerShell. Nothing is sent and no request is run. Standards: RFC 9112, RFC 9110. Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
         logged.
       parameters:
         - name: input
@@ -5956,7 +6020,9 @@ paths:
           schema:
             type: string
             examples:
-              - curl -X POST https://api.example.com -d '{"a":1}'
+              - |-
+                GET /users HTTP/1.1
+                Host: api.example.com
       responses:
         '200':
           description: The computed result.
@@ -5976,10 +6042,9 @@ paths:
       operationId: run_http_request_translator_post
       summary: HTTP request translator (POST)
       description: >-
-        Paste a curl command and get it explained flag by flag, then translated to fetch, a raw HTTP
-        request, HTTPie, and Python requests. Local and offline; the command is decoded in your
-        browser and nothing is sent or run. Standards: curl manual, RFC 9110. Stateless and
-        side-effect-free: the same input always yields the same result, and nothing is stored or
+        Paste a raw HTTP/1.1 request and get the equivalent curl, fetch, HTTPie, Python and
+        PowerShell. Nothing is sent and no request is run. Standards: RFC 9112, RFC 9110. Stateless
+        and side-effect-free: the same input always yields the same result, and nothing is stored or
         logged.
       requestBody:
         required: true
@@ -5989,7 +6054,9 @@ paths:
             schema:
               type: string
               examples:
-                - curl -X POST https://api.example.com -d '{"a":1}'
+                - |-
+                  GET /users HTTP/1.1
+                  Host: api.example.com
       responses:
         '200':
           description: The computed result.

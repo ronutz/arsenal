@@ -11,6 +11,16 @@ status: reviewed
 updated: "2026-06-29"
 ---
 
+## Origens: um formato de documento que também era um programa
+
+O XML foi padronizado em 1998 como subconjunto simplificado do SGML, e herdou dele a **definição de tipo de documento** - uma gramática que o documento declara sobre si mesmo. A DTD é o recurso perigoso, e ela existe porque o XML foi desenhado para publicação, em que um documento declarar o próprio vocabulário e puxar fragmentos compartilhados era o objetivo, e não o risco.
+
+As consequências não eram óbvias na época. Uma DTD pode definir **entidades**, que são substituições nomeadas que o analisador expande. Entidades internas são apenas texto. **Entidades externas** mandam o analisador ir buscar algo - no sistema de arquivos local ou pela rede - e colar dentro do documento. Um analisador que faz isso está se comportando exatamente como especificado.
+
+É essa a classe de vulnerabilidade inteira. O XXE não é defeito de biblioteca; é recurso padrão encontrando uma entrada que os projetistas do formato nunca imaginaram: um documento fornecido por um atacante.
+
+O padrão se generaliza muito além do XML, e é por isso que o artigo importa mais que a sigla: **qualquer formato capaz de referenciar algo fora de si vira uma primitiva de busca quando é analisado com os privilégios do analisador.** A mesma forma reaparece no YAML com desserialização insegura, na injeção de fórmula em planilha, em renderizadores de Markdown que seguem inclusões, e em motores de template.
+
 ## O XML carrega um recurso perigoso
 
 O SAML (Linguagem de Marcação para Asserção de Segurança, do inglês Security Assertion Markup Language) é XML, e o XML tem um recurso que transforma a interpretação de entradas não confiáveis em um problema de segurança: a Definição de Tipo de Documento (DTD) e as entidades que ela pode declarar. Uma entidade é uma substituição nomeada, como uma macro. A maioria é inofensiva, mas uma DTD pode definir entidades que puxam conteúdo externo ou expandem de forma explosiva, e um parser que as processa faz o trabalho do atacante enquanto apenas lê o documento. Como uma mensagem SAML chega de fora e é processada por um servidor, essa é exatamente a situação perigosa.
@@ -46,6 +56,32 @@ Um parser que expande essas entidades esgota memória e CPU tentando materializa
 Os dois ataques compartilham um único pré-requisito: uma DTD que declara entidades. Uma mensagem SAML não tem necessidade legítima de uma. O padrão não exige um DOCTYPE, IdPs reais não emitem um, e o único motivo para uma mensagem SAML carregar uma declaração de entidade é atacar o parser. Isso torna a defesa mais segura também a mais simples: recusar qualquer documento que contenha um DOCTYPE ou uma declaração de entidade, antes de interpretar o seu conteúdo.
 
 Este decodificador faz exatamente isso. Se a entrada contém um `<!DOCTYPE` ou `<!ENTITY`, ela é rejeitada de imediato com um motivo claro, nunca interpretada. Além desse interruptor de segurança, o parser só substitui as cinco entidades XML predefinidas e referências numéricas de caractere; uma entidade nomeada desconhecida fica como texto literal em vez de ser resolvida, então mesmo uma referência que passasse expande para nada perigoso. Tamanho da entrada, profundidade de aninhamento e contagem de elementos são todos limitados como salvaguardas adicionais. O resultado é um parser que não pode ser levado a ler um arquivo local, alcançar a sua rede ou explodir com um documento forjado.
+
+## O que o atacante de fato consegue
+
+- **Leitura de arquivo.** O desfecho clássico: arquivos locais voltam dentro da resposta analisada. Quando a resposta não é devolvida, uma variante fora de banda manda o conteúdo para um servidor do atacante.
+- **Falsificação de requisição no servidor.** O analisador busca URLs de dentro da sua rede, o que o torna uma sonda contra serviços que confiam na própria posição, e não em quem os chama - com os endpoints de metadados de nuvem como alvo de maior valor.
+- **Negação de serviço.** O ataque do bilhão de risadas aninha referências de entidade para que a expansão cresça exponencialmente, consumindo memória a partir de um documento de poucos quilobytes. O estouro quadrático consegue resultado parecido sem aninhamento profundo.
+- **Varredura de portas e confusão de protocolo**, já que alguns analisadores suportam mais esquemas de URI do que quem os implanta pretende.
+
+## Por que recusar é melhor que sanitizar, e onde isso incomoda
+
+Filtrar declarações de entidade significa casar contra uma gramática com codificações, aninhamento e entidades de parâmetro. Recusar o **DOCTYPE** por inteiro é uma única opção, e remove a classe toda, e não os exemplos de que alguém se lembrou. É essa a razão de um analisador [SAML](/learn/saml-proxy-explained) endurecido recusar de saída um documento com DOCTYPE: uma asserção nunca precisa de um, e o caminho de identidade é exatamente onde uma primitiva de busca vale mais para o atacante.
+
+A complicação é que o padrão seguro chegou tarde. Analisadores foram distribuídos por anos com resolução de entidade externa **ligada**, então o endurecimento é exercício por analisador, por linguagem, às vezes por versão - e uma atualização de biblioteca pode reintroduzir isso em silêncio, se a configuração morava nos padrões e não no código.
+
+Duas notas operacionais que valem carregar:
+
+**Os privilégios do analisador são o raio de explosão.** Um analisador XML rodando como conta de serviço que lê arquivos de configuração e alcança endpoints internos transforma um documento em ponto de apoio; o mesmo defeito num processo isolado é um aborrecimento.
+
+**Profundidade também se aplica aqui.** Desligue a DTD, rode o analisador com o menor acesso que permita o trabalho, e trate todo XML de fora como fornecido por atacante - inclusive arquivos enviados por usuários legítimos, já que documentos de escritório, feeds e exportações de configuração são XML por baixo.
+
+## Onde isso aparece, por categoria
+
+- **Analisadores de linguagem** - o libxml2 sob boa parte do ecossistema, mais as pilhas Java, .NET, Python e PHP, cada uma com o próprio jeito de dizer não a uma DTD.
+- **Caminhos de identidade e assinatura** - SAML, XML Signature e XML Encryption, onde o formato encontra entrada não confiável por desenho.
+- **Formatos de documento e de escritório**, cujos contêineres são XML, que é como uma planilha vira entrada para esta classe.
+- **APIs e integrações** - SOAP e interfaces corporativas legadas, em que XML não é escolha que alguém faça hoje, mas segue no caminho.
 
 ## Por que rejeitar é melhor do que sanitizar
 

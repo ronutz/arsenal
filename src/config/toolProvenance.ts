@@ -126,7 +126,7 @@ const PROVENANCE: Record<string, ToolProvenance> = {
       { label: "NVD: CVSS v3.1 Equations", url: "https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator/v31/equations", note: "The base and environmental equations as published by NVD" },
     ],
   },
-  "http-request-translator": {
+  "curl-command-explainer": {
     basis:
       "The command is tokenized and decoded entirely in your browser, the way a shell reads it: single and double quotes, backslash escapes, line continuations, clustered short flags (-sSL), and attached values (-XPOST). From the parsed request the tool derives both the explanation and every translation. It never sends the request or contacts the host (zero egress). Content-Type is resolved the way curl actually behaves, where -d defaults to application/x-www-form-urlencoded rather than JSON, which is a common source of confusion the tool flags.",
     sources: [

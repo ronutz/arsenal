@@ -11051,7 +11051,7 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 
 /* ============================================================================
    F5 automation trio: AS3 / DO / Telemetry Streaming explainers (as3-*, do-*)
-   - authored 2026-07-07. Same disease as http-request-translator: the shared
+   - authored 2026-07-07. Same disease as curl-command-explainer: the shared
    results-presentation family was never written, so verdict cards, chips,
    stat cards, and the object tree rendered as unstyled defaults. The three
    components deliberately share the as3-* vocabulary (their containers stack
@@ -16336,42 +16336,78 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   border-color: var(--color-accent);
 }
 
-/* ---- /industry: where the work landed (PRIME, 31/08/2026) -----------------
-   Names only, set as chips rather than cards: there is one fact per entry and a
-   card would promise detail the section deliberately does not carry. The note
-   above them reads at body scale because it is the part that qualifies the
-   list, and burying it in small print would be the wrong emphasis. */
-.industry-served {
-  margin: 0 0 2.5rem;
-}
-.industry-served-note {
-  font-size: 1.02rem;
-  color: var(--text-secondary);
-  max-width: 68ch;
-  margin: 0.75rem 0 1.5rem;
-}
-.industry-served-group {
+/* ---- /people (PRIME, 01/09/2026) ------------------------------------------
+   A name and one line each, grouped by initial. Deliberately not cards: the
+   page is a way IN to the glossary entries, and a card would imply the
+   biography lives here. */
+.people-count {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-size: 0.85rem;
   color: var(--text-tertiary);
-  margin: 1.25rem 0 0.6rem;
+  margin-top: 0.75rem;
 }
-.industry-served-list {
-  list-style: none;
+.people-group { margin-bottom: 2rem; }
+.people-letter {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+.people-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.85rem; }
+.people-item { display: grid; gap: 0.15rem; }
+.people-link { font-weight: 650; color: var(--text-primary); text-decoration: none; }
+.people-link:hover { color: var(--color-accent); }
+.people-def { font-size: 0.95rem; color: var(--text-secondary); max-width: 70ch; }
+.people-context {
+  font-size: 0.92rem;
+  color: var(--text-tertiary);
+  max-width: 78ch;
+  margin-top: 0.3rem;
+}
+.people-list { gap: 1.6rem; }
+
+/* ---- /people as a timeline (PRIME, 01/09/2026) ---------------------------
+   Ordered by year rather than alphabet, because the chronology is the reading:
+   Volta sits next to Orsted, and Kaminsky next to Hutchins. The strand chips
+   hide and show entries; unpressed loses its fill and gains a strike, so the
+   state does not depend on colour alone. */
+.people-filter {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  padding: 0;
-  margin: 0;
+  margin: 1.25rem 0 2rem;
 }
-.industry-served-item {
+.people-chip {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
   color: var(--text-secondary);
-  padding: 0.35rem 0.8rem;
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: 999px;
+  transition: background 0.12s, border-color 0.12s, opacity 0.12s;
+}
+.people-chip[aria-pressed="true"] { border-color: var(--color-accent); color: var(--text-primary); }
+.people-chip[aria-pressed="false"] { opacity: 0.45; text-decoration: line-through; }
+.people-chip-count { color: var(--text-tertiary); margin-left: 0.35rem; }
+.people-era { margin-bottom: 2.25rem; }
+.people-decade {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.4rem;
+  margin-bottom: 1rem;
+}
+.people-year {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  display: block;
 }

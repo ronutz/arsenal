@@ -2530,9 +2530,9 @@
       "example": "Exemplo",
       "clear": "Limpar"
     },
-    "http-request-translator": {
-      "name": "Tradutor de requisições HTTP",
-      "blurb": "Cole um comando curl e veja-o explicado sinalizador por sinalizador, depois traduzido para fetch, uma requisição HTTP crua, HTTPie e Python requests. Local e offline; o comando é decodificado no seu navegador e nada é enviado ou executado.",
+    "curl-command-explainer": {
+      "name": "explicador de comando curl",
+      "blurb": "Cole um comando curl e receba a explicação sinalizador por sinalizador, e depois a tradução para fetch, requisição HTTP crua, HTTPie e Python. Nada é enviado e nenhuma requisição é executada.",
       "input": "Comando curl",
       "example": "Carregar exemplo",
       "clear": "Limpar",
@@ -6855,7 +6855,42 @@
       "shared": "O que têm em comum",
       "backToProfile": "Voltar ao perfil individual"
     },
-    "whoUsesThis": "Quem usa isto"
+    "whoUsesThis": "Quem usa isto",
+    "http-request-translator": {
+      "name": "Tradutor de requisições HTTP",
+      "blurb": "Cole uma requisição HTTP/1.1 crua e receba o equivalente em curl, fetch, HTTPie, Python e PowerShell. Nada é enviado e nenhuma requisição é executada.",
+      "input": "Requisição HTTP crua",
+      "example": "Carregar exemplo",
+      "clear": "Limpar",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "privacy": "Analisada no seu navegador. A requisição nunca é enviada, e nada sai da página.",
+      "headers": "Cabeçalhos",
+      "translations": "Traduções",
+      "out": {
+        "curl": "curl",
+        "fetch": "fetch (JavaScript)",
+        "httpie": "HTTPie",
+        "python": "Python requests",
+        "powershell": "PowerShell"
+      },
+      "err": {
+        "notARequest": "Isso não começa com uma linha de requisição. Uma requisição começa com método, alvo e versão - por exemplo: GET /users HTTP/1.1"
+      },
+      "warn": {
+        "empty": "Nada para analisar ainda.",
+        "not-a-request-line": "A primeira linha não é uma linha de requisição.",
+        "unknown-method": "Esse método não é um dos padronizados. Ele ainda pode ser válido para o servidor que o responde.",
+        "odd-version": "O token de versão não se parece com HTTP/1.1.",
+        "header-without-colon": "Uma linha de cabeçalho não tinha dois-pontos e foi ignorada.",
+        "no-host": "Não há cabeçalho Host, então a URL absoluta teve de ser adivinhada. Requisições em forma de origem precisam de um.",
+        "content-length-mismatch": "O Content-Length não bate com o tamanho do corpo. Servidores e proxies podem discordar sobre onde esta mensagem termina.",
+        "chunked-body": "O corpo está em pedaços (chunked). Ele é repassado como colado, e não decodificado.",
+        "cleartext": "Esta requisição é http puro, então cabeçalhos e corpo viajam em claro.",
+        "carries-authorization": "Esta requisição carrega um cabeçalho Authorization. Trate o texto colado como credencial.",
+        "carries-cookie": "Esta requisição carrega um cabeçalho Cookie, que em geral é uma sessão viva."
+      }
+    }
   },
   "privacy_page": {
     "eyebrow": "Privacidade",
@@ -7983,7 +8018,13 @@
     "portalPracticeCount": "{count} publicados",
     "portalRoles": "Os Papéis",
     "portalRolesLede": "As posições de que esta indústria é feita, agrupadas pelo caminho que um produto percorre. Quem o faz, move, vende, implanta, opera, sustenta, defende e ensina.",
-    "portalRolesCount": "{count} posições"
+    "portalRolesCount": "{count} posições",
+    "portalIndustry": "A indústria, em perfis",
+    "portalIndustryLede": "Quem construiu a indústria de redes e de segurança, o que aconteceu com essas empresas, e qual companhia a que você usa hoje já foi. Perfis escritos, uma linha do tempo de linhagem, e as aquisições que renomearam tudo.",
+    "portalCompanies": "{count} empresas",
+    "portalPeople": "Pessoas",
+    "portalPeopleLede": "Os indivíduos por trás das ferramentas, das conferências e das redes - inclusive quem construiu as do Brasil.",
+    "portalPeopleCount": "{count} pessoas"
   },
   "meetingBingo": {
     "metaTitle": "Bingo de Reunião",
@@ -15942,6 +15983,154 @@
       "capwap": {
         "def": "O protocolo padronizado entre uma controladora sem fio e seus pontos de acesso, carregando configuração, gestão de rádio e, opcionalmente, o próprio tráfego de dados dos clientes.",
         "context": "A decisão arquitetural que ele expõe é para onde vai o tráfego do usuário. Tunelar tudo de volta à controladora torna política e mobilidade simples e transforma a controladora em gargalo de banda e ponto único de falha; a comutação local mantém o tráfego na borda e empurra a aplicação de política junto. Nenhuma das duas é errada, e a escolha deveria ser deliberada, e não herdada de um padrão de fábrica - sobretudo em filiais, onde um desenho tunelado faz um enlace quebrado parar tráfego local que nunca precisou sair do prédio."
+      },
+      "vint-cerf": {
+        "def": "O codesenhista, com Bob Kahn, do TCP/IP - os protocolos que transformaram redes separadas numa internet - e corecebedor do Prêmio Turing de 2004 pelo trabalho.",
+        "context": "Cerf e Kahn não inventaram uma rede; inventaram o acordo que permite a redes jamais desenhadas uma para a outra trocar pacotes, e é por isso que a citação do prêmio fala em interconexão de redes, e não num protocolo. Nascido em New Haven em junho de 1943, Cerf tem deficiência auditiva desde cedo e já atribuiu parte do seu interesse por redes à promessa de outro canal para quem não usa telefone com facilidade - detalhe que vale guardar, porque o protocolo de comunicação mais consequente do século foi em parte motivado por alguém que achava difícil usar o existente. Passou as décadas seguintes como o advogado mais público que a internet tem, cargo para o qual ninguém o nomeou."
+      },
+      "bob-kahn": {
+        "def": "O codesenhista do TCP/IP com Vint Cerf, e corecebedor do Prêmio Turing de 2004, citado pelo desenho e pela implementação dos protocolos básicos de comunicação da internet.",
+        "context": "A citação do Turing é específica sobre o que a dupla fez: formularam os princípios de projeto da interconexão de redes, especificaram o TCP/IP contra esses requisitos, o prototiparam, e coordenaram as primeiras implementações. Esse último verbo importa mais do que parece. Um protocolo que uma equipe implementa é um programa; um protocolo que várias equipes implementam de forma compatível é um padrão, e chegar lá é trabalho de coordenação, não de desenho. As décadas seguintes de Kahn foram para as instituições em volta da tecnologia, e não para a tecnologia - a metade menos celebrada da razão de tudo isso ainda funcionar."
+      },
+      "bob-metcalfe": {
+        "def": "O inventor da Ethernet, no Xerox PARC em 1973, e recebedor do Prêmio Turing de 2022 pela invenção, pela padronização e pela comercialização dela.",
+        "context": "O memorando de 1973 descrevia uma rede de comunicação por difusão para ligar os computadores Alto do PARC, e a primeira Ethernet rodava a 2,94 Mbps - cerca de dez mil vezes mais rápido que as redes de terminais que substituiu. A palavra que importava estava no nome: Metcalfe escreveu sobre comunicação por um éter, o que deixou o meio em aberto e é por isso que o mesmo desenho sobreviveu depois ao par trançado, à fibra e ao rádio. David Boggs, morto em 2022, coinventou a tecnologia e coassinou o artigo de 1976. A terceira palavra da citação é a que os engenheiros pulam: ao sair da Xerox, Metcalfe levou DEC, Intel e Xerox a uma especificação comum de 10 Mbps em vez de guardá-la."
+      },
+      "radia-perlman": {
+        "def": "A engenheira que inventou o algoritmo de árvore de extensão na Digital, nos anos 1980, tornando a Ethernet em ponte sobrevivível, e que escreveu o poema do algoritmo.",
+        "context": "Seu artigo de 1985 permitiu que pontes de topologia arbitrária concordassem sobre uma árvore sem laços, e sem autoridade central; o IEEE padronizou aquilo no 802.1D em 1990. Toda rede comutada desde então roda um descendente. Ela escreveu a especificação com um poema anexo, o Algorhyme, cujos primeiros versos respondem a Joyce Kilmer: acho que nunca verei um grafo mais bonito que uma árvore. Também é dela o trabalho de estado de enlace por trás do IS-IS. O apelido que lhe deram, mãe da internet, esconde a contribuição real: não foi ter conectado coisas, e sim ter tornado seguro construir uma rede redundante, que é problema diferente e mais difícil."
+      },
+      "jon-postel": {
+        "def": "O editor das RFCs de 1969 até sua morte em 1998, autor ou editor das RFCs que definem IP, ICMP e TCP, e o primeiro diretor da IANA - função para a qual se voluntariou e que a princípio fazia à mão.",
+        "context": "Por quase três décadas uma pessoa cuidou dos documentos que definem a internet, e a autoridade de numeração que mantém endereços e parâmetros de protocolo únicos começou com ele mantendo uma lista. É essa a parte que vale encarar: o registro global hoje disputado por governos nasceu do hábito burocrático de um voluntário. Sua frase mais citada, da especificação de IP de 1980, é o princípio da robustez - seja conservador no que envia e liberal no que aceita -, que moldou o projeto de protocolos por quarenta anos e desde então passou a ser contestado dentro do próprio IAB, sob o argumento de que erro tolerado se entrincheira e um dia vira a especificação."
+      },
+      "paul-vixie": {
+        "def": "O engenheiro por trás do BIND e de boa parte da prática operacional em torno do DNS, fundador do Internet Systems Consortium, autor do Vixie cron, e criador do primeiro serviço comercial antispam bem-sucedido.",
+        "context": "Nascido em 1963, passou a carreira nas partes da internet que só recebem atenção quando quebram. O BIND é o servidor de nomes em que a maior parte da internet rodou; o Vixie cron está em praticamente todo sistema Unix vivo; e as listas de reputação antispam que ele construiu estabeleceram o padrão - uma lista distribuída como DNS, sem exigir software novo em lugar nenhum - que depois produziu as response policy zones, que ele especificou com Vernon Schryver em 2010. A linha condutora é a mesma sempre: pôr a capacidade nova dentro da maquinaria que os operadores já rodam, porque o problema de adoção é mais difícil que o de projeto."
+      },
+      "grace-hopper": {
+        "def": "A matemática e contra-almirante da Marinha dos Estados Unidos que construiu um dos primeiros compiladores, cunhou a palavra, e impulsionou a programação em inglês que virou o COBOL.",
+        "context": "Nascida em 1906, entrou na Reserva Naval em 1943 e foi designada ao Mark I de Harvard; em 1946 escreveu o primeiro manual de computador - o primeiro tratamento extenso, em qualquer lugar, de como programar uma máquina. Na Eckert-Mauchly, a partir de 1949, desenhou um compilador e batizou a categoria; sua divisão produziu em 1957 o Flow-Matic, o primeiro compilador de processamento de dados em linguagem inglesa, ancestral direto do COBOL. A disputa que ela precisou vencer não era técnica, e sim cultural: que uma máquina podia traduzir palavras em instruções de forma útil, e que programador não precisava ser matemático. Deixou a Marinha em 1966, foi convocada de volta em 1967, e se aposentou de novo em 1986 como a oficial mais velha na ativa, aos 79 anos."
+      },
+      "dan-kaminsky": {
+        "def": "O pesquisador que achou em 2008 a falha de envenenamento de cache do DNS que afetava todo resolvedor ao mesmo tempo, e então coordenou o remendo simultâneo entre fabricantes em vez de publicá-la.",
+        "context": "A fraqueza estava no protocolo, e não num produto: o DNS casava respostas com perguntas usando um identificador de consulta de 16 bits, e ele mostrou como vencer essa corrida de forma confiável. O que faz do episódio um marco é a condução. Ele tinha 29 anos, trabalhava como testador de intrusão, e levou o achado a fabricantes concorrentes, que publicaram um remendo coordenado em 8 de julho de 2008 - um mês antes de ele apresentar o detalhe na Black Hat. A aleatorização de porta de origem foi a mitigação; o DNSSEC sempre foi a resposta de verdade. A nota incômoda é que a correção fora proposta anos antes e não adotada, e que resolvedores remendados se mostraram envenenáveis em horas. Ele morreu em 2021."
+      },
+      "alessandro-volta": {
+        "def": "O físico cuja pilha de 1800 - discos de zinco e cobre empilhados, separados por pano embebido em salmoura - produziu a primeira corrente elétrica contínua.",
+        "context": "A eletricidade estática era conhecida havia séculos e não servia para comunicação: uma descarga é um evento, não um sinal. A pilha deu uma corrente que continua fluindo, e só então há algo para modular, comutar ou enviar. Tudo o que vem depois dele nesta linha do tempo depende dessa única mudança de natureza, de faísca para fonte. Seu nome virou a unidade, honra mais rara que um prêmio."
+      },
+      "hans-christian-orsted": {
+        "def": "O físico dinamarquês que observou, em 1820, que um fio com corrente desvia a agulha de uma bússola, mostrando que eletricidade e magnetismo são um só fenômeno.",
+        "context": "Todo motor, todo transformador e toda cabeça de leitura sobre um prato de disco são essa observação aplicada de propósito. E também todo sinal induzido no par errado de um feixe de cabos: diafonia é o experimento de Ørsted acontecendo sem ninguém pedir. O projeto de cabos passou dois séculos arranjando condutores para que o efeito dele ajude em vez de atrapalhar."
+      },
+      "michael-faraday": {
+        "def": "O experimentador que mostrou, em 1831, que um campo magnético variável induz corrente - o recíproco de Ørsted, e a base da geração e de todo problema de acoplamento indutivo desde então.",
+        "context": "É também, diretamente, a razão de o par trançado funcionar. Trance os dois condutores e a interferência induzida em cada um é aproximadamente igual; o receptor lê a diferença entre eles, e a diferença sai quase limpa. Uma norma de cabeamento é a lei de Faraday transformada em tolerância de fabricação. Ele quase não tinha matemática formal, o que não o impediu de estar certo, e Maxwell passou as três décadas seguintes escrevendo seus resultados como equações."
+      },
+      "james-clerk-maxwell": {
+        "def": "O teórico cujas equações de 1865 descreveram eletricidade, magnetismo e luz como um só campo, e previram que ondas eletromagnéticas viajam à velocidade da luz.",
+        "context": "A ordem importa: a previsão veio duas décadas antes de alguém demonstrá-la. O rádio existiu no papel muito antes de existir num laboratório, o que vale lembrar sempre que um padrão é descartado por ainda não ter implementações. Toda especificação sem fio é um tratamento de engenharia desse resultado, e propagação, atenuação e projeto de antena são Maxwell aplicado, saiba o engenheiro disso ou não."
+      },
+      "heinrich-hertz": {
+        "def": "O físico que em 1887 montou um transmissor de centelha e um receptor em laço e demonstrou as ondas previstas por Maxwell, transformando o rádio de matemática em problema de engenharia.",
+        "context": "Consta que ele não via utilidade no resultado, o que é a parte mais útil da história: a distância entre uma demonstração e uma aplicação não mede a demonstração. Em quinze anos o mesmo efeito levava mensagens comerciais através do Atlântico. Seu nome é a unidade em que todo plano de espectro, largura de canal e taxa de relógio é cotado."
+      },
+      "claude-shannon": {
+        "def": "O autor do artigo de 1948 que fundou a teoria da informação e, uma década antes, da tese que mostrou que a álgebra booleana descreve circuitos de comutação.",
+        "context": "Duas contribuições, e qualquer uma delas teria sido uma carreira. A tese de 1937 tornou a lógica digital uma disciplina de projeto, e não um artesanato. O artigo de 1948 definiu informação como quantidade mensurável e deu o teto do que qualquer canal carrega, dada sua banda e seu ruído - e é por isso que planejar capacidade é aritmética, e não opinião, e por que toda promessa de enlace mais rápido uma hora encontra um número que Shannon escreveu. Compressão, correção de erros e modulação são consequências."
+      },
+      "alan-turing": {
+        "def": "O matemático cujo artigo de 1936 definiu o que é computação, e o que máquina nenhuma consegue computar - a fronteira dentro da qual todo computador foi construído desde então.",
+        "context": "O artigo era sobre os limites, e não sobre as possibilidades: ele descreveu uma máquina para provar que algumas perguntas não têm resposta algorítmica. Que a descrição tenha acabado virando um projeto de construção é um dos acidentes maiores do campo. Sua criptanálise de guerra é mais conhecida publicamente e menos fundacional tecnicamente, e o tratamento que ele recebeu depois também faz parte do registro."
+      },
+      "george-boole": {
+        "def": "O matemático que em 1854 construiu uma álgebra da lógica, noventa anos antes de existir máquina para executá-la.",
+        "context": "Ele descrevia o raciocínio, e não circuitos. A conexão foi feita por Shannon em 1937, e o intervalo entre os dois é o ponto: uma peça de matemática pura ficou sem uso por três gerações e então se revelou a descrição exata do comportamento de chaves. Todo condicional, toda regra de controle de acesso e todo filtro de pacotes é a álgebra dele com uma implementação."
+      },
+      "john-von-neumann": {
+        "def": "O matemático cujo rascunho do EDVAC, em 1945, estabeleceu a arquitetura de programa armazenado - instruções na mesma memória dos dados - que quase todo computador ainda segue.",
+        "context": "O rascunho circulou apenas com o nome dele, e é por isso que a arquitetura o carrega; o trabalho do grupo do EDVAC também está ali, e a atribuição é discutida desde então. A decisão de projeto que importa é a que as pessoas esquecem ser uma decisão: código e dado dividem a memória, o que é o que torna o software possível e o que torna o estouro de buffer possível, e é a mesma propriedade nos dois casos."
+      },
+      "guglielmo-marconi": {
+        "def": "O engenheiro e empresário que transformou o efeito de laboratório de Hertz num serviço transatlântico, alegando ter recebido um sinal através do Atlântico em 1901.",
+        "context": "Sua contribuição técnica é contestada e a comercial não é: ele montou a empresa, as estações costeiras e os contratos com navios que fizeram do sem fio um negócio, e não uma demonstração. O padrão é conhecido de quem já viu um padrão vencer - quem torna algo implantável raramente é quem o fez funcionar. A alegação sobre o sinal de 1901 é questionada por razões físicas desde então, e o registro deve carregar isso em vez de alisar."
+      },
+      "tim-berners-lee": {
+        "def": "O autor da proposta de 1989 no CERN que virou a World Wide Web, e do primeiro navegador, servidor e página - e recebedor do Prêmio Turing de 2016 por isso.",
+        "context": "Ele escreveu três coisas que precisavam existir juntas para qualquer uma servir: um esquema de endereçamento, um protocolo de transferência e uma linguagem de marcação. A decisão de consequências mais longas não foi técnica: o CERN pôs a especificação em domínio público em 1993, e a web se espalhou porque ninguém precisava pedir permissão nem pagar licença. Compare com qualquer sistema de hipertexto em rede da mesma época que não fez nem uma coisa nem outra, e a diferença de destino é quase toda essa."
+      },
+      "gordon-moore": {
+        "def": "O cofundador da Fairchild e depois da Intel cujo artigo de 1965 observou que o número de componentes por circuito integrado dobrava numa cadência regular.",
+        "context": "Era uma observação sobre economia com horizonte de cerca de uma década, e virou premissa de planejamento por cinquenta anos - e depois, silenciosamente, um roteiro que a indústria se organizou para cumprir, coisa diferente de lei da natureza. A leitura útil para quem dimensiona infraestrutura é que a curva sempre falou de custo por transistor, e não de velocidade, e que as duas coisas pararam de andar juntas muito antes de alguém anunciar."
+      },
+      "whitfield-diffie": {
+        "def": "Coautor, com Martin Hellman, do artigo de 1976 New Directions in Cryptography, que propôs a criptografia de chave pública e as assinaturas digitais; corecebedor do Prêmio Turing de 2015.",
+        "context": "Antes daquele artigo, cifrar pressupunha que as duas partes já tinham se encontrado, ou que um mensageiro tinha ido. O movimento do texto foi separar a chave que tranca da chave que destranca, o que torna possível conversar em sigilo com um estranho - requisito sobre o qual todo protocolo de comércio posterior se apoia. O artigo descrevia a ideia sem construção prática; três pessoas do MIT forneceram uma no ano seguinte. Ele passou décadas depois defendendo o lado político em público, e depôs nas duas casas do Congresso dos Estados Unidos sobre criptografia."
+      },
+      "martin-hellman": {
+        "def": "Coautor do New Directions in Cryptography e do método de troca de chaves que leva o nome dele com o de Diffie; corecebedor do Prêmio Turing de 2015.",
+        "context": "Vale ler a citação dele com atenção: credita inventar E divulgar, o par de verbos que esta história exige o tempo todo. A troca permite que duas partes combinem um segredo comum por um canal que alguém está escutando, e é ainda o que acontece no início de uma sessão TLS décadas depois - e é por isso que existe sigilo futuro. Boa parte da carreira posterior dele foi sobre risco nuclear, e não sobre criptografia, o que o registro deve mencionar em vez de arrumar."
+      },
+      "ralph-merkle": {
+        "def": "O terceiro nome na patente de chave pública com Diffie e Hellman, que chegou à ideia de forma independente ainda estudante, e o inventor da árvore de hash que leva seu nome.",
+        "context": "Seu projeto de graduação propunha um jeito de duas partes estabelecerem um segredo em público, e foi rejeitado por um avaliador que não achava o problema digno de solução. O prêmio Kanellakis de 1996 o lista com Diffie, Hellman, Rivest, Shamir e Adleman pela concepção e primeira realização efetiva da criptografia de chave pública. A estrutura em árvore que ele descreveu virou depois a forma padrão de provar que um item pertence a um conjunto grande sem enviar o conjunto, e é por isso que ela aparece em transparência de certificados, em backup e em livros-razão."
+      },
+      "ron-rivest": {
+        "def": "O R do RSA: coautor do artigo de 1977 que transformou a criptografia de chave pública de proposta em coisa implementável, e corecebedor do Prêmio Turing de 2002.",
+        "context": "Diffie e Hellman tinham descrito o que era preciso e dito com todas as letras que não tinham forma realista de construir. Rivest, com Shamir e Adleman no MIT, produziu uma em um ano, e o trio fundou a RSA Data Security em 1982 - foi assim que o algoritmo chegou aos produtos, e não apenas às revistas. A citação do Turing é precisa sobre a contribuição: tornar a criptografia de chave pública útil na prática. Ele também escreveu as famílias MD e RC, várias das quais o campo depois teve de aposentar."
+      },
+      "adi-shamir": {
+        "def": "O S do RSA, corecebedor do Prêmio Turing de 2002, e autor do esquema de compartilhamento de segredo que divide uma chave de modo que quaisquer k de n detentores a reconstruam.",
+        "context": "É pelo RSA que ele é citado, e o compartilhamento de segredo talvez seja a ideia mais implantada: é assim que uma chave raiz pode existir sem que ninguém a detenha sozinho, arranjo usado nas cerimônias que assinam a raiz do DNS. Ele também fez trabalho fundacional em criptanálise diferencial, que é a outra metade do ofício - o campo avança tanto quebrando construções quanto propondo-as."
+      },
+      "leonard-adleman": {
+        "def": "O A do RSA e corecebedor do Prêmio Turing de 2002, depois fundador da computação com DNA.",
+        "context": "Seu papel no trio foi em boa medida atacar as construções que os outros dois propunham, e foi assim que a sobrevivente ganhou confiança: o algoritmo publicado é o que resistiu ao próprio coautor tentando quebrá-lo. Essa divisão de trabalho - propor, atacar, ficar com o que sobra - é o método sobre o qual o campo inteiro roda, e é mais fácil de descrever do que de praticar dentro de um grupo de três pessoas que depois precisam concordar sobre um artigo."
+      },
+      "james-ellis": {
+        "def": "O pesquisador do GCHQ que concebeu a cifragem sem segredo por volta de 1969-70, anos antes da descoberta pública da criptografia de chave pública, e não pôde contar a ninguém.",
+        "context": "A ideia existiu dentro de uma agência de inteligência britânica e não fez nada, porque percepção classificada não muda protocolo, não vai em produto e não ensina ninguém. A comparação é o argumento a favor da pesquisa aberta enunciado como um experimento que de fato aconteceu: dois grupos tiveram a mesma ideia, um pôde publicar e o outro não, e toda a infraestrutura de chave pública descende do que pôde. O reconhecimento veio só após a desclassificação no fim dos anos 1990, quando ele já havia morrido."
+      },
+      "clifford-cocks": {
+        "def": "O matemático do GCHQ que em 1973 elaborou uma implementação da ideia de Ellis - equivalente em substância ao que viria a ser o RSA - quatro anos antes de o RSA ser publicado.",
+        "context": "Consta que ele fez isso numa tarde e depois arquivou, porque não havia mais nada a fazer com aquilo. O trabalho ficou secreto até o fim dos anos 1990, então não influenciou nada: nenhum padrão o cita, nenhuma biblioteca o implementa, e a indústria que cresceu em volta da mesma matemática cresceu inteiramente sobre a versão publicada. O episódio é a resposta mais limpa disponível sobre se sigilo ou publicação produz mais capacidade, e não é uma disputa apertada."
+      },
+      "paul-baran": {
+        "def": "O engenheiro da RAND que desenhou a rede distribuída - sem comutador central, com mensagens cortadas em blocos roteados de forma independente - em estudos publicados a partir de 1960 e reunidos em 1964 como On Distributed Communications.",
+        "context": "Pediram a ele um jeito de as comunicações sobreviverem a um ataque nuclear, e a resposta a que chegou foi remover aquilo que podia ser destruído: o centro. Ele descreveu ter se inspirado num cérebro contornando tecido lesionado. Dois detalhes valem carregar. A ideia foi rejeitada pelos engenheiros de comutação por circuito da companhia telefônica, que a consideravam inviável - a rede que substituiu a deles foi recusada por eles primeiro. E o argumento de sobrevivência é a razão de a internet não ter chave mestra, a mesma propriedade que a torna difícil de desligar e difícil de governar."
+      },
+      "donald-davies": {
+        "def": "O cientista do National Physical Laboratory que chegou à mesma ideia de forma independente em meados dos anos 1960, batizou-a de comutação por pacotes, e construiu uma rede no NPL para prová-la.",
+        "context": "Baran tinha o conceito e Davies deu a palavra, o que não é contribuição pequena: o termo pacote é o que permitiu a engenheiros, financiadores e organismos de padronização falarem da coisa sem discutir como chamá-la. Ele também fez o que a teoria precisava - um nó de verdade, funcionando, em Teddington - e o projeto da ARPANET tomou dos dois, com a terminologia vindo dele e o argumento de resiliência vindo de Baran. Chegada independente à mesma resposta, em dois continentes, é a evidência mais forte de que a ideia estava madura, e não de que houve sorte."
+      },
+      "leonard-kleinrock": {
+        "def": "O teórico de filas cujo trabalho do início dos anos 1960 sobre atraso em redes de nós sustentou a análise de desempenho da ARPANET, e cujo laboratório na UCLA hospedou o primeiro nó.",
+        "context": "A matemática dele é o que permite raciocinar sobre espera: quanto uma fila cresce, que atraso uma dada carga produz, e por que um enlace a noventa por cento de utilização se comporta de forma nada parecida com um a cinquenta. Toda conversa sobre capacidade é descendente disso. Sua alegação de ter originado a comutação por pacotes é contestada - por Baran, por Davies e por historiadores que notam que os relatórios iniciais tratam de fila e atraso, e não de blocos de mensagem - e o registro honesto guarda a disputa em vez de resolvê-la para um lado."
+      },
+      "larry-roberts": {
+        "def": "O gerente de programa da ARPA que decidiu, em 1967, que a rede seria por comutação de pacotes, e então a financiou, projetou e conduziu à existência.",
+        "context": "A decisão é a contribuição. Duas pessoas tinham proposto a técnica e nenhuma podia implantá-la; Roberts a escolheu em vez da comutação por circuito, coordenou os contratados que construíram o hardware e a universidade que hospedou o primeiro nó, e revisou o projeto para tomar das duas propostas em vez de escolher um lado. É o papel que raramente ganha monumento: não quem tem a ideia, nem quem escreve o código, mas quem seleciona entre ideias e depois carrega as consequências da escolha."
+      },
+      "van-jacobson": {
+        "def": "O autor de Congestion Avoidance and Control, o trabalho de 1988 que deu ao TCP os algoritmos - partida lenta, prevenção de congestionamento, retransmissão rápida - que impediram a internet de colapsar sob a própria carga.",
+        "context": "Em meados dos anos 1980 a rede sofreu colapso por congestionamento: a vazão entre dois sites caiu três ordens de grandeza, porque cada remetente respondia à perda retransmitindo com mais força. A correção dele foi fazer cada remetente inferir o estado de uma rede que não enxerga, a partir da única evidência que tem - o tempo e a perda dos próprios pacotes - e recuar. Essa inferência é ainda o que toda conexão TCP faz. É também a razão de um enlace poder estar ocupado sem que nada pareça rápido, e de o bufferbloat ter levado décadas para ser reconhecido como o mesmo problema com outro chapéu."
+      },
+      "nelson-murilo": {
+        "def": "O autor do chkrootkit, o detector de rootkits que faz parte do ferramental de segurança Unix desde o fim dos anos 1990, e um dos três fundadores do podcast ISTS e da conferência YSTS.",
+        "context": "Pouquíssimos fundadores de conferência no mundo têm o próprio código ainda instalado em servidores de outras pessoas décadas depois. O chkrootkit continua sendo lançado - a versão 0.57 saiu em janeiro de 2023 -, coisa incomum de se dizer sobre qualquer ferramenta de segurança, ainda mais uma escrita antes de a indústria ter nome para a categoria. Ele é também uma das três vozes do podcast que grava desde 2006, e o evento nasceu dali, e não o contrário."
+      },
+      "luiz-eduardo-dos-santos": {
+        "def": "O fundador de quem partiu a ideia do podcast ISTS, e que passou meses insistindo para que os três gravassem um piloto; cofundador da conferência YSTS que nasceu dali.",
+        "context": "O detalhe que vale guardar é a insistência. Os três trabalhavam com segurança da informação, moravam em cidades diferentes - ele, em outro país - e tinham uma afinidade pelo tema que às vezes convergia e às vezes não. Nada nesse arranjo produz um podcast sem alguém empurrando, e ele empurrou por meses. Quase vinte anos de gravação contínua, e uma das conferências mais seletivas da América Latina, existem por causa disso."
+      },
+      "nelson-brito": {
+        "def": "O criador do T50, a ferramenta de injeção de pacotes e teste de estresse, e o único brasileiro a ter apresentado na PH-Neutral, em Berlim, em 2011.",
+        "context": "O T50 é do tipo de ferramenta usada muito além de quem sabe quem a escreveu, destino comum das boas. Sua pesquisa foi publicada sob nomes como Permutation Oriented Programming e SQL Fingerprint, e seu histórico de palestras percorre o circuito brasileiro - IME, CNASI, CONIP, SERPRO, ITA, H2HC, BSides São Paulo e YSTS -, além daquela aparição em Berlim, que vale registrar porque a PH-Neutral era pequena e não distribuía convite com facilidade."
+      },
+      "deviant-ollam": {
+        "def": "O pesquisador de segurança física e integrante do TOOOL cujas palestras de lockpicking puseram a disciplina diante de plateias de rede que nunca tinham pensado na porta.",
+        "context": "Na quinta edição do YSTS, em maio de 2011, ele abriu o evento com os conceitos básicos de lockpicking e vendeu kits para a plateia depois - o que é o argumento inteiro num gesto só, já que uma fechadura é um controle cujo modo de falha cabe na mão. O acesso físico derrota boa parte do que o resto de um programa de segurança compra: a porta da sala de servidores, a tranca do rack e o leitor de crachá estão debaixo de todo controle de rede, e costumam ser a parte menos examinada do parque."
       }
     },
     "totalCount": "{count} termos",
@@ -16245,11 +16434,7 @@
     "careerNote": "Dois tipos de empresa aparecem aqui, e os marcadores os distinguem: aquelas em que fui empregado e aquelas cuja tecnologia trabalhei diretamente, do outro lado da mesa. Em ordem cronológica de primeiro contato, desde 1996.",
     "careerStripTitle": "Os capítulos vividos por dentro",
     "careerStripNote": "Em todas elas, empregadora ou fabricante, o trabalho teve o mesmo formato: de frente para o cliente final, em pré-vendas e em suporte técnico pós-vendas, e muitas vezes atuando como proxy técnico e facilitador de capacitação para os parceiros que precisavam sustentar o produto por conta própria. A tarefa era deixar o cliente com algo que funcionasse melhor do que antes — uma inovação, uma solução, uma melhoria que continuasse funcionando depois que eu saísse. O relato completo está no registro de carreira.",
-    "careerStripLink": "Ler o registro de carreira",
-    "servedTitle": "Onde o trabalho chegou",
-    "servedNote": "Organizações cujas redes o trabalho alcançou, entregue por meio dos fabricantes, distribuidores, revendas e integradores para os quais trabalhei entre 1996 e 2020.",
-    "servedCustomersTitle": "Clientes finais, por meio de fabricantes e distribuidores",
-    "servedPartnersTitle": "Parceiros, por meio de fabricantes e distribuidores"
+    "careerStripLink": "Ler o registro de carreira"
   },
   "sitemap": {
     "metaTitle": "Mapa do site - todas as seções do ronutz.com",
@@ -19293,6 +19478,25 @@
           "Senso de proporção, já que um programa de controles que ignora custo passa a ser ignorado."
         ]
       }
+    }
+  },
+  "people": {
+    "title": "Pessoas",
+    "metaTitle": "Pessoas — os indivíduos por trás das redes e das ferramentas",
+    "metaDescription": "As pessoas que este site registra: quem escreveu as ferramentas, fundou as conferências, depôs perante senados e construiu a internet brasileira. Cada uma leva ao seu verbete.",
+    "lede": "As pessoas que o corpus registra - quem escreveu as ferramentas que todo mundo ainda roda, fundou as conferências, foi presa, depôs perante senados, ou conectou um país. Cada nome leva ao seu verbete.",
+    "count": "{count} pessoas",
+    "filterAll": "Todos",
+    "filterLabel": "Filtrar a linha do tempo por eixo",
+    "decade": "Anos {decade}",
+    "fields": {
+      "electricity": "Eletricidade e rádio",
+      "computing": "Computação",
+      "internet": "A internet",
+      "crypto": "Criptografia",
+      "security": "Segurança",
+      "hacker-culture": "Cultura hacker",
+      "brazil": "Brasil"
     }
   }
 }

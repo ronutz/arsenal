@@ -3,7 +3,7 @@ slug: http-headers-anatomy
 title: "HTTP Headers: The Anatomy of the Metadata"
 summary: "Everything HTTP knows about a message that isn't the message travels in headers: name-colon-value lines with case-insensitive names, folded into four working roles - request context, response context, representation metadata, and payload plumbing. The end-to-end vs hop-by-hop split that proxies live by, the Host header that made virtual hosting possible, content negotiation, conditionals, and why header order became a fingerprint."
 concepts: ["http", "headers", "host", "content-type", "end-to-end", "hop-by-hop", "content negotiation", "conditional requests"]
-relatedTools: ["http-request-translator", "http-header-order-fingerprint", "secure-headers"]
+relatedTools: ["curl-command-explainer", "http-header-order-fingerprint", "secure-headers"]
 relatedArticles: ["http-status-codes-the-five-families", "secure-headers-overview", "http-cookies-state-over-stateless", "curl-headers-auth-and-cookies"]
 category: networking
 order: 209
@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-21"
 ---
 
-Strip an HTTP message of its body and its first line, and what remains is the protocol's entire nervous system: **headers** - `Name: value` lines, names case-insensitive, values shaped by each header's own grammar. Headers are where caching, authentication, negotiation, routing, and security actually happen; the body is just cargo. This article gives the anatomy; [the request translator](/tools/http-request-translator) lets you dissect real specimens.
+Strip an HTTP message of its body and its first line, and what remains is the protocol's entire nervous system: **headers** - `Name: value` lines, names case-insensitive, values shaped by each header's own grammar. Headers are where caching, authentication, negotiation, routing, and security actually happen; the body is just cargo. This article gives the anatomy; [the request translator](/tools/curl-command-explainer) lets you dissect real specimens.
 
 ## Four working roles
 

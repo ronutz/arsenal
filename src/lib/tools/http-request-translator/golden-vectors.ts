@@ -1,129 +1,123 @@
 // ============================================================================
 // src/lib/tools/http-request-translator/golden-vectors.ts
 // ----------------------------------------------------------------------------
-// Locked cases: each curl command has expected parse facts. verifyVectors()
-// checks method inference, URL parsing, header/body handling, and that each
-// translation contains the load-bearing substrings.
+// Locked cases: each raw HTTP request has expected parse facts. verifyVectors()
+// checks the request line, header handling, URL assembly from Host, the
+// warnings that matter operationally, and that each translation contains the
+// load-bearing substrings.
+//
+// The cases are deliberately unglamorous: an origin-form GET, a POST with a
+// body, absolute-form (proxy) targets, CRLF and bare-LF line endings, a
+// Content-Length that lies, and a chunked body we decline to decode. Those are
+// the shapes a capture actually produces.
 // ============================================================================
 
-import { parseCurl } from "./compute";
+import { parseRequest } from "./compute";
 
-export const SET_ID = "http-request-translator/2026-07-01";
+export const SET_ID = "http-request-translator/2026-09-01";
 
 interface Vector {
   name: string;
   input: string;
-  check: (p: ReturnType<typeof parseCurl>) => string | null; // null = pass, else message
+  check: (p: ReturnType<typeof parseRequest>) => string | null; // null = pass
 }
 
 export const VECTORS: Vector[] = [
   {
-    name: "simple-get",
-    input: "curl https://api.example.com/users",
+    name: "origin-form-get",
+    input: "GET /users HTTP/1.1\r\nHost: api.example.com\r\n\r\n",
     check: (p) =>
       !p.ok ? "should parse"
       : p.method !== "GET" ? "method should be GET"
-      : !p.methodInferred ? "GET should be inferred"
-      : p.urlParts?.host !== "api.example.com" ? "host wrong"
-      : p.urlParts?.path !== "/users" ? "path wrong"
+      : p.url !== "https://api.example.com/users" ? `url wrong: ${p.url}`
+      : !p.translations.curl.includes("curl -X GET") ? "curl missing method"
       : null,
   },
   {
-    name: "post-json-d",
-    input: `curl -X POST https://api.example.com/users -H "Content-Type: application/json" -d '{"name":"Alice"}'`,
+    name: "bare-lf-accepted",
+    input: "GET /a HTTP/1.1\nHost: h.example\n\n",
+    check: (p) => (!p.ok ? "bare LF should still parse" : p.target !== "/a" ? "target wrong" : null),
+  },
+  {
+    name: "post-with-body",
+    input:
+      "POST /v1/users HTTP/1.1\r\nHost: api.example.com\r\nContent-Type: application/json\r\nContent-Length: 26\r\n\r\n{\"name\":\"Alice\",\"a\":true}",
     check: (p) =>
-      p.method !== "POST" ? "method POST"
-      : p.methodInferred ? "method explicit, not inferred"
-      : !p.body?.looksJson ? "should detect JSON body"
-      : p.body?.contentTypeImplicit ? "content-type was explicit"
-      : !p.translations.fetch.includes(`method: 'POST'`) ? "fetch missing method"
-      : !p.translations.fetch.includes("name") ? "fetch missing body"
-      : !p.translations.python.includes("requests.post(") ? "python missing post"
+      p.method !== "POST" ? "method wrong"
+      : p.body === "" ? "body should be captured"
+      : !p.translations.curl.includes("--data-raw") ? "curl should carry the body"
+      : !p.translations.fetch.includes("body:") ? "fetch should carry the body"
       : null,
   },
   {
-    name: "infer-post-from-data",
-    input: `curl https://x.test/api -d 'a=1&b=2'`,
+    name: "host-header-not-re-emitted",
+    input: "GET / HTTP/1.1\r\nHost: h.example\r\nAccept: */*\r\n\r\n",
     check: (p) =>
-      p.method !== "POST" ? "should infer POST from -d"
-      : !p.methodInferred ? "should be inferred"
-      : p.body?.contentType !== "application/x-www-form-urlencoded" ? "default CT wrong"
-      : !p.body?.contentTypeImplicit ? "CT should be implicit"
+      p.translations.curl.includes("Host:") ? "Host must not be re-emitted as -H"
+      : !p.translations.curl.includes("Accept") ? "other headers must survive"
       : null,
   },
   {
-    name: "bearer-auth-header",
-    input: `curl https://api.test/me -H "Authorization: Bearer abc123"`,
+    name: "content-length-mismatch-warns",
+    input: "POST /x HTTP/1.1\r\nHost: h.example\r\nContent-Length: 999\r\n\r\nshort",
     check: (p) =>
-      p.auth?.kind !== "bearer" ? "should detect bearer"
-      : p.auth?.token !== "abc123" ? "token wrong"
+      !p.warnings.includes("content-length-mismatch") ? "should warn on a lying Content-Length" : null,
+  },
+  {
+    name: "chunked-declined",
+    input: "POST /x HTTP/1.1\r\nHost: h.example\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\n\r\n",
+    check: (p) => (!p.warnings.includes("chunked-body") ? "should warn that chunked is not decoded" : null),
+  },
+  {
+    name: "absolute-form-target",
+    input: "GET http://proxy.example/a HTTP/1.1\r\nHost: proxy.example\r\n\r\n",
+    check: (p) =>
+      p.url !== "http://proxy.example/a" ? `absolute-form should win: ${p.url}`
+      : !p.warnings.includes("cleartext") ? "http:// should warn"
       : null,
   },
   {
-    name: "basic-auth-u",
-    input: `curl -u alice:secret https://api.test/private`,
+    name: "credentials-surfaced",
+    input: "GET /a HTTP/1.1\r\nHost: h.example\r\nAuthorization: Bearer tok\r\nCookie: s=1\r\n\r\n",
     check: (p) =>
-      p.auth?.kind !== "basic" ? "should detect basic"
-      : p.auth?.user !== "alice" ? "user wrong"
-      : p.auth?.token !== "secret" ? "pass wrong"
-      : !p.translations.python.includes(`auth=("alice", "secret")`) ? "python auth missing"
+      !p.warnings.includes("carries-authorization") ? "should flag Authorization"
+      : !p.warnings.includes("carries-cookie") ? "should flag Cookie"
       : null,
   },
   {
-    name: "clustered-short-flags-and-attached",
-    input: `curl -sSL -XDELETE https://api.test/item/5`,
-    check: (p) =>
-      p.method !== "DELETE" ? "-XDELETE attached value"
-      : !p.options.some((o) => o.id === "location") ? "-L in cluster missing"
-      : !p.options.some((o) => o.id === "silent") ? "-s in cluster missing"
-      : null,
+    name: "missing-host-warns",
+    input: "GET /a HTTP/1.1\r\n\r\n",
+    check: (p) => (!p.warnings.includes("no-host") ? "origin-form without Host should warn" : null),
   },
   {
-    name: "insecure-and-plaintext-warnings",
-    input: `curl -k http://10.0.0.1/status`,
-    check: (p) =>
-      !p.warnings.includes("insecureTls") ? "missing insecureTls warning"
-      : !p.warnings.includes("plaintextHttp") ? "missing plaintextHttp warning"
-      : null,
+    name: "unknown-method-warns",
+    input: "FROB /a HTTP/1.1\r\nHost: h.example\r\n\r\n",
+    check: (p) => (!p.warnings.includes("unknown-method") ? "should flag an unknown method" : null),
   },
   {
-    name: "multipart-form",
-    input: `curl -F name=Alice -F avatar=@pic.png https://api.test/upload`,
-    check: (p) =>
-      p.method !== "POST" ? "form should infer POST"
-      : p.body?.kind !== "form" ? "body should be form"
-      : (p.body?.fields?.length ?? 0) !== 2 ? "two fields"
-      : !p.body?.fields?.some((f) => f.isFile && f.name === "avatar") ? "file field not flagged"
-      : !p.translations.fetch.includes("FormData") ? "fetch missing FormData"
-      : null,
+    name: "all-five-translations-present",
+    input: "PUT /a HTTP/1.1\r\nHost: h.example\r\nX-A: b\r\n\r\nbody",
+    check: (p) => {
+      const t = p.translations;
+      if (!t.curl || !t.fetch || !t.httpie || !t.python || !t.powershell) return "all five must be produced";
+      if (!t.python.includes("requests.request")) return "python should use requests";
+      if (!t.httpie.includes("http PUT")) return "httpie should carry the method";
+      if (!t.powershell.includes("Invoke-WebRequest")) return "powershell should use Invoke-WebRequest";
+      return null;
+    },
   },
   {
-    name: "query-string-parsed",
-    input: `curl "https://api.test/search?q=hello world&page=2"`,
-    check: (p) =>
-      (p.urlParts?.query.length ?? 0) !== 2 ? "should parse 2 query params"
-      : p.urlParts?.query[0].value !== "hello world" ? "should decode query value"
-      : null,
-  },
-  {
-    name: "not-a-curl-command",
-    input: `wget https://example.com/file.zip`,
-    check: (p) =>
-      p.ok ? "should not parse wget as curl"
-      : p.errorId !== "notCurl" ? "should flag notCurl"
-      : null,
+    name: "not-a-request",
+    input: "hello there",
+    check: (p) => (p.ok ? "prose should not parse as a request" : null),
   },
 ];
 
 export function verifyVectors(): { ok: boolean; failures: string[] } {
   const failures: string[] = [];
   for (const v of VECTORS) {
-    try {
-      const msg = v.check(parseCurl(v.input));
-      if (msg) failures.push(`${v.name}: ${msg}`);
-    } catch (e) {
-      failures.push(`${v.name}: threw ${(e as Error).message}`);
-    }
+    const msg = v.check(parseRequest(v.input));
+    if (msg) failures.push(`${v.name}: ${msg}`);
   }
   return { ok: failures.length === 0, failures };
 }

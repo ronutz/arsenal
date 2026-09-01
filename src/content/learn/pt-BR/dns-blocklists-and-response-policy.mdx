@@ -11,6 +11,18 @@ status: reviewed
 updated: "2026-08-11"
 ---
 
+## Origens: bloquear no resolvedor chegou por acaso
+
+O bloqueio no resolvedor começou como defesa contra spam. As primeiras listas amplamente usadas eram **listas de bloqueio em DNS** no sentido literal: o servidor de e-mail consultava um nome em formato especial, e uma resposta significava que o endereço estava listado. A técnica vem do trabalho de meados dos anos 1990 que virou a Realtime Blackhole List do MAPS, e seu formato foi escolhido por uma razão - todo servidor de e-mail já falava DNS, então uma lista distribuída como DNS não exigia software novo em lugar nenhum.
+
+Duas linhagens cresceram dali:
+
+**Listas de reputação consultadas na hora da mensagem**, ainda a espinha dorsal da filtragem de e-mail.
+
+**Política no resolvedor recursivo**, em que o resolvedor que responde às consultas comuns do cliente é também o lugar onde um nome pode ser recusado. As **Response Policy Zones** foram introduzidas em 2010 por Paul Vixie e Vernon Schryver, e a decisão de projeto que as espalhou foi a mesma que espalhou as listas originais: **a política é entregue como uma zona DNS comum**, então ela transfere, atualiza e escala usando a maquinaria que todo operador já roda.
+
+A herança incômoda é que as duas são mecanismos de censura cuja legitimidade vem inteiramente de quem os opera e por quê. A mesma transferência de zona que bloqueia um domínio de phishing para os funcionários de uma empresa é, em outra jurisdição, como um governo bloqueia um site de notícias - e é por isso que essa técnica aparece também no artigo sobre [desligamentos de internet](/learn/internet-shutdowns-and-kill-switches).
+
 ## Por que o resolvedor é onde bloquear sai mais barato
 
 Toda conexão a um host nomeado começa por uma consulta, então o resolvedor fica **antes** de o tráfego existir. Recusar ali custa uma consulta e impede que a conexão seja sequer tentada — sem sessão para inspecionar, sem certificado para interceptar, sem porta para casar, e funciona igual para um protocolo do qual ninguém escreveu um analisador.
@@ -42,6 +54,44 @@ Duas coisas sobre classificações merecem ser guardadas.
 **Um bloqueio que nunca dispara.** Um dispositivo que usa o próprio resolvedor, ou DNS sobre HTTPS com um serviço da escolha dele, nunca pergunta ao resolvedor que guarda a política. O painel mostra um filtro funcionando perfeitamente sobre as consultas que recebeu, e as que nunca chegaram não estão em gráfico nenhum.
 
 **As duas falhas são silenciosas e falham em direções opostas** — uma bloqueia algo e parece indisponibilidade, a outra não bloqueia nada e parece sucesso.
+
+## O que a política de fato consegue dizer
+
+Uma regra de RPZ pode disparar por mais que o nome consultado, e os tipos de gatilho são a parte útil:
+
+- **O nome consultado** em si, o caso comum.
+- **O endereço da resposta**, de modo que um nome que resolve para uma rede reconhecidamente ruim é pego mesmo sendo novo.
+- **O nome ou o endereço do servidor de nomes**, que pega uma operação de hospedagem inteira em vez de um domínio - o gatilho de maior alavancagem e o mais propenso a bloquear demais.
+- **O endereço do próprio cliente**, para que a política mude conforme quem pergunta.
+
+E as ações disponíveis:
+
+- **NXDOMAIN**, afirmando que o nome não existe.
+- **NODATA**, afirmando que existe, sem registros daquele tipo.
+- **Redirecionamento para um jardim murado**, a única ação capaz de dizer ao usuário o que aconteceu.
+- **DROP**, sem resposta nenhuma, o que para o cliente parece rede quebrada.
+- **PASSTHRU**, uma liberação explícita que sobrepõe uma regra mais ampla - o mecanismo que torna as exceções administráveis.
+
+A escolha entre elas é decisão de experiência do usuário disfarçada de técnica. O NXDOMAIN é honesto com o protocolo e silencioso com a pessoa, que vê uma falha inexplicável e liga para a central de serviços. Uma página de bloqueio custa infraestrutura e evita essa ligação, e também quebra tudo que não seja navegador.
+
+## Onde isso deixa de funcionar
+
+**DNS cifrado.** Um dispositivo usando DNS sobre HTTPS até um resolvedor público nunca pergunta nada ao seu resolvedor, então a política não é aplicada. É esse o fato operacional central do bloqueio por resolvedor hoje, e as respostas são todas imperfeitas: bloquear os pontos conhecidos, usar política de plataforma para desligar o recurso, ou aceitar que o controle agora vale só para dispositivos gerenciados.
+
+**Resolvedores fixos no código.** Appliances e aplicações que já vêm com endereço de resolvedor público ignoram o que a rede entrega, a menos que a rede intercepte a porta 53 de vez.
+
+**O bloqueio não é a proteção.** Um nome recusado não remove malware de um host; remove uma das saídas dele. Tratar a contagem de bloqueios como métrica de segurança mede com que frequência algo já estava errado.
+
+**Bloquear demais tem forma conhecida.** Dispare pelo servidor de nomes e você derruba todos os clientes daquele provedor de hospedagem, inclusive os legítimos. É a falha que transforma um controle de segurança em incidente de disponibilidade, e a razão de o PASSTHRU existir.
+
+## O ecossistema, por categoria
+
+- **Software de resolvedor** - BIND, Unbound, PowerDNS e Knot, em que o RPZ é recurso do resolvedor que você já opera.
+- **Filtragem comercial de DNS** - Cisco Umbrella, Cloudflare Gateway, DNSFilter, Zscaler e outros, vendidos como resolvedor gerenciado com feed classificado e relatórios anexados.
+- **Feeds de reputação e de ameaça**, incluindo as listas de linhagem de e-mail, como a Spamhaus, e os feeds categorizados de web que os fabricantes licenciam uns dos outros com mais frequência do que os clientes imaginam - e é por isso que dois produtos costumam concordar, e também errar do mesmo jeito.
+- **Resolvedores públicos com política** - as variantes filtradas operadas por grandes provedores, que põem o mesmo controle na mão de uma casa, e não de uma empresa.
+
+A pergunta de compra não é o tamanho do feed. É **com que rapidez um falso positivo pode ser revertido**, porque é esse número que decide se a equipe confia no controle o bastante para deixá-lo aplicando.
 
 ## O que levar daqui
 

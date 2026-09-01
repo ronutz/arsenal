@@ -11,6 +11,18 @@ status: reviewed
 updated: "2026-08-11"
 ---
 
+## Origins: blocking arrived at the resolver by accident
+
+Resolver-based blocking began as spam defence. The first widely used lists were **DNS blocklists** in the literal sense: the mail server queried a specially formatted name, and an answer meant the address was listed. The technique dates to the mid-1990s work that became the MAPS Realtime Blackhole List, and its shape was chosen for one reason — every mail server already spoke DNS, so a list distributed as DNS needed no new software anywhere.
+
+Two lineages grew from that:
+
+**Reputation lists queried at message time**, still the backbone of mail filtering.
+
+**Recursive resolver policy**, where the resolver answering a client's ordinary lookups is also the place where a name can be refused. **Response Policy Zones** were introduced in 2010 by Paul Vixie and Vernon Schryver, and the design decision that made them spread was the same one that made the original lists spread: **the policy is shipped as an ordinary DNS zone**, so it transfers, refreshes and scales using machinery every operator already runs.
+
+The uncomfortable inheritance is that both are censorship mechanisms whose legitimacy comes entirely from who operates them and why. The same zone transfer that blocks a phishing domain for a company's own staff is, in another jurisdiction, how a government blocks a news site — which is why this technique appears in the article on [internet shutdowns](/learn/internet-shutdowns-and-kill-switches) as well as in this one.
+
 ## Why the resolver is where blocking is cheapest
 
 Every connection to a named host begins with a lookup, so a resolver sits **before** the traffic exists. Refusing there costs one query and stops the connection from being attempted at all — no session to inspect, no certificate to intercept, no port to match, and it works identically for a protocol nobody has written a parser for.
@@ -42,6 +54,44 @@ Two things about ratings are worth holding onto.
 **A block that never fires.** A device using its own resolver, or DNS over HTTPS to a service of its choosing, never asks the resolver that holds the policy. The dashboard shows a filter working perfectly on the queries it received, and the queries it never received are not on any chart.
 
 **Both failures are silent, and they fail in opposite directions** — one blocks something and looks like an outage, the other blocks nothing and looks like success.
+
+## What the policy can actually say
+
+An RPZ rule can trigger on more than the queried name, and the trigger types are the useful part:
+
+- **The queried name** itself, the common case.
+- **The answer's address**, so a name resolving into a known-bad network is caught even if the name is new.
+- **The nameserver's name or address**, which catches a whole hosting operation rather than one domain — the highest-leverage trigger and the one most likely to over-block.
+- **The client's own address**, so policy differs by who is asking.
+
+And the actions available:
+
+- **NXDOMAIN**, claiming the name does not exist.
+- **NODATA**, claiming it exists with no records of that type.
+- **Redirect to a walled garden**, which is the only action that can tell the user what happened.
+- **DROP**, answering nothing at all, which looks to the client like a broken network.
+- **PASSTHRU**, an explicit allow that overrides a broader rule — the mechanism that makes exceptions manageable.
+
+The choice between them is a user-experience decision disguised as a technical one. NXDOMAIN is honest to the protocol and silent to the person, who sees an inexplicable failure and calls the service desk. A redirect page costs infrastructure and stops that call, and it also breaks anything that is not a browser.
+
+## Where it stops working
+
+**Encrypted DNS.** A device using DNS over HTTPS to a public resolver never asks your resolver anything, so the policy is not applied. This is the central operational fact about resolver blocking today, and the responses to it are all imperfect: block the known endpoints, use platform policy to disable it, or accept that the control now applies only to managed devices.
+
+**Hard-coded resolvers.** Appliances and applications that ship with a public resolver address ignore what the network hands them unless the network intercepts port 53 outright.
+
+**The block is not the protection.** A refused name does not remove malware from a host; it removes one of its routes out. Treating the block count as a security metric measures how often something was already wrong.
+
+**Over-blocking has a shape.** Trigger on a nameserver and you take out every customer of that hosting provider, including the legitimate ones. This is the failure that turns a security control into an availability incident, and the reason PASSTHRU exists.
+
+## The ecosystem, by category
+
+- **Resolver software** — BIND, Unbound, PowerDNS and Knot, where RPZ is a feature of the resolver you already run.
+- **Commercial DNS filtering** — Cisco Umbrella, Cloudflare Gateway, DNSFilter, Zscaler and others, sold as a managed resolver with a rated feed and reporting attached.
+- **Reputation and threat feeds**, including the mail-lineage lists such as Spamhaus, and the categorised web feeds that vendors license to each other more often than customers realise — which is why two products frequently agree, and why they are also frequently wrong in the same way.
+- **Public resolvers with policy** — the filtered variants operated by large providers, which put the same control in the hands of a household rather than an enterprise.
+
+The buying question is not the size of the feed. It is **how fast a false positive can be reversed**, because that is the number that decides whether the team trusts the control enough to leave it enforcing.
 
 ## What to take away
 

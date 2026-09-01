@@ -101,6 +101,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_curl_command_builder",
     "tag": "HTTP & web"
   },
+  "curl-command-explainer": {
+    "url": "https://ronutz.com/api/v1/curl-command-explainer",
+    "method": "GET",
+    "op": "run_curl_command_explainer",
+    "tag": "HTTP & web"
+  },
   "cvss-vector-decoder": {
     "url": "https://ronutz.com/api/v1/cvss-vector-decoder",
     "method": "GET",

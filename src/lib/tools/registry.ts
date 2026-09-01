@@ -125,7 +125,8 @@ import { run as f5AwafDiffRun } from "./f5-awaf-policy-diff";
 import { run as hashRun } from "./hash";
 import { run as hmacRun } from "./hmac";
 import { run as curlCommandBuilderRun } from "./curl-command-builder";
-import { run as httpRequestTranslatorRun } from "./http-request-translator";
+import { run as httpRequestTranslatorRun } from "./curl-command-explainer";
+import { run as rawRequestTranslatorRun } from "./http-request-translator";
 import { run as ipv6Run } from "./ipv6";
 import { run as irulesEventOrderRun } from "./f5-irules-event-order";
 import { run as jsonFormatterRun } from "./json-formatter";
@@ -282,7 +283,8 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "hash", run: hashRun },
   { slug: "curl-command-builder", structured: true, run: (input) => curlCommandBuilderRun(JSON.parse(input)) },
   { slug: "hmac", structured: true, run: (input) => hmacRun(JSON.parse(input)) },
-  { slug: "http-request-translator", run: httpRequestTranslatorRun },
+  { slug: "curl-command-explainer", run: httpRequestTranslatorRun },
+  { slug: "http-request-translator", run: rawRequestTranslatorRun },
   { slug: "ipv6", run: ipv6Run },
   { slug: "f5-irules-event-order", run: irulesEventOrderRun },
   { slug: "json-formatter", run: jsonFormatterRun },

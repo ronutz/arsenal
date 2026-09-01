@@ -2530,9 +2530,9 @@
       "example": "Example",
       "clear": "Clear"
     },
-    "http-request-translator": {
-      "name": "HTTP request translator",
-      "blurb": "Paste a curl command and get it explained flag by flag, then translated to fetch, a raw HTTP request, HTTPie, and Python requests. Local and offline; the command is decoded in your browser and nothing is sent or run.",
+    "curl-command-explainer": {
+      "name": "curl command explainer",
+      "blurb": "Paste a curl command and get it explained flag by flag, then translated to fetch, a raw HTTP request, HTTPie and Python. Nothing is sent and no request is run.",
       "input": "curl command",
       "example": "Load example",
       "clear": "Clear",
@@ -6855,7 +6855,42 @@
       "shared": "What they have in common",
       "backToProfile": "Back to the single profile"
     },
-    "whoUsesThis": "Who uses this"
+    "whoUsesThis": "Who uses this",
+    "http-request-translator": {
+      "name": "HTTP request translator",
+      "blurb": "Paste a raw HTTP/1.1 request and get the equivalent curl, fetch, HTTPie, Python and PowerShell. Nothing is sent and no request is run.",
+      "input": "Raw HTTP request",
+      "example": "Load example",
+      "clear": "Clear",
+      "copy": "Copy",
+      "copied": "Copied",
+      "privacy": "Parsed in your browser. The request is never sent, and nothing leaves the page.",
+      "headers": "Headers",
+      "translations": "Translations",
+      "out": {
+        "curl": "curl",
+        "fetch": "fetch (JavaScript)",
+        "httpie": "HTTPie",
+        "python": "Python requests",
+        "powershell": "PowerShell"
+      },
+      "err": {
+        "notARequest": "That does not start with a request line. A request begins with a method, a target and a version - for example: GET /users HTTP/1.1"
+      },
+      "warn": {
+        "empty": "Nothing to parse yet.",
+        "not-a-request-line": "The first line is not a request line.",
+        "unknown-method": "That method is not one of the standard ones. It may still be valid for the server that answers it.",
+        "odd-version": "The version token does not look like HTTP/1.1.",
+        "header-without-colon": "A header line had no colon and was skipped.",
+        "no-host": "There is no Host header, so the absolute URL had to be guessed. Origin-form requests need one.",
+        "content-length-mismatch": "Content-Length does not match the body length. Servers and proxies may disagree about where this message ends.",
+        "chunked-body": "The body is chunked. It is passed through as pasted rather than decoded.",
+        "cleartext": "This request is plain http, so headers and body travel in the clear.",
+        "carries-authorization": "This request carries an Authorization header. Treat the paste as a credential.",
+        "carries-cookie": "This request carries a Cookie header, which is usually a live session."
+      }
+    }
   },
   "privacy_page": {
     "eyebrow": "Privacy",
@@ -7983,7 +8018,13 @@
     "portalPracticeCount": "{count} published",
     "portalRoles": "The Roles",
     "portalRolesLede": "The positions this industry is made of, grouped by the path a product takes. Who makes it, moves it, sells it, deploys it, runs it, supports it, defends it and teaches it.",
-    "portalRolesCount": "{count} positions"
+    "portalRolesCount": "{count} positions",
+    "portalIndustry": "The industry, in profiles",
+    "portalIndustryLede": "Who built the networking and security industry, what happened to them, and which company the one you use today used to be. Written profiles, a lineage timeline, and the acquisitions that renamed everything.",
+    "portalCompanies": "{count} companies",
+    "portalPeople": "People",
+    "portalPeopleLede": "The individuals behind the tools, the conferences and the networks — including the ones who built Brazil's.",
+    "portalPeopleCount": "{count} people"
   },
   "meetingBingo": {
     "metaTitle": "Meeting Bingo",
@@ -15942,6 +15983,154 @@
       "capwap": {
         "def": "The standardised protocol between a wireless controller and its access points, carrying configuration, radio management and, optionally, the client data traffic itself.",
         "context": "The architectural decision it exposes is where user traffic goes. Tunnelling everything back to the controller makes policy and mobility simple and turns the controller into a bandwidth bottleneck and a single point of failure; local switching keeps traffic at the edge and pushes policy enforcement out with it. Neither is wrong, and the choice should be made deliberately rather than inherited from a default - particularly in branch sites, where a tunnelled design means a broken uplink stops local traffic that never needed to leave the building."
+      },
+      "vint-cerf": {
+        "def": "The co-designer, with Bob Kahn, of TCP/IP - the protocols that turned separate networks into one internet - and joint recipient of the 2004 Turing Award for the work.",
+        "context": "Cerf and Kahn did not invent a network; they invented the agreement that lets networks that were never designed for each other exchange packets, which is why the citation reads for internetworking rather than for a protocol. Born in New Haven in June 1943, Cerf has had a hearing impairment since early life and has attributed part of his interest in networking to its promise as another channel for people who cannot use a telephone easily - a detail worth keeping, because the most consequential communications protocol of the century was partly motivated by someone who found the existing one hard to use. He has spent the decades since as the most public advocate the internet has, which is a job nobody appointed him to."
+      },
+      "bob-kahn": {
+        "def": "The co-designer of TCP/IP with Vint Cerf, and the 2004 Turing Award co-recipient, cited for the design and implementation of the internet's basic communications protocols.",
+        "context": "The Turing citation is specific about what the pair actually did: they formulated the design principles of internetworking, specified TCP/IP against those requirements, prototyped it, and coordinated the early implementations. That last verb matters more than it looks. A protocol that one team implements is a program; a protocol several teams implement compatibly is a standard, and getting there is coordination work rather than design work. Kahn's later decades went into the institutions around the technology rather than the technology itself, which is the less celebrated half of why any of it still functions."
+      },
+      "bob-metcalfe": {
+        "def": "The inventor of Ethernet, at Xerox PARC in 1973, and recipient of the 2022 Turing Award for its invention, standardization and commercialization.",
+        "context": "The 1973 memo described a broadcast communication network for connecting PARC's Alto computers, and the first Ethernet ran at 2.94 Mbps - roughly ten thousand times faster than the terminal networks it replaced. The word that mattered was in the name: Metcalfe wrote of communication over an ether, which left the medium unspecified and is why the same design later survived twisted pair, fibre and radio. David Boggs, who died in 2022, co-invented it and co-authored the 1976 paper. The third word in the citation is the one engineers skip: after leaving Xerox, Metcalfe drove DEC, Intel and Xerox to a shared 10 Mbps specification rather than keeping it."
+      },
+      "radia-perlman": {
+        "def": "The engineer who invented the spanning tree algorithm at Digital in the 1980s, making bridged Ethernet survivable, and who wrote the algorithm's poem.",
+        "context": "Her 1985 paper let bridges of arbitrary topology agree on a loop-free tree without a central authority, and the IEEE standardised it in 802.1D in 1990. Every switched network since has run a descendant. She wrote the specification with a poem attached, Algorhyme, whose first lines answer Joyce Kilmer: I think that I shall never see a graph more lovely than a tree. She also did the link-state work behind IS-IS. The nickname she is given, mother of the internet, obscures the actual contribution: not that she connected things, but that she made a redundant network safe to build, which is a different and harder problem."
+      },
+      "jon-postel": {
+        "def": "The RFC Editor from 1969 until his death in 1998, author or editor of the RFCs that define IP, ICMP and TCP, and the first director of IANA - a job he volunteered for and at first did by hand.",
+        "context": "For almost three decades one person shepherded the documents that define the internet, and the numbering authority that keeps addresses and protocol parameters unique began as him keeping a list. That is the part worth sitting with: the global registry now argued over by governments started as a volunteer's clerical habit. His most quoted line, from the 1980 IP specification, is the robustness principle - be conservative in what you send, liberal in what you accept - which shaped protocol design for forty years and has since been argued against from inside the IAB, on the grounds that tolerated errors become entrenched and eventually become the specification."
+      },
+      "paul-vixie": {
+        "def": "The engineer behind BIND and much of the operational practice around DNS, founder of the Internet Systems Consortium, author of Vixie cron, and creator of the first successful commercial anti-spam service.",
+        "context": "Born in 1963, he has spent a career on the parts of the internet that only get attention when they break. BIND is the name server most of the internet ran on; Vixie cron is on nearly every Unix system alive; and the anti-spam reputation lists he built established the pattern - a list distributed as DNS, so it needed no new software anywhere - that later produced response policy zones, which he specified with Vernon Schryver in 2010. The through-line is the same each time: put the new capability inside machinery operators already run, because the adoption problem is harder than the design problem."
+      },
+      "grace-hopper": {
+        "def": "The mathematician and US Navy rear admiral who built one of the first compilers, coined the word, and drove the English-language programming that became COBOL.",
+        "context": "Born in 1906, she joined the Naval Reserve in 1943 and was assigned to Harvard's Mark I, then wrote the first computer manual in 1946 - the first extensive treatment anywhere of how to program a machine. At Eckert-Mauchly from 1949 she designed a compiler and named the category; her 1957 division produced Flow-Matic, the first English-language data-processing compiler, which is the direct ancestor of COBOL. The argument she had to win was not technical but cultural: that a machine could usefully translate words into instructions, and that programmers need not be mathematicians. She retired from the Navy in 1966, was recalled in 1967, and retired again in 1986 as the oldest officer on active US naval duty, aged 79."
+      },
+      "dan-kaminsky": {
+        "def": "The researcher who found the 2008 DNS cache-poisoning flaw that affected every resolver at once, and then coordinated the simultaneous multi-vendor patch rather than publishing it.",
+        "context": "The weakness was in the protocol, not in one product: DNS matched answers to questions using a 16-bit query identifier, and he showed how to win that race reliably. What makes the episode a landmark is the handling. He was 29, working as a penetration tester, and he took the finding to competing vendors, who shipped a coordinated patch on 8 July 2008 - a month before he presented the detail at Black Hat. Source-port randomisation was the mitigation; DNSSEC was always the real answer. The uncomfortable footnote is that the fix had been proposed years earlier and not adopted, and that patched resolvers were shown to be poisonable in hours. He died in 2021."
+      },
+      "alessandro-volta": {
+        "def": "The physicist whose 1800 pile - stacked zinc and copper discs separated by brine-soaked cloth - produced the first steady electric current.",
+        "context": "Static electricity had been known for centuries and was useless for communication: a discharge is an event, not a signal. The pile gave a current that keeps flowing, and only then is there something to modulate, switch or send. Everything on this timeline after him depends on that one change of kind, from a spark to a supply. His name became the unit, which is a rarer honour than a prize."
+      },
+      "hans-christian-orsted": {
+        "def": "The Danish physicist who observed in 1820 that a current-carrying wire deflects a compass needle, showing electricity and magnetism to be one phenomenon.",
+        "context": "Every motor, every transformer and every read head over a disk platter is this observation applied on purpose. So is every signal induced onto the wrong pair in a cable bundle: crosstalk is Ørsted's experiment happening when nobody asked for it. Cable design has spent two centuries arranging conductors so that his effect helps rather than interferes."
+      },
+      "michael-faraday": {
+        "def": "The experimenter who showed in 1831 that a changing magnetic field induces a current - the reciprocal of Ørsted, and the basis of generation and of every inductive coupling problem since.",
+        "context": "It is also, directly, why twisted pair works. Twist the two conductors and the interference induced into each is roughly equal; the receiver reads the difference between them, and the difference is largely clean. A cabling standard is Faraday's law turned into a manufacturing tolerance. He had almost no formal mathematics, which did not stop him from being right, and Maxwell spent the next three decades writing his results down as equations."
+      },
+      "james-clerk-maxwell": {
+        "def": "The theorist whose 1865 equations described electricity, magnetism and light as one field, and predicted that electromagnetic waves travel at the speed of light.",
+        "context": "The order matters: the prediction came two decades before anyone demonstrated it. Radio existed on paper long before it existed in a laboratory, which is worth remembering whenever a standard is dismissed for having no implementations yet. Every wireless specification is an engineering treatment of this result, and propagation, attenuation and antenna design are applied Maxwell whether the engineer knows it or not."
+      },
+      "heinrich-hertz": {
+        "def": "The physicist who in 1887 built a spark-gap transmitter and a loop receiver and demonstrated the waves Maxwell had predicted, turning radio from mathematics into an engineering problem.",
+        "context": "He reportedly saw no use for the result, which is the most useful thing about the story: the distance between a demonstration and an application is not a measure of the demonstration. Within fifteen years the same effect was carrying messages across the Atlantic commercially. His name is the unit every spectrum plan, channel width and clock rate is quoted in."
+      },
+      "claude-shannon": {
+        "def": "The author of the 1948 paper that founded information theory, and, a decade earlier, of the thesis showing that Boolean algebra describes switching circuits.",
+        "context": "Two contributions, either of which would have been a career. The 1937 thesis made digital logic a design discipline rather than a craft. The 1948 paper defined information as a measurable quantity and gave the ceiling on what any channel can carry given its bandwidth and noise - which is why capacity planning is arithmetic rather than opinion, and why every claim about a faster link eventually meets a number Shannon wrote down. Compression, error correction and modulation are all consequences."
+      },
+      "alan-turing": {
+        "def": "The mathematician whose 1936 paper defined what computation is, and what no machine can compute - the boundary every computer since has been built inside.",
+        "context": "The paper was about the limits, not the possibilities: he described a machine in order to prove that some questions have no algorithmic answer. That the description turned out to be a blueprint is one of the field's larger accidents. His wartime cryptanalysis is better known publicly and less foundational technically, and the treatment he received afterwards is part of the record too."
+      },
+      "george-boole": {
+        "def": "The mathematician who in 1854 built an algebra of logic, ninety years before anyone had a machine to run it on.",
+        "context": "He was describing reasoning, not circuits. The connection was made by Shannon in 1937, and the gap between the two is the point: a piece of pure mathematics sat unused for three generations and then turned out to be the exact description of how switches behave. Every conditional, every access-control rule and every packet filter is his algebra with an implementation."
+      },
+      "john-von-neumann": {
+        "def": "The mathematician whose 1945 EDVAC draft set out the stored-program architecture - instructions held in the same memory as data - that almost every computer still follows.",
+        "context": "The draft circulated with his name alone on it, which is why the architecture carries it; the EDVAC group's work is in there too, and the attribution has been argued over ever since. The design decision that matters is the one people forget is a decision: code and data share a memory, which is what makes software possible and what makes buffer overflows possible, and the same property does both."
+      },
+      "guglielmo-marconi": {
+        "def": "The engineer and entrepreneur who turned Hertz's laboratory effect into a transatlantic service, claiming reception of a signal across the Atlantic in 1901.",
+        "context": "His technical contribution is contested and his commercial one is not: he built the company, the shore stations and the ship contracts that made wireless a business rather than a demonstration. The pattern is familiar to anyone who has watched a standard win - the person who makes something deployable is frequently not the person who made it work. The claim about the 1901 signal has been questioned on physical grounds ever since, which the record should carry rather than smooth over."
+      },
+      "tim-berners-lee": {
+        "def": "The author of the 1989 CERN proposal that became the World Wide Web, and of the first browser, server and page - and the 2016 Turing Award recipient for it.",
+        "context": "He wrote three things that had to exist together for any of them to be useful: an addressing scheme, a transfer protocol and a markup language. The decision with the longest consequences was not technical: CERN put the specification into the public domain in 1993, and the web spread because nobody had to ask permission or pay a licence. Compare any contemporary networked hypertext system that did neither, and the difference in outcome is almost entirely that."
+      },
+      "gordon-moore": {
+        "def": "The Fairchild and later Intel co-founder whose 1965 article observed that the number of components per integrated circuit was doubling on a regular cadence.",
+        "context": "It was an observation about economics with a horizon of about a decade, and it became a planning assumption for fifty years - and then, quietly, an industry roadmap that vendors organised themselves to meet, which is a different thing from a law of nature. The useful reading for anyone sizing infrastructure is that the curve was always about cost per transistor rather than speed, and that the two stopped moving together long before anyone announced it."
+      },
+      "whitfield-diffie": {
+        "def": "Co-author, with Martin Hellman, of the 1976 paper New Directions in Cryptography, which proposed public-key cryptography and digital signatures; joint recipient of the 2015 Turing Award.",
+        "context": "Before that paper, encryption assumed the two parties had already met, or that a courier had. The paper's move was to separate the key that locks from the key that unlocks, which makes it possible to communicate privately with a stranger - the requirement every subsequent commerce protocol rests on. It described the idea without a practical construction; three people at MIT supplied one the following year. He later spent decades arguing the policy side in public, testifying to both houses of the US Congress on cryptography."
+      },
+      "martin-hellman": {
+        "def": "Co-author of New Directions in Cryptography and of the key-exchange method that carries his name with Diffie's; joint recipient of the 2015 Turing Award.",
+        "context": "His citation is worth reading closely: it credits inventing AND promulgating, which is the pair of verbs this history keeps requiring. The exchange lets two parties agree a shared secret over a channel someone else is listening to, and it is still the thing happening at the start of a TLS session decades later - which is why forward secrecy is available at all. He spent much of his later career on nuclear risk rather than cryptography, which the record should mention rather than tidy away."
+      },
+      "ralph-merkle": {
+        "def": "The third name on the public-key patent with Diffie and Hellman, who arrived at the idea independently as a student, and the inventor of the hash tree that carries his name.",
+        "context": "His undergraduate project proposed a way for two parties to establish a secret in public, and was rejected by a reviewer who did not believe the problem was worth solving. The Kanellakis award in 1996 lists him with Diffie, Hellman, Rivest, Shamir and Adleman for the conception and first effective realisation of public-key cryptography. The tree structure he described later became the standard way to prove that one item belongs to a large set without shipping the set, which is why it turns up in certificate transparency, in backups and in ledgers."
+      },
+      "ron-rivest": {
+        "def": "The R in RSA: co-author of the 1977 paper that turned public-key cryptography from a proposal into something implementable, and joint recipient of the 2002 Turing Award.",
+        "context": "Diffie and Hellman had described what was needed and said plainly that they had no realistic way to build it. Rivest, with Shamir and Adleman at MIT, produced one within a year, and the trio founded RSA Data Security in 1982 - which is how the algorithm reached the products rather than the journals. The Turing citation is precise about the contribution: making public-key cryptography useful in practice. He also wrote the MD and RC families of algorithms, several of which the field later had to retire."
+      },
+      "adi-shamir": {
+        "def": "The S in RSA, joint recipient of the 2002 Turing Award, and the author of the secret-sharing scheme that splits a key so that any k of n holders can reconstruct it.",
+        "context": "The RSA work is what he is cited for, and the secret sharing may be the more widely deployed idea: it is how a root key can exist without any one person holding it, which is the arrangement used at the ceremonies that sign the DNS root. He also did foundational work on differential cryptanalysis, which is the other half of a cryptographer's job - the field advances as much by breaking constructions as by proposing them."
+      },
+      "leonard-adleman": {
+        "def": "The A in RSA and joint recipient of the 2002 Turing Award, later the founder of DNA computing.",
+        "context": "His role in the trio was largely to attack the constructions the other two proposed, which is how the surviving one earned confidence: the published algorithm is the one that outlasted its own co-author trying to break it. That division of labour - propose, attack, keep what survives - is the method the whole field runs on, and it is easier to describe than to practise inside a group of three people who have to agree on a paper afterwards."
+      },
+      "james-ellis": {
+        "def": "The GCHQ researcher who conceived non-secret encryption around 1969-70, several years before the public discovery of public-key cryptography, and could tell nobody.",
+        "context": "The idea existed inside a British intelligence agency and did nothing, because a classified insight changes no protocol, ships in no product and teaches no one. The comparison is the argument for open research stated as an experiment that actually ran: two groups had the same idea, one could publish and one could not, and the entire public-key infrastructure descends from the one that could. Recognition came only after declassification in the late 1990s, by which time he had died."
+      },
+      "clifford-cocks": {
+        "def": "The GCHQ mathematician who in 1973 worked out an implementation of Ellis's idea - equivalent in substance to what became RSA - four years before RSA was published.",
+        "context": "He is reported to have done it in an afternoon and then filed it, because there was nothing else to do with it. The work stayed secret until the late 1990s, so it influenced nothing: no standard cites it, no library implements it, and the industry that grew up around the same mathematics grew up entirely on the published version. The episode is the cleanest available answer to whether secrecy or publication produces more capability, and it is not close."
+      },
+      "paul-baran": {
+        "def": "The RAND engineer who designed the distributed network - no central switch, messages cut into blocks routed independently - in studies published from 1960 and collected in 1964 as On Distributed Communications.",
+        "context": "He was asked to find a way for communications to survive a nuclear attack, and the answer he reached was to remove the thing that could be destroyed: the centre. He described taking inspiration from a brain routing around damaged tissue. Two details are worth carrying. The idea was resisted by the telephone company's circuit-switching engineers, who regarded it as unworkable, so the network that replaced theirs was rejected by them first. And the survivability argument is why the internet has no master switch, which is the same property that makes it hard to shut down and hard to govern."
+      },
+      "donald-davies": {
+        "def": "The National Physical Laboratory scientist who arrived at the same idea independently in the mid-1960s, named it packet switching, and built a working network at NPL to prove it.",
+        "context": "Baran had the concept and Davies gave it the word, which is not a small contribution: the term packet is what let engineers, funders and standards bodies talk about the thing without arguing about what to call it. He also did what the theory needed - an actual node, running, at Teddington - and the ARPANET design took from both men, with the terminology coming from him and the resilience argument from Baran. Independent arrival at the same answer, on two continents, is the strongest evidence that the idea was ready rather than lucky."
+      },
+      "leonard-kleinrock": {
+        "def": "The queueing theorist whose early-1960s work on delay in networks of nodes underpinned ARPANET performance analysis, and whose UCLA laboratory hosted the first node.",
+        "context": "His mathematics is what lets anyone reason about waiting: how long a queue grows, what delay a given load produces, and why a link at ninety per cent utilisation behaves nothing like one at fifty. Every capacity conversation is downstream of it. His claim to have originated packet switching is disputed - by Baran, by Davies and by historians who note that the early reports address queueing and delay rather than message blocks - and the honest record keeps the dispute rather than resolving it in either direction."
+      },
+      "larry-roberts": {
+        "def": "The ARPA programme manager who decided in 1967 that the network would be packet switched, then funded, designed and managed it into existence.",
+        "context": "The decision is the contribution. Two people had proposed the technique and neither could deploy it; Roberts chose it over circuit switching, coordinated the contractors who built the hardware and the university that hosted the first node, and revised the design to take from both proposals rather than picking a camp. This is the role that rarely gets a monument: not the person who has the idea, and not the person who writes the code, but the one who selects among ideas and then carries the consequences of the choice."
+      },
+      "van-jacobson": {
+        "def": "The author of Congestion Avoidance and Control, the 1988 work that gave TCP the algorithms - slow start, congestion avoidance, fast retransmit - that stopped the internet collapsing under its own load.",
+        "context": "In the mid-1980s the network suffered congestion collapse: throughput between two sites fell by three orders of magnitude, because every sender responded to loss by retransmitting harder. His fix was to make each sender infer the state of a network it cannot see, from the only evidence it has - the timing and loss of its own packets - and to back off. That inference is still what every TCP connection does. It is also why a link can be busy while nothing feels fast, and why bufferbloat took decades to be recognised as the same problem wearing a different hat."
+      },
+      "nelson-murilo": {
+        "def": "The author of chkrootkit, the rootkit detector that has been part of the Unix security toolkit since the late 1990s, and one of the three founders of the ISTS podcast and the YSTS conference.",
+        "context": "Very few conference founders anywhere have their own code still installed on other people's servers decades later. chkrootkit is still being released - version 0.57 shipped in January 2023 - which is an unusual thing to be able to say about any security tool, let alone one written before the industry had a name for the category. He is also one of the three voices on the podcast that has been recording since 2006, and the event grew out of that rather than the other way round."
+      },
+      "luiz-eduardo-dos-santos": {
+        "def": "The founder whose idea the ISTS podcast was, and who spent months insisting the three of them record a pilot; co-founder of the YSTS conference that grew out of it.",
+        "context": "The detail worth keeping is the insistence. The three worked in information security, lived in different cities - he in a different country - and had an affinity for the subject that sometimes converged and sometimes did not. Nothing about that arrangement produces a podcast without somebody pushing, and he pushed for months. Nearly twenty years of continuous recording, and one of the most selective conferences in Latin America, exist because of that."
+      },
+      "nelson-brito": {
+        "def": "The creator of T50, the packet injection and stress-testing tool, and the only Brazilian to have presented at PH-Neutral in Berlin, in 2011.",
+        "context": "T50 is the kind of tool that gets used far beyond the people who know who wrote it, which is the usual fate of a good one. His research has been published under names like Permutation Oriented Programming and SQL Fingerprint, and his speaking record runs through the Brazilian circuit - IME, CNASI, CONIP, SERPRO, ITA, H2HC, BSides Sao Paulo and YSTS - as well as that one Berlin appearance, which is worth noting because PH-Neutral was small and did not hand out invitations widely."
+      },
+      "deviant-ollam": {
+        "def": "The physical security researcher and TOOOL member whose lockpicking talks put the discipline in front of network audiences that had never considered the door.",
+        "context": "At the fifth edition of YSTS, in May 2011, he opened the event with the basics of lockpicking and sold kits to the room afterwards - which is the whole argument in one gesture, since a lock is a control whose failure mode you can hold in your hand. Physical access defeats most of what the rest of a security programme buys: a server room door, a rack lock and a badge reader sit underneath every network control, and they are usually the least examined part of the estate."
       }
     },
     "totalCount": "{count} terms",
@@ -16245,11 +16434,7 @@
     "careerNote": "Two kinds of company appear here, and the markers tell them apart: the ones I was employed by, and the ones whose technology I worked with directly from the other side of the table. Chronological by first engagement, from 1996.",
     "careerStripTitle": "The chapters lived from inside",
     "careerStripNote": "In every one of these, employer or vendor, the work was the same shape: facing the end customer, in pre-sales and in post-sales technical support, and very often acting as the technical proxy and enablement facilitator for the partners who had to carry the product themselves. The job was to leave the customer with something that worked better than it did before — an innovation, a solution, an improvement they could keep running after I left. The full telling lives at the career record.",
-    "careerStripLink": "Read the career record",
-    "servedTitle": "Where the work landed",
-    "servedNote": "Organisations whose networks the work reached, delivered through the vendors, distributors, resellers and integrators I worked for between 1996 and 2020.",
-    "servedCustomersTitle": "End customers, through vendors and distributors",
-    "servedPartnersTitle": "Partners, through vendors and distributors"
+    "careerStripLink": "Read the career record"
   },
   "sitemap": {
     "metaTitle": "Sitemap - every section of ronutz.com",
@@ -19344,6 +19529,25 @@
           "Judgement about proportion, since a control programme that ignores cost is ignored in turn."
         ]
       }
+    }
+  },
+  "people": {
+    "title": "People",
+    "metaTitle": "People — the individuals behind the networks and the tools",
+    "metaDescription": "The people this site records: the ones who wrote the tools, founded the conferences, testified before senates, and built the Brazilian internet. Each links to their glossary entry.",
+    "lede": "The people the corpus records — the ones who wrote the tools everyone still runs, founded the conferences, went to prison, testified before senates, or connected a country. Each name links to its entry.",
+    "count": "{count} people",
+    "filterAll": "All",
+    "filterLabel": "Filter the timeline by strand",
+    "decade": "{decade}s",
+    "fields": {
+      "electricity": "Electricity and radio",
+      "computing": "Computing",
+      "internet": "The internet",
+      "crypto": "Cryptography",
+      "security": "Security",
+      "hacker-culture": "Hacker culture",
+      "brazil": "Brazil"
     }
   }
 }

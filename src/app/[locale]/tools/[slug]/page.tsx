@@ -341,8 +341,10 @@ import BigipTcpdumpBuilderTool from "@/components/BigipTcpdumpBuilderTool";
 import { manifest as tcpdumpManifest } from "@/lib/tools/f5-bigip-tcpdump-builder";
 import CvssVectorDecoderTool from "@/components/CvssVectorDecoderTool";
 import { manifest as cvssManifest } from "@/lib/tools/cvss-vector-decoder";
+import CurlCommandExplainerTool from "@/components/CurlCommandExplainerTool";
 import HttpRequestTranslatorTool from "@/components/HttpRequestTranslatorTool";
-import { manifest as curlManifest } from "@/lib/tools/http-request-translator";
+import { manifest as curlManifest } from "@/lib/tools/curl-command-explainer";
+import { manifest as reqTransManifest } from "@/lib/tools/http-request-translator";
 import { manifest as curlbManifest } from "@/lib/tools/curl-command-builder";
 import CurlCommandBuilderTool from "@/components/CurlCommandBuilderTool";
 import HashPreimageFinderTool from "@/components/HashPreimageFinderTool";
@@ -767,9 +769,13 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: CurlCommandBuilderTool,
     sources: curlbManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "curl-command-explainer": {
+    Component: CurlCommandExplainerTool,
+    sources: curlManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
   "http-request-translator": {
     Component: HttpRequestTranslatorTool,
-    sources: curlManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+    sources: reqTransManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "hash-preimage-finder": {
     Component: HashPreimageFinderTool,

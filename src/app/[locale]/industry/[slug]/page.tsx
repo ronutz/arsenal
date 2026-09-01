@@ -511,7 +511,24 @@ export default async function PartnerVendorPage({
                   instruct - moves to the tag row, where more than one can be
                   true at once. */}
               <p className="vendor-years mono">{tp("lineageEyebrow")}</p>
-              <VendorTags reduPartner={isRedu} reduLabel={tp("reduPill")} />
+              {/* The engagement marker was already on the index card and
+                  missing here, so a reader who arrived straight at a company
+                  page saw no relationship at all (PRIME, 2026-09-01). The
+                  component has always supported it; the page never passed it. */}
+              <VendorTags
+                reduPartner={isRedu}
+                reduLabel={tp("reduPill")}
+                workedWith={
+                  vendor.relationships?.includes("worked-with-directly") ||
+                  vendor.relationships?.includes("worked-inside") ||
+                  false
+                }
+                workedWithLabel={
+                  vendor.relationships?.includes("worked-inside")
+                    ? tp("careerPill")
+                    : tp("workedWithPill")
+                }
+              />
               <h1 className="vendor-name">{vendor.name}</h1>
               <p className="vendor-tagline">{vendor.tagline}</p>
             </div>

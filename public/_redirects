@@ -419,3 +419,10 @@
 /:locale/about/vendors/anthropic/  /:locale/industry/anthropic/  301
 /:locale/about/vendors/google-search/  /:locale/industry/google-search/  301
 /:locale/about/vendors/sixdegrees/  /:locale/industry/sixdegrees/  301
+
+# Tool renamed 2026-09-01: the old http-request-translator explained curl and
+# never translated an HTTP request, so it became curl-command-explainer. NO
+# REDIRECT is kept from the old path, because a real HTTP request translator now
+# lives there - the freed name was taken by the tool the name describes. The
+# redirect existed for one day and check-redirect-shadowing caught it the moment
+# the new page appeared, which is exactly the case that guard was written for.

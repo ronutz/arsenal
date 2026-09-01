@@ -1,0 +1,72 @@
+---
+slug: security-through-obscurity
+title: "Segurança por obscuridade: o que Kerckhoffs de fato disse"
+summary: "A máxima é citada como proibição de esconder qualquer coisa, o que não é o que ela diz nem o que o campo pratica. Kerckhoffs em 1883, e Saltzer e Schroeder em 1975, faziam uma afirmação mais estreita e mais afiada sobre de qual segredo um sistema pode depender. A história, a diferença entre um segredo e uma obscuridade, onde cada um é legítimo, e os sistemas que provaram o ponto ao serem quebrados assim que alguém olhou."
+concepts: ["cryptography", "design principles", "disclosure", "risk"]
+relatedTools: []
+relatedArticles: ["cipher-suite-anatomy", "aead-vs-cbc", "the-certificate-authority-chokepoint"]
+category: security
+order: 138
+status: reviewed
+updated: "2026-09-01"
+---
+
+## Origens: um manual militar, e não um slogan
+
+O princípio vem de **Auguste Kerckhoffs**, escrevendo em 1883 sobre cifras militares. Entre seis requisitos que enunciou, o que sobreviveu diz que um sistema não deve exigir sigilo, e precisa poder cair nas mãos do inimigo sem inconveniente.
+
+Lido com atenção, aquilo não é proibição de segredos. É uma afirmação sobre **qual** segredo sustenta a segurança. O desenho pode ser público; a **chave** é o que precisa ser privado. O raciocínio de Kerckhoffs era operacional, e não filosófico: uma cifra é usada por muitas pessoas, em campo, por anos. Pessoal muda e equipamento é capturado, então um sistema cuja segurança depende de ninguém descobrir como ele funciona tem uma segurança que vence na primeira vez que ele é perdido.
+
+**Claude Shannon** depois comprimiu isso na forma que a maioria conhece: presuma que o inimigo conhece o sistema. Mesma afirmação, sem nenhuma suavização.
+
+Em 1975, **Saltzer e Schroeder** a inscreveram numa lista de princípios de projeto para proteção em sistemas computacionais, como **desenho aberto**: o mecanismo não deve depender da ignorância dos atacantes, e deve estar aberto a revisão. Puseram-na ao lado de padrões seguros por omissão, menor privilégio e economia de mecanismo, e o argumento deles acrescentou algo que Kerckhoffs não tinha - que um desenho público é examinado, e exame é como falhas são achadas antes da implantação, e não depois.
+
+## A distinção que o slogan perde
+
+Duas coisas são rotineiramente chamadas de obscuridade, e elas se comportam de forma diferente:
+
+**Uma dependência.** O sistema é seguro *porque* um atacante não sabe algo estrutural - o algoritmo, o protocolo, o desenho interno, o fato de existir uma interface de gerência. É isso que o princípio proíbe, e a razão é empírica, e não moral: esse conhecimento sempre vaza, por desmontagem, por gente de dentro, por documento de licitação, ou por alguém com uma chave de fenda e tempo.
+
+**Uma camada.** O sistema é seguro por outros motivos, e a obscuridade adicionalmente eleva o custo para atacantes oportunistas. Tirar o SSH da porta 22 remove quase todo o ruído automatizado dos logs. Não defende de ninguém que esteja de fato atacando você, e torna os logs legíveis, o que tem valor operacional real.
+
+A confusão entre as duas produz dois erros opostos. Uma equipe entrega um produto cuja segurança é um protocolo secreto e chama isso de defesa em profundidade. Outra recusa uma medida barata de redução de ruído porque um princípio mandou. **O teste é o que continua verdadeiro se a obscuridade for removida**: se a resposta for "nada", era dependência; se for "a mesma segurança, com mais ruído", era camada.
+
+## O registro: sistemas que dependeram disso
+
+O argumento está resolvido empiricamente, e os exemplos têm formato constante.
+
+- O **A5/1**, a cifra de voz do GSM, foi desenhado em segredo nos anos 1980, vazou e foi submetido a engenharia reversa nos anos 1990, e quebrado com ataques ao alcance de hardware comum.
+- O **CSS**, a proteção de conteúdo do DVD, manteve algoritmo e tratamento de chaves confidenciais; uma vez extraído, o esquema caiu em pouco tempo, e o esforço do sigilo comprou alguns anos.
+- O **MIFARE Classic**, largamente implantado em transporte e controle de acesso, usava cifra proprietária que foi recuperada do silício e mostrada fraca, e depois disso o parque implantado não podia simplesmente ser recolhido.
+- **Equipamentos de votação e de jogos**, em que várias jurisdições trataram o código-fonte como confidencial e descobriram, na revisão que enfim aconteceu, que a confidencialidade vinha substituindo a correção.
+
+O padrão é idêntico sempre: o segredo durou um tempo, sua revelação foi involuntária, e o custo da substituição caiu sobre o operador, e não sobre quem desenhou. Os sistemas não falharam por serem secretos; eles eram **fracos, e o sigilo adiou a descoberta** para o momento menos conveniente.
+
+## Onde esconder é legítimo
+
+O princípio é mais estreito que a fama dele, e o que segue não o viola:
+
+- **Chaves, credenciais, tokens e certificados.** O desenho inteiro pressupõe que sejam privados. Confundir chave com obscuridade é a leitura errada mais comum da máxima.
+- **Detalhe de configuração que seria útil a um atacante** - endereçamento interno, topologia, inventário de software. Publicar não ajuda ninguém a defender, e tratar isso como sensível não é dependência de segurança.
+- **Banners de versão e verbosidade de erro.** Suprimi-los evita identificação trivial e não elimina nada; mantenha a versão *corrigida*, e não apenas escondida.
+- **Portas fora do padrão, port knocking, autorização por pacote único.** Legítimos como elevadores de custo e redutores de ruído, ilegítimos como a razão de um serviço estar seguro.
+- **Não publicar uma vulnerabilidade sem correção enquanto o conserto é preparado.** Isso é coordenação, e não obscuridade - o desenho segue aberto, e o adiamento é limitado e acordado.
+
+## A discussão sobre divulgação é a mesma discussão
+
+Todo debate sobre divulgação de vulnerabilidade é este princípio aplicado a um defeito específico. A **divulgação completa** sustenta que publicar força o conserto e arma quem defende; a **não divulgação** protege usuários que ainda não podem corrigir e, na prática, protege fabricantes do constrangimento; a **divulgação coordenada** é o meio-termo em que o campo se acomodou, com prazo anexado, porque sem prazo a segunda posição engole a primeira.
+
+O prazo é a parte que sustenta o resto, e ele existe exatamente pelo que Kerckhoffs descreveu: presumir que só quem reportou sabe é inseguro, já que o mesmo defeito está ao alcance de qualquer outro que olhe.
+
+## O que levar disso
+
+**Enuncie o segredo.** Para qualquer sistema que você opere ou compre, nomeie aquilo cuja revelação o quebraria. Se a resposta for uma chave, o desenho é sólido. Se for um documento, um algoritmo ou a ausência de curiosidade, o desenho tem uma dependência que não consegue honrar.
+
+**Faça a mesma pergunta ao fabricante, direto.** "O que acontece com a segurança de vocês se um concorrente obtiver este firmware?" é pergunta justa, de resposta curta, e a qualidade da resposta informa, seja qual for o conteúdo.
+
+**Mantenha as obscuridades baratas e pare de defendê-las como segurança.** Porta fora do padrão e banner discreto valem a pena pela mesma razão que log limpo vale a pena, o que é argumento de manutenção, e não de segurança - e é bem mais fácil de defender nesses termos.
+
+## Fontes
+
+- [O princípio de Kerckhoffs, de La cryptographie militaire, 1883](https://en.wikipedia.org/wiki/Kerckhoffs%27s_principle)
+- [Saltzer e Schroeder, The Protection of Information in Computer Systems, 1975 - o princípio do desenho aberto](https://web.mit.edu/Saltzer/www/publications/protection/)

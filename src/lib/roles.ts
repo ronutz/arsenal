@@ -2560,7 +2560,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     adjacentRoles: ["technical-instructor", "product-manager", "instructional-designer", "community-manager"],
     practiceRoles: ["field", "design"],
     practiceArticles: ["feeding-the-fix-back", "problem-report-intake", "knowledge-capture-that-gets-found"],
-    relatedTools: ["curl-command-builder", "http-request-translator", "jwt"],
+    relatedTools: ["curl-command-builder", "curl-command-explainer", "jwt"],
     updated: "2026-08-15",
   },
 

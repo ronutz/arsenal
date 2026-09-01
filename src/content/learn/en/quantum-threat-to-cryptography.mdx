@@ -13,6 +13,25 @@ updated: "2026-07-06"
 
 The phrase "quantum computers will break encryption" is common and half wrong. A large, fault-tolerant quantum computer would break some of the cryptography the internet runs on completely, and leave the rest almost untouched. Knowing which is which is the whole basis of the migration now underway, so it is worth being precise.
 
+## Origins: the deadline was set by mathematics, then by procurement
+
+Peter Shor published his factoring algorithm in 1994, and the consequence was immediate on paper and remote in practice: a sufficiently large quantum computer would break RSA and elliptic-curve cryptography, because both rest on problems Shor's algorithm solves efficiently. Lov Grover's 1996 search algorithm gave a softer result — a quadratic speed-up against symmetric ciphers and hashes, which is answered by doubling key sizes rather than by replacing the algorithm.
+
+That split is the whole subject, and it is worth keeping straight because most confusion about "quantum breaking encryption" collapses it:
+
+- **Public-key cryptography** — RSA, Diffie-Hellman, elliptic curves — is broken, not weakened. Key exchange and signatures both.
+- **Symmetric cryptography and hashes** — AES, SHA-2, SHA-3 — are weakened predictably. AES-256 remains sound; AES-128 loses margin.
+
+What turned a theoretical result into a procurement deadline was **NIST's post-quantum standardisation**, run as an open competition from 2016. The first standards were published in **August 2024**: FIPS 203 for key encapsulation, based on the algorithm submitted as CRYSTALS-Kyber, and FIPS 204 and 205 for signatures. Standardisation is what makes a cryptographic transition possible at all — vendors do not ship what has no standard, and auditors do not accept what vendors do not ship.
+
+## Harvest now, decrypt later
+
+The reason this is urgent before the machine exists is a single sentence: **traffic captured today can be decrypted when the capability arrives.**
+
+That reframes the question from "when will quantum computers work" to "how long does this data need to stay secret". Anything with a confidentiality lifetime measured in decades — health records, state secrets, long-lived commercial agreements, and the private keys inside long-lived devices — is already exposed to an adversary willing to store ciphertext and wait.
+
+Signatures sit differently. A signature only needs to resist forgery while it is being relied upon, so the pressure there is about **certificate and firmware-signing lifetimes** rather than about past traffic. A device shipped today with a fifteen-year service life and a classical signing root is the harder problem, because nobody can rotate what is burned into hardware.
+
 ## Two algorithms, two very different effects
 
 The threat comes down to two quantum algorithms, and they do not do the same thing.
@@ -33,6 +52,27 @@ The natural response is that no such quantum computer exists yet, so this can wa
 
 Authentication is different in an important way. A signature only has to resist forgery up to the moment it is verified; you cannot forge a TLS handshake signature after the fact to break a session that already happened. So harvest-now-decrypt-later pressures confidentiality (key exchange) first and hardest, while signature migration, though necessary, is less of a race against recorded traffic. That difference is why key agreement moved first across the internet, and signatures are following.
 
-## A dose of humility: SIKE
+## What the transition actually looks like
 
-One more reason this migration is handled carefully rather than rushed. Among the candidates in the standardization process was SIKE, an isogeny-based key-exchange scheme prized for its very small keys. In 2022 it was broken by Castryck and Decru with a classical attack that recovered the key in about an hour on a single computer, no quantum machine involved. A scheme that had survived years of scrutiny collapsed abruptly once the right mathematical idea appeared. The lesson is not that the new algorithms are untrustworthy; it is that confidence in a young mathematical assumption can be wrong, and that is a strong argument for conservative choices, for keeping a backup based on entirely different math, and for the hybrid deployments that pair a new algorithm with a classical one rather than betting everything on the new one alone. Those are the subjects of the companion articles on the NIST standards and on hybrid key exchange in TLS.
+**Hybrid key exchange came first**, and it is already deployed: combine a classical curve with a lattice-based exchange so the session is safe unless *both* are broken. Browsers and large networks turned this on across 2024 and 2025, which makes it the fastest cryptographic transition the web has run — and it works precisely because it does not require trusting the new algorithm alone.
+
+**Signatures are slower**, because they touch certificate hierarchies, code signing, hardware roots and standards bodies that move at their own pace.
+
+**The practical constraints are unglamorous.** Post-quantum keys and signatures are larger, sometimes much larger, and that lands on handshake sizes, packets that no longer fit, embedded devices with fixed buffers, and protocols with field widths written when nobody expected a kilobyte-scale key. The [MTU](/learn/tunnel-overhead-mtu-and-mss) arithmetic is not a coincidence.
+
+**Crypto-agility is the real deliverable.** An estate that cannot answer where its algorithms are configured is not going to complete this transition, whatever it buys. The inventory question comes first: which systems, which libraries, which hard-coded assumptions, which vendors and which contracts.
+
+## A dose of humility, and why it belongs here
+
+**SIKE** was a candidate in the same NIST process, based on supersingular isogenies, and it was broken in 2022 — on a single classical computer, in about an hour, by mathematics unrelated to quantum computing. It had survived years of public analysis before that.
+
+This is the argument for hybrid deployment stated better than any risk assessment could: the new algorithms are young, the analysis is ongoing, and combining them with something well understood is not timidity but the correct engineering response to that uncertainty.
+
+## The landscape, by category
+
+- **Standards bodies** — NIST for the algorithms, with IETF working groups defining how they appear in TLS, SSH and certificates.
+- **National regulators**, which increasingly publish their own migration deadlines, and do not all agree on algorithms or on timing — a real problem for anyone operating across jurisdictions.
+- **Library implementers** — OpenSSL, BoringSSL, liboqs and the platform stacks, where the algorithm becomes something a product can actually call.
+- **Hardware and device vendors**, the slowest layer, and the one where the harvest-now problem is least fixable.
+
+The honest summary: the algorithms are chosen and standardised, hybrid key exchange is already carrying real traffic, and the difficult part is not cryptography but inventory — knowing where the old algorithms are, in an estate nobody documented for that question.

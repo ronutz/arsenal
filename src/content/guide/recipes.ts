@@ -139,7 +139,7 @@ export const GUIDE_RECIPES: GuideRecipe[] = [
   },
   {
     id: "reproduce-an-http-request",
-    toolIds: ["url-inspector", "http-request-translator"],
+    toolIds: ["url-inspector", "curl-command-explainer"],
   },
   {
     id: "identify-an-unknown-hash",

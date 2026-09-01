@@ -4,7 +4,7 @@
 // CURL COMMAND BUILDER - the pure, local engine. Takes a structured selection
 // (protocol + fields + options) and deterministically assembles the curl
 // command, one annotated part per flag, plus safety warnings. The inverse of
-// http-request-translator (which parses a pasted command).
+// curl-command-explainer (which parses a pasted command).
 //
 // Protocol facts are grounded in curl.se ("How To Use", man page) and
 // everything.curl.dev/protocols (retrieved 2026-07-07): curl currently speaks
