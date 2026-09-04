@@ -16845,6 +16845,22 @@
       "nvgre": {
         "def": "Network Virtualization using Generic Routing Encapsulation: a network virtualisation scheme carrying tenant traffic inside an existing tunnelling protocol.",
         "context": "It reused an encapsulation that already existed rather than defining a new one, which is a reasonable instinct and cost it the market: the field it used for load distribution was not one that existing hardware hashed on, so traffic did not spread across links the way operators expected. It is worth keeping in the record as a case where reusing a standard was the more conservative choice and the less successful one."
+      },
+      "ray-tomlinson": {
+        "def": "The BBN engineer who in 1971 made a message reach a person on a different machine, and picked the at sign to say which one.",
+        "context": "Nobody asked him to. A colleague's description is that it was not an assignment at all - he was fooling around, looking for something to do with the ARPANET - and he built it by grafting code from his own file transfer program onto a local messaging tool. The addressing convention he improvised in an afternoon has outlived every system designed to replace it, and the mailbox went on to become the recovery path for nearly every other account a person owns, which is a role no specification ever assigned it."
+      },
+      "robert-taylor": {
+        "def": "The research director who started the ARPANET in 1966 and then used his agency's budget leverage to conscript the man who built it.",
+        "context": "He wanted Larry Roberts to run the project and Roberts declined. Taylor then established that the Defense Department supplied fifty-one per cent of Lincoln Lab's funding, and asked the agency's director to inform the lab's director that sending Roberts would be in everyone's interest. Roberts, by his own account not particularly eager, was at the Pentagon within months. The most consequential networking project of the century began with a program manager who did not want the job, which is worth remembering against every account of invention driven purely by enthusiasm. Taylor's stated objective was plainer than the later mythology: to let people separated geographically discover and exploit common interests."
+      },
+      "howard-frank": {
+        "def": "The engineer who decided where the ARPANET's links should actually go, treating network shape as an optimisation problem.",
+        "context": "Somebody had to choose which sites connected to which, and how many links were enough to survive failures without paying for redundancy nobody needed. He came to that question from work on the survivability of national assets in wartime and from optimising pipeline networks, which is why the answer arrived as operations research rather than as engineering intuition. The topology of the first network was a calculation, and the discipline he founded - designing a network by analysing it before building it - is the one every capacity plan since has been an instance of."
+      },
+      "david-clark": {
+        "def": "The architect who put the internet's governing philosophy into one sentence in 1992: no kings, no presidents, no voting - rough consensus and running code.",
+        "context": "It is the most quoted line in internet governance and it is usually read as a slogan about openness. It is more useful read as a description of a decision procedure, and one with consequences this catalogue keeps recording: a system that advances by rough consensus and working implementations will adopt any improvement one party can deploy alone, and will stall on every improvement that requires everybody to agree at once. Secure routing, DNSSEC and email authentication all waited decades for exactly that reason. The sentence explains both why the internet could be built without permission and why parts of it cannot be repaired."
       }
     },
     "totalCount": "{count} terms",

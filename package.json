@@ -23,7 +23,7 @@
     "build:next": "next build",
     "build:search": "pagefind --site out",
     "build": "next build && pagefind --site out --glob \"{en,pt-BR}/**/*.html\" && tsx scripts/gen-machine-legible.mts && cp public/.assetsignore out/.assetsignore",
-    "postbuild": "node scripts/inject-hreflang.mjs && node scripts/check-hreflang-integrity.mjs && node scripts/check-internal-links.mjs && node scripts/check-redirect-shadowing.mjs && node scripts/check-red-education-links.mjs && node scripts/check-page-titles.mjs && node scripts/check-confidential-terms.mjs && node scripts/write-build-marker.mjs",
+    "postbuild": "node scripts/inject-hreflang.mjs && node scripts/check-hreflang-integrity.mjs && node scripts/check-internal-links.mjs && node scripts/check-redirect-shadowing.mjs && node scripts/check-red-education-links.mjs && node scripts/check-page-titles.mjs && node scripts/check-confidential-terms.mjs && node scripts/write-build-marker.mjs && node scripts/check-orphan-classes.mjs",
     "mark-verified": "node scripts/write-build-marker.mjs",
     "start": "next start",
     "lint": "next lint",

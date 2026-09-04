@@ -16845,6 +16845,22 @@
       "nvgre": {
         "def": "Virtualização de rede usando encapsulamento genérico de roteamento: esquema que carrega tráfego de inquilino dentro de um protocolo de túnel já existente.",
         "context": "Ele reaproveitou um encapsulamento que já existia em vez de definir um novo, instinto razoável que lhe custou o mercado: o campo usado para distribuir carga não era um dos que o hardware existente considerava no espalhamento, então o tráfego não se distribuía pelos enlaces como os operadores esperavam. Vale ficar no registro como caso em que reusar um padrão foi a escolha mais conservadora e a menos bem-sucedida."
+      },
+      "ray-tomlinson": {
+        "def": "O engenheiro da BBN que em 1971 fez uma mensagem alcançar uma pessoa em outra máquina, e escolheu a arroba para dizer qual.",
+        "context": "Ninguém pediu. A descrição de um colega é que aquilo não era tarefa nenhuma - ele estava brincando, procurando o que fazer com a ARPANET - e construiu enxertando código do próprio programa de transferência de arquivos numa ferramenta local de mensagens. A convenção de endereçamento que improvisou numa tarde sobreviveu a todo sistema desenhado para substituí-la, e a caixa postal veio a ser o caminho de recuperação de quase toda outra conta de uma pessoa, papel que especificação nenhuma lhe atribuiu."
+      },
+      "robert-taylor": {
+        "def": "O diretor de pesquisa que iniciou a ARPANET em 1966 e então usou a alavanca orçamentária da agência para recrutar à força quem a construiu.",
+        "context": "Ele queria Larry Roberts tocando o projeto, e Roberts recusou. Taylor então apurou que o Departamento de Defesa fornecia cinquenta e um por cento do financiamento do Lincoln Lab, e pediu ao diretor da agência que informasse ao diretor do laboratório que mandar Roberts seria do interesse de todos. Roberts, pelo relato dele mesmo pouco animado, estava no Pentágono em poucos meses. O projeto de redes mais consequente do século começou com um gerente de programa que não queria o cargo, o que vale lembrar contra todo relato de invenção movida apenas por entusiasmo. O objetivo declarado de Taylor era mais simples que a mitologia posterior: deixar pessoas separadas geograficamente descobrirem e explorarem interesses comuns."
+      },
+      "howard-frank": {
+        "def": "O engenheiro que decidiu por onde os enlaces da ARPANET deviam de fato passar, tratando a forma da rede como problema de otimização.",
+        "context": "Alguém tinha de escolher que sítios se conectavam a quais, e quantos enlaces bastavam para sobreviver a falhas sem pagar por redundância que ninguém precisava. Ele chegou a essa pergunta vindo de trabalho sobre sobrevivência de ativos nacionais em guerra e de otimização de redes de dutos, e é por isso que a resposta veio como pesquisa operacional, e não como intuição de engenharia. A topologia da primeira rede foi um cálculo, e a disciplina que ele fundou - projetar uma rede analisando-a antes de construí-la - é aquela de que todo plano de capacidade desde então é uma instância."
+      },
+      "david-clark": {
+        "def": "O arquiteto que pôs a filosofia de governo da internet numa frase, em 1992: sem reis, sem presidentes, sem votação - consenso aproximado e código que roda.",
+        "context": "É a frase mais citada da governança da internet e costuma ser lida como slogan sobre abertura. É mais útil lida como descrição de um procedimento de decisão, e com consequências que este catálogo não para de registrar: um sistema que avança por consenso aproximado e implementações que funcionam vai adotar qualquer melhoria que uma parte consiga implantar sozinha, e vai emperrar em toda melhoria que exija todo mundo concordando ao mesmo tempo. Roteamento seguro, DNSSEC e autenticação de correio esperaram décadas exatamente por isso. A frase explica tanto por que a internet pôde ser construída sem pedir permissão quanto por que partes dela não conseguem ser consertadas."
       }
     },
     "totalCount": "{count} termos",

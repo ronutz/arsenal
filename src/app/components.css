@@ -16395,6 +16395,31 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .people-chip[aria-pressed="true"] { border-color: var(--color-accent); color: var(--text-primary); }
 .people-chip[aria-pressed="false"] { opacity: 0.45; text-decoration: line-through; }
 .people-chip-count { color: var(--text-tertiary); margin-left: 0.35rem; }
+
+/* ---------------------------------------------------------------------------
+ * PER-FIELD CHIP TINTS (added 2026-09-04)
+ *
+ * WHY THESE EXIST: the people page renders one filter chip per personField and
+ * tags each with a `people-chip--<field>` modifier. The modifiers were emitted
+ * by the component from the day it shipped and never had a rule here, so every
+ * chip fell back to the neutral base and the filter row read as an undesigned
+ * list. Guard 44 (check-orphan-classes) now fails the build when a class we
+ * author appears in markup with no rule, so this cannot recur silently.
+ *
+ * Each tint borrows an existing semantic token rather than introducing new
+ * colour, so the six themes keep working without per-theme additions. The
+ * accent bar sits on the left edge: it reads as a category marker at a glance
+ * and disappears cleanly when the chip is deselected.
+ * ------------------------------------------------------------------------- */
+.people-chip--all { border-left: 3px solid var(--text-tertiary); }
+.people-chip--electricity { border-left: 3px solid var(--color-amber); }
+.people-chip--computing { border-left: 3px solid var(--color-accent); }
+.people-chip--internet { border-left: 3px solid var(--color-info, var(--color-accent)); }
+.people-chip--crypto { border-left: 3px solid var(--color-success, var(--color-accent)); }
+.people-chip--security { border-left: 3px solid var(--color-danger, var(--color-amber)); }
+.people-chip--hacker-culture { border-left: 3px solid var(--text-secondary); }
+.people-chip--brazil { border-left: 3px solid var(--color-success, var(--color-accent)); }
+
 .people-era { margin-bottom: 2.25rem; }
 .people-decade {
   font-family: var(--font-mono);
@@ -16410,4 +16435,77 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   font-size: 0.78rem;
   color: var(--text-tertiary);
   display: block;
+}
+
+/* ---------------------------------------------------------------------------
+ * ORPHAN-CLASS SWEEP (2026-09-04)
+ *
+ * Guard 44 found these emitted by components with no rule behind them. Each is
+ * given the smallest rule that makes the intended distinction visible, using
+ * existing semantic tokens so all six themes keep working untouched.
+ * ------------------------------------------------------------------------- */
+
+/* Milestones: the strand filter row above the timeline. Chips shared the
+ * people-chip idiom in the markup but under their own names. */
+.timeline-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.25rem 0 2rem;
+}
+.timeline-filter-pill {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  transition: background 0.12s, border-color 0.12s, opacity 0.12s;
+}
+.timeline-filter-pill[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  color: var(--text-primary);
+}
+.timeline-filter-pill[aria-pressed="false"] { opacity: 0.45; }
+
+/* Industry: the small uppercase label above a vendor section heading, and the
+ * per-year row inside a vendor timeline. */
+.vendor-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 0.35rem;
+}
+.vendor-timeline-row {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 0.9rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--border-subtle);
+  align-items: baseline;
+}
+
+/* Tools: the bordered container a tool's controls and output sit inside. It
+ * carried no rule at all, so every tool using it rendered as loose elements on
+ * the page background. */
+.tool-panel {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 1.1rem 1.15rem;
+  margin: 1rem 0;
+}
+
+/* Certifications: the renewal calculator embedded in a certification page. */
+.cert-renewal-tool {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1.25rem 0;
 }
