@@ -1,0 +1,96 @@
+---
+slug: firewall-family-history
+title: "O firewall: nascimento, gerações, e o que vem depois do perímetro"
+summary: "Ninguém inventou o firewall. Ele foi discutido até existir, ao longo de uns seis anos, por gente da Digital Equipment Corporation, do Bell Labs e da Trusted Information Systems que discordava de quase tudo, menos de que uma rede precisava de um lugar para dizer não. Esta é a história da família: o artigo de 1988, o primeiro produto entregue em 13 de junho de 1991, a patente de inspeção com estado que decidiu o mercado, o campo dos proxies que perdeu no desempenho e estava certo sobre inspeção, o appliance, o rótulo de próxima geração, e o que acontece com um equipamento de fronteira num parque que não tem mais fronteira."
+concepts: ["firewall", "packet filter", "stateful inspection", "proxy", "ngfw", "utm", "history"]
+relatedTools: []
+relatedArticles: ["ssl-forward-proxy-interception", "network-segmentation-from-vlans-to-microsegmentation", "security-versus-availability", "tcp-proxy-layer-4"]
+category: security
+order: 140
+status: reviewed
+updated: "2026-09-03"
+---
+
+Quase toda tecnologia deste catálogo tem um momento que alguém consegue apontar. O firewall não tem. Ele foi discutido até existir, ao longo de uns seis anos, por vários grupos que discordavam de quase tudo, menos de que uma rede precisava de um lugar onde a resposta pudesse ser não - e a discordância entre eles ainda é visível nos produtos vendidos hoje.
+
+## O nome chegou antes da coisa
+
+A palavra vem da construção civil, em que uma parede corta-fogo impede que o fogo se espalhe entre partes de uma estrutura. Sua primeira aparição em contexto de computação na cultura popular foi o filme *WarGames*, de 1983. Steven Bellovin costuma ser creditado por trazer o termo para a área, enquanto trabalhava com Bill Cheswick no Bell Labs - e os dois negaram tê-lo inventado, o que é um bom resumo do problema inteiro de atribuição.
+
+Bellovin também produziu a melhor definição que alguém conseguiu. Um firewall, disse ele, é uma barreira entre nós e eles, para valores arbitrários de eles. Toda discussão sobre onde colocar um, e toda alegação posterior de que o perímetro morreu, é na verdade uma discussão sobre quem conta como *eles* neste ano.
+
+## Nascimento: 1988 a 1991
+
+O primeiro artigo descrevendo filtragem de pacotes foi publicado pela **Digital Equipment Corporation** em 1988, a partir do trabalho de **Jeff Mogul**, **Brian Reid** e **Paul Vixie** em torno do gateway `gatekeeper.dec.com` e do software `screend`, do Mogul. A ideia não era exótica - roteadores já tinham listas de acesso -, mas escrever que filtrar era função de SEGURANÇA, e não conveniência de gestão de tráfego, é o que iniciou o campo.
+
+No Bell Labs, entre 1989 e 1990, **David Presotto** e colegas construíram gateways de nível de circuito, e Cheswick e Bellovin experimentaram relés de circuito em 1991. Um gateway de circuito repassa uma conexão em vez de examinar cada pacote, e foi o primeiro passo para longe de julgar tráfego um pacote por vez.
+
+O primeiro firewall comercial foi configurado e entregue ao primeiro cliente, uma grande empresa química, em **13 de junho de 1991**. Nos meses seguintes, **Marcus Ranum**, na Digital, inventou os proxies de segurança e reescreveu boa parte do resto do código, e o produto virou o **DEC SEAL** - Secure External Access Link, batizado por Geoff Mulligan.
+
+A arquitetura dele merece ser conhecida porque fixou o formato de tudo o que veio depois: um bastião externo chamado Gatekeeper, a única máquina com quem a internet podia falar; um gateway de filtragem chamado Gate; e um servidor de correio interno. **O primeiro firewall comercial era HÍBRIDO** - proxies numa caixa, filtragem de pacotes noutra - e híbrido é o que os firewalls são desde então, diga o marketing o que disser.
+
+## A discussão que decidiu o mercado
+
+Formaram-se dois campos, e a briga entre eles foi travada em desempenho, suporte a protocolos e segurança.
+
+O campo do **proxy** sustentava que um equipamento deve ENTENDER o que encaminha. Ranum, Wei Xu e Peter Churchyard construíram o **Firewall Toolkit** na Trusted Information Systems, sob contrato da DARPA, e o liberaram gratuitamente sob licença em outubro de 1993; o **TIS Gauntlet** veio como produto, ao lado do **Sidewinder**, da Secure Computing. Um proxy termina a conexão do cliente e abre a própria, o que lhe permite impor correção de protocolo - e custa duas conexões TCP por sessão, com o processamento que isso implica.
+
+O campo da **inspeção com estado** sustentava que um equipamento deve LEMBRAR conexões sem terminá-las. **Gil Shwed** depositou a patente norte-americana de inspeção com estado em 1993 e, com **Nir Zuk**, construiu o **FireWall-1** na Check Point - o primeiro produto de firewall amplamente adotado e de fato utilizável.
+
+A inspeção com estado venceu, de forma decisiva, e a razão foi DESEMPENHO, e não segurança. Era muito mais rápida que fazer proxy, não exigia código novo para cada protocolo, e chegou com um editor gráfico de política num momento em que a alternativa era editar configuração à mão. O argumento do campo do proxy - que não se impõe o que não se analisa - estava certo e perdeu assim mesmo, que é um dos padrões mais repetidos desta indústria: a posição mais bem defendida perde para a que entrega.
+
+E essa discussão voltou, duas vezes. Inspeção profunda de pacotes e firewalls de próxima geração são a posição do campo do proxy reimplementada com velocidade, e a [interceptação de TLS de saída](/learn/ssl-forward-proxy-interception) é um proxy em tudo, menos no nome.
+
+## As gerações, e quem as batizou
+
+- **Filtragem estática de pacotes**, a partir de 1988. Endereços, protocolo, portas, cada pacote julgado sozinho. Rápida, barata, e incapaz de distinguir resposta de pacote não solicitado.
+- **Gateways de circuito**, de 1989 em diante. Repassam a conexão, e não o pacote.
+- **Proxies de aplicação**, do DEC SEAL em 1991 e do Gauntlet a partir de 1994. Entendem o protocolo; pagam por isso.
+- **Inspeção com estado**, patenteada em 1993, entregue no FireWall-1 em 1994. Lembra a conexão, julga o fluxo.
+- **O appliance.** Zuk foi para a **NetScreen**, onde o firewall deixou de ser software num servidor de uso geral e virou caixa dedicada - mudança em como a coisa era comprada e operada, mais do que no que ela fazia.
+- **Gestão unificada de ameaças**, termo cunhado pela IDC em 2004 para uma caixa só fazendo também antivírus, filtragem, prevenção de intrusão e rede privada virtual. Foi resposta à complexidade de COMPRA tanto quanto a ameaças.
+- **Firewall de próxima geração**, categoria que o Gartner introduziu em **2009**: consciência de aplicação, identidade de usuário e prevenção de intrusão integrada. Note que quem batizou essa geração foi um analista de mercado, e não um engenheiro. Naquele ponto, nomear categorias de firewall já tinha passado de quem os construía para quem os vende e classifica.
+
+## As pessoas, e a atribuição honesta
+
+Pergunte quem inventou o firewall e a resposta exata é uma lista: Jeff Mogul, Paul Vixie, Brian Reid, William Cheswick, Steven Bellovin, David Presotto, Marcus Ranum, David Pensak, Nir Zuk, Fred Avolio, Brent Chapman, Gil Shwed, e outros. O comentário do próprio Ranum é o útil - havia muita gente envolvida, e a ideia estava no ar.
+
+A divisão aproximada que a maioria dos profissionais aceita: Cheswick e Bellovin foram pais do conceito de negar tudo o que não é especificamente permitido; Ranum foi pai do primeiro produto, do kit gratuito e do Gauntlet; Presotto e colegas acrescentaram a ideia de estado; Shwed patenteou e transformou em produto a inspeção com estado; e Zuk foi pai do appliance de firewall.
+
+Essa bagunça vale ser preservada, e não aparada. Uma tecnologia tão central a uma profissão não tem inventor, não tem eureca e não tem data limpa - e as pessoas envolvidas são as primeiras a dizer isso.
+
+## O que ele fez com cargos e práticas
+
+O firewall criou um cargo. Alguém precisava ser dono da base de regras, e essa pessoa virou o **administrador de firewall** - função que na maioria das organizações depois se alargou em [engenheiro de segurança de redes](/roles/network-security-engineer) e, nas maiores, se dividiu em política, operação e auditoria.
+
+Ele também criou práticas que sobreviveram a ele. **Controle de mudanças** para equipamento de segurança existe porque uma regra ruim derruba uma unidade de negócio na hora. **Revisão de regras** existe porque base de regras acumula e nada remove nada. **O registro de exceções** existe porque toda organização tem tráfego que não consegue justificar nem bloquear. Uma categoria inteira de software - gestão de política de firewall, vendida por AlgoSec, Tufin e FireMon - existe unicamente porque ninguém consegue ler uma base de regras de dez anos e dizer o que ela faz.
+
+E criou um hábito mental mais difícil de aposentar que o hardware: a suposição de que existe um dentro e um fora, e de que as decisões interessantes acontecem onde os dois se encontram.
+
+## As empresas, antes e agora
+
+O mercado inicial era Check Point com o FireWall-1, TIS com o Gauntlet, Secure Computing com o Sidewinder, Cisco com listas de acesso em roteadores que já vendia, e a Digital, cujo produto começou tudo e cuja empresa não sobreviveu à década.
+
+O mercado atual é Palo Alto Networks - fundada por Zuk, que escreveu o código inicial do FireWall-1 -, além de Fortinet, Check Point ainda, Cisco, Juniper por via da aquisição da NetScreen, Sophos, WatchGuard, e os provedores de nuvem, cujos grupos de segurança são filtros de pacote com uma relação de cobrança anexada. Abaixo de todos eles estão `iptables`, `nftables`, `pf` e agora filtragem baseada em eBPF, fazendo o mesmo trabalho de graça em quase todo servidor que existe.
+
+## Para onde isso vai
+
+Quatro pressões estão remodelando esta família, e nenhuma delas é um produto.
+
+**A fronteira está se dissolvendo.** Nuvem, trabalho remoto e tráfego entre máquinas fazem com que a maior parte das conexões nunca cruze o perímetro que o firewall guarda. A função não ficou inútil - ela se multiplicou e se mudou para hosts, hipervisores, malhas de serviço e motores de política de nuvem. Essa migração é o que [segmentação e confiança zero](/learn/network-segmentation-from-vlans-to-microsegmentation) de fato descrevem.
+
+**A cifragem está fechando a janela.** TLS 1.3, ECH e QUIC deixam progressivamente menos para um equipamento de rede ler, e a interceptação perde terreno por razões que configuração nenhuma corrige. A inspeção está migrando para o endpoint, onde o texto em claro está.
+
+**Identidade está virando o controle.** Uma regra que diz qual *serviço* pode alcançar qual *serviço*, autenticada criptograficamente, é afirmação mais forte que uma sobre endereços - e endereços deixaram de identificar cargas de trabalho de forma confiável faz tempo.
+
+**A política está virando o produto.** Quando os pontos de imposição estão em toda parte, o escasso é uma declaração coerente de intenção que possa ser empurrada para todos eles e auditada depois. É aí que mora o trabalho interessante agora.
+
+O aviso com que vale terminar é o mais antigo da área, e foi escrito por quem escreveu o primeiro livro sobre firewalls. Em muitos dos arranjos de acesso que Cheswick e Bellovin estudaram, o único componente seguro era o próprio firewall - que os atacantes simplesmente contornavam, para chegar às máquinas que ele deveria proteger. Tudo desde então é uma discussão sobre como deixar de ser aquele parque.
+
+## Fontes
+
+- [Who Invented the Firewall - Dark Reading, sobre a linhagem DEC, Bell Labs e TIS e o problema da atribuição](https://www.darkreading.com/cybersecurity-analytics/who-invented-the-firewall-)
+- [Fred Avolio, Firewalls and Internet Security: o primeiro firewall comercial entregue em 13 de junho de 1991, e a arquitetura do SEAL](https://avolio.com/fw2hundred/)
+- [Palo Alto Networks sobre a história dos firewalls, e a lista de contribuidores](https://www.paloaltonetworks.com/cyberpedia/history-of-firewalls)
+- [Application firewall - o Firewall Toolkit liberado sob licença em outubro de 1993 por Ranum, Wei Xu e Peter Churchyard](https://en.wikipedia.org/wiki/Application_firewall)
+- [FireMon, A Practical History of the Firewall: inspeção com estado contra proxies em desempenho, suporte a protocolos e segurança](https://www.firemon.com/blog/a-practical-history-of-the-firewall-part-1-early-days)

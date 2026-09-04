@@ -7598,7 +7598,9 @@
     "navGlossary": "Glossário",
     "navGlossaryLede": "Cada termo usado nos cursos e nos textos, definido uma vez e com referências cruzadas. Útil durante o curso e útil depois dele.",
     "disclaimerTitle": "Antes de continuar a ler",
-    "disclaimerBody": "Trabalho em tempo integral para a Red Education. Todo o trabalho de educação técnica descrito nesta página - entrega de treinamentos e desenvolvimento de conteúdo, workshops, bootcamps, transferências de conhecimento e sessões de capacitação - é realizado exclusivamente por meio da Red Education. Terei prazer em ajudar você a identificar o que a sua organização precisa e colocá-lo em contato com a pessoa certa para tratar do pedido."
+    "disclaimerBody": "Trabalho em tempo integral para a Red Education. Todo o trabalho de educação técnica descrito nesta página - entrega de treinamentos e desenvolvimento de conteúdo, workshops, bootcamps, transferências de conhecimento e sessões de capacitação - é realizado exclusivamente por meio da Red Education. Terei prazer em ajudar você a identificar o que a sua organização precisa e colocá-lo em contato com a pessoa certa para tratar do pedido.",
+    "navCareer": "Carreira",
+    "navCareerLede": "O que são, de fato, os cargos por trás destes cursos - do que cada papel responde, por que é medido, e quais papéis ficam ao lado dele."
   },
   "contact": {
     "title": "Entre em contato",
@@ -14476,7 +14478,7 @@
       },
       "roadsec": {
         "def": "O maior festival hacker da América Latina - um dia inteiro de palestras, CTF, drones e lockpicking que percorre às capitais brasileiras desde 2014.",
-        "context": "O Roadsec inverteu a fórmula das conferências: em vez de fazer os hackers do Brasil viajarem a uma cidade, o festival viaja até eles - uma caravana pelàs capitais, culminando a cada ano numa megaedição em São Paulo. O formato é deliberadamente festival, não conferência: palestras de carreira ao lado de vilas de hardware, montagem de robôs ao lado de pesquisa séria, e no centro o Hackaflag, o campeonato de CTF cujas etapas regionais ao longo da turnê coroam um campeão nacional. Para uma geração de estudantes brasileiros longe do eixo São Paulo-Rio, uma parada do Roadsec foi a primeira vez que a comunidade de segurança chegou à sua cidade - que é exatamente o ponto.\n\nA organização por trás dele é a [Flipside](/industry/flipside), que agora tem uma entrada na linha do tempo da indústria deste site.",
+        "context": "O Roadsec inverteu a fórmula das conferências: em vez de fazer os hackers do Brasil viajarem a uma cidade, o festival viaja até eles - uma caravana pelàs capitais, culminando a cada ano numa megaedição em São Paulo. O formato é deliberadamente festival, não conferência: palestras de carreira ao lado de vilas de hardware, montagem de robôs ao lado de pesquisa séria, e no centro o Hackaflag, o campeonato de CTF cujas etapas regionais ao longo da turnê coroam um campeão nacional. Para uma geração de estudantes brasileiros longe do eixo São Paulo-Rio, uma parada do Roadsec foi a primeira vez que a comunidade de segurança chegou à sua cidade - que é exatamente o ponto.\n\nA organização por trás dele é a Flipside, que agora tem uma entrada na linha do tempo da indústria deste site.",
         "depth": "O Roadsec inverteu a economia usual das conferências. Em vez de exigir que os hackers do país viajassem a uma cidade, ele viajou até eles, com uma caravana de edições pelàs capitais antes de culminar num grande evento em São Paulo. Num país de escala continental, em que um voo doméstico pode custar mais que um salário mensal, essa inversão é todo o argumento.\n\nO formato é deliberadamente festival, e não conferência. Palestras de carreira convivem com hacking de hardware, competições de captura de bandeira, arrombamento de fechaduras e música, o que baixa a barreira de entrada para quem jamais se descreveria como pertencente a um evento de segurança. Essa mistura é tanto estratégia de recrutamento para a área quanto programação.\n\nO que ele demonstra é que geografia é um problema de segurança. A especialização se concentra onde estão os eventos, os eventos estão onde está o dinheiro, e o dinheiro está em poucas cidades, então o talento fora delas permanece invisível para uma indústria que reclama de escassez. Levar o evento às pessoas, em vez do contrário, é uma das poucas intervenções que atacam o mecanismo, e não o sintoma.\n\nTanto este evento quanto o Roadsec sao realizados pela mesma empresa, a Flipside, e foram fundados pela mesma pessoa, Anderson Ramos - fato que nenhuma das duas fichas registrava até agora e que explica bastante do calendário brasileiro. Os dois eram opostos deliberados: um corporativo, cheio de estandes e em São Paulo; o outro um festival itinerante levando a cultura hacker às capitais. Uma organização tocava as duas pontas do espectro. Então, em 2024, o Roadsec não aconteceu. A avaliação de quem acompanha a cena não foi de que ele fracassou, e sim de que o evento corporativo cresceu tanto que consumiu a capacidade da organização de tocar o outro, e a Flipside também havia encerrado as edições regionais dos dois. E uma coisa específica e instrutiva de se ver acontecer: o evento lucrativo não venceu o evento comunitario em mercado nenhum; venceu-o na disputa pela atenção de quem tocava os dois. A consequência não foi nula. Conferências comunitárias locais se multiplicaram no espaço deixado pelas edições regionais, e por isso o calendário brasileiro hoje tem mais eventos pequenos fora de São Paulo do que quando uma grande organizadora atendia aquelas cidades diretamente. Se esse e um desfecho melhor depende do que você valoriza, e a resposta honesta é que e um desfecho diferente."
       },
       "cryptorave": {
@@ -16131,6 +16133,718 @@
       "deviant-ollam": {
         "def": "O pesquisador de segurança física e integrante do TOOOL cujas palestras de lockpicking puseram a disciplina diante de plateias de rede que nunca tinham pensado na porta.",
         "context": "Na quinta edição do YSTS, em maio de 2011, ele abriu o evento com os conceitos básicos de lockpicking e vendeu kits para a plateia depois - o que é o argumento inteiro num gesto só, já que uma fechadura é um controle cujo modo de falha cabe na mão. O acesso físico derrota boa parte do que o resto de um programa de segurança compra: a porta da sala de servidores, a tranca do rack e o leitor de crachá estão debaixo de todo controle de rede, e costumam ser a parte menos examinada do parque."
+      },
+      "dennis-ritchie": {
+        "def": "O criador da linguagem C e cocriador do Unix, e corecebedor com Ken Thompson do Prêmio Turing de 1983, pelo desenvolvimento da teoria geral de sistemas operacionais e pela implementação do Unix.",
+        "context": "A decisão que fez os dois durarem foi reescrever o Unix em C. Antes disso, um sistema operacional era escrito para uma máquina; depois, ele podia ser movido para outra, e portabilidade deixou de ser tema de pesquisa e virou expectativa. Quase tudo que veio depois herda daquela dupla: os descendentes do C rodam os núcleos e as pilhas de rede, e o formato do Unix - hierarquia de arquivos, ferramentas pequenas compostas entre si, processos derivados de outros processos - segue sendo o modelo mental por trás de sistemas que nunca rodaram uma linha do código dele."
+      },
+      "ken-thompson": {
+        "def": "Cocriador do Unix e corecebedor do Prêmio Turing de 1983, e autor da palestra que mostrou que um compilador pode esconder uma porta dos fundos que nenhuma revisão de código encontraria.",
+        "context": "A palestra é a parte que pertence a um site de segurança. Ele descreveu um compilador modificado para inserir uma porta dos fundos num programa, e para inserir a mesma modificação em qualquer compilador que ele compile - de modo que o código malicioso some de todo arquivo-fonte e sobreviva em todo binário. A conclusão que ele tirou é a incômoda: não dá para confiar em código que você não criou inteiramente, e ler o fonte não basta, porque aquilo que lê o fonte também é código. Compilação reproduzível e atestação de cadeia de suprimento existem por causa de um argumento feito em 1984."
+      },
+      "leslie-lamport": {
+        "def": "O recebedor do Prêmio Turing de 2013 por impor ordem a sistemas distribuídos: relógios lógicos, retratos distribuídos, Paxos, tolerância a falhas bizantinas, a distinção entre segurança e vivacidade - e o LaTeX.",
+        "context": "Seu artigo de 1978 sobre tempo, relógios e ordenação de eventos está entre os mais citados da computação, e a tese dele é que num sistema distribuído não existe um agora global - existe causalidade, que se pode ordenar sem relógio comum. Tudo o que vem depois depende disso: consenso, replicação, e todo banco de dados que precisa decidir qual escrita aconteceu primeiro. A frase dele descreve a área melhor que qualquer livro: sistema distribuído é aquele em que a falha de um computador que você nem sabia que existia deixa o seu inutilizável."
+      },
+      "barbara-liskov": {
+        "def": "A recebedora do Prêmio Turing de 2008, citada pelas fundações práticas e teóricas de projeto de linguagens e de sistemas, em especial abstração de dados, tolerância a falhas e computação distribuída.",
+        "context": "O princípio de substituição que leva o nome dela é o que a maioria dos programadores encontra: um subtipo precisa ser utilizável em qualquer lugar em que o supertipo é, sem que quem chama precise saber. Isso é uma afirmação sobre interfaces, e não sobre herança, e é por isso que abstração sobrevive ao contato com uma base de código grande. O trabalho dela em sistemas distribuídos importa tanto quanto e é menos creditado - ela e seu aluno Brian Oki chegaram à replicação com carimbo de visão mais ou menos ao mesmo tempo que o Paxos, de forma independente, que é a segunda vez nesta história em que dois grupos chegam à mesma resposta sem saber."
+      },
+      "tcp": {
+        "def": "O transporte que transforma um fluxo de pacotes num fluxo de bytes ordenado e confiável, numerando o que envia e retransmitindo o que não é confirmado.",
+        "context": "Tudo o que o TCP faz decorre de um fato: a rede por baixo não promete nada. Pacotes podem se perder, duplicar, chegar fora de ordem ou atrasar, então ordenação, retransmissão, controle de fluxo e controle de congestionamento moram nas pontas, e não na rede. Essa decisão é a razão de a internet poder ser construída sobre enlaces que ninguém controlava de forma central, e é também a razão de um único salto com perda degradar uma sessão de ponta a ponta. O aperto de mão de três vias, os números de sequência e a janela são as partes visíveis; a parte interessante é o remetente inferir o estado de uma rede que não enxerga a partir do tempo dos próprios pacotes."
+      },
+      "packet": {
+        "def": "Uma unidade de dados com cabeçalho próprio, encaminhada de forma independente do que veio antes ou depois.",
+        "context": "A palavra é de Donald Davies, cunhada em meados dos anos 1960 para uma ideia a que Paul Baran chegou separadamente, e o batismo importou: deu a engenheiros, financiadores e organismos de padronização como falar da coisa sem discutir o nome dela. A independência é o projeto inteiro. Como cada pacote carrega o próprio endereçamento, nenhum equipamento precisa lembrar de uma conversa, e é isso que permite contornar um enlace caído e que torna a rede barata de escalar - e é também por isso que ordem, confiabilidade e ritmo tiveram de ser reconstruídos nas pontas."
+      },
+      "packet-switching": {
+        "def": "Encaminhar dados como pacotes independentes que dividem enlaces com os de todo mundo, em vez de manter um caminho dedicado aberto durante toda a conversa.",
+        "context": "A alternativa que ela substituiu era a comutação por circuito, em que uma ligação reservava um caminho de ponta a ponta, houvesse ou não alguém falando. A comutação por pacotes vence sempre que o tráfego é em rajadas, que é quase sempre em dados: o enlace é compartilhado, os momentos ociosos de uma conversa carregam os de outra, e a capacidade é vendida várias vezes. Os custos são a imagem espelhada e são permanentes - sem reserva não há garantia, então o atraso varia, o congestionamento é possível, e todo mecanismo de qualidade de serviço desde então existe para recuperar parte do que a reserva dava de graça."
+      },
+      "latency": {
+        "def": "O tempo entre enviar algo e ele chegar - distinto de banda, que é quanto chega por segundo.",
+        "context": "Os dois são confundidos o tempo todo, e a confusão é cara: acrescentar capacidade não faz nada por uma aplicação lenta cujo problema são idas e voltas. A latência tem quatro partes - propagação, que é física e não se compra; serialização, que encolhe conforme os enlaces ficam mais rápidos; enfileiramento, que cresce com a carga e é onde moram quase todas as surpresas; e processamento. A distância impõe um piso que produto nenhum vence, e é por isso que um protocolo tagarela atravessando um oceano é lento por mais banda que se compre, e por que aproximar o trabalho é a única correção real."
+      },
+      "c": {
+        "def": "A linguagem que Dennis Ritchie escreveu no início dos anos 1970, na qual o Unix foi reescrito, e na qual a maioria dos sistemas operacionais e pilhas de rede ainda é escrita.",
+        "context": "A barganha dela é explícita: abstração suficiente para ser portável, e nada entre o programador e a memória. É por isso que roda em todo lugar e por isso que produziu classes inteiras de vulnerabilidade - estouro de buffer, uso após liberação, e o resto do catálogo de segurança de memória que linguagens mais novas existem para evitar. As duas metades dessa frase são verdadeiras ao mesmo tempo, e é essa a leitura honesta de cinquenta anos de C. Ela também não vai embora: software demais em funcionamento no mundo está escrito nela para que reescrever seja um plano."
+      },
+      "unix": {
+        "def": "O sistema operacional construído no Bell Labs a partir de 1969, cujo desenho - arquivos, ferramentas pequenas e combináveis, processos derivados de processos - virou o formato que quase tudo copiou desde então.",
+        "context": "O que se espalhou não foi o código, e sim o modelo, e a razão é que o modelo era pequeno o bastante para ser reimplementado. Linux, os BSDs e o macOS descendem do desenho, e não de uma árvore de código, e o POSIX existe para escrever aquilo em que eles precisam concordar. Para quem opera sistemas hoje, a herança é prática: um shell que canaliza um programa noutro, um sistema de arquivos que representa dispositivos como arquivos, e um modelo de permissões anterior à internet que ainda decide quem lê o quê."
+      },
+      "kernel": {
+        "def": "A parte de um sistema operacional que roda com privilégio total de hardware, mediando memória, processos, dispositivos e rede para todo o resto.",
+        "context": "A fronteira de privilégio é o ponto. Programas comuns não tocam o hardware diretamente; eles pedem, por chamadas de sistema, e o núcleo decide. É isso que torna possível o isolamento entre processos, e é por isso que um defeito dentro do núcleo é categoricamente pior que um numa aplicação: não há nada acima dele para conter o estrago. É também por isso que tanta engenharia de segurança trata de reduzir o que roda ali - drivers movidos para o espaço de usuário, filtragem feita em máquinas virtuais restritas, e hipervisores acrescentando uma camada por baixo."
+      },
+      "shell": {
+        "def": "O programa que lê comandos e os executa, e a interface pela qual a maior parte do trabalho de infraestrutura ainda é feita.",
+        "context": "Sua durabilidade é consequência de projeto, e não nostalgia. Como as ferramentas Unix leem texto e escrevem texto, o shell consegue compor programas que nunca foram escritos um para o outro, e um encadeamento montado numa linha faz o trabalho que de outro modo exigiria um projeto. Essa mesma propriedade é superfície de segurança: um shell interpreta o que recebe, então qualquer coisa que monte um comando a partir de entrada não confiável está a um erro de aspas de executá-la. Injeção de comando é o shell fazendo exatamente o trabalho dele sobre o texto errado."
+      },
+      "compiler": {
+        "def": "Um programa que traduz código-fonte em algo que a máquina executa - categoria que Grace Hopper construiu e batizou.",
+        "context": "Vale lembrar que isso precisou ser defendido. A ideia de que uma máquina podia traduzir de forma útil texto escrito por humanos em instruções não era óbvia em 1952, e a objeção era que o programador deveria escrever as instruções. O compilador é também onde a confiança fica circular: a palestra Turing de Ken Thompson mostrou que um compilador pode inserir porta dos fundos em programas e em compiladores futuros, então inspecionar o fonte não prova nada sobre o binário. Compilação reproduzível existe para fechar esse laço."
+      },
+      "consensus": {
+        "def": "O problema de fazer várias máquinas concordarem sobre um valor quando qualquer uma pode estar lenta, pode falhar, e não dá para distinguir as duas coisas.",
+        "context": "Soa administrativo e é a coisa mais difícil em sistemas distribuídos, porque um nó que não respondeu é indistinguível de um nó morto. Todo banco replicado, eleição de líder de cluster e repositório de configuração se apoia num algoritmo de consenso, e a consequência prática é uma regra de maioria: número ímpar de membros, quórum exigido para decidir, e uma minoria que precisa parar em vez de seguir sozinha. É por isso que um cluster de três nós sobrevive a uma falha e um de dois não sobrevive a nenhuma."
+      },
+      "quorum": {
+        "def": "O número mínimo de membros que precisa concordar para um sistema distribuído agir - normalmente a maioria, para que dois grupos separados nunca decidam ao mesmo tempo.",
+        "context": "A aritmética é o argumento de segurança inteiro. Se uma decisão exige mais da metade dos membros, então quaisquer duas decisões compartilham ao menos um membro, e é esse membro que impede que se contradigam. É também por isso que dimensionar cluster é assunto de número ímpar, e não redondo: cinco membros toleram duas falhas, seis toleram as mesmas duas e custam mais. Quando a rede se parte, o lado sem quórum precisa parar de atender mesmo estando saudável, o que parece errado ao operador na primeira vez e é a única coisa entre ele e o cérebro dividido."
+      },
+      "paxos": {
+        "def": "O algoritmo de consenso de Leslie Lamport, o primeiro provado correto para uma rede assíncrona em que máquinas podem falhar, e a base da maioria dos sistemas replicados construídos desde então.",
+        "context": "Ele é famoso por duas coisas: por estar correto, e por ser difícil de entender pelo artigo, escrito como alegoria sobre um parlamento grego fictício e que levou anos para ser levado a sério. Barbara Liskov e Brian Oki chegaram a um desenho equivalente de forma independente mais ou menos na mesma época. A maioria dos sistemas em produção roda uma variante, e não o original, e o Raft foi desenhado explicitamente para ser a mesma garantia explicada de forma mais simples - caso raro de uma área admitir que ser compreensível é propriedade que vale otimizar."
+      },
+      "raft": {
+        "def": "Um algoritmo de consenso desenhado para ser compreensível, dando as mesmas garantias do Paxos por meio de um líder explícito, um log apenas-acréscimo e uma eleição definida.",
+        "context": "Sua contribuição é pedagógica, e isso não é pouco: um algoritmo sobre o qual o operador consegue raciocinar é um que ele configura certo, e a maioria das quedas de consenso é configuração, e não matemática. Ele separa o problema em eleição de líder, replicação de log e segurança, o que também se mapeia no que um sistema de monitoração consegue mostrar. Se você roda etcd, Consul ou um repositório distribuído moderno, é isso que está rodando, e a regra prática que decorre é a conhecida - número ímpar de membros, e uma minoria que para."
+      },
+      "byzantine-fault-tolerance": {
+        "def": "Acordo que sobrevive a membros que não apenas falham, mas MENTEM - enviando respostas diferentes a pares diferentes, seja por corrupção ou por má-fé.",
+        "context": "O consenso comum supõe que um nó falho fica quieto. A tolerância bizantina abandona essa suposição, o que é bem mais difícil e bem mais caro: o resultado clássico é que o acordo exige que mais de dois terços dos membros sejam honestos. A maioria dos sistemas corporativos não paga por isso, e faz bem, porque controla todos os nós. Ela vira necessária exatamente quando não se controla - blockchains, e qualquer sistema cujos participantes desconfiam uns dos outros - que é a distinção técnica real entre um banco de dados distribuído e um livro-razão."
+      },
+      "fault-tolerance": {
+        "def": "Continuar prestando serviço enquanto algo está quebrado - o que exige decidir de antemão quais falhas são sobreviventes e pagar por isso em redundância.",
+        "context": "A palavra é usada de forma solta, e a versão útil é específica: você tolera as falhas para as quais projetou, e nenhuma outra. Isso significa nomeá-las - uma alimentação, um disco, um sítio, uma região - e aceitar que qualquer coisa não nomeada vai derrubar o serviço. O erro recorrente é redundância que divide uma dependência: dois equipamentos na mesma régua, dois enlaces no mesmo duto, duas regiões com um provedor de identidade só. A segunda cópia só ajuda se falhar de forma independente, e independência é a propriedade que as pessoas esquecem de comprar."
+      },
+      "abstraction": {
+        "def": "Esconder como algo funciona atrás do que ele faz, de modo que quem chama dependa de uma interface, e não de uma implementação.",
+        "context": "É a única técnica que torna sistemas grandes construíveis, e ela sempre vaza. O trabalho de Barbara Liskov é a versão rigorosa: um subtipo precisa ser utilizável onde o supertipo é, sem que quem chama precise notar a diferença - afirmação sobre interfaces, e não sobre herança. O corolário operacional também vale ser dito. Toda abstração tem um modo de falha que atravessa: a rede que finge ser uma chamada local continua tendo latência, e o armazenamento que finge ser infinito continua tendo fatura."
+      },
+      "douglas-engelbart": {
+        "def": "O engenheiro que demonstrou o mouse, o hipertexto, as janelas, o processamento de texto e a videoconferência numa sessão só, em 9 de dezembro de 1968 - a apresentação hoje chamada de Mãe de Todas as Demonstrações.",
+        "context": "A plateia de profissionais nunca tinha visto um cursor movido pela mão, e a máquina que o movia estava a quarenta quilômetros dali. Quase tudo naqueles noventa minutos hoje é mobília, e essa é a parte estranha: a demonstração é mais famosa que qualquer produto que ele tenha entregue. O objetivo declarado dele não era conveniência, e sim aumento - computadores como ferramentas para as pessoas lidarem com problemas complexos demais para caber numa cabeça só -, e ele tinha escrito esse argumento anos antes de ter o hardware para mostrá-lo. O Prêmio Turing chegou a ele em 1997, vinte e nove anos depois da demonstração."
+      },
+      "margaret-hamilton": {
+        "def": "A diretora da Divisão de Engenharia de Software do Instrumentation Laboratory do MIT, que liderou o software de voo embarcado do computador de guiagem da Apollo, e que defendeu chamar aquilo de engenharia.",
+        "context": "Ela foi a primeira programadora contratada para a Apollo no MIT, e a disputa pelo nome é parte da contribuição: software não era tratado como disciplina, e insistir no termo engenharia de software era afirmar que aquilo exigia o mesmo rigor do hardware em que voava. O legado técnico é o escalonamento por prioridade que descarta carga em vez de falhar: durante a descida lunar, o computador abandonou trabalho de menor prioridade sob sobrecarga, em vez de parar. É o ancestral de todo sistema projetado para degradar em vez de morrer."
+      },
+      "elizabeth-feinler": {
+        "def": "A cientista da informação que dirigiu o Network Information Center de 1972 a 1989 - o registro de nomes de máquinas de toda a internet - e cujo grupo criou o esquema .com, .edu, .gov, .mil, .org e .net e construiu o primeiro servidor WHOIS.",
+        "context": "Antes do DNS, cada máquina da rede estava listada num único arquivo que o grupo dela mantinha e publicava, atualizado quase diariamente à mão. É esse o fato que vale encarar: a autoridade de nomes da internet inteira era um serviço de diretório tocado por uma equipe no SRI, acessível por telefone e por correio, além da rede. Ela entrou no Augmentation Research Center de Douglas Engelbart em 1972 e ficou até o ano em que o registro ficou grande demais para um arquivo. Chamou o NIC de o Google pré-histórico da época, e na aposentadoria organizou mais de 350 caixas dos arquivos do Engelbart e do NIC para que o registro sobrevivesse."
+      },
+      "hosts-file": {
+        "def": "Um arquivo de texto local que mapeia nomes para endereços, consultado antes do DNS - e, na origem, o único arquivo que nomeava toda máquina da internet.",
+        "context": "O HOSTS.TXT era mantido centralmente no SRI e baixado por todo host, o que funcionava enquanto a rede era pequena e deixou de funcionar quando não era mais: um arquivo, um editor, uma distribuição, crescendo todo dia. O DNS existe porque aquele arranjo não escalava. O arquivo, porém, nunca sumiu: todo sistema operacional ainda consulta um hosts local primeiro, o que o torna a forma mais rápida de redirecionar um nome numa máquina - útil para teste, e igualmente útil para malware, e é por isso que ferramenta de endpoint vigia esse arquivo."
+      },
+      "whois": {
+        "def": "O serviço de consulta que responde quem registrou um domínio ou um bloco de endereços - o primeiro servidor de consulta a nomes e endereços de máquinas, definido no grupo de Feinler em 1982.",
+        "context": "Começou como um diretório de pessoas e máquinas numa rede em que todo mundo era alcançável, e essa origem explica os problemas dele: um protocolo sem esquema estruturado, sem autenticação e sem modelo de privacidade, respondendo no texto que cada registro escolher. O dado de registro era público porque a rede inicial pressupunha responsabilização, e não anonimato, e a lei de privacidade desde então empurrou quase tudo para trás de censura. O RDAP é o sucessor estruturado e autenticado, e a transição é lenta porque o antigo ainda responde."
+      },
+      "steve-crocker": {
+        "def": "O autor da RFC 1, publicada em 7 de abril de 1969, e a pessoa que decidiu chamar a série de Pedidos de Comentários, em vez de padrões.",
+        "context": "Ele depois chamou aquilo de um memorando modesto e inteiramente esquecível, e a modéstia era o projeto. Um aluno de pós-graduação não tinha autoridade para declarar padrão, então os documentos convidavam à discordância em vez de anunciar decisões - e é esse enquadramento que fez a série sobreviver à chegada de todo mundo com mais autoridade que ele. Os documentos técnicos da internet continuam se chamando pedidos de comentários sessenta anos depois, por organizações que poderiam renomeá-los quando quisessem."
+      },
+      "jcr-licklider": {
+        "def": "O psicólogo que dirigiu o Information Processing Techniques Office da ARPA a partir de 1962 e endereçava seus memorandos aos Membros e Afiliados da Rede Intergaláctica de Computadores.",
+        "context": "Ele não construiu a rede; financiou quem construiu, e descreveu o que ela deveria ser antes de o hardware existir. A piada do nome esconde uma especificação séria: um bem comum eletrônico aberto a todos, e o meio principal de interação informacional para governos, instituições, empresas e indivíduos. É perto do que aconteceu. Sua outra contribuição foi estrutural - o dinheiro que ele direcionou criou departamentos de ciência da computação em várias universidades, e é por isso que a área tinha gente nela uma década depois."
+      },
+      "wietse-venema": {
+        "def": "O autor do Postfix e do TCP Wrapper e, com Dan Farmer, do SATAN - o scanner que sustentou o argumento de testar os próprios sistemas como um atacante faria.",
+        "context": "O artigo de 1993 que anunciou o SATAN se chamava melhore a segurança do seu site invadindo-o, e a reação é a história: um jornal comparou lançá-lo a distribuir lança-foguetes na biblioteca do bairro. A ferramenta saiu assim mesmo, e a posição que ela defendia - que quem defende precisa da visão de quem ataca, e que reter a ferramenta não protege ninguém que já está sendo varrido - é hoje a premissa de todo scanner de vulnerabilidade vendido. O Postfix, escrito depois, é a outra metade do mesmo instinto: reconstruir o servidor de e-mail com separação de privilégio porque o existente não dava para tornar seguro."
+      },
+      "katie-moussouris": {
+        "def": "A pesquisadora que criou o programa de recompensa por falhas da Microsoft e ajudou a criar o primeiro do Departamento de Defesa dos Estados Unidos, e que desde então discute como eles deveriam ser conduzidos.",
+        "context": "A contribuição é institucional, e não técnica, e é a mais difícil: convencer uma empresa de que pagar gente de fora para achar seus defeitos sai mais barato que não saber deles. O argumento posterior dela é o que vale carregar - recompensa não é programa de segurança, e uma organização que não corrige o que já sabe não será ajudada por saber mais. Recompensa premia ACHAR; nada nela premia CONSERTAR, e é por isso que a versão madura vem junto de uma política de divulgação e de uma esteira de correção."
+      },
+      "daniel-j-bernstein": {
+        "def": "O criptógrafo e programador por trás do qmail e do djbdns, e de desenhos de curva e cifra hoje amplamente implantados - e a pessoa que pôs dinheiro atrás de uma garantia de segurança do próprio software.",
+        "context": "A garantia é a parte que mudou a prática: ele ofereceu recompensa em dinheiro por uma falha de segurança verificável no qmail, alegação incomum nos anos 1990 e viável porque o software era pequeno o bastante para se raciocinar sobre ele. Seus projetos são opinativos na mesma direção - menos peças móveis, menos privilégio, nenhuma configurabilidade que possa ser mal configurada. Ele é também uma discussão permanente na área sobre tom: as posições técnicas e as disputas públicas com outros implementadores chegam juntas ao registro, e as duas cabem nele."
+      },
+      "rfc": {
+        "def": "A série numerada de documentos em que os protocolos da internet são especificados - chamada de pedido de comentários porque o primeiro autor não tinha autoridade para declarar padrão.",
+        "context": "Nem toda RFC é padrão: a série carrega padrões propostos, notas informativas, boas práticas correntes, experimentos e piadas de primeiro de abril, e o status importa mais que o número. Qualquer pessoa as lê de graça, que é a diferença em relação à maioria dos organismos de padronização e parte da razão de existirem implementações. A convenção de discutir uma especificação em público antes de fixá-la é a prática que o nome preserva, e é por isso que números de RFC são citados em comentário de código na indústria inteira."
+      },
+      "circuit-switching": {
+        "def": "Reservar um caminho dedicado de ponta a ponta durante toda a conversa, esteja ou não algo sendo enviado por ele.",
+        "context": "É o que a rede telefônica fazia, e suas propriedades são o inverso exato da comutação por pacotes: capacidade garantida, atraso constante, sem congestionamento - e um enlace ocioso enquanto ninguém fala. Esse desperdício é pagável para voz e ruinoso para dados, em que o tráfego chega em rajadas. A distinção ainda molda discussões sobre qualidade de serviço: toda tentativa de dar garantias duras a uma rede de pacotes é uma tentativa de recomprar algo que a comutação por circuito tinha, pagando em complexidade em vez de em capacidade reservada."
+      },
+      "congestion-control": {
+        "def": "A tarefa do remetente de inferir quanto a rede aguenta e desacelerar antes que ela colapse - distinta do controle de fluxo, que protege o receptor.",
+        "context": "Existe porque a rede não dá sinal explícito: o remetente aprende sobre congestionamento pelas próprias perdas e atrasos, e reage. É essa inferência que faz um único enlace ocupado mudar o comportamento de ponta a ponta, e que faz medir uma rede de um extremo dizer tanto sobre o caminho quanto sobre o host. A falha clássica foi o colapso por congestionamento dos anos 1980, quando todo remetente respondia à perda retransmitindo com mais força; a moderna é o bufferbloat, em que buffers grandes demais escondem a perda e o remetente nunca aprende a desacelerar."
+      },
+      "cache-poisoning": {
+        "def": "Fazer um resolvedor ou proxy guardar uma resposta forjada, de modo que todo cliente posterior que fizer a mesma pergunta receba a versão do atacante.",
+        "context": "A alavancagem é o que torna isso grave: uma injeção bem-sucedida serve todo mundo atrás daquele cache até a entrada expirar, o que transforma uma corrida vencida num redirecionamento em escala populacional. No DNS a corrida era contra um identificador de consulta de 16 bits, e é por isso que a aleatorização de porta de origem foi a mitigação de emergência e o DNSSEC a resposta de verdade. O mesmo formato aparece onde quer que algo guarde em nome de muitos - caches web, tabelas ARP, e qualquer middlebox que lembre uma resposta para não perguntar de novo."
+      },
+      "rdap": {
+        "def": "O sucessor estruturado e autenticado do WHOIS: os mesmos dados de registro, devolvidos em JSON sobre HTTPS, com acesso diferenciado em vez de uma resposta pública igual para todos.",
+        "context": "Ele existe porque o WHOIS não sobreviveria à lei de privacidade. Uma única resposta em texto, sem autenticação, não consegue mostrar uma coisa à equipe de um registrador e outra a quem consulta anonimamente, então o registro inteiro teve de ser censurado para todo mundo. O RDAP consegue distinguir quem chama, e é isso que torna possível o acesso em camadas. A adoção é lenta pelo motivo de sempre: o protocolo antigo ainda responde, e nada quebra ao ignorar o novo."
+      },
+      "coordinated-disclosure": {
+        "def": "Relatar um defeito em privado, combinar um prazo, e publicar depois da correção - o meio-termo em que a área se acomodou entre divulgação total e silêncio.",
+        "context": "O prazo é a parte que sustenta o resto, e existe porque, sem ele, o incentivo do fabricante é esperar para sempre. Ele também se apoia numa suposição que vale dizer: quem reportou provavelmente não é a única pessoa capaz de achar aquilo, então tempo sem correção é tempo que outra pessoa pode estar usando. A falha de DNS do Kaminsky é o caso de referência da boa versão - fabricantes concorrentes corrigindo no mesmo dia, detalhe publicado um mês depois - e é rara porque exigiu um pesquisador organizando gente que normalmente não coopera."
+      },
+      "base64": {
+        "def": "Uma codificação que representa bytes arbitrários com 64 caracteres imprimíveis, para que dados binários atravessem canais que só aceitam texto.",
+        "context": "Não é cifragem nem compressão: ela aumenta o dado, em cerca de um terço, em troca de sobreviver a transportes que estragariam bytes crus. A razão de estar em toda parte é histórica - e-mail era só texto, e tudo que foi construído sobre essa premissa herdou a necessidade. Duas notas práticas: a variante segura para URL existe porque mais e barra significam algo numa URL, e ver Base64 num payload não diz nada sobre o conteúdo ser seguro, e é por isso que decodificadores pertencem ao ferramental do analista, e não às conclusões dele."
+      },
+      "bill-cheswick": {
+        "def": "Coautor de Firewalls and Internet Security, de 1994, um dos primeiros livros sobre o tema, escrito a partir da operação do gateway de internet da AT&T - e autor do relato de observar um invasor dentro de um ambiente preparado de propósito.",
+        "context": "An Evening with Berferd é o texto que as pessoas lembram, e é onde o argumento do pote de mel entra na literatura: em vez de expulsar o invasor, ele observou, registrou e aprendeu o que o atacante de fato tentava. A frase mais duradoura do livro é um aviso contra o próprio assunto dele, e partiu dos autores - em muitos dos arranjos de acesso que estudaram, o único componente seguro era o firewall, que os atacantes simplesmente contornavam para chegar às máquinas que ele supostamente protegia."
+      },
+      "steven-bellovin": {
+        "def": "Coautor do livro de firewalls de 1994, diretor da área de segurança do IETF, membro da National Academy of Engineering, e um dos criadores da Usenet anos antes.",
+        "context": "A descrição que ele dá do próprio campo é a frase mais útil dele: trabalha com redes, com segurança, e especialmente com por que as duas não se dão bem. Isso não é piada sobre cultura. Rede otimiza para alcance e segurança para restrição, e quase toda discussão operacional entre as duas equipes é uma redescoberta disso. Seus artigos iniciais sobre fragilidades na pilha TCP/IP nomearam ataques - previsão de número de sequência, falsificação de DNS - anos antes de alguém os executar em escala."
+      },
+      "firewall": {
+        "def": "Um equipamento ou função que decide qual tráfego pode passar entre redes, aplicando uma política numa fronteira.",
+        "context": "O nome vem da parede construída para impedir que o fogo se espalhe entre partes de um prédio, e a metáfora carrega a suposição que envelheceu pior: a de que existe um dentro e um fora. Isso era verdade quando uma organização tinha um gateway, e deixou de ser com nuvem, trabalho remoto e tráfego entre máquinas que nunca toca o perímetro. A função não virou inútil; ela se multiplicou e se mudou, para hosts, hipervisores, malhas de serviço e política de nuvem, que é o que segmentação e confiança zero de fato descrevem. O aviso de quem escreveu o primeiro livro continua valendo: um parque em que o firewall é o único componente seguro é um parque que os atacantes contornam, em vez de atravessar."
+      },
+      "packet-filter": {
+        "def": "A filtragem mais simples: decidir sobre cada pacote de forma independente, por endereços, protocolo e portas, sem memória do que veio antes.",
+        "context": "A ausência de estado é o atrativo e o limite. É rápida, barata e previsível, e pode ser implementada em hardware na velocidade do enlace - e é por isso que listas de controle de acesso vivem em roteadores e comutadores, e não só em appliances de segurança. O que ela não consegue é distinguir uma resposta de um pacote não solicitado, porque isso exige lembrar da requisição. Permitir o tráfego de volta significa, então, permitir toda uma classe de pacotes que apenas se parecem com respostas, e é essa a lacuna que a inspeção com estado veio fechar."
+      },
+      "stateful-inspection": {
+        "def": "Filtragem que lembra conexões, de modo que um pacote é julgado por pertencer a um fluxo que a política já permitiu.",
+        "context": "Guardar estado é o que permite a um firewall liberar respostas sem liberar tudo que se pareça com uma, e é por isso que um conjunto de regras moderno é escrito em termos de quem pode INICIAR, e não de quais pacotes podem passar. O custo é uma tabela de tamanho finito com entradas que expiram, o que vira dois fatos operacionais: uma conexão ociosa por mais tempo que o tempo limite é descartada em silêncio, e a aplicação vê um travamento em vez de uma recusa; e a própria tabela é um recurso que um atacante pode exaurir. Quase toda falha misteriosa de sessão longa é uma dessas duas."
+      },
+      "encoding": {
+        "def": "Representar dados numa forma que um canal ou leitor específico consiga carregar - uma transformação reversível, sem sigilo e sem integridade anexados.",
+        "context": "A palavra é usada para três coisas diferentes, e separá-las evita uma família de erros de segurança: codificar torna o dado transportável, cifrar o torna ilegível sem chave, e resumir por hash o torna irrecuperável. Só a primeira é reversível por qualquer um. Codificações em camadas são também onde os filtros erram - um valor decodificado uma vez pode continuar codificado, e uma verificação aplicada na camada errada vê algo que o destino não verá. Percentual, entidade e Base64 numa mesma URL não é incomum, e todo descompasso entre o que o filtro analisou e o que o alvo analisa é um desvio."
+      },
+      "router": {
+        "def": "Um equipamento que encaminha pacotes entre redes escolhendo um próximo salto numa tabela de rotas.",
+        "context": "A decisão é por pacote e puramente local: um roteador não conhece o caminho, só o próximo passo, e a jornada do pacote é a soma de escolhas independentes feitas por máquinas que nunca se coordenam. É por isso que o traceroute mostra um caminho que pode não ser o do próximo pacote, e por que problemas de roteamento costumam ser assimétricos - a ida e a volta são decididas por equipamentos diferentes, com tabelas diferentes."
+      },
+      "switch": {
+        "def": "Um equipamento que encaminha quadros dentro de uma rede aprendendo quais endereços vivem em qual porta.",
+        "context": "Ele aprende observando: todo quadro que chega ensina onde está o remetente, e o que ainda não foi aprendido é inundado por todas as portas. Esse único comportamento explica quase tudo o que o operador vê - uma rede que funciona antes de a tabela encher, tráfego aparecendo onde não devia durante mudança de topologia, e a razão de um laço ser catastrófico, e não apenas desperdício, já que quadros inundados se multiplicam sem nada para pará-los."
+      },
+      "bridge": {
+        "def": "Um equipamento que une dois segmentos de rede na camada 2, encaminhando apenas os quadros que precisam atravessar.",
+        "context": "A ponte é a ancestral do comutador, e a palavra sobrevive onde a dele não sobrevive: a árvore de extensão ainda elege uma ponte raiz, e a virtualização ainda chama de ponte um comutador em software. O propósito original era cortar um domínio de colisão ao meio mantendo um domínio de difusão, que é exatamente o que uma porta de comutador moderno faz por porta - a ideia não sumiu, ela se multiplicou."
+      },
+      "gateway": {
+        "def": "O endereço para o qual um host envia quando o destino não está na própria rede - e, de forma mais geral, qualquer equipamento que traduz entre dois sistemas.",
+        "context": "A palavra carrega dois sentidos, e confundi-los custa tempo. Um gateway padrão é a saída de um host: um endereço configurado, em geral um roteador, usado para qualquer coisa fora da sub-rede local. Um gateway de aplicação é um tradutor entre protocolos ou formatos. O primeiro é uma decisão de roteamento tomada pelo remetente antes de qualquer roteador entrar, e é por isso que um gateway errado parece falha total numa máquina, com a rede inteira saudável."
+      },
+      "proxy": {
+        "def": "Um intermediário que termina uma conexão e faz outra em nome de quem pediu, em vez de encaminhar pacotes.",
+        "context": "Terminar é a diferença em relação a rotear, e tudo decorre disso: o proxy é parte da conversa, então pode ler, reescrever, cachear, autenticar e registrar - e vira um lugar onde texto claro existe, um gargalo sob carga, e um componente único cuja falha é total. Proxies diretos agem pelos clientes que saem, reversos agem pelos servidores que são alcançados; a mecânica é a mesma, e só a direção da confiança muda."
+      },
+      "port": {
+        "def": "Um número de dezesseis bits que identifica a qual serviço ou conversa num host um pacote pertence.",
+        "context": "Portas existem porque um endereço identifica uma máquina, e não um programa. O número é rótulo, e não permissão: um serviço não fica mais seguro numa porta fora do padrão, e uma porta que responde não é prova do que está escutando. Duas consequências operacionais: dezesseis bits significam cerca de sessenta e cinco mil conversas simultâneas por par de endereços, que é o que se esgota sob proxy pesado, e todo filtro escrito por número de porta descreve uma expectativa, e não um fato."
+      },
+      "socket": {
+        "def": "O identificador que o sistema operacional dá a uma ponta de uma conversa de rede, definido por endereço, porta e protocolo.",
+        "context": "É a fronteira onde a rede vira problema de programação: uma aplicação não envia pacotes, ela escreve num descritor e o núcleo faz o resto. Essa abstração é a razão de tanta depuração de rede acontecer com ferramentas que listam sockets em vez de capturar tráfego - o estado de uma conexão é visível no host antes de existir qualquer coisa no fio. É também recurso finito, e sockets deixados em espera após o fechamento são causa rotineira de um servidor que para de aceitar parecendo ocioso."
+      },
+      "handshake": {
+        "def": "A troca que estabelece uma conversa antes de os dados fluírem - concordando que os dois lados estão presentes, e em que termos.",
+        "context": "Todo aperto de mão custa ao menos uma ida e volta, e é por isso que a latência domina a experiência de um serviço distante mais que a banda: uma página que precisa de várias conexões paga a distância repetidas vezes antes de um byte de conteúdo se mover. É também o ponto em que a capacidade é negociada, o que faz dele o lugar onde moram os ataques de rebaixamento, e a razão de protocolos modernos autenticarem a própria negociação, em vez de confiar nela."
+      },
+      "authentication": {
+        "def": "Estabelecer quem ou o que está fazendo uma requisição - distinto de decidir o que essa pessoa ou coisa pode fazer.",
+        "context": "A distinção em relação à autorização é aquela sobre a qual a maioria dos incidentes gira: um sistema que prova identidade corretamente e então concede tudo a quem provou autenticou perfeitamente e não autorizou nada. A autenticação também acontece uma vez e passa a ser representada por um token, um cookie ou uma sessão, e é por isso que roubar a representação costuma ser mais fácil que derrotar a verificação - e por que duração e revogação importam tanto quanto força."
+      },
+      "authorization": {
+        "def": "Decidir o que uma parte autenticada pode fazer - a verificação que roda em toda requisição, e não só na porta.",
+        "context": "É a metade mais difícil, porque precisa estar certa por objeto, e não por pessoa: um sistema sabe quem você é uma vez, e depois precisa decidir sobre cada registro, endpoint e ação separadamente. É por isso que controle de acesso quebrado é, de forma consistente, o defeito web grave mais comum - não porque o conceito seja difícil, mas porque a verificação precisa se repetir em toda parte, e um único lugar que a esqueça é a falha inteira."
+      },
+      "certificate": {
+        "def": "Uma afirmação assinada que liga uma chave pública a um nome, válida por um período, emitida por uma autoridade em que quem confia decidiu confiar.",
+        "context": "Três coisas falham aqui, e falham de formas diferentes. O nome pode não bater com o que o cliente pediu. O período pode ter acabado, que é a queda que chega numa data que alguém poderia ter lido um ano antes. Ou a cadeia pode não levar a uma raiz confiável naquela máquina específica, e é por isso que um certificado que funciona no navegador falha a partir de um servidor com repositório de confiança mais velho. Nada num certificado válido diz que o operador é honesto - apenas que uma autoridade atestou um nome."
+      },
+      "vulnerability": {
+        "def": "Um defeito que permite a alguém fazer algo que o sistema deveria impedir.",
+        "context": "Uma vulnerabilidade não é risco por si só: risco exige caminho alcançável, parte motivada e algo que valha a pena alcançar. É por isso que a contagem de achados em aberto é um número gerencial ruim, e a de itens exploráveis, expostos e de alto valor é um número útil. O corolário incômodo é que a maioria dos parques não consegue corrigir tudo, então um programa que não prioriza está escolhendo por acidente - e a escolha está sendo feita, alguém a escreva ou não."
+      },
+      "malware": {
+        "def": "Software que roda num sistema para servir a alguém que não é o dono dele.",
+        "context": "As categorias - vírus, verme, cavalo de Troia, rootkit, ladrão de credenciais - descrevem como aquilo se espalha e se esconde, e não o que faz, e as amostras modernas as misturam à vontade, e é por isso que classificar serve menos, operacionalmente, que comportamento. A propriedade que define é ser código executando com permissões legítimas: quase nada do que o malware faz exige capacidade nova, só a de rodar como alguém que já tinha permissão. É por isso que controle de execução e redução de privilégio superam a detecção ao longo do tempo."
+      },
+      "api": {
+        "def": "Uma forma definida de um programa pedir algo a outro - um contrato sobre o que pode ser chamado e o que volta.",
+        "context": "A interface é uma promessa, e a promessa é a superfície de segurança: tudo o que quem chama alcança é tudo o que um atacante com uma credencial alcança. Duas falhas dominam. Autorização verificada no gateway e não por objeto, de modo que trocar um identificador na requisição devolve o registro de outra pessoa. E uma interface que cresceu por adição, em que o endpoint não documentado de três anos atrás continua respondendo porque nada nunca remove nada."
+      },
+      "backup": {
+        "def": "Uma cópia guardada para que os dados possam ser recuperados - o que só é verdade depois que uma restauração foi testada.",
+        "context": "A regra operacional é que ninguém tem backup, só restauração, e uma cópia não testada é uma crença, e não um controle. Três propriedades decidem se ela sobrevive a um incidente, e não apenas a um engano: precisa estar isolada o bastante para que quem comprometeu o sistema não consiga apagá-la, recente o bastante para atender à perda aceitável, e restaurável rápido o bastante para importar. O ransomware transformou a primeira dessas de gentileza em razão de existir."
+      },
+      "session": {
+        "def": "A memória do servidor de que determinado cliente já foi autenticado, em geral representada por um token que o cliente devolve.",
+        "context": "Sessões existem porque o protocolo de baixo não lembra de nada, então cada requisição precisa carregar prova de uma decisão tomada antes. Essa prova é material ao portador: quem a tiver é tratado como o usuário, e é por isso que o roubo de sessão pula a autenticação inteira, e por que duração, vinculação e revogação são os controles que de fato importam. Um logout que só limpa o cliente deixa um token válido na mão de quem o copiou."
+      },
+      "throughput": {
+        "def": "Quanto dado de fato passa por unidade de tempo - ao contrário da capacidade nominal do enlace, que é um teto, e não uma promessa.",
+        "context": "A distância entre os dois é onde moram as perguntas interessantes. Um enlace de um gigabit carregando uma única sessão TCP através de um continente não vai chegar a um gigabit, porque o remetente pode ter apenas uma ida e volta de dados em trânsito por vez. É por isso que a correção para uma transferência lenta costuma ser janela maior ou mais fluxos em paralelo, e não enlace maior, e por que comprar capacidade para resolver problema de distância é o erro caro mais comum da área."
+      },
+      "jitter": {
+        "def": "Variação de atraso entre pacotes - a razão de uma chamada soar quebrada num enlace cuja latência média parece boa.",
+        "context": "Mídia em tempo real se importa mais com consistência que com velocidade, porque o receptor precisa tocar áudio num ritmo estável e só absorve variação armazenando. Um buffer de jitter troca latência por suavidade, então a cura e a doença são medidas na mesma unidade. É por isso que média é a estatística errada para qualquer coisa interativa: o percentil noventa e cinco e a dispersão dizem o que o usuário sente, e a média esconde exatamente os pacotes que estragaram a chamada."
+      },
+      "packet-loss": {
+        "def": "Pacotes que nunca chegam - descartados por fila cheia, corrompidos no caminho, ou derrubados por política.",
+        "context": "Percentuais pequenos causam dano desproporcional, porque a perda é o sinal que o controle de congestionamento escuta: um por cento de perda pode reduzir à metade a vazão de uma transferência, já que o remetente a trata como instrução para desacelerar. Isso também significa que perda nem sempre é defeito a eliminar - uma rede que nunca descarta em geral é uma que armazena, e o atraso resultante é pior para tráfego interativo do que os descartes teriam sido."
+      },
+      "duplex": {
+        "def": "Se um enlace carrega tráfego nos dois sentidos ao mesmo tempo, ou precisa se revezar.",
+        "context": "Enlaces comutados modernos são full duplex e o ajuste quase não é pensado - até haver descompasso, com uma ponta negociando full e a outra supondo half. O resultado é a falha mais enganosa de redes: o enlace está de pé, pings pequenos passam, e a vazão desaba sob carga com erros subindo, porque um lado transmite enquanto o outro acredita ter havido colisão. Ela sobrevive como reflexo de diagnóstico justamente por parecer qualquer coisa menos o que é."
+      },
+      "checksum": {
+        "def": "Um valor pequeno computado a partir dos dados para que o receptor perceba corrupção acidental - detecção, e não correção, e não proteção.",
+        "context": "Ele defende contra ruído, e não contra pessoas: um atacante que muda o dado simplesmente recalcula a soma. É essa a distinção em relação a uma assinatura ou a um código de autenticação de mensagem, e confundi-las é erro real de projeto, e não implicância. Operacionalmente a surpresa é o offload - placas de rede calculam somas em hardware, então uma captura feita no host de origem rotineiramente as mostra como inválidas, comportamento correto que já custou muitas horas de investigação."
+      },
+      "fragmentation": {
+        "def": "Dividir um pacote porque ele é maior que o que algum enlace do caminho carrega.",
+        "context": "É a fonte clássica de falhas que passam em todo teste simples: pacotes pequenos funcionam, a conexão estabelece, e a transferência trava quando dados de verdade começam. Isso acontece quando a mensagem que pede ao remetente para reduzir o tamanho é filtrada, o que é comum porque a mensagem é ICMP e alguém bloqueou ICMP por precaução. Túneis tornam isso rotineiro ao acrescentar cabeçalhos a pacotes já dimensionados para o caminho original, e é por isso que a primeira pergunta sobre qualquer reclamação de VPN é o tamanho máximo efetivo."
+      },
+      "container": {
+        "def": "Um processo isolado por recursos do núcleo, e não por um sistema operacional separado - compartilhando o núcleo do host com tudo o mais que roda nele.",
+        "context": "O núcleo compartilhado é a troca inteira. Ele torna contêineres rápidos de iniciar e baratos de rodar, e faz a fronteira de isolamento ser um conjunto de recursos do núcleo, e não uma fronteira de hardware, de modo que uma vulnerabilidade de núcleo é uma vulnerabilidade de fronteira. É por isso que as perguntas interessantes de segurança são sobre o que o contêiner pode pedir ao núcleo - capacidades, filtragem de chamadas de sistema, se roda como root - e não sobre a imagem, e por que um contêiner comprometido num host compartilhado é conversa diferente de uma máquina virtual comprometida."
+      },
+      "hypervisor": {
+        "def": "A camada que apresenta hardware virtual a vários sistemas operacionais e os mantém separados.",
+        "context": "É a fronteira de isolamento comum mais forte da infraestrutura comum, porque cada convidado tem o próprio núcleo e o hipervisor media o hardware - e é por isso que nuvem multi-inquilino é construída sobre ele, e não só sobre contêineres. O custo é que ele também é o software mais privilegiado presente: o que o comprometer é dono de todos os convidados de uma vez, e os convidados não têm como perceber. Canais laterais por recursos compartilhados de processador são a parte incômoda, porque atravessam uma fronteira que o projeto supunha sólida."
+      },
+      "logging": {
+        "def": "Registrar o que aconteceu para que se possa responder depois - por um operador durante um incidente, ou por um investigador em seguida.",
+        "context": "Os dois públicos querem coisas diferentes, e o conflito raramente é resolvido de propósito. A operação quer recente, verboso, pesquisável e barato; a investigação quer completo, à prova de adulteração e guardado por muito tempo. Parques que otimizam só o primeiro descobrem, durante um incidente, que a janela fechou antes de a pergunta ser feita. A segunda falha recorrente é o log morar na máquina que o gerou, que é a máquina que o atacante controla."
+      },
+      "canary": {
+        "def": "Expor uma mudança primeiro a uma fatia pequena e real do tráfego, para que a falha seja descoberta por poucos, e não por todos.",
+        "context": "Funciona só se duas coisas forem verdadeiras, e as duas costumam faltar. Precisa haver um sinal que distinga o canário do resto, o que significa métricas segmentadas por versão, e não agregadas. E precisa haver uma reversão executável sob pressão por quem estiver acordado. Sem isso, um canário é uma implantação com passos a mais que falha em todo lugar do mesmo jeito, cinco minutos depois."
+      },
+      "rollback": {
+        "def": "Devolver um sistema ao estado anterior que funcionava - o que só é plano se já tiver sido testado.",
+        "context": "A suposição que o quebra é a de que uma mudança é reversível. Migrações de esquema, dados escritos em formato novo, mensagens consumidas e credenciais emitidas não são desfeitos ao reimplantar a versão antiga, e descobrir isso no meio do incidente é como uma queda curta vira longa. Registros de mudança maduros, por isso, declaram a reversão explicitamente e nomeiam o que ela não recupera, o que transforma uma esperança não examinada numa decisão tomada de propósito."
+      },
+      "single-point-of-failure": {
+        "def": "Um componente cuja perda para o serviço - por mais redundância que haja em volta.",
+        "context": "Costumam ser achados por acaso, porque os óbvios são removidos cedo e os que restam são dependências compartilhadas que ninguém desenhou: o provedor de identidade na frente das duas regiões, a autoridade certificadora, a única pessoa que conhece o procedimento, a zona de DNS. Redundância numa camada muitas vezes esconde um ponto único noutra - dois data centers numa rota de fibra, dois clusters numa conta de nuvem, dois nós numa alimentação - e é por isso que o exercício útil é rastrear dependência, e não contar equipamentos."
+      },
+      "exfiltration": {
+        "def": "Tirar o dado roubado para fora - a etapa em que uma invasão vira um vazamento com consequências.",
+        "context": "É a última chance de perceber, e é feita de propósito para parecer comum: envios a serviços que a organização já usa, volumes pequenos por longos períodos, ou tunelamento por protocolos que ninguém inspeciona. O DNS é o canal clássico justamente por ser permitido em todo lugar e raramente examinado por conteúdo. A propriedade detectável costuma ser o formato, e não o conteúdo - um volume, um destino ou um horário que não bate com o comportamento normal daquela conta."
+      },
+      "risk": {
+        "def": "A combinação de quão provável algo ruim é e quanto custaria - o número contra o qual uma decisão deveria ser tomada.",
+        "context": "A utilidade disso desaba quando vira uma cor num gráfico. Uma declaração de risco que não nomeia o ativo, o cenário e a consequência é um humor, e ela compete mal contra um caso de negócio com números. A outra falha é tratar o registro como se fosse o trabalho: anotar um risco não muda nada, e uma organização com registro maduro e nenhuma remediação documentou a própria exposição com precisão, em vez de reduzi-la."
+      },
+      "asset": {
+        "def": "Algo que uma organização possui ou de que depende, que vale proteger - e, na prática, algo que ela precisa saber que existe.",
+        "context": "O inventário é onde programas de segurança falham em silêncio, porque todo outro controle é escopado por ele: a correção cobre o que está listado, a monitoração vigia o que está listado, e a máquina que ninguém registrou é a que ainda roda a versão antiga. Nuvem e trabalho remoto tornaram isso permanentemente mais difícil, já que qualquer coisa pode ser criada em minutos por alguém com um cartão. A métrica honesta não é o tamanho do inventário, e sim a deriva dele - quanto tempo algo consegue existir antes de o registro saber."
+      },
+      "ids": {
+        "def": "Um sistema que observa tráfego ou hosts e relata o que parece ataque - e, como IPS, bloqueia.",
+        "context": "A questão de projeto inteira é a letra que muda. Detecção produz alertas que alguém precisa ler; prevenção produz quedas quando erra. Passar de uma para a outra converte todo falso positivo de ruído em incidente, e é por isso que implantações maduras escalonam: monitorar, depois bloquear num piloto, depois bloquear em geral, com data em cada passo. A segunda restrição é a cifragem - um sensor que não lê o tráfego fica reduzido a metadados, e é por isso que tanto dessa capacidade migrou para o endpoint."
+      },
+      "hub": {
+        "def": "Um repetidor que copia todo quadro para todas as portas - o equipamento que os comutadores substituiram, e a razao de redes antigas compartilharem banda.",
+        "context": "Tudo ligado a um hub ficava num dominio de colisao e enxergava o trafego de todo mundo, e e por isso que capturar pacote era trivial e por que a comutacao foi uma melhoria de seguranca que ninguem vendeu como tal. A palavra sobrevive em dois lugares uteis: um espelhamento de porta recria de proposito o comportamento de hub para monitoracao, e o sem fio e meio compartilhado por fisica, entao a velha aritmetica de contencao ainda vale para um canal, mesmo que o cabeamento tenha deixado de funcionar assim decadas atras."
+      },
+      "trunk": {
+        "def": "Um enlace que carrega varias VLANs de uma vez, etiquetando cada quadro para que a outra ponta saiba a qual rede ele pertence.",
+        "context": "O tronco e onde a segmentacao e aplicada e onde ela e desfeita em silencio com mais frequencia. Uma porta configurada para carregar todas as VLANs por padrao entrega o parque inteiro a partir de um cabo, e um descompasso de VLAN nativa entre dois comutadores funde silenciosamente duas redes que o diagrama diz separadas. Os dois sao defeitos de configuracao, e nao de protocolo, e e por isso que revisoes de segmentacao olham as listas de permissao dos troncos antes de olhar regras de firewall."
+      },
+      "pat": {
+        "def": "Traduzir muitos enderecos privados para um endereco publico reescrevendo tambem as portas - o que a maioria das pessoas quer dizer ao falar NAT.",
+        "context": "A porta e o que torna o compartilhamento possivel: o equipamento que traduz mantem uma tabela ligando cada conversa interna a uma porta de origem unica no endereco compartilhado, e desfaz isso na volta. Duas consequencias decorrem direto. A tabela e finita, entao um host que abre milhares de conexoes pode esgota-la para todos atras do mesmo endereco. E a atribuicao desaba - um endereco num log identifica o gateway, e nao o usuario, que e o problema que implantacoes em escala de operadora criam onde quer que sejam usadas."
+      },
+      "vm": {
+        "def": "Um computador simulado completo, com nucleo proprio, isolado dos vizinhos pelo hipervisor, e nao pelo sistema operacional.",
+        "context": "O nucleo proprio e a diferenca inteira em relacao a um conteiner, e e o que decide onde cada um cabe: maquinas virtuais custam mais para iniciar e rodar, e dao uma fronteira que sobrevive a um defeito no nucleo do convidado. E por isso que cargas nao confiaveis ou mutuamente hostis ainda vao para maquinas separadas, e nao para espacos de nome separados. A heranca operacional sao os retratos - congelar e restaurar um sistema inteiro e a coisa mais util que a virtualizacao deu a operacao, e a mais perigosa para quem testa uma restauracao que nunca ensaiou."
+      },
+      "telemetry": {
+        "def": "As medicoes que um sistema emite sobre si mesmo, enviadas a outro lugar para serem guardadas e lidas.",
+        "context": "A palavra esconde uma decisao: algo escolheu o que emitir, e tudo o que nao foi escolhido e invisivel, por melhor que seja a analise depois. Isso faz da selecao de telemetria um ato arquitetural, e nao operacional, e ela costuma ser feita por padroes de fabrica - a configuracao inicial do agente decide o que a organizacao vai conseguir investigar por anos. A segunda restricao e custo, e e por isso que a pergunta util nao e o que da para coletar, e sim o que continuara pagavel guardar quando o parque dobrar."
+      },
+      "metrics": {
+        "def": "Numeros amostrados ao longo do tempo - baratos de guardar, rapidos de consultar, e incapazes de explicar uma requisicao isolada.",
+        "context": "Metricas respondem quanto e com que frequencia, o que as torna certas para alertar e erradas para investigar: um agregado diz que a taxa de erro subiu e nao diz qual cliente, qual versao ou qual consulta. O erro recorrente e a media, porque ela esconde a cauda que os usuarios de fato sentem - se a resposta media e rapida e o percentil noventa e nove e pessimo, uma fracao relevante de pessoas esta passando mal de forma invisivel."
+      },
+      "tracing": {
+        "def": "Seguir uma requisicao por todos os servicos que ela toca, com cada passo registrado e ligado por um identificador comum.",
+        "context": "Existe porque quebrar uma aplicacao em servicos quebrou o rastro de pilha: nenhuma maquina sozinha ve a requisicao inteira, e o passo lento pode estar em qualquer lugar. Um traco remonta isso, e e por isso que ele e a ferramenta que responde para onde foi o tempo. O custo e instrumentacao e propagacao - todo servico precisa repassar o identificador, e um que nao repassa vira a lacuna onde a trilha para, que costuma ser o componente mais velho e muitas vezes o que esta sendo culpado."
+      },
+      "retention": {
+        "def": "Por quanto tempo registros sao guardados antes de apagados - decisao com consequencias legais, financeiras e investigativas que costuma ser tomada so pelo custo de armazenamento.",
+        "context": "Duas pressoes opostas se encontram aqui, e as duas sao legitimas. Investigacao precisa de historico, e invasoes sao descobertas com frequencia meses depois de comecarem, entao uma janela de noventa dias pode significar que o comeco ja sumiu antes de alguem olhar. Regulacao de privacidade e exposicao judicial empurram para o outro lado, porque dado guardado e dado que pode ser exigido ou vazado. Decidir de proposito e o exercicio inteiro; deixar o padrao vencer significa que a resposta foi dada por quem precificou o nivel de armazenamento."
+      },
+      "forensics": {
+        "def": "Estabelecer o que aconteceu num sistema, de um jeito que sobreviva a ser questionado depois.",
+        "context": "A disciplina e definida por essa segunda parte. Qualquer um consegue olhar uma maquina; pericia e olhar sem alterar o que se olha, registrar como se sabe, e conseguir mostrar depois que a evidencia e a mesma. E por isso que a primeira acao costuma ser capturar estado volatil e isolar, em vez de reiniciar ou limpar - e por que uma organizacao que apaga e reinstala um host comprometido escolheu velocidade de recuperacao em vez de um dia saber o que houve, o que as vezes e a troca certa e deveria ser decisao, e nao reflexo."
+      },
+      "chain-of-custody": {
+        "def": "O registro ininterrupto de quem deteve a evidencia, quando, e o que fez com ela.",
+        "context": "A finalidade e tornar uma resposta defensavel, e nao apenas correta: um investigador que nao consegue mostrar que a evidencia foi protegida de alteracao tem achados que podem ser descartados sem serem refutados. Na pratica e sem glamour - resumos criptograficos tirados na aquisicao, trabalho sobre copias e nao sobre originais, carimbos de tempo, assinaturas e registro de cada transferencia. Importa fora de tribunal porque a mesma disciplina e o que faz um relatorio interno de incidente sobreviver ao contato com um fabricante, uma seguradora ou um regulador."
+      },
+      "change-management": {
+        "def": "O processo pelo qual mudancas planejadas sao propostas, revisadas, agendadas e registradas.",
+        "context": "Existe porque a maioria das quedas e autoinfligida e chega de proposito, entao um registro do que mudou e o caminho mais rapido para o que quebrou. Ele falha em duas direcoes opostas. Pesado demais, atrasa mudancas pequenas e seguras ate elas chegarem em lotes grandes e arriscados - o processo fabricando o risco que deveria controlar. Leve demais, e ninguem responde o que mudou na hora em que o grafico virou. O teste util e se o registro responde essa pergunta em um minuto, durante um incidente."
+      },
+      "idempotence": {
+        "def": "A propriedade de que fazer algo duas vezes tem o mesmo efeito de fazer uma vez.",
+        "context": "E o que torna repetir seguro, e repetir e inevitavel: redes perdem respostas, entao um cliente que nao recebeu resposta nao tem como saber se o trabalho aconteceu. Sem idempotencia, as opcoes sao arriscar duplicar a acao ou arriscar pula-la. E por isso que interfaces de pagamento recebem uma chave de idempotencia, que ferramentas de configuracao descrevem estado desejado em vez de passos, e que a pergunta interessante sobre qualquer interface e o que acontece quando a mesma requisicao chega duas vezes."
+      },
+      "rto-rpo": {
+        "def": "Quanto tempo a recuperacao pode levar, e quanto de dado recente pode ser perdido - os dois numeros que transformam continuidade de aspiracao em projeto.",
+        "context": "Sao uteis porque custam dinheiro de formas opostas. Um tempo de recuperacao curto compra capacidade em espera, que fica ociosa; um ponto de recuperacao curto compra replicacao e a banda para sustenta-la. Declarar os dois obriga o negocio a dizer quanto valem, de fato, uma hora parada e uma hora de trabalho perdido, que e a conversa para a qual o planejamento de continuidade existe. O modo de falha e declarar numeros que ninguem testou, o que produz um plano preciso e falso."
+      },
+      "secure-boot": {
+        "def": "Verificar cada etapa da inicializacao contra uma assinatura antes de executa-la, para que codigo carregado antes do sistema operacional nao possa ser trocado em silencio.",
+        "context": "Isso fecha uma lacuna especifica: qualquer coisa que roda antes do sistema operacional esta acima de toda defesa que o sistema oferece, entao um bootkit ve o software de seguranca iniciar e consegue mentir para ele. A cadeia precisa estar ancorada em hardware. A troca e controle - o mesmo mecanismo que impede codigo malicioso nao assinado impede codigo legitimo nao assinado, e e por isso que a discussao sobre quem detem as chaves de assinatura em hardware de uso geral e genuina, e nao obstrucao."
+      },
+      "persistence": {
+        "def": "Os arranjos que um atacante faz para sobreviver a um reinicio, a uma troca de senha ou a uma limpeza parcial.",
+        "context": "E a diferenca entre um incidente que acaba e um que volta, e e por isso que a contencao e julgada por o invasor poder retornar, e nao por a sessao atual estar fechada. Os mecanismos quase sempre sao recursos legitimos - tarefas agendadas, entradas de inicializacao, contas de servico, regras de e-mail, credenciais acrescentadas num provedor de identidade - e e por isso que cacar persistencia e revisar configuracao, e nao procurar arquivos, e por que uma organizacao que reinstala um host sem auditar identidade costuma encontrar o visitante ja esperando."
+      },
+      "command-and-control": {
+        "def": "O canal que um host comprometido usa para receber instrucoes e reportar de volta.",
+        "context": "E a etapa mais detectavel de uma invasao, de forma confiavel, porque precisa ser repetitiva: algo tem de se apresentar, e apresentar-se deixa um ritmo. E por isso que a deteccao foca em batimento - intervalos regulares, tamanhos constantes, um destino com o qual nenhum outro host do parque conversa - e nao em conteudo, que e cifrado. Canais modernos se escondem em servicos comuns justamente para derrotar isso, usando armazenamento em nuvem, plataformas de conversa e DNS, entao o sinal util costuma ser um host conversando com algo normal num padrao anormal."
+      },
+      "key-management": {
+        "def": "Gerar, guardar, rotacionar, revogar e aposentar chaves criptograficas - a parte da criptografia que de fato falha.",
+        "context": "Algoritmos raramente sao quebrados na pratica; chaves e que sao copiadas, comitadas em repositorio, compartilhadas entre ambientes, deixadas em hardware desativado e nunca rotacionadas porque ninguem sabe o que quebraria. As perguntas uteis sao, portanto, administrativas: onde essa chave existe, quem pode usa-la, o que acontece no dia em que precisar ser trocada, e se isso ja foi feito alguma vez. Uma organizacao que nao responde a ultima tem cifragem cuja forca nunca foi testada do unico jeito que importa."
+      },
+      "blameless": {
+        "def": "Revisar um incidente para achar as condicoes que o permitiram, e nao a pessoa que agiu dentro delas.",
+        "context": "O argumento a favor e pratico, e nao gentil: quem espera culpa relata menos, mais tarde e com menos exatidao, e uma organizacao que nao enxerga os quase-acidentes voa apenas com os eventos grandes demais para esconder. A disciplina e perguntar por que a acao fez sentido na hora - o que o operador via, o que a ferramenta sugeria, qual era a pressao - porque um sistema em que um comando errado causa uma queda tem um problema de projeto que vai sobreviver a pessoa que o digitou."
+      },
+      "wireguard": {
+        "def": "Um protocolo de VPN construido em torno de uma base de codigo deliberadamente pequena e de escolhas criptograficas modernas fixas, sem negociacao.",
+        "context": "A ausencia de negociacao e o argumento de projeto. IPsec e TLS deixam as duas pontas combinarem algoritmos, o que e flexivel e e tambem onde moram ataques de rebaixamento e descompassos de configuracao; o WireGuard elimina a conversa entregando uma suite so e versionando o protocolo inteiro caso precise mudar. A troca e real: sem agilidade de algoritmo, uma quebra numa primitiva exige nova versao do protocolo em todo lugar, e o conjunto pequeno de recursos empurra identidade, politica e atribuicao de endereco para o que quer que o embrulhe."
+      },
+      "accounting": {
+        "def": "O terceiro A do AAA: registrar o que uma parte autenticada de fato fez, para faturamento, capacidade ou evidencia.",
+        "context": "E o que mais costuma ser configurado por ultimo e o mais necessario sob pressao, porque autenticacao e autorizacao respondem perguntas sobre o presente, e a contabilizacao e a unica que responde sobre o passado. Em rede de operadora ela existe para gerar fatura; em rede corporativa existe para que alguem possa dizer qual conta emitiu qual comando em qual equipamento, que e exatamente a pergunta feita depois de uma queda ou de uma invasao, e exatamente o registro que ninguem habilitou."
+      },
+      "tacacs": {
+        "def": "Um protocolo para centralizar o acesso administrativo a equipamentos de rede, separando autenticacao, autorizacao e contabilizacao em trocas distintas.",
+        "context": "A separacao e a diferenca pratica em relacao ao RADIUS: como a autorizacao e uma troca propria, o equipamento pode consultar o servidor sobre cada comando conforme ele e digitado, e e assim que controle por comando e registro completo funcionam. Isso o torna a escolha usual para administracao de equipamento, enquanto o RADIUS segue usual para acesso a rede. A dependencia merece ser dita - se o servidor esta inalcancavel e o retorno local nunca foi configurado nem testado, o parque fica ingerenciavel exatamente no momento em que alguem precisa entrar."
+      },
+      "rce": {
+        "def": "Um defeito que permite a um atacante rodar codigo proprio num sistema pela rede, sem precisar de conta nele.",
+        "context": "E o topo da escala de severidade porque colapsa todos os outros passos: sem phishing, sem roubo de credencial, sem movimento lateral para conseguir o primeiro apoio. E por isso que um caso sem autenticacao num produto exposto a internet produz ciclos de correcao de emergencia, seja qual for a nota do scanner. A pergunta seguinte util e como o codigo roda - o mesmo defeito e um incidente diferente conforme o servico estivesse com menor privilegio ou como root."
+      },
+      "lfi": {
+        "def": "Fazer uma aplicacao ler ou executar um arquivo escolhido por quem chama, controlando um caminho que ela monta a partir da entrada.",
+        "context": "Pertence a mesma familia da injecao: entrada de usuario chegando a um interpretador, aqui o sistema de arquivos. Ler ja e ruim - arquivos de configuracao, credenciais, chaves - e escala para execucao sempre que a aplicacao roda o que inclui. Filtrar o caminho e a estrategia perdedora pela razao conhecida: cada codificacao, cada variante de travessia e cada camada de normalizacao entre a verificacao e a abertura e outra chance de as duas discordarem, e e por isso que a correcao duravel e nunca montar caminho a partir de entrada."
+      },
+      "microservice": {
+        "def": "Uma arquitetura que divide uma aplicacao em servicos implantaveis de forma independente, que se comunicam pela rede.",
+        "context": "O beneficio prometido e organizacional antes de ser tecnico: equipes conseguem entregar sem coordenar uma unica publicacao. O custo e que toda chamada de funcao que cruzava fronteira de processo agora cruza a rede, entao falhas que eram impossiveis viram rotina - sucesso parcial, tempo esgotado, tempestade de repeticoes, e divergencia de versao entre servicos que antes eram compilados juntos. E por isso que traco, idempotencia e contrapressao deixam de ser opcionais, e por que dividir um sistema que uma equipe entrega uma vez por semana costuma comprar os custos sem o beneficio."
+      },
+      "graphql": {
+        "def": "Uma linguagem de consulta para interfaces em que quem chama especifica exatamente quais campos quer, numa requisicao so.",
+        "context": "Ela resolve um problema real - clientes buscando demais ou fazendo varias idas e voltas - movendo o formato da resposta para a mao de quem chama. Essa inversao e tambem a mudanca de seguranca: a autorizacao nao pode mais ser verificada por endpoint, porque na pratica ha um endpoint e quem chama compoe a consulta. As verificacoes precisam viver no nivel de campo e de objeto, e uma consulta profundamente aninhada e tambem uma questao de recurso, e e por isso que limite de profundidade e analise de custo fazem parte de opera-la, e nao sao refinamentos."
+      },
+      "webhook": {
+        "def": "Um arranjo em que um sistema chama uma URL que voce fornece quando algo acontece, em vez de voce ficar perguntando.",
+        "context": "Ele inverte quem inicia, e essa inversao carrega tres obrigacoes que as pessoas descobrem tarde. O endpoint e publico, entao precisa autenticar quem chama - em geral verificando uma assinatura sobre o corpo, porque URL nao e segredo. A entrega e pelo menos uma vez, entao o tratador precisa ser idempotente, ou duplicatas viram cobrancas em dobro. E o remetente espera resposta rapida, entao trabalho de verdade pertence a uma fila, e nao a requisicao, ou um tratador lento vira repeticoes que pioram a carga."
+      },
+      "pam": {
+        "def": "Controlar e registrar o uso de contas administrativas - retirando credenciais, intermediando a sessao, e rotacionando o segredo depois.",
+        "context": "A finalidade e tornar o privilegio temporario e observavel, porque acesso administrativo permanente e o que um invasor procura e o que uma auditoria nao consegue reconciliar. Bem feito, remove senha compartilhada da mao humana por completo. Mal feito, vira um sistema unico guardando todas as credenciais do parque, alcancavel de estacao comum - e e por isso que a pergunta interessante sobre qualquer implantacao e o que acontece com ela, e com o negocio, quando esse sistema esta indisponivel ou comprometido."
+      },
+      "tpm": {
+        "def": "Um chip que guarda chaves e medicoes em hardware, para que segredos sejam utilizaveis pela maquina sem serem extraiveis dela.",
+        "context": "A propriedade que importa e uma chave poder ser usada sem ser lida: o software pede ao chip para assinar ou decifrar, e nunca detem o material privado. E isso que permite a cifragem de disco destravar sem senha guardada no proprio disco, e que permite a uma maquina provar qual software ela inicializou. Os limites tambem valem: ele protege contra copiar o disco, e nao contra um atacante que ja roda codigo na maquina ligada, como o usuario dono da chave."
+      },
+      "tabletop": {
+        "def": "Conduzir uma equipe por um incidente hipotetico numa sala, para achar as lacunas antes que um incidente real ache.",
+        "context": "O valor esta em testar as partes que um teste tecnico nao alcanca: quem decide, quem e acionado as tres da manha, quem fala com clientes, e se o plano pressupoe um sistema que estara indisponivel durante justamente o evento que ele descreve. A descoberta recorrente e banal e cara - o procedimento mora no wiki que esta atras do provedor de identidade que caiu, ou a unica pessoa que conhece o passo a passo e a que esta de ferias. Nada mais acha isso barato."
+      },
+      "capacity": {
+        "def": "Quanta carga um sistema aguenta antes de o comportamento degradar - o que nao e o mesmo que o numero da especificacao.",
+        "context": "O valor util e o ponto em que o tempo de resposta comeca a subir, e nao aquele em que algo para de responder, e os dois estao longe um do outro: filas crescem de forma nao linear, entao um sistema a noventa por cento de utilizacao se comporta de forma nada parecida com um a cinquenta, e os ultimos dez por cento da capacidade nominal costumam ser inutilizaveis na pratica. Planejar contra o numero nominal, e nao contra o joelho medido, e a forma padrao de descobrir isso, sempre no momento menos conveniente."
+      },
+      "dhcp-snooping": {
+        "def": "Um recurso de comutador que so permite respostas de atribuicao de endereco vindas de portas que voce declarou confiaveis.",
+        "context": "Existe porque o protocolo de atribuicao nao tem autenticacao: qualquer dispositivo do segmento pode responder, e a resposta mais rapida vence. Um servidor invasor entrega o proprio endereco como gateway e vira silenciosamente o caminho de tudo, o que e uma maquina no meio conseguida sem tocar num unico cabo do datacenter. Marcar o uplink como unica porta confiavel elimina a classe inteira, e a tabela que ele constroi e o que varias outras protecoes usam depois para validar enderecos."
+      },
+      "region": {
+        "def": "Uma area geografica onde um provedor de nuvem opera data centers, e a fronteira que a maioria dos servicos nao cruza por padrao.",
+        "context": "E a unidade que importa para lei e para falha: residencia de dados e discutida em termos de regiao, e uma queda regional e a maior falha que uma conta de provedor experimenta rotineiramente. A armadilha e supor que multirregiao e uma caixa a marcar - significa dado duplicado com uma decisao de consistencia, esteiras de implantacao duplicadas, e uma fatura de saida pelo trafego entre elas."
+      },
+      "object-storage": {
+        "def": "Armazenamento enderecado por chave, e nao por caminho ou bloco, com metadados anexados e sem semantica de sistema de arquivos.",
+        "context": "Abrir mao do sistema de arquivos e o que faz aquilo escalar: sem diretorios para travar, sem escrita parcial para coordenar, objetos substituidos inteiros. Isso tambem remove o que as aplicacoes esperam - sem acrescentar ao fim, sem renomear que nao seja copia, e concordancia eventual, e nao imediata, em alguns desenhos. A falha de seguranca recorrente nao e a tecnologia, e a permissao: um balde tornado publico para resolver um problema de acesso, e nunca fechado de volta."
+      },
+      "block-storage": {
+        "def": "Armazenamento apresentado a uma maquina como disco cru, que o sistema operacional formata e administra sozinho.",
+        "context": "E o que um banco de dados e um sistema operacional esperam, porque querem controlar layout, cache e ordenacao. A consequencia em nuvem e a anexacao: um volume pertence a uma maquina por vez e vive numa zona, o que faz dele a coisa que prende uma carga a um lugar. Quem projeta para falha descobre que mover a computacao e facil e mover o disco e o projeto de verdade."
+      },
+      "shared-responsibility": {
+        "def": "A divisao de deveres de seguranca entre um provedor de nuvem e o cliente - o provedor protege a plataforma, o cliente protege o que poe nela.",
+        "context": "Esta na documentacao de todo provedor e e lida errado o tempo todo, porque a linha se move com o servico: numa maquina virtual o cliente corrige o sistema operacional, num banco gerenciado nao, e num servico de armazenamento o provedor garante durabilidade enquanto so o cliente decide quem pode ler. Quase todo vazamento de nuvem noticiado esta do lado do cliente de uma linha que fora publicada de antemao."
+      },
+      "multi-tenancy": {
+        "def": "Um sistema atendendo varios clientes a partir de infraestrutura compartilhada, com isolamento imposto por software, e nao por hardware separado.",
+        "context": "E o que faz a economia da nuvem funcionar e o que torna a seguranca dela interessante: a fronteira entre dois clientes e codigo, e um defeito nesse codigo e um problema entre inquilinos, e nao um bug. A pergunta que vale fazer a qualquer plataforma e onde o isolamento de fato mora - processos separados, maquinas separadas, ou apenas um identificador de cliente numa consulta, porque o ultimo caso cai com um unico filtro esquecido."
+      },
+      "egress-fee": {
+        "def": "O que um provedor de nuvem cobra pelos dados que saem da rede dele - em geral gratis para receber e tarifado para enviar.",
+        "context": "A assimetria e a estrategia: importar dado nao custa nada e exportar custa, entao a fatura cresce com qualquer arquitetura que tira dado de la, e encolhe com qualquer uma que o mantem dentro. Isso molda decisoes reais - onde os backups moram, se a analitica roda ao lado do dado, e quanto custaria sair. Vale precificar essa ultima antes de ela importar, e nao durante uma migracao."
+      },
+      "pon": {
+        "def": "Uma rede de acesso em fibra em que um alimentador e dividido opticamente para muitas casas, sem equipamento energizado entre a central e o assinante.",
+        "context": "Passivo e o argumento economico: divisores nao precisam de energia, refrigeracao nem visita de manutencao, e foi isso que tornou fibra ate a casa pagavel. As consequencias decorrem direto - a capacidade de um alimentador e compartilhada por todos do divisor, entao contencao e parametro de projeto, e nao defeito, e o trafego de descida de cada assinante alcanca fisicamente todos os outros, e e por isso que a cifragem no enlace de acesso faz parte do padrao, e nao e opcional."
+      },
+      "spectrum": {
+        "def": "A faixa de frequencias de radio disponivel para transmissao, dividida pelos reguladores em bandas licenciadas e nao licenciadas.",
+        "context": "E o unico insumo de fato finito em redes: fibra pode ser lancada e processador melhorado, mas uma frequencia num lugar so pode ser usada uma vez. Essa escassez explica os dois mundos - espectro licenciado e comprado em leilao e vem com exclusividade, e o nao licenciado e gratuito e vem com vizinhos. Tudo o que e dificil no sem fio de um escritorio e consequencia de escolher o segundo, em que a interferencia sao outras pessoas fazendo a mesma coisa, legalmente."
+      },
+      "ix": {
+        "def": "Um tecido compartilhado em que muitas redes se interconectam diretamente, em vez de pagarem um terceiro para carregar trafego entre elas.",
+        "context": "O argumento e custo e distancia ao mesmo tempo: sem um ponto de troca, o trafego entre duas redes da mesma cidade pode viajar a outro pais e voltar, o que custa dinheiro e acrescenta atraso. Um ponto de troca remove os dois tornando a conexao local. E por isso que pontos de troca sao infraestrutura estrategica de um pais, e nao produtos comerciais, e por que os maiores sao operados como entidades neutras sem fins lucrativos, com regras de associacao, e nao como negocios."
+      },
+      "federation": {
+        "def": "Aceitar uma identidade comprovada em outro lugar, para que um usuario autenticado pela propria organizacao alcance um servico operado por outra.",
+        "context": "Isso move a decisao de confianca de uma senha para uma relacao: o servico deixa de guardar credenciais e passa a decidir em quais emissores acredita. As consequencias merecem ser ditas. O ciclo de vida da conta pertence ao emissor, entao remover alguem em casa remove o acesso em todo lugar - que e o beneficio inteiro e tambem significa que um emissor comprometido e um comprometimento de todo servico que confia nele."
+      },
+      "assertion": {
+        "def": "A afirmacao assinada que um protocolo de federacao carrega: quem se autenticou, quando, como, para qual audiencia, e por quanto tempo vale.",
+        "context": "Todo campo dela sustenta algo. A audiencia impede que um token emitido para um servico seja reapresentado noutro; a janela de validade limita por quanto tempo um roubado serve; o metodo de autenticacao diz ao servico se um segundo fator foi de fato usado. Servicos que conferem a assinatura e ignoram o resto aceitam asserções que eram tecnicamente validas e nao eram para eles."
+      },
+      "passwordless": {
+        "def": "Autenticar com uma chave guardada por um dispositivo, em vez de um segredo compartilhado que o usuario digita.",
+        "context": "A propriedade que importa nao e a conveniencia: como a credencial e vinculada a origem do site e nunca sai do dispositivo, nao ha nada que o usuario possa digitar numa copia convincente da pagina de login. Isso derrota phishing de forma estrutural, e nao por treinamento. Os problemas em aberto sao recuperacao e inscricao - o que acontece quando o dispositivo se perde, e como a primeira credencial e estabelecida, que e onde os ataques restantes agora se concentram."
+      },
+      "raid": {
+        "def": "Combinar varios discos para que o arranjo sobreviva a perda de um - ou mais, conforme o layout escolhido.",
+        "context": "A frase que precisa acompanhar isso e que RAID nao e backup: ele protege contra um disco morrer, e copia uma exclusao, uma corrupcao ou uma cifragem fielmente para todos os membros. O segundo fato operacional e a reconstrucao - trocar um disco falho poe o arranjo sob carga sustentada exatamente quando a redundancia acabou, que e quando a segunda falha costuma chegar."
+      },
+      "replication": {
+        "def": "Manter copias de dados em mais de uma maquina, para que a perda de uma nao perca o dado.",
+        "context": "O assunto inteiro e a palavra 'quando'. A replicacao sincrona confirma uma escrita so depois que a copia a tem, o que custa latencia proporcional a distancia e garante nenhuma perda; a assincrona confirma na hora e aceita que uma falha perde o que ainda nao seguiu. Essa escolha e o objetivo de ponto de recuperacao expresso em engenharia, e nao da para evita-la - um sistema que nao escolheu escolheu assincrona por padrao."
+      },
+      "sharding": {
+        "def": "Dividir um conjunto de dados entre maquinas por alguma chave, para que cada uma guarde parte, e nao tudo.",
+        "context": "E o que se faz quando uma maquina nao consegue mais guardar ou servir o dado, e a chave de particao e a decisao que nao se desfaz barato. Escolha mal e o trafego concentra num fragmento enquanto os outros ficam ociosos, ou a consulta comum precisa visitar todos e o proposito se perde. Tudo o que e dificil nisso - rebalancear, transacao entre fragmentos, chaves quentes - descende daquela unica escolha inicial."
+      },
+      "data-at-rest": {
+        "def": "Dado parado em armazenamento, e nao em movimento - e, em geral, abreviacao para cifra-lo ali.",
+        "context": "A cifragem em repouso defende contra uma ameaca especifica: alguem obter o meio. Um disco roubado, um arranjo desativado, um retrato copiado. Ela nao faz nada contra um atacante com acesso ao sistema em funcionamento, porque o sistema precisa conseguir ler os proprios dados. E por isso que ela atende um requisito de conformidade com mais frequencia do que muda um incidente, e por que a pergunta util e onde a chave mora em relacao ao dado."
+      },
+      "data-in-transit": {
+        "def": "Dado em movimento por uma rede - e a cifragem aplicada para que quem o carrega nao consiga ler.",
+        "context": "E a metade mais bem entendida, e aquela em que a suposicao mais costuma correr na frente da configuracao: o trafego e cifrado ate o balanceador e vai em texto claro atras dele, ou e cifrado com um certificado que ninguem valida. A pergunta honesta de auditoria nao e se esta cifrado, e sim em quais trechos, e o que cada ponta de fato verificou antes de confiar na outra."
+      },
+      "ssid": {
+        "def": "O nome que uma rede sem fio anuncia - um rotulo, e nao uma identidade, e trivialmente copiavel.",
+        "context": "Como o nome e apenas um texto, qualquer dispositivo pode reivindica-lo, e e essa a base inteira do gemeo maligno: um radio mais forte anunciando a mesma rede e recolhendo o que se conectar. Esconde-lo nao protege nada, ja que clientes que o conhecem transmitem a busca por ele e o revelam assim mesmo. O que de fato distingue uma rede legitima e a troca de credenciais atras do nome, e e por isso que autenticacao corporativa e validacao de certificado no cliente sao os controles que importam."
+      },
+      "wpa3": {
+        "def": "A geracao atual de seguranca sem fio, substituindo o aperto de mao de chave compartilhada que permitia adivinhacao de senha fora de linha.",
+        "context": "A mudanca substantiva e o aperto de mao: o esquema antigo permitia a quem capturasse uma tentativa de conexao adivinhar a senha fora de linha no proprio ritmo, e o novo nao permite, e e por isso que uma senha fraca deixa de ser catastrofica no primeiro dia. Ele tambem cifra redes abertas, de modo que um ponto publico deixa de ser legivel por todos os presentes. A adocao e a historia de sempre - o modo misto mantem o aperto de mao antigo disponivel para clientes antigos, e uma rede em modo misto tem as propriedades antigas para quem as pedir."
+      },
+      "captive-portal": {
+        "def": "A pagina que uma rede obriga um cliente novo a ver antes de liberar acesso, implementada interceptando as primeiras requisicoes.",
+        "context": "Funciona mentindo: a rede responde DNS e HTTP por nomes que nao lhe pertencem, para que o navegador va parar em outro lugar. Isso e indistinguivel de um ataque, e e justamente por isso que quebra mais a cada ano - validacao de certificado, DNS cifrado e aplicacoes com fixacao recusam a intercepcao de proposito. Sistemas operacionais hoje sondam um endereco conhecido para detectar a situacao e abrir uma janela restrita, que e a industria admitindo que a tecnica e uma gambiarra que ela concordou em acomodar."
+      },
+      "cache-control": {
+        "def": "O cabecalho que diz aos caches se uma resposta pode ser guardada, por quem, e por quanto tempo.",
+        "context": "Dois erros se repetem e os dois sao caros. Cachear algo privado num cache compartilhado serve a pagina de um usuario para outro, o que e vazamento de dados causado por um cabecalho. E nao cachear nada faz toda requisicao chegar a origem, o que transforma um pico de trafego numa queda que a diretiva correta teria absorvido inteira. A diretiva e pequena, fica num lugar so, e decide as duas coisas."
+      },
+      "etag": {
+        "def": "Um identificador opaco para uma versao especifica de um recurso, usado para perguntar se a copia em cache ainda vale.",
+        "context": "Ele transforma uma transferencia inteira numa pergunta curta: o cliente envia a etiqueta que tem, e o servidor responde nao-modificado se nada mudou. E a economia de banda mais barata da web. Tem uma segunda vida em operacoes de escrita, em que enviar a etiqueta junto de uma atualizacao significa que a mudanca so se aplica se ninguem mais mudou antes, o que e concorrencia otimista implementada num cabecalho."
+      },
+      "websocket": {
+        "def": "Uma conexao que comeca como HTTP e depois evolui para um canal de mao dupla que fica aberto.",
+        "context": "Existe porque o formato requisicao-resposta nao expressa um servidor que precisa falar primeiro. As consequencias operacionais e que surpreendem: a conexao e longeva, entao segura recursos em todo proxy e firewall do caminho e morre com os tempos limite de ociosidade deles; ela contorna as verificacoes por requisicao que um gateway faz, porque ha uma requisicao so; e precisa de modelo proprio de autorizacao, ja que a credencial foi conferida uma vez na evolucao e o canal depois carrega qualquer coisa."
+      },
+      "same-origin": {
+        "def": "A regra do navegador de que script de um site nao le respostas de outro, em que site significa esquema, host e porta juntos.",
+        "context": "E a fundacao sobre a qual todo o modelo de seguranca da web se apoia: sem ela, qualquer pagina poderia ler seu e-mail pedindo-o com os seus cookies anexados. Tudo que parece excecao e uma abertura deliberada dela - o CORS e um servidor dizendo quem pode ler as respostas dele, e uma falha de script entre sites importa justamente porque o codigo injetado roda como a origem, e a politica passa entao a proteger o atacante."
+      },
+      "mta": {
+        "def": "O servidor que aceita mensagens e as repassa em direcao ao destino.",
+        "context": "E um dos ultimos lugares em que uma maquina aceita conexoes nao solicitadas de estranhos e depois age sobre o conteudo delas, e e por isso que a infraestrutura de e-mail carrega tanto da historia de seguranca da internet: controle de repasse, listas de reputacao, registros de autenticacao e filtragem de conteudo foram inventados ali primeiro. A regra operacional que nao mudou e que um agente que aceita e repassa sem conferir quem pediu sera encontrado e usado em horas."
+      },
+      "open-relay": {
+        "def": "Um servidor de e-mail que repassa mensagens de qualquer um para qualquer um - o padrao na internet inicial e um passivo desde entao.",
+        "context": "Nao era um defeito no comeco: repassar para estranhos era comportamento cooperativo numa rede de colegas. O spam transformou aquilo em infraestrutura gratuita para quem o achasse, e a resposta inventou a lista de reputacao, que e o mecanismo que depois se espalhou muito alem do e-mail. Vale lembrar como o caso mais claro de um projeto que estava certo para a rede em que foi construido e virou vulnerabilidade quando a populacao mudou."
+      },
+      "attestation": {
+        "def": "Uma afirmacao de uma parte de que algo sobre outra e verdadeiro, feita numa forma em que um terceiro aceita se apoiar.",
+        "context": "E o que sao um relatorio, uma certificacao e uma lista assinada de componentes de software, e a pergunta util e sempre a mesma trinca: quem esta afirmando, o que exatamente foi verificado, e o que acontece se estiverem errados. Uma atestacao de escopo estreito com responsavel nomeado vale mais que uma ampla que ninguem sustenta, e e por isso que ler a secao de escopo e a habilidade inteira."
+      },
+      "compliance": {
+        "def": "Demonstrar que uma organizacao atende a um requisito externo - objetivo diferente de estar segura.",
+        "context": "Os dois se sobrepoem e nao sao a mesma coisa, e fingir o contrario desperdica dinheiro nas duas direcoes. Um controle pode satisfazer um requisito e nao impedir nada, e uma melhoria real pode ser invisivel para o arcabouco. A postura util e tratar o requisito como piso e como alavanca - ele obtem orcamento e atencao que um argumento de risco nao obteria - enquanto se mede o programa por se um atacante seria de fato impedido."
+      },
+      "5g": {
+        "def": "A quinta geracao de redes moveis, definida tanto pela arquitetura de rede quanto pela velocidade do radio.",
+        "context": "O numero de manchete e a vazao, e as mudancas duraveis estao noutro lugar: um nucleo construido como funcoes de software, e nao como caixas fixas, e o fatiamento de rede, que permite a uma rede fisica apresentar varias logicas com garantias diferentes. A consequencia de seguranca segue a arquitetura - quando o nucleo e software rodando em data centers, seguranca de rede movel vira problema de nuvem e de cadeia de suprimento, e nao de telecomunicacoes."
+      },
+      "lte": {
+        "def": "O padrao movel de quarta geracao, e o ponto em que redes moveis passaram a ser inteiramente por pacotes.",
+        "context": "Abandonar o caminho comutado por circuito e a parte historicamente importante: a voz deixou de ser um sistema separado e virou aplicacao na rede de dados, e e por isso que qualidade de chamada virou problema de qualidade de servico, e nao de comutacao. Boa parte do mundo ainda roda nele, e ele segue sendo o retorno que carrega o servico quando o radio mais novo nao esta disponivel - o que torna suas propriedades de seguranca atuais, e nao historicas."
+      },
+      "sim": {
+        "def": "O modulo que guarda a identidade de um assinante e a chave que o autentica na rede movel.",
+        "context": "E uma credencial de hardware, e trata-la assim explica tanto a forca quanto a fraqueza mais explorada. A chave nunca sai do cartao, o que e genuinamente forte. A conta por tras dele, porem, e transferivel por um atendente - que e o que a troca de SIM ataca, e por que tudo que trata a posse de um numero de telefone como prova de identidade herda a seguranca de uma central de atendimento, e nao a da criptografia."
+      },
+      "cloud-iam": {
+        "def": "O sistema de permissoes de uma plataforma de nuvem - quem e o que pode chamar qual interface em qual recurso.",
+        "context": "Difere do controle de acesso tradicional porque maquinas sao sujeitos de primeira classe: a maioria das identidades numa conta madura sao cargas de trabalho, e nao pessoas, e as credenciais delas sao emitidas automaticamente. E essa a melhoria e o risco, porque um papel permissivo anexado a uma instancia e alcancavel por qualquer coisa que rode codigo nela. O achado recorrente e escopo - curingas concedidos na implantacao e nunca estreitados, porque ninguem sabe qual deles agora sustenta algo."
+      },
+      "spot-instance": {
+        "def": "Capacidade ociosa de nuvem vendida barato sob a condicao de poder ser retomada com pouco aviso.",
+        "context": "E o exemplo mais claro de preco expressando uma garantia: a mesma maquina custa uma fracao da tarifa sob demanda porque o provedor mantem o direito de retoma-la. Isso a torna otima para trabalho que pode ser interrompido e recomecado, e uma armadilha para qualquer coisa que guarde estado. Projetar para ela e a mesma disciplina de projetar para falha, e e por isso que equipes que a usam bem costumam ter melhor comportamento de recuperacao em todo o resto."
+      },
+      "edge-computing": {
+        "def": "Rodar computacao perto de onde o dado e produzido ou consumido, em vez de manda-lo antes para um lugar central.",
+        "context": "O motivo em geral e latencia e as vezes lei: a fisica impoe um piso a ida e volta ate uma regiao distante, e regras de residencia de dados podem proibir a viagem por completo. O custo e multiplicacao operacional - a mesma carga passa a rodar em muitos lugares que voce nao controla fisicamente, com os problemas de atualizacao, monitoracao e gestao de chaves que decorrem. E uma decisao de distribuicao antes de ser tecnologia."
+      },
+      "deprovisioning": {
+        "def": "Remover o acesso de uma identidade quando uma pessoa sai ou um papel muda - a metade do ciclo de vida por que ninguem esta esperando.",
+        "context": "O provisionamento tem publico impaciente e o desprovisionamento nao tem nenhum, e e por isso que acesso se acumula e saidas deixam contas para tras. O residuo perigoso raramente e a conta principal do diretorio, que alguem desabilita, e sim tudo que e federado, local ou entre maquinas e foi concedido a parte: uma chave num repositorio, uma conta no portal de um fornecedor, um token num trabalho agendado. A pergunta mensuravel e quanto tempo depois de uma saida a ultima credencial morre."
+      },
+      "transaction": {
+        "def": "Um grupo de operacoes que ou todas surtem efeito ou nenhuma surte, sem deixar estado visivel pela metade.",
+        "context": "A garantia e o que permite raciocinar sobre um sistema: dinheiro se move entre duas contas sem um instante em que nao esteja em nenhuma. E tambem cara, e sistemas distribuidos gastam a maior parte do esforco de projeto decidindo quanto dela abrir mao - e e por isso que a pergunta interessante sobre qualquer sistema de armazenamento e o que ele promete ENTRE maquinas, e nao dentro de uma."
+      },
+      "data-classification": {
+        "def": "Decidir qual dado e sensivel e como cada classe deve ser tratada - o passo de que todo outro controle de dados depende.",
+        "context": "Ela falha de um jeito especifico: um esquema com cinco niveis que ninguem aplica e pior que dois que todo mundo aplica, porque controles atrelados a rotulos nao fazem nada quando os rotulos faltam ou estao errados. A versao viavel e grosseira, automatica onde der, e ligada a uma consequencia que as pessoas veem. Se nada se comporta diferente depois que algo e rotulado confidencial, o exercicio produziu papelada, e nao protecao."
+      },
+      "bssid": {
+        "def": "O identificador de um radio especifico numa rede sem fio - na pratica o endereco do proprio ponto de acesso, distinto do nome da rede.",
+        "context": "Um nome pode ser servido por centenas de radios, e o cliente escolhe entre eles; o identificador e como se sabe a qual ele de fato se associou. Isso faz dele o campo que importa em diagnostico sem fio, porque uma reclamacao sobre a rede em geral e uma reclamacao sobre um ponto de acesso, e o agregado esconde isso. E tambem como se distingue um invasor anunciando o nome da sua rede do seu proprio equipamento."
+      },
+      "channel-width": {
+        "def": "Quanto espectro um canal sem fio ocupa - mais largo carrega mais por transmissao e deixa menos canais sem sobreposicao.",
+        "context": "E a troca mais clara do projeto sem fio e a mais comumente errada: o ajuste mais largo da o melhor teste de velocidade com um cliente e o pior comportamento em implantacao densa, porque todo ponto de acesso vizinho passa a se sobrepor e eles se revezam em vez de trabalhar em paralelo. Num escritorio a resposta certa costuma ser mais estreita que o padrao, e esse e um argumento que precisa ser feito contra um numero que todo mundo ve no notebook."
+      },
+      "eap-tls": {
+        "def": "Autenticacao sem fio e cabeada usando certificados dos dois lados, em vez de senha compartilhada.",
+        "context": "E a opcao comum mais forte porque nao ha senha para compartilhar, afixar ou levar para um ex-empregador, e cada dispositivo se autentica como si mesmo. O custo e um ciclo de vida de certificado para cada ponta, que e a razao de implantacoes travarem. A configuracao errada frequente merece nome: um cliente que nao valida o certificado do servidor se autentica alegremente a um impostor, o que transforma a opcao mais forte numa oportunidade de colheita de credenciais."
+      },
+      "http2": {
+        "def": "Uma revisao que multiplexa muitas requisicoes numa conexao e comprime cabecalhos, sem mudar o que uma requisicao significa.",
+        "context": "Ela corrigiu o desperdicio principal da epoca - navegadores abrindo varias conexoes e enfileirando requisicoes umas atras das outras - pondo fluxos independentes numa conexao. A limitacao e herdada de baixo: os fluxos sao independentes para a aplicacao e nao para o TCP, entao um pacote perdido trava todos, que e o bloqueio de cabeca de fila que o QUIC foi desenhado para remover. O outro legado e operacional, ja que uma conexao unica e longa se comporta de forma diferente atraves de proxies do que muitas curtas."
+      },
+      "http3": {
+        "def": "HTTP carregado sobre QUIC em UDP, para que perda num fluxo nao trave mais os outros.",
+        "context": "Mudar para UDP e o que remove o bloqueio de cabeca de fila, e traz consequencias alem de velocidade. O transporte e cifrado, entao middleboxes veem bem menos e classificar trafego por inspecao praticamente para de funcionar. Conexoes sobrevivem a troca de endereco, e e por isso que um celular que muda de rede mantem a sessao. E redes que bloqueiam UDP forcam o retorno a versao anterior, o que costuma funcionar e custa o beneficio em silencio."
+      },
+      "user-agent": {
+        "def": "O cliente se identificando num cabecalho - uma alegacao, e nao um fato, e uma das mentiras mais antigas da web.",
+        "context": "A string e famosa por ter se acumulado: navegadores alegam ser outros navegadores porque sites um dia testaram nomes em vez de capacidades, entao quase todo agente moderno afirma uma linhagem que nao tem. Dois pontos praticos sobrevivem a essa historia. Qualquer coisa relevante para seguranca que dependa dele e contornada trivialmente, ja que o cliente escolhe o que enviar. E ele e entrada de identificacao por impressao digital, e e por isso que navegadores hoje reduzem o que ele revela, em vez de acrescentar."
+      },
+      "spam-filter": {
+        "def": "O sistema que decide qual mensagem chega a uma pessoa - o julgamento automatizado mais consequente que a maioria das organizacoes opera.",
+        "context": "E mais um problema de falso positivo que de deteccao: deixar spam passar e chateacao, e bloquear uma fatura, uma proposta de emprego ou a resposta de um cliente e incidente de negocio, e e por isso que quarentena e liberacao existem. E tambem o primeiro controle que um atacante testa, porque entrega e a pre-condicao do phishing, e a razao de os registros de autenticacao de um dominio importarem a todos que recebem mensagens dele, e nao so ao dono."
+      },
+      "audit": {
+        "def": "Um exame independente de se os controles existem e operam como descrito, produzindo uma opiniao em que um terceiro pode se apoiar.",
+        "context": "A independencia e o produto: uma revisao interna acha mais e convence menos. O que auditores testam em geral e uma amostra contra um controle declarado, o que significa que o resultado diz que o controle funcionou naquelas ocasioes, e nao sempre - distincao que vale segurar quando um relatorio limpo encontra um incidente real. A preparacao util nao e arrumar evidencia antes da visita, e sim manter registros que o proprio processo ja produz."
+      },
+      "control-framework": {
+        "def": "Um conjunto publicado de controles usado como referencia comum - para que uma organizacao descreva o que faz em termos que os outros reconhecem.",
+        "context": "O valor e vocabulario compartilhado, e nao novidade: nada num arcabouco e desconhecido de um profissional competente, e o ponto e que um cliente, uma seguradora e um regulador consigam ler o mesmo mapa. A falha e adota-lo como lista de tarefas, o que produz cobertura uniforme em vez de defesa onde e preciso. Arcaboucos descrevem o que considerar, e a organizacao ainda precisa decidir o que o proprio risco exige."
+      },
+      "luigi-galvani": {
+        "def": "O médico que viu pernas de rã morta se contraírem ao toque de metais diferentes em 1780 e chamou aquilo de eletricidade animal.",
+        "context": "A explicação dele estava errada e a observação não, que é o formato útil da história. Volta contestou a teoria - argumentando que a contração vinha do contato entre dois metais, e não de algo no animal - e foi essa discordância que o levou a construir a pilha. Uma interpretação equivocada de um experimento correto produziu a primeira corrente contínua, e a palavra galvânico sobreviveu presa justamente à ideia que ele errou."
+      },
+      "charles-augustin-de-coulomb": {
+        "def": "O engenheiro francês que transformou a balança de torção em instrumento para medir carga, e provou que a força elétrica segue uma lei do inverso do quadrado.",
+        "context": "Antes dele havia aparelhos para gerar, armazenar e detectar eletricidade estática e nenhum jeito fácil de dizer quanto. Ele não inventou a balança - John Michell já usara uma parecida para gravidade -, mas foi o primeiro a apontá-la para a carga, e foi a medição que transformou a eletricidade de fenômeno que se demonstrava em grandeza sobre a qual se raciocina. O campo virou ciência quando ganhou um número."
+      },
+      "andre-marie-ampere": {
+        "def": "O físico que transformou a observação de Ørsted em eletrodinâmica, e o primeiro a distinguir corrente de tensão.",
+        "context": "O experimento de Ørsted foi reproduzido na Academia de Paris em setembro de 1820; Ampère apresentou as primeiras reflexões sobre ele uma semana depois e passou os seis anos seguintes transformando aquilo em matemática. A velocidade importa menos que a diferença de natureza: Ørsted observou que uma corrente desvia uma agulha, e Ampère produziu uma teoria que previa quanto. Separar corrente de tensão é a distinção sobre a qual repousa toda medição elétrica prática, e a unidade da primeira leva o nome dele."
+      },
+      "georg-ohm": {
+        "def": "O físico alemão cuja lei de 1827 relaciona tensão, corrente e resistência - a primeira coisa que se aprende sobre circuitos, e a última que se deixa de usar.",
+        "context": "A lei foi mal recebida quando publicada e ele esperou anos pelo reconhecimento, que nesta linha do tempo é padrão recorrente, e não anedota. O que ela deu ao campo foi ferramenta de projeto: com três grandezas ligadas por uma equação, dá para raciocinar sobre um circuito antes de construí-lo. Todo cálculo de comprimento de cabo, todo orçamento de potência e toda falha por mau contato descendem dela."
+      },
+      "james-prescott-joule": {
+        "def": "O físico que mostrou que energia elétrica, calor e trabalho mecânico são a mesma grandeza em formas diferentes.",
+        "context": "Estabelecer que a energia se conserva através de processos elétricos, térmicos e químicos é o que torna um orçamento de potência possível: os watts que entram num equipamento saem dele como trabalho e calor, e nenhum some. Todo cálculo de refrigeração num data center é o resultado dele aplicado em escala, e a razão de um rack denso ser problema térmico antes de ser qualquer outra coisa. O aquecimento Joule também é por que um mau contato esquenta, um dos sinais de diagnóstico mais antigos do ofício."
+      },
+      "samuel-morse": {
+        "def": "O pintor de retratos cujo código transformou eletricidade em mensagem, enviada de Washington a Baltimore em 24 de maio de 1844.",
+        "context": "Cooke e Wheatstone construíram um telégrafo funcional na Inglaterra ao mesmo tempo, com agulhas móveis; Morse usou som, e foi a codificação que fez a versão dele viajar. A escolha é a primeira aparição de uma decisão que este campo inteiro repete - a de que a codificação importa mais que o meio. O código dele é também a metade mais antiga de uma parceria pouco dita: Alfred Vail e Leonard Gale trabalharam nele e costumam ficar de fora, o que faz deste o primeiro problema de atribuição da linha do tempo, e não o último."
+      },
+      "nikola-tesla": {
+        "def": "O engenheiro cujos sistemas de corrente alternada e cujo transformador ressonante de 1891 transformaram alta frequência e alta tensão em ferramentas, e não em curiosidades.",
+        "context": "Corrente contínua perde demais na distância para servir uma cidade, e corrente alternada pode ser elevada para transmitir e reduzida para usar - e é por isso que a rede elétrica de que todo data center se alimenta é o projeto dele, e não o do rival. A bobina ressonante importa aqui por uma segunda razão: produzir e sintonizar oscilação de alta frequência é o mesmo problema que o rádio teve de resolver, e o trabalho alimentou aquilo diretamente. Ele é também o caso mais claro desta linha do tempo de reputação e recompensa divergindo por completo da contribuição."
+      },
+      "william-crookes": {
+        "def": "O químico cujo tubo parcialmente evacuado permitiu ver e estudar os raios catódicos, e do qual descendem todo display e todo dispositivo a vácuo posteriores.",
+        "context": "Bombear quase todo o ar de um tubo de vidro e passar corrente por ele produziu algo que ninguém sabia explicar, e os instrumentos construídos para estudar aquilo produziram o elétron, o raio X e o tubo de raios catódicos. O aparato sobreviveu a toda teoria oferecida para explicá-lo. Essa é a sequência comum neste campo e vale dizer: uma ferramenta construída para investigar um enigma costuma ser mais duradoura que a resposta que ela foi construída para achar."
+      },
+      "lee-de-forest": {
+        "def": "O engenheiro que acrescentou um terceiro eletrodo a uma válvula em 1906, produzindo o primeiro dispositivo capaz de amplificar um sinal.",
+        "context": "Ele a construiu como detector e não percebeu o que tinha; a capacidade de amplificação só foi compreendida depois de 1912. Amplificação é a propriedade que tornou possíveis telefonia de longa distância, rádio e, por fim, computação, porque um sinal que pode ser reconstruído a intervalos viaja indefinidamente - que é o mesmo argumento de um repetidor, de um regenerador e, depois, de um roteador. O padrão merece registro: o inventor do componente mais consequente da época passou seis anos sem entender a propriedade mais importante dele."
+      },
+      "sarbanes-oxley": {
+        "def": "A lei norte-americana de 2002 sobre relatórios financeiros corporativos, que tornou controles internos, inclusive controle de acesso, matéria de responsabilidade legal para dirigentes.",
+        "context": "É uma lei financeira e ela remodelou a compra de segurança, e é por isso que cabe num glossário técnico. Ao tornar executivos responsáveis pela integridade dos sistemas financeiros, ela transformou governança de identidade, controle de mudanças e registro de auditoria de boa prática em obrigações que alguém assina. Análise estática e governança de identidade viraram categorias corporativas na esteira dela. O padrão é o que este catálogo não para de registrar: conformidade cria mercado mais rápido que ameaça, e desloca a decisão de compra de quem opera um controle para quem precisa atestá-lo."
+      },
+      "x509": {
+        "def": "O formato de certificado publicado pela ITU em 1988 e perfilado para a internet na RFC 5280, que liga um nome a uma chave pública com a assinatura de um emissor.",
+        "context": "Ele carrega o titular, a chave pública, as datas de validade, o emissor e as extensões que decidem para que o certificado pode ser usado, tudo assinado pela autoridade emissora. Vem do mesmo programa de padrões do diretório X.500, e é por isso que as estruturas dele parecem de diretório e por que tanto problema operacional é, na verdade, problema de codificação. A maior parte das falhas de certificado na prática não é criptográfica: intermediário faltando, nome que não bate, ou datas que ninguém estava observando."
+      },
+      "jean-charles-peltier": {
+        "def": "O relojoeiro que descobriu em 1834 que passar corrente por uma junção de dois metais diferentes aquece um lado e resfria o outro, conforme a direção.",
+        "context": "Ele era relojoeiro e se aposentou aos trinta para fazer ciência, e o que achou é o único jeito de mover calor sem peça móvel e sem fluido de trabalho. Aquilo ficou como curiosidade por uns 120 anos, porque precisa de semicondutores para ser eficiente o bastante para importar - o que faz dele um caso limpo de descoberta correta esperando por um material que ainda não existia. Os dispositivos construídos sobre isso hoje mantêm a temperatura de lasers estável dentro de transceptores ópticos, então uma descoberta de 1834 é o que segura um comprimento de onda onde a especificação manda."
+      },
+      "leon-foucault": {
+        "def": "O físico que demonstrou a rotação da Terra com um pêndulo em 1851, descobriu as correntes parasitas e deu nome ao giroscópio.",
+        "context": "O pêndulo é o que se lembra dele, e as correntes parasitas são o que a indústria de fato paga. Correntes induzidas num condutor por campo magnético variável são a perda que todo transformador e todo motor é projetado para minimizar, e o efeito que aquecimento por indução, detector de metais e freio magnético são projetados para explorar - o mesmo fenômeno contado como desperdício numa aplicação e como o produto noutra. Ele também pertence a um padrão que este catálogo não para de encontrar: construía os próprios instrumentos, inclusive o teste de gume de faca ainda usado em espelhos de telescópio, e quem faz as próprias ferramentas costuma enxergar o que os usuários delas não enxergam."
+      },
+      "james-watt": {
+        "def": "O engenheiro que em 1788 pôs um regulador de esferas girantes numa máquina a vapor, criando o ancestral mecânico de toda malha de controle da computação.",
+        "context": "A atribuição merece cuidado: Huygens já construíra reguladores centrífugos no século XVII para moinhos, e Watt ADAPTOU um em vez de inventá-lo - embora a adaptação tenha importado o bastante para ele ser creditado assim mesmo. O que o dispositivo é, com precisão, é uma malha fechada sem humano dentro: a velocidade da máquina levanta os pesos, os pesos fecham a válvula, a válvula desacelera a máquina. James Clerk Maxwell transformou aquilo em matemática em 1868, e tudo, de controle de congestionamento a escalonamento automático e à refrigeração de um data center, é descendente daquele artigo, e não do equipamento."
+      },
+      "john-logie-baird": {
+        "def": "O engenheiro que demonstrou televisão funcionando à Royal Institution em 26 de janeiro de 1926, para uma plateia que aparentemente não percebeu o que tinha visto.",
+        "context": "Nenhum membro presente publicou comentário depois. O único relato de primeira mão foi uma nota curta no Times dois dias depois, e um possível investidor que o visitou em abril concluiu que seria um erro de julgamento levar aquele equipamento ao mercado. A data hoje é tratada como o nascimento da televisão e foi, no dia, irrelevante para os especialistas na sala - o que a põe ao lado de Kao sendo ridicularizado e de Ohm sendo ignorado. O sistema mecânico de Baird então perdeu, em menos de uma década, para a televisão totalmente eletrônica construída sobre o tubo de raios catódicos, cuja linhagem volta a Crookes: primeiro a demonstrar funcionando, e não o projeto que venceu."
+      },
+      "edward-weston": {
+        "def": "O engenheiro que tornou a eletricidade mensurável em campo, com os primeiros medidores portáteis de leitura direta exatos e uma pilha estável o bastante para calibrá-los.",
+        "context": "Ele não partiu para vender instrumentos. Trabalhava com dínamos e achou os medidores disponíveis desajeitados e lentos demais para os próprios experimentos, então construiu melhores - e eles funcionaram tão bem que em 1888 ele largou todo o resto. A lista do que precisou inventar para chegar lá é a história de verdade: ímãs permanentes que continuassem permanentes, condutores que ignorassem temperatura, molas de baixa resistência e sem magnetismo, e amortecimento do ponteiro pelas correntes parasitas de Foucault. A pilha dele, de 1893, serviu depois como padrão internacional de força eletromotriz de 1911 a 1990, o que significa que o volt foi definido por uma pilha química úmida durante quase todo o século XX. Uma indústria não pode ser faturada, ajustada nem confiada antes de poder ser medida, e é este o homem que fechou essa lacuna."
+      },
+      "alexander-graham-bell": {
+        "def": "O professor de surdos cuja patente de 1876 sobre transmitir fala eletricamente criou a rede sobre a qual todas as posteriores foram construídas.",
+        "context": "O telefone importa aqui por uma razão sem glamour: ele produziu os fios. Décadas de comunicação digital rodaram sobre uma planta construída para voz, e é por isso que modems, linhas dedicadas e a primeira banda larga tiveram de funcionar dentro de restrições fixadas por um circuito de fala do século XIX. O trabalho dele com alunos surdos é o que o levou à mecânica da fala e da audição em primeiro lugar - a máquina saiu do ensino, e não da telegrafia. O nome dele hoje está na medalha dada por contribuições à engenharia de comunicações, que várias pessoas deste catálogo receberam."
+      },
+      "lan": {
+        "def": "Rede local: rede dentro de um sítio, sob uma administração, em que os enlaces são seus e a banda é barata.",
+        "context": "A propriedade que a definia nunca foi distância. Era que o cabo é seu, então banda não custa por byte e a latência é pequena o bastante para ignorar - e é por isso que protocolo desenhado para rede local supõe as duas coisas e quebra quando é movido. A palavra local desde então virou afirmação sobre confiança e administração, e não sobre metros, e uma sub-rede de nuvem sem nada de local continua sendo chamada assim."
+      },
+      "wan": {
+        "def": "Rede de longa distância: rede que abrange sítios, construída sobre circuitos que pertencem a outra pessoa e são faturados a você.",
+        "context": "Toda decisão de projeto aqui descende de o enlace ser alugado. A banda é tarifada, a latência é fixada pela geografia e pela velocidade da luz, e o circuito pode falhar de jeitos que você não consegue inspecionar. Compressão, cache, deduplicação, modelagem de tráfego e a categoria inteira de otimização de longa distância existem porque um megabyte por uma WAN custa dinheiro e por uma rede local não."
+      },
+      "man": {
+        "def": "Rede metropolitana: rede que atravessa uma cidade, maior que um sítio e menor que a longa distância de uma operadora.",
+        "context": "É o menos usado dos três termos e descreve uma situação real: uma universidade, um grupo hospitalar ou uma prefeitura com vários prédios pela cidade, unidos por fibra que possuem ou alugam apagada. O que faz dela categoria própria é a economia ficar entre as outras duas - o enlace não é de graça, e também não é tarifado por byte, então as escolhas de projeto não pertencem a nenhuma das duas."
+      },
+      "wlan": {
+        "def": "Rede local sem fio: rede local cujo meio é ar compartilhado, e não cabo dedicado.",
+        "context": "É rede local no endereçamento e bicho completamente diferente no comportamento, porque o comutador removeu as colisões do mundo cabeado e nada as remove do ar. A capacidade cai com o número de quem fala, e não com a distância; o cliente decide quando trocar de ponto e a rede não consegue obrigá-lo; e a interferência vem de vizinhos e eletrodomésticos que você não controla. Tratar aquilo como cabo que por acaso é invisível é o erro de projeto mais comum da área."
+      },
+      "pan": {
+        "def": "Rede de área pessoal: os poucos metros em volta de uma pessoa, em que os dispositivos se emparelham entre si em vez de entrar numa infraestrutura.",
+        "context": "A propriedade interessante é não ter administrador. O emparelhamento é decisão de quem está com o aparelho na mão, e é por isso que o modelo de segurança é consentimento num instante, e não política ao longo do tempo, e por isso que o controle corporativo sobre esta camada é fraco onde existe. Fones, teclados, vestíveis e enlaces veiculares ficam todos aqui, e todos são pontos de conexão que inventário nenhum contém."
+      },
+      "can-campus": {
+        "def": "Rede de campus: várias redes locais em prédios vizinhos sob um mesmo dono, unidas por cabo que esse dono controla.",
+        "context": "É a escala em que as trilhas de certificação de fabricante são de fato ensinadas, e a escala em que os problemas difíceis aparecem primeiro: vários prédios significam camada de distribuição, caminhos redundantes, spanning tree ou sucessores, e decisão de roteamento entre andares. Não confundir com a rede de área de controlador, de mesma sigla, que é um barramento veicular e assunto inteiramente diferente."
+      },
+      "overlay-network": {
+        "def": "Rede construída sobre outra, cujos enlaces são túneis através da rede de baixo.",
+        "context": "A de baixo é a subjacente, e a separação é o padrão dominante da infraestrutura moderna: rotear a de baixo de forma simples e confiável, e expressar na de cima tudo o que a aplicação quer. A parte incômoda é que uma falha na de baixo aparece na de cima como outra coisa completamente diferente, então a camada que tornou o projeto tratável é também a que torna o diagnóstico difícil."
+      },
+      "geneve": {
+        "def": "Encapsulamento genérico de virtualização de rede: formato de túnel projetado para carregar metadados arbitrários, e não um conjunto fixo de campos.",
+        "context": "O argumento inteiro dele é com os antecessores. Encapsulamentos anteriores fixaram os campos de cabeçalho no momento do projeto, então qualquer coisa não prevista exigia protocolo novo; este carrega opções extensíveis, de modo que o formato sobreviva aos requisitos. Se essa generalidade valeu o custo de análise é discordância viva, e o suporte em hardware tem sido o fator decisivo, e não a elegância."
+      },
+      "nvgre": {
+        "def": "Virtualização de rede usando encapsulamento genérico de roteamento: esquema que carrega tráfego de inquilino dentro de um protocolo de túnel já existente.",
+        "context": "Ele reaproveitou um encapsulamento que já existia em vez de definir um novo, instinto razoável que lhe custou o mercado: o campo usado para distribuir carga não era um dos que o hardware existente considerava no espalhamento, então o tráfego não se distribuía pelos enlaces como os operadores esperavam. Vale ficar no registro como caso em que reusar um padrão foi a escolha mais conservadora e a menos bem-sucedida."
       }
     },
     "totalCount": "{count} termos",

@@ -1,0 +1,82 @@
+---
+slug: router-family-history
+title: "The Router: From Gateway to Commodity, and the Names Left Out"
+summary: "The router has been reinvented at least four times and its job has never changed once: read a destination, choose a next hop, forward. This is the family history - the IMPs of 1969, the first true IP router written at BBN by Virginia Strazisar in 1975 and 1976, the multiprotocol router invented twice independently in 1981 at Stanford and MIT, the blue box that became Cisco, and the long slide from specialist hardware to software on a general-purpose machine. Including why the two people who solved the hardest early problems in layers 2 and 3 are both rarely named."
+concepts: ["router", "routing", "imp", "gateway", "multiprotocol", "bgp", "history"]
+relatedTools: []
+relatedArticles: ["bridge-switch-family-history", "firewall-family-history", "network-segmentation-from-vlans-to-microsegmentation"]
+category: networking
+order: 142
+status: reviewed
+updated: "2026-09-03"
+---
+
+The router is the least changed device in networking. Read a destination, consult a table, choose a next hop, forward, decrement, repeat. Everything about where that happens, how fast, and who builds it has been rebuilt several times; the job has not moved.
+
+## 1969: the gateway before the name
+
+The first generation of what we now call routers were the **Interface Message Processors** built by BBN for the ARPANET, delivered from 1969. Each was a Honeywell minicomputer with about six thousand words of software, monitoring network status alongside forwarding, and each cost roughly 82,200 dollars - which is worth holding next to the price of a home router today.
+
+The IMP forwarded within one network. What did not yet exist was a device that could forward *between* networks that did not share a design, which is the actual definition of a router and the reason the word gateway was used first.
+
+## 1975 to 1976: the first true IP router, and the name nobody knows
+
+Under the DARPA internetworking effort, **Virginia Strazisar** at BBN wrote the first true IP router - then called a gateway - implementing the new TCP/IP protocols. By the end of 1976 three PDP-11 based routers were running in the experimental prototype internet.
+
+That is the origin of the device this entire industry sells, and the name is almost unknown. Put it beside the previous article in this series: the loop problem that makes bridged networks survivable was solved by Radia Perlman, and the first internetworking router was written by Virginia Strazisar. **The two foundational mechanisms of layers two and three were built by women whose names most practitioners cannot produce**, while the companies that commercialised their work are known to everyone. That is a fact about attribution rather than about engineering, and it is worth stating once, plainly, in a catalogue that names people.
+
+The 1977 four-network demonstration - ARPANET, SATNET, Ethernet and packet radio interconnected - is what that work made possible, and it is the moment internetworking stopped being a proposal.
+
+## 1981: invented twice, independently, in the same year
+
+The first **multiprotocol** routers were created independently in 1981 by **William Yeager** at Stanford and **Noel Chiappa** at MIT. Both were built on PDP-11s. Neither knew what the other was doing.
+
+This is the third time simultaneous independent invention appears in this catalogue - after Baran and Davies arriving separately at packet switching, and Liskov and Oki reaching view-stamped replication at the same time as Paxos. The pattern is consistent enough to be worth naming: **when the constraints are shared and the tools are the same, the answer arrives to several people at once**, and the argument about who was first is usually less interesting than the fact that the problem had become solvable.
+
+Multiprotocol mattered because the world was not IP yet. A campus ran AppleTalk, DECnet, IP, Novell's IPX and Xerox protocols simultaneously, and a device that spoke only one was useless. Modern routers handling IPv4 and IPv6 are technically multiprotocol and considerably simpler than what those machines did.
+
+## 1984: the blue box becomes a company
+
+At Stanford, Leonard Bosack ran computer facilities in the computer science department and Sandy Lerner ran them at the graduate school of business. They were married, and the university's computers could not talk to each other. The **blue box** built to connect the campus networks, running software originally written by Yeager, worked - and worked at other universities too.
+
+Bosack and Lerner licensed and enhanced Yeager's software and founded **Cisco** in 1984, taking the name from San Francisco. The company that would define networking for forty years began as two university staff commercialising software written by a colleague to solve a problem on their own campus.
+
+BBN, which had built the IMPs and employed Strazisar, also produced early routers and had every possible head start. Nimbler rivals overtook it. That is the same lesson its own entry in this catalogue carries: the organisation that invents something is frequently not the one that sells it, and a research contractor and a product company are different animals with different metabolisms.
+
+## Evolution
+
+- **Software forwarding on general-purpose hardware**, 1969 to the early 1990s. Every packet handled by the processor.
+- **Hardware forwarding**, from the mid-1990s. Application-specific circuits doing lookups at line rate, because software could not keep up with fibre.
+- **Layer 3 switching**, late 1990s. The same function again, in a switch chassis, which ended the industry's convenient story that routing was inherently slow and switching inherently fast.
+- **Merchant silicon**, from the 2000s. Forwarding chips bought from a handful of suppliers rather than designed in-house, which turned differentiation into a software question.
+- **Disaggregation**, from the 2010s. Control plane separated from forwarding plane; network operating systems sold apart from hardware; software routers on ordinary servers moving traffic at speeds that would have required a chassis a decade earlier.
+- **The cloud router**, which is a routing table you configure through an interface and never see, running on somebody else's hardware.
+
+## The jobs and the practices
+
+The router created the network engineer as a distinct profession, and for two decades the certification ladders that defined that profession were built around it. An entire vocabulary of practice came with it: **routing protocol design**, **convergence** as a thing measured in seconds that matter, **route summarisation**, **traceroute as a diagnostic reflex**, and the permanent operational fact that a router's decision is **local** - it knows the next hop, not the path - which is why routing faults are so often asymmetric and so hard to see from one end.
+
+It also produced the industry's most consequential unstated dependency. **Border Gateway Protocol** holds the internet together on a foundation of announced intent and manual filtering, and every large routing incident since has been the same story: somebody announced something they should not have, and enough of the internet believed them.
+
+## The companies
+
+The early market was BBN, Proteon - whose p4200 in 1986 ran on Chiappa's code and which produced OSPF - Wellfleet, and Cisco. Consolidation removed almost all of them: Wellfleet merged into Bay Networks and then Nortel, Proteon dissolved, and Cisco took the market.
+
+Today it is Cisco, Juniper now inside HPE, Arista, Nokia, Huawei, MikroTik at the low end, and the open network operating systems - along with the largest operators of all, the cloud providers and content networks, who build their own and publish papers about them rather than selling them.
+
+## Where it goes
+
+**Forwarding is becoming software again.** Kernel bypass, programmable data planes and eBPF have moved packet handling back to general-purpose processors at speeds that make dedicated hardware optional for many roles. The wheel has turned once completely.
+
+**The control plane is separating from the box.** Centralised computation of paths, whether branded software-defined networking or segment routing, moves the decision away from the device that executes it - which is a change in where the operational risk lives more than in what the network does.
+
+**Routing is becoming a service.** For most organisations the interesting routing now happens inside a cloud provider or a software-defined wide area network overlay, configured through an interface, with the physical device reduced to transport.
+
+**And the core stays ossified.** Interdomain routing still runs on a protocol designed when the operators all knew each other, and every proposal to secure it properly has run into the fact that no single party can require the rest of the internet to adopt anything. The device has been rebuilt four times; the agreement between devices has barely been touched.
+
+## Sources
+
+- [Computer History Museum on internetworking: Strazisar wrote the first internetworking router software for the new TCP/IP protocols, and BBN's early routers were overtaken by nimbler rivals like Cisco](https://www.computerhistory.org/revolution/networking/19/375)
+- [Router history compilation: the IMP as first-generation gateway, the first IP router by Virginia Strazisar at BBN during 1975-1976, three PDP-11 routers in service by the end of 1976, and the multiprotocol routers created independently in 1981 by Yeager at Stanford and Chiappa at MIT](https://slidetodoc.com/internet-router-history-the-first-internet-router-n/)
+- [Packet6 on the first Cisco router at Stanford: Bosack and Lerner, their roles at the university, and the blue box that connected the campus networks](https://packet6.com/throwback-thursday-the-first-cisco-router-at-stanford/)
+- [The Internet: the first ten years - the 1977 four-network demonstration of ARPANET, SATNET, Ethernet and packet radio](https://homes.cs.washington.edu/~lazowska/faculty.lecture/innovation/hpcc/internet/index.html)

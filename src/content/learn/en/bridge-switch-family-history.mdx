@@ -1,0 +1,82 @@
+---
+slug: bridge-switch-family-history
+title: "Bridges and Switches: One Idea, Solved Twice"
+summary: "The bridge and the switch are the same idea forty years apart, and the story runs through two people who are rarely mentioned together. Radia Perlman solved the loop problem at Digital in a single night in December 1985 and wrote the answer as a twelve-line poem. Kalpana put the same function in silicon per port in 1990 and sold the result to Cisco four years later. Along the way: why Perlman says the whole thing grew out of an industry mistake, why the switch replaced the hub without anyone calling it a security improvement, and what happens to a layer that has been declared finished several times."
+concepts: ["bridge", "switch", "spanning tree", "stp", "ethernet", "layer 2", "history"]
+relatedTools: []
+relatedArticles: ["firewall-family-history", "network-segmentation-from-vlans-to-microsegmentation", "tcp-proxy-layer-4"]
+category: networking
+order: 141
+status: reviewed
+updated: "2026-09-03"
+---
+
+Bridges and switches are usually taught as two devices. They are one idea, implemented twice with thirty years of silicon in between, and the second implementation was so much cheaper that it erased the first from the vocabulary while keeping every one of its problems.
+
+## The mistake that created the whole field
+
+Radia Perlman's own account of why bridges exist is the best starting point, and it is not flattering to the industry. When Ethernet was introduced, she says, the industry made the mistake of thinking that Ethernet was *the network*, rather than a link in a network. Applications were written assuming everything was one Ethernet. Those applications did not put the addressing information in their packets that a router would need, so routers could not forward between Ethernets - and something had to join the segments without requiring anyone to rewrite the software.
+
+That something was the **bridge**: a device that listens to every frame and forwards it onto its other ports. It works precisely because it demands nothing of the endpoints. **The entire layer 2 world exists as a workaround for an assumption made early and never retracted**, and every difficulty in it since - flooding, loops, broadcast domains, the constant tension between one big flat network and many small ones - descends from that.
+
+## December 1985: a problem thought unsolvable
+
+Redundancy is what makes a network reliable and it is also what makes a bridged network fatal. Two paths between two bridges means a frame can circulate, and because a bridged frame has no hop count to expire, it circulates forever, multiplying at every junction until the network drowns in copies of itself.
+
+A manager at Digital gave Radia Perlman that problem, considering it probably unsolvable. She went home, woke in the night with the solution formed, and wrote the specification the next morning - along with a twelve-line poem describing it completely and correctly. The paper, in 1985, was **An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN**.
+
+The algorithm elects a root, computes least-cost paths to it, and disables every link that is not on the resulting tree. Redundant links stay physically connected and logically idle until something fails. Digital shipped it in its two-port Ethernet bridge, and the IEEE adopted it as **802.1D in 1990**. Rapid spanning tree followed as 802.1w in 2001, and Perlman herself later designed TRILL to let Ethernet use the links spanning tree switches off.
+
+Two things about her deserve stating plainly. She received no royalties, and for years the protocol was credited to others. And she dislikes being called the mother of the internet - she would rather people understood what the problem was and what the solution did. Her own explanation of why her work was undervalued is worth carrying: her designs were so deceptively simple that people assumed the problems had been easy, while others who produced complicated and unsound designs, described in ways nobody understood, were considered geniuses.
+
+## 1990: the same function, in silicon, per port
+
+A bridge joined two or three segments. Everything on a segment still shared the wire, still collided, still saw everyone else's traffic.
+
+**Kalpana**, founded in Sunnyvale in 1990 by Vinod Bhardwaj and Larry Blair - named after Bhardwaj's wife, whose name means *imagination* in Sanskrit - introduced the seven-port **EtherSwitch**, the first multiport Ethernet switch, followed by the fifteen-port EPS-1500. The idea was a bridge with a port per device instead of a port per segment. Frames went only where they needed to go.
+
+The consequences were larger than the description suggests. Each device got the full link rate rather than a share of it. Collisions disappeared, which is what made full duplex possible. Ethernet could scale to speeds the shared medium could never have supported, which is why the transition to Fast Ethernet and then Gigabit was straightforward. Kalpana also invented **EtherChannel**, running several links in parallel for more bandwidth between switches, which the IEEE later standardised as 802.3ad in 2000.
+
+And one consequence nobody sold: on a hub, capture was trivial because every station saw everything. On a switch, it was not. **Switching was a significant security improvement that the industry marketed purely as a performance upgrade**, and the mirror ports and taps that monitoring now depends on exist to deliberately undo it.
+
+Cisco acquired Kalpana in 1994, along with Grand Junction and Crescendo, and combined them into the Catalyst line - the 3000 series from Kalpana, the 1700, 1900 and 2800 from Grand Junction. Cisco's framing at the time was that layer 3 routing and layer 2 switching were complementary functions of different intelligence: routing slow and complex, switching fast and simple. That distinction shaped the industry's product lines and its job titles for the whole decade.
+
+## Evolution, and the arguments that keep returning
+
+- **Transparent bridging**, mid-1980s. Learn by listening, flood what you do not know.
+- **Spanning tree**, 1985, standardised 1990. One active path, redundancy held in reserve.
+- **Switching**, 1990. Per-port bridging in hardware; the hub disappears.
+- **Virtual local area networks (VLANs)**, standardised as 802.1Q in 1998. One physical switch presenting several logical networks, which is where segmentation as a discipline starts.
+- **Layer 3 switching**, from the late 1990s. Routing at hardware speed, which quietly ended Cisco's slow-and-complex framing.
+- **Data centre fabrics**, from around 2010. TRILL, SPB and then leaf-and-spine with routing at the edge, all designed to escape the fact that spanning tree deliberately wastes links.
+- **Overlays**, VXLAN and friends. A layer 2 network built on top of a layer 3 one, which is the industry admitting the applications never stopped assuming one flat Ethernet.
+
+That last point is the recurring joke. Perlman's mistake - treating Ethernet as the network - was diagnosed forty years ago, and the modern data centre spends considerable effort recreating a flat layer 2 illusion on top of a routed fabric because applications still expect it.
+
+## The jobs and habits it left behind
+
+Switching created the largest technical job family in networking. Most certification ladders start here for a reason: the switch is where a career begins, because it is the device an organisation has the most of and where a mistake is most survivable.
+
+The practices that came with it are still recognisable. **VLAN design** as the first act of segmentation. **Trunk allow-lists**, which decide whether that segmentation is real. **Port security and 802.1X**, which is authentication arriving at a layer that was designed to trust anything plugged into it. **Cable and port documentation**, forever out of date. And **spanning tree fear** - a specific professional caution, present in every operator who has watched a loop take out a site, which is why one of the most common serious outages in enterprise networking is still somebody connecting two ports that should not have been connected.
+
+## The companies
+
+The bridge era belonged to Digital, and to the companies in this catalogue that built the market around it. The switching era began with Kalpana and Grand Junction and was consolidated almost immediately into Cisco. Today the market is Cisco, Arista, Juniper, HPE through Aruba, Extreme Networks, Huawei, and the white-box vendors selling hardware with the operating system unbundled - which is the most interesting development, because it separates the switch from its software for the first time since the function was invented.
+
+## Where it goes
+
+**The distinction is dissolving.** A modern switch routes, filters, encrypts and enforces policy. Calling it a layer 2 device is a description of one function among several, and the exam categories have outlived the architecture.
+
+**The fabric is becoming the unit.** Nobody configures a data centre switch individually any more; they describe an intended fabric and let controllers render it. That moves the skill from device configuration to intent and verification - and it moves the failure mode with it.
+
+**Silicon is consolidating.** Most switches from most vendors now use merchant silicon from a small number of suppliers, which makes differentiation a software question and explains why so much vendor argument is now about operating systems and automation rather than about forwarding.
+
+**And the layer keeps refusing to die.** Layer 2 has been declared finished by every generation since routing became cheap, and it is still there, because applications keep being written by people who assume the network is one flat thing - which is exactly the assumption Perlman identified in the 1980s, still generating work forty years later.
+
+## Sources
+
+- [Hidden Heroes on Radia Perlman: the industry mistake of treating Ethernet as the network rather than a link, and the 1985 spanning tree paper](https://hiddenheroes.netguru.com/radia-perlman)
+- [National Inventors Hall of Fame: how spanning tree transformed Ethernet from a few hundred nodes in one building into networks of hundreds of thousands](https://www.invent.org/inductees/radia-perlman)
+- [IPWatchdog on the spanning tree protocol, DEC's two-port bridge, and IEEE 802.1D in 1990](https://ipwatchdog.com/2016/02/04/spanning-tree-protocol-internet-routing/)
+- [Kalpana, Inc.: founded 1990 in Sunnyvale by Vinod Bhardwaj and Larry Blair, the seven-port EtherSwitch, EtherChannel, and the 1994 Cisco acquisition](https://en.wikipedia.org/wiki/Kalpana,_Inc.)
+- [Cisco Catalyst: the 3000 series from Kalpana and the 1700, 1900 and 2800 series from Grand Junction](https://en.wikipedia.org/wiki/Cisco_Catalyst)

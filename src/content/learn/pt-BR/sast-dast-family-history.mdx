@@ -1,0 +1,86 @@
+---
+slug: sast-dast-family-history
+title: "SAST e DAST: duas linhagens, uma linha de orçamento"
+summary: "Teste estático e teste dinâmico de segurança de aplicação são vendidos como par e descendem de lugares completamente diferentes. O SAST vem do lint, escrito no Bell Labs em 1978 para resolver um problema de portabilidade e só depois apontado para segurança. O DAST vem do ferramental de ataque do fim dos anos 1990, construído pela mesma empresa que fez o primeiro firewall de aplicação web. Esta é a história da família, inclusive por que o nome da ferramenta fundadora virou xingamento, e por que as duas abordagens discordam por construção, e não por qualidade."
+concepts: ["sast", "dast", "lint", "static analysis", "appsec", "history"]
+relatedTools: []
+relatedArticles: ["waf-family-history", "firewall-family-history", "security-through-obscurity"]
+category: security
+order: 146
+status: reviewed
+updated: "2026-09-03"
+---
+
+Os dois são vendidos juntos, orçados juntos e comparados um com o outro o tempo todo, e vêm de lugares sem relação. Um descende de ferramenta de compilador; o outro descende de ferramenta de ataque. Quase toda discussão sobre qual é melhor é, na verdade, uma discussão entre essas duas ascendências.
+
+## 1978: um problema de portabilidade, e não de segurança
+
+**Stephen C. Johnson**, no Bell Labs, lançou o **lint** em 26 de julho de 1978. Ele chegou nele depurando a gramática yacc que escrevia para C e lidando com os problemas de portabilidade de levar o Unix para uma máquina de 32 bits. A ferramenta varria o fonte e sinalizava construções suspeitas antes da compilação, sem mudar o programa.
+
+O nome é a melhor explicação de intenção já anexada a uma ferramenta. Johnson o tirou da fiapagem presa no filtro de uma secadora de roupas: o comando captura fibra solta e deixa o tecido inteiro intacto. Ele saiu do Bell Labs com o Unix Versão 7, em 1979.
+
+**A análise estática não foi inventada para segurança.** Foi inventada porque um compilador é rígido com o que precisa rejeitar e permissivo com todo o resto, e alguém quis um segundo leitor que fosse rígido com o resto. Segurança virou um USO da técnica cerca de vinte anos depois - o mesmo padrão das listas de acesso de roteador virando firewall: um mecanismo construído para um propósito, apontado para outro quando a ameaça chegou.
+
+## O nome que virou xingamento
+
+A análise estática teve um problema de reputação desde o começo, e a prova está no vocabulário: **lint hoje é usado às vezes como termo pejorativo**, como registra a literatura sobre implantar essas ferramentas.
+
+Isso aconteceu por uma razão que nunca sumiu de vez. Uma ferramenta que lê código sem executá-lo precisa supor que todo caminho pode ser executado, então ela reporta coisas que não podem acontecer. Quem recebe uma lista em que uma fração relevante não é real aprende a tratar a lista inteira como ruído, e o nome da ferramenta vira sinônimo de saída pedante que ninguém trata. Toda geração desta tecnologia desde então tentou escapar dessa reputação, e a fuga foi parcial em cada uma.
+
+## As ondas comerciais
+
+A **Coverity** saiu de Stanford e a **Klocwork** da fabricante de equipamento telefônico Nortel, as duas focadas inicialmente em C e C++, em que a flexibilidade da linguagem torna defeito de baixo nível comum e grave ao mesmo tempo. A **Fortify** partiu de outro lugar - segurança para aplicações web em Java e PHP -, e **Checkmarx** e **Ounce Labs**, depois rebatizada AppScan Source, vieram em seguida.
+
+O que transformou isso de ferramenta especializada em categoria corporativa foi regulação, exatamente como no caso dos firewalls de aplicação web. A Sarbanes-Oxley, em 2002, empurrou empresas de capital aberto a controles internos mais fortes e pôs risco de software diante dos conselhos; o PCI DSS versão 1.0, em 2004, exigiu de quem lida com dado de cartão a demonstração de prática segura de desenvolvimento; e o OWASP Top 10, em 2003, deu a todo mundo uma lista comum contra a qual ser medido.
+
+Aquela primeira geração corporativa provou que análise estática em larga escala era possível e produziu relatórios que auditor podia usar. As duas falhas dela seguem sendo as referências: **varredura lenta demais para o ciclo de entrega** e **custo de triagem alto demais, porque o resultado era ruidoso**.
+
+## A linhagem dinâmica
+
+O teste dinâmico veio inteiramente do outro lado. O **AppScan** foi construído pela Sanctum - a mesma empresa que fez o AppShield, o primeiro firewall de aplicação web -, e o **WebInspect** veio da SPI Dynamics, passando depois por HP, Micro Focus e OpenText. O scanner da Sanctum sobreviveu ao firewall dela: o AppScan foi para a Watchfire, depois IBM, depois HCL, e ainda é vendido.
+
+Essa parentela compartilhada é o fato que vale segurar. Como o artigo anterior desta série descreve, o mesmo corpo de conhecimento sobre como aplicações web quebram foi apontado defensivamente para um filtro e ofensivamente para um scanner. **Teste dinâmico e firewall de aplicação web são irmãos; a análise estática não tem parentesco com nenhum dos dois.**
+
+## Por que eles discordam por construção
+
+A comparação que costumam oferecer é exatidão, e esse é o eixo errado.
+
+**A análise estática vê tudo e não sabe nada sobre a realidade.** Ela lê todos os caminhos, inclusive os inalcançáveis, não tem ideia do que está de fato implantado ou exposto, e não consegue dizer se uma falha numa biblioteca chega a ser chamada. Ela reporta POSSIBILIDADE.
+
+**O teste dinâmico vê só o que consegue alcançar e sabe que aquilo é real.** Ele não entra sem credencial, não navega um fluxo que não entende, não testa caminho que nunca dispara - e tudo o que acha, achou fazendo. Ele reporta ATUALIDADE, de forma incompleta.
+
+Nenhum é a versão fraca do outro. Um achado que um produz e o outro não costuma ser comportamento correto dos dois, e qualquer programa que trate a discordância entre eles como falha de ferramenta entendeu errado o que comprou.
+
+## Evolução
+
+- **O lint e seus descendentes**, de 1978 em diante. Portabilidade e correção.
+- **Integração ao compilador e ao ambiente**, contínua. A análise entrou no Xcode, no Visual Studio e em toda cadeia moderna, onde pega defeito raso enquanto a pessoa ainda digita.
+- **Análise estática corporativa**, início dos anos 2000. Coverity, Fortify, Klocwork, Checkmarx - exata o bastante para importar, lenta o bastante para rodar de madrugada, ruidosa o bastante para exigir time de triagem.
+- **Varredura dinâmica**, a partir de 1999. AppScan, WebInspect, e a prática de testar de fora uma aplicação em execução.
+- **Ferramenta voltada ao desenvolvedor**, dos anos 2010. Snyk, Semgrep e pares, otimizando velocidade e sinal dentro de um pedido de alteração, e não completude num relatório.
+- **Análise de composição de software**, ao lado. A percepção de que a maior parte do código de uma aplicação foi escrita por estranhos, e de que a pergunta importante sobre uma dependência não é se ela tem falha conhecida, e sim se a função falha chega a ser chamada.
+
+## Cargos e práticas
+
+Esta família criou o **engenheiro de segurança de aplicação**, papel definido por ficar entre segurança e desenvolvimento sem ter autoridade em nenhum dos dois. A habilidade técnica é real, mas o trabalho é em boa medida tradução: converter achados em mudanças que pessoas que não as pediram vão de fato fazer.
+
+As práticas dele são reconhecíveis em toda parte. **Triagem** como carga permanente, e não projeto. **Linha de base**, para que uma ferramenta nova numa base antiga reporte só o que mudou, e não trinta mil achados preexistentes. **Quebrar o build**, e a longa discussão sobre quando um achado deveria ter permissão de quebrar. E **a exceção com dono e data**, que é o mesmo instrumento que os times de firewall inventaram pela mesma razão.
+
+A medida que importa não é quantos achados a ferramenta produziu. É que fração deles foi corrigida, e em quanto tempo.
+
+## Para onde vai
+
+**Alcançabilidade está virando a pergunta de verdade.** Saber que existe função vulnerável em algum lugar da árvore de dependências é quase inútil; saber que o seu código a chama é acionável. Combinar análise estática com informação de execução para responder isso é onde está o esforço atual.
+
+**Velocidade virou requisito de correção.** Uma varredura que não cabe dentro de um pedido de alteração é uma varredura que os desenvolvedores contornam. As ferramentas vencedoras da última década venceram por latência e sinal, e não por profundidade.
+
+**As duas linhagens estão convergindo no ferramental e não na epistemologia.** As plataformas hoje vendem estática, dinâmica e composição como um produto, mas os limites de baixo não se moveram: uma continua reportando o que PODERIA acontecer, e a outra o que ACONTECEU.
+
+**E código gerado por máquina muda o volume, não a discussão.** Mais código escrito mais rápido por ferramentas que aprenderam de repositórios públicos significa mais de tudo - mais achado, mais ruído, mais triagem - contra a mesma restrição que limita esta família desde 1978, que é quanta saída um humano aceita ler antes de decidir que não vale a pena ouvir a ferramenta.
+
+## Fontes
+
+- [Lint (software): lançado em 26 de julho de 1978 por Stephen C. Johnson no Bell Labs, concebido enquanto ele depurava a gramática yacc para C e lidava com a portabilidade do Unix para 32 bits, batizado com a fiapagem presa no filtro de uma secadora, e liberado fora do Bell Labs no Unix Versão 7, em 1979](https://en.wikipedia.org/wiki/Lint_(software))
+- [IBM sobre análise estática de código: a criação do lint em 1978 marca o começo da análise estática moderna](https://www.ibm.com/think/topics/static-code-analysis)
+- [Deploying Static Analysis: lint hoje é usado às vezes como termo pejorativo; a Klocwork veio da Nortel e a Coverity de Stanford, as duas focadas inicialmente em C e C++, enquanto o foco inicial da Fortify era segurança de aplicação web em Java e PHP](https://arxiv.org/pdf/2202.11861)
+- [As três ondas do SAST: a Sarbanes-Oxley em 2002, o OWASP Top 10 em 2003 e o PCI DSS versão 1.0 em 2004 criando a primeira geração corporativa de Coverity, Fortify, Checkmarx e Ounce Labs, cujas limitações eram varredura lenta e custo alto de triagem](https://corgea.com/blog/the-three-waves-of-sast-from-rules-to-ai-native-analysis)

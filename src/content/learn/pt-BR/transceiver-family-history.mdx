@@ -1,0 +1,80 @@
+---
+slug: transceiver-family-history
+title: "Transceptores: o artigo ridicularizado, e a parte da rede que cabe na mão"
+summary: "Em 1966, um engenheiro de 32 anos num laboratório britânico publicou um artigo argumentando que as perdas enormes da fibra óptica vinham de impurezas, e não da física, e foi amplamente ridicularizado por isso. Quatro anos depois a Corning provou que ele estava certo, e ele recebeu o Nobel quarenta e três anos depois disso. Esta é a história da família do transceptor - do artigo de Kao ao acordo multifonte, o ato de autocontenção deliberada mais bem-sucedido da indústria, e por que a menor peça substituível de uma rede é a que decide o que a rede pode se tornar."
+concepts: ["transceiver", "optical fiber", "sfp", "gbic", "msa", "history"]
+relatedTools: []
+relatedArticles: ["bridge-switch-family-history", "router-family-history", "last-mile-evolution-pots-to-fiber"]
+category: networking
+order: 148
+status: reviewed
+updated: "2026-09-03"
+---
+
+Toda outra família desta série trata de decidir o que fazer com um pacote. Esta trata de pôr bits num meio físico e tirá-los de volta - a camada menos discutida, e a que define o teto de tudo o que vem acima.
+
+## 1966: o artigo em que ninguém acreditou
+
+Luz já era carregada em fibras de vidro antes dos anos 1960, mas com perdas tão enormes que a distância de transmissão ficava severamente limitada. O consenso era que aquilo era propriedade fundamental do vidro.
+
+**Charles Kao**, então com 32 anos, trabalhando no Standard Telecommunication Laboratories em Harlow com **George Hockham**, publicou em 1966 o artigo *Dielectric-fibre surface waveguides for optical frequencies*, argumentando outra coisa: a perda vinha de **impurezas**, e não da física. Ele calculou que as fibras existentes estavam ordens de grandeza acima do limite fundamental imposto pelo espalhamento Rayleigh, apontou a sílica como o material que valia purificar, e especificou o que um sistema funcional exigiria.
+
+**A ideia foi amplamente ridicularizada na época.** Antes daquele artigo, a crença geral era que fibra jamais competiria com cobre.
+
+Em 1970, um grupo da Corning - Robert Maurer, Donald Keck, Peter Schultz e Frank Zimar - produziu fibra de sílica fundida com atenuação de 17 decibéis por quilômetro, abaixo da própria meta de Kao. Em 1972 chegaram a 4, e em 1979 a perda tinha caído a 0,2 decibel por quilômetro. O Bell Labs, que passara duas décadas desenvolvendo guias de onda de micro-ondas enterrados e planejava substituí-los depois por tubos ópticos ocos, abandonou aquele programa; a fibra o tornou obsoleto antes de um único deles entrar em serviço comercial.
+
+Kao recebeu o Nobel de Física em **2009**, quarenta e três anos depois do artigo. **O intervalo entre estar certo e ser acreditado foi de quatro anos; entre estar certo e ser homenageado, de quarenta e três.**
+
+## O que um transceptor é, de fato
+
+Um transceptor converte entre a sinalização elétrica que um equipamento entende e o que o meio carrega - luz na fibra, tensão no cobre, rádio no ar. Tudo acima dele nesta série pressupõe que essa conversão funciona.
+
+As propriedades físicas são implacáveis de um jeito que o processamento de pacotes não é. Distância, comprimento de onda, modo, tipo de conector e orçamento de potência ou casam nas duas pontas ou nada acontece, e um enlace marginal, em vez de quebrado, produz erro intermitente que se parece com todo outro tipo de problema. **Esta é a camada em que a falha é física e o sintoma é lógico**, e é por isso que engenheiro experiente confere nível óptico cedo e inexperiente confere por último.
+
+## O acordo multifonte, e por que ele importa
+
+O módulo plugável - GBIC, depois SFP, SFP+, QSFP e descendentes - é um pequeno milagre comercial que não recebe crédito nenhum.
+
+O mecanismo dele é o **acordo multifonte**: uma especificação escrita por um grupo de fabricantes CONCORRENTES, fora de qualquer organismo formal de padronização, comprometendo-os a construir módulos intercambiáveis. Não é padrão imposto por instituição; é acordo entre rivais de que preferiam dividir um formato a cada um ter o seu, proprietário.
+
+A consequência é que o menor, mais numeroso e mais frequentemente substituído componente de uma rede virou commodity que serve em qualquer coisa. **É o ato de autocontenção deliberada mais bem-sucedido da indústria**, e vale nomear porque a mesma indústria não chegou a acordo comparável em quase nenhuma outra camada.
+
+O contra-movimento merece ser nomeado do mesmo jeito. Fabricantes passaram a codificar módulos para que o equipamento rejeite o que não carrega o identificador certo, recriando aprisionamento dentro de um formato desenhado para evitá-lo. Essa prática, e o negócio de módulos de terceiros que existe para derrotá-la, é uma discussão comercial viva dentro de um componente técnico.
+
+## Evolução
+
+- **Óptica fixa**, até os anos 1990. A interface era soldada na placa; mudar velocidade ou distância significava equipamento novo.
+- **GBIC**, por volta de 1995. O conversor de interface gigabit tornou a óptica removível, de modo que o mesmo comutador servia lances curtos em cobre e fibra monomodo longa.
+- **SFP**, a partir de 2001. Plugável de formato pequeno - a mesma ideia reduzida o bastante para caber em densidade de porta razoável, e o formato que tornou práticos os comutadores de alta contagem de portas.
+- **SFP+, QSFP, QSFP28, QSFP-DD, OSFP**, adiante. Mais rápidos e mais densos, com os truques de paralelismo e de divisão por comprimento de onda necessários para manter o conector do mesmo tamanho enquanto a taxa sobe.
+- **Óptica coerente num plugável**, agora. Tecnologia de transmissão de longa distância que exigia chassi próprio, hoje num módulo que cabe na mão, o que vem colapsando em silêncio a fronteira entre a rede de transporte e o roteador.
+
+## Os cargos e as práticas
+
+Esta camada não produziu cargo glamouroso nenhum e uma quantidade enorme de competência essencial. Quem instala, emenda, testa e certifica em geral não é chamado de engenheiro de redes, e a rede não existe sem essas pessoas.
+
+As práticas dela são incomumente concretas. **Aritmética de orçamento de potência** antes da compra, e não depois da falha. **Limpar conector**, responsável por boa parte das falhas ópticas e a tarefa menos respeitada da disciplina. **Ler nível de luz** em vez de confiar no estado do enlace, porque uma porta que está de pé pode estar recebendo pouco demais para ser confiável. E **etiquetar**, que toda organização negligencia e toda organização paga durante uma queda.
+
+Há também um hábito profissional que vale dizer: o transceptor é a primeira coisa a trocar e a última a ser suspeitada. Porque é barato e substituível, testá-lo é rápido; porque é pequeno e passivo, ele é psicologicamente invisível.
+
+## As empresas
+
+A ciência foi do Standard Telecommunication Laboratories e da Corning; a manufatura em volume é Finisar, hoje dentro da Coherent, Broadcom, Lumentum, Innolight e uma base industrial chinesa substancial. Os fabricantes de equipamento - Cisco, Juniper, Arista, Extreme e os demais - em boa medida remarcam módulos construídos por esses fornecedores, e é por isso que uma óptica com o nome de um fabricante e outra sem costumam ser o mesmo componente com firmware diferente.
+
+## Para onde vai
+
+**O módulo está absorvendo a rede.** Óptica coerente e, cada vez mais, processamento digital de sinal e até funções de comutação estão migrando para dentro do plugável. Um componente que nasceu como forma de trocar o conector está virando lugar onde funções de rede moram.
+
+**A fotônica em silício leva a óptica para dentro do chip.** Integrar geração e detecção de luz ao silício de comutação remove uma interface, e a interface é onde custo, energia e falha se concentram.
+
+**Energia é a restrição agora.** Nas densidades e taxas atuais, a óptica é parcela relevante da energia e do calor de um comutador, e a discussão sobre acionamento linear e encapsulamento conjunto é, no fundo, uma discussão sobre watts, e não sobre bits.
+
+**E o padrão de 1966 se repete.** A contribuição de Kao não foi construir nada; foi identificar corretamente que um limite que todo mundo aceitava não era fundamental. Toda geração desta camada teve um número que se acreditava fixo - uma distância, uma taxa, um orçamento de potência - e a pergunta útil num campo tão físico é sempre quais dos limites atuais são leis e quais são apenas impurezas que ninguém removeu ainda.
+
+## Fontes
+
+- [IEEE Spectrum, How Charles Kao beat Bell Labs to the fibre-optic revolution: o artigo de 1966 de um engenheiro de 32 anos, o grupo da Corning com Maurer, Keck, Schultz e Zimar chegando a 17 decibéis por quilômetro em 1970, 4 em 1972 e 0,2 em 1979, e o Bell Labs abandonando o programa de guias de onda enterrados](https://spectrum.ieee.org/how-charles-kao-beat-bell-labs-to-the-fiberoptic-revolution)
+- [Memorial biográfico da Royal Society sobre Sir Charles Kuen Kao: o artigo de 1966 estabeleceu os parâmetros de projeto e o desempenho que um sistema bem-sucedido exigiria, e a ideia foi amplamente ridicularizada na época](https://royalsocietypublishing.org/rsbm/article/doi/10.1098/rsbm.2020.0006/116090/Sir-Charles-Kuen-Kao-4-November-1933-23-September)
+- [Britannica sobre Charles Kao: nascido em 4 de novembro de 1933 em Xangai, no Standard Telecommunication Laboratories em Harlow a partir de 1960, e o Nobel de Física de 2009 dividido com Willard Boyle e George Smith](https://www.britannica.com/biography/Charles-Kao)
+- [RP Photonics sobre o trabalho de Kao: as perdas das fibras existentes estavam ordens de grandeza acima do limite fundamental imposto pelo espalhamento Rayleigh, a sílica foi apontada como material candidato, e a Corning chegou a 20 decibéis por quilômetro em 1970, quando os números usuais estavam na casa dos milhares](https://www.rp-photonics.com/spotlight_2009_10_08.html)
+- [Linha do tempo da história da fibra óptica: a proposta de baixa perda de Kao em 1966, lasers semicondutores demonstrados em 1970, e o método de deposição por vapor da Corning para fibra de alta pureza e baixa perda](https://www.ecmag.com/magazine/articles/article-detail/fiber-optic-history-timeline)

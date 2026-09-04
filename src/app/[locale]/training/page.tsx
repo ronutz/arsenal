@@ -84,12 +84,16 @@ export default async function TrainingLandingPage({
               prospective client sees. Reuse-only: no new CSS classes. */}
           <section className="section teach-instructor">
             <div className="container teach-container">
-              <p className="teach-instructor-eyebrow">{t("instructor.eyebrow")}</p>
+              <p className="teach-instructor-eyebrow">
+                {t("instructor.eyebrow")}
+              </p>
 
               <div className="teach-instructor-card">
                 <div className="teach-instructor-text">
                   <h2 className="teach-instructor-name">Rodolfo Nützmann</h2>
-                  <p className="teach-instructor-body">{t("instructor.body")}</p>
+                  <p className="teach-instructor-body">
+                    {t("instructor.body")}
+                  </p>
                 </div>
               </div>
             </div>
@@ -128,7 +132,9 @@ export default async function TrainingLandingPage({
             <div className="container teach-container">
               <div className="vendor-note">
                 <p className="vendor-note-title">{t("disclaimerTitle")}</p>
-                <p className="vendor-note-body"><ReduBrand>{t("disclaimerBody")}</ReduBrand></p>
+                <p className="vendor-note-body">
+                  <ReduBrand>{t("disclaimerBody")}</ReduBrand>
+                </p>
               </div>
             </div>
           </section>
@@ -162,11 +168,15 @@ export default async function TrainingLandingPage({
               <ul className="platform-grid">
                 {PLATFORMS.map((p) => (
                   <li key={p.slug}>
-                    <Link href={`/training/${p.slug}`} className="platform-card">
+                    <Link
+                      href={`/training/${p.slug}`}
+                      className="platform-card"
+                    >
                       <span className="platform-card-name">{p.name}</span>
                       <span className="platform-card-tagline">{p.tagline}</span>
                       <span className="platform-card-meta mono">
-                        {tT("courseCount", { count: p.courses.length })} · {tT("since")} {p.since}
+                        {tT("courseCount", { count: p.courses.length })} ·{" "}
+                        {tT("since")} {p.since}
                       </span>
                     </Link>
                   </li>
@@ -184,7 +194,9 @@ export default async function TrainingLandingPage({
             <div className="container teach-container">
               <h2 className="teach-block-title">{t("envTitle")}</h2>
               <p className="teach-block-body">{t("envBody1")}</p>
-              <p className="teach-block-body"><ReduBrand>{t("envBody2")}</ReduBrand></p>
+              <p className="teach-block-body">
+                <ReduBrand>{t("envBody2")}</ReduBrand>
+              </p>
             </div>
           </section>
 
@@ -210,10 +222,11 @@ export default async function TrainingLandingPage({
           <section className="section teach-credibility">
             <div className="container teach-container">
               <h2 className="teach-block-title">{t("s4Title")}</h2>
-              <p className="teach-block-body"><ReduBrand>{t("s4Body")}</ReduBrand></p>
+              <p className="teach-block-body">
+                <ReduBrand>{t("s4Body")}</ReduBrand>
+              </p>
             </div>
           </section>
-
 
           {/* "BEYOND THE CLASSROOM" DELETED, NOT MOVED (PRIME 2026-08-06
               left the choice open).
@@ -255,52 +268,68 @@ export default async function TrainingLandingPage({
                 <a
                   href="#catalog"
                   className="learn-portal-card learn-portal-card-lead"
-                  style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+                  style={
+                    {
+                      "--note-accent": "var(--accent-primary)",
+                    } as CSSProperties
+                  }
                 >
                   <span className="learn-portal-ornament" aria-hidden>
                     &#9632;
                   </span>
                   <p className="learn-portal-title">
-                    {t("navCatalog")} <span className="learn-portal-arrow">&#8593;</span>
+                    {t("navCatalog")}{" "}
+                    <span className="learn-portal-arrow">&#8593;</span>
                   </p>
                   <p className="learn-portal-lede">{t("navCatalogLede")}</p>
                 </a>
                 <Link
                   href="/certifications"
                   className="learn-portal-card"
-                  style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+                  style={
+                    {
+                      "--note-accent": "var(--accent-primary)",
+                    } as CSSProperties
+                  }
                 >
                   <span className="learn-portal-ornament" aria-hidden>
                     &#9679;
                   </span>
                   <p className="learn-portal-title">
-                    {t("navCerts")} <span className="learn-portal-arrow">&#8594;</span>
+                    {t("navCerts")}{" "}
+                    <span className="learn-portal-arrow">&#8594;</span>
                   </p>
                   <p className="learn-portal-lede">{t("navCertsLede")}</p>
                 </Link>
                 <Link
                   href="/learn"
                   className="learn-portal-card"
-                  style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
+                  style={
+                    { "--note-accent": "var(--color-warning)" } as CSSProperties
+                  }
                 >
                   <span className="learn-portal-ornament" aria-hidden>
                     &#9632;
                   </span>
                   <p className="learn-portal-title">
-                    {t("navLearn")} <span className="learn-portal-arrow">&#8594;</span>
+                    {t("navLearn")}{" "}
+                    <span className="learn-portal-arrow">&#8594;</span>
                   </p>
                   <p className="learn-portal-lede">{t("navLearnLede")}</p>
                 </Link>
                 <Link
                   href="/tools"
                   className="learn-portal-card"
-                  style={{ "--note-accent": "var(--color-success)" } as CSSProperties}
+                  style={
+                    { "--note-accent": "var(--color-success)" } as CSSProperties
+                  }
                 >
                   <span className="learn-portal-ornament" aria-hidden>
                     &#9670;
                   </span>
                   <p className="learn-portal-title">
-                    {t("navTools")} <span className="learn-portal-arrow">&#8594;</span>
+                    {t("navTools")}{" "}
+                    <span className="learn-portal-arrow">&#8594;</span>
                   </p>
                   <p className="learn-portal-lede">{t("navToolsLede")}</p>
                 </Link>
@@ -312,13 +341,16 @@ export default async function TrainingLandingPage({
                 <Link
                   href="/glossary"
                   className="learn-portal-card"
-                  style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}
+                  style={
+                    { "--note-accent": "var(--color-danger)" } as CSSProperties
+                  }
                 >
                   <span className="learn-portal-ornament" aria-hidden>
                     &#9679;
                   </span>
                   <p className="learn-portal-title">
-                    {t("navGlossary")} <span className="learn-portal-arrow">&#8594;</span>
+                    {t("navGlossary")}{" "}
+                    <span className="learn-portal-arrow">&#8594;</span>
                   </p>
                   <p className="learn-portal-lede">{t("navGlossaryLede")}</p>
                 </Link>
@@ -329,48 +361,87 @@ export default async function TrainingLandingPage({
                     one grid of seven doors reads as a map, two grids of three
                     and four read as indecision. */}
                 <Link
-                href="/about"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>
-                  RN
-                </span>
-                <p className="learn-portal-title">
-                  {t("instructor.about")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("instructor.aboutLede")}</p>
-              </Link>
+                  href="/about"
+                  className="learn-portal-card"
+                  style={
+                    {
+                      "--note-accent": "var(--accent-primary)",
+                    } as CSSProperties
+                  }
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    RN
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("instructor.about")}{" "}
+                    <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">
+                    {t("instructor.aboutLede")}
+                  </p>
+                </Link>
                 <Link
-                href="/about/credentials"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>
-                  &#10003;
-                </span>
-                <p className="learn-portal-title">
-                  {t("instructor.certs")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("instructor.certsLede")}</p>
-              </Link>
+                  href="/about/credentials"
+                  className="learn-portal-card"
+                  style={
+                    { "--note-accent": "var(--color-warning)" } as CSSProperties
+                  }
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    &#10003;
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("instructor.certs")}{" "}
+                    <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">
+                    {t("instructor.certsLede")}
+                  </p>
+                </Link>
                 <Link
-                href="/endorsements"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--color-success)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>
-                  &#8220;&#8221;
-                </span>
-                <p className="learn-portal-title">
-                  {t("instructor.endorsements")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("instructor.endorsementsLede")}</p>
-              </Link>
+                  href="/endorsements"
+                  className="learn-portal-card"
+                  style={
+                    { "--note-accent": "var(--color-success)" } as CSSProperties
+                  }
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    &#8220;&#8221;
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("instructor.endorsements")}{" "}
+                    <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">
+                    {t("instructor.endorsementsLede")}
+                  </p>
+                </Link>
+                {/* CAREER (PRIME 2026-09-01). A reader who has just decided
+                    whether to trust the instructor is often deciding about
+                    their own next step rather than about a course, and the
+                    roles material answers that question without selling
+                    anything. Reuse-only, as with the cards above. */}
+                <Link
+                  href="/roles"
+                  className="learn-portal-card"
+                  style={
+                    {
+                      "--note-accent": "var(--accent-secondary)",
+                    } as CSSProperties
+                  }
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    &#9670;
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("navCareer")}{" "}
+                    <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("navCareerLede")}</p>
+                </Link>
               </div>
             </div>
           </section>
-
 
           {/* TOOLS PROMOTION REMOVED (PRIME 2026-08-06). The page already
               points at the tools from the "Where to go next" cards further
@@ -385,7 +456,10 @@ export default async function TrainingLandingPage({
                   <h2 className="teach-block-title">{t("historyTitle")}</h2>
                   <p className="teach-block-body">{t("historyBody")}</p>
                 </div>
-                <Link href="/about" className="btn btn-secondary teach-history-btn">
+                <Link
+                  href="/about"
+                  className="btn btn-secondary teach-history-btn"
+                >
                   {t("historyCta")} →
                 </Link>
               </div>

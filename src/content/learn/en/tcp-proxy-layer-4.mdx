@@ -13,6 +13,14 @@ updated: "2026-07-06"
 
 A proxy is any intermediary that sits between a client and a server and speaks to each on the other's behalf. The lowest useful place to do that is Layer 4, the transport layer, where the unit of work is a TCP connection rather than an HTTP request or a TLS record. A TCP proxy is the simplest full proxy there is, and understanding exactly what it can and cannot see makes every higher-layer proxy easier to reason about.
 
+## Origins: the load balancer that could not read
+
+Layer 4 proxying exists because the first load balancers had to work without understanding anything. In the 1990s a device in front of a server farm had one job - spread connections - and the traffic above the transport was somebody else's protocol. Reading it would have meant implementing it, and implementing it would have meant breaking whenever it changed.
+
+So the design settled on the smallest possible commitment: accept a connection, choose a member, open a second connection, and move bytes between them without interpretation. That refusal to look is the whole architecture, and it is why the same device handles a protocol that did not exist when it was built.
+
+The trade has not changed since. Layer 4 is fast, protocol-agnostic and cheap in state; it cannot make a decision that depends on what the bytes mean.
+
 ## Two connections, spliced
 
 The defining move of a TCP proxy is that it does not forward packets; it terminates one connection and originates another. The client completes a full TCP handshake (SYN, SYN-ACK, ACK) with the proxy and believes it is talking to the server. The proxy, in turn, completes its own separate handshake with the real server. From then on the proxy relays bytes between the two: it reads from one socket and writes to the other, in both directions, until one side closes. This is called connection splicing or a full proxy at Layer 4.
@@ -32,6 +40,27 @@ There is one important nuance for encrypted traffic. A Layer 4 proxy cannot read
 Because the proxy originates a brand-new connection to the server, the server sees the proxy's address as the source, not the client's. From the server's point of view every connection comes from the handful of proxy IPs. This is usually deliberate (it is how source NAT and connection pooling work) but it destroys the one piece of information many servers most want: who the client actually was. Access logs show the proxy; IP-based access rules see the proxy; geolocation sees the proxy.
 
 Two mechanisms put the client identity back. At Layer 7, HTTP proxies add an `X-Forwarded-For` header, but that only works for HTTP and only after the payload is parsed. At Layer 4, the answer is the **Proxy Protocol**, a tiny header the proxy prepends to the very start of the server-side TCP stream, before any application data, carrying the original source and destination address and port. The server (if it understands the Proxy Protocol) reads that header first, records the real client address, and then treats the rest of the stream normally. It is the Layer 4 way to preserve client identity through a connection that has been re-originated, and it is protocol-agnostic because it sits below the application entirely.
+
+## What it cannot do, and what people try anyway
+
+**It cannot route by content.** A path, a hostname in a header, a cookie or a method are all invisible. Any requirement phrased as "send /api to this pool" is a layer 7 requirement wearing a layer 4 question.
+
+**It cannot retry a failed request.** If a member dies mid-connection, the proxy can only reset; it has no idea whether the client's request was safely repeatable, because it never parsed one.
+
+**It cannot inspect what it forwards.** Encrypted or not, the payload is opaque by design - which is why layer 4 is the honest choice for traffic you have decided not to inspect, and the wrong one for traffic you have to.
+
+**It multiplies connections.** Two sockets per session, held for the session's life, which turns into a table sized by concurrency rather than by request rate. Long-lived idle connections are the usual cause of exhaustion, and the fix is timeouts that match the application rather than the default.
+
+## The persistence problem
+
+Because there is no cookie and no header to key on, stickiness at layer 4 is usually by source address. That works until the clients arrive behind one address - a corporate gateway, a mobile carrier, a [CGNAT](/learn/cgnat-address-sharing-and-attribution) deployment - and then a thousand users pin to one member, which looks like a broken balancing algorithm and is actually the algorithm working on the information available.
+
+## The landscape, by category
+
+- **Kernel and open-source proxies** - IPVS, HAProxy in TCP mode, NGINX stream, and the eBPF-based load balancers behind large cloud fabrics.
+- **Application delivery controllers** - F5, Citrix, A10 and similar, where layer 4 is the fast path and layer 7 the option you turn on per virtual server.
+- **Cloud network load balancers**, sold explicitly on the layer 4 trade: high throughput, low latency, no content awareness, and often preserving the client address where the layer 7 product does not.
+- **Anything doing TLS passthrough**, which is layer 4 by necessity because the decision has been made not to hold the key.
 
 ## Where you meet TCP proxies
 

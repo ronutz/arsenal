@@ -1,0 +1,83 @@
+---
+slug: ids-ips-family-history
+title: "Intrusion Detection: The Discipline Built on Reading the Logs"
+summary: "Intrusion detection began as a filing problem. James Anderson's 1980 report proposed auditing a computer's records to find abnormal usage; Dorothy Denning and Peter Neumann turned that into a real-time model between 1984 and 1986; Todd Heberlein moved it onto the wire in 1990; and Marty Roesch gave it away in 1998. This is the family history, including the split into detection and prevention that was a business decision as much as a technical one, and why the hardest problem in the field has always been the person who has to read the output."
+concepts: ["ids", "ips", "intrusion detection", "snort", "anomaly detection", "siem", "history"]
+relatedTools: []
+relatedArticles: ["firewall-family-history", "security-versus-availability", "ssl-forward-proxy-interception"]
+category: security
+order: 143
+status: reviewed
+updated: "2026-09-03"
+---
+
+Every other family in this series began with a device. This one began with a filing problem: computers were producing records of what people did with them, nobody was reading those records, and somebody asked what would happen if they did.
+
+## 1980: audit the logs
+
+**James P. Anderson**'s technical report *Computer Security Threat Monitoring and Surveillance*, published in April 1980, is where automated intrusion detection is usually traced from. Its proposal was modest and consequential: audit a computer's data to identify abnormal usage patterns at the end of each day, using statistical analysis.
+
+Two things about that framing matter. It was **after the fact** - a daily review rather than a live alarm - and it worked on **records the system already produced**. Intrusion detection did not begin by adding a sensor. It began by reading what was already there, which is still the cheapest security improvement available to most organisations and still the one most often skipped.
+
+## 1984 to 1986: the model
+
+At SRI International, which had been researching audit-trail analysis since 1983, **Dorothy Denning** and **Peter Neumann** developed a model for a real-time intrusion detection system under government contract between 1984 and 1986. Denning presented **An Intrusion Detection Model** at the IEEE Symposium on Security and Privacy in Oakland in May 1986, published in *IEEE Transactions on Software Engineering* in February 1987.
+
+The model's core idea is still the field's organising principle. Build a statistical profile of normal behaviour for each subject, then flag deviation from it - detection without knowing in advance what the attack looks like. The prototype was the **Intrusion Detection Expert System**, developed at SRI under Teresa Lunt, and it had two components that map exactly onto the split every product still has: one that learns normal behaviour and flags deviation, and one that encodes known vulnerabilities as rules.
+
+**Anomaly detection and signature detection were siblings from the beginning**, in the same prototype, and the entire subsequent history of this family is the two of them trading places depending on which was cheaper to run.
+
+## 1990: onto the wire
+
+Host-based detection reads a machine's own records. **L. Todd Heberlein**'s *A Network Security Monitor*, presented at the 1990 IEEE symposium, moved the idea onto the network - watching traffic rather than audit trails.
+
+That change made the category commercially viable and imposed the constraint it has never escaped. A network sensor sees everything without touching anything, which is why it deploys easily. It also sees only what crosses its point of observation, only what it can parse, and only at the speed it can keep up with - and each of those three limits has eventually been reached.
+
+## The commercial era, and the letter that changed
+
+Through the 1990s the market grew: Internet Security Systems with RealSecure, Cisco buying WheelGroup to acquire network intrusion detection, and a set of host-based products descended from Air Force work.
+
+Then, on 22 December 1998, **Martin Roesch** released **Snort** - initially Unix-only and limited, and by version 1.5 in December 1999 capable of real-time packet analysis and logging. It was free, its rules were readable, and anybody could write one. Snort did to intrusion detection what the Firewall Toolkit had done for firewalls five years earlier: it turned an expensive product category into something a competent engineer could study, and it made the rule language a shared vocabulary.
+
+The move from **detection** to **prevention** followed. An intrusion detection system (IDS) sits beside the traffic and alerts; an intrusion prevention system (IPS) sits in the path and drops. That single letter changes everything about the risk: a false positive in detection is noise, and a false positive in prevention is an outage. Moving one to the other converts an analyst's problem into an operations problem, which is why mature deployments still stage it - monitor, then block for a pilot, then block generally, each step with a date.
+
+## Evolution
+
+- **Audit review**, 1980. Daily, statistical, after the fact.
+- **Real-time host detection**, 1986 to the early 1990s. The IDES model and its descendants.
+- **Network detection**, from 1990. Watch the wire.
+- **Open signatures**, from 1998. Snort, and a rule format others adopted.
+- **Prevention**, from the early 2000s. In-path, dropping.
+- **Absorption**, from around 2009. Intrusion prevention stops being a product and becomes a feature of the next-generation firewall, which is where most organisations run it today.
+- **Behavioural analytics and endpoint detection**, from the 2010s. Denning's anomaly model returning with enough computing power to actually run it, on hosts, where the traffic is still readable.
+
+That last point deserves the emphasis. **The field's founding idea - profile normal, flag deviation - was correct in 1986 and impractical for twenty-five years**, because nobody had the storage or the processing to build per-subject baselines at scale. The current wave of behavioural products is not a new idea; it is the original idea finally affordable.
+
+## The jobs and the practices
+
+This family created the **security analyst** and, with it, the **security operations centre** - a room whose entire purpose is that somebody reads the output. Every other device in this series can run unattended; an intrusion detection system that nobody reads is a cost with no effect.
+
+That produced the discipline's defining and least solved problem: **alert fatigue**. Tuning, suppression, correlation and triage are all responses to the fact that the volume of detections exceeds human attention, and the entire security information and event management category exists downstream of it. The uncomfortable measure of an intrusion detection deployment is not what it caught, but what fraction of what it flagged anybody actually looked at.
+
+It also created **the rule writer** - a specific craft of expressing an attack pattern precisely enough to match and loosely enough to survive variation - and, on the other side, the discipline of evasion, which is the same craft inverted.
+
+## The companies
+
+The research came from SRI, Purdue, the Air Force and university labs rather than from vendors. The first commercial wave was Internet Security Systems, Cisco through WheelGroup, and a set of host products from government work. Sourcefire, founded by Roesch to commercialise Snort, was acquired by Cisco in 2013. Today the function lives mostly inside other products - Palo Alto, Fortinet, Check Point, Cisco - while the open lineage continues in Snort, Suricata and Zeek, the last of which descends directly from the network monitoring research of the 1990s.
+
+## Where it goes
+
+**Encryption removed the payload.** A network sensor that cannot read the traffic is reduced to metadata - who talked to whom, how often, how much. Which turns out to be more useful than expected, and is why detection has partly moved to traffic analysis rather than content inspection.
+
+**The endpoint became the sensor.** Where the plaintext is, the detection is. That is the entire logic of endpoint detection and response, and it is the same migration happening to firewalls and proxies for the same reason.
+
+**Identity became the signal.** The most valuable modern detection is often not about packets at all: an account behaving unlike itself, authenticating from somewhere new, reaching for something it never touched. That is Denning's 1986 model applied to people rather than to processes.
+
+**And the bottleneck has not moved.** Detection has improved by orders of magnitude; the number of people available to read what it produces has not. Every advance in this family is ultimately measured against that constraint, and the honest question about any new detection capability is not what it can find but who is going to look at it.
+
+## Sources
+
+- [SRI Computer Science Laboratory history of intrusion detection: research from 1983, and Denning and Neumann's real-time IDES model developed under contract between 1984 and 1985](https://www.csl.sri.com/programs/intrusion/history.html)
+- [Dorothy E. Denning, An Intrusion-Detection Model, first presented at the 1986 IEEE Symposium on Security and Privacy and published in IEEE Transactions on Software Engineering in February 1987](https://www.cs.colostate.edu/~cs656/reading/ieee-se-13-2.pdf)
+- [Historical perspective bibliography: J.P. Anderson's 1980 Computer Security Threat Monitoring and Surveillance, Lunt's IDES work at SRI, and Heberlein's 1990 A Network Security Monitor](https://www.pearsonhighered.com/assets/samplechapter/0/1/3/0/0130259608.pdf)
+- [GIAC, The History and Evolution of Intrusion Detection: Snort released by Marty Roesch on 22 December 1998, Unix-only and limited, with version 1.5 in December 1999 performing real-time packet analysis and logging](https://www.giac.org/paper/gsec/1294/history-evolution-intrusion-detection/100570)

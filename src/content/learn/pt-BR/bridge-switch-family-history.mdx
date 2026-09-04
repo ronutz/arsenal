@@ -1,0 +1,82 @@
+---
+slug: bridge-switch-family-history
+title: "Pontes e comutadores: uma ideia, resolvida duas vezes"
+summary: "A ponte e o comutador são a mesma ideia com quarenta anos de distância, e a história passa por duas pessoas que raramente são citadas juntas. Radia Perlman resolveu o problema dos laços na Digital numa única noite de dezembro de 1985 e escreveu a resposta como um poema de doze linhas. A Kalpana pôs a mesma função em silício, uma porta por dispositivo, em 1990, e vendeu o resultado para a Cisco quatro anos depois. No caminho: por que Perlman diz que tudo isso nasceu de um erro da indústria, por que o comutador substituiu o hub sem ninguém chamar aquilo de melhoria de segurança, e o que acontece com uma camada declarada encerrada várias vezes."
+concepts: ["bridge", "switch", "spanning tree", "stp", "ethernet", "layer 2", "history"]
+relatedTools: []
+relatedArticles: ["firewall-family-history", "network-segmentation-from-vlans-to-microsegmentation", "tcp-proxy-layer-4"]
+category: networking
+order: 141
+status: reviewed
+updated: "2026-09-03"
+---
+
+Pontes e comutadores costumam ser ensinados como dois equipamentos. São uma ideia só, implementada duas vezes com trinta anos de silício no meio, e a segunda implementação foi tão mais barata que apagou a primeira do vocabulário mantendo todos os problemas dela.
+
+## O erro que criou o campo inteiro
+
+A explicação da própria Radia Perlman para a existência das pontes é o melhor ponto de partida, e não é lisonjeira para a indústria. Quando a Ethernet foi introduzida, diz ela, a indústria cometeu o erro de achar que a Ethernet era *a rede*, em vez de um enlace numa rede. As aplicações foram escritas supondo que tudo era uma Ethernet só. Elas não punham nos pacotes a informação de endereçamento que um roteador precisaria, então roteadores não conseguiam encaminhar entre Ethernets - e algo tinha de juntar os segmentos sem exigir que alguém reescrevesse o software.
+
+Esse algo foi a **ponte**: um equipamento que escuta todo quadro e o encaminha para as demais portas. Ela funciona justamente por não exigir nada das pontas. **O mundo inteiro da camada 2 existe como contorno de uma suposição feita cedo e nunca retirada**, e toda dificuldade dele desde então - inundação, laços, domínios de difusão, a tensão permanente entre uma rede plana grande e várias pequenas - descende disso.
+
+## Dezembro de 1985: um problema tido como insolúvel
+
+Redundância é o que torna uma rede confiável e é também o que torna uma rede em ponte fatal. Dois caminhos entre duas pontes significam que um quadro pode circular, e como quadro em ponte não tem contador de saltos para expirar, ele circula para sempre, multiplicando-se em cada junção até a rede se afogar em cópias de si mesma.
+
+Um gerente da Digital deu esse problema a Radia Perlman, considerando-o provavelmente insolúvel. Ela foi para casa, acordou de noite com a solução formada, e escreveu a especificação na manhã seguinte - junto de um poema de doze linhas que descreve o protocolo de forma completa e correta. O artigo, de 1985, é **An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN**.
+
+O algoritmo elege uma raiz, calcula os caminhos de menor custo até ela, e desativa todo enlace que não esteja na árvore resultante. Enlaces redundantes ficam fisicamente conectados e logicamente ociosos até algo falhar. A Digital o embarcou na sua ponte Ethernet de duas portas, e o IEEE o adotou como **802.1D em 1990**. O spanning tree rápido veio como 802.1w em 2001, e a própria Perlman depois desenhou o TRILL para que a Ethernet pudesse usar os enlaces que o spanning tree desliga.
+
+Duas coisas sobre ela merecem ser ditas sem rodeio. Ela não recebeu royalties, e por anos o protocolo foi creditado a outros. E ela não gosta de ser chamada de mãe da internet - preferiria que as pessoas entendessem qual era o problema e o que a solução fez. A explicação dela para o próprio trabalho ter sido subestimado vale carregar: seus projetos eram tão enganosamente simples que as pessoas supunham que os problemas tinham sido fáceis, enquanto outros, que produziam projetos complicados e tecnicamente frágeis, descritos de um jeito que ninguém entendia, eram considerados gênios.
+
+## 1990: a mesma função, em silício, por porta
+
+Uma ponte unia dois ou três segmentos. Tudo num segmento continuava dividindo o fio, continuava colidindo, continuava vendo o tráfego de todo mundo.
+
+A **Kalpana**, fundada em Sunnyvale em 1990 por Vinod Bhardwaj e Larry Blair - batizada com o nome da esposa de Bhardwaj, que significa *imaginação* em sânscrito -, lançou o **EtherSwitch** de sete portas, o primeiro comutador Ethernet multiportas, seguido do EPS-1500 de quinze portas. A ideia era uma ponte com uma porta por dispositivo, em vez de uma porta por segmento. Os quadros iam só para onde precisavam ir.
+
+As consequências foram maiores que a descrição sugere. Cada dispositivo passou a ter a taxa cheia do enlace, e não uma fração dela. As colisões sumiram, que é o que tornou o full duplex possível. A Ethernet pôde escalar a velocidades que o meio compartilhado nunca teria suportado, e é por isso que a transição para Fast Ethernet e depois Gigabit foi direta. A Kalpana também inventou o **EtherChannel**, agregando enlaces em paralelo para mais banda entre comutadores, que o IEEE padronizou como 802.3ad em 2000.
+
+E uma consequência que ninguém vendeu: num hub, capturar era trivial, porque toda estação via tudo. Num comutador, não era. **A comutação foi uma melhoria de segurança relevante que a indústria vendeu puramente como atualização de desempenho**, e as portas de espelhamento e os taps de que a monitoração hoje depende existem para desfazer isso de propósito.
+
+A Cisco comprou a Kalpana em 1994, junto de Grand Junction e Crescendo, e as combinou na linha Catalyst - a série 3000 vinda da Kalpana, e as 1700, 1900 e 2800 da Grand Junction. O enquadramento da Cisco na época era que roteamento de camada 3 e comutação de camada 2 eram funções complementares de inteligências diferentes: roteamento lento e complexo, comutação rápida e simples. Essa distinção moldou as linhas de produto e os cargos da indústria pela década inteira.
+
+## Evolução, e as discussões que voltam
+
+- **Ponte transparente**, meados dos anos 1980. Aprende escutando, inunda o que não conhece.
+- **Spanning tree**, 1985, padronizado em 1990. Um caminho ativo, redundância guardada.
+- **Comutação**, 1990. Ponte por porta em hardware; o hub desaparece.
+- **Redes locais virtuais (VLANs)**, padronizadas como 802.1Q em 1998. Um comutador físico apresentando várias redes lógicas, que é onde a segmentação começa como disciplina.
+- **Comutação de camada 3**, do fim dos anos 1990. Roteamento em velocidade de hardware, o que encerrou em silêncio o enquadramento de lento e complexo.
+- **Malhas de data center**, a partir de 2010. TRILL, SPB e depois folha-espinha com roteamento na borda, todas desenhadas para escapar do fato de que o spanning tree desperdiça enlaces de propósito.
+- **Sobreposições**, VXLAN e afins. Uma rede de camada 2 construída sobre uma de camada 3, que é a indústria admitindo que as aplicações nunca deixaram de supor uma Ethernet plana.
+
+Esse último ponto é a piada recorrente. O erro que Perlman apontou - tratar a Ethernet como a rede - foi diagnosticado quarenta anos atrás, e o data center moderno gasta esforço considerável recriando uma ilusão de camada 2 plana sobre uma malha roteada, porque as aplicações continuam esperando isso.
+
+## Os cargos e hábitos que ficaram
+
+A comutação criou a maior família de cargos técnicos de redes. A maioria das trilhas de certificação começa aqui por um motivo: o comutador é onde a carreira começa, porque é o equipamento que a organização tem em maior número e onde o erro é mais sobrevivível.
+
+As práticas que vieram junto ainda são reconhecíveis. **Projeto de VLAN** como primeiro ato de segmentação. **Listas de permissão em tronco**, que decidem se aquela segmentação é real. **Segurança de porta e 802.1X**, que é autenticação chegando a uma camada projetada para confiar em qualquer coisa que se conecte. **Documentação de cabo e porta**, eternamente desatualizada. E o **medo de spanning tree** - cautela profissional específica, presente em todo operador que já viu um laço derrubar um sítio, e a razão de uma das quedas graves mais comuns em rede corporativa ainda ser alguém conectando duas portas que não deviam ter sido conectadas.
+
+## As empresas
+
+A era da ponte pertenceu à Digital e às empresas deste catálogo que construíram o mercado em volta. A era da comutação começou com Kalpana e Grand Junction e foi consolidada quase imediatamente dentro da Cisco. Hoje o mercado é Cisco, Arista, Juniper, HPE via Aruba, Extreme Networks, Huawei, e os fabricantes de caixa branca vendendo hardware com o sistema operacional desacoplado - que é o desenvolvimento mais interessante, porque separa o comutador do software dele pela primeira vez desde que a função foi inventada.
+
+## Para onde vai
+
+**A distinção está se dissolvendo.** Um comutador moderno roteia, filtra, cifra e aplica política. Chamá-lo de equipamento de camada 2 é descrever uma função entre várias, e as categorias de prova sobreviveram à arquitetura.
+
+**A malha está virando a unidade.** Ninguém mais configura comutador de data center individualmente; descreve-se a malha pretendida e controladores a renderizam. Isso move a habilidade da configuração de equipamento para intenção e verificação - e move o modo de falha junto.
+
+**O silício está consolidando.** A maioria dos comutadores da maioria dos fabricantes usa silício de mercado de um punhado de fornecedores, o que torna a diferenciação uma questão de software e explica por que tanta discussão de fabricante hoje é sobre sistema operacional e automação, e não sobre encaminhamento.
+
+**E a camada continua se recusando a morrer.** A camada 2 foi declarada encerrada por toda geração desde que rotear ficou barato, e continua aí, porque as aplicações seguem sendo escritas por gente que supõe que a rede é uma coisa plana - que é exatamente a suposição que Perlman identificou nos anos 1980, ainda gerando trabalho quarenta anos depois.
+
+## Fontes
+
+- [Hidden Heroes sobre Radia Perlman: o erro da indústria de tratar a Ethernet como a rede, e o artigo de spanning tree de 1985](https://hiddenheroes.netguru.com/radia-perlman)
+- [National Inventors Hall of Fame: como o spanning tree transformou a Ethernet de algumas centenas de nós num prédio para redes de centenas de milhares](https://www.invent.org/inductees/radia-perlman)
+- [IPWatchdog sobre o spanning tree, a ponte de duas portas da DEC, e o IEEE 802.1D em 1990](https://ipwatchdog.com/2016/02/04/spanning-tree-protocol-internet-routing/)
+- [Kalpana, Inc.: fundada em 1990 em Sunnyvale por Vinod Bhardwaj e Larry Blair, o EtherSwitch de sete portas, o EtherChannel, e a aquisição pela Cisco em 1994](https://en.wikipedia.org/wiki/Kalpana,_Inc.)
+- [Cisco Catalyst: a série 3000 vinda da Kalpana e as séries 1700, 1900 e 2800 da Grand Junction](https://en.wikipedia.org/wiki/Cisco_Catalyst)

@@ -1,0 +1,84 @@
+---
+slug: sdn-family-history
+title: "Rede definida por software: um protesto que virou categoria de produto"
+summary: "O trabalho inicial que virou SDN - Ethane, RCP, 4D - nasceu como protesto contra a ossificação das redes. Em sete anos o protesto tinha uma fundação com Cisco e Juniper entre os membros fundadores, e o autor dele tinha vendido a empresa para a VMware por 1,26 bilhão de dólares e virado investidor. Esta é a história da família: o que o movimento de fato pediu, o que a indústria deu em troca, e por que a ideia venceu completamente enquanto o protocolo que lhe deu nome, em boa medida, não."
+concepts: ["sdn", "openflow", "control plane", "nicira", "network virtualization", "history"]
+relatedTools: []
+relatedArticles: ["router-family-history", "bridge-switch-family-history", "network-segmentation-from-vlans-to-microsegmentation"]
+category: networking
+order: 150
+status: reviewed
+updated: "2026-09-03"
+---
+
+Esta é a última das histórias de família desta série, e é a única que começou como discussão sobre a indústria, e não como solução de um problema técnico.
+
+## 2005 a 2007: um protesto contra a ossificação
+
+O trabalho mais antigo - o **Ethane**, de Casado e colegas, o **RCP** e o **4D** - é descrito na literatura em termos incomumente diretos: esses esforços *nasceram como protesto contra a ossificação das redes*.
+
+A queixa era específica. Funções vinham assadas dentro da infraestrutura, pesquisadores não conseguiam estender equipamentos com capacidade nova, e inovar exigia permissão de fabricante e ciclo de lançamento. O Ethane respondeu com uma linguagem de política baseada em fluxo sobre um plano de dados simplificado e um plano de controle centralizado, e provou que uma rede gerida centralmente era viável - um protótipo em Stanford administrando mais de trezentos hosts por vários meses.
+
+**Martin Casado** fez esse trabalho no doutorado, sob **Nick McKeown**, com **Scott Shenker**; os dois orientadores viraram cofundadores dele. O **OpenFlow**, publicado por McKeown e outros em 2008, transformou a ideia num protocolo aberto entre um controlador e um equipamento, e foi ele mesmo um subproduto do controlador de código aberto **NOX** - um sistema operacional de rede que oferecia um ambiente centralizado para programar uma rede inteira, como um sistema operacional administra aplicações.
+
+A abstração central cabe numa frase: **separar o plano de controle do plano de dados**. Deixar os equipamentos encaminharem, e deixar outra coisa decidir como o encaminhamento deve ser.
+
+## 2007 a 2012: o protesto é comprado
+
+Casado, McKeown e Shenker fundaram a **Nicira** em 2007. Ela também cocriou o **Open vSwitch**, comutador em software que está no núcleo principal do Linux desde a versão 3.3, de março de 2012, e roda, quase despercebido, embaixo de uma quantidade enorme da infraestrutura virtualizada do mundo.
+
+Em **março de 2011** foi estabelecida a **Open Networking Foundation** para cuidar do OpenFlow, com membros fundadores incluindo Google, Facebook, Deutsche Telekom, Ericsson, Broadcom, Juniper e **Cisco**.
+
+Em **23 de julho de 2012**, a VMware anunciou a compra da Nicira por **1,26 bilhão de dólares** - quatro meses depois do lançamento oficial do produto. Casado recebeu o ACM Grace Murray Hopper Award no mesmo ano, com citação por criar o movimento da rede definida por software.
+
+**Leia esses dois parágrafos juntos.** Um protesto contra o controle das redes pelos fabricantes produziu, em quatro anos, uma fundação cujos membros fundadores eram os fabricantes, e uma empresa vendida à maior fabricante de virtualização por mais de um bilhão. Isso não é hipocrisia e não é fracasso. É o que acontece quando uma crítica está certa: os incumbentes aderem, financiam e absorvem, e o movimento consegue o que queria e perde a independência na mesma transação.
+
+## O que venceu, e o que não
+
+A distinção importa mais aqui do que em qualquer outra família desta série, porque o marketing a obscureceu por uma década.
+
+**O OpenFlow em boa medida NÃO venceu.** Como protocolo para um controlador programar diretamente as tabelas de fluxo de um comutador, ele teve implantação em pesquisa, algum uso em operadora e adoção corporativa muito pequena. A maioria dos produtos vendidos como rede definida por software nunca o falou.
+
+**A ideia venceu completamente.** Controle centralizado, estado de rede como software, configuração derivada de intenção em vez de digitada em equipamento, e a rede como algo que uma implantação de aplicação pode solicitar - tudo isso é hoje simplesmente como redes grandes funcionam. A rede de todo provedor de nuvem é controlada centralmente. Toda malha séria de data center é programada de um controlador. A rede de longa distância definida por software levou o mesmo princípio para a filial e é o padrão em implantação nova.
+
+Essa separação - **o protocolo falhou e a abstração venceu** - é a lição mais reaproveitável deste artigo, e ela se repete neste catálogo. O que se propaga raramente é um mecanismo específico; é o jeito de pensar o problema, que depois cada um implementa do seu modo.
+
+## Evolução
+
+- **O protesto de pesquisa**, 2005 a 2007. Ethane, RCP, 4D.
+- **OpenFlow e NOX**, 2008. Um protocolo e um controlador.
+- **A fundação**, 2011. Padronização, com os incumbentes dentro.
+- **Virtualização de rede**, de 2012 em diante. Nicira para a VMware; sobreposições em vez de programação de fluxo, que é onde o valor comercial de fato caiu.
+- **Malhas com controlador**, de meados dos anos 2010. Controladores de fabricante em vez de protocolos abertos, entregando a abstração dentro do parque de um fornecedor só.
+- **Rede baseada em intenção**, hoje o termo preferido. Declarar o estado desejado e deixar o sistema renderizar e verificar - a mesma ideia com vocabulário melhor e, o que importa, com verificação anexada.
+- **Planos de dados programáveis**, em paralelo. P4 e parentes deixam o comportamento de encaminhamento ser escrito, e não escolhido, o que é versão mais radical do argumento original do que o OpenFlow jamais foi.
+
+## Os cargos e as práticas
+
+Esta família mudou o trabalho de rede mais do que qualquer outra da série.
+
+Ela criou a expectativa de que engenheiro de redes escreve código. Não necessariamente como desenvolvedor, mas o bastante para dirigir uma interface, tratar uma resposta estruturada e pôr uma mudança sob controle de versão. Configuração como dado, revisão antes de implantar, e reversão como capacidade projetada em vez de improviso vieram todas com esse pensamento.
+
+Ela também criou um modo de falha novo e real. **Um plano de controle centralizado concentra capacidade E risco**: um erro de configuração no controlador hoje faz o que antes exigia visitar cem equipamentos, e faz em segundos. As práticas que cresceram em volta disso - implantação escalonada, limite de raio de impacto, execução simulada e comparação, redundância de controlador - são o imposto operacional da centralização, e são a razão de o ferramental desta família ser julgado por verificação tanto quanto por expressividade.
+
+E ela mudou o que a competência de um engenheiro de redes vale. Fluência na linha de comando de fabricante, a moeda da profissão por duas décadas, virou parte menor do trabalho; entender intenção, topologia, domínios de falha e os sistemas acima da rede virou parte maior.
+
+## As empresas
+
+A pesquisa veio de Stanford, de Berkeley e das operadoras. A Nicira foi para a VMware; a Big Switch Networks e outras iniciantes puras foram absorvidas ou fecharam; Cisco, Juniper, Arista e as demais construíram controladores próprios. As maiores redes definidas por software do mundo pertencem aos provedores de nuvem e às redes de conteúdo, que publicam artigos sobre elas e não vendem nada.
+
+## Para onde vai
+
+**Verificação está virando o produto.** Programar uma rede centralmente está resolvido; provar que o que você programou faz o que pretendia, antes de entrar no ar, não está. Verificação formal de estado de rede é onde está o trabalho interessante.
+
+**A fronteira segue subindo.** Malhas de serviço e motores de política de nuvem são rede definida por software com outro nome, operadas por times de plataforma que muitas vezes nunca ouviram o termo - o que é a prova mais clara de que a ideia venceu.
+
+**E a queixa da ossificação está voltando, uma camada acima.** O protesto original era que os fabricantes controlavam o que as redes podiam fazer. O equivalente de hoje é que um punhado de provedores de nuvem controla que comportamento de rede é sequer expressável, e as interfaces são deles. Se isso vai produzir o próprio Ethane é pergunta aberta, e o padrão deste catálogo sugere que sim - sendo a parte útil dessa história que o protesto, quando vier, provavelmente será escrito por um doutorando e comprado por um incumbente.
+
+## Fontes
+
+- [Levantamento sobre paradigmas de rede definida por software: Ethane, RCP e 4D nasceram como protesto contra a ossificação das redes; o Ethane introduziu uma linguagem de política baseada em fluxo sobre plano de dados simplificado e plano de controle centralizado, e o OpenFlow construiu sobre esse trabalho em 2008 definindo um protocolo aberto entre controlador e equipamento](https://anrg.usc.edu/www/papers/wirelessSDN.pdf)
+- [Grokipedia sobre rede definida por software: o protótipo Ethane em Stanford administrando mais de 300 hosts por vários meses, o controlador NOX de 2008 como sistema operacional de rede, e a Open Networking Foundation estabelecida em março de 2011 com membros fundadores incluindo Google, Facebook, Cisco, Deutsche Telekom, Ericsson, Broadcom e Juniper](https://grokipedia.com/page/Software-defined_networking)
+- [Nicira: cofundada em 2007 por Martin Casado com Nick McKeown e Scott Shenker; a VMware anunciou a intenção de compra por 1,26 bilhão de dólares em 23 de julho de 2012](https://en.wikipedia.org/wiki/Nicira)
+- [Martin Casado sobre as origens do OpenFlow: o OpenFlow como subproduto do controlador de código aberto NOX, e o Open vSwitch no núcleo principal do Linux desde a versão 3.3, de março de 2012](https://www.enterprisenetworkingplanet.com/standards-protocols/openflow-sdn-inventor-martin-casado-on-sdn-vmware-and-software-defined-networking-hype-video/)
+- [ACM Grace Murray Hopper Award de 2012 a Martin Casado, por criar o movimento da rede definida por software](https://awards.acm.org/award-recipients/casado_9032793)

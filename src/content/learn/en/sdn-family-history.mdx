@@ -1,0 +1,84 @@
+---
+slug: sdn-family-history
+title: "Software-Defined Networking: A Protest That Became a Product Category"
+summary: "The early work that became SDN - Ethane, RCP, 4D - arose as a protest against the ossification of networks. Within seven years the protest had a foundation with Cisco and Juniper among its founding members, and its author had sold his company to VMware for 1.26 billion dollars and become a venture capitalist. This is the family history: what the movement actually asked for, what the industry gave it instead, and why the idea succeeded completely while the protocol it was named after mostly did not."
+concepts: ["sdn", "openflow", "control plane", "nicira", "network virtualization", "history"]
+relatedTools: []
+relatedArticles: ["router-family-history", "bridge-switch-family-history", "network-segmentation-from-vlans-to-microsegmentation"]
+category: networking
+order: 150
+status: reviewed
+updated: "2026-09-03"
+---
+
+This is the last of the family histories in this series, and it is the only one that began as an argument about the industry rather than a solution to a technical problem.
+
+## 2005 to 2007: a protest against ossification
+
+The earliest work - **Ethane** by Casado and colleagues, **RCP**, and **4D** - is described in the literature in terms that are unusually direct: these efforts *arose as a protest against the ossification of networks*.
+
+The complaint was specific. Functions were baked into infrastructure, researchers could not extend network devices with new capability, and innovation required a vendor's permission and a release cycle. Ethane answered it with a flow-based policy language over a simplified data plane and a centralised control plane, and proved a centrally managed network was feasible - a prototype at Stanford managing over three hundred hosts for several months.
+
+**Martin Casado** did this work for his doctorate under **Nick McKeown**, with **Scott Shenker**; the two supervisors became his co-founders. **OpenFlow**, published by McKeown and others in 2008, turned the idea into an open protocol between a controller and a device, and was itself a byproduct of the open-source **NOX** controller - a network operating system offering a centralised environment for programming a whole network the way an operating system manages applications.
+
+The central abstraction is one sentence: **separate the control plane from the data plane**. Let devices forward, and let something else decide what forwarding should look like.
+
+## 2007 to 2012: the protest is acquired
+
+Casado, McKeown and Shenker founded **Nicira** in 2007. It also co-created **Open vSwitch**, a software switch that has been in the mainline Linux kernel since version 3.3 in March 2012 and is running, largely unnoticed, underneath an enormous amount of the world's virtualised infrastructure.
+
+In **March 2011** the **Open Networking Foundation** was established to steward OpenFlow, with founding members including Google, Facebook, Deutsche Telekom, Ericsson, Broadcom, Juniper and **Cisco**.
+
+On **23 July 2012** VMware announced it would acquire Nicira for **1.26 billion dollars** - four months after the product officially launched. Casado received the ACM Grace Murray Hopper Award the same year, cited for creating the movement of software-defined networking.
+
+**Read those two paragraphs together.** A protest against vendor control of networking produced, within four years, a foundation whose founding members were the vendors, and a company sold to the largest virtualisation vendor for over a billion dollars. That is not hypocrisy and it is not failure. It is what happens when a critique is correct: the incumbents join it, fund it, and absorb it, and the movement gets its way and loses its independence in the same transaction.
+
+## What succeeded, and what did not
+
+The distinction matters more here than in any other family in this series, because the marketing has obscured it for a decade.
+
+**OpenFlow largely did not win.** As a protocol for a controller to program switch flow tables directly, it saw research deployment, some operator use and very little enterprise adoption. Most products sold as software-defined networking never spoke it.
+
+**The idea won completely.** Centralised control, network state as software, configuration derived from intent rather than typed into devices, and the network as something an application deployment can request - all of that is now simply how large networks work. Every cloud provider's network is centrally controlled. Every serious data centre fabric is programmed from a controller. Software-defined wide area networking took the same principle to the branch and is the default for new deployments.
+
+That split - **the protocol failed and the abstraction won** - is the most reusable lesson in this article, and it recurs across this catalogue. What propagates is rarely a specific mechanism; it is the way of thinking about a problem, which then gets implemented by everyone in their own way.
+
+## Evolution
+
+- **The research protest**, 2005 to 2007. Ethane, RCP, 4D.
+- **OpenFlow and NOX**, 2008. A protocol and a controller.
+- **The foundation**, 2011. Standardisation, with the incumbents inside.
+- **Network virtualisation**, 2012 onward. Nicira into VMware; overlays rather than flow programming, which is where the commercial value actually landed.
+- **Controller-based fabrics**, from the mid-2010s. Vendor controllers rather than open protocols, delivering the abstraction inside a single supplier's estate.
+- **Intent-based networking**, currently the preferred term. Declare the desired state, let the system render and verify it - the same idea with better vocabulary and, importantly, with verification attached.
+- **Programmable data planes**, in parallel. P4 and its relatives let the forwarding behaviour itself be written rather than selected, which is a more radical version of the original argument than OpenFlow ever was.
+
+## The jobs and the practices
+
+This family did more to change network work than any other in the series.
+
+It created the expectation that a network engineer can write code. Not necessarily as a developer, but enough to drive an interface, parse a structured response and put a change under version control. Configuration as data, review before deployment, and rollback as a designed capability rather than an improvisation all arrived with this thinking.
+
+It also created a genuine new failure mode. **A centralised control plane concentrates both capability and risk**: one controller misconfiguration can now do what previously required visiting a hundred devices, and it can do it in seconds. The practices that grew up around that - staged rollout, blast radius limits, dry-run and diff, controller redundancy - are the operational tax of centralisation, and they are the reason this family's tooling is judged on verification as much as on expressiveness.
+
+And it changed what a network engineer's expertise is worth. Vendor command-line fluency, the currency of the profession for two decades, became a smaller part of the job; understanding intent, topology, failure domains and the systems above the network became a larger one.
+
+## The companies
+
+The research came from Stanford and Berkeley and the operators. Nicira went to VMware; Big Switch Networks and other early pure-plays were absorbed or closed; Cisco, Juniper, Arista and the rest built controllers of their own. The largest software-defined networks in the world belong to the cloud providers and content networks, who publish papers about them and sell nothing.
+
+## Where it goes
+
+**Verification is becoming the product.** Programming a network centrally is solved; proving that what you programmed does what you intended, before it ships, is not. Formal checking of network state is where the interesting work is.
+
+**The boundary keeps moving up.** Service meshes and cloud policy engines are software-defined networking by another name, run by platform teams who have often never heard the term - which is the clearest evidence the idea won.
+
+**And the ossification complaint is returning, one layer higher.** The original protest was that vendors controlled what networks could do. Today's equivalent is that a small number of cloud providers control what network behaviour is expressible at all, and the interfaces are theirs. Whether that produces its own Ethane is an open question, and the pattern in this catalogue suggests it eventually will - the useful part of that history being that the protest, when it comes, will probably be written by a doctoral student and bought by an incumbent.
+
+## Sources
+
+- [Software Defined Networking paradigms survey: Ethane, RCP and 4D arose as a protest against the ossification of networks; Ethane introduced a flow-based policy language over a simplified data plane and centralised control plane, and OpenFlow built on that work in 2008 by defining an open protocol between controller and device](https://anrg.usc.edu/www/papers/wirelessSDN.pdf)
+- [Grokipedia on software-defined networking: the Ethane prototype at Stanford managing over 300 hosts for several months, the NOX controller of 2008 as a network operating system, and the Open Networking Foundation established in March 2011 with founding members including Google, Facebook, Cisco, Deutsche Telekom, Ericsson, Broadcom and Juniper](https://grokipedia.com/page/Software-defined_networking)
+- [Nicira: co-founded in 2007 by Martin Casado with Nick McKeown and Scott Shenker; VMware announced its intention to acquire the company for 1.26 billion dollars on 23 July 2012](https://en.wikipedia.org/wiki/Nicira)
+- [Martin Casado on the origins of OpenFlow: OpenFlow as a byproduct of the open-source NOX controller, and Open vSwitch in the mainline Linux kernel since release 3.3 in March 2012](https://www.enterprisenetworkingplanet.com/standards-protocols/openflow-sdn-inventor-martin-casado-on-sdn-vmware-and-software-defined-networking-hype-video/)
+- [ACM Grace Murray Hopper Award 2012 to Martin Casado, for creating the movement of software-defined networking](https://awards.acm.org/award-recipients/casado_9032793)

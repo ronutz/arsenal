@@ -15,6 +15,14 @@ When a reverse proxy sits in front of HTTPS applications, it has to decide what 
 
 The one thing common to all inbound reverse-proxy TLS is the direction of the certificate. Because the proxy is fronting the servers, it presents the **server's** certificate to arriving clients (or a certificate valid for the same hostname). The client is connecting to `www.example.com` and must see a certificate for `www.example.com`; that the box terminating TLS is a load balancer rather than the origin web server is invisible and intended. This is the opposite of an outbound forward proxy, which forges certificates for destinations it does not own, covered in the SSL forward proxy article.
 
+## Origins: the handshake was too expensive to do everywhere
+
+Inbound TLS termination began as an economic decision rather than a security one. Public key operations were expensive enough that doing them on every application server wasted capacity that could have served requests, so the work moved to one device that did nothing else - often with hardware acceleration - and the servers behind it went back to speaking plaintext.
+
+That original reason has largely evaporated: modern processors do the handshake cheaply, and the cost argument no longer decides anything on its own. What kept the pattern is everything else the termination point turned out to be useful for - one place to hold certificates, one place to renew them, one place to enforce protocol versions and cipher policy, and one place that can read the request well enough to route it.
+
+So the question stopped being whether to terminate and became what happens after: plaintext, re-encrypted, or not terminated at all.
+
 ## Offload: terminate and go plaintext
 
 In **SSL offload** (also called SSL termination), the proxy completes the TLS handshake with the client, decrypts the traffic, and forwards it to the backend as plain HTTP. The connection from proxy to server is unencrypted.
@@ -32,6 +40,31 @@ Bridging keeps all the visibility and control of offload, because the proxy stil
 In **SSL passthrough**, the proxy does not terminate TLS at all. It forwards the encrypted TCP stream straight to a backend, which completes the TLS handshake with the client end to end. The proxy never holds the private key and never sees plaintext.
 
 Passthrough is really a Layer 4 behavior wearing a TLS label, and it inherits the properties of the TCP proxy: fast, protocol-agnostic, and blind to content. The proxy cannot apply a WAF, cannot route by URL, and cannot insert cookies, because it cannot read the request. What it *can* still do is route by the Server Name Indication, because the SNI in the ClientHello is sent in the clear before encryption begins; a passthrough proxy peeks at that hostname to pick the right backend pool without decrypting anything else. Passthrough is the right choice when end-to-end encryption to the backend is mandatory and the proxy has no need to inspect, or when the backend must terminate TLS itself (for example to do its own client-certificate authentication).
+
+## Choosing between the three, honestly
+
+**Offload** is right when the network between the proxy and the servers is genuinely yours and the compliance regime allows it. The plaintext segment is short, and the operational simplicity is real.
+
+**Bridging** is right when it is not, and it costs twice the crypto plus a second trust decision - the proxy must validate the upstream certificate, and if it does not, the encryption is decoration. This is the same trap as [outbound interception](/learn/ssl-forward-proxy-interception): re-encrypting to a server you did not authenticate proves nothing.
+
+**Passthrough** is right when the key must not leave the application, or when the client authenticates with a certificate. It costs everything the proxy could have done: no content routing, no header insertion, no request-level observability, and health checks reduced to whether the port answers.
+
+## The things that break
+
+**The client address disappears.** The server sees the proxy. Recovering it means an inserted header, which the application must be configured to trust from exactly this proxy and nothing else - a header any client can also send is not evidence.
+
+**Certificates expire on a date somebody could have read a year in advance.** Centralising them makes renewal easy and a lapse universal.
+
+**Policy diverges from reality.** The proxy negotiates a modern cipher suite with the client and something much older with the backend, and the posture report only measures the front.
+
+**Health checks lie under passthrough.** A port that accepts a connection is not an application that can answer, which is how an estate serves errors while every monitor is green.
+
+## The landscape, by category
+
+- **Reverse proxies and web servers** - NGINX, HAProxy, Envoy, Apache, Caddy, all terminating and all able to bridge or pass through.
+- **Application delivery controllers** - F5, Citrix, A10, where termination sits next to persistence, health monitoring and traffic policy in one place.
+- **Cloud load balancers and CDNs**, where the certificate often lives in the provider's store and the private key never exists on anything you administer.
+- **Service meshes**, which invert the pattern: mutual TLS everywhere between workloads, with the sidecar as both termination and origination point.
 
 ## What SNI and mutual TLS change
 

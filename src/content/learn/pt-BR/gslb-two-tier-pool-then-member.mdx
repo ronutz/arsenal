@@ -15,6 +15,14 @@ Quando alguém diz "o BIG-IP DNS balanceia a requisição", costuma imaginar uma
 
 Eis o formato real. Um wide IP - o nome totalmente qualificado que um cliente resolve, como `www.example.com` - não aponta para endereços diretamente. Ele aponta para **pools**. Cada pool contém **servidores virtuais** (tipicamente os virtual servers do LTM que ficam na frente da aplicação real em cada site). Quando uma requisição DNS chega, o BIG-IP DNS primeiro escolhe um pool, e só então escolhe um servidor virtual dentro desse pool para retornar como resposta. Dois níveis, duas seleções.
 
+## Origens: o único mecanismo global de direcionamento era um nome
+
+O balanceamento global existe porque não há como direcionar um usuário a um sítio de dentro da rede. O anycast influencia qual instância de um endereço um pacote alcança, mas é decisão de roteamento tomada pelos roteadores de outras pessoas, e ela muda sem pedir licença. A única alavanca que o dono de uma aplicação controla de forma confiável é a resposta dada quando alguém pergunta por um nome.
+
+Então a técnica virou: responder à consulta [DNS](/glossary/dns) de forma diferente conforme quem perguntou e o que está saudável. É esse o mecanismo inteiro, e toda limitação abaixo decorre de ter escolhido um sistema de nomes como controle de tráfego.
+
+Os dois níveis existem pela mesma razão de qualquer hierarquia - a primeira decisão é sobre sítios e a segunda sobre servidores, e misturá-las numa lista só torna as duas mais difíceis de raciocinar.
+
 ## Nível um: o wide IP escolhe um pool
 
 O wide IP tem seu próprio método de balanceamento que governa a seleção de pool, e os pools são considerados na ordem em que estão listados. Quatro métodos estáticos se aplicam aqui:
@@ -43,6 +51,22 @@ Digamos que `www.example.com` tem dois pools. O wide IP usa **Topology**; o clie
 Nível um: o Topology compara o cliente da UE com cada pool. `pool-emea` casa (maior pontuação), então **todas** as requisições vão para lá; `pool-americas` não recebe nada. Nível dois: dentro de `pool-emea`, o Ratio 3:1 divide o tráfego - `vs-lon` fica com três quartos, `vs-fra` com um quarto. De 100 requisições: 0 para as Américas, 75 para Londres, 25 para Frankfurt.
 
 Mude apenas o método do wide IP para Round Robin e o quadro se inverte no nível um: agora as 100 requisições se dividem 50/50 entre os pools independentemente da localização do cliente, e as 50 do pool da UE ainda se dividem 3:1 em 37/38 e 12/13. Os mesmos pools, os mesmos membros, uma resposta completamente diferente - porque a decisão de nível um mudou.
+
+## O que o mecanismo não consegue fazer
+
+**Ele não vê o usuário, vê um resolvedor.** A decisão se baseia em de onde veio a consulta, que é o endereço do resolvedor recursivo, e não o do cliente. Um usuário num resolvedor público pode ser direcionado ao continente errado, e a extensão de sub-rede que deveria corrigir isso não é enviada nem honrada universalmente.
+
+**Ele não move uma conexão estabelecida.** O direcionamento por DNS decide onde uma sessão começa. Depois que o cliente conectou, a resposta é irrelevante até ele resolver de novo - e é por isso que o tempo de comutação é limitado pela expiração do cache, e não pelo intervalo da verificação de saúde.
+
+**O tempo de vida é uma sugestão.** Resolvedores, navegadores e aplicações cacheiam, e alguns ignoram valores curtos de propósito. Um registro de trinta segundos não significa comutação em trinta segundos; significa a comutação mais rápida que se pode esperar, sem garantia.
+
+**Saúde é inferida à distância.** O monitor diz que o servidor virtual respondeu de onde o monitor está. Usuários em outro lugar podem estar tendo experiência completamente diferente, e um sítio que está de pé, porém lento, em geral continua passando.
+
+## Onde isso deixa o projeto
+
+O enquadramento honesto é que o arranjo de dois níveis é bom para decidir **onde uma nova sessão deve começar**, e que tudo referente a continuidade pertence a outro lugar - à aplicação, ao comportamento de repetição do cliente, e ao estado que precisa existir em mais de um lugar se um sítio for ser perdido.
+
+E é por isso que a versão séria desta conversa nunca é sobre o método de balanceamento. É sobre se o dado está nos dois lugares, se o segundo sítio aguenta a carga quando ficar sozinho, e por quanto tempo a organização aceita ficar inconsistente enquanto os dois se reconciliam. O direcionamento é a parte fácil.
 
 ## Os métodos dinâmicos, e a honestidade sobre eles
 

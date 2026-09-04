@@ -1,0 +1,82 @@
+---
+slug: adc-family-history
+title: "Balanceadores e ADCs: construídos contra o tamanho do mercado"
+summary: "No fim de 1995, um webmaster da Netscape disse a um engenheiro da Cisco que existiam provavelmente dez clientes no mundo com problema de balanceamento de carga. Eles começaram a construir assim mesmo, e entregaram o primeiro balanceador da indústria quatro meses depois. Esta é a história da família - o LocalDirector em abril de 1996, o BIG/ip da F5 em julho de 1997 com 200 mil dólares de receita no primeiro ano contra um concorrente de cinco bilhões, a renomeação para controlador de entrega de aplicação, e o que acontece com uma caixa cuja função foi absorvida por toda plataforma que veio depois."
+concepts: ["load balancer", "adc", "big-ip", "localdirector", "reverse proxy", "history"]
+relatedTools: []
+relatedArticles: ["tcp-proxy-layer-4", "tls-reverse-proxy-inbound", "gslb-two-tier-pool-then-member", "firewall-family-history"]
+category: networking
+order: 144
+status: reviewed
+updated: "2026-09-03"
+---
+
+A maioria das categorias de produto começa com alguém acreditando que há mercado. Esta começou com alguém dizendo que não havia.
+
+## Fim de 1995: dez clientes no mundo
+
+O **LocalDirector** foi concebido por John Mayes e Robert Andrews no fim de 1995, durante uma reunião de pré-aquisição com Andrews na condição de webmaster da Netscape. Andrews disse a Mayes que existiam provavelmente dez clientes no mundo com problema de balanceamento de carga.
+
+A decisão de começar o desenvolvimento foi tomada por causa daquela conversa. Não apesar dela - por causa dela. Dez clientes com um problema que ninguém mais tinha notado, exatamente no momento em que a web estava prestes a fazer todo site grande ter aquele problema.
+
+A Cisco entregou o LocalDirector ao primeiro cliente em **abril de 1996**, quatro meses depois de o desenvolvimento começar, chegando ao mercado um ano inteiro antes de F5 e HydraWeb. Ele foi construído sobre a tecnologia de tradução de endereços que a Cisco adquiriu com a Network Translation Inc - a mesma aquisição que produziu o firewall PIX, que rodava um derivado do sistema operacional Finesse do LocalDirector. **O primeiro produto de firewall e o primeiro balanceador da Cisco vieram da mesma compra e dividiam um sistema operacional**, o que é uma ilustração limpa de quão próximas as duas funções de fato são.
+
+## 1996 a 1997: o concorrente sem dinheiro
+
+A **F5 Labs** foi constituída em fevereiro de 1996 por Jeffrey Hussey, em Seattle, e começou a operar em abril. Passou mais de um ano construindo antes de ter o que vender, precisando reequipar o time e refazer o desenvolvimento depois de uma primeira tentativa fracassada, e levou o **BIG/ip** ao mercado em julho de 1997.
+
+A receita do primeiro ano foi de **200 mil dólares**. Os concorrentes eram a Cisco, então uma empresa de cinco bilhões, e a Nortel - as duas com organizações de distribuição e marketing que a F5 não tinha como se aproximar.
+
+A F5 ganhou aquele mercado assim mesmo, e a razão é a lição mais reaproveitável deste artigo. A Cisco chegou primeiro e nunca liderou a categoria: depois das aquisições, o desenvolvimento desacelerou, o produto seguinte ficou congelado no conjunto de recursos do ano 2000, e uma empresa com toda vantagem estrutural perdeu um mercado que ela mesma inventou. **Ser o primeiro é uma posição, e não uma vantagem. O que se acumula é continuar desenvolvendo.**
+
+A F5 acrescentou o **3DNS Controller** em setembro de 1998, para balancear entre sítios em vez de dentro de um; virou F5 Networks em abril de 1999; e abriu capital em junho, a dez dólares por ação.
+
+## A categoria, e o que a renomeação fez
+
+Ao longo do fim dos anos 1990 o campo encheu: Alteon WebSystems, Foundry com o ServerIron, ArrowPoint que virou o CSS da Cisco, HydraWeb, e depois NetScaler na Citrix e Radware. Quase todas foram fundadas ou abriram capital entre 1995 e 2000, e a maioria foi comprada na década seguinte.
+
+Em algum ponto dos anos 2000 o termo mudou de balanceador para **controlador de entrega de aplicação**. A renomeação foi em parte honesta e em parte não. Honesta, porque a caixa de fato acumulou funções - terminação de TLS, compressão, cache, reescrita de conteúdo, monitoração de saúde, persistência e, por fim, firewall de aplicação web. Não honesta, porque a leitura cética se sustenta: chamar de controlador de entrega de aplicação não muda que aquilo continua sendo primariamente um roteador balanceador e proxy reverso com verificação de saúde, e os fundamentos de balanceamento nas camadas 4 e 7 quase não se moveram desde por volta de 2002.
+
+As duas coisas são verdadeiras. A função se estabilizou cedo; o que mudou foi quanta coisa a mais foi pendurada no mesmo ponto do caminho.
+
+## Para que o equipamento serve, de fato
+
+O algoritmo de balanceamento é a parte menos interessante, e a parte em que toda introdução gasta mais tempo. Rodízio, menos conexões, variantes ponderadas - a escolha entre eles raramente decide um desfecho.
+
+As partes que decidem desfechos são três:
+
+**Verificação de saúde.** O trabalho real de um balanceador é saber quais membros conseguem atender. Uma verificação que só confirma que a porta responde vai alegremente continuar mandando usuários para um processo que aceita conexões e devolve erro, que é como um parque serve falhas com todos os monitores verdes.
+
+**Persistência.** Aplicações que guardam estado num servidor precisam que o mesmo usuário volte para lá, e todo mecanismo para arranjar isso - endereço de origem, cookie, identificador de sessão - é um compromisso com o próprio modo de falha. [A persistência por endereço de origem desaba atrás de endereços compartilhados](/learn/tcp-proxy-layer-4), e a persistência por cookie exige ler tráfego que talvez você não possa ler.
+
+**Estar no caminho.** Todo o resto decorre de o equipamento terminar conexões. Ele consegue inspecionar, reescrever, assumir a criptografia e aplicar política porque é parte da conversa - e vira gargalo, lugar de texto em claro e ponto único cuja falha é total, exatamente pela mesma razão.
+
+## Os cargos e as práticas
+
+Esta família produziu um especialista que fica entre duas tribos organizacionais. O balanceador não pertence nem ao time de rede nem ao de aplicação, e conhecer os dois é o que o papel exige: servidores virtuais, pools, monitores, perfis e persistência de um lado; como a aplicação guarda estado e o que o endpoint de saúde dela de fato prova, do outro.
+
+Ele também produziu um hábito de prática característico. **Drenar em vez de desabilitar** - tirar um membro do rodízio sem matar as sessões estabelecidas - é disciplina inventada aqui, que depois virou normal em ferramenta de implantação em toda parte. **A página de manutenção** como destino roteado, e não como mudança no servidor. E a discussão operacional permanente sobre **o que um monitor de saúde deveria testar**, que na verdade é uma discussão sobre quanto a rede tem direito de saber sobre a aplicação.
+
+## As empresas
+
+O primeiro mercado foi Cisco, F5, Alteon, Foundry, ArrowPoint e HydraWeb. A consolidação levou quase todas: Alteon para a Nortel e depois para a Radware, Foundry para a Brocade, ArrowPoint para a Cisco, NetScaler para a Citrix e de novo para fora, como empresa própria.
+
+Hoje são F5 e Citrix no topo do mercado corporativo, Radware e A10 ao lado, os balanceadores próprios dos provedores de nuvem, e a linhagem aberta - HAProxy, NGINX, Envoy -, que hoje move mais tráfego que os fabricantes de appliance e não custa nada.
+
+## Para onde vai
+
+**A função se dissolveu na plataforma.** Controladores de entrada do Kubernetes, sidecars de malha de serviço e balanceadores de nuvem fazem esse trabalho, configurados como parte da implantação da aplicação em vez de solicitados a um time de rede. Para boa parte das cargas novas não há appliance nem conversa.
+
+**As partes difíceis não se dissolveram.** Verificação de saúde que reflita de fato a prontidão da aplicação, persistência para aplicações que não deveriam precisar dela, e drenagem graciosa são os mesmos problemas numa malha e num chassi, e continuam sendo de onde vêm as quedas.
+
+**O equipamento está virando ponto de política.** Onde o appliance permanece, ele sobrevive menos por balancear e mais pelo que consegue fazer estando no caminho: terminar criptografia, rodar firewall de aplicação web, autenticar, e ser o único lugar onde o tráfego pode ser visto.
+
+**E o cético de 1995 estava aritmeticamente errado e direcionalmente interessante.** Não havia dez clientes com problema de balanceamento; no fim havia todos. Mas a observação por baixo se sustenta - o mercado era minúsculo no momento em que a decisão tinha de ser tomada, e quem construiu assim mesmo o fez por um julgamento sobre para onde a web ia, e não por uma contagem de compradores.
+
+## Fontes
+
+- [Cisco LocalDirector: concebido por John Mayes e Robert Andrews no fim de 1995, com Andrews dizendo que havia provavelmente dez clientes no mundo com problema de balanceamento; primeira entrega em abril de 1996, quatro meses depois do início do desenvolvimento, um ano antes de F5 e HydraWeb; construído sobre tecnologia da Network Translation e rodando o Finesse, do qual deriva o sistema do firewall PIX](https://en.wikipedia.org/wiki/Cisco_LocalDirector)
+- [História da F5 Networks: constituída em fevereiro de 1996 como F5 Labs por Jeffrey Hussey, o BIG/ip ao mercado em julho de 1997 com 200 mil dólares de receita até o fim do ano contra Cisco e Nortel, e o 3DNS Controller em setembro de 1998](https://www.fundinguniverse.com/company-histories/f5-networks-inc-history/)
+- [História da F5: renomeada de F5 Labs em abril de 1999 e aberta em bolsa em junho, a dez dólares por ação](https://reference.jrank.org/histories/F5_Networks_Inc.html)
+- [Loadbalancer.org: a leitura cética de que renomear um equipamento como controlador de entrega de aplicação não muda que ele é um roteador balanceador e proxy reverso com verificação de saúde](https://www.loadbalancer.org/blog/so-just-how-should-you-compare-load-balancers/)
+- [Packet Pushers, A History of Load Balancing: o agrupamento de empresas fundadas ou abrindo capital entre 1995 e 2000, e a atividade de aquisições de meados ao fim dos anos 2000](https://packetpushers.net/blog/history-load-balancing/)

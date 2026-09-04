@@ -805,11 +805,12 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Telebrás created the Centro de Pesquisa e Desenvolvimento em Telecomunicações in 1976, in Campinas, with a brief that was explicitly industrial rather than academic: develop domestic telecommunications technology so that Brazil bought less of it from abroad. When the Telebrás system was broken up and sold in 1998, CPqD did not go with it. It became an independent foundation and is still operating.",
     body: [
-      "The brief is what makes it unusual. A great many countries have run state telecommunications monopolies. Rather fewer built a research institute inside one and told it to produce technology rather than papers. CPqD worked on switching systems, transmission, network management and digital telephony, at a time when every one of those was imported, and it did so on behalf of an operator that could guarantee it a customer - which is a structural advantage no independent laboratory has.",
-      "Then the customer was dismantled. The 1998 privatisation split the Telebrás system into twelve holdings sold to different owners, and an in-house research centre serving a monopoly has no obvious place in that arrangement. CPqD was converted into an independent private foundation, and had to find work from operators that were now competitors of one another, and from government.",
-      "That transition is the part worth studying. An institution built to serve one guaranteed customer had to learn to sell, and most such institutions do not survive the lesson. This one has been going for close to five decades in total and around three of them without the parent that created it.",
-      "It remains a research and development organisation rather than a vendor: telecommunications, energy, digital government, and the certification and testing work that a country needs somebody neutral to do. Neutrality is what makes it useful. CPqD is useful to competing operators for the same reason a carrier-neutral exchange is useful to competing carriers, and for the same reason a vendor-neutral certification is worth more than a vendor's own - because it belongs to none of them.",
-      "It also trains, which is why it carries that tag here: a research institute in a country that imports most of its technology is one of the few places domestic expertise is deliberately manufactured rather than hired.",
+      "The Telebras board decided to create the Centro de Pesquisa e Desenvolvimento on 31 August 1976, with an objective stated openly at the time: to reproduce in Brazil a telecommunications research model aimed at national technological autonomy. It was part of the second national development plan, whose purpose was import substitution, and it took on applied research, basic research conducted with universities under Telebras coordination and funding, and the transfer of technology, prototypes and products out to industry.",
+      "The last of those three is the one that made it unusual. A research centre inside a state monopoly could have kept what it built; this one was structured to hand designs to manufacturers, which is why a domestic telecommunications equipment industry existed at all. Digital switching, transmission and network systems came out of it and were built by companies that had not developed them.",
+      "It grew the way institutions actually grow rather than the way they are described. It began in an office in central Campinas, moved into Embratel premises, and spread across five locations before land was bought in June 1980 for the campus it occupies now on the Campinas to Mogi Mirim road.",
+      "The most telling date is at the end. Telebras was privatised by auction on 29 July 1998 - and on 23 July, six days earlier, CPqD was converted into a private-law foundation under the General Telecommunications Law. The research institution was deliberately lifted out before the monopoly was sold. A country selling its telephone system decided separately that it wanted to keep the place where the engineering knowledge lived, which is a distinction most privatisations do not bother to make.",
+      "It survived that transition and kept working, becoming the largest depositor of software registrations in the country and a substantial patent filer, with stakes in companies commercialising what it develops. The research programme it runs is described as the largest in Latin America in its field.",
+    
     ],
     externalUrl: "https://www.cpqd.com.br/",
     externalLabel: "CPqD",
@@ -817,6 +818,10 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Telebrás 50th anniversary account: CPqD created in 1976 for research and development of products, networks, switching systems and digital systems with a focus on developing national technology, and continuing independently since 1998", url: "https://www.telebras.com.br/50anos/" },
       { label: "Wikipédia (pt) on the Telebrás system: CPqD listed among the system's components from 1976 to 1998, operating since then as an independent organisation", url: "https://pt.wikipedia.org/wiki/Telecomunica%C3%A7%C3%B5es_Brasileiras_S.A." },
       { label: "CPqD (own site): current activity across telecommunications, energy and digital government, including testing and certification work", url: "https://www.cpqd.com.br/" },
+    
+      { label: "CPQD (institutional): created in 1976 as the research and development centre of Telebras, becoming a private-law foundation in 1998 with the privatisation of the sector; today it runs the largest information and communications technology research programme in Latin America", url: "https://www.cpqd.com.br/sobre-o-cpqd/" },
+      { label: "Forum Campinas on Fundacao CPqD: created 31 August 1976 alongside Telebras by the telecommunications ministry, to reproduce in Brazil a telecom research model aiming at national technological autonomy, covering applied research, basic research with universities, and transfer of technology and prototypes to industry", url: "https://www.forumcampinas.org.br/interdependencia/fundacao-cpqd-centro-de-pesquisa-e-desenvolvimento-em-telecomunicacoes/" },
+      { label: "Conexis, O rumo e o prumo do CPqD: the Telebras board decided to create the centre on 31 August 1976; it worked first from an office in central Campinas, then in Embratel premises, and across five locations before the present campus on land bought in June 1980", url: "https://conexis.org.br/o-rumo-e-o-prumo-do-cpqd-ii/" },
     ],
   },
   {
@@ -874,13 +879,11 @@ export const partnerVendors: PartnerVendor[] = [
     intro:
       "Before 1972 there were more than nine hundred telecommunications companies operating in Brazil. Law 5.792 of 11 July 1972 authorised a single state holding company, and Telecomunicações Brasileiras S.A. was installed on 9 November that year, during the military government. Within a few years it had absorbed nearly all of them: twenty-seven state operators plus Embratel, the long-distance carrier, together known as the Sistema Telebrás.",
     body: [
-      "The problem it was built to solve was real. Nine hundred operators meant nine hundred technical standards, numbering plans and interconnection arrangements, in a country of continental scale where a call between two states might cross several incompatible networks. Centralising it produced a national network with satellites, submarine cables and a dense terrestrial mesh, and telephony reached essentially the whole territory.",
-      "One figure captures both the achievement and the argument. Installing a telephone line cost about five thousand US dollars in the 1970s. By 1998 it cost about twenty. The heavy infrastructure had been built, and the technology had changed underneath it - which is precisely why private capital, uninterested for decades, became interested.",
-      "In 1976 Telebrás created CPqD, its research and development centre, which worked on switching systems, networks and digital telephony with an explicit brief to develop domestic technology. It is one of the few institutions here that outlived the system that created it: CPqD has operated independently since 1998 and still exists.",
-      "The system was privatised on 29 July 1998, at the Rio de Janeiro stock exchange, following the 1995 constitutional amendment and the General Telecommunications Law. Twenty per cent of the shares - the controlling blocks - were sold, splitting the system into twelve holdings: three fixed-line, one long-distance, and eight mobile. It raised R$22.058B, a premium of 63.7% over the minimum price, and remains the largest privatisation in the country's history. In its final year the system had reported around R$2B of net profit.",
-      "What happened to Embratel afterwards is the part worth following. The long-distance carrier was bought by MCI WorldCom of the United States. WorldCom filed for bankruptcy in 2002 in what was then the largest corporate failure in American history. In 2004 a New York court approved Embratel's sale to Telmex of Mexico, and in 2015 it was absorbed into Claro, part of América Móvil. A Brazilian state carrier passed to an American company, through a bankruptcy court, to a Mexican group, in seventeen years.",
-      "The fixed-line holdings became Telemar, Brasil Telecom and Telefônica - Telesp, the São Paulo operator, being the piece that became Telefônica's Brazilian business - and the successors eventually consolidated into Oi and Vivo. Nine hundred companies became one, then twelve, then a handful, most of them controlled from outside the country. Whether that arc is a success or a loss is still argued about in Brazil, and it is not settled here: the figures above are verifiable, and the judgement is not a technical question.",
-      "Telebrás itself was reactivated in 2010, as a mixed-economy company with a narrower brief - connectivity for federal public administration and the national broadband plan, including schools and health and security facilities. The name survived the system it named.",
+      "Telebras was created by Law 5.792 of 11 July 1972 and came into being that November, to consolidate and implement every public telecommunications policy in Brazil. It became the holding company for a system rather than an operator in its own right: twenty-seven state telephone companies, the long-distance carrier Embratel, and the research centre CPqD.",
+      "The results of that consolidation are usually stated in service numbers, and the numbers are the argument. Payphones in service went from about thirteen thousand in 1972 to over thirty-one thousand by the end of 1977; direct distance dialling, which removed the operator from the call, reached 156 localities in 1974 and around 533 cities three years later. A monopoly with an investment plan did in five years what fragmented private operators had not done in decades.",
+      "The same structure that delivered that also fixed the ceiling. Waiting lists for a line were measured in years and a telephone subscription became an asset people bought and sold, because supply was set by a plan rather than by demand. That is the standing trade with monopoly infrastructure: coordination and reach in exchange for a pace nobody outside the plan can change.",
+      "The system was privatised by auction on 29 July 1998 at the Rio de Janeiro stock exchange, split into regional operators and sold. Everything about Brazilian telecommunications afterwards - the competition, the coverage, the tariffs and the regulator - is a consequence of how that single day was structured.",
+    
     ],
     externalUrl: "https://pt.wikipedia.org/wiki/Telecomunica%C3%A7%C3%B5es_Brasileiras_S.A.",
     externalLabel: "Telecomunicações Brasileiras S.A.",
@@ -891,6 +894,9 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Zambon: more than 900 telecommunications companies operating before the 1972 consolidation; near-total monopoly achieved within three years", url: "https://zambonpericia.com.br/o-que-aconteceu-com-a-telebras/" },
       { label: "Diário Causa Operária: the founding companies (Embratel, CTB, CTMG, CTES, Cotelb); the fall in the cost of installing a line from about US$5,000 in the 1970s to about US$20 by 1998; net profit of around R$2B in 1998", url: "https://causaoperaria.org.br/2019/29-de-julho-de-1998-o-crime-da-privatizacao-da-telebras/", sourceNote: "An openly partisan source - its headline calls the privatisation a crime. Used ONLY for the factual details listed, each of which is consistent with the other sources here. Its judgement of the privatisation is not adopted; the entry deliberately takes no side." },
       { label: "Museu Capixaba do Computador: the subdivision into twelve regional companies at privatisation, and the successor companies Telemar, Brasil Telecom and Telefônica", url: "https://museucapixaba.com.br/hoje/fundacao-da-empresa-telebras-de-1972/" },
+    
+      { label: "Museu Capixaba do Computador: Telebras created by Law 5.792 of 11 July 1972, born 9 November 1972, responsible for consolidating and implementing all public telecommunications policy between 1972 and 1998, and holding company for the 27 state telephone operators, Embratel and CPqD", url: "https://museucapixaba.com.br/hoje/fundacao-da-empresa-telebras-de-1972/" },
+      { label: "Fundacao CPqD dossier: the Telebras privatisation took place by auction on 29 July 1998 at the Rio de Janeiro stock exchange, and on 23 July 1998, under the General Telecommunications Law, CPqD became a foundation", url: "https://www.forumcampinas.org.br/interdependencia/wp-content/uploads/2023/11/Integra-FUNDACAO-CPqD-Centro-de-Pesq-e-Desenv-em-Telecomunicacoes-1.pdf" },
     ],
   },
   {
@@ -5306,6 +5312,11 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "bbn",
     sources: [
       { label: "RTX BBN Technologies - American research and development company", url: "https://en.wikipedia.org/wiki/BBN_Technologies" },
+    
+      { label: "Engineering and Technology History Wiki on Bolt Beranek and Newman: Newman joined the partnership in 1950 and the firm incorporated in 1953; it moved into computing research from 1957, and by about 1960 the computer side was as significant as the acoustics side", url: "https://ethw.org/Bolt_Beranek_and_Newman_Inc." },
+      { label: "Engineering and Technology History Wiki on ARPANET: ARPA issued the Interface Message Processor proposal in July 1968 and awarded the contract to BBN in January 1969; the team included Frank Heart, Dave Walden, Bernie Cosell, Severo Ornstein, Robert Kahn and Will Crowther, beating much larger competitors", url: "https://ethw.org/ARPANET" },
+      { label: "RTX BBN Technologies: four IMPs built for nearly one million dollars between September and December 1969 under Frank Heart and Bob Kahn; the IMPs were the first generation of gateways, known today as routers; the first message between UCLA and SRI was LO, because the SRI host crashed before LOGIN could be completed", url: "https://en.wikipedia.org/wiki/RTX_BBN_Technologies" },
+      { label: "Good Science Project on BBN and the ARPANET: the firm began when Richard Bolt won a 1946 acoustics commission for the United Nations Headquarters and asked Leo Beranek to work it with him, the drawings arriving in 1948", url: "https://goodscienceproject.org/articles/the-third-university-of-cambridge-bbn-and-the-development-of-the-arpanet/" },
     ],
     tags: ["services", "standards"],
     group: "other",
@@ -5314,8 +5325,12 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "A research firm won the ARPANET contract, and the packet switch became a product because somebody had to manufacture it.",
     intro: "Bolt Beranek and Newman began in acoustics - the firm was hired to make auditoriums sound right - and ended up building the machine that made packet switching real. Winning the ARPANET Interface Message Processor contract in 1968 turned a funded idea into hardware somebody had to deliver, support and repair, which is a different problem from proving the idea works.",
     body: [
-      "The IMP is the reason a network device is a separate box rather than a function of a host computer. Hosts differed too much to each implement the network directly; putting the logic in its own machine let one interface absorb the difference. Every router since inherits that decision.",
-      "BBN also demonstrates something the timeline otherwise lacks: a contractor whose product existed because a customer specified it. Most companies here started with a technology looking for a market. This one started with a market of exactly one, and the technology came out of the requirement.",
+      "BBN did not set out to build networks. It began when Richard Bolt, running MIT's acoustical laboratory, won a 1946 commission to advise on the acoustics of the United Nations Headquarters, realised on seeing the drawings in 1948 that it was not a one-man job, and asked Leo Beranek to take it with him. Robert Newman joined in 1950, the name changed, and the firm incorporated in 1953 as an acoustics consultancy.",
+      "It entered computing in 1957 on a deliberately vague premise - that the company needed to be in that business to become known - and the vagueness turned out to be the strategy. J.C.R. Licklider joined that spring. The first machine arrived in 1958, DEC's first PDP-1 in 1960, and the arrival of the hardware is what let BBN hire John McCarthy and Marvin Minsky. By about 1960 the computer side was as substantial as the acoustics side, and the firm had built one of the first time-sharing systems.",
+      "In July 1968 ARPA put out a proposal for a device called the Interface Message Processor. BBN won it in January 1969 against much larger competitors, with a team of Frank Heart, Dave Walden, Bernie Cosell, Severo Ornstein, Robert Kahn and Will Crowther, and built four machines for close to a million dollars between September and December of that year. Those IMPs were the first generation of what the industry now calls routers.",
+      "The famous detail is worth stating precisely because it is usually told as a joke. The first message between the UCLA and Stanford Research Institute machines was 'LO' - the researcher was typing LOGIN and the receiving host crashed partway through. A network's first transmission was a partial word caused by a failure, which is a more accurate introduction to the field than any success would have been.",
+      "The reading that matters here is about institutional shape. BBN was a consultancy hired to build something, not a product company defending a market, and that is exactly why it could take the work: it had no installed base to protect and no line of business the new thing threatened. Almost every foundational piece of the early network came from an organisation with that property - a laboratory, a university, a contractor - and almost none from the companies then selling communications equipment.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/BBN_Technologies",
     externalLabel: "BBN",
@@ -5324,6 +5339,10 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "nbs-nist",
     sources: [
       { label: "National Institute of Standards and Technology - measurement standards laboratory of the United States", url: "https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology" },
+    
+      { label: "NIST, From NBS to NIST: founded as the National Bureau of Standards in 1901, renamed Bureau of Standards in 1903, national restored in 1934, and renamed the National Institute of Standards and Technology in 1988", url: "https://www.nist.gov/coo/nist-100-foundations-progress/nbs-nist" },
+      { label: "Computer Security Act of 1987, effective 8 January 1988: an act to provide for a computer standards program within the National Bureau of Standards, for government-wide computer security, and for training in security matters of people who manage, operate and use federal computer systems", url: "https://en.wikipedia.org/wiki/Computer_Security_Act_of_1987" },
+      { label: "GovFacts history of NIST: the Organic Act of 3 March 1901 established the bureau with a staff of twelve; it published guidance on passwords for controlling access to computer resources in 1977, the first Password Usage Standard in 1985, one of the first formal risk analysis methodologies for data processing systems in 1979, and a contingency planning guide in 1981", url: "https://govfacts.org/tech-innovation/tech-standards/the-history-of-nist-the-national-institute-of-standards-and-technology/" },
     ],
     tags: ["standards"],
     group: "other",
@@ -5332,8 +5351,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Somebody has to decide whether two implementations of a specification actually interoperate, and it is not usually the people who wrote it.",
     intro: "The National Bureau of Standards, renamed the National Institute of Standards and Technology in 1988, is a measurement laboratory rather than a networking company - and it appears in this history because the OSI period made testing a central question. Conformance to a document and interoperation with another vendor's product are different properties, and the gap between them needed a referee nobody had a commercial interest in.",
     body: [
-      "That role is easy to underrate. A specification large enough that no two implementations agree needs somebody to say which ones count, and a laboratory funded by neither the vendors nor their customers is an unusual and valuable thing to have. The OSI interoperability testbeds were built on that premise.",
-      "It is also the counterexample to the idea that standards are settled by committees alone. The committee produces the document; the laboratory finds out whether the document was enough. In this period it repeatedly was not.",
+      "The National Bureau of Standards was established by the Organic Act of 3 March 1901 with a staff of twelve, as the federal government's first physical science laboratory. It was renamed the National Institute of Standards and Technology in 1988, and the earlier name is worth keeping in mind when reading anything from before then.",
+      "Its computer security work started earlier than most people assume and in an unglamorous place - passwords. It published guidance on using passwords to control access to computer resources in 1977 and the first Password Usage Standard in 1985, covering composition and lifetime, concepts still under argument four decades later. In 1979 it published one of the first formal risk analysis methodologies for data processing systems, which moved the field from a checklist of controls toward pricing exposure, and in 1981 a contingency planning guide.",
+      "The Computer Security Act of 1987 then made the arrangement statutory: standards for unclassified federal computer systems would be developed by a civilian standards body rather than by the intelligence community, along with mandatory security training for people operating those systems. That division of responsibility is the reason American security guidance is published openly and can be read, cited and adopted by anyone - including by organisations in other countries with no obligation to follow it.",
+      "It is the least visible institution in this catalogue and one of the most widely used. A great deal of what a security team does daily traces to a document from an agency founded to standardise weights and measures, and the pattern holds generally: the organisations that shape practice most durably are usually the ones publishing specifications rather than the ones selling products.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology",
     externalLabel: "NIST",
@@ -5342,6 +5364,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "mitre",
     sources: [
       { label: "Mitre Corporation - American not-for-profit corporation operating federally funded research and development centers", url: "https://en.wikipedia.org/wiki/Mitre_Corporation" },
+    
+      { label: "History of Computer Communications - National Bureau of Standards and MITRE, 1971 to 1979, including the NBS and MITRE workshop of January 1979 that preceded the local networking symposium", url: "https://historyofcomputercommunications.info/section/8.13/National-Bureau-of-Standards-and-MITRE-1971-1979/" },
+      { label: "History of Computer Communications on the founding of Sytek: the Ford Aerospace team that became Sytek had built a CATV-based network with lineage to MITRENET, and presented at the MITRE and NBS symposium", url: "https://historyofcomputercommunications.info/section/9.10/Michael-Pliner-and-the-Founding-of-Sytek/" },
     ],
     tags: ["services", "standards"],
     group: "other",
@@ -5350,8 +5375,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "An organisation with no product to sell, advising the customer who is buying everybody else's.",
     intro: "MITRE operates federally funded research and development centres, which is an unusual commercial shape: it advises government on technical procurement without competing for the work it evaluates. In a period when the largest single buyer of computer communications was the United States government, that position made it structurally important to how the field developed.",
     body: [
-      "The value of a body with no product is that its advice can be wrong without being self-serving. A vendor's architecture recommendation is inseparable from its catalogue; an integrator's is inseparable from what it can staff. Somebody has to be able to say a requirement is badly specified.",
-      "It belongs in this timeline for the same reason the standards laboratories do: several of the decisions that shaped what could be bought were made in rooms where no vendor was selling anything.",
+      "MITRE is a not-for-profit corporation that operates federally funded research centres, which is an unusual institutional form worth understanding: it works only for government sponsors, holds no commercial products, and exists partly so that technical judgement about systems can be bought without buying it from a bidder.",
+      "In networking its contribution is a system most people have never heard of. MITRENET was a broadband local network built on cable television plant, and it seeded a line of thinking that ran directly into industry - the Ford Aerospace team whose work traced back to MITRENET went on to found Sytek, which built its whole company on broadband and later supplied the technology behind IBM's PC LAN.",
+      "MITRE also worked alongside the National Bureau of Standards through the 1970s on local networking, and the workshop the two organisations ran in January 1979 sits immediately before the symposium and the wave of company formations that followed. That sequence is the fact worth recording: the entrepreneurs who founded the local networking industry in mid-1979 had spent the preceding months in rooms convened by a standards body and a federal research centre.",
+      "It is the least visible kind of contribution and one of the most consequential. Nothing MITRE built became a product, and the people who had been shown what was possible went on to build the products.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Mitre_Corporation",
     externalLabel: "MITRE",
@@ -5366,6 +5394,11 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "ungermann-bass",
     sources: [
       { label: "Ungermann-Bass - computer networking company", url: "https://en.wikipedia.org/wiki/Ungermann-Bass" },
+    
+      { label: "Ungermann-Bass: founded 1979 in Santa Clara by Ralph Ungermann and Charlie Bass, the first large networking company independent of any computer manufacturer; John Davidson, vice president of engineering, was one of the creators of NCP, the ARPANET transport protocol that preceded TCP; defunct 1997, successor Newbridge Networks", url: "https://en.wikipedia.org/wiki/Ungermann-Bass" },
+      { label: "History of Computer Communications on the founding: Bass resigned from Zilog and the two incorporated Ungermann-Bass in July 1979; after investigating and rejecting broadband, Bass built consensus for Ethernet; the first product, the NIU-1, connected eight to thirty-two terminals to host computers over Ethernet using the XNS protocol", url: "https://historyofcomputercommunications.info/section/9.11/Ralph-Ungermann-and-Charlie-Bass-and-the-Founding-of-Ungermann-Bass/" },
+      { label: "History of Computer Communications: the founders recruited Judith Estrin and John Davidson from Zilog, but venture capitalists would only agree to invest once a seasoned sales executive, Jim Jordan of Four-Phase Systems, joined the company", url: "https://historyofcomputercommunications.info/section/c.4/Ungermann-Bass/" },
+      { label: "Grokipedia on Ungermann-Bass: Ungermann managed the 8080 project at Intel and co-founded Zilog with Federico Faggin in 1974; the company faced protocol shifts, having bet on OSI amid the rise of TCP/IP; Tandem Computers acquired it in 1988 for about 260 million dollars in cash at 12.50 dollars a share, after a lower offer from Digital Communications Associates was rejected, with projects including networking 40,000 devices across General Motors facilities", url: "https://grokipedia.com/page/ungermann_bass" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5374,8 +5407,12 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Ralph Ungermann left Zilog to build networks and nothing else, which nobody had done as a business before.",
     intro: "Founded in 1979, Ungermann-Bass is usually described as the first company whose entire business was computer networking rather than computers that happened to network. That is a real distinction: until then, networking was a feature sold by whoever made the machines, and a customer's options were bounded by their computer vendor.",
     body: [
-      "It also opens the pattern this period is full of - founders who leave one company to start another and appear repeatedly across a decade. Ungermann came from Zilog, which he had co-founded after Intel. Reading the era as a sequence of firms misses that it is substantially the same population of people, recombining.",
-      "The company was eventually acquired by Tandem, which is the usual ending here and worth stating plainly rather than treating as failure: being bought is what success looked like for most of these firms.",
+      "Ungermann-Bass was incorporated in July 1979 in Santa Clara by Ralph Ungermann and Charlie Bass, both out of Zilog. Ungermann had managed the 8080 project at Intel and left in 1974 with Federico Faggin to found Zilog; when Exxon's investment brought pressure he clashed with its management and was pushed out at the end of 1978. Bass, who had a doctorate and had taught at Berkeley and Stanford, joined him. They recruited Judith Estrin and John Davidson - Davidson being one of the creators of NCP, the transport protocol the ARPANET used before TCP.",
+      "One detail from the funding is worth more than the amount raised. The venture capitalists would not close the round on the strength of that engineering team alone; they agreed to invest only once a seasoned sales executive, Jim Jordan, joined from Four-Phase Systems. A company assembled from some of the best network engineers available still had to hire a salesman before anyone would fund it.",
+      "The technical decision that defined it was taken against the alternative. Bass investigated broadband and rejected it, building consensus for Ethernet instead - the mirror image of the choice Sytek made in the same city in the same year, and both were deliberate. The first product, the NIU-1, connected eight to thirty-two terminals to host computers over Ethernet using XNS. UB became the first large networking company independent of any computer manufacturer, which was the whole proposition: at the time network equipment came from the computer maker and spoke only that maker's protocols.",
+      "What eventually undid it was a different standards bet. UB backed OSI, the officially sanctioned protocol suite that committees and governments had agreed on, while TCP/IP - unsanctioned, already running, and free - took the market. Backing the official standard against the working one is a recognisable failure mode, and it is one that looks prudent at the time and only becomes an error in retrospect.",
+      "Tandem Computers acquired it in 1988 for about 260 million dollars, having rejected a lower offer from a rival bidder, and the estate it brought included networking forty thousand devices across General Motors plants. Tandem later sold the unit to Newbridge Networks, and the company was liquidated in 1997. Of the three that started Silicon Valley networking in 1979, none survived as an independent company - which says less about their engineering than about how completely the market they created was reorganised around a single vendor.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Ungermann-Bass",
     externalLabel: "Ungermann-Bass",
@@ -5384,6 +5421,10 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "proteon",
     sources: [
       { label: "Proteon - Westborough, Massachusetts computer network equipment vendor", url: "https://en.wikipedia.org/wiki/Proteon" },
+    
+      { label: "Proteon: founded 1972 by Howard Salwen as a communications consulting firm, Westborough Massachusetts; first commercial Token Ring products with MIT, the p4200 multiprotocol router in 1986 based on MIT code by Noel Chiappa, and the OSPF routing protocol; defunct 1998, relaunched as OpenROUTE Networks", url: "https://en.wikipedia.org/wiki/Proteon" },
+      { label: "History of Computer Communications on Proteon: the 1979 MIT Laboratory for Computer Science contract of 100,000 dollars for version 2 of the token ring Local Network Interface, delivered June 1981; 1987 sales of 22.3 million dollars with a 5.7 million dollar loss equal to a third of total venture investment", url: "https://www.historyofcomputercommunications.info/section/14.18/Proteon/" },
+      { label: "Sponsors, Communities and Standards: Ethernet vs Token Ring in the Local Area Networking Business - IBM held 57.7 per cent of the 4 Mbps and 92.6 per cent of the 16 Mbps Token Ring adapter market in 1990, leaving Proteon and Madge with about 10 per cent each", url: "https://kenney.faculty.ucdavis.edu/wp-content/uploads/sites/332/2018/03/Sponsors-Communities-and-Standards_-Ethernet-vs.-Token-Ring-in-the-Local-Area-Networking-Business.pdf" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5392,8 +5433,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "A serious alternative to Ethernet, built by people who thought deterministic access mattered more than simplicity.",
     intro: "Proteon, of Westborough, Massachusetts, built token-ring networking equipment and routers through the period when the local-area contest was still genuinely open. Token passing gives a network a property Ethernet does not: a bounded worst-case wait, because a station transmits only when it holds the token.",
     body: [
-      "That property was not a marketing invention. On a heavily loaded shared Ethernet of the era, collisions and back-off made latency unpredictable in exactly the way a factory floor or a trading desk cannot tolerate. The token approach traded throughput and simplicity for determinism, and reasonable engineers chose it.",
-      "It lost anyway, and the reason is instructive: Ethernet got cheaper faster than token ring got better, and the cost curve beat the technical argument. That is the same shape as several other entries here, and it is why this timeline is not a ranking of merit.",
+      "Proteon was founded in Westborough, Massachusetts in 1972 by Howard Salwen, as a communications consulting firm rather than a manufacturer. It became one because of a contract: in early 1979 MIT's Laboratory for Computer Science paid it a hundred thousand dollars to build the second version of their token ring Local Network Interface, on the reasoning that buying would be faster than building. It took until June 1981 to deliver working boards, which is a useful correction to how these stories are usually told.",
+      "What came out of that was ProNET-10, a ten megabit token-passing network shipped in June 1981 - the first commercial Token Ring products, years before IBM announced its own in the mid-1980s. The company then did something more consequential and less remembered: in 1986 it shipped the p4200, the first commercially available multiprotocol router, built on the MIT multiprotocol router using code written by Noel Chiappa. And it produced OSPF, the link-state protocol that is still the interior routing protocol running inside a large share of enterprise networks today.",
+      "None of that saved it, and the numbers say why. In 1990 IBM held 57.7 per cent of the four megabit Token Ring adapter market and 92.6 per cent of the sixteen megabit market, leaving Proteon and Madge - the two leading independents - about ten per cent each. Being second to IBM in a market IBM defined is not a position, it is a waiting room. The 1987 results show the pressure directly: 22.3 million dollars of sales, up fifteen per cent, against a loss of 5.7 million - a third of everything the venture investors had put in.",
+      "It went defunct in 1998 and was relaunched as OpenROUTE Networks, then passed through Netrix, NX Networks and NSGDatacom. The reading worth keeping is about which inventions survive their inventors. Proteon's hardware is gone completely and its protocol is in production on hundreds of thousands of devices, because a specification can be implemented by anyone while a product has to be bought from you.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Proteon",
     externalLabel: "Proteon",
@@ -5402,6 +5446,8 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "excelan",
     sources: [
       { label: "Excelan - American computer networking company, 1982-1989", url: "https://en.wikipedia.org/wiki/Excelan" },
+    
+      { label: "Excelan: acquired by Novell in 1989, reported by the New York Times on 24 March 1989 and the Los Angeles Times on 27 March 1989", url: "https://en.wikipedia.org/wiki/Excelan" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5410,8 +5456,10 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Selling TCP/IP to corporations in 1982, which required believing a research network's protocol had a commercial future.",
     intro: "Excelan built network interface cards that ran the TCP/IP stack on the card itself, offloading it from a host processor that in the early 1980s could ill afford the work. Founded in 1982 and merged into Novell in 1989, its whole existence sits inside the window when it was not yet obvious which protocol suite enterprises would standardise on.",
     body: [
-      "The bet is the interesting part. In 1982, TCP/IP was what the ARPANET ran; OSI was what the standards bodies and several governments said the future would be. A company selling TCP/IP hardware to corporate buyers was taking a commercial position on an argument that would not be settled for six more years.",
-      "Offloading the stack onto the adapter is also a recurring idea rather than a period curiosity - it returns every time host processors fall behind link speeds, which they periodically do.",
+      "Excelan built TCP/IP networking boards and software for workstations and PCs at a time when that combination was unusual - most local networking of the era was proprietary, and TCP/IP was still largely a research and government protocol rather than an office one. Selling it commercially meant betting that the protocol the universities used would become the protocol businesses used.",
+      "The bet was correct and the company did not get to collect on it alone. Novell acquired Excelan in 1989, reported by the New York Times on 24 March and the Los Angeles Times three days later, and folded the technology into a company whose own networking stack was IPX rather than IP.",
+      "That is the part worth sitting with. Novell dominated local networking in the early 1990s with a protocol of its own design, and its response to TCP/IP was to buy expertise rather than to build it - which bought time and not a position, because the protocol that won was the one nobody owned. The acquisition looks shrewd in 1989 and looks like a hedge against the future in hindsight, and it was both.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Excelan",
     externalLabel: "Excelan",
@@ -5420,6 +5468,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "wellfleet",
     sources: [
       { label: "Wellfleet Communications - American networking equipment manufacturer", url: "https://en.wikipedia.org/wiki/Wellfleet_Communications" },
+    
+      { label: "Wellfleet Communications: founded June 1986 by Paul Severino, Bill Seifert, Steven Willis, Jennifer Lamonakis and David Rowe in Bedford and later Billerica, Massachusetts; merged with SynOptics in October 1994 in a 2.7 billion dollar deal to form Bay Networks; ranked fastest-growing company in the United States by Fortune in 1992 and 1993", url: "https://en.wikipedia.org/wiki/Wellfleet_Communications" },
+      { label: "History of Computer Communications on Wellfleet: Severino founded Interlan in 1981, sold it to Micom in 1985 for 65 million dollars, left a staff role in September 1985, and settled on interconnecting LANs over T-1 as the opportunity; first product announced before the end of 1987, revenue shipments mid-1988, public in 1991", url: "https://historyofcomputercommunications.info/section/c.6/Wellfleet/" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5428,8 +5479,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "The router company that merged with a hub company, producing a business that was briefly the credible alternative to Cisco.",
     intro: "Wellfleet Communications built multiprotocol routers during the internetworking window, competing directly with Cisco at a time when it was not settled who would win. Its 1994 merger with SynOptics produced Bay Networks, which for a few years was the most credible alternative to Cisco that the enterprise market had.",
     body: [
-      "A merger of equals between a router company and a hub company was strategically sound on paper: routers and wiring concentrators were the two halves of an enterprise network, and neither firm alone had the other's channel. What followed is the standard warning about mergers of equals, which is that two head offices, two cultures and two product roadmaps do not become one by agreement.",
-      "Reading Wellfleet and SynOptics together explains a name that otherwise appears from nowhere in the mid-1990s and disappears into Nortel in 1998.",
+      "Wellfleet was founded in June 1986 by Paul Severino with Bill Seifert, Steven Willis, Jennifer Lamonakis and David Rowe, in Bedford and later Billerica, Massachusetts. Severino arrived at it by a route worth recording: he had founded Interlan in 1981 to sell Ethernet products, concluded the company was undercapitalised, engineered its sale to Micom in 1985 for sixty-five million dollars, and then found the staff job that came with it intolerable. He left in September 1985 looking for a company to start, and what kept returning was the problem of interconnecting local networks over T-1 circuits.",
+      "That problem was the internetworking market, and the timing put Wellfleet directly against Cisco, founded two years earlier. It announced its first product before the end of 1987, shipped for revenue in mid-1988, went public in 1991, and was ranked by Fortune as the fastest-growing company in the United States in both 1992 and 1993. Almost nothing about that trajectory suggests a company with a problem.",
+      "It had one anyway, and it was structural rather than commercial: Cisco was winning the router market it needed, and no growth rate closes a gap against a competitor growing from a larger base. In October 1994 Wellfleet merged with SynOptics in a deal worth 2.7 billion dollars to form Bay Networks - two companies each strong in one layer, combining to face a rival strong in both.",
+      "The reading is the one this timeline keeps producing. A merger of equals between two healthy companies is almost always a defensive move against a third, and the combined company inherits two cultures, two product lines and two headquarters while the rival inherits nothing. Bay Networks was acquired by Northern Telecom in 1998, four years later.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Wellfleet_Communications",
     externalLabel: "Wellfleet",
@@ -5438,6 +5492,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "synoptics",
     sources: [
       { label: "SynOptics - American networking equipment manufacturer", url: "https://en.wikipedia.org/wiki/SynOptics" },
+    
+      { label: "SynOptics Communications: founded 1985 in Santa Clara by Andrew K. Ludwick and Ronald V. Schmidt, popularised the modular Ethernet hub and Ethernet over twisted pair and fibre, revenue peaking at 700 million dollars in 1993, merged with Wellfleet on 6 July 1994", url: "https://en.wikipedia.org/wiki/SynOptics" },
+      { label: "Bay Networks: formed July 1994 from Wellfleet and SynOptics, named for the San Francisco Bay and Massachusetts Bay, acquired by Northern Telecom in 1998", url: "https://en.wikipedia.org/wiki/Bay_Networks" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5446,8 +5503,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Ethernet over telephone wiring, which turned a coaxial bus into something a building could actually be wired for.",
     intro: "SynOptics built structured wiring hubs that ran Ethernet over twisted pair, a Xerox PARC-derived idea that changed how buildings were cabled. Its 1994 merger with Wellfleet produced Bay Networks, joining the wiring business to the routing one.",
     body: [
-      "The contribution is easy to undervalue now that twisted pair is simply what Ethernet runs on. Original Ethernet was a shared coaxial bus - one cable through a building, with every station tapped into it, and a single fault affecting everyone on the segment. Star wiring to a hub made the network diagnosable and the building wirable by electricians rather than specialists.",
-      "That is a recurring shape in this history: the technically interesting invention is the protocol, and the thing that makes it deployable is the wiring.",
+      "SynOptics was founded in Santa Clara in 1985 by Andrew K. Ludwick and Ronald V. Schmidt, and its contribution was the one that made Ethernet ordinary: running it over the unshielded twisted-pair telephone cabling that buildings already had, and selling it in modular hubs. Before that, Ethernet meant pulling coaxial cable, which is a construction project rather than a purchase.",
+      "That single decision is why Ethernet beat the alternatives on economics rather than on merit. A network you can install using the wiring already in the walls is a different product from one that needs a contractor, and the market responded accordingly: revenue went from 1.8 million dollars in 1986 to more than 388 million in 1992, peaking around 700 million in 1993.",
+      "Success at that scale carried its own problem. Hubs commoditised - the layer one and two market it dominated was exactly the part of the network where prices fall fastest - and the profit was moving up to routing, where SynOptics was not strong. On 6 July 1994 it merged with Wellfleet, which was strong there and weak where SynOptics was strong, in a 2.7 billion dollar deal that formed Bay Networks. The name split the difference between the San Francisco Bay and Massachusetts Bay, which is a fair summary of the whole arrangement.",
+      "The lesson that outlived the company is about where value sits in a stack. SynOptics won the wiring layer completely and still had to merge, because winning a layer that commoditises is a race you finish and then have to run again somewhere higher.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/SynOptics",
     externalLabel: "SynOptics",
@@ -5464,6 +5524,11 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "codex",
     sources: [
       { label: "Vanguard Managed Solutions (redirected from Codex Corporation) - former American data network company", url: "https://en.wikipedia.org/wiki/Codex_Corporation" },
+    
+      { label: "History of Computer Communications on Codex: Cryer and Kohlenberg incorporated Codex in 1962 because their employer was moving out of state and they had no wish to leave the Boston area, and lived on defence contracts until the uncertainty pushed them toward data communications products", url: "https://historyofcomputercommunications.info/section/c.1/Codex/" },
+      { label: "History of Computer Communications, Beginnings of Modem Competition: MIT professor Robert Gallager told Cryer and Kohlenberg that a 9600 bits per second modem was possible - four times the fastest commercial modem then available from AT&T - and pointed them to Jerry Holsinger, whose prototype had been developed at Defense Research Corporation with National Security Agency funding", url: "https://historyofcomputercommunications.info/section/3.1/Beginnings-of-Modem-Competition-Codex-and-Milgo-1956-1967/" },
+      { label: "History of Computer Communications, Codex and Milgo Needing Money: the AE-96 introduced May 1968 as the world first 9600 bps modem, weighing about 125 pounds across sixty-six printed circuit boards of RTL logic, with every pair manually tuned to the telephone circuit and re-tuned whenever the line characteristics changed", url: "https://historyofcomputercommunications.info/section/3.5/Codex-and-Milgo-Needing-Money-1967-1968/" },
+      { label: "Vanguard Managed Solutions: Codex Corporation founded July 1962 by James M. Cryer Jr and Arthur Kohlenberg, directors at a Boston-area research division of Melpar; Teldata acquired May 1967; the company became a Motorola division and later Vanguard Managed Solutions and Vanguard Networks", url: "https://en.wikipedia.org/wiki/Vanguard_Managed_Solutions" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5472,8 +5537,12 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "A company whose product was signal processing sold as a box, in the window a regulator had just opened.",
     intro: "Codex built high-speed modems in the years after the interconnect decisions made it lawful for somebody other than the telephone company to attach equipment to a line. Its work sat on the mathematical side of data communications - getting more bits through a voice-grade circuit than the circuit looked capable of carrying - which is a different discipline from the switching and multiplexing most of this timeline is about.",
     body: [
-      "The modem is the product this period is most associated with and the one most often taken for granted. A voice line was engineered to carry speech, and everything above about 2,400 bits per second on one was won by signal processing rather than by better wire.",
-      "The company was later absorbed and the name eventually became Vanguard, which is why searching for it lands on a successor. That is the usual ending in this part of the timeline and it is recorded rather than smoothed over.",
+      "Codex was incorporated in July 1962 by James Cryer and Arthur Kohlenberg, a director and a chief scientist at a Boston-area research division of Melpar, for an unremarkable reason: their employer was moving out of state and neither wanted to leave the area. They took their knowledge and contacts and lived on defence contracts, and it was the uncertainty of that - never knowing whether another contract would arrive - that pushed them toward building products instead.",
+      "The product came from a conversation. MIT's Robert Gallager told them a 9600 bit per second modem was possible, four times the fastest commercial modem AT&T then sold, and pointed them at Jerry Holsinger, a 1965 MIT doctorate whose thesis was high-speed transmission over telephone lines. Holsinger had a prototype developed with National Security Agency funding, a company called Teldata, and no success raising money. Codex bought it in May 1967.",
+      "The AE-96 shipped in May 1968 as the world's first 9600 bps modem, and its specification is the most useful thing in this entry. It weighed about 125 pounds, held sixty-six printed circuit boards of resistor-transistor logic, and every pair had to be manually tuned to the specific telephone circuit it ran over - then re-tuned whenever the line changed, which it always did. A first-of-its-kind product that is barely operable is still first, and the market leadership went to the second generation, the L Series developed under David Forney.",
+      "There is a second lesson underneath that one. Bell Labs had known since the mid-1950s that these speeds were achievable and had only managed 2400 bps, while the design that worked came from one person outside the largest communications research organisation in the world. That is not an argument that big laboratories cannot innovate; it is a reminder that a problem important to one determined individual can outrun a problem assigned to a department.",
+      "Motorola approached Codex in 1976 and acquired it, and it operated as a Motorola division for decades before becoming Vanguard Managed Solutions and then Vanguard Networks. Its last strategic decision as an independent line is worth recording too: in 1984 it ceased its own local networking efforts and resold Ungermann-Bass products instead. A company that had defined the high end of one market could not cross into the adjacent one, which is the outcome far more often than the crossing is.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Codex_Corporation",
     externalLabel: "Codex",
@@ -5503,6 +5572,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "paradyne",
     sources: [
       { label: "Paradyne - US telecommunications company", url: "https://en.wikipedia.org/wiki/Paradyne_Corporation" },
+    
+      { label: "Paradyne: formed 1969 in Largo, Florida to supply computer communications systems; competed in high-end modems with Motorola Codex, Racal-Milgo and divisions of AT&T and IBM; AT&T Paradyne from 1989, Paradyne Networks from 1996, acquired by Zhone Technologies in 2005", url: "https://en.wikipedia.org/wiki/Paradyne" },
+      { label: "History of Computer Communications on the modem market: Codex and Milgo from 1956, and the regulatory sequence - the Carterfone decision, Computer Inquiry II and the break-up of AT&T - that opened customer premises equipment to competition", url: "https://historyofcomputercommunications.info/section/c.5/Network-Equipment-Technologies/" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5511,8 +5583,10 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Squeezing usable data rates out of the copper that was already in the ground.",
     intro: "Paradyne built modems and data transmission equipment through the period when the access line was the constraint on everything. Its problem was the one the whole industry shared and few companies specialised in: the wire between a building and the network was already installed, could not be replaced economically, and was never designed for data.",
     body: [
-      "That constraint outlived the analogue era entirely. Every subsequent generation of access technology - the DSL family most obviously - is the same engineering problem restated: extract more from existing copper because replacing it costs more than the service is worth.",
-      "It is a useful corrective to a timeline otherwise full of companies inventing new media. Most of the world's bandwidth problems have been solved on cable that was already there.",
+      "Paradyne was formed in 1969 in Largo, Florida, to supply computer communications systems, and spent the 1970s and 1980s in the high-end modem market against Motorola Codex, Racal-Milgo and the equipment divisions of AT&T and IBM. That market existed at all because of regulation rather than technology: the Carterfone decision and the inquiries that followed forced open the right to attach equipment to the telephone network, and an industry appeared in the space the ruling created.",
+      "The high end mattered more than the phrase suggests. Corporate data ran over leased analogue lines, and squeezing more bits through a fixed circuit was worth paying for, so modems were engineering products with real margins rather than commodities. Everything that made that business good - long leases, few suppliers, customers who could not easily switch - dissolved when the circuits went digital.",
+      "It became AT&T Paradyne in 1989, returned to independence as Paradyne Networks in 1996, and was acquired by Zhone Technologies in 2005. The trajectory is the ordinary fate of a customer-premises equipment vendor: the value that once sat in the box moved into the network itself, and a company that made expensive endpoints for expensive circuits had nothing left to be expensive about.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Paradyne_Corporation",
     externalLabel: "Paradyne",
@@ -5521,6 +5595,11 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "sytek",
     sources: [
       { label: "Sytek - American local area networking company", url: "https://en.wikipedia.org/wiki/Sytek" },
+    
+      { label: "History of Computer Communications - Michael Pliner and the founding of Sytek: incorporated July 1979 by Pliner, Ken Biba, Tom Berson, Jack Goldsmith and Bob Kroll as a consulting firm; first client Xerox, a 250,000 dollar contract; first year of fourteen clients, 1.3 million dollars of revenue and a 300,000 dollar bank balance; the 1980 decision to go broadband rather than baseband Ethernet", url: "https://historyofcomputercommunications.info/section/9.10/Michael-Pliner-and-the-Founding-of-Sytek/" },
+      { label: "History of Computer Communications - Sytek and IBM: the PC LAN announced 14 August 1984 as a reengineered Sytek LocalNet limited to 72 stations, 14,000 units manufactured before announcement, and IBM investing 6 million dollars for 4.9 per cent in September 1984, valuing Sytek above 120 million", url: "https://historyofcomputercommunications.info/section/12.4/Sytek/" },
+      { label: "Sytek: founded 1979 by Michael Pliner, creator of the NetBIOS API used by Microsoft for its early networks; became Hughes LAN Systems and, from April 1995, Whittaker Communications", url: "https://en.wikipedia.org/wiki/Sytek" },
+      { label: "UPI, 2 March 1989: Sytek agrees to be acquired by a GM Hughes Electronics unit, becoming Hughes LAN Systems under Sytek president George Klaus; 330 employees and 50 to 60 million dollars of revenue; General Instrument was majority owner", url: "https://www.upi.com/Archives/1989/03/02/Sytek-Inc-a-local-area-network-company-has-agreed/2885604818000/" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5529,8 +5608,12 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Ran local networks over cable television plant, and left behind an interface that outlived the company by decades.",
     intro: "Sytek built local area networks on broadband coaxial cable - the same medium cable television used - which let a network cover a campus rather than a floor and carry several channels at once. It is better remembered for something smaller: the NetBIOS interface it developed with IBM, which became the foundation of PC networking for a generation.",
     body: [
-      "Broadband LANs lost to baseband Ethernet for the reasons most things in this period lost: cost, simplicity and the pace at which the winning option got cheaper. Running a network over CATV plant required radio-frequency engineering that an ordinary site could not staff.",
-      "NetBIOS is the more interesting legacy and a recurring lesson: the durable artefact of a company is often not its product but an interface it defined, which then long outlives the hardware, the company and eventually the sense of what the acronym meant.",
+      "Sytek was incorporated in July 1979 by five people - Michael Pliner, Ken Biba, Tom Berson, Jack Goldsmith and Bob Kroll - and it began, like several of its contemporaries, as a consulting firm rather than a manufacturer. Its first client was Xerox, which paid it 250,000 dollars to write the communication protocols for an internal network. The first year closed with fourteen clients, 1.3 million dollars of revenue and 300,000 dollars in the bank, which is what bought the freedom to choose a strategy at all.",
+      "The choice they made in 1980 defines everything after. Three local networking companies were incorporated within weeks of each other that summer - 3Com, Ungermann-Bass and Sytek - and while the other two took Ethernet, Sytek deliberately went broadband, precisely because it would differentiate them. Broadband ran over cable television plant, carried many channels at once and suited campus-scale networks with large station counts. It was a real technical bet against the baseband consensus, not a failure to notice one.",
+      "The bet paid spectacularly and briefly. On 14 August 1984 IBM announced the PC LAN - which was a reengineered Sytek LocalNet. Sytek had manufactured fourteen thousand units before the announcement and filled IBM's distribution channel; the following month IBM invested six million dollars for 4.9 per cent, valuing the company above 120 million. One detail in the specification was the warning nobody could act on: IBM limited the product to 72 stations, when the whole advantage of broadband appeared at large station counts.",
+      "IBM's Token Ring announcement on 15 October 1985 changed Sytek's fate, and the shape of that reversal is the lesson. A company whose largest customer is also the standard-setter has no independent position: the same relationship that produced fourteen thousand units of demand could remove it by announcing something else. Sytek was sold to a GM Hughes Electronics unit in March 1989 - 330 employees, fifty to sixty million dollars of revenue - becoming Hughes LAN Systems and later, in 1995, Whittaker Communications.",
+      "What outlived all of it was a piece of software. Sytek created the NetBIOS interface, which Microsoft adopted for its early networking, and whose descendants were still being disabled in enterprise hardening guides four decades later. The broadband is gone, the company is gone, and the API it wrote to talk to IBM PCs is the part that had to be argued about long after everyone forgot who wrote it.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Sytek",
     externalLabel: "Sytek",
@@ -5539,6 +5622,8 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "bridge-communications",
     sources: [
       { label: "Bridge Communications - American computer networking company, merged with 3Com in 1987", url: "https://en.wikipedia.org/wiki/Bridge_Communications" },
+    
+      { label: "History of Computer Communications on Bridge Communications, and on the consolidation of 1987-1988 in which 3Com merged with Bridge, Tandem acquired Ungermann-Bass and Interlan went into Micom", url: "https://historyofcomputercommunications.info/section/12.18/Bridge-Communications/" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5547,8 +5632,10 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Built the equipment that joined incompatible networks, then merged with 3Com in 1987.",
     intro: "Bridge Communications made internetworking equipment - the devices that connected local networks to each other and to hosts - in the years when a building could easily contain several networks that had no way to reach one another. It merged with 3Com in 1987, which is what a successful company in this window usually became.",
     body: [
-      "The company's existence is itself evidence for how the internetworking window opened. Nobody needed a product like this until local area networks had succeeded well enough to proliferate, and the proliferation happened department by department rather than by plan.",
-      "The 3Com merger also shows the consolidation pattern that followed: the firms that defined the window mostly did not survive it as independent companies, and the ones that bought them are the names still on price lists.",
+      "Bridge Communications built terminal servers and internetworking gear in the early 1980s, in the window when local networks were multiplying faster than anyone could connect them to each other. It was one of the Ethernet companies that reached an initial public offering, which mattered more than it sounds: a balance sheet from an IPO was what allowed the Ethernet firms to cut prices aggressively while the token ring vendors could not.",
+      "In 1987 it merged into 3Com, in the same consolidation that saw Tandem Computers acquire Ungermann-Bass and Interlan absorbed into Micom. That clustering of dates is the fact worth recording: the independent local networking companies did not disappear one at a time over a decade, they were absorbed within roughly eighteen months of each other, because the market consolidated on a schedule set by prices falling faster than any of them could cut costs.",
+      "For 3Com the merger bought internetworking capability at exactly the moment the industry's centre of value was moving from cards and hubs to the boxes that joined networks together. Whether it bought enough is a different question, and the answer arrived later, when routing became a market Cisco defined rather than one 3Com competed in.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Bridge_Communications",
     externalLabel: "Bridge Communications",
@@ -5564,6 +5651,9 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Tufin - software company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Tufin" },
       { label: "skyboxsecurity.com now serves a Tufin page welcoming Skybox customers", url: "https://www.skyboxsecurity.com/", sourceNote: "Fetched 2026-08-11: the domain resolves to a Tufin transition page, which is how the absorption is visible from outside." },
       { label: "Founding year: 2005", url: "https://en.wikipedia.org/wiki/Tufin" },
+    
+      { label: "Tufin: founded 2005 in Tel Aviv by Ruvi Kitov and Reuven Harrison, both formerly of Check Point; public on the New York Stock Exchange in April 2019; acquired by Turn/River Capital on 25 August 2022, after which the company went private", url: "https://en.wikipedia.org/wiki/Tufin" },
+      { label: "Grokipedia on Tufin: the Turn/River Capital acquisition was an all-cash transaction of approximately 570 million dollars at 13.00 dollars a share, a 44 per cent premium to the prior closing price, completed 25 August 2022 and delisting the company from the NYSE", url: "https://grokipedia.com/page/Tufin" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -5572,8 +5662,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "A company whose product is understanding the rules you already wrote.",
     intro: "Tufin builds software that analyses, visualises and changes firewall policy across a mixed estate. The market it sits in exists for one reason: past a few hundred rules, written by several people over several years, nobody can say with confidence what a firewall permits - and the device itself will not tell you, because it answers the question it was asked rather than the question you meant.",
     body: [
-      "The category's honest description is unflattering to everyone in it. These are products sold because a control an organisation already owns has become unreadable, and the alternative to buying one is an engineer with a spreadsheet and a change window. That is not a failure of firewalls; it is what happens to any ruleset that outlives the people who wrote it.",
-      "In 2026 the Skybox domain resolves to a Tufin page welcoming Skybox customers, which is the usual ending in this segment: four companies competing to explain the same estates, consolidating into fewer.",
+      "Tufin was founded in Tel Aviv in 2005 by Ruvi Kitov and Reuven Harrison, both formerly of Check Point - which is the relevant fact about it. People who had built a firewall went and built the tool for living with one, having seen what customers actually did to rule bases over years rather than what the product documentation assumed.",
+      "Its suite splits the problem the way operations does: SecureTrack for visibility, auditing and compliance across what is deployed, SecureChange for automating the change itself, and SecureApp for describing connectivity in terms of the application rather than of addresses and ports. That last framing is the useful one, because the person requesting a change describes a business need and somebody then translates it into rules that outlive the request.",
+      "It stayed privately funded until its New York listing in April 2019, and in August 2022 Turn/River Capital took it private in an all-cash deal of roughly 570 million dollars, a 44 per cent premium on the prior close.",
+      "Read alongside AlgoSec, founded a year earlier and self-funded for fourteen years, the pattern is clear enough to state. Two companies built to manage firewall policy both financed themselves from customers for a long time, which is what happens when a product solves a problem the buyer already knows they have. The market did not need to be created; it needed to be noticed.",
+    
     ],
     externalUrl: "https://www.tufin.com/",
     externalLabel: "Tufin",
@@ -5583,6 +5676,8 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "AlgoSec - company site (AlgoSec Horizon Platform; automating application connectivity and security policy)", url: "https://www.algosec.com/" },
       { label: "Founding year: 2004", url: "https://en.wikipedia.org/wiki/AlgoSec" },
+    
+      { label: "AlgoSec: founded 2004 by Yuval Baron and Professor Avishai Wool, whose core technology was developed in 2001 with his research team at Bell Labs while he was a postdoctoral researcher; headquarters moved from Reston, Virginia to Roswell, Georgia in 2010 and to Ridgefield Park, New Jersey in 2012; the company operated self-funded for 14 years before its first external funding round", url: "https://en.wikipedia.org/wiki/AlgoSec" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -5591,8 +5686,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Asks which application a rule serves, which is the question the rule does not record.",
     intro: "AlgoSec works the same estates as the rest of this cluster and frames the problem differently: rather than starting from the rule, it starts from the application and asks what connectivity that application needs. Its own material describes automating application connectivity alongside security policy.",
     body: [
-      "The framing matters more than it sounds. A firewall rule records addresses, ports and an action; it does not record why it exists or which service breaks if it is removed. That missing field is the reason nobody deletes rules - the risk of removing a rule that turns out to matter is concrete, and the benefit of a shorter list is abstract.",
-      "Anything that reattaches rules to the applications behind them is attacking that asymmetry, which is the only thing that makes cleanup possible at all.",
+      "AlgoSec was founded in 2004 by Yuval Baron and Avishai Wool, and its core technology predates the company: Wool developed it in 2001 with his research team at Bell Labs, where he was a postdoctoral researcher working on firewall security and algorithmic complexity. Baron came from Comverse and RAD Data Communications, and had co-founded Actelis Networks in 1999.",
+      "The problem it addresses is one every long-lived estate has and few organisations admit to. A firewall rule set accumulates: rules are added for a project, an exception, a migration, a supplier, and almost none are ever removed, because nobody can prove what would break. After a decade the rule base is a record of every decision the organisation has taken and an explanation of none of them.",
+      "What the category does is turn that into something answerable. Which rules are unused, which are shadowed by others, which permit more than the policy allows, and what a proposed change would actually open - questions that are trivial to state and impossible to answer by reading, once the count passes a few thousand across several vendors.",
+      "The detail worth carrying is financial rather than technical: it ran self-funded for fourteen years before taking outside investment. A company can do that only if customers pay early and keep paying, which says more about how badly the problem is felt than any market sizing would. Unglamorous categories with genuine operational pain do not need venture money to find buyers.",
+    
     ],
     externalUrl: "https://www.algosec.com/",
     externalLabel: "AlgoSec",
@@ -5642,6 +5740,8 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Infoblox - American technology company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Infoblox" },
       { label: "Founding year: 1999", url: "https://en.wikipedia.org/wiki/Infoblox" },
+    
+      { label: "Infoblox: founded 1999 in Chicago by Stuart Bailey, Michael Ford, Greg Lanier, Tom Kowal and Ivan Pulleyn; products manage DNS, DHCP and IP address management, collectively DDI; public on the New York Stock Exchange from 2012 to 2016, then acquired by Vista Equity Partners; SilverBox, an early nonstop DNS and DHCP appliance, launched 2005", url: "https://en.wikipedia.org/wiki/Infoblox" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -5650,8 +5750,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "DNS, DHCP and address management are three protocols and one source of truth.",
     intro: "Infoblox builds DDI - the industry's contraction for DNS, DHCP and IP address management sold as one system. The contraction exists because the three cannot honestly be operated apart: an address is allocated by DHCP, recorded in address management, and made findable by DNS, and any of them disagreeing with the others produces a fault that appears somewhere else entirely.",
     body: [
-      "The failure this addresses is mundane and constant. A spreadsheet of subnets, a DHCP scope edited by hand and a DNS zone maintained separately will diverge, and the divergence surfaces as a duplicate address, an unresolvable host, or a lease handed out for a network that was decommissioned last year.",
-      "It is also the reason DDI appliances end up holding an unglamorous kind of authority: once the three are unified, the system that allocates addresses becomes the record of what exists on the network, which is a heavier responsibility than the product category suggests.",
+      "Infoblox was founded in Chicago in 1999 by Stuart Bailey with Michael Ford, Greg Lanier, Tom Kowal and Ivan Pulleyn, and it effectively created the market now called DDI - DNS, DHCP and address management sold as one managed system rather than as three sets of configuration files on machines somebody set up years earlier.",
+      "The proposition was reliability before it was security. SilverBox, in 2005, was an early nonstop appliance for DNS and DHCP, and the pitch was that services this fundamental should not depend on a particular server, a particular administrator or a particular text file. Anyone who has traced an outage back to a zone file edited by hand understands the argument without needing it explained.",
+      "Its ownership follows the standard path: public on the New York Stock Exchange from 2012, taken private by Vista Equity Partners in 2016, later with Warburg Pincus alongside. The company that made core network services into a product is now itself a private equity holding, which is what happens to a business whose revenue is predictable and whose category is mature.",
+      "The security framing came later and it followed the data rather than the marketing. A system that answers every name query in an organisation holds the most complete record of what that organisation's machines are trying to reach, which makes it a detection surface as much as an operational one - and the reason DDI vendors and resolver vendors ended up in the same market from opposite directions.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Infoblox",
     externalLabel: "Infoblox",
@@ -5661,6 +5764,9 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Proofpoint - American cybersecurity company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Proofpoint" },
       { label: "Founding year: 2002", url: "https://en.wikipedia.org/wiki/Proofpoint,_Inc." },
+    
+      { label: "Proofpoint: founded July 2002 by Eric Hahn, formerly chief technology officer of Netscape Communications; launched 21 July 2003 after a 7 million dollar Series A; public in April 2012 at 13 dollars a share; acquired by Thoma Bravo in 2021 for 12.3 billion dollars", url: "https://en.wikipedia.org/wiki/Proofpoint,_Inc." },
+      { label: "Proofpoint acquisitions and incidents: Wombat Security in 2018 for 225 million dollars, ObserveIT in 2019 for 225 million, Meta Networks for about 120 million, InteliSecure in 2021 and Tessian in December 2023; the EchoSpoofing incident disclosed in 2024 saw up to 14 million fraudulent emails a day relayed through Proofpoint infrastructure over six months", url: "https://www.captaindns.com/en/blog/proofpoint-secure-email-gateway" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -5669,8 +5775,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Email remained the way in long after the industry stopped finding it interesting.",
     intro: "Proofpoint built its business on email security at a time when the attention of the field was moving elsewhere. That timing turned out to be the point: email stayed the most common initial access vector through two decades of newer and more interesting attack surfaces.",
     body: [
-      "The category is unfashionable in a specific way worth noting. A mail gateway is judged on what it silently prevented, and prevention produces no event anybody celebrates - while a false positive produces an angry executive whose invoice was quarantined. The incentive gradient runs against the control, and estates loosen mail filtering in response to complaints far more often than they tighten it after an incident.",
-      "That asymmetry, rather than any technical development, is why the same attack shape keeps working.",
+      "Proofpoint was founded in Sunnyvale in July 2002 by Eric Hahn, who had been chief technology officer of Netscape, and launched a year later after a seven million dollar first round. Its bet was statistical: where the market sold rule-based appliances, it built classification and machine learning into filtering, on the reasoning that spam and phishing change faster than any rule set is updated.",
+      "It went public in April 2012 at thirteen dollars a share and grew mostly by acquisition - security awareness training in 2018, insider threat monitoring in 2019, zero trust network access the same year, managed data loss prevention in 2021, behavioural email analysis in 2023. The pattern is the one every platform vendor follows: buy the adjacent category before the customer buys it from someone else.",
+      "In 2021 Thoma Bravo acquired it for 12.3 billion dollars, one of the largest software buyouts on record, and email security joined the long list of categories now owned by private equity rather than by public shareholders.",
+      "The 2024 EchoSpoofing incident belongs in the record. A configuration weakness allowed up to fourteen million fraudulent messages a day to be relayed through the company's own infrastructure over roughly six months, borrowing its sending reputation. A security platform is infrastructure like any other, and the reputation that makes it useful to customers is precisely what makes it valuable to an attacker who can send through it.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Proofpoint",
     externalLabel: "Proofpoint",
@@ -5704,6 +5813,10 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Barracuda Networks - American software company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Barracuda_Networks" },
       { label: "Founding year: 2003", url: "https://en.wikipedia.org/wiki/Barracuda_Networks" },
+    
+      { label: "Barracuda Networks: founded 2003 by Dean Drako, Michael Perone and Zach Levow, introducing the Barracuda Spam and Virus Firewall in the same year; headquartered in Campbell, California; owned by KKR", url: "https://en.wikipedia.org/wiki/Barracuda_Networks" },
+      { label: "The Silicon Review on Barracuda: the three founders were running an internet service provider in 2002 and could not find an affordable spam-blocking product for their own small business, so they built one, in a small Los Altos office next to a Mexican restaurant that often served as the conference room", url: "https://thesiliconreview.com/magazine/profile/providing-a-secured-environment-for-companies-in-various-regions-and-industry-barracuda" },
+      { label: "Grokipedia on Barracuda Networks: public on 6 November 2013 on the New York Stock Exchange under the ticker CUDA at 18 dollars a share, taken private by Thoma Bravo in 2018 for 1.6 billion dollars, then acquired by KKR in 2022; serving over 200,000 organisations as of February 2026", url: "https://grokipedia.com/page/Barracuda_Networks" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -5712,8 +5825,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Built a business where the budget is small, the staff is one person, and the threat is identical.",
     intro: "Barracuda sells email, network and application security into the mid-market: organisations with the same attackers as a bank and a fraction of the staff. That positioning is a genuine engineering constraint rather than a marketing segment, because a product for an estate with no dedicated security team has to work correctly on its defaults.",
     body: [
-      "Most security tooling assumes somebody will tune it. The mid-market's defining condition is that nobody will - the person responsible also runs the servers, the backups and the helpdesk - so a control that requires attention to be effective will drift into being decorative.",
-      "That is the part of the market where the gap between a product working and a product being operated is widest, and it is under-documented precisely because the people living it do not write conference talks.",
+      "Barracuda began as an internal fix. In 2002 Dean Drako, Michael Perone and Zach Levow were running an internet service provider, could not find an affordable spam-blocking product for their own business, and built one - in a small Los Altos office where the courtyard next to a Mexican restaurant frequently served as the conference room. The Spam and Virus Firewall shipped in 2003, and the founders were their own first customer.",
+      "The commercial insight was pricing rather than technology. Email security at the time was sold at enterprise prices to enterprise buyers, which left every organisation below that line with the same problem and no product. Barracuda sold an appliance that was cheap, arrived configured, and did one job, and it reached a market that had been priced out rather than underserved.",
+      "The portfolio widened from there into web filtering, load balancing, archiving and backup, and the ownership history reads like a summary of how this industry now finances itself: public on the New York Stock Exchange in November 2013 at eighteen dollars a share, taken private by Thoma Bravo in 2018 for 1.6 billion dollars, and sold on to KKR in 2022.",
+      "Two ownership changes in four years is worth noticing rather than skipping. A product that serves two hundred thousand organisations is a predictable revenue stream, and predictable revenue is what private equity buys; the customers experience it as roadmap changes and support reorganisations arriving for reasons never explained to them. That is a real operational consideration when choosing a supplier, and it appears in no datasheet.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Barracuda_Networks",
     externalLabel: "Barracuda Networks",
@@ -5723,6 +5839,9 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "LogRhythm - American security intelligence company (Wikipedia)", url: "https://en.wikipedia.org/wiki/LogRhythm" },
       { label: "Founding year: 2003", url: "https://en.wikipedia.org/wiki/LogRhythm" },
+    
+      { label: "LogRhythm: founded 2003 in Boulder, Colorado, specialising in security information and event management, log management, network monitoring and user behaviour analytics; merged with Exabeam in 2024", url: "https://en.wikipedia.org/wiki/LogRhythm" },
+      { label: "Grokipedia on LogRhythm: founded in 2003 in Boulder by Chris Petersen and Phillip Villella, initially operating as Security Conscious, Inc. before rebranding in 2005; Petersen relocated from Washington and sold his home there for 100,000 dollars to bootstrap the venture; acquired by Thoma Bravo in 2018", url: "https://grokipedia.com/page/LogRhythm" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -5731,8 +5850,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Collecting everything is easy; the cost is that somebody has to read it.",
     intro: "LogRhythm builds security information and event management - the category that centralises logs from an estate and tries to turn them into detections. The technology is well understood and the failure mode is organisational: a SIEM is only as good as the attention it receives, and attention is the scarcest resource in any security team.",
     body: [
-      "The economics are the part worth knowing. Ingesting more data improves detection and increases both cost and noise, so every SIEM deployment converges on the same argument about what not to collect - an argument that is usually settled by licensing rather than by threat modelling.",
-      "And the failure is quiet: an alert nobody triages is indistinguishable from an alert that never fired, which is why SIEM maturity is measured in closed cases rather than in sources connected.",
+      "LogRhythm was founded in Boulder in 2003 by Chris Petersen and Phillip Villella, and it did not start under that name - it operated as Security Conscious, Inc. until a rebrand in 2005. To fund the beginning, Petersen sold his house in Washington for a hundred thousand dollars and moved to Colorado, which is a more precise picture of how a security company starts than any founding narrative.",
+      "The problem they set out to address was the state of log management: systems that collected enormous volumes and made them expensive to store and hard to ask questions of. That gap defined the whole security information and event management category, and it has never entirely closed - the economics of keeping everything and the need to search it quickly still pull in opposite directions.",
+      "The company was acquired by Thoma Bravo in 2018 and merged with Exabeam in 2024, which ended it as an independent name. That path - private equity, then combination with a competitor - is the standard ending for a security product company that is established rather than growing, and it recurs often enough in this catalogue to count as a pattern rather than an event.",
+      "What it leaves behind is a category most organisations run and few enjoy. A platform that ingests everything and alerts on some of it is judged by the alerts nobody acted on, which makes this the corner of security where tooling and staffing are least separable: the product cannot be better than the number of people available to read what it produces.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/LogRhythm",
     externalLabel: "LogRhythm",
@@ -5761,6 +5883,10 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Supermicro - American supplier of servers and information technology equipment (Wikipedia)", url: "https://en.wikipedia.org/wiki/Supermicro" },
       { label: "Founding year: 1993", url: "https://en.wikipedia.org/wiki/Supermicro" },
+    
+      { label: "Supermicro (official): Charles Liang has served as president, chief executive and chairman since the company inception in September 1993; previously president and chief design engineer of Micro Center Computer from July 1991 to August 1993", url: "https://www.supermicro.com/en/about" },
+      { label: "Supermicro: founded 1993 by Charles Liang, Sara Liu and Wally Liaw in San Jose; first European partnership with Boston Limited in the founding year; energy-saving server development from 2004; revenue of 21.97 billion dollars and 6,238 employees in 2025", url: "https://en.wikipedia.org/wiki/Supermicro" },
+      { label: "Taiwan Panorama on Charles Liang: born in Chiayi, Taiwan, he left a teaching job at his alma mater in the 1980s for Silicon Valley, founded Supermicro in 1993 and took it public in 2007; the Taiwanese factory opened in 2012, was enlarged in 2019 and its green production capacity came online in 2021", url: "https://www.taiwan-panorama.com/en/Articles/Details?Guid=d746f266-a3e8-43ba-9255-b278b72184ca" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -5769,8 +5895,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "A great deal of infrastructure is built on boards whose maker is not on the bezel.",
     intro: "Supermicro supplies servers, motherboards and systems, frequently as the physical substrate for products sold under other names. That position - the manufacturer behind the appliance - is common in networking and security and almost never visible to the people operating the result.",
     body: [
-      "It matters operationally more often than it should. Firmware, baseboard management controllers and hardware errata belong to the underlying platform rather than to the badge on the front, so an advisory that concerns your appliance may be published by a company you have no relationship with.",
-      "Knowing what a device actually is - rather than what it is sold as - is the difference between reading the right security bulletin and reading none.",
+      "Supermicro was founded in San Jose in September 1993 by Charles Liang with Sara Liu and Wally Liaw. Liang was born in Chiayi, Taiwan, left a teaching post at his own university in the 1980s for Silicon Valley, and had spent the two previous years running a motherboard design company. By his own account the new business was profitable within six months, and it signed its first European distribution partnership in its founding year.",
+      "For most of its life it was the unglamorous half of the industry - motherboards, chassis and subsystems, sold on engineering rather than brand, to buyers specifying machines rather than buying them. That position looked like a ceiling for two decades. It became the opposite when demand shifted to dense, power-hungry accelerated computing, and the company reported revenue of nearly 22 billion dollars in 2025 with about 6,200 employees.",
+      "One decision inside that history is worth separating out. It began developing energy-efficient servers in 2004, well before power was a purchasing criterion for most buyers, and manufacturing in Taiwan from 2012. Building for efficiency ahead of the market is a bet that only pays if the market eventually arrives, and in datacentre hardware it did - power and cooling became the constraint that decides what can be installed at all.",
+      "The lesson for anyone reading a technology timeline is about where value sits over time. A components company competing on engineering looked strategically inferior to a brand for twenty-five years, and then the layer it occupied became the scarce one. Position in a stack is not permanent, and the layer that is boring during one cycle is frequently the constraint in the next.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Supermicro",
     externalLabel: "Supermicro",
@@ -5844,6 +5973,10 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "DXC Technology - American multinational IT services company (Wikipedia)", url: "https://en.wikipedia.org/wiki/DXC_Technology" },
       { label: "Founding year: 2017", url: "https://en.wikipedia.org/wiki/DXC_Technology" },
+    
+      { label: "DXC Technology annual report FY2017 (SEC): DXC was formed by the spin-off of the Enterprise Services business of Hewlett Packard Enterprise on 31 March 2017 and the merger of CSC with a wholly owned subsidiary of DXC on 1 April 2017; regular-way trading began on the New York Stock Exchange on 3 April 2017, with expected annual revenues of approximately 25 billion dollars and nearly 6,000 clients across 70 countries", url: "https://www.sec.gov/Archives/edgar/data/0001688568/000162612917000419/dxc-ars_033117.htm" },
+      { label: "Forbes on the completed spin-merger: a Reverse Morris Trust structure, tax-free to shareholders of both companies, leaving legacy CSC shareholders with 49.9 per cent of DXC and HPE shareholders with 50.1 per cent; DXC also assumed additional debt and liabilities from the Enterprise Services segment", url: "https://www.forbes.com/sites/joecornell/2017/04/04/hewlett-packard-enterprise-completes-spin-merger-to-form-dxc-technology/" },
+      { label: "Data Center Dynamics on the launch: DXC does not stand for anything - an internal FAQ told employees the name is not an acronym but a reference to digital transformation, with the X meaning force multiplier; the FAQ became public through an anonymous job-loss posting board", url: "https://www.datacenterdynamics.com/en/news/csc-and-hpes-services-division-merge-become-dxc-technology/" },
     ],
     tags: ["services"],
     group: "contemporary",
@@ -5852,8 +5985,12 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Formed from two large IT services organisations, and therefore from their contracts.",
     intro: "DXC Technology is a multinational IT services company formed from the combination of large existing services businesses. Merging service organisations is unlike merging product companies: what is acquired is not a catalogue but a book of long-running contracts, each with its own inherited estate, staffing model and set of promises made years earlier.",
     body: [
-      "That is why integration in this sector is measured in years rather than quarters. Two service businesses can be legally one company and operationally two for a long time, because the contracts underneath them cannot be renegotiated on the merger's schedule - they expire on their own.",
-      "For an engineer, the practical consequence is that the badge on the pass says less than usual about which practices, tooling and escalation paths apply. The contract does.",
+      "DXC was assembled rather than founded. Hewlett Packard Enterprise spun off its Enterprise Services business on 31 March 2017, CSC merged with a DXC subsidiary the following day, and the combined company began trading on 3 April with roughly 25 billion dollars of expected annual revenue and nearly six thousand clients across seventy countries.",
+      "The mechanism is worth naming because it explains the shape of the result. It was a Reverse Morris Trust - a structure that let HPE separate a business tax-free by merging it into another company, leaving former CSC shareholders with 49.9 per cent and HPE shareholders with 50.1 per cent. Nobody bought anybody. Two sets of shareholders ended up owning one company, and DXC also took on debt and liabilities from the spun-off segment.",
+      "What that produced was a company that is simultaneously new and very old. CSC dated to 1959, and the HPE services estate contained contracts and delivery centres inherited from EDS, so a business incorporated in 2017 was immediately responsible for mainframe estates and outsourcing agreements older than most of its staff. Its own launch slogan acknowledged it: new, but not born yesterday.",
+      "Even the name reflects the assembly. An internal FAQ had to tell employees that DXC is not an acronym - it stands for nothing, with the X meant to suggest a force multiplier - and that document reached the public through an anonymous board for people who had lost their jobs.",
+      "The reading is about who carries integration risk. Large technology services companies are now built by financial engineering as often as by growth, and a customer whose systems are run under a contract signed with one of the predecessors experiences the merger as changed account teams, renegotiated terms and migrated tooling. The structure is designed around tax treatment and shareholder ratios; the operational consequences land on estates nobody consulted.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/DXC_Technology",
     externalLabel: "DXC Technology",
@@ -5863,6 +6000,9 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Orange Group - French multinational telecommunications corporation (Wikipedia)", url: "https://en.wikipedia.org/wiki/Orange_S.A." },
       { label: "Founding year: 1988", url: "https://en.wikipedia.org/wiki/Orange_S.A." },
+    
+      { label: "History of Equant N.V.: in 1949 a consortium of European airlines - Air France, KLM, Sabena, Swissair, British European Airways, BOAC, AG Aerotransport, Det Danske Luftfartselskab and Det Norske Luftfartselskap - combined their communications networks as Societe Internationale de Telecommunications Aeronautiques, a not-for-profit governing the shared network; France Telecom later paid 3.5 billion dollars for SITA share in Equant plus 1.2 billion of further investment, and the merged company kept the Equant name and very little long-term debt", url: "https://www.fundinguniverse.com/company-histories/equant-n-v-history/" },
+      { label: "Orange Business: France Telecom bought out the Sprint and Deutsche Telekom stakes in the Global One joint venture, founded January 1996, for 3.88 billion dollars in January 2000; it took a controlling 53 per cent of Dutch-based Equant, part of the SITA group, in November 2000; on 1 June 2006 the businesses of Equant and Wanadoo were rebranded as Orange Business Services, operating in over 220 countries and territories", url: "https://en.wikipedia.org/wiki/Orange_Business" },
     ],
     tags: ["carrier"],
     group: "contemporary",
@@ -5871,8 +6011,12 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "The other side of the European story: the operator the national champions were built to supply.",
     intro: "Orange is a French multinational telecommunications operator, descended from the state monopoly, and it sits on this timeline as the counterpart to entries like Italtel: where the national champion manufactured, the national operator bought, and the relationship between them shaped both.",
     body: [
-      "Its enterprise arm matters to anybody running an international network, because a multinational estate is not assembled from one carrier. It is stitched together from whichever operator holds the local licence in each country, and the party that does the stitching absorbs the incompatibilities - different SLAs, different provisioning times, different definitions of what an outage is.",
-      "That integration role is invisible on a network diagram and is often the reason a change takes six weeks in one country and six months in another.",
+      "Orange Business descends from an airline cooperative. In 1949 a consortium of European carriers - Air France, KLM, Sabena, Swissair, the two British state airlines and the Scandinavian operators - combined their communications networks into Societe Internationale de Telecommunications Aeronautiques, a not-for-profit set up to govern a network they all needed and none wanted to build alone. Equant grew out of that group, carrying network services for air transport.",
+      "The reason it reached everywhere is contained in that origin. An airline network has to work at every airport an airline flies to, including the ones with no commercial market for data services, so the reach was built for operational necessity rather than sold for profit. The company that inherited it operates in over 220 countries and territories, which is a coverage figure almost nobody else can state.",
+      "France Telecom assembled the modern company in stages. It bought out Sprint and Deutsche Telekom from the Global One joint venture in January 2000 for 3.88 billion dollars, took a controlling stake in Equant that November, paying SITA 3.5 billion for its share and investing 1.2 billion more, merged the two in 2001 under the Equant name, and acquired the remaining stock in 2005. On 1 June 2006 it rebranded the result as Orange Business Services.",
+      "The timing of that integration is the part worth carrying. It finished around the end of 2001 - directly into the collapse of the global telecommunications industry - and the company came through it while heavily indebted competitors filed for bankruptcy protection, because its inherited policy had kept almost no long-term debt on the balance sheet.",
+      "That is a fact about capital structure rather than technology, and it decided more than any product did. In a downturn the surviving network operator is not usually the one with the best engineering; it is the one that can still service what it borrowed. Anyone choosing a supplier for a fifteen-year estate is making a financial judgement as much as a technical one, whether or not they frame it that way.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Orange_S.A.",
     externalLabel: "Orange",
@@ -5882,6 +6026,9 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Dimension Data - technology company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Dimension_Data" },
       { label: "Founding year: 1983", url: "https://en.wikipedia.org/wiki/Dimension_Data" },
+    
+      { label: "Dimension Data: founded 1983 in Johannesburg by Keith McLachlan, Werner Sievers, Jeremy Ord, Peter Neale and Kevin Hamilton; listed on the Johannesburg Stock Exchange on 15 July 1987; official South African distributor for Cisco Systems from 1991; fully acquired by Nippon Telegraph and Telephone in 2010; from 1 July 2019 operations outside the Middle East and Africa became part of NTT Ltd", url: "https://en.wikipedia.org/wiki/Dimension_Data" },
+      { label: "Grokipedia on Dimension Data: expanded to nearly 50 countries by 2010 with revenue of approximately 5.8 billion dollars before the NTT acquisition, which was valued at 3.2 billion dollars; rebranded under NTT DATA in 2024", url: "https://grokipedia.com/page/Dimension_Data" },
     ],
     tags: ["reseller", "services"],
     group: "contemporary",
@@ -5890,8 +6037,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "A systems integrator that grew out of one region and was absorbed into a Japanese carrier.",
     intro: "Dimension Data built a large network integration and managed services business, and its arc is the one this timeline keeps recording from different starting points: an integrator grows past the region that produced it, becomes attractive to a carrier that wants delivery capability, and is acquired.",
     body: [
-      "The pattern is worth naming because it explains why so few large independent integrators exist. Integration is a people business with thin margins and deep customer relationships, which is exactly what a carrier or a manufacturer wants to own - and the integrator's value to an acquirer is highest at the moment its independence is most useful to its customers.",
-      "This is the same shape as Network1 into ScanSource and Westcon into Synnex elsewhere on this timeline, at a different scale and on a different continent.",
+      "Dimension Data was founded in Johannesburg in 1983 by Keith McLachlan, Werner Sievers, Jeremy Ord, Peter Neale and Kevin Hamilton, and listed on the Johannesburg Stock Exchange on 15 July 1987. Its decisive move came in 1991, when it became the official South African distributor for Cisco Systems - a position taken at the moment internetworking was becoming the centre of enterprise computing rather than after.",
+      "It is the clearest counterexample in this catalogue to the assumption that global technology integrators come from the United States or Europe. From a country then under sanctions and largely cut off from international markets, it built to nearly fifty countries and around 5.8 billion dollars of revenue by 2010, buying its way across regions through acquisition.",
+      "Nippon Telegraph and Telephone acquired it in 2010 for 3.2 billion dollars, and from 1 July 2019 everything outside the Middle East and Africa was folded into NTT Ltd, with the brand disappearing into NTT DATA by 2024. That is the ordinary end for a large integrator: they are bought by carriers, because a carrier that sells connectivity wants the company that decides what the customer connects.",
+      "The trajectory is worth carrying because it recurs in every market including Brazil. A local integrator builds a relationship with a vendor early, grows on that relationship, expands regionally, and is eventually acquired by something larger that wants the customer list. The name on the invoice changes; the engineers, usually, do not.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Dimension_Data",
     externalLabel: "Dimension Data",
@@ -5941,11 +6091,52 @@ export const partnerVendors: PartnerVendor[] = [
   // the Prosegur/Cipher transaction - which is why Cipher is written here too.
   // Cipher has NO externalUrl: no company site was verified this turn. ----
   {
+    slug: "cesar",
+    sources: [
+      { label: "Wikipedia (pt): CESAR founded 1996 by three professors and researchers of the Centro de Informatica at the Federal University of Pernambuco - Silvio Meira, Ismar Kaufman and Fabio Silva - to bring the university's scientific output closer to industry and to retain qualified technology professionals in Pernambuco, reducing their migration to other regions; in 2000 it took part in creating Porto Digital and became one of its anchor institutions", url: "https://pt.wikipedia.org/wiki/Centro_de_Estudos_e_Sistemas_Avan%C3%A7ados_do_Recife" },
+      { label: "CESAR: born in 1996 to address the brain drain from the region, with the same people later helping to create one of Brazil's main innovation centres", url: "https://www.cesar.org.br/web/english/about" },
+      { label: "CESAR profile: around 600 employees and roughly 100 million reais of revenue, with Silvio Meira as chief scientist and offices beyond Recife", url: "https://en.wikipedia.org/wiki/Recife_Center_for_Advanced_Studies_and_Systems" },
+    ],
+    intro: "CESAR is a private non-profit innovation and education centre in Recife, founded in 1996 by researchers from the federal university and one of the anchor institutions of the Porto Digital technology park.",
+    tags: ["services"],
+    name: "CESAR - the centre founded to stop people leaving",
+    tagline: "A Recife innovation centre created in 1996 to keep technology professionals in Pernambuco, and an anchor of Porto Digital.",
+    group: "contemporary",
+    founded: 1996,
+    body: [
+      "CESAR was founded in Recife in 1996 by three professors and researchers from the computing centre of the Federal University of Pernambuco - Silvio Meira, Ismar Kaufman and Fabio Silva - and its stated purpose was unusually concrete. It existed to bring the university's scientific output closer to what industry actually needed, and to keep qualified technology professionals in Pernambuco rather than watching them leave for other regions.",
+      "That second aim is the one worth dwelling on. The institution was created to stop a brain drain, which means it was founded on a diagnosis of a place rather than on a technology. Almost nothing in this catalogue is founded that way.",
+      "In 2000 it took part in creating Porto Digital, and became one of that park's anchor institutions. It runs a school, an experimentation laboratory, a research and development centre and a venture builder, with around six hundred staff and roughly a hundred million reais of revenue, and Silvio Meira remains its chief scientist.",
+      "The measurable answer to whether the intervention worked is a company. Tempest was incubated here in 2000, spun out in 2003, and is now part of a cybersecurity business valued in the hundreds of millions of reais. That is the same shape as the Campinas story elsewhere in this catalogue - a research institution placed deliberately, a cluster forming around it - with one difference worth noting: here the mechanism was explicit from the start. Retain the people, build the park, incubate the companies, let them go.",
+    ],
+  },
+  {
+    slug: "vision-cybersecurity",
+    sources: [
+      { label: "SpaceMoney, 2026: Vision Cybersecurity, acquired by SPX in January from a division of the Espirito Santo company ISH Tecnologia serving private corporate clients, works with medium-sized companies; Embraer and SPX are merging Tempest and Vision into a company with 700 million reais of revenue", url: "https://www.spacemoney.com.br/tecnologia/embraer-spx-ciberseguranca-fusao" },
+      { label: "AVNews, 2026: Embraer first invested in Tempest in 2015 through an innovation fund in which BNDES also participated and took control in 2020; Tempest focuses on companies with revenue above one billion reais, while Vision follows a different logic and serves medium-sized companies", url: "https://www.ativovirtual.com.br/avnews/artigos/embraer-e-spx-unem-ciberseguranca-gigante-de-r-700-mi-nasce" },
+    ],
+    intro: "Vision Cybersecurity is a Brazilian security services company, formed from the corporate arm of ISH Tecnologia and acquired by SPX in 2026.",
+    tags: ["services"],
+    name: "Vision Cybersecurity - a customer base sold on its own",
+    tagline: "The corporate arm of ISH Tecnologia, acquired by SPX in 2026 and merged with Tempest.",
+    group: "contemporary",
+    founded: 2026,
+    body: [
+      "Vision Cybersecurity was the corporate arm of ISH Tecnologia, the security company from Espirito Santo, serving private business clients. SPX acquired it in January 2026, separating that customer base from its parent.",
+      "Its market position is the interesting part. Where Tempest sells to companies with revenue above a billion reais, Vision works with medium-sized businesses, and the two provide broadly similar services - vulnerability analysis across software, platforms, applications, chatbots and industrial systems, including retail and automotive.",
+      "The middle of the market is where security services are hardest to make profitable. Large accounts justify dedicated teams and small ones buy standard products; the companies in between need real assessment work at a price that does not support a bespoke engagement, which is why so few independents survive there and why this customer base was worth buying separately from the company that built it.",
+      "In 2026 Embraer and SPX announced the merger of Tempest and Vision into a single company with around seven hundred million reais of revenue - joining the large-account business and the mid-market one under one roof, which is the consolidation this segment has been heading towards for a decade.",
+    ],
+  },
+  {
     slug: "tempest",
     sources: [
       { label: "Baguete, 1 July 2020 - Embraer takes control of Tempest; Embraer held 37% indirectly after a R$28.2m investment in 2016 via FIP Aeroespacial (Embraer and BNDES principal holders); revenue R$20m to R$120m; 300 staff in Recife, Sao Paulo and London; CEO and co-founder Cristiano Lincoln Mattos", url: "https://www.baguete.com.br/noticias/01/07/2020/embraer-compra-controle-da-tempest" },
       { label: "Tempest - company site", url: "https://www.tempest.com.br/" },
       { label: "Tempest’s own history page states that the company was born in the year 2000 as a startup incubated at a university centre. A separate company described on the same page was founded in 1999; only the 2000 statement refers to Tempest itself", url: "https://www.tempest.com.br/quem-somos" },
+    
+      { label: "Tempest's own history: born in the year 2000 as a startup incubated at CESAR, within Porto Digital; spun off from CESAR in 2003 to increase its share of the Brazilian market; opened a Sao Paulo office in 2004; launched managed security services in 2006", url: "https://www.tempest.com.br/quem-somos" },
     ],
     tags: ["services"],
     group: "contemporary",
@@ -5954,9 +6145,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Brazil's largest specialist security firm, built outside the Sao Paulo axis and bought by an aircraft manufacturer.",
     intro: "Tempest is a Brazilian cybersecurity company founded and headquartered in Recife, with offices in Sao Paulo and London. Its portfolio spans consulting, managed security services, security software integration and identity protection, and roughly half its client base sits in the financial sector - the industry that funds security work first and most consistently.",
     body: [
-      "Two things make the trajectory worth recording. It grew from about R$20m to R$120m in revenue across four years, and it did so from Recife rather than Sao Paulo - a genuine counterexample to the assumption that Brazilian technology is a Sao Paulo story, and one that matters to anybody deciding where a career can be built.",
-      "The ownership is the other half. Embraer took a 37% indirect stake in 2016 through FIP Aeroespacial, a venture fund whose principal holders are Embraer and the BNDES, and later acquired control. That an aircraft manufacturer and a state development bank ended up owning the country's largest security specialist says more about how Brazilian technology is capitalised than any number of funding rounds would.",
-      "Tempest acquired EZ-Security in 2018, which is the transaction that made it the largest specialist in the country by consolidation rather than by growth alone.",
+      "Tempest was born in the year 2000 as a startup incubated at CESAR, inside Porto Digital, and its early sequence is documented by the company itself: it spun off from CESAR in 2003 to compete more directly in the Brazilian market, opened a Sao Paulo office in 2004, and launched managed security services in 2006.",
+      "That spin-off is the part worth marking. An institution created to keep technology people in Pernambuco incubated a security company and then let it leave the nest as an independent business - which is the intended outcome of a venture builder and, in Brazilian technology, a rarer one than the model's popularity suggests.",
+      "Embraer invested first in 2015 through an innovation fund in which the national development bank also participated, and took control in 2020. The company serves large enterprises, those with revenue above a billion reais, and that customer profile is what opened international accounts for it.",
+      "In 2026 Embraer and SPX announced that Tempest would merge with Vision Cybersecurity, forming a company with roughly seven hundred million reais of revenue and combining the large-account business with a mid-market one. An aircraft manufacturer ending up as a principal owner of Brazilian cybersecurity is a reminder that in this country the capital for security at scale has come from industry and development banks rather than from venture funds.",
+    
     ],
     externalUrl: "https://www.tempest.com.br/",
     externalLabel: "Tempest",
@@ -6031,6 +6224,10 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Servico Federal de Processamento de Dados (Serpro) - Brazilian IT services public company", url: "https://en.wikipedia.org/wiki/Serpro" },
       { label: "Serpro - official site", url: "https://www.serpro.gov.br/" },
+    
+      { label: "Lei 5.615 de 13 de outubro de 1970 (Planalto): reorganiza o Serpro, criado pela Lei 4.516 de 1 de dezembro de 1964, e estabelece que executara prioritariamente e com exclusividade os servicos do Ministerio da Fazenda", url: "https://www.planalto.gov.br/ccivil_03/leis/l5615.htm" },
+      { label: "Servico Federal de Processamento de Dados: founded 1 December 1964, headquartered in Brasilia with eleven regional offices, 2.78 billion reais of revenue and 7,822 employees in 2021", url: "https://en.wikipedia.org/wiki/Servi%C3%A7o_Federal_de_Processamento_de_Dados" },
+      { label: "Wikipedia (pt): em junho de 2020 o The Intercept Brasil revelou que a ABIN solicitou ao Serpro acesso total ao Registro Nacional de Condutores Habilitados - dados de 76 milhoes de brasileiros, 36 por cento da populacao, com atualizacao mensal, por pouco mais de 330 mil reais", url: "https://pt.wikipedia.org/wiki/Empresa_Nacional_de_Intelig%C3%AAncia_em_Governo_Digital_e_Tecnologia_da_Informa%C3%A7%C3%A3o" },
     ],
     tags: ["services", "datacentre"],
     group: "other",
@@ -6040,8 +6237,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Runs the systems a Brazilian citizen cannot opt out of.",
     intro: "Serpro is the Brazilian federal government's data processing service, and it operates the category of system that has no competitor and no acceptable downtime: tax collection, foreign trade, federal registries. When a system like that is unavailable, the alternative is not a different supplier - it is that the function of government stops for the day.",
     body: [
-      "That constraint produces a different engineering culture from the commercial estates most of this timeline documents. Change is slow because a failed change has no commercial consequence and a constitutional one; systems live for decades because replacing them requires the country to keep operating during the replacement; and the platform choices of the 1970s and 1980s are still present because nothing forced them out.",
-      "It also sits at the centre of Brazil's national computing story. The market-reserve period was justified partly by the argument that a country should not depend on foreign suppliers for exactly these systems, and Serpro is what that argument was built around.",
+      "Serpro was created by Law 4.516 of 1 December 1964 and reorganised by Law 5.615 of 1970, which contains the sentence that shaped it: it would carry out the services of the finance ministry priority and with exclusivity. A supplier that cannot be replaced by its principal customer is a different institution from a supplier that can, and every strength and weakness that followed descends from that clause.",
+      "The work began with tax. From 1965 it built the collection systems for income tax, and the state's ability to see what it was owed grew with the computing rather than ahead of it. That is the general shape of public computing in this period and it is easy to state backwards: the systems did not automate an existing capability, they created one.",
+      "Six decades on it is among the largest public technology companies anywhere, headquartered in Brasilia with eleven regional offices, and in 2021 reported 2.78 billion reais of revenue with 7,822 employees. It holds identity, tax and vehicle records for the whole country.",
+      "That concentration has consequences, and one of them became public. In June 2020 The Intercept Brasil revealed that the national intelligence agency had asked Serpro for full access to the national register of licensed drivers - the records of 76 million Brazilians, about 36 per cent of the population, refreshed monthly, for a little over 330,000 reais. The request was not a breach and did not need to be one. When a single organisation holds the country's records, the interesting risk stops being intrusion and becomes access: who may ask, on what authority, and whether anyone outside would ever know. That is a governance property of the architecture, not a failure of it, and it is the reason data concentration is a security topic rather than an efficiency one.",
+    
     ],
     externalUrl: "https://www.serpro.gov.br/",
     externalLabel: "Serpro",
@@ -6050,6 +6250,10 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "dataprev",
     sources: [
       { label: "Dataprev - Brazilian public company; founded 4 November 1974; Brasilia; operates CNIS, Caged, SINE, CTPS and other social-security systems", url: "https://en.wikipedia.org/wiki/Dataprev" },
+    
+      { label: "Lei 6.125 de 4 de novembro de 1974 (Planalto): autoriza a constituicao da Empresa de Processamento de Dados da Previdencia Social, empresa publica vinculada ao Ministerio da Previdencia, com sede no Rio de Janeiro", url: "https://www.planalto.gov.br/ccivil_03/leis/l6125.htm" },
+      { label: "Dataprev: created from the merger of the data processing centres of the social security institutes that existed until 1964; the INPS contract with Burroughs was transferred to Dataprev in 1975; first public tender in 1989 as required by the 1988 Constitution", url: "https://en.wikipedia.org/wiki/Dataprev" },
+      { label: "Dataprev (institutional): guardian of the Cadastro Nacional de Informacoes Sociais, the largest social database in the country; headquarters in Brasilia, six state units and three data centres certified TIER III", url: "https://portal.dataprev.gov.br/conheca-dataprev-quem-somos/empresa" },
     ],
     tags: ["services", "datacentre"],
     group: "other",
@@ -6058,8 +6262,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Formed from the merged data centres of the social security institutes, and still holding the record of who is owed what.",
     intro: "Dataprev was created in 1974 from the merger of the data processing centres of Brazil's social security institutes, and it runs the systems that decide whether a pension is paid. Its records are the national employment and contribution history, which makes it one of the few systems whose correctness is directly a person's income.",
     body: [
-      "The scale is easy to state and hard to appreciate: a benefit calculation depends on a contribution history that may span fifty years, recorded by institutions that no longer exist, on formats that changed repeatedly. Every migration in that estate carries the risk of losing somebody's working life.",
-      "It belongs on this timeline beside Serpro because the two together are what Brazilian state computing actually is - not a policy, but two organisations holding records that predate most of the technology used to hold them.",
+      "Dataprev was created by Law 6.125 of 4 November 1974, as a public company under the social security ministry, headquartered in Rio de Janeiro. It was not built from nothing: it was assembled from the data processing centres of the separate social security institutes that had existed until 1964, which makes its founding an act of consolidation rather than of creation - the state had the computing already and decided it should be one organisation.",
+      "The inherited hardware came with a contract. In 1975 the agreement between the social security institute and Burroughs passed to Dataprev, which took over running the installed machines in Rio de Janeiro and Sao Paulo. That is a detail worth keeping for anyone who works on public sector estates: the company began by operating somebody else's procurement decision, which is how most public computing actually starts.",
+      "What it does now is the part that changes how you read it. It holds the Cadastro Nacional de Informacoes Sociais, the largest social database in the country, and it processes the monthly payment of every retiree and beneficiary of the national social security system - by its own account the largest payroll in the world, never once late in more than forty years. In roughly five hundred Brazilian municipalities those benefits amount to more than a quarter of local economic activity.",
+      "That last figure is what makes this an infrastructure entry rather than a government one. An outage at Dataprev is not an information technology incident, it is a regional economic event in hundreds of towns simultaneously, which is the clearest illustration available of why availability sits alongside confidentiality and integrity rather than beneath them. The company also ran the emergency benefit payments of 2020 at national scale on short notice, and operates three data centres certified to TIER III.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Dataprev",
     externalLabel: "Dataprev",
@@ -6144,6 +6351,10 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "OpenDNS - domain name system provided by Cisco (Wikipedia)", url: "https://en.wikipedia.org/wiki/OpenDNS" },
       { label: "Cisco Umbrella - the same lineage under its current name", url: "https://en.wikipedia.org/wiki/Cisco_Umbrella" },
       { label: "Founding year: 2005", url: "https://en.wikipedia.org/wiki/OpenDNS" },
+    
+      { label: "OpenDNS: founded 1 November 2005 by David Ulevitch in San Francisco, providing resolution with phishing protection and optional content filtering, plus the Umbrella cloud security suite; acquired by Cisco in 2015", url: "https://en.wikipedia.org/wiki/OpenDNS" },
+      { label: "David Ulevitch: entered the internet industry in junior high school at the San Diego provider Electriciti, then a founding member of Packet Clearing House while it built one of the first internet exchange points; created EveryDNS in May 2001 as a student, sold it to Dyn, and later became senior vice president and general manager of Cisco Security", url: "https://en.wikipedia.org/wiki/David_Ulevitch" },
+      { label: "Cisco to acquire OpenDNS for 635 million dollars: the company operated 25 data centres worldwide and competed with internet providers, carriers and Google; Ulevitch wrote that they had previously entertained and rejected other offers - we did not decide to sell OpenDNS, we decided to sell OpenDNS to Cisco", url: "https://www.bankinfosecurity.com/cisco-to-acquire-opendns-a-8367" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -6152,8 +6363,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "A public DNS resolver acquired by Cisco and rebuilt as Umbrella.",
     intro: "OpenDNS ran a public recursive resolver and was acquired by Cisco, becoming the basis of Cisco Umbrella. Its significance is the move it demonstrated: a resolver that answers queries is also a device that sees every name a network asks for, before any connection is made.",
     body: [
-      "That position is why DNS became a security control rather than only a lookup service. A resolver can refuse to answer for a domain, and refusing is cheap, early and protocol-agnostic - it stops a connection that has not been attempted yet, regardless of which port or protocol the client intended to use.",
-      "It is also why a resolver is a surveillance point, and the trade is stated plainly rather than hidden: whoever answers your DNS queries knows every service your network uses, including the ones nobody documented.",
+      "OpenDNS was founded on 1 November 2005 by David Ulevitch, who had been in the industry since junior high school - working at a San Diego internet provider that was a founding member of Packet Clearing House while it built one of the first internet exchange points. As a student in 2001 he had already created EveryDNS, an authoritative service he later sold to Dyn.",
+      "The original proposition was a free public resolver that was faster than the one your provider gave you and that corrected typos and blocked phishing sites. That is a consumer product, and the interesting move came around 2009, when the same infrastructure was pointed at enterprises: every device on a network asks the resolver where things are, so a resolver sees intent before a connection is made, and can refuse it.",
+      "Umbrella was the result - enforcement that follows a device off the corporate network, because a laptop in a hotel still has to resolve names. That is the argument for putting a control at the naming layer rather than at the perimeter, and it arrived before most organisations accepted that the perimeter had stopped being where their users were.",
+      "Cisco acquired the company in 2015 for 635 million dollars, by which point it ran 25 data centres and competed with providers, carriers and Google. Ulevitch's own comment on the sale is worth preserving because it is unusually direct about the difference between two things founders normally blur: they had entertained and rejected other offers, and, in his words, they did not decide to sell OpenDNS - they decided to sell OpenDNS to Cisco.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/OpenDNS",
     externalLabel: "OpenDNS",
@@ -6221,6 +6435,9 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "EfficientIP - company site (network automation and DNS security)", url: "https://www.efficientip.com/", sourceNote: "Cited to the company's own site: en.wikipedia.org/wiki/EfficientIP returns 404." },
       { label: "EfficientIP states on its company page that it has expanded its reach since 2004", url: "https://www.efficientip.com/about-efficientip/" },
+    
+      { label: "EfficientIP (official): a network security and automation company specialising in DNS, DHCP and IPAM - collectively DDI - operating since 2004 with over 1,000 customers worldwide", url: "https://efficientip.com/company/about-us" },
+      { label: "CB Insights profile: EfficientIP founded 2004, based in La Garenne-Colombes, France, providing DDI technology and protection against DNS-based threats across telecommunications, finance, healthcare and education", url: "https://www.cbinsights.com/company/efficientip" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -6229,8 +6446,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "DDI vendor whose positioning leads with DNS security rather than address management.",
     intro: "EfficientIP sells DDI and leads with DNS security, which is a different emphasis from the same underlying product category: the same records, presented as an attack surface to be defended rather than an inventory to be managed.",
     body: [
-      "Both framings are accurate and they attract different buyers. Address management is bought by network operations to stop addresses colliding; DNS security is bought by a security team to stop exfiltration through a protocol nobody blocks.",
-      "The second framing is the one that grew, because DNS is permitted outbound almost everywhere by necessity, and a channel that is always open is a channel worth watching.",
+      "EfficientIP was founded in France in 2004 and sells what the industry calls DDI - the combination of DNS, DHCP and IP address management, run as one system rather than three. Grouping them is not marketing. Those three services decide what a name resolves to, what address a device receives and which addresses exist at all, and an organisation that manages them separately usually discovers the connection during an incident.",
+      "The category is defined by invisibility. Nobody procures address management with enthusiasm, and the three services underneath it are the ones nothing works without: a DHCP scope that exhausts, a DNS zone that goes stale or an address range recorded only in a spreadsheet each produce outages that present as something else entirely.",
+      "Its products treat DNS as a security surface rather than only as a directory, which is the substantive position: resolution is both the first step of nearly every connection and a convenient channel for exfiltration and command traffic, so the same appliance that answers queries is well placed to notice the ones that should not exist.",
+      "It is also one of the few European vendors holding a serious position in a market otherwise defined by American companies, competing against considerably larger firms. Sovereignty of infrastructure is a live consideration in European procurement, and it is one of the reasons a smaller supplier can keep a place in a consolidated market.",
+    
     ],
     externalUrl: "https://www.efficientip.com/",
     externalLabel: "EfficientIP",
@@ -6240,6 +6460,9 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "NextDNS - company site (configurable public resolver, described as a firewall for the modern internet)", url: "https://nextdns.io/", sourceNote: "Cited to the company's own site; no third-party encyclopaedia article was found." },
       { label: "NextDNS help centre - the company states it was founded in May 2019 in Delaware by two French founders, Romain Cointepas and Olivier Poitrey; Poitrey co-founded Dailymotion in 2005 and is Director of Engineering at Netflix, and the two worked together at Dailymotion", url: "https://help.nextdns.io/t/y4hmv0n/who-is-behind-nextdns" },
+    
+      { label: "NextDNS help centre: founded May 2019 in Delaware by two French founders, Romain Cointepas and Olivier Poitrey; Poitrey founded Dailymotion in 2005 and is director of engineering at Netflix working on Open Connect; the company states it supports net neutrality and internet privacy and considers unencrypted resolvers operated by internet providers detrimental to both", url: "https://help.nextdns.io/t/y4hmv0n/who-is-behind-nextdns" },
+      { label: "NextDNS: a resolver built on an anycast network, offering DNS over HTTPS across platforms, with selectable blocking lists for advertising, malware, trackers, phishing and crypto-mining, and CNAME uncloaking support added in November 2019", url: "https://en.everybodywiki.com/NextDNS" },
     ],
     tags: ["services"],
     group: "contemporary",
@@ -6248,8 +6471,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Public resolver where the blocklists, logging and retention are the user's settings.",
     intro: "NextDNS operates a public resolver whose filtering is configurable per profile: which blocklists apply, what is logged, and for how long. It sits at the opposite end of the same axis as Quad9 - one resolver decides policy for you, the other hands you the controls.",
     body: [
-      "The comparison is the useful part of having both on this timeline. A default-blocking resolver protects a network whose operator will never configure anything, which is most networks; a configurable one serves an operator who has an opinion and wants it applied consistently across every device.",
-      "Both share the property that makes resolver-level filtering attractive and uncomfortable at once: it applies to everything on the network without installing anything, and it works by having somebody else see every name you look up.",
+      "NextDNS was founded in May 2019 by Romain Cointepas and Olivier Poitrey, who had worked together at Dailymotion - Poitrey founded it in 2005, and by the time they started this he was director of engineering at Netflix working on Open Connect, the content delivery network that carries a substantial share of United States internet traffic. Two people who had spent their careers building infrastructure at that scale chose resolution as the thing worth rebuilding.",
+      "The premise is stated plainly by the company: unencrypted resolvers operated by internet service providers are harmful to both net neutrality and privacy. Every name a device looks up is a record of what its user is doing, and by default that record is handed in cleartext to whoever supplies the connection. Encrypting the query moves the record to a party the user selects instead.",
+      "What it sells is that choice made operable - an anycast resolver with DNS over HTTPS on every platform, selectable blocking lists for advertising, malware, trackers, phishing and crypto-mining, and per-device profiles. It added CNAME uncloaking in 2019, which matters because trackers had begun disguising themselves as subdomains of the site being visited specifically to defeat list-based blocking.",
+      "That last detail is the whole shape of this category. Blocking by name and evading blocking by name is a loop with no end state, and each side's move is available to the other. A resolver that filters is a control worth running and not a boundary anyone should treat as fixed.",
+    
     ],
     externalUrl: "https://nextdns.io/",
     externalLabel: "NextDNS",
@@ -6285,6 +6511,10 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "State University of Campinas - public university in Sao Paulo, Brazil (Wikipedia)", url: "https://en.wikipedia.org/wiki/State_University_of_Campinas" },
       { label: "Founding year: 1962", url: "https://en.wikipedia.org/wiki/State_University_of_Campinas" },
+    
+      { label: "Unicamp - Historia (official): officially founded 5 October 1966 with the laying of the cornerstone on 30 alqueires of land donated by Joao Adhemar de Almeida Prado, twelve kilometres from the centre of Campinas; the organising commission of 1965 was chaired by Zeferino Vaz", url: "https://www.unicamp.br/historia/" },
+      { label: "University of Campinas Institute of Computing: the origins trace to 1969, when Unicamp created a baccalaureate in Computer Science - the first of its kind in Brazil, which served as a model for computing courses at other universities; the department became a full institute in March 1996", url: "https://en.wikipedia.org/wiki/University_of_Campinas_Institute_of_Computing" },
+      { label: "Wikipedia (pt): in the early 1960s the Sao Paulo state government wanted a new research centre in the interior to promote development and industrialisation of the region; in 2019 Unicamp generated an estimated 13.8 billion reais of impact in the Campinas region", url: "https://pt.wikipedia.org/wiki/Universidade_Estadual_de_Campinas" },
     ],
     tags: ["standards", "services"],
     relationships: ["worked-with-directly"],
@@ -6294,8 +6524,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Public university at the centre of a regional technology cluster.",
     intro: "Unicamp sits at the middle of the Campinas technology region, and its presence explains why a large share of Brazilian hardware and telecommunications work happened in a specific hundred kilometres rather than being spread across the country.",
     body: [
-      "Technology clusters are not accidents of geography and they are not policy successes either; they are what happens when a university, a set of employers and a labour market that can move between them end up close enough that changing jobs does not mean changing cities.",
-      "That proximity is the thing that is hard to reproduce, and it is why regional development schemes that fund buildings without a university rarely produce a cluster.",
+      "Unicamp was officially founded on 5 October 1966, when the cornerstone was laid on thirty alqueires of donated land twelve kilometres outside Campinas. The reason it was placed there rather than in the capital is the part that matters: the state government wanted a research centre in the interior specifically to drive development and industrialisation of the region. The university was an industrial policy instrument before it was an academic one.",
+      "For this timeline its decisive act came three years later. In 1969 Unicamp created a baccalaureate in computer science - the first in Brazil - and it became the model other universities copied. Every Brazilian computing course that followed descends from a curriculum designed at a university that had existed for three years.",
+      "The placement paid off in a way that is visible on a map. CPqD, the telecommunications research centre created by Telebras in 1976, was established in the same city; the region became the country's densest concentration of technology research and manufacturing; and by 2019 the university alone was estimated to generate 13.8 billion reais of impact in the Campinas area.",
+      "That sequence is worth stating plainly because it is usually told as luck. A state deliberately put a research university in an interior city to industrialise it, a federal research centre followed a decade later, and the cluster formed around them rather than the other way round. Technology regions are frequently explained by climate, universities and entrepreneurial culture after the fact; this one was a decision, and the documents recording it name the reason.",
+    
     ],
     externalUrl: "https://en.wikipedia.org/wiki/State_University_of_Campinas",
     externalLabel: "Unicamp",
@@ -6305,6 +6538,9 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Faculdade de Tecnologia do Estado de Sao Paulo (Fatec) - Portuguese Wikipedia", url: "https://pt.wikipedia.org/wiki/Faculdade_de_Tecnologia_do_Estado_de_S%C3%A3o_Paulo" },
       { label: "Founding year: 1970", url: "https://en.wikipedia.org/wiki/Fatec" },
+    
+      { label: "Fatec Sao Paulo - Historia: the state technological education centre was created as an autarchy on 6 October 1969; the state education council approved its installation on 20 April 1970; in 1973 it was renamed after Paula Souza and on 10 April 1973 the Faculdade de Tecnologia de Sao Paulo was created; on 2 June 1974 the Data Processing course was approved", url: "https://www.fatecsp.br/paginas/historia_fatecsp.php" },
+      { label: "Centro Paula Souza (Fatec Santo Andre): created by the decree-law of 6 October 1969 under Governor Roberto Costa de Abreu Sodre, as the result of a working group assessing the gradual implantation of a network of two and three year higher technology courses; it began operating in 1970 with three civil construction courses and two in mechanics, the first two faculties being in Sorocaba and Sao Paulo; the institution today runs 218 technical schools and 64 technology faculties with more than 283,000 students across over 300 municipalities", url: "https://fatecsantoandre.cps.sp.gov.br/sobre/" },
     ],
     tags: ["training"],
     group: "other",
@@ -6313,8 +6549,12 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "State technology faculties offering short applied degrees rather than full engineering courses.",
     intro: "The Fatecs are Sao Paulo state technology faculties, offering applied technologist degrees that are shorter than an engineering course and aimed directly at a job. They are a different answer to the same question the universities answer, and they reach a different person.",
     body: [
-      "The distinction matters to anybody reading this site's own career record, which includes years of engineering and business study without a completed degree. A system that only recognises the five-year path treats an incomplete one as a failure; a system with a three-year applied route treats it as a different route.",
-      "That is a policy choice about who gets to work in this industry, and it is made by whoever decides which qualifications an employer may ask for.",
+      "The state technological education centre that became the Fatec network was created by decree-law on 6 October 1969, under Governor Abreu Sodre, as the outcome of a working group asked to assess building a network of two and three year higher technology courses. It began teaching in 1970 with three courses in civil construction and two in mechanics, and the first two faculties were established in Sorocaba and in Sao Paulo, the latter in the old Escola Politecnica building of the University of Sao Paulo.",
+      "The model is the point. These are short, vocational, public higher-education courses designed to put technically capable people into industry quickly, and they sit alongside the research university rather than beneath it. Brazil built both kinds of institution in the same period and for the same reason - the state wanted an industrial base and understood it needed two different sorts of graduate to get one.",
+      "For this timeline the date that matters is 2 June 1974, when the Data Processing course was approved. Put that beside the rest of the decade and the intent is unmistakable: Prodesp was created in 1969, the technological education centre days later in the same year, Dataprev in 1974, and the course that would staff them in the same year as Dataprev. The state built the computing organisations and the schools to fill them inside five years.",
+      "It grew into one of the largest public technical education systems anywhere. The Centro Paula Souza today runs 218 technical schools and 64 technology faculties, with more than 283,000 students across over 300 municipalities.",
+      "Anyone teaching in Brazilian technology encounters this network constantly, and the reason is structural rather than sentimental. A country that made technical higher education free, short and geographically distributed produced a workforce that arrives already able to do the work, and a permanent expectation that training is something the state provides rather than something an employer buys.",
+    
     ],
     externalUrl: "https://pt.wikipedia.org/wiki/Faculdade_de_Tecnologia_do_Estado_de_S%C3%A3o_Paulo",
     externalLabel: "Fatec",
@@ -6347,6 +6587,9 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "prodesp",
     sources: [
       { label: "Prodesp - Historia (official site): created 24 July 1969 by State Decree 137; began operating that October in a borrowed room at the Secretaria da Fazenda with two employees and no equipment; first premises 1970 in Ponte Pequena; first computer an IBM 360/65 at about US$9 million; first job July 1970 was the state payroll, then 290,000 employees; ~14 large computers and about 900 terminals by the early 1980s; Poupatempo from 1997; incorporated Imprensa Oficial in 2021 under State Law 17.056/2019", url: "https://www.prodesp.sp.gov.br/institucional/historia" },
+    
+      { label: "Prodesp - Historia (official): created 24 July 1969 by State Decree 137, beginning operations that October in a borrowed room in the Finance Secretariat with two employees and no equipment; first computer an IBM 360/65 costing about 9 million dollars; first job in July 1970 was the state payroll of 290,000 employees; in 2021 it absorbed the Imprensa Oficial", url: "https://www.prodesp.sp.gov.br/institucional/historia" },
+      { label: "Prodesp - Historia (official), on the decentralisation programme: regional operations centre at Bauru, the first teleprocessing services, and the Rede Estadual de Processamento de Dados with regional centres at Campinas, Bauru, Presidente Prudente and Ribeirao Preto as the equipment estate more than doubled between 1987 and 1989", url: "https://www.prodesp.sp.gov.br/institucional/historia" },
     ],
     tags: ["services", "datacentre"],
     relationships: ["worked-with-directly"],
@@ -6356,9 +6599,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Created in 1969 with two staff and no equipment; now runs the state's network and data centre.",
     intro: "Prodesp was created on 24 July 1969 by state decree and began work that October in a borrowed room at the finance department, with two employees and no equipment. Its first machine, an IBM 360/65 bought for around nine million dollars, ran its first job in July 1970: the payroll of a state government then employing 290,000 people.",
     body: [
-      "The trajectory from there is the whole history of public-sector computing in one company. Fourteen large computers and roughly nine hundred terminals by the early 1980s; regional data-processing centres through the interior as the equipment park more than doubled between 1987 and 1989; identity cards, driving licences and road maintenance all passing through the same organisation.",
-      "The 1990s turned it from a data-processing bureau into an IT company, and 1997 produced the thing it is best known for outside the industry: Poupatempo, the one-stop public service centre, whose implementation and administration it took on. Prodesp also ran Acessa Sao Paulo, a digital-inclusion programme recognised in 2013 by the Gates Foundation.",
-      "Today it administers Intragov, the state's multiservice IP network, and a data centre among the largest in Latin American public administration. In 2021 it absorbed the Imprensa Oficial do Estado, a 130-year-old institution, which added the official gazette and digital certificate issuance to a company that started with two people and a borrowed desk.",
+      "Prodesp was created on 24 July 1969 by State Decree 137 and began operating that October with two employees, no equipment, and a borrowed room in the Finance Secretariat building in central Sao Paulo. Its first premises of its own, in 1970, were a three-storey house in Ponte Pequena.",
+      "The first machine was an IBM 360/65 costing around nine million dollars, and the first job, in July 1970, was the state payroll - then 290,000 employees. The distance between those two facts and the two people in a borrowed room the previous year is the whole character of state computing in that era: the institution was improvised and the workload was not optional.",
+      "What followed is a tension every large estate eventually meets. While consolidating physically into a new headquarters at Taboao da Serra, the company deliberately decentralised its operation - a regional centre at Bauru, dedicated units for public security and for the teaching hospital, and its first teleprocessing services. The equipment estate more than doubled between 1987 and 1989, and the State Data Processing Network put regional computing centres in Campinas, Bauru, Presidente Prudente and Ribeirao Preto.",
+      "The reason to record that is that it happened for reasons of geography and politics rather than architecture. Sao Paulo state is larger than most countries, the interior needed service, and the country was democratising at the same time. Centralise the building and distribute the processing is a decision most enterprises reach much later and usually describe as an innovation. In 2021 Prodesp absorbed the Imprensa Oficial, an institution with 130 years of its own history.",
+    
     ],
     externalUrl: "https://www.prodesp.sp.gov.br/institucional/historia",
     externalLabel: "Prodesp",
@@ -6403,7 +6648,7 @@ export const partnerVendors: PartnerVendor[] = [
     body: [
       "It appears on this timeline for a reason that has nothing to do with oil: an operation of this shape is one of the hardest networking problems in any country. Offshore platforms are remote sites with no alternative route, refineries are industrial control environments where a network change can stop a physical process, and the seismic processing behind exploration is high-performance computing at national scale.",
       "The 1997 petroleum law ended the legal monopoly and opened the industry to other companies constituted under Brazilian law, which changed what the company had to be. A monopoly builds infrastructure to serve itself; a competitor builds it to be cheaper than someone else's.",
-      "For engineers the interesting inheritance is the mix. Corporate networks, industrial systems that predate the internet, satellite and subsea links to platforms, and research computing all belong to the same organisation and the same policy - which is the setting where the argument between [security and availability](/learn/security-versus-availability) stops being abstract, because taking a control the wrong way costs production rather than convenience.",
+      "For engineers the interesting inheritance is the mix. Corporate networks, industrial systems that predate the internet, satellite and subsea links to platforms, and research computing all belong to the same organisation and the same policy - which is the setting where the argument between security and availability stops being abstract, because taking a control the wrong way costs production rather than convenience.",
     ],
     externalUrl: "https://petrobras.com.br/",
     externalLabel: "Petrobras",
@@ -6429,11 +6674,340 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://embraer.com/",
     externalLabel: "Embraer",
   },
+  {
+    slug: "techdec",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "TechDEC",
+    tagline: "Partner named for both Extreme Networks and Netskope in Brazil.",
+    intro: "A Brazilian integrator that appears on the partner side of two vendors at once - Extreme on the networking side and Netskope on the security side. That combination is the ordinary shape of the Brazilian channel: the same house sells the network and the control that inspects it, because the customer buying one is the customer who has to operate the other.",
+    body: [
+      "Named on two vendor rosters at once: it lists Extreme among its technology partners and has deployed Extreme switching in customer projects, and it also appears as a current Netskope partner. That pairing is the ordinary shape of the Brazilian channel - the same house sells the network and the control that inspects it, because the customer buying one is the customer who has to operate the other.",
+    ],
+  },
+  {
+    slug: "segertech",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Segertech",
+    tagline: "Partner named for Extreme Networks in Brazil.",
+    intro: "One of the Brazilian houses on the Extreme partner side. Entries like this matter to the record for a reason worth stating: the vendor is visible everywhere and the partner is the one who actually installs, configures and answers the phone, which is where most of a customer's experience of the product is decided.",
+    body: [
+      "Carries Gold Extreme partner status. The level matters more than it looks from outside: vendor tiers gate discount, lead access and which engineers may be certified, so a partner's grade decides what it can profitably sell before any conversation with a customer begins.",
+    ],
+  },
+  {
+    slug: "soow-sigma",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    
+      { label: "Soow Sigma, July 2025: Sigma completes 40 years, Fortinet Expert Partner and strategic integrator, with 2025 awards for sales in the South region and for specialisation, and nominations in the managed security and operational technology categories", url: "https://www.soow.com.br/sem-categoria/sigma-completa-40-anos-conectandoempresas-ao-futuro-com-tecnologiaconfianca-e-resultados/" },
+      { label: "Soow Sigma - company site, including the notice that the change of brand, trading name and corporate name left the CNPJ and every existing contract unchanged", url: "https://www.soow.com.br/" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    founded: 1985,
+    name: "Soow Sigma",
+    tagline: "Partner named for Netskope in Brazil.",
+    intro: "A Brazilian partner on the Netskope side. The cloud security channel in Brazil is younger than the networking one, and it shows in the names: houses built around software delivery and subscription rather than around hardware distribution, which is a different business with different economics.",
+    body: [
+      "The most interesting company on this list, because it is not what its current name suggests. Soow Sigma is the rebranded Sigma Telecom, which completed forty years in 2025 - so a house that started in telecommunications in the mid-1980s is now a strategic cybersecurity integrator. The company was careful to publish that the change of brand, trading name and corporate name left the CNPJ untouched, and with it every contract already signed, which is the practical half of a rebrand that nobody outside the finance department usually sees.",
+      "Its standing with vendors is unusually strong for a Brazilian house. Netskope lists it under the Service Delivery Specialization for Latin America and describes it as a strategic partner, which places it above an ordinary reseller relationship in that programme. Fortinet classifies it Expert Partner and named it 2025 Brazil Unified SASE Partner of the Year, on top of a Best Strategic Project award, 2025 recognition for sales in the South region and for specialisation, and nominations in the managed security services and operational technology categories.",
+      "The portfolio it describes spans cybersecurity, connectivity, customer experience and smart cities, which reads like a list until you notice it is the telecom inheritance being reused. Forty years of carrier and connectivity work is exactly the background that makes operational technology and municipal projects tractable, because those are network problems before they are security ones.",
+      "That trajectory is the reading worth keeping. The Brazilian security channel is often described as young, and parts of it are - but some of its strongest houses are old telecom companies that changed what they sell rather than start-ups that arrived with the category. The engineering culture came with them.",
+    
+    ],
+  },
+  {
+    slug: "security4it",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    
+      { label: "Company registry data for Security4IT - Solucoes de Seguranca da Informacao Ltda, CNPJ 09.385.277/0001-54: founded 8 February 2008, Sao Paulo, administrators Cassio David Pereira, Fabio Maeji Amaro and Rodrigo Cavalcante de Souza", url: "https://www.econodata.com.br/consulta-empresa/09385277000154-SECURITY4IT-SOLUCOES-DE-SEGURANCA-DA-INFORMACAO-LTDA" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    founded: 2008,
+    name: "Security4IT",
+    tagline: "Partner named for both Netskope and Check Point in Brazil.",
+    intro: "A Brazilian security integrator appearing on two vendor rosters. The pattern across this part of the channel is that the same handful of houses carry several security vendors at once, because the skills transfer and the customers overlap - which also means a customer changing vendor frequently keeps the same people.",
+    body: [
+      "Security4IT was founded in Sao Paulo on 8 February 2008 and is run by three named administrators - Cassio David Pereira, Fabio Maeji Amaro and Rodrigo Cavalcante de Souza. Its registered activity is the retail of computing equipment and supplies, which is the ordinary registry description for a house whose real business is integration: the classification follows the invoice, not the work.",
+      "It appears on three vendor rosters at once - Netskope, Check Point and Fortinet - which is the pattern across this part of the Brazilian channel. A handful of houses carry several security vendors simultaneously because the skills transfer and the customers overlap, and it means a customer changing vendor frequently keeps the same engineers. That continuity is worth more to the customer than the logo on the box, and it is the reason a partner relationship often outlasts the product decision that started it.",
+      "Founded in 2008, it belongs to the generation of Brazilian security firms that grew up alongside the shift from perimeter appliances to cloud-delivered controls, rather than having to survive it. That timing shows in which vendors it carries: two of the three are companies that did not exist as categories when the older integrators were founded.",
+    
+    ],
+  },
+  {
+    slug: "nowcy",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "NowCy",
+    tagline: "Partner named for Zscaler in Brazil.",
+    intro: "One of the Brazilian partners on the Zscaler side. Zscaler's Brazilian channel is small and recent compared with the network vendors, which is what a market looks like while a category is still being established rather than replaced.",
+    body: [
+      "Describes itself as a recognised Zscaler partner and specialist in Brazil. Zscaler's Brazilian channel is small and recent next to the network vendors, which is what a market looks like while a category is still being established rather than replaced.",
+    ],
+  },
+  {
+    slug: "blue-eye",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Blue Eye",
+    tagline: "Partner named for Zscaler in Brazil.",
+    intro: "A Brazilian partner on the Zscaler side. Worth recording alongside the distributors rather than beneath them: in a subscription category the partner relationship often outlives the distribution arrangement, because the renewal conversation is with whoever operates the service.",
+    body: [
+      "Maintains an active Zscaler solution practice. Worth recording alongside the distributors rather than beneath them: in a subscription category the partner relationship often outlives the distribution arrangement, because the renewal conversation is with whoever operates the service.",
+    ],
+  },
+  {
+    slug: "danresa",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    
+      { label: "DANRESA - Security and Network Solutions: Fortinet partner with FortiGate, and partner of Sophos, Aruba, NSFocus, Nozomi, Forcepoint, Tenable and Carbon Black, with 24x7x365 support", url: "https://www.danresa.com.br/" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Danresa",
+    tagline: "Brazilian partner named in the Fortinet channel.",
+    intro: "One of the Brazilian houses in the Fortinet channel, which is the most populated security channel in the country by some distance. That density is itself the fact: a vendor with many partners has price competition inside its own channel, and a customer's experience varies more between partners than between products.",
+    body: [
+      "DANRESA presents itself as a security and network house rather than a reseller, and the vendor list behind that claim is the substance: Fortinet with FortiGate, alongside Sophos, Aruba, NSFocus, Nozomi, Forcepoint, Tenable and Carbon Black. Nozomi is the tell - it is an operational technology monitoring vendor, and carrying it means the firm works in industrial environments where a security control that fails closed stops a physical process rather than an application.",
+      "Fortinet classifies it at Expert level as an integrator and managed security service provider, with an exceptionally broad specialisation set, and additionally as a Preferred Services and technical support partner. That last designation is the one worth understanding: it means the vendor routes support work to the partner, which is a different and harder relationship than reselling, because the firm is then answering for the product rather than selling it.",
+      "Its own offer is organised the way a managed provider organises one - remote access, next-generation firewall and endpoint together, web application protection, mobile device management, centralised reporting, and 24x7x365 support. Round-the-clock support is the line that separates a reseller from a service business, since it requires enough people to fill a rota rather than enough people to close a sale.",
+    
+    ],
+  },
+  {
+    slug: "solor",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Solor",
+    tagline: "Brazilian partner named in the Fortinet channel.",
+    intro: "A Brazilian partner in the Fortinet channel. The vendor's partner programme grades houses by level and specialisation, which makes its Brazilian directory unusually enumerable compared with vendors whose locators are rendered by script and therefore invisible to anyone trying to map the market.",
+    body: [
+      "Expert-level Fortinet integrator and managed security service provider, specialised across operational technology, SASE, firewall, LAN and security operations. The operational-technology specialisation is worth noting: industrial environments are where a security control that fails closed stops a physical process rather than an application.",
+    ],
+  },
+  {
+    slug: "tld-hub",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "TLD Hub",
+    tagline: "Brazilian partner named in the Fortinet channel.",
+    intro: "A Brazilian house in the Fortinet channel. Names like this are the part of the industry that no vendor timeline records: the companies that carry a product into an actual building, and whose own history is usually shorter than the product's.",
+    body: [
+      "Expert-level Fortinet integrator and managed security service provider, specialised across cloud, operational technology, SASE, SD-WAN, firewall and LAN, and a Preferred Services partner. Houses like this are the part of the industry no vendor timeline records: the companies that carry a product into an actual building.",
+    ],
+  },
+  {
+    slug: "world-zone",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "World Zone",
+    tagline: "Brazilian partner named in the Fortinet channel.",
+    intro: "A Brazilian partner in the Fortinet channel. The Brazilian security channel is a market of many small and mid-sized integrators rather than a few large ones, which is a structural difference from North America and explains why vendor certification programmes carry so much weight here.",
+    body: [
+      "Expert-level Fortinet integrator and managed security service provider, holding one of the broadest specialisation portfolios in the vendor's Brazilian directory. Breadth of specialisation is the closest public proxy for engineering depth, since each one has to be earned with certified staff rather than bought.",
+    ],
+  },
+  {
+    slug: "ziva",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Ziva",
+    tagline: "Brazilian partner named in the Fortinet channel.",
+    intro: "A Brazilian partner in the Fortinet channel. Recording it completes a roster rather than making a claim: the point of listing the channel at all is that the industry is not only the vendors whose logos appear on the equipment.",
+    body: [
+      "Expert-level Fortinet integrator and managed security service provider, specialised in cloud security, operational technology, SASE and security operations. Recording it completes a roster rather than making a claim: the point of listing the channel at all is that the industry is not only the vendors whose logos appear on the equipment.",
+    ],
+  },
+  {
+    slug: "betta",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Betta",
+    tagline: "Expert-level Fortinet partner in Brazil.",
+    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    body: [
+      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+    ],
+  },
+  {
+    slug: "by-seven",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "By Seven",
+    tagline: "Expert-level Fortinet partner in Brazil.",
+    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    body: [
+      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+    ],
+  },
+  {
+    slug: "connection-br",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Connection",
+    tagline: "Expert-level Fortinet partner in Brazil.",
+    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    body: [
+      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+    ],
+  },
+  {
+    slug: "focaldata",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Focaldata",
+    tagline: "Expert-level Fortinet partner in Brazil.",
+    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    body: [
+      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+    ],
+  },
+  {
+    slug: "hexait",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "HexaIT",
+    tagline: "Expert-level Fortinet partner in Brazil.",
+    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    body: [
+      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+    ],
+  },
+  {
+    slug: "inorpel",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Inorpel",
+    tagline: "Expert-level Fortinet partner in Brazil.",
+    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    body: [
+      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+    ],
+  },
+  {
+    slug: "network-secure",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Network Secure",
+    tagline: "Expert-level Fortinet partner in Brazil.",
+    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    body: [
+      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+    ],
+  },
+  {
+    slug: "rcx",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "RCX",
+    tagline: "Expert-level Fortinet partner in Brazil.",
+    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    body: [
+      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+    ],
+  },
+  {
+    slug: "secureway",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Secureway",
+    tagline: "Expert-level Fortinet partner in Brazil.",
+    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    body: [
+      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+    ],
+  },
+  {
+    slug: "trtec",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "TRTEC",
+    tagline: "Expert-level Fortinet partner in Brazil.",
+    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    body: [
+      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+    ],
+  },
+  {
+    slug: "under-protection",
+    sources: [
+      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+    ],
+    tags: ["reseller", "services"],
+    group: "other",
+    name: "Under Protection",
+    tagline: "Expert-level Fortinet partner in Brazil.",
+    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    body: [
+      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+    ],
+  },
 {
     slug: "prodam",
     sources: [
       { label: "Prodam-SP - A Prodam (official site): information and communication technology company of the municipality of Sao Paulo, created by Law 7.619 of 23 June 1971; strategic ICT integrator for the city government", url: "https://portal.prodam.sp.gov.br/a-prodam" },
       { label: "Prodam-SP - Historia (official site): timeline in five periods from 1971, including the Rede Municipal de Informatica from 1992", url: "https://portal.prodam.sp.gov.br/hist%C3%B3ria" },
+    
+      { label: "PRODAM-SP: the information and communication technology company of the municipality of Sao Paulo, established on the basis of Law 7619 of 23 June 1971, responsible for the city computing infrastructure and data processing", url: "https://en.wikipedia.org/wiki/PRODAM" },
     ],
     tags: ["services", "datacentre"],
     relationships: ["worked-with-directly"],
@@ -6443,8 +7017,10 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Municipal ICT company created in 1971, serving a city of more than twelve million people.",
     intro: "Prodam-SP was created by municipal law on 23 June 1971 and is the technology company of the city of Sao Paulo - a municipality of more than twelve million inhabitants, which is larger than most of the countries whose national IT organisations appear on this timeline.",
     body: [
-      "Its own history divides into five periods, and the second is the one worth noticing: the Rede Municipal de Informatica from 1992, which is a city building its own network at the moment the commercial internet was arriving. Municipal computing is under-recorded compared with federal and state work, and it is where a citizen actually meets the state most often - a permit, a tax bill, a school place, a health appointment.",
-      "Reading it beside Prodesp and Serpro completes a picture that is rarely drawn: Brazilian public computing is not one organisation but three layers - municipal, state and federal - each with its own company, its own systems and its own decades of accumulated records, and a citizen's data spread across all three.",
+      "Prodam is the municipal technology company of Sao Paulo, established under Law 7619 of 23 June 1971, and it runs the computing infrastructure and data processing of the city government - which in this case means a municipality with more inhabitants than most countries in the Americas.",
+      "The municipal layer is the least examined of the three and the one closest to the citizen. Federal systems handle taxes and benefits and state systems handle documents and policing, but a city company is where rubbish collection, clinics, schools, transport cards and building permits are actually run. When a system there fails, nobody reads about it nationally and several thousand people cannot do something they needed to do that morning.",
+      "Brazilian public computing was built in three tiers - federal, state and municipal - each with its own company, its own procurement and its own estate, and the friction between them is a permanent feature rather than a transitional one. Anyone integrating public services in Brazil is integrating three organisations that were never designed to be one.",
+    
     ],
     externalUrl: "https://portal.prodam.sp.gov.br/a-prodam",
     externalLabel: "Prodam-SP",
@@ -6709,6 +7285,8 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "ISH Tecnologia - company site: Brazilian security and technology company with a portfolio spanning governance, risk and compliance, business continuity planning, privacy and risk management", url: "https://www.ish.com.br/" },
       { label: "ISH’s own history timeline records 1996 as its foundation, in Vitoria, Espirito Santo, initially as an IT consultancy", url: "https://www.ish.com.br/sobre" },
+    
+      { label: "SpaceMoney, 2026: SPX acquired Vision Cybersecurity in January from a division of ISH Tecnologia, a company from Espirito Santo, serving private corporate clients", url: "https://www.spacemoney.com.br/tecnologia/embraer-spx-ciberseguranca-fusao" },
     ],
     tags: ["services"],
     relationships: ["worked-with-directly"],
@@ -6718,9 +7296,10 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Brazilian security company covering GRC, continuity planning, privacy and risk management.",
     intro: "ISH Tecnologia is a Brazilian security and technology company whose portfolio leads with governance, risk and compliance, business continuity planning, privacy and risk management rather than with products.",
     body: [
-      "That ordering is a statement about who buys security in a regulated Brazilian enterprise. The technical control is chosen after somebody has decided which risks are being accepted, which are being transferred and which the regulator requires evidence of - and the firm that runs that conversation is usually the one that then implements the answer.",
-      "It is the counterpart to the appliance-first story most of this timeline tells: the same estates, approached from the audit rather than from the rack.",
-      "It was founded in 1996 in Vitoria, Espirito Santo, and began as an information technology consultancy rather than a security company. The move into security came later, which is the usual direction of travel: the firms that ended up defending Brazilian networks mostly started by building them.",
+      "ISH Tecnologia is a security company from Espirito Santo, which is itself worth noting: the Brazilian security market concentrates heavily in Sao Paulo, and a company of consequence built outside the main axis is uncommon enough to record.",
+      "Its structure separated a corporate arm serving private business clients from the rest of the business, and in January 2026 that arm was sold to SPX as Vision Cybersecurity - which is a specific and instructive move rather than a general acquisition. A services company is a set of customer relationships, and those relationships can be split by segment and sold separately from the brand that built them.",
+      "What remains under the original name continues in the market it built. The episode is a clean illustration of how consolidation actually works in security services: not usually whole companies bought entire, but customer bases separated, valued and moved.",
+    
     ],
     externalUrl: "https://www.ish.com.br/",
     externalLabel: "ISH Tecnologia",
@@ -6849,8 +7428,11 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "Sao Paulo integrator founded in 2006 around Microsoft Dynamics AX, later expanding by acquisition.",
     intro: "AX4B was founded in Sao Paulo in 2006 to work exclusively with Microsoft Dynamics AX, and grew from that single product into a national integrator with offices across seven states and a catalogue spanning management software, cloud, backup, security and process automation.",
     body: [
-      "The trajectory is a clean example of a pattern this timeline records repeatedly in miniature. A firm starts as the specialist in one product, which is how a small company earns the right to be called; then the specialism becomes a third of revenue rather than all of it, and the way to grow is to buy the next capability rather than to learn it - a systems integrator in 2017, then a SAP Basis consultancy in Porto Alegre the same year.",
-      "The SAP purchase is the interesting one, because it crosses a line most Microsoft partners do not. Its stated logic at the time was that the two vendors were converging - SAP\u2019s S/4 running on Microsoft\u2019s cloud - so a firm fluent in both had somewhere to stand that neither single-vendor partner could reach.",
+      "AX4B was founded in Sao Paulo in 2006 by a team that chose to work exclusively with one product, Microsoft Dynamics AX - which is where the name comes from. Antonio Felix has led it as chief executive through the expansion that followed. Starting as the specialist in a single enterprise resource planning suite is how a small firm earns the right to be called at all: it cannot outbid a large integrator on breadth, so it competes on being the house that knows one thing completely.",
+      "The growth after that was bought rather than learned. In 2017 it acquired the systems integrator Gripho for four million reais, and in the same year the Porto Alegre consultancy Basis IT, which brought SAP NetWeaver and Basis skills. The SAP purchase crossed a line most Microsoft partners do not, and the stated logic at the time was convergence - SAP\u2019s S/4 running on Microsoft\u2019s cloud - so a firm fluent in both had somewhere to stand that neither single-vendor partner could reach. By then Dynamics AX was about a third of revenue rather than all of it.",
+      "The portfolio today reads as the accumulated result of that strategy rather than as a plan: management software and the services around it, plus cloud, backup, endpoint security and process automation. The named alliances span Huawei Cloud, Veeam, ESET, Trend Micro, Kaspersky, Adobe, Autodesk, Automation Anywhere and Hyland - a list that is deliberately not a single vendor stack, because a customer replacing one component should not have to replace the integrator.",
+      "It operates from offices in Sao Paulo, Minas Gerais, Rio de Janeiro, Rio Grande do Sul, Goias and the Federal District, Espirito Santo and Pernambuco. That geography is the part worth noticing for anyone studying the Brazilian channel: national coverage in this market is built city by city, usually by acquiring the firm that already had the relationships there, because enterprise software is sold by people who can be in the room.",
+    
     ],
     externalUrl: "https://ax4b.com/",
     externalLabel: "AX4B",

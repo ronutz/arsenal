@@ -7598,7 +7598,9 @@
     "navGlossary": "Glossary",
     "navGlossaryLede": "Every term used across the courses and the writing, defined once and cross-referenced. Useful mid-course and useful afterwards.",
     "disclaimerTitle": "Before you read further",
-    "disclaimerBody": "I work full time for Red Education. All the technical education work described on this page - training delivery and content development, workshops, bootcamps, knowledge transfers and enablement sessions - is delivered solely through Red Education. I will be happy to help you work out what your organisation needs and put you in touch with the right person to handle the request."
+    "disclaimerBody": "I work full time for Red Education. All the technical education work described on this page - training delivery and content development, workshops, bootcamps, knowledge transfers and enablement sessions - is delivered solely through Red Education. I will be happy to help you work out what your organisation needs and put you in touch with the right person to handle the request.",
+    "navCareer": "Career",
+    "navCareerLede": "What the jobs behind these courses actually are - what each role is accountable for, what it is measured on, and which roles sit next to it."
   },
   "contact": {
     "title": "Get in touch",
@@ -14476,7 +14478,7 @@
       },
       "roadsec": {
         "def": "Latin America's largest hacker festival - a full-day carnival of talks, CTF, drones, and lockpicks that has toured Brazil's state capitals since 2014.",
-        "context": "Roadsec inverted the conference formula: instead of making Brazil's hackers travel to one city, the festival travels to them - a caravan through the state capitals, culminating each year in a mega-edition in São Paulo. The format is deliberately festival, not conference: career talks beside hardware villages, robot-building beside serious research, and at the center the Hackaflag, the CTF championship whose regional rounds along the tour crown a national champion. For a generation of Brazilian students far from the São Paulo-Rio axis, a Roadsec stop was the first time the security community came to their town - which is precisely the point.\n\nThe organisation behind it is [Flipside](/industry/flipside), which now has an entry on this site's industry timeline.",
+        "context": "Roadsec inverted the conference formula: instead of making Brazil's hackers travel to one city, the festival travels to them - a caravan through the state capitals, culminating each year in a mega-edition in São Paulo. The format is deliberately festival, not conference: career talks beside hardware villages, robot-building beside serious research, and at the center the Hackaflag, the CTF championship whose regional rounds along the tour crown a national champion. For a generation of Brazilian students far from the São Paulo-Rio axis, a Roadsec stop was the first time the security community came to their town - which is precisely the point.\n\nThe organisation behind it is Flipside, which now has an entry on this site's industry timeline.",
         "depth": "Roadsec inverted the usual conference economics. Rather than requiring the country's hackers to travel to one city, it travelled to them, running a caravan of editions through state capitals before culminating in a large São Paulo event. In a country of continental scale where a domestic flight can cost more than a monthly wage, that inversion is the whole argument.\n\nThe format is deliberately a festival rather than a conference. Career talks sit beside hardware hacking, capture-the-flag competitions, lockpicking and music, which lowers the entry barrier for people who would never have described themselves as belonging at a security event. That mix is a recruitment strategy for the field as much as a programme.\n\nWhat it demonstrates is that geography is a security problem. Expertise concentrates where events are, events are where money is, and money is in a few cities, so talent outside them stays invisible to an industry that complains about a shortage. Taking the event to the people rather than the reverse is one of the few interventions that addresses the mechanism rather than the symptom.\n\nBoth this event and Roadsec are run by the same company, Flipside, and were founded by the same person, Anderson Ramos - a fact neither entry recorded until now, and which explains a great deal about the Brazilian calendar. The two were deliberate opposites: one corporate, expo-heavy and in Sao Paulo; the other a travelling festival taking hacker culture to the state capitals. One organisation ran both ends of the spectrum. Then, in 2024, Roadsec did not happen. The assessment from people close to the scene was not that it failed but that the corporate event had grown so large it consumed the organisation's capacity to run the other one, and Flipside had also wound down the regional editions of both. That is a specific and instructive thing to watch happen: the profitable event did not out-compete the community event in any market, it out-competed it for the attention of the people who ran both. The consequence was not nothing. Local community conferences multiplied into the space the regional editions vacated, which is why the Brazilian calendar now has more small events outside Sao Paulo than it did when a large organiser was serving those cities directly. Whether that is a better outcome depends on what you value, and the honest answer is that it is a different one."
       },
       "cryptorave": {
@@ -16131,6 +16133,718 @@
       "deviant-ollam": {
         "def": "The physical security researcher and TOOOL member whose lockpicking talks put the discipline in front of network audiences that had never considered the door.",
         "context": "At the fifth edition of YSTS, in May 2011, he opened the event with the basics of lockpicking and sold kits to the room afterwards - which is the whole argument in one gesture, since a lock is a control whose failure mode you can hold in your hand. Physical access defeats most of what the rest of a security programme buys: a server room door, a rack lock and a badge reader sit underneath every network control, and they are usually the least examined part of the estate."
+      },
+      "dennis-ritchie": {
+        "def": "The creator of the C programming language and co-creator of Unix, and joint recipient with Ken Thompson of the 1983 Turing Award for the development of generic operating systems theory and the implementation of Unix.",
+        "context": "The decision that made both last was rewriting Unix in C. Before that, an operating system was written for a machine; afterwards it could be moved to another one, and portability stopped being a research topic and became an expectation. Nearly everything since inherits from that pair: the descendants of C run the kernels and the network stacks, and the shape of Unix - a hierarchy of files, small tools composed together, processes forked from other processes - is still the mental model behind systems that have never run a line of his code."
+      },
+      "ken-thompson": {
+        "def": "Co-creator of Unix and joint recipient of the 1983 Turing Award, and author of the Turing lecture that showed a compiler can hide a backdoor no source review would ever find.",
+        "context": "The lecture is the part that belongs on a security site. He described a compiler modified to insert a backdoor into a program, and to insert the same modification into any compiler it compiles - so the malicious code disappears from every source file while surviving in every binary. The conclusion he drew is the uncomfortable one: you cannot trust code you did not totally create yourself, and reading the source is not enough, because the thing that reads the source is also code. Reproducible builds and supply-chain attestation exist because of an argument he made in 1984."
+      },
+      "leslie-lamport": {
+        "def": "The 2013 Turing Award recipient for imposing order on distributed systems: logical clocks, distributed snapshots, Paxos, Byzantine fault tolerance, the safety and liveness distinction - and LaTeX.",
+        "context": "His 1978 paper on time, clocks and the ordering of events is among the most cited in computing, and its point is that in a distributed system there is no global now - only causality, which you can order without a shared clock. Everything downstream depends on that: consensus, replication, and every database that must decide which write happened first. His own line describes the field better than any textbook: a distributed system is one in which the failure of a computer you did not know existed can render your own computer unusable."
+      },
+      "barbara-liskov": {
+        "def": "The 2008 Turing Award recipient, cited for practical and theoretical foundations of programming language and system design, especially data abstraction, fault tolerance and distributed computing.",
+        "context": "The substitution principle that carries her name is the one most programmers meet: a subtype must be usable anywhere its supertype is, without the caller needing to know. That is a statement about interfaces rather than about inheritance, and it is why abstraction survives contact with a large codebase. Her distributed systems work matters as much and is credited less - she and her student Brian Oki arrived at view-stamped replication at about the same time as Paxos, independently, which is the second time in this history that two groups reached the same answer without knowing."
+      },
+      "tcp": {
+        "def": "The transport that turns a stream of packets into an ordered, reliable byte stream, by numbering what it sends and retransmitting what is not acknowledged.",
+        "context": "Everything TCP does follows from one fact: the network underneath makes no promises. Packets may be lost, duplicated, reordered or delayed, so ordering, retransmission, flow control and congestion control all live in the endpoints rather than in the network. That decision is why the internet could be built from links nobody controlled centrally, and it is also why a single lossy hop degrades a session end to end. The three-way handshake, the sequence numbers and the window are the visible parts; the interesting part is that the sender infers the state of a network it cannot see from the timing of its own packets."
+      },
+      "packet": {
+        "def": "A unit of data with its own header, forwarded independently of whatever came before or after it.",
+        "context": "The word is Donald Davies's, coined in the mid-1960s for an idea Paul Baran had reached separately, and the naming mattered: it gave engineers, funders and standards bodies a way to discuss the thing without arguing about what to call it. The independence is the whole design. Because each packet carries its own addressing, no device has to remember a conversation, which is what lets a failed link be routed around and what makes the network cheap to scale - and it is also why order, reliability and pacing had to be rebuilt at the endpoints."
+      },
+      "packet-switching": {
+        "def": "Forwarding data as independent packets that share links with everyone else's, instead of holding a dedicated path open for the duration of a conversation.",
+        "context": "The alternative it replaced was circuit switching, where a call reserved a path end to end whether or not anything was being said. Packet switching wins whenever traffic is bursty, which is nearly always in data: the link is shared, the idle moments of one conversation carry another's, and capacity is sold many times over. The costs are the mirror image and they are permanent - no reservation means no guarantee, so delay varies, congestion is possible, and every quality-of-service mechanism since exists to claw back some of what the reservation used to provide for free."
+      },
+      "latency": {
+        "def": "The time between sending something and it arriving - distinct from bandwidth, which is how much arrives per second.",
+        "context": "The two get confused constantly, and the confusion is expensive: adding capacity does nothing for a slow application whose problem is round trips. Latency has four parts - propagation, which is physics and cannot be bought down; serialisation, which shrinks as links get faster; queueing, which grows with load and is where most surprises live; and processing. Distance sets a floor no product can beat, which is why a chatty protocol crossing an ocean is slow no matter how much bandwidth is bought, and why moving the work closer is the only real fix."
+      },
+      "c": {
+        "def": "The language Dennis Ritchie wrote in the early 1970s, in which Unix was rewritten, and in which most operating systems and network stacks are still written.",
+        "context": "Its bargain is explicit: enough abstraction to be portable, and nothing between the programmer and the memory. That is why it runs everywhere and why it produced whole vulnerability classes - buffer overflows, use-after-free, and the rest of the memory-safety catalogue that newer languages exist to prevent. Both halves of that sentence are true at once, which is the honest way to read fifty years of C. It is not going away either: too much of the world's running software is written in it for a rewrite to be a plan."
+      },
+      "unix": {
+        "def": "The operating system built at Bell Labs from 1969, whose design - files, small composable tools, processes forked from processes - became the shape almost everything since has copied.",
+        "context": "What spread was not the code but the model, and the reason is that the model was small enough to reimplement. Linux, the BSDs and macOS descend from the design rather than from one source tree, and POSIX exists to write down what they have to agree on. For anyone operating systems today, the inheritance is practical: a shell that pipes one program into another, a filesystem that represents devices as files, and a permission model that predates the internet and still decides who can read what."
+      },
+      "kernel": {
+        "def": "The part of an operating system that runs with full hardware privilege, mediating memory, processes, devices and the network for everything else.",
+        "context": "The privilege boundary is the point. Ordinary programs cannot touch hardware directly; they ask, through system calls, and the kernel decides. That is what makes isolation between processes possible, and it is why a defect inside the kernel is categorically worse than one in an application: there is nothing above it to contain the damage. It is also why so much security engineering is about reducing what runs there - drivers moved to user space, filtering done in constrained virtual machines, and hypervisors adding a layer beneath it."
+      },
+      "shell": {
+        "def": "The program that reads commands and runs them, and the interface through which most infrastructure work is still done.",
+        "context": "Its durability is a design consequence rather than nostalgia. Because Unix tools read text and write text, the shell can compose programs that were never written with each other in mind, and a pipeline assembled in one line does work that would otherwise need a project. That same property is a security surface: a shell interprets what it is given, so anything that builds a command from untrusted input is one quoting mistake away from executing it. Command injection is the shell doing exactly its job on the wrong text."
+      },
+      "compiler": {
+        "def": "A program that translates source code into something a machine can execute - a category Grace Hopper both built and named.",
+        "context": "It is worth remembering that this had to be argued for. The idea that a machine could usefully translate human-written text into instructions was not obvious in 1952, and the objection was that a programmer should write the instructions. The compiler is also where trust becomes circular: Ken Thompson's Turing lecture showed that a compiler can insert a backdoor into programs and into future compilers, so inspecting source proves nothing about the binary. Reproducible builds exist to close that loop."
+      },
+      "consensus": {
+        "def": "The problem of getting several machines to agree on one value when any of them may be slow, may fail, and cannot tell those apart.",
+        "context": "It sounds administrative and it is the hardest thing in distributed systems, because a node that has not answered is indistinguishable from a node that is dead. Every replicated database, cluster leader election and configuration store rests on a consensus algorithm, and the practical consequence is a majority rule: an odd number of members, a quorum required to decide, and a minority that must stop rather than proceed alone. That is why a three-node cluster survives one failure and a two-node cluster survives none."
+      },
+      "quorum": {
+        "def": "The minimum number of members that must agree for a distributed system to act - normally a majority, so that two disjoint groups can never both decide.",
+        "context": "The arithmetic is the whole safety argument. If a decision needs more than half the members, then any two decisions must share at least one member, and that member prevents them contradicting each other. It is also why cluster sizing is about odd numbers rather than round ones: five members tolerate two failures, six tolerate the same two and cost more. When a network splits, the side without quorum has to stop serving even though it is healthy, which feels wrong to operators the first time and is the only thing standing between them and split brain."
+      },
+      "paxos": {
+        "def": "Leslie Lamport's consensus algorithm, the first proved correct for an asynchronous network where machines may fail, and the basis of most replicated systems built since.",
+        "context": "It is famous for two things: being correct, and being hard to understand from the paper, which was written as an allegory about a fictional Greek parliament and took years to be taken seriously. Barbara Liskov and Brian Oki reached an equivalent design independently at about the same time. Most production systems run a variant rather than the original, and Raft was designed explicitly to be the same guarantee explained more simply - which is a rare case of a field admitting that comprehensibility is a property worth optimising."
+      },
+      "raft": {
+        "def": "A consensus algorithm designed to be understandable, giving the same guarantees as Paxos through an explicit leader, an append-only log and a defined election.",
+        "context": "Its contribution is pedagogical and that is not a small thing: an algorithm that operators can reason about is one they configure correctly, and most consensus outages are configuration rather than mathematics. It separates the problem into leader election, log replication and safety, which also maps onto what a monitoring system can show you. If you run etcd, Consul or a modern distributed store, you are running this, and the practical rule that falls out is the familiar one - odd member counts, and a minority that stops."
+      },
+      "byzantine-fault-tolerance": {
+        "def": "Agreement that survives members which do not merely fail, but lie - sending different answers to different peers, whether through corruption or malice.",
+        "context": "Ordinary consensus assumes a failed node goes quiet. Byzantine tolerance drops that assumption, which is much harder and much more expensive: the classic result is that agreement needs more than two thirds of members to be honest. Most enterprise systems do not pay for it, and are right not to, because they control every node. It becomes necessary exactly when they do not - blockchains, and any system whose participants are mutually distrustful - which is the real technical distinction between a distributed database and a ledger."
+      },
+      "fault-tolerance": {
+        "def": "Continuing to provide service while something is broken - which requires deciding in advance which failures are survivable and paying for that in redundancy.",
+        "context": "The word is used loosely and the useful version is specific: you tolerate the failures you designed for, and no others. That means naming them - one power feed, one disk, one site, one region - and accepting that anything unnamed will take the service down. The recurring mistake is redundancy that shares a dependency: two devices on the same power strip, two links in the same duct, two regions with one identity provider. The second copy only helps if it fails independently, and independence is the property people forget to buy."
+      },
+      "abstraction": {
+        "def": "Hiding how something works behind what it does, so callers depend on an interface rather than on an implementation.",
+        "context": "It is the only technique that makes large systems buildable, and it always leaks. Barbara Liskov's work is the rigorous version: a subtype must be usable wherever its supertype is, without the caller needing to know the difference - a statement about interfaces rather than inheritance. The operational corollary is worth stating too. Every abstraction has a failure mode that shows through: the network that pretends to be a local call still has latency, and the storage that pretends to be infinite still has a bill."
+      },
+      "douglas-engelbart": {
+        "def": "The engineer who demonstrated the mouse, hypertext, windows, word processing and video conferencing in a single session on 9 December 1968 - the presentation now called the Mother of All Demos.",
+        "context": "The audience of professionals had never seen a cursor moved by a hand, and the machine driving it sat twenty-five miles away. Almost everything in that ninety minutes is now furniture, which is the strange part: the demonstration is more famous than any product he shipped. His stated aim was not convenience but augmentation - computers as tools for people to handle problems too complex to hold in one head - and he had written that argument down years before he had the hardware to show it. The Turing Award reached him in 1997, twenty-nine years after the demonstration."
+      },
+      "margaret-hamilton": {
+        "def": "The director of the Software Engineering Division at the MIT Instrumentation Laboratory, who led the on-board flight software for the Apollo Guidance Computer, and who argued for calling the work engineering at all.",
+        "context": "She was the first programmer hired for Apollo at MIT, and the naming fight is part of the contribution: software was not treated as a discipline, and insisting on the term software engineering was a claim that it needed the same rigour as the hardware it flew on. The technical legacy is priority scheduling that sheds load rather than failing: during the lunar descent the computer discarded lower-priority work under overload instead of stopping. That is the ancestor of every system designed to degrade rather than die."
+      },
+      "elizabeth-feinler": {
+        "def": "The information scientist who ran the Network Information Center from 1972 to 1989 - the Host Naming Registry for the whole internet - and whose group devised the .com, .edu, .gov, .mil, .org and .net scheme and built the first WHOIS server.",
+        "context": "Before DNS, every machine on the network was listed in one file that her group maintained and published, updated almost daily by hand. That is the fact worth sitting with: the internet's entire naming authority was a directory service run by a team at SRI, reachable by telephone and post as well as by network. She joined Douglas Engelbart's Augmentation Research Center in 1972 and stayed until the year the registry became too big for a file. She called the NIC the prehistoric Google of its day, and in retirement she organised over 350 boxes of the Engelbart and NIC archives so the record would survive."
+      },
+      "hosts-file": {
+        "def": "A local text file mapping names to addresses, consulted before DNS - and originally the single file that named every machine on the internet.",
+        "context": "HOSTS.TXT was maintained centrally at SRI and downloaded by every host, which worked while the network was small and stopped working when it was not: one file, one editor, one distribution, growing daily. DNS exists because that arrangement could not scale. The file never went away, though: every operating system still checks a local hosts file first, which makes it the quickest way to redirect a name on one machine - useful for testing, and equally useful to malware, which is why endpoint tools watch it."
+      },
+      "whois": {
+        "def": "The query service that answers who registered a domain or an address block - the first query-based host name and address server, defined in Feinler's group in 1982.",
+        "context": "It began as a directory of people and machines on a network where everyone was reachable, and that origin explains its problems: a protocol with no structured schema, no authentication and no privacy model, answering in whatever text each registry chooses. Registration data was public because the early network assumed accountability rather than anonymity, and privacy law has since forced most of it behind redaction. RDAP is the structured, authenticated successor, and the transition is slow because the old one still answers."
+      },
+      "steve-crocker": {
+        "def": "The author of RFC 1, published 7 April 1969, and the person who chose to call the series Requests for Comments rather than standards.",
+        "context": "He later called it a modest and entirely forgettable memo, and the modesty was the design. A graduate student had no authority to declare a standard, so the documents invited disagreement instead of announcing decisions - and that framing is why the series survived the arrival of everyone with more authority than him. The internet's technical documents are still called requests for comments sixty years on, by organisations that could rename them any time they liked."
+      },
+      "jcr-licklider": {
+        "def": "The psychologist who ran ARPA's Information Processing Techniques Office from 1962 and addressed his memos to the Members and Affiliates of the Intergalactic Computer Network.",
+        "context": "He did not build the network; he funded the people who did, and described what it should be before the hardware existed. The joke in the name hides a serious specification: an electronic commons open to all, and the main medium of informational interaction for governments, institutions, companies and individuals. That is close to what happened. His other contribution was structural - the money he directed created computer science departments at several universities, which is why the field had people in it a decade later."
+      },
+      "wietse-venema": {
+        "def": "The author of Postfix and TCP Wrapper, and, with Dan Farmer, of SATAN - the scanner that made the argument for testing your own systems the way an attacker would.",
+        "context": "The 1993 paper that announced SATAN was called improving the security of your site by breaking into it, and the reaction was the story: a newspaper compared releasing it to handing out rocket launchers at the local library. The tool shipped anyway, and the position it defended - that defenders need the attacker's view, and that withholding the tool protects nobody who is already being scanned - is now the assumption behind every vulnerability scanner sold. Postfix, written later, is the other half of the same instinct: rebuild the mail server with privilege separation because the existing one could not be made safe."
+      },
+      "katie-moussouris": {
+        "def": "The researcher who created Microsoft's bug bounty programme and helped create the first one at the US Department of Defense, and who has spent the years since arguing about how they should be run.",
+        "context": "The contribution is institutional rather than technical, and it is the harder kind: persuading a company that paying outsiders to find its defects is cheaper than not knowing about them. Her later argument is the one worth carrying - that a bounty is not a security programme, and an organisation that cannot fix what it already knows about will not be helped by learning more. Bounties reward finding; nothing in them rewards repairing, which is why the mature version pairs them with a disclosure policy and a fix pipeline."
+      },
+      "daniel-j-bernstein": {
+        "def": "The cryptographer and programmer behind qmail and djbdns, and of the curve and cipher designs now widely deployed - and the person who put money behind a security guarantee for his own software.",
+        "context": "The guarantee is the part that changed practice: he offered a cash reward for a verifiable security hole in qmail, which was an unusual claim to make in the 1990s and a workable one because the software was small enough to reason about. His designs are opinionated in the same direction - fewer moving parts, less privilege, no configurability that can be misconfigured. He is also a lasting argument in the field about tone: the technical positions and the public disputes with other implementers arrive together in the record, and both belong in it."
+      },
+      "rfc": {
+        "def": "The numbered document series in which internet protocols are specified - named a request for comments because the first author had no authority to declare a standard.",
+        "context": "Not every RFC is a standard: the series carries proposed standards, informational notes, best current practice, experiments and April Fools jokes, and the status matters more than the number. Anyone can read them for free, which is the difference from most standards bodies and part of why implementations exist. The convention that a specification is discussed in public before it is fixed is the practice the name preserves, and it is why RFC numbers are cited in code comments across the industry."
+      },
+      "circuit-switching": {
+        "def": "Reserving a dedicated path end to end for the duration of a conversation, whether or not anything is being sent on it.",
+        "context": "It is what the telephone network did, and its properties are the exact inverse of packet switching: guaranteed capacity, constant delay, no congestion - and a link that sits idle while nobody speaks. That waste is affordable for voice and ruinous for data, where traffic arrives in bursts. The distinction still shapes arguments about quality of service: every attempt to give a packet network hard guarantees is an attempt to buy back something circuit switching had, and to pay for it in complexity instead of in reserved capacity."
+      },
+      "congestion-control": {
+        "def": "The sender's job of inferring how much the network can carry and slowing down before it collapses - distinct from flow control, which protects the receiver.",
+        "context": "It exists because the network gives no explicit signal: a sender learns about congestion from its own losses and delays, and reacts. That inference is why a single busy link changes behaviour end to end, and why measuring a network from one endpoint tells you as much about the path as about the host. The classic failure was congestion collapse in the 1980s, when every sender answered loss by retransmitting harder; the modern one is bufferbloat, where oversized buffers hide the loss and the sender never learns to slow down."
+      },
+      "cache-poisoning": {
+        "def": "Getting a resolver or proxy to store a forged answer, so every later client asking the same question is given the attacker's version.",
+        "context": "The leverage is what makes it serious: one successful injection serves everybody behind that cache until the entry expires, which turns a single race won into a population-scale redirect. In DNS the race was against a 16-bit query identifier, which is why source-port randomisation was the emergency mitigation and DNSSEC the actual answer. The same shape appears wherever something caches on behalf of many - web caches, ARP tables, and any middlebox that remembers an answer to save asking again."
+      },
+      "rdap": {
+        "def": "The structured, authenticated successor to WHOIS: the same registration data, returned as JSON over HTTPS, with differentiated access instead of one public answer for everyone.",
+        "context": "It exists because WHOIS could not survive privacy law. A single unauthenticated text response cannot show a registrar's staff one thing and an anonymous querier another, so the whole record had to be redacted for everybody. RDAP can distinguish the caller, which is what makes tiered access possible at all. Adoption has been slow for the ordinary reason: the old protocol still answers, and nothing breaks by ignoring the new one."
+      },
+      "coordinated-disclosure": {
+        "def": "Reporting a defect privately, agreeing a deadline, and publishing after the fix - the compromise the field settled on between full disclosure and silence.",
+        "context": "The deadline is the load-bearing part, and it exists because without one the vendor's incentive is to wait forever. It also rests on an assumption worth stating: the reporter is probably not the only person who can find this, so time spent unpatched is time somebody else may be using. The Kaminsky DNS flaw is the reference case for what the good version looks like - competing vendors patching on the same day, detail published a month later - and it is rare because it needed one researcher to organise people who do not usually cooperate."
+      },
+      "base64": {
+        "def": "An encoding that represents arbitrary bytes using 64 printable characters, so binary data can travel through channels that only accept text.",
+        "context": "It is not encryption and not compression: it makes data larger, by roughly a third, in exchange for surviving transports that would mangle raw bytes. The reason it is everywhere is historical - email was text-only, and everything built on that assumption inherited the need. Two practical notes: the URL-safe variant exists because plus and slash mean something in a URL, and seeing Base64 in a payload tells you nothing about whether the content is safe, which is why decoders belong in every analyst's toolkit rather than in their conclusions."
+      },
+      "bill-cheswick": {
+        "def": "Co-author of Firewalls and Internet Security in 1994, one of the first books on the subject, written from running AT&T's internet gateway - and the author of the account of watching an intruder inside a deliberately prepared environment.",
+        "context": "An Evening with Berferd is the piece people remember, and it is where the honeypot argument enters the literature: rather than eject the intruder, he watched, recorded and learned what the attacker was actually trying. The book's most durable line is a warning against its own subject, and the authors made it themselves - in many of the access arrangements they studied, the only secure component was the firewall, which attackers simply went around to reach the machines it was said to protect."
+      },
+      "steven-bellovin": {
+        "def": "Co-author of the 1994 firewall book, an IETF Security Area director, a member of the National Academy of Engineering, and one of the creators of Usenet years earlier.",
+        "context": "His standing description of his own field is the most useful sentence in it: he works on networks, security, and especially why the two do not get along. That is not a joke about culture. Networking optimises for reachability and security for restriction, and almost every operational argument between the two teams is a rediscovery of that. His early papers on weaknesses in the TCP/IP protocol suite named attacks - sequence number prediction, DNS spoofing - years before anyone was running them at scale."
+      },
+      "firewall": {
+        "def": "A device or function that decides which traffic may pass between networks, enforcing a policy at a boundary.",
+        "context": "The name is borrowed from a wall built to stop fire spreading between parts of a building, and the metaphor carries the assumption that has aged worst: that there is an inside and an outside. It was true when an organisation had one gateway, and it stopped being true with cloud, remote work and machine-to-machine traffic that never touches the perimeter. The function did not become useless; it multiplied and moved, into hosts, hypervisors, service meshes and cloud policy, which is what segmentation and zero trust are actually describing. The warning from the people who wrote the first book still applies: an estate where the firewall is the only secure component is one attackers go around rather than through."
+      },
+      "packet-filter": {
+        "def": "The simplest filtering: decide on each packet independently, by addresses, protocol and ports, with no memory of what came before.",
+        "context": "Statelessness is both the appeal and the limit. It is fast, cheap and predictable, and it can be implemented in hardware at line rate - which is why access control lists live on routers and switches rather than only on security appliances. What it cannot do is tell a reply from an unsolicited packet, because that requires remembering the request. Permitting the return traffic therefore means permitting a whole class of packets that merely look like replies, which is the gap stateful inspection was invented to close."
+      },
+      "stateful-inspection": {
+        "def": "Filtering that remembers connections, so a packet is judged by whether it belongs to a flow the policy already allowed.",
+        "context": "Keeping state is what lets a firewall permit replies without permitting everything that resembles one, and it is why a modern rule set is written in terms of who may initiate rather than which packets may pass. The cost is a table with finite size and entries with timeouts, which turns into two operational facts: a connection idle longer than the timeout is silently dropped and the application sees a hang rather than a refusal, and the table itself is a resource an attacker can exhaust. Most mysterious long-lived session failures are one of those two."
+      },
+      "encoding": {
+        "def": "Representing data in a form a particular channel or reader can carry - a reversible transformation with no secrecy and no integrity attached.",
+        "context": "The word gets used for three different things, and separating them prevents a family of security mistakes: encoding makes data transportable, encryption makes it unreadable without a key, and hashing makes it unrecoverable. Only the first is reversible by anyone. Layered encodings are also where filters go wrong - a value decoded once may still be encoded, and a check applied at the wrong layer sees something the destination will not. Percent-encoding, entity encoding and Base64 in one URL is not unusual, and every mismatch between what the filter parsed and what the target parses is a bypass."
+      },
+      "router": {
+        "def": "A device that forwards packets between networks by choosing a next hop from a routing table.",
+        "context": "The decision is per packet and purely local: a router does not know the path, only the next step, and the packet's journey is the sum of independent choices made by machines that never coordinate. That is why traceroute shows a path that may not be the path the next packet takes, and why routing problems are often asymmetric - the way out and the way back are decided by different devices with different tables."
+      },
+      "switch": {
+        "def": "A device that forwards frames within a network by learning which addresses live on which port.",
+        "context": "It learns by watching: every frame that arrives teaches it where the sender is, and anything it has not learned yet is flooded to every port. That single behaviour explains most of what operators see - a network that works before the table populates, traffic appearing where it should not during a topology change, and the reason a loop is catastrophic rather than merely wasteful, since flooded frames multiply with nothing to stop them."
+      },
+      "bridge": {
+        "def": "A device that joins two network segments at layer 2, forwarding only the frames that need to cross.",
+        "context": "The bridge is the switch's ancestor and the word survives where the switch's does not: spanning tree still elects a root bridge, and virtualisation still calls a software switch a bridge. The original purpose was to cut a collision domain in half while keeping one broadcast domain, which is exactly what a modern switch port does per port - the idea did not go away, it multiplied."
+      },
+      "gateway": {
+        "def": "The address a host sends to when the destination is not on its own network - and, more generally, any device that translates between two systems.",
+        "context": "The word carries two meanings and confusing them wastes time. A default gateway is a host's exit: a configured address, usually a router, used for anything outside the local subnet. An application gateway is a translator between protocols or formats. The first is a routing decision made by the sender before any router is involved, which is why a wrong gateway looks like a total failure from one machine while the network is fine."
+      },
+      "proxy": {
+        "def": "An intermediary that terminates one connection and makes another on the requester's behalf, rather than forwarding packets.",
+        "context": "Terminating is the difference from routing, and everything follows from it: the proxy is a party to the conversation, so it can read, rewrite, cache, authenticate and log - and it becomes a place where plaintext exists, a bottleneck under load, and a single component whose failure is total. Forward proxies act for clients going out, reverse proxies act for servers being reached; the mechanics are the same and only the direction of trust differs."
+      },
+      "port": {
+        "def": "A sixteen-bit number that identifies which service or conversation on a host a packet belongs to.",
+        "context": "Ports exist because an address identifies a machine and not a program. The number is a label, not a permission: a service is not safer on a non-standard port, and a port that answers is not evidence of what is listening. Two operational consequences follow - sixteen bits means about sixty-five thousand simultaneous conversations per address pair, which is what exhausts under heavy proxying, and any filter written by port number is describing an expectation rather than a fact."
+      },
+      "socket": {
+        "def": "The operating system's handle for one end of a network conversation, identified by address, port and protocol.",
+        "context": "It is the boundary where the network becomes a programming problem: an application does not send packets, it writes to a descriptor and the kernel does the rest. That abstraction is why so much network debugging happens with tools that list sockets rather than capture traffic - the state of a connection is visible on the host before anything is on the wire. It is also a finite resource, and sockets left in a waiting state after close are a routine cause of a server that stops accepting while looking idle."
+      },
+      "handshake": {
+        "def": "The exchange that establishes a conversation before data flows - agreeing that both sides are present, and on what terms.",
+        "context": "Every handshake costs at least one round trip, and that is why latency dominates the experience of a distant service more than bandwidth does: a page needing several connections pays the distance repeatedly before a byte of content moves. It is also the point where capability is negotiated, which makes it the place where downgrade attacks live and the reason modern protocols authenticate the negotiation itself rather than trusting it."
+      },
+      "authentication": {
+        "def": "Establishing who or what is making a request - distinct from deciding what they may do.",
+        "context": "The distinction from authorization is the one most incidents turn on: a system that proves identity correctly and then grants everything to anyone who proved it has authenticated perfectly and authorised nothing. Authentication also happens once and is then represented by a token, a cookie or a session, which is why stealing the representation is usually easier than defeating the check - and why lifetime and revocation matter as much as strength."
+      },
+      "authorization": {
+        "def": "Deciding what an authenticated party may do - the check that runs on every request, not just at the door.",
+        "context": "It is the harder half, because it has to be right per object rather than per person: a system knows who you are once, and must then decide about every record, endpoint and action separately. That is why broken access control is consistently the most common serious web defect - not because the concept is difficult, but because the check has to be repeated everywhere and any single place that forgets it is the whole failure."
+      },
+      "certificate": {
+        "def": "A signed statement binding a public key to a name, valid for a period, issued by an authority the relying party has decided to trust.",
+        "context": "Three things fail here and they fail differently. The name may not match what the client asked for. The period may have ended, which is the outage that arrives on a date somebody could have read a year in advance. Or the chain may not lead to a trusted root on that particular machine, which is why a certificate that works in a browser can fail from a server with an older trust store. Nothing about a valid certificate says the operator is honest - only that an authority attested to a name."
+      },
+      "vulnerability": {
+        "def": "A defect that allows someone to do something the system was meant to prevent.",
+        "context": "A vulnerability is not a risk on its own: risk needs a reachable path, a motivated party and something worth reaching. That is why the count of open findings is a poor management number and the count of exploitable, exposed, high-value ones is a useful one. The awkward corollary is that most estates cannot fix everything, so a programme that does not prioritise is choosing by accident - and the choice is being made whether or not anyone writes it down."
+      },
+      "malware": {
+        "def": "Software that runs on a system to serve someone other than its owner.",
+        "context": "The categories - virus, worm, trojan, rootkit, stealer - describe how it spreads and hides rather than what it does, and modern samples mix them freely, which is why classification is less useful operationally than behaviour. The defining property is that it is code executing with legitimate permissions: almost nothing malware does requires a novel capability, only the ability to run as somebody who was already allowed. That is why execution control and privilege reduction outperform detection over time."
+      },
+      "api": {
+        "def": "A defined way for one program to ask another for something - a contract about what may be called and what comes back.",
+        "context": "The interface is a promise, and the promise is the security surface: everything the caller can reach is everything an attacker who obtains a credential can reach. Two failures dominate. Authorisation checked at the gateway but not per object, so changing an identifier in a request returns somebody else's record. And an interface that grew by addition, where the undocumented endpoint from three years ago is still answering because nothing ever removes anything."
+      },
+      "backup": {
+        "def": "A copy kept so that data can be recovered - which is only true once a restore has been tested.",
+        "context": "The operational rule is that nobody has backups, only restores, and an untested copy is a belief rather than a control. Three properties decide whether it survives an incident rather than merely a mistake: it must be isolated enough that whoever compromised the system cannot delete it, recent enough to satisfy the acceptable loss, and restorable fast enough to matter. Ransomware turned the first of those from a nicety into the whole point."
+      },
+      "session": {
+        "def": "The server's memory that a particular client has already been authenticated, usually represented by a token the client returns.",
+        "context": "Sessions exist because the protocol underneath does not remember anything, so each request must carry proof of a decision made earlier. That proof is bearer material: whoever holds it is treated as the user, which is why session theft skips authentication entirely and why lifetime, binding and revocation are the controls that actually matter. A logout that only clears the client leaves a valid token in the hands of whoever copied it."
+      },
+      "throughput": {
+        "def": "How much data actually gets through per unit of time - as opposed to the link's rated capacity, which is a ceiling and not a promise.",
+        "context": "The gap between the two is where the interesting questions live. A gigabit link carrying a single TCP session across a continent will not reach a gigabit, because the sender may only have one round trip's worth of data outstanding at a time. That is why the fix for a slow transfer is often a larger window or more parallel streams rather than a bigger link, and why buying capacity to solve a distance problem is the most common expensive mistake in the field."
+      },
+      "jitter": {
+        "def": "Variation in delay between packets - the reason a call sounds broken on a link whose average latency looks fine.",
+        "context": "Real-time media cares about consistency more than speed, because a receiver has to play audio at a steady rate and can only absorb variation by buffering. A jitter buffer trades latency for smoothness, so the cure and the disease are measured in the same unit. This is why an average is the wrong statistic for anything interactive: the ninety-fifth percentile and the spread say what the user experiences, and the mean hides exactly the packets that ruined the call."
+      },
+      "packet-loss": {
+        "def": "Packets that never arrive - discarded by a full queue, corrupted in transit, or dropped by policy.",
+        "context": "Small percentages do disproportionate damage, because loss is the signal congestion control listens to: one per cent loss can halve a transfer's throughput, since the sender treats it as instruction to slow down. That also means loss is not always a fault to eliminate - a network that never drops is usually one that buffers instead, and the resulting delay is worse for interactive traffic than the drops would have been."
+      },
+      "duplex": {
+        "def": "Whether a link can carry traffic in both directions at once, or must take turns.",
+        "context": "Modern switched links are full duplex and the setting is rarely thought about - until a mismatch, where one end negotiates full and the other assumes half. The result is the most misleading fault in networking: the link is up, small pings succeed, and throughput collapses under load with rising errors, because one side transmits while the other believes a collision occurred. It survives as a diagnostic reflex precisely because it looks like anything except what it is."
+      },
+      "checksum": {
+        "def": "A small value computed from data so a receiver can notice accidental corruption - detection, not correction, and not protection.",
+        "context": "It defends against noise, not against people: an attacker who changes the data simply recomputes the checksum. That is the distinction from a signature or a message authentication code, and confusing them is a real design error rather than a pedantic one. Operationally the surprise is offload - network cards compute checksums in hardware, so a capture taken on the sending host routinely shows them as invalid, which is correct behaviour that has cost many hours of investigation."
+      },
+      "fragmentation": {
+        "def": "Splitting a packet because it is larger than a link along the path will carry.",
+        "context": "It is the classic source of faults that pass every simple test: small packets work, the connection establishes, and transfers hang once real data starts. That happens when the message asking the sender to reduce its size is filtered, which is common because the message is ICMP and somebody blocked ICMP as a precaution. Tunnels make it routine by adding headers to packets already sized for the original path, which is why the first question about any VPN complaint is the effective maximum size."
+      },
+      "container": {
+        "def": "A process isolated by kernel features rather than by a separate operating system - sharing the host's kernel with everything else running on it.",
+        "context": "The shared kernel is the whole trade. It makes containers fast to start and cheap to run, and it means the isolation boundary is a set of kernel features rather than a hardware one, so a kernel vulnerability is a boundary vulnerability. That is why the interesting security questions are about what the container may ask the kernel to do - capabilities, syscall filtering, whether it runs as root - rather than about the image, and why a compromised container on a shared host is a different conversation from a compromised virtual machine."
+      },
+      "hypervisor": {
+        "def": "The layer that presents virtual hardware to several operating systems and keeps them apart.",
+        "context": "It is the strongest common isolation boundary in ordinary infrastructure, because each guest has its own kernel and the hypervisor mediates the hardware - which is why multi-tenant cloud is built on it rather than on containers alone. The cost is that it is also the most privileged software present: whatever compromises it owns every guest at once, and the guests cannot detect that. Side channels through shared processor resources are the awkward part, because they cross a boundary the design assumed was solid."
+      },
+      "logging": {
+        "def": "Recording what happened so it can be answered for later - by an operator during an incident, or by an investigator afterwards.",
+        "context": "The two audiences want different things and the conflict is rarely resolved deliberately. Operations wants recent, verbose, searchable and cheap; investigation wants complete, tamper-evident and kept for a long time. Estates that optimise only for the first discover during an incident that the window closed before the question was asked. The second recurring failure is that logs live on the machine that generated them, which is the machine an attacker controls."
+      },
+      "canary": {
+        "def": "Exposing a change to a small, real slice of traffic first, so the failure is discovered by few rather than by everyone.",
+        "context": "It works only if two things are true, and both are commonly missing. There must be a signal that distinguishes the canary from the rest, which means metrics segmented by version rather than aggregated. And there must be a rollback that can be executed under pressure by whoever is awake. Without those, a canary is a deployment with extra steps that still fails everywhere, five minutes later than it would have."
+      },
+      "rollback": {
+        "def": "Returning a system to its previous working state - which is only a plan if it has been tried.",
+        "context": "The assumption that breaks it is that a change is reversible. Schema migrations, data written in a new format, consumed messages and issued credentials are not undone by redeploying the old version, and discovering that mid-incident is how a short outage becomes a long one. Mature change records therefore state the rollback explicitly and name what it cannot recover, which turns an unexamined hope into a decision somebody made on purpose."
+      },
+      "single-point-of-failure": {
+        "def": "A component whose loss stops the service - regardless of how much redundancy surrounds it.",
+        "context": "They are usually found by accident because the obvious ones get removed early and the remaining ones are shared dependencies nobody drew: the identity provider in front of both regions, the certificate authority, the one person who knows the procedure, the DNS zone. Redundancy at one layer often hides a single point at another - two data centres on one fibre route, two clusters in one cloud account, two nodes with one power feed - which is why the useful exercise is tracing a dependency rather than counting devices."
+      },
+      "exfiltration": {
+        "def": "Getting stolen data out - the stage where an intrusion becomes a breach with consequences.",
+        "context": "It is the last chance to notice, and it is deliberately made to look ordinary: uploads to services the organisation already uses, small volumes over long periods, or tunnelling through protocols nobody inspects. DNS is the classic channel precisely because it is allowed everywhere and rarely examined for content. The detectable property is usually shape rather than payload - a volume, a destination or a timing that does not match how that account normally behaves."
+      },
+      "risk": {
+        "def": "The combination of how likely something bad is and how much it would cost - the number a decision is supposed to be made against.",
+        "context": "Its usefulness collapses when it becomes a colour on a chart. A risk statement that cannot name the asset, the scenario and the consequence is a mood, and it competes badly against a business case with numbers in it. The other failure is treating the register as the work: recording a risk changes nothing, and an organisation with a mature register and no remediation has documented its exposure precisely rather than reduced it."
+      },
+      "asset": {
+        "def": "Something an organisation owns or depends on that is worth protecting - and, in practice, something it has to know exists.",
+        "context": "Inventory is where security programmes quietly fail, because every other control is scoped by it: patching covers what is listed, monitoring watches what is listed, and the machine nobody recorded is the one still running the old version. Cloud and remote work made this permanently harder, since anything can be created in minutes by someone with a card. The honest metric is not the size of the inventory but its drift - how long something can exist before the register knows."
+      },
+      "ids": {
+        "def": "A system that watches traffic or hosts and reports what looks like an attack - and, as an IPS, blocks it.",
+        "context": "The whole design question is the one letter. Detection produces alerts somebody must read; prevention produces outages when it is wrong. Moving from one to the other converts every false positive from noise into an incident, which is why mature deployments stage it: monitor, then block for a pilot, then block generally, with a date on each step. The second constraint is encryption - a sensor that cannot read the traffic is reduced to metadata, which is why so much of this capability migrated to the endpoint."
+      },
+      "hub": {
+        "def": "A repeater that copies every frame to every port - the device switches replaced, and the reason older networks shared bandwidth.",
+        "context": "Everything plugged into a hub was in one collision domain and could see everyone else's traffic, which is why packet capture used to be trivial and why switching was a security improvement nobody sold as one. The word survives in two useful places: a port mirror deliberately recreates hub behaviour for monitoring, and wireless is a shared medium by physics, so the old contention arithmetic still applies to a channel even though the cabling stopped working that way decades ago."
+      },
+      "trunk": {
+        "def": "A link that carries several VLANs at once, tagging each frame so the far end knows which network it belongs to.",
+        "context": "The trunk is where segmentation is enforced and where it is most often quietly undone. A port configured to carry every VLAN by default hands an attacker the whole estate from one cable, and a native VLAN mismatch between two switches silently merges two networks the diagram says are separate. Both are configuration rather than protocol defects, which is why segmentation reviews look at trunk allow-lists before they look at firewall rules."
+      },
+      "pat": {
+        "def": "Translating many private addresses onto one public address by also rewriting ports - what most people mean when they say NAT.",
+        "context": "The port is what makes the sharing possible: the translating device keeps a table mapping each internal conversation to a unique source port on the shared address, and reverses it on the way back. Two consequences follow directly. The table is finite, so a host opening thousands of connections can exhaust it for everyone behind the same address. And attribution collapses - an address in a log identifies the gateway, not the user, which is the problem carrier-scale deployments create everywhere they are used."
+      },
+      "vm": {
+        "def": "A complete simulated computer with its own kernel, isolated from its neighbours by the hypervisor rather than by the operating system.",
+        "context": "Its own kernel is the whole difference from a container, and it decides where each belongs: virtual machines cost more to start and run, and give a boundary that survives a guest kernel bug. That is why untrusted or mutually hostile workloads still land on separate machines rather than separate namespaces. The operational inheritance is snapshots - freezing and restoring a whole system is the most useful thing virtualisation gave operations, and the most dangerous thing it gave anyone testing a restore they never rehearsed."
+      },
+      "telemetry": {
+        "def": "The measurements a system emits about itself, sent somewhere else to be stored and read.",
+        "context": "The word hides a decision: something chose what to emit, and everything not chosen is invisible no matter how good the analysis is later. That makes telemetry selection an architectural act rather than an operational one, and it is usually made by defaults - the agent's out-of-the-box configuration decides what the organisation will be able to investigate for years. The second constraint is cost, which is why the useful question is not what can be collected but what will still be affordable to keep when the estate doubles."
+      },
+      "metrics": {
+        "def": "Numbers sampled over time - cheap to store, fast to query, and unable to explain a single request.",
+        "context": "Metrics answer how much and how often, which makes them right for alerting and wrong for investigation: an aggregate says the error rate rose and cannot say which customer, which version or which query. The recurring mistake is averaging, because an average hides the tail users actually experience - if the mean response is fast and the ninety-ninth percentile is terrible, a meaningful fraction of people are having a bad time invisibly."
+      },
+      "tracing": {
+        "def": "Following one request through every service it touches, with each step recorded and linked by a shared identifier.",
+        "context": "It exists because breaking an application into services broke the stack trace: no single machine sees the whole request any more, and the slow step could be anywhere. A trace reassembles that, which is why it is the tool that answers where the time went. The cost is instrumentation and propagation - every service must pass the identifier along, and one that does not becomes a gap where the trail stops, which is usually the oldest component and often the one being blamed."
+      },
+      "retention": {
+        "def": "How long records are kept before deletion - a decision with legal, financial and investigative consequences that usually gets made on storage cost alone.",
+        "context": "Two opposite pressures meet here and both are legitimate. Investigations need history, and intrusions are frequently discovered months after they began, so a ninety-day window can mean the beginning is already gone before anyone looks. Privacy regulation and litigation exposure push the other way, because data kept is data that can be demanded or leaked. Deciding deliberately is the whole exercise; letting the default win means the answer was set by whoever priced the storage tier."
+      },
+      "forensics": {
+        "def": "Establishing what happened on a system, in a way that survives being questioned afterwards.",
+        "context": "The discipline is defined by that second clause. Anyone can look at a machine; forensics is looking without changing what you are looking at, recording how you know, and being able to show later that the evidence is the same evidence. That is why the first action is usually to capture volatile state and isolate rather than to reboot or clean - and why an organisation that wipes and reimages a compromised host has chosen recovery speed over ever knowing what happened, which is sometimes the right trade and should be a decision rather than a reflex."
+      },
+      "chain-of-custody": {
+        "def": "The unbroken record of who held evidence, when, and what they did with it.",
+        "context": "Its purpose is to make an answer defensible rather than merely correct: an investigator who cannot show the evidence was protected from alteration has findings that can be dismissed without being disproved. In practice it is unglamorous - hashes taken at acquisition, copies worked on rather than originals, timestamps, signatures and a log of every transfer. It matters outside courtrooms because the same discipline is what makes an internal incident report survive contact with a vendor, an insurer or a regulator."
+      },
+      "change-management": {
+        "def": "The process by which planned changes are proposed, reviewed, scheduled and recorded.",
+        "context": "It exists because most outages are self-inflicted and arrive on purpose, so a record of what changed is the fastest route to what broke. It fails in two opposite directions. Too heavy, and it delays small safe changes until they arrive in large risky batches - the process manufacturing the risk it was meant to control. Too light, and nobody can answer what changed at the hour the graph turned. The useful test is whether the record answers that question in one minute during an incident."
+      },
+      "idempotence": {
+        "def": "The property that doing something twice has the same effect as doing it once.",
+        "context": "It is what makes retrying safe, and retrying is unavoidable: networks lose responses, so a client that got no answer cannot know whether the work happened. Without idempotence the only options are to risk duplicating the action or to risk skipping it. This is why payment interfaces take an idempotency key, why configuration tools describe desired state rather than steps, and why the interesting question about any interface is what happens when the same request arrives twice."
+      },
+      "rto-rpo": {
+        "def": "How long recovery may take, and how much recent data may be lost - the two numbers that turn continuity from an aspiration into a design.",
+        "context": "They are useful because they cost money in opposite ways. A short recovery time buys standby capacity that sits idle; a short recovery point buys replication and the bandwidth to sustain it. Stating both forces the business to say what an hour of downtime and an hour of lost work are actually worth, which is the conversation continuity planning exists to have. The failure mode is declaring numbers nobody has tested, which produces a plan that is precise and untrue."
+      },
+      "secure-boot": {
+        "def": "Checking each stage of startup against a signature before running it, so code that loads before the operating system cannot be replaced silently.",
+        "context": "It closes a specific gap: anything running before the operating system is above every defence the operating system provides, so a bootkit sees the security software start and can lie to it. The chain has to be rooted in hardware. The trade is control - the same mechanism that stops unsigned malicious code stops unsigned legitimate code, which is why the argument about who holds the signing keys for general-purpose hardware is a genuine one rather than an obstruction."
+      },
+      "persistence": {
+        "def": "An attacker's arrangements for surviving a reboot, a password change or a partial cleanup.",
+        "context": "It is the difference between an incident that ends and one that returns, and it is why containment is judged by whether the intruder can come back rather than by whether the current session is closed. The mechanisms are almost always legitimate features - scheduled tasks, startup entries, service accounts, mail rules, added credentials on an identity provider - which is why hunting for persistence is a review of configuration rather than a search for files, and why an organisation that reimages a host without auditing identity often finds the visitor already waiting."
+      },
+      "command-and-control": {
+        "def": "The channel a compromised host uses to receive instructions and report back.",
+        "context": "It is the most reliably detectable stage of an intrusion, because it has to be repetitive: something must check in, and checking in leaves a rhythm. That is why detection focuses on beaconing - regular intervals, consistent sizes, a destination no other host in the estate talks to - rather than on content, which is encrypted. Modern channels hide in ordinary services precisely to defeat that, using cloud storage, chat platforms and DNS, so the useful signal is often a host talking to something normal in an abnormal pattern."
+      },
+      "key-management": {
+        "def": "Generating, storing, rotating, revoking and retiring cryptographic keys - the part of cryptography that actually fails.",
+        "context": "Algorithms are rarely broken in practice; keys are copied, checked into repositories, shared between environments, left on decommissioned hardware and never rotated because nobody knows what would break. The useful questions are therefore administrative: where does this key exist, who can use it, what happens the day it must be replaced, and has that ever been done. An organisation that cannot answer the last one has encryption whose strength is untested in the only way that matters."
+      },
+      "blameless": {
+        "def": "Reviewing an incident to find the conditions that allowed it, rather than the person who acted within them.",
+        "context": "The argument for it is practical rather than kind: people who expect blame report less, later and less accurately, and an organisation that cannot see its near misses is flying on the subset of events too large to hide. The discipline is asking why the action made sense at the time - what the operator saw, what the tooling suggested, what the pressure was - because a system where one wrong command causes an outage has a design problem that will outlive the person who ran it."
+      },
+      "wireguard": {
+        "def": "A VPN protocol built around a deliberately small codebase and a fixed set of modern cryptographic choices, with no negotiation.",
+        "context": "The absence of negotiation is the design argument. IPsec and TLS let two ends agree on algorithms, which is flexible and is also where downgrade attacks and configuration mismatches live; WireGuard removes the conversation by shipping one suite and versioning the whole protocol if it must change. The trade is real: no algorithm agility means a break in one primitive requires a new protocol version everywhere, and the small feature set pushes identity, policy and address assignment out to whatever wraps it."
+      },
+      "accounting": {
+        "def": "The third A in AAA: recording what an authenticated party actually did, for billing, capacity or evidence.",
+        "context": "It is the one most often configured last and needed most under pressure, because authentication and authorisation answer questions about the present while accounting is the only one that answers questions about the past. In carrier networks it exists to produce an invoice; in enterprise networks it exists so that someone can say which account issued which command on which device, which is exactly the question asked after an outage or an intrusion and exactly the record nobody enabled."
+      },
+      "tacacs": {
+        "def": "A protocol for centralising administrative access to network devices, separating authentication, authorization and accounting into distinct exchanges.",
+        "context": "The separation is the practical difference from RADIUS: because authorisation is its own exchange, a device can ask the server about each command as it is typed, which is how per-command control and full command logging work. That makes it the usual choice for device administration while RADIUS remains usual for network access. The dependency deserves stating - if the server is unreachable and local fallback was never configured or never tested, the estate becomes unmanageable at exactly the moment somebody needs to log in."
+      },
+      "rce": {
+        "def": "A defect that lets an attacker run their own code on a system across the network, without needing an account on it.",
+        "context": "It is the top of the severity scale because it collapses every other step: no phishing, no credential theft, no lateral movement needed to get the first foothold. That is why an unauthenticated one in an internet-facing product produces emergency patching cycles regardless of what the scanner score says. The useful follow-up question is what the code runs as - the same defect is a different incident depending on whether the service was running with least privilege or as root."
+      },
+      "lfi": {
+        "def": "Getting an application to read or execute a file the caller chose, by controlling a path it builds from input.",
+        "context": "It belongs to the same family as injection: user input reaching an interpreter, in this case the filesystem. Reading is bad enough - configuration files, credentials, keys - and it escalates to execution whenever the application will run what it includes. Filtering the path is the losing strategy for the familiar reason: every encoding, every traversal variant and every layer of normalisation between the check and the open is another chance for the two to disagree, which is why the durable fix is to never build a path from input at all."
+      },
+      "microservice": {
+        "def": "An architecture that splits an application into independently deployable services communicating over the network.",
+        "context": "The promised benefit is organisational before it is technical: teams can ship without coordinating a single release. The cost is that every function call that crossed a process boundary now crosses a network, so failures that were impossible become routine - partial success, timeout, retry storms, and version skew between services that used to be compiled together. That is why tracing, idempotence and backpressure stop being optional, and why splitting a system that one team ships once a week usually buys the costs without the benefit."
+      },
+      "graphql": {
+        "def": "A query language for interfaces where the caller specifies exactly which fields it wants, in one request.",
+        "context": "It solves a real problem - clients fetching too much or making several round trips - by moving the shape of the response into the caller's hands. That inversion is also the security change: authorisation can no longer be checked per endpoint, because there is effectively one endpoint and the caller composes the query. Checks have to live at the field and object level, and a deeply nested query is a resource question as well, which is why depth limits and cost analysis are part of running it rather than refinements."
+      },
+      "webhook": {
+        "def": "An arrangement where one system calls a URL you provide when something happens, instead of you polling to ask.",
+        "context": "It inverts who initiates, and that inversion carries three obligations people discover late. The endpoint is public, so it must authenticate the caller - usually by verifying a signature over the body, because a URL is not a secret. Delivery is at-least-once, so the handler must be idempotent or duplicates become double charges. And the sender expects a fast answer, so real work belongs on a queue rather than in the request, or a slow handler turns into retries that make the load worse."
+      },
+      "pam": {
+        "def": "Controlling and recording the use of administrative accounts - checking credentials out, brokering the session, and rotating the secret afterwards.",
+        "context": "Its purpose is to make privilege temporary and observable, because standing administrative access is the thing an intruder is looking for and the thing an audit cannot reconcile. Done well it removes shared passwords from human hands entirely. Done badly it becomes a single system holding every credential in the estate, reachable from ordinary workstations - which is why the interesting question about any deployment is what happens to it, and to the business, when that system is unavailable or compromised."
+      },
+      "tpm": {
+        "def": "A chip that stores keys and measurements in hardware, so secrets are usable by the machine without being extractable from it.",
+        "context": "The property that matters is that a key can be used without being read: software asks the chip to sign or decrypt, and never holds the private material. That is what lets disk encryption unlock without a password on the drive, and what lets a machine prove which software it booted. The limits are worth knowing too - it protects against copying the disk, not against an attacker who already runs code on the running machine as the user the key belongs to."
+      },
+      "tabletop": {
+        "def": "Walking a team through a hypothetical incident in a room, to find the gaps before a real one does.",
+        "context": "Its value is that it tests the parts a technical test cannot: who decides, who is called at three in the morning, who talks to customers, and whether the plan assumes a system that will be unavailable during the very event it describes. The recurring discovery is mundane and expensive - the runbook lives on the wiki that is behind the identity provider that is down, or the only person who knows the procedure is the one on holiday. Nothing else finds those cheaply."
+      },
+      "capacity": {
+        "def": "How much load a system can carry before its behaviour degrades - which is not the same as the number on the specification.",
+        "context": "The useful figure is the point where response time starts climbing, not the point where something stops answering, and those are far apart: queues grow non-linearly, so a system at ninety per cent utilisation behaves nothing like one at fifty, and the last ten per cent of nominal capacity is usually unusable in practice. Planning against the rated number rather than the measured knee is the standard way to discover this, always at the least convenient moment."
+      },
+      "dhcp-snooping": {
+        "def": "A switch feature that only allows address-assignment replies from ports you have declared trustworthy.",
+        "context": "It exists because the assignment protocol has no authentication: any device on the segment can answer, and the fastest answer wins. A rogue server hands out its own address as the gateway and quietly becomes the path for everything, which is a machine-in-the-middle achieved without touching a single cable in the datacentre. Marking the uplink as the only trusted port removes the whole class, and the table it builds is what several other protections then use to validate addresses."
+      },
+      "region": {
+        "def": "A geographic area where a cloud provider runs data centres, and the boundary most cloud services do not cross by default.",
+        "context": "It is the unit that matters for both law and failure: data residency is argued in terms of regions, and a regional outage is the largest failure a single provider account routinely experiences. The trap is assuming multi-region is a checkbox - it means duplicated data with a consistency decision, duplicated deployment pipelines, and an egress bill for the traffic between them."
+      },
+      "object-storage": {
+        "def": "Storage addressed by key rather than by path or block, with metadata attached and no filesystem semantics.",
+        "context": "Dropping the filesystem is what makes it scale: no directories to lock, no partial writes to coordinate, objects replaced whole. That also removes what applications expect - no append, no rename that is not a copy, and eventual rather than immediate agreement in some designs. The recurring security failure is not the technology but the permission: a bucket made public to fix an access problem, and never made private again."
+      },
+      "block-storage": {
+        "def": "Storage presented to a machine as a raw disk, which the operating system formats and manages itself.",
+        "context": "It is what a database and an operating system expect, because they want to control layout, caching and ordering. The cloud consequence is attachment: a volume belongs to one machine at a time and lives in one zone, which makes it the thing that pins a workload to a location. Anyone designing for failure discovers that moving the compute is easy and moving the disk is the actual project."
+      },
+      "shared-responsibility": {
+        "def": "The division of security duties between a cloud provider and its customer - the provider secures the platform, the customer secures what they put on it.",
+        "context": "It is stated in every provider's documentation and misread constantly, because the line moves with the service: with a virtual machine the customer patches the operating system, with a managed database they do not, and with a storage service the provider guarantees durability while the customer alone decides who can read it. Almost every publicised cloud breach sits on the customer side of a line that was published in advance."
+      },
+      "multi-tenancy": {
+        "def": "One system serving several customers from shared infrastructure, with isolation enforced by software rather than by separate hardware.",
+        "context": "It is what makes cloud economics work and what makes cloud security interesting: the boundary between two customers is code, and a defect in that code is a cross-tenant issue rather than a bug. The question worth asking of any platform is where the isolation actually lives - separate processes, separate machines, or only a customer identifier in a query, because the last one fails to a single missing filter."
+      },
+      "egress-fee": {
+        "def": "What a cloud provider charges for data leaving its network - typically free to receive and priced to send.",
+        "context": "The asymmetry is the strategy: importing data costs nothing and exporting it costs money, so the bill grows with any architecture that moves data out, and shrinks with any that keeps it in. That shapes real decisions - where backups live, whether analytics run next to the data, and how expensive leaving would be. It is worth pricing that last one before it matters rather than during a migration."
+      },
+      "pon": {
+        "def": "A fibre access network where one feed is split optically to many homes, with no powered equipment between the exchange and the subscriber.",
+        "context": "Passive is the economic argument: splitters need no power, no cooling and no maintenance visit, which is what made fibre to the home affordable. The consequences follow directly - the capacity of one feed is shared among everyone on the split, so contention is a design parameter rather than a fault, and every subscriber's downstream traffic physically reaches every other, which is why encryption on the access link is part of the standard rather than an option."
+      },
+      "spectrum": {
+        "def": "The range of radio frequencies available for transmission, divided by regulators into licensed and unlicensed bands.",
+        "context": "It is the only genuinely finite input in networking: fibre can be laid and processors improved, but a frequency in a place can only be used once. That scarcity explains the two worlds - licensed spectrum is bought at auction and comes with exclusivity, and unlicensed is free and comes with neighbours. Everything difficult about wireless in an office is a consequence of choosing the second, where the interference is other people doing the same thing legally."
+      },
+      "ix": {
+        "def": "A shared fabric where many networks interconnect directly, instead of paying a third party to carry traffic between them.",
+        "context": "The argument is cost and distance at once: without an exchange, traffic between two networks in the same city can travel to another country and back, which costs money and adds delay. An exchange removes both by making the connection local. That is why exchanges are strategic infrastructure for a country rather than commercial products, and why the largest ones are run as neutral non-profits with membership rules rather than as businesses."
+      },
+      "federation": {
+        "def": "Accepting an identity proven somewhere else, so a user authenticated by their own organisation can reach a service run by another.",
+        "context": "It moves the trust decision from a password to a relationship: the service no longer stores credentials, it decides which issuers it believes. The consequences are worth naming. Account lifecycle belongs to the issuer, so removing someone at home removes their access everywhere - which is the whole benefit and also means a compromised issuer is a compromise of every service that trusts it."
+      },
+      "assertion": {
+        "def": "The signed statement a federation protocol carries: who authenticated, when, how, for which audience, and for how long it is valid.",
+        "context": "Every field in it is load-bearing. The audience stops a token issued for one service being replayed at another; the validity window limits how long a stolen one is useful; the authentication method tells the service whether a second factor was actually used. Services that check the signature and ignore the rest accept assertions that were technically valid and not meant for them."
+      },
+      "passwordless": {
+        "def": "Authenticating with a key held by a device rather than with a shared secret the user types.",
+        "context": "The property that matters is not convenience: because the credential is bound to the site's origin and never leaves the device, there is nothing for a user to type into a convincing copy of the login page. That defeats phishing structurally rather than by training. The open problems are recovery and enrolment - what happens when the device is lost, and how the first credential is established, which is where the remaining attacks now concentrate."
+      },
+      "raid": {
+        "def": "Combining several disks so the array survives losing one - or more, depending on the layout chosen.",
+        "context": "The sentence that has to accompany it is that RAID is not a backup: it protects against a disk dying, and copies a deletion, a corruption or an encryption faithfully to every member. The second operational fact is rebuild - replacing a failed disk puts the array under sustained load precisely when its redundancy is gone, which is when the second failure tends to arrive."
+      },
+      "replication": {
+        "def": "Keeping copies of data on more than one machine, so the loss of one does not lose the data.",
+        "context": "The whole subject is the word 'when'. Synchronous replication confirms a write only after the copy has it, which costs latency proportional to distance and guarantees no loss; asynchronous confirms immediately and accepts that a failure loses whatever had not shipped. That choice is the recovery point objective expressed in engineering, and it cannot be avoided - a system that has not chosen has chosen asynchronous by default."
+      },
+      "sharding": {
+        "def": "Splitting a dataset across machines by some key, so each holds part of it rather than all of it.",
+        "context": "It is what you do when one machine can no longer hold or serve the data, and the shard key is the decision that cannot be undone cheaply. Choose badly and traffic concentrates on one shard while the others idle, or the common query has to visit every shard and the whole point is lost. Everything hard about it - rebalancing, cross-shard transactions, hot keys - descends from that single early choice."
+      },
+      "data-at-rest": {
+        "def": "Data sitting in storage rather than moving - and, usually, shorthand for encrypting it there.",
+        "context": "Encryption at rest defends against a specific threat: someone obtaining the medium. A stolen disk, a decommissioned array, a copied snapshot. It does nothing against an attacker who has access to the running system, because the system must be able to read its own data. That is why it satisfies a compliance requirement more often than it changes an incident, and why the useful question is where the key lives relative to the data."
+      },
+      "data-in-transit": {
+        "def": "Data moving across a network - and the encryption applied so that whoever carries it cannot read it.",
+        "context": "It is the better understood half, and the one where the assumption most often outruns the configuration: traffic is encrypted to the load balancer and plaintext behind it, or encrypted with a certificate nobody validates. The honest audit question is not whether it is encrypted but on which segments, and what each end actually checked before trusting the other."
+      },
+      "ssid": {
+        "def": "The name a wireless network advertises - a label, not an identity, and trivially copied.",
+        "context": "Because the name is only a string, any device can claim it, which is the whole basis of the evil twin: a stronger radio announcing the same network and collecting whatever connects. Hiding it protects nothing, since clients that know it broadcast their search for it and reveal it anyway. What actually distinguishes a legitimate network is the credential exchange behind the name, which is why enterprise authentication and certificate validation on the client are the controls that matter."
+      },
+      "wpa3": {
+        "def": "The current generation of wireless security, replacing the shared-key handshake that allowed offline password guessing.",
+        "context": "The substantive change is the handshake: the older scheme let anyone who captured a connection attempt guess the passphrase offline at their own pace, and the new one does not, which is why a weak passphrase stops being catastrophic on day one. It also encrypts open networks so that a public hotspot is no longer readable by everyone present. Adoption is the usual story - mixed mode keeps the old handshake available for old clients, and a network in mixed mode has the old properties for anyone who asks for them."
+      },
+      "captive-portal": {
+        "def": "The page a network forces a new client to see before granting access, implemented by intercepting the first requests.",
+        "context": "It works by lying: the network answers DNS and HTTP for names it does not own so the browser lands somewhere else. That is indistinguishable from an attack, which is precisely why it breaks more every year - certificate validation, encrypted DNS and pinned applications all refuse the interception on purpose. Operating systems now probe a known address to detect the situation and open a restricted window, which is the industry admitting the technique is a hack it has agreed to accommodate."
+      },
+      "cache-control": {
+        "def": "The header that tells caches whether a response may be stored, by whom, and for how long.",
+        "context": "Two mistakes recur and both are expensive. Caching something private in a shared cache serves one user's page to another, which is a data breach caused by a header. And caching nothing means every request reaches the origin, which turns a traffic spike into an outage that a correct directive would have absorbed entirely. The directive is small, sits in one place, and decides both."
+      },
+      "etag": {
+        "def": "An opaque identifier for a specific version of a resource, used to ask whether a cached copy is still current.",
+        "context": "It turns a full transfer into a short question: the client sends the tag it holds, and the server answers not-modified if nothing changed. That is the cheapest bandwidth saving on the web. It has a second life in write operations, where sending the tag with an update means the change applies only if nobody else changed it first, which is optimistic concurrency implemented in a header."
+      },
+      "websocket": {
+        "def": "A connection that starts as HTTP and then upgrades into a two-way channel that stays open.",
+        "context": "It exists because the request-response shape cannot express a server that needs to speak first. The operational consequences are what surprise people: the connection is long-lived, so it holds resources on every proxy and firewall in the path and dies to their idle timeouts; it bypasses the per-request checks a gateway performs, because there is only one request; and it needs its own authorisation model, since the credential was checked once at the upgrade and the channel then carries anything."
+      },
+      "same-origin": {
+        "def": "The browser rule that script from one site cannot read responses from another, where a site means scheme, host and port together.",
+        "context": "It is the foundation the entire web security model rests on: without it, any page could read your mail by requesting it with your cookies attached. Everything that looks like an exception is a deliberate opening of it - CORS is a server saying who may read its responses, and a cross-site scripting flaw matters precisely because injected code runs as the origin and the policy therefore protects the attacker."
+      },
+      "mta": {
+        "def": "The server that accepts mail and passes it on toward its destination.",
+        "context": "It is one of the last places where a machine accepts unsolicited connections from strangers and then acts on their content, which is why mail infrastructure carries so much of the internet's security history: relay controls, reputation lists, authentication records and content filtering were all invented here first. The operational rule that has not changed is that an agent which accepts and forwards without checking who asked will be found and used within hours."
+      },
+      "open-relay": {
+        "def": "A mail server that will forward messages from anyone to anyone - the default in the early internet and a liability ever since.",
+        "context": "It was not a defect originally: forwarding for strangers was cooperative behaviour on a network of colleagues. Spam turned it into free infrastructure for whoever found it, and the response invented the reputation list, which is the mechanism that later spread far beyond mail. It is worth remembering as the clearest case of a design that was correct for the network it was built on and became a vulnerability when the population changed."
+      },
+      "attestation": {
+        "def": "A statement by one party that something about another is true, made in a form somebody else is willing to rely on.",
+        "context": "It is what a report, a certification and a signed software bill of materials all are, and the useful question is always the same three: who is asserting, what exactly did they check, and what happens if they were wrong. An attestation with a narrow scope and a named responsible party is worth more than a broad one nobody stands behind, which is why reading the scope section is the whole skill."
+      },
+      "compliance": {
+        "def": "Demonstrating that an organisation meets an external requirement - which is a different objective from being secure.",
+        "context": "The two overlap and are not the same, and pretending otherwise wastes money in both directions. A control can satisfy a requirement and stop nothing, and a genuine improvement can be invisible to the framework. The useful stance is to treat the requirement as a floor and a forcing function - it obtains budget and attention that a risk argument could not - while measuring the programme against whether an attacker would actually be stopped."
+      },
+      "5g": {
+        "def": "The fifth generation of mobile networking, defined as much by network architecture as by radio speed.",
+        "context": "The headline figure is throughput and the durable changes are elsewhere: a core network built as software functions rather than fixed boxes, and network slicing, which lets one physical network present several logical ones with different guarantees. The security consequence follows the architecture - when the core is software running in data centres, mobile network security becomes a cloud and supply-chain problem rather than a telecom one."
+      },
+      "lte": {
+        "def": "The fourth-generation mobile standard, and the point at which mobile networks became entirely packet-based.",
+        "context": "Dropping the circuit-switched path is the historically important part: voice stopped being a separate system and became an application on the data network, which is why call quality became a quality-of-service problem rather than a switching one. Most of the world still runs on it, and it remains the fallback that carries service when the newer radio is unavailable - which makes its security properties current rather than historical."
+      },
+      "sim": {
+        "def": "The module holding a subscriber's identity and the key that authenticates them to a mobile network.",
+        "context": "It is a hardware credential, and treating it as one explains both its strength and its most exploited weakness. The key never leaves the card, which is genuinely strong. The account behind it, however, is transferable by a support agent - which is what SIM swapping attacks, and why anything that treats possession of a phone number as proof of identity inherits the security of a call centre rather than of cryptography."
+      },
+      "cloud-iam": {
+        "def": "The permission system of a cloud platform - who and what may call which interface on which resource.",
+        "context": "It differs from traditional access control in that machines are first-class subjects: most of the identities in a mature account are workloads, not people, and their credentials are issued automatically. That is the improvement and the risk, because a permissive role attached to a compute instance is reachable by anything that can run code on it. The recurring finding is scope - wildcards granted during setup and never narrowed, because nobody knows which of them is now load-bearing."
+      },
+      "spot-instance": {
+        "def": "Spare cloud capacity sold cheaply on the condition that it can be taken back with little warning.",
+        "context": "It is the clearest example of price expressing a guarantee: the same machine costs a fraction of the on-demand rate because the provider keeps the right to reclaim it. That makes it excellent for work that can be interrupted and restarted, and a trap for anything holding state. Designing for it is the same discipline as designing for failure, which is why teams that use it well tend to have better recovery behaviour everywhere else."
+      },
+      "edge-computing": {
+        "def": "Running computation near where data is produced or consumed, instead of sending it to a central location first.",
+        "context": "The motive is usually latency and sometimes law: physics puts a floor under a round trip to a distant region, and data residency rules can forbid the trip entirely. The cost is operational multiplication - the same workload now runs in many places you do not physically control, with the update, monitoring and key management problems that follow. It is a distribution decision before it is a technology."
+      },
+      "deprovisioning": {
+        "def": "Removing an identity's access when a person leaves or a role changes - the half of the lifecycle nobody is waiting on.",
+        "context": "Provisioning has an impatient audience and deprovisioning has none, which is why access accumulates and departures leave accounts behind. The dangerous residue is rarely the main directory account, which someone does disable, but everything federated, local or machine-to-machine that was granted separately: a key in a repository, an account on a supplier's portal, a token in a scheduled job. The measurable question is how long after a departure the last credential dies."
+      },
+      "transaction": {
+        "def": "A group of operations that either all take effect or none do, leaving no visible half-finished state.",
+        "context": "The guarantee is what lets a system be reasoned about at all: money moves between two accounts without a moment where it exists in neither. It is also expensive, and distributed systems spend most of their design effort deciding how much of it to give up - which is why the interesting question about any storage system is what it promises across machines rather than within one."
+      },
+      "data-classification": {
+        "def": "Deciding which data is sensitive and how each class must be handled - the step every other data control depends on.",
+        "context": "It fails in a specific way: a scheme with five levels that nobody applies is worse than two levels that everyone does, because controls keyed to labels do nothing when the labels are absent or wrong. The workable version is coarse, automatic where possible, and tied to a consequence people can see. If nothing behaves differently once something is labelled confidential, the exercise produced paperwork rather than protection."
+      },
+      "bssid": {
+        "def": "The identifier of one specific radio in a wireless network - in practice the access point's own address, as distinct from the network name.",
+        "context": "One name can be served by hundreds of radios, and the client chooses between them; the identifier is how you tell which one it actually joined. That makes it the field that matters in wireless troubleshooting, because a complaint about the network is usually a complaint about one access point, and the aggregate hides it. It is also how a rogue announcing your network name is distinguished from your own equipment."
+      },
+      "channel-width": {
+        "def": "How much spectrum one wireless channel occupies - wider carries more per transmission and leaves fewer non-overlapping channels.",
+        "context": "It is the clearest trade in wireless design and the most commonly got wrong: the widest setting gives the best single-client speed test and the worst dense-deployment behaviour, because every neighbouring access point now overlaps and they take turns instead of working in parallel. In an office the right answer is usually narrower than the default, which is an argument that has to be made against a number everyone can see on a laptop."
+      },
+      "eap-tls": {
+        "def": "Wireless and wired authentication using certificates on both sides, rather than a shared password.",
+        "context": "It is the strongest common option because there is no passphrase to share, post or take to a former employer, and each device authenticates as itself. The cost is a certificate lifecycle for every endpoint, which is the reason deployments stall. The frequent misconfiguration is worth naming: a client that does not validate the server's certificate will happily authenticate to an impostor, which turns the strongest option into a credential-harvesting opportunity."
+      },
+      "http2": {
+        "def": "A revision that multiplexes many requests over one connection and compresses headers, without changing what a request means.",
+        "context": "It fixed the era's main waste - browsers opening several connections and queueing requests behind each other - by putting independent streams on one connection. The limitation is inherited from underneath: the streams are independent to the application and not to TCP, so one lost packet stalls all of them, which is the head-of-line blocking that QUIC was designed to remove. Its other legacy is operational, since a single long connection behaves differently through proxies than many short ones."
+      },
+      "http3": {
+        "def": "HTTP carried over QUIC on UDP, so loss on one stream no longer stalls the others.",
+        "context": "Moving to UDP is what removes head-of-line blocking, and it brings consequences beyond speed. The transport is encrypted, so middleboxes see far less and traffic classification by inspection largely stops working. Connections survive a change of address, which is why a phone moving between networks keeps its session. And networks that block UDP force a fallback to the older version, which usually works and quietly costs the benefit."
+      },
+      "user-agent": {
+        "def": "The client identifying itself in a header - a claim, not a fact, and one of the oldest lies on the web.",
+        "context": "The string is famously accreted: browsers claim to be other browsers because sites once tested for names instead of capabilities, so almost every modern agent asserts a lineage it does not have. Two practical points survive that history. Anything security-relevant that depends on it is trivially bypassed, since the client chooses what to send. And it is a fingerprinting input, which is why browsers are now reducing what it reveals rather than adding to it."
+      },
+      "spam-filter": {
+        "def": "The system deciding which incoming mail reaches a person - the most consequential automated judgement most organisations run.",
+        "context": "It is a false-positive problem more than a detection problem: missing spam is an annoyance and blocking an invoice, a job offer or a customer reply is a business incident, which is why quarantine and release exist at all. It is also the first control an attacker tests, because delivery is the precondition for phishing, and the reason authentication records for a domain matter to everyone who receives its mail rather than only to its owner."
+      },
+      "audit": {
+        "def": "An independent examination of whether controls exist and operate as described, producing an opinion somebody else can rely on.",
+        "context": "Independence is the product: an internal review can find more and convince fewer. What auditors test is usually a sample against a stated control, which means the result says the control worked on those occasions rather than always - a distinction worth holding on to when a clean report meets a real incident. The useful preparation is not tidying evidence before the visit but keeping records that are produced by the process anyway."
+      },
+      "control-framework": {
+        "def": "A published set of controls used as a common reference - so an organisation can describe what it does in terms others recognise.",
+        "context": "Its value is shared vocabulary rather than novelty: nothing in a framework is unknown to a competent practitioner, and the point is that a customer, an insurer and a regulator can all read the same map. The failure is adopting one as a to-do list, which produces uniform coverage rather than defence where it is needed. Frameworks describe what to consider, and the organisation still has to decide what its own risk demands."
+      },
+      "luigi-galvani": {
+        "def": "The physician who saw dead frog legs twitch at the touch of dissimilar metals in 1780 and called it animal electricity.",
+        "context": "His explanation was wrong and his observation was not, which is the useful shape of the story. Volta disputed the theory - arguing the twitch came from the contact of two metals rather than from anything in the animal - and that disagreement is what drove him to build the pile. A mistaken interpretation of a correct experiment produced the first steady current, and the word galvanic survived attached to the idea he got wrong."
+      },
+      "charles-augustin-de-coulomb": {
+        "def": "The French engineer who turned the torsion balance into an instrument for measuring charge, and proved the electric force follows an inverse square law.",
+        "context": "Before him there were devices to generate, store and detect static electricity and no easy way to say how much. He did not invent the balance - John Michell had used a similar one for gravity - but he was the first to point it at charge, and measurement is what turned electricity from a phenomenon people demonstrated into a quantity people could reason about. The field became a science when it acquired a number."
+      },
+      "andre-marie-ampere": {
+        "def": "The physicist who turned Ørsted's observation into electrodynamics, and who first drew the distinction between current and voltage.",
+        "context": "Ørsted's experiment was reproduced at the Paris Academy in September 1820; Ampère presented his first reflections on it a week later and spent the following six years turning it into mathematics. The speed matters less than the difference in kind: Ørsted observed that a current deflects a needle, and Ampère produced a theory that predicted by how much. Separating current from voltage is the distinction every practical electrical measurement rests on, and the unit of the first carries his name."
+      },
+      "georg-ohm": {
+        "def": "The German physicist whose 1827 law relates voltage, current and resistance - the first thing anyone learns about circuits, and the last thing they stop using.",
+        "context": "The law was poorly received when published and he waited years for recognition, which is a recurring pattern in this timeline rather than an anecdote. What it gave the field was a design tool: with three quantities related by one equation, a circuit can be reasoned about before it is built. Every cable length calculation, every power budget and every fault involving a bad connection is downstream of it."
+      },
+      "james-prescott-joule": {
+        "def": "The physicist who showed that electrical energy, heat and mechanical work are the same quantity in different forms.",
+        "context": "Establishing that energy is conserved across electrical, thermal and chemical processes is what makes a power budget possible: the watts that enter a device leave it as work and heat, and none of them disappear. Every cooling calculation in a data centre is his result applied at scale, and the reason a dense rack is a thermal problem before it is anything else. Joule heating is also why a bad connection warms up, which is one of the oldest diagnostic signs in the trade."
+      },
+      "samuel-morse": {
+        "def": "The portrait painter whose code turned electricity into a message, sent from Washington to Baltimore on 24 May 1844.",
+        "context": "Cooke and Wheatstone built a working telegraph in England at the same time, using moving needles; Morse used sound, and encoding is what made his version travel. The choice is the first appearance of a decision this whole field keeps repeating - that the encoding matters more than the medium. His code is also the older half of a partnership rarely stated: Alfred Vail and Leonard Gale worked on it and are usually left out, which makes this the first attribution problem on the timeline rather than the last."
+      },
+      "nikola-tesla": {
+        "def": "The engineer whose alternating-current systems and 1891 resonant transformer made high frequency and high voltage into tools rather than curiosities.",
+        "context": "Direct current loses too much over distance to serve a city, and alternating current can be transformed up for transmission and down for use - which is why the grid every data centre draws from is his design rather than his rival's. The resonant coil matters here for a second reason: producing and tuning high-frequency oscillation is the same problem radio had to solve, and the work fed straight into it. He is also the clearest case on this timeline of reputation and reward diverging completely from contribution."
+      },
+      "william-crookes": {
+        "def": "The chemist whose partially evacuated tube let cathode rays be seen and studied, and which every later display and vacuum device descends from.",
+        "context": "Pumping most of the air out of a glass tube and passing a current through it produced something nobody could account for, and the instruments built to study it produced the electron, the X-ray and the cathode ray tube. The apparatus outlived every theory offered to explain it. That is the ordinary sequence in this field and it is worth stating: a tool built to investigate a puzzle usually turns out to be more durable than the answer it was built to find."
+      },
+      "lee-de-forest": {
+        "def": "The engineer who added a third electrode to a vacuum tube in 1906, producing the first device that could amplify a signal.",
+        "context": "He built it as a detector and did not grasp what he had; its amplifying capability was only realised after 1912. Amplification is the property that made long-distance telephony, radio and eventually computing possible, because a signal that can be rebuilt at intervals can travel indefinitely - which is the same argument as a repeater, a regenerator and, later, a router. The pattern is worth marking: the inventor of the most consequential component of the era spent six years not understanding its most important property."
+      },
+      "sarbanes-oxley": {
+        "def": "The 2002 United States law on corporate financial reporting that made internal controls, including access control, a matter of legal liability for company officers.",
+        "context": "It is a finance law and it reshaped security purchasing, which is why it belongs in a technical glossary. By making executives answerable for the integrity of financial systems, it turned identity governance, change control and audit logging from good practice into obligations someone signs for. Static analysis and identity governance both became enterprise categories in its wake. The pattern is the one this catalogue keeps recording: compliance creates markets faster than threats do, and it moves the buying decision from the people who operate a control to the people who have to certify it."
+      },
+      "x509": {
+        "def": "The certificate format published by the ITU in 1988 and profiled for the internet in RFC 5280, binding a name to a public key with an issuer's signature.",
+        "context": "It carries the subject, the public key, the validity dates, the issuer and the extensions that decide what the certificate may be used for, all signed by the issuing authority. It comes from the same standards programme as the X.500 directory, which is why its structures feel like a directory's and why so many operational problems are really encoding problems. Most certificate faults in practice are not cryptographic: a missing intermediate, a name that does not match, or dates nobody was watching."
+      },
+      "jean-charles-peltier": {
+        "def": "The clockmaker who found in 1834 that passing current through a junction of two dissimilar metals heats one side and cools the other, depending on direction.",
+        "context": "He was a watchmaker who retired at thirty to do science, and what he found is the only way to move heat with no moving parts and no working fluid. It stayed a curiosity for about 120 years, because it needs semiconductors to be efficient enough to matter - which makes it a clean case of a correct discovery waiting for a material that did not exist yet. The devices built on it now hold laser temperatures steady inside optical transceivers, so a discovery from 1834 is what keeps a wavelength where the specification says it should be."
+      },
+      "leon-foucault": {
+        "def": "The physicist who demonstrated the Earth's rotation with a pendulum in 1851, discovered eddy currents, and gave the gyroscope its name.",
+        "context": "The pendulum is what he is remembered for and the eddy currents are what the industry actually pays for. Currents induced in a conductor by a changing magnetic field are the loss that every transformer and motor is designed to minimise, and the effect that induction heating, metal detectors and magnetic braking are designed to exploit - the same phenomenon counted as waste in one application and as the product in another. He also belongs to a pattern this catalogue keeps finding: he built his own instruments, including the knife-edge test still used on telescope mirrors, and people who make their own tools tend to see what the users of those tools cannot."
+      },
+      "james-watt": {
+        "def": "The engineer who in 1788 put a spinning-weight governor on a steam engine, creating the mechanical ancestor of every control loop in computing.",
+        "context": "The attribution deserves care: Huygens had built centrifugal governors in the seventeenth century for windmills, and Watt adapted one rather than inventing it - though the adaptation mattered enough that he is often credited anyway. What the device is, precisely, is a closed loop with no human in it: the engine's speed raises the weights, the weights close the throttle, the throttle slows the engine. James Clerk Maxwell turned it into mathematics in 1868, and everything from congestion control to autoscaling to a datacentre's cooling is a descendant of that paper rather than of the hardware."
+      },
+      "john-logie-baird": {
+        "def": "The engineer who demonstrated working television to the Royal Institution on 26 January 1926, to an audience that did not appear to realise what it had seen.",
+        "context": "Not one attending member published a comment afterwards. The only first-hand account was a short item in The Times two days later, and a prospective investor visiting that April concluded it would be an error of judgment to bring the equipment to market. The date is now treated as the birth of television and was, on the day, unremarkable to the experts in the room - which places it beside Kao being ridiculed and Ohm being ignored. Baird's mechanical system then lost within a decade to all-electronic television built on the cathode ray tube, whose lineage runs back to Crookes: first to a working demonstration, and not the design that won."
+      },
+      "edward-weston": {
+        "def": "The engineer who made electricity measurable in the field, with the first accurate portable direct-reading meters and a cell stable enough to calibrate them.",
+        "context": "He did not set out to sell instruments. He was working on dynamos and found the available meters too clumsy and slow for his own experiments, so he built better ones - and they worked well enough that in 1888 he abandoned everything else. The list of what he had to invent to get there is the real story: permanent magnets that stayed permanent, conductors that ignored temperature, springs with low resistance and no magnetism, and pointer damping from Foucault's eddy currents. His 1893 cell then served as the international standard for electromotive force from 1911 until 1990, which means the volt was defined by a wet chemical cell for most of the twentieth century. An industry cannot be billed, tuned or trusted until it can be measured, and this is the man who closed that gap."
+      },
+      "alexander-graham-bell": {
+        "def": "The teacher of the deaf whose 1876 patent on transmitting speech electrically created the network that every later one was built on top of.",
+        "context": "The telephone matters here for an unglamorous reason: it produced the wires. Decades of digital communication ran over a plant built for voice, which is why modems, leased lines and the first broadband all had to work within constraints set by a nineteenth-century speech circuit. His work with deaf students is what led him to the mechanics of speech and hearing in the first place - the machine came out of teaching rather than out of telegraphy. His name is now attached to the medal given for contributions to communications engineering, which several people in this catalogue have received."
+      },
+      "lan": {
+        "def": "Local area network: a network within one site, under one administration, where the links are yours and bandwidth is cheap.",
+        "context": "The defining property was never distance. It was that you own the cable, so bandwidth costs nothing per byte and latency is small enough to ignore - which is why protocols designed for a local area assume both and break when moved. The word local has since become a claim about trust and administration rather than about metres, and a cloud subnet with nothing local about it is still called one."
+      },
+      "wan": {
+        "def": "Wide area network: a network spanning sites, built on circuits somebody else owns and bills you for.",
+        "context": "Every design decision here descends from the link being rented. Bandwidth is metered, latency is set by geography and the speed of light, and the circuit can fail in ways you cannot inspect. Compression, caching, deduplication, traffic shaping and the whole wide area optimisation category exist because a megabyte across a wide area costs money and a megabyte across a local one does not."
+      },
+      "man": {
+        "def": "Metropolitan area network: a network across a city, larger than one site and smaller than a carrier's long-haul.",
+        "context": "It is the least used of the three terms and describes a real situation: a university, a hospital group or a municipality with several buildings across a city, joined by fibre they either own or lease dark. What makes it its own category is that the economics sit between the other two - the link is not free, and it is not metered per byte either, so the design choices belong to neither."
+      },
+      "wlan": {
+        "def": "Wireless local area network: a local area network whose medium is shared air rather than dedicated cable.",
+        "context": "It is a local area network in addressing and a completely different animal in behaviour, because the switch removed collisions from the wired world and nothing can remove them from the air. Capacity falls with the number of talkers rather than with distance, the client decides when to roam and the network cannot make it, and interference comes from neighbours and appliances you do not control. Treating it as cable that happens to be invisible is the most common design error in this area."
+      },
+      "pan": {
+        "def": "Personal area network: the few metres around one person, where devices pair with each other rather than joining an infrastructure.",
+        "context": "The interesting property is that it has no administrator. Pairing is a decision made by whoever is holding the device, which is why the security model is consent at a moment rather than policy over time, and why enterprise control over this layer is weak wherever it exists at all. Headsets, keyboards, wearables and vehicle links all sit here, and all of them are network attach points that no inventory contains."
+      },
+      "can-campus": {
+        "def": "Campus area network: several local area networks across adjacent buildings under one owner, joined by cable that owner controls.",
+        "context": "It is the scale at which the vendor certification tracks are actually taught, and the scale where the hard problems first appear: several buildings means a distribution layer, redundant paths, spanning tree or its successors, and a routing decision between floors. Not to be confused with the controller area network of the same acronym, which is an in-vehicle bus and an entirely different subject."
+      },
+      "overlay-network": {
+        "def": "A network built on top of another one, whose links are tunnels across the network beneath it.",
+        "context": "The one underneath is the underlay, and the split is the dominant pattern in modern infrastructure: route the underlay simply and reliably, and express everything the application wants in the overlay. The uncomfortable part is that a fault in the underlay appears in the overlay as something else entirely, so the layer that made the design tractable is also the layer that makes the diagnosis hard."
+      },
+      "geneve": {
+        "def": "Generic Network Virtualization Encapsulation: a tunnelling format designed to carry arbitrary metadata rather than a fixed set of fields.",
+        "context": "Its whole argument is with its predecessors. Earlier encapsulations fixed their header fields at design time, so anything the designers had not anticipated required a new protocol; this one carries extensible options so the format outlives the requirements. Whether that generality was worth the parsing cost is a live disagreement, and hardware support has been the deciding factor rather than elegance."
+      },
+      "nvgre": {
+        "def": "Network Virtualization using Generic Routing Encapsulation: a network virtualisation scheme carrying tenant traffic inside an existing tunnelling protocol.",
+        "context": "It reused an encapsulation that already existed rather than defining a new one, which is a reasonable instinct and cost it the market: the field it used for load distribution was not one that existing hardware hashed on, so traffic did not spread across links the way operators expected. It is worth keeping in the record as a case where reusing a standard was the more conservative choice and the less successful one."
       }
     },
     "totalCount": "{count} terms",

@@ -15,6 +15,14 @@ When someone says "BIG-IP DNS load balances the request," they usually picture o
 
 Here is the actual shape. A wide IP - the fully-qualified name a client resolves, like `www.example.com` - does not point at addresses directly. It points at **pools**. Each pool holds **virtual servers** (typically the LTM virtual servers standing in front of the real application at each site). When a DNS request arrives, BIG-IP DNS first chooses a pool, and only then chooses a virtual server inside that pool to return as the answer. Two tiers, two selections.
 
+## Origins: the only global steering mechanism was a name
+
+Global load balancing exists because there is no way to steer a user to a site from inside the network. Anycast can influence which instance of an address a packet reaches, but it is a routing decision made by other people's routers, and it changes without asking. The one lever an application owner reliably controls is the answer given when somebody asks for a name.
+
+So the technique became: answer the [DNS](/glossary/dns) query differently depending on who asked and what is healthy. That is the whole mechanism, and every limitation below follows from having chosen a naming system as a traffic control.
+
+The two tiers exist for the same reason as any hierarchy - the first decision is about sites and the second about servers, and mixing them into one list makes both harder to reason about.
+
 ## Tier one: the wide IP picks a pool
 
 The wide IP has its own load-balancing method that governs pool selection, and pools are considered in the order they are listed. Four static methods apply here:
@@ -43,6 +51,22 @@ Say `www.example.com` has two pools. The wide IP uses **Topology**; the client i
 Tier one: Topology compares the EU client to each pool. `pool-emea` matches (highest score), so **all** requests go there; `pool-americas` gets nothing. Tier two: inside `pool-emea`, Ratio 3:1 splits the traffic - `vs-lon` takes three-quarters, `vs-fra` one-quarter. Of 100 requests: 0 to the Americas, 75 to London, 25 to Frankfurt.
 
 Change only the wide-IP method to Round Robin and the picture inverts at tier one: now the 100 requests split 50/50 between the pools regardless of client location, and the EU pool's 50 still divide 3:1 into 37/38 and 12/13. Same pools, same members, a completely different answer - because the tier-one decision changed.
+
+## What the mechanism cannot do
+
+**It does not see the user, it sees a resolver.** The decision is based on where the query came from, which is the recursive resolver's address, not the client's. A user on a public resolver may be steered to the wrong continent, and the subnet extension that was meant to fix this is not universally sent or honoured.
+
+**It cannot move an established connection.** DNS steering decides where a session starts. Once the client has connected, the answer is irrelevant until it resolves again - which is why failover time is bounded by cache expiry rather than by health-check interval.
+
+**Time to live is advisory.** Resolvers, browsers and applications all cache, and some ignore short values deliberately. A thirty-second record does not mean thirty-second failover; it means the fastest failover you may hope for and no guarantee.
+
+**Health is inferred at a distance.** The monitor says the virtual server answered from where the monitor sits. Users elsewhere may be having a different experience entirely, and a site that is up but slow usually still passes.
+
+## Where this leaves the design
+
+The honest framing is that the two-tier arrangement is good at deciding **where a new session should begin**, and that everything about continuity belongs elsewhere - to the application, to the client's retry behaviour, and to the state that has to exist in more than one place if a site is going to be lost.
+
+Which is why the serious version of this conversation is never about the load-balancing method. It is about whether the data is in both places, whether the second site can carry the load once it is alone, and how long the organisation is willing to be inconsistent while the two are reconciling. The steering is the easy part.
 
 ## The dynamic methods, and honesty about them
 

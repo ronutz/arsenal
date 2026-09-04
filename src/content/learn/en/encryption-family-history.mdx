@@ -1,0 +1,82 @@
+---
+slug: encryption-family-history
+title: "Encryption: The Standard, the Suspicion, and What the Suspicion Got Wrong"
+summary: "Civilian cryptography has a founding document and a founding argument. The document is the Data Encryption Standard, issued in November 1977 from a cipher IBM built on Horst Feistel's Lucifer. The argument is what the National Security Agency did to it - and the answer, which took seventeen years to emerge, is that the agency made the algorithm stronger against an attack nobody outside knew existed while shortening the key. This is the family history: from a filename too long for an operating system, through the crypto wars, to a standards process that now runs in the open because of what that suspicion cost."
+concepts: ["encryption", "des", "aes", "lucifer", "public key", "crypto wars", "history"]
+relatedTools: []
+relatedArticles: ["quantum-threat-to-cryptography", "security-through-obscurity", "tls12-tls13-dtls-quic"]
+category: security
+order: 147
+status: reviewed
+updated: "2026-09-03"
+---
+
+Cryptography is thousands of years old. **Civilian** cryptography - published algorithms, analysed in the open, used by people with no clearance - is about fifty, and it begins with a government deciding it needed something it was unwilling to build itself.
+
+## 1972 to 1974: the solicitation nobody could answer
+
+After a study of federal computer security needs, the National Bureau of Standards concluded in 1972 that the government required a single standard for encrypting sensitive but unclassified information. The National Security Agency, the obvious builder, was unwilling to design a cryptosystem for public use - so on **15 May 1973**, after consulting the agency, the bureau simply asked the public.
+
+Nothing suitable arrived. A second request went out on **27 August 1974**, and this time IBM submitted a cipher developed in 1973 and 1974 from **Horst Feistel's Lucifer**, first published in 1971.
+
+Lucifer's name is worth keeping. It was a pun on *Demon*, itself a truncation of *Demonstration*, the privacy system Feistel had been working on - shortened because the operating system could not handle a longer filename. **The cipher that founded civilian cryptography is named after a file-length limit.**
+
+The IBM team included Feistel, Walter Tuchman, Don Coppersmith, Alan Konheim, Carl Meyer, Mike Matyas, Roy Adler, Edna Grossman, Bill Notz, Lynn Smith and Bryant Tuckerman.
+
+## 1975 to 1977: the standard and the accusation
+
+The proposal was published in the Federal Register on **17 March 1975**, public comment was invited, and two open workshops followed in 1976. The bureau issued it as **FIPS 46 on 23 November 1977**.
+
+The agency had worked with the bureau throughout, evaluated the algorithm and recommended changes, which IBM made. Two suspicions followed immediately and dominated the field for two decades: that a trapdoor had been inserted, and that the **56-bit** key had been deliberately shortened so the agency could read the traffic. Whitfield Diffie and Martin Hellman published *Exhaustive Cryptanalysis of the NBS Data Encryption Standard* in June 1977, arguing the key was too short for the computing power that was coming.
+
+**Here is what actually happened, and it is the most instructive fact in this article.** The agency's changes reduced the key to 56 bits and the block to 64 - weakening it against brute force, exactly as the critics said. The same changes made the cipher **resistant to differential cryptanalysis**, an attack technique then known only to IBM and the agency and not rediscovered publicly until the early 1990s.
+
+So the suspicion was half right and half exactly backwards. The intelligence agency strengthened the algorithm against an attack the academic world would not discover for seventeen years, and shortened the key so it remained readable to an organisation with enough hardware. Both moves were the same institution acting on the same interest, and neither the critics nor the defenders had the information to say so at the time.
+
+Diffie and Hellman were right about the key. In **January 1999** the Electronic Frontier Foundation and distributed.net broke a DES key in 22 hours and 15 minutes.
+
+## The other 1970s: the key exchange problem
+
+While the standard was being argued over, a separate line of work removed the constraint that had defined cryptography for its entire history: that two parties must already share a secret.
+
+Diffie, Hellman and Ralph Merkle published key exchange over a public channel; Rivest, Shamir and Adleman produced a practical public-key cryptosystem. And, as this catalogue records elsewhere, **James Ellis and Clifford Cocks had reached equivalent results at GCHQ years earlier and could not say so** - classified work that was independently rediscovered in the open, which is the fourth case of simultaneous invention in this corpus and the only one where one side was legally silenced.
+
+## The crypto wars
+
+For twenty-five years, strong cryptography was regulated as a weapon. Export controls limited what could be shipped abroad, which in practice limited what got built at all, since few vendors maintain two versions of a product. The **Clipper chip** proposal of 1993 offered strong encryption with keys escrowed for government access, and was rejected comprehensively enough that the phrase still functions as shorthand for the idea.
+
+Controls were relaxed at the end of the 1990s and the argument moved rather than ended - to backdoors, to lawful access, to device unlocking, and now to messaging. The underlying question has not changed since 1977: whether a system can be built that is strong against everyone except one authorised party, and whether that party can be trusted to remain the only one.
+
+## 1997 to 2001: doing it differently
+
+The replacement for DES was designed to answer the suspicion structurally rather than with reassurance.
+
+NIST announced the **Advanced Encryption Standard** competition in 1997. Candidates were due on 15 June 1998; twenty-one were submitted and fifteen met the criteria, from teams in several countries. Analysis was public, the algorithms were public, cryptanalysts attacked each other's entries in the open, and the winner - Rijndael, from Belgium - was selected in a process anyone could audit. A 1996 committee had argued ninety bits was the minimum for twenty years of security; NIST required 128.
+
+**The AES process is the most important thing in this history after public-key cryptography itself**, and it is a governance achievement rather than a mathematical one. An open competition produces an algorithm the world can trust without trusting its sponsor, and every subsequent standards effort - including the post-quantum selection - has copied the format because of what the DES suspicion cost.
+
+## The jobs and the practices
+
+This family produced remarkably few dedicated jobs and an enormous amount of practice embedded in other people's jobs. There are cryptographers, and there are very few of them; almost everyone else *uses* cryptography, which is where the failures happen.
+
+The operational reality is stated in the [key management](/glossary/key-management) entry and bears repeating here: **algorithms are almost never broken in practice; keys are copied, committed to repositories, shared between environments and never rotated.** The discipline that matters is administrative - where a key exists, who can use it, and whether replacing it has ever been tested.
+
+The other durable practice is **not writing your own**. Kerckhoffs said in 1883 that a system's security must rest in the key rather than the design, and the modern form of that is the near-universal professional rule that implementing cryptographic primitives yourself is a mistake regardless of ability. The strongest field in security is also the one where practitioners are most firmly told to use somebody else's work.
+
+## Where it goes
+
+**Everything is encrypted now, and that changed defence more than attack.** The corpus of articles around this one traces the consequence repeatedly: [interception loses ground](/learn/ssl-forward-proxy-interception), network sensors lose payload, inspection migrates to endpoints. Ubiquitous encryption was a privacy victory that reorganised the entire defensive industry.
+
+**The threat model moved to endpoints and keys.** When the transport is sound, the attacker goes where the plaintext is or where the key is stored - which is why hardware-backed key storage and endpoint security absorbed the effort that used to go into transport security.
+
+**The post-quantum transition is under way and its logic is temporal.** As the [quantum threat article](/learn/quantum-threat-to-cryptography) sets out, data captured today can be decrypted later, so the migration is driven by how long secrets must stay secret rather than by when the machine arrives.
+
+**And the founding argument is unresolved.** Nothing about the 1977 dispute has been settled - only re-litigated with new nouns. A state wanting exceptional access, a public wanting mathematics nobody can override, and a standards body in the middle trying to produce something both will use. The AES process showed the way through it is procedural: not asking to be trusted, but building so trust is unnecessary.
+
+## Sources
+
+- [Data Encryption Standard: developed at IBM from Feistel's Lucifer, published in the Federal Register on 17 March 1975, with the design team including Feistel, Tuchman, Coppersmith, Konheim, Meyer, Matyas, Adler, Grossman, Notz, Smith and Tuckerman](https://en.wikipedia.org/wiki/Data_Encryption_Standard)
+- [NIST cyber history on cryptography: the 1972 study, the solicitations of 15 May 1973 and 27 August 1974, the 1976 public workshops, the issue of FIPS 46 on 23 November 1977, and the trapdoor and key-length controversies](https://csrc.nist.gov/nist-cyber-history/cryptography/chapter)
+- [Lucifer (cipher): first published 1971 with key sizes up to 128 bits; the National Security Agency reduced the key to 56 bits and the block to 64 and made the cipher resistant to differential cryptanalysis, then known only to IBM and the agency; the name was a pun on Demon, truncated from Demonstration because the operating system could not handle the longer name](https://en.wikipedia.org/wiki/Lucifer_(cipher))
+- [Communications of the ACM on designing cryptography for the new century: the agency's unwillingness to design a public cryptosystem, the 1997 competition, the 1996 argument for ninety bits, and NIST settling on a 128-bit minimum](https://cacm.acm.org/opinion/technical-opinion-designing-cryptography-for-the-new-century/)
+- [The Electronic Frontier Foundation and distributed.net breaking a DES key in 22 hours and 15 minutes in January 1999](https://www.tech-faq.com/des.html)

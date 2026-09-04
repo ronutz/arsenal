@@ -1,0 +1,89 @@
+---
+slug: obsolescence
+title: "Obsolescence: What Actually Dies, What Refuses To, and How to Tell"
+summary: "This industry is wrong about obsolescence in both directions. It declares things finished that outlive the declaration by decades, and treats as permanent things that vanish inside a product cycle. Drawing on the family histories and company records in this catalogue, this is an attempt at something more useful than prediction: the specific mechanisms by which a technology actually dies, the specific reasons others cannot be killed, and what both imply for anyone deciding what is worth learning."
+concepts: ["obsolescence", "legacy", "end of life", "technology adoption", "history"]
+relatedTools: []
+relatedArticles: ["virtualization-family-history", "bridge-switch-family-history", "sdn-family-history", "encryption-family-history"]
+category: networking
+order: 156
+status: reviewed
+updated: "2026-09-03"
+---
+
+Every technology in this catalogue was, at some point, the future. Several were declared dead while still carrying most of the world's traffic. At least one was declared impossible, built anyway, and is now the substrate of the entire cloud industry.
+
+The record assembled across these family histories supports a claim worth stating bluntly: **the industry is systematically wrong about obsolescence, and wrong in both directions at once.** It buries things that will not die and assumes permanence in things that disappear inside a decade. What follows is not a prediction method. It is an attempt to name the mechanisms, because the mechanisms are visible even when the outcomes are not.
+
+## Six ways a technology actually dies
+
+**1. The constraint that produced it disappears.** Virtualisation worked in 1967 and vanished for fifteen years, not because it stopped working but because minicomputers and personal computers made hardware cheap and personal. If you do not need to share a machine, you do not need a hypervisor. It returned the moment a datacentre full of underused servers recreated the original constraint. **A technology does not survive on merit; it survives on whether the problem it solves is still expensive.**
+
+**2. The economics invert underneath it.** Token Ring was technically respectable and lost to Ethernet on cost and installation. Hubs lost to switches when per-port silicon became affordable. Nothing about the losing technology got worse; the price of the alternative fell through the floor.
+
+**3. The layer commoditises.** SynOptics won the wiring layer completely and still had to merge, because the part of the network it dominated was the part where prices fall fastest. **Winning a layer that commoditises is a race you finish and then have to run again somewhere higher.**
+
+**4. The vendor stops developing it.** Cisco shipped the first load balancer and never led that market, because development slowed after the acquisitions and the follow-on product stayed frozen at its year-2000 feature set while F5 kept going on two hundred thousand dollars of first-year revenue. **Being first is a position, not an advantage. What compounds is continuing to develop.**
+
+**5. It is absorbed rather than replaced.** Intrusion prevention did not die; it stopped being a product and became a feature of the next-generation firewall. The web application firewall became a module on the delivery controller. Absorption looks like death from the outside and is not - the function continues, the market for it as a separate purchase does not.
+
+**6. The company is acquired and the product becomes a line item.** Wellfleet, Kalpana, Ungermann-Bass, Sourcefire, Nicira. Of the three companies that founded Silicon Valley networking in 1979, none survived as an independent company, and their engineering is not what failed.
+
+## Six reasons a technology cannot be killed
+
+**1. No single party can force the change.** Interdomain routing still runs on a protocol designed when the operators all knew each other. Every proposal to secure it properly has met the fact that nobody can require the rest of the internet to adopt anything. Email is the same story: designed in 1982 with no authentication, and every mechanism since has been bolted on without breaking what exists.
+
+**2. The cost of replacing exceeds the perceived risk.** The first version of the network management protocol shipped with a cleartext community string, and the industry ran it for thirty years anyway. That was not ignorance. It was an accurate assessment that replacement cost more than the risk appeared to.
+
+**3. The applications assume it.** Layer 2 has been declared finished by every generation since routing became cheap, and it is still there, because software keeps being written by people who assume the network is one flat thing. The modern data centre spends real effort recreating a flat layer 2 illusion on top of a routed fabric for exactly this reason.
+
+**4. It is embedded in hardware that cannot be replaced.** WEP had to die and could not be, because the devices could not be upgraded. The retrofit that followed existed to buy time on hardware nobody could recall.
+
+**5. It was given away.** The random access method underneath Wi-Fi, mobile networks, cable and Ethernet was put into the public domain in 1971 because the university had no office to commercialise it. Unowned things cannot be discontinued.
+
+**6. The specification outlived the product.** This is the strongest pattern in the catalogue. Proteon's hardware is gone entirely and OSPF (open shortest path first), which it produced, runs in a large share of enterprise networks. Sytek is gone and NetBIOS was still being disabled in hardening guides four decades later. **A specification can be implemented by anyone; a product has to be bought from you.**
+
+## The case that inverts the assumption
+
+The default mental model is that a successor replaces a predecessor. The most instructive recent event in this corpus is the opposite.
+
+F5 announced end of sale and development for BIG-IP Next, its architectural successor, while the platform it was meant to replace continued - with BIG-IP 21.0 skipping several version numbers to close the gap. **The successor was retired and the incumbent went on.**
+
+That case is worth holding onto because it is the shape people are least prepared for. Announcements of succession are statements of intent by a vendor, not facts about the world, and the installed base gets a vote that is rarely counted in advance.
+
+## What this means for what you learn
+
+The practical question behind all of this is what is worth the years.
+
+**Specifications outlive products.** The corpus evidence is consistent: OSPF outlived Proteon, NetBIOS outlived Sytek, LDAP (lightweight directory access protocol) outlived the company arguments around it, and the DNS design outlived essentially everything else from 1983. Time spent on a protocol is time that keeps paying; time spent on an interface is time that expires with a release.
+
+**Reasoning outlives configuration.** The engineer who learned *why* a stateful firewall keeps a connection table can operate any vendor's implementation. The engineer who learned which menu contains the setting has learned something with the lifespan of a user interface. Every family history here reaches this same point from a different direction.
+
+**The unglamorous layer often becomes the constraint.** Supermicro spent twenty-five years as the unfashionable half of the industry, and then the layer it occupied became the scarce one. **The layer that is boring during one cycle is frequently the constraint in the next**, which is an argument for depth in something ordinary over breadth in something fashionable.
+
+**And declaring things dead is a bad habit with a professional cost.** The people who dismissed layer 2, the mainframe, email, SNMP or the command line spent years being right in principle and wrong in practice - which, in a career made of billable competence, is the same as being wrong.
+
+## The honest limit
+
+None of this predicts. The mechanisms are visible in retrospect and ambiguous in the moment: the same evidence that says a technology is dying says it is entrenched, depending on which mechanism you think is operating.
+
+What the record does support is a discipline of asking better questions. Not *is this obsolete*, but: **is the constraint that produced it still expensive? Can one party replace it alone, or does it need everyone to agree? Is the value in a specification or in a product? And is anyone still developing it?**
+
+Those four questions would have produced better predictions than the industry actually managed on almost every technology in this catalogue - which is a modest claim, and the only one the evidence supports.
+
+## Sources
+
+The version-specific claim about BIG-IP Next is cited below. The rest of this article synthesises the family histories and company records in this catalogue rather than introducing new external material; the primary sources for each claim are cited in the articles it draws on.
+
+- [F5's own account: the strategic decision to discontinue the development of BIG-IP Next and shift focus to modernising BIG-IP TMOS, with v21.0 beginning that series and incorporating capabilities originally envisioned for Next](https://www.f5.com/company/events/webinars/big-ip-v21-0-discover-whats-new)
+- [F5 on v21.1: when BIG-IP Next was discontinued, the pledge to modernise TMOS by integrating enhancements originally envisioned for Next, with v21.0 as the first step](https://www.f5.com/company/blog/a-sneak-peek-into-f5-big-ip-v21-1-ai-security-pqc-and-software-enhancements)
+- [BIG-IP Next 20.3 as the final version, reaching end of life on 30 April 2025, per F5 article K000152956](https://wtit.com/resources/f5-big-ip-software-support-policy/)
+
+Articles this synthesis draws on:
+
+- [Virtualisation: the disappearance and return, and the formal impossibility argument](/learn/virtualization-family-history)
+- [Bridges and switches: layer 2 declared finished by every generation, and the commoditisation of the wiring layer](/learn/bridge-switch-family-history)
+- [Load balancers: first to market and never leading, and what compounds instead](/learn/adc-family-history)
+- [Wireless: the access method placed in the public domain in 1971, and WEP embedded in hardware that could not be replaced](/learn/wireless-family-history)
+- [Routers: interdomain routing unchanged while the device was rebuilt four times](/learn/router-family-history)
+- [Software-defined networking: the protocol that failed and the abstraction that won](/learn/sdn-family-history)

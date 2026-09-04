@@ -1,0 +1,88 @@
+---
+slug: network-scopes-family-history
+title: "Local, Wide and the Words That Stopped Meaning Distance"
+summary: "The distinction between a local and a wide area network was never really about geography. It was about who owned the link and what a byte cost to move, and every protocol written before about 1995 encodes an assumption about which side of that line it would run on. This is the family history of network scope - why the categories were invented, why VLANs and overlays broke them, and why an industry that spent thirty years insisting the perimeter was a place now uses the word local to mean trusted."
+concepts: ["lan", "wan", "man", "wlan", "vlan", "overlay", "history"]
+relatedTools: []
+relatedArticles: ["bridge-switch-family-history", "router-family-history", "sdn-family-history", "identity-family-history"]
+category: networking
+order: 161
+status: reviewed
+updated: "2026-09-04"
+---
+
+Almost every networking course opens with the same diagram: local, metropolitan, wide, drawn as concentric circles of increasing size. It is a reasonable teaching device and a poor description of what the words ever meant.
+
+## The distinction was economic, not geographic
+
+A local area network is one where **you own the cable**. That single fact produces everything else: bandwidth costs nothing per byte, latency is small enough to ignore, and you can add capacity by buying equipment rather than by renegotiating a contract.
+
+A wide area network is one where **somebody else owns the circuit and bills you for it**. Bandwidth is metered, latency is set by geography and the speed of light, and a fault can occur inside infrastructure you are not permitted to inspect.
+
+Metropolitan sits between them because its economics do: a university or a hospital group with fibre across a city has a link that is neither free nor charged by the byte.
+
+**Every protocol carries an assumption about which side of that line it will run on.** Chatty protocols that ask and wait were fine on a floor and disastrous over a leased line. The entire wide area optimisation industry - compression, caching, deduplication, protocol acceleration - exists because software written for one side of the line was deployed on the other.
+
+## What the categories were actually used for
+
+Scope was never only a description. It was **an administrative boundary**, and that is the part that mattered in practice.
+
+Inside the local area you had one owner, one addressing plan, one set of policies and one team to call. Across a wide area you had contracts, demarcation points, other people's change windows and a support relationship. Security models were built on top of that split without anyone deciding to: **inside was trusted because inside was administered, not because inside was safe.**
+
+That assumption survived for decades because it was mostly true, and it produced the perimeter model that the [firewall article](/learn/firewall-family-history) traces from the other side.
+
+## 1998: the first word to lose its meaning
+
+The virtual local area network, standardised as 802.1Q, made one physical switch present several logical networks. From that moment **local stopped being a property of the wire**. Two machines in the same rack could be on different networks, and two machines in different buildings could be on the same one.
+
+This is where segmentation begins as a discipline, and where the vocabulary starts to drift. A VLAN is not a smaller local area network; it is a decision that certain traffic should be kept apart, expressed in equipment that used to express geography.
+
+## The overlay finishes the job
+
+Then the overlay severed the last connection between the word and the world. VXLAN, GENEVE and their relatives carry a layer 2 network across a routed one, so a broadcast domain can span data centres on different continents.
+
+The [bridge and switch article](/learn/bridge-switch-family-history) notes the irony and it belongs here too: Perlman identified the founding mistake as treating Ethernet as *the network* rather than as a link, and the modern data centre spends real engineering effort recreating exactly that illusion on top of a routed fabric - because applications keep being written by people who assume the network is one flat thing.
+
+**The underlay is where the packets go and the overlay is where the meaning is**, and a fault in the first appears in the second as something else entirely. That is the price of the abstraction, and it is paid by whoever is holding the pager.
+
+## Wireless is the exception that never fitted
+
+A wireless local area network is a local area network in addressing and something else entirely in behaviour, for a reason the [wireless article](/learn/wireless-family-history) traces to 1971: the switch removed collisions from the wired world and nothing can remove them from the air.
+
+So capacity falls with the number of talkers rather than with distance. Roaming is decided by clients the network does not control. Interference comes from neighbours and appliances nobody administers. Calling it a local area network is correct about the address plan and misleading about everything an operator needs to plan for.
+
+## Where the words went
+
+Three pressures emptied the geographic meaning entirely.
+
+**Cloud.** A subnet in a provider's region is administered by you, addressed like a local network, and physically nowhere near you. It is called local because you control it.
+
+**Remote work.** The person is at home, the application is in a provider's region, and neither is inside anything. The traffic that used to define the wide area - branch to headquarters - is now a minority of what exists.
+
+**Encryption everywhere.** When the transport is confidential by default, the question of whose wire it crossed matters much less than it did, which removes one of the last practical reasons the distinction was load-bearing.
+
+What replaced it is **identity and policy**, which is where the [identity article](/learn/identity-family-history) and the [SDN article](/learn/sdn-family-history) both end up. The modern question is not where a device is but what it is, who is using it and what it is permitted to reach - and zero trust is, stripped of the marketing, the formal admission that inside was never a security property.
+
+## Jobs and practices
+
+The categories still organise the profession even though they no longer organise the network. Certifications are structured around them, teams are named after them, and budgets are split along the line between the link you own and the link you rent.
+
+The practices that survive are the ones tied to the economics rather than the geography. **Knowing what a byte costs on each path**, because that is still the real difference. **Knowing who to call**, since the administrative boundary outlived the physical one. **Designing for the latency you have** rather than the latency you would like, because the speed of light is the one constraint in this article that has never moved.
+
+And the practice worth keeping longest: **when someone says local, ask whether they mean nearby, cheap, or trusted** - because the word now does all three jobs and the answer changes the design.
+
+## Where it goes
+
+**Scope is becoming a policy label.** Systems increasingly describe reachability in terms of workload identity and intent, with the physical path an implementation detail the operator never names.
+
+**The economics are converging but not equalising.** Inter-region traffic charges keep a version of the old wide area calculation alive inside cloud environments, so the distinction that started with leased lines survives as an egress fee.
+
+**And one thing genuinely has not changed.** Light is still slow, distance still costs milliseconds, and no abstraction has repealed it. Every architecture that treats a remote resource as though it were local eventually meets a round trip it cannot hide - which is the same lesson the first wide area designers learned, arriving by a different route.
+
+## Sources
+
+- [IEEE 802, the family of standards for local and metropolitan area networks](https://en.wikipedia.org/wiki/IEEE_802)
+- [Wide area network: a telecommunications network extending over a large geographic area, typically using circuits leased from carriers](https://en.wikipedia.org/wiki/Wide_area_network)
+- [Overlay network: a network built on top of another, with nodes connected by virtual links each corresponding to a path in the underlying network](https://en.wikipedia.org/wiki/Overlay_network)
+- [RFC 8926, Geneve: Generic Network Virtualization Encapsulation, carrying extensible options rather than a fixed header](https://www.rfc-editor.org/info/rfc8926/)
+- [Campus area network: an interconnection of local area networks within a limited geographical area such as a university or corporate campus](https://en.wikipedia.org/wiki/Campus_network)

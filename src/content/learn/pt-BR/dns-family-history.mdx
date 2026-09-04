@@ -1,0 +1,92 @@
+---
+slug: dns-family-history
+title: "DNS: um arquivo mantido em horário comercial"
+summary: "Antes de 1983, conseguir um endereço na rede significava telefonar para Elizabeth Feinler no SRI, que acrescentava você a um arquivo distribuído pela equipe a todos os hosts umas duas vezes por semana - em horário comercial, feriados excluídos. Jon Postel entregou o problema a um aluno de pós-graduação, que leu as propostas existentes, escreveu a própria, e assinou sozinho a especificação do sistema que hoje resolve trilhões de consultas por dia. Esta é a história da família: o arquivo, o projeto, a segurança que ficou de fora, e como um sistema de nomes virou o ponto de controle mais conveniente da internet."
+concepts: ["dns", "hosts.txt", "mockapetris", "bind", "dnssec", "history"]
+relatedTools: []
+relatedArticles: ["identity-family-history", "pki-family-history", "choosing-a-public-dns-resolver"]
+category: networking
+order: 153
+status: reviewed
+updated: "2026-09-03"
+---
+
+O sistema de nomes da internet começou como um arquivo de texto, e a restrição que matou o arquivo é a mais humana deste catálogo inteiro.
+
+## Antes: um telefonema e um arquivo de texto
+
+**Elizabeth Feinler** e a equipe dela no Network Information Center do SRI mantinham o **HOSTS.TXT**, arquivo central que mapeava nomes para endereços. Para entrar na rede você contatava o NIC, eles o acrescentavam, e a equipe distribuía o arquivo atualizado a todos os hosts umas duas vezes por semana.
+
+O sistema funcionava e tinha um limite que nenhuma engenharia contornava: **Feinler e os colegas trabalhavam em horário comercial e tiravam feriado.** Uma rede que precisa estar sempre disponível não pode ter um sistema de nomes que fecha às cinco da tarde. Isso é ótimo equilíbrio entre vida e trabalho e é modelo operacional impossível, e é o exemplo mais claro deste catálogo de uma arquitetura técnica forçada por restrição humana, e não computacional.
+
+O outro limite era aritmético. Cada host novo significava uma edição manual e uma redistribuição inteira, então o custo crescia com o quadrado da utilidade da rede.
+
+## 1983: o aluno de pós e a tarefa
+
+**Paul Mockapetris** entrou no ISI em 1978 como aluno de pós-graduação, num time de cerca de vinte pessoas supervisionado por **Jon Postel**. Um dia, no relato dele mesmo, Postel entrou na sala e perguntou se ele gostaria de trabalhar no problema de nomeação de domínios - especificamente, conciliar as cinco propostas existentes para melhorar o sistema de nomes.
+
+Ele as leu e escreveu a própria. As **RFCs 882 e 883**, publicadas em novembro de 1983, **assinadas por ele sozinho**, descrevendo o Domain Name System e o protocolo de consulta dele - projeto que a ACM depois chamou de ousado e desarmantemente simples, ao lhe dar o Software System Award em 2019.
+
+Ele também escreveu a primeira implementação, um servidor chamado **Jeeves**, rodando em máquinas DEC Tops-20 no ISI e no Network Information Center do SRI, o que forneceu o primeiro serviço operacional estável. O **BIND** veio logo depois, escrito por alunos de pós em Berkeley sob financiamento da DARPA.
+
+A especificação foi revista nas RFCs 1034 e 1035, em 1987, e são esses os documentos definitivos. As cem páginas originais desde então ganharam a companhia de mais de duzentas outras RFCs.
+
+## O que o projeto fez, de fato
+
+O movimento foi de **uma autoridade** para **autoridade delegada**. Em vez de um arquivo central, cada organização opera o próprio pedaço do espaço de nomes nos próprios servidores, e qualquer um no mundo pode consultá-lo.
+
+Três propriedades decorrem disso, e as três seguem sendo a razão de aquilo funcionar:
+
+**Delegação.** A raiz não precisa conhecer os seus nomes de host; precisa saber quem conhece. A autoridade para em cada fronteira e a carga se distribui com a estrutura.
+
+**Cache.** As respostas carregam um tempo de vida, então um nome popular é resolvido uma vez e reaproveitado muitas. Sem cache o sistema teria falhado numa fração da escala atual, e o valor de tempo de vida é o número mais consequente que a maioria dos engenheiros define sem pensar.
+
+**Nomes para qualquer coisa.** A descrição do próprio Mockapetris é que aquilo foi criado para as pessoas usarem nomes para qualquer coisa - e os tipos de registro acrescentados desde então, carregando roteamento de correio, texto, localização de serviço, chaves e restrições de certificado, são todos consequência dessa generalidade.
+
+## A parte que ficou de fora
+
+O DNS foi projetado para uma rede em que os participantes eram conhecidos e amplamente confiáveis, e ele **não tem autenticação no projeto original**. Um resolvedor acredita na resposta que recebe.
+
+Tudo o que é difícil desde então descende disso. Envenenamento de cache funciona porque uma resposta que parece certa é aceita. O **DNSSEC** existe para assinar registros e levou décadas para chegar a implantação parcial, porque exige uma cadeia de cooperação da raiz até cada zona e dá dor operacional a quem implanta enquanto o benefício vai para todos os outros - que é a economia padrão das melhorias de segurança na internet e a razão padrão de elas emperrarem.
+
+O **DNS sobre TLS e sobre HTTPS** respondeu a outro problema - não se a resposta é verdadeira, mas quem mais consegue ver a pergunta - e a adoção deles foi rápida justamente porque um navegador ou um sistema operacional pode ligá-los unilateralmente. **A correção que uma parte sozinha consegue implantar vence; a que exige cooperação de todos espera.** Vale dizer isso como regra geral, porque ela prevê quais melhorias de segurança vingam melhor que qualquer avaliação de mérito técnico.
+
+## De nomes a controle
+
+Um resolvedor vê todo nome que um dispositivo pede, antes de qualquer conexão. Isso o tornou três coisas para as quais ele nunca foi projetado.
+
+**Controle de segurança.** Recuse resolver, e a conexão nunca acontece - que é a premissa inteira do mercado de resolvedores, e a razão de OpenDNS, NextDNS, Infoblox e EfficientIP venderem a partir dessa posição.
+
+**Ponto de vigilância.** O registro de consultas é um registro de intenção, e é por isso que transporte cifrado virou argumento de privacidade, e não questão técnica.
+
+**Instrumento de censura.** Bloquear na camada de nomes é a forma mais barata de filtragem em escala nacional disponível, não exige cooperação do site bloqueado, e é usada por governos de todo o espectro político.
+
+**Um sistema de nomes construído sobre confiança entre pesquisadores virou o ponto de controle mais conveniente da internet**, e nenhum desses três usos exigiu mudar o protocolo. Exigiu apenas estar no caminho da pergunta.
+
+## Cargos e práticas
+
+O DNS produz poucos papéis dedicados e aparece em toda análise séria de queda. O reflexo profissional que ele criou é diagnóstico: confira a resolução primeiro, porque um nome que resolve para o lugar errado produz sintomas indistinguíveis de uma dúzia de outras falhas.
+
+As práticas dele são reconhecíveis. **Disciplina de tempo de vida** antes de uma migração, baixando os valores com antecedência para que a mudança se propague quando importa. **Mudança de zona sob revisão**, porque registro errado é queda sem mensagem de erro. **Horizonte dividido e a confusão dele**, em que respostas internas e externas diferem e alguém acaba depurando a errada. E **higiene de registrador e registro** - expiração de domínio e comprometimento de conta de registrador são quedas que qualidade nenhuma de infraestrutura evita.
+
+## As empresas
+
+O trabalho veio do SRI, do ISI e de Berkeley, e nenhum dos três o comercializou. O Internet Systems Consortium carrega o BIND; os operadores da raiz e dos domínios de topo são mistura de instituições, empresas e governos; e o mercado comercial são registradores, provedores de autoritativo gerenciado, os fabricantes de DDI e os resolvedores públicos.
+
+## Para onde vai
+
+**A resolução está centralizando.** Um punhado de resolvedores públicos hoje responde uma fatia enorme das consultas do mundo, o que melhora desempenho e privacidade diante do provedor local enquanto cria exatamente a concentração que o projeto distribuído existia para evitar.
+
+**A cifragem mudou a pergunta, não a resposta.** Transporte cifrado esconde a consulta da rede e a entrega a um operador de resolvedor, então a confiança não some - ela se muda de lugar, e escolher resolvedor virou decisão significativa, e não padrão de fábrica.
+
+**O registro está virando transportador de uso geral.** Vinculação de serviço, restrições de certificado, parâmetros de ECH e registros de texto para verificação - cada vez mais, o jeito de um sistema dizer a outro como alcançá-lo com segurança é um registro DNS.
+
+**E a propriedade fundadora continua valendo.** Quarenta anos depois, o sistema faz o que um aluno de pós especificou em cem páginas: delegar autoridade, cachear a resposta, deixar as pessoas usarem nomes para qualquer coisa. Quase nada mais de 1983 na internet segue rodando sem modificação, e a razão disso tem menos a ver com o protocolo do que com a decisão de DAR a autoridade em vez de segurá-la.
+
+## Fontes
+
+- [ACM Software System Award de 2019 a Paul Mockapetris: a comunidade dependia de um arquivo hosts.txt gerido centralmente, atualizado à mão pelo SRI e distribuído diariamente; ele assinou sozinho as RFCs 882 e 883 em 1983, desenvolveu a primeira implementação de servidor, o Jeeves, e a implantou no ISI e no SRI para os servidores raiz iniciais](https://awards.acm.org/award-recipients/mockapetris_3342151)
+- [O relato do próprio Mockapetris no ISI: entrou em 1978 como aluno de pós num time de cerca de vinte pessoas supervisionado por Jon Postel, foi convidado a trabalhar no problema de nomeação de domínios, e o projeto em que cada organização gere o próprio pedaço do sistema de nomes nos próprios servidores](https://www.isi.edu/news/972810/and-the-dns-was-born/)
+- [Elizabeth Feinler e o Network Information Center mantendo o HOSTS.TXT, atualizado e distribuído umas duas vezes por semana, com a equipe do NIC disponível apenas em horário comercial e de folga nos feriados; Postel pediu a Mockapetris que conciliasse cinco propostas existentes](https://smartermsp.com/tech-time-warp-mockapetris-invents-the-domain-name-system/)
+- [Internet Society sobre os trinta anos do DNS: a publicação das RFCs 882 e 883 em novembro de 1983, e as propostas anteriores nas RFCs 799, 819 e 830](https://www.internetsociety.org/blog/2013/11/celebrating-30-years-of-the-domain-name-system-dns-this-month/)
+- [O primeiro servidor de nomes funcional, o Jeeves, escrito em 1983-84 para máquinas DEC Tops-20 no USC-ISI e no SRI-NIC, com o BIND escrito logo depois por alunos de pós em Berkeley sob financiamento da DARPA](https://stuff.mit.edu/afs/net/project/bind/9.2.0/doc/arm/Bv9ARM.ch09.html)

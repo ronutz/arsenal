@@ -1,0 +1,88 @@
+---
+slug: wireless-family-history
+title: "Wireless: The Islands Problem, and the Protocol Given Away"
+summary: "In 1968 a professor in Hawaii needed to connect computers across four islands and could not lay cable across the Pacific. The answer - let stations transmit whenever they have something to send, and deal with the collisions - became operational in June 1971, was placed in the public domain because no office existed to commercialise it, and is now underneath Wi-Fi, mobile networks, cable and Ethernet. This is the family history, including the regulatory decision that mattered more than any protocol and the encryption failure that taught the industry its most expensive lesson."
+concepts: ["wireless", "aloha", "802.11", "wi-fi", "wep", "csma", "history"]
+relatedTools: []
+relatedArticles: ["bridge-switch-family-history", "encryption-family-history", "transceiver-family-history"]
+category: networking
+order: 155
+status: reviewed
+updated: "2026-09-03"
+---
+
+The corpus's [bridge and switch article](/learn/bridge-switch-family-history) treats Ethernet as the starting point of local networking. It is not. Ethernet's access method was borrowed from a radio network built because someone could not run cable across an ocean.
+
+## 1968 to 1971: the constraint was geography
+
+Work began in September 1968 at the University of Hawaii under **Norman Abramson** and **Franklin Kuo**, with Thomas Gaarder, Shu Lin, Wesley Peterson and Ned Weldon. The goal was to connect users on Oahu and the other islands to a central time-sharing computer using low-cost commercial radio equipment.
+
+Abramson's framing of the problem is worth quoting in substance: the team's attitude was that the existing telephone network, which everyone used at the time, was **the wrong approach**.
+
+**ALOHAnet** became operational in June 1971 - the first public demonstration of a wireless packet data network, connecting seven computers across four islands over experimental UHF at 9,600 bits per second, with a base station called the Menehune and the first remote terminal in Abramson's own home about a mile away. The frequencies came from the military, because the regulator had rejected the original request.
+
+## The idea, and why it was not obvious
+
+Radio is inherently a broadcast medium: everyone hears everything. The first hard problem in packet radio was therefore how to arbitrate access to a shared channel.
+
+**ALOHA random access** answered it with something close to insolence: transmit whenever you have data, detect the collisions, and retry. No coordination, no schedule, no master.
+
+That looks obvious now and was not then. As one account puts it plainly, it was not obvious to Abramson or to any of the world's other top computer science researchers at the time - because the entire prior art was **circuits**, and the assumption underneath circuits is that access must be arranged in advance.
+
+## The line into Ethernet
+
+**Robert Metcalfe credited ALOHA for his work on Ethernet and CSMA/CD.** Kleinrock's later refinements to channel access led Metcalfe to carrier sense, and his experimental network at Xerox PARC ran at 2.94 megabits over coaxial cable.
+
+So the sequence is the reverse of how it is taught. **The wireless network came first and the wired one borrowed its access method**, and the reason Ethernet had collisions at all is that it inherited the behaviour of a medium where collisions are unavoidable. The [switch](/learn/bridge-switch-family-history) later removed them from the wired world, and wireless has never been able to, because you cannot give every station its own piece of air.
+
+## The technology was given away
+
+In 1971 the University of Hawaii had no office to help researchers commercialise their work, **so the technology was put into the public domain.**
+
+That accident of institutional structure is one of the most consequential facts in this catalogue. The access method underneath Wi-Fi, mobile telephony, cable modems and Ethernet was unowned from the beginning, which is why every one of those industries could build on it without negotiating. Abramson's own later assessment - that it is everywhere, in Wi-Fi, mobile phones, Ethernet and cable, and exceeded his wildest expectations - is the assessment of someone who never charged for it.
+
+## 1985: the regulator does the decisive thing
+
+The technical history is well known and the regulatory history is what actually enabled the industry. In 1985 the United States regulator opened the **industrial, scientific and medical bands** for unlicensed use.
+
+Unlicensed spectrum means anyone can build and sell a radio without asking permission, and it is the reason a wireless market exists at all. **The most important decision in the history of Wi-Fi was made by a regulator, not an engineer** - the same shape as the Carterfone ruling in the [Paradyne entry](/industry/paradyne), where an industry appeared in the space a legal decision created.
+
+It also fixed the technology's permanent problem. Unlicensed means shared with everyone else, including microwave ovens and every neighbour, which is why interference is a design constraint rather than a fault.
+
+## WEP: the industry's most expensive lesson
+
+802.11 arrived in 1997 with **Wired Equivalent Privacy**, and it was broken comprehensively within a few years by attacks on its use of the stream cipher and its handling of initialisation vectors.
+
+The failure was not in the cipher. It was in how the protocol used it - the classic outcome the [encryption article](/learn/encryption-family-history) warns about, and the canonical demonstration of why practitioners are told not to assemble their own cryptographic constructions regardless of ability. WPA was a retrofit onto hardware that could not be replaced; WPA2 in 2004 and WPA3 in 2018 were the real answers.
+
+The operational legacy is larger than the technical one. **WEP taught a generation that the security of a wireless network is a property of its configuration rather than its existence**, and the practice of treating the wireless segment as untrusted - authenticating at the network layer rather than relying on the radio - dates from it.
+
+## Jobs and practices
+
+Wireless produced a specialism with an unusual property: its work is physical in a way nothing else in this series is. A survey is a walk with an instrument, and coverage is a claim about a building rather than a device.
+
+Its practices are concrete. **Site survey before deployment and validation after**, because prediction and measurement disagree. **Channel planning**, because the scarce resource is spectrum, not bandwidth. **Client behaviour**, since roaming decisions are made by devices the network does not control - which is the discipline's defining frustration. And **capacity by client count rather than by throughput**, because a shared medium degrades with the number of talkers.
+
+The recurring diagnostic truth is that most wireless complaints are not wireless problems. They are authentication, addressing or upstream problems experienced by a user who was standing up at the time.
+
+## The companies
+
+The research was a university's and was given away. The market that followed is Cisco with Meraki, HPE with Aruba, Juniper with Mist, Ubiquiti, Extreme, Ruckus inside CommScope, and Fortinet and others selling access points as extensions of a security platform - which is itself evidence of where this family ended up: **the access point became a policy enforcement point, and the wireless vendor became a security vendor.**
+
+## Where it goes
+
+**Spectrum keeps being the story.** Every generation is mostly about access to more of it, or using what exists more efficiently - wider channels, more spatial streams, better scheduling - and the six gigahertz opening mattered more to real deployments than most protocol features.
+
+**Determinism is the current ambition.** Scheduling transmissions rather than contending for the medium is an attempt to undo ALOHA's founding assumption, fifty years on, for workloads that cannot tolerate variable latency.
+
+**Private cellular is competing for the same job.** Licensed and shared-licensed mobile technology in enterprise settings is a direct answer to the interference problem that unlicensed spectrum creates.
+
+**And the founding trade has not changed.** Abramson's team accepted collisions in exchange for needing no coordination, and every wireless technology since has bought performance by adding coordination back. What made the idea spread was that it needed no permission - from a regulator, a central controller, or a patent holder - and that is still the property that decides which wireless technologies get adopted and which stay in specifications.
+
+## Sources
+
+- [ALOHAnet: development begun September 1968 at the University of Hawaii under Norman Abramson and Franklin Kuo with Gaarder, Lin, Peterson and Weldon, operational June 1971 as the first public demonstration of a wireless packet data network, using ALOHA random access over experimental UHF at 9600 bits per second](https://en.wikipedia.org/wiki/ALOHAnet)
+- [IEEE milestone for the 1971 ALOHA demonstration: Metcalfe created Ethernet and CSMA/CD based on the ALOHA protocol, the first to use packets and random access; Abramson received the 2007 IEEE Alexander Graham Bell Medal for fundamental work in random multiple access](https://ethw.org/Milestones:Demonstration_of_the_ALOHA_Packet_Radio_Data_Network,_1971)
+- [IEEE milestone proposal: ALOHAnet operational June 1971 with the Menehune at Manoa and the first remote terminal in Abramson's home about a mile away, using experimental UHF granted by the military after the regulator rejected the original request; Metcalfe credited ALOHA for Ethernet and CSMA/CD](https://ieeemilestones.ethw.org/Milestone-Proposal:ALOHANET_(aka_ALOHA_System))
+- [StateTech on ALOHAnet: no office existed in 1971 to help commercialise the work, so the technology was put into the public domain; Abramson's view that the existing telephone network was the wrong approach, and that random access was not obvious to him or to any other top researcher at the time](https://statetechmagazine.com/article/2016/06/how-alohanet-helped-hawaii-make-waves-networking-and-it-innovation)
+- [Timeline of Wi-Fi: ALOHA random access as the direct precursor to the collision-avoidance mechanism underpinning all modern 802.11 standards, and the 1985 opening of the industrial, scientific and medical bands by the United States regulator](https://www.purple.ai/en-us/guides/the-definitive-timeline-of-wifi-from-alohanet-to-wifi-7-and-beyond)

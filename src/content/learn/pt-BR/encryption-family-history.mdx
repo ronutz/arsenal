@@ -1,0 +1,82 @@
+---
+slug: encryption-family-history
+title: "Cifragem: o padrão, a suspeita, e o que a suspeita errou"
+summary: "A criptografia civil tem um documento fundador e uma discussão fundadora. O documento é o Data Encryption Standard, emitido em novembro de 1977 a partir de uma cifra que a IBM construiu sobre o Lucifer de Horst Feistel. A discussão é o que a National Security Agency fez com ele - e a resposta, que levou dezessete anos para aparecer, é que a agência tornou o algoritmo mais forte contra um ataque que ninguém de fora conhecia, ao mesmo tempo que encurtou a chave. Esta é a história da família: de um nome de arquivo longo demais para um sistema operacional, passando pelas guerras da criptografia, até um processo de padronização que hoje roda aberto por causa do que aquela suspeita custou."
+concepts: ["encryption", "des", "aes", "lucifer", "public key", "crypto wars", "history"]
+relatedTools: []
+relatedArticles: ["quantum-threat-to-cryptography", "security-through-obscurity", "tls12-tls13-dtls-quic"]
+category: security
+order: 147
+status: reviewed
+updated: "2026-09-03"
+---
+
+A criptografia tem milhares de anos. A criptografia **civil** - algoritmos publicados, analisados em aberto, usados por gente sem credencial de segurança - tem cerca de cinquenta, e começa com um governo decidindo que precisava de algo que ele mesmo não estava disposto a construir.
+
+## 1972 a 1974: a solicitação que ninguém conseguiu responder
+
+Depois de um estudo sobre as necessidades federais de segurança computacional, o National Bureau of Standards concluiu em 1972 que o governo precisava de um padrão único para cifrar informação sensível mas não classificada. A National Security Agency, a construtora óbvia, não estava disposta a projetar um criptossistema para uso público - então, em **15 de maio de 1973**, depois de consultar a agência, o bureau simplesmente perguntou ao público.
+
+Nada adequado chegou. Uma segunda solicitação saiu em **27 de agosto de 1974**, e desta vez a IBM submeteu uma cifra desenvolvida em 1973 e 1974 a partir do **Lucifer, de Horst Feistel**, publicado pela primeira vez em 1971.
+
+O nome Lucifer merece ser guardado. Era um trocadilho com *Demon*, ele mesmo uma abreviação de *Demonstration*, o sistema de privacidade em que Feistel trabalhava - encurtado porque o sistema operacional não aguentava um nome de arquivo mais longo. **A cifra que fundou a criptografia civil tem o nome que tem por causa de um limite de tamanho de nome de arquivo.**
+
+O time da IBM incluía Feistel, Walter Tuchman, Don Coppersmith, Alan Konheim, Carl Meyer, Mike Matyas, Roy Adler, Edna Grossman, Bill Notz, Lynn Smith e Bryant Tuckerman.
+
+## 1975 a 1977: o padrão e a acusação
+
+A proposta foi publicada no Federal Register em **17 de março de 1975**, o comentário público foi convidado, e dois seminários abertos aconteceram em 1976. O bureau a emitiu como **FIPS 46 em 23 de novembro de 1977**.
+
+A agência tinha trabalhado com o bureau o tempo todo, avaliou o algoritmo e recomendou mudanças, que a IBM fez. Duas suspeitas vieram na sequência e dominaram a área por duas décadas: a de que uma porta dos fundos tinha sido inserida, e a de que a chave de **56 bits** tinha sido encurtada de propósito para que a agência pudesse ler o tráfego. Whitfield Diffie e Martin Hellman publicaram *Exhaustive Cryptanalysis of the NBS Data Encryption Standard* em junho de 1977, argumentando que a chave era curta demais para o poder computacional que estava chegando.
+
+**E eis o que de fato aconteceu, que é o fato mais instrutivo deste artigo.** As mudanças da agência reduziram a chave para 56 bits e o bloco para 64 - enfraquecendo contra força bruta, exatamente como os críticos disseram. As mesmas mudanças tornaram a cifra **resistente à criptanálise diferencial**, técnica de ataque então conhecida apenas pela IBM e pela agência, e só redescoberta publicamente no início dos anos 1990.
+
+Ou seja, a suspeita estava metade certa e metade exatamente ao contrário. A agência de inteligência FORTALECEU o algoritmo contra um ataque que o mundo acadêmico levaria dezessete anos para descobrir, e encurtou a chave para que ele permanecesse legível a uma organização com hardware suficiente. Os dois movimentos foram da mesma instituição, pelo mesmo interesse, e nem os críticos nem os defensores tinham como dizer isso na época.
+
+Diffie e Hellman estavam certos sobre a chave. Em **janeiro de 1999**, a Electronic Frontier Foundation e o distributed.net quebraram uma chave DES em 22 horas e 15 minutos.
+
+## Os outros anos 1970: o problema da troca de chaves
+
+Enquanto o padrão era discutido, uma linha separada de trabalho removeu a restrição que definira a criptografia por toda a história dela: a de que duas partes precisam já compartilhar um segredo.
+
+Diffie, Hellman e Ralph Merkle publicaram a troca de chaves por canal público; Rivest, Shamir e Adleman produziram um criptossistema de chave pública prático. E, como este catálogo registra em outro lugar, **James Ellis e Clifford Cocks tinham chegado a resultados equivalentes no GCHQ anos antes e não podiam dizer** - trabalho classificado que foi redescoberto de forma independente em aberto, o que é o quarto caso de invenção simultânea deste corpus e o único em que um dos lados foi legalmente silenciado.
+
+## As guerras da criptografia
+
+Por vinte e cinco anos, criptografia forte foi regulada como arma. Controles de exportação limitavam o que podia ser enviado ao exterior, o que na prática limitava o que era construído, já que poucos fabricantes mantêm duas versões de um produto. A proposta do **chip Clipper**, de 1993, oferecia cifragem forte com chaves em custódia para acesso governamental, e foi rejeitada de forma tão completa que a expressão ainda funciona como abreviação da ideia.
+
+Os controles foram afrouxados no fim dos anos 1990 e a discussão se mudou, em vez de acabar - para portas dos fundos, para acesso legal, para desbloqueio de dispositivo, e agora para mensageria. A pergunta de baixo não muda desde 1977: se é possível construir um sistema forte contra todo mundo menos uma parte autorizada, e se essa parte pode ser confiada a permanecer a única.
+
+## 1997 a 2001: fazendo diferente
+
+A substituição do DES foi desenhada para responder à suspeita de forma estrutural, e não com garantias verbais.
+
+O NIST anunciou a competição do **Advanced Encryption Standard** em 1997. As candidatas venciam em 15 de junho de 1998; vinte e uma foram submetidas e quinze atenderam aos critérios, de times de vários países. A análise era pública, os algoritmos eram públicos, criptanalistas atacavam as submissões uns dos outros em aberto, e a vencedora - o Rijndael, da Bélgica - foi escolhida num processo que qualquer um podia auditar. Um comitê de 1996 argumentara que noventa bits era o mínimo para vinte anos de segurança; o NIST exigiu 128.
+
+**O processo do AES é a coisa mais importante desta história depois da própria criptografia de chave pública**, e é uma conquista de governança, e não de matemática. Uma competição aberta produz um algoritmo em que o mundo pode confiar sem confiar no patrocinador dele, e todo esforço de padronização posterior - inclusive a seleção pós-quântica - copiou o formato por causa do que a suspeita do DES custou.
+
+## Os cargos e as práticas
+
+Esta família produziu notavelmente poucos cargos dedicados e uma quantidade enorme de prática embutida no trabalho de outras pessoas. Existem criptógrafos, e são pouquíssimos; quase todo mundo *usa* criptografia, e é aí que as falhas acontecem.
+
+A realidade operacional está dita no verbete de [gestão de chaves](/glossary/key-management) e vale repetir aqui: **algoritmo quase nunca é quebrado na prática; chave é que é copiada, comitada em repositório, compartilhada entre ambientes e nunca rotacionada.** A disciplina que importa é administrativa - onde a chave existe, quem pode usá-la, e se substituí-la já foi testado alguma vez.
+
+A outra prática duradoura é **não escrever a sua**. Kerckhoffs disse em 1883 que a segurança de um sistema precisa morar na chave, e não no projeto, e a forma moderna disso é a regra profissional quase universal de que implementar primitiva criptográfica por conta própria é erro, independentemente da habilidade. O campo mais forte da segurança é também aquele em que se diz aos profissionais, com mais firmeza, para usar o trabalho de outra pessoa.
+
+## Para onde vai
+
+**Tudo é cifrado agora, e isso mudou a defesa mais do que o ataque.** O conjunto de artigos em volta deste traça a consequência repetidamente: [a interceptação perde terreno](/learn/ssl-forward-proxy-interception), sensores de rede perdem conteúdo, a inspeção migra para os endpoints. A cifragem onipresente foi uma vitória de privacidade que reorganizou a indústria defensiva inteira.
+
+**O modelo de ameaça migrou para pontas e chaves.** Quando o transporte é sólido, o atacante vai onde está o texto em claro ou onde a chave é guardada - e é por isso que armazenamento de chave em hardware e segurança de endpoint absorveram o esforço que antes ia para segurança de transporte.
+
+**A transição pós-quântica está em curso e a lógica dela é temporal.** Como o [artigo sobre a ameaça quântica](/learn/quantum-threat-to-cryptography) expõe, dado capturado hoje pode ser decifrado depois, então a migração é conduzida por quanto tempo o segredo precisa continuar segredo, e não por quando a máquina chega.
+
+**E a discussão fundadora segue sem solução.** Nada da disputa de 1977 foi resolvido - apenas relitigado com substantivos novos. Um Estado querendo acesso excepcional, um público querendo matemática que ninguém possa contornar, e um organismo de padronização no meio tentando produzir algo que os dois usem. O processo do AES mostrou que o caminho é procedimental: não pedir para ser confiável, e sim construir de modo que a confiança não seja necessária.
+
+## Fontes
+
+- [Data Encryption Standard: desenvolvido na IBM a partir do Lucifer de Feistel, publicado no Federal Register em 17 de março de 1975, com o time de projeto incluindo Feistel, Tuchman, Coppersmith, Konheim, Meyer, Matyas, Adler, Grossman, Notz, Smith e Tuckerman](https://en.wikipedia.org/wiki/Data_Encryption_Standard)
+- [História cibernética do NIST sobre criptografia: o estudo de 1972, as solicitações de 15 de maio de 1973 e 27 de agosto de 1974, os seminários públicos de 1976, a emissão do FIPS 46 em 23 de novembro de 1977, e as controvérsias da porta dos fundos e do tamanho de chave](https://csrc.nist.gov/nist-cyber-history/cryptography/chapter)
+- [Lucifer (cifra): publicado pela primeira vez em 1971 com chaves de até 128 bits; a National Security Agency reduziu a chave para 56 bits e o bloco para 64 e tornou a cifra resistente à criptanálise diferencial, então conhecida apenas pela IBM e pela agência; o nome era trocadilho com Demon, abreviado de Demonstration porque o sistema operacional não aguentava o nome mais longo](https://en.wikipedia.org/wiki/Lucifer_(cipher))
+- [Communications of the ACM sobre projetar criptografia para o novo século: a recusa da agência em projetar um criptossistema público, a competição de 1997, o argumento de 1996 pelos noventa bits, e o NIST fixando o mínimo em 128 bits](https://cacm.acm.org/opinion/technical-opinion-designing-cryptography-for-the-new-century/)
+- [A Electronic Frontier Foundation e o distributed.net quebrando uma chave DES em 22 horas e 15 minutos em janeiro de 1999](https://www.tech-faq.com/des.html)

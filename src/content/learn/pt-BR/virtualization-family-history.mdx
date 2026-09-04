@@ -1,0 +1,86 @@
+---
+slug: virtualization-family-history
+title: "Virtualização: resolvida em 1967, esquecida, depois provada impossível, e feita assim mesmo"
+summary: "A IBM entregou um hipervisor funcionando em janeiro de 1967. A indústria então passou quinze anos sem um, porque hardware pessoal barato removeu a razão para compartilhar máquina - e quando a razão voltou, uma análise formal dizia que o processador dominante não podia ser virtualizado. Um grupo de Stanford fez assim mesmo. Esta é a história da família de máquinas virtuais e contêineres: duas linhagens separadas, uma vinda do mainframe e outra de um comando Unix que nunca foi feito para segurança, encontrando-se na infraestrutura sobre a qual tudo hoje roda."
+concepts: ["virtualization", "hypervisor", "cp-40", "vmware", "container", "chroot", "history"]
+relatedTools: []
+relatedArticles: ["sdn-family-history", "bridge-switch-family-history", "identity-family-history"]
+category: networking
+order: 154
+status: reviewed
+updated: "2026-09-03"
+---
+
+Quase tudo neste catálogo foi inventado uma vez e melhorado desde então. Esta foi inventada, abandonada, formalmente provada impossível no hardware que importava, e então construída assim mesmo - o que faz dela a melhor advertência disponível sobre a palavra *impossível*.
+
+## Janeiro de 1967: aquilo já funcionava
+
+O **CP-40**, sistema de pesquisa da IBM no Cambridge Scientific Center, entrou em uso de produção em janeiro de 1967 e é amplamente creditado como o primeiro hipervisor - um programa cuja função é rodar outros sistemas operacionais. Virou **CP-67**, e depois **VM/370** em 1972, que a IBM entregou a instalações de mainframe no mundo inteiro.
+
+Dois detalhes da época merecem ser carregados porque contradizem como a tecnologia costuma ser justificada hoje.
+
+**Desempenho nunca foi o objetivo.** A sobrecarga do VM/370 era estimada em dez a quinze por cento, e quem o construiu não considerava execução eficiente um objetivo primário - a meta era o UTILIZAÇÃO eficiente de uma máquina cara. A troca foi julgada valer a pena em parte por razões de segurança.
+
+**Isolamento foi entendido de imediato.** Rodar vários sistemas operacionais numa máquina, cada um incapaz de tocar os outros, foi reconhecido como propriedade de segurança nos anos 1960 e não precisou ser redescoberto.
+
+## O desaparecimento
+
+Minicomputadores e depois computadores pessoais derrubaram a economia. **Se o hardware é barato e pessoal, não há razão para compartilhá-lo**, e a virtualização sobreviveu apenas dentro de instalações de mainframe por cerca de quinze anos.
+
+Esse é um padrão que vale nomear, porque se repete: **uma tecnologia não sobrevive por mérito, e sim por a restrição que a produziu ainda existir.** Quando hardware voltou a ser caro - na forma de um data center cheio de servidores subutilizados -, a restrição voltou e a tecnologia também.
+
+## A impossibilidade formal
+
+**Popek e Goldberg** estabeleceram os requisitos formais para arquiteturas virtualizáveis em meados dos anos 1970. O x86 da Intel não os satisfazia.
+
+Um artigo de 2000 no USENIX Security, de **John Robin e Cynthia Irvine**, tornou isso preciso: dezessete instruções x86 eram sensíveis mas não privilegiadas - capazes de ler ou alterar estado privilegiado, e falhando **em silêncio** em modo usuário em vez de gerar exceção para o supervisor. Um hipervisor não consegue interceptar o que não gera exceção.
+
+Por duas décadas, virtualização em hardware de mercado foi considerada formalmente impossível. A prova estava correta. A conclusão que tiraram dela estava errada, e a diferença entre essas duas afirmações é a lição inteira: **a análise mostrou que aquilo não podia ser feito do jeito esperado, e todo mundo leu como se mostrasse que não podia ser feito.**
+
+## 1997 a 1998: fazendo assim mesmo
+
+Em Stanford, **Mendel Rosenblum**, com os doutorandos **Edouard Bugnion** e **Scott Devine**, publicou o *Disco*, rodando sistemas operacionais de mercado sobre hardware para o qual eles não tinham sido projetados. A **VMware** veio em 1998, fundada por Rosenblum, **Diane Greene** como presidente, Bugnion, Devine e **Edward Wang**.
+
+A resposta deles foi **tradução binária**: reescrever o código de núcleo enquanto ele roda, substituindo as instruções que falhariam em silêncio. É solução feia para uma impossibilidade elegante, e tornou a virtualização x86 comercialmente viável sete anos antes de Intel e AMD acrescentarem suporte em hardware, em meados dos anos 2000.
+
+Note a sequência, porque ela inverte a história usual. **Os fabricantes de chip acrescentaram suporte a virtualização DEPOIS de uma empresa de software provar que havia mercado**, e não antes. O hardware seguiu uma demanda que o software já tinha criado.
+
+## A outra linhagem: contêineres
+
+Contêineres não descendem de máquinas virtuais. Descendem de um comando Unix.
+
+O **chroot**, introduzido no Unix Versão 7 em 1979, muda o diretório raiz aparente de um processo. Ele não foi projetado para segurança nem para virtualização, e foi o primeiro passo para as duas assim mesmo. As **jails do FreeBSD** em 2000 e os **containers do Solaris** em 2004 endureceram a ideia, e os espaços de nomes e grupos de controle do Linux a transformaram em mecanismo geral, que o **Docker** tornou utilizável em 2013 e o **Kubernetes** tornou escalonável um ano depois.
+
+As duas linhagens respondem a perguntas diferentes e a confusão entre elas é cara. **Uma máquina virtual virtualiza o HARDWARE; um contêiner particiona o SISTEMA OPERACIONAL.** Uma dá um núcleo diferente e uma fronteira forte a custo maior; o outro dá núcleo compartilhado e fronteira mais fraca a custo quase zero. Escolher entre eles é decidir do que você está isolando, e tratar fronteira de contêiner como equivalente a fronteira de hipervisor é o erro mais comum desta família.
+
+## Cargos e práticas
+
+Esta família remodelou o trabalho operacional mais que qualquer outra, tirando o [assunto do artigo de SDN](/learn/sdn-family-history), e em boa medida REMOVENDO escassez: quando um servidor leva minutos em vez de semanas, tudo a jusante muda.
+
+Ela criou o **espalhamento** como problema de disciplina. A máquina trivial de criar é trivial de esquecer, e todo parque acumula instâncias sem dono - que é o mesmo problema de acúmulo das regras de firewall e das entradas de diretório, aparecendo pela terceira vez nesta série.
+
+Criou a **imagem** como unidade de trabalho, e com ela a pergunta de cadeia de suprimentos que a indústria ainda responde: o que tem na imagem base, quem a construiu, e quando ela foi reconstruída pela última vez.
+
+E criou o **instantâneo** - capturar e restaurar estado -, que mudou backup, teste e perícia ao mesmo tempo, e é por isso que virtualização é discutida em resposta a incidente tanto quanto em planejamento de capacidade.
+
+## As empresas
+
+A IBM a construiu e a manteve dentro do mainframe. A VMware definiu o mercado comercial e foi comprada pela Broadcom; Xen e KVM levaram a linhagem aberta para os provedores de nuvem, cujos negócios inteiros repousam sobre esta tecnologia; a Docker criou o mercado de contêineres e teve dificuldade em monetizá-lo; e o Kubernetes, doado pelo Google a uma fundação, virou a camada de escalonamento em que quase todo mundo se padronizou.
+
+## Para onde vai
+
+**A fronteira segue sendo renegociada.** Máquinas virtuais leves que iniciam em milissegundos existem porque a indústria quer velocidade de contêiner com isolamento de hipervisor, o que é admitir que a fronteira do contêiner nunca foi suficiente para carga multi-inquilino.
+
+**A computação confidencial estende isso ao operador.** Memória cifrada e atestação miram uma ameaça que o projeto de 1967 nunca considerou: proteger um hóspede da plataforma que o executa.
+
+**A unidade continua encolhendo.** Máquina, depois instância, depois contêiner, depois função - cada passo trocando isolamento e controle por densidade e velocidade, e cada passo reaprendendo as mesmas lições operacionais sobre o que acontece quando criar algo fica de graça.
+
+**E a propriedade fundadora não mudou.** O CP-40 rodava outros sistemas operacionais numa máquina para que um recurso caro não ficasse ocioso. Toda camada desde então é variação dessa frase. A tecnologia sumiu por quinze anos não porque deixou de funcionar, e sim porque a razão dela foi embora - o que vale lembrar sempre que algo nesta indústria for declarado obsoleto.
+
+## Fontes
+
+- [IBM CP-40: desenvolvido no Cambridge Scientific Center, em uso de produção desde janeiro de 1967, precursor de pesquisa do CP-67 e origem da família VM da IBM](https://en.wikipedia.org/wiki/IBM_CP-40)
+- [História da virtualização: o CP-40 como primeiro hipervisor evoluindo para CP-67 e VM/370, o colapso da economia que tornava o compartilhamento necessário, as dezessete instruções x86 sensíveis mas não privilegiadas identificadas por Robin e Irvine em 2000, e a VMware fundada em 1998 por Mendel Rosenblum, Diane Greene, Edouard Bugnion, Scott Devine e Edward Wang, resolvendo a virtualização x86 com tradução binária](https://www.taskade.com/blog/virtualization-history)
+- [The Ideal Versus the Real: Revisiting the History of Virtual Machines and Containers - sobrecarga do VM/370 estimada em 10 a 15 por cento e julgada válida por razões de segurança, com execução eficiente nunca sendo objetivo primário do trabalho da IBM; os requisitos formais de Popek e Goldberg; e Intel e AMD acrescentando suporte em hardware em meados dos anos 2000](https://dl.acm.org/doi/fullHtml/10.1145/3365199)
+- [VM (sistema operacional): lançado primeiro como Virtual Machine Facility/370 em 1972, substituindo o CP-67, e ainda atual como IBM z/VM](https://en.wikipedia.org/wiki/VM_(operating_system))
+- [A história da virtualização: o chroot introduzido no Unix Versão 7 em 1979 para isolar processos, nunca projetado para segurança ou virtualização como tal, inspirando as jails do FreeBSD em 2000, os containers do Solaris em 2004 e os contêineres do Linux](https://3v-host.com/blog/the-history-of-virtualization/)

@@ -1,0 +1,91 @@
+---
+slug: email-family-history
+title: "Email: A Side Project That Became the Identity Layer"
+summary: "Ray Tomlinson's employer did not ask him to build email. He was, in a colleague's words, just fooling around, looking for something to do with the ARPANET - and he assembled it from a local messaging tool and a file transfer program. The specification written eleven years later allowed the sender shown to a human to differ from the sender declared to the server, which is the design decision that created phishing. This is the family history, and it ends with the clearest exception yet to a rule this catalogue thought it had established."
+concepts: ["email", "smtp", "spf", "dkim", "dmarc", "phishing", "history"]
+relatedTools: []
+relatedArticles: ["dns-family-history", "identity-family-history", "ddos-family-history"]
+category: security
+order: 160
+status: reviewed
+updated: "2026-09-03"
+---
+
+Email is the oldest thing in this catalogue still doing its original job, and the only one that quietly became the credential of record for the entire internet without anyone deciding it should.
+
+## 1971: not an assignment
+
+**Ray Tomlinson** was at BBN - the company whose entry in this catalogue covers the [first routers](/learn/router-family-history) - working on ARPANET protocol development. Sending messages between users of one time-sharing machine already existed, in a program called SNDMSG. What did not exist was sending one to a person on a **different** machine.
+
+He took code from **CPYNET**, a file transfer program he had written, and grafted it onto SNDMSG. **Email is a local messaging tool glued to a file transfer program**, and that lineage explains more about its behaviour than any later specification does.
+
+A Raytheon spokesman's description of how it came about is worth preserving exactly: it was not an assignment at all, he was just fooling around, looking for something to do with the ARPANET. The first messages were tests whose contents Tomlinson called entirely forgettable. The first message of substance announced that network email existed and explained how to use the **@** sign, which he chose to indicate that the user was at another host rather than a local one.
+
+He was inducted into the Internet Hall of Fame in 2012 and died in 2016, aged 74.
+
+## 1980 to 1982: the decision that created phishing
+
+**Jon Postel** co-authored RFC 772, a precursor to SMTP, with **Suzanne Sluizer** in 1980, and published **RFC 821** in August 1982. **David Crocker** published RFC 822 later the same month, defining the message format. Together they are the basis of email as it still works.
+
+One design decision in that pair matters more than everything else in this article. **The From address shown to the reader does not have to match the address the sending server declares to the receiving server.** The envelope and the letterhead are separate, and nothing checks that they agree.
+
+That is not a bug and it was not an oversight. It is a deliberate consequence of a design in which relaying was normal, forwarding was expected, and lying was not anticipated. RFC 5321 states the position plainly: mail is inherently insecure, because even fairly casual users can negotiate directly with receiving servers and create messages that will trick a naive recipient into believing they came from somewhere else.
+
+Sluizer said why, in a 2004 interview: at the time they were doing the work, they were talking about hundreds or maybe thousands of sites on what was then the ARPANET. **That sentence appears, in different words, in the history of BGP (border gateway protocol), DNS, SNMP and NTP in this catalogue.** Every one of them was designed for a network of acquaintances, and every one of them has spent decades having authentication retrofitted by people who cannot change the original.
+
+## Thirty years of bolting authentication on
+
+**SPF** was conceived in 1997 and released as a draft by **Meng Weng Wong** in June 2003. It publishes, in DNS, which servers may send for a domain - which makes the naming system the trust anchor for mail, another instance of the [DNS record becoming a general-purpose carrier](/learn/dns-family-history).
+
+**DomainKeys** came from Yahoo in 2004 and became **DKIM**, signing the message cryptographically so a receiver can verify it was authorised by the domain and not altered in transit.
+
+**DMARC** followed in 2012, and its contribution is the missing piece rather than a third signature: it ties the visible From address to SPF and DKIM results, tells receivers what to do on failure, and - crucially - sends **reports back to the domain owner**, so a domain can discover who is sending mail in its name.
+
+Each of these solves a fragment. None replaced SMTP. Thirty years of security work, none of which touched the protocol, because touching the protocol would require every mail server on earth to change at once.
+
+## The exception that refines this catalogue's own rule
+
+The [DNS article](/learn/dns-family-history) states a rule the evidence supported: the fix one party can deploy alone wins, and the fix requiring everyone to cooperate waits.
+
+Email authentication should have waited forever. It requires senders to publish records, receivers to check them, and both to tolerate the breakage. It waited for two decades, exactly as predicted.
+
+Then, in **February 2024, Google and Yahoo made SPF, DKIM and DMARC a requirement for bulk senders** - and adoption moved faster in a year than in the previous twenty.
+
+**That is a third mechanism, and it belongs in the record.** Not one party acting alone, and not universal agreement, but **a chokepoint large enough to make its preference a condition of delivery**. Two receivers between them touch most of the world's inbound mail, so their policy is effectively the standard whether or not anyone ratified it.
+
+It is worth being honest about what that means. The thing that finally fixed a thirty-year-old security gap was market concentration, applied deliberately - which is the same concentration this catalogue treats as a risk in the [denial of service](/learn/ddos-family-history) and DNS articles. **The property that makes a chokepoint dangerous is the property that makes it effective**, and both statements are true at once.
+
+## What email became when nobody was looking
+
+Password reset. That is the whole argument.
+
+An account's email address is the recovery path for nearly every other account, which makes the mailbox the de facto root credential of a person's digital life - a role no specification ever assigned it and no design ever anticipated. **Email quietly became the identity layer of the internet**, and it did so while carrying an authentication model designed for a few hundred trusting sites.
+
+Everything expensive in security follows from that. Business email compromise is not a technical exploit; it is the correct use of a system in which the letterhead is unverified and the recipient is human. Phishing works for the same reason. Both are consequences of 1982 meeting a world that arrived later.
+
+## Jobs and practices
+
+Email produces administrators rather than engineers in most organisations, and its practices are dominated by deliverability - the discipline of being believed by other people's servers.
+
+**Publishing all three records, correctly**, since a partial or malformed policy is common and is worse than none because it produces confidence without protection. **Reading the DMARC reports**, which most organisations enable and never look at, and which are the only way to discover unauthorised sending in your own name. **Moving to enforcement**, from monitoring to quarantine to reject, on a date - the same staged pattern as [intrusion prevention](/learn/ids-ips-family-history) and web application firewalls, for the same reason: the failure mode of enforcement is a business outage.
+
+And the practice that no configuration replaces: **training people that the From field is a claim, not a fact.**
+
+## Where it goes
+
+**Enforcement is becoming a condition of doing business.** With the largest receivers requiring authentication, the incentive has shifted from security to deliverability, which turns out to motivate organisations far more reliably.
+
+**Encryption in transit is normal and end-to-end is not.** Server-to-server encryption is now widespread; encrypted content between people remains a minority practice, because key management for ordinary users has never been solved and the mailbox providers' business models rely on reading the content.
+
+**The attacks moved above the protocol.** Authentication proves a domain sent a message. It does not prove the message is honest, and a correctly authenticated message from a genuinely compromised account passes every check - which is where the effort now goes.
+
+**And it has outlasted everything sent to replace it.** Fifty-five years, several hundred billion messages a day, and every challenger positioned as its successor has ended up either integrating with it or being reached through it. The reason is the one this catalogue keeps finding: it is federated, unowned, and nobody has to ask permission to join. Those are also precisely the properties that make it impossible to fix.
+
+## Sources
+
+- [Ray Tomlinson at BBN modifying SNDMSG with code from his file transfer program CPYNET to send messages across the ARPANET, on his own initiative rather than as a commissioned project; Postel publishing RFC 821 in August 1982 and Crocker RFC 822 later that month](https://www.prolateral.com/help/kb/smtp/420-when-was-the-first-smtp-email.html)
+- [InfoSec Insights on the history of email and SMTP: the 1982 design in which the From field in the message body did not need to match the Mail From address, paving the way for a range of issues, and RFC 5321's statement that SMTP mail is inherently insecure because casual users can create messages that trick a naive recipient](https://sectigostore.com/blog/a-history-of-email-and-smpt-the-evolution-of-email-security/)
+- [Postel co-authoring RFC 772 with Suzanne Sluizer in 1980, and Sluizer's 2004 account that at the time they were talking about hundreds or maybe thousands of sites on what was then called the ARPANET](https://www.emailonacid.com/blog/article/email-marketing/history-of-email/)
+- [The Sender Policy Framework concept proposed in December 1997 and first released as a draft by Meng Weng Wong in June 2003, with DomainKeys emerging from Yahoo in 2004](https://www.getmailbird.com/evolution-email-privacy-encryption/)
+- [SPF, DKIM and DMARC as RFC 7208, RFC 6376 and RFC 7489, with Google and Yahoo requiring all three from bulk senders since February 2024, and DMARC aggregate reports showing domain owners who is sending in their name](https://dmarcreport.com/blog/the-history-of-email-from-arpanet-to-modern-secure-communication/)
+- [Tomlinson's induction into the Internet Hall of Fame in 2012 and his death in 2016 aged 74, with a Raytheon spokesman noting that developing email was not an assignment at all - he was just fooling around, looking for something to do with the ARPANET](https://www.mail.com/blog/posts/fiftieth-anniversary-of-email/20/)

@@ -11,6 +11,14 @@ status: reviewed
 updated: "2026-07-09"
 ---
 
+## Origins: mail could only carry text
+
+Base64 exists because the earliest mail systems were specified for text and nothing else. A message was seven-bit characters, some byte values meant control rather than content, and gateways along the path felt free to rewrite line endings and strip the eighth bit. Anything binary sent through that survived only by accident.
+
+The answer was to stop sending binary. Take three bytes, treat them as twenty-four bits, split into four groups of six, and map each group onto one of sixty-four characters chosen to be safe everywhere. The output is larger and completely uninteresting to any gateway, which is the point.
+
+The standardisation arrived with MIME in the early 1990s, and it is worth noting what MIME actually did: it did not make mail binary-capable, it made text able to carry anything. Every attachment ever sent is that decision, still being paid for in bandwidth.
+
 ## Why wrap binary in text at all
 
 Many transports were built for text, not raw bytes: email bodies, JSON and XML documents, HTTP headers, source files. Drop raw binary into any of them and a stray control byte or null can break parsing. Base64 solves this by re-expressing bytes using only safe printable characters, so binary can ride inside a text-only channel untouched. Here is where that actually happens.
@@ -25,6 +33,37 @@ Many transports were built for text, not raw bytes: email bodies, JSON and XML d
 ## The size cost
 
 Base64 is not free. Three bytes become four characters, so the encoded form is about **33% larger** than the original, before any line-break overhead. That trade is usually worth it for correctness on a text channel, but it is the reason you would not Base64 a large file you could send as raw bytes. For small inline assets the convenience wins; for big payloads the overhead argues for a binary transport.
+
+## Where it turns up, and why it keeps spreading
+
+The pattern repeats every time a text-shaped channel needs to carry bytes:
+
+- **Mail attachments**, the original case, still encoded the same way.
+- **HTTP basic authentication**, where the credential is Base64 - encoded, not protected, which is the single most common misreading in the field.
+- **Tokens and certificates.** PEM is Base64 with header lines; a JSON Web Token is three Base64url segments joined by dots, and the payload is readable by anyone holding the token.
+- **Data URLs and inline images**, trading size for one fewer request.
+- **Configuration and secrets in environment variables**, where a value has to be a single line of text.
+- **Malware and phishing**, for the same reason as everyone else: it moves bytes through something that only accepts text.
+
+## The URL-safe variant, and why it exists
+
+Standard Base64 uses `+` and `/`, and both mean something else in a URL - a space in a query string, and a path separator. Base64url replaces them with `-` and `_`, and usually drops the trailing padding. It is not a different encoding, and mixing the two is a recurring defect: a token that decodes in one library and fails in another is usually this.
+
+## What it is not
+
+**It is not encryption.** There is no key. Anything Base64-encoded is readable by anyone who notices, and calling an encoded value obfuscated is the [obscurity mistake](/learn/security-through-obscurity) in miniature: nothing remains true once the encoding is removed.
+
+**It is not integrity.** Base64 will happily encode a modified payload, and decode it again.
+
+**It is not a signal of malice.** Seeing it in a payload tells you a channel needed text, and nothing about the content. Analysts who treat encoded content as suspicious per se end up chasing every JSON Web Token in the estate.
+
+## The practical routine
+
+1. Decode it, always - the question is what the bytes are, and the encoding is not the answer to anything.
+2. Check the variant before blaming the decoder: `-` and `_` mean Base64url.
+3. Watch for stacked encodings, which are usually deliberate.
+4. Size it: about a third larger, which matters for tokens carried in every request and for anything stored per row.
+5. If the value is a secret, remember that the encoding did nothing for it. Treat a Base64 credential exactly as you would treat the plain one.
 
 ## Encoding is not encryption
 

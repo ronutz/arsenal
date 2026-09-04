@@ -1,0 +1,89 @@
+---
+slug: obsolescence
+title: "Obsolescência: o que de fato morre, o que se recusa a morrer, e como distinguir"
+summary: "Esta indústria erra sobre obsolescência nas duas direções. Ela declara encerradas coisas que sobrevivem à declaração por décadas, e trata como permanentes coisas que somem dentro de um ciclo de produto. A partir das histórias de família e dos registros de empresas deste catálogo, esta é uma tentativa de algo mais útil que previsão: os mecanismos específicos pelos quais uma tecnologia de fato morre, as razões específicas pelas quais outras não conseguem ser mortas, e o que as duas coisas implicam para quem decide o que vale a pena aprender."
+concepts: ["obsolescence", "legacy", "end of life", "technology adoption", "history"]
+relatedTools: []
+relatedArticles: ["virtualization-family-history", "bridge-switch-family-history", "sdn-family-history", "encryption-family-history"]
+category: networking
+order: 156
+status: reviewed
+updated: "2026-09-03"
+---
+
+Toda tecnologia deste catálogo foi, em algum momento, o futuro. Várias foram declaradas mortas enquanto ainda carregavam a maior parte do tráfego do mundo. Pelo menos uma foi declarada impossível, construída assim mesmo, e hoje é o substrato da indústria de nuvem inteira.
+
+O registro reunido nestas histórias de família sustenta uma afirmação que vale dizer sem rodeio: **a indústria erra sistematicamente sobre obsolescência, e erra nas duas direções ao mesmo tempo.** Ela enterra coisas que não morrem e supõe permanência em coisas que somem dentro de uma década. O que vem a seguir não é método de previsão. É uma tentativa de nomear os mecanismos, porque os mecanismos são visíveis mesmo quando os desfechos não são.
+
+## Seis jeitos de uma tecnologia morrer de fato
+
+**1. A restrição que a produziu desaparece.** A virtualização funcionava em 1967 e sumiu por quinze anos, não porque deixou de funcionar, mas porque minicomputadores e computadores pessoais tornaram o hardware barato e pessoal. Se você não precisa compartilhar máquina, não precisa de hipervisor. Ela voltou no momento em que um data center cheio de servidores subutilizados recriou a restrição original. **Uma tecnologia não sobrevive por mérito; sobrevive por o problema que ela resolve ainda ser caro.**
+
+**2. A economia se inverte por baixo dela.** O Token Ring era tecnicamente respeitável e perdeu para a Ethernet em custo e instalação. Hubs perderam para comutadores quando o silício por porta ficou pagável. Nada na tecnologia perdedora piorou; o preço da alternativa despencou.
+
+**3. A camada vira commodity.** A SynOptics ganhou por completo a camada de cabeamento e ainda assim precisou se fundir, porque a parte da rede que ela dominava era a parte em que o preço cai mais rápido. **Ganhar uma camada que vira commodity é uma corrida que você termina e precisa correr de novo mais acima.**
+
+**4. O fabricante para de desenvolver.** A Cisco entregou o primeiro balanceador e nunca liderou aquele mercado, porque o desenvolvimento desacelerou depois das aquisições e o produto seguinte ficou congelado no conjunto de recursos do ano 2000, enquanto a F5 seguia com duzentos mil dólares de receita no primeiro ano. **Ser o primeiro é uma posição, e não uma vantagem. O que se acumula é continuar desenvolvendo.**
+
+**5. Ela é absorvida, e não substituída.** A prevenção de intrusão não morreu; deixou de ser produto e virou recurso do firewall de próxima geração. O firewall de aplicação web virou módulo do controlador de entrega. Absorção parece morte de fora e não é - a função continua, o mercado para comprá-la separadamente é que não.
+
+**6. A empresa é comprada e o produto vira linha de catálogo.** Wellfleet, Kalpana, Ungermann-Bass, Sourcefire, Nicira. Das três empresas que fundaram a indústria de redes do Vale do Silício em 1979, nenhuma sobreviveu como empresa independente, e não foi a engenharia delas que falhou.
+
+## Seis razões para uma tecnologia não conseguir ser morta
+
+**1. Nenhuma parte sozinha consegue forçar a mudança.** O roteamento entre domínios ainda roda sobre um protocolo desenhado quando os operadores se conheciam. Toda proposta de protegê-lo direito esbarrou no fato de que ninguém pode obrigar o resto da internet a adotar coisa alguma. O correio eletrônico é a mesma história: desenhado em 1982 sem autenticação, e todo mecanismo desde então foi parafusado por cima sem quebrar o que existe.
+
+**2. O custo de substituir excede o risco percebido.** A primeira versão do protocolo de gestão de rede saiu com uma senha de comunidade em texto claro, e a indústria a rodou por trinta anos assim mesmo. Aquilo não era ignorância. Era avaliação exata de que substituir custava mais do que o risco parecia custar.
+
+**3. As aplicações supõem que ela existe.** A camada 2 foi declarada encerrada por toda geração desde que rotear ficou barato, e continua aí, porque software segue sendo escrito por gente que supõe que a rede é uma coisa plana. O data center moderno gasta esforço real recriando uma ilusão de camada 2 plana sobre malha roteada exatamente por isso.
+
+**4. Ela está embutida em hardware que não pode ser trocado.** O WEP tinha de morrer e não conseguiu, porque os equipamentos não podiam ser atualizados. O remendo que veio depois existia para ganhar tempo sobre hardware que ninguém conseguia recolher.
+
+**5. Ela foi doada.** O método de acesso aleatório embaixo do Wi-Fi, das redes móveis, do cabo e da Ethernet foi posto em domínio público em 1971 porque a universidade não tinha escritório para comercializá-lo. O que não tem dono não pode ser descontinuado.
+
+**6. A especificação sobreviveu ao produto.** Este é o padrão mais forte do catálogo. O hardware da Proteon sumiu por completo e o OSPF (open shortest path first), que ela produziu, roda numa fatia enorme das redes corporativas. A Sytek sumiu e o NetBIOS ainda aparecia em guia de endurecimento quatro décadas depois. **Especificação qualquer um implementa; produto tem de ser comprado de você.**
+
+## O caso que inverte a suposição
+
+O modelo mental padrão é que um sucessor substitui um predecessor. O evento recente mais instrutivo deste corpus é o oposto.
+
+A F5 anunciou fim de venda e de desenvolvimento do BIG-IP Next, o sucessor arquitetural dela, enquanto a plataforma que ele deveria substituir seguiu - com o BIG-IP 21.0 pulando vários números de versão para fechar a distância. **O sucessor foi aposentado e o incumbente continuou.**
+
+Esse caso vale ser guardado porque é o formato para o qual as pessoas estão menos preparadas. Anúncio de sucessão é declaração de intenção de um fabricante, e não fato sobre o mundo, e a base instalada tem um voto que raramente é contado de antemão.
+
+## O que isso significa para o que você aprende
+
+A pergunta prática por trás de tudo isso é o que merece os anos.
+
+**Especificações sobrevivem a produtos.** A evidência do corpus é consistente: o OSPF sobreviveu à Proteon, o NetBIOS à Sytek, o LDAP (lightweight directory access protocol) às discussões societárias em volta dele, e o projeto do DNS sobreviveu a essencialmente todo o resto de 1983. Tempo gasto num protocolo é tempo que continua pagando; tempo gasto numa interface é tempo que expira com um lançamento.
+
+**Raciocínio sobrevive a configuração.** O engenheiro que aprendeu *por que* um firewall com estado mantém tabela de conexões opera a implementação de qualquer fabricante. O que aprendeu em qual menu fica a opção aprendeu algo com a vida útil de uma interface gráfica. Toda história de família daqui chega a esse mesmo ponto por um caminho diferente.
+
+**A camada sem glamour costuma virar a restrição.** A Supermicro passou vinte e cinco anos como a metade não elegante da indústria, e então a camada que ela ocupava virou a escassa. **A camada que é chata num ciclo costuma ser a restrição no seguinte**, o que é argumento a favor de profundidade em algo ordinário contra amplitude em algo da moda.
+
+**E declarar coisas mortas é hábito ruim com custo profissional.** Quem descartou a camada 2, o mainframe, o correio eletrônico, o SNMP ou a linha de comando passou anos estando certo em princípio e errado na prática - o que, numa carreira feita de competência faturável, é o mesmo que estar errado.
+
+## O limite honesto
+
+Nada disso prevê. Os mecanismos são visíveis em retrospecto e ambíguos no momento: a mesma evidência que diz que uma tecnologia está morrendo diz que ela está entrincheirada, dependendo de qual mecanismo você acha que está operando.
+
+O que o registro sustenta é uma disciplina de fazer perguntas melhores. Não *isto está obsoleto*, e sim: **a restrição que produziu isto ainda é cara? Uma parte sozinha consegue substituir, ou é preciso todo mundo concordar? O valor está numa especificação ou num produto? E alguém ainda está desenvolvendo?**
+
+Essas quatro perguntas teriam produzido previsões melhores do que a indústria de fato conseguiu sobre quase toda tecnologia deste catálogo - o que é afirmação modesta, e a única que a evidência sustenta.
+
+## Fontes
+
+A afirmação específica de versão sobre o BIG-IP Next está citada abaixo. O resto deste artigo sintetiza as histórias de família e os registros de empresas deste catálogo, em vez de introduzir material externo novo; as fontes primárias de cada afirmação estão citadas nos artigos de que ele parte.
+
+- [O relato da própria F5: a decisão estratégica de descontinuar o desenvolvimento do BIG-IP Next e voltar o foco para modernizar o BIG-IP TMOS, com a v21.0 iniciando essa série e incorporando capacidades originalmente previstas para o Next](https://www.f5.com/company/events/webinars/big-ip-v21-0-discover-whats-new)
+- [A F5 sobre a v21.1: quando o BIG-IP Next foi descontinuado, o compromisso de modernizar o TMOS integrando melhorias originalmente previstas para o Next, com a v21.0 como primeiro passo](https://www.f5.com/company/blog/a-sneak-peek-into-f5-big-ip-v21-1-ai-security-pqc-and-software-enhancements)
+- [O BIG-IP Next 20.3 como versão final, com fim de vida em 30 de abril de 2025, conforme o artigo K000152956 da F5](https://wtit.com/resources/f5-big-ip-software-support-policy/)
+
+Artigos de que esta síntese parte:
+
+- [Virtualização: o desaparecimento e o retorno, e o argumento da impossibilidade formal](/learn/virtualization-family-history)
+- [Pontes e comutadores: a camada 2 declarada encerrada por toda geração, e a comoditização da camada de cabeamento](/learn/bridge-switch-family-history)
+- [Balanceadores: primeiro no mercado e nunca líder, e o que se acumula em vez disso](/learn/adc-family-history)
+- [Sem fio: o método de acesso posto em domínio público em 1971, e o WEP embutido em hardware que não podia ser trocado](/learn/wireless-family-history)
+- [Roteadores: o roteamento entre domínios inalterado enquanto o equipamento foi refeito quatro vezes](/learn/router-family-history)
+- [Rede definida por software: o protocolo que falhou e a abstração que venceu](/learn/sdn-family-history)

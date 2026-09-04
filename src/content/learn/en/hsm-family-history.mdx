@@ -1,0 +1,82 @@
+---
+slug: hsm-family-history
+title: "The Hardware Security Module: The Man Who Invented Both Halves"
+summary: "Mohamed Atalla invented the MOSFET at Bell Labs, watched it be overlooked, resigned, and twelve years later invented the hardware security module. The transistor technology that made modern computing possible and the box that protects its most valuable secrets came from the same person - and he had to leave the world's foremost research laboratory to build the second one. This is the family history: the Atalla Box of 1973, a standard created out of fear that one company would dominate, an assurance level almost nobody reaches, and what happens when the answer to key management moves into somebody else's cloud."
+concepts: ["hsm", "atalla box", "key management", "fips 140", "pin", "history"]
+relatedTools: []
+relatedArticles: ["encryption-family-history", "quantum-threat-to-cryptography", "security-versus-availability"]
+category: security
+order: 149
+status: reviewed
+updated: "2026-09-03"
+---
+
+The [key management](/glossary/key-management) entry in this catalogue states the operational truth of cryptography: algorithms are almost never broken in practice, and keys are copied, committed to repositories and never rotated. The hardware security module is the industry's answer to exactly that, and it is fifty years old.
+
+## The man
+
+**Mohamed M. Atalla** was born in Port Said, Egypt. At Bell Labs he invented the MOSFET - the transistor structure on which essentially all modern computing is built. **The invention was initially overlooked at Bell**, and he resigned over it.
+
+He went to Hewlett-Packard, founded its Semiconductor Lab in 1962 and HP Labs in 1966, then joined Fairchild Semiconductor in 1969 to found its microwave and optoelectronics division, working on Schottky diodes, gallium arsenide and light-emitting diodes. Then he left semiconductors entirely and became an entrepreneur in cryptography.
+
+**The same person invented the device that made modern computing possible and the device that protects its most valuable secrets** - and he had to leave the world's foremost industrial research laboratory to build the second one, because it did not recognise the value of the first.
+
+## 1972 to 1973: the Atalla Box
+
+In 1972 Atalla founded Atalla Corporation and filed a patent for a remote personal identification number verification system: encryption applied so that identification could be entered at one place and verified at another over a telephone link.
+
+The following year he released the product, officially the **Identikey** system and universally the **Atalla Box** - a card reader console, two customer PIN pads, an intelligent controller and a built-in electronic interface. A customer typed a secret code; the device transformed it, using a microprocessor, into a different code for the teller. Offline devices were protected with an unguessable PIN-generating key.
+
+It is the first hardware security module, and it went on to secure the majority of the world's automated teller machine transactions.
+
+## The standard that fear produced
+
+Here is the part that says the most about how this industry works. **Fearful that Atalla would dominate the market, banks and credit card companies began working on an international standard.**
+
+The standard did not emerge because the technology was mature, or because a committee identified a public need. It emerged because a group of institutions did not want to depend on one supplier who was ahead of them. That is a recurring engine in this catalogue - the multi-source agreement in the [transceiver article](/learn/transceiver-family-history) is the same instinct - and it is worth naming honestly: **a significant share of the interoperability the industry enjoys exists because somebody was frightened of a monopoly rather than because anybody wanted openness.**
+
+IBM's 3624, later in the 1970s, used a similar PIN verification process. And Atalla was cited as an influence by IBM employees who worked on the **Data Encryption Standard** - so the commercial device and the civilian cipher standard described in the [encryption article](/learn/encryption-family-history) grew alongside each other, in the same institutions, at the same time. At the National Association of Mutual Savings Banks conference in January 1976 Atalla announced the Interchange Identikey, adding online transaction processing and network security.
+
+## What the box actually does
+
+An HSM is a hardened, tamper-resistant device that generates keys, performs cryptographic operations and stores the most sensitive keys - the master keys - so that they can be **used but not extracted**.
+
+That single property is the entire point, and it is what separates this from encrypting a key file. Software asks the module to sign or decrypt; the module does it and returns the result; the private material never exists anywhere the software can read. An attacker with complete control of the server can make the module work for them for as long as they have access, and cannot take the key with them when access ends.
+
+The defences are physical and layered: tamper **evidence**, meaning visible signs and logging; tamper **resistance**, making interference difficult without destroying the device; and tamper **response**, deleting keys when intrusion is detected. A device that erases its own contents when opened is a different security model from anything else in this series.
+
+## Assurance, and a number worth knowing
+
+HSMs are validated against FIPS 140, and in payment use against the Payment Card Industry requirements. The standard defines four security levels, and **Level 4, the highest, had been achieved by exactly one HSM as of August 2018**.
+
+That figure is the most informative thing about the assurance economics of this family. The top level exists, is well specified, and is almost never reached - because the cost of proving that degree of physical resistance exceeds what nearly every buyer will pay. **Assurance is not a technical ceiling; it is a price**, and most of the market has decided where on that curve it will stop.
+
+## Jobs and practices
+
+This family produced few dedicated roles and an unusually formal set of practices, because the procedures around an HSM are frequently written into audit requirements rather than into operations manuals.
+
+**Key ceremonies** are the distinctive artefact: a scripted, witnessed, documented procedure for generating or loading master keys, with **split knowledge** and **dual control** so no single person ever holds enough to reconstruct anything. The practice looks theatrical to outsiders and is a direct answer to the failure mode the glossary entry names - keys leak through people, not through mathematics.
+
+The other durable practices are **quorum authorisation** for sensitive operations, **backup by shares** rather than copies, and rehearsing recovery, because an HSM that fails with unrecoverable keys destroys the data it protected as thoroughly as any attacker would. **The tamper response that protects the key is also the thing that can lose it**, and that trade is permanent.
+
+## The companies
+
+Atalla Corporation became HP Atalla and is now Utimaco Atalla; its modules remained a de facto standard in payments, handling around 250 million card transactions a day by 2013. The other long-standing names are Thales, which absorbed nCipher, and IBM, whose cryptographic coprocessors descend from the same 1970s banking work. Utimaco, Entrust, Marvell and a set of specialists complete the market, and every large cloud provider now sells a managed service built on the same components.
+
+## Where it goes
+
+**The key moved into somebody else's building.** Cloud key management and cloud HSM services are the dominant deployment model now, which resolves the operational burden and creates a question the original design was meant to answer: the key cannot be extracted, and it lives in infrastructure you do not control. Customer-managed keys and external key stores exist to narrow that, and the honest framing is that they change who must be trusted rather than removing the need to trust.
+
+**Confidential computing is competing from the other direction.** Processor-based enclaves protect data in use on general-purpose hardware, which weakens the argument for a separate box for some workloads while never matching its physical assurance.
+
+**Post-quantum migration lands here hardest.** Devices designed to resist physical extraction for a decade in the field must now support new algorithms, and firmware upgradeability in a tamper-responsive device is a genuinely difficult engineering problem rather than a feature request.
+
+**And the founding property has not changed.** Everything else in this series has been rebuilt several times; the HSM is still doing exactly what the Atalla Box did in 1973 - holding a secret in a place where it can be used and not taken. Fifty years of computing has not produced a better answer to that requirement, only cheaper and more numerous versions of the same one.
+
+## Sources
+
+- [Mohamed M. Atalla: born in Port Said, invented the MOSFET at Bell Labs where it was initially overlooked, leading to his resignation; founded HP's Semiconductor Lab in 1962 and HP Labs in 1966, joined Fairchild in 1969, then founded Atalla Corporation in 1972 and released the first hardware security module, the Atalla Box, in 1973](https://computer.fandom.com/wiki/Mohamed_M._Atalla)
+- [Utimaco Atalla: founded by Mohamed M. Atalla in 1972, US patent 3,938,091 for a remote PIN verification system, and modules that were the payment card industry's de facto standard protecting around 250 million card transactions daily as of 2013](https://en.wikipedia.org/wiki/Utimaco_Atalla)
+- [Secure cryptoprocessor: the Atalla Box commercialised in 1973 as the Identikey system - a card reader console, two customer PIN pads, an intelligent controller and a built-in electronic interface - protecting offline devices with an unguessable PIN-generating key](https://handwiki.org/wiki/Secure_cryptoprocessor)
+- [Utimaco Atalla history: fearful that Atalla would dominate the market, banks and credit card companies began working on an international standard; the IBM 3624 used a similar PIN verification process, and Atalla was cited as an influence by IBM employees who worked on the Data Encryption Standard; the Interchange Identikey was announced at the National Association of Mutual Savings Banks conference in January 1976](https://handwiki.org/wiki/Company:Utimaco_Atalla)
+- [Hardware security module: tamper evidence, tamper resistance and tamper response as distinct properties, and FIPS 140 Security Level 4 having been achieved by only one module as of August 2018](https://computer.fandom.com/wiki/Hardware_security_module)

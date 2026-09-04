@@ -181,20 +181,6 @@ export default async function LearnIndexPage({
                   </span>
                 </p>
               </Link>
-              <Link
-                href="/certifications"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-primary)" } as React.CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#10003;</span>
-                <p className="learn-portal-title">
-                  {t("portalCerts")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("portalCertsLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("portalGuides", { count: studyGuides.length })}</span>
-                </p>
-              </Link>
               {/* THE INDUSTRY (PRIME 2026-09-01). The largest body of written
                   material on this site that the Learn portal did not point at:
                   profiles of the companies and the people, the lineage
@@ -236,6 +222,20 @@ export default async function LearnIndexPage({
                   <span className="learn-portal-badge">
                     {t("portalPeopleCount", { count: GLOSSARY.filter((e) => e.person).length })}
                   </span>
+                </p>
+              </Link>
+              <Link
+                href="/certifications"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--accent-primary)" } as React.CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#10003;</span>
+                <p className="learn-portal-title">
+                  {t("portalCerts")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("portalCertsLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{t("portalGuides", { count: studyGuides.length })}</span>
                 </p>
               </Link>
               <Link

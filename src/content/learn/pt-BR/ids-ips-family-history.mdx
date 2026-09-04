@@ -1,0 +1,83 @@
+---
+slug: ids-ips-family-history
+title: "Detecção de intrusão: a disciplina construída sobre ler os registros"
+summary: "A detecção de intrusão começou como problema de arquivo. O relatório de James Anderson, de 1980, propunha auditar os registros de um computador para achar uso anormal; Dorothy Denning e Peter Neumann transformaram aquilo num modelo em tempo real entre 1984 e 1986; Todd Heberlein levou a ideia para o fio em 1990; e Marty Roesch a deu de graça em 1998. Esta é a história da família, inclusive a divisão entre detecção e prevenção, que foi decisão de negócio tanto quanto técnica, e por que o problema mais difícil da área sempre foi a pessoa que precisa ler a saída."
+concepts: ["ids", "ips", "intrusion detection", "snort", "anomaly detection", "siem", "history"]
+relatedTools: []
+relatedArticles: ["firewall-family-history", "security-versus-availability", "ssl-forward-proxy-interception"]
+category: security
+order: 143
+status: reviewed
+updated: "2026-09-03"
+---
+
+Toda outra família desta série começou com um equipamento. Esta começou com um problema de arquivo: computadores produziam registros do que as pessoas faziam com eles, ninguém lia aqueles registros, e alguém perguntou o que aconteceria se alguém lesse.
+
+## 1980: auditar os registros
+
+O relatório técnico de **James P. Anderson**, *Computer Security Threat Monitoring and Surveillance*, publicado em abril de 1980, é de onde a detecção automatizada de intrusão costuma ser traçada. A proposta era modesta e consequente: auditar os dados de um computador para identificar padrões anormais de uso ao fim de cada dia, com análise estatística.
+
+Duas coisas nesse enquadramento importam. Era **depois do fato** - revisão diária, e não alarme ao vivo - e trabalhava sobre **registros que o sistema já produzia**. A detecção de intrusão não começou acrescentando um sensor. Começou lendo o que já estava lá, que segue sendo a melhoria de segurança mais barata disponível à maioria das organizações e segue sendo a mais pulada.
+
+## 1984 a 1986: o modelo
+
+No SRI International, que pesquisava análise de trilha de auditoria desde 1983, **Dorothy Denning** e **Peter Neumann** desenvolveram um modelo de sistema de detecção de intrusão em tempo real, sob contrato do governo, entre 1984 e 1986. Denning apresentou **An Intrusion Detection Model** no IEEE Symposium on Security and Privacy, em Oakland, em maio de 1986, publicado na *IEEE Transactions on Software Engineering* em fevereiro de 1987.
+
+A ideia central do modelo ainda é o princípio organizador da área. Construir um perfil estatístico do comportamento normal de cada sujeito e então sinalizar desvio - detecção sem saber de antemão como o ataque se parece. O protótipo foi o **Intrusion Detection Expert System**, desenvolvido no SRI sob Teresa Lunt, e tinha dois componentes que correspondem exatamente à divisão que todo produto ainda tem: um que aprende o comportamento normal e aponta desvio, e outro que codifica vulnerabilidades conhecidas como regras.
+
+**Detecção por anomalia e por assinatura eram irmãs desde o começo**, no mesmo protótipo, e toda a história posterior desta família é as duas trocando de lugar conforme qual estivesse mais barata de rodar.
+
+## 1990: para o fio
+
+A detecção baseada em host lê os registros da própria máquina. O trabalho de **L. Todd Heberlein**, *A Network Security Monitor*, apresentado no simpósio do IEEE de 1990, levou a ideia para a rede - observar tráfego em vez de trilha de auditoria.
+
+Essa mudança tornou a categoria comercialmente viável e impôs a restrição da qual ela nunca escapou. Um sensor de rede vê tudo sem tocar em nada, e é por isso que ele é fácil de implantar. Ele também vê só o que cruza o ponto de observação, só o que consegue analisar, e só na velocidade que consegue acompanhar - e cada um desses três limites acabou sendo alcançado.
+
+## A era comercial, e a letra que mudou
+
+Ao longo dos anos 1990 o mercado cresceu: a Internet Security Systems com o RealSecure, a Cisco comprando a WheelGroup para adquirir detecção de intrusão em rede, e um conjunto de produtos de host descendentes de trabalho da Força Aérea.
+
+Então, em 22 de dezembro de 1998, **Martin Roesch** lançou o **Snort** - inicialmente só para Unix e limitado, e já na versão 1.5, de dezembro de 1999, capaz de análise e registro de pacotes em tempo real. Era gratuito, as regras eram legíveis, e qualquer um podia escrever uma. O Snort fez pela detecção de intrusão o que o Firewall Toolkit tinha feito pelos firewalls cinco anos antes: transformou uma categoria cara de produto em algo que um engenheiro competente podia estudar, e fez da linguagem de regras um vocabulário compartilhado.
+
+A passagem de **detecção** para **prevenção** veio depois. Um sistema de detecção de intrusão (IDS) fica ao lado do tráfego e alerta; um sistema de prevenção de intrusão (IPS) fica no caminho e descarta. Essa única letra muda tudo no risco: um falso positivo em detecção é ruído, e um falso positivo em prevenção é uma queda. Passar de um para o outro converte um problema do analista num problema da operação, e é por isso que implantações maduras ainda escalonam - monitorar, depois bloquear num piloto, depois bloquear em geral, cada passo com data.
+
+## Evolução
+
+- **Revisão de auditoria**, 1980. Diária, estatística, depois do fato.
+- **Detecção em host em tempo real**, de 1986 ao início dos anos 1990. O modelo IDES e seus descendentes.
+- **Detecção em rede**, a partir de 1990. Observar o fio.
+- **Assinaturas abertas**, a partir de 1998. O Snort, e um formato de regra que outros adotaram.
+- **Prevenção**, do início dos anos 2000. No caminho, descartando.
+- **Absorção**, por volta de 2009. A prevenção de intrusão deixa de ser produto e vira recurso do firewall de próxima geração, que é onde a maioria das organizações a roda hoje.
+- **Análise comportamental e detecção em endpoint**, dos anos 2010. O modelo de anomalia de Denning voltando com poder computacional suficiente para de fato rodá-lo, nos hosts, onde o tráfego ainda é legível.
+
+Esse último ponto merece ênfase. **A ideia fundacional da área - traçar o normal e sinalizar o desvio - estava certa em 1986 e foi impraticável por vinte e cinco anos**, porque ninguém tinha armazenamento nem processamento para construir linhas de base por sujeito em escala. A onda atual de produtos comportamentais não é ideia nova; é a ideia original finalmente pagável.
+
+## Os cargos e as práticas
+
+Esta família criou o **analista de segurança** e, com ele, o **centro de operações de segurança** - uma sala cujo propósito inteiro é que alguém leia a saída. Todo outro equipamento desta série roda sem supervisão; um sistema de detecção de intrusão que ninguém lê é custo sem efeito.
+
+Daí veio o problema que define a disciplina e segue sem solução: a **fadiga de alertas**. Ajuste, supressão, correlação e triagem são todas respostas ao fato de que o volume de detecções excede a atenção humana, e a categoria inteira de gestão de eventos de segurança existe a jusante disso. A medida incômoda de uma implantação de detecção não é o que ela pegou, e sim que fração do que ela sinalizou alguém de fato olhou.
+
+Ela também criou o **escritor de regras** - ofício específico de expressar um padrão de ataque com precisão suficiente para casar e folga suficiente para sobreviver à variação - e, do outro lado, a disciplina da evasão, que é o mesmo ofício invertido.
+
+## As empresas
+
+A pesquisa veio do SRI, de Purdue, da Força Aérea e de laboratórios universitários, e não de fabricantes. A primeira onda comercial foi a Internet Security Systems, a Cisco via WheelGroup, e um conjunto de produtos de host vindos de trabalho governamental. A Sourcefire, fundada por Roesch para comercializar o Snort, foi comprada pela Cisco em 2013. Hoje a função mora principalmente dentro de outros produtos - Palo Alto, Fortinet, Check Point, Cisco -, enquanto a linhagem aberta segue em Snort, Suricata e Zeek, o último descendente direto da pesquisa de monitoração de rede dos anos 1990.
+
+## Para onde vai
+
+**A cifragem removeu o conteúdo.** Um sensor de rede que não lê o tráfego fica reduzido a metadados - quem falou com quem, com que frequência, quanto. O que acaba sendo mais útil do que se esperava, e é por isso que a detecção migrou em parte para análise de tráfego em vez de inspeção de conteúdo.
+
+**O endpoint virou o sensor.** Onde está o texto em claro, está a detecção. É essa a lógica inteira de detecção e resposta em endpoint, e é a mesma migração que acontece com firewalls e proxies pela mesma razão.
+
+**Identidade virou o sinal.** A detecção moderna mais valiosa muitas vezes não é sobre pacotes: uma conta se comportando diferente de si mesma, autenticando de um lugar novo, buscando algo que nunca tocou. É o modelo de Denning de 1986 aplicado a pessoas, e não a processos.
+
+**E o gargalo não se mexeu.** A detecção melhorou em ordens de grandeza; o número de pessoas disponíveis para ler o que ela produz, não. Todo avanço desta família é medido, no fim, contra essa restrição, e a pergunta honesta sobre qualquer capacidade nova de detecção não é o que ela consegue achar, e sim quem vai olhar.
+
+## Fontes
+
+- [Histórico de detecção de intrusão do Computer Science Laboratory do SRI: pesquisa desde 1983, e o modelo IDES em tempo real de Denning e Neumann desenvolvido sob contrato entre 1984 e 1985](https://www.csl.sri.com/programs/intrusion/history.html)
+- [Dorothy E. Denning, An Intrusion-Detection Model, apresentado no IEEE Symposium on Security and Privacy de 1986 e publicado na IEEE Transactions on Software Engineering em fevereiro de 1987](https://www.cs.colostate.edu/~cs656/reading/ieee-se-13-2.pdf)
+- [Bibliografia histórica: o Computer Security Threat Monitoring and Surveillance de J.P. Anderson, de 1980, o trabalho de Lunt com o IDES no SRI, e o A Network Security Monitor de Heberlein, de 1990](https://www.pearsonhighered.com/assets/samplechapter/0/1/3/0/0130259608.pdf)
+- [GIAC, The History and Evolution of Intrusion Detection: o Snort lançado por Marty Roesch em 22 de dezembro de 1998, só para Unix e limitado, com a versão 1.5 de dezembro de 1999 fazendo análise e registro de pacotes em tempo real](https://www.giac.org/paper/gsec/1294/history-evolution-intrusion-detection/100570)

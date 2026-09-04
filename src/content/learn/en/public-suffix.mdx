@@ -11,6 +11,20 @@ status: reviewed
 updated: "2026-07-07"
 ---
 
+## Origins: a browser bug that had no clean fix
+
+The Public Suffix List exists because of a security problem nobody could solve properly. A browser has to decide whether one site may set a cookie readable by another, and the honest answer requires knowing where an organisation's control over a name begins.
+
+That boundary is not in DNS. There is no record type that says "below this point, different owners". `com` sells to anyone, `co.uk` sells to anyone, `github.io` gives a subdomain to any user with an account, and to the protocol all three look exactly like any other label. Cookie rules based on counting labels therefore failed in both directions: too permissive on `co.uk`, where a site could set a cookie for every British company at once, and too restrictive elsewhere.
+
+Mozilla began maintaining a list in the mid-2000s to fix the cookie behaviour, and the list escaped its original purpose almost immediately. Today the same file decides certificate issuance policy, same-site checks, permission scoping and how analytics group traffic - which is a lot of load for a text file maintained by volunteers, and that fragility is part of the subject rather than an aside.
+
+## What it actually is
+
+A list of suffixes under which anybody can register a name, so the label immediately to the left of a listed suffix is the smallest unit an organisation controls. That unit is the **registrable domain**, or eTLD+1.
+
+Two properties surprise people. It is **not** a list of top-level domains: it contains thousands of entries, most of them deeper than one label. And it is **not** a specification with a numbered document behind it; it is a curated file with a submission process, which means the boundary a browser enforces is a maintained artefact rather than a derived fact.
+
 ## The problem with "the last two labels"
 
 It is tempting to assume the registered part of a hostname is just its last two labels. For `www.example.com` that works: the registered domain is `example.com`. But for `www.example.co.uk` it is wrong. Here `.co.uk` is a public suffix, so the registered domain is `example.co.uk`, three labels deep. There is no pattern in the string that tells you this. The only way to know that `.co.uk` behaves like a top-level domain while `.example.com` does not is to consult a list of which suffixes are public. That list is the [Public Suffix List](https://publicsuffix.org/) (PSL), and the [registered-domain tool](/tools/public-suffix) resolves names against it.
@@ -28,6 +42,33 @@ Two rule types make the difference from naive matching. A **wildcard** such as `
 ## ICANN and PRIVATE
 
 The list is split into two sections, and the distinction is not cosmetic. The **ICANN** (Internet Corporation for Assigned Names and Numbers) section holds registry-operated suffixes: this is the boundary that browsers enforce for security decisions. The **PRIVATE** section holds suffixes that companies added because they hand out subdomains to third parties, such as `github.io`, `*.compute.amazonaws.com`, or various app-hosting platforms. The two can give different answers. Under the full list, `alice.github.io` is its own registered domain, which is exactly what GitHub wants: one user's Pages site should not be same-site with another's. Under ICANN rules alone, the registered domain is `github.io`. Which interpretation is correct depends on the question you are asking, so the tool reports both whenever a PRIVATE rule is what decided the outcome.
+
+## Why the PRIVATE section exists, and what it changes
+
+The file has two divisions. The **ICANN** section covers registry suffixes - the ordinary domain hierarchy. The **PRIVATE** section is where organisations add their own names, and it is added by request.
+
+The reason is subdomain hosting. If a platform gives every customer `customer.example-platform.com`, then without an entry, all those customers share a cookie origin and a certificate rate-limit bucket. One tenant can set cookies readable by another, which is a real isolation failure between people who are strangers to each other. Adding the suffix to PRIVATE turns each tenant into its own registrable domain, and that is the fix.
+
+It also has consequences the requester may not want. Being a public suffix means the platform can no longer set a cookie across its own tenants, and it changes how certificate authorities treat wildcard requests and rate limits. The entry is not free, which is why the list has a review process rather than an upload button.
+
+## What breaks
+
+**Staleness.** The consumer that matters is not the list but the copy compiled into a browser, a library or an appliance. A new suffix is only enforced where the file has been refreshed, so behaviour differs by client version - and a rarely updated device can hold a boundary years out of date.
+
+**Treating it as authoritative about ownership.** It says where registration is open, not who owns what. Two names under the same registrable domain are usually the same organisation; usually is not always, and security decisions built on that assumption inherit the gap.
+
+**Vendoring the file and forgetting it.** The failure is silent: cookies scope slightly wrong, a certificate request is refused for a reason nobody can reproduce, and nothing logs "your public suffix list is old".
+
+**Assuming a specification exists.** Behaviour differs between implementations, particularly around wildcards and exception rules, and there is no conformance test to appeal to.
+
+## Where the boundary shows up, by category
+
+- **Browsers** - cookie scoping, same-site enforcement, permission grouping, and the part of the URL bar some browsers emphasise.
+- **Certificate authorities** - rate limits and issuance policy are commonly counted per registrable domain, which is why a platform's tenants share a bucket until the suffix is listed.
+- **Security tooling** - grouping DNS queries, phishing heuristics that compare a registrable domain against a lookalike, and any control that needs to say "same organisation".
+- **Analytics and advertising**, which needs the same boundary for the same reason browsers do, and which is why the list is quietly commercially important.
+
+The thing to carry away is that a boundary this consequential has no protocol behind it. It is a maintained file, and its accuracy depends on people submitting entries and on every consumer keeping their copy fresh.
 
 ## Where the boundary is used
 

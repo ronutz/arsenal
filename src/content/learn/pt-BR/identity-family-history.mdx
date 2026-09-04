@@ -1,0 +1,86 @@
+---
+slug: identity-family-history
+title: "Identidade: o L de LDAP é uma discussão"
+summary: "O X.500 era um bom modelo de dados embrulhado num protocolo que ninguém conseguia implantar. Em julho de 1993, três engenheiros publicaram uma especificação cuja premissa inteira era jogar a maior parte dele fora, e chamaram o resultado de Leve. Esta é a história da família da identidade - do arquivo de senha por máquina ao NIS, X.500, LDAP, Kerberos, SAML e OpenID Connect - e a discussão que atravessa tudo isso: se identidade é algo que a rede afirma, algo que um diretório guarda, ou algo por que um terceiro se responsabiliza."
+concepts: ["identity", "ldap", "kerberos", "x.500", "saml", "oidc", "history"]
+relatedTools: []
+relatedArticles: ["firewall-family-history", "encryption-family-history", "sdn-family-history"]
+category: security
+order: 151
+status: reviewed
+updated: "2026-09-03"
+---
+
+Toda outra família deste catálogo responde a uma pergunta sobre tráfego. Esta responde a uma pergunta sobre pessoas, e ela vem sendo respondida de um jeito diferente mais ou menos a cada década desde que computador passou a ter mais de um usuário.
+
+## Antes do diretório
+
+A primeira resposta foi um arquivo. O `/etc/passwd` em cada máquina, que funciona perfeitamente para uma máquina e vira cinquenta bases de usuário separadas no momento em que existem cinquenta servidores, cada uma mantida à mão.
+
+O NIS da Sun, em 1984, foi a primeira tentativa séria de resposta central - baseada em difusão, sem cifra, espaço de nomes plano. Revolucionária para a época e um passivo nos anos 1990, que é descrição justa da maioria das primeiras tentativas deste catálogo.
+
+## 1988: o bom modelo que ninguém conseguia rodar
+
+O **X.500** foi o serviço de diretório que o mundo OSI produziu, e o importante a dizer sobre ele é que **o modelo de dados estava certo**. A hierarquia, as classes de objeto, o nome distinto - tudo isso sobrevive hoje, porque tudo isso estava correto.
+
+O protocolo em volta é que era o problema. O Directory Access Protocol exigia a pilha OSI completa e recursos de porte de mainframe; a maioria dos computadores de mesa do início dos anos 1990 simplesmente não conseguia falar com um diretório X.500. Uma especificação pode ser tecnicamente excelente e inimplantável ao mesmo tempo, e a indústria nunca foi boa em distinguir as duas coisas de antemão.
+
+## Julho de 1993: a rebelião, publicada como RFC
+
+**Tim Howes**, na Universidade de Michigan, com **Wengyik Yeong** e **Steve Kille**, publicou a **RFC 1487**: o X.500 Lightweight Directory Access Protocol.
+
+Leia as decisões de projeto e a discussão fica inconfundível. Elementos de protocolo carregados diretamente sobre TCP, contornando a sobrecarga de sessão e apresentação. Elementos de dados codificados como cadeias comuns. Codificação leve em tudo. O objetivo declarado era reduzir o alto custo de entrada associado à tecnologia.
+
+**Eles mantiveram o modelo e jogaram fora o transporte.** Hierarquia, classes de objeto e nomes distintos ficaram; a pilha OSI foi embora, e o que sobrou rodava sobre um soquete TCP na porta 389, em qualquer máquina Unix existente.
+
+**O L significa uma discussão sobre processos de padronização.** Um comitê produziu algo correto e inutilizável; três engenheiros publicaram uma versão enxuta que dava para implantar, e é a versão enxuta que o mundo roda. É exatamente o protesto que o [artigo de SDN](/learn/sdn-family-history) descreve quinze anos depois, e exatamente o desfecho que o [artigo de firewall](/learn/firewall-family-history) descreve quando a inspeção com estado venceu os proxies: **o que entrega vence, e estar certo não basta**.
+
+O LDAP v3, RFC 2251 de 1997, acrescentou SASL, TLS, controles e referências, e ainda é a versão em produção.
+
+## Kerberos: a outra metade
+
+O **Kerberos** saiu do Project Athena do MIT, nos anos 1980, resolvendo outro problema: provar quem você é através de uma rede sem mandar a senha para todo serviço que pergunta.
+
+O projeto dele descende do protocolo Needham-Schroeder e a propriedade dele é um tíquete - afirmação com prazo e proteção criptográfica de que um terceiro já verificou você. Essa é a primeira aparição, nesta família, da ideia que hoje a domina: **identidade como algo AFIRMADO por um emissor confiável, em vez de conferido por cada serviço.**
+
+A divisão de trabalho que resultou disso é a que a maioria das empresas ainda roda. **O LDAP responde quem existe e o que pode fazer; o Kerberos responde se a pessoa à sua frente é quem diz ser.** Diretório e autenticação são problemas separados, e tratá-los como um só é fonte recorrente de confusão em revisão de projeto.
+
+A Microsoft lançou o **Active Directory** em 1999 e 2000 usando os dois - LDAP para consulta, Kerberos para autenticação - com extensões proprietárias por cima. É a implementação mais bem-sucedida desta família por margem enorme, e as extensões dela são a razão de "é só usar LDAP" raramente ser plano completo de migração.
+
+## A web muda a pergunta
+
+O modelo de diretório supõe que o serviço e o usuário estão dentro da mesma fronteira administrativa. O software como serviço quebrou essa suposição por completo: a aplicação é de outra pessoa, e ainda assim precisa saber quem você é.
+
+O **SAML** respondeu com afirmações assinadas passando pelo navegador, e virou a língua do login único corporativo. O **OAuth** respondeu a uma pergunta relacionada mas distinta - autorização delegada, deixar uma aplicação agir em seu nome sem ter sua senha - e o **OpenID Connect** pôs identidade em cima dele, que é o que a maioria das aplicações modernas de fato usa.
+
+A distinção entre os dois é a coisa mais confundida deste campo e vale dizer sem rodeio: **OAuth trata de PERMISSÃO, OpenID Connect trata de IDENTIDADE**, e um sistema que usa um token de autorização como prova de quem alguém é cometeu um erro de categoria que uma hora será explorado.
+
+## Os cargos e as práticas
+
+Esta família criou o engenheiro de identidade, e é um papel com propriedade incomum: é a única disciplina de infraestrutura em que um erro tranca a organização inteira de uma vez. Isso produz uma cautela característica - implantação escalonada, contas de emergência e um caminho de volta testado - que outras disciplinas aprendem depois e esta aprende de imediato.
+
+As práticas dela são reconhecíveis em toda parte. **Entrada, movimentação e saída** como ciclo de vida, e não como três chamados. **Desprovisionamento** como o controle que de fato importa, porque a conta que ninguém fechou é a via de entrada mais comum. **Menor privilégio** e a revisão de direitos que vem junto, que existem porque diretório acumula exatamente como base de regras de firewall, e pela mesma razão - ninguém consegue provar o que quebraria ao remover algo.
+
+A Sarbanes-Oxley, em 2002, transformou controle de acesso em responsabilidade legal, e a governança de identidade virou categoria do mesmo jeito que o [firewall de aplicação web](/learn/waf-family-history): **a regulação criou o mercado, e o centro de compra saiu da engenharia e foi para a auditoria.**
+
+## As empresas
+
+A pesquisa veio de Michigan e do MIT, e nenhuma das duas a comercializou. A Novell foi dona do mercado de diretório e o perdeu; a Microsoft o segura há vinte e cinco anos; Sun, Oracle, IBM e Ping Identity construíram a camada de federação; Okta, Ping, Microsoft Entra e ForgeRock seguram o mercado moderno, com Keycloak e OpenLDAP carregando a linhagem aberta.
+
+## Para onde vai
+
+**Identidade virou o plano de controle.** Todo artigo de família desta série termina com a política migrando para identidade, e é aqui que ela migrou. Quando o perímetro se dissolve, a pergunta "esta conexão é permitida" passa a ser respondida por quem e o quê, e não por onde.
+
+**Identidade de carga de trabalho já é maior que identidade humana.** A maior parte das autenticações num parque moderno é um serviço se provando a outro, e os mecanismos - certificados, tokens, hardware atestado - são os mesmos, aplicados a coisas que não esquecem senha.
+
+**Senhas estão sendo removidas, e não fortalecidas.** Chaves de acesso e autenticadores de plataforma são a primeira mudança em cinquenta anos que REMOVE o segredo compartilhado em vez de alongá-lo, e é a única correção estrutural que esta família já teve disponível.
+
+**E a discussão da ossificação está na hora de novo.** O LDAP venceu porque era implantável quando a resposta correta não era. Os padrões de identidade de hoje são grandes, em camadas e cada vez mais difíceis de implementar por completo - que é exatamente a condição em que alguém publica uma versão enxuta e todo mundo adota. A história deste artigo diz que essa pessoa será um engenheiro com um problema específico de implantação, e não um comitê.
+
+## Fontes
+
+- [RFC 1777, Lightweight Directory Access Protocol, de Yeong, Howes e Kille - elementos de protocolo carregados diretamente sobre TCP contornando a sobrecarga de sessão e apresentação, elementos de dados codificados como cadeias comuns, e o objetivo declarado de reduzir o alto custo de entrada da tecnologia X.500](https://www.rfc-editor.org/pdfrfc/rfc1777.txt.pdf)
+- [RFC 1487, o X.500 Lightweight Directory Access Protocol de julho de 1993, por Yeong da Performance Systems International, Howes da Universidade de Michigan e Kille do ISODE Consortium](https://www.ietf.org/rfc/rfc1487)
+- [O que é LDAP: desenvolvido em 1993 por Tim Howes e colegas na Universidade de Michigan como alternativa leve ao Directory Access Protocol do X.500, que consumia banda demais e que a maioria dos computadores de mesa da época não conseguia usar; a Microsoft lançou o Active Directory em 1999 usando LDAP e Kerberos com extensões proprietárias](https://jumpcloud.com/blog/what-is-ldap)
+- [A linhagem do arquivo de senha por máquina, passando pelo NIS da Sun em 1984 e pelo X.500 em 1988, até a RFC 1487 em 1993 e o LDAP v3 na RFC 2251 de 1997, que acrescentou SASL, TLS, controles e referências](https://linuxcent.com/what-is-ldap/)
+- [Primeiros princípios de gestão de identidade: Howes, Kille e Yeong inventando o LDAP em 1993, o Active Directory usando LDAP para consulta e Kerberos para autenticação, o Kerberos vindo do projeto Athena do MIT, e a Sarbanes-Oxley de 2002 responsabilizando empresas por controle de acesso ruim](https://thecyberwire.com/stories/ed530d44d8514c568bb451723c363f8a/identity-management-a-first-principle-idea)

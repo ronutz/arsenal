@@ -1,0 +1,90 @@
+---
+slug: waf-family-history
+title: "The Web Application Firewall: Bought by Auditors, Blamed by Engineers"
+summary: "The first web application firewall and the first web application scanner were built by the same company, which is the structural fact this family is usually explained without. AppShield shipped in the summer of 1999; ModSecurity opened the category in 2002; the OWASP Top 10 gave it a vocabulary in 2003; and PCI DSS made it a purchase in 2004. This is the family history, including why a technology with twenty-five years of development is still described by its own professional bodies as a magic black box that does security."
+concepts: ["waf", "appshield", "modsecurity", "owasp", "pci dss", "history"]
+relatedTools: []
+relatedArticles: ["firewall-family-history", "adc-family-history", "awaf-false-positives", "awaf-enforcement-mode-blocking-vs-transparent"]
+category: security
+order: 145
+status: reviewed
+updated: "2026-09-03"
+---
+
+Network firewalls filter by address and port. That was sufficient while the interesting traffic was many protocols on many ports, and it stopped being sufficient the moment nearly everything valuable arrived over one port carrying an application nobody could describe.
+
+## 1997 to 1999: one company, two products
+
+**Perfecto Technologies** was founded in 1997 in Herzliya by Eran Reshef and Gili Raanan, later renaming itself **Sanctum**. It released **AppShield** in the summer of 1999 - a reverse proxy that inspected requests and blocked application-level exploits, aimed at electronic commerce and, in the language of the time, protecting against illegal character entries in web pages. The first version, built by a team led by Raanan, ran on a dedicated Linux server.
+
+The same company also built **AppScan**, a scanner that attacked web applications to find their flaws.
+
+**That is the structural fact about this family, and it is almost always left out.** The first web application firewall and the first web application scanner came out of one research effort, because they are the same knowledge pointed in opposite directions: a catalogue of how web applications break, used defensively in one product and offensively in the other. Sanctum named an early top ten of web application hacking techniques and did formal methods research alongside the Turing Award winner Amir Pnueli. Every argument since about whether to fix the application or filter in front of it is a choice between the two halves of that original body of work.
+
+Kavado and Gilian Technologies shipped comparable products around the same time. The market they were all reacting to was the electronic commerce boom - online transaction value had reached roughly 2.4 billion dollars by 1998, and attacks moved to where the money was.
+
+## 2002 to 2004: the parts that made it a discipline
+
+Three things happened in quick succession, and none of them was a product feature.
+
+**ModSecurity**, in 2002, was an open-source rule engine embedded in Apache and later NGINX and IIS. It made the technology accessible to anyone with a web server and, more importantly, made the rules readable - which turned an opaque appliance category into something engineers could study and argue about. The same thing the Firewall Toolkit did for firewalls and Snort did for intrusion detection, and for the same reason.
+
+**OWASP**, founded in December 2001, published the first **Top 10** in 2003. That list gave the field a shared vocabulary - injection, cross-site scripting, broken access control - and vendors immediately built detection for the named categories. The **Core Rule Set** followed as a shared, open library of signatures with anomaly scoring, and it is still what a large share of deployments actually run.
+
+**PCI DSS**, from 2004, named a web application firewall as an acceptable control for protecting public-facing applications. That is the moment the category stopped being a security purchase and became a compliance one.
+
+## What compliance did to the technology
+
+Being written into a standard is the best thing that can happen to a product category commercially, and it is frequently the worst thing that can happen to it operationally.
+
+A WAF bought to satisfy an auditor has a different lifecycle from one bought to stop attacks. It is installed, it is put in a mode where it does not block, the false positives are never worked through, and it stays there - present at audit, transparent in production. Nobody involved is behaving irrationally: **blocking is the point at which a security control starts breaking the business**, and an organisation that has not budgeted the tuning effort makes the only safe local choice.
+
+That is why the profession's own bodies say what they say. Two decades in, an ISACA technical brief observes that a majority of implementations are not delivering on their promises and that these remain perceived as magic black boxes that do security. The technology is not the problem. The operating model around it usually is.
+
+## The hard problem, stated plainly
+
+A WAF has to know what the application it protects considers normal. Nobody has that document.
+
+Everything difficult about running one descends from that single gap. **Learning mode** exists because the policy must be discovered from live traffic rather than specified. **False positives** are inevitable because legitimate input is indistinguishable from attack input without knowing what the parameter means. **Signature staging** exists because a rule cannot be trusted until it has been observed. And **evasion** works because a filter's parsing and the application's parsing are two different implementations that will eventually disagree - the same structural weakness that defeats every filter in this catalogue, from packet filters to path traversal checks.
+
+A WAF is a second, external, approximate model of an application, maintained by people who do not own the application. It is genuinely useful and it is never going to be exact.
+
+## Evolution
+
+- **Reverse proxy appliances**, 1999. AppShield, Kavado, Gilian.
+- **Embedded modules**, 2002. ModSecurity in the web server itself.
+- **Shared rules**, 2003 onward. The OWASP Top 10 and the Core Rule Set.
+- **Compliance-driven adoption**, from 2004. PCI DSS, and a market that grew for reasons other than efficacy.
+- **Absorption into the delivery tier**, from the late 2000s. The WAF became a module on the application delivery controller already terminating the traffic, which is where most enterprises run it - a consolidation the previous article in this series traces from the other side.
+- **Cloud and edge**, from the 2010s. Delivered as a service in front of the origin, which changes the economics and moves the plaintext to the provider.
+- **Behaviour, bots and application programming interfaces**, currently. The traffic being defended is increasingly not a browser and not a page, and the rules written for form submissions do not describe it.
+
+## Jobs and practices
+
+This family created a role that sits uncomfortably between two teams, again: the person who runs the WAF is usually in security, and the knowledge required to tune it belongs to the application developers. Every successful deployment is a negotiated relationship between those two, and every failed one is a ticket queue between them.
+
+The practices are specific and transferable. **Transparent before blocking**, always, with a date. **Per-application policy** rather than one global rule set, because a single policy tuned for everything is tuned for nothing. **Working the false positives** as ongoing operational load rather than a project. And the honest measure: not how many requests were blocked, but whether anyone would notice if the device were switched to monitoring tomorrow.
+
+## The companies
+
+The first wave was Sanctum, Kavado and Gilian. Sanctum merged into Watchfire in 2004 and went to IBM, whose AppScan line is now HCL's - the scanner outlived the firewall. NetContinuum, Breach Security and Imperva followed, with F5 acquiring MagniFire and building it into what became its application security module, and Imperva remaining the notable independent.
+
+Today the function is a module on delivery controllers from F5, Citrix and Radware; a service from Cloudflare, Akamai, Fastly, Imperva and the cloud providers; and, underneath a large share of everything, ModSecurity and the OWASP Core Rule Set doing the work for free.
+
+## Where it goes
+
+**The protected thing changed.** Rules written for form fields and page parameters describe a web that mostly no longer exists. Traffic today is application programming interface calls with structured bodies, and defending those needs a schema rather than a signature - which is why specification validation is becoming the substantive control.
+
+**Bots became the majority of the problem.** Most automated traffic is not exploiting a flaw; it is using the application exactly as designed, at a volume or for a purpose the designer did not intend. That is not a filtering problem, and the tooling reflects it - the growth is in behavioural analysis and challenge rather than in signatures.
+
+**Encryption pushed it to the endpoints of the path.** A WAF must terminate TLS to work at all, which fixes it either at the edge provider or at the delivery tier and rules out anywhere in between.
+
+**And the twenty-five year old critique still stands.** The gap has never been the detection engine; it has been whether an organisation is prepared to own a second model of its own applications. Nothing in the current generation changes that, and any promise that a WAF will secure an application nobody is willing to describe should be read the same way it should have been read in 1999.
+
+## Sources
+
+- [Sanctum Inc.: founded 1997 as Perfecto Technologies by Eran Reshef and Gili Raanan in Herzliya, released AppShield in the summer of 1999, produced both AppShield and the AppScan scanner, researched formal methods with Turing Award winner Amir Pnueli, and merged with Watchfire in 2004 before the IBM acquisition](https://en.wikipedia.org/wiki/Sanctum_Inc.)
+- [Web application firewall: early products from Kavado and Gilian Technologies, ModSecurity formed in 2002 to make the technology more accessible, and rules standardised through the OWASP Top 10 from 2003](https://handwiki.org/wiki/Software:Web_application_firewall)
+- [ISACA technical brief on web application firewalls: Perfecto was the first company to offer a dedicated web application firewall, and a majority of implementations are still not delivering on their promises after twenty years, remaining perceived as magic black boxes that do security](https://www.approach-cyber.com/wp-content/uploads/2024/08/isaca_techbrief_-_waf_where_do_we_stand_final.pdf)
+- [The history of web application firewalls: the 2004 Payment Card Industry Data Security Standard naming the web application firewall as a compensating control, and the OWASP Core Rule Set as a shared library of signatures with anomaly scoring](https://www.cdnhandbook.com/waf/history/)
+- [HCL AppScan: the first version of AppShield built by a team led by Gili Raanan, running on a dedicated Linux server](https://en.wikipedia.org/wiki/HCL_AppScan)

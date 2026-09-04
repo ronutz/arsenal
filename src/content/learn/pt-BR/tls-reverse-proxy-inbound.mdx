@@ -15,6 +15,14 @@ Quando um reverse proxy fica na frente de aplicações HTTPS, ele precisa decidi
 
 A única coisa comum a todo TLS de entrada em reverse proxy é a direção do certificado. Como o proxy está na frente dos servidores, ele apresenta o certificado do **servidor** aos clientes que chegam (ou um certificado válido para o mesmo nome de host). O cliente está se conectando a `www.example.com` e precisa ver um certificado para `www.example.com`; que a caixa terminando o TLS seja um balanceador de carga em vez do servidor web de origem é invisível e intencional. Isso é o oposto de um forward proxy de saída, que forja certificados para destinos que ele não possui, coberto no artigo sobre SSL forward proxy.
 
+## Origens: o aperto de mão era caro demais para fazer em todo lugar
+
+A terminação de TLS de entrada começou como decisão econômica, e não de segurança. Operações de chave pública eram caras o bastante para que fazê-las em cada servidor de aplicação desperdiçasse capacidade que poderia atender requisições, então o trabalho migrou para um equipamento que não fazia mais nada - com frequência com aceleração em hardware - e os servidores atrás dele voltaram a falar texto claro.
+
+Essa razão original praticamente evaporou: processadores modernos fazem o aperto de mão barato, e o argumento de custo já não decide nada sozinho. O que manteve o padrão foi todo o resto para o qual o ponto de terminação se revelou útil - um lugar só para guardar certificados, um só para renová-los, um só para impor versões de protocolo e política de cifras, e um só capaz de ler a requisição o bastante para roteá-la.
+
+Então a pergunta deixou de ser se termina e passou a ser o que acontece depois: texto claro, recifrado, ou não terminar.
+
 ## Offload: terminar e seguir em texto claro
 
 No **SSL offload** (também chamado de terminação SSL), o proxy completa o handshake TLS com o cliente, descriptografa o tráfego, e o encaminha ao backend como HTTP em texto claro. A conexão do proxy ao servidor é não criptografada.
@@ -32,6 +40,31 @@ O bridging mantém toda a visibilidade e o controle do offload, porque o proxy a
 No **SSL passthrough**, o proxy não termina o TLS de forma alguma. Ele encaminha o fluxo TCP criptografado direto a um backend, que completa o handshake TLS com o cliente de ponta a ponta. O proxy nunca detém a chave privada e nunca vê texto claro.
 
 O passthrough é na verdade um comportamento de Camada 4 vestindo um rótulo TLS, e herda as propriedades do proxy TCP: rápido, agnóstico ao protocolo e cego ao conteúdo. O proxy não pode aplicar um WAF, não pode rotear por URL, e não pode inserir cookies, porque não pode ler a requisição. O que ele *ainda pode* fazer é rotear pelo Server Name Indication, porque o SNI no ClientHello é enviado em texto claro antes de a criptografia começar; um proxy passthrough espia aquele nome de host para escolher o pool de backend certo sem descriptografar mais nada. O passthrough é a escolha certa quando a criptografia de ponta a ponta até o backend é obrigatória e o proxy não precisa inspecionar, ou quando o backend precisa terminar o TLS ele mesmo (por exemplo, para fazer sua própria autenticação por certificado de cliente).
+
+## Escolhendo entre os três, com honestidade
+
+O **offload** é correto quando a rede entre o proxy e os servidores é de fato sua e o regime de conformidade permite. O trecho em texto claro é curto, e a simplicidade operacional é real.
+
+O **bridging** é correto quando não é, e custa o dobro de criptografia mais uma segunda decisão de confiança - o proxy precisa validar o certificado de cima, e se não validar, a cifragem é enfeite. É a mesma armadilha da [interceptação de saída](/learn/ssl-forward-proxy-interception): recifrar para um servidor que você não autenticou não prova nada.
+
+O **passthrough** é correto quando a chave não pode sair da aplicação, ou quando o cliente se autentica com certificado. Custa tudo o que o proxy poderia fazer: sem roteamento por conteúdo, sem inserção de cabeçalho, sem observabilidade por requisição, e verificações de saúde reduzidas a se a porta responde.
+
+## As coisas que quebram
+
+**O endereço do cliente some.** O servidor vê o proxy. Recuperá-lo significa um cabeçalho inserido, que a aplicação precisa ser configurada para confiar exatamente deste proxy e de mais nada - um cabeçalho que qualquer cliente também consegue enviar não é evidência.
+
+**Certificados vencem numa data que alguém poderia ter lido um ano antes.** Centralizá-los torna a renovação fácil e um lapso universal.
+
+**A política diverge da realidade.** O proxy negocia uma suíte moderna com o cliente e algo bem mais velho com o backend, e o relatório de postura só mede a frente.
+
+**A verificação de saúde mente no passthrough.** Uma porta que aceita conexão não é uma aplicação capaz de responder, e é assim que um parque serve erros com todos os monitores verdes.
+
+## O cenário, por categoria
+
+- **Proxies reversos e servidores web** - NGINX, HAProxy, Envoy, Apache, Caddy, todos terminando e todos capazes de fazer bridging ou passthrough.
+- **Controladores de entrega de aplicação** - F5, Citrix, A10, em que a terminação fica ao lado de persistência, monitoração de saúde e política de tráfego, no mesmo lugar.
+- **Balanceadores de nuvem e CDNs**, em que o certificado muitas vezes mora no cofre do provedor e a chave privada nunca existe em nada que você administre.
+- **Malhas de serviço**, que invertem o padrão: TLS mútuo em toda parte entre cargas de trabalho, com o sidecar sendo ponto de terminação e de originação ao mesmo tempo.
 
 ## O que o SNI e o TLS mútuo mudam
 

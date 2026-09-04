@@ -1,0 +1,86 @@
+---
+slug: pki-family-history
+title: "PKI: uma monografia de graduação, e um modelo de confiança que ninguém projetaria hoje"
+summary: "Em maio de 1978, um aluno de graduação do MIT escreveu uma monografia que nomeou o certificado, nomeou a lista de revogação e desenhou a estrutura sobre a qual a web ainda roda. O que cresceu em volta é um modelo de confiança que ninguém proporia do zero: cerca de cem emissores confiáveis, qualquer um deles capaz de se responsabilizar por qualquer nome da internet, com o mais fraco definindo a força para todo mundo. Esta é a história da família - Kohnfelder em 1978, X.509 em 1988, os comprometimentos de 2011, o Certificate Transparency como resposta, e um preço que caiu de centenas de dólares para nada."
+concepts: ["pki", "certificate", "x.509", "certificate authority", "certificate transparency", "history"]
+relatedTools: []
+relatedArticles: ["encryption-family-history", "identity-family-history", "hsm-family-history"]
+category: security
+order: 152
+status: reviewed
+updated: "2026-09-03"
+---
+
+A criptografia de chave pública resolveu a distribuição de chaves e criou imediatamente um problema novo: dá para mandar a alguém uma chave pública por canal aberto, e não dá para saber de quem ela é.
+
+## Maio de 1978: a monografia
+
+**Loren Kohnfelder**, aluno de graduação do MIT, entregou *Towards a Practical Public Key Cryptosystem* como monografia de bacharelado. Ela descrevia certificados digitais e a PKI (infraestrutura de chave pública), como se chama hoje, e introduziu os termos **certificado** e **lista de revogação de certificados**, junto de boa parte do aparato conceitual ainda em uso.
+
+Dois anos depois de Diffie e Hellman publicarem, um aluno de graduação produziu a estrutura que carregaria o comércio na internet pelos cinquenta anos seguintes. Vale dizer sem rodeio, contra a suposição de que trabalho fundacional exige senioridade: **a peça que tornou a criptografia de chave pública utilizável em escala foi uma monografia de graduação.** Kohnfelder depois cocriou o modelo de ameaças STRIDE e passou a carreira na Microsoft e no Google.
+
+O problema que ele resolvia é preciso. Buscar a chave pública de alguém num diretório e verificá-la significava PAUSAR a comunicação no meio da conversa, o que ele descreveu como inconveniente. Um certificado remove a pausa: uma parte confiável assina a ligação entre um nome e uma chave de antemão, e quem depende disso confere uma assinatura em vez de fazer uma consulta.
+
+## 1988 a 1995: o formato e o mercado
+
+A ITU publicou o **X.509** em 1988, definindo o formato do certificado. O perfil para a internet veio depois - RFC 2459 em 1999, RFC 5280 em 2008 -, e todo detalhe de implementação que dá trabalho a quem opera descende de uma especificação desenhada dentro do mesmo programa OSI do diretório X.500 do [artigo de identidade](/learn/identity-family-history).
+
+Em **1995** apareceu a primeira autoridade certificadora pública, junto do SSLv2, e os navegadores adotaram um modelo de confiança que nunca foi reprojetado desde então: **uma lista de autoridades raiz embarcada no software, qualquer uma delas podendo se responsabilizar por qualquer nome.**
+
+## O problema estrutural, dito sem eufemismo
+
+Esse modelo tem uma propriedade que ninguém escolheria de propósito.
+
+**Qualquer autoridade confiável pode emitir certificado para qualquer domínio.** Não só o seu - o de qualquer um. A segurança do seu nome, portanto, não depende da autoridade que você escolheu e paga, e sim da mais fraca entre a centena de autoridades que os navegadores dos seus visitantes por acaso confiam, nas jurisdições em que elas operam.
+
+A falha não foi hipotética. Em 2011, atacantes comprometeram a autoridade holandesa **DigiNotar** e emitiram certificados falsos para centenas de sites, inclusive o Google. Como a DigiNotar estava nos repositórios de raízes confiáveis, os clientes não tinham como perceber que estavam sendo interceptados - que é exatamente o que o modelo garante quando um emissor falha.
+
+Essa é a versão mais afiada de um padrão que este catálogo não para de encontrar: **um sistema em que a confiança é distribuída mas não verificável falha em silêncio, e a falha é invisível justamente para quem ela prejudica.**
+
+## De 2013 em diante: a correção não foi mais confiança
+
+A resposta não foi confiar mais nas autoridades. Foi tornar a emissão **observável**.
+
+O **Certificate Transparency**, proposto pelo Google depois da DigiNotar, é um conjunto de registros públicos apenas-anexação que gravam todo certificado emitido. Ele não impede um certificado ruim; torna impossível emitir um em silêncio. O dono de um domínio pode observar os registros e ver certificados para o próprio nome que ele nunca pediu.
+
+Isso é resposta de governança, e não criptográfica, e fica ao lado da competição do AES no [artigo de cifragem](/learn/encryption-family-history) como o segundo grande exemplo deste corpus do mesmo movimento: **quando não dá para tornar uma parte confiável, torne as ações dela públicas.**
+
+## O colapso do preço
+
+Certificados custavam centenas de dólares por ano e exigiam trabalho manual, o que teve uma consequência de segurança que ninguém enquadrava como tal: **cifrar era linha de orçamento, então a maior parte da web ficava sem cifra.**
+
+Emissão automatizada e certificados gratuitos removeram isso, e o efeito foi estrutural, e não incremental. A web foi de majoritariamente em texto claro a majoritariamente cifrada em poucos anos, e toda consequência traçada nos outros artigos daqui - a interceptação perdendo terreno, a detecção migrando para os endpoints, sensores de rede reduzidos a metadados - decorre dessa única mudança de preço e de esforço.
+
+Ela também mudou a prática operacional. Certificado que renova sozinho pode ser de vida curta, e certificado de vida curta faz a revogação - a parte do projeto de Kohnfelder que nunca funcionou bem na prática - importar muito menos. **A indústria não consertou a revogação; fez a expiração ficar rápida o bastante para a revogação importar menos.**
+
+## Cargos e práticas
+
+Esta família não produz cargo dedicado nenhum e uma quantidade enorme de dor recorrente, o que é incomum: quase todo mundo em infraestrutura lida com certificado, e quase ninguém é dono deles.
+
+As práticas existem por causa dessa lacuna. **Inventário**, porque o certificado que expira é sempre o que ninguém sabia que existia. **Monitoração de expiração**, que toda organização implementa depois da primeira queda, e não antes. **Validação de cadeia**, porque certificado que funciona no navegador e falha numa biblioteca cliente em geral é intermediário faltando, e não certificado ruim. E **manuseio de chave privada**, que é onde esta família encontra o [módulo de segurança em hardware](/learn/hsm-family-history) - a chave que assina é o ativo, e o certificado é só a face pública dela.
+
+A queda grave mais comum desta família segue sendo certificado expirado em algo que ninguém tinha inventariado, que é falha de documentação vestida de fantasia criptográfica.
+
+## As empresas
+
+A VeriSign definiu o mercado comercial e passou o negócio de autoridade para a Symantec, cujos certificados acabaram sendo desconfiados pelos navegadores após problemas de emissão - a demonstração mais clara de que confiança raiz é revogável e de que quem tem o poder de fato neste sistema são os fabricantes de navegador, e não as autoridades.
+
+Hoje são DigiCert, Sectigo, GlobalSign e os serviços próprios dos provedores de nuvem, com o **Let's Encrypt** emitindo uma fatia enorme de todos os certificados públicos de graça. Por baixo, os fabricantes de navegador e de sistema operacional tocam os programas de raiz, o que os torna os governantes reais da confiança na internet sem nunca terem sido nomeados para o papel.
+
+## Para onde vai
+
+**As validades continuam encolhendo.** A vida de um certificado caiu de anos para meses e segue caindo, o que força automação e elimina a renovação manual que causava a maior parte das quedas.
+
+**Automação está virando obrigatória, e não opcional.** Nas validades que estão sendo adotadas, organização nenhuma renova à mão, o que encerra em silêncio uma categoria inteira de prática operacional.
+
+**A migração pós-quântica chega cedo aqui.** Certificados encadeiam, então os algoritmos neles precisam mudar antes do tráfego, e a transição descrita no [artigo da ameaça quântica](/learn/quantum-threat-to-cryptography) alcança esta família primeiro.
+
+**E a estrutura fundadora continua lá.** Toda melhoria dos últimos quinze anos - registros de transparência, fixação, validades curtas, emissão automatizada - é controle compensatório em volta de um modelo de confiança desenhado quando havia um punhado de autoridades e todo mundo se conhecia. Ninguém o substituiu, porque substituí-lo exigiria que todo navegador, todo sistema operacional e todo servidor do planeta concordassem com algo ao mesmo tempo. A web roda sobre uma ideia de 1978 e um arranjo de 1995, remendados continuamente, e os remendos são a parte interessante.
+
+## Fontes
+
+- [Loren Kohnfelder: inventou o que hoje se chama infraestrutura de chave pública na monografia de bacharelado do MIT, de maio de 1978, introduzindo os termos certificado e lista de revogação de certificados, e cocriou o modelo de ameaças STRIDE](https://en.wikipedia.org/wiki/Loren_Kohnfelder)
+- [O relato do próprio Kohnfelder: a monografia de 1978, Towards a Practical Public Key Cryptosystem, descreveu pela primeira vez certificados digitais e os fundamentos da infraestrutura de chave pública, seguida por trabalho de segurança na Microsoft e no Google](https://designingsecuresoftware.com/page/about/)
+- [Avaliação da revogação de certificados X.509 no ecossistema da web: certificados inventados em 1978 por Kohnfelder na monografia dele, o comprometimento da DigiNotar em 2011 emitindo certificados falsos para centenas de sites inclusive o Google, e o Certificate Transparency proposto pelo Google como registros públicos apenas-anexação em resposta](https://www.researchgate.net/publication/372690084_An_evaluation_of_X509_certificate_revocation_and_related_privacy_issues_in_the_Web_PKI_ecosystem)
+- [Linha do tempo da PKI: o formato de certificado X.509 da ITU em 1988, o SSLv2 e a primeira autoridade certificadora pública em 1995, o modelo de confiança dos navegadores a partir de 1996, a RFC 2818 para HTTPS e a RFC 2560 para o Online Certificate Status Protocol (OCSP)](https://assets.swoogo.com/uploads/5531575-686e2d74a9ef4.pdf)
+- [O X.509 como padrão que especifica o formato do certificado, descrito na RFC 2459 de 1999 com a versão atual na RFC 5280 de 2008, e o arranjo típico em que um terceiro confiável emite e assina o certificado](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/10609011)

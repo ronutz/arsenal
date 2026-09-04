@@ -1,0 +1,91 @@
+---
+slug: email-family-history
+title: "Correio eletrônico: um projeto paralelo que virou a camada de identidade"
+summary: "O empregador de Ray Tomlinson não pediu que ele construísse o correio eletrônico. Ele estava, nas palavras de um colega, só brincando, procurando o que fazer com a ARPANET - e montou aquilo a partir de uma ferramenta local de mensagens e um programa de transferência de arquivos. A especificação escrita onze anos depois permitiu que o remetente mostrado a um humano fosse diferente do remetente declarado ao servidor, que é a decisão de projeto que criou o phishing. Esta é a história da família, e ela termina com a exceção mais clara a uma regra que este catálogo julgava ter estabelecido."
+concepts: ["email", "smtp", "spf", "dkim", "dmarc", "phishing", "history"]
+relatedTools: []
+relatedArticles: ["dns-family-history", "identity-family-history", "ddos-family-history"]
+category: security
+order: 160
+status: reviewed
+updated: "2026-09-03"
+---
+
+O correio eletrônico é a coisa mais antiga deste catálogo ainda fazendo o trabalho original dela, e a única que virou em silêncio a credencial de referência da internet inteira sem ninguém ter decidido que deveria.
+
+## 1971: não era tarefa
+
+**Ray Tomlinson** estava na BBN - a empresa cuja entrada neste catálogo cobre os [primeiros roteadores](/learn/router-family-history) -, trabalhando no desenvolvimento de protocolos da ARPANET. Mandar mensagem entre usuários de uma máquina de tempo compartilhado já existia, num programa chamado SNDMSG. O que não existia era mandar uma para uma pessoa numa máquina **diferente**.
+
+Ele pegou código do **CPYNET**, um programa de transferência de arquivos que ele mesmo escrevera, e o enxertou no SNDMSG. **Correio eletrônico é uma ferramenta local de mensagens colada num programa de transferência de arquivos**, e essa linhagem explica mais sobre o comportamento dele que qualquer especificação posterior.
+
+A descrição de um porta-voz da Raytheon sobre como aquilo surgiu merece ser preservada com exatidão: não era tarefa nenhuma, ele estava só brincando, procurando o que fazer com a ARPANET. As primeiras mensagens eram testes cujo conteúdo Tomlinson chamou de completamente esquecível. A primeira mensagem de substância anunciava que existia correio em rede e explicava como usar o sinal **@**, que ele escolheu para indicar que o usuário estava em outro host, e não no local.
+
+Ele entrou no Internet Hall of Fame em 2012 e morreu em 2016, aos 74 anos.
+
+## 1980 a 1982: a decisão que criou o phishing
+
+**Jon Postel** coescreveu a RFC 772, precursora do SMTP, com **Suzanne Sluizer**, em 1980, e publicou a **RFC 821** em agosto de 1982. **David Crocker** publicou a RFC 822 ainda naquele mês, definindo o formato da mensagem. Juntas, são a base do correio eletrônico como ele ainda funciona.
+
+Uma decisão de projeto nesse par importa mais que todo o resto deste artigo. **O endereço De mostrado ao leitor não precisa coincidir com o endereço que o servidor remetente declara ao servidor destinatário.** O envelope e o timbre são separados, e nada confere se combinam.
+
+Isso não é defeito e não foi descuido. É consequência deliberada de um projeto em que retransmitir era normal, encaminhar era esperado, e mentir não era previsto. A RFC 5321 diz a posição com todas as letras: o correio é inerentemente inseguro, porque até usuários casuais conseguem negociar diretamente com servidores receptores e criar mensagens que enganem um destinatário ingênuo, fazendo-o crer que elas vieram de outro lugar.
+
+Sluizer explicou por quê, numa entrevista de 2004: na época daquele trabalho, falava-se de centenas ou talvez milhares de sítios no que então era a ARPANET. **Essa frase aparece, com outras palavras, na história do BGP (border gateway protocol), do DNS, do SNMP e do NTP neste catálogo.** Todos foram projetados para uma rede de conhecidos, e todos passaram décadas recebendo autenticação remendada por gente que não pode mudar o original.
+
+## Trinta anos parafusando autenticação por cima
+
+O **SPF** foi concebido em 1997 e liberado como rascunho por **Meng Weng Wong** em junho de 2003. Ele publica, no DNS, quais servidores podem enviar por um domínio - o que faz do sistema de nomes a âncora de confiança do correio, mais uma instância do [registro DNS virando transportador de uso geral](/learn/dns-family-history).
+
+O **DomainKeys** veio do Yahoo em 2004 e virou **DKIM**, assinando a mensagem de forma criptográfica para que o receptor verifique que ela foi autorizada pelo domínio e não foi alterada no caminho.
+
+O **DMARC** veio em 2012, e a contribuição dele é a peça que faltava, e não uma terceira assinatura: ele amarra o endereço De visível aos resultados de SPF e DKIM, diz aos receptores o que fazer quando falha, e - decisivo - manda **relatórios de volta ao dono do domínio**, para que ele descubra quem envia em nome dele.
+
+Cada um resolve um fragmento. Nenhum substituiu o SMTP. Trinta anos de trabalho de segurança, nada disso tocando no protocolo, porque tocar no protocolo exigiria que todo servidor de correio do planeta mudasse ao mesmo tempo.
+
+## A exceção que refina a regra do próprio catálogo
+
+O [artigo de DNS](/learn/dns-family-history) enuncia uma regra que a evidência sustentava: a correção que uma parte sozinha consegue implantar vence, e a que exige cooperação de todos espera.
+
+A autenticação de correio deveria ter esperado para sempre. Ela exige que remetentes publiquem registros, que receptores os confiram, e que os dois tolerem a quebra. Ela esperou por duas décadas, exatamente como previsto.
+
+Então, em **fevereiro de 2024, Google e Yahoo tornaram SPF, DKIM e DMARC exigência para remetentes em massa** - e a adoção andou mais em um ano do que nos vinte anteriores.
+
+**Esse é um terceiro mecanismo, e ele merece entrar no registro.** Não é uma parte agindo sozinha, e não é acordo universal, e sim **um ponto de estrangulamento grande o bastante para tornar a própria preferência condição de entrega**. Dois receptores que, juntos, tocam a maior parte do correio de entrada do mundo: a política deles é o padrão de fato, tenha alguém ratificado ou não.
+
+Vale ser honesto sobre o que isso significa. O que finalmente corrigiu uma lacuna de segurança de trinta anos foi CONCENTRAÇÃO DE MERCADO, aplicada de propósito - a mesma concentração que este catálogo trata como risco nos artigos de [negação de serviço](/learn/ddos-family-history) e de DNS. **A propriedade que torna um ponto de estrangulamento perigoso é a que o torna eficaz**, e as duas afirmações são verdadeiras ao mesmo tempo.
+
+## O que o correio virou enquanto ninguém olhava
+
+Redefinição de senha. É esse o argumento inteiro.
+
+O endereço de correio de uma conta é o caminho de recuperação de quase toda outra conta, o que faz da caixa postal a credencial-raiz de fato da vida digital de uma pessoa - papel que especificação nenhuma atribuiu a ela e projeto nenhum previu. **O correio eletrônico virou em silêncio a camada de identidade da internet**, e fez isso carregando um modelo de autenticação desenhado para algumas centenas de sítios que confiavam uns nos outros.
+
+Tudo o que é caro em segurança decorre disso. Comprometimento de correio corporativo não é exploração técnica; é o uso correto de um sistema em que o timbre não é verificado e o destinatário é humano. Phishing funciona pela mesma razão. Os dois são consequência de 1982 encontrando um mundo que chegou depois.
+
+## Cargos e práticas
+
+O correio produz administradores mais que engenheiros na maioria das organizações, e as práticas dele são dominadas por entregabilidade - a disciplina de ser acreditado pelos servidores dos outros.
+
+**Publicar os três registros, corretamente**, já que política parcial ou malformada é comum e é pior que nenhuma, porque produz confiança sem proteção. **Ler os relatórios DMARC**, que a maioria das organizações habilita e nunca olha, e que são o único jeito de descobrir envio não autorizado em nome próprio. **Passar para imposição**, de monitorar a quarentena e a rejeição, com data - o mesmo padrão escalonado da [prevenção de intrusão](/learn/ids-ips-family-history) e do firewall de aplicação web, pela mesma razão: o modo de falha da imposição é queda de negócio.
+
+E a prática que configuração nenhuma substitui: **treinar as pessoas de que o campo De é uma alegação, e não um fato.**
+
+## Para onde vai
+
+**Imposição está virando condição para fazer negócio.** Com os maiores receptores exigindo autenticação, o incentivo saiu de segurança e foi para entregabilidade, o que motiva organizações de forma muito mais confiável.
+
+**Cifragem em trânsito é normal e ponta a ponta não é.** Cifra entre servidores hoje é generalizada; conteúdo cifrado entre pessoas segue sendo prática minoritária, porque gestão de chaves para usuário comum nunca foi resolvida e o modelo de negócio dos provedores depende de ler o conteúdo.
+
+**Os ataques subiram acima do protocolo.** Autenticação prova que um domínio mandou uma mensagem. Não prova que a mensagem é honesta, e uma mensagem corretamente autenticada de uma conta genuinamente comprometida passa em toda verificação - e é para lá que o esforço foi.
+
+**E ele sobreviveu a tudo o que foi mandado para substituí-lo.** Cinquenta e cinco anos, várias centenas de bilhões de mensagens por dia, e todo desafiante posicionado como sucessor acabou ou se integrando a ele ou sendo alcançado por ele. A razão é a que este catálogo não para de encontrar: ele é federado, sem dono, e ninguém precisa pedir permissão para entrar. Essas são também exatamente as propriedades que tornam impossível consertá-lo.
+
+## Fontes
+
+- [Ray Tomlinson na BBN modificando o SNDMSG com código do programa de transferência de arquivos CPYNET dele para mandar mensagens pela ARPANET, por iniciativa própria e não como projeto encomendado; Postel publicando a RFC 821 em agosto de 1982 e Crocker a RFC 822 ainda naquele mês](https://www.prolateral.com/help/kb/smtp/420-when-was-the-first-smtp-email.html)
+- [InfoSec Insights sobre a história do correio e do SMTP: o projeto de 1982 em que o campo De no corpo da mensagem não precisava coincidir com o endereço Mail From, abrindo caminho para uma série de problemas, e a afirmação da RFC 5321 de que o correio SMTP é inerentemente inseguro porque usuários casuais conseguem criar mensagens que enganam um destinatário ingênuo](https://sectigostore.com/blog/a-history-of-email-and-smpt-the-evolution-of-email-security/)
+- [Postel coescrevendo a RFC 772 com Suzanne Sluizer em 1980, e o relato de Sluizer em 2004 de que na época falava-se de centenas ou talvez milhares de sítios no que então se chamava ARPANET](https://www.emailonacid.com/blog/article/email-marketing/history-of-email/)
+- [O conceito do Sender Policy Framework proposto em dezembro de 1997 e primeiro liberado como rascunho por Meng Weng Wong em junho de 2003, com o DomainKeys surgindo no Yahoo em 2004](https://www.getmailbird.com/evolution-email-privacy-encryption/)
+- [SPF, DKIM e DMARC como RFC 7208, RFC 6376 e RFC 7489, com Google e Yahoo exigindo os três de remetentes em massa desde fevereiro de 2024, e os relatórios agregados do DMARC mostrando aos donos de domínio quem envia em nome deles](https://dmarcreport.com/blog/the-history-of-email-from-arpanet-to-modern-secure-communication/)
+- [A entrada de Tomlinson no Internet Hall of Fame em 2012 e a morte dele em 2016, aos 74 anos, com um porta-voz da Raytheon observando que desenvolver o correio não era tarefa nenhuma - ele estava só brincando, procurando o que fazer com a ARPANET](https://www.mail.com/blog/posts/fiftieth-anniversary-of-email/20/)

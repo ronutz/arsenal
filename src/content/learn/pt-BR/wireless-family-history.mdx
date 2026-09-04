@@ -1,0 +1,88 @@
+---
+slug: wireless-family-history
+title: "Sem fio: o problema das ilhas, e o protocolo que foi doado"
+summary: "Em 1968, um professor no Havaí precisava conectar computadores em quatro ilhas e não podia passar cabo pelo Pacífico. A resposta - deixar as estações transmitirem quando tiverem algo a enviar e lidar com as colisões - entrou em operação em junho de 1971, foi posta em domínio público porque não existia escritório para comercializá-la, e hoje está embaixo do Wi-Fi, das redes móveis, do cabo e da Ethernet. Esta é a história da família, inclusive a decisão regulatória que importou mais que qualquer protocolo e a falha de cifragem que ensinou à indústria a lição mais cara dela."
+concepts: ["wireless", "aloha", "802.11", "wi-fi", "wep", "csma", "history"]
+relatedTools: []
+relatedArticles: ["bridge-switch-family-history", "encryption-family-history", "transceiver-family-history"]
+category: networking
+order: 155
+status: reviewed
+updated: "2026-09-03"
+---
+
+O [artigo de pontes e comutadores](/learn/bridge-switch-family-history) deste catálogo trata a Ethernet como o ponto de partida das redes locais. Não é. O método de acesso da Ethernet foi emprestado de uma rede de rádio construída porque alguém não conseguia passar cabo por um oceano.
+
+## 1968 a 1971: a restrição era geografia
+
+O trabalho começou em setembro de 1968 na Universidade do Havaí, sob **Norman Abramson** e **Franklin Kuo**, com Thomas Gaarder, Shu Lin, Wesley Peterson e Ned Weldon. O objetivo era conectar usuários em Oahu e nas outras ilhas a um computador central de tempo compartilhado usando equipamento de rádio comercial barato.
+
+O enquadramento do problema por Abramson merece ser citado em substância: a atitude do time era a de que a rede telefônica existente, usada por todo mundo na época, era **a abordagem errada**.
+
+A **ALOHAnet** entrou em operação em junho de 1971 - a primeira demonstração pública de uma rede de pacotes sem fio, ligando sete computadores em quatro ilhas por UHF experimental a 9.600 bits por segundo, com uma estação base chamada Menehune e o primeiro terminal remoto na casa do próprio Abramson, a cerca de um quilômetro e meio. As frequências vieram dos militares, porque o regulador tinha rejeitado o pedido original.
+
+## A ideia, e por que ela não era óbvia
+
+Rádio é inerentemente um meio de difusão: todo mundo escuta tudo. O primeiro problema difícil em rádio por pacotes era, portanto, como arbitrar o acesso a um canal compartilhado.
+
+O **acesso aleatório ALOHA** respondeu com algo perto da insolência: transmita quando tiver dado, detecte as colisões, e tente de novo. Sem coordenação, sem agenda, sem mestre.
+
+Isso parece óbvio hoje e não era. Como um relato diz com clareza, não era óbvio para Abramson nem para nenhum dos outros principais pesquisadores de computação do mundo na época - porque toda a arte anterior era **circuito**, e a suposição por baixo de circuito é que o acesso precisa ser arranjado de antemão.
+
+## A linha até a Ethernet
+
+**Robert Metcalfe creditou o ALOHA pelo trabalho dele na Ethernet e no CSMA/CD.** Os refinamentos posteriores de Kleinrock ao acesso ao canal levaram Metcalfe à detecção de portadora, e a rede experimental dele no Xerox PARC rodava a 2,94 megabits sobre cabo coaxial.
+
+Então a sequência é o inverso do que se ensina. **A rede sem fio veio primeiro e a com fio pegou emprestado o método de acesso dela**, e a razão de a Ethernet ter colisões é ter herdado o comportamento de um meio em que colisão é inevitável. O [comutador](/learn/bridge-switch-family-history) depois as removeu do mundo cabeado, e o sem fio nunca conseguiu, porque não dá para dar a cada estação o próprio pedaço de ar.
+
+## A tecnologia foi doada
+
+Em 1971 a Universidade do Havaí não tinha escritório para ajudar pesquisadores a comercializar o trabalho, **então a tecnologia foi posta em domínio público.**
+
+Esse acidente de estrutura institucional é um dos fatos mais consequentes deste catálogo. O método de acesso embaixo do Wi-Fi, da telefonia móvel, dos modems a cabo e da Ethernet não teve dono desde o começo, e é por isso que cada uma dessas indústrias pôde construir sobre ele sem negociar. A avaliação posterior do próprio Abramson - de que aquilo está em toda parte, no Wi-Fi, no celular, na Ethernet e no cabo, e superou as expectativas mais loucas dele - é a avaliação de alguém que nunca cobrou por aquilo.
+
+## 1985: o regulador faz a coisa decisiva
+
+A história técnica é conhecida e a história regulatória é o que de fato viabilizou a indústria. Em 1985 o regulador norte-americano abriu as **faixas industrial, científica e médica** para uso sem licença.
+
+Espectro sem licença significa que qualquer um pode construir e vender um rádio sem pedir permissão, e é a razão de existir um mercado sem fio. **A decisão mais importante da história do Wi-Fi foi tomada por um regulador, e não por um engenheiro** - o mesmo formato da decisão Carterfone na [entrada da Paradyne](/industry/paradyne), em que uma indústria apareceu no espaço que uma decisão jurídica criou.
+
+Ela também fixou o problema permanente da tecnologia. Sem licença significa compartilhado com todo mundo, inclusive fornos de micro-ondas e cada vizinho, e é por isso que interferência é restrição de projeto, e não defeito.
+
+## WEP: a lição mais cara da indústria
+
+O 802.11 chegou em 1997 com o **Wired Equivalent Privacy**, e ele foi quebrado por completo em poucos anos, por ataques ao uso da cifra de fluxo e ao tratamento dos vetores de inicialização.
+
+A falha não estava na cifra. Estava em como o protocolo a usava - o desfecho clássico contra o qual o [artigo de cifragem](/learn/encryption-family-history) adverte, e a demonstração canônica de por que se diz a profissionais para não montarem as próprias construções criptográficas, independentemente da habilidade. O WPA foi remendo sobre hardware que não podia ser trocado; WPA2 em 2004 e WPA3 em 2018 foram as respostas de verdade.
+
+O legado operacional é maior que o técnico. **O WEP ensinou a uma geração que a segurança de uma rede sem fio é propriedade da configuração dela, e não da existência dela**, e a prática de tratar o segmento sem fio como não confiável - autenticando na camada de rede em vez de confiar no rádio - vem daí.
+
+## Cargos e práticas
+
+O sem fio produziu uma especialidade com propriedade incomum: o trabalho dela é físico de um jeito que nada mais nesta série é. Um levantamento é uma caminhada com um instrumento, e cobertura é afirmação sobre um prédio, e não sobre um equipamento.
+
+As práticas são concretas. **Levantamento antes de implantar e validação depois**, porque previsão e medição discordam. **Planejamento de canal**, porque o recurso escasso é espectro, e não banda. **Comportamento do cliente**, já que as decisões de roaming são tomadas por dispositivos que a rede não controla - a frustração que define a disciplina. E **capacidade por número de clientes, e não por vazão**, porque meio compartilhado degrada com a quantidade de quem fala.
+
+A verdade diagnóstica recorrente é que a maioria das reclamações de sem fio não é problema de sem fio. São problemas de autenticação, de endereçamento ou de rede acima, vividos por um usuário que estava de pé na hora.
+
+## As empresas
+
+A pesquisa era de uma universidade e foi doada. O mercado que veio depois é Cisco com Meraki, HPE com Aruba, Juniper com Mist, Ubiquiti, Extreme, Ruckus dentro da CommScope, e Fortinet e outras vendendo pontos de acesso como extensão de plataforma de segurança - o que é, em si, prova de onde esta família foi parar: **o ponto de acesso virou ponto de imposição de política, e o fabricante de sem fio virou fabricante de segurança.**
+
+## Para onde vai
+
+**Espectro segue sendo a história.** Cada geração é sobretudo sobre acesso a mais espectro, ou sobre usar melhor o que existe - canais mais largos, mais fluxos espaciais, escalonamento melhor - e a abertura dos seis gigahertz importou mais para implantação real que a maioria dos recursos de protocolo.
+
+**Determinismo é a ambição atual.** Escalonar transmissões em vez de disputar o meio é tentativa de desfazer a suposição fundadora do ALOHA, cinquenta anos depois, para cargas que não toleram latência variável.
+
+**Celular privativo compete pelo mesmo trabalho.** Tecnologia móvel licenciada e de licença compartilhada em ambiente corporativo é resposta direta ao problema de interferência que o espectro sem licença cria.
+
+**E a troca fundadora não mudou.** O time de Abramson aceitou colisões em troca de não precisar de coordenação, e toda tecnologia sem fio desde então compra desempenho recolocando coordenação. O que fez a ideia se espalhar foi ela não precisar de permissão - de regulador, de controlador central ou de dono de patente - e essa continua sendo a propriedade que decide quais tecnologias sem fio são adotadas e quais ficam na especificação.
+
+## Fontes
+
+- [ALOHAnet: desenvolvimento iniciado em setembro de 1968 na Universidade do Havaí sob Norman Abramson e Franklin Kuo com Gaarder, Lin, Peterson e Weldon, operacional em junho de 1971 como primeira demonstração pública de rede de pacotes sem fio, usando acesso aleatório ALOHA sobre UHF experimental a 9600 bits por segundo](https://en.wikipedia.org/wiki/ALOHAnet)
+- [Marco do IEEE para a demonstração ALOHA de 1971: Metcalfe criou a Ethernet e o CSMA/CD com base no protocolo ALOHA, o primeiro a usar pacotes e acesso aleatório; Abramson recebeu a Medalha Alexander Graham Bell do IEEE em 2007 por trabalho fundamental em acesso múltiplo aleatório](https://ethw.org/Milestones:Demonstration_of_the_ALOHA_Packet_Radio_Data_Network,_1971)
+- [Proposta de marco do IEEE: ALOHAnet operacional em junho de 1971 com o Menehune em Manoa e o primeiro terminal remoto na casa de Abramson a cerca de uma milha, usando UHF experimental cedido pelos militares depois de o regulador rejeitar o pedido original; Metcalfe creditou o ALOHA pela Ethernet e pelo CSMA/CD](https://ieeemilestones.ethw.org/Milestone-Proposal:ALOHANET_(aka_ALOHA_System))
+- [StateTech sobre a ALOHAnet: não existia escritório em 1971 para ajudar a comercializar o trabalho, então a tecnologia foi posta em domínio público; a visão de Abramson de que a rede telefônica existente era a abordagem errada, e de que acesso aleatório não era óbvio para ele nem para nenhum outro pesquisador de ponta na época](https://statetechmagazine.com/article/2016/06/how-alohanet-helped-hawaii-make-waves-networking-and-it-innovation)
+- [Linha do tempo do Wi-Fi: o acesso aleatório ALOHA como precursor direto do mecanismo de prevenção de colisão que sustenta todos os padrões 802.11 modernos, e a abertura das faixas industrial, científica e médica pelo regulador norte-americano em 1985](https://www.purple.ai/en-us/guides/the-definitive-timeline-of-wifi-from-alohanet-to-wifi-7-and-beyond)

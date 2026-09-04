@@ -1,0 +1,128 @@
+---
+slug: nac-family-history
+title: "Controle de acesso à rede: a ideia que chegou cedo demais, duas vezes"
+summary: "O controle de acesso à rede não foi inventado para a rede local. Foi inventado em 1984, na BBN, para o equipamento que você discava - e foi construído para as pessoas se autenticarem MENOS, e não mais. Esta é a história da família: do controlador de acesso de terminal, passando pela autenticação discada e pelo 802.1X, até a malha orientada a conexão da Cabletron, o laço da Enterasys que detectava, localizava, continha e remediava sozinho, a década em que a ideia inteira foi declarada fracasso, e o retorno dela sob um nome com marketing melhor."
+concepts: ["nac", "802.1x", "securefast", "policy networking", "posture", "history"]
+relatedTools: []
+relatedArticles: ["network-scopes-family-history", "identity-family-history", "ids-ips-family-history", "bridge-switch-family-history"]
+category: security
+order: 162
+status: reviewed
+updated: "2026-09-04"
+---
+
+A maioria das famílias deste catálogo foi inventada uma vez e melhorada. Esta foi construída, julgada fracasso, abandonada em silêncio, e então reconstruída por gente que em boa medida não sabia que ela tinha existido - e o começo dela é quarenta anos anterior à sigla.
+
+## 1984: começou onde o acesso era caro
+
+A ARPANET era alcançada por um **Terminal Access Controller** - o equipamento em que um terminal se conectava para entrar na rede. Controlar quem podia usar um deles é a forma mais antiga desta disciplina, e produziu o primeiro protocolo dela.
+
+O **TACACS**, Terminal Access Controller Access-Control System, foi desenvolvido em 1984 pela **BBN**, sob contrato da DARPA, para administrar a ARPANET e a MILNET. **Brian Anderson** escreveu a primeira descrição formal como **RFC 927**, em dezembro de 1984.
+
+Duas coisas naquela origem decidem tudo o que vem depois.
+
+**Ele foi construído para REDUZIR autenticação, e não para acrescentá-la.** O problema que Anderson resolvia era que alguém já autenticado num host precisava se autenticar de novo para alcançar outro; a resposta foi passar um identificador de usuário entre hosts, para que o sistema receptor confiasse no emissor. **O primeiro protocolo de controle de acesso à rede era um recurso de conveniência.** Virou controle de segurança depois, que é a quarta vez neste catálogo em que um mecanismo construído para um fim foi apontado para segurança em seguida - depois das listas de acesso de roteador virando firewall, do lint virando análise estática, e do DNS virando ponto de imposição.
+
+**E ele supunha controle físico do fio.** As credenciais iam em texto claro, o que era aceitável numa rede de instituições de pesquisa e bases militares em que o cabo era contabilizado. Essa suposição é a que o [artigo de escopos](/learn/network-scopes-family-history) nomeia como fundamento do modelo de perímetro inteiro - dentro era confiável porque dentro era administrado - e é a suposição que toda entrada posterior desta família tenta consertar.
+
+A Cisco passou a suportar o TACACS nos produtos dela no fim dos anos 1980, o estendeu de forma incompatível como XTACACS em 1990, e o substituiu pelo **TACACS+** a partir de 1993 - protocolo separado que dividiu a função em **autenticação, autorização e contabilização**, as três perguntas que esta família faz desde então. O **RADIUS** (remote authentication dial-in user service) veio da Livingston Enterprises em 1991 como contraponto, e virou a língua do acesso discado.
+
+## Por que a rede local perdeu o hábito
+
+Aqui está a parte que explica por que o controle de acesso à rede precisou ser reinventado.
+
+**Quando o acesso era escasso, autenticar era inerente.** Para alcançar uma rede você discava um modem para um controlador de acesso de terminal ou um servidor de acesso, e aquele equipamento perguntava quem você era porque não tinha escolha - a porta era medida, a sessão era faturada, e alguém precisava responder por ela.
+
+**A rede local tornou o acesso gratuito**, e a pergunta desapareceu junto com o custo. Uma tomada de parede não mede nada. Plugar era a autenticação, e por uns quinze anos a indústria construiu redes enormes sobre a premissa de que presença física num prédio era prova suficiente de qualquer coisa.
+
+Tudo o que vem depois deste ponto do artigo é o longo projeto de devolver à rede local a disciplina que o mundo discado nunca teve o luxo de largar. O **802.1X**, padronizado em 2001, é exatamente isso: a troca de autenticação dos enlaces ponto a ponto, carregada sobre uma porta de comutador, chegando a uma camada projetada para confiar em qualquer coisa que se conecte. É por isso que instalá-lo depois dói tanto, e é a única peça desta família que sobreviveu sem ambiguidade.
+
+## 1999: um comutador que pede permissão
+
+A **RFC 2643** descreve o produto de rede local virtual da Cabletron, a **SecureFast VLAN**, e lê-la hoje desorienta. Ela documenta um protocolo de comutação distribuído e **orientado a conexão**: para cada par de endereço de origem e destino que um comutador encontra, uma conexão é programada no hardware, e todo pacote seguinte daquela conversa é encaminhado por ela.
+
+Duas consequências decorrem disso, e a segunda é a que importa aqui.
+
+Uma conversa tinha um **caminho**, escolhido entre alternativas de custo igual e balanceado pela malha, com comutador de entrada, comutadores intermediários e comutador de saída - vocabulário emprestado da telefonia, e não da Ethernet.
+
+E uma conversa podia ser **recusada**. Naquele modelo, uma VLAN não é domínio de difusão; é escopo de política, e cada uma carrega um valor de política - **Open ou Secure** - usado para decidir se uma conexão de chamada pode sequer ser estabelecida.
+
+**Isso é controle de acesso à rede, dentro de uma arquitetura de comutação, publicado em 1999.** A decisão de permitir uma conversa acontecia antes de a conversa existir, na malha, com base em quem eram as pontas, e não em onde elas estavam plugadas.
+
+Aquilo perdeu, por completo. Ethernet orientada a conexão era cara em silício e em estado, comutação barata de mercado estava chegando, e a indústria se padronizou no 802.1Q, que o [artigo de escopos](/learn/network-scopes-family-history) traça - uma etiqueta num quadro, e não uma chamada que a rede concorda em completar. **O modelo mais simples venceu por ser mais barato, exatamente como o comutador venceu a ponte e a inspeção com estado venceu os proxies.**
+
+## Enterasys Secure Networks, e o que aquilo de fato fazia
+
+A Cabletron se reorganizou em 2000 e a linha corporativa virou **Enterasys**, que passou a década seguinte construindo a segunda versão da mesma convicção: a de que a própria rede deve aplicar política, e não apenas carregar tráfego.
+
+Em 2007 a documentação do produto já descreve algo que o mercado levou outra década para alcançar:
+
+**Antes e depois da conexão.** A maior parte do controle de acesso daquela época conferia o dispositivo na porta e nunca mais olhava. Este conferia antes de admitir **e continuava avaliando depois**, que é a metade difícil e a que importa, porque um notebook limpo às nove é outra proposta às onze.
+
+**Sem agente, e multifabricante.** A documentação é explícita: nenhum equipamento de comutação novo precisava ser implantado e nenhum agente precisava ser instalado em todas as máquinas. Os dois eram resposta direta ao motivo de as abordagens concorrentes falharem na prática.
+
+**Autenticação multiusuário e multimétodo**, para que máquinas com 802.1X, impressoras que autenticam por endereço e visitantes num portal cativo coexistissem na mesma infraestrutura de portas.
+
+**E a integração que é o ponto desta entrada.** A política era aplicada continuamente juntando três coisas: a decisão de controle de acesso, o **Dragon** - que combinava detecção de intrusão, prevenção de intrusão, detecção de anomalia de comportamento de rede e gestão de informação de segurança - e o **NetSight Automated Security Manager**, que alinhava a detecção do evento à *localização da origem* e mitigava ali.
+
+Leia com atenção, porque é o projeto inteiro: o sistema de detecção diz que algo está errado, a camada de gestão resolve aquilo para uma porta física num comutador específico, e a camada de controle de acesso muda o que aquela porta pode fazer - automaticamente, sem pessoa, dentro do mesmo sistema. **Detectar, localizar, conter, remediar**, como um laço só.
+
+O resto do mercado vendia aquilo como quatro produtos de três fabricantes, sem integração, que é exatamente por que não funcionava.
+
+## O resto do campo
+
+O **Network Admission Control da Cisco** embutiu a mesma ideia no próprio equipamento e o exigiu, o que significava que a postura de segurança de uma rede dependia de trocar a rede.
+
+O **Network Access Protection da Microsoft** chegou com o Windows Server 2008 - baseado em agente, profundamente integrado ao Windows, e inútil para as impressoras, telefones, câmeras e terceiros que formam a parte difícil de qualquer parque. Foi depreciado e removido.
+
+O **802.1X** por baixo de todos é a única peça que sobreviveu sem ambiguidade, e vale ser preciso sobre o que ele é: autenticação chegando a uma camada construída para confiar em qualquer coisa que se conecte, e é por isso que instalá-lo depois dói tanto.
+
+O esforço de interoperabilidade daquele período - fabricantes certificando os agentes uns dos outros, a Enterasys testando contra a tecnologia da Microsoft, a Foundry demonstrando com os servidores de política da Microsoft - é pedaço real e esquecido de história. A indústria TENTOU fazer aquilo funcionar entre fabricantes, e a tentativa está mais bem documentada que o desfecho.
+
+## Por que foi chamada de fracasso
+
+Por volta de 2010, controle de acesso à rede era piada, e as razões eram operacionais, e não técnicas.
+
+**O parque não colaborava.** Impressoras, leitoras de crachá, equipamentos médicos, controladores industriais e sistemas prediais não rodam agente e frequentemente não autenticam de jeito nenhum, então toda implantação acumulava exceções até as exceções serem a política.
+
+**Agente não escala.** Qualquer coisa que exija software em todo endpoint falha na fronteira do parque gerenciado, e a fronteira do parque gerenciado é exatamente onde está o risco.
+
+**Imposição quebrava coisas de forma visível.** Pôr em quarentena um dispositivo que se revela o notebook do presidente ou a bomba de infusão de uma enfermaria é evento de carreira, então as implantações ficavam em modo de monitoração - o mesmo padrão que o [artigo de firewall de aplicação web](/learn/waf-family-history) registra, pela mesma razão.
+
+**E o perímetro que ela defendia deixou de existir.** Como o [artigo de escopos](/learn/network-scopes-family-history) argumenta, controlar a porta deixa de ser decisivo quando o usuário está em casa e a aplicação está na nuvem de outra pessoa.
+
+## O que de fato aconteceu com ela
+
+Ela não morreu. Foi renomeada e teve o escopo mudado.
+
+**Confiança zero** é, na substância, a mesma alegação: nunca confiar por localização, avaliar continuamente, autorizar por recurso. **Postura de dispositivo** num provedor de identidade é a verificação de saúde, movida do comutador para o login. **Acesso condicional** é o motor de política. **Detecção e resposta em endpoint** alimentando uma plataforma de identidade para revogar sessão é detectar-localizar-conter-remediar, rodando acima da rede em vez de dentro dela.
+
+As diferenças são reais e merecem ser nomeadas. A imposição moderna acontece na camada de aplicação e de identidade, e não na porta, o que funciona para um notebook num café e não faz nada por uma câmera comprometida numa VLAN de fábrica. **O modelo antigo alcançava a porta e não alcançava a nuvem; o novo é o inverso**, e os parques que precisam dos dois estão rodando os dois.
+
+Enquanto isso, o problema original voltou sob pressão nova: tecnologia operacional, sistemas prediais e dispositivos conectados são exatamente a população que não roda agente, e controlá-los significa controlar a porta. Controle de acesso na borda da rede está sendo comprado de novo, por gente que não usaria a sigla.
+
+## Cargos e práticas
+
+Esta família não produziu cargo duradouro e produziu um conjunto de práticas que transferem por completo.
+
+**Monitorar antes de impor, com data** - a disciplina que este catálogo encontra em toda família capaz de quebrar produção. **O registro de exceções**, porque dispositivo que não autentica é permanente e fingir o contrário produz política sombra. **Perfilar antes de escrever política**, já que não dá para escrever regra para um parque que não foi inventariado, e toda implantação descobre dispositivos que ninguém sabia que estavam conectados. E **um caminho de volta testado**, porque o modo de falha aqui é trancar a organização para fora.
+
+O hábito mais valioso que ela deixou é o menos técnico: **decidir de antemão quem tem permissão de pôr um dispositivo em quarentena às três da manhã, e o que acontece se essa pessoa errar.**
+
+## Para onde vai
+
+**As duas metades estão convergindo.** Acesso condicional na camada de identidade e imposição na camada de rede estão sendo vendidos juntos, porque os parques que importam contêm tanto notebooks quanto coisas que nunca vão rodar software.
+
+**Microssegmentação é a mesma ideia num grão mais fino.** Decidir se uma carga de trabalho pode falar com outra, continuamente, é a pergunta da SecureFast com as pontas trocadas de pessoas para processos.
+
+**E o registro merece ser dito com clareza.** Uma malha orientada a conexão que se recusava a construir um caminho sem a política permitir, e um laço integrado da detecção até a contenção automática na porta de origem, eram produtos entregues antes de a maior parte do vocabulário atual existir. Eles não estavam à frente da tecnologia; estavam à frente do apetite operacional. **Estar cedo é indistinguível de estar errado, até alguém reconstruir aquilo e chamar de outra coisa.**
+
+## Fontes
+
+- [TACACS: desenvolvido em 1984 pela BBN sob contrato da DARPA para administrar a ARPANET e a MILNET, originalmente projetado para permitir que alguém já autenticado num host se conectasse a outro sem reautenticar; a Cisco passou a suportá-lo no fim dos anos 1980, o estendeu como XTACACS em 1990 e lançou o TACACS+ a partir de 1993](https://en.wikipedia.org/wiki/TACACS)
+- [Brian Anderson, na BBN, escreveu a primeira descrição formal do TACACS como RFC 927, em dezembro de 1984; o protocolo original transmitia credenciais em texto claro, sobre um modelo de segurança que supunha controle físico do fio](https://www.connected.app/ports/49)
+- [RFC 2643, Cabletron's SecureFast VLAN Operational Model, agosto de 1999: protocolo de comutação distribuído e orientado a conexão em que uma conexão é programada no hardware por par de endereço de origem e destino, com cada VLAN carregando um valor de política Open ou Secure usado para determinar se a conexão de chamada pode ser estabelecida](https://www.rfc-editor.org/rfc/rfc2643.html)
+- [Visão geral do Enterasys Network Access Control: solução baseada em padrões, interoperável entre fabricantes, antes e depois da conexão, sem exigir equipamento de comutação novo nem agente em todos os computadores, com autenticação multiusuário e multimétodo](http://doc.netz-komponenten.net/Enterasys/SNS-TAG-LPA.pdf)
+- [Documentação do Enterasys NAC sobre a integração do NAC com o Dragon - combinando detecção de intrusão, prevenção de intrusão, detecção de anomalia de comportamento de rede e gestão de informação de segurança - e o NetSight Automated Security Manager, alinhando a detecção do evento à localização da origem para mitigação automatizada, antes e depois da conexão](https://livreblanc.silicon.fr/wp-content/uploads/2014/02/network_access_c_zkdecv4tplvhgon.pdf)
+- [Integração do Enterasys NAC com agentes de terceiros, incluindo Sygate Enterprise Protection da Symantec, Check Point Integrity e Network Access Protection da Microsoft, usando métodos de imposição por 802.1X, DHCP e IPsec](https://scadahacker.com/library/Documents/Manuals/Enterasys%20-%20Network%20Access%20Control.pdf)
+- [Enterasys Networks: formada em março de 2000 como cisão da Cabletron Systems, aberta na Bolsa de Nova York em agosto de 2001, fechada pelo The Gores Group em 2006 e adquirida pela Extreme Networks em setembro de 2013](https://en.wikipedia.org/wiki/Enterasys_Networks)

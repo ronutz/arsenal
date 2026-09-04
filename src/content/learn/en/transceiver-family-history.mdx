@@ -1,0 +1,80 @@
+---
+slug: transceiver-family-history
+title: "Transceivers: The Ridiculed Paper, and the Part of the Network You Can Hold"
+summary: "In 1966 a 32-year-old engineer at a British lab published a paper arguing that the enormous losses in optical fibre were caused by impurities rather than by physics, and was widely ridiculed for it. Four years later Corning proved him right, and he received the Nobel Prize forty-three years after that. This is the family history of the transceiver - from Kao's paper to the multi-source agreement, the industry's most successful act of deliberate self-restraint, and why the smallest replaceable part of a network is the one that determines what the network can become."
+concepts: ["transceiver", "optical fiber", "sfp", "gbic", "msa", "history"]
+relatedTools: []
+relatedArticles: ["bridge-switch-family-history", "router-family-history", "last-mile-evolution-pots-to-fiber"]
+category: networking
+order: 148
+status: reviewed
+updated: "2026-09-03"
+---
+
+Every other family in this series is about deciding what to do with a packet. This one is about getting bits onto a physical medium and back off again - the least discussed layer, and the one that determines the ceiling for everything above it.
+
+## 1966: the paper nobody believed
+
+Light had been carried in glass fibres before the 1960s, but with losses so enormous that transmission distance was severely limited. The consensus was that this was a fundamental property of glass.
+
+**Charles Kao**, then 32, working at Standard Telecommunication Laboratories in Harlow with **George Hockham**, published *Dielectric-fibre surface waveguides for optical frequencies* in 1966, arguing something different: the loss came from **impurities**, not from physics. He calculated that existing fibres were orders of magnitude above the fundamental limit set by Rayleigh scattering, identified silica as the material worth purifying, and specified what a working system would need.
+
+**The idea was widely ridiculed at the time.** Before that paper, the general belief was that fibre could never compete with copper.
+
+In 1970 a group at Corning - Robert Maurer, Donald Keck, Peter Schultz and Frank Zimar - produced fused silica fibre with attenuation of 17 decibels per kilometre, below Kao's own target. By 1972 they reached 4, and by 1979 loss was down to 0.2 decibels per kilometre. Bell Labs, which had spent two decades developing buried microwave waveguides and planned to replace them later with hollow optical pipes, abandoned that programme; fibre had made it obsolete before a single one entered commercial service.
+
+Kao received the Nobel Prize in Physics in **2009**, forty-three years after the paper. **The gap between being right and being believed was four years; the gap between being right and being honoured was forty-three.**
+
+## What a transceiver actually is
+
+A transceiver converts between the electrical signalling a device understands and whatever the medium carries - light on fibre, voltage on copper, radio in the air. Everything above it in this series assumes that conversion works.
+
+The physical properties are unforgiving in a way that packet processing is not. Distance, wavelength, mode, connector type and power budget either match at both ends or nothing happens, and a link that is marginal rather than broken produces intermittent errors that look like every other kind of problem. **This is the layer where the fault is physical and the symptom is logical**, which is why experienced engineers check optical levels early and inexperienced ones check them last.
+
+## The multi-source agreement, and why it matters
+
+The pluggable module - GBIC, then SFP, then SFP+, QSFP and their descendants - is a small commercial miracle that gets no credit.
+
+Its mechanism is the **multi-source agreement**: a specification written by a group of competing manufacturers, outside any formal standards body, committing them to build interchangeable modules. Not a standard imposed by an institution; an agreement among rivals that they would rather share a form factor than each own a proprietary one.
+
+The consequence is that the smallest, most numerous, most frequently replaced component in a network became a commodity that fits anything. **This is the industry's most successful act of deliberate self-restraint**, and it is worth naming because the same industry failed to reach comparable agreements in almost every other layer.
+
+The counter-move is equally worth naming. Vendors began coding modules so that equipment would reject anything not carrying the right identifier, recreating lock-in inside a format designed to prevent it. That practice, and the third-party module business that exists to defeat it, is a live commercial argument sitting inside a technical component.
+
+## Evolution
+
+- **Fixed optics**, into the 1990s. The interface was soldered to the board; a link speed or distance change meant a new device.
+- **GBIC**, from around 1995. The gigabit interface converter made the optic removable, so the same switch could serve short copper runs and long single-mode fibre.
+- **SFP**, from 2001. Small form-factor pluggable - the same idea made small enough to fit at reasonable port density, and the form factor that made high-port-count switches practical.
+- **SFP+, QSFP, QSFP28, QSFP-DD, OSFP**, onward. Faster and denser, with the parallel and wavelength-division tricks needed to keep the connector the same size while the rate climbs.
+- **Coherent optics in a pluggable**, currently. Long-haul transmission technology that used to require its own chassis, now in a module you can hold, which is quietly collapsing the boundary between the transport network and the router.
+
+## The jobs and the practices
+
+This layer produced no glamorous job title and an enormous amount of essential competence. The people who install, splice, test and certify are usually not called network engineers, and the network does not exist without them.
+
+Its practices are unusually concrete. **Power budget arithmetic** before purchase rather than after failure. **Cleaning connectors**, which is responsible for a large share of optical faults and is the least respected task in the discipline. **Reading light levels** rather than trusting link state, because a port that is up can still be receiving too little to be reliable. And **labelling**, which every organisation neglects and every organisation pays for during an outage.
+
+There is also a professional habit worth stating: the transceiver is the first thing to swap and the last thing to be suspected. Because it is cheap and replaceable, testing it is fast; because it is small and passive, it is psychologically invisible.
+
+## The companies
+
+The science was Standard Telecommunication Laboratories and Corning; the volume manufacturing is Finisar now inside Coherent, Broadcom, Lumentum, Innolight and a substantial Chinese manufacturing base. The equipment vendors - Cisco, Juniper, Arista, Extreme and the rest - mostly rebrand modules built by those suppliers, which is why an optic with a vendor's name on it and one without are frequently the same component with different firmware.
+
+## Where it goes
+
+**The module is absorbing the network.** Coherent optics, and increasingly digital signal processing and even switching functions, are moving into the pluggable. A component that began as a way to change a connector is becoming a place where network functions live.
+
+**Silicon photonics moves the optics onto the chip.** Integrating light generation and detection with the switching silicon removes an interface, and the interface is where cost, power and failure concentrate.
+
+**Power is the constraint now.** At current densities and rates, optics are a significant share of a switch's power and heat, and the argument about linear-drive and co-packaged approaches is fundamentally an argument about watts rather than bits.
+
+**And the pattern from 1966 repeats.** Kao's contribution was not building anything; it was correctly identifying that a limit everyone accepted was not fundamental. Every generation of this layer has had a figure everyone believed was fixed - a distance, a rate, a power budget - and the useful question in a field this physical is always which of the current limits are laws and which are just impurities nobody has removed yet.
+
+## Sources
+
+- [IEEE Spectrum, How Charles Kao beat Bell Labs to the fibre-optic revolution: the 1966 paper by a 32-year-old engineer, the Corning group of Maurer, Keck, Schultz and Zimar reaching 17 decibels per kilometre in 1970, 4 by 1972 and 0.2 by 1979, and Bell Labs abandoning its buried microwave waveguide programme](https://spectrum.ieee.org/how-charles-kao-beat-bell-labs-to-the-fiberoptic-revolution)
+- [Royal Society biographical memoir of Sir Charles Kuen Kao: the 1966 paper set out the design parameters and performance a successful system would need, and the idea was widely ridiculed at the time](https://royalsocietypublishing.org/rsbm/article/doi/10.1098/rsbm.2020.0006/116090/Sir-Charles-Kuen-Kao-4-November-1933-23-September)
+- [Britannica on Charles Kao: born 4 November 1933 in Shanghai, at Standard Telecommunication Laboratories in Harlow from 1960, and the 2009 Nobel Prize in Physics shared with Willard Boyle and George Smith](https://www.britannica.com/biography/Charles-Kao)
+- [RP Photonics on Kao's work: existing fibre losses were orders of magnitude above the fundamental limit set by Rayleigh scattering, silica was identified as the candidate material, and Corning reached 20 decibels per kilometre in 1970 when usual figures were in the thousands](https://www.rp-photonics.com/spotlight_2009_10_08.html)
+- [Fibre optic history timeline: Kao's 1966 low-loss proposal, semiconductor lasers demonstrated in 1970, and the Corning vapour deposition method for high-purity low-loss fibre](https://www.ecmag.com/magazine/articles/article-detail/fiber-optic-history-timeline)

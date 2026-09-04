@@ -1,0 +1,82 @@
+---
+slug: adc-family-history
+title: "Load Balancers and ADCs: Built Against the Market Sizing"
+summary: "In late 1995 a Netscape webmaster told a Cisco engineer there were probably ten customers in the world with a load balancing problem. They started building anyway, and shipped the industry's first load balancer four months later. This is the family history - LocalDirector in April 1996, F5's BIG/ip in July 1997 on 200,000 dollars of first-year revenue against a five-billion-dollar competitor, the rename to application delivery controller, and what happens to a box whose function has been absorbed into every platform that came after it."
+concepts: ["load balancer", "adc", "big-ip", "localdirector", "reverse proxy", "history"]
+relatedTools: []
+relatedArticles: ["tcp-proxy-layer-4", "tls-reverse-proxy-inbound", "gslb-two-tier-pool-then-member", "firewall-family-history"]
+category: networking
+order: 144
+status: reviewed
+updated: "2026-09-03"
+---
+
+Most product categories begin with someone believing there is a market. This one began with someone saying there was not.
+
+## Late 1995: ten customers in the world
+
+The **LocalDirector** was conceived by John Mayes and Robert Andrews in late 1995, during a pre-acquisition meeting with Andrews in his capacity as webmaster at Netscape. Andrews told Mayes there were probably ten customers in the world with a load balancing problem.
+
+The decision to begin development was made because of that conversation. Not despite it - because of it. Ten customers with a problem nobody else had noticed, at the exact moment the web was about to make every large site have it.
+
+Cisco shipped the LocalDirector to its first customer in **April 1996**, four months after development started, beating F5 and HydraWeb to market by a full year. It was built on the network address translation technology Cisco acquired with Network Translation Inc - the same acquisition that produced the PIX firewall, which ran a derivative of LocalDirector's Finesse operating system. **The first firewall product and the first load balancer at Cisco came from the same purchase and shared an operating system**, which is a tidy illustration of how close the two functions actually are.
+
+## 1996 to 1997: the competitor with no money
+
+**F5 Labs** was incorporated in February 1996 by Jeffrey Hussey in Seattle and began operating in April. It spent more than a year building before it had anything to sell, needing to re-staff and re-develop after a first attempt failed, and brought **BIG/ip** to market in July 1997.
+
+Its first-year revenue was **200,000 dollars**. Its competitors were Cisco, then a five-billion-dollar company, and Nortel - both with distribution and marketing organisations F5 could not approach.
+
+F5 won that market anyway, and the reason is the most reusable lesson in this article. Cisco was first to market and never led the category: after the acquisitions, development slowed, the follow-on product was effectively frozen at its year-2000 feature set, and a company with every structural advantage lost a market it had invented. **Being first is a position, not an advantage. What compounds is continuing to develop.**
+
+F5 added the **3DNS Controller** in September 1998 for balancing across sites rather than within one, renamed itself F5 Networks in April 1999, and went public that June at ten dollars a share.
+
+## The category, and what the rename did
+
+Through the late 1990s the field filled: Alteon WebSystems, Foundry with ServerIron, ArrowPoint which became Cisco's CSS, HydraWeb, and later NetScaler at Citrix and Radware. Nearly all of them were founded or went public between 1995 and 2000, and most were acquired in the decade that followed.
+
+Somewhere in the 2000s the term changed from load balancer to **application delivery controller**. The rename was partly honest and partly not. Honest, because the box had genuinely accumulated functions - TLS termination, compression, caching, content rewriting, health monitoring, persistence and eventually a web application firewall. Not honest, because the sceptical reading holds up: calling it an application delivery controller does not change that it is still primarily a load balancing router and reverse proxy with health checks, and the fundamentals of layer 4 and layer 7 balancing have not moved much since about 2002.
+
+Both things are true. The function stabilised early; what changed was how much else got attached to the same point in the path.
+
+## What the device is actually for
+
+The balancing algorithm is the least interesting part, and the part every introduction spends the most time on. Round robin, least connections, weighted variants - the choice between them rarely decides an outcome.
+
+The parts that decide outcomes are three:
+
+**Health checking.** A load balancer's real job is knowing which members are able to serve. A check that only confirms the port answers will happily keep sending users to a process that accepts connections and returns errors, which is how an estate serves failures with every monitor green.
+
+**Persistence.** Applications that keep state on one server need the same user to return there, and every mechanism for arranging that - source address, cookie, session identifier - is a compromise with its own failure mode. [Source-address persistence collapses behind shared addresses](/learn/tcp-proxy-layer-4), and cookie persistence requires reading traffic you may not be able to read.
+
+**Being in the path.** Everything else follows from the device terminating connections. It can inspect, rewrite, offload cryptography and enforce policy because it is a party to the conversation - and it becomes a bottleneck, a plaintext location and a single point whose failure is total, for exactly the same reason.
+
+## The jobs and the practices
+
+This family produced a specialist that sits between two organisational tribes. The load balancer belongs to neither the network team nor the application team, and knowing both is what the role requires: virtual servers, pools, monitors, profiles and persistence on one side; how the application holds state and what its health endpoint actually proves on the other.
+
+It also produced a distinctive habit of practice. **Draining rather than disabling** - taking a member out of rotation without killing established sessions - is a discipline invented here that later became normal in deployment tooling everywhere. **The maintenance page** as a routed destination rather than a server change. And the permanent operational argument about **what a health monitor should test**, which is really an argument about how much the network is entitled to know about the application.
+
+## The companies
+
+The first market was Cisco, F5, Alteon, Foundry, ArrowPoint and HydraWeb. Consolidation took most of them: Alteon into Nortel and eventually into Radware, Foundry into Brocade, ArrowPoint into Cisco, NetScaler into Citrix and then out again into its own company.
+
+Today it is F5 and Citrix at the top of the enterprise market, Radware and A10 alongside, the cloud providers' own balancers, and the open-source line - HAProxy, NGINX, Envoy - which now moves more traffic than the appliance vendors do and costs nothing.
+
+## Where it goes
+
+**The function dissolved into the platform.** Kubernetes ingress controllers, service mesh sidecars and cloud load balancers all do this job, configured as part of an application deployment rather than requested from a network team. For a large share of new workloads there is no appliance and no conversation.
+
+**The hard parts did not dissolve.** Health checking that actually reflects application readiness, persistence for applications that should not need it, and graceful draining are the same problems in a mesh as they were in a chassis, and they are still where outages come from.
+
+**The device is becoming a policy point.** Where an appliance remains, it survives less for balancing than for what it can do while in the path: terminate cryptography, run a web application firewall, authenticate, and be the one place where traffic can be seen at all.
+
+**And the sceptic from 1995 was arithmetically wrong and directionally interesting.** There were not ten customers with a load balancing problem; there were eventually all of them. But the observation underneath it holds - the market was tiny at the moment the decision had to be made, and the people who built anyway did so on a judgement about where the web was going rather than on a count of buyers.
+
+## Sources
+
+- [Cisco LocalDirector: conceived by John Mayes and Robert Andrews in late 1995, with Andrews saying there were probably ten customers in the world with a load balancing problem; first shipped April 1996, four months after development began, beating F5 and HydraWeb by a year; built on Network Translation technology and running Finesse, from which the PIX firewall operating system derives](https://en.wikipedia.org/wiki/Cisco_LocalDirector)
+- [History of F5 Networks: incorporated February 1996 as F5 Labs by Jeffrey Hussey, BIG/ip to market in July 1997 with 200,000 dollars of revenue by year end against Cisco and Nortel, and the 3DNS Controller in September 1998](https://www.fundinguniverse.com/company-histories/f5-networks-inc-history/)
+- [F5 Networks history: renamed from F5 Labs in April 1999 and public that June at ten dollars a share](https://reference.jrank.org/histories/F5_Networks_Inc.html)
+- [Loadbalancer.org: the sceptical reading that renaming a device an application delivery controller does not change that it is still a load balancing router and reverse proxy with health checks](https://www.loadbalancer.org/blog/so-just-how-should-you-compare-load-balancers/)
+- [Packet Pushers, A History of Load Balancing: the cluster of companies founded or going public between 1995 and 2000, and the acquisition activity of the mid to late 2000s](https://packetpushers.net/blog/history-load-balancing/)

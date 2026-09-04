@@ -1,0 +1,86 @@
+---
+slug: sast-dast-family-history
+title: "SAST and DAST: Two Lineages, One Budget Line"
+summary: "Static and dynamic application security testing are sold as a pair and descend from completely different places. SAST comes from lint, written at Bell Labs in 1978 to solve a portability problem and only later pointed at security. DAST comes from the attack tooling of the late 1990s, built by the same company that built the first web application firewall. This is the family history, including why the founding tool's own name became a term of abuse, and why the two approaches disagree by construction rather than by quality."
+concepts: ["sast", "dast", "lint", "static analysis", "appsec", "history"]
+relatedTools: []
+relatedArticles: ["waf-family-history", "firewall-family-history", "security-through-obscurity"]
+category: security
+order: 146
+status: reviewed
+updated: "2026-09-03"
+---
+
+These two are sold together, budgeted together and compared to each other constantly, and they come from unrelated places. One descends from compiler tooling; the other descends from attack tooling. Almost every argument about which is better is really an argument between those two ancestries.
+
+## 1978: a portability problem, not a security one
+
+**Stephen C. Johnson** at Bell Labs released **lint** on 26 July 1978. He arrived at it while debugging the yacc grammar he was writing for C and dealing with the portability problems of moving Unix to a 32-bit machine. It scanned source and flagged suspicious constructions before compilation, without changing the program.
+
+The name is the best explanation of the intent ever attached to a tool. Johnson borrowed it from the fluff caught in a clothes dryer trap: the command captures waste fibres while leaving whole fabrics intact. It went out beyond Bell Labs with Unix Version 7 in 1979.
+
+**Static analysis was not invented for security.** It was invented because a compiler is strict about what it must reject and permissive about everything else, and somebody wanted a second reader that was strict about the rest. Security became a use for the technique roughly twenty years later - the same pattern as router access lists becoming firewalls, a mechanism built for one purpose being pointed at another once the threat arrived.
+
+## The name that became an insult
+
+Static analysis had a reputation problem from the beginning, and the evidence is in the vocabulary: **lint is now sometimes used as a term of abuse**, as noted in the literature on deploying these tools.
+
+That happened for a reason that has never fully gone away. A tool that reads code without running it must assume every path might execute, so it reports things that cannot actually happen. Developers who are handed a list where a meaningful fraction is not real learn to treat the whole list as noise, and the tool's name becomes shorthand for pedantic output nobody acts on. Every generation of this technology since has been an attempt to escape that reputation, and the escape has been partial each time.
+
+## The commercial waves
+
+**Coverity** came out of Stanford and **Klocwork** out of the telephone equipment maker Nortel, both initially focused on C and C++, where the language's flexibility makes low-level defects both common and severe. **Fortify** started from a different place - security for web applications in Java and PHP - and **Checkmarx** and **Ounce Labs**, later branded AppScan Source, followed.
+
+What turned this from a specialist tool into an enterprise category was regulation, exactly as it was for web application firewalls. Sarbanes-Oxley in 2002 pushed public companies toward stronger internal controls and put software risk in front of boards; PCI DSS version 1.0 in 2004 required anyone handling card data to show secure development practice; and the OWASP Top 10 in 2003 gave everyone a shared list to be measured against.
+
+That first enterprise generation proved large-scale static analysis was possible and produced reports auditors could use. Its two failures are still the reference points: **scans too slow for release cycles**, and **triage cost too high because the results were noisy**.
+
+## The dynamic lineage
+
+Dynamic testing came from the other side entirely. **AppScan** was built by Sanctum - the same company that built AppShield, the first web application firewall - and **WebInspect** came from SPI Dynamics, later passing through HP, Micro Focus and OpenText. Sanctum's scanner outlived its firewall: AppScan went to Watchfire, then IBM, then HCL, and is still sold.
+
+That shared parentage is the fact worth holding on to. As the previous article in this series describes, the same body of knowledge about how web applications break was pointed defensively at a filter and offensively at a scanner. **Dynamic testing and the web application firewall are siblings; static analysis is not related to either of them.**
+
+## Why they disagree by construction
+
+The comparison usually offered is accuracy, and that is the wrong axis.
+
+**Static analysis sees everything and knows nothing about reality.** It reads all paths including the unreachable ones, has no idea what is actually deployed or exposed, and cannot tell whether a flaw in a library is ever called. It reports possibility.
+
+**Dynamic testing sees only what it can reach and knows those findings are real.** It cannot log in without credentials, cannot navigate a workflow it does not understand, cannot test code paths it never triggers - and everything it finds, it found by doing. It reports actuality, incompletely.
+
+Neither is a weaker version of the other. A finding one produces and the other misses is usually correct behaviour for both, and any programme that treats disagreement between them as a tooling failure has misunderstood what it bought.
+
+## Evolution
+
+- **Lint and its descendants**, 1978 onward. Portability and correctness.
+- **Compiler and environment integration**, ongoing. Analysis moved into Xcode, Visual Studio and every modern toolchain, where it catches shallow defects while the developer is still typing.
+- **Enterprise static analysis**, early 2000s. Coverity, Fortify, Klocwork, Checkmarx - accurate enough to matter, slow enough to run overnight, noisy enough to need a triage team.
+- **Dynamic scanning**, from 1999. AppScan, WebInspect, and the practice of testing a running application from outside.
+- **Developer-first tooling**, from the 2010s. Snyk, Semgrep and their peers, optimising for speed and signal in a pull request rather than completeness in a report.
+- **Software composition analysis**, alongside. The realisation that most of the code in an application was written by strangers, and that the important question about a dependency is not whether it has a known flaw but whether the flawed function is ever called.
+
+## Jobs and practices
+
+This family created the **application security engineer**, a role defined by sitting between security and development and having authority in neither. The technical skill is real but the job is largely translation: converting findings into changes people who did not ask for them will actually make.
+
+Its practices are recognisable everywhere. **Triage** as permanent load rather than a project. **Baselining**, so a new tool on an old codebase reports only what changed rather than thirty thousand pre-existing findings. **Breaking the build**, and the long argument about when a finding should be allowed to. And **the exception with an owner and a date**, which is the same instrument the firewall teams invented for the same reason.
+
+The measure that matters is not how many findings a tool produced. It is what fraction of them were fixed, and how long that took.
+
+## Where it goes
+
+**Reachability is becoming the real question.** Knowing a vulnerable function exists somewhere in a dependency tree is nearly useless; knowing your code calls it is actionable. Combining static analysis with runtime information to answer that is where the current effort sits.
+
+**Speed is a correctness requirement now.** A scan that does not fit inside a pull request is a scan developers work around. The winning tools of the last decade won on latency and signal, not on depth.
+
+**The two lineages are converging in the tooling and not in the epistemics.** Platforms now sell static, dynamic and composition analysis as one product, but the underlying limits have not moved: one still reports what could happen, the other still reports what did.
+
+**And machine-generated code changes the volume, not the argument.** More code written faster by tools that learned from public repositories means more of everything - more findings, more noise, more triage - against the same constraint that has bounded this family since 1978, which is how much output a human is willing to read before deciding the tool is not worth listening to.
+
+## Sources
+
+- [Lint (software): released 26 July 1978 by Stephen C. Johnson at Bell Labs, conceived while debugging the yacc grammar for C and handling portability in the 32-bit Unix port, named after the fluff caught in a clothes dryer trap, and released outside Bell Labs in Unix Version 7 in 1979](https://en.wikipedia.org/wiki/Lint_(software))
+- [IBM on static code analysis: the 1978 creation of lint marks the beginning of modern static code analysis](https://www.ibm.com/think/topics/static-code-analysis)
+- [Deploying Static Analysis: lint is now sometimes used as a term of abuse; Klocwork came from Nortel and Coverity from Stanford, both initially focused on C and C++, while Fortify's initial focus was web application security in Java and PHP](https://arxiv.org/pdf/2202.11861)
+- [The three waves of SAST: Sarbanes-Oxley in 2002, the OWASP Top 10 in 2003 and PCI DSS version 1.0 in 2004 creating the first enterprise generation of Coverity, Fortify, Checkmarx and Ounce Labs, whose limitations were long scan times and high triage cost](https://corgea.com/blog/the-three-waves-of-sast-from-rules-to-ai-native-analysis)

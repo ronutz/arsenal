@@ -1,0 +1,84 @@
+---
+slug: ddos-family-history
+title: "Negação de serviço: a palestra interrompida pelo próprio assunto"
+summary: "Em fevereiro de 2000, Steven Bellovin estava havia cinco minutos numa palestra de abertura sobre ataques de negação de serviço quando os pagers começaram a tocar e a sala esvaziou. O ataque em curso tinha sido lançado por um garoto de quinze anos usando ferramentas que ele não escreveu. Esta é a história da família - o Trinoo em 1999, a semana que derrubou Yahoo, Amazon, eBay e CNN, o padrão de amplificação que este catálogo já documentou três vezes, e por que a única defesa real é capacidade que ninguém sustenta sozinho."
+concepts: ["ddos", "trinoo", "amplification", "botnet", "mirai", "history"]
+relatedTools: []
+relatedArticles: ["ntp-family-history", "observability-family-history", "dns-family-history"]
+category: security
+order: 159
+status: reviewed
+updated: "2026-09-03"
+---
+
+Todo outro ataque deste catálogo trata de entrar. Este trata de garantir que mais ninguém entre, e é a única categoria em que o problema do defensor é aritmética, e não esperteza.
+
+## 1999: o primeiro caso bem documentado
+
+Um ataque de negação de serviço a partir de uma máquina é briga justa. A versão **distribuída** - muitas máquinas, coordenadas - transformou aquilo em outra coisa.
+
+O primeiro caso bem documentado foi em 1999, quando uma ferramenta chamada **Trinoo** foi implantada em pelo menos 227 sistemas, ao menos 114 deles na rede de pesquisa Internet2, para inundar um único computador da Universidade de Minnesota. Aquela máquina ficou fora do ar por mais de dois dias.
+
+Leia os números de novo. Duzentas e vinte e sete máquinas atacantes contra um alvo, e o alvo perdeu por dois dias. **A assimetria que define esta família já estava presente no primeiro caso documentado e nunca melhorou.**
+
+O Trinoo foi analisado publicamente por David Dittrich, e a família a que ele pertencia - **Tribe Flood Network**, **Stacheldraht**, Trinity - era conhecida, documentada e discutida na comunidade operacional antes de os ataques famosos acontecerem.
+
+## Fevereiro de 2000: a semana, e a palestra
+
+Em **7 de fevereiro de 2000** o Yahoo ficou inalcançável por cerca de três horas. No dia 8, Amazon, Buy.com, CNN e eBay foram atingidos. No dia 9, E*Trade e ZDNet. O atacante era **Michael Calce**, quinze anos, em Montreal, sob o apelido Mafiaboy, e o fato significativo sobre ele é técnico, e não biográfico: **ele não escreveu as ferramentas.** Ele varreu em busca de máquinas com senha fraca ou padrão, instalou software que outras pessoas tinham escrito, e apontou aquilo para os maiores sites da internet.
+
+Enquanto aquilo acontecia, **Steven Bellovin** fazia a palestra de abertura do NANOG 18 - sobre ataques de negação de serviço. Ele estava havia cinco minutos quando os pagers tocaram, as pessoas pegaram os notebooks e saíram correndo da sala, e ele ficou se perguntando por que a plateia estava indo embora.
+
+Isso não é anedota. É a formulação mais afiada disponível do problema central desta família. **A comunidade entendia a ameaça bem o bastante para agendar uma palestra sobre ela, e entender não ajudou.** As ferramentas eram públicas, o mecanismo estava documentado, o aviso estava literalmente sendo dado, e um adolescente sem capacidade original derrubou a internet comercial assim mesmo.
+
+## O padrão que este catálogo já registrou três vezes
+
+O jeito mais eficiente de gerar tráfego não é ter máquinas - é tomá-las emprestadas, fazendo uma pergunta com resposta grande enquanto se diz ser outra pessoa.
+
+Este catálogo já documentou o mesmo formato em três famílias distintas. O **SNMP**, no [artigo de observabilidade](/learn/observability-family-history), respondendo a consulta pequena com resposta grande sobre transporte sem conexão. O **NTP**, no [artigo de tempo](/learn/ntp-family-history), pelo comando de depuração `monlist`. E o memcached, que produziu um ataque de 1,3 terabit contra uma plataforma de hospedagem de código em 2018.
+
+Nenhum desses protocolos foi projetado com descuido. Todos foram desenhados antes de a falsificação de endereço de origem ser ataque rotineiro, numa rede em que responder de forma prestativa a um estranho era virtude. **A vulnerabilidade não está em nenhum deles isoladamente; está numa rede que ainda encaminha pacote com origem forjada**, e todo incidente de amplificação desde 1999 é uma conta por essa propriedade não corrigida.
+
+## 2016: atacar a dependência em vez do alvo
+
+O ataque da botnet Mirai à Dyn, em 2016, mudou o formato do problema de novo. Cerca de 1,2 terabit, ao longo de um dia, construído a partir de equipamentos de consumo com credenciais padrão.
+
+Duas coisas nele importam mais que o volume.
+
+**A botnet era a negligência de outras pessoas.** Os equipamentos eram câmeras e gravadores de gente que não fazia ideia de estar participando e não tinha como saber. Não há correção que um alvo possa aplicar a um ataque feito do equipamento de outra pessoa.
+
+**A vítima não era o alvo.** A Dyn fazia a resolução de nomes de Amazon, Netflix, Twitter, PayPal, Reddit, Spotify e outros; esses serviços não foram atacados e caíram assim mesmo. É o argumento do [artigo de DNS](/learn/dns-family-history) na forma mais cara: resolução é dependência de tudo, então é a coisa mais eficiente de atacar, e o raio de impacto é todo mundo que apontou para lá.
+
+## Por que a defesa concentrou
+
+Filtrar não ajuda quando o tubo está cheio. Se chega mais tráfego do que o enlace carrega, a decisão sobre o que descartar já foi tomada pela física, acima de qualquer equipamento seu.
+
+A única defesa real é **mais capacidade que o ataque**, mais um lugar para pôr o tráfego. Isso não é produto que uma empresa compra e instala; é uma rede global com mais banda do que os atacantes conseguem reunir, que talvez uma dúzia de organizações no planeta consiga operar.
+
+**Esta é a única família do catálogo em que a defesa é inerentemente centralizadora.** Firewall, detecção, identidade e certificado podem todos ser operados pela organização que precisa deles. Proteção contra negação de serviço não pode, e a consequência é que o mesmo punhado de provedores hoje fica na frente de uma fatia enorme da internet - o que resolve o problema de disponibilidade criando um problema de concentração, e os dois são reais.
+
+## Cargos e práticas
+
+Raramente existe um engenheiro de negação de serviço, e as práticas pertencem a quem é dono da disponibilidade.
+
+**Conhecer o plano antes do evento**, já que a decisão de mitigação - redirecionar, depurar, absorver - precisa ser tomada em minutos por gente que não pode deliberar. **Testar a comutação**, porque caminho de mitigação que nunca carregou tráfego de produção é hipótese. **Ocultar a origem**, já que proteção não vale nada se o atacante alcança um endereço que você publicou anos atrás. E **limitar a taxa das próprias dependências**, porque a queda autoinfligida mais comum nesta área é tempestade de novas tentativas dos seus próprios clientes.
+
+A prática incômoda é **decidir de antemão o que descartar**. Plano de disponibilidade que supõe que tudo precisa continuar de pé não é plano; a versão útil nomeia quais funções caem primeiro e quem tem permissão para decidir isso.
+
+## Para onde vai
+
+**Os volumes continuam crescendo porque a fonte de botnet continua crescendo.** Equipamento de consumo, depois instância de nuvem, depois qualquer coisa com pilha de rede e senha padrão - e os picos registrados foram de gigabits a dezenas de terabits dentro do período que este catálogo cobre.
+
+**Ataque na camada de aplicação é o problema mais difícil.** Uma requisição que parece legítima, é cara de servir e chega a taxa modesta derrota a defesa volumétrica por completo, e distingui-la da demanda real é o mesmo problema que as famílias de [firewall de aplicação web](/learn/waf-family-history) e de gestão de bots nunca resolveram inteiramente.
+
+**Extorsão transformou aquilo em negócio.** O que começou como vandalismo e demonstração hoje é sobretudo comercial - ataque por encomenda, e ataque como exigência de pagamento -, o que muda o cálculo do defensor de técnico para econômico.
+
+**E a assimetria fundadora não se mexeu.** Em 1999, foram 227 máquinas para tirar uma da internet por dois dias. As proporções de hoje são maiores nas duas direções, mas o formato é idêntico: atacar é barato, distribuído e não exige trabalho original, enquanto defender exige capacidade, coordenação e dinheiro. Toda melhoria desta família foi melhoria em QUEM pode pagar para se defender, e não no equilíbrio em si.
+
+## Fontes
+
+- [Defenses Against Distributed Denial of Service Attacks: o primeiro DDoS bem documentado em 1999, com o Trinoo implantado em pelo menos 227 sistemas, incluindo ao menos 114 na Internet2, para inundar um único computador da Universidade de Minnesota, que ficou fora do ar por mais de dois dias; o Yahoo inalcançável por três horas em 7 de fevereiro de 2000, Amazon, Buy.com, CNN e eBay no dia 8, E*Trade e ZDNet no dia 9; e a família de ferramentas Tribe Flood Network, Trinoo, Stacheldraht e Trinity](https://www.garykessler.net/library/ddos.html)
+- [Senki, The History of DDoS and DoS: Steven M. Bellovin fazia a palestra de abertura do NANOG 18 sobre negação de serviço e estava havia cinco minutos quando os pagers tocaram e as pessoas saíram correndo da sala; a análise do trinoo por David Dittrich; o ataque Mirai à Dyn em 2016 chegando a 1,2 terabit por mais de um dia, custando à Dyn 14.500 domínios e cerca de 110 milhões de dólares; e o ataque de 1,3 terabit ao GitHub em 2018](https://www.senki.org/ddos-attack-preparation-workbook/history-of-denial-of-services-dos-attacks/)
+- [Michael Calce, conhecido como Mafiaboy, que lançou os ataques de negação de serviço de fevereiro de 2000 contra Yahoo, Fifa.com, Amazon, Dell, E*TRADE, eBay e CNN](https://en.wikipedia.org/wiki/Michael_Calce)
+- [Análise dos ataques de 2000: Calce se apoiou em ferramentas prontas compartilhadas em comunidades clandestinas em vez de escrever o próprio código, varrendo em busca de sistemas desprotegidos e explorando senhas fracas ou padrão para implantar Tribe Flood Network ou Stacheldraht](https://awjunaid.com/cyber-security/mafiaboys-moment-the-2000-denial-of-service-attacks-that-shook-the-internet/)
+- [A história e a evolução do DDoS: enraizado em meados dos anos 1990 como vandalismo, protesto hacktivista ou ego, e amadurecendo em extorsão, sabotagem competitiva e cobertura para outras intrusões](https://embeddedcomputing.com/technology/security/network-security/the-history-and-evolution-of-ddos-attacks)

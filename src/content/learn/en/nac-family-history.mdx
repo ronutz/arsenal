@@ -1,0 +1,128 @@
+---
+slug: nac-family-history
+title: "Network Access Control: The Idea That Was Right Too Early, Twice"
+summary: "Network access control was not invented for the local area network. It was invented in 1984, at BBN, for the device you dialled into - and it was built to make people authenticate less, not more. This is the family history: from the terminal access controller through dial-up authentication and 802.1X to Cabletron's connection-oriented fabric, the Enterasys loop that detected, located, contained and remediated automatically, the decade in which the whole idea was declared a failure, and its return under a name with better marketing."
+concepts: ["nac", "802.1x", "securefast", "policy networking", "posture", "history"]
+relatedTools: []
+relatedArticles: ["network-scopes-family-history", "identity-family-history", "ids-ips-family-history", "bridge-switch-family-history"]
+category: security
+order: 162
+status: reviewed
+updated: "2026-09-04"
+---
+
+Most families in this catalogue were invented once and improved. This one was built, judged a failure, quietly abandoned, and then rebuilt by people who mostly did not know it had existed - and its beginning is forty years earlier than the acronym.
+
+## 1984: it began where access was expensive
+
+The ARPANET was reached through a **Terminal Access Controller** - the device a terminal connected to in order to get onto the network at all. Controlling who could use one is the oldest form of this discipline, and it produced its first protocol.
+
+**TACACS**, the Terminal Access Controller Access-Control System, was developed in 1984 by **BBN** under contract to DARPA, for administering the ARPANET and MILNET. **Brian Anderson** wrote the first formal description as **RFC 927** in December 1984.
+
+Two things about that origin decide everything after it.
+
+**It was built to reduce authentication, not to add it.** The problem Anderson was solving was that someone already logged into one host had to authenticate again to reach another; the answer was to pass a user identifier between hosts so the receiving system could trust the sending one. **The first network access control protocol was a convenience feature.** It became a security control later, which is the fourth time in this catalogue a mechanism built for one purpose has been pointed at security afterwards - after router access lists became firewalls, lint became static analysis, and DNS became an enforcement point.
+
+**And it assumed physical control of the wire.** Credentials went across in cleartext, which was acceptable on a network of research institutions and military bases where the cable was accounted for. That assumption is the one the [scopes article](/learn/network-scopes-family-history) names as the foundation of the whole perimeter model - inside was trusted because inside was administered - and it is the assumption every later entry in this family is trying to repair.
+
+Cisco began supporting TACACS in its products in the late 1980s, extended it incompatibly as XTACACS in 1990, and replaced it with **TACACS+** from 1993 - a separate protocol that split the function into **authentication, authorisation and accounting**, the three questions this family has asked ever since. **RADIUS** (remote authentication dial-in user service) arrived from Livingston Enterprises in 1991 as the counterpart, and became the language of dial-up.
+
+## Why the local area network lost the habit
+
+Here is the part that explains why network access control had to be reinvented at all.
+
+**When access was scarce, authentication was inherent.** To reach a network you dialled a modem into a terminal access controller or an access server, and that device asked who you were because it had no choice - the port was metered, the session was billed, and somebody had to be accountable for it.
+
+**The local area network made access free**, and the asking disappeared with the cost. A wall jack does not meter anything. Plugging in was the authentication, and for roughly fifteen years the industry built enormous networks on the premise that physical presence in a building was sufficient proof of anything.
+
+Everything after this point in the article is the long project of putting back onto the local area network the discipline that the dial-up world never had the luxury of dropping. **802.1X**, standardised in 2001, is exactly that: the authentication exchange from point-to-point links, carried over a switch port, arriving at a layer designed to trust whatever was plugged into it. That is why retrofitting it is so painful, and why it is the only piece of this family that survived unambiguously.
+
+## 1999: a switch that asks permission
+
+**RFC 2643** describes Cabletron's SecureFast virtual local area network product - **SecureFast VLAN** - and reading it now is disorienting. It documents a distributed **connection-oriented** switching protocol: for each source and destination address pair a switch encounters, a connection is programmed into the hardware, and every subsequent packet of that conversation is forwarded along it.
+
+Two consequences follow, and the second is the one that matters here.
+
+A conversation had a **path**, chosen from equal-cost alternatives and load balanced across the fabric, with an ingress switch, intermediate switches and an egress switch - vocabulary borrowed from telephony rather than from Ethernet.
+
+And a conversation could be **refused**. In that model a VLAN is not a broadcast domain; it is a policy scope, and each one carries a policy value - **Open or Secure** - used to decide whether a call connection may be established at all.
+
+**That is network access control, in a switching architecture, published in 1999.** The decision to permit a conversation happened before the conversation existed, in the fabric, based on who the endpoints were rather than where they were plugged in.
+
+It lost, comprehensively. Connection-oriented Ethernet was expensive in silicon and state, cheap merchant switching was arriving, and the industry standardised on 802.1Q, which the [scopes article](/learn/network-scopes-family-history) traces - a tag on a frame rather than a call the network agrees to place. **The simpler model won because it was cheaper, exactly as the switch beat the bridge and stateful inspection beat proxies.**
+
+## Enterasys Secure Networks, and what it actually did
+
+Cabletron reorganised in 2000 and the enterprise line became **Enterasys**, which spent the following decade building the second version of the same conviction: that the network itself should enforce policy, not just carry traffic.
+
+By 2007 the product documentation describes something the market took another decade to converge on:
+
+**Pre-connect and post-connect.** Most access control of that era checked a device at the door and never looked again. This checked before admission **and continued to evaluate afterwards**, which is the harder half and the one that matters, because a laptop that was clean at nine o'clock is a different proposition at eleven.
+
+**Agentless, and multi-vendor.** The documentation is explicit that no new switching hardware needed to be deployed and no agent needed to be installed on every machine. Both were direct answers to why competing approaches failed in practice.
+
+**Multi-user, multi-method authentication**, so 802.1X-capable machines, printers that authenticate by address and guests on a captive portal could coexist on the same port infrastructure.
+
+**And the integration that is the point of this entry.** Policy was enforced continuously by joining three things: the access control decision, **Dragon** - which combined intrusion detection, intrusion prevention, network behaviour anomaly detection and security information management - and **NetSight Automated Security Manager**, which aligned event detection with the *location of the source* and mitigated it there.
+
+Read that carefully, because it is the whole design: the intrusion detection system says something is wrong, the management layer resolves that to a physical port on a specific switch, and the access control layer changes what that port is allowed to do - automatically, without a person, within the same system. **Detect, locate, contain, remediate**, as one loop.
+
+The rest of the market was selling those as four products from three vendors, unintegrated, which is precisely why they did not work.
+
+## The rest of the field
+
+**Cisco Network Admission Control** built the same idea into its own equipment and required it, which meant the security posture of a network depended on replacing the network.
+
+**Microsoft Network Access Protection** arrived with Windows Server 2008 - agent-based, deeply integrated with Windows, and useless for the printers, phones, cameras and contractors that make up the difficult part of any estate. It was deprecated and removed.
+
+**802.1X** underneath all of them is the only piece that survived unambiguously, and it is worth being precise about what it is: authentication arriving at a layer built to trust anything plugged into it, which is why retrofitting it is so painful.
+
+The interoperability effort of the period - vendors certifying each other's agents, Enterasys testing against Microsoft's technology, Foundry demonstrating with Microsoft's policy servers - is a real and forgotten piece of history. The industry did try to make this work across vendors, and the attempt is better documented than its outcome.
+
+## Why it was called a failure
+
+By roughly 2010 network access control was a punchline, and the reasons were operational rather than technical.
+
+**The estate did not cooperate.** Printers, badge readers, medical devices, industrial controllers and building systems cannot run an agent and frequently cannot authenticate at all, so every deployment accumulated exceptions until the exceptions were the policy.
+
+**Agents did not scale.** Anything requiring software on every endpoint failed at the boundary of the managed estate, and the boundary of the managed estate is exactly where the risk is.
+
+**Enforcement broke things visibly.** Quarantining a device that turned out to be a chief executive's laptop or a ward's infusion pump is a career event, so deployments stayed in monitoring mode - the same pattern the [web application firewall article](/learn/waf-family-history) records, for the same reason.
+
+**And the perimeter it defended stopped existing.** As the [scopes article](/learn/network-scopes-family-history) argues, controlling the port stops being decisive once the user is at home and the application is in somebody's cloud.
+
+## What actually happened to it
+
+It did not die. It was renamed and re-scoped.
+
+**Zero trust** is, in its substance, the same claim: never trust by location, evaluate continuously, authorise per resource. **Device posture** in an identity provider is the health check, moved from the switch to the login. **Conditional access** is the policy engine. **Endpoint detection and response** feeding an identity platform to revoke a session is detect-locate-contain-remediate, running above the network instead of inside it.
+
+The differences are real and worth naming. Modern enforcement happens at the application and identity layer rather than at the port, which works for a laptop in a café and does nothing for a compromised camera on a factory VLAN. **The old model could reach the port and could not reach the cloud; the new one is the reverse**, and the estates that need both are running both.
+
+Meanwhile the original problem returned under new pressure: operational technology, building systems and connected devices are exactly the population that cannot run an agent, and controlling them means controlling the port. Access control at the network edge is being bought again, by people who would not use the acronym.
+
+## Jobs and practices
+
+This family produced no lasting job title and a set of practices that transfer completely.
+
+**Monitor before enforce, with a date** - the discipline this catalogue keeps finding in every family that can break production. **The exception register**, because unauthenticatable devices are permanent and pretending otherwise produces shadow policy. **Profiling before policy**, since you cannot write rules for an estate you have not inventoried, and every deployment discovers devices nobody knew were connected. And **a tested way back**, because the failure mode here is locking out the organisation.
+
+The most valuable habit it left is the least technical: **decide in advance who is allowed to quarantine a device at three in the morning, and what happens if they are wrong.**
+
+## Where it goes
+
+**The two halves are converging.** Identity-layer conditional access and network-layer enforcement are being sold together, because the estates that matter contain both laptops and things that will never run software.
+
+**Microsegmentation is the same idea at a finer grain.** Deciding whether one workload may speak to another, continuously, is SecureFast's question with the endpoints changed from people to processes.
+
+**And the record deserves stating plainly.** A connection-oriented fabric that refused to build a path unless policy allowed it, and an integrated loop from detection to automatic containment at the source port, were shipping products before most of the current vocabulary existed. They were not ahead of the technology; they were ahead of the operational appetite. **Being early is indistinguishable from being wrong, right up until somebody rebuilds it and calls it something else.**
+
+## Sources
+
+- [TACACS: developed in 1984 by BBN under contract to DARPA for administration of ARPANET and MILNET, originally designed to let someone already logged into one host connect to another without re-authenticating; Cisco supported it from the late 1980s, extended it as XTACACS in 1990 and released TACACS+ from 1993](https://en.wikipedia.org/wiki/TACACS)
+- [Brian Anderson at BBN wrote the first formal description of TACACS as RFC 927 in December 1984; the original protocol transmitted credentials in cleartext, on a security model that assumed physical control of the wire](https://www.connected.app/ports/49)
+- [RFC 2643, Cabletron's SecureFast VLAN Operational Model, August 1999: a distributed connection-oriented switching protocol in which a connection is programmed into switch hardware per source and destination address pair, with each VLAN carrying a policy value of Open or Secure used to determine whether a call connection can be established](https://www.rfc-editor.org/rfc/rfc2643.html)
+- [Enterasys Network Access Control product overview: a standards-based, multi-vendor interoperable pre-connect and post-connect solution requiring no new switching hardware and no agent on every computer, with multi-user multi-method authentication](http://doc.netz-komponenten.net/Enterasys/SNS-TAG-LPA.pdf)
+- [Enterasys NAC documentation on the integration of NAC with Dragon - combining intrusion detection, intrusion prevention, network behaviour anomaly detection and security information management - and NetSight Automated Security Manager, aligning event detection with the location of the source for automated threat mitigation, before and after connection](https://livreblanc.silicon.fr/wp-content/uploads/2014/02/network_access_c_zkdecv4tplvhgon.pdf)
+- [Enterasys NAC integration with third-party agents including Symantec's Sygate Enterprise Protection, Check Point Integrity and Microsoft Network Access Protection, using 802.1X, DHCP and IPsec enforcement methods](https://scadahacker.com/library/Documents/Manuals/Enterasys%20-%20Network%20Access%20Control.pdf)
+- [Enterasys Networks: formed March 2000 as a spin-off of Cabletron Systems, public on the New York Stock Exchange from August 2001, taken private by The Gores Group in 2006 and acquired by Extreme Networks in September 2013](https://en.wikipedia.org/wiki/Enterasys_Networks)

@@ -64,7 +64,9 @@ export default async function PeoplePage({
   // Volta next to Ørsted and Kaminsky next to Hutchins, which is the reading
   // an alphabet destroys: these people answer each other across decades.
   const people = GLOSSARY.filter((e) => e.person).sort(
-    (a, b) => (a.personYear ?? 9999) - (b.personYear ?? 9999) || a.headword.localeCompare(b.headword),
+    (a, b) =>
+      (a.personYear ?? 9999) - (b.personYear ?? 9999) ||
+      a.headword.localeCompare(b.headword),
   );
 
   // Grouped by decade, so the density of a period is visible at a glance.
@@ -80,7 +82,8 @@ export default async function PeoplePage({
   // alphabetically, so the legend reads the same way the page does.
   const fieldOrder: string[] = [];
   for (const p of people) {
-    if (p.personField && !fieldOrder.includes(p.personField)) fieldOrder.push(p.personField);
+    if (p.personField && !fieldOrder.includes(p.personField))
+      fieldOrder.push(p.personField);
   }
   const fields = fieldOrder.map((key) => ({
     key,
@@ -95,50 +98,65 @@ export default async function PeoplePage({
       </a>
       <Header />
       <main id="main">
-        <article className="article-container">
-          <Breadcrumbs
-            items={[
-              { href: "/learn", label: tNav("learn") },
-              { label: t("title") },
-            ]}
-          />
-          <header className="section">
-            <h1 className="page-hero-title">{t("title")}</h1>
-            <p className="page-hero-lede">{t("lede")}</p>
-            <p className="people-count">{t("count", { count: people.length })}</p>
-          </header>
+        <article>
+          <section className="section">
+            <div className="container section-narrow">
+              <Breadcrumbs
+                ariaLabel={tNav("breadcrumb")}
+                items={[
+                  { label: tNav("home"), href: "/" },
+                  { href: "/learn", label: tNav("learn") },
+                  { label: t("title") },
+                ]}
+              />
+              <header className="section">
+                <h1 className="page-hero-title">{t("title")}</h1>
+                <p className="page-hero-lede">{t("lede")}</p>
+                <p className="people-count">
+                  {t("count", { count: people.length })}
+                </p>
+              </header>
 
-          <PeopleTimelineFilter
-            fields={fields}
-            allLabel={t("filterAll")}
-            regionLabel={t("filterLabel")}
-          />
+              <PeopleTimelineFilter
+                fields={fields}
+                allLabel={t("filterAll")}
+                regionLabel={t("filterLabel")}
+              />
 
-          <section className="section" data-people-timeline>
-            {Array.from(eras.entries()).map(([decade, group]) => (
-              <div className="people-era" key={decade}>
-                <h2 className="people-decade">{t("decade", { decade })}</h2>
-                <ul className="people-list">
-                  {group.map((p) => (
-                    <li className="people-item" data-field={p.personField ?? ""} key={p.slug}>
-                      <span className="people-year">{p.personYear}</span>
-                      <Link className="people-link" href={`/glossary/${p.slug}`}>
-                        {p.headword}
-                      </Link>
-                      <span className="people-def">
-                        {tGloss(`entries.${p.slug}.def`)}
-                      </span>
-                      {/* The full paragraph, not only the one-liner: PRIME asked
+              <section className="section" data-people-timeline>
+                {Array.from(eras.entries()).map(([decade, group]) => (
+                  <div className="people-era" key={decade}>
+                    <h2 className="people-decade">{t("decade", { decade })}</h2>
+                    <ul className="people-list">
+                      {group.map((p) => (
+                        <li
+                          className="people-item"
+                          data-field={p.personField ?? ""}
+                          key={p.slug}
+                        >
+                          <span className="people-year">{p.personYear}</span>
+                          <Link
+                            className="people-link"
+                            href={`/glossary/${p.slug}`}
+                          >
+                            {p.headword}
+                          </Link>
+                          <span className="people-def">
+                            {tGloss(`entries.${p.slug}.def`)}
+                          </span>
+                          {/* The full paragraph, not only the one-liner: PRIME asked
                           for people to read as richly as everything else, and a
                           name plus a sentence is a directory, not a record. */}
-                      <span className="people-context">
-                        {tGloss(`entries.${p.slug}.context`)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+                          <span className="people-context">
+                            {tGloss(`entries.${p.slug}.context`)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </section>
+            </div>
           </section>
         </article>
       </main>

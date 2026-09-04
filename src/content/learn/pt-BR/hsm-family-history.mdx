@@ -1,0 +1,82 @@
+---
+slug: hsm-family-history
+title: "O módulo de segurança em hardware: o homem que inventou as duas metades"
+summary: "Mohamed Atalla inventou o MOSFET no Bell Labs, viu a invenção ser ignorada, pediu demissão, e doze anos depois inventou o módulo de segurança em hardware. A tecnologia de transistor que tornou a computação moderna possível e a caixa que protege os segredos mais valiosos dela vieram da mesma pessoa - e ele precisou sair do principal laboratório de pesquisa do mundo para construir a segunda. Esta é a história da família: a Caixa Atalla de 1973, um padrão criado por medo de que uma empresa dominasse, um nível de garantia que quase ninguém alcança, e o que acontece quando a resposta à gestão de chaves se muda para a nuvem de outra pessoa."
+concepts: ["hsm", "atalla box", "key management", "fips 140", "pin", "history"]
+relatedTools: []
+relatedArticles: ["encryption-family-history", "quantum-threat-to-cryptography", "security-versus-availability"]
+category: security
+order: 149
+status: reviewed
+updated: "2026-09-03"
+---
+
+O verbete de [gestão de chaves](/glossary/key-management) deste catálogo enuncia a verdade operacional da criptografia: algoritmo quase nunca é quebrado na prática, e chave é copiada, comitada em repositório e nunca rotacionada. O módulo de segurança em hardware é a resposta da indústria exatamente a isso, e ele tem cinquenta anos.
+
+## O homem
+
+**Mohamed M. Atalla** nasceu em Port Said, no Egito. No Bell Labs ele inventou o MOSFET - a estrutura de transistor sobre a qual essencialmente toda a computação moderna é construída. **A invenção foi inicialmente ignorada no Bell**, e ele se demitiu por causa disso.
+
+Foi para a Hewlett-Packard, fundou o laboratório de semicondutores dela em 1962 e o HP Labs em 1966, depois entrou na Fairchild Semiconductor em 1969 para fundar a divisão de micro-ondas e optoeletrônica, trabalhando com diodos Schottky, arseneto de gálio e diodos emissores de luz. Então deixou os semicondutores por completo e virou empreendedor em criptografia.
+
+**A mesma pessoa inventou o dispositivo que tornou a computação moderna possível e o dispositivo que protege os segredos mais valiosos dela** - e precisou sair do principal laboratório industrial de pesquisa do mundo para construir o segundo, porque ele não reconheceu o valor do primeiro.
+
+## 1972 a 1973: a Caixa Atalla
+
+Em 1972, Atalla fundou a Atalla Corporation e depositou uma patente de sistema remoto de verificação de número de identificação pessoal: cifragem aplicada para que a identificação pudesse ser digitada num lugar e verificada em outro, por enlace telefônico.
+
+No ano seguinte lançou o produto, oficialmente o sistema **Identikey** e universalmente a **Caixa Atalla** - um console leitor de cartão, dois teclados de senha para o cliente, um controlador inteligente e um pacote de interface eletrônica embutido. O cliente digitava um código secreto; o equipamento o transformava, com um microprocessador, noutro código para o caixa. Dispositivos fora de linha eram protegidos com uma chave geradora de senha impossível de adivinhar.
+
+É o primeiro módulo de segurança em hardware, e ele passou a proteger a maior parte das transações de caixa eletrônico do mundo.
+
+## O padrão que o medo produziu
+
+Eis a parte que mais diz sobre como esta indústria funciona. **Temendo que a Atalla dominasse o mercado, bancos e bandeiras de cartão começaram a trabalhar num padrão internacional.**
+
+O padrão não surgiu porque a tecnologia estava madura, nem porque um comitê identificou uma necessidade pública. Surgiu porque um grupo de instituições não queria depender de um fornecedor que estava na frente delas. Esse é um motor recorrente neste catálogo - o acordo multifonte do [artigo de transceptores](/learn/transceiver-family-history) é o mesmo instinto - e vale nomear com honestidade: **parcela relevante da interoperabilidade de que a indústria desfruta existe porque alguém teve medo de um monopólio, e não porque alguém quisesse abertura.**
+
+O IBM 3624, no fim dos anos 1970, usou processo semelhante de verificação de senha. E a Atalla foi citada como influência por funcionários da IBM que trabalharam no **Data Encryption Standard** - então o equipamento comercial e o padrão civil de cifra descritos no [artigo de cifragem](/learn/encryption-family-history) cresceram lado a lado, nas mesmas instituições, ao mesmo tempo. Na conferência da National Association of Mutual Savings Banks, em janeiro de 1976, a Atalla anunciou o Interchange Identikey, acrescentando processamento de transação on-line e segurança de rede.
+
+## O que a caixa faz, de fato
+
+Um HSM (módulo de segurança em hardware) é um equipamento endurecido e resistente a violação que gera chaves, executa operações criptográficas e guarda as chaves mais sensíveis - as chaves mestras - de modo que elas possam ser **usadas e não extraídas**.
+
+Essa única propriedade é o ponto inteiro, e é o que separa isso de cifrar um arquivo de chave. O software pede ao módulo para assinar ou decifrar; o módulo faz e devolve o resultado; o material privado nunca existe em lugar nenhum que o software consiga ler. Um atacante com controle completo do servidor consegue fazer o módulo trabalhar para ele enquanto tiver acesso, e não consegue levar a chave quando o acesso acabar.
+
+As defesas são físicas e em camadas: **evidência** de violação, com sinais visíveis e registro; **resistência** à violação, que torna a interferência difícil sem inutilizar o equipamento; e **resposta** à violação, apagando as chaves quando a intrusão é detectada. Um equipamento que apaga o próprio conteúdo ao ser aberto é um modelo de segurança diferente de tudo o mais nesta série.
+
+## Garantia, e um número que vale saber
+
+HSMs são validados contra o FIPS 140 e, em uso de pagamento, contra os requisitos do setor de cartões. O padrão define quatro níveis de segurança, e **o Nível 4, o mais alto, tinha sido alcançado por exatamente um HSM até agosto de 2018**.
+
+Esse número é a coisa mais informativa sobre a economia de garantia desta família. O nível de topo existe, está bem especificado, e quase nunca é atingido - porque o custo de provar aquele grau de resistência física excede o que quase todo comprador paga. **Garantia não é teto técnico; é preço**, e a maior parte do mercado decidiu em que ponto dessa curva vai parar.
+
+## Cargos e práticas
+
+Esta família produziu poucos papéis dedicados e um conjunto incomumente formal de práticas, porque os procedimentos em torno de um HSM costumam estar escritos em requisito de auditoria, e não em manual de operação.
+
+As **cerimônias de chave** são o artefato característico: procedimento roteirizado, testemunhado e documentado para gerar ou carregar chaves mestras, com **conhecimento fracionado** e **controle duplo**, para que ninguém sozinho jamais detenha o bastante para reconstruir coisa alguma. A prática parece teatral de fora e é resposta direta ao modo de falha que o verbete do glossário nomeia - chave vaza por pessoa, e não por matemática.
+
+As outras práticas duradouras são **autorização por quórum** para operação sensível, **backup por partes** em vez de cópias, e ensaiar a recuperação, porque um HSM que falha com chaves irrecuperáveis destrói o dado que protegia tão completamente quanto qualquer atacante. **A resposta à violação que protege a chave é também o que pode perdê-la**, e essa troca é permanente.
+
+## As empresas
+
+A Atalla Corporation virou HP Atalla e hoje é Utimaco Atalla; os módulos dela seguiram como padrão de fato em pagamentos, tratando cerca de 250 milhões de transações de cartão por dia em 2013. Os outros nomes de longa data são a Thales, que absorveu a nCipher, e a IBM, cujos coprocessadores criptográficos descendem do mesmo trabalho bancário dos anos 1970. Utimaco, Entrust, Marvell e um conjunto de especialistas completam o mercado, e todo grande provedor de nuvem hoje vende um serviço gerenciado construído sobre os mesmos componentes.
+
+## Para onde vai
+
+**A chave se mudou para o prédio de outra pessoa.** Gestão de chaves em nuvem e HSM como serviço são hoje o modelo dominante de implantação, o que resolve a carga operacional e cria a pergunta que o projeto original existia para responder: a chave não pode ser extraída, e vive numa infraestrutura que você não controla. Chaves gerenciadas pelo cliente e repositórios externos existem para estreitar isso, e o enquadramento honesto é que eles mudam em quem é preciso confiar, e não removem a necessidade de confiar.
+
+**A computação confidencial compete pelo outro lado.** Enclaves em processador protegem dado em uso sobre hardware de uso geral, o que enfraquece o argumento por uma caixa separada em algumas cargas, sem nunca igualar a garantia física dela.
+
+**A migração pós-quântica pesa mais aqui.** Equipamentos projetados para resistir a extração física por uma década em campo agora precisam suportar algoritmos novos, e atualizar firmware num dispositivo que responde a violação é problema de engenharia genuinamente difícil, e não pedido de recurso.
+
+**E a propriedade fundadora não mudou.** Todo o resto desta série foi refeito várias vezes; o HSM continua fazendo exatamente o que a Caixa Atalla fazia em 1973 - guardar um segredo num lugar onde ele pode ser usado e não levado. Cinquenta anos de computação não produziram resposta melhor para esse requisito, apenas versões mais baratas e mais numerosas da mesma.
+
+## Fontes
+
+- [Mohamed M. Atalla: nascido em Port Said, inventou o MOSFET no Bell Labs, onde a invenção foi inicialmente ignorada, levando à demissão dele; fundou o laboratório de semicondutores da HP em 1962 e o HP Labs em 1966, entrou na Fairchild em 1969, e então fundou a Atalla Corporation em 1972 e lançou o primeiro módulo de segurança em hardware, a Caixa Atalla, em 1973](https://computer.fandom.com/wiki/Mohamed_M._Atalla)
+- [Utimaco Atalla: fundada por Mohamed M. Atalla em 1972, patente norte-americana 3.938.091 de sistema remoto de verificação de senha, e módulos que eram padrão de fato do setor de cartões, protegendo cerca de 250 milhões de transações por dia em 2013](https://en.wikipedia.org/wiki/Utimaco_Atalla)
+- [Coprocessador criptográfico seguro: a Caixa Atalla comercializada em 1973 como sistema Identikey - console leitor de cartão, dois teclados de senha, controlador inteligente e interface eletrônica embutida -, protegendo dispositivos fora de linha com chave geradora de senha impossível de adivinhar](https://handwiki.org/wiki/Secure_cryptoprocessor)
+- [História da Utimaco Atalla: temendo que a Atalla dominasse o mercado, bancos e bandeiras começaram a trabalhar num padrão internacional; o IBM 3624 usou processo semelhante de verificação de senha, e a Atalla foi citada como influência por funcionários da IBM que trabalharam no Data Encryption Standard; o Interchange Identikey foi anunciado na conferência da National Association of Mutual Savings Banks em janeiro de 1976](https://handwiki.org/wiki/Company:Utimaco_Atalla)
+- [Módulo de segurança em hardware: evidência, resistência e resposta a violação como propriedades distintas, e o Nível 4 de segurança do FIPS 140 alcançado por apenas um módulo até agosto de 2018](https://computer.fandom.com/wiki/Hardware_security_module)

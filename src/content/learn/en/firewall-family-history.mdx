@@ -1,0 +1,96 @@
+---
+slug: firewall-family-history
+title: "The Firewall: Birth, Generations, and What Comes After the Perimeter"
+summary: "Nobody invented the firewall. It was argued into existence over roughly six years by people at Digital Equipment Corporation, Bell Labs and Trusted Information Systems who disagreed about almost everything except that a network needed a place to say no. This is the family history: the 1988 paper, the first product delivered on 13 June 1991, the stateful inspection patent that decided the market, the proxy camp that lost on performance and was right about inspection, the appliance, the next-generation label, and what happens to a boundary device in an estate that no longer has a boundary."
+concepts: ["firewall", "packet filter", "stateful inspection", "proxy", "ngfw", "utm", "history"]
+relatedTools: []
+relatedArticles: ["ssl-forward-proxy-interception", "network-segmentation-from-vlans-to-microsegmentation", "security-versus-availability", "tcp-proxy-layer-4"]
+category: security
+order: 140
+status: reviewed
+updated: "2026-09-03"
+---
+
+Almost every technology in this catalogue has a moment somebody can point at. The firewall does not. It was argued into existence over about six years, by several groups who disagreed on nearly everything except that a network needed a place where the answer could be no, and the disagreement between them is still visible in the products sold today.
+
+## The name arrived before the thing
+
+The word is borrowed from building construction, where a firewall is a barrier that stops fire spreading between parts of a structure. Its first appearance in a computing context in popular culture was the 1983 film *WarGames*. Steven Bellovin is generally credited with introducing the term to the field while working with Bill Cheswick at Bell Labs - and both have denied inventing it, which is a fair summary of the whole attribution problem.
+
+Bellovin also produced the best definition anyone has managed. A firewall, he said, is a barrier between us and them for arbitrary values of them. Every argument about where to place one, and every later claim that the perimeter is dead, is really an argument about who counts as *them* this year.
+
+## Birth: 1988 to 1991
+
+The first paper describing network packet filtering was published by **Digital Equipment Corporation** in 1988, out of work by **Jeff Mogul**, **Brian Reid** and **Paul Vixie** around the `gatekeeper.dec.com` gateway and Mogul's `screend` software. The idea itself was not exotic - routers already carried access lists - but writing down that filtering was a security function rather than a traffic-management convenience is what started the field.
+
+At Bell Labs between 1989 and 1990, **David Presotto** and colleagues built circuit-level gateways, and Cheswick and Bellovin experimented with circuit relays in 1991. A circuit gateway relays a connection rather than examining each packet, which was the first move away from judging traffic one packet at a time.
+
+The first commercial firewall was configured and delivered to its first customer, a large chemical company, on **13 June 1991**. In the following months **Marcus Ranum** at Digital invented security proxies and rewrote much of the rest of the code, and the product became **DEC SEAL** - Secure External Access Link, named by Geoff Mulligan.
+
+Its architecture is worth knowing because it settled the shape of everything after: an external bastion called Gatekeeper, the only machine the internet was allowed to talk to; a filtering gateway called Gate; and an internal mail hub. **The first commercial firewall was a hybrid** - proxies on one box, packet filtering on another - and hybrid is what firewalls have been ever since, whatever the marketing says.
+
+## The argument that decided the market
+
+Two camps formed, and the fight between them was fought on performance, protocol support and security.
+
+The **proxy** camp held that a device should understand what it forwards. Ranum, Wei Xu and Peter Churchyard built the **Firewall Toolkit** at Trusted Information Systems under a DARPA contract and released it freely under licence in October 1993; **TIS Gauntlet** followed as a product, alongside **Secure Computing's Sidewinder**. A proxy terminates the client connection and opens its own, which means it can enforce protocol correctness - and costs two TCP connections per session and the processing that implies.
+
+The **stateful inspection** camp held that a device should remember connections without terminating them. **Gil Shwed** filed the United States patent for stateful inspection in 1993, and with **Nir Zuk** built **FireWall-1** at Check Point - the first widely adopted, genuinely usable firewall product.
+
+Stateful inspection won, decisively, and the reason was performance rather than security. It was far faster than proxying, it needed no new code for each protocol, and it arrived with a graphical policy editor at a moment when the alternative was editing configuration by hand. The proxy camp's argument - that you cannot enforce what you do not parse - was correct and lost anyway, which is one of the most repeated patterns in this industry: the better-defended position loses to the one that ships.
+
+That argument then returned, twice. Deep packet inspection and next-generation firewalls are the proxy camp's position reimplemented at speed, and [outbound TLS interception](/learn/ssl-forward-proxy-interception) is a proxy in everything but name.
+
+## The generations, and who named them
+
+- **Static packet filtering**, from 1988. Addresses, protocol, ports, each packet judged alone. Fast, cheap, and unable to tell a reply from an unsolicited packet.
+- **Circuit gateways**, 1989 onward. Relay the connection rather than the packet.
+- **Application proxies**, from DEC SEAL in 1991 and Gauntlet from 1994. Understand the protocol; pay for it.
+- **Stateful inspection**, patented 1993, shipped in FireWall-1 in 1994. Remember the connection, judge the flow.
+- **The appliance.** Zuk went on to **NetScreen**, where the firewall stopped being software on a general-purpose server and became a purpose-built box - a change in how the thing was bought and operated more than in what it did.
+- **Unified threat management**, a term coined by IDC in 2004 for a single box also doing antivirus, filtering, intrusion prevention and virtual private networking. It was an answer to purchasing complexity as much as to threats.
+- **Next-generation firewall**, a category Gartner introduced in **2009**: application awareness, user identity, and integrated intrusion prevention. Note that a market analyst named this generation, not an engineer. By that point the naming of firewall categories had moved from the people building them to the people selling and rating them.
+
+## The people, and the honest attribution
+
+Ask who invented the firewall and the accurate answer is a list: Jeff Mogul, Paul Vixie, Brian Reid, William Cheswick, Steven Bellovin, David Presotto, Marcus Ranum, David Pensak, Nir Zuk, Fred Avolio, Brent Chapman, Gil Shwed, and others. Ranum's own comment is the useful one - there were many people involved, and the idea was floating around.
+
+The rough division most practitioners accept: Cheswick and Bellovin fathered the concept of denying everything not specifically allowed; Ranum fathered the first product, the free toolkit and Gauntlet; Presotto and colleagues added the state idea; Shwed patented and productised stateful inspection; and Zuk fathered the firewall appliance.
+
+That untidiness is worth preserving rather than smoothing. A technology this central to a profession has no inventor, no eureka, and no clean date - and the people involved are the first to say so.
+
+## What it did to jobs and practices
+
+The firewall created a role. Someone had to own the rule base, and that person became the **firewall administrator** - a job that in most organisations later widened into [network security engineer](/roles/network-security-engineer) and, in larger ones, split into policy, operations and audit.
+
+It also created practices that outlived it. **Change control** for security devices exists because a bad rule takes down a business unit instantly. **Rule review** exists because rule bases accumulate and nothing removes anything. **The exception register** exists because every organisation has traffic it cannot justify and cannot block. An entire software category - firewall policy management, sold by AlgoSec, Tufin and FireMon - exists solely because nobody can read a decade-old rule base and say what it does.
+
+And it created a habit of mind that has been harder to retire than the hardware: the assumption that there is an inside and an outside, and that the interesting decisions happen where they meet.
+
+## The companies, then and now
+
+The early market was Check Point with FireWall-1, TIS with Gauntlet, Secure Computing with Sidewinder, Cisco with access lists on routers it was already selling, and Digital, whose product started it all and whose company did not survive the decade.
+
+The current market is Palo Alto Networks - founded by Zuk, who wrote FireWall-1's early code - along with Fortinet, Check Point still, Cisco, Juniper by way of its NetScreen acquisition, Sophos, WatchGuard, and the cloud providers whose security groups are packet filters with a billing relationship attached. Below all of them sit `iptables`, `nftables`, `pf` and now eBPF-based filtering, doing the same work for free on nearly every server in existence.
+
+## Where it is going
+
+Four pressures are reshaping this family, and none of them is a product.
+
+**The boundary is dissolving.** Cloud, remote work and machine-to-machine traffic mean most connections never cross the perimeter the firewall guards. The function did not become useless - it multiplied and moved into hosts, hypervisors, service meshes and cloud policy engines. That migration is what [segmentation and zero trust](/learn/network-segmentation-from-vlans-to-microsegmentation) actually describe.
+
+**Encryption is closing the window.** TLS 1.3, encrypted client hello and QUIC leave a network device progressively less to read, and interception is losing ground for reasons no configuration can fix. Inspection is moving to the endpoint, where the plaintext is.
+
+**Identity is becoming the control.** A rule that says which *service* may reach which *service*, authenticated cryptographically, is a stronger statement than one about addresses - and addresses stopped identifying workloads reliably some time ago.
+
+**The policy is becoming the product.** When enforcement points are everywhere, the scarce thing is a coherent statement of intent that can be pushed to all of them and audited afterwards. That is where the interesting work now sits.
+
+The warning worth ending on is the oldest one in the field, and it was written by the people who wrote the first book about firewalls. In many of the access arrangements Cheswick and Bellovin studied, the only secure component was the firewall itself - which attackers simply went around, to reach the machines it was supposed to protect. Everything since has been an argument about how to stop being that estate.
+
+## Sources
+
+- [Who Invented the Firewall - Dark Reading, on the DEC, Bell Labs and TIS lineage and the attribution problem](https://www.darkreading.com/cybersecurity-analytics/who-invented-the-firewall-)
+- [Fred Avolio, Firewalls and Internet Security: the first commercial firewall delivered 13 June 1991, and the SEAL architecture](https://avolio.com/fw2hundred/)
+- [Palo Alto Networks on the history of firewalls, and the list of contributors](https://www.paloaltonetworks.com/cyberpedia/history-of-firewalls)
+- [Application firewall - the Firewall Toolkit released under licence in October 1993 by Ranum, Wei Xu and Peter Churchyard](https://en.wikipedia.org/wiki/Application_firewall)
+- [FireMon, A Practical History of the Firewall: stateful inspection against proxies on performance, protocol support and security](https://www.firemon.com/blog/a-practical-history-of-the-firewall-part-1-early-days)

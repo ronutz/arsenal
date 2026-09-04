@@ -1,0 +1,86 @@
+---
+slug: pki-family-history
+title: "PKI: An Undergraduate Thesis, and a Trust Model Nobody Would Design Today"
+summary: "In May 1978 an MIT undergraduate wrote a thesis that named the certificate, named the revocation list, and laid out the structure the web still runs on. What grew around it is a trust model that no one would propose from scratch: roughly a hundred trusted issuers, any of which can vouch for any name on the internet, with the weakest setting the strength for everyone. This is the family history - Kohnfelder in 1978, X.509 in 1988, the compromises of 2011, Certificate Transparency as the fix, and a price that fell from hundreds of dollars to nothing."
+concepts: ["pki", "certificate", "x.509", "certificate authority", "certificate transparency", "history"]
+relatedTools: []
+relatedArticles: ["encryption-family-history", "identity-family-history", "hsm-family-history"]
+category: security
+order: 152
+status: reviewed
+updated: "2026-09-03"
+---
+
+Public-key cryptography solved key distribution and immediately created a new problem: you can send someone a public key over an open channel, and you cannot tell whose it is.
+
+## May 1978: the thesis
+
+**Loren Kohnfelder**, an MIT undergraduate, submitted *Towards a Practical Public Key Cryptosystem* as a bachelor's thesis. It described digital certificates and what is now called public key infrastructure, and it introduced the terms **certificate** and **certificate revocation list** along with much of the conceptual apparatus still in use.
+
+Two years after Diffie and Hellman published, an undergraduate produced the structure that would carry commerce on the internet for the next fifty years. It is worth stating plainly against the assumption that foundational work requires seniority: **the piece that made public-key cryptography usable at scale was a bachelor's thesis.** Kohnfelder went on to co-create the STRIDE threat model and spent his later career at Microsoft and Google.
+
+The problem he was solving is precise. Retrieving someone's public key from a directory and verifying it meant pausing communication mid-conversation, which he described as inconvenient. A certificate removes the pause: a trusted party signs the binding between a name and a key in advance, and the relying party checks a signature instead of making a query.
+
+## 1988 to 1995: the format and the market
+
+The ITU published **X.509** in 1988, defining the certificate format. The internet profile arrived later - RFC 2459 in 1999, RFC 5280 in 2008 - and every implementation detail that gives operators trouble descends from a specification designed inside the same OSI programme as the X.500 directory in the [identity article](/learn/identity-family-history).
+
+In **1995** the first public certificate authority appeared, alongside SSLv2, and the browsers adopted a trust model that has never been redesigned since: **a list of root authorities shipped with the software, any of which may vouch for any name.**
+
+## The structural problem, stated without euphemism
+
+That model has a property nobody would choose deliberately.
+
+**Any trusted authority can issue a certificate for any domain.** Not just yours - anyone's. The security of your name therefore depends not on the authority you chose and pay, but on the weakest of the hundred-odd authorities your visitors' browsers happen to trust, in whatever jurisdictions those operate in.
+
+The failure was not hypothetical. In 2011 attackers compromised the Dutch authority **DigiNotar** and issued rogue certificates for hundreds of sites including Google. Because DigiNotar was in the trusted root stores, clients could not tell they were being intercepted - which is exactly what the model guarantees when an issuer fails.
+
+That is the sharpest version of a pattern this catalogue keeps finding: **a system where trust is distributed but not verifiable fails silently, and the failure is invisible precisely to the people it harms.**
+
+## 2013 onward: the fix was not more trust
+
+The response was not to trust the authorities harder. It was to make issuance **observable**.
+
+**Certificate Transparency**, proposed by Google after DigiNotar, is a set of append-only public logs recording every certificate issued. It does not prevent a bad certificate; it makes one impossible to issue quietly. A domain owner can watch the logs and see certificates for their own name that they never requested.
+
+That is a governance answer rather than a cryptographic one, and it sits alongside the AES competition in the [encryption article](/learn/encryption-family-history) as the second great example in this corpus of the same move: **when you cannot make a party trustworthy, make its actions public.**
+
+## The price collapse
+
+Certificates cost hundreds of dollars a year and required manual work, which had a security consequence nobody framed as one: **encryption was a budget line, so most of the web went unencrypted.**
+
+Automated issuance and free certificates removed that, and the effect was structural rather than incremental. The web went from mostly plaintext to mostly encrypted in a few years, and every consequence traced in the other articles here - inspection losing ground, detection moving to endpoints, network sensors reduced to metadata - follows from that one change in price and effort.
+
+It also changed operational practice. Certificates that renew automatically can be short-lived, and short-lived certificates make revocation - the part of Kohnfelder's design that never worked well in practice - much less important. **The industry did not fix revocation; it made expiry fast enough that revocation matters less.**
+
+## Jobs and practices
+
+This family produces no dedicated job title and an enormous amount of recurring pain, which is unusual: almost everyone in infrastructure deals with certificates, and almost nobody owns them.
+
+The practices exist because of that gap. **Inventory**, because the certificate that expires is always the one nobody knew about. **Expiry monitoring**, which every organisation implements after its first outage rather than before. **Chain validation**, because a certificate that works in a browser and fails in a client library is usually a missing intermediate rather than a bad certificate. And **private key handling**, which is where this family meets the [hardware security module](/learn/hsm-family-history) - the key that signs is the asset, and the certificate is only its public face.
+
+The most common serious outage in this family remains an expired certificate on something nobody had inventoried, which is a documentation failure wearing a cryptographic costume.
+
+## The companies
+
+VeriSign defined the commercial market and passed its authority business to Symantec, whose certificates were eventually distrusted by browsers after issuance problems - the clearest demonstration that root trust is revocable and that the browser vendors, not the authorities, hold the actual power in this system.
+
+Today it is DigiCert, Sectigo, GlobalSign and the cloud providers' own services, with **Let's Encrypt** issuing an enormous share of all public certificates for nothing. Underneath, the browser and operating system vendors run the root programmes, which makes them the real governors of internet trust without ever having been appointed to the role.
+
+## Where it goes
+
+**Lifetimes keep shrinking.** Certificate validity has fallen from years to months and continues downward, which forces automation and eliminates the manual renewal that caused most outages.
+
+**Automation is becoming mandatory rather than optional.** At the lifetimes now being adopted, no organisation can renew by hand, which quietly ends a whole category of operational practice.
+
+**Post-quantum migration lands here early.** Certificates chain, so the algorithms in them must change before the traffic does, and the transition described in the [quantum threat article](/learn/quantum-threat-to-cryptography) reaches this family first.
+
+**And the founding structure is still there.** Every improvement of the last fifteen years - transparency logs, pinning, shorter lifetimes, automated issuance - is a compensating control around a trust model designed when there were a handful of authorities and everyone knew each other. Nobody has replaced it, because replacing it would require every browser, every operating system and every server on earth to agree on something at once. The web runs on a 1978 idea and a 1995 arrangement, patched continuously, and the patches are the interesting part.
+
+## Sources
+
+- [Loren Kohnfelder: invented what is now called public key infrastructure in his May 1978 MIT bachelor's thesis, introducing the terms certificate and certificate revocation list, and co-creating the STRIDE threat model](https://en.wikipedia.org/wiki/Loren_Kohnfelder)
+- [Kohnfelder's own account: the 1978 thesis Towards a Practical Public Key Cryptosystem first described digital certificates and the foundations of public key infrastructure, followed by security work at Microsoft and Google](https://designingsecuresoftware.com/page/about/)
+- [An evaluation of X.509 certificate revocation in the web PKI ecosystem: certificates invented in 1978 by Kohnfelder in his bachelor's thesis, the 2011 DigiNotar compromise issuing rogue certificates for hundreds of sites including Google, and Certificate Transparency proposed by Google as append-only public logs in response](https://www.researchgate.net/publication/372690084_An_evaluation_of_X509_certificate_revocation_and_related_privacy_issues_in_the_Web_PKI_ecosystem)
+- [PKI timeline: the ITU X.509 public key certificate format in 1988, SSLv2 and the first public certificate authority in 1995, the browser trust model from 1996, RFC 2818 for HTTPS and RFC 2560 for the Online Certificate Status Protocol (OCSP)](https://assets.swoogo.com/uploads/5531575-686e2d74a9ef4.pdf)
+- [X.509 as the standard specifying the certificate format, described in RFC 2459 in 1999 with the current version in RFC 5280 from 2008, and the typical arrangement in which a trusted third party issues and signs the certificate](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/10609011)

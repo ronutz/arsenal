@@ -1,0 +1,88 @@
+---
+slug: observability-family-history
+title: "Observabilidade: o protocolo temporário que sobreviveu ao próprio substituto"
+summary: "Em 1988, um grupo de trabalho publicou um protocolo que fora instruído a manter simples, pensado como paliativo, autenticado por uma senha enviada em texto claro. Ele virou o jeito como o mundo observa suas redes e continua rodando. O sucessor mais seguro dele desabou sob a complexidade da própria segurança. Esta é a história da família - do SGMP e da RFC 1067 até o fracasso da versão 2 e a telemetria por fluxo - e o que ela diz sobre por que segurança ruim sobrevive."
+concepts: ["snmp", "mib", "telemetry", "monitoring", "observability", "history"]
+relatedTools: []
+relatedArticles: ["obsolescence", "ids-ips-family-history", "router-family-history"]
+category: networking
+order: 157
+status: reviewed
+updated: "2026-09-03"
+---
+
+Toda outra família deste catálogo faz algo com o tráfego. Esta apenas observa, e a restrição que a moldou é que observar não pode virar peso sobre a coisa observada.
+
+## 1987 a 1988: mantenha simples, e provisório
+
+Antes dele, cada fabricante usava protocolo proprietário para gerir o próprio equipamento, então um parque com três fabricantes precisava de três sistemas de gestão. O Internet Activities Board iniciou em 1987 o trabalho de algo padronizado.
+
+A **RFC 1067**, publicada em agosto de 1988 por **Jeffrey Case**, **Mark Fedor**, **Martin Schoffstall** e **James Davin**, definiu o Simple Network Management Protocol. Ele não era compatível com o antecessor, o Simple Gateway Monitoring Protocol, e o memorando diz por que as mudanças foram mínimas: o conselho tinha orientado os grupos de trabalho a serem **extremamente sensíveis à necessidade de manter o SNMP simples**.
+
+Dois fatos daquele documento decidem tudo o que vem depois.
+
+**Ele era para ser temporário.** A versão 1 foi pensada como solução interina, e a simplicidade e a eficácia dela a tornaram permanente.
+
+**Os agradecimentos dele são um mapa deste catálogo.** O grupo de trabalho que o moldou incluía James Davin, da **Proteon**; Anthony Chung, da **Sytek**; Ramesh Babu, da **Excelan**; Amatzia Ben-Artzi, da 3Com/**Bridge**; Phill Gross, da **MITRE**; Greg Satz, da Cisco; Marshall Rose na presidência; e Keith McCloghrie, do Wollongong Group. Quase toda empresa dessa lista tem entrada neste catálogo e a maioria não existe mais. **As empresas se dissolveram e o documento que elas escreveram continua em produção**, que é o padrão da especificação-sobrevive-ao-produto dito da forma mais direta possível.
+
+## O que ele de fato estabeleceu
+
+O protocolo é a parte pequena. O que durou foi o modelo.
+
+**O objeto gerenciado.** Equipamentos expõem uma hierarquia de valores nomeados - a base de informações de gestão - definida em notação formal, de modo que um gerente pode pedir um valor a qualquer equipamento sem saber que equipamento é. É essa a ideia que matou o problema dos três sistemas de gestão.
+
+**Consulta, e não envio.** Um gerente pergunta; o equipamento responde. Isso põe o controle da carga em quem observa e mantem o equipamento burro, o que estava certo para hardware com processador minúsculo e é a raiz de toda queixa de escala desde então.
+
+**Quatro operações e uma armadilha.** Get, get-next, set e uma notificação não solicitada. O memorando argumenta explicitamente por limitar as mensagens não solicitadas, para minimizar o tráfego gerado pela própria função de gestão.
+
+**E uma recusa deliberada.** O projeto excluiu comandos imperativos: em vez de um comando de reinício, você ajusta um valor que provoca o reinício. Gestão deve descrever estado, e não dar ordens - que é o mesmo princípio que os sistemas baseados em intenção do [artigo de SDN](/learn/sdn-family-history) redescobriram trinta anos depois.
+
+## A segurança que nunca chegou
+
+A versão 1 autenticava com uma **senha de comunidade** enviada em texto claro, e a RFC 1067 era honesta ao dizer que gerir relações administrativas de forma efetiva exige autenticação de verdade.
+
+O trabalho na versão 2 começou em 1992. Ela tentou corrigir a segurança, e **as complexidades das melhorias de segurança levaram ao fim dela** - a correção fracassou por ser complicada demais para ser adotada, e a versão 1 ficou. A versão 3 acabou entregando um modelo de segurança por usuário, e a essa altura uma geração de equipamentos, ferramentas e hábitos já tinha sido construída em volta da versão que não tinha nenhuma.
+
+Este é o caso mais claro do corpus para o mecanismo nomeado no [artigo de obsolescência](/learn/obsolescence): **o custo de substituir excedeu o risco percebido, então uma fraqueza conhecida rodou por décadas**. A senha de comunidade persistiu não porque alguém a defendesse, e sim porque tudo já funcionava, a exposição era em boa medida interna, e o substituto era mais difícil que o problema.
+
+O único ponto em que ela foi punida foi amplificação. Um protocolo que responde a uma pergunta pequena com uma resposta grande, sobre transporte sem conexão que permite origem forjada, é presente para quem monta ataque de negação de serviço - e foi isso que finalmente moveu os operadores, mais que o argumento de autenticação jamais moveu.
+
+## De consulta a fluxo
+
+Consultar degrada de um jeito específico: para ver um equipamento com mais frequência, você pergunta mais vezes, e a carga de quem observa cresce com o produto de equipamentos, métricas e frequência. Em escala de parque, aquilo para de funcionar.
+
+A **telemetria por fluxo** inverte. O equipamento empurra dados estruturados continuamente para um coletor, no ritmo dele, em formato definido. Isso move o custo para o equipamento que tem a informação, remove o intervalo como limite de resolução, e transforma monitoração num problema de tubulação de dados, e não de consulta.
+
+**Registros, métricas e rastros** viraram o enquadramento padrão, com o rastreamento vindo de sistemas distribuídos, e não de redes - porque quando uma requisição atravessa quarenta serviços, saber que cada um está saudável não diz nada sobre por que a requisição foi lenta.
+
+A própria palavra **observabilidade** marca a virada, e a distinção que ela carrega vale ser dita com exatidão: monitoração responde a perguntas que você pensou de antemão, e observabilidade é a alegação de que dá para fazer perguntas novas depois. Se uma implantação entrega isso é questão de retenção de dado e cardinalidade, e não de nome de produto.
+
+## Cargos e práticas
+
+Esta família criou o centro de operações de rede e a disciplina de observar, e as práticas dela são moldadas por um problema permanente: **sempre há mais dado disponível do que alguém consegue olhar**.
+
+**Linha de base**, porque um número não significa nada sem saber qual era o normal. **Limiares e a futilidade deles**, já que limiar estático é ou ruidoso ou cego, e em geral os dois em horários diferentes. **Correlação**, que existe porque uma falha produz cinquenta alarmes e quem opera precisa da causa, e não do censo. E **o roteiro anexado ao alerta**, que é a diferença entre sistema de monitoração e sistema de paginação.
+
+A patologia que a define é a mesma que o [artigo de detecção de intrusão](/learn/ids-ips-family-history) nomeia: volume de alerta excedendo a atenção humana. As duas famílias descobriram de forma independente que **a restrição não é a detecção, e sim quem lê a saída** - e as duas responderam construindo camadas de correlação por cima, em vez de gerar menos.
+
+## As empresas
+
+O protocolo veio de universidades e redes de pesquisa e foi dado a todo mundo. A camada comercial acima dele girou continuamente: os grandes arcabouços de gestão dos anos 1990, a linhagem aberta de Nagios, Cacti, Zabbix e sucessores, as plataformas de métricas construídas sobre bancos de séries temporais, e os fabricantes de observabilidade vendendo ingestão por gigabyte - que é o modelo de negócio atual e a queixa atual.
+
+## Para onde vai
+
+**O modelo de custo virou a restrição de projeto.** Quando observabilidade é cobrada por volume, decidir o que NÃO coletar é decisão de engenharia com orçamento anexado, e amostragem deixa de ser compromisso técnico e vira compromisso financeiro.
+
+**Instrumentação aberta está vencendo.** Padrões de instrumentação neutros em relação a fabricante significam que a aplicação é instrumentada uma vez e o backend é substituível, o que é a primeira vez na história desta família em que o dado não fica cativo da ferramenta que o coleta.
+
+**A análise está migrando para o coletor.** Detectar anomalia na tubulação em vez de num painel é a mesma migração que as famílias de segurança fizeram, e esbarra na mesma pergunta: que fração do que é sinalizado alguém trata.
+
+**E a troca fundadora não mudou.** Case e os coautores foram instruídos a manter simples e mantiveram, e simplicidade é por que aquilo se espalhou e por que a segurança dele levou quinze anos para chegar. Toda geração desta família desde então enfrentou a mesma escolha entre ser fácil o bastante para implantar em toda parte e ser boa o bastante para confiar, e o registro histórico daqui diz qual das duas vence.
+
+## Fontes
+
+- [RFC 1067, A Simple Network Management Protocol, agosto de 1988, por Case, Fedor, Schoffstall e Davin - incompatível com o Simple Gateway Monitoring Protocol, com mudanças mínimas conforme a orientação do conselho de que os grupos de trabalho fossem extremamente sensíveis à necessidade de manter o SNMP simples, e com os agradecimentos nomeando Davin da Proteon, Chung da Sytek, Babu da Excelan, Ben-Artzi da 3Com/Bridge, Gross da MITRE e Satz da Cisco](https://www.ietf.org/rfc/rfc1067.txt)
+- [Arquitetura da RFC 1067: limitar mensagens não solicitadas para minimizar o tráfego gerado pela própria função de gestão, a exclusão deliberada de comandos imperativos em favor de ajustar valores de parâmetro, e o reconhecimento de que gestão efetiva exige serviços de autenticação de verdade](https://www.rfc-editor.org/info/rfc1067/)
+- [O Internet Activities Board iniciando o desenvolvimento do SNMP em 1987 para substituir protocolos proprietários por fabricante; a versão 1 publicada em 1988 como RFC 1067 e pensada como solução temporária, tornada permanente pela simplicidade e pela eficácia](https://www.networkacademy.io/ccna/network-services/simple-network-management-protocol-snmp)
+- [O SNMPv1 definindo quatro operações de protocolo e usando autenticação simples por senha de comunidade, com objetos organizados numa base hierárquica de informações de gestão](https://fydus.co.uk/history-and-development-of-snmp-simple-network-management-protocol/)
+- [SANS sobre senhas de comunidade padrão: a versão 1 continuou sendo a mais implementada; o trabalho na versão 2 começou em 1992 e foi adotado em 1993, e as complexidades das melhorias de segurança levaram ao fim dela](https://www.giac.org/paper/gcih/44/default-snmp-community-strings-set-public-private/100366)

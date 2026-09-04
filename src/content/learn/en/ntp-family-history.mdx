@@ -1,0 +1,78 @@
+---
+slug: ntp-family-history
+title: "Time: The Dependency Nobody Lists"
+summary: "One man designed both the first modern software router and the protocol that keeps the internet's clocks, and fragments of the code written for it in 1985 are still running. Time appears in no architecture diagram and sits underneath certificates, tickets, logs, one-time codes and half the security controls in this catalogue. This is the family history of NTP - the Fuzzball, RFC 958, leap seconds specified from the very first document, and the debug command that became a weapon."
+concepts: ["ntp", "time synchronisation", "leap second", "fuzzball", "nts", "history"]
+relatedTools: []
+relatedArticles: ["observability-family-history", "pki-family-history", "identity-family-history"]
+category: networking
+order: 158
+status: reviewed
+updated: "2026-09-03"
+---
+
+Time is in no architecture diagram. It is underneath certificate validity, Kerberos tickets, log correlation, one-time codes, cache expiry and distributed consensus - and it is the only dependency in this catalogue that fails silently in every direction at once.
+
+## The man who built two foundations
+
+**David L. Mills** (1938 to 17 January 2024) taught at Maryland, worked at COMSAT on early internet protocols and then at Linkabit, and joined the University of Delaware in 1986. He is known for two things, and the second is usually left out of the first's telling.
+
+He designed the **Network Time Protocol**. He also invented the **Fuzzball** - described as the first modern software router, and the machine on which much of the early internet was prototyped.
+
+That makes him the second person in this catalogue to have built two foundations of the field, after Mohamed Atalla, who invented the MOSFET and then the [hardware security module](/learn/hsm-family-history). **The pattern is worth noticing: the people who produce more than one foundational thing tend to be the ones who build their own instruments**, because a person who has made the tools sees problems the users of those tools cannot.
+
+## 1985: the specification, and the code that never left
+
+NTP version 0 was implemented in 1985, in the Fuzzball by Mills himself and in Unix by **Louis Mamakos** and **Michael Petry** at the University of Maryland. **Fragments of their code survive in the software running today.**
+
+That sentence is the strongest longevity claim in this entire corpus. Not the design, not the protocol - the actual code, written in 1985, still present four decades later in software synchronising billions of devices.
+
+**RFC 958**, September 1985, is the first formal specification. Mills is candid in his own history that it did little more than document the packet header and the offset and delay calculations - which are still the ones used. The accuracy achievable on an Ethernet of the era was in the low tens of milliseconds, and on transatlantic paths jitter could exceed a full second.
+
+The mechanism it documented has not needed replacing: **four timestamps in one exchange** yield both the offset between two clocks and the round-trip delay, letting a client steer its own clock gently rather than jumping it. Steering rather than jumping is the entire operational philosophy of this family - a clock that leaps backwards breaks assumptions everywhere above it.
+
+## Leap seconds were in the first document
+
+RFC 958 has a section on leap seconds. **The very first specification of network time already dealt with the messiest part of civil timekeeping**, because Mills understood from the start that the protocol had to carry a discontinuity that astronomy imposes and computing cannot absorb.
+
+The industry broke on it anyway. The 2012 leap second produced kernel and runtime failures across large fleets, and the eventual mainstream answer - smearing the extra second across hours rather than inserting it - is an admission that a great deal of software cannot survive a second that does not exist in its model of time.
+
+## The debug command that became a weapon
+
+Around 2013 and 2014, NTP servers were used for large reflection and amplification attacks, chiefly through the legacy `monlist` command, which returns a long list of recent clients in response to a short query.
+
+The shape is exactly the one the [observability article](/learn/observability-family-history) records for SNMP: **a convenience feature, on a connectionless protocol that permits forged source addresses, turns any public server into an amplifier.** Neither protocol was careless; both were designed in an era when the network was not adversarial, and both were punished for the same structural reason decades later.
+
+The response was safer defaults, response rate limiting and the retirement of brittle features - and, as one account puts it, time servers stopped being background appliances and became internet-exposed services requiring active stewardship. **Network Time Security** later supplied the cryptographic answer to spoofing and on-path tampering.
+
+## Scale, and who was actually maintaining it
+
+Mills's 1997 survey found more than 185,000 client-server associations across over 38,000 servers and clients, and noted that this was only a fraction, since many thousands sit behind firewalls where the measurement tools cannot reach.
+
+Against that scale, the maintenance was carried for decades by a very small number of people - Mills himself, then **Harlan Stenn** and the Network Time Foundation. A protocol underneath essentially all of computing, sustained by a handful of maintainers and intermittent funding, is the clearest single example of a pattern the industry only started naming recently: **critical infrastructure whose bus factor is embarrassing, and whose cost is invisible precisely because it works.**
+
+## The jobs and the practices
+
+There is no time engineer. Everyone depends on this and nobody owns it, which is why its failures are so consistently misdiagnosed.
+
+Its practices are few and unusually load-bearing. **Same source, everywhere** - hosts, network devices, hypervisors and appliances agreeing on one hierarchy, because correlation across systems with different clocks is guesswork. **Monitor the offset, not just reachability**, since a reachable server serving wrong time is worse than an unreachable one. **Stratum discipline**, so the topology of trust is deliberate rather than accidental. And **UTC everywhere in logs**, with local time as a display choice, which is the single cheapest decision anyone makes in this area and the one most often skipped.
+
+The diagnostic value is out of all proportion to the effort. Certificates that fail validation, Kerberos tickets rejected for skew, one-time codes that never match, distributed jobs running twice, logs that cannot be correlated - all present as separate faults and are frequently one clock.
+
+## Where it goes
+
+**Precision is becoming a product requirement.** Financial regulation demands demonstrable timestamp accuracy, and distributed databases use tightly bounded clock error to order transactions - which turns time from an assumption into a measured, audited input.
+
+**The alternatives are more demanding, not simpler.** Hardware-assisted schemes achieve far better than NTP by putting timestamps close to the wire, at the cost of needing support in every device along the path.
+
+**Authentication is finally arriving.** Network Time Security does for time what the security retrofits did for routing and naming - and, as with those, adoption is gated by the fact that the party doing the work is rarely the party that benefits.
+
+**And the founding property holds.** Four timestamps, a gentle correction and a hierarchy of sources. It was written by one man in 1985, alongside the software router he also built, and some of the original code is still executing. **Almost nothing in this catalogue has been replaced less** - which is what happens when a design gets the physics right the first time and asks nothing of anyone else to keep working.
+
+## Sources
+
+- [RFC 958, Network Time Protocol, D.L. Mills, M/A-COM Linkabit, September 1985 - built on the User Datagram Protocol, with a section on leap seconds in the original specification](https://www.rfc-editor.org/info/rfc958/)
+- [Mills, A Brief History of NTP Time: version 0 implemented in 1985 in the Fuzzball by Mills and in Unix by Louis Mamakos and Michael Petry at Maryland, with fragments of their code surviving in the software running today; accuracy in the low tens of milliseconds on Ethernet and transatlantic jitter over a second; the 1997 survey finding over 185,000 associations across more than 38,000 servers and clients](https://www.ntp.org/reflib/papers/history.pdf)
+- [David L. Mills, 1938 to 17 January 2024: developer of NTP and inventor of the Fuzzball, the first modern software router; Maryland, COMSAT, Linkabit and the University of Delaware from 1986; version 2 in RFC 1119 adding authentication, version 3 in RFC 1305, and version 4 in RFC 5905 becoming an Internet Standard](https://grokipedia.com/page/David_L._Mills)
+- [NTP for engineers: the four-timestamp exchange yielding offset and delay, the reflection and amplification attacks of 2013-2014 via the legacy monlist command pushing safer defaults and rate limiting, time servers becoming internet-exposed services requiring active stewardship, Network Time Security as the cryptographic answer, and the 2012 leap second causing kernel and runtime failures across large fleets](https://blogs.reliablepenguin.com/2025/11/08/ntp-a-practical-introduction-for-engineers)
+- [Network Time Protocol: in operation since before 1985, one of the oldest internet protocols in current use, designed by David L. Mills of the University of Delaware, with Harlan Stenn and the Network Time Foundation continuing its development](https://en.wikipedia.org/wiki/Network_Time_Protocol)

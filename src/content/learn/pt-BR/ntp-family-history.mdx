@@ -1,0 +1,78 @@
+---
+slug: ntp-family-history
+title: "Tempo: a dependência que ninguém lista"
+summary: "Um mesmo homem projetou o primeiro roteador moderno em software e o protocolo que mantém os relógios da internet, e fragmentos do código escrito para ele em 1985 ainda estão rodando. Tempo não aparece em diagrama de arquitetura nenhum e está embaixo de certificados, tíquetes, registros, códigos de uso único e metade dos controles de segurança deste catálogo. Esta é a história da família do NTP - o Fuzzball, a RFC 958, os segundos bissextos especificados desde o primeiro documento, e o comando de depuração que virou arma."
+concepts: ["ntp", "time synchronisation", "leap second", "fuzzball", "nts", "history"]
+relatedTools: []
+relatedArticles: ["observability-family-history", "pki-family-history", "identity-family-history"]
+category: networking
+order: 158
+status: reviewed
+updated: "2026-09-03"
+---
+
+Tempo não está em diagrama de arquitetura nenhum. Ele está embaixo da validade de certificado, dos tíquetes Kerberos, da correlação de registros, dos códigos de uso único, da expiração de cache e do consenso distribuído - e é a única dependência deste catálogo que falha em silêncio em todas as direções ao mesmo tempo.
+
+## O homem que construiu duas fundações
+
+**David L. Mills** (1938 a 17 de janeiro de 2024) lecionou em Maryland, trabalhou na COMSAT com protocolos iniciais da internet e depois na Linkabit, e entrou na Universidade de Delaware em 1986. Ele é conhecido por duas coisas, e a segunda costuma ficar de fora quando se conta a primeira.
+
+Ele projetou o **Network Time Protocol**. E inventou o **Fuzzball** - descrito como o primeiro roteador moderno em software, e a máquina sobre a qual boa parte da internet inicial foi prototipada.
+
+Isso faz dele a segunda pessoa deste catálogo a ter construído duas fundações do campo, depois de Mohamed Atalla, que inventou o MOSFET e depois o [módulo de segurança em hardware](/learn/hsm-family-history). **O padrão vale ser notado: quem produz mais de uma coisa fundacional costuma ser quem constrói os próprios instrumentos**, porque quem fez a ferramenta enxerga problemas que os usuários dela não enxergam.
+
+## 1985: a especificação, e o código que nunca saiu
+
+A versão 0 do NTP foi implementada em 1985, no Fuzzball pelo próprio Mills e em Unix por **Louis Mamakos** e **Michael Petry**, na Universidade de Maryland. **Fragmentos do código deles sobrevivem no software que roda hoje.**
+
+Essa frase é a afirmação de longevidade mais forte deste corpus inteiro. Não o projeto, não o protocolo - o CÓDIGO, escrito em 1985, ainda presente quatro décadas depois em software que sincroniza bilhões de dispositivos.
+
+A **RFC 958**, de setembro de 1985, é a primeira especificação formal. Mills é franco na própria história ao dizer que ela pouco mais fez que documentar o cabeçalho do pacote e os cálculos de deslocamento e atraso - que continuam sendo os usados. A exatidão possível numa Ethernet da época ficava na casa das dezenas baixas de milissegundos, e em caminhos transatlânticos a variação podia passar de um segundo inteiro.
+
+O mecanismo que ela documentou não precisou ser substituído: **quatro carimbos de tempo numa troca** dão tanto o deslocamento entre dois relógios quanto o atraso de ida e volta, permitindo ao cliente CONDUZIR o próprio relógio com suavidade em vez de saltá-lo. Conduzir em vez de saltar é a filosofia operacional inteira desta família - um relógio que pula para trás quebra suposições em tudo o que está acima.
+
+## Segundos bissextos estavam no primeiro documento
+
+A RFC 958 tem uma seção sobre segundos bissextos. **A primeiríssima especificação de tempo em rede já tratava da parte mais bagunçada da cronometragem civil**, porque Mills entendeu desde o começo que o protocolo teria de carregar uma descontinuidade que a astronomia impõe e a computação não absorve.
+
+A indústria quebrou nisso assim mesmo. O segundo bissexto de 2012 produziu falhas de núcleo e de máquina virtual em frotas grandes, e a resposta corrente que se firmou - espalhar o segundo extra ao longo de horas em vez de inseri-lo - é admitir que muito software não sobrevive a um segundo que não existe no modelo de tempo dele.
+
+## O comando de depuração que virou arma
+
+Por volta de 2013 e 2014, servidores NTP foram usados em grandes ataques de reflexão e amplificação, principalmente pelo comando legado `monlist`, que devolve uma lista longa de clientes recentes em resposta a uma consulta curta.
+
+O formato é exatamente o que o [artigo de observabilidade](/learn/observability-family-history) registra para o SNMP: **um recurso de conveniência, sobre um protocolo sem conexão que permite origem forjada, transforma qualquer servidor público num amplificador.** Nenhum dos dois protocolos foi descuidado; os dois foram desenhados numa época em que a rede não era adversarial, e os dois foram punidos pela mesma razão estrutural décadas depois.
+
+A resposta foram padrões mais seguros, limitação de taxa de resposta e aposentadoria de recursos frágeis - e, como diz um relato, servidores de tempo deixaram de ser equipamentos de fundo e viraram serviços expostos à internet, exigindo cuidado ativo. O **Network Time Security** depois forneceu a resposta criptográfica à falsificação e à adulteração no caminho.
+
+## Escala, e quem de fato mantinha aquilo
+
+O levantamento de Mills em 1997 achou mais de 185 mil associações cliente-servidor em mais de 38 mil servidores e clientes, e observou que aquilo era só uma fração, já que muitos milhares ficam atrás de firewalls onde as ferramentas de medição não chegam.
+
+Contra essa escala, a manutenção foi carregada por décadas por pouquíssimas pessoas - o próprio Mills, depois **Harlan Stenn** e a Network Time Foundation. Um protocolo embaixo de essencialmente toda a computação, sustentado por um punhado de mantenedores e financiamento intermitente, é o exemplo mais claro de um padrão que a indústria só começou a nomear há pouco: **infraestrutura crítica com fator de ônibus constrangedor, e cujo custo é invisível justamente porque ela funciona.**
+
+## Os cargos e as práticas
+
+Não existe engenheiro de tempo. Todo mundo depende disso e ninguém é dono, e é por isso que as falhas dele são tão consistentemente mal diagnosticadas.
+
+As práticas são poucas e incomumente estruturais. **A mesma fonte, em toda parte** - hosts, equipamentos de rede, hipervisores e appliances concordando com uma hierarquia, porque correlacionar entre sistemas com relógios diferentes é chute. **Monitorar o deslocamento, e não só a alcançabilidade**, já que servidor alcançável servindo hora errada é pior que servidor inalcançável. **Disciplina de estrato**, para que a topologia de confiança seja deliberada, e não acidental. E **UTC em todo registro**, com hora local como escolha de exibição, que é a decisão mais barata que alguém toma nesta área e a mais pulada.
+
+O valor diagnóstico é desproporcional ao esforço. Certificado que falha na validação, tíquete Kerberos recusado por desvio, código de uso único que nunca bate, tarefa distribuída rodando duas vezes, registro que não correlaciona - tudo se apresenta como falha separada e frequentemente é um relógio só.
+
+## Para onde vai
+
+**Precisão está virando requisito de produto.** Regulação financeira exige exatidão demonstrável de carimbo de tempo, e bancos de dados distribuídos usam erro de relógio estritamente limitado para ordenar transações - o que transforma tempo de suposição em insumo medido e auditado.
+
+**As alternativas são mais exigentes, e não mais simples.** Esquemas assistidos por hardware alcançam muito mais que o NTP pondo os carimbos perto do fio, ao custo de exigir suporte em todo equipamento do caminho.
+
+**Autenticação finalmente está chegando.** O Network Time Security faz pelo tempo o que os remendos de segurança fizeram pelo roteamento e pela nomeação - e, como neles, a adoção é limitada pelo fato de que quem faz o trabalho raramente é quem colhe o benefício.
+
+**E a propriedade fundadora se sustenta.** Quatro carimbos de tempo, uma correção suave e uma hierarquia de fontes. Foi escrita por um homem em 1985, ao lado do roteador em software que ele também construiu, e parte do código original ainda está executando. **Quase nada neste catálogo foi menos substituído** - que é o que acontece quando um projeto acerta a física de primeira e não exige nada de mais ninguém para continuar funcionando.
+
+## Fontes
+
+- [RFC 958, Network Time Protocol, D.L. Mills, M/A-COM Linkabit, setembro de 1985 - construída sobre o User Datagram Protocol, com uma seção sobre segundos bissextos já na especificação original](https://www.rfc-editor.org/info/rfc958/)
+- [Mills, A Brief History of NTP Time: a versão 0 implementada em 1985 no Fuzzball por Mills e em Unix por Louis Mamakos e Michael Petry, em Maryland, com fragmentos do código deles sobrevivendo no software que roda hoje; exatidão na casa das dezenas baixas de milissegundos em Ethernet e variação transatlântica acima de um segundo; o levantamento de 1997 achando mais de 185 mil associações em mais de 38 mil servidores e clientes](https://www.ntp.org/reflib/papers/history.pdf)
+- [David L. Mills, 1938 a 17 de janeiro de 2024: criador do NTP e inventor do Fuzzball, o primeiro roteador moderno em software; Maryland, COMSAT, Linkabit e a Universidade de Delaware a partir de 1986; a versão 2 na RFC 1119 acrescentando autenticação, a versão 3 na RFC 1305, e a versão 4 na RFC 5905 virando Padrão da Internet](https://grokipedia.com/page/David_L._Mills)
+- [NTP para engenheiros: a troca de quatro carimbos dando deslocamento e atraso, os ataques de reflexão e amplificação de 2013-2014 pelo comando legado monlist levando a padrões mais seguros e limitação de taxa, servidores de tempo virando serviços expostos à internet que exigem cuidado ativo, o Network Time Security como resposta criptográfica, e o segundo bissexto de 2012 causando falhas de núcleo e de execução em frotas grandes](https://blogs.reliablepenguin.com/2025/11/08/ntp-a-practical-introduction-for-engineers)
+- [Network Time Protocol: em operação desde antes de 1985, um dos protocolos mais antigos da internet ainda em uso, projetado por David L. Mills, da Universidade de Delaware, com Harlan Stenn e a Network Time Foundation seguindo o desenvolvimento](https://en.wikipedia.org/wiki/Network_Time_Protocol)

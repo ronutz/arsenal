@@ -1,0 +1,88 @@
+---
+slug: network-scopes-family-history
+title: "Local, longa distância, e as palavras que deixaram de significar distância"
+summary: "A distinção entre rede local e rede de longa distância nunca foi realmente sobre geografia. Era sobre quem era dono do enlace e quanto custava mover um byte, e todo protocolo escrito antes de mais ou menos 1995 codifica uma suposição sobre de que lado dessa linha ele iria rodar. Esta é a história da família do escopo de rede - por que as categorias foram inventadas, por que VLANs e sobreposições as quebraram, e por que uma indústria que passou trinta anos insistindo que o perímetro era um lugar hoje usa a palavra local para dizer confiável."
+concepts: ["lan", "wan", "man", "wlan", "vlan", "overlay", "history"]
+relatedTools: []
+relatedArticles: ["bridge-switch-family-history", "router-family-history", "sdn-family-history", "identity-family-history"]
+category: networking
+order: 161
+status: reviewed
+updated: "2026-09-04"
+---
+
+Quase todo curso de redes abre com o mesmo diagrama: local, metropolitana, longa distância, desenhadas como círculos concêntricos de tamanho crescente. É recurso didático razoável e descrição ruim do que as palavras um dia significaram.
+
+## A distinção era econômica, e não geográfica
+
+Rede local é aquela em que **o cabo é seu**. Esse único fato produz todo o resto: banda não custa nada por byte, a latência é pequena o bastante para ignorar, e dá para acrescentar capacidade comprando equipamento em vez de renegociar contrato.
+
+Rede de longa distância é aquela em que **outra pessoa é dona do circuito e cobra por ele**. A banda é tarifada, a latência é fixada pela geografia e pela velocidade da luz, e uma falha pode acontecer dentro de infraestrutura que você não tem permissão de inspecionar.
+
+A metropolitana fica entre as duas porque a economia dela fica: uma universidade ou um grupo hospitalar com fibra pela cidade tem um enlace que não é de graça nem cobrado por byte.
+
+**Todo protocolo carrega uma suposição sobre de que lado dessa linha vai rodar.** Protocolo tagarela, que pergunta e espera, era ótimo num andar e desastroso sobre linha dedicada. A indústria inteira de otimização de longa distância - compressão, cache, deduplicação, aceleração de protocolo - existe porque software escrito para um lado da linha foi implantado no outro.
+
+## Para que as categorias serviam de fato
+
+Escopo nunca foi só descrição. Era **fronteira administrativa**, e é essa a parte que importava na prática.
+
+Dentro da rede local havia um dono, um plano de endereçamento, um conjunto de políticas e um time para chamar. Numa longa distância havia contratos, pontos de demarcação, janelas de mudança de terceiros e uma relação de suporte. Modelos de segurança foram construídos sobre essa divisão sem ninguém decidir: **dentro era confiável porque dentro era ADMINISTRADO, e não porque fosse seguro.**
+
+Essa suposição sobreviveu décadas porque era em boa medida verdadeira, e produziu o modelo de perímetro que o [artigo de firewall](/learn/firewall-family-history) traça do outro lado.
+
+## 1998: a primeira palavra a perder o sentido
+
+A rede local virtual, padronizada como 802.1Q, fez um comutador físico apresentar várias redes lógicas. A partir daquele momento **local deixou de ser propriedade do fio**. Duas máquinas no mesmo rack podiam estar em redes diferentes, e duas máquinas em prédios diferentes podiam estar na mesma.
+
+É aqui que a segmentação começa como disciplina, e onde o vocabulário começa a derivar. Uma VLAN não é uma rede local menor; é a decisão de que certo tráfego deve ficar separado, expressa num equipamento que antes expressava geografia.
+
+## A sobreposição termina o serviço
+
+Então a sobreposição cortou a última ligação entre a palavra e o mundo. VXLAN, GENEVE e parentes carregam uma rede de camada 2 sobre uma roteada, de modo que um domínio de difusão pode abranger data centers em continentes diferentes.
+
+O [artigo de pontes e comutadores](/learn/bridge-switch-family-history) nota a ironia e ela cabe aqui também: Perlman identificou o erro fundador como tratar a Ethernet como *a rede*, e não como um enlace, e o data center moderno gasta esforço real de engenharia recriando exatamente essa ilusão sobre uma malha roteada - porque as aplicações seguem sendo escritas por gente que supõe que a rede é uma coisa plana.
+
+**A rede de baixo é para onde os pacotes vão e a de cima é onde está o significado**, e uma falha na primeira aparece na segunda como outra coisa completamente diferente. É esse o preço da abstração, e quem paga é quem está com o telefone de plantão.
+
+## O sem fio é a exceção que nunca coube
+
+Uma rede local sem fio é rede local no endereçamento e outra coisa inteiramente no comportamento, por uma razão que o [artigo de sem fio](/learn/wireless-family-history) traça até 1971: o comutador removeu as colisões do mundo cabeado e nada as remove do ar.
+
+Então a capacidade cai com o número de quem fala, e não com a distância. O roaming é decidido por clientes que a rede não controla. A interferência vem de vizinhos e eletrodomésticos que ninguém administra. Chamar aquilo de rede local é correto quanto ao plano de endereços e enganoso quanto a tudo que um operador precisa planejar.
+
+## Para onde as palavras foram
+
+Três pressões esvaziaram por completo o sentido geográfico.
+
+**Nuvem.** Uma sub-rede na região de um provedor é administrada por você, endereçada como rede local, e fisicamente longe de você. Ela é chamada de local porque você a controla.
+
+**Trabalho remoto.** A pessoa está em casa, a aplicação está na região de um provedor, e nenhum dos dois está dentro de coisa alguma. O tráfego que definia a longa distância - filial para matriz - hoje é minoria do que existe.
+
+**Cifragem em toda parte.** Quando o transporte é confidencial por padrão, a pergunta sobre por qual fio ele passou importa muito menos, o que remove uma das últimas razões práticas de a distinção ser estrutural.
+
+O que substituiu isso foi **identidade e política**, que é onde o [artigo de identidade](/learn/identity-family-history) e o [de SDN](/learn/sdn-family-history) desembocam. A pergunta moderna não é onde um dispositivo está, e sim o que ele é, quem o usa e o que ele pode alcançar - e confiança zero é, tirado o marketing, a admissão formal de que dentro nunca foi propriedade de segurança.
+
+## Cargos e práticas
+
+As categorias ainda organizam a profissão mesmo já não organizando a rede. Certificações são estruturadas em volta delas, times são nomeados por elas, e orçamentos são divididos ao longo da linha entre o enlace que você tem e o que você aluga.
+
+As práticas que sobrevivem são as ligadas à economia, e não à geografia. **Saber quanto custa um byte em cada caminho**, porque essa continua sendo a diferença de verdade. **Saber a quem ligar**, já que a fronteira administrativa sobreviveu à física. **Projetar para a latência que existe**, e não para a desejada, porque a velocidade da luz é a única restrição deste artigo que nunca se moveu.
+
+E a prática que vale guardar por mais tempo: **quando alguém disser local, pergunte se quer dizer próximo, barato ou confiável** - porque a palavra hoje faz os três trabalhos e a resposta muda o projeto.
+
+## Para onde vai
+
+**Escopo está virando rótulo de política.** Os sistemas cada vez mais descrevem alcançabilidade em termos de identidade de carga e de intenção, com o caminho físico como detalhe de implementação que o operador nunca nomeia.
+
+**A economia está convergindo, e não se igualando.** Cobrança de tráfego entre regiões mantém viva uma versão do velho cálculo de longa distância dentro da nuvem, então a distinção que começou com linha dedicada sobrevive como taxa de saída.
+
+**E uma coisa de fato não mudou.** A luz continua lenta, distância continua custando milissegundos, e abstração nenhuma revogou isso. Toda arquitetura que trata um recurso remoto como se fosse local uma hora encontra uma ida e volta que não consegue esconder - que é a mesma lição que os primeiros projetistas de longa distância aprenderam, chegando por outro caminho.
+
+## Fontes
+
+- [IEEE 802, a família de padrões para redes locais e metropolitanas](https://en.wikipedia.org/wiki/IEEE_802)
+- [Rede de longa distância: rede de telecomunicações que se estende por grande área geográfica, tipicamente usando circuitos alugados de operadoras](https://en.wikipedia.org/wiki/Wide_area_network)
+- [Rede de sobreposição: rede construída sobre outra, com nós ligados por enlaces virtuais que correspondem cada um a um caminho na rede subjacente](https://en.wikipedia.org/wiki/Overlay_network)
+- [RFC 8926, Geneve: Generic Network Virtualization Encapsulation, carregando opções extensíveis em vez de cabeçalho fixo](https://www.rfc-editor.org/info/rfc8926/)
+- [Rede de campus: interconexão de redes locais numa área geográfica limitada, como uma universidade ou um campus corporativo](https://en.wikipedia.org/wiki/Campus_network)

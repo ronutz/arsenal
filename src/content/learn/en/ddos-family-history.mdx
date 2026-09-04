@@ -1,0 +1,84 @@
+---
+slug: ddos-family-history
+title: "Denial of Service: The Keynote Interrupted by Its Own Subject"
+summary: "In February 2000 Steven Bellovin was five minutes into a conference keynote on denial-of-service attacks when pagers started going off and the room emptied. The attack under way was launched by a fifteen-year-old using tools he had not written. This is the family history - Trinoo in 1999, the week that took down Yahoo, Amazon, eBay and CNN, the amplification pattern this catalogue has now documented three times, and why the only real defence is capacity nobody can afford alone."
+concepts: ["ddos", "trinoo", "amplification", "botnet", "mirai", "history"]
+relatedTools: []
+relatedArticles: ["ntp-family-history", "observability-family-history", "dns-family-history"]
+category: security
+order: 159
+status: reviewed
+updated: "2026-09-03"
+---
+
+Every other attack in this catalogue is about getting in. This one is about making sure nobody else can, and it is the only category where the defender's problem is arithmetic rather than cleverness.
+
+## 1999: the first well-documented case
+
+A denial-of-service attack from one machine is a fair fight. The **distributed** version - many machines, coordinated - turned it into something else.
+
+The first well-documented case was in 1999, when a tool called **Trinoo** was deployed on at least 227 systems, at least 114 of them on the research network Internet2, to flood a single computer at the University of Minnesota. That machine was off the air for more than two days.
+
+Read the numbers again. Two hundred and twenty-seven attacking machines against one target, and the target lost for two days. **The asymmetry that defines this family was present in the first documented case and has never improved.**
+
+Trinoo was analysed publicly by David Dittrich, and the family it belonged to - **Tribe Flood Network**, **Stacheldraht**, Trinity - was known, documented and discussed in the operational community before the famous attacks happened.
+
+## February 2000: the week, and the keynote
+
+On **7 February 2000** Yahoo was unreachable for about three hours. On the 8th, Amazon, Buy.com, CNN and eBay were hit. On the 9th, E*Trade and ZDNet. The attacker was **Michael Calce**, a fifteen-year-old in Montreal using the alias Mafiaboy, and the significant fact about him is technical rather than biographical: **he did not write the tools.** He scanned for machines with weak or default passwords, installed software other people had written, and pointed it at the largest sites on the internet.
+
+While it was happening, **Steven Bellovin** was delivering the keynote at NANOG 18 - on denial-of-service attacks. He was five minutes in when pagers went off, people grabbed laptops and ran out of the room, and he was left wondering why his audience was leaving.
+
+That is not an anecdote. It is the sharpest available statement of this family's central problem. **The community understood the threat well enough to schedule a keynote about it, and understanding did not help.** The tools were public, the mechanism was documented, the warning was literally being delivered, and a teenager with no original capability took down the commercial internet anyway.
+
+## The pattern this catalogue has now recorded three times
+
+The most efficient way to generate traffic is not to own machines - it is to borrow them by asking a question with a large answer while claiming to be somebody else.
+
+This catalogue has now documented the same shape in three separate families. **SNMP**, in the [observability article](/learn/observability-family-history), answering a small query with a large reply over a connectionless transport. **NTP**, in the [time article](/learn/ntp-family-history), through the `monlist` debug command. And memcached, which produced a 1.3 terabit attack against a code hosting platform in 2018.
+
+None of these protocols was carelessly designed. All were designed before source address forgery was a routine attack, on a network where a helpful reply to a stranger was a virtue. **The vulnerability is not in any of them individually; it is in a network that still forwards packets with forged sources**, and every amplification incident since 1999 is a bill for that unfixed property.
+
+## 2016: attacking the dependency instead of the target
+
+The Mirai botnet's attack on Dyn in 2016 changed the shape of the problem again. Around 1.2 terabits, over a day, built from consumer devices with default credentials.
+
+Two things about it matter more than the volume.
+
+**The botnet was other people's negligence.** The devices were cameras and recorders belonging to people who had no idea they were participating and no way to know. There is no patch a target can apply to an attack made of somebody else's equipment.
+
+**The victim was not the target.** Dyn ran naming for Amazon, Netflix, Twitter, PayPal, Reddit, Spotify and others; those services were not attacked and went down anyway. That is the [DNS article's](/learn/dns-family-history) argument in its most expensive form: resolution is a dependency of everything, so it is the most efficient thing to attack, and the blast radius is everyone who pointed at it.
+
+## Why defence concentrated
+
+Filtering does not help when the pipe is full. If more traffic arrives than the link can carry, the decision about what to discard has already been made by physics upstream of any device you own.
+
+The only real defence is **more capacity than the attack**, plus somewhere to put the traffic. That is not a product an enterprise can buy and install; it is a global network with more bandwidth than the attackers can muster, which perhaps a dozen organisations on earth can operate.
+
+**This is the only family in the catalogue where the defence is inherently centralising.** Firewalls, detection, identity and certificates can all be run by the organisation that needs them. Denial-of-service protection cannot, and the consequence is that the same handful of providers now sit in front of a very large share of the internet - which solves the availability problem by creating a concentration problem, and both are real.
+
+## Jobs and practices
+
+There is rarely a denial-of-service engineer, and the practices belong to whoever owns availability.
+
+**Knowing the plan before the event**, since the mitigation decision - reroute, scrub, absorb - has to be made in minutes by people who cannot deliberate. **Testing the failover**, because a mitigation path that has never carried production traffic is a hypothesis. **Origin concealment**, since protection is worthless if the attacker can reach past it to an address you published years ago. And **rate limiting your own dependencies**, because the most common self-inflicted outage in this space is a retry storm from your own clients.
+
+The uncomfortable practice is **deciding in advance what to shed**. An availability plan that assumes everything must stay up is not a plan; the useful version names which functions are dropped first and who is allowed to make that call.
+
+## Where it goes
+
+**Volumes keep growing because the botnet source keeps growing.** Consumer devices, then cloud instances, then anything with a network stack and a default password - and the recorded peaks have moved from gigabits to tens of terabits within this catalogue's timespan.
+
+**Application-layer attacks are the harder problem.** A request that looks legitimate, is expensive to serve and arrives at a modest rate defeats volumetric defence entirely, and distinguishing it from real demand is the same problem the [web application firewall](/learn/waf-family-history) and bot-management families have never fully solved.
+
+**Extortion made it a business.** What began as vandalism and demonstration is now largely commercial - attacks for hire, and attacks as a demand for payment - which changes the defender's calculation from technical to economic.
+
+**And the founding asymmetry has not moved.** In 1999 it took 227 machines to remove one from the internet for two days. The ratios today are larger in both directions, but the shape is identical: attacking is cheap, distributed and requires no original work, while defending requires capacity, coordination and money. Every improvement in this family has been an improvement in who can afford to defend, not in the balance itself.
+
+## Sources
+
+- [Defenses Against Distributed Denial of Service Attacks: the first well-documented DDoS in 1999, with Trinoo deployed on at least 227 systems including at least 114 on Internet2 to flood a single University of Minnesota computer, which was off the air for more than two days; Yahoo inaccessible for three hours on 7 February 2000, Amazon, Buy.com, CNN and eBay on the 8th, E*Trade and ZDNet on the 9th; and the tool family of Tribe Flood Network, Trinoo, Stacheldraht and Trinity](https://www.garykessler.net/library/ddos.html)
+- [Senki, The History of DDoS and DoS: Steven M. Bellovin was giving the NANOG 18 keynote on denial-of-service attacks and was five minutes in when pagers went off and people ran out of the room; David Dittrich's analysis of trinoo; the 2016 Mirai attack on Dyn reaching 1.2 terabits over more than a day, costing Dyn 14,500 domains and around 110 million dollars; and the 1.3 terabit attack on GitHub in 2018](https://www.senki.org/ddos-attack-preparation-workbook/history-of-denial-of-services-dos-attacks/)
+- [Michael Calce, known as Mafiaboy, who launched the February 2000 denial-of-service attacks against Yahoo, Fifa.com, Amazon, Dell, E*TRADE, eBay and CNN](https://en.wikipedia.org/wiki/Michael_Calce)
+- [Analysis of the 2000 attacks: Calce relied on pre-written tools shared in underground communities rather than writing malware himself, scanning for unprotected systems and exploiting weak or default passwords to deploy Tribe Flood Network or Stacheldraht](https://awjunaid.com/cyber-security/mafiaboys-moment-the-2000-denial-of-service-attacks-that-shook-the-internet/)
+- [The history and evolution of DDoS: taking root in the mid-1990s as vandalism, hacktivist protest or ego, and maturing into extortion, competitive sabotage and cover for other intrusions](https://embeddedcomputing.com/technology/security/network-security/the-history-and-evolution-of-ddos-attacks)

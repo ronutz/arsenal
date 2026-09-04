@@ -13,6 +13,14 @@ updated: "2026-07-06"
 
 Um proxy é qualquer intermediário que fica entre um cliente e um servidor e fala com cada um em nome do outro. O lugar mais baixo e útil para fazer isso é a Camada 4, a camada de transporte, onde a unidade de trabalho é uma conexão TCP em vez de uma requisição HTTP ou um registro TLS. Um proxy TCP é o full proxy mais simples que existe, e entender exatamente o que ele pode e não pode ver torna todo proxy de camada superior mais fácil de raciocinar.
 
+## Origens: o balanceador que não sabia ler
+
+O proxy de camada 4 existe porque os primeiros balanceadores tinham de funcionar sem entender nada. Nos anos 1990, um equipamento diante de uma fazenda de servidores tinha uma tarefa - distribuir conexões - e o tráfego acima do transporte era protocolo de outra pessoa. Ler aquilo teria significado implementá-lo, e implementá-lo teria significado quebrar toda vez que ele mudasse.
+
+Então o projeto se acomodou no menor compromisso possível: aceitar uma conexão, escolher um membro, abrir uma segunda conexão, e mover bytes entre as duas sem interpretar. Essa recusa a olhar é a arquitetura inteira, e é por isso que o mesmo equipamento atende um protocolo que não existia quando ele foi construído.
+
+A troca não mudou desde então. A camada 4 é rápida, agnóstica de protocolo e barata em estado; ela não consegue tomar uma decisão que dependa do que os bytes significam.
+
 ## Duas conexões, unidas
 
 O movimento que define um proxy TCP é que ele não encaminha pacotes; ele termina uma conexão e origina outra. O cliente completa um handshake TCP completo (SYN, SYN-ACK, ACK) com o proxy e acredita estar falando com o servidor. O proxy, por sua vez, completa seu próprio handshake separado com o servidor real. A partir daí o proxy repassa bytes entre os dois: ele lê de um socket e escreve no outro, nas duas direções, até que um lado feche. Isso se chama splicing de conexão ou full proxy na Camada 4.
@@ -32,6 +40,27 @@ Há uma nuance importante para o tráfego criptografado. Um proxy de Camada 4 n�
 Como o proxy origina uma conexão novinha para o servidor, o servidor vê o endereço do proxy como origem, não o do cliente. Do ponto de vista do servidor toda conexão vem do punhado de IPs do proxy. Isso normalmente é deliberado (é como funcionam o source NAT e o agrupamento de conexões) mas destrói a informação que muitos servidores mais querem: quem o cliente realmente era. Logs de acesso mostram o proxy; regras de acesso baseadas em IP veem o proxy; a geolocalização vê o proxy.
 
 Dois mecanismos trazem a identidade do cliente de volta. Na Camada 7, proxies HTTP adicionam um cabeçalho `X-Forwarded-For`, mas isso só funciona para HTTP e só depois que o payload é parseado. Na Camada 4, a resposta é o **Proxy Protocol**, um pequeno cabeçalho que o proxy prepende no início do fluxo TCP do lado servidor, antes de qualquer dado de aplicação, carregando o endereço e a porta de origem e destino originais. O servidor (se entender o Proxy Protocol) lê esse cabeçalho primeiro, registra o endereço real do cliente, e então trata o resto do fluxo normalmente. É o jeito da Camada 4 de preservar a identidade do cliente através de uma conexão que foi re-originada, e é agnóstico ao protocolo porque fica inteiramente abaixo da aplicação.
+
+## O que ela não faz, e o que as pessoas tentam mesmo assim
+
+**Não roteia por conteúdo.** Um caminho, um nome de host num cabeçalho, um cookie ou um método são todos invisíveis. Todo requisito formulado como "mande /api para este pool" é requisito de camada 7 vestido de pergunta de camada 4.
+
+**Não repete uma requisição que falhou.** Se um membro morre no meio da conexão, o proxy só consegue derrubá-la; ele não tem ideia se a requisição do cliente podia ser repetida com segurança, porque nunca analisou nenhuma.
+
+**Não inspeciona o que encaminha.** Cifrado ou não, o conteúdo é opaco por projeto - e é por isso que a camada 4 é a escolha honesta para tráfego que você decidiu não inspecionar, e a errada para tráfego que você precisa inspecionar.
+
+**Ela multiplica conexões.** Dois sockets por sessão, mantidos pela vida da sessão, o que vira uma tabela dimensionada por concorrência, e não por taxa de requisições. Conexões ociosas e longas são a causa usual de exaustão, e a correção são tempos limite que casem com a aplicação, e não o padrão de fábrica.
+
+## O problema da persistência
+
+Como não há cookie nem cabeçalho para usar de chave, a aderência na camada 4 costuma ser por endereço de origem. Isso funciona até os clientes chegarem atrás de um endereço só - um gateway corporativo, uma operadora móvel, uma implantação de [CGNAT](/learn/cgnat-address-sharing-and-attribution) (tradução de endereços de rede, ou NAT, em escala de operadora) - e então mil usuários grudam num membro, o que parece algoritmo de balanceamento quebrado e é, na verdade, o algoritmo funcionando com a informação disponível.
+
+## O cenário, por categoria
+
+- **Proxies de núcleo e de código aberto** - IPVS, HAProxy em modo TCP, NGINX stream, e os balanceadores baseados em eBPF por trás de grandes malhas de nuvem.
+- **Controladores de entrega de aplicação** - F5, Citrix, A10 e similares, em que a camada 4 é o caminho rápido e a camada 7 é a opção que se liga por servidor virtual.
+- **Balanceadores de rede em nuvem**, vendidos explicitamente pela troca da camada 4: alta vazão, baixa latência, sem consciência de conteúdo, e muitas vezes preservando o endereço do cliente, o que o produto de camada 7 não faz.
+- **Qualquer coisa fazendo passthrough de TLS**, que é camada 4 por necessidade, porque a decisão tomada foi não guardar a chave.
 
 ## Onde você encontra proxies TCP
 

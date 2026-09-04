@@ -1,0 +1,92 @@
+---
+slug: dns-family-history
+title: "DNS: A File Maintained During Business Hours"
+summary: "Before 1983, getting an address on the network meant telephoning Elizabeth Feinler at SRI, who added you to a file that staff distributed to every host a couple of times a week - during business hours, holidays excepted. Jon Postel handed the problem to a graduate student, who read the existing proposals, wrote his own, and single-authored the specification of the system that now resolves trillions of queries a day. This is the family history: the file, the design, the security that was left out, and how a naming system became the internet's most convenient point of control."
+concepts: ["dns", "hosts.txt", "mockapetris", "bind", "dnssec", "history"]
+relatedTools: []
+relatedArticles: ["identity-family-history", "pki-family-history", "choosing-a-public-dns-resolver"]
+category: networking
+order: 153
+status: reviewed
+updated: "2026-09-03"
+---
+
+The internet's naming system began as a text file, and the constraint that killed the file is the most human one in this entire catalogue.
+
+## Before: a phone call and a text file
+
+**Elizabeth Feinler** and her team at SRI's Network Information Center maintained **HOSTS.TXT**, a central file mapping names to addresses. To get on the network you contacted the NIC, they added you, and staff distributed the updated file to every host a couple of times a week.
+
+The system worked and had a limit nobody could engineer around: **Feinler and her colleagues worked business hours and took holidays.** A network that needs to be always available cannot have a naming system that closes at five o'clock. That is a fine work-life balance and an impossible operational model, and it is the clearest example in this catalogue of a technical architecture being forced by a human constraint rather than a computational one.
+
+The other limit was arithmetic. Every new host meant a manual edit and a full redistribution, so the cost grew with the square of the network's usefulness.
+
+## 1983: the graduate student and the assignment
+
+**Paul Mockapetris** joined ISI in 1978 as a graduate student, on a team of about twenty supervised by **Jon Postel**. One day, in his own account, Postel walked into his office and asked whether he would like to work on the domain naming problem - specifically, to reconcile the five existing proposals for improving the naming system.
+
+He read them and wrote his own instead. **RFCs 882 and 883**, published November 1983, **single-authored**, describing the Domain Name System and its query protocol - a design the ACM later called bold and disarmingly simple when it gave him the Software System Award in 2019.
+
+He also wrote the first implementation, a server called **Jeeves**, running on DEC Tops-20 machines at ISI and at SRI's Network Information Center, which provided the first stable operational service. **BIND** followed shortly after, written by graduate students at Berkeley under a DARPA grant.
+
+The specification was revised as RFCs 1034 and 1035 in 1987, and those remain the definitive documents. The original hundred pages have since been joined by more than two hundred further RFCs.
+
+## What the design actually did
+
+The move was from **one authority** to **delegated authority**. Rather than a central file, each organisation runs its own piece of the namespace on its own servers, and anyone in the world can query it.
+
+Three properties follow, and all three are still the reason this works:
+
+**Delegation.** The root does not need to know your hostnames; it needs to know who does. Authority stops at each boundary and the load distributes with the structure.
+
+**Caching.** Answers carry a lifetime, so a popular name is resolved once and reused many times. Without caching the system would have failed at a fraction of its current scale, and the time-to-live value is the most consequential number most engineers set without thinking about it.
+
+**Names for anything.** Mockapetris's own description is that it was created to let people use names for anything - and the record types added since, carrying mail routing, text, service locations, keys and certificate constraints, are all consequences of that generality.
+
+## The part that was left out
+
+DNS was designed for a network where the participants were known and largely trusted, and it has **no authentication in the original design**. A resolver believes the answer it receives.
+
+Everything difficult since descends from that. Cache poisoning works because an answer that looks right is accepted. **DNSSEC** exists to sign records and has taken decades to reach partial deployment, because it requires a chain of cooperation from the root down to each zone and gives operational pain to the party that deploys it while the benefit accrues to everyone else - which is the standard economics of internet security upgrades and the standard reason they stall.
+
+**DNS over TLS and DNS over HTTPS** answered a different problem - not whether the answer is true, but who else can see the question - and their adoption was faster precisely because a browser or an operating system can turn them on unilaterally. **The fix that one party can deploy alone wins; the fix requiring everyone to cooperate waits.** That is worth stating as a general rule, because it predicts which security improvements succeed better than any assessment of their technical merit.
+
+## From naming to control
+
+A resolver sees every name a device asks for, before any connection is made. That has made it three things it was never designed to be.
+
+**A security control.** Refuse to resolve, and the connection never happens - which is the entire premise of the resolver market, and the reason [OpenDNS, NextDNS, Infoblox and EfficientIP](/learn/adc-family-history) all sell from that position.
+
+**A surveillance point.** The query log is a record of intent, which is why encrypted transport became a privacy argument rather than a technical one.
+
+**A censorship instrument.** Blocking at the naming layer is the cheapest form of national-scale filtering available, requires no cooperation from the site being blocked, and is deployed by governments across the political spectrum.
+
+**A naming system built on trust between researchers became the internet's most convenient point of control**, and none of those three uses required changing the protocol at all. They required only being in the path of the question.
+
+## Jobs and practices
+
+DNS produces few dedicated roles and appears in every serious outage postmortem. The professional reflex it created is diagnostic: check resolution first, because a name that resolves to the wrong place produces symptoms indistinguishable from a dozen other faults.
+
+Its practices are recognisable. **TTL discipline** before a migration, lowering values in advance so a change can propagate when it matters. **Zone changes under review**, because a bad record is an outage with no error message. **Split-horizon and its confusion**, where internal and external answers differ and somebody eventually debugs the wrong one. And **registrar and registry hygiene** - domain expiry and registrar account compromise are outages that no amount of infrastructure quality prevents.
+
+## The companies
+
+The work came from SRI, ISI and Berkeley, none of which commercialised it. The Internet Systems Consortium carries BIND; the operators of the root and the top-level domains are a mix of institutions, companies and governments; and the commercial market is registrars, managed authoritative providers, the DDI vendors and the public resolvers.
+
+## Where it goes
+
+**Resolution is centralising.** A small number of public resolvers now answer an enormous share of the world's queries, which improves performance and privacy against the local provider while creating exactly the concentration that the distributed design was built to avoid.
+
+**Encryption moved the question, not the answer.** Encrypted transport hides the query from the network and delivers it to a resolver operator, so the trust does not disappear - it relocates, and choosing a resolver became a meaningful decision rather than a default.
+
+**The record is becoming a general-purpose carrier.** Service binding, certificate constraints, encrypted client hello parameters and text records for verification - increasingly, the way one system tells another how to reach it securely is a DNS record.
+
+**And the founding property still holds.** Forty years on, the system does what a graduate student specified in a hundred pages: delegate authority, cache the answer, let people use names for anything. Almost nothing else on the internet from 1983 is still running unmodified, and the reason this is has less to do with the protocol than with the decision to give away authority rather than hold it.
+
+## Sources
+
+- [ACM Software System Award 2019 to Paul Mockapetris: the community relied on a centrally managed hosts.txt file manually updated by SRI and distributed daily; he single-authored RFCs 882 and 883 in 1983, developed the first server implementation Jeeves, and deployed it at ISI and SRI for the initial root servers](https://awards.acm.org/award-recipients/mockapetris_3342151)
+- [Mockapetris's own account at ISI: joining in 1978 as a graduate student on a team of about twenty supervised by Jon Postel, being asked to work on the domain naming problem, and the design in which each organisation manages its own piece of the naming system on its own servers](https://www.isi.edu/news/972810/and-the-dns-was-born/)
+- [Elizabeth Feinler and the Network Information Center maintaining HOSTS.TXT, updated and distributed a couple of times a week, with NIC staff available only during business hours and off on holidays; Postel asked Mockapetris to reconcile five existing proposals](https://smartermsp.com/tech-time-warp-mockapetris-invents-the-domain-name-system/)
+- [Internet Society on thirty years of DNS: the November 1983 publication of RFCs 882 and 883, and the earlier proposals in RFC 799, RFC 819 and RFC 830](https://www.internetsociety.org/blog/2013/11/celebrating-30-years-of-the-domain-name-system-dns-this-month/)
+- [The first working name server Jeeves, written in 1983-84 for DEC Tops-20 machines at USC-ISI and SRI-NIC, with BIND written soon after by graduate students at Berkeley under a DARPA grant](https://stuff.mit.edu/afs/net/project/bind/9.2.0/doc/arm/Bv9ARM.ch09.html)
