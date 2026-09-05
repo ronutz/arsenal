@@ -129,29 +129,37 @@ export default async function AboutPage({
              they are. */}
         <section className="section about-facts-section">
           <div className="container section-narrow">
+            {/* CARD ORDER (PRIME 2026-09-05): Based in, Citizenships, Travel
+                permits, Teaches, Languages, Offers. The order answers a reader's
+                questions in the sequence they arise - where is he, what is he
+                entitled to, can he come here, what does he do, in what language,
+                and what else is on offer. Citizenships and travel permits are
+                two different facts and are kept apart: one is status, the other
+                is the practical ability to appear somewhere next month. */}
             <ul className="about-facts">
               <li className="about-fact">
                 <span className="about-fact-label">{t("now.basedLabel")}</span>
                 <span className="about-fact-value">{t("now.basedValue")}</span>
               </li>
               <li className="about-fact">
-                <span className="about-fact-label">{t("now.teachesLabel")}</span>
-                <span className="about-fact-value">{t("now.teachesValue")}</span>
+                <span className="about-fact-label">{t("now.citizenshipsLabel")}</span>
+                <span className="about-fact-value">{t("now.citizenshipsValue")}</span>
               </li>
-              {/* TRAVEL PERMITS (PRIME 2026-08-11). A fourth fact rather than a
-                  line appended to "Based in", because it answers a different
-                  question. "Based in" tells a reader where he is; this tells
-                  them he can be somewhere else next month without a visa
-                  process attached - which is the thing an organisation booking
-                  on-site delivery abroad actually needs to know, and the reason
-                  it belongs beside Teaches rather than buried in a location. */}
               <li className="about-fact">
                 <span className="about-fact-label">{t("now.permitsLabel")}</span>
                 <span className="about-fact-value">{t("now.permitsValue")}</span>
               </li>
               <li className="about-fact">
+                <span className="about-fact-label">{t("now.teachesLabel")}</span>
+                <span className="about-fact-value">{t("now.teachesValue")}</span>
+              </li>
+              <li className="about-fact">
                 <span className="about-fact-label">{t("now.languagesLabel")}</span>
                 <span className="about-fact-value">{t("now.languagesValue")}</span>
+              </li>
+              <li className="about-fact">
+                <span className="about-fact-label">{t("now.offersLabel")}</span>
+                <span className="about-fact-value">{t("now.offersValue")}</span>
               </li>
             </ul>
           </div>
@@ -194,6 +202,17 @@ export default async function AboutPage({
               {t("approach.title")}
             </h3>
             <p className="section-body">{t("approach.body")}</p>
+
+            {/* HOW I ADVISE (PRIME 2026-09-05). Sits directly under "How I
+                teach" because the two are the same practice pointed at
+                different audiences: one explains a platform to the people who
+                will run it, the other explains a decision to the people who
+                will own it. Kept as a peer h3 rather than its own section, so
+                the page does not imply these are separate careers. */}
+            <h3 className="vendor-note-title" style={{ marginTop: "2.5rem" }}>
+              {t("advise.title")}
+            </h3>
+            <p className="section-body">{t("advise.body")}</p>
             <Gap note="Expand teaching-philosophy copy with Rodolfo's own words if desired (current text is from the verified bio only)." />
           </div>
         </section>

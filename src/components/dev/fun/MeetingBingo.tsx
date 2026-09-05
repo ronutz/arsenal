@@ -35,6 +35,7 @@ export interface BingoLabels {
   typeLabel: string;
   newCard: string;
   free: string;
+  sizeLabel: string;
   bingo: string;
   bingoSub: string;
   shuffling: string;
@@ -42,18 +43,34 @@ export interface BingoLabels {
   fullscreenExitAria: string;
 }
 
-/** Grid geometry: 5x5 = 25 squares, index 12 is the FREE center. */
-const SIZE = 5;
-const CELLS = SIZE * SIZE;
-const FREE_INDEX = 12;
+/** Selectable card sizes (PRIME 2026-09-05). 5x5 is the classic and stays the
+ *  default; 4x4 and 3x3 make a shorter game for a shorter meeting. */
+const SIZES = [5, 4, 3] as const;
+type Size = (typeof SIZES)[number];
 
-/** All 12 winning lines (5 rows, 5 columns, 2 diagonals) as index arrays. */
-const LINES: number[][] = [
-  ...Array.from({ length: SIZE }, (_, r) => Array.from({ length: SIZE }, (_, c) => r * SIZE + c)),
-  ...Array.from({ length: SIZE }, (_, c) => Array.from({ length: SIZE }, (_, r) => r * SIZE + c)),
-  Array.from({ length: SIZE }, (_, i) => i * SIZE + i),
-  Array.from({ length: SIZE }, (_, i) => i * SIZE + (SIZE - 1 - i)),
-];
+/**
+ * Geometry for a given card size.
+ *
+ * The FREE square only exists on an ODD grid, because an even grid has no
+ * centre square to give away. On 4x4 every square must be earned, which is the
+ * honest consequence of the shape rather than an arbitrary rule - and it means
+ * a 4x4 card consumes sixteen phrases where a 5x5 consumes twenty-four.
+ */
+function geometry(size: Size) {
+  const cells = size * size;
+  const freeIndex = size % 2 === 1 ? Math.floor(cells / 2) : -1;
+  const lines: number[][] = [
+    ...Array.from({ length: size }, (_, r) =>
+      Array.from({ length: size }, (_, c) => r * size + c)
+    ),
+    ...Array.from({ length: size }, (_, c) =>
+      Array.from({ length: size }, (_, r) => r * size + c)
+    ),
+    Array.from({ length: size }, (_, i) => i * size + i),
+    Array.from({ length: size }, (_, i) => i * size + (size - 1 - i)),
+  ];
+  return { cells, freeIndex, lines, phrases: freeIndex >= 0 ? cells - 1 : cells };
+}
 
 /** Fisher-Yates shuffle on a copy; returns the first `n` items. */
 function drawRandom(pool: string[], n: number): string[] {
@@ -68,12 +85,16 @@ function drawRandom(pool: string[], n: number): string[] {
 export default function MeetingBingo({ labels, types }: { labels: BingoLabels; types: BingoType[] }) {
   const { ref: fsRef, isFullscreen, toggle: toggleFs } = useFullscreen<HTMLDivElement>();
   const [typeId, setTypeId] = useState(types[0]?.id ?? "");
+  const [size, setSize] = useState<Size>(5);
+  const { cells: CELLS, freeIndex: FREE_INDEX, lines: LINES, phrases: PHRASES } =
+    useMemo(() => geometry(size), [size]);
   // The 24 dealt phrases (null until the client deals — see header note).
   const [dealt, setDealt] = useState<string[] | null>(null);
   // Marked squares, FREE center pre-marked. Index-aligned with the 5x5 grid.
   const [marked, setMarked] = useState<boolean[]>(() => {
-    const m = new Array<boolean>(CELLS).fill(false);
-    m[FREE_INDEX] = true;
+    const g = geometry(5);
+    const m = new Array<boolean>(g.cells).fill(false);
+    if (g.freeIndex >= 0) m[g.freeIndex] = true;
     return m;
   });
 
@@ -81,9 +102,9 @@ export default function MeetingBingo({ labels, types }: { labels: BingoLabels; t
 
   /** Deal a fresh card for the current type and reset the marks. */
   const deal = (pool: string[]) => {
-    setDealt(drawRandom(pool, CELLS - 1));
+    setDealt(drawRandom(pool, PHRASES));
     const m = new Array<boolean>(CELLS).fill(false);
-    m[FREE_INDEX] = true;
+    if (FREE_INDEX >= 0) m[FREE_INDEX] = true;
     setMarked(m);
   };
 
@@ -116,6 +137,7 @@ export default function MeetingBingo({ labels, types }: { labels: BingoLabels; t
   /** Grid index -> phrase (the FREE center consumes no phrase). */
   const phraseAt = (i: number): string => {
     if (!dealt) return "";
+    if (FREE_INDEX < 0) return dealt[i] ?? "";
     return dealt[i < FREE_INDEX ? i : i - 1] ?? "";
   };
 
@@ -137,6 +159,28 @@ export default function MeetingBingo({ labels, types }: { labels: BingoLabels; t
             </option>
           ))}
         </select>
+        {/* CARD SIZE (PRIME 2026-09-05). Changing size deals a fresh card,
+            because the old marks index a grid that no longer exists. */}
+        <div className="bingo-sizes" role="group" aria-label={labels.sizeLabel}>
+          {SIZES.map((n) => (
+            <button
+              key={n}
+              type="button"
+              className={`bingo-size${n === size ? " bingo-size-on" : ""}`}
+              aria-pressed={n === size}
+              onClick={() => {
+                setSize(n);
+                const g = geometry(n);
+                const m = new Array<boolean>(g.cells).fill(false);
+                if (g.freeIndex >= 0) m[g.freeIndex] = true;
+                setMarked(m);
+                if (current) setDealt(drawRandom(current.phrases, g.phrases));
+              }}
+            >
+              {n}&times;{n}
+            </button>
+          ))}
+        </div>
         <button type="button" className="bingo-new" onClick={() => current && deal(current.phrases)}>
           {labels.newCard} <span aria-hidden="true">&#8635;</span>
         </button>
@@ -152,6 +196,27 @@ export default function MeetingBingo({ labels, types }: { labels: BingoLabels; t
         </button>
       </div>
 
+      {/* BINGO BALLS (PRIME 2026-09-05). Decorative only, aria-hidden, drawn
+          from semantic tokens so every theme gets it for free. Three balls
+          rather than a full illustration: enough to say "bingo" above the
+          card without competing with the card for attention. */}
+      <svg
+        className="bingo-art"
+        viewBox="0 0 220 64"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle cx="34" cy="34" r="24" className="bingo-art-ball" />
+        <circle cx="34" cy="34" r="15" className="bingo-art-face" />
+        <text x="34" y="40" textAnchor="middle" className="bingo-art-num">B</text>
+        <circle cx="110" cy="30" r="27" className="bingo-art-ball" />
+        <circle cx="110" cy="30" r="17" className="bingo-art-face" />
+        <text x="110" y="37" textAnchor="middle" className="bingo-art-num">I</text>
+        <circle cx="186" cy="36" r="22" className="bingo-art-ball" />
+        <circle cx="186" cy="36" r="14" className="bingo-art-face" />
+        <text x="186" y="42" textAnchor="middle" className="bingo-art-num">N</text>
+      </svg>
+
       {hasBingo && (
         <div className="bingo-banner" role="status">
           <p className="bingo-banner-word">{labels.bingo}</p>
@@ -159,7 +224,12 @@ export default function MeetingBingo({ labels, types }: { labels: BingoLabels; t
         </div>
       )}
 
-      <div className="bingo-grid" role="group" aria-label={current?.name}>
+      <div
+        className="bingo-grid"
+        role="group"
+        aria-label={current?.name}
+        style={{ gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))` }}
+      >
         {Array.from({ length: CELLS }, (_, i) =>
           i === FREE_INDEX ? (
             <div key={i} className="bingo-cell bingo-cell-free mono" aria-hidden="true">

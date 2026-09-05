@@ -113,7 +113,7 @@
       "certsLede": "O que cada exame cobra e o que estudar para ele. Gratuito, e útil tendo você contratado um curso ou não.",
       "certsBadge": "{count} guias",
       "advisory": "Consultoria",
-      "advisoryLede": "Julgamento independente sobre decisões ainda não tomadas. Trabalho delimitado, resposta por escrito, sem plantão.",
+      "advisoryLede": "Julgamento em nível de conselho sobre decisões de tecnologia antes de elas serem tomadas. Trabalho com escopo, resposta escrita que se defende internamente, sem plantão.",
       "advisoryBadge": "Sob contratação",
       "hubs": "Hubs de fabricantes",
       "hubsLede": "Uma porta por plataforma: as ferramentas, artigos e material de certificação daquele fabricante, reunidos num só lugar.",
@@ -6988,7 +6988,11 @@
       "languagesLabel": "Idiomas",
       "languagesValue": "Português (nativo), inglês (fluente), espanhol (básico), alemão (básico)",
       "permitsLabel": "Autorizações de viagem",
-      "permitsValue": "Autorizações de viagem válidas e vigentes para a União Europeia e os Estados Unidos"
+      "permitsValue": "Autorizações de viagem válidas e vigentes para a União Europeia e os Estados Unidos",
+      "citizenshipsLabel": "Cidadanias",
+      "citizenshipsValue": "Brasileira e alemã",
+      "offersLabel": "Oferece",
+      "offersValue": "Assessoria técnica de nível executivo para decisões de missão crítica, ao lado de treinamento oficial ministrado por instrutor"
     },
     "platforms": {
       "title": "As plataformas, ensinadas com profundidade",
@@ -7049,7 +7053,11 @@
       "blogDesc": "Textos ocasionais sobre a indústria, o ofício, e o que quer que eu esteja destrinchando no momento."
     },
     "historySectionTitle": "A História",
-    "metaTitle": "Rodolfo Nützmann - trinta anos em redes e segurança corporativa"
+    "metaTitle": "Rodolfo Nützmann - trinta anos em redes e segurança corporativa",
+    "advise": {
+      "title": "Como eu assessoro",
+      "body": "Trinta anos de experiência direta com decisões que carregam consequência para o negócio ou para a missão: que tecnologia adotar, o que habilitar, o que melhorar, e quanto a adoção vai de fato custar na prática, e não no slide. O que levo a um conselho ou a um comitê diretor é uma análise estruturada, metódica e neutra - o diagnóstico, as opções, as cautelas, os riscos, e o que cada caminho exigiria para ser executado. Neutra é a palavra que importa: sou instrutor autorizado em quatro plataformas e não tenho cota de vendas em nenhuma delas, então a recomendação não é produto de comissão. O impacto quem diz é o negócio, e prefiro ser julgado por ele do que pela apresentação."
+    }
   },
   "endorsements": {
     "eyebrow": "Depoimentos",
@@ -7563,7 +7571,7 @@
     "s3Body": "A habilidade técnica se constrói fazendo, então todo curso tem laboratórios práticos em sistemas reais, apoiados por ambientes de laboratório gerenciados onde a prática sempre tem um lugar real para acontecer. Para quem já conhece os fundamentos e veio para colocar a mão na tecnologia, é exatamente isso que essas pessoas buscam, e é tempo bem gasto. Para quem é mais novo no assunto, o tempo vai primeiro para as fundações sobre as quais os laboratórios se apoiam, de modo que a parte prática faça sentido em vez de ser seguida de forma mecânica. Ambos têm igual valor, e o equilíbrio simplesmente muda conforme a turma. O formato se adapta ao público: treinamento ao vivo conduzido por instrutor e entregue globalmente, presencial quando isso for melhor, em inglês ou português. De um jeito ou de outro, as pessoas devem sair com algo real e útil em mãos e uma compreensão real de por que aquilo funciona.",
     "s4Title": "Reconhecido, certificado e atualizado",
     "s4Body": "F5 DevCentral MVP por três anos consecutivos, em 2022, 2023 e 2024. Certificações F5 desde 2015, e autorização de instrutor em F5, Extreme Networks, Fortinet e Netskope. A entrega é verdadeiramente global, alcançando a Ásia-Pacífico, incluindo Austrália, Nova Zelândia, Cingapura, Filipinas, Índia e Bangladesh; a Europa, incluindo Reino Unido, Países Baixos, Bélgica, Alemanha, Polônia, Suíça e Noruega; o Oriente Médio e a África, incluindo os Emirados Árabes Unidos e Gana; a América Latina, incluindo Brasil, México e Colômbia; e a América do Norte, incluindo Canadá e Estados Unidos, através da Red Education, um centro de treinamento autorizado de referência global para os principais fabricantes de cibersegurança e de redes corporativas.",
-    "platformsTitle": "O que eu ensino",
+    "platformsTitle": "Treinamento oficial de fabricante que ministro atualmente",
     "platformsBody": "Treinamento oficial e certificado, conduzido por instrutor, nas plataformas no centro das redes e da segurança modernas. Cada uma leva ao seu catálogo de cursos completo.",
     "historyTitle": "Três décadas, um fio condutor",
     "historyBody": "De montar computadores ainda adolescente em 1991, passando pelo ensino formal como parte de cada cargo técnico desde 1997, até a instrução global em tempo integral a partir de 2020. O ensino não é a parte recente; a exclusividade é. Vale a pena ler a história completa se você quiser entender a experiência por trás dele.",
@@ -7612,7 +7620,7 @@
     "formTopic": "Sobre o que é?",
     "topicTraining": "Treinamento oficial",
     "topicCustom": "Programa sob medida para equipe",
-    "topicAdvisory": "Consultoria e assessoria",
+    "topicAdvisory": "Assessoria executiva",
     "topicOther": "Outro assunto",
     "formMessage": "Sua mensagem",
     "formSend": "Enviar mensagem",
@@ -8486,7 +8494,8 @@
     },
     "devFunTitle": "Voltar para /dev/fun",
     "fullscreenEnterAria": "Entrar em tela cheia",
-    "fullscreenExitAria": "Sair da tela cheia"
+    "fullscreenExitAria": "Sair da tela cheia",
+    "sizeLabel": "Tamanho da cartela"
   },
   "devFun": {
     "metaTitle": "/dev/fun",
@@ -16914,6 +16923,39 @@
       "danny-cohen": {
         "def": "O engenheiro que pôs voz e vídeo em tempo real numa rede de pacotes em 1973, adaptando um simulador de voo.",
         "context": "A ARPANET foi construída para mover arquivos e mensagens, em que chegar atrasado é inconveniente. Ele adaptou um simulador visual de voo para rodar sobre ela, o que exige a propriedade oposta: um pacote que chega atrasado é pior que um que não chega nunca. Essa é a primeira aplicação de comutação de pacotes a tempo real, e toda discussão desde então sobre buffer de jitter, qualidade de serviço e se a internet aguenta uma ligação telefônica descende de alguém ligar um simulador a uma rede de pesquisa para ver o que aconteceria."
+      },
+      "peter-eckersley": {
+        "def": "O tecnólogo da EFF que cofundou o Let's Encrypt e, com isso, removeu o preço de cifrar um site.",
+        "context": "Dois fios deste catálogo se encontram numa pessoa só. O artigo de certificados argumenta que a cifra ficou fora da maior parte da web porque era linha de orçamento e trabalho chato, e que remover as duas coisas mudou a postura de segurança da internet mais que qualquer protocolo - e foi ele quem as removeu, a partir de uma conversa numa conferência em 2012 sobre automatizar aquilo que todo mundo fazia à mão. E a demonstração de impressão digital deste próprio site pertence a um gênero que ele inventou na EFF, onde mostrar à pessoa exatamente o que um rastreador conseguiria ler dela acabou defendendo a causa melhor que qualquer explicação. Ele morreu em 2022, aos 43. Um obituário resumiu o primeiro feito sem rodeio: tornou obsoleta uma indústria de bilhões da noite para o dia, e deixou segurança melhor para todo mundo."
+      },
+      "douglas-comer": {
+        "def": "O professor de Purdue que escreveu os livros que ensinaram a uma geração como a internet de fato funciona.",
+        "context": "A citação dele merece leitura atenta, pelo que honra. Um hall da fama de resto cheio de gente que inventou protocolo admitiu alguém por EXPLICÁ-LOS: a primeira série de livros-texto expondo os princípios científicos sob o projeto, e a orientação formal mais antiga para construir coisas que o usam. Os três volumes saíram em 1987 e foram para dezesseis idiomas. Ele fez bastante além disso - membro original do Internet Architecture Board, uma rede que oferecia conexão antes de existirem provedores, primeiro chefe de pesquisa da Cisco - mas o registro põe o ensino em primeiro lugar. Um detalhe mede o que aquelas edições atravessaram: a primeira foi escrita quando a internet ligava cerca de cinco mil computadores, e na quarta já eram mais de cinquenta e seis milhões. O mesmo livro, revisado ao longo de quatro ordens de grandeza da coisa que ele descrevia."
+      },
+      "randy-bush": {
+        "def": "O operador que passou quarenta anos ajudando outros países a construir as próprias redes, e que depois foi atrás da segurança do sistema de roteamento.",
+        "context": "Ele estava na turma inaugural do hall da fama, e não por ter inventado algo: a citação é pelo Network Startup Resource Center, que começou em 1988 como voluntariado, quando engenheiros da África e da América Latina pediram ajuda para se conectar. O relato dele sobre o motivo é sem sentimentalismo - havia cientistas capazes ficando desatualizados por estarem isolados - e a descrição da época também: a internet ali era cientistas e organizações não governamentais, e não rede social.",
+        "depth": "O modelo é que era a parte importante. O centro trabalha com engenheiros locais que operam a própria infraestrutura, fornecendo treinamento, informação técnica e equipamento doado, em vez de operar coisa alguma. É a diferença entre construir uma rede PARA um lugar e deixar uma rede NELE, e é a mesma distinção sobre a qual gira o verbete da conexão da África: o escasso raramente é o trabalho técnico, é o aparato em volta, e alguém de fora pode ou fornecê-lo para sempre ou ajudar a construí-lo localmente.\n\nEle fez muita coisa além disso. Foi o engenheiro fundador da Verio, presidiu o grupo de DNS do IETF por uma década, esteve no conselho fundador do ARIN e ajudou a criar NANOG e AFRINIC. A partir de 2000 se voltou para a pergunta de se o sistema de roteamento pode ser confiado, catalisando o trabalho que virou o RPKI - que é um segundo ato adequado para quem passou a década anterior ajudando gente a entrar numa rede supondo que o roteamento dela dizia a verdade."
+      },
+      "ira-fuchs": {
+        "def": "O administrador da CUNY que construiu a rede acadêmica para todo mundo que a ARPANET deixara de fora, começando por um enlace até Yale em 1981.",
+        "context": "Ele mesmo deu o motivo, sem enfeitar: tinha inveja de quem usava a ARPANET. A ARPANET servia à matemática e à física financiadas pela defesa, e o resto da universidade - as humanidades, as artes liberais, todo mundo sem a bolsa certa - não tinha nada. Então ele construiu uma rede cuja condição de entrada era concordar em conectar a próxima instituição. Chegou a 1.400 universidades em 49 países e foi a primeira rede acadêmica a alcançar Japão, Israel, a URSS e boa parte da Europa ocidental. O nome começou como Because It’s There e virou Because It’s Time, disse ele, porque soava melhor. E a origem é o detalhe que vale guardar: ele atribuiu a ideia inteira a ser um adolescente com um rádio amador no Queens, falando com desconhecidos do mundo todo do próprio quarto - o mesmo artigo de fé, aplicado a instituições em vez de pessoas."
+      },
+      "adiel-akplogan": {
+        "def": "O engenheiro togolês que ajudou a levar a primeira conexão TCP/IP ao país dele, e depois construiu o registro que aloca endereços para um continente.",
+        "context": "O verbete do Quaynor observa que conectar a África significou montar as instituições junto com a infraestrutura. Isto é como aquilo se pareceu numa carreira só. Ele ajudou a estabelecer a primeira conexão TCP/IP do Togo em 1996, trabalhou em vários dos primeiros provedores da África Ocidental, assessorou a estratégia de desenvolvimento de internet de meia dúzia de países, e então em 2003 ajudou a fundar o AFRINIC - o órgão que decide quem recebe quais endereços em toda a África - e o dirigiu por uma década. Pretendia ficar dois anos. A origem vale guardar por ser tão diferente da história de fundação usual: um estagiário, a quem prometeram emprego fixo se conseguisse consertar o que os outros não conseguiam, que trabalhou três dias e três noites e produziu um protótipo funcionando sobre a tecnologia francesa Minitel. Ele chamou aquilo de o começo da jornada para a internet no Togo."
+      },
+      "kees-neggers": {
+        "def": "O diretor de rede holandês por trás da primeira espinha dorsal europeia, e do ponto de troca que fez de Amsterdã um lugar por onde o tráfego passa.",
+        "context": "A Ebone, que ele liderou em 1991, foi a primeira espinha dorsal transfronteiriça da Europa, e a ideia fundadora dela é a que vale carregar: Open Exchanges - lugares neutros em que qualquer rede podia encontrar qualquer outra, em vez de uma hierarquia de quem compra trânsito de quem. O verbete de ponto de troca do Glenn Ricart descreve aquela sala no abstrato; ele é boa parte da razão de a Europa ter acabado com várias, e de Amsterdã em particular ter virado lugar por onde o tráfego do mundo passa, e não por fora. A lista sob o nome dele é quase toda de instituições - RARE, TERENA, o registro RIPE, a troca de Amsterdã, um consórcio de fibra - que é o mesmo formato dos outros verbetes daqui cujo trabalho foi fazer arranjos entre organizações se sustentarem."
+      },
+      "mike-jensen": {
+        "def": "O engenheiro que passou décadas conectando as organizações que ninguém ia conectar por interesse comercial.",
+        "context": "As redes dele serviram primeiro ao setor sem fins lucrativos, que é ponto de partida incomum: quase toda conectividade chega porque alguém espera faturar por ela, e a dele não. A Association for Progressive Communications, que ele ajudou a fundar em 1992, existe sobre essa premissa até hoje. E o método na citação merece nota justamente por ser sem glamour - ele viajou o continente, organização por organização, ajudando cada uma a entrar na rede ou a conseguir enlace melhor. Não há protocolo aqui, e não há produto. É a constatação de que uma rede alcança aonde alguém se dispôs a ir e fazer o trabalho, e é por isso que mapa de cobertura sempre acompanhou esforço tanto quanto economia."
+      },
+      "karen-banks": {
+        "def": "A engenheira da GreenNet cujo gateway carregou correio para sessenta organizações parceiras em três continentes, usando de propósito a tecnologia errada.",
+        "context": "O GnFido rodava em store-and-forward - fidonet e uucp - e não sobre um enlace permanente de internet, porque para a maior parte dos correspondentes dele enlace permanente não existia nem cabia no orçamento. Era a tecnologia inferior por toda medida exceto a que importava, que era funcionar onde a melhor não funcionava, e para milhares de pessoas foi a única comunicação eletrônica acessível que houve. Em 1995 o programa que ela ajudou a fundar levou quarenta mulheres à conferência da ONU em Pequim e deu acesso a correio e web a dez mil delegadas, algumas pela primeira vez na vida; e o mesmo grupo então conseguiu inscrever comunicações na Plataforma de Ação de Pequim, a primeira política intergovernamental a tratar o acesso das mulheres a essas tecnologias como questão de direitos. O resumo que ela mesma faz de trinta anos é a frase a guardar: uma coisa é ter acesso às tecnologias e aos canos, mas são as pessoas que fazem a rede."
       }
     },
     "totalCount": "{count} termos",
@@ -17501,35 +17543,35 @@
   "advisory": {
     "eyebrow": "Consultoria estratégica",
     "title": "Assessoria independente para decisões de rede e segurança.",
-    "lede": "Trinta anos dentro dos fabricantes, distribuidores e integradores que atendem redes corporativas — defendendo a causa do cliente a partir desse lado da mesa. Oferecidos aqui como julgamento sobre decisões que ainda não foram tomadas: você recebe uma decisão que consegue defender, o raciocínio por trás dela, e a evidência para levar a quem precisa aprovar.",
+    "lede": "Trinta anos do lado de quem fornece em redes e segurança corporativa, vistos de todos os ângulos possíveis: por dentro de fabricantes, de revendas e distribuidores de valor agregado, de casas de consultoria, e diretamente do outro lado da mesa com o cliente. Oferecidos aqui como julgamento sobre decisões que ainda não foram tomadas, no nível em que elas de fato se tomam.",
     "availabilityTitle": "Disponível, não empacotado",
     "availabilityBody": "Isto não é um catálogo de produtos. O que está descrito abaixo são os tipos de pergunta em que sou útil; o formato de cada contratação é acordado antes de começar. Se a sua necessidade for parecida com alguma delas, mas não igual, em geral não há problema e vale uma conversa.",
     "scopeTitle": "O que é, e o que não é",
     "scopeIn": "Julgamento técnico sobre uma decisão: revisar um projeto antes de o orçamento ser comprometido, escrever a especificação, avaliar a proposta de terceiros, escolher entre alternativas, ou explicar depois do ocorrido por que algo falhou e o que deveria mudar.",
     "scopeOutTitle": "Não faz parte do escopo",
-    "offersTitle": "Onde eu agrego mais valor",
+    "offersTitle": "Assessoria executiva",
     "offerReviewTitle": "Revisão de projeto e arquitetura",
-    "offerReviewBody": "Uma leitura independente de um projeto proposto, antes de ser construído e pago. O que ele pressupõe, onde vai sofrer, quanto vai custar para operar, e quais partes são decisões e não apenas padrões de fábrica.",
+    "offerReviewBody": "Ler um projeto proposto antes de ele ser construído e pago: o que ele supõe, onde vai forçar, quanto vai custar para operar e não para comprar, e quais das suposições dele sustentam o resto. As falhas que importam raramente estão no produto; estão no que o projeto deu por certo.",
     "offerSpecTitle": "Especificação e redação de RFP",
-    "offerSpecBody": "Escrever o que se deve pedir. Uma RFP, sigla em inglês para solicitação de proposta, que descreva o resultado esperado com precisão suficiente para ser pontuada, em vez de uma montada a partir do datasheet do próprio fornecedor.",
+    "offerSpecBody": "Escrever o que pedir. Uma especificação ou edital que descreva o resultado com precisão suficiente para ser pontuado com justiça - e que feche as brechas que um fornecedor de outro modo ficaria livre para interpretar a favor dele. A má contratação costuma ser decidida nesta etapa, e não na proposta.",
     "offerAssessTitle": "Avaliação independente de proposta",
-    "offerAssessBody": "Você tem um orçamento e um diagrama vindos de um fornecedor e nenhuma forma neutra de julgar qualquer um dos dois. Uma segunda leitura, por escrito, com as perguntas que vale a pena devolver a ele.",
+    "offerAssessBody": "Uma segunda leitura neutra da cotação e do diagrama de um fornecedor, por escrito: o que está de fato sendo proposto, o que ficou de fora, o que se supõe sobre o ambiente em que aquilo vai cair, e que perguntas devolver antes de assinar qualquer coisa.",
     "offerSelectTitle": "Seleção de tecnologia e de fornecedor",
-    "offerSelectBody": "Ficar ou trocar, consolidar ou manter dois, no data center próprio ou como serviço. Uma pergunta definida, os prós e contras declarados nos dois sentidos, e uma recomendação que diz para qual lado e por quê.",
+    "offerSelectBody": "Ficar ou mudar, consolidar ou manter dois, local ou como serviço. Uma pergunta definida, os compromissos ditos nos termos da organização e não nos do fabricante, e uma resposta defensável com o raciocínio anexado - para a decisão sobreviver a quem a tomou.",
     "offerPostmortemTitle": "Análise pós-incidente",
-    "offerPostmortemBody": "Não é resposta a incidente. É a análise posterior, quando o incêndio já foi apagado e alguém precisa dar uma explicação honesta do que aconteceu e do que deve mudar. Trabalho agendado, semanas depois do evento, escrito para um público que inclui quem não estava na sala.",
-    "independenceTitle": "Por que independência importa aqui",
-    "independenceBody": "Mantenho autorizações vigentes de instrutor nas plataformas de quatro fabricantes e não vendo nenhuma delas. Não há produto deste lado da mesa, nem meta de vendas, nem margem de canal por trás da recomendação.",
+    "offerPostmortemBody": "Não é resposta a incidente - é a revisão depois, quando o fogo acabou e alguém precisa dar uma conta honesta do que aconteceu e do que impediria a repetição. Escrita para ser lida por quem não estava lá, e sem a procura por um culpado que torna inúteis quase todos esses documentos.",
+    "independenceTitle": "Por que a independência é a parte que sustenta",
+    "independenceBody": "A literatura sobre relações de assessoria põe a confiabilidade como credibilidade, constância e franqueza, tudo dividido pelo interesse próprio - e é a divisão que decide o resultado. Um denominador grande estraga um numerador excelente, e é por isso que um especialista com algo a vender vale menos que um competente sem nada a vender.\n\nEntão o fato relevante aqui não são os trinta anos. É que sou instrutor autorizado em quatro plataformas e não vendo nenhuma delas: não há produto deste lado da mesa, não há cota, não há margem de parceiro por trás da recomendação, e não existe versão deste trabalho que me pague mais se você comprar uma coisa em vez de outra. Cada autorização pode ser verificada de forma independente, que é o motivo de eu nomeá-las.",
     "howTitle": "Como funciona uma contratação",
     "howStep1": "Uma conversa sobre a decisão que você tem pela frente, sem custo, para estabelecer se sou a pessoa certa para ela.",
     "howStep2": "Um escopo por escrito: a pergunta, a entrega, as datas e o valor. Preço fechado por contratação, não por hora.",
     "howStep3": "O trabalho, com acesso a quem detém o detalhe técnico.",
     "howStep4": "Uma resposta por escrito que você possa circular internamente, e uma call para percorrê-la.",
-    "ctaTitle": "Se há uma decisão sobre a sua mesa",
-    "ctaBody": "A primeira mensagem útil diz qual é a decisão e quando ela precisa ser tomada.",
+    "ctaTitle": "Se há uma decisão na sua mesa",
+    "ctaBody": "Escreva diretamente para mim. Esta prática é minha, então a primeira conversa é com quem vai fazer o trabalho, e não com um gerente de contas. A mensagem inicial útil diz qual é a decisão, quem tem de assiná-la, e quando.",
     "ctaButton": "Iniciar uma conversa",
     "disclaimerTitle": "Antes de continuar a ler",
-    "disclaimerBody": "Trabalho em tempo integral para a Red Education. O trabalho de consultoria descrito nesta página é entregue pessoalmente por mim e contratado através da Red Education. A única coisa sobre a qual não posso informar é preço: isso vem somente depois de uma conversa detalhada de escopo e alinhamento de expectativas, e é fornecido exclusivamente pela Red Education. O que posso dizer é que serei o principal defensor do melhor resultado possível para você. Desde 1996 venho argumentando de forma consistente pelo que serve ao cliente final, e não necessariamente pelo que servia à empresa para a qual eu trabalhava na época. O certo é o certo, e o justo é o justo. Se você precisa de treinamento, isso também passa pela Red Education.",
+    "disclaimerBody": "Trabalho em tempo integral para a Red Education. O trabalho de consultoria descrito nesta página é entregue pessoalmente por mim <amber>e contratado através da</amber> Red Education. A única coisa sobre a qual não posso informar é preço: isso vem somente depois de uma conversa detalhada de escopo e alinhamento de expectativas, e é fornecido exclusivamente pela Red Education. O que posso dizer é que serei o principal defensor do melhor resultado possível para você. Desde 1996 venho argumentando de forma consistente pelo que serve ao cliente final, e não necessariamente pelo que servia à empresa para a qual eu trabalhava na época. O certo é o certo, e o justo é o justo. Se você precisa de treinamento, isso também passa pela Red Education.",
     "exclusion1Term": "Implantação e configuração",
     "exclusion1Body": "Reviso o que está planejado e audito o que foi construído, mas não sou as mãos que constroem.",
     "exclusion2Term": "Plantão, sobreaviso e responsabilidade operacional",
@@ -17537,16 +17579,26 @@
     "exclusion3Term": "Alocação de mão de obra",
     "exclusion3Body": "Se o que falta é mais uma pessoa no time, isso é uma decisão de contratação — não é o que este trabalho resolve.",
     "exclusion4Term": "Treinamento e capacitação, em qualquer formato",
-    "exclusion4Body": "Todo curso, workshop e trilha de certificação que eu ministro é entregue pela Red Education. Treinamentos customizados e sob medida são bem-vindos — peça à Red Education e chega até mim.",
+    "exclusion4Body": "Treinamento não é vendido nesta página. Ministro cursos oficiais sob autorização de fabricante, e isso é um trabalho separado, com agenda e condições próprias - é só perguntar que eu indico o caminho. O que se oferece aqui é julgamento sobre uma decisão, e não uma grade de curso.",
     "offerSpeakingTitle": "Palestras",
     "offerSpeakingBody": "Palestras em eventos, keynotes e sessões internas sobre de onde veio esta indústria, como era estar dentro dela e como isso se compara com o presente — além de um pouco de futurologia sobre para onde caminham os papéis profissionais e o próprio trabalho. Palestras prontas, e temas sob medida mediante combinação.",
     "advisorEyebrow": "Seu consultor",
-    "advisorBody": "Passei trinta anos empregado por fabricantes, distribuidores e integradores — implantando, sustentando, implementando e ensinando o que eles vendem, em vez de vendê-lo. É essa a base inteira do conselho: meu trabalho era fazer a coisa funcionar para o cliente depois, então eu tive de conviver com a resposta. As credenciais, o histórico de carreira e o que dizem clientes e alunos estão a um clique.",
+    "advisorBody": "Trinta anos do lado de quem fornece em redes e segurança corporativa, por dentro de fabricantes, de revendas e distribuidores de valor agregado, de casas de consultoria, e em engajamentos diretos com o cliente - implantando, sustentando, operando e ensinando o que essas empresas vendem, em vez de vender. É essa a base inteira da assessoria: meu trabalho era fazer aquilo funcionar depois, então sempre tive de conviver com a resposta. Esta prática é minha, a análise é minha, e eu assino embaixo. As credenciais, o histórico de carreira e o que clientes e alunos dizem estão a um clique, porque afirmação que não se pode conferir não vale a pena fazer.",
     "advisorLinkCreds": "Credenciais",
     "advisorLinkCareer": "Histórico de carreira",
     "advisorLinkEndorsements": "O que dizem os clientes",
     "offerEstateTitle": "Revisão do parque de rede e sistemas",
-    "offerEstateBody": "Um inventário que vira um mapa. O que está conectado, o que cada coisa de fato faz, o que depende dela, e quais dessas relações existem apenas na memória de alguém. Entregue como registro escrito com diagnóstico — o que está frágil, o que não tem dono, o que está duplicado, o que não sobrevive à próxima mudança — e, quando desejado, um plano priorizado para corrigir."
+    "offerEstateBody": "Um inventário que vira mapa: o que está conectado, o que cada coisa de fato faz, o que depende dela, e que partes ninguém consegue explicar hoje. Chamado de revisão e não de auditoria, porque auditoria carrega sentido de asseguração que isto não reivindica. Quase todo parque tem algo que sustenta o resto e que ninguém olha há anos.",
+    "offersLede": "Uma oferta, dita com clareza, para a decisão que tem consequência.",
+    "offerExecutiveTitle": "Assessoria técnica de nível executivo para decisões de missão crítica",
+    "offerExecutiveBody": "Para o conselho, o comitê diretor ou o executivo que precisa se comprometer com uma direção de adoção de tecnologia, transformação digital, ou habilitação e melhoria de serviço - e que precisa da realidade técnica daquela decisão dita por alguém sem nada a vender. A entrega é uma análise estruturada, metódica e neutra: o diagnóstico, as opções com seus compromissos, as cautelas, os riscos, e o que cada caminho de fato exigiria para ser executado. Escrita para circular e ser defendida internamente, e não para ser apresentada e esquecida. O que ela não inclui é recomendação moldada por comissão, porque não há comissão - sou instrutor autorizado em quatro plataformas e não tenho cota de vendas em nenhuma. O impacto quem diz é o negócio.",
+    "secondaryTitle": "Também disponível",
+    "recordTitle": "De onde isso vem",
+    "recordBody": "Passei os primeiros vinte e quatro anos de carreira, de 1996 a 2020, fazendo este trabalho para organizações líderes de muitos segmentos: instituições financeiras, órgãos de governo, provedores de serviço de todo tipo, grandes conglomerados multinacionais de comércio e serviços, e indústria numa faixa ampla. Entreguei, fui responsável, supervisionei, colaborei, liderei e participei - muitas vezes, de dentro de fabricantes, distribuidores e integradores. Estes trabalhos não são mais o que eu vendo. São aquilo de que a assessoria acima é feita, e estão listados aqui para você julgar se essa base é a certa para a sua decisão.",
+    "earnTitle": "O que eu não farei",
+    "earnBody": "Não vou dizer o que fazer antes de entender a sua situação, e a primeira conversa existe para estabelecer se posso ser útil - inclusive a resposta de que não posso, ou de que a pergunta é melhor endereçada a outra pessoa. Um assessor que já tem certeza antes de ter ouvido está vendendo alguma coisa. Se a resposta honesta for que o seu fornecedor atual está certo, é essa a resposta que você receberá por escrito, e será a frase mais valiosa do documento.",
+    "problemTitle": "O problema para o qual isto existe",
+    "problemBody": "Organizações estão sendo obrigadas a tomar decisões sobre tecnologia para as quais o próprio modelo de negócio delas não as preparou, num ritmo que não permite contratar e formar essa competência internamente antes. O resultado é conhecido: a decisão é tomada a partir do material fornecido por quem vende para ela, porque é o único material na sala. Todo diagrama é desenhado por alguém com uma cota atrás, toda referência é escolhida a dedo, e o time interno - que pode ser excelente - está sendo posto para arbitrar um jogo em que só vê o manual de um dos lados.\n\nÉ essa a lacuna que esta prática existe para fechar, e nada além. Não para substituir o time, não para tocar o projeto, e não para virar mais um fornecedor com um diagrama: para pôr uma leitura técnica independente e experiente diante de quem tem de assinar, a tempo de mudar a decisão em vez de explicá-la depois."
   },
   "speaking": {
     "eyebrow": "Palestras",

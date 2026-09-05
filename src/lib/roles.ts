@@ -740,7 +740,8 @@ export const ROLES: readonly Role[] = Object.freeze([
     title: "Technical instructor",
     group: "teaches",
     order: 1,
-    provenance: { kind: "held", where: "delivering vendor-authorised training", when: "2020-present" },
+    provenance: { kind: "held", where: "at every technical role since 1997, and exclusively from 2020",
+      when: "1997-present" },
     whatItIs:
       "The engineer who teaches the product to the people who will run it. Authorised instruction is delivered against a vendor's own curriculum to a room of practising engineers, which makes the role a teaching job resting on a practitioner's foundation: the questions arrive from real environments and expect answers that hold up in them. The work is also continuous with what came before it — field, consulting and support roles all end with training the customer's staff, and instruction is that final hour of the visit made into the whole job.",
     theDay: [

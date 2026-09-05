@@ -97,6 +97,7 @@ export default async function MeetingBingoPage({
     typeLabel: t("typeLabel"),
     newCard: t("newCard"),
     free: t("free"),
+          sizeLabel: t("sizeLabel"),
     bingo: t("bingo"),
     bingoSub: t("bingoSub"),
     shuffling: t("shuffling"),

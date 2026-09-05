@@ -113,7 +113,7 @@
       "certsLede": "What each exam tests and what to study for it. Free, and useful whether or not you ever book a course.",
       "certsBadge": "{count} guides",
       "advisory": "Advisory",
-      "advisoryLede": "Independent judgement on decisions that have not been made yet. Scoped work, written answer, no on-call.",
+      "advisoryLede": "Board-level judgement on technology decisions before they are made. Scoped work, a written answer you can defend internally, no on-call.",
       "advisoryBadge": "By engagement",
       "hubs": "Vendor hubs",
       "hubsLede": "One door per platform: the tools, articles and certification material for that vendor, gathered in one place.",
@@ -6988,7 +6988,11 @@
       "languagesLabel": "Languages",
       "languagesValue": "Portuguese (native), English (fluent), Spanish (basic), German (basic)",
       "permitsLabel": "Travel permits",
-      "permitsValue": "Valid, current European Union and United States travel permits"
+      "permitsValue": "Valid, current European Union and United States travel permits",
+      "citizenshipsLabel": "Citizenships",
+      "citizenshipsValue": "Brazilian and German",
+      "offersLabel": "Offers",
+      "offersValue": "Executive-level technical advisory for mission-critical decisions, alongside official instructor-led training"
     },
     "platforms": {
       "title": "The platforms, taught in depth",
@@ -7049,7 +7053,11 @@
       "blogDesc": "Occasional writing on the industry, the craft, and whatever I have been working through lately."
     },
     "historySectionTitle": "The History",
-    "metaTitle": "Rodolfo Nützmann - thirty years in enterprise networking and security"
+    "metaTitle": "Rodolfo Nützmann - thirty years in enterprise networking and security",
+    "advise": {
+      "title": "How I advise",
+      "body": "Thirty years of first-hand experience with decisions that carry business or mission consequences: which technology to adopt, what to enable, what to improve, and what the adoption will actually cost in practice rather than on the slide. What I bring to a board or a steering committee is a structured, methodical and neutral analysis - the diagnosis, the options, the cautions, the risks, and what each one would take to carry out. Neutral is the operative word: I hold authorized instructor status across four platforms and no sales quota on any of them, so the recommendation is not the product of a commission. The impact is for the business to tell, and I would rather be judged on that than on the deck."
+    }
   },
   "endorsements": {
     "eyebrow": "Endorsements",
@@ -7563,7 +7571,7 @@
     "s3Body": "Technical skill is built by doing, so every course has hands-on labs on real systems, backed by managed lab environments where practice always has somewhere real to happen. For people who already know the fundamentals and came to get their hands on the technology, that is exactly what they are here for, and it is time well spent. For those newer to it, the time goes first into the foundations the labs rest on, so the hands-on work makes sense rather than being followed by rote. Both are equally valuable, and the balance simply shifts with the room. The format adapts to the audience: virtual instructor-led training delivered globally, in-person when that serves better, in English or Portuguese. Either way, people should leave with something real and useful in hand and a real understanding of why it works.",
     "s4Title": "Recognized, certified, and current",
     "s4Body": "F5 DevCentral MVP for three consecutive years, in 2022, 2023, and 2024. F5 certifications held since 2015, and instructor authorization across F5, Extreme Networks, Fortinet and Netskope. Delivery is truly global, reaching Asia-Pacific including Australia, New Zealand, Singapore, the Philippines, India and Bangladesh, Europe including the United Kingdom, the Netherlands, Belgium, Germany, Poland, Switzerland and Norway, the Middle East and Africa including the United Arab Emirates and Ghana, Latin America including Brazil, Mexico and Colombia, and North America including Canada and the United States, through Red Education, a premier global authorized training center for the main cybersecurity and enterprise networking vendors.",
-    "platformsTitle": "What I teach",
+    "platformsTitle": "Official vendor training I currently teach",
     "platformsBody": "Official, certified instructor-led training across the platforms at the center of modern networking and security. Each links to its full course catalog.",
     "historyTitle": "Three decades, one through-line",
     "historyBody": "From building computers as a teenager in 1991, through formal teaching as part of every technical role since 1997, to full-time global instruction from 2020. The teaching is not the recent part; the exclusivity is. The whole story is worth reading if you want to understand the experience behind it.",
@@ -7612,7 +7620,7 @@
     "formTopic": "What's this about?",
     "topicTraining": "Official training",
     "topicCustom": "Custom program for a team",
-    "topicAdvisory": "Advisory & consulting",
+    "topicAdvisory": "Executive advisory",
     "topicOther": "Something else",
     "formMessage": "Your message",
     "formSend": "Send message",
@@ -8486,7 +8494,8 @@
     },
     "devFunTitle": "Back to /dev/fun",
     "fullscreenEnterAria": "Enter full screen",
-    "fullscreenExitAria": "Exit full screen"
+    "fullscreenExitAria": "Exit full screen",
+    "sizeLabel": "Card size"
   },
   "devFun": {
     "metaTitle": "/dev/fun",
@@ -16914,6 +16923,39 @@
       "danny-cohen": {
         "def": "The engineer who put real-time voice and video onto a packet network in 1973, by adapting a flight simulator.",
         "context": "The ARPANET was built to move files and messages, where arriving late is an inconvenience. He adapted a visual flight simulator to run across it, which requires the opposite property: a packet that arrives late is worse than one that never arrives at all. That is the first application of packet switching to real time, and every argument since about jitter buffers, quality of service and whether the internet can carry a phone call descends from someone attaching a simulator to a research network to see what would happen."
+      },
+      "peter-eckersley": {
+        "def": "The EFF technologist who co-founded Let's Encrypt, and so removed the price of encrypting a website.",
+        "context": "Two of this catalogue's threads meet in one person. The certificate article argues that encryption stayed off most of the web because it was a budget line and a chore, and that removing both changed the security posture of the internet more than any protocol did - he is who removed them, beginning with a conversation at a conference in 2012 about automating the thing everyone did by hand. And the site's own fingerprint demonstration belongs to a genre he invented at the EFF, where showing a person exactly what a tracker could read about them turned out to argue the case better than any explanation. He died in 2022, at 43. An obituary put the first achievement plainly: deprecating a billion-dollar industry overnight, and leaving better security behind for everyone."
+      },
+      "douglas-comer": {
+        "def": "The Purdue professor who wrote the books that taught a generation how the internet actually works.",
+        "context": "His citation is worth reading carefully, because of what it honours. A hall of fame otherwise full of people who invented protocols admitted someone for EXPLAINING them: the first series of textbooks setting out the scientific principles under the design, and the earliest formal guidance for building things that use it. The three volumes appeared in 1987 and went into sixteen languages. He did plenty besides - an original Internet Architecture Board member, an early network offering connections before ISPs existed, Cisco's first head of research - but the record puts the teaching first. One detail measures what those editions spanned: the first was written when the internet connected about five thousand computers, and by the fourth it was over fifty-six million. The same book, revised across four orders of magnitude of the thing it described."
+      },
+      "randy-bush": {
+        "def": "The operator who spent forty years helping other countries build their own networks, and who later went after the routing system's security.",
+        "context": "He was in the inaugural Hall of Fame class, and not for inventing anything: the citation is for the Network Startup Resource Center, which began in 1988 as volunteering when engineers in Africa and Latin America asked for help getting connected. His account of the motive is unsentimental - there were capable scientists going out of date because they were isolated - and so is his description of the era: the internet then was scientists and non-governmental organisations, not social media.",
+        "depth": "The model was the important part. The centre works with local engineers who run their own infrastructure, supplying training, technical information and donated equipment rather than operating anything itself. That is the difference between building a network for somewhere and leaving one behind, and it is the same distinction the entry on Africa's connection turns on: what is scarce is rarely the technical work, it is the surrounding apparatus, and an outsider can either supply that permanently or help build it locally.\n\nHe did a great deal besides. He was Verio's founding engineer, chaired the IETF's DNS working group for a decade, sat on ARIN's founding board, and helped start NANOG and AFRINIC. From 2000 he turned to the question of whether the routing system can be trusted at all, catalysing the work that became RPKI - which is a fitting second act for someone who spent the previous decade helping people join a network on the assumption that its routing told the truth."
+      },
+      "ira-fuchs": {
+        "def": "The CUNY administrator who built the academic network for everyone the ARPANET had left out, starting with one link to Yale in 1981.",
+        "context": "He gave the motive himself, without dressing it up: he was envious of ARPANET users. The ARPANET served defence-funded mathematics and physics, and the rest of the university - the humanities, the liberal arts, everyone without the right grant - had nothing. So he built a network whose entry condition was that you agree to connect the next institution along. It reached 1,400 universities in 49 countries and was the first academic network to reach Japan, Israel, the USSR and most of western Europe. The name began as Because It’s There and became Because It’s Time, he said, because it sounded better. And the origin is the detail worth keeping: he traced the whole idea to being a teenager with a ham radio in Queens, talking to strangers across the world from his bedroom - the same article of faith, applied to institutions instead of individuals."
+      },
+      "adiel-akplogan": {
+        "def": "The Togolese engineer who helped bring the first TCP/IP connection to his country, then built the registry that allocates addresses for a continent.",
+        "context": "The Quaynor entry notes that connecting Africa meant assembling the institutions alongside the infrastructure. This is what that looked like in one career. He helped establish Togo's first TCP/IP connection in 1996, worked on several of the earliest West African providers, advised the internet development strategy of half a dozen countries, and then in 2003 helped found AFRINIC - the body that decides who gets which addresses across Africa - and ran it for a decade. He intended to stay two years. The origin is worth keeping because it is so unlike the usual founding story: an intern, promised a permanent job if he could fix what others could not, who worked three days and nights and produced a working prototype on French Minitel technology. He called that the start of the journey to the internet in Togo."
+      },
+      "kees-neggers": {
+        "def": "The Dutch network director behind the first European backbone, and behind the exchange that made Amsterdam a place traffic goes.",
+        "context": "Ebone, which he led in 1991, was Europe's first cross-border backbone, and its founding idea is the one worth carrying: Open Exchanges - neutral places where any network could meet any other, rather than a hierarchy of who buys transit from whom. The exchange point entry for Glenn Ricart describes that room in the abstract; he is a large part of why Europe ended up with several, and why Amsterdam in particular became somewhere the world's traffic passes through rather than around. The list under his name is almost entirely institutions - RARE, TERENA, the RIPE registry, the Amsterdam exchange, a fibre consortium - which is the same shape as the other entries here whose work was making arrangements between organisations hold."
+      },
+      "mike-jensen": {
+        "def": "The engineer who spent decades connecting the organisations nobody was going to connect commercially.",
+        "context": "His networks served the nonprofit sector first, which is an unusual starting point: most connectivity arrives because somebody expects to bill for it, and his did not. The Association for Progressive Communications, which he helped found in 1992, exists on that premise still. And the method in the citation is worth noting because it is so unglamorous - he travelled the continent, organisation by organisation, helping each one get online or get a better link. There is no protocol here and no product. It is the observation that a network reaches wherever somebody was willing to go and do the work, which is why coverage maps have always tracked effort as much as economics."
+      },
+      "karen-banks": {
+        "def": "The GreenNet engineer whose gateway carried mail for sixty partner organisations across three continents, using the wrong technology on purpose.",
+        "context": "GnFido ran on store-and-forward - fidonet and uucp - rather than a permanent internet link, because for most of its correspondents no permanent link existed or could be afforded. It was the inferior technology by every measure except the one that mattered, which was that it worked where the better one did not, and for thousands of people it was the only affordable electronic communication available. In 1995 the programme she helped found took forty women to the UN conference in Beijing and gave ten thousand delegates email and web access, some of them for the first time in their lives; the same group then got communications written into the Beijing Platform for Action, the first intergovernmental policy to treat women's access to these technologies as a matter of rights. Her own summary of thirty years is the line to keep: it is one thing to have access to the technologies and the pipes, but it is the people who make the network."
       }
     },
     "totalCount": "{count} terms",
@@ -17552,35 +17594,35 @@
   "advisory": {
     "eyebrow": "Advisory",
     "title": "Independent advice on network and security decisions.",
-    "lede": "Thirty years inside the vendors, distributors and integrators that serve enterprise networks — spent arguing the customer's case from that side of the table. Offered here as judgement on decisions that have not been made yet: you get a decision you can defend, the reasoning behind it, and the evidence to take to whoever has to approve it.",
+    "lede": "Thirty years on the supply side of enterprise networking and security, seen from every angle it can be seen from: inside vendors, inside value-added resellers and distributors, inside consulting practices, and directly across the table from the customer. Offered here as judgement on decisions that have not yet been made, at the level where they are actually taken.",
     "availabilityTitle": "Available, not packaged",
     "availabilityBody": "This is not a product catalogue. The work below describes the kinds of question I am useful on; the shape of any particular engagement is agreed before it starts. If what you need is close to one of these but not the same, that is usually fine and worth a conversation.",
     "scopeTitle": "What this is, and what it is not",
     "scopeIn": "Judgement on a decision: reviewing a design before the budget is committed, writing the specification, assessing somebody else's proposal, choosing between options, or explaining after the fact why something failed and what should change.",
     "scopeOutTitle": "Not offered here",
-    "offersTitle": "Where I bring the most value",
+    "offersTitle": "Executive advisory",
     "offerReviewTitle": "Design and architecture review",
-    "offerReviewBody": "An independent read of a proposed design before it is built and paid for. What it assumes, where it will strain, what it will cost to operate, and which parts are decisions rather than defaults.",
+    "offerReviewBody": "Reading a proposed design before it is built and paid for: what it assumes, where it will strain, what it will cost to operate rather than to buy, and which of its assumptions are load-bearing. The failures that matter are rarely in the product; they are in what the design took for granted.",
     "offerSpecTitle": "Specification and RFP authoring",
-    "offerSpecBody": "Writing what to ask for. A request for proposal (RFP) that describes the outcome precisely enough to be scored, rather than one assembled from a vendor's own datasheet.",
+    "offerSpecBody": "Writing what to ask for. A specification or request for proposal that describes the outcome precisely enough to be scored fairly - and closes the gaps a supplier would otherwise be free to interpret in their own favour. Most bad procurement is decided at this stage rather than at the bid.",
     "offerAssessTitle": "Independent assessment of a proposal",
-    "offerAssessBody": "You have a quotation and a diagram from a supplier and no neutral way to judge either. A second reading, in writing, with the questions worth putting back to them.",
+    "offerAssessBody": "A neutral second reading of a supplier's quotation and diagram, in writing: what is actually being proposed, what it leaves out, what it assumes about the environment it will land in, and which questions to put back before anything is signed.",
     "offerSelectTitle": "Technology and vendor selection",
-    "offerSelectBody": "Stay or move, consolidate or keep two, on-premises or as a service. A defined question, the trade-offs stated in both directions, and a recommendation that says which way and why.",
+    "offerSelectBody": "Stay or move, consolidate or keep two, on-premises or as a service. A defined question, the trade-offs stated in the terms of the organisation rather than the vendor's, and a defensible answer with the reasoning attached - so the decision survives the person who made it.",
     "offerPostmortemTitle": "Post-incident review",
-    "offerPostmortemBody": "Not incident response. The review afterwards, when the fire is out and somebody has to give an honest account of what happened and what should change. Scheduled work, weeks after the event, written for an audience that includes people who were not in the room.",
-    "independenceTitle": "Why independent matters here",
-    "independenceBody": "I hold current instructor authorizations across four vendors' platforms and sell none of them. There is no product on this side of the table, no quota, and no partner margin behind the recommendation.",
+    "offerPostmortemBody": "Not incident response - the review afterwards, when the fire is out and somebody has to give an honest account of what happened and what would prevent it recurring. Written to be read by people who were not there, and without the search for someone to blame that makes most such documents useless.",
+    "independenceTitle": "Why independence is the load-bearing part",
+    "independenceBody": "The literature on advisory relationships puts trustworthiness as credibility, reliability and candour, all divided by self-interest - and it is the division that decides the result. A large denominator ruins an otherwise excellent numerator, which is why an expert with something to sell is worth less than a competent one with nothing to sell.\n\nSo the relevant fact here is not the thirty years. It is that I hold current instructor authorizations across four vendors' platforms and sell none of them: no product on this side of the table, no quota, no partner margin behind the recommendation, and no version of this engagement that pays me more if you buy one thing rather than another. You can verify each authorization independently, which is the point of naming them.",
     "howTitle": "How an engagement runs",
     "howStep1": "A conversation about the decision you are facing, at no charge, to establish whether I am the right person for it.",
     "howStep2": "A written scope: the question, the deliverable, the dates and the fee. Fixed price per engagement rather than by the hour.",
     "howStep3": "The work, with access to whoever holds the technical detail.",
     "howStep4": "A written answer you can circulate internally, and a call to walk through it.",
     "ctaTitle": "If there is a decision on your desk",
-    "ctaBody": "The useful first message says what the decision is and when it has to be made.",
+    "ctaBody": "Write to me directly. This is my own practice, so the first conversation is with the person who will do the work, not with an account manager. The useful first message says what the decision is, who has to sign it, and when.",
     "ctaButton": "Start a conversation",
     "disclaimerTitle": "Before you read further",
-    "disclaimerBody": "I work full time for Red Education. The advisory work described on this page is delivered personally by me and contracted through Red Education. The one thing I cannot tell you about is pricing: that comes only after a detailed scoping and expectations call, and is provided exclusively by Red Education. What I can tell you is that I will be the main advocate for the best possible outcome for you. Since 1996 I have consistently argued for what serves the end customer, not necessarily for what served the company I was working for at the time. Right is right, and fair is fair. If you need training, that goes through Red Education too.",
+    "disclaimerBody": "I work full time for Red Education. The advisory work described on this page is delivered personally by me <amber>and contracted through</amber> Red Education. The one thing I cannot tell you about is pricing: that comes only after a detailed scoping and expectations call, and is provided exclusively by Red Education. What I can tell you is that I will be the main advocate for the best possible outcome for you. Since 1996 I have consistently argued for what serves the end customer, not necessarily for what served the company I was working for at the time. Right is right, and fair is fair. If you need training, that goes through Red Education too.",
     "exclusion1Term": "Implementation and configuration",
     "exclusion1Body": "I will review what is planned and audit what was built, but I am not the pair of hands that builds it.",
     "exclusion2Term": "On-call, standby, and operational duty",
@@ -17588,16 +17630,26 @@
     "exclusion3Term": "Staff augmentation",
     "exclusion3Body": "If what is needed is another person on the team, that is a hiring decision rather than an advisory one.",
     "exclusion4Term": "Training and enablement, in any form",
-    "exclusion4Body": "Every course, workshop and certification path I deliver is delivered through Red Education. Custom and tailored training is welcome — ask Red Education and it reaches me.",
+    "exclusion4Body": "Training is not sold from this page. I deliver official instructor-led courses under vendor authorization, and that is a separate engagement with its own scheduling and its own terms - ask and I will point you to it. What is offered here is judgement on a decision, not a curriculum.",
     "offerSpeakingTitle": "Speaking engagements",
     "offerSpeakingBody": "Conference talks, keynotes, and internal sessions on where this industry came from, what it was like to be in it, and how that compares with now — plus a little futurology about where the professional roles and the work itself are heading. Prepared talks, and custom subjects by arrangement.",
     "advisorEyebrow": "Your advisor",
-    "advisorBody": "I have spent thirty years employed by vendors, distributors and integrators — implementing, supporting, deploying and teaching what they sell rather than selling it. That is the whole basis of the advice: my job was to make the thing work for the customer afterwards, so I have had to live with the answer. The credentials, the career record and what past clients and students say are a click away.",
+    "advisorBody": "Thirty years on the supply side of enterprise networking and security, from inside vendors, value-added resellers and distributors, consulting practices, and direct engagements with the customer - implementing, supporting, deploying and teaching what those companies sell, rather than selling it. That is the whole basis of the advice: my job was to make the thing work afterwards, so I have always had to live with the answer. This practice is my own, the analysis is mine, and I put my name on it. The credentials, the career record and what past clients and students say are a click away, because a claim you cannot check is not worth making.",
     "advisorLinkCreds": "Credentials",
     "advisorLinkCareer": "Career record",
     "advisorLinkEndorsements": "What clients say",
     "offerEstateTitle": "Network and systems estate review",
-    "offerEstateBody": "An inventory that becomes a map. What is connected, what each thing actually does, what depends on it, and which of those relationships exist only in somebody's memory. Delivered as a written record with a diagnosis — what is fragile, what is unowned, what is duplicated, what will not survive its next change — and, where wanted, a prioritised plan for putting it right."
+    "offerEstateBody": "An inventory that becomes a map: what is connected, what each thing actually does, what depends on it, and which parts nobody can currently explain. Named a review rather than an audit, because audit carries assurance meaning this does not claim. Most estates contain something load-bearing that no one has looked at in years.",
+    "offersLede": "One offer, stated plainly, for the decision that has consequences.",
+    "offerExecutiveTitle": "Executive-level technical advisory for mission-critical decisions",
+    "offerExecutiveBody": "For the board, the steering committee or the executive who has to commit to a direction on technology adoption, digital transformation, or enabling and improving a service - and who needs the technical reality of that decision stated by someone with nothing to sell. The deliverable is a structured, methodical and neutral analysis: the diagnosis, the options with their trade-offs, the cautions, the risks, and what each path would actually take to carry out. Written to be circulated and defended internally, not presented and forgotten. What it does not include is a recommendation shaped by a commission, because there is no commission - I hold authorized instructor status across four platforms and a sales quota on none of them. The impact is for the business to tell.",
+    "secondaryTitle": "Also available",
+    "recordTitle": "Where this comes from",
+    "recordBody": "I spent the first twenty-four years of my career, from 1996 to 2020, doing this work for leading organisations across many segments: financial institutions, government agencies, service providers of every sort, large multinational conglomerates in commerce and services, and industry across a wide range. Delivered, been responsible for, overseen, collaborated on, led and taken part in - many times over, from inside vendors, distributors and integrators. These engagements are no longer what I sell. They are what the advice above is made of, and they are listed here so you can judge whether that foundation is the right one for your decision.",
+    "earnTitle": "What I will not do",
+    "earnBody": "I will not tell you what to do before I understand your situation, and the first conversation exists to establish whether I can be useful at all - including the answer that I cannot, or that the question is better put to someone else. An advisor who is certain before they have listened is selling something. If the honest answer is that your existing supplier is right, that is the answer you will get in writing, and it will be the most valuable sentence in the document.",
+    "problemTitle": "The problem this exists for",
+    "problemBody": "Organisations are being asked to make decisions about technology that their own business models did not prepare them to make, at a pace that does not allow the expertise to be hired and grown in-house first. The result is familiar: the decision gets made from the material supplied by the people selling into it, because that is the only material in the room. Every diagram is drawn by someone with a quota behind it, every reference is chosen, and the internal team - who may be excellent - is being asked to referee a game where they only see one side's playbook.\n\nThat is the gap this practice exists to close, and nothing more. Not to replace the team, not to run the project, and not to become another supplier with a diagram: to put an independent, experienced technical reading in front of the people who have to sign, in time for it to change the decision rather than explain it afterwards."
   },
   "speaking": {
     "eyebrow": "Speaking",

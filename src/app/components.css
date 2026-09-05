@@ -16586,3 +16586,29 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   opacity: 0.55;
   min-width: 2px;
 }
+
+/* Amber emphasis inside a vendor-note body. Same token as the note's title and
+ * its left stripe, so the three read as one deliberate signal. */
+.vendor-note-emphasis { color: var(--accent-amber); font-weight: 600; }
+
+/* Bingo card-size picker (PRIME 2026-09-05). Same pill idiom as the other
+ * toggles on the site, so it needs no new visual language. */
+.bingo-sizes { display: inline-flex; gap: 0.35rem; }
+.bingo-size {
+  font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600;
+  padding: 0.35rem 0.6rem; border-radius: 999px; cursor: pointer;
+  color: var(--text-secondary); background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.12s, color 0.12s;
+}
+.bingo-size-on { border-color: var(--color-accent); color: var(--text-primary); }
+
+/* Bingo balls above the card. Decorative, hidden from assistive technology,
+ * and built only from semantic tokens so the six themes need no additions. */
+.bingo-art { display: block; width: 100%; max-width: 220px; height: auto; margin: 0 auto 0.75rem; }
+.bingo-art-ball { fill: var(--color-accent); opacity: 0.85; }
+.bingo-art-face { fill: var(--surface-elevated); }
+.bingo-art-num {
+  font-family: var(--font-mono); font-size: 15px; font-weight: 700;
+  fill: var(--text-primary);
+}

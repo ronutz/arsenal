@@ -66,28 +66,25 @@ export default async function AdvisoryPage({
   // frame this as AVAILABILITY rather than to lead with one specialism, because
   // he is employed full time and is not trying to build a single-offer funnel.
   // So: no ordering by preference, no "most popular", no highlighted card.
-  const offers = [
+  // THREE TIERS (PRIME 2026-09-05). The page used to present one flat list
+  // headed "Where I bring the most value", which was no longer true: the
+  // operational engagements below are where the value CAME FROM, over the first
+  // twenty-four years, and they are not what is being sold now. Splitting them
+  // says that plainly instead of letting a reader infer the wrong offer.
+  //
+  // Tier 1 is the offer. Tier 2 is a smaller, real offer kept deliberately
+  // below it. Tier 3 is the record that makes tier 1 credible.
+  const primaryOffer = { key: "offerExecutive" } as const;
+
+  const secondaryOffers = [{ key: "offerSpeaking" }] as const;
+
+  const trackRecord = [
     { key: "offerReview" },
     { key: "offerSpec" },
     { key: "offerAssess" },
     { key: "offerSelect" },
-    { key: "offerPostmortem" },
-    // Estate review, added 31/08/2026. It is the one offer here that produces a
-    // map rather than an opinion, and it is deliberately named REVIEW rather
-    // than audit: audit carries assurance and regulatory meaning that would
-    // attract expectations about independence certification and scope that this
-    // engagement does not claim.
     { key: "offerEstate" },
-    // REMOVED 31/08/2026: the by-arrangement tier — real-time presence during a
-    // migration window, a cutover or a planned failover. It was the one offer
-    // that pulled against everything else on this page: fixed-scope written
-    // deliverables, no hours sold, no rota. Attendance during an operation is
-    // hours by another name, at night and at weekends, and it was the item a
-    // client would anchor on. Where presence is genuinely needed, that is a
-    // referral rather than a line item here.
-    // Speaking, added 2026-08-06: it is a paid engagement like the others and
-    // was reachable only from the nav-less /speaking page.
-    { key: "offerSpeaking" },
+    { key: "offerPostmortem" },
   ] as const;
 
   return (
@@ -180,7 +177,21 @@ export default async function AdvisoryPage({
             <div className="container section-narrow">
               <div className="vendor-note">
                 <p className="vendor-note-title">{t("disclaimerTitle")}</p>
-                <p className="vendor-note-body"><ReduBrand>{t("disclaimerBody")}</ReduBrand></p>
+                {/* AMBER PHRASE (PRIME 2026-09-05). "and contracted through"
+                    is the contractual fact the rest of the paragraph turns on,
+                    so it carries the same amber as the card's title and stripe.
+                    t.rich keeps the phrase inside the translated string rather
+                    than splitting the sentence in the component, so translators
+                    can move it where their grammar needs it. */}
+                <p className="vendor-note-body">
+                  <ReduBrand>
+                    {t.rich("disclaimerBody", {
+                      amber: (chunks) => (
+                        <span className="vendor-note-emphasis">{chunks}</span>
+                      ),
+                    })}
+                  </ReduBrand>
+                </p>
               </div>
             </div>
           </section>
@@ -233,14 +244,66 @@ export default async function AdvisoryPage({
           </section>
 
           {/* The kinds of work */}
+          {/* THE PROBLEM (PRIME 2026-09-05, informed by the boutique-services
+              literature, whose opening chapter is THE PROBLEM - before the
+              client, the service or the go-to-market). The page described what
+              is offered without ever naming what it is for, which leaves a
+              reader to infer the need themselves. Placed above the offer,
+              because an answer only carries weight once the question is on the
+              table. */}
+          <section className="section section-accent">
+            <div className="container section-narrow">
+              <h2 className="section-title">{t("problemTitle")}</h2>
+              <p className="section-body" style={{ whiteSpace: "pre-line" }}>
+                {t("problemBody")}
+              </p>
+            </div>
+          </section>
+
+          {/* TIER 1 - the offer. Given its own section and full width so it
+              is not read as one card among several. */}
           <section className="section">
-            <div className="container">
+            <div className="container section-narrow">
               <h2 className="section-title">{t("offersTitle")}</h2>
-              {/* Reuses the learn-card pattern rather than introducing new
-                  classes (standing CSS rule: reuse only). These are not links -
-                  there is nowhere to go yet - so they render as plain cards. */}
+              <p className="section-body" style={{ marginBottom: "1.5rem" }}>
+                {t("offersLede")}
+              </p>
+              <div className="learn-card">
+                <h3 className="learn-card-title">{t(`${primaryOffer.key}Title`)}</h3>
+                <p className="learn-card-summary">{t(`${primaryOffer.key}Body`)}</p>
+              </div>
+            </div>
+          </section>
+
+          {/* TIER 2 - speaking. A real offer, deliberately placed and sized
+              below the advisory one. */}
+          <section className="section">
+            <div className="container section-narrow">
+              <h2 className="section-title">{t("secondaryTitle")}</h2>
               <ul className="learn-grid">
-                {offers.map(({ key }) => (
+                {secondaryOffers.map(({ key }) => (
+                  <li key={key} className="learn-grid-item">
+                    <div className="learn-card">
+                      <h3 className="learn-card-title">{t(`${key}Title`)}</h3>
+                      <p className="learn-card-summary">{t(`${key}Body`)}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+
+          {/* TIER 3 - the record. These are not on offer; they are what the
+              advice is made of. The heading says so, so that nobody reads the
+              list as a menu. */}
+          <section className="section section-accent">
+            <div className="container">
+              <h2 className="section-title">{t("recordTitle")}</h2>
+              <p className="section-body" style={{ marginBottom: "2rem", maxWidth: "70ch" }}>
+                {t("recordBody")}
+              </p>
+              <ul className="learn-grid">
+                {trackRecord.map(({ key }) => (
                   <li key={key} className="learn-grid-item">
                     <div className="learn-card">
                       <h3 className="learn-card-title">{t(`${key}Title`)}</h3>
@@ -265,6 +328,19 @@ export default async function AdvisoryPage({
                   independence argument stands on the first paragraph alone:
                   no product, no quota, no margin. */}
               <p className="section-body">{t("independenceBody")}</p>
+            </div>
+          </section>
+
+          {/* EARNING THE RIGHT (PRIME 2026-09-05, informed by the advisory
+              literature). The page was strong on credibility and thin on the
+              other terms of trustworthiness, which is the standard imbalance in
+              professional-services copy. This section is the counterweight: it
+              states what will NOT happen, which is the only kind of promise a
+              reader cannot check against a competitor's identical claim. */}
+          <section className="section">
+            <div className="container section-narrow">
+              <h2 className="section-title">{t("earnTitle")}</h2>
+              <p className="section-body">{t("earnBody")}</p>
             </div>
           </section>
 
