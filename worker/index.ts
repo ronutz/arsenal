@@ -42,7 +42,10 @@ import { evaluateGate, type GateContext } from "../src/lib/api-gates";
 // not in scope for wrangler's bundler.
 import { LOCALE_CODES, LIVE_LOCALE_CODES, DEFAULT_LOCALE } from "../src/i18n/locales";
 
-interface Env {
+import { record, type AnalyticsEnv } from "./analytics";
+import { handleStats, type StatsEnv } from "./stats";
+
+interface Env extends AnalyticsEnv, StatsEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
 }
 
@@ -137,6 +140,15 @@ export default {
     // CORS preflight.
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: CORS });
+    }
+
+    // ---- /api/stats/* : the site's own aggregate request counts -----------
+    // Read side of the counting described in worker/analytics.ts. Public
+    // routes are aggregated; full referring URLs are never published. See
+    // worker/stats.ts for why that distinction is drawn where it is.
+    {
+      const statsResponse = await handleStats(url, env);
+      if (statsResponse) return statsResponse;
     }
 
     // ---- /api/v1/<slug> : generic tool dispatch ----------------------------
@@ -358,6 +370,16 @@ export default {
       // construction. Ratified by PRIME in-chat 03/07/2026 after live
       // verification that the header is ignored (/f5 + pt-BR still -> /en/f5/).
       return Response.redirect(new URL(dest, url.origin).toString(), 301);
+    }
+
+    // Count the page view. Fire-and-forget: see worker/analytics.ts for why
+    // this is two disjoint rows rather than one wide one, and for the list of
+    // things that are never written. Wrapped so a collection fault can never
+    // affect the response.
+    try {
+      record(request, url, url.pathname.split("/")[1] ?? "", env);
+    } catch {
+      /* analytics must never break page delivery */
     }
 
     return env.ASSETS.fetch(request);

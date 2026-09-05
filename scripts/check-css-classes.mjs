@@ -72,7 +72,11 @@ for (const f of walk(PAGE_ROOT, (x) => x.endsWith(".tsx"))) {
 // So the number may only go DOWN. The fault that produced this guard cannot
 // recur, and the pre-existing ones can be cleared deliberately rather than in a
 // panic.
-const BASELINE = 21;
+// Ratchet. Lowered 21 -> 19 on 2026-09-05: adding the /stats rules to
+// components.css defined two names that had been used and undefined. The guard
+// itself asked for the drop, which is the point of a ratchet - it may only go
+// down, so ground regained cannot be quietly given back.
+const BASELINE = 19;
 
 const uniq = [...new Set(problems)];
 if (uniq.length > BASELINE) {

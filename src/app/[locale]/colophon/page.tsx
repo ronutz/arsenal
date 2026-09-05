@@ -277,6 +277,13 @@ export default async function ColophonPage({
                 <Link href="/roadmap" className="btn btn-secondary colophon-back">
                   {t("roadmapLink")} →
                 </Link>
+                {/* PRIME asked for the stats section to be reachable from
+                    here specifically, not only from the footer. It belongs
+                    with the other "how this was built and how it is doing"
+                    links rather than with the legal cluster. */}
+                <Link href="/stats" className="btn btn-secondary colophon-back">
+                  {t("statsLink")} →
+                </Link>
               </div>
             </div>
           </section>

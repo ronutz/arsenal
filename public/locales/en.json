@@ -6897,14 +6897,14 @@
     "title": "Your data, and what this site does with it",
     "lede": "A plain-language account of exactly what this website does and does not do with your information. It is written to be accurate rather than merely reassuring, because under regulations like the GDPR and Brazil's LGPD it is the accurate disclosure that matters.",
     "shortTitle": "The short version",
-    "short1": "This site sets no cookies, runs no analytics, uses no advertising, and contains no third-party trackers or fingerprinting. Nothing follows you across the web.",
+    "short1": "This site sets no cookies, uses no advertising, and contains no third-party trackers or fingerprinting. Nothing follows you across the web. It does count requests at the server, in aggregate, and that counting is described in full below.",
     "short2": "It does not sell, share, or build profiles of its visitors, and it asks you for nothing in order to read it.",
     "short3": "The interactive tools run entirely in your browser. What you paste or type into them stays on your device and is not transmitted anywhere.",
-    "short4": "Only three things involve data at all, and each is explained below: a single theme setting saved in your own browser, the standard connection logs that every website visit creates at the hosting layer, and any message you choose to send by email.",
+    "short4": "Only four things involve data at all, and each is explained below: a single theme setting saved in your own browser, the standard connection logs that every website visit creates at the hosting layer, the aggregate request counts this site keeps at the server, and any message you choose to send by email.",
     "controllerTitle": "Who is responsible",
     "controllerBody": "This is the personal website of Rodolfo Nützmann (ronutz.com). For any privacy question, or to exercise any of the rights described below, write to {email}. Enquiries are handled directly by Rodolfo Nützmann, as the data controller.",
-    "noTrackTitle": "No cookies, no tracking, no analytics",
-    "noTrackBody": "This site sets no cookies of any kind. It uses no analytics service (such as Google Analytics or Plausible), no advertising network, no social-media tracking pixels, and no device fingerprinting. Your visit is not measured, profiled, or shared with anyone for those purposes.",
+    "noTrackTitle": "No cookies, no third-party analytics, and what is counted instead",
+    "noTrackBody": "This site sets no cookies of any kind. It uses no third-party analytics service (such as Google Analytics or Plausible), no advertising network, no social-media tracking pixels, and no device fingerprinting. No script on the page reports anything about you.\n\nWhat the site does keep is a count, made at its own server as it answers each request. Two separate records are written, and they are deliberately kept apart so that neither can be matched to the other. The first records which page was served, the language, the visiting country as your network reports it, and whether the request came from a person or from a known crawler. The second records only a referring address, when your browser sends one, and carries nothing else at all - no page, no country, no time correlation with the first.\n\nYour IP address is never written. Your browser's user agent is never written; it is read only to decide whether the request came from a crawler, and the label kept is a category such as search engine or monitoring tool. No identifier of any kind is used, so there is no visitor to profile, no session to reconstruct, and nothing to share.",
     "browserTitle": "What is stored in your browser",
     "browserBody": "One small thing: your chosen visual theme, saved in your browser's local storage so the site can remember it the next time you visit. It is a convenience setting that stays on your own device, is never sent to this site or to anyone else, and can be cleared at any time through your browser. No other data about you is stored on your device.",
     "hostingTitle": "Hosting and server logs",
@@ -6947,7 +6947,8 @@
     "disclaimer": "Disclaimer",
     "glossary": "Glossary",
     "sitemap": "sitemap",
-    "blog": "Blog"
+    "blog": "Blog",
+    "stats": "Stats"
   },
   "search": {
     "kindTool": "Tool",
@@ -6995,9 +6996,7 @@
       "f5": "BIG-IP across the full instructor-led curriculum: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automation, and troubleshooting.",
       "fortinet": "Fortinet certified training across the NSE 4, 5 and 6 levels.",
       "extreme": "Extreme Networks switching, SD-WAN, and API and automation tracks, across installation, configuration, management, and troubleshooting.",
-      "netskope": "Netskope security cloud instructor-led training.",
-      "ping": "Ping Identity access management and federation.",
-      "zscaler": "Zscaler Zero Trust Exchange."
+      "netskope": "Netskope security cloud instructor-led training."
     },
     "path": {
       "title": "The path here",
@@ -7010,14 +7009,14 @@
       "juniper": "Channel support engineer and instructor for enterprise switches and firewalls. Technical sales enablement and Junos-SRX operations training.",
       "implementation": "Deploying and integrating security and network platforms for end customers, mostly under contracts held by resellers and occasionally direct. Juniper SSG, SRX, EX and Secure Access - the line that became MAG and then Pulse Secure - alongside Cisco ASA, Palo Alto Networks next-generation firewalls, and Extreme Networks Summit and BlackDiamond switches.",
       "f5channel": "Channel-facing sales and pre-sales engineering for F5, providing technical enablement, proof-of-concept execution, and partner training across distribution. Secondary work in the same years covered FireEye, McAfee, VMware, Ixia and Keysight, and Pulse Secure.",
-      "rededucation": "Authorized training instructor delivering official certified courses across F5, Fortinet, Extreme Networks, and Netskope to organizations worldwide. The teaching years began in 2020 with F5 courses as a fixed contractor to an authorized training centre in Brazil, widened in 2021 to Extreme Networks delivery on demand for authorized partners in Brazil and Poland, and settled at Red Education - contracted from 2021, full-time from September 2023.",
+      "rededucation": "Authorized training instructor delivering official certified courses across F5, Fortinet, Extreme Networks, and Netskope to organizations worldwide. Teaching has been part of the job since 1997, at every role since: internetworking at Cabletron, routing at Riverstone, switching and network access control at Enterasys, JUNOS at Juniper, and vendor enablement across the distribution years. What changed in 2020 is that it became the whole job - F5 courses as a fixed contractor to an authorized training centre in Brazil, widening in 2021 to Extreme Networks delivery on demand for authorized partners in Brazil and Poland, and settling at Red Education, contracted from 2021 and full-time from September 2023.",
       "fullHistory": "Read the full history",
       "vendorsLink": "The career record",
       "lineagesLink": "Vendor lineages & acquisitions"
     },
     "origins": {
       "title": "Where it started",
-      "body": "Before the formal career, there was the curiosity. Through the early 1990s I was importing and assembling computers, running and using bulletin board systems, and working across DOS, Unix, Linux, Netware, early Ethernet, X.25, and dial-up internet. By 1995 that hands-on work had become a first formal role building an electronic-data-interchange system. The thread from then to now is the same: take something genuinely complex and make it work, then make it make sense to someone else."
+      "body": "Before the formal career, there was the curiosity. Through the early 1990s I was importing and assembling computers, running and using bulletin board systems, and working across DOS, Unix, Linux, Netware, early Ethernet, X.25, and dial-up internet. By 1995 that hands-on work had become a first formal role building an electronic-data-interchange system. The thread from then to now is the same: take something genuinely complex, make it work, and make it make sense to someone else. Those have never been separate phases - the teaching started in 1997 and has run alongside every role since."
     },
     "approach": {
       "title": "How I teach",
@@ -7026,7 +7025,8 @@
     "cta": {
       "title": "Get in touch",
       "body": "If you have a training need, a decision you are weighing, or an event to fill, the useful first message says what it is and roughly when.",
-      "contactButton": "Get in touch"
+      "contactButton": "Get in touch",
+      "statsButton": "See what the site is asked for"
     },
     "credibility": {
       "certsEyebrow": "Verified",
@@ -7073,7 +7073,7 @@
   },
   "history": {
     "indexTitle": "The history",
-    "indexLede": "Three eras, one through-line: take something genuinely complex, make it work, then make it make sense to someone else.",
+    "indexLede": "Three eras, one through-line: take something genuinely complex, make it work, and make it make sense to someone else. The last part started in 1997 and never stopped; what changed was how much of the week it took.",
     "eraLabel": "Era",
     "backToHistory": "All eras",
     "backToAbout": "About",
@@ -7279,7 +7279,7 @@
     "era19962020": {
       "years": "1996 – 2020",
       "title": "The practitioner",
-      "subtitle": "Two decades inside the networking and security industry, building, breaking, and fixing the systems that later became the curriculum.",
+      "subtitle": "Two decades inside the networking and security industry, building, breaking and fixing the systems - and, from 1997, teaching them at every one of those roles.",
       "intro": "This is the long middle of the story, and the reason the teaching that came later carries weight. For roughly two decades, the work was implementation: designing networks, standing them up, troubleshooting them under pressure, and being the person called when something critical broke. The journey ran through some of the defining names in networking, on two continents.",
       "s1Title": "Cabletron and Enterasys, 1996 to 2000",
       "s1Body": "The formal career began in 1996 at Cabletron Systems, then a leading networking equipment vendor based in Rochester, New Hampshire. Over four and a half years, the role spanned field engineering and post-sales support, systems engineering and pre-sales, and, from 1997, certified instruction. The subject matter was the enterprise LAN and WAN of the era: switches, routers, Wi-Fi and WLAN, network management, NAC and UAC, and stateful-inspection firewalls. In 2000, Cabletron reorganized into four companies, and the part this career touched became Enterasys Networks.",
@@ -7296,7 +7296,7 @@
     "era2020present": {
       "years": "2020 – present",
       "title": "The instructor",
-      "subtitle": "Full-time technical training, delivered globally, expanding platform by platform.",
+      "subtitle": "The teaching stops sharing the week with anything else: full-time, official, delivered globally, expanding platform by platform.",
       "intro": "In 2020, a career-long thread became the whole cloth. After two decades where teaching accompanied every role, training became the work itself: full-time, official, certified instruction delivered to professionals and teams across the world. What makes this era distinct is not just the focus, but the deliberate, dated expansion across platforms, each one added on top of deep practitioner experience rather than in place of it.",
       "s1Title": "Full-time, by vocation",
       "s1Body": "Since 2020, the work has been delivering official instructor-led training, remotely and in person, in Portuguese and English, to audiences around the globe. The delivery reaches Australia, Singapore, India, Central Europe, the United States, and Brazil. Brazilian and German citizenship, together with travel clearance to the United States and the United Kingdom, make that global reach practical: unrestricted eligibility to work across the European Union and Mercosur, and the freedom to go where the classroom is.",
@@ -7479,7 +7479,7 @@
       "s1Body": "Two decades of this record run through firewalls, load balancers, and the perimeters they defended; Zscaler is the company that bet earliest that the perimeter would dissolve into a global inspection cloud. Studying the Zero Trust Exchange, ZIA, and ZPA architectures is the natural continuation of the SSE work already underway in the Netskope chapter, from the other side of the same market.",
       "s2Title": "Reading the TLS surface",
       "s2Body": "The JA4 and JA3 decoders on this site read the same TLS surface the Zero Trust Exchange inspects at scale: the handshake a client offers before any policy fires, and everything it reveals. It is a natural pairing - a cloud that terminates and inspects the world's TLS, and a toolbox that teaches what those handshakes say - with more of that tooling to follow.",
-      "certs": "Platform certifications will be recorded on the credentials page as they land."
+      "certs": "The credentials page carries the current certification record."
     },
     "pulse": {
       "name": "Pulse Secure",
@@ -7504,7 +7504,7 @@
       "s1Body": "Packet filtering existed before 1993 and stateful inspection was not a Check Point invention in the academic sense. What Check Point did was turn it into something you could buy, install and administer without building it yourself, and then wrap it in a management model that treated policy as a database rather than a device configuration. That second decision is the one that aged best. Thirty years later the separation of management server from enforcement point, and the idea that you publish a policy before you install it, is still the thing that surprises people arriving from other vendors - and it is still the model those vendors are compared against.",
       "s2Title": "Learning it backwards",
       "s2Body": "The CCSA and CCSE study guides on this site were written from Check Point's own published exam blueprints, and they are deliberately weighted toward what catches someone arriving from FortiGate or BIG-IP. That the rule base ends in an implicit drop that logs nothing. That policy layers are an AND rather than an OR, so accepting in one layer only means the traffic proceeds to the next. That publish and install are two separate actions and stopping after the first changes nothing. None of these is difficult; all of them are the kind of thing you learn once, usually by getting them wrong. Red Education is a Check Point Authorized Training Center, named Check Point Software Technologies Platinum Elite ATC Partner of the Year 2024, which is how this chapter opened.",
-      "certs": "Studying toward CCSA and CCSE. Certifications will be recorded on the credentials page as they land; the study guides here are study material and carry no delivery claim."
+      "certs": "The study guides here are study material. The credentials page carries the current certification record."
     },
     "nginx": {
       "name": "NGINX",
@@ -7566,7 +7566,7 @@
     "platformsTitle": "What I teach",
     "platformsBody": "Official, certified instructor-led training across the platforms at the center of modern networking and security. Each links to its full course catalog.",
     "historyTitle": "Three decades, one through-line",
-    "historyBody": "From building computers as a teenager in 1991, through two decades inside the networking and security industry, to full-time global instruction since 2020. The whole story is worth reading if you want to understand the experience behind the teaching.",
+    "historyBody": "From building computers as a teenager in 1991, through formal teaching as part of every technical role since 1997, to full-time global instruction from 2020. The teaching is not the recent part; the exclusivity is. The whole story is worth reading if you want to understand the experience behind it.",
     "historyCta": "Read the full history",
     "ctaTitle": "Let's work together",
     "ctaBody": "Whether you are looking to book official training, build a custom program for your team, or bring in experienced counsel on a hard problem, the door is open.",
@@ -7719,7 +7719,7 @@
     "p1Title": "Compute, never guess",
     "p1Body": "The tools on this site calculate answers locally and deterministically. They do not call a server with your input, and they do not approximate. What runs in your browser, stays in your browser.",
     "p2Title": "Open at the core",
-    "p2Body": "The deterministic logic each tool runs is the whole of the tool. There is no hidden server step, no account, and no telemetry. Everything runs in your browser.",
+    "p2Body": "The deterministic logic each tool runs is the whole of the tool. There is no hidden server step, no account, and nothing about your use of a tool is reported anywhere. Everything runs in your browser.",
     "p3Title": "Documented by construction",
     "p3Body": "Every part of the codebase is commented and documented, not as an afterthought but as a standing rule. The build is meant to be legible, to its maintainer and to anyone who inherits it.",
     "p4Title": "Built to last and to travel",
@@ -7759,7 +7759,7 @@
     "redblueLabel": "Red and blue",
     "redblueBody": "The same decode-and-explain that lets a red-teamer read a captured token lets a blue-teamer understand what their own stack is emitting. The platform deliberately sits on the analysis side of that line: it identifies, decodes, converts, and explains, and it stops short of forging, injecting, or defeating controls. That boundary is a design decision, not an oversight; these tools exist to teach and to diagnose, not to weaponize.",
     "localLabel": "Local and deterministic",
-    "localBody": "Everything runs in the browser. The tool calls a pure function: given the same input it returns the same output, holds no state, and sends nothing to a server. No cookies, no analytics, as the Privacy page sets out in full.",
+    "localBody": "Everything runs in the browser. The tool calls a pure function: given the same input it returns the same output, holds no state, and sends nothing to a server. No cookies and no third-party analytics; the site's own aggregate request counting is set out in full on the Privacy page.",
     "thanksTitle": "Special thanks",
     "limitsTitle": "The ceiling, stated plainly",
     "limitsBody1": "This site runs as a single Cloudflare Worker serving static assets, and that platform has hard, published limits worth being honest about. A Worker version may carry at most 20,000 static files on the free plan and 100,000 on the paid plan (raised from 20,000 in September 2025, and only when deploying with Wrangler 4.34 or newer), with no single file over 25 MiB. Requests for static assets themselves are free and unlimited; only invocations of the Worker script, such as the API, are metered.",
@@ -7770,7 +7770,8 @@
     "wordDef": "1. A note, traditionally at the end of a book, recording how it was made: who produced it, where, and with which tools and typefaces.",
     "wordExt": "2. By modern extension, a page on a website that explains how the site was built. In other words: this page.",
     "wordEty": "From the Greek kolophōn, via Latin: summit, finishing touch.",
-    "fableNote": "A note on Fable 5. It is the seat's intended engine, but only for a limited window on the current plan; after that it becomes pay-per-use, and the added cost means it will see little use here. In practice it also falls back to Claude Opus 4.8 for most of this work: ARSENAL's subject is network and application security, and the safeguards on Fable 5 route security-related requests to Opus 4.8, catching this content (sometimes as a false positive) because Fable 5 is currently gated from handling those subjects. So most of what stands here was built on Opus 4.8."
+    "fableNote": "A note on Fable 5. It is the seat's intended engine, but only for a limited window on the current plan; after that it becomes pay-per-use, and the added cost means it will see little use here. In practice it also falls back to Claude Opus 4.8 for most of this work: ARSENAL's subject is network and application security, and the safeguards on Fable 5 route security-related requests to Opus 4.8, catching this content (sometimes as a false positive) because Fable 5 is currently gated from handling those subjects. So most of what stands here was built on Opus 4.8.",
+    "statsLink": "How the site is doing"
   },
   "support": {
     "title": "Support the project",
@@ -15988,7 +15989,7 @@
       },
       "vint-cerf": {
         "def": "The co-designer, with Bob Kahn, of TCP/IP - the protocols that turned separate networks into one internet - and joint recipient of the 2004 Turing Award for the work.",
-        "context": "Cerf and Kahn did not invent a network; they invented the agreement that lets networks that were never designed for each other exchange packets, which is why the citation reads for internetworking rather than for a protocol. Born in New Haven in June 1943, Cerf has had a hearing impairment since early life and has attributed part of his interest in networking to its promise as another channel for people who cannot use a telephone easily - a detail worth keeping, because the most consequential communications protocol of the century was partly motivated by someone who found the existing one hard to use. He has spent the decades since as the most public advocate the internet has, which is a job nobody appointed him to."
+        "context": "Cerf and Kahn did not invent a network; they invented the agreement that lets networks that were never designed for each other exchange packets, which is why the citation reads for internetworking rather than for a protocol. Born in New Haven in June 1943, Cerf has had a hearing impairment since early life and has attributed part of his interest in networking to its promise as another channel for people who cannot use a telephone easily - a detail worth keeping, because the most consequential communications protocol of the century was partly motivated by someone who found the existing one hard to use. He has spent the decades since as the most public advocate the internet has, which is a job nobody appointed him to. He was inducted into the Internet Hall of Fame in its inaugural class of 2012, as a Pioneer."
       },
       "bob-kahn": {
         "def": "The co-designer of TCP/IP with Vint Cerf, and the 2004 Turing Award co-recipient, cited for the design and implementation of the internet's basic communications protocols.",
@@ -16000,7 +16001,7 @@
       },
       "radia-perlman": {
         "def": "The engineer who invented the spanning tree algorithm at Digital in the 1980s, making bridged Ethernet survivable, and who wrote the algorithm's poem.",
-        "context": "Her 1985 paper let bridges of arbitrary topology agree on a loop-free tree without a central authority, and the IEEE standardised it in 802.1D in 1990. Every switched network since has run a descendant. She wrote the specification with a poem attached, Algorhyme, whose first lines answer Joyce Kilmer: I think that I shall never see a graph more lovely than a tree. She also did the link-state work behind IS-IS. The nickname she is given, mother of the internet, obscures the actual contribution: not that she connected things, but that she made a redundant network safe to build, which is a different and harder problem."
+        "context": "Her 1985 paper let bridges of arbitrary topology agree on a loop-free tree without a central authority, and the IEEE standardised it in 802.1D in 1990. Every switched network since has run a descendant. She wrote the specification with a poem attached, Algorhyme, whose first lines answer Joyce Kilmer: I think that I shall never see a graph more lovely than a tree. She also did the link-state work behind IS-IS. The nickname she is given, mother of the internet, obscures the actual contribution: not that she connected things, but that she made a redundant network safe to build, which is a different and harder problem. She was inducted into the Internet Hall of Fame in 2014 and the National Inventors Hall of Fame in 2016."
       },
       "jon-postel": {
         "def": "The RFC Editor from 1969 until his death in 1998, author or editor of the RFCs that define IP, ICMP and TCP, and the first director of IANA - a job he volunteered for and at first did by hand.",
@@ -16116,7 +16117,7 @@
       },
       "van-jacobson": {
         "def": "The author of Congestion Avoidance and Control, the 1988 work that gave TCP the algorithms - slow start, congestion avoidance, fast retransmit - that stopped the internet collapsing under its own load.",
-        "context": "In the mid-1980s the network suffered congestion collapse: throughput between two sites fell by three orders of magnitude, because every sender responded to loss by retransmitting harder. His fix was to make each sender infer the state of a network it cannot see, from the only evidence it has - the timing and loss of its own packets - and to back off. That inference is still what every TCP connection does. It is also why a link can be busy while nothing feels fast, and why bufferbloat took decades to be recognised as the same problem wearing a different hat."
+        "context": "In the mid-1980s the network suffered congestion collapse: throughput between two sites fell by three orders of magnitude, because every sender responded to loss by retransmitting harder. His fix was to make each sender infer the state of a network it cannot see, from the only evidence it has - the timing and loss of its own packets - and to back off. That inference is still what every TCP connection does. It is also why a link can be busy while nothing feels fast, and why bufferbloat took decades to be recognised as the same problem wearing a different hat. He was in the inaugural 2012 class of the Internet Hall of Fame, inducted as an Innovator - the category for people whose contribution was a new use rather than the underlying architecture, which is a fair description of making an existing protocol survive its own success."
       },
       "nelson-murilo": {
         "def": "The author of chkrootkit, the rootkit detector that has been part of the Unix security toolkit since the late 1990s, and one of the three founders of the ISTS podcast and the YSTS conference.",
@@ -16861,6 +16862,58 @@
       "david-clark": {
         "def": "The architect who put the internet's governing philosophy into one sentence in 1992: no kings, no presidents, no voting - rough consensus and running code.",
         "context": "It is the most quoted line in internet governance and it is usually read as a slogan about openness. It is more useful read as a description of a decision procedure, and one with consequences this catalogue keeps recording: a system that advances by rough consensus and working implementations will adopt any improvement one party can deploy alone, and will stall on every improvement that requires everybody to agree at once. Secure routing, DNSSEC and email authentication all waited decades for exactly that reason. The sentence explains both why the internet could be built without permission and why parts of it cannot be repaired."
+      },
+      "tcl": {
+        "def": "Tool Command Language: a scripting language designed in 1988 to be embedded inside other people's programs, so that each tool would not invent a command language of its own.",
+        "context": "Ousterhout built it out of frustration that every tool he encountered had grown its own half-designed scripting language, and he shipped it as a C library precisely so an application could gain a scripting layer without recompiling. That design decision determined where it ended up: Tcl is rarely the language you choose for a project and frequently the language you find inside a product you bought. It is the scripting layer of network test equipment, the language F5 iRules are written in, and, through Don Libes's Expect extension of 1990, the way a generation automated devices that only offered a terminal. Anyone who learned it to drive one vendor's tool has usually found it waiting inside another one years later."
+      },
+      "expect": {
+        "def": "The Tcl extension, written by Don Libes in 1990, that automates programs which only offer an interactive terminal.",
+        "context": "It exists because a great deal of infrastructure has no interface except the one built for a human typing at a prompt. Expect drives that interface: wait for this text, send that text, handle the case where neither arrives. Every network automation effort before vendors shipped usable programmatic interfaces was some version of it, and a surprising amount of production tooling still is. The honest assessment is that screen-scraping a command line is fragile and was always the wrong shape, and that it was also the only thing available for two decades, which is why the skill outlived every prediction of its retirement."
+      },
+      "rfc-2544": {
+        "def": "The 1999 benchmarking methodology that defined how a network device's throughput, latency, frame loss and burst tolerance are to be measured.",
+        "context": "Its introduction is unusually blunt for a standards document: vendors engage in specsmanship, it says, involving smoke and mirrors to confuse the people buying their products. The whole methodology exists to make performance claims comparable, by fixing the frame sizes, the trial durations and the reporting so that two vendors' numbers mean the same thing. It also has a sequel worth knowing about: the IETF later published an applicability statement titled Use on Production Networks Considered Harmful, because a test that deliberately drives a device to its loss threshold does exactly that to whatever else is running."
+      },
+      "traffic-generation": {
+        "def": "Producing synthetic traffic with known properties in order to measure what a device or network does with it.",
+        "context": "The point is not volume, it is control: you know exactly what was sent, so anything missing, late or reordered is attributable. That is why the discipline sits closer to instrumentation than to networking, and why the equipment is bought by test labs, carriers accepting a circuit, and vendors who must publish a number. The harder use is scenario recreation - reproducing a fault that happened once in production, under conditions you control, until it happens on demand. Most difficult problems are not solved by inspecting the broken system but by rebuilding the circumstances that broke it."
+      },
+      "line-rate": {
+        "def": "The theoretical maximum a link can carry for a given frame size - and the claim that benchmarking exists to check.",
+        "context": "It is a property of the medium and the frame size together, not of the interface speed alone, because per-frame overhead means small frames reach a lower bit rate than large ones on the same wire. This is why a device advertised at line rate may be honest at 1518-byte frames and nowhere near it at 64 bytes, and why any benchmark that does not state the frame size has not stated anything. The number a vendor prints and the number an operator measures usually differ for this reason rather than through dishonesty."
+      },
+      "werner-zorn": {
+        "def": "The Karlsruhe professor who connected Germany to the internet in 1984, and China three years later.",
+        "context": "He had been proposing the connection since 1982, and the first message - received by his colleague Michael Rotert on 3 August 1984 - was a welcome from MIT, making Germany the second country outside the United States to be reached. What he did next is the part usually left out: in 1987 he connected China to the same network through Germany. A national connection is normally told as a national achievement, and this one was performed twice by the same man for two countries, one of which was not his."
+      },
+      "jun-murai": {
+        "def": "The Keio professor who built Japan's first inter-university network in 1984 and the research consortium that followed it.",
+        "context": "JUNET came first, then WIDE, which carried the country's first real internet traffic over leased lines. The detail worth keeping is the route: Japan's international link to the United States was established through Hawaii, with help from the University of Hawaii - the same institution that had put a packet radio network across four islands thirteen years earlier because it could not lay cable. The place that solved its own isolation ended up being how somebody else's was solved."
+      },
+      "nii-quaynor": {
+        "def": "The Ghanaian scientist recognised for pioneering internet development across Africa.",
+        "context": "The technical work of connecting a country is largely the same everywhere; what differs is how much of the surrounding apparatus you have to build yourself. Where a European or Japanese pioneer could assume universities with budgets, existing leased circuits and a regulator that had heard of data, the equivalent work across much of Africa meant assembling the institutions alongside the infrastructure. That this catalogue can name the person who connected Germany and the person who connected Japan far more easily than the person who did comparable work for a continent is itself worth noticing."
+      },
+      "kanchana-kanchanasut": {
+        "def": "The computer scientist credited with bringing the internet to Thailand, and with obtaining the country's domain.",
+        "context": "Securing a country-code domain sounds administrative and is closer to foundational: it is the point at which a country stops being a set of hosts inside somebody else's namespace and becomes an addressable place with its own registry, its own policy and its own dispute over who runs it. Nearly every national internet story in this catalogue has that moment in it, and it is almost always accomplished by one or two academics doing paperwork nobody else understood the importance of."
+      },
+      "stephen-wolff": {
+        "def": "The programme director who built the American research backbone and, from the start, planned for it to stop needing him.",
+        "context": "Taking over NSFNET in 1986, he identified two needs at once: infrastructure for the academic community, and a strategy to put that infrastructure on a footing ultimately independent of federal funding. The mechanism was to push the regional networks toward commercial customers so that scale would lower everyone's costs. Federal support for the backbone ended in April 1995, on purpose. A public official whose stated objective was to make his own programme unnecessary is rare enough in any field to be worth recording, and the commercial internet is what that decision produced."
+      },
+      "david-farber": {
+        "def": "The organiser of CSNET, and one half of the 1981 agreement that let one network's traffic cross another's without anyone counting it.",
+        "context": "CSNET existed because most computer science departments were not eligible for the ARPANET, and the arrangement he negotiated with Robert Kahn let CSNET traffic ride ARPANET infrastructure on a statistical, no-metered-settlements basis. That phrase is worth pausing on. Two organisations agreed to carry each other's traffic without measuring or billing it, because measuring would have cost more than it was worth - and that principle, invented as an accounting convenience between two American agencies, is how networks interconnect worldwide to this day. His CSNET software is also what Karlsruhe used to bring Germany online three years later."
+      },
+      "glenn-ricart": {
+        "def": "The man who built the first place where separate networks met as equals, and who led the first TCP/IP implementation for the IBM PC.",
+        "context": "An exchange point is an unglamorous room where networks that do not own each other agree to hand over traffic, and it is the physical form of the interconnection principle. Before one exists, every pair of networks needs its own private arrangement; afterwards, joining once reaches everybody present. Every internet exchange since - and the entire peering economy that decides how traffic actually flows between continents - is that room repeated. The second achievement is easy to underrate: TCP/IP on the IBM PC is what moved the protocol off institutional machines and onto desks."
+      },
+      "danny-cohen": {
+        "def": "The engineer who put real-time voice and video onto a packet network in 1973, by adapting a flight simulator.",
+        "context": "The ARPANET was built to move files and messages, where arriving late is an inconvenience. He adapted a visual flight simulator to run across it, which requires the opposite property: a packet that arrives late is worse than one that never arrives at all. That is the first application of packet switching to real time, and every argument since about jitter buffers, quality of service and whether the internet can carry a phone call descends from someone attaching a simulator to a research network to see what would happen."
       }
     },
     "totalCount": "{count} terms",
@@ -17040,7 +17093,7 @@
     "explainersTitle": "The course explainers Red Education publishes",
     "explainersIntro": "Red Education writes an explainer for each platform it trains on: what the courses cover, what they lead to, and how they fit a career. Ten are published, and these are all of them, ordered with the platforms I teach first. Worth reading before you choose a course, because they say more about outcomes than a course outline does.",
     "explainersMine": "— a platform I deliver",
-    "explainersGap": "Read on 16 August 2026. Of the platforms I deliver, F5 and Extreme Networks have no explainer published at the time of reading; their vendor pages carry the course listings instead. Ping Identity and Zscaler are platforms I am working towards, not ones I teach.",
+    "explainersGap": "Read on 16 August 2026. Of the platforms I deliver, F5 and Extreme Networks have no explainer published at the time of reading; their vendor pages carry the course listings instead.",
     "jumpExplainers": "Course explainers",
     "articlesTitle": "What Red Education writes about",
     "articlesIntro": "Red Education runs a blog on certifications, careers and the state of security training. Their index is drawn after the page loads, so only the featured article can be linked directly from here; the rest are behind the index link below. Read on 16 August 2026.",
@@ -20279,5 +20332,36 @@
       "hacker-culture": "Hacker culture",
       "brazil": "Brazil"
     }
+  },
+  "stats_page": {
+    "eyebrow": "Statistics",
+    "title": "What this site is asked for",
+    "metaDescription": "The aggregate request counts ronutz.com keeps at its own server: pages served, humans versus crawlers by family, referring hosts, countries and languages. No cookies, no third-party analytics, no visitor identifiers.",
+    "lede": "A site that keeps counts and never shows them is asking to be taken on trust. These are the counts, published.",
+    "whatIsCounted": "What is counted, what is never written, and why the two records are kept apart is set out in full on the",
+    "privacyLink": "Privacy page",
+    "windowLabel": "Time window",
+    "window_24h": "24 hours",
+    "window_7d": "7 days",
+    "window_30d": "30 days",
+    "window_90d": "90 days",
+    "loading": "Reading the counts.",
+    "unconfigured": "Statistics are not configured on this deployment. The counting runs at the server; the reading endpoint needs its credentials before these panels can fill.",
+    "error": "The counts could not be read just now. Nothing is wrong with the page; the reporting endpoint did not answer.",
+    "noData": "Nothing recorded in this window.",
+    "sampledNote": "These figures are sampled and scaled, which is how the underlying store works; they are close rather than exact, and a number without its conditions is not a measurement.",
+    "referrerNote": "Aggregated to the referring site. The full referring addresses are not published here: they can carry other people's data, and receiving something is not a reason to broadcast it.",
+    "panelPages": "Pages served to people",
+    "panelClients": "People and automation",
+    "panelReferrers": "Where readers arrive from",
+    "panelCountries": "Countries",
+    "panelLocales": "Languages",
+    "col_path": "Page",
+    "col_client": "Client",
+    "col_host": "Referring site",
+    "col_country": "Country",
+    "col_locale": "Language",
+    "col_views": "Requests",
+    "itemLabel": "Read '{n}' times in the last 90 days."
   }
 }

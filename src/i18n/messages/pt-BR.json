@@ -6897,14 +6897,14 @@
     "title": "Seus dados, e o que este site faz com eles",
     "lede": "Uma explicação em linguagem clara do que exatamente este site faz e não faz com as suas informações. Foi escrita para ser precisa, e não apenas tranquilizadora, porque sob normas como o GDPR e a LGPD brasileira é a declaração precisa que importa.",
     "shortTitle": "A versão curta",
-    "short1": "Este site não usa cookies, não executa nenhuma análise (analytics), não usa publicidade e não contém rastreadores de terceiros nem fingerprinting. Nada o segue pela web.",
+    "short1": "Este site não usa cookies, não usa publicidade e não contém rastreadores de terceiros nem impressão digital de dispositivo. Nada segue você pela web. Ele conta requisições no servidor, de forma agregada, e essa contagem está descrita por inteiro abaixo.",
     "short2": "Ele não vende, compartilha nem cria perfis de seus visitantes, e não pede nada de você para que você o leia.",
     "short3": "As ferramentas interativas funcionam inteiramente no seu navegador. O que você cola ou digita nelas permanece no seu dispositivo e não é transmitido a lugar nenhum.",
-    "short4": "Apenas três coisas envolvem dados, e cada uma é explicada abaixo: uma única configuração de tema salva no seu próprio navegador, os registros (logs) de conexão padrão que toda visita a um site gera na camada de hospedagem, e qualquer mensagem que você escolha enviar por e-mail.",
+    "short4": "Apenas quatro coisas envolvem dados, e cada uma está explicada abaixo: uma única preferência de tema salva no seu próprio navegador, os registros de conexão padrão que toda visita a um site cria na camada de hospedagem, as contagens agregadas de requisição que este site mantém no servidor, e qualquer mensagem que você escolha enviar por e-mail.",
     "controllerTitle": "Quem é o responsável",
     "controllerBody": "Este é o site pessoal de Rodolfo Nützmann (ronutz.com). Para qualquer questão de privacidade, ou para exercer qualquer dos direitos descritos abaixo, escreva para {email}. As solicitações são tratadas diretamente por Rodolfo Nützmann, na condição de controlador dos dados.",
-    "noTrackTitle": "Sem cookies, sem rastreamento, sem analytics",
-    "noTrackBody": "Este site não usa cookies de nenhum tipo. Ele não usa nenhum serviço de análise (como Google Analytics ou Plausible), nenhuma rede de publicidade, nenhum pixel de rastreamento de redes sociais e nenhum fingerprinting de dispositivo. A sua visita não é medida, perfilada nem compartilhada com ninguém para esses fins.",
+    "noTrackTitle": "Sem cookies, sem analytics de terceiros, e o que é contado no lugar",
+    "noTrackBody": "Este site não usa cookies de nenhum tipo. Não usa serviço de analytics de terceiros (como Google Analytics ou Plausible), nem rede de publicidade, nem pixel de rastreamento de rede social, nem impressão digital de dispositivo. Nenhum script na página reporta nada sobre você.\n\nO que o site mantém é uma contagem, feita no próprio servidor enquanto ele responde a cada requisição. Dois registros separados são escritos, e eles são mantidos apartados de propósito, para que nenhum possa ser casado com o outro. O primeiro registra qual página foi servida, o idioma, o país de visita conforme a sua rede o informa, e se a requisição veio de uma pessoa ou de um rastreador conhecido. O segundo registra apenas um endereço de origem, quando o seu navegador envia um, e não carrega mais nada - nem página, nem país, nem correlação de tempo com o primeiro.\n\nSeu endereço IP nunca é gravado. O agente de usuário do seu navegador nunca é gravado; ele é lido apenas para decidir se a requisição veio de um rastreador, e o que fica guardado é uma categoria, como buscador ou ferramenta de monitoração. Nenhum identificador é usado, então não há visitante a perfilar, não há sessão a reconstruir, e não há nada a compartilhar.",
     "browserTitle": "O que é armazenado no seu navegador",
     "browserBody": "Uma única coisa pequena: o tema visual que você escolher, salvo no armazenamento local (local storage) do seu navegador para que o site possa lembrá-lo na sua próxima visita. É uma configuração de conveniência que permanece no seu próprio dispositivo, nunca é enviada a este site nem a ninguém, e pode ser apagada a qualquer momento pelo seu navegador. Nenhum outro dado sobre você é armazenado no seu dispositivo.",
     "hostingTitle": "Hospedagem e registros de servidor",
@@ -6947,7 +6947,8 @@
     "disclaimer": "Aviso legal",
     "glossary": "Glossário",
     "sitemap": "sitemap",
-    "blog": "Blog"
+    "blog": "Blog",
+    "stats": "Estatísticas"
   },
   "search": {
     "kindTool": "Ferramenta",
@@ -6995,9 +6996,7 @@
       "f5": "BIG-IP em todo o currículo conduzido por instrutor: LTM, DNS, Advanced WAF (ASM), APM, AFM, SSL Orchestrator, automação e troubleshooting.",
       "fortinet": "Treinamento Fortinet certificado nos níveis NSE 4, 5 e 6.",
       "extreme": "Trilhas de switching, SD-WAN, e API e automação da Extreme Networks, passando por instalação, configuração, gerenciamento e troubleshooting.",
-      "netskope": "Treinamento conduzido por instrutor sobre a Netskope Security Cloud.",
-      "ping": "Gestão de acesso e federação Ping Identity.",
-      "zscaler": "Zscaler Zero Trust Exchange."
+      "netskope": "Treinamento conduzido por instrutor sobre a Netskope Security Cloud."
     },
     "path": {
       "title": "O caminho até aqui",
@@ -7010,14 +7009,14 @@
       "juniper": "Engenheiro de suporte de canal e instrutor para switches e firewalls corporativos. Capacitação técnica de vendas e treinamento operacional de Junos-SRX.",
       "implementation": "Implantação e integração de plataformas de segurança e rede para clientes finais, em geral sob contratos de revendas e ocasionalmente direto. Juniper SSG, SRX, EX e Secure Access - a linha que virou MAG e depois Pulse Secure - além de Cisco ASA, firewalls de nova geração da Palo Alto Networks e switches Summit e BlackDiamond da Extreme Networks.",
       "f5channel": "Vendas e pré-vendas voltadas ao canal para F5, com capacitação técnica, execução de provas de conceito e treinamento de parceiros na distribuição. Nos mesmos anos, trabalho secundário com FireEye, McAfee, VMware, Ixia e Keysight, e Pulse Secure.",
-      "rededucation": "Instrutor autorizado, ministrando cursos oficiais certificados de F5, Fortinet, Extreme Networks e Netskope para organizações no mundo todo. Os anos de ensino começaram em 2020 com cursos F5 como contratado fixo de um centro de treinamento autorizado no Brasil, se ampliaram em 2021 para entregas de Extreme Networks sob demanda para parceiros autorizados no Brasil e na Polônia, e se firmaram na Red Education - contratado desde 2021, em tempo integral desde setembro de 2023.",
+      "rededucation": "Instrutor autorizado, ministrando cursos oficiais certificados de F5, Fortinet, Extreme Networks e Netskope para organizações no mundo todo. Ensinar faz parte do trabalho desde 1997, em cada cargo desde então: interredes na Cabletron, roteamento na Riverstone, comutação e controle de acesso à rede na Enterasys, JUNOS na Juniper, e capacitação de canal ao longo dos anos de distribuição. O que mudou em 2020 é que aquilo virou o trabalho inteiro - cursos F5 como contratado fixo de um centro de treinamento autorizado no Brasil, ampliando em 2021 para entregas de Extreme Networks sob demanda para parceiros autorizados no Brasil e na Polônia, e se firmando na Red Education, contratado desde 2021 e em tempo integral desde setembro de 2023.",
       "fullHistory": "Ler a história completa",
       "vendorsLink": "O registro de carreira",
       "lineagesLink": "Linhagens e aquisições de fornecedores"
     },
     "origins": {
       "title": "Onde tudo começou",
-      "body": "Antes da carreira formal, veio a curiosidade. No início dos anos 1990, eu importava e montava computadores, operava e usava sistemas de bulletin board, e trabalhava com DOS, Unix, Linux, Netware, os primeiros Ethernet, X.25 e internet discada. Em 1995, esse trabalho prático já havia se tornado um primeiro emprego formal: a construção de um sistema de troca eletrônica de dados. O fio condutor de então até hoje é o mesmo: pegar algo realmente complexo e fazer funcionar, e depois torná-lo compreensível para outra pessoa."
+      "body": "Antes da carreira formal, veio a curiosidade. No início dos anos 1990, eu importava e montava computadores, operava e usava sistemas de bulletin board, e trabalhava com DOS, Unix, Linux, Netware, os primeiros Ethernet, X.25 e internet discada. Em 1995, esse trabalho prático já havia se tornado um primeiro emprego formal: a construção de um sistema de troca eletrônica de dados. O fio condutor de então até hoje é o mesmo: pegar algo realmente complexo, fazer funcionar, e torná-lo compreensível para outra pessoa. Nunca foram fases separadas - o ensino começou em 1997 e correu ao lado de cada cargo desde então."
     },
     "approach": {
       "title": "Como eu ensino",
@@ -7026,7 +7025,8 @@
     "cta": {
       "title": "Entre em contato",
       "body": "Se você tem uma necessidade de treinamento, uma decisão em avaliação, ou um evento a preencher, a primeira mensagem útil diz qual é e mais ou menos quando.",
-      "contactButton": "Fale comigo"
+      "contactButton": "Fale comigo",
+      "statsButton": "Veja o que pedem ao site"
     },
     "credibility": {
       "certsEyebrow": "Verificado",
@@ -7073,7 +7073,7 @@
   },
   "history": {
     "indexTitle": "A história",
-    "indexLede": "Três épocas, um fio condutor: pegar algo realmente complexo, fazer funcionar, e depois torná-lo compreensível para outra pessoa.",
+    "indexLede": "Três épocas, um fio condutor: pegar algo realmente complexo, fazer funcionar, e torná-lo compreensível para outra pessoa. Essa última parte começou em 1997 e nunca parou; o que mudou foi quanto da semana ela ocupava.",
     "eraLabel": "Época",
     "backToHistory": "Todas as épocas",
     "backToAbout": "Sobre",
@@ -7279,7 +7279,7 @@
     "era19962020": {
       "years": "1996 – 2020",
       "title": "Quem é da área",
-      "subtitle": "Duas décadas dentro da indústria de redes e segurança, construindo, quebrando e consertando os sistemas que mais tarde se tornaram o conteúdo programático.",
+      "subtitle": "Duas décadas dentro da indústria de redes e segurança, construindo, quebrando e consertando os sistemas - e, desde 1997, ensinando-os em cada um daqueles cargos.",
       "intro": "Este é o longo meio da história, e a razão de o treinamento que veio depois ter peso. Por cerca de duas décadas, o trabalho foi implementação: projetar redes, colocá-las no ar, resolver seus problemas sob pressão, e ser a pessoa que recebe a ligação quando algo crítico quebrava. A jornada passou por alguns dos nomes que definiram as redes, em dois continentes.",
       "s1Title": "Cabletron e Enterasys, 1996 a 2000",
       "s1Body": "A carreira formal começou em 1996 na Cabletron Systems, à época uma fabricante líder de equipamentos de rede sediada em Rochester, New Hampshire. Ao longo de quatro anos e meio, o cargo abrangeu engenharia de campo e suporte pós-venda, engenharia de sistemas e pré-vendas, e, a partir de 1997, instrução certificada. O assunto era a LAN e a WAN corporativa da época: switches, roteadores, Wi-Fi e WLAN, gerenciamento de rede, NAC e UAC, e firewalls de inspeção de estado. Em 2000, a Cabletron se reorganizou em quatro empresas, e a parte que tocou esta carreira virou Enterasys Networks.",
@@ -7296,7 +7296,7 @@
     "era2020present": {
       "years": "2020 – atual",
       "title": "O instrutor",
-      "subtitle": "Treinamento técnico em tempo integral, ministrado para o mundo todo, expandindo plataforma a plataforma.",
+      "subtitle": "O ensino deixa de dividir a semana com qualquer outra coisa: tempo integral, oficial, ministrado para o mundo todo, expandindo plataforma a plataforma.",
       "intro": "Em 2020, um fio presente por toda a carreira virou o tecido inteiro. Depois de duas décadas em que o ensino acompanhou cada cargo, o treinamento virou o trabalho em si: em tempo integral, oficial, instrução certificada ministrada para profissionais e equipes no mundo todo. O que distingue esta época não é só o foco, mas a expansão deliberada e datada pelas plataformas, cada uma somada sobre uma profunda experiência de campo, e não em seu lugar.",
       "s1Title": "Tempo integral, por vocação",
       "s1Body": "Desde 2020, o trabalho tem sido ministrar treinamento oficial conduzido por instrutor, remoto e presencial, em português e inglês, para audiências do mundo todo. A entrega alcança Austrália, Singapura, Índia, Europa Central, Estados Unidos e Brasil. As cidadanias brasileira e alemã, somadas à autorização de viagem para os Estados Unidos e o Reino Unido, tornam esse alcance global prático: elegibilidade irrestrita para trabalhar na União Europeia e no Mercosul, e a liberdade de ir até onde a sala de aula estiver.",
@@ -7479,7 +7479,7 @@
       "s1Body": "Duas décadas deste registro atravessam firewalls, balanceadores e os perímetros que eles defendiam; a Zscaler é a empresa que apostou mais cedo que o perímetro se dissolveria numa nuvem global de inspeção. Estudar as arquiteturas do Zero Trust Exchange, do ZIA e do ZPA é a continuação natural do trabalho de SSE já em andamento no capítulo Netskope, do outro lado do mesmo mercado.",
       "s2Title": "Lendo a superfície TLS",
       "s2Body": "Os decodificadores JA4 e JA3 deste site leem a mesma superfície TLS que o Zero Trust Exchange inspeciona em escala: o handshake que um cliente oferece antes de qualquer política disparar, e tudo o que ele revela. É um par natural - uma nuvem que termina e inspeciona o TLS do mundo, e uma caixa de ferramentas que ensina o que esses handshakes dizem - com mais desse ferramental a caminho.",
-      "certs": "As certificações da plataforma serão registradas na página de credenciais à medida que chegarem."
+      "certs": "A página de credenciais traz o registro atual de certificações."
     },
     "pulse": {
       "name": "Pulse Secure",
@@ -7504,7 +7504,7 @@
       "s1Body": "A filtragem de pacotes existia antes de 1993 e a inspeção com estado não foi invenção da Check Point no sentido acadêmico. O que a Check Point fez foi transformá-la em algo que se podia comprar, instalar e administrar sem construir você mesmo, e então envolvê-la num modelo de gerência que tratava a política como banco de dados, e não como configuração de equipamento. Essa segunda decisão foi a que envelheceu melhor. Trinta anos depois, a separação entre servidor de gerência e ponto de aplicação, e a ideia de que se publica uma política antes de instalá-la, ainda é o que surpreende quem chega de outros fabricantes - e ainda é o modelo com o qual esses fabricantes são comparados.",
       "s2Title": "Aprendendo de trás para frente",
       "s2Body": "Os guias de estudo do CCSA e do CCSE deste site foram escritos a partir dos blueprints de prova publicados pela própria Check Point, e são deliberadamente inclinados ao que pega quem chega de FortiGate ou BIG-IP. Que a base de regras termina num descarte implícito que não registra nada. Que as camadas de política são um E, e não um OU, então aceitar numa camada só significa que o tráfego segue para a próxima. Que publicar e instalar são duas ações separadas e parar na primeira não muda nada. Nenhuma delas é difícil; todas são do tipo que se aprende uma vez, normalmente errando. A Red Education é um Check Point Authorized Training Center, nomeada Check Point Software Technologies Platinum Elite ATC Partner of the Year 2024, e foi assim que este capítulo começou.",
-      "certs": "Estudando para CCSA e CCSE. As certificações serão registradas na página de credenciais à medida que chegarem; os guias de estudo aqui são material de estudo e não constituem afirmação de entrega."
+      "certs": "Os guias de estudo aqui são material de estudo. A página de credenciais traz o registro atual de certificações."
     },
     "nginx": {
       "name": "NGINX",
@@ -7566,7 +7566,7 @@
     "platformsTitle": "O que eu ensino",
     "platformsBody": "Treinamento oficial e certificado, conduzido por instrutor, nas plataformas no centro das redes e da segurança modernas. Cada uma leva ao seu catálogo de cursos completo.",
     "historyTitle": "Três décadas, um fio condutor",
-    "historyBody": "De montar computadores ainda adolescente em 1991, passando por duas décadas dentro da indústria de redes e segurança, até a instrução global em tempo integral desde 2020. Vale a pena ler a história completa se você quiser entender a experiência por trás do ensino.",
+    "historyBody": "De montar computadores ainda adolescente em 1991, passando pelo ensino formal como parte de cada cargo técnico desde 1997, até a instrução global em tempo integral a partir de 2020. O ensino não é a parte recente; a exclusividade é. Vale a pena ler a história completa se você quiser entender a experiência por trás dele.",
     "historyCta": "Ler a história completa",
     "ctaTitle": "Vamos trabalhar juntos",
     "ctaBody": "Seja para contratar um treinamento oficial, montar um programa sob medida para a sua equipe, ou trazer uma consultoria experiente para um problema difícil, a porta está aberta.",
@@ -7758,9 +7758,9 @@
     "redblueLabel": "Vermelho e azul",
     "redblueBody": "A mesma decodificação-e-explicação que permite a um red-teamer ler um token capturado permite a um blue-teamer entender o que a própria stack está emitindo. A plataforma fica deliberadamente do lado da análise dessa linha: ela identifica, decodifica, converte e explica, e não chega a forjar, injetar ou derrotar controles. Essa fronteira é uma decisão de projeto, não um descuido; estas ferramentas existem para ensinar e diagnosticar, não para servir de arma.",
     "localLabel": "Local e determinístico",
-    "localBody": "Tudo roda no navegador. A ferramenta chama uma função pura: dada a mesma entrada, ela retorna a mesma saída, não guarda estado e não envia nada para um servidor. Sem cookies, sem analytics, como a página de Privacidade detalha por completo.",
+    "localBody": "Tudo roda no navegador. A ferramenta chama uma função pura: dada a mesma entrada, devolve a mesma saída, não guarda estado e não manda nada para servidor. Sem cookies e sem analytics de terceiros; a contagem agregada de requisições do próprio site está descrita por inteiro na página de Privacidade.",
     "thanksTitle": "Agradecimentos especiais",
-    "p2Body": "A lógica determinística que cada ferramenta executa é a ferramenta inteira: não há etapa oculta no servidor, nem conta, nem telemetria. Tudo é executado no seu navegador.",
+    "p2Body": "A lógica determinística que cada ferramenta roda é a ferramenta inteira. Não há passo escondido em servidor, não há conta, e nada sobre o seu uso de uma ferramenta é reportado a lugar nenhum. Tudo roda no seu navegador.",
     "limitsTitle": "O teto, dito com clareza",
     "limitsBody1": "Este site roda como um único Cloudflare Worker servindo arquivos estáticos, e essa plataforma tem limites rígidos e publicados que merecem honestidade. Uma versão de Worker pode carregar no máximo 20.000 arquivos estáticos no plano gratuito e 100.000 no plano pago (elevado de 20.000 em setembro de 2025, e somente ao publicar com o Wrangler 4.34 ou mais novo), com nenhum arquivo acima de 25 MiB. As requisições aos próprios arquivos estáticos são gratuitas e ilimitadas; apenas as invocações do script do Worker, como a API, são medidas.",
     "limitsBody2": "Esses números importam porque esta arquitetura multiplica conteúdo de propósito. Cada página renderizada é publicada como cerca de três arquivos: seu HTML, o payload de navegação do framework e um fragmento do índice de busca, em todos os dezesseis idiomas, e as páginas em inglês e português ainda ganham gêmeas em Markdown legível por máquina. Na prática, uma ferramenta custa cerca de cinquenta arquivos e uma ferramenta com seu artigo companheiro cerca de cem, então o site atual está um pouco acima de dezoito mil arquivos. Sob o teto do plano pago, isso deixa espaço para centenas de ferramentas a mais; o build é medido contra esses limites e, se um dia a caixa de ferramentas realmente superar um único Worker, o caminho de expansão já está traçado: dividir rotas entre Workers adicionais, cada um com sua própria cota, e por fim armazenamento de objetos sem limite algum de contagem.",
@@ -7770,7 +7770,8 @@
     "wordDef": "1. Nota, tradicionalmente ao final de um livro, que registra como ele foi feito: quem o produziu, onde, e com quais ferramentas e tipografias.",
     "wordExt": "2. Por extensão moderna, a página de um site que explica como o site foi construído. Ou seja: esta página.",
     "wordEty": "Do grego kolophôn, pelo latim medieval: cume, acabamento.",
-    "fableNote": "Uma nota sobre o Fable 5. É o motor pretendido para este assento, mas apenas por uma janela limitada no plano atual; depois disso passa a ser pago por uso, e o custo adicional faz com que seja pouco usado aqui. Na prática, ele também recorre ao Claude Opus 4.8 na maior parte deste trabalho: o tema do ARSENAL é segurança de redes e de aplicações, e as salvaguardas do Fable 5 encaminham solicitações relacionadas a segurança para o Opus 4.8, capturando esse conteúdo (às vezes como falso positivo) porque o Fable 5 está atualmente impedido de tratar desses assuntos. Portanto, a maior parte do que está aqui foi construída com o Opus 4.8."
+    "fableNote": "Uma nota sobre o Fable 5. É o motor pretendido para este assento, mas apenas por uma janela limitada no plano atual; depois disso passa a ser pago por uso, e o custo adicional faz com que seja pouco usado aqui. Na prática, ele também recorre ao Claude Opus 4.8 na maior parte deste trabalho: o tema do ARSENAL é segurança de redes e de aplicações, e as salvaguardas do Fable 5 encaminham solicitações relacionadas a segurança para o Opus 4.8, capturando esse conteúdo (às vezes como falso positivo) porque o Fable 5 está atualmente impedido de tratar desses assuntos. Portanto, a maior parte do que está aqui foi construída com o Opus 4.8.",
+    "statsLink": "Como o site vai"
   },
   "support": {
     "title": "Apoie o projeto",
@@ -15988,7 +15989,7 @@
       },
       "vint-cerf": {
         "def": "O codesenhista, com Bob Kahn, do TCP/IP - os protocolos que transformaram redes separadas numa internet - e corecebedor do Prêmio Turing de 2004 pelo trabalho.",
-        "context": "Cerf e Kahn não inventaram uma rede; inventaram o acordo que permite a redes jamais desenhadas uma para a outra trocar pacotes, e é por isso que a citação do prêmio fala em interconexão de redes, e não num protocolo. Nascido em New Haven em junho de 1943, Cerf tem deficiência auditiva desde cedo e já atribuiu parte do seu interesse por redes à promessa de outro canal para quem não usa telefone com facilidade - detalhe que vale guardar, porque o protocolo de comunicação mais consequente do século foi em parte motivado por alguém que achava difícil usar o existente. Passou as décadas seguintes como o advogado mais público que a internet tem, cargo para o qual ninguém o nomeou."
+        "context": "Cerf e Kahn não inventaram uma rede; inventaram o acordo que permite a redes jamais desenhadas uma para a outra trocar pacotes, e é por isso que a citação do prêmio fala em interconexão de redes, e não num protocolo. Nascido em New Haven em junho de 1943, Cerf tem deficiência auditiva desde cedo e já atribuiu parte do seu interesse por redes à promessa de outro canal para quem não usa telefone com facilidade - detalhe que vale guardar, porque o protocolo de comunicação mais consequente do século foi em parte motivado por alguém que achava difícil usar o existente. Passou as décadas seguintes como o advogado mais público que a internet tem, cargo para o qual ninguém o nomeou. Ele entrou no Internet Hall of Fame na turma inaugural de 2012, como Pioneer."
       },
       "bob-kahn": {
         "def": "O codesenhista do TCP/IP com Vint Cerf, e corecebedor do Prêmio Turing de 2004, citado pelo desenho e pela implementação dos protocolos básicos de comunicação da internet.",
@@ -16000,7 +16001,7 @@
       },
       "radia-perlman": {
         "def": "A engenheira que inventou o algoritmo de árvore de extensão na Digital, nos anos 1980, tornando a Ethernet em ponte sobrevivível, e que escreveu o poema do algoritmo.",
-        "context": "Seu artigo de 1985 permitiu que pontes de topologia arbitrária concordassem sobre uma árvore sem laços, e sem autoridade central; o IEEE padronizou aquilo no 802.1D em 1990. Toda rede comutada desde então roda um descendente. Ela escreveu a especificação com um poema anexo, o Algorhyme, cujos primeiros versos respondem a Joyce Kilmer: acho que nunca verei um grafo mais bonito que uma árvore. Também é dela o trabalho de estado de enlace por trás do IS-IS. O apelido que lhe deram, mãe da internet, esconde a contribuição real: não foi ter conectado coisas, e sim ter tornado seguro construir uma rede redundante, que é problema diferente e mais difícil."
+        "context": "Seu artigo de 1985 permitiu que pontes de topologia arbitrária concordassem sobre uma árvore sem laços, e sem autoridade central; o IEEE padronizou aquilo no 802.1D em 1990. Toda rede comutada desde então roda um descendente. Ela escreveu a especificação com um poema anexo, o Algorhyme, cujos primeiros versos respondem a Joyce Kilmer: acho que nunca verei um grafo mais bonito que uma árvore. Também é dela o trabalho de estado de enlace por trás do IS-IS. O apelido que lhe deram, mãe da internet, esconde a contribuição real: não foi ter conectado coisas, e sim ter tornado seguro construir uma rede redundante, que é problema diferente e mais difícil. Ela entrou no Internet Hall of Fame em 2014 e no National Inventors Hall of Fame em 2016."
       },
       "jon-postel": {
         "def": "O editor das RFCs de 1969 até sua morte em 1998, autor ou editor das RFCs que definem IP, ICMP e TCP, e o primeiro diretor da IANA - função para a qual se voluntariou e que a princípio fazia à mão.",
@@ -16116,7 +16117,7 @@
       },
       "van-jacobson": {
         "def": "O autor de Congestion Avoidance and Control, o trabalho de 1988 que deu ao TCP os algoritmos - partida lenta, prevenção de congestionamento, retransmissão rápida - que impediram a internet de colapsar sob a própria carga.",
-        "context": "Em meados dos anos 1980 a rede sofreu colapso por congestionamento: a vazão entre dois sites caiu três ordens de grandeza, porque cada remetente respondia à perda retransmitindo com mais força. A correção dele foi fazer cada remetente inferir o estado de uma rede que não enxerga, a partir da única evidência que tem - o tempo e a perda dos próprios pacotes - e recuar. Essa inferência é ainda o que toda conexão TCP faz. É também a razão de um enlace poder estar ocupado sem que nada pareça rápido, e de o bufferbloat ter levado décadas para ser reconhecido como o mesmo problema com outro chapéu."
+        "context": "Em meados dos anos 1980 a rede sofreu colapso por congestionamento: a vazão entre dois sites caiu três ordens de grandeza, porque cada remetente respondia à perda retransmitindo com mais força. A correção dele foi fazer cada remetente inferir o estado de uma rede que não enxerga, a partir da única evidência que tem - o tempo e a perda dos próprios pacotes - e recuar. Essa inferência é ainda o que toda conexão TCP faz. É também a razão de um enlace poder estar ocupado sem que nada pareça rápido, e de o bufferbloat ter levado décadas para ser reconhecido como o mesmo problema com outro chapéu. Ele estava na turma inaugural de 2012 do Internet Hall of Fame, empossado como Innovator - a categoria de quem contribuiu com um uso novo, e não com a arquitetura de base, o que descreve bem fazer um protocolo existente sobreviver ao próprio sucesso."
       },
       "nelson-murilo": {
         "def": "O autor do chkrootkit, o detector de rootkits que faz parte do ferramental de segurança Unix desde o fim dos anos 1990, e um dos três fundadores do podcast ISTS e da conferência YSTS.",
@@ -16861,6 +16862,58 @@
       "david-clark": {
         "def": "O arquiteto que pôs a filosofia de governo da internet numa frase, em 1992: sem reis, sem presidentes, sem votação - consenso aproximado e código que roda.",
         "context": "É a frase mais citada da governança da internet e costuma ser lida como slogan sobre abertura. É mais útil lida como descrição de um procedimento de decisão, e com consequências que este catálogo não para de registrar: um sistema que avança por consenso aproximado e implementações que funcionam vai adotar qualquer melhoria que uma parte consiga implantar sozinha, e vai emperrar em toda melhoria que exija todo mundo concordando ao mesmo tempo. Roteamento seguro, DNSSEC e autenticação de correio esperaram décadas exatamente por isso. A frase explica tanto por que a internet pôde ser construída sem pedir permissão quanto por que partes dela não conseguem ser consertadas."
+      },
+      "tcl": {
+        "def": "Tool Command Language: linguagem de script projetada em 1988 para ser embutida dentro do programa dos outros, de modo que cada ferramenta não inventasse a própria linguagem de comando.",
+        "context": "Ousterhout a construiu por frustração com o fato de que toda ferramenta que ele encontrava tinha criado a própria linguagem de script meio projetada, e a entregou como biblioteca C justamente para que uma aplicação ganhasse camada de script sem recompilar. Essa decisão de projeto determinou onde ela foi parar: Tcl raramente é a linguagem que se escolhe para um projeto, e frequentemente é a linguagem que se encontra dentro de um produto que se comprou. É a camada de script de equipamento de teste de rede, é a linguagem em que as iRules do F5 são escritas, e, pela extensão Expect de Don Libes, de 1990, foi como uma geração automatizou equipamentos que só ofereciam um terminal. Quem a aprendeu para dirigir a ferramenta de um fabricante costuma reencontrá-la dentro da de outro, anos depois."
+      },
+      "expect": {
+        "def": "A extensão de Tcl, escrita por Don Libes em 1990, que automatiza programas que só oferecem um terminal interativo.",
+        "context": "Ela existe porque boa parte da infraestrutura não tem interface nenhuma além da construída para um humano digitando num prompt. O Expect dirige essa interface: espere por este texto, mande aquele texto, trate o caso em que nenhum dos dois vem. Todo esforço de automação de rede anterior a fabricantes entregarem interface programática utilizável era alguma versão disso, e uma quantidade surpreendente de ferramental em produção ainda é. A avaliação honesta é que raspar tela de linha de comando é frágil e sempre foi o formato errado, e que também foi a única coisa disponível por duas décadas, e é por isso que a habilidade sobreviveu a toda previsão de aposentadoria dela."
+      },
+      "rfc-2544": {
+        "def": "A metodologia de teste de 1999 que definiu como medir vazão, latência, perda de quadros e tolerância a rajada de um equipamento de rede.",
+        "context": "A introdução dela é incomumente direta para um documento de padronização: fabricantes praticam \"specsmanship\", diz o texto, com fumaça e espelhos para confundir quem compra os produtos. A metodologia inteira existe para tornar alegações de desempenho comparáveis, fixando tamanhos de quadro, durações de ensaio e forma de reportar, de modo que os números de dois fabricantes signifiquem a mesma coisa. E ela tem uma sequência que vale conhecer: a IETF depois publicou uma declaração de aplicabilidade intitulada \"uso em redes de produção considerado nocivo\", porque um teste que deliberadamente leva um equipamento ao limiar de perda faz exatamente isso com tudo o mais que estiver rodando."
+      },
+      "traffic-generation": {
+        "def": "Produzir tráfego sintético com propriedades conhecidas para medir o que um equipamento ou uma rede faz com ele.",
+        "context": "O ponto não é volume, é CONTROLE: você sabe exatamente o que foi enviado, então tudo que falta, atrasa ou chega fora de ordem é atribuível. É por isso que a disciplina fica mais perto de instrumentação que de redes, e por que o equipamento é comprado por laboratório de teste, por operadora aceitando um circuito, e por fabricante que precisa publicar um número. O uso mais difícil é a recriação de cenário - reproduzir sob condições controladas uma falha que aconteceu uma vez em produção, até ela acontecer sob demanda. A maior parte dos problemas difíceis não se resolve inspecionando o sistema quebrado, e sim reconstruindo as circunstâncias que o quebraram."
+      },
+      "line-rate": {
+        "def": "O máximo teórico que um enlace carrega para um dado tamanho de quadro - e a alegação que o teste de desempenho existe para conferir.",
+        "context": "É propriedade do meio e do tamanho do quadro em conjunto, e não da velocidade da interface sozinha, porque a sobrecarga por quadro faz quadros pequenos alcançarem taxa de bits menor que os grandes no mesmo fio. É por isso que um equipamento anunciado como de taxa plena pode ser honesto com quadros de 1518 bytes e ficar longe disso com 64, e por que qualquer número de desempenho que não diga o tamanho do quadro não disse nada. O número que o fabricante imprime e o que o operador mede costumam divergir por essa razão, e não por desonestidade."
+      },
+      "werner-zorn": {
+        "def": "O professor de Karlsruhe que conectou a Alemanha à internet em 1984, e a China três anos depois.",
+        "context": "Ele vinha propondo a conexão desde 1982, e a primeira mensagem - recebida pelo colega Michael Rotert em 3 de agosto de 1984 - foi uma saudação do MIT, o que fez da Alemanha o segundo país fora dos Estados Unidos a ser alcançado. O que ele fez em seguida é a parte que costuma ficar de fora: em 1987 conectou a China à mesma rede, através da Alemanha. Conexão nacional em geral é contada como feito nacional, e esta foi realizada duas vezes pelo mesmo homem, para dois países, um deles não sendo o dele."
+      },
+      "jun-murai": {
+        "def": "O professor da Keio que construiu a primeira rede interuniversitária do Japão em 1984, e o consórcio de pesquisa que veio depois.",
+        "context": "Primeiro veio a JUNET, depois a WIDE, que carregou o primeiro tráfego de internet de verdade do país sobre linhas dedicadas. O detalhe que vale guardar é a rota: o enlace internacional do Japão para os Estados Unidos foi estabelecido através do Havaí, com ajuda da Universidade do Havaí - a mesma instituição que treze anos antes tinha posto uma rede de rádio por pacotes entre quatro ilhas porque não conseguia passar cabo. O lugar que resolveu o próprio isolamento acabou sendo como o isolamento de outro foi resolvido."
+      },
+      "nii-quaynor": {
+        "def": "O cientista ganense reconhecido por ser pioneiro do desenvolvimento da internet na África.",
+        "context": "O trabalho técnico de conectar um país é em boa medida o mesmo em toda parte; o que muda é quanto do aparato em volta você tem de construir sozinho. Onde um pioneiro europeu ou japonês podia supor universidades com orçamento, circuitos dedicados já existentes e um regulador que já tinha ouvido falar de dados, o trabalho equivalente em boa parte da África significou montar as instituições junto com a infraestrutura. Que este catálogo consiga nomear com muito mais facilidade quem conectou a Alemanha e quem conectou o Japão do que quem fez trabalho comparável para um continente é, em si, algo digno de nota."
+      },
+      "kanchana-kanchanasut": {
+        "def": "A cientista da computação creditada por trazer a internet para a Tailândia e por obter o domínio do país.",
+        "context": "Conseguir um domínio de código de país soa administrativo e está mais perto de fundacional: é o ponto em que um país deixa de ser um conjunto de hosts dentro do espaço de nomes de outra pessoa e vira um lugar endereçável, com registro próprio, política própria e disputa própria sobre quem o opera. Quase toda história de internet nacional deste catálogo tem esse momento, e ele quase sempre é realizado por um ou dois acadêmicos fazendo papelada cuja importância mais ninguém entendia."
+      },
+      "stephen-wolff": {
+        "def": "O diretor de programa que construiu a espinha dorsal de pesquisa americana e, desde o início, planejou que ela deixasse de precisar dele.",
+        "context": "Ao assumir a NSFNET em 1986, ele identificou duas necessidades ao mesmo tempo: infraestrutura para a comunidade acadêmica, e uma estratégia para pôr essa infraestrutura em bases enfim independentes de financiamento federal. O mecanismo foi empurrar as redes regionais em direção a clientes comerciais, para que a escala baixasse o custo de todos. O apoio federal à espinha dorsal terminou em abril de 1995, de propósito. Um servidor público cujo objetivo declarado era tornar o próprio programa desnecessário é raro o bastante em qualquer área para valer registro, e a internet comercial é o que aquela decisão produziu."
+      },
+      "david-farber": {
+        "def": "O organizador da CSNET, e uma das metades do acordo de 1981 que deixou o tráfego de uma rede atravessar outra sem ninguém contabilizar.",
+        "context": "A CSNET existia porque a maioria dos departamentos de computação não tinha direito à ARPANET, e o arranjo que ele negociou com Robert Kahn deixou o tráfego da CSNET viajar sobre a infraestrutura da ARPANET em base estatística e sem liquidação medida. Vale parar nessa expressão. Duas organizações concordaram em carregar o tráfego uma da outra sem medir nem faturar, porque medir custaria mais do que valia - e esse princípio, inventado como conveniência contábil entre duas agências americanas, é como as redes se interconectam no mundo inteiro até hoje. O software CSNET dele é também o que Karlsruhe usou para pôr a Alemanha na rede três anos depois."
+      },
+      "glenn-ricart": {
+        "def": "O homem que construiu o primeiro lugar em que redes separadas se encontraram como iguais, e que liderou a primeira implementação de TCP/IP para o IBM PC.",
+        "context": "Um ponto de troca é uma sala sem glamour em que redes que não são donas umas das outras concordam em entregar tráfego, e é a forma física do princípio de interconexão. Antes de um existir, cada par de redes precisa do próprio arranjo privado; depois, entrar uma vez alcança todo mundo que está lá. Todo ponto de troca desde então - e a economia inteira de peering que decide como o tráfego de fato flui entre continentes - é aquela sala repetida. O segundo feito é fácil de subestimar: TCP/IP no IBM PC é o que tirou o protocolo das máquinas institucionais e o pôs sobre as mesas."
+      },
+      "danny-cohen": {
+        "def": "O engenheiro que pôs voz e vídeo em tempo real numa rede de pacotes em 1973, adaptando um simulador de voo.",
+        "context": "A ARPANET foi construída para mover arquivos e mensagens, em que chegar atrasado é inconveniente. Ele adaptou um simulador visual de voo para rodar sobre ela, o que exige a propriedade oposta: um pacote que chega atrasado é pior que um que não chega nunca. Essa é a primeira aplicação de comutação de pacotes a tempo real, e toda discussão desde então sobre buffer de jitter, qualidade de serviço e se a internet aguenta uma ligação telefônica descende de alguém ligar um simulador a uma rede de pesquisa para ver o que aconteceria."
       }
     },
     "totalCount": "{count} termos",
@@ -17040,7 +17093,7 @@
     "explainersTitle": "Os guias de curso que a Red Education publica",
     "explainersIntro": "A Red Education escreve um guia para cada plataforma em que treina: o que os cursos cobrem, aonde levam, e como se encaixam numa carreira. Dez estão publicados, e estes são todos, começando pelas plataformas que eu ensino. Valem a leitura antes de escolher um curso, porque falam mais de resultados do que uma ementa.",
     "explainersMine": "— plataforma que eu ministro",
-    "explainersGap": "Lido em 16 de agosto de 2026. Entre as plataformas que eu ministro, F5 e Extreme Networks não tinham guia publicado no momento da leitura; suas páginas de fabricante trazem a lista de cursos. Ping Identity e Zscaler são plataformas em que estou avançando, não plataformas que eu ministro.",
+    "explainersGap": "Lido em 16 de agosto de 2026. Entre as plataformas que eu ministro, F5 e Extreme Networks não tinham guia publicado no momento da leitura; suas páginas de fabricante trazem a lista de cursos.",
     "jumpExplainers": "Guias de curso",
     "articlesTitle": "Sobre o que a Red Education escreve",
     "articlesIntro": "A Red Education mantém um blog sobre certificações, carreiras e o estado do treinamento em segurança. O índice deles é montado depois que a página carrega, então só o artigo em destaque pode ser linkado diretamente daqui; o resto está atrás do link do índice abaixo. Lido em 16 de agosto de 2026.",
@@ -20228,5 +20281,36 @@
       "hacker-culture": "Cultura hacker",
       "brazil": "Brasil"
     }
+  },
+  "stats_page": {
+    "eyebrow": "Estatísticas",
+    "title": "O que pedem a este site",
+    "metaDescription": "As contagens agregadas de requisição que o ronutz.com mantém no próprio servidor: páginas servidas, pessoas e rastreadores por família, sites de origem, países e idiomas. Sem cookies, sem analytics de terceiros, sem identificador de visitante.",
+    "lede": "Um site que mantém contagens e nunca as mostra está pedindo para ser aceito na confiança. Estas são as contagens, publicadas.",
+    "whatIsCounted": "O que é contado, o que nunca é gravado, e por que os dois registros são mantidos apartados está descrito por inteiro na",
+    "privacyLink": "página de Privacidade",
+    "windowLabel": "Janela de tempo",
+    "window_24h": "24 horas",
+    "window_7d": "7 dias",
+    "window_30d": "30 dias",
+    "window_90d": "90 dias",
+    "loading": "Lendo as contagens.",
+    "unconfigured": "As estatísticas não estão configuradas nesta implantação. A contagem roda no servidor; o endpoint de leitura precisa das credenciais dele antes de estes painéis se preencherem.",
+    "error": "Não foi possível ler as contagens agora. Não há nada errado com a página; o endpoint de relatório não respondeu.",
+    "noData": "Nada registrado nesta janela.",
+    "sampledNote": "Estes números são amostrados e escalados, que é como o repositório subjacente funciona; são próximos, e não exatos, e um número sem as condições dele não é uma medição.",
+    "referrerNote": "Agregado ao site de origem. Os endereços de origem completos não são publicados aqui: eles podem carregar dados de outras pessoas, e receber algo não é razão para transmiti-lo.",
+    "panelPages": "Páginas servidas a pessoas",
+    "panelClients": "Pessoas e automação",
+    "panelReferrers": "De onde os leitores chegam",
+    "panelCountries": "Países",
+    "panelLocales": "Idiomas",
+    "col_path": "Página",
+    "col_client": "Cliente",
+    "col_host": "Site de origem",
+    "col_country": "País",
+    "col_locale": "Idioma",
+    "col_views": "Requisições",
+    "itemLabel": "Lido '{n}' vezes nos últimos 90 dias."
   }
 }

@@ -418,6 +418,9 @@ export default async function AboutPage({
               <Link href="/contact" className="btn btn-primary">
                 {t("cta.contactButton")}
               </Link>
+              <Link href="/stats" className="btn btn-secondary">
+                {t("cta.statsButton")}
+              </Link>
             </div>
           </div>
         </section>

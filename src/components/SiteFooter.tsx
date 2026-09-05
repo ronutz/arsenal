@@ -21,14 +21,23 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { BUILD_TIME } from "@/generated/build-info";
 import LicenseBadges from "@/components/LicenseBadges";
+import ItemViews from "@/components/ItemViews";
+import { getLocale } from "next-intl/server";
 
 export default async function SiteFooter() {
   const t = await getTranslations("footer");
   const tBadges = await getTranslations("licenseBadges");
+  const tStats = await getTranslations("stats_page");
+  const locale = await getLocale();
 
   return (
     <footer className="site-footer">
       <div className="container site-footer-inner">
+        {/* This page's own count. Mounted here, once, so every route carries a
+            counter without each of eighty-seven pages having to remember one -
+            see components/ItemViews.tsx for why it locates itself. Renders
+            nothing at all until it has a number. */}
+        <ItemViews label={tStats("itemLabel")} locale={locale} />
         <p className="footer-built">
           {/* The whole line links to the colophon; simple and reliable. */}
           <Link href="/colophon" className="footer-built-link">
@@ -88,6 +97,12 @@ export default async function SiteFooter() {
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/privacy" className="footer-contribute-link">
             {t("privacy")}
+          </Link>
+          <span className="footer-sep" aria-hidden="true">&#183;</span>
+          {/* Stats sits next to Privacy deliberately: the Privacy page states
+              what is counted, and this is where the counts are shown. */}
+          <Link href="/stats" className="footer-contribute-link">
+            {t("stats")}
           </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           <Link href="/settings" className="footer-contribute-link">

@@ -4173,7 +4173,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Three founding stories - McAfee and commercial antivirus (1987), FireEye and virtual-machine detonation (2004), Mandiant and incident response as a discipline (2004) - collided in 2021-2022. Symphony Technology Group carved out McAfee Enterprise ($4.0B) and FireEye's products plus the FireEye name ($1.2B), fused them into Trellix, and spun the SSE portfolio out as Skyhigh Security; the remaining company renamed itself Mandiant and joined Google Cloud; McAfee's consumer business went private for over $14 billion.",
     body: [],
     note:
-      "Neither I nor Red Education delivers McAfee, Trellix, FireEye, or Mandiant training. This page is corporate history, verified against SEC filings and primary sources. My own connection is from the distribution side: he carried the FireEye and McAfee lines in Brazil during his Westcon-Comstor and ScanSource years.",
+      "Neither I nor Red Education delivers McAfee, Trellix, FireEye, or Mandiant training. This page is corporate history, verified against SEC filings and primary sources. My own connection is from the distribution side: FireEye at Westcon-Comstor, and McAfee later at Network1/ScanSource - two employers, in sequence.",
     sources: [
       { label: "Alphabet 10-K FY2022 - Mandiant closed Sep 12, 2022 ($6.1B total incl. cash and debt)", url: "https://www.sec.gov/Archives/edgar/data/1652044/000165204423000016/goog-20221231.htm" },
       { label: "McAfee SEC 8-K - Advent/Permira take-private completed (>$14B, Mar 1, 2022)", url: "https://www.sec.gov/Archives/edgar/data/1783317/000119312522060146/d319834dex991.htm" },

@@ -1,0 +1,81 @@
+---
+slug: test-measurement-family-history
+title: "Test and Measurement: The Family That Checks the Others"
+summary: "Every other family in this catalogue builds something. This one exists to find out whether the claims the others make are true - and it began as an internal engineering tool that somebody got the rights to in an acquisition. This is the history: TART at a subsidiary in 1982, the Sniffer selling nine hundred million dollars' worth, a standards document that opens by accusing vendors of smoke and mirrors, and a free analyser written because one company could only afford a single instrument."
+concepts: ["testing", "rfc 2544", "sniffer", "wireshark", "traffic generation", "history"]
+relatedTools: []
+relatedArticles: ["observability-family-history", "obsolescence", "transceiver-family-history"]
+category: networking
+order: 163
+status: reviewed
+updated: "2026-09-05"
+---
+
+Fourteen families in this catalogue build things. This one exists to check them, and it is the only discipline here whose product is a number somebody else would rather not hear.
+
+## 1982: an internal tool nobody meant to sell
+
+At **Zynar**, the British subsidiary of a personal-computer networking company called Nestar Systems, engineers **John Rowlands** and **Chris Reed** built a promiscuous packet receiver for ARCNET to test their own products. They called it **TART**, for Transmit and Receive Totaliser. Custom hardware, an IBM PC, software in BASIC and assembler, and no commercial intent whatever.
+
+When Nestar was acquired in 1986, **Harry Saal** and **Len Shustek** received the rights to TART. They founded **Network General** on 13 May 1986, sold it first as an ARCNET line analyser, then reengineered it for Token Ring with a new interface written in C, and shipped it in December 1986 as **The Sniffer**.
+
+**The company had four employees at the end of that year.** Between 1986 and March 1997 it sold about nine hundred and thirty-three million dollars of Sniffers and related products, and by 1994 it led the high-end analyser market.
+
+That sequence is the most instructive thing in this family. **A tool built to check your own work, by engineers who were not trying to build a product, turned out to be the product** - and it reached the market because two founders took the rights with them when the company that owned it was sold.
+
+## 1999: a standard that opens by accusing the industry
+
+Measurement matters when somebody is claiming a number, and by the late 1990s vendors were claiming a great many.
+
+**RFC 2544**, by **Bradner** and **McQuaid**, March 1999, defines how a device's throughput, latency, frame loss and burst tolerance are to be measured. Its introduction does not hedge: vendors, it says, engage in **specsmanship**, often involving **smoke and mirrors** to confuse the potential users of the products.
+
+A standards document written to constrain the dishonesty of the industry it serves is unusual, and the method follows from the motive. Fixed frame sizes. Trials of defined duration. Twenty repetitions with the average reported. A tagged frame at sixty seconds so latency has an unambiguous start and stop. **None of that is about measuring accurately; it is about measuring in a way two vendors cannot each describe differently.**
+
+The follow-up is equally telling. The IETF later published an applicability statement titled **Use on Production Networks Considered Harmful**, because a benchmark that deliberately drives a device to its loss threshold does precisely that to whatever else is running on it. The test built for a laboratory kept being pointed at live networks by people who had read the first document and not thought about the second.
+
+## 1997: the instrument nobody could get to
+
+**Gerald Combs** was working for a small internet service provider. Commercial analysers cost around fifteen hundred dollars and did not run on the platforms his company used. Worse, the one Sniffer they had was permanently borrowed by somebody else - his own description was that it reminded him of a university with a single pencil that everyone had to share.
+
+He started writing **Ethereal** in 1997 and released it publicly in July 1998. It was renamed **Wireshark** in May 2006, because the Ethereal trademark belonged to the employer he had written it at.
+
+**Scarcity of the instrument produced its free replacement.** That is the same shape as the [wireless article's](/learn/wireless-family-history) origin - a constraint nobody could buy their way past - and the same outcome as the [intrusion detection article's](/learn/ids-ips-family-history): what was given away became what everyone builds on, and the commercial product it displaced is now a footnote in most engineers' education.
+
+## What the discipline actually consists of
+
+**Generating traffic you control.** The value is not volume, it is knowing exactly what was sent, so that anything missing, late or reordered is attributable rather than suspected.
+
+**Capturing what actually happened**, which is a different job. Generation proves what a device does with known input; capture explains what it did with unknown input, after the fact, when the input cannot be reproduced.
+
+**Recreating scenarios**, which is the hard one. Taking a fault that occurred once in production and rebuilding the conditions until it occurs on demand - because most difficult problems are not solved by inspecting the broken system but by reconstructing what broke it.
+
+And underneath all three, **stating your conditions**. A throughput number without a frame size is not a measurement, because per-frame overhead means the same interface reaches a different bit rate with sixty-four-byte frames than with fifteen hundred. Most disputes between a vendor's figure and an operator's are this, rather than dishonesty.
+
+## The jobs and the practices
+
+Test and measurement produced a role that mostly is not a job title: the person in a lab, a carrier acceptance team or a vendor's engineering group whose output is evidence.
+
+Its practices are recognisably scientific and unusual in this industry. **A control**, because a measurement with nothing to compare against is an anecdote. **Repetition** - RFC 2544 asks for twenty trials and the average, precisely because one run is noise. **Recording the setup**, since a result whose conditions were not written down cannot be challenged or reproduced, which makes it useless in the argument it was gathered for. And **not testing in production**, a rule this family learned publicly enough that the IETF had to publish it.
+
+The professional habit worth carrying: **the number is not the finding. The conditions are the finding**, and the number is what happened under them.
+
+## The companies
+
+Network General's Sniffer went to McAfee in 1997, was spun out in 2004, and the assets landed at NetScout in 2007. Ixia and Spirent built the traffic generation market for labs and carriers; Ixia is now inside Keysight. Wireshark remains free and is what most engineers actually use. Cloud providers run enormous internal measurement estates and sell none of it.
+
+## Where it goes
+
+**Measurement moved inside the thing being measured.** Streaming telemetry and in-band techniques mean the network reports on itself rather than being interrogated by an instrument on the side, which is faster and removes the independent observer.
+
+**That independence is the loss worth naming.** A device that reports its own performance is exactly the arrangement RFC 2544 was written to correct. The corrective is not nostalgia for external test sets; it is remembering why they existed.
+
+**And the founding property still holds.** TART existed because engineers needed to know whether their own work did what they thought. Everything in this family since is that question asked at larger scale and against other people's claims - which is why it is the one discipline here whose value is entirely in being uncomfortable.
+
+## Sources
+
+- [Sniffer: the inspiration was an internal test tool developed at Nestar Systems, where in 1982 John Rowlands and Chris Reed at the UK subsidiary Zynar built an ARCNET promiscuous packet receiver called TART; Saal and Shustek received the rights when Nestar was acquired in 1986, reengineered it and began selling it as The Sniffer in December 1986 with four employees at year end; about $933M sold between 1986 and March 1997](https://dpiconsortium.org/resources/sniffer/)
+- [Network General: founded 13 May 1986 by Harry Saal and Len Shustek, acquired by McAfee in 1997 for $1.3bn, assets spun off in 2004 and acquired by NetScout Systems in 2007](https://en.wikipedia.org/wiki/Network_General)
+- [RFC 2544, Benchmarking Methodology for Network Interconnect Devices, Bradner and McQuaid, March 1999, whose introduction states that vendors often engage in specsmanship involving smoke and mirrors, and which specifies trial duration, twenty repetitions and a tagged frame at sixty seconds for latency](https://www.rfc-editor.org/rfc/rfc2544.html)
+- [RFC 2544 is updated by RFC 6815, Applicability Statement for RFC 2544: Use on Production Networks Considered Harmful](https://dl.acm.org/doi/10.17487/RFC2544)
+- [Wireshark: Gerald Combs began Ethereal in 1997 while working for a small internet service provider, because commercial analysers cost around $1500 and did not run on Solaris and Linux; first released 1998 and renamed Wireshark in May 2006 as the Ethereal trademark was owned by his former employer](https://en.wikipedia.org/wiki/Wireshark)
+- [Combs's own account of the frustration: the single Sniffer was always lent to another department, which reminded him of a university with only one pencil that everyone had to share](https://www.garlandtechnology.com/blog/wireshark-from-ethereal-to-today)

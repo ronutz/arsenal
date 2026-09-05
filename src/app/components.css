@@ -16509,3 +16509,80 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   padding: 1rem 1.1rem;
   margin: 1.25rem 0;
 }
+
+/* ---------------------------------------------------------------------------
+ * STATS PANELS (added 2026-09-05)
+ * Tables of aggregate request counts on /stats. Semantic tokens only, so the
+ * six themes need no per-theme additions. Guard 44 requires every class the
+ * component emits to have a rule here.
+ * ------------------------------------------------------------------------- */
+.stats-wrap { margin-top: 0.5rem; }
+.stats-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.stats-window {
+  font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600;
+  padding: 0.4rem 0.9rem; border-radius: 999px; cursor: pointer;
+  color: var(--text-secondary); background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.12s, color 0.12s, opacity 0.12s;
+}
+.stats-window--on { border-color: var(--color-accent); color: var(--text-primary); }
+.stats-window[aria-pressed="false"] { opacity: 0.55; }
+.stats-state, .stats-empty {
+  font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-secondary);
+  margin: 1rem 0;
+}
+.stats-grid {
+  display: grid; gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+.stats-panel {
+  background: var(--surface-elevated); border: 1px solid var(--border-subtle);
+  border-radius: 10px; padding: 1rem 1.1rem;
+}
+.stats-panel-title {
+  font-size: 1rem; margin: 0 0 0.35rem; color: var(--text-primary);
+}
+.stats-panel-note {
+  font-size: 0.82rem; color: var(--text-tertiary); margin: 0 0 0.75rem; line-height: 1.5;
+}
+.stats-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.stats-table th {
+  text-align: left; font-family: var(--font-mono); font-size: 0.76rem;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary);
+  padding: 0.35rem 0; border-bottom: 1px solid var(--border-subtle);
+}
+.stats-table td { padding: 0.35rem 0; border-bottom: 1px solid var(--border-subtle); }
+.stats-table tr:last-child td { border-bottom: none; }
+.stats-key {
+  font-family: var(--font-mono); color: var(--text-secondary);
+  word-break: break-all; padding-right: 1rem;
+}
+.stats-num { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-primary); }
+.stats-sampled {
+  font-size: 0.82rem; color: var(--text-tertiary); margin-top: 1.5rem;
+  max-width: 62ch; line-height: 1.6;
+}
+
+/* Per-item view counter. Deliberately quiet: it sits below the article, in
+ * secondary text, and is absent entirely when there is no number to show. */
+.item-views {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* Inline bar under each stats row. Scaled per panel (see StatsPanels.tsx) and
+ * hidden from assistive technology, because the number beside it already says
+ * everything the bar says. */
+.stats-bar {
+  display: block;
+  height: 3px;
+  margin-top: 0.3rem;
+  border-radius: 2px;
+  background: var(--color-accent);
+  opacity: 0.55;
+  min-width: 2px;
+}

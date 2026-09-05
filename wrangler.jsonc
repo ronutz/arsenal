@@ -36,6 +36,22 @@
   // are unaffected by this.
   "workers_dev": false,
 
+  // ==========================================================================
+  // ANALYTICS ENGINE (added 2026-09-05, PRIME request)
+  // --------------------------------------------------------------------------
+  // TWO datasets, deliberately. A single dataset carrying path + country +
+  // referrer in one row would let those columns be correlated back into a
+  // visit; splitting them means the correlation has nowhere to happen. See
+  // worker/analytics.ts for the full reasoning and for the list of fields that
+  // are never written (IP, user agent, any header beyond referer).
+  //
+  // Datasets are created on first write; nothing to provision.
+  // ==========================================================================
+  "analytics_engine_datasets": [
+    { "binding": "PAGEVIEWS", "dataset": "ronutz_pageviews" },
+    { "binding": "REFERRERS", "dataset": "ronutz_referrers" }
+  ],
+
   "assets": {
     // Folder produced by `npm run build` (next build -> ./out, then pagefind
     // writes its search index into ./out/pagefind).
