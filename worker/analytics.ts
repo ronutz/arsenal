@@ -71,6 +71,46 @@ interface AnalyticsEngineDataset {
  *  layer, so the cap is a decision recorded here rather than an accident. */
 const MAX_REFERRER = 512;
 
+// ---------------------------------------------------------------------------
+// REFERRER SOURCE + SEARCH TERM (PRIME 2026-09-06)
+//
+// What IS reliably in the Referer is the HOST - the major engines stopped
+// sending the query years ago - and classifying the host into a source family
+// (search, AI assistant, social, other) is the report that can be produced.
+// Search TERMS come from Search Console, not from headers; a term-extraction
+// step was built and removed on 2026-09-06 for that reason.
+// ---------------------------------------------------------------------------
+
+/** Referring host -> source family. Longest-match on suffix; unknown -> "other". */
+const REFERRER_SOURCES: Array<[string, string]> = [
+  // search
+  ["google.", "search:google"], ["bing.com", "search:bing"], ["duckduckgo.com", "search:duckduckgo"],
+  ["yandex.", "search:yandex"], ["baidu.com", "search:baidu"], ["yahoo.", "search:yahoo"],
+  ["ecosia.org", "search:ecosia"], ["brave.com", "search:brave"], ["startpage.com", "search:startpage"],
+  ["qwant.com", "search:qwant"], ["kagi.com", "search:kagi"],
+  // AI assistants that link out
+  ["perplexity.ai", "ai:perplexity"], ["chatgpt.com", "ai:openai"], ["openai.com", "ai:openai"],
+  ["claude.ai", "ai:anthropic"], ["anthropic.com", "ai:anthropic"], ["gemini.google.com", "ai:google"],
+  ["copilot.microsoft.com", "ai:microsoft"], ["you.com", "ai:you"], ["phind.com", "ai:phind"],
+  // social / community
+  ["linkedin.com", "social:linkedin"], ["lnkd.in", "social:linkedin"], ["x.com", "social:x"],
+  ["twitter.com", "social:x"], ["t.co", "social:x"], ["facebook.com", "social:facebook"],
+  ["reddit.com", "social:reddit"], ["news.ycombinator.com", "social:hackernews"],
+  ["youtube.com", "social:youtube"], ["mastodon.", "social:mastodon"], ["bsky.app", "social:bluesky"],
+];
+
+function classifyReferrer(host: string): string {
+  const h = host.toLowerCase();
+  // gemini.google.com must win over google.; check longer patterns first
+  const ordered = [...REFERRER_SOURCES].sort((a, b) => b[0].length - a[0].length);
+  for (const [needle, family] of ordered) {
+    if (h === needle || h.endsWith("." + needle) || h.includes(needle)) return family;
+  }
+  return "other";
+}
+
+
+
 /** Paths that are machinery rather than reading. Counting them would inflate
  *  every figure and answer no question anyone has. */
 const IGNORED = [/^\/api\//, /^\/_next\//, /^\/pagefind\//, /\.[a-z0-9]+$/i];
@@ -107,6 +147,21 @@ const UA_FAMILIES: Array<[RegExp, string]> = [
   [/curl|wget|python-requests|go-http-client|axios|node-fetch/i, "tool"],
   [/bot|crawler|spider|crawl/i, "other"],
 ];
+
+
+/**
+ * Coarse device class from the User-Agent, for a mobile-versus-desktop share.
+ * The UA string is READ here and NEVER STORED, exactly as classifyClient does
+ * for bots: the only thing written is one of three words. Tablets count as
+ * mobile; anything unrecognised is "other" rather than guessed.
+ */
+export function classifyDevice(request: Request): string {
+  const ua = request.headers.get("user-agent") ?? "";
+  if (!ua) return "other";
+  if (/Mobi|Android|iPhone|iPad|iPod|Windows Phone|webOS|BlackBerry|Opera Mini/i.test(ua)) return "mobile";
+  if (/Windows NT|Macintosh|X11|Linux|CrOS/i.test(ua)) return "desktop";
+  return "other";
+}
 
 export function classifyClient(request: Request): string {
   const cf = (request as { cf?: Record<string, unknown> }).cf;
@@ -155,8 +210,11 @@ export function record(
     const country =
       ((request as { cf?: Record<string, unknown> }).cf?.country as string) ??
       "XX";
+    // blob5: device class, humans only (a crawler has no screen). Empty on
+    // rows written before 2026-09-06.
+    const device = botClass === "human" ? classifyDevice(request) : "";
     env.PAGEVIEWS.writeDataPoint({
-      blobs: [url.pathname, locale, country, botClass],
+      blobs: [url.pathname, locale, country, botClass, device],
       doubles: [1],
       // Sampling key is the PATH. Never a visitor identifier.
       indexes: [url.pathname],
@@ -179,10 +237,17 @@ export function record(
       } catch {
         return; // unparseable referrer: discard rather than store a fragment
       }
+      // Source family and search term derived from the referrer itself -
+      // still nothing about the visitor, the page, or the country. blob2 and
+      // blob3 are empty on rows written before 2026-09-06.
+      const source = classifyReferrer(host);
       env.REFERRERS.writeDataPoint({
         // The full referring URL, query string included, per PRIME's request -
         // and NOTHING else. No path, no country, no class, no locale.
-        blobs: [raw.slice(0, MAX_REFERRER)],
+        // blob3 (a search term) was added and removed the same day: engines
+        // no longer send one, and a field nothing reads is collection without
+        // purpose. Search terms come from Search Console.
+        blobs: [raw.slice(0, MAX_REFERRER), source],
         doubles: [1],
         // Grouped by referring host, which is the axis the report uses.
         indexes: [host],

@@ -145,13 +145,27 @@ export async function handleStats(
         if (!/^\/[A-Za-z0-9\-/._]{0,200}$/.test(path)) {
           return json({ error: "bad_path" }, 400);
         }
-        const rows = await query(
-          env,
-          `SELECT ${VIEWS} FROM ${PAGEVIEWS}
-           WHERE ${since} AND blob4 = 'human' AND blob1 = '${path.replace(/'/g, "")}'`
-        );
+        const safe = path.replace(/'/g, "");
+        // Total and a per-day series in one response (2026-09-06): the
+        // series is what the small chart under an article draws. Same SQL
+        // shape as the timeline route, filtered to one path.
+        const [rows, days] = await Promise.all([
+          query(env, `SELECT ${VIEWS} FROM ${PAGEVIEWS}
+                      WHERE ${since} AND blob4 = 'human' AND blob1 = '${safe}'`),
+          query(env, `SELECT toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day, ${VIEWS}
+                      FROM ${PAGEVIEWS} WHERE ${since} AND blob4 = 'human' AND blob1 = '${safe}'
+                      GROUP BY day ORDER BY day ASC LIMIT 400`),
+        ]);
         const first = rows[0] as { views?: string } | undefined;
-        return json({ path, views: Number(first?.views ?? 0), sampled: true });
+        return json({
+          path,
+          views: Number(first?.views ?? 0),
+          series: (days as Array<{ day?: string; views?: string }>).map((d) => ({
+            day: String(d.day ?? "").slice(0, 10),
+            views: Number(d.views ?? 0),
+          })),
+          sampled: true,
+        });
       }
 
       // ---- Humans versus automation, and the bot families --------------
@@ -189,11 +203,95 @@ export async function handleStats(
           note: "Aggregated to the referring host. Full referring URLs are not published.",
           rows: await query(
             env,
-            `SELECT index1 AS host, ${VIEWS} FROM ${REFERRERS}
-             WHERE ${since} GROUP BY host ORDER BY views DESC LIMIT 100`
+            `SELECT index1 AS host, blob2 AS source, ${VIEWS} FROM ${REFERRERS}
+             WHERE ${since} GROUP BY host, source ORDER BY views DESC LIMIT 100`
           ),
         });
       }
+
+      // ---- Where readers come from, by source family --------------------
+      // search:google, ai:perplexity, social:linkedin, other. Derived from
+      // the referring host, which every engine still sends. Public.
+      case "sources":
+        return json({
+          rows: await query(
+            env,
+            `SELECT blob2 AS source, ${VIEWS} FROM ${REFERRERS}
+             WHERE ${since} AND blob2 != '' GROUP BY source ORDER BY views DESC LIMIT 50`
+          ),
+        });
+
+      // ---- Readers per day ---------------------------------------------
+      // Human requests only, bucketed by UTC day. The trend that makes every
+      // other panel legible: a page count means little without knowing
+      // whether the site had a normal week. Still no visitor, ever - a day is
+      // the coarsest bucket there is.
+      case "timeline":
+        return json({
+          rows: await query(
+            env,
+            `SELECT toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day, ${VIEWS}
+             FROM ${PAGEVIEWS} WHERE ${since} AND blob4 = 'human'
+             GROUP BY day ORDER BY day ASC LIMIT 400`
+          ),
+        });
+
+      // ---- Mobile versus desktop ------------------------------------------
+      // Humans only. Three coarse words derived from the User-Agent at write
+      // time; the UA itself is never stored. Percentages are computed on the
+      // page from these totals.
+      case "devices":
+        return json({
+          rows: await query(
+            env,
+            `SELECT blob5 AS device, ${VIEWS} FROM ${PAGEVIEWS}
+             WHERE ${since} AND blob4 = 'human' AND blob5 != ''
+             GROUP BY device ORDER BY views DESC LIMIT 5`
+          ),
+        });
+
+      // ---- Automation by day and family ----------------------------------
+      // Every non-human class, per UTC day. The page derives the AI-crawler
+      // share from this: the one trend this site has a particular reason to
+      // publish. Same SQL shapes as the panels above; nothing new to trust.
+      case "crawlers":
+        return json({
+          rows: await query(
+            env,
+            `SELECT toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day, blob4 AS client, ${VIEWS}
+             FROM ${PAGEVIEWS} WHERE ${since} AND blob4 != 'human'
+             GROUP BY day, client ORDER BY day ASC LIMIT 4000`
+          ),
+        });
+
+      // ---- Every page people read in the window --------------------------
+      // Path and count, no ranking cut. One response serves three panels on
+      // the page: traffic by section, the long tail, and how many distinct
+      // pages were read at all. Paths are public URLs; there is nothing here
+      // about who read them.
+      case "paths":
+        return json({
+          rows: await query(
+            env,
+            `SELECT blob1 AS path, ${VIEWS} FROM ${PAGEVIEWS}
+             WHERE ${since} AND blob4 = 'human'
+             GROUP BY path ORDER BY views DESC LIMIT 6000`
+          ),
+        });
+
+      // ---- When the site is read ------------------------------------------
+      // Human requests in UTC-hour buckets. The page folds these into hour of
+      // day and day of week. An hour is a coarse bucket and a share of many
+      // readers; it identifies nobody.
+      case "hourly":
+        return json({
+          rows: await query(
+            env,
+            `SELECT toStartOfInterval(timestamp, INTERVAL '1' HOUR) AS hour, ${VIEWS}
+             FROM ${PAGEVIEWS} WHERE ${since} AND blob4 = 'human'
+             GROUP BY hour ORDER BY hour ASC LIMIT 2500`
+          ),
+        });
 
       // ---- Reach, without identifying anybody ---------------------------
       case "countries":
@@ -220,7 +318,7 @@ export async function handleStats(
         return json(
           {
             error: "not_found",
-            routes: ["pages", "item", "clients", "referrers", "countries", "locales"],
+            routes: ["pages", "item", "clients", "referrers", "sources", "timeline", "devices", "crawlers", "paths", "hourly", "countries", "locales"],
           },
           404
         );

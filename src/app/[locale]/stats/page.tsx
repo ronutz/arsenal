@@ -19,6 +19,8 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import StatsPanels from "@/components/StatsPanels";
+import { LIVE_LOCALES } from "@/i18n/locales";
+import { COUNTRY_NAMES } from "@/content/vendors/origins";
 
 export async function generateMetadata({
   params,
@@ -64,6 +66,58 @@ export default async function StatsPage({
     col_country: t("col_country"),
     col_locale: t("col_locale"),
     col_views: t("col_views"),
+    pagesNote: t("pagesNote"),
+    clientsNote: t("clientsNote"),
+    countriesNote: t("countriesNote"),
+    localesNote: t("localesNote"),
+    panelDevices: t("panelDevices"),
+    devicesNote: t("devicesNote"),
+    col_device: t("col_device"),
+    device_mobile: t("device_mobile"),
+    device_desktop: t("device_desktop"),
+    device_other: t("device_other"),
+    groupSearch: t("groupSearch"),
+    groupAi: t("groupAi"),
+    groupSocial: t("groupSocial"),
+    groupOtherSites: t("groupOtherSites"),
+    groupOther: t("groupOther"),
+    panelAiShare: t("panelAiShare"),
+    aiShareNote: t("aiShareNote"),
+    panelSections: t("panelSections"),
+    sectionsNote: t("sectionsNote"),
+    col_section: t("col_section"),
+    panelTail: t("panelTail"),
+    tailNote: t("tailNote"),
+    tailCounts: t("tailCounts"),
+    tailLeast: t("tailLeast"),
+    tail_1: t("tail_1"),
+    tail_2: t("tail_2"),
+    tail_3: t("tail_3"),
+    panelCoverage: t("panelCoverage"),
+    coverageNote: t("coverageNote"),
+    col_measure: t("col_measure"),
+    coverageDistinct: t("coverageDistinct"),
+    coverageRequests: t("coverageRequests"),
+    coveragePer: t("coveragePer"),
+    panelHour: t("panelHour"),
+    hourNote: t("hourNote"),
+    col_hour: t("col_hour"),
+    panelWeekday: t("panelWeekday"),
+    weekdayNote: t("weekdayNote"),
+    col_weekday: t("col_weekday"),
+    wd_0: t("wd_0"),
+    wd_1: t("wd_1"),
+    wd_2: t("wd_2"),
+    wd_3: t("wd_3"),
+    wd_4: t("wd_4"),
+    wd_5: t("wd_5"),
+    wd_6: t("wd_6"),
+    panelTimeline: t("panelTimeline"),
+    timelineNote: t("timelineNote"),
+    col_day: t("col_day"),
+    panelSources: t("panelSources"),
+    sourceNote: t("sourceNote"),
+    col_source: t("col_source"),
   };
 
   return (
@@ -74,7 +128,6 @@ export default async function StatsPage({
           <div className="container section-narrow">
             <p className="hero-eyebrow">{t("eyebrow")}</p>
             <h1 className="page-hero-title">{t("title")}</h1>
-            <p className="page-hero-lede">{t("lede")}</p>
             <p className="section-body">
               {t("whatIsCounted")}{" "}
               <Link href="/privacy">{t("privacyLink")}</Link>.
@@ -84,7 +137,11 @@ export default async function StatsPage({
 
         <section className="section section-accent">
           <div className="container">
-            <StatsPanels strings={strings} />
+            <StatsPanels
+              strings={strings}
+              localeNames={Object.fromEntries(LIVE_LOCALES.map((l) => [l.code, l.nativeName]))}
+              countryNames={COUNTRY_NAMES}
+            />
           </div>
         </section>
       </main>

@@ -47,6 +47,7 @@ export default function ItemViews({
 }) {
   const routerPath = usePathname();
   const [views, setViews] = useState<number | null>(null);
+  const [series, setSeries] = useState<Array<{ day: string; views: number }>>([]);
   // Normalise to the shape the Worker recorded: leading locale, trailing slash.
   const target =
     path ??
@@ -60,7 +61,10 @@ export default function ItemViews({
       .then((r) => (r.ok ? r.json() : null))
       .then((body) => {
         if (cancelled || !body || typeof body.views !== "number") return;
-        if (body.views > 0) setViews(body.views);
+        if (body.views > 0) {
+          setViews(body.views);
+          if (Array.isArray(body.series)) setSeries(body.series);
+        }
       })
       .catch(() => {
         /* silence is the documented default */
@@ -75,6 +79,26 @@ export default function ItemViews({
   return (
     <p className="item-views" title={label.replace("{n}", String(views))}>
       {label.replace("{n}", views.toLocaleString())}
+      {/* SPARKLINE (2026-09-06). Daily reads for the window, as a small inline
+          SVG beside the count. It fills the gap between "read 41 times" and
+          "read 41 times last Tuesday when it was shared". Decorative and
+          aria-hidden: the number beside it already says what it says.
+          Only drawn with at least three days of data, because two points
+          make a line and one point makes a dot, and neither is a trend. */}
+      {series.length >= 3 && <Sparkline data={series.map((d) => d.views)} />}
     </p>
+  );
+}
+
+/** A tiny inline SVG line, semantic tokens only, hidden from assistive tech. */
+function Sparkline({ data }: { data: number[] }) {
+  const w = 96, h = 18, pad = 1;
+  const max = Math.max(1, ...data);
+  const step = (w - pad * 2) / Math.max(1, data.length - 1);
+  const pts = data.map((v, i) => `${(pad + i * step).toFixed(1)},${(h - pad - (v / max) * (h - pad * 2)).toFixed(1)}`);
+  return (
+    <svg className="item-views-spark" viewBox={`0 0 ${w} ${h}`} aria-hidden="true" focusable="false">
+      <polyline points={pts.join(" ")} />
+    </svg>
   );
 }
