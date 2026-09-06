@@ -228,6 +228,25 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # ---------------------------------------------------------------
+          # WORKER SECRETS (2026-09-06). GitHub Actions secrets and Cloudflare
+          # Worker secrets are DIFFERENT stores: the first are visible to this
+          # workflow, the second are bound to the running Worker. PRIME added
+          # the three analytics secrets to GitHub (correctly - that is where
+          # the workflow lives) and /api/stats kept returning 503, because
+          # nothing forwarded them. This does. wrangler-action runs
+          # `wrangler secret put NAME` for each name listed here, reading the
+          # value from the job environment below. Idempotent on every deploy,
+          # so rotating a secret is: edit it in GitHub, push anything.
+          # ---------------------------------------------------------------
+          secrets: |
+            CF_ACCOUNT_ID
+            CF_ANALYTICS_TOKEN
+            STATS_DETAIL_KEY
           # To force a specific wrangler version for the deploy step,
           # uncomment and pin:
           # wranglerVersion: "4.34.0"
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_ANALYTICS_TOKEN: ${{ secrets.CF_ANALYTICS_TOKEN }}
+          STATS_DETAIL_KEY: ${{ secrets.STATS_DETAIL_KEY }}
