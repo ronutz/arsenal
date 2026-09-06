@@ -45,7 +45,15 @@ import { readFileSync } from "node:fs";
 // entries of 2,000 to 4,900 characters. So the line sits just above the
 // established content rather than below it, because a guard that fails on
 // content which was correct before it existed teaches people to disable guards.
-const MAX_CONTEXT = 1000;
+//
+// RAISED 1000 -> 1400 on 2026-09-05 (PRIME). The standing rule that a vendor or
+// person entry must cover its security, defence and espionage history as part of
+// its scope adds a genuine beat to entries that were already complete. The old
+// ceiling would have forced that new material to be paid for by cutting existing
+// detail, which is the wrong trade: the guard exists to stop scroll traps of
+// 2,000 to 4,900 characters, not to ration substance. 1,400 still sits far below
+// the failure mode it was built for.
+const MAX_CONTEXT = 1400;
 
 const failures = [];
 let checked = 0;
