@@ -10572,8 +10572,8 @@
         "context": "Supernetting (route aggregation) is subnetting in reverse: combining adjacent blocks into one shorter prefix so routers carry fewer, broader entries. It is how the global routing table stays manageable rather than listing every small network separately."
       },
       "supply-chain-attack": {
-        "def": "Compromising software by attacking something it depends on, rather than the target directly.",
-        "context": "Instead of breaching you, an attacker poisons a library, build tool, or update you trust, and rides it in, as the left-pad fright and several real incidents showed how far dependencies reach. Defences include verifying provenance and pinning what you rely on."
+        "def": "Compromising a product or system through something it depends on - a supplier, a standard, a shipment, a maintainer - rather than attacking it directly. The payload can be code, or it can be physical.",
+        "context": "The cases in this catalogue sort into six routes, and only one of them is affected by choosing a different vendor. One: own the manufacturer - Crypto AG sold cipher machines to 120 governments while belonging to two intelligence services. Two: use the maintenance channel - a camera lived inside the Soviet embassy's Xerox 914 because the repairman was the one American allowed in. Three: write a weapon for the product that is simply the standard - Stuxnet targeted Siemens controllers because that is what the plant ran. Four: intercept the shipment - the NSA fitted beacon firmware to network equipment in transit and resealed the boxes. Five: compromise the upstream volunteer - a two-year campaign against a burnt-out maintainer put a backdoor in XZ Utils, caught by half a second of latency. Six: compromise the standard itself - Dual_EC_DRBG sat in the NIST recommendation, so every compliant product inherited it. And the payload need not be information: the 2024 pager detonations carried explosive through the same brand-licensing and distribution chain any other device uses. Defences - provenance, pinning, reproducible builds, audit logs kept where an insider cannot reach them - address some routes and not others, which is why the routes are worth knowing by name."
       },
       "syn-flood": {
         "def": "A denial-of-service that opens many half-finished TCP connections to exhaust a server's resources.",
@@ -16956,6 +16956,10 @@
       "karen-banks": {
         "def": "The GreenNet engineer whose gateway carried mail for sixty partner organisations across three continents, using the wrong technology on purpose.",
         "context": "GnFido ran on store-and-forward - fidonet and uucp - rather than a permanent internet link, because for most of its correspondents no permanent link existed or could be afforded. It was the inferior technology by every measure except the one that mattered, which was that it worked where the better one did not, and for thousands of people it was the only affordable electronic communication available. In 1995 the programme she helped found took forty women to the UN conference in Beijing and gave ten thousand delegates email and web access, some of them for the first time in their lives; the same group then got communications written into the Beijing Platform for Action, the first intergovernmental policy to treat women's access to these technologies as a matter of rights. Her own summary of thirty years is the line to keep: it is one thing to have access to the technologies and the pipes, but it is the people who make the network."
+      },
+      "hardware-implant": {
+        "def": "Something added to a device during manufacture or transit that the buyer cannot see and the vendor may not know about.",
+        "context": "Most of this catalogue's supply chain cases carry an information payload: a beacon in a router, a backdoor in a library, a rootkit in a controller. The mechanism does not require that. On 17 and 18 September 2024 thousands of pagers and hundreds of radios carried by members of Hezbollah detonated across Lebanon and Syria; 42 people were reported dead by 22 September, at least 12 of them civilians, with thousands injured across 150 hospitals. UN human rights experts condemned the attacks as potential war crimes, holding that the indiscriminate nature of simultaneous detonations breached international law; Israel's president denied involvement. The commercial detail is the transferable one. The brand on the pagers was licensed: a Taiwanese firm said the model was designed, made and sold by a Budapest company under a trademark agreement, and that the devices used a chip it does not use. The name on a product and the maker of a product are routinely different entities, entirely lawfully, and a buyer inspecting the label learns nothing about either. An implant can also lie dormant for years and wake on a message, which is a property it shares with software - the difference is only in what the payload does."
       }
     },
     "totalCount": "{count} terms",
@@ -20383,7 +20387,12 @@
       "security": "Security",
       "hacker-culture": "Hacker culture",
       "brazil": "Brazil"
-    }
+    },
+    "searchLabel": "Search by name",
+    "searchPlaceholder": "Type a name",
+    "showing": "Showing '{shown}' of '{total}'",
+    "clear": "Clear",
+    "none": "Nobody matches. Clear the search or pick another field."
   },
   "stats_page": {
     "eyebrow": "Statistics",

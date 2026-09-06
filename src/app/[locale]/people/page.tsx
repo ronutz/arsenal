@@ -119,8 +119,14 @@ export default async function PeoplePage({
 
               <PeopleTimelineFilter
                 fields={fields}
+                total={people.length}
                 allLabel={t("filterAll")}
                 regionLabel={t("filterLabel")}
+                searchLabel={t("searchLabel")}
+                searchPlaceholder={t("searchPlaceholder")}
+                showingLabel={t("showing")}
+                clearLabel={t("clear")}
+                noneLabel={t("none")}
               />
 
               <section className="section" data-people-timeline>
@@ -132,6 +138,7 @@ export default async function PeoplePage({
                         <li
                           className="people-item"
                           data-field={p.personField ?? ""}
+                          data-name={p.headword}
                           key={p.slug}
                         >
                           <span className="people-year">{p.personYear}</span>

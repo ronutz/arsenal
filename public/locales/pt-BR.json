@@ -10572,8 +10572,8 @@
         "context": "A supernetting (agregação de rotas) é o inverso da divisão em sub-redes: combinar blocos adjacentes em um prefixo mais curto para que roteadores carreguem menos entradas, mais abrangentes. É como a tabela de roteamento global se mantém gerenciável em vez de listar cada rede pequena separadamente."
       },
       "supply-chain-attack": {
-        "def": "Comprometer um software atacando algo de que ele depende, em vez do alvo diretamente.",
-        "context": "Em vez de invadir você, um atacante envenena uma biblioteca, ferramenta de build ou atualização em que você confia, e entra de carona, como o susto do left-pad e vários incidentes reais mostraram o alcance das dependências. As defesas incluem verificar a proveniência e fixar aquilo em que você se apoia."
+        "def": "Comprometer um produto ou sistema por meio de algo de que ele depende - um fornecedor, uma norma, uma remessa, um mantenedor - em vez de atacá-lo diretamente. A carga pode ser código, ou pode ser física.",
+        "context": "Os casos deste catálogo se organizam em seis rotas, e só uma delas é afetada por escolher outro fornecedor. Um: possuir o fabricante - a Crypto AG vendeu máquinas de cifra a 120 governos enquanto pertencia a dois serviços de inteligência. Dois: usar o canal de manutenção - uma câmera vivia dentro do Xerox 914 da embaixada soviética porque o técnico era o único americano admitido. Três: escrever uma arma para o produto que é simplesmente o padrão - o Stuxnet mirou controladores Siemens porque era o que a planta rodava. Quatro: interceptar a remessa - a NSA instalou firmware de sinalização em equipamento de rede em trânsito e relacrou as caixas. Cinco: comprometer o voluntário a montante - uma campanha de dois anos contra um mantenedor esgotado pôs uma porta dos fundos no XZ Utils, pega por meio segundo de latência. Seis: comprometer a própria norma - o Dual_EC_DRBG estava na recomendação do NIST, então todo produto conforme o herdou. E a carga não precisa ser informação: as detonações de pagers de 2024 levaram explosivo pela mesma cadeia de licenciamento de marca e distribuição que qualquer outro dispositivo usa. Defesas - procedência, fixação de versões, builds reproduzíveis, registros de auditoria guardados onde um insider não alcança - tratam algumas rotas e não outras, e é por isso que vale conhecer as rotas pelo nome."
       },
       "syn-flood": {
         "def": "Uma negação de serviço que abre muitas conexões TCP pela metade para esgotar os recursos de um servidor.",
@@ -16956,6 +16956,10 @@
       "karen-banks": {
         "def": "A engenheira da GreenNet cujo gateway carregou correio para sessenta organizações parceiras em três continentes, usando de propósito a tecnologia errada.",
         "context": "O GnFido rodava em store-and-forward - fidonet e uucp - e não sobre um enlace permanente de internet, porque para a maior parte dos correspondentes dele enlace permanente não existia nem cabia no orçamento. Era a tecnologia inferior por toda medida exceto a que importava, que era funcionar onde a melhor não funcionava, e para milhares de pessoas foi a única comunicação eletrônica acessível que houve. Em 1995 o programa que ela ajudou a fundar levou quarenta mulheres à conferência da ONU em Pequim e deu acesso a correio e web a dez mil delegadas, algumas pela primeira vez na vida; e o mesmo grupo então conseguiu inscrever comunicações na Plataforma de Ação de Pequim, a primeira política intergovernamental a tratar o acesso das mulheres a essas tecnologias como questão de direitos. O resumo que ela mesma faz de trinta anos é a frase a guardar: uma coisa é ter acesso às tecnologias e aos canos, mas são as pessoas que fazem a rede."
+      },
+      "hardware-implant": {
+        "def": "Algo acrescentado a um dispositivo na fabricação ou no transporte que o comprador não consegue ver e que o fabricante pode desconhecer.",
+        "context": "Quase todos os casos de cadeia de suprimento deste catálogo carregam carga de informação: um farol num roteador, uma porta dos fundos numa biblioteca, um rootkit num controlador. O mecanismo não exige isso. Em 17 e 18 de setembro de 2024, milhares de pagers e centenas de rádios portados por membros do Hezbollah detonaram no Líbano e na Síria; até 22 de setembro contavam-se 42 mortos, ao menos 12 deles civis, com milhares de feridos atendidos em 150 hospitais. Peritos de direitos humanos da ONU condenaram os ataques como possíveis crimes de guerra, sustentando que a natureza indiscriminada de detonações simultâneas violou o direito internacional; o presidente de Israel negou envolvimento. O detalhe comercial é o que se transfere. A marca nos pagers era licenciada: uma empresa taiwanesa declarou que o modelo foi projetado, fabricado e vendido por uma companhia de Budapeste sob acordo de marca, e que os aparelhos usavam um chip que ela não usa. O nome num produto e o fabricante de um produto são rotineiramente entidades diferentes, de forma inteiramente lícita, e quem inspeciona o rótulo não aprende nada sobre nenhum dos dois. Um implante também pode ficar dormente por anos e acordar com uma mensagem, propriedade que ele divide com software - a diferença está só no que a carga faz."
       }
     },
     "totalCount": "{count} termos",
@@ -20332,7 +20336,12 @@
       "security": "Segurança",
       "hacker-culture": "Cultura hacker",
       "brazil": "Brasil"
-    }
+    },
+    "searchLabel": "Buscar por nome",
+    "searchPlaceholder": "Digite um nome",
+    "showing": "Mostrando '{shown}' de '{total}'",
+    "clear": "Limpar",
+    "none": "Ninguém corresponde. Limpe a busca ou escolha outro campo."
   },
   "stats_page": {
     "eyebrow": "Estatísticas",

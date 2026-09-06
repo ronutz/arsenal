@@ -16393,7 +16393,11 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   transition: background 0.12s, border-color 0.12s, opacity 0.12s;
 }
 .people-chip[aria-pressed="true"] { border-color: var(--color-accent); color: var(--text-primary); }
-.people-chip[aria-pressed="false"] { opacity: 0.45; text-decoration: line-through; }
+/* Selection model changed 2026-09-06: an unpressed chip is now the RESTING
+   state (nothing selected = All), so it must look neutral, not struck out.
+   The old strike-through belonged to the inverted model this replaced. */
+.people-chip[aria-pressed="false"] { opacity: 0.85; }
+.people-chip[aria-pressed="false"]:hover { opacity: 1; }
 .people-chip-count { color: var(--text-tertiary); margin-left: 0.35rem; }
 
 /* ---------------------------------------------------------------------------
@@ -16612,3 +16616,54 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   font-family: var(--font-mono); font-size: 15px; font-weight: 700;
   fill: var(--text-primary);
 }
+
+/* ---------------------------------------------------------------------------
+ * THE hidden ATTRIBUTE MUST WIN (bug fix, 2026-09-06)
+ * The people filter set `item.hidden = true` and nothing disappeared, because
+ * `.people-item { display: grid }` outranks the browser's default
+ * `[hidden] { display: none }`. Any component that sets a display value on an
+ * element it later hides has this bug. One global rule closes the whole class.
+ * ------------------------------------------------------------------------- */
+[hidden] { display: none !important; }
+
+/* ---------------------------------------------------------------------------
+ * PEOPLE FILTER REVAMP (2026-09-06)
+ * Sticky bar with name search, live count, and a chip row whose resting state
+ * is "All". Semantic tokens only. Guard 44 requires every class the component
+ * emits to have a rule here.
+ * ------------------------------------------------------------------------- */
+.people-filter {
+  /* Overrides the older flex rule above: the bar is two stacked rows now. */
+  display: block;
+  position: sticky; top: 0; z-index: 5;
+  padding: 0.85rem 0 0.75rem;
+  background: var(--color-canvas);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 1.5rem;
+}
+.people-filter-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.75rem;
+}
+.people-filter-row + .people-filter-row { margin-top: 0.6rem; }
+.people-search { display: flex; flex-direction: column; gap: 0.25rem; flex: 1 1 16rem; max-width: 24rem; }
+.people-search-label {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text-tertiary);
+}
+.people-search-input {
+  font: inherit; font-size: 0.95rem;
+  padding: 0.5rem 0.75rem; border-radius: 8px;
+  color: var(--text-primary); background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.12s;
+}
+.people-search-input:focus { outline: none; border-color: var(--color-accent); }
+.people-filter-status {
+  margin: 0 0 0 auto; font-family: var(--font-mono); font-size: 0.82rem;
+  color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+.people-filter-chips { padding-top: 0.15rem; }
+.people-chip--clear {
+  border-style: dashed; color: var(--text-tertiary);
+}
+.people-chip--clear:hover { color: var(--text-primary); }
