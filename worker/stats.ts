@@ -101,6 +101,24 @@ async function query(env: StatsEnv, sql: string): Promise<unknown[]> {
  */
 const VIEWS = "SUM(_sample_interval) AS views";
 
+// ---------------------------------------------------------------------------
+// RETROACTIVE RECLASSIFICATION (2026-09-06)
+// Rows written before the datacenter classifier deployed carry
+// blob4 = 'human' for a scraper fleet that was, in the data, ~29,000 of
+// ~31,000 "human" requests in a week, all from one country. Analytics Engine
+// rows cannot be edited, so the correction is applied at read time: a human
+// row from that country before the cutoff is treated as 'unverified:datacenter'
+// everywhere - excluded from every people-only panel, and shown in the clients
+// panel under its own label so the count is visible rather than deleted.
+// The handful of genuine readers in that country in that window are lost to
+// the same rule; that is the smaller error by four orders of magnitude.
+// ---------------------------------------------------------------------------
+const RECLASS_COUNTRY = "SG";
+const RECLASS_BEFORE = "2026-09-07 12:00:00";
+const POLLUTED = `(blob4 = 'human' AND blob3 = '${RECLASS_COUNTRY}' AND timestamp < toDateTime('${RECLASS_BEFORE}'))`;
+/** The people-only filter every human panel uses. */
+const HUMAN = `(blob4 = 'human' AND NOT ${POLLUTED})`;
+
 export async function handleStats(
   url: URL,
   env: StatsEnv
@@ -133,7 +151,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT blob1 AS path, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} AND blob4 = 'human'
+             WHERE ${since} AND ${HUMAN}
              GROUP BY path ORDER BY views DESC LIMIT 100`
           ),
         });
@@ -151,9 +169,9 @@ export async function handleStats(
         // shape as the timeline route, filtered to one path.
         const [rows, days] = await Promise.all([
           query(env, `SELECT ${VIEWS} FROM ${PAGEVIEWS}
-                      WHERE ${since} AND blob4 = 'human' AND blob1 = '${safe}'`),
+                      WHERE ${since} AND ${HUMAN} AND blob1 = '${safe}'`),
           query(env, `SELECT toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day, ${VIEWS}
-                      FROM ${PAGEVIEWS} WHERE ${since} AND blob4 = 'human' AND blob1 = '${safe}'
+                      FROM ${PAGEVIEWS} WHERE ${since} AND ${HUMAN} AND blob1 = '${safe}'
                       GROUP BY day ORDER BY day ASC LIMIT 400`),
         ]);
         const first = rows[0] as { views?: string } | undefined;
@@ -169,15 +187,30 @@ export async function handleStats(
       }
 
       // ---- Humans versus automation, and the bot families --------------
-      case "clients":
+      case "clients": {
+        // Two queries: the family breakdown, and the count of rows the
+        // retroactive rule relabels. The relabelled count is moved from
+        // 'human' to its own row so it is visible, not deleted.
+        const [rows, polluted] = await Promise.all([
+          query(env, `SELECT blob4 AS client, ${VIEWS} FROM ${PAGEVIEWS}
+                      WHERE ${since} GROUP BY client ORDER BY views DESC`),
+          query(env, `SELECT ${VIEWS} FROM ${PAGEVIEWS} WHERE ${since} AND ${POLLUTED}`),
+        ]);
+        const p = Number((polluted[0] as { views?: string } | undefined)?.views ?? 0);
+        const out = (rows as Array<{ client: string; views: string }>).map((r) =>
+          r.client === "human" ? { ...r, views: String(Math.max(0, Number(r.views) - p)) } : r
+        );
+        if (p > 0) {
+          const i = out.findIndex((r) => r.client === "unverified:datacenter");
+          if (i >= 0) out[i] = { ...out[i], views: String(Number(out[i].views) + p) };
+          else out.push({ client: "unverified:datacenter", views: String(p) });
+        }
+        out.sort((a, b) => Number(b.views) - Number(a.views));
         return json({
-          rows: await query(
-            env,
-            `SELECT blob4 AS client, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} GROUP BY client ORDER BY views DESC`
-          ),
-          note: "client 'human' is everything not matched as automation; the rest are bot families.",
+          rows: out,
+          note: "client 'human' is everything not matched as automation and not from a datacenter network; the rest are families.",
         });
+      }
 
       // ---- Where readers come from -------------------------------------
       // PUBLIC: aggregated to the referring host. The full URL, with its query
@@ -231,7 +264,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day, ${VIEWS}
-             FROM ${PAGEVIEWS} WHERE ${since} AND blob4 = 'human'
+             FROM ${PAGEVIEWS} WHERE ${since} AND ${HUMAN}
              GROUP BY day ORDER BY day ASC LIMIT 400`
           ),
         });
@@ -245,7 +278,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT blob5 AS device, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} AND blob4 = 'human' AND blob5 != ''
+             WHERE ${since} AND ${HUMAN} AND blob5 != ''
              GROUP BY device ORDER BY views DESC LIMIT 5`
           ),
         });
@@ -259,7 +292,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day, blob4 AS client, ${VIEWS}
-             FROM ${PAGEVIEWS} WHERE ${since} AND blob4 != 'human'
+             FROM ${PAGEVIEWS} WHERE ${since} AND (blob4 != 'human' OR ${POLLUTED})
              GROUP BY day, client ORDER BY day ASC LIMIT 4000`
           ),
         });
@@ -274,7 +307,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT blob1 AS path, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} AND blob4 = 'human'
+             WHERE ${since} AND ${HUMAN}
              GROUP BY path ORDER BY views DESC LIMIT 6000`
           ),
         });
@@ -288,7 +321,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT toStartOfInterval(timestamp, INTERVAL '1' HOUR) AS hour, ${VIEWS}
-             FROM ${PAGEVIEWS} WHERE ${since} AND blob4 = 'human'
+             FROM ${PAGEVIEWS} WHERE ${since} AND ${HUMAN}
              GROUP BY hour ORDER BY hour ASC LIMIT 2500`
           ),
         });
@@ -299,7 +332,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT blob3 AS country, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} AND blob4 = 'human'
+             WHERE ${since} AND ${HUMAN}
              GROUP BY country ORDER BY views DESC LIMIT 100`
           ),
         });
@@ -309,7 +342,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT blob2 AS locale, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} AND blob4 = 'human'
+             WHERE ${since} AND ${HUMAN}
              GROUP BY locale ORDER BY views DESC`
           ),
         });

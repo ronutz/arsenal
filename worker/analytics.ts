@@ -163,6 +163,62 @@ export function classifyDevice(request: Request): string {
   return "other";
 }
 
+
+// ---------------------------------------------------------------------------
+// DATACENTER ORIGIN (2026-09-06, second fix the same day)
+//
+// The first day of live data showed ~29,000 of ~31,000 "human" requests in a
+// week from one country. Bot Fight Mode had been on for weeks and it got
+// through, and the header-consistency check above would not catch it either:
+// a real browser engine run headless sends every header a browser sends. What
+// it cannot fake is where it connects FROM. Cloudflare gives the Worker the
+// client's autonomous system (cf.asn, cf.asOrganization). A browser User-Agent
+// arriving from a cloud or hosting provider's network is a machine, not a
+// person at a desk: residential, mobile and corporate networks are where
+// readers are; datacenters are where scrapers rent servers.
+//
+// Neither the ASN nor the organisation is STORED. They are read, matched
+// against the list below, and the only thing written is the class. The list is
+// deliberately the well-known cloud and hosting providers only, by number
+// first and by name as a fallback, so a corporate ISP is never on it. The
+// class is "unverified", not "bot": a reader on a corporate VDI in a cloud
+// region will land here, and that is an acceptable cost of not counting a
+// scraper fleet as readers.
+// ---------------------------------------------------------------------------
+const DATACENTER_ASNS = new Set<number>([
+  16509, 14618, 8987,           // Amazon (AWS)
+  15169, 396982, 19527,         // Google, Google Cloud
+  8075, 8068, 8069,             // Microsoft (Azure)
+  14061,                        // DigitalOcean
+  45102, 37963, 45090,          // Alibaba Cloud, Alibaba CN, Tencent
+  132203, 132591,               // Tencent Cloud
+  24940, 213230,                // Hetzner
+  16276,                        // OVH
+  63949,                        // Linode (Akamai)
+  20473,                        // Vultr (Choopa)
+  31898,                        // Oracle Cloud
+  136907, 55990,                // Huawei Cloud
+  51167,                        // Contabo
+  60781, 28753,                 // Leaseweb
+  9009,                         // M247
+  212238, 60068,                // Datacamp / CDN77
+  46606, 26496,                 // Unified Layer, GoDaddy hosting
+  12876,                        // Scaleway (Online SAS)
+  197540,                       // netcup
+  136258, 138915,               // Kaopu / other SEA hosting seen in scraping
+  13335,                        // Cloudflare (WARP egress and Workers)
+]);
+const DATACENTER_ORG = /amazon|aws|google cloud|microsoft|azure|digitalocean|alibaba|aliyun|tencent|hetzner|ovh|linode|akamai|vultr|choopa|oracle|huawei cloud|contabo|leaseweb|m247|datacamp|cdn77|scaleway|netcup|hosting|datacenter|data center|server|cloud/i;
+
+/** True when the request's autonomous system is a known cloud or hosting provider. */
+function fromDatacenter(request: Request): boolean {
+  const cf = (request as { cf?: Record<string, unknown> }).cf;
+  const asn = Number(cf?.asn ?? 0);
+  if (asn && DATACENTER_ASNS.has(asn)) return true;
+  const org = String(cf?.asOrganization ?? "");
+  return org !== "" && DATACENTER_ORG.test(org);
+}
+
 export function classifyClient(request: Request): string {
   const cf = (request as { cf?: Record<string, unknown> }).cf;
   const bm = cf?.botManagement as
@@ -198,6 +254,10 @@ export function classifyClient(request: Request): string {
   // tools and curl-with-a-fake-UA will land here too, which is why the class
   // is called "unverified" and not "bot".
   if (/Mozilla\//.test(ua)) {
+    // A browser's name on a datacenter's network: the strongest signal there
+    // is without correlating anything. Checked before the header test because
+    // a real engine passes the header test.
+    if (fromDatacenter(request)) return "unverified:datacenter";
     const hasFetchMeta = !!request.headers.get("sec-fetch-mode");
     const hasLanguage = !!request.headers.get("accept-language");
     if (!hasFetchMeta && !hasLanguage) return "unverified:headless";
