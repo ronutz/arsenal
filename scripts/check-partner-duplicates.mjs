@@ -74,6 +74,11 @@ const STOP = new Set([
   "the","and","a","an","of","in","to","for","networks","network","systems","system",
   "technologies","technology","corporation","corp","inc","ltd","group","company",
   "co","that","who","was","is","it","its","from","with","-","&",
+  // Descriptive words that appear in display names as PROSE, not as company
+  // identity (added 2026-09-06 after "supply chain" matched two unrelated
+  // entries). A shared adjective is not a shared company.
+  "supply","chain","first","compromise","cascading","without","when","then",
+  "never","most","between","before","after","every","other","into","their",
 ]);
 const tokens = (s) =>
   s.toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length > 3 && !STOP.has(t));
@@ -101,7 +106,7 @@ for (const [tok, slugs] of byToken) {
 // without that entry in place. It is a common-word overlap, not a duplicate
 // company. Raising a warning threshold by a measured one is legitimate;
 // raising it to make a failure go away without measuring is not.
-const BASELINE = 125;
+const BASELINE = 116; // ratcheted 125 -> 116 on 2026-09-06 after prose words joined the stop list
 
 if (failures.length) {
   console.error("\n[check-partner-duplicates] FAIL:\n");

@@ -186,6 +186,23 @@ export function classifyClient(request: Request): string {
   // automation, which is a useful category of its own.
   if (typeof bm?.score === "number" && bm.score <= 30) return "unverified";
 
+  // BROWSER CONSISTENCY (2026-09-06). Without Bot Management the score above
+  // is absent, and the first day of live data showed why that matters: about
+  // 29,000 of 31,000 "human" requests in a week came from one country, from
+  // clients presenting a browser User-Agent. A real browser sends the
+  // Sec-Fetch-* headers on navigations (every current engine does) and, in
+  // practice, Accept-Language. A headless client wearing a browser's name
+  // very often sends neither. Presenting as a browser while lacking BOTH is
+  // classed as unverified rather than human. The headers are read and not
+  // stored; the only thing written is the word. Old browsers, some privacy
+  // tools and curl-with-a-fake-UA will land here too, which is why the class
+  // is called "unverified" and not "bot".
+  if (/Mozilla\//.test(ua)) {
+    const hasFetchMeta = !!request.headers.get("sec-fetch-mode");
+    const hasLanguage = !!request.headers.get("accept-language");
+    if (!hasFetchMeta && !hasLanguage) return "unverified:headless";
+  }
+
   return "human";
 }
 

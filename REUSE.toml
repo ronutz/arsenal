@@ -65,3 +65,12 @@ path = "public/vendor/swagger-ui/**"
 precedence = "override"
 SPDX-FileCopyrightText = "SmartBear Software and the Swagger UI contributors"
 SPDX-License-Identifier = "Apache-2.0"
+
+# Country flags on /stats: the 4x3 set from flag-icons (Panayiotis Lipiridis),
+# MIT, vendored as files rather than as a dependency so the lockfile stays
+# untouched and nothing is fetched from a third party at runtime.
+[[annotations]]
+path = "public/flags/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2013 Panayiotis Lipiridis <https://github.com/lipis/flag-icons>"
+SPDX-License-Identifier = "MIT"

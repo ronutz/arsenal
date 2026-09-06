@@ -141,6 +141,7 @@ export default async function StatsPage({
               strings={strings}
               localeNames={Object.fromEntries(LIVE_LOCALES.map((l) => [l.code, l.nativeName]))}
               countryNames={COUNTRY_NAMES}
+              locale={locale}
             />
           </div>
         </section>

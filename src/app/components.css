@@ -16693,7 +16693,7 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   text-transform: uppercase; color: var(--text-tertiary);
 }
 .stats-country { display: inline-flex; align-items: center; gap: 0.5rem; }
-.stats-country .country-flag { width: 1.35rem; height: auto; flex: none; border-radius: 2px; }
+.stats-flag { width: 1.35rem; height: auto; flex: none; border-radius: 2px; box-shadow: 0 0 0 1px var(--border-subtle); }
 .stats-country-code { font-family: var(--font-mono); }
 .stats-country-name { color: var(--text-secondary); font-family: var(--font-prose, inherit); }
 .stats-panel--wide { grid-column: 1 / -1; }

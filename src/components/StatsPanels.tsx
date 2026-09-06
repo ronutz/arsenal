@@ -22,7 +22,6 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
-import CountryFlag from "@/components/CountryFlag";
 
 type Row = Record<string, string | number>;
 type PanelKind = "ranked" | "timeline" | "countries" | "locales" | "referrers" | "pages" | "devices"
@@ -76,13 +75,28 @@ export default function StatsPanels({
   strings,
   localeNames,
   countryNames,
+  locale,
 }: {
   strings: Record<string, string>;
   /** code -> native name, resolved server-side from LIVE_LOCALES. */
   localeNames: Record<string, string>;
-  /** ISO code -> country name, for the countries panel. */
+  /** ISO code -> country name, used only as a fallback when the browser
+   *  cannot name a region itself. */
   countryNames: Record<string, string>;
+  /** Page locale, so region names come out in the reader's language. */
+  locale: string;
 }) {
+  // COUNTRY NAMES (2026-09-06). The browser already knows every region name
+  // in every language through Intl.DisplayNames, so no table is shipped:
+  // "SG" -> "Singapore" in English, "Singapura" in Portuguese. The
+  // hand-written map is only a fallback for engines without the API.
+  const regionNames = useMemo(() => {
+    try { return new Intl.DisplayNames([locale], { type: "region" }); } catch { return null; }
+  }, [locale]);
+  const nameOf = (code: string) => {
+    try { const n = regionNames?.of(code); if (n && n !== code) return n; } catch { /* fall through */ }
+    return countryNames[code] ?? "";
+  };
   const [win, setWin] = useState("30d");
   const [data, setData] = useState<Record<string, Row[] | null>>({});
   const [state, setState] = useState<"loading" | "ok" | "unconfigured" | "error">("loading");
@@ -219,11 +233,20 @@ export default function StatsPanels({
     if (p.kind === "timeline") return raw.slice(0, 10);
     if (p.kind === "countries") {
       const code = raw.toUpperCase();
+      const name = nameOf(code);
+      // FLAGS (2026-09-06). The hand-drawn set in the industry catalogue
+      // covers ~25 countries; stats can show any of ~250. The complete set
+      // is vendored under /public/flags (MIT, see REUSE.toml) and served
+      // from this origin - nothing fetched from a third party. Unknown
+      // codes such as "XX" get no image and no name.
+      const known = /^[A-Z]{2}$/.test(code) && code !== "XX";
       return (
         <span className="stats-country">
-          <CountryFlag code={code} />
+          {known ? (
+            <img className="stats-flag" src={`/flags/4x3/${code.toLowerCase()}.svg`} alt="" width={20} height={15} loading="lazy" />
+          ) : null}
           <span className="stats-country-code">{code}</span>
-          {countryNames[code] ? <span className="stats-country-name">{countryNames[code]}</span> : null}
+          {name ? <span className="stats-country-name">{name}</span> : null}
         </span>
       );
     }
