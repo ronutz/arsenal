@@ -16667,3 +16667,21 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   border-style: dashed; color: var(--text-tertiary);
 }
 .people-chip--clear:hover { color: var(--text-primary); }
+
+/* Featured endorsement on /about (2026-09-06). One quote, full width, quiet
+ * chrome: a left rule in the accent, prose sized like the body, and a
+ * mono caption. It must read as a record, not as marketing. */
+.about-featured-quote {
+  margin: 2rem 0 0; padding: 1rem 0 1rem 1.25rem;
+  border-left: 3px solid var(--accent-primary);
+}
+.about-featured-quote-text { margin: 0; }
+.about-featured-quote-text p { margin: 0 0 0.6rem; font-size: 1.05rem; line-height: 1.6; color: var(--text-primary); }
+.about-featured-quote-text p:last-child { margin-bottom: 0; }
+.about-featured-quote-meta {
+  margin-top: 0.85rem; display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem;
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-tertiary);
+}
+.about-featured-quote-author { color: var(--text-secondary); font-weight: 600; }
+.about-featured-quote-title { }
+.about-featured-quote-source { }

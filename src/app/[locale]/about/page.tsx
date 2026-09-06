@@ -28,6 +28,7 @@ import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+import { TESTIMONIALS } from "@/content/testimonials/data";
 
 // Dev-only gap flag. In production (NODE_ENV === "production") it renders
 // nothing, so no TODO ever ships. In dev it shows a visible amber note.
@@ -213,6 +214,32 @@ export default async function AboutPage({
               {t("advise.title")}
             </h3>
             <p className="section-body">{t("advise.body")}</p>
+
+            {/* FEATURED ENDORSEMENT (PRIME 2026-09-06). Rendered from the
+                verbatim catalogue by record id, never as a copied string, so
+                the site's one-source rule for testimonials holds. It sits
+                beside "How I advise" because it is an endorsement of
+                judgement, which is what advisory sells. */}
+            {(() => {
+              const q = TESTIMONIALS.find((x) => x.id === "75");
+              if (!q) return null;
+              return (
+                <figure className="about-featured-quote">
+                  <blockquote className="about-featured-quote-text">
+                    {q.text.split("\n").map((line, i) => (
+                      <p key={i}>{line}</p>
+                    ))}
+                  </blockquote>
+                  <figcaption className="about-featured-quote-meta">
+                    <span className="about-featured-quote-author">{q.author}</span>
+                    {q.title ? <span className="about-featured-quote-title">{q.title}</span> : null}
+                    <span className="about-featured-quote-source">
+                      {q.source} &middot; {q.date}
+                    </span>
+                  </figcaption>
+                </figure>
+              );
+            })()}
             <Gap note="Expand teaching-philosophy copy with Rodolfo's own words if desired (current text is from the verified bio only)." />
           </div>
         </section>

@@ -349,6 +349,48 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </p>
                 <p className="learn-portal-lede">{t("map.aboutLede")}</p>
               </Link>
+              <Link href="/people" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9675;</span>
+                <p className="learn-portal-title">
+                  {t("map.people")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.peopleLede")}</p>
+              </Link>
+              <Link href="/speaking" className="learn-portal-card" style={{ "--note-accent": "var(--color-amber)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
+                <p className="learn-portal-title">
+                  {t("map.speaking")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.speakingLede")}</p>
+              </Link>
+              <Link href="/blog" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9674;</span>
+                <p className="learn-portal-title">
+                  {t("map.blog")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.blogLede")}</p>
+              </Link>
+              <Link href="/endorsements" className="learn-portal-card" style={{ "--note-accent": "var(--color-amber)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#10022;</span>
+                <p className="learn-portal-title">
+                  {t("map.endorsements")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.endorsementsLede")}</p>
+              </Link>
+              <Link href="/dev" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9881;</span>
+                <p className="learn-portal-title">
+                  {t("map.dev")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.devLede")}</p>
+              </Link>
+              <Link href="/contribute" className="learn-portal-card" style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9998;</span>
+                <p className="learn-portal-title">
+                  {t("map.contribute")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("map.contributeLede")}</p>
+              </Link>
               <Link href="/industry/chapters" className="learn-portal-card" style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
                 <p className="learn-portal-title">
@@ -393,7 +435,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         {/* --- PRIVACY EXPLAINER --- */}
         <section className="section section-accent">
           <div className="container section-narrow">
-            <h2 className="section-title">{t("privacy.title")}</h2>
+            {/* Title carries emphasis on "doesn't leave" (PRIME 2026-09-06),
+                so it is rendered rich rather than plain. */}
+            <h2 className="section-title">
+              {t.rich("privacy.title", { em: (c) => <em>{c}</em> })}
+            </h2>
             <p className="section-body">{t("privacy.body")}</p>
           </div>
         </section>

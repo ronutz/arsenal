@@ -65,7 +65,7 @@
       "netskope": "Netskope"
     },
     "privacy": {
-      "title": "Why local-first matters for security work.",
+      "title": "Local-first means your information <em>doesn't leave</em> your browser",
       "body": "When you paste a configuration, a packet capture, or a certificate into a tool, that data often contains secrets. Here, the everyday tools run entirely in your browser. The input never leaves your device, so there is nothing to log, leak, or subpoena."
     },
     "toolPreview": {
@@ -95,7 +95,7 @@
       "sectionLabel": "The toolbox at a glance"
     },
     "map": {
-      "title": "What is here",
+      "title": "Sections",
       "tools": "Tools",
       "toolsLede": "Deterministic calculators and explainers for networks, security and identity. They compute in your browser and send nothing anywhere.",
       "toolsBadge": "{count} live",
@@ -136,7 +136,19 @@
       "careerBadge": "{count} chapters",
       "rolesBadge": "{count} positions",
       "roles": "The Roles",
-      "rolesLede": "The positions this industry is made of, grouped by the path a product takes from the company that builds it to the person who depends on it."
+      "rolesLede": "The positions this industry is made of, grouped by the path a product takes from the company that builds it to the person who depends on it.",
+      "people": "People",
+      "peopleLede": "The people who built the field, by decade and by discipline.",
+      "speaking": "Speaking",
+      "speakingLede": "Talks and sessions, past and available.",
+      "blog": "Blog",
+      "blogLede": "Notes between the articles.",
+      "endorsements": "Endorsements",
+      "endorsementsLede": "What clients and students have said, verbatim.",
+      "dev": "Dev tools",
+      "devLede": "The odd, the experimental, and the fun.",
+      "contribute": "Contribute",
+      "contributeLede": "How to improve a tool, an article, or an entry."
     }
   },
   "tools": {

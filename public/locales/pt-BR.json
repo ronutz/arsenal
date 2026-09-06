@@ -65,7 +65,7 @@
       "netskope": "Netskope"
     },
     "privacy": {
-      "title": "Por que processar localmente faz diferença em segurança.",
+      "title": "Local-first significa que a sua informação <em>não sai</em> do seu navegador",
       "body": "Quando você cola uma configuração, uma captura de pacotes ou um certificado em uma ferramenta, esses dados costumam conter segredos. Aqui, as ferramentas do dia a dia rodam inteiramente no seu navegador. A informação nunca sai do seu dispositivo, então não há o que registrar, vazar ou intimar judicialmente."
     },
     "toolPreview": {
@@ -95,7 +95,7 @@
       "sectionLabel": "O conjunto de ferramentas em números"
     },
     "map": {
-      "title": "O que há aqui",
+      "title": "Seções",
       "tools": "Ferramentas",
       "toolsLede": "Calculadoras e explicadores determinísticos para redes, segurança e identidade. Calculam no seu navegador e não enviam nada a lugar nenhum.",
       "toolsBadge": "{count} no ar",
@@ -136,7 +136,19 @@
       "careerBadge": "{count} capítulos",
       "rolesBadge": "{count} posições",
       "roles": "Os Papéis",
-      "rolesLede": "As posições de que esta indústria é feita, agrupadas pelo caminho que um produto percorre de quem o constrói a quem depende dele."
+      "rolesLede": "As posições de que esta indústria é feita, agrupadas pelo caminho que um produto percorre de quem o constrói a quem depende dele.",
+      "people": "Pessoas",
+      "peopleLede": "Quem construiu o campo, por década e por disciplina.",
+      "speaking": "Palestras",
+      "speakingLede": "Palestras e sessões, passadas e disponíveis.",
+      "blog": "Blog",
+      "blogLede": "Notas entre os artigos.",
+      "endorsements": "Depoimentos",
+      "endorsementsLede": "O que clientes e alunos disseram, na íntegra.",
+      "dev": "Ferramentas dev",
+      "devLede": "O curioso, o experimental e o divertido.",
+      "contribute": "Contribuir",
+      "contributeLede": "Como melhorar uma ferramenta, um artigo ou um verbete."
     }
   },
   "tools": {

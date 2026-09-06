@@ -41,6 +41,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 
 import ReduBrand from "@/components/ReduBrand";
+import { TESTIMONIALS } from "@/content/testimonials/data";
 export async function generateMetadata({
   params,
 }: {
@@ -302,6 +303,39 @@ export default async function AdvisoryPage({
               <p className="section-body" style={{ marginBottom: "2rem", maxWidth: "70ch" }}>
                 {t("recordBody")}
               </p>
+
+              {/* FEATURED CLIENT ENDORSEMENT (PRIME 2026-09-06, record #63).
+                  Chosen over every colleague's word because it is a CLIENT's,
+                  from the financial sector, describing design and conception
+                  led across several suppliers - which is the independence
+                  argument this page makes, evidenced from 2008. Rendered from
+                  the verbatim catalogue by id; the English is the recorded
+                  translation, never a paraphrase. */}
+              {(() => {
+                const q = TESTIMONIALS.find((x) => x.id === "63");
+                if (!q) return null;
+                const text = q.textEnglish ?? q.text;
+                return (
+                  <figure className="about-featured-quote">
+                    <blockquote className="about-featured-quote-text">
+                      {text.split("\n").map((line, i) => (
+                        <p key={i}>{line}</p>
+                      ))}
+                    </blockquote>
+                    <figcaption className="about-featured-quote-meta">
+                      <span className="about-featured-quote-author">{q.author}</span>
+                      {q.title ? <span className="about-featured-quote-title">{q.title}</span> : null}
+                      {q.relationship ? (
+                        <span className="about-featured-quote-title">{q.relationship}</span>
+                      ) : null}
+                      <span className="about-featured-quote-source">
+                        {q.source} &middot; {q.date}
+                        {q.lang !== "EN" ? " \u00b7 translated from the original" : ""}
+                      </span>
+                    </figcaption>
+                  </figure>
+                );
+              })()}
               <ul className="learn-grid">
                 {trackRecord.map(({ key }) => (
                   <li key={key} className="learn-grid-item">

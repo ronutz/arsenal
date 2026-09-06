@@ -131,63 +131,6 @@ export default async function LearnIndexPage({
                   <span className="learn-portal-badge">{t("portalHubCount", { count: VENDOR_FAMILIES.length })}</span>
                 </p>
               </Link>
-              {/* THE PRACTICE (PRIME 2026-08-06). A SIBLING card, not a nested
-                  section: PRIME asked whether the corpus should live under
-                  /learn and the answer was no. Learn holds 528 articles on how
-                  the TECHNOLOGY works; The Practice holds writing on how the
-                  WORK is done. A reader arrives here with a protocol question
-                  and there with a professional one, and nesting the second
-                  under the first would have made it look like product
-                  documentation and buried 48 articles under 528.
-
-                  The count is COMPUTED from the corpus rather than written
-                  down, so the card cannot claim a number the section then
-                  contradicts. */}
-              <Link
-                href="/practice"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--color-danger)" } as React.CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
-                <p className="learn-portal-title">
-                  {t("portalPractice")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("portalPracticeLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">
-                    {t("portalPracticeCount", { count: practiceCount })}
-                  </span>
-                </p>
-              </Link>
-
-              {/* THE ROLES (PRIME 2026-08-14). Placed immediately after The
-                  Practice because the two are a pair: that corpus is how the
-                  work is done, this one is what the positions are. Sibling
-                  card, same as the Practice card - the section lives at
-                  /roles, a top-level peer rather than a child of learn. */}
-              <Link
-                href="/roles"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--color-accent)" } as React.CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
-                <p className="learn-portal-title">
-                  {t("portalRoles")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("portalRolesLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">
-                    {t("portalRolesCount", { count: ROLES.length })}
-                  </span>
-                </p>
-              </Link>
-              {/* THE INDUSTRY (PRIME 2026-09-01). The largest body of written
-                  material on this site that the Learn portal did not point at:
-                  profiles of the companies and the people, the lineage
-                  timeline, and the acquisition trail that explains why the
-                  product on the shelf carries a different name from the one
-                  that built it. Counts come from the registries, so the card
-                  cannot drift from the section. */}
               <Link
                 href="/industry"
                 className="learn-portal-card"
@@ -204,10 +147,38 @@ export default async function LearnIndexPage({
                   </span>
                 </p>
               </Link>
-              {/* PEOPLE (PRIME 2026-09-01). The individuals were in the
-                  glossary all along with no address of their own; the flag on
-                  each entry is what made a page possible. Count is derived, so
-                  it cannot drift from the data. */}
+              <Link
+                href="/roles"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-accent)" } as React.CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
+                <p className="learn-portal-title">
+                  {t("portalRoles")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("portalRolesLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">
+                    {t("portalRolesCount", { count: ROLES.length })}
+                  </span>
+                </p>
+              </Link>
+              <Link
+                href="/practice"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-danger)" } as React.CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
+                <p className="learn-portal-title">
+                  {t("portalPractice")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("portalPracticeLede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">
+                    {t("portalPracticeCount", { count: practiceCount })}
+                  </span>
+                </p>
+              </Link>
               <Link
                 href="/people"
                 className="learn-portal-card"
@@ -267,8 +238,7 @@ export default async function LearnIndexPage({
                 <p className="learn-portal-badges">
                   <span className="learn-portal-badge">{t("portalTerms", { count: GLOSSARY.length })}</span>
                 </p>
-              </Link>
-            </div>
+              </Link></div>
 
 
 
