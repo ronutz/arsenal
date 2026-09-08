@@ -174,18 +174,35 @@ def append_body(slug: str, paragraphs: list[str], sources: list[tuple[str, str]]
     e = find_entry(slug)
     if must_not_contain and re.search(must_not_contain, e.text, re.I):
         raise FileExistsError(f"{slug}: already contains /{must_not_contain}/ - not appending")
-    mb = re.search(r"\n\s+body: \[(.*?)\n\s+\],", e.text, re.S)
+    mb = re.search(r"\n\s+body: \[\n(.*?)\n\s+\],", e.text, re.S)
     if not mb:
         raise LookupError(f"{slug}: no multi-line body array to append to")
     new = e.text[: mb.end(1)] + "".join(
         '\n      "%s",' % p.replace('"', '\\"') for p in paragraphs
     ) + e.text[mb.end(1) :]
-    ms = re.search(r"\s+sources: \[(.*?)\n\s+\],", new, re.S)
-    if not ms:
-        raise LookupError(f"{slug}: no multi-line sources array to append to")
-    new = new[: ms.end(1)] + "".join(
-        '\n      { label: "%s", url: "%s" },' % (l, u) for l, u in sources
-    ) + new[ms.end(1) :]
+    # Two layouts exist. Entries written by add_entry carry the sources array
+    # INLINE on one line ("sources: [{ label: ..., url: ... }, { ... }],");
+    # older hand-written entries carry it multi-line. The multi-line regex,
+    # applied to an inline array, has no closing "],\n" of its own to stop
+    # at and runs on to the BODY's closing bracket - which on 2026-09-07 put
+    # a source object inside a body array (caught by tsc, not by the
+    # library). Handle the inline form first, on its own line only.
+    mi = re.search(r"sources: \[(\{[^\n]*\})\],", new)
+    if mi:
+        new = new[: mi.end(1)] + "".join(
+            ', { label: "%s", url: "%s" }' % (l, u) for l, u in sources
+        ) + new[mi.end(1) :]
+    else:
+        ms = re.search(r"\s+sources: \[(.*?)\n\s+\],", new, re.S)
+        if not ms:
+            raise LookupError(f"{slug}: no sources array to append to")
+        new = new[: ms.end(1)] + "".join(
+            '\n      { label: "%s", url: "%s" },' % (l, u) for l, u in sources
+        ) + new[ms.end(1) :]
+    # Post-condition: no source object may have landed inside the body array.
+    mb2 = re.search(r"\n\s+body: \[\n(.*?)\n\s+\],", new, re.S)
+    if mb2 and "{ label:" in mb2.group(1):
+        raise RuntimeError(f"{slug}: a source object landed inside the body array - refusing to write")
     src = PARTNERS.read_text(encoding="utf-8")
     PARTNERS.write_text(src[: e.start] + new + src[e.end :], encoding="utf-8")
 
@@ -236,10 +253,21 @@ def _selftest() -> None:
     fj = find_entry("fujitsu")
     assert _BODY_RE.search(fj.text), "single-line body not locatable"
     six = next(e for e in es if re.search(r"\n      body: \[\n", e.text))
-    assert re.search(r"\n\s+body: \[(.*?)\n\s+\],", six.text, re.S), "six-space body not locatable"
+    assert re.search(r"\n\s+body: \[\n(.*?)\n\s+\],", six.text, re.S), "six-space body not locatable"
     # 8. the depth queue excludes profiled entries (dns-bind has a profile)
     assert has_profile("dns-bind") and "dns-bind" not in [s for _, s, _ in depth_queue()]
-    print(f"[check-anvil-lib] OK: {len(es)} entries enumerated; 8 invariants hold.")
+    # 9. no source object sits inside any body array (2026-09-07: append_body
+    #    on an inline-sources entry put a { label: ... } into the body; tsc
+    #    caught it, the library did not - now it does, on every build)
+    for e in es:
+        mb = re.search(r"\n\s+body: \[\n(.*?)\n\s+\],", e.text, re.S)
+        assert not (mb and "{ label:" in mb.group(1)), f"{e.slug}: source object inside body"
+    # 9b. the inline-sources append path is exercised on a synthetic entry
+    fake = ('  {\n    slug: "zz-test",\n    sources: [{ label: "a", url: "https://a" }],\n'
+            '    body: [\n      "one",\n    ],\n  },\n')
+    mi = re.search(r"sources: \[(\{[^\n]*\})\],", fake)
+    assert mi and mi.group(1) == '{ label: "a", url: "https://a" }', "inline sources not located"
+    print(f"[check-anvil-lib] OK: {len(es)} entries enumerated; 9 invariants hold.")
 
 
 

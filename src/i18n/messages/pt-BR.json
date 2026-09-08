@@ -14125,7 +14125,7 @@
       },
       "ieee": {
         "def": "A sociedade de engenharia cujo comitê 802 define os padrões de LAN sobre os quais tudo neste site roda.",
-        "context": "A IEEE Standards Association é onde vivem o Ethernet (802.3), o Wi-Fi (802.11) e bridging/VLANs (802.1, incluindo o 802.1Q e a linhagem 802.1D do Spanning Tree). A família 802 é um mapa de grupos de trabalho, cada um dono de uma tecnologia de camada 2 - um mapa que este site vai cartografar grupo a grupo num explicador dedicado.",
+        "context": "A IEEE Standards Association é onde vivem o Ethernet (802.3), o Wi-Fi (802.11) e bridging/VLANs (802.1, incluindo o 802.1Q e a linhagem 802.1D do Spanning Tree). A família 802 é um mapa de grupos de trabalho, cada um dono de uma tecnologia de camada 2 - um mapa que vale cartografar grupo a grupo.",
         "depth": "O IEEE padroniza as camadas física e de enlace sobre as quais a maioria das redes roda, e é por isso que tanta documentação de equipamento é uma lista de números. 802.3 é Ethernet, 802.11 é sem fio, 802.1Q é marcação de VLAN, 802.1X é autenticação de porta, e as letras de emenda depois deles são como cada um evoluiu.\n\nEssa numeração vale ser aprendida porque é o jeito preciso de fazer uma pergunta. Dizer que um switch suporta 802.1Q informa algo exato; dizer que suporta VLANs não distingue marcação de esquemas proprietários. Fichas técnicas de fabricante listam conformidade nessa notação pela mesma razão, e lê-la é o jeito mais rápido de estabelecer com o que um equipamento de fato vai interoperar."
       },
       "eia-tia": {
@@ -15031,7 +15031,7 @@
       },
       "post-incident-review": {
         "def": "A reunião ou o documento que examina um incidente depois de restaurado o serviço, para decidir o que muda em consequência.",
-        "context": "Distinta do trabalho técnico de causa raiz: a análise pergunta o que a organização deveria fazer diferente, o que frequentemente não tem resposta de engenharia. Quando a causa foi uma decisão que ninguém tomou — um certificado sem dono, uma previsão não lida — a constatação pertence aqui, e não a um chamado."
+        "context": "Distinta do trabalho técnico de causa raiz: a análise pergunta o que a organização deveria fazer diferente, o que frequentemente não tem resposta de engenharia. Quando a causa foi uma decisão que ninguém tomou — um certificado sem dono, uma previsão não lida — a constatação pertence à revisão, e não a um chamado."
       },
       "observer-effect": {
         "def": "Quando o ato de medir altera o comportamento medido, e a falha desaparece justamente enquanto você a observa.",
@@ -16914,7 +16914,7 @@
       },
       "nii-quaynor": {
         "def": "O cientista ganense reconhecido por ser pioneiro do desenvolvimento da internet na África.",
-        "context": "O trabalho técnico de conectar um país é em boa medida o mesmo em toda parte; o que muda é quanto do aparato em volta você tem de construir sozinho. Onde um pioneiro europeu ou japonês podia supor universidades com orçamento, circuitos dedicados já existentes e um regulador que já tinha ouvido falar de dados, o trabalho equivalente em boa parte da África significou montar as instituições junto com a infraestrutura. Que este catálogo consiga nomear com muito mais facilidade quem conectou a Alemanha e quem conectou o Japão do que quem fez trabalho comparável para um continente é, em si, algo digno de nota."
+        "context": "O trabalho técnico de conectar um país é em boa medida o mesmo em toda parte; o que muda é quanto do aparato em volta você tem de construir sozinho. Onde um pioneiro europeu ou japonês podia supor universidades com orçamento, circuitos dedicados já existentes e um regulador que já tinha ouvido falar de dados, o trabalho equivalente em boa parte da África significou montar as instituições junto com a infraestrutura. Que quem conectou a Alemanha e quem conectou o Japão sejam muito mais fáceis de nomear do que quem fez trabalho comparável para um continente é, em si, algo digno de nota."
       },
       "kanchana-kanchanasut": {
         "def": "A cientista da computação creditada por trazer a internet para a Tailândia e por obter o domínio do país.",
@@ -17008,6 +17008,10 @@
       "jim-mckie": {
         "def": "Membro da equipe de Amsterdã que pôs a Europa na Usenet, que em 1982 disse aos usuários Unix do continente que o Centro Matemático ligaria para qualquer um, e que depois trabalhou nos Bell Labs no Plan 9, o sucessor do Unix.",
         "context": "O primeiro enlace através do Atlântico, da decvax da Digital à mcvax de Amsterdã, ficou parado até 1982 por algo pequeno: um modem com discagem automática dentro das normas europeias era difícil de conseguir. Quando funcionou, alguém tinha de contar à Europa, e foi McKie. Na reunião do grupo europeu de usuários Unix em Paris, na primavera de 1982, o Centro Matemático anunciou que estava na Usenet e ligaria para qualquer sítio do grupo no continente, ou receberia ligação - o momento, diz o registro, que começou a transformação da comunidade Unix europeia numa comunidade em rede. Escreveu isso como Where Is Europe para a Usenix de 1983 em Toronto, e uma mensagem sua daquele agosto sobrevive nos arquivos, assinada mcvax!jim, sobre o custo de mandar notícias a alienígenas - os alienígenas sendo os europeus, e o custo, a conta de telefone. Era um da pequena equipe de Hagen, com Akkerhuis, Beertema e Karrenberg, que fazia a rede do instituto. Depois foi à fonte: os Bell Labs o listam entre o departamento que construiu o Plan 9, o sistema que o grupo de Ritchie, Pike e Thompson projetou a partir do fim dos anos 1980 para um mundo de máquinas em rede em vez de uma compartilhada. Passara o início dos anos oitenta fazendo máquinas Unix conversarem através de um oceano, e passou a década seguinte no laboratório que fez o Unix, construindo o sistema que supunha a rede desde o início."
+      },
+      "marisa-bellisario": {
+        "def": "Executiva italiana que, a partir de 1981, transformou a fabricante estatal de telecomunicações Italtel do que a imprensa chamava de escândalo nacional numa empresa lucrativa, e cuja fusão planejada num grupo de escala europeia foi cancelada, registra sua fundação, porque um sócio não aceitaria uma mulher como presidente executiva.",
+        "context": "Formou-se na Olivetti dos anos eletrônicos, foi para a América em 1965, dirigiu a empresa americana da Olivetti a partir de 1979 e consertou seu balanço, e em outubro de 1980 aceitou da holding estatal o trabalho mais difícil da indústria italiana. A Italtel tinha seis fábricas, vinte e nove mil funcionários, produtividade baixíssima, absenteísmo alto e prejuízos pesados; a imprensa a chamava de pesadelo e escândalo nacional, e ela escreveu depois que era pior do que se descrevia. Codiretora-geral desde o início de 1981, administradora única a partir daquele agosto, trocou a direção, iniciou projetos novos e levou o plano adiante contra os sindicatos e parte da imprensa. Em três anos o faturamento foi de 503 bilhões de liras para 1.300 bilhões, com lucro substancial, e a parcela de mulheres entre os graduados da empresa foi de cinco por cento para vinte e sete. A fusão com a Telettra da Fiat, que faria um grupo italiano de equipamentos em escala europeia, não aconteceu; a fundação que leva seu nome afirma sem rodeios que a Fiat não lhe daria a cadeira de presidente executiva por ser mulher, e que o crescimento do setor estancou junto. Morreu no cargo em agosto de 1988, aos cinquenta e três anos. O verbete da Italtel registra o que foi feito da empresa; esta é a pessoa que lhe deu a década que teve."
       }
     },
     "totalCount": "{count} termos",
@@ -17548,7 +17552,8 @@
     "milestonesLink": "Antes de todas estas empresas: os marcos sobre os quais foram construídas",
     "filterCategoryLabel": "Categoria",
     "filterCategoryAll": "Selecionar todas",
-    "filterCategoryNone": "Limpar"
+    "filterCategoryNone": "Limpar",
+    "learningLink": "As empresas que ensinam a indústria: centros de treinamento, certificadores, plataformas e escolas"
   },
   "milestones": {
     "eyebrow": "Antes das empresas",
@@ -20395,7 +20400,7 @@
     "eyebrow": "Estatísticas",
     "title": "O que foi lido, não quem leu",
     "metaDescription": "As contagens agregadas de requisição que o ronutz.com mantém no próprio servidor: páginas servidas, pessoas e rastreadores por família, sites de origem, países e idiomas. Sem cookies, sem analytics de terceiros, sem identificador de visitante.",
-    "whatIsCounted": "Contado passivamente na borda; nada que possa apontar para um leitor é gravado ou correlacionado. O que é contado e o que nunca é gravado está descrito por inteiro na",
+    "whatIsCounted": "Contado passivamente na borda; nada que possa apontar para um leitor é gravado ou correlacionado. Uma requisição conta como pessoa só quando veio de um navegador numa rede que não é de provedor de nuvem ou hospedagem - uma verificação que começou em 7 de setembro de 2026, então pessoas são contadas a partir desse dia e requisições anteriores aparecem como não verificadas. O que é contado e o que nunca é gravado está descrito por inteiro na",
     "privacyLink": "página de Privacidade",
     "windowLabel": "Janela de tempo",
     "window_24h": "24 horas",
@@ -20407,7 +20412,7 @@
     "error": "Não foi possível ler as contagens agora. Não há nada errado com a página; o endpoint de relatório não respondeu.",
     "noData": "Nada registrado nesta janela.",
     "sampledNote": "Estes números são amostrados e escalados, que é como o repositório subjacente funciona; são próximos, e não exatos, e um número sem as condições dele não é uma medição.",
-    "referrerNote": "O site de onde o leitor veio, agregado ao host e agrupado por tipo. Endereços completos de origem não são publicados: podem carregar dados de outras pessoas.",
+    "referrerNote": "Conta requisições de pessoas que chegaram com um site de origem, agregadas ao host desse site e agrupadas por tipo. Endereços completos não são publicados: podem carregar dados de outras pessoas. Contado a partir de 7 de setembro de 2026, quando a regra de datacenter entrou em vigor; antes disso, uma frota de scrapers forjando origem google.com dominava o registro e não é mostrada.",
     "panelPages": "Páginas servidas a pessoas",
     "panelClients": "Pessoas e automação",
     "panelReferrers": "De onde os leitores chegam",
@@ -20421,17 +20426,17 @@
     "col_views": "Requisições",
     "itemLabel": "Lido '{n}' vezes nos últimos 90 dias.",
     "panelSources": "Referências de busca, IA e redes",
-    "sourceNote": "A família do site de origem: um buscador, um assistente de IA que linkou para cá, uma rede social, ou outra coisa. Todo buscador ainda envia o host, então este painel é completo.",
+    "sourceNote": "As mesmas origens, agrupadas pela família do site de origem: um buscador, um assistente de IA que linkou para cá, uma rede social, ou outra coisa. Todo buscador ainda envia seu host, então a família é sempre conhecida.",
     "col_source": "Origem",
     "panelTimeline": "Leitores por dia",
-    "timelineNote": "Só pessoas, por dia. O contexto para todo outro painel: uma contagem de página diz pouco sem saber se esta foi uma semana normal.",
+    "timelineNote": "Conta requisições de pessoas, uma por página servida, agrupadas por dia UTC. Pessoas significa toda requisição não identificada como automação e não vinda de uma rede de datacenter. A contagem começou em 5 de setembro de 2026, então a série começa ali.",
     "col_day": "Dia",
-    "pagesNote": "Só requisições de pessoas; rastreadores e outras automações são excluídos antes da contagem. Agrupado pelo idioma da página servida.",
-    "clientsNote": "Toda requisição, separada em pessoas e famílias de automação: rastreadores de busca, rastreadores de IA, monitores, pré-visualizadores de link, ferramentas, e clientes que não puderam ser verificados. Um navegador que chega da rede de um provedor de nuvem ou hospedagem conta como não verificado, não como pessoa: pessoas leem de casa, do celular e do escritório, e scrapers alugam servidores.",
-    "countriesNote": "De onde vêm as requisições de pessoas, pelo país da conexão. Nada mais fino que o país é registrado.",
-    "localesNote": "Que versões de idioma do site as pessoas leem.",
+    "pagesNote": "Conta requisições de pessoas, uma por página servida, para toda página lida na janela - a mesma população da série diária, então os totais batem. Agrupado pelo idioma da página; as quinze mais lidas por idioma são listadas.",
+    "clientsNote": "Toda requisição, separada em pessoas e famílias de automação: rastreadores de busca, rastreadores de IA, monitores, pré-visualizadores de link, ferramentas, e clientes que não puderam ser verificados. Um navegador que chega da rede de um provedor de nuvem ou hospedagem conta como não verificado, não como pessoa; o mesmo vale para toda requisição anterior a essa verificação, que é a linha 'before-classifier'.",
+    "countriesNote": "Conta requisições de pessoas pelo país da conexão, conforme a Cloudflare o informa. Nada mais fino que o país é registrado.",
+    "localesNote": "Conta requisições de pessoas pela versão de idioma da página servida.",
     "panelDevices": "Celulares e computadores",
-    "devicesNote": "Parcela das requisições de pessoas pela classe grosseira do dispositivo. Derivada do navegador no momento da requisição e não armazenada.",
+    "devicesNote": "Parcelas das requisições de pessoas pela classe grosseira do dispositivo - celular ou tablet, computador, outro - derivada do navegador no momento da requisição e não armazenada. A classe é registrada desde 6 de setembro de 2026; requisições anteriores não a têm e não estão neste painel, então o total dele é menor que o dos outros.",
     "col_device": "Dispositivo",
     "device_mobile": "Celular ou tablet",
     "device_desktop": "Computador",
@@ -20442,28 +20447,28 @@
     "groupOtherSites": "De outros sites",
     "groupOther": "Outros caminhos",
     "panelAiShare": "Rastreadores de IA, como parcela da automação",
-    "aiShareNote": "Para cada dia, a proporção das requisições automatizadas que vieram de rastreadores de IA - os coletores por trás de assistentes e de treinamento de modelos - contra todo outro tipo de automação.",
+    "aiShareNote": "Para cada dia UTC, a parcela das requisições automatizadas que veio de rastreadores de IA - os coletores por trás de assistentes e de treinamento de modelos - contra todo outro tipo de automação. Requisições de pessoas ficam de fora; requisições de redes de datacenter contam como automação.",
     "panelSections": "Onde as pessoas leem",
-    "sectionsNote": "Requisições de pessoas por seção do site, como parcela do todo. Ferramentas, artigos, o catálogo da indústria, o glossário, e o resto.",
+    "sectionsNote": "Parcelas das requisições de pessoas por seção do site - ferramentas, artigos, o catálogo da indústria, o glossário, e o resto - derivadas do caminho de cada página servida.",
     "col_section": "Seção",
     "panelTail": "A cauda longa",
-    "tailNote": "Páginas lidas só uma, duas ou três vezes na janela, e as páginas menos lidas que ainda assim foram lidas. Para um catálogo deste tamanho, a cauda é a maior parte.",
+    "tailNote": "De toda página que pessoas leram na janela: quantas foram lidas exatamente uma, duas ou três vezes, e as vinte e cinco menos lidas que ainda assim foram lidas. Para um catálogo deste tamanho, a cauda é a maior parte.",
     "tailCounts": "Páginas por número de leituras",
     "tailLeast": "Menos lidas, mas lidas",
     "tail_1": "Lidas exatamente uma vez",
     "tail_2": "Lidas exatamente duas vezes",
     "tail_3": "Lidas exatamente três vezes",
     "panelCoverage": "Quanto do site foi lido",
-    "coverageNote": "Páginas distintas que as pessoas alcançaram na janela, no total e por idioma.",
+    "coverageNote": "Páginas distintas que as pessoas alcançaram na janela, no total e por idioma, contra as requisições que as alcançaram.",
     "col_measure": "Medida",
     "coverageDistinct": "Páginas distintas lidas",
     "coverageRequests": "Requisições de pessoas",
     "coveragePer": "Páginas lidas em",
     "panelHour": "Hora do dia",
-    "hourNote": "Requisições de pessoas por hora, em UTC, ao longo da janela. A forma mostra que partes do mundo estão acordadas quando o site é lido.",
+    "hourNote": "Requisições de pessoas por hora do dia, em UTC, somadas ao longo da janela. A forma mostra que partes do mundo estão acordadas quando o site é lido.",
     "col_hour": "Hora (UTC)",
     "panelWeekday": "Dia da semana",
-    "weekdayNote": "Requisições de pessoas por dia da semana, em UTC, ao longo da janela.",
+    "weekdayNote": "Requisições de pessoas por dia da semana, em UTC, somadas ao longo da janela.",
     "col_weekday": "Dia",
     "wd_0": "Domingo",
     "wd_1": "Segunda",
@@ -20471,6 +20476,24 @@
     "wd_3": "Quarta",
     "wd_4": "Quinta",
     "wd_5": "Sexta",
-    "wd_6": "Sábado"
+    "wd_6": "Sábado",
+    "pagesTotal": "'{requests}' requisições em '{pages}' páginas na janela"
+  },
+  "learning_page": {
+    "eyebrow": "Indústria",
+    "title": "Onde a indústria aprende",
+    "metaDescription": "Os centros de treinamento, órgãos certificadores, plataformas de aprendizado e escolas do catálogo da indústria, agrupados pelo tipo de instituição.",
+    "lede": "Toda empresa do catálogo da indústria que existe para ensinar, certificar ou credenciar, retirada da linha do tempo e agrupada pelo que é: um centro que vende o currículo de um fabricante, um órgão que certifica uma pessoa, uma plataforma que vende uma biblioteca, uma escola que concede um diploma. A distinção importa porque os próprios verbetes não param de traçá-la.",
+    "backToIndustry": "Indústria",
+    "centresTitle": "Centros de treinamento autorizados",
+    "centresNote": "Empresas que entregam o currículo do próprio fabricante por meio de instrutores que o fabricante certificou.",
+    "bodiesTitle": "Órgãos certificadores e aplicação de exames",
+    "bodiesNote": "Organizações cujo produto é a própria credencial, e as empresas que administram os exames.",
+    "platformsTitle": "Plataformas de aprendizado e laboratórios",
+    "platformsNote": "Bibliotecas, marketplaces e ambientes de laboratório em que o instrutor, a universidade ou qualquer pessoa fornece o curso.",
+    "schoolsTitle": "Escolas e institutos de pesquisa",
+    "schoolsNote": "Instituições que concedem diplomas ou conduzem programas, em vez de vender cursos.",
+    "restTitle": "Também marcados como treinamento",
+    "restNote": "Verbetes com a tag de treinamento que as seções acima não nomeiam."
   }
 }

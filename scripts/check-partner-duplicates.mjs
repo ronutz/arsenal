@@ -79,12 +79,21 @@ const STOP = new Set([
   // entries). A shared adjective is not a shared company.
   "supply","chain","first","compromise","cascading","without","when","then",
   "never","most","between","before","after","every","other","into","their",
+  "software","vendor","world","worlds","enterprise","became","declared","corridor",
+  "against","what","that","help","desk","flaws","buys","defends",
 ]);
 const tokens = (s) =>
   s.toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length > 3 && !STOP.has(t));
 const byToken = new Map();
+// The catalogue's `name` field follows the convention "Company - descriptive
+// phrase" (e.g. "Coursera - a hundred thousand students in a lifetime"). Only
+// the part BEFORE the dash is the company's identity; the phrase is prose, and
+// tokenising it produced a stream of false overlaps ("thousand", "silicon",
+// "security") that three stop-list extensions never caught up with
+// (2026-09-06/07). Tokenise the head only.
+const head = (name) => name.split(/\s[-\u2013\u2014]\s/)[0];
 for (const e of entries) {
-  for (const t of new Set(tokens(e.name))) {
+  for (const t of new Set(tokens(head(e.name)))) {
     if (!byToken.has(t)) byToken.set(t, []);
     byToken.get(t).push(e.slug);
   }
@@ -106,7 +115,7 @@ for (const [tok, slugs] of byToken) {
 // without that entry in place. It is a common-word overlap, not a duplicate
 // company. Raising a warning threshold by a measured one is legitimate;
 // raising it to make a failure go away without measuring is not.
-const BASELINE = 116; // ratcheted 125 -> 116 on 2026-09-06 after prose words joined the stop list
+const BASELINE = 14; // ratcheted 111 -> 14 on 2026-09-07 when the tokeniser was fixed to read the company-name head only
 
 if (failures.length) {
   console.error("\n[check-partner-duplicates] FAIL:\n");

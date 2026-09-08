@@ -102,22 +102,28 @@ async function query(env: StatsEnv, sql: string): Promise<unknown[]> {
 const VIEWS = "SUM(_sample_interval) AS views";
 
 // ---------------------------------------------------------------------------
-// RETROACTIVE RECLASSIFICATION (2026-09-06)
-// Rows written before the datacenter classifier deployed carry
-// blob4 = 'human' for a scraper fleet that was, in the data, ~29,000 of
-// ~31,000 "human" requests in a week, all from one country. Analytics Engine
-// rows cannot be edited, so the correction is applied at read time: a human
-// row from that country before the cutoff is treated as 'unverified:datacenter'
-// everywhere - excluded from every people-only panel, and shown in the clients
-// panel under its own label so the count is visible rather than deleted.
-// The handful of genuine readers in that country in that window are lost to
-// the same rule; that is the smaller error by four orders of magnitude.
 // ---------------------------------------------------------------------------
-const RECLASS_COUNTRY = "SG";
-const RECLASS_BEFORE = "2026-09-07 12:00:00";
-const POLLUTED = `(blob4 = 'human' AND blob3 = '${RECLASS_COUNTRY}' AND timestamp < toDateTime('${RECLASS_BEFORE}'))`;
+// WHAT "PEOPLE" MEANS, AND FROM WHEN (2026-09-07, second revision)
+// A request counts as a person only if the origin classifier vetted it: a
+// browser User-Agent on a network that is not a known cloud or hosting
+// provider (worker/analytics.ts). That classifier went live on the morning of
+// 7 September 2026. Rows written BEFORE it were never vetted - the first
+// revision of this rule relabelled only the Singapore fleet, and the
+// people-by-country panel then showed the Netherlands, a hosting hub, in
+// second place, which was the same fleet from another datacenter. There is no
+// way to vet an old row after the fact (the ASN is read at write time and not
+// stored), so the only honest rule is a date: every "human" row before the
+// classifier is treated as unverified, everywhere, and shown in the clients
+// panel under its own label rather than deleted. The genuine readers of those
+// days are lost to the people panels. That is the smaller error, and it is
+// stated on the page. Analytics Engine rows cannot be edited, so this is a
+// read-time rule.
+// ---------------------------------------------------------------------------
+const CLASSIFIER_LIVE = "2026-09-07 14:00:00"; // UTC; safely after the deploy was verified live
+const PRE_CLASSIFIER = `(blob4 = 'human' AND timestamp < toDateTime('${CLASSIFIER_LIVE}'))`;
+const PRE_LABEL = "unverified:before-classifier";
 /** The people-only filter every human panel uses. */
-const HUMAN = `(blob4 = 'human' AND NOT ${POLLUTED})`;
+const HUMAN = `(blob4 = 'human' AND NOT ${PRE_CLASSIFIER})`;
 
 export async function handleStats(
   url: URL,
@@ -194,21 +200,17 @@ export async function handleStats(
         const [rows, polluted] = await Promise.all([
           query(env, `SELECT blob4 AS client, ${VIEWS} FROM ${PAGEVIEWS}
                       WHERE ${since} GROUP BY client ORDER BY views DESC`),
-          query(env, `SELECT ${VIEWS} FROM ${PAGEVIEWS} WHERE ${since} AND ${POLLUTED}`),
+          query(env, `SELECT ${VIEWS} FROM ${PAGEVIEWS} WHERE ${since} AND ${PRE_CLASSIFIER}`),
         ]);
         const p = Number((polluted[0] as { views?: string } | undefined)?.views ?? 0);
         const out = (rows as Array<{ client: string; views: string }>).map((r) =>
           r.client === "human" ? { ...r, views: String(Math.max(0, Number(r.views) - p)) } : r
         );
-        if (p > 0) {
-          const i = out.findIndex((r) => r.client === "unverified:datacenter");
-          if (i >= 0) out[i] = { ...out[i], views: String(Number(out[i].views) + p) };
-          else out.push({ client: "unverified:datacenter", views: String(p) });
-        }
+        if (p > 0) out.push({ client: PRE_LABEL, views: String(p) });
         out.sort((a, b) => Number(b.views) - Number(a.views));
         return json({
           rows: out,
-          note: "client 'human' is everything not matched as automation and not from a datacenter network; the rest are families.",
+          note: `client 'human' is a browser on a non-datacenter network, counted from ${CLASSIFIER_LIVE} UTC; earlier requests are '${PRE_LABEL}'.`,
         });
       }
 
@@ -237,7 +239,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT index1 AS host, blob2 AS source, ${VIEWS} FROM ${REFERRERS}
-             WHERE ${since} GROUP BY host, source ORDER BY views DESC LIMIT 100`
+             WHERE ${since} AND ${REFERRER_SINCE} GROUP BY host, source ORDER BY views DESC LIMIT 100`
           ),
         });
       }
@@ -250,7 +252,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT blob2 AS source, ${VIEWS} FROM ${REFERRERS}
-             WHERE ${since} AND blob2 != '' GROUP BY source ORDER BY views DESC LIMIT 50`
+             WHERE ${since} AND ${REFERRER_SINCE} AND blob2 != '' GROUP BY source ORDER BY views DESC LIMIT 50`
           ),
         });
 
@@ -287,15 +289,20 @@ export async function handleStats(
       // Every non-human class, per UTC day. The page derives the AI-crawler
       // share from this: the one trend this site has a particular reason to
       // publish. Same SQL shapes as the panels above; nothing new to trust.
-      case "crawlers":
-        return json({
-          rows: await query(
-            env,
-            `SELECT toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day, blob4 AS client, ${VIEWS}
-             FROM ${PAGEVIEWS} WHERE ${since} AND (blob4 != 'human' OR ${POLLUTED})
-             GROUP BY day, client ORDER BY day ASC LIMIT 4000`
-          ),
-        });
+      case "crawlers": {
+        // Pre-classifier "human" rows are automation for this panel's purposes
+        // and must not be LABELLED human here - the first revision filtered
+        // them in but left the label, so the automation panel showed a
+        // "human" family (2026-09-07). Relabel client-side; the SQL groups by
+        // the stored word and cannot rename it.
+        const rows = (await query(
+          env,
+          `SELECT toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day, blob4 AS client, ${VIEWS}
+           FROM ${PAGEVIEWS} WHERE ${since} AND (blob4 != 'human' OR ${PRE_CLASSIFIER})
+           GROUP BY day, client ORDER BY day ASC LIMIT 4000`
+        )) as Array<{ day: string; client: string; views: string }>;
+        return json({ rows: rows.map((r) => (r.client === "human" ? { ...r, client: PRE_LABEL } : r)) });
+      }
 
       // ---- Every page people read in the window --------------------------
       // Path and count, no ranking cut. One response serves three panels on

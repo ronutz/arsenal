@@ -67,6 +67,7 @@ export default async function StatsPage({
     col_locale: t("col_locale"),
     col_views: t("col_views"),
     pagesNote: t("pagesNote"),
+    pagesTotal: t("pagesTotal"),
     clientsNote: t("clientsNote"),
     countriesNote: t("countriesNote"),
     localesNote: t("localesNote"),

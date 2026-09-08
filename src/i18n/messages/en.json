@@ -14125,7 +14125,7 @@
       },
       "ieee": {
         "def": "The engineering society whose 802 committee defines the LAN standards everything on this site runs over.",
-        "context": "The IEEE Standards Association is where Ethernet (802.3), Wi-Fi (802.11), and bridging/VLANs (802.1, including 802.1Q and Spanning Tree's 802.1D lineage) live. The 802 family is a map of working groups, each owning a layer-2 technology - a map this site will chart group by group in a dedicated explainer.",
+        "context": "The IEEE Standards Association is where Ethernet (802.3), Wi-Fi (802.11), and bridging/VLANs (802.1, including 802.1Q and Spanning Tree's 802.1D lineage) live. The 802 family is a map of working groups, each owning a layer-2 technology - a map worth charting group by group.",
         "depth": "The IEEE standardizes the physical and data-link layers most networks run on, which is why so much equipment documentation is a list of numbers. 802.3 is Ethernet, 802.11 is wireless, 802.1Q is VLAN tagging, 802.1X is port authentication, and the amendment letters after them are how each has evolved.\n\nThat numbering is worth learning because it is the precise way to ask a question. Saying a switch supports 802.1Q tells you something exact; saying it supports VLANs does not distinguish tagging from proprietary schemes. Vendor datasheets list conformance in this notation for the same reason, and reading it is the fastest way to establish what a device will actually interoperate with."
       },
       "eia-tia": {
@@ -15031,7 +15031,7 @@
       },
       "post-incident-review": {
         "def": "The meeting or document that examines an incident after service is restored, to decide what changes as a result.",
-        "context": "Distinct from the technical root cause work: the review asks what the organisation should do differently, which frequently has no engineering answer at all. Where the cause was a decision nobody made - a certificate nobody owned, a forecast nobody read - the finding belongs here rather than in a ticket."
+        "context": "Distinct from the technical root cause work: the review asks what the organisation should do differently, which frequently has no engineering answer at all. Where the cause was a decision nobody made - a certificate nobody owned, a forecast nobody read - the finding belongs in the review rather than in a ticket."
       },
       "observer-effect": {
         "def": "When the act of measuring changes the behaviour being measured, so the fault disappears while you are watching for it.",
@@ -16914,7 +16914,7 @@
       },
       "nii-quaynor": {
         "def": "The Ghanaian scientist recognised for pioneering internet development across Africa.",
-        "context": "The technical work of connecting a country is largely the same everywhere; what differs is how much of the surrounding apparatus you have to build yourself. Where a European or Japanese pioneer could assume universities with budgets, existing leased circuits and a regulator that had heard of data, the equivalent work across much of Africa meant assembling the institutions alongside the infrastructure. That this catalogue can name the person who connected Germany and the person who connected Japan far more easily than the person who did comparable work for a continent is itself worth noticing."
+        "context": "The technical work of connecting a country is largely the same everywhere; what differs is how much of the surrounding apparatus you have to build yourself. Where a European or Japanese pioneer could assume universities with budgets, existing leased circuits and a regulator that had heard of data, the equivalent work across much of Africa meant assembling the institutions alongside the infrastructure. That the person who connected Germany and the person who connected Japan are far easier to name than the person who did comparable work for a continent is itself worth noticing."
       },
       "kanchana-kanchanasut": {
         "def": "The computer scientist credited with bringing the internet to Thailand, and with obtaining the country's domain.",
@@ -17008,6 +17008,10 @@
       "jim-mckie": {
         "def": "Member of the Amsterdam team that put Europe on Usenet, who in 1982 told the continent's Unix users that the Mathematical Centre would call anyone, and who later worked at Bell Labs on Plan 9, the successor to Unix.",
         "context": "The first link across the Atlantic, from Digital's decvax to Amsterdam's mcvax, was held up into 1982 by something small: an autodialling modem that satisfied European telephone standards was hard to get. Once it worked, somebody had to tell Europe, and that was McKie. At the European Unix Users Group meeting in Paris in the spring of 1982 the Mathematical Centre announced it was connected to Usenet and would call, or be called by, any group site on the continent - the moment, the record says, that began the transformation of the European Unix community into a networked one. He wrote it up as Where Is Europe for the 1983 Usenix conference in Toronto, and a posting of his from that August survives in the archives, signed mcvax!jim, on the cost of sending news to aliens - the aliens being Europeans, and the cost being the phone bill. He was one of the small team under Hagen, with Akkerhuis, Beertema and Karrenberg, that did the institute's networking. Then he went to the source: Bell Labs lists him among the department that built Plan 9, the system Ritchie, Pike and Thompson's group designed from the late 1980s for a world of networked machines rather than one shared one. He had spent the early eighties making Unix machines talk across an ocean, and spent the next decade at the lab that made Unix, building the system that assumed the network from the start."
+      },
+      "marisa-bellisario": {
+        "def": "Italian executive who, from 1981, turned the state telecommunications manufacturer Italtel from what the press called a national scandal into a profitable company, and whose planned merger into a group of European scale was cancelled, her foundation records, because a partner would not have a woman as chief executive.",
+        "context": "She came up through Olivetti in its electronic years, went to America in 1965, ran Olivetti's American company from 1979 and repaired its balance sheet, and in October 1980 accepted the state holding's offer of the hardest job in Italian industry. Italtel had six plants, twenty-nine thousand employees, very low productivity, high absenteeism and heavy losses; the press called it a nightmare and a national scandal, and she wrote later that it was worse than described. Co-general manager from the start of 1981, sole managing director from that August, she replaced the management, started new projects, and carried the plan through against the unions and part of the press. In three years turnover went from 503 billion lire to 1,300 billion, with a substantial profit, and the share of women among the company's graduates went from five per cent to twenty-seven. The merger with Fiat's Telettra that would have made an Italian equipment group of European scale did not happen; the foundation that bears her name states plainly that Fiat would not give her the chief executive's chair because she was a woman, and that the sector's growth stalled with it. She died in office in August 1988, at fifty-three. The Italtel entry records what became of the company; this is the person who gave it the decade it had."
       }
     },
     "totalCount": "{count} terms",
@@ -17599,7 +17603,8 @@
     "milestonesLink": "Before any of these companies: the milestones they were built on",
     "filterCategoryLabel": "Category",
     "filterCategoryAll": "Select all",
-    "filterCategoryNone": "Clear"
+    "filterCategoryNone": "Clear",
+    "learningLink": "The companies that teach the industry: training centres, certification bodies, platforms and schools"
   },
   "milestones": {
     "eyebrow": "Before the companies",
@@ -20446,7 +20451,7 @@
     "eyebrow": "Statistics",
     "title": "What was read, not who read it",
     "metaDescription": "The aggregate request counts ronutz.com keeps at its own server: pages served, humans versus crawlers by family, referring hosts, countries and languages. No cookies, no third-party analytics, no visitor identifiers.",
-    "whatIsCounted": "Counted passively at the edge; nothing that could point to a reader is stored or correlated. What is counted and what is never written is set out in full on the",
+    "whatIsCounted": "Counted passively at the edge; nothing that could point to a reader is stored or correlated. A request counts as a person only when it came from a browser on a network that is not a cloud or hosting provider - a check that began on 7 September 2026, so people are counted from that day and earlier requests are shown as unverified. What is counted and what is never written is set out in full on the",
     "privacyLink": "Privacy page",
     "windowLabel": "Time window",
     "window_24h": "24 hours",
@@ -20458,7 +20463,7 @@
     "error": "The counts could not be read just now. Nothing is wrong with the page; the reporting endpoint did not answer.",
     "noData": "Nothing recorded in this window.",
     "sampledNote": "These figures are sampled and scaled, which is how the underlying store works; they are close rather than exact, and a number without its conditions is not a measurement.",
-    "referrerNote": "The site a reader came from, aggregated to its host and grouped by kind. Full referring addresses are not published: they can carry other people’s data.",
+    "referrerNote": "Counts requests from people that arrived with a referring site, aggregated to that site's host and grouped by kind. Full addresses are not published: they can carry other people's data. Counted from 7 September 2026, when the datacenter rule took effect; before that a scraper fleet forging a google.com referral dominated the record and is not shown.",
     "panelPages": "Pages served to people",
     "panelClients": "People and automation",
     "panelReferrers": "Where readers arrive from",
@@ -20472,17 +20477,17 @@
     "col_views": "Requests",
     "itemLabel": "Read '{n}' times in the last 90 days.",
     "panelSources": "Search, AI and social referrals",
-    "sourceNote": "The family of the referring site: a search engine, an AI assistant that linked here, a social network, or something else. Every engine still sends the host, so this one is complete.",
+    "sourceNote": "The same referrals, grouped by the family of the referring site: a search engine, an AI assistant that linked here, a social network, or something else. Every engine still sends its host, so the family is always known.",
     "col_source": "Source",
     "panelTimeline": "Readers per day",
-    "timelineNote": "People only, by day. The context for every other panel: a page count means little without knowing whether this was a normal week.",
+    "timelineNote": "Counts requests from people, one per page served, grouped by UTC day. People means every request not matched as automation and not arriving from a datacenter network. Counting began on 5 September 2026, so the series starts there.",
     "col_day": "Day",
-    "pagesNote": "Requests from people only; crawlers and other automation are excluded before counting. Grouped by language of the page served.",
-    "clientsNote": "Every request, sorted into people and families of automation: search crawlers, AI crawlers, monitors, link previewers, tools, and clients that could not be verified. A browser arriving from a cloud or hosting provider's network is counted as unverified, not as a person: people read from homes, phones and offices, and scrapers rent servers.",
-    "countriesNote": "Where requests from people originate, by the country of the connection. Nothing finer than the country is recorded.",
-    "localesNote": "Which language versions of the site people read.",
+    "pagesNote": "Counts requests from people, one per page served, for every page read in the window - the same population as the day-by-day series, so the totals agree. Grouped by the language of the page; the fifteen most-read per language are listed.",
+    "clientsNote": "Every request, sorted into people and families of automation: search crawlers, AI crawlers, monitors, link previewers, tools, and clients that could not be verified. A browser arriving from a cloud or hosting provider's network counts as unverified, not as a person; so does every request from before that check existed, which is the 'before-classifier' line.",
+    "countriesNote": "Counts requests from people by the country of the connection, as Cloudflare reports it. Nothing finer than the country is recorded.",
+    "localesNote": "Counts requests from people by the language version of the page served.",
     "panelDevices": "Phones and desktops",
-    "devicesNote": "Share of requests from people by the coarse class of device. Derived from the browser at the moment of the request and not stored.",
+    "devicesNote": "Shares of requests from people by the coarse class of device - phone or tablet, desktop or laptop, other - derived from the browser at the moment of the request and not stored. The class has been recorded since 6 September 2026; earlier requests have none and are not in this panel, so its total is smaller than the others.",
     "col_device": "Device",
     "device_mobile": "Phone or tablet",
     "device_desktop": "Desktop or laptop",
@@ -20493,28 +20498,28 @@
     "groupOtherSites": "From other sites",
     "groupOther": "Other paths",
     "panelAiShare": "AI crawlers, as a share of all automation",
-    "aiShareNote": "For each day, the proportion of automated requests that came from AI crawlers - the fetchers behind assistants and model training - against every other kind of automation.",
+    "aiShareNote": "For each UTC day, the share of automated requests that came from AI crawlers - the fetchers behind assistants and model training - against every other kind of automation. Requests from people are excluded; requests from datacenter networks count as automation.",
     "panelSections": "Where people read",
-    "sectionsNote": "Requests from people by section of the site, as a share of the whole. Tools, articles, the industry catalogue, the glossary, and the rest.",
+    "sectionsNote": "Shares of requests from people by section of the site - tools, articles, the industry catalogue, the glossary, and the rest - derived from the path of each page served.",
     "col_section": "Section",
     "panelTail": "The long tail",
-    "tailNote": "Pages read only once, twice or three times in the window, and the least-read pages that were read at all. For a catalogue this size, the tail is most of it.",
+    "tailNote": "From every page people read in the window: how many pages were read exactly once, twice or three times, and the twenty-five least-read pages that were read at all. For a catalogue this size, the tail is most of it.",
     "tailCounts": "Pages by number of reads",
     "tailLeast": "Least read, but read",
     "tail_1": "Read exactly once",
     "tail_2": "Read exactly twice",
     "tail_3": "Read exactly three times",
     "panelCoverage": "How much of the site was read",
-    "coverageNote": "Distinct pages that people reached in the window, in total and by language.",
+    "coverageNote": "Distinct pages that people reached in the window, in total and by language, against the requests that reached them.",
     "col_measure": "Measure",
     "coverageDistinct": "Distinct pages read",
     "coverageRequests": "Requests from people",
     "coveragePer": "Pages read in",
     "panelHour": "Hour of the day",
-    "hourNote": "Requests from people by hour, in UTC, across the window. The shape shows which parts of the world are awake when the site is read.",
+    "hourNote": "Requests from people by hour of the day, in UTC, summed across the window. The shape shows which parts of the world are awake when the site is read.",
     "col_hour": "Hour (UTC)",
     "panelWeekday": "Day of the week",
-    "weekdayNote": "Requests from people by weekday, in UTC, across the window.",
+    "weekdayNote": "Requests from people by day of the week, in UTC, summed across the window.",
     "col_weekday": "Weekday",
     "wd_0": "Sunday",
     "wd_1": "Monday",
@@ -20522,6 +20527,24 @@
     "wd_3": "Wednesday",
     "wd_4": "Thursday",
     "wd_5": "Friday",
-    "wd_6": "Saturday"
+    "wd_6": "Saturday",
+    "pagesTotal": "'{requests}' requests across '{pages}' pages in the window"
+  },
+  "learning_page": {
+    "eyebrow": "Industry",
+    "title": "Where the industry learns",
+    "metaDescription": "The training centres, certification bodies, learning platforms and schools in the industry catalogue, grouped by what kind of institution each one is.",
+    "lede": "Every company in the industry catalogue that exists to teach, certify or credential, pulled out of the timeline and grouped by what it is: a centre that sells a manufacturer's curriculum, a body that certifies a person, a platform that sells a library, a school that grants a degree. The distinction matters because the entries keep drawing it.",
+    "backToIndustry": "Industry",
+    "centresTitle": "Authorised training centres",
+    "centresNote": "Companies that deliver a manufacturer's own curriculum through instructors the manufacturer has certified.",
+    "bodiesTitle": "Certification bodies and exam delivery",
+    "bodiesNote": "Organisations whose product is the credential itself, and the companies that administer the examinations.",
+    "platformsTitle": "Learning platforms and labs",
+    "platformsNote": "Libraries, marketplaces and lab environments where the instructor, the university or anyone at all supplies the course.",
+    "schoolsTitle": "Schools and research institutes",
+    "schoolsNote": "Institutions that grant degrees or run programmes rather than sell courses.",
+    "restTitle": "Also tagged training",
+    "restNote": "Entries carrying the training tag that the sections above do not name."
   }
 }

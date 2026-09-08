@@ -30,7 +30,10 @@ type Panel = { route: string; titleKey: string; noteKey: string; cols: [string, 
 
 const PANELS: Panel[] = [
   { route: "timeline",  titleKey: "panelTimeline",  noteKey: "timelineNote",  cols: ["day", "views"],     kind: "timeline" },
-  { route: "pages",     titleKey: "panelPages",     noteKey: "pagesNote",     cols: ["path", "views"],    kind: "pages" },
+  // Reads the COMPLETE list (the "paths" route), not a top-100, so its total
+  // matches the timeline exactly; the panel then shows 15 per language and
+  // says how many requests and pages the whole set holds.
+  { route: "paths",     titleKey: "panelPages",     noteKey: "pagesNote",     cols: ["path", "views"],    kind: "pages" },
   { route: "clients",   titleKey: "panelClients",   noteKey: "clientsNote",   cols: ["client", "views"],  kind: "ranked" },
   { route: "devices",   titleKey: "panelDevices",   noteKey: "devicesNote",   cols: ["device", "views"],  kind: "devices" },
   { route: "referrers", titleKey: "panelReferrers", noteKey: "referrerNote",  cols: ["host", "views"],    kind: "referrers" },
@@ -127,8 +130,9 @@ export default function StatsPanels({
 
   /** Rows grouped for display, per panel kind. Each group: [label|null, rows]. */
   const key = (p: Panel) => `${p.route}:${p.kind}`;
-  const grouped = useMemo(() => {
+  const { grouped, totals } = useMemo(() => {
     const out: Record<string, Array<[string | null, Row[]]>> = {};
+    const totals: Record<string, string> = {};
     for (const p of PANELS) {
       const rows = data[p.route] ?? [];
       if (p.kind === "pages") {
@@ -146,6 +150,9 @@ export default function StatsPanels({
           k ? `${k} — ${localeNames[k] ?? k}` : strings.groupOther,
           buckets.get(k)!.sort((a, b) => Number(b.views) - Number(a.views)).slice(0, 15),
         ]);
+        totals[key(p)] = strings.pagesTotal
+          .replace("{requests}", rows.reduce((a, r) => a + Number(r.views ?? 0), 0).toLocaleString())
+          .replace("{pages}", rows.length.toLocaleString());
       } else if (p.kind === "referrers") {
         const order: Array<["search" | "ai" | "social" | "other", string]> = [
           ["search", strings.groupSearch], ["ai", strings.groupAi],
@@ -223,7 +230,7 @@ export default function StatsPanels({
         out[key(p)] = [[null, rows.slice(0, 25)]];
       }
     }
-    return out;
+    return { grouped: out, totals };
   }, [data, localeNames, strings]);
 
   const total = (rows: Row[]) => rows.reduce((a, r) => a + Number(r.views ?? 0), 0);
@@ -280,6 +287,7 @@ export default function StatsPanels({
               <section key={key(p)} className={`stats-panel${p.kind === "timeline" ? " stats-panel--wide" : ""}`}>
                 <h3 className="stats-panel-title">{strings[p.titleKey]}</h3>
                 <p className="stats-panel-note">{strings[p.noteKey]}</p>
+                {totals[key(p)] ? <p className="stats-panel-total">{totals[key(p)]}</p> : null}
                 {all.length === 0 ? (
                   <p className="stats-empty">{strings.noData}</p>
                 ) : (

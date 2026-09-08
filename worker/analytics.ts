@@ -185,6 +185,9 @@ export function classifyDevice(request: Request): string {
 // region will land here, and that is an acceptable cost of not counting a
 // scraper fleet as readers.
 // ---------------------------------------------------------------------------
+// Every number below was checked against RIPEstat's as-overview on
+// 2026-09-06 and resolves to a hosting or cloud holder; none is a residential
+// or mobile carrier. Add nothing here without doing the same.
 const DATACENTER_ASNS = new Set<number>([
   16509, 14618, 8987,           // Amazon (AWS)
   15169, 396982, 19527,         // Google, Google Cloud
